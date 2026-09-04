@@ -1,222 +1,222 @@
-# ArcForges 全 C# 未来架构总纲
+# ArcForges full C# future architecture overview
 
-> 状态：目标架构 / 从零重写版  
-> 技术基线核验日期：2026-07-20  
-> 适用范围：ArcChat、ArcVideo、ArcNotes、ArcImage、ArcForges Cloud、移动端与 Web 前端  
-> 关键词：.NET 10 LTS、C# 14、Native AOT、Avalonia、.NET MAUI、Blazor WebAssembly、ASP.NET Core Minimal API、Refit、StreamJsonRpc、SignalR、System.Text.Json、Nerdbank.MessagePack、P/Invoke、Interface Code First RPC
+> Status: Target architecture / rewritten from scratch
+> Technical baseline verification date: 2026-07-20
+> Scope of application: ArcChat, ArcVideo, ArcNotes, ArcImage, ArcForges Cloud, mobile terminal and web front-end
+> Keywords: .NET 10 LTS, C# 14, Native AOT, Avalonia, .NET MAUI, Blazor WebAssembly, ASP.NET Core Minimal API, Refit, StreamJsonRpc, SignalR, System.Text.Json, Nerdbank.MessagePack, P/Invoke, Interface Code First RPC
 
 ---
 
-## 0. 文档结论
+## 0. Document conclusion
 
-ArcForges 的未来架构统一为 **All C# / All .NET**，并把通信明确拆成三条互不混淆的主链路：
+The future architecture of ArcForges is unified as **All C# / All .NET**, and communication is clearly split into three main links that are not confusing with each other:
 
-- **公网请求/响应 API：ASP.NET Core Minimal API + Refit + 标准 HTTP/JSON**；
-- **本机进程间 RPC：StreamJsonRpc + 强类型 .NET Interface + Named Pipe/Unix Domain Socket**；
-- **公网实时功能：ASP.NET Core SignalR**，只承担在线状态、通知、进度、聊天增量和远程桥接等实时会话；
-- 云服务器使用 ASP.NET Core 与 C#，以 Native AOT 兼容的 Minimal API/SignalR 子集为默认基线；
-- Windows、macOS、Linux 桌面端使用 Avalonia 与 C#，以 Native AOT 发布为目标；
-- Android、iOS 移动端使用 .NET MAUI 与 C#；iOS 使用 Native AOT，Android 在 .NET 10 下需要区分“Mono AOT”与仍属实验性的“Native AOT”；
-- Web 前端使用 Blazor WebAssembly，并在需要时启用 WASM AOT；严格全 AOT 目标下不把 Blazor Server/Interactive Server 作为核心运行模式；
-- 公网 DTO 使用 `System.Text.Json` Source Generation；Refit 客户端必须走 generated-only 路径；
-- 本机 StreamJsonRpc 契约是真正的 **Interface Code First RPC**：客户端代理与服务端实现围绕同一接口契约工作；
-- 本机 StreamJsonRpc 在 Native AOT 下默认使用 `NerdbankMessagePackFormatter` + 生成式 TypeShape；需要 UTF-8 JSON 时才使用 `SystemTextJsonFormatter` + `JsonSerializerContext`，并接受其更严格的 AOT 限制；
-- 原生编解码、GPU、媒体和系统能力通过 `[LibraryImport]`/P/Invoke 直接进入所属应用进程；
-- 不再设计、构建或部署 C++ Worker；
-- 不再使用 Aeron.NET、MagicOnion、gRPC/Protobuf 作为 ArcForges 主通信层；
-- 不再设置一个持有全部产品业务状态的中央 Service 进程。
+- **Public network request/response API: ASP.NET Core Minimal API + Refit + Standard HTTP/JSON**;
+- **Native inter-process RPC: StreamJsonRpc + strongly typed .NET Interface + Named Pipe/Unix Domain Socket**;
+- **Public network real-time function: ASP.NET Core SignalR**, only responsible for real-time sessions such as online status, notification, progress, chat increment and remote bridging;
+- The cloud server uses ASP.NET Core and C#, with the Native AOT-compatible Minimal API/SignalR subset as the default baseline;
+- Windows, macOS, and Linux desktops use Avalonia and C#, targeting Native AOT release;
+- Android and iOS mobile terminals use .NET MAUI and C#; iOS uses Native AOT, and Android needs to distinguish between "Mono AOT" and the still experimental "Native AOT" under .NET 10;
+- The web front-end uses Blazor WebAssembly and enables WASM AOT when needed; Blazor Server/Interactive Server is not used as the core operating mode under the strict full AOT goal;
+- Public network DTO uses `System.Text.Json` Source Generation; the Refit client must take the generated-only path;
+- The native StreamJsonRpc contract is true **Interface Code First RPC**: the client proxy and server implementation work around the same interface contract;
+- The native StreamJsonRpc uses `NerdbankMessagePackFormatter` + generated TypeShape by default under Native AOT; only use `SystemTextJsonFormatter` + `JsonSerializerContext` when UTF-8 JSON is required, and accept its stricter AOT restrictions;
+- Native codec, GPU, media and system capabilities directly enter the corresponding application process through `[LibraryImport]`/P/Invoke;
+- No more designing, building, or deploying C++ workers;
+- Aeron.NET, MagicOnion, gRPC/Protobuf are no longer used as ArcForges main communication layer;
+- There is no longer a central Service process that holds all product business status.
 
-“单进程”在本文中的准确含义是：**每个产品实例是一个完整、自治的 C# OS 进程，原生库也在该进程内运行**。它不意味着把 ArcChat、ArcVideo、ArcNotes、ArcImage 和云服务器合并成同一个操作系统进程。
+The precise meaning of "single process" in this article is: **Each product instance is a complete, autonomous C# OS process, and the native libraries also run within this process**. It is not meant to merge ArcChat, ArcVideo, ArcNotes, ArcImage and Cloud Server into the same operating system process.
 
-ArcChat 默认承载本机 Hub，但 Hub 只管理平台级目录、路由、权限、审批、协调和审计。每个产品仍拥有自己的领域状态、数据库、资源、UI、撤销栈和恢复日志。跨应用调用通过 StreamJsonRpc 强类型能力契约完成，Hub 不接管产品内部状态。
+ArcChat hosts a native Hub by default, but the Hub only manages platform-level catalogs, routing, permissions, approvals, coordination, and auditing. Each product still has its own domain state, database, resources, UI, undo stack, and restore log. Cross-application calls are completed through the StreamJsonRpc strong type capability contract, and the Hub does not take over the internal state of the product.
 
-这不是把 JVM 版本逐行翻译成 C#，而是保留其正确的产品边界、状态所有权和能力模型，再用现代 .NET 技术重新实现。
+This is not a line-by-line translation of the JVM version into C#, but rather a re-implementation using modern .NET technology that retains its correct product boundaries, state ownership and capabilities model.
 
-### 0.1 “全 AOT”的定义与当前现实边界
+### 0.1 The definition of “full AOT” and the current boundary of reality
 
-本文把“全 AOT”分成两个层次，避免把术语混为一谈：
+This article divides "full AOT" into two levels to avoid confusing the terms:
 
-1. **架构目标**：所有生产主路径都必须可静态分析、禁止运行时代码生成、禁止依赖动态代理/Reflection.Emit，并持续通过 trimming/AOT analyzer 与真实发布构建；
-2. **严格 Native AOT**：宿主最终由 CoreCLR Native AOT 直接生成原生可执行文件。
+1. **Architectural Goal**: All production main paths must be statically analyzeable, disable runtime code generation, disable dependencies on dynamic proxies/Reflection.Emit, and continuously build with real releases through trimming/AOT analyzers;
+2. **Strict Native AOT**: The host finally generates native executable files directly by CoreCLR Native AOT.
 
-截至 2026-07-20，严格 Native AOT 仍有两个必须正视的边界：
+As of 2026-07-20, strictly Native AOT still has two boundaries that must be faced:
 
-- .NET MAUI Android 的 Native AOT 在 .NET 10 仍不是应无条件作为生产主基线的能力；Android Release 可使用 Mono AOT，但这不等同于 CoreCLR Native AOT；
-- EF Core 的 Native AOT 支持仍不适合作为严格生产基线，因此严格全 AOT 的 Cloud/桌面持久化路径不能把 EF Core 运行时作为不可替代依赖。
+- .NET MAUI Android's Native AOT is still not a capability that should be unconditionally used as the production main baseline in .NET 10; Android Release can use Mono AOT, but this is not equivalent to CoreCLR Native AOT;
+- EF Core's Native AOT support is still not suitable as a strict production baseline, so a strictly full-AOT Cloud/desktop persistence path cannot rely on the EF Core runtime as an irreplaceable dependency.
 
-因此本文的硬性原则是：**通信层本身必须 AOT-safe；任何阻止宿主 Native AOT 的基础设施依赖都要被替换、隔离为构建/迁移工具，或明确列为平台暂时例外。**
+So the hard rule of this article is: the communication layer itself must be AOT-safe; any infrastructure dependencies that prevent hosting Native AOT must be replaced, isolated as build/migration tools, or explicitly listed as a temporary exception to the platform. **
 
-## 1. 为什么要这样重写
+## 1. Why should we rewrite this way?
 
-### 1.1 保留的产品本质
+### 1.1 Retained product essence
 
-从现有 ArcForges 产品设计中必须保留以下事实：
+The following facts must be retained from existing ArcForges product designs:
 
-1. **每个产品都是完整应用，而不是中央服务的薄壳。**  
-   ArcVideo 能独立剪辑和保存，ArcNotes 能独立编辑和检索，ArcImage 能独立处理图像，ArcChat 能独立聊天和运行 Agent。
+1. **Each product is a complete application, not a centrally served thin shell. **
+   ArcVideo can edit and save independently, ArcNotes can edit and retrieve independently, ArcImage can process images independently, and ArcChat can chat and run Agent independently.
 
-2. **本地体验不依赖 Hub 在线。**  
-   ArcChat 或 Hub 不可用时，其他应用仍可打开、编辑、导出和恢复本地文档；恢复连接后重新注册能力即可。
+2. **Local experience does not rely on Hub online. **
+   When ArcChat or Hub is unavailable, other applications can still open, edit, export, and restore local documents; just re-register the ability when the connection is restored.
 
-3. **状态归属明确。**  
-   谁拥有文档，谁负责它的事务、版本、撤销、日志、快照和资源生命周期。
+3. **Status ownership is clear. **
+   Who owns the document is responsible for its transactions, versions, undos, logs, snapshots, and resource lifecycle.
 
-4. **本地 UI 与远程命令走同一条应用服务路径。**  
-   StreamJsonRpc/Refit 都只是入口适配器，不能另建一套业务逻辑，更不能直接操作 ViewModel 或控件。
+4. **Local UI and remote commands follow the same application service path. **
+   StreamJsonRpc/Refit are just entry adapters and cannot create another set of business logic, let alone directly operate ViewModel or controls.
 
-5. **跨应用调用是语义能力，不是远程 UI 操作。**  
-   调用方请求“移动片段”“插入图片”“导出文档”，而不是请求“点击某按钮”或“修改某控件属性”。
+5. **Cross-application calls are semantic capabilities, not remote UI operations. **
+   The caller requests "move a fragment", "insert a picture" and "export a document" instead of "click a button" or "modify a control property".
 
-6. **大资源留在所有者一侧。**  
-   视频帧、GPU 纹理、模型文件和大型附件不穿过 Hub；跨边界只传 ResourceRef、任务句柄和受控流。
+6. **Big resources stay on the owner's side. **
+   Video frames, GPU textures, model files, and large attachments do not pass through the Hub; only ResourceRefs, task handles, and controlled flows are passed across boundaries.
 
-### 1.2 删除的旧思路
+### 1.2 The old idea of deletion
 
-以下设计不再属于目标架构：
+The following designs no longer belong to the target architecture:
 
-- 中央 C# Service 持有全部产品状态；
-- Avalonia 客户端只是展示层；
-- Aeron.NET 负责主 RPC；
-- MagicOnion/gRPC/Protobuf 作为 ArcForges 主 RPC；
-- 公网客户端使用非标准二进制 RPC 取代普通 HTTP/JSON；
-- 本机 IPC 为了“统一协议”而额外启动 Kestrel/HTTP/2；
-- 每个应用再启动一个 C++ Worker；
-- 通过共享内存在 C# 与 C++ Worker 之间搬运帧；
-- 用 `invoke(string capability, Dictionary<string, object>)` 作为实际调用协议；
-- RPC 服务直接调用 ViewModel、Dispatcher 或控件；
-- Hub 代理所有文件、媒体帧和大对象；
-- 为追求 AOT 仍保留运行时动态代理、Reflection.Emit、contractless 序列化或未验证的反射回退。
+- The central C# Service holds all product status;
+- The Avalonia client is just the presentation layer;
+- Aeron.NET is responsible for the main RPC;
+- MagicOnion/gRPC/Protobuf as ArcForges main RPC;
+- The public network client uses non-standard binary RPC instead of ordinary HTTP/JSON;
+- Native IPC additionally enables Kestrel/HTTP/2 for "unified protocols";
+- Each application starts another C++ Worker;
+- Moving frames between C# and C++ Workers via shared memory;
+- Use `invoke(string capability, Dictionary<string, object>)` as the actual calling protocol;
+- The RPC service calls ViewModel, Dispatcher or control directly;
+- The Hub proxies all files, media frames, and large objects;
+- Runtime dynamic proxies, Reflection.Emit, contractless serialization or unvalidated reflection fallbacks remain in pursuit of AOT.
 
-### 1.3 目标
+### 1.3 Objectives
 
-- 统一语言、工具链、依赖注入、日志、测试和工程规范；
-- 保持产品自治，同时提供一致的跨应用协作体验；
-- 公网使用标准 HTTP/JSON，便于调试、代理、缓存、观测、版本治理和第三方接入；
-- 本机使用 StreamJsonRpc 强类型接口代理，得到真正的 Interface Code First RPC，而不是手写 method string；
-- 实时公网能力统一使用 SignalR，但不把 SignalR 当数据库、可靠队列或唯一状态源；
-- 所有通信 DTO、代理和序列化都走源码生成或显式静态元数据，消除 AOT 反射回退；
-- 将领域层与 UI、传输、数据库、原生库彻底隔离；
-- 让故障边界、版本兼容、安全边界和恢复路径可以被测试；
-- 默认以模块化单体起步，避免过早微服务化；
-- 保留将来拆分服务或增加隔离进程的接口，但不预先支付复杂度。
+- Unify language, tool chain, dependency injection, logging, testing and engineering specifications;
+- Maintain product autonomy while providing a consistent cross-application collaboration experience;
+- The public network uses standard HTTP/JSON to facilitate debugging, proxying, caching, observation, version management and third-party access;
+- This machine uses the StreamJsonRpc strongly typed interface proxy to get real Interface Code First RPC instead of handwritten method string;
+- Real-time public network capabilities use SignalR uniformly, but SignalR is not used as a database, reliable queue or sole status source;
+- All communication DTOs, proxies and serialization are generated through source code or explicit static metadata, eliminating AOT reflection fallback;
+- Completely isolate the domain layer from UI, transmission, database, and native libraries;
+- Enable failure boundaries, version compatibility, safety boundaries and recovery paths to be tested;
+- By default, it starts with a modular monolith to avoid premature microservices;
+- Preserve interfaces for future splitting of services or adding isolated processes, but without paying for the complexity up front.
 
-### 1.4 非目标
+### 1.4 Non-target
 
-- 不是所有 UI 共享同一套 XAML；
-- 不是所有平台产出同一种发布包；
-- 不是用 SignalR 替代所有 HTTP API；
-- 不是让 Refit 接口成为服务端领域接口；Refit 是公网客户端契约层；
-- 不是让 StreamJsonRpc 暴露到公网；
-- 不是把 JSON-RPC method string 当业务代码的主要调用方式；业务层必须使用强类型代理；
-- 不是一个数据库服务所有产品；
-- 不是把本机 IPC 暴露为公网 API；
-- 不是允许任意第三方原生插件进入主进程；
-- 不是用一个巨型 `ArcForges.Contracts` 程序集耦合全部产品；
-- 不是声称当前所有 MAUI Android 生产包都已经是 CoreCLR Native AOT。
+- Not all UIs share the same set of XAML;
+- Not all platforms produce the same release package;
+- Not replacing all HTTP APIs with SignalR;
+- It is not that the Refit interface becomes the server domain interface; Refit is the public network client contract layer;
+- Rather than exposing StreamJsonRpc to the public network;
+- Do not use JSON-RPC method string as the main calling method of business code; the business layer must use a strongly typed proxy;
+- Not one database serves all products;
+- Rather than exposing the local IPC as a public API;
+- It does not allow any third-party native plug-in to enter the main process;
+- Instead of coupling all products with one giant `ArcForges.Contracts` assembly;
+- It is not claimed that all current MAUI Android production packages are already CoreCLR Native AOT.
 
-## 2. 2026 技术基线与版本策略
+## 2. 2026 technology baseline and version strategy
 
-截至 2026-07-20，目标基线如下。版本号是架构决策时已核验的稳定基线；预览版不进入稳定主链路。
+As of 2026-07-20, the target baseline is as follows. The version number is a stable baseline that has been verified when making architectural decisions; the preview version does not enter the stable main link.
 
-| 层级 | 技术 | 核验基线 | 决策 |
+| Hierarchy | technology | Verify baseline | decision making |
 |---|---|---:|---|
-| 语言与运行时 | C# / .NET | C# 14 / .NET 10 LTS | 全产品统一基线 |
-| SDK | .NET SDK | 10.0.x 稳定 feature band | `global.json` 固定仓库实际验证版本 |
-| 云服务 | ASP.NET Core | .NET 10 | Native AOT 兼容 Minimal API + SignalR 子集 |
-| 公网 HTTP 客户端 | Refit | 13.1.0 stable | `AddRefitGeneratedClient` / `ForGenerated`，标准 HTTP/JSON |
-| 本机 Interface RPC | StreamJsonRpc | 2.25.29 stable | Named Pipe/UDS；Source-generated proxy；部分 NativeAOT-safe，按本文限制使用 |
-| 本机默认 formatter | Nerdbank.MessagePack | 1.2.36 stable | StreamJsonRpc 官方推荐的 NativeAOT 最安全路径；只作为本机 wire formatter |
-| 公网 JSON | System.Text.Json | .NET 10 inbox | `JsonSerializerContext` 源生成；禁止反射兜底 |
-| 公网实时 | ASP.NET Core SignalR | .NET 10 inbox | Native AOT 支持子集；AOT 下只用 JSON Hub protocol |
-| 桌面 UI | Avalonia | 12.x 稳定线 | Windows/macOS/Linux；Native AOT 发布目标 |
-| MVVM | CommunityToolkit.Mvvm | 8.4.x 稳定线 | ViewModel、命令和通知基础设施 |
-| 移动 UI | .NET MAUI Controls | 10.0.80 stable | Android/iOS；iOS Native AOT，Android 单独看 AOT 模式 |
-| Web UI | Blazor WebAssembly | ASP.NET Core 10 | 严格全 AOT 下优先 WASM AOT + 静态托管 |
-| 云端数据库驱动 | Npgsql | 10.x 稳定线 | 严格 Native AOT 路径优先直接 ADO.NET/编译 SQL |
-| ORM | EF Core | 10.x | Native AOT 仍属高风险/实验路径，不作为严格全 AOT 生产基线 |
-| Agent | Microsoft Agent Framework | Microsoft.Agents.AI 1.13.x | 仅在通过 AOT 分析/发布验证的功能面启用 |
-| AI 抽象 | Microsoft.Extensions.AI | 10.x | 模型、工具、遥测抽象 |
-| 遥测 | OpenTelemetry | 1.x 稳定线 | Trace、Metric、Log 关联 |
-| 更新与安装 | Velopack | 1.x | 桌面安装、增量更新与回滚候选；需逐平台 AOT 包验证 |
+| Language and runtime | C# / .NET | C# 14 / .NET 10 LTS | Unified baseline for all products |
+| SDK | .NET SDK | 10.0.x stable feature band | `global.json` Fixed the actual verification version of the warehouse |
+| cloud service | ASP.NET Core | .NET 10 | Native AOT is compatible with Minimal API + SignalR subset |
+| Public HTTP client | Refit | 13.1.0 stable | `AddRefitGeneratedClient` / `ForGenerated`, standard HTTP/JSON |
+| Native Interface RPC | StreamJsonRpc | 2.25.29 stable | Named Pipe/UDS; Source-generated proxy; Part of NativeAOT-safe, use according to the restrictions of this article |
+| This machine's default formatter | Nerdbank.MessagePack | 1.2.36 stable | StreamJsonRpc is the safest path to NativeAOT officially recommended; only used as a native wire formatter |
+| Public network JSON | System.Text.Json | .NET 10 inbox | `JsonSerializerContext` Source generation; disable reflection |
+| Public network real-time | ASP.NET Core SignalR | .NET 10 inbox | Native AOT supports a subset; only JSON Hub protocol is used under AOT |
+| Desktop UI | Avalonia | 12.x stability line | Windows/macOS/Linux; Native AOT release target |
+| MVVM | CommunityToolkit.Mvvm | 8.4.x Stability line | ViewModel, command and notification infrastructure |
+| Mobile UI | .NET MAUI Controls | 10.0.80 stable | Android/iOS; iOS Native AOT, Android looks at AOT mode alone |
+| Web UI | Blazor WebAssembly | ASP.NET Core 10 | Strictly give priority to WASM AOT + static hosting under full AOT |
+| Cloud database driver | Npgsql | 10.x stability line | Strictly Native AOT path gives priority to direct ADO.NET/compile SQL |
+| ORM | EF Core | 10.x | Native AOT is still a high-risk/experimental path and cannot be used as a strict full-AOT production baseline. |
+| Agent | Microsoft Agent Framework | Microsoft.Agents.AI 1.13.x | Enabled only on functional aspects verified by AOT analysis/release |
+| AI abstract | Microsoft.Extensions.AI | 10.x | Models, Tools, Telemetry Abstractions |
+| Telemetry | OpenTelemetry | 1.x stability line | Trace, Metric, Log correlation |
+| Update and installation | Velopack | 1.x | Desktop install, incremental update, and rollback candidate; requires platform-by-platform AOT package verification |
 
-版本策略：
+Version strategy:
 
-- SDK 由 `global.json` 固定，禁止 CI 与开发机漂移；
-- NuGet 由 `Directory.Packages.props` 集中管理；
-- 提交 `packages.lock.json`，CI 使用 locked mode；
-- 同一发布列车只允许一套 Public Contracts、Local RPC Contracts 和 SignalR Contracts 主版本；
-- Refit、StreamJsonRpc、Nerdbank.MessagePack 的补丁升级必须跑 AOT publish + trimming + 旧契约兼容矩阵；
-- 不在业务项目中直接写散落的包版本号；
-- 预览包不得进入稳定分支核心链路；
-- `PublishAot=true` 的宿主把 IL2026/IL3050 等 AOT/trimming 警告视为阻断问题，禁止通过大面积 `UnconditionalSuppressMessage` 掩盖未知路径。
+- The SDK is fixed by `global.json`, which prohibits CI and development machine drift;
+- NuGet is centrally managed by `Directory.Packages.props`;
+- Submit `packages.lock.json`, CI uses locked mode;
+- Only one major version of Public Contracts, Local RPC Contracts and SignalR Contracts is allowed in the same release train;
+- Patch upgrades for Refit, StreamJsonRpc, and Nerdbank.MessagePack must run AOT publish + trimming + old contract compatibility matrix;
+- Do not write scattered package version numbers directly in business projects;
+- Preview packages are not allowed to enter the stable branch core link;
+- Hosts of `PublishAot=true` treat AOT/trimming warnings such as IL2026/IL3050 as blocking issues and prohibit masking unknown paths through large areas `UnconditionalSuppressMessage`.
 
-### 2.1 AOT 的真实边界
+### 2.1 The real boundary of AOT
 
-目标从“按宿主选择 AOT”升级为：**除明确平台例外外，生产宿主以 Native AOT 为默认设计约束**。
+The goal is upgraded from "select AOT by host" to: **Except for explicit platform exceptions, production hosts have Native AOT as the default design constraint**.
 
-| 宿主 | 目标模式 | 当前约束与策略 |
+| host | target mode | Current constraints and strategies |
 |---|---|---|
-| ArcForges Cloud API | Native AOT | Minimal API + Refit 对应 HTTP/JSON + SignalR JSON；不依赖 MVC/Razor runtime compilation；数据库使用 AOT-safe 驱动路径 |
-| ArcChat Desktop | Native AOT | Avalonia + StreamJsonRpc；Agent/插件发现必须移除动态代码路径或静态注册 |
-| ArcVideo Desktop | Native AOT | Avalonia + StreamJsonRpc + `[LibraryImport]`；原生媒体库本身不妨碍托管宿主 AOT |
-| ArcNotes Desktop | Native AOT | Avalonia + StreamJsonRpc + AOT-safe 本地持久化 |
+| ArcForges Cloud API | Native AOT | Minimal API + Refit corresponds to HTTP/JSON + SignalR JSON; does not rely on MVC/Razor runtime compilation; the database uses AOT-safe driver path |
+| ArcChat Desktop | Native AOT | Avalonia + StreamJsonRpc; Agent/plugin discovery must remove dynamic code path or static registration |
+| ArcVideo Desktop | Native AOT | Avalonia + StreamJsonRpc + `[LibraryImport]`; The native media library itself does not hinder the managed host AOT |
+| ArcNotes Desktop | Native AOT | Avalonia + StreamJsonRpc + AOT-safe local persistence |
 | ArcImage Desktop | Native AOT | Avalonia + StreamJsonRpc + `[LibraryImport]` |
-| MAUI iOS | Native AOT | 正式路径；所有 Refit/SignalR DTO 必须源生成 |
-| MAUI Android | Mono AOT 为生产基线；Native AOT 单独实验 | .NET 10 下不能把实验性 Android Native AOT 宣称为全平台稳定基线 |
-| Blazor WebAssembly | WASM AOT | 生产热点/严格 AOT 构建启用；注意包体与构建时间 |
+| MAUI iOS | Native AOT | Official path; all Refit/SignalR DTOs must be generated from source |
+| MAUI Android | Mono AOT is the production baseline; Native AOT is a separate experiment | Experimental Android Native AOT cannot be claimed as a stable baseline for all platforms under .NET 10 |
+| Blazor WebAssembly | WASM AOT | Production hotspot/strict AOT build enabled; pay attention to package body and build time |
 
-#### 2.1.1 StreamJsonRpc 的 Native AOT 定位
+#### 2.1.1 Native AOT positioning of StreamJsonRpc
 
-StreamJsonRpc 官方当前表述是 **“partially NativeAOT safe”**，不是“装包即 100% AOT-safe”。ArcForges 必须满足以下硬条件：
+The current official statement of StreamJsonRpc is **"partially NativeAOT safe"**, not "packaging is 100% AOT-safe". ArcForges must meet the following hard conditions:
 
-- 所有调用 `JsonRpc.Attach` 的项目链路设置 `<EnableStreamJsonRpcInterceptors>true</EnableStreamJsonRpcInterceptors>`；
-- 所有 RPC 接口使用 `[JsonRpcContract]`；
-- 所有 RPC 接口同时使用 `[GenerateShape(IncludeMethods = MethodShapeFlags.PublicInstance)]`；
-- 独立 Contracts 程序集使用 `[assembly: ExportRpcContractProxies]`，让代理可直接激活；
-- 多接口共用一个连接时，提前声明 `JsonRpcProxyInterfaceGroupAttribute` 所需组合；禁止运行时任意拼接未知接口；
-- 本机默认 `NerdbankMessagePackFormatter`；若必须 UTF-8 JSON，则 `SystemTextJsonFormatter.JsonSerializerOptions.TypeInfoResolver` 必须绑定源生成 `JsonSerializerContext`；
-- 添加服务端 target 使用 `RpcTargetMetadata` 生成路径，不使用需要运行时反射枚举方法的便利重载；
-- 创建代理使用具体泛型或 `typeof`，不从未知运行时 Type 集合动态构造；
-- AOT + `SystemTextJsonFormatter` 下禁止依赖 RPC marshalable objects；需要该能力时使用 Nerdbank.MessagePack 路径；
-- 每个平台都跑真正的 `dotnet publish -p:PublishAot=true`，Debug/JIT 测试不算 AOT 验证。
+- All project link settings `<EnableStreamJsonRpcInterceptors>true</EnableStreamJsonRpcInterceptors>` that call `JsonRpc.Attach`;
+- All RPC interfaces use `[JsonRpcContract]`;
+- All RPC interfaces use `[GenerateShape(IncludeMethods = MethodShapeFlags.PublicInstance)]` simultaneously;
+- The standalone Contracts assembly uses `[assembly: ExportRpcContractProxies]`, allowing agents to be activated directly;
+- When multiple interfaces share one connection, declare `JsonRpcProxyInterfaceGroupAttribute` the required combination in advance; it is prohibited to splice unknown interfaces at runtime;
+- This machine defaults to `NerdbankMessagePackFormatter`; if UTF-8 JSON is required, `SystemTextJsonFormatter.JsonSerializerOptions.TypeInfoResolver` must be bound to the source to generate `JsonSerializerContext`;
+- Adding a server-side target uses `RpcTargetMetadata` to generate paths without using convenience overloads that require runtime reflection enumeration methods;
+- Create proxies using concrete generics or `typeof`, not dynamically constructed from an unknown runtime Type collection;
+- It is forbidden to rely on RPC marshalable objects under AOT + `SystemTextJsonFormatter`; use the Nerdbank.MessagePack path when this capability is needed;
+- Each platform runs real `dotnet publish -p:PublishAot=true`, Debug/JIT testing does not count as AOT verification.
 
-#### 2.1.2 Refit 的 Native AOT 定位
+#### 2.1.2 Refit’s Native AOT positioning
 
-Refit 13.1.0 的生成式路径足以作为 AOT 公网客户端基线，但 ArcForges 只允许：
+The generated path of Refit 13.1.0 is sufficient as a baseline for the AOT public client, but ArcForges only allows:
 
-- `RestService.ForGenerated<T>` 或 `AddRefitGeneratedClient<T>`；
-- `SystemTextJsonContentSerializer` + 源生成 `JsonSerializerContext`；
-- 不允许任何 Refit 运行时反射回退；若升级到提供 `Refit.Reflection` opt-in 包的版本，也不得把它引入生产 AOT 主路径；
-- CI 将 Refit analyzer 中提示需要反射 request builder 的诊断升级为错误；若所用版本提供 RF006，则同样视为错误；
-- 公开 API 接口的方法形状必须落在 generated request building 支持范围；
-- 公网服务端仍是 ASP.NET Core Minimal API，**不是**“实现 Refit 接口”来伪装本机 RPC。
+- `RestService.ForGenerated<T>` or `AddRefitGeneratedClient<T>`;
+- `SystemTextJsonContentSerializer` + source generation `JsonSerializerContext`;
+- No Refit runtime reflection fallback is allowed; if you upgrade to a version that provides the `Refit.Reflection` opt-in package, it must not be introduced into the production AOT main path;
+- CI upgrades the diagnosis in the Refit analyzer that prompts the need to reflect the request builder to an error; if the version used provides RF006, it is also regarded as an error;
+- The method shape of the public API interface must fall within the supported range of generated request building;
+- The public network server is still ASP.NET Core Minimal API, not "implementing the Refit interface" to disguise native RPC.
 
-#### 2.1.3 SignalR 的 Native AOT 定位
+#### 2.1.3 SignalR’s Native AOT positioning
 
-SignalR 自 .NET 9 起支持客户端和服务端 Native AOT 场景，但 AOT 基线必须收窄：
+SignalR supports client-side and server-side Native AOT scenarios since .NET 9, but the AOT baseline must be narrowed:
 
-- 只使用 JSON Hub protocol，并给所有 Hub DTO 提供 `System.Text.Json` 源生成元数据；
-- Native AOT 服务端不使用 `Hub<T>` strongly typed hub；使用普通 `Hub` + 集中式方法名常量/生成包装器；
-- 不依赖 AOT 不支持的 Hub 参数/返回类型组合；
-- SignalR 只做实时层，断线后状态通过 Refit HTTP 查询 revision/sequence 恢复；
-- 所有生产客户端都执行 AOT publish smoke test，而不是仅验证普通 JIT 连接。
+- Only use the JSON Hub protocol and provide `System.Text.Json` source generation metadata to all Hub DTOs;
+- Native AOT server does not use `Hub<T>` strongly typed hub; uses ordinary `Hub` + centralized method name constant/generated wrapper;
+- Does not rely on Hub parameter/return type combinations not supported by AOT;
+- SignalR only works on the real-time layer, and the status after disconnection is restored through Refit HTTP query revision/sequence;
+- All production clients perform AOT publish smoke tests instead of just validating normal JIT connections.
 
-#### 2.1.4 严格全 AOT 对数据层的影响
+#### 2.1.4 The impact of strict full AOT on the data layer
 
-EF Core 的 Native AOT 支持截至本次核验仍不应作为严格生产基线。若 ArcForges 坚持 Cloud/Desktop 主宿主严格 Native AOT：
+EF Core's Native AOT support should not be used as a strict production baseline as of this verification. If ArcForges insists on Cloud/Desktop primary hosting strictly Native AOT:
 
-- Cloud 默认 Npgsql ADO.NET + 显式/生成式 SQL；Dapper.AOT 可作为经过 PoC 后的增强层；
-- 本地 SQLite 默认使用 AOT-safe ADO.NET 路径与显式 SQL/生成式映射；
-- schema migration 可由构建/部署阶段工具执行，但生产主宿主不因此引入动态 ORM 运行时；
-- 若未来 EF Core Native AOT 达到稳定生产级，再通过 ADR 重新评估，而不是现在为“代码方便”破坏全 AOT 目标。
+- Cloud defaults to Npgsql ADO.NET + explicit/generated SQL; Dapper.AOT can be used as an enhancement layer after PoC;
+- Native SQLite uses AOT-safe ADO.NET paths with explicit SQL/generative mapping by default;
+- Schema migration can be performed by build/deployment phase tools, but the production master host does not introduce a dynamic ORM runtime;
+- If EF Core Native AOT reaches a stable production level in the future, it will be re-evaluated through ADR instead of destroying the full AOT goal for "code convenience" now.
 
-## 3. 产品拓扑
+## 3. Product topology
 
-### 3.1 总体拓扑
+### 3.1 Overall topology
 
 ```mermaid
 flowchart LR
-    subgraph LocalMachine["用户本机"]
+    subgraph LocalMachine["User's local machine"]
         Chat["ArcChat\nAvalonia + Local Hub + Agent"]
         Video["ArcVideo\nAvalonia + Domain + Native Media"]
         Notes["ArcNotes\nAvalonia + Domain"]
@@ -236,122 +236,122 @@ flowchart LR
     Browser <-->|"HTTP/JSON\n+ SignalR realtime"| Cloud
 ```
 
-通信规则只有三条：
+There are only three communication rules:
 
-1. **同机进程边界**：StreamJsonRpc；
-2. **公网命令/查询**：Refit 生成的标准 HTTP/JSON 客户端；
-3. **公网实时事件**：SignalR。
+1. **Same machine process boundary**: StreamJsonRpc;
+2. **Public network command/query**: Standard HTTP/JSON client generated by Refit;
+3. **Public network real-time events**: SignalR.
 
-禁止为了“统一”让本机走 HTTP，也禁止为了“实时”让业务写命令只存在于 SignalR 消息里。
+It is forbidden to allow the local machine to use HTTP for the sake of "unification", and it is also forbidden for the business to write commands that only exist in SignalR messages for the sake of "real-time".
 
 ### 3.2 ArcChat
 
-ArcChat 是：
+ArcChat is:
 
-- 完整聊天产品；
-- 本机 Agent 入口；
-- 默认本机 Hub 宿主；
-- 能力目录、实例目录、权限和审批协调者；
-- 跨应用 Saga 与审计的发起者；
-- 云端同步和可选远程桥接的出口；
-- 本机 StreamJsonRpc 连接管理器；
-- 公网 Refit/SignalR 客户端宿主。
+- Complete chat product;
+- Local Agent entrance;
+- Default native Hub host;
+- Capability catalog, instance catalog, permissions and approval coordinator;
+- Initiator of cross-application sagas and audits;
+- Exit for cloud sync and optional remote bridging;
+- Native StreamJsonRpc connection manager;
+- Public network Refit/SignalR client host.
 
-ArcChat 不是：
+ArcChat is not:
 
-- 全部产品的数据库；
-- 视频帧和图片内容的代理；
-- 其他应用领域状态的权威来源；
-- 其他应用的隐藏 UI 线程；
-- 所有命令都必须经过的单点。
+- Database of all products;
+- Proxies for video frame and image content;
+- Authoritative source of status for other application areas;
+- Hidden UI thread for other applications;
+- A single point through which all commands must pass.
 
-ArcChat 自己提供的能力在进程内直接调用应用服务，不做“自己 RPC 自己”。其他应用能力通过 Hub 保存的强类型 StreamJsonRpc 代理调用。
+ArcChat itself provides the ability to directly call application services within the process without doing "your own RPC". Other application capabilities are called through the strongly typed StreamJsonRpc proxy held by the Hub.
 
 ### 3.3 ArcVideo
 
-ArcVideo 是独立桌面应用，拥有：
+ArcVideo is a standalone desktop application that has:
 
-- 项目、时间线、轨道、片段、效果、标记等领域模型；
-- 媒体索引、代理文件和渲染任务；
-- 本地数据库、命令日志、快照和撤销栈；
-- Avalonia UI 与本进程 ViewModel；
-- FFmpeg 或其他原生媒体库的 P/Invoke 适配层；
-- 对外的 `IVideoLocalRpc` 等版本化 StreamJsonRpc 能力接口。
+- Domain models such as projects, timelines, tracks, clips, effects, markers;
+- media indexing, proxy files, and rendering tasks;
+- Local database, command log, snapshot and undo stack;
+- Avalonia UI and this process ViewModel;
+- P/Invoke adaptation layer for FFmpeg or other native media libraries;
+- External versioned StreamJsonRpc capability interfaces such as `IVideoLocalRpc`.
 
-跨应用可以请求 ArcVideo 导入资源、移动片段、创建标记或导出成品，但不能获得裸 GPU 句柄、任意原生指针或内部可变实体引用。
+Cross-applications can request ArcVideo to import assets, move clips, create markers, or export finished products, but cannot obtain bare GPU handles, arbitrary native pointers, or internal mutable entity references.
 
 ### 3.4 ArcNotes
 
-ArcNotes 是独立知识与文档应用，拥有：
+ArcNotes is a stand-alone knowledge and documentation application that has:
 
-- 笔记本、文档、块、链接、标签和索引；
-- 本地搜索与可选向量索引；
-- 附件 ResourceRef；
-- 本地数据库、日志、快照和撤销栈；
+- Notebooks, documents, blocks, links, tags and indexes;
+- Local search with optional vector indexing;
+- Attachment ResourceRef;
+- Local database, logs, snapshots and undo stack;
 - Avalonia UI；
-- `INotesLocalRpc` 等语义能力。
+- `INotesLocalRpc` and other semantic capabilities.
 
 ### 3.5 ArcImage
 
-ArcImage 是独立图像应用，拥有：
+ArcImage is a standalone imaging application that has:
 
-- 画布、图层、蒙版、滤镜、历史和导出配置；
-- 图像缓存与 GPU/CPU 资源；
-- 原生编解码或 GPU 库的 P/Invoke 适配层；
-- 本地数据库、日志、快照和撤销栈；
+- Canvas, layers, masks, filters, history and export configurations;
+- Image caching and GPU/CPU resources;
+- P/Invoke adaptation layer for native codecs or GPU libraries;
+- Local database, logs, snapshots and undo stack;
 - Avalonia UI；
-- `IImageLocalRpc` 等语义能力。
+- `IImageLocalRpc` and other semantic capabilities.
 
 ### 3.6 ArcForges Cloud
 
-云端承担：
+The cloud is responsible for:
 
-- 账户、组织、设备和授权；
-- 标准 HTTP/JSON Public API；
-- SignalR 实时连接、通知、在线状态和远程桥接；
-- 跨设备会话与消息；
-- 同步元数据、冲突协调和云端资源索引；
-- AI Provider 接入、配额和审计；
-- 移动端与 Web API；
-- 服务端任务与通知。
+- Accounts, organizations, devices and authorizations;
+- Standard HTTP/JSON Public API;
+- SignalR real-time connections, notifications, presence and remote bridging;
+- Cross-device conversations and messaging;
+- Synchronization of metadata, conflict resolution and cloud resource indexing;
+- AI Provider access, quotas and auditing;
+- Mobile and Web API;
+- Server tasks and notifications.
 
-第一阶段使用模块化单体。公开命令/查询进入 Minimal API/Application Service；实时事件从提交后的 outbox/应用通知投递到 SignalR。只有当独立扩容、隔离、安全或团队所有权有实证需求时，才把模块拆成服务。
+The first phase uses modular monoliths. Expose commands/queries into the Minimal API/Application Service; real-time events are delivered to SignalR from the outbox/application notification after submission. Only split modules into services when there is a proven need for independent scaling, isolation, security, or team ownership.
 
-### 3.7 移动端与 Web
+### 3.7 Mobile and Web
 
-- MAUI 是云端客户端，不直接发现或连接用户局域网中的桌面 Hub；
-- MAUI 公网请求/响应通过 Refit generated-only HTTP/JSON；实时通过 SignalR；
-- Web 浏览器只连接 ArcForges Cloud；Blazor WebAssembly 使用普通 HTTP/JSON 与 SignalR；
-- 远程控制桌面如要实现，必须由桌面 ArcChat 主动建立公网 SignalR 出站连接，并经过用户可见的设备授权、审批和撤销；
-- 远程控制的持久命令/结果仍落入 HTTP/API 或持久任务状态，SignalR 只是实时投递和唤醒通道；
-- 移动和 Web 共享 DTO 与应用语义，不强行共享 UI 实现。
+- MAUI is a cloud client and does not directly discover or connect to the desktop Hub in the user's LAN;
+- MAUI public network request/response through Refit generated-only HTTP/JSON; real-time through SignalR;
+- Web browsers only connect to ArcForges Cloud; Blazor WebAssembly uses plain HTTP/JSON and SignalR;
+- If remote control of the desktop is to be implemented, the desktop ArcChat must actively establish a public network SignalR outbound connection and undergo user-visible device authorization, approval and revocation;
+- Persistent commands/results of remote control still fall into HTTP/API or persistent task state, SignalR is just a real-time delivery and wake-up channel;
+- Mobile and web share DTO and application semantics without forcing shared UI implementation.
 
-## 4. 状态所有权与一致性
+## 4. State ownership and consistency
 
-### 4.1 唯一所有者原则
+### 4.1 Sole owner principle
 
-| 状态 | 权威所有者 | 禁止的副本 |
+| Status | authoritative owner | prohibited copies |
 |---|---|---|
-| 视频项目与时间线 | ArcVideo 实例 | Hub 中的可写镜像 |
-| 笔记与知识图谱 | ArcNotes 实例 | ArcChat 中的业务数据库副本 |
-| 图像工程与图层 | ArcImage 实例 | 云端未经同步协议的可写副本 |
-| 聊天会话与本地 Agent 会话 | ArcChat | 其他桌面应用中的影子会话 |
-| 在线实例与能力目录 | ArcChat Hub | 每个应用各自维护全局目录 |
-| 云账户、组织、设备 | ArcForges Cloud | 本机应用自封的权威账户状态 |
-| 本地权限授予与审批记录 | ArcChat Hub | Provider 自行静默授权 |
+| Video Projects and Timeline | ArcVideo instance | Writable image in Hub |
+| Notes and Knowledge Graph | ArcNotes instance | Business database copy in ArcChat |
+| Image Projects and Layers | ArcImage instance | Writable copy in the cloud without synchronization protocol |
+| Chat Sessions vs. Local Agent Sessions | ArcChat | Shadow sessions in other desktop apps |
+| Online Examples and Competencies Catalog | ArcChat Hub | Each application maintains its own global directory |
+| Cloud accounts, organizations, devices | ArcForges Cloud | Native application self-proclaimed authoritative account status |
+| Local permission grant and approval records | ArcChat Hub | Provider silently authorizes itself |
 
-允许缓存，但缓存必须：
+Caching is allowed, but the cache must:
 
-- 标注来源与 revision；
-- 可丢弃并重新获取；
-- 不能被当作权威写入点；
-- 不跨越安全权限扩大可见范围。
+- Mark sources and revisions;
+- Can be discarded and reacquired;
+- Not to be taken as an authoritative writing point;
+- Do not extend visibility beyond security permissions.
 
-### 4.2 本地与远程统一写路径
+### 4.2 Unified local and remote write paths
 
 ```mermaid
 flowchart TB
-    UI["本地 View / ViewModel"] --> AS["Application Service"]
+    UI["Local View/ViewModel"] --> AS["Application Service"]
     LocalRpc["StreamJsonRpc Adapter"] --> AS
     Http["Minimal API Adapter"] --> AS
     Agent["ArcChat AIFunction Adapter"] --> Cap["Typed Local Capability Client"]
@@ -364,30 +364,30 @@ flowchart TB
     Projector --> UI
 ```
 
-约束：
+Constraints:
 
-- StreamJsonRpc Adapter 只做本机身份、输入验证、DTO 映射、取消传递和应用服务调用；
-- Minimal API Adapter 只做公网认证授权、HTTP 语义、JSON DTO 与应用服务调用；
-- SignalR Hub 不直接改领域状态；需要写入时调用同一 Application Service，且必须保留 CommandId/revision 语义；
-- ViewModel 只消费 ViewState 和调用本地 Facade；
-- 应用服务不引用 Avalonia、MAUI、Blazor、Refit、StreamJsonRpc、SignalR 或控件类型；
-- 领域层不引用数据库 Provider、传输库、文件系统和原生句柄；
-- 本地点击、本机 RPC 和公网 HTTP 命令必须产生相同领域命令、revision、日志和通知；
-- UI 更新由所属进程内投影器完成，远程调用方不能直接调度对方 UI。
+- StreamJsonRpc Adapter only does native identity, input validation, DTO mapping, undelivery and application service calls;
+- Minimal API Adapter only handles public network authentication and authorization, HTTP semantics, JSON DTO and application service calls;
+- SignalR Hub does not directly change the domain status; it calls the same Application Service when writing is required, and the CommandId/revision semantics must be retained;
+- ViewModel only consumes ViewState and calls local Facade;
+- App Service does not reference Avalonia, MAUI, Blazor, Refit, StreamJsonRpc, SignalR, or control types;
+- The domain layer does not reference database providers, transport libraries, file systems and native handles;
+- Local hits, native RPCs, and public HTTP commands must produce the same domain commands, revisions, logs, and notifications;
+- UI updates are completed by the projector within the process, and the remote caller cannot directly schedule the other party's UI.
 
-### 4.3 一致性级别
+### 4.3 Conformance level
 
-- 单文档内命令：本地事务强一致；
-- 同一应用多文档：优先每文档事务，以应用级 Saga 协调；
-- 跨应用：最终一致，使用 Saga、幂等命令、补偿与可见状态；
-- 公网 HTTP：成功响应只代表服务端已按定义完成/接受；长任务返回 TaskHandle；
-- SignalR：只提供实时可见性，不提供唯一可靠事实；断线后必须通过 HTTP revision/sequence 补齐；
-- 跨设备：基于同步协议和 revision，禁止把数据库文件当同步单元；
-- Agent 多步操作：每一步均为普通受控能力调用，失败可观察、可恢复、可审批。
+- Commands within a single document: strong consistency in local transactions;
+- Multiple documents in the same application: Prioritize per-document transactions and coordinate with application-level Saga;
+- Cross-application: eventually consistent, using Saga, idempotent commands, compensation and visible state;
+- Public HTTP: A successful response only means that the server has completed/accepted it as defined; long tasks return TaskHandle;
+- SignalR: only provides real-time visibility and does not provide the only reliable fact; after disconnection, it must be completed through HTTP revision/sequence;
+- Cross-device: Based on the synchronization protocol and revision, it is prohibited to use database files as synchronization units;
+- Agent multi-step operation: Each step is a common controlled capability call, and failures can be observed, recovered, and approved.
 
-## 5. 解决方案与代码边界
+## 5. Solution and code boundaries
 
-### 5.1 建议仓库布局
+### 5.1 Suggested warehouse layout
 
 ```text
 ArcForges/
@@ -449,9 +449,9 @@ ArcForges/
 └─ docs/
 ```
 
-这是逻辑布局，不要求一次性移动所有现有目录。迁移期间允许产品按垂直切片逐步落位。
+This is a logical layout and does not require moving all existing directories at once. During migration, products are allowed to be gradually placed in vertical slices.
 
-### 5.2 引用方向
+### 5.2 Reference direction
 
 ```text
 Desktop / LocalRpc / Infrastructure ─┐
@@ -463,69 +463,69 @@ Contracts.Foundation <- Contracts.PublicApi
 Contracts.Foundation <- Contracts.Realtime
 ```
 
-硬性规则：
+Hard rules:
 
-- Domain 不能引用 Application、Infrastructure、UI 或 Contracts；
-- Application 只能依赖 Domain 和少量抽象；
-- Infrastructure 实现 Application 定义的端口；
-- Local RPC DTO/Public API DTO 不直接成为领域实体；
-- UI Model 不直接成为传输 DTO；
-- Refit 接口只能存在于 PublicApi Client Contract 边界；
-- StreamJsonRpc 接口只能存在于 LocalRpc Contract 边界；
-- SignalR Hub DTO 不能被当作持久领域事件本体；
-- LocalRpc Contracts 不被浏览器或 Cloud Host 引用；
-- PublicApi Contracts 不暴露本机 IPC、原生句柄和桌面实现细节。
+- Domain cannot reference Application, Infrastructure, UI or Contracts;
+- Application can only rely on Domain and a few abstractions;
+- Infrastructure implements the port defined by Application;
+- Local RPC DTO/Public API DTO do not directly become domain entities;
+- The UI Model does not directly become a transport DTO;
+- The Refit interface can only exist within the PublicApi Client Contract boundary;
+- The StreamJsonRpc interface can only exist at the LocalRpc Contract boundary;
+- SignalR Hub DTO cannot be treated as a persistent domain event ontology;
+- LocalRpc Contracts are not referenced by the browser or Cloud Host;
+- PublicApi Contracts do not expose native IPC, native handles, and desktop implementation details.
 
-### 5.3 为什么拆分 Contracts
+### 5.3 Why split Contracts
 
-`ArcForges.Contracts.Foundation` 只包含：
+`ArcForges.Contracts.Foundation` contains only:
 
-- 稳定 ID：AppId、InstanceId、DocumentId、ResourceId、CommandId、TaskId；
-- revision/version 基础类型；
+- Stable ID: AppId, InstanceId, DocumentId, ResourceId, CommandId, TaskId;
+- revision/version basic type;
 - `ArcResult<T>`、`ArcError`；
-- `ResourceRef`、TaskSnapshot 等跨域稳定值；
-- 分页、时间和基础枚举。
+- `ResourceRef`, TaskSnapshot and other cross-domain stable values;
+- Pagination, time and base enums.
 
-`ArcForges.Contracts.LocalRpc` 包含：
+`ArcForges.Contracts.LocalRpc` contains:
 
-- Hub 注册、发现、租约、审批和本机路由；
-- ArcVideo、ArcNotes、ArcImage、ArcChat 的 StreamJsonRpc 强类型接口；
-- `[JsonRpcContract]`、`GenerateShape` 所需静态契约元数据；
-- 本机连接事件和通知契约。
+- Hub registration, discovery, leases, approvals, and native routing;
+- StreamJsonRpc strongly typed interface for ArcVideo, ArcNotes, ArcImage, and ArcChat;
+- `[JsonRpcContract]`, `GenerateShape` required static contract metadata;
+- Native connection event and notification contracts.
 
-`ArcForges.Contracts.PublicApi` 包含：
+`ArcForges.Contracts.PublicApi` contains:
 
-- 账户、设备、聊天、同步、云任务、资源和审批 DTO；
-- Refit 客户端接口及 HTTP route/version 定义；
-- `System.Text.Json` 源生成上下文；
-- 不包含服务端 Application/Domain 实现。
+- Account, Device, Chat, Sync, Cloud Tasks, Resources and Approval DTOs;
+- Refit client interface and HTTP route/version definition;
+- `System.Text.Json` source generation context;
+- Does not include server-side Application/Domain implementation.
 
-`ArcForges.Contracts.Realtime` 包含：
+`ArcForges.Contracts.Realtime` contains:
 
-- SignalR 方法名常量；
-- 通知、在线状态、任务进度、聊天增量和桥接 envelope DTO；
-- sequence/revision 恢复信息；
-- `System.Text.Json` 源生成上下文。
+- SignalR method name constant;
+- Notifications, presence, task progress, chat delta, and bridging envelope DTOs;
+- sequence/revision recovery information;
+- `System.Text.Json` Source generation context.
 
-所有契约项目以 AOT/trimming 兼容为硬门槛，并且不引用 UI、ORM、数据库 Provider、原生库或具体宿主。
+All contract projects have AOT/trimming compatibility as a hard threshold and do not reference UI, ORM, database provider, native library or specific host.
 
 ## 6. StreamJsonRpc Interface Code First RPC
 
-### 6.1 为什么本机选 StreamJsonRpc
+### 6.1 Why does this machine choose StreamJsonRpc?
 
-StreamJsonRpc 是 ArcForges **唯一主本机 RPC 层**。选择它不是因为“JSON 好看”，而是因为它直接匹配本机多进程 C# 架构：
+StreamJsonRpc is ArcForges' only primary native RPC layer. It was chosen not because "JSON looks good" but because it directly matches the native multi-process C# architecture:
 
-- RPC API 可以直接定义为 .NET interface；
-- 客户端通过 `Attach<T>()` 得到强类型代理；
-- Provider 可以直接实现同一接口，形成真正的 Interface Code First；
-- 同一全双工连接双方都可以发起调用和通知；
-- transport 与协议解耦，可直接跑在 `Stream`、Named Pipe、Unix Domain Socket、WebSocket 等双向通道上；
-- 不需要为了本机 RPC 启动 Kestrel、HTTP/2 或占用 TCP 端口；
-- 有 Source Generator/Analyzer，可在受约束方式下用于 Native AOT。
+- RPC API can be directly defined as .NET interface;
+- The client obtains a strongly typed proxy through `Attach<T>()`;
+- Provider can directly implement the same interface to form a true Interface Code First;
+- Both parties on the same full-duplex connection can initiate calls and notifications;
+- The transport is decoupled from the protocol and can run directly on `Stream`, Named Pipe, Unix Domain Socket, WebSocket and other bidirectional channels;
+- No need to start Kestrel, HTTP/2 or occupy TCP ports for native RPC;
+- There is Source Generator/Analyzer, available for Native AOT in constrained mode.
 
-但必须明确：**StreamJsonRpc 官方当前只称自己“partially NativeAOT safe”**。ArcForges 的可用性来自严格遵守生成式路径，而不是假设所有 API 都天然 AOT-safe。
+But it must be clear: **StreamJsonRpc officially only calls itself "partially NativeAOT safe"**. The usability of ArcForges comes from strictly adhering to generative paths, rather than assuming that all APIs are naturally AOT-safe.
 
-### 6.2 契约样式：接口就是本机 RPC 源
+### 6.2 Contract Style: The interface is the native RPC source
 
 ```csharp
 using PolyType;
@@ -547,7 +547,7 @@ public partial interface IVideoLocalRpc : IDisposable
 }
 ```
 
-服务端实现同一接口：
+The server implements the same interface:
 
 ```csharp
 public sealed class VideoLocalRpcService(
@@ -575,43 +575,43 @@ public sealed class VideoLocalRpcService(
 }
 ```
 
-客户端只看到接口：
+The client only sees the interface:
 
 ```csharp
 IVideoLocalRpc video = rpc.Attach<IVideoLocalRpc>();
 var result = await video.MoveClipAsync(request, cancellationToken);
 ```
 
-这就是本文所说的 **Interface Code First RPC**：
+This is what this article calls **Interface Code First RPC**:
 
-- 接口是编译期契约源；
-- 业务调用不写 `"video.moveClip"` 之类 method string；
-- Analyzer 可以在编译期检查不支持的接口形状；
-- Source Generator 为 AOT 生成代理；
-- 服务端仍只是 Adapter，最终调用 Application Service。
+- Interfaces are compile-time contract sources;
+- Do not write method strings such as `"video.moveClip"` for business calls;
+- Analyzer can check for unsupported interface shapes at compile time;
+- Source Generator generates agents for AOT;
+- The server is still just an Adapter, which ultimately calls the Application Service.
 
-### 6.3 StreamJsonRpc 接口硬规则
+### 6.3 StreamJsonRpc interface hard rules
 
-按照当前强类型代理约束，ArcForges 本机 RPC 接口必须：
+Under current strongly typed proxy constraints, the ArcForges native RPC interface must:
 
-- 标记 `[JsonRpcContract]`；
-- 标记 `[GenerateShape(IncludeMethods = MethodShapeFlags.PublicInstance)]`；
-- 声明为 `partial interface`；
-- 不包含 properties；
-- 不包含 generic methods；
-- 方法返回 `Task`、`Task<T>`、`ValueTask`、`ValueTask<T>` 或经过验证的 `IAsyncEnumerable<T>`；
-- `CancellationToken` 若存在必须放在最后；
-- 事件只使用 `EventHandler`/`EventHandler<T>`；
-- 建议接口继承 `IDisposable`，让代理生命周期明确；
-- 对外方法避免重载，避免 CLR 重命名造成难以审计的 wire contract 变化；
-- 每个写方法使用 request DTO，必须包含 CommandId、DocumentId/ResourceId 和 ExpectedRevision 等必要并发字段；
-- 不传 `object`、`dynamic`、`Type`、任意 Dictionary object graph、DbContext、EF Entity、ViewModel、控件、原生指针或 `SafeHandle`。
+- tag `[JsonRpcContract]`;
+- tag `[GenerateShape(IncludeMethods = MethodShapeFlags.PublicInstance)]`;
+- Declared as `partial interface`;
+- Does not contain properties;
+- Does not contain generic methods;
+- Method returns `Task`, `Task<T>`, `ValueTask`, `ValueTask<T>`, or authenticated `IAsyncEnumerable<T>`;
+- `CancellationToken` If present, it must be placed last;
+- Events only use `EventHandler`/`EventHandler<T>`;
+- It is recommended that the interface inherit `IDisposable` to make the agent life cycle clear;
+- Avoid overloading of external methods and avoid difficult-to-audit wire contract changes caused by CLR renaming;
+- Each write method uses request DTO, which must contain necessary concurrency fields such as CommandId, DocumentId/ResourceId and ExpectedRevision;
+- Do not pass `object`, `dynamic`, `Type`, any Dictionary object graph, DbContext, EF Entity, ViewModel, control, native pointer, or `SafeHandle`.
 
-接口方法名本身属于协议兼容面。若需要长期稳定 wire name，可使用显式 JSON-RPC 方法命名特性或 V2 接口策略，但不能在发布后随意重命名公共方法。
+The interface method name itself belongs to the protocol compatibility surface. If you need long-term stable wire names, you can use the explicit JSON-RPC method naming feature or the V2 interface policy, but you cannot arbitrarily rename public methods after release.
 
-### 6.4 Native AOT：必须开启生成式代理拦截
+### 6.4 Native AOT: Generative proxy interception must be turned on
 
-所有会创建 StreamJsonRpc 代理的项目，包括间接依赖项目，必须启用：
+All projects that create StreamJsonRpc proxies, including indirectly dependent projects, must enable:
 
 ```xml
 <PropertyGroup>
@@ -621,13 +621,13 @@ var result = await video.MoveClipAsync(request, cancellationToken);
 </PropertyGroup>
 ```
 
-`EnableStreamJsonRpcInterceptors=true` 的意义是：
+`EnableStreamJsonRpcInterceptors=true` means:
 
-- `JsonRpc.Attach<T>()` 不再静默退回任意动态代理；
-- 对没有源生成代理的接口请求会尽早失败；
-- AOT 构建可以把“漏掉契约生成”变成可测试错误。
+- `JsonRpc.Attach<T>()` No longer silently returns arbitrary dynamic proxies;
+- Requests to interfaces that do not have a source generating proxy will fail early;
+- AOT builds can turn "missed contract generation" into testable bugs.
 
-独立 Contracts 程序集建议直接导出代理：
+The standalone Contracts assembly recommends exporting the agent directly:
 
 ```csharp
 using StreamJsonRpc;
@@ -635,32 +635,32 @@ using StreamJsonRpc;
 [assembly: ExportRpcContractProxies]
 ```
 
-在 ArcForges 中把它升级为**默认硬规则**。这样 AOT 宿主可以直接构造生成代理，避免通过反射寻找/激活不可见代理。
+Upgrade this to the **default hard rule** in ArcForges. In this way, the AOT host can directly construct the generation agent and avoid finding/activating invisible agents through reflection.
 
-### 6.5 多接口共用一个连接
+### 6.5 Multiple interfaces share one connection
 
-一个本机进程连接通常会同时需要：
+A native process connection usually requires both:
 
 - `IHubControlRpc`；
-- `IVideoLocalRpc` / `INotesLocalRpc` 等产品接口；
-- 可能的回调/事件接口。
+- `IVideoLocalRpc` / `INotesLocalRpc` and other product interfaces;
+- Possible callback/event interface.
 
-规则：
+Rules:
 
-- 一个 transport 只创建一个 `JsonRpc` 实例；
-- 禁止对同一个 Stream 多次调用静态 `JsonRpc.Attach<T>(stream)`，因为每次都会创建独立 `JsonRpc`；
-- 需要多个代理时先创建一个 `JsonRpc`，再调用实例 `rpc.Attach<T>()`；
-- Native AOT 下需要的多接口组合必须通过 `JsonRpcProxyInterfaceGroupAttribute` 预生成；
-- 可在评估后设置 `AcceptProxyWithExtraInterfaces=true` 降低组合爆炸，但必须有契约测试覆盖；
-- 禁止运行时扫描程序集并“发现所有接口后动态 Attach”。
+- A transport creates only one `JsonRpc` instance;
+- It is forbidden to call static `JsonRpc.Attach<T>(stream)` multiple times on the same Stream, because an independent `JsonRpc` will be created each time;
+- When multiple agents are needed, first create one `JsonRpc`, and then call the instance `rpc.Attach<T>()`;
+- The multi-interface combination required under Native AOT must be pre-generated through `JsonRpcProxyInterfaceGroupAttribute`;
+- `AcceptProxyWithExtraInterfaces=true` can be set after evaluation to reduce combinatorial explosion, but must be covered by contract testing;
+- Disable runtime scanning of assemblies and "Dynamic Attach after discovering all interfaces".
 
-这也是为什么本地 Contracts 要小而稳定，而不是做成一个无限增长的巨型程序集。
+This is why local Contracts should be small and stable, rather than being made into a giant assembly that grows infinitely.
 
-### 6.6 formatter：AOT 默认选择 Nerdbank.MessagePack
+### 6.6 formatter: AOT default selection Nerdbank.MessagePack
 
-虽然库名叫 StreamJsonRpc，但 JSON-RPC 消息模型并不要求 wire bytes 一定是 JSON 文本。
+Although the library is called StreamJsonRpc, the JSON-RPC message model does not require wire bytes to be JSON text.
 
-为满足全 AOT，ArcForges 本机默认：
+In order to meet the full AOT, ArcForges native default:
 
 ```csharp
 static IJsonRpcMessageFormatter CreateLocalRpcFormatter()
@@ -675,18 +675,18 @@ static IJsonRpcMessageFormatter CreateLocalRpcFormatter()
 internal partial class LocalRpcTypeShapeWitness;
 ```
 
-理由：StreamJsonRpc 官方明确把 `NerdbankMessagePackFormatter` 描述为 NativeAOT 下“best and safest experience”，并且它能在 NativeAOT 下支持 RPC marshalable objects。
+Reason: StreamJsonRpc officially describes `NerdbankMessagePackFormatter` as the "best and safest experience" under NativeAOT, and it can support RPC marshalable objects under NativeAOT.
 
-这里的 MessagePack **只是一种本机 wire formatter**：
+MessagePack here is just a native wire formatter:
 
-- 它不是 ArcForges 公网 API；
-- 它不是跨语言 IDL；
-- 它不取代 HTTP/JSON；
-- 它不要求业务领域以 MessagePack attribute 为中心设计。
+- It is not the ArcForges public API;
+- It is not cross-language IDL;
+- It does not replace HTTP/JSON;
+- It does not require the business domain to be designed around the MessagePack attribute.
 
-### 6.7 若本机必须使用 UTF-8 JSON
+### 6.7 If this machine must use UTF-8 JSON
 
-只有调试互操作或明确需求时使用：
+Use only when debugging interop or when clear requirements are required:
 
 ```csharp
 [JsonSerializable(typeof(MoveClipRequest))]
@@ -704,19 +704,19 @@ static IJsonRpcMessageFormatter CreateJsonFormatter()
     };
 ```
 
-必须同时遵守：
+Must also comply with:
 
-- 所有 RPC DTO 都进入 `JsonSerializerContext`；
-- 不使用默认 `JsonMessageFormatter`，因为它基于 Newtonsoft.Json 且不是本文 AOT 基线；
-- 不依赖 `SystemTextJsonFormatter` 下 NativeAOT 不安全的 RPC marshalable objects；
-- 不在生产里通过 `JsonSerializerOptions` 运行时 resolver 扫描未知类型；
-- 对每一个新 DTO 都有 AOT publish 测试。
+- All RPC DTOs go into `JsonSerializerContext`;
+- The default `JsonMessageFormatter` is not used as it is based on Newtonsoft.Json and is not the AOT baseline for this article;
+- Does not rely on unsafe RPC marshalable objects under NativeAOT under `SystemTextJsonFormatter`;
+- Do not scan for unknown types via the `JsonSerializerOptions` runtime resolver in production;
+- There are AOT publish tests for every new DTO.
 
-因此本机默认仍是 Nerdbank.MessagePack；公网标准协议才统一 HTTP/JSON。
+Therefore, the default of this machine is still Nerdbank.MessagePack; only the public network standard protocol unifies HTTP/JSON.
 
-### 6.8 服务端 target 注册：禁止反射便利路径
+### 6.8 Server target registration: disabling reflection convenience paths
 
-Native AOT 服务端 target 使用生成式 metadata：
+Native AOT server target uses generative metadata:
 
 ```csharp
 var metadata = RpcTargetMetadata.FromShape<IVideoLocalRpc>();
@@ -724,17 +724,17 @@ rpc.AddLocalRpcTarget(metadata, videoService, options: null);
 rpc.StartListening();
 ```
 
-规则：
+Rules:
 
-- 所有 target 在 `StartListening()` 前注册完成；
-- 使用 `RpcTargetMetadata`/TypeShape 生成路径；
-- 不使用依赖运行时反射枚举目标方法的重载作为生产主路径；
-- target 生命周期与本机连接/应用生命周期明确；
-- RPC Adapter 不持有 UI 对象。
+- All targets are registered before `StartListening()`;
+- Use `RpcTargetMetadata`/TypeShape to generate paths;
+- Do not use overloads that rely on runtime reflection enumeration target methods as the production main path;
+- The target life cycle is clear from the native connection/application life cycle;
+- RPC Adapter does not hold UI objects.
 
-### 6.9 framing 与 transport
+### 6.9 framing and transport
 
-本机二进制默认：
+Native binary default:
 
 ```csharp
 var handler = new LengthHeaderMessageHandler(
@@ -745,124 +745,124 @@ var handler = new LengthHeaderMessageHandler(
 var rpc = new JsonRpc(handler);
 ```
 
-UTF-8 JSON 可使用合适的 header-delimited handler。
+UTF-8 JSON can be used with the appropriate header-delimited handler.
 
-Transport 选择：
+Transport selection:
 
-- Windows：Named Pipe；创建 pipe 时必须使用异步选项，避免 async RPC 出现阻塞/挂起；
-- Linux/macOS：Unix Domain Socket；包装为全双工 Stream；
-- 测试：`FullDuplexStream` 或进程内 loopback；
-- 不使用固定 TCP 端口作为正式本机发现方案。
+- Windows: Named Pipe; the asynchronous option must be used when creating the pipe to avoid blocking/hanging in async RPC;
+- Linux/macOS: Unix Domain Socket; wrapped as full-duplex Stream;
+- Test: `FullDuplexStream` or in-process loopback;
+- Fixed TCP ports are not used as the official native discovery scheme.
 
-### 6.10 双向调用、事件与回调
+### 6.10 Bidirectional calls, events and callbacks
 
-StreamJsonRpc 是对等全双工协议，双方都可以发起调用。ArcForges 使用原则：
+StreamJsonRpc is a peer-to-peer full-duplex protocol, and both parties can initiate calls. ArcForges usage principles:
 
-- 命令/查询：强类型方法；
-- 低频连接级通知：接口 event 或显式 callback contract；
-- 高频状态流：优先 revision + delta，必要时经过验证后使用 `IAsyncEnumerable<T>`；
-- 大文件/视频帧：绝不作为普通 RPC DTO 连续推送，使用 ResourceRef/受控 stream；
-- 事件永远不是持久事实，掉线恢复仍靠 revision/journal 查询。
+- Command/Query: Strongly typed methods;
+- Low-frequency connection-level notification: interface event or explicit callback contract;
+- High-frequency state flow: give priority to revision + delta, and use `IAsyncEnumerable<T>` after verification if necessary;
+- Large files/video frames: never pushed continuously as normal RPC DTO, use ResourceRef/controlled stream;
+- Events are never persistent facts, and recovery from disconnection still relies on revision/journal query.
 
-### 6.11 并发、顺序与死锁
+### 6.11 Concurrency, Sequence and Deadlock
 
-不能把 StreamJsonRpc 理解成“天然串行 Actor”。它支持并发 RPC，并且同步上下文行为不能替代领域级并发控制。
+StreamJsonRpc cannot be understood as a "natural serial actor". It supports concurrent RPCs, and synchronization context behavior is not a substitute for domain-level concurrency control.
 
-硬规则：
+Hard rules:
 
-- 每个 DocumentSession/Timeline 使用 mailbox、AsyncLock 或单写者队列维护写顺序；
-- 不依赖 RPC 到达顺序表达业务顺序；
-- 不在持有领域锁时等待对端 callback；
-- 双向回调不得形成 A 等 B、B 又同步等 A 的循环；
-- Channel/queue 必须有容量上限和满载策略；
-- 写命令永远依赖 ExpectedRevision + CommandId，而不是“这个连接上刚刚先发了另一个调用”。
+- Each DocumentSession/Timeline uses mailbox, AsyncLock or single writer queue to maintain write order;
+- Express business order without relying on RPC arrival order;
+- Do not wait for peer callback while holding domain lock;
+- Bidirectional callbacks must not form a cycle in which A waits for B, and B waits for A simultaneously;
+- Channel/queue must have capacity limit and full load policy;
+- Writing commands always relies on ExpectedRevision + CommandId, rather than "another call has just been sent on this connection".
 
-### 6.12 断线、取消与重连
+### 6.12 Disconnection, cancellation and reconnection
 
-StreamJsonRpc 不替你实现业务重试。
+StreamJsonRpc does not implement business retries for you.
 
-- 连接断开时未完成调用可能以 `ConnectionLostException` 失败；
-- 远端异常表现为 `RemoteInvocationException`，业务失败仍优先使用 `ArcResult<T>`；
-- 正常取消表现为 `OperationCanceledException`；
-- 监听 `Completion`/`Disconnected` 更新连接状态；
-- 可按场景启用连接关闭时取消本地正在执行的 RPC，但长业务任务不能仅靠连接生命周期决定是否取消；
-- 重连使用指数退避 + jitter；
-- 查询可安全重试；
-- 写命令只有携带 CommandId 并由 Provider 实现幂等后才能重试；
-- 重连后重新认证、注册能力，并按 revision/sequence 补齐状态。
+- Incomplete calls may fail with `ConnectionLostException` when the connection is broken;
+- The remote exception appears as `RemoteInvocationException`. If the business fails, `ArcResult<T>` will still be used first;
+- Normal cancellation behaves as `OperationCanceledException`;
+- Listen to `Completion`/`Disconnected` to update the connection status;
+- Cancellation of locally executing RPCs when the connection is closed can be enabled according to scenarios, but long business tasks cannot decide whether to cancel based on the connection life cycle alone;
+- Reconnect using exponential backoff + jitter;
+- Queries are safe to retry;
+- The write command can only be retried if it carries the CommandId and is idempotent by the Provider;
+- After reconnecting, re-authenticate and register capabilities, and complete the status according to revision/sequence.
 
-### 6.13 错误模型
+### 6.13 Error model
 
-分离三类失败：
+Separation of three categories of failure:
 
-1. **连接/协议失败**：`ConnectionLostException`、method not found、invalid params；
-2. **远端执行异常**：`RemoteInvocationException`，不向客户端泄漏服务端堆栈和敏感路径；
-3. **业务失败**：`ArcResult<T>` / `ArcError`，包含稳定 code、message key、可选 details、correlationId。
+1. **Connection/Protocol failed**: `ConnectionLostException`, method not found, invalid params;
+2. **Remote execution exception**: `RemoteInvocationException`, does not leak the server stack and sensitive paths to the client;
+3. **Business failure**: `ArcResult<T>` / `ArcError`, including stable code, message key, optional details, correlationId.
 
-调用方只按稳定 code 做业务逻辑，不解析人类错误文本。
+The caller only does business logic according to stable code and does not parse human error text.
 
-### 6.14 安全
+### 6.14 Security
 
-StreamJsonRpc 本身不是认证授权系统。
+StreamJsonRpc itself is not an authentication and authorization system.
 
-- Named Pipe ACL/UDS 文件权限先限制 OS 用户；
-- 建连后第一阶段完成 Hub session handshake；
-- session token 不写进公开 endpoint manifest；
-- token 绑定 appId、instanceId、endpoint、buildId、contractSet 和过期时间；
-- 每个写调用继续携带/解析 actor 与 scope；
-- Provider 在最终执行点再次授权；
-- 不可信客户端即使能连上 pipe/socket，也不能因为“本机”就自动拥有全部能力。
+- Named Pipe ACL/UDS file permissions first restrict OS users;
+- After the connection is established, the first phase of Hub session handshake is completed;
+- The session token is not written into the public endpoint manifest;
+- The token binds appId, instanceId, endpoint, buildId, contractSet and expiration time;
+- Each write call continues to carry/resolve actors and scopes;
+- Provider authorizes again at final execution point;
+- Even if the untrusted client can connect to the pipe/socket, it does not automatically have all the capabilities just because it is "native".
 
-### 6.15 版本兼容
+### Compatible with version 6.15
 
-发布后：
+After publishing:
 
-- 同一主版本内不随意重命名公开接口和方法；
-- DTO 新增字段必须保持 formatter 的前后兼容策略；
-- 破坏性变化创建 `IVideoLocalRpcV2` 等新接口，让 V1/V2 共存一个迁移窗口；
-- Hub 注册携带 `contractSet`、semanticVersion、buildId、features；
-- 调用前做 capability/version 协商；
-- 合同兼容测试保留上一稳定版本的客户端程序集、序列化金样本和 AOT 发布产物；
-- AOT proxy generation 失败属于 CI 阻断，不允许线上退回动态代理。
+- Do not arbitrarily rename public interfaces and methods within the same major version;
+- The new fields in DTO must maintain the formatter’s backward and forward compatibility strategy;
+- Destructive changes create new interfaces such as `IVideoLocalRpcV2`, allowing V1/V2 to coexist in a migration window;
+- Hub registration carries `contractSet`, semanticVersion, buildId, features;
+- Conduct capability/version negotiation before calling;
+- Contract compatibility testing retains the client assembly, serialization gold sample, and AOT release products of the previous stable version;
+- AOT proxy generation failure is a CI block and dynamic proxy is not allowed to be returned online.
 
-### 6.16 StreamJsonRpc AOT 最终检查表
+### 6.16 StreamJsonRpc AOT final checklist
 
-每个 Local RPC 合并前必须回答：
+Each Local RPC must answer before merging:
 
-- [ ] 接口是否 `[JsonRpcContract]` + `GenerateShape(PublicInstance)` + `partial`？
-- [ ] Contracts 程序集是否导出生成代理？
-- [ ] 所有 Attach 调用链是否启用 `EnableStreamJsonRpcInterceptors`？
-- [ ] 是否没有动态 interface/type discovery？
-- [ ] 多接口组合是否预生成？
-- [ ] formatter 是否为 Nerdbank.MessagePack，或 STJ + `JsonSerializerContext`？
-- [ ] target 是否通过 `RpcTargetMetadata` 生成路径注册？
-- [ ] 是否跑过真实 Native AOT publish 并启动一次 RPC round-trip？
-- [ ] 是否测试断线、重连、重复 CommandId、revision 冲突和回调死锁？
+- [ ] Is the interface `[JsonRpcContract]` + `GenerateShape(PublicInstance)` + `partial`?
+- [ ] Does the Contracts assembly export a build agent?
+- [ ] Are `EnableStreamJsonRpcInterceptors` enabled for all Attach call chains?
+- [ ] Is there no dynamic interface/type discovery?
+- [ ] Are multi-interface combinations pre-generated?
+- [ ] formatter Nerdbank.MessagePack, or STJ + `JsonSerializerContext`?
+- [ ] Is the target registered via the `RpcTargetMetadata` generation path?
+- [ ] Have you run a real Native AOT publish and initiated an RPC round-trip?
+- [ ] Are you testing for disconnections, reconnections, duplicate CommandIds, revision conflicts, and callback deadlocks?
 
-## 7. 本机 IPC、发现和路由
+## 7. Native IPC, Discovery and Routing
 
-### 7.1 传输选择
+### 7.1 Transmission selection
 
-本机 StreamJsonRpc 直接运行在 OS IPC 的全双工 Stream 上，不再启动 Kestrel/HTTP/2：
+Native StreamJsonRpc runs directly on OS IPC's full-duplex Stream, no longer initiating Kestrel/HTTP/2:
 
-| 平台 | 默认 IPC | 身份控制 | AOT 注意 |
+| Platform | Default IPC | Identity control | AOT attention |
 |---|---|---|---|
-| Windows | Named Pipe | 当前用户 ACL；必要时限制服务 SID/AppContainer | pipe 使用异步选项；不靠反射发现服务 |
-| Linux | Unix Domain Socket | 私有 runtime 目录 + socket 文件权限 | socket 路径长度、清理 stale socket |
-| macOS | Unix Domain Socket | 用户目录权限 + socket 文件权限 | 沙盒/签名场景单独验证容器路径 |
-| 开发诊断 | `127.0.0.1` 随机端口，仅显式启用 | 仍需 session token | 不能成为生产默认 |
+| Windows | Named Pipe | Current user ACL; restrict service SID/AppContainer if necessary | pipe uses asynchronous options; does not rely on reflection to discover services |
+| Linux | Unix Domain Socket | Private runtime directory + socket file permissions | socket path length, clean stale socket |
+| macOS | Unix Domain Socket | User directory permissions + socket file permissions | Sandbox/Signature scenarios individually verify container paths |
+| develop diagnostics | `127.0.0.1` Random port, only explicitly enabled | Still need session token | Cannot be made the production default |
 
-选择 OS IPC 的原因：
+Reasons to choose OS IPC:
 
-- 不占用固定 TCP 端口；
-- 更容易绑定当前 OS 用户权限；
-- 不需要同机 TLS 证书；
-- 没有本机 Kestrel/gRPC 宿主，桌面 Native AOT 路径更简单；
-- StreamJsonRpc 可以直接复用同一 Stream 完成双向 Interface RPC。
+- Does not occupy a fixed TCP port;
+- Easier to bind current OS user permissions;
+- No peer TLS certificate required;
+- Without a native Kestrel/gRPC host, the desktop Native AOT path is simpler;
+- StreamJsonRpc can directly reuse the same Stream to complete bidirectional Interface RPC.
 
-### 7.2 端点清单
+### 7.2 Endpoint list
 
-每个应用启动时在当前用户私有 runtime 目录写入最小端点清单：
+When each application starts, a minimal endpoint list is written to the current user's private runtime directory:
 
 ```json
 {
@@ -877,9 +877,9 @@ StreamJsonRpc 本身不是认证授权系统。
 }
 ```
 
-清单不是认证凭据。会话 token 不以明文写入清单；进程还要验证对端用户、预期进程、build/contract 和 Hub 发放的短期会话凭据。
+The manifest is not an authentication credential. Session tokens are not written into the manifest as clear text; the process also verifies the short-term session credentials issued by the peer user, the intended process, the build/contract, and the Hub.
 
-### 7.3 注册生命周期
+### 7.3 Registration life cycle
 
 ```mermaid
 sequenceDiagram
@@ -887,8 +887,8 @@ sequenceDiagram
     participant Hub as ArcChat Hub
     participant Caller as ArcChat Agent
 
-    App->>App: 创建 Named Pipe/UDS + StreamJsonRpc Target
-    App->>Hub: 建立 StreamJsonRpc 连接
+    App->>App: Create Named Pipe/UDS + StreamJsonRpc Target
+    App->>Hub: Establish StreamJsonRpc connection
     App->>Hub: Authenticate + Register(instance, endpoint, capabilities, versions)
     Hub->>App: RegistrationAccepted(lease, session token)
     loop Lease active
@@ -900,61 +900,61 @@ sequenceDiagram
     Hub-->>Caller: result
 ```
 
-生命周期规则：
+Life cycle rules:
 
-- 应用先启动自身 endpoint，再连接 Hub；
-- Hub 不可用不阻止应用进入本地可用状态；
-- Hub 按租约淘汰失联实例；
-- 应用重连时使用新的 sessionId，幂等地替换旧注册；
-- 同产品多实例同时存在，路由必须带 InstanceId 或 DocumentId；
-- Hub 的 document routing index 只存“哪个实例当前打开哪个文档”，不存文档内容；
-- 进程正常退出主动 unregister；崩溃依赖租约过期清理；
-- 连接重建后必须重新 Attach 生成代理，旧 proxy 不复用。
+- The application first starts its own endpoint and then connects to the Hub;
+- Hub unavailability does not prevent the application from entering the locally available state;
+- Hub eliminates disconnected instances based on leases;
+- When the application reconnects, it uses the new sessionId and replaces the old registration idempotently;
+- If multiple instances of the same product exist at the same time, the route must carry InstanceId or DocumentId;
+- Hub's document routing index only stores "which instance is currently opening which document" and does not store the document content;
+- The process exits normally and actively unregisters; crashes depend on lease expiration and cleanup;
+- After the connection is reestablished, Attach must be re-generated to generate a proxy, and the old proxy will not be reused.
 
-### 7.4 路由
+### 7.4 Routing
 
-路由优先级：
+Route priority:
 
-1. 命令明确指定 InstanceId；
-2. DocumentId 已绑定到在线实例；
-3. 用户当前选定的默认 Provider；
-4. 同类型唯一健康实例；
-5. 否则返回 `ProviderSelectionRequired`，由用户或 Agent 选择。
+1. The command explicitly specifies the InstanceId;
+2. DocumentId is bound to the online instance;
+3. The default Provider currently selected by the user;
+4. The only healthy instance of the same type;
+5. Otherwise return `ProviderSelectionRequired`, chosen by the user or Agent.
 
-Hub 不应在存在多个候选实例时静默随机路由。
+The Hub should not silently route random routes when multiple candidate instances exist.
 
-### 7.5 健康与背压
+### 7.5 Health and Backpressure
 
-Provider 上报：
+Provider reports:
 
 - `Ready / Busy / Degraded / Draining`；
-- 当前任务数、队列深度和可选负载等级；
-- 支持的 contractSet 和 feature flags；
-- 最近成功心跳和进程启动时间。
+- Current number of tasks, queue depth and optional load levels;
+- Supported contractSet and feature flags;
+- The most recent successful heartbeat and process start time.
 
-调用方必须处理 `Busy`、`RetryAfter` 和队列上限。无限队列不是容错策略。
+The caller must handle `Busy`, `RetryAfter`, and the queue limit. Infinite queues are not a fault-tolerant strategy.
 
-### 7.6 连接管理器
+### 7.6 Connection Manager
 
-每个产品只有一个基础设施组件负责 StreamJsonRpc connection lifecycle：
+There is only one infrastructure component per product responsible for the StreamJsonRpc connection lifecycle:
 
-- 创建/监听 Named Pipe 或 UDS；
-- 创建 formatter + message handler；
-- 注册本地 target；
+- Create/listen to Named Pipe or UDS;
+- Create formatter + message handler;
+- Register local target;
 - `StartListening()`；
-- 创建强类型 proxy；
-- 监听 Completion/Disconnected；
-- 指数退避重连；
-- 重新认证/注册；
-- 更新连接健康状态。
+- Create a strongly typed proxy;
+- Listen for Completion/Disconnected;
+- Index backoff reconnection;
+- recertification/registration;
+- Update connection health status.
 
-业务代码永远不直接 new pipe/socket/JsonRpc，也不直接写 method string。
+Business code never directly new pipe/socket/JsonRpc, nor directly write method string.
 
-## 8. 能力系统与 Agent
+## 8. Ability System and Agent
 
-### 8.1 能力是语义接口
+### 8.1 Capabilities are semantic interfaces
 
-能力目录中可以有字符串 ID，例如：
+There can be string IDs in the capability catalog, for example:
 
 ```text
 arcvideo.timeline.move-clip
@@ -963,78 +963,78 @@ arcnotes.document.insert-block
 arcimage.canvas.apply-filter
 ```
 
-字符串只用于：
+Strings are only used for:
 
-- 发现；
-- 搜索与展示；
-- 权限策略；
-- Agent 工具选择；
-- 路由和审计。
+- discover;
+- Search and display;
+- permissions policy;
+- Agent tool selection;
+- Routing and auditing.
 
-实际调用必须落到已编译的强类型接口方法。禁止用一个万能 `InvokeAsync(string, object)` 绕过契约、权限和版本控制。
+The actual call must fall to the compiled strongly typed interface method. Using a catch-all `InvokeAsync(string, object)` to bypass contracts, permissions, and version control is prohibited.
 
-### 8.2 能力描述
+### 8.2 Capability description
 
-每项能力至少包含：
+Each competency includes at least:
 
-- capabilityId 与 display metadata；
+- capabilityId and display metadata;
 - provider app/instance；
 - typed service/method identity；
-- contract version 和 feature flags；
-- 输入/输出摘要；
-- 是否写入状态；
-- 所需 scope；
-- 风险级别；
-- 是否必须用户确认；
-- 是否支持 dry-run、undo、cancel；
-- 资源大小、预计时长和并发限制。
+- contract version and feature flags;
+- input/output summary;
+- Whether to write status;
+- required scope;
+- risk level;
+- Whether user confirmation is required;
+- Whether to support dry-run, undo, cancel;
+- Resource size, estimated duration, and concurrency limits.
 
-### 8.3 Agent 运行位置
+### 8.3 Agent running location
 
-ArcChat 在同一 C# 进程内运行 Microsoft Agent Framework：
+ArcChat runs Microsoft Agent Framework within the same C# process:
 
-- `Microsoft.Agents.AI` 负责编排 Agent、会话和工具；
-- `Microsoft.Extensions.AI` 抽象 Chat Client、Embedding、工具和遥测；
-- Capability Registry 将强类型代理包装为 `AIFunction`；
-- JIT 宿主允许必要的运行时工具发现，但稳定工具仍优先生成显式绑定；
-- 模型输出永远先经过参数验证和授权，再调用 Provider。
+- `Microsoft.Agents.AI` is responsible for orchestrating Agents, sessions and tools;
+- `Microsoft.Extensions.AI` Abstract Chat Client, Embedding, Tools and Telemetry;
+- Capability Registry wraps strongly typed proxies as `AIFunction`;
+- The JIT host allows necessary runtime tool discovery, but stable tools still prefer generating explicit bindings;
+- Model output always goes through parameter verification and authorization before calling the Provider.
 
-### 8.4 Agent 不是超级用户
+### 8.4 Agent is not a super user
 
-Agent 与人类 UI 使用相同应用服务和能力接口。它不能：
+Agents use the same application services and capability interfaces as human UIs. It cannot:
 
-- 绕过 Scope；
-- 伪造用户身份；
-- 直接写其他产品数据库；
-- 直接操作 ViewModel；
-- 使用未注册原生函数；
-- 在用户不知情时执行高风险导出、删除、发布或云共享。
+- Bypass Scope;
+- Forge user identity;
+- Directly write other product databases;
+- Directly manipulate ViewModel;
+- Use unregistered native functions;
+- Perform high-risk exports, deletions, releases, or cloud shares without the user's knowledge.
 
-### 8.5 审批
+### 8.5 Approval
 
-审批状态由 Hub 管理：
+Approval status is managed by Hub:
 
 ```text
 Requested -> Presented -> Approved/Denied/Expired -> Executed/Failed
 ```
 
-审批绑定：
+Approval binding:
 
-- actor 与 device；
+- actors and devices;
 - capabilityId；
-- 参数摘要或哈希；
+- parameter digest or hash;
 - provider instance；
-- 有效期；
-- 风险级别；
+- validity period;
+- risk level;
 - correlationId。
 
-参数在审批后发生实质变化，必须重新审批。
+If the parameters change substantially after approval, they must be re-approved.
 
 ---
 
-## 9. Avalonia 桌面应用架构
+## 9. Avalonia desktop application architecture
 
-### 9.1 每个桌面进程的内部结构
+### 9.1 Internal structure of each desktop process
 
 ```mermaid
 flowchart TB
@@ -1058,176 +1058,176 @@ flowchart TB
     Notify --> UI
 ```
 
-Generic Host 统一管理：
+Generic Host unified management:
 
-- 依赖注入；
-- 配置与 Secret 引用；
-- 日志和 OpenTelemetry；
-- StreamJsonRpc endpoint/connection 生命周期；
-- Refit HttpClient 与 SignalR HubConnection 生命周期；
-- 数据库迁移检查和恢复；
-- Native runtime 初始化；
-- 有序关机。
+- dependency injection;
+- Configuration and Secret reference;
+- Logging and OpenTelemetry;
+- StreamJsonRpc endpoint/connection life cycle;
+- Refit HttpClient and SignalR HubConnection life cycle;
+- Database migration check and recovery;
+- Native runtime initialization;
+- Orderly shutdown.
 
-Avalonia 生命周期与 Generic Host 生命周期必须协调：UI 关闭先进入 draining，停止接受新远程写命令，等待关键事务落盘，再停止 StreamJsonRpc endpoint、SignalR 连接和 native runtime。
+The Avalonia life cycle and the Generic Host life cycle must be coordinated: when the UI is closed, it first enters draining, stops accepting new remote write commands, waits for key transactions to be placed, and then stops the StreamJsonRpc endpoint, SignalR connection and native runtime.
 
-Native AOT 额外约束：
+Native AOT additional constraints:
 
-- Avalonia XAML 尽量使用 compiled bindings；
-- 禁止依赖运行时加载任意 XAML、动态代理或反射扫描插件作为核心路径；
-- DI 注册优先显式/生成式，不把“扫描整个程序集自动注册”作为不可替代机制；
-- 第三方 Avalonia 控件必须经过 trimming/AOT publish 验证；
-- 每个桌面 RID 都真实发布 Native AOT 包并执行启动、打开文档、本机 RPC、云端 HTTP、SignalR round-trip smoke test。
+- Avalonia XAML uses compiled bindings whenever possible;
+- It is forbidden to rely on the runtime to load any XAML, dynamic proxy or reflection scanning plug-in as the core path;
+- DI registration prioritizes explicit/generative methods, and does not regard "scanning the entire assembly for automatic registration" as an irreplaceable mechanism;
+- Third-party Avalonia controls must be trimming/AOT publish verified;
+- Each desktop RID actually publishes the Native AOT package and performs startup, document opening, native RPC, cloud HTTP, and SignalR round-trip smoke tests.
 
 ### 9.2 MVVM
 
-使用 CommunityToolkit.Mvvm，但不把 ViewModel 当领域对象：
+Use CommunityToolkit.Mvvm, but don't treat the ViewModel as a domain object:
 
-- `ObservableObject` 只用于 ViewState；
-- `[RelayCommand]` 只调用 Facade/Application Service；
-- ViewModel 不持有数据库 connection/session；
-- ViewModel 不持有裸 native pointer；
-- 长任务通过 TaskProjection 展示进度；
-- 领域通知经 ViewState Projector 转换后再切到 Avalonia UI 线程；
-- 远程修改与本地修改产生同一种投影更新。
+- `ObservableObject` ViewState only;
+- `[RelayCommand]` Only calls Facade/Application Service;
+- ViewModel does not hold database connection/session;
+- ViewModel does not hold a bare native pointer;
+- Long tasks display progress through TaskProjection;
+- Realm notifications are converted by ViewState Projector and then switched to the Avalonia UI thread;
+- Remote modifications produce the same kind of projected updates as local modifications.
 
-### 9.3 线程模型
+### 9.3 Threading model
 
-- UI 线程只做布局、输入和轻量状态应用；
-- CPU 密集计算进入受控调度器，不能随意 `Task.Run` 形成无限并发；
-- I/O 全链路 async；
-- Native callback 尽快复制最小元数据并交给托管队列；
-- 每个文档/时间线用串行 mailbox 或 AsyncLock 保护写顺序；
-- 不在持有领域锁时等待 StreamJsonRpc callback、UI Dispatcher 或长时间 native 调用；
-- Channel 必须有容量和满载策略。
+- The UI thread only does layout, input and lightweight state applications;
+- CPU-intensive calculations enter the controlled scheduler and cannot `Task.Run` form unlimited concurrency at will;
+- I/O full link async;
+- Native callback copies the minimum metadata as quickly as possible and hands it to the managed queue;
+- Protect write order with serial mailbox or AsyncLock per document/timeline;
+- Do not wait for StreamJsonRpc callback, UI Dispatcher or long native calls while holding domain lock;
+- Channel must have capacity and full load policy.
 
-### 9.4 多窗口与多实例
+### 9.4 Multiple windows and multiple instances
 
-- 一个进程可有多个窗口，但状态仍按 DocumentSession 分隔；
-- 多进程打开同一文档必须有明确锁、只读或协同协议；
-- OS 文件关联启动应先尝试路由到已有合适实例，再决定新建实例；
-- InstanceId 每次启动唯一，AppId 稳定。
+- A process can have multiple windows, but the status is still separated by DocumentSession;
+- Multiple processes opening the same document must have explicit locks, read-only or cooperative protocols;
+- OS file association startup should first try to route to an existing suitable instance before deciding to create a new instance;
+- InstanceId is unique each time it is started, and AppId is stable.
 
-## 10. 文档、Revision 与并发
+## 10. Documentation, Revision and Concurrency
 
-### 10.1 文档身份
+### 10.1 Document Identity
 
-- DocumentId 是稳定逻辑身份，不等于文件路径；
-- 文件移动或重命名不改变 DocumentId；
-- ResourceId 不复用；
-- InstanceId 只表示当前运行实例；
-- Revision 是某个文档权威所有者的单调递增版本。
+- DocumentId is a stable logical identity, not equal to the file path;
+- Moving or renaming the file does not change the DocumentId;
+- ResourceId is not reused;
+- InstanceId only represents the current running instance;
+- Revision is a monotonically increasing version of the authoritative owner of a document.
 
-### 10.2 写命令
+### 10.2 Writing commands
 
-每个写命令至少包含：
+Each write command contains at least:
 
 - CommandId；
 - DocumentId；
 - ExpectedRevision；
-- Actor/Device 由认证上下文提供；
+- Actor/Device is provided by the authentication context;
 - CausationId、CorrelationId；
-- 业务参数；
-- 可选审批引用。
+- business parameters;
+- Optional approval reference.
 
-处理步骤：
+Processing steps:
 
-1. 验证身份、权限和能力版本；
-2. 检查 CommandId 是否已执行；
-3. 检查 ExpectedRevision；
-4. 执行领域规则；
-5. 原子写入状态变化、命令记录和 journal；
-6. 增加 revision；
-7. 提交后发布本进程通知；
-8. 返回 NewRevision 和最小 delta。
+1. Verify identity, permissions and capability versions;
+2. Check if CommandId has been executed;
+3. Check ExpectedRevision;
+4. Enforce domain rules;
+5. Atomic writing of status changes, command records and journal;
+6. Add revision;
+7. Publish a process notification after submission;
+8. Return NewRevision and minimum delta.
 
-### 10.3 冲突
+### 10.3 Conflict
 
-revision 不匹配时不做隐式 last-write-wins。返回：
+Do not do implicit last-write-wins when revision does not match. Return:
 
 - currentRevision；
-- 可安全公开的冲突摘要；
-- 是否可自动重放；
-- 建议动作：刷新、rebase、用户合并或重新执行。
+- Conflict summaries that are safe to disclose;
+- Whether automatic replay is possible;
+- Recommended actions: refresh, rebase, user merge, or re-execute.
 
-只有天然交换或幂等的操作才自动重放。
+Only natural commutative or idempotent operations are automatically replayed.
 
 ---
 
 ## 11. Undo / Redo
 
-撤销属于文档所有者，不属于 Hub。
+Undo belongs to the document owner, not the Hub.
 
-### 11.1 模型
+### 11.1 Model
 
-- 每个成功可撤销命令产生 UndoRecord；
-- UndoRecord 保存逆操作所需的领域信息，而不是 UI 快照；
-- 远程、Agent 和本地 UI 命令进入同一历史；
-- 审计记录与用户撤销历史分开；
-- 不是每个命令都可撤销，导出、发送、发布等外部副作用使用补偿或明确不可撤销。
+- Each successful undoable command produces an UndoRecord;
+- UndoRecord saves the domain information needed for the reverse operation instead of a UI snapshot;
+- Remote, Agent, and local UI commands go into the same history;
+- Audit records are separated from user revocation history;
+- Not every command is undoable, and external side effects such as export, send, publish, etc. are compensated or explicitly irrevocable.
 
-### 11.2 组合命令
+### 11.2 Combination commands
 
-Agent 或跨应用操作可用 transaction group/correlation group 聚合展示，但不能假装跨进程有 ACID 事务。跨应用撤销按 Saga 反向补偿，且每一步都可能失败并需要用户处理。
+Agent or cross-application operations can be aggregated with transaction group/correlation group, but cannot pretend to have ACID transactions across processes. Cross-app undo is back-compensated by Saga, and each step may fail and require user processing.
 
 ---
 
-## 12. Journal、Snapshot 与崩溃恢复
+## 12. Journal, Snapshot and Crash Recovery
 
-### 12.1 本地持久化
+### 12.1 Local persistence
 
-每个桌面产品自行选择 SQLite/文件存储组合，但严格全 AOT 基线遵循：
+Each desktop product chooses its own SQLite/file storage combination, but strictly follows the full AOT baseline:
 
-- 生产主宿主不把 EF Core 运行时作为不可替代依赖；
-- SQLite 使用经过 Native AOT publish 验证的 ADO.NET/显式 SQL 或生成式数据访问路径；
-- connection/transaction 生命周期按工作单元，不做全局单例；
-- WAL 模式只在经过平台和文件系统验证后启用；
-- 写事务短小；
-- schema migration 有独立版本与可回滚/前向恢复策略；
-- 用户文档与缓存目录分离；
-- 不在多个产品间共享可写数据库文件；
-- 所有 serializer/mapper 必须可静态生成或显式注册，禁止 AOT 下运行时扫描实体类型。
+- The production master host does not rely on the EF Core runtime as an irreplaceable dependency;
+- SQLite uses Native AOT publish validated ADO.NET/explicit SQL or generative data access paths;
+- The connection/transaction life cycle is based on work units and does not create a global singleton;
+- WAL mode is only enabled after platform and file system validation;
+- Write business short;
+- Schema migration has independent versions and rollback/forward recovery strategies;
+- Separation of user documents and cache directories;
+- Do not share writable database files between multiple products;
+- All serializers/mappers must be statically generated or explicitly registered, and runtime scanning of entity types under AOT is prohibited.
 
 ### 12.2 Journal
 
-Journal 记录足以恢复已确认命令的最小信息：
+Journal records the minimum information sufficient to recover a confirmed command:
 
 - sequence；
 - commandId；
 - previous/new revision；
-- command type 与版本；
-- payload 或持久化引用；
+- command type and version;
+- payload or persistent reference;
 - checksum；
 - actor/correlation/causation；
 - committedAtUtc。
 
-先保证落盘语义，再向 StreamJsonRpc/HTTP 调用方报告成功。SignalR 通知只能在提交后发出；即使实时通知丢失，也可由 revision/sequence 恢复。
+Ensure placement semantics first, and then report success to the StreamJsonRpc/HTTP caller. SignalR notifications can only be issued after a commit; even if live notifications are lost, they can be restored by the revision/sequence.
 
 ### 12.3 Snapshot
 
-- 按命令数、时间和体积创建快照；
-- 快照有 schema version 和 checksum；
-- 恢复从最近有效快照开始重放 journal；
-- 快照写入使用临时文件、flush/fsync 策略和原子替换；
-- 保留至少一个上一代已验证快照；
-- 缓存可重建，不进入关键快照。
+- Create snapshots by number of commands, time and volume;
+- Snapshots have schema version and checksum;
+- Restore replays the journal starting from the most recent valid snapshot;
+- Snapshot writes use temporary files, flush/fsync strategies, and atomic replacement;
+- Keep at least one previous generation verified snapshot;
+- The cache can be rebuilt without entering critical snapshots.
 
-### 12.4 原生崩溃后的恢复
+### 12.4 Recovery after native crash
 
-由于原生库与应用同进程，access violation 会终止整个应用。这是取消 Worker 后明确接受的故障边界。下次启动必须：
+Since the native library is in the same process as the application, an access violation will terminate the entire application. This is an explicitly accepted failure boundary after canceling the Worker. The next startup must:
 
-1. 检测非正常退出标记；
-2. 校验最后事务和 journal；
-3. 恢复到最后已提交 revision；
-4. 隔离可能触发崩溃的媒体/插件/操作；
-5. 向用户展示恢复报告与可选诊断包；
-6. 重新注册本机 Hub，并重建 StreamJsonRpc 代理；
-7. 重新建立公网 SignalR 会话并通过 Refit 查询缺失状态；
-8. 不伪造未完成任务为成功。
+1. Detect abnormal exit flags;
+2. Verify the last transaction and journal;
+3. Revert to the last committed revision;
+4. Isolate media/plugins/actions that may trigger crashes;
+5. Present recovery reports and optional diagnostic packages to users;
+6. Re-register the native Hub and rebuild the StreamJsonRpc agent;
+7. Re-establish the public network SignalR session and query the missing status through Refit;
+8. Do not fake unfinished tasks as success.
 
-## 13. 长任务模型
+## 13. Long task model
 
-导入、索引、渲染、转码、模型下载和云同步不能作为长时间占用的本机 RPC 或 HTTP 请求。
+Importing, indexing, rendering, transcoding, model downloads, and cloud sync cannot be performed as long-lived native RPC or HTTP requests.
 
 ### 13.1 TaskHandle
 
@@ -1241,13 +1241,13 @@ public sealed partial record TaskHandle
 }
 ```
 
-同一个 DTO 若进入：
+If the same DTO enters:
 
-- StreamJsonRpc/Nerdbank.MessagePack：由 TypeShape source generation 覆盖；
-- Refit/System.Text.Json：进入 `JsonSerializerContext`；
-- SignalR JSON：进入对应 Realtime `JsonSerializerContext`。
+- StreamJsonRpc/Nerdbank.MessagePack: overridden by TypeShape source generation;
+- Refit/System.Text.Json: Enter `JsonSerializerContext`;
+- SignalR JSON: Enter corresponding Realtime `JsonSerializerContext`.
 
-任务状态：
+Task status:
 
 ```text
 Queued -> Running -> Succeeded
@@ -1256,20 +1256,20 @@ Queued -> Running -> Succeeded
                  -> Paused -> Running
 ```
 
-### 13.2 规则
+### 13.2 Rules
 
-- Task Owner 是实际执行工作的应用或云模块；
-- 任务状态持久化，进程重启后能恢复、失败或明确标记中断；
-- 进度是单调的最佳估计，不承诺精确时间；
-- 本机进度可通过 StreamJsonRpc event/查询；公网实时进度通过 SignalR；
-- Refit HTTP 查询接口始终可用于断线补偿和最终状态读取；
-- 取消是请求，不是假定立即成功；
-- 任务输出使用 ResourceRef；
-- Hub 只聚合任务摘要，不接管执行状态。
+- The Task Owner is the application or cloud module that actually performs the work;
+- The task state is persistent and can be recovered, failed or clearly marked as interrupted after the process is restarted;
+- Progress is a monotonic best estimate, with no commitment to precise times;
+- Local progress can be queried through StreamJsonRpc event/; real-time progress on the public network can be queried through SignalR;
+- The Refit HTTP query interface is always available for disconnection compensation and final status reading;
+- Cancellation is a request, not an assumption of immediate success;
+- Task output uses ResourceRef;
+- Hub only aggregates task summaries and does not take over execution status.
 
-应用内 `BackgroundService`、Channel 消费者或持久任务调度器是 C# 宿主的一部分，不是被删除的 C++ Worker。
+The in-app `BackgroundService`, Channel consumer, or persistent task scheduler is part of the C# host and is not a deleted C++ Worker.
 
-## 14. ResourceRef 与大数据路径
+## 14. ResourceRef and big data path
 
 ### 14.1 ResourceRef
 
@@ -1287,49 +1287,49 @@ public sealed partial record ResourceRef
 }
 ```
 
-ResourceRef 只表示资源身份和元数据，不包含任意绝对路径。序列化元数据由各传输层的 source-generated context/type-shape 提供，不在 DTO 上绑定某一种 wire formatter。
+ResourceRef represents only the resource identity and metadata and does not contain any absolute paths. Serialization metadata is provided by the source-generated context/type-shape of each transport layer and is not bound to a certain wire formatter on the DTO.
 
-### 14.2 本机资源访问
+### 14.2 Native resource access
 
-- 同一用户、同一信任域内优先由 Owner 提供受控打开/导出能力；
-- 路径只在双方明确授权且完成规范化、根目录检查后返回；
-- 临时资源使用短期 capability token；
-- 大资源不塞进普通 StreamJsonRpc request/response；使用受控 stream、文件句柄策略或临时资源通道；
-- 资源读取支持 range/chunk、校验和、取消和限速；
-- Hub 不转发视频帧或大型文件正文。
+- Within the same user and the same trust domain, the Owner is given priority to provide controlled open/export capabilities;
+- The path will only be returned after explicit authorization by both parties and completion of normalization and root directory checking;
+- Temporary resources use short-term capability tokens;
+- Large resources are not crammed into ordinary StreamJsonRpc request/response; use controlled streams, file handle strategies or temporary resource channels;
+- Resource reading supports range/chunk, checksum, cancellation and rate limiting;
+- The Hub does not forward video frames or large file bodies.
 
-### 14.3 云资源访问
+### 14.3 Cloud resource access
 
-- 元数据/控制面走 Refit HTTP/JSON；
-- 对象正文走标准 HTTP upload/download，不通过 SignalR；
-- 对象存储使用短期签名 URL 或受控下载端点；
-- 数据库保存元数据、所有权和生命周期，不保存大型二进制正文；
-- 上传使用分片、校验、幂等完成提交；
-- 客户端不能选择任意 bucket/key；
-- 下载权限在签发和消费时都校验；
-- 敏感资源可使用每资源密钥与信封加密。
+- Metadata/control plane adopts Refit HTTP/JSON;
+- The object body goes through standard HTTP upload/download, not SignalR;
+- Object storage uses short-lived signed URLs or controlled download endpoints;
+- The database saves metadata, ownership and lifecycle, and does not save large binary bodies;
+- The upload uses sharding, verification, and idempotence to complete the submission;
+- The client cannot select any bucket/key;
+- Download permissions are verified at the time of issuance and consumption;
+- Sensitive resources can be encrypted using per-resource keys and envelopes.
 
-### 14.4 媒体帧与 GPU
+### 14.4 Media Frames and GPU
 
-取消 Worker 后，帧与 GPU 状态留在 ArcVideo/ArcImage 自己的进程：
+After canceling the Worker, the frame and GPU state remain in ArcVideo/ArcImage's own process:
 
-- CPU buffer 通过 `Span<T>`、`Memory<T>`、MemoryPool 和受控 pinned memory 使用；
-- GPU 资源通过平台专用渲染桥在本进程内共享；
-- UI 只接收可展示 surface/bitmap 抽象；
-- 不通过 StreamJsonRpc、Refit 或 SignalR 序列化逐帧图像；
-- 不建立“全局共享内存池”。
+- CPU buffer is used through `Span<T>`, `Memory<T>`, MemoryPool and controlled pinned memory;
+- GPU resources are shared within this process through a platform-specific rendering bridge;
+- The UI only accepts presentable surface/bitmap abstractions;
+- Does not serialize frame-by-frame images via StreamJsonRpc, Refit or SignalR;
+- Do not create a "global shared memory pool".
 
-## 15. P/Invoke 与原生 ABI
+## 15. P/Invoke and native ABI
 
-### 15.1 总原则
+### 15.1 General principles
 
-ArcForges 的产品代码、业务逻辑、服务、任务调度和 UI 全部使用 C#。只有无法合理替代的底层库保留原生二进制，例如编解码、GPU、设备驱动或高性能图像算子。
+ArcForges' product code, business logic, services, task scheduling, and UI all use C#. Only low-level libraries that cannot be reasonably replaced remain native binaries, such as codecs, GPUs, device drivers, or high-performance image operators.
 
-如果依赖只有 C++ API，必须在 `native/` 下提供很薄的 `extern "C"` ABI shim。这个 shim 是库适配，不是 Worker，也不持有产品业务状态。
+If the dependency is C++ API only, a thin `extern "C"` ABI shim must be provided under `native/`. This shim is a library adaptation, not a Worker, and does not hold product business status.
 
-### 15.2 使用 LibraryImport
+### 15.2 Using LibraryImport
 
-优先使用 Source-generated P/Invoke：
+Prefer using Source-generated P/Invoke:
 
 ```csharp
 internal static partial class NativeMedia
@@ -1349,70 +1349,70 @@ internal static partial class NativeMedia
 }
 ```
 
-优先 `[LibraryImport]`，只有生成式 marshalling 无法覆盖且有验证时才使用 `[DllImport]`。
+Prioritize `[LibraryImport]`, use `[DllImport]` only if generative marshalling cannot override and there is verification.
 
-### 15.3 ABI 规则
+### 15.3 ABI rules
 
-- C calling convention 明确且跨编译器稳定；
-- 导出函数有固定前缀和 ABI version；
-- 结构体携带 `struct_size`/version，字段只向尾部追加；
-- 使用固定宽度整数，不直接跨边界传 C++ `bool`、STL、异常、RTTI 或虚表；
-- 字符串默认 UTF-8，并明确由谁分配、谁释放；
-- 句柄是不透明指针，托管侧用 `SafeHandle`；
-- 资源所有权在每个函数注释和测试中明确；
-- native 异常永不穿越 C ABI；返回 status/error object；
-- callback 有注册、注销、线程、重入和关闭协议；
-- 函数尽量粗粒度，避免每像素/每采样点 P/Invoke；
-- 所有长度在进入 native 前检查溢出和上限。
+- The C calling convention is clear and stable across compilers;
+- Exported functions have fixed prefix and ABI version;
+- The structure carries `struct_size`/version, and the fields are only appended to the end;
+- Use fixed-width integers and do not directly pass C++ `bool`, STL, exceptions, RTTI or virtual tables across boundaries;
+- The string defaults to UTF-8, and it is clear who allocates and releases it;
+- The handle is an opaque pointer, and the managed side uses `SafeHandle`;
+- Resource ownership is made clear in each function comment and test;
+- Native exceptions never traverse C ABI; return status/error object;
+- callback has registration, logout, thread, reentry and shutdown protocols;
+- The function should be as coarse-grained as possible to avoid P/Invoke per pixel/sampling point;
+- All lengths are checked for overflow and cap before entering native.
 
-### 15.4 加载
+### 15.4 Loading
 
-使用 `NativeLibrary.SetDllImportResolver` 将逻辑库名解析到随应用签名发布的 RID 资产。禁止：
+Use `NativeLibrary.SetDllImportResolver` to resolve the library name to the RID asset published with the app signature. prohibit:
 
-- 从当前工作目录任意加载；
-- 从用户可写搜索路径加载未签名 DLL；
-- 修改全局 PATH 解决依赖；
-- 让同名系统库意外抢先加载。
+- Load arbitrarily from the current working directory;
+- Load unsigned DLL from user-writable search path;
+- Modify global PATH to resolve dependencies;
+- Let the system library with the same name be loaded unexpectedly first.
 
-启动时验证：
+Verify on startup:
 
 - ABI version；
 - build/hash；
 - CPU/GPU feature；
-- 必需入口点；
-- 最小驱动/系统能力。
+- Required entry point;
+- Minimum driver/system capabilities.
 
-### 15.5 SafeHandle 与生命周期
+### 15.5 SafeHandle and life cycle
 
-- 每种 native handle 有专用 `SafeHandle`；
-- 异步包装实现 `IAsyncDisposable`；
-- finalizer 只做最后保险，不承担正常释放；
-- 调用期间使用 `DangerousAddRef` 等安全模式防止句柄被并发释放；
-- callback delegate 或 function pointer 生命周期明确固定；
-- native runtime 在 UI 和 RPC 停止接收新任务后再关闭。
+- Each native handle has a dedicated `SafeHandle`;
+- Asynchronous packaging implementation `IAsyncDisposable`;
+- The finalizer only provides final insurance and does not assume normal release;
+- Use safety modes such as `DangerousAddRef` during calls to prevent handles from being released concurrently;
+- The life cycle of callback delegate or function pointer is clearly fixed;
+- The native runtime stops accepting new tasks after the UI and RPC have stopped.
 
-### 15.6 故障与安全边界
+### 15.6 Failure and safety boundaries
 
-无 Worker 意味着原生内存错误会杀死所属应用。接受这一点的前提是：
+No Worker means native memory errors will kill the owning application. The prerequisite for accepting this is:
 
-- 原生 ABI 极小；
-- 原生输入先做托管验证；
-- 原生库启用 ASan/UBSan 等测试构建；
-- 对媒体和图像 parser 做 fuzz；
-- 原生集成测试可在牺牲进程中运行；
-- 生产保留 crash dump、符号和 build id；
-- journal 保证业务恢复；
-- 不允许不可信第三方 native plugin 直接进入稳定主进程。
+- Native ABI is minimal;
+- Native input undergoes managed verification first;
+- The native library enables test builds such as ASan/UBSan;
+- fuzz media and image parsers;
+- Native integration tests can be run in the sacrifice process;
+- Production retains crash dumps, symbols and build ids;
+- journal ensures business recovery;
+- Untrusted third-party native plugins are not allowed to directly enter the stable main process.
 
-如果未来出现必须运行不可信插件、驱动不稳定或安全隔离的实证需求，可以另立“隔离宿主”ADR。它不能被默认叫回 C++ Worker，也不能改变本文当前架构。
+If there is an empirical need to run untrusted plug-ins, drive instability, or security isolation in the future, a separate "isolated host" ADR can be established. It cannot be called back to C++ Worker by default, nor can it change the current architecture of this article.
 
 ---
 
-## 16. ArcForges Cloud 服务端
+## 16. ArcForges Cloud server
 
-### 16.1 模块化单体
+### 16.1 Modular unit
 
-第一阶段一个 ASP.NET Core Native AOT Host，内部按业务模块隔离：
+The first stage is an ASP.NET Core Native AOT Host, which is internally isolated according to business modules:
 
 - Identity & Organization；
 - Devices & Sessions；
@@ -1425,19 +1425,19 @@ internal static partial class NativeMedia
 - Public HTTP API；
 - SignalR Realtime。
 
-每个模块拥有：
+Each module has:
 
-- Application/Domain 边界；
-- 自己的数据库 schema 或明确表所有权；
-- 公共模块 API/事件；
-- 独立测试；
-- 禁止其他模块直接写它的表。
+- Application/Domain boundary;
+- Own database schema or explicit table ownership;
+- Public module API/events;
+- independent testing;
+- Prevent other modules from writing directly to its tables.
 
-### 16.2 Host 管线与 Native AOT
+### 16.2 Host Pipeline and Native AOT
 
-严格全 AOT 基线使用 `CreateSlimBuilder`/AOT-friendly host 能力和 Minimal API：
+Strictly full AOT baseline using `CreateSlimBuilder`/AOT-friendly host capabilities and Minimal API:
 
-1. Forwarded headers 与 trusted proxy；
+1. Forwarded headers and trusted proxy;
 2. request limits；
 3. correlation/trace；
 4. exception normalization；
@@ -1448,22 +1448,22 @@ internal static partial class NativeMedia
 9. SignalR hubs；
 10. health/management endpoints。
 
-云端通信全部 TLS。
+All TLS for cloud communications.
 
-禁止把以下能力作为严格 Native AOT 主路径：
+It is prohibited to use the following capabilities as strictly Native AOT main paths:
 
-- MVC/Controller 反射模型绑定依赖；
+- MVC/Controller reflection model binding dependency;
 - Razor runtime compilation；
-- 运行时程序集扫描注册 endpoints；
-- 动态 JSON 类型解析；
-- EF Core 作为不可替代的生产运行时；
-- 任何 `Reflection.Emit`/动态代理依赖。
+- Runtime assembly scan registration endpoints;
+- Dynamic JSON type parsing;
+- EF Core as an irreplaceable production runtime;
+- Any `Reflection.Emit`/dynamic proxy dependencies.
 
-### 16.3 公网请求/响应：Refit + 标准 HTTP/JSON
+### 16.3 Public network request/response: Refit + standard HTTP/JSON
 
-公网 API 的服务端是普通 REST-ish HTTP/JSON Minimal API；Refit 是 C# 客户端生成层。
+The server side of the public API is an ordinary REST-ish HTTP/JSON Minimal API; Refit is the C# client generation layer.
 
-客户端契约示例：
+Client contract example:
 
 ```csharp
 public interface IArcForgesCloudApi
@@ -1480,7 +1480,7 @@ public interface IArcForgesCloudApi
 }
 ```
 
-AOT 注册必须使用 generated-only：
+AOT registration must use generated-only:
 
 ```csharp
 services
@@ -1495,26 +1495,26 @@ services
     .ConfigureHttpClient(client => client.BaseAddress = cloudBaseUri);
 ```
 
-或者直接：
+Or directly:
 
 ```csharp
 var api = RestService.ForGenerated<IArcForgesCloudApi>(httpClient, settings);
 ```
 
-规则：
+Rules:
 
-- 不使用 `AddRefitClient<T>`/`RestService.For<T>` 作为严格 AOT 主注册方式；
-- 不允许任何 Refit 运行时反射回退；若升级到提供 `Refit.Reflection` opt-in 包的版本，也不得把它引入生产 AOT 主路径；
-- Refit generated request building 必须覆盖所有公开接口方法；
-- 所有提示反射 request builder 的 analyzer 诊断在 CI 中视为错误；若所用版本提供 RF006，则 RF006 同样为错误；
-- JSON DTO 全部进入 `PublicApiJsonContext`；
-- route/path/query 类型保持生成器明确支持的静态形状；
-- 文件上传下载使用标准 HTTP content/stream，不把大型对象 JSON base64 化；
-- 超时、取消、重试由 HttpClient/Polly 等显式策略管理；写请求重试必须有 CommandId 幂等保证。
+- Do not use `AddRefitClient<T>`/`RestService.For<T>` as the strict AOT primary registration method;
+- No Refit runtime reflection fallback is allowed; if you upgrade to a version that provides the `Refit.Reflection` opt-in package, it must not be introduced into the production AOT main path;
+- Refit generated request building must cover all public interface methods;
+- All analyzer diagnostics that prompt reflection request builder are treated as errors in CI; if the version used provides RF006, RF006 is also an error;
+- JSON DTO all enter `PublicApiJsonContext`;
+- route/path/query types hold static shapes explicitly supported by generators;
+- File upload and download use standard HTTP content/stream and do not convert large objects into JSON base64;
+- Timeouts, cancellations, and retries are managed by explicit policies such as HttpClient/Polly; write request retries must have CommandId idempotent guarantees.
 
-### 16.4 服务端 Minimal API 与 Refit 的关系
+### 16.4 The relationship between server-side Minimal API and Refit
 
-服务端不要“实现 Refit interface”来模拟本机 RPC。正确结构是：
+The server does not "implement the Refit interface" to simulate native RPC. The correct structure is:
 
 ```text
 Refit Interface (client only)
@@ -1526,107 +1526,107 @@ Application Service
 Domain
 ```
 
-这样得到：
+This gets:
 
-- 标准 HTTP 状态码、Header、Cache-Control、ETag/If-Match 等 Web 语义；
-- curl/浏览器/代理/网关都能理解；
-- 将来非 C# 客户端不需要理解 Refit；
-- Refit 只是 C# 端的强类型客户端体验。
+- Standard HTTP status code, Header, Cache-Control, ETag/If-Match and other web semantics;
+- curl/browser/proxy/gateway can all understand it;
+- In the future, non-C# clients will not need to understand Refit;
+- Refit is just a strongly typed client experience on the C# side.
 
-API 漂移通过以下方式控制：
+API drift is controlled in the following ways:
 
-- 共享 PublicApi DTO/route 常量；
-- OpenAPI 作为可观测/第三方描述，而不是 C# 主契约源；
+- Shared PublicApi DTO/route constants;
+- OpenAPI acts as an observable/third-party description rather than the C# master contract source;
 - server-client contract integration tests；
-- 上一稳定客户端对当前服务端的兼容矩阵。
+- Compatibility matrix of the last stable client to the current server.
 
-### 16.5 公网实时：SignalR
+### 16.5 Public network real-time: SignalR
 
-SignalR 只负责需要服务器主动推送的实时体验：
+SignalR is only responsible for real-time experiences that require active push from the server:
 
-- presence/在线状态；
-- 新消息/聊天增量；
+- presence/online status;
+- New message/chat increment;
 - Task progress；
 - approval resolved；
-- device/session 状态；
-- 远程桌面桥接的意图通知；
-- 需要低延迟的轻量通知。
+- device/session status;
+- Intent notification for remote desktop bridging;
+- Need lightweight notifications with low latency.
 
-SignalR **不负责**：
+SignalR **is not responsible** for:
 
-- 唯一持久命令日志；
-- 数据库事务；
-- 大文件上传下载；
-- 视频帧；
-- 断线后唯一状态恢复；
-- 替代全部 Refit HTTP API。
+- The only persistent command log;
+- database transactions;
+- Large file upload and download;
+- video frame;
+- The only state recovery after disconnection;
+- Replaces all Refit HTTP APIs.
 
-所有重要实时事件必须至少带：
+All important real-time events must be accompanied by at least:
 
 - event kind；
 - sequence/revision；
 - correlationId；
 - occurredAtUtc；
-- 必要时 resource/document/task id。
+- resource/document/task id if necessary.
 
-客户端断线重连后，通过 Refit 查询当前 snapshot/revision/sequence，再继续接收 SignalR 增量。
+After the client disconnects and reconnects, query the current snapshot/revision/sequence through Refit, and then continue to receive SignalR increments.
 
-### 16.6 SignalR Native AOT 规则
+### 16.6 SignalR Native AOT rules
 
-严格 Native AOT 下：
+Strictly under Native AOT:
 
-- 只使用 JSON Hub protocol；
-- 所有 Hub payload 进入 `RealtimeJsonContext`；
-- 不使用 `Hub<T>` strongly typed hub 作为服务端 AOT 基线；
-- 使用普通 `Hub`，方法名放在集中式常量或 source-generated wrapper 中，避免散落 magic string；
-- 避免当前 Native AOT 不支持的 streaming parameter/return 组合；
-- 只使用经过 AOT 发布验证的 async 返回类型；
-- Server 和 .NET client 都执行真实 AOT publish integration test；
-- WebSocket 失败时允许 SignalR transport negotiation/fallback，但应用层不能因此改变一致性语义。
+- Only use JSON Hub protocol;
+- All Hub payloads go into `RealtimeJsonContext`;
+- Do not use `Hub<T>` strongly typed hub as server-side AOT baseline;
+- Use plain `Hub` and place method names in centralized constants or source-generated wrappers to avoid scattering magic strings;
+- Avoid streaming parameter/return combinations that are currently not supported by Native AOT;
+- Only use async return types that are validated for AOT publishing;
+- Both Server and .NET client execute real AOT publish integration test;
+- SignalR transport negotiation/fallback is allowed when WebSocket fails, but the application layer cannot change the consistency semantics as a result.
 
-### 16.7 数据库
+### 16.7 Database
 
-严格 Native AOT 默认 PostgreSQL + Npgsql ADO.NET：
+Strict Native AOT Default PostgreSQL + Npgsql ADO.NET:
 
-- 每个请求/工作单元使用短生命周期 connection/transaction；
-- migration 作为受控部署步骤，不由每个实例争抢执行；
-- 乐观并发 token/revision；
-- outbox 与业务事务一起提交；
-- inbox/幂等表保护消息重复；
-- 热查询有显式索引和 query plan 监控；
-- 大资源进入对象存储；
-- 向量检索只是可替换模块，不渗入核心文档模型。
+- Use short life cycle connection/transaction for each request/unit of work;
+- Migration is a controlled deployment step and is not executed by each instance competing for execution;
+- Optimistic concurrency token/revision;
+- outbox is submitted together with the business matter;
+- inbox/idempotent table protects message duplication;
+- Hot queries have explicit index and query plan monitoring;
+- Large resources enter object storage;
+- Vector retrieval is just a replaceable module and does not penetrate the core document model.
 
-Dapper.AOT 可在基准和功能验证后作为映射/SQL 生成增强层。EF Core 只在其 Native AOT 成熟度达到生产标准后重新评估。
+Dapper.AOT can be used as a mapping/SQL generation enhancement layer after benchmarking and functional validation. EF Core is only re-evaluated after its Native AOT maturity reaches production standards.
 
-### 16.8 可靠事件与 SignalR 的关系
+### 16.8 The relationship between reliable events and SignalR
 
-- 业务事务提交 -> outbox；
-- outbox dispatcher -> 内部可靠处理/通知投影；
-- SignalR broadcaster -> 在线客户端实时可见；
-- 客户端 ack 不等于业务事务提交；
-- SignalR 丢失不丢业务事实；
-- 多实例扩展时，再按实证需求增加 backplane/消息基础设施。
+- Business transaction submission -> outbox;
+- outbox dispatcher -> internal reliable processing/notification projection;
+- SignalR broadcaster -> visible to online clients in real time;
+- Client ack does not equal business transaction submission;
+- SignalR does not lose business facts;
+- When expanding to multiple instances, add backplane/message infrastructure based on empirical needs.
 
-### 16.9 后台任务
+### 16.9 Background tasks
 
-服务端可在同一 Native AOT C# 部署单元中运行 `BackgroundService`，但关键任务必须持久化租约、重试次数和幂等键。规模或隔离需要时，可将同一 C# AOT Worker Host 作为部署角色拆出；这仍是云端托管角色，不是桌面 C++ Worker。
+The server can run `BackgroundService` in the same Native AOT C# deployment unit, but mission-critical tasks must persist leases, retries, and idempotent keys. When scale or isolation requires, the same C# AOT Worker Host can be spun out as a deployment role; this is still a cloud-hosted role, not a desktop C++ worker.
 
-## 17. .NET MAUI 移动端
+## 17. .NET MAUI mobile terminal
 
-### 17.1 范围
+### 17.1 Scope
 
-移动端首要能力：
+Primary capabilities of the mobile terminal:
 
-- 登录与设备管理；
-- 聊天与 Agent；
-- 云端任务、通知和审批；
-- 文档/资源预览与轻量编辑；
-- 可选桌面桥接控制面。
+- Login and device management;
+- Chat with Agent;
+- Cloud tasks, notifications and approvals;
+- Document/resource preview and light editing;
+- Optional desktop bridge control plane.
 
-移动端不直接装载桌面原生媒体栈，也不直接连接本机 ArcChat Hub。
+The mobile terminal does not directly load the desktop native media stack, nor does it directly connect to the native ArcChat Hub.
 
-### 17.2 分层
+### 17.2 Stratification
 
 ```text
 MAUI Views / Handlers
@@ -1640,49 +1640,49 @@ Refit Generated HTTP Client + SignalR Client
 Secure Storage / Local Cache / Offline Outbox
 ```
 
-共享：Foundation/PublicApi/Realtime DTO、验证器、纯应用语义、基础 ViewModel 模式。  
-不共享：Avalonia XAML、桌面 Window/Dispatcher、StreamJsonRpc LocalRpc Contracts、桌面 IPC 和桌面原生 handle。
+Share: Foundation/PublicApi/Realtime DTO, validators, pure application semantics, basic ViewModel pattern.  
+Not shared: Avalonia XAML, desktop Window/Dispatcher, StreamJsonRpc LocalRpc Contracts, desktop IPC, and desktop native handles.
 
-### 17.3 网络
+### 17.3 Network
 
-- 公网命令/查询统一 Refit generated-only；
-- SignalR 只负责实时更新；
-- HttpClient/Refit client 由单一工厂管理；
-- access token 通过 DelegatingHandler 注入；
-- token refresh 串行化；
-- 前后台切换按平台策略重建/恢复 SignalR 会话；
-- 网络变化使用带抖动指数退避；
-- 本地 outbox 保存离线可重试命令；
-- 所有写重试遵守 CommandId 幂等语义；
-- SignalR 重连后通过 Refit 查询 sequence/revision 补齐；
-- 不把敏感 token 写日志或普通 Preferences。
+- Public network command/query unified Refit generated-only;
+- SignalR is only responsible for real-time updates;
+- HttpClient/Refit client is managed by a single factory;
+- access token is injected through DelegatingHandler;
+- token refresh serialization;
+- Switch between front and back to rebuild/restore SignalR sessions according to platform policies;
+- Network changes use exponential backoff with jitter;
+- Local outbox saves commands that can be retried offline;
+- All write retries obey the idempotent semantics of CommandId;
+- After SignalR reconnects, query sequence/revision through Refit to complete it;
+- Do not write sensitive tokens to logs or normal Preferences.
 
-### 17.4 AOT 与 trimming
+### 17.4 AOT and trimming
 
-- iOS 使用正式 Native AOT 路径；
-- Refit 只用 `AddRefitGeneratedClient`/`ForGenerated`；
-- Public API JSON 使用 `JsonSerializerContext`；
-- SignalR 只使用 JSON protocol + 源生成 DTO 元数据；
-- 反射、动态程序集、运行时代码生成不得进入 iOS 主路径；
-- Android .NET 10 的生产基线应明确区分 Mono AOT 与实验性 Native AOT；不能在文档里把二者混称为同一个“Native AOT”；
-- 若产品硬性要求“Android 也必须 CoreCLR Native AOT”，必须先完成真机 PoC、第三方 SDK/JNI/Java interop、SignalR、Refit、启动时间、包体和商店链路验证，再宣布生产支持；
-- CI 必须真正构建 Release/AOT 产物并运行设备 smoke test，Debug 成功不算通过。
+- iOS uses the official Native AOT path;
+- Refit only uses `AddRefitGeneratedClient`/`ForGenerated`;
+- Public API JSON uses `JsonSerializerContext`;
+- SignalR only uses JSON protocol + source to generate DTO metadata;
+- Reflection, dynamic assemblies, and runtime code generation must not enter the iOS main path;
+- The production baseline of Android .NET 10 should clearly distinguish between Mono AOT and experimental Native AOT; they cannot be confused as the same "Native AOT" in the documentation;
+- If the product has a mandatory requirement that "Android must also have CoreCLR Native AOT", the real machine PoC, third-party SDK/JNI/Java interop, SignalR, Refit, startup time, package body and store link verification must be completed before announcing production support;
+- CI must actually build the Release/AOT product and run the device smoke test. Successful Debug does not count as passing.
 
-## 18. Blazor Web 前端
+## 18. Blazor Web Frontend
 
-### 18.1 严格全 AOT 的 Web 选择
+### 18.1 Strictly all-AOT Web selection
 
-严格全 AOT 目标下，Web 前端默认使用：
+Under the strict full AOT goal, the web front end uses by default:
 
 - Blazor WebAssembly；
-- 发布时按场景启用 WASM AOT；
-- 静态资源由 CDN/静态站点或 Native AOT ASP.NET Core Host 提供；
-- 公网请求/响应使用标准 HTTP/JSON；C# 客户端可使用 Refit generated-only；
-- 实时使用 SignalR client。
+- Enable WASM AOT by scene when publishing;
+- Static resources are provided by CDN/static site or Native AOT ASP.NET Core Host;
+- Public network requests/responses use standard HTTP/JSON; C# clients can use Refit generated-only;
+- Use the SignalR client in real time.
 
-不把 Blazor Server/Interactive Server 作为核心基线，因为它会把 UI circuit 绑定到服务端运行时，并与“所有主宿主严格 Native AOT”的目标冲突。
+Blazor Server/Interactive Server is not considered a core baseline as it would tie the UI circuit to the server runtime and conflict with the goal of "strictly Native AOT for all hosts".
 
-### 18.2 Web 通信边界
+### 18.2 Web communication boundaries
 
 ```text
 Blazor WASM
@@ -1690,103 +1690,103 @@ Blazor WASM
    └─ SignalR Client    -> Realtime Hub
 ```
 
-规则：
+Rules:
 
-- 命令和查询通过 HTTP/JSON；
-- 实时通知通过 SignalR；
-- SignalR 消息到达后，如果需要权威完整状态，调用 Refit API 刷新；
-- 不使用 gRPC-Web/MagicOnion 作为浏览器主链路；
-- 大文件使用标准 HTTP upload/download；
-- WASM 端 JSON 元数据必须 source-generated；
-- WASM AOT 是否启用按性能/包体测量决定，但严格发布矩阵至少保留一个 AOT 构建验证。
+- Commands and queries via HTTP/JSON;
+- Real-time notifications via SignalR;
+- After the SignalR message arrives, if the authoritative complete status is required, call the Refit API to refresh;
+- Do not use gRPC-Web/MagicOnion as the browser main link;
+- Large files use standard HTTP upload/download;
+- WASM-side JSON metadata must be source-generated;
+- Whether WASM AOT is enabled or not is determined by performance/package measurements, but strict release matrix retains at least one AOT build verification.
 
-### 18.3 Refit 在 Blazor WASM 中的角色
+### 18.3 The role of Refit in Blazor WASM
 
-Refit 支持现代 .NET/Blazor，但 ArcForges 仍遵循同一 AOT 规则：
+Refit supports modern .NET/Blazor, but ArcForges still follows the same AOT rules:
 
 - generated-only client；
-- 不允许任何 Refit 运行时反射回退；若升级到提供 `Refit.Reflection` opt-in 包的版本，也不得把它引入生产 AOT 主路径；
+- No Refit runtime reflection fallback is allowed; if you upgrade to a version that provides the `Refit.Reflection` opt-in package, it must not be introduced into the production AOT main path;
 - `SystemTextJsonContentSerializer` + `PublicApiJsonContext`；
-- 浏览器不把长期 access token 暴露给可被任意 JS 读取的持久存储；
-- 鉴权模型优先短期 token/BFF 风格安全边界，具体部署由安全 ADR 决定。
+- Browsers do not expose long-term access tokens to persistent storage that can be read by arbitrary JS;
+- The authentication model prioritizes short-term token/BFF style security boundaries, and the specific deployment is determined by security ADR.
 
-### 18.4 Web 安全
+### 18.4 Web Security
 
 - HTTPS only；
-- CSP、SameSite、secure cookie/BFF 策略按部署模式配置；
-- 上传有内容类型、大小、病毒/格式检查和隔离区；
-- 不把 Secret 编译进 WASM；
-- 公开分享链接短期、可撤销、最小权限；
-- SignalR WebSocket/SSE/Long Polling 的 access token 日志必须脱敏；
-- 所有跨域策略显式白名单，不使用宽泛生产 CORS。
+- CSP, SameSite, secure cookie/BFF policies are configured by deployment mode;
+- Uploads have content type, size, virus/format checking and quarantine;
+- Do not compile Secret into WASM;
+- Public sharing links are short-term, revocable, and have minimal permissions;
+- The access token logs of SignalR WebSocket/SSE/Long Polling must be desensitized;
+- Explicitly whitelist all cross-domain policies and do not use wide production CORS.
 
-## 19. 云端与桌面桥接
+## 19. Cloud and desktop bridging
 
-这不是第一阶段核心链路，但架构预留如下安全模型：
+This is not the first phase core link, but the architecture reserves the following security model:
 
-1. ArcChat Desktop 主动向 Cloud 建立 TLS SignalR 出站连接；
-2. 用户在桌面确认设备绑定；
-3. Cloud 只通过 SignalR 向已绑定设备投递受限“意图/唤醒”消息；
-4. ArcChat 收到意图后按本机能力、权限和审批，通过 StreamJsonRpc 路由到 Provider；
-5. Provider 的持久业务结果写入自身状态；
-6. ArcChat/Provider 通过 Refit HTTP API 提交需要云端持久化的结果，或由 SignalR 回传轻量实时状态；
-7. 所有步骤有 correlationId、CommandId 和审计；
-8. 用户可随时断开、撤销设备和能力 scope。
+1. ArcChat Desktop proactively establishes a TLS SignalR outbound connection to the Cloud;
+2. The user confirms device binding on the desktop;
+3. Cloud only delivers restricted "intent/wake" messages to bonded devices via SignalR;
+4. After receiving the intent, ArcChat routes to the Provider through StreamJsonRpc according to the native capabilities, permissions and approvals;
+5. Provider's persistent business results are written into its own state;
+6. ArcChat/Provider submits results that require cloud persistence through the Refit HTTP API, or SignalR returns lightweight real-time status;
+7. All steps have correlationId, CommandId and audit;
+8. Users can disconnect and revoke device and capability scope at any time.
 
-原则：
+Principles:
 
-- Cloud 不能扫描局域网；
-- Mobile/Web 不能直接打本机 Named Pipe/UDS；
-- 公网不能暴露本机 IPC endpoint；
-- SignalR 不是远程写入的唯一事实源；
-- 远程写命令最终仍必须经过本地 Application Service + revision/idempotency；
-- SignalR 断线后未确认命令必须通过 HTTP/任务状态重新判定，不能盲目重复执行。
+- Cloud cannot scan LAN;
+- Mobile/Web cannot directly play local Named Pipe/UDS;
+- The public network cannot expose the local IPC endpoint;
+- SignalR is not the only source of truth for remote writing;
+- Remote write commands must still go through the local Application Service + revision/idempotency;
+- Unconfirmed commands after SignalR is disconnected must be re-determined through HTTP/task status and cannot be blindly repeated.
 
-## 20. 身份、安全与权限
+## 20. Identity, Security and Permissions
 
-### 20.1 身份分层
+### 20.1 Identity stratification
 
-- Cloud User：云账户身份；
-- Organization/Workspace：租户与资源边界；
-- Device：已注册设备；
-- Local OS User：本机 IPC 安全主体；
-- App Instance：某次进程实例；
-- Agent Actor：代表某用户/会话执行，但不是独立超级身份。
+- Cloud User: Cloud account identity;
+- Organization/Workspace: Tenant and resource boundaries;
+- Device: registered device;
+- Local OS User: native IPC security principal;
+- App Instance: a certain process instance;
+- Agent Actor: Execute on behalf of a user/session, but not an independent super identity.
 
-### 20.2 云端认证授权
+### 20.2 Cloud authentication and authorization
 
-- 使用标准 OIDC/OAuth 2.1 语义和 ASP.NET Core Authentication/Authorization；
-- access token 短期，refresh token 轮换并可撤销；
-- audience、issuer、tenant、device、scope 全部校验；
-- Minimal API endpoint 使用 policy-based authorization；
-- SignalR connection 与 hub method 使用同一身份体系和明确授权；
-- 资源级授权在 Application Service 再次校验，不能只靠 route/hub attribute；
-- 管理能力和普通用户能力完全分离；
-- Refit/SignalR 客户端日志不得记录 Authorization header 或 query token。
+- Uses standard OIDC/OAuth 2.1 semantics and ASP.NET Core Authentication/Authorization;
+- The access token is short-term, and the refresh token is rotating and revocable;
+- Audience, issuer, tenant, device, scope are all verified;
+- Minimal API endpoint uses policy-based authorization;
+- SignalR connection and hub method use the same identity system and explicit authorization;
+- Resource-level authorization is verified again in the Application Service and cannot rely solely on the route/hub attribute;
+- Management capabilities are completely separated from ordinary user capabilities;
+- Refit/SignalR client logs must not record Authorization header or query token.
 
-### 20.3 本机认证
+### 20.3 Native authentication
 
-本机 OS IPC 也必须认证：
+Native OS IPC must also be certified:
 
-- Named Pipe ACL / UDS 文件权限限制当前用户；
-- Hub 与 Provider 在 StreamJsonRpc 建连后完成短期 session token 握手；
-- token 绑定 instanceId、endpoint、buildId、contractSet、过期时间；
-- endpoint manifest 只做发现，不存 Secret；
-- 每个调用传递 actor、scope 和 correlation context；
-- Provider 最终执行前再次校验，而不是盲信 Hub；
-- debug loopback 端口不能因“只监听 127.0.0.1”而跳过认证。
+- Named Pipe ACL/UDS file permissions restrict current user;
+- Hub and Provider complete the short-term session token handshake after establishing connection through StreamJsonRpc;
+- The token is bound to instanceId, endpoint, buildId, contractSet, and expiration time;
+- The endpoint manifest only performs discovery and does not store Secrets;
+- Each call passes actor, scope and correlation context;
+- Provider verifies again before final execution instead of blindly trusting Hub;
+- The debug loopback port cannot skip authentication because it "only listens on 127.0.0.1".
 
 ### 20.4 Secret
 
-- Windows Credential Manager/DPAPI、Apple Keychain、Android Keystore 等平台安全存储；
-- 云端使用托管 Secret/KMS；
-- 配置文件只保存引用，不保存长期明文 Secret；
-- 日志、crash dump 和诊断包默认脱敏；
-- API key 按 provider、用户和环境隔离。
+- Secure storage on Windows Credential Manager/DPAPI, Apple Keychain, Android Keystore and other platforms;
+- Cloud uses hosted Secret/KMS;
+- The configuration file only saves references and does not save long-term plaintext Secrets;
+- Logs, crash dumps and diagnostic packages are desensitized by default;
+- API keys are isolated by provider, user, and environment.
 
-### 20.5 最小权限与危险操作
+### 20.5 Least Privilege and Dangerous Operations
 
-能力按 scope 授权，例如：
+Capabilities are authorized by scope, for example:
 
 ```text
 video.read
@@ -1799,28 +1799,28 @@ cloud.share
 device.remote-control
 ```
 
-删除、覆盖、发布、外部发送、云共享、远程控制、执行不可信工具等操作需要更高风险级别和显式审批。
+Operations such as deletion, overwriting, publishing, external sending, cloud sharing, remote control, execution of untrusted tools, etc. require a higher risk level and explicit approval.
 
-## 21. 可观测性
+## 21. Observability
 
 ### 21.1 OpenTelemetry
 
-所有宿主统一：
+Unified for all hosts:
 
-- `ActivitySource` 创建 trace/span；
-- `Meter` 创建 counter、histogram、gauge；
-- 结构化日志自动带 traceId/spanId；
-- ASP.NET Core、HttpClient/Refit、SignalR、数据库和任务接入同一上下文；
-- StreamJsonRpc 在 Adapter/ConnectionManager 层显式创建 RPC span，并记录接口/方法而不是任意原始 payload；
-- 本地默认保留滚动日志和有限诊断，用户同意后才上传。
+- `ActivitySource` Create trace/span;
+- `Meter` Create counter, histogram, gauge;
+- Structured logs automatically include traceId/spanId;
+- ASP.NET Core, HttpClient/Refit, SignalR, database and tasks are connected to the same context;
+- StreamJsonRpc explicitly creates RPC spans at the Adapter/ConnectionManager layer and records interfaces/methods instead of arbitrary raw payloads;
+- By default, rolling logs and limited diagnostics are retained locally and uploaded only after the user agrees.
 
-### 21.2 必备维度
+### 21.2 Required dimensions
 
 - appId / instanceId / buildId；
-- actorId 的安全化标识；
+- The security identifier of the actorId;
 - transport：local-rpc/http/signalr；
 - service/interface/method/capabilityId；
-- documentId 的脱敏或哈希；
+- Desensitization or hashing of documentId;
 - commandId / taskId；
 - correlationId / causationId；
 - expectedRevision / resultRevision；
@@ -1828,144 +1828,144 @@ device.remote-control
 - native library ABI/build；
 - reconnect count、connection generation、sequence gap。
 
-禁止把聊天正文、笔记正文、文件路径、token 和原始模型 prompt 默认放进遥测。
+It is forbidden to put chat text, note text, file path, token and original model prompt into telemetry by default.
 
-### 21.3 指标
+### 21.3 Indicators
 
 - StreamJsonRpc latency、error、connection lost、reconnect、pending calls；
-- Named Pipe/UDS 建连耗时与认证失败；
+- Named Pipe/UDS connection establishment takes time and authentication fails;
 - Refit/HTTP latency、status、timeout、retry、payload size；
-- SignalR 在线连接数、断线、重连、transport、sequence gap；
-- Provider lease、路由失败和版本不匹配；
-- command conflict、幂等命中；
-- task queue depth、运行时长、取消和失败；
-- journal replay、snapshot 时间、恢复失败；
-- native 调用耗时、status 和 crash signature；
-- UI 卡顿、帧率、内存和 GC pause；
+- SignalR online connection number, disconnection, reconnection, transport, sequence gap;
+- Provider lease, routing failure and version mismatch;
+- command conflict, idempotent hit;
+- task queue depth, running time, cancellation and failure;
+- journal replay, snapshot time, recovery failure;
+- Native call time, status and crash signature;
+- UI stuttering, frame rate, memory and GC pause;
 - Cloud DB pool、query、outbox backlog。
 
-## 22. 性能、内存与背压
+## 22. Performance, memory and backpressure
 
-### 22.1 测量原则
+### 22.1 Measurement principles
 
-- 先定义用户场景 SLO，再优化；
-- BenchmarkDotNet 用于可隔离热点；
-- dotnet-trace、dotnet-counters、PerfView/平台 profiler 用于可运行环境；Native AOT 产物使用对应平台 profiler/trace 能力；
-- 不为了“零分配”把代码变成不可维护的全局对象池；
-- WASM AOT、GC 模式和 SIMD 都用测量决定；
-- Refit/SignalR/StreamJsonRpc 分别基准，不能用一种 transport 的数字代表全部通信。
+- Define user scenario SLO first, and then optimize;
+- BenchmarkDotNet for isolable hotspots;
+- dotnet-trace, dotnet-counters, PerfView/platform profiler are used in the runnable environment; Native AOT products use the corresponding platform profiler/trace capabilities;
+- Do not turn the code into an unmaintainable global object pool for the sake of "zero allocation";
+- WASM AOT, GC mode, and SIMD are all determined using measurements;
+- Refit/SignalR/StreamJsonRpc are benchmarked respectively, and one transport number cannot be used to represent all communications.
 
-### 22.2 分配与缓冲
+### 22.2 Allocation and buffering
 
-- 小 DTO 正常分配，避免过度池化；
-- 大 buffer 使用 `ArrayPool<T>`/`MemoryPool<T>`，严格归还；
-- native buffer 只在必要时 pinned，并限制固定时间；
-- 不把大 `byte[]` 放进状态树或重复序列化；
-- 图片/帧缓存有预算、淘汰和压力反馈；
-- 所有 Channel、队列和并发 semaphore 有上限；
-- SignalR 不发送大 blob；
-- StreamJsonRpc 普通调用设置合理消息上限，大资源走 ResourceRef/stream。
+- Small DTOs are allocated normally to avoid excessive pooling;
+- Large buffers use `ArrayPool<T>`/`MemoryPool<T>` and are strictly returned;
+- The native buffer is only pinned when necessary and limited to a fixed time;
+- Do not put large `byte[]` into the state tree or repeat serialization;
+- Image/frame buffer with budget, elimination and pressure feedback;
+- All channels, queues, and concurrent semaphore have upper limits;
+- SignalR does not send large blobs;
+- Set a reasonable message upper limit for ordinary calls to StreamJsonRpc, and use ResourceRef/stream for large resources.
 
-### 22.3 GC 与原生内存
+### 22.3 GC and native memory
 
-Native AOT 不代表“没有 GC”。
+Native AOT does not mean "no GC".
 
-- 桌面/Cloud 按实际 AOT runtime GC 配置和负载测量；
-- 大对象堆和 pinned object heap 有指标；
-- 不在业务代码中频繁主动 `GC.Collect()`；
-- 原生内存也进入预算和遥测，不能只看 managed heap；
-- SignalR 连接、HTTP response buffer、RPC formatter pool 都计入容量测试。
+- Desktop/Cloud based on actual AOT runtime GC configuration and load measurements;
+- Large object heap and pinned object heap have indicators;
+- Do not frequently proactively `GC.Collect()` in business code;
+- Native memory also goes into budgeting and telemetry, you can’t just look at managed heap;
+- SignalR connection, HTTP response buffer, and RPC formatter pool are all included in the capacity test.
 
-### 22.4 目标 SLO 起点
+### 22.4 Target SLO starting point
 
-以下是首轮测量目标，不是未经基准承诺的营销指标：
+The following are first-round measurement targets and are not marketing metrics without benchmark commitments:
 
-- 本机轻量 StreamJsonRpc request/response P95 < 10–20 ms（同机，不含实际长业务）；
-- 本地 UI 输入到可见状态 P95 < 50 ms；
-- UI 主线程单次工作尽量 < 8 ms；
-- Provider 掉线在 3 个 heartbeat 周期内被标记不可路由；
-- 已提交命令在进程崩溃后可恢复；
-- 公网 HTTP 与 SignalR 分别定义 SLO；
-- SignalR 重连后必须能在可控时间内通过 HTTP 补齐 sequence gap。
+- Native lightweight StreamJsonRpc request/response P95 < 10–20 ms (same machine, excluding actual long business);
+- Local UI input to visible state P95 < 50 ms;
+- The single work time of the UI main thread should be < 8 ms as much as possible;
+- Provider goes offline and is marked as unroutable within 3 heartbeat cycles;
+- Submitted commands can be recovered after a process crash;
+- Public network HTTP and SignalR define SLO respectively;
+- After SignalR reconnects, it must be able to fill the sequence gap through HTTP within a controllable time.
 
-## 23. 发布模式矩阵
+## 23. Release pattern matrix
 
-### 23.1 桌面
+### 23.1 Desktop
 
-桌面目标：
+Desktop goals:
 
 - self-contained；
-- 按 RID 目录发布；
+- Published by RID Directory;
 - `PublishAot=true`；
 - `IsAotCompatible=true`；
-- trimming 由 Native AOT 发布链路执行；
-- native 库作为明确签名资产随包发布；
-- StreamJsonRpc 代理/TypeShape 在编译期生成；
+- trimming is performed by the Native AOT publishing link;
+- The native library is distributed with the package as an explicitly signed asset;
+- StreamJsonRpc proxy/TypeShape is generated at compile time;
 - Refit generated-only；
 - SignalR JSON DTO source-generated。
 
-单文件发布不是默认要求。Native AOT 已改变发布模型，但 native 资产定位、签名、更新器和 crash symbol 行为仍需逐平台验证。
+Single-file publishing is not a default requirement. Native AOT has changed the release model, but native asset location, signatures, updaters, and crash symbol behavior still need to be verified on a platform-by-platform basis.
 
-### 23.2 云端
+### 23.2 Cloud
 
-- Linux Native AOT 容器/受控主机；
+- Linux Native AOT container/controlled host;
 - ASP.NET Core Minimal API + SignalR；
-- 不使用不兼容 AOT 的 MVC/Razor Server 主路径；
-- startup/readiness/liveness 分离；
-- 优雅 drain HTTP、SignalR 和任务；
-- 数据库 migration 与应用滚动发布解耦；
-- Npgsql/数据访问路径执行 AOT publish + integration test。
+- Do not use MVC/Razor Server home paths that are not AOT compatible;
+- startup/readiness/liveness separation;
+- Gracefully drain HTTP, SignalR and tasks;
+- Database migration is decoupled from application rolling release;
+- Npgsql/data access path performs AOT publish + integration test.
 
-### 23.3 移动与 Web
+### 23.3 Mobile vs. Web
 
 - iOS：Native AOT；
-- Android：生产默认 Mono AOT；CoreCLR Native AOT 在 .NET 10 仍需作为实验 PoC 看待；
-- Blazor WebAssembly：WASM AOT 作为严格 AOT 发布目标；
-- 不把 Blazor Server 作为严格全 AOT Web 主模式；
-- 每种发布模式都执行 trimming/AOT analyzer 和真实设备/浏览器测试。
+- Android: Production default Mono AOT; CoreCLR Native AOT still needs to be treated as an experimental PoC in .NET 10;
+- Blazor WebAssembly: WASM AOT as a strict AOT release target;
+- Do not use Blazor Server as strictly full AOT Web master mode;
+- Each release mode performs trimming/AOT analyzer and real device/browser testing.
 
-### 23.4 AOT 失败原则
+### 23.4 AOT Failure Principle
 
-如果某依赖导致 Native AOT 失败：
+If a dependency causes Native AOT to fail:
 
-1. 先查是否有 source generator/静态注册路径；
-2. 再替换依赖或缩小功能面；
-3. 必要时把非 AOT 工具移到构建/迁移阶段；
-4. 只有平台本身尚不支持时才登记“平台例外”；
-5. 不允许把整个桌面/Cloud 静默退回 JIT 后仍声称“全 AOT”。
+1. First check whether there is a source generator/static registration path;
+2. Then replace dependencies or reduce the functional area;
+3. Move non-AOT tools to the build/migration phase when necessary;
+4. Register a "Platform Exception" only if the platform itself does not support it yet;
+5. It is not allowed to silently return the entire desktop/Cloud to JIT and still claim to be "full AOT".
 
-## 24. 构建与工程治理
+## 24. Construction and Engineering Governance
 
-### 24.1 全局构建配置
+### 24.1 Global build configuration
 
-建议启用：
+It is recommended to enable:
 
 - nullable；
 - implicit usings；
 - deterministic builds；
-- warnings as errors（分阶段清债后全仓开启）；
-- analyzers 与 `.editorconfig`；
+- warnings as errors (full position will be opened after the debt is cleared in stages);
+- analyzers and `.editorconfig`;
 - SourceLink；
 - reproducible package metadata；
 - Central Package Management；
 - locked restore。
 
-AOT 相关规则：
+AOT related rules:
 
-- 可复用 library 标记 `<IsAotCompatible>true</IsAotCompatible>`；
-- 生产宿主标记 `<PublishAot>true</PublishAot>`；
-- StreamJsonRpc 使用 `<EnableStreamJsonRpcInterceptors>true</EnableStreamJsonRpcInterceptors>`；
-- Refit 只允许 generated-only API；
-- Public/Realtime JSON context 必须显式 source-generated；
-- IL2026/IL3050、Refit 反射回退诊断、StreamJsonRpc proxy generation 失败均为 CI blocker；
-- 禁止为了“过编译”全局关闭 trimming analyzer。
+- Reusable library tag `<IsAotCompatible>true</IsAotCompatible>`;
+- Production host tag `<PublishAot>true</PublishAot>`;
+- StreamJsonRpc uses `<EnableStreamJsonRpcInterceptors>true</EnableStreamJsonRpcInterceptors>`;
+- Refit only allows generated-only API;
+- Public/Realtime JSON context must be explicitly source-generated;
+- IL2026/IL3050, Refit reflection fallback diagnosis, and StreamJsonRpc proxy generation failure are all caused by CI blocker;
+- It is forbidden to globally turn off the trimming analyzer for the purpose of "over-compiling".
 
-### 24.2 版本
+### Version 24.2
 
-区分：
+Distinguishing:
 
-- Product version：用户看到的版本；
-- BuildId：精确构建；
+- Product version: the version seen by the user;
+- BuildId: Accurate build;
 - LocalRpc ContractSet version；
 - PublicApi version；
 - Realtime event schema version；
@@ -1973,11 +1973,11 @@ AOT 相关规则：
 - Native ABI version；
 - Resource format version。
 
-这些版本不能只用一个 AssemblyVersion 替代。
+These versions cannot be replaced by just one AssemblyVersion.
 
-### 24.3 原生构建
+### 24.3 Native build
 
-`native/` 可用 CMake/Ninja 生成极薄 ABI shim，产物按 RID/architecture 固定：
+`native/` CMake/Ninja can be used to generate extremely thin ABI shim, and the product is fixed according to RID/architecture:
 
 ```text
 runtimes/win-x64/native/arcforges_media.dll
@@ -1985,265 +1985,265 @@ runtimes/linux-x64/native/libarcforges_media.so
 runtimes/osx-arm64/native/libarcforges_media.dylib
 ```
 
-原生产物：
+Original product:
 
-- 可重现构建；
-- 保留符号服务器映射；
-- SBOM 和 license 扫描；
-- 签名/公证；
+- Reproducible builds;
+- Preserve symbol server mapping;
+- SBOM and license scanning;
+- Signature/notarization;
 - ABI test；
-- 不从开发机临时复制未知版本进入发布包。
+- Do not temporarily copy unknown versions from the development machine into the release package.
 
-## 25. 测试策略
+## 25. Testing strategy
 
-### 25.1 测试金字塔
+### 25.1 Test Pyramid
 
-1. Domain 单元测试：纯 C#、快速、无 I/O；
-2. Application 测试：端口使用 fake/test double；
-3. Persistence 测试：真实 SQLite/PostgreSQL；
-4. Local RPC formatter/type-shape 兼容测试；
-5. StreamJsonRpc 集成测试：真实 Named Pipe/UDS + 强类型 proxy；
-6. Refit contract 测试：generated-only client + 真 Minimal API；
-7. SignalR 集成测试：连接、断线、重连、sequence gap 恢复；
-8. Native ABI 测试：每个 RID 和错误路径；
-9. UI 组件/自动化测试；
-10. 多进程端到端测试；
-11. Native AOT 发布包、更新、回滚和崩溃恢复测试。
+1. Domain unit testing: pure C#, fast, no I/O;
+2. Application test: Use fake/test double for the port;
+3. Persistence test: real SQLite/PostgreSQL;
+4. Local RPC formatter/type-shape compatibility test;
+5. StreamJsonRpc integration test: real Named Pipe/UDS + strongly typed proxy;
+6. Refit contract test: generated-only client + true Minimal API;
+7. SignalR integration test: connection, disconnection, reconnection, sequence gap recovery;
+8. Native ABI testing: every RID and error path;
+9. UI component/automated testing;
+10. Multi-process end-to-end testing;
+11. Native AOT release packages, updates, rollbacks and crash recovery testing.
 
-### 25.2 架构测试
+### 25.2 Architecture testing
 
-自动验证：
+Automatic verification:
 
-- Domain 未引用 UI/Infrastructure/Refit/StreamJsonRpc/SignalR；
-- LocalRpc Adapter 未引用 ViewModel；
-- PublicApi Adapter 未引用 UI；
-- Contracts 未引用平台类型；
-- 产品之间未直接引用彼此 Infrastructure；
-- Native pointer 未越过 Native adapter；
-- Cloud 模块未越权访问其他模块持久化所有权；
-- 没有万能 string/object RPC；
-- 没有 C++ Worker 可执行项目进入发布图；
-- 不存在 Refit 运行时反射回退依赖；若版本提供 `Refit.Reflection`，它不进入生产依赖图；
-- StreamJsonRpc Contracts 全部具备生成式代理标记。
+- Domain does not reference UI/Infrastructure/Refit/StreamJsonRpc/SignalR;
+- LocalRpc Adapter does not reference ViewModel;
+- PublicApi Adapter does not reference UI;
+- Contracts does not reference platform types;
+- Products do not directly reference each other's Infrastructure;
+- Native pointer has not crossed Native adapter;
+- The Cloud module does not have unauthorized access to the persistent ownership of other modules;
+- There is no universal string/object RPC;
+- No C++ Worker executable projects enter the release graph;
+- There is no Refit runtime reflection fallback dependency; if the version provides `Refit.Reflection`, it does not enter the production dependency graph;
+- StreamJsonRpc Contracts all have generative proxy tags.
 
-### 25.3 契约兼容测试
+### 25.3 Contract Compatibility Testing
 
-本机 StreamJsonRpc：
+Native StreamJsonRpc:
 
-- 上一稳定客户端 proxy 调用当前 Provider；
-- 当前客户端在支持窗口内调用上一稳定 Provider；
-- 接口/方法名无意外变化；
-- DTO 新字段按 formatter 策略兼容；
-- Source-generated proxy 在 Native AOT 发布产物中可用。
+- The previous stable client proxy calls the current Provider;
+- The current client calls the previous stable Provider within the support window;
+- There are no unexpected changes in interface/method names;
+- DTO new fields are compatible according to formatter strategy;
+- Source-generated proxy is available in the Native AOT release.
 
-公网 HTTP：
+Public network HTTP:
 
-- Refit generated client 调用当前 Minimal API；
-- route、verb、status、JSON shape、ETag/revision 语义稳定；
-- 上一稳定客户端兼容；
-- 反射 request builder 为零；若版本提供 RF006，则 RF006 为零。
+- Refit generated client calls the current Minimal API;
+- The semantics of route, verb, status, JSON shape, ETag/revision are stable;
+- Compatible with the previous stable client;
+- Reflection request builder is zero; if the version provides RF006, RF006 is zero.
 
 SignalR：
 
-- method/event names 和 payload schema 兼容；
-- sequence/revision 可断线恢复；
-- AOT JSON context 覆盖所有 payload。
+- method/event names are compatible with payload schema;
+- sequence/revision can be restored after disconnection;
+- AOT JSON context covers all payloads.
 
-### 25.4 故障注入
+### 25.4 Fault injection
 
-必须覆盖：
+Must cover:
 
-- Hub 启动晚于 Provider；
-- Hub 重启；
-- Named Pipe/UDS 被断开；
-- Provider 在命令提交前/后崩溃；
-- heartbeat 丢失；
-- 重复命令与乱序响应；
-- revision 冲突；
-- StreamJsonRpc 双向 callback 潜在死锁；
+- Hub starts later than Provider;
+- Hub restart;
+- Named Pipe/UDS is disconnected;
+- Provider crashes before/after command submission;
+- heartbeat lost;
+- Repeated commands and out-of-order responses;
+- revision conflict;
+- StreamJsonRpc bidirectional callback potential deadlock;
 - HTTP timeout/5xx/429；
-- SignalR 断线、transport fallback、重连后事件缺口；
-- 磁盘满、数据库忙、快照损坏；
-- native 函数返回错误、超时或测试进程崩溃；
-- token 过期与 refresh 竞争；
-- 客户端版本不兼容；
-- 更新中断与回滚。
+- SignalR disconnection, transport fallback, event gap after reconnection;
+- The disk is full, the database is busy, and the snapshot is damaged;
+- The native function returns an error, times out, or the test process crashes;
+- Token expiration competes with refresh;
+- The client version is incompatible;
+- Update interruption and rollback.
 
-### 25.5 性能测试
+### 25.5 Performance testing
 
-- 本机 StreamJsonRpc Named Pipe/UDS request-response 基准；
-- formatter：Nerdbank.MessagePack 与可选 STJ 路径比较；
-- Refit generated HTTP client 吞吐/分配；
-- SignalR 并发连接、广播、重连；
-- 大项目加载和 journal replay；
-- ArcVideo 时间线操作、预览和导出；
-- ArcImage 大画布和滤镜；
-- ArcNotes 大库搜索和索引；
-- Agent 并行工具和审批；
-- Cloud 并发 HTTP/SignalR 和数据库；
-- MAUI 冷启动、内存、弱网；
-- Blazor WASM 下载体积和 AOT 性能。
+- Native StreamJsonRpc Named Pipe/UDS request-response benchmark;
+- formatter: Nerdbank.MessagePack compared to optional STJ path;
+- Refit generated HTTP client throughput/distribution;
+- SignalR concurrent connection, broadcast, reconnection;
+- Large project loading and journal replay;
+- ArcVideo timeline manipulation, preview and export;
+- ArcImage large canvas and filters;
+- ArcNotes database search and indexing;
+- Agent parallel tools and approvals;
+- Cloud concurrent HTTP/SignalR and database;
+- MAUI cold start, memory, weak network;
+- Blazor WASM download size and AOT performance.
 
-## 26. CI/CD 质量门
+## 26. CI/CD Quality Gate
 
-每个变更至少通过：
+Each change passes at least:
 
 - restore locked mode；
 - format/analyzer；
 - build Debug + Release；
-- 单元/集成/架构测试；
+- Unit/integration/architecture testing;
 - StreamJsonRpc proxy/type-shape generation；
 - Refit generated-only contract tests；
 - SignalR JSON context/compatibility tests；
-- 依赖漏洞、license 和 secret 扫描；
+- Dependency vulnerability, license and secret scanning;
 - SBOM；
-- Windows/Linux/macOS 桌面 Native AOT publish；
-- 每个平台至少一次本机 StreamJsonRpc round-trip smoke test；
+- Windows/Linux/macOS desktop Native AOT publish;
+- At least one native StreamJsonRpc round-trip smoke test per platform;
 - Cloud Native AOT publish + Minimal API/SignalR smoke test；
-- MAUI Android Release AOT 基线路径；
-- MAUI iOS Native AOT 构建（macOS runner）；
-- Blazor WASM publish + AOT 构建；
+- MAUI Android Release AOT baseline path;
+- MAUI iOS Native AOT build (macOS runner);
+- Blazor WASM publish + AOT build;
 - native ABI matrix；
-- 安装、升级、降级保护和回滚 smoke test。
+- Install, upgrade, downgrade protection and rollback smoke tests.
 
-AOT 专项禁止项：
+AOT special prohibited items:
 
-- IL2026/IL3050 未审查 warning；
-- 出现 Refit runtime reflection fallback；若版本提供 `Refit.Reflection`，其出现在生产依赖树；
-- Refit 方法需要 runtime request builder；
-- StreamJsonRpc Attach 请求未生成 proxy；
-- STJ DTO 未进入 JsonSerializerContext；
-- 生产代码依赖未知程序集反射扫描；
-- Cloud Host 因某依赖退回 JIT 而 CI 仍通过。
+- IL2026/IL3050 not reviewed warning;
+- Refit runtime reflection fallback appears; if the version provides `Refit.Reflection`, it appears in the production dependency tree;
+- The Refit method requires runtime request builder;
+- StreamJsonRpc Attach request does not generate proxy;
+- STJ DTO not entered JsonSerializerContext;
+- Production code relies on reflection scanning of unknown assemblies;
+- Cloud Host returns JIT due to a dependency but CI still passes.
 
-发布列车额外执行：
+Release train additional execution:
 
-- 上一稳定版升级到候选版；
-- LocalRpc/PublicApi/Realtime 兼容窗口；
-- 数据库 migration rehearsal；
+- Upgrade the previous stable version to the candidate version;
+- LocalRpc/PublicApi/Realtime compatibility window;
+- Database migration rehearsal;
 - crash recovery；
-- SignalR 重连 + HTTP 补偿恢复；
-- 签名、公证和安装来源验证；
-- 完整端到端产品协作场景。
+- SignalR reconnection + HTTP compensation recovery;
+- Signing, notarization, and installation source verification;
+- Complete end-to-end product collaboration scenario.
 
-## 27. 安装、更新与回滚
+## 27. Installation, updates and rollbacks
 
-### 27.1 桌面产品
+### 27.1 Desktop Products
 
-每个产品独立安装和更新，但使用 ArcForges release manifest 保证组合兼容：
+Each product is installed and updated independently, but the combination is guaranteed to be compatible using the ArcForges release manifest:
 
-- ArcChat、ArcVideo、ArcNotes、ArcImage 可独立发布补丁；
-- manifest 声明最小/最大 ContractSet；
-- 更新前检查运行任务和未保存文档；
-- 下载、验签、stage、原子切换；
-- 保留上一可启动版本；
-- 数据格式升级先保证旧版本不会误打开，或提供可逆迁移；
-- native library 与托管调用方作为一个版本集更新。
+- ArcChat, ArcVideo, ArcNotes, and ArcImage can independently release patches;
+- The manifest declares the minimum/maximum ContractSet;
+- Check running tasks and unsaved documents before updating;
+- Download, signature verification, stage, atomic switching;
+- Keep the last bootable version;
+- When upgrading the data format, first ensure that the old version will not be opened accidentally, or provide reversible migration;
+- The native library is updated with managed callers as a version set.
 
-Velopack 是默认候选，但需在三桌面平台 PoC 后正式落 ADR；若某平台签名/商店要求不同，由该平台安装器适配，不改变应用架构。
+Velopack is the default candidate, but it needs to be officially dropped into ADR after the PoC of the three desktop platforms; if the signature/store requirements of a certain platform are different, it will be adapted by the platform installer without changing the application architecture.
 
-### 27.2 数据兼容
+### 27.2 Data Compatibility
 
-- 更新应用前写 recovery point；
-- schema migration 使用 expand/contract；
-- 不把自动迁移和应用启动绑定成不可恢复的一步；
-- 发生失败时应用进入安全只读/恢复模式，而不是继续写半升级数据；
-- 文档格式有 reader/writer version 和迁移测试。
+- Write recovery point before updating the application;
+- Schema migration uses expand/contract;
+- Do not tie automatic migration and application startup into an unrecoverable step;
+- When a failure occurs, the application enters a safe read-only/recovery mode instead of continuing to write semi-upgraded data;
+- Document formats include reader/writer version and migration test.
 
-### 27.3 签名
+### 27.3 Signature
 
-- Windows 代码签名；
-- macOS Developer ID、Hardened Runtime 与 notarization；
-- 移动端平台签名；
-- Linux 包校验和/仓库签名；
-- NuGet/internal feed 与 native asset 来源可追溯。
+- Windows code signing;
+- macOS Developer ID, Hardened Runtime and notarization;
+- Mobile platform signature;
+- Linux package checksum/repository signing;
+- NuGet/internal feed and native asset sources are traceable.
 
 ---
 
-## 28. 分阶段落地计划
+## 28. Phased implementation plan
 
-### Phase 0：决策冻结与最小骨架
+### Phase 0: Decision Freezing and Minimal Skeleton
 
-交付：
+Delivery:
 
-- 采用本文；
-- 固定 .NET 10 SDK 与中央包版本；
-- 建立 Foundation/Application/Contracts 边界；
-- 建立架构测试和 CI；
-- 写出关键 ADR：Public HTTP/Refit、Local StreamJsonRpc、SignalR、AOT、P/Invoke、持久化、发布模式。
+- Adopt this article;
+- Fixed .NET 10 SDK and central package versions;
+- Establish Foundation/Application/Contracts boundary;
+- Set up architectural testing and CI;
+- Write out key ADRs: Public HTTP/Refit, Local StreamJsonRpc, SignalR, AOT, P/Invoke, persistence, release mode.
 
-退出条件：空解决方案在全部目标 runner 构建通过，并至少有 Cloud/Desktop Native AOT hello-world 发布产物。
+Exit conditions: The empty solution passes the build in all target runners, and has at least Cloud/Desktop Native AOT hello-world to publish the product.
 
-### Phase 1：本机 StreamJsonRpc Vertical Slice
+### Phase 1: Native StreamJsonRpc Vertical Slice
 
-用 ArcChat + 一个最小 ArcNotes 能力证明完整路径：
+Prove full paths with ArcChat + a minimal ArcNotes capability:
 
-- 两个独立 Avalonia Native AOT 进程；
+- Two independent Avalonia Native AOT processes;
 - ArcChat Local Hub；
 - Windows Named Pipe / Linux/macOS UDS；
 - `[JsonRpcContract]` + `GenerateShape`；
 - `EnableStreamJsonRpcInterceptors=true`；
 - generated proxy + exported contract proxies；
 - Nerdbank.MessagePack formatter + TypeShape；
-- 注册、租约、心跳、发现；
-- 强类型 `INotesLocalRpc` 命令；
-- 本地 UI 与远程 RPC 共用 Application Service；
-- revision、CommandId、通知和崩溃恢复。
+- Registration, lease, heartbeat, discovery;
+- Strongly typed `INotesLocalRpc` commands;
+- The local UI and remote RPC share the Application Service;
+- revision, CommandId, notifications and crash recovery.
 
-退出条件：Hub 可重启，ArcNotes 离线仍可编辑，重连后 Agent 能调用受控能力，且两个 AOT 发布进程间真实 RPC 通过。
+Exit conditions: Hub can be restarted, ArcNotes can still be edited offline, Agent can call controlled capabilities after reconnection, and the real RPC between the two AOT publishing processes passes.
 
-### Phase 2：ArcNotes 完整化
+### Phase 2: ArcNotes complete
 
-- 文档模型、AOT-safe SQLite、journal/snapshot；
-- 搜索与附件 ResourceRef；
+- Document model, AOT-safe SQLite, journal/snapshot;
+- Search and Attachments ResourceRef;
 - Undo/Redo；
-- 多窗口/多实例策略；
-- LocalRpc 契约兼容测试。
+- Multi-window/multi-instance strategy;
+- LocalRpc contract compatibility testing.
 
-退出条件：真实文档量、崩溃恢复和升级测试通过。
+Exit conditions: Real document volume, crash recovery and upgrade tests passed.
 
-### Phase 3：ArcImage 与 P/Invoke 基线
+### Phase 3: ArcImage and P/Invoke Baseline
 
 - LibraryImport、SafeHandle、ABI version；
-- 原生图像库适配；
-- 大 buffer 和 GPU/CPU 显示路径；
+- Native image library adaptation;
+- Large buffer and GPU/CPU display paths;
 - fuzz、sanitizer、crash dump；
-- 无 Worker 的恢复验证；
-- Native AOT 发布验证。
+- No worker recovery verification;
+- Native AOT release verification.
 
-退出条件：原生库异常不会造成已提交文档损坏，重启可恢复。
+Exit conditions: Native library exceptions will not cause damage to submitted documents and can be recovered by restarting.
 
 ### Phase 4：ArcVideo
 
-- 媒体索引、时间线、预览、任务和导出；
-- 原生编解码 P/Invoke；
-- 背压、内存预算和长任务；
-- Agent/ArcChat StreamJsonRpc 语义能力。
+- Media index, timeline, preview, tasks and export;
+- Native codec P/Invoke;
+- Backpressure, memory budget, and long tasks;
+- Agent/ArcChat StreamJsonRpc semantic capabilities.
 
-退出条件：大项目性能和长时间稳定性达到实测 SLO。
+Exit conditions: Large project performance and long-term stability reach the measured SLO.
 
 ### Phase 5：ArcForges Cloud
 
-- Native AOT ASP.NET Core 模块化单体；
+- Native AOT ASP.NET Core modular monolith;
 - Identity、Chat、Device、Sync、Resource、Task；
-- Minimal API 标准 HTTP/JSON；
+- Minimal API standard HTTP/JSON;
 - Refit generated-only clients；
 - SignalR JSON realtime；
-- Npgsql AOT-safe 持久化 + outbox；
-- OpenTelemetry 与生产安全基线。
+- Npgsql AOT-safe persistence + outbox;
+- OpenTelemetry and production security baselines.
 
-退出条件：桌面通过 Refit/SignalR 完成云连接、断网恢复和多设备安全测试，Cloud `PublishAot=true` 产物通过生产等价 smoke test。
+Exit conditions: The desktop completes cloud connection, network disconnection recovery and multi-device security testing through Refit/SignalR, and the Cloud [[CODE_164]]] product passes the production equivalent smoke test.
 
 ### Phase 6：MAUI
 
-- Android/iOS 登录、聊天、任务、审批；
+- Android/iOS login, chat, tasks, approval;
 - Refit generated-only；
 - SignalR realtime；
 - iOS Native AOT；
-- Android Mono AOT 生产基线与 Native AOT 实验 PoC 分开；
-- offline outbox、push 和安全存储。
+- Android Mono AOT production baseline separate from Native AOT experimental PoC;
+- offline outbox, push and secure storage.
 
-退出条件：真机弱网、后台恢复、AOT 和商店包验证通过。
+Exit conditions: Real machine weak network, background recovery, AOT and store package verification passed.
 
 ### Phase 7：Blazor WebAssembly
 
@@ -2251,176 +2251,176 @@ Velopack 是默认候选，但需在三桌面平台 PoC 后正式落 ADR；若�
 - Refit/HttpClient HTTP/JSON；
 - SignalR realtime；
 - WASM AOT；
-- 静态/Native AOT Host 部署；
-- 安全与浏览器兼容测试。
+- Static/Native AOT Host deployment;
+- Security and browser compatibility testing.
 
-退出条件：WASM AOT 发布、首次加载、缓存、实时重连和 API 兼容测试通过。
+Exit conditions: WASM AOT release, first load, cache, real-time reconnection and API compatibility tests passed.
 
-### Phase 8：可选桌面桥接
+### Phase 8: Optional desktop bridging
 
-- ArcChat 主动 SignalR 出站连接；
-- 设备绑定；
-- 远程 scope 与审批；
-- Cloud SignalR 意图 -> 本地 StreamJsonRpc 能力；
-- Refit 持久结果/任务查询；
-- 断连、撤销和审计。
+- ArcChat active SignalR outbound connection;
+- device binding;
+- Remote scope and approval;
+- Cloud SignalR intent -> native StreamJsonRpc capability;
+- Refit persistent results/task queries;
+- Disconnect, revocation and audit.
 
-退出条件：外部安全评审与用户可见控制完整通过。
+Exit conditions: The external security review and user-visible control have been completely passed.
 
-## 29. 主要风险与纪律
+## 29. Main risks and disciplines
 
-### 29.1 StreamJsonRpc 只是部分 NativeAOT-safe
+### 29.1 StreamJsonRpc is only partially NativeAOT-safe
 
-处理：把官方 AOT 限制变成仓库硬规则：interceptors、`JsonRpcContract`、GenerateShape、导出 proxy、预生成 interface group、AOT-safe formatter、`RpcTargetMetadata`、真实 Native AOT publish 测试。禁止线上动态代理 fallback。
+Processing: Turn official AOT restrictions into warehouse hard rules: interceptors, `JsonRpcContract`, GenerateShape, export proxy, pre-generated interface group, AOT-safe formatter, `RpcTargetMetadata`, real Native AOT publish test. Disable online dynamic proxy fallback.
 
-### 29.2 StreamJsonRpc 双向调用造成并发/死锁误判
+### 29.2 StreamJsonRpc bidirectional call causes concurrency/deadlock misjudgment
 
-处理：不把 transport 当 Actor；领域写入按文档串行化；不持锁等待 callback；写命令靠 revision/CommandId；故障注入覆盖双向回调和断线。
+Processing: do not use transport as an Actor; domain writes are serialized according to documents; do not hold locks and wait for callbacks; write commands by revision/CommandId; fault injection covers bidirectional callbacks and disconnections.
 
-### 29.3 Refit 仍可能因接口形状退回反射 request builder
+### 29.3 Refit may still return reflection request builder due to interface shape
 
-处理：只用 generated-only API，禁止 runtime reflection fallback，把相关 analyzer 诊断升级为错误；若版本提供 RF006/`Refit.Reflection`，分别要求 RF006 为零且生产依赖不包含 `Refit.Reflection`。并对每个 Public API 方法跑 Native AOT publish contract test。
+Processing: Only use the generated-only API, disable runtime reflection fallback, and upgrade the relevant analyzer diagnosis to an error; if the version provides RF006/`Refit.Reflection`, respectively require RF006 to be zero and the production dependency does not contain `Refit.Reflection`. And run Native AOT publish contract test for each Public API method.
 
-### 29.4 SignalR 被误用成可靠业务总线
+### 29.4 SignalR is misused as a reliable business bus
 
-处理：SignalR 只做实时层；业务事实落数据库/journal/outbox；客户端按 sequence/revision 通过 Refit HTTP 恢复；大文件和关键命令不依赖一次实时消息送达。
+Processing: SignalR only does the real-time layer; business facts are implemented in the database/journal/outbox; the client restores through Refit HTTP according to sequence/revision; large files and key commands do not rely on one real-time message delivery.
 
-### 29.5 SignalR Native AOT 功能面有限
+### 29.5 SignalR Native AOT has limited functionality
 
-处理：AOT 下只用 JSON protocol、普通 `Hub`、source-generated JSON，避免 `Hub<T>` 和不支持的 streaming shape；升级 .NET 后先跑 AOT compatibility suite 再放宽。
+Solution: Only use JSON protocol, ordinary `Hub`, and source-generated JSON under AOT to avoid `Hub<T>` and unsupported streaming shape; after upgrading .NET, run the AOT compatibility suite first and then relax.
 
-### 29.6 Android 严格 Native AOT 尚不是稳定全平台现实
+### 29.6 Android’s strict Native AOT is not yet a stable full-platform reality
 
-处理：文档明确 Android Mono AOT 与 CoreCLR Native AOT 的区别。若“全 AOT”定义为严格 Native AOT，则 Android 在 .NET 10 是平台例外，不能靠措辞掩盖；持续 PoC，官方稳定后再迁移。
+Treatment: Documentation clarifies the difference between Android Mono AOT and CoreCLR Native AOT. If "full AOT" is defined as strictly Native AOT, then Android is a platform exception in .NET 10 and cannot be covered up by wording; continue PoC and migrate after the official stability.
 
-### 29.7 EF Core 阻碍严格 Native AOT
+### 29.7 EF Core blocks strict Native AOT
 
-处理：生产主宿主采用 Npgsql/SQLite 的 AOT-safe 访问路径；EF Core 不作为硬依赖。迁移工具可独立，但不能把 JIT ORM 带回主进程。
+Solution: The production main host adopts the AOT-safe access path of Npgsql/SQLite; EF Core is not used as a hard dependency. The migration tool can be independent, but it cannot bring the JIT ORM back to the main process.
 
-### 29.8 原生库同进程崩溃
+### 29.8 The native library crashes in the same process
 
-处理：窄 C ABI、SafeHandle、输入验证、fuzz/sanitizer、牺牲进程测试、crash dump、journal 恢复。若未来安全隔离需求成立，再以 ADR 新增隔离宿主。
+Handling: Narrow C ABI, SafeHandle, input validation, fuzz/sanitizer, sacrificial process testing, crash dump, journal recovery. If the security isolation requirement is met in the future, then add an isolation host using ADR.
 
-### 29.9 C# 共享过度导致巨型单体
+### 29.9 C# Excessive Sharing Leads to Giant Monolith
 
-处理：共享语言不等于共享模型；Foundation/LocalRpc/PublicApi/Realtime Contracts 拆分、模块所有权、架构测试和禁止跨产品 Infrastructure 引用。
+Dealing with: Shared language does not equal shared model; Foundation/LocalRpc/PublicApi/Realtime Contracts split, module ownership, architecture testing and prohibition of cross-product Infrastructure references.
 
-### 29.10 Interface Code First 的破坏性重命名
+### 29.10 Destructive renaming of Interface Code First
 
-处理：LocalRpc 契约版本规范、V1/V2 共存、旧代理矩阵和 API diff；Refit Public API 则按 HTTP route/version 兼容规则治理。
+Processing: LocalRpc contract version specification, V1/V2 coexistence, old proxy matrix and API diff; Refit Public API is governed by HTTP route/version compatibility rules.
 
-### 29.11 Hub 变成中央业务服务
+### 29.11 Hub becomes a central business service
 
-处理：Hub 数据模型只允许平台状态；产品领域表、文档和撤销栈不得进入 Hub；定期架构审计。
+Handling: The Hub data model only allows platform state; product domain tables, documents, and undo stacks are not allowed into the Hub; periodic architecture audits.
 
-### 29.12 Agent 绕过权限
+### 29.12 Agent bypasses permissions
 
-处理：Agent 只能调用普通 typed capability；Provider 最终授权；高风险审批绑定参数哈希；全链路审计。
+Processing: Agent can only call common typed capabilities; Provider final authorization; high-risk approval binding parameter hash; full-link audit.
 
-### 29.13 过早微服务和消息基础设施
+### 29.13 Premature Microservices and Messaging Infrastructure
 
-处理：云端模块化单体起步；只有真实独立扩容/隔离需求才拆；本机不引入分布式消息系统。
+Processing: The cloud is started as a modular unit; it will only be dismantled if there are real independent expansion/isolation requirements; the distributed messaging system will not be introduced natively.
 
-## 30. 架构审查清单
+## 30. Architecture Review Checklist
 
-每个新功能合并前回答：
+Answer before each new feature is merged:
 
-### 产品与状态
+### Products and status
 
-- [ ] 这个状态的唯一权威所有者是谁？
-- [ ] Hub 是否错误持有了产品领域状态？
-- [ ] Hub 离线时产品核心功能是否仍可用？
-- [ ] 跨应用是否使用最终一致和可补偿设计？
+- [ ] Who is the sole authoritative owner of this state?
+- [ ] Is Hub holding product domain status incorrectly?
+- [ ] Are core product features still available when the Hub is offline?
+- [ ] Are eventually consistent and compensable designs used across applications?
 
-### 分层
+### layered
 
-- [ ] 本地 UI、本机 RPC、公网 HTTP 是否调用同一个 Application Service？
-- [ ] StreamJsonRpc/Minimal API/SignalR Adapter 是否完全不引用 ViewModel/控件？
-- [ ] Domain 是否无 UI、数据库、通信库和 native 依赖？
-- [ ] DTO、Domain Model、ViewState 是否没有混用？
+- [ ] Do the local UI, local RPC, and public network HTTP call the same Application Service?
+- [ ] Does StreamJsonRpc/Minimal API/SignalR Adapter not reference ViewModel/control at all?
+- [ ] Does Domain have no UI, database, communication library and native dependencies?
+- [ ] Are DTO, Domain Model, and ViewState not mixed?
 
-### 本机 StreamJsonRpc
+### Native StreamJsonRpc
 
-- [ ] 是否为 `[JsonRpcContract]` 强类型接口，而不是 string/object 万能调用？
-- [ ] 是否使用 `GenerateShape(PublicInstance)` 和导出的 generated proxies？
-- [ ] 是否启用 `EnableStreamJsonRpcInterceptors`？
-- [ ] 多接口组合是否预生成，而不是运行时动态拼装？
-- [ ] formatter 是否为 AOT-safe 路径？
-- [ ] target 是否用生成式 `RpcTargetMetadata`？
-- [ ] 是否有 CancellationToken、CommandId 和 revision？
-- [ ] 是否验证旧 proxy/client 兼容？
+- Is [ ] a `[JsonRpcContract]` strongly typed interface instead of a universal call to string/object?
+- [ ] Do you want to use `GenerateShape(PublicInstance)` and exported generated proxies?
+- [ ] Do you want to enable `EnableStreamJsonRpcInterceptors`?
+- [ ] Are multiple interface combinations pre-generated rather than dynamically assembled at runtime?
+- [ ] Is formatter an AOT-safe path?
+- [ ] target Use the production expression `RpcTargetMetadata`?
+- [ ] Is there a CancellationToken, CommandId and revision?
+- [ ] Verify old proxy/client is compatible?
 
-### 公网 Refit HTTP/JSON
+### Public network Refit HTTP/JSON
 
-- [ ] 是否使用 `AddRefitGeneratedClient`/`ForGenerated`？
-- [ ] 是否完全没有 Refit runtime reflection fallback；若当前版本提供 `Refit.Reflection`，生产依赖是否不包含它？
-- [ ] 是否没有反射 request builder 诊断？
-- [ ] JSON DTO 是否进入 `JsonSerializerContext`？
-- [ ] HTTP verb/status/cache/version 语义是否正确？
-- [ ] 大对象是否走标准 HTTP stream/ResourceRef？
+- [ ] Do you want to use `AddRefitGeneratedClient`/`ForGenerated`?
+- [ ] Is there no Refit runtime reflection fallback at all? If the current version provides `Refit.Reflection`, does the production dependency not include it?
+- [ ] Is there no reflection request builder diagnostic?
+- Does the [ ] JSON DTO go into `JsonSerializerContext`?
+- [ ] Is the HTTP verb/status/cache/version semantics correct?
+- [ ] Do large objects use standard HTTP stream/ResourceRef?
 
 ### SignalR
 
-- [ ] 是否只用于实时需求，而非唯一持久事实？
-- [ ] AOT 下是否只用 JSON protocol？
-- [ ] 是否避免 `Hub<T>` Native AOT 限制？
-- [ ] payload 是否 source-generated？
-- [ ] 断线后是否能通过 Refit + sequence/revision 恢复？
+- [ ] Is it only used for real-time needs and not the only persistent fact?
+- [ ] Is only JSON protocol used under AOT?
+- [ ] Do you want to avoid `Hub<T>` Native AOT limitations?
+- [ ] Is the payload source-generated?
+- [ ] Can it be restored through Refit + sequence/revision after disconnection?
 
-### IPC 与安全
+### IPC and security
 
-- [ ] Windows Named Pipe / Unix Domain Socket 权限是否最小化？
-- [ ] 是否验证 app instance、session 和 actor？
-- [ ] Provider 是否做最终授权？
-- [ ] 是否避免固定公网端口和任意路径加载？
+- [ ] Are Windows Named Pipe / Unix Domain Socket permissions minimized?
+- [ ] Verify app instance, session, and actor?
+- [ ] Does the Provider do the final authorization?
+- [ ] Do you want to avoid fixed public network ports and arbitrary path loading?
 
-### 原生互操作
+### Native interop
 
-- [ ] 是否确实需要原生库？
-- [ ] 是否通过稳定 C ABI 和 `[LibraryImport]`？
-- [ ] 是否使用 SafeHandle 和明确所有权？
-- [ ] 原生异常是否被挡在 ABI 内？
-- [ ] 是否有 fuzz、sanitizer、ABI 和崩溃恢复测试？
-- [ ] 是否没有新增 C++ Worker？
+- [ ] Do you really need native libraries?
+- [ ] by stabilizing C ABI and `[LibraryImport]`?
+- [ ] Use SafeHandle and clear ownership?
+- [ ] Are native exceptions blocked within the ABI?
+- [ ] Are there fuzz, sanitizer, ABI and crash recovery tests?
+- [ ] Is there no new C++ Worker?
 
-### UI 与任务
+### UI and tasks
 
-- [ ] UI 线程是否只做轻量工作？
-- [ ] 队列是否有界并有背压？
-- [ ] 长任务是否返回 TaskHandle？
-- [ ] 任务是否可查询、可恢复、可取消或明确不可取消？
+- [ ] Does the UI thread only do light work?
+- [ ] Is the queue bounded and has backpressure?
+- [ ] Does a long task return TaskHandle?
+- [ ] Is the task queryable, resumable, cancelable or explicitly non-cancelable?
 
-### AOT 与发布
+### AOT and publishing
 
-- [ ] 宿主是否真实执行 `PublishAot=true`（适用平台）？
-- [ ] 是否没有未审查 IL2026/IL3050？
-- [ ] Android 是否明确区分 Mono AOT 与实验性 Native AOT？
-- [ ] native 和 managed 是否作为同一版本集？
-- [ ] 更新、回滚、schema 和文档格式是否兼容？
-- [ ] 是否有签名、SBOM、依赖和 Secret 扫描？
+- [ ] Does the host actually execute `PublishAot=true` (applicable platform)?
+- [ ] Is there no uncensored IL2026/IL3050?
+- [ ] Does Android clearly differentiate between Mono AOT and experimental Native AOT?
+- [ ] Are native and managed as the same version set?
+- [ ] Are updates, rollbacks, schema and document formats compatible?
+- [ ] Are there signature, SBOM, dependency and secret scans?
 
-## 31. 最终决策摘要
+## 31. Summary of final decision
 
-ArcForges 未来应被理解为一组使用同一种语言和平台、但保持领域自治的产品：
+ArcForges should be understood in the future as a set of products that use the same language and platform but maintain domain autonomy:
 
-- **语言统一**：产品代码全部 C#；
-- **运行时统一**：.NET 10 LTS；
-- **AOT 目标**：Cloud/Desktop/iOS 以 Native AOT 为默认硬约束，Web 使用 WASM AOT；Android 明确当前平台例外；
-- **桌面统一**：Avalonia；
-- **移动统一**：.NET MAUI；
-- **Web 统一**：Blazor WebAssembly；
-- **云端统一**：ASP.NET Core Native AOT Minimal API；
-- **公网请求/响应**：Refit generated-only + 标准 HTTP/JSON；
-- **公网实时**：SignalR JSON；
-- **本机 RPC**：StreamJsonRpc + Interface Code First + Named Pipe/UDS；
-- **本机 AOT formatter**：默认 Nerdbank.MessagePack + TypeShape，UTF-8 JSON 仅在明确需要时使用 STJ source generation；
-- **原生互操作**：同进程 P/Invoke + 窄 C ABI；
-- **故障恢复**：journal + snapshot + revision + idempotency；
-- **Agent**：ArcChat 内运行，但不拥有额外权限；
-- **架构形态**：每产品完整单进程、Hub 只管平台状态、Cloud 模块化单体起步；
-- **持久化**：严格 Native AOT 主宿主不以 EF Core 为不可替代运行时。
+- **Language Unification**: Product codes are all C#;
+- **Runtime Unification**: .NET 10 LTS;
+- **AOT target**: Cloud/Desktop/iOS uses Native AOT as the default hard constraint, and Web uses WASM AOT; Android clearly makes exceptions for the current platform;
+- **Desktop Unification**: Avalonia;
+- **Mobile Unification**: .NET MAUI;
+- **Web Unification**: Blazor WebAssembly;
+- **Cloud Unification**: ASP.NET Core Native AOT Minimal API;
+- **Public network request/response**: Refit generated-only + standard HTTP/JSON;
+- **Public network real-time**: SignalR JSON;
+- **Native RPC**: StreamJsonRpc + Interface Code First + Named Pipe/UDS;
+- **Native AOT formatter**: Default Nerdbank.MessagePack + TypeShape, UTF-8 JSON Use STJ source generation only when explicitly needed;
+- **Native interop**: same-process P/Invoke + narrow C ABI;
+- **Failure recovery**: journal + snapshot + revision + idempotency;
+- **Agent**: runs within ArcChat, but does not have additional permissions;
+- **Architecture form**: Each product has a complete single process, the Hub only cares about the platform status, and the Cloud starts as a modular unit;
+- **Persistence**: Strictly Native AOT main host does not use EF Core as an irreplaceable runtime.
 
-三种通信职责必须长期保持清晰：
+Three communications responsibilities must remain clear over time:
 
 ```text
 Local process-to-process  -> StreamJsonRpc
@@ -2428,13 +2428,13 @@ Public request/response   -> Refit + HTTP/JSON
 Public realtime           -> SignalR
 ```
 
-最重要的约束不是“所有代码看起来都在 C# 仓库里”，而是：**状态有唯一所有者，调用有强类型契约，公网遵守标准 HTTP 语义，实时层可丢但可恢复，所有生产主路径可被 AOT 静态分析，失败可恢复，权限在最终执行点验证，原生能力不泄漏出适配边界。**
+The most important constraint is not "all code looks like it is in the C# warehouse", but: ** state has a unique owner, calls have a strongly typed contract, the public network adheres to standard HTTP semantics, the real-time layer is lost but recoverable, all production main paths can be statically analyzed by AOT, failure is recoverable, permissions are verified at the final execution point, and native capabilities do not leak out of the adaptation boundary. **
 
-## 32. 官方资料与实时核验来源
+## 32. Official information and real-time verification sources
 
-以下资料用于本次技术决策，核验时间为 **2026-07-20**。版本号优先选择稳定版本；预览版只用于判断未来方向，不作为本文稳定基线。
+The following information is used for this technical decision-making, and the verification time is **2026-07-20**. The version number gives priority to the stable version; the preview version is only used to judge future directions and is not used as a stable baseline for this article.
 
-### .NET、ASP.NET Core Native AOT 与数据层
+### .NET, ASP.NET Core Native AOT and data layer
 
 - [.NET Native AOT deployment](https://learn.microsoft.com/en-us/dotnet/core/deploying/native-aot/)
 - [ASP.NET Core Native AOT support](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/native-aot/)
@@ -2445,22 +2445,22 @@ Public realtime           -> SignalR
 - [Npgsql](https://www.npgsql.org/)
 - [Dapper.AOT](https://github.com/DapperLib/DapperAOT)
 
-### Refit：公网 HTTP/JSON
+### Refit: Public network HTTP/JSON
 
 - [Refit official documentation](https://reactiveui.github.io/refit/)
 - [Refit 13.1.0 NuGet](https://www.nuget.org/packages/Refit/13.1.0)
 - [Refit.HttpClientFactory 13.1.0 NuGet](https://www.nuget.org/packages/Refit.HttpClientFactory/13.1.0)
 
-本次采用的关键结论：
+Key conclusions from this adoption:
 
-- Refit 13.x 自带 source generator；
-- Native AOT/trimmed 应用使用 `RestService.ForGenerated<T>` 或 `AddRefitGeneratedClient<T>`；
-- generated-only API 不允许缺失生成实现时静默回退；
-- generated request building 覆盖大多数现代接口形状，但未覆盖形状可能触发 runtime request builder，因此 CI 必须拦截相关 analyzer 诊断；
-- JSON 使用 `SystemTextJsonContentSerializer` + source-generated `JsonSerializerContext`；
-- 严格 AOT 禁止 runtime reflection fallback；若未来/所用版本提供 `Refit.Reflection` opt-in 包，不将其引入生产 AOT 主路径。
+- Refit 13.x comes with source generator;
+- Native AOT/trimmed applications use `RestService.ForGenerated<T>` or `AddRefitGeneratedClient<T>`;
+- The generated-only API does not allow silent fallback when a generated implementation is missing;
+- generated request building covers most modern interface shapes, but uncovered shapes may trigger the runtime request builder, so CI must intercept related analyzer diagnostics;
+- JSON uses `SystemTextJsonContentSerializer` + source-generated `JsonSerializerContext`;
+- Strict AOT prohibits runtime reflection fallback; if future/used versions provide the `Refit.Reflection` opt-in package, it will not be introduced into the production AOT main path.
 
-### StreamJsonRpc：本机 Interface Code First RPC
+### StreamJsonRpc: Native Interface Code First RPC
 
 - [StreamJsonRpc NativeAOT / Trimming](https://microsoft.github.io/vs-streamjsonrpc/docs/nativeAOT.html)
 - [StreamJsonRpc Strongly typed proxies](https://microsoft.github.io/vs-streamjsonrpc/docs/proxies.html)
@@ -2472,34 +2472,34 @@ Public realtime           -> SignalR
 - [StreamJsonRpc 2.25.29 NuGet](https://www.nuget.org/packages/StreamJsonRpc/2.25.29)
 - [Nerdbank.MessagePack 1.2.36 NuGet](https://www.nuget.org/packages/Nerdbank.MessagePack/1.2.36)
 
-本次采用的关键结论：
+Key conclusions from this adoption:
 
-- StreamJsonRpc 官方明确是 **partially NativeAOT safe**；
-- `EnableStreamJsonRpcInterceptors=true` 是 Native AOT 代理路径的关键开关；
-- `[JsonRpcContract]` + `GenerateShape(PublicInstance)` 触发/支撑生成式代理；
-- 独立 Contracts 可用 `[assembly: ExportRpcContractProxies]` 直接暴露生成代理；
-- 多接口代理组合用 `JsonRpcProxyInterfaceGroupAttribute` 预定义；
-- Native AOT 优先 `NerdbankMessagePackFormatter`；UTF-8 JSON 使用 `SystemTextJsonFormatter` + `JsonSerializerContext`；
-- AOT target 注册使用 `RpcTargetMetadata` 生成路径；
-- 强类型代理接口不允许 property/generic method，支持 Task/ValueTask/IAsyncEnumerable 与尾部 CancellationToken；
-- 同一个 Stream 不可创建多个独立 JsonRpc 实例共享；
-- Windows Named Pipe 的 async 场景必须按官方建议使用异步 pipe 选项。
+- StreamJsonRpc is officially **partially NativeAOT safe**;
+- `EnableStreamJsonRpcInterceptors=true` is the key switch of the Native AOT agent path;
+- `[JsonRpcContract]` + `GenerateShape(PublicInstance)` triggers/supports generative agents;
+- Standalone Contracts can directly expose the generation agent using `[assembly: ExportRpcContractProxies]`;
+- Multi-interface proxy combinations are predefined with `JsonRpcProxyInterfaceGroupAttribute`;
+- Native AOT takes precedence `NerdbankMessagePackFormatter`; UTF-8 JSON uses `SystemTextJsonFormatter` + `JsonSerializerContext`;
+- AOT target registration uses `RpcTargetMetadata` to generate the path;
+- The strongly typed proxy interface does not allow property/generic methods, but supports Task/ValueTask/IAsyncEnumerable and tail CancellationToken;
+- The same Stream cannot be created and shared by multiple independent JsonRpc instances;
+- The async scenario of Windows Named Pipe must use the asynchronous pipe option as officially recommended.
 
-### SignalR：公网实时
+### SignalR: real-time on public network
 
 - [ASP.NET Core SignalR introduction](https://learn.microsoft.com/en-us/aspnet/core/signalr/introduction)
 - [ASP.NET Core SignalR .NET client](https://learn.microsoft.com/en-us/aspnet/core/signalr/dotnet-client)
 - [ASP.NET Core .NET 9 release notes — Native AOT SignalR](https://learn.microsoft.com/en-us/aspnet/core/release-notes/aspnetcore-9.0)
 
-本次采用的关键结论：
+Key conclusions from this adoption:
 
-- SignalR 客户端/服务端已有 Native AOT 支持面；
-- AOT 下以 JSON Hub protocol + System.Text.Json source generation 为基线；
-- `Hub<T>` strongly typed hub 不是本文 Native AOT 服务端基线；
-- SignalR 只做实时会话，不替代 HTTP API、outbox 或持久状态；
-- 重连后由 HTTP 查询 revision/sequence 做状态恢复。
+- SignalR client/server already has Native AOT support;
+- Under AOT, JSON Hub protocol + System.Text.Json source generation is used as the baseline;
+- `Hub<T>` strongly typed hub is not the Native AOT server baseline of this article;
+- SignalR only does real-time sessions and does not replace the HTTP API, outbox, or persistent state;
+- After reconnection, HTTP query revision/sequence is used for state recovery.
 
-### Avalonia、MAUI 与 Blazor
+### Avalonia, MAUI and Blazor
 
 - [Avalonia Native AOT](https://docs.avaloniaui.net/docs/deployment/native-aot)
 - [Avalonia Supported Platforms](https://docs.avaloniaui.net/docs/supported-platforms)
@@ -2508,7 +2508,7 @@ Public realtime           -> SignalR
 - [.NET MAUI Android build process / AOT](https://learn.microsoft.com/en-us/dotnet/android/deployment/)
 - [Blazor WebAssembly AOT compilation](https://learn.microsoft.com/en-us/aspnet/core/blazor/webassembly-build-tools-and-aot)
 
-### P/Invoke、Agent、遥测与发布
+### P/Invoke, Agent, Telemetry and Publishing
 
 - [Source generation for platform invokes](https://learn.microsoft.com/en-us/dotnet/standard/native-interop/pinvoke-source-generation)
 - [Native interoperability best practices](https://learn.microsoft.com/en-us/dotnet/standard/native-interop/best-practices)
@@ -2519,4 +2519,4 @@ Public realtime           -> SignalR
 - [OpenTelemetry.Extensions.Hosting NuGet](https://www.nuget.org/packages/OpenTelemetry.Extensions.Hosting/)
 - [Velopack](https://github.com/velopack/velopack)
 
-当这些资料的稳定版本或约束变化时，应先更新 ADR、AOT 兼容矩阵和真实发布 PoC，再修改本总纲的技术基线；不能只因新版本发布就无验证地改变架构。
+When the stable version or constraints of these materials change, the ADR, AOT compatibility matrix and real release PoC should be updated first, and then the technical baseline of this general outline should be modified; the architecture cannot be changed without verification just because a new version is released.

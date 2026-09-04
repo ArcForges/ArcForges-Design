@@ -1,5 +1,3 @@
 # Product Requirements
 
-This directory will contain one coherent requirements specification for each ArcForges product or host after its scope has been reviewed and accepted.
-
-No product specification is implied by this placeholder.
+This directory will contain specific requirements documents for each ArcForges product (ArcChat, ArcNotes, ArcScope, ArcSlate, and supporting services).

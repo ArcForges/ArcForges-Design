@@ -1,38 +1,38 @@
-# ArcForges 全产品家族实施顺序
+# ArcForges Product Family Implementation Sequencing
 
-> 状态：Current Sequence Baseline  
-> 用途：规定整个 ArcForges 家族的总体实施依赖和串行顺序，不代替各编号步骤中的详细实施规格。  
-> 详细规划格式参考：`C:\MyFile\ArcForges\ArchitectureDesign\AionUiReWrite-Kotlin`  
-> 规划输出位置：`C:\MyFile\ArcForges\ArchitectureDesign\ArcForgesReWrite-AllCsharp`
+> Status: Current Sequence Baseline  
+> Purpose: Establishes overall implementation dependencies and sequential ordering for the entire ArcForges family; does not replace detailed implementation specifications in numbered steps.  
+> Detailed planning format reference: `C:\MyFile\ArcForges\ArchitectureDesign\AionUiReWrite-Kotlin`  
+> Planning output location: `C:\MyFile\ArcForges\ArchitectureDesign\ArcForgesReWrite-AllCsharp`
 
-主产品顺序“ArcChat → ArcNotes → ArcScope → ArcSlate”作为产品主线保持不变，但不能理解成“一个项目 100% 做完才考虑下一个项目及其依赖”。正确方式是：
+The primary product sequence "ArcChat → ArcNotes → ArcScope → ArcSlate" remains unchanged as the mainline, but it must not be interpreted as "only considering the next project and its dependencies after one project is 100% finished." The correct approach is:
 
-> 先冻结架构、范围与契约 → 建立真实跨进程骨架 → 完成 ArcChat 独立核心 → 完成 ArcNotes 文档核心并闭环跨 App → 落地第一版真实 Cloud → 分阶段补齐 ArcNotes Edgeless/Database/Slides → 完成 MAUI/Android 远程闭环 → ArcScope → ArcSlate → Cloud 完整化 → 独立 Blazor Web 衔接、Account/付费与生产发布。
+> Freeze architecture, scope, and contracts first → Establish real cross-process skeleton → Complete ArcChat independent core → Complete ArcNotes document core and close cross-App loop → Deliver first real Cloud version → Progressively complete ArcNotes Edgeless/Database/Slides → Complete MAUI/Android remote loop → ArcScope → ArcSlate → Cloud completion → Independent Blazor Web integration, Account/Billing, and production release.
 
-其中服务器接口现在就要设计，服务器可先用本地实现和 Mock；但在 ArcNotes 文档核心 V1 完成后必须尽早建立第一条真实 Cloud/Sync/Remote 闭环，不能等 ArcNotes 扩展能力或四个桌面产品全部完成。
+Server interfaces must be designed now, with initial local implementations and mocks; however, the first real Cloud/Sync/Remote closed loop must be established as early as possible after ArcNotes document core V1 is complete, rather than waiting for ArcNotes extended capabilities or all four desktop products to finish.
 
-## 一、现有输入文档中需要在新规划里统一的地方
+## I. Reconciliations Required in New Planning from Existing Input Documents
 
-### 1. `ArcForges-stages.md` 不是开发顺序
+### 1. `ArcForges-stages.md` is Not a Development Order
 
-Stage 0～28 是需求和架构决策形成顺序，不是工程施工顺序。
+Stage 0–28 represents the discovery order for requirements and architectural decisions, not engineering construction order.
 
-真正编码时，必须把以下“后面的 Stage”提前成为基础约束：
+When writing code, later stages must be pulled forward as baseline constraints:
 
-- Stage 13：四产品拓扑、状态所有权
-- Stage 14：共享桌面体验
-- Stage 19：统一 Task/Run/Step/Approval 模型
-- Stage 21：Capability、Resource、Context、Artifact
-- Stage 22：本地存储、工程格式、恢复、迁移
-- Stage 23：Search/Knowledge/Retrieval
-- Stage 26：权限、Trust、审批、最终所有者校验
-- Stage 27：AOT、性能、恢复、兼容性门禁
+- Stage 13: Four-product topology, state ownership
+- Stage 14: Shared desktop experience
+- Stage 19: Unified Task/Run/Step/Approval model
+- Stage 21: Capability, Resource, Context, Artifact
+- Stage 22: Local persistence, project format, recovery, migration
+- Stage 23: Search/Knowledge/Retrieval
+- Stage 26: Permissions, Trust, approval, final owner validation
+- Stage 27: AOT, performance, recovery, compatibility gates
 
-Stage 24 扩展平台、Stage 25 动态策略、Stage 28 运营后台可以晚做，但不能破坏前面的扩展点、安全模型和审计模型。
+Stage 24 (Extension Platform), Stage 25 (Dynamic Policy), and Stage 28 (Operations Backoffice) can be built later, but must not break earlier extension points, security models, or audit models.
 
-### 2. `FutureAllCSharp.md` 的产品名称和落地顺序已过期
+### 2. Product Names and Delivery Order in `FutureAllCSharp.md` are Obsolete
 
-旧文件仍写：
+The legacy file listed:
 
 ```text
 ArcChat
@@ -41,7 +41,7 @@ ArcImage
 ArcVideo
 ```
 
-最新冻结结果已经是：
+The latest frozen baseline is:
 
 ```text
 ArcChat
@@ -50,84 +50,84 @@ ArcScope
 ArcSlate
 ```
 
-其中：
+Where:
 
-- ArcVideo → ArcSlate：方向继承
-- ArcImage → ArcScope：不是改名，而是完全不同的新产品
-- 旧 Phase 3 “ArcImage/PInvoke”不能直接套给 ArcScope
-- 旧 Phase 4 “ArcVideo”应被 Stage 20 的 ArcSlate Phase 0～12 替代
+- ArcVideo → ArcSlate: directional inheritance
+- ArcImage → ArcScope: not a rename, but a completely new product
+- Legacy Phase 3 "ArcImage/PInvoke" cannot be directly applied to ArcScope
+- Legacy Phase 4 "ArcVideo" should be replaced by Stage 20 ArcSlate Phase 0–12
 
-新的规划输出必须统一使用 ArcChat、ArcNotes、ArcScope、ArcSlate，并在目标目录名称、Contract 名称、测试名称和 CI 矩阵中消除新的 `ArcVideo`/`ArcImage` 遗留。
+New planning outputs must consistently use ArcChat, ArcNotes, ArcScope, ArcSlate, and eliminate any new `ArcVideo`/`ArcImage` remnants in target directory names, contract names, test names, and CI matrices.
 
-`FutureAllCSharp.md`、`ArcForges-stages.md` 等文件是本次规划的只读输入。除非用户另行授权，不修改这些输入文件；旧名称和旧示例应在新的规划输出中建立明确的兼容、替代和迁移映射。
+Files such as `FutureAllCSharp.md` and `ArcForges-stages.md` are read-only inputs for this planning. Unless explicitly authorized by the user, these input files are not modified; legacy names and examples should have explicit compatibility, replacement, and migration mappings established in new planning outputs.
 
-### 3. ArcChat 的 AOT 描述存在一处冲突
+### 3. One Conflict in ArcChat AOT Description
 
-总纲一方面要求 ArcChat Native AOT，另一方面 Agent 章节写了“JIT 宿主允许运行时工具发现”。
+The general outline on one hand requires ArcChat Native AOT, while the Agent chapter mentions "JIT host allows runtime tool discovery."
 
-严格全 AOT 下应改成：
+Under strict full AOT, this must be amended to:
 
-- 内置 Agent、Tool、Capability 全部静态注册或源码生成；
-- 禁止运行时任意程序集扫描、动态代理和 `Reflection.Emit`；
-- 第三方可执行扩展默认进程外运行；
-- 第三方扩展自身可以不是 AOT，但 ArcChat 主进程继续 Native AOT；
-- AOT 不兼容的 Agent SDK 功能必须先做真实发布 PoC，不能只看普通 Debug 构建。
+- Built-in Agents, Tools, and Capabilities are all statically registered or source-generated;
+- Arbitrary runtime assembly scanning, dynamic proxies, and `Reflection.Emit` are prohibited;
+- Third-party executable extensions run out-of-process by default;
+- Third-party extensions themselves may not be AOT, but the ArcChat main process remains Native AOT;
+- AOT-incompatible Agent SDK features must undergo real release PoC first, not just standard Debug builds.
 
-## 二、ArcNotes、ArcScope、ArcSlate 的“二开”需要重新定义
+## II. Redefining "Secondary Development" for ArcNotes, ArcScope, and ArcSlate
 
-### ArcNotes：分阶段完整纳入 AFFiNE 核心能力
+### ArcNotes: Phased Complete Inclusion of AFFiNE Core Capabilities
 
-关于 ArcNotes 是否包含 AFFiNE 的 Edgeless Canvas/Whiteboard、多视图 Database 和 Slides/Presentation，用户已经作出决定：
+Regarding whether ArcNotes includes AFFiNE's Edgeless Canvas/Whiteboard, multi-view Database, and Slides/Presentation, the user has already decided:
 
-> **选择 5：分阶段完整纳入，不从 ArcNotes 总体范围中删除。**
+> **Option 5: Complete inclusion in phases; do not delete from the overall ArcNotes scope.**
 
-该问题已经解决，不得再次把这些能力是否进入 ArcNotes 完整产品范围作为待决冲突。
+This question is resolved and must not be reopened as a pending conflict.
 
-ArcNotes 最早 V1 先完成 Document-first、Local-first 的专业文档核心：
+ArcNotes V1 first completes the Document-first, Local-first professional document core:
 
-- Notebook、Folder、Document、Block；
-- Block 编辑器；
-- 内链、Block Link、Backlink；
-- Typed Properties、Tag、全文搜索；
-- 附件；
-- History、Revision、Checkpoint、Trash；
-- Undo/Redo、崩溃恢复和升级迁移；
-- Markdown、HTML、PDF 等导入导出；
-- AI 与 ArcChat Capability。
+- Notebook, Folder, Document, Block;
+- Block editor;
+- Internal links, Block Links, Backlinks;
+- Typed Properties, Tags, full-text search;
+- Attachments;
+- History, Revision, Checkpoint, Trash;
+- Undo/Redo, crash recovery, and upgrade migration;
+- Markdown, HTML, PDF import and export;
+- AI and ArcChat Capabilities.
 
-从 V1 开始必须建立真实、可验证的未来兼容基础：
+From V1 onwards, a real, verifiable foundation for future compatibility must be established:
 
-- Document/Space 与 Block 使用稳定 ID、Revision 和统一引用语义；
-- Block 模型允许后续增加 Surface/Canvas 类型；
-- Canvas 空间位置、连接线、分组和布局数据与普通文档布局适当隔离；
-- Typed Properties、Query 和 Saved View 为多视图 Database 提供基础；
-- 不把所有未来字段塞进核心 Block；
-- 不创建虚假的空 Canvas、Database 或 Slides 实现；
-- AOT 下的 Block 类型和扩展类型使用静态注册或源码生成；
-- `DocumentId/BlockId/Operation/Revision` 从开始保留未来协同兼容性，但最早 V1 不实施完整多人实时协同。
+- Document/Space and Block use stable IDs, Revisions, and unified reference semantics;
+- Block model allows subsequent addition of Surface/Canvas types;
+- Canvas spatial positions, connectors, groupings, and layout data are properly isolated from normal document layouts;
+- Typed Properties, Queries, and Saved Views provide the foundation for multi-view Database;
+- Do not stuff all future fields into the core Block;
+- Do not create fake empty Canvas, Database, or Slides implementations;
+- Block types and extension types under AOT use static registration or source generation;
+- `DocumentId/BlockId/Operation/Revision` preserves future collaboration compatibility from the start, though earliest V1 does not implement full multi-user real-time collaboration.
 
-ArcNotes 文档核心稳定后，必须在正式串行计划中安排明确步骤：
+Once the ArcNotes document core stabilizes, explicit steps must be arranged in the formal sequential plan:
 
 1. **Edgeless Canvas/Whiteboard**
-   - 作为第二编辑面；
-   - 文档 Block 与 Canvas 内容尽可能共享；
-   - 不保存两份互不兼容的内容；
-   - 实现空间布局、连接、分组、选择、移动、缩放和必要交互。
+   - Serves as the second editing surface;
+   - Document Blocks and Canvas content share as much as possible;
+   - Do not store two mutually incompatible sets of content;
+   - Implement spatial layout, connections, grouping, selection, moving, zooming, and essential interactions.
 
-2. **多视图 Database**
-   - 建立在 Typed Properties、Query 和 Saved View 上；
-   - 根据来源功能和产品需求实现 Table、Board/Kanban、Calendar 等经过确认的视图；
-   - “不做 Notion Database Clone”表示不无限复制 Notion 全部范围，不表示禁止 ArcNotes 实现自己的 Typed Database 和多视图能力。
+2. **Multi-View Database**
+   - Built on Typed Properties, Queries, and Saved Views;
+   - Implement confirmed views such as Table, Board/Kanban, Calendar based on source features and product requirements;
+   - "Do not clone Notion Database" means not endlessly copying Notion's entire scope, not prohibiting ArcNotes from implementing its own Typed Database and multi-view capabilities.
 
 3. **Slides/Presentation**
-   - 进入 ArcNotes 完整产品范围；
-   - 优先设计为 Document/Canvas 内容的 Presentation View；
-   - 不建立第三套互不兼容的内容模型。
+   - Enters full ArcNotes product scope;
+   - Prioritize designing as a Presentation View of Document/Canvas content;
+   - Do not establish a third mutually incompatible content model.
 
-必须建立 `ArcNotes Reference Coverage Matrix`：
+An `ArcNotes Reference Coverage Matrix` must be established:
 
 ```text
-AFFiNE / SiYuan 功能
+AFFiNE / SiYuan feature
 → Source Path / Source Behavior / License
 → Copy / Rewrite / Improve / Replace / Reference Only / Drop
 → V1 Foundation / Edgeless / Database / Slides / Later Collaboration
@@ -135,19 +135,19 @@ AFFiNE / SiYuan 功能
 → Test / Completion Gate
 ```
 
-AFFiNE 中的非 AGPL 内容按照用户已经确认的 Copy First 规则规划，可以在未来实施阶段先复制代码、逻辑、测试和资源，再按 C#、Avalonia、AOT 和统一产品架构逐步替换或重构。
+Non-AGPL content from AFFiNE follows the user-confirmed Copy First rule: code, logic, tests, and assets may be copied during future implementation phases, then progressively replaced or refactored according to C#, Avalonia, AOT, and unified product architecture.
 
-SiYuan 以及其他实际识别为 AGPL 的内容只作为行为和语义参考，目标功能使用独立 C# 实现。SiYuan 的 Block 引用、大文档、PDF 标注、导出、Web Clipper、插件市场等仍是重要功能来源。
+SiYuan and other content identified as AGPL serve only as behavioral and semantic reference; target functionality uses independent C# implementations. SiYuan's block referencing, large documents, PDF annotations, export, Web Clipper, and plugin marketplace remain important feature sources.
 
-### ArcScope：按来源许可证逐项复用或重写
+### ArcScope: Reuse or Rewrite Item-by-Item Based on Source License
 
-Stage 16 已经定义了很完整的 ArcScope 产品，但没有真正建立 Serial Studio → ArcScope 的迁移矩阵。
+Stage 16 defined a comprehensive ArcScope product, but did not establish a Serial Studio → ArcScope migration matrix.
 
-Serial Studio 的许可证必须以本地仓库基线和文件级 SPDX 为准重新核验，不能只依赖外部网页或仓库根许可证。
+Serial Studio licensing must be verified against local repository baselines and file-level SPDX, not solely external web pages or root repository licenses.
 
-ArcScope 的目标运行时架构仍然是自己的 C#、Avalonia、AOT、领域模型、采集管线和可视化体系；这不排除按照用户已经确认的 Copy First 规则，在未来实施阶段复制和复用所有非 AGPL 的代码、逻辑、测试和资源。
+ArcScope's target runtime architecture remains its own C#, Avalonia, AOT, domain model, acquisition pipeline, and visualization system; this does not preclude copying and reusing non-AGPL code, logic, tests, and assets under the user-confirmed Copy First rule.
 
-开工前建立：
+Establish before starting work:
 
 ```text
 Serial Studio feature/file
@@ -159,15 +159,15 @@ Serial Studio feature/file
 → Test / Completion Gate
 ```
 
-尤其 MQTT、Modbus、CAN、MDF4、报告、数据库记录、3D/XY/Waterfall 等必须逐文件核验许可证和来源。内部迁移规划不得因为许可证分析而放弃已经确认的非 AGPL Copy First 策略；正式商业发布前必须完成 NOTICE、来源记录、允许保留内容和必须替换内容的合规收口。
+In particular, MQTT, Modbus, CAN, MDF4, reports, database logging, 3D/XY/Waterfall must be audited for licenses and origins file-by-file. Internal migration planning must not abandon confirmed non-AGPL Copy First strategies due to license analysis; formal commercial release must complete NOTICE, source records, allowed retained content, and mandatory replacement content compliance closure.
 
-### ArcSlate：Stage 20 的方向是正确的
+### ArcSlate: Direction in Stage 20 is Correct
 
-Stage 20 已经把 Olive 定义为产品和行为参考，而不是把其 C++/Qt/OpenGL 运行时架构照搬进目标产品，这是正确的。ArcSlate 的最终架构仍是 C#、Avalonia、AOT 和明确的原生媒体互操作边界。
+Stage 20 defined Olive as product and behavioral reference rather than porting its C++/Qt/OpenGL runtime architecture directly into the target product, which is correct. ArcSlate's final architecture remains C#, Avalonia, AOT, and explicit native media interop boundaries.
 
-对于 ArcVideo、ArcVideoFoundation、Olive 以及其他来源中的非 AGPL 内容，未来实施阶段按照 Copy First 规则规划直接复制或复用代码、逻辑、测试和资源，并记录目标位置、替换阶段和发布合规要求；AGPL 文件仍采用独立 C# 实现规则。
+For non-AGPL content in ArcVideo, ArcVideoFoundation, Olive, and other sources, future implementation phases plan direct copying or reuse of code, logic, tests, and assets under Copy First rules, recording target locations, replacement phases, and release compliance obligations; AGPL files still adhere to independent C# implementation rules.
 
-ArcSlate 应严格执行文档中的：
+ArcSlate should strictly follow the path laid out in the documentation:
 
 ```text
 Product archaeology
@@ -184,209 +184,209 @@ Product archaeology
 → Cloud
 ```
 
-## 三、具体实施顺序
+## III. Concrete Implementation Sequence
 
 ```mermaid
 flowchart LR
-    A["规格、用户决定、许可证与名称冻结"] --> B["AOT / Contracts / Persistence / Shared UX 骨架"]
-    B --> C["四产品高风险技术探针"]
-    C --> D["ArcChat + 最小 ArcNotes 真实跨进程切片"]
-    D --> E["ArcChat 独立核心"]
-    E --> F["ArcNotes 文档核心 V1"]
-    F --> G["第一条真实 Cloud / Sync / Remote 闭环"]
-    G --> H["ArcNotes Edgeless / Database / Slides 完整化"]
-    H --> I["MAUI 共享架构 + Android Remote ArcChat"]
-    I --> J["ArcScope 完整产品"]
-    J --> K["ArcSlate 完整产品"]
-    K --> L["Cloud / Remote / AI / Billing / Operations 完整化"]
-    L --> M["独立 Blazor Web 衔接 / Account Portal"]
-    M --> N["正式官网、Checkout 与全平台生产发布"]
+    A["Specifications, User Decisions, Licenses, and Naming Freeze"] --> B["AOT / Contracts / Persistence / Shared UX Skeleton"]
+    B --> C["Four-Product High-Risk Technical Probes"]
+    C --> D["ArcChat + Minimal ArcNotes Real Cross-Process Slice"]
+    D --> E["ArcChat Independent Core"]
+    E --> F["ArcNotes Document Core V1"]
+    F --> G["First Real Cloud / Sync / Remote Loop"]
+    G --> H["ArcNotes Edgeless / Database / Slides Completion"]
+    H --> I["MAUI Shared Architecture + Android Remote ArcChat"]
+    I --> J["ArcScope Complete Product"]
+    J --> K["ArcSlate Complete Product"]
+    K --> L["Cloud / Remote / AI / Billing / Operations Completion"]
+    L --> M["Independent Blazor Web Integration / Account Portal"]
+    M --> N["Official Website, Checkout, and Full-Platform Production Release"]
 ```
 
-### 0. 规格和权利冻结
+### 0. Specification and Rights Freeze
 
-先完成：
+Complete first:
 
-- 合并两个文档的产品命名；
-- 落实已经确认的 ArcNotes 选择 5：分阶段完整纳入 Edgeless、Database Views 和 Slides；
-- 建立 AFFiNE、SiYuan、Serial Studio、Olive 的功能/许可证矩阵；
-- 冻结 Stage 13、19、21、22、26 的核心名词；
-- 明确 AGPL、第三方 NOTICE、SPDX 和源码来源记录；
-- 修正 ArcChat AOT/JIT 冲突；
-- 在新规划中建立旧 ArcVideo/ArcImage 名称和目标 ArcScope/ArcSlate 之间的替代映射；
-- 冻结 MAUI、Android、iOS Deferred、Blazor Web 边界和 Android 服务器通信路径。
+- Merge product naming across documents;
+- Enforce confirmed ArcNotes Option 5: phased full inclusion of Edgeless, Database Views, and Slides;
+- Establish feature/license matrices for AFFiNE, SiYuan, Serial Studio, Olive;
+- Freeze core terminology from Stages 13, 19, 21, 22, 26;
+- Clarify AGPL, third-party NOTICE, SPDX, and source provenance records;
+- Resolve ArcChat AOT/JIT conflict;
+- Establish replacement mapping between legacy ArcVideo/ArcImage names and target ArcScope/ArcSlate in new planning;
+- Freeze MAUI, Android, iOS Deferred, Blazor Web boundaries, and Android server communication paths.
 
-这是第一个硬门禁。否则编辑器、数据格式、Capability 和 Cloud Sync 都可能返工。
+This is the first hard gate, avoiding rework in editors, data formats, Capabilities, and Cloud Sync.
 
-### 1. 平台骨架与 AOT 证明
+### 1. Platform Skeleton and AOT Proof
 
-建立：
+Establish:
 
-- `.NET 10` SDK、中央包版本、locked restore；
-- Domain/Application/Infrastructure/UI 分层；
-- `Contracts.Foundation/LocalRpc/PublicApi/Realtime`；
-- ArchitectureTests；
-- 三桌面平台 Native AOT publish；
-- Cloud Native AOT hello-world；
-- AOT-safe SQLite、MessagePack、STJ、Refit、SignalR PoC；
-- Avalonia 安装、启动、升级和 crash dump 骨架；
-- Stage 14 的最小主题、Shell、命令、设置、错误展示，不要一次做完整 UI 框架。
+- `.NET 10` SDK, central package versioning, locked restore;
+- Domain/Application/Infrastructure/UI layering;
+- `Contracts.Foundation/LocalRpc/PublicApi/Realtime`;
+- ArchitectureTests;
+- Native AOT publish on three desktop platforms;
+- Cloud Native AOT hello-world;
+- AOT-safe SQLite, MessagePack, STJ, Refit, SignalR PoC;
+- Avalonia install, startup, upgrade, and crash dump skeleton;
+- Stage 14 minimal theme, Shell, commands, settings, and error displays; do not build full UI framework at once.
 
-这一阶段还必须把未来数据库和通信规格放到真实位置：
+This phase must also position future database and communication specifications in real locations:
 
-- 为桌面 SQLite、Cloud PostgreSQL 和 Mobile Cache 确定项目、migration 工具和版本规则；
-- 为 `LocalRpc`、`PublicApi`、`Realtime` 建立独立 Contract 边界；
-- 冻结基础 ID、错误、Revision、Sequence、幂等、版本和 Source Generation 规则；
-- 建立后续每个产品步骤必须补齐 schema、接口、消息、错误和测试的门禁。
+- Determine projects, migration tooling, and versioning rules for desktop SQLite, Cloud PostgreSQL, and Mobile Cache;
+- Establish independent Contract boundaries for `LocalRpc`, `PublicApi`, `Realtime`;
+- Freeze base IDs, errors, Revisions, Sequences, idempotency, versioning, and Source Generation rules;
+- Establish gates requiring subsequent product steps to complete schemas, interfaces, messages, errors, and tests.
 
-### 2. 四个高风险技术探针
+### 2. Four High-Risk Technical Probes
 
-在进入完整产品功能前，分别完成：
+Before entering full product functionality, complete separately:
 
-- ArcChat：Agent SDK 在 Native AOT 下真实运行；
-- ArcNotes：Block Editor + SQLite + Undo + crash recovery；
-- ArcScope：高吞吐采集、ring buffer、绘图降采样；
-- ArcSlate：P/Invoke 解码、音视频同步、显示一帧。
+- ArcChat: Agent SDK running under Native AOT;
+- ArcNotes: Block Editor + SQLite + Undo + crash recovery;
+- ArcScope: High-throughput acquisition, ring buffer, plot downsampling;
+- ArcSlate: P/Invoke decoding, audio/video synchronization, rendering one frame.
 
-ArcScope/ArcSlate 的完整开发很晚，但技术风险必须现在探明。
+ArcScope/ArcSlate full development comes late, but technical risks must be proven now.
 
-这些探针必须形成可复现的构建、测试和性能证据。探针可以隔离在验证项目中，但结论必须进入后续正式步骤；不得把探针代码未经整理直接当成生产实现。
+These probes must yield reproducible build, test, and performance evidence. Probes may be isolated in verification projects, but conclusions must feed into subsequent formal steps; probe code must not be treated directly as production code without cleanup.
 
-### 3. ArcChat + 最小 ArcNotes 真实垂直切片
+### 3. ArcChat + Minimal ArcNotes Real Vertical Slice
 
-不要只做 ArcChat 自己调用 Fake。
+Do not just test ArcChat calling fakes.
 
-必须运行两个真实 Native AOT 进程：
+Two real Native AOT processes must run:
 
 ```text
 ArcChat Hub
 ↕ Named Pipe / UDS + StreamJsonRpc
-最小 ArcNotes Provider
+Minimal ArcNotes Provider
 ```
 
-验证：
+Verify:
 
-- 注册、租约、心跳、重连；
-- Capability 发现；
-- `CommandId`、revision、幂等；
-- ResourceRef、TaskHandle；
-- Approval；
-- ArcNotes 无 ArcChat 时仍能编辑；
-- Hub 重启后重新注册；
-- 本地 UI 和 RPC 走同一 Application Service；
-- 真正的 generated proxy、TypeShape、MessagePack；
-- 真正发布后的 AOT 二进制通信。
+- Registration, lease, heartbeat, reconnection;
+- Capability discovery;
+- `CommandId`, revision, idempotency;
+- ResourceRef, TaskHandle;
+- Approval;
+- ArcNotes remains editable without ArcChat;
+- Re-registration after Hub restart;
+- Local UI and RPC follow the same Application Service;
+- Genuine generated proxies, TypeShape, MessagePack;
+- AOT binary communication after real publish.
 
-这一阶段可以 Mock AI 和 Cloud，但不能 Mock IPC、序列化和 AOT。
+This phase may mock AI and Cloud, but cannot mock IPC, serialization, or AOT.
 
-### 4. ArcChat 独立核心 V1A
+### 4. ArcChat Independent Core V1A
 
-先把不依赖其他产品的 ArcChat 做完整：
+First complete ArcChat without dependencies on other products:
 
-- Conversation、Message、Branch、Search、Attachment；
-- 本地模型、BYOK、Managed AI 适配接口；
-- Project、Profile、Skill；
-- Task/Run/Step、进度、取消、Artifact；
-- Permission、Approval、Audit；
-- Hub Registry、App 状态、启动与恢复；
-- Automation 的基本创建/启停；
-- 本地数据、History、Recovery；
-- Thin Preview + Rich Handoff。
+- Conversation, Message, Branch, Search, Attachment;
+- Local models, BYOK, Managed AI adapter interfaces;
+- Project, Profile, Skill;
+- Task/Run/Step, progress, cancellation, Artifact;
+- Permission, Approval, Audit;
+- Hub Registry, App state, startup, and recovery;
+- Basic Automation creation/start/stop;
+- Local data, History, Recovery;
+- Thin Preview + Rich Handoff.
 
-但此时不要宣称 ArcChat 生态能力“完全完成”。以下能力必须随着真实专业 App 逐步闭环：
+Do not claim ArcChat ecosystem capabilities are "completely finished" at this stage. The following capabilities must close progressively as real professional Apps connect:
 
 - Federated Search
-- ArcNotes/ArcScope/ArcSlate Context Provider
-- 真实语义修改
-- 跨 App Workflow
-- 真实 Artifact Handler
+- ArcNotes/ArcScope/ArcSlate Context Providers
+- Real semantic mutations
+- Cross-App Workflows
+- Real Artifact Handlers
 
-所以 ArcChat 分为：
-
-```text
-V1A：独立聊天、Agent、Task、Hub 完整
-V1B：随着专业 App 接入逐步完成生态能力
-```
-
-### 5. ArcNotes 文档核心 V1，并完成 ArcChat 第一条真实工作流
-
-先以 Stage 15 的本地闭环为准：
-
-- Block 编辑；
-- Link/Backlink/Properties/Tags；
-- 全文搜索；
-- 附件；
-- Undo/History/Checkpoint/Trash；
-- Markdown/HTML/PDF 与 Native Export；
-- 非破坏性 Import；
-- 崩溃恢复和升级迁移；
-- 大文档性能；
-- ArcChat Query/Read/Create/Edit/Artifact Capability。
-
-完成真实场景：
+ArcChat is therefore divided into:
 
 ```text
-ArcChat 请求生成报告
-→ ArcNotes 建立 Document
-→ 插入多个 Block
-→ 用户审批
-→ 保存、撤销、恢复
-→ ArcChat 获得 Artifact 引用
+V1A: Independent Chat, Agent, Task, and Hub complete
+V1B: Ecosystem capabilities completed progressively as professional Apps integrate
 ```
 
-这是 ArcForges 平台第一次真正成立，而不仅是一个聊天客户端。
+### 5. ArcNotes Document Core V1, and Completing ArcChat's First Real Workflow
 
-### 6. 第一版真实服务器，不再只 Mock
+First adhere to Stage 15 local closed loop:
 
-ArcNotes 稳定后立即实现模块化单体 Cloud 的第一条真实链路：
+- Block editing;
+- Link/Backlink/Properties/Tags;
+- Full-text search;
+- Attachments;
+- Undo/History/Checkpoint/Trash;
+- Markdown/HTML/PDF and Native Export;
+- Non-destructive Import;
+- Crash recovery and upgrade migration;
+- Large document performance;
+- ArcChat Query/Read/Create/Edit/Artifact Capability.
+
+Complete real-world scenario:
+
+```text
+ArcChat requests report generation
+→ ArcNotes creates Document
+→ Inserts multiple Blocks
+→ User approves
+→ Save, undo, recovery
+→ ArcChat receives Artifact reference
+```
+
+This is where the ArcForges platform first becomes a reality, rather than just a chat client.
+
+### 6. First Version of Real Server, No Longer Just Mocks
+
+As soon as ArcNotes stabilizes, implement the first real path of the modular monolith Cloud:
 
 1. Identity/Workspace/Device/Session/Device Trust
-2. Entitlement 的最小 Resolver
+2. Entitlement minimal Resolver
 3. Chat/Conversation/Task/Run/Step/Approval
 4. Resource Metadata/Object Storage
 5. ArcNotes Notebook/Document Sync
-6. Device Presence、Desktop 出站连接和 Remote Task 路由
-7. SignalR 通知、进度和实时投递
-8. HTTP Snapshot、Sequence Gap 和断线补偿恢复
-9. Outbox/Inbox/幂等
-10. PostgreSQL、migration、backup/recovery
+6. Device Presence, Desktop outbound connection, and Remote Task routing
+7. SignalR notifications, progress, and real-time delivery
+8. HTTP Snapshot, Sequence Gap, and disconnected compensation recovery
+9. Outbox/Inbox/Idempotency
+10. PostgreSQL, migration, backup/recovery
 
-此时不需要立刻做完整 Billing、Community、Support、T&S，但必须用真实 PostgreSQL、真实 HTTP/JSON、真实 SignalR 和真实断线恢复。
+Full Billing, Community, Support, T&S are not immediately needed, but real PostgreSQL, real HTTP/JSON, real SignalR, and real disconnected recovery are mandatory.
 
-ArcNotes 是最适合证明第一条同步协议的产品：它比 ArcScope Raw Capture 和 ArcSlate 大媒体简单，同时又足够复杂，可以验证 revision、附件、删除、冲突、历史和恢复。
+ArcNotes is the best product to prove the initial sync protocol: simpler than ArcScope raw captures and ArcSlate large media, yet sufficiently complex to validate revisions, attachments, deletions, conflicts, history, and recovery.
 
-### 7. ArcNotes Edgeless、Database Views 和 Slides 完整化
+### 7. Completing ArcNotes Edgeless, Database Views, and Slides
 
-按照已经确认的选择 5，文档核心稳定后继续完成：
+Per confirmed Option 5, continue after document core stabilizes:
 
 ```text
-V1 数据兼容基础
+V1 data compatibility baseline
 → Edgeless Canvas / Whiteboard
 → Typed Properties / Query / Saved View
-→ Table / Board / Calendar 等多视图 Database
+→ Multi-view Database (Table / Board / Calendar, etc.)
 → Slides / Presentation View
-→ 对应 Import / Export / History / Recovery
+→ Corresponding Import / Export / History / Recovery
 → ArcChat Context / Capability / Artifact
 → Sync / Backup / Migration
 ```
 
-顺序要求：
+Sequential requirements:
 
-- Edgeless 先建立文档和空间编辑面的统一内容语义；
-- Database Views 建立在 Typed Properties、Query 和 Saved View 上；
-- Slides 建立在 Document/Canvas 内容之上；
-- 每一步都必须迁移兼容 V1 文档，不能创建第二套互不兼容数据；
-- 实时多人协同继续作为后续能力，不阻塞上述本地产品完整化，但 Operation/Revision 兼容边界不得被破坏。
+- Edgeless first establishes unified content semantics for document and spatial editing surfaces;
+- Database Views build upon Typed Properties, Queries, and Saved Views;
+- Slides build upon Document/Canvas content;
+- Every step must maintain backward migration compatibility with V1 documents; do not create incompatible secondary data structures;
+- Real-time multi-user collaboration remains a later capability, not blocking local product completion, but Operation/Revision compatibility boundaries must not be violated.
 
-### 8. MAUI 共享架构与 Android Remote ArcChat
+### 8. MAUI Shared Architecture and Android Remote ArcChat
 
-第一版真实 Cloud 的 Identity、Device、Chat、Task、Approval、Remote 和 SignalR/HTTP 恢复契约稳定后，完成移动端真实闭环。
+Once Identity, Device, Chat, Task, Approval, Remote, and SignalR/HTTP recovery contracts in the first real Cloud version stabilize, complete real mobile loop.
 
-产品定位：
+Product positioning:
 
-> Android 是 ArcChat 的聊天式电脑遥控器，是完整远程 Chat/Task/Approval/Steering 控制面，不是 ArcNotes、ArcScope、ArcSlate 的手机版，也不是通用屏幕、鼠标和键盘遥控软件。
+> Android is ArcChat's chat-style computer remote controller, providing a complete remote Chat/Task/Approval/Steering control surface; it is not a phone edition of ArcNotes, ArcScope, or ArcSlate, nor a generic screen/mouse/keyboard remote tool.
 
-实施顺序：
+Implementation sequence:
 
 ```text
 .NET MAUI shared architecture
@@ -404,7 +404,7 @@ V1 数据兼容基础
 → Android signing / AAB / Play Store gates
 ```
 
-正式通信路径：
+Formal communication path:
 
 ```text
 ArcChat Android
@@ -416,19 +416,19 @@ ArcChat Desktop / Hub
 Local Agent / Workspace / ArcNotes / ArcScope / ArcSlate
 ```
 
-禁止 Android 直接连接局域网 Hub、Named Pipe、UDS 或专业 App。
+Direct connection from Android to LAN Hub, Named Pipe, UDS, or professional Apps is prohibited.
 
-iOS 与 Android 使用完整的 MAUI 共享架构和相同业务合同。iOS 平台生命周期、权限、通知、安全存储、签名、发布和测试必须完成规划，但当前状态为：
+iOS and Android share complete MAUI architecture and business contracts. iOS platform lifecycle, permissions, notifications, secure storage, signing, release, and testing must be planned, but current status is:
 
 `Planned / Build Deferred`
 
-不得声称已经编译或测试 iOS。
+Do not claim iOS has been compiled or tested.
 
-Android 必须使用当前正式支持的 Release AOT 路径，并保持业务代码 AOT-safe、trimming-safe、source-generation-first；不得把 Mono AOT 错称为 CoreCLR Native AOT。
+Android must use the officially supported Release AOT path and maintain business code as AOT-safe, trimming-safe, source-generation-first; do not mislabel Mono AOT as CoreCLR Native AOT.
 
 ### 9. ArcScope
 
-按顺序实现：
+Implement in order:
 
 ```text
 Source/Adapter
@@ -446,69 +446,69 @@ Source/Adapter
 → Cloud metadata sync
 ```
 
-Raw Capture 默认本地，Cloud 只同步元数据、分析、标注和报告；原始数据必须显式上传。
+Raw Capture defaults to local; Cloud syncs only metadata, analysis, annotations, and reports; raw data requires explicit upload.
 
 ### 10. ArcSlate
 
-严格按 Stage 20 的 Phase 0～12 实施。ArcSlate 是四个产品中复杂度和性能风险最高的，放在最后是合理的。
+Strictly implement per Stage 20 Phase 0–12. ArcSlate has the highest complexity and performance risk among the four products, so placing it last is sound.
 
-但早期媒体运行时 PoC 已在平台阶段完成，因此此时不是第一次发现解码、GPU、音视频同步或 AOT 问题。
+Early media runtime PoCs were completed during the platform skeleton stage, so decoding, GPU, audio/video synchronization, and AOT issues are not encountered for the first time here.
 
-ArcChat Capability 必须等 Timeline/Command/Undo 语义稳定后再公开，不能先锁死 API。
+ArcChat Capabilities must only be exposed once Timeline/Command/Undo semantics stabilize; do not lock APIs prematurely.
 
-### 11. Cloud 完整化
+### 11. Cloud Completion
 
-四产品本地模型稳定后，补齐：
+After the four products' local models stabilize, complete:
 
-- ArcScope 和 ArcSlate Sync/Resource 策略；
-- Desktop Remote Agent / Semantic Remote Task；
-- Cloud AI/BYOK/AI Wallet；
-- 完整 Entitlement、Quota、Storage；
-- Billing/Webhook/Reconciliation；
-- Search/Knowledge；
-- Dynamic Policy；
-- Self-host；
-- Operations、Support、T&S、Security Advisory。
+- ArcScope and ArcSlate Sync/Resource strategies;
+- Desktop Remote Agent / Semantic Remote Task;
+- Cloud AI/BYOK/AI Wallet;
+- Full Entitlement, Quotas, Storage;
+- Billing/Webhook/Reconciliation;
+- Search/Knowledge;
+- Dynamic Policy;
+- Self-host;
+- Operations, Support, T&S, Security Advisory.
 
-注意：每个专业 App 可直接连接 Cloud，不得强制经 ArcChat 转发。ArcChat Hub 是本地控制面和协调者，不是其他产品的同步数据网关。
+Note: Each professional App may connect directly to Cloud; do not force proxying through ArcChat. ArcChat Hub is a local control plane and coordinator, not a sync gateway for other products.
 
-### 12. 独立 Blazor Web 项目的正确衔接顺序
+### 12. Correct Sequencing and Integration of Independent Blazor Web Project
 
-“Web 前端 → 服务器”顺序不成立，应拆为三类：
+The "Web frontend → Server" order does not hold; split into three tiers:
 
-- `arcforges.com` 静态官网：很早就可以做 V0，只提供介绍、文档、下载、开源和路线图。
-- `account.arcforges.com`：必须在 Identity、Workspace、Device、Entitlement、Billing API 之后。
-- ArcChat Web Companion：必须在 Chat、Task、Approval、Remote、SignalR 稳定后。
+- `arcforges.com` static website: V0 can be built very early, offering introduction, docs, downloads, open source, and roadmap.
+- `account.arcforges.com`: Must follow Identity, Workspace, Device, Entitlement, Billing APIs.
+- ArcChat Web Companion: Must follow stabilization of Chat, Task, Approval, Remote, SignalR.
 
-正式价格和 Checkout 不应在 Entitlement、退款、Webhook 幂等和真实提现链路完成前公开上线。
+Official pricing and Checkout must not launch publicly before Entitlements, refunds, webhook idempotency, and real payout paths are complete.
 
-Web 技术方向是 Blazor，但 Web 是单独项目。本次 `ArcForgesReWrite-AllCsharp` 只需要规划：
+Web technology is Blazor, but Web is a separate project. `ArcForgesReWrite-AllCsharp` only needs to plan:
 
-- Web 产品边界；
-- 与服务器、Identity、Workspace、Device、Entitlement、Billing 的依赖；
-- 共享 Public API 和 Realtime Contract；
-- 在总实施顺序中的位置；
-- 哪些服务器接口必须提前稳定。
+- Web product boundaries;
+- Dependencies on Server, Identity, Workspace, Device, Entitlement, Billing;
+- Shared Public API and Realtime Contracts;
+- Position in overall implementation sequence;
+- Which server interfaces must stabilize early.
 
-不得在这套全家族计划中展开完整独立 Web 实施计划。
+Do not unfold a full independent Web implementation plan in this family-wide plan.
 
-### 13. 正式官网、Checkout 与全平台生产发布
+### 13. Official Website, Checkout, and Full-Platform Production Release
 
-最后统一完成：
+Finally unify:
 
-- 正式官网产品入口、下载、开源、文档和支持入口；
-- Account Portal 与 Checkout 的生产衔接；
-- Windows、macOS、Linux 桌面发布；
-- Android AAB、签名、商店资料和发布；
-- iOS 继续保持 Planned / Build Deferred，除非用户以后改变决定；
-- Cloud Production、migration rehearsal、backup/restore、upgrade/rollback；
-- NOTICE、SBOM、许可证和复制内容发布审计；
-- 可观测性、告警、Runbook、Support 和 Incident 闭环；
-- 整个产品家族最终生产门禁。
+- Official website product portals, downloads, open source, documentation, and support entry points;
+- Production integration of Account Portal and Checkout;
+- Windows, macOS, Linux desktop releases;
+- Android AAB, signing, store listing, and release;
+- iOS remains Planned / Build Deferred unless user decides otherwise later;
+- Cloud Production, migration rehearsal, backup/restore, upgrade/rollback;
+- NOTICE, SBOM, license, and copied content release audit;
+- Observability, alerting, Runbooks, Support, and Incident closure;
+- Entire product family final production gates.
 
-## 四、服务器接口现在应该设计到什么程度
+## IV. How Far Server Interfaces Should Be Designed Now
 
-现在就冻结这些稳定基础：
+Freeze these stable foundations now:
 
 ```text
 UserId / WorkspaceId / DeviceId
@@ -532,115 +532,115 @@ Pagination / Time / ETag
 Contract version / compatibility window
 ```
 
-同时分开三套通信契约：
+Separate three sets of communication contracts:
 
 ```text
-LocalRpc   = StreamJsonRpc，本机进程间
-PublicApi  = HTTP/JSON + Refit，公网请求/响应
-Realtime   = SignalR，实时通知
+LocalRpc   = StreamJsonRpc, local inter-process
+PublicApi  = HTTP/JSON + Refit, public request/response
+Realtime   = SignalR, realtime notifications
 ```
 
-每个真实垂直切片必须补齐字段级规格，至少包括：
+Each real vertical slice must complete field-level specifications, at least including:
 
-- LocalRpc interface、method、request、response、callback/event、error；
-- HTTP route、method、request、response、status code、authentication、authorization、idempotency、ETag、pagination；
-- SignalR event name、payload、sequence、revision、actor、resource、authorization、gap recovery；
-- DTO 的每个字段、类型、是否必填、默认值、边界、版本和兼容规则；
-- Timeout、Cancellation、Retry、Backpressure、Reconnect；
-- Source Generation 和 AOT 验证；
-- Contract Test 和 Mixed-version Test。
+- LocalRpc interface, method, request, response, callback/event, error;
+- HTTP route, method, request, response, status code, authentication, authorization, idempotency, ETag, pagination;
+- SignalR event name, payload, sequence, revision, actor, resource, authorization, gap recovery;
+- DTO fields, types, required flags, defaults, bounds, versioning, and compatibility rules;
+- Timeout, Cancellation, Retry, Backpressure, Reconnect;
+- Source Generation and AOT validation;
+- Contract Tests and Mixed-version Tests.
 
-每个涉及持久化的垂直切片必须同时冻结真实数据库规格：
+Each vertical slice touching persistence must simultaneously freeze real database specifications:
 
-- PostgreSQL/SQLite schema；
-- table、column 和数据类型；
-- primary key、foreign key、unique constraint；
-- index 和查询路径；
-- concurrency、revision、soft delete、audit；
-- migration、rollback、seed；
-- backup、restore、retention；
-- 与 Domain、Contract 和 Sync 的映射。
+- PostgreSQL/SQLite schema;
+- tables, columns, and data types;
+- primary keys, foreign keys, unique constraints;
+- indexes and query paths;
+- concurrency, revision, soft deletes, audit;
+- migration, rollback, seeds;
+- backup, restore, retention;
+- mappings to Domain, Contract, and Sync.
 
-现在不要一次冻结数百个产品方法。正确方式是：
+Do not freeze hundreds of product methods at once. The correct way is:
 
-> 稳定基础类型现在冻结，产品命令随每个真实 vertical slice 增量设计；每发布一版就建立上一版兼容测试。
+> Stable foundational types are frozen now; product commands are designed incrementally with each real vertical slice; compatibility tests against prior versions are established with each release.
 
-## 五、哪些地方可以 Mock，哪些绝对不能
+## V. What Can Be Mocked, and What Absolutely Cannot
 
-| 可以先 Mock | 必须尽早真实 |
+| Can Be Mocked Initially | Must Be Real Early On |
 |---|---|
-| AI Provider、流式响应、Token 计费 | Agent 在 Native AOT 发布物中运行 |
-| Email/OTP、Push | Identity/Refresh/Session 竞争 |
-| Billing Provider Webhook fixture | Webhook inbox、幂等和 reconciliation |
-| 对象存储 Adapter | 上传中断、哈希、恢复、配额 |
-| Cloud Policy | 权限在最终 Resource Owner 处再次校验 |
-| Cloud Search | 本地全文索引、Citation Anchor |
-| ArcScope 设备模拟器 | 真实串口/TCP/UDP、断连和吞吐 |
-| ArcSlate 测试媒体 | 真实解码、音视频同步、长时间导出 |
-| Application Port 的 fake | SQLite journal、crash recovery、migration |
-| Cloud API stub | 真实 Refit/STJ/SignalR 协议兼容测试 |
-| Capability 测试 Provider | 真实 Named Pipe/UDS、generated proxy、MessagePack |
+| AI Providers, streaming responses, token billing | Agent running within Native AOT release binaries |
+| Email/OTP, Push | Identity/Refresh/Session contention |
+| Billing Provider Webhook fixtures | Webhook inbox, idempotency, and reconciliation |
+| Object storage Adapters | Upload interruptions, hashes, resumption, quotas |
+| Cloud Policy | Permissions re-validated at final Resource Owner |
+| Cloud Search | Local full-text indexing, Citation Anchors |
+| ArcScope device simulators | Real serial ports/TCP/UDP, disconnects, throughput |
+| ArcSlate test media | Real decoding, audio/video sync, prolonged exports |
+| Application Port fakes | SQLite journal, crash recovery, migration |
+| Cloud API stubs | Real Refit/STJ/SignalR protocol compatibility tests |
+| Capability test Providers | Real Named Pipe/UDS, generated proxies, MessagePack |
 
-最重要的原则是：
+The most vital principle:
 
-> 可以 Mock 外部供应商，不能 Mock 自己的架构边界。
+> External vendors can be mocked; internal architectural boundaries cannot be mocked.
 
-## 最终建议顺序
+## Final Recommended Sequence
 
-最终采用这一条：
+The final adopted sequence is:
 
 ```text
-0. 文档/产品/许可证冻结
-1. AOT、Contracts、CI、Persistence、Shared UX 骨架
-2. 四个高风险技术 PoC
-3. ArcChat Hub + 最小 ArcNotes 真实跨进程切片
-4. ArcChat 独立核心 V1A
-5. ArcNotes 文档核心 V1 + ArcChat 第一条真实工作流
-6. 第一版真实 Cloud：Identity/Device/Chat/Task/Approval/Remote/Resource/Notes Sync
-7. ArcNotes Edgeless + Database Views + Slides 分阶段完整化
-8. MAUI 共享架构 + Android Remote ArcChat；iOS Planned / Build Deferred
-9. ArcScope 完整实现 + Hub/Cloud 集成
-10. ArcSlate 完整实现 + Hub/Cloud 集成
-11. Cloud/Remote/AI/Billing/Operations 完整化
-12. 独立 Blazor Web 的接口和顺序衔接
-13. 正式官网、Account、Checkout 与全平台生产发布
+0. Document/Product/License Freeze
+1. AOT, Contracts, CI, Persistence, Shared UX Skeleton
+2. Four High-Risk Technical PoCs
+3. ArcChat Hub + Minimal ArcNotes Real Cross-Process Slice
+4. ArcChat Independent Core V1A
+5. ArcNotes Document Core V1 + ArcChat First Real Workflow
+6. First Real Cloud Version: Identity/Device/Chat/Task/Approval/Remote/Resource/Notes Sync
+7. ArcNotes Edgeless + Database Views + Slides Phased Completion
+8. MAUI Shared Architecture + Android Remote ArcChat; iOS Planned / Build Deferred
+9. ArcScope Full Implementation + Hub/Cloud Integration
+10. ArcSlate Full Implementation + Hub/Cloud Integration
+11. Cloud/Remote/AI/Billing/Operations Completion
+12. Independent Blazor Web Interface and Sequencing Integration
+13. Official Website, Account, Checkout, and Full-Platform Production Release
 ```
 
-因此必须保持：
+Therefore, adhere to:
 
-- ArcChat 不能在没有真实 Provider 的情况下声称生态层完成；
-- ArcNotes 按已确认的选择 5 分阶段完整纳入 AFFiNE 核心能力；
-- ArcScope 需要补 Serial Studio 功能与许可迁移矩阵；
-- Server Contract 现在设计、Mock 现在做、真实 Cloud 在 ArcNotes 后落地；
-- Android 在第一版真实 Cloud 契约稳定后形成真实远程闭环，不得拖到所有产品完成以后才设计；
-- iOS 使用完整 MAUI 架构但当前不编译；
-- Account、付费和 Web Companion 的正式实现依赖服务器；
-- Web 使用 Blazor并作为独立项目，本计划只说明边界和衔接；
-- 静态产品官网可以很早开始。
+- ArcChat cannot claim its ecosystem tier is complete without real Providers;
+- ArcNotes incorporates AFFiNE core capabilities in phases per confirmed Option 5;
+- ArcScope requires a Serial Studio feature and license migration matrix;
+- Server Contracts are designed now, mocks built now, real Cloud delivered after ArcNotes;
+- Android forms a real remote closed loop after first real Cloud contracts stabilize, not postponed until after all products;
+- iOS uses complete MAUI architecture but is not currently compiled;
+- Official implementations of Account, Billing, and Web Companion depend on the server;
+- Web uses Blazor as an independent project; this plan only outlines boundaries and integration;
+- Static product website can start very early.
 
-## 六、映射到串行规划文档
+## VI. Mapping to Sequential Planning Documents
 
-以上是宏观依赖顺序，不表示每个编号只生成一个巨大文件。
+The above represents high-level dependency ordering, not that each numbered item yields a single massive file.
 
-生成 `C:\MyFile\ArcForges\ArchitectureDesign\ArcForgesReWrite-AllCsharp` 时，必须参考：
+When generating `C:\MyFile\ArcForges\ArchitectureDesign\ArcForgesReWrite-AllCsharp`, reference must be made to:
 
 `C:\MyFile\ArcForges\ArchitectureDesign\AionUiReWrite-Kotlin`
 
-将宏观阶段拆成根目录下连续编号的串行步骤文件，并允许共享基础、服务器、MAUI、Cloud 和跨产品能力在正确位置穿插。
+Decompose high-level stages into consecutively numbered sequential step files in the root directory, allowing shared foundations, server, MAUI, Cloud, and cross-product capabilities to interleave at appropriate positions.
 
-每个编号步骤及其子步骤必须明确：
+Each numbered step and its substeps must specify:
 
-- Scope；
-- Required Inputs；
-- Non-Negotiable Rules；
-- Why this step exists；
-- What must be fully done；
-- 预计创建或修改的项目、目录、文件和类型；
-- 数据库、协议、UI、平台、安全、迁移和兼容影响；
-- Testing Requirements；
-- Completion Gate；
-- 前后步骤依赖。
+- Scope;
+- Required Inputs;
+- Non-Negotiable Rules;
+- Why this step exists;
+- What must be fully done;
+- Expected projects, directories, files, and types created or modified;
+- Database, protocol, UI, platform, security, migration, and compatibility impacts;
+- Testing Requirements;
+- Completion Gate;
+- Prior and subsequent step dependencies.
 
-不得按 ArcChat、ArcNotes、ArcScope、ArcSlate 分别创建互不衔接的多层目录计划。
+Do not create multi-tiered disconnected directory plans separately for ArcChat, ArcNotes, ArcScope, ArcSlate.
 
-不得因为宏观顺序已经确定，就跳过对每个具体步骤依赖的验证。发现新的产品、架构、数据、协议、许可证、平台或顺序冲突时，必须先读取全部相关信息并询问用户；获得决定后重写所有受影响步骤，再继续后续规划。
+Do not skip verification of specific step dependencies simply because high-level sequencing is established. When discovering new product, architecture, data, protocol, licensing, platform, or sequencing conflicts, read all relevant information and consult the user first; rewrite all affected steps upon receiving a decision before continuing subsequent planning.

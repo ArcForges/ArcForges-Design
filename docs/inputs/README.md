@@ -1,7 +1,5 @@
 # Design Inputs
 
-This directory contains source material used to develop ArcForges requirements and architecture. Source documents may retain their original language to preserve fidelity.
+This directory preserves the original design inputs and exploration records for the ArcForges product family.
 
-Inputs are informative. They preserve design intent, alternatives, and provenance, but they are not current product or architecture authority. Conflicting or outdated statements are resolved only in canonical requirements, architecture specifications, and decision records.
-
-`source-manifest.md` records the origin and integrity of each migrated input.
+These documents provide historical context, rationale, and foundational technical concepts that inform current requirements, architecture, and planning.
