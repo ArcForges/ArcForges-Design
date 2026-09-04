@@ -1,0 +1,20 @@
+# Pin line endings so every checkout is byte-identical across platforms.
+#
+# Git for Windows ships with core.autocrlf=true in its system config, which
+# rewrites text files to CRLF on checkout. The files in this repository are
+# stored as LF, so without this file the working copy you get depends on who
+# cloned it. eol=lf keeps the working tree LF everywhere.
+
+* text=auto eol=lf
+
+# Safeguards for content that must never be line-ending converted, in case
+# any is added later.
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.ico   binary
+*.pdf   binary
+*.woff  binary
+*.woff2 binary
+*.zip   binary
