@@ -1,0 +1,7 @@
+* text=auto eol=lf
+
+# Preserve migrated source inputs byte-for-byte.
+docs/inputs/implementation-sequencing-notes.md -text
+docs/inputs/platform-architecture-concept.md -text
+docs/inputs/product-discovery-overview.md -text
+docs/inputs/product-discovery-record.md -text
