@@ -1,214 +1,214 @@
-# ArcForges full C# future architecture overview
+# ArcForges All-C# Future Architecture Master Outline
 
-> Status: Target architecture / rewritten from scratch
-> Technical baseline verification date: 2026-07-20
-> Scope of application: ArcChat, ArcVideo, ArcNotes, ArcImage, ArcForges Cloud, mobile client and web front-end
+> Status: Target architecture / from-scratch rewrite  
+> Technical baseline verification date: 2026-07-20  
+> Applies to: ArcChat, ArcVideo, ArcNotes, ArcImage, ArcForges Cloud, mobile clients, and the web front end  
 > Keywords: .NET 10 LTS, C# 14, Native AOT, Avalonia, .NET MAUI, Blazor WebAssembly, ASP.NET Core Minimal API, Refit, StreamJsonRpc, SignalR, System.Text.Json, Nerdbank.MessagePack, P/Invoke, Interface Code First RPC
 
 ---
 
 ## 0. Document conclusion
 
-The future architecture of ArcForges is unified as **All C# / All .NET**, and communication is clearly split into three main links that are not confusing with each other:
+The future architecture of ArcForges is unified as **All C# / All .NET**, with communication explicitly split into three main paths that are never conflated:
 
-- **Public network request/response API: ASP.NET Core Minimal API + Refit + Standard HTTP/JSON**;
-- **Native inter-process RPC: StreamJsonRpc + strongly typed .NET Interface + Named Pipe/Unix Domain Socket**;
-- **Public network real-time function: ASP.NET Core SignalR**, only responsible for real-time sessions such as online status, notification, progress, chat increment and remote bridging;
+- **Public-facing request/response API: ASP.NET Core Minimal API + Refit + standard HTTP/JSON**;
+- **Local inter-process RPC: StreamJsonRpc + strongly typed .NET interfaces + Named Pipe/Unix Domain Socket**;
+- **Public-facing real-time: ASP.NET Core SignalR**, carrying only real-time sessions such as presence, notifications, progress, chat deltas, and remote bridging;
 - The cloud server uses ASP.NET Core and C#, with the Native AOT-compatible Minimal API/SignalR subset as the default baseline;
-- Windows, macOS, and Linux desktops use Avalonia and C#, targeting Native AOT release;
-- Android and iOS mobile clients use .NET MAUI and C#; iOS uses Native AOT, and Android needs to distinguish between "Mono AOT" and the still experimental "Native AOT" under .NET 10;
-- The web front-end uses Blazor WebAssembly and enables WASM AOT when needed; Blazor Server/Interactive Server is not used as the core operating mode under the strict full AOT goal;
-- Public network DTO uses `System.Text.Json` Source Generation; the Refit client must take the generated-only path;
-- The native StreamJsonRpc contract is true **Interface Code First RPC**: the client proxy and server implementation work around the same interface contract;
-- The native StreamJsonRpc uses `NerdbankMessagePackFormatter` + generated TypeShape by default under Native AOT; only use `SystemTextJsonFormatter` + `JsonSerializerContext` when UTF-8 JSON is required, and accept its stricter AOT restrictions;
-- Native codec, GPU, media and system capabilities directly enter the corresponding application process through `[LibraryImport]`/P/Invoke;
-- No more designing, building, or deploying C++ workers;
-- Aeron.NET, MagicOnion, gRPC/Protobuf are no longer used as ArcForges main communication layer;
-- There is no longer a central Service process that holds all product business status.
+- Windows, macOS, and Linux desktops use Avalonia and C#, targeting Native AOT publication;
+- Android and iOS mobile clients use .NET MAUI and C#; iOS uses Native AOT, while Android under .NET 10 must distinguish "Mono AOT" from the still-experimental "Native AOT";
+- The web front end uses Blazor WebAssembly, enabling WASM AOT where needed; under a strict full-AOT goal, Blazor Server/Interactive Server is not a core execution mode;
+- Public-facing DTOs use `System.Text.Json` source generation; Refit clients must take the generated-only path;
+- The local StreamJsonRpc contract is true **Interface Code First RPC**: the client proxy and the server implementation work against the same interface contract;
+- Under Native AOT, local StreamJsonRpc uses `NerdbankMessagePackFormatter` + generated TypeShape by default; `SystemTextJsonFormatter` + `JsonSerializerContext` is used only when UTF-8 JSON is required, accepting its stricter AOT limits;
+- Native codecs, GPU, media, and system capabilities enter their owning application process directly via `[LibraryImport]`/P/Invoke;
+- C++ workers are no longer designed, built, or deployed;
+- Aeron.NET, MagicOnion, and gRPC/Protobuf are no longer used as the main ArcForges communication layer;
+- There is no longer a central Service process holding the business state of every product.
 
-The precise meaning of "single process" in this article is: **Each product instance is a complete, autonomous C# OS process, and the native libraries also run within this process**. It is not meant to merge ArcChat, ArcVideo, ArcNotes, ArcImage and Cloud Server into the same operating system process.
+The precise meaning of "single process" in this document is: **each product instance is a complete, autonomous C# OS process, and its native libraries run inside that same process**. It does not mean merging ArcChat, ArcVideo, ArcNotes, ArcImage, and the cloud server into one operating-system process.
 
-ArcChat hosts a native Hub by default, but the Hub only manages platform-level catalogs, routing, permissions, approvals, coordination, and auditing. Each product still has its own domain state, database, resources, UI, undo stack, and restore log. Cross-application calls are completed through the StreamJsonRpc strong type capability contract, and the Hub does not take over the internal state of the product.
+ArcChat hosts the local Hub by default, but the Hub manages only platform-level catalogs, routing, permissions, approvals, coordination, and auditing. Each product still owns its own domain state, database, resources, UI, undo stack, and recovery log. Cross-application calls go through strongly typed StreamJsonRpc capability contracts; the Hub does not take over any product's internal state.
 
-This is not a line-by-line translation of the JVM version into C#, but rather a re-implementation using modern .NET technology that retains its correct product boundaries, state ownership and capabilities model.
+This is not a line-by-line translation of the JVM version into C#. It preserves that version's correct product boundaries, state ownership, and capability model, then reimplements them with modern .NET technology.
 
-### 0.1 The definition of “full AOT” and the current boundary of reality
+### 0.1 The definition of "full AOT" and its current real-world boundaries
 
-This article divides "full AOT" into two levels to avoid confusing the terms:
+This document splits "full AOT" into two levels so the terms are not conflated:
 
-1. **Architectural Goal**: All production main paths must be statically analyzeable, disable runtime code generation, disable dependencies on dynamic proxies/Reflection.Emit, and continuously build with real releases through trimming/AOT analyzers;
-2. **Strict Native AOT**: The host finally generates native executable files directly by CoreCLR Native AOT.
+1. **Architectural goal**: every production main path must be statically analyzable, runtime code generation is prohibited, reliance on dynamic proxies/`Reflection.Emit` is prohibited, and the code must continuously pass trimming/AOT analyzers and real release builds;
+2. **Strict Native AOT**: the host is ultimately produced as a native executable directly by CoreCLR Native AOT.
 
-As of 2026-07-20, strictly Native AOT still has two boundaries that must be faced:
+As of 2026-07-20, strict Native AOT still has two boundaries that must be confronted:
 
-- .NET MAUI Android's Native AOT is still not a capability that should be unconditionally used as the production main baseline in .NET 10; Android Release can use Mono AOT, but this is not equivalent to CoreCLR Native AOT;
-- EF Core's Native AOT support is still not suitable as a strict production baseline, so a strictly full-AOT Cloud/desktop persistence path cannot rely on the EF Core runtime as an irreplaceable dependency.
+- Native AOT for .NET MAUI Android is still not a capability that should be adopted unconditionally as the production baseline on .NET 10; Android Release builds may use Mono AOT, but that is not equivalent to CoreCLR Native AOT;
+- EF Core's Native AOT support is still unsuitable as a strict production baseline, so a strict full-AOT Cloud/desktop persistence path must not treat the EF Core runtime as an irreplaceable dependency.
 
-So the hard rule of this article is: the communication layer itself must be AOT-safe; any infrastructure dependencies that prevent hosting Native AOT must be replaced, isolated as build/migration tools, or explicitly listed as a temporary exception to the platform. **
+Therefore the hard rule of this document is: **the communication layer itself must be AOT-safe; any infrastructure dependency that prevents the host from going Native AOT must be replaced, isolated as a build/migration tool, or explicitly listed as a temporary platform exception.**
 
-## 1. Why should we rewrite this way?
+## 1. Why rewrite this way
 
-### 1.1 Retained product essence
+### 1.1 Retained product essentials
 
-The following facts must be retained from existing ArcForges product designs:
+The following facts must be carried over from the existing ArcForges product design:
 
-1. **Each product is a complete application, not a centrally served thin shell. **
-   ArcVideo can edit and save independently, ArcNotes can edit and retrieve independently, ArcImage can process images independently, and ArcChat can chat and run Agent independently.
+1. **Each product is a complete application, not a thin shell over a central service.**  
+   ArcVideo can edit and save on its own, ArcNotes can edit and search on its own, ArcImage can process images on its own, and ArcChat can chat and run Agents on its own.
 
-2. **Local experience does not rely on Hub online. **
-   When ArcChat or Hub is unavailable, other applications can still open, edit, export, and restore local documents; just re-register the ability when the connection is restored.
+2. **The local experience does not depend on the Hub being online.**  
+   When ArcChat or the Hub is unavailable, other applications can still open, edit, export, and recover local documents; they simply re-register their capabilities once the connection returns.
 
-3. **Status ownership is clear. **
-   Who owns the document is responsible for its transactions, versions, undos, logs, snapshots, and resource lifecycle.
+3. **State ownership is explicit.**  
+   Whoever owns a document is responsible for its transactions, versions, undo, logs, snapshots, and resource lifecycle.
 
-4. **Local UI and remote commands follow the same application service path. **
-   StreamJsonRpc/Refit are just entry adapters and cannot create another set of business logic, let alone directly operate ViewModel or controls.
+4. **Local UI and remote commands take the same application-service path.**  
+   StreamJsonRpc and Refit are entry adapters only; they must not build a second set of business logic, and must never manipulate ViewModels or controls directly.
 
-5. **Cross-application calls are semantic capabilities, not remote UI operations. **
-   The caller requests "move a fragment", "insert a picture" and "export a document" instead of "click a button" or "modify a control property".
+5. **Cross-application calls are semantic capabilities, not remote UI operations.**  
+   The caller requests "move a clip", "insert an image", or "export a document" — not "click this button" or "change this control property".
 
-6. **Big resources stay on the owner's side. **
-   Video frames, GPU textures, model files, and large attachments do not pass through the Hub; only ResourceRefs, task handles, and controlled flows are passed across boundaries.
+6. **Large resources stay on the owner's side.**  
+   Video frames, GPU textures, model files, and large attachments never pass through the Hub; only ResourceRefs, task handles, and controlled streams cross the boundary.
 
-### 1.2 Discarded Legacy Concepts
+### 1.2 Discarded legacy approaches
 
 The following designs no longer belong to the target architecture:
 
-- The central C# Service holds all product status;
-- The Avalonia client is just the presentation layer;
-- Aeron.NET is responsible for the main RPC;
-- MagicOnion/gRPC/Protobuf as ArcForges main RPC;
-- The public network client uses non-standard binary RPC instead of ordinary HTTP/JSON;
-- Native IPC additionally enables Kestrel/HTTP/2 for "unified protocols";
-- Each application starts another C++ Worker;
-- Moving frames between C# and C++ Workers via shared memory;
-- Use `invoke(string capability, Dictionary<string, object>)` as the actual calling protocol;
-- The RPC service calls ViewModel, Dispatcher or control directly;
-- The Hub proxies all files, media frames, and large objects;
-- Runtime dynamic proxies, Reflection.Emit, contractless serialization or unvalidated reflection fallbacks remain in pursuit of AOT.
+- A central C# Service holding the state of every product;
+- The Avalonia client as a mere presentation layer;
+- Aeron.NET as the main RPC;
+- MagicOnion/gRPC/Protobuf as the main ArcForges RPC;
+- Public clients using non-standard binary RPC in place of ordinary HTTP/JSON;
+- Local IPC starting an extra Kestrel/HTTP/2 stack in the name of a "unified protocol";
+- Each application spawning yet another C++ worker;
+- Moving frames between C# and C++ workers through shared memory;
+- Using `invoke(string capability, Dictionary<string, object>)` as the real call protocol;
+- RPC services calling ViewModels, the Dispatcher, or controls directly;
+- The Hub proxying all files, media frames, and large objects;
+- Retaining runtime dynamic proxies, `Reflection.Emit`, contractless serialization, or unverified reflection fallbacks while claiming to pursue AOT.
 
-### 1.3 Objectives
+### 1.3 Goals
 
-- Unify language, tool chain, dependency injection, logging, testing and engineering specifications;
-- Maintain product autonomy while providing a consistent cross-application collaboration experience;
-- The public network uses standard HTTP/JSON to facilitate debugging, proxying, caching, observation, version management and third-party access;
-- Local IPC uses the StreamJsonRpc strongly typed interface proxy to get real Interface Code First RPC instead of handwritten method string;
-- Real-time public network capabilities use SignalR uniformly, but SignalR is not used as a database, reliable queue or sole status source;
-- All communication DTOs, proxies and serialization are generated through source code or explicit static metadata, eliminating AOT reflection fallback;
-- Completely isolate the domain layer from UI, transmission, database, and native libraries;
-- Enable failure boundaries, version compatibility, safety boundaries and recovery paths to be tested;
-- By default, it starts with a modular monolith to avoid premature microservices;
-- Preserve interfaces for future splitting of services or adding isolated processes, but without paying for the complexity up front.
+- Unify language, toolchain, dependency injection, logging, testing, and engineering conventions;
+- Preserve product autonomy while offering a consistent cross-application collaboration experience;
+- Use standard HTTP/JSON on the public internet, easing debugging, proxying, caching, observability, version governance, and third-party integration;
+- Use StreamJsonRpc strongly typed interface proxies locally, yielding real Interface Code First RPC rather than hand-written method strings;
+- Use SignalR uniformly for public-facing real-time capabilities, without treating SignalR as a database, a reliable queue, or the sole source of state;
+- Route every communication DTO, proxy, and serializer through source generation or explicit static metadata, eliminating AOT reflection fallbacks;
+- Isolate the domain layer completely from UI, transport, database, and native libraries;
+- Make failure boundaries, version compatibility, security boundaries, and recovery paths testable;
+- Start from a modular monolith by default, avoiding premature microservices;
+- Keep the seams for splitting services or adding isolated processes later, without paying that complexity up front.
 
-### 1.4 Non-Goals
+### 1.4 Non-goals
 
-- Not all UIs share the same set of XAML;
-- Not all platforms produce the same release package;
-- Not replacing all HTTP APIs with SignalR;
-- It is not that the Refit interface becomes the server domain interface; Refit is the public network client contract layer;
-- Rather than exposing StreamJsonRpc to the public network;
-- Do not use JSON-RPC method string as the main calling method of business code; the business layer must use a strongly typed proxy;
-- Not one database serves all products;
-- Rather than exposing the local IPC as a public API;
-- It does not allow any third-party native plug-in to enter the main process;
-- Instead of coupling all products with one giant `ArcForges.Contracts` assembly;
-- It is not claimed that all current MAUI Android production packages are already CoreCLR Native AOT.
+- Not all UIs sharing one set of XAML;
+- Not all platforms producing the same release package;
+- Not replacing every HTTP API with SignalR;
+- Not making Refit interfaces the server-side domain interfaces; Refit is the public-facing client contract layer;
+- Not exposing StreamJsonRpc to the public internet;
+- Not using JSON-RPC method strings as the primary call mechanism in business code; the business layer must use strongly typed proxies;
+- Not one database serving every product;
+- Not exposing local IPC as a public-facing API;
+- Not admitting arbitrary third-party native plug-ins into the main process;
+- Not coupling every product together through one giant `ArcForges.Contracts` assembly;
+- Not claiming that every current MAUI Android production package is already CoreCLR Native AOT.
 
 ## 2. 2026 technology baseline and version strategy
 
-As of 2026-07-20, the target baseline is as follows. The version number is a stable baseline that has been verified when making architectural decisions; the preview version does not enter the stable main link.
+As of 2026-07-20, the target baseline is as follows. The version numbers are stable baselines already verified when the architectural decisions were made; preview releases do not enter the stable main path.
 
-| Hierarchy | technology | Verify baseline | decision making |
+| Layer | Technology | Verified baseline | Decision |
 |---|---|---:|---|
-| Language and runtime | C# / .NET | C# 14 / .NET 10 LTS | Unified baseline for all products |
-| SDK | .NET SDK | 10.0.x stable feature band | `global.json` Fixed the actual verified version for the repository |
-| cloud service | ASP.NET Core | .NET 10 | Native AOT is compatible with Minimal API + SignalR subset |
+| Language and runtime | C# / .NET | C# 14 / .NET 10 LTS | Unified baseline across all products |
+| SDK | .NET SDK | 10.0.x stable feature band | `global.json` pins the version actually verified in the repository |
+| Cloud service | ASP.NET Core | .NET 10 | Native AOT-compatible Minimal API + SignalR subset |
 | Public HTTP client | Refit | 13.1.0 stable | `AddRefitGeneratedClient` / `ForGenerated`, standard HTTP/JSON |
-| Native Interface RPC | StreamJsonRpc | 2.25.29 stable | Named Pipe/UDS; Source-generated proxy; Part of NativeAOT-safe, use according to the restrictions of this article |
-| Local IPC default formatter | Nerdbank.MessagePack | 1.2.36 stable | StreamJsonRpc is the safest path to NativeAOT officially recommended; only used as a native wire formatter |
-| Public network JSON | System.Text.Json | .NET 10 inbox | `JsonSerializerContext` Source generation; disable reflection |
-| Public network real-time | ASP.NET Core SignalR | .NET 10 inbox | Native AOT supports a subset; only JSON Hub protocol is used under AOT |
-| Desktop UI | Avalonia | 12.x stability line | Windows/macOS/Linux; Native AOT release target |
-| MVVM | CommunityToolkit.Mvvm | 8.4.x Stability line | ViewModel, command and notification infrastructure |
-| Mobile UI | .NET MAUI Controls | 10.0.80 stable | Android/iOS; iOS Native AOT, Android looks at AOT mode alone |
-| Web UI | Blazor WebAssembly | ASP.NET Core 10 | Strictly give priority to WASM AOT + static hosting under full AOT |
-| Cloud database driver | Npgsql | 10.x stability line | Strictly Native AOT path gives priority to direct ADO.NET/compile SQL |
-| ORM | EF Core | 10.x | Native AOT is still a high-risk/experimental path and cannot be used as a strict full-AOT production baseline. |
-| Agent | Microsoft Agent Framework | Microsoft.Agents.AI 1.13.x | Enabled only on functional aspects verified by AOT analysis/release |
-| AI abstract | Microsoft.Extensions.AI | 10.x | Models, Tools, Telemetry Abstractions |
-| Telemetry | OpenTelemetry | 1.x stability line | Trace, Metric, Log correlation |
-| Update and installation | Velopack | 1.x | Desktop install, incremental update, and rollback candidate; requires platform-by-platform AOT package verification |
+| Local interface RPC | StreamJsonRpc | 2.25.29 stable | Named Pipe/UDS; source-generated proxy; only partly NativeAOT-safe, use within the limits set out in this document |
+| Local default formatter | Nerdbank.MessagePack | 1.2.36 stable | The safest NativeAOT path officially recommended by StreamJsonRpc; used only as a local wire formatter |
+| Public-facing JSON | System.Text.Json | .NET 10 inbox | `JsonSerializerContext` source generation; no reflection fallback |
+| Public-facing real-time | ASP.NET Core SignalR | .NET 10 inbox | Native AOT-supported subset; only the JSON hub protocol under AOT |
+| Desktop UI | Avalonia | 12.x stable line | Windows/macOS/Linux; Native AOT publication target |
+| MVVM | CommunityToolkit.Mvvm | 8.4.x stable line | ViewModel, command, and notification infrastructure |
+| Mobile UI | .NET MAUI Controls | 10.0.80 stable | Android/iOS; iOS Native AOT, Android's AOT mode assessed separately |
+| Web UI | Blazor WebAssembly | ASP.NET Core 10 | Under strict full AOT, prefer WASM AOT + static hosting |
+| Cloud database driver | Npgsql | 10.x stable line | The strict Native AOT path prefers direct ADO.NET/compiled SQL |
+| ORM | EF Core | 10.x | Native AOT is still a high-risk/experimental path; not used as a strict full-AOT production baseline |
+| Agent | Microsoft Agent Framework | Microsoft.Agents.AI 1.13.x | Enabled only on feature surfaces validated by AOT analysis/publish |
+| AI abstractions | Microsoft.Extensions.AI | 10.x | Model, tool, and telemetry abstractions |
+| Telemetry | OpenTelemetry | 1.x stable line | Trace, metric, and log correlation |
+| Update and install | Velopack | 1.x | Desktop install, incremental update, and rollback candidate; requires per-platform AOT package verification |
 
 Version strategy:
 
-- The SDK is fixed by `global.json`, which prohibits CI and development machine drift;
+- The SDK is pinned by `global.json`, with no drift between CI and developer machines;
 - NuGet is centrally managed by `Directory.Packages.props`;
-- Submit `packages.lock.json`, CI uses locked mode;
-- Only one major version of Public Contracts, Local RPC Contracts and SignalR Contracts is allowed in the same release train;
+- Commit `packages.lock.json`; CI uses locked mode;
+- Only one major version of the Public Contracts, Local RPC Contracts, and SignalR Contracts is allowed within a single release train;
 - Patch upgrades for Refit, StreamJsonRpc, and Nerdbank.MessagePack must run AOT publish + trimming + old contract compatibility matrix;
-- Do not write scattered package version numbers directly in business projects;
-- Preview packages are not allowed to enter the stable branch core link;
-- Hosts of `PublishAot=true` treat AOT/trimming warnings such as IL2026/IL3050 as blocking issues and prohibit masking unknown paths through large areas `UnconditionalSuppressMessage`.
+- Do not scatter package version numbers directly across business projects;
+- Preview packages must not enter the core path of a stable branch;
+- Hosts with `PublishAot=true` treat AOT/trimming warnings such as IL2026/IL3050 as blocking issues; masking unknown paths behind blanket `UnconditionalSuppressMessage` is prohibited.
 
-### 2.1 The real boundary of AOT
+### 2.1 The real boundaries of AOT
 
-The goal is upgraded from "select AOT by host" to: **Except for explicit platform exceptions, production hosts have Native AOT as the default design constraint**.
+The goal is upgraded from "choose AOT per host" to: **apart from explicit platform exceptions, production hosts take Native AOT as the default design constraint**.
 
-| host | target mode | Current constraints and strategies |
+| Host | Target mode | Current constraints and strategy |
 |---|---|---|
-| ArcForges Cloud API | Native AOT | Minimal API + Refit corresponds to HTTP/JSON + SignalR JSON; does not rely on MVC/Razor runtime compilation; the database uses AOT-safe driver path |
-| ArcChat Desktop | Native AOT | Avalonia + StreamJsonRpc; Agent/plugin discovery must remove dynamic code path or static registration |
-| ArcVideo Desktop | Native AOT | Avalonia + StreamJsonRpc + `[LibraryImport]`; The native media library itself does not hinder the managed host AOT |
+| ArcForges Cloud API | Native AOT | Minimal API + Refit over HTTP/JSON + SignalR JSON; no dependency on MVC/Razor runtime compilation; the database uses an AOT-safe driver path |
+| ArcChat Desktop | Native AOT | Avalonia + StreamJsonRpc; Agent/plugin discovery must eliminate dynamic code paths or use static registration |
+| ArcVideo Desktop | Native AOT | Avalonia + StreamJsonRpc + `[LibraryImport]`; the native media libraries themselves do not prevent the managed host from going AOT |
 | ArcNotes Desktop | Native AOT | Avalonia + StreamJsonRpc + AOT-safe local persistence |
 | ArcImage Desktop | Native AOT | Avalonia + StreamJsonRpc + `[LibraryImport]` |
-| MAUI iOS | Native AOT | Official path; all Refit/SignalR DTOs must be generated from source |
+| MAUI iOS | Native AOT | The official path; all Refit/SignalR DTOs must be source-generated |
 | MAUI Android | Mono AOT is the production baseline; Native AOT is a separate experiment | Experimental Android Native AOT cannot be claimed as a stable baseline for all platforms under .NET 10 |
-| Blazor WebAssembly | WASM AOT | Production hotspot/strict AOT build enabled; pay attention to package body and build time |
+| Blazor WebAssembly | WASM AOT | Enabled for production hot paths/strict AOT builds; watch bundle size and build time |
 
-#### 2.1.1 Native AOT positioning of StreamJsonRpc
+#### 2.1.1 The Native AOT positioning of StreamJsonRpc
 
-The current official statement of StreamJsonRpc is **"partially NativeAOT safe"**, not "packaging is 100% AOT-safe". ArcForges must meet the following hard conditions:
+The current official wording for StreamJsonRpc is **"partially NativeAOT safe"**, not "add the package and you are 100% AOT-safe". ArcForges must meet the following hard conditions:
 
-- All project link settings `<EnableStreamJsonRpcInterceptors>true</EnableStreamJsonRpcInterceptors>` that call `JsonRpc.Attach`;
+- Every project path that calls `JsonRpc.Attach` sets `<EnableStreamJsonRpcInterceptors>true</EnableStreamJsonRpcInterceptors>`;
 - All RPC interfaces use `[JsonRpcContract]`;
-- All RPC interfaces use `[GenerateShape(IncludeMethods = MethodShapeFlags.PublicInstance)]` simultaneously;
-- The standalone Contracts assembly uses `[assembly: ExportRpcContractProxies]`, allowing agents to be activated directly;
-- When multiple interfaces share one connection, declare `JsonRpcProxyInterfaceGroupAttribute` the required combination in advance; it is prohibited to splice unknown interfaces at runtime;
-- Local IPC defaults to `NerdbankMessagePackFormatter`; if UTF-8 JSON is required, `SystemTextJsonFormatter.JsonSerializerOptions.TypeInfoResolver` must be bound to the source to generate `JsonSerializerContext`;
-- Adding a server-side target uses `RpcTargetMetadata` to generate paths without using convenience overloads that require runtime reflection enumeration methods;
-- Create proxies using concrete generics or `typeof`, not dynamically constructed from an unknown runtime Type collection;
+- All RPC interfaces also use `[GenerateShape(IncludeMethods = MethodShapeFlags.PublicInstance)]`;
+- Standalone Contracts assemblies use `[assembly: ExportRpcContractProxies]` so proxies can be activated directly;
+- When several interfaces share one connection, declare the required combination up front via `JsonRpcProxyInterfaceGroupAttribute`; assembling unknown interfaces at runtime is prohibited;
+- Local IPC defaults to `NerdbankMessagePackFormatter`; where UTF-8 JSON is unavoidable, `SystemTextJsonFormatter.JsonSerializerOptions.TypeInfoResolver` must be bound to a source-generated `JsonSerializerContext`;
+- Register server-side targets through the `RpcTargetMetadata` generated path, not through convenience overloads that enumerate methods by runtime reflection;
+- Create proxies with concrete generics or `typeof`; never construct them dynamically from an unknown runtime `Type` collection;
 - It is forbidden to rely on RPC marshalable objects under AOT + `SystemTextJsonFormatter`; use the Nerdbank.MessagePack path when this capability is needed;
-- Each platform runs real `dotnet publish -p:PublishAot=true`, Debug/JIT testing does not count as AOT verification.
+- Every platform runs a real `dotnet publish -p:PublishAot=true`; Debug/JIT testing does not count as AOT verification.
 
-#### 2.1.2 Refit’s Native AOT positioning
+#### 2.1.2 The Native AOT positioning of Refit
 
-The generated path of Refit 13.1.0 is sufficient as a baseline for the AOT public client, but ArcForges only allows:
+The generated path in Refit 13.1.0 is sufficient as the AOT public-facing client baseline, but ArcForges permits only:
 
 - `RestService.ForGenerated<T>` or `AddRefitGeneratedClient<T>`;
-- `SystemTextJsonContentSerializer` + source generation `JsonSerializerContext`;
-- No Refit runtime reflection fallback is allowed; if you upgrade to a version that provides the `Refit.Reflection` opt-in package, it must not be introduced into the production AOT main path;
-- CI upgrades the diagnosis in the Refit analyzer that prompts the need to reflect the request builder to an error; if the version used provides RF006, it is also regarded as an error;
-- The method shape of the public API interface must fall within the supported range of generated request building;
-- The public network server is still ASP.NET Core Minimal API, not "implementing the Refit interface" to disguise native RPC.
+- `SystemTextJsonContentSerializer` + source-generated `JsonSerializerContext`;
+- No Refit runtime reflection fallback of any kind; if a version offering the `Refit.Reflection` opt-in package is adopted, it must still not enter the production AOT main path;
+- CI escalates any Refit analyzer diagnostic reporting that a reflection-based request builder is required into an error; where the version in use provides RF006, that is treated as an error as well;
+- The method shapes of public API interfaces must stay within what generated request building supports;
+- The public-facing server is still ASP.NET Core Minimal API; it does **not** "implement the Refit interface" to impersonate local RPC.
 
-#### 2.1.3 SignalR’s Native AOT positioning
+#### 2.1.3 The Native AOT positioning of SignalR
 
-SignalR supports client-side and server-side Native AOT scenarios since .NET 9, but the AOT baseline must be narrowed:
+SignalR has supported client- and server-side Native AOT scenarios since .NET 9, but the AOT baseline must be narrowed:
 
-- Only use the JSON Hub protocol and provide `System.Text.Json` source generation metadata to all Hub DTOs;
-- Native AOT server does not use `Hub<T>` strongly typed hub; uses ordinary `Hub` + centralized method name constant/generated wrapper;
-- Does not rely on Hub parameter/return type combinations not supported by AOT;
-- SignalR only works on the real-time layer, and the status after disconnection is restored through Refit HTTP query revision/sequence;
-- All production clients perform AOT publish smoke tests instead of just validating normal JIT connections.
+- Use only the JSON hub protocol, and provide source-generated `System.Text.Json` metadata for every Hub DTO;
+- Native AOT servers do not use the `Hub<T>` strongly typed hub; they use a plain `Hub` plus centralized method-name constants/generated wrappers;
+- Do not rely on Hub parameter/return type combinations that AOT does not support;
+- SignalR serves only as the real-time layer; state after a disconnect is recovered by querying revision/sequence over Refit HTTP;
+- Every production client runs an AOT publish smoke test, rather than only validating an ordinary JIT connection.
 
 #### 2.1.4 The impact of strict full AOT on the data layer
 
-EF Core's Native AOT support should not be used as a strict production baseline as of this verification. If ArcForges insists on Cloud/Desktop primary hosting strictly Native AOT:
+As of this verification, EF Core's Native AOT support should still not be treated as a strict production baseline. If ArcForges holds the main Cloud/desktop hosts to strict Native AOT:
 
-- Cloud defaults to Npgsql ADO.NET + explicit/generated SQL; Dapper.AOT can be used as an enhancement layer after PoC;
-- Native SQLite uses AOT-safe ADO.NET paths with explicit SQL/generative mapping by default;
-- Schema migration can be performed by build/deployment phase tools, but the production master host does not introduce a dynamic ORM runtime;
-- If EF Core Native AOT reaches a stable production level in the future, it will be re-evaluated through ADR instead of destroying the full AOT goal for "code convenience" now.
+- Cloud defaults to Npgsql ADO.NET + explicit/generated SQL; Dapper.AOT may serve as an enhancement layer once proven by PoC;
+- Local SQLite defaults to the AOT-safe ADO.NET path with explicit SQL/generated mapping;
+- Schema migration may be performed by build/deployment-stage tooling, but the production main host must not take on a dynamic ORM runtime as a result;
+- If EF Core Native AOT reaches stable production quality in the future, it is re-evaluated through an ADR, rather than breaking the full-AOT goal now for "coding convenience".
 
 ## 3. Product topology
 
@@ -228,7 +228,7 @@ flowchart LR
     end
 
     Cloud["ArcForges Cloud\nASP.NET Core Native AOT\nMinimal API + SignalR"]
-    Mobile["ArcForges Mobile\n .NET MAUI"]
+    Mobile["ArcForges Mobile\n.NET MAUI"]
     Browser["Web Browser\nBlazor WebAssembly"]
 
     Chat <-->|"Refit HTTP/JSON\n+ SignalR realtime"| Cloud
@@ -238,120 +238,120 @@ flowchart LR
 
 There are only three communication rules:
 
-1. **Same machine process boundary**: StreamJsonRpc;
-2. **Public network command/query**: Standard HTTP/JSON client generated by Refit;
-3. **Public network real-time events**: SignalR.
+1. **Same-machine process boundary**: StreamJsonRpc;
+2. **Public-facing commands/queries**: the standard HTTP/JSON client generated by Refit;
+3. **Public-facing real-time events**: SignalR.
 
-It is forbidden to allow the local machine to use HTTP for the sake of "unification", and it is also forbidden for the business to write commands that only exist in SignalR messages for the sake of "real-time".
+Routing local traffic over HTTP in the name of "uniformity" is forbidden, and so is letting business write commands exist only inside SignalR messages in the name of "real time".
 
 ### 3.2 ArcChat
 
 ArcChat is:
 
 - Complete chat product;
-- Local Agent entrance;
-- Default native Hub host;
-- Capability catalog, instance catalog, permissions and approval coordinator;
-- Initiator of cross-application sagas and audits;
-- Exit for cloud sync and optional remote bridging;
-- Native StreamJsonRpc connection manager;
-- Public network Refit/SignalR client host.
+- The local Agent entry point;
+- The default local Hub host;
+- The coordinator of the capability catalog, instance catalog, permissions, and approvals;
+- The initiator of cross-application sagas and auditing;
+- The egress for cloud sync and optional remote bridging;
+- The local StreamJsonRpc connection manager;
+- The host for the public-facing Refit/SignalR clients.
 
 ArcChat is not:
 
-- Database of all products;
-- Proxies for video frame and image content;
-- Authoritative source of status for other application areas;
-- Hidden UI thread for other applications;
-- A single point through which all commands must pass.
+- The database for every product;
+- A proxy for video frames and image content;
+- The authoritative source of other applications' domain state;
+- A hidden UI thread for other applications;
+- A single point that every command must pass through.
 
-ArcChat itself provides the ability to directly call application services within the process without doing "your own RPC". Other application capabilities are called through the strongly typed StreamJsonRpc proxy held by the Hub.
+Capabilities that ArcChat provides itself call the application service directly in-process; it does not "RPC itself". Capabilities belonging to other applications are invoked through the strongly typed StreamJsonRpc proxies held by the Hub.
 
 ### 3.3 ArcVideo
 
 ArcVideo is a standalone desktop application that has:
 
-- Domain models such as projects, timelines, tracks, clips, effects, markers;
-- media indexing, proxy files, and rendering tasks;
-- Local database, command log, snapshot and undo stack;
-- Avalonia UI and this process ViewModel;
-- P/Invoke adaptation layer for FFmpeg or other native media libraries;
-- External versioned StreamJsonRpc capability interfaces such as `IVideoLocalRpc`.
+- Domain models such as projects, timelines, tracks, clips, effects, and markers;
+- Media indexes, proxy files, and rendering tasks;
+- A local database, command log, snapshots, and an undo stack;
+- Avalonia UI and in-process ViewModels;
+- A P/Invoke adaptation layer for FFmpeg or other native media libraries;
+- Outward-facing versioned StreamJsonRpc capability interfaces such as `IVideoLocalRpc`.
 
-Cross-applications can request ArcVideo to import assets, move clips, create markers, or export finished products, but cannot obtain bare GPU handles, arbitrary native pointers, or internal mutable entity references.
+Other applications may ask ArcVideo to import assets, move clips, create markers, or export finished output, but they must not obtain raw GPU handles, arbitrary native pointers, or references to internal mutable entities.
 
 ### 3.4 ArcNotes
 
-ArcNotes is a stand-alone knowledge and documentation application that has:
+ArcNotes is a standalone knowledge and document application, owning:
 
-- Notebooks, documents, blocks, links, tags and indexes;
-- Local search with optional vector indexing;
-- Attachment ResourceRef;
-- Local database, logs, snapshots and undo stack;
+- Notebooks, documents, blocks, links, tags, and indexes;
+- Local search and optional vector indexing;
+- Attachment ResourceRefs;
+- A local database, logs, snapshots, and an undo stack;
 - Avalonia UI;
-- `INotesLocalRpc` and other semantic capabilities.
+- Semantic capabilities such as `INotesLocalRpc`.
 
 ### 3.5 ArcImage
 
-ArcImage is a standalone imaging application that has:
+ArcImage is a standalone image application, owning:
 
-- Canvas, layers, masks, filters, history and export configurations;
-- Image caching and GPU/CPU resources;
-- P/Invoke adaptation layer for native codecs or GPU libraries;
-- Local database, logs, snapshots and undo stack;
+- Canvases, layers, masks, filters, history, and export configuration;
+- Image caches and GPU/CPU resources;
+- A P/Invoke adaptation layer for native codecs or GPU libraries;
+- A local database, logs, snapshots, and an undo stack;
 - Avalonia UI;
-- `IImageLocalRpc` and other semantic capabilities.
+- Semantic capabilities such as `IImageLocalRpc`.
 
 ### 3.6 ArcForges Cloud
 
 The cloud is responsible for:
 
-- Accounts, organizations, devices and authorizations;
+- Accounts, organizations, devices, and authorization;
 - Standard HTTP/JSON Public API;
-- SignalR real-time connections, notifications, presence and remote bridging;
-- Cross-device conversations and messaging;
-- Synchronization of metadata, conflict resolution and cloud resource indexing;
-- AI Provider access, quotas and auditing;
+- SignalR real-time connections, notifications, presence, and remote bridging;
+- Cross-device sessions and messages;
+- Sync metadata, conflict coordination, and cloud resource indexing;
+- AI Provider integration, quotas, and auditing;
 - Mobile and Web API;
-- Server tasks and notifications.
+- Server-side tasks and notifications.
 
-The first phase uses modular monoliths. Expose commands/queries into the Minimal API/Application Service; real-time events are delivered to SignalR from the outbox/application notification after submission. Only split modules into services when there is a proven need for independent scaling, isolation, security, or team ownership.
+The first phase uses a modular monolith. Public commands/queries enter the Minimal API/Application Service; real-time events are delivered to SignalR from the post-commit outbox/application notifications. Modules are split into services only when there is demonstrated need for independent scaling, isolation, security, or team ownership.
 
 ### 3.7 Mobile and Web
 
-- MAUI is a cloud client and does not directly discover or connect to the desktop Hub in the user's LAN;
-- MAUI public network request/response through Refit generated-only HTTP/JSON; real-time through SignalR;
+- MAUI is a cloud client; it does not directly discover or connect to a desktop Hub on the user's LAN;
+- MAUI public-facing request/response goes over Refit generated-only HTTP/JSON; real time goes over SignalR;
 - Web browsers only connect to ArcForges Cloud; Blazor WebAssembly uses plain HTTP/JSON and SignalR;
-- If remote control of the desktop is to be implemented, the desktop ArcChat must actively establish a public network SignalR outbound connection and undergo user-visible device authorization, approval and revocation;
-- Persistent commands/results of remote control still fall into HTTP/API or persistent task state, SignalR is just a real-time delivery and wake-up channel;
-- Mobile and web share DTO and application semantics without forcing shared UI implementation.
+- If desktop remote control is implemented, the desktop ArcChat must actively establish an outbound public-facing SignalR connection, subject to user-visible device authorization, approval, and revocation;
+- Durable commands/results for remote control still land in the HTTP API or in durable task state; SignalR is only a real-time delivery and wake-up channel;
+- Mobile and Web share DTOs and application semantics, without forcing a shared UI implementation.
 
 ## 4. State ownership and consistency
 
 ### 4.1 Sole owner principle
 
-| Status | authoritative owner | prohibited copies |
+| State | Authoritative owner | Forbidden copies |
 |---|---|---|
-| Video Projects and Timeline | ArcVideo instance | Writable image in Hub |
-| Notes and Knowledge Graph | ArcNotes instance | Business database copy in ArcChat |
-| Image Projects and Layers | ArcImage instance | Writable copy in the cloud without synchronization protocol |
-| Chat Sessions vs. Local Agent Sessions | ArcChat | Shadow sessions in other desktop apps |
-| Online Examples and Competencies Catalog | ArcChat Hub | Each application maintains its own global directory |
-| Cloud accounts, organizations, devices | ArcForges Cloud | Native application self-proclaimed authoritative account status |
-| Local permission grant and approval records | ArcChat Hub | Provider silently authorizes itself |
+| Video projects and timelines | ArcVideo instance | A writable mirror inside the Hub |
+| Notes and knowledge graph | ArcNotes instance | A copy of the business database inside ArcChat |
+| Image projects and layers | ArcImage instance | A writable cloud-side copy that bypasses the sync protocol |
+| Chat sessions and local Agent sessions | ArcChat | Shadow sessions inside other desktop applications |
+| Online instances and capability catalog | ArcChat Hub | Each application maintaining its own global catalog |
+| Cloud accounts, organizations, devices | ArcForges Cloud | Authoritative account state self-declared by a local application |
+| Local permission grants and approval records | ArcChat Hub | Providers granting themselves silent authorization |
 
-Caching is allowed, but the cache must:
+Caching is allowed, but a cache must:
 
-- Mark sources and revisions;
-- Can be discarded and reacquired;
-- Not to be taken as an authoritative writing point;
-- Do not extend visibility beyond security permissions.
+- Record its source and revision;
+- Be discardable and re-fetchable;
+- Never be treated as an authoritative write point;
+- Not widen visibility beyond the security permissions.
 
 ### 4.2 Unified local and remote write paths
 
 ```mermaid
 flowchart TB
-    UI["Local View/ViewModel"] --> AS["Application Service"]
+    UI["Local View / ViewModel"] --> AS["Application Service"]
     LocalRpc["StreamJsonRpc Adapter"] --> AS
     Http["Minimal API Adapter"] --> AS
     Agent["ArcChat AIFunction Adapter"] --> Cap["Typed Local Capability Client"]
@@ -366,24 +366,24 @@ flowchart TB
 
 Constraints:
 
-- StreamJsonRpc Adapter only does native identity, input validation, DTO mapping, undelivery and application service calls;
-- Minimal API Adapter only handles public network authentication and authorization, HTTP semantics, JSON DTO and application service calls;
-- SignalR Hub does not directly change the domain status; it calls the same Application Service when writing is required, and the CommandId/revision semantics must be retained;
-- ViewModel only consumes ViewState and calls local Facade;
-- App Service does not reference Avalonia, MAUI, Blazor, Refit, StreamJsonRpc, SignalR, or control types;
-- The domain layer does not reference database providers, transport libraries, file systems and native handles;
-- Local hits, native RPCs, and public HTTP commands must produce the same domain commands, revisions, logs, and notifications;
-- UI updates are completed by the projector within the process, and the remote caller cannot directly schedule the other party's UI.
+- The StreamJsonRpc Adapter handles only local identity, input validation, DTO mapping, cancellation propagation, and application service calls;
+- The Minimal API Adapter handles only public-facing authentication and authorization, HTTP semantics, JSON DTOs, and application service calls;
+- The SignalR Hub does not change domain state directly; when a write is needed it calls the same Application Service, and must preserve CommandId/revision semantics;
+- ViewModels only consume ViewState and call local facades;
+- Application Services do not reference Avalonia, MAUI, Blazor, Refit, StreamJsonRpc, SignalR, or control types;
+- The domain layer does not reference database providers, transport libraries, the file system, or native handles;
+- Local clicks, local RPC, and public-facing HTTP commands must all produce the same domain commands, revisions, logs, and notifications;
+- UI updates are performed by the projector inside the owning process; a remote caller must not drive the other side's UI directly.
 
-### 4.3 Conformance level
+### 4.3 Consistency levels
 
-- Commands within a single document: strong consistency in local transactions;
-- Multiple documents in the same application: Prioritize per-document transactions and coordinate with application-level Saga;
-- Cross-application: eventually consistent, using Saga, idempotent commands, compensation and visible state;
-- Public HTTP: A successful response only means that the server has completed/accepted it as defined; long tasks return TaskHandle;
-- SignalR: only provides real-time visibility and does not provide the only reliable fact; after disconnection, it must be completed through HTTP revision/sequence;
-- Cross-device: Based on the synchronization protocol and revision, it is prohibited to use database files as synchronization units;
-- Agent multi-step operation: Each step is a common controlled capability call, and failures can be observed, recovered, and approved.
+- Commands within a single document: strongly consistent under a local transaction;
+- Multiple documents in the same application: prefer per-document transactions, coordinated by an application-level Saga;
+- Cross-application: eventually consistent, using Sagas, idempotent commands, compensation, and visible state;
+- Public-facing HTTP: a success response means only that the server has completed/accepted the request as defined; long-running tasks return a TaskHandle;
+- SignalR: provides real-time visibility only, never the sole source of reliable truth; after a disconnect, gaps must be backfilled via HTTP revision/sequence;
+- Cross-device: based on the sync protocol and revision; using database files as the unit of synchronization is prohibited;
+- Multi-step Agent operations: every step is an ordinary, controlled capability call, and failures are observable, recoverable, and subject to approval.
 
 ## 5. Solution and code boundaries
 
@@ -449,7 +449,7 @@ ArcForges/
 └─ docs/
 ```
 
-This is a logical layout and does not require moving all existing directories at once. During migration, products are allowed to be gradually placed in vertical slices.
+This is a logical layout; it does not require moving every existing directory at once. During migration, products may land in place gradually, one vertical slice at a time.
 
 ### 5.2 Reference direction
 
@@ -465,67 +465,67 @@ Contracts.Foundation <- Contracts.Realtime
 
 Hard rules:
 
-- Domain cannot reference Application, Infrastructure, UI or Contracts;
-- Application can only rely on Domain and a few abstractions;
-- Infrastructure implements the port defined by Application;
-- Local RPC DTO/Public API DTO do not directly become domain entities;
-- The UI Model does not directly become a transport DTO;
-- The Refit interface can only exist within the PublicApi Client Contract boundary;
-- The StreamJsonRpc interface can only exist at the LocalRpc Contract boundary;
-- SignalR Hub DTO cannot be treated as a persistent domain event ontology;
-- LocalRpc Contracts are not referenced by the browser or Cloud Host;
-- PublicApi Contracts do not expose native IPC, native handles, and desktop implementation details.
+- Domain must not reference Application, Infrastructure, UI, or Contracts;
+- Application may depend only on Domain and a small set of abstractions;
+- Infrastructure implements the ports defined by Application;
+- Local RPC DTOs and Public API DTOs must not become domain entities directly;
+- UI models must not become transport DTOs directly;
+- Refit interfaces may exist only within the PublicApi client contract boundary;
+- StreamJsonRpc interfaces may exist only within the LocalRpc contract boundary;
+- SignalR Hub DTOs must not be treated as the canonical persisted domain events;
+- LocalRpc Contracts are not referenced by the browser or the Cloud Host;
+- PublicApi Contracts do not expose local IPC, native handles, or desktop implementation details.
 
-### 5.3 Why split Contracts
+### 5.3 Why Contracts are split
 
 `ArcForges.Contracts.Foundation` contains only:
 
-- Stable ID: AppId, InstanceId, DocumentId, ResourceId, CommandId, TaskId;
-- revision/version basic type;
+- Stable IDs: AppId, InstanceId, DocumentId, ResourceId, CommandId, TaskId;
+- revision/version base types;
 - `ArcResult<T>`, `ArcError`;
-- `ResourceRef`, TaskSnapshot and other cross-domain stable values;
-- Pagination, time and base enums.
+- `ResourceRef`, TaskSnapshot, and other cross-domain stable values;
+- Pagination, time, and base enums.
 
 `ArcForges.Contracts.LocalRpc` contains:
 
-- Hub registration, discovery, leases, approvals, and native routing;
-- StreamJsonRpc strongly typed interface for ArcVideo, ArcNotes, ArcImage, and ArcChat;
-- `[JsonRpcContract]`, `GenerateShape` required static contract metadata;
-- Native connection event and notification contracts.
+- Hub registration, discovery, leases, approvals, and local routing;
+- The strongly typed StreamJsonRpc interfaces for ArcVideo, ArcNotes, ArcImage, and ArcChat;
+- The static contract metadata required by `[JsonRpcContract]` and `GenerateShape`;
+- Local connection event and notification contracts.
 
 `ArcForges.Contracts.PublicApi` contains:
 
-- Account, Device, Chat, Sync, Cloud Tasks, Resources and Approval DTOs;
-- Refit client interface and HTTP route/version definition;
-- `System.Text.Json` source generation context;
-- Does not include server-side Application/Domain implementation.
+- Account, device, chat, sync, cloud task, resource, and approval DTOs;
+- Refit client interfaces and HTTP route/version definitions;
+- `System.Text.Json` source-generation contexts;
+- No server-side Application/Domain implementation.
 
 `ArcForges.Contracts.Realtime` contains:
 
-- SignalR method name constant;
-- Notifications, presence, task progress, chat delta, and bridging envelope DTOs;
+- SignalR method-name constants;
+- Notification, presence, task progress, chat delta, and bridging envelope DTOs;
 - sequence/revision recovery information;
-- `System.Text.Json` Source generation context.
+- `System.Text.Json` source-generation contexts.
 
-All contract projects have AOT/trimming compatibility as a hard threshold and do not reference UI, ORM, database provider, native library or specific host.
+Every contract project treats AOT/trimming compatibility as a hard gate, and references no UI, ORM, database provider, native library, or specific host.
 
 ## 6. StreamJsonRpc Interface Code First RPC
 
-### 6.1 Why choose StreamJsonRpc for local IPC?
+### 6.1 Why StreamJsonRpc was chosen for local IPC
 
-StreamJsonRpc is ArcForges' only primary native RPC layer. It was chosen not because "JSON looks good" but because it directly matches the native multi-process C# architecture:
+StreamJsonRpc is ArcForges' **only primary local RPC layer**. It was chosen not because "JSON looks nice", but because it directly matches a local multi-process C# architecture:
 
-- RPC API can be directly defined as .NET interface;
+- The RPC API can be defined directly as a .NET interface;
 - The client obtains a strongly typed proxy through `Attach<T>()`;
-- Provider can directly implement the same interface to form a true Interface Code First;
+- Providers can implement that same interface directly, giving true Interface Code First;
 - Both parties on the same full-duplex connection can initiate calls and notifications;
-- The transport is decoupled from the protocol and can run directly on `Stream`, Named Pipe, Unix Domain Socket, WebSocket and other bidirectional channels;
-- No need to start Kestrel, HTTP/2 or occupy TCP ports for native RPC;
-- There is Source Generator/Analyzer, available for Native AOT in constrained mode.
+- Transport is decoupled from protocol, so it can run directly over `Stream`, Named Pipe, Unix Domain Socket, WebSocket, and other bidirectional channels;
+- Local RPC needs no Kestrel, no HTTP/2, and no TCP port;
+- A Source Generator/Analyzer exists, making it usable under Native AOT in a constrained form.
 
-But it must be clear: **StreamJsonRpc officially only calls itself "partially NativeAOT safe"**. The usability of ArcForges comes from strictly adhering to generative paths, rather than assuming that all APIs are naturally AOT-safe.
+But this must be stated plainly: **StreamJsonRpc officially describes itself only as "partially NativeAOT safe"**. What makes it usable for ArcForges is strict adherence to the generated paths, not an assumption that every API is inherently AOT-safe.
 
-### 6.2 Contract Style: Interfaces as the local RPC source
+### 6.2 Contract style: the interface is the local RPC source
 
 ```csharp
 using PolyType;
@@ -582,36 +582,36 @@ IVideoLocalRpc video = rpc.Attach<IVideoLocalRpc>();
 var result = await video.MoveClipAsync(request, cancellationToken);
 ```
 
-This is what this article calls **Interface Code First RPC**:
+This is what this document calls **Interface Code First RPC**:
 
 - Interfaces are compile-time contract sources;
-- Do not write method strings such as `"video.moveClip"` for business calls;
-- Analyzer can check for unsupported interface shapes at compile time;
-- Source Generator generates agents for AOT;
-- The server is still just an Adapter, which ultimately calls the Application Service.
+- Business calls never write method strings such as `"video.moveClip"`;
+- Analyzers can flag unsupported interface shapes at compile time;
+- The Source Generator produces proxies for AOT;
+- The server side remains only an adapter, ultimately calling the Application Service.
 
 ### 6.3 StreamJsonRpc interface hard rules
 
-Under current strongly typed proxy constraints, the ArcForges native RPC interface must:
+Under the current strongly typed proxy constraints, ArcForges local RPC interfaces must:
 
-- tag `[JsonRpcContract]`;
-- tag `[GenerateShape(IncludeMethods = MethodShapeFlags.PublicInstance)]`;
-- Declared as `partial interface`;
-- Does not contain properties;
-- Does not contain generic methods;
-- Method returns `Task`, `Task<T>`, `ValueTask`, `ValueTask<T>`, or authenticated `IAsyncEnumerable<T>`;
-- `CancellationToken` If present, it must be placed last;
-- Events only use `EventHandler`/`EventHandler<T>`;
-- It is recommended that the interface inherit `IDisposable` to make the agent life cycle clear;
-- Avoid overloading of external methods and avoid difficult-to-audit wire contract changes caused by CLR renaming;
-- Each write method uses request DTO, which must contain necessary concurrency fields such as CommandId, DocumentId/ResourceId and ExpectedRevision;
-- Do not pass `object`, `dynamic`, `Type`, any Dictionary object graph, DbContext, EF Entity, ViewModel, control, native pointer, or `SafeHandle`.
+- Be marked `[JsonRpcContract]`;
+- Be marked `[GenerateShape(IncludeMethods = MethodShapeFlags.PublicInstance)]`;
+- Be declared as a `partial interface`;
+- Contain no properties;
+- Contain no generic methods;
+- Return `Task`, `Task<T>`, `ValueTask`, `ValueTask<T>`, or a validated `IAsyncEnumerable<T>`;
+- Put `CancellationToken` last whenever it is present;
+- Use only `EventHandler`/`EventHandler<T>` for events;
+- Preferably inherit `IDisposable`, so that proxy lifetimes are explicit;
+- Avoid overloads on outward-facing methods, so CLR renaming cannot produce wire contract changes that are hard to audit;
+- Use a request DTO for every write method, carrying the necessary concurrency fields such as CommandId, DocumentId/ResourceId, and ExpectedRevision;
+- Never pass `object`, `dynamic`, `Type`, arbitrary dictionary object graphs, a DbContext, an EF entity, a ViewModel, controls, native pointers, or a `SafeHandle`.
 
-The interface method name itself belongs to the protocol compatibility surface. If you need long-term stable wire names, you can use the explicit JSON-RPC method naming feature or the V2 interface policy, but you cannot arbitrarily rename public methods after release.
+Interface method names are themselves part of the protocol compatibility surface. Where long-term stable wire names are required, use explicit JSON-RPC method naming attributes or a V2 interface strategy; public methods must not be renamed at will after release.
 
-### 6.4 Native AOT: Generative proxy interception must be turned on
+### 6.4 Native AOT: generated proxy interception must be enabled
 
-All projects that create StreamJsonRpc proxies, including indirectly dependent projects, must enable:
+Every project that creates StreamJsonRpc proxies, including projects that depend on them indirectly, must enable:
 
 ```xml
 <PropertyGroup>
@@ -623,11 +623,11 @@ All projects that create StreamJsonRpc proxies, including indirectly dependent p
 
 `EnableStreamJsonRpcInterceptors=true` means:
 
-- `JsonRpc.Attach<T>()` No longer silently returns arbitrary dynamic proxies;
-- Requests to interfaces that do not have a source generating proxy will fail early;
-- AOT builds can turn "missed contract generation" into testable bugs.
+- `JsonRpc.Attach<T>()` no longer silently falls back to an arbitrary dynamic proxy;
+- Requests for interfaces without a source-generated proxy fail early;
+- AOT builds turn "a missed contract generation" into a testable error.
 
-The standalone Contracts assembly recommends exporting the agent directly:
+Standalone Contracts assemblies should export their proxies directly:
 
 ```csharp
 using StreamJsonRpc;
@@ -635,32 +635,32 @@ using StreamJsonRpc;
 [assembly: ExportRpcContractProxies]
 ```
 
-Upgrade this to the **default hard rule** in ArcForges. In this way, the AOT host can directly construct the generation agent and avoid finding/activating invisible agents through reflection.
+In ArcForges this is promoted to a **default hard rule**, so the AOT host can construct the generated proxy directly instead of locating/activating an invisible proxy through reflection.
 
-### 6.5 Multiple interfaces share one connection
+### 6.5 Sharing one connection across multiple interfaces
 
-A native process connection usually requires both:
+A single local process connection typically needs all of:
 
 - `IHubControlRpc`;
-- `IVideoLocalRpc` / `INotesLocalRpc` and other product interfaces;
-- Possible callback/event interface.
+- Product interfaces such as `IVideoLocalRpc` / `INotesLocalRpc`;
+- Any callback/event interfaces.
 
 Rules:
 
-- A transport creates only one `JsonRpc` instance;
-- It is forbidden to call static `JsonRpc.Attach<T>(stream)` multiple times on the same Stream, because an independent `JsonRpc` will be created each time;
-- When multiple agents are needed, first create one `JsonRpc`, and then call the instance `rpc.Attach<T>()`;
-- The multi-interface combination required under Native AOT must be pre-generated through `JsonRpcProxyInterfaceGroupAttribute`;
-- `AcceptProxyWithExtraInterfaces=true` can be set after evaluation to reduce combinatorial explosion, but must be covered by contract testing;
-- Disable runtime scanning of assemblies and "Dynamic Attach after discovering all interfaces".
+- Create exactly one `JsonRpc` instance per transport;
+- Calling the static `JsonRpc.Attach<T>(stream)` more than once on the same Stream is prohibited, because each call creates a separate `JsonRpc`;
+- When several proxies are needed, create one `JsonRpc` first, then call the instance method `rpc.Attach<T>()`;
+- Any multi-interface combination required under Native AOT must be pre-generated via `JsonRpcProxyInterfaceGroupAttribute`;
+- `AcceptProxyWithExtraInterfaces=true` may be set after evaluation to curb combinatorial explosion, but it must be covered by contract tests;
+- Scanning assemblies at runtime and "attaching dynamically once all interfaces are discovered" is prohibited.
 
-This is why local Contracts should be small and stable, rather than being made into a giant assembly that grows infinitely.
+This is also why the local Contracts should stay small and stable rather than growing into one ever-expanding giant assembly.
 
-### 6.6 formatter: AOT default selection Nerdbank.MessagePack
+### 6.6 Formatter: Nerdbank.MessagePack as the AOT default
 
-Although the library is called StreamJsonRpc, the JSON-RPC message model does not require wire bytes to be JSON text.
+Although the library is named StreamJsonRpc, the JSON-RPC message model does not require the wire bytes to be JSON text.
 
-In order to meet the full AOT, ArcForges native default:
+To satisfy full AOT, the ArcForges local default is:
 
 ```csharp
 static IJsonRpcMessageFormatter CreateLocalRpcFormatter()
@@ -675,18 +675,18 @@ static IJsonRpcMessageFormatter CreateLocalRpcFormatter()
 internal partial class LocalRpcTypeShapeWitness;
 ```
 
-Reason: StreamJsonRpc officially describes `NerdbankMessagePackFormatter` as the "best and safest experience" under NativeAOT, and it can support RPC marshalable objects under NativeAOT.
+Rationale: StreamJsonRpc explicitly describes `NerdbankMessagePackFormatter` as the "best and safest experience" under NativeAOT, and it can support RPC marshalable objects there.
 
-MessagePack here is just a native wire formatter:
+MessagePack here is **only a local wire formatter**:
 
-- It is not the ArcForges public API;
-- It is not cross-language IDL;
+- It is not the ArcForges public-facing API;
+- It is not a cross-language IDL;
 - It does not replace HTTP/JSON;
-- It does not require the business domain to be designed around the MessagePack attribute.
+- It does not require the business domain to be designed around MessagePack attributes.
 
 ### 6.7 If local IPC must use UTF-8 JSON
 
-Use only when debugging interop or when clear requirements are required:
+Used only for debugging interop or where there is an explicit requirement:
 
 ```csharp
 [JsonSerializable(typeof(MoveClipRequest))]
@@ -704,19 +704,19 @@ static IJsonRpcMessageFormatter CreateJsonFormatter()
     };
 ```
 
-Must also comply with:
+The following must also be observed:
 
-- All RPC DTOs go into `JsonSerializerContext`;
-- The default `JsonMessageFormatter` is not used as it is based on Newtonsoft.Json and is not the AOT baseline for this article;
-- Does not rely on unsafe RPC marshalable objects under NativeAOT under `SystemTextJsonFormatter`;
-- Do not scan for unknown types via the `JsonSerializerOptions` runtime resolver in production;
-- There are AOT publish tests for every new DTO.
+- Every RPC DTO goes into the `JsonSerializerContext`;
+- The default `JsonMessageFormatter` is not used: it is based on Newtonsoft.Json and is not this document's AOT baseline;
+- Do not rely on RPC marshalable objects, which are not NativeAOT-safe under `SystemTextJsonFormatter`;
+- Do not scan for unknown types through a `JsonSerializerOptions` runtime resolver in production;
+- Every new DTO has an AOT publish test.
 
-Therefore, the local IPC default is still Nerdbank.MessagePack; only the public network standard protocol unifies HTTP/JSON.
+The local default therefore remains Nerdbank.MessagePack; HTTP/JSON is the unified standard protocol only on the public-facing side.
 
-### 6.8 Server target registration: disabling reflection convenience paths
+### 6.8 Server target registration: reflection convenience paths are prohibited
 
-Native AOT server target uses generative metadata:
+Native AOT server targets use generated metadata:
 
 ```csharp
 var metadata = RpcTargetMetadata.FromShape<IVideoLocalRpc>();
@@ -726,15 +726,15 @@ rpc.StartListening();
 
 Rules:
 
-- All targets are registered before `StartListening()`;
-- Use `RpcTargetMetadata`/TypeShape to generate paths;
-- Do not use overloads that rely on runtime reflection enumeration target methods as the production main path;
-- The target life cycle is clear from the native connection/application life cycle;
-- RPC Adapter does not hold UI objects.
+- Register all targets before `StartListening()`;
+- Use the `RpcTargetMetadata`/TypeShape generated path;
+- Do not use overloads that enumerate target methods by runtime reflection as the production main path;
+- Target lifetimes are explicitly tied to the local connection/application lifetime;
+- RPC adapters hold no UI objects.
 
-### 6.9 framing and transport
+### 6.9 Framing and transport
 
-Native binary default:
+Local binary default:
 
 ```csharp
 var handler = new LengthHeaderMessageHandler(
@@ -750,119 +750,119 @@ UTF-8 JSON can be used with the appropriate header-delimited handler.
 Transport selection:
 
 - Windows: Named Pipe; the asynchronous option must be used when creating the pipe to avoid blocking/hanging in async RPC;
-- Linux/macOS: Unix Domain Socket; wrapped as full-duplex Stream;
-- Test: `FullDuplexStream` or in-process loopback;
-- Fixed TCP ports are not used as the official native discovery scheme.
+- Linux/macOS: Unix Domain Socket, wrapped as a full-duplex `Stream`;
+- Tests: `FullDuplexStream` or in-process loopback;
+- Fixed TCP ports are not used as the official local discovery mechanism.
 
-### 6.10 Bidirectional calls, events and callbacks
+### 6.10 Bidirectional calls, events, and callbacks
 
-StreamJsonRpc is a peer-to-peer full-duplex protocol, and both parties can initiate calls. ArcForges usage principles:
+StreamJsonRpc is a peer full-duplex protocol: either side can initiate a call. ArcForges applies these principles:
 
-- Command/Query: Strongly typed methods;
-- Low-frequency connection-level notification: interface event or explicit callback contract;
-- High-frequency state flow: give priority to revision + delta, and use `IAsyncEnumerable<T>` after verification if necessary;
-- Large files/video frames: never pushed continuously as normal RPC DTO, use ResourceRef/controlled stream;
-- Events are never persistent facts, and recovery from disconnection still relies on revision/journal query.
+- Commands/queries: strongly typed methods;
+- Low-frequency connection-level notifications: interface events or an explicit callback contract;
+- High-frequency state streams: prefer revision + delta; where necessary, use a validated `IAsyncEnumerable<T>`;
+- Large files/video frames: never pushed continuously as ordinary RPC DTOs; use ResourceRef/controlled streams;
+- Events are never durable truth; recovery after a disconnect still relies on revision/journal queries.
 
-### 6.11 Concurrency, Sequence and Deadlock
+### 6.11 Concurrency, ordering, and deadlock
 
-StreamJsonRpc cannot be understood as a "natural serial actor". It supports concurrent RPCs, and synchronization context behavior is not a substitute for domain-level concurrency control.
+StreamJsonRpc must not be understood as a "naturally serial actor". It supports concurrent RPCs, and synchronization-context behaviour is no substitute for domain-level concurrency control.
 
 Hard rules:
 
-- Each DocumentSession/Timeline uses mailbox, AsyncLock or single writer queue to maintain write order;
-- Express business order without relying on RPC arrival order;
-- Do not wait for peer callback while holding domain lock;
-- Bidirectional callbacks must not form a cycle in which A waits for B, and B waits for A simultaneously;
-- Channel/queue must have capacity limit and full load policy;
-- Writing commands always relies on ExpectedRevision + CommandId, rather than "another call has just been sent on this connection".
+- Each DocumentSession/Timeline maintains write ordering with a mailbox, an AsyncLock, or a single-writer queue;
+- Do not express business ordering through RPC arrival order;
+- Never await a peer callback while holding a domain lock;
+- Bidirectional callbacks must not form a cycle in which A waits on B while B synchronously waits on A;
+- Channels/queues must have a capacity limit and an overflow policy;
+- Write commands always rely on ExpectedRevision + CommandId, never on "another call happened to be sent first on this connection".
 
-### 6.12 Disconnection, cancellation and reconnection
+### 6.12 Disconnection, cancellation, and reconnection
 
-StreamJsonRpc does not implement business retries for you.
+StreamJsonRpc does not implement business retries.
 
-- Incomplete calls may fail with `ConnectionLostException` when the connection is broken;
-- The remote exception appears as `RemoteInvocationException`. If the business fails, `ArcResult<T>` will still be used first;
-- Normal cancellation behaves as `OperationCanceledException`;
-- Listen to `Completion`/`Disconnected` to update the connection status;
-- Cancellation of locally executing RPCs when the connection is closed can be enabled according to scenarios, but long business tasks cannot decide whether to cancel based on the connection life cycle alone;
+- Calls still in flight when the connection drops may fail with `ConnectionLostException`;
+- Remote exceptions surface as `RemoteInvocationException`; business failures still prefer `ArcResult<T>`;
+- Normal cancellation surfaces as `OperationCanceledException`;
+- Listen to `Completion`/`Disconnected` to update connection state;
+- Cancelling locally executing RPCs on connection close may be enabled per scenario, but long-running business tasks must not derive cancellation from the connection lifetime alone;
 - Reconnect using exponential backoff + jitter;
 - Queries are safe to retry;
-- The write command can only be retried if it carries the CommandId and is idempotent by the Provider;
-- After reconnecting, re-authenticate and register capabilities, and complete the status according to revision/sequence.
+- Write commands may be retried only once they carry a CommandId and the Provider has implemented idempotency;
+- After reconnecting, re-authenticate, re-register capabilities, and backfill state by revision/sequence.
 
 ### 6.13 Error model
 
-Separation of three categories of failure:
+Three categories of failure are kept separate:
 
-1. **Connection/Protocol failed**: `ConnectionLostException`, method not found, invalid params;
-2. **Remote execution exception**: `RemoteInvocationException`, does not leak the server stack and sensitive paths to the client;
-3. **Business failure**: `ArcResult<T>` / `ArcError`, including stable code, message key, optional details, correlationId.
+1. **Connection/protocol failure**: `ConnectionLostException`, method not found, invalid params;
+2. **Remote execution exception**: `RemoteInvocationException`; the server stack and sensitive paths are not leaked to the client;
+3. **Business failure**: `ArcResult<T>` / `ArcError`, carrying a stable code, message key, optional details, and correlationId.
 
-The caller only does business logic according to stable code and does not parse human error text.
+Callers branch only on the stable code; they never parse human-readable error text.
 
 ### 6.14 Security
 
-StreamJsonRpc itself is not an authentication and authorization system.
+StreamJsonRpc is not itself an authentication or authorization system.
 
-- Named Pipe ACL/UDS file permissions first restrict OS users;
-- After the connection is established, the first phase of Hub session handshake is completed;
-- The session token is not written into the public endpoint manifest;
-- The token binds appId, instanceId, endpoint, buildId, contractSet and expiration time;
-- Each write call continues to carry/resolve actors and scopes;
-- Provider authorizes again at final execution point;
-- Even if the untrusted client can connect to the pipe/socket, it does not automatically have all the capabilities just because it is "native".
+- Named Pipe ACLs/UDS file permissions restrict the OS user first;
+- The Hub session handshake completes as the first stage after connecting;
+- Session tokens are never written into the public endpoint manifest;
+- Tokens bind appId, instanceId, endpoint, buildId, contractSet, and an expiry time;
+- Every write call continues to carry and resolve actor and scope;
+- The Provider authorizes again at the final execution point;
+- Even when an untrusted client can connect to the pipe/socket, being "local" must never automatically grant it every capability.
 
 ### 6.15 Version compatibility
 
-After publishing:
+After release:
 
-- Do not arbitrarily rename public interfaces and methods within the same major version;
-- The new fields in DTO must maintain the formatter’s backward and forward compatibility strategy;
-- Destructive changes create new interfaces such as `IVideoLocalRpcV2`, allowing V1/V2 to coexist in a migration window;
+- Do not rename public interfaces and methods at will within the same major version;
+- New DTO fields must respect the formatter's forward/backward compatibility strategy;
+- Breaking changes introduce a new interface such as `IVideoLocalRpcV2`, letting V1 and V2 coexist for one migration window;
 - Hub registration carries `contractSet`, semanticVersion, buildId, features;
-- Conduct capability/version negotiation before calling;
-- Contract compatibility testing retains the client assembly, serialization gold sample, and AOT release products of the previous stable version;
-- AOT proxy generation failure is a CI block and dynamic proxy is not allowed to be returned online.
+- Perform capability/version negotiation before calling;
+- Contract compatibility tests retain the previous stable version's client assembly, serialization golden samples, and AOT publish artifacts;
+- A failure in AOT proxy generation is a CI blocker; falling back to a dynamic proxy in production is not permitted.
 
 ### 6.16 StreamJsonRpc AOT final checklist
 
-Each Local RPC must answer before merging:
+Before any Local RPC change is merged, the following must be answered:
 
-- [] Is the interface `[JsonRpcContract]` + `GenerateShape(PublicInstance)` + `partial`?
-- [] Does the Contracts assembly export a build agent?
-- [] Are `EnableStreamJsonRpcInterceptors` enabled for all Attach call chains?
-- [] Is there no dynamic interface/type discovery?
-- [] Are multi-interface combinations pre-generated?
-- [] formatter Nerdbank.MessagePack, or STJ + `JsonSerializerContext`?
-- [] Is the target registered via the `RpcTargetMetadata` generation path?
-- [] Have you run a real Native AOT publish and initiated an RPC round-trip?
-- [] Are you testing for disconnections, reconnections, duplicate CommandIds, revision conflicts, and callback deadlocks?
+- [ ] Is the interface `[JsonRpcContract]` + `GenerateShape(PublicInstance)` + `partial`?
+- [ ] Does the Contracts assembly export generated proxies?
+- [ ] Is `EnableStreamJsonRpcInterceptors` enabled on every Attach call chain?
+- [ ] Is dynamic interface/type discovery absent?
+- [ ] Are multi-interface combinations pre-generated?
+- [ ] Is the formatter Nerdbank.MessagePack, or STJ + `JsonSerializerContext`?
+- [ ] Is the target registered through the `RpcTargetMetadata` generated path?
+- [ ] Has a real Native AOT publish been run, with at least one RPC round-trip?
+- [ ] Have disconnection, reconnection, duplicate CommandId, revision conflict, and callback deadlock been tested?
 
-## 7. Local IPC, Discovery, and Routing
+## 7. Local IPC, discovery, and routing
 
-### 7.1 Transmission selection
+### 7.1 Transport selection
 
-Native StreamJsonRpc runs directly on OS IPC's full-duplex Stream, no longer initiating Kestrel/HTTP/2:
+Local StreamJsonRpc runs directly over the OS IPC full-duplex `Stream`, with no Kestrel/HTTP/2 started:
 
-| Platform | Default IPC | Identity control | AOT attention |
+| Platform | Default IPC | Identity control | AOT notes |
 |---|---|---|---|
-| Windows | Named Pipe | Current user ACL; restrict service SID/AppContainer if necessary | pipe uses asynchronous options; does not rely on reflection to discover services |
-| Linux | Unix Domain Socket | Private runtime directory + socket file permissions | socket path length, clean stale socket |
-| macOS | Unix Domain Socket | User directory permissions + socket file permissions | Sandbox/Signature scenarios individually verify container paths |
-| develop diagnostics | `127.0.0.1` Random port, only explicitly enabled | Still need session token | Cannot be made the production default |
+| Windows | Named Pipe | Current-user ACL; restrict to a service SID/AppContainer where necessary | Create the pipe with asynchronous options; do not discover services by reflection |
+| Linux | Unix Domain Socket | Private runtime directory + socket file permissions | Socket path length; clean up stale sockets |
+| macOS | Unix Domain Socket | User directory permissions + socket file permissions | Verify container paths separately for sandbox/signing scenarios |
+| Development diagnostics | `127.0.0.1` random port, only when explicitly enabled | Session token still required | Must not become the production default |
 
-Reasons to choose OS IPC:
+Reasons for choosing OS IPC:
 
-- Does not occupy a fixed TCP port;
-- Easier to bind current OS user permissions;
-- No peer TLS certificate required;
-- Without a native Kestrel/gRPC host, the desktop Native AOT path is simpler;
-- StreamJsonRpc can directly reuse the same Stream to complete bidirectional Interface RPC.
+- It occupies no fixed TCP port;
+- It binds more easily to the current OS user's permissions;
+- No same-machine TLS certificate is required;
+- With no local Kestrel/gRPC host, the desktop Native AOT path is simpler;
+- StreamJsonRpc can reuse the same `Stream` directly for bidirectional interface RPC.
 
-### 7.2 Endpoint list
+### 7.2 Endpoint manifest
 
-When each application starts, a minimal endpoint list is written to the current user's private runtime directory:
+At startup, each application writes a minimal endpoint manifest into the current user's private runtime directory:
 
 ```json
 {
@@ -877,9 +877,9 @@ When each application starts, a minimal endpoint list is written to the current 
 }
 ```
 
-The manifest is not an authentication credential. Session tokens are not written into the manifest as clear text; the process also verifies the short-term session credentials issued by the peer user, the intended process, the build/contract, and the Hub.
+The manifest is not an authentication credential. Session tokens are not written into it in clear text; the process must also verify the peer user, the expected process, the build/contract, and the short-lived session credential issued by the Hub.
 
-### 7.3 Registration life cycle
+### 7.3 Registration lifecycle
 
 ```mermaid
 sequenceDiagram
@@ -900,61 +900,61 @@ sequenceDiagram
     Hub-->>Caller: result
 ```
 
-Life cycle rules:
+Lifecycle rules:
 
-- The application first starts its own endpoint and then connects to the Hub;
-- Hub unavailability does not prevent the application from entering the locally available state;
-- Hub eliminates disconnected instances based on leases;
-- When the application reconnects, it uses the new sessionId and replaces the old registration idempotently;
-- If multiple instances of the same product exist at the same time, the route must carry InstanceId or DocumentId;
-- Hub's document routing index only stores "which instance is currently opening which document" and does not store the document content;
-- The process exits normally and actively unregisters; crashes depend on lease expiration and cleanup;
-- After the connection is reestablished, Attach must be re-generated to generate a proxy, and the old proxy will not be reused.
+- An application starts its own endpoint first, then connects to the Hub;
+- Hub unavailability does not stop an application from reaching a locally usable state;
+- The Hub evicts out-of-contact instances by lease;
+- On reconnect, an application uses a new sessionId and idempotently replaces the old registration;
+- When several instances of the same product are present at once, routing must carry an InstanceId or DocumentId;
+- The Hub's document routing index stores only "which instance currently has which document open", never document content;
+- A process that exits normally unregisters proactively; crashes are cleaned up by lease expiry;
+- After a connection is re-established, generated proxies must be attached again; old proxies are never reused.
 
 ### 7.4 Routing
 
-Route priority:
+Routing priority:
 
-1. The command explicitly specifies the InstanceId;
-2. DocumentId is bound to the online instance;
+1. The command names an InstanceId explicitly;
+2. The DocumentId is already bound to an online instance;
 3. The default Provider currently selected by the user;
-4. The only healthy instance of the same type;
-5. Otherwise return `ProviderSelectionRequired`, chosen by the user or Agent.
+4. The single healthy instance of that type;
+5. Otherwise return `ProviderSelectionRequired`, for the user or the Agent to choose.
 
-The Hub should not silently route random routes when multiple candidate instances exist.
+The Hub should not silently pick a route at random when several candidate instances exist.
 
-### 7.5 Health and Backpressure
+### 7.5 Health and backpressure
 
-Provider reports:
+Providers report:
 
 - `Ready / Busy / Degraded / Draining`;
-- Current number of tasks, queue depth and optional load levels;
-- Supported contractSet and feature flags;
-- The most recent successful heartbeat and process start time.
+- The current task count, queue depth, and an optional load level;
+- The supported contractSet and feature flags;
+- The most recent successful heartbeat and the process start time.
 
-The caller must handle `Busy`, `RetryAfter`, and the queue limit. Infinite queues are not a fault-tolerant strategy.
+Callers must handle `Busy`, `RetryAfter`, and the queue ceiling. An unbounded queue is not a fault-tolerance strategy.
 
-### 7.6 Connection Manager
+### 7.6 Connection manager
 
-There is only one infrastructure component per product responsible for the StreamJsonRpc connection lifecycle:
+Each product has exactly one infrastructure component responsible for the StreamJsonRpc connection lifecycle:
 
-- Create/listen to Named Pipe or UDS;
-- Create formatter + message handler;
-- Register local target;
+- Creating/listening on the Named Pipe or UDS;
+- Creating the formatter + message handler;
+- Registering the local target;
 - `StartListening()`;
-- Create a strongly typed proxy;
-- Listen for Completion/Disconnected;
-- Index backoff reconnection;
-- recertification/registration;
-- Update connection health status.
+- Creating the strongly typed proxy;
+- Listening for Completion/Disconnected;
+- Reconnecting with exponential backoff;
+- Re-authenticating and re-registering;
+- Updating connection health state.
 
-Business code never directly new pipe/socket/JsonRpc, nor directly write method string.
+Business code never creates a pipe, socket, or `JsonRpc` directly, and never writes method strings directly.
 
-## 8. Capability System and Agents
+## 8. Capability system and Agents
 
 ### 8.1 Capabilities are semantic interfaces
 
-There can be string IDs in the capability catalog, for example:
+The capability catalog may hold string IDs, for example:
 
 ```text
 arcvideo.timeline.move-clip
@@ -963,56 +963,56 @@ arcnotes.document.insert-block
 arcimage.canvas.apply-filter
 ```
 
-Strings are only used for:
+Strings are used only for:
 
-- discover;
+- Discovery;
 - Search and display;
-- permissions policy;
+- Permission policy;
 - Agent tool selection;
 - Routing and auditing.
 
-The actual call must fall to the compiled strongly typed interface method. Using a catch-all `InvokeAsync(string, object)` to bypass contracts, permissions, and version control is prohibited.
+The actual call must land on a compiled, strongly typed interface method. Using a catch-all `InvokeAsync(string, object)` to bypass contracts, permissions, and version control is prohibited.
 
 ### 8.2 Capability description
 
-Each competency includes at least:
+Every capability carries at least:
 
 - capabilityId and display metadata;
 - provider app/instance;
 - typed service/method identity;
 - contract version and feature flags;
 - input/output summary;
-- Whether to write status;
+- whether it writes state;
 - required scope;
 - risk level;
-- Whether user confirmation is required;
-- Whether to support dry-run, undo, cancel;
-- Resource size, estimated duration, and concurrency limits.
+- whether user confirmation is mandatory;
+- whether dry-run, undo, and cancel are supported;
+- resource size, expected duration, and concurrency limits.
 
-### 8.3 Agent running location
+### 8.3 Where Agents run
 
 ArcChat runs Microsoft Agent Framework within the same C# process:
 
-- `Microsoft.Agents.AI` is responsible for orchestrating Agents, sessions and tools;
-- `Microsoft.Extensions.AI` Abstract Chat Client, Embedding, Tools and Telemetry;
+- `Microsoft.Agents.AI` orchestrates Agents, sessions, and tools;
+- `Microsoft.Extensions.AI` abstracts the chat client, embeddings, tools, and telemetry;
 - Capability Registry wraps strongly typed proxies as `AIFunction`;
-- The JIT host allows necessary runtime tool discovery, but stable tools still prefer generating explicit bindings;
-- Model output always goes through parameter verification and authorization before calling the Provider.
+- The JIT host permits the runtime tool discovery it needs, but stable tools still prefer explicitly generated bindings;
+- Model output always passes parameter validation and authorization before the Provider is called.
 
-### 8.4 Agent is not a super user
+### 8.4 Agents are not superusers
 
-Agents use the same application services and capability interfaces as human UIs. It cannot:
+Agents use the same application services and capability interfaces as the human UI. They must not:
 
 - Bypass Scope;
-- Forge user identity;
-- Directly write other product databases;
-- Directly manipulate ViewModel;
+- Forge a user identity;
+- Write directly to another product's database;
+- Manipulate ViewModels directly;
 - Use unregistered native functions;
-- Perform high-risk exports, deletions, releases, or cloud shares without the user's knowledge.
+- Perform high-risk exports, deletions, publications, or cloud sharing without the user's knowledge.
 
 ### 8.5 Approval
 
-Approval status is managed by Hub:
+Approval state is managed by the Hub:
 
 ```text
 Requested -> Presented -> Approved/Denied/Expired -> Executed/Failed
@@ -1020,7 +1020,7 @@ Requested -> Presented -> Approved/Denied/Expired -> Executed/Failed
 
 Approval binding:
 
-- actors and devices;
+- actor and device;
 - capabilityId;
 - parameter digest or hash;
 - provider instance;
@@ -1028,7 +1028,7 @@ Approval binding:
 - risk level;
 - correlationId.
 
-If the parameters change substantially after approval, they must be re-approved.
+If parameters change materially after approval, approval must be sought again.
 
 ---
 
@@ -1038,7 +1038,7 @@ If the parameters change substantially after approval, they must be re-approved.
 
 ```mermaid
 flowchart TB
-    Host[" .NET Generic Host / Native AOT"]
+    Host[".NET Generic Host / Native AOT"]
     UI["Avalonia UI"]
     RPC["StreamJsonRpc + Named Pipe/UDS"]
     Cloud["Refit + SignalR Clients"]
@@ -1058,69 +1058,69 @@ flowchart TB
     Notify --> UI
 ```
 
-Generic Host unified management:
+The Generic Host manages, in one place:
 
-- dependency injection;
-- Configuration and Secret reference;
+- Dependency injection;
+- Configuration and Secret references;
 - Logging and OpenTelemetry;
-- StreamJsonRpc endpoint/connection life cycle;
-- Refit HttpClient and SignalR HubConnection life cycle;
-- Database migration check and recovery;
+- The StreamJsonRpc endpoint/connection lifecycle;
+- The Refit HttpClient and SignalR HubConnection lifecycle;
+- Database migration checks and recovery;
 - Native runtime initialization;
 - Orderly shutdown.
 
-The Avalonia life cycle and the Generic Host life cycle must be coordinated: when the UI is closed, it first enters draining, stops accepting new remote write commands, waits for key transactions to be placed, and then stops the StreamJsonRpc endpoint, SignalR connection and native runtime.
+The Avalonia lifecycle and the Generic Host lifecycle must be coordinated: on UI shutdown the process first enters draining, stops accepting new remote write commands, waits for critical transactions to be flushed to disk, and only then stops the StreamJsonRpc endpoint, the SignalR connection, and the native runtime.
 
-Native AOT additional constraints:
+Additional Native AOT constraints:
 
 - Avalonia XAML uses compiled bindings whenever possible;
-- It is forbidden to rely on the runtime to load any XAML, dynamic proxy or reflection scanning plug-in as the core path;
-- DI registration prioritizes explicit/generative methods, and does not regard "scanning the entire assembly for automatic registration" as an irreplaceable mechanism;
-- Third-party Avalonia controls must be trimming/AOT publish verified;
-- Each desktop RID actually publishes the Native AOT package and performs startup, document opening, native RPC, cloud HTTP, and SignalR round-trip smoke tests.
+- Relying on runtime loading of arbitrary XAML, dynamic proxies, or reflection-scanned plug-ins as a core path is prohibited;
+- DI registration prefers explicit/generated registration and never treats "scan the whole assembly and auto-register" as an irreplaceable mechanism;
+- Third-party Avalonia controls must be verified through trimming/AOT publish;
+- Every desktop RID genuinely publishes a Native AOT package and runs startup, document-open, local RPC, cloud HTTP, and SignalR round-trip smoke tests.
 
 ### 9.2 MVVM
 
-Use CommunityToolkit.Mvvm, but don't treat the ViewModel as a domain object:
+Use CommunityToolkit.Mvvm, but do not treat ViewModels as domain objects:
 
-- `ObservableObject` ViewState only;
-- `[RelayCommand]` Only calls Facade/Application Service;
-- ViewModel does not hold database connection/session;
-- ViewModel does not hold a bare native pointer;
-- Long tasks display progress through TaskProjection;
-- Realm notifications are converted by ViewState Projector and then switched to the Avalonia UI thread;
+- `ObservableObject` is used for ViewState only;
+- `[RelayCommand]` only calls a facade/Application Service;
+- ViewModels hold no database connection or session;
+- ViewModels hold no raw native pointers;
+- Long-running tasks surface progress through TaskProjection;
+- Domain notifications are converted by the ViewState Projector before being marshalled to the Avalonia UI thread;
 - Remote modifications produce the same kind of projected updates as local modifications.
 
 ### 9.3 Threading model
 
-- The UI thread only does layout, input and lightweight state applications;
-- CPU-intensive calculations enter the controlled scheduler and cannot `Task.Run` form unlimited concurrency at will;
-- I/O full link async;
-- Native callback copies the minimum metadata as quickly as possible and hands it to the managed queue;
-- Protect write order with serial mailbox or AsyncLock per document/timeline;
-- Do not wait for StreamJsonRpc callback, UI Dispatcher or long native calls while holding domain lock;
-- Channel must have capacity and full load policy.
+- The UI thread does only layout, input, and lightweight state application;
+- CPU-intensive work goes to a controlled scheduler; arbitrary `Task.Run` calls must not create unbounded concurrency;
+- I/O is async end to end;
+- Native callbacks copy the minimum metadata as early as possible and hand it to a managed queue;
+- Each document/timeline protects write ordering with a serial mailbox or an AsyncLock;
+- Never wait on a StreamJsonRpc callback, the UI Dispatcher, or a long native call while holding a domain lock;
+- Channels must have a capacity and an overflow policy.
 
 ### 9.4 Multiple windows and multiple instances
 
-- A process can have multiple windows, but the status is still separated by DocumentSession;
-- Multiple processes opening the same document must have explicit locks, read-only or cooperative protocols;
-- OS file association startup should first try to route to an existing suitable instance before deciding to create a new instance;
-- InstanceId is unique each time it is started, and AppId is stable.
+- One process may own several windows, but state is still partitioned by DocumentSession;
+- Opening the same document from multiple processes requires an explicit lock, read-only mode, or collaboration protocol;
+- Startup from an OS file association should first try to route to a suitable existing instance before deciding to create a new one;
+- InstanceId is unique per launch; AppId is stable.
 
-## 10. Documentation, Revision and Concurrency
+## 10. Documents, revisions, and concurrency
 
-### 10.1 Document Identity
+### 10.1 Document identity
 
-- DocumentId is a stable logical identity, not equal to the file path;
-- Moving or renaming the file does not change the DocumentId;
-- ResourceId is not reused;
-- InstanceId only represents the current running instance;
-- Revision is a monotonically increasing version of the authoritative owner of a document.
+- DocumentId is a stable logical identity, not a file path;
+- Moving or renaming a file does not change its DocumentId;
+- ResourceIds are never reused;
+- InstanceId denotes only the currently running instance;
+- Revision is a monotonically increasing version maintained by a document's authoritative owner.
 
-### 10.2 Writing commands
+### 10.2 Write commands
 
-Each write command contains at least:
+Every write command carries at least:
 
 - CommandId;
 - DocumentId;
@@ -1128,29 +1128,29 @@ Each write command contains at least:
 - Actor/Device is provided by the authentication context;
 - CausationId, CorrelationId;
 - business parameters;
-- Optional approval reference.
+- an optional approval reference.
 
 Processing steps:
 
-1. Verify identity, permissions and capability versions;
-2. Check if CommandId has been executed;
+1. Verify identity, permissions, and capability version;
+2. Check whether the CommandId has already been executed;
 3. Check ExpectedRevision;
 4. Enforce domain rules;
-5. Atomic writing of status changes, command records and journal;
-6. Add revision;
-7. Publish a process notification after submission;
-8. Return NewRevision and minimum delta.
+5. Atomically write the state change, the command record, and the journal;
+6. Increment the revision;
+7. Publish the in-process notification after commit;
+8. Return NewRevision and the minimal delta.
 
-### 10.3 Conflict
+### 10.3 Conflicts
 
-Do not do implicit last-write-wins when revision does not match. Return:
+When the revision does not match, there is no implicit last-write-wins. Return:
 
 - currentRevision;
-- Conflict summaries that are safe to disclose;
-- Whether automatic replay is possible;
-- Recommended actions: refresh, rebase, user merge, or re-execute.
+- a conflict summary that is safe to disclose;
+- whether automatic replay is possible;
+- a recommended action: refresh, rebase, user merge, or re-execute.
 
-Only natural commutative or idempotent operations are automatically replayed.
+Only operations that are naturally commutative or idempotent are replayed automatically.
 
 ---
 
@@ -1160,74 +1160,74 @@ Undo belongs to the document owner, not the Hub.
 
 ### 11.1 Model
 
-- Each successful undoable command produces an UndoRecord;
+- Every successful undoable command produces an UndoRecord;
 - UndoRecord saves the domain information needed for the reverse operation instead of a UI snapshot;
-- Remote, Agent, and local UI commands go into the same history;
-- Audit records are separated from user revocation history;
-- Not every command is undoable, and external side effects such as export, send, publish, etc. are compensated or explicitly irrevocable.
+- Remote, Agent, and local UI commands all enter the same history;
+- Audit records are kept separate from the user's undo history;
+- Not every command is undoable; external side effects such as export, send, and publish use compensation or are explicitly marked non-undoable.
 
-### 11.2 Combination commands
+### 11.2 Composite commands
 
-Agent or cross-application operations can be aggregated with transaction group/correlation group, but cannot pretend to have ACID transactions across processes. Cross-app undo is back-compensated by Saga, and each step may fail and require user processing.
+Agent or cross-application operations may be aggregated for display by transaction group/correlation group, but must not pretend that ACID transactions span processes. Cross-application undo compensates in reverse through a Saga, and each step may fail and require user intervention.
 
 ---
 
-## 12. Journal, Snapshot and Crash Recovery
+## 12. Journal, snapshot, and crash recovery
 
 ### 12.1 Local persistence
 
-Each desktop product chooses its own SQLite/file storage combination, but strictly follows the full AOT baseline:
+Each desktop product picks its own SQLite/file-storage combination, but the strict full-AOT baseline requires:
 
-- The production master host does not rely on the EF Core runtime as an irreplaceable dependency;
-- SQLite uses Native AOT publish validated ADO.NET/explicit SQL or generative data access paths;
-- The connection/transaction life cycle is based on work units and does not create a global singleton;
-- WAL mode is only enabled after platform and file system validation;
-- Write business short;
-- Schema migration has independent versions and rollback/forward recovery strategies;
-- Separation of user documents and cache directories;
-- Do not share writable database files between multiple products;
-- All serializers/mappers must be statically generated or explicitly registered, and runtime scanning of entity types under AOT is prohibited.
+- The production main host does not treat the EF Core runtime as an irreplaceable dependency;
+- SQLite uses an ADO.NET/explicit-SQL or generated data-access path validated by Native AOT publish;
+- Connection/transaction lifetimes follow the unit of work; no global singleton;
+- WAL mode is enabled only after platform and file-system validation;
+- Write transactions are kept short;
+- Schema migration has its own versioning and a rollback/forward-recovery strategy;
+- User documents and cache directories are kept separate;
+- Writable database files are never shared between products;
+- All serializers/mappers must be statically generated or explicitly registered; runtime scanning of entity types under AOT is prohibited.
 
 ### 12.2 Journal
 
-Journal records the minimum information sufficient to recover a confirmed command:
+The journal records the minimum information needed to recover a confirmed command:
 
 - sequence;
 - commandId;
 - previous/new revision;
 - command type and version;
-- payload or persistent reference;
+- payload or a durable reference;
 - checksum;
 - actor/correlation/causation;
 - committedAtUtc.
 
-Ensure placement semantics first, and then report success to the StreamJsonRpc/HTTP caller. SignalR notifications can only be issued after a commit; even if live notifications are lost, they can be restored by the revision/sequence.
+Durability semantics are guaranteed first, and only then is success reported to the StreamJsonRpc/HTTP caller. SignalR notifications may be emitted only after commit; even if a real-time notification is lost, state can still be recovered from revision/sequence.
 
 ### 12.3 Snapshot
 
-- Create snapshots by number of commands, time and volume;
-- Snapshots have schema version and checksum;
-- Restore replays the journal starting from the most recent valid snapshot;
-- Snapshot writes use temporary files, flush/fsync strategies, and atomic replacement;
-- Keep at least one previous generation verified snapshot;
-- The cache can be rebuilt without entering critical snapshots.
+- Snapshots are created by command count, elapsed time, and size;
+- Snapshots carry a schema version and a checksum;
+- Recovery replays the journal from the most recent valid snapshot;
+- Snapshot writes use a temporary file, a flush/fsync policy, and atomic replacement;
+- At least one verified previous-generation snapshot is retained;
+- Caches are rebuildable and do not enter critical snapshots.
 
 ### 12.4 Recovery after native crash
 
-Since the native library is in the same process as the application, an access violation will terminate the entire application. This is an explicitly accepted failure boundary after canceling the Worker. The next startup must:
+Because native libraries share the application's process, an access violation terminates the whole application. This is the failure boundary explicitly accepted once the Worker was dropped. The next startup must:
 
-1. Detect abnormal exit flags;
-2. Verify the last transaction and journal;
-3. Revert to the last committed revision;
-4. Isolate media/plugins/actions that may trigger crashes;
-5. Present recovery reports and optional diagnostic packages to users;
-6. Re-register the native Hub and rebuild the StreamJsonRpc agent;
-7. Re-establish the public network SignalR session and query the missing status through Refit;
-8. Do not fake unfinished tasks as success.
+1. Detect the abnormal-exit marker;
+2. Validate the last transaction and the journal;
+3. Recover to the last committed revision;
+4. Quarantine the media/plug-ins/operations that may have triggered the crash;
+5. Show the user a recovery report and an optional diagnostic bundle;
+6. Re-register with the local Hub and rebuild the StreamJsonRpc proxies;
+7. Re-establish the public-facing SignalR session and query missing state through Refit;
+8. Never report unfinished tasks as successful.
 
 ## 13. Long task model
 
-Importing, indexing, rendering, transcoding, model downloads, and cloud sync cannot be performed as long-lived native RPC or HTTP requests.
+Import, indexing, rendering, transcoding, model download, and cloud sync must not be run as long-occupying local RPC or HTTP requests.
 
 ### 13.1 TaskHandle
 
@@ -1241,13 +1241,13 @@ public sealed partial record TaskHandle
 }
 ```
 
-If the same DTO enters:
+When the same DTO is used by:
 
-- StreamJsonRpc/Nerdbank.MessagePack: overridden by TypeShape source generation;
-- Refit/System.Text.Json: Enter `JsonSerializerContext`;
-- SignalR JSON: Enter corresponding Realtime `JsonSerializerContext`.
+- StreamJsonRpc/Nerdbank.MessagePack: it is covered by TypeShape source generation;
+- Refit/System.Text.Json: it enters the `JsonSerializerContext`;
+- SignalR JSON: it enters the corresponding Realtime `JsonSerializerContext`.
 
-Task status:
+Task states:
 
 ```text
 Queued -> Running -> Succeeded
@@ -1259,17 +1259,17 @@ Queued -> Running -> Succeeded
 ### 13.2 Rules
 
 - The Task Owner is the application or cloud module that actually performs the work;
-- The task state is persistent and can be recovered, failed or clearly marked as interrupted after the process is restarted;
-- Progress is a monotonic best estimate, with no commitment to precise times;
-- Local progress can be queried through StreamJsonRpc event/; real-time progress on the public network can be queried through SignalR;
-- The Refit HTTP query interface is always available for disconnection compensation and final status reading;
-- Cancellation is a request, not an assumption of immediate success;
+- Task state is persisted; after a process restart it can be recovered, failed, or explicitly marked as interrupted;
+- Progress is a monotonic best estimate and promises no precise timing;
+- Local progress is available through StreamJsonRpc events/queries; public-facing real-time progress goes over SignalR;
+- The Refit HTTP query interface is always available for disconnect compensation and final state reads;
+- Cancellation is a request, never an assumption of immediate success;
 - Task output uses ResourceRef;
-- Hub only aggregates task summaries and does not take over execution status.
+- The Hub only aggregates task summaries; it does not take over execution state.
 
-The in-app `BackgroundService`, Channel consumer, or persistent task scheduler is part of the C# host and is not a deleted C++ Worker.
+An in-application `BackgroundService`, Channel consumer, or durable task scheduler is part of the C# host, not the C++ Worker that was removed.
 
-## 14. ResourceRef and big data path
+## 14. ResourceRef and the large-data path
 
 ### 14.1 ResourceRef
 
@@ -1287,49 +1287,49 @@ public sealed partial record ResourceRef
 }
 ```
 
-ResourceRef represents only the resource identity and metadata and does not contain any absolute paths. Serialization metadata is provided by the source-generated context/type-shape of each transport layer and is not bound to a certain wire formatter on the DTO.
+ResourceRef carries only resource identity and metadata, never an arbitrary absolute path. Serialization metadata comes from each transport layer's source-generated context/type shape; the DTO itself is not bound to any one wire formatter.
 
 ### 14.2 Local resource access
 
-- Within the same user and the same trust domain, the Owner is given priority to provide controlled open/export capabilities;
-- The path will only be returned after explicit authorization by both parties and completion of normalization and root directory checking;
-- Temporary resources use short-term capability tokens;
-- Large resources are not crammed into ordinary StreamJsonRpc request/response; use controlled streams, file handle strategies or temporary resource channels;
-- Resource reading supports range/chunk, checksum, cancellation and rate limiting;
-- The Hub does not forward video frames or large file bodies.
+- Within the same user and trust domain, the Owner preferentially provides controlled open/export capabilities;
+- Paths are returned only after both sides explicitly authorize and after normalization and root-directory checks are complete;
+- Temporary resources use short-lived capability tokens;
+- Large resources are never stuffed into an ordinary StreamJsonRpc request/response; use controlled streams, a file-handle strategy, or a temporary resource channel;
+- Resource reads support range/chunk, checksums, cancellation, and rate limiting;
+- The Hub does not relay video frames or large file bodies.
 
 ### 14.3 Cloud resource access
 
-- Metadata/control plane adopts Refit HTTP/JSON;
-- The object body goes through standard HTTP upload/download, not SignalR;
+- The metadata/control plane goes over Refit HTTP/JSON;
+- Object bodies go over standard HTTP upload/download, never SignalR;
 - Object storage uses short-lived signed URLs or controlled download endpoints;
-- The database saves metadata, ownership and lifecycle, and does not save large binary bodies;
-- The upload uses sharding, verification, and idempotence to complete the submission;
-- The client cannot select any bucket/key;
-- Download permissions are verified at the time of issuance and consumption;
-- Sensitive resources can be encrypted using per-resource keys and envelopes.
+- The database holds metadata, ownership, and lifecycle, never large binary bodies;
+- Uploads use chunking, verification, and an idempotent completion commit;
+- Clients must not choose arbitrary buckets/keys;
+- Download permissions are checked both when issued and when consumed;
+- Sensitive resources may use per-resource keys and envelope encryption.
 
-### 14.4 Media Frames and GPU
+### 14.4 Media frames and GPU
 
-After canceling the Worker, the frame and GPU state remain in ArcVideo/ArcImage's own process:
+With the Worker dropped, frames and GPU state stay inside ArcVideo/ArcImage's own process:
 
-- CPU buffer is used through `Span<T>`, `Memory<T>`, MemoryPool and controlled pinned memory;
-- GPU resources are shared within this process through a platform-specific rendering bridge;
-- The UI only accepts presentable surface/bitmap abstractions;
-- Does not serialize frame-by-frame images via StreamJsonRpc, Refit or SignalR;
-- Do not create a "global shared memory pool".
+- CPU buffers are used through `Span<T>`, `Memory<T>`, MemoryPool, and controlled pinned memory;
+- GPU resources are shared inside the process through a platform-specific rendering bridge;
+- The UI receives only presentable surface/bitmap abstractions;
+- Per-frame images are never serialized over StreamJsonRpc, Refit, or SignalR;
+- No "global shared memory pool" is created.
 
-## 15. P/Invoke and native ABI
+## 15. P/Invoke and the native ABI
 
 ### 15.1 General principles
 
-ArcForges' product code, business logic, services, task scheduling, and UI all use C#. Only low-level libraries that cannot be reasonably replaced remain native binaries, such as codecs, GPUs, device drivers, or high-performance image operators.
+ArcForges product code, business logic, services, task scheduling, and UI are all C#. Only low-level libraries with no reasonable substitute stay as native binaries — codecs, GPU, device drivers, or high-performance image operators, for example.
 
-If the dependency is C++ API only, a thin `extern "C"` ABI shim must be provided under `native/`. This shim is a library adaptation, not a Worker, and does not hold product business status.
+Where a dependency offers only a C++ API, a very thin `extern "C"` ABI shim must be provided under `native/`. That shim is a library adaptation, not a Worker, and it holds no product business state.
 
 ### 15.2 Using LibraryImport
 
-Prefer using Source-generated P/Invoke:
+Source-generated P/Invoke is preferred:
 
 ```csharp
 internal static partial class NativeMedia
@@ -1349,62 +1349,62 @@ internal static partial class NativeMedia
 }
 ```
 
-Prioritize `[LibraryImport]`, use `[DllImport]` only if generative marshalling cannot override and there is verification.
+Prefer `[LibraryImport]`; use `[DllImport]` only where generated marshalling cannot cover the case and the usage has been verified.
 
 ### 15.3 ABI rules
 
-- The C calling convention is clear and stable across compilers;
-- Exported functions have fixed prefix and ABI version;
-- The structure carries `struct_size`/version, and the fields are only appended to the end;
-- Use fixed-width integers and do not directly pass C++ `bool`, STL, exceptions, RTTI or virtual tables across boundaries;
-- The string defaults to UTF-8, and it is clear who allocates and releases it;
-- The handle is an opaque pointer, and the managed side uses `SafeHandle`;
-- Resource ownership is made clear in each function comment and test;
-- Native exceptions never traverse C ABI; return status/error object;
-- callback has registration, logout, thread, reentry and shutdown protocols;
-- The function should be as coarse-grained as possible to avoid P/Invoke per pixel/sampling point;
-- All lengths are checked for overflow and cap before entering native.
+- The C calling convention is explicit and stable across compilers;
+- Exported functions carry a fixed prefix and an ABI version;
+- Structs carry `struct_size`/version, and fields are only appended at the end;
+- Use fixed-width integers; never pass C++ `bool`, STL types, exceptions, RTTI, or vtables across the boundary directly;
+- Strings default to UTF-8, with explicit rules on who allocates and who frees;
+- Handles are opaque pointers; the managed side uses `SafeHandle`;
+- Resource ownership is stated explicitly in every function comment and test;
+- Native exceptions never cross the C ABI; a status/error object is returned instead;
+- Callbacks have registration, deregistration, threading, reentrancy, and shutdown protocols;
+- Functions are as coarse-grained as practical, avoiding a P/Invoke per pixel or per sample;
+- Every length is checked for overflow and against its upper bound before entering native code.
 
 ### 15.4 Loading
 
-Use `NativeLibrary.SetDllImportResolver` to resolve the library name to the RID asset published with the app signature. prohibit:
+Use `NativeLibrary.SetDllImportResolver` to resolve logical library names to RID assets published and signed with the application. The following are prohibited:
 
-- Load arbitrarily from the current working directory;
-- Load unsigned DLL from user-writable search path;
-- Modify global PATH to resolve dependencies;
-- Let the system library with the same name be loaded unexpectedly first.
+- Loading arbitrarily from the current working directory;
+- Loading an unsigned DLL from a user-writable search path;
+- Modifying the global PATH to resolve dependencies;
+- Allowing a same-named system library to be picked up first by accident.
 
 Verify on startup:
 
 - ABI version;
 - build/hash;
 - CPU/GPU feature;
-- Required entry point;
+- Required entry points;
 - Minimum driver/system capabilities.
 
-### 15.5 SafeHandle and life cycle
+### 15.5 SafeHandle and lifetime
 
-- Each native handle has a dedicated `SafeHandle`;
-- Asynchronous packaging implementation `IAsyncDisposable`;
-- The finalizer only provides final insurance and does not assume normal release;
-- Use safety modes such as `DangerousAddRef` during calls to prevent handles from being released concurrently;
-- The life cycle of callback delegate or function pointer is clearly fixed;
-- The native runtime stops accepting new tasks after the UI and RPC have stopped.
+- Every native handle has a dedicated `SafeHandle`;
+- Asynchronous wrappers implement `IAsyncDisposable`;
+- Finalizers are a last-resort safety net only; they are not responsible for normal release;
+- Use safe patterns such as `DangerousAddRef` during calls, so handles cannot be freed concurrently;
+- Callback delegate and function-pointer lifetimes are explicitly pinned;
+- The native runtime shuts down only after the UI and RPC have stopped accepting new work.
 
 ### 15.6 Failure and safety boundaries
 
-No Worker means native memory errors will kill the owning application. The prerequisite for accepting this is:
+Having no Worker means a native memory error kills the owning application. Accepting that is conditional on:
 
-- Native ABI is minimal;
-- Native input undergoes managed verification first;
-- The native library enables test builds such as ASan/UBSan;
-- fuzz media and image parsers;
-- Native integration tests can be run in the sacrifice process;
-- Production retains crash dumps, symbols and build ids;
-- journal ensures business recovery;
-- Untrusted third-party native plugins are not allowed to directly enter the stable main process.
+- Keeping the native ABI extremely small;
+- Validating input in managed code before it reaches native code;
+- Building the native libraries with ASan/UBSan and similar test builds;
+- Fuzzing the media and image parsers;
+- Running native integration tests in a sacrificial process;
+- Retaining crash dumps, symbols, and build ids in production;
+- Relying on the journal for business recovery;
+- Never letting untrusted third-party native plug-ins into the stable main process.
 
-If there is an empirical need to run untrusted plug-ins, drive instability, or security isolation in the future, a separate "isolated host" ADR can be established. It cannot be called back to C++ Worker by default, nor can it change the current architecture of this article.
+Should a demonstrated need later arise to run untrusted plug-ins, to cope with driver instability, or to enforce security isolation, a separate "isolated host" ADR may be raised. It must not become a default route back to the C++ Worker, and it must not change the architecture set out in this document.
 
 ---
 
@@ -1412,7 +1412,7 @@ If there is an empirical need to run untrusted plug-ins, drive instability, or s
 
 ### 16.1 Modular monolith
 
-The first stage is an ASP.NET Core Native AOT Host, which is internally isolated according to business modules:
+Phase one is a single ASP.NET Core Native AOT host, partitioned internally by business module:
 
 - Identity & Organization;
 - Devices & Sessions;
@@ -1425,17 +1425,17 @@ The first stage is an ASP.NET Core Native AOT Host, which is internally isolated
 - Public HTTP API;
 - SignalR Realtime.
 
-Each module has:
+Each module owns:
 
-- Application/Domain boundary;
-- Own database schema or explicit table ownership;
-- Public module API/events;
-- independent testing;
-- Prevent other modules from writing directly to its tables.
+- An Application/Domain boundary;
+- Its own database schema, or explicit table ownership;
+- A public module API/events;
+- Independent tests;
+- A prohibition on other modules writing to its tables directly.
 
-### 16.2 Host Pipeline and Native AOT
+### 16.2 Host pipeline and Native AOT
 
-Strictly full AOT baseline using `CreateSlimBuilder`/AOT-friendly host capabilities and Minimal API:
+The strict full-AOT baseline uses `CreateSlimBuilder`/AOT-friendly host capabilities and Minimal API:
 
 1. Forwarded headers and trusted proxy;
 2. request limits;
@@ -1448,20 +1448,20 @@ Strictly full AOT baseline using `CreateSlimBuilder`/AOT-friendly host capabilit
 9. SignalR hubs;
 10. health/management endpoints.
 
-All TLS for cloud communications.
+All cloud communication runs over TLS.
 
-It is prohibited to use the following capabilities as strictly Native AOT main paths:
+The following must not be used on the strict Native AOT main path:
 
-- MVC/Controller reflection model binding dependency;
+- Dependence on MVC/Controller reflection model binding;
 - Razor runtime compilation;
-- Runtime assembly scan registration endpoints;
-- Dynamic JSON type parsing;
+- Registering endpoints through runtime assembly scanning;
+- Dynamic JSON type resolution;
 - EF Core as an irreplaceable production runtime;
-- Any `Reflection.Emit`/dynamic proxy dependencies.
+- Any dependency on `Reflection.Emit`/dynamic proxies.
 
-### 16.3 Public network request/response: Refit + standard HTTP/JSON
+### 16.3 Public-facing request/response: Refit + standard HTTP/JSON
 
-The server side of the public API is an ordinary REST-ish HTTP/JSON Minimal API; Refit is the C# client generation layer.
+The server side of the public-facing API is an ordinary REST-ish HTTP/JSON Minimal API; Refit is the C# client generation layer.
 
 Client contract example:
 
@@ -1503,18 +1503,18 @@ var api = RestService.ForGenerated<IArcForgesCloudApi>(httpClient, settings);
 
 Rules:
 
-- Do not use `AddRefitClient<T>`/`RestService.For<T>` as the strict AOT primary registration method;
-- No Refit runtime reflection fallback is allowed; if you upgrade to a version that provides the `Refit.Reflection` opt-in package, it must not be introduced into the production AOT main path;
-- Refit generated request building must cover all public interface methods;
-- All analyzer diagnostics that prompt reflection request builder are treated as errors in CI; if the version used provides RF006, RF006 is also an error;
-- JSON DTO all enter `PublicApiJsonContext`;
-- route/path/query types hold static shapes explicitly supported by generators;
-- File upload and download use standard HTTP content/stream and do not convert large objects into JSON base64;
-- Timeouts, cancellations, and retries are managed by explicit policies such as HttpClient/Polly; write request retries must have CommandId idempotent guarantees.
+- Do not use `AddRefitClient<T>`/`RestService.For<T>` as the primary registration route under strict AOT;
+- No Refit runtime reflection fallback of any kind; if a version offering the `Refit.Reflection` opt-in package is adopted, it must still not enter the production AOT main path;
+- Refit generated request building must cover every public interface method;
+- Every analyzer diagnostic indicating a reflection-based request builder is treated as an error in CI; where the version in use provides RF006, RF006 is an error too;
+- All JSON DTOs go into `PublicApiJsonContext`;
+- route/path/query types keep to the static shapes the generator explicitly supports;
+- File upload/download uses standard HTTP content/streams; large objects are never base64-encoded into JSON;
+- Timeout, cancellation, and retry are governed by explicit policies such as HttpClient/Polly; retrying a write request requires a CommandId idempotency guarantee.
 
-### 16.4 The relationship between server-side Minimal API and Refit
+### 16.4 How the server-side Minimal API relates to Refit
 
-The server does not "implement the Refit interface" to simulate native RPC. The correct structure is:
+The server does not "implement the Refit interface" to imitate local RPC. The correct structure is:
 
 ```text
 Refit Interface (client only)
@@ -1526,107 +1526,107 @@ Application Service
 Domain
 ```
 
-This gets:
+This yields:
 
-- Standard HTTP status code, Header, Cache-Control, ETag/If-Match and other web semantics;
-- curl/browser/proxy/gateway can all understand it;
-- In the future, non-C# clients will not need to understand Refit;
+- Standard web semantics: HTTP status codes, headers, Cache-Control, ETag/If-Match;
+- curl, browsers, proxies, and gateways can all understand it;
+- Future non-C# clients need not understand Refit;
 - Refit is just a strongly typed client experience on the C# side.
 
-API drift is controlled in the following ways:
+API drift is controlled by:
 
 - Shared PublicApi DTO/route constants;
-- OpenAPI acts as an observable/third-party description rather than the C# master contract source;
+- OpenAPI as a description for observation and third parties, rather than the primary C# contract source;
 - server-client contract integration tests;
-- Compatibility matrix of the last stable client to the current server.
+- A compatibility matrix of the previous stable client against the current server.
 
-### 16.5 Public network real-time: SignalR
+### 16.5 Public-facing real time: SignalR
 
-SignalR is only responsible for real-time experiences that require active push from the server:
+SignalR is responsible only for real-time experiences that require the server to push:
 
-- presence/online status;
-- New message/chat increment;
+- presence/online state;
+- new messages/chat deltas;
 - Task progress;
 - approval resolved;
-- device/session status;
-- Intent notification for remote desktop bridging;
-- Need lightweight notifications with low latency.
+- device/session state;
+- intent notifications for remote desktop bridging;
+- lightweight notifications that need low latency.
 
 SignalR **is not responsible** for:
 
-- The only persistent command log;
-- database transactions;
+- Serving as the sole durable command log;
+- Database transactions;
 - Large file upload and download;
-- video frame;
-- The only state recovery after disconnection;
-- Replaces all Refit HTTP APIs.
+- Video frames;
+- Being the only means of state recovery after a disconnect;
+- Replacing the Refit HTTP API as a whole.
 
-All important real-time events must be accompanied by at least:
+Every significant real-time event must carry at least:
 
 - event kind;
 - sequence/revision;
 - correlationId;
 - occurredAtUtc;
-- resource/document/task id if necessary.
+- resource/document/task id where relevant.
 
-After the client disconnects and reconnects, query the current snapshot/revision/sequence through Refit, and then continue to receive SignalR increments.
+After a client reconnects, it queries the current snapshot/revision/sequence through Refit, then resumes receiving SignalR deltas.
 
 ### 16.6 SignalR Native AOT rules
 
-Strictly under Native AOT:
+Under strict Native AOT:
 
-- Only use JSON Hub protocol;
+- Use only the JSON hub protocol;
 - All Hub payloads go into `RealtimeJsonContext`;
-- Do not use `Hub<T>` strongly typed hub as server-side AOT baseline;
+- Do not use the `Hub<T>` strongly typed hub as the server-side AOT baseline;
 - Use plain `Hub` and place method names in centralized constants or source-generated wrappers to avoid scattering magic strings;
 - Avoid streaming parameter/return combinations that are currently not supported by Native AOT;
-- Only use async return types that are validated for AOT publishing;
-- Both Server and .NET client execute real AOT publish integration test;
-- SignalR transport negotiation/fallback is allowed when WebSocket fails, but the application layer cannot change the consistency semantics as a result.
+- Use only async return types validated by an AOT publish;
+- Both the server and the .NET client run a real AOT publish integration test;
+- SignalR transport negotiation/fallback is allowed when WebSocket fails, but the application layer must not change its consistency semantics as a result.
 
 ### 16.7 Database
 
-Strict Native AOT Default PostgreSQL + Npgsql ADO.NET:
+Under strict Native AOT, the default is PostgreSQL + Npgsql ADO.NET:
 
-- Use short life cycle connection/transaction for each request/unit of work;
-- Migration is a controlled deployment step and is not executed by each instance competing for execution;
+- Use a short-lived connection/transaction per request/unit of work;
+- Migration is a controlled deployment step, not something every instance races to run;
 - Optimistic concurrency token/revision;
-- outbox is submitted together with the business matter;
-- inbox/idempotent table protects message duplication;
-- Hot queries have explicit index and query plan monitoring;
-- Large resources enter object storage;
-- Vector retrieval is just a replaceable module and does not penetrate the core document model.
+- The outbox is committed together with the business transaction;
+- An inbox/idempotency table guards against duplicate messages;
+- Hot queries have explicit indexes and query-plan monitoring;
+- Large resources go to object storage;
+- Vector retrieval is only a replaceable module; it does not bleed into the core document model.
 
 Dapper.AOT can be used as a mapping/SQL generation enhancement layer after benchmarking and functional validation. EF Core is only re-evaluated after its Native AOT maturity reaches production standards.
 
-### 16.8 The relationship between reliable events and SignalR
+### 16.8 How reliable events relate to SignalR
 
-- Business transaction submission -> outbox;
+- Business transaction commit -> outbox;
 - outbox dispatcher -> internal reliable processing/notification projection;
 - SignalR broadcaster -> visible to online clients in real time;
-- Client ack does not equal business transaction submission;
-- SignalR does not lose business facts;
+- A client ack is not a business transaction commit;
+- Losing SignalR does not lose business facts;
 - When expanding to multiple instances, add backplane/message infrastructure based on empirical needs.
 
 ### 16.9 Background tasks
 
-The server can run `BackgroundService` in the same Native AOT C# deployment unit, but mission-critical tasks must persist leases, retries, and idempotent keys. When scale or isolation requires, the same C# AOT Worker Host can be spun out as a deployment role; this is still a cloud-hosted role, not a desktop C++ worker.
+The server may run a `BackgroundService` inside the same Native AOT C# deployment unit, but critical tasks must persist leases, retry counts, and idempotency keys. Where scale or isolation demands it, the same C# AOT Worker Host can be split out as a deployment role; that is still a cloud-hosted role, not a desktop C++ Worker.
 
-## 17. .NET MAUI mobile client
+## 17. The .NET MAUI mobile client
 
 ### 17.1 Scope
 
-Primary capabilities of the mobile client:
+The mobile client's primary capabilities:
 
 - Login and device management;
-- Chat with Agent;
+- Chat and Agent;
 - Cloud tasks, notifications and approvals;
-- Document/resource preview and light editing;
+- Document/resource preview and lightweight editing;
 - Optional desktop bridge control plane.
 
-The mobile client does not directly load the desktop native media stack, nor does it directly connect to the native ArcChat Hub.
+The mobile client does not load the desktop native media stack directly, nor does it connect directly to the local ArcChat Hub.
 
-### 17.2 Stratification
+### 17.2 Layering
 
 ```text
 MAUI Views / Handlers
@@ -1640,21 +1640,21 @@ Refit Generated HTTP Client + SignalR Client
 Secure Storage / Local Cache / Offline Outbox
 ```
 
-Share: Foundation/PublicApi/Realtime DTO, validators, pure application semantics, basic ViewModel pattern.
+Shared: Foundation/PublicApi/Realtime DTOs, validators, pure application semantics, and base ViewModel patterns.  
 Not shared: Avalonia XAML, desktop Window/Dispatcher, StreamJsonRpc LocalRpc Contracts, desktop IPC, and desktop native handles.
 
 ### 17.3 Network
 
-- Public network command/query unified Refit generated-only;
+- Public-facing commands/queries all go through Refit generated-only;
 - SignalR is only responsible for real-time updates;
 - HttpClient/Refit client is managed by a single factory;
-- access token is injected through DelegatingHandler;
-- token refresh serialization;
-- Switch between front and back to rebuild/restore SignalR sessions according to platform policies;
+- Access tokens are injected through a DelegatingHandler;
+- Token refresh is serialized;
+- Foreground/background transitions rebuild or restore the SignalR session according to platform policy;
 - Network changes use exponential backoff with jitter;
-- Local outbox saves commands that can be retried offline;
+- A local outbox holds commands that can be retried offline;
 - All write retries obey the idempotent semantics of CommandId;
-- After SignalR reconnects, query sequence/revision through Refit to complete it;
+- After SignalR reconnects, gaps are backfilled by querying sequence/revision through Refit;
 - Do not write sensitive tokens to logs or normal Preferences.
 
 ### 17.4 AOT and trimming
@@ -1662,25 +1662,25 @@ Not shared: Avalonia XAML, desktop Window/Dispatcher, StreamJsonRpc LocalRpc Con
 - iOS uses the official Native AOT path;
 - Refit only uses `AddRefitGeneratedClient`/`ForGenerated`;
 - Public API JSON uses `JsonSerializerContext`;
-- SignalR only uses JSON protocol + source to generate DTO metadata;
+- SignalR uses only the JSON protocol plus source-generated DTO metadata;
 - Reflection, dynamic assemblies, and runtime code generation must not enter the iOS main path;
-- The production baseline of Android .NET 10 should clearly distinguish between Mono AOT and experimental Native AOT; they cannot be confused as the same "Native AOT" in the documentation;
-- If the product has a mandatory requirement that "Android must also have CoreCLR Native AOT", the real machine PoC, third-party SDK/JNI/Java interop, SignalR, Refit, startup time, package body and store link verification must be completed before announcing production support;
-- CI must actually build the Release/AOT product and run the device smoke test. Successful Debug does not count as passing.
+- The Android .NET 10 production baseline must clearly separate Mono AOT from experimental Native AOT; the two must never be conflated under one name "Native AOT" in documentation;
+- If the product hard-requires that "Android must also be CoreCLR Native AOT", then on-device PoC, third-party SDK/JNI/Java interop, SignalR, Refit, startup time, bundle size, and store pipeline verification must all be completed before production support is declared;
+- CI must genuinely build the Release/AOT artifacts and run device smoke tests; a successful Debug build does not count as a pass.
 
-## 18. Blazor Web Frontend
+## 18. The Blazor web front end
 
-### 18.1 Strictly all-AOT Web selection
+### 18.1 The web choice under strict full AOT
 
-Under the strict full AOT goal, the web front end uses by default:
+Under the strict full-AOT goal, the web front end defaults to:
 
 - Blazor WebAssembly;
-- Enable WASM AOT by scene when publishing;
+- WASM AOT enabled per scenario at publish time;
 - Static resources are provided by CDN/static site or Native AOT ASP.NET Core Host;
-- Public network requests/responses use standard HTTP/JSON; C# clients can use Refit generated-only;
-- Use the SignalR client in real time.
+- Public-facing requests/responses use standard HTTP/JSON; C# clients may use Refit generated-only;
+- Real time over the SignalR client.
 
-Blazor Server/Interactive Server is not considered a core baseline as it would tie the UI circuit to the server runtime and conflict with the goal of "strictly Native AOT for all hosts".
+Blazor Server/Interactive Server is not treated as a core baseline, because it would tie the UI circuit to the server runtime and conflict with the goal of "strict Native AOT for every main host".
 
 ### 18.2 Web communication boundaries
 
@@ -1692,99 +1692,99 @@ Blazor WASM
 
 Rules:
 
-- Commands and queries via HTTP/JSON;
-- Real-time notifications via SignalR;
-- After the SignalR message arrives, if the authoritative complete status is required, call the Refit API to refresh;
-- Do not use gRPC-Web/MagicOnion as the browser main link;
+- Commands and queries go over HTTP/JSON;
+- Real-time notifications go over SignalR;
+- Once a SignalR message arrives, call the Refit API to refresh if authoritative full state is needed;
+- gRPC-Web/MagicOnion is not used as the browser's main path;
 - Large files use standard HTTP upload/download;
 - WASM-side JSON metadata must be source-generated;
-- Whether WASM AOT is enabled or not is determined by performance/package measurements, but strict release matrix retains at least one AOT build verification.
+- Whether WASM AOT is enabled is decided by performance/bundle-size measurements, but the strict release matrix keeps at least one AOT build verification.
 
 ### 18.3 The role of Refit in Blazor WASM
 
 Refit supports modern .NET/Blazor, but ArcForges still follows the same AOT rules:
 
 - generated-only client;
-- No Refit runtime reflection fallback is allowed; if you upgrade to a version that provides the `Refit.Reflection` opt-in package, it must not be introduced into the production AOT main path;
+- No Refit runtime reflection fallback of any kind; if a version offering the `Refit.Reflection` opt-in package is adopted, it must still not enter the production AOT main path;
 - `SystemTextJsonContentSerializer` + `PublicApiJsonContext`;
-- Browsers do not expose long-term access tokens to persistent storage that can be read by arbitrary JS;
-- The authentication model prioritizes short-term token/BFF style security boundaries, and the specific deployment is determined by security ADR.
+- Browsers do not place long-lived access tokens in persistent storage readable by arbitrary JS;
+- The authorization model prefers short-lived tokens/BFF-style security boundaries; the concrete deployment is settled by a security ADR.
 
-### 18.4 Web Security
+### 18.4 Web security
 
 - HTTPS only;
-- CSP, SameSite, secure cookie/BFF policies are configured by deployment mode;
-- Uploads have content type, size, virus/format checking and quarantine;
-- Do not compile Secret into WASM;
-- Public sharing links are short-term, revocable, and have minimal permissions;
-- The access token logs of SignalR WebSocket/SSE/Long Polling must be desensitized;
-- Explicitly whitelist all cross-domain policies and do not use wide production CORS.
+- CSP, SameSite, and secure cookie/BFF policies are configured per deployment mode;
+- Uploads undergo content-type, size, and virus/format checks, with a quarantine area;
+- Secrets are never compiled into the WASM bundle;
+- Public share links are short-lived, revocable, and least-privilege;
+- Access tokens in SignalR WebSocket/SSE/long-polling logs must be redacted;
+- All cross-origin policies are explicit allowlists; broad production CORS is not used.
 
 ## 19. Cloud and desktop bridging
 
-This is not the first phase core link, but the architecture reserves the following security model:
+This is not a core path in phase one, but the architecture reserves the following security model:
 
 1. ArcChat Desktop proactively establishes a TLS SignalR outbound connection to the Cloud;
 2. The user confirms device binding on the desktop;
-3. Cloud only delivers restricted "intent/wake" messages to bonded devices via SignalR;
-4. After receiving the intent, ArcChat routes to the Provider through StreamJsonRpc according to the native capabilities, permissions and approvals;
-5. Provider's persistent business results are written into its own state;
-6. ArcChat/Provider submits results that require cloud persistence through the Refit HTTP API, or SignalR returns lightweight real-time status;
-7. All steps have correlationId, CommandId and audit;
+3. The Cloud delivers only restricted "intent/wake" messages to bound devices over SignalR;
+4. On receiving an intent, ArcChat routes it to the Provider over StreamJsonRpc according to local capabilities, permissions, and approvals;
+5. The Provider's durable business results are written into its own state;
+6. ArcChat/the Provider submits results needing cloud persistence through the Refit HTTP API, or returns lightweight real-time state over SignalR;
+7. Every step carries a correlationId, a CommandId, and an audit record;
 8. Users can disconnect and revoke device and capability scope at any time.
 
 Principles:
 
-- Cloud cannot scan LAN;
-- Mobile/Web cannot directly play local Named Pipe/UDS;
-- The public network cannot expose the local IPC endpoint;
-- SignalR is not the only source of truth for remote writing;
-- Remote write commands must still go through the local Application Service + revision/idempotency;
-- Unconfirmed commands after SignalR is disconnected must be re-determined through HTTP/task status and cannot be blindly repeated.
+- The Cloud must not scan the LAN;
+- Mobile/Web must not talk directly to a local Named Pipe/UDS;
+- Local IPC endpoints must never be exposed on the public internet;
+- SignalR is not the sole source of truth for remote writes;
+- Remote write commands must still pass through the local Application Service plus revision/idempotency;
+- Commands left unconfirmed when SignalR disconnects must be re-adjudicated through HTTP/task state, never blindly re-executed.
 
-## 20. Identity, Security and Permissions
+## 20. Identity, security, and permissions
 
-### 20.1 Identity stratification
+### 20.1 Identity layering
 
-- Cloud User: Cloud account identity;
-- Organization/Workspace: Tenant and resource boundaries;
-- Device: registered device;
-- Local OS User: native IPC security principal;
-- App Instance: a certain process instance;
-- Agent Actor: Execute on behalf of a user/session, but not an independent super identity.
+- Cloud User: the cloud account identity;
+- Organization/Workspace: tenant and resource boundaries;
+- Device: a registered device;
+- Local OS User: the local IPC security principal;
+- App Instance: one particular process instance;
+- Agent Actor: acts on behalf of a user/session, but is not an independent superuser identity.
 
 ### 20.2 Cloud authentication and authorization
 
-- Uses standard OIDC/OAuth 2.1 semantics and ASP.NET Core Authentication/Authorization;
-- The access token is short-term, and the refresh token is rotating and revocable;
-- Audience, issuer, tenant, device, scope are all verified;
-- Minimal API endpoint uses policy-based authorization;
-- SignalR connection and hub method use the same identity system and explicit authorization;
-- Resource-level authorization is verified again in the Application Service and cannot rely solely on the route/hub attribute;
-- Management capabilities are completely separated from ordinary user capabilities;
-- Refit/SignalR client logs must not record Authorization header or query token.
+- Standard OIDC/OAuth 2.1 semantics with ASP.NET Core Authentication/Authorization;
+- Access tokens are short-lived; refresh tokens rotate and can be revoked;
+- audience, issuer, tenant, device, and scope are all validated;
+- Minimal API endpoints use policy-based authorization;
+- SignalR connections and hub methods use the same identity model and explicit authorization;
+- Resource-level authorization is validated again in the Application Service; it must not rest on route/hub attributes alone;
+- Administrative capabilities are kept entirely separate from ordinary user capabilities;
+- Refit/SignalR client logs must never record the Authorization header or query tokens.
 
 ### 20.3 Local authentication
 
-Native OS IPC must also be certified:
+Local OS IPC must be authenticated as well:
 
-- Named Pipe ACL/UDS file permissions restrict current user;
-- Hub and Provider complete the short-term session token handshake after establishing connection through StreamJsonRpc;
-- The token is bound to instanceId, endpoint, buildId, contractSet, and expiration time;
-- The endpoint manifest only performs discovery and does not store Secrets;
-- Each call passes actor, scope and correlation context;
-- Provider verifies again before final execution instead of blindly trusting Hub;
-- The debug loopback port cannot skip authentication because it "only listens on 127.0.0.1".
+- Named Pipe ACLs/UDS file permissions restrict access to the current user;
+- The Hub and the Provider complete a short-lived session token handshake once the StreamJsonRpc connection is established;
+- Tokens bind instanceId, endpoint, buildId, contractSet, and an expiry time;
+- The endpoint manifest serves discovery only and stores no Secrets;
+- Every call carries actor, scope, and correlation context;
+- The Provider validates again before final execution rather than blindly trusting the Hub;
+- A debug loopback port must not skip authentication just because it "only listens on 127.0.0.1".
 
 ### 20.4 Secret
 
-- Secure storage on Windows Credential Manager/DPAPI, Apple Keychain, Android Keystore and other platforms;
-- Cloud uses hosted Secret/KMS;
-- The configuration file only saves references and does not save long-term plaintext Secrets;
-- Logs, crash dumps and diagnostic packages are desensitized by default;
+- Platform secure storage: Windows Credential Manager/DPAPI, Apple Keychain, Android Keystore;
+- The cloud uses a managed Secret store/KMS;
+- Configuration files hold references only, never long-lived plaintext Secrets;
+- Logs, crash dumps, and diagnostic bundles are redacted by default;
 - API keys are isolated by provider, user, and environment.
 
-### 20.5 Least Privilege and Dangerous Operations
+### 20.5 Least privilege and dangerous operations
 
 Capabilities are authorized by scope, for example:
 
@@ -1799,28 +1799,28 @@ cloud.share
 device.remote-control
 ```
 
-Operations such as deletion, overwriting, publishing, external sending, cloud sharing, remote control, execution of untrusted tools, etc. require a higher risk level and explicit approval.
+Operations such as deletion, overwriting, publishing, sending externally, cloud sharing, remote control, and executing untrusted tools require a higher risk level and explicit approval.
 
 ## 21. Observability
 
 ### 21.1 OpenTelemetry
 
-Unified for all hosts:
+Unified across all hosts:
 
-- `ActivitySource` Create trace/span;
-- `Meter` Create counter, histogram, gauge;
+- `ActivitySource` creates traces/spans;
+- `Meter` creates counters, histograms, and gauges;
 - Structured logs automatically include traceId/spanId;
-- ASP.NET Core, HttpClient/Refit, SignalR, database and tasks are connected to the same context;
+- ASP.NET Core, HttpClient/Refit, SignalR, the database, and tasks all feed into the same context;
 - StreamJsonRpc explicitly creates RPC spans at the Adapter/ConnectionManager layer and records interfaces/methods instead of arbitrary raw payloads;
 - By default, rolling logs and limited diagnostics are retained locally and uploaded only after the user agrees.
 
 ### 21.2 Required dimensions
 
 - appId / instanceId / buildId;
-- The security identifier of the actorId;
+- a de-identified form of actorId;
 - transport: local-rpc/http/signalr;
 - service/interface/method/capabilityId;
-- Desensitization or hashing of documentId;
+- a redacted or hashed documentId;
 - commandId / taskId;
 - correlationId / causationId;
 - expectedRevision / resultRevision;
@@ -1828,144 +1828,144 @@ Unified for all hosts:
 - native library ABI/build;
 - reconnect count, connection generation, sequence gap.
 
-It is forbidden to put chat text, note text, file path, token and original model prompt into telemetry by default.
+Chat bodies, note bodies, file paths, tokens, and raw model prompts must never go into telemetry by default.
 
 ### 21.3 Metrics
 
-- StreamJsonRpc latency, error, connection lost, reconnect, pending calls;
-- Named Pipe/UDS connection establishment takes time and authentication fails;
+- StreamJsonRpc latency, errors, connection loss, reconnects, pending calls;
+- Named Pipe/UDS connection setup latency and authentication failures;
 - Refit/HTTP latency, status, timeout, retry, payload size;
-- SignalR online connection number, disconnection, reconnection, transport, sequence gap;
-- Provider lease, routing failure and version mismatch;
-- command conflict, idempotent hit;
-- task queue depth, running time, cancellation and failure;
-- journal replay, snapshot time, recovery failure;
-- Native call time, status and crash signature;
-- UI stuttering, frame rate, memory and GC pause;
+- SignalR concurrent connections, disconnects, reconnects, transport, sequence gaps;
+- Provider leases, routing failures, and version mismatches;
+- Command conflicts and idempotency hits;
+- Task queue depth, run duration, cancellations, and failures;
+- Journal replay, snapshot time, recovery failures;
+- Native call duration, status, and crash signature;
+- UI jank, frame rate, memory, and GC pauses;
 - Cloud DB pool, query, outbox backlog.
 
-## 22. Performance, memory and backpressure
+## 22. Performance, memory, and backpressure
 
 ### 22.1 Measurement principles
 
-- Define user scenario SLO first, and then optimize;
-- BenchmarkDotNet for isolable hotspots;
-- dotnet-trace, dotnet-counters, PerfView/platform profiler are used in the runnable environment; Native AOT products use the corresponding platform profiler/trace capabilities;
+- Define the user-scenario SLO first, then optimize;
+- BenchmarkDotNet for isolatable hot spots;
+- dotnet-trace, dotnet-counters, and PerfView/platform profilers for runnable environments; Native AOT artifacts use the corresponding platform profiler/trace capabilities;
 - Do not turn the code into an unmaintainable global object pool for the sake of "zero allocation";
-- WASM AOT, GC mode, and SIMD are all determined using measurements;
-- Refit/SignalR/StreamJsonRpc are benchmarked respectively, and one transport number cannot be used to represent all communications.
+- WASM AOT, GC mode, and SIMD are all decided by measurement;
+- Refit/SignalR/StreamJsonRpc are benchmarked separately; numbers from one transport must not stand in for all communication.
 
 ### 22.2 Allocation and buffering
 
-- Small DTOs are allocated normally to avoid excessive pooling;
-- Large buffers use `ArrayPool<T>`/`MemoryPool<T>` and are strictly returned;
-- The native buffer is only pinned when necessary and limited to a fixed time;
-- Do not put large `byte[]` into the state tree or repeat serialization;
-- Image/frame buffer with budget, elimination and pressure feedback;
-- All channels, queues, and concurrent semaphore have upper limits;
+- Small DTOs are allocated normally; avoid over-pooling;
+- Large buffers use `ArrayPool<T>`/`MemoryPool<T>` and are returned rigorously;
+- Native buffers are pinned only where necessary, and the pinning duration is bounded;
+- Never put a large `byte[]` into the state tree or serialize it repeatedly;
+- Image/frame caches have a budget, an eviction policy, and pressure feedback;
+- Every channel, queue, and concurrency semaphore has an upper bound;
 - SignalR does not send large blobs;
-- Set a reasonable message upper limit for ordinary calls to StreamJsonRpc, and use ResourceRef/stream for large resources.
+- Ordinary StreamJsonRpc calls set a sensible message size limit; large resources go through ResourceRef/streams.
 
 ### 22.3 GC and native memory
 
 Native AOT does not mean "no GC".
 
-- Desktop/Cloud based on actual AOT runtime GC configuration and load measurements;
-- Large object heap and pinned object heap have indicators;
-- Do not frequently proactively `GC.Collect()` in business code;
-- Native memory also goes into budgeting and telemetry, you can’t just look at managed heap;
-- SignalR connection, HTTP response buffer, and RPC formatter pool are all included in the capacity test.
+- Desktop/Cloud GC configuration follows the actual AOT runtime and load measurements;
+- The large object heap and pinned object heap have metrics;
+- Do not call `GC.Collect()` proactively and repeatedly from business code;
+- Native memory also enters the budget and telemetry; the managed heap alone is not enough;
+- SignalR connections, HTTP response buffers, and RPC formatter pools all count towards capacity testing.
 
-### 22.4 Target SLO starting point
+### 22.4 Starting-point SLO targets
 
-The following are first-round measurement targets and are not marketing metrics without benchmark commitments:
+These are first-round measurement targets, not marketing figures promised without benchmarks:
 
-- Native lightweight StreamJsonRpc request/response P95 < 10–20 ms (same machine, excluding actual long business);
+- Lightweight local StreamJsonRpc request/response P95 < 10–20 ms (same machine, excluding actual long-running business work);
 - Local UI input to visible state P95 < 50 ms;
-- The single work time of the UI main thread should be < 8 ms as much as possible;
-- Provider goes offline and is marked as unroutable within 3 heartbeat cycles;
-- Submitted commands can be recovered after a process crash;
-- Public network HTTP and SignalR define SLO respectively;
-- After SignalR reconnects, it must be able to fill the sequence gap through HTTP within a controllable time.
+- A single unit of UI main-thread work should stay under 8 ms wherever possible;
+- A Provider that drops offline is marked unroutable within three heartbeat cycles;
+- Committed commands are recoverable after a process crash;
+- Public-facing HTTP and SignalR define their SLOs separately;
+- After SignalR reconnects, the sequence gap must be backfillable over HTTP within a bounded time.
 
-## 23. Release pattern matrix
+## 23. Release mode matrix
 
 ### 23.1 Desktop
 
-Desktop goals:
+Desktop targets:
 
 - self-contained;
-- Published by RID Directory;
+- Published per-RID directory;
 - `PublishAot=true`;
 - `IsAotCompatible=true`;
-- trimming is performed by the Native AOT publishing link;
+- Trimming is performed by the Native AOT publish pipeline;
 - The native library is distributed with the package as an explicitly signed asset;
-- StreamJsonRpc proxy/TypeShape is generated at compile time;
+- StreamJsonRpc proxies/TypeShape are generated at compile time;
 - Refit generated-only;
 - SignalR JSON DTO source-generated.
 
-Single-file publishing is not a default requirement. Native AOT has changed the release model, but native asset location, signatures, updaters, and crash symbol behavior still need to be verified on a platform-by-platform basis.
+Single-file publishing is not a default requirement. Native AOT has already changed the publish model, but native asset location, signing, updater, and crash-symbol behaviour still need per-platform verification.
 
 ### 23.2 Cloud
 
 - Linux Native AOT container/controlled host;
 - ASP.NET Core Minimal API + SignalR;
-- Do not use MVC/Razor Server home paths that are not AOT compatible;
-- startup/readiness/liveness separation;
-- Gracefully drain HTTP, SignalR and tasks;
-- Database migration is decoupled from application rolling release;
-- Npgsql/data access path performs AOT publish + integration test.
+- No AOT-incompatible MVC/Razor Server main path;
+- startup/readiness/liveness are separated;
+- HTTP, SignalR, and tasks drain gracefully;
+- Database migration is decoupled from application rolling releases;
+- The Npgsql/data-access path runs AOT publish + integration tests.
 
 ### 23.3 Mobile and Web
 
 - iOS: Native AOT;
-- Android: Production default Mono AOT; CoreCLR Native AOT still needs to be treated as an experimental PoC in .NET 10;
-- Blazor WebAssembly: WASM AOT as a strict AOT release target;
-- Do not use Blazor Server as strictly full AOT Web master mode;
-- Each release mode performs trimming/AOT analyzer and real device/browser testing.
+- Android: Mono AOT is the production default; CoreCLR Native AOT must still be treated as an experimental PoC on .NET 10;
+- Blazor WebAssembly: WASM AOT as the strict AOT publish target;
+- Blazor Server is not used as the primary web mode under strict full AOT;
+- Every release mode runs the trimming/AOT analyzer plus real device/browser tests.
 
-### 23.4 AOT Failure Principle
+### 23.4 AOT failure principle
 
 If a dependency causes Native AOT to fail:
 
-1. First check whether there is a source generator/static registration path;
-2. Then replace dependencies or reduce the functional area;
-3. Move non-AOT tools to the build/migration phase when necessary;
-4. Register a "Platform Exception" only if the platform itself does not support it yet;
-5. It is not allowed to silently return the entire desktop/Cloud to JIT and still claim to be "full AOT".
+1. First check for a source generator/static registration path;
+2. Then replace the dependency or narrow the feature surface;
+3. Move non-AOT tooling to the build/migration stage where necessary;
+4. Record a "platform exception" only where the platform itself does not yet support it;
+5. Silently falling the whole desktop/Cloud back to JIT while still claiming "full AOT" is not permitted.
 
-## 24. Construction and Engineering Governance
+## 24. Build and engineering governance
 
 ### 24.1 Global build configuration
 
-It is recommended to enable:
+Recommended settings:
 
 - nullable;
 - implicit usings;
 - deterministic builds;
-- warnings as errors (full position will be opened after the debt is cleared in stages);
+- warnings as errors (enabled repository-wide once the debt has been cleared in stages);
 - analyzers and `.editorconfig`;
 - SourceLink;
 - reproducible package metadata;
 - Central Package Management;
 - locked restore.
 
-AOT related rules:
+AOT-related rules:
 
-- Reusable library tag `<IsAotCompatible>true</IsAotCompatible>`;
-- Production host tag `<PublishAot>true</PublishAot>`;
+- Reusable libraries are marked `<IsAotCompatible>true</IsAotCompatible>`;
+- Production hosts are marked `<PublishAot>true</PublishAot>`;
 - StreamJsonRpc uses `<EnableStreamJsonRpcInterceptors>true</EnableStreamJsonRpcInterceptors>`;
-- Refit only allows generated-only API;
+- Refit permits only the generated-only API;
 - Public/Realtime JSON context must be explicitly source-generated;
-- IL2026/IL3050, Refit reflection fallback diagnosis, and StreamJsonRpc proxy generation failure are all caused by CI blocker;
-- It is forbidden to globally turn off the trimming analyzer for the purpose of "over-compiling".
+- IL2026/IL3050, Refit reflection-fallback diagnostics, and StreamJsonRpc proxy generation failures are all CI blockers;
+- Globally disabling the trimming analyzer just to "make it compile" is prohibited.
 
 ### 24.2 Versioning
 
-Distinguishing:
+Distinguish between:
 
-- Product version: the version seen by the user;
-- BuildId: Accurate build;
+- Product version: the version users see;
+- BuildId: the exact build;
 - LocalRpc ContractSet version;
 - PublicApi version;
 - Realtime event schema version;
@@ -1973,11 +1973,11 @@ Distinguishing:
 - Native ABI version;
 - Resource format version.
 
-These versions cannot be replaced by just one AssemblyVersion.
+These versions cannot all be collapsed into a single AssemblyVersion.
 
-### 24.3 Native compilation and builds
+### 24.3 Native builds
 
-`native/` CMake/Ninja can be used to generate extremely thin ABI shim, and the product is fixed according to RID/architecture:
+CMake/Ninja may be used under `native/` to produce an extremely thin ABI shim; artifacts are fixed by RID/architecture:
 
 ```text
 runtimes/win-x64/native/arcforges_media.dll
@@ -1985,198 +1985,198 @@ runtimes/linux-x64/native/libarcforges_media.so
 runtimes/osx-arm64/native/libarcforges_media.dylib
 ```
 
-Original product:
+Native artifacts:
 
 - Reproducible builds;
-- Preserve symbol server mapping;
+- Retained symbol server mapping;
 - SBOM and license scanning;
-- Signature/notarization;
-- ABI test;
-- Do not temporarily copy unknown versions from the development machine into the release package.
+- Signing/notarization;
+- ABI tests;
+- No ad-hoc copying of unknown versions from a developer machine into the release package.
 
 ## 25. Testing strategy
 
-### 25.1 Test Pyramid
+### 25.1 Test pyramid
 
-1. Domain unit testing: pure C#, fast, no I/O;
-2. Application test: Use fake/test double for the port;
-3. Persistence test: real SQLite/PostgreSQL;
-4. Local RPC formatter/type-shape compatibility test;
-5. StreamJsonRpc integration test: real Named Pipe/UDS + strongly typed proxy;
-6. Refit contract test: generated-only client + true Minimal API;
-7. SignalR integration test: connection, disconnection, reconnection, sequence gap recovery;
-8. Native ABI testing: every RID and error path;
-9. UI component/automated testing;
-10. Multi-process end-to-end testing;
-11. Native AOT release packages, updates, rollbacks and crash recovery testing.
+1. Domain unit tests: pure C#, fast, no I/O;
+2. Application tests: fakes/test doubles for ports;
+3. Persistence tests: real SQLite/PostgreSQL;
+4. Local RPC formatter/type-shape compatibility tests;
+5. StreamJsonRpc integration tests: real Named Pipe/UDS + strongly typed proxy;
+6. Refit contract tests: generated-only client + a real Minimal API;
+7. SignalR integration tests: connect, disconnect, reconnect, sequence gap recovery;
+8. Native ABI tests: every RID and error path;
+9. UI component/automation tests;
+10. Multi-process end-to-end tests;
+11. Native AOT release package, update, rollback, and crash recovery tests.
 
-### 25.2 Architecture testing
+### 25.2 Architecture tests
 
-Automatic verification:
+Automated verification that:
 
 - Domain does not reference UI/Infrastructure/Refit/StreamJsonRpc/SignalR;
 - LocalRpc Adapter does not reference ViewModel;
 - PublicApi Adapter does not reference UI;
 - Contracts does not reference platform types;
-- Products do not directly reference each other's Infrastructure;
-- Native pointer has not crossed Native adapter;
-- The Cloud module does not have unauthorized access to the persistent ownership of other modules;
-- There is no universal string/object RPC;
-- No C++ Worker executable projects enter the release graph;
+- Products do not reference each other's Infrastructure directly;
+- Native pointers do not cross the native adapter;
+- Cloud modules do not reach past their authority into another module's persistence ownership;
+- There is no catch-all string/object RPC;
+- No C++ Worker executable project enters the release graph;
 - There is no Refit runtime reflection fallback dependency; if the version provides `Refit.Reflection`, it does not enter the production dependency graph;
-- StreamJsonRpc Contracts all have generative proxy tags.
+- All StreamJsonRpc Contracts carry generated-proxy attributes.
 
-### 25.3 Contract Compatibility Testing
+### 25.3 Contract compatibility testing
 
-Native StreamJsonRpc:
+Local StreamJsonRpc:
 
 - The previous stable client proxy calls the current Provider;
 - The current client calls the previous stable Provider within the support window;
-- There are no unexpected changes in interface/method names;
-- DTO new fields are compatible according to formatter strategy;
-- Source-generated proxy is available in the Native AOT release.
+- No unexpected changes to interface/method names;
+- New DTO fields are compatible under the formatter's strategy;
+- Source-generated proxies work in the Native AOT publish artifacts.
 
-Public network HTTP:
+Public-facing HTTP:
 
-- Refit generated client calls the current Minimal API;
+- The Refit generated client calls the current Minimal API;
 - The semantics of route, verb, status, JSON shape, ETag/revision are stable;
-- Compatible with the previous stable client;
-- Reflection request builder is zero; if the version provides RF006, RF006 is zero.
+- The previous stable client remains compatible;
+- Reflection request builders number zero; where the version provides RF006, RF006 is zero as well.
 
 SignalR:
 
-- method/event names are compatible with payload schema;
-- sequence/revision can be restored after disconnection;
+- method/event names and payload schema are compatible;
+- sequence/revision can recover after a disconnect;
 - AOT JSON context covers all payloads.
 
 ### 25.4 Fault injection
 
 Must cover:
 
-- Hub starts later than Provider;
+- The Hub starts later than the Provider;
 - Hub restart;
-- Named Pipe/UDS is disconnected;
-- Provider crashes before/after command submission;
-- heartbeat lost;
-- Repeated commands and out-of-order responses;
-- revision conflict;
-- StreamJsonRpc bidirectional callback potential deadlock;
+- The Named Pipe/UDS is severed;
+- The Provider crashes before/after a command commit;
+- Lost heartbeats;
+- Duplicate commands and out-of-order responses;
+- revision conflicts;
+- Potential deadlock in StreamJsonRpc bidirectional callbacks;
 - HTTP timeout/5xx/429;
-- SignalR disconnection, transport fallback, event gap after reconnection;
-- The disk is full, the database is busy, and the snapshot is damaged;
-- The native function returns an error, times out, or the test process crashes;
-- Token expiration competes with refresh;
-- The client version is incompatible;
-- Update interruption and rollback.
+- SignalR disconnects, transport fallback, event gaps after reconnect;
+- Disk full, database busy, snapshot corruption;
+- A native function returning an error, timing out, or crashing the test process;
+- Token expiry racing with refresh;
+- Incompatible client versions;
+- Interrupted updates and rollback.
 
-### 25.5 Performance testing
+### 25.5 Performance tests
 
-- Native StreamJsonRpc Named Pipe/UDS request-response benchmark;
-- formatter: Nerdbank.MessagePack compared to optional STJ path;
-- Refit generated HTTP client throughput/distribution;
-- SignalR concurrent connection, broadcast, reconnection;
-- Large project loading and journal replay;
-- ArcVideo timeline manipulation, preview and export;
+- Local StreamJsonRpc Named Pipe/UDS request-response benchmarks;
+- Formatter: Nerdbank.MessagePack against the optional STJ path;
+- Refit generated HTTP client throughput/allocation;
+- SignalR concurrent connections, broadcast, reconnection;
+- Large project load and journal replay;
+- ArcVideo timeline operations, preview, and export;
 - ArcImage large canvas and filters;
-- ArcNotes database search and indexing;
+- ArcNotes large-library search and indexing;
 - Agent parallel tools and approvals;
 - Cloud concurrent HTTP/SignalR and database;
 - MAUI cold start, memory, weak network;
 - Blazor WASM download size and AOT performance.
 
-## 26. CI/CD Quality Gate
+## 26. CI/CD quality gates
 
-Each change passes at least:
+Every change must pass at least:
 
 - restore locked mode;
 - format/analyzer;
 - build Debug + Release;
-- Unit/integration/architecture testing;
+- Unit/integration/architecture tests;
 - StreamJsonRpc proxy/type-shape generation;
 - Refit generated-only contract tests;
 - SignalR JSON context/compatibility tests;
-- Dependency vulnerability, license and secret scanning;
+- Dependency vulnerability, license, and secret scanning;
 - SBOM;
 - Windows/Linux/macOS desktop Native AOT publish;
-- At least one native StreamJsonRpc round-trip smoke test per platform;
+- At least one local StreamJsonRpc round-trip smoke test per platform;
 - Cloud Native AOT publish + Minimal API/SignalR smoke test;
-- MAUI Android Release AOT baseline path;
+- The MAUI Android Release AOT baseline path;
 - MAUI iOS Native AOT build (macOS runner);
 - Blazor WASM publish + AOT build;
 - native ABI matrix;
-- Install, upgrade, downgrade protection and rollback smoke tests.
+- Install, upgrade, downgrade protection, and rollback smoke tests.
 
-AOT special prohibited items:
+AOT-specific prohibitions:
 
-- IL2026/IL3050 not reviewed warning;
-- Refit runtime reflection fallback appears; if the version provides `Refit.Reflection`, it appears in the production dependency tree;
-- The Refit method requires runtime request builder;
-- StreamJsonRpc Attach request does not generate proxy;
-- STJ DTO not entered JsonSerializerContext;
-- Production code relies on reflection scanning of unknown assemblies;
-- Cloud Host returns JIT due to a dependency but CI still passes.
+- Unreviewed IL2026/IL3050 warnings;
+- Any Refit runtime reflection fallback appearing; or, where the version provides `Refit.Reflection`, it appearing in the production dependency tree;
+- A Refit method requiring a runtime request builder;
+- A StreamJsonRpc Attach request with no generated proxy;
+- An STJ DTO that never entered a `JsonSerializerContext`;
+- Production code relying on reflection scanning of unknown assemblies;
+- The Cloud Host falling back to JIT because of some dependency while CI still passes.
 
-Release train additional execution:
+The release train additionally runs:
 
-- Upgrade the previous stable version to the candidate version;
-- LocalRpc/PublicApi/Realtime compatibility window;
+- Upgrade from the previous stable version to the candidate;
+- The LocalRpc/PublicApi/Realtime compatibility window;
 - Database migration rehearsal;
 - crash recovery;
-- SignalR reconnection + HTTP compensation recovery;
-- Signing, notarization, and installation source verification;
-- Complete end-to-end product collaboration scenario.
+- SignalR reconnect + HTTP compensating recovery;
+- Signing, notarization, and install-source verification;
+- A complete end-to-end product collaboration scenario.
 
-## 27. Installation, updates and rollbacks
+## 27. Installation, update, and rollback
 
-### 27.1 Desktop Products
+### 27.1 Desktop products
 
-Each product is installed and updated independently, but the combination is guaranteed to be compatible using the ArcForges release manifest:
+Each product installs and updates independently, but the ArcForges release manifest guarantees the combination stays compatible:
 
-- ArcChat, ArcVideo, ArcNotes, and ArcImage can independently release patches;
+- ArcChat, ArcVideo, ArcNotes, and ArcImage can ship patches independently;
 - The manifest declares the minimum/maximum ContractSet;
-- Check running tasks and unsaved documents before updating;
-- Download, signature verification, stage, atomic switching;
-- Keep the last bootable version;
-- When upgrading the data format, first ensure that the old version will not be opened accidentally, or provide reversible migration;
-- The native library is updated with managed callers as a version set.
+- Check for running tasks and unsaved documents before updating;
+- Download, verify signature, stage, then switch atomically;
+- Retain the previous launchable version;
+- A data-format upgrade must first guarantee that older versions cannot open it by mistake, or must provide a reversible migration;
+- Native libraries and their managed callers are updated as a single version set.
 
-Velopack is the default candidate, but it needs to be officially dropped into ADR after the PoC of the three desktop platforms; if the signature/store requirements of a certain platform are different, it will be adapted by the platform installer without changing the application architecture.
+Velopack is the default candidate, but it must be formally recorded in an ADR after a PoC on all three desktop platforms; where a platform's signing/store requirements differ, the platform installer adapts, without changing the application architecture.
 
-### 27.2 Data Compatibility
+### 27.2 Data compatibility
 
-- Write recovery point before updating the application;
+- Write a recovery point before updating the application;
 - Schema migration uses expand/contract;
 - Do not tie automatic migration and application startup into an unrecoverable step;
-- When a failure occurs, the application enters a safe read-only/recovery mode instead of continuing to write semi-upgraded data;
-- Document formats include reader/writer version and migration test.
+- On failure the application enters a safe read-only/recovery mode rather than continuing to write half-upgraded data;
+- Document formats carry reader/writer versions and have migration tests.
 
-### 27.3 Signature
+### 27.3 Signing
 
 - Windows code signing;
 - macOS Developer ID, Hardened Runtime and notarization;
-- Mobile platform signature;
-- Linux package checksum/repository signing;
-- NuGet/internal feed and native asset sources are traceable.
+- Mobile platform signing;
+- Linux package checksums/repository signing;
+- NuGet/internal feed and native asset provenance are traceable.
 
 ---
 
 ## 28. Phased implementation plan
 
-### Phase 0: Decision Freezing and Minimal Skeleton
+### Phase 0: decision freeze and minimal skeleton
 
-Delivery:
+Deliverables:
 
-- Adopt this article;
-- Fixed .NET 10 SDK and central package versions;
-- Establish Foundation/Application/Contracts boundary;
-- Set up architectural testing and CI;
-- Write out key ADRs: Public HTTP/Refit, Local StreamJsonRpc, SignalR, AOT, P/Invoke, persistence, release mode.
+- Adopt this document;
+- Pin the .NET 10 SDK and the central package versions;
+- Establish the Foundation/Application/Contracts boundaries;
+- Set up architecture tests and CI;
+- Write the key ADRs: public HTTP/Refit, local StreamJsonRpc, SignalR, AOT, P/Invoke, persistence, release mode.
 
-Exit conditions: The empty solution passes the build in all target runners, and has at least Cloud/Desktop Native AOT hello-world to publish the product.
+Exit conditions: the empty solution builds on every target runner, and at least a Cloud/Desktop Native AOT hello-world publish artifact exists.
 
-### Phase 1: Native StreamJsonRpc Vertical Slice
+### Phase 1: local StreamJsonRpc vertical slice
 
-Prove full paths with ArcChat + a minimal ArcNotes capability:
+Prove the complete path with ArcChat plus one minimal ArcNotes capability:
 
 - Two independent Avalonia Native AOT processes;
 - ArcChat Local Hub;
@@ -2187,63 +2187,63 @@ Prove full paths with ArcChat + a minimal ArcNotes capability:
 - Nerdbank.MessagePack formatter + TypeShape;
 - Registration, lease, heartbeat, discovery;
 - Strongly typed `INotesLocalRpc` commands;
-- The local UI and remote RPC share the Application Service;
-- revision, CommandId, notifications and crash recovery.
+- Local UI and remote RPC share the same Application Service;
+- revision, CommandId, notifications, and crash recovery.
 
-Exit conditions: Hub can be restarted, ArcNotes can still be edited offline, Agent can call controlled capabilities after reconnection, and the real RPC between the two AOT publishing processes passes.
+Exit conditions: the Hub can restart, ArcNotes stays editable offline, the Agent can invoke controlled capabilities after reconnecting, and real RPC between the two AOT-published processes passes.
 
-### Phase 2: ArcNotes complete
+### Phase 2: ArcNotes completion
 
 - Document model, AOT-safe SQLite, journal/snapshot;
-- Search and Attachments ResourceRef;
+- Search and attachment ResourceRefs;
 - Undo/Redo;
 - Multi-window/multi-instance strategy;
-- LocalRpc contract compatibility testing.
+- LocalRpc contract compatibility tests.
 
-Exit conditions: Real document volume, crash recovery and upgrade tests passed.
+Exit conditions: realistic document volumes, crash recovery, and upgrade tests all pass.
 
-### Phase 3: ArcImage and P/Invoke Baseline
+### Phase 3: ArcImage and the P/Invoke baseline
 
 - LibraryImport, SafeHandle, ABI version;
 - Native image library adaptation;
-- Large buffer and GPU/CPU display paths;
+- Large buffers and the GPU/CPU display path;
 - fuzz, sanitizer, crash dump;
-- No worker recovery verification;
-- Native AOT release verification.
+- Recovery verification with no Worker;
+- Native AOT publish verification.
 
-Exit conditions: Native library exceptions will not cause damage to submitted documents and can be recovered by restarting.
+Exit conditions: a native library fault does not corrupt committed documents, and a restart recovers.
 
 ### Phase 4: ArcVideo
 
-- Media index, timeline, preview, tasks and export;
+- Media indexing, timeline, preview, tasks, and export;
 - Native codec P/Invoke;
-- Backpressure, memory budget, and long tasks;
+- Backpressure, memory budget, and long-running tasks;
 - Agent/ArcChat StreamJsonRpc semantic capabilities.
 
-Exit conditions: Large project performance and long-term stability reach the measured SLO.
+Exit conditions: large-project performance and long-run stability meet the measured SLO.
 
 ### Phase 5: ArcForges Cloud
 
-- Native AOT ASP.NET Core modular monolith;
+- A Native AOT ASP.NET Core modular monolith;
 - Identity, Chat, Device, Sync, Resource, Task;
 - Minimal API standard HTTP/JSON;
 - Refit generated-only clients;
 - SignalR JSON realtime;
 - Npgsql AOT-safe persistence + outbox;
-- OpenTelemetry and production security baselines.
+- OpenTelemetry and the production security baseline.
 
-Exit conditions: The desktop completes cloud connection, network disconnection recovery and multi-device security testing through Refit/SignalR, and the Cloud [[CODE_164]]] product passes the production equivalent smoke test.
+Exit conditions: The desktop completes cloud connection, network disconnection recovery and multi-device security testing through Refit/SignalR, and the Cloud `PublishAot=true` artifact passes a production-equivalent smoke test.
 
 ### Phase 6: MAUI
 
-- Android/iOS login, chat, tasks, approval;
+- Android/iOS login, chat, tasks, approvals;
 - Refit generated-only;
 - SignalR realtime;
 - iOS Native AOT;
-- Android Mono AOT production baseline separate from Native AOT experimental PoC;
-- offline outbox, push and secure storage.
+- The Android Mono AOT production baseline is kept separate from the Native AOT experimental PoC;
+- Offline outbox, push, and secure storage.
 
-Exit conditions: Real machine weak network, background recovery, AOT and store package verification passed.
+Exit conditions: on-device weak-network, background resume, AOT, and store package verification all pass.
 
 ### Phase 7: Blazor WebAssembly
 
@@ -2251,176 +2251,176 @@ Exit conditions: Real machine weak network, background recovery, AOT and store p
 - Refit/HttpClient HTTP/JSON;
 - SignalR realtime;
 - WASM AOT;
-- Static/Native AOT Host deployment;
-- Security and browser compatibility testing.
+- Static/Native AOT host deployment;
+- Security and browser compatibility tests.
 
-Exit conditions: WASM AOT release, first load, cache, real-time reconnection and API compatibility tests passed.
+Exit conditions: WASM AOT publish, first load, caching, real-time reconnect, and API compatibility tests all pass.
 
 ### Phase 8: Optional desktop bridging
 
-- ArcChat active SignalR outbound connection;
-- device binding;
+- ArcChat proactively opening an outbound SignalR connection;
+- Device binding;
 - Remote scope and approval;
-- Cloud SignalR intent -> native StreamJsonRpc capability;
-- Refit persistent results/task queries;
-- Disconnect, revocation and audit.
+- Cloud SignalR intent -> local StreamJsonRpc capability;
+- Refit durable result/task queries;
+- Disconnection, revocation, and audit.
 
-Exit conditions: The external security review and user-visible control have been completely passed.
+Exit conditions: the external security review and the user-visible controls both pass in full.
 
-## 29. Main risks and disciplines
+## 29. Principal risks and disciplines
 
 ### 29.1 StreamJsonRpc is only partially NativeAOT-safe
 
-Processing: Turn official AOT restrictions into repository hard rules: interceptors, `JsonRpcContract`, GenerateShape, export proxy, pre-generated interface group, AOT-safe formatter, `RpcTargetMetadata`, real Native AOT publish test. Disable online dynamic proxy fallback.
+Mitigation: turn the official AOT restrictions into hard repository rules — interceptors, `JsonRpcContract`, GenerateShape, exported proxies, pre-generated interface groups, an AOT-safe formatter, `RpcTargetMetadata`, and a real Native AOT publish test. Dynamic proxy fallback in production is prohibited.
 
-### 29.2 StreamJsonRpc bidirectional call causes concurrency/deadlock misjudgment
+### 29.2 StreamJsonRpc bidirectional calls cause concurrency/deadlock misjudgements
 
-Processing: do not use transport as an Actor; domain writes are serialized according to documents; do not hold locks and wait for callbacks; write commands by revision/CommandId; fault injection covers bidirectional callbacks and disconnections.
+Mitigation: do not treat the transport as an Actor; serialize domain writes per document; never hold a lock while awaiting a callback; base write commands on revision/CommandId; cover bidirectional callbacks and disconnects with fault injection.
 
-### 29.3 Refit may still return reflection request builder due to interface shape
+### 29.3 Refit may still fall back to a reflection request builder because of interface shape
 
-Processing: Only use the generated-only API, disable runtime reflection fallback, and upgrade the relevant analyzer diagnosis to an error; if the version provides RF006/`Refit.Reflection`, respectively require RF006 to be zero and the production dependency does not contain `Refit.Reflection`. And run Native AOT publish contract test for each Public API method.
+Mitigation: use only the generated-only API, prohibit runtime reflection fallback, and escalate the relevant analyzer diagnostics to errors; where the version provides RF006/`Refit.Reflection`, require RF006 to be zero and `Refit.Reflection` to be absent from production dependencies. Run a Native AOT publish contract test for every public API method.
 
 ### 29.4 SignalR is misused as a reliable business bus
 
-Processing: SignalR only does the real-time layer; business facts are implemented in the database/journal/outbox; the client restores through Refit HTTP according to sequence/revision; large files and key commands do not rely on one real-time message delivery.
+Mitigation: SignalR is the real-time layer only; business facts land in the database/journal/outbox; clients recover through Refit HTTP by sequence/revision; large files and critical commands never depend on a single real-time message being delivered.
 
-### 29.5 SignalR Native AOT has limited functionality
+### 29.5 SignalR Native AOT has a limited feature surface
 
-Solution: Only use JSON protocol, ordinary `Hub`, and source-generated JSON under AOT to avoid `Hub<T>` and unsupported streaming shape; after upgrading .NET, run the AOT compatibility suite first and then relax.
+Mitigation: under AOT use only the JSON protocol, a plain `Hub`, and source-generated JSON, avoiding `Hub<T>` and unsupported streaming shapes; after a .NET upgrade, run the AOT compatibility suite before relaxing anything.
 
-### 29.6 Android’s strict Native AOT is not yet a stable full-platform reality
+### 29.6 Android's strict Native AOT is not yet a stable full-platform reality
 
-Treatment: Documentation clarifies the difference between Android Mono AOT and CoreCLR Native AOT. If "full AOT" is defined as strictly Native AOT, then Android is a platform exception in .NET 10 and cannot be covered up by wording; continue PoC and migrate after the official stability.
+Mitigation: the documentation states the difference between Android Mono AOT and CoreCLR Native AOT explicitly. If "full AOT" means strict Native AOT, then Android is a platform exception on .NET 10 and no wording may paper over it; keep the PoC running and migrate once it is officially stable.
 
 ### 29.7 EF Core blocks strict Native AOT
 
-Solution: The production main host adopts the AOT-safe access path of Npgsql/SQLite; EF Core is not used as a hard dependency. The migration tool can be independent, but it cannot bring the JIT ORM back to the main process.
+Mitigation: the production main host uses the AOT-safe Npgsql/SQLite access path; EF Core is not a hard dependency. Migration tooling may stand alone, but it must not bring a JIT ORM back into the main process.
 
-### 29.8 The native library crashes in the same process
+### 29.8 An in-process native library crash
 
-Handling: Narrow C ABI, SafeHandle, input validation, fuzz/sanitizer, sacrificial process testing, crash dump, journal recovery. If the security isolation requirement is met in the future, then add an isolation host using ADR.
+Mitigation: a narrow C ABI, SafeHandle, input validation, fuzz/sanitizer, sacrificial-process testing, crash dumps, and journal recovery. Should a security isolation requirement be established later, add an isolated host through an ADR.
 
-### 29.9 C# Excessive Sharing Leads to Giant Monolith
+### 29.9 Over-sharing in C# leads to a giant monolith
 
-Dealing with: Shared language does not equal shared model; Foundation/LocalRpc/PublicApi/Realtime Contracts split, module ownership, architecture testing and prohibition of cross-product Infrastructure references.
+Mitigation: a shared language is not a shared model; split Foundation/LocalRpc/PublicApi/Realtime Contracts, enforce module ownership and architecture tests, and ban cross-product Infrastructure references.
 
-### 29.10 Destructive renaming of Interface Code First
+### 29.10 Breaking renames under Interface Code First
 
-Processing: LocalRpc contract version specification, V1/V2 coexistence, old proxy matrix and API diff; Refit Public API is governed by HTTP route/version compatibility rules.
+Mitigation: LocalRpc contract versioning rules, V1/V2 coexistence, an old-proxy matrix, and API diffs; the Refit public API is governed by HTTP route/version compatibility rules.
 
 ### 29.11 Hub becomes a central business service
 
-Handling: The Hub data model only allows platform state; product domain tables, documents, and undo stacks are not allowed into the Hub; periodic architecture audits.
+Mitigation: the Hub data model admits platform state only; product domain tables, documents, and undo stacks must never enter the Hub; run periodic architecture audits.
 
 ### 29.12 Agent bypasses permissions
 
-Processing: Agent can only call common typed capabilities; Provider final authorization; high-risk approval binding parameter hash; full-link audit.
+Mitigation: Agents may call only ordinary typed capabilities; the Provider performs final authorization; high-risk approvals bind a parameter hash; auditing is end to end.
 
-### 29.13 Premature Microservices and Messaging Infrastructure
+### 29.13 Premature microservices and messaging infrastructure
 
-Processing: The cloud is started as a modular monolith; it will only be dismantled if there are real independent expansion/isolation requirements; the distributed messaging system will not be introduced natively.
+Mitigation: start the cloud as a modular monolith; split it only when there is a genuine need for independent scaling/isolation; introduce no distributed messaging system on the local machine.
 
-## 30. Architecture Review Checklist
+## 30. Architecture review checklist
 
-Answer before each new feature is merged:
+Answer these before merging any new feature:
 
-### Products and status
+### Products and state
 
-- [] Who is the sole authoritative owner of this state?
-- [] Is Hub holding product domain status incorrectly?
-- [] Are core product features still available when the Hub is offline?
-- [] Are eventually consistent and compensable designs used across applications?
+- [ ] Who is the sole authoritative owner of this state?
+- [ ] Is the Hub wrongly holding product domain state?
+- [ ] Are core product features still available when the Hub is offline?
+- [ ] Do cross-application paths use eventually consistent, compensatable designs?
 
-### layered
+### Layering
 
-- [] Do the local UI, local RPC, and public network HTTP call the same Application Service?
-- [] Does StreamJsonRpc/Minimal API/SignalR Adapter not reference ViewModel/control at all?
-- [] Does Domain have no UI, database, communication library and native dependencies?
-- [] Are DTO, Domain Model, and ViewState not mixed?
+- [ ] Do local UI, local RPC, and public-facing HTTP all call the same Application Service?
+- [ ] Do the StreamJsonRpc/Minimal API/SignalR adapters avoid referencing ViewModels/controls entirely?
+- [ ] Is Domain free of UI, database, communication-library, and native dependencies?
+- [ ] Are DTOs, domain models, and ViewState kept unmixed?
 
-### Native StreamJsonRpc
+### Local StreamJsonRpc
 
-- Is [] a `[JsonRpcContract]` strongly typed interface instead of a universal call to string/object?
-- [] Do you want to use `GenerateShape(PublicInstance)` and exported generated proxies?
-- [] Do you want to enable `EnableStreamJsonRpcInterceptors`?
-- [] Are multiple interface combinations pre-generated rather than dynamically assembled at runtime?
-- [] Is formatter an AOT-safe path?
-- [] target Use the production expression `RpcTargetMetadata`?
-- [] Is there a CancellationToken, CommandId and revision?
-- [] Verify old proxy/client is compatible?
+- [ ] Is this a `[JsonRpcContract]` strongly typed interface rather than a catch-all string/object call?
+- [ ] Does it use `GenerateShape(PublicInstance)` and exported generated proxies?
+- [ ] Is `EnableStreamJsonRpcInterceptors` enabled?
+- [ ] Are multi-interface combinations pre-generated rather than assembled dynamically at runtime?
+- [ ] Is the formatter on an AOT-safe path?
+- [ ] Does the target use the generated `RpcTargetMetadata`?
+- [ ] Are CancellationToken, CommandId, and revision present?
+- [ ] Has compatibility with the previous proxy/client been verified?
 
-### Public network Refit HTTP/JSON
+### Public-facing Refit HTTP/JSON
 
-- [] Do you want to use `AddRefitGeneratedClient`/`ForGenerated`?
-- [] Is there no Refit runtime reflection fallback at all? If the current version provides `Refit.Reflection`, does the production dependency not include it?
-- [] Is there no reflection request builder diagnostic?
-- Does the [] JSON DTO go into `JsonSerializerContext`?
-- [] Is the HTTP verb/status/cache/version semantics correct?
-- [] Do large objects use standard HTTP stream/ResourceRef?
+- [ ] Does it use `AddRefitGeneratedClient`/`ForGenerated`?
+- [ ] Is there no Refit runtime reflection fallback at all? If the current version provides `Refit.Reflection`, does the production dependency not include it?
+- [ ] Is there no reflection request builder diagnostic?
+- [ ] Do the JSON DTOs go into a `JsonSerializerContext`?
+- [ ] Are the HTTP verb/status/cache/version semantics correct?
+- [ ] Do large objects go through a standard HTTP stream/ResourceRef?
 
 ### SignalR
 
-- [] Is it only used for real-time needs and not the only persistent fact?
-- [] Is only JSON protocol used under AOT?
-- [] Do you want to avoid `Hub<T>` Native AOT limitations?
-- [] Is the payload source-generated?
-- [] Can it be restored through Refit + sequence/revision after disconnection?
+- [ ] Is it used only for real-time needs, never as the sole durable fact?
+- [ ] Is only the JSON protocol used under AOT?
+- [ ] Are the `Hub<T>` Native AOT limitations avoided?
+- [ ] Is the payload source-generated?
+- [ ] Can state be recovered through Refit + sequence/revision after a disconnect?
 
 ### IPC and security
 
-- [] Are Windows Named Pipe / Unix Domain Socket permissions minimized?
-- [] Verify app instance, session, and actor?
-- [] Does the Provider do the final authorization?
-- [] Do you want to avoid fixed public network ports and arbitrary path loading?
+- [ ] Are Windows Named Pipe / Unix Domain Socket permissions minimized?
+- [ ] Are app instance, session, and actor verified?
+- [ ] Does the Provider perform the final authorization?
+- [ ] Are fixed public-facing ports and arbitrary-path loading avoided?
 
 ### Native interop
 
-- [] Do you really need native libraries?
-- [] by stabilizing C ABI and `[LibraryImport]`?
-- [] Use SafeHandle and clear ownership?
-- [] Are native exceptions blocked within the ABI?
-- [] Are there fuzz, sanitizer, ABI and crash recovery tests?
-- [] Is there no new C++ Worker?
+- [ ] Is a native library genuinely required?
+- [ ] Does it go through a stable C ABI and `[LibraryImport]`?
+- [ ] Does it use SafeHandle with explicit ownership?
+- [ ] Are native exceptions contained inside the ABI?
+- [ ] Are there fuzz, sanitizer, ABI, and crash recovery tests?
+- [ ] Has no new C++ Worker been added?
 
 ### UI and tasks
 
-- [] Does the UI thread only do light work?
-- [] Is the queue bounded and has backpressure?
-- [] Does a long task return TaskHandle?
-- [] Is the task queryable, resumable, cancelable or explicitly non-cancelable?
+- [ ] Does the UI thread do only lightweight work?
+- [ ] Is the queue bounded and backpressured?
+- [ ] Does a long-running task return a TaskHandle?
+- [ ] Is the task queryable, recoverable, and cancellable — or explicitly non-cancellable?
 
 ### AOT and publishing
 
-- [] Does the host actually execute `PublishAot=true` (applicable platform)?
-- [] Is there no uncensored IL2026/IL3050?
-- [] Does Android clearly differentiate between Mono AOT and experimental Native AOT?
-- [] Are native and managed as the same version set?
-- [] Are updates, rollbacks, schema and document formats compatible?
-- [] Are there signature, SBOM, dependency and secret scans?
+- [ ] Does the host genuinely run `PublishAot=true` (on applicable platforms)?
+- [ ] Are there no unreviewed IL2026/IL3050 warnings?
+- [ ] Does Android clearly distinguish Mono AOT from experimental Native AOT?
+- [ ] Are native and managed shipped as one version set?
+- [ ] Are updates, rollbacks, schema and document formats compatible?
+- [ ] Are there signing, SBOM, dependency, and Secret scans?
 
-## 31. Summary of final decision
+## 31. Final decision summary
 
-ArcForges should be understood in the future as a set of products that use the same language and platform but maintain domain autonomy:
+The future of ArcForges should be read as a set of products that share one language and platform while remaining domain-autonomous:
 
-- **Language Unification**: Product codes are all C#;
-- **Runtime Unification**: .NET 10 LTS;
-- **AOT target**: Cloud/Desktop/iOS uses Native AOT as the default hard constraint, and Web uses WASM AOT; Android clearly makes exceptions for the current platform;
-- **Desktop Unification**: Avalonia;
-- **Mobile Unification**: .NET MAUI;
-- **Web Unification**: Blazor WebAssembly;
-- **Cloud Unification**: ASP.NET Core Native AOT Minimal API;
-- **Public network request/response**: Refit generated-only + standard HTTP/JSON;
-- **Public network real-time**: SignalR JSON;
-- **Native RPC**: StreamJsonRpc + Interface Code First + Named Pipe/UDS;
-- **Native AOT formatter**: Default Nerdbank.MessagePack + TypeShape, UTF-8 JSON Use STJ source generation only when explicitly needed;
+- **Unified language**: all product code is C#;
+- **Unified runtime**: .NET 10 LTS;
+- **AOT target**: Cloud/Desktop/iOS take Native AOT as the default hard constraint and Web uses WASM AOT; Android is explicitly a current platform exception;
+- **Unified desktop**: Avalonia;
+- **Unified mobile**: .NET MAUI;
+- **Unified web**: Blazor WebAssembly;
+- **Unified cloud**: ASP.NET Core Native AOT Minimal API;
+- **Public-facing request/response**: Refit generated-only + standard HTTP/JSON;
+- **Public-facing real time**: SignalR JSON;
+- **Local RPC**: StreamJsonRpc + Interface Code First + Named Pipe/UDS;
+- **Local AOT formatter**: Nerdbank.MessagePack + TypeShape by default; UTF-8 JSON uses STJ source generation only where explicitly needed;
 - **Native interop**: same-process P/Invoke + narrow C ABI;
 - **Failure recovery**: journal + snapshot + revision + idempotency;
-- **Agent**: runs within ArcChat, but does not have additional permissions;
-- **Architecture form**: Each product has a complete single process, the Hub only cares about the platform status, and the Cloud starts as a modular monolith;
-- **Persistence**: Strictly Native AOT main host does not use EF Core as an irreplaceable runtime.
+- **Agent**: runs inside ArcChat but holds no extra permissions;
+- **Architectural shape**: each product is one complete process, the Hub manages platform state only, and the Cloud starts as a modular monolith;
+- **Persistence**: a strict Native AOT main host does not treat EF Core as an irreplaceable runtime.
 
-Three communications responsibilities must remain clear over time:
+The three communication responsibilities must stay clearly separated for the long term:
 
 ```text
 Local process-to-process  -> StreamJsonRpc
@@ -2428,39 +2428,39 @@ Public request/response   -> Refit + HTTP/JSON
 Public realtime           -> SignalR
 ```
 
-The most important constraint is not "all code looks like it is in the C# repository", but: ** state has a unique owner, calls have a strongly typed contract, the public network adheres to standard HTTP semantics, the real-time layer is lost but recoverable, all production main paths can be statically analyzed by AOT, failure is recoverable, permissions are verified at the final execution point, and native capabilities do not leak out of the adaptation boundary. **
+The most important constraint is not that "all the code sits in one C# repository", but that **state has a single owner, calls have strongly typed contracts, the public internet follows standard HTTP semantics, the real-time layer may drop messages yet stays recoverable, every production main path is statically analyzable by AOT, failures are recoverable, permissions are validated at the final execution point, and native capabilities never leak past the adapter boundary.**
 
-## 32. Official information and real-time verification sources
+## 32. Official material and verification sources
 
-The following information is used for this technical decision-making, and the verification time is **2026-07-20**. The version number gives priority to the stable version; the preview version is only used to judge future directions and is not used as a stable baseline for this article.
+The following material informed this technical decision; the verification date is **2026-07-20**. Version numbers favour stable releases; preview releases are used only to judge future direction and are never a stable baseline for this document.
 
-### .NET, ASP.NET Core Native AOT and data layer
+### .NET, ASP.NET Core Native AOT, and the data layer
 
-- [ .NET Native AOT deployment](https://learn.microsoft.com/en-us/dotnet/core/deploying/native-aot/)
+- [.NET Native AOT deployment](https://learn.microsoft.com/en-us/dotnet/core/deploying/native-aot/)
 - [ASP.NET Core Native AOT support](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/native-aot/)
-- [What's new in ASP.NET Core in .NET 9 - SignalR Native AOT](https://learn.microsoft.com/en-us/aspnet/core/release-notes/aspnetcore-9.0)
+- [What's new in ASP.NET Core in .NET 9 — SignalR Native AOT](https://learn.microsoft.com/en-us/aspnet/core/release-notes/aspnetcore-9.0)
 - [ASP.NET Core SignalR overview](https://learn.microsoft.com/en-us/aspnet/core/signalr/introduction)
 - [System.Text.Json source generation](https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/source-generation)
 - [EF Core NativeAOT support](https://learn.microsoft.com/en-us/ef/core/performance/nativeaot-and-precompiled-queries)
 - [Npgsql](https://www.npgsql.org/)
 - [Dapper.AOT](https://github.com/DapperLib/DapperAOT)
 
-### Refit: Public network HTTP/JSON
+### Refit: public-facing HTTP/JSON
 
 - [Refit official documentation](https://reactiveui.github.io/refit/)
 - [Refit 13.1.0 NuGet](https://www.nuget.org/packages/Refit/13.1.0)
 - [Refit.HttpClientFactory 13.1.0 NuGet](https://www.nuget.org/packages/Refit.HttpClientFactory/13.1.0)
 
-Key conclusions from this adoption:
+The key conclusions adopted here:
 
-- Refit 13.x comes with source generator;
+- Refit 13.x ships with a source generator;
 - Native AOT/trimmed applications use `RestService.ForGenerated<T>` or `AddRefitGeneratedClient<T>`;
 - The generated-only API does not allow silent fallback when a generated implementation is missing;
-- generated request building covers most modern interface shapes, but uncovered shapes may trigger the runtime request builder, so CI must intercept related analyzer diagnostics;
+- Generated request building covers most modern interface shapes, but an uncovered shape can trigger the runtime request builder, so CI must intercept the related analyzer diagnostics;
 - JSON uses `SystemTextJsonContentSerializer` + source-generated `JsonSerializerContext`;
-- Strict AOT prohibits runtime reflection fallback; if future/used versions provide the `Refit.Reflection` opt-in package, it will not be introduced into the production AOT main path.
+- Strict AOT prohibits runtime reflection fallback; if a future or in-use version provides the `Refit.Reflection` opt-in package, it is not brought into the production AOT main path.
 
-### StreamJsonRpc: Native Interface Code First RPC
+### StreamJsonRpc: local Interface Code First RPC
 
 - [StreamJsonRpc NativeAOT / Trimming](https://microsoft.github.io/vs-streamjsonrpc/docs/nativeAOT.html)
 - [StreamJsonRpc Strongly typed proxies](https://microsoft.github.io/vs-streamjsonrpc/docs/proxies.html)
@@ -2472,43 +2472,43 @@ Key conclusions from this adoption:
 - [StreamJsonRpc 2.25.29 NuGet](https://www.nuget.org/packages/StreamJsonRpc/2.25.29)
 - [Nerdbank.MessagePack 1.2.36 NuGet](https://www.nuget.org/packages/Nerdbank.MessagePack/1.2.36)
 
-Key conclusions from this adoption:
+The key conclusions adopted here:
 
-- StreamJsonRpc is officially **partially NativeAOT safe**;
-- `EnableStreamJsonRpcInterceptors=true` is the key switch of the Native AOT agent path;
-- `[JsonRpcContract]` + `GenerateShape(PublicInstance)` triggers/supports generative agents;
-- Standalone Contracts can directly expose the generation agent using `[assembly: ExportRpcContractProxies]`;
+- StreamJsonRpc is officially stated to be **partially NativeAOT safe**;
+- `EnableStreamJsonRpcInterceptors=true` is the key switch for the Native AOT proxy path;
+- `[JsonRpcContract]` + `GenerateShape(PublicInstance)` triggers/underpins generated proxies;
+- Standalone Contracts can expose generated proxies directly via `[assembly: ExportRpcContractProxies]`;
 - Multi-interface proxy combinations are predefined with `JsonRpcProxyInterfaceGroupAttribute`;
-- Native AOT takes precedence `NerdbankMessagePackFormatter`; UTF-8 JSON uses `SystemTextJsonFormatter` + `JsonSerializerContext`;
-- AOT target registration uses `RpcTargetMetadata` to generate the path;
-- The strongly typed proxy interface does not allow property/generic methods, but supports Task/ValueTask/IAsyncEnumerable and tail CancellationToken;
-- The same Stream cannot be created and shared by multiple independent JsonRpc instances;
-- The async scenario of Windows Named Pipe must use the asynchronous pipe option as officially recommended.
+- Native AOT prefers `NerdbankMessagePackFormatter`; UTF-8 JSON uses `SystemTextJsonFormatter` + `JsonSerializerContext`;
+- AOT target registration uses the `RpcTargetMetadata` generated path;
+- Strongly typed proxy interfaces allow no properties or generic methods; they support Task/ValueTask/IAsyncEnumerable and a trailing CancellationToken;
+- Multiple independent `JsonRpc` instances must not be created to share one Stream;
+- Async scenarios over a Windows Named Pipe must use the asynchronous pipe option, as officially recommended.
 
-### SignalR: real-time on public network
+### SignalR: public-facing real time
 
 - [ASP.NET Core SignalR introduction](https://learn.microsoft.com/en-us/aspnet/core/signalr/introduction)
 - [ASP.NET Core SignalR .NET client](https://learn.microsoft.com/en-us/aspnet/core/signalr/dotnet-client)
-- [ASP.NET Core .NET 9 release notes - Native AOT SignalR](https://learn.microsoft.com/en-us/aspnet/core/release-notes/aspnetcore-9.0)
+- [ASP.NET Core .NET 9 release notes — Native AOT SignalR](https://learn.microsoft.com/en-us/aspnet/core/release-notes/aspnetcore-9.0)
 
-Key conclusions from this adoption:
+The key conclusions adopted here:
 
-- SignalR client/server already has Native AOT support;
-- Under AOT, JSON Hub protocol + System.Text.Json source generation is used as the baseline;
-- `Hub<T>` strongly typed hub is not the Native AOT server baseline of this article;
-- SignalR only does real-time sessions and does not replace the HTTP API, outbox, or persistent state;
-- After reconnection, HTTP query revision/sequence is used for state recovery.
+- The SignalR client and server already have a Native AOT support surface;
+- Under AOT, the baseline is the JSON hub protocol + System.Text.Json source generation;
+- The `Hub<T>` strongly typed hub is not this document's Native AOT server baseline;
+- SignalR carries real-time sessions only; it does not replace the HTTP API, the outbox, or durable state;
+- After reconnecting, state recovery comes from querying revision/sequence over HTTP.
 
-### Avalonia, MAUI and Blazor
+### Avalonia, MAUI, and Blazor
 
 - [Avalonia Native AOT](https://docs.avaloniaui.net/docs/deployment/native-aot)
 - [Avalonia Supported Platforms](https://docs.avaloniaui.net/docs/supported-platforms)
-- [ .NET MAUI Controls NuGet](https://www.nuget.org/packages/Microsoft.Maui.Controls/10.0.80)
-- [ .NET MAUI Native AOT](https://learn.microsoft.com/en-us/dotnet/maui/deployment/nativeaot)
-- [ .NET MAUI Android build process / AOT](https://learn.microsoft.com/en-us/dotnet/android/deployment/)
+- [.NET MAUI Controls NuGet](https://www.nuget.org/packages/Microsoft.Maui.Controls/10.0.80)
+- [.NET MAUI Native AOT](https://learn.microsoft.com/en-us/dotnet/maui/deployment/nativeaot)
+- [.NET MAUI Android build process / AOT](https://learn.microsoft.com/en-us/dotnet/android/deployment/)
 - [Blazor WebAssembly AOT compilation](https://learn.microsoft.com/en-us/aspnet/core/blazor/webassembly-build-tools-and-aot)
 
-### P/Invoke, Agent, Telemetry and Publishing
+### P/Invoke, Agent, telemetry, and publishing
 
 - [Source generation for platform invokes](https://learn.microsoft.com/en-us/dotnet/standard/native-interop/pinvoke-source-generation)
 - [Native interoperability best practices](https://learn.microsoft.com/en-us/dotnet/standard/native-interop/best-practices)
@@ -2519,4 +2519,4 @@ Key conclusions from this adoption:
 - [OpenTelemetry.Extensions.Hosting NuGet](https://www.nuget.org/packages/OpenTelemetry.Extensions.Hosting/)
 - [Velopack](https://github.com/velopack/velopack)
 
-When the stable version or constraints of these materials change, the ADR, AOT compatibility matrix and real release PoC should be updated first, and then the technical baseline of this general outline should be modified; the architecture cannot be changed without verification just because a new version is released.
+When the stable versions or constraints of this material change, update the ADRs, the AOT compatibility matrix, and a real publish PoC first, and only then amend the technical baseline of this master outline; the architecture must not be changed without verification simply because a new version has shipped.
