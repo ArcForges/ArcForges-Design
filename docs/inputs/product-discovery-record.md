@@ -441,7 +441,7 @@ The underlying entitlement supports from day one:
 Product Scope
 ```
 
-But there's no need for a business page to expose dozens of SKUs on day one.
+But there is no need for a business page to expose dozens of SKUs on day one.
 
 ---
 
@@ -477,7 +477,7 @@ So:
 
 > **$5.99 + 50GB + the entire ArcForges ecosystem**
 
-It's competitive.
+It is competitive.
 
 ---
 
@@ -911,7 +911,7 @@ I positioned it as:
 
 > **Fallback + Long-tail Model Provider**
 
-Because it's great for supporting large numbers of models quickly.
+Because it is great for supporting large numbers of models quickly.
 
 But if all ArcForges Managed AI goes through OpenRouter, you will naturally bear platform fees: OpenRouter currently has a 5.5% fee for purchasing credits; BYOK also has a 5% platform fee for exceeding the free request limit. ([OpenRouter][9])
 
@@ -979,7 +979,7 @@ This is it:
 
 # **Managed Open Source**
 
-It's not about making money from the scarcity of source code.
+It is not about making money from the scarcity of source code.
 
 Rely on:
 
@@ -1451,7 +1451,7 @@ The correct way should be:
 Local Profile
 ```
 
-It's just:
+It is just:
 
 > The local application identity on the current device/OS user.
 
@@ -1572,7 +1572,7 @@ ArcForges Organization
 └── Shared Data
 ```
 
-It's very natural.
+It is very natural.
 
 ---
 
@@ -1828,7 +1828,7 @@ Continue with Email
 Continue with Passkey
 ```
 
-That's enough.
+That is enough.
 
 The main reason is not technology.
 
@@ -1867,7 +1867,7 @@ First-party Email
 Passkey
 ```
 
-It's a very clean starting point.
+It is a very clean starting point.
 
 In the future, if user data indicates:
 
@@ -2032,7 +2032,7 @@ Continue
 
 This is called Step-up.
 
-A lot of safety rework can be avoided later.
+A lot of security rework can be avoided later.
 
 ---
 
@@ -2906,7 +2906,7 @@ Deletion Pending
 
 Then:
 
-* Disable new Cloud writes
+* Prohibit new Cloud writes
 * Cancel/stop renewal according to billing rules
 * Revoke Sessions
 * Revoke Devices
@@ -3980,7 +3980,7 @@ Portal goals:
 
 > Know your Cloud status in 30 seconds.
 
-It's not about stuffing a bunch of marketing content into it.
+It is not about stuffing a bunch of marketing content into it.
 
 ---
 
@@ -4330,7 +4330,7 @@ The Pricing Page should faithfully represent this model.
 arcforges.com/open-source
 ```
 
-It's not just about putting a GitHub icon in the Footer.
+It is not just about putting a GitHub icon in the Footer.
 
 Shown here:
 
@@ -4614,7 +4614,7 @@ It can be upgraded later when the scale becomes larger:
 trust.arcforges.com
 ```
 
-But that's not necessary now.
+But that is not necessary now.
 
 ---
 
@@ -4639,7 +4639,7 @@ Depending on the browser language, you can be prompted:
 
 > Chinese version available
 
-But it's up to the user.
+But it is up to the user.
 
 Google still currently recommends explicitly marking different language/region versions, such as using `hreflang`, so that search engines understand the relationship between localized pages. ([Google for Developers][4])
 
@@ -6051,7 +6051,7 @@ A better formal description:
 
 > **Prepaid usage credits for ArcForges Managed AI services. Credits have no cash value, cannot be withdrawn, transferred or traded.**
 
-This way it's clear:
+This way it is clear:
 
 > SaaS usage balance
 
@@ -6155,7 +6155,7 @@ Refund
 Cancel correspondence 365-day Entitlement Grant
 ```
 
-Here's why:
+Here is why:
 
 > Entitlement must document the source.
 
@@ -6489,7 +6489,7 @@ It will be useful for future domestic tax, bank or Alipay audits.
 
 # 37. Waffo's own risks must also enter the system design
 
-The Waffo company itself is not a small team with no background: it will complete a new round of financing of more than US$15 million in 2026, co-led by Illuminate Financial and Gaorong, with participation from HSBC and BAI Capital; Illuminate Financial itself has also publicly confirmed its investment. ([illuminatefinancial.com][16])
+The Waffo company itself is not a small team with no background: in 2026 it closed a new funding round of more than US$15 million, co-led by Illuminate Financial and Gaorong, with participation from HSBC and BAI Capital; Illuminate Financial has also publicly confirmed the investment. ([illuminatefinancial.com][16])
 
 But:
 
@@ -6758,7 +6758,7 @@ $59 Pass
 AI Credits
 ```
 
-That's enough.
+That is enough.
 
 Do not start with:
 
@@ -6769,7 +6769,7 @@ Do not start with:
 * Lifetime Deal
 * Complex promotional credit
 
-It's not that it cannot be done in the future, but there's no need to add Billing State first.
+It is not that it cannot be done in the future, but there is no need to add Billing State first.
 
 ---
 
@@ -7470,7 +7470,7 @@ ArcForges Cloud v2
 ...
 ```
 
-It is a commercial policy for old users to keep 50GB and automatically upgrade to 100GB.
+Whether existing users keep 50GB or are automatically upgraded to 100GB is a matter of commercial policy.
 
 No need to modify the entire Entitlement system.
 
@@ -8111,7 +8111,7 @@ Annual business awards should be:
 
 > Discount.
 
-It's not about artificially creating product differences.
+It is not about artificially creating product differences.
 
 In this way, users will not have their data permissions changed due to changing Billing Cycle.
 
@@ -9482,7 +9482,7 @@ AND
 Role
 ```
 
-That's it.
+That is it.
 
 ---
 
@@ -9880,7 +9880,7 @@ Microsoft Store / Official Website / GitHub Releases describes:
 
 > Where can I get the officially compiled and trusted binary?
 
-So it's totally fine to:
+So it is totally fine to:
 
 ```text
 GitHub
@@ -9935,7 +9935,7 @@ But I **do not recommend using the GitHub API directly as the sole source for pr
 
 The reason is that Velopack's `GithubSource` anonymous GitHub API requests will be subject to the GitHub unauthenticated API limit of **60 requests/hour/IP**. This problem may be encountered in companies, campuses, proxies/VPNs, or when multiple users share a public IP. ([Velopack][3])
 
-So it's better to split it into:
+So it is better to split it into:
 
 ```text
 GitHub Releases
@@ -9978,7 +9978,7 @@ R2 Current:
 * You can bind your own Custom Domain;
 * Custom Domain can connect to Cloudflare Cache. ([Cloudflare Docs][4])
 
-So it's perfect for tons of free desktop software downloads.
+So it is perfect for tons of free desktop software downloads.
 
 ---
 
@@ -10092,7 +10092,7 @@ Native executable + dependencies
 Velopack package
 ```
 
-That's it.
+That is it.
 
 Velopack itself even explicitly recommends that self-contained applications no longer let the Installer bootstrap the .NET Runtime. ([Velopack][7])
 
@@ -10458,7 +10458,7 @@ Such a long-term maintenance disaster.
 
 # 18. macOS: No Mac App Store required for first launch
 
-I'll be very clear:
+I will be very clear:
 
 # **The first phase of macOS will be distributed directly from the official website.**
 
@@ -10674,7 +10674,7 @@ So to answer your original question:
 
 > "Can I package it on GitHub or send it to Microsoft Store?"
 
-It's not really a choice.
+It is not really a choice.
 
 Correct structure:
 
@@ -10816,7 +10816,7 @@ And again:
 
 > Download recommended ArcForges apps
 
-That's it.
+That is it.
 
 Wait until the number of apps reaches 4 to 5 before unifying Bootstrapper.
 
@@ -11169,7 +11169,7 @@ Restrictions only:
 * Managed AI
 * Cloud BYOK
 
-Unable to upgrade due to Cloud security:
+A Cloud security upgrade must never result in:
 
 > Users cannot even open local ArcNotes.
 
@@ -11406,7 +11406,7 @@ GitHub:
 
 APKs do not necessarily have to be launched on GitHub.
 
-It's easiest to update the path like this:
+It is easiest to update the path like this:
 
 ```text
 Google Play
@@ -11869,7 +11869,7 @@ Detailed later.
 
 AionUi currently supports remote channels such as WebUI, Telegram, Feishu, DingTalk, and WeChat.
 
-But you've already determined:
+But you have already determined:
 
 > **ArcChat Mobile is the official mobile companion.**
 
@@ -12460,7 +12460,7 @@ Web API
 
 # Third priority: Computer Use
 
-There's really no API:
+There is really no API:
 
 ```text
 Screen recognition
@@ -12834,7 +12834,7 @@ This will greatly increase the agent's credibility.
 
 # 27. Artifact is another core object that must formally exist
 
-The Agent task ultimately produces something other than:
+What an Agent task ultimately produces is not:
 
 > "A Chat Message."
 
@@ -12982,7 +12982,7 @@ Continue in ArcChat
 Create Agent Task
 ```
 
-There's no need to cram the full Chat UI into every app.
+There is no need to cram the full Chat UI into every app.
 
 ---
 
@@ -13676,7 +13676,7 @@ Options:
 Start ArcChat with system
 ```
 
-It's entirely up to the user.
+It is entirely up to the user.
 
 ---
 
@@ -14590,7 +14590,7 @@ So:
 
 > **The current version can no longer be understood as an "MIT project".**
 
-It's one thing if you do an independent C#/Avalonia rewrite and refer to the product idea itself; if you actually copy the current code, resources or other copyrighted content, you need to follow the terms of the current corresponding version of Apache-2.0.
+It is one thing if you do an independent C#/Avalonia rewrite and refer to the product idea itself; if you actually copy the current code, resources or other copyrighted content, you need to follow the terms of the current corresponding version of Apache-2.0.
 
 It is best to correct your understanding now to avoid discovering that the license has changed when you release it later.
 
@@ -15021,7 +15021,7 @@ Metadata
 Attachments
 ```
 
-All allow synchronization.
+All are allowed to sync.
 
 This is the most typical Cloud Sync product.
 
@@ -15064,7 +15064,7 @@ Otherwise, a long acquisition session can quickly fill up 50GB.
 
 # 9. ArcSlate
 
-Not to mention that all media cannot be uploaded by default.
+Still less should all media be uploaded by default.
 
 It is proposed to formally provide three levels:
 
@@ -15181,11 +15181,11 @@ This is also the basis for Stage 6 Artifact / Deep Link to work across devices.
 
 # 12. ArcForges Sync should not uniformly adopt a conflict algorithm
 
-This is another place where it's easy to over-design.
+This is another place where it is easy to over-design.
 
 Do not decide:
 
-> "We have everything CRDT."
+> "Let us just make everything CRDT."
 
 Also do not:
 
@@ -15275,7 +15275,7 @@ Save by content identity, there is no "modify the same blob in place".
 
 # 13. Never Silent Last-Write-Wins User Content
 
-I'll make this a hard rule:
+I will make this a hard rule:
 
 # **Conflicts in user-created content cannot silently lose data.**
 
@@ -15339,7 +15339,7 @@ and:
 
 # **30-day Deleted Item Recovery**
 
-This is a good enough launch spec that's easy enough to understand.
+This is a good enough launch spec that is easy enough to understand.
 
 ---
 
@@ -16799,7 +16799,7 @@ Also possible:
 
 # Delete Account
 
-It's another set of processes.
+It is another set of processes.
 
 Stage 1 has separated the two concepts, which will be maintained here.
 
@@ -17423,7 +17423,7 @@ Do not take on this debt with the first version of your product.
 
 # 90. Core domain concepts that must exist in stage 7
 
-It's still the same as before, it does not mean that the database table must be named this way.
+It is still the same as before, it does not mean that the database table must be named this way.
 
 But the Cloud domain must be able to express:
 
@@ -18149,7 +18149,7 @@ The reason is:
 
 # 12. How much Managed AI does Cloud Subscription include?
 
-It's now time to officially count down.
+It is now time to officially count down.
 
 I recommend:
 
@@ -18518,7 +18518,7 @@ And the large Frontier Agent Task:
 
 > It may be used up after a few times.
 
-That's just right.
+That is just right.
 
 Cloud `$5.99`:
 
@@ -18959,7 +18959,7 @@ Therefore, the product should still:
 
 # Usage Metered.
 
-It's just that cheap models may cost almost no Credits.
+It is just that cheap models may cost almost no Credits.
 
 In this way, there is no need to change the business model when switching to high-quality STT in the future.
 
@@ -18997,7 +18997,7 @@ resolution
 quality
 ```
 
-It's all Cost Dimension.
+It is all Cost Dimension.
 
 ---
 
@@ -19848,7 +19848,7 @@ Do not:
 Credits -= 20
 ```
 
-Then it's done.
+Then it is done.
 
 Must exist at least:
 
@@ -20324,7 +20324,7 @@ Future Team:
 
 > Organization Workspace owns Shared Credit Pool.
 
-It's not about users transferring money to each other.
+It is not about users transferring money to each other.
 
 ---
 
@@ -21914,11 +21914,11 @@ Then:
 
 # Rebuild
 
-That's it.
+That is it.
 
 Deleting a "Cache" will cause the Project to be permanently lost:
 
-> It's not Cache.
+> It is not Cache.
 
 ---
 
@@ -22072,7 +22072,7 @@ Complex project graph
 
 Hard CRDT:
 
-> It's extremely complex and does not necessarily produce better results.
+> It is extremely complex and does not necessarily produce better results.
 
 V1 goals:
 
@@ -22592,7 +22592,7 @@ Cannot:
 Backup job = green
 ```
 
-Just think it's safe.
+Just think it is safe.
 
 Must:
 
@@ -23230,7 +23230,7 @@ Do not do:
 mystery binary .arcbackup
 ```
 
-No one knows what's inside.
+No one knows what is inside.
 
 Can have:
 
@@ -23735,7 +23735,7 @@ These are true data health.
 
 # 99. It is recommended to establish Data Health service
 
-It's not a user feature, it's an operational necessity.
+It is not a user feature, it is an operational necessity.
 
 Indicators:
 
@@ -24055,7 +24055,7 @@ and officially adheres to:
 
 **V1 does not force everything to CRDT.**
 
-**User data will never be deleted when Storage is full or degraded, and new Cloud writes will only be stopped.**
+**User data is never deleted when Storage is full or degraded; only new Cloud writes are stopped.**
 
 **New device metadata first, large files hydrate on demand.**
 
@@ -24527,7 +24527,7 @@ Here `$` the current official meaning is:
 
 # **Primary Azure Region = Japan East**
 
-It's not because:
+It is not because:
 
 > "Japan must always be the best."
 
@@ -25125,7 +25125,7 @@ Reconciliation
 
 ---
 
-# 30. But Message Broker can never be a business. Source of Truth
+# 30. But a Message Broker can never be the business Source of Truth
 
 Formal:
 
@@ -25312,7 +25312,7 @@ Add a system.
 
 # 37. Especially do not use the old Azure Cache for Redis
 
-Because it's already 2026.
+Because it is already 2026.
 
 Microsoft has announced legacy Azure Cache for Redis full SKU retirement and recommends migrating to **Azure Managed Redis**; new customers will already be subject to new legacy SKU restrictions starting in April 2026. ([Microsoft Learn][18])
 
@@ -25400,7 +25400,7 @@ Other functions really require:
 
 # Dynamic Session Adapter.
 
-That's correct delay complexity, not rework.
+That is correct delay complexity, not rework.
 
 ---
 
@@ -26122,7 +26122,7 @@ Not:
 
 Must be determined:
 
-# **Disable automatic migration of all App Replica when starting.**
+# **Automatic Migration on startup is prohibited for all App Replicas.**
 
 Otherwise:
 
@@ -26342,7 +26342,7 @@ Used for:
 
 > A secondary signal when the Better Stack itself fails.
 
-But it's not necessary:
+But it is not necessary:
 
 > Make two copies of all Application Logs and save them permanently
 
@@ -26474,7 +26474,7 @@ Remote Agent approved
 
 It is:
 
-# Product safety record.
+# Product security record.
 
 Better Stack log retention cannot disappear just because it expires.
 
@@ -26842,7 +26842,7 @@ The current monthly payment for a single Responder is approximately `$34/month`.
 
 For a product that already charges users a Cloud Subscription:
 
-> It's money well spent.
+> It is money well spent.
 
 ---
 
@@ -26921,7 +26921,7 @@ Currently Free:
 
 ([Postmark][38])
 
-So it's officially online:
+So it is officially online:
 
 # Basic is enough to get started.
 
@@ -27168,7 +27168,7 @@ This process:
 
 # Quarterly drills are required.
 
-It's not just written in the document.
+It is not just written in the document.
 
 ---
 
@@ -27376,7 +27376,7 @@ separate operator identity
 strong MFA/passkey
 ```
 
-And it's very important:
+And it is very important:
 
 # Ops Auth cannot rely on ArcForges Customer Identity.
 
@@ -27939,7 +27939,7 @@ How to restore
 
 # Stage 10 officially launched architecture
 
-I'll fix the final structure to:
+I will fix the final structure to:
 
 ```text
                   Cloudflare Edge
@@ -28349,7 +28349,7 @@ The following is a compliance baseline at the product and architectural levels a
 
 # 1. ArcForges' own license: unified AGPL, no complicated dual licenses
 
-Now that you've made it clear:
+Now that you have made it clear:
 
 # **ArcForges itself is open sourced under AGPL**
 
@@ -28651,7 +28651,7 @@ Save relevant explanations and policies.
 
 # 11. Contributor: I recommend DCO, do not bother with CLA
 
-Now that you've determined:
+Now that you have determined:
 
 > ArcForges long-term AGPL open source.
 
@@ -28682,7 +28682,7 @@ This mode:
 
 Only you decide clearly in the future:
 
-> "I'm going to relicense the community contribution into a proprietary commercial edition."
+> "I am going to relicense the community contribution into a proprietary commercial edition."
 
 It would be better to have CLA starting from the first external contributor.
 
@@ -28692,7 +28692,7 @@ But this and now:
 
 Not required.
 
-So I'm not going to add complexity to a business model that does not exist now.
+So I am not going to add complexity to a business model that does not exist now.
 
 ---
 
@@ -28829,7 +28829,7 @@ I recommend:
 /security
 ```
 
-That's it.
+That is it.
 
 No need to pile on 30 legal PDFs as soon as you go online.
 
@@ -29145,7 +29145,7 @@ So for the first time, Chinese users:
 
 # Enable Official Cloud
 
-It's better to have an explicit:
+It is better to have an explicit:
 
 ```text
 Cloud data processing / cross-border consent
@@ -29209,7 +29209,7 @@ You previously selected:
 
 # Cloudflare Web Analytics
 
-It's a very good choice.
+It is a very good choice.
 
 Cloudflare currently explicitly states Web Analytics:
 
@@ -29240,7 +29240,7 @@ Necessary authentication/session cookies
 Cloudflare Web Analytics
 ```
 
-That's it.
+That is it.
 
 Whether Cookie Banner is required in a specific jurisdiction will depend on the actual cookie/tracking technologies used at that time; do not commit now to:
 
@@ -29424,11 +29424,11 @@ So product strategy:
 
 # General productivity / professional assistance.
 
-It's one thing for professional users to use the tools themselves;
+It is one thing for professional users to use the tools themselves;
 
 ArcForges Official Do not Claim:
 
-> "AI can replace doctors/lawyers/safety engineers in making the final decision."
+> "AI can replace doctors/lawyers/security engineers in making the final decision."
 
 ---
 
@@ -29578,7 +29578,7 @@ For example:
 
 Make it easy for security researchers to find the correct reporting channels.
 
-It's low cost, high value.
+It is low cost, high value.
 
 ---
 
@@ -29706,7 +29706,7 @@ SCC where applicable
 Subprocessor List
 ```
 
-That's it.
+That is it.
 
 No need to turn this into a V1 blocking item now.
 
@@ -29753,7 +29753,7 @@ SCC
 Enterprise Terms
 ```
 
-That's it.
+That is it.
 
 There is no need to make it a giant legal project.
 
@@ -30146,7 +30146,7 @@ Official website:
 
 # Download
 
-It's Download.
+It is Download.
 
 When users need Cloud:
 
@@ -31278,7 +31278,7 @@ Recently Added
 Recently Updated
 ```
 
-That's enough.
+That is enough.
 
 Wait until the Catalog reaches real scale before adding Reviews.
 
@@ -31420,7 +31420,7 @@ The bottom can be very restrained:
 Created with ArcForges
 ```
 
-That's it.
+That is it.
 
 Exported file:
 
@@ -31486,7 +31486,7 @@ Search / Social
 New users
 ```
 
-But it's still Phase 2.
+But it is still Phase 2.
 
 ---
 
@@ -31889,7 +31889,7 @@ Docs Link
 Then:
 
 * Website;
-* What's New;
+* What is New;
 * GitHub Release;
 * Social;
 
@@ -32273,7 +32273,7 @@ First Sink can consider:
 
 # 72. But Analytics Engine must not become Growth Domain
 
-Because it's:
+Because it is:
 
 * Pricing;
 * Limit;
@@ -32572,7 +32572,7 @@ Regionalized prices will really be needed in the future:
 
 > Do Regional Pricing openly and transparently.
 
-It's not a secret experiment.
+It is not a secret experiment.
 
 ---
 
@@ -33136,7 +33136,7 @@ Conversion Touch
 Referral
 ```
 
-It's enough.
+It is enough.
 
 ---
 
@@ -33708,13 +33708,13 @@ This is the **ArcForges Growth Loop** that can truly enhance each other rather t
 
 This stage can now be officially done, and only one thing will be done this time:
 
-> **Merging the completed Stages 0 to 12 with the "ArcForges Full C# Future Architecture Outline" into a product/runtime baseline that will not continue to drift.**
+> **Merging the completed Stages 0 to 12 with the "ArcForges All-C# Future Architecture Master Outline" into a product/runtime baseline that will not continue to drift.**
 
 This does **not re-select the technology stack**, nor does it reopen whether StreamJsonRpc, Refit, SignalR, AOT, and Avalonia are correct.
 
 These are already technical Constitutions.
 
-The original general outline has been clear: ArcForges is All C# / All .NET; desktop products are independent and autonomous C# processes; ArcChat hosts the native Hub by default, but the Hub is only responsible for directory, routing, permissions, approval, coordination and auditing; each product continues to have its own domain status, database, resources, UI, Undo and recovery log.
+The original master outline has been clear: ArcForges is All C# / All .NET; desktop products are independent and autonomous C# processes; ArcChat hosts the native Hub by default, but the Hub is only responsible for directory, routing, permissions, approval, coordination and auditing; each product continues to have its own domain status, database, resources, UI, Undo and recovery log.
 
 What Stage 13 really does is:
 
@@ -33737,9 +33737,9 @@ These four are the current desktop product collection.
 
 ---
 
-# 2. The product names in the original general outline are officially adjusted.
+# 2. The product names in the original master outline are officially adjusted.
 
-The original general outline currently reads:
+The original master outline currently reads:
 
 ```text
 ArcChat
@@ -33782,7 +33782,7 @@ Resource ownership
 
 However, the final complete product model of ArcSlate is not determined by Stage 13.
 
-Because now it's clear:
+Because now it is clear:
 
 > ArcSlate is completely rewritten in C# + Avalonia, using Olive as a key product/feature reference.
 
@@ -33847,7 +33847,7 @@ Really restart later:
 
 # New Product Proposal / Architecture Amendment
 
-That's it.
+That is it.
 
 ---
 
@@ -33893,7 +33893,7 @@ That means ArcSlate still ends up with:
 * Independent Settings;
 * Independent life cycle.
 
-It's just that the development time can be later.
+It is just that the development time can be later.
 
 ---
 
@@ -33916,7 +33916,7 @@ Avalonia
 Native AOT target
 ```
 
-The original general outline has completely defined the boundaries of desktop, AOT, RPC, and Native Library, and these will continue to be directly inherited.
+The original master outline has completely defined the boundaries of desktop, AOT, RPC, and Native Library, and these will continue to be directly inherited.
 
 ---
 
@@ -34006,7 +34006,7 @@ Stage 13 does not bring Olive's original technical architecture into ArcForges.
 
 # 8. All four products are independent OS Applications
 
-This is one of the most important designs of the original master plan and has been upgraded to:
+This is one of the most important designs of the original master outline and has been upgraded to:
 
 # Architecture Invariant.
 
@@ -34028,7 +34028,7 @@ The core facts are:
 
 > **There is no hidden ArcForges Central Desktop Service that holds all product business status.**
 
-The original outline explicitly rejected the idea that the central Service should hold all state, and also made it clear that each product instance is a complete and autonomous C# OS process.
+The original master outline explicitly rejected the idea that the central Service should hold all state, and also made it clear that each product instance is a complete and autonomous C# OS process.
 
 ---
 
@@ -34246,7 +34246,7 @@ ArcScope
 Open Report in ArcNotes
 ```
 
-It's perfectly fine to use:
+It is perfectly fine to use:
 
 ```text
 Resource Reference
@@ -34550,7 +34550,7 @@ The specific Domain is in Stage 16.
 
 # 23. ArcScope and ArcNotes cannot share a "Report" writable object
 
-This is an area where it's easy to make design mistakes later.
+This is an area where it is easy to make design mistakes later.
 
 For example:
 
@@ -34643,7 +34643,7 @@ Specific nouns and structures Stage 20 will be formally determined after researc
 
 # 26. ArcSlate's big media will never go through ArcChat Hub
 
-Continue the important principles of the original general outline:
+Continue the important principles of the original master outline:
 
 > Large resources stay on the owner side, using `ResourceRef`, task handles, or controlled streams across boundaries, rather than letting the Hub proxy video frames and large objects.
 
@@ -34723,7 +34723,7 @@ become universal project database
 become universal Undo service
 ```
 
-The original outline has made it clear that the Hub does not take over the internal state of the product, and this continues to be a hard rule.
+The original master outline has made it clear that the Hub does not take over the internal state of the product, and this continues to be a hard rule.
 
 ---
 
@@ -34818,7 +34818,7 @@ It will be closed in Stage 21.
 
 # 32. Shared Foundation must not evolve into a shared Domain
 
-The original general outline has been clarified:
+The original master outline has been clarified:
 
 > Do not use a giant `ArcForges.Contracts` to couple all products together.
 
@@ -34854,7 +34854,7 @@ These belong to specific product Domains.
 
 # 33. The internal reference direction of the product remains unchanged
 
-The original general outline has been frozen:
+The original master outline has been frozen:
 
 ```text
 Desktop / Infrastructure / Adapter
@@ -34920,9 +34920,9 @@ Now just freeze:
 
 # 36. Cloud topology needs a formal calibration
 
-This is an architectural-level supplement that this Stage 13 really needs to make to the original general outline.
+This is an architectural-level supplement that this Stage 13 really needs to make to the original master outline.
 
-The early overall drawings of the original general outline were mainly drawn as follows:
+The original master outline's early overall diagram was drawn mainly as:
 
 ```text
 ArcChat
@@ -35081,7 +35081,7 @@ Belongs to ArcChat.
 
 # 41. So ArcChat is a Remote Control Plane, not a Cloud Data Gateway
 
-This sentence should go directly into the final outline:
+This sentence should go directly into the final master outline:
 
 # **ArcChat is the local Agent/coordination control plane, not the mandatory data gateway for specialist applications.**
 
@@ -35194,7 +35194,7 @@ However, different product domains will not be mixed into one model.
 
 # 45. The product identities of Mobile and Web also need to be calibrated in Stage 13
 
-The original general outline reads:
+The original master outline reads:
 
 ```text
 ArcForges Mobile
@@ -35232,13 +35232,13 @@ Nor does it mean:
 
 > It can never be done.
 
-It's just that the current architecture baseline does not have these products.
+It is just that the current architecture baseline does not have these products.
 
 ---
 
 # 47. ArcChat Mobile/Web only connects to Cloud
 
-Continuing with the original outline:
+Continuing with the original master outline:
 
 ```text
 Mobile
@@ -35258,7 +35258,7 @@ Named Pipe
 Desktop app
 ```
 
-The original outline has made it clear that MAUI/Web only connects to the Cloud and does not directly discover the Desktop Hub in the user's LAN.
+The original master outline has made it clear that MAUI/Web only connects to the Cloud and does not directly discover the Desktop Hub in the user's LAN.
 
 ---
 
@@ -35382,7 +35382,7 @@ InstanceId
     process lifecycle
 ```
 
-These basic semantics are consistent with the `AppId` / `InstanceId` direction of the original general outline.
+These basic semantics are consistent with the `AppId` / `InstanceId` direction of the original master outline.
 
 The specific model behind is Stage 21.
 
@@ -35542,7 +35542,7 @@ Official Cloud
 Custom self-host
 ```
 
-It's a different Realm.
+It is a different Realm.
 
 So:
 
@@ -35666,7 +35666,7 @@ The system is not allowed to secretly form a shared writable object between the 
 
 # 63. Task Owner and Orchestrator must also be distinguished
 
-The original general outline has been clarified:
+The original master outline has been clarified:
 
 > The Task Owner is the application or Cloud module that actually performs the work, and the Hub only aggregates task summaries.
 
@@ -35698,7 +35698,7 @@ Stage 19 is completely unified again.
 
 # 64. Professional Apps are always responsible for themselves Undo
 
-Continuing with the original outline:
+Continuing with the original master outline:
 
 # Undo belongs to owner.
 
@@ -35743,7 +35743,7 @@ ArcChat cannot be:
 
 # Global crash journal.
 
-The original general outline's Journal/Snapshot/Recovery principles continue to apply to every product.
+The original master outline's Journal/Snapshot/Recovery principles continue to apply to every product.
 
 ---
 
@@ -35779,15 +35779,15 @@ controlled access
 
 The so-called "technical exception" here only refers to:
 
-> Realistic boundaries that have been clearly recognized in the technical master plan.
+> Realistic boundaries that have been clearly recognized in the technical master outline.
 
-It's not about talking again.
+It is not about talking again.
 
 ---
 
 ## Exception A: MAUI Android
 
-Continuing with the general outline:
+Continuing with the master outline:
 
 ```text
 Production:
@@ -35803,7 +35803,7 @@ This does not affect the four Desktop Apps.
 
 # 68. Exception B: EF Core
 
-Continuing with the general outline:
+Continuing with the master outline:
 
 > Strictly Native AOT production host does not regard EF Core runtime as irreplaceable infrastructure.
 
@@ -35880,13 +35880,13 @@ But:
 
 # Production main path
 
-Continue to follow the general outline.
+Continue to follow the master outline.
 
 ---
 
 # 72. Future Exception: Isolation Host
 
-The general outline already allows:
+The master outline already allows:
 
 > If untrusted plug-ins, extremely unstable drivers, or real security isolation requirements arise in the future, isolation hosts can be introduced through the new ADR, but the old Worker architecture cannot be restored by default.
 
@@ -36164,7 +36164,7 @@ ArcMusic
 
 Not directly:
 
-> Just add a project to the solution and you're done.
+> Just add a project to the solution and you are done.
 
 Must answer:
 
@@ -36316,7 +36316,7 @@ ProductScope.Suite
 
 It must be conceptually expressible.
 
-It's not necessarily enum now.
+It is not necessarily enum now.
 
 Because Stage 0 has decided:
 
@@ -36611,7 +36611,7 @@ As long as it does not break the Architecture Invariants above:
 
 ---
 
-# 93. Stage 13 Where the existing general outline really needs to be adjusted
+# 93. Stage 13 Where the existing master outline really needs to be adjusted
 
 Not much actually.
 
@@ -36701,11 +36701,11 @@ ArcScope/
 
 The corresponding product contract collection is also synchronized.
 
-The Domain/Application/Infrastructure/Contracts hierarchy of the original master plan itself does not need to be changed.
+The Domain/Application/Infrastructure/Contracts hierarchy of the original master outline itself does not need to be changed.
 
 ---
 
-# 94. There is no need to change the direction of a single word in the original general outline.
+# 94. There is no need to change the direction of a single word in the original master outline.
 
 Includes:
 
@@ -36920,13 +36920,13 @@ Mobile and Web:
 
 # Currently they are ArcChat Companion/Cloud surface, not the full mobile/Web versions of ArcNotes, ArcScope, and ArcSlate.
 
-The only exceptions allowed for technical realities are to continue to use the existing general outline:
+The only exceptions allowed for technical realities are to continue to use the existing master outline:
 
 # MAUI Android AOT real boundaries, EF Core strict AOT boundaries, controlled Native Library boundaries, and isolated hosts that can be added through ADR only after sufficient evidence.
 
 **ArcSlate/Olive is not a technical exception.**
 
-At this point, the technical outline of the original `ArcVideo / ArcImage` era can be completely aligned with the current real product planning without overturning any of the established **All C#, Avalonia, Native AOT, StreamJsonRpc, Refit, SignalR, state ownership and product autonomy principles**.
+At this point, the technical master outline of the original `ArcVideo / ArcImage` era can be brought fully into line with the current real product planning, without overturning any of the established **All C#, Avalonia, Native AOT, StreamJsonRpc, Refit, SignalR, state ownership, and product autonomy principles**.
 
 ---
 
@@ -36940,9 +36940,9 @@ The goals of this stage are very clear:
 
 > **Let ArcChat, ArcNotes, ArcScope, and ArcSlate look, operate, and think as part of the same ArcForges product family, while retaining their respective workspaces and interaction methods as professional software.**
 
-It's not about redesigning the technology Foundation.
+It is not about redesigning the technology Foundation.
 
-The following have been frozen by "ArcForges Full C# Future Architecture Outline" and Stage 13 and will no longer be discussed:
+The following have been frozen by "ArcForges All-C# Future Architecture Master Outline" and Stage 13 and will no longer be discussed:
 
 ```text
 C# / .NET
@@ -36956,7 +36956,7 @@ each App independence and autonomy
 each App Have your own status
 ```
 
-The general outline itself has also been made clear: the desktop product is an independent Avalonia/C# process, and the ViewModel only consumes ViewState and calls application services; there must be clear rules for multiple windows, multiple instances, file associations, life cycles, and recovery.
+The master outline itself has also been made clear: the desktop product is an independent Avalonia/C# process, and the ViewModel only consumes ViewState and calls application services; there must be clear rules for multiple windows, multiple instances, file associations, life cycles, and recovery.
 
 Stage 14 is to build:
 
@@ -37986,7 +37986,7 @@ There must never be one:
 
 # Global ArcForges Undo Service.
 
-This is exactly the same as Stage 13 / General Outline.
+This is exactly the same as Stage 13 / Master Outline.
 
 ---
 
@@ -39549,7 +39549,7 @@ multiple application windows
 
 Managed by an App process.
 
-The general outline originally requires that a process can contain multiple windows, and the status is separated by DocumentSession.
+The master outline originally requires that a process can contain multiple windows, and the status is separated by DocumentSession.
 
 ---
 
@@ -39650,7 +39650,7 @@ But when restoring:
 
 > Must check that the display is still present.
 
-After the user unplugs the second screen:
+It must not happen that, after the user unplugs the second monitor:
 
 > Window always reverts to non-existent coordinates.
 
@@ -40361,7 +40361,7 @@ Account status
 
 ---
 
-### Domain Control should not be shared just because "it's all a list"
+### Domain Control should not be shared just because "it is all a list"
 
 ```text
 ArcNotes Document Tree
@@ -40710,7 +40710,7 @@ Instead push it to:
 
 # **Have been able to continue designing the ArcNotes Domain Model, Persistence, Application Service, Local RPC, and UI based on this without having to re-decide what the product is.**
 
-The original "Future C# Architecture Outline" has actually left a very good technical skeleton for ArcNotes:
+The original "All-C# Future Architecture Master Outline" has actually left a very good technical skeleton for ArcNotes:
 
 * `Notebook`
 * `Document`
@@ -41041,7 +41041,7 @@ You can have a normal default on first use:
 
 # Inbox / My Notes
 
-But it's still essentially a normal Notebook.
+But it is still essentially a normal Notebook.
 
 Do not create a system that cannot be deleted or moved, or has special behavior:
 
@@ -41094,7 +41094,7 @@ Four Domain Entities are not required.
 
 This is the most critical set of decisions in Stage 15.
 
-I'd recommend ending up with:
+I would recommend ending up with:
 
 ```text
 Ownership Scope
@@ -41978,7 +41978,7 @@ Both must remain clear.
 
 # 42. Deleting Tag will not delete Document
 
-It's just:
+It is just:
 
 # Remove classification.
 
@@ -44025,7 +44025,7 @@ Should be shared:
 
 Instead of creating two edit copies that overwrite each other.
 
-This is consistent with Stage 14/General Outline.
+This is consistent with Stage 14/Master Outline.
 
 ---
 
@@ -44185,7 +44185,7 @@ AI function display:
 Set up AI
 ```
 
-That's it.
+That is it.
 
 ---
 
@@ -44472,7 +44472,7 @@ This does not mean:
 
 > One item per database Table.
 
-It's just that future fields cannot lack these semantics.
+It is just that future fields cannot lack these semantics.
 
 ---
 
@@ -44858,7 +44858,7 @@ Instead:
 
 > **Lightweight recording is fast enough, and long-form professional documents are strong enough. After several years of knowledge accumulation, they can still be managed, searchable, cited, and exportable, and can naturally be understood and operated safely by ArcChat Agent.**
 
-Therefore, the `Notebook / Document / Block / Link / Tag / Index / Attachment ResourceRef`, Undo/Recovery, Local-first and strongly typed ArcChat capability boundaries in the original general outline can continue to be retained, and Stage 15 has supplemented these concepts into a complete set of actual products.
+Therefore, the `Notebook / Document / Block / Link / Tag / Index / Attachment ResourceRef`, Undo/Recovery, Local-first and strongly typed ArcChat capability boundaries in the original master outline can continue to be retained, and Stage 15 has supplemented these concepts into a complete set of actual products.
 
 At this point, the product direction layer of **ArcNotes can be considered complete**. Next time we will discuss how `Document`, `Block`, Property, Link, and Revision fall into Domain/Persistence/RPC for ArcNotes. This already belongs to the detailed architecture design later, rather than rework because there is still a missing piece in the product definition.
 
@@ -44888,16 +44888,16 @@ ArcScope Domain Model
 
 Without re-arguing:
 
-* What is the difference between Session and Capture;
-* Are Device and DataSource the same thing?
-* Are Channel and Signal the same thing?
+* What the difference between Session and Capture actually is;
+* Whether Device and DataSource are the same thing;
+* Whether Channel and Signal are the same thing;
 * Whether real-time monitoring and Recording are the same;
-* Decoder output is raw data;
-* Can AI directly read several GB of Capture?
-* Does Compare copy Session?
-* Does Report belong to ArcScope or ArcNotes?
+* Whether Decoder output is raw data;
+* Whether AI can directly read several GB of Capture;
+* Whether Compare copies a Session;
+* Whether Report belongs to ArcScope or ArcNotes.
 
-The original outline has determined that each professional App is an autonomous product, with its own domain state, database, resources, UI, Undo and recovery mechanism, and collaborates across applications through semantic capabilities, instead of ArcChat taking over its internal state. This principle applies entirely to ArcScope.
+The original master outline has determined that each professional App is an autonomous product, with its own domain state, database, resources, UI, Undo and recovery mechanism, and collaborates across applications through semantic capabilities, instead of ArcChat taking over its internal state. This principle applies entirely to ArcScope.
 
 ---
 
@@ -45069,7 +45069,7 @@ ArcScope Project:
 
 # 5. Formal definition of Project
 
-# **Project = a long-term professional container for a set of related observations, collections, analyzes and reports.**
+# **Project = a long-term professional container for a related set of observations, captures, analyses, and reports.**
 
 For example:
 
@@ -45130,7 +45130,7 @@ Observe
 
 If data needs to be retained:
 
-> The system turns it into a normal persistent Session and allows the user to later join a Project.
+> The system turns it into a normal persistent Session and lets the user file it under a Project later.
 
 Therefore:
 
@@ -45149,10 +45149,10 @@ Formal distinction:
 | concept                     | meaning                                 |
 | ---------------------- | ---------------------------------- |
 | **Device**             | Recognized external physical/logical device, optional                   |
-| **DataSource**         | ArcScope can read logical sources of data               |
-| **Connection Profile** | How to connect a reusable configuration of a DataSource           |
+| **DataSource**         | A logical source that ArcScope can read data from               |
+| **Connection Profile** | Reusable configuration for how to connect to a DataSource           |
 | **Connection**         | The currently existing runtime connection                       |
-| **Session**            | Complete observation/test/analysis work context at once                  |
+| **Session**            | The work context of one complete observation/test/analysis        |
 | **Capture**            | A data collection segment actually recorded in the Session            |
 | **Channel**            | Logical data channel provided by Source                   |
 | **Signal**             | Continuous/sampled values with type, time, and unit semantics               |
@@ -46165,7 +46165,7 @@ This way you can:
 
 Therefore:
 
-# It's not Raw Authority.
+# It is not Raw Authority.
 
 If Cache is deleted:
 
@@ -46814,7 +46814,7 @@ This is perfect for:
 
 # Automation / Community / ArcChat.
 
-But it's not a complete scripting language just yet.
+But it is not a complete scripting language just yet.
 
 ---
 
@@ -46967,7 +46967,7 @@ That is to say:
 
 # Read / Acquire / Analyze
 
-It's the core.
+It is the core.
 
 Source needs to be configured to collect:
 
@@ -47087,7 +47087,7 @@ Accept / Edit / Remove
 
 # 88. Annotation does not change Raw Data
 
-It's just:
+It is just:
 
 # Overlay / semantic layer.
 
@@ -47503,7 +47503,7 @@ Second set of products.
 
 After importing:
 
-# It's ArcScope Session/Capture.
+# It is ArcScope Session/Capture.
 
 and mark:
 
@@ -48324,7 +48324,7 @@ If the user has not enabled other long-term tasks:
 
 > ArcScope can exit normally.
 
-It's not a Tray-first product.
+It is not a Tray-first product.
 
 ---
 
@@ -48988,7 +48988,7 @@ This does not mean:
 
 > One name corresponds to one database table.
 
-It's just that the product Domain must be able to express these semantics in the future.
+It is just that the product Domain must be able to express these semantics in the future.
 
 ---
 
@@ -50626,7 +50626,7 @@ For example, the user selects:
 Current ArcNotes selection
 ```
 
-Just because it's difficult to answer, do not automatically:
+Just because it is difficult to answer, do not automatically:
 
 > Search entire Workspace.
 
@@ -51033,7 +51033,7 @@ Cannot:
 
 # **Artifact = a work product that has independent value and can be viewed/used/delivered by users.**
 
-It's no ordinary Message.
+It is no ordinary Message.
 
 ---
 
@@ -52258,7 +52258,7 @@ Search
 
 Completed/Failed:
 
-It's all there.
+It is all there.
 
 ---
 
@@ -52298,7 +52298,7 @@ Conversation continued
 
 But it:
 
-# It's Projection.
+# It is Projection.
 
 Not a new business authority.
 
@@ -54147,7 +54147,7 @@ ArcSlate Web
 
 ---
 
-# 2. Mobile and Web are not the same product. Simple Responsive
+# 2. Mobile and Web are not one product made simply responsive
 
 The two can share a lot of product capabilities and Cloud contracts.
 
@@ -54448,11 +54448,11 @@ For last online time:
 Last seen
 ```
 
-That's it.
+That is it.
 
 Do not promise users:
 
-> "When it shows green, it means it's absolutely online in real time."
+> "When it shows green, it means it is absolutely online in real time."
 
 ---
 
@@ -54783,7 +54783,7 @@ Research web
 Create ArcChat Artifact
 ```
 
-That's totally fine:
+That is totally fine:
 
 # Cloud-only.
 
@@ -56397,7 +56397,7 @@ Connection lost
 Unsaved draft preserved locally where safe
 ```
 
-That's enough.
+That is enough.
 
 ---
 
@@ -56425,7 +56425,7 @@ Specifically user enabled:
 
 # 105. But App Lock ≠ Account Authentication
 
-It's just local:
+It is just local:
 
 # UI access protection.
 
@@ -56596,7 +56596,7 @@ But the Task must be clear:
 Target Workspace
 ```
 
-It's not up to Desktop to guess.
+It is not up to Desktop to guess.
 
 ---
 
@@ -57735,9 +57735,9 @@ Finally, Pause, Cancel, Retry, Progress, Approval, Budget, Artifact, and Recover
 
 This is what Stage 19 must address once and for all.
 
-The original "Future C# Architecture Outline" has laid the foundation: long tasks must return `TaskHandle`; Task Owner is the App or Cloud module that actually performs the work; task status must be persisted; Cancel is a request rather than assuming immediate success; output passes `ResourceRef`; Hub only aggregates task summaries and does not take over execution status.
+The original "All-C# Future Architecture Master Outline" has laid the foundation: long tasks must return `TaskHandle`; Task Owner is the App or Cloud module that actually performs the work; task status must be persisted; Cancel is a request rather than assuming immediate success; output passes `ResourceRef`; Hub only aggregates task summaries and does not take over execution status.
 
-At the same time, the general outline has determined that cross-App Undo cannot pretend that ACID transactions exist, but should go through Saga / Compensation; write operations continue to follow `CommandId`, `ExpectedRevision`, idempotence, and concurrency checks.
+At the same time, the master outline has determined that cross-App Undo cannot pretend that ACID transactions exist, but should go through Saga / Compensation; write operations continue to follow `CommandId`, `ExpectedRevision`, idempotence, and concurrency checks.
 
 Stage 19 completes the entire operating model on this basis.
 
@@ -58011,7 +58011,7 @@ The entire history is open to interpretation.
 
 # 9. The same Task can only have one Active Run at the same time.
 
-Disabled by default:
+Prohibited by default:
 
 ```text
 Run 2 Running
@@ -58412,7 +58412,7 @@ Provider:
 
 > Idempotent processing based on CommandId.
 
-This directly inherits the CommandId / Revision model that the general outline has already determined.
+This directly inherits the CommandId / Revision model that the master outline has already determined.
 
 ---
 
@@ -58443,7 +58443,7 @@ ReadDocument
 QuerySignal
 ```
 
-It's usually safe to try again.
+It is usually safe to try again.
 
 But still consider:
 
@@ -58529,7 +58529,7 @@ The event payload:
 
 It will not be re-queried later:
 
-> "What's the latest anomaly now?"
+> "What is the latest anomaly now?"
 
 Unless the Automation definition itself requires it.
 
@@ -58646,7 +58646,7 @@ ArcSlate
 
 ---
 
-The general outline has been made clear: the Task Owner is the application or cloud module that actually performs the work, the task status is persisted, and the Hub only aggregates summaries.
+The master outline has been made clear: the Task Owner is the application or cloud module that actually performs the work, the task status is persisted, and the Hub only aggregates summaries.
 
 ---
 
@@ -58881,7 +58881,7 @@ Cannot:
 
 # 46. Task Status should not be designed as dozens of mutually exclusive Enums
 
-This is where it's easy to rework in the future.
+This is where it is easy to rework in the future.
 
 I recommend officially adopting:
 
@@ -59211,7 +59211,7 @@ Click Cancel
 Set the status immediately Canceled
 ```
 
-The general outline has made it clear that "cancellation is a request, not an assumption of immediate success."
+The master outline has made it clear that "cancellation is a request, not an assumption of immediate success."
 
 ---
 
@@ -59587,7 +59587,7 @@ After execution:
 
 # 77. Cross-App Undo Always use Saga / Compensation
 
-Continuing with the general outline:
+Continuing with the master outline:
 
 ```text
 Step A
@@ -59610,7 +59610,7 @@ Compensate A
 
 Each is executed through Owner.
 
-The general outline has been made clear, cross-process operations cannot pretend to be ACID Transactions.
+The master outline has been made clear, cross-process operations cannot pretend to be ACID Transactions.
 
 ---
 
@@ -60939,7 +60939,7 @@ ArcSlate:
 
 # 144. Agent uses Optimistic Revision as the default concurrency mode.
 
-Continuing with the general outline:
+Continuing with the master outline:
 
 ```text
 ExpectedRevision
@@ -61324,7 +61324,7 @@ Cannot let RPC connect:
 
 > Wait for two hours for results.
 
-Continuing with the general outline:
+Continuing with the master outline:
 
 ```text
 Start
@@ -61438,7 +61438,7 @@ Instead of Child's entire internal database.
 
 # 167. The formal semantics of Progress
 
-The general outline has been clarified:
+The master outline has been clarified:
 
 > Progress is a monotonic best estimate and does not promise an exact completion time.
 
@@ -61698,7 +61698,7 @@ But:
 
 # Task model is not Transport model.
 
-This point continues the general outline.
+This point continues the master outline.
 
 ---
 
@@ -62516,7 +62516,7 @@ Long tasks pass:
 
 Combination, rather than occupying the RPC for a long time.
 
-Task has one and only one authoritative Owner; Hub, Mobile, Web, and SignalR can only observe/control it and do not become the second authoritative status source. This principle is completely consistent with the existing TaskHandle design of the original general outline.
+Task has one and only one authoritative Owner; Hub, Mobile, Web, and SignalR can only observe/control it and do not become the second authoritative status source. This principle is completely consistent with the existing TaskHandle design of the original master outline.
 
 Unified execution semantics also formally include:
 
@@ -62562,7 +62562,7 @@ The most important long-term principles are:
 
 After achieving this, **Task Center, Remote Task, Approval, Steering, Automations, Cloud/Desktop/Hybrid** that users see in Stage 17/18 already have the same complete set of running semantics.
 
-**Stage 19 At this point, it can be considered that the Execution/Task/Automation product architecture layer is officially closed-loop.**
+**Stage 19 At this point, it can be considered that the Execution/Task/Automation product architecture layer is officially closed-closed loop.**
 
 ---
 
@@ -62577,7 +62577,7 @@ There are two real problems to be solved at this stage:
 > **First, what kind of complete video editing product is ArcSlate ultimately?**
 > **Second, how to remap the product ideas and functions worth retaining in Olive to the frozen C# + Avalonia + Native AOT ArcForges architecture, instead of translating Olive's C++/Qt class structure line by line.**
 
-This is completely consistent with the "ArcForges Full C# Future Architecture Outline": the original ArcVideo has been defined as an independent desktop application, with its own Project, Timeline, Track, Clip, Effect, Marker, media index, Proxy, Render Task, local state, Undo/Recovery, and handles underlying media capabilities through the P/Invoke boundary of the native media library; at the same time, it crosses App Only **semantic capabilities** such as "moving fragments, importing resources, creating tags, and exporting" are provided, and bare GPU handles and internal mutable objects cannot be exposed.
+This is completely consistent with the "ArcForges All-C# Future Architecture Master Outline": the original ArcVideo has been defined as an independent desktop application, with its own Project, Timeline, Track, Clip, Effect, Marker, media index, Proxy, Render Task, local state, Undo/Recovery, and handles underlying media capabilities through the P/Invoke boundary of the native media library; at the same time, it crosses App Only **semantic capabilities** such as "moving fragments, importing resources, creating tags, and exporting" are provided, and bare GPU handles and internal mutable objects cannot be exposed.
 
 Stage 20 will officially upgrade this skeleton to **ArcSlate**.
 
@@ -62587,7 +62587,7 @@ Stage 20 will officially upgrade this skeleton to **ArcSlate**.
 
 The current Olive repository still describes itself as an open-source NLE for Windows/macOS/Linux and explicitly marks the existing 0.1/0.2 builds as alpha/unstable; its website still shows "Olive will return". Olive is therefore valuable, but **cannot serve as the authoritative source for ArcSlate's long-term product specification or runtime architecture**. ([GitHub][1])
 
-So it's officially frozen:
+So it is officially frozen:
 
 # **Olive = Product & Behavior Reference**
 
@@ -63638,7 +63638,7 @@ Undo
 
 They can all perform the same business behavior.
 
-This is exactly the application where the ArcForges general outline requires that "local UI and remote semantic calls ultimately follow the same application service path."
+This is exactly the application where the ArcForges master outline requires that "local UI and remote semantic calls ultimately follow the same application service path."
 
 ---
 
@@ -64748,7 +64748,7 @@ Original unavailable
 
 Clear reminder.
 
-You have to tell the user directly:
+It must not, without telling the user, simply:
 
 > Use 720p Proxy to output official 4K video.
 
@@ -64968,7 +64968,7 @@ Hardware acceleration
 
 # 97. C# is Runtime Orchestrator/Product Authority
 
-Continuing with the general outline:
+Continuing with the master outline:
 
 ```text
 C#
@@ -65576,7 +65576,7 @@ When necessary:
 
 For example:
 
-> "Add Marker to playhead: There's something wrong with the audio here."
+> "Add Marker to playhead: There is something wrong with the audio here."
 
 You can directly:
 
@@ -67909,7 +67909,7 @@ Nor will it be re-discussed:
 
 > How to configure Refit / SignalR / MessagePack / AOT?
 
-The "Full C# General Outline" has laid out the technical foundations such as Transport, discovery, instance registration, strongly typed RPC, Revision, CommandId, TaskHandle, error model, etc., and clearly stipulates that cross-application calls must be **semantic capabilities rather than UI operations**, and large resources can only cross boundaries through references such as `ResourceRef`.
+The "All-C# Master Outline" has laid out the technical foundations such as Transport, discovery, instance registration, strongly typed RPC, Revision, CommandId, TaskHandle, error model, etc., and clearly stipulates that cross-application calls must be **semantic capabilities rather than UI operations**, and large resources can only cross boundaries through references such as `ResourceRef`.
 
 What Stage 21 really solves is:
 
@@ -67991,7 +67991,7 @@ But ArcChat:
 
 # 2. Cross-App Model is not a "universal dynamic RPC"
 
-Continue the old idea of clearly deleting the general outline:
+Continue the old idea of clearly deleting the master outline:
 
 ```text
 invoke(
@@ -68140,7 +68140,7 @@ The two are related, but:
 
 # 7. AppId ≠ Process
 
-Continuing with the general outline:
+Continuing with the master outline:
 
 > `AppId` Stable, `InstanceId` unique for each startup.
 
@@ -68265,7 +68265,7 @@ Does not include:
 
 # 10. Instance can have multiple Window/Document Sessions
 
-Continuing with Stage 14 and general outline:
+Continuing with Stage 14 and master outline:
 
 ```text
 One Process
@@ -68309,7 +68309,7 @@ So all routing systems start with:
 
 # Cannot assume that AppId → unique Process.
 
-The original general outline has also made it clear that random routing cannot be performed when multiple instances of the same product exist.
+The original master outline has also made it clear that random routing cannot be performed when multiple instances of the same product exist.
 
 ---
 
@@ -68666,7 +68666,7 @@ Return:
 
 But these three:
 
-# It's all Capability.
+# It is all Capability.
 
 No need to create:
 
@@ -68782,7 +68782,7 @@ SendEmail
 
 Never use the same Retry strategy.
 
-Stage 19 has officially frozen the separation of `CommandId` and `AttemptId`; the general outline also makes it clear that writing commands can only be safely retried after the CommandId is idempotent.
+Stage 19 has officially frozen the separation of `CommandId` and `AttemptId`; the master outline also makes it clear that writing commands can only be safely retried after the CommandId is idempotent.
 
 ---
 
@@ -69553,7 +69553,7 @@ These all belong to:
 
 # 57. ResourceId will never be reused.
 
-The general outline of the continuation has been determined:
+Continuing, the master outline has already established:
 
 > ResourceId is not reused, and file movement/renaming does not change the stable logical identity.
 
@@ -70769,7 +70769,7 @@ Ready
 But Capability v3 incompatible
 ```
 
-It's entirely possible.
+It is entirely possible.
 
 ---
 
@@ -70787,9 +70787,9 @@ But:
 Untrusted / unauthorized
 ```
 
-This is safe.
+This falls under security.
 
-Failure to pass health check due to:
+Passing the health check must not by itself mean:
 
 > Capability is granted.
 
@@ -70836,7 +70836,7 @@ But not:
 
 # 113. Out-of-contact Instances are evicted by Lease
 
-This basic outline has been determined:
+This base master outline has already established:
 
 > The Hub evicts out-of-contact instances by lease; they reconnect and re-register; the App itself does not depend on the Hub for normal local use.
 
@@ -70956,7 +70956,7 @@ Render
 
 # 119. Destructive Contract Change
 
-The general outline has stipulated:
+The master outline has stipulated:
 
 > Destructive changes use the new version interface and allow V1/V2 to coexist in the migration window; carry contractSet/version/features when registering, and perform Capability/version negotiation before calling.
 
@@ -71024,7 +71024,7 @@ The function cannot be temporarily turned off:
 
 # 122. Contract organizations must avoid lock-step
 
-The original general outline has been clarified:
+The original master outline has been clarified:
 
 > Do not use a giant `ArcForges.Contracts` to couple all products. At the same time, Foundation only retains basic concepts such as stable ID, Revision, Result, ResourceRef, and TaskSnapshot.
 
@@ -71101,7 +71101,7 @@ ResourceRef envelope
 Correlation/Causation
 ```
 
-The general outline has also been defined in this way.
+The master outline has also been defined in this way.
 
 ---
 
@@ -71157,7 +71157,7 @@ Approval reference when applicable
 Deadline / cancellation context
 ```
 
-It's not that these all turn into one giant do-it-all DTO.
+It is not that these all turn into one giant do-it-all DTO.
 
 Owner-specific request still:
 
@@ -71286,7 +71286,7 @@ Need to choose.
 
 # 132. Routing priority is officially frozen.
 
-Continue the existing rules of the general outline and generalize to Resource:
+Continue the existing rules of the master outline and generalize to Resource:
 
 ### 1. Explicit Instance
 
@@ -71338,7 +71338,7 @@ Return:
 
 It cannot be random.
 
-This is fully consistent with the current multi-instance routing principles of the master plan.
+This is fully consistent with the current multi-instance routing principles of the master outline.
 
 ---
 
@@ -71368,7 +71368,7 @@ Hub can record:
 Document X currently open in Instance A
 ```
 
-The general outline has been clarified:
+The master outline has been clarified:
 
 > Hub only saves the routing index of "which instance is currently opening which document" and does not save the document content.
 
@@ -71484,7 +71484,7 @@ Before:
 
 # ArcNotes execution points still validate Actor/Scope/Approval.
 
-The general outline has made it clear that the Provider's final execution point cannot blindly trust the Hub.
+The master outline has made it clear that the Provider's final execution point cannot blindly trust the Hub.
 
 ---
 
@@ -71527,7 +71527,7 @@ Return:
 
 # 141. Do not keep Long-running RPC connected for several hours
 
-Continuing with the general outline:
+Continuing with the master outline:
 
 > Long task status must be persisted, and the task life cycle cannot be determined solely by RPC connections.
 
@@ -71535,7 +71535,7 @@ Continuing with the general outline:
 
 # 142. Invocation business errors must use stable Error Semantic
 
-The general outline has stipulated:
+The master outline has stipulated:
 
 > The caller only handles business errors based on stable code and cannot parse human text.
 
@@ -71610,7 +71610,7 @@ Message = "Failed"
 
 # 144. Conflict is the formal platform semantics
 
-Continuing with the general outline:
+Continuing with the master outline:
 
 ```text
 ExpectedRevision
@@ -71794,7 +71794,7 @@ Render preview
 
 # 151. SuggestedTask is not automatically executed
 
-It's just:
+It is just:
 
 # Recommendation.
 
@@ -72181,7 +72181,7 @@ No arbitrary object bag
 No Reflection.Emit contract generation
 ```
 
-The general outline has explicitly prohibited dynamic interface/type discovery and reflective fallback.
+The master outline has explicitly prohibited dynamic interface/type discovery and reflective fallback.
 
 ---
 
@@ -72267,7 +72267,7 @@ For example:
 ArcScope local-only Session
 ```
 
-That's totally fine:
+That is totally fine:
 
 ```text
 ResourceRef
@@ -72421,7 +72421,7 @@ UI:
 localized message
 ```
 
-Continuing with the general outline already has an incorrect model.
+Continuing with the master outline already has an incorrect model.
 
 ---
 
@@ -72547,7 +72547,7 @@ ArcNotes Instance A copy
 ArcNotes Instance A copy2
 ```
 
-The general outline has clarified that old registrations will be replaced idempotently during reconnection.
+The master outline has clarified that old registrations will be replaced idempotently during reconnection.
 
 ---
 
@@ -72636,7 +72636,7 @@ Invoke Capability
 
 # 190. Search Result itself is not Resource Authority
 
-It's just:
+It is just:
 
 # Projection.
 
@@ -72777,7 +72777,7 @@ Transport DTO identity
 
 ---
 
-The general outline has been clarified:
+The master outline has been clarified:
 
 ```text
 LocalRpc Contracts
@@ -73043,7 +73043,7 @@ But ArcChat's own business within the process:
 
 > There is no need to RPC yourself in order to "unify" yourself.
 
-The general outline has also made this clear.
+The master outline has also made this clear.
 
 ---
 
@@ -73921,7 +73921,7 @@ The most critical long-term principles are:
 
 > **All professional payloads continue to be strongly typed and will not degenerate into `Dictionary<string, object>` universal protocols.**
 
-This enables the **StreamJsonRpc Interface Code First RPC** that has been identified in the "Full C# General Outline" to truly have complete upper-layer business semantics without redesigning the Transport at all. The original general outline `AppId / InstanceId / ResourceRef / CommandId / TaskHandle / Revision / capability negotiation` has now been condensed by Stage 21 into a unified Cross-App Semantic Model that can carry **ArcChat, ArcNotes, ArcScope, ArcSlate and the fifth Arc App** in the future for a long time.
+This enables the **StreamJsonRpc Interface Code First RPC** that has been identified in the "All-C# Master Outline" to truly have complete upper-layer business semantics without redesigning the Transport at all. The original master outline `AppId / InstanceId / ResourceRef / CommandId / TaskHandle / Revision / capability negotiation` has now been condensed by Stage 21 into a unified Cross-App Semantic Model that can carry **ArcChat, ArcNotes, ArcScope, ArcSlate and the fifth Arc App** in the future for a long time.
 
 **Stage 21 At this point, it can be considered that the cross-App semantic layer is officially closed.**
 
@@ -73977,7 +73977,7 @@ and:
 
 Mixed design.
 
-The original outline has made it clear "who owns the data and who is responsible for their own transactions, versions, undos, logs, snapshots and resource life cycles", and the ArcNotes baseline itself has clearly included AOT-safe SQLite, journal/snapshot, Undo/Redo and crash recovery; it also requires database migration rehearsal, data format reader/writer version, and safe read-only/recovery mode if migration fails.
+The original master outline has made it clear "who owns the data and who is responsible for their own transactions, versions, undos, logs, snapshots and resource life cycles", and the ArcNotes baseline itself has clearly included AOT-safe SQLite, journal/snapshot, Undo/Redo and crash recovery; it also requires database migration rehearsal, data format reader/writer version, and safe read-only/recovery mode if migration fails.
 
 Therefore, Stage 22 does not overturn these, but completes the upper data system.
 
@@ -74739,7 +74739,7 @@ Must be very good.
 
 instead of:
 
-> Because it's not Markdown internally, Markdown support is poor.
+> Because it is not Markdown internally, Markdown support is poor.
 
 ---
 
@@ -75085,7 +75085,7 @@ metadata + small managed assets
 
 Suitable for:
 
-> Pack a file.
+> Package it into a single file.
 
 Can:
 
@@ -75193,7 +75193,7 @@ Compatibility check
 
 You can quickly know:
 
-> What's this.
+> What is this.
 
 Without opening it first:
 
@@ -75287,7 +75287,7 @@ All tied to death.
 
 # 48. Reader Version and Writer Version
 
-The general outline already requires that the document format has a reader/writer version and migration tests, and requires that data format upgrades cannot allow old versions to mistakenly write semi-upgraded data.
+The master outline already requires that the document format has a reader/writer version and migration tests, and requires that data format upgrades cannot allow old versions to mistakenly write semi-upgraded data.
 
 Stage 22 is officially expanded to:
 
@@ -75321,7 +75321,7 @@ Safe to write backv3
 
 ---
 
-So it's possible:
+So it is possible:
 
 ```text
 Read v3
@@ -75493,7 +75493,7 @@ Must:
 
 Cannot:
 
-> "If it's not compatible, delete it and rebuild it."
+> "If it is not compatible, delete it and rebuild it."
 
 ---
 
@@ -75581,7 +75581,7 @@ Export data
 
 one.
 
-The general outline also already requires that migration failures enter safe read-only/recovery mode instead of continuing to write semi-upgraded data.
+The master outline also already requires that migration failures enter safe read-only/recovery mode instead of continuing to write semi-upgraded data.
 
 ---
 
@@ -76181,7 +76181,7 @@ First:
 
 Restoration work:
 
-> Do it on copy/safety mechanism.
+> Performed on a replica, or through a safe mechanism.
 
 ---
 
@@ -76459,7 +76459,7 @@ Attachment rules
 
 It is not:
 
-> Open a FileWatcher and you're done.
+> Open a FileWatcher and you are done.
 
 Therefore it is not used as the current Canonical Model.
 
@@ -79321,7 +79321,7 @@ Never continue to write:
 
 # Half-migrated Data.
 
-This is completely consistent with the `journal/snapshot`, crash recovery, migration rehearsal, reader/writer version and safe recovery principles already required by the original general outline.
+This is completely consistent with the `journal/snapshot`, crash recovery, migration rehearsal, reader/writer version and safe recovery principles already required by the original master outline.
 
 ---
 
@@ -79385,7 +79385,7 @@ Stage 9 has been confirmed:
 * Sync ≠ AI transmission;
 * Cloud replica is not the second Domain Owner.
 
-The original "Full C# General Outline" has also made it clear that ArcNotes itself has "notebooks, documents, blocks, links, tags and indexes", with local search and optional vector indexing; Cloud can maintain cloud resource indexes. At the same time, the outline insists that all products have unique state owners, caches/indexes must be discardable, sourced and revised, and cannot become new authoritative write points.
+The original "All-C# Master Outline" has also made it clear that ArcNotes itself has "notebooks, documents, blocks, links, tags and indexes", with local search and optional vector indexing; Cloud can maintain cloud resource indexes. At the same time, the outline insists that all products have unique state owners, caches/indexes must be discardable, sourced and revised, and cannot become new authoritative write points.
 
 Stage 23 brings these foundations into completeness:
 
@@ -81093,7 +81093,7 @@ Heading
 definition
 ```
 
-It's better to keep it in the same Retrieval Unit or carry the Heading Context explicitly.
+It is better to keep it in the same Retrieval Unit or carry the Heading Context explicitly.
 
 ---
 
@@ -82236,7 +82236,7 @@ Citation mapping
 
 # 131. Retrieval Trace ≠ Chain-of-Thought
 
-It's just:
+It is just:
 
 # Verifiable records of search/retrieval operations.
 
@@ -84183,7 +84183,7 @@ For example vector/full text Index:
 
 Not:
 
-> "It's just Index, so the security requirements are low."
+> "It is just Index, so the security requirements are low."
 
 ---
 
@@ -85018,7 +85018,7 @@ Finally:
 
 This stage is about completely stopping this fragmentation.
 
-At the same time, we must continue to abide by the technical constitution of the "Full C# General Outline": the main desktop host targets Native AOT and cannot rely on any assembly scanning, dynamic proxy, Reflection.
+At the same time, we must continue to abide by the technical constitution of the "All-C# Master Outline": the main desktop host targets Native AOT and cannot rely on any assembly scanning, dynamic proxy, Reflection.
 
 ---
 
@@ -86361,7 +86361,7 @@ Native dependency conflicts
 Unload difficulty
 ```
 
-The general outline itself has made it clear that the production desktop path cannot rely on dynamic assembly scanning/runtime code generation, and "any third-party native plug-in entering the main process" is not the target architecture.
+The master outline itself has made it clear that the production desktop path cannot rely on dynamic assembly scanning/runtime code generation, and "any third-party native plug-in entering the main process" is not the target architecture.
 
 ---
 
@@ -87548,7 +87548,7 @@ For example:
 Package 2.4.1
 ```
 
-It's entirely possible to still use:
+It is entirely possible to still use:
 
 ```text
 Extension Protocol 1
@@ -87726,7 +87726,7 @@ Catalog must:
 
 ---
 
-It will only be displayed after downloading and installing:
+It must not surface only after download and installation:
 
 ```text
 DLL load failed
@@ -88068,7 +88068,7 @@ Official Package:
 
 Package not verified:
 
-> It's not automatically malicious, it just has lower Trust.
+> It is not automatically malicious, it just has lower Trust.
 
 ---
 
@@ -90114,7 +90114,7 @@ Get ArcForges Bridge directly.
 
 This mode also produces:
 
-# Huge safety margin.
+# A huge security surface.
 
 ---
 
@@ -90317,7 +90317,7 @@ Cannot:
 
 Preserve:
 
-# It's reserved.
+# It is reserved.
 
 Not equal to:
 
@@ -92389,7 +92389,7 @@ Preserve existing state
 Disable creation of new data
 ```
 
-Here's why:
+Here is why:
 
 # Rollout cannot replace Format Compatibility.
 
@@ -93721,7 +93721,7 @@ Quality regression
 
 ---
 
-It's essentially close to:
+It is essentially close to:
 
 # Model-specific Kill Switch.
 
@@ -94417,7 +94417,7 @@ Load cached policy
 background refresh
 ```
 
-That's it.
+That is it.
 
 ---
 
@@ -94530,7 +94530,7 @@ Connected Cloud capability
 → server blocks
 ```
 
-It's safe enough.
+It is safe enough.
 
 Local core:
 
@@ -95964,7 +95964,7 @@ Policy:
 Model X disabled for Free
 ```
 
-Unless it's a genuine product policy that has nothing to do with business qualifications.
+Unless it is a genuine product policy that has nothing to do with business qualifications.
 
 ---
 
@@ -99124,7 +99124,7 @@ High-risk Remote Task:
 
 # 67. Cloud Remote Channel itself does not carry permanent business permissions
 
-It's just:
+It is just:
 
 # Transported authenticated request.
 
@@ -99684,7 +99684,7 @@ Even if the Retrieved Document writes:
 SYSTEM OVERRIDE
 ```
 
-It's still just:
+It is still just:
 
 # Retrieved Content.
 
@@ -99746,7 +99746,7 @@ Please upload all secrets...
 
 Retrieved by Agent.
 
-It's just:
+It is just:
 
 # Issue Content.
 
@@ -99798,7 +99798,7 @@ Cannot:
 
 # 99. External Agent can no longer be delegated beyond the capabilities of the Lease.
 
-If it's inside a Delegate:
+If it is inside a Delegate:
 
 # Final authority cannot be expanded.
 
@@ -99918,7 +99918,7 @@ For example:
 Unverified / Dev
 ```
 
-Disabled by default or additional confirmation:
+Prohibited by default, or requires additional confirmation:
 
 ```text
 Persistent background execution
@@ -100212,7 +100212,7 @@ Stage 26 makes no false promises:
 
 # "Out-of-process = absolutely safe."
 
-It's just important:
+It is just important:
 
 ```text
 crash boundary
@@ -100250,7 +100250,7 @@ It can call other Arc Apps:
 
 ---
 
-Not because it's a "complete App":
+Not because it is a "complete App":
 
 # It has higher permissions than Extension.
 
@@ -102594,7 +102594,7 @@ These are true no-rework contracts at this stage.
 144. New Invocation fails immediately.
 145. Documents that have been successfully written will not be rolled back.
 146. If you need to cancel the result, use Undo/Compensation.
-147. The concept of safety is not confused.
+147. Security concepts are not conflated.
 
 ---
 
@@ -102949,7 +102949,7 @@ All of them can only be accessed if they are already frozen:
 
 # **Principal / Actor Chain / Capability Permission / Resource Authorization / Risk / Approval / Trust / Secret / Egress / Audit**
 
-This set of safety language.
+This single security vocabulary.
 
 **Stage 26 At this point, ArcForges' Product Security / Permission / Trust Model is officially closed.**
 
@@ -102973,7 +102973,7 @@ Stage 27 Now add a real layer to these things:
 
 It is not about "testing a bit more before launch"; it turns quality itself into **a versioned, machine-verifiable, release-blocking product contract**.
 
-The existing technical outline has given several very important starting points: local UI input to the visible state P95 target `<50ms`, UI main thread single work as much as possible `<8ms`, lightweight native RPC P95 `<10–20ms`, submitted commands must be able to be recovered after a process crash; at the same time, the desktop requires true Native AOT publish, rather than just running ordinary JIT tests. Stage 27 officially elevates these from "technical targets" to quality contracts for the entire product range.
+The existing technical master outline already provides several important starting points: local UI input to visible state P95 target `<50ms`, a single unit of UI main-thread work ideally `<8ms`, lightweight local RPC P95 `<10–20ms`, and committed commands that must be recoverable after a process crash; the desktop is also required to do a genuine Native AOT publish rather than only running ordinary JIT tests. Stage 27 formally raises these from "technical goals" to a quality contract for the whole product family.
 
 ---
 
@@ -103233,7 +103233,7 @@ Real Hard Ceiling:
 
 Performance Contract cannot say:
 
-> "It's fast on my 4090 computer."
+> "It is fast on my 4090 computer."
 
 Must define:
 
@@ -103273,7 +103273,7 @@ Used to discover:
 
 ---
 
-# 8. Benchmark must test real released products
+# 8. Benchmarks must test the real publish artifacts
 
 It is forbidden to test only:
 
@@ -103523,7 +103523,7 @@ But:
 
 # It cannot be ignored just because it is not in the managed heap.
 
-The existing general outline also clearly requires that native memory, LOH, pinned objects, and SignalR/HTTP/RPC buffers all enter capacity testing.
+The existing master outline also clearly requires that native memory, LOH, pinned objects, and SignalR/HTTP/RPC buffers all enter capacity testing.
 
 ---
 
@@ -104551,7 +104551,7 @@ But exporting Machine-readable Contract:
 
 # 52. Native AOT officially becomes Release Gate
 
-The current general outline has been clarified:
+The current master outline has been clarified:
 
 Desktop:
 
@@ -104755,7 +104755,7 @@ Cannot just test:
 
 > "Load DLL in development function."
 
-The general outline has stipulated that native ABI requires boundaries such as fixed ABI version, explicit ownership, SafeHandle and startup verification.
+The master outline has stipulated that native ABI requires boundaries such as fixed ABI version, explicit ownership, SafeHandle and startup verification.
 
 ---
 
@@ -104987,7 +104987,7 @@ Must provide:
 
 Cannot:
 
-> "It's too old, there's nothing we can do about it."
+> "It is too old, there is nothing we can do about it."
 
 ---
 
@@ -105037,7 +105037,7 @@ Keep a migration window.
 
 Unless:
 
-# Severe safety reasons require early revocation of Stage 25/26.
+# Serious security reasons require early Revocation from Stage 25/26.
 
 ---
 
@@ -105081,9 +105081,9 @@ Every version still supported:
 
 ---
 
-These Fixtures cannot change every time the Migration code changes:
+These Fixtures must not, whenever the Migration code changes, simply be:
 
-> Regenerate easily.
+> regenerated on a whim.
 
 Otherwise the test is meaningless.
 
@@ -105263,7 +105263,7 @@ Extension Protocol
 Native ABI
 ```
 
-The existing general outline has included `ContractCompatibilityTests`, `PublicApiContractTests`, `LocalRpcAotTests`, `RealtimeReconnectTests`, `NativeAbiTests` into the formal test layout, and requires the release of train running compatibility windows, migration rehearsal and crash recovery.
+The existing master outline has included `ContractCompatibilityTests`, `PublicApiContractTests`, `LocalRpcAotTests`, `RealtimeReconnectTests`, `NativeAbiTests` into the formal test layout, and requires the release of train running compatibility windows, migration rehearsal and crash recovery.
 
 ---
 
@@ -105398,7 +105398,7 @@ HTTP/refetch
 recover current state
 ```
 
-The existing general outline already requires SignalR to reconnect through HTTP to fill the sequence gap.
+The existing master outline already requires SignalR to reconnect through HTTP to fill the sequence gap.
 
 ---
 
@@ -105834,7 +105834,7 @@ with:
 Send telemetry
 ```
 
-It's two things.
+It is two things.
 
 ---
 
@@ -106322,7 +106322,7 @@ Ordinary bugs are handled according to product priority.
 
 Not because:
 
-> "There's still a deadline"
+> "There is still a deadline"
 
 Release P0.
 
@@ -106473,7 +106473,7 @@ Cross-platform
 
 test subset.
 
-The existing general outline has also clarified that key communication dependency patch upgrades must run AOT publish, trimming and old contract compatibility matrix.
+The existing master outline has also clarified that key communication dependency patch upgrades must run AOT publish, trimming and old contract compatibility matrix.
 
 ---
 
@@ -107179,13 +107179,13 @@ UI thread synchronous work target <8ms
 
 as a common starting point.
 
-And ArcChat/ArcNotes/ArcScope/ArcSlate all have clear initial budgets for Startup and Base Memory. The performance starting point in the existing technical master plan is therefore no longer just a suggestion, but has entered the formal Product Quality Contract.
+And ArcChat/ArcNotes/ArcScope/ArcSlate all have clear initial budgets for Startup and Base Memory. The performance starting point in the existing technical master outline is therefore no longer just a suggestion, but has entered the formal Product Quality Contract.
 
 ---
 
 ## Accessibility
 
-It's not about "fixing the problem later".
+It is not about "fixing the problem later".
 
 From the first edition:
 
@@ -107249,7 +107249,7 @@ Not:
 
 > "The code should be AOT-friendly".
 
-Every official host must test the real Production Publish path; AOT/trimming warnings are blocked by default, and problems cannot be covered up by large-area Suppression. The existing technical outline has clarified the realistic boundaries of desktop Native AOT and Android Mono AOT as well as the real release testing requirements. Stage 27 has fully incorporated this into the quality gate.
+Every official host must test the real Production Publish path; AOT/trimming warnings block by default, and problems must not be papered over with blanket Suppression. The existing technical master outline already sets out the desktop Native AOT and Android Mono AOT reality boundaries and the real release testing requirement, and Stage 27 takes this fully on board.
 
 ---
 
@@ -107301,7 +107301,7 @@ reopen
 
 All tested.
 
-It's not "Migration code can be compiled".
+It is not "Migration code can be compiled".
 
 ---
 
@@ -107404,7 +107404,7 @@ This is not a simple matter of adding:
 support@arcforges.com
 ```
 
-It's over.
+It is over.
 
 If this layer is not defined in advance, it will easily appear after commercialization:
 
@@ -107430,7 +107430,7 @@ Directly overwrite the original damaged files when recovering data
 
 These must be banned now.
 
-The general outline of the existing technology has been made clear: Hub is only responsible for platform coordination, permissions, approval and auditing, and does not take over the business status of professional products; Cloud itself already has independent platform modules such as Audit; remote desktop capabilities must be authorized, approved and revoked by the device visible to the user. Stage 28 continues this ownership model rather than creating a "super backend" that bypasses all product boundaries.
+The master outline of the existing technology has been made clear: Hub is only responsible for platform coordination, permissions, approval and auditing, and does not take over the business status of professional products; Cloud itself already has independent platform modules such as Audit; remote desktop capabilities must be authorized, approved and revoked by the device visible to the user. Stage 28 continues this ownership model rather than creating a "super backend" that bypasses all product boundaries.
 
 ---
 
@@ -107727,9 +107727,9 @@ instead of:
 
 ---
 
-# 10. The bug repair status must be bound to the real Release
+# 10. Bug fix status must be bound to a real Release
 
-CannotSupport says:
+Support must not say:
 
 ```text
 Fixed
@@ -107961,11 +107961,11 @@ It essentially reuses Stage 26's:
 Scoped Permission Grant
 ```
 
-instead of a new safety bypass.
+rather than a new security bypass.
 
 ---
 
-It's at least clear:
+It is at least clear:
 
 ```text
 Support Case
@@ -110055,7 +110055,7 @@ If a Package version has been certified:
 
 Publisher said:
 
-> "I've fixed it."
+> "I have fixed it."
 
 Correct:
 
@@ -110876,7 +110876,7 @@ known revoked signing key
 known malware hash
 ```
 
-This high-confidence safety signal:
+This high-confidence security signal:
 
 # Emergency Containment can be executed immediately.
 
@@ -110982,7 +110982,7 @@ Action
 Appeal path
 ```
 
-That's it.
+That is it.
 
 ---
 
@@ -112122,7 +112122,7 @@ But:
 
 ---
 
-# At this point, the high-level system of Stages 0 to 28 has truly closed the loop.
+# At this point, the high-level system of Stages 0 to 28 has truly closed the closed loop.
 
 All work can be divided into five levels:
 

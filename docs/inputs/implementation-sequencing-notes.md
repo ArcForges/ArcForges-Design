@@ -7,7 +7,7 @@
 
 The primary product sequence "ArcChat → ArcNotes → ArcScope → ArcSlate" remains unchanged as the mainline, but it must not be read as "a project must be 100% finished before the next project and its dependencies are considered." The correct approach is:
 
-> Freeze architecture, scope, and contracts first → Establish real cross-process skeleton → Complete ArcChat independent core → Complete ArcNotes document core and close cross-App loop → Deliver first real Cloud version → Progressively complete ArcNotes Edgeless/Database/Slides → Complete MAUI/Android remote loop → ArcScope → ArcSlate → Cloud completion → Independent Blazor Web integration, Account/Billing, and production release.
+> Freeze architecture, scope, and contracts first → Establish real cross-process skeleton → Complete ArcChat independent core → Complete ArcNotes document core and close cross-App closed loop → Deliver first real Cloud version → Progressively complete ArcNotes Edgeless/Database/Slides → Complete MAUI/Android remote closed loop → ArcScope → ArcSlate → Cloud completion → Independent Blazor Web integration, Account/Billing, and production release.
 
 Server interfaces must be designed now, though the server may initially use local implementations and mocks; however, the first real Cloud/Sync/Remote closed loop must be established as early as possible after ArcNotes document core V1 is complete, rather than waiting for ArcNotes extended capabilities or all four desktop products to finish.
 
