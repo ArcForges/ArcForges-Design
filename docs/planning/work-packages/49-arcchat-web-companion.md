@@ -1,0 +1,174 @@
+# WP-49 — ArcChat Web Companion
+
+> Status: **Authoritative** — Phase 2 (Detailed Specifications)
+> Layer: Planning · Work package
+> Phase: K — Web and release
+> Upstream: `26`, `48` · Downstream: `50`
+
+> **Goal.** Deliver the browser companion as the second deployment profile of the same application: chat, tasks, approvals, steering, artifacts and remote control — a cloud surface, distinct from the account portal, sharing no state with it.
+
+---
+
+## 1. Scope and purpose
+
+**In scope.** The chat deployment profile: conversation, message and streaming; task, run and step surfaces; approval, steering and cancellation; artifact preview; project and automation visibility; device presence and target selection; and the honest offline and degradation behaviour of a browser client.
+
+**Out of scope.** Any professional product editing. Account management, which is `48`'s profile. A second account application, which is forbidden.
+
+**Why this package exists.** `I2 §III.12` requires the web companion to follow stabilisation of chat, task, approval, remote and realtime — which is why it lands after `26` and after the portal establishes the shared shell.
+
+---
+
+## 2. Required inputs and dependencies
+
+| Input | Why it matters |
+|---|---|
+| [`../../requirements/products/arcchat-mobile-and-web.md`](../../requirements/products/arcchat-mobile-and-web.md) | The companion product model shared with mobile |
+| [`../../architecture/10-web-architecture.md`](../../architecture/10-web-architecture.md) `§3`, `§4` | The application structure and the surface matrix |
+| `WP-26`, `WP-48` output | The remote closed loop and the shared application shell |
+
+---
+
+## 3. Binding rules and decisions
+
+| # | Rule |
+|---|---|
+| BR-01 | **The chat profile shares no state, storage or cookies with the account profile** (**D-015**). |
+| BR-02 | **The browser never connects to a local endpoint.** Remote work goes through Cloud and the durable tool bridge (**D-010**). |
+| BR-03 | **An operation requiring local presence cannot be completed from the browser alone.** |
+| BR-04 | **A web session is shorter-lived and less trusted than a desktop session.** |
+| BR-05 | **Web offline is minimal and honest**: it states it is offline and preserves unsent input; it does not pretend to work. |
+| BR-06 | **Realtime loss degrades to polling authoritative state**, then backfills on reconnection. |
+| BR-07 | **Preview rendering of user content is sandboxed**; untrusted content never executes in the application origin. |
+| BR-08 | **There are no public share links in V1.** Links are authenticated and private. |
+| BR-09 | **A cloud resource URL verifies permission at access**, and a denial does not disclose existence where that would leak. |
+| BR-10 | **Bundle size and interactivity budgets apply**, with a regression gate. |
+
+---
+
+## 4. Projects, directories, files and major types affected
+
+| Location | Change |
+|---|---|
+| `src/Web/ArcForges.Web.App/Features/Chat/` | Conversation, message, streaming, slash commands, context mentions |
+| `src/Web/ArcForges.Web.App/Features/Tasks/` | Task, run, step, tool call, progress, approval, steering |
+| `src/Web/ArcForges.Web.App/Features/Artifacts/` | Sandboxed artifact preview and download |
+| `src/Web/ArcForges.Web.App/Features/Devices/` | Presence and target selection |
+| `deploy/edge/chat/` | Origin configuration for the chat surface |
+| `tests/Web/Chat/` | Streaming, approval, offline, sandbox and budget suites |
+
+**Major types introduced.** `ChatProfile`, `ConversationView`, `StreamingAssembler`, `TaskBoardView`, `ApprovalPanel`, `SteeringPanel`, `ArtifactSandbox`, `PresencePicker`.
+
+---
+
+## 5. Required implementation work
+
+### WP-49.00 — Chat profile and isolation
+
+**What must be fully done.** The chat deployment profile with its own navigation, branding and feature set, sharing the codebase with the account profile but no state, storage or cookies.
+
+**Testing requirements.** A cross-profile isolation test; a build-per-profile test; a navigation-scope test.
+
+**Completion gate.** The two profiles share code and provably share no state.
+
+### WP-49.01 — Conversation and streaming
+
+**What must be fully done.** Conversation and message display with streaming assembly, slash commands, context mentions, and profile and model selection. Interruption is handled explicitly; a partial stream is never presented as a complete message.
+
+**Testing requirements.** Streaming, interruption and reconnection-mid-stream tests; a partial-message assertion.
+
+**Completion gate.** An interrupted stream is always shown as interrupted, never as complete.
+
+### WP-49.02 — Tasks, approval and steering
+
+**What must be fully done.** Task, run, step and tool-call surfaces with progress; approve, reject, cancel, pause, retry and steer as idempotent commands; approval requests described in the user's terms; local-presence-required operations clearly refused with an explanation.
+
+**Testing requirements.** Idempotency per control; a local-presence negative test; approval expiry; a durable-attention test asserting a missed notification loses nothing.
+
+**Completion gate.** Every control is idempotent, local-presence-required operations are refused with an explanation, and no pending approval is lost by a missed notification.
+
+### WP-49.03 — Artifacts and sandboxing
+
+**What must be fully done.** Artifact preview inside a sandbox so untrusted content never executes in the application origin. Downloads verify permission at access. No public share links exist in V1.
+
+**Testing requirements.** A sandbox escape attempt with hostile content; a permission-at-access test; an existence-disclosure test on a denied resource; an absence assertion for public share links.
+
+**Completion gate.** **Hostile content cannot escape the preview sandbox**, permission is verified at access, and no public share link exists.
+
+### WP-49.04 — Remote control
+
+**What must be fully done.** Device presence and target selection; remote task issuance through the durable tool bridge; honest state when a target is offline including queue state and expiry.
+
+**Testing requirements.** Offline-target queueing; presence transitions; a no-local-connection assertion for the browser client.
+
+**Completion gate.** Remote work reaches a desktop only through the cloud bridge, and an offline target shows an honest queued state with an expiry.
+
+### WP-49.05 — Offline, degradation and accessibility
+
+**What must be fully done.** Honest offline messaging with unsent input preserved; realtime loss degrading to polling with backfill; a cloud outage reporting which capabilities are unavailable rather than blanking; accessibility with keyboard-only completion of every core workflow.
+
+**Testing requirements.** Offline and reconnection tests; a polling-degradation test; a cloud-outage test; accessibility automated and manual passes.
+
+**Completion gate.** The application never blanks, states what is unavailable and why, converges after reconnection, and completes every core workflow by keyboard.
+
+### WP-49.06 — Performance budgets
+
+**What must be fully done.** Bundle size, first-interactive and interaction responsiveness measured against budget with a regression gate applied at release.
+
+**Testing requirements.** Budget measurements per release candidate; a regression-gate negative test.
+
+**Completion gate.** All three budgets are met and a deliberate regression is caught by the gate.
+
+---
+
+## 6. Impacts
+
+| Dimension | Impact |
+|---|---|
+| Database | None directly; consumes cloud APIs |
+| Protocol | Consumes chat, task, approval, artifact and presence contracts |
+| UI | The browser companion experience |
+| Security | Sandboxed previews, per-origin isolation, no public sharing in V1 |
+| Platform | Browser support matrix |
+| Migration | Cached client handling with a grace period |
+| Compatibility | The web client enters the supported client window |
+
+---
+
+## 7. Tests and verification evidence
+
+| Evidence | Produced by |
+|---|---|
+| Cross-profile isolation results | `WP-49.00` |
+| Streaming, interruption and partial-message results | `WP-49.01` |
+| Control idempotency, local-presence and attention-durability results | `WP-49.02` |
+| Sandbox escape, permission-at-access and share-link absence results | `WP-49.03` |
+| Offline-target queueing and no-local-connection results | `WP-49.04` |
+| Offline, degradation, convergence and accessibility results | `WP-49.05` |
+| Budget measurements and regression-gate negative test | `WP-49.06` |
+
+---
+
+## 8. Completion gate
+
+**All of the following, with recorded evidence:**
+
+1. The chat and account profiles share code and provably share no state, storage or cookies.
+2. An interrupted stream is always shown as interrupted, never as complete.
+3. Every task control is idempotent; local-presence-required operations are refused with an explanation; a missed notification never loses a pending approval.
+4. **Hostile content cannot escape the preview sandbox**; permission is verified at access; no public share link exists in V1.
+5. Remote work reaches a desktop only through the cloud bridge; an offline target shows an honest queued state with an expiry.
+6. The application never blanks during an outage, converges after reconnection, and completes every core workflow by keyboard.
+7. Bundle, first-interactive and interaction budgets are met, and a deliberate regression is caught by the gate.
+
+---
+
+## 9. Dependencies
+
+**Upstream.** `26` (the remote closed loop), `48` (the shared application shell).
+
+**Downstream.**
+
+| Package | What it needs from here |
+|---|---|
+| `50` — Production release | The web companion as a shippable surface |
