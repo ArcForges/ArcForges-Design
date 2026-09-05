@@ -1,3 +1,30 @@
 # Product Requirements
 
-This directory will contain specific requirements documents for each ArcForges product (ArcChat, ArcNotes, ArcScope, ArcSlate, and supporting services).
+Per-product requirements for the ArcForges family. Each document assumes [`../00-product-scope-and-portfolio.md`](../00-product-scope-and-portfolio.md) and [`../01-normative-glossary-and-invariants.md`](../01-normative-glossary-and-invariants.md), and consumes the cross-cutting requirements rather than restating them.
+
+## Desktop products
+
+The frozen baseline is exactly four desktop products (**D-002**).
+
+| Document | Product | Positioning |
+|---|---|---|
+| [`arcchat.md`](arcchat.md) | **ArcChat** (`arcchat`) | AI Agent Command Center, Local Hub, Task Center, cross-application orchestrator |
+| [`arcnotes.md`](arcnotes.md) | **ArcNotes** (`arcnotes`) | Local-first Knowledge & Document authority — document core in V1, with Canvas, Database and Slides in complete scope, phased (**D-006**) |
+| [`arcscope.md`](arcscope.md) | **ArcScope** (`arcscope`) | Local-first Observation, Acquisition & Telemetry Analysis authority — independently defined, **not** a continuation of any prior product (**D-002**) |
+| [`arcslate.md`](arcslate.md) | **ArcSlate** (`arcslate`) | Local-first Professional Non-linear Video Editing authority, rebuilt in C#/Avalonia with Olive as product reference only |
+
+## Platform and companion surfaces
+
+| Document | Surface | Positioning |
+|---|---|---|
+| [`arcforges-cloud.md`](arcforges-cloud.md) | **ArcForges Cloud** | The continuity and remote-execution platform: an ASP.NET Core **JIT modular monolith** (**D-008**), its runtime roles, dependency posture, environments, deployment, operations, resilience and go-live threshold |
+| [`arcforges-web.md`](arcforges-web.md) | **ArcForges Web** | The twelve-surface web presence: static public pages plus one Blazor WebAssembly application (**D-007**, **D-014**, **D-015**) |
+| [`arcchat-mobile-and-web.md`](arcchat-mobile-and-web.md) | **ArcChat Mobile / ArcChat Web** | Cloud continuity and remote-agent companion — Apache-2.0 mobile boundary (**D-004**), Android on Mono AOT with iOS build-deferred (**D-008**), consumption-only commerce (**D-022**) |
+
+## Rules that apply to every product document
+
+1. **Product independence** — every professional product completes its core work with ArcChat absent, no account, and no network.
+2. **State ownership** — each document states what its product owns authoritatively and what it must never own.
+3. **Reference posture** — where a reference repository exists (**D-012**), the document records that it is a source of features, behaviour, tests and possibly reusable material, never an architecture authority or a parity commitment, and that reuse is licence- and provenance-gated (**D-013**).
+4. **V1 scope** — each document separates the complete product model from what the first release must actually deliver, so "complete specification" is never mistaken for "complete first version".
+5. **Acceptance scenarios** — each document ends with the scenarios that must pass, including failure behaviour, not only the happy path.
