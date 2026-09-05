@@ -3,7 +3,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: A — Freeze and foundation
-> Upstream: `02` · Downstream: `04`, `05`, `09`, `21`, `23`, `30`
+> Upstream: `02` · Downstream: `04`, `05`, `06`, `09`, `21`, `23`, `30`
 
 > **Goal.** Create the contract projects the whole system speaks through — split by communication boundary, product ownership, release cadence and licence boundary — with C# as the single source of truth and every wire artifact generated from it.
 
