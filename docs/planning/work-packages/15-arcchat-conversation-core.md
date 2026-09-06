@@ -3,7 +3,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: C — First real slice
-> Upstream: `14` · Downstream: `17`
+> Upstream: `14` · Downstream: `17`, `52`
 
 > **Goal.** Build ArcChat's own domain — conversation, message, branch, attachment, project, profile and skill — as durable local state with search, history and recovery, independent of any other product.
 

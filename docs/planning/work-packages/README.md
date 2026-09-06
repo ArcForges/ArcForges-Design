@@ -117,8 +117,9 @@ The number is an identity, not a schedule. Ordering is by dependency; parallelis
 | 47 | [Static public site](47-static-public-site.md) | 00 |
 | 48 | [Account portal](48-account-portal.md) | 42, 44, 47 |
 | 49 | [ArcChat Web companion](49-arcchat-web-companion.md) | 26, 48 |
-| 50 | [Full-platform production release](50-full-platform-production-release.md) | 20, 28, 32, 35, 39, 43, 46, 49, 51 |
+| 50 | [Full-platform production release](50-full-platform-production-release.md) | 20, 28, 32, 35, 39, 43, 46, 49, 51, 52 |
 | 51 | [ArcScope deterministic Cloud simulator](51-arcscope-cloud-simulator.md) | 21, 23, 25, 33 |
+| 52 | [The Cloud Harness](52-cloud-harness.md) | 15, 17, 21, 23, 42, 43 |
 
 ---
 
@@ -143,9 +144,9 @@ Which packages are blocked by each package's completion gate.
 | 12 | 21, 45 |
 | 13 | 14, 33, 36 |
 | 14 | 15, 16, 18 |
-| 15 | 17 |
+| 15 | 17, 52 |
 | 16 | 17, 43 |
-| 17 | 20, 26, 41 |
+| 17 | 20, 26, 41, 52 |
 | 18 | 19 |
 | 19 | 20, 25, 28, 40 |
 | 20 | 50 |
@@ -226,4 +227,4 @@ Every gate in [`../../assurance/open-gates-register.md`](../../assurance/open-ga
 - **A package never re-creates a completed baseline audit.** The reference matrices and the code inventory are versioned planning inputs; packages consume them and check for drift ([`../evidence-driven-revisions.md`](../evidence-driven-revisions.md)).
 - One main context advances the sequence serially (**D-019**). Implementation ownership is not split across autonomous agent teams.
 - **A package identifier is stable and never reused.** `27` and `29` are retired by P2-006; their files remain as retirement records so an older citation resolves to an explanation rather than a broken reference.
-- **Numbering is allocation order, not execution order, above `50`.** `00`–`50` were allocated when the sequence was derived, and a retired identifier is never recycled, so a package added afterwards takes the next free number. **`51` executes in Phase H, after `33`, and is therefore an upstream of `50` despite its higher number.** The dependency graph in this file and each package's own header are authoritative for order; the numeral is not.
+- **Numbering is allocation order, not execution order, above `50`.** `00`–`50` were allocated when the sequence was derived, and a retired identifier is never recycled, so a package added afterwards takes the next free number. **`51` executes in Phase H after `33`, and `52` executes in Phase J after `43`; both are therefore upstreams of `50` despite their higher numbers.** The dependency graph in this file and each package's own header are authoritative for order; the numeral is not.

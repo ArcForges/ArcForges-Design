@@ -85,13 +85,11 @@
 
 **Completion gate.** Semantic modification is idempotent, owner-validated, and returns the resulting revision.
 
-### WP-20.03 — The full workflow
+### WP-20.03 — The full workflow · **RELOCATED**
 
-**What must be fully done.** The scenario runs end to end: a request in ArcChat produces a Task; the plan creates an ArcNotes document, inserts multiple blocks, and pauses for approval before writing; the user approves; content is written; the user undoes part of it; the document is saved; a hard kill is recovered from; and ArcChat holds an artifact reference that resolves to the correct document state.
+> **Relocated 2026-09-07 to [`52-cloud-harness.md`](52-cloud-harness.md) `§WP-52.05`.** The full agent-driven workflow requires the **Cloud Harness**, which admits through Commerce (`42`) and dispatches through Cloud AI (`43`). Neither exists in Phase D, so this step could not have run where it stood. The identifier is retired here and not reused.
 
-**Testing requirements.** The full scenario as an automated end-to-end test; variants for approval refusal, approval expiry, kill during write, kill during approval, and provider restart mid-plan.
-
-**Completion gate.** The full scenario passes, and every variant produces a correct, explained outcome with no data loss beyond uncommitted work.
+**What remains in this package** is everything the workflow *calls*: the context provider (`WP-20.00`), federated search (`WP-20.01`), real semantic modification (`WP-20.02`) and artifact handlers (`WP-20.04`). Those are capability surfaces and are genuinely buildable in Phase D — they are exercised here by direct invocation, and by the Harness later.
 
 ### WP-20.04 — Artifact handlers
 
@@ -145,7 +143,7 @@
 1. Context contribution is typed, bounded, explicitly refused when oversized, and visible to the user before sharing.
 2. Federated search attributes results per source, applies permission per source including counts, and degrades with a stated reason when a source is absent or slow.
 3. Semantic modification is idempotent under retry and disconnection, owner-validated, and returns the resulting revision.
-4. **The full workflow passes end to end** — request, document creation, block insertion, approval, write, undo, save, kill, recovery, artifact reference resolution — and every failure variant produces a correct, explained outcome.
+4. **Every capability the workflow needs is exercised by direct invocation** — document creation, block insertion, approval, write, undo, save, kill, recovery, artifact reference resolution — and every failure variant produces a correct, explained outcome.
 5. Artifacts preview and hand off correctly whether or not the target is running, and report staleness honestly.
 6. With ArcNotes absent, the capability is unavailable with a reason and ArcChat continues to function.
 7. Closed V1B items cite evidence; remaining V1B items still name their closing package.

@@ -3,7 +3,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: C — First real slice
-> Upstream: `15`, `16` · Downstream: `20`, `26`, `41`
+> Upstream: `15`, `16` · Downstream: `20`, `26`, `41`, `52`
 
 > **Goal.** Complete ArcChat as an independent product: chat, agent, task centre, capability hub, permission and approval, automation, local data and recovery — with **no claim** that its ecosystem tier is finished (`I2 §III.4`).
 
@@ -130,21 +130,7 @@
 
 **Completion gate.** Every V1B item is enumerated with a named closing package, and nothing incomplete is presented as complete.
 
-### WP-17.08 — The turn loop, batching and bounds
-
-**What must be fully done.** The harness turn loop of [`../../architecture/17-agent-harness.md`](../../architecture/17-agent-harness.md): durable iteration, response classification, continuation decisions, every loop bound, progress detection, batching of parallel tool calls with declared conflict sets, and the concurrency ceiling. Every bound ends a turn with a stated reason. An undeclared conflict set is treated as exclusive.
-
-**Testing requirements.** A crash-injection suite resuming from each loop point with no duplicate effect; a bounds suite proving no unbounded loop is reachable; a repetition test proving no-progress termination; a conflict suite proving two writes to one target never run in parallel while two independent reads do; a partial-failure test proving a failing call returns its siblings' real results.
-
-**Completion gate.** No unbounded loop is reachable, every bound ends the turn with a stated reason, and parallel batching never violates a declared conflict.
-
-### WP-17.09 — History compaction
-
-**What must be fully done.** `CompactionRecord` as a derived store: produced by a metered model call, keyed to branch and span, never mutating a stored message, never promoted to personal memory. The verbatim tail, retained opening intent, call-and-result atomicity, and retention of approvals, refusals and user corrections. Disclosure in the interface with expansion to the underlying messages. Degradation to disclosed hard truncation on compaction failure. Temporary Chat compacts in memory only.
-
-**Testing requirements.** A long-conversation suite proving the stored branch is byte-identical before and after compaction; a rebuild test proving records are reconstructible and losing them costs no content; a branch test proving a record never covers messages outside its branch; an atomicity test proving a tool call and its result are never separated; a decision-retention test proving a refused proposal is not re-proposed after compaction; a Temporary Chat test proving no record is persisted.
-
-**Completion gate.** Compaction reduces what is sent without altering what is stored, is disclosed and expandable, and no compacted span loses an approval, a refusal or a user correction.
+> **`WP-17.08` and `WP-17.09` are relocated to [`52-cloud-harness.md`](52-cloud-harness.md).** The turn loop, batching, bounds and history compaction are Cloud work (`LS-02`), and Phase C predates the Cloud host by two phases. Their identifiers are retired here and not reused.
 
 ---
 
@@ -174,8 +160,6 @@
 | Use-without-reveal and adapter-substitution results | `WP-17.05` |
 | Handoff, startup budget and recovery results | `WP-17.06` |
 | V1B enumeration completeness check | `WP-17.07` |
-| Loop-bound, crash-resume, no-progress and conflict-batching results | `WP-17.08` |
-| Compaction immutability, rebuild, atomicity and decision-retention results | `WP-17.09` |
 
 ---
 
@@ -184,15 +168,15 @@
 **All of the following, with recorded evidence:**
 
 1. Every registered capability is visible with risk, trust, permission and health, and unavailability always shows a reason.
-2. Multi-step agent plans execute inside a published AOT binary with explainable capability selection and validated plans.
+2. **Multi-step agent plans execute in Cloud** with explainable capability selection and validated plans, and **no desktop assembly contains a turn loop, a planner or a provider adapter** (`LS-02`, `HV-09`).
 3. Permission is visible and revocable, revocation takes effect mid-operation, and approvals survive a restart.
 4. Tasks from more than one product appear in one task centre with correct controls and ownership attribution.
 5. Automations start, stop and record runs; cascades are detected and stopped; no implicit permission is acquired.
 6. **No provider credential exists on the client**, and an admission refusal states which of service term, capacity or extra-credit authorisation is missing.
 7. Handoff works with the target both running and not running; startup meets budget; recovery is clean.
 8. **Every V1B ecosystem item is enumerated with a named closing package**, and nothing incomplete is presented as complete.
-9. No unbounded agent loop is reachable; every loop bound ends the turn with a stated reason; parallel tool batching never violates a declared conflict.
-10. **Compaction reduces what is sent without altering what is stored**, is disclosed and expandable, and never loses an approval, a refusal or a user correction.
+9. *(Moved to `WP-52` — the Cloud Harness. The turn loop, batching and bounds run in the Cloud host and admit through Commerce, so they cannot be built in Phase C.)*
+10. *(Moved to `WP-52` — the Cloud Harness. Compaction is a Cloud concern for the same reason.)*
 
 ---
 

@@ -36,7 +36,7 @@
 
 | # | Rule |
 |---|---|
-| BR-01 | **ArcNotes does not become a relational database clone.** A view is a projection over a query, not a table with foreign keys. |
+| BR-01 | **ArcNotes does not become a relational database clone.** A view is a projection over a query, not a table with foreign keys. **No formula, relation or rollup evaluator is built** (`P2-006`), and no expression language reaches the filter path (`NO-06` of the local RPC contract). |
 | BR-02 | **A document table block is a document table**, not a database view. The two remain distinct concepts. |
 | BR-03 | **Properties must not make plain notes heavy.** A note with no properties has no property overhead and no property UI imposed. |
 | BR-04 | **System properties and user properties are separated** and never conflated. |
@@ -55,7 +55,7 @@
 | `src/ArcNotes/ArcNotes.Database/` | Query model, view definitions, view configuration, projections |
 | `src/ArcNotes/ArcNotes.Search/` | Query evaluation extended with property predicates and sorting |
 | `src/ArcNotes/ArcNotes.Infrastructure/` | Property indexes and the schema migration |
-| `src/ArcNotes/ArcNotes.Presentation/` | Table, board, calendar and list view surfaces |
+| `src/ArcNotes/ArcNotes.Presentation/` | **Table and list** view surfaces only (`P2-006`) |
 | `fixtures/formats/arcnotes/v3/` | The views-era fixture, with V1 and V2 retained |
 | `tests/ArcNotes.Tests.Integration/` | Query, view, migration and performance suites |
 
@@ -67,7 +67,7 @@
 
 ### WP-28.00 — Typed property schemas
 
-**What must be fully done.** Property definitions with types — text, number, date, select, multi-select, checkbox, relation to a document, and derived — with validation and defaults. System properties are separate. A property definition has a lifecycle: creation, rename, type change with a stated migration behaviour, and deletion with a stated consequence.
+**What must be fully done.** Property definitions with **bounded scalar types only** — text, number, date, select, multi-select, checkbox (`P2-006`). **`relation` and `derived` are excluded**: a relation type implies a join engine and a derived type implies a formula evaluator, and both are outside the delivered scope. With validation and defaults. System properties are separate. A property definition has a lifecycle: creation, rename, type change with a stated migration behaviour, and deletion with a stated consequence.
 
 **Testing requirements.** Type validation per kind; a rename test asserting values are preserved; a type-change test asserting the stated behaviour; a deletion test asserting the stated consequence.
 
@@ -83,7 +83,7 @@
 
 ### WP-28.02 — View kinds
 
-**What must be fully done.** Table, board, calendar and list views as projections over a query, each with its own configuration — visible properties, grouping, sorting, and per-kind options. A view kind change preserves the underlying query.
+**What must be fully done.** **Table and list** views as projections over a query, each with its own configuration — visible properties, sorting and filtering over scalar properties (`P2-006`). **Board, gallery, calendar and timeline layouts are excluded**, and no grouping engine that presupposes them is built. A view kind change preserves the underlying query.
 
 **Testing requirements.** Per-kind rendering and interaction tests; a kind-switch test asserting query preservation; an ownership test asserting deletion is non-destructive.
 

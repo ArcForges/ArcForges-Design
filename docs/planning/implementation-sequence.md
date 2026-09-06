@@ -64,12 +64,12 @@ The sequence is one continuous numbered series. Phases are a reading aid, not a 
 | **G — Mobile** | 30 – 32 | The Android remote closed loop exists under the Apache boundary; iOS is planned, build-deferred |
 | **H — ArcScope** | 33 – 35, **51** | Acquisition, analysis, integration and the deterministic Cloud simulator. `51` is sequenced here and numbered last because `00`–`50` are allocated and a retired identifier is never reused |
 | **I — ArcSlate** | 36 – 39 | Timeline, runtime, render and integration |
-| **J — Platform completion** | 40 – 46 | Knowledge, extensions, commerce, AI economics, policy, operations and resilience |
+| **J — Platform completion** | 40 – 46, **52** | Knowledge, extensions, commerce, AI economics, policy, operations — and **the Cloud Harness**. `52` sits here, not in Phase C, because the Harness runs in the Cloud host and admits through Commerce: it cannot precede either |
 | **K — Web and release** | 47 – 50 | Public site, account portal, web companion and the full-platform production release |
 
 ---
 
-> **Numbering above `50`.** `00`–`50` were allocated when the sequence was first derived, and a retired identifier is never recycled (`27`, `29`). A package added afterwards therefore takes the next free number while executing at its real dependency position: **`51` runs in Phase H and is an upstream of `50`.** Where the numeral and the dependency graph disagree, **the dependency graph governs**.
+> **Numbering above `50`.** `00`–`50` were allocated when the sequence was first derived, and a retired identifier is never recycled (`27`, `29`). A package added afterwards therefore takes the next free number while executing at its real dependency position: **`51` runs in Phase H and `52` runs in Phase J; both are upstreams of `50`.** Where the numeral and the dependency graph disagree, **the dependency graph governs**.
 
 ---
 

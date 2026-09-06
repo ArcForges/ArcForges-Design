@@ -63,13 +63,13 @@
 
 ## 5. Required implementation work
 
-### WP-13.00 — Probe A: agent under Native AOT
+### WP-13.00 — Probe A: device tool execution under Native AOT
 
-**What must be fully done.** An agent loop runs inside a published Native AOT desktop binary: it selects a capability from a statically registered set, invokes it, handles a streamed response from a stub provider, and completes a multi-step plan. No reflection, no dynamic assembly, no runtime code generation is involved. Static registration and out-of-process extensibility are both exercised.
+**What must be fully done.** The **device side** of the Harness runs inside a published Native AOT desktop binary: it pulls a stub `ToolRequest`, re-authorises it locally, resolves a `CapabilityKey` through the **generated allowlist**, decodes structured arguments into a **typed** product request (`§3.1` of the local RPC contract), invokes it, and returns an idempotent result. **The model loop is not probed here — it is Cloud and JIT** (`LS-02`, **V-03**). What is at risk under AOT is the generated decode and static registration path, not the loop. No reflection, no dynamic assembly, no runtime code generation is involved. Static registration and out-of-process extensibility are both exercised.
 
-**Testing requirements.** An AOT publish log with zero diagnostics; an end-to-end run inside the published binary; a negative test confirming a reflection-based registration path fails to compile or is absent.
+**Testing requirements.** An AOT publish log with zero diagnostics; an end-to-end `ToolRequest` → decode → typed invocation → result run inside the published binary; a negative test confirming a reflection-based registration or decode path fails to compile or is absent; a containment test confirming the structured value type appears only in the boundary dispatch assembly (`DP-02`).
 
-**Completion gate.** A multi-step agent plan completes inside a published AOT binary with no reflection path present.
+**Completion gate.** A device tool request is decoded and executed through generated, typed, statically registered code inside a published AOT binary, with no reflection path present.
 
 ### WP-13.01 — Probe B: block editor, store, undo and recovery
 

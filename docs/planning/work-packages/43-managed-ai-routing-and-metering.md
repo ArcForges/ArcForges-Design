@@ -3,7 +3,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: J — Platform completion
-> Upstream: `16`, `42` · Downstream: `50`
+> Upstream: `16`, `42` · Downstream: `50`, `52`
 
 > **Goal.** Replace the stubbed provider path with the real one: provider routing under **operator-funded credentials**, dispatch-time supplier prices and Run-pinned customer tariffs, real usage normalisation, metering that reserves before and settles after, transparency obligations, and honest failure when a provider is unavailable.
 
@@ -38,7 +38,7 @@
 | BR-01 | **Every run locks a tariff snapshot at start**; a rate change never alters a settled charge (**D-020**). |
 | BR-02 | **Credits are reserved before execution and settled after**, with a hard stop at zero (**D-020**). |
 | BR-03 | **The three ledgers stay separate** (`I-011`): provider cost, customer credit, payment and revenue. |
-| BR-04 | **A desktop-local BYOK secret never leaves the device**; a cloud BYOK secret is used server-side by reference and never downloaded. |
+| BR-04 | **Provider credentials exist only as Cloud deployment secrets** (`DC-15`), injected by secret manager or Docker secret with least privilege. They never appear in the policy file, the image, the logs, the public sample or any client projection (`DC-14`). |
 | BR-05 | **There is no end-user BYOK** (`BY-01`–`BY-04`, `I-015` retired). Provider credentials are deployment secrets (`DC-15`); a self-host operator provisioning server credentials is infrastructure provisioning, not customer BYOK (`I-495`). |
 | BR-06 | **Provider and model availability is policy**, not a compiled list, and a withdrawn model degrades explicitly. |
 | BR-07 | **Provider interaction records are a separate trace system** from execution, capability and audit traces. |
@@ -168,7 +168,7 @@
 1. Routing is policy-driven, explainable and recorded; streaming interruption never stores a partial response as complete.
 2. A rate change never alters a settled charge; every historical charge is explainable from its locked tariff snapshot.
 3. Metering never double-charges, never leaks a reservation, and never permits an overdraft under concurrency.
-4. **No BYOK secret ever crosses a boundary it must not cross**, and BYOK never relaxes the permission model.
+4. **No end-user BYOK path exists anywhere in the product** — no operation, schema field, setting or UI accepts a customer provider key — and provider credentials are present only in the Cloud host's injected secrets.
 5. Provider interaction records are a separate, redacted trace system; run cost is explainable to the user; every artifact type has a defined transparency marking — satisfying `VG-01` once the regime determination is recorded.
 6. A provider outage never silently consumes credit; a withdrawn model degrades with a stated reason; all-routes-unavailable alerts.
 7. Every provider is exercised against its test environment with recorded fixtures — satisfying `PG-10` for AI providers.

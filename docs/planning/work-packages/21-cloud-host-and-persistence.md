@@ -3,7 +3,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: E — First real cloud
-> Upstream: `03`, `05`, `12` · Downstream: `22`, `45`, `51`
+> Upstream: `03`, `05`, `12` · Downstream: `22`, `45`, `51`, `52`
 
 > **Goal.** Stand up the real cloud: a JIT modular monolith as **one deployable host** with lease-fenced internal services (**P2-006**), a fixed host pipeline order, module boundaries with owned schemas, a real database with a standalone migrator, reliable events, and background work — running against real infrastructure, not stubs.
 
@@ -110,11 +110,11 @@
 
 ### WP-21.05 — Background work
 
-**What must be fully done.** Background jobs with leases, at-least-once execution with idempotent handlers, visible queue depth and oldest-message age, and bounded retry with dead-lettering. A job never runs on the API role.
+**What must be fully done.** Bounded hosted services inside the single host, each claiming work by **durable lease with a monotonic fence token**, at-least-once execution with idempotent handlers, visible queue depth and oldest-work age, and bounded retry with dead-lettering. Every replica runs every hosted service (`RT-03`); **a stale fence token cannot publish** (`RT-04`), and no hosted service runs an unbounded loop (`RT-05`). Also the **change-feed publisher** (`§9.1` of the cloud data model): commit-ordered `publish_seq` assignment under a per-workspace lease, with oldest-unpublished age as a monitored signal (`PB-05`).
 
-**Testing requirements.** Lease expiry and takeover; poison-message handling; a role assertion that jobs do not run on the API role.
+**Testing requirements.** Lease expiry and takeover; a fencing test proving a stale token cannot publish; poison-message handling; a bounded-batch assertion that no hosted-service iteration exceeds its budget; a multi-replica test proving two identical replicas never both claim the same leased work; **a publisher test proving a change committed after a later one still receives a higher `publish_seq` and is never skipped by an advanced cursor** (`PB-01`, `PB-02`).
 
-**Completion gate.** Leases expire and are taken over safely, poison messages dead-letter rather than looping, and jobs never run on the API role.
+**Completion gate.** Leases expire and are taken over safely under fencing, poison messages dead-letter rather than looping, no unbounded loop is reachable, and **the change feed is provably commit-ordered** — a late-committing change is always delivered.
 
 ### WP-21.06 — Configuration, secrets and tenancy
 

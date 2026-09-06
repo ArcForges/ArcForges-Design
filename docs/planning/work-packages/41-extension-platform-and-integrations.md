@@ -123,13 +123,13 @@
 
 **Completion gate.** The SDK generates all protocol code, `validate` matches host install checks, and a first-party extension is built through the public SDK.
 
-### WP-41.07 — MCP, connectors and external agents
+### WP-41.07 — MCP and connectors
 
-**What must be fully done.** MCP as an external capability adapter with the SDK version pinned and an explicit mapping between MCP extension concepts and the ArcForges execution vocabulary. Connectors with definition and connection instance separated and secrets held as references. External agents mapped onto the unified Task model with a capability lease per delegation, and their hidden reasoning excluded from the product model.
+**What must be fully done.** **External-agent integration is excluded** (`EA-01`–`EA-06`): no provider, adapter, session mapping, delegation lease or result adapter is built, and a structural test asserts no delegation contribution kind exists (`EA-08`). MCP remains as an external **tool** adapter with the SDK version pinned and an explicit mapping between MCP extension concepts and the ArcForges execution vocabulary. Connectors with definition and connection instance separated and secrets held as references. External agents mapped onto the unified Task model with a capability lease per delegation, and their hidden reasoning excluded from the product model.
 
-**Testing requirements.** MCP tool and resource mapping tests; a vocabulary-mapping record; connector secret-handling tests; an external-agent lease expiry test; a hidden-reasoning exclusion assertion.
+**Testing requirements.** MCP tool and resource mapping tests; a vocabulary-mapping record; connector secret-handling tests; **a structural test asserting no external-agent contribution kind, delegation adapter or second planner exists** (`EA-08`, `HV-18`); a hidden-reasoning exclusion assertion.
 
-**Completion gate.** MCP terms are explicitly mapped and the SDK version pinned — **satisfying `VG-02`** — connectors never store plaintext secrets, and external agent work maps onto ArcForges Tasks with leases.
+**Completion gate.** MCP terms are explicitly mapped and the SDK version pinned — **satisfying `VG-02`** — connectors never store plaintext secrets, and **no external-agent delegation path exists**; an integration contributes tools, never a planner. Superseded text: external agent work maps onto ArcForges Tasks with leases.
 
 ---
 
@@ -158,7 +158,7 @@
 | Lifecycle matrix, re-consent, uninstall and revoke results | `WP-41.04` |
 | Hostile catalog and unreachable-catalog results | `WP-41.05` |
 | Generator, validate-parity and first-party build results | `WP-41.06` |
-| MCP mapping record, connector secret and lease results | `WP-41.07` |
+| MCP mapping record, connector secret and no-delegation structural results | `WP-41.07` |
 
 ---
 
@@ -173,7 +173,7 @@
 5. The full package lifecycle works; new permissions force re-consent; uninstall never cascade-deletes professional resources; revoke reaches installed clients.
 6. Hostile catalog content is rejected without executing anything; catalog unavailability never disables installed packages.
 7. The SDK generates all protocol code; `validate` matches host install checks; a first-party extension is built through the public SDK.
-8. **MCP concepts are explicitly mapped to the ArcForges vocabulary with the SDK version pinned** — satisfying `VG-02`; connectors hold secrets only as references; external agent work maps onto Tasks with leases.
+8. **MCP concepts are explicitly mapped to the ArcForges vocabulary with the SDK version pinned** — satisfying `VG-02`; **no external-agent delegation path exists**; connectors hold secrets only as references; external agent work maps onto Tasks with leases.
 9. The extension protocol conformance suite passes — satisfying `PG-09`.
 
 ---

@@ -5,7 +5,7 @@
 > Phase: C — First real slice
 > Upstream: `09`, `11`, `14` · Downstream: `17`, `43`
 
-> **Goal.** Implement the one execution model everything else routes through: Intent → Task → Run → Plan → Step → Attempt → Capability Invocation → Result → Artifact, with lifecycle states, failure classification, checkpoints, compensation, approval, steering and budget — durable, resumable and identical wherever it runs.
+> **Goal.** Implement the **native Product Job** model — the lifecycle every long-running *product* operation shares: render, capture, index, import, export. Cloud Agent Tasks are a **different** model owned by `WP-44` (`CM-04`, `I-121`, `I-485`). This package delivers lifecycle states, failure classification, checkpoints, compensation, approval, steering and budget — durable, resumable and identical wherever it runs.
 
 ---
 
@@ -15,7 +15,9 @@
 
 **Out of scope.** Provider routing and real metering (`43`) — the budget interface exists here, its economics do not. Cloud placement (`26`). Automation triggers (`17`). Workflow blueprints (`41`).
 
-**Why this package exists.** Every long-running operation in ArcForges — an agent run, a render, a capture, an import, an automation — is the same Task. Building four of them produces four different recovery stories and four different approval models.
+> **Scope amendment, 2026-09-07 (P2-006).** The previous goal said *an agent run, a render, a capture, an import and an automation are the same Task*. Under P2-006 they are **two** models: a **Cloud Agent Task** owned by the Harness, and a **native Product Job** owned by the product that runs it (`CM-04` of the runtime architecture). Conflating them would put a render under AI metering and Cloud recovery, and would put an agent turn under a desktop lifecycle. This package now owns the Product Job; `WP-44` owns the Agent Task. They share vocabulary and failure classification deliberately — not an implementation.
+
+**Why this package exists.** Every long-running *product* operation — a render, a capture, an index rebuild, an import, an export — has the same lifecycle needs. Building four of them produces four different recovery stories and four different approval models.
 
 ---
 

@@ -60,7 +60,7 @@
 | `src/Contracts/Public/ArcForges.Contracts.PublicApi.Identity/` | Identity DTOs on the Apache boundary |
 | `tests/CloudIntegrationTests/Identity/` | Authentication, contention, trust, recovery and deletion suites |
 
-**Major types introduced.** `Realm`, `User`, `AuthIdentity`, `AuthMethod`, `Workspace`, `WorkspaceMembership`, `Device`, `DeviceTrustLevel`, `Installation`, `Instance`, `Session`, `RefreshToken`, `ApiToken`, `StepUpChallenge`, `RecoveryFlow`, `AccountState`, `DeletionRequest`.
+**Major types introduced.** `Realm`, `User`, `AuthIdentity`, `AuthMethod`, `Workspace`, `ServiceTerm`, `Device`, `DeviceTrustLevel`, `Installation`, `Instance`, `Session`, `RefreshToken`, `ApiToken`, `StepUpChallenge`, `RecoveryFlow`, `AccountState`, `DeletionRequest`.
 
 ---
 
@@ -68,11 +68,11 @@
 
 ### WP-22.00 — Core identity model
 
-**What must be fully done.** Realm, user, authentication identity, workspace and membership with their relationships. A user may hold several authentication identities. Adding, removing or changing an authentication identity never changes user identity or workspace membership. Workspace is the scope everything else attaches to.
+**What must be fully done.** Realm, user, authentication identity and **single-owner** workspace with their relationships. Ownership is `workspace.owner_user_id`; **there is no membership table, join, role or seat** (`WO-01`–`WO-05`), and authorization is a direct ownership check (`WO-02`). A user may hold several authentication identities. Adding, removing or changing an authentication identity never changes user identity or workspace membership. Workspace is the scope everything else attaches to.
 
 **Testing requirements.** Identity-change tests asserting user continuity; **a structural test asserting no schema, contract or operation carries a membership, role, invitation, seat or shared-editor concept** (`WO-05`); a structural test asserting no capability treats an authentication identity as a user.
 
-**Completion gate.** Changing an authentication identity never affects user identity, membership or attached data.
+**Completion gate.** Changing an authentication identity never affects user identity, workspace ownership or attached data, and **no membership, role, invitation or seat concept exists anywhere in the schema, contracts or operations**.
 
 ### WP-22.01 — Authentication
 
@@ -165,7 +165,7 @@
 
 **All of the following, with recorded evidence:**
 
-1. Changing an authentication identity never affects user identity, membership or attached data.
+1. Changing an authentication identity never affects user identity, workspace ownership or attached data, and no membership, role, invitation or seat concept exists.
 2. Concurrent refresh never storms; revocation is immediate; multiple passkeys work per user.
 3. Device, installation, instance and session are distinguishable everywhere; device revocation cascades correctly; device identity is not a hardware fingerprint.
 4. Remote access is off by default; a valid session alone never grants it.
