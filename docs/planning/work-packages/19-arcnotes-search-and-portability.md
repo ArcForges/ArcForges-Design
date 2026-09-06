@@ -44,7 +44,7 @@
 | BR-06 | **Import is non-destructive**: the source is never modified, and a partial import is reported rather than silently completed. |
 | BR-07 | **Export is complete**: a native export can be re-imported to reconstruct the content, including attachments and structure (`EX-01` in the data requirements). |
 | BR-08 | **An export never silently loses fidelity.** A lossy target format states what it drops. |
-| BR-09 | **No repository projection, Git synchronisation, linked-repository mode or LFS path is built** (`§14` there, `EX-09`, `EE-04`). `GT-01`–`GT-09` are retired, explicitly including their acceptance gates, so no Git-friendliness level is declared and none may be demanded. |
+| BR-09 | **No repository projection, Git synchronisation, linked-repository mode or LFS path is built** (`§14` and `EX-09` of the data-format requirements; `EE-04` there). `GT-01`–`GT-09` are retired, explicitly including their acceptance gates, so no Git-friendliness level is declared and none may be demanded. |
 
 ---
 
@@ -117,7 +117,7 @@
 
 > **This step builds nothing.** It replaces a Git-friendliness step that `§14` of the data-format requirements retired, gates included. A retired delivery still needs an assertion, because the way an excluded feature returns is by a later package quietly adding it.
 
-**What must be fully done.** A structural assertion that **no ArcNotes assembly — and no assembly it references — carries a repository-projection writer, a Git client dependency or an LFS path** (`§14` there, `EX-09`). The exclusion is recorded where a reader looks for the feature, so a user asking for a Git-backed notebook gets the stated answer instead of a silent absence (`EE-04`, `EP-05` of the policy requirements).
+**What must be fully done.** A structural assertion that **no ArcNotes assembly — and no assembly it references — carries a repository-projection writer, a Git client dependency or an LFS path** (`§14` and `EX-09` of the data-format requirements). The exclusion is recorded where a reader looks for the feature, so a user asking for a Git-backed notebook gets the stated answer instead of a silent absence (`EE-04` of the data-format requirements; `EP-05` of the policy requirements).
 
 **Testing requirements.** A dependency-policy test failing the build on a Git or LFS client package reference from any ArcNotes project; a structural test asserting no type implements or is named as a projection writer; a presentation test asserting the excluded capability is explained rather than merely hidden.
 

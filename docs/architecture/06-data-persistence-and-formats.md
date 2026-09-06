@@ -160,7 +160,7 @@ Interchange Formats          third-party, declared round-trip level
 | FA-07 | **An unknown domain element is preserved, marked and surfaced** — never silently dropped, never executed (`FV-05` there). |
 | FA-08 | **A format feature requirement is declarable**, producing an explicit "requires a newer version" state instead of a corrupt read (`FV-06` there). |
 
-> **Scope of the layer.** `Native Portable Format` exists for **ArcScope and ArcSlate**. `§4` of the data-format requirements limits the package requirements to those native formats and states plainly that they create no Notes/Chat local archive obligation; `EP-04` and `EX-01` confirm it per product. For ArcNotes and ArcChat the layer below `Working Store` is a **Cloud-generated download**, not a native package, and it carries no re-import promise.
+> **Scope of the layer.** `Native Portable Format` exists for **ArcScope and ArcSlate**. `§4` of the data-format requirements limits the package requirements to those native formats and states plainly that they create no Notes/Chat local archive obligation; `EP-04` of the ArcNotes requirements and `EX-09` of the data-format requirements confirm it per product. For ArcNotes and ArcChat the layer below `Working Store` is a **Cloud-generated download**, not a native package, and it carries no re-import promise.
 
 ### 8.1 Portable package structure
 

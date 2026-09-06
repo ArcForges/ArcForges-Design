@@ -162,7 +162,9 @@ The prerequisite evidence **D-019** requires was produced, and then the plan was
 
 ## 3. Revisions caused by the invariant accounting
 
-### R-15 — The catalogue is 421 rows, not "approximately 490"
+### R-15 — The catalogue is a counted set of rows, not "approximately 490"
+
+> **Superseded figure.** This revision established **421** against the pre-P2-006 catalogue. P2-006 later added `I-491`–`I-498`, so **the current count is 429** (`PR-03` of the coverage document). The finding below is retained as the record of *why* the count is counted rather than inferred from the highest identifier; **421 is not a current figure and is not a gate threshold**.
 
 | Field | Content |
 |---|---|
@@ -212,7 +214,7 @@ The prerequisite evidence **D-019** requires was produced, and then the plan was
 |---|---|---|
 | R-01 – R-08 | Each matrix's completeness check, run per matrix | 145 rows, 0 unresolved except `OC-01` |
 | R-09 – R-14 | The reconciliation completeness check | 166 of 166 projects; 6 of 6 shims; 6 corrections recorded |
-| R-15 – R-17 | The invariant accounting re-run after the additions | 484 of 484 statements accounted for; 421 of 421 mapped |
+| R-15 – R-17 | The invariant accounting re-run after the additions | 484 of 484 statements accounted for; 421 of 421 mapped **at that revision** — superseded, see the banner on `R-15`; the current figure is **429 of 429** |
 | All | Link and identifier integrity across `docs/` | Reported in the closure summary |
 
 | # | Rule |

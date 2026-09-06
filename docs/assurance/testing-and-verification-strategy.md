@@ -90,13 +90,13 @@ These are not additional families; they are obligations distributed across the f
 
 ## 4. The invariant-to-test obligation
 
-**D-018** produces an invariant catalogue of **421** `X ≠ Y` statements — the count, not the highest identifier, which reaches `I-490` because each section reserves headroom. They are only useful if they are enforced.
+**D-018** produces an invariant catalogue of **429** `X ≠ Y` statements — 421 at the original baseline plus 8 added by P2-006 (`I-491`–`I-498`). That is the count, not the highest identifier, which reaches `I-498` because each section reserves headroom. They are only useful if they are enforced.
 
 **The obligation has two halves with two gates.** They were previously conflated, which let an owned open finding appear to satisfy a coverage gate.
 
 | Half | Content | Gate | State |
 |---|---|---|---|
-| **Design traceability** | Architecture home, mechanism, **planned** verification, owning gate — per invariant | `PG-06` | **Closed** — 421 of 421 in [`invariant-coverage.md`](invariant-coverage.md) `§7` |
+| **Design traceability** | Architecture home, mechanism, **planned** verification, owning gate — per invariant | `PG-06` | **Closed** — **429 of 429** in [`invariant-coverage.md`](invariant-coverage.md) `§7` |
 | **Implementation enforcement** | An **implemented** check with a **passing** result | `PG-11` | **Open** — distributed across owning packages |
 
 | # | Rule |
@@ -155,12 +155,14 @@ Design defects are cheaper to catch than implementation defects.
 
 | # | Check | Mechanism |
 |---|---|---|
-| SV-01 | Every requirement identifier referenced by architecture, assurance or a work package exists | Link and identifier check over `docs/` |
+| SV-01 | Every requirement identifier referenced by architecture, assurance or a work package **resolves to exactly one definition** — existence is not enough, because `RT-03` is defined in ten documents and `BR-01` in fifty-three (`OG-05`) | Identifier resolver over `docs/`: for each citation, the defining document; fail on zero, or on more than one without a named home |
 | SV-02 | Every internal document link resolves | Link check over `docs/` |
 | SV-03 | No superseded product name or superseded provider appears as current outside `docs/inputs/` | Forbidden-term scan |
 | SV-04 | Every Phase 1 decision is cited by at least one Phase 2 document, or its non-applicability is stated | Traceability matrix coverage check |
 | SV-05 | Every deferred gate (**F-013**, **F-023**, **F-026**) is scheduled in a named work package | Open-gates register |
-| SV-06 | Every work package's stated dependencies refer to existing work packages, and the graph is acyclic | Planning consistency check |
+| SV-06 | Every work package's stated dependencies refer to existing work packages, the graph is acyclic, **and every declared edge is symmetric** — an upstream declaration without its matching downstream is a defect, in either direction | Planning consistency check over the package headers and the downstream index |
+| SV-07 | **No work package sits in a phase its own header contradicts**, and no package depends on one whose phase is later than its own without the backward edge being stated and justified (`§3` of the implementation sequence) | Planning consistency check |
+| SV-08 | **A capability the requirements retired has no live specification, work-package step or completion gate anywhere** — a retired delivery is asserted absent, not left unmentioned | Retired-claim scan over `docs/` outside `docs/inputs/` |
 
 ---
 

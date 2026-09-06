@@ -117,9 +117,9 @@
 
 ### WP-15.06 — History, export and recovery
 
-**What must be fully done.** Conversation history with restoration; **the export client half** — request a Cloud conversation export, download the produced artifact, and present its documented JSON/text content and attachment manifest with explicit availability (`EX-01`); recovery after a hard kill with explicit reporting of any uncommitted loss. **`EX-01` requires no standalone local conversation archive or recovery format**, so none is built and no local round-trip is claimed. `EX-03`: an export never carries keys or secrets.
+**What must be fully done.** Conversation history with restoration; **the export client half** — request a Cloud conversation export, download the produced artifact, and present its documented JSON/text content and attachment manifest with explicit availability (`EX-01` of the ArcChat requirements); recovery after a hard kill with explicit reporting of any uncommitted loss. **`EX-01` there requires no standalone local conversation archive or recovery format**, so none is built and no local round-trip is claimed. `EX-03`: an export never carries keys or secrets.
 
-**Testing requirements.** An export requested, produced and downloaded, asserting the manifest matches the delivered attachments and that unavailable items are declared rather than omitted silently; an export while unsynchronised local edits exist, asserting they are **excluded and the exclusion stated**; a secret-scanning assertion over export output (`EX-03`); kill-during-write recovery reporting uncommitted loss.
+**Testing requirements.** An export requested, produced and downloaded, asserting the manifest matches the delivered attachments and that unavailable items are declared rather than omitted silently; an export while unsynchronised local edits exist, asserting they are **excluded and the exclusion stated**; a secret-scanning assertion over export output (`EX-03` of the ArcChat requirements); kill-during-write recovery reporting uncommitted loss.
 
 **Completion gate.** An export is complete against its manifest, honest about what it omits, and free of secrets; recovery reports loss explicitly rather than silently discarding. **No local archive format is produced, and no round-trip is asserted** — `EX-01` does not require one.
 
@@ -177,7 +177,7 @@
 4. Attachments are stored by reference with integrity verification, and unavailability is a visible state.
 5. Projects, profiles and skills are structurally distinct, with skills conferring no capability and updates not altering history.
 6. Search over cached content works during a Cloud outage, rebuilds from scratch, and leaks nothing direct access would refuse.
-7. A Cloud conversation export is complete against its manifest, excludes unsynchronised edits and says so, carries no secrets (`EX-03`), and recovery reports uncommitted loss explicitly. **No local conversation archive format is built** (`EX-01`).
+7. A Cloud conversation export is complete against its manifest, excludes unsynchronised edits and says so, carries no secrets (`EX-03` there), and recovery reports uncommitted loss explicitly. **No local conversation archive format is built** (`EX-01` of the ArcChat requirements).
 8. **ArcChat is fully usable with every other product absent.**
 
 ---

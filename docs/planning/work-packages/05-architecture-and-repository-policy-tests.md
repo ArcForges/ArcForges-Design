@@ -109,13 +109,13 @@
 
 ### WP-05.05 — Invariant enforcement accounting
 
-> **Design-stage traceability already complete.** [`../../assurance/invariant-coverage.md`](../../assurance/invariant-coverage.md) `§7` maps all 421 catalogued invariants to an architecture home, a mechanism, a planned verification and an owning gate. **`PG-06` is closed.** This sub-step does **not** re-derive that mapping and cannot re-close that gate.
+> **Design-stage traceability already complete.** [`../../assurance/invariant-coverage.md`](../../assurance/invariant-coverage.md) `§7` maps all **429** catalogued invariants to an architecture home, a mechanism, a planned verification and an owning gate. **`PG-06` is closed.** This sub-step does **not** re-derive that mapping and cannot re-close that gate.
 
 **What must be fully done.** A build-produced **accounting report** stating, for every invariant, whether an **implemented** check exists and whether it **passes**. The report is a status instrument. It classifies each invariant as: enforced and passing · enforced and failing · not yet implemented.
 
-**Testing requirements.** The report is asserted for completeness — every one of the 421 invariants appears with exactly one classification, and every classification is derived from an actual test-run result rather than declared.
+**Testing requirements.** The report is asserted for completeness — every one of the **429** invariants appears with exactly one classification, and every classification is derived from an actual test-run result rather than declared.
 
-**Completion gate for this sub-step.** The accounting report exists, covers all 421 invariants, and derives every classification from a real result.
+**Completion gate for this sub-step.** The accounting report exists, covers all **429** invariants, and derives every classification from a real result.
 
 > **What this gate explicitly does not do.**
 >
@@ -160,7 +160,7 @@
 | Forbidden-term scan, zero findings | `WP-05.02` |
 | Contract and serialization policy results | `WP-05.03` |
 | Banned-symbol detection results | `WP-05.04` |
-| Invariant enforcement accounting report, 421 of 421 classified from real results | `WP-05.05` |
+| Invariant enforcement accounting report, **429 of 429** classified from real results | `WP-05.05` |
 | Specification integrity report, zero findings | `WP-05.06` |
 
 ---
@@ -173,7 +173,7 @@
 2. The forbidden-term scan produces zero findings and detects every listed term.
 3. Contract, serialization and RPC-attribute policy is enforced with negative fixtures failing.
 4. Every banned API category is detected.
-5. The invariant enforcement accounting report covers all 421 invariants with every classification derived from a real result. **`PG-06` was closed by design evidence before this package; `PG-11` remains open until every invariant is enforced and passing in its owning package.**
+5. The invariant enforcement accounting report covers all **429** invariants with every classification derived from a real result. **`PG-06` was closed by design evidence before this package; `PG-11` remains open until every invariant is enforced and passing in its owning package.**
 6. Specification integrity checks produce zero findings.
 7. Both suites run in the pull-request pipeline and a violation fails the build.
 

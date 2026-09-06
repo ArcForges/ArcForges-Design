@@ -28,7 +28,7 @@
 | Catalogue rows | **429** — 421 at the earlier baseline, **plus 8 added by P2-006** (`I-491`–`I-498`) |
 | Catalogue identifier range | `I-001` … `I-498` |
 
-**The earlier claim of "roughly 490 invariants" was wrong.** It read the highest identifier as a count. The catalogue holds **421 rows**; the identifier range reaches 490 because each section reserves headroom after its last used identifier (`§2`).
+**The earlier claim of "roughly 490 invariants" was wrong.** It read the highest identifier as a count. The catalogue holds **429 rows** — 421 before P2-006 and 8 added by it — while the identifier range reaches `I-498` because each section reserves headroom after its last used identifier (`§2`). **421 is a superseded figure and must not appear as a current count or as a gate threshold** (`PR-03`).
 
 ---
 

@@ -11,7 +11,7 @@
 
 ## 1. Scope and purpose
 
-**In scope.** Cloud provider adapters and routing under operator-funded credentials; model and provider availability as policy; supplier price versions and Run-pinned customer tariffs; real usage normalisation into non-overlapping categories; settlement and the three ledgers; the provider interaction record; metering integrated with credits; **operator-funded provider credential custody and the structural absence of any end-user key path** (`WP-43.03`, `AI-02`, `ON-03`); AI transparency obligations; and failure handling when providers degrade.
+**In scope.** Cloud provider adapters and routing under operator-funded credentials; model and provider availability as policy; supplier price versions and Run-pinned customer tariffs; real usage normalisation into non-overlapping categories; settlement and the three ledgers; the provider interaction record; metering integrated with credits; **operator-funded provider credential custody and the structural absence of any end-user key path** (`WP-43.03`; `AI-02` of the AI requirements; `ON-03` of the ArcChat requirements); AI transparency obligations; and failure handling when providers degrade.
 
 **Out of scope.** The execution engine itself (`16`). Retrieval (`40`). Commercial policy authoring (`42`).
 

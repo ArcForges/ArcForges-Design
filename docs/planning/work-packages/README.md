@@ -211,7 +211,7 @@ Every gate in [`../../assurance/open-gates-register.md`](../../assurance/open-ga
 | **PG-03** — native dependency licence review | 13, then 33 and 37. Shim-level dispositions already assigned (`§5.2` of the reconciliation evidence); two shims fenced pending substitute analyses in `35.04` and `39.05` |
 | **PG-04** — runbook rehearsal evidence | 45 |
 | **PG-05** — telemetry redaction proof | 12 |
-| **PG-06** — design-stage invariant traceability | **Closed 2026-09-05 by design-stage evidence** — [`../../assurance/invariant-coverage.md`](../../assurance/invariant-coverage.md) `§7`, 421 of 421 mapped |
+| **PG-06** — design-stage invariant traceability | **Closed 2026-09-05 by design-stage evidence** — [`../../assurance/invariant-coverage.md`](../../assurance/invariant-coverage.md) `§7`, **429 of 429** mapped after P2-006 added `I-491`–`I-498` |
 | **PG-11** — implementation-stage invariant enforcement | **Open.** Distributed across the owning packages named in the coverage mapping; accounting reported by `05.05`, which closes neither gate |
 | **PG-07** — format fixture completeness | 19, 35, 39 |
 | **PG-08** — hardware lab inventory | 13 |

@@ -530,7 +530,7 @@ All four are *(derived)*, in a **separate store file** from the project, so `WP-
 
 ## 6. The portable package
 
-**Which products have one.** The package requirements apply to **the ArcScope and ArcSlate native formats**, and to any package a product explicitly offers. **They create no ArcNotes or ArcChat local archive obligation** (`§4` of the data-format requirements, `EP-04`, `EX-01`): those two products' exit path is a Cloud-generated download over acknowledged revisions, built in `WP-19.05` and `WP-15.06`, and neither produces a re-importable native package. Reading this section as a universal obligation is how an impossible round-trip gate gets written.
+**Which products have one.** The package requirements apply to **the ArcScope and ArcSlate native formats**, and to any package a product explicitly offers. **They create no ArcNotes or ArcChat local archive obligation** (`§4` of the data-format requirements; `EP-04` of the ArcNotes requirements; `EX-01` of the ArcChat requirements): those two products' exit path is a Cloud-generated download over acknowledged revisions, built in `WP-19.05` and `WP-15.06`, and neither produces a re-importable native package. Reading this section as a universal obligation is how an impossible round-trip gate gets written.
 
 The working store is not the exchange format (`§8` of the persistence architecture). Where a product has a package, it is a directory or archive containing:
 

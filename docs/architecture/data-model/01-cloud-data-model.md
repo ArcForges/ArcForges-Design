@@ -1037,7 +1037,7 @@ publish(workspace):
 | CU-03 | **A cursor beyond the retention floor is refused with `sync.cursor_expired`**, and the client performs a full resync (`DL-02`). It is never silently clamped, because clamping would skip the changes between the floor and the cursor. |
 | CU-04 | **Retention pruning removes only rows below the floor**, and the floor advances only after the tombstone-retention window (`DL-01`), so a returning device either resyncs fully or sees every tombstone it needs. |
 | CU-05 | **Publication is per workspace**, so one workspace's slow publisher cannot stall another's feed, and a workspace's sequence has no relationship to any other's. |
-| CU-06 | **The feed is at-least-once.** A client may see a `publish_seq` twice after a reconnect and applies it idempotently by `(aggregate_kind, aggregate_id, aggregate_rev)` (`GP-05`). |
+| CU-06 | **The feed is at-least-once.** A client may see a `publish_seq` twice after a reconnect and applies it idempotently by `(aggregate_kind, aggregate_id, aggregate_rev)` (`GP-05` of the realtime and bridge contract — **not** the `GP-05` in the persistence or native-interop architecture, which are unrelated families; see `OG-05`). |
 
 ### `sync.publication_watermark`
 

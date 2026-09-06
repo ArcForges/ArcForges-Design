@@ -28,7 +28,7 @@
 | [`../../requirements/01-normative-glossary-and-invariants.md`](../../requirements/01-normative-glossary-and-invariants.md) | The glossary and invariant catalogue this package makes enforceable |
 | [`../../assurance/reference-coverage-and-provenance.md`](../../assurance/reference-coverage-and-provenance.md) | The matrix method, the ten-field provenance record and the licence decision table |
 | [`../../assurance/reference-coverage/`](../../assurance/reference-coverage/README.md) | **The five completed matrices** — versioned planning inputs, not work to be done |
-| [`../../assurance/invariant-coverage.md`](../../assurance/invariant-coverage.md) | **The completed invariant accounting and item-level mapping** — 421 rows |
+| [`../../assurance/invariant-coverage.md`](../../assurance/invariant-coverage.md) | **The completed invariant accounting and item-level mapping** — **429** rows |
 | [`../../assurance/open-gates-register.md`](../../assurance/open-gates-register.md) | The gates this package opens and schedules |
 | The existing monorepo's `NOTICE.md`, `LICENSE` and package declarations | The current licence position that must be verified rather than assumed |
 | Upstream work packages | **None.** This is the first package. |
@@ -84,13 +84,15 @@
 
 ### WP-00.01 — Glossary and invariant enforcement data
 
-> **Design-stage prerequisite already complete.** The catalogue accounting and the item-level mapping were produced during the Stage 2 repair and are recorded in [`../../assurance/invariant-coverage.md`](../../assurance/invariant-coverage.md): 484 of 484 corpus statements accounted for, 421 catalogue rows, each with an architecture home, an enforcement mechanism, a planned verification and an owning gate. **`PG-06` is closed.** This sub-step consumes that mapping; it does not re-derive it.
+> **Design-stage prerequisite already complete.** The catalogue accounting and the item-level mapping were produced during the Stage 2 repair and are recorded in [`../../assurance/invariant-coverage.md`](../../assurance/invariant-coverage.md): 484 of 484 corpus statements accounted for, **429** catalogue rows — 421 plus the 8 P2-006 added — each with an architecture home, an enforcement mechanism, a planned verification and an owning gate. **`PG-06` is closed.** This sub-step consumes that mapping; it does not re-derive it.
 
 **What must be fully done.** The completed catalogue and its mapping are exported into machine-readable policy data the build can read: canonical terms with their term space (domain, wire, UI, storage, commercial), product namespacing, forbidden aliases, and every invariant with its identifier, its assigned mechanism and its owning package.
 
-**Testing requirements.** A round-trip consistency check that the exported data matches [`../../requirements/01-normative-glossary-and-invariants.md`](../../requirements/01-normative-glossary-and-invariants.md) and `§7` of the coverage document exactly, in both directions — no term or invariant present in one and absent from the other.
+**And the identifier index** (`PG-21`, `SV-01`): every `XX-nn` rule identifier defined anywhere under `docs/`, with its defining document. Rule identifiers are **document-scoped** — `BR-01` is a binding rule in fifty-three packages, `RT-03` is defined in ten documents — so the index is what turns a citation into a resolution instead of a guess (`OG-05`).
 
-**Completion gate.** The exported policy data matches both source documents exactly. **This does not close `PG-06`, which is already closed by design evidence, and it does not close `PG-11`, which requires implemented, passing checks.**
+**Testing requirements.** A round-trip consistency check that the exported data matches [`../../requirements/01-normative-glossary-and-invariants.md`](../../requirements/01-normative-glossary-and-invariants.md) and `§7` of the coverage document exactly, in both directions — no term or invariant present in one and absent from the other. **A resolver run over every citation in `docs/`**, reporting each one's defining document and failing on a citation that resolves to zero definitions, or to several with no named home; the **1,597 citations ambiguous at this baseline** are worked to zero or individually waived with a reason.
+
+**Completion gate.** The exported policy data matches both source documents exactly, **and every citation in `docs/` resolves to exactly one definition or carries a recorded waiver** (`PG-21`). **This does not close `PG-06`, which is already closed by design evidence, and it does not close `PG-11`, which requires implemented, passing checks.**
 
 ### WP-00.02 — Licence boundary declaration
 

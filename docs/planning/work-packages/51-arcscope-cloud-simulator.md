@@ -168,5 +168,5 @@
 
 | Package | What it needs from here |
 |---|---|
-| `34` — ArcScope analysis *(benefit, **not** a dependency)* | An **additional** repeatable synthetic source. `WP-34` must not wait for this package: `SD-09` makes **file/replay** a V1 adapter delivered in `WP-33`, and that is `WP-34`'s repeatable source. Making `34` depend on `51` would put native analysis behind Cloud persistence, storage and leases — the same backward dependency `§3` of the implementation sequence forbids |
+| `34` — ArcScope analysis *(benefit, **not** a dependency)* | An **additional** repeatable synthetic source. `WP-34` must not wait for this package: `SD-09` of the ArcScope requirements makes **file/replay** a V1 adapter delivered in `WP-33`, and that is `WP-34`'s repeatable source. Making `34` depend on `51` would put native analysis behind Cloud persistence, storage and leases — the same backward dependency `§3` of the implementation sequence forbids |
 | `50` — Full-platform release | The simulator acceptance evidence |

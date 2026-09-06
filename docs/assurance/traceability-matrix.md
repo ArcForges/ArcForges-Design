@@ -147,9 +147,9 @@ Test family identifiers are those of [`testing-and-verification-strategy.md`](te
 
 ## 5. Invariant enforcement
 
-The catalogue in [`../requirements/01-normative-glossary-and-invariants.md`](../requirements/01-normative-glossary-and-invariants.md) contains **421 invariants** across twelve sections. The full item-level mapping is [`invariant-coverage.md`](invariant-coverage.md) `§7`.
+The catalogue in [`../requirements/01-normative-glossary-and-invariants.md`](../requirements/01-normative-glossary-and-invariants.md) contains **429 invariants** across twelve sections — 421 at the original baseline plus 8 added by P2-006. The full item-level mapping is [`invariant-coverage.md`](invariant-coverage.md) `§7`.
 
-> **Corrected count.** Earlier documents said "approximately 490". That read the highest identifier as a count. The catalogue holds 421 rows; identifiers reach `I-490` because each section reserves headroom, evidenced in `§2` of the coverage document.
+> **Corrected count.** Earlier documents said "approximately 490". That read the highest identifier as a count. The catalogue holds **429** rows; identifiers reach `I-498` because each section reserves headroom, evidenced in `§2` of the coverage document. **421 is the superseded pre-P2-006 figure.**
 
 | Mechanism | Applies to | Invariants |
 |---|---|---|
@@ -163,7 +163,7 @@ The catalogue in [`../requirements/01-normative-glossary-and-invariants.md`](../
 | Obligation | Content | Gate | State |
 |---|---|---|---|
 | **A — design completeness** | Every corpus statement preserved or explicitly dispositioned | Part of `PG-06` | **Complete** — 484 of 484 accounted for; four invariants added; one superseded statement correctly excluded |
-| **B — design traceability** | Architecture home, mechanism, planned verification, owning gate, per invariant | `PG-06` | **Complete** — 421 of 421 mapped; **`PG-06` closed 2026-09-05** |
+| **B — design traceability** | Architecture home, mechanism, planned verification, owning gate, per invariant | `PG-06` | **Complete** — **429 of 429** mapped; **`PG-06` closed 2026-09-05 and re-verified after P2-006 added `I-491`–`I-498`** |
 | **C — implementation evidence** | An implemented check with a passing result | `PG-11` | **Open**, distributed across owning packages |
 
 | # | Rule |

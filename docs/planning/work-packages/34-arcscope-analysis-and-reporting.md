@@ -24,7 +24,7 @@
 | Input | Why it matters |
 |---|---|
 | [`../../requirements/products/arcscope.md`](../../requirements/products/arcscope.md) | Visualisation, triggers, decoders, analysis, comparison and reporting requirements |
-| `WP-33` output | Sessions, captures, the time model and effective configuration snapshots — **including the file/replay adapter, which is this package's repeatable source** (`SD-09`) |
+| `WP-33` output | Sessions, captures, the time model and effective configuration snapshots — **including the file/replay adapter, which is this package's repeatable source** (`SD-09` of the ArcScope requirements) |
 | — | **The Cloud simulator (`WP-51`) is not required here.** Reproducibility is verified against replay of a recorded capture; the simulator adds a second synthetic source later and closes `PG-14b`, which is an ArcScope *Cloud-simulation* claim, not an analysis claim |
 | [`../../requirements/12-quality-and-compatibility-contract.md`](../../requirements/12-quality-and-compatibility-contract.md) | Responsiveness and scale budgets for visualisation |
 
