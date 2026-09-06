@@ -257,7 +257,7 @@ Conflating any two of these is the defect class this section exists to prevent (
 
 This is the part most likely to be got wrong, so it is specified rather than described. It runs on read, under the bucket row's lock.
 
-> **Corrected 2026-09-07.** An earlier revision multiplied the whole eligible interval by one rate. That is wrong across a configuration change: five seconds at rate 1 then five seconds at rate 10 earns **55**, not 100. Rate and burst now come from **immutable policy history** (`entitlement.capacity_policy_period`), and refill integrates over the intervals actually in force.
+> **Corrected 2026-09-08.** Two defects. An earlier revision multiplied the whole eligible interval by one rate, which is wrong across a rate change. A later revision integrated the rates correctly but applied **only the final ceiling**, so capacity that should have been discarded while the bucket was full was recovered retroactively — and the answer then **depended on how often refill happened to run**. With a burst of 10 raised to 100 at *t*=10, a rate of 1/s and a full bucket at *t*=0, evaluating once at *t*=11 gave 21, evaluating at *t*=9 and again at *t*=11 gave 12, and the correct answer is 11. **Accrual now saturates period by period.**
 
 ```
 refill(bucket, now):
@@ -269,29 +269,37 @@ refill(bucket, now):
         eligible_service_intervals(workspace),   -- union of terms (TM-01)
         policy_periods(realm, offer))            -- immutable history
 
-    earned = bucket.remainder                    -- exact rational carry
-    for w in windows, chronologically:
-        earned += duration_seconds(w) * w.rate_micro_per_second
+    for w in windows, CHRONOLOGICALLY:           -- one pass per period, in order
+        earned  = bucket.remainder + duration_seconds(w) * w.rate_micro_per_second
+        whole   = floor(earned)
+        bucket.remainder = earned - whole        -- exact rational, carried forward
 
-    whole            = floor(earned)
-    bucket.remainder = earned - whole            -- exact, never a float
-    ceiling          = max(0, burst_at(now) - bucket.held_micro)
-    bucket.available_micro = min(bucket.available_micro + whole, ceiling)
-    bucket.watermark_at    = now
+        cap = max(0, w.burst_micro - bucket.held_micro)     -- THIS period's ceiling
+        bucket.available_micro =
+            min(bucket.available_micro + whole,
+                max(bucket.available_micro, cap))           -- rise to cap; never fall
+
+    bucket.watermark_at = now
 ```
+
+The clamp is `min(available + whole, max(available, cap))`, and both halves matter:
+
+- `min(..., cap)` stops accrual at the ceiling **in force during that period**, so capacity discarded while full is never recovered later. This is what makes the result independent of evaluation frequency.
+- `max(available, cap)` means an existing balance **above** a newly reduced ceiling is preserved and simply cannot grow. This is what makes a reduction a stop on accrual rather than a confiscation.
 
 | # | Rule |
 |---|---|
-| RF-01 | **Recovery accrues only over the intersection of elapsed time, eligible paid intervals and policy periods** (`AC-02`). A lapse contributes zero; an inactive stretch is simply absent from the window set (`AC-03`). |
+| RF-01 | **Recovery accrues only over the intersection of elapsed time, eligible paid intervals and policy periods** (`AC-02`). A lapse contributes zero; an inactive stretch is absent from the window set (`AC-03`). |
 | RF-02 | **The watermark advances monotonically and is durable** (`AC-12`). Reconnect, restart, another device, another replica or a clock rollback cannot rewind it. Racing replicas serialise on the row lock. |
-| RF-03 | **The fractional remainder is an exact rational**, never a float and never a fixed-scale integer. Rate changes vary the carry's natural denominator, and a fixed scale would round at every boundary — turning each rate change into a small permanent gift or loss. |
-| RF-04 | **The ceiling uses the burst in force now and counts held capacity**: `available ≤ max(0, burst − held)` (`AC-11`). A burst reduction stops accrual immediately and lets the balance drain; it never claws back earned capacity and never releases a hold. |
-| RF-05 | **Returned capacity is capped by the same ceiling.** Releasing a hold or issuing a refund must never mint spendable capacity above the burst (`AC-11`). |
-| RF-06 | **Purchased credits never refill** (`AC-11`). No path adds to a lot except a purchase, a compensation grant or an adjustment. |
-| RF-07 | **Initialisation happens once per contiguous run, not once per term** (`AC-03`). `activation_term_id` names the term that opened the current run; a contiguous renewal leaves it unchanged and does **not** refill to full, while a term starting after a gap initialises once, idempotently. |
-| RF-08 | **Activation moves no capacity.** It closes one policy period and opens the next inside the activation transaction (`CA-03`); each workspace integrates across the boundary on its next refill. Activation cost is therefore independent of workspace count, and no capacity is reset, released or minted (`DC-13`). |
-| RF-09 | **A hold outstanding across a rate change is unaffected.** A hold is micro-credits already reserved; only accrual is rate-dependent. |
-| RF-10 | **Restart is invisible.** Watermark, remainder and policy history are all durable, so a refill after a restart produces exactly the value it would have produced without one. |
+| RF-03 | **The fractional remainder is an exact rational**, never a float and never a fixed-scale integer, and it is **carried across period boundaries** rather than settled at each. Rate changes vary the carry's natural denominator, and a fixed scale would round at every boundary — turning each rate change into a small permanent gift or loss. |
+| RF-04 | **Accrual saturates at each period's own ceiling, in chronological order.** The result is **identical whether refill runs once or a thousand times** over the same interval, which is the property the previous formulation lacked. A verification fixture asserts exactly this (`CT-13`). |
+| RF-05 | **A ceiling reduction stops accrual; it never claws back.** An existing balance above the new ceiling is preserved and drains through use. `max(available, cap)` is the clause that makes `RF-04` and this rule compatible rather than contradictory. |
+| RF-06 | **Returned capacity is capped by the same expression.** Releasing a hold or issuing a refund can never mint spendable capacity above the ceiling in force (`AC-11`). |
+| RF-07 | **Purchased credits never refill** (`AC-11`). No path adds to a lot except a purchase, a compensation grant or an adjustment. |
+| RF-08 | **Initialisation happens once per contiguous run, not once per term** (`AC-03`). `activation_term_id` names the term that opened the current run; a **contiguous** renewal (`TM-03`) leaves it unchanged and does **not** refill to full, while a term starting after a genuine service gap sets it and initialises once, idempotently. The distinction is computed from the terms, never from a flag. |
+| RF-09 | **Activation moves no capacity.** It closes one policy period and opens the next inside the activation transaction (`CA-03`); each workspace integrates across the boundary on its next refill. Activation cost is independent of workspace count, and no capacity is reset, released or minted (`DC-13`). |
+| RF-10 | **A hold outstanding across a rate or ceiling change is unaffected.** A hold is micro-credits already reserved; only accrual is rate- and ceiling-dependent. |
+| RF-11 | **Restart is invisible.** Watermark, remainder, holds and policy history are all durable, so a refill after a restart produces exactly the value it would have produced without one. |
 
 ### 7.3 Admission
 
@@ -479,7 +487,7 @@ customer  = cost at the Run's pinned retail tariff snapshot, as micro-credits   
 | CT-04 | **Concurrency suite**: parallel runs against one workspace never overdraw (`AD-02`), reservation races across devices and replicas resolve to one outcome, and reservation expiry releases correctly. |
 | CT-05 | **Precision suite**: no floating-point path exists in money or credit arithmetic (`BC-06`), asserted as a repository policy test. |
 | CT-06 | **Funding-order suite**: capacity → compensation → authorised purchased credits, earliest-expiry within compensation, oldest-acquisition within purchased, and refund hold, for every combination (`CD-05`). |
-| CT-13 | **Refill suite**: recovery accrues only over eligible paid intervals; a lapse contributes zero; the watermark never moves backwards under clock rollback, restart, reconnect or a racing replica; the fractional remainder is preserved so that many small evaluations deliver the same total as one large one; and `available ≤ max(0, burst − held)` holds after every operation including a refund (`RF-01`–`RF-06`). |
+| CT-13 | **Refill suite**, asserting evaluation-frequency independence as its central property: over one interval containing a **ceiling raise**, a **ceiling reduction** and a **rate change**, the result is identical whether refill runs once, at every boundary, or a thousand times at random instants. The worked case is asserted exactly — burst 10 raised to 100 at *t*=10, rate 1/s, bucket full at *t*=0 → **11 at *t*=11**, never 21 and never 12 (`RF-04`). Plus: a lapse contributing zero; a watermark that never moves backwards under clock rollback, restart, reconnect or a racing replica; a fractional carry preserved **across period boundaries**; a reduction that stops accrual without clawing back (`RF-05`); and the ceiling expression holding after every operation including a release and a refund (`RF-06`). |
 | CT-14 | **Normalisation suite**: two providers whose cache and reasoning fields overlap differently both settle correctly; cumulative stream snapshots replace rather than sum; a duplicate usage event does not double-debit; an undeclared usage field enters reconciliation rather than a debit (`UN-01`–`UN-06`, `MT-03`, `MT-05`). |
 | CT-15 | **Worked-fixture suite**: the `§8.6` arithmetic is asserted exactly — USD 0.00244 supplier cost, 4,880,000 micro-credits customer cost, 1.12 credits released to the original sources (`RP-04`). |
 | CT-16 | **Uncertain-usage suite**: missing final usage, post-dispatch timeout and a lost response each produce `UsagePending`/`CostUnconfirmed`, never zero and never a fabricated total; the deadline releases the customer hold while retaining the supplier liability (`UC-01`, `UC-02`, `MT-12`). |

@@ -615,19 +615,26 @@ Carries the internal metadata sent to the provider (`ID-04`): billing account, w
 
 Three ledgers, one table, discriminated and **never joined across the discriminator** (`LG-01`, `LG-03`):
 
+> **Units corrected 2026-09-08.** A single `money` amount column spanned all three ledgers, including `customerCredit` — but customer amounts are **integer micro-credits**, not money (`CD-01`, `MT-07`, `I-493`). Storing a service unit in a money column invites exactly the conflation the three-ledger rule exists to prevent. The amount is now **two mutually exclusive columns**, one per unit system.
+
 | Field | Type | Notes |
 |---|---|---|
 | `ledger_entry_id` | `id` | **PK** |
 | `ledger` | `enum(providerCost, customerCredit, paymentRevenue) NN` | |
 | `workspace_id` | `id?` | Null for provider-cost rows that are not workspace-attributable |
-| `amount` | `money NN` | Signed |
+| `amount_micro` | `int64?` | **Signed micro-credits.** Set **only** for `customerCredit` |
+| `amount_money` | `decimal(28,9)?` | **Signed money.** Set **only** for `providerCost` and `paymentRevenue` |
+| `currency` | `char(3)?` | **Required** whenever `amount_money` is set; **NULL** for `customerCredit`, which is currency-independent (`ST-08`, `MT-16`) |
 | `occurred_at` | `instant NN` | |
 | `reference_kind`, `reference_id` | `text NN`, `id NN` | What the entry is about |
 | `created_at` | `instant NN` | |
 
 - **Append-only.** A correction is a new entry (`BC-05`)
 - `IX (ledger, occurred_at)`; `IX (ledger, workspace_id, occurred_at)`
-- **Constraint** — a policy test asserts no query joins two `ledger` values
+- **Constraint** — `ledger = 'customerCredit'` requires `amount_micro IS NOT NULL AND amount_money IS NULL AND currency IS NULL`
+- **Constraint** — `ledger IN ('providerCost','paymentRevenue')` requires `amount_money IS NOT NULL AND currency IS NOT NULL AND amount_micro IS NULL`
+- **Constraint** — a policy test asserts no query joins two `ledger` values, and **no query sums `amount_micro` with `amount_money`** — they are different quantities in different units (`I-493`)
+- **Rule** — margin is a **report** computed by relating rows across ledgers through their references, never a stored figure and never a subtraction of one column from another (`LG-04`)
 
 ---
 
