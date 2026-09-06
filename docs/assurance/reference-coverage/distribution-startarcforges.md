@@ -86,7 +86,7 @@
 |---|---|
 | Every reviewed area in `§3` produces at least one row | **Pass** — 12 rows across all 7 areas |
 | Every row carries all nine required fields | **Pass** |
-| Every row has exactly one completeness state | **Pass** — 11 evidence established, 1 accepted exclusion, 0 unresolved |
+| Every row has exactly one completeness state | **Pass** — 12 rows: 11 evidence established, 1 accepted exclusion, 0 unresolved |
 | Every non-`Drop` row maps to an existing ArcForges requirement | **Pass** — no row creates a new requirement |
 | Oracle boundary respected | **Pass** — no execution, no unpacking, no source claims |
 | Any row proposing reuse carries a provenance obligation | **Not applicable** — no row proposes reuse, and a binary tree is not a reuse source |

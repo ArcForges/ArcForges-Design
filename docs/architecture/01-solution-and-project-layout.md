@@ -53,7 +53,8 @@ ArcForges/
 │  │  ├─ ArcChat.Infrastructure/
 │  │  ├─ ArcChat.LocalRpc/                       adapter: hosts + consumes local contracts
 │  │  ├─ ArcChat.Hub/                            platform coordination plane
-│  │  ├─ ArcChat.Agent/                          agent runtime, capability registry
+│  │  ├─ ArcChat.Agent/                          agent runtime, turn loop, capability registry
+│  │  ├─ ArcChat.LocalTools/                     first-party local capabilities ArcChat owns
 │  │  ├─ ArcChat.CloudClient/
 │  │  ├─ ArcChat.Desktop/                        Avalonia host — PublishAot
 │  │  └─ ArcChat.Tests.*/

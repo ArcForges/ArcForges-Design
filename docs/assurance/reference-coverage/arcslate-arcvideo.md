@@ -120,7 +120,7 @@
 |---|---|
 | Every reviewed area in `§3` produces at least one row | **Pass** — 31 rows across all 14 areas |
 | Every row carries all nine required fields | **Pass** |
-| Every row has exactly one completeness state | **Pass** — 29 evidence established, 2 accepted exclusions (`AL-24` carries both), **0 unresolved** |
+| Every row has exactly one completeness state | **Pass** — 31 rows: 29 evidence established, 2 accepted exclusions (`AL-23`, `AL-24`), **0 unresolved** |
 | Every non-`Drop` row maps to an existing ArcForges requirement | **Pass** |
 | Licence position determined below the repository root | **Pass** — and `AL-20` records a vendored third-party header with its own licence |
 | Any row proposing reuse carries a provenance obligation | **Not applicable** — no row proposes reuse |

@@ -126,7 +126,7 @@ The repository root `LICENSE` is **not** a single grant. Read in full, it states
 |---|---|
 | Every reviewed area in `§3` produces at least one row | **Pass** — 41 rows across all 8 areas |
 | Every row carries all nine required fields | **Pass** |
-| Every row has exactly one completeness state | **Pass** — 32 evidence established, 9 accepted exclusions (`AN-14` carries both, counted in each), 0 unresolved |
+| Every row carries a completeness state | **Pass** — 41 rows: 34 evidence established, 8 accepted exclusions, 0 unresolved. `AN-14` is the one compound row (sharing excluded, quota established) and is counted in both, so the two figures sum to 42 over 41 rows |
 | Every non-`Drop` row maps to an existing ArcForges requirement | **Pass** — no row creates a new requirement |
 | Licence position determined below the repository root | **Pass, and materially so** — the AFFiNE split changed the position for two subtrees |
 | Any row proposing reuse carries a provenance obligation | **Not applicable** — no row proposes reuse |

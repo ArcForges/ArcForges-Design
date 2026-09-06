@@ -106,7 +106,7 @@
 |---|---|
 | Every reviewed area in `§3` produces at least one row | **Pass** — 31 rows across all 11 areas |
 | Every row carries all nine required fields | **Pass** |
-| Every row has exactly one completeness state | **Pass** — 24 evidence established, 7 accepted exclusions, 0 unresolved |
+| Every row has exactly one completeness state | **Pass** — 31 rows: 24 evidence established, 7 accepted exclusions, 0 unresolved |
 | Every non-`Drop` row maps to an existing ArcForges requirement | **Pass** |
 | Pro-module boundary respected | **Pass** — 3 rows (`AS-03`, `AS-14`, `AS-27`) are excluded on licence grounds with their source deliberately unread |
 | Packaged binary not executed | **Pass** — directory listing only |

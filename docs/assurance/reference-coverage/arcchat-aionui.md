@@ -100,7 +100,7 @@ Disposition vocabulary is **D-013**'s: Copy · Rewrite · Improve · Replace · 
 |---|---|
 | Every reviewed area in `§3` produces at least one row | **Pass** — 30 rows across all 8 areas |
 | Every row carries all nine required fields | **Pass** |
-| Every row has exactly one completeness state | **Pass** — 24 evidence established, 6 accepted exclusions, 0 unresolved |
+| Every row has exactly one completeness state | **Pass** — 30 rows: 25 evidence established, 5 accepted exclusions (`AC-11`, `AC-15`, `AC-24`, `AC-25`, `AC-27`), 0 unresolved |
 | Every non-`Drop` row maps to an existing ArcForges requirement | **Pass** — no row creates a new requirement |
 | Every `Drop` row states why it is excluded | **Pass** |
 | Any row proposing reuse carries a provenance-record obligation | **Not applicable** — no row proposes reuse |
