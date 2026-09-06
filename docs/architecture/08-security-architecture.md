@@ -204,7 +204,7 @@ Every one of these is **data, never instruction**:
 ```
 Human Principal
    └── delegates to → Agent Actor          (never exceeds the delegator)
-          └── delegates to → External Agent  under a Capability Lease
+          └── invokes → Extension tool  under a bounded Capability Lease
                                               (task-scoped, time-bounded, non-amplifying)
 ```
 

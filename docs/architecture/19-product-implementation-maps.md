@@ -82,7 +82,7 @@ The matrix records 30 items at commit `29c9271a5` — **25 evidence established,
 | AC-03 | `@`-mention context binding | Present, and **bounded, frozen and permission-filtered** at assembly | `ArcChat.Agent`; `§4` of the harness, `WP-40.03` |
 | AC-04 | Tool-call normalisation | Present as the resolve-and-validate step of the turn loop, normalising into the typed capability model | `ArcChat.Agent`; `§2` of the harness, `MR-01` |
 | AC-05 | Approval store | Present, and **owner-side enforced** — an approval is a durable object, and a cloud approval never substitutes for local re-authorization | `ArcChat.Application`; `§5` of the harness, `BR-01`–`BR-03` |
-| AC-06 | ACP external-agent integration | Present as the external-agent adapter under a capability lease | `WP-41.07`; `XA-02`, `XA-03` of the harness |
+| AC-06 | ACP external-agent integration | **Excluded by P2-006** (`EA-01`–`EA-06`). An integration contributes tools, never a planner | `§9` of the harness; `XA-01`, `XA-03` of the harness |
 | AC-07 | MCP client and built-in MCP server | Present as an **edge adapter**, never the internal protocol (**V-02**). A built-in MCP **server** is not built | `WP-41.07`; `XA-06`, `XA-07` |
 | AC-08 | Agent detection and hub types | Present, and **contract-typed and lease-based** rather than discovered | `ArcChat.Hub`; `WP-17.00` |
 | AC-09 | Assistant / agent profile | Present, **Cloud-owned** (`§5` of the product scope); clients edit authorised configuration | `ArcForges.Cloud.Modules.Agent`; `WP-15.03` |

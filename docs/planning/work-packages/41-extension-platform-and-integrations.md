@@ -5,7 +5,7 @@
 > Phase: J — Platform completion
 > Upstream: `09`, `11`, `17` · Downstream: `50`
 
-> **Goal.** Open the platform without weakening it: out-of-process extensions, the dual capability boundary with a closed AOT-safe value model, declarative UI contribution, the Arc Package runtime, the catalog, and the MCP, connector and external-agent integrations — all under the same security pipeline as first-party code.
+> **Goal.** Open the platform without weakening it: out-of-process extensions contributing **tools, never planners** (`EA-08`), the dual capability boundary with a closed AOT-safe value model, declarative UI contribution, the Arc Package runtime, the catalog, and the MCP, connector and external-agent integrations — all under the same security pipeline as first-party code.
 
 ---
 

@@ -77,7 +77,7 @@ An aggregate root is the unit of concurrency, authorization and sync. Everything
 |---|---|
 | Cloud | `Workspace`, `User`, `Device`, `Subscription`, `Grant`, `CreditLot`, `Task`, `Conversation`, `SyncScope`, `CloudObject`, `PolicyBundle`, `PackageInstallation`, `SupportCase` |
 | ArcChat local | `Conversation`, `ArcChatProject`, `AgentProfile`, `Skill`, `Task` |
-| ArcNotes local | `Document`, `Notebook`, `Canvas`, `SavedView`, `SlideDeck`, `PropertyDefinition`, `Tag` |
+| ArcNotes local | `Document`, `Notebook`, `SavedView`, `PropertyDefinition`, `Tag` — `Canvas` and `SlideDeck` **retired by P2-006** |
 | ArcScope local | `ScopeProject`, `SessionRecord`, `Capture`, `AnalysisDefinition`, `Finding`, `Report`, `ConnectionProfile` |
 | ArcSlate local | `SlateProject`, `Sequence`, `MediaAsset`, `ExportPreset`, `RenderRequest` |
 

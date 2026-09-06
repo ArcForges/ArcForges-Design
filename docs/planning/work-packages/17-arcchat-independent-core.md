@@ -11,7 +11,9 @@
 
 ## 1. Scope and purpose
 
-**In scope.** The ArcChat capability registry surface; permission, approval and audit surfaces; the task centre; basic automation creation, start and stop; local BYOK and provider adapter wiring; thin preview and rich handoff; and application state, start-up and recovery.
+**In scope.** The ArcChat capability registry surface; permission, approval and audit surfaces; the task centre; basic automation creation, start and stop; the **Cloud AI client and local tool executor**; thin preview and rich handoff; and application state, start-up and recovery.
+
+> **Scope amendment, 2026-09-06 (P2-006).** The Harness is Cloud-only (`LS-02`). ArcChat Desktop presents task state, executes authorised `ToolRequest`s and runs product-local jobs. It holds **no provider credential, no model loop and no planner**.
 
 **Out of scope.** Federated search across products, product context providers, real semantic modifications, cross-application workflows and real artifact handlers — these are **V1B**, delivered progressively as the professional products come online (`20`, `35`, `39`).
 
@@ -39,7 +41,7 @@
 | BR-03 | **An agent is not a superuser** (`I3 §8.4`). It holds exactly the capabilities granted to it, subject to the same pipeline as a human actor. |
 | BR-04 | **Every capability invocation passes the security pipeline** and is recorded in the audit and execution traces. |
 | BR-05 | **Automation is not a workflow** and **a workflow is not an agent runtime** (`I4 §Stage 24 §17`, `§20`). Automation decides *when*; a plan decides *how*. |
-| BR-06 | **A local BYOK secret never leaves the device** and never reaches a mobile or cloud surface (`AI-03` in the companion requirements). |
+| BR-06 | **No provider credential exists on the client** (`BY-01`–`BY-04`, `I-015` retired). Provider credentials are deployment secrets held only by the Cloud host (`DC-15`). |
 | BR-07 | **Thin preview versus rich handoff**: ArcChat shows enough to act, and hands off to the owning product for real work (`§16` of the shared desktop requirements). |
 | BR-08 | **Automation in V1 stays simple** — creation, start, stop, and a bounded trigger set (`I4 §Stage 19 §62`). |
 
@@ -49,14 +51,16 @@
 
 | Location | Change |
 |---|---|
-| `src/ArcChat/ArcChat.Agent/` | The agent runtime, the turn loop and batching, plan construction, capability selection, compaction and steering |
+| `src/ArcChat/ArcChat.Agent/` | **Presentation-side agent surfaces only** — turn submission, streaming display, steering controls. The turn loop, batching, planning, selection and compaction are **Cloud** (`ArcForges.Cloud.AgentRuntime`, `LS-02`) |
 | `src/ArcChat/ArcChat.Application/` | Task centre, automation, permission and approval services |
 | `src/ArcChat/ArcChat.LocalTools/` | First-party local capabilities ArcChat itself owns |
 | `src/ArcChat/ArcChat.Presentation/`, `.Desktop/` | Task centre, capability hub, security centre, automation and handoff surfaces |
-| `src/ArcChat/ArcChat.Infrastructure/` | Provider adapters with a local BYOK secret path through the broker |
+| `src/ArcChat/ArcChat.CloudClient/` | The Cloud AI client: submit a turn, read task state, surface admission reasons. **No provider adapter, no credential** |
 | `tests/ArcChat.Tests.Integration/` | Agent, automation, approval, recovery and handoff suites |
 
-**Major types introduced.** `CapabilityHub`, `AgentSession`, `PlanBuilder`, `TaskCentreView`, `AutomationDefinition`, `AutomationTrigger`, `AutomationRun`, `TurnLoop`, `ToolCallBatch`, `ConflictSet`, `CompactionRecord`, `PermissionGrantView`, `SecurityCentre`, `HandoffRequest`, `PreviewDescriptor`, `ProviderAdapter`.
+**Major types introduced.** `CapabilityHub`, `AgentSessionView`, `TaskCentreView`, `AutomationDefinition`, `AutomationTrigger`, `AutomationRun`, `ToolRequestExecutor`, `AdmissionReasonView`, `PermissionGrantView`, `SecurityCentre`, `HandoffRequest`, `PreviewDescriptor`, `CloudAiClient`.
+
+**Types that moved to Cloud under P2-006.** `TurnLoop`, `ToolCallBatch`, `ConflictSet`, `CompactionRecord`, `PlanBuilder` and `ProviderAdapter` belong to `ArcForges.Cloud.AgentRuntime` and `ArcForges.Cloud.Modules.AI`, not to any desktop project.
 
 ---
 
@@ -72,11 +76,11 @@
 
 ### WP-17.01 — Agent runtime over the engine
 
-**What must be fully done.** The agent constructs plans over the execution engine, selects capabilities through the registry, and executes attempts through the security pipeline. Static registration is used; no reflection path exists. A plan is validated before execution, including the compensation declaration check.
+**What must be fully done.** **The Cloud Harness** constructs plans over the execution engine, selects capabilities through the registry, and executes attempts through the security pipeline (`LS-02`). ArcChat Desktop submits turns, renders plan and step state, and executes authorised device tools. A plan is validated before execution, including the compensation declaration check.
 
-**Testing requirements.** A published-AOT agent run; a plan-validation negative test; a capability-selection explainability test.
+**Testing requirements.** An end-to-end turn against the real Cloud host; a plan-validation negative test; a capability-selection explainability test; **a structural test asserting no desktop assembly contains a turn loop, a planner or a provider adapter** (`HV-09`).
 
-**Completion gate.** Multi-step plans execute inside a published AOT binary with explainable capability selection.
+**Completion gate.** Multi-step plans execute in Cloud with explainable capability selection, and **no client-side model loop is reachable**.
 
 ### WP-17.02 — Permission, approval and the security centre
 
@@ -102,13 +106,13 @@
 
 **Completion gate.** Automations start, stop and record runs; cascades are stopped; no implicit permission is acquired.
 
-### WP-17.05 — Provider adapters and local BYOK
+### WP-17.05 — Cloud AI client and admission surfacing
 
-**What must be fully done.** Provider adapters behind one interface, with a local BYOK secret stored through the secret broker and used without being revealed. A local model path is supported where the platform allows. Managed provider economics are stubbed and explicitly marked as `43`'s responsibility.
+**What must be fully done.** The desktop's Cloud AI client: submit a turn, poll or subscribe to task state, and **surface admission outcomes precisely** — which of an active paid service term, included capacity, or extra-credit authorisation is missing, with the server-calculated recovery time where one applies. **No provider adapter, model endpoint or credential exists on the client** (`BY-01`–`BY-04`, `EC-05`). The managed provider path itself is `43`'s responsibility and is visibly stubbed here.
 
-**Testing requirements.** A use-without-reveal test; an adapter-substitution test; a stub-marking check asserting the managed path is not presented as complete.
+**Testing requirements.** A structural test asserting no desktop assembly references a provider adapter or holds a credential; a refusal test covering `entitlement.no_service_term`, `capacity_exhausted` with `recoveryAt`, and `extra_credits_required`, each surfacing the correct action; a stub-marking check asserting the managed path is not presented as complete.
 
-**Completion gate.** A local BYOK secret is used without being revealed, and the managed path is visibly stubbed rather than falsely complete.
+**Completion gate.** **No provider credential exists on the client**, and every admission refusal states its specific reason and action rather than a generic failure.
 
 ### WP-17.06 — Preview, handoff and application state
 
@@ -152,7 +156,7 @@
 | Protocol | ArcChat's own capabilities and the handoff contract |
 | UI | Task centre, capability hub, security centre, automation and preview surfaces |
 | Security | Permission and approval become user-visible and user-controllable |
-| Platform | Local model support varies per platform and is surfaced honestly |
+| Platform | **No local model support exists** (`C-02`). Cloud availability and AI admission are surfaced honestly and separately |
 | Migration | Automation and grant schema versions |
 | Compatibility | The handoff and preview contracts other products implement |
 
@@ -184,7 +188,7 @@
 3. Permission is visible and revocable, revocation takes effect mid-operation, and approvals survive a restart.
 4. Tasks from more than one product appear in one task centre with correct controls and ownership attribution.
 5. Automations start, stop and record runs; cascades are detected and stopped; no implicit permission is acquired.
-6. A local BYOK secret is used without being revealed; the managed provider path is visibly stubbed.
+6. **No provider credential exists on the client**, and an admission refusal states which of service term, capacity or extra-credit authorisation is missing.
 7. Handoff works with the target both running and not running; startup meets budget; recovery is clean.
 8. **Every V1B ecosystem item is enumerated with a named closing package**, and nothing incomplete is presented as complete.
 9. No unbounded agent loop is reachable; every loop bound ends the turn with a stated reason; parallel tool batching never violates a declared conflict.

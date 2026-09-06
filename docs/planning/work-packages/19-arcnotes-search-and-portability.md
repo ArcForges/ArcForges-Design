@@ -174,5 +174,5 @@
 |---|---|
 | `20` — First workflow | Search and artifact production for the real workflow |
 | `25` — Sync | A format proven to round-trip locally before it round-trips through a server |
-| `27` — Edgeless | The V1 baseline plus a proven export path to extend |
+| `28` — Bounded properties and views | The V1 baseline plus a proven export path to extend. **`27` is retired by P2-006** |
 | `40` — Knowledge | The local index and citation anchors retrieval builds on |

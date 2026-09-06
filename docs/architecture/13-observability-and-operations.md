@@ -186,7 +186,7 @@ Audit is a **product security record**, not a diagnostic aid.
 
 | # | Rule |
 |---|---|
-| DG-01 | **Desktop analytics are minimal and opt-in** (`OB-07` there, `PV-06` in the security requirements). A local-first product does not report on the user by default. |
+| DG-01 | **Desktop analytics are minimal and opt-in** (`OB-07` there, `PV-06` in the security requirements). A product whose native surfaces run without telemetry obligations does not report on the user by default. |
 | DG-02 | **Local diagnostics are always available to the user without any upload.** A local log and a local diagnostic view exist regardless of telemetry consent. |
 | DG-03 | **A crash or diagnostic report is generated, shown to the user, and uploaded only after approval** (`I4 §Stage 10 §79`). The flow is: generate → show exactly what will be sent → user approves → send. |
 | DG-04 | **A full memory dump is never uploaded by default**, because it may contain document content and secrets (`I4 §Stage 10 §79`). |

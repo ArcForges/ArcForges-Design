@@ -11,9 +11,9 @@
 
 ## 1. Scope and purpose
 
-**In scope.** The identity domain and its cloud implementation: realm, user, authentication identity, workspace, membership, device, installation, instance, session, device trust, API tokens, actor kinds, account states, recovery, and deletion. Authentication methods, step-up, and the session contention behaviour that must be real early (`I2 §V`).
+**In scope.** The identity domain and its cloud implementation: realm, user, authentication identity, **single-owner** workspace, device, installation, instance, session, device trust, API tokens, actor kinds, account states, recovery, and deletion. Authentication methods, step-up, and the session contention behaviour that must be real early (`I2 §V`).
 
-**Out of scope.** The account portal UI (`48`). Entitlement (`42`). Team and organisation features beyond the base model — the corpus places team capability beyond the first launch.
+**Out of scope.** The account portal UI (`48`). Entitlement (`42`). **Organisations, membership, invitations, roles, seats and shared editing are excluded outright by P2-006** — not deferred, and with no dormant schema hook (`WO-01`–`WO-05`). Historical note: the earlier baseline placed team capability beyond the first launch.
 
 **Why this package exists.** Everything cloud-side attaches to identity, and `I2 §V` marks identity, refresh and session contention as things that must be real early. Getting the separation of user from authentication identity wrong is close to unrecoverable once accounts exist.
 
@@ -54,7 +54,7 @@
 
 | Location | Change |
 |---|---|
-| `src/Cloud/ArcForges.Cloud.Modules.Identity/` | The identity module: realm, user, authentication identity, workspace, membership, device, session, trust, tokens, recovery, deletion |
+| `src/Cloud/ArcForges.Cloud.Modules.Identity/` | The identity module: realm, user, authentication identity, single-owner workspace, device, session, trust, tokens, recovery, deletion |
 | `src/Cloud/ArcForges.Cloud.Host/` | Authentication and tenancy resolution wired into the fixed pipeline |
 | `src/BuildingBlocks/ArcForges.Security/` | Client-side session handling, refresh serialisation, device registration |
 | `src/Contracts/Public/ArcForges.Contracts.PublicApi.Identity/` | Identity DTOs on the Apache boundary |
@@ -70,7 +70,7 @@
 
 **What must be fully done.** Realm, user, authentication identity, workspace and membership with their relationships. A user may hold several authentication identities. Adding, removing or changing an authentication identity never changes user identity or workspace membership. Workspace is the scope everything else attaches to.
 
-**Testing requirements.** Identity-change tests asserting user continuity; membership tests; a structural test asserting no capability treats an authentication identity as a user.
+**Testing requirements.** Identity-change tests asserting user continuity; **a structural test asserting no schema, contract or operation carries a membership, role, invitation, seat or shared-editor concept** (`WO-05`); a structural test asserting no capability treats an authentication identity as a user.
 
 **Completion gate.** Changing an authentication identity never affects user identity, membership or attached data.
 

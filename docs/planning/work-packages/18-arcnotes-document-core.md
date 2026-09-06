@@ -13,7 +13,7 @@
 
 **In scope.** The block document model and editor; internal links, block links and backlinks; typed properties and tags at document level; managed and referenced attachments; undo, history, checkpoint and trash as four distinct mechanisms; crash recovery; upgrade migration; and large-document performance.
 
-**Out of scope.** Edgeless canvas (`27`), database views (`28`) and slides (`29`) — the phased completion of **D-006**. Search, import and export (`19`). Sync (`25`).
+**Out of scope.** Bounded properties and saved views (`28`). **Edgeless canvas and slides are excluded from delivery by P2-006** — `27` and `29` are retired, not deferred. Search, import and export (`19`). Sync (`25`).
 
 **Why this package exists.** `I2 §III.5` starts ArcNotes from the local closed loop. `SQ-05` then uses ArcNotes to prove sync, which requires a real document model with revisions, attachments, deletions and history first.
 
@@ -37,7 +37,7 @@
 | # | Rule |
 |---|---|
 | BR-01 | **The ArcNotes Reference Coverage Matrix is a completed, versioned planning input** — [`../../assurance/reference-coverage/arcnotes-affine-siyuan.md`](../../assurance/reference-coverage/arcnotes-affine-siyuan.md), 41 item-level rows, bound to AFFiNE at `81df4751a3` and SiYuan at `eef105683`. It was produced before this plan was derived (**D-019**). **This package consumes it and checks it for drift; it does not create it.** |
-| BR-02 | **ArcNotes scope is phased full inclusion of edgeless, database views and slides** (**D-006**). This package builds the V1 compatibility baseline every later phase must preserve. |
+| BR-02 | **ArcNotes scope is the notebook core plus bounded properties and saved views** (**D-006** as amended by **P2-006**). This package builds the V1 baseline every later phase must preserve. |
 | BR-03 | **Undo, history, checkpoint and journal are four distinct mechanisms** (`QI-09`) and never substitute for one another. |
 | BR-04 | **A document rename never breaks a link** — links target a stable identity, not a name. |
 | BR-05 | **Backlinks are derived** from a link index and are never written into document content. |

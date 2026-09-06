@@ -182,7 +182,7 @@
 | Package | What it needs from here |
 |---|---|
 | `26` — Remote action | Sync state as the basis for remote work |
-| `27` — Edgeless | Sync for new content kinds on the proven engine |
+| `28` — Bounded properties and views | Sync for property and view content on the proven engine. **`27` is retired by P2-006** |
 | `35`, `39` | The engine ArcScope and ArcSlate extend with their own scope rules |
 | `40` — Knowledge | Synced content as a knowledge source |
 | `46` — Backup | Committed state as the backup subject |

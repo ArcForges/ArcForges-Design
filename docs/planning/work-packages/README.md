@@ -105,7 +105,7 @@ The number is an identity, not a schedule. Ordering is by dependency; parallelis
 | 40 | [Knowledge, search and retrieval](40-knowledge-search-and-retrieval.md) | 19, 25 |
 | 41 | [Extension platform and integrations](41-extension-platform-and-integrations.md) | 09, 11, 17 |
 | 42 | [Commerce, entitlement and credits](42-commerce-entitlement-and-credits.md) | 22, 23 |
-| 43 | [Managed AI, BYOK, routing and metering](43-managed-ai-routing-and-metering.md) | 16, 42 |
+| 43 | [Cloud AI routing, metering and settlement](43-managed-ai-routing-and-metering.md) | 16, 42 |
 | 44 | [Dynamic policy and configuration control plane](44-dynamic-policy-and-configuration.md) | 23, 42 |
 | 45 | [Operations, support and trust & safety](45-operations-support-and-trust-safety.md) | 12, 21, 44 |
 | 46 | [Backup, disaster recovery and data health](46-backup-recovery-and-data-health.md) | 25, 45 |

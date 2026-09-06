@@ -1,17 +1,17 @@
-# WP-43 — Managed AI, BYOK, Routing and Metering
+# WP-43 — Cloud AI Routing, Metering and Settlement
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: J — Platform completion
 > Upstream: `16`, `42` · Downstream: `50`
 
-> **Goal.** Replace the stubbed provider path with the real one: provider routing with locked tariffs, BYOK with server-side reference use, metering that reserves before and settles after, transparency obligations, and honest failure when a provider is unavailable.
+> **Goal.** Replace the stubbed provider path with the real one: provider routing under **operator-funded credentials**, dispatch-time supplier prices and Run-pinned customer tariffs, real usage normalisation, metering that reserves before and settles after, transparency obligations, and honest failure when a provider is unavailable.
 
 ---
 
 ## 1. Scope and purpose
 
-**In scope.** Provider adapters and routing; model and provider availability as policy; tariff versioning and cost dimensions; the provider interaction record; metering integrated with credits; BYOK for cloud and desktop with their different secret paths; AI transparency obligations; and failure handling when providers degrade.
+**In scope.** Cloud provider adapters and routing under operator-funded credentials; model and provider availability as policy; supplier price versions and Run-pinned customer tariffs; real usage normalisation into non-overlapping categories; settlement and the three ledgers; the provider interaction record; metering integrated with credits; BYOK for cloud and desktop with their different secret paths; AI transparency obligations; and failure handling when providers degrade.
 
 **Out of scope.** The execution engine itself (`16`). Retrieval (`40`). Commercial policy authoring (`42`).
 
@@ -39,7 +39,7 @@
 | BR-02 | **Credits are reserved before execution and settled after**, with a hard stop at zero (**D-020**). |
 | BR-03 | **The three ledgers stay separate** (`I-011`): provider cost, customer credit, payment and revenue. |
 | BR-04 | **A desktop-local BYOK secret never leaves the device**; a cloud BYOK secret is used server-side by reference and never downloaded. |
-| BR-05 | **BYOK changes the economics, not the permission model.** A user with their own key still passes the same security pipeline. |
+| BR-05 | **There is no end-user BYOK** (`BY-01`–`BY-04`, `I-015` retired). Provider credentials are deployment secrets (`DC-15`); a self-host operator provisioning server credentials is infrastructure provisioning, not customer BYOK (`I-495`). |
 | BR-06 | **Provider and model availability is policy**, not a compiled list, and a withdrawn model degrades explicitly. |
 | BR-07 | **Provider interaction records are a separate trace system** from execution, capability and audit traces. |
 | BR-08 | **Hidden model reasoning never enters the product model.** |
@@ -55,10 +55,10 @@
 |---|---|
 | `src/Cloud/ArcForges.Cloud.Modules.AI/` | Provider adapters, routing, tariffs, metering, interaction records |
 | `src/Cloud/ArcForges.Cloud.Modules.Entitlement/` | Credit settlement integration |
-| `src/ArcChat/ArcChat.Infrastructure/` | Desktop provider adapters and the local BYOK path |
+| `src/Cloud/ArcForges.Cloud.Modules.AI/` | Provider adapters, routing, normalisation, settlement. **No desktop project participates** |
 | `src/BuildingBlocks/ArcForges.Execution.Budget/` | Real reserve, settle and release against credits |
 | `src/Contracts/Public/ArcForges.Contracts.PublicApi.AI/` | AI request, response and metering DTOs |
-| `tests/CloudIntegrationTests/AI/` | Routing, tariff, metering, BYOK, outage and transparency suites |
+| `tests/CloudIntegrationTests/AI/` | Routing, supplier price, customer tariff, normalisation, settlement, uncertain-usage, outage and transparency suites |
 
 **Major types introduced.** `AiProviderAdapter`, `ProviderCapabilityDescriptor`, `ModelDescriptor`, `RoutingPolicy`, `RoutingDecision`, `TariffVersion`, `TariffSnapshot`, `CostDimension`, `ProviderInteractionRecord`, `MeteringResult`, `ByokBinding`, `TransparencyMarking`.
 
@@ -139,8 +139,8 @@
 | Database | Tariffs, interaction records and metering results |
 | Protocol | AI request, response and metering contracts |
 | UI | Model selection, cost transparency and availability surfaces |
-| Security | BYOK secret custody; egress control on model interaction; instruction provenance on model output |
-| Platform | Local model support where available, surfaced honestly |
+| Security | Operator credential custody by secret injection (`DC-15`); egress control on model interaction; instruction provenance on model output |
+| Platform | **No local model support** (`C-02`). Provider availability and route health are surfaced honestly |
 | Migration | Tariff and interaction record schema versioning |
 | Compatibility | AI contracts enter the supported window |
 
@@ -153,7 +153,8 @@
 | Routing decision, explainability and streaming results | `WP-43.00` |
 | Rate-change immutability and historical explainability results | `WP-43.01` |
 | Metering accounting, idempotency, sweep and overdraft results | `WP-43.02` |
-| BYOK boundary assertions and permission-parity results | `WP-43.03` |
+| No-BYOK structural assertions and credential-custody results | `WP-43.03` |
+| Real-provider normalisation, settlement and worked-fixture results | `WP-43.07` |
 | Trace separation, redaction, cost explainability and marking coverage | `WP-43.04` |
 | Degradation, reservation release and alert results | `WP-43.05` |
 | Per-provider test-environment runs and fixture-driven CI results | `WP-43.06` |

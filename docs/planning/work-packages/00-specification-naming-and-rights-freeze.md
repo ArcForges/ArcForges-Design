@@ -50,7 +50,7 @@
 | BR-09 | **A repository-root licence must not be assumed to cover every file** (**D-013**). |
 | BR-10 | **The technical exception list is closed** (`§8.1` of the scope requirements). Adding to it requires a formal decision. |
 | BR-11 | **The ArcChat AOT position is settled**: ArcChat Desktop is a Native AOT deliverable like the other desktop products (**D-008**). Any residual corpus text suggesting otherwise is stale. |
-| BR-12 | **ArcNotes scope is the phased full inclusion of edgeless, database views and slides** (**D-006**), not a reduced subset. |
+| BR-12 | **ArcNotes scope is the notebook core, bounded typed properties, saved list/table views, references and cloud sync** (**D-006** as amended by **P2-006**, 2026-09-06). Edgeless, slides and further database layouts are **excluded from delivery**, with no mandatory future hook. |
 
 ---
 

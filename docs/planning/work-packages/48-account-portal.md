@@ -54,7 +54,7 @@
 |---|---|
 | `src/Web/ArcForges.Web.App/` | Shell, deployment profile selection, navigation, theming, locale |
 | `src/Web/ArcForges.Web.App/Features/Account/` | Account, security, devices, sessions, recovery |
-| `src/Web/ArcForges.Web.App/Features/Workspace/` | Workspace, membership, storage, usage |
+| `src/Web/ArcForges.Web.App/Features/Workspace/` | Workspace settings, storage, usage, capacity and service term. **No membership surface** (`WO-01`) |
 | `src/Web/ArcForges.Web.App/Features/Commerce/` | Entitlement, subscription, credits, billing history, invoices |
 | `src/Web/ArcForges.Web.App/Features/Data/` | Export, deletion, data health visibility |
 | `deploy/edge/account/` | Origin configuration: content security policy, cookie policy, CORS, CSRF posture |
@@ -92,9 +92,9 @@
 
 ### WP-48.03 — Workspace, storage and usage
 
-**What must be fully done.** Workspace management and membership; storage consumption computed from committed objects; usage against quota with reset boundaries visible; data health visibility.
+**What must be fully done.** Single-owner workspace settings — **no membership, invitation, role or seat surface** (`WO-01`–`WO-05`); **service term and included-capacity display with recovery timing and the extra-credit opt-in** (`EC-01`–`EC-04`); storage consumption computed from committed objects; usage against quota with reset boundaries visible; data health visibility.
 
-**Testing requirements.** Accounting comparison against server-side figures; boundary display tests; a permission test on membership operations.
+**Testing requirements.** Accounting comparison against server-side figures; boundary display tests; **a structural test asserting no membership, invitation, role or seat operation is offered**; a projection test asserting the portal receives no supplier rate, route weight or other user's state (`DC-14`); a display test asserting capacity and purchased credits are never summed into one figure (`CD-07`).
 
 **Completion gate.** Displayed storage and usage match server-side computed values exactly.
 

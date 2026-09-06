@@ -5,13 +5,13 @@
 > Phase: E — First real cloud
 > Upstream: `03`, `05`, `12` · Downstream: `22`, `45`, `51`
 
-> **Goal.** Stand up the real cloud: a JIT modular monolith with three runtime roles, a fixed host pipeline order, module boundaries with owned schemas, a real database with a standalone migrator, reliable events, and background work — running against real infrastructure, not stubs.
+> **Goal.** Stand up the real cloud: a JIT modular monolith as **one deployable host** with lease-fenced internal services (**P2-006**), a fixed host pipeline order, module boundaries with owned schemas, a real database with a standalone migrator, reliable events, and background work — running against real infrastructure, not stubs.
 
 ---
 
 ## 1. Scope and purpose
 
-**In scope.** The cloud host and its pipeline; the three runtime roles (API, worker, task runner); module structure with schema ownership and module-to-module rules; persistence with a standalone migrator; the outbox, inbox and idempotency infrastructure; background work; configuration and secrets; failure isolation; and instrumentation of the real pipeline.
+**In scope.** The single cloud host and its pipeline; its bounded hosted services and their durable lease fencing; module structure with schema ownership and module-to-module rules; persistence with a standalone migrator; the outbox, inbox and idempotency infrastructure; background work; configuration and secrets; failure isolation; and instrumentation of the real pipeline.
 
 **Out of scope.** Identity (`22`), the public API surface (`23`), realtime (`24`), sync (`25`), commerce (`42`), policy (`44`) and operations tooling (`45`) — this package is the substrate those land on.
 
@@ -53,8 +53,9 @@
 | Location | Change |
 |---|---|
 | `src/Cloud/ArcForges.Cloud.Host/` | The API role and its fixed pipeline |
-| `src/Cloud/ArcForges.Cloud.Worker/` | The background role |
-| `src/Cloud/ArcForges.Cloud.TaskRunner/` | The isolated job role |
+| `src/Cloud/ArcForges.Cloud.BackgroundJobs/` | Hosted services — a **library** referenced by the host, not a deployable |
+| `src/Cloud/ArcForges.Cloud.AgentRuntime/` | The single Harness — a **library** referenced by the host |
+| `src/Cloud/ArcForges.Cloud.AppHost/` | Aspire orchestration for **local development only** (`EN-05`) |
 | `src/Cloud/ArcForges.Cloud.Persistence/` | Store abstraction, unit of work, outbox and inbox |
 | `src/Cloud/ArcForges.Cloud.Migrations/` | The standalone migrator and the numbered migration set |
 | `src/Cloud/ArcForges.Cloud.Modules.*/` | Module skeletons with owned schemas, module APIs and events, reconciled against `WP-01` |

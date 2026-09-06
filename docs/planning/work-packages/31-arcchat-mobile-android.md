@@ -41,7 +41,7 @@
 | BR-05 | **A push action opens a surface; it never carries authorization.** |
 | BR-06 | **An operation requiring local presence cannot be completed from mobile alone** (`WP-26.04`). |
 | BR-07 | **Mobile holds no professional product's writable domain state.** |
-| BR-08 | **No desktop-local BYOK secret reaches the device**, and cloud BYOK secrets are used server-side by reference only. |
+| BR-08 | **No provider credential exists on any client** (`BY-01`–`BY-04`). Provider credentials are deployment secrets held only by the Cloud host (`DC-15`) and never projected to a client (`DC-14`). |
 | BR-09 | **Offline caching is restrained and bounded**: recent task state, recent conversation summaries, pending attention items and small previews — evictable and never authoritative. |
 | BR-10 | **Complex configuration surfaces live on desktop and web**, not on mobile. |
 

@@ -551,7 +551,7 @@ These hold the **cloud replica** of locally authoritative data (`§4` of the ove
 
 ### `chat.conversation`, `chat.message`
 
-Mirror the local model (`§2` of [`02-desktop-data-model.md`](02-desktop-data-model.md)) with `workspace_id`, `rev`, sync state and a tombstone flag. **Cloud is a replica, not the authority** — a cloud-side edit is impossible; the only writer is the sync engine applying a client change.
+Mirror the client-side schema (`§2` of [`02-desktop-data-model.md`](02-desktop-data-model.md)) with `workspace_id`, `rev`, sync state and a tombstone flag. **Cloud holds the authoritative acknowledged revision** (`AU-01`); the client copy is a working cache plus pending changes. **Cloud is a replica, not the authority** — a cloud-side edit is impossible; the only writer is the sync engine applying a client change.
 
 ### `task.task`
 

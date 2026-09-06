@@ -242,7 +242,7 @@ The cloud half of the **D-010** model:
 | CS-01 | **Configuration files hold references, never long-lived plaintext secrets.** |
 | CS-02 | **Production secrets live in a managed vault in RBAC mode with purge protection.** |
 | CS-03 | **Service-to-service authentication uses workload identity where available.** |
-| CS-04 | **User Cloud BYOK secrets use envelope encryption**, not one vault entry per user (`SC-03` in the cloud product requirements). |
+| CS-04 | **Envelope encryption is used for per-workspace secret material**, not one vault entry per workspace. **There are no user provider secrets** — end-user BYOK is excluded (`BY-01`–`BY-04`, `I-015` retired); provider credentials are deployment secrets (`DC-15`). |
 | CS-05 | **Logs, crash dumps and diagnostic bundles are redacted by default.** |
 | CS-06 | **Provider API keys are isolated by provider, workspace and environment.** |
 
