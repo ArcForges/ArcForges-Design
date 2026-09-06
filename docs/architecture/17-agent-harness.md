@@ -2,34 +2,34 @@
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Architecture
-> Governing authority: **D-008** (the host is Native AOT), **D-010** (topology), **D-020** (metering), **V-01** (transparency), **V-02** (MCP vocabulary)
+> Governing authority: **P2-006** (Cloud-only single Harness), **D-010** (topology), **D-020** as amended (metering), **V-01** (transparency), **V-02** (MCP vocabulary)
 > Companions: [`09-ai-and-agent-runtime-architecture.md`](09-ai-and-agent-runtime-architecture.md) (the runtime this executes inside), [`contracts/02-local-rpc-operations.md`](contracts/02-local-rpc-operations.md), [`08-security-architecture.md`](08-security-architecture.md)
 
-The runtime architecture describes the task engine, placement, metering and tracing. **It does not describe the loop.** This document specifies the concrete mechanism by which a model is given context, proposes actions, has them executed against real ArcForges operations, and produces durable results.
+The runtime architecture describes the task engine, tool locality, metering and tracing. **It does not describe the loop.** This document specifies the concrete mechanism by which a model is given context, proposes actions, has them executed against real ArcForges operations, and produces durable results.
 
-**What this is.** An ArcForges-owned harness: the turn loop, the tool protocol, context assembly and compaction, capability selection, approval interleaving, streaming, cancellation and recovery.
+**What this is.** The single ArcForges-owned Harness, running in `ArcForges.Cloud.Host`: the turn loop, the tool protocol, context assembly and compaction, capability selection, approval interleaving, streaming, cancellation and recovery.
 
-**What this is not.** A general-purpose coding agent, and not a dependency on one. ArcForges uses **models** from providers. It does not depend on any vendor's coding-agent product, and no external agent is a prerequisite for the built-in agent (`§9`).
+**What this is not.** A general-purpose coding agent, a client-side loop, or a delegation platform. ArcForges uses **models** from providers with operator-funded credentials. There are no agent teams, no sub-agents, no external-agent delegation and no end-user provider keys (`§9`).
 
 ---
 
 ## 1. Layer separation
 
-Conflating these four is the most common way a design like this becomes unimplementable.
+**The Harness is Cloud-only and single** (**P2-006**). Conflating these three is the most common way a design like this becomes unimplementable.
 
 | Layer | What it is | Who owns it | Replaceable? |
 |---|---|---|---|
-| **Provider transport** | HTTP to a model provider; request and response shapes; streaming framing | Provider adapter (`§6` of the runtime architecture) | Yes — per provider |
+| **Provider transport** | HTTP to a model provider using **operator-funded credentials**; request and response shapes; streaming framing | Provider adapter, in Cloud (`§6` of the runtime architecture) | Yes — per provider |
 | **Reusable mechanism** | Token counting, message serialisation, streaming parsing, retry primitives | A library **or** first-party code, chosen on merit | Yes |
-| **ArcForges harness** | The turn loop, tool protocol, context assembly, compaction, selection, approval, durability, recovery, metering | **ArcForges, always** | **No** |
-| **External agent integration** | Delegating work to an agent outside ArcForges | Adapter, per `§5` of the extension architecture | Yes — and optional |
+| **The ArcForges Harness** | The turn loop, tool protocol, context assembly, compaction, selection, approval, durability, recovery, admission and metering | **ArcForges Cloud, always** | **No** |
 
 | # | Rule |
 |---|---|
-| LS-01 | **Using a provider's model is not depending on that vendor's agent product.** The harness speaks a provider's completion or messages API; it does not embed a coding agent. |
-| LS-02 | **No external agent is a prerequisite for the built-in agent.** ArcChat's agent works with no extension installed and no external agent configured (`WP-17.01`). |
-| LS-03 | **A reusable library may be adopted for a mechanism layer** where it satisfies the AOT constraints (**D-008**), is licence-compatible (**D-004**), and passes the dependency policy. It may **never** own the harness layer. |
-| LS-04 | **External agent delegation, where configured, maps onto the same Task model with a capability lease** (`§5` of the extension architecture; `§9` of the security architecture). It is an alternative executor, not an alternative harness. |
+| LS-01 | **Using a provider's model is not depending on that vendor's agent product.** The Harness speaks a provider's completion or messages API; it does not embed a coding agent. |
+| LS-02 | **There is exactly one Harness, and it runs in `ArcForges.Cloud.Host`** (`RT-03` of the cloud architecture). No desktop, mobile or browser client runs a model loop (`CM-02` of the runtime architecture, `I-491`). |
+| LS-03 | **A reusable library may be adopted for a mechanism layer** where it is licence-compatible (**D-004**) and passes the dependency policy. It may **never** own the Harness layer. The Cloud AOT constraint does not apply here (**D-008**, **V-03**). |
+| LS-04 | **No end-user provider credential exists** in any layer (`BY-01`–`BY-04` of the commerce requirements; `I-015` retired). Provider credentials are deployment secrets injected per `DC-15`. |
+| LS-05 | **Agent teams, sub-agents and external-agent delegation are excluded** (`EA-01`–`EA-08` of the extension requirements). See `§9`. |
 
 ---
 
@@ -40,7 +40,7 @@ A **turn** is one user-visible unit of agent work: the user asks, the agent work
 ```
 StartAgentTurnAsync
   ↓
-create Task (placement decided once) ─── returns TaskRef immediately
+create Cloud Task (owner + tool locality recorded) ── returns TaskRef immediately
   ↓
 [TURN LOOP]  ── durable; every iteration is persisted before the next begins
   │
@@ -190,7 +190,7 @@ collect references          (identity only — no content yet)
 | PK-01 | **References first, content last.** A reference that fails revalidation never causes its content to be fetched. |
 | PK-02 | **Every packed item carries source, revision and anchor**, which is what makes a citation resolvable afterwards (`WP-19.02`). |
 | PK-03 | **Permission is applied per source during assembly.** A refused source contributes nothing, including to counts (`WP-40.03`). |
-| PK-04 | **Local-only content never leaves the device** because AI was enabled (`OW-08` of the AI requirements; `I-182`, which separates sync transmission from AI transmission). For a cloud-executed turn, local-only sources are excluded and **the exclusion is stated in the pack**, so the model is not silently reasoning on partial evidence. |
+| PK-04 | **Only acknowledged Cloud revisions are packable** (`I-498`). Content that was never synchronised — an unenrolled notebook, a local-only ArcScope capture, an ArcSlate media file — is **not context**, and its absence is stated in the pack rather than silently reducing the evidence. Enabling AI never causes an upload (`OW-08` of the AI requirements, `I-182`). |
 
 ### 4.3 Staleness and invalidation
 
@@ -370,53 +370,40 @@ approval.decide
 
 ---
 
-## 9. External agents, and what they are not
+## 9. What the Harness is not
 
 | # | Rule |
 |---|---|
-| XA-01 | **The built-in agent has no external-agent dependency.** With no extension installed and no external agent configured, ArcChat's agent is fully functional (`LS-02`). An external agent is delivered as an integration package and **never becomes the built-in agent** (`EA-08` of the extension requirements). |
-| XA-02 | **An external agent is an alternative executor**, reached as an out-of-process contribution kind (`§5` of the extension architecture), and its work maps onto the same Task model with a capability lease per delegation (`EA-05` there). |
-| XA-03 | **Delegation narrows authority; it never amplifies it** (`DG-01` of the security architecture, `I-266`). The lease is scoped, time-bounded, task-bounded, non-amplifying and auto-expiring, so an external agent's tools are a subset of the delegating actor's, never the full registry. |
-| XA-04 | **An external agent's internal chain-of-thought never enters the ArcChat product model** (`EA-07` of the extension requirements, `TR-03` of the runtime architecture, `I-107`). Its outputs map to ordinary results and `ArtifactRef`s (`EA-06` there). |
-| XA-05 | **The user can see that a delegated workstream exists** without its hidden reasoning being exposed (`CT-07` of the AI requirements). Delegation is visible as work, opaque as thought. |
-| XA-06 | **MCP is an edge adapter behind the capability registry**, never the internal protocol (**V-02**, `MC-01` of the runtime architecture). MCP's own task and skill vocabulary never conflates with ArcForges' (`MC-04` there), and the mapping is recorded when the SDK version is pinned at first consumption (`MC-05` there). |
-| XA-07 | **A capability reached over MCP passes the same security pipeline** as any other, with owner-side validation, and its tool descriptions, resource contents and prompts are **untrusted data, never instructions** (`ES-05` of the knowledge requirements, `I-262`, `I-263`). |
-| XA-08 | **A down external integration degrades that integration only** (`MC-07` of the runtime architecture), and the harness reports the loss rather than silently dropping the capability from the declaration set mid-turn. |
+| XA-01 | **There is no external-agent integration.** External-agent providers, ACP adapters, session mapping, delegation leases and result adapters are all retired (`EA-01`–`EA-06` of the extension requirements, `I-313`, `I-314` retired). |
+| XA-02 | **There are no agent teams and no sub-agents** (`EA-08` there). A Task may create **child tasks** for long or independent work, and a turn may run **parallel tool calls** (`§2.1`) — both are execution mechanisms inside the one Harness, not additional agents. |
+| XA-03 | **A package, connector or MCP tool cannot start an autonomous delegated agent** (`EA-08` there). An integration contributes tools; it never contributes a planner. |
+| XA-04 | **MCP remains a tool-integration edge adapter**, never the internal protocol (**V-02**, `MC-01` of the extension requirements). An MCP tool maps to a declared capability carrying risk, permission and provenance — it is never injected as a raw tool (`MC-02` there). |
+| XA-05 | **MCP tool descriptions, prompts and resource contents are untrusted data** (`MC-07` there, `I-262`, `I-263`), and an MCP server changing its tool set re-enters permission review (`MC-10` there). |
+| XA-06 | **Hidden model reasoning never enters the product model** (`EA-07` there, `PR-10` of the AI requirements, `I-107`). Reasoning appears as a metered cost category (`MT-03`), never as content or trace. |
+| XA-07 | **The Harness is not a native Product Job runner.** A render, capture, index or export is owned by its product (`CM-04` of the runtime architecture, `I-121`, `I-485`); the Harness may observe one through a status tool, never adopt it as a Step.
 
 ---
 
-## 10. Multi-agent posture
+## 10. Tool locality
 
-The corpus position is narrower than "multi-agent is deferred" and more useful: **multi-agent work is an internal capability that reuses this runtime, not a second runtime and not a V1 user-facing concept.**
+The Harness always runs in Cloud (`LS-02`). What varies is **where each tool executes** (`§9` of the runtime architecture).
 
-| # | Position |
-|---|---|
-| MA-01 | **Multi-agent work uses the same runtime.** Short internal parallel work becomes **parallel Steps** (`§2.1`); long or independent work becomes **Child Tasks** (`WP-16.03`). **There is no second agent runtime** (`CT-06` of the AI requirements, `CT-04` of the runtime architecture). |
-| MA-02 | **Multi-agent is not a user-facing product concept in V1** (`§23` of the ArcChat requirements). There is no agent-team interface, no inter-agent conversation surface, and none is designed here. |
-| MA-03 | **Sub-agents share one Task budget from one reservation pool** (`BG-05` of the AI requirements, `MB-02` of the runtime architecture). A sub-agent must never see the whole workspace balance, and parallel sub-work cannot collectively overdraw (`WP-16.05`). |
-| MA-04 | **A delegated or child workstream is visible as work and opaque as thought** (`XA-05`). |
-| MA-05 | **Cancellation and budget exhaustion propagate down the child-task tree**, and a cancelled parent leaves no orphaned child running (`CN-01`, `WP-16.03`). |
-| MA-06 | **Nothing here infers a user-facing multi-agent decision from the existence of child tasks or parallel steps.** They are execution mechanisms; an agent-team product concept would be a separate decision. |
-
----
-
-## 11. Placement
-
-| Turn placement | When | Constraint |
+| Tool locality | When | Constraint |
 |---|---|---|
-| **Local** | Default for a desktop-initiated turn with local context or local-only capabilities | Model calls go out from the desktop; local BYOK secret never leaves |
-| **Cloud** | Initiated from mobile or web, or explicitly chosen | Local-only context is excluded and the exclusion is stated (`PK-04`) |
-| **Remote via bridge** | A cloud turn needing a local capability | Each such invocation is a durable tool request (`§5` of the bridge document) |
+| **Cloud tool** | The capability is Cloud-owned | Executes in-process inside the turn |
+| **Device tool** | The capability requires a desktop | Each invocation is a durable `ToolRequest` pulled by the device (`§5` of the bridge contract) |
 
 | # | Rule |
 |---|---|
-| PL-01 | **Placement is decided once at turn creation and recorded** (`TO-06` of the data-model overview). Task authority never migrates silently (`OW-02` of the AI requirements). |
-| PL-02 | **A turn requiring a local-only capability cannot be placed `cloud`** without the bridge, and if the bridge is unavailable the turn fails with a stated reason rather than degrading silently. |
-| PL-03 | **`Auto` placement never uploads local-only data to enable cloud execution** (`OW-08` of the AI requirements). `Auto` is constrained by data availability, capability availability, permission, cost, privacy and policy (`OW-07` there) — it is not a free choice. |
+| PL-01 | **A Task is Cloud-owned from creation** (`TO-02` of the data-model overview). There is no local or hybrid task placement to decide. |
+| PL-02 | **A device tool with no eligible online device enters `WaitingForDevice`** with a stated reason and a bounded wait — it never degrades to a cloud approximation. |
+| PL-03 | **Waiting consumes no model capacity.** A turn parked on a device or an approval releases its included-capacity hold at the safe boundary and re-reserves on resume (`AC-05` of the commerce requirements). This is what stops one waiting Task from reserving the whole workspace. |
+| PL-04 | **Local-only data never leaves the device to enable a cloud tool** (`OW-08` of the AI requirements). If the data cannot leave, the device tool runs or the step fails with a reason. |
+| PL-05 | **Cached, unacknowledged client state is never treated as Cloud context.** Only acknowledged Cloud revisions enter the context pack (`I-498`); a pending local edit is visible to the user, not to the model, until it is acknowledged.
 
 ---
 
-## 12. Transparency and cost
+## 11. Transparency and cost
 
 | # | Rule |
 |---|---|
@@ -428,30 +415,32 @@ The corpus position is narrower than "multi-agent is deferred" and more useful: 
 
 ---
 
-## 13. Verification
+## 12. Verification
 
 | # | Obligation | Where |
 |---|---|---|
-| HV-01 | A multi-step turn completes inside a published Native AOT binary with no reflection path | `WP-13.00`, `WP-17.01` |
+| HV-01 | A multi-step turn completes end to end in the single Cloud host, against a real provider | `WP-43.07`, `WP-17.01` |
 | HV-02 | A model-proposed action reaches a real product operation through the full security pipeline | `WP-20.02` |
-| HV-03 | A crash at each loop point resumes correctly, with no duplicate effect | `WP-17.08`, `WP-16.00`, `WP-26.03` |
+| HV-03 | A crash at each loop point resumes correctly, with no duplicate effect and no duplicate charge | `WP-17.08`, `WP-16.00`, `WP-26.03` |
 | HV-04 | An approval-suspended turn survives restart of either side and resumes with revalidated context | `WP-14.04`, `WP-16.05` |
-| HV-05 | An interrupted stream is never stored as complete | `WP-15.00` |
+| HV-05 | An interrupted stream is never stored as complete, and cumulative stream usage is not summed as independent consumption | `WP-15.00`, `WP-43.02` |
 | HV-06 | Stale context is detected before a write, and the model is told rather than silently corrected | `WP-20.02` |
 | HV-07 | Every loop bound ends the turn with a stated reason; no unbounded loop is reachable | `WP-17.08`, `WP-16.07` |
-| HV-08 | A cancelled turn settles budget at actual usage and leaves a determinate state | `WP-16.05` |
-| HV-09 | The built-in agent works with no extension installed and no external agent configured | `WP-17.01` |
+| HV-08 | A cancelled turn settles verified consumption and releases the remainder | `WP-16.05`, `WP-43.02` |
+| HV-09 | **No client runs a model loop.** A structural test asserts no desktop, mobile or browser assembly references a provider adapter or holds a provider credential | `WP-05`, `WP-17.01` |
 | HV-10 | A capability not declarable to the model is never proposed, and never invocable if proposed | `WP-17.00` |
-| HV-11 | A local BYOK secret is used without being revealed, and never leaves the device | `WP-43.03` |
-| HV-12 | A provider outage releases the reservation and consumes no credit | `WP-43.05` |
+| HV-11 | **No end-user BYOK path exists.** No operation, schema field, setting or UI accepts a customer provider key | `WP-05`, `WP-43.03` |
+| HV-12 | A provider outage releases the customer reservation or appends a compensating adjustment, and retains the supplier cost | `WP-43.05` |
 | HV-13 | Two tool calls writing the same target never execute in parallel; two reads of independent targets do | `WP-17.08`, `WP-20.03` |
 | HV-14 | An approval mid-batch suspends the whole batch, and resume re-evaluates the remainder against revalidated context | `WP-17.08`, `WP-16.05` |
 | HV-15 | A failure inside a parallel group returns the siblings' real results alongside the failure | `WP-17.08`, `WP-16.02` |
-| HV-16 | A platform-caused provider retry is not charged to the user | `WP-43.04` |
-| HV-17 | Sub-agent work shares one reservation pool and cannot collectively overdraw | `WP-16.03`, `WP-16.05` |
-| HV-18 | A delegated workstream is visible as work while its internal reasoning never enters the product model | `WP-41.07`, `WP-11.07` |
+| HV-16 | A platform-caused provider retry is charged once to the customer and remains fully visible in supplier cost | `WP-43.02`, `WP-43.04` |
+| HV-17 | A turn waiting for a device or an approval holds no included capacity, and cannot reserve the workspace indefinitely | `WP-16.05`, `WP-43.02` |
+| HV-18 | **No agent team, sub-agent or external-agent delegation is reachable.** A structural test asserts no delegation contribution kind and no second planner exists | `WP-05`, `WP-41.07` |
 | HV-19 | MCP tool descriptions and retrieved content are treated as data; an instruction inside them changes no behaviour | `WP-11.06`, `WP-41.07` |
-| HV-20 | Hidden model reasoning never appears in trace, and reasoning tokens appear only as a cost dimension | `WP-16.06`, `WP-43.04` |
+| HV-20 | Hidden model reasoning never appears in trace, and reasoning tokens appear only as a metered cost category | `WP-16.06`, `WP-43.02` |
 | HV-21 | The stored branch is byte-identical before and after compaction, and losing every `CompactionRecord` costs no content | `WP-17.09` |
 | HV-22 | A compacted span never loses an approval, a refusal or a user correction, and never separates a tool call from its result | `WP-17.09` |
 | HV-23 | A `CompactionRecord` never becomes personal memory and never crosses a branch or a conversation | `WP-17.09`, `WP-15.01` |
+| HV-24 | Official inference is refused without an active paid service term, whatever the credit balance | `WP-42.11`, `WP-43.02` |
+| HV-25 | Only acknowledged Cloud revisions enter the context pack; a pending client edit never reaches the model as context | `WP-25.01`, `WP-20.02` |

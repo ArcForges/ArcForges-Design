@@ -23,42 +23,44 @@
 
 ---
 
-## 2. Roles and topology
+## 2. Deployment host and internal services
 
-Three production roles (`§1.1` of the cloud product requirements):
+**One deployable host** (**P2-006**; `§8` of the product scope). `ArcForges.Cloud.Host` is the single ASP.NET Core JIT executable. Request handling, realtime hubs, the single Harness and every bounded background service run inside it as libraries. Horizontal scale is **replicas of that one host**, never a second deployable with a different job.
 
 ```
-                          Edge (TLS, WAF, rate limit)
-                                     │
-                          private ingress only
-                                     ▼
-┌────────────────────────── ArcForges.Cloud.Host (API) ──────────────────────────┐
-│ forwarded headers → request limits → correlation → exception normalisation      │
-│ → authentication → authorization → rate limiting → endpoints → realtime hubs    │
-│ → health and management                                                         │
-└──────┬─────────────────────────────────────────────────────────────────┬────────┘
-       │                                                                 │
-       │ module application services                                     │ outbox
-       ▼                                                                 ▼
-   PostgreSQL  ──────────────────────────────────────────────►  Outbox dispatcher
-       ▲                                                                 │
-       │                                          ┌──────────────────────┴───────┐
-       │                                          ▼                              ▼
-ArcForges.Cloud.Worker                     Message broker              Realtime broadcast
-  outbox dispatch · reconciliation                │
-  indexing · notification fan-out                 ▼
-  deletion propagation · maintenance      ArcForges.Cloud.TaskRunner
-                                            isolated, ephemeral, task-scoped credentials
+                      Edge (TLS, WAF, rate limit)
+                                 |
+                      private ingress only
+                                 v
++--------------- ArcForges.Cloud.Host  --  N identical replicas ----------------+
+| REQUEST PIPELINE                                                              |
+|   forwarded headers -> request limits -> correlation -> exception normalise    |
+|   -> authentication -> authorization -> rate limiting -> endpoints -> hubs     |
+|                                                                               |
+| HOSTED SERVICES  (bounded, lease-fenced; never an unbounded loop in a handler) |
+|   outbox dispatcher | harness runner | reconciliation | indexing               |
+|   notification fan-out | deletion propagation | capacity refill | simulator    |
+|   usage reconciliation | retention and maintenance                             |
++------+----------------------------------------------------------+------------+
+       |                                                          |
+       v                                                          v
+   PostgreSQL                                              Object storage
+   - durable work queues and leases                        - simulator segments
+   - outbox                                                - blobs, export artifacts
 ```
 
 | # | Rule |
 |---|---|
-| RT-01 | **The API role is stateless.** Any state that must survive a request lives in the database, the broker or object storage. |
-| RT-02 | **The API never scales to zero and runs at least two replicas.** |
-| RT-03 | **TaskRunner work is isolated** with ephemeral storage, task-scoped credentials, time and resource limits, and network policy (`RX-06`, `RX-07` in the cloud requirements). |
-| RT-04 | **A user automation is never a platform scheduled job** (`RR-01` there). |
-| RT-05 | **Untrusted code never holds a platform identity** (`RR-05` there). |
-| RT-06 | **Roles are split into further deployment units only on demonstrated need** for independent scaling, isolation, security or ownership. |
+| RT-01 | **The host is stateless between requests.** Anything that must survive a request lives in the database or object storage. |
+| RT-02 | **The host never scales to zero and runs at least two replicas**, so a single instance is never a correctness assumption. |
+| RT-03 | **Every replica is identical and runs the same hosted services.** There is no role flag, no worker-only deployment and no leader instance chosen by configuration. |
+| RT-04 | **Concurrency across replicas is controlled by durable leases with fencing**, not by deploying exactly one instance. A hosted service claims work by lease, renews while working, and loses it cleanly on expiry (`§9`). |
+| RT-05 | **A hosted service is bounded.** It claims a batch, processes it and yields. An unbounded generation loop inside a request handler or a hosted service is prohibited (`SIM-10` of the ArcScope requirements). |
+| RT-06 | **A user automation is never a platform scheduled job** (`RR-01` in the cloud requirements). |
+| RT-07 | **Untrusted code never holds a platform identity** (`RR-05` there). |
+| RT-08 | **Splitting a hosted service into its own deployable is an architecture baseline change**, requiring demonstrated need for independent scaling, isolation, security or ownership. V1 does not require it and no design may assume it. |
+
+> **Implementation evidence, 2026-09-06.** `ArcForges/src/Cloud` at commit `ede43db` contains exactly one web executable — `ArcForges.Cloud.Host` — referencing `ArcForges.Cloud.AgentRuntime`, `ArcForges.Cloud.BackgroundJobs`, `ArcForges.Cloud.PublicApi` and `ArcForges.Cloud.Realtime` as libraries. No `Worker` or `TaskRunner` executable exists. `ArcForges.Cloud.AppHost` is an Aspire orchestration host for local development only (`EN-05`). Every cloud module is currently an `AssemblyPlaceholder.cs` scaffold with no implemented behaviour, so this topology correction is unblocked by existing code.
 
 ---
 
@@ -177,7 +179,7 @@ Sixteen modules, each owning an application and domain boundary, its schema or e
 ```
 Business transaction commits (state + outbox row, atomically)
         ↓
-Outbox dispatcher (Worker role)
+Outbox dispatcher (a hosted service in the host)
         ↓
 ├── internal reliable processing and projections
 ├── message broker for cross-module and deferred work
@@ -199,7 +201,7 @@ Outbox dispatcher (Worker role)
 
 | # | Rule |
 |---|---|
-| BG-01 | Background services run inside the Worker role, or as isolated jobs in the TaskRunner role. |
+| BG-01 | **Background services are hosted services inside `ArcForges.Cloud.Host`** (`RT-03`). There is no separate worker or task-runner deployable. |
 | BG-02 | **Critical background work persists leases, retry counts and idempotency keys.** |
 | BG-03 | **A crashed worker does not lose a task.** Task authority lives in the database; a worker is only an executor (`RV-05` in the AI requirements). |
 | BG-04 | Splitting a worker into its own deployment role is a scaling or isolation decision — still a cloud role, never a reintroduced desktop worker process. |

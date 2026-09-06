@@ -35,7 +35,9 @@ Cloud modular monolith
 │    └── Paddle adapter       the only customer-facing adapter
 ├── Commerce.EventInbox       provider event persistence, verification, dispatch
 ├── Commerce.Subscription     normalised subscription state machine
-├── Commerce.Credits          credit lots, reservation, settlement, refund hold
+├── Commerce.Credits          purchased and compensation lots, reservation, settlement, refund hold
+├── Commerce.Metering         usage normaliser, price resolver, cost calculator,
+│                            settlement, uncertain-usage reconciliation (§7)
 ├── Commerce.Ledgers          three separate ledgers (§8)
 ├── Commerce.Reconciliation   two-way comparison and repair
 └── Commerce.Evidence         commercial evidence, disputes, exports
@@ -43,9 +45,32 @@ Cloud modular monolith
 Entitlement                  ← a SEPARATE top-level module, not part of Commerce
 ├── definitions, bundles
 ├── grants, revocations       ← Commerce writes here through the grant interface
+├── service terms             ← the AI gate (§5.3); a credit balance never creates one
+├── included-capacity buckets ← refill, burst ceiling, holds (§7.2)
+├── admission                 ← one atomic decision over term + capacity + limits (§7.3)
 ├── resolver, snapshots
 └── quotas, usage counters
+
+Configuration                ← a SEPARATE top-level module (§2.2)
+├── bundle loader and schema validator
+├── activation, snapshot persistence, revision history
+└── client projection (allowlisted fields only)
 ```
+
+### 2.2 Configuration is not owned by Commerce either
+
+`DC-01`–`DC-17` of the configuration requirements make deployment configuration the production policy source. It is a **separate top-level module**, for the same reason Entitlement is: Commerce is one of its consumers, not its owner.
+
+| # | Rule |
+|---|---|
+| CG-01 | **Configuration owns the bundle, its schema, validation, activation and the persisted snapshots.** Commerce, Entitlement, the Harness and the simulator all *read* an activated revision; none of them loads or validates one. |
+| CG-02 | **A request records which validated revision it used** (`DC-12`). That recorded revision — not the current file — is what a later reproduction reads (`RP-02`, `I-494`). |
+| CG-03 | **Activation is atomic and all replicas converge on one coherent revision** (`DC-11`, `DC-12`). A replica that cannot load the activated revision **cannot admit affected work**; it does not fall back to a previous revision or a sample. |
+| CG-04 | **Runtime facts are never configuration.** Subscription state, measured tokens, usage, reservations, balances and payment facts are database records (`DC-09`). Direct SQL editing is not an alternative policy authority. |
+| CG-05 | **Only an allowlisted projection reaches a client** (`DC-14`): the user's own offer and rights, published retail rates, current capacity and balance, recovery timing and availability reasons. Supplier rates, risk thresholds, route weights and other users' state never ship to a client. |
+| CG-06 | **Secrets are not configuration** (`DC-15`). Provider keys, payment credentials and signing keys are injected by secret manager or Docker secret, never present in the policy file, the image, the logs or the public sample. |
+
+---
 
 ### 2.1 Entitlement is not owned by Commerce
 
@@ -170,6 +195,20 @@ Inputs                                     Output
 | ED-04 | **Enforcement is server-side for anything with cost.** A client-side check is a user-experience affordance, never the control (`§3` of the security architecture). |
 | ED-05 | **Loss of entitlement never deletes local user data** (`§13` of the data requirements). Access to cloud capability changes; local content does not. |
 
+### 5.3 The service term — the gate before every AI decision
+
+`C-03` makes an **active paid service term** the precondition for official inference. It is a distinct concept from both entitlement capabilities and credit balance, and it is checked first (`AD-01`).
+
+| # | Rule |
+|---|---|
+| SV-01 | **A service term is an interval, not a flag.** `service_term` rows record kind (`subscription` | `pass` | `compensation` | `selfHostGrant`), start, end, source order or grant reference, and realm. The effective term is the union of overlapping intervals. |
+| SV-02 | **Only four things create one** (`§8.7` there): a verified subscription, a prepaid Cloud Pass (**D-023**), an audited compensation extension of an existing paid service, or — in a self-hosted realm only — an explicit operator-funded `ServiceGrant`. |
+| SV-03 | **A credit grant, trial flag or operator edit cannot create one** (`§8.7` there). This is the rule that makes "credits alone do not authorise AI" enforceable rather than aspirational. |
+| SV-04 | **A self-host `ServiceGrant` authorises only its own realm** (`BY-04`, `DC-16`). It confers no official-service entitlement, and no realm's grant is visible to another (`I-497` family; realm isolation in `§3`). |
+| SV-05 | **Renewal grace protects data access, not AI.** During grace, retained data is readable and downloadable; **no new official inference is admitted** (`C-07`). The two windows are configured and evaluated separately. |
+| SV-06 | **Term expiry during a running Task stops further dispatch at a durable boundary** with the explicit eligibility reason. Work already settled stays settled; holds are released per `§7.6`. |
+| SV-07 | **Self-host billing may be disabled entirely** (`§8.7` there, `DC-16`). Identity, authorisation, real usage measurement, budget limits and accounting correctness remain enforced; only customer payment is absent. |
+
 ---
 
 ## 6. Quota and usage
@@ -186,41 +225,159 @@ Inputs                                     Output
 
 ---
 
-## 7. Credit architecture
+## 7. Capacity, credits and the metering path
 
-### 7.1 Lots
+**P2-006 replaces the reissued-allowance model with a replenishing capacity bucket plus opt-in purchased credits.** Everything in this section derives from `§8.4`–`§8.7` of the commerce requirements (`MT-01`–`MT-16`, `AC-01`–`AC-12`) and remains bound by **D-020** as amended.
 
-| # | Rule |
-|---|---|
-| CD-01 | **A balance is never a single number** (`CR-01` there). It is the sum over credit lots, each with source, reference, original amount, remaining amount, creation time, expiry and refund status. |
-| CD-02 | **Three lot classes with different rules** (`CR-03` there): subscription allowance (reissued per period, no rollover, voided at period end), purchased credits (accumulate, expire, no cash value, not withdrawable, not transferable), and promotional or compensation credits (independent expiry, non-refundable). |
-| CD-03 | **Consumption order is earliest-expiry-first within the specified class priority** (`CR-04` there), so user-visible loss is minimised. |
-| CD-04 | **Purchased credits survive subscription end** (`CR-05` there). |
-| CD-05 | **An annual subscription issues its allowance monthly on the anniversary** (`CR-06` there), never as twelve periods at once. |
-| CD-06 | **Allowance and purchased credits are presented separately** (`§8.3` there), never summed, because they expire differently. |
+### 7.1 The four separate quantities
 
-### 7.2 Reserve, settle, release
+Conflating any two of these is the defect class this section exists to prevent (`I-493`).
 
-```
-Run requested
-  → estimate cost from the locked tariff snapshot
-  → RESERVE against available lots      (Available ↓, Reserved ↑)
-  → execute
-  → SETTLE actual                        (Reserved ↓, Consumed ↑)
-  → RELEASE the unused reservation       (Reserved ↓, Available ↑)
-```
+| Quantity | Unit | Lives in | Recovers? |
+|---|---|---|---|
+| **Included capacity** | Integer micro-credits | `entitlement.capacity_bucket`, one row per workspace | **Yes** — continuously, during eligible paid service, up to a burst ceiling |
+| **Purchased credits** | Integer micro-credits | `commerce.credit_lot` rows | **No** — conserved; spendable only while a paid term is active |
+| **Supplier cost** | Fixed-precision decimal money with currency, ≥ 9 fractional digits | `commerce.supplier_cost_entry` | n/a — an obligation ArcForges owes a provider |
+| **Payment revenue** | Sale currency and amount | `commerce.ledger_entry` (payment ledger) | n/a |
 
 | # | Rule |
 |---|---|
-| CS-01 | **Reservation happens before execution and settlement after it** (`CR-20` there). Three quantities exist: available, reserved, consumed. |
-| CS-02 | **Reservation is what prevents overdraft under concurrency** (`CR-21` there). Concurrent runs must not each pass a balance check against the same unreserved balance. |
-| CS-03 | **Reservation and settlement are atomic against the lot set**, using a single transactional boundary with explicit conflict handling. |
-| CS-04 | **A reservation has an expiry.** An orphaned reservation from a crashed run is released by a sweeper, and the sweep is observable. |
-| CS-05 | **Settlement is idempotent per attempt.** A retried settlement for the same attempt does not double-debit (`§4` of the agent runtime architecture). |
-| CS-06 | **Negative balances are impossible** (`CR-23` there). Exhaustion is a hard stop with a clear prompt to purchase or switch to BYOK; post-paid overdraft is not offered. |
-| CS-07 | **A refund request places the affected lot into a refund hold** (`CR-24` there), freezing the amount under adjudication so it cannot be spent. |
-| CS-08 | **Every run carries a tariff snapshot** (`CR-09` there), so a historical charge is explainable against the rates in force at the time. |
-| CS-09 | **A provider price change never retroactively alters a settled charge** (**D-020**). |
+| CD-01 | **One credit = 1,000,000 micro-credits, and every customer amount is an integer count of micro-credits** (`MT-07`). No binary floating point appears in any accounting path. |
+| CD-02 | **Included capacity is a bucket, not a lot.** It has a burst ceiling and a recovery rate, both deployment parameters (`AC-01`), and it is never modelled as a credit lot with an expiry. |
+| CD-03 | **Purchased credits are lots and are conserved** (`AC-11`). They do not expire with time or cancellation (`CR-03`), survive service expiry, and become spendable again on renewal without reissue (`CR-05`). |
+| CD-04 | **Compensation lots are lots with a disclosed expiry** (`CR-03`), consumed earliest-expiry-first. |
+| CD-05 | **Consumption order is fixed**: included capacity, then eligible compensation, then purchased credits — and purchased credits only under an explicit extra-usage authorisation (`CR-04`, `AC-06`). |
+| CD-06 | **A reservation preserves its source allocation.** Settlement debits and releases against the same sources it reserved from; there is no silent conversion between pools (`CR-04`, `AC-11`). |
+| CD-07 | **Capacity and purchased credits are presented separately, never summed** (`§8.3` there), because one recovers and the other does not. |
+
+### 7.2 The refill algorithm
+
+This is the part most likely to be got wrong, so it is specified rather than described. It runs on read, under the bucket row's own lock.
+
+```
+refill(bucket, now):
+    eligible = overlap(bucket.watermark .. now, workspace's eligible paid intervals)
+    if eligible <= 0:                          # lapsed, or clock went backwards
+        bucket.watermark = max(bucket.watermark, now)   # monotonic, never backwards
+        return                                          # AC-02, AC-12
+
+    earned_exact  = eligible * rate_per_second + bucket.remainder_micro
+    earned_whole  = floor(earned_exact)
+    bucket.remainder_micro = earned_exact - earned_whole   # fractional carry, AC-12
+
+    ceiling = max(0, bucket.burst - bucket.held)           # AC-11
+    bucket.available = min(bucket.available + earned_whole, ceiling)
+    bucket.watermark = now
+```
+
+| # | Rule |
+|---|---|
+| RF-01 | **Recovery accrues only over the overlap with eligible paid intervals** (`AC-02`). A lapse contributes zero; capacity does not accumulate during a gap (`AC-03`). |
+| RF-02 | **The watermark advances monotonically and is durable** (`AC-12`). Reconnect, process restart, another device, another replica or a clock rollback cannot rewind it or refill the bucket. |
+| RF-03 | **The fractional remainder is preserved across evaluations** (`AC-12`). Without it, frequent small requests would round the recovery rate down and slow requests would round it up — either way the contractual rate would not be delivered. |
+| RF-04 | **The ceiling counts held capacity** (`AC-11`): `available ≤ max(0, burst − held)`. This is what stops a large outstanding hold from coexisting with a full bucket and effectively doubling the burst. |
+| RF-05 | **Returned capacity is capped by the same ceiling.** Releasing a hold or issuing a refund must never mint spendable capacity above the burst (`AC-11`). |
+| RF-06 | **Purchased credits never refill** (`AC-11`). They have their own conservation ledger, and no code path adds to a purchased lot except a purchase, a compensation grant or an explicit adjustment. |
+| RF-07 | **First paid activation initialises the bucket once under an idempotent grant** keyed by the service term (`AC-03`). Contiguous renewal extends the eligible interval and does **not** refill to full. |
+| RF-08 | **A configuration change applies at a recorded boundary** without resetting the watermark, releasing holds or reissuing capacity (`AC-12`, `DC-13`). |
+
+### 7.3 Admission
+
+Admission is one atomic decision, not a sequence of independent checks (`AC-04`).
+
+```
+admit(request):
+    verify active paid service term                     # C-03, §8.7 — fails first, cheapest
+    resolve customer tariff snapshot (pin to Run)       # MT-06
+    resolve supplier price version (dispatch-time)      # MT-06
+    bound = conservative ceiling over input, output/reasoning, and
+            separately billed tools, from the actual route            # MT-15
+    if bound is unpriceable or unbounded:  reject                     # MT-15, DC-05
+    ATOMIC:
+        refill(bucket, now)                                           # §7.2
+        check workspace concurrency, per-request and per-run ceilings  # AC-04
+        check provider budget                                          # AC-04
+        reserve bound from  capacity -> compensation -> purchased      # CD-05
+    if insufficient:  WaitingForCapacity(recovery_time) | ExtraCreditsRequired | Reject
+```
+
+| # | Rule |
+|---|---|
+| AD-01 | **The service-term check precedes everything.** No credit balance, trial flag, operator edit or self-host setting substitutes for it (`§8.7`, `C-03`). |
+| AD-02 | **Admission reserves atomically.** Concurrent runs on one workspace, across devices and replicas, cannot each pass a check against the same unreserved balance (`CR-21`, `AC-04`). |
+| AD-03 | **A request whose bound can never fit capacity plus authorised extra credits is rejected immediately** with a smaller-request or budget action — never queued forever (`AC-04`). |
+| AD-04 | **An unbounded or unpriceable route cannot enter paid service** (`MT-15`, `DC-05`). There is no assumed zero-rate category and no wildcard model entry. |
+| AD-05 | **Exhausted capacity waits for a server-calculated recovery time** (`AC-06`). Purchased credits are used only after the user enables extra usage with a maximum budget; there is no automatic purchase, recharge or paid fallback. |
+| AD-06 | **Background automation spends only within its previously authorised budget** (`AC-06`). |
+| AD-07 | **Rate limits, safety limits and provider availability remain enforceable even with extra credits** (`AC-09`). |
+| AD-08 | **All entry points share one workspace pool** (`AC-07`). Desktop, Web, Mobile and automation consume the same capacity and credits; changing model changes consumption through the tariff, never by granting a new allowance. |
+
+### 7.4 Usage normalisation
+
+Provider usage shapes differ, so a normaliser turns each provider's report into **non-overlapping** ArcForges billing categories (`MT-03`).
+
+| Category | Meaning |
+|---|---|
+| `input.uncached` | Input tokens billed at the full input rate |
+| `input.cached_read` | Input tokens served from a provider cache |
+| `input.cache_write` | Cache-creation tokens, per supported class |
+| `output` | Output tokens, **inclusive of reasoning where the provider bills them together** |
+| `output.reasoning` | Only where a provider bills reasoning as a separately priced category |
+| `tool.<kind>` | Separately billed search, tool or media operations, with explicit quantity, unit and rate (`MT-10`) |
+
+| # | Rule |
+|---|---|
+| UN-01 | **Each provider adapter declares its inclusion relationships**, and the normaliser asserts them (`MT-03`). Reasoning already inside `output`, and cached tokens already inside a reported input total, must not be charged twice. |
+| UN-02 | **A category the adapter does not declare cannot be billed.** An unrecognised usage field enters reconciliation, never an automatic debit (`MT-05`). |
+| UN-03 | **Streaming cumulative usage replaces the previous total for that attempt** (`MT-05`, `I-492`). It is never summed as independent consumption. |
+| UN-04 | **Pre-call counting is an estimate for admission only** (`MT-05`, `I-492`). Local text-length estimates and client-reported counters are never final cost authority. |
+| UN-05 | **Quantities are validated** — non-negative, matching request and model identity, matching the declared category semantics. A mismatch enters reconciliation (`MT-05`). |
+| UN-06 | **Tier resolution uses actual request facts** (`MT-04`): context, processing and region tier come from what the request really was, not from a per-model flat rate. Each applied modifier is recorded exactly once. |
+
+### 7.5 Settlement
+
+```
+cost      = Σ over categories:  quantity × configured_rate ÷ unit_divisor      # MT-04
+supplier  = cost at the dispatch-time supplier price version, as decimal money  # MT-06, MT-07
+customer  = cost at the Run's pinned retail tariff snapshot, as micro-credits   # MT-06, MT-07
+```
+
+| # | Rule |
+|---|---|
+| ST-01 | **Settlement happens once per logical request**, after category aggregation, with declared half-even rounding — never per stream fragment (`MT-07`). |
+| ST-02 | **Reservation rounds conservatively upward; settlement rounds the aggregate** (`MT-07`). |
+| ST-03 | **Settlement is idempotent per attempt usage revision and per logical request** (`MT-11`). Duplicate or reordered events never double-debit; genuinely distinct retries remain distinct supplier-cost records. |
+| ST-04 | **A correction is an appended adjustment linked to the original records**, never an edit (`MT-11`, `CR-10`, **D-020**). |
+| ST-05 | **Settlement debits the sources the reservation held** and releases only their unused allocation (`CD-06`, `AC-11`). |
+| ST-06 | **Supplier cost is retained even when the customer is not charged** (`MT-09`). A platform failure releases the customer hold or appends a compensating adjustment; the money ArcForges owes upstream does not disappear. |
+| ST-07 | **Beneficiary classification decides who pays** (`MT-08`). Delivered user-requested inference consumes capacity or authorised credits. Routing, abuse checks, health checks, admitted background indexing and platform-caused retries are **platform cost** — recorded, budgeted, and not charged to the user. |
+| ST-08 | **Money always carries currency** (`MT-16`). V1 supplier budgets compare within one currency; there is no implicit FX conversion. Customer credits are currency-independent service units. |
+
+### 7.6 Uncertain and missing usage
+
+| Situation | State | Behaviour |
+|---|---|---|
+| Final usage never arrives | `UsagePending` | Reconcile from available provider evidence; **never zero cost, never a fabricated total** (`MT-12`) |
+| Timeout after dispatch | `CostUnconfirmed` | Same. **No blind redispatch** and no repeat charge (`MT-12`) |
+| Response lost in transit | `CostUnconfirmed` | Same |
+| Reconciliation deadline passes unresolved | Resolved-by-policy | **Release the customer hold** with no surprise later debit; **retain the unresolved supplier liability**; alert and restrict the affected route (`MT-12`) |
+| Verified supplier overrun beyond the authorised hold | Operator cost incident | **Not customer overdraft.** Block further dispatch on that route, reconcile, adjust — without erasing the real supplier usage (`MT-15`) |
+| Caller cancels | Partial | Settle verified consumption already incurred within the authorised ceiling; release the remainder. Completed provider work is not presumed refundable (`MT-09`) |
+
+| # | Rule |
+|---|---|
+| UC-01 | **`unknown` is never silently resolved to zero.** A missing usage report is a state with a deadline, not an absence of cost (`MT-12`). |
+| UC-02 | **The customer-protection deadline and the supplier-liability record are independent.** Releasing one does not clear the other (`MT-12`). |
+| UC-03 | **Estimated, usage-confirmed and invoice-reconciled cost remain three distinguishable values** for the same request (`MT-13`). |
+
+### 7.7 Reproducibility
+
+| # | Rule |
+|---|---|
+| RP-01 | **Every metering record carries the full identity chain** (`MT-14`): workspace, service term, logical request, run, attempt, reservation, usage revision, supplier price version, customer tariff snapshot, funding source, debit and any adjustment. |
+| RP-02 | **A historical charge is reproducible after model retirement or configuration replacement** (`MT-14`). Snapshots are persisted facts, not lookups into current configuration (`I-494`). |
+| RP-03 | **Replacing configuration never resets usage, replenishes an issued allowance, reissues purchased credits or releases unresolved reservations** (`DC-13`). |
+| RP-04 | **The worked fixture of `§8.6` is an executable acceptance test**, not documentation: 800 uncached + 200 cached input + 100 output settles to USD 0.00244 supplier cost and 4,880,000 micro-credits customer cost, with a 6-credit hold releasing 1.12 credits to its original sources.
 
 ---
 
@@ -300,15 +457,23 @@ Run requested
 | CT-01 | **Idempotency suite**: duplicate webhook delivery, duplicate checkout submission, retried settlement, replayed inbox — each converges to one outcome. |
 | CT-02 | **Out-of-order event suite**: renewal before payment, cancellation before renewal, refund before settlement — each produces the specified state. |
 | CT-03 | **Resolver equivalence**: rebuilding a snapshot from grants and revocations equals the stored snapshot for every fixture account (`EN-02`). |
-| CT-04 | **Concurrency suite**: parallel runs against one balance never overdraw (`CS-02`), and reservation expiry releases correctly. |
+| CT-04 | **Concurrency suite**: parallel runs against one workspace never overdraw (`AD-02`), reservation races across devices and replicas resolve to one outcome, and reservation expiry releases correctly. |
 | CT-05 | **Precision suite**: no floating-point path exists in money or credit arithmetic (`BC-06`), asserted as a repository policy test. |
-| CT-06 | **Lot-ordering suite**: consumption order, expiry, allowance void and refund hold behave as specified for every lot-class combination. |
+| CT-06 | **Funding-order suite**: capacity → compensation → authorised purchased credits, earliest-expiry within compensation, oldest-acquisition within purchased, and refund hold, for every combination (`CD-05`). |
+| CT-13 | **Refill suite**: recovery accrues only over eligible paid intervals; a lapse contributes zero; the watermark never moves backwards under clock rollback, restart, reconnect or a racing replica; the fractional remainder is preserved so that many small evaluations deliver the same total as one large one; and `available ≤ max(0, burst − held)` holds after every operation including a refund (`RF-01`–`RF-06`). |
+| CT-14 | **Normalisation suite**: two providers whose cache and reasoning fields overlap differently both settle correctly; cumulative stream snapshots replace rather than sum; a duplicate usage event does not double-debit; an undeclared usage field enters reconciliation rather than a debit (`UN-01`–`UN-06`, `MT-03`, `MT-05`). |
+| CT-15 | **Worked-fixture suite**: the `§8.6` arithmetic is asserted exactly — USD 0.00244 supplier cost, 4,880,000 micro-credits customer cost, 1.12 credits released to the original sources (`RP-04`). |
+| CT-16 | **Uncertain-usage suite**: missing final usage, post-dispatch timeout and a lost response each produce `UsagePending`/`CostUnconfirmed`, never zero and never a fabricated total; the deadline releases the customer hold while retaining the supplier liability (`UC-01`, `UC-02`, `MT-12`). |
+| CT-17 | **Beneficiary suite**: a platform-caused retry is charged once to the customer and fully visible in supplier cost; routing, abuse and health calls are platform cost (`ST-07`, `MT-08`). |
+| CT-18 | **Service-term suite**: official inference is refused with a full credit balance and no active term; a paid term expiring mid-Task stops further dispatch at a durable boundary; renewal re-enables retained credits without reissue (`AD-01`, `CR-05`, `§8.7`). |
+| CT-19 | **Configuration suite**: two example policies with different rates, prices, recovery rates and grants change future decisions and leave historical charges identical; replacement during concurrent requests produces no mixed-version evaluation, quota reset or duplicate grant; all replicas restart preserving balances, holds and refill state (`§10.6` of the configuration requirements). |
+| CT-20 | **Real-provider suite**: one real provider usage response and one real payment-provider event are reconciled through the same code as the fixtures. Deterministic fixtures supplement this evidence; they do not replace it (`MT-01`, `§10.6` there). |
 | CT-07 | **Reconciliation suite**: a dropped webhook, a duplicated order and a provider-side change are each detected and repaired without editing history. |
 | CT-08 | **Immutability suite**: any attempt to update or delete a grant, revocation, payment or ledger entry fails. |
 | CT-09 | **Boundary suite**: no provider type or identifier format appears outside the provider adapter (`BC-07`), asserted as an architecture test. |
 | CT-10 | **Mobile prohibition suite**: the commerce checks of `MO-02` fail the build if any purchase or unlock path is introduced. |
 | CT-11 | **Evidence suite**: a dispute export for a fixture account is complete, reproducible and free of payment instrument data. |
-| CT-12 | **Go-live gate**: purchase, renewal, cancellation, refund, dispute, reconciliation, credit lifecycle and entitlement distribution are all demonstrated end to end against the provider's test environment before the paid product opens (`§18` there). |
+| CT-12 | **Go-live gate**: purchase, renewal, cancellation, refund, dispute, reconciliation, capacity recovery, extra-credit opt-in and entitlement distribution are all demonstrated end to end against the provider's test environment before the paid product opens (`§18` there). |
 
 ---
 

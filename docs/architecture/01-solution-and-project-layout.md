@@ -64,9 +64,10 @@ ArcForges/
 │  ├─ ArcSlate/          Domain · Application · Infrastructure · Media · LocalRpc · CloudClient · Desktop · Tests
 │  │
 │  ├─ Cloud/
-│  │  ├─ ArcForges.Cloud.Host/                   API role
-│  │  ├─ ArcForges.Cloud.Worker/                 background role
-│  │  ├─ ArcForges.Cloud.TaskRunner/             isolated job role
+│  │  ├─ ArcForges.Cloud.Host/                   the single deployable host (§2 of the cloud architecture)
+│  │  ├─ ArcForges.Cloud.AgentRuntime/           the single Harness — a library
+│  │  ├─ ArcForges.Cloud.BackgroundJobs/         hosted services — a library
+│  │  ├─ ArcForges.Cloud.AppHost/                Aspire local-development orchestration only
 │  │  ├─ ArcForges.Cloud.PublicApi/              endpoint mapping
 │  │  ├─ ArcForges.Cloud.Realtime/               hubs
 │  │  ├─ ArcForges.Cloud.Persistence/

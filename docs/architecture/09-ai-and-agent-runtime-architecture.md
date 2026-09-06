@@ -5,34 +5,41 @@
 > Governing authority: **D-008** (agent framework only on AOT-validated surfaces), **D-010** (remote execution), **D-020** (economic model), **V-02** (MCP)
 > Companions: [`../requirements/05-ai-and-agent-execution.md`](../requirements/05-ai-and-agent-execution.md), [`02-contracts-and-protocols.md`](02-contracts-and-protocols.md), [`16-billing-and-commerce-architecture.md`](16-billing-and-commerce-architecture.md)
 
-One execution engine, three placements, one metering path.
+One Cloud Harness, one Task model, one metering path. Tool locality varies; the model loop never leaves Cloud (**P2-006**, `I-491`).
 
 ---
 
 ## 1. Component map
 
+**Every model call, the single Harness and all durable agent orchestration are Cloud** (**P2-006**). The desktop contributes UI, authorised local tool execution and product-local jobs. There is no second agent runtime anywhere.
+
 ```
-┌──────────────── ArcChat Desktop ────────────────┐   ┌──── ArcForges Cloud ────┐
-│ Agent Runtime                                    │   │ Cloud Task Engine       │
-│  ├── Planner                                     │   │  ├── same Task model    │
-│  ├── Executor            ── one Task engine ──   │───│  ├── isolated runner    │
-│  ├── Capability Registry                         │   │  └── ToolRequest issuer │
-│  ├── Context Assembler                           │   │                         │
-│  ├── Budget Manager                              │   │ AI Control Plane        │
-│  ├── Approval Coordinator                        │   │  ├── routing policy     │
-│  └── Trace Recorder                              │   │  ├── tariff resolution  │
-│                                                  │   │  ├── credit ledger      │
-│ Local AI Adapter · Local BYOK Adapter            │   │  └── usage + cost records│
-│ Cloud AI Client ─────────────────────────────────│───│ Provider Adapters       │
-└──────────────────────────────────────────────────┘   └─────────────────────────┘
++----------- ArcChat / product desktop -----------+   +------- ArcForges Cloud Host -------+
+| Presentation and command surfaces               |   | THE HARNESS  (single, Cloud-only)  |
+|  - conversation, task and approval UI           |   |  - turn loop and tool protocol     |
+|  - product AI entry points (selection-scoped)   |   |  - context assembly                |
+|                                                 |   |  - capability selection            |
+| Local tool executor                             |   |  - approval interleaving           |
+|  - pulls authorised ToolRequests                |<--|  - ToolRequest issuer              |
+|  - re-authorises locally, executes, returns     |-->|  - trace recorder                  |
+|                                                 |   |                                    |
+| Product job runner  (NOT an agent runtime)      |   | AI control plane                   |
+|  - render, capture, index, export               |   |  - routing and tariff resolution   |
+|  - owns its own progress and recovery           |   |  - admission, capacity, credits    |
++-------------------------------------------------+   |  - usage and supplier cost records |
+                                                       |  - provider adapters (operator-    |
+                                                       |    funded credentials only)        |
+                                                       +------------------------------------+
 ```
 
 | # | Rule |
 |---|---|
-| CM-01 | **There is one Task model, not three** (`OW-04` in the AI requirements). Local, cloud and hybrid are placement policies over the same semantics. |
-| CM-02 | **The agent runtime lives in ArcChat**, and holds no permission beyond its delegator (`SP-02` in the security requirements). |
+| CM-01 | **There is one Task model and one Harness, both Cloud-owned** (**P2-006**). Tool *locality* varies; the model loop does not (`I-491`). |
+| CM-02 | **No desktop, mobile or browser client runs a model loop, holds provider credentials or plans agent work.** A client proposes intent and executes authorised tools. |
 | CM-03 | **The credit ledger is always cloud-side and always ArcForges-owned** (`RT-04` in the AI requirements). A gateway's dashboard is never the business ledger. |
-| CM-04 | **Local AI and local BYOK require no cloud component at all** (`AI-04` there). |
+| CM-04 | **A Cloud Agent Task and a native Product Job are different things** (`I-121`, `I-485`). A render, a capture, an index rebuild and an export are product jobs: they invoke no model, consume no AI capacity, and are owned and recovered by the product that runs them. |
+| CM-05 | **Product AI entry points call the Cloud AI surface directly** with minimal authorised context (`§4.5` of the product scope). They do not require ArcChat Desktop and do not constitute a second orchestrator. |
+| CM-06 | **Official inference requires an active paid service term** (`C-03`, `§8.7` of the commerce requirements). No local mode, desktop setting, credit balance or self-host flag can authorise it.
 
 ---
 
@@ -146,28 +153,31 @@ Explicit attachments  ·  pinned context  ·  project context  ·  temporary con
 
 ## 6. Provider routing
 
+Providers are reached with **deployment-operator credentials only**. End-user BYOK does not exist in any form (`BY-01`–`BY-04` of the commerce requirements, `I-015` retired).
+
 ```
-Logical AI Request
-   → resolve source (Local AI | Local BYOK | Cloud BYOK | Managed)
-   → resolve model (explicit pin honoured; Auto routes within its cost class)
-   → resolve tariff version and lock it for the run
-   → resolve provider route (direct primary; aggregator for long tail and fallback)
-   → gateway (analytics, caching, rate limiting, spend guard)
-   → Provider Attempt 1 … N
-   → usage record + upstream cost record + credit debit
+Logical AI Request  (Cloud, authorised, service term verified)
+   -> resolve model (explicit pin honoured; Auto routes within its cost class)
+   -> resolve supplier price version applicable at dispatch
+   -> resolve customer retail tariff snapshot and pin it to the Run/request
+   -> admission: capacity + credits + concurrency + provider budget, reserved atomically
+   -> resolve provider route (direct primary; aggregator for long tail and fallback)
+   -> Provider Attempt 1 ... N
+   -> usage normalisation -> supplier cost record + customer settlement + ledger entries
 ```
 
 | # | Rule |
 |---|---|
-| PR-01 | **Source, provider and model are three separate axes** (`I-115`, `I-116`). |
+| PR-01 | **Provider and model are separate axes** (`I-116`). The source axis is gone: there is exactly one source, the operator-funded Cloud provider set. |
 | PR-02 | **An explicitly pinned model is never substituted** (`RT-08` in the AI requirements). The provider route may change; the model may not. |
 | PR-03 | **Auto routing is bounded by cost class, policy and task budget** (`RT-06`, `BG-08` there). |
 | PR-04 | **Fallback stays within the tariff class or asks before escalating price** (`RT-07` there). |
-| PR-05 | **BYOK and managed never silently substitute for each other** (`AI-02`, `AI-03` there). |
+| PR-05 | **Supplier price and customer tariff are resolved separately and never derived from one another** (`MT-06`). The supplier version applies at dispatch; the customer snapshot pins to the Run. |
 | PR-06 | **A gateway is infrastructure, never a domain concept** (`RT-01` there), and never a single point of failure — a direct-provider bypass exists (`§7` of the cloud product requirements). |
-| PR-07 | **`Logical AI Request ≠ Provider Attempt ≠ Step Attempt`** (`LG-03` there). |
+| PR-07 | **`Logical AI Request ≠ Provider Attempt ≠ Step Attempt`** (`LG-03` there, `MT-02`). |
 | PR-08 | **Model availability is policy, not health** (`I-361`), and a task snapshots its model policy decision (`PA-07` in the policy requirements). |
 | PR-09 | **An emergency model suspension may interrupt future invocations inside a running run** — the single documented exception to snapshot immutability (`PA-08` there). |
+| PR-10 | **A route with no configured price for a billable category cannot be dispatched** (`DC-05`, `MT-15`). There is no assumed zero rate and no silent default.
 
 ---
 
@@ -209,22 +219,24 @@ Task start
 
 ---
 
-## 9. Placement and remote execution
+## 9. Tool locality and remote execution
 
-| Placement | Root owner | Execution |
+Placement no longer describes where the model loop runs — it always runs in Cloud (`I-491`). It describes **where an individual tool executes**.
+
+| Tool locality | Executed by | Reached how |
 |---|---|---|
-| **Local** | ArcChat Desktop | On this machine |
-| **Cloud** | Cloud Task module | In an isolated cloud runner |
-| **Hybrid** | Whichever created the root | Steps and child tasks distributed |
+| **Cloud tool** | The Cloud host itself | In-process, inside the Harness turn |
+| **Device tool** | An authorised desktop, through ArcChat Desktop's local tool executor | Durable `ToolRequest` pulled by the device (**D-010**) |
 
 | # | Rule |
 |---|---|
-| PL-01 | **`Auto` placement is constrained by data availability, capability availability, permission, cost, privacy, workspace policy and user preference** (`OW-07` there). |
-| PL-02 | **`Auto` never uploads local-only data to enable cloud execution** (`OW-08` there). |
-| PL-03 | **A desktop-targeted task with the device offline enters `WaitingForDevice`** (`RX-02` in the cloud requirements). |
-| PL-04 | **Remote execution is a durable `ToolRequest` pulled by the desktop, re-authorised locally, answered with an idempotent `ToolResult`** (**D-010**, `§10` of the cloud architecture). |
-| PL-05 | **A cloud runner is isolated with ephemeral storage and task-scoped credentials** (`RX-07` there), and **is not a general-purpose compute host** (`RX-06` there). |
-| PL-06 | **Fallback placement is explicit**, and a cloud failure never silently performs external side effects on a desktop (`OW-09` in the AI requirements). |
+| PL-01 | **Every Task is Cloud-owned.** There is no local, hybrid or auto *task placement*; the only variable is each tool's locality. |
+| PL-02 | **A tool declares its locality**, and a tool that requires the device is never silently substituted by a cloud approximation. |
+| PL-03 | **A device tool with no eligible online device enters `WaitingForDevice`** with a stated reason and a bounded wait (`RX-02` in the cloud requirements). Waiting consumes no model capacity (`AC-05`). |
+| PL-04 | **Remote execution is a durable `ToolRequest` pulled by the desktop, re-authorised locally, answered with an idempotent `ToolResult`** (**D-010**, `§10` of the cloud architecture). Cloud never connects to a device. |
+| PL-05 | **A device tool never uploads local-only data merely to make a cloud alternative possible** (`OW-08` in the AI requirements). If the data cannot leave, the tool runs on the device or the step fails with a reason. |
+| PL-06 | **A cloud failure never silently performs an external side effect on a desktop** (`OW-09` there), and the reverse is equally prohibited. |
+| PL-07 | **A native Product Job is not a tool locality.** A render, capture or export started by the user is owned and recovered by its product (`CM-04`); the Harness may *observe* one through a status tool, never adopt it as a Step.
 
 ---
 
