@@ -89,7 +89,7 @@ Mark          := bold | italic | strikethrough | underline | code
 | A markup string anywhere in the model | `EC-02`; a markup string makes `BlockId` stability and structured operations impossible |
 | Arbitrary attributes on a block or run | An open bag defeats validation, migration and the closed value model (`L2-02` of the extension architecture) |
 | Per-block revisions | The document is the aggregate; the document's revision governs (`RV-03` of the data-model overview) |
-| Presentation state in content | Collapse, scroll, zoom and viewport are device-local (`WP-27.01`) |
+| Presentation state in content | Collapse, scroll and viewport are device-local; they are view state, never a synchronised revision (`SL-03`) |
 | Backlinks in content | The index is derived; writing them into content would make a read into a write (`WP-18.02`) |
 
 ---
@@ -345,7 +345,7 @@ document → block sequence (in ordinal order, hierarchy flattened with depth)
 
 | # | Rule |
 |---|---|
-| EM-01 | **An embed is a reference, never a copy** (`I-224`, `WP-27.00`). Editing the source updates every embed. |
+| EM-01 | **An embed is a reference, never a copy** (`I-224`, `WP-18.02`). Editing the source updates every embed. |
 | EM-02 | **An embed renders at a bounded depth.** A cycle is detected and the inner occurrence renders as a link with a stated reason, never as infinite recursion. |
 | EM-03 | **An embed re-checks permission at render**, so an embed of content the reader may not see resolves to an unavailable placeholder rather than leaking it. |
 | EM-04 | **A broken reference is an explicit state** (`state = broken` in `document_link`), never a silent blank. |

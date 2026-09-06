@@ -395,7 +395,7 @@ An index exists because a named query path needs it. The per-entity documents li
 | DV-05 | Reference counting never orphans and never premature-deletes, including across a crash | `WP-07.04` |
 | DV-06 | A cross-workspace read fails at the data layer with a forged scope | `WP-21.06` |
 | DV-07 | Every eventual relationship's divergence signal fires on an induced fault, and its repair converges | `WP-46.04` |
-| DV-08 | The full migration chain preserves semantics from the earliest supported version | `WP-29.04`, `WP-21.03` |
+| DV-08 | The full migration chain preserves semantics from the earliest supported version | `WP-18.06`, `WP-21.03` |
 
 ---
 

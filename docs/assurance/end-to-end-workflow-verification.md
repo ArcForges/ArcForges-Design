@@ -2,12 +2,12 @@
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Assurance
-> Produced: 2026-09-06, **recomputed against the P2-006 requirements revision**. The five workflows of the previous baseline are superseded; three of them changed materially under the revised scope.
+> Produced: 2026-09-06; **rechecked 2026-09-07 against the defect-repair pass**, which changed mechanisms several of these traces relied on. The five workflows of the previous baseline are superseded; three of them changed materially under the revised scope.
 > Method: each step is resolved against a named operation, schema, rule or gate. **A step that cannot be resolved is a finding**, not a narrative gap.
 
 A specification set can satisfy every internal check and still be unimplementable, because implementability is a property of whole workflows rather than of individual documents. These eight traces cross the most boundaries in the system, and each is followed to a **terminal state on both the success and the failure path**.
 
-**Result: eight workflows traced, 0 unresolved steps, 7 findings — all closed within this pass.**
+**Result: eight workflows traced. 7 findings closed in the P2-006 pass; a further 13 supplied findings and 3 independently discovered defects closed on 2026-09-07 (`§12`).**
 
 ---
 
@@ -31,15 +31,15 @@ A step resolving to a requirement alone is **not** sufficient — a requirement 
 |---|---|---|---|
 | A-01 | Purchase intent, provider checkout, webhook persisted before processing | `purchase.createIntent`; `EI-01`; `commerce.provider_event` | Signature invalid → quarantined, never processed (`PE-05`) |
 | A-02 | Order and payment written | `commerce.order`, `commerce.payment` | Unmatched payment → quarantined, **never granted** (`PE-09`) |
-| A-03 | **A service term is created** — the only four sources are a subscription, a Pass, an audited compensation or a self-host grant | `entitlement.service_term`; `SV-02`; `UQ (kind, source_ref)` | Replayed event → **extends nothing twice**, by unique constraint |
-| A-04 | Capacity bucket initialised **once**, idempotently | `entitlement.capacity_bucket.initialised_from`; `RF-07` | Duplicate activation → no second initialisation |
+| A-03 | **A service term is created** — the only four sources are a subscription, a Pass, an audited compensation or a self-host grant | `entitlement.service_term`; `SV-02`; `UQ (kind, period_ref)` | Replayed event → **creates nothing**; a genuine renewal carries a new `period_ref` and is a new row (`TM-02`) |
+| A-04 | Capacity bucket initialised **once per contiguous run**, idempotently | `capacity_bucket.activation_term_id`; `RF-07`, `TM-03` | Contiguous renewal → no re-initialisation, no refill to full |
 | A-05 | Client hinted, then re-reads authoritatively | `serviceTerm.changed` → `entitlement.getServiceTerm`; `entitlement.getCapacity` | Event lost → converges on next read (`RE-07`) |
 | A-06 | User starts a turn | `StartAgentTurnAsync` → Cloud (`CH-01`) | No term → `entitlement.no_service_term` **before any provider call** (`CH-03`, `AD-01`) |
-| A-07 | **Admission**: refill, then atomically reserve capacity and check ceilings and provider budget | `§7.3` of the commerce architecture; `entitlement.capacity_reservation` | Insufficient → `capacity_exhausted` with `recoveryAt`, or `extra_credits_required` (`AI-02`, `AI-03`) |
+| A-07 | **Admission**: refill across policy boundaries, then reserve atomically **in one shared unit of work spanning Entitlement and Commerce**, committing before dispatch | `§7.3` there; `SU-01`, `DB-01` of the data-model overview | Insufficient → `capacity_exhausted` with `recoveryAt`, or `extra_credits_required` (`AI-02`, `AI-03`) |
 | A-08 | Supplier price resolved at dispatch; customer tariff **pinned to the Run** | `agent.supplier_price_version`, `agent.tariff_version`; `MT-06`, `PR-05` | Unpriced category → **not dispatchable** (`AD-04`, `MT-15`) |
 | A-09 | Provider attempts recorded with request identity, tiers and completeness | `commerce.provider_attempt`; `MT-02` | Retry → **a distinct row with its own supplier cost** (`ST-03`) |
 | A-10 | Usage normalised into non-overlapping categories | `commerce.attempt_usage`; `§7.4`; `UQ (attempt, usage_revision, category)` | Cumulative stream → **replaces, never sums** (`UN-03`, `I-492`) |
-| A-11 | Settlement once per logical request, half-even after aggregation | `commerce.customer_settlement`; `ST-01` | Write fails → idempotent per attempt usage revision, re-runs (`AI-10`) |
+| A-11 | Settlement once per logical request, half-even after aggregation, **in one shared unit of work** so both pools move together | `commerce.customer_settlement`; `ST-01`, `ST-05`, `SU-01` | Write fails → idempotent per attempt usage revision, re-runs (`AI-10`) |
 | A-12 | Debit and release against **the same sources the reservation held** | `ST-05`, `CD-06` | Release → capped by the burst; **cannot mint capacity** (`RF-05`) |
 | A-13 | Supplier cost and customer cost recorded separately, in different units | `commerce.supplier_cost_entry` (decimal money) vs micro-credits; `I-493` | — |
 | A-14 | User sees capacity, purchased credits and the funding source separately | `entitlement.getCapacity`, `commerce.explainCharge`; `AC-10`, `EC-04` | — |
@@ -94,12 +94,12 @@ A step resolving to a requirement alone is **not** sufficient — a requirement 
 | D-01 | User edits a hydrated note offline | `EditTransaction`; journal + `sync_outbox` in one transaction (`PC-01`) | Crash → at most the coalescing window is lost; what survives is a valid document |
 | D-02 | The edit is durable **on this device**, and is **not** presented as saved to Cloud | `PE-04`, `NO-04`; `§3.1` of the product scope | — |
 | D-03 | Cache pressure occurs while the edit is pending | `PE-02` eviction gate | **Refused** — a row with an unacknowledged change is not evictable (`I-498`) |
-| D-04 | Reconnect; outbox pushes with its `command_id` | `sync.pushChange` | Response lost → `unknown`; idempotent re-push (`SY-01`) |
-| D-05 | Cloud acknowledges; the revision becomes authoritative | `AU-01` | — |
-| D-06 | Outbox row clears **only on a confirmed ack** | `PE-02` | Crash before clearing → duplicate push recognised by revision (`SY-02`) |
+| D-04 | Reconnect; outbox pushes with its `CommandId` and **`ExpectedRev = acked_rev`**, never `local_rev` | `sync.pushChange`; `RV-C1` | Response lost → `unknown`; idempotent re-push (`SY-01`) |
+| D-05 | **Cloud commits and assigns the revision**, writing the `sync.change` row in the same transaction | `CW-04`, `CW-06` | — |
+| D-06 | On acknowledgement, `acked_rev` is set and `local_rev` resets to 0 in the transaction that clears the outbox row | `RV-C5`, `PE-02` | Crash before clearing → duplicate push recognised, re-push idempotent (`SY-02`) |
 | D-07 | Concurrent edit on another device raises a conflict | `sync.conflictRaised`; both branches retained | Edit-versus-delete → the delete does not silently win (`SY-06`) |
 | D-08 | Resolution produces a **new revision** | `§4` of the sync architecture | — |
-| D-09 | The second device converges | `GP-04` | Gap → scoped reconciliation, convergence verified (`SY-04`) |
+| D-09 | The second device converges by pulling from its `publish_seq` cursor | `CU-01`; `PB-02` guarantees no published change is skipped | Gap → scoped reconciliation (`SY-04`); expired cursor → full resync, never a silent clamp (`CU-03`) |
 | D-10 | The agent's context uses acknowledged revisions only | `PK-04`, `CH-04`; `I-498` | A pending edit is visible to the user, **not** to the model |
 
 **Terminal states.** Success: converged, acknowledged, nothing lost. Failure: **no branch discards an unacknowledged change**, and the local-versus-cloud distinction is never blurred.
@@ -209,6 +209,36 @@ Seven steps failed to resolve on the first pass. All seven are closed by work in
 | WF-02 | **A step resolving to a requirement alone is a finding**, not a resolution. |
 | WF-03 | **These eight are representative, not exhaustive.** They were chosen for boundary crossings, not coverage. |
 | WF-04 | **The previous baseline's traces are superseded, not carried forward.** Workflows A, B and D of the earlier pass rested on a credit balance, a local harness and local-first authority — all three changed under P2-006, so re-using their results would have been false evidence. |
+
+---
+
+## 12. Findings closed on 2026-09-07
+
+A subsequent review supplied thirteen findings and this pass discovered three more. **All sixteen were confirmed against the documents and closed**; none was rejected. The traces above were rechecked against the corrected mechanisms, and six steps were updated because the mechanism beneath them changed.
+
+| # | Defect | Where it would have shown | Closed by |
+|---|---|---|---|
+| F-01 | Scope amendments had not reached implementation bodies, types, tests or gates in seven packages | A gate requiring an AOT agent plan that Cloud can never satisfy | Package bodies corrected; `WP-52` created |
+| F-02 | Chat authority said Cloud both was and was not the authority | A Harness reply with no legal writer | `§4.2` commit authority |
+| F-03 | Cross-module transactions prohibited while admission required one | Concurrent overdraft between two writes | `§6.1.1` shared unit of work; `§6.1.2` dispatch barrier |
+| F-04 | `change_seq` allocated in-transaction claimed to prevent false gaps | A late-committing change never delivered | `§9.1` commit-order publication |
+| F-05 | Partial indexes described as row filtering | Trashed content returned by a query missing its predicate | `QP-05`–`QP-07` |
+| F-06 | Two billing models coexisting with different units and keys | Partial settlement across two reservation tables | `credit_lot` unified; `credit_reservation` retired |
+| F-07 | `service_term` keyed so renewal violates its own constraint | The second paid period unrecordable | `period_ref` and the three identities |
+| F-08 | Refill multiplied the whole interval by one rate | 100 units earned where 55 were owed | Policy-period integration |
+| F-09 | Absent log treated as proof of no effect; timeout as *did not happen* | A duplicated real-world effect, or an uncharged billed call | Dispatch intent; `§6.4` resolution ladder |
+| F-10 | `InvokeAsync` violating the typed-boundary test as written | An architecture test failing against the required boundary | `§3.1` decode step; `XT-05` rescoped |
+| F-11 | Streaming told clients to fetch a part that does not exist | No live output on any surface | Stream buffer; `task.readStream` |
+| F-12 | Exact frame *and* sample round trips promised on incommensurate grids | Drift at 30000/1001 fps with 48 kHz | Canonical ticks; projections with declared rounding |
+| F-13 | Backfill had no catch-up; additive schema read as data-safe rollback | Stale new representation read at switch; rollback discarding writes | `§2.5` ladder; `§2.6` data rollback window |
+| **I-01** | Render still "a Task under the unified engine" in `WP-38`, `WP-39`, `WP-20` | A render under AI metering and Cloud recovery | Product Job separated from Agent Task |
+| **I-02** | Client revision token ambiguous between `acked_rev` and `local_rev` | False conflicts, or silent clobbering between local callers | `§1.3a` two revisions; composite local token |
+| **I-03** | Turn loop and first workflow scheduled two phases before the Cloud host | An unexecutable delivery sequence | `WP-52` at its real dependency position |
+
+| # | Rule |
+|---|---|
+| WF-05 | **A trace is re-run when a mechanism beneath it changes**, not only when a step is added. Six steps above were rewritten on 2026-09-07 for that reason. |
+| WF-06 | **A finding is closed by a mechanism, not by a note.** Each row names the section that now carries the behaviour. |
 
 ---
 

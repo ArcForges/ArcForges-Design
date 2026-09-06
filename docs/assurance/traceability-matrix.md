@@ -27,7 +27,7 @@ Every decision is carried. The **Primary home** column names where the decision 
 | **D-003** | Verification scope and first-consumption | `open-gates-register.md` `§5` | `reference-coverage-and-provenance.md` | Register review; `NV-02` |
 | **D-004** | ArcChat Mobile licensing boundary | `../architecture/11-mobile-architecture.md` `§2` | Solution layout `§4`; provenance `§4`; `WP-30`, `WP-32` | Licence policy tests (`G-03`), **F-023** closure |
 | **D-005** | Payment provider baseline | `../architecture/16-billing-and-commerce-architecture.md` | Commerce requirements; `WP-42` | Provider containment architecture test (`CT-09`) |
-| **D-006** | ArcNotes complete scope | `../requirements/products/arcnotes.md` | `WP-18`, `WP-27`, `WP-28`, `WP-29` | The V1→V4 migration chain gate (`WP-29.04`) |
+| **D-006** *(as amended by P2-006)* | ArcNotes scope: notebook core, bounded properties, saved views | `../requirements/products/arcnotes.md` | `WP-18`, `WP-28` — **`27` and `29` retired** | The migration chain gate (`WP-18.06`); the V4 stage is retired with `27` and `29` |
 | **D-007** | Web technology and rendering boundary | `../architecture/10-web-architecture.md` | `WP-47`, `WP-48`, `WP-49` | Prohibited-technology policy test; no-script render test |
 | **D-008** | Runtime and AOT matrix | `../architecture/14-build-packaging-and-release.md` `§3` | Desktop, cloud, mobile, web architecture; `WP-02`, `WP-06`, `WP-30` | Evaluated-property assertions; AOT publish proof (`R-03`) |
 | **D-009** | Contract granularity | `../architecture/02-contracts-and-protocols.md` | Solution layout `§3`; `WP-03`, `WP-23` | Contract baseline diff gate (`G-05`) |
@@ -123,13 +123,13 @@ Test family identifiers are those of [`testing-and-verification-strategy.md`](te
 | `14-build-packaging-and-release` | `02`, `06`, `32`, `50` |
 | `15-extension-platform-architecture` | `41` |
 | `16-billing-and-commerce-architecture` | `42`, `43` |
-| `17-agent-harness` | `13`, `15`, `16`, `17`, `40`, `41`, `43` |
+| `17-agent-harness` | **`52`** (the Harness itself), `15`, `17`, `40`, `42`, `43` |
 | `18-editing-and-rich-content` | `18`, `19`, `27`, `28`, `29` |
 | `19-product-implementation-maps` | `01`, `05`, and each product package it maps |
 | `20-cross-system-lifecycles` | `24`, `25`, `26`, `42`, `43`, `46`, `50` |
 | `21-platform-and-dependency-matrix` | `06`, `13`, `33`, `37`, `50` |
 | `22-deployment-and-release-execution` | `21`, `23`, `44`, `45`, `50` |
-| `23-simulator-and-interchange` | `33`, `39`, **`51`** |
+| `23-simulator-and-interchange` *(also the ArcSlate time model, `§3`)* | `33`, `36`, `37`, `38`, `39`, **`51`** |
 | `contracts/00-operation-catalogue` | `03`, `04`, `09`, `23` |
 | `contracts/01-public-api-operations` | `22`, `23`, `25`, `42` |
 | `contracts/02-local-rpc-operations` | `08`, `09`, `14`, `17`, `18`, `20`, `33`, `36` |
@@ -223,6 +223,7 @@ Every gate in [`open-gates-register.md`](open-gates-register.md) is scheduled.
 | NC-07 | **Row counts prove nothing about completeness.** 31 of 31 architecture documents being realised in a work package says every document is claimed by someone, not that every subject is designed. |
 | NC-08 | **This matrix was recomputed on 2026-09-06 against the revised requirements**, not carried forward. P2-006's downstream reconciliation statement is explicit that prior completion claims do not demonstrate coverage of the amended scope, so every count here is a fresh derivation. |
 | NC-09 | **A retired package still appears.** `27` and `29` are listed as retired rather than deleted, so a reader following an older citation finds the retirement record instead of a broken reference. |
+| NC-10 | **This matrix was rechecked on 2026-09-07** after the design-defect repair pass. `WP-52` was created at its real dependency position, and the sub-steps relocated into it (`WP-17.08`, `WP-17.09`, `WP-20.03`) are retired at their old identifiers rather than left as dangling citations. |
 
 ---
 

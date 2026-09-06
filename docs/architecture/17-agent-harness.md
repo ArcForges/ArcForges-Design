@@ -509,26 +509,26 @@ The Harness always runs in Cloud (`LS-02`). What varies is **where each tool exe
 |---|---|---|
 | HV-01 | A multi-step turn completes end to end in the single Cloud host, against a real provider | `WP-43.07`, `WP-17.01` |
 | HV-02 | A model-proposed action reaches a real product operation through the full security pipeline | `WP-20.02` |
-| HV-03 | A crash at each loop point resumes correctly, with no duplicate effect and no duplicate charge | `WP-17.08`, `WP-16.00`, `WP-26.03` |
+| HV-03 | A crash at each loop point resumes correctly, with no duplicate effect and no duplicate charge | `WP-52.00`, `WP-16.00`, `WP-26.03` |
 | HV-04 | An approval-suspended turn survives restart of either side and resumes with revalidated context | `WP-14.04`, `WP-16.05` |
 | HV-05 | An interrupted stream is never stored as complete, and cumulative stream usage is not summed as independent consumption | `WP-15.00`, `WP-43.02` |
 | HV-06 | Stale context is detected before a write, and the model is told rather than silently corrected | `WP-20.02` |
-| HV-07 | Every loop bound ends the turn with a stated reason; no unbounded loop is reachable | `WP-17.08`, `WP-16.07` |
+| HV-07 | Every loop bound ends the turn with a stated reason; no unbounded loop is reachable | `WP-52.00`, `WP-16.07` |
 | HV-08 | A cancelled turn settles verified consumption and releases the remainder | `WP-16.05`, `WP-43.02` |
 | HV-09 | **No client runs a model loop.** A structural test asserts no desktop, mobile or browser assembly references a provider adapter or holds a provider credential | `WP-05`, `WP-17.01` |
 | HV-10 | A capability not declarable to the model is never proposed, and never invocable if proposed | `WP-17.00` |
 | HV-11 | **No end-user BYOK path exists.** No operation, schema field, setting or UI accepts a customer provider key | `WP-05`, `WP-43.03` |
 | HV-12 | A provider outage releases the customer reservation or appends a compensating adjustment, and retains the supplier cost | `WP-43.05` |
-| HV-13 | Two tool calls writing the same target never execute in parallel; two reads of independent targets do | `WP-17.08`, `WP-20.03` |
-| HV-14 | An approval mid-batch suspends the whole batch, and resume re-evaluates the remainder against revalidated context | `WP-17.08`, `WP-16.05` |
-| HV-15 | A failure inside a parallel group returns the siblings' real results alongside the failure | `WP-17.08`, `WP-16.02` |
+| HV-13 | Two tool calls writing the same target never execute in parallel; two reads of independent targets do | `WP-52.00`, `WP-20.02` |
+| HV-14 | An approval mid-batch suspends the whole batch, and resume re-evaluates the remainder against revalidated context | `WP-52.00`, `WP-16.05` |
+| HV-15 | A failure inside a parallel group returns the siblings' real results alongside the failure | `WP-52.00`, `WP-16.02` |
 | HV-16 | A platform-caused provider retry is charged once to the customer and remains fully visible in supplier cost | `WP-43.02`, `WP-43.04` |
 | HV-17 | A turn waiting for a device or an approval holds no included capacity, and cannot reserve the workspace indefinitely | `WP-16.05`, `WP-43.02` |
 | HV-18 | **No agent team, sub-agent or external-agent delegation is reachable.** A structural test asserts no delegation contribution kind and no second planner exists | `WP-05`, `WP-41.07` |
 | HV-19 | MCP tool descriptions and retrieved content are treated as data; an instruction inside them changes no behaviour | `WP-11.06`, `WP-41.07` |
 | HV-20 | Hidden model reasoning never appears in trace, and reasoning tokens appear only as a metered cost category | `WP-16.06`, `WP-43.02` |
-| HV-21 | The stored branch is byte-identical before and after compaction, and losing every `CompactionRecord` costs no content | `WP-17.09` |
-| HV-22 | A compacted span never loses an approval, a refusal or a user correction, and never separates a tool call from its result | `WP-17.09` |
-| HV-23 | A `CompactionRecord` never becomes personal memory and never crosses a branch or a conversation | `WP-17.09`, `WP-15.01` |
+| HV-21 | The stored branch is byte-identical before and after compaction, and losing every `CompactionRecord` costs no content | `WP-52.01` |
+| HV-22 | A compacted span never loses an approval, a refusal or a user correction, and never separates a tool call from its result | `WP-52.01` |
+| HV-23 | A `CompactionRecord` never becomes personal memory and never crosses a branch or a conversation | `WP-52.01`, `WP-15.01` |
 | HV-24 | Official inference is refused without an active paid service term, whatever the credit balance | `WP-42.11`, `WP-43.02` |
 | HV-25 | Only acknowledged Cloud revisions enter the context pack; a pending client edit never reaches the model as context | `WP-25.01`, `WP-20.02` |

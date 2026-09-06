@@ -130,7 +130,7 @@
 | Context contribution, bounding and visibility results | `WP-20.00` |
 | Federated search attribution, permission and degradation results | `WP-20.01` |
 | Semantic modification idempotency and owner-validation results | `WP-20.02` |
-| The full scenario plus every failure variant | `WP-20.03` |
+| The full agent-driven scenario plus every failure variant | **`WP-52.05`** *(relocated)* |
 | Preview, handoff, staleness and permission re-check results | `WP-20.04` |
 | V1B closure record | `WP-20.05` |
 

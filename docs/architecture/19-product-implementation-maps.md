@@ -58,7 +58,7 @@ Plus per-product specialisations: `ArcChat.Hub` and `ArcChat.Agent`; `ArcScope.A
 | Attachments by reference | `ArcChat.Domain` + `ArcChat.Infrastructure` | `WP-15.02` |
 | Projects, agent profiles, skills | `ArcChat.Domain` + `ArcChat.Application` | `WP-15.03`, `WP-15.04` |
 | Local search over conversations | `ArcChat.Infrastructure` (derived store) | `WP-15.05` |
-| **The turn loop, batching, compaction** | **`ArcForges.Cloud.AgentRuntime`** — Cloud, not the desktop (`LS-02`) | `WP-17.08`, `WP-17.09` |
+| **The turn loop, batching, compaction** | **`ArcForges.Cloud.AgentRuntime`** — Cloud, not the desktop (`LS-02`) | `WP-52.00`, `WP-52.01` |
 | Context assembly and packing | **`ArcForges.Cloud.AgentRuntime`** | `WP-40.03` |
 | Capability registry and selection | Cloud registry + `ArcChat.Hub` for device-local capabilities | `WP-17.00` |
 | Execution engine — task, run, plan, step, attempt | **`ArcForges.Cloud.Modules.Agent`** (`TO-01`) | `WP-16.00`–`WP-16.07` |
