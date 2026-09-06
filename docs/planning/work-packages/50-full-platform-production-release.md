@@ -3,7 +3,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: K — Web and release
-> Upstream: `20`, `28`, `32`, `35`, `39`, `43`, `46`, `49`, `51`
+> Upstream: `20`, `28`, `32`, `35`, `39`, `43`, `46`, `49`, `51` · Downstream: —
 
 > **Goal.** Ship everything together, once every gate is genuinely satisfied: four desktop products across three platforms, the Android companion, the cloud, the web surfaces, and the commercial loop — with the release audit, the production gates and the honest statement of what is and is not shipped.
 

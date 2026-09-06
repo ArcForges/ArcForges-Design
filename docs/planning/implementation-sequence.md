@@ -69,6 +69,10 @@ The sequence is one continuous numbered series. Phases are a reading aid, not a 
 
 ---
 
+> **Numbering above `50`.** `00`–`50` were allocated when the sequence was first derived, and a retired identifier is never recycled (`27`, `29`). A package added afterwards therefore takes the next free number while executing at its real dependency position: **`51` runs in Phase H and is an upstream of `50`.** Where the numeral and the dependency graph disagree, **the dependency graph governs**.
+
+---
+
 ## 3. What may be mocked, and what may not
 
 Directly from `I2 §V`, which is binding on every work package.
