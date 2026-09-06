@@ -43,7 +43,7 @@
 | BR-05 | **A branch is a first-class structure**, not a hidden copy; branching never mutates the original. |
 | BR-06 | **Streaming assembly is a presentation concern.** The durable message is written once, complete; a partial stream is never the stored fact. |
 | BR-07 | **An attachment is either managed or referenced**, and the distinction is explicit and visible. |
-| BR-08 | **Local search is a first-class capability**, available with no cloud and no account. |
+| BR-08 | **Search over cached conversation content is a first-class capability**, available during a Cloud outage. Chat is Cloud-authoritative (`CW-02`), so this searches the working cache and unsent drafts; workspace-wide search is `search.query` on the public surface, and neither is presented as the other. |
 | BR-09 | **A provider adapter is an interface**; the real provider integration lands in `43`. |
 | BR-10 | **Hidden reasoning from a model never enters the product model** (`I4 §Stage 24 §50`). |
 
@@ -113,7 +113,7 @@
 
 **Testing requirements.** Index rebuild-from-scratch test; relevance tests against a fixture corpus; a permission test asserting search reveals nothing direct access would refuse.
 
-**Completion gate.** Search works offline and account-free, the index rebuilds fully, and search never leaks what access would refuse.
+**Completion gate.** Search over cached content works during a Cloud outage, the index rebuilds fully from the cache, and search never leaks what access would refuse.
 
 ### WP-15.06 — History, export and recovery
 
@@ -176,7 +176,7 @@
 3. Branching shares history by reference and never mutates the original.
 4. Attachments are stored by reference with integrity verification, and unavailability is a visible state.
 5. Projects, profiles and skills are structurally distinct, with skills conferring no capability and updates not altering history.
-6. Local search works offline and account-free, rebuilds from scratch, and leaks nothing direct access would refuse.
+6. Search over cached content works during a Cloud outage, rebuilds from scratch, and leaks nothing direct access would refuse.
 7. Export round-trips completely and recovery reports uncommitted loss explicitly.
 8. **ArcChat is fully usable with every other product absent.**
 

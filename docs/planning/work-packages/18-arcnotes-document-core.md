@@ -46,7 +46,7 @@
 | BR-08 | **An attachment is never base64-embedded in document content.** |
 | BR-09 | **The editing authority of an embedded reference stays with the original object** — there is no second writable block. |
 | BR-10 | **Table blocks are document tables, not a relational database engine** in V1. |
-| BR-11 | **ArcNotes works fully with no account and no cloud.** |
+| BR-11 | **An enrolled, hydrated notebook remains editable and searchable during a Cloud outage**, and pending edits are durably recoverable (`§3.1` of the product scope). **This is outage tolerance, not an account-free product**: initial notebook creation and enrolment require Cloud, and uncached content is unavailable until it is fetched (`C-05`). |
 
 ---
 
@@ -196,7 +196,7 @@ Session undo follows `§3.2` of the editing architecture: **selection is restore
 7. Undo, history, checkpoint and trash behave independently, and none recovers what another owns. Undo restores selection with content, an agent edit is undoable and attributed, and a concurrent change never causes an undo entry to target the wrong block.
 8. Crash recovery is clean and honest; migration preserves semantics against every fixture; downgrade never leaves partial state.
 9. Every ArcNotes capability declares risk and approval posture, and owner-side validation refuses regardless of caller assertion.
-10. **ArcNotes is fully usable with no account, no cloud and no ArcChat.**
+10. **An enrolled, hydrated notebook is editable and searchable through a Cloud outage, with pending edits durably recoverable**, and ArcNotes never requires ArcChat. Enrolment and uncached content require Cloud (`BR-11`).
 
 ---
 

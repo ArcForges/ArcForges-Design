@@ -3,7 +3,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: A — Freeze and foundation
-> Upstream: `03`, `04`, `05` · Downstream: `07`, `08`, `10`, `12`, `13`
+> Upstream: `03`, `04`, `05` · Downstream: `07`, `08`, `10`, `12`, `13`, `17`
 
 > **Goal.** Prove the runtime matrix on real published artifacts, not on intentions. Every desktop product publishes Native AOT and launches; Cloud publishes JIT and runs its full pipeline; the web application publishes to WebAssembly. Until this holds, every downstream design choice is a hypothesis.
 

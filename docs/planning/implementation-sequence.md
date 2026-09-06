@@ -79,7 +79,7 @@ Directly from `I2 §V`, which is binding on every work package.
 
 | May be mocked initially | Must be real early |
 |---|---|
-| AI providers, streaming responses, token billing | **The agent running inside a real AOT release binary** |
+| AI providers, streaming responses, token billing | **The device tool path inside a real AOT release binary** — pull, local re-authorisation, generated decode, typed invocation, idempotent result. **The agent loop itself is Cloud and JIT** (`LS-02`, **V-03**), so no AOT gate applies to it |
 | Email delivery and one-time codes; push | **Identity, refresh and session contention** |
 | Payment provider webhook payloads (as fixtures) | **The webhook inbox, idempotency and reconciliation** |
 | Object storage adapters | **Upload interruption, hashing, resumption and quota** |
@@ -96,6 +96,24 @@ Directly from `I2 §V`, which is binding on every work package.
 | MK-01 | **A mock is temporary and named.** Every mock introduced by a work package is listed in that package, with the later package that replaces it. |
 | MK-02 | **A mock never crosses a completion gate that the real thing is supposed to prove.** |
 | MK-03 | **A test that only ever runs against a mock does not satisfy a gate for the real integration.** |
+| MK-04 | **A package may not gate on a capability a later package builds.** Where an early package needs a Cloud behaviour that does not exist yet, it uses a named fixture and **states in its own gate that the real verification belongs to the later package**. `WP-17.01` and `WP-52` are the worked case. |
+
+### 3.1 Named temporary scaffolding
+
+Every fixture that stands in for a later capability is listed here with the package that **deletes** it. `MK-01` requires the naming; this table is where it lives.
+
+| Scaffolding | Introduced by | Stands in for | Deleted by |
+|---|---|---|---|
+| **Fixture turn endpoint** — accepts a turn, returns scripted task and step transitions, scripted stream chunks and scripted `ToolRequest`s; runs no model, planner, admission or metering | `WP-17.01` | The Cloud Harness | **`WP-52.05`**, which asserts structurally that it no longer exists |
+| Stubbed managed provider path | `WP-17.05` | Real provider routing and metering | `WP-43.00`, `WP-43.07` |
+| Payment provider webhook fixtures | `WP-42.03` | Real provider events | `WP-42.10`'s go-live gate against the provider's test environment |
+| ArcScope device simulators (local) | `WP-33.00` | Real hardware transports | `WP-33`'s hardware-lab gate (`PG-08`) |
+| ArcSlate test media | `WP-37.01` | Real decode and long exports | `WP-37`, `WP-38` gates |
+
+| # | Rule |
+|---|---|
+| TS-01 | **Scaffolding is deleted, never adapted.** A fixture that graduates into production code stops being visible as a fixture, which is how a mock ends up serving real traffic. |
+| TS-02 | **The deleting package asserts the deletion structurally**, so the removal is verified rather than assumed. |
 
 ---
 

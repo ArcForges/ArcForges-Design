@@ -291,7 +291,8 @@ The local read projection of tasks whose authority is elsewhere (`TO-07`): carri
 
 - `IX (notebook_id, state, updated_at)`
 - `IX (state, updated_at)` — the global recent list
-- **Partial index** on `state = active` for every list path (`QP-05`), so a forgotten predicate cannot leak trashed content
+- **Partial index** on `state = active` for every list path — for **size and speed only**. It does **not** filter: a query omitting the predicate simply does not use it and returns trashed rows from a sequential scan (`QP-05`)
+- **Exclusion is enforced by the repository read surface**, which applies the state predicate and is the only reachable path to this table from application code (`QP-06`)
 
 ### `block`
 
@@ -559,5 +560,5 @@ attachments-external/  external reference descriptors, never the files themselve
 | DL-05 | Deleting every derived store leaves each product fully intact | `WP-07.06`, `WP-37.05` |
 | DL-06 | Undo, history, checkpoint and journal behave independently | `WP-18.05` |
 | DL-07 | The portable package round-trips with equivalence, deterministically | `WP-19.05`, `WP-19.06` |
-| DL-08 | A partial index prevents a trashed row from appearing in any list path | `WP-18.00` |
+| DL-08 | **The repository read surface** excludes a trashed row from every list path, and **no application assembly can construct a query against the raw table** (`QP-06`) | `WP-18.00`, `WP-05` |
 | DL-09 | A crash at any write-path point recovers to a committed boundary | `WP-07.02` |

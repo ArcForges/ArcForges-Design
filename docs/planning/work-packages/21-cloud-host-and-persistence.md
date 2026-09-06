@@ -168,11 +168,11 @@
 **All of the following, with recorded evidence, against real infrastructure:**
 
 1. The host pipeline order is asserted; no handler is reachable with tenancy unresolved; the JIT posture is explicit with no AOT properties.
-2. Each runtime role starts only its declared components.
+2. **One deployable host runs every bounded hosted service** (`RT-03`); every replica is identical, with no role flag and no leader chosen by configuration.
 3. No module writes another module's tables or references its internals; the module set is reconciled and recorded.
 4. Migration is transactional, idempotent, resumable, and rehearsed forward and backward, with the three-phase pattern demonstrated.
 5. A failure between state change and publish never loses or invents a message; duplicate delivery has no additional effect; dead-letter replay works.
-6. Background leases expire and are taken over safely; poison messages dead-letter; jobs never run on the API role.
+6. Leases expire and are taken over safely under fencing; a stale token cannot publish; poison messages dead-letter; no hosted service runs an unbounded loop (`RT-05`); and **the change feed is provably commit-ordered** (`PB-01`).
 7. No secret exists in configuration; cross-tenant access is refused at the data layer even with a forged scope.
 8. Each simulated dependency outage degrades only its dependent capabilities, and correlation survives every hop.
 

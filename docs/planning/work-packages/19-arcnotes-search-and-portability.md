@@ -5,13 +5,15 @@
 > Phase: D — ArcNotes core
 > Upstream: `18` · Downstream: `20`, `25`, `28`, `40`
 
-> **Goal.** Make ArcNotes content findable and portable: local full-text search with citation anchors, non-destructive import, and export to markdown, HTML, a portable package and a printable form — proving the portability constitution rather than asserting it.
+> **Goal.** Make ArcNotes content findable and portable **within the accepted exit path** (`§13` of the ArcNotes requirements): search over hydrated content with citation anchors, non-destructive Markdown and plain-text import, and the **Cloud-generated notebook download** — proving the exit path rather than asserting it.
 
 ---
 
 ## 1. Scope and purpose
 
-**In scope.** The local search index and its query surface; citation anchors; saved views over queries; non-destructive import from the supported source formats; export to markdown, HTML, printable output and the native portable package; and the Git-friendliness level ArcNotes commits to.
+**In scope.** The local search index over hydrated content and its query surface; citation anchors; saved views over queries; non-destructive import from Markdown and plain-text sources including an Obsidian-style folder layout (`IM-02`); the client half of the **Cloud notebook export** with its fidelity report; and the Git-friendliness level ArcNotes commits to.
+
+**Out of scope by `EP-04` and `IM-02`.** Native portable packages; HTML, PDF and DOCX export pipelines; bit-for-bit archive round-trips; custom local encrypted export; DOCX, Notion-specific, HTML and proprietary full-fidelity importers; and any live bidirectional folder mirror or linked-vault mode (`IM-07`).
 
 **Out of scope.** Cloud search (`40` and `25`). Semantic retrieval and embeddings (`40`). Database-view queries (`28`) — saved views here are list projections only.
 
@@ -25,7 +27,7 @@
 |---|---|
 | [`../../requirements/06-knowledge-search-and-retrieval.md`](../../requirements/06-knowledge-search-and-retrieval.md) | Search versus retrieval, evidence and citation anchors, permission-aware retrieval |
 | [`../../requirements/13-data-formats-and-portability.md`](../../requirements/13-data-formats-and-portability.md) | The portability constitution, import and export obligations, Git friendliness |
-| [`../../architecture/06-data-persistence-and-formats.md`](../../architecture/06-data-persistence-and-formats.md) `§8` | The portable package structure and the import/export pipeline |
+| [`../../architecture/06-data-persistence-and-formats.md`](../../architecture/06-data-persistence-and-formats.md) `§8` | The import pipeline and the export pipeline |
 | `WP-18` output | The document model, link index and attachment model |
 
 ---
@@ -34,7 +36,7 @@
 
 | # | Rule |
 |---|---|
-| BR-01 | **Search works with no cloud and no account.** |
+| BR-01 | **Search over hydrated content works during a Cloud outage.** Workspace-wide search is `search.query` on the public surface; the two are separate operations with different completeness and neither is presented as the other (`NO-05`). |
 | BR-02 | **`Search ≠ Retrieval`.** Search serves a person; retrieval assembles evidence for a model. They share an index but not a contract. |
 | BR-03 | **The index is a derived store**: deleting it rebuilds completely (`QI-10`). |
 | BR-04 | **Search reveals nothing direct access would refuse** — permission is applied at query, not after ranking. |
@@ -51,7 +53,7 @@
 | Location | Change |
 |---|---|
 | `src/ArcNotes/ArcNotes.Search/` | Index, tokenisation, query, ranking, citation anchors, saved views |
-| `src/ArcNotes/ArcNotes.ImportExport/` | Import pipeline, export writers, portable package reader and writer |
+| `src/ArcNotes/ArcNotes.ImportExport/` | Markdown and plain-text import pipeline, and the client half of the Cloud export download. **No portable-package writer, no HTML/PDF/DOCX pipeline** (`EP-04`) |
 | `src/ArcNotes/ArcNotes.Application/` | Search and import/export application services |
 | `fixtures/formats/import/` | Source-format fixtures for every supported import claim |
 | `fixtures/formats/arcnotes/v1/` | Extended with export round-trip fixtures |
@@ -105,11 +107,11 @@
 
 ### WP-19.05 — Export and round-trip
 
-**What must be fully done.** Export to markdown, HTML, printable output and the native portable package. The native package is complete: re-importing it reconstructs documents, structure, links, properties, tags and attachments. Lossy targets state what they drop before writing.
+**What must be fully done.** **The required exit path is a Cloud-generated notebook download** (`§13.2` of the ArcNotes requirements): Markdown documents, attachments, a machine-readable metadata and link manifest, and a fidelity report. It snapshots **acknowledged** revisions and states plainly that pending device-only edits are excluded until they synchronise (`EP-03`). **`EP-04` excludes** custom local encrypted export, native portable packages, HTML/PDF/DOCX pipelines and bit-for-bit archive round-trips; none is built. Ordinary clipboard and attachment saving remain.
 
-**Testing requirements.** A full round-trip equivalence test on the native package; a fidelity-statement check for each lossy target; a large-corpus export performance measurement.
+**Testing requirements.** A Cloud export of a selected notebook verifying content, attachment hashes, link mapping and the declared loss report (`§13.3` there); an export interrupted and retried; an export while pending device edits exist, asserting they are **excluded and the exclusion stated** (`EP-03`); an export after a paid term ends, asserting retained data is still exportable within its bounded artifact lifetime (`EP-02`); a fidelity-statement check for each lossy target; a large-corpus export performance measurement.
 
-**Completion gate.** The native package round-trips with equivalence, and every lossy target states its losses before writing. **This satisfies `PG-07` for ArcNotes.**
+**Completion gate.** A Cloud export produces Markdown, attachments, a link manifest and a fidelity report over acknowledged revisions, with pending edits excluded and said so; and every lossy target states its losses before writing. **This satisfies `PG-07` for ArcNotes.**
 
 ### WP-19.06 — Git friendliness
 
@@ -144,7 +146,7 @@
 | Anchor survival and invalidity results | `WP-19.02` |
 | Saved view ownership and freshness results | `WP-19.03` |
 | Per-source import results, immutability assertion, partial-failure report | `WP-19.04` |
-| Native round-trip equivalence and lossy-target fidelity statements | `WP-19.05` |
+| Cloud export content, attachment-hash, link-manifest and fidelity results | `WP-19.05` |
 | Export determinism and diff-readability evidence | `WP-19.06` |
 
 ---
@@ -158,9 +160,9 @@
 3. Citation anchors survive surrounding edits and report invalidity explicitly.
 4. A saved view owns no content and always reflects current data.
 5. Every declared import source has a fixture, imports correctly, never modifies the source, and reports partial failure honestly.
-6. The native portable package round-trips with equivalence; every lossy export states its losses before writing — satisfying `PG-07` for ArcNotes.
+6. A Cloud export is complete, verifiable and honest about what it omits; every lossy target states its losses before writing — satisfying `PG-07` for ArcNotes.
 7. Export is deterministic and the committed Git-friendliness level is demonstrated.
-8. **All of the above work with no cloud and no account.**
+8. **Search over hydrated content survives a Cloud outage**, and pending work remains durably recoverable. Export is a Cloud operation and is unavailable during an outage, which the interface states rather than failing opaquely.
 
 ---
 

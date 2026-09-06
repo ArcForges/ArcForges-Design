@@ -135,7 +135,7 @@
 
 **All of the following, with recorded evidence:**
 
-1. A multi-step agent plan completes inside a published Native AOT binary with no reflection path present.
+1. A device tool request is decoded and executed through generated, typed, statically registered code inside a published Native AOT binary, with no reflection path present. **The model loop is not probed here** — it is Cloud and JIT (`LS-02`, **V-03**).
 2. A kill during editing recovers to a committed boundary with explicit loss reporting, and undo is demonstrably not crash recovery.
 3. Sustained acquisition above the product target runs with bounded memory, and every overrun, gap and disconnect is explicitly reported.
 4. A decoded frame displays with synchronised audio; the sanitiser run is clean; the software fallback works with acceleration disabled.

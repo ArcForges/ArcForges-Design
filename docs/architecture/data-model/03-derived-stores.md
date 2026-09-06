@@ -25,7 +25,7 @@ Every store here is **reconstructable from canonical data**. Deleting all of the
 
 ## 2. Local search index
 
-The lexical index over each product's content. **Works with no cloud and no account** (`BR-01` of `WP-19`).
+The lexical index over each product's **hydrated** content. **Works during a Cloud outage** (`BR-01` of `WP-19`), which is outage tolerance rather than an account-free product: it indexes what the device has, and workspace-wide search is a Cloud operation.
 
 ### `search_document`
 

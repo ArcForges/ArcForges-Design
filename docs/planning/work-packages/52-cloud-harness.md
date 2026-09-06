@@ -11,7 +11,7 @@
 
 ## 1. Scope and purpose
 
-**Why this package exists, and why it is here.** P2-006 moved the model loop to Cloud (`LS-02`). Its work was previously distributed across `WP-13.00` (a Native AOT desktop agent probe), `WP-16` (a unified Task engine that also covered agent runs), `WP-17.08`/`WP-17.09` (the turn loop and compaction, in a **Phase C** desktop package) and `WP-20.03` (the first agent-driven workflow, in **Phase D**). **Every one of those placements is now unexecutable**: the Harness runs in the Cloud host, which does not exist until Phase E, and it admits and meters through Commerce and Cloud AI, which do not exist until Phase J.
+**Why this package exists, and why it is here.** P2-006 moved the model loop to Cloud (`LS-02`). Its work was previously distributed across `WP-13.00` (a Native AOT desktop agent probe), `WP-16` (a unified Task engine that also covered agent runs), `WP-17.08`/`WP-17.09` (the turn loop and compaction, in a **Phase C** desktop package) and `WP-20.03` (the first agent-driven workflow, in **Phase D**). **Every one of those placements is now unexecutable.** A *minimal real* Cloud host exists from `WP-06.04` — real pipeline, real database, one contract endpoint — but the Harness needs the **production** host and its lease-fenced hosted services (`21`), the public surface (`23`), admission and capacity (`42`), and provider routing and settlement (`43`). None of those exists before Phase J, and a turn loop cannot admit, dispatch or settle without them.
 
 Rather than leave a package whose steps cannot run in their stated order, the Harness is one package at its real dependency position.
 
@@ -108,7 +108,7 @@ Rather than leave a package whose steps cannot run in their stated order, the Ha
 
 ### WP-52.05 — The first agent-driven cross-product workflow
 
-**What must be fully done.** *(Relocated from `WP-20.03`, which was in Phase D and could not run before the Cloud Harness existed.)* The end-to-end workflow of `I2 §III.5`: ArcChat is asked to produce a report, ArcNotes creates the document and receives its content through a device tool, the user approves, the result saves, undoes and recovers, and an artifact reference resolves.
+**What must be fully done.** **Delete the `WP-17.01` fixture turn endpoint** and prove the same client and device paths against the real Harness — the fixture is removed, never adapted into production code. *(This step is also where `WP-20.03` was relocated from, having been in Phase D where no Harness existed.)* The end-to-end workflow of `I2 §III.5`: ArcChat is asked to produce a report, ArcNotes creates the document and receives its content through a device tool, the user approves, the result saves, undoes and recovers, and an artifact reference resolves.
 
 **Testing requirements.** The full workflow end to end — request, admission, dispatch, document creation, block insertion, approval, write, undo, save, kill, recovery, artifact resolution — with **every failure variant** exercised: device offline, approval expired, capacity exhausted mid-turn, term expiring mid-turn, and a crash after dispatch.
 
@@ -156,7 +156,7 @@ Rather than leave a package whose steps cannot run in their stated order, the Ha
 7. **No crash or failure path resolves an uncertain external effect to *did not happen***, and no non-idempotent capability is retried without a resolution step.
 8. A capability that can produce an external effect and declares neither idempotency nor a status operation **cannot be registered**.
 9. Every surface reaches identical streamed output **with realtime fully disabled**; **a read served by a replica that never wrote the stream returns correct data**; a miss is never reported as an eviction; and no buffer byte is persisted as a message.
-10. The full cross-product workflow passes end to end with every failure variant reaching a stated terminal state.
+10. The full cross-product workflow passes end to end with every failure variant reaching a stated terminal state, and **the `WP-17.01` fixture turn endpoint no longer exists in the codebase** — asserted structurally.
 
 ---
 

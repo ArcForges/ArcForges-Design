@@ -60,7 +60,7 @@
 | `src/Contracts/Public/ArcForges.Contracts.PublicApi.AI/` | AI request, response and metering DTOs |
 | `tests/CloudIntegrationTests/AI/` | Routing, supplier price, customer tariff, normalisation, settlement, uncertain-usage, outage and transparency suites |
 
-**Major types introduced.** `AiProviderAdapter`, `ProviderCapabilityDescriptor`, `ModelDescriptor`, `RoutingPolicy`, `RoutingDecision`, `TariffVersion`, `TariffSnapshot`, `CostDimension`, `ProviderInteractionRecord`, `MeteringResult`, `ByokBinding`, `TransparencyMarking`.
+**Major types introduced.** `AiProviderAdapter`, `ProviderCapabilityDescriptor`, `ModelDescriptor`, `RoutingPolicy`, `RoutingDecision`, `TariffVersion`, `TariffSnapshot`, `CostDimension`, `ProviderInteractionRecord`, `MeteringResult`, `SupplierPriceVersion`, `AttemptUsage`, `CustomerSettlement`, `TransparencyMarking`. **`ByokBinding` is retired** — no customer credential type exists (`BR-05`).
 
 ---
 

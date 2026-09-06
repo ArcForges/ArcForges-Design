@@ -3,7 +3,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: C — First real slice
-> Upstream: `15`, `16` · Downstream: `20`, `26`, `41`, `52`
+> Upstream: `06`, `15`, `16` · Downstream: `20`, `26`, `41`, `52`
 
 > **Goal.** Complete ArcChat as an independent product: chat, agent, task centre, capability hub, permission and approval, automation, local data and recovery — with **no claim** that its ecosystem tier is finished (`I2 §III.4`).
 
@@ -74,13 +74,17 @@
 
 **Completion gate.** Every registered capability is visible with risk, trust, permission and health, and every unavailability shows a reason.
 
-### WP-17.01 — Agent runtime over the engine
+### WP-17.01 — Cloud AI client and device tool executor
 
-**What must be fully done.** **The Cloud Harness** constructs plans over the execution engine, selects capabilities through the registry, and executes attempts through the security pipeline (`LS-02`). ArcChat Desktop submits turns, renders plan and step state, and executes authorised device tools. A plan is validated before execution, including the compensation declaration check.
+**What must be fully done — with real code, here.** The desktop's Cloud AI client: submit a turn, subscribe or poll for task and step state, read streamed output through `task.readStream`, and surface admission outcomes precisely. The **device tool executor**: pull an authorised `ToolRequest`, re-authorise locally, resolve the `CapabilityKey` through the generated allowlist, decode into a typed product request (`§3.1` of the local RPC contract), invoke it, and return an idempotent result. Both are **production code, not scaffolding**.
 
-**Testing requirements.** An end-to-end turn against the real Cloud host; a plan-validation negative test; a capability-selection explainability test; **a structural test asserting no desktop assembly contains a turn loop, a planner or a provider adapter** (`HV-09`).
+**What is fixture-backed here, and explicitly temporary.** The Cloud side of the turn is a **fixture turn endpoint** on the `WP-06.04` host: it accepts a turn, returns scripted task and step transitions, emits scripted stream chunks, and issues scripted `ToolRequest`s. It runs **no model, no planner, no admission and no metering**. Its purpose is to exercise the client and the device path against real transport and real persistence before the Harness exists.
 
-**Completion gate.** Multi-step plans execute in Cloud with explainable capability selection, and **no client-side model loop is reachable**.
+> **The fixture endpoint is deleted by `WP-52`, not adapted.** It is registered in the temporary-scaffolding list of `§3` of the implementation sequence, and `WP-52.05`'s gate asserts it is gone.
+
+**Testing requirements.** A turn submitted to the fixture endpoint on the **real** `WP-06.04` host over **real** transport, asserting the client renders every scripted state transition and stream chunk correctly; a device `ToolRequest` executed end to end through decode, typed invocation and idempotent result, with a duplicate delivery producing one effect; admission-refusal rendering for each of `no_service_term`, `capacity_exhausted` with `recoveryAt`, and `extra_credits_required`; **a structural test asserting no desktop assembly contains a turn loop, a planner or a provider adapter** (`HV-09`).
+
+**Completion gate.** The Cloud AI client and the device tool executor are complete against real transport and real persistence; **no client-side model loop is reachable**; and the fixture endpoint is **labelled temporary with its removing package named**. **Real multi-step plan execution is `WP-52`'s gate, not this one** — claiming it here would require the Harness that `WP-52` builds.
 
 ### WP-17.02 — Permission, approval and the security centre
 
@@ -168,7 +172,7 @@
 **All of the following, with recorded evidence:**
 
 1. Every registered capability is visible with risk, trust, permission and health, and unavailability always shows a reason.
-2. **Multi-step agent plans execute in Cloud** with explainable capability selection and validated plans, and **no desktop assembly contains a turn loop, a planner or a provider adapter** (`LS-02`, `HV-09`).
+2. The Cloud AI client and the device tool executor work against **real transport and real persistence**, and **no desktop assembly contains a turn loop, a planner or a provider adapter** (`LS-02`, `HV-09`). **Multi-step plan execution is verified in `WP-52`**, where the Harness exists; claiming it here would require the thing `WP-52` builds.
 3. Permission is visible and revocable, revocation takes effect mid-operation, and approvals survive a restart.
 4. Tasks from more than one product appear in one task centre with correct controls and ownership attribution.
 5. Automations start, stop and record runs; cascades are detected and stopped; no implicit permission is acquired.

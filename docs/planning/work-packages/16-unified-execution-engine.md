@@ -39,7 +39,7 @@
 
 | # | Rule |
 |---|---|
-| BR-01 | **One Task model serves every long-running operation**, whatever its placement. |
+| BR-01 | **One *Product Job* model serves every long-running product operation** — render, capture, index, import, export. A **Cloud Agent Task is a different model with a different owner** (`CM-04`, `I-121`, `I-485`), owned by `WP-52`. They share vocabulary, never an implementation. |
 | BR-02 | **`Task ≠ Run ≠ Plan ≠ Step ≠ Attempt`.** Five distinct concepts with five distinct lifecycles. |
 | BR-03 | **A retry allocates a new attempt and reuses the command identity** (`WP-04.01`). |
 | BR-04 | **Failure classification includes effect certainty**: definitely-not, definitely-did, or unknown. An unknown effect never auto-retries a non-idempotent operation. |
@@ -61,7 +61,7 @@
 | `src/BuildingBlocks/ArcForges.Execution/` | Created: the task engine, scheduler, state machine, checkpoint and compensation infrastructure |
 | `src/BuildingBlocks/ArcForges.Execution.Persistence/` | Created: durable execution state and its recovery |
 | `src/BuildingBlocks/ArcForges.Execution.Budget/` | Created: the reserve-settle-release interface, implemented against a local stub here |
-| `src/ArcChat/ArcChat.Agent/` | The agent runtime hosting plans over the engine |
+| `src/BuildingBlocks/ArcForges.Execution/` | The Product Job lifecycle shared by every product. **No agent runtime here** — the Harness is Cloud (`LS-02`) |
 | `tests/ExecutionEngineTests/` | Lifecycle, idempotency, recovery, compensation, concurrency and storm-protection suites |
 
 **Major types introduced.** `Intent`, `TaskRecord`, `Run`, `Plan`, `PlanStep`, `Attempt`, `ExecutionState`, `ReasonFacet`, `FailureClass`, `EffectCertainty`, `Checkpoint`, `CompensationAction`, `ApprovalGate`, `SteeringSignal`, `BudgetReservation`, `ProgressReport`, `ExecutionOutcome`, `ExecutionTrace`.
