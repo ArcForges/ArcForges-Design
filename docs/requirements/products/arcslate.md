@@ -15,11 +15,12 @@
 
 | # | Requirement |
 |---|---|
-| RF-01 | **Olive is a product and behaviour reference** (**D-012**), not an architecture authority. It informs product concepts, editing workflows, timeline behaviour, media workflows, the feature set, project behaviour, interaction patterns and existing implementation experience. |
-| RF-02 | **Class-to-class translation is prohibited.** The Olive class list is **not** a migration checklist. What transfers is **product intent, never implementation shape**. |
+| RF-01 | **ArcVideo and ArcVideoFoundation are ArcSlate's product and behaviour references** (**D-012** as amended 2026-09-05, `P2-005`), not architecture authorities. They inform product concepts, editing workflows, timeline behaviour, media workflows, the feature set, project behaviour, interaction patterns and existing implementation experience. |
+| RF-02 | **Class-to-class translation is prohibited.** A reference class list is **not** a migration checklist. What transfers is **product intent, never implementation shape**. |
 | RF-03 | **ArcSlate is not a technical exception** (Stage 13 §6). Its architecture is C#, .NET, Avalonia and Native AOT, with `[LibraryImport]`/P/Invoke to native media libraries where necessary. It is **not** a Qt application, **not** a C++ product with a C# shell, and **not** a C++ worker. |
-| RF-04 | **ArcVideo, ArcVideoFoundation and Olive are all ArcSlate references** (**D-012**). Reuse of any of them is licence-gated and provenance-gated under **D-013**, with file-level SPDX evidence — the **F-013** gate. Olive is GPL-family, so it is **behavioural reference only** unless an explicit compatibility decision says otherwise. |
-| RF-05 | An **ArcSlate Reference Coverage Matrix** and an **Olive-to-ArcSlate migration matrix** are required before ArcSlate implementation planning is finalised. |
+| RF-04 | **ArcVideo and ArcVideoFoundation are ArcSlate's references** (**D-012** as amended, `P2-005`). Both are **GPL-3.0-only**, so both are **behavioural reference only**: **D-013** prohibits copying, translating or porting from either. Reuse would in any case be licence-gated and provenance-gated with file-level SPDX evidence — the **F-013** gate, closed on the recorded determinations. |
+| RF-05 | **The ArcSlate Reference Coverage Matrix is complete** — [`../../assurance/reference-coverage/arcslate-arcvideo.md`](../../assurance/reference-coverage/arcslate-arcvideo.md), 31 item-level rows bound to ArcVideo `caf5651` and ArcVideoFoundation `139eeca`. It is a versioned planning input; `WP-36.07` checks it for drift. **No separate migration matrix from an upstream project is required**, because no upstream checkout is obtained and no material is reused (`RF-04`). |
+| RF-06 | **Upstream provenance is preserved.** ArcVideo is a documented fork; its GPL-3.0 obligations, upstream copyright and attribution to the original authors stand, and are recorded wherever inherited material requires them (**D-013**). Removing an upstream project from the reference map never removes its provenance. |
 
 ---
 
@@ -313,7 +314,7 @@ ArcSlate Project
 | PF-02 | **The native project format is versioned** (`FV-01`–`FV-09`). |
 | PF-03 | **The project format contains no regenerable cache** (`EX-04` in the data requirements) — but it does contain everything required for correctness, including effect configuration, keyframes and colour configuration. |
 | PF-04 | **The project is separated from large media** (`WS-02`). A project bundle is a directory-backed working store; export may produce a single archive. |
-| PF-05 | An **Olive project importer** is an ordinary import adapter producing ArcSlate canonical data (`IM-01`–`IM-08` in the data requirements). |
+| PF-05 | **An importer for a third-party editor project format**, where one is offered, is an ordinary import adapter producing ArcSlate canonical data (`IM-01`–`IM-08` in the data requirements). Every claimed import version requires a fixture (`PG-07`). |
 | PF-06 | **No bidirectional external-project compatibility is promised.** Import is one-way. |
 | PF-07 | **Any unmappable imported feature generates an import report entry** (`IM-05` in the data requirements). **Silent loss is prohibited.** |
 | PF-08 | **An unknown effect or missing plug-in is preserved and bypassed**, clearly marked, so the project opens and the state can be restored if the plug-in returns (`LC-06`, `LC-07` in the extension requirements). |
@@ -444,10 +445,10 @@ ProjectCheckpoint · MediaRelink · ImportOrigin · ArcSlateArtifactReference
 | Source | Consumed as |
 |---|---|
 | `I4 §Stage 20` | The complete ArcSlate specification: reference posture, product definition and principles, domain structure, time model, media, timeline, viewer, processing graph, subtitles, audio, colour, proxy and cache, runtime, render, undo and recovery, AI integration, cloud boundary, project format, workspace, the twelve-phase rewrite plan, V1 scope, non-goals and domain model |
-| `I2 §II` | The Olive reuse posture and the required migration matrix |
+| `I2 §II` | The reference reuse posture. **The migration-matrix obligation it describes is discharged by the completed Reference Coverage Matrix** (`RF-05`); no separate upstream migration matrix is required (`P2-005`) |
 | `I4 §Stage 13 §6`, `§24–26` | ArcSlate is not a technical exception; its owned state; large media never crossing the Hub |
 | `I4 §Stage 22 §34–39`, `§197` | ArcSlate storage strategy, working store versus portable package, local structure |
 | `I3 §14`, `§15` | Large-data path, media frames and GPU staying in-process, native ABI discipline |
 | **D-002** | ArcSlate inherits product direction from ArcVideo, not its model |
 | **D-008** | Native AOT desktop deliverable with trim/AOT-safe dependencies |
-| **D-012**, **D-013** | Olive, ArcVideo and ArcVideoFoundation as licence-gated references |
+| **D-012** (as amended 2026-09-05), **D-013**, **P2-005** | ArcVideo and ArcVideoFoundation as ArcSlate's licence-gated references; upstream provenance retained |

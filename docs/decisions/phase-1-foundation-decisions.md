@@ -650,6 +650,20 @@ The current effective applied scope of this decision is recorded under **F-004**
 >
 > Mark F-011 USER_CONFIRMED and resolved by D-012.
 
+### Amendment 2026-09-05 — Olive removed as a separate required reference
+
+**Amended by user decision, recorded as `P2-005` in [`phase-2-specification-decisions.md`](phase-2-specification-decisions.md).**
+
+The verbatim decision block above is unchanged, following this register's supersession convention. The **current effective reference map** replaces its ArcSlate line:
+
+> - **ArcVideo and ArcVideoFoundation → ArcSlate references.**
+
+Every other line of the map, and every other part of D-012 — the non-authority position, the not-a-parity-commitment position, the no-runtime-import position, and the per-product Reference Coverage Matrix requirement — remains in force exactly as recorded.
+
+**Basis.** Olive could not be built in the user's environment. ArcVideo contains the modifications made to get that codebase building, and ArcVideo and ArcVideoFoundation are the intended concrete reference baselines. There is no requirement to obtain or independently review an Olive repository.
+
+**What this amendment does not do.** It removes Olive as a *separate required reference*. It does **not** remove Olive's provenance. ArcVideo is a documented fork of Olive; its GPL-3.0 obligations, upstream copyright and attribution run to the Olive authors, and every notice, licence header and provenance record that inherited material requires is preserved unchanged (**D-013**).
+
 ---
 
 ## D-013 — Reuse policy · resolves **F-012**, governs **F-013** · `USER_CONFIRMED`
@@ -988,7 +1002,7 @@ Global rules now in force. Applied to all occurrences they cover without further
 | 28 | Professional desktop products talk directly to Cloud for their own identity, sync, storage and product-domain APIs. **ArcChat is a control plane, never a mandatory data gateway or proxy.** | D-010 | T04, T07, T18 |
 | 29 | **Cloud never connects directly to localhost, Named Pipes, Unix sockets or local stdio.** Local action flows as a durable `ToolRequest` that ArcChat Desktop pulls, re-authorizes locally, executes, and answers with an idempotent `ToolResult`. Same-machine first-party product-to-product communication remains StreamJsonRpc over Named Pipe/UDS. | D-010 | T07, T08, T09 |
 | 30 | The implementation target is the existing `ArcForges` monorepo; no replacement implementation repository is created. `ArcForges-Design` is the sole authoritative requirements, architecture and planning repository and contains no product source code. Existing scaffolds and code are implementation-state evidence, never design authority. | D-011 | T23 |
-| 31 | The reference map is fixed: AionUi → ArcChat; AFFiNE and SiYuan → ArcNotes; Serial-Studio → ArcScope; ArcVideo, ArcVideoFoundation and Olive → ArcSlate; StartArcForges → packaged-product and release-behaviour oracle; the ArcForges monorepo → implementation-state inventory and reconciliation target. References are never architecture authorities, parity commitments, or reasons to import a runtime stack. | D-012 | T02, T03, T20 |
+| 31 | The reference map is fixed: AionUi → ArcChat; AFFiNE and SiYuan → ArcNotes; Serial-Studio → ArcScope; **ArcVideo and ArcVideoFoundation → ArcSlate** (amended 2026-09-05; see D-012's amendment); StartArcForges → packaged-product and release-behaviour oracle; the ArcForges monorepo → implementation-state inventory and reconciliation target. References are never architecture authorities, parity commitments, or reasons to import a runtime stack. | D-012 | T02, T03, T20 |
 | 32 | Every product receives a Reference Coverage Matrix — Copy / Rewrite / Improve / Replace / Reference Only / Drop — before its implementation planning is finalized. | D-012, D-006 | T02, T03, T20 |
 | 33 | Copy First is licence-gated and provenance-gated; unconditional copying is rejected. The nine-field provenance record in D-013 is mandatory before any source, test, asset or generated artifact is copied, translated, ported or structurally reused. | D-013 | T20 |
 | 34 | GPL-only, licence-unclear, unknown-origin or otherwise incompatible material must not be copied, translated or ported; it may be used only as controlled behavioural evidence until an explicit compatibility decision says otherwise. Tests and assets require their own licence checks; a repository-root licence is never assumed to cover every file. | D-013 | T20 |

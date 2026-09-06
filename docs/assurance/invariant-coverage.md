@@ -83,6 +83,12 @@ Each was individually checked against the catalogue and is the same distinction 
 | *Policy ≠ Settings* | `I-340` — Policy ≠ Setting | Plural versus singular |
 | *Yank ≠ Moderation Removal* | `I-433` — Publisher Yank ≠ platform enforcement | The canonical row names the actors, which is the load-bearing part |
 
+### 3.1.1 One catalogue row reworded 2026-09-05
+
+| Row | Corpus phrasing | Catalogue phrasing | Why |
+|---|---|---|---|
+| `I-032` | *Olive product reference ≠ ArcSlate runtime architecture* | **Upstream product reference ≠ ArcSlate runtime architecture** | `P2-005` amended **D-012**'s reference map: ArcSlate's references are ArcVideo and ArcVideoFoundation, and no Olive repository is obtained or reviewed. The **invariant is unchanged** — a product reference is never a runtime architecture — and it now names the relationship rather than a repository that is no longer in the map. The corpus statement is preserved unaltered in the preserved inputs. |
+
 ### 3.2 The one superseded statement
 
 | Corpus statement | Why excluded |
@@ -213,7 +219,7 @@ Every invariant has at least one owning package. Packages carrying the largest i
 | `I-029` | ArcScope Report ≠ ArcNotes Document | `00-architecture-overview.md` §7; `01-solution-and-project-layout.md` §8 | Repository policy test | Assert `ArcScope Report` is not `ArcNotes Document`: a value, type or state satisfying one side is rejected where the other is required, and the refusal names this invariant. | `00`, `01`, `05` | `WP-05.00`, `WP-05.02` |
 | `I-030` | ArcNotes AI ≠ ArcChat Agent Platform; ArcScope AI ≠ ArcChat Agent Platform | `00-architecture-overview.md` §7; `01-solution-and-project-layout.md` §8 | Repository policy test | Assert `ArcNotes AI` is not `ArcChat Agent Platform; ArcScope AI`, `ArcChat Agent Platform; ArcScope AI` is not `ArcChat Agent Platform`: a value, type or state satisfying one side is rejected where the other is required, and the refusal names this invariant. | `00`, `01`, `05` | `WP-05.00`, `WP-05.02` |
 | `I-031` | ArcChat Federated Search ≠ a central ArcForges database | `00-architecture-overview.md` §7; `01-solution-and-project-layout.md` §8 | Repository policy test | Assert `ArcChat Federated Search` is not `a central ArcForges database`: a value, type or state satisfying one side is rejected where the other is required, and the refusal names this invariant. | `00`, `01`, `05` | `WP-05.00`, `WP-05.02` |
-| `I-032` | Olive product reference ≠ ArcSlate runtime architecture | `00-architecture-overview.md` §7; `01-solution-and-project-layout.md` §8 | Repository policy test | Assert `Olive product reference` is not `ArcSlate runtime architecture`: a value, type or state satisfying one side is rejected where the other is required, and the refusal names this invariant. | `00`, `01`, `05` | `WP-05.00`, `WP-05.02` |
+| `I-032` | Upstream product reference ≠ ArcSlate runtime architecture | `00-architecture-overview.md` §7; `01-solution-and-project-layout.md` §8 | Repository policy test | Assert `Upstream product reference` is not `ArcSlate runtime architecture`: a value, type or state satisfying one side is rejected where the other is required, and the refusal names this invariant. | `00`, `01`, `05` | `WP-05.00`, `WP-05.02` |
 | `I-040` | Capability ≠ Action | `02-contracts-and-protocols.md` §5–§8 | Type distinction | Assert `Capability` is not `Action`: a value, type or state satisfying one side is rejected where the other is required, and the refusal names this invariant. | `03`, `09` | `WP-03.03`, `WP-09.05` |
 | `I-041` | Capability ≠ UI Command | `02-contracts-and-protocols.md` §5–§8 | Type distinction | Assert `Capability` is not `UI Command`: a value, type or state satisfying one side is rejected where the other is required, and the refusal names this invariant. | `03`, `09` | `WP-03.03`, `WP-09.05` |
 | `I-042` | Capability ≠ Permission | `02-contracts-and-protocols.md` §5–§8 | Type distinction | Assert `Capability` is not `Permission`: a value, type or state satisfying one side is rejected where the other is required, and the refusal names this invariant. | `03`, `09` | `WP-03.03`, `WP-09.05` |

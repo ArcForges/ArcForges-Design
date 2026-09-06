@@ -36,7 +36,7 @@
 
 | # | Rule |
 |---|---|
-| BR-01 | **The ArcSlate Reference Coverage Matrix is a completed, versioned planning input** — [`../../assurance/reference-coverage/arcslate-arcvideo.md`](../../assurance/reference-coverage/arcslate-arcvideo.md), 31 item-level rows, bound to ArcVideo at `caf5651` and ArcVideoFoundation at `139eeca`. It was produced before this plan was derived (**D-019**). **This package consumes it and checks it for drift; it does not create it.** |
+| BR-01 | **The ArcSlate Reference Coverage Matrix is a completed, versioned planning input** — [`../../assurance/reference-coverage/arcslate-arcvideo.md`](../../assurance/reference-coverage/arcslate-arcvideo.md), 31 item-level rows, bound to ArcVideo at `caf5651` and ArcVideoFoundation at `139eeca` — ArcSlate's complete reference set under **D-012** as amended (`P2-005`). It was produced before this plan was derived (**D-019**). **This package consumes it and checks it for drift; it does not create it.** |
 | BR-02 | **ArcSlate is not a technical exception.** Its architecture is C#, Avalonia and Native AOT with P/Invoke to native media libraries. It is not a Qt application, not a C++ product with a C# shell, and not a C++ worker. |
 | BR-03 | **Editing is non-destructive.** Source media is never modified. |
 | BR-04 | **`Project ≠ Sequence`** and **`Project ≠ media folder`** (`I-476`). |
@@ -172,7 +172,7 @@
 
 **All of the following, with recorded evidence:**
 
-1. **Drift check only**: the reference is compared against its bound commit, and any newly introduced material is assessed against the accepted ArcSlate scope. The matrix and its licence audit were completed as design-stage evidence and closed `PG-01` and `F-013` before this package began. Findings carried in: **F-AL-2** records that ArcVideoFoundation is a **thin utility layer of 27 files**, not the “fat core” its README describes — so no substantial reusable core exists. **`OC-01`**: Olive is registered by **D-012** but is **not present** at the authorized location; this package proceeds on the two accessible references and makes no claim of Olive coverage.
+1. **Drift check only**: the reference is compared against its bound commit, and any newly introduced material is assessed against the accepted ArcSlate scope. The matrix and its licence audit were completed as design-stage evidence and closed `PG-01` and `F-013` before this package began. Findings carried in: **F-AL-2** records that ArcVideoFoundation is a **thin utility layer of 27 files**, not the “fat core” its README describes — so no substantial reusable core exists. **`P2-005`** fixes the reference baseline as **ArcVideo and ArcVideoFoundation**; no upstream checkout is sought, and **upstream provenance is preserved** (`RF-06` in the ArcSlate requirements).
 2. A project holds multiple sequences over one media library, with project, sequence and folder structurally distinct.
 3. **No drift accumulates over long durations in any supported rate**; frame–sample conversion round-trips exactly.
 4. A project opens fully with all media offline and relinks correctly; **no native type appears anywhere in the domain, contracts or persisted types**.

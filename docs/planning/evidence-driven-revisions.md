@@ -63,15 +63,16 @@ The prerequisite evidence **D-019** requires was produced, and then the plan was
 | **Downstream consumers** | `WP-36`, `WP-37` |
 | **Verification** | `MT-02` of that matrix re-checks `AL-30` on drift: if the Foundation grows into the core its README describes, the assumption changes |
 
-### R-06 — Olive is unavailable
+### R-06 — ArcSlate's reference baseline narrowed to the two actual repositories
 
 | Field | Content |
 |---|---|
-| **Evidence** | [`arcslate-arcvideo.md`](../assurance/reference-coverage/arcslate-arcvideo.md) `§3.1`. No Olive repository exists at the authorized reference-map location; a filesystem search to depth 4 found no candidate |
-| **Affected statement** | The plan assumed all registered ArcSlate references were available |
-| **Correction** | Recorded as **`OC-01`**, an unresolved determination requiring the user's decision. Olive-derived evidence is reachable transitively through ArcVideo — a documented fork — and every such row is labelled *(Olive-derived)*. **No claim of complete Olive coverage is made anywhere** |
-| **Downstream consumers** | `WP-36`–`WP-39`; none depends on Olive-direct evidence |
-| **Verification** | The matrix's completeness check records one unresolved determination; `§6` of the open-gates register carries it |
+| **Evidence** | [`arcslate-arcvideo.md`](../assurance/reference-coverage/arcslate-arcvideo.md) `§2`. No Olive repository existed at the authorized reference-map location. ArcVideo's `README.md` (lines 12, 20, 98) documents it as a fork of Olive, and it is the buildable codebase |
+| **Affected statement** | **D-012**'s reference map listed Olive as a third ArcSlate reference; the plan assumed all three were available |
+| **Correction** | **User decision `P2-005`, 2026-09-05**: ArcSlate's direct references are **ArcVideo and ArcVideoFoundation**; no Olive repository is to be obtained or independently reviewed. Olive could not be built in the user's environment and ArcVideo carries the modifications that made it build. **D-012** is amended by dated record; the Olive-direct audit scope and the missing-repository blocker are removed; `OC-01` is closed |
+| **What was deliberately not removed** | **Olive-origin provenance.** ArcVideo's GPL-3.0 obligations, upstream copyright and attribution to the Olive authors are retained wherever inherited material requires them (`§3.1` of that matrix; `LP-02`). Matrix rows previously labelled *(Olive-derived)* now read *(upstream-derived)* — an attribution note about ArcVideo's own tree, not a claim about an Olive repository |
+| **Downstream consumers** | `WP-36`–`WP-39`; [`../assurance/reference-coverage-and-provenance.md`](../assurance/reference-coverage-and-provenance.md) `§1.1`, `§2.2`, `§7`; [`../requirements/products/arcslate.md`](../requirements/products/arcslate.md) `§1`; [`../requirements/00-product-scope-and-portfolio.md`](../requirements/00-product-scope-and-portfolio.md) `§9` |
+| **Verification** | The matrix completeness check now records **0 unresolved determinations**; the gates register records `OC-01` closed; no document claims Olive coverage or requires an Olive checkout |
 
 ### R-07 — Native NOTICE obligation extends to native assets
 

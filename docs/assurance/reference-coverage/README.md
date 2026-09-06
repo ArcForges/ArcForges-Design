@@ -2,12 +2,14 @@
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications), design-stage evidence
 > Layer: Assurance
-> Governing authority: **D-012** (per-product matrix before implementation planning is finalized), **D-013** (reuse policy and provenance), **D-004**/**D-021** (licence boundaries)
+> Governing authority: **D-012** as amended 2026-09-05 (per-product matrix before implementation planning is finalized), **P2-005** (ArcSlate reference baseline), **D-013** (reuse policy and provenance), **D-004**/**D-021** (licence boundaries)
 > Companions: [`../reference-coverage-and-provenance.md`](../reference-coverage-and-provenance.md) (method), [`../open-gates-register.md`](../open-gates-register.md)
 
 These are the **completed design-stage Reference Coverage Matrices** required by **D-012**. They are evidence, not templates and not future audit instructions.
 
 Each matrix was produced by reading the named reference repository at a recorded commit: its licence files, source tree, tests, packaging and documentation, to the depth needed to establish an item-level position. Every reviewed item carries an evidence location, the source identity and commit, an ArcForges requirement or an explicit exclusion, a disposition, a rationale, a licensing and provenance position, a verification oracle and an owner.
+
+> **Reference map amendment, 2026-09-05.** **D-012**'s ArcSlate line is amended by user decision `P2-005`: **ArcVideo and ArcVideoFoundation** are ArcSlate's direct references, and there is no requirement to obtain or independently review an Olive repository. **This narrows the audit scope, not the provenance obligation** — ArcVideo is a documented Olive fork, and its GPL-3.0 obligations, upstream copyright and attribution to the Olive authors are preserved wherever inherited material requires them (`§3.1` of that matrix).
 
 ---
 
@@ -18,7 +20,7 @@ Each matrix was produced by reading the named reference repository at a recorded
 | [`arcchat-aionui.md`](arcchat-aionui.md) | AionUi | ArcChat | **Complete** |
 | [`arcnotes-affine-siyuan.md`](arcnotes-affine-siyuan.md) | AFFiNE, SiYuan | ArcNotes | **Complete** |
 | [`arcscope-serial-studio.md`](arcscope-serial-studio.md) | Serial-Studio | ArcScope | **Complete** |
-| [`arcslate-arcvideo.md`](arcslate-arcvideo.md) | ArcVideo, ArcVideoFoundation, Olive | ArcSlate | **Complete for the two accessible references; Olive unresolved — see `§3` of that matrix** |
+| [`arcslate-arcvideo.md`](arcslate-arcvideo.md) | ArcVideo, ArcVideoFoundation | ArcSlate | **Complete** |
 | [`distribution-startarcforges.md`](distribution-startarcforges.md) | StartArcForges | Distribution and release | **Complete within the authorized oracle boundary** |
 
 ---
@@ -35,7 +37,6 @@ Every matrix is bound to a specific commit. Re-reading a reference at a differen
 | Serial-Studio | `github.com/Serial-Studio/Serial-Studio` | `639daafb` | 2026-07-13 | **Dual GPL-3.0-only / commercial** — see the matrix `§2` |
 | ArcVideo | `github.com/ArcForges/ArcVideo` | `caf5651` | 2026-03-16 | GPL-3.0 (`LICENSE`) |
 | ArcVideoFoundation | `github.com/ArcForges/ArcVideoFoundation` | `139eeca` | 2026-03-30 | GPL-3.0 (`LICENSE`) |
-| Olive | — | — | — | **Not present in the authorized reference map location** |
 | StartArcForges | local packaged-output tree | not a git repository | — | Per-product bundled notices |
 
 ---
@@ -48,7 +49,7 @@ Every row carries exactly one of three states. They are not interchangeable, and
 |---|---|
 | **Evidence established** | The reference material was read, its position is determined, and the disposition follows from the evidence |
 | **Accepted exclusion** | The item exists in the reference and is deliberately out of ArcForges scope; the reason is recorded and it becomes no requirement |
-| **Unresolved determination** | The item's position cannot be settled from the accessible material; the exact blocker and its owner are recorded, and it blocks whatever depends on it |
+| **Unresolved determination** | The item's position cannot be settled from the accessible material; the exact blocker and its owner are recorded, and it blocks whatever depends on it. **None remains across the five matrices** — the one that existed was closed by `P2-005` |
 
 | # | Rule |
 |---|---|
@@ -62,7 +63,7 @@ Every row carries exactly one of three states. They are not interchangeable, and
 
 ## Aggregate licence position
 
-The single most consequential finding across all five matrices:
+The single most consequential finding across all five matrices — six registered references:
 
 | Reference | Effective position for reuse | Consequence |
 |---|---|---|
@@ -74,7 +75,7 @@ The single most consequential finding across all five matrices:
 | Serial-Studio — Pro modules | **Commercial-only, excluded from GPL** | Reference Only, and the excluded module list is respected as an authorship boundary |
 | ArcVideo, ArcVideoFoundation | **GPL-3.0-only** | **Not copyable, translatable or portable** under **D-013**. Reference Only |
 
-**Consequence for the whole programme.** Four of the six accessible references are GPL-family, proprietary, or AGPL. Only AionUi and AFFiNE's MIT subtrees are permissively licensed. **No matrix row proposes copying, porting or translating reference source into ArcForges.** Every product is therefore an original implementation informed by behavioural evidence, and the **F-013** determinations recorded here are what establishes that.
+**Consequence for the whole programme.** Four of the six registered references are GPL-family, proprietary, or AGPL. Only AionUi and AFFiNE's MIT subtrees are permissively licensed. **No matrix row proposes copying, porting or translating reference source into ArcForges.** Every product is therefore an original implementation informed by behavioural evidence, and the **F-013** determinations recorded here are what establishes that.
 
 ---
 
@@ -82,8 +83,9 @@ The single most consequential finding across all five matrices:
 
 | # | Statement |
 |---|---|
-| ND-01 | **They do not close F-013.** They discharge its trigger and record the determinations for the reviewed scope; the gate closes when the Licensing and Provenance Owner accepts them ([`../open-gates-register.md`](../open-gates-register.md)). |
+| ND-01 | **They record the F-013 determinations**; the gate is closed on that evidence ([`../open-gates-register.md`](../open-gates-register.md)). |
 | ND-02 | **They do not authorize any reuse.** No row proposes reuse; if one ever did, the ten-field provenance record would still be required first. |
 | ND-03 | **They do not create requirements.** Items map to existing requirements or become accepted exclusions. |
 | ND-04 | **They do not replace drift checking.** Each product's implementation package re-checks the recorded commit for drift and newly introduced material. |
 | ND-05 | **No reference repository was modified, and no packaged binary was executed.** |
+| ND-06 | **They do not remove upstream provenance.** Where a reference is itself a fork, its upstream copyright, licence obligations and attribution are recorded and retained, independently of which repositories the reference map registers. |

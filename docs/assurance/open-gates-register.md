@@ -42,7 +42,7 @@ A gate is never closed by registering a finding about it, and never closed by a 
 
 | Gate | Subject | Owner | Trigger | Blocks | Scheduled in | State |
 |---|---|---|---|---|---|---|
-| **F-013** | Reference-repository licences and file-level SPDX evidence (**D-013**) | Licensing and Provenance Owner | The first step of a product's Reference Coverage Matrix and licence audit — **fired and satisfied 2026-09-05** | That product's implementation planning; `P-02` in the release gates | Design-stage evidence: the five matrices in [`reference-coverage/`](reference-coverage/README.md), 146 item-level rows with a licence position each | **`CLOSED` 2026-09-05** for the five accessible references; **one unresolved determination** — Olive (`OC-01`) |
+| **F-013** | Reference-repository licences and file-level SPDX evidence (**D-013**) | Licensing and Provenance Owner | The first step of a product's Reference Coverage Matrix and licence audit — **fired and satisfied 2026-09-05** | That product's implementation planning; `P-02` in the release gates | Design-stage evidence: the five matrices in [`reference-coverage/`](reference-coverage/README.md), 145 item-level rows with a licence position each | **`CLOSED` 2026-09-05** for every registered reference under the amended **D-012** map |
 | **F-023** | ArcChat Mobile provenance and complete direct and transitive dependency closure (**D-004**) | Release Engineering Owner **and** Licensing and Provenance Owner; Product Owner approves | Before the first store, test-flight, store-listing or sideloadable mobile artifact is produced | Any mobile artifact; `L-50` | The mobile release work package | `OPEN` |
 | **F-026** | Typed HTTP client version pin, generated-only entry point, reflection-package prohibition, generator diagnostic treated as build-breaking | Owning platform work-package owner; Architecture Owner approves | Before accepting the typed HTTP client into an AOT deliverable | Any AOT deliverable consuming it; `R-03` | The platform skeleton and AOT proof work package | `OPEN` |
 
@@ -108,11 +108,18 @@ These are new obligations that follow from Phase 2 architecture rather than from
 
 ## 6. Unresolved determinations
 
-Distinct from a gate. A gate has a known obligation awaiting evidence; an **unresolved determination** is a question the accessible material cannot answer.
+**None.**
 
-| # | Determination | Owner | Exact affected scope | Blocks | Resolution |
-|---|---|---|---|---|---|
-| **OC-01** | **Olive is registered by D-012 as an ArcSlate reference but is not present** at the authorized reference-map location, and a filesystem search to depth 4 found no candidate | Licensing and Provenance Owner, with the Product Owner | Olive capabilities absent from or altered in ArcVideo at commit `caf5651`; Olive's own licence file and per-file provenance; Olive's tests and interchange fixtures | Only a claim of complete Olive coverage — which is made nowhere. No ArcSlate package depends on Olive-direct evidence | **Requires the user's decision**: make Olive available at the authorized location, or record an accepted exclusion for the Olive-direct scope. Recorded as `OC-01` in [`../decisions/phase-2-specification-decisions.md`](../decisions/phase-2-specification-decisions.md) |
+Distinct from a gate. A gate has a known obligation awaiting evidence; an **unresolved determination** is a question the accessible material cannot answer. One existed and is closed.
+
+| # | Determination | Resolution | State |
+|---|---|---|---|
+| **OC-01** | **Olive was registered by D-012 as an ArcSlate reference but was not present** at the authorized reference-map location | **User decision, 2026-09-05** (`P2-005`): ArcSlate's direct reference repositories are **ArcVideo and ArcVideoFoundation**; there is no requirement to obtain or independently review an Olive repository. Olive could not be built in the user's environment, and ArcVideo carries the modifications made to get that codebase building. **D-012**'s reference map is amended accordingly | **`CLOSED` 2026-09-05** |
+
+| # | Rule |
+|---|---|
+| UD-01 | **Closing OC-01 removed an audit obligation, not a provenance obligation.** ArcVideo is a documented Olive fork; its GPL-3.0 obligations, upstream copyright and attribution to the Olive authors are preserved wherever inherited material requires them (**D-013**; `§3.1` of the ArcSlate matrix). |
+| UD-02 | **A future unresolved determination is recorded here** with the same fields, and blocks whatever depends on it until decided. |
 
 ---
 
@@ -125,7 +132,7 @@ Distinct from a gate. A gate has a known obligation awaiting evidence; an **unre
 | Gates created by Phase 2 | 11 | Was 10; `PG-06` split into `PG-06` (design) and `PG-11` (implementation) |
 | **Closed by design-stage evidence** | **4** | `F-013`, `PG-01`, `PG-02`, `PG-06` — each with a named artifact |
 | **Open implementation-stage gates** | **22** | Legitimate future obligations; their triggers are listed per gate |
-| Unresolved determinations | 1 | `OC-01` — requires the user's decision |
+| Unresolved determinations | **0** | `OC-01` closed by user decision 2026-09-05 (`P2-005`) |
 
 | # | Rule |
 |---|---|

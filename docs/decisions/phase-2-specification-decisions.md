@@ -7,7 +7,7 @@
 
 Phase 1 froze twenty-three foundation decisions. **They are binding and are not reopened here.** This register records only what Phase 2 had to decide that is *not* derivable from them.
 
-The bar for entry is deliberately high. A conclusion already stated in the preserved input corpus, or already implied by a Phase 1 decision, is implemented in the requirements, architecture or planning layers with a citation — it does not become a decision record. Four entries exist: three in force, and one withdrawn and retained as the record of a corrected error.
+The bar for entry is deliberately high. A conclusion already stated in the preserved input corpus, or already implied by a Phase 1 decision, is implemented in the requirements, architecture or planning layers with a citation — it does not become a decision record. Five entries exist: four in force, and one withdrawn and retained as the record of a corrected error.
 
 ---
 
@@ -73,7 +73,7 @@ P2-002 substituted a different process — derive first, audit during implementa
 | The implementation repository has **166 projects and 8,638 C# lines**, not 332 projects of substance | [`../assurance/implementation-state-reconciliation.md`](../assurance/implementation-state-reconciliation.md) `§3` `C-01`, `C-02` | A materially different starting position |
 | Four of six recorded conformance findings were false | there, `C-03`–`C-06` | `WP-02` and `WP-05` scoped larger than the evidence supports |
 | The cloud three-role separation does not exist | there, `§5.5` | Not identified at all — a new priority-3 item |
-| Olive is **not present** at the authorized location | [`arcslate-arcvideo.md`](../assurance/reference-coverage/arcslate-arcvideo.md) `§3.1` | That all registered ArcSlate references were available |
+| Olive was **not present** at the authorized location, which the plan had assumed | [`arcslate-arcvideo.md`](../assurance/reference-coverage/arcslate-arcvideo.md) | That all registered ArcSlate references were available. **Resolved by `P2-005`**: the reference map is amended and ArcVideo plus ArcVideoFoundation are the baselines |
 
 `DC-04` anticipated rewriting "a package"; the evidence in fact changed package scope, priority order and one open question requiring the user's decision. Deriving first did not make the dependency structure visible — it made a **provisional** structure look settled.
 
@@ -113,7 +113,7 @@ P2-002 substituted a different process — derive first, audit during implementa
 |---|---|---|
 | Requirements | [`../requirements/`](../requirements/README.md) | Complete |
 | Architecture | [`../architecture/`](../architecture/README.md) | Complete |
-| Licence matrices — per product, per **D-012** | [`../assurance/reference-coverage/`](../assurance/reference-coverage/README.md) — five matrices, 146 item-level rows | **Complete**, with one unresolved determination (Olive, `§3.1` of the ArcSlate matrix) |
+| Licence matrices — per product, per **D-012** | [`../assurance/reference-coverage/`](../assurance/reference-coverage/README.md) — five matrices, 145 item-level rows | **Complete.** The one unresolved determination it carried was closed by `P2-005` |
 | Current-code reconciliation | [`../assurance/implementation-state-reconciliation.md`](../assurance/implementation-state-reconciliation.md) — 166 projects, item-level | **Complete** |
 
 **Ordering, stated plainly.** Requirements and architecture, then licence matrices and code reconciliation, **then** the plan. That is **D-019**'s ordering and it is now followed rather than substituted.
@@ -124,7 +124,7 @@ P2-002 substituted a different process — derive first, audit during implementa
 - `DD-02`: **The baseline matrices and the inventory are versioned planning inputs.** Implementation packages consume them. No implementation package re-creates a baseline audit.
 - `DD-03`: **Implementation packages retain drift checks only** — source drift against the recorded commit, changed scope, and newly introduced material. Baseline creation and later maintenance are different obligations and are not conflated.
 - `DD-04`: **Where evidence changed a package, the change is recorded** with its evidence, the affected statement, the correction, downstream consumers and the verification needed — in [`../planning/evidence-driven-revisions.md`](../planning/evidence-driven-revisions.md).
-- `DD-05`: **One unresolved determination remains** (Olive). It does not block the derivation, because the two accessible ArcSlate references were fully reviewed and no ArcSlate package depends on Olive-direct evidence. It blocks only a claim of complete Olive coverage, which is not made anywhere.
+- `DD-05`: **No unresolved determination remains.** The one that existed — `OC-01`, the ArcSlate reference baseline — was closed by user decision on 2026-09-05 and is recorded as `P2-005`.
 - `DD-06`: **`DC-01`–`DC-04` are withdrawn with P2-002.** They described the substituted process.
 
 **Authority.** Product Owner, with the Architecture Owner and the Licensing and Provenance Owner.
@@ -132,6 +132,33 @@ P2-002 substituted a different process — derive first, audit during implementa
 **Consumed by.** [`../planning/implementation-sequence.md`](../planning/implementation-sequence.md) `§1.1`; [`../planning/work-packages/README.md`](../planning/work-packages/README.md); [`../planning/evidence-driven-revisions.md`](../planning/evidence-driven-revisions.md); every work package's Required Inputs.
 
 **Reversal cost.** Not applicable — this is the ordering Phase 1 already confirmed. It is followed, not chosen.
+
+---
+
+## P2-005 — ArcSlate reference baseline: ArcVideo and ArcVideoFoundation · `ADOPTED`
+
+**Decision (user, 2026-09-05).** **ArcSlate's direct reference repositories are ArcVideo and ArcVideoFoundation. There is no requirement to obtain or independently review an Olive repository.**
+
+**Basis.** Olive could not be built in the user's environment. ArcVideo contains the modifications made to get that codebase building, and ArcVideo and ArcVideoFoundation are the intended concrete reference baselines. The concrete, buildable fork is the reference of record; the unbuildable upstream is not.
+
+**Why this is a decision and not an inference.** **D-012** registered Olive explicitly. Dropping it is a scope decision that only the Product Owner can take — which is why the Stage 2 repair recorded it as `OC-01` and did not resolve it locally.
+
+**Consequences.**
+
+- `RB-01`: **D-012's reference map is amended.** The verbatim decision block is preserved per this register's supersession convention; the current effective ArcSlate line is *"ArcVideo and ArcVideoFoundation → ArcSlate references"* ([`phase-1-foundation-decisions.md`](phase-1-foundation-decisions.md) §D-012 amendment; applied-disposition row 31).
+- `RB-02`: **The Olive-direct audit scope is removed.** No obligation exists to obtain Olive's independent tests, fixtures, source or licence file. The missing-repository blocker is withdrawn.
+- `RB-03`: **ArcSlate's reference coverage, planning and verification evidence rest on the actual ArcVideo and ArcVideoFoundation repositories**, at commits `caf5651` and `139eeca`.
+- `RB-04`: **Olive-origin provenance is preserved, not erased.** ArcVideo is a documented fork of Olive. Its **GPL-3.0 obligations, upstream copyright and attribution run to the Olive authors**, and every notice, licence header and provenance record that inherited material requires is retained (**D-013**). Removing Olive as an independent reference does not authorise removing its provenance, and no row in any matrix does so.
+- `RB-05`: **Preserved raw inputs are unchanged.** `I2 §II` and `I4 §Stage 20` still discuss Olive as historical evidence; this decision is recorded outside them and does not rewrite them.
+- `RB-06`: **`OC-01` is closed.** No unresolved determination remains in the Phase 2 register.
+
+**What does not change.** ArcSlate remains an **original implementation**. Both references are **GPL-3.0-only**, so **D-013** still prohibits copying, translating or porting from either; every matrix row remains `Reference Only` or an accepted exclusion. Removing Olive narrows the *audit* scope, not the *reuse* prohibition.
+
+**Authority.** Product Owner (this decision), with the Licensing and Provenance Owner for `RB-04`.
+
+**Consumed by.** [`phase-1-foundation-decisions.md`](phase-1-foundation-decisions.md) §D-012 amendment; [`../assurance/reference-coverage/arcslate-arcvideo.md`](../assurance/reference-coverage/arcslate-arcvideo.md); [`../assurance/reference-coverage-and-provenance.md`](../assurance/reference-coverage-and-provenance.md) §1.1, §2.2, §7; [`../assurance/open-gates-register.md`](../assurance/open-gates-register.md) §6; [`../requirements/products/arcslate.md`](../requirements/products/arcslate.md) §1; [`../requirements/00-product-scope-and-portfolio.md`](../requirements/00-product-scope-and-portfolio.md) §9; `WP-36`.
+
+**Reversal cost.** Low. Should an Olive checkout later become available and be wanted, it is added to the reference map and the ArcSlate matrix is extended; nothing built on this decision would need to be undone.
 
 ---
 
@@ -153,19 +180,17 @@ Recording a non-decision as a decision is as harmful as leaving a decision unrec
 
 ## Open material conflicts requiring a user decision
 
-**One.**
+**None.**
 
-### OC-01 — Olive is registered as an ArcSlate reference but is not present
+### OC-01 — ArcSlate reference baseline · `CLOSED 2026-09-05`
 
 | Field | Position |
 |---|---|
-| **Conflict** | **D-012** registers Olive as an ArcSlate reference. No Olive repository exists at the authorized reference-map location (`C:\MyFile\ArcForges\`), and a filesystem search of `C:\MyFile` to depth 4 found no candidate. |
-| **Why it cannot be resolved here** | Substituting a similar repository is prohibited; recovering an excluded historical plan is prohibited; and treating ArcVideo — a documented Olive fork — as equivalent to the upstream would misstate the provenance chain. **D-012** registered Olive deliberately, so removing it from the reference map is a scope decision. |
-| **What was completed anyway** | Both accessible ArcSlate references were fully reviewed: 31 item-level rows in [`../assurance/reference-coverage/arcslate-arcvideo.md`](../assurance/reference-coverage/arcslate-arcvideo.md), including complete coverage of ArcVideoFoundation's 27-file tree. Olive-derived evidence is reachable transitively through the fork and is labelled as such. |
-| **Exact affected scope** | Olive capabilities absent from or altered in ArcVideo at commit `caf5651`; Olive's own licence file and per-file provenance; Olive's tests and interchange fixtures. |
-| **What it blocks** | Only a claim of complete Olive coverage — which is made nowhere. No ArcSlate package depends on Olive-direct evidence. |
-| **Options** | (a) make Olive available at the authorized location so the matrix is extended; (b) record an accepted exclusion for the Olive-direct scope, leaving ArcVideo and ArcVideoFoundation as the ArcSlate references. |
-| **Owner** | Licensing and Provenance Owner, with the Product Owner |
+| **Was** | **D-012** registered Olive as an ArcSlate reference; no Olive repository existed at the authorized reference-map location |
+| **Resolution** | **User decision, 2026-09-05**: ArcSlate's direct reference repositories are **ArcVideo and ArcVideoFoundation**; there is no requirement to obtain or independently review an Olive repository. Recorded as `P2-005`, and applied to **D-012** as a dated amendment |
+| **Effect** | The Olive-direct audit scope and the missing-repository blocker are removed. ArcSlate's evidence rests on the two actual repositories at commits `caf5651` and `139eeca` |
+| **Not removed** | **Olive-origin provenance.** ArcVideo is a documented fork; GPL-3.0 obligations, upstream copyright and attribution to the Olive authors are preserved wherever inherited material requires them (`RB-04`) |
+| **State** | **Closed.** No unresolved determination remains in the Phase 2 register |
 
 ---
 

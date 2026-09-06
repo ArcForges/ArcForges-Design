@@ -259,7 +259,7 @@ Every entry is binding. The left and right sides are separate concepts and must 
 | I-029 | ArcScope Report ≠ ArcNotes Document |
 | I-030 | ArcNotes AI ≠ ArcChat Agent Platform; ArcScope AI ≠ ArcChat Agent Platform |
 | I-031 | ArcChat Federated Search ≠ a central ArcForges database |
-| I-032 | Olive product reference ≠ ArcSlate runtime architecture |
+| I-032 | Upstream product reference ≠ ArcSlate runtime architecture |
 
 ### 7.3 Capability, context and resource
 

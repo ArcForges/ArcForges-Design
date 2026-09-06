@@ -116,7 +116,7 @@
 
 **Testing requirements.** A registration check that every matrix names its reference commit and that each commit is resolvable; a dry run of the drift check against one reference.
 
-**Completion gate.** All five matrices are registered with resolvable bound commits, and the drift-check procedure is defined and exercised once. **One unresolved determination is carried forward, not resolved here**: `OC-01` — Olive is registered by **D-012** but is not present at the authorized location ([`../../assurance/open-gates-register.md`](../../assurance/open-gates-register.md) `§6`).
+**Completion gate.** All five matrices are registered with resolvable bound commits, and the drift-check procedure is defined and exercised once. **No unresolved determination is carried forward** — the one that existed, `OC-01`, was closed by user decision on 2026-09-05 (`P2-005`), which amended **D-012**'s ArcSlate reference line to ArcVideo and ArcVideoFoundation ([`../../assurance/open-gates-register.md`](../../assurance/open-gates-register.md) `§6`).
 
 ### WP-00.05 — Stale-claim reconciliation
 

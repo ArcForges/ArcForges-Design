@@ -22,7 +22,7 @@ Nothing in this document authorises reuse. It defines the process by which reuse
 | RR-05 | **Reading a reference repository is always permitted; reusing its material is not** — reuse requires `§3` and `§4`. |
 | RR-06 | **Reference repositories are never modified.** This is a documentation repository, and the reference checkouts are read-only evidence. |
 
-### 1.1 The reference map (**D-012**)
+### 1.1 The reference map (**D-012**, as amended 2026-09-05 by `P2-005`)
 
 | Reference | Role | Consuming product |
 |---|---|---|
@@ -30,9 +30,8 @@ Nothing in this document authorises reuse. It defines the process by which reuse
 | AFFiNE | Behaviour, feature and editor-model reference | ArcNotes |
 | SiYuan | Behaviour, feature and knowledge-model reference | ArcNotes |
 | Serial-Studio | Behaviour, acquisition and visualisation reference | ArcScope |
-| Olive | Behaviour, timeline and editing-model reference | ArcSlate |
-| ArcVideo (existing) | Behaviour and implementation-experience reference | ArcSlate |
-| ArcVideoFoundation (existing) | Media-foundation implementation experience | ArcSlate |
+| ArcVideo | Behaviour, timeline, editing-model and implementation-experience reference | ArcSlate |
+| ArcVideoFoundation | Media-foundation implementation experience | ArcSlate |
 | StartArcForges | Packaged-product and release-behaviour oracle | Distribution and release |
 | The existing ArcForges monorepo | Implementation-state inventory and reconciliation target | All — see [`implementation-state-reconciliation.md`](implementation-state-reconciliation.md) |
 
@@ -79,11 +78,11 @@ Nothing in this document authorises reuse. It defines the process by which reuse
 | ArcChat | AionUi | [`arcchat-aionui.md`](reference-coverage/arcchat-aionui.md) | 30 | **Complete** — 24 evidence established, 6 accepted exclusions, 0 unresolved |
 | ArcNotes | AFFiNE, SiYuan | [`arcnotes-affine-siyuan.md`](reference-coverage/arcnotes-affine-siyuan.md) | 41 | **Complete** — 32 evidence established, 9 accepted exclusions, 0 unresolved |
 | ArcScope | Serial-Studio | [`arcscope-serial-studio.md`](reference-coverage/arcscope-serial-studio.md) | 31 | **Complete** — 24 evidence established, 7 accepted exclusions, 0 unresolved |
-| ArcSlate | Olive, ArcVideo, ArcVideoFoundation | [`arcslate-arcvideo.md`](reference-coverage/arcslate-arcvideo.md) | 31 | **Complete for the two accessible references**; **Olive unresolved** (`OC-01`) |
+| ArcSlate | ArcVideo, ArcVideoFoundation | [`arcslate-arcvideo.md`](reference-coverage/arcslate-arcvideo.md) | 31 | **Complete** |
 | Distribution and release | StartArcForges | [`distribution-startarcforges.md`](reference-coverage/distribution-startarcforges.md) | 12 | **Complete** within the authorized oracle boundary |
 | Whole repository | Existing ArcForges monorepo | [`implementation-state-reconciliation.md`](implementation-state-reconciliation.md) | 166 projects | **Complete** — item-level, with dispositions |
 
-**Gate consequence.** `PG-01` and `F-013` are **closed** for the five accessible references. `PG-02` is **closed**. Implementation packages consume these matrices as versioned inputs and run drift checks only (`WP-15.07`, `WP-18.08`, `WP-33.07`, `WP-36.07`, `WP-01.00`).
+**Gate consequence.** `PG-01` and `F-013` are **closed** for every registered reference. `PG-02` is **closed**. Implementation packages consume these matrices as versioned inputs and run drift checks only (`WP-15.07`, `WP-18.08`, `WP-33.07`, `WP-36.07`, `WP-01.00`).
 
 ---
 
@@ -195,7 +194,7 @@ Reference repositories are also the source of migration evidence — what existi
 | What was determined | Root and subtree licences read per reference; **the AFFiNE split and the Serial-Studio Pro-module exclusion were found below the repository root**, exactly the case **D-013** warns about. Every one of the 145 rows carries a licence position |
 | Result | **No row proposes reuse.** Four of six accessible references are GPL-family, proprietary or AGPL. The per-file determination that would be required before any copy, translation or port has no pending subject |
 | Owner | Licensing and Provenance Owner |
-| State | **`CLOSED` 2026-09-05** for AionUi, AFFiNE, SiYuan, Serial-Studio, ArcVideo and ArcVideoFoundation. **One unresolved determination**: Olive is not present at the authorized location (`OC-01`) |
+| State | **`CLOSED` 2026-09-05** for AionUi, AFFiNE, SiYuan, Serial-Studio, ArcVideo and ArcVideoFoundation — **the complete amended reference map** (**D-012** as amended, `P2-005`). No unresolved determination remains |
 | Related gate | **F-023** — mobile provenance and full dependency closure before the first mobile artifact (`AE-04`). **Still open**; it requires a dependency-closure audit, not a reference audit |
 
 | # | Rule |
@@ -203,7 +202,7 @@ Reference repositories are also the source of migration evidence — what existi
 | FG-01 | **F-013 closed on evidence, not on assertion.** The evidence is the five matrices and their per-row licence positions. |
 | FG-02 | **A per-file determination is still required before any future reuse.** Closing F-013 records that none is currently proposed; it does not pre-authorise reuse. |
 | FG-03 | **A licence position can change upstream.** Each product's drift-check sub-step re-reads the reference's licence files, and a changed subtree licence corrects the affected dispositions before dependent work continues. |
-| FG-04 | **The Olive determination remains unresolved** and is carried in [`open-gates-register.md`](open-gates-register.md) `§6`. |
+| FG-04 | **Upstream provenance survives a reference-map amendment.** `P2-005` removed Olive as a separate required reference; ArcVideo's fork relationship, GPL-3.0 obligations and upstream attribution are unaffected and are preserved wherever inherited material requires them. |
 
 ---
 

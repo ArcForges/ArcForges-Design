@@ -33,7 +33,7 @@ Every decision is carried. The **Primary home** column names where the decision 
 | **D-009** | Contract granularity | `../architecture/02-contracts-and-protocols.md` | Solution layout `§3`; `WP-03`, `WP-23` | Contract baseline diff gate (`G-05`) |
 | **D-010** | Cloud topology | `../architecture/00-architecture-overview.md` `§3` | Local IPC, cloud, mobile architecture; `WP-08`, `WP-26`, `WP-31` | No-inbound-connection assertions (`WP-26.01`, `WP-31.06`) |
 | **D-011** | Target monorepo | `implementation-state-reconciliation.md` — **item-level, 166 projects** | Solution layout `§1`; `WP-01` | `PG-02` **closed** by that evidence |
-| **D-012** | Reference-repository roles | `reference-coverage-and-provenance.md` `§1` (method); [`reference-coverage/`](reference-coverage/README.md) (**the five completed matrices**) | Every product document's reference posture; `WP-00.04` | `PG-01` **closed** by those matrices |
+| **D-012** | Reference-repository roles — **amended 2026-09-05** by `P2-005` (ArcSlate: ArcVideo and ArcVideoFoundation) | `reference-coverage-and-provenance.md` `§1` (method); [`reference-coverage/`](reference-coverage/README.md) (**the five completed matrices**) | Every product document's reference posture; `WP-00.04` | `PG-01` **closed** by those matrices |
 | **D-013** | Reuse policy | `reference-coverage-and-provenance.md` `§3`, `§4` | Solution layout `LB-07`; `WP-00.03` | Provenance-record check (`AE-06`); **F-013 closed** — 145 rows each carry a licence position and **no row proposes reuse** |
 | **D-014** | Web and service surface inventory | `../architecture/10-web-architecture.md` `§4` | Observability `§8`, `§10`; build `§7`; `WP-47` | Surface deployment matrix; origin policy tests |
 | **D-015** | Account portal URL | `../architecture/10-web-architecture.md` `§4` | `WP-48`, `WP-49` | Redirect and profile-isolation tests (`WP-48.00`) |
@@ -199,7 +199,7 @@ Every gate in [`open-gates-register.md`](open-gates-register.md) is scheduled.
 |---|---|
 | NC-01 | **No gate is closed by this document.** Four gates are closed by the design-stage artifacts they name; this matrix records that, it does not effect it. |
 | NC-02 | **Design traceability is complete; implementation enforcement is not.** `PG-06` is closed on the mapping; `PG-11` requires implemented, passing checks and is open. |
-| NC-03 | **All five Reference Coverage Matrices exist**, with 145 item-level rows. One unresolved determination remains: Olive is not present at the authorized location (`OC-01`). |
+| NC-03 | **All five Reference Coverage Matrices exist**, with 145 item-level rows, and **no unresolved determination remains** — `OC-01` was closed by user decision (`P2-005`). |
 | NC-04 | **The item-level code inventory exists** — 166 of 166 projects, measured. Its dispositions are **not executed**; that is `WP-01`'s work. |
 | NC-05 | **No test in this matrix has been run.** This is a specification repository; the test families and gates are defined here and executed in the implementation repository. |
 

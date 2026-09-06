@@ -83,7 +83,7 @@ Consequences that bind every downstream document, schema, contract, identifier, 
 
 - No database, table, column, enum member, runtime component, dependency, navigation entry, contract, specification, roadmap item, work package, telemetry dimension or feature flag may be created for them.
 - **ArcScope is an independently defined product, not a rename or continuation of ArcImage.** The ArcImage domain vocabulary — Canvas, Layer, Mask, Filter, image editing — must never be mechanically migrated into ArcScope (Stage 13 §2, §3; D-002).
-- **ArcSlate inherits product *direction* from ArcVideo, not its model.** The retained high-level concepts are Project, Timeline, Track, Clip, Effect, Media, Proxy, Render, Undo/Recovery and resource ownership. The complete ArcSlate model is defined by its own product specification, informed by Olive as reference only (Stage 13 §2, §7).
+- **ArcSlate inherits product *direction* from ArcVideo, not its model.** The retained high-level concepts are Project, Timeline, Track, Clip, Effect, Media, Proxy, Render, Undo/Recovery and resource ownership. The complete ArcSlate model is defined by its own product specification, informed by ArcVideo and ArcVideoFoundation as references only (**D-012** as amended 2026-09-05, `P2-005`) (Stage 13 §2, §7).
 - **ArcNotes Edgeless Canvas is an ArcNotes capability**, never a standalone product (**D-002**).
 - The raw input files under `docs/inputs/` retain these names as preserved historical evidence and are never edited.
 
@@ -366,7 +366,7 @@ Reference repositories are sources of features, behaviour, tests, migration evid
 | AionUi | ArcChat reference |
 | AFFiNE, SiYuan | ArcNotes references |
 | Serial-Studio | ArcScope reference |
-| ArcVideo, ArcVideoFoundation, Olive | ArcSlate references |
+| ArcVideo, ArcVideoFoundation | ArcSlate references (**D-012** as amended 2026-09-05, `P2-005`) |
 | StartArcForges | Packaged-product and release-behaviour oracle |
 | The existing `ArcForges` monorepo | Implementation-state inventory and reconciliation target (**D-011**) |
 

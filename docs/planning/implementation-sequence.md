@@ -34,7 +34,7 @@ This document states the dependency model that produces the work-package sequenc
 |---|---|---|
 | Requirements | [`../requirements/`](../requirements/README.md) | Complete |
 | Architecture | [`../architecture/`](../architecture/README.md) | Complete |
-| Licence matrices, per product | [`../assurance/reference-coverage/`](../assurance/reference-coverage/README.md) — five matrices, 145 item-level rows | **Complete**, with one unresolved determination (`OC-01`, Olive) |
+| Licence matrices, per product | [`../assurance/reference-coverage/`](../assurance/reference-coverage/README.md) — five matrices, 145 item-level rows | **Complete** |
 | Current-code reconciliation | [`../assurance/implementation-state-reconciliation.md`](../assurance/implementation-state-reconciliation.md) — 166 projects, item-level | **Complete** |
 
 > **A correction is recorded here rather than hidden.** An earlier Phase 2 decision (`P2-002`) substituted a different process — derive the plan first, perform the prerequisite audits during implementation, rewrite afterwards — and presented that substitution as satisfying **D-019**. It did not. That entry is **withdrawn** and retained as the record of the error; `P2-004` records the re-derivation from the completed evidence. The changes the evidence caused are in [`evidence-driven-revisions.md`](evidence-driven-revisions.md).
@@ -45,7 +45,7 @@ This document states the dependency model that produces the work-package sequenc
 | DD-02 | **The matrices and the inventory are versioned planning inputs.** Implementation packages consume them; **no implementation package re-creates a baseline audit.** |
 | DD-03 | **Implementation packages retain drift checks only** — source drift against the recorded commit, changed scope, and newly introduced material. Each has a named producing sub-step: `WP-15.07`, `WP-18.08`, `WP-33.07`, `WP-36.07` for references, and `WP-01.00` for the code inventory. |
 | DD-04 | **Baseline creation and later maintenance are different obligations** and are never conflated in a gate. |
-| DD-05 | **One unresolved determination remains** — `OC-01`. It blocks only a claim of complete Olive coverage, which is made nowhere. |
+| DD-05 | **No unresolved determination remains.** `OC-01` — the ArcSlate reference baseline — was closed by user decision on 2026-09-05 (`P2-005`), which amended **D-012**'s reference map to ArcVideo and ArcVideoFoundation. |
 
 ---
 

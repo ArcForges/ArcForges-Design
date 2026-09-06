@@ -11,7 +11,7 @@ The frozen baseline is exactly four desktop products (**D-002**).
 | [`arcchat.md`](arcchat.md) | **ArcChat** (`arcchat`) | AI Agent Command Center, Local Hub, Task Center, cross-application orchestrator |
 | [`arcnotes.md`](arcnotes.md) | **ArcNotes** (`arcnotes`) | Local-first Knowledge & Document authority — document core in V1, with Canvas, Database and Slides in complete scope, phased (**D-006**) |
 | [`arcscope.md`](arcscope.md) | **ArcScope** (`arcscope`) | Local-first Observation, Acquisition & Telemetry Analysis authority — independently defined, **not** a continuation of any prior product (**D-002**) |
-| [`arcslate.md`](arcslate.md) | **ArcSlate** (`arcslate`) | Local-first Professional Non-linear Video Editing authority, rebuilt in C#/Avalonia with Olive as product reference only |
+| [`arcslate.md`](arcslate.md) | **ArcSlate** (`arcslate`) | Local-first Professional Non-linear Video Editing authority, rebuilt in C#/Avalonia with ArcVideo and ArcVideoFoundation as product references only |
 
 ## Platform and companion surfaces
 
