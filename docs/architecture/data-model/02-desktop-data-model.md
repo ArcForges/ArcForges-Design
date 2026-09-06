@@ -72,6 +72,17 @@ The local half of `TX-01`–`TX-06`.
 - `IX (state, next_attempt_at)`
 - **Constraint** — written in the business transaction (`§2.1` of the persistence architecture); survives process termination (`WP-25.01`)
 
+**`I-498` — an evictable acknowledged cache is not an unacknowledged edit.** This is the distinction that decides whether a user loses work, so it is a schema property rather than a convention.
+
+| # | Rule |
+|---|---|
+| PE-01 | **Cloud is authoritative for acknowledged revisions of synchronised data** (`§5` of the product scope). The local store holds a **working cache** of what Cloud has acknowledged, plus **durable pending changes** that it has not. |
+| PE-02 | **A row is evictable only if every change to it has been acknowledged.** Eviction is gated on `NOT EXISTS (SELECT 1 FROM sync_outbox WHERE aggregate_id = ? AND state <> 'sent')`, and on the absence of a pending upload or an unreturned tool receipt. |
+| PE-03 | **Cache pressure, sign-out, account switch, subscription restriction and workspace change never discard an unacknowledged change** (`C-06`). Each of these paths runs the same eviction gate; none has a shortcut. |
+| PE-04 | **A durable local save is never presented as saved to Cloud** (`§3.1` of the product scope). The UI distinguishes *saved on this device* from *acknowledged by Cloud*, and the outbox row is what makes the difference queryable. |
+| PE-05 | **Pending work survives reinstall-level recovery.** The outbox, the journal and staged upload content are in the durable store, not in a cache directory that a cleanup tool may remove. |
+| PE-06 | **An acknowledged revision that is evicted is re-fetchable; an unacknowledged change that is lost is gone.** That asymmetry is why `PE-02` is a constraint and not a heuristic.
+
 ### 1.5 `local_audit`
 
 Append-only, separate from telemetry (`OA-06`), holding local security-relevant events: capability grant and revocation, approval decision, secret use, egress authorisation, local presence proof.
@@ -268,13 +279,24 @@ The local read projection of tasks whose authority is elsewhere (`TO-07`): carri
 
 - `IX (property_def_id, value_text)`, `IX (property_def_id, value_number)`, `IX (property_def_id, value_date)` — the query-and-view paths
 
-### `canvas`, `canvas_element`
+### `saved_view`
 
-`canvas` is an aggregate root; `canvas_element` places **existing block content** spatially. **Placement is content and syncs; viewport is device-local and does not** (`WP-27.01`). An element references a `block_id` rather than duplicating content, which is what makes `WP-27.00`'s unified content model true at the data level rather than only in prose.
+`saved_view` is a saved query plus its configuration and view kind. **It owns no documents**, so its deletion cascades to nothing.
 
-### `saved_view`, `slide_deck`, `slide`
+| Field | Type | Notes |
+|---|---|---|
+| `saved_view_id` | `id` | **PK** |
+| `notebook_id` | `id?` | Scope; null means workspace-wide |
+| `kind` | `enum(list, table) NN` | **Exactly two layouts** (`P2-006`). Board, gallery, calendar and timeline layouts are excluded |
+| `filter` | `json NN` | Property predicates over the bounded scalar types of `§2.1` of the editing architecture |
+| `sort` | `json NN` | Ordered sort keys |
+| `columns` | `json?` | Table layout only |
+| `rev` | `rev NN` | |
 
-`saved_view` is a saved query plus configuration and a view kind; **it owns no documents**, so its deletion cascades to nothing. `slide_deck` and `slide` project existing content: a slide references a document section, a canvas frame or a view, and **holds no private copy** (`WP-29.00`). `speaker_note` is associated with a slide and **never appears in source content**.
+- **Constraint** — a filter references only **declared property definitions with scalar types**. There is no formula, relation or rollup evaluator (`P2-006`), and no expression language enters this column
+- **Rule** — a view is a **query, never a container**. Deleting a view deletes no document; a document appears in a view because it matches, not because it was added
+
+> **Retired identifiers.** `canvas`, `canvas_element`, `slide_deck`, `slide` and `speaker_note` are **retired by P2-006** and are not reused. Edgeless canvas, whiteboard surfaces, shapes, connectors, frames and presentations are excluded from delivery, with no mandatory future hook. Their historical definitions are in the git history of this document at `7ed79a6`.
 
 ### `document_history`, `checkpoint`, `trash_entry`
 

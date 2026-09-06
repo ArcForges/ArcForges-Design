@@ -16,18 +16,20 @@ Notation is defined in [`00-data-model-overview.md`](00-data-model-overview.md) 
 | Schema | Module | Aggregate roots |
 |---|---|---|
 | `identity` | Identity | `user`, `auth_identity`, `session` |
-| `workspace` | Workspace | `workspace`, `membership` |
+| `workspace` | Workspace | `workspace` — **no membership table** (`WO-01`) |
 | `device` | Devices | `device`, `installation` |
-| `entitlement` | Entitlement | `grant`, `entitlement_snapshot`, `usage_counter` |
-| `commerce` | Commerce | `billing_account`, `order`, `subscription`, `credit_lot`, `provider_event` |
+| `entitlement` | Entitlement | `grant`, `entitlement_snapshot`, `usage_counter`, `service_term`, `capacity_bucket`, `capacity_reservation` |
+| `commerce` | Commerce | `billing_account`, `order`, `subscription`, `credit_lot`, `provider_event`, `logical_ai_request`, `provider_attempt`, `attempt_usage`, `supplier_cost_entry`, `customer_settlement` |
 | `chat` | Chat | `conversation` |
 | `task` | Task | `task`, `automation` |
-| `agent` | Agent | `agent_profile`, `model_descriptor`, `tariff_version` |
+| `agent` | Agent | `agent_profile`, `model_descriptor`, `tariff_version`, `supplier_price_version` |
 | `sync` | Sync | `sync_scope`, `change` |
 | `resource` | Resource | `cloud_object`, `upload_session` |
 | `search` | Search | *(derived — see [`03-derived-stores.md`](03-derived-stores.md))* |
 | `notification` | Notification | `notification`, `push_registration` |
 | `policy` | Policy | `policy_bundle` |
+| `scope` | ArcScope Cloud | `simulation_definition`, `simulation_run`, `simulation_segment` (`§8.3`) |
+| `config` | Configuration | `revision` — activated deployment policy (`§8.2`) |
 | `audit` | Audit | `audit_event` |
 | `support` | Support | `support_case`, `access_grant` |
 | `trustsafety` | TrustSafety | `report`, `enforcement_action` |
@@ -207,19 +209,19 @@ Short-lived rows with `expires_at`, an attempt counter, and a rate-limit key. Bo
 - `IX (owner_user_id, state)`
 - **Constraint** — `data_region` is immutable; moving a workspace between regions is a realm migration operation that creates a new workspace and migrates content (`WP-46.05`), never an update
 
-### `workspace.membership`
+### Workspace ownership — no membership table
 
-| Field | Type | Notes |
-|---|---|---|
-| `membership_id` | `id` | **PK** |
-| `workspace_id` | `id NN` | `FK →`; cascade on purge |
-| `user_id` | `id NN` | `FK →`; restrict |
-| `role` | `enum(owner) NN` | |
-| `created_at` | `instant NN` | |
+**P2-006 excludes organisations, membership, invitations, collaborative editing and collaboration-only schema hooks.** The `workspace.membership` table of the previous baseline was exactly such a hook: one row per workspace, one role value, no V1 writer. It is **removed**, not retained empty.
 
-- `UQ (workspace_id, user_id)`
+| # | Rule |
+|---|---|
+| WO-01 | **Ownership is `workspace.owner_user_id`**, a single non-null column. There is no join table, no role column and no seat concept. |
+| WO-02 | **Authorization is `Actor → owns → Workspace → Resource`.** The previous `Actor → Membership → Workspace → Resource` chain collapses to a direct ownership check (`MT-02` of the cloud architecture is amended accordingly). |
+| WO-03 | **A workspace is a multi-device boundary, not a collaboration unit.** Several devices of one owner share it; no second principal ever holds rights in it. |
+| WO-04 | **Re-introducing membership is an architecture baseline change**, not an additive migration. Retaining a dormant table would have made it look like a configuration switch, which is precisely the ambiguity P2-006 removes. |
+| WO-05 | **A repository policy test asserts no schema, contract or operation carries a membership, role, invitation, seat or shared-editor concept** (`WP-05`). |
 
-> **V1 scope.** The implementation repository's `WorkspaceId` documentation states: *"V1 has no organisation membership, team workspace or shared seat. A workspace belongs to one user; it is a boundary, not a collaboration unit."* That matches the accepted scope, where team capability builds a base but does not launch. The table exists with a single role so that adding roles later is an additive migration rather than a structural one — but **no V1 code path creates a second membership**, and a policy test asserts it.
+> **Retired identifier.** `workspace.membership` is retired by P2-006 and is not reused for another purpose. Its historical definition is in the git history of this document at `7ed79a6`.
 
 ---
 
@@ -345,6 +347,68 @@ The Entitlement module is **independent of Commerce** (`§2.1` of the commerce a
 
 ---
 
+
+### `entitlement.service_term` *(new — P2-006)*
+
+The gate before every AI decision (`§5.3` of the commerce architecture). An interval, never a flag.
+
+| Field | Type | Notes |
+|---|---|---|
+| `service_term_id` | `id` | **PK** |
+| `workspace_id` | `id NN` | `FK →` `workspace.workspace`; restrict |
+| `realm_id` | `id NN` | **Realm-scoped**; a term is never visible outside its realm (`SV-04`) |
+| `kind` | `enum(subscription, pass, compensation, selfHostGrant) NN` | The only four sources (`SV-02`) |
+| `source_ref` | `text NN` | Subscription id, order id, compensation record or operator grant id |
+| `starts_at` | `instant NN` | |
+| `ends_at` | `instant NN` | Exclusive |
+| `grace_ends_at` | `instant?` | Data-access grace; **never extends AI admission** (`SV-05`) |
+| `created_at` | `instant NN` | |
+
+- `IX (workspace_id, starts_at, ends_at)` — the admission-path query
+- `UQ (kind, source_ref)` — **idempotent creation**; a replayed provider event extends nothing twice
+- **Constraint** — `ends_at > starts_at`
+- **Constraint** — no row may be created from a credit grant, a trial flag or an operator balance edit (`SV-03`), enforced by the grant interface, not by convention
+- **Rule** — the effective term is the **union of overlapping intervals**; contiguous renewal extends eligibility without creating a gap (`AC-03`)
+
+### `entitlement.capacity_bucket` *(new — P2-006)*
+
+One row per workspace. The replenishing included-capacity bucket (`§7.2` of the commerce architecture).
+
+| Field | Type | Notes |
+|---|---|---|
+| `workspace_id` | `id` | **PK** — exactly one bucket per workspace |
+| `available_micro` | `int64 NN` | Integer micro-credits (`CD-01`). **Never a float** |
+| `held_micro` | `int64 NN` | Sum of live reservations funded from capacity |
+| `burst_micro` | `int64 NN` | Ceiling, from the activated configuration revision |
+| `rate_micro_per_second` | `int64 NN` | Recovery rate, from the same revision |
+| `remainder_micro` | `int64 NN` | **Fractional carry** (`RF-03`), scaled; never discarded between evaluations |
+| `watermark_at` | `instant NN` | **Monotonic** (`RF-02`); advanced, never rewound |
+| `initialised_from` | `id?` | `FK →` `entitlement.service_term`; the idempotent first activation (`RF-07`) |
+| `config_revision_id` | `id NN` | Which activated revision supplied `burst`/`rate` (`CG-02`) |
+| `rev` | `rev NN` | |
+
+- **Constraint** — `available_micro >= 0` and `held_micro >= 0`
+- **Constraint** — `available_micro <= GREATEST(0, burst_micro - held_micro)` (`RF-04`), asserted after every mutation
+- **Constraint** — `watermark_at` is non-decreasing, enforced by a trigger or a checked update predicate (`RF-02`)
+- **Rule** — refill runs under this row's lock (`§7.2` there); a racing replica serialises rather than double-crediting
+
+### `entitlement.capacity_reservation` *(new — P2-006)*
+
+| Field | Type | Notes |
+|---|---|---|
+| `reservation_id` | `id` | **PK** |
+| `workspace_id` | `id NN` | `FK →` `entitlement.capacity_bucket` |
+| `logical_request_id` | `id NN` | `FK →` `commerce.logical_ai_request` |
+| `from_capacity_micro` | `int64 NN` | Portion held against the bucket |
+| `from_compensation_micro` | `int64 NN` | Portion held against compensation lots |
+| `from_purchased_micro` | `int64 NN` | Portion held against purchased lots — **non-zero only under an extra-usage authorisation** (`AD-05`) |
+| `state` | `enum(held, settled, released, expired) NN` | |
+| `expires_at` | `instant NN` | Swept when passed (`CS-04`) |
+| `created_at` | `instant NN` | |
+
+- `IX (workspace_id, state)`, `IX (state, expires_at)` — the sweeper path
+- **Constraint** — the three source columns record the allocation, and settlement debits and releases **against the same sources** (`CD-06`, `ST-05`)
+- **Constraint** — a `from_purchased_micro > 0` row requires a live extra-usage authorisation reference
 ## 7. `commerce`
 
 ### `commerce.billing_account`
@@ -535,9 +599,236 @@ Durable pending state with `expires_at`, the operation described in user terms, 
 
 The durable bridge (**D-010**). A request carries its target device, its payload, its expiry and its delivery state; a result carries the answering attempt and is **idempotent on `(task_id, attempt_id)`** so a re-submitted result has one effect.
 
-### `agent.model_descriptor`, `agent.tariff_version`, `agent.provider_interaction`
+### `agent.model_descriptor`, `agent.tariff_version`, `agent.supplier_price_version`
 
-`model_descriptor` and `tariff_version` are workspace-independent catalogue rows. `tariff_version` is **append-only with effective dates**, and every run stores the `tariff_version_id` it locked at start (`CS-08`), which is what makes a historical charge explainable. `provider_interaction` is a **separate trace store** (`§4` of the observability architecture) carrying provider request identifier, token and media unit counts, duration and result — **never prompt or response content**.
+`model_descriptor` and the two price tables are workspace-independent catalogue rows **projected from an activated configuration revision** (`CG-02`, `DC-05`, `DC-06`). They are persisted snapshots, not live lookups into the current file (`I-494`).
+
+| Table | Holds | Applies at |
+|---|---|---|
+| `agent.model_descriptor` | Provider route, concrete model and version, billed categories, per-unit divisor, inclusion semantics, tier selection rules, output and context ceilings, lifecycle state | Resolution time |
+| `agent.supplier_price_version` | **What ArcForges pays**: per-category rate, currency, unit divisor, validity | **Dispatch time** (`MT-06`) |
+| `agent.tariff_version` | **What the customer is charged**: per-category service units, tier, validity | **Pinned to the Run or request** (`MT-06`, `CR-09`) |
+
+- Both price tables are **append-only with effective dates**; a new price is a new row, never an update
+- **Constraint** — a `model_descriptor` with any billable category lacking a rate in the applicable `supplier_price_version` **cannot be dispatched** (`AD-04`, `DC-05`, `MT-15`). There is no assumed zero rate
+- **Constraint** — `config_revision_id` on every row records which activated revision produced it, so a historical charge is reproducible after the model is retired (`RP-02`, `MT-14`)
+
+---
+
+## 8.1 `commerce` — the metering chain *(new — P2-006)*
+
+Five tables carry `MT-01`–`MT-16`. They form one identity chain from request to ledger (`RP-01`).
+
+```
+logical_ai_request ──1:N──> provider_attempt ──1:N──> attempt_usage
+        │                          │                       │
+        │                          └──1:1──> supplier_cost_entry
+        └──1:1──> capacity_reservation ──1:1──> customer_settlement ──> ledger_entry
+```
+
+### `commerce.logical_ai_request`
+
+| Field | Type | Notes |
+|---|---|---|
+| `logical_request_id` | `id` | **PK** |
+| `workspace_id` | `id NN` | `FK →` |
+| `service_term_id` | `id NN` | `FK →` `entitlement.service_term` — **which term authorised this** (`AD-01`, `MT-14`) |
+| `run_id`, `step_id`, `attempt_id` | `id?` | Present for agent work; absent for an ordinary chat request |
+| `beneficiary` | `enum(userDelivered, platformRouting, platformAbuse, platformHealth, platformIndexing, platformRetry) NN` | Decides who pays (`ST-07`, `MT-08`) |
+| `tariff_version_id` | `id NN` | **Pinned here**, not looked up later (`MT-06`) |
+| `config_revision_id` | `id NN` | `CG-02` |
+| `state` | `enum(admitted, dispatched, settled, usagePending, costUnconfirmed, resolvedByPolicy, cancelled, rejected) NN` | `§7.6` of the commerce architecture |
+| `created_at`, `settled_at` | `instant NN`, `instant?` | |
+
+- `UQ (logical_request_id)`; `IX (workspace_id, created_at)`; `IX (state, created_at)` — the reconciliation-deadline sweep
+- **Constraint** — `beneficiary != userDelivered` rows **never debit a customer** (`ST-07`)
+
+### `commerce.provider_attempt`
+
+| Field | Type | Notes |
+|---|---|---|
+| `provider_attempt_id` | `id` | **PK** |
+| `logical_request_id` | `id NN` | `FK →`; **one logical request may have many attempts** (`MT-02`, `PR-07`) |
+| `attempt_ordinal` | `int NN` | |
+| `provider_request_ref` | `text NN` | The provider's own request identity (`MT-02`) |
+| `model_descriptor_id` | `id NN` | Concrete model and version actually used |
+| `supplier_price_version_id` | `id NN` | **Dispatch-time** version (`MT-06`) |
+| `route`, `processing_tier`, `context_tier`, `region_tier` | `text NN` | Resolved from actual request facts (`MT-04`, `UN-06`) |
+| `dispatched_at`, `completed_at` | `instant NN`, `instant?` | |
+| `usage_source` | `enum(providerFinal, providerStream, invoice, unresolved) NN` | (`MT-05`) |
+| `completeness` | `enum(complete, pending, unconfirmed, mismatched) NN` | (`MT-12`) |
+| `outcome` | `enum(delivered, providerError, platformError, cancelled, timeout) NN` | |
+
+- `UQ (logical_request_id, attempt_ordinal)`
+- **Constraint** — **no prompt or response content** is stored here (`MT-02`); content lives in the product store, counts live here
+- **Rule** — a genuinely distinct retry is a **distinct row with its own supplier cost** (`ST-03`, `MT-11`)
+
+### `commerce.attempt_usage`
+
+The normalised, non-overlapping category quantities (`MT-03`, `§7.4` there).
+
+| Field | Type | Notes |
+|---|---|---|
+| `attempt_usage_id` | `id` | **PK** |
+| `provider_attempt_id` | `id NN` | `FK →` |
+| `usage_revision` | `int NN` | **Increments on each cumulative stream snapshot** (`UN-03`, `I-492`) |
+| `category` | `text NN` | `input.uncached` · `input.cached_read` · `input.cache_write` · `output` · `output.reasoning` · `tool.<kind>` |
+| `quantity` | `int64 NN` | Non-negative (`UN-05`) |
+| `unit` | `text NN` | `token` · `request` · `second` · `image` (`MT-10`) |
+| `recorded_at` | `instant NN` | |
+
+- `UQ (provider_attempt_id, usage_revision, category)` — **this is the idempotency key** (`ST-03`, `MT-11`)
+- **Rule** — a later `usage_revision` **replaces** the earlier total for that attempt; revisions are never summed (`UN-03`)
+- **Constraint** — a category not declared by the attempt's model descriptor is **rejected into reconciliation**, never debited (`UN-02`, `MT-05`)
+
+### `commerce.supplier_cost_entry`
+
+| Field | Type | Notes |
+|---|---|---|
+| `supplier_cost_id` | `id` | **PK** |
+| `provider_attempt_id` | `id NN` | `FK →` |
+| `currency` | `char(3) NN` | **Always present** (`ST-08`, `MT-16`) |
+| `amount` | `decimal(28,9) NN` | ≥ 9 fractional digits (`MT-07`). **Never a float** |
+| `basis` | `enum(estimated, usageConfirmed, invoiceReconciled) NN` | The three remain distinguishable (`UC-03`, `MT-13`) |
+| `unresolved` | `bool NN` | Retained even when the customer hold is released (`ST-06`, `MT-12`) |
+
+- `IX (basis, unresolved)` — the reconciliation queue
+- **Constraint** — a row is **never deleted or updated**; a correction is a new linked adjustment row (`ST-04`)
+
+### `commerce.customer_settlement`
+
+| Field | Type | Notes |
+|---|---|---|
+| `settlement_id` | `id` | **PK** |
+| `logical_request_id` | `id NN` | `FK →` |
+| `reservation_id` | `id NN` | `FK →` `entitlement.capacity_reservation` |
+| `debit_capacity_micro`, `debit_compensation_micro`, `debit_purchased_micro` | `int64 NN` | Debited **against the sources the reservation held** (`ST-05`) |
+| `released_micro` | `int64 NN` | Returned to those same sources, capped by the burst (`RF-05`) |
+| `rounding_mode` | `text NN` | Declared half-even (`ST-01`) |
+| `settled_at` | `instant NN` | |
+| `adjusts_settlement_id` | `id?` | Present on a correction; the original is never edited (`ST-04`) |
+
+- `UQ (logical_request_id)` **where `adjusts_settlement_id IS NULL`** — one settlement per logical request (`ST-01`)
+- **Constraint** — settlement occurs **once, after category aggregation**, never per stream fragment (`ST-01`)
+
+---
+
+## 8.2 `config` — activated policy revisions *(new — P2-006)*
+
+`DC-04`, `DC-09`, `DC-12` make the activated bundle a persisted fact, not a file read at request time.
+
+### `config.revision`
+
+| Field | Type | Notes |
+|---|---|---|
+| `config_revision_id` | `id` | **PK** |
+| `schema_version` | `text NN` | |
+| `revision_identity` | `text NN` | Operator-supplied; **immutable** |
+| `content_hash` | `bytes NN` | |
+| `environment`, `realm_id` | `text NN`, `id NN` | Rejected on mismatch (`DC-04`) |
+| `effective_at` | `instant NN` | |
+| `activated_at` | `instant?` | Null until activation succeeds |
+| `state` | `enum(validated, active, superseded, rejected) NN` | |
+| `document` | `json NN` | The validated bundle as activated |
+
+- `UQ (revision_identity)` — **a revision identity cannot be reused with different content** (`DC-04`), enforced together with `content_hash`
+- `UQ (realm_id, state)` **where `state = 'active'`** — exactly one active revision per realm (`CG-03`)
+- **Rule** — a replica that cannot load the active revision **admits no affected work**; it does not fall back to a previous revision or a sample (`CG-03`, `DC-11`)
+- **Rule** — rollback publishes a **new** revision restoring prior values (`DC-12`); it never reactivates a superseded row
+
+---
+
+## 8.3 `scope` — the deterministic Cloud simulator *(new — P2-006)*
+
+`SIM-01`–`SIM-20` of the ArcScope requirements. Cloud owns the definition and the run; ArcScope owns the native session projection and the downloaded capture (`SIM-01`).
+
+**A `SimulationRun` is a product job, not an Agent Run, and invokes no model** (`SIM-01`, `CM-04` of the runtime architecture). It consumes product-resource quota — duration, samples, bytes, egress — never model tokens (`SIM-17`).
+
+### `scope.simulation_definition`, `scope.scenario_version`
+
+| Field | Type | Notes |
+|---|---|---|
+| `definition_id` / `scenario_version_id` | `id` | **PK** |
+| `workspace_id` | `id NN` | `FK →`; owner scope |
+| `version_ordinal` | `int NN` | On `scenario_version` |
+| `channel_schema` | `json NN` | Stable channel ids, value types, units, rate and timestamp semantics, encoding (`SIM-03`) |
+| `expression_ast` | `json?` | Bounded AST (`SIM-04`) |
+| `fault_profile` | `json?` | Latency, jitter, drop, duplicate, reorder, disconnect, malformed, outlier (`SIM-05`) |
+| `content_hash` | `bytes NN` | |
+| `created_at` | `instant NN` | |
+
+- `UQ (definition_id, version_ordinal)`
+- **Constraint** — a `scenario_version` is **immutable** (`SIM-02`). Editing a definition creates a new version and **affects future runs only**
+- **Constraint** — AST validation runs **before admission** (`SIM-04`): acyclic channel dependencies, bounded depth, node count and per-tick operations. No script, dynamic compilation, reflection, file access or network
+
+### `scope.simulation_run`
+
+| Field | Type | Notes |
+|---|---|---|
+| `run_id` | `id` | **PK** |
+| `workspace_id` | `id NN` | `FK →` |
+| `scenario_version_id` | `id NN` | `FK →` — **the immutable version, not the definition** (`SIM-02`) |
+| `seed` | `int64 NN` | |
+| `execution_profile` | `text NN` | Pins numeric semantics, RNG, generator and encoding versions (`SIM-07`) |
+| `clock_mode` | `enum(realTime, accelerated) NN` | Pacing **never changes sample values, logical timestamps or hashes** (`SIM-06`) |
+| `duration_ticks` | `int64 NN` | The requested finite logical range |
+| `state` | `enum(queued, starting, running, pausing, paused, stopping, canceled, succeeded, failed) NN` | (`SIM-08`) |
+| `terminal_reason` | `text?` | |
+| `completed_ticks` | `int64 NN` | **Partial extent is queryable** (`SIM-08`, `SIM-09`) |
+| `service_term_id` | `id NN` | `FK →` — official simulation requires an active term (`SIM-17`) |
+| `rev` | `rev NN` | |
+
+- `IX (workspace_id, state)`; `IX (state, updated_at)` — the scheduler path
+- **Constraint** — `succeeded` requires `completed_ticks = duration_ticks`. **A cancel records a partial outcome, never success for an incomplete range** (`SIM-08`)
+- **Constraint** — a terminal run cannot be resurrected; a duplicate start creates no second run (`SIM-09`)
+
+### `scope.simulation_lease`
+
+| Field | Type | Notes |
+|---|---|---|
+| `run_id` | `id` | **PK** — one live lease per run |
+| `holder_instance` | `text NN` | |
+| `fence_token` | `int64 NN` | **Monotonic**; a publish carrying a stale token is rejected (`SIM-10`) |
+| `expires_at` | `instant NN` | |
+
+- **Rule** — this is what lets N identical replicas run the simulator without two of them publishing the same logical segment (`RT-04`, `SIM-10`)
+
+### `scope.simulation_segment`
+
+The manifest over immutable object-storage segments (`SIM-11`).
+
+| Field | Type | Notes |
+|---|---|---|
+| `segment_id` | `id` | **PK** |
+| `run_id` | `id NN` | `FK →` |
+| `sequence` | `int64 NN` | |
+| `logical_from_tick`, `logical_to_tick` | `int64 NN` | |
+| `sample_count` | `int64 NN` | |
+| `encoding` | `text NN` | |
+| `byte_length` | `int64 NN` | |
+| `content_hash` | `bytes NN` | Client-verifiable (`SIM-13`) |
+| `object_key` | `text NN` | |
+| `fence_token` | `int64 NN` | The token under which it was published |
+
+- `UQ (run_id, sequence)`; `UQ (run_id, logical_from_tick)`
+- **Constraint** — **a committed manifest row never references an unverified partial object** (`SIM-11`). The object is written and verified first; the manifest row is the commit point
+- **Rule** — an incomplete object stays **invisible** and is cleaned; visibility is the manifest row, not the object's existence
+
+### `scope.simulation_checkpoint`
+
+| Field | Type | Notes |
+|---|---|---|
+| `run_id` | `id` | **PK** |
+| `next_tick` | `int64 NN` | |
+| `rng_state` | `bytes NN` | Per channel and per fault source, independently seeded (`SIM-05`) |
+| `generator_state` | `json NN` | |
+| `replay_position` | `json?` | For CSV replay (`SIM-18`) |
+| `pending_fault_state` | `json NN` | Reorder and duplicate buffers (`SIM-05`) |
+| `committed_segment_sequence` | `int64 NN` | |
+| `updated_at` | `instant NN` | |
+
+- **Constraint** — the checkpoint advances **only after** the corresponding manifest row commits (`SIM-11`, `SIM-12`)
+- **Rule** — pause/resume, host loss and lease takeover produce **the same remaining canonical data**, with no duplicate and no missing logical range (`SIM-12`). This is the single most important simulator invariant, and `SIM-20` tests it by killing the host
 
 ---
 

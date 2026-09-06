@@ -91,38 +91,50 @@ An aggregate root is the unit of concurrency, authorization and sync. Everything
 
 ## 4. Authority map — where the authoritative copy lives
 
-This is the single most consequential table in the data layer. Every entity has exactly one authoritative store; every other copy is a projection, a cache or a sync replica.
+This is the single most consequential table in the data layer. Every entity has exactly one authoritative store; every other copy is a projection, a cache or a durable pending change.
 
-| Entity family | Authoritative store | Replicated to | Rule |
+**P2-006 moves the authority for synchronised user data to Cloud.** Native clients keep a working cache of acknowledged revisions plus durable pending edits (`I-498`). Hardware acquisition and media working stores keep product-local authority.
+
+| Entity family | Authoritative store | Held by clients as | Rule |
 |---|---|---|---|
-| Realm, User, AuthIdentity, Session, ApiToken | **Cloud — Identity** | Nothing. Clients hold a session token, never a user record | Identity has no local authoritative copy |
-| Workspace, Membership | **Cloud — Workspace** | Cached locally, read-only | Local edits impossible |
-| Device, Installation, Presence, Trust | **Cloud — Devices** | Device holds its own identity locally | Trust level is cloud-authoritative; the device may cache it |
-| Grant, Revocation, EntitlementSnapshot, Quota, UsageCounter | **Cloud — Entitlement** | Cached locally with its version | `ED-01`–`ED-04` of the commerce architecture |
-| BillingAccount, Offer, Order, Payment, Subscription, CreditLot, LedgerEntry, ProviderEvent | **Cloud — Commerce** | Never replicated to a client beyond read projections | No local write path exists |
-| Conversation, Message, Branch, ArcChatProject, AgentProfile, Skill | **ArcChat local** | Synced to Cloud when in scope | Local-first; Cloud is a replica |
-| Document, Block, Link, Tag, Property, Canvas, View, SlideDeck | **ArcNotes local** | Synced to Cloud when in scope | Local-first; Cloud is a replica |
-| ScopeProject, SessionRecord, Capture metadata, Analysis, Finding, Report | **ArcScope local** | Metadata synced; **raw capture is local by default** (`I-474`) | Raw upload is an explicit per-session act |
-| SlateProject, Sequence, Timeline, MediaAsset metadata | **ArcSlate local** | Project data synced; heavyweight media by explicit policy | Derived caches never sync as authority |
-| Task, Run, Plan, Step, Attempt, Approval | **Split by placement** — see `§4.1` | | The single trickiest ownership question in the system |
-| CloudObject, Blob, UploadSession | **Cloud — Resource** | Local managed copy is a cache with the same content hash | Content-addressed, so a copy is verifiable |
-| Artifact | **The producing product** | Referenced by identity elsewhere | `ArtifactRef` carries provenance, never the body |
-| PolicyBundle, Flag, KillSwitch | **Cloud — Policy** | Cached locally with staleness and last-known-good | Compiled hard limits win over any cached value |
+| Realm, User, AuthIdentity, Session, ApiToken | **Cloud — Identity** | A session token only, never a user record | Identity has no local authoritative copy |
+| Workspace | **Cloud — Workspace** | Read-only cache | **Single-owner; there is no Membership entity** (`WO-01`) |
+| Device, Installation, Presence, Trust | **Cloud — Devices** | Its own identity locally | Trust level is cloud-authoritative |
+| ServiceTerm, CapacityBucket, Grant, Revocation, EntitlementSnapshot, Quota, UsageCounter | **Cloud — Entitlement** | Allowlisted projection with its version (`CG-05`) | A client never computes admission (`AD-01`) |
+| BillingAccount, Offer, Order, Payment, Subscription, CreditLot, LedgerEntry, ProviderEvent, LogicalAIRequest, ProviderAttempt, AttemptUsage, SupplierCost, CustomerSettlement | **Cloud — Commerce** | Read projections only | No local write path exists |
+| ConfigRevision | **Cloud — Configuration** | Allowlisted client projection only (`DC-14`) | Supplier rates and thresholds never ship to a client |
+| Conversation, Message, Branch, ArcChatProject, AgentProfile, Skill | **Cloud — Chat/Agent** | Working cache + **unsent drafts** (`I-124`) | A draft is local until appended and acknowledged |
+| Document, Block, Link, Tag, Property, SavedView | **Cloud — Notes** for acknowledged revisions | Working cache + **durable pending edits** (`PE-01`) | A pending edit is never discarded as cache (`PE-03`) |
+| Task, Run, Plan, Step, Attempt, Approval, ToolRequest, ToolResult | **Cloud — Task/Agent** | Read projection | **Always Cloud-owned** (`§4.1`); only tool locality varies |
+| Native Product Job — render, capture, index, export | **The running product** | Its own durable job record | **Not a Cloud Agent Task** (`I-121`, `I-485`); invokes no model |
+| ScopeProject, SessionRecord, Capture metadata, Analysis, Finding, Report | **ArcScope local** | — | Metadata synced; **raw capture is local by default** (`I-474`) |
+| SimulationDefinition, ScenarioVersion, SimulationRun, Segment, Checkpoint | **Cloud — Scope** | Downloaded segments are a verified copy | **Synthetic, cloud-owned, quota-counted** (`I-496`, `SIM-01`, `C-09`) |
+| SlateProject, Sequence, Timeline, MediaAsset metadata | **ArcSlate local** | — | Project data synced; heavyweight media by explicit policy |
+| OTIO artifact | **Neither** — an interchange file | Produced and consumed, never the working store | `I-497`; export binds a committed sequence revision (`OT-04`) |
+| CloudObject, Blob, UploadSession | **Cloud — Resource** | Content-addressed cache; **staged uploads are pending, not cache** (`PE-02`) | A copy is verifiable by hash |
+| Artifact | **The producing product** | Referenced by identity | `ArtifactRef` carries provenance, never the body |
+| PolicyBundle, Flag, KillSwitch | **Cloud — Policy** | Cached with staleness and last-known-good | Compiled hard limits win over any cached value |
 | AuditEvent | **Cloud — Audit** (cloud actions); **local audit store** (local actions) | Neither replicates to the other | Two append-only stores, correlated by identifier only |
 | SearchIndex, RetrievalIndex, Projection, Thumbnail, Proxy, RenderCache | **Derived** — nowhere authoritative | — | Deleting every one leaves the product intact |
 
-### 4.1 Task ownership across placement
+| # | Rule |
+|---|---|
+| AU-01 | **Acknowledgement is the authority boundary.** A revision Cloud has acknowledged is authoritative in Cloud; a change it has not is authoritative on the device that holds it, and is durable there (`PE-01`). |
+| AU-02 | **There is no second notebook authority.** A native client never becomes the durable owner of an acknowledged revision, and requiring a Cloud acknowledgement before a local durable save is equally prohibited (item 9 of the architecture baseline changes). |
+| AU-03 | **A product job is not an agent task.** Confusing the two would put a render under AI metering and Cloud recovery, which is wrong in both directions (`CM-04` of the runtime architecture).
 
-A Task can be created locally, in the cloud, or from a remote surface. Ownership must not follow the creator.
+### 4.1 Task ownership and tool locality
+
+A Task can be created from any surface — desktop, Web, Mobile or an automation trigger. **Ownership never follows the creator, because ownership is always Cloud.**
 
 | # | Rule |
 |---|---|
-| TO-01 | **A Task is owned by exactly one product**, recorded in `Task.owningProduct`. Ownership never transfers. |
-| TO-02 | **A Task's authoritative store follows its placement**, recorded in `Task.placement ∈ {local, cloud, remoteViaBridge}`. |
-| TO-03 | **A `local` Task's authoritative record is in the owning product's local store.** Cloud holds a read projection only, for the task centre and mobile surfaces. |
-| TO-04 | **A `cloud` Task's authoritative record is in Cloud — Task.** The desktop holds a read projection. |
-| TO-05 | **A `remoteViaBridge` Task is authoritative in Cloud for its request and result, and in the desktop for its execution attempts.** The two are joined by `Task.id`, and neither writes the other's rows. |
-| TO-06 | **Placement is decided once, at creation, and recorded.** A task declared local-only can never be re-placed (`WP-26.06`). |
+| TO-01 | **Every Agent Task is Cloud-owned** (**P2-006**). `Task.owningProduct` records which product's domain the work concerns; it does not move the authoritative store. |
+| TO-02 | **`Task.toolLocality ∈ {cloud, device}` is recorded per Step, not per Task.** A single Task may mix both. The old `placement ∈ {local, cloud, remoteViaBridge}` field is **retired**: there is no local task placement (`I-491`). |
+| TO-03 | **The authoritative record is always `task.task` in Cloud.** Every client — including the desktop that created the Task — holds a read projection. |
+| TO-04 | **A device Step's execution attempts are recorded in Cloud from the returned `ToolResult`**, and mirrored in the device's own `command_log` for local idempotency. Neither writes the other's rows (`BI-03` of the bridge contract). |
+| TO-05 | **A native Product Job is not a Task at all.** A render, capture, index or export is owned and recovered by its product, has its own durable job record, and never appears in `task.task` (`AU-03`, `I-121`, `I-485`). |
+| TO-06 | **Tool locality is decided per Step and recorded.** A Step declared `device` is never silently satisfied by a cloud approximation (`PL-02` of the harness); if no eligible device is online it waits with a stated reason (`WP-26.06`). |
 | TO-07 | **A projection is stamped with the authoritative revision it was built from**, so a stale projection is detectable rather than silently wrong. |
 
 ---
