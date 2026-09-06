@@ -94,11 +94,11 @@
 
 ### WP-21.03 — Persistence and the standalone migrator
 
-**What must be fully done.** A real database with the numbered migration set applied by a standalone migrator. Migration is transactional per step, idempotent, resumable, and rehearsed forward and backward. The expand/deploy/contract pattern is implemented for any change that is not directly reversible.
+**What must be fully done.** A real database with the numbered migration set applied by a standalone migrator. Migration is transactional per step, idempotent, resumable, and rehearsed forward and backward. The expand/deploy/contract pattern is implemented for any change that is not directly reversible, with the **write-compatibility mode declared** (`BF-01`) and, for modes A and B, a **capture mechanism outside application code that starts before backfill and stops only at contract** (`BF-02`, `BF-03`, `BF-05`).
 
-**Testing requirements.** Forward migration on a clean database and on every historical fixture; interruption and resume; an expand/deploy/contract rehearsal; a rollback rehearsal.
+**Testing requirements.** Forward migration on a clean database and on every historical fixture; interruption and resume; an expand/deploy/contract rehearsal; a rollback rehearsal. Additionally: a **capture-before-backfill ordering test** asserting a migration whose recorded times violate `BF-04` is refused; a test in which an **old** replica writes during deploy and soak, asserting the write reaches the new representation through capture **with no application code in that path** (`BF-03`); a drain test asserting the switch is blocked while the applier backlog is non-empty (`BF-06`); and a rollback **after** the switch and within the horizon, asserting the old version reads correct data because capture never stopped (`RW-06`).
 
-**Completion gate.** Migration is resumable and rehearsed in both directions, and a non-reversible change is demonstrably handled by the three-phase pattern.
+**Completion gate.** Migration is resumable and rehearsed in both directions; a non-reversible change is demonstrably handled by the three-phase pattern; **no window exists in which a write can be missed** — capture provably precedes backfill and continues past the switch; and a rollback within the horizon reads correct data.
 
 ### WP-21.04 — Outbox, inbox and idempotency
 

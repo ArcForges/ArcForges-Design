@@ -92,50 +92,67 @@ The requirements say migration is a gated step, that schema change uses expand/c
 
 ---
 
-### 2.5 Backfill catch-up and rollback data safety
+### 2.5 Backfill, capture and the cutover window
 
-> **Added 2026-09-07.** The phase table said backfill populates new structures while old code still *reads* old ones. Old code also **writes** them. A row backfilled at T and updated by old code at T+1 leaves the new representation **stale**, and the switch then reads it. Separately, "the migration was additive" makes the *schema* rollback-safe; it says nothing about **data** written only in the new representation after the switch. Both gaps are closed here.
+> **Corrected 2026-09-08.** The previous rules made a catch-up pass finding nothing the completion condition, with a sampled comparison as evidence. **Neither covers the interval between that check and the switch**, during which old replicas keep writing — and deploy plus soak make that interval long. A sample is evidence about the past, not a mechanism for the future. **Capture must start before backfill and continue past the switch**, so that no window exists in which a write can be missed.
 
-#### The write-compatibility ladder
+#### The ordering that removes the window
 
-Every expand/contract migration declares one of three modes **before** the expand phase, and the mode determines the backfill and rollback procedure.
-
-| Mode | When it applies | Backfill | Rollback safety |
-|---|---|---|---|
-| **A — Derived** | The new structure is computable from the old at any time (an index, a denormalisation, a projection) | Backfill, then a **catch-up pass** to convergence | **Free.** Old code never needed the new structure; rolling back loses nothing |
-| **B — Dual-write** | Both representations must carry the same fact during the window | New code writes **both**; old code writes the old one, and a **converter** maintains the new one for those writes | **Free while dual-write holds.** The old representation is never behind |
-| **C — Exclusive** | The new representation carries facts the old one cannot express | Backfill, then a **bounded write pause** at cutover | **Not free.** Rollback loses post-cutover facts, so it is gated by `§2.6` |
+```
+ EXPAND      add the new structure  AND  START CAPTURE
+             |                            capture covers writes from EVERY version,
+             |                            including replicas that know nothing about it
+ BACKFILL    fill rows that predate capture, oldest first
+             |
+ CONVERGED   capture started before backfill  AND  backfill reached the end
+             |   -> every row is covered: old rows by backfill, new writes by capture
+             |   -> this is provable from two timestamps, not sampled
+ DEPLOY      new version rolls out; capture still running
+ SOAK        capture still running
+ SWITCH      READERS move to the new structure; CAPTURE CONTINUES
+             |
+ (rollback horizon)
+             |
+ CONTRACT    stop capture, confirm, then remove the old structure
+```
 
 | # | Rule |
 |---|---|
 | BF-01 | **The mode is declared in the migration, not chosen at execution time**, and the deployment gate refuses a migration that declares none. |
-| BF-02 | **Mode A is the default and is preferred.** Most schema evolution can be made derived by keeping the old column authoritative until contract. |
-| BF-03 | **Mode B's converter is part of the migration, not of application code.** It is a database trigger or an outbox-driven applier that runs regardless of which application version wrote the row, because the whole point is that old code does not know about the new structure. |
-| BF-04 | **Mode C requires an explicit, bounded, announced write pause** on the affected aggregates. It is the only mode that may block writes, its duration is measured in the rehearsal, and exceeding the measured bound aborts the cutover. |
-| BF-05 | **Backfill is not complete when the pass ends.** It is complete when a **catch-up pass finds nothing** — no row whose old representation changed after its backfill. Convergence, not completion, is the exit check. |
-| BF-06 | **The catch-up pass is driven by change detection, not by re-scanning**: the affected rows carry an update watermark, and the pass reprocesses only rows updated since their backfill. A full re-scan is the fallback, and its cost is measured. |
-| BF-07 | **Equivalence is asserted before the switch, on live data**: a sampled comparison of old and new representations must find zero divergence, and a divergence stops the sequence (`DX-05`). A backfill that "looks done" is not evidence. |
+| BF-02 | **Capture starts in the expand phase, before any backfill row is written**, and its start time is recorded. This ordering is what makes the coverage argument possible at all: a row is covered either because capture saw its write, or because backfill filled it. |
+| BF-03 | **Capture is outside application code.** It is a database trigger, or an outbox-driven applier fed by the business transaction — never a code path in the new version, because the writers that most need covering are the **old** replicas, which do not have that code (`MX-02`). |
+| BF-04 | **Convergence is `capture_started_at <= backfill_started_at AND backfill_completed`.** It is a proposition about two recorded facts, not a sampled observation. A catch-up pass is **not** the completion condition — with continuous capture there is nothing left for it to catch. |
+| BF-05 | **Capture continues through deploy, soak and switch, and stops only at contract** (`RW-02`). Stopping it earlier reopens exactly the window this ordering closes. |
+| BF-06 | **An asynchronous applier is permitted, with a bounded and monitored lag.** The switch's entry check requires the applier's backlog to be **drained**, not merely small, so no write is in flight across the reader cutover. Oldest-unapplied age is a monitored signal and a stalled applier blocks the switch. |
+| BF-07 | **A sampled equivalence comparison is corroborating evidence, never the mechanism** (`BF-04`). It runs before the switch and a divergence stops the sequence (`DX-05`), because a divergence means capture or backfill is defective — but its passing does not by itself authorise the switch. |
+| BF-08 | **Mode A is the default and is preferred.** Most schema evolution can be made derived by keeping the old structure authoritative until contract; a derived structure still requires continuous capture, because a derivation computed once goes stale exactly as a copy does. |
+| BF-09 | **Mode C's write pause exists only where the new representation carries facts the old cannot express**, so no converter can maintain it. It is explicit, bounded, announced and rehearsed, and exceeding its measured bound aborts the cutover. |
 
 #### 2.6 The rollback window and its data semantics
 
 `RH-01` defines the rollback horizon in terms of *schema*. This defines it in terms of **data**.
 
+> **Corrected 2026-09-08.** `RW-02` previously said both that *the switch ends dual-write* and that the two are ordered *stop the behaviour, then stop dual-write*. Those cannot both hold: the switch is what **starts** the behaviour. Worse, ending capture at the switch would close the data rollback window at the same instant — which is mode C's behaviour, not mode B's, and would remove the reason for running a converter at all.
+
 | # | Rule |
 |---|---|
-| RW-01 | **Rollback is data-safe only while the old representation is still authoritative or still maintained.** In mode A that is always; in mode B it is until dual-write stops; in mode C it ends at cutover. |
-| RW-02 | **The switch is what ends mode B's dual-write, and it is a separate decision from the flag that enables the behaviour.** Turning the behaviour off does not restart dual-write, so the two are ordered: stop the behaviour, confirm, then stop dual-write. |
-| RW-03 | **A mode C cutover closes the data-rollback window immediately**, even though the schema window stays open until contract. The deployment record states both, because assuming they are the same is how a "safe" rollback silently discards a day of writes. |
+| RW-01 | **Rollback is data-safe while the old representation is still authoritative or still maintained.** Mode A and mode B: until capture stops at contract. Mode C: until the cutover. |
+| RW-02 | **Capture continues past the switch and stops at contract.** The order is: **switch readers on → establish beyond the horizon → stop capture → confirm → remove the old structure.** Turning the behaviour off is a *rollback* action, not a step in the forward sequence, and it does not require capture to have stopped. |
+| RW-03 | **A mode C cutover closes the data-rollback window immediately**, even though the schema window stays open until contract. The deployment record states both, because assuming they are the same is how a rollback silently discards a day of writes. |
 | RW-04 | **Beyond the data-rollback window, recovery is a forward fix or a restore** (`RH-03`), never an application rollback presented as safe. |
-| RW-05 | **The pre-rollback check is mechanical**: the operator tooling refuses an application rollback whose target version cannot read the current authoritative representation, and states which mode and which cutover closed the window. |
+| RW-05 | **The pre-rollback check is mechanical**: the tooling refuses an application rollback whose target version cannot read the current authoritative representation, and states which mode and which event closed the window. |
+| RW-06 | **Rolling back after the switch, within the horizon, is safe precisely because capture never stopped.** The old representation is current, so the old version reads correct data. This is the property `RW-02`'s previous wording would have destroyed. |
 
 #### 2.7 Additions to the phase table
 
 | Phase | Additional entry check | Additional exit check |
 |---|---|---|
-| **1 Expand** | The migration declares mode A, B or C (`BF-01`); a mode B converter exists and is itself tested | — |
-| **2 Backfill** | — | **Catch-up converges** (`BF-05`) and the live equivalence sample finds zero divergence (`BF-07`) |
-| **5 Switch** | For mode C, the announced write pause has been rehearsed and its measured bound is within budget (`BF-04`) | The data-rollback window's state is **recorded** (`RW-03`) |
-| **6 Contract** | Dual-write, where used, has been stopped and confirmed (`RW-02`) | — |
+| **1 Expand** | The migration declares mode A, B or C (`BF-01`); the capture mechanism exists, is itself tested, and is **started before backfill** (`BF-02`) | Capture is running and its start time is recorded |
+| **2 Backfill** | Capture already running (`BF-02`) | **Convergence proposition holds** (`BF-04`); the live equivalence sample finds zero divergence (`BF-07`) |
+| **3 Deploy** | Capture still running | Capture still running |
+| **4 Soak** | Capture still running | Capture still running |
+| **5 Switch** | **The applier's backlog is drained**, not merely small (`BF-06`); for mode C, the announced write pause is rehearsed and within budget (`BF-09`) | Readers on the new structure; **capture still running**; the data-rollback window's state recorded (`RW-03`) |
+| **6 Contract** | The version is established beyond the rollback horizon; capture has been stopped **and confirmed** (`RW-02`) | The old structure removed |
 
 ---
 
@@ -268,11 +285,12 @@ build once (per RID) → sign → publish to the artifact store
 | DF-08 | Configuration missing at start-up | Replica does not start | Start-up validation (`CF-05`) | Operations | Fix configuration; **no replica ever starts with a silent default** |
 | DF-09 | Client update interrupted mid-install | Previous installation intact | Client update matrix | Client | Retry; **partial state is never the resting state** (`CD-05`) |
 | DF-10 | Client on a version outside the Supported Client Set | Refused with a named reason and an update path | Version check | Cloud | The user is told what to do, never given an opaque failure |
-| DF-11 | Backfill catch-up never converges — the write rate exceeds the pass rate | New representation permanently stale | Convergence check (`BF-05`) | Operations | **Do not switch.** Either raise the pass rate, or change the migration to mode B so old writes maintain the new structure |
+| DF-11 | Capture was started **after** backfill began | An uncovered window: rows written between backfill start and capture start are in neither set | The recorded start times (`BF-04`) | Operations | **Restart the migration from expand.** The convergence proposition is false and no amount of catch-up establishes it |
 | DF-12 | Live equivalence sample finds divergence | Old and new disagree | Equivalence check (`BF-07`) | Operations | Stop the sequence. A divergence before the switch is a converter or backfill defect, and switching would make it user-visible |
 | DF-13 | Mode C write pause exceeds its measured bound | Writes blocked longer than announced | Pause timer | Operations | **Abort the cutover** and release the pause. The old representation is still authoritative, so aborting is safe |
 | DF-14 | Application rollback attempted after a mode C cutover | Post-cutover facts unreadable by the old version | Pre-rollback check (`RW-05`) | Operations | **Refused by tooling**, with the mode and cutover named. Forward fix or restore (`RW-04`) |
-| DF-15 | Dual-write stopped before the behaviour flag was turned off | New writes reach only the new representation while the old is presumed maintained | Ordering check (`RW-02`) | Operations | Restart dual-write, then re-order the shutdown correctly |
+| DF-15 | Capture stopped before contract | The old representation goes stale, silently closing the data-rollback window while the schema window still looks open | Capture liveness check (`RW-02`, `BF-05`) | Operations | **Restart capture and re-backfill the gap**, then treat the window as closed until convergence is re-established |
+| DF-16 | The applier's backlog is non-empty at the switch | Writes in flight across the reader cutover | Drain check (`BF-06`) | Operations | **Do not switch.** Wait for drain, or stop if the backlog is not shrinking |
 
 ---
 
@@ -296,8 +314,12 @@ build once (per RID) → sign → publish to the artifact store
 | DV-10 | A Compatibility Manifest is produced for every release and matches what was tested | `WP-50.00`, `WP-50.08` |
 | DV-11 | A client outside the Supported Client Set receives a named reason and an update path, never an opaque failure | `WP-23.06` |
 | DV-12 | Every deployment phase records its checks, operator and time, and an incident can reconstruct the sequence | `WP-45.04` |
-| DV-17 | A row updated by old code after its backfill is caught by the catch-up pass, and the switch never reads a stale new representation | `WP-21.03` |
+| DV-17 | A row updated by an old replica after its backfill reaches the new representation **through capture**, and the switch never reads a stale representation (`BF-03`, `BF-05`) | `WP-21.03` |
 | DV-18 | A mode B converter maintains the new representation for writes made by a version that does not know it exists | `WP-21.03` |
 | DV-19 | The live equivalence sample detects an injected divergence and stops the sequence | `WP-21.03`, `WP-50.04` |
 | DV-20 | A mode C write pause is rehearsed, measured, and aborts cleanly when it exceeds its bound | `WP-21.03` |
 | DV-21 | The pre-rollback check refuses an unsafe application rollback and names the mode and cutover that closed the window | `WP-50.04` |
+| DV-22 | **Capture demonstrably starts before backfill**, and a migration whose recorded times violate that ordering is refused (`BF-04`) | `WP-21.03` |
+| DV-23 | A write made by an **old** replica during deploy and soak reaches the new representation through capture, with no application code in that path (`BF-03`) | `WP-21.03`, `WP-50.04` |
+| DV-24 | The switch is blocked while the applier's backlog is non-empty (`BF-06`) | `WP-21.03` |
+| DV-25 | An application rollback **after** the switch and within the horizon reads correct data, because capture never stopped (`RW-06`) | `WP-50.04` |
