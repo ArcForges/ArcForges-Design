@@ -11,9 +11,9 @@
 
 ## 1. Scope and purpose
 
-**In scope.** The local search index over hydrated content and its query surface; citation anchors; saved views over queries; non-destructive import from Markdown and plain-text sources including an Obsidian-style folder layout (`IM-02`); the client half of the **Cloud notebook export** with its fidelity report; and the Git-friendliness level ArcNotes commits to.
+**In scope.** The local search index over hydrated content and its query surface; citation anchors; saved views over queries; non-destructive import from Markdown and plain-text sources including an Obsidian-style folder layout (`IM-02`); and the client half of the **Cloud notebook export** with its fidelity report.
 
-**Out of scope by `EP-04` and `IM-02`.** Native portable packages; HTML, PDF and DOCX export pipelines; bit-for-bit archive round-trips; custom local encrypted export; DOCX, Notion-specific, HTML and proprietary full-fidelity importers; and any live bidirectional folder mirror or linked-vault mode (`IM-07`).
+**Out of scope by `EP-04`, `IM-02` and `§14` of the data-format requirements.** Repository projection, Git synchronisation, linked-repository editing and LFS integration; native portable packages; HTML, PDF and DOCX export pipelines; bit-for-bit archive round-trips; custom local encrypted export; DOCX, Notion-specific, HTML and proprietary full-fidelity importers; and any live bidirectional folder mirror or linked-vault mode (`IM-07`).
 
 **Out of scope.** Cloud search (`40` and `25`). Semantic retrieval and embeddings (`40`). Database-view queries (`28`) — saved views here are list projections only.
 
@@ -26,7 +26,7 @@
 | Input | Why it matters |
 |---|---|
 | [`../../requirements/06-knowledge-search-and-retrieval.md`](../../requirements/06-knowledge-search-and-retrieval.md) | Search versus retrieval, evidence and citation anchors, permission-aware retrieval |
-| [`../../requirements/13-data-formats-and-portability.md`](../../requirements/13-data-formats-and-portability.md) | The portability constitution, import and export obligations, Git friendliness |
+| [`../../requirements/13-data-formats-and-portability.md`](../../requirements/13-data-formats-and-portability.md) | The portability constitution, import and export obligations, and the **repository-projection exclusion** (`§14`, `EX-09`) |
 | [`../../architecture/06-data-persistence-and-formats.md`](../../architecture/06-data-persistence-and-formats.md) `§8` | The import pipeline and the export pipeline |
 | `WP-18` output | The document model, link index and attachment model |
 
@@ -44,7 +44,7 @@
 | BR-06 | **Import is non-destructive**: the source is never modified, and a partial import is reported rather than silently completed. |
 | BR-07 | **Export is complete**: a native export can be re-imported to reconstruct the content, including attachments and structure (`EX-01` in the data requirements). |
 | BR-08 | **An export never silently loses fidelity.** A lossy target format states what it drops. |
-| BR-09 | **The Git-friendliness level ArcNotes commits to is declared**, and the format honours it (`§12` there). |
+| BR-09 | **No repository projection, Git synchronisation, linked-repository mode or LFS path is built** (`§14` there, `EX-09`, `EE-04`). `GT-01`–`GT-09` are retired, explicitly including their acceptance gates, so no Git-friendliness level is declared and none may be demanded. |
 
 ---
 
@@ -113,13 +113,15 @@
 
 **Completion gate.** A Cloud export produces Markdown, attachments, a link manifest and a fidelity report over acknowledged revisions, with pending edits excluded and said so; and every lossy target states its losses before writing. **This satisfies `PG-07` for ArcNotes.**
 
-### WP-19.06 — Git friendliness
+### WP-19.06 — The repository-projection prohibition
 
-**What must be fully done.** The declared Git-friendliness level is implemented and stated: file granularity, deterministic serialization ordering, stable identifiers, and diff readability at the committed level. A non-goal statement makes clear what is *not* promised.
+> **This step builds nothing.** It replaces a Git-friendliness step that `§14` of the data-format requirements retired, gates included. A retired delivery still needs an assertion, because the way an excluded feature returns is by a later package quietly adding it.
 
-**Testing requirements.** A determinism test — two exports of unchanged content are byte-identical; a diff-readability check on a representative edit.
+**What must be fully done.** A structural assertion that **no ArcNotes assembly — and no assembly it references — carries a repository-projection writer, a Git client dependency or an LFS path** (`§14` there, `EX-09`). The exclusion is recorded where a reader looks for the feature, so a user asking for a Git-backed notebook gets the stated answer instead of a silent absence (`EE-04`, `EP-05` of the policy requirements).
 
-**Completion gate.** Export is deterministic and the committed Git-friendliness level is demonstrated on a real edit.
+**Testing requirements.** A dependency-policy test failing the build on a Git or LFS client package reference from any ArcNotes project; a structural test asserting no type implements or is named as a projection writer; a presentation test asserting the excluded capability is explained rather than merely hidden.
+
+**Completion gate.** **No projection path exists and none can be added without failing the build**, and the exclusion is stated to the user rather than left as a gap.
 
 ---
 
@@ -161,7 +163,7 @@
 4. A saved view owns no content and always reflects current data.
 5. Every declared import source has a fixture, imports correctly, never modifies the source, and reports partial failure honestly.
 6. A Cloud export is complete, verifiable and honest about what it omits; every lossy target states its losses before writing — satisfying `PG-07` for ArcNotes.
-7. Export is deterministic and the committed Git-friendliness level is demonstrated.
+7. **No repository-projection or Git/LFS path exists in ArcNotes or its dependencies**, the build fails if one is added, and the exclusion is explained rather than hidden.
 8. **Search over hydrated content survives a Cloud outage**, and pending work remains durably recoverable. Export is a Cloud operation and is unavailable during an outage, which the interface states rather than failing opaquely.
 
 ---

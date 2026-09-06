@@ -105,7 +105,10 @@ client tracks lastSeq per subscription
 
 ```
 Remote surface (mobile / web)
-   │  task.create  (placement = remoteViaBridge, targetDeviceId)
+   │  task.create  (origin_surface = mobile | web)   ── provenance only, not authority
+   ▼
+Cloud owns the Task; the Cloud plan decides locality per Step
+   │  plan_step.tool_locality = device, target_device_id   ── declared, never inferred
    ▼
 Cloud ── writes task.tool_request (durable, expiring) ──▶ queue
    │

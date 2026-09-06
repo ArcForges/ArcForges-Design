@@ -160,6 +160,8 @@ Interchange Formats          third-party, declared round-trip level
 | FA-07 | **An unknown domain element is preserved, marked and surfaced** — never silently dropped, never executed (`FV-05` there). |
 | FA-08 | **A format feature requirement is declarable**, producing an explicit "requires a newer version" state instead of a corrupt read (`FV-06` there). |
 
+> **Scope of the layer.** `Native Portable Format` exists for **ArcScope and ArcSlate**. `§4` of the data-format requirements limits the package requirements to those native formats and states plainly that they create no Notes/Chat local archive obligation; `EP-04` and `EX-01` confirm it per product. For ArcNotes and ArcChat the layer below `Working Store` is a **Cloud-generated download**, not a native package, and it carries no re-import promise.
+
 ### 8.1 Portable package structure
 
 ```
@@ -259,17 +261,19 @@ Export:   domain → select scope → resolve assets → assemble package
 
 ---
 
-## 12. Git projection
+## 12. Repository projection — excluded delivery
+
+**No product ships one.** `§14` of the data-format requirements excludes Git synchronisation, repository projection, linked-repository editing and LFS integration; `GT-01`–`GT-09` are retired dispositions, and the retirement is explicit that there is **no repository-projection feature and no acceptance gate**. `EX-09` says the same for ArcNotes specifically. This section therefore states a prohibition, not a design.
+
+What survives is the pair of invariants, which are **prohibitions about a user's own repository**, not obligations to write into one:
 
 | # | Rule |
 |---|---|
-| GP-01 | **The repository projection is a derived output, written by an explicit action** — the runtime never treats a repository as its store (`GT-01` there). |
-| GP-02 | **Projection is deterministic**: stable ordering, stable identifiers, stable formatting, so one logical change produces one small diff (`GT-04` there). |
-| GP-03 | **Projection is human-legible** (`GT-05` there). |
-| GP-04 | **Projection shape is per product** (`GT-06` there). |
-| GP-05 | **Large assets are referenced, not embedded**; large-file handling is delegated to existing tooling rather than reinvented (`GT-03` there). |
-| GP-06 | **Working store, caches, indexes and device state never enter the projection.** |
-| GP-07 | **ArcForges never modifies a user's repository without saying so** (`GT-09` there). |
+| GP-01 | **No product writes a repository projection**, and no build produces a projection writer, a Git client dependency or an LFS path. A structural test asserts it (`§14` there). |
+| GP-02 | **`I-211` — a repository is never runtime authority.** If a user keeps exported content inside a repository, that repository is still not a store: the runtime reads its own working store, and content arriving through a repository is an ordinary import, subject to the ordinary import pipeline (`§10`). |
+| GP-03 | **`I-212` — a repository is never the live working store.** No code path opens a working store located in, or synchronised by, a repository as though it were transactional storage. |
+| GP-04 | **`P3` still binds**: transaction safety and editing performance are never traded for text friendliness. With projection excluded there is nothing left to trade them for, which is the point of the exclusion. |
+| GP-05 | **A product's exit path is its declared export** (`§8`), never a repository. Directing a user to a repository as a substitute for export or for multi-device sync is prohibited — a runtime database is not a mergeable document. |
 
 ---
 
@@ -288,7 +292,7 @@ The cloud data model is specified in [`05-cloud-architecture.md`](05-cloud-archi
 
 | Source | Consumed as |
 |---|---|
-| `I4 §Stage 22` | Store composition, format layering, portable package structure, migration mechanics, import and export pipelines, storage pressure, Git projection |
+| `I4 §Stage 22` | Store composition, format layering, portable package structure, migration mechanics, import and export pipelines, storage pressure. **Its Git-projection material is retired delivery** (`§14` of the data-format requirements) and survives here only as the prohibition in `§12` |
 | `I3 §12` | Local persistence rules, journal, snapshot, crash recovery |
 | `I3 §10` | Document identity, write command processing, conflict semantics |
 | `I4 §Stage 9` | Blob immutability, integrity hashing, deletion propagation |

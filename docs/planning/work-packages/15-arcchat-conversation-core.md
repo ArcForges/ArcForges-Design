@@ -109,7 +109,7 @@
 
 ### WP-15.05 — Local search
 
-**What must be fully done.** Full-text search over conversation content, attachments' extracted text and project metadata, available with no cloud and no account. The index is a derived store: deleting it rebuilds. Search respects the same permission model as direct access.
+**What must be fully done.** Full-text search over **hydrated** conversation content, attachments' extracted text and project metadata, **available while Cloud is unreachable**. Conversation content is Cloud-authoritative with a durable native cache, so this searches what the device holds — it is outage tolerance, not an account-free product, and uncached history is not silently treated as absent. The index is a derived store: deleting it rebuilds. Search respects the same permission model as direct access.
 
 **Testing requirements.** Index rebuild-from-scratch test; relevance tests against a fixture corpus; a permission test asserting search reveals nothing direct access would refuse.
 
@@ -117,11 +117,11 @@
 
 ### WP-15.06 — History, export and recovery
 
-**What must be fully done.** Conversation history with restoration; export to the portable format and to a human-readable form; recovery after a hard kill with explicit reporting of any uncommitted loss.
+**What must be fully done.** Conversation history with restoration; **the export client half** — request a Cloud conversation export, download the produced artifact, and present its documented JSON/text content and attachment manifest with explicit availability (`EX-01`); recovery after a hard kill with explicit reporting of any uncommitted loss. **`EX-01` requires no standalone local conversation archive or recovery format**, so none is built and no local round-trip is claimed. `EX-03`: an export never carries keys or secrets.
 
-**Testing requirements.** Export round-trip; kill-during-write recovery; an export completeness check against the portability requirements.
+**Testing requirements.** An export requested, produced and downloaded, asserting the manifest matches the delivered attachments and that unavailable items are declared rather than omitted silently; an export while unsynchronised local edits exist, asserting they are **excluded and the exclusion stated**; a secret-scanning assertion over export output (`EX-03`); kill-during-write recovery reporting uncommitted loss.
 
-**Completion gate.** Export round-trips completely, and recovery reports loss explicitly rather than silently discarding.
+**Completion gate.** An export is complete against its manifest, honest about what it omits, and free of secrets; recovery reports loss explicitly rather than silently discarding. **No local archive format is produced, and no round-trip is asserted** — `EX-01` does not require one.
 
 ### WP-15.07 — Reference drift check
 
@@ -163,7 +163,7 @@
 | Container distinction results | `WP-15.03` |
 | Skill capability-free and versioning results | `WP-15.04` |
 | Index rebuild, relevance and permission results | `WP-15.05` |
-| Export round-trip and recovery results | `WP-15.06` |
+| Export completeness, manifest agreement, secret-scan and recovery results | `WP-15.06` |
 
 ---
 
@@ -177,7 +177,7 @@
 4. Attachments are stored by reference with integrity verification, and unavailability is a visible state.
 5. Projects, profiles and skills are structurally distinct, with skills conferring no capability and updates not altering history.
 6. Search over cached content works during a Cloud outage, rebuilds from scratch, and leaks nothing direct access would refuse.
-7. Export round-trips completely and recovery reports uncommitted loss explicitly.
+7. A Cloud conversation export is complete against its manifest, excludes unsynchronised edits and says so, carries no secrets (`EX-03`), and recovery reports uncommitted loss explicitly. **No local conversation archive format is built** (`EX-01`).
 8. **ArcChat is fully usable with every other product absent.**
 
 ---

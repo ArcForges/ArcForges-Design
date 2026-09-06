@@ -3,7 +3,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: A — Freeze and foundation
-> Upstream: `01` · Downstream: `03`, `05`, `10`
+> Upstream: `01` · Downstream: `03`, `05`
 
 > **Goal.** Make the build tell the truth. Until diagnostics are real, warnings are errors, versions are locked and the runtime split is expressed in the build itself, every later AOT proof and every later quality claim rests on unverified ground.
 
@@ -176,5 +176,5 @@
 | `03` — Contract foundation | Generator settings, serialization posture, locked packages |
 | `05` — Policy tests | A build that can fail on policy violations |
 | `06` — AOT proof | Real diagnostics, without which the proof is meaningless |
-| `10` — Design system | The AOT diagnostic posture that third-party control adoption is judged against |
+| `10` — Design system *(transitive, through `06`)* | The AOT diagnostic posture that third-party control adoption is judged against |
 | Every later package | A build that enforces rather than reports |

@@ -530,7 +530,9 @@ All four are *(derived)*, in a **separate store file** from the project, so `WP-
 
 ## 6. The portable package
 
-The working store is not the exchange format (`§8` of the persistence architecture). A portable package is a directory or archive containing:
+**Which products have one.** The package requirements apply to **the ArcScope and ArcSlate native formats**, and to any package a product explicitly offers. **They create no ArcNotes or ArcChat local archive obligation** (`§4` of the data-format requirements, `EP-04`, `EX-01`): those two products' exit path is a Cloud-generated download over acknowledged revisions, built in `WP-19.05` and `WP-15.06`, and neither produces a re-importable native package. Reading this section as a universal obligation is how an impossible round-trip gate gets written.
+
+The working store is not the exchange format (`§8` of the persistence architecture). Where a product has a package, it is a directory or archive containing:
 
 ```
 manifest.json          format version, product, created-by, content inventory with hashes
@@ -541,8 +543,8 @@ attachments-external/  external reference descriptors, never the files themselve
 
 | # | Rule |
 |---|---|
-| PP-01 | **The package is complete**: re-importing reconstructs every aggregate, relationship and managed resource (`WP-19.05`). |
-| PP-02 | **Serialisation is deterministic** — stable ordering, stable key order, no timestamps outside content. Two exports of unchanged content are byte-identical (`WP-19.06`). |
+| PP-01 | **The package is complete**: re-importing reconstructs every aggregate, relationship and managed resource (`WP-39.02`, `WP-35.04`). |
+| PP-02 | **Serialisation is deterministic** — stable ordering, stable key order, no timestamps outside content. Two exports of unchanged content are byte-identical (`WP-39.02`, `WP-35.04`). |
 | PP-03 | **Derived data is excluded.** No index, cache, proxy or thumbnail enters a package. |
 | PP-04 | **External references are exported as descriptors**, and collect/consolidate is the separate explicit operation that turns them into managed content (`WP-39.02`). |
 | PP-05 | **The manifest carries `nativeFormatVersion`**, distinct from `storageSchemaVersion` — a version axis of its own. |
@@ -559,6 +561,7 @@ attachments-external/  external reference descriptors, never the files themselve
 | DL-04 | No floating-point column exists in the ArcSlate time model | `WP-36.01` policy test |
 | DL-05 | Deleting every derived store leaves each product fully intact | `WP-07.06`, `WP-37.05` |
 | DL-06 | Undo, history, checkpoint and journal behave independently | `WP-18.05` |
-| DL-07 | The portable package round-trips with equivalence, deterministically | `WP-19.05`, `WP-19.06` |
+| DL-07 | **Where a product has a portable package**, it round-trips with equivalence, deterministically | `WP-39.02`, `WP-35.04` |
+| DL-07a | **Where a product's exit path is a Cloud download**, the export is complete over acknowledged revisions, states its exclusions, and **is not asserted to re-import** | `WP-19.05`, `WP-15.06` |
 | DL-08 | **The repository read surface** excludes a trashed row from every list path, and **no application assembly can construct a query against the raw table** (`QP-06`) | `WP-18.00`, `WP-05` |
 | DL-09 | A crash at any write-path point recovers to a committed boundary | `WP-07.02` |

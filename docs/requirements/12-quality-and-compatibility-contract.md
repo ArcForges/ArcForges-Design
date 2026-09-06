@@ -509,7 +509,7 @@ The traditional three layers are insufficient here. The required families, each 
 
 ## 27. Must-pass release scenarios
 
-**Startup** — Cloud entirely offline; ArcNotes starts; an editable workspace within budget; cloud state refreshes in the background; **no sign-in blocking gate**.
+**Startup** — launching the application requires no account (`ID-01`). With an **already enrolled and hydrated** notebook and Cloud entirely offline: ArcNotes starts, the hydrated workspace is editable within budget, pending edits are durably saved and visibly unsynchronised, cloud state refreshes in the background when Cloud returns, and **a cached session is never forced into an interactive re-authentication prompt merely because Cloud is unreachable**. Enrolment itself requires Cloud and sign-in (`PR-02`, `CL-02`), so an unenrolled first run is a different scenario and is not this one.
 
 **ArcChat Hub** — ArcChat absent; the professional product starts, works and saves; ArcChat starts later and registration recovers.
 

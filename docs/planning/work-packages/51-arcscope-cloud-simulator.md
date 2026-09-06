@@ -3,7 +3,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: H — ArcScope *(sequenced after `33`; numbered `51` because `00`–`50` are allocated and a retired identifier is never reused)*
-> Upstream: `21`, `23`, `25`, `33` · Downstream: `34`, `50`
+> Upstream: `21`, `23`, `25`, `33` · Downstream: `50`
 
 > **Goal.** Deliver the deterministic Cloud simulator of `SIM-01`–`SIM-20` as a **real capability running through real Cloud persistence, real object storage and the real native acquisition pipeline**. A preview, a canned response or a test fake does not satisfy this package (`SIM-20`).
 
@@ -168,5 +168,5 @@
 
 | Package | What it needs from here |
 |---|---|
-| `34` — ArcScope analysis | A repeatable synthetic source for analysis and report verification |
+| `34` — ArcScope analysis *(benefit, **not** a dependency)* | An **additional** repeatable synthetic source. `WP-34` must not wait for this package: `SD-09` makes **file/replay** a V1 adapter delivered in `WP-33`, and that is `WP-34`'s repeatable source. Making `34` depend on `51` would put native analysis behind Cloud persistence, storage and leases — the same backward dependency `§3` of the implementation sequence forbids |
 | `50` — Full-platform release | The simulator acceptance evidence |

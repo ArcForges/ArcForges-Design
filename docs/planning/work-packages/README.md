@@ -88,6 +88,7 @@ The number is an identity, not a schedule. Ordering is by dependency; parallelis
 | 33 | [ArcScope acquisition and session core](33-arcscope-acquisition-and-session.md) | 07, 10, 13, 26 |
 | 34 | [ArcScope analysis, visualisation and reporting](34-arcscope-analysis-and-reporting.md) | 33 |
 | 35 | [ArcScope integration and metadata sync](35-arcscope-integration-and-sync.md) | 25, 34 |
+| 51 | [ArcScope deterministic Cloud simulator](51-arcscope-cloud-simulator.md) | 21, 23, 25, 33 |
 
 ### Phase I — ArcSlate
 
@@ -109,6 +110,7 @@ The number is an identity, not a schedule. Ordering is by dependency; parallelis
 | 44 | [Dynamic policy and configuration control plane](44-dynamic-policy-and-configuration.md) | 23, 42 |
 | 45 | [Operations, support and trust & safety](45-operations-support-and-trust-safety.md) | 12, 21, 44 |
 | 46 | [Backup, disaster recovery and data health](46-backup-recovery-and-data-health.md) | 25, 45 |
+| 52 | [The Cloud Harness](52-cloud-harness.md) | 15, 17, 21, 23, 42, 43 |
 
 ### Phase K — Web and release
 
@@ -117,9 +119,7 @@ The number is an identity, not a schedule. Ordering is by dependency; parallelis
 | 47 | [Static public site](47-static-public-site.md) | 00 |
 | 48 | [Account portal](48-account-portal.md) | 42, 44, 47 |
 | 49 | [ArcChat Web companion](49-arcchat-web-companion.md) | 26, 48 |
-| 50 | [Full-platform production release](50-full-platform-production-release.md) | 20, 28, 32, 35, 39, 43, 46, 49, 51, 52 |
-| 51 | [ArcScope deterministic Cloud simulator](51-arcscope-cloud-simulator.md) | 21, 23, 25, 33 |
-| 52 | [The Cloud Harness](52-cloud-harness.md) | 15, 17, 21, 23, 42, 43 |
+| 50 | [Full-platform production release](50-full-platform-production-release.md) | 20, 28, 32, 35, 39, 40, 41, 43, 46, 49, 51, 52 |
 
 ---
 
@@ -131,7 +131,7 @@ Which packages are blocked by each package's completion gate.
 |---|---|
 | 00 | 01, 47 |
 | 01 | 02 |
-| 02 | 03, 05, 10 |
+| 02 | 03, 05 |
 | 03 | 04, 05, 06, 09, 21, 23, 30 |
 | 04 | 06, 07, 11, 12 |
 | 05 | 06, 21 |
@@ -150,19 +150,17 @@ Which packages are blocked by each package's completion gate.
 | 18 | 19 |
 | 19 | 20, 25, 28, 40 |
 | 20 | 50 |
-| 21 | 22, 45 |
+| 21 | 22, 45, 51, 52 |
 | 22 | 23, 42 |
-| 23 | 24, 30, 42, 44 |
+| 23 | 24, 30, 42, 44, 51, 52 |
 | 24 | 25, 26, 30 |
 | 25 | 26, 28, 35, 39, 40, 46, 51 |
 | 26 | 31, 33, 36, 49 |
-| ~~27~~ | — (retired) |
 | 28 | 50 |
-| 29 | 50 |
 | 30 | 31 |
 | 31 | 32 |
 | 32 | 50 |
-| 33 | 34 |
+| 33 | 34, 51 |
 | 34 | 35 |
 | 35 | 50 |
 | 36 | 37 |
@@ -171,8 +169,8 @@ Which packages are blocked by each package's completion gate.
 | 39 | 50 |
 | 40 | 50 |
 | 41 | 50 |
-| 42 | 43, 44, 48 |
-| 43 | 50 |
+| 42 | 43, 44, 48, 52 |
+| 43 | 50, 52 |
 | 44 | 45, 48 |
 | 45 | 46 |
 | 46 | 50 |
@@ -180,6 +178,10 @@ Which packages are blocked by each package's completion gate.
 | 48 | 49 |
 | 49 | 50 |
 | 50 | — |
+| 51 | 50 |
+| 52 | 50 |
+
+`27` and `29` are **retired by P2-006** and are absent from this index; a retired identifier is never reused.
 
 ---
 
