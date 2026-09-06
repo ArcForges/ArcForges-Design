@@ -26,7 +26,8 @@
 | [`../../requirements/products/arcscope.md`](../../requirements/products/arcscope.md) | The full product model, domain concepts and V1 scope |
 | [`../../architecture/12-native-interop-and-media.md`](../../architecture/12-native-interop-and-media.md) `§8` | The acquisition pipeline architecture and its rules |
 | `WP-13.02` output | The throughput, ring buffer and overrun probe conclusions |
-| [`../../assurance/reference-coverage-and-provenance.md`](../../assurance/reference-coverage-and-provenance.md) | The ArcScope Reference Coverage Matrix and licence audit |
+| [`../../assurance/reference-coverage/arcscope-serial-studio.md`](../../assurance/reference-coverage/arcscope-serial-studio.md) | **The completed ArcScope Reference Coverage Matrix** — 31 rows, each with evidence location, source commit, requirement or exclusion, disposition, rationale, licence position, oracle and owner |
+| [`../../assurance/reference-coverage-and-provenance.md`](../../assurance/reference-coverage-and-provenance.md) | The matrix method and the ten-field provenance record that governs any future reuse |
 | `WP-07`, `WP-10`, `WP-26` output | Persistence, shell and remote task participation |
 
 ---
@@ -35,7 +36,7 @@
 
 | # | Rule |
 |---|---|
-| BR-01 | **The ArcScope Reference Coverage Matrix and licence audit are complete before this package begins** (`DC-02`). |
+| BR-01 | **The ArcScope Reference Coverage Matrix is a completed, versioned planning input** — [`../../assurance/reference-coverage/arcscope-serial-studio.md`](../../assurance/reference-coverage/arcscope-serial-studio.md), 31 item-level rows, bound to Serial-Studio at `639daafb`. It was produced before this plan was derived (**D-019**). **This package consumes it and checks it for drift; it does not create it.** |
 | BR-02 | **`Device ≠ DataSource`** (`I-466`). The data source is the real entry point; the device is an optional identity. |
 | BR-03 | **`Session ≠ Capture`** (`I-467`) and live observation is separate from capture (`I-469`). |
 | BR-04 | **Pausing the view never stops recording** (`I-469`). |
@@ -124,6 +125,20 @@
 
 **Completion gate.** Recording state is always visible, and closing a window during capture never silently stops or continues it.
 
+### WP-33.07 — Reference drift check
+
+> **Not a baseline audit.** The ArcScope matrix is complete and closed `PG-01` and `F-013` before this package began. This sub-step is **maintenance**, and it is the producer of the drift check the package gate requires.
+
+**What must be fully done.** The reference is compared against its bound commit — Serial-Studio at `639daafb`. Three outputs are produced:
+
+1. **Changed material**: any file behind a matrix row that changed since the bound commit, with the row re-assessed.
+2. **Newly introduced material**: capabilities added upstream since the bound commit, each assessed against the accepted ArcScope scope. **A new upstream capability does not become an ArcForges requirement by appearing** — it is mapped to an existing requirement or recorded as an accepted exclusion.
+3. **Licence re-verification**: the reference's licence files are re-read. A subtree licence can change upstream, and the disposition of every row depends on it.
+
+**Testing requirements.** A drift report listing changed rows, new material with its assessment, and the licence comparison. A completeness check that every changed or new item has a disposition.
+
+**Completion gate.** The drift report exists, every changed and newly introduced item carries a disposition, and the licence position is re-confirmed or amended with a reason. **If the licence position changed, the affected rows' dispositions are corrected before any dependent work continues** (**D-001**).
+
 ---
 
 ## 6. Impacts
@@ -158,7 +173,7 @@
 
 **All of the following, with recorded evidence:**
 
-1. The ArcScope Reference Coverage Matrix and licence audit are complete.
+1. **Drift check only**: the reference is compared against its bound commit, and any newly introduced material is assessed against the accepted ArcScope scope. The matrix and its licence audit were completed as design-stage evidence and closed `PG-01` and `F-013` before this package began. Findings carried in: **F-AS-1** records an **authorship boundary**, not merely a reuse prohibition: the reference’s commercial-only modules — MQTT, XY plotting, 3D visualisation and the activation system — were deliberately **not read**, and no ArcScope capability may derive from their expression.
 2. Every adapter works over a real transport; historical configuration is immutable; a second claimant is refused with a busy state.
 3. Sustained throughput exceeds the product target with bounded memory; every overrun is counted, timestamped and visible.
 4. Every lifecycle transition is correct; pausing the view never stops recording; a disconnect produces an explicit gap.

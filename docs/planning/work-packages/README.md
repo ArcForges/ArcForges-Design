@@ -187,7 +187,7 @@ Every gate in [`../../assurance/open-gates-register.md`](../../assurance/open-ga
 
 | Gate | Satisfied in |
 |---|---|
-| **F-013** — reference licence determinations | 00 (process and first product), then each product's own audit inside 18, 33, 36 and 15 |
+| **F-013** — reference licence determinations | **Closed 2026-09-05 by design-stage evidence** — the five matrices in [`../../assurance/reference-coverage/`](../../assurance/reference-coverage/README.md). Drift maintenance only: `15.07`, `18.08`, `33.07`, `36.07` |
 | **F-023** — mobile provenance and dependency closure | 32 |
 | **F-026** — typed HTTP client AOT packaging | 06 |
 | **VG-01** — AI transparency marking | 43 |
@@ -202,12 +202,13 @@ Every gate in [`../../assurance/open-gates-register.md`](../../assurance/open-ga
 | **VG-11** — payout eligibility and currency | 42 |
 | **VG-12** — regional enablement gates (conditional) | 42 |
 | **VG-13** — store category fit and consumption-only | 32 |
-| **PG-01** — per-product Reference Coverage Matrix | 00 (method), then 15, 18, 33, 36 |
-| **PG-02** — item-level reconciliation inventory | 01 |
-| **PG-03** — native dependency licence review | 13, then 33 and 36 |
+| **PG-01** — per-product Reference Coverage Matrix | **Closed 2026-09-05 by design-stage evidence.** Registered as versioned inputs in `00.04`; drift maintenance in `15.07`, `18.08`, `33.07`, `36.07` |
+| **PG-02** — item-level reconciliation inventory | **Closed 2026-09-05 by design-stage evidence** — [`../../assurance/implementation-state-reconciliation.md`](../../assurance/implementation-state-reconciliation.md). Drift validation in `01.00`; disposition execution in `01.01`–`01.05` |
+| **PG-03** — native dependency licence review | 13, then 33 and 37. Shim-level dispositions already assigned (`§5.2` of the reconciliation evidence); two shims fenced pending substitute analyses in `35.04` and `39.05` |
 | **PG-04** — runbook rehearsal evidence | 45 |
 | **PG-05** — telemetry redaction proof | 12 |
-| **PG-06** — invariant coverage | 05 |
+| **PG-06** — design-stage invariant traceability | **Closed 2026-09-05 by design-stage evidence** — [`../../assurance/invariant-coverage.md`](../../assurance/invariant-coverage.md) `§7`, 421 of 421 mapped |
+| **PG-11** — implementation-stage invariant enforcement | **Open.** Distributed across the owning packages named in the coverage mapping; accounting reported by `05.05`, which closes neither gate |
 | **PG-07** — format fixture completeness | 19, 35, 39 |
 | **PG-08** — hardware lab inventory | 13 |
 | **PG-09** — extension protocol conformance | 41 |
@@ -221,4 +222,5 @@ Every gate in [`../../assurance/open-gates-register.md`](../../assurance/open-ga
 - Every package states the nine mandatory fields listed in `§6` of [`../implementation-sequence.md`](../implementation-sequence.md).
 - A package's completion gate is machine-evaluated wherever possible and always names its evidence artifact.
 - A package that discovers a genuine architecture conflict stops and raises it (**D-001**); it does not resolve it locally.
+- **A package never re-creates a completed baseline audit.** The reference matrices and the code inventory are versioned planning inputs; packages consume them and check for drift ([`../evidence-driven-revisions.md`](../evidence-driven-revisions.md)).
 - One main context advances the sequence serially (**D-019**). Implementation ownership is not split across autonomous agent teams.

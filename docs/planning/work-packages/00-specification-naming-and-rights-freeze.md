@@ -13,7 +13,7 @@
 
 **In scope.** Establishing in the implementation repository the enforceable form of decisions already taken in Phase 1: the product baseline, the normative glossary and invariant catalogue, the licence boundary declaration, the reuse and provenance process, the reference audit method, and the terminology enforcement mechanism.
 
-**Out of scope.** Any product feature. Any architectural decision — those are made; this package records and enforces them. Producing the *content* of each per-product Reference Coverage Matrix beyond the first (those sit inside each product's own package).
+**Out of scope.** Any product feature. Any architectural decision — those are made; this package records and enforces them. **Producing any Reference Coverage Matrix or the reconciliation inventory** — both were completed as design-stage evidence before the plan was derived (**D-019**), and this package consumes them.
 
 **Why this package exists.** Every later package cites terms, boundaries and identifiers from this one. A term that means two things, a project on the wrong side of a licence boundary, or a reused file with no provenance record are all defects that become exponentially more expensive after code exists.
 
@@ -26,7 +26,9 @@
 | [`../../decisions/phase-1-foundation-decisions.md`](../../decisions/phase-1-foundation-decisions.md) | D-001 … D-023 are binding and are not reopened here |
 | [`../../requirements/00-product-scope-and-portfolio.md`](../../requirements/00-product-scope-and-portfolio.md) | The four-product freeze, the technology constitution and the closed exception list |
 | [`../../requirements/01-normative-glossary-and-invariants.md`](../../requirements/01-normative-glossary-and-invariants.md) | The glossary and invariant catalogue this package makes enforceable |
-| [`../../assurance/reference-coverage-and-provenance.md`](../../assurance/reference-coverage-and-provenance.md) | The matrix columns, the ten-field provenance record and the licence decision table |
+| [`../../assurance/reference-coverage-and-provenance.md`](../../assurance/reference-coverage-and-provenance.md) | The matrix method, the ten-field provenance record and the licence decision table |
+| [`../../assurance/reference-coverage/`](../../assurance/reference-coverage/README.md) | **The five completed matrices** — versioned planning inputs, not work to be done |
+| [`../../assurance/invariant-coverage.md`](../../assurance/invariant-coverage.md) | **The completed invariant accounting and item-level mapping** — 421 rows |
 | [`../../assurance/open-gates-register.md`](../../assurance/open-gates-register.md) | The gates this package opens and schedules |
 | The existing monorepo's `NOTICE.md`, `LICENSE` and package declarations | The current licence position that must be verified rather than assumed |
 | Upstream work packages | **None.** This is the first package. |
@@ -63,7 +65,8 @@
 | `Directory.Build.props` | Gains the boundary property that every project must set |
 | `docs/` in the implementation repository | Reduced to implementation-facing notes; design authority stays in this repository (**D-017**) |
 | `tests/RepositoryPolicyTests/` | Created (implemented in `05`; the policy data lands here) |
-| Reference audit workspace | Created: the per-product matrix template and the provenance record template |
+| `eng/policy/reference-baselines.json` | Created: the five matrix registrations with their bound reference commits |
+| Provenance record store | Created: the location and naming convention for the ten-field records |
 
 **Major types introduced:** none — this package produces policy data, declarations and process artifacts, not runtime types.
 
@@ -81,11 +84,13 @@
 
 ### WP-00.01 — Glossary and invariant enforcement data
 
-**What must be fully done.** The canonical term set and the invariant catalogue are exported from the glossary requirements into machine-readable policy data: canonical terms with their term space (domain, wire, UI, storage, commercial), product namespacing, forbidden aliases, and every `X ≠ Y` invariant with its identifier. Each invariant records its intended enforcement mechanism — type distinction, policy test, unit test or end-to-end test.
+> **Design-stage prerequisite already complete.** The catalogue accounting and the item-level mapping were produced during the Stage 2 repair and are recorded in [`../../assurance/invariant-coverage.md`](../../assurance/invariant-coverage.md): 484 of 484 corpus statements accounted for, 421 catalogue rows, each with an architecture home, an enforcement mechanism, a planned verification and an owning gate. **`PG-06` is closed.** This sub-step consumes that mapping; it does not re-derive it.
 
-**Testing requirements.** A consistency check that every term in the policy data appears in the glossary document and the reverse; a check that every invariant has an enforcement mechanism assigned.
+**What must be fully done.** The completed catalogue and its mapping are exported into machine-readable policy data the build can read: canonical terms with their term space (domain, wire, UI, storage, commercial), product namespacing, forbidden aliases, and every invariant with its identifier, its assigned mechanism and its owning package.
 
-**Completion gate.** The policy data is complete, matches the glossary document exactly, and every invariant has a named mechanism. **This satisfies part of `PG-06`**; the coverage assertion itself lands in `05`.
+**Testing requirements.** A round-trip consistency check that the exported data matches [`../../requirements/01-normative-glossary-and-invariants.md`](../../requirements/01-normative-glossary-and-invariants.md) and `§7` of the coverage document exactly, in both directions — no term or invariant present in one and absent from the other.
+
+**Completion gate.** The exported policy data matches both source documents exactly. **This does not close `PG-06`, which is already closed by design evidence, and it does not close `PG-11`, which requires implemented, passing checks.**
 
 ### WP-00.02 — Licence boundary declaration
 
@@ -103,13 +108,15 @@
 
 **Completion gate.** The process exists, the template is in use for at least one real record, and the checks run in CI.
 
-### WP-00.04 — Reference audit method and the first matrix
+### WP-00.04 — Register the completed reference matrices as versioned planning inputs
 
-**What must be fully done.** The Reference Coverage Matrix template exists with every required column. The **first** matrix is produced end to end for one product, to prove the method works and to calibrate effort. ArcChat with AionUi is the calibration target, because ArcChat is the first product built.
+> **Design-stage prerequisite already complete.** All five Reference Coverage Matrices were produced during the Stage 2 repair, before the plan was derived, as **D-012** and **D-019** require. They are in [`../../assurance/reference-coverage/`](../../assurance/reference-coverage/README.md): ArcChat/AionUi (30 rows), ArcNotes/AFFiNE+SiYuan (41), ArcScope/Serial-Studio (31), ArcSlate/ArcVideo+ArcVideoFoundation (31), distribution/StartArcForges (12). **`PG-01` and `F-013` are closed** for the five accessible references. **This sub-step does not create a matrix.**
 
-**Testing requirements.** A completeness check on the produced matrix: every item has a disposition, a rationale, a licence position where required, a verification oracle and an owner.
+**What must be fully done.** Each matrix is registered as a **versioned planning input** with its bound commit, so downstream packages consume a fixed baseline rather than re-reading a moving reference. The drift-check procedure is defined: what is compared against the recorded commit, what counts as newly introduced material, and who assesses it.
 
-**Completion gate.** The template is proven by one complete matrix. **This fires the `F-013` trigger for ArcChat** and satisfies `PG-01` for ArcChat.
+**Testing requirements.** A registration check that every matrix names its reference commit and that each commit is resolvable; a dry run of the drift check against one reference.
+
+**Completion gate.** All five matrices are registered with resolvable bound commits, and the drift-check procedure is defined and exercised once. **One unresolved determination is carried forward, not resolved here**: `OC-01` — Olive is registered by **D-012** but is not present at the authorized location ([`../../assurance/open-gates-register.md`](../../assurance/open-gates-register.md) `§6`).
 
 ### WP-00.05 — Stale-claim reconciliation
 
@@ -156,7 +163,7 @@
 2. The glossary and invariant catalogue exist as machine-readable policy data, consistent with the glossary document, with an enforcement mechanism assigned to every invariant.
 3. Every project declares an SPDX identifier and a licence boundary, and the reference-direction check passes.
 4. The provenance process exists, is encoded as policy data, and is in use for at least one real record.
-5. The Reference Coverage Matrix template is proven by one complete matrix (ArcChat/AionUi), satisfying `PG-01` for ArcChat and firing the `F-013` trigger for it.
+5. All five completed Reference Coverage Matrices are registered as versioned planning inputs with resolvable bound commits, and the drift-check procedure is defined and exercised once. `PG-01` and `F-013` were closed by the design-stage evidence itself, not by this package.
 6. No stale runtime, licence or scope claim remains in the implementation repository.
 
 ---

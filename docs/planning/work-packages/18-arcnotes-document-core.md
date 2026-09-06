@@ -25,7 +25,8 @@
 |---|---|
 | [`../../requirements/products/arcnotes.md`](../../requirements/products/arcnotes.md) | The full product model, domain concepts and V1 scope |
 | [`../../requirements/13-data-formats-and-portability.md`](../../requirements/13-data-formats-and-portability.md) | Storage strategy, save semantics and the four-mechanism separation |
-| [`../../assurance/reference-coverage-and-provenance.md`](../../assurance/reference-coverage-and-provenance.md) | The ArcNotes Reference Coverage Matrix over its two references |
+| [`../../assurance/reference-coverage/arcnotes-affine-siyuan.md`](../../assurance/reference-coverage/arcnotes-affine-siyuan.md) | **The completed ArcNotes Reference Coverage Matrix** — 41 rows, each with evidence location, source commit, requirement or exclusion, disposition, rationale, licence position, oracle and owner |
+| [`../../assurance/reference-coverage-and-provenance.md`](../../assurance/reference-coverage-and-provenance.md) | The matrix method and the ten-field provenance record that governs any future reuse |
 | `WP-13.01` output | The editor, store, undo and recovery probe conclusions |
 | `WP-07`, `WP-10`, `WP-14` output | Persistence, shell and the provider skeleton |
 
@@ -35,7 +36,7 @@
 
 | # | Rule |
 |---|---|
-| BR-01 | **The ArcNotes Reference Coverage Matrix and licence audit over both references are complete before this package begins** (`DC-02`). |
+| BR-01 | **The ArcNotes Reference Coverage Matrix is a completed, versioned planning input** — [`../../assurance/reference-coverage/arcnotes-affine-siyuan.md`](../../assurance/reference-coverage/arcnotes-affine-siyuan.md), 41 item-level rows, bound to AFFiNE at `81df4751a3` and SiYuan at `eef105683`. It was produced before this plan was derived (**D-019**). **This package consumes it and checks it for drift; it does not create it.** |
 | BR-02 | **ArcNotes scope is phased full inclusion of edgeless, database views and slides** (**D-006**). This package builds the V1 compatibility baseline every later phase must preserve. |
 | BR-03 | **Undo, history, checkpoint and journal are four distinct mechanisms** (`QI-09`) and never substitute for one another. |
 | BR-04 | **A document rename never breaks a link** — links target a stable identity, not a name. |
@@ -131,6 +132,20 @@
 
 **Completion gate.** Every capability declares its risk and approval posture, and owner-side validation refuses regardless of what the caller asserts.
 
+### WP-18.08 — Reference drift check
+
+> **Not a baseline audit.** The ArcNotes matrix is complete and closed `PG-01` and `F-013` before this package began. This sub-step is **maintenance**, and it is the producer of the drift check the package gate requires.
+
+**What must be fully done.** The reference is compared against its bound commit — AFFiNE at `81df4751a3` and SiYuan at `eef105683`. Three outputs are produced:
+
+1. **Changed material**: any file behind a matrix row that changed since the bound commit, with the row re-assessed.
+2. **Newly introduced material**: capabilities added upstream since the bound commit, each assessed against the accepted ArcNotes scope. **A new upstream capability does not become an ArcForges requirement by appearing** — it is mapped to an existing requirement or recorded as an accepted exclusion.
+3. **Licence re-verification**: the reference's licence files are re-read. A subtree licence can change upstream, and the disposition of every row depends on it.
+
+**Testing requirements.** A drift report listing changed rows, new material with its assessment, and the licence comparison. A completeness check that every changed or new item has a disposition.
+
+**Completion gate.** The drift report exists, every changed and newly introduced item carries a disposition, and the licence position is re-confirmed or amended with a reason. **If the licence position changed, the affected rows' dispositions are corrected before any dependent work continues** (**D-001**).
+
 ---
 
 ## 6. Impacts
@@ -166,7 +181,7 @@
 
 **All of the following, with recorded evidence:**
 
-1. The ArcNotes Reference Coverage Matrix and licence audit over both references are complete.
+1. **Drift check only**: the reference is compared against its bound commit, and any newly introduced material is assessed against the accepted ArcNotes scope. The matrix and its licence audit were completed as design-stage evidence and closed `PG-01` and `F-013` before this package began. Findings carried in: **F-AN-1** records that AFFiNE’s `packages/backend/**` and `packages/common/native/**` are **proprietary**, not MIT — permanently ineligible for reuse and deliberately unread. **F-AN-2** records that **neither reference implements slides**, so `WP-29`’s oracles are first-party only.
 2. Every editing operation is a single-write-path command; block identity survives structural change.
 3. Editing meets the responsiveness budget on the scale corpus, including composition input on every platform.
 4. Rename never breaks a link; the link index rebuilds from scratch; backlinks are provably derived.

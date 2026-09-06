@@ -72,16 +72,18 @@ Nothing in this document authorises reuse. It defines the process by which reuse
 
 ### 2.2 Per-product matrix status
 
-| Product | Required references | Matrix status | Blocking gate |
-|---|---|---|---|
-| ArcChat | AionUi | **Not started** | Required before ArcChat implementation planning is finalised |
-| ArcNotes | AFFiNE, SiYuan | **Not started** | Required before ArcNotes implementation planning is finalised |
-| ArcScope | Serial-Studio | **Not started** | Required before ArcScope implementation planning is finalised |
-| ArcSlate | Olive, ArcVideo, ArcVideoFoundation | **Not started** | Required before ArcSlate implementation planning is finalised |
-| Distribution and release | StartArcForges | **Not started** | Required before the release-engineering work package is closed |
-| Whole repository | Existing ArcForges monorepo | **Not started** | Required before restructuring begins ([`implementation-state-reconciliation.md`](implementation-state-reconciliation.md)) |
+**All matrices are complete.** They were produced as design-stage evidence before the implementation plan was derived, as **D-019** and **D-012** require. This document defines the method; [`reference-coverage/`](reference-coverage/README.md) holds the evidence.
 
-> These are honest status statements, not placeholders for missing specification. Producing each matrix requires reading a reference repository item by item, which is implementation-planning work assigned to a specific work package (`§8`). The *specification* of what each matrix must contain, and the gate it must pass, is complete here.
+| Product | Required references | Matrix | Rows | Status |
+|---|---|---|---|---|
+| ArcChat | AionUi | [`arcchat-aionui.md`](reference-coverage/arcchat-aionui.md) | 30 | **Complete** — 24 evidence established, 6 accepted exclusions, 0 unresolved |
+| ArcNotes | AFFiNE, SiYuan | [`arcnotes-affine-siyuan.md`](reference-coverage/arcnotes-affine-siyuan.md) | 41 | **Complete** — 32 evidence established, 9 accepted exclusions, 0 unresolved |
+| ArcScope | Serial-Studio | [`arcscope-serial-studio.md`](reference-coverage/arcscope-serial-studio.md) | 31 | **Complete** — 24 evidence established, 7 accepted exclusions, 0 unresolved |
+| ArcSlate | Olive, ArcVideo, ArcVideoFoundation | [`arcslate-arcvideo.md`](reference-coverage/arcslate-arcvideo.md) | 31 | **Complete for the two accessible references**; **Olive unresolved** (`OC-01`) |
+| Distribution and release | StartArcForges | [`distribution-startarcforges.md`](reference-coverage/distribution-startarcforges.md) | 12 | **Complete** within the authorized oracle boundary |
+| Whole repository | Existing ArcForges monorepo | [`implementation-state-reconciliation.md`](implementation-state-reconciliation.md) | 166 projects | **Complete** — item-level, with dispositions |
+
+**Gate consequence.** `PG-01` and `F-013` are **closed** for the five accessible references. `PG-02` is **closed**. Implementation packages consume these matrices as versioned inputs and run drift checks only (`WP-15.07`, `WP-18.08`, `WP-33.07`, `WP-36.07`, `WP-01.00`).
 
 ---
 
@@ -182,23 +184,26 @@ Reference repositories are also the source of migration evidence — what existi
 
 ---
 
-## 7. The F-013 gate
+## 7. The F-013 gate — discharged
 
-**F-013 remains `DEFERRED_WITH_OWNER_AND_TRIGGER`** (**D-013**).
+**F-013's trigger has fired and been satisfied for the five accessible references.**
 
 | Aspect | Position |
 |---|---|
-| What is deferred | The per-file licence determinations for reference material |
-| Trigger | **The first step of the per-product Reference Coverage Matrix and licence audit**, before substantive reference source is used for planning or implementation (**D-013**) |
+| What was deferred | The per-file licence determinations for reference material |
+| Trigger | The first step of the per-product Reference Coverage Matrix and licence audit (**D-013**) — **fired 2026-09-05** |
+| What was determined | Root and subtree licences read per reference; **the AFFiNE split and the Serial-Studio Pro-module exclusion were found below the repository root**, exactly the case **D-013** warns about. Every one of the 145 rows carries a licence position |
+| Result | **No row proposes reuse.** Four of six accessible references are GPL-family, proprietary or AGPL. The per-file determination that would be required before any copy, translation or port has no pending subject |
 | Owner | Licensing and Provenance Owner |
-| Blocking | Implementation planning for the affected product cannot be finalised until the matrix and audit for that product are complete (`CM-07`) |
-| Related gate | **F-023** — mobile provenance and full dependency closure before the first mobile artifact (`AE-04`) |
+| State | **`CLOSED` 2026-09-05** for AionUi, AFFiNE, SiYuan, Serial-Studio, ArcVideo and ArcVideoFoundation. **One unresolved determination**: Olive is not present at the authorized location (`OC-01`) |
+| Related gate | **F-023** — mobile provenance and full dependency closure before the first mobile artifact (`AE-04`). **Still open**; it requires a dependency-closure audit, not a reference audit |
 
 | # | Rule |
 |---|---|
-| FG-01 | **F-013 is not resolved by this document.** It is scheduled by it. |
-| FG-02 | **A product's licence audit result is recorded in that product's matrix**, and its completion is a work-package completion gate (`§8`). |
-| FG-03 | **An audit finding that blocks a planned disposition changes the disposition**, and the change is recorded with its reason (`CM-06`). |
+| FG-01 | **F-013 closed on evidence, not on assertion.** The evidence is the five matrices and their per-row licence positions. |
+| FG-02 | **A per-file determination is still required before any future reuse.** Closing F-013 records that none is currently proposed; it does not pre-authorise reuse. |
+| FG-03 | **A licence position can change upstream.** Each product's drift-check sub-step re-reads the reference's licence files, and a changed subtree licence corrects the affected dispositions before dependent work continues. |
+| FG-04 | **The Olive determination remains unresolved** and is carried in [`open-gates-register.md`](open-gates-register.md) `§6`. |
 
 ---
 

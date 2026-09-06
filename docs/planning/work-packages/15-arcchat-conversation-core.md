@@ -24,7 +24,8 @@
 | Input | Why it matters |
 |---|---|
 | [`../../requirements/products/arcchat.md`](../../requirements/products/arcchat.md) | The full ArcChat product model, V1 scope and acceptance scenarios |
-| [`../../assurance/reference-coverage-and-provenance.md`](../../assurance/reference-coverage-and-provenance.md) | The completed ArcChat Reference Coverage Matrix from `WP-00.04` |
+| [`../../assurance/reference-coverage/arcchat-aionui.md`](../../assurance/reference-coverage/arcchat-aionui.md) | **The completed ArcChat Reference Coverage Matrix** — 30 rows, each with evidence location, source commit, requirement or exclusion, disposition, rationale, licence position, oracle and owner |
+| [`../../assurance/reference-coverage-and-provenance.md`](../../assurance/reference-coverage-and-provenance.md) | The matrix method and the ten-field provenance record that governs any future reuse |
 | [`../../architecture/04-desktop-application-architecture.md`](../../architecture/04-desktop-application-architecture.md) | Host structure, MVVM, threading and persistence |
 | `WP-07` output | The local store, journal and recovery |
 | `WP-14` output | The Hub and a working provider |
@@ -35,7 +36,7 @@
 
 | # | Rule |
 |---|---|
-| BR-01 | **The ArcChat Reference Coverage Matrix and licence audit are complete before this package begins** (`DC-02`; gates `PG-01`, `P-02`). |
+| BR-01 | **The ArcChat Reference Coverage Matrix is a completed, versioned planning input** — [`../../assurance/reference-coverage/arcchat-aionui.md`](../../assurance/reference-coverage/arcchat-aionui.md), 30 item-level rows, bound to AionUi at `29c9271a5`. It was produced before this plan was derived (**D-019**). **This package consumes it and checks it for drift; it does not create it.** |
 | BR-02 | **ArcChat is fully usable with every other product absent.** |
 | BR-03 | **`Conversation ≠ Project` and `Project ≠ Workspace`.** Three distinct containers with distinct ownership. |
 | BR-04 | **A skill is declarative guidance and never code** (`I4 §Stage 24 §4`), and **a skill confers no capability** (`§5` there). |
@@ -122,6 +123,20 @@
 
 **Completion gate.** Export round-trips completely, and recovery reports loss explicitly rather than silently discarding.
 
+### WP-15.07 — Reference drift check
+
+> **Not a baseline audit.** The ArcChat matrix is complete and closed `PG-01` and `F-013` before this package began. This sub-step is **maintenance**, and it is the producer of the drift check the package gate requires.
+
+**What must be fully done.** The reference is compared against its bound commit — AionUi at `29c9271a5`. Three outputs are produced:
+
+1. **Changed material**: any file behind a matrix row that changed since the bound commit, with the row re-assessed.
+2. **Newly introduced material**: capabilities added upstream since the bound commit, each assessed against the accepted ArcChat scope. **A new upstream capability does not become an ArcForges requirement by appearing** — it is mapped to an existing requirement or recorded as an accepted exclusion.
+3. **Licence re-verification**: the reference's licence files are re-read. A subtree licence can change upstream, and the disposition of every row depends on it.
+
+**Testing requirements.** A drift report listing changed rows, new material with its assessment, and the licence comparison. A completeness check that every changed or new item has a disposition.
+
+**Completion gate.** The drift report exists, every changed and newly introduced item carries a disposition, and the licence position is re-confirmed or amended with a reason. **If the licence position changed, the affected rows' dispositions are corrected before any dependent work continues** (**D-001**).
+
 ---
 
 ## 6. Impacts
@@ -156,7 +171,7 @@
 
 **All of the following, with recorded evidence:**
 
-1. The ArcChat Reference Coverage Matrix and licence audit are complete.
+1. **Drift check only**: the reference is compared against its bound commit, and any newly introduced material is assessed against the accepted ArcChat scope. The matrix and its licence audit were completed as design-stage evidence and closed `PG-01` and `F-013` before this package began. Findings carried in: **F-AC-1** records that the reference implements remote control by running a web server on the user’s machine — the shape **D-010** forbids. `WP-26` and `WP-31` already assert the prohibition structurally.
 2. Committed messages are immutable; an interrupted stream never stores a fragment as complete; large conversations meet the responsiveness budget.
 3. Branching shares history by reference and never mutates the original.
 4. Attachments are stored by reference with integrity verification, and unavailability is a visible state.

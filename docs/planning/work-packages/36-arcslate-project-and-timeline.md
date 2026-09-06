@@ -26,7 +26,8 @@
 | [`../../requirements/products/arcslate.md`](../../requirements/products/arcslate.md) | The full product model, domain concepts and V1 scope |
 | [`../../architecture/12-native-interop-and-media.md`](../../architecture/12-native-interop-and-media.md) `§7` | The media pipeline boundary and the domain-purity rules |
 | `WP-13.03` output | Decode, synchronisation and native safety probe conclusions |
-| [`../../assurance/reference-coverage-and-provenance.md`](../../assurance/reference-coverage-and-provenance.md) | The ArcSlate Reference Coverage Matrix over its three references |
+| [`../../assurance/reference-coverage/arcslate-arcvideo.md`](../../assurance/reference-coverage/arcslate-arcvideo.md) | **The completed ArcSlate Reference Coverage Matrix** — 31 rows, each with evidence location, source commit, requirement or exclusion, disposition, rationale, licence position, oracle and owner |
+| [`../../assurance/reference-coverage-and-provenance.md`](../../assurance/reference-coverage-and-provenance.md) | The matrix method and the ten-field provenance record that governs any future reuse |
 | `WP-07`, `WP-10`, `WP-26` output | Persistence, shell and remote task participation |
 
 ---
@@ -35,7 +36,7 @@
 
 | # | Rule |
 |---|---|
-| BR-01 | **The ArcSlate Reference Coverage Matrix and licence audit over all three references are complete before this package begins** (`DC-02`). |
+| BR-01 | **The ArcSlate Reference Coverage Matrix is a completed, versioned planning input** — [`../../assurance/reference-coverage/arcslate-arcvideo.md`](../../assurance/reference-coverage/arcslate-arcvideo.md), 31 item-level rows, bound to ArcVideo at `caf5651` and ArcVideoFoundation at `139eeca`. It was produced before this plan was derived (**D-019**). **This package consumes it and checks it for drift; it does not create it.** |
 | BR-02 | **ArcSlate is not a technical exception.** Its architecture is C#, Avalonia and Native AOT with P/Invoke to native media libraries. It is not a Qt application, not a C++ product with a C# shell, and not a C++ worker. |
 | BR-03 | **Editing is non-destructive.** Source media is never modified. |
 | BR-04 | **`Project ≠ Sequence`** and **`Project ≠ media folder`** (`I-476`). |
@@ -123,6 +124,20 @@
 
 **Completion gate.** Undo, checkpoint and recovery behave as three distinct mechanisms, and a crash recovers to a committed boundary with honest loss reporting.
 
+### WP-36.07 — Reference drift check
+
+> **Not a baseline audit.** The ArcSlate matrix is complete and closed `PG-01` and `F-013` before this package began. This sub-step is **maintenance**, and it is the producer of the drift check the package gate requires.
+
+**What must be fully done.** The reference is compared against its bound commit — ArcVideo at `caf5651` and ArcVideoFoundation at `139eeca`. Three outputs are produced:
+
+1. **Changed material**: any file behind a matrix row that changed since the bound commit, with the row re-assessed.
+2. **Newly introduced material**: capabilities added upstream since the bound commit, each assessed against the accepted ArcSlate scope. **A new upstream capability does not become an ArcForges requirement by appearing** — it is mapped to an existing requirement or recorded as an accepted exclusion.
+3. **Licence re-verification**: the reference's licence files are re-read. A subtree licence can change upstream, and the disposition of every row depends on it.
+
+**Testing requirements.** A drift report listing changed rows, new material with its assessment, and the licence comparison. A completeness check that every changed or new item has a disposition.
+
+**Completion gate.** The drift report exists, every changed and newly introduced item carries a disposition, and the licence position is re-confirmed or amended with a reason. **If the licence position changed, the affected rows' dispositions are corrected before any dependent work continues** (**D-001**).
+
 ---
 
 ## 6. Impacts
@@ -157,7 +172,7 @@
 
 **All of the following, with recorded evidence:**
 
-1. The ArcSlate Reference Coverage Matrix and licence audit over all three references are complete.
+1. **Drift check only**: the reference is compared against its bound commit, and any newly introduced material is assessed against the accepted ArcSlate scope. The matrix and its licence audit were completed as design-stage evidence and closed `PG-01` and `F-013` before this package began. Findings carried in: **F-AL-2** records that ArcVideoFoundation is a **thin utility layer of 27 files**, not the “fat core” its README describes — so no substantial reusable core exists. **`OC-01`**: Olive is registered by **D-012** but is **not present** at the authorized location; this package proceeds on the two accessible references and makes no claim of Olive coverage.
 2. A project holds multiple sequences over one media library, with project, sequence and folder structurally distinct.
 3. **No drift accumulates over long durations in any supported rate**; frame–sample conversion round-trips exactly.
 4. A project opens fully with all media offline and relinks correctly; **no native type appears anywhere in the domain, contracts or persisted types**.

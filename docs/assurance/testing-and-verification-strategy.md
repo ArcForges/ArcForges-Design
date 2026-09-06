@@ -15,7 +15,7 @@ The quality contract states *what must be true*. This document states *how it is
 |---|---|
 | TS-01 | **Each test family exists to catch a failure class no other family catches.** A family that duplicates another is removed, not kept for comfort. |
 | TS-02 | **A passing test in one execution mode is not evidence for another** (`QI-01`, `QI-02`, `QI-03`). Debug is not Production; JIT is not AOT; a successful build is not runtime compatibility. |
-| TS-03 | **Every invariant in the glossary catalogue maps to at least one test** (**D-018**), or it is not an enforceable invariant. |
+| TS-03 | **Every invariant in the glossary catalogue maps to a planned verification** (**D-018**, design obligation B, complete), and to an **implemented** check before its owning package closes (obligation C, open). A planned verification is not evidence that the invariant holds. |
 | TS-04 | **Structural rules are tested, not reviewed.** Architecture and repository-policy tests turn design rules into build failures. |
 | TS-05 | **Evidence is produced and retained**, not asserted. A gate that cannot point at an artifact is not passed. |
 | TS-06 | **Tests are deterministic.** A test that depends on wall-clock timing, network availability, machine speed or ordering is either made deterministic or moved to a family designed for non-determinism (soak, hardware lab). |
@@ -90,12 +90,19 @@ These are not additional families; they are obligations distributed across the f
 
 ## 4. The invariant-to-test obligation
 
-**D-018** produces an invariant catalogue of roughly 490 `X ≠ Y` statements. They are only useful if they are enforced.
+**D-018** produces an invariant catalogue of **421** `X ≠ Y` statements — the count, not the highest identifier, which reaches `I-490` because each section reserves headroom. They are only useful if they are enforced.
+
+**The obligation has two halves with two gates.** They were previously conflated, which let an owned open finding appear to satisfy a coverage gate.
+
+| Half | Content | Gate | State |
+|---|---|---|---|
+| **Design traceability** | Architecture home, mechanism, **planned** verification, owning gate — per invariant | `PG-06` | **Closed** — 421 of 421 in [`invariant-coverage.md`](invariant-coverage.md) `§7` |
+| **Implementation enforcement** | An **implemented** check with a **passing** result | `PG-11` | **Open** — distributed across owning packages |
 
 | # | Rule |
 |---|---|
-| IV-01 | **Every invariant maps to at least one architecture rule, one test, and one work-package completion gate** (`§10` of the glossary requirements; recorded in [`traceability-matrix.md`](traceability-matrix.md)). |
-| IV-02 | **An invariant with no test is an open finding**, tracked until closed. |
+| IV-01 | **Every invariant maps to an architecture rule, a planned verification and an owning work-package completion gate** — complete, in [`invariant-coverage.md`](invariant-coverage.md) `§7`. |
+| IV-02 | **An invariant with no implemented test leaves `PG-11` open.** Registering it as an open finding records who owes the work; it does not satisfy the gate, and it has no effect on `PG-06`. |
 | IV-03 | **Invariants are enforced by the cheapest sufficient mechanism**: a type distinction where possible, a repository-policy test where a naming or reference rule expresses it, a unit test where it is behavioural, and an end-to-end test only where nothing smaller can observe it. |
 | IV-04 | **A test that enforces an invariant names it**, so a failure message identifies the violated rule rather than only the failed assertion. |
 | IV-05 | **The forbidden-alias and obsolete-name scan runs over `src/` and `docs/` excluding `docs/inputs/`**, plus identifiers and resource strings (`§10` of the glossary requirements). |

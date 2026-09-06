@@ -285,6 +285,7 @@ Every entry is binding. The left and right sides are separate concepts and must 
 | I-057 | ResourceRef ≠ Search Result |
 | I-058 | Artifact ≠ Resource |
 | I-059 | ArtifactRef ≠ ResourceRef |
+| I-077 | ArtifactRef ≠ Permission Token |
 | I-060 | Artifact Preview ≠ Artifact Authority |
 | I-061 | Cloud Artifact Copy ≠ source professional resource |
 | I-062 | Deep Link ≠ Command |
@@ -447,6 +448,7 @@ Every entry is binding. The left and right sides are separate concepts and must 
 | I-221 | Read compatibility ≠ safe write compatibility |
 | I-222 | Cache Recovery ≠ Canonical Data Recovery |
 | I-223 | Projection Repair ≠ Canonical Data Repair |
+| I-224 | Project Reference ≠ Resource Copy |
 
 ### 7.7 Security, permission and trust
 
@@ -618,6 +620,7 @@ Every entry is binding. The left and right sides are separate concepts and must 
 | I-402 | Quality Requirement ≠ Engineering Suggestion |
 | I-403 | SLO ≠ external SLA |
 | I-404 | Focus ≠ Selection |
+| I-405 | Push Notification ≠ Durable Attention State |
 
 ### 7.11 Support, operations and trust & safety
 
@@ -697,6 +700,7 @@ Every entry is binding. The left and right sides are separate concepts and must 
 | I-487 | Agent Context ≠ media upload; Project Sync ≠ original media upload |
 | I-488 | External Media ≠ Managed Media |
 | I-489 | ArcSlate Link ≠ shared identity |
+| I-490 | ArcSlate Sequence ≠ Timeline Clip |
 
 ---
 

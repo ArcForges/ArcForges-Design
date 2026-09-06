@@ -7,7 +7,14 @@
 
 Every gate that Phase 1 deferred, every gate the official verification record created, and every gate Phase 2 adds — in one register, each with an owner, a trigger, what it blocks, and the work package that must satisfy it.
 
-**No gate in this register is closed by Phase 2.** Phase 2's obligation is to schedule each one against a specific work package so that none can be forgotten. That scheduling is complete here.
+Gates fall into two classes, and the distinction is load-bearing:
+
+| Class | Obligation | Can Phase 2 close it? |
+|---|---|---|
+| **Design-stage** | The obligation is design or planning evidence — a matrix, an inventory, a mapping | **Yes**, and where Phase 2 produced the evidence the gate is marked `CLOSED` with its artifact named |
+| **Implementation-stage** | The obligation is execution evidence — an AOT publish, a hardware result, a received payout, a passing test | **No.** Phase 2 schedules it against a named package; only recorded execution evidence closes it |
+
+A gate is never closed by registering a finding about it, and never closed by a weaker gate passing in its place.
 
 ---
 
@@ -27,6 +34,7 @@ Every gate that Phase 1 deferred, every gate the official verification record cr
 | OG-02 | **A gate whose trigger has fired and which is not closed blocks the dependent work** — it does not become a warning. |
 | OG-03 | **A gate may not be silently re-scoped.** Changing a gate requires a decision record. |
 | OG-04 | **A new gate discovered during implementation is added here**, with the same fields, rather than living only in the document that discovered it. |
+| OG-05 | **Identifier disambiguation.** `PG-nn` in this register and in the assurance and planning layers means *Phase 2 gate*. [`../requirements/products/arcslate.md`](../requirements/products/arcslate.md) independently uses `PG-01`–`PG-14` for its *processing graph* rules. **The namespaces collide.** Every cross-document citation of an ArcSlate processing-graph rule is therefore qualified by its document — for example “`PG-08` in the ArcSlate requirements” — and an unqualified `PG-nn` always means a gate. This is a convention, not a structural guarantee; it is recorded as a known limitation rather than left implicit. |
 
 ---
 
@@ -34,7 +42,7 @@ Every gate that Phase 1 deferred, every gate the official verification record cr
 
 | Gate | Subject | Owner | Trigger | Blocks | Scheduled in | State |
 |---|---|---|---|---|---|---|
-| **F-013** | Reference-repository licences and file-level SPDX evidence (**D-013**) | Licensing and Provenance Owner | The first step of a product's Reference Coverage Matrix and licence audit, before substantive reference source is used for planning or implementation | That product's implementation planning; `P-02` in the release gates | The per-product reference-audit work packages | `OPEN` |
+| **F-013** | Reference-repository licences and file-level SPDX evidence (**D-013**) | Licensing and Provenance Owner | The first step of a product's Reference Coverage Matrix and licence audit — **fired and satisfied 2026-09-05** | That product's implementation planning; `P-02` in the release gates | Design-stage evidence: the five matrices in [`reference-coverage/`](reference-coverage/README.md), 146 item-level rows with a licence position each | **`CLOSED` 2026-09-05** for the five accessible references; **one unresolved determination** — Olive (`OC-01`) |
 | **F-023** | ArcChat Mobile provenance and complete direct and transitive dependency closure (**D-004**) | Release Engineering Owner **and** Licensing and Provenance Owner; Product Owner approves | Before the first store, test-flight, store-listing or sideloadable mobile artifact is produced | Any mobile artifact; `L-50` | The mobile release work package | `OPEN` |
 | **F-026** | Typed HTTP client version pin, generated-only entry point, reflection-package prohibition, generator diagnostic treated as build-breaking | Owning platform work-package owner; Architecture Owner approves | Before accepting the typed HTTP client into an AOT deliverable | Any AOT deliverable consuming it; `R-03` | The platform skeleton and AOT proof work package | `OPEN` |
 
@@ -66,12 +74,13 @@ These are new obligations that follow from Phase 2 architecture rather than from
 
 | Gate | Subject | Owner | Trigger | Blocks | Scheduled in | State |
 |---|---|---|---|---|---|---|
-| **PG-01** | The per-product **Reference Coverage Matrix** exists with a disposition for every item (**D-012**) | Product Owner with Architecture Owner | Start of that product's implementation planning | `P-01`; that product's first release | The per-product reference-audit work packages | `OPEN` |
-| **PG-02** | The **implementation-state reconciliation inventory** exists before repository restructuring begins | Architecture Owner | Before the first restructuring change | All restructuring work | The repository reconciliation work package | `OPEN` |
+| **PG-01** | The per-product **Reference Coverage Matrix** exists with a disposition for every item (**D-012**) | Product Owner with Architecture Owner | Start of that product's implementation planning — **fired and satisfied 2026-09-05** | `P-01`; that product's first release | Design-stage evidence: [`reference-coverage/`](reference-coverage/README.md) — ArcChat 30 rows, ArcNotes 41, ArcScope 31, ArcSlate 31, distribution 12 | **`CLOSED` 2026-09-05** for all four products and the distribution oracle |
+| **PG-02** | The **implementation-state reconciliation inventory** exists before repository restructuring begins | Architecture Owner | Before the first restructuring change — **fired and satisfied 2026-09-05** | All restructuring work | Design-stage evidence: [`implementation-state-reconciliation.md`](implementation-state-reconciliation.md) — 166 of 166 projects, 6 of 6 native shims, 28 test suites | **`CLOSED` 2026-09-05** |
 | **PG-03** | The **native dependency licence review** per product, against that product's licence boundary (`LD-07` in the native architecture) | Licensing and Provenance Owner | First native dependency accepted into a product | That dependency's use | The native interoperability work package | `OPEN` |
 | **PG-04** | **Runbook rehearsal evidence**: every required runbook executed at least once, with a dated record (`RB-04` in the observability architecture) | Operations Owner | Before paid cloud go-live | `L-12` | The operations readiness work package | `OPEN` |
 | **PG-05** | **Redaction proof**: marker values injected as headers, tokens, prompts and document content never appear in exported telemetry (`TV-01` there) | Operations Owner | First telemetry export to an external backend | `R-16` | The observability work package | `OPEN` |
-| **PG-06** | **Invariant coverage**: every glossary invariant maps to at least one architecture rule, one test and one work-package completion gate (**D-018**) | Architecture Owner | Continuous from the first implementation work package | Traceability completeness | The glossary enforcement work package | `OPEN` |
+| **PG-06** | **Design-stage invariant traceability**: every catalogued invariant has an architecture home, an enforcement mechanism, a **planned** verification specification and an owning work-package completion gate (**D-018** obligation B) | Architecture Owner | On completion of the glossary catalogue | Finalising the design baseline | `WP-00.01`; evidence in [`invariant-coverage.md`](invariant-coverage.md) `§7` | **`CLOSED` 2026-09-05** — 421 of 421 mapped |
+| **PG-11** | **Implementation-stage invariant enforcement**: every catalogued invariant has an **implemented** check and a **passing** result (**D-018** obligation C) | Each invariant's owning package owner, coordinated by the Architecture Owner | Each owning package reaching its completion gate | That package's completion gate; and `P-03` for the affected product | Distributed across the owning packages listed in [`invariant-coverage.md`](invariant-coverage.md) `§7` | `OPEN` |
 | **PG-07** | **Format fixture completeness**: every claimed import format version has a fixture (`ME-03` in the provenance document) | Product Owner per product | First public import claim for that product | That claim | The per-product import and export work packages | `OPEN` |
 | **PG-08** | **Hardware lab inventory**: a maintained device, firmware and driver inventory exists before ArcScope or ArcSlate hardware results are accepted (`TE-03` in the testing strategy) | Quality Owner | First hardware-lab test run | `C-04` | The ArcScope and ArcSlate verification work packages | `OPEN` |
 | **PG-09** | **Extension protocol conformance**: the reference-extension suite passes before the extension platform is opened to third parties | Architecture Owner | Before third-party extension enablement | `L-60` | The extension platform work package | `OPEN` |
@@ -97,18 +106,36 @@ These are new obligations that follow from Phase 2 architecture rather than from
 
 ---
 
-## 6. Register summary
+## 6. Unresolved determinations
 
-| State | Count |
-|---|---|
-| Deferred gates carried from Phase 1 | 3 |
-| Gates created by the verification record | 12 active + 1 merged |
-| Gates created by Phase 2 | 10 |
-| Closed in Phase 2 | **0** — Phase 2 schedules gates; it does not close them |
+Distinct from a gate. A gate has a known obligation awaiting evidence; an **unresolved determination** is a question the accessible material cannot answer.
+
+| # | Determination | Owner | Exact affected scope | Blocks | Resolution |
+|---|---|---|---|---|---|
+| **OC-01** | **Olive is registered by D-012 as an ArcSlate reference but is not present** at the authorized reference-map location, and a filesystem search to depth 4 found no candidate | Licensing and Provenance Owner, with the Product Owner | Olive capabilities absent from or altered in ArcVideo at commit `caf5651`; Olive's own licence file and per-file provenance; Olive's tests and interchange fixtures | Only a claim of complete Olive coverage — which is made nowhere. No ArcSlate package depends on Olive-direct evidence | **Requires the user's decision**: make Olive available at the authorized location, or record an accepted exclusion for the Olive-direct scope. Recorded as `OC-01` in [`../decisions/phase-2-specification-decisions.md`](../decisions/phase-2-specification-decisions.md) |
 
 ---
 
-## 7. Traceability
+## 7. Register summary
+
+| Class | Count | Note |
+|---|---|---|
+| Deferred gates carried from Phase 1 | 3 | **F-013 closed**; F-023 and F-026 remain implementation-stage |
+| Gates created by the verification record | 12 active + 1 merged | All implementation-stage; none closable by design work |
+| Gates created by Phase 2 | 11 | Was 10; `PG-06` split into `PG-06` (design) and `PG-11` (implementation) |
+| **Closed by design-stage evidence** | **4** | `F-013`, `PG-01`, `PG-02`, `PG-06` — each with a named artifact |
+| **Open implementation-stage gates** | **22** | Legitimate future obligations; their triggers are listed per gate |
+| Unresolved determinations | 1 | `OC-01` — requires the user's decision |
+
+| # | Rule |
+|---|---|
+| RS-01 | **A design-stage gate closes on design evidence.** Four have. |
+| RS-02 | **An implementation-stage gate never closes on design evidence**, however complete that evidence is. |
+| RS-03 | **`PG-06` closing does not close `PG-11`.** They are different obligations with different evidence; the weaker one passing has no effect on the stronger one. |
+
+---
+
+## 8. Traceability
 
 | Source | Consumed as |
 |---|---|

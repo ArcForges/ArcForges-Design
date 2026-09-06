@@ -26,20 +26,26 @@ This document states the dependency model that produces the work-package sequenc
 | SQ-09 | **The static public site can start very early** (`I2 §III.12`) because it depends on nothing but content. |
 | SQ-10 | **Each professional product may connect directly to Cloud.** Nothing in this sequence may create a dependency in which a professional product must relay through ArcChat (**D-010**, `I2 §III.11`). |
 
-### 1.1 The D-019 derivation condition
+### 1.1 The D-019 ordering, followed
 
-**D-019** requires that the implementation plan be derived *after* requirements, architecture, licence matrices and current-code reconciliation are complete. Requirements and architecture are complete. The per-product licence matrices and the item-level code inventory are **not** — producing them requires reading reference repositories and 332 project files item by item, which is implementation-planning work, not specification work.
+**D-019** requires the implementation plan to be derived **after** requirements, architecture, licence matrices and current-code reconciliation are complete. **D-012** requires each product's Reference Coverage Matrix before that product's implementation planning is finalized. That ordering is followed.
 
-The resolution is structural rather than a deferral of the sequence:
+| Prerequisite | Artifact | State |
+|---|---|---|
+| Requirements | [`../requirements/`](../requirements/README.md) | Complete |
+| Architecture | [`../architecture/`](../architecture/README.md) | Complete |
+| Licence matrices, per product | [`../assurance/reference-coverage/`](../assurance/reference-coverage/README.md) — five matrices, 145 item-level rows | **Complete**, with one unresolved determination (`OC-01`, Olive) |
+| Current-code reconciliation | [`../assurance/implementation-state-reconciliation.md`](../assurance/implementation-state-reconciliation.md) — 166 projects, item-level | **Complete** |
+
+> **A correction is recorded here rather than hidden.** An earlier Phase 2 decision (`P2-002`) substituted a different process — derive the plan first, perform the prerequisite audits during implementation, rewrite afterwards — and presented that substitution as satisfying **D-019**. It did not. That entry is **withdrawn** and retained as the record of the error; `P2-004` records the re-derivation from the completed evidence. The changes the evidence caused are in [`evidence-driven-revisions.md`](evidence-driven-revisions.md).
 
 | # | Position |
 |---|---|
-| DC-01 | **The packages that produce the licence matrices and the code inventory sit at the front of the sequence** — work packages `00`, `01` and the per-product reference audits — and their completion gates block the product packages downstream. |
-| DC-02 | **No product implementation package may begin before its product's Reference Coverage Matrix and licence audit are complete** (**D-012**, **D-013**; gates `PG-01`, `P-02`). |
-| DC-03 | **No restructuring package may begin before the item-level reconciliation inventory exists** (gate `PG-02`). |
-| DC-04 | **If a matrix or the inventory produces a finding that invalidates a later package's scope, that package is rewritten** before work continues on it (**D-001**, `WF-03`). The sequence is derived now; it is not frozen against evidence that has yet to be gathered. |
-
-This satisfies **D-019**'s intent — no product work is planned in detail on unknown ground — while producing the continuous sequence now, so the dependency structure is visible and the audits themselves are scheduled rather than assumed.
+| DD-01 | **The sequence is derived, not provisional.** Every package's scope rests on evidence that existed before the package was written. |
+| DD-02 | **The matrices and the inventory are versioned planning inputs.** Implementation packages consume them; **no implementation package re-creates a baseline audit.** |
+| DD-03 | **Implementation packages retain drift checks only** — source drift against the recorded commit, changed scope, and newly introduced material. Each has a named producing sub-step: `WP-15.07`, `WP-18.08`, `WP-33.07`, `WP-36.07` for references, and `WP-01.00` for the code inventory. |
+| DD-04 | **Baseline creation and later maintenance are different obligations** and are never conflated in a gate. |
+| DD-05 | **One unresolved determination remains** — `OC-01`. It blocks only a claim of complete Olive coverage, which is made nowhere. |
 
 ---
 

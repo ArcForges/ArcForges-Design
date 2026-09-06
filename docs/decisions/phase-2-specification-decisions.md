@@ -7,7 +7,7 @@
 
 Phase 1 froze twenty-three foundation decisions. **They are binding and are not reopened here.** This register records only what Phase 2 had to decide that is *not* derivable from them.
 
-The bar for entry is deliberately high. A conclusion already stated in the preserved input corpus, or already implied by a Phase 1 decision, is implemented in the requirements, architecture or planning layers with a citation — it does not become a decision record. Three items met the bar.
+The bar for entry is deliberately high. A conclusion already stated in the preserved input corpus, or already implied by a Phase 1 decision, is implemented in the requirements, architecture or planning layers with a citation — it does not become a decision record. Four entries exist: three in force, and one withdrawn and retained as the record of a corrected error.
 
 ---
 
@@ -15,7 +15,7 @@ The bar for entry is deliberately high. A conclusion already stated in the prese
 
 | Field | Meaning |
 |---|---|
-| **Status** | `ADOPTED` — decided and in force · `DEFERRED` — deliberately left open with an owner, a trigger and a binding constraint |
+| **Status** | `ADOPTED` — decided and in force · `DEFERRED` — deliberately left open with an owner, a trigger and a binding constraint · `WITHDRAWN` — recorded in error, normative content removed, entry retained so the correction is auditable |
 | **Authority** | Who may change it |
 | **Consumed by** | Where it is implemented and enforced |
 
@@ -53,26 +53,33 @@ The bar for entry is deliberately high. A conclusion already stated in the prese
 
 ---
 
-## P2-002 — Sequence derivation under D-019 · `ADOPTED`
+## P2-002 — Sequence derivation under D-019 · `WITHDRAWN — SUPERSEDED BY P2-004`
 
-**Decision.** The numbered work-package sequence is derived **now**, with the packages that produce the per-product licence matrices and the item-level code inventory placed at the front of the sequence, gating every downstream product package.
+> **This entry was wrong and is retained as the record of the error, not as authority.** Its normative content is withdrawn. The governing entry is `P2-004`.
 
-**Why this is a Phase 2 decision.** **D-019** requires the implementation plan to be derived *after* requirements, architecture, licence matrices and current-code reconciliation are complete. Requirements and architecture are complete; the licence matrices and the item-level inventory are not, because producing them means reading reference repositories and several hundred project files item by item — implementation-planning work, not specification work.
+**What it decided.** That the numbered work-package sequence would be derived **before** the per-product Reference Coverage Matrices and the item-level code inventory existed, with those audits scheduled inside the sequence and later packages rewritten if a finding invalidated them (`DC-01`–`DC-04`).
 
-Two readings were possible: withhold the sequence until those audits exist, or derive it now with the audits scheduled inside it. Phase 2 chose the second, because the first would leave the dependency structure invisible and the audits themselves unscheduled — the precise failure **D-019** exists to prevent.
+**Why it was wrong.** **D-019** states that the implementation plan *must be derived after* requirements, architecture, licence matrices and current-code reconciliation are complete. **D-012** states that every product must receive a Reference Coverage Matrix *before implementation planning for that product is finalized*. Both are `USER_CONFIRMED` and binding.
 
-**Consequences.**
+P2-002 substituted a different process — derive first, audit during implementation, rewrite after findings — and presented that substitution as satisfying **D-019**. It did not. A Phase 2 decision may not alter a Phase 1 decision's ordering requirement, and `RC-01` of this register already says so. The entry contradicted the rule under which it was recorded.
 
-- `DC-01`: the audit-producing packages (`00`, `01`, and each product's reference audit) sit at the front and their gates block downstream work.
-- `DC-02`: no product implementation package begins before its Reference Coverage Matrix and licence audit are complete (**D-012**, **D-013**).
-- `DC-03`: no restructuring begins before the item-level inventory exists.
-- `DC-04`: **if a matrix or the inventory produces a finding that invalidates a later package's scope, that package is rewritten before work continues on it** (**D-001**). The sequence is derived, not frozen against evidence not yet gathered.
+**What the substitution cost.** It was not a formality. Producing the prerequisite evidence afterwards surfaced findings that would have changed the plan:
 
-**Authority.** Product Owner, with the Architecture Owner.
+| Finding | Where | What the sequence had assumed |
+|---|---|---|
+| Four of six accessible references are GPL-family, proprietary or AGPL; **no reuse is possible from any of them** | [`../assurance/reference-coverage/README.md`](../assurance/reference-coverage/README.md) `§Aggregate licence position` | That per-product licence audits might clear material for reuse, making `Copy`/`Port` dispositions plausible downstream |
+| Neither ArcNotes reference implements slides | [`arcnotes-affine-siyuan.md`](../assurance/reference-coverage/arcnotes-affine-siyuan.md) `F-AN-2` | That `WP-29` would have reference oracles like its sibling packages |
+| Serial-Studio's licence creates an **authorship boundary**, not only a reuse prohibition | [`arcscope-serial-studio.md`](../assurance/reference-coverage/arcscope-serial-studio.md) `F-AS-1` | That the whole reference was readable evidence |
+| The implementation repository has **166 projects and 8,638 C# lines**, not 332 projects of substance | [`../assurance/implementation-state-reconciliation.md`](../assurance/implementation-state-reconciliation.md) `§3` `C-01`, `C-02` | A materially different starting position |
+| Four of six recorded conformance findings were false | there, `C-03`–`C-06` | `WP-02` and `WP-05` scoped larger than the evidence supports |
+| The cloud three-role separation does not exist | there, `§5.5` | Not identified at all — a new priority-3 item |
+| Olive is **not present** at the authorized location | [`arcslate-arcvideo.md`](../assurance/reference-coverage/arcslate-arcvideo.md) `§3.1` | That all registered ArcSlate references were available |
 
-**Consumed by.** [`../planning/implementation-sequence.md`](../planning/implementation-sequence.md) `§1.1`; [`../planning/work-packages/README.md`](../planning/work-packages/README.md); work packages `00`, `01`.
+`DC-04` anticipated rewriting "a package"; the evidence in fact changed package scope, priority order and one open question requiring the user's decision. Deriving first did not make the dependency structure visible — it made a **provisional** structure look settled.
 
-**Reversal cost.** Low. Rewriting a package before it starts is cheap; `DC-04` makes that the expected path rather than an exception.
+**Status of everything it produced.** The sequence derived under P2-002 was **provisional**, not a validly derived implementation plan. `P2-004` records its re-derivation from the completed evidence and the specific changes that followed.
+
+**Withdrawn on.** 2026-09-05, during the Stage 2 repair and closure pass.
 
 ---
 
@@ -98,6 +105,36 @@ Two readings were possible: withhold the sequence until those audits exist, or d
 
 ---
 
+## P2-004 — Sequence derivation from completed prerequisite evidence · `ADOPTED`
+
+**Decision.** The implementation sequence is derived from the completed prerequisite evidence, in the ordering **D-019** and **D-012** require. The prerequisite evidence is:
+
+| Prerequisite | Artifact | State |
+|---|---|---|
+| Requirements | [`../requirements/`](../requirements/README.md) | Complete |
+| Architecture | [`../architecture/`](../architecture/README.md) | Complete |
+| Licence matrices — per product, per **D-012** | [`../assurance/reference-coverage/`](../assurance/reference-coverage/README.md) — five matrices, 146 item-level rows | **Complete**, with one unresolved determination (Olive, `§3.1` of the ArcSlate matrix) |
+| Current-code reconciliation | [`../assurance/implementation-state-reconciliation.md`](../assurance/implementation-state-reconciliation.md) — 166 projects, item-level | **Complete** |
+
+**Ordering, stated plainly.** Requirements and architecture, then licence matrices and code reconciliation, **then** the plan. That is **D-019**'s ordering and it is now followed rather than substituted.
+
+**Consequences.**
+
+- `DD-01`: **The sequence is derived, not provisional.** Every package's scope rests on evidence that existed before it was written.
+- `DD-02`: **The baseline matrices and the inventory are versioned planning inputs.** Implementation packages consume them. No implementation package re-creates a baseline audit.
+- `DD-03`: **Implementation packages retain drift checks only** — source drift against the recorded commit, changed scope, and newly introduced material. Baseline creation and later maintenance are different obligations and are not conflated.
+- `DD-04`: **Where evidence changed a package, the change is recorded** with its evidence, the affected statement, the correction, downstream consumers and the verification needed — in [`../planning/evidence-driven-revisions.md`](../planning/evidence-driven-revisions.md).
+- `DD-05`: **One unresolved determination remains** (Olive). It does not block the derivation, because the two accessible ArcSlate references were fully reviewed and no ArcSlate package depends on Olive-direct evidence. It blocks only a claim of complete Olive coverage, which is not made anywhere.
+- `DD-06`: **`DC-01`–`DC-04` are withdrawn with P2-002.** They described the substituted process.
+
+**Authority.** Product Owner, with the Architecture Owner and the Licensing and Provenance Owner.
+
+**Consumed by.** [`../planning/implementation-sequence.md`](../planning/implementation-sequence.md) `§1.1`; [`../planning/work-packages/README.md`](../planning/work-packages/README.md); [`../planning/evidence-driven-revisions.md`](../planning/evidence-driven-revisions.md); every work package's Required Inputs.
+
+**Reversal cost.** Not applicable — this is the ordering Phase 1 already confirmed. It is followed, not chosen.
+
+---
+
 ## What was considered and deliberately not recorded
 
 Recording a non-decision as a decision is as harmful as leaving a decision unrecorded. These were considered and rejected for entry, with the reason:
@@ -116,15 +153,31 @@ Recording a non-decision as a decision is as harmful as leaving a decision unrec
 
 ## Open material conflicts requiring a user decision
 
-**None.**
+**One.**
 
-Phase 2 encountered four tensions that could have required a user decision. Each was resolvable within the authority Phase 1 already granted, and each resolution is recorded where it applies rather than escalated:
+### OC-01 — Olive is registered as an ArcSlate reference but is not present
+
+| Field | Position |
+|---|---|
+| **Conflict** | **D-012** registers Olive as an ArcSlate reference. No Olive repository exists at the authorized reference-map location (`C:\MyFile\ArcForges\`), and a filesystem search of `C:\MyFile` to depth 4 found no candidate. |
+| **Why it cannot be resolved here** | Substituting a similar repository is prohibited; recovering an excluded historical plan is prohibited; and treating ArcVideo — a documented Olive fork — as equivalent to the upstream would misstate the provenance chain. **D-012** registered Olive deliberately, so removing it from the reference map is a scope decision. |
+| **What was completed anyway** | Both accessible ArcSlate references were fully reviewed: 31 item-level rows in [`../assurance/reference-coverage/arcslate-arcvideo.md`](../assurance/reference-coverage/arcslate-arcvideo.md), including complete coverage of ArcVideoFoundation's 27-file tree. Olive-derived evidence is reachable transitively through the fork and is labelled as such. |
+| **Exact affected scope** | Olive capabilities absent from or altered in ArcVideo at commit `caf5651`; Olive's own licence file and per-file provenance; Olive's tests and interchange fixtures. |
+| **What it blocks** | Only a claim of complete Olive coverage — which is made nowhere. No ArcSlate package depends on Olive-direct evidence. |
+| **Options** | (a) make Olive available at the authorized location so the matrix is extended; (b) record an accepted exclusion for the Olive-direct scope, leaving ArcVideo and ArcVideoFoundation as the ArcSlate references. |
+| **Owner** | Licensing and Provenance Owner, with the Product Owner |
+
+---
+
+### Tensions resolved without escalation
+
+Four further tensions were resolvable within the authority Phase 1 already granted. Each resolution is recorded where it applies:
 
 | Tension | Resolution | Recorded in |
 |---|---|---|
-| **D-019** requires the plan to follow audits that do not yet exist | Derive the sequence now with the audits scheduled at its front and `DC-04` permitting rewrite on finding | `P2-002` above |
-| The existing monorepo is substantially more advanced than a greenfield sequence assumes | Reconciliation with per-item dispositions including `Keep`; the sequence adapts to what exists rather than discarding it | [`../assurance/implementation-state-reconciliation.md`](../assurance/implementation-state-reconciliation.md) |
-| The existing native surface is broader than the architecture's illustration | Permitted-surface decision per shim, with licence review, in `WP-01.03` | [`../architecture/12-native-interop-and-media.md`](../architecture/12-native-interop-and-media.md) `§2` |
-| Every commercial figure in the corpus is a proposal, not a commitment | Recorded as versioned commercial policy with corpus defaults labelled proposals (**D-020**) | [`../requirements/04-commerce-entitlement-and-credits.md`](../requirements/04-commerce-entitlement-and-credits.md) |
+| **D-019** requires the plan to follow audits that did not exist | **Not resolvable by substitution** — the earlier attempt is withdrawn. The audits were produced, then the plan was re-derived | `P2-002` (withdrawn) and `P2-004` above |
+| The existing monorepo's state differs materially from any assumption | Item-level reconciliation with per-project dispositions; the plan adapts to measured evidence | [`../assurance/implementation-state-reconciliation.md`](../assurance/implementation-state-reconciliation.md) |
+| Two native shims may fall outside the permitted native surface | `Fence` with a scheduled substitute analysis per shim, rather than a global judgement | there, `§5.2` `NS-07`, `NS-08` |
+| Every commercial figure in the corpus is a proposal, not a commitment | Recorded as versioned commercial policy with corpus defaults labelled proposals (**D-020**); no figure has been consumed as an authoritative specification | [`../requirements/04-commerce-entitlement-and-credits.md`](../requirements/04-commerce-entitlement-and-credits.md); [`../assurance/commercial-figure-status.md`](../assurance/commercial-figure-status.md) |
 
-Should implementation surface a genuine material conflict, **D-001** governs: the work stops, the conflict is registered, and it is returned for decision rather than resolved locally.
+Should implementation surface a further material conflict, **D-001** governs: the work stops, the conflict is registered, and it is returned for decision rather than resolved locally.

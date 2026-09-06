@@ -32,15 +32,15 @@ Every decision is carried. The **Primary home** column names where the decision 
 | **D-008** | Runtime and AOT matrix | `../architecture/14-build-packaging-and-release.md` `§3` | Desktop, cloud, mobile, web architecture; `WP-02`, `WP-06`, `WP-30` | Evaluated-property assertions; AOT publish proof (`R-03`) |
 | **D-009** | Contract granularity | `../architecture/02-contracts-and-protocols.md` | Solution layout `§3`; `WP-03`, `WP-23` | Contract baseline diff gate (`G-05`) |
 | **D-010** | Cloud topology | `../architecture/00-architecture-overview.md` `§3` | Local IPC, cloud, mobile architecture; `WP-08`, `WP-26`, `WP-31` | No-inbound-connection assertions (`WP-26.01`, `WP-31.06`) |
-| **D-011** | Target monorepo | `implementation-state-reconciliation.md` | Solution layout `§1`; `WP-01` | Inventory gate `PG-02` |
-| **D-012** | Reference-repository roles | `reference-coverage-and-provenance.md` `§1` | Every product document's reference posture; `WP-00.04` | Matrix completion gate `PG-01` |
-| **D-013** | Reuse policy | `reference-coverage-and-provenance.md` `§3`, `§4` | Solution layout `LB-07`; `WP-00.03` | Provenance-record check (`AE-06`), **F-013** |
+| **D-011** | Target monorepo | `implementation-state-reconciliation.md` — **item-level, 166 projects** | Solution layout `§1`; `WP-01` | `PG-02` **closed** by that evidence |
+| **D-012** | Reference-repository roles | `reference-coverage-and-provenance.md` `§1` (method); [`reference-coverage/`](reference-coverage/README.md) (**the five completed matrices**) | Every product document's reference posture; `WP-00.04` | `PG-01` **closed** by those matrices |
+| **D-013** | Reuse policy | `reference-coverage-and-provenance.md` `§3`, `§4` | Solution layout `LB-07`; `WP-00.03` | Provenance-record check (`AE-06`); **F-013 closed** — 145 rows each carry a licence position and **no row proposes reuse** |
 | **D-014** | Web and service surface inventory | `../architecture/10-web-architecture.md` `§4` | Observability `§8`, `§10`; build `§7`; `WP-47` | Surface deployment matrix; origin policy tests |
 | **D-015** | Account portal URL | `../architecture/10-web-architecture.md` `§4` | `WP-48`, `WP-49` | Redirect and profile-isolation tests (`WP-48.00`) |
 | **D-016** | Deferred-decision ownership | `open-gates-register.md` | Native architecture `NI-10` | Register ownership fields |
 | **D-017** | Planning location and format | `../planning/README.md` | `../planning/work-packages/README.md` | Repository structure; `WP-05.06` |
-| **D-018** | Normative glossary | `../requirements/01-normative-glossary-and-invariants.md` | Every layer's vocabulary; `WP-00.01` | Forbidden-term scan; invariant coverage gate `PG-06` |
-| **D-019** | Sequence status | `../planning/implementation-sequence.md` `§1.1` | `../planning/work-packages/README.md` | Derivation-condition rules `DC-01`–`DC-04` |
+| **D-018** | Normative glossary | `../requirements/01-normative-glossary-and-invariants.md`; [`invariant-coverage.md`](invariant-coverage.md) | Every layer's vocabulary; `WP-00.01` | Forbidden-term scan; **`PG-06` closed** (design traceability); `PG-11` open (implementation enforcement) |
+| **D-019** | Sequence status | `../planning/implementation-sequence.md` `§1.1` | `../planning/work-packages/README.md`; [`../planning/evidence-driven-revisions.md`](../planning/evidence-driven-revisions.md) | **Ordering followed**: the plan was derived after the matrices and the inventory. `P2-002`, which substituted a different ordering, is withdrawn; `P2-004` records the re-derivation |
 | **D-020** | AI and payment economic model | `../architecture/16-billing-and-commerce-architecture.md` | Commerce requirements; `WP-42`, `WP-43` | Fixed-precision policy test (`CT-05`); no-compiled-figure scan (`WP-42.01`) |
 | **D-021** | Apache boundary for validators and shared semantics | `../architecture/11-mobile-architecture.md` `§1` | Solution layout `§3`; extension SDK `§11`; `WP-30.01` | Shared/not-shared policy test |
 | **D-022** | Mobile-store commerce | `../architecture/11-mobile-architecture.md` `§9` | Commerce architecture `§10`; `WP-31`, `WP-32` | Five commerce-prohibition build checks (`WP-32.03`) |
@@ -130,22 +130,30 @@ Test family identifiers are those of [`testing-and-verification-strategy.md`](te
 
 ## 5. Invariant enforcement
 
-The catalogue in [`../requirements/01-normative-glossary-and-invariants.md`](../requirements/01-normative-glossary-and-invariants.md) contains roughly 490 `X ≠ Y` invariants across twelve sections. Each is assigned an enforcement mechanism in `WP-00.01` and asserted in `WP-05.05`.
+The catalogue in [`../requirements/01-normative-glossary-and-invariants.md`](../requirements/01-normative-glossary-and-invariants.md) contains **421 invariants** across twelve sections. The full item-level mapping is [`invariant-coverage.md`](invariant-coverage.md) `§7`.
 
-| Mechanism | Applies to | Where implemented |
+> **Corrected count.** Earlier documents said "approximately 490". That read the highest identifier as a count. The catalogue holds 421 rows; identifiers reach `I-490` because each section reserves headroom, evidenced in `§2` of the coverage document.
+
+| Mechanism | Applies to | Invariants |
 |---|---|---|
-| **Type distinction** — the wrong thing does not compile | Identity, revision, sequence, version-axis and secret invariants | `WP-04.00`, `WP-04.02`, `WP-04.05`, `WP-11.04` |
-| **Repository policy test** — naming, reference and structural rules | Forbidden aliases, obsolete names, layering, licence boundary, banned APIs | `WP-05.00`–`WP-05.04` |
-| **Unit test** — behavioural distinctions | Undo vs checkpoint vs journal, search vs retrieval, trust vs permission, progress vs outcome | Each owning product package |
-| **Integration or end-to-end test** — only observable across a boundary | Cloud sync vs raw upload, isolation vs authorization, push vs durable attention | `WP-25`, `WP-35`, `WP-41`, `WP-31` |
+| **Type distinction** | Identity, reference, capability and version-axis distinctions | 55 |
+| **Repository policy test** | Boundary, naming, reference-direction and platform rules | 39 |
+| **Unit test** | Behavioural distinctions within one component | 202 |
+| **Integration test** | Distinctions observable only across a process, device or system boundary | 125 |
+
+### 5.1 Three obligations, three states
+
+| Obligation | Content | Gate | State |
+|---|---|---|---|
+| **A — design completeness** | Every corpus statement preserved or explicitly dispositioned | Part of `PG-06` | **Complete** — 484 of 484 accounted for; four invariants added; one superseded statement correctly excluded |
+| **B — design traceability** | Architecture home, mechanism, planned verification, owning gate, per invariant | `PG-06` | **Complete** — 421 of 421 mapped; **`PG-06` closed 2026-09-05** |
+| **C — implementation evidence** | An implemented check with a passing result | `PG-11` | **Open**, distributed across owning packages |
 
 | # | Rule |
 |---|---|
-| IE-01 | **Every invariant has exactly one assigned mechanism** and at least one concrete test (`IV-01` in the testing strategy). |
-| IE-02 | **An invariant with no test is an open finding** with an owner and a closing package, reported by `WP-05.05`. |
-| IE-03 | **A test enforcing an invariant names it**, so a failure identifies the violated rule. |
-
-**Status: the assignment is produced by `WP-00.01`; the 100 % coverage assertion is the completion gate of `WP-05.05` (`PG-06`).** Until that gate passes, invariant coverage is *specified* but not yet *demonstrated* — this document does not claim otherwise.
+| IE-01 | **`PG-06` and `PG-11` are different gates with different evidence.** `PG-06` closing has no effect on `PG-11`. |
+| IE-02 | **An owned open finding never closes either.** `WP-05.05` produces an accounting report; a faithful report of unimplemented checks is a complete report and a failing `PG-11`. |
+| IE-03 | **A planned verification is not evidence that an invariant holds.** It is evidence that the invariant is verifiable and that someone owns proving it. |
 
 ---
 
@@ -155,7 +163,7 @@ Every gate in [`open-gates-register.md`](open-gates-register.md) is scheduled.
 
 | Gate | Scheduled in | Blocking |
 |---|---|---|
-| **F-013** | `00.04`; then `15`, `18`, `33`, `36` per product | `P-02` per product |
+| **F-013** | **Closed by design evidence 2026-09-05** — the five matrices. Registered in `00.04`; drift maintenance in `15.07`, `18.08`, `33.07`, `36.07` | `P-02` per product |
 | **F-023** | `32.02` | `L-50`, any mobile artifact |
 | **F-026** | `03.02`, `06.02` | `R-03` on consuming targets |
 | **VG-01** | `43.04` | First EU-available release |
@@ -169,18 +177,19 @@ Every gate in [`open-gates-register.md`](open-gates-register.md) is scheduled.
 | **VG-10**, **VG-11** | `42.10` | Commercial go-live |
 | **VG-12** | `42.10`, conditional | Regional enablement |
 | **VG-13** | `32.04` | First store submission |
-| **PG-01** | `00.04`; then per product | Product first release |
-| **PG-02** | `01.00` | All restructuring |
-| **PG-03** | `13.04`, `33`, `37.00` | Native dependency use |
+| **PG-01** | **Closed by design evidence 2026-09-05.** Registered in `00.04`; drift maintenance per product | Product first release |
+| **PG-02** | **Closed by design evidence 2026-09-05** — the item-level inventory. Drift validation in `01.00`; execution in `01.01`–`01.05` | All restructuring |
+| **PG-03** | `13.04`, `33`, `37.00`; shim dispositions already assigned, two fenced pending `35.04` and `39.05` | Native dependency use |
 | **PG-04** | `45.02` | Paid cloud go-live |
 | **PG-05** | `12.02` | `R-16` |
-| **PG-06** | `05.05` | Traceability completeness |
+| **PG-06** | **Closed by design evidence 2026-09-05** — [`invariant-coverage.md`](invariant-coverage.md) `§7` | Finalising the design baseline |
+| **PG-11** | Distributed across the owning packages in that mapping; accounting reported by `05.05` | Each owning package's gate; `P-03` per product |
 | **PG-07** | `19.05`, `35.04`, `39.05` | Public import claims |
 | **PG-08** | `13.04` | `C-04` |
 | **PG-09** | `41` | Third-party extension enablement |
 | **PG-10** | `42.10`, `43.06` | `L-28`, `L-29` |
 
-**Coverage: 25 of 25 gates scheduled or explicitly dormant.**
+**Coverage: 26 of 26 gates scheduled, closed or explicitly dormant** — four closed by design evidence, twenty-two open implementation-stage obligations, plus one unresolved determination (`OC-01`) carried in [`open-gates-register.md`](open-gates-register.md) `§6`.
 
 ---
 
@@ -188,10 +197,10 @@ Every gate in [`open-gates-register.md`](open-gates-register.md) is scheduled.
 
 | # | Statement |
 |---|---|
-| NC-01 | **No gate is closed by this document.** Phase 2 schedules gates; only recorded evidence closes them. |
-| NC-02 | **Invariant coverage is specified, not demonstrated.** The 100 % assertion is `WP-05.05`'s gate, not a present fact. |
-| NC-03 | **The per-product Reference Coverage Matrices do not yet exist** beyond the ArcChat calibration matrix produced in `WP-00.04`. |
-| NC-04 | **The item-level code inventory does not yet exist.** `implementation-state-reconciliation.md` records an observed first-pass inventory and states plainly that the item-level version is `WP-01.00`'s deliverable. |
+| NC-01 | **No gate is closed by this document.** Four gates are closed by the design-stage artifacts they name; this matrix records that, it does not effect it. |
+| NC-02 | **Design traceability is complete; implementation enforcement is not.** `PG-06` is closed on the mapping; `PG-11` requires implemented, passing checks and is open. |
+| NC-03 | **All five Reference Coverage Matrices exist**, with 145 item-level rows. One unresolved determination remains: Olive is not present at the authorized location (`OC-01`). |
+| NC-04 | **The item-level code inventory exists** — 166 of 166 projects, measured. Its dispositions are **not executed**; that is `WP-01`'s work. |
 | NC-05 | **No test in this matrix has been run.** This is a specification repository; the test families and gates are defined here and executed in the implementation repository. |
 
 ---
