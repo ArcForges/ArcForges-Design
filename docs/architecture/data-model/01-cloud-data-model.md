@@ -660,22 +660,45 @@ The client schema (`§2` of [`02-desktop-data-model.md`](02-desktop-data-model.m
 |---|---|---|
 | `task_id` | `id` | **PK** |
 | `workspace_id` | `id NN` | |
-| `owning_product` | `text NN` | Never transfers (`TO-01`) |
-| `placement` | `enum(local, cloud, remoteViaBridge) NN` | Decided once (`TO-06`) |
-| `authoritative_store` | `enum(cloud, device) NN` | *(derived from placement)* |
-| `origin_device_id` | `id?` | |
-| `target_device_id` | `id?` | For `remoteViaBridge` |
-| `state` | `enum(created, queued, running, waitingApproval, waitingBudget, paused, succeeded, failed, cancelled, unknownEffect) NN` | |
+| `owning_product` | `text NN` | Whose **domain** the work concerns. It never transfers, and it does **not** move the authoritative store (`TO-01`) |
+| `origin_surface` | `enum(desktop, web, mobile, automation) NN` | Where the request came from. Provenance only — it confers no authority (`TO-03`) |
+| `origin_device_id` | `id?` | Present when a device originated it; **null for Web, Mobile and automation** |
+| `state` | `enum(created, queued, running, waitingApproval, waitingDevice, waitingCapacity, paused, succeeded, failed, cancelled, unknownEffect) NN` | |
 | `reason_facet` | `text?` | *Why* it is in that state (`WP-16.01`) |
 | `intent_summary` | `text NN` | User-facing |
 | `created_at`, `updated_at` | `instant NN` | |
 | `rev` | `rev NN` | |
 
 - `IX (workspace_id, state, updated_at)` — the task centre
-- `IX (target_device_id, state)` — the tool-request pull path
-- **Constraint** — a task with `placement = local` must have `authoritative_store = device`; a check constraint enforces it, so `TO-07` cannot be violated by a code path
+
+> **Corrected 2026-09-08.** The table carried `placement ∈ {local, cloud, remoteViaBridge}`, `authoritative_store ∈ {cloud, device}` and a check constraint forcing local placement to device authority. All three contradict `TO-01`: **every Agent Task is Cloud-owned**, and no Agent Task has a device authoritative store. They are removed rather than defaulted, because a column whose only legal value is `cloud` invites code to branch on it.
+
+| # | Rule |
+|---|---|
+| TK-01 | **There is no `placement` column and no `authoritative_store` column.** The authoritative store is always Cloud (`TO-01`). What varies is **each Step's tool locality**, which lives on `task.plan_step` (`TK-02`), because one Task routinely mixes both. |
+| TK-02 | **`plan_step.tool_locality ∈ {cloud, device}`**, with `target_device_id` on the Step — not on the Task — since different Steps of one Task may target different devices, or none. |
+| TK-03 | **A native Product Job is not in this table at all** (`TO-05`, `I-485`). It lives in its product's own store with its own job identity; the task centre reads both through a union projection and labels each with its owner (`WP-17.03`). |
+| TK-04 | **`origin_surface` and `origin_device_id` are provenance, never authority.** A Task created from Web has no device and is fully executable; a device is required only for a Step whose locality is `device` (`CW-03`). |
+| TK-05 | **Cancellation and recovery are Cloud-side for the Task and product-side for a Product Job.** Cancelling a Task cancels its Steps; a Step that started a Product Job requests that product's cancellation and records the outcome — it does not reach into the product's store. |
 
 ### `task.run`, `task.plan_step`, `task.attempt`
+
+**Tool locality lives on the Step** (`TK-02`), because one Task mixes cloud and device Steps.
+
+| `plan_step` field | Type | Notes |
+|---|---|---|
+| `plan_step_id` | `id` | **PK** |
+| `run_id` | `id NN` | `FK →`; cascade |
+| `step_ordinal` | `int NN` | |
+| `capability_key` | `text NN` | Resolved through the generated allowlist (`DP-04`) |
+| `tool_locality` | `enum(cloud, device) NN` | **Declared, never inferred** (`PL-02` of the harness) |
+| `target_device_id` | `id?` | Required when `tool_locality = 'device'`, else null |
+| `state`, `reason_facet` | `text NN`, `text?` | |
+
+- `IX (target_device_id, state)` — **the tool-request pull path**, now correctly on the Step
+- **Constraint** — `tool_locality = 'device'` requires `target_device_id IS NOT NULL`; `cloud` requires it to be null
+- **Constraint** — a Step declared `device` is **never** satisfied by a cloud substitute (`PL-02`); if no eligible device is online the Step waits with a stated reason
+
 
 `run` groups attempts at one task. `plan_step` holds the ordered plan with each step's capability, arguments reference, compensation declaration and approval requirement. `attempt` is the unit of retry:
 
@@ -964,7 +987,8 @@ The change feed. One row per aggregate revision that entered the cloud replica.
 | `aggregate_id` | `id NN` | |
 | `aggregate_rev` | `rev NN` | |
 | `change_kind` | `enum(upsert, tombstone) NN` | |
-| `origin_device_id` | `id NN` | So a device can skip its own echo |
+| `origin_kind` | `enum(device, cloud) NN` | **Cloud-originated changes exist** — an assistant message needs no device (`CW-03`) |
+| `origin_device_id` | `id?` | **Null when `origin_kind = 'cloud'`**; set when a device submitted the change |
 | `occurred_at` | `instant NN` | Wall clock, for display; **never a cursor** |
 | `publish_seq` | `bigint?` | **NULL until published.** Assigned in commit order by the publisher (`§9.1`) |
 | `published_at` | `instant?` | |
@@ -972,6 +996,8 @@ The change feed. One row per aggregate revision that entered the cloud replica.
 - `IX (workspace_id, publish_seq)` **WHERE `publish_seq IS NOT NULL`** — the only feed query path
 - `IX (workspace_id, change_id)` **WHERE `publish_seq IS NULL`** — the publisher's claim path
 - **Constraint** — the row is written **in the business transaction** (`CW-06`), so a committed change is always publishable
+- **Constraint** — `origin_kind = 'device'` requires `origin_device_id IS NOT NULL`; `cloud` requires it to be null
+- **Rule** — **echo suppression matches on `origin_device_id`, and a null never matches.** A device skips a change only when `origin_kind = 'device' AND origin_device_id = <its own>`. A Cloud-originated change is therefore **never** suppressed as somebody's echo — which, with a non-null column and a placeholder value, is exactly what would have happened to every assistant message
 - **Constraint** — `UQ (workspace_id, publish_seq)`; `publish_seq` is assigned once and never changed
 
 #### 9.1 Publication — commit order, not allocation order

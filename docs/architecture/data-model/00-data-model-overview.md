@@ -166,13 +166,13 @@ The authority map says *where the authoritative copy lives*. It does not by itse
 
 | # | Step | Committer | Transaction contents | Revision |
 |---|---|---|---|---|
-| 1 | Web calls `chat.appendMessage` | **Cloud — Chat** | `chat.message` (user), its command record, its `sync.change` row | `rev = r1`, assigned by Cloud |
+| 1 | Web calls `chat.appendMessage` | **Cloud — Chat**, enlisting Sync | `chat.message` (user), its command record, its `sync.change` row (`origin_kind = cloud`, since Web is not a sync device) | `rev = r1`, assigned by Cloud |
 | 2 | A Task is created (`CH-01`) | **Cloud — Task** | `task.task`; linked to the message by identifier | separate aggregate |
 | 3 | Admission reserves (`§6.1.1`) | Entitlement + Commerce | shared unit of work; commits **before** dispatch (`DB-01`) | — |
 | 4 | Provider streams; deltas are transient (`§7` of the harness) | **nobody** — the stream buffer is not an aggregate | none | none |
-| 5 | Turn completes; the assistant message is committed once | **Cloud — Chat** | `chat.message` (assistant), its `sync.change` row, the task's terminal state | `rev = r2`, assigned by Cloud |
-| 6 | Settlement | Entitlement + Commerce | shared unit of work | — |
-| 7 | Desktop reconnects and pulls from its cursor | — | reads `r1` and `r2` in publication order (`§9`) | — |
+| 5 | Turn completes; the assistant message is committed once | **Cloud — Chat**, enlisting Sync and Task in one shared unit of work (`§6.1.1a`) | `chat.message` (assistant) + its `sync.change` row (`origin_kind = cloud`, **no device**) + the Task's terminal state | `rev = r2`, assigned by Cloud |
+| 6 | Settlement | Entitlement + Commerce | A **separate** shared unit of work, after step 5 — it must not hold the message behind provider latency (`TU-01`) | — |
+| 7 | Desktop reconnects and pulls from its cursor | — | reads `r1` and `r2` in publication order (`§9`). **Neither is suppressed as its own echo**, because `origin_device_id` is null and a null never matches | — |
 | 8 | Desktop had an unsent draft for the same conversation | Desktop, locally | the draft is local-only and is **not** a competing revision (`I-124`) | none |
 
 **Nothing in this path requires a device.** Step 8 is the only place a device holds state, and a draft is deliberately outside the revision model.
@@ -216,31 +216,63 @@ Four store kinds coexist: the local structured store, the Cloud database, object
 |---|---|
 | **Local store** | One aggregate root's state change, its command record, its journal entry, its revision increment, and its sync outbox entry (`§2.1` of the persistence architecture) |
 | **Cloud database, ordinary case** | One module's aggregate change plus its outbox rows plus its idempotency row (`PS-04`) |
-| **Cloud database, enumerated shared unit of work** | The participants listed in `§6.1.1`, and **only** those |
+| **Cloud database, enumerated shared unit of work** | The **operation classes** listed in `§6.1.1`, and only those. Note that **every synchronised aggregate write is one of them** (`CW-06`), so this is a routine path rather than a rare exception |
 | **Across stores** | **Never.** No transaction spans the database and object storage |
 
 **Ordinary module-to-module effect is asynchronous** — outbox → event → inbox — and every consumer is idempotent (`OB-03`).
 
 #### 6.1.1 The shared unit of work — a closed exception
 
-Asynchronous propagation cannot express a decision that must be **all-or-nothing before an irreversible external act**. AI admission is exactly that: it draws on Entitlement's capacity bucket and Commerce's credit lots, and if either half can succeed alone there is an overdraft window in which two concurrent runs each pass a check against the same unreserved funds (`AD-02`). A saga cannot close that window, because the window is between the two writes.
+Asynchronous propagation cannot express a decision that must be **all-or-nothing at the instant it is taken**. Two situations qualify, and only two.
 
-Because Cloud is **one deployable host over one database** (`RT-03` of the cloud architecture), the correct mechanism is a genuine shared transaction with a **closed, enumerated participant list** — not a distributed protocol simulating one.
+**Funding.** AI admission draws on Entitlement's capacity bucket and Commerce's credit lots. If either half can succeed alone there is an overdraft window in which two concurrent runs each pass a check against the same unreserved funds (`AD-02`). A saga cannot close it, because the window lies *between* the two writes.
+
+**Publication.** A synchronised aggregate's change and its `sync.change` row must commit together (`CW-06`). If they did not, a committed change could be unpublishable, or a published change could name a row that never committed. `sync` is a separate schema, so **every** synchronised write is already a two-module transaction.
+
+Because Cloud is **one deployable host over one database** (`RT-03` of the cloud architecture), the mechanism is a genuine shared transaction with a **closed, enumerated participant list** — not a distributed protocol simulating one.
 
 | # | Rule |
 |---|---|
-| SU-01 | **Only the operations in the table below may open a shared unit of work.** The list is closed; adding to it is an architecture baseline change. |
+| SU-01 | **Only the operation classes in the table below may open a shared unit of work.** The list is closed; adding a class is an architecture baseline change. |
 | SU-02 | **A participant never touches another module's tables** (`MD-02` of the cloud architecture). Each exposes a **transaction-participating API** that accepts the ambient unit of work and operates on its own tables through its own repository. The rule that survives is *no foreign table access*, which was always the point of the module boundary. |
-| SU-03 | **The participant list is asserted by an architecture test**: exactly these operations, exactly these participants, and no other call site enlists a second module (`WP-05`). |
-| SU-04 | **Lock order is fixed and declared** — Entitlement before Commerce, and within Entitlement the workspace's `capacity_bucket` row first. A fixed order is what makes deadlock structurally impossible rather than retried. |
-| SU-05 | **A shared unit of work is short and contains no I/O.** No provider call, no object-storage write, no network hop occurs inside one. It reserves, it commits, and only then does dispatch begin (`§6.1.2`). |
-| SU-06 | **Every other cross-module effect stays asynchronous.** Purchase → grant remains outbox-driven with its reconciliation repair (`PE-06` of the lifecycles), because money that moved is a fact and the grant can be retried forward. |
+| SU-03 | **The participant list is asserted by an architecture test**: exactly these classes, exactly these participants, and no other call site enlists a second module (`WP-05`). |
+| SU-04 | **Lock order is fixed and declared, globally**: `Entitlement → Commerce → Chat → Notes → Task → Sync`. Within Entitlement, the workspace's `capacity_bucket` row first. A single global order is what makes deadlock structurally impossible rather than retried. |
+| SU-05 | **A shared unit of work is short and contains no I/O.** No provider call, no object-storage write, no network hop occurs inside one. It commits, and only then does dispatch begin (`§6.1.2`). |
+| SU-06 | **Every cross-module effect not in the table stays asynchronous.** Purchase → grant remains outbox-driven with its reconciliation repair (`PE-06` of the lifecycles), because money that moved is a fact and the grant can be retried forward. |
+| SU-07 | **`sync` is a participant, never an initiator.** It has no operation of its own here; it is enlisted by whichever module is committing a synchronised aggregate. |
 
-| Operation | Participants | Why it cannot be asynchronous |
+| Operation class | Participants | Why it cannot be asynchronous |
 |---|---|---|
-| **AI admission** (`§7.3` of the commerce architecture) | Entitlement (`capacity_bucket`, `capacity_reservation`), Commerce (`credit_lot`) | The reservation must exclude concurrent runs before dispatch (`AD-02`) |
-| **AI settlement** (`§7.5` there) | Entitlement (`capacity_bucket`, `capacity_reservation`), Commerce (`credit_lot`, `customer_settlement`) | Debit and release must move against the same sources the reservation held, or a partial settlement leaves funds double-counted (`ST-05`) |
-| **Reservation sweep** (`AI-09` of the lifecycles) | Same as settlement | Releasing a hold must restore the same sources atomically |
+| **Synchronised aggregate write** — any commit to Chat, Notes or another synchronised store | The owning module + **Sync** (`sync.change`) | `CW-06`: a committed change must be publishable, and a published change must exist |
+| **AI admission** (`§7.3` of the commerce architecture) | Entitlement (`capacity_bucket`, `capacity_reservation`) + Commerce (`credit_lot`) | The reservation must exclude concurrent runs before dispatch (`AD-02`) |
+| **AI settlement** (`§7.5` there) | Entitlement + Commerce (`credit_lot`, `customer_settlement`) | Debit and release must move against the same sources the reservation held (`ST-05`) |
+| **Reservation sweep** (`AI-09` of the lifecycles) | Entitlement + Commerce | Releasing a hold must restore the same sources atomically |
+| **Agent turn completion** | **Chat** (`chat.message`) + **Sync** (`sync.change`) + **Task** (terminal state) | See `§6.1.1a` |
+
+##### 6.1.1a Why turn completion is one transaction, and what it excludes
+
+A completed turn commits the assistant message, its publication row and the Task's terminal state. Splitting them produces a state a client can observe and cannot interpret: a message with no completed Task reads as still generating; a completed Task with no message reads as an empty answer.
+
+| # | Rule |
+|---|---|
+| TU-01 | **These three, and nothing else, commit together.** Settlement is **not** in this transaction — it is its own class above, running after, because it depends on usage the provider reports and must not hold the message write behind provider latency (`SU-05`). |
+| TU-02 | **A crash between turn completion and settlement leaves a completed turn with an outstanding reservation.** That is a resolvable state, not a lost one: the sweeper and the usage reconciliation resolve it (`AI-08`, `UU-01`), and the user has their answer meanwhile. The reverse ordering — settling first — would risk charging for an answer that was never delivered. |
+| TU-03 | **The Task's terminal state and the message are inseparable; the Task's *progress* updates are not.** Progress is written independently and is explicitly lossy (`RE-03`). |
+
+##### 6.1.1b What stays asynchronous, and how it recovers
+
+| Effect | Mechanism | Recovery |
+|---|---|---|
+| Purchase → entitlement grant | `platform.outbox` → event → Entitlement inbox | Reconciliation invariant: *every paid order has a matching grant* (`PE-06`) |
+| Change → search and retrieval indexing | Outbox → indexer hosted service | Derived store; rebuildable, and losing it costs compute not content (`DS-01`) |
+| Change → notification fan-out | Outbox → notification service | Durable notifications are re-readable (`RE-04`) |
+| Deletion → downstream purge across stores | Outbox → per-store purger | Completion invariant per store, retried to convergence (`DE-01`, `DE-05`) |
+| Settlement → ledger entries | Same transaction as settlement (**not** asynchronous) | — |
+
+| # | Rule |
+|---|---|
+| AS-01 | **Every asynchronous cross-module effect names its outbox, its consumer and its recovery mechanism** in the table above. An effect with no named recovery is a defect, because at-least-once delivery without a reconciliation path is at-most-once in practice. |
+| AS-02 | **No rule elsewhere demands atomicity for a row in that table.** Where a design wants an asynchronous effect to be atomic, the resolution is to add an operation class to `SU-01` — a baseline change — not to assert atomicity that `SU-06` forbids. |
 
 #### 6.1.2 The dispatch barrier
 

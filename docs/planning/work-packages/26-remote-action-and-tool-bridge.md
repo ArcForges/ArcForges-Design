@@ -11,7 +11,7 @@
 
 ## 1. Scope and purpose
 
-**In scope.** Device presence; remote task placement; the durable tool-request bridge and its local re-authorisation; remote approval and steering; result and artifact return; and the honest degradation when the target desktop is offline.
+**In scope.** Device presence; **per-Step tool locality and device targeting** (`TK-02`); the durable tool-request bridge and its local re-authorisation; remote approval and steering; result and artifact return; and the honest degradation when the target desktop is offline.
 
 **Out of scope.** The mobile client that uses it (`31`). The web companion (`49`). Cloud-side AI execution economics (`43`).
 
@@ -51,7 +51,7 @@
 
 | Location | Change |
 |---|---|
-| `src/Cloud/ArcForges.Cloud.Modules.Agent/` | Tool request queue, placement, result reconciliation |
+| `src/Cloud/ArcForges.Cloud.Modules.Agent/` | Tool request queue, per-Step locality, result reconciliation |
 | `src/Cloud/ArcForges.Cloud.Modules.Identity/` | Device presence tracking and trust-gated remote eligibility |
 | `src/ArcChat/ArcChat.CloudClient/` | The pull loop, local re-authorisation, result submission |
 | `src/ArcChat/ArcChat.Agent/` | Remote task integration with the local execution engine |
@@ -112,11 +112,11 @@
 
 **Completion gate.** An offline target queues visibly with an expiry, and expiry closes the request with a typed reason.
 
-### WP-26.06 — Placement recording
+### WP-26.06 — Per-Step tool locality and device targeting
 
-**What must be fully done.** Every task records its placement — local, cloud, or remote-via-bridge. A task declared local-only never runs in the cloud. Placement is visible in the task centre and in the trace.
+**What must be fully done.** **Every Task is Cloud-owned** (`TO-01`); there is no task placement to record. **Each Step records its `tool_locality ∈ {cloud, device}`** with `target_device_id` on the Step, since one Task routinely mixes both (`TK-02`). A Step declared `device` is never satisfied by a cloud substitute; with no eligible device online it enters `waitingDevice` with a stated reason and a bounded wait, holding no included capacity (`PL-03`). Locality is visible in the task centre and in the trace.
 
-**Testing requirements.** A negative test asserting a local-only task cannot be placed in the cloud; a placement-visibility test.
+**Testing requirements.** A negative test asserting a `device` Step is **never** satisfied by a cloud substitute; a mixed-locality Task exercising both Step kinds; a `waitingDevice` test asserting a bounded wait, a stated reason and **no capacity held** while waiting; a schema test asserting no `placement` or `authoritative_store` column exists on `task.task` (`TK-01`).
 
 **Completion gate.** Placement is recorded and visible, and a local-only task cannot be placed elsewhere.
 
@@ -126,7 +126,7 @@
 
 | Dimension | Impact |
 |---|---|
-| Database | Tool request queue, presence and placement records |
+| Database | Tool request queue, presence, and **per-Step tool locality** (`TK-02`) |
 | Protocol | The tool-request and tool-result contracts |
 | UI | Presence, remote task state, remote approval and expiry surfaces |
 | Security | Local re-authorisation is the central control; trust gates eligibility |
