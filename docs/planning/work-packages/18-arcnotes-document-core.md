@@ -70,19 +70,19 @@
 
 ### WP-18.00 — Block document model
 
-**What must be fully done.** A document is an ordered tree of typed blocks with stable block identities. Every editing operation is a command through the single write path, producing one revision. Multi-block selection is first-class. Block drag and drop distinguishes move from reference and from copy.
+**What must be fully done.** A document is an ordered tree of typed blocks with stable block identities. The typed inline content model and the closed block-kind set of [`../../architecture/18-editing-and-rich-content.md`](../../architecture/18-editing-and-rich-content.md) `§2`, with **no markup string on any internal path**. The closed `EditTransaction` operation set (`§3.1` there): atomic application, computed inverses, fractional ordinal insertion, and declared kind-conversion mappings including their stated losses. Multi-block selection is first-class. Block drag and drop distinguishes move from reference and from copy. An unknown block kind and an unknown mark survive a read-modify-write cycle unchanged.
 
-**Testing requirements.** Command round-trips per block kind; multi-block operation tests; a stability test asserting block identity survives reorder and reparent.
+**Testing requirements.** Command round-trips per block kind; multi-block operation tests; a stability test asserting block identity survives reorder, reparent, split of a sibling, conversion and merge; a transaction-atomicity test asserting a failure at any operation leaves the document unchanged; a conversion matrix asserting every declared mapping and every stated loss; a forward-compatibility test on unknown kinds and marks; clipboard tests asserting exact code round-trip and table-shape preservation; a repository policy test asserting no internal path serialises content to Markdown, HTML or RTF.
 
-**Completion gate.** Every editing operation is a single-write-path command, and block identity is stable across structural change.
+**Completion gate.** Every editing operation is a single-write-path transaction, block identity is stable across structural change, no internal path round-trips content through a markup string, and every conversion applies its declared mapping.
 
 ### WP-18.01 — Editor interaction
 
-**What must be fully done.** Rich block editing with markdown-friendly keyboard syntax and a slash menu, distinct from the command palette. Editing is responsive under the large-document corpus. Composition (input-method) editing works correctly on every platform.
+**What must be fully done.** Rich block editing with markdown-friendly keyboard syntax and a slash menu, distinct from the command palette. **Grapheme-correct caret movement, deletion and selection**; Unicode word boundaries; bidirectional caret movement and discontiguous selection painting (`§4.2` of the editing architecture). **IME composition as view state**, committing exactly one transaction, positioned from the caret's real rectangle, and never interrupted by a concurrent remote or agent edit (`§4.3` there). Virtualised block layout with measurement caching, scroll anchoring to `(blockId, offset)`, and bounded nesting (`§5.2` there). Code highlighting from a bounded, statically registered grammar set, degrading to plain text; math rendering with an explicitly marked unsupported-construct path.
 
-**Testing requirements.** Interaction tests per block kind; a composition-input test per platform; responsiveness measurement against the scale corpus.
+**Testing requirements.** Interaction tests per block kind; a text-correctness corpus covering emoji with modifiers, Devanagari, Thai and combining marks; a composition-input test per platform asserting one undo entry and one transaction, plus a concurrent-edit-during-composition test; a bidi caret and selection-painting test; a ten-thousand-block scale test asserting interactive open and no re-measurement of measured blocks; a scroll-anchor test asserting an edit above the viewport does not move the reader; an unsupported-math-construct test asserting source with an explicit marker.
 
-**Completion gate.** Editing meets the responsiveness budget on the scale corpus, and composition input works on every platform.
+**Completion gate.** Editing meets the responsiveness budget on the scale corpus, text handling is grapheme- and bidi-correct, composition input works on every platform without loss, and no unsupported construct renders silently wrong.
 
 ### WP-18.02 — Links, backlinks and outline
 
@@ -104,17 +104,21 @@
 
 **What must be fully done.** Managed attachments enter the managed resource store; external references record a location with an availability state. Small dragged files default to managed; large or clearly external material defaults to reference. Extracted text from a document attachment is derived data.
 
-**Testing requirements.** Managed round-trip with integrity; reference-unavailable behaviour; a structural test asserting no embedded encoding in content; a derived-data rebuild test.
+The three preview levels of `§8.1` of the editing architecture — metadata card, thin preview, in-product viewer — with **explicit degradation to the level below and a stated reason**, never a blank surface. Bounded, off-thread image decode with EXIF orientation applied. **No preview path fetches a remote resource referenced by the content, and none evaluates embedded program content.** The PDF viewer is subject to `PG-12`: until its dependency is adopted under `DR-03`, `AT-05` is not met and the surface presents a metadata card.
 
-**Completion gate.** No attachment body is embedded in content, integrity is verified, and extracted text is rebuildable derived data.
+**Testing requirements.** Managed round-trip with integrity; reference-unavailable behaviour; a structural test asserting no embedded encoding in content; a derived-data rebuild test; a malformed-input corpus for images, PDFs and embeds asserting degradation to a placeholder with a reason and no process instability; an egress test asserting no preview path performs a network fetch; a level-degradation test asserting every unavailable level states its reason.
+
+**Completion gate.** No attachment body is embedded in content, integrity is verified, extracted text is rebuildable derived data, every preview degradation states a reason, and no preview path fetches a remote resource or evaluates content.
 
 ### WP-18.05 — Undo, history, checkpoint and trash
 
 **What must be fully done.** Four distinct mechanisms: session undo with composite operation grouping; document history across revisions; explicit user checkpoints; and trash with restore and permanent deletion. None substitutes for another, and each has its own retention and scope.
 
-**Testing requirements.** A distinction matrix asserting each mechanism's independent behaviour; restore-from-trash; checkpoint restore; a test asserting undo history is not crash recovery.
+Session undo follows `§3.2` of the editing architecture: **selection is restored with content**, typing coalesces and breaks on the declared boundaries, an agent transaction is undoable and labelled with its origin, and a remote change rebases pending entries rather than retargeting them.
 
-**Completion gate.** All four mechanisms behave independently, and none can be used to recover what another is responsible for.
+**Testing requirements.** A distinction matrix asserting each mechanism's independent behaviour; restore-from-trash; checkpoint restore; a test asserting undo history is not crash recovery; an undo-selection test; a coalescing-boundary test; an agent-edit undo and attribution test; a rebase test asserting a remote change never causes an undo entry to target the wrong block.
+
+**Completion gate.** All four mechanisms behave independently, none can be used to recover what another is responsible for, undo restores selection with content, and no undo entry is ever applied to the wrong block after a concurrent change.
 
 ### WP-18.06 — Recovery and migration
 
@@ -154,9 +158,9 @@
 |---|---|
 | Database | The ArcNotes schema and its V1 migration baseline |
 | Protocol | ArcNotes' real capability contracts |
-| UI | The complete ArcNotes editing experience on the shared shell |
+| UI | The complete ArcNotes editing experience on the shared shell, including virtualised block layout and the three preview levels |
 | Security | Attachment handling, link resolution and owner-side validation |
-| Platform | Composition input, drag and drop, and file handling per platform |
+| Platform | Composition input, text shaping and bidi, drag and drop, and file handling per platform; the document-rendering dependency of `PG-12` where adopted |
 | Migration | The V1 format fixture every later phase must still read |
 | Compatibility | The V1 data compatibility baseline for `27`, `28` and `29` |
 
@@ -166,12 +170,13 @@
 
 | Evidence | Produced by |
 |---|---|
-| Write-path and block-identity stability results | `WP-18.00` |
-| Interaction, composition and responsiveness results | `WP-18.01` |
+| Write-path, transaction-atomicity, conversion-mapping and block-identity stability results | `WP-18.00` |
+| No-markup-string repository policy test result | `WP-18.00` |
+| Text-correctness corpus (grapheme, bidi, composition) and scale-corpus responsiveness results | `WP-18.01` |
 | Link, backlink and index-rebuild results | `WP-18.02` |
 | Property typing and tag-deletion results | `WP-18.03` |
-| Attachment integrity and no-embedding results | `WP-18.04` |
-| Four-mechanism distinction matrix | `WP-18.05` |
+| Attachment integrity, no-embedding, malformed-input degradation and preview-egress results | `WP-18.04` |
+| Four-mechanism distinction matrix, undo-selection and undo-rebase results | `WP-18.05` |
 | Recovery matrix and migration semantic comparison | `WP-18.06` |
 | Capability descriptor and owner-side refusal results | `WP-18.07` |
 
@@ -183,11 +188,12 @@
 
 1. **Drift check only**: the reference is compared against its bound commit, and any newly introduced material is assessed against the accepted ArcNotes scope. The matrix and its licence audit were completed as design-stage evidence and closed `PG-01` and `F-013` before this package began. Findings carried in: **F-AN-1** records that AFFiNE’s `packages/backend/**` and `packages/common/native/**` are **proprietary**, not MIT — permanently ineligible for reuse and deliberately unread. **F-AN-2** records that **neither reference implements slides**, so `WP-29`’s oracles are first-party only.
 2. Every editing operation is a single-write-path command; block identity survives structural change.
-3. Editing meets the responsiveness budget on the scale corpus, including composition input on every platform.
+3. Editing meets the responsiveness budget on the scale corpus; text handling is grapheme- and bidi-correct; composition input works on every platform without loss and is never interrupted by a concurrent edit.
+3a. **No internal path round-trips content through a markup string**, and every kind conversion applies its declared mapping with its stated loss shown first.
 4. Rename never breaks a link; the link index rebuilds from scratch; backlinks are provably derived.
 5. Property typing is enforced; tag deletion never deletes documents; plain notes stay light.
-6. No attachment body is embedded in content; integrity is verified; extracted text is rebuildable.
-7. Undo, history, checkpoint and trash behave independently, and none recovers what another owns.
+6. No attachment body is embedded in content; integrity is verified; extracted text is rebuildable. **Every preview level that is unavailable degrades to the level below with a stated reason**, no preview path fetches a remote resource or evaluates embedded content, and a malformed image, PDF or embed degrades to a placeholder without affecting process stability.
+7. Undo, history, checkpoint and trash behave independently, and none recovers what another owns. Undo restores selection with content, an agent edit is undoable and attributed, and a concurrent change never causes an undo entry to target the wrong block.
 8. Crash recovery is clean and honest; migration preserves semantics against every fixture; downgrade never leaves partial state.
 9. Every ArcNotes capability declares risk and approval posture, and owner-side validation refuses regardless of caller assertion.
 10. **ArcNotes is fully usable with no account, no cloud and no ArcChat.**

@@ -225,8 +225,8 @@ The local read projection of tasks whose authority is elsewhere (`TO-07`): carri
 | `document_id` | `id NN` | `FK →`; cascade |
 | `parent_block_id` | `id?` | Null at document root |
 | `ordinal` | `text NN` | **A fractional order key**, not an integer |
-| `kind` | `text NN` | `paragraph`, `heading`, `list`, `code`, `quote`, `divider`, `table`, `image`, `attachment`, `embed`, `callout`, `math`, `mermaid`, `canvasRef`, `columns` |
-| `content` | `json NN` | Kind-specific inline model (`§3` of the rich-content architecture) |
+| `kind` | `text NN` | Exactly the `BL-04` V1 set: `paragraph`, `heading`, `list`, `quote`, `callout`, `code`, `divider`, `table`, `math`, `image`, `attachment`, `embed`, `toggle`. **Checklist is a `list` style and PDF is an `attachment` presentation** — neither is a separate kind (`§2.1` of the editing architecture) |
+| `content` | `json NN` | The kind's declared content shape; text-bearing kinds carry `InlineContent` (`§2` of the [editing architecture](../18-editing-and-rich-content.md)) |
 | `created_at` | `instant NN` | |
 
 - `UQ (document_id, parent_block_id, ordinal)`

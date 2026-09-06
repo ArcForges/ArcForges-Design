@@ -85,6 +85,7 @@ These are new obligations that follow from Phase 2 architecture rather than from
 | **PG-08** | **Hardware lab inventory**: a maintained device, firmware and driver inventory exists before ArcScope or ArcSlate hardware results are accepted (`TE-03` in the testing strategy) | Quality Owner | First hardware-lab test run | `C-04` | The ArcScope and ArcSlate verification work packages | `OPEN` |
 | **PG-09** | **Extension protocol conformance**: the reference-extension suite passes before the extension platform is opened to third parties | Architecture Owner | Before third-party extension enablement | `L-60` | The extension platform work package | `OPEN` |
 | **PG-10** | **Provider test-environment coverage**: every provider integration is exercised against the provider's test environment and frozen as recorded contract fixtures (`TE-04` there) | Architecture Owner | First provider integration | `L-28`, `L-29` | The commerce and AI provider work packages | `OPEN` |
+| **PG-12** | **ArcNotes document-rendering dependency**: `AT-05` requires in-product PDF viewing with page-anchored annotation targets, which no managed-only path in the current stack delivers. The dependency's owner, substitute analysis, licence position and provenance record must exist **before adoption** (`DR-03`), and until then `AT-05` is not met | Architecture Owner with Licensing and Provenance Owner | First implementation of the ArcNotes attachment viewer | `AT-05`; ArcNotes' first release claim of PDF support | `WP-18.05`; scope in `§2.1` of the native interoperability architecture and `§8.2` of the editing architecture | `OPEN` |
 
 ---
 
@@ -129,9 +130,9 @@ Distinct from a gate. A gate has a known obligation awaiting evidence; an **unre
 |---|---|---|
 | Deferred gates carried from Phase 1 | 3 | **F-013 closed**; F-023 and F-026 remain implementation-stage |
 | Gates created by the verification record | 12 active + 1 merged | All implementation-stage; none closable by design work |
-| Gates created by Phase 2 | 11 | Was 10; `PG-06` split into `PG-06` (design) and `PG-11` (implementation) |
+| Gates created by Phase 2 | 12 | Was 10; `PG-06` split into `PG-06` (design) and `PG-11` (implementation); `PG-12` added by the editing and rich-content design pass |
 | **Closed by design-stage evidence** | **4** | `F-013`, `PG-01`, `PG-02`, `PG-06` — each with a named artifact |
-| **Open implementation-stage gates** | **22** | Legitimate future obligations; their triggers are listed per gate |
+| **Open implementation-stage gates** | **23** | Legitimate future obligations; their triggers are listed per gate |
 | Unresolved determinations | **0** | `OC-01` closed by user decision 2026-09-05 (`P2-005`) |
 
 | # | Rule |

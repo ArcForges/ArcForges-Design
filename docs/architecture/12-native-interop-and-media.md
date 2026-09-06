@@ -36,7 +36,7 @@ Having no worker process means **a native memory error kills the owning applicat
 |---|---|---|
 | ArcSlate | Demux, decode, encode, colour conversion, scaling, resampling, GPU device and surface access, high-performance pixel and audio primitives | Project model, timeline model, edit decisions, render orchestration, export policy, cache policy |
 | ArcScope | Device and transport SDKs, high-rate acquisition primitives, hardware timestamps, high-performance signal primitives | Session model, capture lifecycle, trigger semantics, analysis definitions, evidence storage |
-| ArcNotes | Platform system APIs where required — shell integration, secure storage | Anything in the note, block or search model |
+| ArcNotes | Platform system APIs where required — shell integration, secure storage; **document rendering and text extraction for attachment viewing** (`§2.1`) | Anything in the note, block, link or search model; any editing, layout or content path |
 | ArcChat | Platform system APIs where required — global hotkey, notification, secure storage | Anything in the conversation, task or capability model |
 | Cloud | **None.** Cloud is managed code on a managed hosting platform (**D-008**) | All native dependencies |
 | Mobile and Web | Platform framework only; no first-party native ABI | A first-party C ABI shim |
@@ -46,6 +46,19 @@ Having no worker process means **a native memory error kills the owning applicat
 | NP-01 | **A native dependency is introduced per product, with a named owner and a stated substitute analysis** — which managed option was evaluated, and why it was insufficient. |
 | NP-02 | **A native library used by two products is still loaded per process**, with no shared global state between them. |
 | NP-03 | **No global shared memory pool exists across products** (`I3 §14.4`). |
+
+### 2.1 ArcNotes document rendering — the one amendment, and why
+
+`AT-05` of the ArcNotes requirements makes PDF **a first-class attachment with in-product viewing, page-anchored annotation targets and citation anchors**. That is an in-product viewer, not a thumbnail, and no managed-only path in the current stack delivers it. The permitted surface is therefore extended — narrowly.
+
+| # | Rule |
+|---|---|
+| DR-01 | **The extension covers exactly two operations**: rasterising a page to a bitmap at a requested scale, and extracting text with per-glyph or per-range geometry. Nothing else. |
+| DR-02 | **No content, editing, layout, link or search path may call it.** The note, block, link and search models stay fully managed (`§2`), and a repository policy test asserts that only the viewer infrastructure project references the wrapper. |
+| DR-03 | **`NP-01` is not waived by this amendment.** The named owner, the substitute analysis, the licence position and the provenance record are prerequisites to adoption, not follow-ups (**D-013**). |
+| DR-04 | **The renderer parses hostile input by definition**, so the full C ABI discipline (`§3.2`), the loading rules (`§3.3`) and handle lifetime rules apply without exception, and a malformed document degrades to a metadata card (`PD-04` of the editing architecture). |
+| DR-05 | **Until adopted, `AT-05` is not met.** The gap is carried as `PG-12` in the [open-gates register](../assurance/open-gates-register.md), never absorbed by relabelling the viewer a preview. |
+| DR-06 | **The same surface serves any later document-rendering need** — it is not re-opened per format. A format needing more than `DR-01`'s two operations is a new decision.
 
 ---
 
