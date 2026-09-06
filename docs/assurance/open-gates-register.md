@@ -35,6 +35,7 @@ A gate is never closed by registering a finding about it, and never closed by a 
 | OG-03 | **A gate may not be silently re-scoped.** Changing a gate requires a decision record. |
 | OG-04 | **A new gate discovered during implementation is added here**, with the same fields, rather than living only in the document that discovered it. |
 | OG-05 | **Identifier disambiguation.** `PG-nn` in this register and in the assurance and planning layers means *Phase 2 gate*. [`../requirements/products/arcslate.md`](../requirements/products/arcslate.md) independently uses `PG-01`–`PG-14` for its *processing graph* rules. **The namespaces collide.** Every cross-document citation of an ArcSlate processing-graph rule is therefore qualified by its document — for example “`PG-08` in the ArcSlate requirements” — and an unqualified `PG-nn` always means a gate. This is a convention, not a structural guarantee; it is recorded as a known limitation rather than left implicit. |
+| OG-06 | **`PG-14b` is deliberately suffixed.** `PG-14` is already an ArcSlate processing-graph rule in [`../requirements/products/arcslate.md`](../requirements/products/arcslate.md), and reusing the bare number would have made two unrelated obligations indistinguishable in citation. The suffix is the disambiguation `OG-05` requires. |
 
 ---
 
@@ -86,6 +87,10 @@ These are new obligations that follow from Phase 2 architecture rather than from
 | **PG-09** | **Extension protocol conformance**: the reference-extension suite passes before the extension platform is opened to third parties | Architecture Owner | Before third-party extension enablement | `L-60` | The extension platform work package | `OPEN` |
 | **PG-10** | **Provider test-environment coverage**: every provider integration is exercised against the provider's test environment and frozen as recorded contract fixtures (`TE-04` there) | Architecture Owner | First provider integration | `L-28`, `L-29` | The commerce and AI provider work packages | `OPEN` |
 | **PG-12** | **ArcNotes document-rendering dependency**: `AT-05` requires in-product PDF viewing with page-anchored annotation targets, which no managed-only path in the current stack delivers. The dependency's owner, substitute analysis, licence position and provenance record must exist **before adoption** (`DR-03`), and until then `AT-05` is not met | Architecture Owner with Licensing and Provenance Owner | First implementation of the ArcNotes attachment viewer | `AT-05`; ArcNotes' first release claim of PDF support | `WP-18.05`; scope in `§2.1` of the native interoperability architecture and `§8.2` of the editing architecture | `OPEN` |
+| **PG-13** | **Real-provider metering evidence**: one real provider usage response and one real payment-provider event reconciled through the same code as the fixtures, plus the `§8.6` worked fixture asserted exactly. Interfaces, fixed responses and in-memory mock balances are **not** completion evidence (`MT-01`, `§10.6` of the configuration requirements) | Architecture Owner with Commercial Operations Owner | First paid AI dispatch in any environment | Paid AI go-live; `PG-10` | `WP-43.07`, `WP-42.11` | `OPEN` |
+| **PG-14b** | **Simulator acceptance against the real host**: same-seed hashes, fault positions, killed host with fenced takeover, duplicate commands, malformed AST and CSV, quota exhaustion, cross-workspace denial, realtime-disabled reconnect, partial cancellation and a 24-hour bounded-resource soak. **A preview or test fake is insufficient** (`SIM-20`) | Quality Owner with Architecture Owner | First ArcScope Cloud simulation release claim | ArcScope release; `WP-34` verification that depends on a repeatable source | `WP-51.00`–`WP-51.05` | `OPEN` |
+| **PG-15** | **OTIO bidirectional evidence**: real fixtures and the pinned official library exercising import and export, mixed and fractional rates with no frame shift, unsupported-feature reports, malicious paths, malformed input, cancellation and semantic round-trip. **Merely opening JSON is insufficient** (`OT-12`) | Quality Owner | First ArcSlate interchange release claim | ArcSlate release | `WP-39.05` | `OPEN` |
+| **PG-16** | **Configuration activation evidence**: two example policies producing different future decisions and identical historical charges; malformed, partial and duplicate-version rejection; replacement during concurrent requests with no mixed-version evaluation, quota reset or duplicate grant; all replicas restarting with balances, holds and refill state preserved; and the client projection proven free of server-only parameters and credentials (`§10.6` there) | Operations Owner with Architecture Owner | Before the first paid production deployment | Paid production go-live | `WP-44.01`, `WP-42.11` | `OPEN` |
 
 ---
 
@@ -130,9 +135,9 @@ Distinct from a gate. A gate has a known obligation awaiting evidence; an **unre
 |---|---|---|
 | Deferred gates carried from Phase 1 | 3 | **F-013 closed**; F-023 and F-026 remain implementation-stage |
 | Gates created by the verification record | 12 active + 1 merged | All implementation-stage; none closable by design work |
-| Gates created by Phase 2 | 12 | Was 10; `PG-06` split into `PG-06` (design) and `PG-11` (implementation); `PG-12` added by the editing and rich-content design pass |
+| Gates created by Phase 2 | 16 | `PG-06` split into `PG-06` (design) and `PG-11` (implementation); `PG-12` added by the editing pass; **`PG-13`, `PG-14b`, `PG-15`, `PG-16` added by the P2-006 reconciliation** |
 | **Closed by design-stage evidence** | **4** | `F-013`, `PG-01`, `PG-02`, `PG-06` — each with a named artifact |
-| **Open implementation-stage gates** | **23** | Legitimate future obligations; their triggers are listed per gate |
+| **Open implementation-stage gates** | **27** | Legitimate future obligations; their triggers are listed per gate |
 | Unresolved determinations | **0** | `OC-01` closed by user decision 2026-09-05 (`P2-005`) |
 
 | # | Rule |

@@ -80,20 +80,20 @@ Every decision is carried. The **Primary home** column names where the decision 
 | `01-normative-glossary-and-invariants` | All (vocabulary) | F-01, F-17 | `00`, `05` |
 | `02-identity-account-and-workspace` | `08-security-architecture` | F-02, F-03, F-11 | `11`, `22`, `48` |
 | `03-cloud-services-and-sync` | `07-sync-conflict-and-backup`; `20-cross-system-lifecycles`; `contracts/01`, `contracts/03`; `data-model/01` | F-03, F-07, F-11, F-13 | `21`, `24`, `25`, `46` |
-| `04-commerce-entitlement-and-credits` | `16-billing-and-commerce-architecture`; `20-cross-system-lifecycles` `§2`–`§4`; `data-model/01` | F-02, F-03, F-06 | `42`, `43`, `48` |
-| `05-ai-and-agent-execution` | `09-ai-and-agent-runtime-architecture`; **`17-agent-harness`** (the loop) | F-02, F-11, F-13 | `16`, `17`, `43` |
+| `04-commerce-entitlement-and-credits` | `16-billing-and-commerce-architecture` `§5.3`, `§7`; `20-cross-system-lifecycles` `§2`–`§4`; `data-model/01` `§8.1` | F-02, F-03, F-06 | `42`, `43`, `48` |
+| `05-ai-and-agent-execution` | `09-ai-and-agent-runtime-architecture`; **`17-agent-harness`** (the Cloud loop); `16` `§7.3` (admission) | F-02, F-11, F-13 | `16`, `17`, `42`, `43` |
 | `06-knowledge-search-and-retrieval` | `09-ai-and-agent-runtime-architecture` `§5`; `17-agent-harness` `§4`; `data-model/03` | F-03, F-11 | `19`, `40` |
 | `07-security-privacy-and-trust` | `08-security-architecture` | F-02, F-11, F-17 | `11`, `22`, `41`, `45` |
 | `08-extensions-and-developer-platform` | `15-extension-platform-architecture` | F-05, F-11, F-17 | `41` |
 | `09-shared-desktop-experience` | `04-desktop-application-architecture`; `18-editing-and-rich-content` `§8` (preview levels) | F-09, F-10, F-15 | `10` |
 | `10-distribution-update-and-support` | `14-build-packaging-and-release`; `13-observability-and-operations`; **`22-deployment-and-release-execution`** | F-16, F-11 | `02`, `32`, `45`, `50` |
-| `11-policy-and-configuration` | `05-cloud-architecture` `§12`; policy client | F-02, F-06, F-11 | `44` |
+| `11-policy-and-configuration` | `16-billing-and-commerce-architecture` `§2.2`; `22-deployment-and-release-execution` `§3.1`; `data-model/01` `§8.2`; `05-cloud-architecture` `§12` | F-02, F-06, F-11 | `44`, `42` |
 | `12-quality-and-compatibility-contract` | All (budgets and gates); `21-platform-and-dependency-matrix` `§2`; `22-deployment-and-release-execution` `§5` | Every family | `02`, `05`, `06`, and each product package |
 | `13-data-formats-and-portability` | `06-data-persistence-and-formats`; `18-editing-and-rich-content` `§10`; `data-model/02` | F-03, F-12, F-13 | `07`, `19`, `35`, `39` |
 | `products/arcchat` | `04`, `09`, **`17`**, `19` `§3` architecture; `contracts/02` `§4` | F-02, F-05, F-11 | `15`, `17`, `20` |
-| `products/arcnotes` | `04`, `06`, **`18`**, `19` `§4` architecture; `data-model/02` `§3` | F-03, F-09, F-12 | `18`, `19`, `27`, `28`, `29` |
-| `products/arcscope` | `12-native-interop-and-media` `§8`; `19` `§5`; `21` `§3`; `data-model/02` `§4` | F-08, F-14, F-18 | `33`, `34`, `35` |
-| `products/arcslate` | `12-native-interop-and-media` `§7`; `19` `§6`; `21` `§3`; `data-model/02` `§5` | F-08, F-15, F-18 | `36`, `37`, `38`, `39` |
+| `products/arcnotes` | `04`, `06`, **`18`**, `19` `§4` architecture; `data-model/02` `§3` | F-03, F-09, F-12 | `18`, `19`, `28` — **`27` and `29` retired by P2-006** |
+| `products/arcscope` | `12-native-interop-and-media` `§8`; **`23-simulator-and-interchange` `§1`**; `19` `§5`; `21` `§3`; `data-model/01` `§8.3`; `data-model/02` `§4` | F-08, F-14, F-18 | `33`, `34`, `35`, **`51`** |
+| `products/arcslate` | `12-native-interop-and-media` `§7`; **`23-simulator-and-interchange` `§2`**; `19` `§6`; `21` `§3`; `data-model/02` `§5` | F-08, F-15, F-18 | `36`, `37`, `38`, `39` |
 | `products/arcchat-mobile-and-web` | `11-mobile-architecture`; `10-web-architecture` | F-04, F-06, F-16 | `30`, `31`, `32`, `49` |
 | `products/arcforges-web` | `10-web-architecture` | F-09, F-10, F-15 | `47`, `48`, `49` |
 | `products/arcforges-cloud` | `05-cloud-architecture`; `13-observability-and-operations`; **`22-deployment-and-release-execution`**; `contracts/01`; `data-model/01` | F-03, F-07, F-13, F-14 | `21`–`26`, `45`, `46` |
@@ -129,6 +129,7 @@ Test family identifiers are those of [`testing-and-verification-strategy.md`](te
 | `20-cross-system-lifecycles` | `24`, `25`, `26`, `42`, `43`, `46`, `50` |
 | `21-platform-and-dependency-matrix` | `06`, `13`, `33`, `37`, `50` |
 | `22-deployment-and-release-execution` | `21`, `23`, `44`, `45`, `50` |
+| `23-simulator-and-interchange` | `33`, `39`, **`51`** |
 | `contracts/00-operation-catalogue` | `03`, `04`, `09`, `23` |
 | `contracts/01-public-api-operations` | `22`, `23`, `25`, `42` |
 | `contracts/02-local-rpc-operations` | `08`, `09`, `14`, `17`, `18`, `20`, `33`, `36` |
@@ -138,7 +139,7 @@ Test family identifiers are those of [`testing-and-verification-strategy.md`](te
 | `data-model/02-desktop-data-model` | `07`, `15`, `18`, `33`, `36` |
 | `data-model/03-derived-stores` | `19`, `40` |
 
-**Coverage: 31 of 31 architecture documents realised in at least one work package.**
+**Coverage: 32 of 32 architecture documents realised in at least one work package.**
 
 > **Layer note.** Documents `00`–`22` state architecture: boundaries, ownership and rules. The `contracts/` and `data-model/` subdirectories state the concrete design those rules produce — the operations, signatures, events and schemas. Both are cited by work packages, because a rule without its concrete counterpart is not implementable.
 
@@ -220,6 +221,8 @@ Every gate in [`open-gates-register.md`](open-gates-register.md) is scheduled.
 | NC-05 | **No test in this matrix has been run.** This is a specification repository; the test families and gates are defined here and executed in the implementation repository. |
 | NC-06 | **A resolving citation is not a designed mechanism.** This matrix records that a requirement has an architecture home; whether that home specifies a mechanism rather than restating the requirement is checked by [`end-to-end-workflow-verification.md`](end-to-end-workflow-verification.md), which found three such gaps and closed them. |
 | NC-07 | **Row counts prove nothing about completeness.** 31 of 31 architecture documents being realised in a work package says every document is claimed by someone, not that every subject is designed. |
+| NC-08 | **This matrix was recomputed on 2026-09-06 against the revised requirements**, not carried forward. P2-006's downstream reconciliation statement is explicit that prior completion claims do not demonstrate coverage of the amended scope, so every count here is a fresh derivation. |
+| NC-09 | **A retired package still appears.** `27` and `29` are listed as retired rather than deleted, so a reader following an older citation finds the retirement record instead of a broken reference. |
 
 ---
 

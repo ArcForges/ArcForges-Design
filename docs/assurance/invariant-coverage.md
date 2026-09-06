@@ -25,8 +25,8 @@
 | Extraction | Every line containing the distinction marker, across all 29 stages |
 | Raw marked lines | **589** |
 | Unique statements after normalisation | **484** |
-| Catalogue rows | **421** |
-| Catalogue identifier range | `I-001` … `I-490` |
+| Catalogue rows | **429** — 421 at the earlier baseline, **plus 8 added by P2-006** (`I-491`–`I-498`) |
+| Catalogue identifier range | `I-001` … `I-498` |
 
 **The earlier claim of "roughly 490 invariants" was wrong.** It read the highest identifier as a count. The catalogue holds **421 rows**; the identifier range reaches 490 because each section reserves headroom after its last used identifier (`§2`).
 
@@ -138,7 +138,7 @@ Every invariant maps to an architecture home, an enforcement mechanism, a planne
 | **Repository policy test** | 7.2, 7.10 | 39 | Boundary, naming, reference-direction and platform rules are structural |
 | **Unit test** | 7.4, 7.5, 7.7, 7.9, 7.12 | 202 | Behavioural distinctions observable within one component |
 | **Integration test** | 7.6, 7.8, 7.11 | 125 | Distinctions observable only across a process, device or system boundary |
-| **Total** | | **421** | |
+| **Total** | | **429** | |
 
 ### 4.3 Owning package distribution
 
@@ -165,10 +165,29 @@ Every invariant has at least one owning package. Packages carrying the largest i
 | No superseded statement promoted | Forbidden-term match over the corpus set | **1 excluded, 0 promoted** |
 | No duplicate identifier | Identifier frequency check | **0 duplicates** |
 | Identifier gaps explained | Section-boundary analysis | **All 72 gaps are reserved headroom** (`§2`) |
-| Every catalogue row has an architecture home | Section-to-architecture mapping applied per row | **421 of 421** |
-| Every catalogue row has a mechanism | Per-section assignment | **421 of 421** |
-| Every catalogue row has a planned verification | Derived per row from its own statement | **421 of 421** |
-| Every catalogue row has an owning package and gate | Section-to-package mapping | **421 of 421** |
+| Every catalogue row has an architecture home | Section-to-architecture mapping applied per row | **426 of 426 active** — 3 rows are retired by P2-006 and carry an absence test instead |
+| Every catalogue row has a mechanism | Per-section assignment | **429 of 429** — including an absence test for each retired row |
+| Every catalogue row has a planned verification | Derived per row from its own statement | **429 of 429** |
+| Every catalogue row has an owning package and gate | Section-to-package mapping | **429 of 429** |
+
+### 5.1 P2-006 reconciliation, 2026-09-06
+
+The revised requirements changed the catalogue itself, so the accounting is recomputed rather than carried forward.
+
+| Change | Count | Effect on coverage |
+|---|---|---|
+| Rows **added** (`I-491`–`I-498`) | 8 | Each mapped in `§7` with an architecture home, a mechanism, a planned verification, an owning package and a gate |
+| Rows **retired** (`I-015`, `I-313`, `I-314`) | 3 | Retained in the catalogue with a retirement statement, and mapped to an **absence test** rather than removed |
+| Rows **reworded** without retirement (`I-028`, `I-030`, `I-105`, `I-114`, `I-121`, `I-124`, `I-485`) | 7 | Statement updated; mapping unchanged in structure |
+| Total catalogue rows | **421 → 429** | |
+
+| # | Rule |
+|---|---|
+| PR-01 | **A retired invariant is not deleted.** Deleting it would lose the record that the distinction once mattered and was deliberately dropped. It is mapped to an absence test so the exclusion is *asserted*, not merely undocumented. |
+| PR-02 | **An absence test is a real verification obligation**, not a note. `I-015` requires that no schema field, operation, setting or UI accepts a customer provider credential; `I-313` and `I-314` require that no external-agent contribution kind or delegation adapter exists. |
+| PR-03 | **The previous completion count is not carried forward.** The 421-of-421 result applied to the earlier baseline; this section recomputes against the revised catalogue, per `P2-006`'s downstream reconciliation statement. |
+
+---
 
 **Obligations A and B are complete. There are no owned open findings, because there are no gaps to own.**
 
@@ -204,7 +223,7 @@ Every invariant has at least one owning package. Packages carrying the largest i
 | `I-012` | Reserved Credits ≠ Charged Credits | `08-security-architecture.md` §1; `16-billing-and-commerce-architecture.md` §3 | Type distinction | Assert `Reserved Credits` is not `Charged Credits`: a value, type or state satisfying one side is rejected where the other is required, and the refusal names this invariant. | `04`, `22`, `42` | `WP-04.00`, `WP-22.00`, `WP-42.04` |
 | `I-013` | Budget ≠ Entitlement | `08-security-architecture.md` §1; `16-billing-and-commerce-architecture.md` §3 | Type distinction | Assert `Budget` is not `Entitlement`: a value, type or state satisfying one side is rejected where the other is required, and the refusal names this invariant. | `04`, `22`, `42` | `WP-04.00`, `WP-22.00`, `WP-42.04` |
 | `I-014` | AI Billing Workspace ≠ Conversation Storage Scope | `08-security-architecture.md` §1; `16-billing-and-commerce-architecture.md` §3 | Type distinction | Assert `AI Billing Workspace` is not `Conversation Storage Scope`: a value, type or state satisfying one side is rejected where the other is required, and the refusal names this invariant. | `04`, `22`, `42` | `WP-04.00`, `WP-22.00`, `WP-42.04` |
-| `I-015` | Cloud BYOK ≠ Local BYOK | `08-security-architecture.md` §1; `16-billing-and-commerce-architecture.md` §3 | Type distinction | Assert `Cloud BYOK` is not `Local BYOK`: a value, type or state satisfying one side is rejected where the other is required, and the refusal names this invariant. | `04`, `22`, `42` | `WP-04.00`, `WP-22.00`, `WP-42.04` |
+| `I-015` | **RETIRED by P2-006** — Cloud BYOK ≠ Local BYOK | — | **Absence test** | Assert the excluded concept is unreachable: no schema field, operation, setting or UI accepts it, and no contribution kind provides it | `WP-05`, `WP-43.03`, `WP-41.07` | The exclusion is structurally asserted, not merely undocumented |
 | `I-016` | Cloud Account Restriction ≠ Local Data Confiscation | `08-security-architecture.md` §1; `16-billing-and-commerce-architecture.md` §3 | Type distinction | Assert `Cloud Account Restriction` is not `Local Data Confiscation`: a value, type or state satisfying one side is rejected where the other is required, and the refusal names this invariant. | `04`, `22`, `42` | `WP-04.00`, `WP-22.00`, `WP-42.04` |
 | `I-017` | ArcForges Cloud Agent ≠ free VPS | `08-security-architecture.md` §1; `16-billing-and-commerce-architecture.md` §3 | Type distinction | Assert `ArcForges Cloud Agent` is not `free VPS`: a value, type or state satisfying one side is rejected where the other is required, and the refusal names this invariant. | `04`, `22`, `42` | `WP-04.00`, `WP-22.00`, `WP-42.04` |
 | `I-020` | Reference ≠ Ownership | `00-architecture-overview.md` §7; `01-solution-and-project-layout.md` §8 | Repository policy test | Assert `Reference` is not `Ownership`: a value, type or state satisfying one side is rejected where the other is required, and the refusal names this invariant. | `00`, `01`, `05` | `WP-05.00`, `WP-05.02` |
@@ -464,8 +483,8 @@ Every invariant has at least one owning package. Packages carrying the largest i
 | `I-310` | MCP Prompt ≠ Skill | `15-extension-platform-architecture.md` | Integration test | Assert `MCP Prompt` is not `Skill`: a value, type or state satisfying one side is rejected where the other is required, and the refusal names this invariant. | `41` | `WP-41.02`, `WP-41.04` |
 | `I-311` | Connector ≠ Connection | `15-extension-platform-architecture.md` | Integration test | Assert `Connector` is not `Connection`: a value, type or state satisfying one side is rejected where the other is required, and the refusal names this invariant. | `41` | `WP-41.02`, `WP-41.04` |
 | `I-312` | Connector ≠ imported snapshot | `15-extension-platform-architecture.md` | Integration test | Assert `Connector` is not `imported snapshot`: a value, type or state satisfying one side is rejected where the other is required, and the refusal names this invariant. | `41` | `WP-41.02`, `WP-41.04` |
-| `I-313` | External Agent ≠ Agent Profile | `15-extension-platform-architecture.md` | Integration test | Assert `External Agent` is not `Agent Profile`: a value, type or state satisfying one side is rejected where the other is required, and the refusal names this invariant. | `41` | `WP-41.02`, `WP-41.04` |
-| `I-314` | External Agent ≠ ArcChat Task | `15-extension-platform-architecture.md` | Integration test | Assert `External Agent` is not `ArcChat Task`: a value, type or state satisfying one side is rejected where the other is required, and the refusal names this invariant. | `41` | `WP-41.02`, `WP-41.04` |
+| `I-313` | **RETIRED by P2-006** — External Agent ≠ Agent Profile | — | **Absence test** | Assert the excluded concept is unreachable: no schema field, operation, setting or UI accepts it, and no contribution kind provides it | `WP-05`, `WP-43.03`, `WP-41.07` | The exclusion is structurally asserted, not merely undocumented |
+| `I-314` | **RETIRED by P2-006** — External Agent ≠ ArcChat Task | — | **Absence test** | Assert the excluded concept is unreachable: no schema field, operation, setting or UI accepts it, and no contribution kind provides it | `WP-05`, `WP-43.03`, `WP-41.07` | The exclusion is structurally asserted, not merely undocumented |
 | `I-315` | ACP Session ≠ Conversation | `15-extension-platform-architecture.md` | Integration test | Assert `ACP Session` is not `Conversation`: a value, type or state satisfying one side is rejected where the other is required, and the refusal names this invariant. | `41` | `WP-41.02`, `WP-41.04` |
 | `I-316` | ACP ≠ ArcChat runtime model | `15-extension-platform-architecture.md` | Integration test | Assert `ACP` is not `ArcChat runtime model`: a value, type or state satisfying one side is rejected where the other is required, and the refusal names this invariant. | `41` | `WP-41.02`, `WP-41.04` |
 | `I-317` | Extension ≠ third-party Arc App | `15-extension-platform-architecture.md` | Integration test | Assert `Extension` is not `third-party Arc App`: a value, type or state satisfying one side is rejected where the other is required, and the refusal names this invariant. | `41` | `WP-41.02`, `WP-41.04` |
@@ -611,6 +630,14 @@ Every invariant has at least one owning package. Packages carrying the largest i
 | `I-488` | External Media ≠ Managed Media | per-product architecture and product requirements | Unit test | Assert `External Media` is not `Managed Media`: a value, type or state satisfying one side is rejected where the other is required, and the refusal names this invariant. | `15`, `18`, `33`, `36` | owning product package gate |
 | `I-489` | ArcSlate Link ≠ shared identity | per-product architecture and product requirements | Unit test | Assert `ArcSlate Link` is not `shared identity`: a value, type or state satisfying one side is rejected where the other is required, and the refusal names this invariant. | `15`, `18`, `33`, `36` | owning product package gate |
 | `I-490` | ArcSlate Sequence ≠ Timeline Clip | per-product architecture and product requirements | Unit test | Assert `ArcSlate Sequence` is not `Timeline Clip`: a value, type or state satisfying one side is rejected where the other is required, and the refusal names this invariant. | `15`, `18`, `33`, `36` | owning product package gate |
+| `I-491` | Model loop location ≠ tool execution location | `17-agent-harness.md` §1, §10; `09-ai-and-agent-runtime-architecture.md` §9 | Structural test | Assert no desktop, mobile or browser assembly references a provider adapter or runs a turn loop; assert a Step's `toolLocality` is independent of Task ownership | `WP-17.08`, `WP-05` | No client-side model loop is reachable |
+| `I-492` | Actual measured tokens ≠ estimated tokens; cumulative stream usage ≠ per-event delta | `16-billing-and-commerce-architecture.md` §7.4; `data-model/01-cloud-data-model.md` §8.1 | Integration test | Assert a pre-call estimate never becomes the settled amount; assert a later `usage_revision` replaces rather than sums, under duplicate and reordered delivery | `WP-43.07`, `WP-43.02` | Streamed and duplicated usage settle once, at measured quantities |
+| `I-493` | Included recoverable capacity ≠ purchased credits ≠ supplier cost ≠ subscription payment | `16-billing-and-commerce-architecture.md` §7.1; `data-model/01-cloud-data-model.md` §8.1 | Unit and integration test | Assert the four quantities live in separate stores with separate units, are never summed into one figure, and that a refund of one cannot mint another | `WP-42.11`, `WP-42.08` | The four are separately queryable and never conflated |
+| `I-494` | Current configuration ≠ historical pricing snapshot; changing configuration ≠ resetting customer balances | `22-deployment-and-release-execution.md` §3.1; `16-billing-and-commerce-architecture.md` §7.7 | Integration test | Replace every current rate and replay a historical charge, asserting the original amount reproduces; assert replacement resets no usage, capacity, credit or hold | `WP-44.01`, `WP-43.07` | Historical charges reproduce after full configuration replacement |
+| `I-495` | Open executable policy logic ≠ private deployment values; secret mount ≠ customer BYOK | `16-billing-and-commerce-architecture.md` §2.2; `08-security-architecture.md` §6 | Policy test | Assert the public repository builds and validates with the public sample alone; assert no operation, field or UI accepts a customer provider credential | `WP-43.03`, `WP-05` | Public code runs on public samples; no customer credential path exists |
+| `I-496` | Synthetic capture ≠ hardware evidence; preview sample ≠ canonical simulation data | `23-simulator-and-interchange.md` §1 | Integration test | Assert simulated data is labelled synthetic through session, export and copy; assert preview decimation never drops a canonical sample | `WP-51.01`, `WP-51.04` | Synthetic data never enters a hardware-evidence path |
+| `I-497` | OTIO interchange ≠ ArcSlate working project ≠ embedded source media | `23-simulator-and-interchange.md` §2 | Integration test | Assert import creates ArcSlate-owned objects rather than an OTIO working store; assert export binds a committed revision; assert no media is collected, uploaded or embedded | `WP-39.05` | Interchange is a file, never the project and never the media |
+| `I-498` | Evictable acknowledged cache ≠ unacknowledged edits/uploads/tool receipts | `data-model/02-desktop-data-model.md` §1.4 | Integration test | Assert eviction is refused while an unacknowledged change, staged upload or unreturned receipt references the row, under cache pressure, sign-out, account switch and subscription restriction | `WP-25.01`, `WP-18.05` | No path discards unacknowledged work as cache |
 
 ---
 

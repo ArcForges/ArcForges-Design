@@ -11,6 +11,8 @@ Each matrix was produced by reading the named reference repository at a recorded
 
 > **Reference map amendment, 2026-09-05.** **D-012**'s ArcSlate line is amended by user decision `P2-005`: **ArcVideo and ArcVideoFoundation** are ArcSlate's direct references, and there is no requirement to obtain or independently review an Olive repository. **This narrows the audit scope, not the provenance obligation** — ArcVideo is a documented Olive fork, and its GPL-3.0 obligations, upstream copyright and attribution to the Olive authors are preserved wherever inherited material requires them (`§3.1` of that matrix).
 
+> **Scope amendment, 2026-09-06 (P2-006).** The revised requirements exclude capabilities several rows previously mapped to: Edgeless canvas and slides (ArcNotes), external-agent integration and agent teams (ArcChat), and end-user BYOK. Those rows are **reclassified as accepted exclusions with their reason recorded**, never deleted — the evidence that the capability was reviewed and deliberately dropped is worth more than a shorter matrix. Portfolio totals across 145 rows are now **121 evidence established, 25 accepted exclusions, 0 unresolved**; `AN-14` remains the one compound row, so the figures sum to 146 over 145 rows. **No row in any matrix proposes reuse.**
+
 ---
 
 ## Matrix set
