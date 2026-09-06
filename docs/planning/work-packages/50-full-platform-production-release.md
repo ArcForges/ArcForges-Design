@@ -67,9 +67,9 @@
 
 **What must be fully done.** Every gate in [`release-gates.md`](../../assurance/release-gates.md) evaluated for every surface, with its evidence artifact named. Every gate in [`open-gates-register.md`](../../assurance/open-gates-register.md) either closed with evidence or explicitly recorded as still open with its blocking consequence stated.
 
-**Testing requirements.** A gate-coverage report asserting no gate is unevaluated; an evidence-resolution check asserting every claimed evidence artifact exists.
+**Testing requirements.** A gate-coverage report asserting no gate is unevaluated; an evidence-resolution check asserting every claimed evidence artifact exists; a **cross-system failure-row coverage check** asserting that every failure row in [`../../architecture/20-cross-system-lifecycles.md`](../../architecture/20-cross-system-lifecycles.md) names a test that exists and has run.
 
-**Completion gate.** **Every gate is evaluated with a named, resolvable evidence artifact**, and every open gate's blocking consequence is stated.
+**Completion gate.** **Every gate is evaluated with a named, resolvable evidence artifact**, every open gate's blocking consequence is stated, and **no cross-system failure row lacks a run test**.
 
 ### WP-50.01 — Licence, SBOM and copied-content audit
 
