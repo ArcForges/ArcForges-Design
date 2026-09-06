@@ -124,9 +124,9 @@ User action while offline
 |---|---|
 | SS-01 | **Session material uses the platform secure storage** — keychain or keystore. |
 | SS-02 | **Sensitive tokens never enter ordinary preferences or logs** (`I3 §17.3`). |
-| SS-03 | **No desktop-local BYOK secret ever reaches a mobile device** (`AI-03` in the companion requirements). |
+| SS-03 | **No provider credential exists on any client, desktop or mobile** (`BY-01`–`BY-04`). |
 | SS-04 | **App lock is UI access protection, not authentication** (`I-277`); biometric unlock never substitutes for step-up (`I-278`). |
-| SS-05 | **Cloud BYOK secrets are never downloaded to the device**; they are used server-side by reference. |
+| SS-05 | **Provider credentials are deployment secrets held only by the Cloud host** (`DC-15`), used server-side and never projected to any client (`DC-14`). |
 
 ---
 

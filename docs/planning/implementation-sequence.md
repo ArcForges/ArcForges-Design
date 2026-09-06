@@ -60,9 +60,9 @@ The sequence is one continuous numbered series. Phases are a reading aid, not a 
 | **C — First real slice** | 14 – 17 | Two real processes talk; ArcChat has a domain, an execution engine and an independent core |
 | **D — ArcNotes core** | 18 – 20 | ArcNotes is a complete local product, and the first genuine cross-product workflow runs |
 | **E — First real cloud** | 21 – 26 | Identity, public API, realtime, sync and remote action exist against real infrastructure |
-| **F — ArcNotes completion** | 27 – 29 | Edgeless, database views and slides land on the V1 compatibility baseline |
+| **F — ArcNotes completion** | 28 | Bounded typed properties and saved list/table views land. **`27` and `29` are retired by P2-006** — canvas and slides are excluded from delivery, not deferred | Edgeless, database views and slides landed on the V1 compatibility baseline |
 | **G — Mobile** | 30 – 32 | The Android remote closed loop exists under the Apache boundary; iOS is planned, build-deferred |
-| **H — ArcScope** | 33 – 35 | Acquisition, analysis and integration |
+| **H — ArcScope** | 33 – 35, **51** | Acquisition, analysis, integration and the deterministic Cloud simulator. `51` is sequenced here and numbered last because `00`–`50` are allocated and a retired identifier is never reused |
 | **I — ArcSlate** | 36 – 39 | Timeline, runtime, render and integration |
 | **J — Platform completion** | 40 – 46 | Knowledge, extensions, commerce, AI economics, policy, operations and resilience |
 | **K — Web and release** | 47 – 50 | Public site, account portal, web companion and the full-platform production release |

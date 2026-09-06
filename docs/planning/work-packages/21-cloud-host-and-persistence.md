@@ -3,7 +3,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: E — First real cloud
-> Upstream: `03`, `05`, `12` · Downstream: `22`, `45`
+> Upstream: `03`, `05`, `12` · Downstream: `22`, `45`, `51`
 
 > **Goal.** Stand up the real cloud: a JIT modular monolith with three runtime roles, a fixed host pipeline order, module boundaries with owned schemas, a real database with a standalone migrator, reliable events, and background work — running against real infrastructure, not stubs.
 
@@ -75,13 +75,13 @@
 
 **Completion gate.** The pipeline order is asserted, no handler is reachable without tenancy resolution, and the JIT posture is explicit.
 
-### WP-21.01 — Three runtime roles
+### WP-21.01 — One host and its bounded hosted services
 
-**What must be fully done.** API, worker and task runner as separate deployable roles sharing one codebase. Each declares what it runs; a role never silently hosts another's responsibility. Scaling and failure characteristics differ per role.
+**What must be fully done.** **One deployable host** — `ArcForges.Cloud.Host` — running the request pipeline, realtime hubs, the single Harness and every bounded background service as libraries (**P2-006**, `RT-03` of the cloud architecture). Every replica is identical: no role flag, no worker-only deployment, no leader chosen by configuration. Cross-replica concurrency is controlled by **durable leases with fencing** (`RT-04`), and every hosted service claims a bounded batch and yields — no unbounded loop exists in a request handler or a hosted service (`RT-05`). Scaling and failure characteristics differ per role.
 
-**Testing requirements.** A role-composition test asserting each role starts only its declared components; a cross-role isolation test.
+**Testing requirements.** A structural test asserting exactly one web executable exists and no second deployable is produced; a multi-replica test proving two identical replicas do not both claim the same leased work; a fencing test proving a stale token cannot publish; a bounded-batch test asserting no hosted-service iteration exceeds its budget; a drain test proving a shutting-down replica completes or releases its in-flight work rather than abandoning a lease.
 
-**Completion gate.** Each role starts only its declared components, verified by inspection of the running composition.
+**Completion gate.** **N identical replicas run every hosted service safely under lease fencing**, no unbounded loop is reachable, and no second deployable exists.
 
 ### WP-21.02 — Module boundaries
 

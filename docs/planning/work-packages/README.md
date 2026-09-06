@@ -69,9 +69,9 @@ The number is an identity, not a schedule. Ordering is by dependency; parallelis
 
 | # | Work package | Depends on |
 |---|---|---|
-| 27 | [ArcNotes edgeless canvas](27-arcnotes-edgeless-canvas.md) | 19, 25 |
-| 28 | [ArcNotes typed properties and database views](28-arcnotes-properties-and-views.md) | 27 |
-| 29 | [ArcNotes slides and presentation](29-arcnotes-slides.md) | 28 |
+| ~~27~~ | [ArcNotes edgeless canvas](27-arcnotes-edgeless-canvas.md) — **RETIRED** by P2-006 | — |
+| 28 | [ArcNotes bounded properties and saved views](28-arcnotes-properties-and-views.md) | 19, 25 |
+| ~~29~~ | [ArcNotes slides and presentation](29-arcnotes-slides.md) — **RETIRED** by P2-006 | — |
 
 ### Phase G — Mobile
 
@@ -117,7 +117,8 @@ The number is an identity, not a schedule. Ordering is by dependency; parallelis
 | 47 | [Static public site](47-static-public-site.md) | 00 |
 | 48 | [Account portal](48-account-portal.md) | 42, 44, 47 |
 | 49 | [ArcChat Web companion](49-arcchat-web-companion.md) | 26, 48 |
-| 50 | [Full-platform production release](50-full-platform-production-release.md) | 20, 29, 32, 35, 39, 43, 46, 49 |
+| 50 | [Full-platform production release](50-full-platform-production-release.md) | 20, 28, 32, 35, 39, 43, 46, 49, 51 |
+| 51 | [ArcScope deterministic Cloud simulator](51-arcscope-cloud-simulator.md) | 21, 23, 25, 33 |
 
 ---
 
@@ -146,16 +147,16 @@ Which packages are blocked by each package's completion gate.
 | 16 | 17, 43 |
 | 17 | 20, 26, 41 |
 | 18 | 19 |
-| 19 | 20, 25, 27, 40 |
+| 19 | 20, 25, 28, 40 |
 | 20 | 50 |
 | 21 | 22, 45 |
 | 22 | 23, 42 |
 | 23 | 24, 30, 42, 44 |
 | 24 | 25, 26, 30 |
-| 25 | 26, 27, 35, 39, 40, 46 |
+| 25 | 26, 28, 35, 39, 40, 46, 51 |
 | 26 | 31, 33, 36, 49 |
-| 27 | 28 |
-| 28 | 29 |
+| ~~27~~ | — (retired) |
+| 28 | 50 |
 | 29 | 50 |
 | 30 | 31 |
 | 31 | 32 |

@@ -3,7 +3,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: D — ArcNotes core
-> Upstream: `18` · Downstream: `20`, `25`, `27`, `40`
+> Upstream: `18` · Downstream: `20`, `25`, `28`, `40`
 
 > **Goal.** Make ArcNotes content findable and portable: local full-text search with citation anchors, non-destructive import, and export to markdown, HTML, a portable package and a printable form — proving the portability constitution rather than asserting it.
 

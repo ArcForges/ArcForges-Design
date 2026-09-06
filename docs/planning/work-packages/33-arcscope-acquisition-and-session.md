@@ -3,7 +3,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: H — ArcScope
-> Upstream: `07`, `10`, `13`, `26` · Downstream: `34`
+> Upstream: `07`, `10`, `13`, `26` · Downstream: `34`, `51`
 
 > **Goal.** Build the evidence layer: sources and adapters, the acquisition pipeline, sessions and captures with segments and gaps, the channel and event time model, and record and replay — with raw capture treated as evidence, immutable once finalised.
 

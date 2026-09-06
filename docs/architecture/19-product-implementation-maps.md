@@ -58,18 +58,18 @@ Plus per-product specialisations: `ArcChat.Hub` and `ArcChat.Agent`; `ArcScope.A
 | Attachments by reference | `ArcChat.Domain` + `ArcChat.Infrastructure` | `WP-15.02` |
 | Projects, agent profiles, skills | `ArcChat.Domain` + `ArcChat.Application` | `WP-15.03`, `WP-15.04` |
 | Local search over conversations | `ArcChat.Infrastructure` (derived store) | `WP-15.05` |
-| **The turn loop, batching, compaction** | `ArcChat.Agent` (`§2`–`§4` of the harness) | `WP-17.08`, `WP-17.09` |
-| Context assembly and packing | `ArcChat.Agent` | `WP-40.03` |
-| Capability registry and selection | `ArcChat.Agent` + `ArcChat.Hub` | `WP-17.00` |
-| Execution engine — task, run, plan, step, attempt | `ArcChat.Application` | `WP-16.00`–`WP-16.07` |
+| **The turn loop, batching, compaction** | **`ArcForges.Cloud.AgentRuntime`** — Cloud, not the desktop (`LS-02`) | `WP-17.08`, `WP-17.09` |
+| Context assembly and packing | **`ArcForges.Cloud.AgentRuntime`** | `WP-40.03` |
+| Capability registry and selection | Cloud registry + `ArcChat.Hub` for device-local capabilities | `WP-17.00` |
+| Execution engine — task, run, plan, step, attempt | **`ArcForges.Cloud.Modules.Agent`** (`TO-01`) | `WP-16.00`–`WP-16.07` |
 | Permission, approval, audit surfaces | `ArcChat.Application` + `ArcChat.Desktop` | `WP-17.02` |
 | Task centre | `ArcChat.Application` + `ArcChat.Desktop` | `WP-17.03` |
 | Automation | `ArcChat.Application` | `WP-17.04` |
-| Provider adapters, local BYOK | `ArcChat.Infrastructure` | `WP-17.05` |
+| Cloud AI client — submit a turn, read task state, surface admission reasons | `ArcChat.CloudClient` | `WP-17.05` |
 | Hub registration, routing, health | `ArcChat.Hub` | `WP-14.00`–`WP-14.06` |
 | Thin preview and handoff | `ArcChat.Desktop` (`§8.1` of the editing architecture) | `WP-17.06` |
 | Cloud client, sync, bridge consumption | `ArcChat.CloudClient` | `WP-25`, `WP-26` |
-| First-party local capabilities | `ArcChat.LocalTools` | `WP-17.00` |
+| First-party local capabilities and the ToolRequest executor | `ArcChat.LocalTools` | `WP-17.00`, `WP-26.02` |
 
 ### 3.2 AionUI reference verification
 
@@ -85,9 +85,9 @@ The matrix records 30 items at commit `29c9271a5` — **25 evidence established,
 | AC-06 | ACP external-agent integration | Present as the external-agent adapter under a capability lease | `WP-41.07`; `XA-02`, `XA-03` of the harness |
 | AC-07 | MCP client and built-in MCP server | Present as an **edge adapter**, never the internal protocol (**V-02**). A built-in MCP **server** is not built | `WP-41.07`; `XA-06`, `XA-07` |
 | AC-08 | Agent detection and hub types | Present, and **contract-typed and lease-based** rather than discovered | `ArcChat.Hub`; `WP-17.00` |
-| AC-09 | Assistant / agent profile | Present | `ArcChat.Domain`; `WP-15.03` |
+| AC-09 | Assistant / agent profile | Present, **Cloud-owned** (`§5` of the product scope); clients edit authorised configuration | `ArcForges.Cloud.Modules.Agent`; `WP-15.03` |
 | AC-10 | Workspaces | Present, and **an entitlement and data scope from day one** | `ArcForges.Cloud.Modules.Workspace`; `WP-22` |
-| AC-11 | Teams / multi-agent | **Accepted exclusion.** Multi-agent is internal only — parallel steps and child tasks, never an agent-team interface | `§10` of the harness; `MA-02` |
+| AC-11 | Teams / multi-agent | **Excluded outright by P2-006** (`EA-08`). Not internal-only: there are no agent teams and no sub-agents. Parallel steps and child tasks remain execution mechanisms inside the one Harness | `§9` of the harness; `XA-02` |
 | AC-12 | Cron / scheduled tasks | Present as Automation, **kept distinct from a Plan**: automation decides *when*, a plan decides *how* | `ArcChat.Application`; `WP-17.04`, `BR-05` of `WP-17` |
 | AC-13 | Remote access via a host-side web server | **Refused by design.** The bridge is pull-and-answer; Cloud never connects to a device (**D-010**) | `§5` of the realtime and bridge contract; `WP-26`, `RV-05` there |
 | AC-14 | Previews | Present as the three honest levels, with rich handoff added | `§8.1` of the editing architecture; `WP-17.06` |
@@ -131,8 +131,9 @@ The matrix records 30 items at commit `29c9271a5` — **25 evidence established,
 | Attachments, preview levels, PDF viewer | `ArcNotes.Infrastructure` + `ArcNotes.Desktop` | `WP-18.04`; **`PG-12`** |
 | History, checkpoint, trash, recovery | `ArcNotes.Application` + `ArcNotes.Infrastructure` | `WP-18.05`, `WP-18.06` |
 | Search and portability | `ArcNotes.Infrastructure` | `WP-19` |
-| Edgeless canvas | `ArcNotes.Domain` + `ArcNotes.Desktop` | `WP-27` |
-| Slides | `ArcNotes.Domain` + `ArcNotes.Desktop` | `WP-29` |
+| ~~Edgeless canvas~~ | **Retired by P2-006** — excluded from delivery, no future hook | — |
+| ~~Slides~~ | **Retired by P2-006** — excluded from delivery, no future hook | — |
+| Saved list and table views over bounded scalar properties | `ArcNotes.Domain` + `ArcNotes.Desktop` | `WP-28` |
 | Capability surface | `ArcNotes.LocalRpc` + `ArcNotes.Application` | `WP-18.07` |
 
 ### 4.2 AFFiNE and SiYuan reference verification
@@ -144,7 +145,7 @@ The matrix records 30 items at commit `29c9271a5` — **25 evidence established,
 | VN-01 | **AFFiNE's licence is split, and the split is load-bearing.** `packages/backend/**` and `packages/common/native/**` are governed by the Enterprise Edition licence, not MIT (`LP-01` there). Those subtrees are **permanently ineligible and deliberately unread** — recorded as finding `F-AN-1`. |
 | VN-02 | **This is exactly the case D-013 anticipates**: a repository-root licence does not cover every file. The matrix is the evidence that the rule was applied rather than assumed. |
 | VN-03 | **SiYuan is AGPL-3.0.** Under **D-004**/**D-021**, AGPL material could only ever live inside the AGPL boundary and is **prohibited in the Apache-2.0 mobile, public-client and SDK projects**. No row proposes reuse, so the question stays hypothetical. |
-| VN-04 | **Neither reference implements slides** (`F-AN-2`), so `WP-29` has **no reference oracle** and its correctness criteria are first-party only. This is stated rather than discovered during implementation. |
+| VN-04 | **`F-AN-2` is now moot.** Neither reference implemented slides, and P2-006 excludes slides from delivery, so the missing-oracle finding closes by scope rather than by evidence. The same applies to canvas criteria are first-party only. This is stated rather than discovered during implementation. |
 | VN-05 | The eight exclusions are recorded individually: journal as a distinct model (`AN-12`), comments (`AN-13`), public sharing (`AN-14`), WebDAV/CalDAV/CardDAV (`AN-32`), flashcards (`AN-33`), OCR (`AN-34`), graph view (`AN-35`) and publish access (`AN-36`). Each states its reason rather than being left unmentioned. |
 | VN-06 | **The block model, transaction and undo log rows (`AN-01`, `AN-07`, `AN-23`) are behavioural evidence for `§2`–`§3` of the editing architecture**, which is a first-party design; the correspondence is conceptual, not derived. |
 

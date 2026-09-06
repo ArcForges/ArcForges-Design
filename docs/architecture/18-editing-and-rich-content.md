@@ -47,7 +47,7 @@ A `block` row stores `kind` plus a `content` structure typed by that kind (`§3`
 | `math` | TeX source + `display ∈ {block}` | `§7.2` |
 | `image` | `AttachmentRef` + `alt` + `layout` | References, never embeds (`AT-03`, `AT-04`) |
 | `attachment` | `AttachmentRef` + `presentation ∈ {chip, card, pdfViewer}` | **PDF is this kind with `pdfViewer`**, not a separate kind (`AT-05`) |
-| `embed` | `ReferenceTarget` + `renderMode` | A reference to a document, block, canvas or view — never a copy (`I-224`) |
+| `embed` | `ReferenceTarget` + `renderMode` | A reference to a document, block or saved view — never a copy (`I-224`) |
 | `toggle` | `InlineContent` + children | Collapsible; collapse state is device-local, not content |
 
 | # | Rule |
@@ -244,6 +244,8 @@ Two modes, permanently distinct:
 | RN-01 | **No reflection-based templating, no runtime XAML loading, no dynamic control construction from a string** (`AC-04` of the architecture overview, **D-008**). Block presenters are resolved through a statically registered kind-to-presenter map. |
 | RN-02 | **ArcForges does not implement text shaping.** Shaping, font fallback and glyph rasterisation belong to the platform stack; reimplementing them is out of scope and would be a multi-year commitment (`§9`). |
 | RN-03 | **A custom-drawn control is used where a composed control cannot meet the measured budget**, and that choice is recorded with its measurement — never taken by default. |
+| RN-04 | **No WebView, no Chromium, no browser engine, no DOM, no JavaScript engine, no HTML-as-UI and no loopback UI server** (**P2-006**, `§8` of the product scope). This is a technology-constitution prohibition, not a preference, and a repository policy test asserts that no desktop project references a web-view package (`WP-05`). |
+| RN-05 | **`I-028` — a native editor with a working cache is not a WebView shell.** The prohibition exists because a browser-hosted editor would make the AOT constraint, the input model and the accessibility model all unenforceable. |
 
 ### 5.2 Block layout and virtualisation
 
@@ -385,13 +387,15 @@ This is where "preview" most often conceals missing capability, so each surface 
 | PD-06 | **A page anchor is `(attachmentContentHash, pageIndex, rectOrTextRange)`**, so an annotation anchor survives re-open and is invalidated honestly if the attachment content changes. |
 | PD-07 | **If the dependency is not adopted, `AT-05` is not met**, and that is stated as an open gate rather than absorbed by relabelling the viewer a preview. This is recorded as `PG-12` in the [open-gates register](../assurance/open-gates-register.md). |
 
-### 8.3 Office documents
+### 8.3 Office documents — excluded from delivery
 
 | # | Rule |
 |---|---|
-| OF-01 | **DOCX is explicitly later** (`§13` of the ArcNotes requirements), and V1 presents an Office attachment as a metadata card with an open-in-system-application action. |
+| OF-01 | **DOCX import is excluded by P2-006**, not merely deferred. An Office attachment is presented as a metadata card with an open-in-system-application action. |
 | OF-02 | **The architecture accommodates it**: import maps to blocks through the same `EditTransaction` path, and unsupported constructs are preserved inert and marked (`IE-06` of the persistence architecture). |
 | OF-03 | **No Office rendering engine is embedded**, and no Office application is automated. |
+| OF-04 | **Required import is Markdown and plain text** (**P2-006**); required export is a Cloud data export. A full-fidelity local package ecosystem is not a delivery obligation. |
+| OF-05 | **The block model does not carry a DOCX-shaped construct** so that a future import would be additive. Adding DOCX later is a scope decision with its own design, not a hook waiting to be switched on.
 
 ### 8.4 Audio and video in a document
 

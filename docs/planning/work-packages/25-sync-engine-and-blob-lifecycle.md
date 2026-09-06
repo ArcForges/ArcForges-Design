@@ -3,7 +3,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: E — First real cloud
-> Upstream: `19`, `24` · Downstream: `26`, `27`, `35`, `39`, `40`, `46`
+> Upstream: `19`, `24` · Downstream: `26`, `28`, `35`, `39`, `40`, `46`, `51`
 
 > **Goal.** Prove sync on ArcNotes: a client outbox, a server inbox, a change feed, five conflict policies, deletion propagation, and a blob lifecycle that never leaves a reference pointing at nothing — with multi-device convergence demonstrated, not assumed.
 

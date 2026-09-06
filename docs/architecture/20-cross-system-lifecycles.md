@@ -183,7 +183,7 @@ Five distinct operations (`§8` of the data-model overview), and the failure mod
 | DV-02 | Device revoked while a realtime subscription is open | `happened` | Permission re-check on change (`SB-01`) | Cloud | **Delivery stops immediately and the client is told** | Yes |
 | DV-03 | Device offline past a queued request's expiry | `didNotHappen` | Expiry | Cloud | Closed with a typed reason and shown to the requester (`BI-04`, `BI-05`) | Yes |
 | DV-04 | Presence stale — device shows online but is gone | `unknown` | Heartbeat timeout | Cloud | Marked not eligible for remote targeting; **a request is never silently routed to a dead device** | Yes |
-| DV-05 | Local secret present on a revoked device | `happened` | Local revocation check at start-up and on reconnect | Desktop | Local material cleared per policy. **A local BYOK secret never left the device** in the first place (`§3` of the security architecture) | Yes |
+| DV-05 | Revoked device still holds cached content | `happened` | Local revocation check at start-up and on reconnect | Desktop | Cached acknowledged content is cleared per policy; **unacknowledged pending edits are preserved and offered for recovery or export** (`PE-03`). There is no provider credential on the device to clear (`BY-01`–`BY-04`) | Yes |
 
 ---
 

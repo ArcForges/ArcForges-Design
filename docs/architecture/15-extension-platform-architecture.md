@@ -156,7 +156,7 @@ date/time · ResourceRef · list<Value> · record<name, Value>
 | **Workflow** | No | A blueprint compiled into Plan and Step objects of the unified execution model; never a second agent runtime (`§3` there) |
 | **MCP integration** | Out of process | An external capability adapter; MCP terms are disambiguated per **V-02** and never become the internal protocol (`§5` there) |
 | **Connector** | Out of process | Definition and connection instance separated; secrets held as `SecretRef` only (`§6` there) |
-| **External agent** | Out of process | Delegated work mapped onto the unified Task model with a capability lease per delegation (`§7` there) |
+| ~~External agent~~ | — | **Retired by P2-006.** External-agent providers, ACP adapters, session mapping, delegation leases and result adapters are excluded (`EA-01`–`EA-06` of the extension requirements). **There is no external-agent contribution kind**, and a package, connector or MCP tool cannot start an autonomous delegated agent (`EA-08` there). An integration contributes tools; it never contributes a planner |
 | **Extension** | **Yes** | The extension process model of `§3` |
 | **Third-party Arc App** | Yes, as a peer app | Participates through the cross-application contribution model, not through the extension host (`§8.4` there) |
 
@@ -193,7 +193,7 @@ date/time · ResourceRef · list<Value> · record<name, Value>
 | SE-01 | **Every extension invocation is an ordinary capability invocation** and passes the fourteen-step security decision pipeline (`§12` of the security requirements). |
 | SE-02 | **Owner-side final validation always applies** (`§3` of the security architecture). The extension host is one enforcement point; the capability owner remains the last. |
 | SE-03 | **Permissions are declared in the manifest, presented before installation, and granted explicitly** (`I4 §Stage 24 §121`, `§122`). Installation is not authorization. |
-| SE-04 | **A delegation to an extension creates a capability lease** — scoped, expiring, revocable, and audited (`§10` of the security requirements). |
+| SE-04 | **A tool invocation into an extension creates a capability lease** — scoped, expiring, revocable, and audited (`§10` of the security requirements). The lease bounds one bounded invocation; it never authorises an extension to plan or to run its own agent loop (`EA-05`, `EA-08` there). |
 | SE-05 | **Input to an extension is minimised to the current call** (`EX-14` there). There is no full-access object. |
 | SE-06 | **Extension output is untrusted input.** It is schema-validated (`L2-04`), and any instruction-like content it carries is marked with untrusted provenance for the agent runtime (`§8` of the security architecture). |
 | SE-07 | **Trust, permission, signature and review status are four separate things** (`I4 §Stage 24 §123`–`§126`): trust is a level, permission is a grant, a signature proves origin not safety, and review status is an independent assertion. |

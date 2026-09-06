@@ -103,13 +103,13 @@
 
 **Completion gate.** Enabling sync never implicitly transfers heavyweight media, derived data never syncs as authority, and projects converge across devices.
 
-### WP-39.05 — Interchange
+### WP-39.05 — OTIO interchange
 
-**What must be fully done.** Import and export in the supported interchange formats with fidelity stated before writing, and a fixture for every claimed version. Import records origin and never fabricates data the source did not contain.
+**What must be fully done.** Canonical `.otio` **import and export**, both directions, in V1 (`OT-01`). A declared support profile naming the pinned library, supported schema versions and supported top-level types (`OT-02`). The supported semantic subset of `OT-03`: ordered video and audio tracks and stacks, clips, gaps, source ranges, timeline placement, rate-aware times, external and missing media references, names, markers, bounded namespaced metadata, straight cuts and explicitly mapped standard dissolves. Import staged before commit with a fidelity report the user reviews or cancels; import creating ArcSlate-owned canonical objects with provenance, never a mutable OTIO working store. Export binding a **committed** sequence revision, writing a temporary destination and publishing atomically. Item-level retained/approximated/omitted dispositions for everything outside the subset. Media relink for Offline Media. Bounded parsing with **no adapters, no Python plug-ins and no executable content**, behind an owned narrow C ABI.
 
-**Testing requirements.** Per-format round-trips against fixtures; fidelity-statement checks; a fabrication-absence assertion.
+**Testing requirements.** Real fixtures and the pinned official library exercising both directions; mixed and fractional frame rates proving **no silent frame shift**; gaps and stack ordering; repeated uses of one source retaining placement; missing references becoming relinkable Offline Media; supported dissolves and markers; unsupported features each producing an item-level disposition; malicious relative and absolute paths denied; malformed and oversized input rejected before commit; export cancellation leaving the project and any existing destination untouched; semantic round-trip compared on **timeline meaning and media references, not bytes or internal identifiers**; and a round-trip through external tooling that drops private ArcSlate metadata, proving core supported edits survive.
 
-**Completion gate.** Every claimed interchange version has a fixture, states its fidelity, and never fabricates missing data. **This satisfies `PG-07` for ArcSlate.**
+**Completion gate.** **Both directions work against real fixtures and the pinned official library**, nothing is silently flattened or dropped, no frame shift occurs, and no adapter or plug-in loads. Merely opening JSON is insufficient (`OT-12`).
 
 ---
 

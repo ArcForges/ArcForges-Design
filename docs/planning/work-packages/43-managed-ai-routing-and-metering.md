@@ -90,13 +90,13 @@
 
 **Completion gate.** Metering never double-charges, never leaks a reservation, and never permits an overdraft.
 
-### WP-43.03 — BYOK
+### WP-43.03 — Operator provider credentials and the absence of BYOK
 
-**What must be fully done.** Cloud BYOK secrets held in the secret broker and used server-side by reference, never downloaded to any device. Desktop BYOK secrets held locally and never uploaded. BYOK changes entitlement economics without changing the permission model.
+**What must be fully done.** **End-user BYOK is excluded in every form** (`BY-01`–`BY-04`, `I-015` retired). Provider credentials belong to the deployment operator and are injected by secret manager or Docker secret with least privilege (`DC-15`); they never appear in the policy file, the image, the logs, the public sample or any client projection (`DC-14`). Self-host operators provision their own server credentials the same way — that is infrastructure provisioning, not customer BYOK (`I-495`). Historical BYOK changes entitlement economics without changing the permission model.
 
-**Testing requirements.** A no-download assertion for cloud secrets; a no-upload assertion for desktop secrets; a permission-parity test between BYOK and managed paths.
+**Testing requirements.** A contract policy test asserting **no operation, schema field, setting or UI accepts a customer provider key, model endpoint or credential**; a structural test asserting no desktop, mobile or browser assembly references a provider adapter; a projection test asserting no supplier rate, route weight or credential reaches a client (`DC-14`); a secret-handling test asserting credentials are absent from the image, the sample configuration and the logs.
 
-**Completion gate.** **No BYOK secret ever crosses a boundary it must not cross**, and BYOK never relaxes the permission model.
+**Completion gate.** **No end-user BYOK path exists anywhere in the product**, and provider credentials are present only in the Cloud host's injected secrets.
 
 ### WP-43.04 — Provider interaction records and transparency
 
@@ -113,6 +113,14 @@
 **Testing requirements.** Model-withdrawal degradation; provider-outage reservation release; fallback routing; an alert assertion for all-routes-unavailable.
 
 **Completion gate.** A provider outage never silently consumes credit, and a withdrawn model degrades with a stated reason.
+
+### WP-43.07 — Real-provider metering evidence
+
+**What must be fully done.** The complete path exercised against a **real provider**, not a fixture: normalisation of that provider's actual usage report into non-overlapping categories with its declared inclusion relationships; cumulative stream snapshots replacing rather than summing; supplier cost at the dispatch-time price version; customer cost at the Run's pinned tariff snapshot; idempotent settlement keyed on `(provider_attempt_id, usage_revision, category)`; and the `§8.6` worked fixture asserted exactly — USD 0.00244 supplier cost, 4,880,000 micro-credits customer cost, 1.12 credits released to the original funding sources.
+
+**Testing requirements.** Two providers whose cache and reasoning fields overlap differently, both settling correctly; a duplicate usage event proving no double debit; an undeclared usage field entering reconciliation rather than a debit; a cancellation settling verified consumption and releasing the remainder; a lost final usage producing `UsagePending` and, at the deadline, releasing the customer hold while **retaining the supplier liability**; a platform-caused retry charged once to the customer and fully visible in supplier cost; a token-category and tier price change applying to future dispatch only; historical replay after replacing every current rate, reproducing the original charge exactly.
+
+**Completion gate.** **One real provider usage response and one real payment-provider event are reconciled through the same code as the fixtures** (`MT-01`, `§10.6` of the configuration requirements). Deterministic fixtures supplement this evidence; they do not replace it.
 
 ### WP-43.06 — Provider test-environment coverage
 

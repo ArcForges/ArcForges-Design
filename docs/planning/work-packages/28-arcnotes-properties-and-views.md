@@ -1,11 +1,13 @@
-# WP-28 — ArcNotes Typed Properties and Database Views
+# WP-28 — ArcNotes Bounded Properties and Saved Views
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: F — ArcNotes completion
-> Upstream: `27` · Downstream: `29`
+> Upstream: `19`, `25` · Downstream: `50`  *(`27` and `29` are retired by P2-006)*
 
-> **Goal.** Add typed properties, queries and multi-view projections — table, board, calendar and their siblings — **without turning ArcNotes into a relational database clone** and without making a plain note heavier.
+> **Goal.** Add **bounded** typed properties, queries and saved **list and table** views — the depth P2-006 retains — without turning ArcNotes into a database platform and without making a plain note heavier.
+
+> **Scope amendment, 2026-09-06 (P2-006).** Board, gallery, calendar and timeline layouts, formula evaluation, relation and rollup engines are **excluded from delivery**, with no mandatory future hook. Required depth is common scalar property types plus saved list and table views with filtering and sorting.
 
 ---
 

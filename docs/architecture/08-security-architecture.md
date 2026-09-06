@@ -144,7 +144,7 @@ Business data           →  SecretRef only
 | SE-01 | **A secret value never appears in a DTO, a task payload, a settings blob, a log, a trace, an audit record, telemetry or an AI context** (`SE-01` there). |
 | SE-02 | **`Use` and `Reveal` are separate permissions** (`I-257`); most functionality needs use without reveal. |
 | SE-03 | **Local secrets use platform secure storage** — the platform credential store, keychain or keystore. |
-| SE-04 | **Cloud secrets use a managed vault**; **user Cloud BYOK secrets use envelope encryption** with per-workspace data keys wrapped by vault-held key-encryption keys (`SC-03` in the cloud product requirements). |
+| SE-04 | **Cloud secrets use a managed vault** with secret-manager or Docker-secret injection (`DC-15`). **There are no user provider secrets to store** — end-user BYOK is excluded in every form (`BY-01`–`BY-04`, `I-015` retired). Provider credentials belong to the deployment operator, never to a customer, and never appear in the policy file, the image, the logs or the public sample. Envelope encryption remains for per-workspace data keys wrapped by vault-held key-encryption keys (`SC-03` in the cloud product requirements). |
 | SE-05 | **Workspace and personal secret scopes are a hard boundary** (`SE-08` in the security requirements). |
 | SE-06 | **Rotation does not change the business configuration identity** (`SE-09` there). |
 | SE-07 | **Revocation is immediate**: the credential becomes unobtainable at once, and dependents enter Needs Attention (`RA-06` there). |
@@ -160,14 +160,14 @@ Read permission ──✗── does not imply ──✗── Egress permission
 
 Egress decision inputs:
   content classification · knowledge policy (AI eligibility) · destination identity
-  · destination class (managed AI | BYOK provider | connector | third-party | public)
+  · destination class (cloud AI provider | connector | third-party | public)
   · workspace policy · actor permission · effective risk
 ```
 
 | # | Rule |
 |---|---|
 | EG-01 | **Egress is a separate authorization** (`I-254`), evaluated per destination identity, not per destination category (`EG-05` there). |
-| EG-02 | **Managed AI and BYOK are different destinations** with potentially different rules (`EG-04` there). |
+| EG-02 | **A cloud AI provider is a distinct egress destination class** with its own rules (`EG-04` there). There is no customer-provider destination, because no customer credential exists (`BY-01`–`BY-04`). |
 | EG-03 | **A package must not route user data to a publisher-controlled backend to evade network permission** (`EG-07` there). |
 | EG-04 | **Every egress event is auditable and user-visible**: what content, to which destination, under which authorization, when (`UI-07` there). |
 | EG-05 | **Knowledge retrieval policy does not replace permission** (`EG-03` there). Both must hold. |
@@ -285,7 +285,7 @@ Audit event  (append-only, owner-scoped)
 |---|---|
 | MB-01 | **Session material uses platform secure storage; sensitive tokens never enter ordinary preferences or logs.** |
 | MB-02 | **App lock is UI access protection, not authentication** (`I-277`), and biometric unlock never substitutes for step-up (`I-278`). |
-| MB-03 | **No desktop-local BYOK secret ever reaches a mobile device** (`AI-03` in the companion requirements). |
+| MB-03 | **No provider credential exists on any client** (`BY-01`–`BY-04`). There is no desktop-local secret to protect from mobile, because there is no desktop-local provider secret. |
 | MB-04 | **A push action is not an authorization token** (`AD-01` in the security requirements). |
 | MB-05 | **The Apache-2.0 boundary is enforced by dependency and architecture tests** (**D-004** obligation 7). |
 

@@ -31,7 +31,7 @@ ObjectRevision                        immutable, parented, actor-attributed
 ```
 Product  →  Sync Scope  →  Objects
               ├── enabled state
-              ├── protection profile (Standard | EndToEndEncrypted)
+              ├── protection profile (Standard | Enhanced)
               ├── large-asset policy
               ├── selective-sync policy
               └── conflict policy
@@ -200,7 +200,7 @@ Client requests upload authorization
 | Profile | Server capability |
 |---|---|
 | **Standard** (V1) | TLS in transit, encryption at rest, workspace isolation, strict service authorization, secret separation — enabling cloud search, semantic indexing, cloud agent, managed AI context and web access |
-| **EndToEndEncrypted** (modelled, released later) | The server sees opaque objects: sync, versioning and download to a trusted device work; server-side full-text search, semantic search, cloud-native agent context and cloud preview do not |
+| **EndToEndEncrypted** — **retired by P2-006** | End-to-end encryption, custom local encrypted stores and encrypted portable exports are excluded. TLS in transit, server-side storage and backup protection, system secret storage and pending-work recovery remain. The profile value is retired and not reused. Historical definition: the server saw opaque objects: sync, versioning and download to a trusted device work; server-side full-text search, semantic search, cloud-native agent context and cloud preview do not |
 
 | # | Rule |
 |---|---|

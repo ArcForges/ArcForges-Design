@@ -3,7 +3,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: E — First real cloud
-> Upstream: `03`, `22` · Downstream: `24`, `30`, `42`, `44`
+> Upstream: `03`, `22` · Downstream: `24`, `30`, `42`, `44`, `51`
 
 > **Goal.** Expose the cloud through one versioned public API generated from the C# source of truth, with typed clients that work identically from a Native AOT desktop binary, a Mono AOT mobile binary and a WebAssembly application — and a compatibility window that is tested rather than promised.
 

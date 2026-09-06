@@ -148,6 +148,14 @@
 
 **Completion gate.** A refund rolls entitlement back correctly, and an evidence export is complete, reproducible and free of payment instrument data.
 
+### WP-42.11 — Service term and replenishing capacity
+
+**What must be fully done.** `entitlement.service_term` as an interval with the four permitted sources and a unique `(kind, source_ref)` so a replayed provider event extends nothing twice. `entitlement.capacity_bucket` with the refill algorithm of `§7.2` of the commerce architecture: recovery accrued only over eligible paid intervals, a **monotonic durable watermark**, a preserved **fractional remainder**, and the `available ≤ max(0, burst − held)` ceiling enforced after every mutation. Idempotent first activation; contiguous renewal that extends eligibility **without** refilling to full; a lapse that accrues nothing. `entitlement.capacity_reservation` recording its three funding sources so settlement debits and releases against the same ones. Atomic admission with the **service-term check first**, then capacity, concurrency, per-request and per-run ceilings and provider budget. Extra-credit opt-in with a maximum budget, and its withdrawal.
+
+**Testing requirements.** Official inference refused with a full credit balance and no active term; a lapse accruing nothing and a renewal not refilling to full; clock rollback, process restart, reconnect, a second device and a racing replica each failing to rewind the watermark or double-credit; many small refill evaluations delivering the same total as one large one; the ceiling holding after a release and after a refund, proving returned capacity cannot exceed the burst; a request whose bound can never fit rejected immediately rather than queued; a waiting-for-device turn holding no included capacity; extra credits spent only after opt-in and never beyond the stated budget.
+
+**Completion gate.** **A credit balance never authorises inference**, the refill arithmetic is exact under concurrency, restart and clock disturbance, and no path mints capacity above the burst.
+
 ### WP-42.10 — Go-live gates
 
 **What must be fully done.** Supplier onboarding and account approval; sanctions and export screening for the intended market set; payout eligibility and receiving-currency confirmation; one real payment, subscription, renewal, cancellation, reactivation and refund; the webhook duplicate-and-loss test; the reconciliation repair test; and a **completed payout received**. The regional route stays disabled by configuration until its own gates are met.
