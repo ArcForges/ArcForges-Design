@@ -35,21 +35,42 @@ Cloud modular monolith
 │    └── Paddle adapter       the only customer-facing adapter
 ├── Commerce.EventInbox       provider event persistence, verification, dispatch
 ├── Commerce.Subscription     normalised subscription state machine
-├── Commerce.Entitlement      grants, revocations, resolver, snapshot, version
-├── Commerce.Quota            quota definitions, usage counters, enforcement reads
 ├── Commerce.Credits          credit lots, reservation, settlement, refund hold
 ├── Commerce.Ledgers          three separate ledgers (§8)
 ├── Commerce.Reconciliation   two-way comparison and repair
 └── Commerce.Evidence         commercial evidence, disputes, exports
+
+Entitlement                  ← a SEPARATE top-level module, not part of Commerce
+├── definitions, bundles
+├── grants, revocations       ← Commerce writes here through the grant interface
+├── resolver, snapshots
+└── quotas, usage counters
 ```
+
+### 2.1 Entitlement is not owned by Commerce
+
+**`MD-05` of the cloud architecture governs**: *Commerce depends on Entitlement's grant interface, never the reverse. Entitlement must remain usable with Commerce entirely absent.* That is the authoritative ownership statement, and this document is subordinate to it.
+
+| # | Rule |
+|---|---|
+| EO-01 | **Entitlement is a top-level Cloud module** ([`05-cloud-architecture.md`](05-cloud-architecture.md) `§4`). It owns definitions, bundles, grants, revocations, the resolver, snapshots, quotas and usage counters. |
+| EO-02 | **Commerce is a separate top-level module.** It owns billing accounts, offers, price versions, purchase intents, checkout attempts, orders, payments, provider events, subscriptions, credits, ledgers, reconciliation and commercial evidence. |
+| EO-03 | **Commerce writes into Entitlement only through Entitlement's published grant interface** — `IssueGrant`, `RevokeGrant` — never by writing Entitlement's tables (`MD-02` there: no module writes another module's tables). |
+| EO-04 | **Entitlement never calls Commerce.** A grant carries its own source discriminator (`purchase`, `administrative`, `promotional`, `trial`, `store`), so Entitlement can resolve without knowing a provider exists. |
+| EO-05 | **Removing Commerce entirely must leave Entitlement working**, serving free-tier and administrative grants. This is the test that keeps the boundary honest, and it is asserted in `WP-42.00`. |
+| EO-06 | **Credits belong to Commerce; quota and usage belong to Entitlement.** A credit is money-adjacent and is settled against a ledger; a quota is a capability limit resolved from a grant. Conflating them was the defect this section corrects. |
+| EO-07 | **The reserve-then-settle budget interface spans both**: Commerce.Credits holds the lots and performs the accounting; Entitlement answers *may this workspace spend at all*. The execution engine calls one façade that fans out to both, and that façade lives in Commerce. |
+
+> **Correction, 2026-09-05.** An earlier revision of this document listed `Commerce.Entitlement` and `Commerce.Quota` as sub-modules of Commerce, contradicting `MD-05`. Both are removed above. Every later reference in this document to *"the entitlement resolver"* means the **Entitlement module's** resolver, reached through its published interface.
 
 | # | Rule |
 |---|---|
 | MB-01 | **Only `Commerce.Providers` knows a provider exists.** Every other module speaks in ArcForges' own commercial vocabulary. |
+| MB-01a | **Commerce and Entitlement are separate top-level modules** (`§2.1`). Commerce reaches Entitlement only through its grant interface. |
 | MB-02 | **`BillingProviderCapabilities` is a typed capability description** (`§3.1` there), read by the rest of the system to decide what is offered — never a hard-coded assumption that a provider supports a given operation. |
 | MB-03 | **A provider identifier is stored as an external reference on an ArcForges entity**, never as the entity's own identity. |
-| MB-04 | **Entitlement is read by everything and written by nothing except the resolver** (`§5`). |
-| MB-05 | **No module outside `Commerce.*` computes an entitlement decision.** They ask, and receive a reasoned answer. |
+| MB-04 | **Entitlement state is read by everything and written only by the Entitlement module** — by its resolver for snapshots, and by its grant interface for grants and revocations (`§5`). |
+| MB-05 | **No module computes an entitlement decision for itself.** Every caller asks the Entitlement module and receives a reasoned answer. |
 
 ---
 
