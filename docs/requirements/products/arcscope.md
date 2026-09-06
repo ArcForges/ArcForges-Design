@@ -1,4 +1,5 @@
 # ArcScope — Product Requirements
+> Current scope amendment: **[P2-006](../../decisions/phase-2-specification-decisions.md)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Requirements / Products
@@ -56,7 +57,7 @@ ArcScope Project
 | SD-06 | **`Session ≠ Connection`** (`I-467`). A session may involve several data sources and may outlive individual connections. |
 | SD-07 | **A source disconnect must not close the session** (`§4`). The session survives; the interruption is recorded as an explicit gap. |
 | SD-08 | **The same source must not be silently claimed by two captures.** Exclusive access is coordinated by the capability owner with lease/busy semantics (`CC-05`). |
-| SD-09 | V1 first-party adapters cover generic transports — serial, TCP, UDP, and file/replay. Device-specific SDK adapters are added later through the same adapter contract. |
+| SD-09 | V1 adapters cover serial, TCP, UDP, file/replay and Cloud Simulation (§17.1). Device-specific SDKs remain later; simulation is a real product capability, not a mock hardware driver. |
 | SD-10 | **Replay must never impersonate a real device.** Replayed data is explicitly labelled as replay, with its origin. |
 
 ---
@@ -257,13 +258,13 @@ Export is in four classes:
 | AI-02 | **AI does not process an entire raw capture.** It receives necessary structured results — measurements, analysis outputs, decoded event summaries, selected ranges (`CP-03` in the knowledge requirements). |
 | AI-03 | **When AI states a number it must cite its source** — measurement, analysis result, range and revision (`EC-09`). |
 | AI-04 | Internal AI actions are selection- and result-scoped: explain this range, summarise these findings, suggest a measurement, draft a report section. |
-| AI-05 | **ArcScope does not implement a complete agent platform** (`I-030`). Complex orchestration is "Ask ArcChat". |
+| AI-05 | ArcScope has no agent harness. AI actions and orchestration use the single Cloud harness; ArcChat supplies the shared chat/task surface and local authorization bridge. |
 | AI-06 | **"Ask ArcChat" passes a bounded context reference** — session, range, signals, results — never the raw capture. |
 | AI-07 | **The user must see the scope the AI used** (`RT-03` in the knowledge requirements). |
 | AI-08 | **A local-only capture must not be uploaded because an AI button was pressed** (`I-182`). |
 | AI-09 | **AI-generated analysis must be reproducible** like any other analysis (`MA-08`), or clearly marked as narrative. |
 | AI-10 | **`AI Summary ≠ Measurement Result`** (`I-163`). Summary is narrative; analysis result is evidence. |
-| AI-11 | Local AI, local BYOK and managed AI all apply per [`../05-ai-and-agent-execution.md`](../05-ai-and-agent-execution.md) §11. |
+| AI-11 | All AI uses the subscribed Cloud service and actual-usage metering. Deterministic local measurement and analysis are ordinary product computation, not local AI. |
 
 ### 16.1 Capabilities exposed to ArcChat
 
@@ -276,12 +277,41 @@ Query capabilities (list projects, sessions, captures, channels, signals, events
 | # | Requirement |
 |---|---|
 | CL-01 | **`Cloud Sync ≠ Raw Capture Upload`** (`I-474`). |
-| CL-02 | **Default sync**: project, session metadata, annotations, findings, analysis results, reports and configurations. **Raw capture is local by default.** |
+| CL-02 | Default sync covers project, session metadata, annotations, findings, analysis results, reports and configurations. Hardware capture is local by default. Simulator output originates in Cloud under SIM-01–SIM-20 and is labelled synthetic. |
 | CL-03 | **Enabling project cloud sync does not upload raw capture.** Raw upload is an explicit per-session act. |
 | CL-04 | **The raw-capture cloud policy is explicit and visible** per project and per session. |
 | CL-05 | **Cloud metadata present with raw data missing locally is a normal state**, clearly presented — **never "corrupted"** (`AS-04`). |
-| CL-06 | **Raw data need not be permanently stored in the cloud.** The intended pattern is **local compute plus remote control**: an online desktop ArcScope performs the analysis on local data, driven remotely through ArcChat (`§6.3` of the product scope). |
+| CL-06 | Hardware acquisition and analysis of local captures remain native. Cloud orchestrates authorized desktop tools through ArcChat; the Cloud simulator runs server-side without an online desktop. |
 | CL-07 | A remote agent may use an online desktop ArcScope to run analyses, subject to the full remote authorization model. |
+
+---
+
+### 17.1 Deterministic Cloud simulator — V1
+
+The simulator supplies repeatable signal/event data through real Cloud persistence and client acquisition paths without attached hardware. It is a user-facing capability and a verification source; canned test responses do not discharge this requirement.
+
+| # | Requirement |
+|---|---|
+| SIM-01 | Cloud owns SimulationDefinition, immutable ScenarioVersion, SimulationRun, SimulationSegment and SimulationEvent. ArcScope owns the native observation/session projection and downloaded capture. A SimulationRun is a product job, not an Agent Run, and invokes no model. |
+| SIM-02 | A run binds the owner workspace, scenario version, seed, channel schema, duration/tick budget, clock mode, generator version and deterministic execution/encoding profile. Definition edits affect future runs only. |
+| SIM-03 | Channels have stable IDs, value types, units, rate/timestamp semantics and encoding. V1 generators include constant, sine, square, triangle, sawtooth, seeded noise, seeded random walk, pulse, step sequence and uploaded CSV replay. Numeric, digital and event cases feed the normal native acquisition pipeline. |
+| SIM-04 | V1 supports a bounded expression AST over constants, time/tick, channel references, arithmetic, comparison, conditionals and allowlisted numeric functions. Acyclic channel dependencies and limits on depth, nodes and operations per tick are validated before admission. Arbitrary scripts, dynamic compilation, reflection, file access and networking are prohibited. |
+| SIM-05 | Optional fault profiles cover latency, jitter, drop, duplicate, reorder, disconnect, malformed frame and outlier injection at explicit logical boundaries. Seeded random streams are independent per channel/fault source. Intentional faults carry provenance and counters; they never hide unexpected data loss. |
+| SIM-06 | Fixed logical ticks drive canonical data. Real-time-paced and bounded accelerated generation are supported; pacing, preview refresh and wall-clock timestamps do not change sample values, logical timestamps or canonical hashes. |
+| SIM-07 | Identical effective input under the same supported execution/encoding profile yields identical canonical segment content and hashes. The profile pins numeric semantics, RNG, generator and encoding versions; arbitrary cross-version/CPU floating-point equivalence is not promised. Host/run IDs and wall-clock metadata are outside the reproducible payload. |
+| SIM-08 | Lifecycle is Queued → Starting → Running, with Pausing → Paused → Running, Stopping → Canceled, and terminal Succeeded or Failed. Success means the requested finite logical range completed. Cancel preserves committed segments and records a partial outcome, never success for an incomplete range. |
+| SIM-09 | Start, pause, resume and cancel are durable, authorized, idempotent commands with expected state/revision. Stale commands and duplicate starts cannot create another run or resurrect a terminal run. Terminal reason and complete/partial extent are queryable. |
+| SIM-10 | The single ASP.NET Core Cloud host executes bounded simulator work internally. Durable leases with fencing prevent replicas from publishing the same logical segment; request handlers do not run an unbounded generation loop. |
+| SIM-11 | Canonical batches become immutable object-storage segments. Each manifest entry contains run/profile identity, sequence, logical range, count, encoding, byte length and hash. Publication, manifest visibility and checkpoint advancement are recoverable: incomplete objects stay invisible and are cleaned; a committed manifest never references an unverified partial object. |
+| SIM-12 | A durable checkpoint includes next tick, RNG/generator/replay positions, pending fault/reorder state and committed segment boundary. Pause/resume or host loss and lease takeover produce the same remaining canonical data without duplicate or missing logical ranges. |
+| SIM-13 | Clients obtain an authorized manifest and resumable, hash-verifiable segments through HTTP/object storage, plus revision/cursor-based state/event polling. SignalR is an optional wakeup/preview hint, never the authoritative raw sample stream. Reconnect and disabled realtime preserve access to retained committed data. |
+| SIM-14 | ArcScope exposes Cloud Simulation as a clearly synthetic DataSource. Users start/select a scenario, observe, pause/cancel, download and replay committed data in normal session, capture, decoder, measurement and report workflows. Seed/profile provenance survives export or copy. |
+| SIM-15 | Memory, queues and temporary storage are bounded. Preview may visibly decimate or throttle. Canonical generation instead slows, persists safely or stops with an explicit partial outcome; preview overload cannot silently drop canonical samples. |
+| SIM-16 | Deployment policy bounds channels/rates/duration, AST work, per-workspace/global concurrency, queue/wait time, storage/egress and retention. Limits are enforced before and during execution, with capacity reservation where required. Unauthorized or impossible requests fail before side effects. |
+| SIM-17 | Official simulation requires the configured active Cloud service entitlement, independently of AI credits. Duration, samples, bytes and egress are product-resource usage, never model tokens. No simulator per-run AI debit or separate pay-per-use sale is required. Self-hosting uses operator grants and the same safety limits. Term expiry/suspension stops further generation at a durable boundary as Canceled with the explicit eligibility reason; committed output follows retained-data access rules. |
+| SIM-18 | CSV replay reads explicitly uploaded, workspace-owned resources with a content hash, schema and bounded parse report. Scenarios cannot fetch arbitrary URLs, read host files or cross workspace boundaries. Exported scenarios contain no deployment secrets or policy values. |
+| SIM-19 | Retention, deletion and exhausted storage expose their effect on historical runs and native availability. Active leases/readers are handled safely. Stored outputs remain distinguishable from regenerating a new run. |
+| SIM-20 | Acceptance runs against the real Cloud host, storage and native adapter: same seed/profile hashes; changed seed; precise fault positions; pause/resume; killed host and fenced takeover; duplicate commands; malformed AST/CSV; quota exhaustion; cross-workspace denial; reconnect with realtime disabled; partial cancellation; and a 24-hour bounded-resource soak. A preview or test fake is insufficient. |
 
 ---
 
@@ -302,7 +332,7 @@ Query capabilities (list projects, sessions, captures, channels, signals, events
 
 | # | Requirement |
 |---|---|
-| LR-01 | Capture, decode, analysis, import and export are long-running activities in the shared activity surface (`AV-01`). |
+| LR-01 | Capture, decode, analysis, import and export are product Activity/Job operations in the shared activity surface. SimulationRun is a Cloud-owned product job. None creates a second AI scheduler. |
 | LR-02 | **Capture is a special long-running activity with a permanently visible recording state.** |
 | LR-03 | **The recording indicator is safety-critical UI.** It must be unmistakable, always visible while recording, and must never be obscured or ambiguous. |
 | LR-04 | **Closing a window during capture must not silently stop or silently continue.** The user is asked, with the consequences stated (`LF-04`). |
@@ -324,7 +354,7 @@ Reserved contribution points: **source adapters**, **decoders**, **measurement k
 
 ## 21. Non-goals
 
-ArcScope is **not**: a general-purpose BI tool; a long-term knowledge base (that is ArcNotes); an agent platform (that is ArcChat); a device management or configuration console; a SCADA/control system; an image editor; or a data warehouse.
+ArcScope is **not**: a general-purpose BI tool; a long-term knowledge base (that is ArcNotes); an agent runtime (the single runtime lives in Cloud); a device management or configuration console; a SCADA/control system; an image editor; or a data warehouse.
 
 **The architecture is always Raw immutable + Derived analysis.**
 
@@ -347,6 +377,7 @@ Annotation · Marker · RegionAnnotation · Finding
 SavedAnalysisView · Comparison · Alignment · BaselineReference
 ArcScopeReport
 ImportOrigin · ImportJob · ExportJob
+SimulationDefinition · ScenarioVersion · SimulationRun · SimulationSegment · SimulationEvent
 ```
 
 ---
@@ -367,7 +398,7 @@ ImportOrigin · ImportJob · ExportJob
 | **Report** | Structured report with traceable sources |
 | **Import/Export** | Generic data import, CSV/JSON export with precision warnings, native export, collect bundle |
 | **AI** | Grounded internal actions, Ask ArcChat with bounded context, ArcChat query and analysis capabilities |
-| **Cloud** | Project and metadata sync, explicit per-session raw upload, remote analysis via ArcChat |
+| **Cloud** | Project/metadata sync, explicit hardware-capture upload, Cloud-orchestrated native analysis and deterministic Cloud simulation (SIM-01–SIM-20) |
 
 ---
 
@@ -415,6 +446,8 @@ ImportOrigin · ImportJob · ExportJob
 **AI** — a numeric claim carries a citation; the raw capture is never sent to a model; a local-only capture is not uploaded by pressing an AI button; the scope used is visible.
 
 **Cloud** — enabling project sync uploads no raw capture; a session with cloud metadata and missing local raw data presents clearly, not as corruption; remote analysis runs on the desktop rather than uploading the data.
+
+**Simulator** — SIM-20 exercises the actual host, storage and native source adapter. Reproducing simulated faults requires no physical hardware, AI access or always-online desktop.
 
 **Safety UI** — the recording indicator is unmistakable; closing a window during capture asks; background capture ends when work ends.
 

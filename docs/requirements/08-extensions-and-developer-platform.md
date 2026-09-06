@@ -1,4 +1,5 @@
 # Extensions, Integrations and Developer Platform Requirements
+> Current scope amendment: **[P2-006](../decisions/phase-2-specification-decisions.md)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Requirements
@@ -13,7 +14,7 @@ Template     parameterised initial blueprint        no code, no capability
 Workflow     reusable execution blueprint           orchestrates existing capabilities
 MCP          external capability integration        adapter to an external server
 Connector    long-lived external relationship       identity + data + capability
-External Agent  delegated executor                  operates under a capability lease
+External Agent  excluded                           no delegation/ACP executor
 Extension    installable executable component       out-of-process, adds new capability
 Third-party App  standalone Arc application         its own product, own domain
 ```
@@ -57,7 +58,7 @@ Third-party App  standalone Arc application         its own product, own domain
 | WF-03 | **Workflow ≠ Agent Plan** (`I-297`). A workflow is authored and deterministic in structure; an agent plan is generated per run and revisable. |
 | WF-04 | **A workflow update does not change a running Task.** Running Tasks keep their frozen execution snapshot. |
 | WF-05 | **A workflow is not a second agent runtime.** It compiles into ordinary Steps in the one execution model. |
-| WF-06 | **No scripting language is introduced** (`I-298`). Workflow steps are declared, typed and closed: invoke capability, branch on a declared condition, iterate a bounded collection, wait for approval, wait for a child task, produce an artifact. |
+| WF-06 | **No scripting language is introduced** (`I-298`). Workflow steps are declared, typed and closed: invoke capability, branch on a declared condition, iterate a bounded collection, wait for approval, wait for a product job, produce an artifact. |
 | WF-07 | **Unbounded looping is not a workflow capability.** Recurrence belongs to Automation triggers. |
 | WF-08 | **A community workflow obtains no implicit permission** (`I-265`). Each step passes the full security pipeline. |
 | WF-09 | A workflow may depend on **connector capabilities**; the resulting run is an ordinary root Task. |
@@ -102,20 +103,20 @@ Automation is specified in [`05-ai-and-agent-execution.md`](05-ai-and-agent-exec
 | CN-08 | **Connector content is data, never instruction** (`I-263`). |
 | CN-09 | An OAuth scope expansion requires re-consent (`TR-11`). |
 
-## 7. External Agent
-
-**External Agent = an agent executor outside the ArcChat agent runtime that can accept delegated work.**
+## 7. External-agent exclusion
 
 | # | Requirement |
 |---|---|
-| EA-01 | **External Agent ≠ Agent Profile** (`I-313`). A profile is ArcChat configuration; an external agent is a foreign executor. |
-| EA-02 | **ACP is an external-agent adapter**, one access protocol among several — not the ArcChat runtime model (`I-316`). |
-| EA-03 | **An ACP session is not a Conversation** (`I-315`). It maps into ArcChat objects; it does not become one. |
-| EA-04 | External agent execution maps into the **same** Stage-19 model: root task, run, steps, attempts, artifacts. **It is not a parallel task authority** (`I-314`). |
-| EA-05 | **Every delegation is a Capability Lease** (`CL-01`–`CL-04`): scoped, time-bounded, task-bounded, non-amplifying, auto-expiring. |
-| EA-06 | External agent outputs map uniformly to ArcForges results and `ArtifactRef`s. |
-| EA-07 | **An external agent's internal chain-of-thought never enters the ArcChat product model** (`I-107`). |
-| EA-08 | An external agent is delivered as an integration package; it does not become a built-in ArcChat agent. |
+| EA-01 | Retired by P2-006: external-agent providers and profile-to-external-agent modes are excluded. |
+| EA-02 | Retired by P2-006: no ACP external-agent adapter. |
+| EA-03 | Retired by P2-006: no external-agent session mapping. |
+| EA-04 | Retired by P2-006: no delegation into another agent runtime or independently planning child Task. |
+| EA-05 | Retired by P2-006: no external-agent delegation lease. Ordinary bounded tool leases retain security requirements. |
+| EA-06 | Retired by P2-006: no external-agent result adapter; ordinary tool results use the accepted result contract. |
+| EA-07 | Hidden reasoning is never an extension result or audit requirement. |
+| EA-08 | A package/connector/MCP tool cannot bypass this exclusion by starting an autonomous delegated agent. No agent-team or external-agent contribution kind. |
+
+The single Cloud Harness may call authorised tools concurrently within one budget. A tool has declared input/output, effect and timeout semantics; it does not own a model loop or a delegated work goal.
 
 ---
 
@@ -247,8 +248,8 @@ The unresolved tension — a strongly typed AOT product versus unknown third-par
 | # | Requirement |
 |---|---|
 | CA-01 | **Catalog ≠ Marketplace** (`I-323`). It is not a paid marketplace in this baseline. |
-| CA-02 | **Catalog ≠ runtime dependency** (`I-324`). Local products keep working with the catalog unreachable; installed packages keep running offline. |
-| CA-03 | Three catalog source classes are supported: the **official** catalog, an **organization or self-hosted** catalog, and **local/sideload**. |
+| CA-02 | **Catalog ≠ runtime dependency** (`I-324`). Local products keep working with the catalog unreachable; installed non-AI native capabilities remain available offline; Cloud AI never falls back to local execution. |
+| CA-03 | Three catalog source classes are supported: the **official** catalog, a **self-hosted** catalog, and **local/sideload**. |
 | CA-04 | **A self-hosted realm must not be locked to the official catalog.** |
 | CA-05 | A catalog package page shows: identity, publisher, trust state, review status, category, contributions, **declared permission surface**, compatibility, platform targets, licence, version history and security contact. |
 | CA-06 | **Permissions are visible before installation** (`UX-02`). |
@@ -257,7 +258,7 @@ The unresolved tension — a strongly typed AOT product versus unknown third-par
 | CA-09 | **A recommendation never installs anything automatically** and never becomes advertising pressure. |
 | CA-10 | **An agent must never auto-install or auto-trust a community package.** |
 | CA-11 | **Community ratings and reviews are not runtime authority.** |
-| CA-12 | An **organization policy** may restrict which catalogs, publishers, categories or trust levels are permitted (see [`11-policy-and-configuration.md`](11-policy-and-configuration.md)). |
+| CA-12 | A **realm or owner workspace policy** may restrict which catalogs, publishers, categories or trust levels are permitted (see [`11-policy-and-configuration.md`](11-policy-and-configuration.md)). |
 | CA-13 | **Package revocation reaches installed users** as an actionable Needs Attention state, coordinated with the security-advisory process, and never deletes user work. |
 
 ---
@@ -356,7 +357,7 @@ Extension points are typed and versioned per product. Not every point must open 
 | EP-01 | **Extension points are versioned independently** of the host product version. |
 | EP-02 | **Official reserved capability namespaces are protected** and cannot be registered by an extension (`EX-12`). |
 | EP-03 | **Outside a known extension point**, contribution goes through the level-2 schema-described capability protocol. |
-| EP-04 | **Extension-generated knowledge sources are ordinary knowledge sources** subject to the full five-dimension policy model — declaring one does not mean AI indexes everything behind it. |
+| EP-04 | **Extension-generated knowledge sources are ordinary knowledge sources** subject to the current four-dimension policy model — declaring one does not mean AI indexes everything behind it. |
 | EP-05 | **Connector events feed ordinary automation triggers**, with mandatory throttling, `EventId` deduplication and causation, because a high-rate external event stream must not create a task storm (`LP-04`). |
 | EP-06 | **Capability resolution must be deterministic** when several providers offer the same capability: an explicit preference, then a documented rule — never a random pick. |
 | EP-07 | **A package cannot expand its permission through a dependency** (`AP-12` analogue). Authority belongs to the actual executor and is evaluated per invocation. |
@@ -377,7 +378,6 @@ WorkflowDefinition · WorkflowVersion · WorkflowStepTemplate
 IntegrationDefinition · IntegrationInstance
 McpIntegration · McpConnection
 ConnectorDefinition · ConnectorConnection · ConnectorSyncState
-ExternalAgentProvider · ExternalAgentConnection · ExternalAgentSessionMapping
 ExtensionDefinition · ExtensionInstance · ExtensionHostSession
 ExtensionCapabilityDescriptor · ExtensionSchema · StructuredExtensionValue
 ExtensionPoint · ExtensionPointVersion
@@ -392,7 +392,7 @@ DeveloperMode
 
 | Surface | Contents |
 |---|---|
-| **Integrations** | MCP connections, connectors and external agents in one management surface, with unified status: configured, connected, degraded, failing, unauthorised, revoked |
+| **Integrations** | MCP connections and connectors in one management surface, with unified status: configured, connected, degraded, failing, unauthorised, revoked |
 | **Library** | Skills, templates and workflows as first-class reusable objects — not buried in settings |
 | **Extensions** | Installed packages, trust state, permissions, health, updates |
 
@@ -416,7 +416,7 @@ DeveloperMode
 
 **Connector** — a definition supports several connections; a secret is stored only by reference; a live query is distinguished from an import.
 
-**External agent** — delegated work maps into the ArcForges task model under a lease; the lease expires with the task; sub-delegation beyond the lease fails.
+**Excluded executor** — packages, MCP connections and connectors cannot register an external-agent/ACP mode, start a sub-agent or bypass Cloud AI billing; ordinary bounded tools remain usable.
 
 **Out-of-process extension** — an extension crash leaves the owning product running; the extension is restarted on demand; the affected capability shows a clear degraded state.
 
@@ -436,7 +436,7 @@ DeveloperMode
 
 **Missing contribution** — a project referencing an unavailable effect opens, explains, and preserves the state for later restoration.
 
-**Catalog** — offline operation continues; a self-hosted catalog is usable; organization policy restricts sources.
+**Catalog** — offline operation continues; a self-hosted catalog is usable; realm/owner policy restricts sources.
 
 **Revocation** — an installed revoked package surfaces Needs Attention and stops executing.
 
@@ -460,9 +460,9 @@ DeveloperMode
 
 | Source | Consumed as |
 |---|---|
-| `I4 §Stage 24` | The entire developer platform: skill, template, workflow, MCP, connector, external agent, extension, third-party app, dual capability boundary, package model, catalog, SDK, CLI, lifecycle, placement rules and non-goals |
+| `I4 §Stage 24` | The entire developer platform: skill, template, workflow, MCP, connector and extension, third-party app, dual capability boundary, package model, catalog, SDK, CLI, lifecycle, placement rules and non-goals |
 | `I4 §Stage 26` | Trust layering, permission and consent rules applied to packages and extensions |
-| `I4 §Stage 19` | The execution model that workflows and external agents map into |
+| `I4 §Stage 19` | Cloud execution for accepted workflows; product jobs remain distinct and external agents are excluded |
 | `I4 §Stage 23` | Extension-provided knowledge sources under the knowledge policy model |
 | `I3 §1.4`, `§9.1`, `§15` | No arbitrary third-party native plug-ins in the main process; AOT host constraints; native boundary discipline |
 | **D-008** | The AOT host constraint that makes out-of-process extensions structural rather than stylistic |

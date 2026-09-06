@@ -1,4 +1,5 @@
 # ArcChat — Product Requirements
+> Current scope amendment: **[P2-006](../../decisions/phase-2-specification-decisions.md)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Requirements / Products
@@ -24,10 +25,10 @@ Six sentences that decide almost every design question:
 |---|---|
 | PB-01 | ArcChat serves **three depths of use in one product**: a quick answer, a directed piece of work, and a long-running orchestrated workflow. It must not fork into three products or three modes of a shell. |
 | PB-02 | **ArcChat is a control plane, never a mandatory data gateway** (**D-010**). Professional products reach Cloud directly for their own data. |
-| PB-03 | **ArcChat owns**: conversations, messages, ArcChat projects, agent tasks and orchestration state, agent profiles, skill configuration, ArcChat-owned automation definitions, the capability registry, the application and instance registry, local approvals, local permission coordination, operational task traces, and artifact references and provenance owned by tasks. |
+| PB-03 | The ArcChat product domain owns conversations, messages, projects, profiles, skills, memory and automation definitions in Cloud. Cloud owns all agent execution and orchestration state. Desktop owns cached projections, drafts, the local application/capability registry, permission checks and idempotent local tool receipts. |
 | PB-04 | **ArcChat never owns**: an authoritative ArcNotes document copy, a writable ArcNotes knowledge database, an authoritative ArcScope session, raw ArcScope capture, an ArcSlate timeline, ArcSlate media ownership, or any professional product's undo stack (`I-020`). |
-| PB-05 | **Thin Preview + Rich Handoff** is the governing interaction principle: ArcChat previews a professional result lightly and hands off to the owning product for real work. |
-| PB-06 | **ArcChat is free and open source, permanently.** Local Hub, local agent, cross-application orchestration, local BYOK and local AI never move behind a subscription (`C-02`). |
+| PB-05 | Thin Preview + Rich Handoff governs results. Native text/image previews and document/media metadata or thumbnails are sufficient; a code/Diff/Office/PDF editing or full media preview workbench is not required. Professional editing opens the owning product; required edit-approval previews remain reviewable. |
+| PB-06 | The native client and local capability bridge are open-source product functionality. Official AI requires an active paid service term with replenishing capacity and optional credits. Local AI, end-user BYOK and a desktop agent scheduler are excluded. |
 
 ### 1.1 Non-goals
 
@@ -75,7 +76,7 @@ Primary surfaces:
 | CV-07 | **Message ≠ Task** (`I-108`). A task is not a message; a conversation **links** to tasks. |
 | CV-08 | **A tool call is not ordinary chat text** (`I-109`). It is an activity detail with its own presentation. |
 | CV-09 | **Model chain-of-thought is never displayed** (`I-107`). |
-| CV-10 | **Assistant response metadata is retained** — model, provider route, tariff version, token and credit usage, tools used, citations, and the effective AI policy — and shown on request rather than crowding the main text. |
+| CV-10 | Response details show the executed model, public route identity, customer tariff version, measured usage and charge status, tools and citations. Private supplier prices, provider credentials and unrestricted deployment policy are never exposed. |
 
 ---
 
@@ -125,7 +126,7 @@ Primary surfaces:
 | PJ-02 | **A project stores references, not copies** of professional data (`I-051`). |
 | PJ-03 | **Deleting a project never cascades into external professional resources** (`LC-05` analogue). Referenced ArcNotes documents, ArcScope sessions and ArcSlate projects survive. |
 | PJ-04 | ArcChat-owned content inside a deleted project — its conversations and tasks — is preserved or explicitly handled, never silently destroyed. |
-| PJ-05 | **A project may be local-only or workspace-synced**, and that choice is explicit. |
+| PJ-05 | Projects and their acknowledged content belong to the selected Cloud workspace. Native cached projections and unsent drafts are durable; a local-only agent project is not a supported storage or execution mode. |
 
 ---
 
@@ -133,7 +134,7 @@ Primary surfaces:
 
 | # | Requirement |
 |---|---|
-| TC-01 | **Task Center is the second core surface.** Every task — manual, agent-created, automation-created, remote — appears here. Origin is a filter, not a separate page (`AU-06` family). |
+| TC-01 | The Task Center projects Cloud agent tasks from interactive and automation origins. It may display associated native product jobs distinctly, with owner and availability; a render or capture does not become an AI task merely by appearing here. |
 | TC-02 | **A task does not require a conversation** (`I-108`), and **a conversation may link many tasks**. |
 | TC-03 | Task detail contains: intent, status with reason, execution location, plan, operational trace, artifacts, approvals, cost, budget, origin, actor chain and outcome summary. |
 | TC-04 | **Task trace shows the operational trace only** (`I-107`, `PR-08`–`PR-10`). |
@@ -177,7 +178,7 @@ Primary surfaces:
 | AP-08 | **Every capability carries a trust level** (§9). |
 | AP-09 | **Capability version compatibility exists from the first release** (`P-13`, `CM-01`). |
 | AP-10 | **Application events may drive agent automation** — the event feeds an ordinary automation trigger with deduplication, causation and throttling (`EP-05`). **V1 keeps event automation simple**; time triggers are the baseline. |
-| AP-11 | **No hidden call network forms between products.** Automated cross-application orchestration goes through ArcChat (`§4.1` of the product scope). This does not reduce product independence: a simple user-directed handoff still goes product-to-product. |
+| AP-11 | AI cross-product orchestration runs in the single Cloud harness. ArcChat bridges authorized desktop tools; simple user-directed handoffs can go directly to the owning product. |
 
 ### 8.1 Capability invocation ordering
 
@@ -244,19 +245,15 @@ The agent's preference order is fixed:
 | IN-04 | **MCP credentials are secrets**, not configuration strings (`SE-01`). |
 | IN-05 | **A down MCP server must not break ArcChat.** The product continues; the integration shows degraded. |
 | IN-06 | **An MCP resource does not automatically become AI context** (`I-076`, `PL-01`). |
-| IN-07 | MCP servers, connectors and external agents are presented in **one Integrations surface** with unified status (`§16` of the extension requirements). |
+| IN-07 | MCP servers and connectors share an Integrations surface. External agent/ACP adapters, handoff and agent delegation are excluded. |
 
 ---
 
 ## 12. AI source, provider and model
 
-Three separate axes (`I-115`, `I-116`):
+Cloud service access has one customer mode: subscribed, operator-managed AI. The model picker selects an Auto class or an available concrete model; provider routing is server-side infrastructure. Self-hosting changes the service realm and operator configuration, not the desktop into a model host.
 
-| Axis | Meaning |
-|---|---|
-| **AI Source** | Local AI · Local BYOK · Cloud BYOK · Arc Managed AI |
-| **Provider** | Which vendor or route serves the request |
-| **Model** | Which model executes it |
+---
 
 | # | Requirement |
 |---|---|
@@ -268,11 +265,11 @@ Three separate axes (`I-115`, `I-116`):
 | AI-06 | A conversation remembers its model policy; **a single message may override without permanently changing the default**. |
 | AI-07 | Resolution order: per-message override → conversation policy → project default → profile → global default, bounded by availability policy and budget. |
 | AI-08 | **A task freezes its AI policy at start** (`TR-04`, `TS-01`). |
-| AI-09 | **BYOK and Managed AI never silently fall back to each other** (`AI-02`, `AI-03` in the AI requirements). |
+| AI-09 | AI always uses the selected Cloud service realm. Provider unavailability cannot cause desktop inference, end-user key use or a silent switch to another service realm. |
 | AI-10 | **Auto routing is explainable**: the user can see which model ran and why. |
-| AI-11 | A **Usage / Credits** surface shows allowance and purchased credits separately, with per-task and per-response cost (`§11.8` of the AI requirements). |
+| AI-11 | Usage shows replenishing included capacity, recovery timing, additional credits, configured rate/concurrency limits and per-response/task measured consumption. Extra-credit use is opt-in and visibly capped. |
 | AI-12 | **Long context is flagged before it is used** (`CO-04`). |
-| AI-13 | **ArcChat must start and be usable with no AI provider configured at all.** "Continue without AI" is a real button, not a dead end. |
+| AI-13 | The client starts without a paid term and exposes sign-in, preferences, application status and authorized cached history. Sending a model request requires Cloud connectivity and service eligibility; no provider setup or offline agent alternative is offered. |
 | AI-14 | **Provider failure is productised**: a clear state, a retry path, an alternative, and never a red-flagged conversation. |
 
 ---
@@ -335,13 +332,13 @@ Three separate axes (`I-115`, `I-116`):
 
 | # | Requirement |
 |---|---|
-| ON-01 | **Onboarding is extremely restrained.** No account gate, no forced tour, no marketing wall. |
-| ON-02 | **AI setup is progressive**: local AI, local BYOK, or Arc Managed AI — chosen when the user wants it. |
-| ON-03 | **Local AI and local BYOK require no cloud account** (`AI-04` in the AI requirements). |
-| ON-04 | **Arc Managed AI requires an ArcForges account** and is offered, never imposed. |
+| ON-01 | Onboarding is restrained and explains the Cloud account/service dependency where needed. No forced tour or suite install. |
+| ON-02 | AI onboarding selects an available Cloud model policy after sign-in, shows service eligibility and usage limits, and obtains any required purchase through the approved commerce surface. |
+| ON-03 | Local AI and all end-user BYOK setup paths are excluded. |
+| ON-04 | Official AI requires an ArcForges account and active paid service term. Extra credits alone do not activate AI. Self-hosting uses the configured operator service grant, not official credits. |
 | ON-05 | **Application detection is informative, not coercive.** Discovering that ArcNotes is installed enables capabilities; not having it must not push a suite installation. |
 | ON-06 | **Permissions are not front-loaded into onboarding** (`UX-01`). They are just-in-time. |
-| ON-07 | **First value is fast**: send a first message, or run a first simple agent task. |
+| ON-07 | For an eligible account, first value is a first answer or simple Cloud agent task. An ineligible/offline state gives a precise next action rather than a fake response. |
 
 ---
 
@@ -351,7 +348,7 @@ Three separate axes (`I-115`, `I-116`):
 |---|---|
 | **Chat & Composer** | Defaults, draft behaviour, display, conversation data |
 | **Agent & Tasks** | Default profile, default budgets, default execution target, approval defaults |
-| **Models & Providers** | AI source, provider configuration, model policy, credentials by reference |
+| **AI & Usage** | Cloud model policy, service status, included capacity, extra-credit consent and budgets |
 | **Memory & Personalization** | Personal memory, its visibility and controls |
 | **Data & Privacy** | Sync scope, AI processing, export, local data location |
 | **Account & Workspace** | Identity, realm, active workspace, storage |
@@ -360,10 +357,10 @@ Three separate axes (`I-115`, `I-116`):
 | # | Requirement |
 |---|---|
 | ST-01 | **Skills, MCP and Apps are manageable product objects with their own surfaces**, not buried in Settings. Settings carries defaults and preferences. |
-| ST-02 | **A provider credential is never a settings string** (`SE-01`). It lives in the secret vault and appears as a reference. |
-| ST-03 | **Cloud sync and AI processing are separated in the interface** (`I-182`, `AI-01`). Using managed AI for a local conversation does not add that conversation to cloud sync. |
-| ST-04 | **A conversation's storage scope and its AI billing scope are distinct** (`SC-03` in the AI requirements). A local-only conversation may be billed to a workspace's credits without granting that workspace data access. |
-| ST-05 | **Local conversations and projects are never automatically uploaded after sign-in** (`ID-06`). |
+| ST-02 | End users never configure model-provider credentials. MCP/connector credentials remain purpose-scoped secrets by reference; they cannot act as a BYOK inference bypass. |
+| ST-03 | Cloud sync and AI processing permissions are distinct. Sync does not authorize every resource as AI context. Conversations/tasks are Cloud-owned; sending AI content is Cloud processing. |
+| ST-04 | Every Cloud agent operation uses one selected owner workspace for data authorization, service eligibility and metering. Cross-realm billing or a local-only agent task billed elsewhere is excluded. |
+| ST-05 | Unsent drafts and local-only professional files are never uploaded merely on sign-in. Sending/attaching explicitly authorizes only the displayed content scope. |
 | ST-06 | **The active workspace and context scope are always visible** (`AC-03`), and there is **no silent cross-workspace context** (`AS-02`). |
 
 ---
@@ -372,7 +369,7 @@ Three separate axes (`I-115`, `I-116`):
 
 | Failure | Required behaviour |
 |---|---|
-| **Cloud outage** | Local chat, local agent, local tasks and local BYOK continue. Cloud-dependent capabilities degrade with a specific reason. The whole product does not enter a red offline mode (`ST-03` in the shared desktop requirements). |
+| **Cloud outage** | Cached history, drafts, deterministic search and authorized native tools remain usable. New AI requests wait for Cloud; there is no local model loop. Cloud-dependent capabilities degrade with a specific reason. The whole product does not enter a red offline mode (`ST-03` in the shared desktop requirements). |
 | **Provider failure** | Reserved credits are released; the failure is reported with a retry or alternative; the user is not charged for platform-caused retries (`CU-03`). |
 | **Agent task failure** | The **task** is marked failed, **not the conversation** (`ER-01`). |
 | **Professional application unavailable** | The task waits or needs attention with a specific reason and a launch or install route (`HO-02`–`HO-04`). |
@@ -384,8 +381,8 @@ Three separate axes (`I-115`, `I-116`):
 
 | # | Requirement |
 |---|---|
-| EX-01 | **Conversation export** is supported in documented formats, with attachments handled explicitly. |
-| EX-02 | **Task export and artifact export** are supported, carrying provenance. |
+| EX-01 | Cloud conversation export supplies documented JSON/text content with an attachment manifest and explicit availability. The client downloads the artifact; no standalone local conversation archive/recovery format is required. |
+| EX-02 | Cloud task-summary and selected artifact export preserve provenance and declared scope. They exclude secret credentials, private operational traces and another product’s unselected data. |
 | EX-03 | **ArcChat export never includes API keys or secrets** (`EX-10` in the data requirements). |
 | EX-04 | **Public share links are not in V1** (`§18` of the cloud requirements). Sharing is by export. |
 
@@ -395,9 +392,9 @@ Three separate axes (`I-115`, `I-116`):
 
 | # | Requirement |
 |---|---|
-| BL-01 | **ArcChat is the stated background/tray exception** (`LF-03`). It may run in the background to host the Hub, receive remote work and run automations. |
+| BL-01 | ArcChat may visibly run in the background for the local Hub and Cloud ToolRequest bridge. Automation scheduling and the model loop remain in Cloud; stopping the bridge makes local tools unavailable without ending Cloud-only work. |
 | BL-02 | **It must never reside in the background secretly.** The state is visible, and the user can stop it. |
-| BL-03 | **Task recovery on restart is mandatory** (`RV-01`–`RV-05`). Interrupted runs are evaluated, not silently retried or silently dropped. |
+| BL-03 | Restart recovers Cloud task projections and durable local tool receipts. A lost reply reconciles by operation identity; the desktop never recreates or blindly reruns the Cloud agent loop. |
 | BL-04 | **The Hub is hosted in the ArcChat process** (`P-05`); no system service is installed. |
 
 ---
@@ -411,7 +408,7 @@ ContextReference · PinnedContext · TemporaryContext
 ArcChatProject · ProjectInstruction · ProjectReference
 AgentProfile · AgentProfileVersion
 Skill · SkillVersion · SkillAssignment
-AISelectionPolicy · AIResponseUsage · ProviderConfiguration · ModelDescriptor
+AISelectionPolicy · AIResponseUsage · CloudModelSelection · ModelDescriptor
 TaskReference · ApprovalReference
 Artifact · ArtifactReference · ArtifactProvenance
 AppRegistrationProjection · CapabilityProjection
@@ -434,15 +431,15 @@ ArcChatDataScope
 | **Agent** | Task creation, Task Center, progress, approval, cancel, artifacts |
 | **Apps** | Detect Arc products, installed/running state, capabilities, launch on demand |
 | **Profiles / Skills** | A default profile, user profiles, user skills, skill assignment |
-| **AI** | Local AI, local BYOK, Arc Managed AI, Cloud BYOK, Auto plus explicit model |
+| **AI** | Cloud subscription service, Auto/explicit model, actual usage, capacity recovery and opt-in extra credits |
 | **Search** | ArcChat data search plus the federated search foundation |
 | **Memory** | Transparent personal memory, project context, conversation context |
 | **Automation** | List, enable/disable, create, "automate this" |
-| **Cloud** | Explicit ArcChat sync, workspace, managed AI, task and remote integration |
+| **Cloud** | Authoritative conversations/projects, single-owner workspace, AI tasks and local-tool integration |
 
-**Not required in V1**: a third-party package manager inside ArcChat, an integration marketplace, a full extension ecosystem, computer use as a core mechanism, multi-agent as a user-facing concept, public share links, or a large model catalogue.
+**Not required in V1**: a third-party package manager inside ArcChat, an integration marketplace, a full extension ecosystem, computer use as a core mechanism, public share links, or a large model catalogue.
 
-**Multi-agent is an internal capability, not a user-facing product concept** in V1 — parallel steps and child tasks, not an agent-team interface (`CT-06`).
+**Multi-agent execution, sub-agents, agent teams, handoff and external-agent delegation are excluded internally and in the UI.** Bounded concurrent tools and ordinary product jobs remain supported.
 
 ---
 
@@ -458,7 +455,7 @@ An **ArcChat Reference Coverage Matrix** is required before ArcChat implementati
 
 ## 25. Acceptance scenarios
 
-**First run** — no account; Home opens; no AI provider configured and the product does not fail; local AI can be configured; "continue without AI" works.
+**First run** — the native shell opens; sign-in/service requirements are clear; cached functions work as authorized; sending requires an eligible Cloud service. No provider-key or local-model setup exists.
 
 **Chat versus Agent** — a question in Chat Mode answers with no task; a work request in Agent Mode creates a task with a visible plan and controls.
 
@@ -480,7 +477,7 @@ An **ArcChat Reference Coverage Matrix** is required before ArcChat implementati
 
 **Model** — a pinned model is never substituted; Auto stays within its cost class; a per-message override does not change the default.
 
-**BYOK** — a provider 429 on the user's key does not silently spend credits.
+**Service usage** — exhausted included capacity offers recovery timing or explicitly authorized extra credits; a credit balance without an active paid term cannot invoke official AI.
 
 **Memory** — personal memory is inspectable and deletable; a temporary chat is honest about what the model received.
 
@@ -488,7 +485,7 @@ An **ArcChat Reference Coverage Matrix** is required before ArcChat implementati
 
 **Automation** — "automate this" from a successful task produces a template with dynamic input, and each run appears in the Task Center.
 
-**Cloud outage** — chat, local agent, local tasks and local BYOK all continue.
+**Cloud outage** — cached history, drafts and native tools survive; new AI is unavailable. Recovery reconciles Cloud state and pending local tool results without duplicate execution or billing.
 
 **Background** — background operation is visible and stoppable; interrupted tasks are recovered and evaluated on restart.
 

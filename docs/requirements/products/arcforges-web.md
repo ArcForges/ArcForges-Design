@@ -1,4 +1,5 @@
 # ArcForges Web — Product Requirements
+> Current scope amendment: **[P2-006](../../decisions/phase-2-specification-decisions.md)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Requirements / Products
@@ -63,14 +64,14 @@ Its job is **Discover → Understand → Download**, then **Upgrade to Cloud**.
 
 | # | Requirement |
 |---|---|
-| MS-01 | **The site must never become a SaaS login home page.** The product path is: visit → learn → **download directly** → use locally for free → need cloud or AI → register and sign in → subscribe. The inverse — register, pay, then download — is prohibited. |
+| MS-01 | Discovery and direct download require no account. Product pages accurately separate native offline operations from Cloud account, service and AI requirements; download is never gated by purchase. |
 | MS-02 | **Downloading never requires an account** (`C-05`). |
 | MS-03 | First-level navigation is fixed: **Products · Cloud · Pricing · Download · Open Source · Docs**, with **Sign In** and a primary download action. |
-| MS-04 | **The home page states, plainly and immediately, that local software is free and open source and that the paid product is an optional managed cloud service.** |
+| MS-04 | The home page states that product source is open, Cloud is authoritative for subscribed AI and synchronized content, and operator deployment values are private. It must not imply account-free local AI or a permanent standalone ArcNotes service. |
 | MS-05 | **Every product has a page on a unified template**: what it is, who it is for, key capabilities, screenshots or demo, platform support, system requirements, download, documentation link, open-source link, and how the cloud enhances it. |
 | MS-06 | **Product pages must never advertise a superseded product name.** `ArcCanvas`, `ArcMusic`, `ArcImage` and `ArcVideo` do not appear (**D-002**). |
 | MS-07 | **A unified Download Center** presents every product, platform, architecture, package format, version, release channel, hash and signature information, and system requirements — from **one source of truth**. |
-| MS-08 | **The pricing page states that final price and applicable taxes are determined at checkout** (`PC-03`), and never promises unlimited storage or unlimited AI (`C-04`, `C-09`). |
+| MS-08 | Pricing is generated from the public projection of deployed offers, states that checkout determines final price/tax, and discloses AI recovery, burst/rate/concurrency and model limits. It never promises unbounded throughput, budget or storage. |
 | MS-09 | **Open Source is a first-level official page**: licences (both boundaries per **D-004**), repositories, contribution guidance, third-party notices and the security policy. |
 | MS-10 | **Self-hosting belongs in the documentation**, presented as a supported first-class deployment — not as a competing product line on the marketing site. |
 | MS-11 | **A public roadmap commitment system is not built.** Direction may be communicated; dated feature promises are not (`OB-05` in the distribution requirements). |
@@ -112,9 +113,9 @@ Its job is **Discover → Understand → Download**, then **Upgrade to Cloud**.
 | Section | Contents |
 |---|---|
 | **Overview** | Plan, cloud status, storage summary, AI usage summary, devices summary, attention items |
-| **Workspace** | Personal and organization workspaces, data region, protection profile, members (later) |
+| **Workspace** | Single-owner personal workspace, data region and device association; no teams, members, invitations or protection-mode selector |
 | **Storage** | Quota, usage by product, versions and trash, manage storage |
-| **AI** | Allowance and purchased credits shown separately, usage history, provider and model preferences, Cloud BYOK |
+| **AI** | Included capacity/recovery, additional credits, service eligibility, usage history, Cloud model policy and extra-credit limits |
 | **Devices** | Registered devices, presence, trust, revoke |
 | **Remote Access** | Per-device remote enablement and per-capability grants |
 | **Security** | Passkeys, recovery codes, sessions, security activity, API tokens, step-up |
@@ -127,7 +128,7 @@ Its job is **Discover → Understand → Download**, then **Upgrade to Cloud**.
 | AP-02 | **Every high-privilege operation lives here**: account, security, account deletion, billing, device revocation, remote-access grants (`§12` of the identity requirements). |
 | AP-03 | **In-product account interfaces stay lightweight** and link here (`§12` there). |
 | AP-04 | **Account deletion is available in the portal** and separately in every product, as required by store policy (`§10` there). |
-| AP-05 | **Allowance and purchased credits are displayed separately**, never summed (`§8.3` of the commerce requirements). |
+| AP-05 | Included recoverable capacity and purchased credits are displayed separately, with recovery timing, active-term dependency, extra-credit consent and consumption history. |
 | AP-06 | **Entitlement is shown with reasons**, not as a bare plan name (`ES-02` there). |
 | AP-07 | **An Entitlement Explain view exists for support** (`ES-07` there). |
 | AP-08 | **Invoices, receipts, payment details and billing-related refunds are handled by the Merchant of Record's portal** in V1; ArcForges does not reimplement an invoice engine or a tax-invoice editor (`§11` there). |
@@ -187,13 +188,13 @@ ServiceComponent · StatusIncident
 Each must be complete and testable:
 
 1. **Discover → product page → download**, with no account.
-2. **Download → install → use locally**, with no account and no network.
-3. **Need cloud → sign up → create passkey → personal workspace → choose what to sync.**
+2. **Download → install → native product entry**, with honest sign-in requirements; cached work and native capture/render operate under their product-specific offline contract.
+3. **Sign up → create passkey → single-owner workspace → activate service → synchronized work**, with explicit native raw-media/capture upload choices.
 4. **Pricing → sign in → checkout → confirming → entitlement active** (`§4` of the commerce requirements).
 5. **Sign in → account portal → manage storage, AI, devices, remote access, security, billing.**
 6. **Enable remote access on desktop → manage per-capability grants in the portal → approve from a companion surface.**
 7. **Export workspace data → download.**
-8. **Delete cloud data**, and separately **delete account**, with local data untouched.
+8. **Delete selected Cloud data**, or **delete account**, with a retention/propagation preview and protection of unsent work. Deletion semantics distinguish device caches from independent native capture/media files.
 9. **Read documentation for a specific product version.**
 10. **Check status during an incident**, on infrastructure independent of the cloud.
 11. **Report a security issue** through the private route.

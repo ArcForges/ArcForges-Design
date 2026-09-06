@@ -1,8 +1,9 @@
 # ArcForges Normative Glossary and Invariant Catalogue
+> Current scope amendment: **[P2-006](../decisions/phase-2-specification-decisions.md)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Requirements — cross-cutting, consumed by every requirements, architecture, assurance and planning document
-> Satisfies: **D-018** (mandatory foundation-to-specification gate), including the **V-02** MCP term-collision requirement
+> Governs: **D-018** vocabulary and **V-02** term disambiguation. Earlier coverage evidence must be reconciled to P2-006 before the revised requirements claim closure.
 > Owner role: Architecture Owner
 
 This document is the single normative vocabulary for ArcForges. Every other authoritative document uses these terms with these meanings and no others.
@@ -11,7 +12,7 @@ This document is the single normative vocabulary for ArcForges. Every other auth
 
 1. **One definition per canonical term.** If a term appears in a specification, contract, schema, UI string, telemetry dimension, database column, test name or work package, it carries the meaning defined here.
 2. **Product-specific meanings are namespaced.** Where a word means different things in different products, the bare word is not usable; the namespaced form is mandatory (`ArcChat.Project`, `ArcScope.Project`, `ArcSlate.Project`).
-3. **Every `X ≠ Y` invariant in §7 is binding.** Merging two sides of an invariant into one type, one table, one column, one flag, one enum, one endpoint, one event or one permission is an architecture violation, not a simplification.
+3. **Every active `X ≠ Y` invariant in §7 is binding within current scope. Retired entries are historical only.**** Merging two sides of an invariant into one type, one table, one column, one flag, one enum, one endpoint, one event or one permission is an architecture violation, not a simplification.
 4. **Forbidden aliases (§8) must not appear** in any new authoritative document, identifier, or user-visible string.
 5. Terms are classified by space — **wire**, **domain**, **UI**, **storage**, **commercial** — in §6. A term may exist in more than one space; when it does, the spaces are distinct types and are never the same object.
 
@@ -23,10 +24,10 @@ This document is the single normative vocabulary for ArcForges. Every other auth
 |---|---|---|
 | **Realm** | domain, wire | An independent deployment of ArcForges Cloud that is its own authority: the Official realm, or a self-hosted realm. Objects are never identical across realms even when the account email matches. Every cross-device and cross-application reference is realm-aware. |
 | **User** | domain, wire | A cloud account identity within a realm. |
-| **Local Anonymous User** | domain | The signed-out operator of a desktop product. Has full local capability. Has no cloud identity and no `UserId`. |
-| **Workspace** | domain, wire | The cloud tenancy and resource-ownership boundary. **Never** a panel/window layout. |
+| **Local Anonymous User** | domain | A signed-out native operator without a Cloud UserId. May use product-specific native functions; has no official AI access or account-free notebook service. |
+| **Workspace** | domain, wire | A single-user Cloud data, device, sync, billing and permission boundary. One owner in a realm; never a team/member container or panel layout. |
 | **Layout** | UI | A desktop panel/window arrangement. The mandatory term for what some products elsewhere call a "workspace". |
-| **Organization** | domain, wire | A future multi-seat container above Workspace. Modelled, not sold, in the current baseline. |
+| **Organization** | retired | Excluded by P2-006: no organization, team, membership, invitation or collaboration-specific schema reservation. |
 | **Device** | domain, wire | A registered client machine or handset within a realm. |
 | **Installation** / `InstallationId` | domain | One installed copy of one product on one device. Long-lived. |
 | **Instance** / `InstanceId` | domain, wire | One running process of one product. Per-launch. |
@@ -90,14 +91,14 @@ The ArcForges execution vocabulary is a strict hierarchy. No level may be collap
 | Term | Space | Definition |
 |---|---|---|
 | **Intent** | domain | What the user asked for, before any plan exists. |
-| **Task** | domain, wire | A durable unit of requested work with an owner, a lifecycle and a persistent record. |
+| **Task** | domain, wire | Durable Cloud agent work with a lifecycle and persistent record. Ordinary render, capture, import or simulation jobs are not agent Tasks. |
 | **Run** | domain, wire | One execution of a Task. A Task may have several Runs. |
 | **Step** | domain, wire | One planned unit inside a Run. |
 | **Attempt** / `AttemptId` | domain, wire | One execution try of a Step. Distinct from `CommandId`. |
-| **Task Owner** | domain | The application or cloud module that actually performs the work and holds authoritative task state. |
-| **Orchestrator** | domain | The component that sequences a cross-application Task. For automated cross-application workflows this is ArcChat. Related to, never identical with, the Task Owner. |
-| **Execution Location** | domain | Where a Run physically executes (desktop, cloud, hybrid). Distinct from Task Owner. |
-| **TaskHandle** | wire | A stable reference to a Task, used to poll and to correlate. Never an RPC connection. |
+| **Task Owner** | domain | The Cloud agent module holding authoritative Task/Run/Step/Attempt state. A desktop tool owner is not a Task Owner. |
+| **Orchestrator** | domain | The single Cloud harness sequencing agent work and authorized tools. ArcChat presents tasks and bridges local tools; it does not run another orchestrator. |
+| **Execution Location** | domain | Cloud for the AI runtime. Desktop/Cloud/Hybrid labels on a task describe tool locality only; they never select another model loop. |
+| **TaskHandle** | wire | A stable Cloud Agent Task reference for query/correlation, never an RPC connection or product job identity. |
 | **TaskSnapshot** | wire | An authoritative point-in-time projection of Task state, retrievable over HTTP. |
 | **Progress Event** | wire | A best-effort realtime notification. Never task authority. |
 | **Checkpoint** | domain, storage | A resumable execution marker inside a Run. Never an Undo entry; never a Recovery Journal. |
@@ -112,20 +113,32 @@ The ArcForges execution vocabulary is a strict hierarchy. No level may be collap
 | **Trigger Occurrence** | domain | One event matching the rule. |
 | **Operational Trace** | domain | The recorded sequence of steps, invocations, decisions and results for a Run, safe to show. Never model chain-of-thought; never an Audit record. |
 
-### 4.1 Task lifecycle states
+### 4.1 Related jobs and commercial terms
 
-`Queued → Running → Succeeded | Failed | CancelRequested → Canceled | Paused → Running`, with `Waiting` and `Interrupted` as distinct non-terminal states.
+| Term | Space | Definition |
+|---|---|---|
+| **Product Job / Activity** | domain, UI | Bounded non-agent work owned by a product or Cloud module: capture, render, import, indexing, simulation. It has its own progress/cancel/recovery contract, never a second model loop. |
+| **ProductJobHandle** | wire | Typed, owner-qualified reference to a product job that a Cloud Task may observe through tools. Not a TaskHandle. |
+| **Measured Usage** | domain, storage | Normalized actual provider usage per attempt/category, with provenance and settled/unknown status; not a prompt-size estimate. |
+| **Supplier Cost** | commercial | Actual billable provider units multiplied by the applicable supplier-rate snapshot, independently reconciled against provider charges. |
+| **Customer Tariff** | commercial | Versioned rates converting eligible usage to customer service units; distinct from supplier cost and payment price. |
+| **Included Capacity** | commercial | A bounded recoverable service-unit balance replenishing during eligible service time. Not a monthly cash or purchased-credit lot. |
+| **Additional Credits** | commercial | Separate purchased/compensation lots consumed only with explicit consent and an eligible service term. Credit ownership alone grants no official AI access. |
+| **Policy Publication** | storage | One validated, immutable version/hash of operator deployment configuration, archived for audit; not a mutable rewrite of historical usage or paid grants. |
 
-- `CancelRequested` is a request; `Canceled` is a resolved outcome. They are different states.
-- `Canceled` does not imply the absence of side effects.
-- `Succeeded` means the declared postcondition holds, not merely that no exception was thrown.
-- `Paused` (deliberate suspension) is not `Waiting` (blocked on an external condition), and `Waiting` is not `Interrupted` (lost its executor).
+### 4.2 Task lifecycle states
+
+The lifecycle states are Queued, Running, Waiting, Paused, Interrupted, Succeeded, PartiallySucceeded, Failed and Canceled, as specified in AI execution §2. Waiting carries a reason such as device, approval, capacity or budget.
+
+CancelRequested/Canceling and PauseRequested/Pausing describe control-request progress, not completed outcomes. Canceled does not imply no side effects. Succeeded means the declared postcondition holds. Product jobs and SimulationRun have their own documented lifecycle; a common progress surface does not force them into the Agent Task state machine.
 
 ---
 
 ## 5. Product-namespaced terms
 
 ### 5.1 ArcChat
+
+The ArcChat product domain is Cloud-owned unless explicitly designated as native UI, draft, cache, Hub or local permission/tool state.
 
 | Term | Definition |
 |---|---|
@@ -140,6 +153,8 @@ The ArcForges execution vocabulary is a strict hierarchy. No level may be collap
 
 ### 5.2 ArcNotes
 
+Cloud-acknowledged revisions are authoritative; native working caches preserve pending edits without becoming a separate account-free product.
+
 | Term | Definition |
 |---|---|
 | `ArcNotes.Notebook` | The top-level ArcNotes container. **Not** a Workspace. |
@@ -150,9 +165,9 @@ The ArcForges execution vocabulary is a strict hierarchy. No level may be collap
 | `ArcNotes.Tag` | A non-hierarchical label. |
 | `ArcNotes.SavedView` | A stored query and presentation over typed properties. Confers **no ownership** of the objects it lists. |
 | `ArcNotes.Attachment` | A referenced binary managed by ArcNotes. Never base64 embedded in canonical content. |
-| `ArcNotes.Canvas` (Edgeless) | The spatial editing surface over shared block content. An ArcNotes capability, never a product. |
-| `ArcNotes.Database` | The typed multi-view capability built on Properties, Queries and Saved Views. |
-| `ArcNotes.Slides` | A presentation view over Document and Canvas content. Never a third content model. |
+| `ArcNotes.Canvas` (Edgeless) | Retired by P2-006. Edgeless, whiteboard, shape/connector/frame workspaces are excluded. |
+| `ArcNotes.Database` | Bounded note organization through scalar properties, queries and table/list Saved Views; not the SQLite/PostgreSQL storage schema or a formula/relation/rollup platform. |
+| `ArcNotes.Slides` | Retired by P2-006. Presentations, slide generation, frame ordering and presentation navigation are excluded. |
 | `ArcNotes.ChecklistItem` | A document-local task item. **Not** an ArcChat Agent Task. |
 
 ### 5.3 ArcScope
@@ -178,6 +193,8 @@ The ArcForges execution vocabulary is a strict hierarchy. No level may be collap
 | `ArcScope.LiveView` / `Recording` | Display versus persistence. Pausing the view never pauses the capture. |
 | `ArcScope.DisplayDecimation` | Downsampling for rendering only. Never the measurement data. |
 
+The simulator additionally defines Cloud-owned **SimulationDefinition**, immutable **ScenarioVersion**, non-agent **SimulationRun**, immutable **SimulationSegment** and ordered **SimulationEvent**. SIM-01–SIM-20 in the ArcScope requirements govern these objects; synthetic provenance is mandatory.
+
 ### 5.4 ArcSlate
 
 | Term | Definition |
@@ -195,7 +212,7 @@ The ArcForges execution vocabulary is a strict hierarchy. No level may be collap
 | `ArcSlate.Keyframe` | A time-anchored parameter value. **Not** the current parameter value. |
 | `ArcSlate.Proxy` | A lower-cost stand-in for original media. **Not** the original; **not** a render cache. |
 | `ArcSlate.RenderCache` | Rebuildable rendered output. **Never** project authority. |
-| `ArcSlate.RenderJob` | A long-running export/render Task. **Not** a UI progress dialog. |
+| `ArcSlate.RenderJob` | An ArcSlate-owned native product render/export Job, distinct from a Cloud Agent Task and UI progress dialog. |
 | `ArcSlate.RenderedArtifact` | The produced media file. **Not** the ArcSlate Project. |
 | `ArcSlate.Transcript` / `Subtitle` | Machine text versus authored, timed, styled display text. |
 
@@ -219,7 +236,7 @@ The same word may live in more than one space. When it does, the spaces are sepa
 
 ## 7. Invariant catalogue
 
-Every entry is binding. The left and right sides are separate concepts and must remain separately represented, separately named and separately tested.
+Every active entry is binding where its concepts are in current product scope. A distinction does not itself require an excluded feature or a dedicated table/type for an otherwise unnecessary concept. Retired rows retain IDs for historical traceability and create no delivery obligation. P2-006 changes invalidate prior unchanged-coverage claims; downstream mappings must be reconciled before Stage 2 closes.
 
 ### 7.1 Identity, tenancy and commerce
 
@@ -239,7 +256,7 @@ Every entry is binding. The left and right sides are separate concepts and must 
 | I-012 | Reserved Credits ≠ Charged Credits |
 | I-013 | Budget ≠ Entitlement |
 | I-014 | AI Billing Workspace ≠ Conversation Storage Scope |
-| I-015 | Cloud BYOK ≠ Local BYOK |
+| I-015 | **Retired by P2-006:** Cloud BYOK and Local BYOK are both excluded, with no customer credential types or routes required. |
 | I-016 | Cloud Account Restriction ≠ Local Data Confiscation |
 | I-017 | ArcForges Cloud Agent ≠ free VPS |
 
@@ -255,9 +272,9 @@ Every entry is binding. The left and right sides are separate concepts and must 
 | I-025 | App Version ≠ Contract Version |
 | I-026 | Semantic Contract ≠ Wire Contract |
 | I-027 | Mobile/Web Companion ≠ Professional-app Mobile/Web port |
-| I-028 | ArcNotes local product ≠ ArcNotes cloud client shell |
+| I-028 | Native ArcNotes editor/working cache ≠ WebView shell; acknowledged Cloud revision ≠ pending local edit |
 | I-029 | ArcScope Report ≠ ArcNotes Document |
-| I-030 | ArcNotes AI ≠ ArcChat Agent Platform; ArcScope AI ≠ ArcChat Agent Platform |
+| I-030 | Product AI surface ≠ agent runtime; all products use the single Cloud harness |
 | I-031 | ArcChat Federated Search ≠ a central ArcForges database |
 | I-032 | Upstream product reference ≠ ArcSlate runtime architecture |
 
@@ -333,7 +350,7 @@ Every entry is binding. The left and right sides are separate concepts and must 
 | I-102 | Trigger Definition ≠ Trigger Occurrence |
 | I-103 | Automation Disable ≠ cancel running Task |
 | I-104 | Automation Concurrency ≠ Step Parallelism |
-| I-105 | Hybrid execution ≠ a third runtime |
+| I-105 | Hybrid tool locality ≠ additional agent runtime |
 | I-106 | Progress Event ≠ Task Authority |
 | I-107 | Operational Trace ≠ Chain-of-Thought |
 | I-108 | Conversation ≠ Task |
@@ -342,17 +359,17 @@ Every entry is binding. The left and right sides are separate concepts and must 
 | I-111 | Input Attachment ≠ Artifact |
 | I-112 | Agent Profile ≠ Running Agent |
 | I-113 | Agent Profile ≠ Model |
-| I-114 | Agent Profile ≠ External Agent |
+| I-114 | Agent Profile ≠ running agent; external-agent execution is excluded |
 | I-115 | Provider ≠ Model |
 | I-116 | Provider ≠ AI Source |
 | I-117 | Chat Mode ≠ no tools |
 | I-118 | Agent Mode ≠ unlimited permission |
 | I-119 | Task Creation Authorization ≠ lifetime authorization |
 | I-120 | Remote Task ≠ Remote Desktop |
-| I-121 | Cloud Task ≠ Desktop Task |
+| I-121 | Cloud Agent Task ≠ native Product Job |
 | I-122 | Remote Task ≠ Cloud-only Task |
 | I-123 | Conversation Sync ≠ Remote Task State |
-| I-124 | Local Conversation ≠ no remote Task |
+| I-124 | Unsent local draft ≠ acknowledged Cloud conversation |
 | I-125 | Continuity ≠ mirroring UI |
 
 ### 7.5 Knowledge, search and retrieval
@@ -534,8 +551,8 @@ Every entry is binding. The left and right sides are separate concepts and must 
 | I-310 | MCP Prompt ≠ Skill |
 | I-311 | Connector ≠ Connection |
 | I-312 | Connector ≠ imported snapshot |
-| I-313 | External Agent ≠ Agent Profile |
-| I-314 | External Agent ≠ ArcChat Task |
+| I-313 | **Retired by P2-006:** external-agent integration is excluded, not a separate agent-profile implementation. |
+| I-314 | **Retired by P2-006:** no external-agent task/delegation adapter is required. |
 | I-315 | ACP Session ≠ Conversation |
 | I-316 | ACP ≠ ArcChat runtime model |
 | I-317 | Extension ≠ third-party Arc App |
@@ -695,7 +712,7 @@ Every entry is binding. The left and right sides are separate concepts and must 
 | I-482 | Effect Definition ≠ Effect Instance; Effect Stack ≠ separate effect engine |
 | I-483 | Node Graph ≠ arbitrary script runtime; Keyframe ≠ current parameter value |
 | I-484 | Proxy ≠ Render Cache; Render Cache ≠ Project Authority |
-| I-485 | Render Task ≠ UI progress dialog; Rendered Artifact ≠ ArcSlate Project |
+| I-485 | Native Render Job ≠ Cloud Agent Task ≠ UI progress dialog; Rendered Artifact ≠ ArcSlate Project |
 | I-486 | Transcript ≠ Subtitle; AI Analysis ≠ Timeline Edit |
 | I-487 | Agent Context ≠ media upload; Project Sync ≠ original media upload |
 | I-488 | External Media ≠ Managed Media |
@@ -704,17 +721,32 @@ Every entry is binding. The left and right sides are separate concepts and must 
 
 ---
 
+### 7.13 P2-006 scope and accounting invariants
+
+| # | Invariant |
+|---|---|
+| I-491 | Model loop location ≠ tool execution location |
+| I-492 | Actual measured tokens ≠ estimated tokens; cumulative stream usage ≠ per-event delta |
+| I-493 | Included recoverable capacity ≠ purchased credits ≠ supplier cost ≠ subscription payment |
+| I-494 | Current configuration ≠ historical pricing snapshot; changing configuration ≠ resetting customer balances |
+| I-495 | Open executable policy logic ≠ private deployment values; secret mount ≠ customer BYOK |
+| I-496 | Synthetic capture ≠ hardware evidence; preview sample ≠ canonical simulation data |
+| I-497 | OTIO interchange ≠ ArcSlate working project ≠ embedded source media |
+| I-498 | Evictable acknowledged cache ≠ unacknowledged edits/uploads/tool receipts |
+
+---
+
 ## 8. Forbidden aliases and obsolete terms
 
 | Forbidden / obsolete | Reason | Use instead |
 |---|---|---|
-| `ArcCanvas`, `ArcMusic`, `ArcImage`, `ArcVideo` | `SUPERSEDED` product names (**D-002**) | `ArcNotes.Canvas` capability; nothing; `ArcScope`; `ArcSlate` |
+| `ArcCanvas`, `ArcMusic`, `ArcImage`, `ArcVideo` | `SUPERSEDED` product names (**D-002**) | No replacement canvas/slides product or capability; nothing; `ArcScope`; `ArcSlate` |
 | "Workspace" meaning a panel layout | Collides with the cloud tenancy boundary | **Layout** |
 | Bare "Project" in cross-product text | Three incompatible product meanings | `ArcChat.Project` / `ArcScope.Project` / `ArcSlate.Project` |
 | Bare "Scope" | Eight distinct meanings exist | Name the scope explicitly: Knowledge Scope, Sync Scope, Permission Scope, Policy Scope, Product Scope, Search Scope, Egress Scope, Resource Scope |
 | "ArcForges Suite 2.0" as a version | No mandatory suite release train (Stage 13 §55) | Per-product versions plus an optional release campaign name |
 | "Central desktop service", `ArcForgesService.exe` | Prohibited architecture (Stage 13 §8, §49) | ArcChat-hosted Hub |
-| "Unlimited AI", "unlimited storage" | Prohibited commercial claims | Quota, allowance, storage tier |
+| Unqualified "Unlimited AI" / "unlimited storage" | Prohibited unbounded commercial claims | Disclosed AI capacity recovery/rate/concurrency/model limits and storage tier |
 | "Native AOT" applied to Android production builds | Conflates Mono AOT with CoreCLR Native AOT (**D-008**, V-04) | ".NET 10 Mono AOT" |
 | "Cloud must publish as Native AOT" | Removed by **D-008** | "Cloud is an ASP.NET Core JIT modular monolith" |
 | "SignalR is unsupported under Native AOT" | Stale .NET 8 statement (V-03) | "SignalR has Partial support under .NET 10 Native AOT" |
@@ -732,7 +764,7 @@ The Model Context Protocol `2026-07-28` revision is a **stable** specification w
 
 | MCP term | ArcForges term | Relationship |
 |---|---|---|
-| `MCP.Task` | `ArcForges.Task` | **Unrelated.** An MCP task is a protocol-level unit of work at an MCP server. An ArcForges Task is a durable, owned, auditable unit in the ArcForges execution model. An MCP task never becomes an ArcForges Task implicitly; if one is created, it is created explicitly, owned by ArcChat, and carries its own `TaskId`. |
+| `MCP.Task` | `ArcForges.Task` | **Unrelated.** An MCP task is a protocol-level unit of work at an MCP server. An ArcForges Task is a durable, owned, auditable unit in the ArcForges execution model. An MCP task never becomes an ArcForges Task implicitly; if one is created, it is created explicitly, owned by the Cloud agent module, and carries its own `TaskId`. |
 | `MCP.Skill` | `ArcChat.Skill` | **Unrelated.** MCP skills are server-published behaviour packs. `ArcChat.Skill` is ArcChat-owned configuration. An MCP skill never becomes an `ArcChat.Skill`; it is surfaced as a capability contribution subject to the ordinary trust and permission model. |
 | `MCP.Resource` | `ArcForges.Resource` | **Distinct.** `I-076`, `I-341`. An MCP resource is addressed by the MCP server's own scheme and is never an ArcForges `ResourceRef`. |
 | `MCP.Prompt` | `ArcChat.Skill` | **Distinct** (`I-310`). |

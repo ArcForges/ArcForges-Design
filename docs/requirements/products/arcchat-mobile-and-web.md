@@ -1,4 +1,5 @@
 # ArcChat Mobile and ArcChat Web — Product Requirements
+> Current scope amendment: **[P2-006](../../decisions/phase-2-specification-decisions.md)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Requirements / Products
@@ -34,7 +35,7 @@ See → Approve → Steer → Continue → Start remote work → Receive results
 
 | Surface | Responsibility |
 |---|---|
-| **Desktop** | Full product; owns local execution, local capability, local data and the Hub |
+| **Desktop** | Native product surface, cached projections/drafts, local tool execution and the Hub; Cloud owns AI execution |
 | **Mobile** | Attention, approval, remote control, result consumption — with cloud chat and tasks in their own right |
 | **Web** | Cloud chat, tasks, projects, search, automation, continuity — closer to desktop in depth, without local capability |
 
@@ -83,18 +84,18 @@ See → Approve → Steer → Continue → Start remote work → Receive results
 
 ## 5. Remote tasks
 
-**`Remote Task` = an ArcChat Task initiated from Mobile or Web, whose actual execution location may be Desktop, Cloud or Hybrid.**
+**Remote Task** is a Cloud agent task initiated from a companion, optionally using authorized desktop tools. Desktop/Cloud/Hybrid labels describe tool locality, never multiple agent runtimes.
 
 | # | Requirement |
 |---|---|
-| RT-01 | **A target is chosen at creation**: Auto, a specific device, Cloud, or Hybrid-allowed (`OW-06`). |
+| RT-01 | A task fixes its permitted tool targets: Cloud-only, an explicitly selected desktop, or authorized Cloud/desktop tools. The agent loop always runs in Cloud. |
 | RT-02 | **With exactly one online desktop, Auto may select it**; with several, the user chooses rather than the system guessing. |
 | RT-03 | **The device target is a task attribute**, recorded and visible, not a transient UI selection. |
 | RT-04 | **Desktop-offline behaviour differs by task type**: a cloud-executable task proceeds; a desktop-required task enters **`WaitingForDevice`**, never `Failed` (`RX-02`). |
 | RT-05 | **Local-only data must never be uploaded to Cloud merely because the desktop is offline** (`OW-08`). The task waits. |
 | RT-06 | **A remote task is durable by default** (`EX-02`). It never depends on the mobile session's lifetime. |
 | RT-07 | **A created remote task enters the Task Center immediately**, before any execution begins. |
-| RT-08 | **Cloud tasks and desktop tasks are visually distinguished**, with the execution location always explicit (`RX-01`). |
+| RT-08 | Task presentation distinguishes Cloud-only work from work waiting for or using desktop tools. Tool location never implies a desktop agent runtime. |
 | RT-09 | **Cloud tasks can be created with no desktop at all** (`§9` of the cloud requirements). |
 | RT-10 | **Hybrid task presentation must be clear**: which steps ran in Cloud, which require a device, and what is currently blocking. |
 
@@ -190,13 +191,13 @@ Three preview layers:
 
 | # | Requirement |
 |---|---|
-| CN-01 | **Conversation continuity applies to cloud-synced conversations only.** |
-| CN-02 | **A local-only conversation must not appear on the phone.** Its historical text is not visible. |
-| CN-03 | **A remote session handle may still exist**: the user may reach *the task* remotely even where the conversation text is local-only. **Task remote metadata and conversation sync are different things** (`I-123`, `I-124`). |
+| CN-01 | Conversation continuity uses Cloud-acknowledged history in the selected owner workspace. |
+| CN-02 | Unsent desktop drafts and unsynchronized local tool/file content do not become visible on a phone merely because the account matches. |
+| CN-03 | Task visibility follows Cloud task authorization; it does not disclose unselected local tool inputs or device files. Local-only conversation execution is not a separate supported mode. |
 | CN-04 | **Task continuity is by identity**: one `TaskId` observed and steered from desktop, web and mobile — not three sessions (`SN-01`). |
 | CN-05 | **Task detail may be simplified per device** without becoming a different object. |
 | CN-06 | **Draft continuity is optional and explicit**: cloud draft sync is a user choice, not a default. |
-| CN-07 | **Project continuity** shows synced projects, their references and their tasks; unsynced projects do not appear. |
+| CN-07 | Project continuity uses the same Cloud project identities, references and tasks. Native pending drafts are not advertised as acknowledged content. |
 
 ---
 
@@ -216,13 +217,13 @@ Three preview layers:
 
 | # | Requirement |
 |---|---|
-| AI-01 | **Mobile cannot use desktop local AI as an ordinary model.** Using a desktop-local model means creating a **remote desktop task or remote chat execution**, which requires the desktop online. |
-| AI-02 | **Cloud managed AI and Cloud BYOK do not depend on a desktop** (`§9` of the cloud requirements). |
-| AI-03 | **The BYOK distinction is preserved** (`I-015`): a desktop-local BYOK secret stays on the desktop; Cloud BYOK is a workspace vault secret. Mobile never receives a desktop-local secret. |
-| AI-04 | **AI source display is unified** across surfaces, showing which source will execute and where. |
-| AI-05 | **Remote chat and remote task are different**: a remote chat executes a conversational turn on a device; a remote task is durable work (`I-120`). |
+| AI-01 | No device supplies a local model. Mobile, Web and Desktop invoke the same Cloud AI service; only authorized native tools depend on a desktop being online. |
+| AI-02 | Cloud AI requires the selected service realm and its service eligibility; Cloud-only work requires no desktop. |
+| AI-03 | No customer provider-key submission or BYOK mode exists on any surface. Operator provider credentials remain server-side deployment secrets. |
+| AI-04 | The selected service realm, model policy and actual tool targets are visible consistently across surfaces. |
+| AI-05 | A conversational turn and a durable agent task both use Cloud AI; neither transfers a model loop to the desktop. |
 | AI-06 | **A quick remote instruction is supported** — a short "do this on my desktop" — and if it produces durable context, it becomes a proper task rather than an orphan. |
-| AI-07 | **AI usage is visible on Mobile and Web**: allowance, purchased credits, and per-task cost (`§11.8` of the AI requirements). |
+| AI-07 | Mobile and Web show replenishing included capacity, recovery timing, purchased credits separately, and actual per-task consumption. Extra-credit consent and limits apply across all clients. |
 | AI-08 | **An automation exhausting its budget produces Needs Attention** (`LP-05`), visible on the companion. |
 | AI-09 | **A remote surface must never silently break through a task budget** (`BG-07`). Raising it requires approval with a stated estimate. |
 
@@ -344,7 +345,7 @@ WorkspaceDeviceContext · RemoteSession · OfflineCachePolicy
 | PF-01 | **Android is the V1 mobile platform**, on the supported .NET 10 Mono AOT release path, with `UseMonoRuntime` explicit in the project file rather than relying on a default that changes in a later framework version (**V-04**). |
 | PF-02 | **iOS is architecture-present and build-deferred** (**D-008**). Its lifecycle, permissions, notifications, secure storage, signing, release and testing are fully planned. **It must not be claimed as compiled or tested.** |
 | PF-03 | **Mobile and Web never load executable extensions** (`PL-01` in the extension requirements). |
-| PF-04 | **Mobile secure storage** holds session material only; **no desktop-local BYOK secret ever reaches a mobile device** (`AI-03`). |
+| PF-04 | Mobile secure storage holds authorized session material. Model-provider credentials and private deployment policy never reach the phone. |
 | PF-05 | **Weak-network behaviour is a release gate** (`PM-03` in the quality contract): background resume, reconnection with sequence backfill, and offline queueing all verified on real devices. |
 | PF-06 | **Web uses standalone Blazor WebAssembly with `RunAOTCompilation=false`** (**D-007**), with no Blazor Server circuits, no interactive server rendering, no React, no TypeScript, no Node and no JavaScript package manager. Minimal audited JavaScript interop is permitted only where no adequate managed interface exists. |
 | PF-07 | **The mobile provenance and dependency-closure audit (F-023) must pass before the first mobile artifact is produced** (`PL-06` in the distribution requirements). |
@@ -370,11 +371,11 @@ WorkspaceDeviceContext · RemoteSession · OfflineCachePolicy
 
 **Artifacts** — a device-only artifact shows as requiring a transfer; requesting it creates a visible transfer task; a large transfer prompts and respects the cellular policy; handoff opens the owning desktop product.
 
-**Continuity** — a local-only conversation never appears on mobile, while its task remains reachable; one `TaskId` is observed and steered from three surfaces.
+**Continuity** — acknowledged history and one Cloud TaskId are observed across all surfaces; unsent drafts and unselected device files remain private to their current location.
 
 **Search** — cloud search finds only cloud-accessible content; a local resource is not fetched by waking the desktop implicitly.
 
-**AI** — a desktop-local model is used only through a remote execution requiring the desktop online; a desktop-local BYOK secret never reaches the phone; usage and cost are visible.
+**AI** — Cloud-only work runs with desktops off; local tools wait for an authorized device; no local model or BYOK path exists; shared usage and extra-credit limits hold across simultaneous clients.
 
 **Workspace** — switching workspace clears composer context; a remote task targeting a device verifies workspace, realm and permission.
 

@@ -1,13 +1,14 @@
 # AI, Agent Execution, Tasks and Automation Requirements
+> Current scope amendment: **[P2-006](../decisions/phase-2-specification-decisions.md)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Requirements
 > Governing authority: **D-020** (economic model), **D-010** (cloud topology and local action), **D-008** (runtime matrix)
 > Companions: [`01-normative-glossary-and-invariants.md`](01-normative-glossary-and-invariants.md), [`04-commerce-entitlement-and-credits.md`](04-commerce-entitlement-and-credits.md), [`07-security-privacy-and-trust.md`](07-security-privacy-and-trust.md), [`../architecture/09-ai-and-agent-runtime-architecture.md`](../architecture/09-ai-and-agent-runtime-architecture.md)
 
-This document defines one execution model for every long-running unit of work in ArcForges, and the AI economics that sit under it.
+This document defines the Cloud Agent Task model and Cloud AI economics. Native product activities and jobs retain their own lifecycles.
 
-**One model, not six.** Local agent runs, cloud agent runs, remote desktop runs, hybrid runs, automation runs, ArcScope analyses, ArcSlate renders and ArcNotes bulk agent edits all use the same semantics for pause, cancel, retry, progress, approval, budget, artifact and recovery.
+**One Cloud Harness.** All model loops, durable agent tasks and AI automation run inside the Cloud JIT host. Native acquisition, editing, rendering and background maintenance are ordinary product jobs; an agent may invoke and observe them without converting them into a second agent runtime.
 
 ---
 
@@ -32,7 +33,7 @@ Task                              stable TaskId for the life of the work goal
   └── Run 2                       created by Retry
 ```
 
-A Step may contain: an AI request, a capability invocation, a child task, an approval gate, a wait, or artifact production.
+A Step may contain: an AI request, a capability invocation, a product job reference, an approval gate, a wait, or artifact production.
 
 ### 1.1 Definitions
 
@@ -51,13 +52,13 @@ A Step may contain: an AI request, a capability invocation, a child task, an app
 | # | Requirement |
 |---|---|
 | EX-01 | **Intent is not a Task.** An ordinary chat turn produces a conversation turn and an AI response, with no Task at all. |
-| EX-02 | A Task **must** be created when any of these hold: the work may outlive the current request; it needs multiple steps; it has write or external side effects; it needs approval; it runs in the background; it needs remote execution; it must wait on a device, app or network; it is automation-driven; it must be recoverable; it needs a budget; or it produces a durable artifact. Agent Mode creates Tasks by default; remote and automation execution **always** create Tasks. |
+| EX-02 | Create a Cloud Agent Task for recoverable or multi-step AI work, approvals, agent-driven side effects, automation and work waiting on tools/devices. An ordinary native render, capture, search or edit is a product Activity/Job and does not require a Cloud Task or paid AI. |
 | EX-03 | **`TaskId` is stable for the life of the work goal.** A failed Run 1 followed by a successful Run 2 remains one Task. |
 | EX-04 | **A Task has at most one active Run at a time.** Running two Runs of one Task concurrently would produce duplicated documents, duplicated requests and duplicated external calls. A user wanting to try two approaches forks or clones the Task. |
 | EX-05 | **A Run freezes an Execution Snapshot at start**: intent version, agent profile version, skill versions, model and routing policy, permission policy, budget, execution-target policy, workspace and realm, input bindings, and the automation definition version where applicable. Editing a profile mid-run affects only later Runs and Tasks. |
 | EX-06 | **Plan revisions are retained, never overwritten.** A plan change records a categorised reason: user steering, capability unavailable, new evidence, retry strategy, alternative path. Hidden reasoning is never exposed. |
 | EX-07 | **A Step is not a capability call** (`I-084`). One Step ("analyse the startup regression") may internally issue several capability invocations and AI requests. Some Steps invoke nothing at all — wait for approval, wait for device, produce the final response, evaluate results. |
-| EX-08 | **Steps form a DAG**, so independent work runs in parallel. The user interface presents a simple ordered checklist; the DAG is an implementation capability, not a user-facing diagram. |
+| EX-08 | V1 advances one model/agent loop per Run. A step may issue bounded independent tool calls concurrently and join their results before the loop continues. Dependency recording does not require a general DAG scheduler, independent planning branches or sub-agent execution. |
 | EX-09 | **Retrying a Step produces a new Attempt inside the same Step**, never a new Step. |
 | EX-10 | Attempts distinguish **technical retry** (transient timeout; the system may re-attempt automatically) from **user retry** (a document conflict; a decision is required). Mechanical retry of the second class is prohibited. |
 
@@ -73,7 +74,7 @@ Run Again    → new Task
 |---|---|
 | ID-01 | **`AttemptId` ≠ `CommandId`** (`I-085`). `CommandId` identifies the business action ("create this document"); `AttemptId` identifies how many times it was actually dispatched. A write capability that times out is re-sent under the **same** `CommandId`, so the owning application deduplicates rather than creating a second document. |
 | ID-02 | **`InvocationId` ≠ `CommandId`** (`I-073`), and **Invocation ≠ Step** (`I-074`). |
-| ID-03 | **Retry ≠ Run Again** (`I-088`). "Retry" reuses the original intent, input bindings and execution snapshot. "Run yesterday's analysis on the latest session" is a **new Task**, not a retry — retrying must never silently rewrite a historical Intent. |
+| ID-03 | Retry preserves the original intent and fixed input bindings. A Step retry stays within its Run snapshot; a Task retry creates a new Run and revalidates current eligibility, security, model availability and customer tariff within an approved budget. Material cost changes are shown before new spending. Running against newly selected/latest data is a new Task, never a silent rewrite of historical intent. |
 | ID-04 | A read capability retry is generally safe but must still consider revision: if the object read has changed, the Task must know its context moved. |
 
 ### 1.4 Input binding
@@ -105,7 +106,7 @@ Run Again    → new Task
 | `Failed` | The main goal was not achieved, and not enough completed to call it partial |
 | `Canceled` | Cancellation was requested and has resolved |
 
-`WaitingReason` is a separate dimension: `Approval`, `Device`, `App`, `Network`, `Resource`, `RateLimit`, `Budget`, `Dependency`, `ChildTask`, `ScheduleCondition`. Adding a new reason later (for example `GPU`) must not change the state machine.
+`WaitingReason` is a separate dimension: `Approval`, `Device`, `App`, `Network`, `Resource`, `RateLimit`, `Capacity`, `Budget`, `Dependency`, `ProductJob`, `ScheduleCondition`. Adding a new reason later (for example `GPU`) must not change the state machine.
 
 | # | Requirement |
 |---|---|
@@ -157,33 +158,35 @@ Tasks carry a limited priority: `Background`, `Normal`, `High`. Automation defau
 
 ## 3. Ownership and execution location
 
+The single Harness is hosted by ArcForges.Cloud.Host (JIT). Microsoft.Agents.AI and Microsoft.Extensions.AI are a thin adapter; ArcForges owns durable state, authorisation, metering and recovery. SDK objects are not wire or persistence authority. One Harness design supports many isolated users/tasks; it does not mean one global active task.
+
 | # | Requirement |
 |---|---|
-| OW-01 | **Every Task has exactly one authoritative Owner** — the application or cloud module that actually performs the work and holds authoritative state. |
-| OW-02 | **Task authority never migrates silently.** A locally owned Task does not become cloud-owned because the user opened the mobile app. Remote continuation is expressed as a **Cloud Root Task referencing a Local Child Task**, not as a transfer of ownership. |
-| OW-03 | A remote task originated from mobile or web has `Owner = Cloud` for the root, even when the real work executes on a desktop. A desktop-originated agent task has `Owner = ArcChat Desktop`, even when it calls managed AI in the cloud. |
-| OW-04 | **Hybrid is not a third runtime** (`I-105`). Hybrid means the Steps and Child Tasks of one Task are distributed across execution locations. Local / Cloud / Hybrid is a **placement policy**, not three task engines. |
-| OW-05 | Execution location for a Step is one of: current device, a specific trusted device, cloud, or the owning professional application on a device. |
-| OW-06 | Task target policy is one of: `Auto`, `CurrentDevice`, `SpecificDevice`, `Cloud`, `HybridAllowed`. |
-| OW-07 | **`Auto` is constrained**, not free: data availability, capability availability, permission, cost, privacy, workspace policy and user preference all bound it. |
-| OW-08 | **`Auto` must never upload local-only data to enable cloud execution.** An 80 GB local capture selects desktop execution; it does not become an 80 GB upload. |
-| OW-09 | Fallback execution policy is explicit ("prefer cloud, fall back to this desktop"). A cloud failure must never silently perform external side effects on a desktop. |
-| OW-10 | **Actor ≠ Origin ≠ Executor ≠ Capability Owner.** All four are recorded: actor `Ryan`, origin `ArcChat Mobile`, executor `<desktop> ArcChat`, capability owner `ArcScope`. |
-| OW-11 | Task actor kind is one of `Human`, `Automation`, `AgentDelegation`, `Service`; origin is one of desktop, mobile, web, automation trigger. |
+| OW-01 | Every Agent Task/Run/Step/Attempt has exactly one durable authority: the Cloud Agent module. Product jobs and user data keep their own product authority. |
+| OW-02 | Agent ownership never moves to a desktop. Reconnection reconstructs a Cloud projection; desktop receipt/execution of a ToolRequest does not create a local child Agent Task. |
+| OW-03 | Desktop-, Web-, Mobile- and automation-originated AI all use the same Cloud authority. Ordinary chat has a durable Cloud request/usage record even when no multi-step Task is needed. |
+| OW-04 | Local/Cloud describes tool execution location only. The model loop and scheduler always remain in Cloud; there is no local or hybrid Harness. |
+| OW-05 | A tool may execute in Cloud or in an explicitly authorised product on a selected device. Scope hardware capture and Slate render/playback remain native jobs. |
+| OW-06 | Tool target policy may select Cloud or a specific authorised device/product. It cannot select a local model/provider loop. |
+| OW-07 | Automatic tool placement is bounded by data availability, capability, consent, resource authorisation, paid-service eligibility and budget. |
+| OW-08 | **`Auto` must never upload local-only data to enable cloud execution.** An 80 GB local capture selects an authorized desktop analysis tool; it does not become an 80 GB upload. |
+| OW-09 | Provider fallback remains within approved Cloud routes and the frozen customer budget. A Cloud outage never starts a desktop agent or changes the payer. |
+| OW-10 | **Actor ≠ Origin ≠ Executor ≠ Capability Owner.** All four are recorded: actor `Ryan`, origin `ArcChat Mobile`, AI executor Cloud, local bridge ArcChat Desktop, capability owner/executor ArcScope. |
+| OW-11 | Task origin records desktop, Mobile, Web or a Cloud automation occurrence. The initiating actor is the workspace owner or an authorised Cloud service acting for that owner; no AgentDelegation origin exists. |
 
 ---
 
-## 4. Child tasks
+## 4. Product jobs referenced by an Agent Task
 
 | # | Requirement |
 |---|---|
-| CT-01 | A long-running capability returns a **`TaskHandle`**, never a blocking RPC that waits hours. The parent Step enters `WaitingForChildTask`, observes the child, and continues on completion. |
-| CT-02 | A Child Task is a **first-class object** with its own owner, parent reference, causation, output and status. |
-| CT-03 | **Not every internal Step becomes a Child Task.** Child Tasks exist only where the work has an independent persistent lifecycle, an independent owner, long duration, independent cancel/recover, or its own artifact. Typical: ArcSlate render, large ArcScope decode/analysis, long cloud export, cloud sandbox job. |
-| CT-04 | Parent cancellation propagates **only** to child tasks the parent created and exclusively owns. It must never cancel a pre-existing shared background task. |
-| CT-05 | The parent receives result, `ResourceRef`, `ArtifactRef` and outcome from the child — never the child's internal state store. |
-| CT-06 | Multi-agent work uses the same runtime: short internal parallel work becomes **parallel Steps**; long or independent work becomes **Child Tasks**. There is no second agent runtime (`I-193` analogue). |
-| CT-07 | Agent delegation retains trace: the user can see that a parallel workstream exists, without hidden reasoning being exposed. |
+| CT-01 | A long native/cloud product operation returns a ProductJobHandle with stable identity and status access. The Cloud Step waits for that job and observes completion; no hours-long blocking RPC. |
+| CT-02 | The referenced Product Job records its owner, origin/correlation, output and status. It has no model loop, autonomous planning or delegated agent identity. |
+| CT-03 | Create a product Job only for an independent lifecycle such as capture, render/export, bulk processing or simulation. Internal agent Steps stay inside the same Cloud Run. |
+| CT-04 | Parent cancellation may request cancellation only of jobs it initiated and is authorised to control. Pre-existing/shared work is not cancelled; product safe-point semantics govern. |
+| CT-05 | The Cloud Run receives a job reference, outcome and ResourceRef/ArtifactRef, never the product internal state store. |
+| CT-06 | Sub-agents, agent teams, task handoff to another agent and external-agent delegation are excluded. Bounded independent tool calls are allowed inside the single Run. |
+| CT-07 | Job/tool concurrency remains visible through causal references and status. It never creates an independent agent workstream. |
 
 ---
 
@@ -193,7 +196,7 @@ Tasks carry a limited priority: `Background`, `Normal`, `High`. Automation defau
 
 | Kind | Owner | Purpose |
 |---|---|---|
-| **Execution Checkpoint** | The agent runtime | Resume a Run: completed steps, pending steps, continuation state, child task references |
+| **Execution Checkpoint** | The agent runtime | Resume a Run: completed steps, pending steps, continuation state, product job references |
 | **Domain Checkpoint** | The owning professional application | A data recovery point, e.g. "before agent rewrite" in ArcNotes, "before agent timeline edit" in ArcSlate |
 
 | # | Requirement |
@@ -261,12 +264,12 @@ Every side-effecting Step declares one of:
 | BG-02 | Budget dimensions include, at minimum: **AI credit budget**, **execution time / deadline**, **external paid tool budget**, and **operational limits** (maximum expensive capability calls, maximum generated outputs). The model must be extensible. |
 | BG-03 | A Task **reserves** its budget at start and settles afterwards. Reservation is what prevents three concurrent Tasks each independently observing a sufficient balance and collectively overdrawing it. |
 | BG-04 | Reservation is not deduction. Actual usage produces the credit debit; the unused reservation is released. |
-| BG-05 | **Multi-agent runs share one Task budget from one reservation pool.** Sub-agents must not each see the whole workspace balance. |
+| BG-05 | All calls and concurrent tools within a Run share its authorised budget. Each provider dispatch has an atomic bounded reservation; no tool receives the entire workspace balance as spend authority. |
 | BG-06 | On approaching exhaustion the Task may reduce its plan, use a lower-cost model, or complete a partial result. Increasing the budget **requires approval** with a stated estimate. |
 | BG-07 | **An agent can never raise its own budget**, regardless of what the model concludes about result quality. |
 | BG-08 | **Auto model routing is bounded by the Task budget.** The router chooses within policy and budget rather than spending first and explaining later. |
 | BG-09 | **No negative balance, ever.** On reaching a hard limit the Task stops at a safe boundary and requests a budget extension. |
-| BG-10 | Ordinary chat does not prompt for a budget per message. A per-message soft limit applies, plus user-configurable maximums per message, per task, per day and per month. |
+| BG-10 | Ordinary chat uses a configured per-request ceiling without a mandatory budget dialog. Extra-credit consumption requires opt-in and a maximum; workspace/user/task limits may only narrow the available service capacity. |
 
 ---
 
@@ -292,7 +295,7 @@ Every side-effecting Step declares one of:
 | SN-01 | **Task Snapshot is the authoritative read surface.** Live events are notifications only. |
 | SN-02 | Task Snapshot carries revision and sequence, so a client can detect that its view is at 42 while the server is at 47, and backfill. |
 | SN-03 | **A lost event must never damage a Task.** Re-reading the snapshot restores the correct state. |
-| SN-04 | **The Task model is not the transport model.** The same semantics are carried locally over StreamJsonRpc and publicly over HTTP/JSON plus realtime. |
+| SN-04 | Cloud Task snapshots are read over the public HTTP/JSON authority surface. Local IPC carries tool requests and product job references, not a second authoritative Task store. |
 
 ### 8.2 Crash recovery
 
@@ -301,8 +304,8 @@ Every side-effecting Step declares one of:
 | RV-01 | Task and Run state are persisted. After a restart an in-flight Run is marked `Interrupted` and enters recovery evaluation. |
 | RV-02 | **Interrupted Steps are not blanket-retried.** The evaluation asks: was the effect committed? is the operation idempotent? is reconciliation possible? does a checkpoint exist? |
 | RV-03 | Recovery outcomes are: safe to resume, safe to retry, needs reconciliation, requires user decision, cannot recover. |
-| RV-04 | **A professional application crash must not destroy root task history.** ArcScope crashing leaves the ArcChat Task waiting on an interrupted child, which can be recovered after the application restarts. |
-| RV-05 | **A cloud worker crash does not lose the Task.** Task authority lives in cloud storage; a worker is only an executor. |
+| RV-04 | A native product crash leaves the Cloud Agent Task waiting on an interrupted product job; Cloud history survives and recovery consults the job owner before retry. |
+| RV-05 | Cloud host failure preserves tasks, usage and reservations in durable storage. Another replica may resume only after acquiring fenced ownership; no duplicate model/tool dispatch from competing executors. |
 
 ---
 
@@ -311,7 +314,7 @@ Every side-effecting Step declares one of:
 | # | Requirement |
 |---|---|
 | CC-01 | **Automation concurrency and task-step parallelism are two different layers** and must never be conflated (`I-104`). |
-| CC-02 | Step parallelism respects resource conflict. Reading two sessions can parallelise; two Steps editing the same document must not. |
+| CC-02 | Bounded tool/Step parallelism inside one Cloud Run respects resource conflict. Reading two sessions can parallelise; two Steps editing the same document must not. |
 | CC-03 | **There is no global ArcForges lock manager.** Concurrency authority belongs to the owning product: ArcNotes decides document revision and locking, ArcScope decides device and session concurrency, ArcSlate decides timeline and render resource concurrency. |
 | CC-04 | **Optimistic revision is the default agent concurrency mode.** `ExpectedRevision` mismatch is a Conflict. Holding a document lock for the 40-minute duration of a long Task is prohibited. |
 | CC-05 | Genuinely exclusive resources — single-access hardware, for instance — are governed by lease/busy semantics provided by the capability owner. |
@@ -375,13 +378,13 @@ Supported trigger families: `Manual / Run Now`, `One-time`, `Interval`, `Cron / 
 | AP-11 | Persistent grants inside an automation are **narrowly scoped**: "may append to the 'Weekly Reports' notebook" rather than "may write anywhere in ArcNotes forever". |
 | AP-12 | **External-effect automations are strictest.** Publishing, sending email or modifying an external service must select one of: always approve, approve first run, or allow within an explicitly scoped policy. High-risk external actions never run unattended by default. |
 
-### 10.5 Local versus cloud automation
+### 10.5 Cloud automation and native jobs
 
 | # | Requirement |
 |---|---|
-| LA-01 | **Local automation is free forever** and requires no cloud: local ArcChat, local AI, local products, local schedule. |
-| LA-02 | Cloud automation requires cloud entitlement and continues to fire while the desktop is offline. |
-| LA-03 | A cloud-scheduled, desktop-targeted automation produces a Task in `WaitingForDevice`, resolved by the missed-run policy — never a silently lost run. |
+| LA-01 | Retired by P2-006: no desktop AI automation scheduler or offline autonomous agent mode. Ordinary native jobs may run without AI. |
+| LA-02 | AI automation is scheduled by the Cloud Harness and requires an active paid service term plus capacity/budget. Device-originated events become durable deduplicated Cloud triggers. |
+| LA-03 | A Cloud automation requiring an offline desktop waits on that device under its bounded missed-run policy. It never starts a local agent as fallback. |
 
 ### 10.6 One Task Center
 
@@ -393,28 +396,23 @@ All Tasks — manual, automation-created, remote — appear in one Task Center. 
 
 ## 11. AI business model
 
-Three paths, permanently distinct (`I-015`, `I-116`):
+All model execution uses the Cloud-operated provider adapter. Official users purchase a paid service term; included capacity and authorised extra credits fund requested inference. Desktop, Web and Mobile never expose provider-key entry.
 
-```
-ArcForges AI
-├── Local AI            user's own machine — ArcForges cost ≈ 0 — free forever
-├── BYOK
-│   ├── Local BYOK      client → provider — free forever
-│   └── Cloud BYOK      ArcForges Cloud → provider — requires cloud subscription — 0 % markup on tokens
-└── Arc Managed AI      ArcForges pays the provider — user consumes Arc AI Credits
-```
-
-Managed AI does not compete on reselling API access at cost, because price-sensitive users always have BYOK. It sells: no key management, no per-provider top-ups, automatic model routing, provider fallback, usage and budget control, agent integration, unified credits, tool calling, model switching, and operated availability.
+The real metering and capacity contract is **[commerce §8.4–§8.6](04-commerce-entitlement-and-credits.md)**. Operational prices and limits are **[external deployment configuration](11-policy-and-configuration.md)**. No local AI, end-user BYOK, agent team or external-agent payer route exists.
 
 | # | Requirement |
 |---|---|
-| AI-01 | **"Unlimited managed AI" is never sold**, at any price tier (`C-04`). Subscriptions fund cloud services; credits fund highly variable AI cost of goods. |
-| AI-02 | **Local BYOK never auto-escalates to managed AI.** A provider 429 on the user's own key must not silently spend credits. The `Fallback to Arc Managed AI` option is **off by default** and states clearly that it may consume credits. |
-| AI-03 | **Managed AI never auto-falls-back to a stored BYOK key.** Different payer, different data path; the switch is explicit. |
-| AI-04 | Managed AI requires an ArcForges account (credits, purchase, usage and refund need a stable identity and workspace). Local AI and local BYOK require no account. |
-| AI-05 | Purchased credits belong to the **Workspace**, never to a global user wallet. This is what makes team shared credit pools natural later. |
-| AI-06 | **Credit transfer between workspaces is prohibited** in V1 — it would immediately create credit trading, laundering and account markets. A future organization workspace holds a shared pool; users do not transfer to each other. |
-| AI-07 | **New accounts carry an AI spend-velocity limit.** Buying a large credit pack and consuming it within minutes enters risk review. Ordinary users must not perceive the limit. Credits are high-stakes instantly-consumable digital goods, so a stolen-card purchase followed by immediate consumption and a later chargeback is a real exposure. |
+| AI-01 | Official AI requires an active paid service term and available capacity/budget; included capacity replenishes over time and extra credits require opt-in. Limits are visible. |
+| AI-02 | No direct desktop-to-provider call or end-user BYOK. Provider errors cannot select a user credential. |
+| AI-03 | Cloud fallback stays within authorised destinations, model class, tariff and budget; it cannot enable extra-credit spending. |
+| AI-04 | Every AI entry point authenticates a realm/workspace. An independent self-host uses deployment-operator credentials and its own policy; it grants no official access. |
+| AI-05 | Capacity and credits are shared by the single workspace owner across devices and products. |
+| AI-06 | No credit transfer across users, workspaces or realms. |
+| AI-07 | Purchase/spend velocity, concurrency and provider exposure have server-enforced configurable limits with actionable reasons. Buying credits does not bypass them. |
+
+---
+
+The active-service rule for official versus self-hosted realms is specified in [commerce §8.7](04-commerce-entitlement-and-credits.md#87-service-eligibility-across-realms).
 
 ### 11.1 Credit definition and precision
 
@@ -422,35 +420,37 @@ Managed AI does not compete on reselling API access at cost, because price-sensi
 |---|---|
 | CD-01 | The **grant ratio** (how many credits a purchase amount yields) is versioned commercial policy under **D-020**. The corpus-proposed shape is a simple linear ratio with **no bonus tiers in V1**, because that keeps refunds, lot valuation and reconciliation simple and avoids distinguishing bonus credits. |
 | CD-02 | **A credit is not cash.** The legal and product definition is: non-transferable prepaid service usage units with no cash value, not withdrawable, not tradable, not currency, usable only for Arc Managed AI. |
-| CD-03 | **Internal accounting uses a sub-credit unit** (fixed-precision micro-credits). Rounding every request up to a whole credit is prohibited — it constitutes a hidden charge. The user interface displays whole credits. |
-| CD-04 | **Credits must not obscure cost.** Tariffs are published, tasks are estimated, usage history is itemised, balances and expiries are visible. Credits exist to unify billing units across providers, never to hide price. |
+| CD-03 | Internal accounting uses integer micro-credits (1 credit = 1,000,000 micro-credits). UI summaries may be compact, but detailed usage exposes the settled fractional amount and source allocations. Display rounding never changes billing or shows a positive charge as exact zero. |
+| CD-04 | **Credits must not obscure cost.** Tariffs are published, tasks are estimated, usage history is itemised, capacity recovery and compensation expiry are visible, with purchased credits retained across service lapse. Credits exist to unify billing units across providers, never to hide price. |
 
 ### 11.2 Tariffs
 
 | # | Requirement |
 |---|---|
-| TR-01 | Two price layers exist and are never collapsed: `Provider Cost → ArcForges Cost Engine → Retail Tariff → Arc AI Credits`. Retail must not equal upstream (that is zero-margin resale). |
-| TR-02 | The **retail multiplier is versioned commercial policy** (**D-020**), set per model and adjusted for provider stability, aggregator cost, failure rate, tool cost, price volatility and volume discount. It is an internal target, never a published promise. **The corpus's specific multiplier and every figure derived from it are invalidated by D-020 and are not carried forward.** |
+| TR-01 | Supplier cost, customer tariff, subscription price and credit purchase conversion are independent versioned data. No universal markup, fixed price ratio or assumption that subscription revenue equals an AI budget. |
+| TR-02 | Customer tariff rates and any derivation factors are validated external configuration under D-020 and P2-006. Official operating values need no private code repository; historical customer snapshots remain immutable. |
 | TR-03 | Retail tariffs are **versioned**: `RetailTariffVersion` with validity windows. Every request binds its tariff version, so any historical charge is exactly recomputable. |
 | TR-04 | **A Run locks a retail tariff snapshot at start.** A mid-run upstream price change does not change the rate that Run is charged at; ArcForges absorbs the variance and the new price applies from the next Run. Ordinary chat locks per message; automation locks per Automation Run. |
 | TR-05 | The cost model is always built against **normal, sustainable provider prices**. Provider promotions, free quotas and startup credits are treated as **margin bonus** and must never be used to set permanent product pricing or allowances. |
 | TR-06 | A significant tariff increase is notified in advance. A sudden extreme upstream increase may temporarily remove a model from automatic routing or require confirmation, rather than letting automation burn silently. |
-| TR-07 | **Provider price catalogue changes are never trusted automatically from a web page.** The flow is: detected change → review → publish a new `UpstreamPriceVersion` → generate a `RetailTariffVersion`. |
+| TR-07 | Upstream-price changes require verified operational evidence and a new supplier-rate publication. A retail-tariff change is a separate deliberate publication; updating supplier cost never automatically changes customer prices. |
 | TR-08 | **Purchased credit balances never change because a model's price changed.** What changes is how many credits a future call costs. |
+
+**Metering precedence.** Commerce MT-01–MT-16 and AC-01–AC-12 govern usage normalisation, unknown outcomes, fixed precision, capacity recovery and extra-credit admission. Economic summaries below do not add product capability commitments.
 
 ### 11.3 Cost dimensions
 
-A model's cost table must express far more than input and output tokens:
+An enabled model route prices every applicable billable category/tier. The following vocabulary is not a list of new product features; unsupported generation/computer-use routes remain excluded unless separately brought into scope:
 
 `Input` · `Cached Input` · `Cache Write` · `Output` · `Reasoning` · `Image Input` · `Image Output` · `Audio Input` · `Audio Output` · `Video` · `Tool Call` · `Search` · `Computer Use` · `Context Tier` · `Processing Tier` · `Region`
 
 | # | Requirement |
 |---|---|
-| CO-01 | **Context pricing tiers are mandatory.** Several providers change rates above a context threshold. Storing one input price and one output price per model is insufficient. |
-| CO-02 | **Prompt-cache savings are passed to the user.** Cached input is billed separately from uncached input. Charging full input rate while the provider charged a fraction is prohibited. |
+| CO-01 | An enabled route must declare all applicable context/processing/region pricing tiers and their calculation basis. Unsupported/unpriced billable cases are refused before dispatch. |
+| CO-02 | Actual cached and uncached usage is distinguished and charged under the published category tariff; overlapping counters are normalised without double charging. Supplier discounts and customer tariffs remain separate records. |
 | CO-03 | **Cache isolation is a security requirement.** User-data-derived cache is workspace-scoped. Only genuinely public content — system prompts, public tool schemas, fixed instructions — may be reused across workspaces. |
 | CO-04 | Long-context requests are **flagged to the user in advance** ("a large context will increase credit usage"), not discovered after the fact. |
-| CO-05 | **Media is billed in media units.** Images per image, video per second at a given resolution and quality. Forcing everything into token equivalents is prohibited, because media costs differ by orders of magnitude. |
+| CO-05 | Multimodal consumption follows actual supplier units: tokens when token-billed; explicit image/second/call quantities when independently billed. Never invent token counts or charge tokenised media twice. |
 | CO-06 | **Paid tools are part of the budget.** Web search and similar tools carry their own per-call cost alongside token cost, and task budgets estimate them together. |
 | CO-07 | **Cloud search and web search are distinguished in the interface.** Searching ArcForges Cloud is a subscription feature and consumes no credits; searching the web may consume credits. Labelling both "Search" leaves the user unable to explain a charge. |
 
@@ -460,8 +460,8 @@ A model's cost table must express far more than input and output tokens:
 |---|---|
 | Chat responses | Cloud search embedding, indexing and reranking |
 | Agent reasoning | Internal routing model calls |
-| Document and code generation | Abuse classification |
-| Image and video generation | Health checks |
+| Selection-scoped document actions | Abuse classification |
+| Supported media-understanding requests | Health checks |
 | Web search on the user's behalf | Cost prediction |
 | User-requested transcription | Platform-caused retry with no user value |
 
@@ -470,8 +470,8 @@ A model's cost table must express far more than input and output tokens:
 | CU-01 | **Internal platform AI never deducts user credits.** A cheap routing classifier deciding "is this ArcNotes or ArcScope?" is platform overhead. |
 | CU-02 | **Cloud search embedding never deducts credits.** Synchronising 100 notes must not silently cost the user credits; semantic search is a subscription capability. |
 | CU-03 | **Platform-caused retry is not charged to the user.** A logical AI request whose first provider attempt failed and second succeeded is charged for the useful work, not twice. |
-| CU-04 | User-initiated cancellation is a different matter from platform failure and is charged per the configured rule for work actually performed upstream. |
-| CU-05 | A provider safety block or comparable non-delivery is handled by an explicit policy — courtesy credit-back or cost adjustment — rather than an unexplained charge. |
+| CU-04 | User cancellation settles verified consumption already incurred within the authorised limit and releases unused holds. Unknown consumption is reconciled under commerce MT-12; no assumed zero or surprise overdraft. |
+| CU-05 | A provider safety block or other non-delivery with no usable result creates no customer debit, or an idempotent compensating adjustment if already settled. Actual supplier usage/cost is retained. Caller cancellation follows CU-04 instead. |
 
 ### 11.5 Routing
 
@@ -517,7 +517,7 @@ The most effective cost control is sending fewer meaningless tokens, not reducin
 | LG-04 | Refunds, compensation and provider corrections produce **Adjustments**, never rewritten history. |
 | LG-05 | **Provider invoice reconciliation is mandatory.** Internal computed cost is compared against the provider's bill, and divergence is investigated (reasoning tokens, tool cost, region pricing, provider rounding, wrong price version, retries). Discovering a months-old miscalculation is a failure of this control. |
 | LG-06 | Daily operational metrics cover commerce (AI revenue, credits sold, credits consumed, deferred credit balance), cost (upstream cost, per provider, per model, tool cost, retry loss, fallback loss) and margin (gross AI margin, contribution margin, margin by model, margin by pack). |
-| LG-07 | Efficiency metrics are tracked because they drive product decisions: cache hit rate, input/output ratio, context length, cost per completed task, cost per failed task, sub-agent multiplier, model fallback rate. |
+| LG-07 | Efficiency metrics include cache hits, input/output ratio, context length, cost per completed/failed Task, tool concurrency, retry cost and model fallback rate. No sub-agent metric or corresponding runtime is required. |
 | LG-08 | **Automated cost alerts** fire on abnormal upstream price movement or margin falling below threshold. Noticing a price change by occasionally reading a vendor page is not a control. |
 | LG-09 | **Provider prepaid balance is monitored and alerted.** Managed AI must not depend on a provider free tier, and must not fail because an upstream balance silently ran out. |
 | LG-10 | **AI working capital** is planned: credits are sold before the upstream cost is incurred, so a reserve policy is required. |
@@ -525,7 +525,7 @@ The most effective cost control is sending fewer meaningless tokens, not reducin
 
 ### 11.8 User-facing transparency
 
-- An **AI Usage** page showing, separately: included allowance remaining and reset date; purchased credit balance; and a recent breakdown by source (agent, product feature, web search).
+- An **AI Usage** page showing, separately: included capacity remaining, recovery timing and applicable rate/concurrency limits; purchased credit balance; and a recent breakdown by source (agent, product feature, web search).
 - **Task detail** showing per-model and per-tool credit usage with a total, and a "view details" affordance for advanced users. Provider invoice detail is not shown to ordinary users.
 - A **model selector** showing relative cost class, expandable to the exact per-unit tariff. Users must be able to make an informed choice.
 
@@ -535,9 +535,9 @@ The most effective cost control is sending fewer meaningless tokens, not reducin
 
 | # | Requirement |
 |---|---|
-| SC-01 | **Each Task has exactly one active realm and workspace data scope.** An agent must never draw data from two organization workspaces in one Task. |
-| SC-02 | A local-only Task is legitimate: `Realm = Local`, `Workspace = none / local profile`. |
-| SC-03 | **AI billing scope may differ from data storage scope**: a local-only Task may be billed against a personal workspace's credits. **Billing scope never grants data access** (`I-014`). |
+| SC-01 | Every Agent Task has one explicit realm and single-owner workspace. Resource and billing authority never cross workspaces implicitly. |
+| SC-02 | No local-only Agent Task. Native offline editing, rendering and acquisition are product jobs with their own domain references. |
+| SC-03 | A Cloud task may reference explicitly authorised device-local media or captures through tools. Billing never grants data access and never makes local bytes automatically cloud-resident. |
 
 ---
 
@@ -552,7 +552,7 @@ Step · StepDependency
 Attempt · FailureReason · EffectCertainty
 CapabilityInvocation · LogicalCommand · CapabilityResult
 LogicalAIRequest · ProviderAttempt
-ChildTaskReference
+ProductJobReference
 ExecutionCheckpoint · DomainCheckpointReference · CompensationAction
 ApprovalRequest · ApprovalDecision · SteeringEvent
 Budget · BudgetReservation · BudgetUsage
@@ -588,19 +588,19 @@ Transient retried within bounds · conflict rebased and re-approved · permissio
 Approval bound to a specific revision · approval invalidated by a revision change · approval expiring · approval denied with an alternative path · steering event recorded immutably · original intent preserved · completed steps retained after contrary steering.
 
 ### Budget
-Task reserves and settles · three concurrent tasks cannot collectively overdraw · multi-agent shares one pool · budget exhaustion pauses and asks · agent cannot raise its own budget · routing constrained by budget · hard stop with no negative balance.
+Task reserves and settles · three concurrent tasks cannot collectively overdraw · all concurrent tools share one Run budget · budget exhaustion pauses and asks · agent cannot raise its own budget · routing constrained by budget · hard stop with no negative balance.
 
 ### Automation
 Weekly automation producing distinct Tasks · disabled automation leaves a running Task alone · deleted automation retains history · missed run per each policy · bounded catch-up · `SkipIfRunning` default · cooperative replace · self-recursion suppressed · cross-automation loop halted by causation depth · storm caps enforced · aggregate budget pausing the automation · DST transition with defined semantics · scheduler restart not double-firing · duplicate event not double-creating.
 
 ### AI pricing and usage
-Ordinary input/output · cached input · cache write · reasoning tokens · context crossing a pricing threshold · priority tier · batch tier · region surcharge · provider price change mid-catalogue · promotional price expiring · streaming completing · user cancelling mid-stream · provider failure with no upstream charge · provider failure with partial upstream charge · automatic retry not charged to the user · model fallback within class · multi-agent parallel accounting · tool use · web search · image · video · audio.
+Ordinary input/output · cached input · cache write · reasoning tokens · context crossing a pricing threshold · priority tier · batch tier · region surcharge · provider price change mid-catalogue · promotional price expiring · streaming completing · user cancelling mid-stream · provider failure with no upstream charge · provider failure with partial upstream charge · automatic retry not charged to the user · model fallback within class · concurrent tool accounting · enabled tool/search billing dimensions · supported media-understanding routes only. Unscoped image/video generation is not a delivery obligation.
 
 ### Credits
-Allowance issued monthly on an annual subscription · allowance expiring unused · multiple purchased lots with different expiries · earliest-expiry-first consumption · concurrent reservations · insufficient balance hard stop · partial refund · refund hold · compensation credit · **model retired but credits unaffected** · historical task retaining its retired model and tariff version.
+Capacity recovers only in paid intervals · annual renewal does not reset capacity · separate purchased/compensation lots · disclosed source-order consumption · concurrent reservations · insufficient balance hard stop · partial refund · refund hold · compensation credit · **model retired but credits unaffected** · historical task retaining its retired model and tariff version.
 
-### BYOK
-Local BYOK with no account · cloud BYOK requiring subscription · BYOK provider 429 **not** silently escalating to managed AI · managed AI exhaustion **not** silently reaching for a stored BYOK key.
+### Cloud-only service boundary
+No local/provider-key mode or external-agent delegation · native render/capture without Agent Task · direct product Cloud AI without ArcChat Desktop · paused/expired service stops new model calls even with credits · a self-host policy cannot unlock official AI.
 
 ---
 

@@ -1,8 +1,11 @@
 # Shared Desktop Experience Requirements
+> Current scope amendment: **[P2-006](../decisions/phase-2-specification-decisions.md)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Requirements
 > Companions: [`01-normative-glossary-and-invariants.md`](01-normative-glossary-and-invariants.md), [`11-policy-and-configuration.md`](11-policy-and-configuration.md), [`12-quality-and-compatibility-contract.md`](12-quality-and-compatibility-contract.md), [`../architecture/04-desktop-application-architecture.md`](../architecture/04-desktop-application-architecture.md)
+
+All desktop UI is native Avalonia/Skia under Native AOT. WebView, DOM/JavaScript, HTML-as-UI and localhost UI are prohibited, including previews and account/payment screens; external account/checkout links use the system browser.
 
 The four desktop products are neither four independently designed applications nor one shared shell with swapped content. The pattern is:
 
@@ -20,7 +23,7 @@ Founding invariant: **Shared Experience ≠ Shared Shell ≠ Shared Domain** (`I
 | DP-02 | **Calm UI** | Nothing moves, flashes or interrupts without cause. Attention is a budget the product spends deliberately. |
 | DP-03 | **Progressive complexity** | Easy to start, efficient at depth. Advanced capability is discoverable, not front-loaded. |
 | DP-04 | **Keyboard and mouse are equally first-class** | Every meaningful action is reachable by both. A keyboard-only professional must not be a second-class user. |
-| DP-05 | **Local-first status is genuinely visible** | The user can always tell what is saved locally and, separately, what has reached the cloud. |
+| DP-05 | **Durability and synchronization are visible** | The user can always tell what is saved locally and, separately, what has reached the cloud. |
 
 ---
 
@@ -57,7 +60,7 @@ Founding invariant: **Shared Experience ≠ Shared Shell ≠ Shared Domain** (`I
 | WN-03 | **Multi-window first, multi-process second.** Multi-process is an explicit extension capability, not the default user experience. |
 | WN-04 | **The same resource must not have two independent writable owners** without an explicit coordination mechanism. A `DocumentSession` owns write authority; a second view is read-only, coordinated, or refused with an explanation. Two silently-diverging local writable copies are prohibited. |
 | WN-05 | **Window and layout physical state is device-local by default** and is never synced as user data (`I-181`). |
-| WN-06 | **Full-screen and presentation states are not permanently forced to restore.** A product does not reopen into an unexpected immersive mode. |
+| WN-06 | Full-screen state is not forced to restore unexpectedly. This shared behavior does not require a presentation/slides mode in ArcNotes. |
 
 ### 3.2 Panels, docking and layout
 
@@ -115,7 +118,7 @@ Four levels, resolved in a defined order:
 | Scope | Examples |
 |---|---|
 | **Account preference** | Locale, timezone, notification preferences |
-| **Workspace setting** | Workspace-level defaults and organization-visible configuration |
+| **Workspace setting** | Single-owner workspace defaults; no team/member configuration |
 | **Device setting** | Paths, hardware, GPU, local cache, remote-access consent, layout |
 | **Product setting** | Per-application behaviour |
 | **Project / document setting** | Per-project overrides |
@@ -160,14 +163,14 @@ Five channels, chosen by **durability**, not only by severity:
 |---|---|
 | ST-01 | **Local Saved and Cloud Synced are always two different states** (`I-199`). |
 | ST-02 | **Cloud Pending ≠ Unsaved** (`I-200`). A locally durable document with a pending upload must not produce a "you have unsaved changes" prompt. |
-| ST-03 | **A cloud failure must not put the whole application into a red offline mode.** The product is local-first; cloud state is a secondary indicator. |
+| ST-03 | Cloud unavailability is explicit for AI, sync and uncached data. Native operations and cached editing/search remain usable without a global failure screen; pending changes remain durable. |
 | ST-04 | Cloud status is presented per the state vocabulary in [`03-cloud-services-and-sync.md`](03-cloud-services-and-sync.md) §4. |
 
 ### 6.3 Activity surface
 
 | # | Requirement |
 |---|---|
-| AV-01 | Every product has one **Activity surface** listing background work: indexing, sync, import, export, render, capture, agent tasks. |
+| AV-01 | The Activity surface projects native/Cloud product jobs and associated Cloud agent tasks with their real owner. Shared progress UI does not make indexing, import, render, capture or simulation into agent tasks. |
 | AV-02 | Progress follows the unified model — determinate, milestone or indeterminate — and never fabricates a percentage. |
 | AV-03 | **Cancel is accurate**: `Canceling` is shown while the operation reaches a safe point, and `Canceled` only when it has actually stopped. |
 | AV-04 | **Cross-application progress must not be presented as a local operation.** The interface always shows the owning product actually performing the work. |
@@ -278,7 +281,7 @@ Four semantics:
 
 | # | Requirement |
 |---|---|
-| AC-01 | **Account is never a first-launch gate** (`ID-01`). There is no login screen before first use. |
+| AC-01 | The native shell and direct download are not purchase-gated. Cloud-backed notebook/chat use requires the stated account/service boundary; no blanket account-free first-use promise overrides product requirements. |
 | AC-02 | The **account surface is in the same place with the same behaviour in every product**: identity, realm, workspace, storage summary, and "Manage Account →". |
 | AC-03 | **The workspace selector must clearly express that it changes cloud ownership context** — what is synced, where new cloud objects go, which knowledge scope applies. It is not a cosmetic filter. |
 | AC-04 | **Cloud status presentation is unified** across products. |
@@ -373,8 +376,8 @@ Stage-14 shared experience does **not** own:
 | SI-22 | Multi-window is the default; multi-process is an explicit extension. |
 | SI-23 | The same resource cannot have two local writable owners without a coordination mechanism. |
 | SI-24 | Window and layout physical state is device-local by default. |
-| SI-25 | Account is not a first-launch gate. |
-| SI-26 | A cloud failure cannot render a local-first product unusable. |
+| SI-25 | Account and service requirements are stated per capability; direct download and native product operations are not purchase-gated. |
+| SI-26 | Cloud outage preserves cached work and native jobs while explicitly disabling unavailable Cloud capabilities. |
 | SI-27 | Cross-application user interface always shows the owning product doing the work. |
 | SI-28 | Shared UI shares mechanism and experience only, never professional domain state. |
 
@@ -409,7 +412,7 @@ ArcForges Desktop Experience
 
 **Save versus sync** — an offline edit shows locally saved and cloud pending, with no unsaved-changes prompt on close.
 
-**Cloud outage** — every product remains fully usable; only cloud indicators degrade.
+**Cloud outage** — cached edits/search and native capture/render remain available; Cloud AI and uncached content show precise unavailability, and no pending work is discarded.
 
 **Attention** — a completed background job produces a toast; a required approval produces a persistent attention item that survives restart.
 

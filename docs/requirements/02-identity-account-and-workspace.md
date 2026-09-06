@@ -1,4 +1,5 @@
 # Identity, Account, Device, Session and Workspace Requirements
+> Current scope amendment: **[P2-006](../decisions/phase-2-specification-decisions.md)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Requirements
@@ -24,18 +25,18 @@ Six responsibilities, never merged:
 
 ---
 
-## 1. The no-account rule
+## 1. Native launch and Cloud account boundary
 
 | # | Requirement |
 |---|---|
-| ID-01 | Installing, launching and fully using any desktop product locally requires **no account**. No product may present a "Sign in to continue" gate on first run or on any local path. |
+| ID-01 | Installing and launching native applications requires no account. Cloud notebook enrolment, AI and continuity require sign-in; previously authorised hydrated content and pending edits follow the offline/cache rules. |
 | ID-02 | The signed-out operator is a **Local Profile**: the local application identity of the current OS user on the current device. It has no server-side representation. |
 | ID-03 | A Local Profile is **never** silently registered as a cloud "Anonymous User" or "Guest Account". No hidden server record is created on first launch. |
-| ID-04 | A Local Profile owns local settings, local documents, local agent history, local BYOK keys and local indexes. |
-| ID-05 | Sign-in is requested only when the user activates a cloud capability: Enable Sync, Back up to Cloud, Use Arc AI, Remote Access, Continue on Mobile, Continue on Web, Cloud BYOK, Cloud Search. |
-| ID-06 | Signing in **never** implies upload. After sign-in the user makes an explicit, per-scope choice about what participates in sync. A user with 2,000 local notes and 300 GB of local media must not observe an automatic upload. |
-| ID-07 | Signing out never deletes local data. Signing out stops cloud sync; local content remains. |
-| ID-08 | Subscription expiry never disables local application functionality (`C-07`). |
+| ID-04 | A Local Profile owns device settings and ordinary native jobs/files. Authenticated workspace caches and pending edits remain scoped to their realm/owner; no local agent history or provider-key mode. |
+| ID-05 | Sign-in identifies the selected Cloud realm/workspace for notes, sync, search, AI and remote tools. Service entitlement is checked separately; provider-key configuration is not an onboarding option. |
+| ID-06 | Sign-in alone does not upload unrelated device files. Creating/importing into an enrolled Cloud notebook explicitly consents to storing those notes/managed attachments in that workspace; captures/original media require their own upload choice. |
+| ID-07 | Sign-out stops Cloud access and clears active session credentials. Workspace views are locked until authentication; pending edits are retained safely and are never silently deleted or reassigned to a later account. |
+| ID-08 | Service expiry blocks protected Cloud writes/AI according to the commerce lifecycle. Existing native work and pending edits remain recoverable; it does not enable an offline AI mode. |
 
 ---
 
@@ -67,7 +68,7 @@ A **Realm** is an independent identity and data authority: the Official ArcForge
 | ID-26 | V1 does **not** implement Google, Apple or other social sign-in. The model supports adding them without a schema change. |
 | ID-27 | Email verification uses a **verification code** as the primary mechanism. Magic links may be offered as a convenience but must never be the only route, because ArcForges spans desktop, mobile and web with deep-link complications. |
 | ID-28 | No phone number or SMS in the first stage. No global username. No security questions. |
-| ID-29 | Account merging is never automatic and never inferred from a matching email address. Both identities must be re-verified. V1 need not implement merge; the model must permit it, handling Identity, Personal Workspace, Subscription, AI Credits, Organization Membership and Devices separately. |
+| ID-29 | V1 does not implement account merging. A matching email never merges realm/user identities or moves notes, devices, subscription sources or credits. |
 
 ### 2.3 Recovery
 
@@ -88,14 +89,14 @@ Account Profile is deliberately minimal: Display Name, Avatar, Primary Email, Lo
 |---|---|
 | WS-01 | **All cloud data belongs to a Workspace, never directly to a User.** `User.Notes`, `User.Storage`, `User.SubscriptionId` and equivalents are prohibited. |
 | WS-02 | On registration a **Personal Workspace** is created automatically and owned by the User. |
-| WS-03 | Workspace is the boundary for data, storage quota, AI usage and budget, sync participation, membership and entitlement. |
-| WS-04 | **Organization** is modelled from day one with roles Owner / Admin / Member / Guest, and is not opened in V1. An Organization owns Organization Workspaces. |
-| WS-05 | Leaving an organization removes a **Membership**, never the User. The user's Personal Workspace is unaffected. |
-| WS-06 | An Organization Owner cannot delete their account without first transferring ownership or deleting the Organization. |
-| WS-07 | **Every cloud object belongs to a Workspace** — objects, tasks, search index entries, AI credits, secrets, artifacts, automations. Authorization is always `Actor → Membership → Workspace → Resource`. Knowledge of an `ObjectId` never grants access. |
-| WS-08 | An agent session always has an explicit **Active Workspace**. Data is never searched across workspaces implicitly, even where the user is a member of both. Cross-workspace operations are explicit user acts. |
+| WS-03 | Workspace is the single-owner boundary for data, device access, storage, AI usage/budget, sync, authorisation and entitlement. |
+| WS-04 | Organisations, team workspaces, membership roles and invitation models are excluded. V1 provisions one personal workspace per user in each realm. |
+| WS-05 | Cross-user workspace access and shared credit pools are excluded. Device access belongs to the same owner and is independently revocable. |
+| WS-06 | Account deletion applies to the owner personal workspace; no organisation ownership transfer or membership departure prerequisite exists. |
+| WS-07 | Every Cloud object belongs to a workspace. Authorisation checks authenticated realm/user → workspace OwnerUserId → resource permission, plus current service/device constraints. ObjectId knowledge is never permission. |
+| WS-08 | An AI session has one explicit active realm/workspace. Another owner workspace or another realm is never searched or accessed implicitly. |
 | WS-09 | Workspace carries a **DataRegion** attribute from day one, defaulting to `Automatic`. It exists so regional requirements can be met later without a data-model migration. No public claim of a specific storage jurisdiction may be made unless infrastructure that legally guarantees it is actually in use. |
-| WS-10 | Workspace carries a **DataProtectionProfile**: `Standard` (V1) or `EndToEndEncrypted` (modelled now, released later). See [`03-cloud-services-and-sync.md`](03-cloud-services-and-sync.md) §6. |
+| WS-10 | Standard Cloud protection applies: authenticated access, workspace isolation, TLS and encryption at rest. No E2EE profile, encrypted-export mode or future encryption-profile field is required. |
 
 ---
 
@@ -149,12 +150,12 @@ Operations requiring step-up:
 - Remove all Passkeys
 - Generate Recovery Codes
 - Delete Account
-- Add or replace Cloud BYOK credentials
+- Add or revoke an external connector authorisation
 - Reveal or replace any sensitive secret
 - Enable Remote Agent
 - Revoke trusted devices
 - Create a high-privilege API token
-- Transfer Organization ownership
+- Change the owner account’s security or recovery credentials
 
 **Step-up ≠ Approval** (`I-242`). Step-up proves identity; Approval authorises a specific pending operation.
 
@@ -192,9 +193,9 @@ Account status is richer than Active/Deleted:
 | `Pending` | Registered, first verification incomplete | None |
 | `Active` | Normal | None |
 | `Restricted` | e.g. AI abuse — cloud AI disabled; the user can still sign in and export | **None** |
-| `Suspended` | Serious violation — official Cloud discontinued | **None. Local products must never be remotely locked.** |
+| `Suspended` | Serious violation — protected Cloud operations denied | Native capture/media and pending-work recovery remain; cached data follows its authorized access contract |
 | `DeletionPending` | Deletion requested, within the reversal window | None |
-| `Deleted` | Cloud identity and data removed | **None. Local files remain.** |
+| `Deleted` | Cloud identity and data removed subject to retention | Independent native files and pending work are not remotely wiped; cached Cloud views are no longer an active workspace |
 
 `I-016`: **Cloud Account Restriction ≠ Local Data Confiscation.**
 
@@ -211,11 +212,11 @@ Required entry points:
 
 Flow: `Request → Step-up Authentication → Explain consequences → Offer data export → Confirm → DeletionPending`.
 
-On entering `DeletionPending`, the system must: prohibit new cloud writes; cancel or stop renewal per billing rules; revoke sessions, devices, API tokens and remote access; delete workspace data, the vector index, cloud BYOK secrets and cloud resources; and process records that must legally be retained (accounting) under a stated retention policy.
+On entering DeletionPending, prohibit new Cloud writes and AI dispatch, stop renewal, revoke ordinary sessions/devices/API tokens/remote access, and schedule data/credential purge after the disclosed reversal window. A narrowly scoped reauthentication/recovery path may cancel deletion within that window; ordinary revoked tokens cannot. Purge workspace content and derived data only at the irreversible deadline, subject to explicit retention duties; commercial/security records follow separate retention.
 
 | # | Requirement |
 |---|---|
-| DL-01 | **Local data is not part of account deletion** (`I-016`). `~/Documents/ArcNotes` and equivalents are never deleted automatically. A separate, explicit "delete local data too" choice exists. |
+| DL-01 | Account deletion does not remotely erase independent native capture/media files or pending user edits/uploads. Preview their fate before confirmation and offer recovery. Explicit local cache deletion is a separate choice. A guarded recovery view for locally owned pending work must remain usable without paid Cloud access, even if the Cloud identity has been deleted; it is not a new standalone notebook mode. |
 | DL-02 | **Subscription cancellation ≠ Account deletion ≠ Cloud data deletion ≠ Workspace deletion** (`I-002`). Four distinct flows. |
 | DL-03 | A user may delete cloud data while retaining the account, AI credits and purchase history. |
 | DL-04 | Deletion propagates to derived data: full-text index entries, vector entries, derived previews and caches. A deleted document must not remain findable through semantic search (`I-165`, Stage 7 §71). |
@@ -226,7 +227,7 @@ On entering `DeletionPending`, the system must: prohibit new cloud writes; cance
 
 | # | Requirement |
 |---|---|
-| SN-01 | The account portal exposes a **Security Activity** log the user can read: new device sign-in, passkey added or removed, email changed, recovery initiated, device revoked, Cloud BYOK changed, remote access enabled. |
+| SN-01 | The account portal exposes security activity: device sign-in/revocation, passkey/email/recovery changes, connector authorisation and remote access enablement. No BYOK event class is required. |
 | SN-02 | Security notifications are **not opt-out**: new sign-in, email changed, passkey removed, recovery used, remote access enabled, account deletion requested. |
 | SN-03 | Marketing email is separately opt-in and opt-out and must never be bundled with security notification preferences. |
 
@@ -261,13 +262,13 @@ Minimum V1 portal scope:
 
 ---
 
-## 14. Secrets and BYOK ownership
+## 14. Credential ownership
 
 | # | Requirement |
 |---|---|
-| SC-01 | **Local BYOK belongs to the Device**, stored in platform secure storage. **Cloud BYOK belongs to the Workspace**, stored in a Workspace Secret Vault. `User.Profile.ApiKey` is prohibited. |
-| SC-02 | This split is what allows an Organization to hold a shared provider key without a member's personal BYOK leaking into the Organization. |
-| SC-03 | A stored secret is never re-displayable in full. The vault exposes: replace, revoke, test, fingerprint/last-4, last-used, and audit. `GET /apikey` returning plaintext is prohibited. |
+| SC-01 | Client login/device credentials use OS secure storage. Operator model/payment/signing credentials live only in Cloud deployment secret storage; no end-user AI provider-key vault or reveal API exists. |
+| SC-02 | External connector credentials, where an accepted integration needs them, are workspace-scoped and distinct from operator AI-provider credentials. Removing BYOK does not remove connector authentication or device identity. |
+| SC-03 | Secret management exposes authorised replacement/revocation/status, never full secret retrieval. Operator deployment credentials are not editable through a customer settings screen. |
 | SC-04 | **SecretRef ≠ Secret Value** (`I-256`) and **Secret Use ≠ Secret Reveal** (`I-257`). |
 
 ---
@@ -283,12 +284,11 @@ Identity Realm
 │   ├── Authentication Identity  (Email · Passkey · External Provider)
 │   ├── Recovery                 (Email · Recovery Codes)
 │   ├── Security Activity
-│   └── Membership ──────────────► Workspace
+│   └── OwnerUserId ────────────► Personal Workspace
 │
-├── Workspace   (Personal | Organization)
+├── Workspace   (single owner)
 │   ├── DataRegion
-│   ├── DataProtectionProfile
-│   └── Members
+│   └── OwnerUserId
 │
 ├── Device
 │   └── App Installation
@@ -303,11 +303,11 @@ Identity Realm
 ├── Subscription
 ├── Entitlement
 ├── Storage Quota
-├── AI Wallet
+├── AI Capacity and Credit Accounts
 └── Secret Vault
 ```
 
-Stage 1 settles **identity ownership relationships** only. Commercial rules for Billing Account, Subscription, Entitlement, Storage Quota and AI Wallet are specified in [`04-commerce-entitlement-and-credits.md`](04-commerce-entitlement-and-credits.md).
+Stage 1 settles **identity ownership relationships** only. Commercial rules for Billing Account, Subscription, Entitlement, Storage Quota and AI Capacity and Credit Accounts are specified in [`04-commerce-entitlement-and-credits.md`](04-commerce-entitlement-and-credits.md).
 
 ---
 
@@ -315,18 +315,18 @@ Stage 1 settles **identity ownership relationships** only. Commercial rules for 
 
 | # | Scenario | Required outcome |
 |---|---|---|
-| A-01 | Fresh install, no network, no account | Product reaches an editable state within its startup budget; no sign-in gate appears |
-| A-02 | Sign in with 2,000 local notes present | No automatic upload; an explicit per-scope sync choice is presented |
+| A-01 | Fresh install, no network/account | Native UI starts within budget; local capture/media operations are usable; initial Cloud notebook enrolment and AI show their sign-in/network requirement |
+| A-02 | Sign in with unrelated local files present | Nothing is automatically imported/uploaded; explicit notebook enrolment and file selection define participation |
 | A-03 | Sign out of ArcNotes while ArcChat is signed in | ArcChat session unaffected; ArcNotes local data intact |
 | A-04 | Revoke a device from another device | The revoked device loses sync, remote and cloud access; its local data is intact |
 | A-05 | Enable remote access, then attempt an R4 operation from mobile | The operation is refused remotely and the user is directed to confirm on a trusted device |
 | A-06 | Sign in to Official and to a self-hosted realm with the same email | Two distinct identities; no data or entitlement crosses between them |
 | A-07 | Delete all Passkeys, then recover via Email | Recovery succeeds; a security notification is emitted; the user is prompted to add a Passkey |
-| A-08 | Account moves to `Suspended` | Cloud services stop; every desktop product continues to function locally with full capability |
+| A-08 | Account moves to Suspended | Cloud/AI access is denied; native files and pending edits are preserved; the product accurately distinguishes available local operations |
 | A-09 | Request account deletion | Step-up is required; export is offered; on confirmation, cloud identity, workspace data, index entries and vault entries are removed; local files remain |
 | A-10 | Change account email while subscribed | Subscription and entitlement are unaffected |
-| A-11 | Cross-workspace object-id probe | Access is denied by workspace scoping, regardless of membership in another workspace |
-| A-12 | Agent session with two workspace memberships | Search and retrieval are confined to the Active Workspace; no implicit cross-workspace access |
+| A-11 | Cross-owner workspace ObjectId probe | Access denied regardless of a known object ID or valid subscription on another workspace |
+| A-12 | Switch realm/workspace while an AI task or local edit is pending | The original scope remains fixed; another account cannot read its cache, spend its credits or redirect its pending operation |
 
 ---
 

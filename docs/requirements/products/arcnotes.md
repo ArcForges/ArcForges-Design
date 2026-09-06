@@ -1,48 +1,47 @@
 # ArcNotes — Product Requirements
+> Current scope amendment: **[P2-006](../../decisions/phase-2-specification-decisions.md)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Requirements / Products
-> Product identity: `arcnotes` · Positioning: **Local-first Professional Knowledge & Document Workspace**
-> Governing authority: **D-006** (complete scope: Canvas, Database and Slides are in scope, phased), **D-002** (Edgeless Canvas is an ArcNotes capability, never a product)
+> Product identity: `arcnotes` · Positioning: **Cloud-backed Personal Knowledge & Document Workspace**
+> Governing authority: **P2-006** amends D-006; D-002 and D-012/D-013 retain portfolio and reference boundaries.
 > Companions: [`../06-knowledge-search-and-retrieval.md`](../06-knowledge-search-and-retrieval.md), [`../13-data-formats-and-portability.md`](../13-data-formats-and-portability.md), [`arcchat.md`](arcchat.md)
 
-> **ArcNotes is a document-first, block-based, local-first professional knowledge and documentation system, and the long-term knowledge authority of ArcForges.**
+> **ArcNotes is a document-first, block-based notebook application with cloud history and multi-device sync. Its native editor uses durable working caches; the Cloud Notes module owns acknowledged document revisions.**
 
 ---
 
 ## 1. Scope
 
-### 1.1 Complete scope versus V1 baseline
+### 1.1 Current complete scope
 
-**D-006 is binding.** The document core is the **V1 baseline, not the ceiling of the product**.
+The notebook core and cloud continuity are the product. Reference applications inform behaviour and correctness; their feature catalogues do not expand this scope.
 
-| Capability family | Status |
+| Capability family | Delivery |
 |---|---|
-| **Document core** | V1 — this document's §3–§13 |
-| **Edgeless Canvas** | **In complete scope**, phased after the document core stabilises |
-| **Typed multi-view Database** | **In complete scope**, phased, built on typed properties, queries and saved views |
-| **Slides / Presentation** | **In complete scope**, phased, defaulting to a **presentation view over document and canvas content** rather than a third content model |
-| Real-time multi-user collaboration | Later; compatibility must be preserved from the start |
+| Document core | Rich text, document/folder hierarchy, stable blocks, block references, backlinks, outline, tags, search, attachments, undo, history and trash |
+| Properties and views | Common scalar properties, saved list/table views, filtering, sorting and bounded queries |
+| Cloud | Single-owner workspace, multi-device revisions/conflicts, attachment availability and recovery |
+| AI | Selection actions and product tools executed through the Cloud AI service |
+| Excluded | Edgeless/whiteboard, shapes/connectors/spatial workbench, frames/frame ordering, slides/presentations, spaced repetition/flashcards, DOCX import, formula/relation/rollup engines and collaboration |
 
 | # | Requirement |
 |---|---|
-| SC-01 | "Incorporate in full, in phases" means all three families are in scope. **It does not mean feature-for-feature parity with any external product.** Depth is decided by the ArcNotes Reference Coverage Matrix using Copy / Rewrite / Improve / Replace / Reference Only / Drop (**D-006**, **D-012**). |
-| SC-02 | **No fake empty Canvas, Database or Slides implementations may be created** (**D-006**). |
-| SC-03 | **ArcNotes Edgeless Canvas is an ArcNotes capability, never a standalone product** (**D-002**). |
+| SC-01 | Deliver the notebook scope above. AFFiNE and SiYuan are behaviour references; no external-product parity or phased presentation/whiteboard obligation remains. |
+| SC-02 | No empty implementation, reserved project, schema hook or acceptance gate is created for an excluded capability. |
+| SC-03 | Retired by P2-006: Edgeless Canvas is not a current ArcNotes capability or separate product. |
 
-### 1.2 V1 compatibility hooks — binding from the beginning
-
-**D-006** makes these binding from the first line of code:
+### 1.2 Required foundations
 
 | # | Hook |
 |---|---|
-| CH-01 | Stable Document/Space and Block identities, with revisions and unified reference semantics |
-| CH-02 | A block model that permits later addition of Surface/Canvas block types |
-| CH-03 | Canvas spatial positions, connectors, groupings and layout data **isolated from ordinary document layout** |
-| CH-04 | Typed properties, queries and saved views as the multi-view database foundation |
-| CH-05 | **No stuffing of future fields into the core Block** |
-| CH-06 | Block types and extension types registered **statically or by source generation** under AOT (**D-008**) |
-| CH-07 | `DocumentId` / `BlockId` / `Operation` / `Revision` preserving future collaboration compatibility from the start, even though V1 implements no real-time collaboration |
+| CH-01 | Stable notebook/document/block identities, explicit revisions and unified reference semantics support edits and multi-device conflict handling. |
+| CH-02 | Retired by P2-006: no required future Surface/Canvas block extension. |
+| CH-03 | Retired by P2-006: no canvas positions, connectors, frames or spatial-layout storage. |
+| CH-04 | Typed scalar properties, bounded queries and saved views support notebook organisation. |
+| CH-05 | No speculative fields in core blocks for excluded product families. |
+| CH-06 | Supported block types use static/source-generated registration compatible with Native AOT. |
+| CH-07 | Stable IDs, base revisions, outbox/inbox and tombstones serve single-user multi-device sync; no CRDT, membership, shared cursors or future-collaboration reservation. |
 
 ---
 
@@ -51,11 +50,11 @@
 | # | Principle |
 |---|---|
 | PR-01 | **Document-first, not database-first.** A note is a document; the database capability grows over documents, not the reverse. |
-| PR-02 | **Local-first.** Full capability with no account and no network. |
+| PR-02 | **Cloud-backed with native editing.** A realm/workspace is required for notebook enrolment. Previously hydrated notes remain editable/searchable offline; pending edits survive crashes and are distinct from acknowledged Cloud versions. |
 | PR-03 | **Canonical Document ≠ Markdown file** (`I-190`). Markdown is a first-class **interchange** format, not the runtime authority. |
-| PR-04 | **Not being Markdown internally must not create lock-in.** Portability is guaranteed by first-class import and export (§12), not by adopting a lossy runtime format. |
+| PR-04 | Basic data portability is provided by the Cloud export in §13; no proprietary encrypted local package is required. |
 | PR-05 | **ArcNotes is the long-term knowledge authority** (`§9` of the knowledge requirements). ArcChat references and retrieves; it never becomes a second knowledge store. |
-| PR-06 | **ArcNotes does not become a Notion-style database and application builder.** It implements its own typed database and multi-view capability at a depth ArcForges chooses. |
+| PR-06 | ArcNotes provides bounded notebook properties and query views. It does not implement a spreadsheet, relational application builder or complete reference-product database engine. |
 
 ### 2.1 Three depths of use
 
@@ -77,7 +76,7 @@ Notebook
 | OR-01 | **Notebook = the top-level ArcNotes knowledge/document container.** |
 | OR-02 | **Notebooks do not nest.** Hierarchy is provided by folders. |
 | OR-03 | **Notebook ≠ ArcForges Workspace** (`I-460`). A workspace is the cloud tenancy boundary; a notebook is an ArcNotes container. |
-| OR-04 | **A local-only notebook is a first-class, permanent state** requiring no workspace. |
+| OR-04 | Every notebook belongs to one single-owner Cloud workspace. Device cache availability is a local policy, not a permanent local-only notebook ownership mode. |
 | OR-05 | **The notebook is the default ArcNotes cloud sync scope** (`SY-01`). |
 | OR-06 | **Folder = hierarchical location organisation inside a notebook.** |
 | OR-07 | **Documents do not nest inside documents.** Document hierarchy must not be used as a substitute for folders. |
@@ -104,7 +103,7 @@ Notebook
 
 | # | Requirement |
 |---|---|
-| BL-01 | Every block has a **stable `BlockId`** that does **not** change under ordinary editing — editing text, moving, indenting or re-ordering preserves it. This is what makes block links, citations and future collaboration possible. |
+| BL-01 | Every block has a stable BlockId under editing, moves, indentation and reordering. References and multi-device revision reconciliation depend on this identity. |
 | BL-02 | **Blocks support hierarchy** (nesting), independent of document nesting. |
 | BL-03 | **`Block ≠ Markdown line`** (`I-460`). |
 | BL-04 | **V1 first-party block types**: paragraph, headings, bulleted list, numbered list, checklist item, quote, callout, code, divider, table, math, image, file/attachment, PDF, embed/reference, toggle/collapsible. |
@@ -137,7 +136,7 @@ Notebook
 | # | Requirement |
 |---|---|
 | PT-01 | **Typed properties are distinct from tables** (`I-462`). Properties describe the document; a table is content inside it. |
-| PT-02 | Property types include at minimum: text, number, date, checkbox, select, multi-select, URL, relation to a document, and person or actor where applicable. |
+| PT-02 | Required property types: text, number, date/date-time, checkbox, single-select, multi-select and URL. Person/member fields, computed formulas, relationship properties and rollups are excluded. |
 | PT-03 | **System properties and user properties are separated.** Created time, modified time, author and revision are system-owned and not user-editable as arbitrary fields. |
 | PT-04 | **Properties must not make ordinary notes heavy.** A plain note has no mandatory property ceremony. |
 | PT-05 | **`Property ≠ document content`** (`I-462`). |
@@ -146,8 +145,11 @@ Notebook
 | PT-08 | Tag scope follows data-ownership scope, not a global namespace across unrelated notebooks. |
 | PT-09 | **Saved View = a saved query plus sort, filter and view configuration.** |
 | PT-10 | **A saved view owns nothing** (`I-462`). Deleting a view deletes the view definition only. |
-| PT-11 | **V1 may provide a list view only**; the model supports further view kinds as the database capability phases in. |
+| PT-11 | **V1 delivers saved list and table views.** A view selects authorised documents in a notebook, projects chosen properties and applies bounded typed filters and stable sorting. Calendar, board, gallery and spatial layouts are not required. |
 | PT-12 | **Favorites and Recent are user-level presentation state**, and Recent is derived. Neither is content. |
+| PT-13 | Property definitions and options have stable IDs. Renaming preserves existing values and view bindings; changing type requires validation and a loss preview. Incompatible values are preserved or the change is refused, never silently discarded. |
+| PT-14 | Missing value differs from empty string, false and zero. Date/time zone, number comparison, case sensitivity, null ordering and an identity tie-breaker are declared so Cloud and native cached views agree. |
+| PT-15 | View edits change the owning document property through the ordinary revision/conflict path. Deleting a view never deletes source documents. Unsupported query operators and excessive query complexity fail explicitly. |
 
 ---
 
@@ -192,12 +194,12 @@ Two categories, permanently separate (`I-193`):
 
 | # | Requirement |
 |---|---|
-| SR-01 | Search is a first-class ArcNotes capability, in three scopes: **within the current document**, **within the current notebook**, **across all local notebooks** (plus cloud where enabled). |
+| SR-01 | Search is a first-class ArcNotes capability, in three scopes: **within the current document**, **within the current notebook**, **across hydrated notebooks** (with an explicit broader Cloud search scope). |
 | SR-02 | **Basic search never requires AI** (`IX-03`). Full-text and metadata search work with no model present. |
 | SR-03 | Search filters cover notebook, folder, tag, property, date range, block type and attachment presence. |
 | SR-04 | **A search result locates the specific block** wherever possible, so opening lands the user at the match. |
 | SR-05 | **Semantic search is an enhancement, never a replacement** (`IX-04`). With the semantic index unavailable, ordinary search still works. |
-| SR-06 | Semantic search may be **local or cloud**, and these are separate policy decisions (`§4` of the knowledge requirements). |
+| SR-06 | Semantic retrieval and model-based embedding run only in Cloud and require service entitlement and explicit knowledge eligibility. Native full-text/metadata search over hydrated content remains available without AI. |
 | SR-07 | The **knowledge status of a notebook is visible**: indexed, partially indexed, not indexed, excluded, stale. |
 | SR-08 | **Knowledge is a projection, never a second copy** (`I-134`). Documents and attachments are the source. |
 | SR-09 | **Knowledge participation is per notebook with per-document override** (`KS-06`). |
@@ -214,12 +216,12 @@ Three layers, with a firm boundary at the third:
 |---|---|
 | **1 — Editor AI actions** | Selection-scoped actions: summarise, rewrite, translate, extract, continue, fix, explain |
 | **2 — Ask ArcChat** | Hands a context reference to ArcChat and receives an answer or an artifact |
-| **3 — Agent-driven ArcNotes capabilities** | ArcChat's agent invokes ArcNotes capabilities under the full permission model |
+| **3 — Agent-driven ArcNotes capabilities** | The Cloud agent invokes authorized ArcNotes capabilities under the full permission model |
 
 | # | Requirement |
 |---|---|
-| AI-01 | **ArcNotes native AI does not require ArcChat to be installed** (`§3.2` of the product scope). Layer 1 works standalone with local AI or BYOK. |
-| AI-02 | **ArcNotes does not implement a second agent orchestration platform** (`I-030`). Complex orchestration belongs to ArcChat. |
+| AI-01 | Selection AI actions call Cloud directly and do not require ArcChat Desktop. An authenticated workspace, active service term, allowed context and available capacity are required. No local AI or BYOK path exists. |
+| AI-02 | ArcNotes has no agent loop. Cloud owns the single Harness; ArcChat provides task interaction and the authorised cross-product local-tool bridge. |
 | AI-03 | **"Ask ArcChat" passes a context reference, never a blanket copy** (`CX-03`). |
 | AI-04 | **Clicking "Ask ArcChat" must never upload an entire notebook.** The minimum necessary context is passed (`AS-08`). |
 | AI-05 | **Every AI modification carries provenance** (`SY-21`): actor is the agent, with task, capability and approval reference. |
@@ -255,7 +257,7 @@ Four separate levels (`I-201`–`I-205`):
 |---|---|
 | HR-01 | **History UI displays the actor** — user, or agent with its task — so "why did this change?" is answerable. |
 | HR-02 | **Restoring an earlier state does not delete subsequent history.** Restore creates a new revision. |
-| HR-03 | **Local history is not a cloud-only capability.** Local revision history, checkpoints and trash are free local features; the cloud adds cross-device version history and deleted-item recovery. |
+| HR-03 | Cloud history is the acknowledged multi-device record. Local undo, recovery journal and unacknowledged edit checkpoints protect working changes; they do not form a second independently authoritative notebook history. |
 | HR-04 | **Restoring from trash preserves the `DocumentId`** (`DE-03`). |
 | HR-05 | **Deleting a folder moves the folder and its descendants to trash.** |
 | HR-06 | **Deleting a tag has entirely different semantics**: documents are untouched (`PT-07`). |
@@ -270,32 +272,36 @@ Four separate levels (`I-201`–`I-205`):
 
 | # | Requirement |
 |---|---|
-| IM-01 | **Import is a first-class ArcNotes capability**, not an afterthought. |
-| IM-02 | **First official import families**: Markdown files and folders, an Obsidian-style vault, a Notion-style export, plain text, HTML, and ArcNotes' own native package. |
-| IM-03 | **Import is always non-destructive** (`IM-04` in the data requirements). It creates ArcNotes objects; it never mutates or deletes the source. |
-| IM-04 | **Import preserves relationships wherever possible**: internal links, attachments, tags, properties, folder structure and dates. |
-| IM-05 | **Every import produces a report** (`IM-05` in the data requirements): imported, skipped, approximated, preserved-unmapped, and lost. |
-| IM-06 | **Repeated import identifies its origin** so a second run can update rather than duplicate (`IM-03`, `IM-04` in the data requirements). |
-| IM-07 | **V1 does not implement real-time bidirectional Markdown folder mirroring** (`EE-01`). Import and export are the boundary. A **Linked Vault Mode** is a possible later capability, and only as an explicitly declared mode with declared writer authority. |
+| IM-01 | Import remains a non-destructive way to move existing notes into a Cloud notebook. |
+| IM-02 | Required formats are plain text and Markdown files/folders with local attachments and relative links, including an Obsidian-style folder/vault layout. DOCX, Notion-specific, HTML and proprietary full-fidelity package importers are not required. |
+| IM-03 | Sources are never modified or deleted. Input size, attachment access and path traversal are validated before processing. |
+| IM-04 | Preserve representable hierarchy, links, attachments, tags and metadata. Unsupported constructs are retained as safe text or reported; no silent loss or execution of embedded content. |
+| IM-05 | Produce an import report: created, skipped, approximated, unresolved references and rejected files, with actionable reasons. |
+| IM-06 | Import batches have stable origins and idempotency keys. Retrying the same batch cannot duplicate documents; deliberately importing again offers a preview before updates/copies. |
+| IM-07 | No live bidirectional folder mirror, linked-vault mode or standalone local notebook is required. Staged import work remains recoverable until Cloud commit or explicit cancellation. |
 
 ### 13.2 Export
 
-**Export must be more reliable than import, because it is the user's exit freedom.**
-
-| Format | Fidelity |
-|---|---|
-| **ArcNotes native package** | Full fidelity |
-| **Markdown** | High fidelity for representable content, with a loss report |
-| **HTML** | Presentation fidelity |
-| **PDF** | Fixed-layout sharing and printing |
-| **Plain text / clipboard** | Lossy by design |
-| **DOCX** | Later; the architecture supports it |
+The required exit path is a **Cloud-generated notebook/account download**, with Markdown documents, attachments, a machine-readable metadata/link manifest and a fidelity report. It preserves access to user-created data without promising lossless interchange for every editor representation.
 
 | # | Requirement |
 |---|---|
-| EX-01 | **Content Markdown cannot represent** — typed properties, certain block types, embeds, canvas content later — is handled by a declared strategy: front-matter, a sidecar, an approximation, or an explicit loss entry. **Silent loss is prohibited** (`EX-03` in the data requirements). |
-| EX-02 | **External attachments are excluded from export by default**, with an explicit "collect external attachments" option (`EX-07` in the data requirements). |
-| EX-03 | Every export declares its round-trip level (`EX-01` in the data requirements). |
+| EP-01 | Users select the notebooks/documents to export. Export validates owner/workspace access and reports missing or unavailable attachments; it never silently claims a complete result. |
+| EP-02 | Export is available for retained data after a paid term ends. The downloadable artifact has a bounded lifetime and authorised access. Cancellation or expiry of that artifact does not delete source notes. |
+| EP-03 | Snapshot the acknowledged source revisions. Pending device-only edits are not falsely included; the UI explains that they must synchronise first or be recovered locally. |
+| EP-04 | Custom local encrypted export, native portable packages, HTML/PDF/DOCX export pipelines and bit-for-bit native archive round-trips are not required. Ordinary clipboard/attachment saving and crash recovery are not removed. |
+
+The earlier export identifiers remain binding within this narrower Cloud exit path:
+
+| # | Requirement |
+|---|---|
+| EX-01 | Supported scalar properties, links and hierarchy that Markdown cannot represent use documented metadata/sidecars. Unsupported blocks/formatting receive explicit approximations or loss entries; no excluded canvas/presentation support is inferred. |
+| EX-02 | External attachments are excluded by default. Only explicitly selected and authorized available bytes may be collected; device-only references are listed as unavailable until separately uploaded. |
+| EX-03 | Every export declares its semantic round-trip/fidelity level. Markdown plus metadata is not advertised as a lossless native execution/archive format. |
+
+### 13.3 Portability acceptance
+
+Import a Markdown folder with nested links and attachments; retry without duplication; synchronise; export the selected notebook from Cloud; verify content, attachment hashes, link mapping and the declared loss report. Interrupt export and retry without changing source state. No DOCX importer or excluded package UI is reachable.
 
 ---
 
@@ -304,10 +310,10 @@ Four separate levels (`I-201`–`I-205`):
 | # | Requirement |
 |---|---|
 | CL-01 | **ArcNotes' cloud data capabilities do not depend on ArcChat** (**D-010**). |
-| CL-02 | **The notebook is the cloud enablement unit** (`OR-05`), enabled explicitly per notebook. |
-| CL-03 | **Nothing is uploaded automatically after sign-in** (`ID-06`). |
-| CL-04 | **A synced notebook still holds a complete local replica.** It is a local-first replicated notebook, **not** a cloud document with a cache. |
-| CL-05 | **With Cloud unavailable**, everything local continues; sync queues; the state is visible and non-alarming. |
+| CL-02 | Notebook creation/enrolment explicitly identifies the Cloud workspace. Subsequent notebook edits synchronise automatically under that enrolment; turning off device hydration does not change Cloud ownership. |
+| CL-03 | Notebook onboarding explains that new documents and managed attachments will be stored in Cloud. Sign-in alone never uploads unrelated local files, existing external libraries or device folders. |
+| CL-04 | Each device holds a selected, revision-labelled working cache, not a mandatory complete replica. Pending writes are durable and cannot be evicted before acknowledgement or explicit user discard. |
+| CL-05 | Cloud unavailability preserves editing and keyword search for hydrated content. Pending changes are visibly unsynchronised; unavailable content, AI and Cloud operations show specific unavailable states. |
 | CL-06 | **Storage full** pauses cloud writes only; local editing and saving continue (`ST-06`). |
 | CL-07 | **A new device fetches metadata and small content first**; attachments hydrate per policy (`AS-08`). |
 | CL-08 | **Attachment availability policy is user-controlled** per notebook (`AS-07`). |
@@ -331,17 +337,17 @@ Four separate levels (`I-201`–`I-205`):
 
 | # | Requirement |
 |---|---|
-| FR-01 | **No account required**; the editor is usable immediately (`ID-01`). |
-| FR-02 | **First value within seconds**: create a note and start typing. |
-| FR-03 | **AI configuration must never block the editor** (`AI-13` in the ArcChat requirements applied here). |
-| FR-04 | **ArcChat absent changes nothing about core ArcNotes** (`§3.1` of the product scope). AI actions that require ArcChat show as ecosystem capabilities that are currently unavailable. |
+| FR-01 | First notebook use signs into a realm and selects its workspace. Returning users open authorized cached content during outages. Sign-out blocks normal workspace views; the explicit local pending-work recovery path in identity DL-01 is a narrow exception, not account-free notebook creation or AI. |
+| FR-02 | After account/workspace setup, first value is creating a note and typing immediately; shell startup never waits for background hydration/indexing. |
+| FR-03 | AI entitlement, provider availability and model configuration never block ordinary editing of available content. |
+| FR-04 | ArcChat absence does not disable ArcNotes editing or direct Cloud AI entry points. Cross-product desktop tool requests requiring the ArcChat bridge report that dependency. |
 | FR-05 | Startup meets the budget in [`../12-quality-and-compatibility-contract.md`](../12-quality-and-compatibility-contract.md) §5, with no cloud dependency in the startup path. |
 
 ---
 
 ## 17. Non-goals
 
-ArcNotes is **not**: a Notion clone or an application builder; a spreadsheet; a project-management suite; an image editor; a real-time collaborative editor in V1; a Markdown folder mirror; or a second agent platform.
+ArcNotes is **not**: a Notion clone or an application builder; a spreadsheet; a project-management suite; an image editor; a collaborative editor; a Markdown folder mirror; or a second agent platform.
 
 **A knowledge graph, if offered, is a derived view of the link graph** — never a separate authoritative store (`IX-06`).
 
@@ -366,7 +372,7 @@ ImportJob · ImportOrigin · ExportJob
 ArcNotesArtifactReference
 ```
 
-Reserved for the phased capabilities, consistent with `CH-01`–`CH-07`: surface/canvas block types with isolated spatial data; query, view kind and database view definitions over typed properties; and presentation view definitions over document and canvas content.
+The domain contains only the accepted notebook and property-view concepts. No canvas, presentation, flashcard or collaboration domain reservations are required.
 
 ---
 
@@ -378,11 +384,11 @@ Reserved for the phased capabilities, consistent with `CH-01`–`CH-07`: surface
 | **Organisation** | Tags, properties, favorites, recent, internal links, backlinks, outline |
 | **Retrieval** | Full-text search, metadata filters, basic saved views |
 | **Reliability** | Autosave, undo/redo, history, checkpoint, trash, crash recovery |
-| **Portability** | Markdown import and export, plain text, HTML, PDF export, vault-style import |
+| **Portability** | Markdown/text and folder/vault import; Cloud Markdown/attachment/metadata export |
 | **AI** | Selection AI actions, Ask ArcChat, ArcChat context and capabilities, agent provenance and checkpoints |
 | **Cloud** | Explicit notebook sync, managed attachment sync, cloud status, version and recovery integration |
 
-A Notion-style importer may land in V1 or shortly after; **the architecture supports it directly**.
+Advanced importers and excluded workbenches are outside the current delivery baseline.
 
 ---
 
@@ -392,7 +398,7 @@ A Notion-style importer may land in V1 or shortly after; **the architecture supp
 
 | # | Requirement |
 |---|---|
-| RF-01 | An **ArcNotes Reference Coverage Matrix** is required before ArcNotes implementation planning is finalised (**D-012**, **D-006**), mapping each reference feature to Copy / Rewrite / Improve / Replace / Reference Only / Drop, to a phase (V1 / Edgeless / Database / Slides / later collaboration), to a target domain, data, UI or contract area, and to a test and completion gate. |
+| RF-01 | Maintain an ArcNotes Reference Coverage Matrix for AFFiNE and SiYuan, mapping accepted notebook behaviour to target data/UI/contracts and acceptance evidence. Classify excluded whiteboard, presentation, collaboration, flashcard and advanced database behaviour as Drop or Reference Only; no implementation gate remains for them. |
 | RF-02 | **Reuse is licence-gated and provenance-gated** (**D-013**). File-level SPDX evidence against the local repository baseline is required before any copy, translation or port — the **F-013** gate. AGPL-identified material is behavioural reference only, implemented independently. |
 | RF-03 | Reference material informs feature depth; **the target runtime architecture is ArcForges' own** — C#, Avalonia, Native AOT, the ArcForges domain and persistence model. |
 
@@ -400,35 +406,23 @@ A Notion-style importer may land in V1 or shortly after; **the architecture supp
 
 ## 21. Acceptance scenarios
 
-**Basic** — no account, no network; create a notebook, folder and document; edit; save; reopen; search; export.
+**Notebook core** — sign into a workspace, create a notebook/folder/document, edit rich blocks, save and acknowledge Cloud; reopen on another device; links, ordering, tags and metadata agree.
 
-**Block identity** — editing text, moving, indenting and reordering a block preserve its `BlockId`; a block link still resolves afterwards.
+**Native resilience** — hydrate a notebook, disconnect, edit and search it; restart after a durable local save; pending edits survive and remain visibly unsynchronised. Reconnect against a changed base revision: both versions survive as an explicit conflict. Never call pending edits Cloud-saved.
 
-**Rename** — renaming a document leaves every internal link intact.
+**Block identity and references** — move/rename/edit without breaking document or block links; backlinks are derived; deleted or unavailable targets have explicit states.
 
-**Backlinks** — a link creates a backlink; deleting the source removes it; the backlink was never written into the target's body.
+**Properties/views** — list and table views share the same source documents; typed filtering/sorting agrees between Cloud and hydrated cache; rename a property without losing values; reject a lossy type change without confirmation; deleting a view leaves documents intact.
 
-**Broken link** — a deleted target produces an explicit broken-link state, not silent plain text.
+**Attachments** — managed uploads preserve bytes and references, large/external files require a clear choice, hydration loss is recoverable, and an unavailable attachment does not masquerade as downloaded.
 
-**Attachments** — a small drop becomes managed; a large external file prompts; nothing is base64-embedded; a missing external attachment produces a recoverable state.
+**AI** — selection AI works through Cloud without ArcChat Desktop; no service term means no AI even with credits; no BYOK/model download UI exists; context is minimal; bulk edits require review and checkpoints.
 
-**Search** — full-text works with no model; a result lands on the matching block; with the semantic index down, search still works.
+**History/trash** — restore creates a new revision; trash restore preserves identity; deleting tags/views deletes no notes; deleting a folder has an explicit descendant scope.
 
-**Knowledge policy** — a notebook excluded from AI is still searchable by title and keyword; enabling sync does not enable cloud AI indexing.
+**Portability** — §13.3 passes, including expired-subscription export of retained data and explicit handling of device-only pending edits.
 
-**AI** — a selection action works with local BYOK and no ArcChat; "Ask ArcChat" passes a reference rather than the notebook; an agent edit creates a checkpoint and carries provenance; Review Changes gates a large edit.
-
-**Cross-application** — ArcChat requests a report; ArcNotes creates the document; the document is ArcNotes-owned; ArcChat holds an `ArtifactRef`; deleting the artifact entry leaves the document.
-
-**History** — restore an old revision; subsequent history remains; trash restore preserves `DocumentId`; deleting a tag deletes no documents.
-
-**Import/export** — a vault import is non-destructive, preserves links and produces a report; re-import updates rather than duplicating; Markdown export reports what it could not represent; native export round-trips losslessly.
-
-**Cloud** — enabling notebook sync uploads nothing until confirmed; a synced notebook remains fully editable offline; storage-full pauses upload only; a new device shows documents before attachments finish.
-
-**Reliability** — kill the process immediately after typing; the change is present on restart; a corrupted search index rebuilds without any claim of document corruption.
-
-**Compatibility hooks** — adding a surface/canvas block type later requires no change to existing document data; typed properties already support the query and saved-view foundation.
+**Scope enforcement** — no whiteboard, frames/slides, presentation navigation, spaced repetition, DOCX importer, formula/relation/rollup engine, E2EE or collaboration-only schema/acceptance obligation remains.
 
 ---
 
@@ -437,10 +431,10 @@ A Notion-style importer may land in V1 or shortly after; **the architecture supp
 | Source | Consumed as |
 |---|---|
 | `I4 §Stage 15` | The complete ArcNotes product specification: organisation model, document and block model, editor, properties and tags, links and references, attachments, search and knowledge, AI layers, history and deletion, import and export, cloud behaviour, windows, first run, non-goals, domain model and V1 scope |
-| `I2 §II` | The V1 compatibility hooks made binding by **D-006** |
+| `I2 §II` | Historical foundation input; only IDs, revisions and the accepted property/query foundation remain required under P2-006 |
 | `I4 §Stage 13 §18–20` | ArcNotes as the long-term knowledge authority and its owned state |
 | `I4 §Stage 22 §23–26`, `§195` | ArcNotes storage strategy and local structure |
 | `I4 §Stage 23 §138–139` | ArcNotes knowledge responsibilities |
-| **D-002** | Edgeless Canvas is an ArcNotes capability, never a product |
-| **D-006** | Complete scope with phased Canvas, Database and Slides; binding V1 hooks; no fake empty implementations |
+| **D-002**, **P2-006** | Four-product portfolio; excluded canvas/presentation features do not re-enter through references |
+| **D-006 as amended by P2-006** | Notebook core, bounded property views, Cloud continuity and explicit exclusions |
 | **D-012**, **D-013** | AFFiNE and SiYuan as licence-gated references with a required coverage matrix |

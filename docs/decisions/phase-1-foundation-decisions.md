@@ -6,6 +6,8 @@
 
 This register holds every material issue found while reviewing the closed Phase 1 input corpus, together with the user decisions that resolve them. Nothing here is a specification. Only a decision the user has actually given is recorded as `USER_CONFIRMED`.
 
+> **Current amendment (2026-09-06):** [P2-006](phase-2-specification-decisions.md) records subsequent explicit user direction and delegated requirements design. Original quotations below remain historical records and do not reinstate superseded obligations.
+
 ## Authority order
 
 Confirmed by the user as **D-001**.
@@ -98,7 +100,7 @@ Totals: **26 registered** (F-001 to F-026, every identifier used, none skipped) 
 
 **Where** `I4 §Stage 15` is titled "ArcNotes Complete Product Specification" and contains no Edgeless Canvas, no multi-view Database and no Slides; `§Stage 15.150` lists "Not complete Notion Database Platform" as a core non-goal; `§Stage 15.39` excludes relational database pages, formula engine, board engine, project management database and complex rollup. Stage 15 never mentions AFFiNE or SiYuan. `I2 §II` records the settled Option 5 decision, pre-empts the apparent contradiction ("'No Notion Database clone' means not replicating Notion's entire scope without limit"), and enumerates the V1 compatibility hooks.
 
-**Outcome** Option A confirmed. Stage 15 is the V1 document-core baseline, not the ceiling. Canvas, typed multi-view Database and Slides are all in complete scope, phased after the document core stabilises, at ArcForges-decided depth via the Reference Coverage Matrix. The `I2 §II` V1 compatibility hooks are binding from the beginning. Slides defaults to a presentation view over document and canvas content.
+**Original outcome — scope superseded by P2-006.** Option A was confirmed. Stage 15 was the V1 document-core baseline, not the ceiling. Canvas, typed multi-view Database and Slides are all in complete scope, phased after the document core stabilises, at ArcForges-decided depth via the Reference Coverage Matrix. The `I2 §II` V1 compatibility hooks are binding from the beginning. Slides defaults to a presentation view over document and canvas content.
 
 ## F-004 — Verification policy for time-sensitive claims
 
@@ -532,6 +534,12 @@ The current effective applied scope of this decision is recorded under **F-004**
 
 ---
 
+### D-006 amendment — 2026-09-06
+
+**Current effective scope:** [P2-006](phase-2-specification-decisions.md) removes Edgeless Canvas, Slides/Presentation and future-collaboration hooks from required ArcNotes delivery. Notebook core, bounded typed properties, saved list/table views, queries, references and multi-device cloud sync remain. No reference feature automatically expands scope. The original quotation above is preserved for provenance.
+
+---
+
 ## D-007 — Web technology and rendering boundary · resolves **F-006** · `USER_CONFIRMED`
 
 > The public marketing experience must render as static HTML and CSS without waiting for the .NET runtime or WebAssembly to start. Marketing, legal, download and other public information pages must not boot Blazor merely to display their initial content.
@@ -861,6 +869,12 @@ Every other line of the map, and every other part of D-012 — the non-authority
 
 ---
 
+### D-020 amendment — 2026-09-06
+
+[P2-006](phase-2-specification-decisions.md) adopts subscription capacity that replenishes over time, actual-token metering and opt-in extra credits. Official AI requires an active paid service term. Fixed precision, distinct cost/customer/revenue records, customer tariff snapshots, pre-authorisation and immutable corrections remain. Exhausted capacity waits for recovery or explicitly authorised credits; no overdraft or unbounded compute is permitted. Production numbers are external deployment configuration. A $20 monthly offer is an illustrative target, not a verified tariff or profitability assertion.
+
+---
+
 ## D-021 — Apache boundary for validators and shared semantics · resolves **F-022** · `USER_CONFIRMED`
 
 > Confirm and refine Option C.
@@ -978,7 +992,7 @@ Global rules now in force. Applied to all occurrences they cover without further
 | 4 | `ArcCanvas`, `ArcMusic` and `ArcImage` are obsolete and `SUPERSEDED` wherever they appear, and are excluded from every new authoritative document. Not future, reserved, alias or re-entry-candidate products, so the `I4 §Stage 13.81` fifth-product contract does not apply to them; it remains available for a genuinely new product. | D-002 | All |
 | 5 | `ArcVideo` is likewise obsolete wherever it appears; ArcSlate is the current product. | D-002 | T01, T03 |
 | 6 | ArcScope is an independently defined product, not a rename or continuation of ArcImage. `I3 §3.5` ArcImage domain concepts must not be migrated into ArcScope. | D-002 | T01, T03 |
-| 7 | ArcNotes Edgeless Canvas is an ArcNotes capability, never a standalone product. | D-002 | T03 |
+| 7 | The former Canvas naming distinction does not require delivery. Canvas/whiteboard and presentation scope is excluded by P2-006; no standalone product is introduced. | D-002; D-006 as amended by P2-006 | T03 |
 | 8 | Raw input files remain unmodified. Dispositions are recorded here, never applied to the inputs themselves. | D-002, D-005 | All |
 | 9 | Foundation-critical external facts are verified now; all pricing, quota, fee, rate and regional-availability data is deferred with a first-consumption trigger. | D-003 | All |
 | 10 | Two-boundary licensing: ArcChat Mobile and its mobile-facing interoperability code are Apache-2.0; ArcChat Desktop, ArcNotes, ArcScope, ArcSlate, ArcForges Cloud and all server implementations, and everything not explicitly assigned to the Apache-2.0 boundary, remain `AGPL-3.0-only`. | D-004 | T17, T20 |
@@ -991,7 +1005,7 @@ Global rules now in force. Applied to all occurrences they cover without further
 | 17 | **Payoneer is the payout and settlement destination for receiving Paddle payouts.** Not a second Merchant of Record, not an interchangeable checkout provider, not a customer-facing fallback processor. | D-005 | T11 |
 | 18 | Provider-abstraction principles preserved: entitlement state independent of provider identifiers; provider IDs never in client authority contracts; webhooks verified and idempotent; no irreversible dependence on one provider's proprietary data model. | D-005 | T11 |
 | 19 | The payment-provider verification target is Paddle and Payoneer. Their pricing and fees remain under D-003's first-consumption rule. | D-005 | T11 |
-| 20 | Stage 15 is the ArcNotes V1 document-core baseline, not the scope ceiling. Canvas, typed multi-view Database and Slides are in complete scope, phased, at ArcForges-decided depth via the Reference Coverage Matrix — never at external-product parity. The `I2 §II` V1 compatibility hooks are binding from the beginning, and no fake empty implementations may be created. | D-006 | T03, T13 |
+| 20 | Current ArcNotes scope is notebook core, bounded property/query views and cloud sync. Canvas, Slides and collaboration-only hooks are excluded by the dated D-006 amendment; references do not imply parity. | D-006 as amended by P2-006 | T03, T13 |
 | 21 | Public marketing, legal, download and other public information pages render as static HTML/CSS without booting the .NET runtime or WebAssembly. Static pages are deployment artifacts, not a second browser application. | D-007 | T16 |
 | 22 | `ArcForges.Web.App` is the only interactive browser application: standalone Blazor WebAssembly, `RunAOTCompilation=false`. No Blazor Server circuits, Interactive Server, runtime SSR, React, TypeScript, Node or JS package manager. Minimal audited JS interop only where no adequate managed interface exists. | D-007 | T16 |
 | 23 | **ArcForges Cloud is an ASP.NET Core JIT modular monolith.** Strict Native AOT is not a Cloud requirement, and every obsolete claim that Cloud must publish as Native AOT is removed. Azure SDKs, the durable agent loop, provider adapters, SignalR integration, billing, policy and operational infrastructure run inside the JIT boundary. | D-008 | T18, T07 |

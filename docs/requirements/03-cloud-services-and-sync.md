@@ -1,4 +1,5 @@
 # Cloud Services, Sync, Assets and Data Integrity Requirements
+> Current scope amendment: **[P2-006](../decisions/phase-2-specification-decisions.md)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Requirements
@@ -12,10 +13,10 @@ ArcForges Cloud
 ├── Continuity        cross-device, Web, Mobile, task-state continuity
 ├── Sync & Recovery   replication, version history, restore, cloud storage
 ├── Remote Execution  remote tasks, device scheduling, automation
-└── Managed Services  cloud search, cloud BYOK, managed AI, notifications
+└── Managed Services  cloud search, subscription AI, metering, notifications
 ```
 
-**Founding principle:** ArcForges Cloud is never a prerequisite for running local software. With Cloud entirely unreachable, every local product, every local agent, local BYOK and local AI continue to work at full capability. Only sync, remote, cloud search, cloud BYOK, managed cloud tasks and web/mobile continuity are affected.
+**Founding principle:** Cloud owns AI orchestration and acknowledged synchronised revisions. Native clients preserve working caches and pending edits during outages; local acquisition/media jobs keep running. No offline AI or account-free notebook service is promised.
 
 ---
 
@@ -33,34 +34,25 @@ Every numeric allowance below is **versioned commercial policy under D-020**, no
 | Infrastructure backup retention | ≈ 35 days | Proposal; requires approval |
 | Storage add-on tiers | +100 GB / +500 GB / +1 TB | Proposal; requires approval |
 
-Two figures are **structural**, not policy, and are binding: storage is **workspace-shared, not per-product**, and **"unlimited" is never offered** for storage or AI (`C-04`, `C-09`).
+Two figures are **structural**, not policy, and are binding: storage is **workspace-shared, not per-product**, and storage/AI constraints are honestly disclosed under C-04/C-09. Replenishing AI capacity is specified by commerce AC-01–AC-12.
 
 ---
 
 ## 2. Cloud capability bundle
 
-| Capability | Local (free) | Cloud subscription |
+| Capability | Native/offline boundary | Active official service |
 |---|---|---|
-| All desktop products, all local features | Yes | Yes |
-| Local agent, local BYOK, local AI, local search and vector index | Yes | Yes |
-| Multi-device sync | — | Yes |
-| Workspace shared cloud storage | — | Yes |
-| Version history | — | Yes |
-| Deleted-item recovery | — | Yes |
-| Cloud search (metadata, full-text, semantic) | — | Yes |
-| ArcChat Web continuity | — | Yes |
-| ArcChat Mobile continuity | — | Yes |
-| Remote desktop agent | — | Yes |
-| Cloud agent tasks and cloud automations | — | Yes |
-| Cloud BYOK | — | Yes |
-| Managed AI monthly allowance | — | Yes |
-| Purchased Arc AI Credits | Usable | Usable |
+| Editor/capture/media operations | Available for local files and authorised hydrated data | Cloud features separately enabled |
+| Notebook/chat continuity | Scoped cache/pending drafts; no autonomous AI | Acknowledged data, sync, history and recovery |
+| Search | Keyword/metadata over available native data | Cloud keyword and permitted semantic search |
+| AI tasks/automation | No local loop/provider-key mode | Cloud single Harness, included capacity and opt-in extra credits |
+| Scope simulator | Downloaded captures remain inspectable | Real deterministic Cloud simulation under resource/storage limits |
 
 | # | Requirement |
 |---|---|
-| CL-01 | **Purchased Arc AI Credits do not depend on an active cloud subscription to survive.** Credits bought with real money are never voided by cancellation and remain usable from local ArcChat. |
-| CL-02 | On subscription end: Cloud BYOK, Cloud Agent, Remote Agent and Web continuity become unavailable, and the monthly allowance stops being issued. Nothing local changes. |
-| CL-03 | Cloud capabilities degrade **independently**. An AI provider outage must never stop ArcNotes sync. The status surface reports per-capability state: Identity, Sync, Storage, Search, Remote, Tasks, Managed AI, Billing. |
+| CL-01 | Purchased credits remain recorded after subscription expiry but are spendable only during an active paid service term. |
+| CL-02 | After PaidThrough, new official AI/model-based jobs stop and capacity does not replenish. Native pending work is preserved; retained Cloud data stays readable/exportable under the published retention lifecycle. |
+| CL-03 | Capability health is independent. An AI provider outage does not stop note sync, keyword search or native editing; status distinguishes Identity, Sync, Storage, Search, Tools, Tasks, AI and Billing. |
 
 ---
 
@@ -75,7 +67,7 @@ Every byte in the ecosystem belongs to exactly one class. A new data type must b
 | **External Reference** | A video on the user's own disk | Yes, but ArcForges does not own it | **Never uploaded by default** |
 | **Derived Data** | Thumbnail, waveform, embedding, search index, preview, transcode cache | No | Rebuildable; not synced as user data |
 | **Device-local State** | Window position, GPU configuration, device paths, local caches, recent folders | No | Never synced |
-| **Secret** | Local BYOK key, device private key, local credentials | Sensitive | Dedicated vault only |
+| **Secret** | Device/login credentials, connector tokens, operator provider keys | Sensitive | Dedicated credential storage; never ordinary sync data |
 | **Ephemeral Data** | Temp files, agent scratch, logs, render temp, task working directories | No | Never synced |
 | **Operational Data** | Sync cursor, job state | System | Cloud-owned |
 | **Audit / Commercial** | Billing records, security audit | System | Independently retained, separate retention |
@@ -95,23 +87,27 @@ Every byte in the ecosystem belongs to exactly one class. A new data type must b
 
 ---
 
+### 3.2 Cloud acknowledgement and native pending work
+
+For Notes/Chat, Cloud product modules own acknowledged revisions. Native writes commit durably to an owner-scoped pending journal and become authoritative Cloud versions only after revision validation and acknowledgement. The UI distinguishes local durability from Cloud sync success. Pending edits cannot be evicted as cache, reassigned on account switch, or overwritten by a newer Cloud snapshot. Scope/Slate local capture/media authority and explicit upload choices remain unchanged. No permanent local-only notebook mode is required.
+
 ## 4. Sync Scope
 
 Sync is never "the app directory is uploaded". The unit of participation is a **Sync Scope**.
 
 | # | Requirement |
 |---|---|
-| SY-01 | A Sync Scope carries its own: sync enabled state, protection mode, large-asset policy, selective-sync policy and conflict policy. |
+| SY-01 | A sync scope declares owner realm/workspace, enrolled resources, local hydration/large-asset policy and conflict semantics. No encryption mode or collaboration profile is required. |
 | SY-02 | **Sync Scope ≠ ArcChat Project.** An ArcChat Project is agent context/work topic; a Sync Scope is which data participates in cloud replication. One ArcChat Project may reference three objects with three different sync states. |
 | SY-03 | Per-product default sync policy: see §4.1. Defaults are conservative for large data. |
-| SY-04 | Sync state is user-legible, not a single green cloud icon. The states are: `Synced`, `Syncing`, `Offline`, `Local only`, `Conflict`, `Waiting for network`, `Storage full`, `Error`. Settings additionally show last successful sync, current device, pending uploads, pending downloads and conflicts. |
-| SY-05 | Turning **off** sync for a scope must ask whether to keep files on this device, defaulting to **yes**. The "turn off sync and lose local files" failure mode of cloud-first software must not occur. |
+| SY-04 | Expose Synced, Syncing, Offline, PendingChanges, Conflict, StorageFull and Error with last Cloud acknowledgement, pending transfers and next action. LocalOnly applies to unuploaded capture/media resources, not a separate notebook or Agent mode. |
+| SY-05 | Pausing sync/hydration preserves pending edits. Evicting acknowledged cache requires an explicit local-space action and cannot delete Cloud data. Leaving a realm or deleting Cloud content is a separate confirmed operation. |
 
 ### 4.1 Per-product default sync policy
 
 | Product | Synced by default | Not synced | User-selectable escalation |
 |---|---|---|---|
-| **ArcChat** | Conversations, Projects, task records, artifact references, agent profiles, user skills, automation definitions, selected preferences | Local BYOK keys, local model files, device-local paths, transient task working data, logs, device secrets | — |
+| **ArcChat** | Conversations, Projects, task records, artifact references, agent profiles, user skills, automation definitions, selected preferences | Device-local paths, transient task working data, logs, device secrets | — |
 | **ArcNotes** | Documents, Notebooks, metadata, managed attachments | External-reference targets | — |
 | **ArcScope** | Projects, session metadata, annotations, analyses, reports, configurations | **Raw capture — local only by default** | Per-session "upload raw data" |
 | **ArcSlate** | **Project only** by default: timeline, project metadata, editing decisions, text/subtitles, small assets | Managed originals, proxies | `Project + Managed Proxies` → `Project + Selected Originals` → `Full Managed Media` |
@@ -157,7 +153,7 @@ ArcSlate is never a single Sync On/Off toggle (`I-487`: **Project Sync ≠ origi
 | CF-01 | **There is no single global conflict algorithm.** Each object type declares a `ConflictPolicy` from: `Append`, `Merge`, `RevisionCompare`, `ConflictBranch`, `Immutable`. |
 | CF-02 | **Silent last-write-wins on user-created content is prohibited.** Where safe automatic merge is impossible, the original and both device versions are all retained. |
 | CF-03 | Conflict presentation names what happened: which device, which time, with actions to open either version, keep both, or resolve. `Sync error 409` is not acceptable user-facing behaviour. |
-| CF-04 | **V1 does not force CRDT.** ArcNotes may adopt CRDT for specific structures later. ArcSlate timelines, ArcScope sessions, binary assets and complex project graphs are not retrofitted to CRDT for a collaboration scenario that does not exist. The V1 goal is **no silent data loss**, not real-time multi-user editing. |
+| CF-04 | No CRDT, Yjs, awareness, shared cursors or multi-user editing. Multi-device sync uses stable IDs, explicit base revisions, outbox/inbox, change feed, tombstones and durable conflicts; no silent last-write-wins. |
 
 ### 4.6 Deletion
 
@@ -218,13 +214,13 @@ ArcSlate is never a single Sync On/Off toggle (`I-487`: **Project Sync ≠ origi
 
 ---
 
-## 6. Protection modes and encryption
+## 6. Standard Cloud protection
 
 | # | Requirement |
 |---|---|
 | PR-01 | V1 ships **Standard Protected Cloud**: TLS in transit, encryption at rest, workspace isolation, strict service authorization, secret separation. This is what makes cloud search, semantic indexing, cloud agent, managed AI context and web access possible. |
-| PR-02 | The `DataProtectionProfile` concept exists from day one with two values: `Standard` and `EndToEndEncrypted`. **E2EE is modelled now, released later.** |
-| PR-03 | The E2EE trade-off is stated honestly and never marketed away. In an E2EE scope the server sees opaque objects: sync, versioning and download to a trusted device work; **server-side full-text search, semantic search, cloud-native agent context and cloud-side preview do not**. Desktop local search, desktop local agent and remote desktop agent continue, because the desktop holds the key. |
+| PR-02 | Retired by P2-006: no E2EE mode, profile field, key-sharing protocol or deferred delivery requirement. |
+| PR-03 | Custom local encrypted stores and encrypted portable exports are excluded. Login/device secret protection and encrypted operator backups remain infrastructure requirements; no zero-knowledge claim. |
 | PR-04 | No claim of "zero-knowledge cloud" may be made while `Standard` is the operating mode. |
 
 ---
@@ -249,30 +245,30 @@ ArcSlate is never a single Sync On/Off toggle (`I-487`: **Project Sync ≠ origi
 | CS-02 | Three levels exist and are distinguished: **metadata search**, **full-text search**, **semantic search** (`I-145`). |
 | CS-03 | **The search index is never data authority** (`I-135`). The chain is `canonical object → search document → full-text index → vector index`, all derived, all deletable and rebuildable at any time. This is what makes changing the vector backend possible later. |
 | CS-04 | The ArcForges search API must not expose any vendor's vector-database concepts. |
-| CS-05 | Cloud search is **strictly workspace-scoped**. Membership in two workspaces never permits an implicit cross-workspace result. |
+| CS-05 | Cloud search is restricted to the authenticated owner workspace and authorised resources. Another realm/workspace is never included implicitly. |
 | CS-06 | Deleting a source object removes its search document, vector entries and derived previews (`DE-04`, `DE-05`). |
 
 ---
 
 ## 9. Remote and cloud execution
 
-Three execution locations, always visible to the user (`I-023`, `I-105`):
+Three tool-location shapes under one Cloud agent runtime, always visible to the user (`I-023`, `I-105`):
 
 | Mode | Where it runs | Desktop required? |
 |---|---|---|
-| **Desktop Execution** | The user's own machine, via ArcChat Desktop | Yes, online |
+| **Desktop tool execution** | Authorised native product job, requested by the Cloud Harness | Yes, online for remote control |
 | **Cloud Execution** | ArcForges Cloud | No — the machine may be off |
-| **Hybrid Execution** | Cloud steps plus desktop steps in one task | For the desktop steps only |
+| **Mixed tool targets** | One Cloud Run observes Cloud and desktop product jobs | For desktop tools only |
 
 | # | Requirement |
 |---|---|
-| RX-01 | The task detail surface always states the execution location explicitly ("Cloud", "Ryan Desktop · Windows", "Hybrid: Cloud + Ryan Desktop"). It is never ambiguous. |
+| RX-01 | Task details distinguish Cloud agent orchestration from each tool target, including a named desktop/product. A desktop target never denotes a desktop model loop. |
 | RX-02 | A task targeted at an offline device enters **`WaitingForDevice`**, not `Failed`. The user may wait, run when online, cancel, or choose another device. |
 | RX-03 | Remote desktop access uses a **desktop-initiated outbound authenticated connection**. Opening an inbound public port on a user machine is prohibited. |
 | RX-04 | Remote access defaults to off and requires explicit enablement per device, with per-capability grants (see [`02-identity-account-and-workspace.md`](02-identity-account-and-workspace.md) §5). |
 | RX-05 | **Device Presence** is an ephemeral cloud capability showing device online state, app version, remote-enabled flag and per-product readiness. It is not durable data and is never trust (`I-250`). |
 | RX-06 | **Cloud task runtime is not a general-purpose VPS.** It carries a maximum runtime, CPU and memory limits, disk limits, network policy, AI budget and output limits. |
-| RX-07 | A cloud task runs in an **isolated environment** with ephemeral working storage and task-scoped credentials, and the environment is reclaimed on completion. Two users' tasks never share a writable workspace process. Only artifacts are durable. |
+| RX-07 | Trusted Cloud tools run as bounded internal jobs in the single JIT host, with per-job workspace scope, cancellation and temporary resources. No arbitrary user code or per-task container/TaskRunner deployment is required. Durable task/usage records survive process failure. |
 | RX-08 | Secrets are injected per capability, never as a whole vault. A task needing one connector receives only that connector's secret handle. |
 | RX-09 | **Cloud execution does not mean unlimited permission.** Every risk-tiered capability check still applies, and R4-class operations still require local confirmation on a trusted device. |
 | RX-10 | The server re-authorises independently. It never trusts that the desktop already checked. Session, workspace, entitlement, permission, device trust and capability are all re-validated server-side. **The client is never the security authority.** |
@@ -283,7 +279,7 @@ Three execution locations, always visible to the user (`I-023`, `I-105`):
 
 | # | Requirement |
 |---|---|
-| AU-01 | An Automation declares an **execution location**: Cloud, Desktop or Hybrid. |
+| AU-01 | Every AI automation is Cloud-scheduled. Its tools may target Cloud or an explicitly authorised device/product; no local automation Harness. |
 | AU-02 | Every Automation declares a **Missed Run Policy**: `Run when device returns`, `Skip missed run`, or `Ask me`. Silent guessing is prohibited. |
 | AU-03 | Every Automation declares a **Concurrency Policy**: `Skip`, `Queue`, `Replace`, or `Allow concurrent`. |
 | AU-04 | Every Automation is bound to an **AI Budget**: max credits per run, per day and per month. On reaching the budget the automation **pauses and asks**; it never continues spending. |
@@ -307,9 +303,9 @@ Three execution locations, always visible to the user (`I-023`, `I-105`):
 | Phase | Cloud behaviour | Local behaviour |
 |---|---|---|
 | **Active** | Full cloud capability | Unaffected |
-| **Grace** (payment failure window) | Cloud capability continues | Unaffected |
-| **Cloud Retention** (after entitlement ends) | **Read / export / download only.** New upload, new sync write, remote agent, cloud BYOK and cloud tasks are blocked | Unaffected |
-| **After retention** | Cloud data scheduled for deletion, with notification in advance (a longer and a final warning) | **Local data is never deleted** |
+| **Grace** (payment failure window) | Data continuity follows published grace policy; no new AI, embedding, paid-tool or simulation dispatch after PaidThrough | Cached edits and native jobs remain available; no local AI |
+| **Cloud Retention** (after entitlement ends) | **Read / export / download only.** New upload, new sync write, remote agent, new simulations and cloud tasks are blocked | Unaffected |
+| **After retention** | Notified Cloud purge follows the deletion/retention policy | Pending work and independent native files are preserved; acknowledged cache follows recorded deletions and cannot resurrect purged objects |
 
 | # | Requirement |
 |---|---|
@@ -323,14 +319,18 @@ Three execution locations, always visible to the user (`I-023`, `I-105`):
 
 | # | Requirement |
 |---|---|
-| EX-01 | **Per-product export** is a V1 capability: export an ArcNotes Notebook, an ArcSlate Project, an ArcScope Session. |
-| EX-02 | **Workspace export** is a V1 capability, producing a manifest plus per-product data plus managed assets. |
+| EX-01 | V1 offers the product-specific exports in [data §12](13-data-formats-and-portability.md): Notes Markdown/attachments/metadata, Chat history/task summaries, Scope data/reports and Slate project/OTIO/media as applicable. Cloud exports only data it actually holds. |
+| EX-02 | Workspace export coordinates the supported per-product Cloud exports with one inventory/checksum/fidelity manifest. It declares included revisions, attachment availability and omitted device-only/pending content. It is not a universal native archive or a promise to restore execution, credentials or billing state. |
 | EX-03 | The export manifest format is **documented and public**, covering manifest, schema version, objects, references, assets and checksums. A convenience container extension may exist; an undocumented opaque archive is prohibited, because the product's premise is that data is not locked in. |
-| EX-04 | Export distinguishes external references: the user is asked whether to include external assets, defaulting to **no**. A user's entire external library is never silently copied into an export. |
+| EX-04 | Device-only/external assets are listed by availability and safe provenance, not silently fetched or bundled. Including permitted missing assets requires a separately authorized transfer; a user library is never copied automatically. |
 | EX-05 | **Import treats the package as untrusted input.** It must not trust internal absolute paths, must reject `../` path traversal, must bound decompression against archive bombs, must never execute contained scripts, and must never load contained binaries. |
 | EX-06 | Cloud-stored assets are never treated as executable content. Web preview uses sandboxing, safe content disposition and content-type validation. An agent runtime never executes a file merely because it is present in a workspace. |
 
 ---
+
+### 13.1 Cloud simulator data contract
+
+The Scope module must deliver [SIM-01–SIM-20](products/arcscope.md#171-deterministic-cloud-simulator--v1) in this same deployment: admitted definitions, immutable versions, finite runs, fenced leases, durable checkpoints, verifiable manifests and native download/replay. Operator resource policy and service eligibility apply independently of model usage. Simulator data is synthetic and never represented as physical acquisition evidence.
 
 ## 14. Backup and disaster recovery
 
@@ -400,21 +400,21 @@ Tracked indicators: `BrokenReferences`, `OrphanBlobs`, `ConflictRate`, `SyncBack
 
 | # | Requirement |
 |---|---|
-| SH-01 | Self-host can provide: Identity Realm, Workspace, Sync, Storage, Search, Remote Relay, Tasks, Automation, BYOK. |
-| SH-02 | **Arc Managed AI is an official commercial service and is not part of the self-hosted deliverable.** A self-hoster uses their own provider keys or local models. Commercial systems are not bolted onto the open-source server. |
-| SH-03 | **Self-host uses the same protocol and the same data model.** There must not be a full official sync and a separate simplified self-host sync. |
+| SH-01 | The same self-hosted Cloud provides identity, single-owner workspaces, sync, storage, search, bounded tasks/automation, simulator and operator-funded remote-provider AI. |
+| SH-02 | The deployment operator supplies provider credentials and a validated realm policy. End users have no BYOK interface. Payment collection may be disabled for that realm; usage, budget and authorisation remain real. No local models or official entitlement bypass. |
+| SH-03 | Self-host uses the same implementation, public contracts and data semantics. Public sample deployment policy is sufficient for testing with operator credentials; production private values are not a code dependency. |
 | SH-04 | Realms never share object-identity authority. An imported object may retain an **origin identity** for provenance, but the receiving realm mints its own realm-local identity and mapping. |
-| SH-05 | Realm migration in V1 is Export → Import. Live bidirectional official ↔ self-host sync is out of scope. |
+| SH-05 | V1 realm portability uses the supported product export/import formats with disclosed fidelity and new destination identities. It does not migrate billing grants, live agent execution, device trust or secrets. Full-state realm cloning and live bidirectional official/self-host sync are excluded. |
 
 ---
 
 ## 18. Deliberate V1 exclusions
 
-Modelled where noted, not built:
+Outside current scope; no speculative implementation or schema reservations:
 
 - Real-time multi-user collaborative editing (presence, cursors, OT/CRDT convergence)
 - Public "anyone with the link" sharing
-- Zero-knowledge E2EE mode (concept present, mode not released)
+- Zero-knowledge E2EE, custom local encrypted stores and encrypted portable exports
 - Full ArcNotes or ArcSlate web editors
 - Cloud video rendering farm
 - Unlimited general-purpose cloud compute
@@ -430,7 +430,7 @@ Modelled where noted, not built:
 The cloud and data domain must be able to express:
 
 ```
-CloudWorkspace · DataRegion · DataProtectionProfile
+CloudWorkspace · OwnerUserId · DataRegion
 SyncScope · SyncCursor · SyncChange · SyncOutbox · SyncInbox · SyncConflict · ConflictBranch · Tombstone
 UserDataObject · ObjectType · ObjectIdentity · ObjectRevision · RevisionParent · RevisionActor
 CloudObject · CloudObjectRevision · CloudBlob · ObjectReference
@@ -441,6 +441,7 @@ TrashItem · DeletedItem · RecoveryRevision · RecoveryPoint
 SearchDocument · SearchIndexState
 DevicePresence · DeviceConnection · RemoteSession
 CloudTask · TaskExecution · ExecutionTarget · CloudArtifact
+SimulationDefinition · ScenarioVersion · SimulationRun · SimulationSegment · SimulationEvent
 Automation · AutomationRun · MissedRunPolicy · ConcurrencyPolicy · Approval
 CloudSecret · SecretReference · Notification
 ExportManifest · ExportJob · ImportSession · DeletionJob · DeletionPropagation · RetentionPolicy
@@ -469,7 +470,7 @@ One device · two devices · three devices · long-offline return · double edit
 Project-only sync · proxy sync · selected originals · one original reused by several projects · **timeline edits never re-upload the original**.
 
 ### ArcScope
-Raw telemetry local-only · explicit upload · resumed session upload · session deletion.
+Hardware telemetry local-only · explicit upload · resumed session upload · session deletion · Cloud scenario/seed/profile replay · immutable segment hashes · pause/resume/fenced takeover · native simulator adapter · SIM-20.
 
 ### History and deletion
 Version restore · delete · restore from trash · retention purge · **tombstone prevents an old device resurrecting an object** · search entry disappears after deletion · vector entry disappears after deletion.
@@ -481,13 +482,13 @@ Approaching quota · storage full · local work continues · over-quota downgrad
 Database PITR restore · missing primary blob · restore from secondary backup · backup-credential compromise simulation · erroneous primary deletion simulation · backup object lock enforced · random checksum restore · full DR drill.
 
 ### Export and import
-Full workspace export · import into a fresh account · import into a self-hosted realm · external references handled per choice · corrupt package rejected · path-traversal package rejected · archive bomb rejected.
+Workspace export with an explicit per-product inventory and loss report · supported Markdown/OTIO/Scope formats imported into a fresh account or self-host realm · no assumed live-task/credit/secret migration · device-only data reported unavailable · malformed inputs, traversal and archive bombs rejected.
 
 ### Remote and tasks
 Desktop online · desktop offline → `WaitingForDevice` · mobile steering · device revoke · remote disabled · R4 requires local confirmation · machine fully powered off and a cloud-only task still completes · hybrid task waits for the desktop · cloud task timeout · budget exhausted · provider 429 and fallback · task interrupted and recovered.
 
 ### Automation
-Cloud schedule · desktop schedule · missed run per policy · concurrent run per policy · AI budget enforcement.
+Cloud schedule with Cloud or desktop tool targets · missed run per policy · concurrent run per policy · AI budget enforcement.
 
 ### Subscription
 Active · grace · retention · re-subscribe · retention expiry · local files still present · export during retention.

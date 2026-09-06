@@ -5,9 +5,9 @@
 > Governing authority: **D-001** (conflict-resolution rule), **D-016** (deferred-decision ownership), **D-019** (sequence status)
 > Companions: [`phase-1-foundation-decisions.md`](phase-1-foundation-decisions.md), [`../assurance/open-gates-register.md`](../assurance/open-gates-register.md)
 
-Phase 1 froze twenty-three foundation decisions. **They are binding and are not reopened here.** This register records only what Phase 2 had to decide that is *not* derivable from them.
+Phase 1 decisions remain binding except where subsequent explicit user direction amends them under D-001. **P2-006 records the user-directed requirements revision of 2026-09-06.**
 
-The bar for entry is deliberately high. A conclusion already stated in the preserved input corpus, or already implied by a Phase 1 decision, is implemented in the requirements, architecture or planning layers with a citation — it does not become a decision record. Five entries exist: four in force, and one withdrawn and retained as the record of a corrected error.
+The bar for entry is deliberately high. A conclusion already stated in the preserved input corpus, or already implied by a Phase 1 decision, is implemented in the requirements, architecture or planning layers with a citation — it does not become a decision record. P2-001 through P2-006 are recorded below; P2-002 is withdrawn and P2-003 remains explicitly deferred.
 
 ---
 
@@ -21,7 +21,7 @@ The bar for entry is deliberately high. A conclusion already stated in the prese
 
 | # | Rule |
 |---|---|
-| RC-01 | **A Phase 2 decision may not contradict a Phase 1 decision.** Where it appears to, the Phase 1 decision governs and the Phase 2 text is a defect (**D-001**). |
+| RC-01 | An author may not silently contradict Phase 1. Subsequent explicit user decisions take precedence under **D-001** and require a dated amendment recording the affected scope; **P2-006** is such an amendment. |
 | RC-02 | **A decision recorded here is cited inline wherever it is implemented**, exactly as Phase 1 decisions are. |
 | RC-03 | **A deferred decision carries an owner, a trigger and the constraint every permitted option must satisfy** — never a bare "decide later". |
 | RC-04 | **Adding to this register requires the same discipline as Phase 1**: a real decision, a stated consequence, and a named enforcement mechanism. |
@@ -162,6 +162,32 @@ P2-002 substituted a different process — derive first, audit during implementa
 
 ---
 
+## P2-006 — Cloud subscription product and requirements scope revision · ADOPTED
+
+**Authority.** The user's explicit requirements discussion and instruction of **2026-09-06** to apply the changes directly in this worktree, design the remaining metering rules, and review the resulting requirements. This overrides conflicting preserved-input positions and affected portions of D-006 and D-020 under **D-001**. Preserved inputs remain unchanged.
+
+**User-directed scope.** All AI inference, the single Harness, durable agent orchestration and AI automation are Cloud responsibilities. Official AI requires an active paid service term and uses subscription capacity plus explicitly authorised extra credits. No local AI, end-user BYOK (local or Cloud), agent teams, sub-agents or external-agent delegation. Ordinary bounded tool concurrency and non-agent background jobs remain. Workspaces are single-owner, multi-device boundaries; no organisations, membership, invitations, collaborative editing or collaboration-only schema hooks. Cloud has one ASP.NET Core JIT deployment host with bounded internal background services.
+
+ArcNotes delivers the notebook core, cloud sync, block references/backlinks, properties, queries and views informed by AFFiNE and SiYuan. Full Edgeless, shapes/connectors/frames, slides/presentations, spaced repetition and DOCX import are excluded from the current complete scope, with no mandatory future hooks. Custom local encrypted stores, encrypted portable exports and E2EE are also excluded. ArcChat retains the lean preview scope; no code/Diff/Office workbench is added. ArcScope gains a real deterministic Cloud simulator. ArcSlate gains canonical .otio import/export.
+
+**Design dispositions under the user's delegated requirement-design authority.** These make that direction implementable; they are not quotations of additional user confirmations:
+
+- Cloud owns acknowledged versions of synchronised user data and all agent state. Native clients keep working caches and durable pending edits; cached note editing/search can survive outages, without promising a permanent account-free notebook product. Hardware acquisition and media editing/rendering retain product-local execution and resource ownership.
+- Notes' required property depth is common scalar types plus saved list/table views with filtering and sorting. Formula, relation/rollup engines and further database layouts are excluded from current delivery. Basic Markdown/text import and a Cloud data export remain; a full-fidelity local package ecosystem is not required.
+- A paid monthly/annual subscription or active prepaid Cloud Pass is the service term; the Pass remains the D-023 non-recurring purchase route, not a credit-only AI bypass. Renewal grace protects data access but does not fund new AI calls after the paid term. Purchased credits are retained on expiry and usable again with an active service term.
+- Actual provider usage, normalised into non-overlapping billing categories, is the metering basis. Supplier cost, customer usage units, subscription capacity, purchased credits and payment revenue remain separate. Customer tariff snapshots, fixed precision, reservation, idempotent settlement and immutable adjustments remain binding under D-020. Replenishing subscription capacity supplies the base service; extra credits require opt-in. Numeric prices and limits remain versioned deployment data.
+- Complete pricing, entitlement and rate-control code runs against validated external configuration. Production values are mounted into Docker at deployment; no private repository, proprietary policy plug-in, separate policy service or authoring UI is required. Public sample configuration exercises the same implementation. Database snapshots and ledgers are real persisted facts, not alternate mutable price authorities.
+- Independent self-hosting runs the same Cloud code with an operator-funded, deployment-configured remote model provider and realm policy. This is infrastructure credential provisioning, not end-user BYOK. It confers no official-service entitlement and does not run models in the desktop.
+- Existing licensing boundaries remain. Deployment-specific operating values are private; covered implementation code is not hidden as configuration. Public schemas and runnable samples remain available.
+
+**Consumed by.** The revised [requirements set](../requirements/README.md), especially [scope](../requirements/00-product-scope-and-portfolio.md), [commerce](../requirements/04-commerce-entitlement-and-credits.md), [AI execution](../requirements/05-ai-and-agent-execution.md), [configuration](../requirements/11-policy-and-configuration.md) and [product requirements](../requirements/products/README.md).
+
+**Downstream reconciliation status.** This is a requirements revision within **Stage 2**, not a claim that Stage 2 or implementation is complete. Architecture, reference/invariant coverage accounting, work packages, traceability and assurance evidence were produced against earlier scope and require reconciliation before implementation. Their previous completion claims do not demonstrate coverage of P2-006. Detailed schemas, classes, deployment artifacts and implementation steps remain downstream work.
+
+**Acceptance.** Current requirements neither grant an excluded mode nor leave required simulator, OTIO or metering behaviour as a placeholder. Requirements agree on authority, scope, lifecycle, failure behaviour and evidence. Existing identifiers remain traceable; excluded obligations are explicitly retired rather than silently reused.
+
+---
+
 ## What was considered and deliberately not recorded
 
 Recording a non-decision as a decision is as harmful as leaving a decision unrecorded. These were considered and rejected for entry, with the reason:
@@ -169,7 +195,7 @@ Recording a non-decision as a decision is as harmful as leaving a decision unrec
 | Considered | Why it is not a Phase 2 decision |
 |---|---|
 | The dual capability boundary for extensions | Stated in the preserved corpus (`I4 §Stage 24 §67`–`§73`); implemented in [`../architecture/15-extension-platform-architecture.md`](../architecture/15-extension-platform-architecture.md) `§4` with citations |
-| Three cloud runtime roles | Derivable from the modular monolith and isolated-job requirements; implemented in [`../architecture/05-cloud-architecture.md`](../architecture/05-cloud-architecture.md) `§2` |
+| Three cloud runtime roles | **Historical, superseded by P2-006:** the current requirement is one deployable host with bounded internal services. The prior three-role interpretation remains in [`../architecture/05-cloud-architecture.md`](../architecture/05-cloud-architecture.md) `§2` |
 | The eighteen test families | A design output of the quality contract, not a choice between alternatives |
 | Native shims beyond the architecture's illustrative two | Governed by the permitted-surface rule (`NP-01`) and resolved per shim in `WP-01.03`; not a global decision |
 | An isolated extension host | Already governed by **D-016** and the closed technical exception list; raising one is a future decision, not a present one |
@@ -196,7 +222,7 @@ Recording a non-decision as a decision is as harmful as leaving a decision unrec
 
 ### Tensions resolved without escalation
 
-Four further tensions were resolvable within the authority Phase 1 already granted. Each resolution is recorded where it applies:
+The following earlier-baseline tensions were recorded before P2-006. Their evidence remains historical; any affected architecture/coverage/plan must now be reconciled to the amended requirements:
 
 | Tension | Resolution | Recorded in |
 |---|---|---|

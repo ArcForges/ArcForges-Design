@@ -1,4 +1,5 @@
 # Distribution, Update, Support and Trust & Safety Requirements
+> Current scope amendment: **[P2-006](../decisions/phase-2-specification-decisions.md)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Requirements
@@ -300,7 +301,7 @@ Notice → Warning → Version-scoped delist → Package delist
 
 | # | Requirement |
 |---|---|
-| AE-01 | **Account enforcement is compatible with local-first.** Restricting or suspending a cloud account never locks local software or local data (`I-016`, §9 of the identity requirements). |
+| AE-01 | Cloud account restrictions stop authorized Cloud service access as specified; they do not confiscate independent native capture/media data or discard unsynced work. Cached Notes/Chat access, service expiry and deletion follow the identity and Cloud lifecycle contracts; local AI is not a fallback. |
 | AE-02 | **Cloud Account Restriction ≠ local data confiscation** (`I-438`). |
 
 ### 13.4 Appeal

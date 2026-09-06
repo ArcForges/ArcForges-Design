@@ -1,4 +1,5 @@
 # ArcSlate — Product Requirements
+> Current scope amendment: **[P2-006](../../decisions/phase-2-specification-decisions.md)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Requirements / Products
@@ -57,7 +58,7 @@ ArcSlate Project
  ├── ProcessingGraph → ProcessingNode → EffectInstance → EffectParameter → AnimationCurve → Keyframe
  ├── Marker · RangeMarker
  ├── ProxyRepresentation · RenderCache · ThumbnailCache · WaveformCache   [Derived]
- └── ExportPreset · RenderRequest · RenderTaskReference · ProjectCheckpoint
+ └── ExportPreset · RenderRequest · RenderJobReference · ProjectCheckpoint
 ```
 
 | # | Requirement |
@@ -230,13 +231,13 @@ ArcSlate Project
 |---|---|
 | RN-01 | **`ExportPreset`** holds reusable output settings. |
 | RN-02 | **`RenderRequest`** captures what to render: sequence, range, preset, destination and options. |
-| RN-03 | **A render is a Task under the unified execution model** (`§1` of the AI/agent requirements), **owned by ArcSlate** (`OW-01`). |
+| RN-03 | A render is an ArcSlate-owned product Job with durable progress, cancellation, recovery and output provenance. It creates no local AI Task/Run/Step/Attempt runtime. |
 | RN-04 | **A render task binds a project/sequence revision snapshot.** A render must never use half an old timeline and half a new one (`EX-05`). |
-| RN-05 | **This makes render genuinely repeatable**: the same request against the same revision produces the same output. |
+| RN-05 | The same revision, inputs, preset and declared runtime profile reproduce render semantics within specified tolerances. Byte-identical output across codecs, hardware paths or library versions is not assumed. |
 | RN-06 | **Render range** is explicit: whole sequence, in/out range, or selected items. |
 | RN-07 | A **render queue** supports several queued renders with priority and progress. |
-| RN-08 | **The render queue and ArcChat tasks are not two task systems** (`I-485`). A render is an ArcSlate-owned task; ArcChat sees a `TaskHandle` and a task projection. |
-| RN-09 | **Batch export produces multiple traceable render tasks** under a batch parent. |
+| RN-08 | The native queue owns render jobs. Cloud agent tasks may reference a ProductJobHandle through authorized tools. The shared UI shows the association without transferring job ownership or creating another agent scheduler. |
+| RN-09 | Batch export produces traceable product render jobs under a batch operation, with per-output outcome. |
 | RN-10 | **A failed render retains completed output state** and reports partial success (`ST-06` in the AI requirements). |
 | RN-11 | **Render must never overwrite existing output without prompting.** |
 | RN-12 | **`Rendered Artifact ≠ ArcSlate Project`** (`I-485`). The output is an artifact with provenance; ArcChat may hold an `ArtifactRef`. |
@@ -267,15 +268,15 @@ ArcSlate Project
 | AI-02 | **An agent edit preview is a timeline diff**, reviewable before commit, for anything beyond a small reversible change. |
 | AI-03 | **A simple agent edit does not require heavy approval every time**: an R1 reversible operation proceeds inside an authorised scope; higher-risk operations require approval (`§4` of the security requirements). |
 | AI-04 | **AI media understanding applies data minimisation** (`AS-08`): the model receives transcripts, metadata, timecodes, detected scenes and selected frames — **not raw video** (`I-161`, `I-487`). |
-| AI-05 | **Local AI may analyse local proxies and frames directly** as a free local path. |
-| AI-06 | **Managed AI follows the credit, scope and budget model** (`§11` of the AI requirements), and media costs are estimated in media units (`CO-05` there). |
+| AI-05 | All model-based media understanding uses subscribed Cloud AI. Only authorized, bounded transcripts, metadata, frames or audio extracts leave the device; deterministic decoding and signal processing remain native. |
+| AI-06 | AI uses Cloud admission, budgets and actual provider-usage metering. Duration estimates scope, not measured tokens; non-token-billed routes require their declared units under commerce MT-10. |
 | AI-07 | **AI transcription is a natural ArcSlate capability**, producing searchable transcript metadata as **derived data**. |
 | AI-08 | **Scene/shot detection, silence detection and highlight detection are derived analysis**, presented as suggestions. |
 | AI-09 | **AI analysis results and actual edits are layered** (`I-486`): an analysis proposes; an edit is an explicit, undoable, semantic command. |
 
 ### 14.1 Capabilities exposed to ArcChat
 
-**Context providers** (current project, sequence, selection, playhead, selected clips and range), **query capabilities** (list projects, sequences, tracks, clips, markers, media, transcripts, render state), **edit capabilities** (the semantic timeline operations, marker and subtitle operations, effect application), and **render capabilities** (start a render returning a `TaskHandle`, query render state, cancel).
+**Context providers** (current project, sequence, selection, playhead, selected clips and range), **query capabilities** (list projects, sequences, tracks, clips, markers, media, transcripts, render state), **edit capabilities** (the semantic timeline operations, marker and subtitle operations, effect application), and **render capabilities** (start a render returning a ProductJobHandle, query render state, cancel).
 
 **Exposing an edit capability does not grant the agent permission to use it** (`§2` of the security requirements).
 
@@ -315,9 +316,30 @@ ArcSlate Project
 | PF-03 | **The project format contains no regenerable cache** (`EX-04` in the data requirements) — but it does contain everything required for correctness, including effect configuration, keyframes and colour configuration. |
 | PF-04 | **The project is separated from large media** (`WS-02`). A project bundle is a directory-backed working store; export may produce a single archive. |
 | PF-05 | **An importer for a third-party editor project format**, where one is offered, is an ordinary import adapter producing ArcSlate canonical data (`IM-01`–`IM-08` in the data requirements). Every claimed import version requires a fixture (`PG-07`). |
-| PF-06 | **No bidirectional external-project compatibility is promised.** Import is one-way. |
+| PF-06 | Third-party editor project import is one-way unless stated. Canonical .otio interchange (OT-01–OT-12) is a required V1 import AND export exception with a defined semantic subset, not arbitrary editor-project parity. |
 | PF-07 | **Any unmappable imported feature generates an import report entry** (`IM-05` in the data requirements). **Silent loss is prohibited.** |
 | PF-08 | **An unknown effect or missing plug-in is preserved and bypassed**, clearly marked, so the project opens and the state can be restored if the plug-in returns (`LC-06`, `LC-07` in the extension requirements). |
+
+---
+
+### 17.1 OpenTimelineIO interchange — V1
+
+| # | Requirement |
+|---|---|
+| OT-01 | ArcSlate delivers canonical .otio import AND export in V1. A dependency entry or a one-direction adapter does not satisfy delivery. |
+| OT-02 | The support profile identifies the pinned library, supported OTIO schema versions and top-level types. V1 accepts/emits a Timeline; unsupported collections or top-level types receive a clear report, never an implicit partial selection. |
+| OT-03 | The supported semantic subset includes ordered video/audio tracks and stacks, clips, gaps, source ranges, timeline placement, rate-aware times, external/missing media references, names, markers and bounded namespaced metadata. Straight cuts and explicitly mapped standard dissolves are supported; other transitions are reported. |
+| OT-04 | Import creates ArcSlate-owned canonical objects with provenance; OTIO is not the mutable working store. Export binds a committed sequence revision and produces a separate artifact with support-profile and fidelity information. |
+| OT-05 | Conversion preserves supported rate/range semantics, including fractional frame rates and audio alignment. Rounding, representability limits and unsupported time effects are reported against affected objects; no silent frame shift is permitted. |
+| OT-06 | Round-trip acceptance compares supported timeline meaning and media references, not byte equality or internal ArcSlate IDs. Repeated uses of one source retain placement. Core supported edits survive even if external tooling drops private ArcSlate metadata. |
+| OT-07 | Unsupported effects, titles, generators, nesting, retiming and metadata receive item-level retained/approximated/omitted dispositions. Export cannot silently flatten or discard them; the user reviews the result or cancels. Opaque preservation is not advertised as editable support. |
+| OT-08 | A .otio file references media; it does not collect, upload or embed sources automatically. Relative paths resolve under an explicitly approved base; missing media becomes relinkable Offline Media. Files cannot authorize access outside selected roots or initiate downloads. |
+| OT-09 | Parsing bounds size, depth and item count, rejects malformed/unsupported schema and invalid numeric values, and stages changes before commit. No arbitrary adapters, Python plugins or executable content load. Native OTIO use stays behind an owned narrow C ABI and the untrusted-content boundary. |
+| OT-10 | Export writes a temporary destination and publishes atomically after validation. Failure/cancellation preserves the working project and existing destination; overwrite requires explicit approval. Reports exclude unselected absolute paths and secrets. |
+| OT-11 | EDL, AAF, FCPXML, editor-specific adapters and .otioz media bundles are not V1 requirements. Native project/collect export and rendered media remain separate deliverables. |
+| OT-12 | Real fixtures and the pinned official library verify both directions, mixed rates, gaps/stack ordering, repeated media, missing references, supported dissolves/markers, unsupported-feature reports, malicious paths, malformed input, cancellation and semantic round-trip. Merely opening JSON is insufficient. |
+
+The source-format basis is the [official OTIO file specification](https://opentimelineio.readthedocs.io/en/latest/tutorials/otio-file-format-specification.html) and [timeline structure](https://opentimelineio.readthedocs.io/en/latest/tutorials/otio-timeline-structure.html). The ArcSlate support profile defines the narrower product compatibility commitment.
 
 ---
 
@@ -373,14 +395,15 @@ ArcSlate Project
 | **Colour** | Input interpretation, working configuration, viewer and export transforms, scopes |
 | **Subtitle** | Subtitle track, import and export, AI transcription to subtitles |
 | **Proxy / Cache** | Proxy generation and policy, render/thumbnail/waveform caches |
-| **Render** | Presets, requests, revision-bound tasks, queue, ranges, artifacts |
+| **Render** | Presets, requests, revision-bound product jobs, queue, ranges, artifacts |
+| **OTIO interchange** | Canonical .otio import/export, media relink, fidelity reports and semantic round-trip fixtures (OT-01–OT-12) |
 | **Reliability** | Autosave, undo, revisions, checkpoints, crash recovery |
 | **ArcChat** | Context providers, query, semantic edit, render capabilities |
 | **Cloud** | Project-only sync by default, escalation levels, metadata-first open |
 
 ### 20.1 Not V1 blockers — but not blocked by the domain either
 
-Multicam, compound clips beyond nested sequences, advanced adjustment-layer workflows, advanced motion graphics, third-party audio plug-in hosting, cloud render, and collaborative editing are **not V1 requirements**.
+Multicam, compound clips beyond nested sequences, advanced adjustment-layer workflows, advanced motion graphics, third-party audio plug-in hosting and cloud render are **not V1 requirements**. Multi-user collaborative editing is excluded by P2-006.
 
 **The domain must not preclude them**: multicam, compound clips and adjustment layers must all be expressible in the existing model — a nested sequence, a generated/special clip plus a processing graph — rather than requiring a later structural change.
 
@@ -388,7 +411,7 @@ Multicam, compound clips beyond nested sequences, advanced adjustment-layer work
 
 ## 21. Non-goals
 
-ArcSlate is **not**: a motion-graphics application; a professional DAW; a dedicated colour-finishing suite; a media asset manager for an organisation; a transcoding farm; a collaborative editing platform in V1; or a Qt or C++ product wearing a C# shell.
+ArcSlate is **not**: a motion-graphics application; a professional DAW; a dedicated colour-finishing suite; a media asset manager for an organisation; a transcoding farm; a collaborative editing platform; or a Qt or C++ product wearing a C# shell.
 
 ---
 
@@ -406,7 +429,7 @@ EffectDefinition · EffectInstance · EffectParameter · AnimationCurve · Keyfr
 TimeValue · TimeBase · SourceRange · TimelineRange
 ProxyRepresentation · RenderCache · ThumbnailCache · WaveformCache
 SavedLayout · EditView
-ExportPreset · RenderRequest · RenderTaskReference
+ExportPreset · RenderRequest · RenderJobReference
 ProjectCheckpoint · MediaRelink · ImportOrigin · ArcSlateArtifactReference
 ```
 
@@ -428,13 +451,15 @@ ProjectCheckpoint · MediaRelink · ImportOrigin · ArcSlateArtifactReference
 
 **Proxy** — enabling proxies changes the edit experience and **not** the render output; permitting proxy render is an explicit choice; deleting every cache leaves the project intact.
 
-**Render** — a render binds a revision snapshot and is repeatable; a queued batch produces traceable tasks; a failed render retains completed output; an existing output is never overwritten silently; the artifact carries provenance.
+**Render** — a render binds a revision snapshot and is repeatable; a queued batch produces traceable product jobs; a failed render retains completed output; an existing output is never overwritten silently; the artifact carries provenance.
 
 **Reliability** — killing the process mid-edit recovers to the last durable commit; a corrupted render cache never produces "project corrupt"; an agent bulk edit is preceded by a checkpoint.
 
 **AI** — an agent edit uses semantic commands, previews as a timeline diff, and is undoable; raw video is never sent to a model; transcription produces derived data and an editable subtitle track.
 
 **Cloud** — enabling project sync uploads no originals; opening on a second device shows the timeline before media resolves; missing external media is Offline Media with recovery options; a cloud proxy never silently becomes the render source.
+
+**OTIO** — both directions satisfy OT-12 against the published support profile; unsupported edits are disclosed before export and no media is fetched implicitly.
 
 **Import** — an external project import produces ArcSlate canonical data with a report of everything unmapped; nothing is silently lost.
 

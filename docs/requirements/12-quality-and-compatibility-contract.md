@@ -1,4 +1,5 @@
 # Product Quality and Compatibility Contract
+> Current scope amendment: **[P2-006](../decisions/phase-2-specification-decisions.md)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Requirements
@@ -82,7 +83,7 @@ A **Lower-bound Supported Hardware Class** is maintained in parallel, to answer 
 | RS-02 | **Animation must not be used to conceal real slowness** (`I-392`). A spinner over a slow operation is not responsiveness. |
 | RS-03 | **A synchronous block of more than ~50 ms on the UI thread is a serious defect**, and a sustained one is release-blocking. |
 | RS-04 | **Responsive animation ≠ responsive product** (`I-392`). A smooth frame rate during an unusable wait is not a pass. |
-| RS-05 | Long work returns a `TaskHandle` and reports progress through the activity surface (`AV-01`–`AV-04`), never by blocking. |
+| RS-05 | Long work returns an owner-qualified handle and reports progress without blocking: TaskHandle for Cloud agent tasks, ProductJobHandle for ordinary product work. The UI does not imply identical schedulers. |
 
 ---
 
@@ -108,7 +109,7 @@ The product metric is **Time To Usable** (`I-389`).
 | # | Requirement |
 |---|---|
 | SU-01 | ArcScope and ArcSlate may continue device scanning, media indexing and derived-cache loading in the background — **but must never block first workspace availability on them**. |
-| SU-02 | **Startup must not wait for Cloud.** The sequence is: open the local store → show the local workspace → refresh cloud, policy and sync asynchronously. Waiting for account, cloud, feature policy or a model catalogue before opening is prohibited. |
+| SU-02 | Native startup opens the shell and authorized cached work without waiting on Cloud. First-run or missing-content views state sign-in/network requirements honestly; Cloud refresh is asynchronous and does not promise account-free local AI or a standalone notebook. |
 | SU-03 | **Startup must not require ArcChat to be online.** ArcNotes, ArcScope and ArcSlate open their core workspace first; the Hub connection is background recovery. |
 
 ---
@@ -139,7 +140,7 @@ The product metric is **Time To Usable** (`I-389`).
 |---|---|
 | SK-01 | Every product has a **long-running soak test** as a release gate. |
 | SK-02 | **No monotonic growth is permitted** in handles, native resources, threads, subscriptions, timers or event registrations. |
-| SK-03 | Product-specific soaks: ArcChat — long agent and conversation sessions with many task cycles; ArcNotes — long editing sessions over a large corpus with continuous indexing; **ArcScope — continuous capture and visualisation for 8 hours or more**; ArcSlate — long editing, playback and export cycles with proxy and cache churn. |
+| SK-03 | Product soaks cover Cloud agent cycles with native task projections; native note editing with pending sync/index work; at least 8 hours of hardware capture/visualization; the 24-hour Cloud simulator soak in SIM-20; and native timeline/playback/export with cache churn. |
 | SK-04 | **Small benchmark ≠ scale reliability** (`I-388`). Soak and scale results, not micro-benchmarks, decide the gate. |
 
 ---
@@ -156,7 +157,7 @@ The product metric is **Time To Usable** (`I-389`).
 | # | Requirement |
 |---|---|
 | BG-01 | **Busy polling is prohibited.** Waiting is event-driven, with bounded backoff. |
-| BG-02 | **Background network is controlled.** Presence and liveness use the realtime channel or an explicit heartbeat; other background traffic is event- or outbox-driven with bounded retry. Periodic polling loops are prohibited. |
+| BG-02 | Background traffic is bounded. Prefer notifications/outbox dispatch; when realtime is unavailable, authorized HTTP polling with backoff, jitter, idle limits and reconnect backfill is supported. Busy polling and unbounded retries are prohibited. |
 | BG-03 | **Background work must not starve foreground work.** Task resource competition has explicit priority: a timeline drag must not stutter, a capture must not lose data, and typing must not lag because of background indexing, sync or rendering. |
 
 ---
@@ -383,6 +384,19 @@ Three tiers of matrix, running at different cadences:
 | PM-09 | **The input matrix is tested**: keyboard layouts, IME composition, touch, pen, trackpad gestures, and high-precision pointing. |
 | PM-10 | **Shortcut tests follow platform semantics** and verify no conflict with critical OS shortcuts (`SH-04`). |
 | PM-11 | **One OS passing ≠ cross-platform support** (`I-398`). |
+
+
+### 20.1 P2-006 delivery and exclusion checks
+
+| # | Requirement |
+|---|---|
+| SCV-01 | Published Native AOT desktops contain no WebView/DOM/JavaScript UI, local provider inference or agent scheduler. Core workflows exercise real native controls. Cloud JIT behavior is verified separately; desktop AOT does not impose Cloud AOT. |
+| SCV-02 | Native cached Notes work survives offline edits, restart, service expiry and disk/cache pressure, then reconciles through revisions/conflicts. Pending edits/uploads cannot be evicted. Property-view tests cover only the accepted scalar/list/table scope and loss-safe type changes. |
+| SCV-03 | Real metering verifies cached/uncached/reasoning categories, cumulative streaming, interrupted calls, unknown usage, cancellation, platform retries, concurrent clients, holds, corrections, price changes, period transitions and duplicate payment events under MT/AC/DC requirements. Deterministic provider fixtures complement a controlled real-provider integration; neither alone proves the full billing loop. |
+| SCV-04 | The same public Cloud code runs with a documented mounted sample configuration and operator secrets. Validate missing/invalid policy, atomic activation, rollback, replica convergence, no balance reset, historic-rate retention and no disclosure of private values. A stub policy interface does not pass. |
+| SCV-05 | Cloud simulation passes [SIM-20](products/arcscope.md) through the actual database, storage, host and native source adapter. This does not substitute for hardware acquisition tests. |
+| SCV-06 | ArcSlate .otio passes [OT-12](products/arcslate.md), including both directions and semantic fidelity, separately from native-project recovery and rendered-media verification. |
+| SCV-07 | No obsolete acceptance or schema obligation reintroduces BYOK, multi-agent/ACP delegation, team/member/invite models, whiteboard/slides, flashcards, DOCX import, formula/relation/rollup engines, custom encrypted stores/exports or E2EE. Ordinary TLS, server storage/backup protection, token storage and native data recovery remain verified. |
 
 ---
 

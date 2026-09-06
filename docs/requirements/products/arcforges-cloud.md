@@ -1,4 +1,5 @@
 # ArcForges Cloud — Product and Platform Requirements
+> Current scope amendment: **[P2-006](../../decisions/phase-2-specification-decisions.md)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Requirements / Products
@@ -17,29 +18,24 @@ Product capability requirements are specified in [`../03-cloud-services-and-sync
 |---|---|
 | PP-01 | **ArcForges Cloud is an ASP.NET Core JIT modular monolith** (**D-008**). Strict Native AOT is **not** a Cloud requirement, and every claim that it must publish as Native AOT is removed. Azure SDKs, the durable agent loop, provider adapters, realtime integration, billing, policy and operational infrastructure all run inside the JIT boundary. |
 | PP-02 | **It is one logical platform** (Stage 13 §43), internally partitioned by module — never split into per-product backends. |
-| PP-03 | **A small number of runtime roles, not dozens of microservices.** Local orchestration tooling for development must not be mistaken for a production topology. |
+| PP-03 | One deployable ASP.NET Core JIT Cloud host contains API handlers, the single AI harness and bounded internal background services. Independent Worker/TaskRunner deployments and microservices are not current requirements. |
 | PP-04 | **Kubernetes is not used in the first stage.** A managed container application platform is sufficient and materially cheaper to operate at this scale. |
 | PP-05 | **Cloud never connects to localhost, a named pipe, a Unix socket or local stdio** (**D-010**). Local action is a durable `ToolRequest` that ArcChat Desktop pulls, re-authorises locally, executes, and answers with an idempotent `ToolResult`. |
 | PP-06 | **Cloud never scans a LAN** and never addresses a desktop directly. |
 | PP-07 | **Professional products reach Cloud directly** for their own identity, sync, storage and product-domain APIs; ArcChat is not a mandatory data gateway (**D-010**). |
 
-### 1.1 Runtime roles
+### 1.1 One deployable host, bounded internal work
 
-Exactly three production roles:
-
-| Role | Nature | Responsibility |
-|---|---|---|
-| **API** | Stateless, horizontally scaled | Public HTTP API, realtime hub integration, webhook ingress, module application services |
-| **Worker** | Long-running background service | Outbox dispatch, reconciliation, indexing, notification fan-out, scheduled maintenance, deletion propagation |
-| **TaskRunner** | Job-shaped, isolated, ephemeral | Cloud agent tasks and other bounded, isolated units of work |
+API ingress, webhook processing, sync, AI model execution, scheduling, outbox dispatch, indexing, reconciliation, simulation and maintenance are internal responsibilities of the same host. Replicas run the same deployable application. Module boundaries, leases, resource budgets and recovery protect correctness without adding independent deployment roles.
 
 | # | Requirement |
 |---|---|
-| RR-01 | **A user automation must never become a platform-level scheduled job.** Automations are domain objects with their own scheduler and their own concurrency and missed-run policies (`§10` of the AI requirements), not infrastructure cron entries. |
-| RR-02 | **The production API never scales to zero** and runs at least two replicas, so a single instance failure is not an outage. |
-| RR-03 | **TaskRunner work is isolated with ephemeral storage and task-scoped credentials** (`RX-07`). |
-| RR-04 | **Trusted platform work and untrusted code execution are separated.** Untrusted code, if ever executed, runs in a dedicated isolation platform behind an adapter — **and it is not a V1 requirement**. |
-| RR-05 | **Untrusted code never receives a platform managed identity** (`RX-08`). By default it holds no ArcForges production identity at all. |
+| RR-01 | User automations are Cloud domain objects with concurrency and missed-run policies, not per-user infrastructure cron entries. Their scheduler runs inside the host. |
+| RR-02 | The official production host does not scale to zero and uses at least two replicas for its availability target. Replica count is not a separate service role; self-host/development may use one replica with an explicit availability limitation. |
+| RR-03 | Internal work has bounded concurrency, memory, time and temporary storage. Durable claims, fencing and idempotency prevent duplicate model dispatch, charge settlement, simulation publication and maintenance effects after host loss. No background loop depends on an HTTP connection staying open. |
+| RR-04 | Arbitrary untrusted server-side code execution is excluded. A bounded simulator expression interpreter or trusted tool adapter does not authorize general code execution in the host. |
+| RR-05 | Secrets and resource access are purpose-bound to the admitted operation; no user input obtains the host identity or arbitrary host file/network access. |
+| RR-06 | AI activity, sync and ordinary product jobs have separate capacity budgets within the host. Load shedding and graceful drain prevent an agent or simulator from starving identity, billing webhooks and sync. |
 
 ---
 
@@ -120,9 +116,9 @@ The current baseline selections. **Every provider fact — availability, region 
 
 | # | Requirement |
 |---|---|
-| SC-01 | **All production secrets live in a managed key vault**, in RBAC mode, with purge protection enabled. |
+| SC-01 | Production secrets are injected through deployment secret references or a managed secret store, with least privilege, rotation and audited access. Non-secret operational policy is the mounted versioned configuration in DC-01–DC-17, not a secret-store entry per business value. |
 | SC-02 | **Service-to-service authentication uses workload identity, not secrets**, wherever the platform supports it. |
-| SC-03 | **User Cloud BYOK secrets are not stored as individual vault entries.** They use **envelope encryption**: per-workspace data keys wrapped by vault-held key-encryption keys, so the model scales to many users and supports rotation and revocation (`§14` of the identity requirements). |
+| SC-03 | Provider credentials belong to the deployment operator and are resolved server-side. There is no customer Cloud BYOK submission, key vault or reveal API. Self-hosting uses operator-funded remote credentials with the same host implementation. |
 | SC-04 | **Operator identity is independent of customer identity.** The operator surface must not authenticate through the customer identity system (`§10` of the distribution requirements). |
 | SC-05 | **Break-glass administrative access exists with two independent recovery routes**, under the constraints in `§9` of the distribution requirements. |
 | SC-06 | **Support staff can never silently become a user** (`SC-06` there). |
@@ -175,12 +171,12 @@ Four layers:
 | Failure | Required behaviour |
 |---|---|
 | **Object storage unavailable** | Metadata operations continue where possible; uploads and downloads queue or fail cleanly with a specific reason; no partial commit; existing local data unaffected |
-| **Database unavailable** | The API returns an honest degraded state; nothing is silently accepted; local products continue fully |
+| **Database unavailable** | The API returns an honest degraded state; nothing is silently accepted; native tools and cached editing/search continue; Cloud AI and fresh Cloud data remain unavailable, and pending edits are clearly unsynced |
 | **Realtime unavailable** | Clients fall back to polling the authoritative state; **no business fact is lost** (`SN-03`); reconnection backfills by sequence |
 | **AI provider unavailable** | Reserved credits are released; routing falls back within the cost class or asks; **the user is not charged for platform-caused retries** (`CU-03`) |
 | **AI gateway unavailable** | A direct-provider bypass path exists and is exercised, so the gateway is not a single point of failure |
 | **Observability platform unavailable** | The product continues operating normally; only visibility is degraded |
-| **Edge or tunnel unavailable** | Cloud is unreachable; **every local product continues in full** — the edge provider was never written into the business domain |
+| **Edge or tunnel unavailable** | Cloud is unreachable; native product jobs and cached work continue; Cloud AI pauses and unsynced changes stay durable — the edge provider was never written into the business domain |
 | **Email provider unavailable** | An emergency secondary exists for critical mail; **failover must never deliver two one-time codes for one request** |
 
 | # | Requirement |
@@ -198,7 +194,7 @@ Four layers:
 | OB-01 | **OpenTelemetry is the unified standard** across every host, with traces, metrics and structured logs correlated. |
 | OB-02 | **The application retains its own standard instrumentation**; a platform-managed agent supplements it rather than replacing it. |
 | OB-03 | **Platform-native signals are retained alongside** the external platform, so a failure of one does not blind the other. |
-| OB-04 | **Every request carries unified correlation** across edge, API, worker, task runner, database, realtime and outbound calls (`DG-06`). |
+| OB-04 | Every request carries correlation across edge, Cloud host, internal job/agent operation, database, realtime and outbound calls. |
 | OB-05 | **Observability must never become a user-content database** (`I-273`). Chat bodies, note bodies, file paths, tokens and raw prompts never enter telemetry by default (`I3 §21.2`). |
 | OB-06 | **Audit and observability logs are completely separate systems** (`I-272`, `I-273`) with separate retention, access control and purpose. |
 | OB-07 | **Desktop telemetry is stricter than cloud telemetry**: minimal, opt-in, and never carrying user content (`PV-06`). |
@@ -241,7 +237,7 @@ Database failover and restore · point-in-time recovery · object-store outage �
 | CC-02 | **Budget alerts and anomaly detection are configured** across cloud spend, AI spend and storage growth. |
 | CC-03 | **Autoscaling has a maximum cap.** An unbounded scale-out is an availability risk and a financial one. |
 | CC-04 | **Cloud tasks have maximum concurrency**, per workspace and globally (`LP-04`). |
-| CC-05 | **AI spend limits exist at the gateway as a second-line guard**, with the authoritative ledger held by ArcForges (`RT-04` in the AI requirements). |
+| CC-05 | The authoritative usage, capacity, credit and supplier-cost ledgers belong to ArcForges. Adapter/gateway caps are secondary guards. The mounted configuration supplies real model rates, plan terms, capacity recovery and bounded resource policies under the commerce and configuration requirements. |
 | CC-06 | **Provider prepaid balance is monitored and alerted** (`LG-09` there). |
 
 ---
@@ -268,7 +264,7 @@ Before the paid cloud goes live:
 4. Message-broker backlog and dead-letter replay proven.
 5. Realtime outage with client fallback and sequence backfill proven.
 6. AI provider outage with credit release and fallback proven.
-7. Edge or tunnel outage with local products fully unaffected, verified.
+7. Edge/tunnel outage with durable cached work and native jobs preserved, Cloud AI correctly unavailable, and reconnection recovery verified.
 8. Email failover proven **without duplicate one-time codes**.
 9. Deployment rollback exercised, and a migration failure recovered.
 10. A region rebuild rehearsed from IaC plus backups.
@@ -284,9 +280,11 @@ Before the paid cloud goes live:
 
 The cloud modular monolith is partitioned into modules, each owning an application/domain boundary, its own schema or explicit table ownership, a public module API and events, independent tests, and a prohibition on other modules writing its tables:
 
-**Identity & Workspace · Devices & Sessions · Entitlement & Commerce · Chat & Conversation · Task & Execution · Agent & Provider · Sync & Conflict · Resource & Storage Metadata · Search & Knowledge Index · Notification · Policy Control Plane · Audit · Support & Operations · Trust & Safety**
+**Identity & Workspace · Devices & Sessions · Entitlement & Commerce · Chat & Conversation · Task & Execution · Agent & Provider · Sync & Conflict · Resource & Storage Metadata · Search & Knowledge Index · Notification · Policy Control Plane · Audit · Support & Operations · Trust & Safety · Scope Simulation**
 
-Full boundaries, ownership and interaction rules are specified in [`../../architecture/05-cloud-architecture.md`](../../architecture/05-cloud-architecture.md).
+Scope Simulation owns the durable simulator state and manifests required by [SIM-01–SIM-20](arcscope.md#171-deterministic-cloud-simulator--v1); it is an internal module, not another service.
+
+Architecture boundaries must be reconciled to P2-006 in [`../../architecture/05-cloud-architecture.md`](../../architecture/05-cloud-architecture.md).
 
 ---
 
@@ -310,9 +308,9 @@ Full boundaries, ownership and interaction rules are specified in [`../../archit
 
 **Email** — the primary provider fails, the secondary delivers, and the user receives exactly one one-time code.
 
-**Edge** — the edge is unavailable; every desktop product continues at full local capability.
+**Edge** — Cloud is unreachable; cached editing/search and native capture/render remain available, new Cloud AI cannot start, and pending changes synchronize safely after recovery.
 
-**Secrets** — a cloud BYOK key is stored under envelope encryption, is rotatable and revocable, and is never retrievable in plaintext by any operator path.
+**Secrets/configuration** — operator provider credentials never reach clients or logs. The real host uses a mounted validated policy; updating rates creates a new version without repricing prior usage or resetting capacity. A non-production sample runs without proprietary code; production rejects missing/invalid pricing.
 
 **SSRF** — a cloud task attempting to reach an internal address or a metadata endpoint is blocked, including through a redirect.
 

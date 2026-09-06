@@ -1,4 +1,5 @@
 # Knowledge, Search and Retrieval Requirements
+> Current scope amendment: **[P2-006](../decisions/phase-2-specification-decisions.md)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Requirements
@@ -72,7 +73,7 @@ Two ownership statements govern everything below:
 | IX-04 | **Semantic search is never the only search capability.** A semantic backend outage degrades ranking, never search itself. |
 | IX-05 | **Not everything becomes a vector.** Structured measurements, timecodes and typed properties use specialised domain indexes owned by their products. |
 | IX-06 | **There is no central ArcForges graph database as the authority for all data.** Link-graph retrieval is one signal, owned as a derived domain relation by the product that owns the links. |
-| IX-07 | **Each product owns the local index of its own data.** ArcChat must never read another product's index database directly. |
+| IX-07 | Each product owns native lexical/domain indexes over available local data; Cloud owns its derived semantic index. ArcChat cannot read another product index database directly. |
 | IX-08 | The index carries an **`IndexSchemaVersion`** and an **`ExtractionProfile`** version, so a pipeline change is a rebuild rather than silent inconsistency. |
 | IX-09 | **The index is protected data.** It contains user content in derived form and is subject to the same confidentiality, isolation and deletion rules as its source. |
 | IX-10 | **Index engine choice is not frozen here.** Swapping the lexical, vector or specialised engine must never change resource identity, and must never require a knowledge source to be re-added — only a derived rebuild. |
@@ -89,7 +90,7 @@ Two ownership statements govern everything below:
 | IP-03 | **An index failure is not a source failure** (`I-166` family). The resource remains fully usable; only its searchability is degraded, and that state is visible. |
 | IP-04 | **Search must know its own freshness.** `IndexWatermark` and per-result freshness are first-class, so a stale result can be labelled as such. |
 | IP-05 | **Keyword index updates should be as fast as practical**, because users expect a just-saved document to be findable. |
-| IP-06 | Index build is **background work** modelled as a Task (see [`05-ai-and-agent-execution.md`](05-ai-and-agent-execution.md)). A large initial build or rebuild is cancellable and resumable; cancelling cancels a derived build, never user data. |
+| IP-06 | Indexing is a bounded product/platform Job with progress, cancellation and recovery, not an Agent Task by default. Model-based embedding/reranking runs in Cloud; native lexical index maintenance requires no model. |
 | IP-07 | Index build is **bounded**: a background resource budget, plus power and device policy (for example not on battery, not on a metered connection where cloud work is involved). |
 | IP-08 | Cloud indexing carries a **cost policy**, visible and controllable, because embedding and reranking are real cost of goods. |
 | IP-09 | Attachment text extraction and OCR are **derived pipeline** outputs, never canonical assets. OCR output anchors back to page and region so a citation can point at the original. |
@@ -108,28 +109,27 @@ Two ownership statements govern everything below:
 
 ---
 
-## 4. Knowledge policy: five independent dimensions
+## 4. Knowledge policy: processing and retrieval boundaries
 
-A resource or source carries five **separate** policy flags. Collapsing any two is prohibited.
+Search visibility, Cloud indexing, AI retrieval and provider processing have distinct permissions. No local semantic-model mode exists.
 
 | Dimension | Question |
 |---|---|
 | **Searchable** | May it appear in search results at all? |
-| **Local Semantic Index Allowed** | May a semantic index be built locally, on the user's own machine? |
 | **Cloud Index Allowed** | May a derived index be built in the cloud? |
 | **AI Retrieval Allowed** | May its content be retrieved as evidence for an AI answer? |
 | **Managed AI Processing Allowed** | May its content be sent to a managed AI provider? |
 
 | # | Requirement |
 |---|---|
-| PL-01 | **"Exclude from AI" means the content may never enter a generative model's context** — regardless of search visibility. |
+| PL-01 | Exclude from AI denies model-based processing and AI retrieval, including new embedding/reranking calls, independently of ordinary keyword search. Apply the deny before every dispatch/retrieval; already-sent data cannot be recalled and must not be described as never processed. |
 | PL-02 | **Exclude from AI ≠ Hide from Search** (`I-144`). An excluded document may still be findable by title and keyword; its content simply never reaches a model. |
-| PL-03 | **Local semantic search and Exclude from AI are distinguished in the product.** Local semantic indexing is local processing; it may be permitted while agent retrieval is not. The interface must make the distinction explicit rather than offering one ambiguous toggle. |
+| PL-03 | No local embedding/model loop or local semantic provider configuration. Native keyword/metadata search over available content remains distinct from Cloud semantic retrieval. |
 | PL-04 | **Cloud managed semantic indexing requires Managed AI Processing permission**, because it sends content to managed AI infrastructure. |
-| PL-05 | **Local embedding consumes no AI credits** (`CU-02` in the AI requirements). Managed embedding and reranking are governed by managed AI policy. |
+| PL-05 | Cloud embedding/reranking for eligible indexed content is subscription-funded platform cost, measured under the AI usage contract and bounded by workspace indexing/resource policy. It does not silently spend purchased credits. New model calls stop outside an active service term. |
 | PL-06 | **Sync ≠ AI** (`I-182`) and **Cloud Sync ≠ Cloud Index** (`I-140`) and **Cloud Index ≠ AI Retrieval** (`I-141`) and **AI Retrieval ≠ Managed AI Processing** (`I-143`). Four independent gates. |
 | PL-07 | Policy **inherits** from source to resource, with resource-level override winning. |
-| PL-08 | **A workspace policy may prohibit override.** Where the organization forbids a class of AI processing, an individual cannot temporarily bypass it. |
+| PL-08 | Realm and owner workspace policy may prohibit overrides. A resource-level or one-request choice cannot loosen a governing deny. |
 | PL-09 | A **temporary AI override** for one request is permitted where policy allows it; it must not silently change the durable source policy. |
 | PL-10 | **Explicit context selection is still subject to Exclude from AI.** A user attaching an excluded document does not thereby override the exclusion; the product states why it cannot be used. |
 
@@ -363,7 +363,7 @@ This is the most consequential privacy control in the product.
 - A global knowledge-graph engine
 - Automatic whole-filesystem indexing
 - Advanced graph RAG
-- Cross-organization federated search
+- Cross-owner or cross-realm federated search
 - Every external SaaS connector
 - Complex learned reranking
 - Real-time collaborative knowledge curation
@@ -388,7 +388,7 @@ KnowledgeFreshness · AIEligibility · CloudIndexEligibility · SemanticIndexEli
 
 ## 16. Acceptance scenarios
 
-**Local search** — no account, a large ArcNotes corpus, exact technical term found by keyword alone; metadata filters; results ordered with exact match prioritised.
+**Local search** — an authorized hydrated ArcNotes corpus remains keyword/metadata searchable offline; an exact technical term is found without model execution or fresh Cloud access.
 
 **Semantic failure** — the semantic backend is unavailable; keyword search continues to work and the degradation is visible.
 
@@ -398,7 +398,7 @@ KnowledgeFreshness · AIEligibility · CloudIndexEligibility · SemanticIndexEli
 
 **Exclude from AI** — an excluded document is still findable by title; its content never enters a model context; an explicit attachment of it is refused with a reason.
 
-**Local semantic only** — local semantic indexing enabled, agent retrieval disabled; the agent cannot read the content.
+**Search without AI** — native keyword/metadata search works on available cached content while AI retrieval is disabled; no local embedding model runs.
 
 **Cloud sync ≠ AI** — a synced notebook is not thereby AI-eligible or cloud-indexed.
 
@@ -430,7 +430,7 @@ KnowledgeFreshness · AIEligibility · CloudIndexEligibility · SemanticIndexEli
 
 | Source | Consumed as |
 |---|---|
-| `I4 §Stage 23` | The entire knowledge, search and retrieval architecture, including the five-dimension policy model, evidence and citation semantics, retrieval scope as the privacy boundary, and the V1 scope split |
+| `I4 §Stage 23` | The entire knowledge, search and retrieval architecture, including the four-dimension policy model, evidence and citation semantics, retrieval scope as the privacy boundary, and the V1 scope split |
 | `I4 §Stage 7 §22–26` | Cloud search levels, workspace scoping, respect for product data policy |
 | `I4 §Stage 9` | Derived-data classification, deletion propagation, index rebuildability |
 | `I4 §Stage 15`, `§Stage 16`, `§Stage 20` | Per-product knowledge responsibilities and citation anchors |

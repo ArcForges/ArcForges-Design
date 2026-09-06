@@ -1,4 +1,5 @@
 # Security, Permission, Privacy and Trust Requirements
+> Current scope amendment: **[P2-006](../decisions/phase-2-specification-decisions.md)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Requirements
@@ -27,7 +28,7 @@ Actor → Delegation → Capability → Resource → Risk → Approval → Audit
 |---|---|
 | **Human Principal** | A person. A cloud user, or a **Local Human Principal** — the operator of a signed-out local install. |
 | **Automation Principal** | The identity an automation runs as. |
-| **Service Principal** | A workspace-scoped non-human identity, created explicitly for integration or automation use. |
+| **Internal Service Identity** | Deployment-provisioned non-human identity with explicit least privilege; no customer-managed workspace service-account product is required. |
 
 | # | Requirement |
 |---|---|
@@ -35,10 +36,10 @@ Actor → Delegation → Capability → Resource → Risk → Approval → Audit
 | SP-02 | **An agent never exceeds the authority of the delegating Principal.** If the human cannot do it, the agent cannot do it. |
 | SP-03 | **Tool configuration in an agent profile is not a permission grant** (`I-233`). Listing a tool makes it available to the profile; it does not authorise its use. |
 | SP-04 | **An Automation Definition is not an Automation Principal** (`I-235`). The definition states rules; the principal carries authority. |
-| SP-05 | Automation runs in one of two modes: **Run As Creator** (reusing the creator's current permissions, re-evaluated at each trigger) or as an explicitly created **Workspace Service Principal**. |
+| SP-05 | Cloud automation runs on behalf of the single workspace owner, with current permission, service and policy re-evaluated at each trigger and protected invocation. It is not another independent user or agent identity. |
 | SP-06 | **A creator's permissions are never frozen into the automation at creation time.** If the creator loses a permission, subsequent runs lose it too and the automation enters Needs Attention. |
-| SP-07 | A Service Principal must be **created explicitly**. Nothing creates one implicitly, and by default none is required. |
-| SP-08 | **An External Agent is not an independent Principal by default.** It is an executor operating under a **scoped delegation lease** (§8). |
+| SP-07 | Customer-created Workspace Service Principals are not a current requirement. Internal deployment service identities remain explicitly provisioned with least privilege; they cannot bypass owner authorization for product work. |
+| SP-08 | External-agent principals, leases and delegated model loops are excluded. The Cloud Harness acts for the authenticated owner; ordinary tool executors receive only task-bound capability authority. |
 
 ### 1.2 Actor, Executor, Caller
 
@@ -52,7 +53,7 @@ Actor → Delegation → Capability → Resource → Risk → Approval → Audit
 | # | Requirement |
 |---|---|
 | AC-01 | **Identity ≠ Actor ≠ Executor ≠ Caller Instance** (`I-230`). All are recorded; none substitutes for another. |
-| AC-02 | An **Actor Chain** is carried end to end: human → agent delegation → automation → executor → capability owner. |
+| AC-02 | Carry the actor chain end to end: workspace owner → authorised Cloud automation/Harness → tool executor → capability owner. No external-agent delegation chain is created. |
 | AC-03 | **The Actor Chain must not be lost across an application boundary.** A capability call arriving at ArcNotes carries the whole chain, not just "ArcChat asked". |
 | AC-04 | **Application identity does not confer user authority** (`I-231`). A trusted software identity establishes what code is running, never what the user is entitled to do. |
 | AC-05 | **First-party application trust is not unlimited permission** (`I-249`). ArcChat being first-party does not let it bypass ArcNotes' authorization. |
@@ -163,10 +164,10 @@ Actor → Delegation → Capability → Resource → Risk → Approval → Audit
 | SE-05 | A **Secret Broker** mediates use: the caller presents a `SecretRef` and the broker performs the credential-bearing operation, or issues a short-lived scoped credential. |
 | SE-06 | **Out-of-process extensions use brokered use by default.** Where an integration genuinely requires the original credential, that is an explicitly declared sensitive permission with its own consent. |
 | SE-07 | **An extension receives only the secrets it was granted**, never a vault handle. |
-| SE-08 | **Workspace secrets and personal secrets are not interchangeable.** The boundary is hard: a personal key must not leak into an organization, and an organization key must not silently back a personal action. |
+| SE-08 | Workspace connector secrets, device credentials and operator model/payment credentials are separate. The Cloud provider payer is deployment-owned; customer content access never exposes the operator key. |
 | SE-09 | **Secret rotation does not change the business configuration identity.** Replacing a key does not require reconfiguring every consumer. |
 | SE-10 | A revoked secret puts dependent configurations into **Needs Attention**, not silent failure. |
-| SE-11 | **Reveal is rare by design.** The preferred model is write-only credentials with rotate/replace, so reveal is seldom needed; when it exists it is a high-risk, independently authorised, audited action. |
+| SE-11 | Stored credentials expose replacement, revocation and status, not plaintext retrieval to the customer. Privileged server-side use and rotation are audited; operator AI/payment secrets have no customer reveal path. |
 | SE-12 | **Secret permission is not general settings permission** (`I-258`). |
 
 ---
@@ -176,9 +177,9 @@ Actor → Delegation → Capability → Resource → Risk → Approval → Audit
 | # | Requirement |
 |---|---|
 | EG-01 | **Data Read Permission ≠ Data Egress Permission** (`I-254`). Being allowed to read something does not authorise sending it anywhere. |
-| EG-02 | Any operation crossing a **trust boundary** requires separate authorization: to a managed AI provider, to a BYOK provider, to an external connector, to a third-party API, to a public destination. |
+| EG-02 | Crossing a trust boundary to a configured Cloud model provider, external connector/API or public destination requires explicit applicable authorisation. No customer-supplied AI-provider destination exists. |
 | EG-03 | **Knowledge-retrieval policy does not replace permission** (`I-253`). Both must hold: the actor has read permission **and** the current AI destination is allowed for that content. |
-| EG-04 | **Managed AI and BYOK external AI may carry different egress rules.** They are different destinations with different processors. |
+| EG-04 | Provider processing destinations are governed by declared Cloud routes and user content policy. Fallback cannot bypass a destination deny or silently change payer; all routes remain subject to the same scope/budget checks. |
 | EG-05 | **Egress must know its destination identity.** "Send to an external service" is insufficient; the specific destination is part of the authorization and the audit. |
 | EG-06 | **Third-party extension network permission is scoped by destination.** General network access is a distinct, higher-risk permission from a named-destination permission. |
 | EG-07 | **A package must not circumvent network permission via its own backend.** Routing user data to a publisher-controlled service is external network egress and is authorised as such. |
@@ -202,13 +203,13 @@ Actor → Delegation → Capability → Resource → Risk → Approval → Audit
 
 ### 8.2 Capability Lease
 
-**Capability Lease = a set of capabilities temporarily granted to an external executor, within a specific task, period and scope.**
+**Capability Lease = narrowly scoped authority for an accepted tool invocation within a task/request and time window. It grants no autonomous agent or model-loop authority.**
 
 | # | Requirement |
 |---|---|
-| CL-01 | An external agent operates under a lease, never as an independent principal. |
+| CL-01 | Capability leases apply only to accepted bounded tool/extension invocations, not external agents. A lease binds owner workspace, request/task, permitted resources/actions, expiry and revocation. |
 | CL-02 | **A lease expires automatically when its task ends.** |
-| CL-03 | **Delegation can narrow authority, never amplify it** (`I-266`). An external agent cannot sub-delegate beyond its lease. |
+| CL-03 | A tool lease can narrow authority only. Tools cannot mint broader grants, sub-delegate an agent, choose a provider payer or raise a budget. |
 | CL-04 | Leases are also the mechanism for an extension's temporary elevated call, rather than a durable elevated grant. |
 
 ---
@@ -310,7 +311,7 @@ Every real capability invocation passes through, in order:
 | AU-06 | **Audit does not store full sensitive document content by default.** References and minimal descriptors, not payloads. |
 | AU-07 | **Audit is append-oriented.** A revocation is a new `PermissionRevoked` event, never an edit to the original grant event. |
 | AU-08 | **Local audit must not be claimed to be tamper-proof.** A local file on a user-controlled machine is not an immutable ledger, and the product must not say it is. |
-| AU-09 | **Audit ownership follows product ownership.** ArcNotes records its own authoritative mutation security events; ArcChat records orchestration and delegation; Cloud records cloud-side security events. An aggregated view is a **projection**, not a second authority. |
+| AU-09 | Audit ownership follows the actual authority: Cloud records agent orchestration and acknowledged product mutations; native products record local edits/jobs and tool authorization/execution. Aggregated UI is a projection, not another audit authority. |
 | AU-10 | Local-only operations can still be audited locally, with a sync/project-relevant audit projection where applicable. |
 | AU-11 | **Audit has a stated retention policy** and does not grow forever by default. Retention is a privacy control as much as a storage one. |
 | AU-12 | **Audit is not operator-editable history** (`I-446`). |
@@ -336,10 +337,10 @@ A single **Security & Permissions** surface, not an ACL editor for engineers.
 | UI-02 | **Every permission is directly revocable** from this surface. |
 | UI-03 | **Permission Impact Preview** explains, before granting, what the grant will allow, in concrete terms. |
 | UI-04 | **Trusted Devices is not a "logged-in devices" list.** Trust for remote control is a distinct state, shown distinctly. |
-| UI-05 | **Secrets are never displayed in plaintext by default.** Reveal is a separate, high-risk, audited action. |
+| UI-05 | Secret management displays safe status/reference information and replace/revoke controls, never stored credential plaintext or an AI-provider key-entry mode. |
 | UI-06 | The user must be able to answer quickly: what can act for me, what has acted for me, what left my machine, and what did I approve. |
 | UI-07 | **Data egress audit** is directly visible: what content, to which destination, under which authorization, when. |
-| UI-08 | **External agent audit** is directly visible: which lease, which capabilities, which task, what was done. |
+| UI-08 | Tool execution audit shows the task/request, executing product/integration, scoped authority, result and expiry/revocation. No external-agent management surface is required. |
 
 ### 13.1 Permission user experience
 
@@ -471,7 +472,7 @@ Verified against current official guidance: **EU AI Act Article 50 applies from 
 |---|---|
 | **Open source** | `LICENSE` (two boundaries per **D-004**), `NOTICE`, `CONTRIBUTING` (DCO, inbound-equals-outbound per scope), `SECURITY`, `CODE_OF_CONDUCT`, third-party licence inventory |
 | **Public legal** | Terms of Service, Cloud Terms, Privacy Policy, Subprocessors, Acceptable Use Policy, Refund Policy, Security page, Trademark policy |
-| **Later** | Data Processing Agreement, standard contractual clauses, organization terms |
+| **Later** | Data Processing Agreement, standard contractual clauses, future business terms outside the current single-owner scope |
 
 | # | Requirement |
 |---|---|
@@ -487,7 +488,7 @@ Verified against current official guidance: **EU AI Act Article 50 applies from 
 ## 19. Domain model
 
 ```
-SecurityPrincipal · HumanPrincipal · AutomationPrincipal · ServicePrincipal
+SecurityPrincipal · HumanPrincipal · InternalServiceIdentity
 Actor · ActorChain · Delegation · ExecutorIdentity · SoftwareIdentity
 CapabilityPermission · PermissionGrant · PermissionScope · PermissionConstraint · PermissionLifetime
 ResourceAuthorization
@@ -545,7 +546,7 @@ PrivacyDataInventoryEntry · ProviderRegistryEntry · SubprocessorRegistryEntry
 
 **Developer mode** — an unsigned local package runs, is clearly marked, and still cannot bypass permission, secret rules or workspace policy.
 
-**External agent lease** — the lease expires with the task; the external agent cannot sub-delegate beyond it.
+**Tool lease** — task/request expiry or revocation ends authority; an executor cannot broaden permission or create another agent.
 
 **Cross-workspace** — holding permissions in two workspaces does not permit transferring between them without the dedicated high-risk capability.
 

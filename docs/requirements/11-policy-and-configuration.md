@@ -1,4 +1,5 @@
 # Dynamic Policy and Configuration Requirements
+> Current scope amendment: **[P2-006](../decisions/phase-2-specification-decisions.md)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Requirements
@@ -111,7 +112,7 @@ Binary contains the code path
 | RC-02 | **The value type set is closed**: null, boolean, integer, decimal, string, enumerated value, duration, list of these, and record of these. **Arbitrary CLR objects, runtime types and code are prohibited.** |
 | RC-03 | **Every numeric config has validation** — range, unit, and monotonicity where relevant. |
 | RC-04 | **A compiled hard limit always outranks remote config.** Remote config may tighten a limit; it can never exceed the built-in safety ceiling. An out-of-range value is rejected or clamped as invalid, and the rejection is recorded. |
-| RC-05 | **Every remote config key has a safe compiled default**, so a client with no policy at all still behaves correctly. |
+| RC-05 | Every client-facing setting has a safe compiled default. Commercial price/capacity authority has no permissive fallback: a missing, invalid or unrecognised production policy blocks the affected paid operation. A sample tariff is never a production default. |
 | RC-06 | **Remote Config ≠ User Setting** (`I-355`). A setting declares whether it is policy-controllable at all; some settings are never remotely forceable. |
 | RC-07 | **Remote Config ≠ Project Format** (`I-357`) and **≠ transport selection** (`I-358`). Neither the persistent format nor the communication architecture is remotely configurable. |
 | RC-08 | **Every policy key has an owning product.** Unowned keys accumulate into an unmaintainable surface and are rejected at publication. |
@@ -128,8 +129,8 @@ Binary contains the code path
 | PS-02 | Recommended scopes: **Realm**, **Platform**, **Product**, **Workspace**, **Cohort/Rollout**, **Device/Installation**. |
 | PS-03 | **Policy Scope ≠ Entitlement Scope** (`I-346`). |
 | PS-04 | **Realm is the top-level isolation boundary.** Official policy and self-hosted policy are separate authorities. |
-| PS-05 | **A self-hosted realm has its own policy authority.** Where a self-hosted deployment consumes official managed AI, the official policy governs *that service*; it does not become the self-hosted product's control plane. |
-| PS-06 | **Policy rules use a limited declarative predicate language.** Remote arbitrary script is prohibited. |
+| PS-05 | A self-hosted realm loads its own operator configuration. Its policy cannot authorise official paid services, alter official balances or import official secrets. |
+| PS-06 | Policies select implemented modes and bounded typed predicates over declared metadata. Arbitrary scripts, executable plug-ins, SQL fragments, CLR type names and user-content expressions are prohibited. A new algorithm requires reviewed code, not a hidden program in configuration. |
 | PS-07 | **The policy engine is deterministic**: the same decision context yields the same decision, every time, on every surface. |
 | PS-08 | **User content never enters the policy decision context.** A decision that depends on document content cannot be stably explained and is prohibited. |
 | PS-09 | **A policy rule cannot be arbitrarily complex.** This is not a general business-rules engine. |
@@ -148,7 +149,7 @@ Binary contains the code path
 Certain properties are **never** feature-flagged, remotely configured or policy-controlled:
 
 - State ownership and the product topology
-- Local-first operation and the ability to work with no account and no network
+- The declared native-working-cache, pending-edit recovery and Cloud authority boundary under P2-006
 - Which product owns a protocol or a resource type
 - The choice of transport for local IPC, public API or realtime
 - Persistent format contracts
@@ -169,7 +170,7 @@ Certain properties are **never** feature-flagged, remotely configured or policy-
 | CO-04 | **A blocked version range is distinct from a minimum version.** A specific bad build can be blocked while both older and newer builds remain allowed. |
 | CO-05 | **A grace period applies before a minimum-version block takes effect**, with clear in-product notice. |
 | CO-06 | **An emergency security block may skip the grace period** — an explicitly exceptional path, recorded as such. |
-| CO-07 | **Minimum Cloud Version ≠ Minimum Local Data Version** (`I-360`). A client blocked from cloud sync must still open, edit, export and recover its local data. |
+| CO-07 | A Cloud compatibility block preserves native pending edits, cached reading and product-specific native recovery/export. Notes/Chat Cloud export remains available through a supported portal during retention; no universal offline export engine is required. |
 | CO-08 | **Compatibility policy can never make local user data inaccessible.** |
 | CO-09 | **Compatibility policy cannot redefine a project format** (`RC-07`). |
 | CO-10 | A blocked old client receives a specific, actionable message naming the required version and what remains available. |
@@ -190,7 +191,7 @@ Certain properties are **never** feature-flagged, remotely configured or policy-
 | PA-08 | **An emergency model suspension may interrupt future invocations** inside a running Run — the one case where emergency policy outranks the run snapshot. |
 | PA-09 | An already-dispatched provider request is allowed to complete or is cancelled per the kill-switch mode; it is never left in an undefined state. |
 | PA-10 | **Model capability metadata is not fabricated by remote config.** It comes from the provider/model catalog definition. |
-| PA-11 | **Provider and model policy never carry pricing** (`I-350` analogue). Pricing is the commercial layer (**D-020**). |
+| PA-11 | Availability rules and commercial rates have separate owners/schemas even when packaged in one deployment configuration. Only the entitled public capability/tariff projection is returned to clients; supplier costs, credentials and internal routing/risk parameters remain server-side. |
 | PA-12 | **Model availability must not disguise a plan restriction.** "Not available" and "not included in your plan" are different messages produced by different layers. |
 | PA-13 | **Model retirement must not silently rewrite history.** A historical task retains the model it used (`RT-13`). |
 | PA-14 | If a pinned model retires, the user is prompted to choose a replacement; the system does not choose silently. |
@@ -229,7 +230,7 @@ Certain properties are **never** feature-flagged, remotely configured or policy-
 | PB-02 | **A published policy revision is immutable** (`I-369`). Its content never changes after publication. |
 | PB-03 | Policy is distributed as a **Policy Bundle** — a coherent set applied **atomically**. A partially applied bundle is prohibited. |
 | PB-04 | **Publication requires validation**: schema conformance, key ownership, prerequisite acyclicity, experiment allocation validity, compatibility version-range validity, and provider/model references resolving to real catalog entries. |
-| PB-05 | **Publication requires a dry run** with cohort impact evaluation, so the blast radius is known before publication. |
+| PB-05 | Validate a proposed deployment policy against representative current subscriptions, running-task snapshots and boundary contexts before activation. This is a real validation/dry-run capability, not a required graphical authoring platform. |
 | PB-06 | **Policy rollback is a new revision, not a deleted one** (`I-370`). Revision 102 remains in history; revision 103 restores the earlier behaviour. |
 | PB-07 | The **policy bundle schema is itself versioned**. An older client safely ignores unknown *additive* policy. |
 | PB-08 | **An unknown *critical* policy must not default to enabled in an older client.** Where a client cannot understand a critical policy, the corresponding cloud capability is blocked rather than silently permitted. |
@@ -242,10 +243,10 @@ Certain properties are **never** feature-flagged, remotely configured or policy-
 | DS-01 | **A policy push is invalidation and acceleration, not authority** (`I-367`). A realtime event is not persistent truth. |
 | DS-02 | **A client must not depend on a realtime connection to obtain policy.** Realtime speeds up refresh; the authoritative fetch is a normal request. |
 | DS-03 | **Last Known Good** is a first-class concept: the last successfully validated policy snapshot, used when the control plane is unreachable. **LKG ≠ current cloud truth** (`I-368`). |
-| DS-04 | **With no LKG at all, built-in safe compiled defaults apply.** |
+| DS-04 | With no client LKG, safe UI defaults apply. With no validated server commercial revision, no new billable invocation is admitted; account recovery and retained-data access remain available. |
 | DS-05 | **Staleness strategy is per policy class, not one global rule.** A cosmetic rollout may tolerate long staleness; a compatibility block may not. The server re-decides on the actual request in either case. |
 | DS-06 | **It is an accepted fact that an offline client cannot receive a new kill switch.** This is exactly why cloud-side enforcement is mandatory (`KS-04`) and why a local security fix requires an update (`KS-05`). |
-| DS-07 | **Policy expiry must never brick a local application.** An expired snapshot degrades cloud-dependent features; local-first operation continues. |
+| DS-07 | Policy expiry does not destroy native work or pending edits. Cloud/AI access follows the authoritative server decision; cached editing and product-local jobs retain their defined availability. |
 | DS-08 | **Policy time uses stable server semantics.** The server decision is authoritative; client clock skew must not change eligibility. |
 | DS-09 | **Policy fetch must never block local startup or exit** (`LF-06`). |
 
@@ -274,6 +275,34 @@ Configuration additionally declares **hot-change safety**: whether a value may c
 | TS-04 | **Experiment assignment is snapshotted the same way**: a Run assigned variant B continues as B. |
 | TS-05 | **A feature disabled while a Task is running** follows the kill-switch mode; the Task is not silently corrupted. |
 | TS-06 | **An automation referencing a now-unavailable feature or model** enters Needs Attention with a specific reason; existing automations are not deleted, and may resume when availability returns. |
+
+---
+
+### 10.5 Deployment configuration is the production policy source
+
+| # | Requirement |
+|---|---|
+| DC-01 | Deliver a production-capable configuration reader, schema validator, policy evaluator, cost calculator, quota enforcement and ledger integration. An interface with no real provider, fake responses or TODO billing is insufficient. Example values run through the same code as production. |
+| DC-02 | V1 uses one coherent external configuration bundle, a typed JSON document, mounted read-only into the Cloud container using Docker configuration/file mounts. The deployment points to the file; changing prices must not require rebuilding the application image. No private Git repository, proprietary policy assembly, separate policy service or policy-authoring UI is required. |
+| DC-03 | The public repository includes the format/schema, field ownership, units, valid ranges, supported modes, documentation and a complete runnable non-production example. Official deployment values live outside the repository/image and are backed up by the operator. A container mount is a delivery mechanism, not automatic secrecy or validation. |
+| DC-04 | Required identity fields: schema version, immutable revision identity, effective time, deployment environment/realm and content hash. A revision identity cannot be reused with different content. Invalid environment, unknown critical fields or schema versions reject activation. |
+| DC-05 | Model entries identify provider route, concrete model/version, currency, billed categories, per-unit divisor, inclusion/overlap semantics, context/processing/region tier selection, output/context ceilings and lifecycle. Operational secrets are references only. No assumed zero-rate category or model wildcard admits an unpriced request. |
+| DC-06 | Customer tariff entries define fixed-precision service units per metered category/tier and their validity, separately from supplier cost. Subscription offers define sale currency/amount/period, payment-provider mapping, included-capacity burst/recovery, eligible models, extra-credit policy and applicable resource caps. The monthly price does not implicitly determine these values. |
+| DC-07 | Credit purchase entries declare units granted, price mapping and immutable purchased-lot terms. Config also declares grace/retention, unknown-usage reconciliation deadline, bounded reconciliation/cancellation deadlines consistent with the fixed customer-protection rules, concurrency, queue/time limits, routing/fallback, spend-velocity and simulator resource limits. Security/ownership/accounting invariants are never switchable parameters. |
+| DC-08 | Operational numbers such as a $20 monthly price or demonstration token rates are illustrative until explicitly configured and verified for launch. Numeric deployment values may remain unset in design documents; their required meaning, units, validation and behaviour must not remain unresolved. |
+| DC-09 | The file is the sole V1 policy publication input. Persist validated immutable snapshots, activation history and associated transaction versions in the database. Subscription states, measured token counts, usage, reservations, balances and payment facts are runtime database records, never editable config counters. Direct SQL edits are not an alternative live policy authority. |
+| DC-10 | Activation validates cross-references, units/currency, non-negative rates, finite capacity and invocation bounds, payment-price mapping, model categories, term transitions and all compiled safety ceilings. Missing prices disable that route; missing official commercial policy disables new paid work without disabling data recovery. |
+| DC-11 | Ordinary revisions may take effect by controlled reload or rolling deployment. All replicas use a coherent activated revision; a replica unable to load it cannot admit affected work. Emergency stop/suspension supports a bounded operator-triggered runtime reload and server enforcement before further dispatch, without waiting for desktop updates or restarting all tasks. No unauthenticated file-upload/reload endpoint. |
+| DC-12 | Activation is atomic. Requests record which validated revision they used. Customer tariffs remain pinned per Run/request; paid-term changes follow disclosed effective rules. Provider prices can change for future dispatches without rewriting customer history. Rollback publishes a new revision restoring prior values. |
+| DC-13 | Policy replacement never resets usage, replenishes an already issued allowance, reissues purchased credits or releases unresolved reservations. Clock skew and process restart cannot increase entitlement or bypass quotas. |
+| DC-14 | Only an allowlisted client projection is published: the user's offer/rights, published retail rates, current capacity/balance, recovery timing and availability reasons. Supplier rates, internal risk thresholds, route weights and unrelated users' state never ship in desktop/mobile/browser configuration. |
+| DC-15 | Provider keys, payment credentials and signing keys use secret-manager/Docker-secret injection with least privilege; they do not belong in the ordinary policy file, image, logs or public sample. Self-host operators provision their server provider credentials this way; no end-user BYOK UI/API is introduced. |
+| DC-16 | Independent self-host policy may disable collection of payments from its users and apply operator-funded grants/resource caps within that realm. Identity, authorisation, real usage measurement, budget limits and accounting correctness remain enforced. It cannot assert official-service entitlement. |
+| DC-17 | Public code must operate completely with the public example plus separately supplied test/operator credentials. Private deployment values are not necessary to build, understand or validate the algorithms. Moving executable algorithms into configuration is not an approved way to hide covered source. |
+
+### 10.6 Configuration acceptance
+
+Run the same formal implementation with two example policies having different token rates, monthly prices, recovery rates and credit grants; verify changed future decisions and identical historical charges. Reject malformed/partial/duplicate-version configs, unknown billable model dimensions, currency/mapping mismatches and production fallback to samples. Replace config during concurrent requests without mixed-version evaluation, quota reset or duplicate grants. Restart all replicas and preserve balances, holds and refill state. Reconcile one real provider usage response and payment-provider event through the same code; deterministic fixtures supplement this evidence, not replace it. Verify the client projection and diagnostics contain no server-only parameters or credentials.
 
 ---
 
@@ -334,13 +363,13 @@ PolicyApplicationTiming · PolicyStalenessMode
 
 **Feature rollout** — a percentage rollout assigns deterministically; the same user resolves identically on every device and every evaluation.
 
-**Workspace rollout** — a workspace-scoped rollout applies to every member consistently.
+**Workspace rollout** — the owner’s enrolled devices observe one effective workspace policy revision; replica/device differences cannot reset capacity or grant access.
 
 **Kill switch** — each mode behaves as declared: new invocations blocked, existing drained, stopped at a safe point, or reduced to read-only; no data is deleted; no restart is required; the cloud enforces it regardless of client state.
 
 **Policy server failure** — the client uses Last Known Good; the product continues; cloud requests are still decided server-side.
 
-**First offline start** — with no policy at all, built-in safe defaults apply and the product is fully usable locally.
+**First offline start** — the native shell and available native data use safe defaults; absent account/content/AI shows its actual dependency. No default tariff authorizes paid work.
 
 **Remote config validation** — an out-of-range value is rejected or clamped, never applied; the compiled hard limit wins.
 
@@ -358,7 +387,7 @@ PolicyApplicationTiming · PolicyStalenessMode
 
 **Blocked bad version** — one specific build is blocked while both neighbours are allowed.
 
-**Cloud sync blocked** — the client can still open, edit, export and recover locally, with an actionable message.
+**Cloud sync blocked** — pending edits and cached/native work remain safe. The user receives an update path and the supported Cloud export/recovery route; obsolete clients cannot bypass server admission.
 
 **Model pinning** — a pinned model is never silently substituted; on retirement the user is asked.
 
