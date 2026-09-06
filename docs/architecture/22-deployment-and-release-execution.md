@@ -107,6 +107,48 @@ The requirements say migration is a gated step, that schema change uses expand/c
 
 ---
 
+## 3.1 Configuration activation — a separate lifecycle from deployment
+
+`DC-01`–`DC-17` make deployment configuration the production policy source. **Replacing it is not a deployment**, and conflating the two is how a price change ends up requiring an image rebuild — which `DC-02` exists to prevent.
+
+```
+ 0  AUTHOR      operator edits the bundle outside the repository and the image
+ 1  VALIDATE    schema, identity, cross-references, units, currency, non-negative
+                rates, finite capacity and bounds, payment mapping, model categories,
+                term transitions, compiled safety ceilings                     -- DC-10
+ 2  PERSIST     store the validated immutable snapshot with its revision identity
+                and content hash                                               -- DC-04, DC-09
+ 3  ACTIVATE    atomically; exactly one active revision per realm               -- CG-03, DC-12
+ 4  CONVERGE    every replica loads it; one that cannot admits no affected work -- DC-11
+ 5  RECORD      each subsequent request records which revision it used          -- CG-02, DC-12
+```
+
+| # | Rule |
+|---|---|
+| CA-01 | **Changing prices must not require rebuilding the image** (`DC-02`). The bundle is mounted read-only; the deployment points at the file. |
+| CA-02 | **A revision identity cannot be reused with different content** (`DC-04`), enforced by a unique constraint on the identity together with the content hash. |
+| CA-03 | **Activation is atomic, and all replicas converge on one coherent revision** (`DC-11`, `DC-12`). A replica that cannot load it **admits no affected work** — it does not fall back to a previous revision, and never to the public sample. |
+| CA-04 | **Missing prices disable that route; missing official commercial policy disables new paid work without disabling data recovery** (`DC-10`). Degradation is scoped to what the gap actually affects. |
+| CA-05 | **Rollback publishes a new revision restoring prior values** (`DC-12`). A superseded revision is never reactivated, so the history stays append-only. |
+| CA-06 | **Replacement never resets usage, replenishes an issued allowance, reissues purchased credits or releases unresolved reservations** (`DC-13`, `RP-03`). Clock skew and process restart cannot increase entitlement. |
+| CA-07 | **A started Run keeps its pinned customer tariff** (`AC-09`, `DC-12`). A new revision cannot retroactively lower a Run's budget or silently raise its rate. |
+| CA-08 | **Emergency suspension is a bounded, authenticated, operator-triggered runtime reload** enforced server-side before further dispatch (`DC-11`). It does not wait for desktop updates and does not restart all tasks. **There is no unauthenticated upload or reload endpoint.** |
+| CA-09 | **Secrets are provisioned separately from the bundle** (`DC-15`, `CG-06`) — secret manager or Docker secret, least privilege, absent from the file, the image, the logs and the public sample. |
+| CA-10 | **A self-host realm may disable payment collection and apply operator grants within its own realm** (`DC-16`), while identity, authorisation, real usage measurement, budget limits and accounting correctness remain enforced. It cannot assert official-service entitlement. |
+
+### 3.2 Configuration failure matrix
+
+| # | Failure | Detected by | Owner | Action |
+|---|---|---|---|---|
+| CF-01 | Malformed, partial or duplicate-version bundle | Validation, step 1 | Operations | Rejected before persistence; the active revision is untouched |
+| CF-02 | Unknown billable model dimension | Validation | Operations | Rejected — an unpriced route would admit an unbounded charge (`AD-04`) |
+| CF-03 | Currency or payment-mapping mismatch | Validation | Operations | Rejected (`DC-10`, `MT-16`) |
+| CF-04 | A replica cannot load the activated revision | Startup and reload check | Operations | **That replica admits no affected work** (`CA-03`); it does not serve from a stale revision |
+| CF-05 | Production accidentally pointed at the public sample | Environment and realm field mismatch (`DC-04`) | Operations | Rejected. **A sample is labelled non-production and never silently selected** (`§8.6` of the commerce requirements) |
+| CF-06 | Activation succeeds but a rate is wrong | Post-activation review | Operations | Publish a **new** revision restoring prior values (`CA-05`). History is not edited |
+
+---
+
 ## 4. Client release execution
 
 Client and cloud releases are decoupled (`EP-04`), so this sequence runs independently of `§2`.
@@ -193,6 +235,10 @@ build once (per RID) → sign → publish to the artifact store
 | DV-05 | An application rollback restores service without a schema change, at every point in the sequence before contract | `WP-21.03`, `WP-50.04` |
 | DV-06 | A switch flag disables the new behaviour without a deployment | `WP-44.03` |
 | DV-07 | A missing required configuration value fails start-up naming the key, and no default is silently substituted | `WP-44.01`, `WP-21.06` |
+| DV-13 | Two example policies with different rates, prices, recovery rates and grants change future decisions and leave historical charges identical | `WP-44.01`, `WP-43.07` |
+| DV-14 | Replacement during concurrent requests produces no mixed-version evaluation, quota reset or duplicate grant | `WP-44.01`, `WP-42.11` |
+| DV-15 | All replicas restart preserving balances, holds and refill state | `WP-42.11`, `WP-21.06` |
+| DV-16 | A replica that cannot load the active revision admits no affected work and never falls back to a sample | `WP-44.01` |
 | DV-08 | The full client update matrix passes on all three desktop platforms, including interrupted download, interrupted install, corrupted artifact and update during a long task | `WP-50.02` |
 | DV-09 | Mixed-version desktop combinations are tested in both directions, per `CM-03` of the quality contract | `WP-50.02`, `WP-23.06` |
 | DV-10 | A Compatibility Manifest is produced for every release and matches what was tested | `WP-50.00`, `WP-50.08` |

@@ -89,24 +89,57 @@ client                cloud commerce            provider              entitlemen
 
 ---
 
-## 4. Credit lifecycle
+## 4. AI admission, capacity and settlement
+
+**P2-006 replaces the single-balance credit lifecycle with a service term, a replenishing bucket and opt-in credits.** Three things must go right in order, and each can fail independently.
 
 ```
-purchase → credit_lot (amount, expiry, source)
-   ↓ reserve   (before the work)     Reserved ↑   Available ↓
-   ↓ execute
-   ↓ settle    (actual usage)        debit the lot, release the remainder
+service term active?  --no-->  entitlement.no_service_term          -- a credit balance does NOT resolve this
+   | yes
+   v
+refill bucket over eligible paid interval only                       -- AC-02, RF-01
+   |
+   v
+ATOMIC admit: reserve bound from capacity -> compensation -> authorised purchased
+   |          + concurrency, per-request/per-run ceilings, provider budget
+   |--insufficient--> WaitingForCapacity(recoveryAt) | ExtraCreditsRequired | Reject
+   v
+dispatch -> provider attempts -> normalise usage into non-overlapping categories
+   v
+settle once per logical request: supplier cost (dispatch price) + customer cost (pinned tariff)
+   v
+debit and release against the SAME sources the reservation held
 ```
 
 | # | Failure point | Effect certainty | Detected by | Owner | Outcome | Auto-repair |
 |---|---|---|---|---|---|---|
-| CR-01 | Reservation made; process crashes before execute | `didNotHappen` | Reservation expiry sweep | Commerce | Released; **a crash never permanently consumes budget** (`CS-04`, `CR-02` of the harness) | Yes |
-| CR-02 | Work executed; settlement write fails | **Partial success — usage occurred, not yet charged** | Reconciliation invariant: *no settled attempt lacks a ledger entry* | Commerce | Settlement is idempotent per attempt and re-runs | Yes |
-| CR-03 | Settlement exceeds the reservation | `happened` | Settlement check | Commerce | Debited to actual usage; the overage is recorded and, above a threshold, alerts. **A hard stop at zero is enforced at reservation, not at settlement** (**D-020**) | Yes |
-| CR-04 | Two parallel runs against one balance | `happened` twice | Reservation concurrency control | Commerce | **They cannot collectively overdraw** (`CS-02`); the second reservation is refused rather than allowed to go negative | Yes |
-| CR-05 | Provider bill diverges from computed cost | Partial | Monthly provider invoice reconciliation (`LG-05`) | Commerce | Divergence investigated — reasoning tokens, tool cost, region surcharge are the usual causes. **A divergence is never absorbed silently** | No |
-| CR-06 | Lot expires with a reservation outstanding | `unknown` | Expiry job | Commerce | The reservation settles against the expiring lot first; expiry never invalidates work already reserved | Yes |
-| CR-07 | Platform-caused provider retry | `happened` twice at the provider | Attempt records | Commerce | **The user is charged for useful work only** (`CU-03`, `PF-04` of the harness) | Yes |
+| AI-01 | Purchased credits present, paid term expired | `didNotHappen` | Admission, **first check** | Entitlement | `entitlement.no_service_term`. Credits are **retained and remain recorded**; renewal re-enables them without reissue (`CR-05`) | N/A — the user renews |
+| AI-02 | Capacity exhausted, no extra-credit authorisation | `didNotHappen` | Admission | Entitlement | `entitlement.capacity_exhausted` with a **server-calculated `recoveryAt`** (`AC-06`, `EC-03`) | Yes — recovery is time-based |
+| AI-03 | Capacity exhausted, credits present, extra usage not opted in | `didNotHappen` | Admission | Entitlement | `entitlement.extra_credits_required`. **No automatic purchase, recharge or paid fallback** (`AC-06`) | No — explicit opt-in |
+| AI-04 | Request bound can never fit capacity plus authorised credits | `didNotHappen` | Admission | Entitlement | Rejected immediately with a smaller-request or budget action, **never queued forever** (`AC-04`, `AD-03`) | No |
+| AI-05 | Two devices admit concurrently against one bucket | Both attempt | Atomic reservation under the bucket lock | Entitlement | One succeeds, one waits or is refused. **A check without a reservation would let both pass** (`AD-02`, `CR-21`) | Yes |
+| AI-06 | Replica race on refill | — | Monotonic watermark plus row lock | Entitlement | Serialised; **no double credit** (`RF-02`, `AC-12`) | Yes |
+| AI-07 | Clock rolls backwards | — | `watermark_at` non-decreasing constraint | Entitlement | Elapsed time clamps to zero; the bucket does not refill (`AC-02`) | Yes |
+| AI-08 | Process restart mid-turn | `unknown` for the in-flight attempt | Reservation expiry sweep | Commerce | Orphaned reservation released (`CS-04`); the attempt resolves through `§4.1` | Yes |
+| AI-09 | Reservation held, work never dispatched | `didNotHappen` | Expiry sweep | Commerce | Released to its original sources, capped by the burst (`RF-05`) | Yes |
+| AI-10 | Settlement write fails after provider work | **Partial — usage occurred, not charged** | Invariant: *no completed attempt lacks a settlement or an unresolved marker* | Commerce | Settlement is idempotent per attempt usage revision and re-runs (`ST-03`) | Yes |
+| AI-11 | Duplicate or reordered usage events | `happened` once | `UQ (provider_attempt_id, usage_revision, category)` | Commerce | Later revision **replaces**, never sums (`UN-03`, `I-492`) | Yes |
+| AI-12 | Provider retry caused by the platform | `happened` twice upstream | Beneficiary classification | Commerce | **Charged once to the customer, fully visible in supplier cost** (`ST-07`, `MT-08`) | Yes |
+| AI-13 | Caller cancels mid-stream | Partial | Cancellation path | Commerce | Verified consumption within the authorised ceiling settles; the remainder releases. **Completed provider work is not presumed refundable** (`MT-09`) | Yes |
+| AI-14 | Paid term expires **during** a running Task | `happened` so far | Term evaluation at each dispatch | Entitlement | Further dispatch stops at a **durable boundary** with the eligibility reason (`SV-06`). Settled work stays settled; holds release per `§7.6` | Yes |
+| AI-15 | Task waiting for a device or an approval | — | Safe-boundary release | Entitlement | The included-capacity hold is **released at the boundary and re-reserved on resume** (`AC-05`, `PL-03`). One waiting Task cannot reserve the workspace | Yes |
+| AI-16 | Configuration replaced mid-flight | — | Pinned snapshots | Configuration | The Run keeps its pinned customer tariff; supplier price applies to **future** dispatch only. **No reset of usage, capacity, credits or holds** (`DC-12`, `DC-13`, `AC-09`) | Yes |
+| AI-17 | Refund of a purchased lot | Reversal | Refund hold then settlement | Commerce | Lot amount frozen, then zeroed. **A refund must not mint capacity above the burst** (`RF-05`, `AC-11`) | Yes |
+| AI-18 | Verified supplier overrun beyond the authorised hold | `happened` | Reconciliation against provider evidence | Operations | **Operator cost incident, not customer overdraft** (`MT-15`). Block further dispatch on that route, reconcile, adjust; the real supplier usage is never erased | No |
+
+### 4.1 Uncertain usage
+
+| # | Failure point | Effect certainty | Detected by | Owner | Outcome | Auto-repair |
+|---|---|---|---|---|---|---|
+| UU-01 | Final usage never arrives | **`unknown`** | Attempt completeness state | Commerce | `UsagePending`. Reconcile from available provider evidence — **never zero, never a fabricated total** (`MT-12`) | Partly |
+| UU-02 | Timeout after dispatch | **`unknown`** | Same | Commerce | `CostUnconfirmed`. **No blind redispatch and no repeat charge** (`MT-12`) | Partly |
+| UU-03 | Reconciliation deadline passes unresolved | Still unknown | Deadline sweep | Commerce | **Release the customer hold with no surprise later debit; retain the unresolved supplier liability**; alert and restrict the route. The two deadlines are independent (`UC-02`) | Yes |
+| UU-04 | Provider invoice diverges from computed cost | Partial | Invoice reconciliation (`MT-13`) | Commerce | Estimated, usage-confirmed and invoice-reconciled cost remain three distinguishable values (`UC-03`); the difference is a reconciliation adjustment, never a silent rewrite | No |
 
 ---
 
@@ -194,8 +227,8 @@ The same divergence must not be hunted by three mechanisms, and none must be hun
 | Detector | Runs | Covers |
 |---|---|---|
 | **Foreground failure handling** | Per operation | Rows where the caller is still present: `PE-06`, `SY-01`, `AS-03` |
-| **Expiry and sweep jobs** | Continuously | `PE-01`, `CR-01`, `AS-02`, `DV-03` |
-| **Commerce reconciliation** | Scheduled, both directions | `PE-02`, `PE-07`, `PE-11`, `SU-01`, `SU-04`, `SU-07`, `CR-02`, `CR-05` |
+| **Expiry and sweep jobs** | Continuously | `PE-01`, `AI-08`, `AI-09`, `UU-03`, `AS-02`, `DV-03` |
+| **Commerce reconciliation** | Scheduled, both directions | `PE-02`, `PE-07`, `PE-11`, `SU-01`, `SU-04`, `SU-07`, `AI-10`, `UU-01`–`UU-04` |
 | **Sync reconciliation** | On reconnect and on gap | `SY-03`, `SY-04`, `SY-10` |
 | **Data-health scans** | Scheduled | `AS-04`, `AS-05`, `DE-03` |
 | **Completion invariants** | Per lifecycle | `PE-06`, `DE-01`, `DE-02`, `DE-04`, `CR-02` |
@@ -222,7 +255,16 @@ Each row is release-gating (`XL-07`).
 | LV-04 | An unmatched provider payment is quarantined and never grants access | `WP-42.03` |
 | LV-05 | A refund and a chargeback each produce a revocation, never a deleted grant | `WP-42.09`, `WP-42.04` |
 | LV-06 | A downgrade over quota permits read, download and delete and deletes nothing | `WP-42.06`, `WP-25.05` |
-| LV-07 | Parallel runs against one balance cannot collectively overdraw, and a crash releases the reservation | `WP-42.07`, `WP-43.05` |
+| LV-07 | Parallel runs against one workspace cannot collectively overdraw, and a crash releases the reservation | `WP-42.11`, `WP-43.05` |
+| LV-19 | Official inference is refused with a full credit balance and no active paid service term | `WP-42.11` |
+| LV-20 | Capacity recovers only over eligible paid intervals; a lapse accrues nothing and a renewal does not refill to full | `WP-42.11` |
+| LV-21 | Clock rollback, restart, reconnect, a second device and a racing replica each fail to rewind the watermark or double-credit | `WP-42.11` |
+| LV-22 | No path mints capacity above the burst, including a release and a refund | `WP-42.11` |
+| LV-23 | A duplicate or reordered usage event replaces rather than sums, and never double-debits | `WP-43.07` |
+| LV-24 | Missing final usage releases the customer hold at the deadline while retaining the supplier liability | `WP-43.07` |
+| LV-25 | A paid term expiring mid-Task stops dispatch at a durable boundary with its reason | `WP-42.11` |
+| LV-26 | A Task waiting for a device or an approval holds no included capacity | `WP-42.11`, `WP-16.05` |
+| LV-27 | Configuration replacement mid-flight resets no usage, capacity, credit or hold, and changes no started Run's tariff | `WP-44.01`, `WP-42.11` |
 | LV-08 | Provider invoice reconciliation detects an injected divergence | `WP-42.08`, `WP-43.02` |
 | LV-09 | A lost push response, a crash before outbox clearing, and a re-push all converge with one effect | `WP-25.01`, `WP-25.02` |
 | LV-10 | An induced sequence gap reconciles to verified convergence without a blanket resync | `WP-24.02`, `WP-24.03` |
