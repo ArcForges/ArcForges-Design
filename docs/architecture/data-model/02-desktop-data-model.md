@@ -392,15 +392,16 @@ Raw capture is **not** in the relational store (`SE-14`). It is a chunked append
 |---|---|---|
 | `sequence_id` | `id` | **PK** |
 | `project_id` | `id NN` | `FK →`; cascade |
-| `frame_rate_num`, `frame_rate_den` | `int NN` | The source's **own** rate. Rational, stored exactly (`TM-03`) — never a float, and never assumed equal to the sequence's (`SM-01`) |
-| `pts_time_base_num`, `pts_time_base_den` | `int NN` | The container's PTS base, recorded because it is generally neither rate (`SM-01`) |
-| `ticks_per_source_unit` | `bigint?` | The exact tick mapping where the source base divides the tick base; **NULL means the mapping rounds**, and the rounding is in the conform report (`SM-03`) |
-| `drop_frame` | `bool NN` | |
-| `sample_rate` | `int NN` | |
+| `frame_rate_num`, `frame_rate_den` | `int NN` | **The sequence's own output video grid.** Rational, stored exactly — never a float. A sequence has exactly one; its sources may have many different ones (`SG-01`) |
+| `drop_frame` | `bool NN` | Timecode **presentation** only; it never affects position arithmetic (`§3.6` of the time model) |
+| `sample_rate` | `int NN` | **The sequence's own output audio grid** (`SG-02`) |
+| `ticks_per_video_frame` | `bigint NN` | *(derived, materialised)* Exact ticks per output frame. **NOT NULL** — a sequence grid that is not exactly representable cannot exist (`TB-02`) |
+| `ticks_per_audio_sample` | `bigint NN` | *(derived, materialised)* Exact ticks per output sample |
 | `width`, `height` | `int NN` | |
 | `working_color_config` | `json NN` | |
 | `rev` | `rev NN` | |
 
+- **Constraint** — `ticks_per_video_frame` and `ticks_per_audio_sample` are **exact**: `705600000 × frame_rate_den` must divide by `frame_rate_num`, and `705600000` by `sample_rate`. A sequence whose grid is not exactly representable **cannot be created** (`TB-02`, `SG-03`)
 - **Constraint** — a frame rate is **never** stored as a floating-point value. This single decision is what prevents accumulated drift (`WP-36.01`), and a policy test asserts no float column exists in the time model.
 
 ### `media_asset`, `media_stream`
@@ -417,6 +418,24 @@ Raw capture is **not** in the relational store (`SE-14`). It is a chunked append
 
 - **Constraint** — `media_asset_id` is **not a file path** (`I-192`), and **a clip never references a file** (`MD-07`)
 - `media_location` is a separate table keyed `(media_asset_id, device_id)` — **the same asset may resolve to different locations on different devices** (`MD-08`) while remaining one logical asset. This table is device-local and does not sync.
+
+
+**Source time bases live here, not on the sequence** (`SG-01`). One sequence routinely contains sources with different stream time bases, so a single per-sequence field could not represent them.
+
+| `media_stream` field | Type | Notes |
+|---|---|---|
+| `media_stream_id` | `id` | **PK** |
+| `media_asset_id` | `id NN` | `FK →`; cascade |
+| `stream_kind` | `enum(video, audio, subtitle, data) NN` | |
+| `stream_index` | `int NN` | The container's own index |
+| `rate_num`, `rate_den` | `int NN` | **This stream's own** rate. Rational, exact, never a float |
+| `pts_time_base_num`, `pts_time_base_den` | `int NN` | The container's PTS base for **this stream** — generally neither the stream rate nor any sequence's |
+| `ticks_per_pts_unit` | `bigint?` | Exact tick mapping where the PTS base divides the tick base; **NULL means the mapping rounds** (`SM-03`), and the rounding is recorded in the conform report |
+| `start_pts` | `bigint NN` | The container's own origin, preserved rather than normalised away |
+
+- `UQ (media_asset_id, stream_index)`
+- **Constraint** — a `NULL` `ticks_per_pts_unit` is legal and **does not block import** (`SM-03`); it makes the stream's mapping approximate, and the approximation is reported, never silent
+- **Rule** — a stream's rate is never assumed equal to the sequence's output grid. That assumption is the defect `SG-01` exists to prevent
 
 ### `track`, `timeline_item`, `clip`, `transition`
 

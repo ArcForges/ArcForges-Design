@@ -161,13 +161,14 @@ release:  on expiry, loss, pause or terminal state, drop the lease cleanly
 
 > **Corrected 2026-09-07.** The plan required exact frame *and* sample round trips while storing integer frames in the sequence rate and integer samples in a parallel column set, "converted only through the exact rational conversion". **Those two grids do not map onto each other.** At 30000/1001 fps and 48 kHz one frame spans exactly 48000 × 1001/30000 = **1601.6 samples**, so frame 1 is sample 1601.6 — not an integer — and sample 1000 is frame 625/1001 — not an integer either. Rational *arithmetic* is exact; the *grid mapping* is not, and promising both was a guarantee the storage model could not keep.
 
-### 3.1 One canonical domain, two projections
+### 3.1 One canonical domain; every grid is a projection
 
 | Domain | Unit | Role |
 |---|---|---|
 | **Canonical** | Integer **ticks** at **705 600 000 Hz** | The only domain in which positions are stored, compared, added or persisted |
-| Frame grid | Integer frames in the sequence rate | A **projection** for editing, display and timecode |
-| Sample grid | Integer samples in the audio rate | A **projection** for audio rendering and waveform addressing |
+| Sequence video grid | Integer frames in the sequence's output rate | A **projection** for video editing, display and timecode |
+| Sequence audio grid | Integer samples in the sequence's output rate | A **projection** for audio editing and render sample addressing |
+| Source stream grid | The stream's own rate and PTS base | A **projection** for decode targets and conform (`§5` of the desktop data model) |
 
 The tick base is chosen so that every rate the product supports divides it exactly:
 
@@ -189,25 +190,78 @@ The tick base is chosen so that every rate the product supports divides it exact
 | TB-03 | **Arithmetic is exact and closed.** Adding, subtracting and comparing ticks is integer arithmetic; no conversion occurs, so no rounding occurs. |
 | TB-04 | **Frames and samples are projections, computed on demand**, never stored as the position. The parallel integer sample columns of the previous model are removed: two stored grids that cannot agree is the defect itself. |
 
-### 3.2 Where exactness is guaranteed, and where it is not
+### 3.2 Three grids, and which is authoritative for what
 
-| Guaranteed exact | Bounded, and the bound is stated |
-|---|---|
-| Tick arithmetic, and any round trip that stays in ticks | Projecting an arbitrary tick onto the frame grid |
-| Frame *n* → ticks → frame *n* for any *n* | Projecting an arbitrary tick onto the sample grid |
-| Sample *k* → ticks → sample *k* for any *k* | Frame *n* → sample index, when the rates are not commensurate |
-| Any edit point the user placed on the frame grid | Audio alignment of a cut relative to the frame boundary |
+A sequence has **two output grids**; each source stream has **its own**. Conflating them is the defect this section prevents.
+
+| Grid | Owner | Used for |
+|---|---|---|
+| **Canonical ticks** | The project | Every stored position; all arithmetic and comparison |
+| Sequence **video** grid | The sequence (`frame_rate_num/den`) | Video edit points, display, timecode |
+| Sequence **audio** grid | The sequence (`sample_rate`) | Audio edit points, render sample addressing |
+| Source **stream** grid | Each `media_stream` | Decode targets, PTS mapping, conform |
 
 | # | Rule |
 |---|---|
-| TG-01 | **A round trip through the canonical domain is lossless.** Frame → tick → frame and sample → tick → sample are exact for every supported rate, because each grid point is an integer multiple of the tick. |
-| TG-02 | **A round trip through the *other* grid is not, and is never claimed.** Frame → sample → frame can move by up to half a frame at incommensurate rates. Nothing in the design depends on it. |
-| TG-03 | **Edit points are frame-grid points by construction.** The user places cuts on frames; the tick value stored is the exact tick of that frame, so the edit is exact and stays exact. |
-| TG-04 | **Audio is rendered from ticks, not from a frame-derived sample index.** The renderer converts the clip's tick range to samples once, at render time, with a single declared rounding — so a cut lands within **at most one sample** of its canonical position, and never accumulates across clips. |
-| TG-05 | **Rounding is declared and directional, never incidental.** Range starts round toward the start of the range and range ends round toward the end, so a projected range always **covers** its canonical range and adjacent clips never leave a one-sample hole. |
-| TG-06 | **Error never accumulates.** Every projection is computed from the canonical value, never from a previous projection. This is why sequential clips cannot drift. |
+| SG-01 | **A sequence has one output video grid and one output audio grid; a source stream has its own.** They are separate columns on separate tables (`§5` of the desktop data model), because one sequence routinely contains sources with several different stream bases. |
+| SG-02 | **Both sequence grids must be exactly representable in ticks**, and the exact divisors are materialised on the row. A sequence whose grid is not exactly representable cannot be created. |
+| SG-03 | **Changing a sequence's output grid reprojects; it never rewrites a stored position.** That is what makes a rate change non-destructive. |
 
-### 3.3 Source media, PTS and conform
+### 3.3 Where exactness is guaranteed
+
+| Guaranteed exact | Bounded, and the bound is stated |
+|---|---|
+| Tick arithmetic, and any round trip that stays in ticks | Projecting an arbitrary tick onto **either** sequence grid |
+| Video frame *n* → ticks → frame *n*, for the sequence's video grid | Projecting a video-grid point onto the audio grid, or the reverse |
+| Audio sample *k* → ticks → sample *k*, for the sequence's audio grid | Mapping a source PTS whose base does not divide the tick base (`SM-03`) |
+| Any edit point placed on **its own** grid | Retiming to an arbitrary rational speed |
+
+| # | Rule |
+|---|---|
+| TG-01 | **A round trip through the canonical domain is lossless** for each grid separately: frame↔tick and sample↔tick are exact for every representable grid. |
+| TG-02 | **A round trip through the *other* grid is not, and is never claimed.** At 30000/1001 fps and 48 kHz one frame is 1601.6 samples, so frame↔sample cannot round-trip. Nothing depends on it. |
+| TG-03 | **Video edits snap to the sequence video grid; audio edits snap to the sequence audio grid.** Both are exact **on their own grid** — an audio edit is sample-precise and a video edit is frame-precise, and neither is forced onto the other's grid. A cut that is both (a clip boundary carrying picture and sound) stores **one canonical tick** and is projected to each grid independently. |
+| TG-04 | **Error never accumulates.** Every projection is computed from the canonical value, never from a previous projection. |
+
+### 3.4 Boundary ownership — no duplicated and no missing sample
+
+Directional outward rounding on both sides of a shared boundary **duplicates** the boundary sample. At the frame-1 boundary of a 30000/1001 fps sequence with 48 kHz audio, the boundary falls at sample 1601.6: rounding clip A's end up gives 1602 and clip B's start down gives 1601, so **sample 1601 is emitted twice**.
+
+Output sample ownership is therefore assigned, not rounded.
+
+| # | Rule |
+|---|---|
+| BO-01 | **A rendered range is half-open in ticks: `[start, end)`.** Adjacency means `A.end == B.start` exactly, in ticks. |
+| BO-02 | **An output sample belongs to exactly one clip**: sample *k* covers the tick interval `[k·T, (k+1)·T)`, and it belongs to the clip whose half-open tick range **contains `k·T`**, the sample's own start instant. This is a total function — every sample has exactly one owner, and adjacency leaves no hole. |
+| BO-03 | **Decoder padding and coverage are not ownership.** A decoder may be asked for samples outside a clip's range to prime a filter; those samples are **discarded on mix** and never emitted. Coverage is an input concern; ownership is an output concern, and conflating them is what produces a duplicated sample at every cut. |
+| BO-04 | **`TG-05`'s outward rounding is retained only for *coverage* requests** — deciding what to decode — and is explicitly **not** used to decide what to emit. |
+| BO-05 | **The boundary sample is verified, not assumed.** A fixture at 30000/1001 fps and 48 kHz asserts that a cut at frame 1 emits sample 1601 exactly once and sample 1602 exactly once, across the join (`TV-08`). |
+
+### 3.5 Representability — three different rules
+
+`TB-02` and `SM-03` are not in conflict once the subject of each is named.
+
+| Subject | Rule | Rationale |
+|---|---|---|
+| **Sequence output grid** | **Must** be exactly representable; a non-representable rate cannot be chosen (`SG-02`) | ArcForges controls this; an inexact output grid would make every stored edit approximate |
+| **Source stream timestamps** | **Need not** be. A source whose PTS base does not divide the tick base is **imported**, with its mapping rounded and the rounding reported (`SM-03`) | ArcForges does not control real media, and rejecting it would be a product failure |
+| **Interchange (`.otio`)** | A file whose timeline rate is not representable is **imported into a representable sequence grid**, with the substitution stated in the fidelity report; **export refuses to claim** a rate the sequence does not have | Neither silent approximation nor refusal to open |
+
+| # | Rule |
+|---|---|
+| TB-02 | **A sequence output grid that is not an exact integer tick count cannot be created**, and the attempt fails with a stated reason. This is a constraint on ArcForges' own grids only. |
+| SM-03 | **A source stream whose base does not divide the tick base is supported**, with per-sample rounding recorded in the conform report. **It is never rejected** — real media includes such sources. |
+| RP-01 | **Retiming composes rationals and projects once** (`SM-05`). A non-unit speed generally produces source positions off the source grid; the projection rounds once, at the decode boundary, and the fidelity report records any speed whose mapping is inexact. |
+| RP-02 | **Every rounding site is enumerated**: source PTS mapping (`SM-03`), retiming projection (`RP-01`), output-grid projection for display (`TG-01`), and encoder-grid projection at export. **No other code path rounds a position**, and a policy test asserts it (`TV-02`). |
+
+### 3.6 Timecode presentation is not position arithmetic
+
+| # | Rule |
+|---|---|
+| TC-01 | **Drop-frame timecode is a display convention**, defined against the nominal integer rate. Its rounding is correct *for timecode* and is never applied to a position. |
+| TC-02 | **A timecode string is produced from a canonical tick and never parsed back into one for storage.** Round-tripping a position through a timecode string is prohibited, because timecode is lossy by construction at fractional rates. |
+
+### 3.7 Source media, PTS and conform
 
 Source media has its own time base, which is generally neither the sequence rate nor the audio rate.
 
@@ -215,21 +269,21 @@ Source media has its own time base, which is generally neither the sequence rate
 |---|---|
 | SM-01 | **A source's own time base is recorded as a rational** (`frame_rate_num`/`frame_rate_den`, `sample_rate`, and the container's PTS time base), and is never assumed equal to the sequence's. |
 | SM-02 | **A source PTS converts to canonical ticks exactly where the source base divides the tick base, and with a declared rounding where it does not.** The conversion result is recorded with the media reference, so decode targets are reproducible rather than recomputed differently by two code paths. |
-| SM-03 | **A source whose base does not divide the tick base is supported**, with its per-sample rounding recorded in the conform report. **It is not rejected** — real media includes such sources — but the approximation is stated rather than hidden. |
+| SM-03 | *(stated in `§3.5`)* A source whose base does not divide the tick base is **supported**, with its per-sample rounding recorded in the conform report. The rule lives with the other two representability rules so the three subjects are read together. |
 | SM-04 | **Conform never rewrites the source.** It records a mapping; the media file is untouched (`MP-01` of the native interop architecture). |
 | SM-05 | **Retiming composes rationals, then projects once.** A speed change multiplies the canonical range by an exact rational and projects to the source's grid at the end — never a chain of grid-to-grid conversions, which is how retiming drift is normally introduced. |
 
-### 3.4 Consequences for the surrounding designs
+### 3.8 Consequences for the surrounding designs
 
 | Area | What follows |
 |---|---|
 | **Playback** | The audio clock is the master (`MP-04`); video presentation times are projected from ticks, so a dropped video frame cannot shift audio |
 | **OTIO** | `RationalTime` maps to ticks exactly where the rate is supported; where a file carries an unsupported rate the import report records it (`OS-04`, `OT-05`). **`OS-03`'s "no silent frame shift" is now achievable**, because the canonical value is preserved and only projections round |
-| **Export** | The render plan carries canonical ticks; the encoder's own grid is a projection with `TG-05`'s directional rounding |
+| **Export** | The render plan carries canonical ticks; the encoder's grid is a projection, and **emitted samples follow `BO-02` ownership** — outward rounding decides only what to decode (`BO-04`) |
 | **Proxy and cache** | Cache keys use canonical ticks, so a proxy generated at one preview rate is valid for another (`MP-06`) |
 | **Data model** | `timeline_item` stores ticks; the parallel sample columns are removed (`TB-04`) |
 
-### 3.5 The reference is evidence, not an oracle
+### 3.9 The reference is evidence, not an oracle
 
 ArcVideo and ArcVideoFoundation are `Reference Only` (`§6.2` of the implementation maps), and their time handling is **evaluated, not inherited**.
 
@@ -272,3 +326,8 @@ The distinction matters because the reference is not simply wrong: its timecode 
 | TV-05 | A projected range covers its canonical range; adjacent clips leave no one-sample hole | `WP-37.02` |
 | TV-06 | Retiming composes rationals and projects once; a chain of speed changes introduces no drift | `WP-37.02` |
 | TV-07 | A source whose time base does not divide the tick base imports with its rounding recorded in the conform report | `WP-36.02` |
+| TV-08 | **A cut at frame 1 of a 30000/1001 fps sequence with 48 kHz audio emits sample 1601 exactly once and 1602 exactly once** across the join — no duplicated and no missing sample (`BO-02`, `BO-05`) | `WP-37.04` |
+| TV-09 | Video edits are frame-precise and audio edits sample-precise **on their own grids**, and neither is forced onto the other's (`TG-03`) | `WP-36.01`, `WP-37.04` |
+| TV-10 | A sequence output grid that is not exactly representable **cannot be created**, while a source stream with an inexact PTS base **imports successfully** with its rounding reported (`TB-02`, `SM-03`) | `WP-36.01`, `WP-36.02` |
+| TV-11 | A `.otio` timeline whose rate is not representable imports into a representable sequence grid with the substitution stated in the fidelity report; export never claims a rate the sequence does not have | `WP-39.05` |
+| TV-12 | Every rounding site is one of the four enumerated in `RP-02`; a policy test asserts no other code path rounds a position | `WP-05`, `WP-36.01` |

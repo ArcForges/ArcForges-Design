@@ -78,11 +78,11 @@
 
 ### WP-36.01 — The exact time model
 
-**What must be fully done.** Rational frame rates including drop-frame and non-integer rates, represented exactly. Sample-precise audio time. Explicit, exact conversion between the two domains. Timecode display and parsing that never introduces drift.
+**What must be fully done.** **Canonical positions as integer ticks at 705 600 000 Hz** (`TB-01` of the time model). Rational sequence output grids — video and audio — each exactly representable in ticks, with their exact divisors materialised (`SG-02`). Source stream rates and PTS bases stored **per stream**, never on the sequence (`SG-01`), and a stream whose base does not divide the tick base **imports successfully** with its rounding reported (`SM-03`). Output sample ownership by `BO-02`, so an adjacent cut duplicates and drops nothing. The four enumerated rounding sites and no others (`RP-02`). Timecode display and parsing that never introduces drift.
 
-**Testing requirements.** Exactness tests across every supported rate including drop-frame; long-duration accumulation tests asserting zero drift; conversion round-trip tests between frame and sample domains.
+**Testing requirements.** Frame↔tick and sample↔tick round-trip exactness across every supported rate including drop-frame; long-duration accumulation tests asserting zero drift; **a boundary fixture at 30000/1001 fps with 48 kHz asserting a cut at frame 1 emits sample 1601 exactly once and 1602 exactly once** (`TV-08`); a negative test asserting a non-representable **sequence** grid cannot be created while a source stream with an inexact PTS base imports with its rounding reported (`TV-10`); a policy test asserting no stored position is a frame, a sample, a float or a duration type, and that no code path outside `RP-02`'s four sites rounds a position (`TV-02`, `TV-12`).
 
-**Completion gate.** **No drift accumulates over long durations in any supported rate**, and frame–sample conversion round-trips exactly.
+**Completion gate.** **No drift accumulates over long durations in any supported rate**; frame↔tick and sample↔tick round-trip exactly on their own grids; **an adjacent cut emits every boundary sample exactly once**; and a non-representable sequence grid is refused while inexact source media still imports. **Frame↔sample round-tripping is not claimed** — at 30000/1001 fps and 48 kHz one frame is 1601.6 samples, so it is not achievable and nothing depends on it (`TG-02`).
 
 ### WP-36.02 — Media assets and availability
 
@@ -174,11 +174,11 @@
 
 1. **Drift check only**: the reference is compared against its bound commit, and any newly introduced material is assessed against the accepted ArcSlate scope. The matrix and its licence audit were completed as design-stage evidence and closed `PG-01` and `F-013` before this package began. Findings carried in: **F-AL-2** records that ArcVideoFoundation is a **thin utility layer of 27 files**, not the “fat core” its README describes — so no substantial reusable core exists. **`P2-005`** fixes the reference baseline as **ArcVideo and ArcVideoFoundation**; no upstream checkout is sought, and **upstream provenance is preserved** (`RF-06` in the ArcSlate requirements).
 2. A project holds multiple sequences over one media library, with project, sequence and folder structurally distinct.
-3. **No drift accumulates over long durations in any supported rate**; frame–sample conversion round-trips exactly.
+3. **No drift accumulates over long durations in any supported rate**; frame↔tick and sample↔tick round-trip exactly on their own grids; an adjacent cut emits every boundary sample exactly once. Frame↔sample round-tripping is **not** claimed (`TG-02`).
 4. A project opens fully with all media offline and relinks correctly; **no native type appears anywhere in the domain, contracts or persisted types**.
 5. Import completes without waiting on caches; an indexing failure never fails an import.
 6. Many clips reference one asset independently; no clip holds a file path.
-7. Every edit operation is frame- and sample-exact, non-destructive, and routed through the single write path.
+7. Every edit operation is **exact on its own grid** — video edits frame-precise, audio edits sample-precise (`TG-03`) — non-destructive, and routed through the single write path.
 8. Undo, checkpoint and recovery are three distinct mechanisms, and a crash recovers to a committed boundary with honest loss reporting.
 
 ---
