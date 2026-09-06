@@ -298,7 +298,7 @@ approval.decide
 | The model request's identity — not its content | `provider_interaction` |
 | The response's durable parts | `message_part` |
 | Each invocation with its `InvocationId` and `CommandId` | `attempt` |
-| Budget reservation and settlement | `credit_reservation`, `credit_transaction` |
+| Budget reservation and settlement | `entitlement.capacity_reservation`, `commerce.credit_transaction`, `commerce.customer_settlement` |
 | Context pack manifest — sources and revisions, not content | Execution trace |
 
 **Prompt and response content is never written to telemetry** (`RD-01` of the observability architecture). Durable message parts are user content in the product store; the interaction record carries counts and identifiers only.

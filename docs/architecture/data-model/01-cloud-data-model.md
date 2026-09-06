@@ -18,7 +18,7 @@ Notation is defined in [`00-data-model-overview.md`](00-data-model-overview.md) 
 | `identity` | Identity | `user`, `auth_identity`, `session` |
 | `workspace` | Workspace | `workspace` — **no membership table** (`WO-01`) |
 | `device` | Devices | `device`, `installation` |
-| `entitlement` | Entitlement | `grant`, `entitlement_snapshot`, `usage_counter`, `service_term`, `capacity_bucket`, `capacity_reservation` |
+| `entitlement` | Entitlement | `grant`, `entitlement_snapshot`, `usage_counter`, `service_term`, `capacity_bucket`, `capacity_policy_period`, `capacity_reservation` |
 | `commerce` | Commerce | `billing_account`, `order`, `subscription`, `credit_lot`, `provider_event`, `logical_ai_request`, `provider_attempt`, `attempt_usage`, `supplier_cost_entry`, `customer_settlement` |
 | `chat` | Chat | `conversation` |
 | `task` | Task | `task`, `automation` |
@@ -348,9 +348,17 @@ The Entitlement module is **independent of Commerce** (`§2.1` of the commerce a
 ---
 
 
-### `entitlement.service_term` *(new — P2-006)*
+### `entitlement.service_term` *(new — P2-006; keys corrected 2026-09-07)*
 
 The gate before every AI decision (`§5.3` of the commerce architecture). An interval, never a flag.
+
+> **Corrected 2026-09-07.** The previous definition set `source_ref` to the subscription id under `UQ (kind, source_ref)`. That made **renewal impossible**: the second paid period of the same subscription would collide on the key. Three identities were conflated, and are now separate.
+
+| Identity | Meaning | Lives in |
+|---|---|---|
+| **Subscription identity** | The provider's long-lived subscription | `subscription_ref` |
+| **Paid-period identity** | *One* paid interval of it | `period_ref` — the key |
+| **Provider-event identity** | The webhook that caused this row | `commerce.provider_event`, deduplicated there (`EI-02`) |
 
 | Field | Type | Notes |
 |---|---|---|
@@ -358,39 +366,108 @@ The gate before every AI decision (`§5.3` of the commerce architecture). An int
 | `workspace_id` | `id NN` | `FK →` `workspace.workspace`; restrict |
 | `realm_id` | `id NN` | **Realm-scoped**; a term is never visible outside its realm (`SV-04`) |
 | `kind` | `enum(subscription, pass, compensation, selfHostGrant) NN` | The only four sources (`SV-02`) |
-| `source_ref` | `text NN` | Subscription id, order id, compensation record or operator grant id |
+| `subscription_ref` | `text?` | The provider subscription, for `kind = subscription`. **Stable across renewals** |
+| `period_ref` | `text NN` | **The paid period's own identity** — the provider's invoice or billing-period id for a subscription; the order id for a pass; the grant id for a compensation or self-host term |
 | `starts_at` | `instant NN` | |
 | `ends_at` | `instant NN` | Exclusive |
 | `grace_ends_at` | `instant?` | Data-access grace; **never extends AI admission** (`SV-05`) |
+| `supersedes_id` | `id?` | `FK →` self. Set when this row replaces an earlier period on plan change |
 | `created_at` | `instant NN` | |
 
+- `UQ (kind, period_ref)` — **idempotent creation per period.** A replayed provider event for the same period creates nothing; a genuine renewal carries a **new** `period_ref` and creates a new row (`SV-02`)
 - `IX (workspace_id, starts_at, ends_at)` — the admission-path query
-- `UQ (kind, source_ref)` — **idempotent creation**; a replayed provider event extends nothing twice
+- `IX (subscription_ref, starts_at)` — the renewal-chain query
 - **Constraint** — `ends_at > starts_at`
-- **Constraint** — no row may be created from a credit grant, a trial flag or an operator balance edit (`SV-03`), enforced by the grant interface, not by convention
-- **Rule** — the effective term is the **union of overlapping intervals**; contiguous renewal extends eligibility without creating a gap (`AC-03`)
+- **Constraint** — `kind = 'subscription'` requires `subscription_ref IS NOT NULL`; the other kinds require it to be `NULL`
+- **Constraint** — no row is created from a credit grant, a trial flag or an operator balance edit (`SV-03`), enforced by the grant interface
 
-### `entitlement.capacity_bucket` *(new — P2-006)*
+| # | Rule |
+|---|---|
+| TM-01 | **The effective term is the union of overlapping and abutting intervals** (`SV-01`). Contiguous renewal therefore extends eligibility with no gap, while remaining a separate row with its own period identity. |
+| TM-02 | **Deduplication is by provider event, not by term row.** `commerce.provider_event` already deduplicates on `(eventType, eventId)` (`EI-02`); the term's own key only prevents two rows for one *period*. Conflating the two was the original defect. |
+| TM-03 | **Contiguity is computed, not stored.** Two terms are contiguous when `previous.ends_at >= next.starts_at`. A gap between them means capacity accrued nothing in between (`RF-01`) and the next term is a **new activation** for `RF-07`. |
+| TM-04 | **A plan change mid-period supersedes rather than edits.** The new row carries `supersedes_id`, and the superseded row's `ends_at` is set to the change instant. History stays append-only, and the union rule keeps eligibility continuous. |
+| TM-05 | **A revocation — refund or chargeback — is recorded as a revocation against the term** (`RE-05` of the commerce architecture), not by deleting the row. Access ends at the revocation's effective time; the record of what was granted survives. |
+
+### `entitlement.capacity_bucket` *(new — P2-006; refill corrected 2026-09-07)*
 
 One row per workspace. The replenishing included-capacity bucket (`§7.2` of the commerce architecture).
+
+> **Corrected 2026-09-07.** The previous definition stored `burst_micro` and `rate_micro_per_second` **on the bucket row**, and refill multiplied the whole elapsed interval by that single rate. That is wrong whenever the configured rate changed inside the interval: five seconds at rate 1 followed by five seconds at rate 10 earns **55**, not 100. Rate and burst now come from **immutable policy history**, and refill integrates over the intervals actually in force.
 
 | Field | Type | Notes |
 |---|---|---|
 | `workspace_id` | `id` | **PK** — exactly one bucket per workspace |
 | `available_micro` | `int64 NN` | Integer micro-credits (`CD-01`). **Never a float** |
-| `held_micro` | `int64 NN` | Sum of live reservations funded from capacity |
-| `burst_micro` | `int64 NN` | Ceiling, from the activated configuration revision |
-| `rate_micro_per_second` | `int64 NN` | Recovery rate, from the same revision |
-| `remainder_micro` | `int64 NN` | **Fractional carry** (`RF-03`), scaled; never discarded between evaluations |
+| `held_micro` | `int64 NN` | Sum of live reservations funded from capacity (`CX-08`) |
+| `remainder_num`, `remainder_den` | `int64 NN` | **Exact fractional carry** as a rational (`RF-03`). Never a float, never truncated |
 | `watermark_at` | `instant NN` | **Monotonic** (`RF-02`); advanced, never rewound |
-| `initialised_from` | `id?` | `FK →` `entitlement.service_term`; the idempotent first activation (`RF-07`) |
-| `config_revision_id` | `id NN` | Which activated revision supplied `burst`/`rate` (`CG-02`) |
+| `activation_term_id` | `id?` | `FK →` `entitlement.service_term` — the term that opened the **current contiguous run** (`RF-07`, `TM-03`) |
 | `rev` | `rev NN` | |
 
-- **Constraint** — `available_micro >= 0` and `held_micro >= 0`
-- **Constraint** — `available_micro <= GREATEST(0, burst_micro - held_micro)` (`RF-04`), asserted after every mutation
-- **Constraint** — `watermark_at` is non-decreasing, enforced by a trigger or a checked update predicate (`RF-02`)
-- **Rule** — refill runs under this row's lock (`§7.2` there); a racing replica serialises rather than double-crediting
+- **Constraint** — `available_micro >= 0`, `held_micro >= 0`
+- **Constraint** — `available_micro <= GREATEST(0, burst_at(now) - held_micro)` (`RF-04`), evaluated on every mutation
+- **Constraint** — `watermark_at` is non-decreasing, enforced by a checked update predicate (`RF-02`)
+- **Rule** — burst and rate are **not columns here.** They are read from `entitlement.capacity_policy_period`, so a configuration change cannot silently rewrite a bucket's parameters or its history
+
+### `entitlement.capacity_policy_period` *(new — 2026-09-07)*
+
+Immutable policy history. One row per `(realm, offer, activation interval)` in which the capacity parameters were constant.
+
+| Field | Type | Notes |
+|---|---|---|
+| `policy_period_id` | `id` | **PK** |
+| `realm_id`, `offer_id` | `id NN` | |
+| `config_revision_id` | `id NN` | `FK →` `config.revision` — which activated revision supplied these values (`CG-02`) |
+| `burst_micro` | `int64 NN` | |
+| `rate_micro_per_second` | `int64 NN` | |
+| `effective_from` | `instant NN` | The activation instant of that revision |
+| `effective_to` | `instant?` | NULL while current; set when the next revision activates |
+
+- `UQ (realm_id, offer_id, effective_from)`
+- `IX (realm_id, offer_id, effective_from, effective_to)` — the integration query
+- **Constraint** — a row is **never updated except to close `effective_to`**, and never deleted (`I-494`)
+- **Constraint** — periods for one `(realm, offer)` are contiguous and non-overlapping; closing one and opening the next happens in the **activation transaction** (`CA-03`), so no instant is uncovered or double-covered
+
+#### The refill calculation
+
+Refill runs on read, under the bucket row's lock, and **integrates over the intersection of three interval sets**: elapsed time, eligible paid service, and policy periods.
+
+```
+refill(bucket, now):
+    LOCK bucket row                                   -- serialises racing replicas (RF-02)
+    if now <= bucket.watermark_at:                    -- clock rollback, or already current
+        return                                        -- never rewind (RF-02)
+
+    windows = intersect(
+        [bucket.watermark_at, now),
+        eligible_service_intervals(workspace),        -- union of service terms (TM-01)
+        policy_periods(realm, offer))                 -- immutable history
+
+    earned = bucket.remainder_as_rational
+    for w in windows in chronological order:          -- SPLIT AT EVERY BOUNDARY
+        earned += duration_seconds(w) * w.rate_micro_per_second
+
+    whole = floor(earned)
+    bucket.remainder = earned - whole                 -- exact rational carry (RF-03)
+
+    ceiling = max(0, burst_at(now) - bucket.held_micro)
+    bucket.available_micro = min(bucket.available_micro + whole, ceiling)
+    bucket.watermark_at = now
+```
+
+| # | Rule |
+|---|---|
+| RF-01 | **Recovery accrues only over the intersection of elapsed time, eligible paid intervals and policy periods.** A lapse contributes zero; an inactive period is simply absent from the window set (`AC-02`, `AC-03`). |
+| RF-02 | **The watermark advances monotonically and is durable** (`AC-12`). Reconnect, restart, another device, another replica or a clock rollback cannot rewind it or refill the bucket. Racing replicas serialise on the row lock. |
+| RF-03 | **The fractional remainder is carried as an exact rational**, not a scaled integer and never a float. Rate changes make the carry's natural denominator vary, and a fixed scale would round at every boundary — turning a rate change into a small permanent gift or loss. |
+| RF-04 | **The ceiling uses the burst in force *now*** (`burst_at(now)`), and counts held capacity: `available <= max(0, burst - held)` (`AC-11`). A burst *reduction* therefore stops accrual immediately and lets existing balance drain; it never claws back what was already earned, and never releases a hold. |
+| RF-05 | **Returned capacity is capped by the same ceiling.** Releasing a hold or issuing a refund must never mint spendable capacity above the burst (`AC-11`). |
+| RF-06 | **Purchased credits never refill** (`AC-11`). No code path adds to a lot except a purchase, a compensation grant or an adjustment. |
+| RF-07 | **Initialisation happens once per contiguous run**, not once per term. `activation_term_id` names the term that opened the current run; a **contiguous** renewal (`TM-03`) leaves it unchanged and does **not** refill to full (`AC-03`), while a term starting after a gap sets it and initialises once, idempotently. |
+| RF-08 | **A configuration activation does not itself move capacity.** It closes one `capacity_policy_period` and opens the next inside the activation transaction (`CA-03`); the next refill for each workspace integrates across the boundary. No bucket is touched at activation, so activation cost is independent of workspace count and **no capacity is reset, released or minted** (`DC-13`). |
+| RF-09 | **A hold outstanding across a rate change is unaffected.** Holds are micro-credit amounts already reserved; only accrual is rate-dependent. |
+| RF-10 | **Restart is invisible.** Nothing is cached in memory: the watermark, the remainder and the policy periods are all durable, so a refill after restart produces exactly the value it would have produced without one. |
 
 ### `entitlement.capacity_reservation` *(new — P2-006)*
 
@@ -495,35 +572,44 @@ Carries the internal metadata sent to the provider (`ID-04`): billing account, w
 - `IX (state, paid_through)` — the state-transition sweeper
 - **Constraint** — `state` is recomputed from `paid_through` plus the grace policy; it is never set directly from a provider webhook field
 
-### `commerce.credit_lot`, `commerce.credit_reservation`, `commerce.credit_transaction`
+### `commerce.credit_lot`, `commerce.credit_transaction`
+
+> **Unified 2026-09-07.** The previous definition carried the pre-P2-006 model: a `subscriptionAllowance` lot class, `money`-typed customer balances, and a `credit_reservation` table keyed on `attempt_id`. All three are superseded. **Included capacity is a bucket, not a lot** (`CD-02`); customer amounts are **integer micro-credits**, not money (`CD-01`, `MT-07`); and reservation is per **logical request**, not per attempt (`§7.3` of the commerce architecture). `commerce.credit_reservation` is **retired**; `entitlement.capacity_reservation` is the single reservation table for both funding pools.
 
 | `credit_lot` field | Type | Notes |
 |---|---|---|
 | `credit_lot_id` | `id` | **PK** |
-| `workspace_id` | `id NN` | |
-| `lot_class` | `enum(subscriptionAllowance, purchased, promotional) NN` | Three classes, three rule sets (`CD-02`) |
-| `original_amount` | `money NN` | Fixed-precision (`BC-06`) |
-| `remaining_amount` | `money NN` | |
-| `expires_at` | `instant?` | |
+| `workspace_id` | `id NN` | `FK →` |
+| `lot_class` | `enum(purchased, compensation) NN` | **Two classes.** `subscriptionAllowance` is retired — that pool is `entitlement.capacity_bucket` |
+| `original_micro` | `int64 NN` | **Integer micro-credits** (`CD-01`). Never `money`, never a float |
+| `remaining_micro` | `int64 NN` | |
+| `held_micro` | `int64 NN` | Sum of live reservations funded from this lot |
+| `expires_at` | `instant?` | **NULL for `purchased`** — purchased credits do not expire with time or cancellation (`CD-03`). Required for `compensation` (`CD-04`) |
 | `refund_hold` | `bool NN` | Freezes the lot during adjudication (`CS-07`) |
-| `source_ref` | `text?` | Order or grant reference |
+| `source_ref` | `text?` | Order or compensation-grant reference |
 | `created_at` | `instant NN` | |
 
-- `IX (workspace_id, refund_hold, expires_at)` — **the consumption-order query**: earliest-expiry-first within class priority (`CD-03`)
-- **Constraint** — `remaining_amount ≥ 0`, enforced by a check constraint. This is what makes "no overdraft" structural rather than procedural (`CS-06`).
+- `IX (workspace_id, lot_class, refund_hold, expires_at, created_at)` — **the funding-order query**: compensation earliest-expiry-first, then purchased oldest-acquisition-first (`CD-05`)
+- **Constraint** — `remaining_micro >= 0` and `held_micro >= 0` and `held_micro <= remaining_micro`. This is what makes "no overdraft" structural (`CR-23`)
+- **Constraint** — `lot_class = 'purchased'` requires `expires_at IS NULL`; `lot_class = 'compensation'` requires `expires_at IS NOT NULL`
+- **Constraint** — a lot is **never** created by a refill; only a purchase, a compensation grant or an adjustment creates one (`RF-06`)
 
-| `credit_reservation` field | Type | Notes |
-|---|---|---|
-| `reservation_id` | `id` | **PK** |
-| `workspace_id`, `attempt_id` | `id NN` | |
-| `amount` | `money NN` | |
-| `state` | `enum(held, settled, released, expired) NN` | |
-| `expires_at` | `instant NN` | Sweeper releases orphans (`CS-04`) |
+`credit_transaction` is the append-only movement log: reserve, settle, release, expire, refund, adjust. Every row names its lot, its `reservation_id` where applicable, its **signed micro-credit amount**, its reason, and the `logical_request_id` it settles where one applies. **No row is ever updated or deleted** (`ST-04`).
 
-- `UQ (attempt_id)` where state is non-terminal — **one live reservation per attempt**, which is what prevents double-charging on retry
-- `IX (state, expires_at)`
+#### The two funding pools, and the one reservation
 
-`credit_transaction` is the append-only movement log: reservation, settlement, release, expiry, refund. Every row names its lot, its reservation where applicable, its signed amount and its reason.
+| Pool | Table | Unit | Recovers | Reserved by |
+|---|---|---|---|---|
+| Included capacity | `entitlement.capacity_bucket` | micro-credits | **Yes** (`§7.2`) | `entitlement.capacity_reservation.from_capacity_micro` |
+| Purchased and compensation | `commerce.credit_lot` | micro-credits | **No** (`RF-06`) | `capacity_reservation.from_compensation_micro` / `from_purchased_micro` |
+
+| # | Rule |
+|---|---|
+| FU-01 | **One reservation row spans both pools.** `entitlement.capacity_reservation` records the split across its three source columns, and settlement moves against exactly those (`ST-05`). Two reservation tables would make a partial settlement possible, which is the defect this unification removes. |
+| FU-02 | **Reservation identity is the logical request**, not the attempt: `UQ (logical_request_id)` where the state is non-terminal. A logical request may make several provider attempts (`MT-02`); they share the one hold and settle once (`ST-01`). |
+| FU-03 | **Supplier accounting is per attempt; customer accounting is per logical request.** `commerce.supplier_cost_entry` has one row per `provider_attempt`; `commerce.customer_settlement` has one row per `logical_ai_request`. **They are never joined as if one-to-one** — a platform-caused retry produces two supplier rows and one customer debit (`ST-07`, `MT-08`). |
+| FU-04 | **A lot's `held_micro` is maintained by the same shared unit of work that maintains the bucket's** (`§6.1.1` of the overview), so the two pools cannot disagree about what is held. |
+| FU-05 | **A refund holds, then zeroes, the lot's remaining amount** (`AI-17`). It never returns micro-credits to the capacity bucket, and never mints capacity above the burst (`RF-05`). |
 
 ### `commerce.ledger_entry`
 
@@ -547,11 +633,19 @@ Three ledgers, one table, discriminated and **never joined across the discrimina
 
 ## 8. `chat`, `task`, `agent`
 
-These hold the **cloud replica** of locally authoritative data (`§4` of the overview), plus genuinely cloud-owned execution state.
+**Cloud commits every row in this schema** (`§4.2` of the overview). Chat and Task are Cloud-authoritative; clients hold read projections plus, for Chat, unsent local drafts.
 
 ### `chat.conversation`, `chat.message`
 
-Mirror the client-side schema (`§2` of [`02-desktop-data-model.md`](02-desktop-data-model.md)) with `workspace_id`, `rev`, sync state and a tombstone flag. **Cloud holds the authoritative acknowledged revision** (`AU-01`); the client copy is a working cache plus pending changes. **Cloud is a replica, not the authority** — a cloud-side edit is impossible; the only writer is the sync engine applying a client change.
+The client schema (`§2` of [`02-desktop-data-model.md`](02-desktop-data-model.md)) mirrors these, not the reverse. **Cloud holds the authoritative acknowledged revision and is its committer** (`AU-01`, `CW-02`); the client copy is a working cache plus unsent drafts.
+
+| # | Rule |
+|---|---|
+| CH-D1 | **Cloud writes these tables directly.** `chat.appendMessage` commits the user message; the Harness commits the assistant message. A Cloud-originated message requires no device and no client change (`CW-03`). |
+| CH-D2 | **`rev` is assigned by Cloud.** A client's `local_rev` is a device-scoped counter for unsent work and never appears here (`CW-01`). |
+| CH-D3 | **Every commit writes its `sync.change` row in the same transaction** (`CW-06`), so a message can never exist without being publishable. |
+| CH-D4 | **An unsent draft is not a row here.** It lives only on the device that composed it (`I-124`), and is therefore never a competing revision. |
+| CH-D5 | **A message is immutable once committed** (`WP-15.00`). An edit creates a new branch; a stream in progress is not a row at all until the turn completes (`§7` of the harness). |
 
 ### `task.task`
 
@@ -853,19 +947,74 @@ The manifest over immutable object-storage segments (`SIM-11`).
 
 The change feed. One row per aggregate revision that entered the cloud replica.
 
+> **Corrected 2026-09-07.** The previous design allocated `change_seq` from a database sequence inside the applying transaction and asserted that this prevented false gaps. **It does not.** Sequence allocation is non-transactional and ordered by *call*, while row visibility is ordered by *commit*. Transaction A may take 100 and stay open while B takes 101 and commits; a reader then serves 101, advances its cursor past 100, and **never sees A's change when A finally commits**. Monotonic allocation is not commit order, and no watermark derived from the sequence alone repairs it.
+
 | Field | Type | Notes |
 |---|---|---|
-| `change_seq` | `bigint` | **PK** — monotonic per workspace, allocated by a sequence |
+| `change_id` | `id` | **PK** — identity only, never a cursor |
 | `workspace_id` | `id NN` | |
 | `aggregate_kind` | `text NN` | |
 | `aggregate_id` | `id NN` | |
 | `aggregate_rev` | `rev NN` | |
 | `change_kind` | `enum(upsert, tombstone) NN` | |
 | `origin_device_id` | `id NN` | So a device can skip its own echo |
-| `occurred_at` | `instant NN` | |
+| `occurred_at` | `instant NN` | Wall clock, for display; **never a cursor** |
+| `publish_seq` | `bigint?` | **NULL until published.** Assigned in commit order by the publisher (`§9.1`) |
+| `published_at` | `instant?` | |
 
-- `IX (workspace_id, change_seq)` — **the only feed query path**, and the cursor is `(workspace_id, change_seq)`
-- **Constraint** — `change_seq` is allocated **inside** the applying transaction, so the feed can never show a gap that is not a real gap
+- `IX (workspace_id, publish_seq)` **WHERE `publish_seq IS NOT NULL`** — the only feed query path
+- `IX (workspace_id, change_id)` **WHERE `publish_seq IS NULL`** — the publisher's claim path
+- **Constraint** — the row is written **in the business transaction** (`CW-06`), so a committed change is always publishable
+- **Constraint** — `UQ (workspace_id, publish_seq)`; `publish_seq` is assigned once and never changed
+
+#### 9.1 Publication — commit order, not allocation order
+
+The cursor is `publish_seq`, and **only the publisher assigns it**. The publisher is a lease-fenced hosted service in the single host (`RT-04` of the cloud architecture), so exactly one assigner is live per workspace shard at a time.
+
+```
+publish(workspace):
+    hold the workspace's publication lease (fenced)             -- RT-04
+    BEGIN
+      SELECT change_id FROM sync.change
+        WHERE workspace_id = ? AND publish_seq IS NULL
+        ORDER BY change_id
+        FOR UPDATE SKIP LOCKED                                  -- only COMMITTED rows are visible
+      assign publish_seq = watermark + 1, 2, 3 ... in that order
+      UPDATE sync.change SET publish_seq = ?, published_at = now()
+      UPDATE sync.publication_watermark SET last_seq = ?
+    COMMIT
+```
+
+| # | Rule |
+|---|---|
+| PB-01 | **Only committed rows are ever visible to the publisher**, because it reads them in a separate transaction. An uncommitted change is simply not there yet, and gets its `publish_seq` on a later pass — **after** the sequence numbers already served, never before. That is the property the old design tried and failed to get from an in-transaction sequence. |
+| PB-02 | **A reader may never see a `publish_seq` lower than one it has already been served.** This is what makes the cursor safe, and it is a consequence of `PB-01` rather than an assertion. |
+| PB-03 | **Assignment is monotonic per workspace** and gapless by construction: the publisher allocates from its own durable watermark inside the same transaction that sets the rows, so a publisher crash rolls back both. |
+| PB-04 | **A rolled-back business transaction leaves no row at all**, so a rollback cannot create a gap. The old design's rollback gap came from the sequence, which this design does not use for the cursor. |
+| PB-05 | **Publication latency is bounded and observable.** Oldest unpublished age is a monitored signal (`§5` of the observability architecture); a stalled publisher is a page-worthy condition, because it stalls every client's feed. |
+| PB-06 | **`change_id` is never a cursor.** It orders the publisher's own claim scan only; it carries no cross-transaction ordering meaning. |
+
+#### 9.2 Cursor, bootstrap and retention
+
+| # | Rule |
+|---|---|
+| CU-01 | **A cursor is `(workspace_id, publish_seq)`** and is opaque to the client (`QP-02`). A client never constructs one. |
+| CU-02 | **Bootstrap is a snapshot plus a cursor taken together.** The server reads the current watermark `W`, then serves the aggregate snapshot as of a transaction that can see everything published up to `W`, and returns the cursor `W`. Anything published after `W` arrives through the feed. **A snapshot without its matching cursor is prohibited**, because the seam between them is exactly where a change is lost. |
+| CU-03 | **A cursor beyond the retention floor is refused with `sync.cursor_expired`**, and the client performs a full resync (`DL-02`). It is never silently clamped, because clamping would skip the changes between the floor and the cursor. |
+| CU-04 | **Retention pruning removes only rows below the floor**, and the floor advances only after the tombstone-retention window (`DL-01`), so a returning device either resyncs fully or sees every tombstone it needs. |
+| CU-05 | **Publication is per workspace**, so one workspace's slow publisher cannot stall another's feed, and a workspace's sequence has no relationship to any other's. |
+| CU-06 | **The feed is at-least-once.** A client may see a `publish_seq` twice after a reconnect and applies it idempotently by `(aggregate_kind, aggregate_id, aggregate_rev)` (`GP-05`). |
+
+### `sync.publication_watermark`
+
+| Field | Type | Notes |
+|---|---|---|
+| `workspace_id` | `id` | **PK** |
+| `last_seq` | `bigint NN` | The highest assigned `publish_seq`; **monotonic** |
+| `updated_at` | `instant NN` | |
+
+- **Constraint** — `last_seq` is non-decreasing, enforced by a checked update predicate
+- **Rule** — the watermark and the row updates commit together, so a crashed publisher leaves neither
 
 ### `sync.tombstone`
 
@@ -947,7 +1096,10 @@ These cannot be foreign keys (`AG-01`, `MD-02`). Each is an application invarian
 | # | Invariant | Enforced at | Detected by |
 |---|---|---|---|
 | CX-01 | Every `entitlement.grant` with `source = purchase` corresponds to a completed `commerce.order` | Commerce's grant issue call | Reconciliation (`WP-42.08`) |
-| CX-02 | Every `commerce.credit_reservation` in `held` belongs to a live `task.attempt` | Reservation creation | The reservation sweeper (`CS-04`) |
+| CX-02 | Every `entitlement.capacity_reservation` in `held` belongs to a live `commerce.logical_ai_request` that has not settled | Reservation creation, in the shared unit of work (`SU-01`) | The reservation sweeper (`CS-04`) |
+| CX-08 | For every workspace, the sum of live `capacity_reservation.from_capacity_micro` equals `capacity_bucket.held_micro`, and the sum of `from_compensation_micro` + `from_purchased_micro` per lot equals that lot's `held_micro` | The shared unit of work (`FU-04`) | Accounting comparison (`WP-42.11`) |
+| CX-09 | Every settled `logical_ai_request` has exactly one non-adjusting `customer_settlement`, and at least one `provider_attempt`; **the counts are not required to match** (`FU-03`) | Settlement, in the shared unit of work | Reconciliation (`WP-43.07`) |
+| CX-10 | Every `sync.change` row with a non-null `publish_seq` has a `publish_seq` less than or equal to its workspace's `publication_watermark.last_seq` | The publisher's transaction (`PB-03`) | Feed integrity check |
 | CX-03 | Every `resource.object_reference` referrer exists in its owning module | Reference creation | Orphan detection (`WP-46.04`) |
 | CX-04 | Every `sync.change` names an aggregate that exists or has a tombstone | The applying transaction | Feed integrity check |
 | CX-05 | Every `task.tool_request` targets a device that exists and is eligible | Request creation | Presence sweeper |

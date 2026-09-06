@@ -139,6 +139,59 @@ A Task can be created from any surface — desktop, Web, Mobile or an automation
 
 ---
 
+### 4.2 Commit authority — who executes the transaction that assigns a revision
+
+The authority map says *where the authoritative copy lives*. It does not by itself say **who commits**, and for Chat that gap was previously filled by two contradictory sentences. This section settles it.
+
+**Cloud is the sole committer of every acknowledged revision of synchronised data.** A client never assigns an authoritative revision. What differs between Chat and Notes is not who commits — it is where a change *originates* and whether it is durably staged before it reaches Cloud.
+
+| | Chat | Notes |
+|---|---|---|
+| Origination | Any client, **or Cloud itself** (an assistant message) | A client only |
+| Staged locally before submission | An unsent draft is local (`I-124`); a submitted message is not re-staged | **Yes** — a durable pending edit survives offline (`PE-01`) |
+| Submitted through | `chat.appendMessage` | `sync.pushChange` |
+| Committer | Cloud | Cloud |
+| Revision assigned by | Cloud | Cloud |
+
+| # | Rule |
+|---|---|
+| CW-01 | **A client never writes an acknowledged revision.** It submits a proposal and receives the revision Cloud assigned. `local_rev` on a client row is a device-scoped counter for pending work; it is **not** the aggregate's revision and never appears in a contract as one. |
+| CW-02 | **Cloud writes Chat directly.** `chat.appendMessage` commits the user message in Cloud; the Harness commits the assistant message in Cloud. **There is no rule that Cloud may only apply a client change** — that statement described a Notes-shaped replica model and was wrong for Chat. |
+| CW-03 | **A Cloud-originated row needs no client.** With every device offline, a Web user's message and the Harness's reply both commit normally; devices discover them through the change feed when they return. |
+| CW-04 | **Notes changes originate on a device and are staged durably before submission** (`PE-01`), which is what makes offline editing safe. Cloud still commits, and the client's pending row clears only on the acknowledgement (`PE-02`). |
+| CW-05 | **One writer per aggregate per transaction.** The module that owns the schema executes the write; no other module and no client writes those tables (`MD-02`, `SU-02`). |
+| CW-06 | **Every commit that changes a synchronised aggregate writes its `sync.change` row in the same transaction** (`§9`), so a change can never be committed and un-publishable. |
+
+#### 4.2.1 Worked path — Web message and Cloud reply with Desktop offline
+
+| # | Step | Committer | Transaction contents | Revision |
+|---|---|---|---|---|
+| 1 | Web calls `chat.appendMessage` | **Cloud — Chat** | `chat.message` (user), its command record, its `sync.change` row | `rev = r1`, assigned by Cloud |
+| 2 | A Task is created (`CH-01`) | **Cloud — Task** | `task.task`; linked to the message by identifier | separate aggregate |
+| 3 | Admission reserves (`§6.1.1`) | Entitlement + Commerce | shared unit of work; commits **before** dispatch (`DB-01`) | — |
+| 4 | Provider streams; deltas are transient (`§7` of the harness) | **nobody** — the stream buffer is not an aggregate | none | none |
+| 5 | Turn completes; the assistant message is committed once | **Cloud — Chat** | `chat.message` (assistant), its `sync.change` row, the task's terminal state | `rev = r2`, assigned by Cloud |
+| 6 | Settlement | Entitlement + Commerce | shared unit of work | — |
+| 7 | Desktop reconnects and pulls from its cursor | — | reads `r1` and `r2` in publication order (`§9`) | — |
+| 8 | Desktop had an unsent draft for the same conversation | Desktop, locally | the draft is local-only and is **not** a competing revision (`I-124`) | none |
+
+**Nothing in this path requires a device.** Step 8 is the only place a device holds state, and a draft is deliberately outside the revision model.
+
+#### 4.2.2 Worked path — offline note edit
+
+| # | Step | Committer | Result |
+|---|---|---|---|
+| 1 | User edits offline | **Device**, into its working store | Durable pending change, `local_rev` advances; **not** an acknowledged revision (`CW-01`, `PE-04`) |
+| 2 | Device reconnects, submits `sync.pushChange` with its `CommandId` | — | — |
+| 3 | Cloud applies it | **Cloud — Notes** | `document`/`block` rows, the command record, and the `sync.change` row, in one transaction (`CW-06`); Cloud assigns `rev` |
+| 4 | Acknowledgement returns the assigned `rev` | — | The pending row clears **only now** (`PE-02`) |
+| 5 | A concurrent change existed | **Cloud — Notes** | Conflict raised with both branches retained; resolution is a **new** Cloud-assigned revision |
+
+| # | Rule |
+|---|---|
+| CW-07 | **`ExpectedRev` on a client write is the last acknowledged Cloud revision the client saw**, never its `local_rev`. That is what makes conflict detection meaningful across devices. |
+| CW-08 | **A conflict is resolved by a new revision, never by a client overwriting one** (`§4` of the sync architecture). |
+
 ## 5. Cross-store relationships
 
 Four store kinds coexist: the local structured store, the Cloud database, object storage, and derived stores. Relationships between them are constrained.
@@ -162,9 +215,49 @@ Four store kinds coexist: the local structured store, the Cloud database, object
 | Scope | Permitted in one transaction |
 |---|---|
 | **Local store** | One aggregate root's state change, its command record, its journal entry, its revision increment, and its sync outbox entry (`§2.1` of the persistence architecture) |
-| **Cloud database** | One module's aggregate change plus its outbox rows plus its idempotency row (`PS-04`) |
-| **Across modules** | **Never.** Module-to-module effect is achieved by outbox → event → inbox |
+| **Cloud database, ordinary case** | One module's aggregate change plus its outbox rows plus its idempotency row (`PS-04`) |
+| **Cloud database, enumerated shared unit of work** | The participants listed in `§6.1.1`, and **only** those |
 | **Across stores** | **Never.** No transaction spans the database and object storage |
+
+**Ordinary module-to-module effect is asynchronous** — outbox → event → inbox — and every consumer is idempotent (`OB-03`).
+
+#### 6.1.1 The shared unit of work — a closed exception
+
+Asynchronous propagation cannot express a decision that must be **all-or-nothing before an irreversible external act**. AI admission is exactly that: it draws on Entitlement's capacity bucket and Commerce's credit lots, and if either half can succeed alone there is an overdraft window in which two concurrent runs each pass a check against the same unreserved funds (`AD-02`). A saga cannot close that window, because the window is between the two writes.
+
+Because Cloud is **one deployable host over one database** (`RT-03` of the cloud architecture), the correct mechanism is a genuine shared transaction with a **closed, enumerated participant list** — not a distributed protocol simulating one.
+
+| # | Rule |
+|---|---|
+| SU-01 | **Only the operations in the table below may open a shared unit of work.** The list is closed; adding to it is an architecture baseline change. |
+| SU-02 | **A participant never touches another module's tables** (`MD-02` of the cloud architecture). Each exposes a **transaction-participating API** that accepts the ambient unit of work and operates on its own tables through its own repository. The rule that survives is *no foreign table access*, which was always the point of the module boundary. |
+| SU-03 | **The participant list is asserted by an architecture test**: exactly these operations, exactly these participants, and no other call site enlists a second module (`WP-05`). |
+| SU-04 | **Lock order is fixed and declared** — Entitlement before Commerce, and within Entitlement the workspace's `capacity_bucket` row first. A fixed order is what makes deadlock structurally impossible rather than retried. |
+| SU-05 | **A shared unit of work is short and contains no I/O.** No provider call, no object-storage write, no network hop occurs inside one. It reserves, it commits, and only then does dispatch begin (`§6.1.2`). |
+| SU-06 | **Every other cross-module effect stays asynchronous.** Purchase → grant remains outbox-driven with its reconciliation repair (`PE-06` of the lifecycles), because money that moved is a fact and the grant can be retried forward. |
+
+| Operation | Participants | Why it cannot be asynchronous |
+|---|---|---|
+| **AI admission** (`§7.3` of the commerce architecture) | Entitlement (`capacity_bucket`, `capacity_reservation`), Commerce (`credit_lot`) | The reservation must exclude concurrent runs before dispatch (`AD-02`) |
+| **AI settlement** (`§7.5` there) | Entitlement (`capacity_bucket`, `capacity_reservation`), Commerce (`credit_lot`, `customer_settlement`) | Debit and release must move against the same sources the reservation held, or a partial settlement leaves funds double-counted (`ST-05`) |
+| **Reservation sweep** (`AI-09` of the lifecycles) | Same as settlement | Releasing a hold must restore the same sources atomically |
+
+#### 6.1.2 The dispatch barrier
+
+Reservation and the external act are **separated by a commit**, so no external effect can occur inside a transaction and no transaction can be held open across a network call.
+
+```
+1. SHARED UNIT OF WORK        reserve + write dispatch intent   -> COMMIT
+2. DISPATCH BARRIER           nothing before this point has touched a provider
+3. EXTERNAL ACT               provider call / device tool / MCP tool
+4. SEPARATE TRANSACTION       record outcome, settle, release
+```
+
+| # | Rule |
+|---|---|
+| DB-01 | **The dispatch intent is written before the barrier**, in the reserving transaction. Its presence with no recorded outcome means **unknown**, never *did not happen* (`§9` of the harness). |
+| DB-02 | **Nothing crosses the barrier inside a transaction.** A held transaction across a provider call would hold row locks for the provider's latency and is prohibited. |
+| DB-03 | **A crash between the barrier and the outcome leaves a reservation and an intent with no outcome.** That state is resolved by reconciliation, not by assuming either result (`§7.6` of the commerce architecture). |
 
 ### 6.2 Idempotency
 
@@ -258,9 +351,11 @@ An index exists because a named query path needs it. The per-entity documents li
 |---|---|
 | QP-01 | **Every index names the query path it serves.** An index with no named path is removed. |
 | QP-02 | **Every list query is paginated with a stable cursor**, and the cursor is opaque and scope-bound (`WP-23.02`). |
-| QP-03 | **Every tenant-scoped table's primary query path leads with the tenant column**, so a query cannot accidentally scan across workspaces. |
+| QP-03 | **Every tenant-scoped table's primary query path leads with the tenant column.** This is a *performance* property: it makes the scoped query cheap. **It is not the isolation mechanism** — isolation is enforced at the data access layer (`MT-03` of the cloud architecture), which is what makes a missing filter a structural impossibility rather than a slow query. |
 | QP-04 | **A query plan is reviewed at scale-corpus size**, not at development size (`CS-07`). |
-| QP-05 | **A soft-deleted row is excluded by the index, not by the caller** — partial indexes on the active state, so a forgotten predicate cannot leak trashed content. |
+| QP-05 | **A partial index does not filter rows.** It contains only rows matching its predicate, so a query *without* that predicate simply does not use it — and returns trashed rows from a sequential scan. Partial indexes on the active state are kept for size and speed, and are **never** claimed as an exclusion guarantee. |
+| QP-06 | **Soft-delete exclusion is enforced where a query cannot bypass it**: every soft-deletable aggregate is reachable from application code **only** through a repository whose read surface applies the state predicate, and the underlying table is not exposed. The negative test asserts that a trashed row is absent from every repository read path, **and** that no application assembly can construct a query against the raw table (`WP-05`). |
+| QP-07 | **The same distinction applies wherever an index is described as a guarantee.** An index is a plan input. A guarantee needs a predicate the caller cannot omit — a repository, a view, or a database-enforced policy — and the mechanism is named at the point the guarantee is made. |
 
 ---
 

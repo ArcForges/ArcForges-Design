@@ -235,8 +235,8 @@ Conflating any two of these is the defect class this section exists to prevent (
 
 | Quantity | Unit | Lives in | Recovers? |
 |---|---|---|---|
-| **Included capacity** | Integer micro-credits | `entitlement.capacity_bucket`, one row per workspace | **Yes** — continuously, during eligible paid service, up to a burst ceiling |
-| **Purchased credits** | Integer micro-credits | `commerce.credit_lot` rows | **No** — conserved; spendable only while a paid term is active |
+| **Included capacity** | Integer micro-credits | `entitlement.capacity_bucket`, one row per workspace; parameters in `entitlement.capacity_policy_period` | **Yes** — continuously, during eligible paid service, up to a burst ceiling |
+| **Purchased credits** | Integer micro-credits | `commerce.credit_lot` rows (`lot_class ∈ {purchased, compensation}`) | **No** — conserved; spendable only while a paid term is active |
 | **Supplier cost** | Fixed-precision decimal money with currency, ≥ 9 fractional digits | `commerce.supplier_cost_entry` | n/a — an obligation ArcForges owes a provider |
 | **Payment revenue** | Sale currency and amount | `commerce.ledger_entry` (payment ledger) | n/a |
 
@@ -249,41 +249,53 @@ Conflating any two of these is the defect class this section exists to prevent (
 | CD-05 | **Consumption order is fixed**: included capacity, then eligible compensation, then purchased credits — and purchased credits only under an explicit extra-usage authorisation (`CR-04`, `AC-06`). |
 | CD-06 | **A reservation preserves its source allocation.** Settlement debits and releases against the same sources it reserved from; there is no silent conversion between pools (`CR-04`, `AC-11`). |
 | CD-07 | **Capacity and purchased credits are presented separately, never summed** (`§8.3` there), because one recovers and the other does not. |
+| CD-08 | **One reservation row spans both pools.** `entitlement.capacity_reservation` records the split across three source columns; there is no separate credit reservation table. Two reservation tables would permit a partial settlement in which one pool moved and the other did not (`FU-01`). |
+| CD-09 | **Reservation identity is the logical request, not the attempt** (`FU-02`). A logical request may make several provider attempts (`MT-02`); they share one hold and settle once (`ST-01`). |
+| CD-10 | **Supplier accounting is per attempt; customer accounting is per logical request** (`FU-03`). The two are never joined one-to-one: a platform-caused retry produces two supplier cost rows and **one** customer debit (`ST-07`). |
 
 ### 7.2 The refill algorithm
 
-This is the part most likely to be got wrong, so it is specified rather than described. It runs on read, under the bucket row's own lock.
+This is the part most likely to be got wrong, so it is specified rather than described. It runs on read, under the bucket row's lock.
+
+> **Corrected 2026-09-07.** An earlier revision multiplied the whole eligible interval by one rate. That is wrong across a configuration change: five seconds at rate 1 then five seconds at rate 10 earns **55**, not 100. Rate and burst now come from **immutable policy history** (`entitlement.capacity_policy_period`), and refill integrates over the intervals actually in force.
 
 ```
 refill(bucket, now):
-    eligible = overlap(bucket.watermark .. now, workspace's eligible paid intervals)
-    if eligible <= 0:                          # lapsed, or clock went backwards
-        bucket.watermark = max(bucket.watermark, now)   # monotonic, never backwards
-        return                                          # AC-02, AC-12
+    LOCK bucket row                              -- racing replicas serialise here
+    if now <= bucket.watermark_at: return        -- clock rollback or already current
 
-    earned_exact  = eligible * rate_per_second + bucket.remainder_micro
-    earned_whole  = floor(earned_exact)
-    bucket.remainder_micro = earned_exact - earned_whole   # fractional carry, AC-12
+    windows = intersect(                         -- SPLIT AT EVERY BOUNDARY
+        [bucket.watermark_at, now),
+        eligible_service_intervals(workspace),   -- union of terms (TM-01)
+        policy_periods(realm, offer))            -- immutable history
 
-    ceiling = max(0, bucket.burst - bucket.held)           # AC-11
-    bucket.available = min(bucket.available + earned_whole, ceiling)
-    bucket.watermark = now
+    earned = bucket.remainder                    -- exact rational carry
+    for w in windows, chronologically:
+        earned += duration_seconds(w) * w.rate_micro_per_second
+
+    whole            = floor(earned)
+    bucket.remainder = earned - whole            -- exact, never a float
+    ceiling          = max(0, burst_at(now) - bucket.held_micro)
+    bucket.available_micro = min(bucket.available_micro + whole, ceiling)
+    bucket.watermark_at    = now
 ```
 
 | # | Rule |
 |---|---|
-| RF-01 | **Recovery accrues only over the overlap with eligible paid intervals** (`AC-02`). A lapse contributes zero; capacity does not accumulate during a gap (`AC-03`). |
-| RF-02 | **The watermark advances monotonically and is durable** (`AC-12`). Reconnect, process restart, another device, another replica or a clock rollback cannot rewind it or refill the bucket. |
-| RF-03 | **The fractional remainder is preserved across evaluations** (`AC-12`). Without it, frequent small requests would round the recovery rate down and slow requests would round it up — either way the contractual rate would not be delivered. |
-| RF-04 | **The ceiling counts held capacity** (`AC-11`): `available ≤ max(0, burst − held)`. This is what stops a large outstanding hold from coexisting with a full bucket and effectively doubling the burst. |
+| RF-01 | **Recovery accrues only over the intersection of elapsed time, eligible paid intervals and policy periods** (`AC-02`). A lapse contributes zero; an inactive stretch is simply absent from the window set (`AC-03`). |
+| RF-02 | **The watermark advances monotonically and is durable** (`AC-12`). Reconnect, restart, another device, another replica or a clock rollback cannot rewind it. Racing replicas serialise on the row lock. |
+| RF-03 | **The fractional remainder is an exact rational**, never a float and never a fixed-scale integer. Rate changes vary the carry's natural denominator, and a fixed scale would round at every boundary — turning each rate change into a small permanent gift or loss. |
+| RF-04 | **The ceiling uses the burst in force now and counts held capacity**: `available ≤ max(0, burst − held)` (`AC-11`). A burst reduction stops accrual immediately and lets the balance drain; it never claws back earned capacity and never releases a hold. |
 | RF-05 | **Returned capacity is capped by the same ceiling.** Releasing a hold or issuing a refund must never mint spendable capacity above the burst (`AC-11`). |
-| RF-06 | **Purchased credits never refill** (`AC-11`). They have their own conservation ledger, and no code path adds to a purchased lot except a purchase, a compensation grant or an explicit adjustment. |
-| RF-07 | **First paid activation initialises the bucket once under an idempotent grant** keyed by the service term (`AC-03`). Contiguous renewal extends the eligible interval and does **not** refill to full. |
-| RF-08 | **A configuration change applies at a recorded boundary** without resetting the watermark, releasing holds or reissuing capacity (`AC-12`, `DC-13`). |
+| RF-06 | **Purchased credits never refill** (`AC-11`). No path adds to a lot except a purchase, a compensation grant or an adjustment. |
+| RF-07 | **Initialisation happens once per contiguous run, not once per term** (`AC-03`). `activation_term_id` names the term that opened the current run; a contiguous renewal leaves it unchanged and does **not** refill to full, while a term starting after a gap initialises once, idempotently. |
+| RF-08 | **Activation moves no capacity.** It closes one policy period and opens the next inside the activation transaction (`CA-03`); each workspace integrates across the boundary on its next refill. Activation cost is therefore independent of workspace count, and no capacity is reset, released or minted (`DC-13`). |
+| RF-09 | **A hold outstanding across a rate change is unaffected.** A hold is micro-credits already reserved; only accrual is rate-dependent. |
+| RF-10 | **Restart is invisible.** Watermark, remainder and policy history are all durable, so a refill after a restart produces exactly the value it would have produced without one. |
 
 ### 7.3 Admission
 
-Admission is one atomic decision, not a sequence of independent checks (`AC-04`).
+Admission is **one atomic decision**, not a sequence of independent checks (`AC-04`) — and because its funds live in two modules it uses the enumerated shared unit of work of `§6.1.1` of the data-model overview, committing **before** any provider call.
 
 ```
 admit(request):
@@ -293,18 +305,25 @@ admit(request):
     bound = conservative ceiling over input, output/reasoning, and
             separately billed tools, from the actual route            # MT-15
     if bound is unpriceable or unbounded:  reject                     # MT-15, DC-05
-    ATOMIC:
-        refill(bucket, now)                                           # §7.2
-        check workspace concurrency, per-request and per-run ceilings  # AC-04
-        check provider budget                                          # AC-04
-        reserve bound from  capacity -> compensation -> purchased      # CD-05
+    SHARED UNIT OF WORK  (Entitlement + Commerce; §6.1.1 of the data-model overview)
+        LOCK capacity_bucket(workspace)                    # fixed lock order, SU-04
+        refill(bucket, now)                                # §7.2
+        check workspace concurrency, per-request and per-run ceilings   # AC-04
+        check provider budget                                           # AC-04
+        reserve bound across capacity -> compensation -> purchased      # CD-05
+          writing capacity_reservation and each lot's held_micro
+        write the dispatch intent                                       # DB-01
+    COMMIT                                                              # <- DISPATCH BARRIER
     if insufficient:  WaitingForCapacity(recovery_time) | ExtraCreditsRequired | Reject
+    -- nothing above this line has touched a provider or any network
 ```
 
 | # | Rule |
 |---|---|
 | AD-01 | **The service-term check precedes everything.** No credit balance, trial flag, operator edit or self-host setting substitutes for it (`§8.7`, `C-03`). |
-| AD-02 | **Admission reserves atomically.** Concurrent runs on one workspace, across devices and replicas, cannot each pass a check against the same unreserved balance (`CR-21`, `AC-04`). |
+| AD-02 | **Admission reserves atomically in one transaction spanning Entitlement and Commerce** — the enumerated shared unit of work (`SU-01` of the data-model overview). Concurrent runs on one workspace, across devices and replicas, cannot each pass a check against the same unreserved balance (`CR-21`, `AC-04`). An asynchronous saga cannot close that window, because the window lies *between* the two writes. |
+| AD-09 | **Nothing crosses the dispatch barrier inside a transaction** (`DB-02` there). The reservation commits first; only then does a provider call begin. Holding a transaction open across provider latency would hold the bucket lock for the provider's response time. |
+| AD-10 | **The dispatch intent is written in the reserving transaction** (`DB-01` there). Its presence with no recorded outcome means **unknown**, never *did not happen* (`§8` of the harness). |
 | AD-03 | **A request whose bound can never fit capacity plus authorised extra credits is rejected immediately** with a smaller-request or budget action — never queued forever (`AC-04`). |
 | AD-04 | **An unbounded or unpriceable route cannot enter paid service** (`MT-15`, `DC-05`). There is no assumed zero-rate category and no wildcard model entry. |
 | AD-05 | **Exhausted capacity waits for a server-calculated recovery time** (`AC-06`). Purchased credits are used only after the user enables extra usage with a maximum budget; there is no automatic purchase, recharge or paid fallback. |
@@ -348,7 +367,7 @@ customer  = cost at the Run's pinned retail tariff snapshot, as micro-credits   
 | ST-02 | **Reservation rounds conservatively upward; settlement rounds the aggregate** (`MT-07`). |
 | ST-03 | **Settlement is idempotent per attempt usage revision and per logical request** (`MT-11`). Duplicate or reordered events never double-debit; genuinely distinct retries remain distinct supplier-cost records. |
 | ST-04 | **A correction is an appended adjustment linked to the original records**, never an edit (`MT-11`, `CR-10`, **D-020**). |
-| ST-05 | **Settlement debits the sources the reservation held** and releases only their unused allocation (`CD-06`, `AC-11`). |
+| ST-05 | **Settlement debits the sources the reservation held** and releases only their unused allocation (`CD-06`, `AC-11`), **in one shared unit of work spanning Entitlement and Commerce** (`SU-01` of the data-model overview). A settlement that moved one pool and failed on the other would leave funds double-counted, which is why it is not two transactions. |
 | ST-06 | **Supplier cost is retained even when the customer is not charged** (`MT-09`). A platform failure releases the customer hold or appends a compensating adjustment; the money ArcForges owes upstream does not disappear. |
 | ST-07 | **Beneficiary classification decides who pays** (`MT-08`). Delivered user-requested inference consumes capacity or authorised credits. Routing, abuse checks, health checks, admitted background indexing and platform-caused retries are **platform cost** — recorded, budgeted, and not charged to the user. |
 | ST-08 | **Money always carries currency** (`MT-16`). V1 supplier budgets compare within one currency; there is no implicit FX conversion. Customer credits are currency-independent service units. |
