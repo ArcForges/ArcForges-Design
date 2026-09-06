@@ -20,7 +20,7 @@ Notation is defined in [`00-data-model-overview.md`](00-data-model-overview.md) 
 | `device` | Devices | `device`, `installation` |
 | `entitlement` | Entitlement | `grant`, `entitlement_snapshot`, `usage_counter`, `service_term`, `capacity_bucket`, `capacity_policy_period`, `capacity_reservation` |
 | `commerce` | Commerce | `billing_account`, `order`, `subscription`, `credit_lot`, `provider_event`, `logical_ai_request`, `provider_attempt`, `attempt_usage`, `supplier_cost_entry`, `customer_settlement` |
-| `chat` | Chat | `conversation` |
+| `chat` | Chat | `conversation`, `message`; plus the **transient** `stream_chunk`/`stream_state` (`§7.1` of the harness) |
 | `task` | Task | `task`, `automation` |
 | `agent` | Agent | `agent_profile`, `model_descriptor`, `tariff_version`, `supplier_price_version` |
 | `sync` | Sync | `sync_scope`, `change` |
@@ -653,6 +653,7 @@ The client schema (`§2` of [`02-desktop-data-model.md`](02-desktop-data-model.m
 | CH-D3 | **Every commit writes its `sync.change` row in the same transaction** (`CW-06`), so a message can never exist without being publishable. |
 | CH-D4 | **An unsent draft is not a row here.** It lives only on the device that composed it (`I-124`), and is therefore never a competing revision. |
 | CH-D5 | **A message is immutable once committed** (`WP-15.00`). An edit creates a new branch; a stream in progress is not a row at all until the turn completes (`§7` of the harness). |
+| CH-D6 | **`chat.stream_chunk` and `chat.stream_state` are transient rows, not aggregates** (`SB-01`). They carry no revision, never appear in `sync.change`, are excluded from backup, and are swept by `expires_at`. They live in the shared database rather than in a replica's memory **because any replica must be able to serve any read** (`SB-04`); that is a deployment consequence of identical replicas, not a storage preference. |
 
 ### `task.task`
 

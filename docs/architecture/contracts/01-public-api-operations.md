@@ -175,7 +175,7 @@ Owned by the **Entitlement** module, independent of Commerce (`EO-01`).
 | `task.cancel` | Request cancellation | `R2` | `IW` | `state.invalid_transition` | `FR` |
 | `task.pause` / `task.resume` | Suspend and continue | `R2` | `IW` | `state.invalid_transition` | `AC` |
 | `task.retryAttempt` | Retry a failed attempt | `R2` | `NI` | `state.invalid_transition` | `FR` |
-| `task.readStream` | In-progress turn output from a byte offset; returns `{ streamId, fromOffset, bytes, nextOffset, state }` | session, read on the task | `Q` | `state.not_found`, `state.gone` | `AO` |
+| `task.readStream` | In-progress turn output from a byte offset; `streamId` optional and resolves the current attempt | session, read on the task | `Q` | `state.not_found` | `AO` |
 | `task.steer` | Adjust a running task — **grants nothing** | `R1` | `AP` | `state.invalid_transition` | `AC` |
 | `approval.list` | Pending approvals | `R1` | `Q` | — | `AO` |
 | `approval.decide` | Approve or reject | risk of the underlying operation; **`localPresence` where the operation requires it** | `IW` | `perm.approval_expired`, `auth.local_presence_required` | `FR` |
@@ -190,6 +190,16 @@ Owned by the **Entitlement** module, independent of Commerce (`EO-01`).
 | TK-03 | **`task.steer` is an append, not an authorization.** It can never escalate (`WP-16.05`). |
 | TK-04 | **`bridge.pullRequests` is the only direction.** There is no cloud-to-device push of work (**D-010**), and no operation in this catalogue lets Cloud initiate one. |
 | TK-05 | **`bridge.submitResult` is idempotent on `(taskId, attemptId)`**, so a lost response is recoverable by re-submission without duplicating the effect (`WP-26.03`). |
+
+---
+
+| # | Rule |
+|---|---|
+| RS-01 | **`task.readStream` returns `{ streamId, fromOffset, bytes, nextOffset, state, retryAfter? }`** with `state ∈ {open, completed, superseded, evicted}` (`§7.1` of the harness). |
+| RS-02 | **`state` is the authority, not the presence of bytes.** An empty result with `state = open` means *not yet*; it is **never** an error and never implies eviction (`SB-05`). |
+| RS-03 | **Any replica serves any read**, because the buffer is in the shared database (`SB-04`). There is no affinity requirement and no sticky routing. |
+| RS-04 | **`evicted` does not imply the turn ended.** A client checks the Task's own state to distinguish *the answer is ready* from *live presentation was lost while work continues* (`SR-07`). |
+| RS-05 | **Polling with `retryAfter` is equivalent to realtime**, and a client with realtime disabled reaches identical output (`SR-02`, `RE-07`). |
 
 ---
 

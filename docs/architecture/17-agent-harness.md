@@ -376,13 +376,16 @@ Resolution is ordered from cheapest and most certain to least, and stops at the 
 
 ### 7.1 Where in-progress output lives
 
+> **Corrected 2026-09-08.** The buffer was specified as living "in Cloud", which is not a location when the deployment is **N identical replicas** (`RT-03` of the cloud architecture). A read arriving at replica B could not see replica A's buffer, and — worse — a miss was indistinguishable from an eviction, so a client would have been told the stream had ended and to read a durable message that did not yet exist.
+
 ```
 provider stream
-   |
+   |                        (the replica holding the turn's lease)
    v
-STREAM BUFFER  (transient, Cloud, per turn)          <- NOT an aggregate, NOT a message
-   |  append-only, byte-offset addressed
-   |  fanned out to every authorised subscriber
+ append to stream_chunk rows in the database, keyed (task_id, stream_id, from_offset)
+   |                        bounded, TTL'd, transient -- NOT an aggregate
+   v
+ any replica can serve a read, because the buffer is in shared storage
    v
 turn completes
    |
@@ -390,31 +393,66 @@ turn completes
 chat.message + message_part  (durable, committed once, Cloud-assigned rev)   <- CW-02
 ```
 
+The smallest mechanism consistent with identical replicas is to put the buffer in the **database the replicas already share**, as short-lived rows — not in process memory, and not in a new service.
+
+### `chat.stream_chunk` *(transient)*
+
+| Field | Type | Notes |
+|---|---|---|
+| `task_id`, `stream_id` | `id NN` | `stream_id` changes on every attempt (`SB-02`) |
+| `from_offset` | `bigint NN` | Byte offset of this chunk's first byte |
+| `bytes` | `bytea NN` | Bounded per chunk |
+| `created_at` | `instant NN` | |
+
+- **PK** `(task_id, stream_id, from_offset)`; `IX (created_at)` for the eviction sweep
+- **Transient by construction**: no revision, never in `sync.change`, never synchronised, and **excluded from backup** (`SB-01`)
+- **Rule** — chunks are append-only within a `stream_id`; a gap in offsets is impossible because each append writes the next contiguous range
+
+### `chat.stream_state`
+
+One row per attempt, so a reader can distinguish *not here yet* from *gone*.
+
+| Field | Type | Notes |
+|---|---|---|
+| `task_id`, `stream_id` | `id NN` | **PK** together |
+| `attempt_id` | `id NN` | Which attempt produced it |
+| `state` | `enum(open, completed, superseded, evicted) NN` | The **authoritative** answer to "is there more?" |
+| `next_offset` | `bigint NN` | The end of what has been written |
+| `current` | `bool NN` | Exactly one `current` row per `task_id` |
+| `expires_at` | `instant NN` | |
+
+- `UQ (task_id)` **where `current`** — the client need not know a `stream_id` to start reading
+- **Rule** — **state transitions are monotonic**: `open → completed | superseded`, then `→ evicted`. A state never moves backwards, so a stale read cannot resurrect a finished stream
+
 | # | Rule |
 |---|---|
-| SB-01 | **The stream buffer is transient presentation state, not an aggregate.** It has no revision, is never synchronised, never appears in `sync.change`, and is not the message (`ST-01`). Losing all of it costs the live view and nothing else. |
-| SB-02 | **It lives in Cloud, keyed by `(taskId, streamId)`**, where `streamId` changes on every attempt so a retried attempt cannot interleave with an abandoned one. |
-| SB-03 | **Content is addressed by byte offset**, monotonically increasing within one `streamId`. Offsets are what make reconnect exact rather than approximate. |
-| SB-04 | **Its lifetime is the turn plus a short bounded tail**, so a client that reconnects seconds later still catches up. After that it is evicted; the durable message is then the only source, and that is sufficient. |
-| SB-05 | **It is bounded.** A stream exceeding its byte ceiling stops being buffered, the turn continues, and clients fall back to the completed message. Presentation degrades; the outcome does not (`ST-01`). |
-| SB-06 | **It is not durable across a host restart.** A client reconnecting after one receives a gap signal and re-reads the task; if the turn completed, it reads the message (`SR-04`). |
+| SB-01 | **The buffer is transient presentation state, not an aggregate.** No revision, never synchronised, never backed up. Losing all of it costs the live view and nothing else. |
+| SB-02 | **`stream_id` changes on every attempt**, so a retried attempt cannot interleave with an abandoned one; the abandoned one becomes `superseded`. |
+| SB-03 | **Content is addressed by byte offset**, monotonically increasing within one `stream_id`. |
+| SB-04 | **Any replica can serve any read**, because both tables are in the shared database. **This is the property the previous design lacked**, and it is why the buffer is not in process memory. |
+| SB-05 | **A read that finds no chunk is never treated as an eviction.** `stream_state` is the authority: `open` with `next_offset` at the caller's position means *not yet — poll again*; `evicted` means *read the durable message*. **Absence of a chunk answers nothing** (`SR-04`). |
+| SB-06 | **Lifetime is the turn plus a short bounded tail**, enforced by `expires_at` and a sweeper. Eviction sets `state = 'evicted'` **before** deleting chunks, so the state row outlives the content and can still answer a late reader. |
+| SB-07 | **It is bounded.** A stream exceeding its byte ceiling stops buffering and sets `state = 'completed'` early with a truncation marker; the turn continues and clients fall back to the completed message. Presentation degrades; the outcome does not (`ST-01`). |
+| SB-08 | **Lease takeover, draining and restart do not lose the stream.** The buffer is not owned by the replica that wrote it. A new lease holder continues appending to the **same** `stream_id` if the attempt survived, or opens a new one and supersedes the old if it did not. |
+| SB-09 | **Writes are bounded and batched.** Chunks are appended at a declared minimum size or interval, so a token-by-token stream does not become a row-per-token write load. |
 
 ### 7.2 How a client reads it
 
 | Operation | Purpose | Auth | Class |
 |---|---|---|---|
-| `task.readStream(taskId, streamId?, fromOffset)` → `{ streamId, fromOffset, bytes, nextOffset, state }` | Read in-progress output from an offset | Read on the task | `Q` |
+| `task.readStream(taskId, streamId?, fromOffset)` → `{ streamId, fromOffset, bytes, nextOffset, state, retryAfter? }` | Read in-progress output from an offset | Read on the task | `Q` |
 
-`state ∈ { open, completed, evicted, superseded }`.
+Omitting `streamId` resolves the **current** attempt, so a reconnecting client needs only the task.
 
 | # | Rule |
 |---|---|
-| SR-01 | **`task.outputAppended` carries `(taskId, streamId, nextOffset)` and no content**, preserving `RE-02`. It is a *hint that more exists*, and it names exactly what to ask for. |
-| SR-02 | **The event is optional.** A client that never receives one reaches the same output by polling `task.readStream` (`RE-07` of the realtime contract). Realtime is an accelerator, never the only path. |
-| SR-03 | **Reconnect is `fromOffset = lastReceived`.** The server returns everything from there, so no delta is lost and none is duplicated in the view. |
-| SR-04 | **`evicted` and `superseded` are answers, not errors.** `evicted` means read the completed message; `superseded` means this attempt was abandoned and the client should discard what it rendered from it and follow the new `streamId`. |
-| SR-05 | **Authorisation is re-checked on every read**, exactly as for any task operation. A buffer is not a permission-free side channel. |
-| SR-06 | **The buffer is never the source of a durable fact.** A client must not persist buffer bytes as a message, and the completed message — not the concatenated stream — is what is stored and synchronised (`ST-01`). |
+| SR-01 | **`task.outputAppended` carries `(taskId, streamId, nextOffset)` and no content**, preserving `RE-02`. It names exactly what to ask for. |
+| SR-02 | **The event is optional.** A client that never receives one reaches identical output by polling (`RE-07`), using `retryAfter` to pace itself. Realtime is an accelerator, never the only path. |
+| SR-03 | **Reconnect is `fromOffset = lastReceived`**, returning everything from there — nothing lost, nothing duplicated in the view. |
+| SR-04 | **The four states are distinct answers, and only `completed` and `evicted` mean "read the message".** `open` means more is coming; `superseded` means discard what was rendered from this attempt and follow the new `streamId`. **A replica miss produces none of these** — it produces `open` with an unchanged `next_offset` (`SB-05`). |
+| SR-05 | **Authorisation is re-checked on every read.** A buffer is not a permission-free side channel. |
+| SR-06 | **The buffer is never the source of a durable fact.** A client must not persist buffer bytes as a message; the completed message — not the concatenated stream — is what is stored and synchronised (`ST-01`). |
+| SR-07 | **A client distinguishes "live presentation unavailable" from "the answer is ready".** `evicted` with a completed Task means read the message; `evicted` with a running Task means presentation was lost while work continues, and the UI says so rather than implying the turn ended. |
 
 ### 7.3 The rules that survive
 

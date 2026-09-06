@@ -90,13 +90,13 @@ Rather than leave a package whose steps cannot run in their stated order, the Ha
 
 **Completion gate.** No crash path resolves an uncertain external effect to *did not happen*, and no non-idempotent capability is retried without a resolution step.
 
-### WP-52.03 — Streaming and the stream buffer
+### WP-52.03 — Streaming across identical replicas
 
-**What must be fully done.** The transient stream buffer of `§7.1`: Cloud-side, keyed by `(taskId, streamId)`, byte-offset addressed, bounded, evicted after a short tail. `task.readStream` with its four states. `task.outputAppended` carrying identifiers only. The committed message written once on completion (`ST-01`).
+**What must be fully done.** The transient buffer of `§7.1` of the harness as `chat.stream_chunk` and `chat.stream_state` rows **in the shared database**, so any replica serves any read (`SB-04`). Monotonic state transitions; exactly one `current` attempt per task; eviction that sets state **before** deleting chunks so a late reader still gets an answer (`SB-06`); bounded, batched appends (`SB-09`); and `task.readStream` with `streamId` optional. The committed message written once on completion (`ST-01`).
 
-**Testing requirements.** Reconnect at an arbitrary offset losing and duplicating nothing; **polling with realtime fully disabled reaching identical output** (`SR-02`); a superseded attempt asserting the client discards the abandoned stream; buffer eviction falling back to the completed message; a bound-exceeded stream continuing the turn while stopping the buffer; an interrupted stream stored as `interrupted`, never complete.
+**Testing requirements.** **A read served by a replica that never wrote the stream**, returning identical bytes (`SB-04`). **A read arriving before any chunk exists, asserting `open` — not `evicted`, not an error** (`SB-05`). Lease takeover mid-stream, asserting the same `stream_id` continues or a new one supersedes, with no silent gap (`SB-08`). A drained replica mid-stream. A restart mid-stream. Eviction with a late reader, asserting the state row still answers after chunks are gone. A superseded attempt, asserting the client discards what it rendered. **Polling with realtime fully disabled reaching byte-identical output** (`SR-02`). An `evicted` state with a still-running Task, asserting the UI reports lost presentation rather than a finished turn (`SR-07`). A bound-exceeded stream continuing the turn. An interrupted stream stored as `interrupted`, never complete.
 
-**Completion gate.** Every surface reaches the same output with realtime disabled, and no buffer byte is ever persisted as a message.
+**Completion gate.** **A read reaching any replica returns correct data**, a miss is never reported as an eviction, takeover and restart lose no output, and every surface reaches identical output with realtime disabled.
 
 ### WP-52.04 — Provider failure and effect certainty
 
@@ -137,7 +137,7 @@ Rather than leave a package whose steps cannot run in their stated order, the Ha
 | Loop-bound, crash-resume, no-progress and conflict-batching results | `WP-52.00` |
 | Context permission, staleness and compaction results | `WP-52.01` |
 | Approval-across-restart, cancellation and uncertain-effect results | `WP-52.02` |
-| Reconnect, realtime-disabled equivalence and buffer-lifecycle results | `WP-52.03` |
+| Cross-replica read, miss-is-not-eviction, takeover, realtime-disabled equivalence and buffer-lifecycle results | `WP-52.03` |
 | Effect-certainty classification and deadline-release results | `WP-52.04` |
 | Full cross-product workflow with every failure variant | `WP-52.05` |
 
@@ -155,7 +155,7 @@ Rather than leave a package whose steps cannot run in their stated order, the Ha
 6. An approval-suspended turn survives restart of either side and resumes with revalidated context.
 7. **No crash or failure path resolves an uncertain external effect to *did not happen***, and no non-idempotent capability is retried without a resolution step.
 8. A capability that can produce an external effect and declares neither idempotency nor a status operation **cannot be registered**.
-9. Every surface reaches identical streamed output **with realtime fully disabled**, and no buffer byte is persisted as a message.
+9. Every surface reaches identical streamed output **with realtime fully disabled**; **a read served by a replica that never wrote the stream returns correct data**; a miss is never reported as an eviction; and no buffer byte is persisted as a message.
 10. The full cross-product workflow passes end to end with every failure variant reaching a stated terminal state.
 
 ---
