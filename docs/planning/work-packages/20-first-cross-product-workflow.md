@@ -40,7 +40,7 @@
 | BR-04 | **The artifact returned to ArcChat is a reference**, never a document body (`WP-14.05`). |
 | BR-05 | **Federated search is permission-aware per source**, and a refused source contributes nothing, including to counts. |
 | BR-06 | **Context passed to a model is bounded and explicit**; a whole workspace is never handed over implicitly. |
-| BR-07 | **A cross-product operation is a Task** under the unified engine, with its own trace, budget and recovery. |
+| BR-07 | **A cross-product operation is a Task of the appropriate kind.** A user-initiated product operation is a **native Product Job** (`WP-16`); an agent-driven one is a **Cloud Agent Task** (`WP-52`). Both have a trace and a recovery story; **only the Agent Task has an AI budget** (`CM-04`, `I-121`). Conflating them would put a product operation under AI metering. |
 | BR-08 | **The workflow must degrade honestly**: with ArcNotes absent, the capability is unavailable with a reason, and ArcChat continues to function. |
 
 ---

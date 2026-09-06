@@ -39,7 +39,7 @@
 | BR-04 | **The colour management backend does not become domain.** The domain holds colour semantic configuration; the backend is infrastructure. |
 | BR-05 | **Video scopes are derived views**, never authority, and are distinct from the ArcScope product. |
 | BR-06 | **A render task binds a project and sequence revision snapshot.** A render never uses half an old timeline and half a new one. |
-| BR-07 | **A render is a Task** under the unified execution engine, owned by ArcSlate. |
+| BR-07 | **A render is a native Product Job owned by ArcSlate**, not a Cloud Agent Task (`RN-03` of the ArcSlate requirements, `CM-04` of the runtime architecture, `I-485`). It invokes no model, consumes no AI capacity, and ArcSlate owns its progress, cancellation and recovery. It shares the Product Job lifecycle of `WP-16`; it does not enter `task.task`. |
 | BR-08 | **Export writes to a temporary target and commits atomically**; a cancelled or failed render never leaves a file that looks complete. |
 | BR-09 | **Proxy render is an explicit, declared choice**, never a silent substitution. |
 | BR-10 | **Media analysis output is derived data**, rebuildable and never authority. |
@@ -90,7 +90,7 @@
 
 ### WP-38.03 — Render execution and atomic export
 
-**What must be fully done.** Render as a Task with progress, pause, resume and cancellation. Output written to a temporary target and committed atomically. A failure or cancellation leaves no file that looks complete. Long renders survive machine sleep and resume where the platform permits.
+**What must be fully done.** Render as a **native Product Job** with progress, pause, resume and cancellation, owned and recovered by ArcSlate (`BR-07`). Output written to a temporary target and committed atomically. A failure or cancellation leaves no file that looks complete. Long renders survive machine sleep and resume where the platform permits.
 
 **Testing requirements.** Cancellation and failure tests asserting no complete-looking partial file; a long-render soak; a sleep-and-resume test; a disk-full test.
 

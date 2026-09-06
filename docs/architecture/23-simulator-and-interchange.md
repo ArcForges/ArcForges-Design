@@ -231,7 +231,18 @@ Source media has its own time base, which is generally neither the sequence rate
 
 ### 3.5 The reference is evidence, not an oracle
 
-ArcVideo and ArcVideoFoundation are `Reference Only` (`§6.2` of the implementation maps), and their time handling is **evaluated, not inherited**. Where their conversion or rounding differs from `§3.2`, ArcForges' rule governs and the difference is recorded in the coverage matrix rather than silently adopted. Inheriting a rounding convention without evaluating it is how a subtle drift becomes a permanent behaviour.
+ArcVideo and ArcVideoFoundation are `Reference Only` (`§6.2` of the implementation maps), and their time handling is **evaluated, not inherited**.
+
+**Evidence, read 2026-09-07 at ArcVideoFoundation `139eeca`.** `src/util/timecodefunctions.cpp` converts through `double` throughout — `time_dbl`, `std::floor(time_dbl)`, `std::llround((time_dbl - total_seconds) * 1000)` — and derives its frame arithmetic from a **rounded** frame rate: `int rounded_frame_rate = std::llround(frame_rate)`, with the drop-frame calculation then running on that value (`std::llround(frame_rate * 600)`, `std::llround(frame_rate * (2.0/30.0))`). `include/arcvideo/foundation/util/rational.h` exposes `fromDouble`, `toDouble` and a `toRationalTime(double framerate)` overload.
+
+| Reference behaviour | ArcForges position |
+|---|---|
+| Positions and conversions pass through `double` | **Rejected for positions.** Canonical positions are integer ticks (`TB-01`); no position path touches floating point |
+| Frame arithmetic derived from `std::llround(frame_rate)` — 29.97 becomes 30 | **Rejected for arithmetic.** Rates are exact rationals, and every supported rate is an exact tick count (`TB-02`) |
+| The same rounded rate drives **drop-frame timecode** | **Adopted for display only.** Drop-frame timecode is *defined* against the nominal integer rate, so rounding there is correct — but it is a **presentation** projection and never a stored position (`TB-04`) |
+| `rational::fromDouble` / `toDouble` as ordinary conversions | **Not used on any position path.** A double round trip is where drift enters |
+
+The distinction matters because the reference is not simply wrong: its timecode rounding is right *for timecode*. What would be wrong is carrying that convention into position storage, which is exactly what `TB-01` prevents. **Inheriting a rounding convention without evaluating where it applies is how a subtle drift becomes permanent behaviour.**
 
 ---
 

@@ -56,6 +56,26 @@ The local half of `TX-01`–`TX-06`.
 - **Constraint** — the journal entry is durable **before** the commit is acknowledged (`WP-07.01`). This is the difference between crash-free and recoverable (`QI-08`).
 - **Truncation** — safe under concurrent read, bounded by snapshot policy
 
+### 1.3a The two revisions a client row carries
+
+`CW-01` of the data-model overview says a client never assigns an authoritative revision, and `CW-07` says `ExpectedRev` on a *Cloud* write is the last acknowledged Cloud revision. A synchronised aggregate on a device therefore carries **two** version values, and conflating them produces either false conflicts or silent clobbering.
+
+| Field | Assigned by | Meaning | Sent to Cloud |
+|---|---|---|---|
+| `acked_rev` | **Cloud** | The last revision Cloud acknowledged for this aggregate | **Yes** — this is `ExpectedRev` on `sync.pushChange` |
+| `local_rev` | **The device** | A device-scoped counter, incremented on every durable local edit; resets to 0 on acknowledgement | **Never** |
+
+Every synchronised aggregate table replaces its single `rev` column with these two.
+
+| # | Rule |
+|---|---|
+| RV-C1 | **`acked_rev` is the only value Cloud ever sees.** A device that sent `local_rev` as `ExpectedRev` would produce a conflict on every second edit, because Cloud has never heard of it. |
+| RV-C2 | **`local_rev > 0` means the row has unacknowledged work**, and is exactly the eviction gate of `PE-02`. It is cheaper and more direct than joining the outbox, and the two must agree — an invariant check asserts they do. |
+| RV-C3 | **A local RPC's `ExpectedRev` is the composite `(acked_rev, local_rev)`**, because a local caller — an agent's device tool, or another product — saw the *local* state, which includes pending edits. Passing only `acked_rev` would let two local callers overwrite each other between acknowledgements. |
+| RV-C4 | **`NO-04`'s "local revision" is `(acked_rev, local_rev)`**, and the operation says so rather than returning a bare number that reads like a Cloud revision. |
+| RV-C5 | **On acknowledgement the device sets `acked_rev` to the value Cloud returned and resets `local_rev` to 0**, in the same transaction that clears the outbox row (`PE-02`). A crash between those steps leaves the outbox row present, and the re-push is idempotent (`SY-02`). |
+| RV-C6 | **A conflict compares `acked_rev`, never `local_rev`.** Two devices conflict when they submitted against the same `acked_rev`; how many local edits each accumulated is irrelevant to that question. |
+
 ### 1.4 `sync_outbox`
 
 | Field | Type | Notes |
@@ -77,7 +97,7 @@ The local half of `TX-01`–`TX-06`.
 | # | Rule |
 |---|---|
 | PE-01 | **Cloud is authoritative for acknowledged revisions of synchronised data** (`§5` of the product scope). The local store holds a **working cache** of what Cloud has acknowledged, plus **durable pending changes** that it has not. |
-| PE-02 | **A row is evictable only if every change to it has been acknowledged.** Eviction is gated on `NOT EXISTS (SELECT 1 FROM sync_outbox WHERE aggregate_id = ? AND state <> 'sent')`, and on the absence of a pending upload or an unreturned tool receipt. |
+| PE-02 | **A row is evictable only if every change to it has been acknowledged.** The gate is `local_rev = 0` (`RV-C2`) **and** no staged upload and no unreturned tool receipt references it. `local_rev` is the primary test because it is on the row itself; the outbox check is the corroborating invariant, and the two must agree. |
 | PE-03 | **Cache pressure, sign-out, account switch, subscription restriction and workspace change never discard an unacknowledged change** (`C-06`). Each of these paths runs the same eviction gate; none has a shortcut. |
 | PE-04 | **A durable local save is never presented as saved to Cloud** (`§3.1` of the product scope). The UI distinguishes *saved on this device* from *acknowledged by Cloud*, and the outbox row is what makes the difference queryable. |
 | PE-05 | **Pending work survives reinstall-level recovery.** The outbox, the journal and staged upload content are in the durable store, not in a cache directory that a cleanup tool may remove. |

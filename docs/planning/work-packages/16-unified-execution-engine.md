@@ -11,9 +11,11 @@
 
 ## 1. Scope and purpose
 
-**In scope.** The task engine: the execution chain and its persistence; lifecycle states and reason facets; failure classification with effect certainty; child tasks; checkpoints and compensation; approval and steering integration; the budget reserve-then-settle interface; progress, outcome and trace; crash recovery; and concurrency control.
+**In scope.** The **native Product Job** engine: the execution chain and its persistence; lifecycle states and reason facets; failure classification with effect certainty; child jobs; checkpoints and compensation; approval and steering integration; the budget reserve-then-settle interface; progress, outcome and trace; crash recovery; and concurrency control.
 
-**Out of scope.** Provider routing and real metering (`43`) — the budget interface exists here, its economics do not. Cloud placement (`26`). Automation triggers (`17`). Workflow blueprints (`41`).
+**Out of scope.** **The Cloud Agent Task and its Harness (`52`)** — a different model with a different owner (`CM-04`). Provider routing and real metering (`43`). Device tool delivery (`26`). Automation triggers (`17`). Workflow blueprints (`41`).
+
+> **What the two models share, and what they do not.** Product Jobs and Agent Tasks share *vocabulary* — lifecycle states, reason facets, effect certainty, checkpointing — because the same failure questions arise in both. They do **not** share an implementation, an owner, a store or a budget: a Product Job is owned by the product that runs it and consumes no AI capacity, while an Agent Task is Cloud-owned and metered (`I-121`, `I-485`). Building one implementation for both is what would put a render under AI metering.
 
 > **Scope amendment, 2026-09-07 (P2-006).** The previous goal said *an agent run, a render, a capture, an import and an automation are the same Task*. Under P2-006 they are **two** models: a **Cloud Agent Task** owned by the Harness, and a **native Product Job** owned by the product that runs it (`CM-04` of the runtime architecture). Conflating them would put a render under AI metering and Cloud recovery, and would put an agent turn under a desktop lifecycle. This package now owns the Product Job; `WP-44` owns the Agent Task. They share vocabulary and failure classification deliberately — not an implementation.
 

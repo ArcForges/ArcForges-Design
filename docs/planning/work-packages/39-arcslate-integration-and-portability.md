@@ -40,7 +40,7 @@
 | BR-04 | **The same asset may resolve to different locations on different devices** and remains one logical asset. |
 | BR-05 | **Offline media is a normal state** and never blocks opening a project. |
 | BR-06 | **AI receives bounded structured context** — sequence structure, markers, selected ranges, metadata — never raw media. |
-| BR-07 | **A render is a Task owned by ArcSlate**, visible in the shared task centre with correct ownership attribution. |
+| BR-07 | **A render is a native Product Job owned by ArcSlate** (`RN-03`, `I-485`), visible in the shared task centre alongside Cloud Agent Tasks with correct ownership attribution. |
 | BR-08 | **Caches, proxies and analysis outputs are never synced as authority**; they are derived and rebuildable. |
 | BR-09 | **Interchange export states its fidelity** and never silently drops timeline structure. |
 
