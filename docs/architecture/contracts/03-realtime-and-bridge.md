@@ -28,6 +28,10 @@ Every event carries `{ subscriptionKey, seq, workspaceId, occurredAt, correlatio
 | `notification.raised` | `notificationId`, `durability` | Show; a durable one is also in `notification.list` |
 | `policy.bundleAvailable` | `bundleVersion` | Fetch and validate the bundle |
 | `resource.committed` | `cloudObjectId`, `contentHash` | A pending upload finished |
+| `capacity.changed` | `workspaceId`, `recoveryAt?` | Re-read `entitlement.getCapacity`; **never used as the balance itself** |
+| `serviceTerm.changed` | `workspaceId` | Re-read `entitlement.getServiceTerm` — a term ended, renewed or entered grace |
+| `simulation.stateChanged` | `runId`, `state`, `committedSequence` | Refresh the run; **fetch segments by manifest**, never from this event (`SO-04`) |
+| `config.revisionActivated` | `configRevisionId` | Re-read the allowlisted client projection (`DC-14`)
 
 | # | Rule |
 |---|---|
@@ -37,6 +41,9 @@ Every event carries `{ subscriptionKey, seq, workspaceId, occurredAt, correlatio
 | RE-04 | **`approval.raised` is a hint over durable state.** Missing it never loses a pending approval (`PD-02`). |
 | RE-05 | **`bridge.requestAvailable` carries a count, not content** — the desktop pulls, which keeps **D-010** true even in the notification. |
 | RE-06 | **A missed event is always recoverable by re-reading**, and every event above names what to re-read. |
+| RE-07 | **Realtime is optional, and its absence is a complete-fallback case, not a degraded one.** Every event above has a polling or cursor equivalent on the HTTP surface, and a client with realtime permanently disabled reaches the same state — later, not less completely (`SO-05`, `SIM-13`). |
+| RE-08 | **No commercial decision is ever taken from an event.** `capacity.changed` and `serviceTerm.changed` are refresh hints; admission is server-side and atomic (`AD-01`, `EC-02`). A client that admitted work because an event said capacity was available would be wrong under concurrency. |
+| RE-09 | **Bulk data never flows over realtime** (`SO-04`): no simulator segment, object body, message body or document content. |
 
 ---
 
@@ -48,10 +55,10 @@ subscribe(subscriptionKey) → { accepted, startSeq } | refused(reason)
 
 | Subscription key | Scope | Permission |
 |---|---|---|
-| `workspace:{id}` | Sync, entitlement, notification, policy for one workspace | Membership |
+| `workspace:{id}` | Sync, entitlement, capacity, service term, notification, policy, simulation for one workspace | **Ownership** (`WO-02`) |
 | `task:{id}` | One task's state, progress and output | Read on the task |
 | `device:{id}` | Presence and bridge availability for one device | The device's own session |
-| `approval:{workspaceId}` | Approvals awaiting this user | Membership |
+| `approval:{workspaceId}` | Approvals awaiting this user | **Ownership** (`WO-02`) |
 
 | # | Rule |
 |---|---|

@@ -70,9 +70,22 @@ Owned by the **Entitlement** module, independent of Commerce (`EO-01`).
 | Operation | Purpose | Auth | Class | Key errors | Compat |
 |---|---|---|---|---|---|
 | `entitlement.getSnapshot` | Effective entitlement with per-capability reasons and its version | `R1` | `Q` | — | `AO` |
+| `entitlement.getServiceTerm` | The effective paid service term: kind, interval, grace end, and whether AI is admissible **now** | `R1` | `Q` | — | `AO` |
+| `entitlement.getCapacity` | Included capacity: available, held, burst, recovery rate, and a server-calculated `recoveryAt` | `R1` | `Q` | — | `AO` |
 | `entitlement.listGrants` | Grant history with sources | `R1` | `Q` | — | `AO` |
 | `entitlement.getUsage` | Quota, usage and period boundary | `R1` | `Q` | — | `AO` |
 | `entitlement.check` | Batch capability check, for a client about to offer an action | `R1` | `Q` | — | `AO` |
+| `commerce.authoriseExtraUsage` | Opt in to spending purchased credits, **with a maximum budget** | `R2`, step-up per policy | `IW` | `entitlement.no_service_term` | `FR` |
+| `commerce.revokeExtraUsage` | Withdraw that authorisation | `R2` | `IW` | `state.not_found` | `FR` |
+| `commerce.explainCharge` | Why a request waited, stopped or charged, and which pool funded it | `R1` | `Q` | `state.not_found` | `AO` |
+
+| # | Rule |
+|---|---|
+| EC-01 | **`entitlement.getServiceTerm` and `entitlement.getCapacity` are separate operations** because they answer different questions and change on different schedules (`I-493`). A client must not infer one from the other. |
+| EC-02 | **A client never computes admission.** These operations exist to explain and to enable affordances; the decision is server-side and atomic (`AD-01`, `AD-02`). |
+| EC-03 | **`recoveryAt` is server-calculated** (`AC-06`). A client never derives it from a rate and a clock. |
+| EC-04 | **`commerce.explainCharge` satisfies `AC-10`**: capacity consumption, purchased-credit consumption, compensation, supplier cost and revenue remain separately queryable, and a user can see which pool funded a request. |
+| EC-05 | **No operation accepts a provider key, a model endpoint or a customer credential** (`BY-01`–`BY-04`), asserted as a contract policy test.
 
 | # | Rule |
 |---|---|
@@ -158,7 +171,7 @@ Owned by the **Entitlement** module, independent of Commerce (`EO-01`).
 |---|---|---|---|---|---|
 | `task.list` | Tasks across products with state and reason | `R1` | `Q` | — | `AO` |
 | `task.get` | One task with its runs, steps and attempts | `R1` | `Q` | `state.not_found` | `AO` |
-| `task.create` | Create a task with an explicit placement | `R2`+ (the invoked capability's risk) | `CC` | `entitlement.credits_exhausted`, `perm.approval_required` | `FR` |
+| `task.create` | Create a Cloud task; each Step declares its tool locality (`TO-02`) | `R2`+ (the invoked capability's risk) | `CC` | `entitlement.credits_exhausted`, `perm.approval_required` | `FR` |
 | `task.cancel` | Request cancellation | `R2` | `IW` | `state.invalid_transition` | `FR` |
 | `task.pause` / `task.resume` | Suspend and continue | `R2` | `IW` | `state.invalid_transition` | `AC` |
 | `task.retryAttempt` | Retry a failed attempt | `R2` | `NI` | `state.invalid_transition` | `FR` |
@@ -222,6 +235,38 @@ Owned by the **Entitlement** module, independent of Commerce (`EO-01`).
 
 ---
 
+## 9.1 ArcScope Cloud simulator
+
+`SIM-01`–`SIM-20`. The simulator is a **product job**, so these operations are entitlement-gated on the service term and product-resource quota, **never on AI credits** (`SIM-17`).
+
+| Operation | Purpose | Auth | Class | Key errors | Compat |
+|---|---|---|---|---|---|
+| `simulation.listDefinitions` | The workspace's scenario definitions | `R1` | `Q` | — | `AO` |
+| `simulation.getDefinition` | One definition with its versions | `R1` | `Q` | `state.not_found` | `AO` |
+| `simulation.createDefinition` | Create a definition | `R2` | `CC` | `validation.failed` | `FR` |
+| `simulation.publishScenarioVersion` | Freeze an **immutable** version; validates the channel schema, AST bounds and CSV reference | `R2` | `CC` | `validation.failed`, `validation.ast_bounds_exceeded` | `FR` |
+| `simulation.startRun` | Start a run against a scenario version, seed and execution profile | `R2` | `CC` | `entitlement.no_service_term`, `entitlement.quota_exceeded`, `capacity.rate_limited` | `FR` |
+| `simulation.pauseRun` / `simulation.resumeRun` | Pause and resume at a durable boundary | `R2` | `IW` | `state.invalid_transition` | `FR` |
+| `simulation.cancelRun` | Cancel; commits a **partial** outcome | `R2` | `IW` | `state.invalid_transition` | `FR` |
+| `simulation.getRun` | State, terminal reason and **complete-or-partial extent** | `R1` | `Q` | `state.not_found` | `AO` |
+| `simulation.listSegments` | The authorised manifest: sequence, logical range, count, encoding, byte length, hash | `R1` | `Q` | `state.not_found` | `AO` |
+| `simulation.getSegmentTicket` | A short-lived, resumable, range-capable download authorisation for one segment | `R1` | `NI` | `perm.capability_denied`, `state.gone` | `FR` |
+| `simulation.pollState` | Revision- or cursor-based state and event polling | `R1` | `Q` | — | `AO` |
+
+| # | Rule |
+|---|---|
+| SO-01 | **Start, pause, resume and cancel are durable, authorised, idempotent commands carrying expected state and revision** (`SIM-09`). A stale command is refused; a duplicate start creates no second run and cannot resurrect a terminal run. |
+| SO-02 | **`simulation.getRun` distinguishes complete from partial** (`SIM-08`). A cancelled run reports `canceled` with its committed extent — never `succeeded` for an incomplete range. |
+| SO-03 | **The manifest is the authority; the object is not.** `listSegments` returns only committed rows, and an incomplete object is invisible (`SIM-11`). |
+| SO-04 | **Bulk data never flows over realtime.** Segments are fetched by HTTP or object storage with a hash the client verifies; SignalR is an optional wakeup or preview hint (`SIM-13`). |
+| SO-05 | **Disabling realtime entirely must not reduce access to retained committed data** (`SIM-13`). `pollState` plus `listSegments` is a complete authoritative fallback, and this is verified rather than assumed. |
+| SO-06 | **A scenario cannot fetch a URL, read a host file or cross a workspace boundary** (`SIM-18`). CSV replay reads an explicitly uploaded, workspace-owned resource identified by content hash. |
+| SO-07 | **An exported scenario contains no deployment secret or policy value** (`SIM-18`). |
+| SO-08 | **Term expiry or suspension stops generation at a durable boundary** as `canceled` with the explicit eligibility reason; committed output then follows retained-data access rules (`SIM-17`). |
+| SO-09 | **Unauthorised or impossible requests fail before any side effect** (`SIM-16`) — before a lease, before an object, before a quota debit. |
+
+---
+
 ## 10. What is deliberately absent
 
 | Absent | Why |
@@ -234,6 +279,12 @@ Owned by the **Entitlement** module, independent of Commerce (`EO-01`).
 | A public share-link operation | No public share links in V1 (`CS-07` of the web architecture) |
 | A cross-workspace query | `MT-03` — operator paths are separate and audited |
 | A bulk-delete-everything operation | Destructive scope is explicit and bounded per operation |
+| Any membership, invitation, role or seat operation | **P2-006** — workspaces are single-owner (`WO-01`–`WO-05`); no collaboration-only surface exists |
+| Any operation accepting a customer provider key, model endpoint or credential | **P2-006** — no end-user BYOK in any form (`BY-01`–`BY-04`, `EC-05`) |
+| Any operation delegating work to an external agent, agent team or sub-agent | **P2-006** — excluded (`EA-01`–`EA-08`); an integration contributes tools, never a planner |
+| An operation that admits AI on credit balance alone | **P2-006** — an active paid service term is the gate (`AD-01`, `entitlement.no_service_term`) |
+| A client-side operation that computes admission, capacity recovery or a charge | Admission is server-side and atomic (`EC-02`, `EC-03`) |
+| An unauthenticated configuration upload or reload endpoint | `DC-11` — emergency reload is operator-triggered and authenticated |
 
 ---
 

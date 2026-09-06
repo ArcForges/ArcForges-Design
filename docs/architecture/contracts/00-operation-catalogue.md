@@ -45,7 +45,7 @@ Every mutating request carries, in addition to its own payload:
 | `commandId` | `id` | Idempotency anchor |
 | `expectedRev` | `rev?` | Optimistic concurrency; absent for non-versioned operations |
 | `correlationId` | `id` | Propagated across every hop (`CR-01`) |
-| `workspaceId` | `id?` | Required for workspace-scoped operations; validated against the caller's membership |
+| `workspaceId` | `id?` | Required for workspace-scoped operations; validated against **`workspace.owner_user_id`** (`WO-02`). There is no membership lookup |
 
 ### 2.2 The response envelope
 
@@ -81,9 +81,12 @@ Every operation's failures map into these. An operation may not invent a conditi
 | `perm.approval_required` | Awaiting a human decision | No — approval flow | Did not happen |
 | `perm.approval_expired` | The approval window elapsed | No — re-request | Did not happen |
 | `perm.lease_expired` | A delegated capability lease ended | No | Did not happen |
+| `entitlement.no_service_term` | **No active paid service term.** Returned before any capacity or credit evaluation (`AD-01`, `C-03`) | No — subscribe, or activate a Cloud Pass. A credit balance does not resolve it | Did not happen |
 | `entitlement.not_entitled` | No grant covers this capability | No — purchase or grant | Did not happen |
 | `entitlement.quota_exceeded` | Quota limit reached | Yes, after the period boundary | Did not happen |
-| `entitlement.credits_exhausted` | Balance is zero — a **hard stop** | No — purchase or BYOK | Did not happen |
+| `entitlement.capacity_exhausted` | Included capacity is spent | **Yes, after `recoveryAt`** — the response carries a server-calculated time (`AD-05`) | Did not happen |
+| `entitlement.extra_credits_required` | Capacity is spent and purchased credits exist, but extra usage is not authorised | No — the user must opt in with a maximum budget (`AC-06`) | Did not happen |
+| `entitlement.credits_exhausted` | Authorised extra credits are also spent — a **hard stop** | No — purchase, or wait for capacity recovery | Did not happen |
 | `validation.invalid_request` | Failed boundary validation | No | Did not happen |
 | `validation.unsupported_version` | Contract version outside the window | No | Did not happen |
 | `conflict.revision_mismatch` | `expectedRev` did not match | Yes, after re-reading | Did not happen |

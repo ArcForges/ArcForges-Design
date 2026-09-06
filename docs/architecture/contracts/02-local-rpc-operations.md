@@ -179,6 +179,9 @@ These are the domain operations each product exposes as capabilities. They are t
 | NO-01 | **`ApplyBlockEditsAsync` takes a typed edit list**, not a document body. A whole-document replace is not offered, because it would destroy concurrent edits and defeat per-block sync. |
 | NO-02 | **Every write carries `ExpectedRev` and returns the new revision**, so an agent chaining edits cannot silently clobber a user's concurrent change. |
 | NO-03 | **`CreateDocumentAsync` takes a caller-allocated `DocumentId`**, which makes it idempotent under retry (`ID-04`). |
+| NO-04 | **A write returns the *local* revision and enqueues a `sync_outbox` row; it does not return a Cloud acknowledgement** (`PE-04`). The caller learns that the edit is durable on this device, which is a different fact from acknowledged by Cloud. |
+| NO-05 | **`SearchAsync` searches the hydrated local cache.** Cloud search over the whole workspace is `search.query` on the public surface; the two are separate operations with different completeness, and neither is presented as the other. |
+| NO-06 | **`SetPropertiesAsync` accepts only declared property definitions with bounded scalar types** (`§2.1` of the editing architecture). There is no formula, relation or rollup evaluation, so no expression reaches this path. |
 
 ### `IScopeOperations` — ArcScope
 
@@ -214,12 +217,24 @@ These are the domain operations each product exposes as capabilities. They are t
 | `CancelRenderAsync(RenderRequestId)` | `R2`, none | `IW` |
 | `ExportAsync(ExportRequest)` → `ArtifactRef` | `R2`, `perOperation`; `egress = declared` | `NI` |
 | `GetSequenceContextAsync(ContextRequest)` → `SequenceContextReference` | `R1`, none | `Q` |
+| `ImportOtioAsync(OtioImportRequest)` → `OtioImportResult` | `R2`, `perOperation`; `egress = none` | `NI` |
+| `PreviewOtioImportAsync(OtioImportRequest)` → `OtioFidelityReport` | `R1`, none | `Q` |
+| `ExportOtioAsync(SequenceId, CommittedRev, OtioExportRequest)` → `ArtifactRef` + `OtioFidelityReport` | `R2`, `perOperation`; `egress = declared` | `NI` |
+| `RelinkMediaAsync(SequenceId, MediaRelink[])` → `Revision` | `R2`, none | `IW` |
 
 | # | Rule |
 |---|---|
 | SL-01 | **The capability contract was frozen only after timeline, command and undo semantics stabilised** (`I2 §III.10`, `WP-39.00`). This interface does not exist before `WP-39`. |
 | SL-02 | **`GetSequenceContextAsync` returns structure, markers, ranges, timecodes and metadata — never media** (`WP-39.01`). |
 | SL-03 | **`StartRenderAsync` binds a revision snapshot** and returns a `TaskRef`; the render never reads live editor state (`RN-04`). |
+| SL-04 | **`StartRenderAsync` produces a native Product Job, not a Cloud Agent Task** (`I-485`, `CM-04` of the runtime architecture). It invokes no model, consumes no AI capacity, and ArcSlate owns its progress and recovery. |
+| SL-05 | **OTIO import is staged before commit** (`OT-09`). `PreviewOtioImportAsync` returns the fidelity report without mutating the project, so the user reviews retained, approximated and omitted dispositions **before** anything changes (`OT-07`). |
+| SL-06 | **Import creates ArcSlate-owned canonical objects with provenance; OTIO is never the mutable working store** (`OT-04`, `I-497`). |
+| SL-07 | **Export binds a committed sequence revision** and writes a **separate artifact** carrying the support profile and fidelity information (`OT-04`). It cannot export live editor state. |
+| SL-08 | **Export writes a temporary destination and publishes atomically** (`OT-10`). Failure or cancellation leaves both the project and any existing destination untouched; overwrite requires explicit approval. |
+| SL-09 | **A `.otio` file references media; it never collects, uploads or embeds it** (`OT-08`). Relative paths resolve only under an explicitly approved base; missing media becomes relinkable Offline Media, which is what `RelinkMediaAsync` addresses. |
+| SL-10 | **Parsing is bounded and adapter-free** (`OT-09`): bounded size, depth and item count; malformed or unsupported schema rejected; **no arbitrary adapters, no Python plug-ins, no executable content**. Native OTIO use stays behind an owned narrow C ABI and the untrusted-content boundary. |
+| SL-11 | **A fidelity report excludes unselected absolute paths and secrets** (`OT-10`). |
 
 ### `IChatOperations` — ArcChat
 
@@ -234,8 +249,10 @@ These are the domain operations each product exposes as capabilities. They are t
 
 | # | Rule |
 |---|---|
-| CH-01 | **`StartAgentTurnAsync` returns a `TaskRef` immediately.** Generation is durable execution, not a long synchronous call (`§3` of the harness architecture). |
+| CH-01 | **`StartAgentTurnAsync` submits the turn to Cloud and returns a `TaskRef` immediately.** It does **not** start a local loop: the Harness is Cloud-only (`LS-02` of the harness). Generation is durable Cloud execution. |
 | CH-02 | **ArcChat exposes no operation that writes another product's state.** It invokes their capabilities (`BR-01` of `WP-20`). |
+| CH-03 | **A turn submitted with no active paid service term is refused with `entitlement.no_service_term`** before any provider call (`AD-01`). The desktop surfaces the reason and the action; it never retries into a paid path on its own. |
+| CH-04 | **Only acknowledged content is submitted as context.** An unsent draft or an unacknowledged local edit is visible to the user, not to the model (`PK-04` of the harness, `I-124`, `I-498`). |
 
 ---
 
@@ -251,6 +268,12 @@ These are the domain operations each product exposes as capabilities. They are t
 | Any operation that writes raw capture | `SO-04` |
 | A device-control operation | `SO-03` |
 | A relay operation on the Hub | `RT-02` — the Hub carries no body |
+| Any local model, embedding or inference operation | **P2-006** — all inference is Cloud (`C-02`, `CM-02`) |
+| Any operation accepting or storing a provider key | **P2-006** — no end-user BYOK (`BY-01`–`BY-04`) |
+| Any local planning, tool-selection or turn-loop operation | The Harness is Cloud-only (`LS-02`). The desktop executes authorised tools; it does not choose them |
+| Any operation delegating to an external agent or sub-agent | **P2-006** (`EA-01`–`EA-08`) |
+| A canvas, whiteboard, frame, slide or presentation operation | **P2-006** — excluded from ArcNotes delivery |
+| A DOCX, formula, relation or rollup operation | **P2-006** — excluded; import is Markdown/text (`§2.1` of the editing architecture) |
 
 ---
 
