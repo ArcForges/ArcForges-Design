@@ -44,7 +44,7 @@ The number is an identity, not a schedule. Ordering is by dependency; parallelis
 | 14 | [ArcChat Hub and minimal ArcNotes cross-process slice](14-hub-and-minimal-provider-slice.md) | 08, 09, 10, 11, 13 |
 | 15 | [ArcChat conversation and project core](15-arcchat-conversation-core.md) | 14 |
 | 16 | [Unified execution engine](16-unified-execution-engine.md) | 09, 11, 14 |
-| 17 | [ArcChat independent core V1A](17-arcchat-independent-core.md) | 15, 16 |
+| 17 | [ArcChat independent core V1A](17-arcchat-independent-core.md) | 06, 15, 16 |
 
 ### Phase D — ArcNotes core
 
