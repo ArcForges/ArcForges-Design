@@ -49,14 +49,14 @@
 
 | Location | Change |
 |---|---|
-| `src/ArcChat/ArcChat.Agent/` | The agent runtime, plan construction, capability selection and steering |
+| `src/ArcChat/ArcChat.Agent/` | The agent runtime, the turn loop and batching, plan construction, capability selection, compaction and steering |
 | `src/ArcChat/ArcChat.Application/` | Task centre, automation, permission and approval services |
 | `src/ArcChat/ArcChat.LocalTools/` | First-party local capabilities ArcChat itself owns |
 | `src/ArcChat/ArcChat.Presentation/`, `.Desktop/` | Task centre, capability hub, security centre, automation and handoff surfaces |
 | `src/ArcChat/ArcChat.Infrastructure/` | Provider adapters with a local BYOK secret path through the broker |
 | `tests/ArcChat.Tests.Integration/` | Agent, automation, approval, recovery and handoff suites |
 
-**Major types introduced.** `CapabilityHub`, `AgentSession`, `PlanBuilder`, `TaskCentreView`, `AutomationDefinition`, `AutomationTrigger`, `AutomationRun`, `PermissionGrantView`, `SecurityCentre`, `HandoffRequest`, `PreviewDescriptor`, `ProviderAdapter`.
+**Major types introduced.** `CapabilityHub`, `AgentSession`, `PlanBuilder`, `TaskCentreView`, `AutomationDefinition`, `AutomationTrigger`, `AutomationRun`, `TurnLoop`, `ToolCallBatch`, `ConflictSet`, `CompactionRecord`, `PermissionGrantView`, `SecurityCentre`, `HandoffRequest`, `PreviewDescriptor`, `ProviderAdapter`.
 
 ---
 
@@ -126,13 +126,29 @@
 
 **Completion gate.** Every V1B item is enumerated with a named closing package, and nothing incomplete is presented as complete.
 
+### WP-17.08 — The turn loop, batching and bounds
+
+**What must be fully done.** The harness turn loop of [`../../architecture/17-agent-harness.md`](../../architecture/17-agent-harness.md): durable iteration, response classification, continuation decisions, every loop bound, progress detection, batching of parallel tool calls with declared conflict sets, and the concurrency ceiling. Every bound ends a turn with a stated reason. An undeclared conflict set is treated as exclusive.
+
+**Testing requirements.** A crash-injection suite resuming from each loop point with no duplicate effect; a bounds suite proving no unbounded loop is reachable; a repetition test proving no-progress termination; a conflict suite proving two writes to one target never run in parallel while two independent reads do; a partial-failure test proving a failing call returns its siblings' real results.
+
+**Completion gate.** No unbounded loop is reachable, every bound ends the turn with a stated reason, and parallel batching never violates a declared conflict.
+
+### WP-17.09 — History compaction
+
+**What must be fully done.** `CompactionRecord` as a derived store: produced by a metered model call, keyed to branch and span, never mutating a stored message, never promoted to personal memory. The verbatim tail, retained opening intent, call-and-result atomicity, and retention of approvals, refusals and user corrections. Disclosure in the interface with expansion to the underlying messages. Degradation to disclosed hard truncation on compaction failure. Temporary Chat compacts in memory only.
+
+**Testing requirements.** A long-conversation suite proving the stored branch is byte-identical before and after compaction; a rebuild test proving records are reconstructible and losing them costs no content; a branch test proving a record never covers messages outside its branch; an atomicity test proving a tool call and its result are never separated; a decision-retention test proving a refused proposal is not re-proposed after compaction; a Temporary Chat test proving no record is persisted.
+
+**Completion gate.** Compaction reduces what is sent without altering what is stored, is disclosed and expandable, and no compacted span loses an approval, a refusal or a user correction.
+
 ---
 
 ## 6. Impacts
 
 | Dimension | Impact |
 |---|---|
-| Database | Automation definitions, grants, task state and provider configuration |
+| Database | Automation definitions, grants, task state, provider configuration and the `CompactionRecord` derived store |
 | Protocol | ArcChat's own capabilities and the handoff contract |
 | UI | Task centre, capability hub, security centre, automation and preview surfaces |
 | Security | Permission and approval become user-visible and user-controllable |
@@ -154,6 +170,8 @@
 | Use-without-reveal and adapter-substitution results | `WP-17.05` |
 | Handoff, startup budget and recovery results | `WP-17.06` |
 | V1B enumeration completeness check | `WP-17.07` |
+| Loop-bound, crash-resume, no-progress and conflict-batching results | `WP-17.08` |
+| Compaction immutability, rebuild, atomicity and decision-retention results | `WP-17.09` |
 
 ---
 
@@ -169,6 +187,8 @@
 6. A local BYOK secret is used without being revealed; the managed provider path is visibly stubbed.
 7. Handoff works with the target both running and not running; startup meets budget; recovery is clean.
 8. **Every V1B ecosystem item is enumerated with a named closing package**, and nothing incomplete is presented as complete.
+9. No unbounded agent loop is reachable; every loop bound ends the turn with a stated reason; parallel tool batching never violates a declared conflict.
+10. **Compaction reduces what is sent without altering what is stored**, is disclosed and expandable, and never loses an approval, a refusal or a user correction.
 
 ---
 
