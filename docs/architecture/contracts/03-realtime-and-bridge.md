@@ -19,7 +19,7 @@ Every event carries `{ subscriptionKey, seq, workspaceId, occurredAt, correlatio
 | `sync.conflictRaised` | `aggregateKind`, `aggregateId` | Surface it; fetch through `sync.listConflicts` |
 | `task.stateChanged` | `taskId`, `state`, `reasonFacet`, `rev` | Refresh the task if displayed |
 | `task.progress` | `taskId`, `runId`, `progress`, `stepOrdinal` | **Best-effort display only** — never persisted as outcome |
-| `task.outputAppended` | `taskId`, `messageId`, `partOrdinal` | Fetch the part; used for streaming assembly |
+| `task.outputAppended` | `taskId`, `streamId`, `nextOffset` | **A hint that more output exists.** Read it with `task.readStream(taskId, streamId, fromOffset)` (`§7.2` of the harness). **Carries no content** (`RE-02`), and is optional — polling reaches the same output (`SR-02`) |
 | `approval.raised` | `approvalId`, `taskId`, `riskLevel`, `expiresAt` | Show it; **also durable**, so a missed event loses nothing |
 | `approval.resolved` | `approvalId`, `decision` | Dismiss the prompt |
 | `entitlement.changed` | `entitlementVersion` | Re-read `entitlement.getSnapshot` |

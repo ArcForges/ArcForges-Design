@@ -175,6 +175,7 @@ Owned by the **Entitlement** module, independent of Commerce (`EO-01`).
 | `task.cancel` | Request cancellation | `R2` | `IW` | `state.invalid_transition` | `FR` |
 | `task.pause` / `task.resume` | Suspend and continue | `R2` | `IW` | `state.invalid_transition` | `AC` |
 | `task.retryAttempt` | Retry a failed attempt | `R2` | `NI` | `state.invalid_transition` | `FR` |
+| `task.readStream` | In-progress turn output from a byte offset; returns `{ streamId, fromOffset, bytes, nextOffset, state }` | session, read on the task | `Q` | `state.not_found`, `state.gone` | `AO` |
 | `task.steer` | Adjust a running task — **grants nothing** | `R1` | `AP` | `state.invalid_transition` | `AC` |
 | `approval.list` | Pending approvals | `R1` | `Q` | — | `AO` |
 | `approval.decide` | Approve or reject | risk of the underlying operation; **`localPresence` where the operation requires it** | `IW` | `perm.approval_expired`, `auth.local_presence_required` | `FR` |

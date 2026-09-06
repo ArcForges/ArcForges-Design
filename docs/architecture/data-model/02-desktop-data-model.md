@@ -372,7 +372,9 @@ Raw capture is **not** in the relational store (`SE-14`). It is a chunked append
 |---|---|---|
 | `sequence_id` | `id` | **PK** |
 | `project_id` | `id NN` | `FK →`; cascade |
-| `frame_rate_num`, `frame_rate_den` | `int NN` | **Rational, stored exactly** (`TM-03`) — never a float |
+| `frame_rate_num`, `frame_rate_den` | `int NN` | The source's **own** rate. Rational, stored exactly (`TM-03`) — never a float, and never assumed equal to the sequence's (`SM-01`) |
+| `pts_time_base_num`, `pts_time_base_den` | `int NN` | The container's PTS base, recorded because it is generally neither rate (`SM-01`) |
+| `ticks_per_source_unit` | `bigint?` | The exact tick mapping where the source base divides the tick base; **NULL means the mapping rounds**, and the rounding is in the conform report (`SM-03`) |
 | `drop_frame` | `bool NN` | |
 | `sample_rate` | `int NN` | |
 | `width`, `height` | `int NN` | |
@@ -398,19 +400,23 @@ Raw capture is **not** in the relational store (`SE-14`). It is a chunked append
 
 ### `track`, `timeline_item`, `clip`, `transition`
 
+> **Corrected 2026-09-07.** Positions were stored as integer frames with a **parallel integer sample column set**. Those two grids cannot agree: at 30000/1001 fps and 48 kHz one frame is 1601.6 samples, so most frame positions have no integer sample and most sample positions have no integer frame. Storing both made the model self-contradictory. Positions are now **canonical ticks** (`§3` of the [time model](../23-simulator-and-interchange.md)); frames and samples are computed projections.
+
 | `timeline_item` field | Type | Notes |
 |---|---|---|
 | `timeline_item_id` | `id` | **PK** |
 | `sequence_id`, `track_id` | `id NN` | `FK →`; cascade |
 | `kind` | `enum(clip, transition, gap, generatedMedia, title, subtitleCue) NN` | |
-| `start_frame` | `bigint NN` | **Integer frames in the sequence rate** |
-| `duration_frames` | `bigint NN` | |
+| `start_ticks` | `bigint NN` | **Canonical ticks at 705 600 000 Hz** (`TB-01`) |
+| `duration_ticks` | `bigint NN` | |
 | `media_asset_id` | `id?` | Clips only |
-| `source_in_frame`, `source_out_frame` | `bigint?` | |
+| `source_in_ticks`, `source_out_ticks` | `bigint?` | In the **source's** canonical tick domain, mapped by conform (`SM-02`) |
 
-- `IX (sequence_id, track_id, start_frame)` — **the timeline read path**
+- `IX (sequence_id, track_id, start_ticks)` — **the timeline read path**
 - **Constraint** — many timeline items may reference one `media_asset` independently (`I-477`); there is no back-reference from asset to clip
-- **Constraint** — positions are integer frames, never seconds. Audio-domain positions are integer samples in a parallel column set, converted only through the exact rational conversion (`WP-36.01`).
+- **Constraint** — **no position column is a frame number, a sample index, a float or a duration type** (`TB-01`, `TB-04`), asserted by a repository policy test (`TV-02`)
+- **Constraint** — `duration_ticks > 0`; a zero-length item is not representable
+- **Rule** — the sequence's frame rate and the project's audio rate are **projection parameters**, not storage units. Changing a sequence's frame rate reprojects the display without altering a single stored position, which is what makes a rate change non-destructive.
 
 ### `effect_instance`, `effect_parameter`, `keyframe`, `animation_curve`
 
@@ -427,10 +433,10 @@ All four are *(derived)*, in a **separate store file** from the project, so `WP-
 | `render_request_id` | `id` | **PK** |
 | `sequence_id` | `id NN` | |
 | `bound_project_rev`, `bound_sequence_rev` | `rev NN` | **The immutable snapshot binding** (`RN-04`) |
-| `range_start_frame`, `range_end_frame` | `bigint NN` | |
+| `range_start_ticks`, `range_end_ticks` | `bigint NN` | **Canonical ticks** (`TB-01`). The encoder's own grid is a projection with directional rounding (`TG-05`) |
 | `export_preset_id` | `id NN` | |
 | `allow_proxy_render` | `bool NN` | Explicit, recorded in output metadata |
-| `task_id` | `id NN` | A render **is** a Task (`RN-03`) |
+| `job_id` | `id NN` | A render is a **native Product Job**, not a Cloud Agent Task (`CM-04` of the runtime architecture, `I-485`). ArcSlate owns its progress, cancellation and recovery |
 | `destination` | `text NN` | |
 
 - **Constraint** — the render reads the bound revisions, never live editor state. Editing during a render cannot affect its output (`WP-38.02`).

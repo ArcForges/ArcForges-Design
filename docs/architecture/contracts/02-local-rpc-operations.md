@@ -80,10 +80,54 @@ InvokeAsync(InvocationRequest)               → ArcResult<InvocationOutcome>
 |---|---|
 | CI-01 | **`EvaluateAvailabilityAsync` is side-effect free** and cheap enough to run on UI enumeration (`WP-09.03`). |
 | CI-02 | **`InvokeAsync` performs owner-side final validation regardless of what the caller asserts** (`BR-02` of `WP-20`). An `ApprovalToken` is evidence, never authority. |
+| CI-07 | **`InvokeAsync` is the boundary, not a product contract.** It decodes into a generated typed request and calls the product's typed operation (`§3.1`). The structured value never travels past the decode step, so `AC-02`'s prohibition on a catch-all first-party call holds where it matters — in the product's own contracts. |
 | CI-03 | **Context is frozen by the caller and immutable in transit** (`WP-09.04`). The provider never re-reads live context mid-invocation. |
 | CI-04 | **The outcome carries the resulting revision**, so the caller can chain without re-reading. |
 | CI-05 | **Large arguments and results cross by `ResourceRef`**, never inline (`BR-10` of `WP-08`). |
 | CI-06 | **An invocation is idempotent on `CommandId`** — a retry after a lost response returns the original outcome (`WP-14.03`). |
+
+---
+
+## 3.1 From an untyped request to a typed product operation
+
+`AC-02` prohibits a catch-all `Invoke(string, object)`, and `L2-06`/`XT-05` require that the structured value type never appear in a first-party product contract. `ICapabilityProvider.InvokeAsync` nevertheless takes a `CapabilityKey` and structured `Arguments` — because that is exactly what arrives from a model or an extension, which cannot be compiled against ArcForges' types.
+
+Both are correct. What was missing is the **decode step between them**, and the precise scope of the containment rule.
+
+```
+model tool call  /  extension invocation
+        |  CapabilityKey + structured Arguments
+        v
+  +----------------------------------------------------+
+  |  BOUNDARY  -- ICapabilityProvider.InvokeAsync       |   structured value permitted HERE
+  |    1. resolve CapabilityKey in the allowlist        |   and only here
+  |    2. validate Arguments against the descriptor's   |
+  |       schema, rejecting unknown fields (L2-08)      |
+  |    3. DECODE into the generated typed request       |
+  +----------------------------------------------------+
+        |  ApplyBlockEditsRequest  (a generated record)
+        v
+  INotesOperations.ApplyBlockEditsAsync(...)              typed, compile-time checked
+        |
+        v
+  application service -> domain                            no structured value anywhere
+```
+
+| # | Rule |
+|---|---|
+| DP-01 | **The structured value model is permitted at exactly one place: the boundary dispatch contract** (`ICapabilityProvider`). It appears in no domain type, no application service signature, no product operation interface and no persisted schema. |
+| DP-02 | **`XT-05` is scoped accordingly**: the containment test asserts the structured value type is absent from every **domain, application and product-operation** assembly, and permitted **only** in the boundary dispatch assembly. A test that simply forbade it everywhere would fail against the boundary the design requires, which is why the previous unscoped wording was a defect rather than a stricter rule. |
+| DP-03 | **The decoder is generated, never hand-written and never reflective.** A source generator reads each product operation's request record and emits: the descriptor's schema, the allowlist entry, and the decode function. Adding an operation therefore cannot forget to update any of the three (`CF-01` of the extension architecture). |
+| DP-04 | **`CapabilityKey` resolves through a closed generated allowlist**, not a dictionary lookup at runtime and not a name-to-type map. An unknown key is a typed protocol error before any validation (`RC-02` of the harness). |
+| DP-05 | **Decode failure is a typed protocol error attributed to the caller** (`L2-05`), never a host exception and never a partially applied operation. Validation completes before the typed request is constructed. |
+| DP-06 | **AOT holds because nothing is discovered at runtime**: the allowlist, the schemas and the decoders are all generated at compile time, so there is no reflection, no `MakeGenericType` and no assembly scanning on the invocation path (`AC-04`). |
+| DP-07 | **Versioning lives on the typed request record.** The schema is generated from it, so a field added to the record is a schema change by construction, and the compatibility class of the operation governs whether that addition is permitted (`§6` of the operation catalogue). The schema is never edited independently of the record. |
+| DP-08 | **The same decode step serves a model tool call and an extension invocation.** There is one boundary, not two, which is what keeps the security pipeline, the validation rules and the audit trail identical for both. |
+
+| # | Rule |
+|---|---|
+| DP-09 | **A product operation is never reachable except through its typed interface.** The boundary calls `INotesOperations`, `IScopeOperations`, `ISlateOperations` or `IChatOperations`; it never touches an application service or a repository directly, and an architecture test asserts it (`WP-05`). |
+| DP-10 | **`ResourceRef` and `ArtifactRef` cross the boundary by identity**; large payloads never travel inside the structured value (`CI-05`). |
 
 ---
 

@@ -133,6 +133,7 @@ date/time · ResourceRef · list<Value> · record<name, Value>
 | L2-04 | **Every dynamic payload is validated in both directions** — inbound to the host and outbound to the extension — before it reaches any product logic (`EX-13` there). |
 | L2-05 | **Validation failure is a typed protocol error** attributed to the extension, never a host exception. |
 | L2-06 | **The schema exception never leaks inward** (`DB-05` there, `I-329`). ArcNotes, ArcScope and ArcSlate native capabilities stay compile-time typed. A repository policy test asserts that the structured value type does not appear in a first-party domain or product contract. |
+| L2-09 | **Inward means past the decode step.** The boundary receives a structured value and immediately converts it to a generated typed request (`§3.1` of the local RPC contract); everything after that point is compile-time typed. The exception is a doorway, not a corridor. |
 | L2-07 | **Numeric, temporal and text semantics are specified exactly** — integer width, decimal precision, time zone handling, normalisation and length limits — so two implementations agree. |
 | L2-08 | **Unknown fields are rejected by default**, with an explicit forward-compatible mode where the schema declares it. |
 
@@ -339,7 +340,7 @@ The `arcforge` CLI is part of the developer platform (`I4 §Stage 24 §148`, `§
 | XT-02 | **Version negotiation matrix**: host and extension at differing protocol versions produce the specified outcome — negotiated, partially usable, or cleanly refused. |
 | XT-03 | **Isolation tests**: extension crash, hang, memory exhaustion, and infinite output each leave the host healthy with a typed failure (`EA-06`, `PR-04`–`PR-06`). |
 | XT-04 | **Security tests**: an extension attempting to exceed its grant, impersonate another package, claim a reserved namespace, read a secret, or egress data is refused and audited. |
-| XT-05 | **Schema-containment test**: the structured value type does not appear in any first-party domain or product contract (`L2-06`), enforced as a repository policy test. |
+| XT-05 | **Schema-containment test**, scoped precisely: the structured value type is **absent** from every first-party domain, application and product-operation assembly, and **permitted only** in the boundary dispatch assembly that decodes it (`§3.1` of the local RPC contract, `DP-02`). An unscoped test would fail against the boundary the design requires; a test that omitted the boundary's own assembly would let the exception leak inward. Enforced as a repository policy test. |
 | XT-06 | **AOT test**: the host publishes AOT with the extension platform present, and no reflection-based path is required (`EA-03`). |
 | XT-07 | **Package lifecycle tests**: install, permission grant, update with new permissions, disable, enable, rollback, uninstall with and without private-data deletion, and revoke reaching an installed client. |
 | XT-08 | **Provenance tests**: a task and artifact produced through a community package carry that package's provenance (`CK-05`). |

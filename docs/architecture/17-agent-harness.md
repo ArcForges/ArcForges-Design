@@ -320,49 +320,137 @@ approval.decide
 
 ### 6.3 Crash recovery
 
-| State at crash | On restart |
-|---|---|
-| Between iterations | Resume at the next iteration |
-| Mid-model-call | The call is lost; the reservation is swept; retry the iteration |
-| Mid-invocation | The local command log decides: recorded ⇒ completed, absent ⇒ safe to re-attempt |
-| Mid-settlement | Settlement is idempotent per attempt; re-run |
-| Awaiting approval | Nothing to do — durable by construction |
+> **Corrected 2026-09-07.** The previous table said an absent command-log record made a re-attempt safe. That is true only when the log write and the effect are **the same transaction** — which holds for a local database write and holds for nothing else. A device tool, an MCP server, a provider call and any network side effect cannot commit atomically with a row in ArcForges' database. Absence of a record therefore proves **nothing**, and treating it as proof would duplicate real-world effects.
+
+Recovery is decided by **dispatch intent**, not by outcome absence.
+
+```
+intent written, no outcome      ->  UNKNOWN        (never "did not happen")
+intent written, outcome written ->  that outcome
+no intent                       ->  did not happen (the only safe absence)
+```
+
+The asymmetry is the point: **the intent is written before the act, so its absence is meaningful and its presence is not.**
+
+| State at crash | Recorded state | Effect certainty | On restart |
+|---|---|---|---|
+| Before the reserving transaction committed | No intent | **Did not happen** | Start the iteration cleanly |
+| Between the dispatch barrier and any provider byte | Intent, no attempt outcome | **Unknown** | `§6.4` — resolve, do not assume |
+| Mid-model-call, stream started | Intent + partial attempt | **Unknown**, and usage is partially known | Store the partial as `interrupted` (`RC-01`); reconcile usage (`§7.6` of the commerce architecture) |
+| Mid-invocation of a **local** capability whose command record commits with its effect | Command record present or absent | **Decidable** — this is the one atomic case | Present ⇒ completed; absent ⇒ safe to re-attempt |
+| Mid-invocation of a **device, MCP or network** capability | Intent, no result | **Unknown** | `§6.4`. Never re-attempt on absence alone |
+| Mid-settlement | Reservation held, settlement absent | Decidable | Settlement is idempotent per attempt usage revision; re-run (`ST-03`) |
+| Awaiting approval | Durable approval record | — | Nothing to do — durable by construction |
 
 | # | Rule |
 |---|---|
-| CR-01 | **The command log is what makes mid-invocation recovery decidable** (`BI-02`, `BI-03` of the bridge contract). Without it every crash would produce an unknown effect. |
-| CR-02 | **An orphaned reservation is released by the sweeper** (`CS-04` of the commerce architecture); a crash never permanently consumes budget. |
+| CR-01 | **A local command log decides recovery only for effects that commit with it.** For an ArcNotes edit on the same device, the log write and the edit are one transaction and absence is proof. For anything crossing a process, a device or a network, it is not, and the design says so rather than relying on a convenient assumption. |
+| CR-02 | **An orphaned reservation is released by the sweeper** (`CS-04` of the commerce architecture); a crash never permanently consumes budget. Releasing a customer hold does **not** clear an unresolved supplier liability (`UC-02` there). |
 | CR-03 | **Recovery is verifiable**: after restart, every task is in a valid state with a reason facet, and none is stuck in a transient state (`WP-16.00`). |
+| CR-04 | **`Unknown` is a terminal-until-resolved state, not a synonym for failure.** It has its own reason facet, its own resolution path (`§6.4`) and its own user-visible presentation. Collapsing it into success or failure is what produces either a duplicated effect or a lost one. |
+
+### 6.4 Resolving an unknown effect
+
+Resolution is ordered from cheapest and most certain to least, and stops at the first that answers.
+
+| # | Step | Applies when | Result |
+|---|---|---|---|
+| 1 | **Consult the declared idempotency** (`FL-08` of the AI requirements) | The capability declares `Idempotent` | Re-attempt with the same `CommandId`. One effect regardless of how many attempts (`CI-06`) |
+| 2 | **Ask the owner** | The capability declares a status or reconciliation operation | The owner's answer is authoritative; record it and continue |
+| 3 | **Ask the provider** | A model attempt with a provider request identity (`MT-02`) | Usage and outcome from the provider's own record; settle against it (`MT-12`) |
+| 4 | **Wait for the deadline** | Nothing above answers | The reconciliation deadline releases the customer hold while retaining the supplier liability (`UU-03` of the lifecycles) |
+| 5 | **Surface a decision** | The capability is non-idempotent, has no status operation, and the effect matters | Present what is known and let the user decide (`BE-01` of the bridge contract). **Never retry silently** |
+
+| # | Rule |
+|---|---|
+| UR-01 | **Retry safety is a declared property of the capability, never inferred from the absence of a record** (`FL-08`). This is the rule the previous recovery table violated. |
+| UR-02 | **A capability that can produce an external effect and declares neither idempotency nor a status operation cannot be invoked by the Harness at all.** Such a capability would make every crash an unresolvable ambiguity, so the descriptor requirement is a precondition of registration, not a nicety (`WP-17.00`). |
+| UR-03 | **Step 2 is why `CapabilityDescriptor` carries a status operation reference.** Without it there is no mechanical way to answer "did it happen", and every uncertain case escalates to a human. |
+| UR-04 | **The bridge's command log resolves the device case at step 1**, because the device's log commits with the device-local effect (`BI-02`, `BI-03` of the bridge contract). It does not resolve an effect the device itself made across a further network. |
 
 ---
 
 ## 7. Streaming
 
+> **Completed 2026-09-07.** The previous rules said the durable message is written once on completion and that deltas arrive through `task.outputAppended`. But that event carries only identifiers (`RE-02` forbids bodies), and the client was told to "fetch the part" — **a part that does not exist yet**, because the message is not written until the turn completes. There was no read path for in-progress output. This section supplies one.
+
+### 7.1 Where in-progress output lives
+
+```
+provider stream
+   |
+   v
+STREAM BUFFER  (transient, Cloud, per turn)          <- NOT an aggregate, NOT a message
+   |  append-only, byte-offset addressed
+   |  fanned out to every authorised subscriber
+   v
+turn completes
+   |
+   v
+chat.message + message_part  (durable, committed once, Cloud-assigned rev)   <- CW-02
+```
+
+| # | Rule |
+|---|---|
+| SB-01 | **The stream buffer is transient presentation state, not an aggregate.** It has no revision, is never synchronised, never appears in `sync.change`, and is not the message (`ST-01`). Losing all of it costs the live view and nothing else. |
+| SB-02 | **It lives in Cloud, keyed by `(taskId, streamId)`**, where `streamId` changes on every attempt so a retried attempt cannot interleave with an abandoned one. |
+| SB-03 | **Content is addressed by byte offset**, monotonically increasing within one `streamId`. Offsets are what make reconnect exact rather than approximate. |
+| SB-04 | **Its lifetime is the turn plus a short bounded tail**, so a client that reconnects seconds later still catches up. After that it is evicted; the durable message is then the only source, and that is sufficient. |
+| SB-05 | **It is bounded.** A stream exceeding its byte ceiling stops being buffered, the turn continues, and clients fall back to the completed message. Presentation degrades; the outcome does not (`ST-01`). |
+| SB-06 | **It is not durable across a host restart.** A client reconnecting after one receives a gap signal and re-reads the task; if the turn completed, it reads the message (`SR-04`). |
+
+### 7.2 How a client reads it
+
+| Operation | Purpose | Auth | Class |
+|---|---|---|---|
+| `task.readStream(taskId, streamId?, fromOffset)` → `{ streamId, fromOffset, bytes, nextOffset, state }` | Read in-progress output from an offset | Read on the task | `Q` |
+
+`state ∈ { open, completed, evicted, superseded }`.
+
+| # | Rule |
+|---|---|
+| SR-01 | **`task.outputAppended` carries `(taskId, streamId, nextOffset)` and no content**, preserving `RE-02`. It is a *hint that more exists*, and it names exactly what to ask for. |
+| SR-02 | **The event is optional.** A client that never receives one reaches the same output by polling `task.readStream` (`RE-07` of the realtime contract). Realtime is an accelerator, never the only path. |
+| SR-03 | **Reconnect is `fromOffset = lastReceived`.** The server returns everything from there, so no delta is lost and none is duplicated in the view. |
+| SR-04 | **`evicted` and `superseded` are answers, not errors.** `evicted` means read the completed message; `superseded` means this attempt was abandoned and the client should discard what it rendered from it and follow the new `streamId`. |
+| SR-05 | **Authorisation is re-checked on every read**, exactly as for any task operation. A buffer is not a permission-free side channel. |
+| SR-06 | **The buffer is never the source of a durable fact.** A client must not persist buffer bytes as a message, and the completed message — not the concatenated stream — is what is stored and synchronised (`ST-01`). |
+
+### 7.3 The rules that survive
+
 | # | Rule |
 |---|---|
 | ST-01 | **Streaming is presentation; the durable message is written once, complete** (`WP-15.00`). |
-| ST-02 | **Deltas reach the UI through `task.outputAppended`** and are best-effort. Losing every delta must not affect the stored result. |
+| ST-02 | **Deltas are best-effort.** Losing every delta must not affect the stored result. |
 | ST-03 | **A tool call is not emitted as a delta until it is complete and parsed.** Partial tool-call syntax never reaches the UI. |
-| ST-04 | **A remote surface receives the same deltas through realtime**, and re-reads authoritatively on completion (`RE-01` of the realtime contract). |
+| ST-04 | **Every surface uses the same path.** Desktop, Web and Mobile all read `task.readStream` and re-read the message authoritatively on completion (`RE-01` of the realtime contract). **No client runs a model loop to produce its own stream** (`LS-02`). |
+| ST-05 | **An interrupted stream is stored as `interrupted`, never as complete** (`RC-01`), and the buffer's `state` never overrides the message's. |
 
 ---
 
 ## 8. Provider failure handling
 
-| Failure | Classification | Harness action |
-|---|---|---|
-| Rate limited | `capacity.rate_limited`, transient | Honour `retryAfter`; retry within budget |
-| Timeout before any token | Transient, **did not happen** | Retry |
-| Timeout mid-stream | Transient, **unknown** | Store partial as `interrupted`; ask the user or the profile before retrying |
-| Content refused by provider | Permanent, refused | Record as the turn outcome |
-| Context too long | Permanent, correctable | Compact harder (`§4.3` of the runtime architecture) and retry once |
-| Model withdrawn | Permanent | Fail with a stated reason; **no silent substitution** (`WP-43.05`) |
-| Provider outage | Transient | Fall back where policy allows, else fail; **release the reservation** |
-| All routes unavailable | Permanent for now | Fail with a stated reason; page-worthy (`AL-02` of the observability architecture) |
+> **Corrected 2026-09-07.** A timeout before the first token was previously classified *did not happen* and retried. **A missing response is not evidence that the provider did no work** — the request may have been received, processed and billed while the response was lost. That classification contradicted `MT-12` of the commerce requirements, `UU-02` of the lifecycles and `XL-04`'s own rule that `unknown` is never silently resolved to `didNotHappen`. Certainty now depends on **where the failure occurred relative to dispatch**, not on whether bytes came back.
+
+| Failure | Dispatched? | Effect certainty | Harness action |
+|---|---|---|---|
+| Refused before dispatch — admission, unpriced route, bad request | **No** | **Did not happen** | Fail with the stated reason; release the reservation in full |
+| Connection refused or DNS failure — no request left the host | **No** | **Did not happen** | Retry within budget |
+| Rate limited, response received | Yes, rejected by the provider | **Did not happen** — the provider said so | Honour `retryAfter`; retry within budget |
+| **Timeout before any token** | **Yes** | **Unknown** | `§6.4`: reconcile against the provider's own record before deciding. **Never an automatic retry** |
+| Timeout mid-stream | Yes | **Unknown**, usage partially known | Store the partial as `interrupted`; reconcile usage; ask the user or the profile before retrying |
+| Response lost after dispatch | Yes | **Unknown** | `§6.4` |
+| Content refused by the provider, response received | Yes | **Happened** — and may be billable | Record as the turn outcome; settle whatever the provider reports |
+| Context too long, rejected before generation | Yes, rejected | **Did not happen** for generation | Compact harder (`§4.6`) and retry once |
+| Model withdrawn | No | **Did not happen** | Fail with a stated reason; **no silent substitution** (`WP-43.05`) |
+| Provider outage, no route reached | **No** | **Did not happen** | Fall back where policy allows, else fail; release the reservation |
+| All routes unavailable | No | **Did not happen** | Fail with a stated reason; page-worthy (`AL-02` of the observability architecture) |
 
 | # | Rule |
 |---|---|
-| PF-01 | **A provider outage never silently consumes credit** (`WP-43.05`). |
+| PF-01 | **A provider outage that never reached a route consumes no credit** (`WP-43.05`), because nothing was dispatched. An outage *after* dispatch is an `unknown`, and its customer hold is released at the reconciliation deadline while the supplier liability is retained (`UU-03` of the lifecycles). |
+| PF-06 | **The dividing line is the dispatch barrier** (`DB-01` of the data-model overview), not the arrival of bytes. Before it, absence is proof; after it, absence is `unknown`. |
+| PF-07 | **An `unknown` is never retried automatically**, whatever the transport reported. It enters `§6.4`, which resolves it by declared idempotency, an owner status operation, the provider's own record, the deadline, or a user decision — in that order. |
 | PF-02 | **A fallback is a policy decision, not an adapter default**, and the substitution is recorded in the interaction record and shown to the user. |
 | PF-03 | **A retry produces a new Attempt inside the same Step, never a new Step** (`EX-09` there), and the `CommandId` is unchanged because the business action is unchanged (`ID-01` there, `I-085`). |
 | PF-04 | **A platform-caused retry is not charged to the user** (`CU-03` there). A logical AI request whose first provider attempt failed and whose second succeeded is charged for the useful work only. |

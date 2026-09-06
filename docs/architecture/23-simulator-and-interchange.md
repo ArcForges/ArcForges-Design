@@ -1,4 +1,4 @@
-# Cloud Simulator and OTIO Interchange
+# Cloud Simulator, Time Model and OTIO Interchange
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Architecture
@@ -157,7 +157,85 @@ release:  on expiry, loss, pause or terminal state, drop the lease cleanly
 
 ---
 
-## 3. Verification
+## 3. The ArcSlate time model
+
+> **Corrected 2026-09-07.** The plan required exact frame *and* sample round trips while storing integer frames in the sequence rate and integer samples in a parallel column set, "converted only through the exact rational conversion". **Those two grids do not map onto each other.** At 30000/1001 fps and 48 kHz one frame spans exactly 48000 × 1001/30000 = **1601.6 samples**, so frame 1 is sample 1601.6 — not an integer — and sample 1000 is frame 625/1001 — not an integer either. Rational *arithmetic* is exact; the *grid mapping* is not, and promising both was a guarantee the storage model could not keep.
+
+### 3.1 One canonical domain, two projections
+
+| Domain | Unit | Role |
+|---|---|---|
+| **Canonical** | Integer **ticks** at **705 600 000 Hz** | The only domain in which positions are stored, compared, added or persisted |
+| Frame grid | Integer frames in the sequence rate | A **projection** for editing, display and timecode |
+| Sample grid | Integer samples in the audio rate | A **projection** for audio rendering and waveform addressing |
+
+The tick base is chosen so that every rate the product supports divides it exactly:
+
+| Rate | Ticks | | Rate | Ticks |
+|---|---|---|---|---|
+| 24 fps | 29 400 000 | | 8 kHz | 88 200 |
+| 25 fps | 28 224 000 | | 22.05 kHz | 32 000 |
+| 30 fps | 23 520 000 | | 44.1 kHz | 16 000 |
+| 24000/1001 fps | 29 429 400 | | 48 kHz | 14 700 |
+| 30000/1001 fps | 23 543 520 | | 96 kHz | 7 350 |
+| 60000/1001 fps | 11 771 760 | | 192 kHz | 3 675 |
+
+`int64` at this base spans over three million hours, so range is not a constraint.
+
+| # | Rule |
+|---|---|
+| TB-01 | **Canonical position is an integer tick count.** `timeline_item.start_ticks`, `duration_ticks` and every stored position are ticks. **No stored position is a frame number, a sample index, a float or a `TimeSpan`.** |
+| TB-02 | **Every supported rate is an exact integer number of ticks** (table above). A rate that is not is **not a supported rate**, and is rejected at import with a stated reason rather than silently approximated. |
+| TB-03 | **Arithmetic is exact and closed.** Adding, subtracting and comparing ticks is integer arithmetic; no conversion occurs, so no rounding occurs. |
+| TB-04 | **Frames and samples are projections, computed on demand**, never stored as the position. The parallel integer sample columns of the previous model are removed: two stored grids that cannot agree is the defect itself. |
+
+### 3.2 Where exactness is guaranteed, and where it is not
+
+| Guaranteed exact | Bounded, and the bound is stated |
+|---|---|
+| Tick arithmetic, and any round trip that stays in ticks | Projecting an arbitrary tick onto the frame grid |
+| Frame *n* → ticks → frame *n* for any *n* | Projecting an arbitrary tick onto the sample grid |
+| Sample *k* → ticks → sample *k* for any *k* | Frame *n* → sample index, when the rates are not commensurate |
+| Any edit point the user placed on the frame grid | Audio alignment of a cut relative to the frame boundary |
+
+| # | Rule |
+|---|---|
+| TG-01 | **A round trip through the canonical domain is lossless.** Frame → tick → frame and sample → tick → sample are exact for every supported rate, because each grid point is an integer multiple of the tick. |
+| TG-02 | **A round trip through the *other* grid is not, and is never claimed.** Frame → sample → frame can move by up to half a frame at incommensurate rates. Nothing in the design depends on it. |
+| TG-03 | **Edit points are frame-grid points by construction.** The user places cuts on frames; the tick value stored is the exact tick of that frame, so the edit is exact and stays exact. |
+| TG-04 | **Audio is rendered from ticks, not from a frame-derived sample index.** The renderer converts the clip's tick range to samples once, at render time, with a single declared rounding — so a cut lands within **at most one sample** of its canonical position, and never accumulates across clips. |
+| TG-05 | **Rounding is declared and directional, never incidental.** Range starts round toward the start of the range and range ends round toward the end, so a projected range always **covers** its canonical range and adjacent clips never leave a one-sample hole. |
+| TG-06 | **Error never accumulates.** Every projection is computed from the canonical value, never from a previous projection. This is why sequential clips cannot drift. |
+
+### 3.3 Source media, PTS and conform
+
+Source media has its own time base, which is generally neither the sequence rate nor the audio rate.
+
+| # | Rule |
+|---|---|
+| SM-01 | **A source's own time base is recorded as a rational** (`frame_rate_num`/`frame_rate_den`, `sample_rate`, and the container's PTS time base), and is never assumed equal to the sequence's. |
+| SM-02 | **A source PTS converts to canonical ticks exactly where the source base divides the tick base, and with a declared rounding where it does not.** The conversion result is recorded with the media reference, so decode targets are reproducible rather than recomputed differently by two code paths. |
+| SM-03 | **A source whose base does not divide the tick base is supported**, with its per-sample rounding recorded in the conform report. **It is not rejected** — real media includes such sources — but the approximation is stated rather than hidden. |
+| SM-04 | **Conform never rewrites the source.** It records a mapping; the media file is untouched (`MP-01` of the native interop architecture). |
+| SM-05 | **Retiming composes rationals, then projects once.** A speed change multiplies the canonical range by an exact rational and projects to the source's grid at the end — never a chain of grid-to-grid conversions, which is how retiming drift is normally introduced. |
+
+### 3.4 Consequences for the surrounding designs
+
+| Area | What follows |
+|---|---|
+| **Playback** | The audio clock is the master (`MP-04`); video presentation times are projected from ticks, so a dropped video frame cannot shift audio |
+| **OTIO** | `RationalTime` maps to ticks exactly where the rate is supported; where a file carries an unsupported rate the import report records it (`OS-04`, `OT-05`). **`OS-03`'s "no silent frame shift" is now achievable**, because the canonical value is preserved and only projections round |
+| **Export** | The render plan carries canonical ticks; the encoder's own grid is a projection with `TG-05`'s directional rounding |
+| **Proxy and cache** | Cache keys use canonical ticks, so a proxy generated at one preview rate is valid for another (`MP-06`) |
+| **Data model** | `timeline_item` stores ticks; the parallel sample columns are removed (`TB-04`) |
+
+### 3.5 The reference is evidence, not an oracle
+
+ArcVideo and ArcVideoFoundation are `Reference Only` (`§6.2` of the implementation maps), and their time handling is **evaluated, not inherited**. Where their conversion or rounding differs from `§3.2`, ArcForges' rule governs and the difference is recorded in the coverage matrix rather than silently adopted. Inheriting a rounding convention without evaluating it is how a subtle drift becomes a permanent behaviour.
+
+---
+
+## 4. Verification
 
 | # | Obligation | Where |
 |---|---|---|
@@ -176,3 +254,10 @@ release:  on expiry, loss, pause or terminal state, drop the lease cleanly
 | OV-04 | Fractional frame rates round-trip with no frame shift, and any rounding is reported against its object | `WP-39.05` |
 | OV-05 | Malicious paths, malformed input and oversized documents are rejected before commit; no adapter or plug-in loads | `WP-39.05`, `WP-11.05` |
 | OV-06 | Export cancellation leaves the project and any existing destination untouched | `WP-39.05` |
+| TV-01 | Frame → tick → frame and sample → tick → sample round-trip exactly for every supported rate | `WP-36.02` |
+| TV-02 | No stored position is a frame number, a sample index, a float or a `TimeSpan`; a policy test asserts it | `WP-05`, `WP-36.02` |
+| TV-03 | A rate that is not an exact integer number of ticks is rejected at import with a stated reason, never approximated | `WP-36.02`, `WP-39.05` |
+| TV-04 | Sequential clips at 30000/1001 fps and 48 kHz show **no cumulative drift** over a long sequence, and each cut lands within one sample of its canonical position | `WP-37.02` |
+| TV-05 | A projected range covers its canonical range; adjacent clips leave no one-sample hole | `WP-37.02` |
+| TV-06 | Retiming composes rationals and projects once; a chain of speed changes introduces no drift | `WP-37.02` |
+| TV-07 | A source whose time base does not divide the tick base imports with its rounding recorded in the conform report | `WP-36.02` |
