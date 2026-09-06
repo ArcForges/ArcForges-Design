@@ -174,6 +174,8 @@ Inputs                                     Output
 
 ## 6. Quota and usage
 
+> **Ownership.** Quota and usage counters belong to **Entitlement**, not Commerce (`EO-01`, `EO-06`). The rules below are stated here because commerce operations are their most common cause, not because Commerce owns the store.
+
 | # | Rule |
 |---|---|
 | QA-01 | **Quota is a limit; usage is a measurement** (`§7` there). They are separate stores with separate lifecycles. |

@@ -1,0 +1,200 @@
+# Deployment and Release Execution
+
+> Status: **Authoritative** — Phase 2 (Detailed Specifications)
+> Layer: Architecture
+> Governing authority: `§6` and `§6.1` of the cloud requirements, `§15` of the quality contract, `§11` of the build architecture
+> Companions: [`14-build-packaging-and-release.md`](14-build-packaging-and-release.md), [`05-cloud-architecture.md`](05-cloud-architecture.md), [`20-cross-system-lifecycles.md`](20-cross-system-lifecycles.md)
+
+The requirements say migration is a gated step, that schema change uses expand/contract, and that a production deployment is reversible. **What none of them gives is the sequence** — the order of the phases, the check that must pass between each, and what happens when one fails with a half-deployed fleet. A deployment procedure that exists only as a set of rules is a procedure that gets improvised at 2 a.m.
+
+---
+
+## 1. Controlling rules
+
+| # | Rule |
+|---|---|
+| DX-01 | **A deployment is a sequence of phases, each with an entry check, an exit check and a defined failure action.** A phase without all three is not deployable. |
+| DX-02 | **Every phase is independently reversible, or it is not entered.** Where reversal is impossible — a contract phase that drops a column — the phase is deferred until the version that needs it is irreversibly established (`§2.4`). |
+| DX-03 | **No phase depends on every replica being at the same version at the same instant.** Rolling deployment means mixed versions are the normal state, not an exception (`PS-10` of the cloud architecture). |
+| DX-04 | **Production never rebuilds** (`EN-10`). The digest built once in CI is what runs, and deployment references the digest, never a tag (`EN-11`). |
+| DX-05 | **A failed phase stops the sequence.** It never proceeds "to get to a consistent state", because the consistent state is the one before the failure. |
+| DX-06 | **Every phase's outcome is recorded** with its checks, its operator and its time, so a later incident can reconstruct what ran. |
+
+---
+
+## 2. The cloud deployment sequence
+
+### 2.1 Phases
+
+```
+ 0  PRE-FLIGHT      artifact identity · gate evidence · approval
+ 1  EXPAND          additive schema only — new columns, new tables, new indexes
+ 2  BACKFILL        populate new structures; old code still reads old structures
+ 3  DEPLOY          roll the new application version across replicas
+ 4  SOAK            observe at the new version under real traffic
+ 5  SWITCH          enable behaviour that depends on the new structures (policy flag)
+ 6  CONTRACT        remove what nothing reads any more — a SEPARATE, LATER deployment
+```
+
+| Phase | Entry check | Exit check | On failure |
+|---|---|---|---|
+| **0 Pre-flight** | Digest matches the CI-produced artifact; every release gate has resolvable evidence (`WP-50.00`); environment approval granted (`EN-13`) | All three pass | Stop. Nothing has changed |
+| **1 Expand** | Migration is **additive only** — a machine check, not a reviewer's judgement; forward and backward rehearsal passed against a production-shaped copy (`RG-15`) | Schema applied; **the currently deployed version still passes its health checks** | Roll the migration back. It is additive, so rollback is safe by construction |
+| **2 Backfill** | New structures exist; the backfill is resumable and idempotent | Backfill complete or provably converging; **no read path depends on it yet** | Stop and resume later. Old code is unaffected because it does not read the new structures |
+| **3 Deploy** | Expand applied; the new version is **proven to run against the expanded schema** — this is the compatibility that makes rolling safe | Every replica healthy at the new version; error rate and latency within the release envelope | **Roll back the application** (`EN-14`, one action). The schema stays expanded, which is why this rollback is always available |
+| **4 Soak** | Fleet at the new version | The soak window elapses with no new page-worthy condition and no error-budget burn | Roll back the application. The schema stays expanded |
+| **5 Switch** | Soak clean; the new behaviour is behind a policy flag (`§4` of the policy architecture) | The behaviour is on and healthy | **Turn the flag off** — no deployment needed, which is the point of separating switch from deploy |
+| **6 Contract** | The new version is **irreversibly established**: rollback to the pre-expand version is no longer a permitted action, and no read path touches the removed structure | Removal applied | Stop. A contract failure is the only phase whose reversal needs a restore, which is why `§2.4` gates entry so hard |
+
+### 2.2 Why the phases are separate
+
+| Separation | What it buys |
+|---|---|
+| Expand before deploy | The old version keeps working, so deploy is reversible |
+| Backfill before switch | The new behaviour never reads a half-populated structure |
+| Deploy before switch | A bad *deployment* and a bad *behaviour* fail independently and are diagnosed separately |
+| Switch by flag, not by deploy | Reversal is seconds, not a deployment cycle |
+| Contract as a **separate, later deployment** | The window in which rollback is possible is not shortened by tidying up |
+
+| # | Rule |
+|---|---|
+| PH-01 | **Expand and contract are never in the same deployment.** Combining them removes the rollback path the expand phase exists to preserve. |
+| PH-02 | **Contract runs only after the intervening version is established beyond the rollback horizon**, which is a stated duration, not a feeling. |
+| PH-03 | **A migration that cannot be expressed as expand-then-contract is a design problem**, escalated rather than executed as a single destructive step (`MG-04`). |
+| PH-04 | **"Migration down" is not the rollback strategy** (`MG-04`). Rollback is an application rollback or a forward fix. |
+| PH-05 | **Migration never runs on application start-up, on any replica** (`MG-01`). It is a separate gated step with a single executor. |
+
+### 2.3 Mixed-version behaviour during phases 3 and 4
+
+| Situation | Required behaviour |
+|---|---|
+| Old replica reads a row written by a new replica | Unknown fields preserved on round trip; no loss (`SY-09` of the lifecycle document) |
+| New replica reads a row written by an old replica | New columns absent or default; the new code must tolerate this, and a test asserts it |
+| An outbox message enqueued by one version, consumed by the other | Message contracts are additive-only within a major; a consumer ignores unknown fields |
+| A background lease taken by an old replica, expiring during deploy | Lease expiry is version-independent; another replica takes it (`BG-02`, `BG-03`) |
+| A long-running task started before the deploy | **Task authority is in the database, not the worker** (`BG-03`). It continues on any replica |
+| A realtime connection to a replica being drained | The client reconnects and **reconciles unconditionally** (`GP-03`) |
+
+| # | Rule |
+|---|---|
+| MX-01 | **Both orderings are tested**, not just old-then-new (`CM-07` of the quality contract) — a client or replica newer than its peer is as normal as the reverse. |
+| MX-02 | **A message or row written by either version is readable by the other**, for the whole rolling window. |
+| MX-03 | **Draining a replica completes or releases its in-flight work**; it never abandons a lease silently. |
+
+### 2.4 The rollback horizon
+
+| # | Rule |
+|---|---|
+| RH-01 | **The rollback horizon is the period during which the previous version can be restored by an application rollback alone.** It begins at deploy and ends at contract. |
+| RH-02 | **Contract closes the horizon**, which is why `§2.1` phase 6 requires that closing it be an explicit, recorded decision rather than a consequence of routine tidying. |
+| RH-03 | **Beyond the horizon, recovery is a restore**, with its own drill evidence (`WP-46.03`) — a materially more expensive operation, and the reason the horizon is generous by default. |
+| RH-04 | **A security fix may close the horizon early**, and that is a decision with its own record, not an exception taken quietly. |
+
+---
+
+## 3. Configuration and secrets at deploy time
+
+| # | Rule |
+|---|---|
+| CF-01 | **Environments are configuration, not builds** (`EP-01`). The same digest runs in staging and production. |
+| CF-02 | **Configuration files hold references, never long-lived plaintext secrets** (`CS-01` of the cloud architecture); production secrets live in a managed vault in RBAC mode with purge protection (`CS-02` there). |
+| CF-03 | **CI authenticates with federated identity only** (`EN-08`); no long-lived deployment credential exists to leak. |
+| CF-04 | **Staging and production use different deployment identities**, neither holding subscription-owner rights (`EN-09`). |
+| CF-05 | **A missing or malformed required configuration value fails start-up with a named key**, never a default that silently changes behaviour. |
+| CF-06 | **A secret rotation is a configuration change, not a deployment.** The application re-reads on a defined schedule or on a signal, so rotating does not require a release. |
+| CF-07 | **IaC state is a secret** (`EN-06`), stored in a secured backend, never in version control, and separated per environment. |
+| CF-08 | **Portal-driven production change is prohibited** (`EN-07`); an emergency manual change is reconciled back into IaC promptly, and drift detection runs regularly. |
+
+---
+
+## 4. Client release execution
+
+Client and cloud releases are decoupled (`EP-04`), so this sequence runs independently of `§2`.
+
+### 4.1 Desktop
+
+```
+build once (per RID) → sign → publish to the artifact store
+   → update feed entry: version, hashes, compatibility range, minimum versions
+   → channel promotion: nightly → beta → stable
+   → client discovers, verifies hash and signature, stages, applies
+```
+
+| # | Rule |
+|---|---|
+| CD-01 | **The product's own feed is authoritative; storage is replaceable** (`§7` of the build architecture, confirmed independently by `AC-17` of the AionUI matrix). |
+| CD-02 | **A client verifies hash and signature before applying**, and a corrupted artifact is rejected rather than installed (`WP-50.02`). |
+| CD-03 | **An update never interrupts a long-running task.** It stages and applies at a safe point, and the update matrix tests exactly this case. |
+| CD-04 | **Downgrade protection is enforced by the feed and by compatibility policy**, so a blocked bad version is refused twice. |
+| CD-05 | **An interrupted download or install leaves a working previous installation.** Partial state is never the resting state. |
+| CD-06 | **The four desktop products version independently** (`CM-02` of the quality contract), and **mixed-version combinations are actually tested** — nominal independence with de facto lockstep is a failed contract. |
+
+### 4.2 Mobile
+
+| # | Rule |
+|---|---|
+| MR-01 | **Store review latency is part of the release plan**, not a surprise. A fix that must reach users quickly cannot depend on a store round trip. |
+| MR-02 | **Android release is verified on real devices** (`PM-03` of the quality contract), against the release AOT artifact. |
+| MR-03 | **iOS is architecture-present, build-deferred** (**D-008**) and is **never claimed as released**. |
+
+### 4.3 Web
+
+| # | Rule |
+|---|---|
+| CW-01 | **Static output regenerates byte-identically**, so a deployment that changes nothing produces no diff. |
+| CW-02 | **A cached WebAssembly bundle must not strand a client on an incompatible version.** Version identity is part of the bundle's cache key. |
+| CW-03 | **A web deployment is reversible by redeploying the previous artifact**, which is why the artifact is retained rather than regenerated. |
+
+---
+
+## 5. The compatibility window
+
+| Axis | Window | Rule |
+|---|---|---|
+| Desktop ↔ desktop, locally | Current stable **and** the immediately previous supported stable line, **both directions** (`CM-03` of the quality contract) | A floor, not a ceiling (`CM-05` there) |
+| Client ↔ Cloud | Cloud's declared **Supported Client Set** (`CM-06` there) | Removal is planned and communicated, **never discovered by users** |
+| Extension protocol | Current major **and** previous major (`CM-08` there) | Earlier revocation only for a security reason |
+| Native formats | Every format in the Supported Native Format set (`CM-09` there) | **Format compatibility outlives application interoperability** |
+
+| # | Rule |
+|---|---|
+| CO-01 | **A cloud release must not require a client release on the same day** (`EP-04`). If it would, it is not shippable as designed. |
+| CO-02 | **A minimum-cloud-version requirement is imposed only after every channel has had a genuine opportunity to update** (`EP-05`), with the grace period honoured. |
+| CO-03 | **Every release produces a Compatibility Manifest as a release artifact** (`CM-01` there), so the window is a published fact rather than an assumption. |
+| CO-04 | **Read compatibility is not write compatibility** (`CM-10` there, `I-385`). Each is declared and tested separately, so "we can open it" never becomes an implied "we can save it". |
+
+---
+
+## 6. Deployment failure matrix
+
+| # | Failure | Effect | Detected by | Owner | Action |
+|---|---|---|---|---|---|
+| DF-01 | Expand migration fails part-way | Schema partially expanded | Migration step exit check | Operations | Roll back the additive change; the deployed version is unaffected |
+| DF-02 | Backfill stalls | New structures partly populated | Backfill progress metric | Operations | Resume; **nothing reads them yet**, so there is no user impact |
+| DF-03 | Deploy fails on some replicas | Mixed fleet | Health checks per replica | Operations | Roll back the application; mixed-version tolerance (`§2.3`) makes this safe |
+| DF-04 | New version healthy but error rate rises in soak | Working but degraded | Release envelope | Operations | Roll back; investigate before re-attempting |
+| DF-05 | Switch flag causes a regression | New behaviour bad | Alerting, error budget | Operations | **Turn the flag off** — seconds, no deployment |
+| DF-06 | Contract removes something still read | Errors on a live path | Immediate errors | Operations | **Restore** (`RH-03`). This is why `§2.1` gates contract entry on "no read path touches it" |
+| DF-07 | Rollback attempted after the horizon closed | Rollback unavailable | Pre-rollback check | Operations | Forward fix, or restore with drill-proven procedure |
+| DF-08 | Configuration missing at start-up | Replica does not start | Start-up validation (`CF-05`) | Operations | Fix configuration; **no replica ever starts with a silent default** |
+| DF-09 | Client update interrupted mid-install | Previous installation intact | Client update matrix | Client | Retry; **partial state is never the resting state** (`CD-05`) |
+| DF-10 | Client on a version outside the Supported Client Set | Refused with a named reason and an update path | Version check | Cloud | The user is told what to do, never given an opaque failure |
+
+---
+
+## 7. Verification
+
+| # | Obligation | Where |
+|---|---|---|
+| DV-01 | Migration forward and backward rehearsal passes against a production-shaped copy before every schema deployment | `RG-15`, `WP-21.03` |
+| DV-02 | Expand-only enforcement is a machine check, and a non-additive migration in an expand phase fails the gate | `WP-21.03` |
+| DV-03 | A rolling deployment is exercised with both version orderings, and rows and messages written by either are readable by the other | `WP-21.03`, `WP-50.04` |
+| DV-04 | A long-running task survives a full fleet roll, and no lease is silently abandoned | `WP-21.05`, `WP-16.00` |
+| DV-05 | An application rollback restores service without a schema change, at every point in the sequence before contract | `WP-21.03`, `WP-50.04` |
+| DV-06 | A switch flag disables the new behaviour without a deployment | `WP-44.03` |
+| DV-07 | A missing required configuration value fails start-up naming the key, and no default is silently substituted | `WP-44.01`, `WP-21.06` |
+| DV-08 | The full client update matrix passes on all three desktop platforms, including interrupted download, interrupted install, corrupted artifact and update during a long task | `WP-50.02` |
+| DV-09 | Mixed-version desktop combinations are tested in both directions, per `CM-03` of the quality contract | `WP-50.02`, `WP-23.06` |
+| DV-10 | A Compatibility Manifest is produced for every release and matches what was tested | `WP-50.00`, `WP-50.08` |
+| DV-11 | A client outside the Supported Client Set receives a named reason and an update path, never an opaque failure | `WP-23.06` |
+| DV-12 | Every deployment phase records its checks, operator and time, and an incident can reconstruct the sequence | `WP-45.04` |
