@@ -93,10 +93,10 @@ A step resolving to a requirement alone is **not** sufficient — a requirement 
 |---|---|---|---|
 | D-01 | User edits a hydrated note offline | `EditTransaction`; journal + `sync_outbox` in one transaction (`PC-01`) | Crash → at most the coalescing window is lost; what survives is a valid document |
 | D-02 | The edit is durable **on this device**, and is **not** presented as saved to Cloud | `PE-04`, `NO-04`; `§3.1` of the product scope | — |
-| D-03 | Cache pressure occurs while the edit is pending | `PE-02` eviction gate | **Refused** — a row with an unacknowledged change is not evictable (`I-498`) |
+| D-03 | Cache pressure occurs while the edit is pending | `EV-L1` eviction gate | **Refused** — `head_local_seq > acked_local_seq` means the row has unacknowledged work, and the same gate runs for sign-out, account switch and restriction (`EV-L3`) |
 | D-04 | Reconnect; outbox pushes with its `CommandId` and **`ExpectedRev = acked_rev`**, never `local_rev` | `sync.pushChange`; `RV-C1` | Response lost → `unknown`; idempotent re-push (`SY-01`) |
 | D-05 | **Cloud commits and assigns the revision**, writing the `sync.change` row in the same transaction | `CW-04`, `CW-06` | — |
-| D-06 | On acknowledgement, `acked_rev` is set and `local_rev` resets to 0 in the transaction that clears the outbox row | `RV-C5`, `PE-02` | Crash before clearing → duplicate push recognised, re-push idempotent (`SY-02`) |
+| D-06 | The watermark advances to **exactly the batch's covered range**; an edit made while the batch was in flight stays pending | `RV-C4`, `SB-L1`, `EV-L1` | Crash before settling → the batch is re-sent under the same `batch_id` and returns the original result (`SB-L5`, `SB-L6`) |
 | D-07 | Concurrent edit on another device raises a conflict | `sync.conflictRaised`; both branches retained | Edit-versus-delete → the delete does not silently win (`SY-06`) |
 | D-08 | Resolution produces a **new revision** | `§4` of the sync architecture | — |
 | D-09 | The second device converges by pulling from its `publish_seq` cursor | `CU-01`; `PB-02` guarantees no published change is skipped | Gap → scoped reconciliation (`SY-04`); expired cursor → full resync, never a silent clamp (`CU-03`) |

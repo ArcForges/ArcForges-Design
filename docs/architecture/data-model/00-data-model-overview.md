@@ -181,15 +181,15 @@ The authority map says *where the authoritative copy lives*. It does not by itse
 
 | # | Step | Committer | Result |
 |---|---|---|---|
-| 1 | User edits offline | **Device**, into its working store | Durable pending change, `local_rev` advances; **not** an acknowledged revision (`CW-01`, `PE-04`) |
+| 1 | User edits offline | **Device**, into its working store | Durable pending change taking the next `local_seq`; **not** an acknowledged revision (`CW-01`, `PE-04`) |
 | 2 | Device reconnects, submits `sync.pushChange` with its `CommandId` | — | — |
 | 3 | Cloud applies it | **Cloud — Notes** | `document`/`block` rows, the command record, and the `sync.change` row, in one transaction (`CW-06`); Cloud assigns `rev` |
-| 4 | Acknowledgement returns the assigned `rev` | — | The pending row clears **only now** (`PE-02`) |
+| 4 | Acknowledgement returns the assigned `rev` | — | The watermark advances to **the highest `local_seq` the batch covered, and no further** (`RV-C4`). Edits made while the batch was in flight remain pending (`SB-L1`) |
 | 5 | A concurrent change existed | **Cloud — Notes** | Conflict raised with both branches retained; resolution is a **new** Cloud-assigned revision |
 
 | # | Rule |
 |---|---|
-| CW-07 | **`ExpectedRev` on a client write is the last acknowledged Cloud revision the client saw**, never its `local_rev`. That is what makes conflict detection meaningful across devices. |
+| CW-07 | **`ExpectedRev` on a client write is the last acknowledged Cloud revision the client saw**, never a local sequence (`RV-C1`). A local RPC instead carries `(acked_rev, head_local_seq)` (`RV-C5`), because a local caller saw the local state including pending work. |
 | CW-08 | **A conflict is resolved by a new revision, never by a client overwriting one** (`§4` of the sync architecture). |
 
 ## 5. Cross-store relationships

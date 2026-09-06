@@ -56,27 +56,72 @@ The local half of `TX-01`–`TX-06`.
 - **Constraint** — the journal entry is durable **before** the commit is acknowledged (`WP-07.01`). This is the difference between crash-free and recoverable (`QI-08`).
 - **Truncation** — safe under concurrent read, bounded by snapshot policy
 
-### 1.3a The two revisions a client row carries
+### 1.3a Local edit identity, submission and acknowledgement
 
-`CW-01` of the data-model overview says a client never assigns an authoritative revision, and `CW-07` says `ExpectedRev` on a *Cloud* write is the last acknowledged Cloud revision. A synchronised aggregate on a device therefore carries **two** version values, and conflating them produces either false conflicts or silent clobbering.
+`CW-01` of the data-model overview says a client never assigns an authoritative revision. What that leaves open — and what the previous formulation got wrong — is **exactly how much local work an acknowledgement covers**.
 
-| Field | Assigned by | Meaning | Sent to Cloud |
+> **Corrected 2026-09-08.** The previous `RV-C5` reset `local_rev` to 0 whenever an acknowledgement arrived. Counterexample: edit **A** becomes durable and is submitted; while A is in flight, edit **B** becomes durable on the same aggregate; Cloud acknowledges A; `local_rev` resets to 0 although B is still pending; the eviction gate then reports the row as having no pending work and **B is discardable as cache**. A monotonic counter cannot express *which* work an acknowledgement covered, so it is replaced by a watermark over an ordered log.
+
+#### The four identities
+
+| Identity | Scope | Assigned by | Purpose |
 |---|---|---|---|
-| `acked_rev` | **Cloud** | The last revision Cloud acknowledged for this aggregate | **Yes** — this is `ExpectedRev` on `sync.pushChange` |
-| `local_rev` | **The device** | A device-scoped counter, incremented on every durable local edit; resets to 0 on acknowledgement | **Never** |
+| `local_seq` | Per aggregate, per device | The device, strictly increasing, **never reset** | Orders durable local edits and names exactly what a submission covered |
+| `batch_id` | Per submission | The device, allocated once | The **idempotency identity** of a dispatched request (`TX-01`) |
+| `acked_rev` | Per aggregate | **Cloud** | The authoritative revision, and the `ExpectedRev` a submission is made against |
+| `acked_local_seq` | Per aggregate, per device | Set from the acknowledgement | The **watermark**: local work at or below it is acknowledged |
 
-Every synchronised aggregate table replaces its single `rev` column with these two.
+Every synchronised aggregate row carries `acked_rev`, `acked_local_seq` and `head_local_seq` (the highest durable local edit). It **does not** carry `local_rev`.
 
 | # | Rule |
 |---|---|
-| RV-C1 | **`acked_rev` is the only value Cloud ever sees.** A device that sent `local_rev` as `ExpectedRev` would produce a conflict on every second edit, because Cloud has never heard of it. |
-| RV-C2 | **`local_rev > 0` means the row has unacknowledged work**, and is exactly the eviction gate of `PE-02`. It is cheaper and more direct than joining the outbox, and the two must agree — an invariant check asserts they do. |
-| RV-C3 | **A local RPC's `ExpectedRev` is the composite `(acked_rev, local_rev)`**, because a local caller — an agent's device tool, or another product — saw the *local* state, which includes pending edits. Passing only `acked_rev` would let two local callers overwrite each other between acknowledgements. |
-| RV-C4 | **`NO-04`'s "local revision" is `(acked_rev, local_rev)`**, and the operation says so rather than returning a bare number that reads like a Cloud revision. |
-| RV-C5 | **On acknowledgement the device sets `acked_rev` to the value Cloud returned and resets `local_rev` to 0**, in the same transaction that clears the outbox row (`PE-02`). A crash between those steps leaves the outbox row present, and the re-push is idempotent (`SY-02`). |
-| RV-C6 | **A conflict compares `acked_rev`, never `local_rev`.** Two devices conflict when they submitted against the same `acked_rev`; how many local edits each accumulated is irrelevant to that question. |
+| RV-C1 | **`acked_rev` is the only revision Cloud ever sees**, and it is the `ExpectedRev` on `sync.pushChange`. A device that sent a local counter would conflict on every second edit, because Cloud has never heard of it. |
+| RV-C2 | **The pending predicate is `head_local_seq > acked_local_seq`**, not a counter being non-zero. In the counterexample, acknowledging A advances `acked_local_seq` to A's sequence while `head_local_seq` is B's — so the row is correctly still pending. |
+| RV-C3 | **`local_seq` is never reset.** Resetting is what destroyed the ability to say which work an acknowledgement covered. It is a per-aggregate, per-device counter and its absolute value has no meaning outside that pair. |
+| RV-C4 | **An acknowledgement advances the watermark to the highest `local_seq` the submitted batch contained — and no further.** The batch records its range when it is dispatched, so the covered set is a recorded fact, not a re-derivation at acknowledgement time. |
+| RV-C5 | **A local RPC's optimistic token is `(acked_rev, head_local_seq)`.** A local caller saw the local state, which includes pending edits; passing only `acked_rev` would let two local callers overwrite each other between acknowledgements. |
+| RV-C6 | **A conflict compares `acked_rev`, never a local sequence.** Two devices conflict when they submitted against the same `acked_rev`; how much local work each accumulated is irrelevant to that question. |
 
-### 1.4 `sync_outbox`
+#### The submission log
+
+`sync_outbox` becomes a log of **immutable submission batches** rather than a queue of mutable rows.
+
+| Field | Type | Notes |
+|---|---|---|
+| `batch_id` | `id` | **PK**, and the idempotency identity sent to Cloud |
+| `aggregate_kind`, `aggregate_id` | `text NN`, `id NN` | |
+| `from_local_seq`, `to_local_seq` | `bigint NN` | **The exact local work this batch covers** — inclusive range |
+| `expected_rev` | `rev NN` | The `acked_rev` the batch was built against |
+| `payload_ref` | `id NN` | The **immutable** change content; never edited after dispatch |
+| `state` | `enum(pending, dispatched, acknowledged, conflicted, superseded) NN` | |
+| `dispatched_at`, `settled_at` | `instant?` | |
+
+- `UQ (batch_id)`; `IX (aggregate_id, from_local_seq)`; `IX (state, dispatched_at)`
+- **Constraint** — once `state = 'dispatched'`, `payload_ref`, `from_local_seq`, `to_local_seq` and `expected_rev` are **immutable**. A retry re-sends the identical request under the identical `batch_id` (`TX-03`)
+- **Constraint** — batches for one aggregate have non-overlapping, ascending `local_seq` ranges
+
+| # | Rule |
+|---|---|
+| SB-L1 | **An edit made while a batch is in flight does not join it.** It takes the next `local_seq` and waits for the next batch. **Editing is never blocked on network latency** — the user keeps typing, and the work accumulates behind the dispatched batch. |
+| SB-L2 | **A dispatched batch is never mutated.** Appending to an in-flight request would change what a `batch_id` means, and a retry would then carry different content under the same idempotency key (`TX-03`). |
+| SB-L3 | **The next batch is built against the `acked_rev` the previous one produced.** Batches for one aggregate are therefore strictly sequential; there is at most one in flight per aggregate. |
+| SB-L4 | **A duplicate or delayed acknowledgement is idempotent.** Advancing the watermark to a value at or below its current one is a no-op, so an acknowledgement arriving twice — or late, after a newer one — cannot move it backwards. |
+| SB-L5 | **A lost response is resolved by re-sending the same `batch_id`.** Cloud returns the original result (`TX-04`), including the revision it assigned, so the client learns the outcome without a second effect. |
+| SB-L6 | **Restart resumes from the log.** A `dispatched` batch with no settlement is re-sent; a `pending` batch is built and sent. Nothing is inferred from in-memory state. |
+| SB-L7 | **A conflict marks the batch `conflicted` and does not advance the watermark.** The covered edits remain pending and recoverable. Resolution produces a **new** batch against the new `acked_rev`, and subsequent pending work is rebased onto it — its `local_seq` values are unchanged, since they order local work and say nothing about Cloud state. |
+| SB-L8 | **Nothing is discarded on conflict.** A rebased batch may be transformed by the resolution, but the original edits stay in the log until a resolution acknowledges them, so a conflict can never lose work. |
+
+#### Safe eviction
+
+| # | Rule |
+|---|---|
+| EV-L1 | **A row is evictable only when `head_local_seq == acked_local_seq`** and no staged upload and no unreturned tool receipt references it. This is `PE-02`, restated against the watermark. |
+| EV-L2 | **The corroborating invariant is that no batch for the aggregate is in a non-terminal state.** The two conditions must agree; a periodic check asserts they do, and a disagreement is a defect rather than a tie-break. |
+| EV-L3 | **Cache pressure, sign-out, account switch and subscription restriction all run this same gate** (`PE-03`). None has a shortcut, because each is a path by which unacknowledged work has historically been lost.
+
+### 1.4 `sync_outbox` — the submission batch log
+
+**Schema and rules are in `§1.3a`.** The table below is the transport-level view; the batch identity, covered range and immutability rules govern it.
 
 | Field | Type | Notes |
 |---|---|---|
@@ -97,7 +142,7 @@ Every synchronised aggregate table replaces its single `rev` column with these t
 | # | Rule |
 |---|---|
 | PE-01 | **Cloud is authoritative for acknowledged revisions of synchronised data** (`§5` of the product scope). The local store holds a **working cache** of what Cloud has acknowledged, plus **durable pending changes** that it has not. |
-| PE-02 | **A row is evictable only if every change to it has been acknowledged.** The gate is `local_rev = 0` (`RV-C2`) **and** no staged upload and no unreturned tool receipt references it. `local_rev` is the primary test because it is on the row itself; the outbox check is the corroborating invariant, and the two must agree. |
+| PE-02 | **A row is evictable only if every change to it has been acknowledged.** The gate is `head_local_seq == acked_local_seq` (`EV-L1`) **and** no staged upload and no unreturned tool receipt references it. The watermark comparison is the primary test because it is on the row itself; the batch-state check is the corroborating invariant, and the two must agree (`EV-L2`). |
 | PE-03 | **Cache pressure, sign-out, account switch, subscription restriction and workspace change never discard an unacknowledged change** (`C-06`). Each of these paths runs the same eviction gate; none has a shortcut. |
 | PE-04 | **A durable local save is never presented as saved to Cloud** (`§3.1` of the product scope). The UI distinguishes *saved on this device* from *acknowledged by Cloud*, and the outbox row is what makes the difference queryable. |
 | PE-05 | **Pending work survives reinstall-level recovery.** The outbox, the journal and staged upload content are in the durable store, not in a cache directory that a cleanup tool may remove. |

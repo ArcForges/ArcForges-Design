@@ -48,6 +48,8 @@ Product  →  Sync Scope  →  Objects
 
 ## 3. Change propagation
 
+**Client submission is a log of immutable batches, not a mutable queue** (`§1.3a` of the desktop data model). Each batch records the exact `local_seq` range it covers; an acknowledgement advances the watermark to that range's end **and no further**, so an edit made while a batch was in flight stays pending (`RV-C4`, `SB-L1`). A dispatched batch is never mutated — appending to it would change what its idempotency identity means (`SB-L2`) — and there is at most one batch in flight per aggregate (`SB-L3`).
+
 ### 3.1 Client outbox
 
 ```

@@ -43,7 +43,7 @@
 | BR-06 | **A high-risk operation is not executed remotely without the approval its risk level demands**, including local presence where required. |
 | BR-07 | **An offline target degrades honestly**: the request is queued with a visible state and an expiry, never silently dropped or falsely reported as running. |
 | BR-08 | **The tool request carries a bounded payload**; large data crosses by reference through the resource path. |
-| BR-09 | **Placement is explicit**: a task records where it ran, and a task that must run locally never silently runs in the cloud. |
+| BR-09 | **Locality is explicit per Step** (`TK-02`): a Step records where it ran, and a Step that must run locally never silently runs in the cloud. |
 
 ---
 
@@ -55,7 +55,7 @@
 | `src/Cloud/ArcForges.Cloud.Modules.Identity/` | Device presence tracking and trust-gated remote eligibility |
 | `src/ArcChat/ArcChat.CloudClient/` | The pull loop, local re-authorisation, result submission |
 | `src/ArcChat/ArcChat.Agent/` | Remote task integration with the local execution engine |
-| `src/BuildingBlocks/ArcForges.Execution/` | Placement recording and remote attempt semantics |
+| `src/BuildingBlocks/ArcForges.Execution/` | Per-Step locality recording and remote attempt semantics |
 | `tests/RemoteToolBridgeTests/` | Bridge, re-authorisation, offline, duplicate and expiry suites |
 
 **Major types introduced.** `DevicePresence`, `RemoteEligibility`, `ToolRequest`, `ToolRequestState`, `ToolResult`, `LocalReauthorization`, `PlacementDecision`, `RemoteApproval`, `RequestExpiry`.
@@ -118,7 +118,7 @@
 
 **Testing requirements.** A negative test asserting a `device` Step is **never** satisfied by a cloud substitute; a mixed-locality Task exercising both Step kinds; a `waitingDevice` test asserting a bounded wait, a stated reason and **no capacity held** while waiting; a schema test asserting no `placement` or `authoritative_store` column exists on `task.task` (`TK-01`).
 
-**Completion gate.** Placement is recorded and visible, and a local-only task cannot be placed elsewhere.
+**Completion gate.** Every Step's locality is recorded and visible; a `device` Step is never satisfied by a cloud substitute; a Task with no eligible device waits with a stated reason holding no capacity; and no `placement` or `authoritative_store` column exists on `task.task` (`TK-01`).
 
 ---
 
@@ -146,7 +146,7 @@
 | Duplicate, lost-result and kill-during-execution results | `WP-26.03` |
 | Remote approval and local-presence negative results | `WP-26.04` |
 | Offline queue, delivery and expiry results | `WP-26.05` |
-| Placement recording and local-only negative results | `WP-26.06` |
+| Per-Step locality, no-cloud-substitute and waiting-device results | `WP-26.06` |
 
 ---
 
@@ -160,7 +160,7 @@
 4. One request produces one effect; a lost result is recoverable without duplicating the effect.
 5. Remote approval works for permitted risk levels and can never satisfy a local-presence requirement.
 6. An offline target queues visibly with an expiry, and expiry closes the request with a typed reason.
-7. Placement is recorded and visible, and a local-only task cannot be placed elsewhere.
+7. Every Step's locality is recorded and visible; a `device` Step is never satisfied by a cloud substitute; and no task-level placement column exists.
 
 ---
 

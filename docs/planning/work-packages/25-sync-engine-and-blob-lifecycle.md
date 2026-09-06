@@ -71,13 +71,13 @@
 
 **Completion gate.** Scopes are per-product, changeable without redundant transfer, and can express a content exclusion.
 
-### WP-25.01 — Client outbox
+### WP-25.01 — Client submission batch log
 
-**What must be fully done.** A durable outbox capturing local changes with command identities, surviving termination, retrying with backoff, and preserving causal order where required. Outbox depth and age are visible.
+**What must be fully done.** The submission log of `§1.3a` of the desktop data model: durable local edits taking a strictly increasing, **never reset** `local_seq`; immutable batches recording the exact `(from_local_seq, to_local_seq)` range they cover and the `expected_rev` they were built against; at most one batch in flight per aggregate; and an acknowledgement advancing `acked_local_seq` **to that range's end and no further**. Editing continues freely while a batch is in flight — new edits take the next sequence and wait for the next batch, and **editing is never blocked on network latency** (`SB-L1`).
 
-**Testing requirements.** Kill-with-pending-entries; retry ordering; a long-offline accumulation test with bounded growth and a clear state.
+**Testing requirements.** **The in-flight counterexample**: edit A durable and dispatched, edit B durable on the same aggregate while A is in flight, A acknowledged — assert B is still pending, the row is **not** evictable, and B is submitted in the next batch (`RV-C2`). A duplicate acknowledgement and a late acknowledgement arriving after a newer one, each asserting the watermark never moves backwards (`SB-L4`). A lost response re-sent under the same `batch_id` returning the original result with one effect (`SB-L5`). A restart mid-flight resuming from the log alone (`SB-L6`). A conflict asserting the watermark does not advance, the covered edits stay pending, and subsequent pending work rebases without loss (`SB-L7`, `SB-L8`). A mutation attempt on a dispatched batch, asserting it is **refused** (`SB-L2`). A latency test asserting edit throughput is unaffected by a slow acknowledgement.
 
-**Completion gate.** Pending changes survive termination, retry in correct order, and accumulate with bounded, visible growth.
+**Completion gate.** **An acknowledgement clears exactly the work it covered and nothing more**; no path discards an unacknowledged edit; a dispatched request is never mutated under its own idempotency identity; and editing proceeds at full speed while a batch is in flight.
 
 ### WP-25.02 — Server inbox and change feed
 
@@ -148,7 +148,7 @@
 | Evidence | Produced by |
 |---|---|
 | Scope change and exclusion results | `WP-25.00` |
-| Outbox survival, ordering and growth results | `WP-25.01` |
+| Batch-log survival, in-flight-edit, duplicate-acknowledgement and conflict-rebase results | `WP-25.01` |
 | Deduplication, feed stability and expired-cursor results | `WP-25.02` |
 | Conflict matrix and recoverability results | `WP-25.03` |
 | Tombstone convergence and resurrection-prevention results | `WP-25.04` |
