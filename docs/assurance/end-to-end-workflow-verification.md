@@ -32,7 +32,7 @@ A step resolving to a requirement alone is **not** sufficient — a requirement 
 | A-01 | Purchase intent, provider checkout, webhook persisted before processing | `purchase.createIntent`; `EI-01`; `commerce.provider_event` | Signature invalid → quarantined, never processed (`PE-05`) |
 | A-02 | Order and payment written | `commerce.order`, `commerce.payment` | Unmatched payment → quarantined, **never granted** (`PE-09`) |
 | A-03 | **A service term is created** — the only four sources are a subscription, a Pass, an audited compensation or a self-host grant | `entitlement.service_term`; `SV-02`; `UQ (kind, period_ref)` | Replayed event → **creates nothing**; a genuine renewal carries a new `period_ref` and is a new row (`TM-02`) |
-| A-04 | Capacity bucket initialised **once per contiguous run**, idempotently | `capacity_bucket.activation_term_id`; `RF-07`, `TM-03` | Contiguous renewal → no re-initialisation, no refill to full |
+| A-04 | Capacity bucket initialised **once per contiguous run**, idempotently | `capacity_bucket.activation_term_id`; `RF-08` of the commerce architecture, `TM-03` | Contiguous renewal → no re-initialisation, no refill to full |
 | A-05 | Client hinted, then re-reads authoritatively | `serviceTerm.changed` → `entitlement.getServiceTerm`; `entitlement.getCapacity` | Event lost → converges on next read (`RE-07`) |
 | A-06 | User starts a turn | `StartAgentTurnAsync` → Cloud (`CH-01`) | No term → `entitlement.no_service_term` **before any provider call** (`CH-03`, `AD-01`) |
 | A-07 | **Admission**: refill across policy boundaries, then reserve atomically **in one shared unit of work spanning Entitlement and Commerce**, committing before dispatch | `§7.3` there; `SU-01`, `DB-01` of the data-model overview | Insufficient → `capacity_exhausted` with `recoveryAt`, or `extra_credits_required` (`AI-02`, `AI-03`) |
@@ -40,7 +40,7 @@ A step resolving to a requirement alone is **not** sufficient — a requirement 
 | A-09 | Provider attempts recorded with request identity, tiers and completeness | `commerce.provider_attempt`; `MT-02` | Retry → **a distinct row with its own supplier cost** (`ST-03`) |
 | A-10 | Usage normalised into non-overlapping categories | `commerce.attempt_usage`; `§7.4`; `UQ (attempt, usage_revision, category)` | Cumulative stream → **replaces, never sums** (`UN-03`, `I-492`) |
 | A-11 | Settlement once per logical request, half-even after aggregation, **in one shared unit of work** so both pools move together | `commerce.customer_settlement`; `ST-01`, `ST-05`, `SU-01` | Write fails → idempotent per attempt usage revision, re-runs (`AI-10`) |
-| A-12 | Debit and release against **the same sources the reservation held** | `ST-05`, `CD-06` | Release → capped by the burst; **cannot mint capacity** (`RF-05`) |
+| A-12 | Debit and release against **the same sources the reservation held** | `ST-05`, `CD-06` | Release → capped by the burst; **cannot mint capacity** (`RF-06` of the commerce architecture) |
 | A-13 | Supplier cost and customer cost recorded separately, in different units | `commerce.supplier_cost_entry` (decimal money) vs micro-credits; `I-493` | — |
 | A-14 | User sees capacity, purchased credits and the funding source separately | `entitlement.getCapacity`, `commerce.explainCharge`; `AC-10`, `EC-04` | — |
 
@@ -59,7 +59,7 @@ A step resolving to a requirement alone is **not** sufficient — a requirement 
 | B-05 | User cancels mid-stream | `§6.2` of the harness; `MT-09` | Verified consumption within the ceiling settles; the remainder releases. **Completed provider work is not presumed refundable** |
 | B-06 | Paid term expires while the Task is running | Term evaluation at each dispatch; `SV-06`, `AI-14` | Further dispatch stops at a **durable boundary** with the eligibility reason. Settled work stays settled |
 | B-07 | Renewal grace begins | `service_term.grace_ends_at`; `SV-05`, `C-07` | **Data readable and downloadable; no new inference admitted.** The two windows are configured separately |
-| B-08 | User renews | New `service_term` row; `RF-07` | Contiguous renewal **extends eligibility without refilling to full** (`AC-03`) |
+| B-08 | User renews | New `service_term` row; `RF-08` of the commerce architecture | Contiguous renewal **extends eligibility without refilling to full** (`AC-03`) |
 | B-09 | Retained purchased credits become spendable again | `CR-05` | **Re-enabled without reissue or transfer** |
 | B-10 | Refund of a purchased lot | `RefundHold` → settlement; `AI-17` | Amount frozen then zeroed. **A refund must not mint capacity above the burst** (`AC-11`) |
 

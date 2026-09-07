@@ -406,7 +406,7 @@ One row per workspace. The replenishing included-capacity bucket (`§7.2` of the
 | `rev` | `rev NN` | |
 
 - **Constraint** — `available_micro >= 0`, `held_micro >= 0`
-- **Constraint** — `available_micro <= GREATEST(0, burst_at(now) - held_micro)` (`RF-04`), evaluated on every mutation
+- **Constraint** — `available_micro` may **never be increased** past `GREATEST(available_micro_before, GREATEST(0, burst_in_force - held_micro))` by any operation (`RF-04`, `RF-05` of the commerce architecture). It is a **bound on the increase, not on the resting value**, and the difference is not pedantry: a ceiling reduction leaves a balance legitimately above the new ceiling (`RF-05`), so a `CHECK` on the row would reject the workspace's *next unrelated write* and strand the bucket. Enforced by the update predicate, which no path may bypass
 - **Constraint** — `watermark_at` is non-decreasing, enforced by a checked update predicate (`RF-02`)
 - **Rule** — burst and rate are **not columns here.** They are read from `entitlement.capacity_policy_period`, so a configuration change cannot silently rewrite a bucket's parameters or its history
 
@@ -431,43 +431,21 @@ Immutable policy history. One row per `(realm, offer, activation interval)` in w
 
 #### The refill calculation
 
-Refill runs on read, under the bucket row's lock, and **integrates over the intersection of three interval sets**: elapsed time, eligible paid service, and policy periods.
+> **The algorithm lives in one place, and this is not it.** It is `§7.2` of [the billing and commerce architecture](../16-billing-and-commerce-architecture.md), with its rules `RF-01`–`RF-11`. This section previously restated it and **the two copies had diverged**: the restatement summed every window and applied one ceiling from `burst_at(now)`, instead of saturating at each period's own ceiling in chronological order, and its assignment omitted the `max(available, cap)` clause. Worked examples of the divergence — a ceiling that rises mid-interval yields 15 under the corrected algorithm and 20 under the restatement; a ceiling reduction yields 50 against 10, confiscating balance that `RF-05` says is preserved. A second copy of an algorithm is a second answer, so this one is removed rather than re-synchronised.
 
-```
-refill(bucket, now):
-    LOCK bucket row                                   -- serialises racing replicas (RF-02)
-    if now <= bucket.watermark_at:                    -- clock rollback, or already current
-        return                                        -- never rewind (RF-02)
+**What this schema must provide for it**, and all that belongs here:
 
-    windows = intersect(
-        [bucket.watermark_at, now),
-        eligible_service_intervals(workspace),        -- union of service terms (TM-01)
-        policy_periods(realm, offer))                 -- immutable history
-
-    earned = bucket.remainder_as_rational
-    for w in windows in chronological order:          -- SPLIT AT EVERY BOUNDARY
-        earned += duration_seconds(w) * w.rate_micro_per_second
-
-    whole = floor(earned)
-    bucket.remainder = earned - whole                 -- exact rational carry (RF-03)
-
-    ceiling = max(0, burst_at(now) - bucket.held_micro)
-    bucket.available_micro = min(bucket.available_micro + whole, ceiling)
-    bucket.watermark_at = now
-```
-
-| # | Rule |
+| Need | Supplied by |
 |---|---|
-| RF-01 | **Recovery accrues only over the intersection of elapsed time, eligible paid intervals and policy periods.** A lapse contributes zero; an inactive period is simply absent from the window set (`AC-02`, `AC-03`). |
-| RF-02 | **The watermark advances monotonically and is durable** (`AC-12`). Reconnect, restart, another device, another replica or a clock rollback cannot rewind it or refill the bucket. Racing replicas serialise on the row lock. |
-| RF-03 | **The fractional remainder is carried as an exact rational**, not a scaled integer and never a float. Rate changes make the carry's natural denominator vary, and a fixed scale would round at every boundary — turning a rate change into a small permanent gift or loss. |
-| RF-04 | **The ceiling uses the burst in force *now*** (`burst_at(now)`), and counts held capacity: `available <= max(0, burst - held)` (`AC-11`). A burst *reduction* therefore stops accrual immediately and lets existing balance drain; it never claws back what was already earned, and never releases a hold. |
-| RF-05 | **Returned capacity is capped by the same ceiling.** Releasing a hold or issuing a refund must never mint spendable capacity above the burst (`AC-11`). |
-| RF-06 | **Purchased credits never refill** (`AC-11`). No code path adds to a lot except a purchase, a compensation grant or an adjustment. |
-| RF-07 | **Initialisation happens once per contiguous run**, not once per term. `activation_term_id` names the term that opened the current run; a **contiguous** renewal (`TM-03`) leaves it unchanged and does **not** refill to full (`AC-03`), while a term starting after a gap sets it and initialises once, idempotently. |
-| RF-08 | **A configuration activation does not itself move capacity.** It closes one `capacity_policy_period` and opens the next inside the activation transaction (`CA-03`); the next refill for each workspace integrates across the boundary. No bucket is touched at activation, so activation cost is independent of workspace count and **no capacity is reset, released or minted** (`DC-13`). |
-| RF-09 | **A hold outstanding across a rate change is unaffected.** Holds are micro-credit amounts already reserved; only accrual is rate-dependent. |
-| RF-10 | **Restart is invisible.** Nothing is cached in memory: the watermark, the remainder and the policy periods are all durable, so a refill after restart produces exactly the value it would have produced without one. |
+| The integration lower bound, durable and monotonic | `capacity_bucket.watermark_at` (`RF-02`) |
+| Exact fractional carry across period boundaries | `capacity_bucket.remainder_num` / `remainder_den` (`RF-03`) |
+| The eligible-service interval set | `entitlement.service_term`, unioned by `TM-01` |
+| The policy-period interval set, with the burst and rate in force in each | `entitlement.capacity_policy_period`, contiguous and non-overlapping by its own constraint |
+| Held capacity, so the ceiling can be computed net of reservations | `capacity_bucket.held_micro`, reconciled by `CX-08` |
+| Serialisation of racing replicas | The `capacity_bucket` row lock (`RF-02`) |
+| The one contiguous run, so initialisation happens once | `capacity_bucket.activation_term_id` with `TM-03` (`RF-08`) |
+
+**Cross-checks this schema owes the algorithm.** `CX-08` reconciles `held_micro` against live reservations. `CX-11` asserts that no stored `available_micro` was produced by an increase past the bound above — the property the removed `CHECK` was reaching for, expressed where it is actually true.
 
 ### `entitlement.capacity_reservation` *(new — P2-006)*
 
@@ -601,7 +579,7 @@ Carries the internal metadata sent to the provider (`ID-04`): billing account, w
 | Pool | Table | Unit | Recovers | Reserved by |
 |---|---|---|---|---|
 | Included capacity | `entitlement.capacity_bucket` | micro-credits | **Yes** (`§7.2`) | `entitlement.capacity_reservation.from_capacity_micro` |
-| Purchased and compensation | `commerce.credit_lot` | micro-credits | **No** (`RF-06`) | `capacity_reservation.from_compensation_micro` / `from_purchased_micro` |
+| Purchased and compensation | `commerce.credit_lot` | micro-credits | **No** (`RF-07` of the commerce architecture) | `capacity_reservation.from_compensation_micro` / `from_purchased_micro` |
 
 | # | Rule |
 |---|---|
@@ -828,7 +806,7 @@ The normalised, non-overlapping category quantities (`MT-03`, `§7.4` there).
 | `logical_request_id` | `id NN` | `FK →` |
 | `reservation_id` | `id NN` | `FK →` `entitlement.capacity_reservation` |
 | `debit_capacity_micro`, `debit_compensation_micro`, `debit_purchased_micro` | `int64 NN` | Debited **against the sources the reservation held** (`ST-05`) |
-| `released_micro` | `int64 NN` | Returned to those same sources, capped by the burst (`RF-05`) |
+| `released_micro` | `int64 NN` | Returned to those same sources, capped by the burst (`RF-06` of the commerce architecture) |
 | `rounding_mode` | `text NN` | Declared half-even (`ST-01`) |
 | `settled_at` | `instant NN` | |
 | `adjusts_settlement_id` | `id?` | Present on a correction; the original is never edited (`ST-04`) |
@@ -1007,17 +985,26 @@ The cursor is `publish_seq`, and **only the publisher assigns it**. The publishe
 
 ```
 publish(workspace):
-    hold the workspace's publication lease (fenced)             -- RT-04
+    hold the workspace's publication lease (fenced)             -- RT-04: ONE publisher
     BEGIN
       SELECT change_id FROM sync.change
         WHERE workspace_id = ? AND publish_seq IS NULL
-        ORDER BY change_id
-        FOR UPDATE SKIP LOCKED                                  -- only COMMITTED rows are visible
+        ORDER BY change_id                                      -- a stable scan order
+                                                                -- only COMMITTED rows are visible
+                                                                -- NO row locks, NO skip-locked: see PB-07
       assign publish_seq = watermark + 1, 2, 3 ... in that order
       UPDATE sync.change SET publish_seq = ?, published_at = now()
       UPDATE sync.publication_watermark SET last_seq = ?
-    COMMIT
+    COMMIT                                                      -- the whole batch appears at once
 ```
+
+**What "commit order" does and does not mean here.** The claim is precise, and stating it loosely is how an implementer builds the wrong thing:
+
+| Scope | Order delivered | Why |
+|---|---|---|
+| **Across batches** | **Commit order.** | A change enters a batch only once its business transaction has committed, so a transaction that commits late gets a `publish_seq` above every number already assigned — even if it started first and holds a lower `change_id` (`PB-01`). |
+| **Within one batch, same aggregate** | **Commit order.** | Revision *n+1* of an aggregate cannot be written until revision *n*'s transaction has committed and released it, so that transaction's `sync.change` insert — and therefore its `change_id` — is later. `change_id` order **is** commit order for a single aggregate; it is not a coincidence to rely on silently, so it is stated. |
+| **Within one batch, across aggregates** | **Arbitrary, and irrelevant.** | The batch commits atomically, so no reader can observe an interleaving inside it. There is nothing here to get right. |
 
 | # | Rule |
 |---|---|
@@ -1026,14 +1013,16 @@ publish(workspace):
 | PB-03 | **Assignment is monotonic per workspace** and gapless by construction: the publisher allocates from its own durable watermark inside the same transaction that sets the rows, so a publisher crash rolls back both. |
 | PB-04 | **A rolled-back business transaction leaves no row at all**, so a rollback cannot create a gap. The old design's rollback gap came from the sequence, which this design does not use for the cursor. |
 | PB-05 | **Publication latency is bounded and observable.** Oldest unpublished age is a monitored signal (`§5` of the observability architecture); a stalled publisher is a page-worthy condition, because it stalls every client's feed. |
-| PB-06 | **`change_id` is never a cursor.** It orders the publisher's own claim scan only; it carries no cross-transaction ordering meaning. |
+| PB-06 | **`change_id` is never a cursor.** It orders the publisher's own claim scan, and within a batch it coincides with commit order **for a single aggregate** for the reason in the table above. Across unrelated aggregates it carries no ordering meaning, and no client may derive one from it. |
+| PB-07 | **The claim scan takes no row locks and never uses `SKIP LOCKED`.** The lease already guarantees a single publisher per workspace (`RT-04`), so there is no second claimant to exclude — and a locking scan would *weaken* the property this section depends on: PostgreSQL applies `ORDER BY` before locking, so `FOR UPDATE` can return rows in a different order than the sort specified, and `SKIP LOCKED` can drop rows out of the middle of the intended prefix. Two concurrency models cannot both be the answer; the lease is the answer. **This reasoning is from the documented semantics, not from an executed test** — `PG-17` requires the test. |
 
 #### 9.2 Cursor, bootstrap and retention
 
 | # | Rule |
 |---|---|
 | CU-01 | **A cursor is `(workspace_id, publish_seq)`** and is opaque to the client (`QP-02`). A client never constructs one. |
-| CU-02 | **Bootstrap is a snapshot plus a cursor taken together.** The server reads the current watermark `W`, then serves the aggregate snapshot as of a transaction that can see everything published up to `W`, and returns the cursor `W`. Anything published after `W` arrives through the feed. **A snapshot without its matching cursor is prohibited**, because the seam between them is exactly where a change is lost. |
+| CU-02 | **Bootstrap is a snapshot plus a cursor, and the order is part of the contract**: read the watermark `W` **first**, then take the aggregate snapshot, then return both. Anything published after `W` arrives through the feed. **A snapshot without its matching cursor is prohibited**, because the seam between them is exactly where a change is lost. |
+| CU-02a | **The snapshot must see *at least* everything published up to `W`; it will usually see more, and that is correct.** Taking it after reading `W` guarantees the lower bound. It also picks up work that is **committed but not yet published**, which the feed then delivers again above `W` — harmless, because application is idempotent by `(aggregate_kind, aggregate_id, aggregate_rev)` (`CU-06`). **Do not try to bound the snapshot above by `W`.** Aggregate rows carry no `publish_seq`, so there is nothing to filter on, and the attempt would trade a harmless duplicate for the one failure that actually loses data: a snapshot that omits a row the feed will never resend. Over-delivery is safe here; under-delivery is not. |
 | CU-03 | **A cursor beyond the retention floor is refused with `sync.cursor_expired`**, and the client performs a full resync (`DL-02`). It is never silently clamped, because clamping would skip the changes between the floor and the cursor. |
 | CU-04 | **Retention pruning removes only rows below the floor**, and the floor advances only after the tombstone-retention window (`DL-01`), so a returning device either resyncs fully or sees every tombstone it needs. |
 | CU-05 | **Publication is per workspace**, so one workspace's slow publisher cannot stall another's feed, and a workspace's sequence has no relationship to any other's. |
@@ -1134,6 +1123,7 @@ These cannot be foreign keys (`AG-01`, `MD-02`). Each is an application invarian
 | CX-08 | For every workspace, the sum of live `capacity_reservation.from_capacity_micro` equals `capacity_bucket.held_micro`, and the sum of `from_compensation_micro` + `from_purchased_micro` per lot equals that lot's `held_micro` | The shared unit of work (`FU-04`) | Accounting comparison (`WP-42.11`) |
 | CX-09 | Every settled `logical_ai_request` has exactly one non-adjusting `customer_settlement`, and at least one `provider_attempt`; **the counts are not required to match** (`FU-03`) | Settlement, in the shared unit of work | Reconciliation (`WP-43.07`) |
 | CX-10 | Every `sync.change` row with a non-null `publish_seq` has a `publish_seq` less than or equal to its workspace's `publication_watermark.last_seq` | The publisher's transaction (`PB-03`) | Feed integrity check |
+| CX-11 | No `capacity_bucket.available_micro` was raised past `max(previous_available, max(0, burst_in_force - held_micro))` by any operation, and a balance sitting above the current ceiling after a reduction is **not** a violation (`RF-05` of the commerce architecture) | The bucket update predicate | Capacity accounting check |
 | CX-03 | Every `resource.object_reference` referrer exists in its owning module | Reference creation | Orphan detection (`WP-46.04`) |
 | CX-04 | Every `sync.change` names an aggregate that exists or has a tombstone | The applying transaction | Feed integrity check |
 | CX-05 | Every `task.tool_request` targets a device that exists and is eligible | Request creation | Presence sweeper |
