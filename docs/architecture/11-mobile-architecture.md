@@ -113,6 +113,7 @@ User action while offline
 | OB-01 | **The outbox is durable**, surviving process termination. |
 | OB-02 | **Every write retry obeys `CommandId` idempotency** (`ID-01` in the AI requirements). |
 | OB-03 | **A high-risk agent task is never automatically executed on reconnection** (`OF-02` in the companion requirements). |
+| OB-03a | **An unrecognised Task state renders as an unknown non-terminal state with its reason text** (`TS-01` of the public API contract), never as failed and never as absent. Mobile ships on store timelines and is routinely older than the Cloud host, so this is the normal case, not an edge one. |
 | OB-04 | **Offline caching is restrained and bounded**: recent task state, recent conversation summaries, pending attention items and small previews (`OF-01` there). |
 | OB-05 | **Cached content is evictable and never authoritative.** |
 

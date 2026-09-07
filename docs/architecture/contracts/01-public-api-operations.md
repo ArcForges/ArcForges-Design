@@ -185,11 +185,35 @@ Owned by the **Entitlement** module, independent of Commerce (`EO-01`).
 
 | # | Rule |
 |---|---|
-| TK-01 | **`task.create` records placement once and it never changes** (`TO-06`). A `local`-declared task cannot be created with `cloud` placement. |
+| TK-01 | **`task.create` records no placement.** The field is retired: a Task is always Cloud-owned (`TO-01`), the surface it came from is provenance only (`TK-04` of the Cloud data model), and **locality is declared per Step** as `toolLocality ∈ {cloud, device}` (`TO-02`, `TO-06`). One Task may mix both. A Step declared `device` is never silently satisfied by a cloud approximation; with no eligible device online the Task waits in `waitingDevice` and says so. |
 | TK-02 | **`approval.decide` inherits the underlying operation's requirements**, including local presence. An operation needing local presence **cannot** be approved from mobile or web (`AZ-01`). |
 | TK-03 | **`task.steer` is an append, not an authorization.** It can never escalate (`WP-16.05`). |
 | TK-04 | **`bridge.pullRequests` is the only direction.** There is no cloud-to-device push of work (**D-010**), and no operation in this catalogue lets Cloud initiate one. |
 | TK-05 | **`bridge.submitResult` is idempotent on `(taskId, attemptId)`**, so a lost response is recoverable by re-submission without duplicating the effect (`WP-26.03`). |
+
+---
+
+### 7.1 The Task state a client is given
+
+`task.list`, `task.get` and every realtime task event carry this set, and `RS-04` sends clients here. **These are the wire values**, matching `task.task.state` in the Cloud data model exactly. Requirements prose uses the domain spelling for the same states — `WaitingForDevice` in `§` remote task of the mobile and web requirements is this table's `waitingDevice`, not a second state (`WP-00.01` exports the term-space mapping).
+
+| State | Meaning to a client |
+|---|---|
+| `created` | Accepted and recorded; not yet queued |
+| `queued` | Waiting for the Harness to pick it up |
+| `running` | A turn is executing |
+| `waitingApproval` | Blocked on a human decision (`approval.list`) |
+| `waitingDevice` | Blocked on a `device` Step with no eligible device online (`TO-06`). **Not a failure**; the client says which device is needed |
+| `waitingCapacity` | Admitted but unfunded: no capacity and no authorised extra credits. Carries `recoveryAt` where capacity replenishes (`AD-03` of the commerce architecture). **Not a failure** |
+| `paused` | Suspended by `task.pause` |
+| `unknownEffect` | Dispatched with no recorded outcome. **Not terminal and not a failure**: it resolves through the ladder in `§6.4` of the harness — declared idempotency, an owner status operation, the provider's record, the deadline, or a user decision (`UR-01`–`UR-04`). A client presents it as *outcome not yet established*, never as done and never as failed |
+| `succeeded`, `failed`, `cancelled` | Terminal |
+
+| # | Rule |
+|---|---|
+| TS-01 | **A client must render an unrecognised state as an unknown non-terminal state**, showing the accompanying reason text, and must never treat it as failed, terminal or absent. Clients version independently of the Cloud host (`CD-06` of the deployment architecture), so a client older than the host **will** receive a state it does not know — `waitingDevice` and `waitingCapacity` were both added to an existing enum this way. |
+| TS-02 | **Only `succeeded`, `failed` and `cancelled` are terminal**, and terminality is never inferred from an unrecognised value. A client that stops polling on an unknown state strands the Task. |
+| TS-03 | **`waitingDevice` and `waitingCapacity` are waiting states with a stated cause and, where one exists, a stated recovery time.** Presenting either as an error is a defect — the work is still going to happen. |
 
 ---
 
