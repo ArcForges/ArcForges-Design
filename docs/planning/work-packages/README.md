@@ -23,7 +23,7 @@ The number is an identity, not a schedule. Ordering is by dependency; serial exe
 | 03 | [Contract foundation and the licence boundary split](03-contract-foundation-and-licence-split.md) | 02 |
 | 04 | [Identity, error, revision and versioning primitives](04-identity-error-and-versioning-primitives.md) | 03 |
 | 05 | [Architecture and repository policy test suite](05-architecture-and-repository-policy-tests.md) | 02, 03 |
-| 06 | [AOT, JIT and WebAssembly publish proof](06-aot-jit-and-wasm-publish-proof.md) | 03, 04, 05 |
+| 06 | [AOT, JIT and Web publish proof](06-aot-jit-and-wasm-publish-proof.md) | 03, 04, 05 |
 | 07 | [Local persistence foundation](07-local-persistence-foundation.md) | 04, 06 |
 
 ### Phase B — Shared platform
@@ -114,7 +114,7 @@ The number is an identity, not a schedule. Ordering is by dependency; serial exe
 
 | # | Work package | Depends on |
 |---|---|---|
-| 47 | [Static public site](47-static-public-site.md) | 00 |
+| 47 | [Static public site](47-static-public-site.md) | 00, 02 |
 | 48 | [Account portal](48-account-portal.md) | 42, 44, 47 |
 | 49 | [ArcChat Web companion](49-arcchat-web-companion.md) | 26, 48, 52 |
 | 50 | [Full-platform production release](50-full-platform-production-release.md) | 20, 28, 32, 35, 39, 40, 41, 43, 46, 49, 51, 52 |
@@ -129,7 +129,7 @@ The number is an identity, not a schedule. Ordering is by dependency; serial exe
 |---|---|
 | 00 | 01, 47 |
 | 01 | 02 |
-| 02 | 03, 05 |
+| 02 | 03, 05, 47 |
 | 03 | 04, 05, 06, 09, 21, 23, 30 |
 | 04 | 06, 07, 11, 12 |
 | 05 | 06, 21 |

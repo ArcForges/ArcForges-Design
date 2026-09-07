@@ -36,10 +36,34 @@ Every cloud HTTP operation. Columns follow `§2` of the catalogue: each operatio
 | # | Rule |
 |---|---|
 | ID-01 | **`identity.removeAuthIdentity` refuses the last usable credential** (`identity.last_credential`), because succeeding would lock the user out irrecoverably. |
-| ID-02 | **`identity.refreshSession` rotates.** Presenting a superseded generation revokes the whole family and raises a security audit event — the stolen-token detection of `identity.session`. |
+| ID-02 | **Native identity.refreshSession rotates.** Reusing a superseded generation revokes its bearer family and raises a security audit event. BrowserCookie sessions use the separate adopted opaque-cookie lifecycle and never call this refresh endpoint. |
 | ID-03 | **Account deletion never touches local data** ([ED-05](../16-billing-and-commerce-architecture.md#rule-ed-05)), and the response says so explicitly so the client can show it. |
 
 ---
+
+<a id="browser-session-operations"></a>
+
+### 1.1 Browser session transport operations
+
+These C# endpoint mappings live inside the existing Cloud host, exposed through the Account/Chat same-origin edge. They share Identity application services and do not duplicate native authentication logic or other business operations. Their generated baseline is `contracts/browser-session/v1/openapi.json`; normal business endpoints still consume the same public API DTOs. Native bearer issuance/refresh endpoints are absent from the browser edge allowlist. Browser authentication and recovery use the same underlying Identity services with cookie-only response shaping; they cannot accidentally return a native token response. The native `identity.refreshSession` operation is not a browser refresh route.
+
+| OperationId / verb and path | Auth/input | Output and effect |
+|---|---|---|
+| `browser.bootstrap` · GET `/session/v1/bootstrap` | Anonymous or live cookie session; exact configured origin | No-store CSRF request token, authenticated flag and safe session/expiry/profile projection. Pre-auth material is bounded/expiring; no bearer/session secret in JSON |
+| `browser.beginAuthentication` · POST `/session/v1/authentication/begin` | Pre-auth flow + CSRF/Origin; existing passkey/email policy | Expiring, rate-limited challenge bound to method/origin/RP/flow; no user-existence leak |
+| `browser.completeAuthentication` · POST `/session/v1/authentication/complete` | One-use challenge response + CSRF/Origin | Creates lowest-trust browser device/session, Set-Cookie only, safe session projection; invalidate pre-auth flow |
+| `browser.logout` · POST `/session/v1/logout` | Cookie + CSRF/Origin; replay against already-ended session is harmless | Revoke before cookie deletion; no-store result; never logout by GET |
+
+Step-up, credential management, recovery, revoking other sessions and workspace selection use the existing public Identity/Workspace operations through the cookie-auth adapter with the same authorization and idempotency rules. WebSocket origin validation and negotiation antiforgery are explicit transport requirements, not new business operations. No endpoint accepts a caller-supplied forwarding URL.
+
+**Errors and compatibility.** Reuse the existing auth/validation/rate-limit error vocabulary; unauthenticated/expired reads return an HTTP auth error, not an HTML redirect or a fake empty workspace. CSRF/origin failure executes no business handler. One-use authentication challenges are not ordinary retryable business commands; existing [NI](#ni-auth-note) semantics apply. Schema generation includes cookie/CSRF requirements, Set-Cookie/no-store metadata and safe response shapes. [Web session storage](../data-model/01-cloud-data-model.md#browser-session-storage) is the storage authority.
+
+<a id="ni-auth-note"></a>
+Authentication challenge creation/completion uses the catalogue's NI classification: no blind automatic retry; duplicate consumed challenge is rejected safely and a fresh login starts a new bounded flow.
+
+---
+
+
 
 ## 2. Workspace and device
 

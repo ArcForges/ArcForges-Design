@@ -166,6 +166,8 @@ These exist once and are used by every module. They are the mechanism behind [TX
 - `UQ (address_normalised, purpose)` where verified
 - **Rule** — email is a **contact and recovery channel, never an identity** ([ID-01](../16-billing-and-commerce-architecture.md#rule-id-01) of the commerce architecture). Changing it never changes `user_id` and never affects entitlement.
 
+<a id="browser-session-storage"></a>
+
 ### `identity.session`
 
 | Field | Type | Notes |
@@ -177,15 +179,43 @@ These exist once and are used by every module. They are the mechanism behind [TX
 | `issued_at` | `instant NN` | |
 | `expires_at` | `instant NN` | |
 | `revoked_at` | `instant?` | |
-| `refresh_token_hash` | `text NN` | Hash only; never the token |
-| `refresh_generation` | `int NN` | Rotation counter — a reused older generation revokes the family |
+| `credential_kind` | `enum(nativeBearer, browserCookie) NN` | Selects exactly one credential shape |
+| `refresh_token_hash` | `text?` | Native bearer family only; hash only |
+| `browser_handle_hash` | `text?` | Browser only; hash of cryptographically random 256-bit handle |
+| `browser_origin` | `text?` | Browser only; exact configured Account or Chat origin |
+| `idle_expires_at` | `instant?` | Browser only; never later than absolute expires_at |
+| `last_activity_at` | `instant?` | Accepted interactive HTTP activity, not passive realtime keepalive |
+| `session_policy_version` | `text NN` | Issuance policy reference; current revocation/tighter security policy still enforced |
+| `refresh_generation` | `int?` | Native bearer only; reused superseded generation revokes the family |
 | `step_up_at` | `instant?` | When step-up was last satisfied |
 | `step_up_classes` | `text[]` | Which operation classes the step-up covers |
 
 - `IX (user_id, revoked_at, expires_at)` — active-session listing and mass revocation
 - `IX (device_id)` — device revocation cascade
-- `UQ (refresh_token_hash)`
-- **Constraint** — presenting a superseded `refresh_generation` revokes the entire session family and raises a security audit event. This is the detection mechanism for a stolen refresh token.
+- Partial `UQ (refresh_token_hash)` for native sessions; partial `UQ (browser_handle_hash)` for browser sessions; `IX (browser_origin, idle_expires_at)` for browser expiry maintenance.
+- **Exclusive credential check:** nativeBearer requires refresh hash/generation and null browser fields; browserCookie requires handle hash/origin/idle expiry and null refresh fields. The server accepts no browser cookie on the native bearer scheme.
+- **Native constraint:** presenting a superseded refresh generation revokes the family and raises a security audit event.
+- **Browser constraint:** exact origin, unrevoked user/device/installation/session, absolute expiry and idle expiry are checked before authorization. The random handle is issued only in a host-only HttpOnly cookie and stored as a hash; no plaintext refresh token is stored for the browser.
+- **Browser creation:** verified authentication consumes its one-use pre-auth challenge and creates/validates the lowest-trust browser device and installation through the owning modules, then creates the session in the same enlisted transaction. Follow the declared Identity → Device lock order; the browser cannot supply a trusted device assertion. Lost login responses may require reauthentication; they never cause an operation replay with increased authority.
+- **Activity:** update idle expiry with a conditional write only for an unrevoked, currently unexpired session, bounded by absolute expires_at. Concurrent requests cannot revive expired/revoked rows; passive SignalR heartbeats do not extend session life. Logout/revocation sets revoked_at before cookie deletion and terminates live connections. Already committed commands keep their recorded result.
+- **Replica/restore:** every Cloud replica validates the same store. Database restore invalidates browser sessions under the existing security recovery procedure; shared protected ASP.NET Data Protection keys support antiforgery across replicas. Authentication needs no replica affinity or in-memory-only session authority; browser transport follows the WebSocket-only/HTTP-fallback deployment contract.
+- **Cleanup:** expired handles and pre-auth challenges are purged by bounded Identity jobs after the security retention interval; secret hashes never enter application logs. User/device purge follows existing session FK/cascade rules.
+
+
+### `identity.browser_auth_flow`
+
+| Field | Type | Notes |
+|---|---|---|
+| `flow_id` | `id` | **PK**; public correlation ID, not sufficient proof of ownership |
+| `binding_hash` | `text NN` | Hash of random pre-auth binding issued only in a host-only Secure/HttpOnly cookie |
+| `origin` | `text NN` | Exact configured browser origin; method/RP expectations are server-set |
+| `method` / `purpose` | `enum NN` | Existing passkey/email method and authentication/recovery/enrollment purpose |
+| `challenge` | `json NN` | Typed, bounded method-specific public challenge plus server verification metadata; hash any email proof secret |
+| `created_at` / `expires_at` | `instant NN` | Short server-policy lifetime; indexed expiry cleanup |
+| `attempts` / `max_attempts` | `int NN` | Atomically bounded, with existing rate-limit keys |
+| `consumed_at` | `instant?` | One-way terminal consumption; no client reset |
+
+The row plus its separate cookie binding and antiforgery validation bind a browser challenge; a flow ID alone grants no authority. Verify the existing method proof, then atomically compare the unconsumed/unexpired row, consume it and create the session/device in the registered transaction family. Duplicate completions fail safely. Expired/consumed rows are purged under the short challenge retention policy; logs never contain challenge proofs or binding secrets. Session bootstrap does not allocate an unbounded flow on every GET: beginAuthentication creates one under abuse limits. Shared ASP.NET antiforgery keys remain required across replicas.
 
 ### `identity.step_up_challenge`, `identity.recovery_flow`
 

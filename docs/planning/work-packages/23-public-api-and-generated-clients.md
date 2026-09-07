@@ -7,7 +7,7 @@
 > Phase: E — First real cloud
 > Upstream: `03`, `22` · Downstream: `24`, `30`, `42`, `44`, `51`, `52`
 
-> **Goal.** Expose the cloud through one versioned public API generated from the C# source of truth, with typed clients that work identically from a Native AOT desktop binary, a Mono AOT mobile binary and a WebAssembly application — and a compatibility window that is tested rather than promised.
+> **Goal.** Expose the cloud through one versioned public API generated from the C# source of truth, with typed clients that work identically from a Native AOT desktop binary, a Mono AOT mobile binary and a React browser application — and a compatibility window that is tested rather than promised.
 
 ---
 
@@ -33,13 +33,17 @@
 
 ---
 
+**Web redesign input.** [P2-008](../../decisions/phase-2-specification-decisions.md#rule-p2-008) and [Web toolchain and SDK](../../architecture/25-web-toolchain-and-sdk.md) are binding for this package's Web, generated-contract, toolchain and test responsibilities. The existing desktop/mobile runtime and product-scope decisions remain separately governed.
+
+---
+
 ## 3. Binding rules and decisions
 
 | # | Rule |
 |---|---|
 | BR-01 | **Endpoints are mapped from the contract set**, not hand-written in divergence from it (**[D-009](../../decisions/phase-1-foundation-decisions.md#rule-d-009)**). |
 | BR-02 | **The generated document is produced by the build and diffed against a baseline** ([WP-03.05](03-contract-foundation-and-licence-split.md#rule-wp-03.05)). |
-| BR-03 | **Every client uses the generated-only entry point**; the reflection package is absent (**[F-026](../../assurance/open-gates-register.md#rule-f-026)**). |
+| BR-03 | **C# clients use generated-only Refit with no reflection package; TypeScript uses the OpenAPI-generated Fetch SDK.** Both obey one public operation contract; their authentication adapters are language/surface-specific. |
 | BR-04 | **Every error is a problem detail with a registered reason code.** No raw exception text is ever returned. |
 | BR-05 | **The supported client window is declared and tested**, in both directions: an older client against the current server, and the current client against the minimum supported server. |
 | BR-06 | **Requests are idempotent where they change state**, keyed by command identity. |
@@ -119,13 +123,13 @@
 
 <a id="rule-wp-23.05"></a>
 
-### WP-23.05 — Generated clients
+### WP-23.05 — Generated C# and TypeScript clients
 
-**What must be fully done.** Typed clients generated from the contract set, sharing one factory with a token handler and serialised refresh. The clients work from a Native AOT desktop binary and a WebAssembly application, with the reflection package absent everywhere.
+**What must be fully done.** Produce generated C# native/mobile clients and the generated TS SDK from the real endpoint/serializer metadata. C# uses its bearer handler and serialized refresh; browser uses the [WP-22](22-identity-workspace-and-device.md#rule-wp-22) cookie-session adapter plus CSRF headers and safe same-origin routing. Keep cancellation/retry/error/query policy outside generated files. Include all declared success/failure/status/header shapes, exact primitive mappings and client-version behavior.
 
-**Testing requirements.** Client tests from a published AOT binary and from the WebAssembly host; a dependency assertion for the reflection package; a refresh-storm test.
+**Testing requirements.** Published AOT C# and production React clients against the real Cloud test host/PostgreSQL; native refresh race and browser session expiry/revocation; no-store/auth cookies/CSRF; int64/decimal bidirectional vectors; 401/403/409/429, ETag, Retry-After, cancellation, uncertain mutation with same CommandId, and previous/current SDK compatibility.
 
-**Completion gate.** Generated clients work from published AOT and WebAssembly hosts with no reflection package present.
+**Completion gate.** Both generated client families work against the real server with the same business semantics and exact values. No browser bearer credential, hand-authored duplicate model or C# reflection fallback.
 
 <a id="rule-wp-23.06"></a>
 
@@ -147,7 +151,7 @@
 | Protocol | This package *is* the public protocol surface |
 | UI | Clients become available to every surface |
 | Security | Validation, rate limiting, ticket issuance and existence-leak prevention |
-| Platform | Client behaviour verified on AOT desktop and WebAssembly |
+| Platform | Client behaviour verified on AOT desktop and production React browser |
 | Migration | Contract versioning and the supported window |
 | Compatibility | The golden vector corpus and the bidirectional matrix |
 
@@ -162,7 +166,7 @@
 | Pagination stability and cursor-forging results | [WP-23.02](#rule-wp-23.02) |
 | API-boundary idempotency and rate-limit results | [WP-23.03](#rule-wp-23.03) |
 | Upload resumption, checksum and permission results | [WP-23.04](#rule-wp-23.04) |
-| AOT and WebAssembly client results with dependency assertion | [WP-23.05](#rule-wp-23.05) |
+| C# AOT and generated TS browser contract results | [WP-23.05](#rule-wp-23.05) |
 | Bidirectional compatibility matrix and its negative test | [WP-23.06](#rule-wp-23.06) |
 
 ---
@@ -176,7 +180,7 @@
 3. Pagination is stable under concurrent mutation; a forged cursor cannot escape scope.
 4. One command produces one effect at the API boundary; rate limiting refuses with actionable guidance.
 5. Uploads resume and verify; permission is checked at ticket issue and at consumption; client-chosen storage locations are refused.
-6. Generated clients work from a published Native AOT binary and a WebAssembly host with the reflection package absent.
+6. Generated C# and TS clients pass the real-server, exact-value and compatibility matrix, with native reflection exclusion and browser cookie/CSRF semantics verified.
 7. The bidirectional compatibility matrix passes and catches a deliberately breaking change.
 
 ---

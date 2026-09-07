@@ -9,6 +9,12 @@ The requirements say migration is a gated step, that schema change uses expand/c
 
 ---
 
+### Web deployment boundary
+
+[P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008) uses Node-built Site/Account/Chat assets and the existing C# Cloud host. For each browser origin route /api, /session and /realtime only to the allowlisted Cloud service, preserving the validated external origin and permitting WebSocket upgrade. API/auth failures must never enter SPA fallback. Session/CSRF/config/API responses use no-store; hashed assets use immutable caching; old chunks survive the compatibility window. Each release manifest binds asset and generated-schema fingerprints, public runtime-config schema and compatible security headers. Promotion/rollback reuses those bytes and honors the current/previous API window. All replicas share the Identity session store and protected Data Protection key ring; restored data invalidates browser sessions. No Node production process, esproj evaluation or npm install occurs in the running Cloud image.
+
+---
+
 ## 1. Controlling rules
 
 | # | Rule |
@@ -245,7 +251,7 @@ build once (per RID) → sign → publish to the artifact store
 | # | Rule |
 |---|---|
 | CW-01 | **Static output regenerates byte-identically**, so a deployment that changes nothing produces no diff. |
-| CW-02 | **A cached WebAssembly bundle must not strand a client on an incompatible version.** Version identity is part of the bundle's cache key. |
+| CW-02 | **A cached browser bundle must not strand a client on an incompatible version.** Version identity is part of the bundle's cache key. |
 | CW-03 | **A web deployment is reversible by redeploying the previous artifact**, which is why the artifact is retained rather than regenerated. |
 
 ---
@@ -320,3 +326,5 @@ build once (per RID) → sign → publish to the artifact store
 | DV-23 | A write made by an **old** replica during deploy and soak reaches the new representation through capture, with no application code in that path ([BF-03](#rule-bf-03)) | [WP-21.03](../planning/work-packages/21-cloud-host-and-persistence.md#rule-wp-21.03), [WP-50.04](../planning/work-packages/50-full-platform-production-release.md#rule-wp-50.04) |
 | DV-24 | A writer racing cutover is either drained before the barrier or admitted under the new epoch; an asynchronous backlog is drained under the exclusive fence | [WP-21.03](../planning/work-packages/21-cloud-host-and-persistence.md#rule-wp-21.03) |
 | DV-25 | An application rollback **after** the switch and within the horizon reads correct data, because capture never stopped ([RW-06](#rule-rw-06)) | [WP-50.04](../planning/work-packages/50-full-platform-production-release.md#rule-wp-50.04) |
+
+**Browser realtime topology.** Configure the production edge for the browser WebSocket upgrade path. Browser SignalR uses WebSockets-only/skip-negotiation; a blocked upgrade falls back to generated ordinary HTTP operations, not SignalR long polling. Verify cross-replica catch-up with no affinity and no required backplane. This is the explicit transport companion to the shared session store in [Web architecture](10-web-architecture.md#5-browser-session-architecture--p2-003-resolved).

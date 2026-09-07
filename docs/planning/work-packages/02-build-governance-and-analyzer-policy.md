@@ -5,7 +5,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: A — Freeze and foundation
-> Upstream: `01` · Downstream: `03`, `05`
+> Upstream: `01` · Downstream: `03`, `05`, `47`
 
 > **Goal.** Make the build tell the truth. Until diagnostics are real, warnings are errors, versions are locked and the runtime split is expressed in the build itself, every later AOT proof and every later quality claim rests on unverified ground.
 
@@ -33,16 +33,20 @@
 
 ---
 
+**Web redesign input.** [P2-008](../../decisions/phase-2-specification-decisions.md#rule-p2-008) and [Web toolchain and SDK](../../architecture/25-web-toolchain-and-sdk.md) are binding for this package's Web, generated-contract, toolchain and test responsibilities. The existing desktop/mobile runtime and product-scope decisions remain separately governed.
+
+---
+
 ## 3. Binding rules and decisions
 
 | # | Rule |
 |---|---|
 | BR-01 | **The SDK version is pinned and upgrading it is a reviewed change** ([BM-01](../../architecture/14-build-packaging-and-release.md#rule-bm-01) in the build architecture). |
-| BR-02 | **Central package management is mandatory**; a version number in a business project file is a defect ([PJ-04](../../architecture/01-solution-and-project-layout.md#rule-pj-04)). |
+| BR-02 | **Central package management governs NuGet; exact npm manifests and one root lock govern Web.** Node/npm and the JavaScript SDK have reviewed pins. |
 | BR-03 | **The lock file is committed and CI restores in locked mode** ([PJ-05](../../architecture/01-solution-and-project-layout.md#rule-pj-05)). |
 | BR-04 | **Warnings are errors on the main path**; trim and AOT diagnostics are always errors on AOT deliverables ([PJ-08](../../architecture/01-solution-and-project-layout.md#rule-pj-08)). |
 | BR-05 | **Every reusable library consumed by an AOT deliverable declares AOT compatibility; every AOT host declares AOT publish** ([PJ-02](../../architecture/01-solution-and-project-layout.md#rule-pj-02)). |
-| BR-06 | **Desktop is Native AOT; Cloud is ASP.NET Core JIT; Android is Mono AOT; Web is WebAssembly without AOT compilation** (**[D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008)**). The build expresses this split; no target inherits another's posture. |
+| BR-06 | **Desktop is Native AOT; Cloud is ASP.NET Core JIT; Android is Mono AOT; Web is React/TypeScript built by Node/npm.** No esproj or TS package inherits .NET runtime properties ([P2-008](../../decisions/phase-2-specification-decisions.md#rule-p2-008)). |
 | BR-07 | **Cloud must not be packaged as Native AOT** for consistency's sake (**[D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008)**, **[V-03](../../assurance/phase-1-official-verification.md#rule-v-03)**). |
 | BR-08 | **Preview packages never enter a stable branch's core path** ([PJ-06](../../architecture/01-solution-and-project-layout.md#rule-pj-06)). |
 | BR-09 | **The build must not depend on machine state** ([BM-05](../../architecture/14-build-packaging-and-release.md#rule-bm-05)) and must work offline after restore ([BM-07](../../architecture/14-build-packaging-and-release.md#rule-bm-07)). |
@@ -62,7 +66,7 @@
 | `eng/build/desktop-aot.props` | Verified: AOT publish, trim analysis, single-file diagnostics as errors, RID set |
 | `eng/build/cloud-jit.props` | Verified: JIT posture explicit; AOT properties absent by design |
 | `eng/build/android-aot.props` | Verified: explicit runtime selection, never inherited ([RT-02](../../architecture/11-mobile-architecture.md#rule-rt-02) in the mobile architecture) |
-| `eng/build/web-wasm.props` | Created: WebAssembly publish with AOT compilation disabled (**[D-007](../../decisions/phase-1-foundation-decisions.md#rule-d-007)**) |
+| `src/Web/package.json`, `package-lock.json`, `.node-version`, `.npmrc`, `ArcForges.Web.esproj` | Create the one Node/npm workspace, exact toolchain/dependency pins, portable commands and Windows adapter; remove obsolete Web WASM property imports |
 | `eng/build/contracts.props` | Verified: source-generated serialization and generator settings for contract projects |
 | `.editorconfig` | Analyzer severities as build policy |
 | `eng/policy/dependency-policy.json` | Created: allowlist per licence boundary, preview-package rules, upgrade evidence requirements |
@@ -75,13 +79,13 @@
 
 <a id="rule-wp-02.00"></a>
 
-### WP-02.00 — Pin and lock
+### WP-02.00 — Pin and lock each toolchain
 
-**What must be fully done.** The SDK pin is verified and its upgrade process recorded. Central package management with transitive pinning is verified. A lock file is generated and committed for every project, and CI restore is switched to locked mode. Preview packages in the core path are enumerated and either justified or removed.
+**What must be fully done.** Verify the .NET SDK and central NuGet pins, locked project restores and stable dependency policy. Establish the Web root manifest/lock, exact supported Node 24 LTS patch and npm version, exact generator/framework pins and reviewed JavaScript SDK. Disable implicit npm install in esproj; its explicit restore calls root npm ci once.
 
-**Testing requirements.** A restore on a clean machine with no package cache succeeds in locked mode; a check that no project declares its own version of a centrally managed package.
+**Testing requirements.** Clean-cache locked .NET restore and npm ci; reject lock drift, nested npm locks and wrong engine versions; verify no accidental package overrides.
 
-**Completion gate.** Locked restore succeeds from clean, and no project-level version override exists.
+**Completion gate.** Both restored graphs are reproducible and declared; changing a lock or toolchain requires review.
 
 <a id="rule-wp-02.01"></a>
 
@@ -105,13 +109,13 @@
 
 <a id="rule-wp-02.03"></a>
 
-### WP-02.03 — Runtime split in the build
+### WP-02.03 — Runtime and directory boundaries
 
-**What must be fully done.** The per-target property files express **[D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008)** exactly: desktop Native AOT with the RID set; Cloud JIT with AOT properties deliberately absent; Android with explicit runtime selection that is never inherited from a framework default; Web with AOT compilation disabled. Each file carries a comment stating the governing decision and the verification finding behind it.
+**What must be fully done.** Express desktop Native AOT, Cloud JIT and Android Mono AOT in the managed build. Create the independent Node/TS workspace and thin esproj commands; win.slnx composes it, while Cloud.csproj/ArcForges.slnx have no esproj dependency. Implement typed portable orchestration, explicit restore/health-aware dev configuration and separate account/chat development hostnames. Initial commands may target foundation shells; real SDK/runtime proof belongs to [WP-06](06-aot-jit-and-wasm-publish-proof.md#rule-wp-06).
 
-**Testing requirements.** A property-inspection test asserting each target's effective posture; a check that no target file sets a property belonging to another target's posture.
+**Testing requirements.** Evaluated .NET property assertions; inspect project references/imports; Windows esproj load/restore/build command dispatch; direct npm invocation on non-Windows; assert no duplicate dev server, implicit install or production dev proxy.
 
-**Completion gate.** Each target's effective posture matches **[D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008)**, verified by inspection of evaluated properties rather than by reading the file.
+**Completion gate.** Each build graph has the correct runtime/toolchain; Windows and CLI commands share one Web implementation and portable .NET build does not evaluate esproj.
 
 <a id="rule-wp-02.04"></a>
 
@@ -162,6 +166,10 @@
 
 ---
 
+**Web evidence.** Record Node/npm/JS SDK versions, npm ci output, portable command results, esproj solution load/dispatch, and scoped policy checks. The later real React/API proof remains [WP-06.05](06-aot-jit-and-wasm-publish-proof.md#rule-wp-06.05); it is not claimed by toolchain setup.
+
+---
+
 ## 8. Completion gate
 
 **All of the following, with recorded evidence:**
@@ -185,3 +193,4 @@
 
 - [03 — Contract Foundation and the Licence Boundary Split](03-contract-foundation-and-licence-split.md)
 - [05 — Architecture and Repository Policy Test Suite](05-architecture-and-repository-policy-tests.md)
+- [47 — Static Public Site](47-static-public-site.md)

@@ -33,6 +33,10 @@
 
 ---
 
+**Web redesign input.** [P2-008](../../decisions/phase-2-specification-decisions.md#rule-p2-008) and [Web toolchain and SDK](../../architecture/25-web-toolchain-and-sdk.md) are binding for this package's Web, generated-contract, toolchain and test responsibilities. The existing desktop/mobile runtime and product-scope decisions remain separately governed.
+
+---
+
 ## 3. Binding rules and decisions
 
 | # | Rule |
@@ -136,6 +140,15 @@
 **Completion gate.** The repository builds, fenced code is unreferenceable, and the remaining dispositions are scheduled against named packages.
 
 ---
+
+### Web reconciliation disposition
+
+Reconcile the current Blazor App/Application/Infrastructure/Components and C# SiteGenerator projects by capability, not by retaining empty project names. Replace Web UI/rendering/build paths with `src/Web/ArcForges.Web.App`, `ArcForges.Web.Site` and owned TS packages. Retain reusable public C# DTOs/server behavior in their proper boundary; replace .NET-only Web UI component/unit tests with TS suites while retaining useful C# API/server tests. Remove obsolete Web WASM properties, package references and test/solution entries when their replacement slice lands. Windows win.slnx gains the one workspace esproj; the portable managed solution excludes all esproj references. Inventory and update implementation README/AGENTS/CLAUDE/build-policy instructions whose Web prohibition or all-C# wording conflicts with [P2-008](../../decisions/phase-2-specification-decisions.md#rule-p2-008).
+
+**Completion addition.** Every affected existing Web project/test/build entry has a replace/retain/remove disposition and a target, and the Web directory/esproj/managed/native boundary is explicit. Existing scaffold project counts are not evidence of React behavior.
+
+---
+
 
 ## 6. Impacts
 

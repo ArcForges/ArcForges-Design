@@ -233,3 +233,8 @@ The prerequisite evidence **[D-019](../decisions/phase-1-foundation-decisions.md
 |---|---|
 | EV-01 | **A future evidence-driven change is added here** with the same five fields. |
 | EV-02 | **A change with no evidence does not belong in this document** — and, absent a dependency-based reason, does not belong in the plan either. |
+
+
+## React/TypeScript Web redesign — user decision
+
+[P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008) replaces Web Blazor and the C# static generator with React/TypeScript on Node/npm. The ReactApp2 template was inspected for esproj/Vite integration only. The C# → OpenAPI → TS SDK preserves contract authority and adds exact-value cross-language tests. [P2-003](../decisions/phase-2-specification-decisions.md#rule-p2-003) now selects same-origin opaque-cookie sessions in the existing Cloud host. [WP-02](work-packages/02-build-governance-and-analyzer-policy.md#rule-wp-02) now precedes [WP-47](work-packages/47-static-public-site.md#rule-wp-47), and both index directions are amended; [WP-22.08](work-packages/22-identity-workspace-and-device.md#rule-wp-22.08) supplies browser sessions before generated-client integration, [WP-47.07](work-packages/47-static-public-site.md#rule-wp-47.07) supplies the shared consumer design system, and [WP-50.06](work-packages/50-full-platform-production-release.md#rule-wp-50.06) aggregates real production-browser/rollback evidence. All earlier code observations remain baseline evidence, not proof of the new UI.

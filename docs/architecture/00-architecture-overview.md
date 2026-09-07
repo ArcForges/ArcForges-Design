@@ -51,7 +51,7 @@ Five constraints determine almost every structural decision downstream.
      HTTPS + realtime                        HTTPS + realtime
                │                                      │
         ArcChat Mobile                          Browser
-        .NET MAUI · Android Mono AOT            Blazor WebAssembly
+        .NET MAUI · Android Mono AOT            React/TypeScript
         (iOS architecture-present,              static public pages
          build deferred)                        + ArcForges.Web.App
 ```
@@ -61,7 +61,7 @@ Five constraints determine almost every structural decision downstream.
 | Path | Technology | Carries |
 |---|---|---|
 | **Same-machine, first-party, process-to-process** | StreamJsonRpc over Named Pipe / UDS, Nerdbank.MessagePack formatter | Semantic capability invocation, Hub registration, local events |
-| **Public request/response** | ASP.NET Core Minimal API server; Refit generated-only client | Commands, queries, durable state, uploads and downloads |
+| **Public request/response** | ASP.NET Core Minimal API server; generated Refit for C#, generated Fetch SDK for TypeScript | Commands, queries, durable state, uploads and downloads |
 | **Public realtime** | SignalR | Presence, notifications, progress, chat deltas, remote wake-up |
 
 **Prohibited:** routing local traffic over HTTP "for uniformity"; letting a business write command exist only inside a realtime message "for latency"; exposing local IPC on the public internet; starting a local HTTP host for same-machine RPC.
@@ -82,7 +82,7 @@ Five constraints determine almost every structural decision downstream.
 Identical in every product and in Cloud:
 
 ```
-Desktop / LocalRpc / Infrastructure / MinimalApi / MAUI / WASM adapters
+Desktop / LocalRpc / Infrastructure / MinimalApi / MAUI adapters
                               ↓
                        Application Services
                               ↓
@@ -113,7 +113,7 @@ Fixed by **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**, e
 | **ArcForges Cloud** | **ASP.NET Core JIT modular monolith** | Strict Native AOT is **not** a Cloud requirement; every obsolete claim that it must be is removed |
 | **ArcChat Mobile — Android** | **.NET 10 Mono AOT** | `UseMonoRuntime` explicit; Android CoreCLR and Android Native AOT are experimental and are **not** production baselines |
 | **ArcChat Mobile — iOS** | Architecture present, **build deferred** | Release runtime re-verified against the then-current supported baseline before activation |
-| **ArcForges Web** | **Blazor WebAssembly, `RunAOTCompilation=false`** | Unless a measured benchmark and explicit decision prove otherwise |
+| **ArcForges Web** | **React/TypeScript; Node.js/npm build tooling** | Production browser matrix; static public pre-rendering; [P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008) |
 
 | # | Rule |
 |---|---|
@@ -241,7 +241,7 @@ Every write command carries at minimum `CommandId`, the target identity, `Expect
 | [`07-sync-conflict-and-backup.md`](07-sync-conflict-and-backup.md) | Sync protocol, change feed, conflict policies, tombstones, blob lifecycle, backup topology |
 | [`08-security-architecture.md`](08-security-architecture.md) | Identity layering, authorization enforcement points, secret handling, egress, audit |
 | [`09-ai-and-agent-runtime-architecture.md`](09-ai-and-agent-runtime-architecture.md) | Agent runtime, capability registry, task engine, provider routing, credit metering |
-| [`10-web-architecture.md`](10-web-architecture.md) | Static generation, Blazor WebAssembly application, per-surface deployment and security |
+| [`10-web-architecture.md`](10-web-architecture.md) | Static generation, React/TypeScript application, per-surface deployment and security |
 | [`11-mobile-architecture.md`](11-mobile-architecture.md) | MAUI structure, Apache boundary, offline outbox, push, secure storage |
 | [`12-native-interop-and-media.md`](12-native-interop-and-media.md) | P/Invoke discipline, the C ABI, SafeHandle, media and acquisition pipelines |
 | [`13-observability-and-operations.md`](13-observability-and-operations.md) | Telemetry, correlation, health, incident tooling, operator surface |
@@ -261,9 +261,9 @@ Answerable before any feature merges:
 
 **Local RPC** — Is this a strongly typed contract rather than a catch-all string/object call? Are the generated-proxy attributes present? Are interceptors enabled? Are multi-interface combinations pre-generated rather than assembled at runtime? Is the formatter on an AOT-safe path? Does the target use generated metadata? Are cancellation, command identity and revision present? Has compatibility with the previous client been verified?
 
-**Public HTTP** — Generated-only client? No reflection fallback and no reflection-builder diagnostic? Are DTOs in a source-generated serialization context? Are verb, status, cache and version semantics correct? Do large objects use a stream or a resource reference?
+**Public HTTP** — Generated Refit for C# and OpenAPI-generated Fetch SDK for TypeScript? C# source-generated serialization and TS runtime validation agree? No reflection fallback in C#? Are verb, status, cache and version semantics correct? Do large objects use a stream or a resource reference?
 
-**Realtime** — Used only for realtime need, never as the sole durable fact? Payloads source-generated? Recoverable through HTTP by revision or sequence after a disconnect?
+**Realtime** — Used only for realtime need, never as the sole durable fact? C# and TS payloads generated from the same authored contract? Recoverable through HTTP by revision or sequence after a disconnect?
 
 **IPC and security** — Are pipe and socket permissions minimised? Are instance, session and actor verified? Does the owner perform final authorization? Are fixed public ports and arbitrary-path loading avoided?
 

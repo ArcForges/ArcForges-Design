@@ -221,3 +221,8 @@ Full state is tracked in [`open-gates-register.md`](open-gates-register.md).
 | **[D-022](../decisions/phase-1-foundation-decisions.md#rule-d-022)**, **[V-09](phase-1-official-verification.md#rule-v-09)**, **[F-023](open-gates-register.md#rule-f-023)** | Mobile release gates |
 | **[D-023](../decisions/phase-1-foundation-decisions.md#rule-d-023)** | Regional enablement gates |
 | **[F-026](open-gates-register.md#rule-f-026)** | The typed HTTP client packaging gate |
+
+
+## React/TypeScript Web release evidence
+
+[P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008) replaces the Web runtime proof with Node-built Site/Account/Chat artifacts. [PG-23](open-gates-register.md#rule-pg-23) requires real C#/TS SDK and session/realtime compatibility, consumer visual/accessibility/performance evidence, esproj/CLI workflow checks, exact-value correctness, npm provenance/SBOM and coherent edge/asset rollback. Existing native AOT and real commercial provider gates remain independent.

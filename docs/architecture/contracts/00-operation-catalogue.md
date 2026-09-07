@@ -24,7 +24,7 @@ The contract architecture states how contracts are *shaped, versioned and genera
 
 ## 2. The shared operation contract
 
-Every operation on every surface — HTTP, local RPC, realtime — obeys the same seven rules. This uniformity is what lets one client-side retry, error and conflict implementation serve all three.
+Every operation on every surface — HTTP, local RPC, realtime — obeys the same seven rules. This uniformity supplies one semantic contract for retry/error/conflict behavior. C# and TypeScript have separate generated clients and language-specific adapters, verified by shared conformance vectors; they do not share a compiled client implementation.
 
 | # | Rule |
 |---|---|
@@ -35,6 +35,9 @@ Every operation on every surface — HTTP, local RPC, realtime — obeys the sam
 | OC-05 | **Every operation declares its authorization requirement** as a capability, a risk level and an approval posture — never "authenticated" alone. |
 | OC-06 | **Every list operation is cursor-paginated** with an opaque, scope-bound cursor. |
 | OC-07 | **Every operation declares its compatibility class** (`§7`), which determines what may change without a version bump. |
+
+**Wire projection for TypeScript.** SQL/C# bigint and decimal names below describe logical values. Their public JSON representation follows [Web exact-value rules](../25-web-toolchain-and-sdk.md#31-exact-wire-values): 64-bit integers and decimals are canonical strings, int32 counters remain numbers, and null/absence are not silently conflated. Existing authentication NI exceptions remain distinct from idempotent business commands.
+
 
 ### 2.1 The request envelope
 

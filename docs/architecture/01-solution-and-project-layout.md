@@ -19,7 +19,8 @@ ArcForges/
 ├─ Directory.Packages.props          central package management
 ├─ NuGet.config
 ├─ packages.lock.json                committed; CI restores in locked mode
-├─ ArcForges.slnx
+├─ ArcForges.slnx                     managed-only portable solution
+├─ win.slnx                           Windows IDE: managed + native + Web esproj
 │
 ├─ eng/
 │  ├─ build/                         build scripts and shared MSBuild logic
@@ -79,8 +80,13 @@ ArcForges/
 │  │  └─ ArcChat.Mobile/                         Apache-2.0 — MAUI application
 │  │
 │  ├─ Web/
-│  │  ├─ ArcForges.Web.App/                      Blazor WebAssembly — account + chat deployments
-│  │  └─ ArcForges.Web.StaticGen/                build-time generator for static public pages
+│  │  ├─ package.json / package-lock.json        one private npm workspace and lock
+│  │  ├─ ArcForges.Web.esproj                    win.slnx integration only
+│  │  ├─ ArcForges.Web.App/                      React/TypeScript Account + Chat profiles
+│  │  ├─ ArcForges.Web.Site/                     React/TypeScript static generation
+│  │  ├─ packages/sdk/                          generated Apache TS SDK + wire validators
+│  │  ├─ packages/ui/                           owned AGPL Web design system
+│  │  └─ tooling/ · tests/                      typed Node commands and browser tests
 │  │
 │  ├─ Sdk/                                       Apache-2.0 public SDK
 │  │  ├─ ArcForges.Sdk.Foundation/
@@ -116,6 +122,12 @@ ArcForges/
 
 ---
 
+### 1.1 Web toolchain boundary
+
+[P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008) adds the Node/npm workspace defined in [Web toolchain and SDK](25-web-toolchain-and-sdk.md). Windows win.slnx includes one esproj; focused solution filters select the same projects. Portable .NET projects/ArcForges.slnx never reference esproj, and Cloud publish never bundles or builds Web. Non-Windows development opens src/Web and runs npm independently, alongside the existing dotnet and CMake entry points. CI joins artifact dependencies explicitly.
+
+---
+
 ## 2. Project conventions
 
 **Approved helper projects ([P2-007](../decisions/phase-2-specification-decisions.md#rule-p2-007)).** `src/DesktopHelpers/ArcForges.ContentSandbox` is a signed first-party C# Native AOT executable with no product-domain/Harness/store dependency. `ArcForges.ContentSandbox.Contracts` contains only generated bounded parent-child DTOs; `ArcForges.ContentSandbox.Broker` owns launch profiles and handle/resource budgets. Product-specific approved parser wrappers are loaded only in that helper. Native library adaptation remains narrow; no C++ business host or cross-product shared pool is introduced. [WP-11.09](../planning/work-packages/11-security-foundation.md#rule-wp-11.09) supplies this boundary before [WP-18.04](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.04) or media ingestion depends on it.
@@ -123,14 +135,14 @@ ArcForges/
 | # | Rule |
 |---|---|
 | <a id="rule-pj-01"></a>PJ-01 | **One responsibility per project.** A project that is both a domain and an adapter is a defect. |
-| <a id="rule-pj-02"></a>PJ-02 | **Every reusable library sets `IsAotCompatible`.** Every production host that is an AOT deliverable sets `PublishAot`. |
+| <a id="rule-pj-02"></a>PJ-02 | **Every .NET library consumed by an AOT deliverable sets IsAotCompatible; each AOT host sets PublishAot.** Node/TS packages and esproj never inherit .NET runtime properties. |
 | PJ-03 | **Every project on a local-RPC attach chain enables the StreamJsonRpc interceptors property.** |
-| <a id="rule-pj-04"></a>PJ-04 | **Package versions are centrally managed.** A version number in a business project file is a defect. |
-| <a id="rule-pj-05"></a>PJ-05 | **`packages.lock.json` is committed; CI restores in locked mode.** |
+| <a id="rule-pj-04"></a>PJ-04 | **NuGet versions use Directory.Packages.props; Web versions use exact npm manifest pins and the one workspace lock.** JavaScript SDK/Node versions have their own reviewed toolchain pins; no accidental inline NuGet override. |
+| <a id="rule-pj-05"></a>PJ-05 | **Each .NET packages.lock.json and the Web package-lock.json are committed.** CI uses locked dotnet restore and npm ci; esproj disables implicit npm install. |
 | <a id="rule-pj-06"></a>PJ-06 | **Preview packages never enter a stable branch's core path.** |
-| <a id="rule-pj-07"></a>PJ-07 | **Nullable reference types, implicit usings, deterministic builds, analyzers, `.editorconfig`, SourceLink and reproducible package metadata are repository-wide.** |
+| <a id="rule-pj-07"></a>PJ-07 | **.NET code follows nullable/implicit-usings/analyzer/SourceLink policy; TypeScript follows strict compiler, import-boundary and lint policy.** Deterministic builds, UTF-8/LF formatting and reproducible provenance cover both. |
 | <a id="rule-pj-08"></a>PJ-08 | **Warnings as errors**, enabled repository-wide once staged debt is cleared; trimming and AOT diagnostics are always errors on AOT deliverables. |
-| <a id="rule-pj-09"></a>PJ-09 | **Every project declares its SPDX licence identifier and its licence boundary** (§4), and the declaration is verified by a repository-policy test. |
+| <a id="rule-pj-09"></a>PJ-09 | **Every project/package declares its SPDX licence and boundary.** .NET uses project metadata, npm uses package metadata; public generated SDK and product UI dependency graphs are audited separately. |
 
 ---
 
@@ -176,8 +188,8 @@ ArcForges/
 
 | # | Rule |
 |---|---|
-| LB-01 | Every project declares `PackageLicenseExpression` (or an equivalent property) matching its boundary, plus a `LicenceBoundary` property with value `Apache` or `AGPL`. |
-| LB-02 | **A repository-policy test asserts that no `AGPL` project is referenced, directly or transitively, from an `Apache` project.** |
+| LB-01 | Every .NET project declares PackageLicenseExpression/LicenceBoundary; npm packages declare license and the equivalent repository boundary metadata. The generated TS public SDK is Apache; Web product UI is AGPL. |
+| LB-02 | **No AGPL source/package enters an Apache dependency closure.** Check .NET references and npm imports/dependencies, including generators and copied component provenance where applicable. |
 | LB-03 | **A dependency test asserts that the mobile distributable's complete direct and transitive closure is compatible with Apache-2.0 application distribution and applicable store terms** (**[D-004](../decisions/phase-1-foundation-decisions.md#rule-d-004)** obligation 7). |
 | LB-04 | **`NOTICE` files are generated from the dependency graph**, per boundary, as part of packaging. |
 | LB-05 | **SBOM generation runs per deliverable**, and its output is a release artifact. |
@@ -204,7 +216,7 @@ Modules: **Identity**, **Workspace**, **Devices**, **Entitlement**, **Commerce**
 ## 6. Reference direction
 
 ```
-Desktop / LocalRpc / Infrastructure / MinimalApi / MAUI / WASM adapters
+Desktop / LocalRpc / Infrastructure / MinimalApi / MAUI adapters
                                  ↓
                           Application
                                  ↓
@@ -249,9 +261,9 @@ These are release gates, not advisory checks (`§23` of the quality contract).
 | AT-07 | A Cloud module does not reach into another module's persistence |
 | AT-08 | No catch-all string/object RPC entry point exists |
 | AT-09 | No long-lived C++ worker executable project enters the release graph |
-| AT-10 | The reflection-based typed-HTTP-client package is absent from every production dependency graph |
+| AT-10 | The reflection-based typed-HTTP-client package is absent from C# production dependency graphs; browser HTTP uses generated TS SDK imports. |
 | AT-11 | Every local RPC contract interface carries the required generated-proxy attributes |
-| AT-12 | Every serialized DTO belongs to a source-generated serialization context |
+| AT-12 | Every C# serialized DTO has a source-generated context; every consumed TS wire shape/validator is generated from C#-exported contracts. |
 | AT-13 | Every module's public surface is reachable only through its declared API |
 | <a id="rule-at-14"></a>AT-14 | The design system and shell reference no product domain assembly |
 
@@ -263,12 +275,18 @@ These are release gates, not advisory checks (`§23` of the quality contract).
 | RP-02 | Every project declares an SPDX licence identifier and a licence boundary |
 | RP-03 | No `AGPL` project is referenced from an `Apache` project |
 | RP-04 | The mobile distributable's dependency closure passes the licence policy |
-| RP-05 | No package version appears outside central package management |
-| RP-06 | The lock file is present and current |
+| RP-05 | NuGet versions obey central management; npm versions/lock and JavaScript SDK pins obey the declared Web policy. |
+| RP-06 | Each toolchain lock is present/current; there is exactly one Web npm root and no nested lockfile. |
 | RP-07 | No blanket suppression of trimming or AOT diagnostics exists |
 | RP-08 | Every glossary-forbidden term is absent from new authoritative text |
 | RP-09 | No secret-shaped literal is committed |
 | <a id="rule-rp-10"></a>RP-10 | Every public API method has a corresponding contract test |
+
+---
+
+### 7.3 Web graph assertions
+
+Assert portable managed projects have no esproj reference; win.slnx contains exactly the intended Web adapter; Web imports no private policy, database/entity or local-RPC contract; SDK imports no product UI; Account/Chat route graphs are selected explicitly; C# serializer/endpoint changes trigger TS generation and compatibility tests. Scope desktop DOM/JS bans to desktop build graphs, while prohibiting obsolete Blazor product dependencies in the current Web target.
 
 ---
 

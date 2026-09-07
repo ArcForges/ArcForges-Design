@@ -412,12 +412,18 @@ These are **hard authoring rules**, not optimisations. **[V-05b](../assurance/ph
 | CA-08 | Contract interfaces prefer `IDisposable` so proxy lifetimes are explicit |
 | CA-09 | Every write method takes a request DTO carrying `CommandId`, the target identity and `ExpectedRevision` |
 | CA-10 | **Never pass** `object`, `dynamic`, `Type`, an arbitrary dictionary graph, a database context, an ORM entity, a view model, a control, a native pointer or a `SafeHandle` |
-| <a id="rule-ca-11"></a>CA-11 | Every public API DTO belongs to a source-generated serialization context |
-| CA-12 | Every realtime payload belongs to a source-generated serialization context |
-| <a id="rule-ca-13"></a>CA-13 | Typed HTTP clients use only the generated registration and entry points; the reflection package is absent; its diagnostic is build-breaking (**[F-026](../assurance/open-gates-register.md#rule-f-026)**) |
+| <a id="rule-ca-11"></a>CA-11 | Every public C# API DTO belongs to a source-generated serialization context; TypeScript DTOs/validators derive from its generated OpenAPI/schema. |
+| CA-12 | Every realtime C# payload belongs to a source-generated context; the TS adapter consumes generated names, DTOs and validators from the same event schema. |
+| <a id="rule-ca-13"></a>CA-13 | C# typed HTTP clients use generated-only registration with no reflection package ([F-026](../assurance/open-gates-register.md#rule-f-026)); Web uses the generated TypeScript Fetch SDK, with equivalent operation/error/revision semantics. |
 | <a id="rule-ca-14"></a>CA-14 | Interface and method names are part of the wire compatibility surface and are not renamed at will after release |
 
 **A repository-policy test asserts [CA-01](#rule-ca-01) through [CA-03](#rule-ca-03) and [CA-11](#rule-ca-11) through [CA-13](#rule-ca-13) mechanically** (`§7.2` of the layout architecture).
+
+---
+
+### 16.1 TypeScript consumers and exact JSON values
+
+[P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008) adds the C# → OpenAPI 3.1 / JSON Schema → TS SDK pipeline specified in [Web toolchain and SDK §3](25-web-toolchain-and-sdk.md#3-c--openapi--typescript). C# remains the authored schema source; serializers and schemas must emit the same wire shape. Int64 revisions/counters/offsets/microcredits and decimal prices use canonical strings, with exact cross-language vectors and migration rules. An SDK generation success does not prove auth, idempotency, streaming or compatibility; real C#/TS clients exercise the same operation catalogue.
 
 ---
 

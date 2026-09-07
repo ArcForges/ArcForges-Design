@@ -97,8 +97,10 @@ These are new obligations that follow from Phase 2 architecture rather than from
 | <a id="rule-pg-20"></a>**PG-20** | Time model proof: exact supported output-grid projections, reported inexact-source conform, per-track cut ownership with one mixed sample across tracks/dissolves/gaps, and the official OTIO double boundary without silent frame/sample drift | Quality Owner | First ArcSlate timeline release claim | ArcSlate release; OTIO round-trip claims | [WP-36.01](../planning/work-packages/36-arcslate-project-and-timeline.md#rule-wp-36.01), [WP-37.04](../planning/work-packages/37-arcslate-playback-and-processing.md#rule-wp-37.04), [WP-39.05](../planning/work-packages/39-arcslate-integration-and-portability.md#rule-wp-39.05) | `OPEN` |
 | <a id="rule-pg-21"></a>**PG-21** | Complete current-corpus citation proof: every active citation names one defining document and stable anchor; no missing, duplicate or unqualified reference remains ([OG-05](#rule-og-05)). Reserved headroom and explicit historical relocations are not implementation obligations. | Quality Owner with Architecture Owner | Current Stage 2 repair and every later normative edit | Acceptance criteria that cite design rules | [Executable corpus check and recorded evidence](design-repair-verification.md); [repair review](phase-2-design-closure-review.md). Continuing verification in [WP-00.01](../planning/work-packages/00-specification-naming-and-rights-freeze.md#rule-wp-00.01) | **`CLOSED` on current design evidence; future edits recheck** |
 | <a id="rule-pg-22"></a>**PG-22** | **OS isolation proof**: real packaged C# ContentSandbox and executable-extension profiles deny product-store/credential/network/process escape, contain native crash/hang/exhaustion and clean up after parent death; no unrestricted fallback | Security and Privacy Owner with Release Engineering Owner | Before any first-party hostile parser or executable extension ships on a RID | PDF/image/media parsing and executable extensions on that RID | [WP-11.09](../planning/work-packages/11-security-foundation.md#rule-wp-11.09), [WP-18.04](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.04), [WP-37.01](../planning/work-packages/37-arcslate-playback-and-processing.md#rule-wp-37.01), [WP-41.00](../planning/work-packages/41-extension-platform-and-integrations.md#rule-wp-41.00) | `OPEN` |
+| <a id="rule-pg-23"></a>**PG-23** | **React/TypeScript commercial Web proof under [P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008):** production Node-built assets, generated C#/TS SDK and exact values, same-origin cookie/CSRF/expiry/revocation, realtime recovery, approved visual/accessibility/performance evidence, esproj/portable CLI and coherent release/rollback | Web Engineering Owner with Security, Quality and Release Engineering Owners | First production Account/Chat deployment or Web release | Account/Chat commercial release; public static deployment must pass its applicable subset | [WP-06.05](../planning/work-packages/06-aot-jit-and-wasm-publish-proof.md#rule-wp-06.05), [WP-22.08](../planning/work-packages/22-identity-workspace-and-device.md#rule-wp-22.08), [WP-23.05](../planning/work-packages/23-public-api-and-generated-clients.md#rule-wp-23.05), [WP-24.06](../planning/work-packages/24-realtime-and-reliable-events.md#rule-wp-24.06), [WP-47](../planning/work-packages/47-static-public-site.md#rule-wp-47), [WP-48](../planning/work-packages/48-account-portal.md#rule-wp-48), [WP-49](../planning/work-packages/49-arcchat-web-companion.md#rule-wp-49), [WP-50.06](../planning/work-packages/50-full-platform-production-release.md#rule-wp-50.06) | `OPEN` |
 
 ---
+
 
 ## 5. What is deliberately not verified
 
@@ -135,15 +137,19 @@ Distinct from a gate. A gate has a known obligation awaiting evidence; an **unre
 
 ---
 
+**Browser deployment decision.** [P2-003](../decisions/phase-2-specification-decisions.md#rule-p2-003) is now ADOPTED under [P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008). This resolves the design choice; [PG-23](#rule-pg-23) carries its real implementation evidence. Gate scope changes from obsolete Blazor/WASM to React/TS are authorized by that decision; native AOT gates are unchanged.
+
+---
+
 ## 7. Register summary
 
 | Class | Count | Note |
 |---|---|---|
 | Deferred gates carried from Phase 1 | 3 | **[F-013](#rule-f-013) closed**; [F-023](#rule-f-023) and [F-026](#rule-f-026) remain implementation-stage |
 | Gates created by the verification record | 12 active + 1 merged | All implementation-stage; none closable by design work |
-| Gates created by Phase 2 | 22 | Includes the current citation closure and the new packaged OS isolation gate |
+| Gates created by Phase 2 | 23 | Includes citation closure, packaged OS isolation and the new React/TypeScript Web implementation gate |
 | **Closed by design-stage evidence** | **5** | [F-013](#rule-f-013), [PG-01](#rule-pg-01), [PG-02](#rule-pg-02), [PG-06](#rule-pg-06), [PG-21](#rule-pg-21) |
-| **Open implementation-stage gates** | **32** | Includes two dormant entries; the other 30 are current, conditional or recurring. One additional verification entry is merged, not counted twice as an open obligation |
+| **Open implementation-stage gates** | **33** | Includes two dormant entries; the other 31 are current, conditional or recurring. One additional verification entry is merged, not counted twice as an open obligation |
 | Unresolved determinations | **0** | [OC-01](#rule-oc-01) closed by user decision 2026-09-05 ([P2-005](../decisions/phase-2-specification-decisions.md#rule-p2-005)) |
 
 | # | Rule |

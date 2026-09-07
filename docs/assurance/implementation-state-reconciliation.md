@@ -11,6 +11,24 @@ This is the **item-level reconciliation evidence** required before implementatio
 
 ---
 
+### Current Web disposition — P2-008
+
+The item-level inventory below remains evidence of the inspected C# baseline. Its Blazor/WebAssembly conformance labels are historical and do not describe the new target. [P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008) changes the current disposition:
+
+| Observed implementation entry | Current action | Owner |
+|---|---|---|
+| ArcForges.Web.App C# project | Replace browser host/UI with the React/TS application, retaining scope/operation behavior only where real and conformant | [WP-01](../planning/work-packages/01-repository-reconciliation-and-target-layout.md#rule-wp-01), [WP-06](../planning/work-packages/06-aot-jit-and-wasm-publish-proof.md#rule-wp-06), [WP-48](../planning/work-packages/48-account-portal.md#rule-wp-48), [WP-49](../planning/work-packages/49-arcchat-web-companion.md#rule-wp-49) |
+| ArcForges.Web.Application / Infrastructure / Components | Move genuinely reusable C# wire/server behavior to its proper boundary; replace Web-specific UI/state/HTTP code with TS packages; remove obsolete project references | [WP-01](../planning/work-packages/01-repository-reconciliation-and-target-layout.md#rule-wp-01), [WP-03](../planning/work-packages/03-contract-foundation-and-licence-split.md#rule-wp-03), [WP-23](../planning/work-packages/23-public-api-and-generated-clients.md#rule-wp-23), [WP-48](../planning/work-packages/48-account-portal.md#rule-wp-48) |
+| ArcForges.Web.SiteGenerator | Replace build-time C# page generator with the Node/React Site package | [WP-01](../planning/work-packages/01-repository-reconciliation-and-target-layout.md#rule-wp-01), [WP-02](../planning/work-packages/02-build-governance-and-analyzer-policy.md#rule-wp-02), [WP-47](../planning/work-packages/47-static-public-site.md#rule-wp-47) |
+| C# Web Unit/Component tests | Replace browser UI tests with Vitest/RTL; retain applicable real server/contract tests | [WP-05](../planning/work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05), [WP-06](../planning/work-packages/06-aot-jit-and-wasm-publish-proof.md#rule-wp-06), [WP-23](../planning/work-packages/23-public-api-and-generated-clients.md#rule-wp-23), [WP-48](../planning/work-packages/48-account-portal.md#rule-wp-48), [WP-49](../planning/work-packages/49-arcchat-web-companion.md#rule-wp-49) |
+| C# Web Contract/Browser test scaffolds | Reconcile against generated TS and production Playwright coverage; do not count project presence as a passing browser test | [WP-23](../planning/work-packages/23-public-api-and-generated-clients.md#rule-wp-23), [WP-24](../planning/work-packages/24-realtime-and-reliable-events.md#rule-wp-24), [WP-48](../planning/work-packages/48-account-portal.md#rule-wp-48), [WP-49](../planning/work-packages/49-arcchat-web-companion.md#rule-wp-49) |
+| win.slnx / ArcForges.slnx / Web WASM properties | Add one esproj to win.slnx, keep portable managed graph esproj-free, remove obsolete Web-only .NET props/dependencies and update instructions/policy | [WP-01](../planning/work-packages/01-repository-reconciliation-and-target-layout.md#rule-wp-01), [WP-02](../planning/work-packages/02-build-governance-and-analyzer-policy.md#rule-wp-02), [WP-05](../planning/work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05) |
+
+The product repository currently having these C# projects is not evidence that the new React application exists. Source migration occurs through the named implementation packages; this design update does not modify that repository.
+
+---
+
+
 ## 1. Source identity and method
 
 | Field | Value |
@@ -21,7 +39,7 @@ This is the **item-level reconciliation evidence** required before implementatio
 | Reviewed on | 2026-09-05 |
 | Reviewer | Architecture Owner (design stage) |
 
-### 1.1 Method
+## 1.1 Method
 
 | Step | What was done |
 |---|---|
@@ -32,7 +50,7 @@ This is the **item-level reconciliation evidence** required before implementatio
 | 5 | Read the contents of the substantive projects and of every native shim, rather than treating their directory names as evidence |
 | 6 | Compared each finding against the earlier first-pass claim and recorded every correction |
 
-### 1.2 The measurement that changes the picture
+## 1.2 The measurement that changes the picture
 
 | Measure | Value |
 |---|---|
@@ -388,7 +406,7 @@ All 273 `.cs` files declare `SPDX-License-Identifier: AGPL-3.0-only`, and `NOTIC
 | Contract AOT posture | `eng/build/contracts.props`: `IsAotCompatible`, `EnableTrimAnalyzer`, `TreatWarningsAsErrors` | Conforms | `Keep` |
 | Cloud JIT posture | `eng/build/cloud-jit.props` present as a distinct file | Structurally conforms to **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**; effective properties to be asserted in [WP-02.03](../planning/work-packages/02-build-governance-and-analyzer-policy.md#rule-wp-02.03) | `Keep` |
 | Android AOT posture | `eng/build/android-aot.props` present | Structurally conforms; explicit runtime selection to be asserted in [WP-30.02](../planning/work-packages/30-mobile-shared-architecture.md#rule-wp-30.02) | `Keep` |
-| Web WebAssembly posture | **No `web-wasm.props` found** | **Gap** — the fourth **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** row has no build-property file | [WP-02.03](../planning/work-packages/02-build-governance-and-analyzer-policy.md#rule-wp-02.03) creates it |
+| Historical Web WebAssembly posture | **No `web-wasm.props` found** in the inspected baseline | Former gap superseded by [P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008) | [WP-02.03](../planning/work-packages/02-build-governance-and-analyzer-policy.md#rule-wp-02.03) removes obsolete Web-only managed posture and establishes Node tooling |
 | Test runner | `global.json` selects a modern test platform | Conforms | `Keep` |
 
 **Revised conclusion.** Build governance is close to conformant. [WP-02](../planning/work-packages/02-build-governance-and-analyzer-policy.md#rule-wp-02)'s remaining work is narrower than planned: the Web posture file, the `IsAotCompatible` sweep for libraries **outside** the two central imports, effective-property assertion, and the version-axis plumbing.

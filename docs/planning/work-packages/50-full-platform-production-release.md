@@ -33,6 +33,10 @@
 
 ---
 
+**Web redesign input.** [P2-008](../../decisions/phase-2-specification-decisions.md#rule-p2-008) and [Web toolchain and SDK](../../architecture/25-web-toolchain-and-sdk.md) are binding for this package's Web, generated-contract, toolchain and test responsibilities. The existing desktop/mobile runtime and product-scope decisions remain separately governed.
+
+---
+
 ## 3. Binding rules and decisions
 
 | # | Rule |
@@ -127,13 +131,13 @@
 
 <a id="rule-wp-50.06"></a>
 
-### WP-50.06 — Web surfaces
+### WP-50.06 — Node-built Web release set and real-browser verification
 
-**What must be fully done.** The static site, account portal and web companion deployed atomically per surface from promoted artifacts, each with its own origin policy, with rollback restoring the previous artifact set and a cached-older-client path that refreshes with a grace period rather than breaking.
+**What must be fully done.** Build Site/Account/Chat once through the pinned Node/npm pipeline after current C# export/TS SDK compatibility checks; promote the same artifacts with their manifest and safe runtime-config schema. Deploy per-origin edge routing, opaque cookie/CSRF policy, CSP and shared Cloud session prerequisites. Preserve old hashed chunks for the compatibility window; rollback headers/assets/config coherently. Keep production Node servers and esproj/npm installs out of Cloud runtime.
 
-**Testing requirements.** Atomic deployment and rollback per surface; a cached-client compatibility test; a cross-surface isolation assertion.
+**Testing requirements.** Production asset/real C# integration in the supported browser matrix; public no-script content, auth/CSRF/expiry/replica revocation, paid checkout return and Task recovery; visual/accessibility/performance budgets; atomic switch/rollback, cached client/chunk failure, route fallback/API error separation; npm SBOM/provenance and Windows/CLI evidence. No fixture-only substitution.
 
-**Completion gate.** Every web surface deploys atomically, rolls back cleanly, and handles a cached older client with a grace period.
+**Completion gate.** All declared Web surfaces pass commercial/browser/session/contract/visual/deployment gates including [PG-23](../../assurance/open-gates-register.md#rule-pg-23), using promoted production artifacts with an auditable rollback and client-compatibility path.
 
 <a id="rule-wp-50.07"></a>
 

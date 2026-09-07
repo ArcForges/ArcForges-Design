@@ -5,11 +5,11 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: K — Web and release
-> Upstream: `00` · Downstream: `48`
+> Upstream: `00`, `02` · Downstream: `48`
 
 > **Goal.** Ship the public face early and keep it independent: marketing, documentation, downloads and legal pages as static HTML and CSS generated from one source of truth, requiring no runtime, no account and no cloud.
 
-> **Parallelism note.** This package depends only on `00` and may run in parallel with the entire foundation and platform sequence (`§4` of the implementation sequence). It is numbered here because its *content* completes late, but its first version can exist very early.
+> **Dependency note.** This package consumes [WP-00](00-specification-naming-and-rights-freeze.md#rule-wp-00)'s names/content authority and [WP-02](02-build-governance-and-analyzer-policy.md#rule-wp-02)'s Node workspace/toolchain. Its first static slice can be implemented after those gates in the one serial context; final public commercial content still depends on the release gates. It is not parallel implementation authorization.
 
 ---
 
@@ -17,9 +17,9 @@
 
 **In scope.** The static generator; content sourcing from one source of truth for product catalogue, release metadata, pricing and legal document versions; per-locale output; the documentation surface; the download and update surfaces; legal pages; performance and internationalisation obligations; and privacy-preserving analytics.
 
-**Out of scope.** The account portal (`48`) and the web companion (`49`) — both are the Blazor application, not the static site. Any interactive application feature.
+**Out of scope.** The account portal (`48`) and the web companion (`49`) — both are the React application, not the static site. Any interactive application feature.
 
-**Why this package exists.** `I2 §III.12` states the static site can be built very early because it depends on nothing but content. **[D-007](../../decisions/phase-1-foundation-decisions.md#rule-d-007)** requires it to render without waiting for the runtime or WebAssembly.
+**Why this package exists.** `I2 §III.12` permits early delivery of static public content. [P2-008](../../decisions/phase-2-specification-decisions.md#rule-p2-008) adds the shared Node/toolchain dependency; public content remains usable before JavaScript runs.
 
 ---
 
@@ -34,13 +34,17 @@
 
 ---
 
+**Web redesign input.** [P2-008](../../decisions/phase-2-specification-decisions.md#rule-p2-008) and [Web toolchain and SDK](../../architecture/25-web-toolchain-and-sdk.md) are binding for this package's Web, generated-contract, toolchain and test responsibilities. The existing desktop/mobile runtime and product-scope decisions remain separately governed.
+
+---
+
 ## 3. Binding rules and decisions
 
 | # | Rule |
 |---|---|
-| BR-01 | **Public pages render as static HTML and CSS without waiting for the runtime or WebAssembly** (**[D-007](../../decisions/phase-1-foundation-decisions.md#rule-d-007)**). |
-| BR-02 | **Prohibited**: server circuits, runtime server-side rendering, React, TypeScript, Node, any JavaScript package manager (**[D-007](../../decisions/phase-1-foundation-decisions.md#rule-d-007)**). |
-| BR-03 | **Minimal audited JavaScript interop only**, each instance reviewed and listed. |
+| BR-01 | **Public pages render as static HTML and CSS before JavaScript runs**, with working ordinary navigation when scripting is disabled ([D-007](../../decisions/phase-1-foundation-decisions.md#rule-d-007), as amended). |
+| BR-02 | **Node.js/npm, React/TypeScript, Vite and React Router generate the static site.** Runtime Node SSR, Blazor and a second business backend are outside [P2-008](../../decisions/phase-2-specification-decisions.md#rule-p2-008). |
+| BR-03 | **Browser enhancements follow the owned design system and dependency/CSP/performance policy.** Initial content, links and downloads remain usable with JavaScript disabled. |
 | BR-04 | **Product catalogue, release metadata and pricing come from one source of truth.** The generator consumes it and never re-states versions or prices. |
 | BR-05 | **Above-the-fold content is present in the delivered HTML**; no client script is required to render it. |
 | BR-06 | **Locale-scoped URLs with correct alternate-language annotations**; no client-only language switching and no trapping automatic redirect. |
@@ -56,12 +60,12 @@
 
 | Location | Change |
 |---|---|
-| `src/Web/ArcForges.Web.StaticGen/` | The build-time generator |
-| `content/` | Marketing, documentation, legal and changelog content with locale variants |
-| `content/catalogue.json` | The single source of truth for products, releases and pricing references |
-| `eng/build/web-static.props` | Generator build configuration |
+| `src/Web/ArcForges.Web.Site/` | The build-time generator |
+| `src/Web/ArcForges.Web.Site/content/` | Marketing, documentation, legal and changelog content with locale variants |
+| `src/Web/ArcForges.Web.Site/content/catalogue.json` | The single source of truth for products, releases and pricing references |
+| `src/Web/ArcForges.Web.Site/react-router.config.ts` | Generator build configuration |
 | `deploy/edge/` | Edge hosting configuration, cache policy, redirects |
-| `tests/Web/StaticGenTests/` | Determinism, locale, link, performance and accessibility suites |
+| `src/Web/tests/site/` | Determinism, locale, link, performance and accessibility suites |
 
 **Major types introduced.** `ContentSource`, `PageDefinition`, `LocaleVariant`, `SiteManifest`, `Sitemap`, `RedirectRule`, `AssetFingerprint`.
 
@@ -71,23 +75,23 @@
 
 <a id="rule-wp-47.00"></a>
 
-### WP-47.00 — Generator and determinism
+### WP-47.00 — React static generation and determinism
 
-**What must be fully done.** A C# build-time generator producing per-locale, per-page static output plus sitemap, metadata and redirects. Two runs over unchanged input produce byte-identical output so a diff is meaningful.
+**What must be fully done.** Use the shared Node/npm workspace and React Router build-time pre-rendering with runtime SSR disabled. Generate the full public locale/URL inventory, documentation versions, sitemap, metadata and redirects. Public output contains no Account/Chat route bundle or private runtime configuration; builds use pinned local content/pricing/release inputs.
 
-**Testing requirements.** A determinism test comparing two full builds; a diff-meaningfulness check on a single content change.
+**Testing requirements.** Two full builds with identical toolchain/inputs; no-script navigation/content tests; public route inventory and 404 checks; single-content-change diff; build with network disabled after approved restore.
 
-**Completion gate.** Two builds of unchanged content are byte-identical, and a single content change produces a minimal diff.
+**Completion gate.** Deterministic static artifacts render their meaningful content/navigation without JavaScript or Cloud, with complete locale/docs routes and no private application content.
 
 <a id="rule-wp-47.01"></a>
 
-### WP-47.01 — Content sourcing
+### WP-47.01 — Versioned public content and pricing inputs
 
-**What must be fully done.** Product catalogue, release metadata, changelog, pricing references and legal document versions consumed from one source of truth. The generator never restates a version or a price independently.
+**What must be fully done.** Consume catalogue, release metadata, changelog, public offer projection and legal versions from declared versioned inputs. No live provider fetch during a build. Show the pricing projection's effective version/time; final checkout revalidates eligibility/tax/price through Cloud. Content can refer to released signed artifacts only.
 
-**Testing requirements.** A source-of-truth assertion asserting no hard-coded version or price exists in content or templates; a release-metadata integration test.
+**Testing requirements.** Assert no independently hard-coded product version/private supplier price; compare public projection to the selected approved snapshot; changed/stale offer and unavailable-checkout presentation tests.
 
-**Completion gate.** No version or price is hard-coded anywhere in the site.
+**Completion gate.** Public amounts/versions are traceable to approved inputs, no private commercial policy ships, and stale static content cannot authorize a charge.
 
 <a id="rule-wp-47.02"></a>
 
@@ -141,6 +145,18 @@
 
 ---
 
+<a id="rule-wp-47.07"></a>
+
+### WP-47.07 — Owned consumer design system
+
+**What must be fully done.** Create packages/ui with design tokens, responsive typography/spacing/color/themes, owned accessible primitives and optional Motion interactions. Establish a test-only component catalogue and approved visual baselines for home/product/pricing plus reusable account/usage/chat primitives. Implement localization, long labels, mobile-width navigation, focus/keyboard/reduced-motion and loading/error/empty variants. No extra public application or desktop Web UI is introduced.
+
+**Testing requirements.** React Testing Library behavior tests, production-rendered Playwright visual snapshots for representative viewport/theme/locale combinations, automated accessibility and dated human visual/keyboard review; dependency/licence/provenance checks for incorporated components/assets.
+
+**Completion gate.** The shared design system has approved consumer layouts and complete accessible states; [WP-48](48-account-portal.md#rule-wp-48), [WP-49](49-arcchat-web-companion.md#rule-wp-49) reuse it. Starter-template appearance alone is not acceptance.
+
+---
+
 ## 6. Impacts
 
 | Dimension | Impact |
@@ -169,6 +185,10 @@
 
 ---
 
+**Visual-system evidence.** [WP-47.07](#rule-wp-47.07)'s component behavior, browser snapshots, licensed assets and dated human visual/accessibility review are required outputs, in addition to the static/content/deployment results above.
+
+---
+
 ## 8. Completion gate
 
 **All of the following, with recorded evidence:**
@@ -188,6 +208,7 @@
 **Upstream — all must be complete.**
 
 - [00 — Specification, Naming and Rights Freeze](00-specification-naming-and-rights-freeze.md)
+- [02 — Build Governance, Packaging Policy and Analyzers](02-build-governance-and-analyzer-policy.md)
 
 **Downstream — these consume this package’s completed output.**
 

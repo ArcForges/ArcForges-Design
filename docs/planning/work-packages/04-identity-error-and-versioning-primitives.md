@@ -33,6 +33,10 @@
 
 ---
 
+**Web redesign input.** [P2-008](../../decisions/phase-2-specification-decisions.md#rule-p2-008) and [Web toolchain and SDK](../../architecture/25-web-toolchain-and-sdk.md) are binding for this package's Web, generated-contract, toolchain and test responsibilities. The existing desktop/mobile runtime and product-scope decisions remain separately governed.
+
+---
+
 ## 3. Binding rules and decisions
 
 | # | Rule |
@@ -126,6 +130,12 @@
 
 ---
 
+### TypeScript primitive projection
+
+Implement the C# serializers and metadata projection for the exact wire rules in [Web toolchain and SDK](../../architecture/25-web-toolchain-and-sdk.md). IDs are opaque strings; 64-bit revision/sequence/token/byte/microcredit values and decimal rates preserve exact canonical strings. Bound int32 counters remain numbers. This package consumes [WP-03](03-contract-foundation-and-licence-split.md#rule-wp-03)'s initial vectors and extends them as primitives stabilize. Runtime JSON and generated OpenAPI must agree; metadata-only stringification is a failing gate.
+
+---
+
 ## 6. Impacts
 
 | Dimension | Impact |
@@ -172,7 +182,7 @@
 
 **Downstream — these consume this package’s completed output.**
 
-- [06 — AOT, JIT and WebAssembly Publish Proof](06-aot-jit-and-wasm-publish-proof.md)
+- [06 — AOT, JIT and Web Publish Proof](06-aot-jit-and-wasm-publish-proof.md)
 - [07 — Local Persistence Foundation](07-local-persistence-foundation.md)
 - [11 — Security Foundation](11-security-foundation.md)
 - [12 — Observability Foundation](12-observability-foundation.md)

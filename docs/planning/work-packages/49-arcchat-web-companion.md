@@ -33,6 +33,10 @@ The Web companion verifies real generation, tool approval, stream fallback and r
 
 ---
 
+**Web redesign input.** [P2-008](../../decisions/phase-2-specification-decisions.md#rule-p2-008) and [Web toolchain and SDK](../../architecture/25-web-toolchain-and-sdk.md) are binding for this package's Web, generated-contract, toolchain and test responsibilities. The existing desktop/mobile runtime and product-scope decisions remain separately governed.
+
+---
+
 ## 3. Binding rules and decisions
 
 | # | Rule |
@@ -54,12 +58,12 @@ The Web companion verifies real generation, tool approval, stream fallback and r
 
 | Location | Change |
 |---|---|
-| `src/Web/ArcForges.Web.App/Features/Chat/` | Conversation, message, streaming, slash commands, context mentions |
-| `src/Web/ArcForges.Web.App/Features/Tasks/` | Task, run, step, tool call, progress, approval, steering |
-| `src/Web/ArcForges.Web.App/Features/Artifacts/` | Sandboxed artifact preview and download |
-| `src/Web/ArcForges.Web.App/Features/Devices/` | Presence and target selection |
+| `src/Web/ArcForges.Web.App/app/features/chat/` | Conversation, message, streaming, slash commands, context mentions |
+| `src/Web/ArcForges.Web.App/app/features/tasks/` | Task, run, step, tool call, progress, approval, steering |
+| `src/Web/ArcForges.Web.App/app/features/artifacts/` | Sandboxed artifact preview and download |
+| `src/Web/ArcForges.Web.App/app/features/devices/` | Presence and target selection |
 | `deploy/edge/chat/` | Origin configuration for the chat surface |
-| `tests/Web/Chat/` | Streaming, approval, offline, sandbox and budget suites |
+| `src/Web/tests/chat/` | Streaming, approval, offline, sandbox and budget suites |
 
 **Major types introduced.** `ChatProfile`, `ConversationView`, `StreamingAssembler`, `TaskBoardView`, `ApprovalPanel`, `SteeringPanel`, `ArtifactSandbox`, `PresencePicker`.
 
@@ -69,23 +73,23 @@ The Web companion verifies real generation, tool approval, stream fallback and r
 
 <a id="rule-wp-49.00"></a>
 
-### WP-49.00 — Chat profile and isolation
+### WP-49.00 — React Chat profile and design-system integration
 
-**What must be fully done.** The chat deployment profile with its own navigation, branding and feature set, sharing the codebase with the account profile but no state, storage or cookies.
+**What must be fully done.** Compose Chat routes in the same React/TypeScript application using the owned UI tokens/components and generated TS SDK. Account/Chat assets, cookies, query scopes and public config are independently selected and validated. Implement responsive conversation navigation/composer/task panel and native-product handoff with keyboard/reduced-motion support; no Node/browser agent loop.
 
-**Testing requirements.** A cross-profile isolation test; a build-per-profile test; a navigation-scope test.
+**Testing requirements.** Production route/profile inspection; approved light/dark/narrow-screen Chat visual baselines; keyboard, touch and long-text states; source/dependency assertion that no provider or Harness implementation enters the browser.
 
-**Completion gate.** The two profiles share code and provably share no state.
+**Completion gate.** The Chat profile is a coherent consumer interface with isolated session/state and no duplicated business authority.
 
 <a id="rule-wp-49.01"></a>
 
-### WP-49.01 — Conversation and streaming
+### WP-49.01 — Conversation, exact streaming and recovery
 
-**What must be fully done.** Conversation and message display with streaming assembly, slash commands, context mentions, and profile and model selection. Interruption is handled explicitly; a partial stream is never presented as a complete message.
+**What must be fully done.** Use the real Cloud Chat/Harness from [WP-52](52-cloud-harness.md#rule-wp-52) for conversation history, submission, bounded output streams and canonical persisted messages. The generated SDK and TS realtime adapter preserve CommandId, exact revisions and UTF-8 byte offsets. Distinguish open/completed/truncated/evicted/superseded stream outcomes from Task terminal state; reconnect/backfill never resubmits the turn. Preserve in-memory unsent input on transient loss, clear scoped state on logout/revocation.
 
-**Testing requirements.** Streaming, interruption and reconnection-mid-stream tests; a partial-message assertion.
+**Testing requirements.** Real Cloud/Harness test configuration with production browser assets: multibyte split boundaries, duplicate/delayed chunks, final-message race, window truncation, attempt replacement, polling-only recovery, expired session and concurrent tabs; peak memory and long-message rendering budgets; verify one customer operation despite reconnect.
 
-**Completion gate.** An interrupted stream is always shown as interrupted, never as complete.
+**Completion gate.** History, pending input, stream and final-message presentation stay consistent with the Cloud authority under every declared recovery outcome and retain exact positions without duplicate execution.
 
 <a id="rule-wp-49.02"></a>
 
@@ -164,6 +168,10 @@ The Web companion verifies real generation, tool approval, stream fallback and r
 | Offline-target queueing and no-local-connection results | [WP-49.04](#rule-wp-49.04) |
 | Offline, degradation, convergence and accessibility results | [WP-49.05](#rule-wp-49.05) |
 | Budget measurements and regression-gate negative test | [WP-49.06](#rule-wp-49.06) |
+
+---
+
+**React/Cloud evidence.** All Chat gates use the generated TS SDK and real Cloud/Harness test deployment. Fixture UI mode remains development-only and is excluded from release routes. Record schema fingerprint, browser/realtime conformance, scope-clearing and visual/accessibility evidence; [PG-23](../../assurance/open-gates-register.md#rule-pg-23) must close before release.
 
 ---
 

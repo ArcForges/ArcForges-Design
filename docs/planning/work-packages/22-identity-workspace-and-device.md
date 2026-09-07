@@ -32,6 +32,10 @@
 
 ---
 
+**Web redesign input.** [P2-008](../../decisions/phase-2-specification-decisions.md#rule-p2-008) and [Web toolchain and SDK](../../architecture/25-web-toolchain-and-sdk.md) are binding for this package's Web, generated-contract, toolchain and test responsibilities. The existing desktop/mobile runtime and product-scope decisions remain separately governed.
+
+---
+
 ## 3. Binding rules and decisions
 
 | # | Rule |
@@ -150,6 +154,18 @@
 
 ---
 
+<a id="rule-wp-22.08"></a>
+
+### WP-22.08 — Browser cookie-session adapter
+
+**What must be fully done.** Implement the adopted [P2-003](../../decisions/phase-2-specification-decisions.md#rule-p2-003) same-origin C# adapter in the existing Cloud host. Add the browser/native exclusive session schema, random handle hashing, origin binding, idle/absolute expiry, lowest-trust browser device/installation creation, the bounded browser_auth_flow store/cookie binding and shared Data Protection keys. Expose the C#-described bootstrap/authentication/logout operations and cookie/antiforgery middleware; all other operations call existing application services.
+
+**Testing requirements.** Real PostgreSQL tests for one-use challenge, concurrent idle update vs revoke/expiry, complete/login response loss, user/device revocation and replica failover. Browser tests for host-only cookies, no JS bearer secrets, cross-origin/sibling-origin CSRF on JSON/multipart/negotiation, WebSocket Origin, expiry and no elevated browser trust. Native refresh regression; native token issuance/refresh paths rejected at the browser edge, while cookie-shaped login/recovery succeeds.
+
+**Completion gate.** Authentication has one server authority, no extra deployment, no credential leakage, no session resurrection and no cross-origin credential sharing. This is a producer for [WP-23](23-public-api-and-generated-clients.md#rule-wp-23) and [WP-48](48-account-portal.md#rule-wp-48); full portal acceptance remains [WP-48.01](48-account-portal.md#rule-wp-48.01).
+
+---
+
 ## 6. Impacts
 
 | Dimension | Impact |
@@ -176,6 +192,10 @@
 | Token scope and revocation results | [WP-22.05](#rule-wp-22.05) |
 | Recovery abuse-resistance, state matrix and deletion results | [WP-22.06](#rule-wp-22.06) |
 | Cross-product sign-in and local-data-survival results | [WP-22.07](#rule-wp-22.07) |
+
+---
+
+**Browser-session evidence.** [WP-22.08](#rule-wp-22.08) contributes real database/concurrency, origin/CSRF/expiry and multi-replica results. The browser adapter must pass these before [WP-23](23-public-api-and-generated-clients.md#rule-wp-23) consumes its contract; a written [P2-003](../../decisions/phase-2-specification-decisions.md#rule-p2-003) decision alone is insufficient.
 
 ---
 

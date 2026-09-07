@@ -46,7 +46,7 @@ This document is a **capability inventory and a platform commitment structure**,
 | Target | Runtime | Architecture posture |
 |---|---|---|
 | **ArcForges Cloud** | ASP.NET Core JIT container | The container's target architecture is a deployment decision, not a product surface |
-| **ArcForges.Web.App** | Blazor WebAssembly, `RunAOTCompilation=false` | Architecture-independent; the commitment is the browser matrix ([PM-04](../requirements/12-quality-and-compatibility-contract.md#rule-pm-04) there) |
+| **ArcForges.Web.App** | React/TypeScript browser assets; Node.js/npm build tooling | Supported browser matrix; no .NET WASM host. win.slnx/esproj on Windows; npm directory workflow elsewhere ([P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008)) |
 | **ArcChat Mobile — Android** | .NET 10 Mono AOT | arm64 Tier 1; x64 for emulator use only, never a release claim |
 | **ArcChat Mobile — iOS** | **Architecture present, build deferred** (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**) | **Never claimed as compiled or tested** |
 

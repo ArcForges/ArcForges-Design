@@ -69,6 +69,25 @@ Each family below states its unique responsibility, where it runs, and its evide
 
 ---
 
+### 2.5 React/TypeScript execution of the existing families
+
+[P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008) adds Node/browser runners, not a replacement for the eighteen evidence families. Vitest/React Testing Library cover TS state, components and generated validation; Playwright covers production browser assets, edge/session behavior, accessibility and visual scenarios. C# server/persistence/architecture tests retain their existing runner and real infrastructure obligations.
+
+| Boundary | Required evidence | What does not substitute |
+|---|---|---|
+| C# → OpenAPI → TS SDK | Fresh C# export/baseline diff, deterministic TS generation, real-server C#/TS calls and exact-value/unknown-field/error/header vectors | TypeScript compilation or a hand-authored matching fixture |
+| Browser session | Real cookie/CSRF/origin, concurrent logout/expiry, replica failover, step-up, passkey matrix and no-credential-leak tests | A unit test of a frontend auth state flag |
+| Realtime/stream | Both language adapters, duplicate/gap/reconnect, byte-offset correctness, polling equivalence and revocation | A component playing pre-recorded chunks only |
+| Consumer interface | Approved representative production-rendered visual baselines, responsive/locale/theme states, keyboard/assistive review and interaction checks | Installing a UI library or accepting screenshots alone |
+| Independent workflows | Windows VS esproj command evidence and direct npm work on non-Windows, one locked dependency root | Successful dotnet or CMake build |
+| Release | Promoted Node artifacts, real Cloud commercial/Chat flows, strict production CSP, old cached clients, edge routes and rollback | Vite dev server, MSW, a hosted prototype or .NET WASM publish |
+
+MSW remains an explicit test-only developer mode; release route graphs exclude it. Failed required external prerequisites make an integration gate incomplete, not silently skipped. [PG-23](open-gates-register.md#rule-pg-23) aggregates the resulting Web release evidence.
+
+---
+
+
+
 ## 3. Cross-cutting verification themes
 
 These are not additional families; they are obligations distributed across the families above, each with a named owner.

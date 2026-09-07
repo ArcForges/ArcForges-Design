@@ -73,6 +73,12 @@ The sequence is one continuous numbered series. Phases are a reading aid, not a 
 
 ---
 
+### 2.1 Web redesign producers and consumers
+
+[P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008) preserves package identity while changing its Web implementation: [WP-01](work-packages/01-repository-reconciliation-and-target-layout.md#rule-wp-01), [WP-02](work-packages/02-build-governance-and-analyzer-policy.md#rule-wp-02) produce the npm/esproj/toolchain boundary; [WP-03](work-packages/03-contract-foundation-and-licence-split.md#rule-wp-03), [WP-04](work-packages/04-identity-error-and-versioning-primitives.md#rule-wp-04) produce C#-exported schemas and exact TS wire values; [WP-06.05](work-packages/06-aot-jit-and-wasm-publish-proof.md#rule-wp-06.05) proves a production React call against the real foundation host. [WP-22.08](work-packages/22-identity-workspace-and-device.md#rule-wp-22.08) supplies the production cookie-session adapter before [WP-23](work-packages/23-public-api-and-generated-clients.md#rule-wp-23)'s generated clients and [WP-24](work-packages/24-realtime-and-reliable-events.md#rule-wp-24)'s TS realtime adapter. [WP-47](work-packages/47-static-public-site.md#rule-wp-47) now also depends on [WP-02](work-packages/02-build-governance-and-analyzer-policy.md#rule-wp-02) and supplies the shared consumer design system before [WP-48](work-packages/48-account-portal.md#rule-wp-48), [WP-49](work-packages/49-arcchat-web-companion.md#rule-wp-49). Commercial/Chat release acceptance still consumes the real Cloud/Harness, then [WP-50](work-packages/50-full-platform-production-release.md#rule-wp-50). One new edge, [WP-02](work-packages/02-build-governance-and-analyzer-policy.md#rule-wp-02) → [WP-47](work-packages/47-static-public-site.md#rule-wp-47), prevents the static site from assuming a Node toolchain that no package has built.
+
+---
+
 ## 3. What may be mocked, and what may not
 
 Directly from `I2 §V`, which is binding on every work package.
@@ -88,7 +94,7 @@ Directly from `I2 §V`, which is binding on every work package.
 | ArcScope device simulators | **Real serial, TCP and UDP transports, disconnects and throughput** |
 | ArcSlate test media | **Real decoding, audio/video synchronisation and long exports** |
 | Application-port fakes | **The local store journal, crash recovery and migration** |
-| Cloud API stubs | **Real HTTP client, serialization and realtime protocol compatibility tests** |
+| Cloud API stubs and generated-contract MSW UI fixtures | **Real C#/TS generated clients, exact JSON values, browser sessions, serialization and realtime compatibility tests** |
 | Capability test providers | **Real named pipes and domain sockets, generated proxies and the binary formatter** |
 
 | # | Rule |
@@ -116,6 +122,10 @@ Every fixture that stands in for a later capability is listed here with the pack
 |---|---|
 | TS-01 | **Scaffolding is deleted, never adapted.** A fixture that graduates into production code stops being visible as a fixture, which is how a mock ends up serving real traffic. |
 | TS-02 | **The deleting package asserts the deletion structurally**, so the removal is verified rather than assumed. |
+
+---
+
+**Web fixtures.** [WP-06](work-packages/06-aot-jit-and-wasm-publish-proof.md#rule-wp-06) may use a labelled foundation endpoint and Web development may use MSW fixtures. MSW handlers remain test-only; they are excluded from release bundles. [WP-23](work-packages/23-public-api-and-generated-clients.md#rule-wp-23) replaces fixture evidence with real API/session conformance and [WP-48](work-packages/48-account-portal.md#rule-wp-48), [WP-49](work-packages/49-arcchat-web-companion.md#rule-wp-49) require the real commercial/Harness services. Retaining a regression fixture does not authorize a production mock registration.
 
 ---
 

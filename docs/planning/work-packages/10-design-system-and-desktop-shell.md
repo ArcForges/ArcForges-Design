@@ -209,7 +209,7 @@
 
 **Upstream — all must be complete.**
 
-- [06 — AOT, JIT and WebAssembly Publish Proof](06-aot-jit-and-wasm-publish-proof.md)
+- [06 — AOT, JIT and Web Publish Proof](06-aot-jit-and-wasm-publish-proof.md)
 
 **Downstream — these consume this package’s completed output.**
 

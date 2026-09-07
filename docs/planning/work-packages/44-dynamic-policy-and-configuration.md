@@ -154,7 +154,7 @@
 | Protocol | Policy bundle distribution contracts |
 | UI | Feature availability, kill-switch explanations and staleness indicators |
 | Security | Kill switches are a security control; hard limits cannot be loosened remotely |
-| Platform | Policy client works identically on every surface including AOT and WebAssembly |
+| Platform | Policy client works identically on every surface including AOT and React browser |
 | Migration | Policy schema versioning |
 | Compatibility | Compatibility policy is itself distributed as policy |
 

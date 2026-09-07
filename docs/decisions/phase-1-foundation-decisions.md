@@ -169,7 +169,7 @@ This is the single active statement of [D-003](#rule-d-003)'s applied scope. It 
 
 **Where** `I3 §18.1` and `§31` mandate Blazor WebAssembly with WASM AOT and rule out Blazor Server as a core mode. `I4 §Stage 2.27` requires the public marketing page to render above the fold *without JS/WASM fully started*, at LCP ≤2.5s / INP ≤200ms / CLS ≤0.1 (p75), and states that a marketing site must not require multi-MB WASM before Hero. Blazor WASM cannot satisfy that. `I2 §III.12` splits web into static site / account portal / chat companion and calls web a separate project, noting the static site "V0 can be built very early".
 
-**Outcome** Static HTML/CSS for public pages; one interactive Blazor WebAssembly application; `RunAOTCompilation=false`; no Blazor Server circuits, no React/TypeScript/Node/JS package manager; minimal audited JS interop only where no adequate managed interface exists.
+**Current outcome (amended 2026-09-06).** Static public pages plus one React/TypeScript Account/Chat application; Node.js/npm tooling; generated C# → OpenAPI → TS SDK; Windows esproj integration. The original Blazor outcome is superseded by [P2-008](phase-2-specification-decisions.md#rule-p2-008).
 
 ## [F-007](#rule-f-007) — Runtime and AOT matrix
 
@@ -179,7 +179,7 @@ This is the single active statement of [D-003](#rule-d-003)'s applied scope. It 
 
 **Verification** **[V-03](../assurance/phase-1-official-verification.md#rule-v-03)** confirms the conflict is real and structural: under .NET 10, "Other Authentication", MVC, Blazor Server, OData, Session and Spa are **Not supported** under Native AOT; Minimal APIs and SignalR have only **Partial support**. **[V-04](../assurance/phase-1-official-verification.md#rule-v-04)** confirms Android CoreCLR is experimental and not intended for production in .NET 10.
 
-**Outcome** Cloud is an ASP.NET Core **JIT** modular monolith; strict Native AOT is not a Cloud requirement. Desktop remains Native AOT. Android uses the supported .NET 10 Mono AOT path. Web uses Blazor WebAssembly with `RunAOTCompilation=false`. AOT release gates apply only to projects actually consumed by an AOT deliverable.
+**Outcome** Cloud is an ASP.NET Core **JIT** modular monolith; strict Native AOT is not a Cloud requirement. Desktop remains Native AOT. Android uses the supported .NET 10 Mono AOT path. **Web amendment (2026-09-06):** [P2-008](phase-2-specification-decisions.md#rule-p2-008) replaces the original Blazor WASM posture with React/TypeScript and Node/npm; .NET WASM flags no longer apply to Web. AOT release gates apply only to projects actually consumed by an AOT deliverable.
 
 **Corpus correction recorded** `I3 §2.1.3`'s statement that SignalR is unsupported under AOT reflects the .NET 8 status. Under .NET 10 SignalR has Partial support ([V-03](../assurance/phase-1-official-verification.md#rule-v-03)). The decision is unaffected; the stale statement must not be carried forward unamended.
 
@@ -555,6 +555,9 @@ The current effective applied scope of this decision is recorded under **[F-004]
 <a id="rule-d-007"></a>
 
 ## D-007 — Web technology and rendering boundary · resolves **[F-006](#rule-f-006)** · `USER_CONFIRMED`
+
+**Effective amendment — 2026-09-06, [P2-008](phase-2-specification-decisions.md#rule-p2-008).** The user replaces the Web technology with React/TypeScript and Node.js/npm. C# DTOs/endpoints generate OpenAPI and the TS SDK. Windows win.slnx includes an esproj; portable builds keep Web/npm, managed/dotnet and native/CMake separate. Public pages remain static; Account/Chat retain the shared codebase and isolated origins. The quoted original decision below is preserved as history; its Blazor-only and React/TS/Node/npm prohibition no longer applies to Web.
+
 
 > The public marketing experience must render as static HTML and CSS without waiting for the .NET runtime or WebAssembly to start. Marketing, legal, download and other public information pages must not boot Blazor merely to display their initial content.
 >
@@ -1053,7 +1056,7 @@ Global rules now in force. Applied to all occurrences they cover without further
 | 19 | The payment-provider verification target is Paddle and Payoneer. Their pricing and fees remain under [D-003](#rule-d-003)'s first-consumption rule. | [D-005](#rule-d-005) | T11 |
 | 20 | Current ArcNotes scope is notebook core, bounded property/query views and cloud sync. Canvas, Slides and collaboration-only hooks are excluded by the dated [D-006](#rule-d-006) amendment; references do not imply parity. | [D-006](#rule-d-006) as amended by [P2-006](phase-2-specification-decisions.md#rule-p2-006) | T03, T13 |
 | 21 | Public marketing, legal, download and other public information pages render as static HTML/CSS without booting the .NET runtime or WebAssembly. Static pages are deployment artifacts, not a second browser application. | [D-007](#rule-d-007) | T16 |
-| 22 | `ArcForges.Web.App` is the only interactive browser application: standalone Blazor WebAssembly, `RunAOTCompilation=false`. No Blazor Server circuits, Interactive Server, runtime SSR, React, TypeScript, Node or JS package manager. Minimal audited JS interop only where no adequate managed interface exists. | [D-007](#rule-d-007) | T16 |
+| 22 | `ArcForges.Web.App` is one React/TypeScript application with Account/Chat build profiles. Node.js/npm generates static assets and the TS SDK from C#-generated contracts. Windows win.slnx includes esproj; other platforms run npm in src/Web. No production Node business service or runtime SSR baseline. | [D-007](#rule-d-007) as amended by [P2-008](phase-2-specification-decisions.md#rule-p2-008) | T16 |
 | 23 | **ArcForges Cloud is an ASP.NET Core JIT modular monolith.** Strict Native AOT is not a Cloud requirement, and every obsolete claim that Cloud must publish as Native AOT is removed. Azure SDKs, the durable agent loop, provider adapters, SignalR integration, billing, policy and operational infrastructure run inside the JIT boundary. | [D-008](#rule-d-008) | T18, T07 |
 | 24 | Desktop remains a Native AOT deliverable with trim/AOT-safe dependency rules. **Only projects actually consumed by an AOT deliverable must satisfy AOT release gates.** Shared public contracts and client libraries stay trim-safe and source-generation friendly. | [D-008](#rule-d-008) | T07, T19 |
 | 25 | ArcChat Mobile Android uses the supported .NET 10 Mono AOT release path. Experimental Android CoreCLR and experimental Android NativeAOT are not production baselines. iOS architecture stays present and complete with its build deferred; its release runtime is re-verified against the then-current supported MAUI/iOS baseline. | [D-008](#rule-d-008) | T17 |

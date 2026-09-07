@@ -23,6 +23,12 @@
 
 ---
 
+### 1.1 React/TypeScript browser boundary
+
+[P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008) adds a C# same-origin browser-session adapter inside this host's PublicApi/Identity boundary. Edge routing serves React assets independently and forwards only declared API/session/realtime paths. The adapter calls existing application services, uses server-side session records and explicit cookie/CSRF/origin checks, and never duplicates entitlement, pricing, Harness or persistence behavior in Node. Native/mobile retain their bearer API scheme; the TS SDK derives from C# metadata. [Web architecture §5](10-web-architecture.md#5-browser-session-architecture--p2-003-resolved) and [session storage](data-model/01-cloud-data-model.md#browser-session-storage) define the lifecycle.
+
+---
+
 ## 2. Deployment host and internal services
 
 **One deployable host** (**[P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006)**; `§8` of the product scope). `ArcForges.Cloud.Host` is the single ASP.NET Core JIT executable. Request handling, realtime hubs, the single Harness and every bounded background service run inside it as libraries. Horizontal scale is **replicas of that one host**, never a second deployable with a different job.

@@ -191,6 +191,12 @@ Cloud updates the task; realtime hints the requester; the requester re-reads
 
 ---
 
+### 6.1 Browser adapter
+
+The browser uses the official SignalR JavaScript client with DTOs, event names and runtime validators generated from C#-exported JSON Schema. C# clients retain their AOT-aware implementation; both run the same sequence/duplicate/reconnect/backfill conformance vectors. Browser transport uses same-origin cookies, WebSocket Origin checks, WebSockets-only and skipNegotiation, never an access token in a query URL. Upgrade failure uses bounded authoritative HTTP polling, not SignalR long polling; periodic catch-up covers a wakeup emitted on another replica. No replica affinity or backplane is required for browser correctness. The Task stream keeps byte offsets and bounded buffers; JavaScript UTF-16 string length is not a cursor. See [Web realtime rules](../25-web-toolchain-and-sdk.md#32-realtime-and-streaming).
+
+---
+
 ## 7. Verification
 
 | # | Obligation | Where |

@@ -32,6 +32,10 @@
 
 ---
 
+**Web redesign input.** [P2-008](../../decisions/phase-2-specification-decisions.md#rule-p2-008) and [Web toolchain and SDK](../../architecture/25-web-toolchain-and-sdk.md) are binding for this package's Web, generated-contract, toolchain and test responsibilities. The existing desktop/mobile runtime and product-scope decisions remain separately governed.
+
+---
+
 ## 3. Binding rules and decisions
 
 | # | Rule |
@@ -127,13 +131,13 @@
 
 <a id="rule-wp-24.06"></a>
 
-### WP-24.06 — AOT and cross-surface client
+### WP-24.06 — C# and TypeScript realtime adapters
 
-**What must be fully done.** One shared client used by desktop, web and later mobile, using source-generated payload metadata, working from a published Native AOT binary and a WebAssembly host.
+**What must be fully done.** Share C#-authored event contracts and conformance vectors; keep one reusable C# client for native/mobile and one TS adapter using the official SignalR JS client. Generate TS names/DTOs/validators from exported schema; implement same-origin browser cookies, WebSockets-only with skipNegotiation, ordinary HTTP fallback, explicit antiforgery on unsafe HTTP operations and WebSocket Origin/expiry checks. Preserve event hints versus durable HTTP authority, byte stream positions and bounded backfill.
 
-**Testing requirements.** Published-AOT and WebAssembly connection tests; a shared-implementation assertion that no surface has its own divergent client.
+**Testing requirements.** Browser WebSockets-only/skip-negotiation across two replicas without affinity; blocked upgrade falls back to ordinary HTTP, and cross-replica lost hints converge through periodic catch-up. Published-AOT and production React real-server connections; disconnect/duplicate/gap/reconnect, permanently disabled realtime polling equivalence, UTF-8 stream offsets, browser revocation/expiry and negative origin checks; assert no manually duplicated event model.
 
-**Completion gate.** One client implementation serves every surface and works from published AOT and WebAssembly hosts.
+**Completion gate.** Both language adapters reach the same authoritative state under the conformance matrix. Shared semantics do not require a C# client to run inside the browser.
 
 ---
 
@@ -145,7 +149,7 @@
 | Protocol | The realtime protocol and its payload contracts |
 | UI | Connection state, degradation indicators and live updates |
 | Security | Subscription permission, revocation propagation and token redaction |
-| Platform | Realtime verified under AOT and WebAssembly |
+| Platform | Realtime verified under AOT and React browser |
 | Migration | Realtime payload versioning enters the compatibility window |
 | Compatibility | The sequence and backfill contract clients depend on |
 
@@ -161,7 +165,7 @@
 | Backfill convergence comparisons | [WP-24.03](#rule-wp-24.03) |
 | Fan-out failure divergence results | [WP-24.04](#rule-wp-24.04) |
 | Degradation and outage visibility results | [WP-24.05](#rule-wp-24.05) |
-| Published-AOT and WebAssembly client results | [WP-24.06](#rule-wp-24.06) |
+| Published-AOT and React browser client results | [WP-24.06](#rule-wp-24.06) |
 
 ---
 
@@ -175,7 +179,7 @@
 4. **After any gap, disconnection or server restart the client converges to authoritative state, verified by comparison.**
 5. A fan-out failure never loses the underlying state change, and the client still converges through backfill.
 6. Realtime loss degrades to visible polling; a full cloud outage never blanks a client.
-7. One shared client implementation works from a published Native AOT binary and a WebAssembly host.
+7. C# and TypeScript realtime adapters pass the shared real-server recovery matrix with generated event contracts and their correct authentication boundaries.
 
 ---
 

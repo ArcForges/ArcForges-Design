@@ -160,7 +160,7 @@
 
 **Upstream — all must be complete.**
 
-- [06 — AOT, JIT and WebAssembly Publish Proof](06-aot-jit-and-wasm-publish-proof.md)
+- [06 — AOT, JIT and Web Publish Proof](06-aot-jit-and-wasm-publish-proof.md)
 - [07 — Local Persistence Foundation](07-local-persistence-foundation.md)
 - [08 — Local IPC Transport and Registration Lifecycle](08-local-ipc-and-registration.md)
 

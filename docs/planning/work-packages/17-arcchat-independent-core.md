@@ -209,7 +209,7 @@
 
 **Upstream — all must be complete.**
 
-- [06 — AOT, JIT and WebAssembly Publish Proof](06-aot-jit-and-wasm-publish-proof.md)
+- [06 — AOT, JIT and Web Publish Proof](06-aot-jit-and-wasm-publish-proof.md)
 - [15 — ArcChat Conversation and Project Core](15-arcchat-conversation-core.md)
 - [16 — Unified Execution Engine](16-unified-execution-engine.md)
 

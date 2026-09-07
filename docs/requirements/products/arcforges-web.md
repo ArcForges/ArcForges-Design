@@ -49,12 +49,12 @@ Fixed by **[D-007](../../decisions/phase-1-foundation-decisions.md#rule-d-007)**
 
 | # | Requirement |
 |---|---|
-| <a id="rule-tb-01"></a>TB-01 | **Public marketing, legal, download and information pages render as static HTML and CSS without waiting for the .NET runtime or WebAssembly to start.** They must not boot a client application merely to display their initial content. |
-| TB-02 | **`ArcForges.Web.App` is the only interactive browser application**, implemented as **standalone Blazor WebAssembly** for authenticated account and ArcChat companion experiences. |
-| TB-03 | Static public pages may be hand-authored or generated at build time by C#/.NET tooling. **They are static deployment artifacts, not a second browser application.** |
-| TB-04 | **Prohibited**: Blazor Server circuits, Interactive Server, runtime server-side rendering, React, TypeScript, Node, and any JavaScript package manager. |
-| TB-05 | **`RunAOTCompilation=false`** for the WebAssembly application unless a future measured benchmark and an explicit decision prove the larger download justified. |
-| TB-06 | **Minimal audited JavaScript interop only**, and only where the browser or a required provider offers no adequate managed interface. |
+| <a id="rule-tb-01"></a>TB-01 | **Public marketing, legal, download and information pages render as static HTML and CSS before JavaScript runs.** Their content and ordinary navigation work with scripting disabled; they do not boot a client application merely to display initial content. |
+| TB-02 | **`ArcForges.Web.App` is the only interactive browser application**, implemented in React and strict TypeScript as separate Account/Chat build profiles under [P2-008](../../decisions/phase-2-specification-decisions.md#rule-p2-008). |
+| TB-03 | **Public pages are generated at build time using React/TypeScript and Node.js**, as static deployment artifacts. Their initial content and navigation work without JavaScript. |
+| TB-04 | **The selected Web toolchain is Node.js/npm, Vite and React Router.** No Blazor browser host, React Native migration, runtime Node SSR or separate Node business backend is required. |
+| TB-05 | **Web is checked against production browser assets, not .NET AOT properties.** Pin the Node/compiler/dependency toolchain, enforce browser compatibility and track initial and per-route transfer budgets. |
+| TB-06 | **Browser JS/TS libraries are permitted under dependency, CSP, accessibility and performance policy.** This permission is confined to Web and does not relax pure-native Avalonia desktop requirements. |
 
 ---
 
@@ -153,9 +153,9 @@ Specified in [`arcchat-mobile-and-web.md`](arcchat-mobile-and-web.md). Two bound
 | # | Requirement |
 |---|---|
 | SE-01 | **HTTPS only**, across every surface. |
-| SE-02 | **Content Security Policy, `SameSite` and secure-cookie or BFF-style policies are configured per deployment mode** (**[D-015](../../decisions/phase-1-foundation-decisions.md#rule-d-015)**). |
-| SE-03 | **Secrets are never compiled into the WebAssembly bundle.** |
-| SE-04 | **Browsers must not hold long-lived access tokens in storage readable by arbitrary scripts.** The authorization model prefers short-lived tokens and a bounded security boundary; the concrete deployment is settled by an architecture decision. |
+| SE-02 | **Each deployment has its own CSP, host-only cookie, CSRF and explicit origin policy**, using the C# browser-session adapter adopted by [P2-003](../../decisions/phase-2-specification-decisions.md#rule-p2-003). |
+| SE-03 | **Secrets are never compiled into the browser bundle.** |
+| SE-04 | **Browser JavaScript receives no access/refresh credential.** Opaque Secure/HttpOnly cookie sessions are held and revoked server-side; cookie-authenticated writes require explicit antiforgery and origin checks. |
 | SE-05 | **Cross-origin policy is an explicit allowlist.** Broad production CORS is prohibited. |
 | SE-06 | **Uploads undergo content-type, size and format validation with a quarantine area**, and are never executed server-side ([EX-06](../03-cloud-services-and-sync.md#rule-ex-06) in the cloud requirements). |
 | SE-07 | **Access tokens must be redacted from realtime transport logs.** |
@@ -163,6 +163,30 @@ Specified in [`arcchat-mobile-and-web.md`](arcchat-mobile-and-web.md). Two bound
 | SE-09 | **A web session is more conservative than a desktop session**, and an unknown browser does not immediately hold high-risk approval capability ([OF-07](arcchat-mobile-and-web.md#rule-of-07), [OF-08](arcchat-mobile-and-web.md#rule-of-08) in the companion requirements). |
 
 ---
+
+### 6.1 Generated contracts and independent engineering
+
+| # | Requirement |
+|---|---|
+| <a id="rule-web-01"></a>WEB-01 | **C# public DTOs/endpoints generate OpenAPI 3.1, JSON Schema and the TypeScript SDK.** No duplicate handwritten TS business contract or React-specific business backend; runtime response validation and version compatibility are required. |
+| <a id="rule-web-02"></a>WEB-02 | **Exact values survive C# and JavaScript.** Int64 revisions/token counts/microcredits and decimal prices use the specified canonical string wire encoding; UI display never rounds accounting values through JS Number. |
+| <a id="rule-web-03"></a>WEB-03 | **One Web npm workspace can be developed independently.** Windows win.slnx includes its esproj; non-Windows developers run Node/npm in the Web directory without loading the managed/native solution. |
+| <a id="rule-web-04"></a>WEB-04 | **Fixture development and real integration are separate modes.** Tests of the generated SDK against real C# APIs, browser sessions, PostgreSQL state and approved provider test flows are release evidence; fixture success alone is not. |
+| <a id="rule-web-05"></a>WEB-05 | **Realtime and streaming have generated event contracts and recovery tests**, including byte offsets, reconnect/gaps, duplicate delivery and loss of authorization. |
+| <a id="rule-web-06"></a>WEB-06 | **The browser handles API uncertainty explicitly.** Idempotency keys, revision conflicts, rate limits, pending checkout confirmation and expired sessions cannot be replaced with unconditional optimistic success. |
+
+### 6.2 Consumer visual and interaction quality
+
+| # | Requirement |
+|---|---|
+| <a id="rule-uxw-01"></a>UXW-01 | **A shared owned design system governs Site, Account and Chat**: typography, spacing, color, iconography, light/dark themes, responsive layout and motion. React/shadcn components are adapted to this system; shipping an unreviewed starter theme is insufficient. |
+| <a id="rule-uxw-02"></a>UXW-02 | **Core screens have approved visual baselines**: home/product/pricing, subscription/checkout return, account overview, usage/capacity, conversation and task approval. Validate desktop and narrow browser layouts and long translated text. |
+| <a id="rule-uxw-03"></a>UXW-03 | **Loading, empty, error, pending, disabled, expired and recovery states are designed and tested.** Server truth controls subscription/credit/task status; animations and placeholders do not imply authority. |
+| <a id="rule-uxw-04"></a>UXW-04 | **Motion supports comprehension**, honors reduced-motion preferences and never hides focus, delays primary actions or blocks initial content. Keyboard, screen reader and touch behavior are acceptance conditions. |
+| <a id="rule-uxw-05"></a>UXW-05 | **Production artifacts meet the existing public Web Vitals target and committed application budgets.** Visual review, interaction/browser tests and performance evidence are all required. |
+
+---
+
 
 ## 7. Content and data concepts
 
@@ -204,7 +228,7 @@ Each must be complete and testable:
 
 ## 9. Non-goals
 
-The web presence is **not**: an ArcNotes, ArcScope or ArcSlate web editor; a second account application at a secondary path; a public content-sharing platform in V1; a public roadmap commitment system; a heavy client application on public marketing pages; or a JavaScript-framework application.
+The web presence is **not**: an ArcNotes, ArcScope or ArcSlate web editor; a second account application at a secondary path; a public content-sharing platform in V1; a public roadmap commitment system; a heavy client application on public marketing pages.
 
 ---
 
@@ -230,9 +254,17 @@ The web presence is **not**: an ArcNotes, ArcScope or ArcSlate web editor; a sec
 
 **Localization** — a locale-scoped page carries correct alternate-language annotations, and no automatic redirect traps a user in the wrong locale.
 
-**Security** — the WebAssembly bundle contains no secret; CORS is an explicit allowlist; an unknown browser cannot immediately perform a high-risk approval.
+**Security** — the browser bundle contains no secret; CORS is an explicit allowlist; an unknown browser cannot immediately perform a high-risk approval.
 
 **Commerce** — checkout requires sign-in and a selected workspace; the success redirect shows a confirming state and grants nothing until verified provider events arrive.
+
+---
+
+**Generated-client interoperability** — C# emits the contract, TS regenerates without handwritten DTOs, exact large integers/decimals round-trip, and stale clients follow the compatibility window.
+
+**Independent developer workflow** — Windows opens/builds the Web esproj in win.slnx; Linux/macOS run the same npm commands directly. Real-browser API and fixture modes are distinguishable.
+
+**Visual acceptance** — approved Site, subscription and Chat layouts pass theme, narrow-screen, locale, asynchronous-state, keyboard and reduced-motion checks.
 
 ---
 
@@ -243,8 +275,8 @@ The web presence is **not**: an ArcNotes, ArcScope or ArcSlate web editor; a sec
 | `I4 §Stage 2` | The complete web presence: surface layout, marketing site positioning and navigation, product pages, download centre, account portal scope, pricing, open source, documentation, changelog, status, support, security, internationalisation, mainland access, performance, analytics, discovery metadata, key paths and content concepts |
 | `I4 §Stage 7 §54–56` | ArcChat Web as a cloud surface, separate from the account portal |
 | `I4 §Stage 5` | Download and release metadata as one source of truth |
-| `I3 §18` | Blazor WebAssembly boundaries and web security posture |
-| **[D-007](../../decisions/phase-1-foundation-decisions.md#rule-d-007)** | Static public pages; one Blazor WebAssembly application; prohibited technologies |
+| `I3 §18` | Historical Web input; current technology follows [P2-008](../../decisions/phase-2-specification-decisions.md#rule-p2-008), with origin/security principles retained |
+| **[D-007](../../decisions/phase-1-foundation-decisions.md#rule-d-007)** | Static public pages and one application; technology amended by [P2-008](../../decisions/phase-2-specification-decisions.md#rule-p2-008) |
 | **[D-014](../../decisions/phase-1-foundation-decisions.md#rule-d-014)** | The twelve-entry surface inventory and "a hostname is not an application" |
 | **[D-015](../../decisions/phase-1-foundation-decisions.md#rule-d-015)** | Canonical account portal origin and boundary policy |
 | **[D-002](../../decisions/phase-1-foundation-decisions.md#rule-d-002)** | Superseded product names never appear |

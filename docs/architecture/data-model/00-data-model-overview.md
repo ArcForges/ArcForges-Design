@@ -246,6 +246,7 @@ Cloud is one deployable host and one PostgreSQL database. A unit of work owns on
 | Resource upload admission, verified-object promotion, final release/GC accounting | Entitlement + Resource | Staging/storage/egress reservations and committed-byte accounting transition once with object state; network deletion is separate and retryable |
 | Simulator admission, bounded segment publication, cancellation and permit release | Entitlement + Scope + Resource | Product permits and bytes are reserved; manifest/checkpoint and segment references commit together under the current fence; AI credits are untouched |
 | Policy-file activation | Config + Entitlement + Commerce + Agent + Policy | Active head, immutable route/tariff/offer/client projections and capacity-policy intervals agree on one revision; no workspace balance moves during activation |
+| Browser authentication completion | Identity + Device | Consumed one-use browser flow, lowest-trust device/installation and live opaque-cookie session commit together; lost response may require a fresh authentication flow |
 | Device revocation | Identity + Device + Notification | Device denial, session revocation and push-registration revocation become visible together; queued tool withdrawals follow the named asynchronous path |
 
 #### 6.1.1a Per-call delivery and final Turn completion

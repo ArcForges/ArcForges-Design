@@ -1,19 +1,19 @@
 <a id="rule-wp-06"></a>
 
-# WP-06 — AOT, JIT and WebAssembly Publish Proof
+# WP-06 — AOT, JIT and Web Publish Proof
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: A — Freeze and foundation
 > Upstream: `03`, `04`, `05` · Downstream: `07`, `08`, `10`, `12`, `13`, `17`
 
-> **Goal.** Prove the runtime matrix on real published artifacts, not on intentions. Every desktop product publishes Native AOT and launches; Cloud publishes JIT and runs its full pipeline; the web application publishes to WebAssembly. Until this holds, every downstream design choice is a hypothesis.
+> **Goal.** Prove the runtime matrix on real published artifacts, not on intentions. Every desktop product publishes Native AOT and launches; Cloud publishes JIT and runs its full pipeline; the React application builds into production browser assets. Until this holds, every downstream design choice is a hypothesis.
 
 ---
 
 ## 1. Scope and purpose
 
-**In scope.** A minimal but *real* deliverable per target that publishes with the production posture and runs: a desktop host with the real contract set and local RPC attach, a cloud host with its real pipeline order, a WebAssembly application with a real typed client call, and the toolchain evidence for each.
+**In scope.** A minimal but *real* deliverable per target that publishes with the production posture and runs: a desktop host with the real contract set and local RPC attach, a cloud host with its real pipeline order, a production React application with a generated TypeScript SDK call, and the toolchain evidence for each.
 
 **Out of scope.** Product features. UI beyond what is required to prove a window opens and a command runs. The mobile targets — Android's proof is `30`/`32`, because it depends on the mobile boundary that does not exist yet.
 
@@ -31,6 +31,10 @@
 | [`../../architecture/04-desktop-application-architecture.md`](../../architecture/04-desktop-application-architecture.md) `§2` | Desktop AOT constraints [AO-01](../../architecture/04-desktop-application-architecture.md#rule-ao-01)–[AO-12](../../architecture/04-desktop-application-architecture.md#rule-ao-12) |
 | [`../../architecture/05-cloud-architecture.md`](../../architecture/05-cloud-architecture.md) `§1`, `§3` | The JIT decision and the host pipeline order |
 | [WP-03](03-contract-foundation-and-licence-split.md#rule-wp-03), [WP-04](04-identity-error-and-versioning-primitives.md#rule-wp-04), [WP-05](05-architecture-and-repository-policy-tests.md#rule-wp-05) output | Real contracts, real primitives, and policy tests that keep the proof true |
+
+---
+
+**Web redesign input.** [P2-008](../../decisions/phase-2-specification-decisions.md#rule-p2-008) and [Web toolchain and SDK](../../architecture/25-web-toolchain-and-sdk.md) are binding for this package's Web, generated-contract, toolchain and test responsibilities. The existing desktop/mobile runtime and product-scope decisions remain separately governed.
 
 ---
 
@@ -56,7 +60,7 @@
 | `src/ArcChat/ArcChat.Desktop/` | Minimal AOT-publishable host: window, one command, local RPC attach, cloud client construction |
 | `src/ArcNotes/ArcNotes.Desktop/`, `src/ArcScope/ArcScope.Desktop/`, `src/ArcSlate/ArcSlate.Desktop/` | Equivalent minimal AOT-publishable hosts |
 | `src/Cloud/ArcForges.Cloud.Host/` | Minimal host running the real pipeline order with a health endpoint and one contract endpoint |
-| `src/Web/ArcForges.Web.App/` | Minimal WebAssembly application making one typed client call |
+| `src/Web/ArcForges.Web.App/` | Minimal React browser application making one typed client call |
 | `tests/LocalRpcAotTests/` | Extended: attach, invoke and detach against a published AOT binary |
 | `tests/ReleaseArtifactTests/` | Extended: published-artifact launch and posture inspection |
 | `eng/verification/` | The publish proof scripts and their evidence output |
@@ -118,13 +122,13 @@
 
 <a id="rule-wp-06.05"></a>
 
-### WP-06.05 — WebAssembly publish
+### WP-06.05 — React production build and generated SDK proof
 
-**What must be fully done.** The web application publishes to WebAssembly with AOT compilation disabled, loads in a browser, and makes one typed client call using source-generated serialization. Initial bundle size is measured and recorded as the first budget baseline.
+**What must be fully done.** Build the minimal Account/Chat profiles through the Node workspace, serve production assets, and call the real C# contract endpoint from [WP-06.04](#rule-wp-06.04) using the generated Fetch SDK and runtime validators. Exercise public exact-value vectors, a typed failure and a cancelled request. Establish initial route/transfer/interaction budgets and prove Windows esproj plus non-Windows npm entry points. The endpoint is a labelled foundation probe; production identity/business/checkout remains [WP-22](22-identity-workspace-and-device.md#rule-wp-22), [WP-23](23-public-api-and-generated-clients.md#rule-wp-23), [WP-48](48-account-portal.md#rule-wp-48), [WP-49](49-arcchat-web-companion.md#rule-wp-49).
 
-**Testing requirements.** A publish and load test; a typed call test; a recorded bundle size measurement.
+**Testing requirements.** Production browser load and real HTTP round trip; above-safe-integer/decimal values; schema failure/cancellation; dependency/CSP/secret scan; Windows IDE command and non-Windows CLI checks; measured asset budgets.
 
-**Completion gate.** The application publishes, loads and calls successfully, and a bundle baseline exists.
+**Completion gate.** Node-built profiles load and call the real C# probe with generated TS contracts. No .NET WASM payload, handwritten DTO, fixture-only network proof or unmeasured production-build claim.
 
 <a id="rule-wp-06.06"></a>
 
@@ -161,7 +165,7 @@
 | Dependency-graph and negative build-test results for the typed client | [WP-06.02](#rule-wp-06.02) |
 | AOT realtime reconnection results | [WP-06.03](#rule-wp-06.03) |
 | Cloud image build, pipeline order and integration results | [WP-06.04](#rule-wp-06.04) |
-| WebAssembly publish, load and bundle baseline | [WP-06.05](#rule-wp-06.05) |
+| production Web build, load and bundle baseline | [WP-06.05](#rule-wp-06.05) |
 | Third-party control probe log | [WP-06.06](#rule-wp-06.06) |
 
 ---
@@ -175,7 +179,7 @@
 3. A published AOT binary makes a typed HTTP call with the reflection package absent and its diagnostic build-breaking — satisfying [F-026](../../assurance/open-gates-register.md#rule-f-026).
 4. Realtime connects, receives, disconnects and reconnects with sequence backfill from a published AOT binary.
 5. The cloud host publishes and runs JIT with its real pipeline order and no AOT properties.
-6. The web application publishes to WebAssembly, loads, makes a typed call, and has a recorded bundle baseline.
+6. Production React assets load and call the real C# probe through the generated TS SDK with exact-value vectors, Windows/CLI workflow evidence and recorded budgets.
 7. The third-party control admission process exists and has been exercised once.
 8. All of the above run on every main-branch build, not once.
 

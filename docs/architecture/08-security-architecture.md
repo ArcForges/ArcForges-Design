@@ -64,7 +64,7 @@ Authorization is enforced at **four** points, and each is mandatory.
 | # | Rule |
 |---|---|
 | AU-01 | **Standard OIDC/OAuth 2.1 semantics** with the framework's authentication and authorization stack. |
-| AU-02 | **Access tokens are short-lived; refresh tokens rotate and are revocable.** |
+| AU-02 | **Native/mobile bearer access tokens are short-lived with rotating revocable refresh tokens.** Browser authentication uses server-held opaque-cookie sessions with idle/absolute expiry and live revocation under [Web session architecture](10-web-architecture.md#5-browser-session-architecture--p2-003-resolved). |
 | AU-03 | **Audience, issuer, tenant, device and scope are all validated.** |
 | AU-04 | **Endpoints use policy-based authorization**; **resource-level authorization is re-validated in the application service**, never resting on a route or hub attribute alone. |
 | AU-05 | **Realtime connections and hub methods use the same identity model and explicit authorization.** |
@@ -269,9 +269,9 @@ Audit event  (append-only, owner-scoped)
 |---|---|
 | WB-01 | **HTTPS only, on every surface.** |
 | <a id="rule-wb-02"></a>WB-02 | **Origins are isolated**: the account portal and the chat surface do not share authentication cookies, and **no broad parent-domain cookie exists** (**[D-015](../decisions/phase-1-foundation-decisions.md#rule-d-015)**). |
-| WB-03 | **Content Security Policy, `SameSite` and secure-cookie or BFF-style policies are configured per deployment mode.** |
-| <a id="rule-wb-04"></a>WB-04 | **No secret is compiled into the WebAssembly bundle.** |
-| <a id="rule-wb-05"></a>WB-05 | **Long-lived access tokens are never held in storage readable by arbitrary scripts.** Short-lived tokens with a bounded security boundary are preferred; the concrete deployment is settled by a decision record. |
+| WB-03 | **Per-origin host-only Secure/HttpOnly cookie sessions use the existing C# Cloud adapter**, with explicit Origin and antiforgery checks on every unsafe cookie operation including JSON/multipart and realtime negotiation; no parent-domain cookie. |
+| <a id="rule-wb-04"></a>WB-04 | **No secret is compiled into the browser bundle.** |
+| <a id="rule-wb-05"></a>WB-05 | **Browser JavaScript holds no access/refresh credential.** The HttpOnly opaque handle, server session state, exact-origin checks and CSRF rules are fixed by [P2-003](../decisions/phase-2-specification-decisions.md#rule-p2-003), now adopted; no token in Web Storage or URL. |
 | <a id="rule-wb-06"></a>WB-06 | **Cross-origin policy is an explicit allowlist.** |
 | <a id="rule-wb-07"></a>WB-07 | **Uploads are content-type-, size- and format-validated with a quarantine area, and are never executed server-side.** |
 | <a id="rule-wb-08"></a>WB-08 | **Realtime transport logs redact tokens.** |

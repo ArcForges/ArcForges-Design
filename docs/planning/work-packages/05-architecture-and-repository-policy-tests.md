@@ -38,6 +38,10 @@
 
 ---
 
+**Web redesign input.** [P2-008](../../decisions/phase-2-specification-decisions.md#rule-p2-008) and [Web toolchain and SDK](../../architecture/25-web-toolchain-and-sdk.md) are binding for this package's Web, generated-contract, toolchain and test responsibilities. The existing desktop/mobile runtime and product-scope decisions remain separately governed.
+
+---
+
 ## 3. Binding rules and decisions
 
 | # | Rule |
@@ -153,6 +157,12 @@
 
 ---
 
+### Web repository and architecture assertions
+
+Add Node/TS import and dependency checks to the existing policy suite: one Web workspace/lock; exact Node/npm/generator pins; SDK-to-UI licence separation; generated wire types; no private/server/local-RPC imports; desktop JS/DOM prohibition scoped to desktop graphs; no obsolete Blazor target in the active Web graph; no esproj in portable managed references; no implicit npm install or production dev/HMR server. TS fixtures and test helpers cannot enter a release route graph. Exercise negative examples and verify the policy fails for each prohibited dependency/route.
+
+---
+
 ## 6. Impacts
 
 | Dimension | Impact |
@@ -204,5 +214,5 @@
 
 **Downstream — these consume this package’s completed output.**
 
-- [06 — AOT, JIT and WebAssembly Publish Proof](06-aot-jit-and-wasm-publish-proof.md)
+- [06 — AOT, JIT and Web Publish Proof](06-aot-jit-and-wasm-publish-proof.md)
 - [21 — Cloud Host, Modules, Persistence and Migrations](21-cloud-host-and-persistence.md)

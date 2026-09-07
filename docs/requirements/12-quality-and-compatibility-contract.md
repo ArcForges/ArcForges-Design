@@ -71,7 +71,7 @@ A **Lower-bound Supported Hardware Class** is maintained in parallel, to answer 
 
 | # | Requirement |
 |---|---|
-| RH-01 | **Benchmarks run against real publish artifacts**: the production Native AOT desktop package, the release Android AOT package, the production WebAssembly build. A Debug or JIT measurement is not a benchmark result ([I-380](01-normative-glossary-and-invariants.md#rule-i-380), [I-381](01-normative-glossary-and-invariants.md#rule-i-381)). |
+| RH-01 | **Benchmarks run against real release artifacts:** the production Native AOT desktop package, release Android AOT package and production Node-built Web assets. A Debug/dev-server result, or a JIT desktop substitute for its required AOT artifact, is not evidence. Cloud and browser measurements use their own supported production runtimes ([I-380](01-normative-glossary-and-invariants.md#rule-i-380), [I-381](01-normative-glossary-and-invariants.md#rule-i-381)). |
 
 ---
 
@@ -240,7 +240,7 @@ The product metric is **Time To Usable** ([I-389](01-normative-glossary-and-inva
 | AO-05 | **Per [D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008), AOT gates apply only to projects actually consumed by an AOT deliverable.** Cloud is a JIT modular monolith and carries no strict AOT requirement. Shared public contracts and client libraries consumed by desktop or mobile remain trim-safe and source-generation friendly. |
 | AO-06 | **A third-party extension does not change this contract.** The host stays a Native AOT deliverable; an extension runs out of process with its own runtime and does not affect the host's AOT metrics ([EX-04](08-extensions-and-developer-platform.md#rule-ex-04) in the extension requirements). |
 | AO-07 | **Android production is .NET 10 Mono AOT** (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**, **[V-04](../assurance/phase-1-official-verification.md#rule-v-04)**). `UseMonoRuntime` is explicit in the project file rather than relying on a default that changes in a later framework version. Documentation must never conflate Mono AOT with CoreCLR Native AOT. |
-| AO-08 | **Web uses Blazor WebAssembly with `RunAOTCompilation=false`** (**[D-007](../decisions/phase-1-foundation-decisions.md#rule-d-007)**) unless a measured benchmark and an explicit decision justify otherwise. |
+| AO-08 | **Web is React/TypeScript production browser assets built with the pinned Node.js/npm toolchain** ([P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008)); .NET WebAssembly/AOT flags do not apply. Type safety, generated-contract drift, browser/visual/accessibility behavior and asset budgets are release gates. |
 | AO-09 | Dependency-specific AOT gates carried from Phase 1 verification are enforced: source-generated StreamJsonRpc proxies with the required contract attributes; Refit generated-only entry points with the reflection package absent and its diagnostic build-breaking; a real publish proof for Avalonia plus every third-party control actually used. |
 
 ---
@@ -376,7 +376,7 @@ Three tiers of matrix, running at different cadences:
 | <a id="rule-pm-01"></a>PM-01 | **Desktop Tier-1 platforms genuinely enter build, AOT publish, install, UI, recovery, compatibility, performance and release matrices.** A platform that only compiles is not supported. |
 | <a id="rule-pm-02"></a>PM-02 | **The supported OS range is a versioned matrix** published as release metadata, not folklore. |
 | <a id="rule-pm-03"></a>PM-03 | **ArcChat Mobile is verified on real devices**, not only emulators — the release AOT artifact, cold start, weak network, background resume, and store-package verification. |
-| <a id="rule-pm-04"></a>PM-04 | **ArcChat Web is verified against a maintained browser matrix**, including the WebAssembly publish, first load, caching and realtime reconnection. |
+| <a id="rule-pm-04"></a>PM-04 | **ArcChat Web is verified against a maintained browser matrix**, including the production Web build, first load, caching and realtime reconnection. |
 | PM-05 | **A hardware lab is mandatory for ArcScope and ArcSlate.** Real serial, network and device interfaces; real media, codecs and GPUs. A CI virtual machine cannot detect the failures these products actually have. |
 | <a id="rule-pm-06"></a>PM-06 | **Native hardware paths require fallback tests**: missing GPU, unsupported codec, absent device, driver failure — each must degrade explicitly rather than crash. |
 | PM-07 | **Cross-platform file-system behaviour is tested**: case sensitivity, path length, reserved names, Unicode normalisation, permissions, locking, and network or removable volumes. |
@@ -569,5 +569,5 @@ Define budget → Encode in the machine-readable contract → Measure on referen
 | `I4 §Stage 27` | The entire quality and compatibility contract: two-tier thresholds, reference hardware, startup, memory, soak, background budgets, accessibility, localization, units, AOT, version axes, compatibility matrix, migration testing, contract testing, crash and recovery, diagnostics, platform matrices, severity and waivers, the test pyramid, and the quality invariants |
 | `I3 §22`–`§27` | Performance and backpressure principles, release-mode matrix, build governance, test strategy, CI gates, installation and update |
 | `I4 §Stage 5`, `§Stage 9`, `§Stage 22` | Update, recovery and migration behaviour that the contract gates |
-| **[D-007](../decisions/phase-1-foundation-decisions.md#rule-d-007)**, **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** | Web WebAssembly posture; Cloud is JIT; desktop AOT gates; Android Mono AOT |
+| **[D-007](../decisions/phase-1-foundation-decisions.md#rule-d-007)**, **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** | React/TypeScript Web posture under [P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008); Cloud is JIT; desktop AOT gates; Android Mono AOT |
 | **[V-03](../assurance/phase-1-official-verification.md#rule-v-03)**, **[V-04](../assurance/phase-1-official-verification.md#rule-v-04)**, **[V-05](../assurance/phase-1-official-verification.md#rule-v-05)** | AOT support surfaces, Android runtime posture, and the per-dependency AOT gates enforced here |

@@ -5,7 +5,7 @@
 > Governing authority: **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** (runtime and AOT matrix), **[D-011](../decisions/phase-1-foundation-decisions.md#rule-d-011)** (target monorepo), **[D-014](../decisions/phase-1-foundation-decisions.md#rule-d-014)** (surface inventory, update and download domains), **[D-022](../decisions/phase-1-foundation-decisions.md#rule-d-022)** (mobile commerce posture), `I4 §Stage 5`
 > Companions: [`../requirements/10-distribution-update-and-support.md`](../requirements/10-distribution-update-and-support.md), [`../requirements/12-quality-and-compatibility-contract.md`](../requirements/12-quality-and-compatibility-contract.md), [`01-solution-and-project-layout.md`](01-solution-and-project-layout.md)
 
-One monorepo, many independently versioned products, one build system, and one rule that governs everything below: **the bytes a user runs are the bytes CI produced, verified end to end.**
+One monorepo, many independently versioned products, one coordinated build graph with managed, native and Web toolchains, and one rule that governs everything below: **the bytes a user runs are the bytes CI produced, verified end to end.**
 
 ---
 
@@ -40,18 +40,26 @@ build/                                the build orchestration entry points
 | # | Rule |
 |---|---|
 | <a id="rule-bm-01"></a>BM-01 | **The SDK version is pinned** and upgrading it is a reviewed change with the full verification matrix re-run (`§22` of the quality contract). |
-| BM-02 | **Central package management is mandatory.** A project never declares its own version of a shared dependency. |
-| BM-03 | **Analyzer and warning policy is repository-wide**, with warnings as errors on the main path. A per-project suppression carries a justification comment and an owner. |
+| BM-02 | **NuGet uses central management; Web uses exact npm pins and one package-lock.json.** Node/npm and the JavaScript SDK are independently pinned; no business project invents a package version. |
+| BM-03 | **Compiler/analyzer policy applies per language:** .NET warnings/AOT diagnostics and TS strict typechecking/lint/import boundaries, with owned time-bounded exceptions. |
 | BM-04 | **Trim, AOT and single-file analyzers are enabled on every project that participates in an AOT publish** (`§12` of the quality contract), and their diagnostics are build-breaking. |
 | <a id="rule-bm-05"></a>BM-05 | **A build must not depend on machine state** — no globally installed tool that is not restored by the repository, no environment variable that is not declared, no network fetch outside restore. |
-| <a id="rule-bm-06"></a>BM-06 | **Generated code is generated at build time, never committed**, except where a golden file is deliberately checked in as a compatibility fixture (`§6`). |
+| <a id="rule-bm-06"></a>BM-06 | **Generated source is produced at build time and not committed.** Generated OpenAPI/JSON Schema baselines are deliberate committed compatibility fixtures; Web-only developers generate the SDK from these while CI verifies them against fresh C# export. |
 | <a id="rule-bm-07"></a>BM-07 | **The build works offline after restore**, so a transient registry outage does not stop a release. |
+
+### 2.1.1 Web entry points and release artifacts
+
+[Web toolchain and SDK](25-web-toolchain-and-sdk.md) defines the exact directory/command contract. Windows win.slnx composes native projects, managed projects and one Web esproj. The portable managed graph excludes esproj; non-Windows Web work runs npm from src/Web, independently of CMake. JS SDK restore invokes root npm ci explicitly and Build never silently installs. Node runs only build/dev/test work; production assets are static artifacts served by the edge, and Cloud remains the C# host.
+
+CI retains generated OpenAPI/schema fingerprints, Node/npm and lock versions, generated SDK provenance, browser/visual reports and an npm-aware SBOM. Changed C# endpoint/serializer contracts trigger both native and TS compatibility checks. The full solution's C# test pass is insufficient for Web. Existing Windows VS/native hooks and cross-platform CMake jobs retain separate obligations.
+
 
 ### 2.2 Build stages
 
 ```
-restore → analyze → compile → unit test → generate contracts artifacts
-   → architecture and policy tests → integration test → publish (per RID)
+locked restores (.NET/native/npm) → C# compile and metadata export
+   → contract compatibility diff → TS SDK/event generation → language checks/tests
+   → architecture/policy → production .NET/native/Web builds → integration/browser tests
    → package → sign → verify → attest → record → promote
 ```
 
@@ -70,8 +78,8 @@ restore → analyze → compile → unit test → generate contracts artifacts
 |---|---|---|
 | ArcChat, ArcNotes, ArcScope, ArcSlate desktop | **Native AOT**, self-contained (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**) | AOT publish succeeds with zero trim/AOT warnings; the produced binary launches without a machine-installed runtime |
 | ArcForges Cloud | **ASP.NET Core JIT**, container image (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**) | Strict AOT is explicitly not required (**[V-03](../assurance/phase-1-official-verification.md#rule-v-03)**); the image runs the same pipeline in every environment |
-| ArcForges.Web.App | **Blazor WebAssembly**, `RunAOTCompilation=false` (**[D-007](../decisions/phase-1-foundation-decisions.md#rule-d-007)**) | Publish succeeds; bundle size measured against budget |
-| ArcForges.Web.StaticGen output | Static artifacts | Deterministic regeneration produces byte-identical output |
+| ArcForges.Web.App | **React/TypeScript browser assets**, Node/npm production build ([P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008)) | Account/Chat profile artifacts, generated SDK round trip, browser/CSP/visual/bundle evidence |
+| ArcForges.Web.Site output | React/TS build-time pre-rendered static artifacts | No-script content, deterministic build, locale/SEO/accessibility and performance |
 | ArcChat Mobile — Android | **.NET 10 Mono AOT** release build (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**, **[V-04](../assurance/phase-1-official-verification.md#rule-v-04)**) | The runtime posture is confirmed by inspecting the produced artifact ([RT-07](11-mobile-architecture.md#rule-rt-07) in the mobile architecture); CI builds the release artifact and smoke-tests on a real device |
 | ArcChat Mobile — iOS | **Architecture present, build deferred** (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**) | Never claimed as compiled or tested; re-verified against the then-current supported baseline before activation |
 

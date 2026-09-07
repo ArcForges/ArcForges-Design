@@ -7,7 +7,7 @@
 
 Phase 1 decisions remain binding except where subsequent explicit user direction amends them under D-001. **[P2-006](#rule-p2-006) records the user-directed requirements revision of 2026-09-06.**
 
-The bar for entry is deliberately high. A conclusion already stated in the preserved input corpus, or already implied by a Phase 1 decision, is implemented in the requirements, architecture or planning layers with a citation — it does not become a decision record. [P2-001](#rule-p2-001) through [P2-006](#rule-p2-006) are recorded below; [P2-002](#rule-p2-002) is withdrawn and [P2-003](#rule-p2-003) remains explicitly deferred.
+The bar for entry is deliberately high. A conclusion already stated in the preserved input corpus, or already implied by a Phase 1 decision, is implemented in the requirements, architecture or planning layers with a citation — it does not become a decision record. [P2-001](#rule-p2-001) through [P2-008](#rule-p2-008) are recorded below. [P2-002](#rule-p2-002) is withdrawn; [P2-003](#rule-p2-003) is now adopted under the Web redesign. [P2-008](#rule-p2-008) is the latest authority for Web, Node tooling and generated TypeScript clients.
 
 ---
 
@@ -89,25 +89,19 @@ The withdrawn rule anticipated rewriting "a package"; the evidence in fact chang
 
 <a id="rule-p2-003"></a>
 
-## P2-003 — Browser token-handling deployment · `DEFERRED`
+## P2-003 — Browser session deployment · `ADOPTED 2026-09-06`
 
-**Decision.** The concrete browser token-handling deployment — a cookie-based backend-for-frontend versus in-memory access tokens with a short lifetime — is **deliberately not decided in Phase 2**. It is deferred to implementation with a binding constraint that every permitted option must satisfy.
+**Current decision.** Under [P2-008](#rule-p2-008), browser authentication uses a same-origin C# session adapter inside the existing Cloud host. The edge routes the Account and Chat origins to that host; no new Node server or separate BFF deployment is needed. Each origin receives its own opaque Secure/HttpOnly host-only cookie; session authority, expiry, step-up and revocation stay in the PostgreSQL Identity store. Browser JavaScript receives no access/refresh credential.
 
-**The binding constraint.** **A long-lived access token is never held in storage readable by arbitrary scripts.** Whichever deployment is chosen must satisfy this, together with: short-lived access tokens with refresh rotation and revocation; serialised refresh so concurrent requests never storm; per-origin cookie, cross-origin and request-forgery posture with **no broad parent-domain authentication cookie** (**[D-015](phase-1-foundation-decisions.md#rule-d-015)**); and a web session that is shorter-lived and less trusted than a desktop session.
+**Why it can now be resolved.** The Web redesign fixes the edge/API topology and the shared Cloud deployment. The previously unknown extra-host question no longer applies. The adapter calls the same C# application services as native/public API endpoints rather than storing bearer tokens to proxy into a second backend.
 
-**Why this is deferred rather than decided.** Both options satisfy the security requirement, and the choice between them turns on operational facts that do not exist yet — the edge and hosting topology, the cost of an additional server-side component per origin, and measured refresh behaviour under real load. Deciding it now would be a guess presented as an architecture.
+**Binding requirements.** Exact origin checks, explicit antiforgery on all unsafe cookie-authenticated operations, no parent-domain cookie, no credentials in bundles or URLs, bounded idle/absolute expiry, conservative browser trust and revocation across replicas. Native/mobile bearer refresh semantics remain separately specified.
 
-**Why it is recorded rather than left silent.** An undecided item that is not written down becomes an accidental decision made by whoever writes the code first. **[D-016](phase-1-foundation-decisions.md#rule-d-016)** requires deferred decisions to carry an owner and a trigger; this one does.
+**Owner and verification.** Architecture Owner with Security and Privacy Owner. [WP-22.08](../planning/work-packages/22-identity-workspace-and-device.md#rule-wp-22.08) implements the server adapter; [WP-23.05](../planning/work-packages/23-public-api-and-generated-clients.md#rule-wp-23.05) proves generated clients; [WP-48.01](../planning/work-packages/48-account-portal.md#rule-wp-48.01) verifies real browser authentication. [PG-23](../assurance/open-gates-register.md#rule-pg-23) remains open for implementation evidence.
 
-**Owner.** Architecture Owner, with the Security and Privacy Owner.
+**Consumed by.** [Web architecture §5](../architecture/10-web-architecture.md#5-browser-session-architecture--p2-003-resolved), [Cloud session storage](../architecture/data-model/01-cloud-data-model.md#browser-session-storage), [browser-session operations](../architecture/contracts/01-public-api-operations.md#browser-session-operations).
 
-**Trigger.** Before the account portal's authentication implementation begins — work package `48`, sub-step `48.01`.
-
-**Blocks.** [WP-48.01](../planning/work-packages/48-account-portal.md#rule-wp-48.01). The package cannot complete its gate without the decision being made and recorded.
-
-**Consumed by.** [`../architecture/10-web-architecture.md`](../architecture/10-web-architecture.md) `§5` ([AU-02](../architecture/10-web-architecture.md#rule-au-02), [AU-03](../architecture/10-web-architecture.md#rule-au-03)); work package `48`.
-
-**On resolution.** The chosen deployment is recorded as an amendment to this entry with its status changed to `ADOPTED`, and the constraint above becomes a test in [WP-48.01](../planning/work-packages/48-account-portal.md#rule-wp-48.01).
+**History.** Originally deferred to [WP-48.01](../planning/work-packages/48-account-portal.md#rule-wp-48.01) between cookie-based BFF and in-memory access tokens. The 2026-09-06 redesign adopts the cookie-session form. The historical deferral is not an outstanding design choice, and this decision is not evidence that browser authentication has been implemented.
 
 ---
 
@@ -211,6 +205,32 @@ ArcNotes delivers the notebook core, cloud sync, block references/backlinks, pro
 **Closure evidence.** The [Stage 2 closure review](../assurance/phase-2-design-closure-review.md) records the fourteen dispositions, design checks and remaining implementation obligations. Existing historical statements are not completion evidence for the revised baseline. A future runtime gate cannot substitute for resolving a contradiction in current specifications.
 
 ---
+
+<a id="rule-p2-008"></a>
+
+## P2-008 — React/TypeScript Web and C# generated API clients · ADOPTED
+
+**Authority and date.** Explicit user direction, 2026-09-06: redesign the Web frontend in TypeScript using Node.js and C# → OpenAPI → TS SDK; include an esproj in Windows win.slnx, while non-Windows platforms use their own toolchain directories, analogous to CMake. The user-supplied ReactApp2 template is an IDE-integration reference.
+
+**Decision.**
+
+1. Replace the Blazor-only Web boundary with React/React DOM, strict TypeScript, Vite and React Router; npm workspaces on pinned Node.js 24 LTS. The Site pre-renders public HTML at build time; Account/Chat are separate build profiles of one React application.
+2. C# public DTOs, serializer metadata and endpoints remain authoritative. Generate OpenAPI 3.1 / JSON Schema 2020-12, then the TypeScript Fetch SDK, validators and query integrations. C# clients continue using the generated C# route; browser code uses the generated TypeScript route.
+3. The existing ASP.NET Core JIT Cloud remains the single business backend and Harness host. Node is build/development/test/static-generation infrastructure; no production Node business service or runtime SSR is required.
+4. One Web npm root and lockfile reside under src/Web. Windows win.slnx includes one esproj for that workspace; portable .NET projects do not depend on esproj. Non-Windows and CI run npm, dotnet and CMake in their respective boundaries.
+5. Resolve [P2-003](#rule-p2-003) to the same-origin C# cookie-session adapter. Share business handlers, not browser credentials or duplicated billing/authorization logic.
+6. Consumer visual quality is an explicit acceptance obligation: owned design tokens/components, representative approved layouts, complete asynchronous/failure states, responsive behavior, accessibility, production performance and browser evidence.
+
+**Supersession.** The original [D-007](phase-1-foundation-decisions.md#rule-d-007) Blazor/RunAOTCompilation and React/TS/Node/npm prohibition is superseded for Web only. Any [D-008](phase-1-foundation-decisions.md#rule-d-008) interpretation that applies .NET/WASM flags to Web is superseded. [D-009](phase-1-foundation-decisions.md#rule-d-009)'s C# source-of-truth rule, [D-014](phase-1-foundation-decisions.md#rule-d-014)/[D-015](phase-1-foundation-decisions.md#rule-d-015)'s surface/origin rules, [D-021](phase-1-foundation-decisions.md#rule-d-021)'s licence boundary and [P2-006](#rule-p2-006)'s product scope remain effective. The Web tooling exception does not permit desktop WebViews/DOM, local AI, mobile React Native, teams, BYOK or a second agent. Public HTTP stays JSON; this is not a Fory/TypeSpec/tRPC protocol decision.
+
+**Implementation consequence.** Reconcile obsolete Blazor Web projects, .NET Web component tests and static C# generator targets in the implementation inventory. Introduce Node/TS restore, generation, diagnostics, tests, licences/SBOM and release artifacts. Retain package identifiers and amend real dependencies rather than inventing an unrelated implementation sequence.
+
+**Selected mechanisms and verification.** [Web architecture](../architecture/10-web-architecture.md), [Web toolchain and SDK](../architecture/25-web-toolchain-and-sdk.md), the updated Web requirements, [WP-01](../planning/work-packages/01-repository-reconciliation-and-target-layout.md#rule-wp-01), [WP-02](../planning/work-packages/02-build-governance-and-analyzer-policy.md#rule-wp-02), [WP-03](../planning/work-packages/03-contract-foundation-and-licence-split.md#rule-wp-03), [WP-05](../planning/work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05), [WP-06](../planning/work-packages/06-aot-jit-and-wasm-publish-proof.md#rule-wp-06), [WP-22](../planning/work-packages/22-identity-workspace-and-device.md#rule-wp-22), [WP-23](../planning/work-packages/23-public-api-and-generated-clients.md#rule-wp-23), [WP-24](../planning/work-packages/24-realtime-and-reliable-events.md#rule-wp-24), [WP-47](../planning/work-packages/47-static-public-site.md#rule-wp-47), [WP-48](../planning/work-packages/48-account-portal.md#rule-wp-48), [WP-49](../planning/work-packages/49-arcchat-web-companion.md#rule-wp-49), [WP-50](../planning/work-packages/50-full-platform-production-release.md#rule-wp-50) and [PG-23](../assurance/open-gates-register.md#rule-pg-23) specify producers, consumers and real execution evidence.
+
+**Cost accepted.** A TypeScript/Node dependency and testing toolchain in return for the React design/interaction ecosystem. A monorepo remains one source tree with several toolchains, not one universal compiler. No change to desktop/mobile business scope is inferred.
+
+---
+
 
 ## What was considered and deliberately not recorded
 

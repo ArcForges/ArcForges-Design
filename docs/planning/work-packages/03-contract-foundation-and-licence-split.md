@@ -35,6 +35,10 @@
 
 ---
 
+**Web redesign input.** [P2-008](../../decisions/phase-2-specification-decisions.md#rule-p2-008) and [Web toolchain and SDK](../../architecture/25-web-toolchain-and-sdk.md) are binding for this package's Web, generated-contract, toolchain and test responsibilities. The existing desktop/mobile runtime and product-scope decisions remain separately governed.
+
+---
+
 ## 3. Binding rules and decisions
 
 | # | Rule |
@@ -43,7 +47,7 @@
 | BR-02 | **Contracts split by communication boundary, product/domain ownership, release cadence and licence boundary** (**[D-009](../../decisions/phase-1-foundation-decisions.md#rule-d-009)**). |
 | BR-03 | **The Apache-2.0 set is exactly**: public protocol specifications, wire schemas, DTOs, public clients, contract-level validators, and the public SDK (**[D-004](../../decisions/phase-1-foundation-decisions.md#rule-d-004)**, **[D-021](../../decisions/phase-1-foundation-decisions.md#rule-d-021)**). |
 | <a id="rule-br-04"></a>BR-04 | **No Apache-boundary project references an AGPL project**, directly or transitively (**[D-004](../../decisions/phase-1-foundation-decisions.md#rule-d-004)**). |
-| BR-05 | **Every public DTO belongs to a source-generated serialization context.** No reflection-based serialization exists on any main path. |
+| BR-05 | **Every public C# DTO has a source-generated serialization context.** TS DTOs and validators derive from the C#-generated schema; no parallel handwritten browser wire model. |
 | BR-06 | **Every local RPC contract interface carries the generated-shape attribute with public instance methods included** (**[V-05b](../../assurance/phase-1-official-verification.md#rule-v-05b)**), asserted by a policy test. |
 | BR-07 | **Base ViewModel patterns are never shared between desktop and mobile** (**[D-021](../../decisions/phase-1-foundation-decisions.md#rule-d-021)**) — the shared boundary is contracts and semantics, not UI patterns. |
 | BR-08 | **Contract version and application version are separate axes** ([QI-04](../../requirements/12-quality-and-compatibility-contract.md#rule-qi-04)), and a contract change without a version change fails the build. |
@@ -125,23 +129,23 @@
 
 <a id="rule-wp-03.05"></a>
 
-### WP-03.05 — Generation pipeline and the baseline gate
+### WP-03.05 — C# export, TS generation and baseline gate
 
-**What must be fully done.** The build generates OpenAPI documents, JSON Schema and capability descriptors from the C# source of truth into a stable artifact location, deterministically. A committed baseline exists, and the build diffs against it. A change without a declared contract version bump and a compatibility note fails.
+**What must be fully done.** Implement network-free C# metadata export for OpenAPI 3.1/JSON Schema, capability descriptors and realtime schema. Commit generated compatibility baselines; pin Hey API and generate the Apache TS Fetch SDK/Zod/query integration from local artifacts. Exclude private/operator/internal types. Frontend-only dev generates from baselines; full CI first verifies them against fresh C# export.
 
-**Testing requirements.** A determinism test — two builds produce byte-identical artifacts; a negative test — an undeclared contract change fails the build.
+**Testing requirements.** Two deterministic exports/generations; fail on undeclared drift or unsupported shape; regenerate/typecheck TS without .NET or a running backend using committed baselines; dependency/licence and private-schema leakage checks.
 
-**Completion gate.** Generation is deterministic and the baseline gate blocks an undeclared change.
+**Completion gate.** One authored C# contract produces both client boundaries. SDK output regenerates deterministically and has no manual model duplication or secret/internal dependency.
 
 <a id="rule-wp-03.06"></a>
 
-### WP-03.06 — Compatibility rules and the supported window
+### WP-03.06 — Cross-language compatibility window
 
-**What must be fully done.** The compatibility rules [VC-01](../../architecture/02-contracts-and-protocols.md#rule-vc-01)–[VC-10](../../architecture/02-contracts-and-protocols.md#rule-vc-10) are implemented as tests: additive-only changes within a version, required-field additions as breaking, unknown-field handling, and the supported client window. Golden wire vectors are captured for the initial version.
+**What must be fully done.** Implement additive/breaking compatibility rules and golden vectors for C#/TS. C# converters, OpenAPI and TS validators agree: 64-bit numbers and decimal prices are canonical strings, bounded int32 remains numeric, and null/omission, unions and unknown response values follow the declared contract. Initial production baseline uses the new wire shape; an already deployed numeric shape requires a versioned migration.
 
-**Testing requirements.** A compatibility matrix test across the declared window using the golden vectors.
+**Testing requirements.** C#→TS and TS→C# vectors for values above 2^53−1, supported 64-bit extremes, precise decimal prices, malformed/unknown/omitted fields; current/previous client matrix; no TS any fallback.
 
-**Completion gate.** The matrix passes and the initial golden vectors are committed as immutable fixtures.
+**Completion gate.** The same vectors pass in both language runtimes without accounting/revision precision loss, and breaking changes cannot silently replace a deployed wire contract.
 
 ---
 
@@ -195,7 +199,7 @@
 
 - [04 — Identity, Error, Revision and Versioning Primitives](04-identity-error-and-versioning-primitives.md)
 - [05 — Architecture and Repository Policy Test Suite](05-architecture-and-repository-policy-tests.md)
-- [06 — AOT, JIT and WebAssembly Publish Proof](06-aot-jit-and-wasm-publish-proof.md)
+- [06 — AOT, JIT and Web Publish Proof](06-aot-jit-and-wasm-publish-proof.md)
 - [09 — Capability, Contribution and Resource Model](09-capability-contribution-and-resource-model.md)
 - [21 — Cloud Host, Modules, Persistence and Migrations](21-cloud-host-and-persistence.md)
 - [23 — Public API Surface and Generated Clients](23-public-api-and-generated-clients.md)
