@@ -117,7 +117,7 @@ Every synchronised aggregate row carries `acked_rev`, `acked_local_seq` and `hea
 |---|---|
 | EV-L1 | **A row is evictable only when `head_local_seq == acked_local_seq`** and no staged upload and no unreturned tool receipt references it. This is `PE-02`, restated against the watermark. |
 | EV-L2 | **The corroborating invariant is that no batch for the aggregate is in a non-terminal state.** The two conditions must agree; a periodic check asserts they do, and a disagreement is a defect rather than a tie-break. |
-| EV-L3 | **Cache pressure, sign-out, account switch and subscription restriction all run this same gate** (`PE-03`). None has a shortcut, because each is a path by which unacknowledged work has historically been lost.
+| EV-L3 | **Cache pressure, sign-out, account switch and subscription restriction all run this same gate** (`PE-03`). None has a shortcut, because each is a path by which unacknowledged work has historically been lost. |
 
 ### 1.4 `sync_outbox` — the submission batch log
 
