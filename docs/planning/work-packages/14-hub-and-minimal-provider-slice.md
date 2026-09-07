@@ -1,3 +1,5 @@
+<a id="rule-wp-14"></a>
+
 # WP-14 — ArcChat Hub and Minimal ArcNotes Cross-Process Slice
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
@@ -15,7 +17,7 @@
 
 **Out of scope.** ArcChat's conversation model (`15`) and execution engine (`16`). ArcNotes' document model beyond the minimum needed to prove the slice (`18`). Anything cloud.
 
-**Why this package exists.** `SQ-04` requires that the first cross-process slice be real. `I2 §III.3` is explicit: this phase may mock AI and Cloud, but it cannot mock IPC, serialization or AOT. It is the single highest-value risk retirement in the sequence.
+**Why this package exists.** [SQ-04](../implementation-sequence.md#rule-sq-04) requires that the first cross-process slice be real. `I2 §III.3` is explicit: this phase may mock AI and Cloud, but it cannot mock IPC, serialization or AOT. It is the single highest-value risk retirement in the sequence.
 
 ---
 
@@ -26,8 +28,8 @@
 | `I2 §III.3` | The exact verification list this slice must satisfy |
 | [`../../architecture/03-local-ipc-and-process-model.md`](../../architecture/03-local-ipc-and-process-model.md) | Registration, routing, health and reconnection |
 | [`../../architecture/02-contracts-and-protocols.md`](../../architecture/02-contracts-and-protocols.md) | Capability descriptors, context freezing, resource references, artifacts |
-| **D-010** | ArcChat is a control plane and never a mandatory data gateway |
-| `WP-08`–`WP-13` output | Transport, capability model, shell, security and probe conclusions |
+| **[D-010](../../decisions/phase-1-foundation-decisions.md#rule-d-010)** | ArcChat is a control plane and never a mandatory data gateway |
+| [WP-08](08-local-ipc-and-registration.md#rule-wp-08)–[WP-13](13-high-risk-technical-probes.md#rule-wp-13) output | Transport, capability model, shell, security and probe conclusions |
 
 ---
 
@@ -35,13 +37,13 @@
 
 | # | Rule |
 |---|---|
-| BR-01 | **ArcNotes remains fully editable and saveable with ArcChat absent** (**D-010**). This is a hard gate, not a degradation nicety. |
-| BR-02 | **The Hub is a coordinator, never a data relay** (**D-010**). No document body traverses it. |
+| <a id="rule-br-01"></a>BR-01 | **ArcNotes remains fully editable and saveable with ArcChat absent** (**[D-010](../../decisions/phase-1-foundation-decisions.md#rule-d-010)**). This is a hard gate, not a degradation nicety. |
+| BR-02 | **The Hub is a coordinator, never a data relay** (**[D-010](../../decisions/phase-1-foundation-decisions.md#rule-d-010)**). No document body traverses it. |
 | BR-03 | **Both processes are Native AOT release publishes.** A debug-host demonstration does not satisfy this package. |
 | BR-04 | **Generated proxies, generated type shapes and the binary formatter are used** — no reflection-based marshalling. |
-| BR-05 | **Every write carries a command identity and is idempotent under retry** (`WP-04.01`). |
+| BR-05 | **Every write carries a command identity and is idempotent under retry** ([WP-04.01](04-identity-error-and-versioning-primitives.md#rule-wp-04.01)). |
 | BR-06 | **Approval crosses the process boundary** and is enforced owner-side, whatever the caller claimed. |
-| BR-07 | **Re-registration after a Hub restart is automatic and idempotent** (`WP-08.02`). |
+| BR-07 | **Re-registration after a Hub restart is automatic and idempotent** ([WP-08.02](08-local-ipc-and-registration.md#rule-wp-08.02)). |
 | BR-08 | **The local UI and the RPC surface use the same application service.** Two paths into one behaviour is a defect. |
 | BR-09 | **AI and Cloud may be mocked in this package** (`I2 §III.3`); IPC, serialization and AOT may not. |
 
@@ -65,6 +67,8 @@
 
 ## 5. Required implementation work
 
+<a id="rule-wp-14.00"></a>
+
 ### WP-14.00 — Hub registry and lifecycle
 
 **What must be fully done.** The Hub accepts registrations, maintains leases with heartbeats, aggregates health, routes invocations, and survives restart with automatic provider re-registration. It exposes no data-relay path.
@@ -72,6 +76,8 @@
 **Testing requirements.** Restart-recovery, lease-expiry and duplicate-registration tests; a structural test asserting no relay endpoint exists.
 
 **Completion gate.** Providers re-register automatically after a Hub restart, dead leases expire, and no data-relay path exists.
+
+<a id="rule-wp-14.01"></a>
 
 ### WP-14.01 — Minimal ArcNotes provider
 
@@ -81,6 +87,8 @@
 
 **Completion gate.** Three real capabilities are registered, discoverable, and backed by durable state.
 
+<a id="rule-wp-14.02"></a>
+
 ### WP-14.02 — Discovery and invocation round trip
 
 **What must be fully done.** ArcChat discovers ArcNotes' capabilities through the registry, displays them, and invokes them. Context is frozen at invocation. Results return as typed outcomes. Failures map to the closed semantic error set.
@@ -88,6 +96,8 @@
 **Testing requirements.** Discovery, invocation and error-mapping tests across success, refusal, unavailable-provider and version-mismatch cases.
 
 **Completion gate.** Discovery and invocation work end to end between published AOT binaries, with every failure typed.
+
+<a id="rule-wp-14.03"></a>
 
 ### WP-14.03 — Idempotency and revision
 
@@ -97,6 +107,8 @@
 
 **Completion gate.** One command yields one effect under retry, disconnection and concurrency, and conflicts are typed rather than silent.
 
+<a id="rule-wp-14.04"></a>
+
 ### WP-14.04 — Approval across the boundary
 
 **What must be fully done.** A capability with an approval posture produces an approval request surfaced in ArcChat, with the operation described in the user's terms. Approval is enforced owner-side in ArcNotes: a forged or absent approval is refused there, whatever ArcChat claimed. Approval state is durable across a restart of either process.
@@ -105,6 +117,8 @@
 
 **Completion gate.** ArcNotes refuses an unapproved high-risk operation regardless of what ArcChat asserts, and pending approval survives restart.
 
+<a id="rule-wp-14.05"></a>
+
 ### WP-14.05 — Resource references and artifacts
 
 **What must be fully done.** ArcNotes returns a document artifact reference rather than a document body. ArcChat resolves it through the resource path with permission re-checked at access. The Hub carries no body. A large payload uses the controlled transfer channel.
@@ -112,6 +126,8 @@
 **Testing requirements.** A no-body assertion on the Hub path; permission re-check at resolution; a large-transfer test.
 
 **Completion gate.** Artifacts cross as references, permission is re-checked at access, and the Hub demonstrably carries no body.
+
+<a id="rule-wp-14.06"></a>
 
 ### WP-14.06 — Degradation in both directions
 
@@ -141,13 +157,13 @@
 
 | Evidence | Produced by |
 |---|---|
-| Hub restart, lease and no-relay results | `WP-14.00` |
-| Capability descriptor and write-path results | `WP-14.01` |
-| Discovery, invocation and error-mapping matrix | `WP-14.02` |
-| Idempotency, conflict and disconnection results | `WP-14.03` |
-| Owner-side refusal, expiry and restart-survival results | `WP-14.04` |
-| Artifact reference, permission re-check and no-body assertions | `WP-14.05` |
-| Hub-absent and provider-absent workflow results | `WP-14.06` |
+| Hub restart, lease and no-relay results | [WP-14.00](#rule-wp-14.00) |
+| Capability descriptor and write-path results | [WP-14.01](#rule-wp-14.01) |
+| Discovery, invocation and error-mapping matrix | [WP-14.02](#rule-wp-14.02) |
+| Idempotency, conflict and disconnection results | [WP-14.03](#rule-wp-14.03) |
+| Owner-side refusal, expiry and restart-survival results | [WP-14.04](#rule-wp-14.04) |
+| Artifact reference, permission re-check and no-body assertions | [WP-14.05](#rule-wp-14.05) |
+| Hub-absent and provider-absent workflow results | [WP-14.06](#rule-wp-14.06) |
 
 ---
 
@@ -167,13 +183,16 @@
 
 ## 9. Dependencies
 
-**Upstream.** `08` (transport), `09` (capability model), `10` (shell), `11` (security), `13` (probe conclusions).
+**Upstream — all must be complete.**
 
-**Downstream.**
+- [08 — Local IPC Transport and Registration Lifecycle](08-local-ipc-and-registration.md)
+- [09 — Capability, Contribution and Resource Model](09-capability-contribution-and-resource-model.md)
+- [10 — Design System and Desktop Shell Foundation](10-design-system-and-desktop-shell.md)
+- [11 — Security Foundation](11-security-foundation.md)
+- [13 — Four High-Risk Technical Probes](13-high-risk-technical-probes.md)
 
-| Package | What it needs from here |
-|---|---|
-| `15` — ArcChat core | A working Hub and a real provider to build against |
-| `16` — Execution engine | A proven invocation path to schedule work onto |
-| `18` — ArcNotes core | A proven provider skeleton and store integration |
-| `20` — First workflow | The slice this package proves, extended to a real product workflow |
+**Downstream — these consume this package’s completed output.**
+
+- [15 — ArcChat Conversation and Project Core](15-arcchat-conversation-core.md)
+- [16 — Unified Execution Engine](16-unified-execution-engine.md)
+- [18 — ArcNotes Document Core](18-arcnotes-document-core.md)

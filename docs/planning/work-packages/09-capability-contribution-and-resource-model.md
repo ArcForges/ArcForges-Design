@@ -1,3 +1,5 @@
+<a id="rule-wp-09"></a>
+
 # WP-09 — Capability, Contribution and Resource Model
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
@@ -26,8 +28,8 @@
 | [`../../architecture/02-contracts-and-protocols.md`](../../architecture/02-contracts-and-protocols.md) | The full semantic model, `ResourceRef` rules, invocation pipeline and routing priority |
 | [`../../requirements/08-extensions-and-developer-platform.md`](../../requirements/08-extensions-and-developer-platform.md) `§14` | The extension points the model must be able to carry |
 | [`../../requirements/09-shared-desktop-experience.md`](../../requirements/09-shared-desktop-experience.md) | Deep links, handoff and command semantics |
-| `WP-03` output | The descriptor contract types |
-| `WP-08` output | The transport that carries invocations |
+| [WP-03](03-contract-foundation-and-licence-split.md#rule-wp-03) output | The descriptor contract types |
+| [WP-08](08-local-ipc-and-registration.md#rule-wp-08) output | The transport that carries invocations |
 
 ---
 
@@ -64,6 +66,8 @@
 
 ## 5. Required implementation work
 
+<a id="rule-wp-09.00"></a>
+
 ### WP-09.00 — App, Installation and Instance identity
 
 **What must be fully done.** The three identities with their lifecycles: an app is a stable product identity; an installation is that app installed on a device; an instance is a running process. Registration carries all three, and routing distinguishes "the app is installed" from "an instance is running".
@@ -71,6 +75,8 @@
 **Testing requirements.** Lifecycle tests covering install without run, run without registration, multiple instances of one installation, and instance death.
 
 **Completion gate.** The three identities are distinguishable at every decision point, with a test per confusion case.
+
+<a id="rule-wp-09.01"></a>
 
 ### WP-09.01 — Contribution registration
 
@@ -80,6 +86,8 @@
 
 **Completion gate.** Registration is idempotent and refuses reserved-namespace claims.
 
+<a id="rule-wp-09.02"></a>
+
 ### WP-09.02 — Capability registry and selection
 
 **What must be fully done.** The registry stores descriptors with their full field set. The selection pipeline resolves a requested capability to a concrete provider using the fixed routing priority, considering availability, health, version compatibility and placement. Selection is deterministic and explainable — the pipeline can state why it chose what it chose.
@@ -87,6 +95,8 @@
 **Testing requirements.** Selection tests across every priority tier; an explainability test asserting a reason is produced; a determinism test.
 
 **Completion gate.** Selection follows the fixed priority, is deterministic, and explains itself.
+
+<a id="rule-wp-09.03"></a>
 
 ### WP-09.03 — Actions and availability
 
@@ -96,6 +106,8 @@
 
 **Completion gate.** Every unavailability produces a typed reason, and evaluation is side-effect free.
 
+<a id="rule-wp-09.04"></a>
+
 ### WP-09.04 — Context providers and freezing
 
 **What must be fully done.** Context providers contribute typed context. At invocation, the context is frozen into an immutable snapshot carried with the invocation. A later change to the live context never affects an in-flight invocation.
@@ -103,6 +115,8 @@
 **Testing requirements.** A mutation-during-invocation test asserting the frozen snapshot is used; a size-bounding test asserting oversized context is refused rather than truncated silently.
 
 **Completion gate.** Context is provably frozen and oversized context is refused explicitly.
+
+<a id="rule-wp-09.05"></a>
 
 ### WP-09.05 — Resources and artifacts
 
@@ -112,6 +126,8 @@
 
 **Completion gate.** Resolution re-checks permission at access, and a reference structurally cannot carry a path.
 
+<a id="rule-wp-09.06"></a>
+
 ### WP-09.06 — Deep links, events and health
 
 **What must be fully done.** A deep-link router mapping canonical links to surfaces, treating every link as untrusted input carrying no secret. An event model with typed events and bounded subscription. Health reporting across the five dimensions, aggregated per contribution and per instance.
@@ -119,6 +135,8 @@
 **Testing requirements.** Deep-link tests including hostile input; event delivery and unsubscribe tests; health aggregation tests including a degraded provider.
 
 **Completion gate.** Deep links reject hostile input, events cannot leak subscriptions, and health aggregation reflects a degraded provider correctly.
+
+<a id="rule-wp-09.07"></a>
 
 ### WP-09.07 — Invocation pipeline
 
@@ -148,14 +166,14 @@
 
 | Evidence | Produced by |
 |---|---|
-| Identity lifecycle matrix | `WP-09.00` |
-| Registration idempotency and namespace refusal results | `WP-09.01` |
-| Selection priority, determinism and explainability results | `WP-09.02` |
-| Availability reason matrix and purity assertion | `WP-09.03` |
-| Context freezing and size-bound results | `WP-09.04` |
-| Resource resolution matrix and structural path prohibition | `WP-09.05` |
-| Deep-link hostile-input, event and health results | `WP-09.06` |
-| Pipeline bypass-prohibition, error-mapping and tracing results | `WP-09.07` |
+| Identity lifecycle matrix | [WP-09.00](#rule-wp-09.00) |
+| Registration idempotency and namespace refusal results | [WP-09.01](#rule-wp-09.01) |
+| Selection priority, determinism and explainability results | [WP-09.02](#rule-wp-09.02) |
+| Availability reason matrix and purity assertion | [WP-09.03](#rule-wp-09.03) |
+| Context freezing and size-bound results | [WP-09.04](#rule-wp-09.04) |
+| Resource resolution matrix and structural path prohibition | [WP-09.05](#rule-wp-09.05) |
+| Deep-link hostile-input, event and health results | [WP-09.06](#rule-wp-09.06) |
+| Pipeline bypass-prohibition, error-mapping and tracing results | [WP-09.07](#rule-wp-09.07) |
 
 ---
 
@@ -175,14 +193,14 @@
 
 ## 9. Dependencies
 
-**Upstream.** `03` (descriptor contracts), `08` (transport).
+**Upstream — all must be complete.**
 
-**Downstream.**
+- [03 — Contract Foundation and the Licence Boundary Split](03-contract-foundation-and-licence-split.md)
+- [08 — Local IPC Transport and Registration Lifecycle](08-local-ipc-and-registration.md)
 
-| Package | What it needs from here |
-|---|---|
-| `11` — Security | The invocation pipeline to attach authorization to |
-| `14` — First slice | Capability discovery across two real processes |
-| `16` — Execution engine | Capability invocation as the unit of work |
-| `41` — Extension platform | The typed extension point layer and contribution model |
-| Every product package | The registration path for its own capabilities |
+**Downstream — these consume this package’s completed output.**
+
+- [11 — Security Foundation](11-security-foundation.md)
+- [14 — ArcChat Hub and Minimal ArcNotes Cross-Process Slice](14-hub-and-minimal-provider-slice.md)
+- [16 — Unified Execution Engine](16-unified-execution-engine.md)
+- [41 — Extension Platform and Integrations](41-extension-platform-and-integrations.md)

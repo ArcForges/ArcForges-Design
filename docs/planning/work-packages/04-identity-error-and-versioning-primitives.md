@@ -1,3 +1,5 @@
+<a id="rule-wp-04"></a>
+
 # WP-04 — Identity, Error, Revision and Versioning Primitives
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
@@ -27,7 +29,7 @@
 | [`../../architecture/02-contracts-and-protocols.md`](../../architecture/02-contracts-and-protocols.md) | Resource reference rules and the semantic error set |
 | [`../../architecture/09-ai-and-agent-runtime-architecture.md`](../../architecture/09-ai-and-agent-runtime-architecture.md) `§4` | The four idempotency identities and their distinct roles |
 | [`../../requirements/12-quality-and-compatibility-contract.md`](../../requirements/12-quality-and-compatibility-contract.md) `§11.1`, `§14` | Time handling and the nine version axes |
-| `WP-03` output | The contract types this package gives behaviour to |
+| [WP-03](03-contract-foundation-and-licence-split.md#rule-wp-03) output | The contract types this package gives behaviour to |
 
 ---
 
@@ -38,11 +40,11 @@
 | BR-01 | **`CommandId`, `InvocationId`, `AttemptId` and `RunId` are four distinct identities with four distinct roles.** Collapsing any two is a defect. |
 | BR-02 | **A retry reuses the command identity and allocates a new attempt identity.** This is what makes exactly-once effect achievable. |
 | BR-03 | **`Revision ≠ Version`** and **`Sequence ≠ Revision`**. A revision orders changes to one object; a sequence orders delivery on a channel. |
-| BR-04 | **A resource identity is never a file path** (`I-192`). |
-| BR-05 | **Canonical storage, localised presentation** (`QI-18`). Time is stored as an unambiguous instant with its originating zone where the zone is meaningful; it is never stored as a formatted string. |
-| BR-06 | **Every failure carries an enumerated reason code**, shared by the product surface, support and telemetry (`DM-04` in the observability architecture). |
+| BR-04 | **A resource identity is never a file path** ([I-192](../../requirements/01-normative-glossary-and-invariants.md#rule-i-192)). |
+| BR-05 | **Canonical storage, localised presentation** ([QI-18](../../requirements/12-quality-and-compatibility-contract.md#rule-qi-18)). Time is stored as an unambiguous instant with its originating zone where the zone is meaningful; it is never stored as a formatted string. |
+| BR-06 | **Every failure carries an enumerated reason code**, shared by the product surface, support and telemetry ([DM-04](../../architecture/13-observability-and-operations.md#rule-dm-04) in the observability architecture). |
 | BR-07 | **Effect certainty is part of failure classification**: whether the operation definitely did not happen, definitely did, or is unknown. |
-| BR-08 | **The nine version axes are distinct value types**, so one cannot be assigned to another (`I-383`). |
+| BR-08 | **The nine version axes are distinct value types**, so one cannot be assigned to another ([I-383](../../requirements/01-normative-glossary-and-invariants.md#rule-i-383)). |
 | BR-09 | **Monotonic time is used for durations; wall-clock time is used for timestamps.** A duration is never computed by subtracting wall-clock values. |
 
 ---
@@ -62,6 +64,8 @@
 
 ## 5. Required implementation work
 
+<a id="rule-wp-04.00"></a>
+
 ### WP-04.00 — Identifier types
 
 **What must be fully done.** Each identifier concept is a distinct value type with its own generation, parsing, validation and serialization. Identifiers are opaque to consumers, sortable where ordering is meaningful, and never carry embedded semantics that could be parsed by a client. Cross-assignment between identifier types is a compile error.
@@ -69,6 +73,8 @@
 **Testing requirements.** A compile-negative test per identifier pair; round-trip and parse-rejection tests; a collision and distribution test for generated identifiers.
 
 **Completion gate.** Cross-assignment fails to compile, and every identifier round-trips and rejects malformed input.
+
+<a id="rule-wp-04.01"></a>
 
 ### WP-04.01 — Execution identity and idempotency
 
@@ -78,6 +84,8 @@
 
 **Completion gate.** Exactly-once effect holds under duplication, retry and concurrency.
 
+<a id="rule-wp-04.02"></a>
+
 ### WP-04.02 — Revision and sequence
 
 **What must be fully done.** `Revision` implements per-object monotonic change ordering with the expected-revision comparison that optimistic concurrency uses. `SequenceNumber` implements per-channel delivery ordering with gap detection. The two are separate types and cannot be compared to one another.
@@ -85,6 +93,8 @@
 **Testing requirements.** Optimistic concurrency conflict tests; sequence gap detection tests; a compile-negative test that revision and sequence cannot be compared.
 
 **Completion gate.** Conflict and gap semantics are correct, and the types are non-interchangeable.
+
+<a id="rule-wp-04.03"></a>
 
 ### WP-04.03 — Time
 
@@ -94,6 +104,8 @@
 
 **Completion gate.** A locale or time-zone change never alters stored data, and durations survive a clock adjustment.
 
+<a id="rule-wp-04.04"></a>
+
 ### WP-04.04 — Error and reason codes
 
 **What must be fully done.** A single reason-code registry is generated from source, with each code carrying its category, its retryability, its effect certainty and its user-facing message key. The result type expresses success, typed failure and cancellation distinctly — a cancellation is never reported as a failure.
@@ -101,6 +113,8 @@
 **Testing requirements.** A registry completeness test; a test that every failure path returns a registered code; a test that cancellation and failure are distinguishable at every layer.
 
 **Completion gate.** No failure path returns an unregistered code, and cancellation is never conflated with failure.
+
+<a id="rule-wp-04.05"></a>
 
 ### WP-04.05 — Version axis types
 
@@ -130,11 +144,11 @@
 
 | Evidence | Produced by |
 |---|---|
-| Compile-negative test suite for identifier and axis confusion | `WP-04.00`, `WP-04.05` |
-| Exactly-once effect proof under duplication, retry and concurrency | `WP-04.01` |
-| Optimistic concurrency and sequence gap test results | `WP-04.02` |
-| Locale, time-zone and daylight-saving test results | `WP-04.03` |
-| Reason-code registry with a completeness report | `WP-04.04` |
+| Compile-negative test suite for identifier and axis confusion | [WP-04.00](#rule-wp-04.00), [WP-04.05](#rule-wp-04.05) |
+| Exactly-once effect proof under duplication, retry and concurrency | [WP-04.01](#rule-wp-04.01) |
+| Optimistic concurrency and sequence gap test results | [WP-04.02](#rule-wp-04.02) |
+| Locale, time-zone and daylight-saving test results | [WP-04.03](#rule-wp-04.03) |
+| Reason-code registry with a completeness report | [WP-04.04](#rule-wp-04.04) |
 
 ---
 
@@ -152,14 +166,13 @@
 
 ## 9. Dependencies
 
-**Upstream.** `03` — the contract types these primitives implement.
+**Upstream — all must be complete.**
 
-**Downstream.**
+- [03 — Contract Foundation and the Licence Boundary Split](03-contract-foundation-and-licence-split.md)
 
-| Package | What it needs from here |
-|---|---|
-| `06` — AOT proof | Primitives that must survive trimming and AOT |
-| `07` — Persistence | Revision, sequence and time semantics |
-| `11` — Security | Typed identifiers and the actor identity set |
-| `12` — Observability | Correlation, causation and reason codes |
-| `16` — Execution engine | The four execution identities and idempotency |
+**Downstream — these consume this package’s completed output.**
+
+- [06 — AOT, JIT and WebAssembly Publish Proof](06-aot-jit-and-wasm-publish-proof.md)
+- [07 — Local Persistence Foundation](07-local-persistence-foundation.md)
+- [11 — Security Foundation](11-security-foundation.md)
+- [12 — Observability Foundation](12-observability-foundation.md)

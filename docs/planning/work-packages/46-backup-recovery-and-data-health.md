@@ -1,3 +1,5 @@
+<a id="rule-wp-46"></a>
+
 # WP-46 — Backup, Disaster Recovery and Data Health
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
@@ -15,7 +17,7 @@
 
 **Out of scope.** Local device backup responsibility, which belongs to the user's own system and is documented rather than implemented. Operational alerting itself (`45`).
 
-**Why this package exists.** `L-13` in the release gates requires a **proven restore**, not merely a green backup job. `DR-04` states plainly that a compressed archive is not a backup strategy. Neither is satisfiable without rehearsal.
+**Why this package exists.** [L-13](../../assurance/release-gates.md#rule-l-13) in the release gates requires a **proven restore**, not merely a green backup job. [DR-04](../../requirements/products/arcforges-cloud.md#rule-dr-04) states plainly that a compressed archive is not a backup strategy. Neither is satisfiable without rehearsal.
 
 ---
 
@@ -26,7 +28,7 @@
 | [`../../architecture/07-sync-conflict-and-backup.md`](../../architecture/07-sync-conflict-and-backup.md) | The five backup layers, data health and realm migration |
 | [`../../requirements/products/arcforges-cloud.md`](../../requirements/products/arcforges-cloud.md) `§9.2` | Disaster recovery posture and recovery objectives |
 | [`../../requirements/03-cloud-services-and-sync.md`](../../requirements/03-cloud-services-and-sync.md) | Backup, data health and export requirements |
-| `WP-25`, `WP-45` output | Committed state as the backup subject, and the incident framework drills run inside |
+| [WP-25](25-sync-engine-and-blob-lifecycle.md#rule-wp-25), [WP-45](45-operations-support-and-trust-safety.md#rule-wp-45) output | Committed state as the backup subject, and the incident framework drills run inside |
 
 ---
 
@@ -41,7 +43,7 @@
 | BR-05 | **A region rebuild is a tested procedure**, exercised in a full drill. |
 | BR-06 | **Recovery objectives are internal engineering objectives** until a drill justifies publishing anything. |
 | BR-07 | **Data health is continuous detection**, not an occasional audit, with a repair path per anomaly class. |
-| BR-08 | **Export is a first-class product capability** and remains available regardless of subscription state where the data is the user's own. |
+| <a id="rule-br-08"></a>BR-08 | **Export is a first-class product capability** and remains available regardless of subscription state where the data is the user's own. |
 | BR-09 | **A restore never silently overwrites newer data**; a restore is an explicit, scoped, audited operation. |
 | BR-10 | **Backup integrity is verified continuously**, not assumed from job success. |
 
@@ -64,6 +66,8 @@
 
 ## 5. Required implementation work
 
+<a id="rule-wp-46.00"></a>
+
 ### WP-46.00 — The five backup layers
 
 **What must be fully done.** Each layer implemented with its own scope, frequency, retention and verification: the transactional database, object storage, configuration and infrastructure definitions, secrets metadata, and the audit store. Cross-provider and cross-region copies for the layers that require them.
@@ -72,13 +76,17 @@
 
 **Completion gate.** Every layer backs up, verifies and retains per policy, with cross-provider copies verified.
 
+<a id="rule-wp-46.01"></a>
+
 ### WP-46.01 — Point-in-time and blob restore
 
-**What must be fully done.** Point-in-time database restore to a chosen instant, and blob restore including cross-provider restore. A restore is scoped, explicit and audited, and never silently overwrites newer data.
+**What must be fully done.** Account for logged stream rows in physical backup/WAL retention; purge restored presentation before traffic and reconcile unknown provider intents without repeating calls.  Point-in-time database restore to a chosen instant, and blob restore including cross-provider restore. A restore is scoped, explicit and audited, and never silently overwrites newer data.
 
-**Testing requirements.** A point-in-time restore to a chosen instant with verification; a cross-provider blob restore; a negative test asserting a restore cannot silently overwrite newer data.
+**Testing requirements.** Restore while a stream/attempt is in flight and verify durable Task fallback, retained liability and no automatic dispatch.  A point-in-time restore to a chosen instant with verification; a cross-provider blob restore; a negative test asserting a restore cannot silently overwrite newer data.
 
-**Completion gate.** **A point-in-time restore and a cross-provider blob restore are both proven by execution**, and no restore silently overwrites newer data.
+**Completion gate.** TTL is not falsely presented as deletion from physical backups.  **A point-in-time restore and a cross-provider blob restore are both proven by execution**, and no restore silently overwrites newer data.
+
+<a id="rule-wp-46.02"></a>
 
 ### WP-46.02 — Region rebuild
 
@@ -88,6 +96,8 @@
 
 **Completion gate.** A region rebuild from infrastructure definitions plus backups produces a verified working environment.
 
+<a id="rule-wp-46.03"></a>
+
 ### WP-46.03 — Drill programme
 
 **What must be fully done.** A recurring disaster-recovery drill programme covering database failover, point-in-time restore, blob restore, broker backlog and dead-letter replay, realtime outage, provider outage, deployment rollback, migration failure and region rebuild. Each drill produces a dated record and any runbook corrections it revealed.
@@ -95,6 +105,8 @@
 **Testing requirements.** A completed drill cycle with dated records; a runbook-update assertion for every correction found.
 
 **Completion gate.** A complete drill cycle is executed with dated records, and every correction found updated its runbook.
+
+<a id="rule-wp-46.04"></a>
 
 ### WP-46.04 — Data health
 
@@ -104,6 +116,8 @@
 
 **Completion gate.** **Every anomaly class is detected and repaired**, and the health dashboard reflects verified state rather than job success.
 
+<a id="rule-wp-46.05"></a>
+
 ### WP-46.05 — Export and realm migration
 
 **What must be fully done.** Complete user-data export available regardless of subscription state where the data is the user's own, and realm migration moving a workspace's data with verification and no silent loss.
@@ -112,13 +126,15 @@
 
 **Completion gate.** Export is complete and available with a lapsed subscription, and realm migration verifies its result.
 
+<a id="rule-wp-46.06"></a>
+
 ### WP-46.06 — Backup health as a gate
 
-**What must be fully done.** The backup health dashboard is green **with a proven restore**, and backup lag beyond objective is a page-worthy alert. The evidence for `L-13` is assembled.
+**What must be fully done.** The backup health dashboard is green **with a proven restore**, and backup lag beyond objective is a page-worthy alert. The evidence for [L-13](../../assurance/release-gates.md#rule-l-13) is assembled.
 
 **Testing requirements.** A lag-alert test; assembled evidence linking each backup layer to a dated restore proof.
 
-**Completion gate.** The backup health gate is satisfied by dated restore proofs, not by job success — supplying the evidence for `L-13`.
+**Completion gate.** The backup health gate is satisfied by dated restore proofs, not by job success — supplying the evidence for [L-13](../../assurance/release-gates.md#rule-l-13).
 
 ---
 
@@ -140,13 +156,13 @@
 
 | Evidence | Produced by |
 |---|---|
-| Per-layer backup, verification and retention results | `WP-46.00` |
-| Point-in-time and cross-provider restore proofs | `WP-46.01` |
-| Region rebuild rehearsal record with functional verification | `WP-46.02` |
-| Dated drill cycle records and runbook corrections | `WP-46.03` |
-| Per-anomaly detection and repair results; dashboard truthfulness | `WP-46.04` |
-| Export completeness and realm migration verification | `WP-46.05` |
-| Backup lag alert and assembled restore-proof evidence | `WP-46.06` |
+| Per-layer backup, verification and retention results | [WP-46.00](#rule-wp-46.00) |
+| Point-in-time and cross-provider restore proofs | [WP-46.01](#rule-wp-46.01) |
+| Region rebuild rehearsal record with functional verification | [WP-46.02](#rule-wp-46.02) |
+| Dated drill cycle records and runbook corrections | [WP-46.03](#rule-wp-46.03) |
+| Per-anomaly detection and repair results; dashboard truthfulness | [WP-46.04](#rule-wp-46.04) |
+| Export completeness and realm migration verification | [WP-46.05](#rule-wp-46.05) |
+| Backup lag alert and assembled restore-proof evidence | [WP-46.06](#rule-wp-46.06) |
 
 ---
 
@@ -160,16 +176,17 @@
 4. A complete drill cycle is executed with dated records, and every correction found updated its runbook.
 5. **Every data-health anomaly class is detected and repaired**, and the dashboard reflects verified state rather than job success.
 6. Export is complete and available with a lapsed subscription; realm migration verifies its result.
-7. **The backup health gate is satisfied by dated restore proofs**, supplying the evidence for `L-13`.
+7. **The backup health gate is satisfied by dated restore proofs**, supplying the evidence for [L-13](../../assurance/release-gates.md#rule-l-13).
 
 ---
 
 ## 9. Dependencies
 
-**Upstream.** `25` (committed state), `45` (the incident and runbook framework).
+**Upstream — all must be complete.**
 
-**Downstream.**
+- [25 — Sync Engine and Blob Lifecycle](25-sync-engine-and-blob-lifecycle.md)
+- [45 — Operations, Support and Trust & Safety](45-operations-support-and-trust-safety.md)
 
-| Package | What it needs from here |
-|---|---|
-| `50` — Production release | Proven recovery as a go-live gate |
+**Downstream — these consume this package’s completed output.**
+
+- [50 — Full-Platform Production Release](50-full-platform-production-release.md)

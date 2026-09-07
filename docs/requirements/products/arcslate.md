@@ -1,10 +1,10 @@
 # ArcSlate — Product Requirements
-> Current scope amendment: **[P2-006](../../decisions/phase-2-specification-decisions.md)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
+> Current scope amendment: **[P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Requirements / Products
 > Product identity: `arcslate` · Positioning: **Local-first Professional Non-linear Video Editing Workspace**
-> Governing authority: **D-002** (ArcSlate inherits product direction from ArcVideo, not its model), Stage 13 §6 (**ArcSlate is not a technical exception**)
+> Governing authority: **[D-002](../../decisions/phase-1-foundation-decisions.md#rule-d-002)** (ArcSlate inherits product direction from ArcVideo, not its model), Stage 13 §6 (**ArcSlate is not a technical exception**)
 > Companions: [`../12-quality-and-compatibility-contract.md`](../12-quality-and-compatibility-contract.md), [`../13-data-formats-and-portability.md`](../13-data-formats-and-portability.md), [`../../architecture/12-native-interop-and-media.md`](../../architecture/12-native-interop-and-media.md)
 
 > **A local-first professional NLE, completely rebuilt in C# and Avalonia.**
@@ -16,12 +16,12 @@
 
 | # | Requirement |
 |---|---|
-| RF-01 | **ArcVideo and ArcVideoFoundation are ArcSlate's product and behaviour references** (**D-012** as amended 2026-09-05, `P2-005`), not architecture authorities. They inform product concepts, editing workflows, timeline behaviour, media workflows, the feature set, project behaviour, interaction patterns and existing implementation experience. |
+| <a id="rule-rf-01"></a>RF-01 | **ArcVideo and ArcVideoFoundation are ArcSlate's product and behaviour references** (**[D-012](../../decisions/phase-1-foundation-decisions.md#rule-d-012)** as amended 2026-09-05, [P2-005](../../decisions/phase-2-specification-decisions.md#rule-p2-005)), not architecture authorities. They inform product concepts, editing workflows, timeline behaviour, media workflows, the feature set, project behaviour, interaction patterns and existing implementation experience. |
 | RF-02 | **Class-to-class translation is prohibited.** A reference class list is **not** a migration checklist. What transfers is **product intent, never implementation shape**. |
 | RF-03 | **ArcSlate is not a technical exception** (Stage 13 §6). Its architecture is C#, .NET, Avalonia and Native AOT, with `[LibraryImport]`/P/Invoke to native media libraries where necessary. It is **not** a Qt application, **not** a C++ product with a C# shell, and **not** a C++ worker. |
-| RF-04 | **ArcVideo and ArcVideoFoundation are ArcSlate's references** (**D-012** as amended, `P2-005`). Both are **GPL-3.0-only**, so both are **behavioural reference only**: **D-013** prohibits copying, translating or porting from either. Reuse would in any case be licence-gated and provenance-gated with file-level SPDX evidence — the **F-013** gate, closed on the recorded determinations. |
-| RF-05 | **The ArcSlate Reference Coverage Matrix is complete** — [`../../assurance/reference-coverage/arcslate-arcvideo.md`](../../assurance/reference-coverage/arcslate-arcvideo.md), 31 item-level rows bound to ArcVideo `caf5651` and ArcVideoFoundation `139eeca`. It is a versioned planning input; `WP-36.07` checks it for drift. **No separate migration matrix from an upstream project is required**, because no upstream checkout is obtained and no material is reused (`RF-04`). |
-| RF-06 | **Upstream provenance is preserved.** ArcVideo is a documented fork; its GPL-3.0 obligations, upstream copyright and attribution to the original authors stand, and are recorded wherever inherited material requires them (**D-013**). Removing an upstream project from the reference map never removes its provenance. |
+| <a id="rule-rf-04"></a>RF-04 | **ArcVideo and ArcVideoFoundation are ArcSlate's references** (**[D-012](../../decisions/phase-1-foundation-decisions.md#rule-d-012)** as amended, [P2-005](../../decisions/phase-2-specification-decisions.md#rule-p2-005)). Both are **GPL-3.0-only**, so both are **behavioural reference only**: **[D-013](../../decisions/phase-1-foundation-decisions.md#rule-d-013)** prohibits copying, translating or porting from either. Reuse would in any case be licence-gated and provenance-gated with file-level SPDX evidence — the **[F-013](../../assurance/open-gates-register.md#rule-f-013)** gate, closed on the recorded determinations. |
+| <a id="rule-rf-05"></a>RF-05 | **The ArcSlate Reference Coverage Matrix is complete** — [`../../assurance/reference-coverage/arcslate-arcvideo.md`](../../assurance/reference-coverage/arcslate-arcvideo.md), 31 item-level rows bound to ArcVideo `caf5651` and ArcVideoFoundation `139eeca`. It is a versioned planning input; [WP-36.07](../../planning/work-packages/36-arcslate-project-and-timeline.md#rule-wp-36.07) checks it for drift. **No separate migration matrix from an upstream project is required**, because no upstream checkout is obtained and no material is reused ([RF-04](#rule-rf-04)). |
+| <a id="rule-rf-06"></a>RF-06 | **Upstream provenance is preserved.** ArcVideo is a documented fork; its GPL-3.0 obligations, upstream copyright and attribution to the original authors stand, and are recorded wherever inherited material requires them (**[D-013](../../decisions/phase-1-foundation-decisions.md#rule-d-013)**). Removing an upstream project from the reference map never removes its provenance. |
 
 ---
 
@@ -31,16 +31,16 @@
 |---|---|
 | PD-01 | **ArcSlate is a focused professional NLE**, not an attempt to be every post-production tool at once. It is not a motion-graphics suite, not a professional DAW, and not a colour-finishing system — while being genuinely professional at editing. |
 | PD-02 | **The timeline is the heart of the product.** |
-| PD-03 | **AI enhances editing; it never replaces the timeline editor** (`I-486`). |
+| PD-03 | **AI enhances editing; it never replaces the timeline editor** ([I-486](../01-normative-glossary-and-invariants.md#rule-i-486)). |
 
 ### 2.1 Product principles
 
 | # | Principle |
 |---|---|
-| PP-01 | **Non-destructive.** Source media is never modified. |
-| PP-02 | **One Media Asset, many Clip instances** (`I-477`). Twenty clips of one asset are twenty instances of one identity. |
-| PP-03 | **Preview prioritises real time; final render prioritises correctness and quality** (`I-479`). |
-| PP-04 | **Proxy, render cache, thumbnails and waveforms are derived representations** (`I-484`) and are never project authority. |
+| <a id="rule-pp-01"></a>PP-01 | **Non-destructive.** Source media is never modified. |
+| PP-02 | **One Media Asset, many Clip instances** ([I-477](../01-normative-glossary-and-invariants.md#rule-i-477)). Twenty clips of one asset are twenty instances of one identity. |
+| <a id="rule-pp-03"></a>PP-03 | **Preview prioritises real time; final render prioritises correctness and quality** ([I-479](../01-normative-glossary-and-invariants.md#rule-i-479)). |
+| PP-04 | **Proxy, render cache, thumbnails and waveforms are derived representations** ([I-484](../01-normative-glossary-and-invariants.md#rule-i-484)) and are never project authority. |
 | PP-05 | **Exact time arithmetic.** Floating-point seconds are never authoritative (`§4`). |
 
 ---
@@ -63,7 +63,7 @@ ArcSlate Project
 
 | # | Requirement |
 |---|---|
-| DS-01 | **`Project` = ArcSlate's long-term editing work container.** **`Project ≠ Sequence`** and **`Project ≠ media folder`** (`I-476`). |
+| DS-01 | **`Project` = ArcSlate's long-term editing work container.** **`Project ≠ Sequence`** and **`Project ≠ media folder`** ([I-476](../01-normative-glossary-and-invariants.md#rule-i-476)). |
 | DS-02 | **A project supports multiple sequences** sharing one media library. |
 | DS-03 | **`Sequence` = a playable, renderable edit composition with its own timeline, output parameters and edit structure.** |
 | DS-04 | **Sequence settings are a stable snapshot.** Changing project defaults does not silently reinterpret an existing sequence. |
@@ -79,10 +79,10 @@ ArcSlate Project
 | # | Requirement |
 |---|---|
 | TM-01 | The authoritative time model is **integer or rational**, with an explicit **time base**. |
-| TM-02 | **Video frame precision and audio sample precision must coexist** (`I-478`). Both are exact, in their own rate domains, related by explicit conversion. |
-| TM-03 | **Sequence frame rate is rational** — drop-frame and non-integer rates are represented exactly, never approximated. |
-| TM-04 | **`SourceTime ≠ TimelineTime`** (`I-478`). A clip carries a source range and a timeline range, and they are separate types. |
-| TM-05 | **ArcSlate time is not forced into the general unit system** (`UN-05`). It is a first-class rational time and time-base model. |
+| <a id="rule-tm-02"></a>TM-02 | **Video frame precision and audio sample precision must coexist** ([I-478](../01-normative-glossary-and-invariants.md#rule-i-478)). Both are exact, in their own rate domains, related by explicit conversion. |
+| <a id="rule-tm-03"></a>TM-03 | **Sequence frame rate is rational** — drop-frame and non-integer rates are represented exactly, never approximated. |
+| TM-04 | **`SourceTime ≠ TimelineTime`** ([I-478](../01-normative-glossary-and-invariants.md#rule-i-478)). A clip carries a source range and a timeline range, and they are separate types. |
+| TM-05 | **ArcSlate time is not forced into the general unit system** ([UN-05](../12-quality-and-compatibility-contract.md#rule-un-05)). It is a first-class rational time and time-base model. |
 | TM-06 | Every arithmetic operation on timeline positions is exact; accumulation drift is structurally impossible, not merely unlikely. |
 
 ---
@@ -92,13 +92,13 @@ ArcSlate Project
 | # | Requirement |
 |---|---|
 | MD-01 | **`MediaAsset` = a stable logical identity for a media source usable in ArcSlate.** |
-| MD-02 | **`MediaAsset ≠ File`** (`I-477`), and **`AssetId` is never a file path** (`I-192`). |
-| MD-03 | **Original media is referenced externally by default** (`AS-02`), and **managed media must also be available** as an explicit choice. |
-| MD-04 | **Collect / Consolidate Project** gathers external media into a managed, portable form on request, **without destroying the originals** (`EX-08` in the data requirements). |
-| MD-05 | **Offline media is a normal product state, not an error** (`AS-04`). The project still opens, structure is preserved, and edit decisions are retained. |
-| MD-06 | **Relink is a first-class capability**, verifying by content — asset identity, expected size, content hash and metadata — not by filename (`AS-05`). |
-| MD-07 | **A clip must not know which physical file is currently in use.** It references the `MediaAsset`; the asset resolves to original, managed copy or proxy at runtime (`PX-01`). |
-| MD-08 | **The same `MediaAsset` may have different locations on different devices** and remains one logical asset (`§13`). |
+| MD-02 | **`MediaAsset ≠ File`** ([I-477](../01-normative-glossary-and-invariants.md#rule-i-477)), and **`AssetId` is never a file path** ([I-192](../01-normative-glossary-and-invariants.md#rule-i-192)). |
+| <a id="rule-md-03"></a>MD-03 | **Original media is referenced externally by default** ([AS-02](../03-cloud-services-and-sync.md#rule-as-02)), and **managed media must also be available** as an explicit choice. |
+| MD-04 | **Collect / Consolidate Project** gathers external media into a managed, portable form on request, **without destroying the originals** ([EX-08](../13-data-formats-and-portability.md#rule-ex-08) in the data requirements). |
+| <a id="rule-md-05"></a>MD-05 | **Offline media is a normal product state, not an error** ([AS-04](../03-cloud-services-and-sync.md#rule-as-04)). The project still opens, structure is preserved, and edit decisions are retained. |
+| MD-06 | **Relink is a first-class capability**, verifying by content — asset identity, expected size, content hash and metadata — not by filename ([AS-05](../03-cloud-services-and-sync.md#rule-as-05)). |
+| <a id="rule-md-07"></a>MD-07 | **A clip must not know which physical file is currently in use.** It references the `MediaAsset`; the asset resolves to original, managed copy or proxy at runtime ([PX-01](#rule-px-01)). |
+| <a id="rule-md-08"></a>MD-08 | **The same `MediaAsset` may have different locations on different devices** and remains one logical asset (`§13`). |
 | MD-09 | A media asset carries typed **MediaMetadata** — streams, codecs, dimensions, rate, duration, colour metadata, timecode, audio channel layout — and an explicit **MediaAvailability** state. |
 
 ---
@@ -107,16 +107,16 @@ ArcSlate Project
 
 | # | Requirement |
 |---|---|
-| TL-01 | **`Clip` = a non-destructive instantiation of a source or asset on the sequence timeline** (`I-477`). |
+| TL-01 | **`Clip` = a non-destructive instantiation of a source or asset on the sequence timeline** ([I-477](../01-normative-glossary-and-invariants.md#rule-i-477)). |
 | TL-02 | **One asset may have unlimited clips**, each with its own source range, effects and parameters. |
-| TL-03 | **`ClipId` is stable** across trims, moves and edits (`BL-01` analogue). |
+| TL-03 | **`ClipId` is stable** across trims, moves and edits ([BL-01](arcnotes.md#rule-bl-01) analogue). |
 | TL-04 | **Tracks are role-typed** — video, audio, subtitle, and later others — so behaviour follows role rather than index. |
 | TL-05 | **The model is a traditional track-based non-destructive NLE**, familiar to professional editors. |
 | TL-06 | The complete basic operation set: insert, overwrite, move, trim (in/out), ripple trim, roll, slip, slide, split/razor, delete, ripple delete, lift, extract, duplicate, group and ungroup, enable/disable, speed/retime, and reorder tracks. |
-| TL-07 | **Every one of those is a semantic command**, not a UI coordinate manipulation. This is what makes undo, scripting, agent capability and testing tractable (`§10`). |
+| <a id="rule-tl-07"></a>TL-07 | **Every one of those is a semantic command**, not a UI coordinate manipulation. This is what makes undo, scripting, agent capability and testing tractable (`§10`). |
 | TL-08 | **Snap is a timeline service**, not mouse-cursor logic: it operates on timeline model positions with declared snap targets and tolerances. |
-| TL-09 | **Linked audio and video form a link group.** **`Link ≠ shared identity`** (`I-489`): linked items move together by default and remain independent objects that can be unlinked. |
-| TL-10 | **`Transition` is a declared timeline relationship and processing element** (`I-481`), never an incidental overlap of two clips. Its essence is realised through the processing graph. |
+| TL-09 | **Linked audio and video form a link group.** **`Link ≠ shared identity`** ([I-489](../01-normative-glossary-and-invariants.md#rule-i-489)): linked items move together by default and remain independent objects that can be unlinked. |
+| TL-10 | **`Transition` is a declared timeline relationship and processing element** ([I-481](../01-normative-glossary-and-invariants.md#rule-i-481)), never an incidental overlap of two clips. Its essence is realised through the processing graph. |
 | TL-11 | **Markers are first-class objects**, not coloured dots: they carry identity, time or range, name, comment, colour, and category — and may be attached to a sequence or to a clip. |
 
 ---
@@ -128,8 +128,8 @@ ArcSlate Project
 | VW-01 | Two logical viewer roles: a **source viewer** for the original media asset, and a **sequence viewer** for the current sequence output. |
 | VW-02 | Professional transport is required: play/pause, frame step forward and back, shuttle (JKL-style), in/out marking, go-to-timecode, loop, and playback rate. |
 | VW-03 | **Playback and editing are decoupled.** An edit invalidates and re-requests media incrementally; it does not stall the editor. |
-| VW-04 | **Realtime playback quality strategy**: drop displayed frames if necessary, but **keep the audio and timeline clock correct**. |
-| VW-05 | **`Dropped preview frame ≠ dropped media data`** (`I-480`). Not displaying a frame is a playback quality event, never data loss. |
+| <a id="rule-vw-04"></a>VW-04 | **Realtime playback quality strategy**: drop displayed frames if necessary, but **keep the audio and timeline clock correct**. |
+| VW-05 | **`Dropped preview frame ≠ dropped media data`** ([I-480](../01-normative-glossary-and-invariants.md#rule-i-480)). Not displaying a frame is a playback quality event, never data loss. |
 | VW-06 | **Playback quality state is visible**: realtime, reduced quality, using proxy, dropping frames, or requiring render. |
 
 ---
@@ -141,19 +141,19 @@ ArcSlate Project
 | # | Requirement |
 |---|---|
 | PG-01 | The long-term authoritative processing model is a **typed processing graph**. |
-| PG-02 | The **Effect Stack / Inspector** and the **Advanced Node Graph** are **two surfaces over one engine**. The effect stack must not create a second effect model (`I-482`). |
+| PG-02 | The **Effect Stack / Inspector** and the **Advanced Node Graph** are **two surfaces over one engine**. The effect stack must not create a second effect model ([I-482](../01-normative-glossary-and-invariants.md#rule-i-482)). |
 | PG-03 | **Nodes are typed processing nodes**, implemented in C# and AOT-compatible. |
 | PG-04 | Principal graph data types include video frame, audio buffer, mask/matte, transform, colour data and parameter values. |
 | PG-05 | **Ports are typed and not arbitrarily connectable.** An invalid connection is a validation error, not a runtime surprise. |
-| PG-06 | **The node graph is dataflow, not arbitrary code execution** (`I-483`). Custom processing arrives through the extension platform, out of process, under the schema-described capability protocol. |
-| PG-07 | **`EffectDefinition ≠ EffectInstance`** (`I-482`). |
-| PG-08 | **Effect parameters can be animated.** **`Keyframe ≠ current parameter value`** (`I-483`). |
+| PG-06 | **The node graph is dataflow, not arbitrary code execution** ([I-483](../01-normative-glossary-and-invariants.md#rule-i-483)). Custom processing arrives through the extension platform, out of process, under the schema-described capability protocol. |
+| <a id="rule-pg-07"></a>PG-07 | **`EffectDefinition ≠ EffectInstance`** ([I-482](../01-normative-glossary-and-invariants.md#rule-i-482)). |
+| PG-08 | **Effect parameters can be animated.** **`Keyframe ≠ current parameter value`** ([I-483](../01-normative-glossary-and-invariants.md#rule-i-483)). |
 | PG-09 | **Keyframe time belongs to its effect's scope** — clip-local time for a clip effect, sequence time for a sequence-level effect — and never silently switches. |
 | PG-10 | A **curve editor** exposes interpolation, easing and handles. |
 | PG-11 | Effects apply at declared levels: clip, track, adjustment clip/layer, and sequence. |
 | PG-12 | **An adjustment clip is a generated/special timeline clip plus a processing graph**, not a separate mechanism. |
 | PG-13 | **Generated media** — colour, gradient, counter, test pattern, title — is a first-class timeline source. |
-| PG-14 | **Titles are supported at NLE level**, deliberately not attempting to be a motion-graphics application. |
+| <a id="rule-pg-14"></a>PG-14 | **Titles are supported at NLE level**, deliberately not attempting to be a motion-graphics application. |
 
 ---
 
@@ -165,7 +165,7 @@ ArcSlate Project
 |---|---|
 | SB-01 | **Subtitle/caption is an independent track role**, not a text overlay effect. |
 | SB-02 | **Subtitle import and export** in standard formats is supported. |
-| SB-03 | **`Transcript ≠ Subtitle`** (`I-486`). A transcript is derived machine text; a subtitle is authored, timed, styled display text. |
+| SB-03 | **`Transcript ≠ Subtitle`** ([I-486](../01-normative-glossary-and-invariants.md#rule-i-486)). A transcript is derived machine text; a subtitle is authored, timed, styled display text. |
 | SB-04 | **AI transcription may generate a subtitle track**, which is then editable as ordinary authored content. |
 | SB-05 | Transcript editing and subtitle editing may be separate surfaces over related data. |
 
@@ -174,10 +174,10 @@ ArcSlate Project
 | # | Requirement |
 |---|---|
 | AU-01 | **Audio is core, not an accessory.** |
-| AU-02 | **Audio and video share one timeline time model**, with audio editing at **sample precision** (`TM-02`). |
+| AU-02 | **Audio and video share one timeline time model**, with audio editing at **sample precision** ([TM-02](#rule-tm-02)). |
 | AU-03 | Audio clip effects run through the same processing graph as audio nodes. |
 | AU-04 | **A professional DAW is not the target.** ArcSlate provides editorial audio: levels, pan, fades, basic processing, mixing and monitoring. |
-| AU-05 | Third-party audio plug-in hosting is **not a V1 requirement** and, if ever added, follows the out-of-process extension model (`EX-01`–`EX-03` in the extension requirements). |
+| AU-05 | Third-party audio plug-in hosting is **not a V1 requirement** and, if ever added, follows the out-of-process extension model ([EX-01](../08-extensions-and-developer-platform.md#rule-ex-01)–[EX-03](../08-extensions-and-developer-platform.md#rule-ex-03) in the extension requirements). |
 
 ### 9.3 Colour
 
@@ -185,9 +185,9 @@ ArcSlate Project
 |---|---|
 | CO-01 | **Colour management is first-class from the beginning**, not retrofitted. |
 | CO-02 | **An asset carries its own input colour metadata**, and the user may **override interpretation**. |
-| CO-03 | **An override never modifies the original media** (`PP-01`). It changes how ArcSlate interprets the source. |
+| <a id="rule-co-03"></a>CO-03 | **An override never modifies the original media** ([PP-01](#rule-pp-01)). It changes how ArcSlate interprets the source. |
 | CO-04 | The **project/sequence working colour configuration** is an explicit processing policy. |
-| CO-05 | **Viewer display transform and export transform are separate.** |
+| <a id="rule-co-05"></a>CO-05 | **Viewer display transform and export transform are separate.** |
 | CO-06 | **The colour-management backend must not leak into the domain** (`§12` of the architecture). The domain holds colour semantic configuration; the backend is infrastructure. |
 | CO-07 | **Video scopes** — waveform, vectorscope, histogram, parade — are supported as **derived views**. **They are colour scopes, unrelated to the ArcScope product**; the naming must never be conflated. |
 | CO-08 | Media analysis output — scene detection, loudness, motion — is **derived data**. |
@@ -198,17 +198,17 @@ ArcSlate Project
 
 | # | Requirement |
 |---|---|
-| PX-01 | **`Proxy` = an alternative low-cost editorial representation of a media asset** (`I-484`). |
-| PX-02 | **Switching proxy on or off must never change render output** (`I-484`). Final render uses the original unless the user explicitly permits proxy render. |
+| <a id="rule-px-01"></a>PX-01 | **`Proxy` = an alternative low-cost editorial representation of a media asset** ([I-484](../01-normative-glossary-and-invariants.md#rule-i-484)). |
+| <a id="rule-px-02"></a>PX-02 | **Switching proxy on or off must never change render output** ([I-484](../01-normative-glossary-and-invariants.md#rule-i-484)). Final render uses the original unless the user explicitly permits proxy render. |
 | PX-03 | **Proxy render is an explicit, declared choice**, never a silent substitution. |
 | PX-04 | **Proxy policy is configurable** per project and per asset: when to generate, at what quality, where to store, and when to evict. |
-| PX-05 | **A proxy is a derived asset with no business identity** — it is not a `MediaAsset` in its own right. |
-| PX-06 | **`Proxy ≠ Render Cache`** (`I-484`). A proxy is a cheaper source decode; a render cache is a stored result of timeline processing. |
-| PX-07 | **`Render Cache ≠ project authority`** (`I-484`). Thumbnail and waveform caches are likewise derived. |
-| PX-08 | **A cache is never the only fact of a project.** Deleting every cache must leave the project fully intact (`IX-01`). |
-| PX-09 | **Import references in place by default** (`MD-03`), with managed import as an explicit choice. |
+| <a id="rule-px-05"></a>PX-05 | **A proxy is a derived asset with no business identity** — it is not a `MediaAsset` in its own right. |
+| PX-06 | **`Proxy ≠ Render Cache`** ([I-484](../01-normative-glossary-and-invariants.md#rule-i-484)). A proxy is a cheaper source decode; a render cache is a stored result of timeline processing. |
+| <a id="rule-px-07"></a>PX-07 | **`Render Cache ≠ project authority`** ([I-484](../01-normative-glossary-and-invariants.md#rule-i-484)). Thumbnail and waveform caches are likewise derived. |
+| <a id="rule-px-08"></a>PX-08 | **A cache is never the only fact of a project.** Deleting every cache must leave the project fully intact ([IX-01](../06-knowledge-search-and-retrieval.md#rule-ix-01)). |
+| PX-09 | **Import references in place by default** ([MD-03](#rule-md-03)), with managed import as an explicit choice. |
 | PX-10 | **Background analysis follows import.** **Import must not wait for all caches to be generated before completing.** |
-| PX-11 | **A media indexing failure is not an import failure.** The asset exists; indexing is degraded and retryable (`IP-03`). |
+| PX-11 | **A media indexing failure is not an import failure.** The asset exists; indexing is degraded and retryable ([IP-03](../06-knowledge-search-and-retrieval.md#rule-ip-03)). |
 
 ---
 
@@ -217,11 +217,11 @@ ArcSlate Project
 | # | Requirement |
 |---|---|
 | RT-01 | **C# is the runtime orchestrator and product authority.** Domain, business rules, timeline semantics, task management and state ownership are C# (Technical Exception C in `§8.1` of the product scope). |
-| RT-02 | **A native media foundation is a reasonable infrastructure choice and must never leak into the domain.** It lives behind the native/infrastructure boundary with a narrow, versioned ABI (`§13` of the architecture). |
+| <a id="rule-rt-02"></a>RT-02 | **A native media foundation is a reasonable infrastructure choice and must never leak into the domain.** It lives behind the native/infrastructure boundary with a narrow, versioned ABI (`§13` of the architecture). |
 | RT-03 | **Hardware acceleration is abstracted.** Different machines may take different hardware paths. |
 | RT-04 | **The output must not change because a different hardware path was used** — beyond declared, measurable tolerance. |
-| RT-05 | **On hardware acceleration failure, a software path is available**, and the fallback is visible (`PM-06` in the quality contract). |
-| RT-06 | **Preview and final render share processing semantics.** Effect semantics and colour semantics must be consistent; only quality, speed and precision differ (`PP-03`). |
+| RT-05 | **On hardware acceleration failure, a software path is available**, and the fallback is visible ([PM-06](../12-quality-and-compatibility-contract.md#rule-pm-06) in the quality contract). |
+| <a id="rule-rt-06"></a>RT-06 | **Preview and final render share processing semantics.** Effect semantics and colour semantics must be consistent; only quality, speed and precision differ ([PP-03](#rule-pp-03)). |
 
 ---
 
@@ -231,16 +231,16 @@ ArcSlate Project
 |---|---|
 | RN-01 | **`ExportPreset`** holds reusable output settings. |
 | RN-02 | **`RenderRequest`** captures what to render: sequence, range, preset, destination and options. |
-| RN-03 | A render is an ArcSlate-owned product Job with durable progress, cancellation, recovery and output provenance. It creates no local AI Task/Run/Step/Attempt runtime. |
-| RN-04 | **A render task binds a project/sequence revision snapshot.** A render must never use half an old timeline and half a new one (`EX-05`). |
+| <a id="rule-rn-03"></a>RN-03 | A render is an ArcSlate-owned product Job with durable progress, cancellation, recovery and output provenance. It creates no local AI Task/Run/Step/Attempt runtime. |
+| <a id="rule-rn-04"></a>RN-04 | **A render task binds a project/sequence revision snapshot.** A render must never use half an old timeline and half a new one ([EX-05](../13-data-formats-and-portability.md#rule-ex-05)). |
 | RN-05 | The same revision, inputs, preset and declared runtime profile reproduce render semantics within specified tolerances. Byte-identical output across codecs, hardware paths or library versions is not assumed. |
 | RN-06 | **Render range** is explicit: whole sequence, in/out range, or selected items. |
 | RN-07 | A **render queue** supports several queued renders with priority and progress. |
 | RN-08 | The native queue owns render jobs. Cloud agent tasks may reference a ProductJobHandle through authorized tools. The shared UI shows the association without transferring job ownership or creating another agent scheduler. |
 | RN-09 | Batch export produces traceable product render jobs under a batch operation, with per-output outcome. |
-| RN-10 | **A failed render retains completed output state** and reports partial success (`ST-06` in the AI requirements). |
+| RN-10 | **A failed render retains completed output state** and reports partial success ([ST-06](../05-ai-and-agent-execution.md#rule-st-06) in the AI requirements). |
 | RN-11 | **Render must never overwrite existing output without prompting.** |
-| RN-12 | **`Rendered Artifact ≠ ArcSlate Project`** (`I-485`). The output is an artifact with provenance; ArcChat may hold an `ArtifactRef`. |
+| RN-12 | **`Rendered Artifact ≠ ArcSlate Project`** ([I-485](../01-normative-glossary-and-invariants.md#rule-i-485)). The output is an artifact with provenance; ArcChat may hold an `ArtifactRef`. |
 
 ---
 
@@ -249,14 +249,14 @@ ArcSlate Project
 | # | Requirement |
 |---|---|
 | UN-01 | **Undo/redo is a core capability** and every edit operation is undoable. |
-| UN-02 | **Undo commands are semantic edits** (`UR-01`), never UI snapshots. |
+| UN-02 | **Undo commands are semantic edits** ([UR-01](../13-data-formats-and-portability.md#rule-ur-01)), never UI snapshots. |
 | UN-03 | **A complex edit becomes a compound command** so it undoes as one user-meaningful step. |
-| UN-04 | **An undo transaction is never held open indefinitely.** A preview or transient drag is not a committed command; the commit boundary is explicit (`SV-04`). |
-| UN-05 | **`Undo ≠ Revision`** (`I-201`). |
-| UN-06 | **Autosave exists and is a durable local save** (`SV-01`–`SV-03`). |
-| UN-07 | **An explicit Save command still exists**, meaning "force a checkpoint and confirm durable state" (`SV-06`). |
-| UN-08 | **Crash recovery restores to the last durable commit** with a recovery report; a damaged cache never yields "project corrupt" (`CR-04`, `CR-05` in the quality contract). |
-| UN-09 | **A project checkpoint is created before any large-scale agent edit** (`CK-02`). |
+| UN-04 | **An undo transaction is never held open indefinitely.** A preview or transient drag is not a committed command; the commit boundary is explicit ([SV-04](../13-data-formats-and-portability.md#rule-sv-04)). |
+| UN-05 | **`Undo ≠ Revision`** ([I-201](../01-normative-glossary-and-invariants.md#rule-i-201)). |
+| UN-06 | **Autosave exists and is a durable local save** ([SV-01](../13-data-formats-and-portability.md#rule-sv-01)–[SV-03](../13-data-formats-and-portability.md#rule-sv-03)). |
+| UN-07 | **An explicit Save command still exists**, meaning "force a checkpoint and confirm durable state" ([SV-06](../13-data-formats-and-portability.md#rule-sv-06)). |
+| UN-08 | **Crash recovery restores to the last durable commit** with a recovery report; a damaged cache never yields "project corrupt" ([CR-04](../12-quality-and-compatibility-contract.md#rule-cr-04), [CR-05](../12-quality-and-compatibility-contract.md#rule-cr-05) in the quality contract). |
+| UN-09 | **A project checkpoint is created before any large-scale agent edit** ([CK-02](../05-ai-and-agent-execution.md#rule-ck-02)). |
 
 ---
 
@@ -264,15 +264,15 @@ ArcSlate Project
 
 | # | Requirement |
 |---|---|
-| AI-01 | **Agent edits use semantic timeline capabilities, never UI coordinates** (`TL-07`). This is one of the largest benefits of the rewrite. |
+| AI-01 | **Agent edits use semantic timeline capabilities, never UI coordinates** ([TL-07](#rule-tl-07)). This is one of the largest benefits of the rewrite. |
 | AI-02 | **An agent edit preview is a timeline diff**, reviewable before commit, for anything beyond a small reversible change. |
 | AI-03 | **A simple agent edit does not require heavy approval every time**: an R1 reversible operation proceeds inside an authorised scope; higher-risk operations require approval (`§4` of the security requirements). |
-| AI-04 | **AI media understanding applies data minimisation** (`AS-08`): the model receives transcripts, metadata, timecodes, detected scenes and selected frames — **not raw video** (`I-161`, `I-487`). |
+| AI-04 | **AI media understanding applies data minimisation** ([AS-08](../06-knowledge-search-and-retrieval.md#rule-as-08)): the model receives transcripts, metadata, timecodes, detected scenes and selected frames — **not raw video** ([I-161](../01-normative-glossary-and-invariants.md#rule-i-161), [I-487](../01-normative-glossary-and-invariants.md#rule-i-487)). |
 | AI-05 | All model-based media understanding uses subscribed Cloud AI. Only authorized, bounded transcripts, metadata, frames or audio extracts leave the device; deterministic decoding and signal processing remain native. |
 | AI-06 | AI uses Cloud admission, budgets and actual provider-usage metering. Duration estimates scope, not measured tokens; non-token-billed routes require their declared units under commerce MT-10. |
 | AI-07 | **AI transcription is a natural ArcSlate capability**, producing searchable transcript metadata as **derived data**. |
 | AI-08 | **Scene/shot detection, silence detection and highlight detection are derived analysis**, presented as suggestions. |
-| AI-09 | **AI analysis results and actual edits are layered** (`I-486`): an analysis proposes; an edit is an explicit, undoable, semantic command. |
+| AI-09 | **AI analysis results and actual edits are layered** ([I-486](../01-normative-glossary-and-invariants.md#rule-i-486)): an analysis proposes; an edit is an explicit, undoable, semantic command. |
 
 ### 14.1 Capabilities exposed to ArcChat
 
@@ -286,7 +286,7 @@ ArcSlate Project
 
 | # | Requirement |
 |---|---|
-| XP-01 | **ArcNotes integration** is by reference: an ArcSlate project or rendered output may be referenced from an ArcNotes document, and an ArcNotes document may be referenced from an ArcSlate project, by `ResourceRef`. **Databases are never shared directly** (`P-10`). |
+| XP-01 | **ArcNotes integration** is by reference: an ArcSlate project or rendered output may be referenced from an ArcNotes document, and an ArcNotes document may be referenced from an ArcSlate project, by `ResourceRef`. **Databases are never shared directly** ([P-10](../00-product-scope-and-portfolio.md#rule-p-10)). |
 | XP-02 | **An edit decision list or report may be produced** as an artifact and, on request, materialised as an ArcNotes document — a copy/import creating a new ArcNotes-owned object (`§4.2` of the product scope). |
 | XP-03 | **Large media never crosses the Hub** (Stage 13 §26). Only identity, metadata and controlled access cross boundaries. |
 
@@ -296,13 +296,13 @@ ArcSlate Project
 
 | # | Requirement |
 |---|---|
-| CL-01 | **`Project Sync ≠ original media upload`** (`I-487`). |
-| CL-02 | **External originals are never uploaded by default.** A large external library must never begin uploading because sync was enabled (`AS-03`). |
+| CL-01 | **`Project Sync ≠ original media upload`** ([I-487](../01-normative-glossary-and-invariants.md#rule-i-487)). |
+| CL-02 | **External originals are never uploaded by default.** A large external library must never begin uploading because sync was enabled ([AS-03](../03-cloud-services-and-sync.md#rule-as-03)). |
 | CL-03 | **Project metadata sync** is the default level: project, sequences, timeline, edit decisions, markers, text and subtitles, effect configuration and small assets (`§4.1` of the cloud requirements). |
 | CL-04 | Escalation levels are explicit: `Project Only` → `Project + Managed Proxies` → `Project + Selected Originals` → `Full Managed Media`. |
 | CL-05 | **Opening a project on another device works metadata-first**: the project opens, the timeline is intact, and media resolves per availability. |
-| CL-06 | **Missing external media on another device is Offline Media**, a normal state with relink and download options (`MD-05`). |
-| CL-07 | **A cloud proxy is not the original** (`I-484`). It supports rough editing; final render requires the original unless proxy render was explicitly permitted. |
+| CL-06 | **Missing external media on another device is Offline Media**, a normal state with relink and download options ([MD-05](#rule-md-05)). |
+| CL-07 | **A cloud proxy is not the original** ([I-484](../01-normative-glossary-and-invariants.md#rule-i-484)). It supports rough editing; final render requires the original unless proxy render was explicitly permitted. |
 | CL-08 | **Cloud render is not a hidden V1 capability** (`§18` of the cloud requirements). V1 renders locally. |
 
 ---
@@ -312,13 +312,13 @@ ArcSlate Project
 | # | Requirement |
 |---|---|
 | PF-01 | **ArcSlate has its own canonical native project format.** **An external tool's project format is never ArcSlate's authoritative format.** |
-| PF-02 | **The native project format is versioned** (`FV-01`–`FV-09`). |
-| PF-03 | **The project format contains no regenerable cache** (`EX-04` in the data requirements) — but it does contain everything required for correctness, including effect configuration, keyframes and colour configuration. |
-| PF-04 | **The project is separated from large media** (`WS-02`). A project bundle is a directory-backed working store; export may produce a single archive. |
-| PF-05 | **An importer for a third-party editor project format**, where one is offered, is an ordinary import adapter producing ArcSlate canonical data (`IM-01`–`IM-08` in the data requirements). Every claimed import version requires a fixture (`PG-07`). |
-| PF-06 | Third-party editor project import is one-way unless stated. Canonical .otio interchange (OT-01–OT-12) is a required V1 import AND export exception with a defined semantic subset, not arbitrary editor-project parity. |
-| PF-07 | **Any unmappable imported feature generates an import report entry** (`IM-05` in the data requirements). **Silent loss is prohibited.** |
-| PF-08 | **An unknown effect or missing plug-in is preserved and bypassed**, clearly marked, so the project opens and the state can be restored if the plug-in returns (`LC-06`, `LC-07` in the extension requirements). |
+| PF-02 | **The native project format is versioned** ([FV-01](../13-data-formats-and-portability.md#rule-fv-01)–[FV-09](../13-data-formats-and-portability.md#rule-fv-09)). |
+| PF-03 | **The project format contains no regenerable cache** ([EX-04](../13-data-formats-and-portability.md#rule-ex-04) in the data requirements) — but it does contain everything required for correctness, including effect configuration, keyframes and colour configuration. |
+| PF-04 | **The project is separated from large media** ([WS-02](../13-data-formats-and-portability.md#rule-ws-02)). A project bundle is a directory-backed working store; export may produce a single archive. |
+| PF-05 | **An importer for a third-party editor project format**, where one is offered, is an ordinary import adapter producing ArcSlate canonical data ([IM-01](../13-data-formats-and-portability.md#rule-im-01)–[IM-08](../13-data-formats-and-portability.md#rule-im-08) in the data requirements). Every claimed import version requires a fixture ([PG-07](#rule-pg-07)). |
+| PF-06 | Third-party editor project import is one-way unless stated. Canonical .otio interchange ([OT-01](#rule-ot-01)–[OT-12](#rule-ot-12)) is a required V1 import AND export exception with a defined semantic subset, not arbitrary editor-project parity. |
+| PF-07 | **Any unmappable imported feature generates an import report entry** ([IM-05](../13-data-formats-and-portability.md#rule-im-05) in the data requirements). **Silent loss is prohibited.** |
+| PF-08 | **An unknown effect or missing plug-in is preserved and bypassed**, clearly marked, so the project opens and the state can be restored if the plug-in returns ([LC-06](../08-extensions-and-developer-platform.md#rule-lc-06), [LC-07](../08-extensions-and-developer-platform.md#rule-lc-07) in the extension requirements). |
 
 ---
 
@@ -326,18 +326,18 @@ ArcSlate Project
 
 | # | Requirement |
 |---|---|
-| OT-01 | ArcSlate delivers canonical .otio import AND export in V1. A dependency entry or a one-direction adapter does not satisfy delivery. |
-| OT-02 | The support profile identifies the pinned library, supported OTIO schema versions and top-level types. V1 accepts/emits a Timeline; unsupported collections or top-level types receive a clear report, never an implicit partial selection. |
-| OT-03 | The supported semantic subset includes ordered video/audio tracks and stacks, clips, gaps, source ranges, timeline placement, rate-aware times, external/missing media references, names, markers and bounded namespaced metadata. Straight cuts and explicitly mapped standard dissolves are supported; other transitions are reported. |
-| OT-04 | Import creates ArcSlate-owned canonical objects with provenance; OTIO is not the mutable working store. Export binds a committed sequence revision and produces a separate artifact with support-profile and fidelity information. |
-| OT-05 | Conversion preserves supported rate/range semantics, including fractional frame rates and audio alignment. Rounding, representability limits and unsupported time effects are reported against affected objects; no silent frame shift is permitted. |
-| OT-06 | Round-trip acceptance compares supported timeline meaning and media references, not byte equality or internal ArcSlate IDs. Repeated uses of one source retain placement. Core supported edits survive even if external tooling drops private ArcSlate metadata. |
-| OT-07 | Unsupported effects, titles, generators, nesting, retiming and metadata receive item-level retained/approximated/omitted dispositions. Export cannot silently flatten or discard them; the user reviews the result or cancels. Opaque preservation is not advertised as editable support. |
-| OT-08 | A .otio file references media; it does not collect, upload or embed sources automatically. Relative paths resolve under an explicitly approved base; missing media becomes relinkable Offline Media. Files cannot authorize access outside selected roots or initiate downloads. |
-| OT-09 | Parsing bounds size, depth and item count, rejects malformed/unsupported schema and invalid numeric values, and stages changes before commit. No arbitrary adapters, Python plugins or executable content load. Native OTIO use stays behind an owned narrow C ABI and the untrusted-content boundary. |
-| OT-10 | Export writes a temporary destination and publishes atomically after validation. Failure/cancellation preserves the working project and existing destination; overwrite requires explicit approval. Reports exclude unselected absolute paths and secrets. |
-| OT-11 | EDL, AAF, FCPXML, editor-specific adapters and .otioz media bundles are not V1 requirements. Native project/collect export and rendered media remain separate deliverables. |
-| OT-12 | Real fixtures and the pinned official library verify both directions, mixed rates, gaps/stack ordering, repeated media, missing references, supported dissolves/markers, unsupported-feature reports, malicious paths, malformed input, cancellation and semantic round-trip. Merely opening JSON is insufficient. |
+| <a id="rule-ot-01"></a>OT-01 | ArcSlate delivers canonical .otio import AND export in V1. A dependency entry or a one-direction adapter does not satisfy delivery. |
+| <a id="rule-ot-02"></a>OT-02 | The support profile identifies the pinned library, supported OTIO schema versions and top-level types. V1 accepts/emits a Timeline; unsupported collections or top-level types receive a clear report, never an implicit partial selection. |
+| <a id="rule-ot-03"></a>OT-03 | The supported semantic subset includes ordered video/audio tracks and stacks, clips, gaps, source ranges, timeline placement, rate-aware times, external/missing media references, names, markers and bounded namespaced metadata. Straight cuts and explicitly mapped standard dissolves are supported; other transitions are reported. |
+| <a id="rule-ot-04"></a>OT-04 | Import creates ArcSlate-owned canonical objects with provenance; OTIO is not the mutable working store. Export binds a committed sequence revision and produces a separate artifact with support-profile and fidelity information. |
+| <a id="rule-ot-05"></a>OT-05 | Conversion preserves supported rate/range semantics, including fractional frame rates and audio alignment. Rounding, representability limits and unsupported time effects are reported against affected objects; no silent frame shift is permitted. |
+| <a id="rule-ot-06"></a>OT-06 | Round-trip acceptance compares supported timeline meaning and media references, not byte equality or internal ArcSlate IDs. Repeated uses of one source retain placement. Core supported edits survive even if external tooling drops private ArcSlate metadata. |
+| <a id="rule-ot-07"></a>OT-07 | Unsupported effects, titles, generators, nesting, retiming and metadata receive item-level retained/approximated/omitted dispositions. Export cannot silently flatten or discard them; the user reviews the result or cancels. Opaque preservation is not advertised as editable support. |
+| <a id="rule-ot-08"></a>OT-08 | A .otio file references media; it does not collect, upload or embed sources automatically. Relative paths resolve under an explicitly approved base; missing media becomes relinkable Offline Media. Files cannot authorize access outside selected roots or initiate downloads. |
+| <a id="rule-ot-09"></a>OT-09 | Parsing bounds size, depth and item count, rejects malformed/unsupported schema and invalid numeric values, and stages changes before commit. No arbitrary adapters, Python plugins or executable content load. Native OTIO use stays behind an owned narrow C ABI and the untrusted-content boundary. |
+| <a id="rule-ot-10"></a>OT-10 | Export writes a temporary destination and publishes atomically after validation. Failure/cancellation preserves the working project and existing destination; overwrite requires explicit approval. Reports exclude unselected absolute paths and secrets. |
+| <a id="rule-ot-11"></a>OT-11 | EDL, AAF, FCPXML, editor-specific adapters and .otioz media bundles are not V1 requirements. Native project/collect export and rendered media remain separate deliverables. |
+| <a id="rule-ot-12"></a>OT-12 | Real fixtures and the pinned official library verify both directions, mixed rates, gaps/stack ordering, repeated media, missing references, supported dissolves/markers, unsupported-feature reports, malicious paths, malformed input, cancellation and semantic round-trip. Merely opening JSON is insufficient. |
 
 The source-format basis is the [official OTIO file specification](https://opentimelineio.readthedocs.io/en/latest/tutorials/otio-file-format-specification.html) and [timeline structure](https://opentimelineio.readthedocs.io/en/latest/tutorials/otio-timeline-structure.html). The ArcSlate support profile defines the narrower product compatibility commitment.
 
@@ -347,11 +347,11 @@ The source-format basis is the [official OTIO file specification](https://openti
 
 | # | Requirement |
 |---|---|
-| WS-01 | ArcSlate is a **compact, panel-heavy professional workspace** built on the shared dock/panel foundation (`LY-02`). |
+| WS-01 | ArcSlate is a **compact, panel-heavy professional workspace** built on the shared dock/panel foundation ([LY-02](../09-shared-desktop-experience.md#rule-ly-02)). |
 | WS-02 | **Not every panel is visible at once.** Named layouts are provided: Editing, Effects, Colour and Audio. |
 | WS-03 | **`ArcSlate layout ≠ ArcForges Workspace`** (glossary §8). The word for a panel arrangement is **Layout**. |
 | WS-04 | Project browser search covers bins, assets, metadata and markers; **timeline search** covers clips, markers, text and subtitles. |
-| WS-05 | The command palette and context menus are highly context-sensitive, built on the shared command system (`CM-02`, `MN-03`). |
+| WS-05 | The command palette and context menus are highly context-sensitive, built on the shared command system ([CM-02](../09-shared-desktop-experience.md#rule-cm-02), [MN-03](../09-shared-desktop-experience.md#rule-mn-03)). |
 
 ---
 
@@ -396,7 +396,7 @@ The source-format basis is the [official OTIO file specification](https://openti
 | **Subtitle** | Subtitle track, import and export, AI transcription to subtitles |
 | **Proxy / Cache** | Proxy generation and policy, render/thumbnail/waveform caches |
 | **Render** | Presets, requests, revision-bound product jobs, queue, ranges, artifacts |
-| **OTIO interchange** | Canonical .otio import/export, media relink, fidelity reports and semantic round-trip fixtures (OT-01–OT-12) |
+| **OTIO interchange** | Canonical .otio import/export, media relink, fidelity reports and semantic round-trip fixtures ([OT-01](#rule-ot-01)–[OT-12](#rule-ot-12)) |
 | **Reliability** | Autosave, undo, revisions, checkpoints, crash recovery |
 | **ArcChat** | Context providers, query, semantic edit, render capabilities |
 | **Cloud** | Project-only sync by default, escalation levels, metadata-first open |
@@ -459,7 +459,7 @@ ProjectCheckpoint · MediaRelink · ImportOrigin · ArcSlateArtifactReference
 
 **Cloud** — enabling project sync uploads no originals; opening on a second device shows the timeline before media resolves; missing external media is Offline Media with recovery options; a cloud proxy never silently becomes the render source.
 
-**OTIO** — both directions satisfy OT-12 against the published support profile; unsupported edits are disclosed before export and no media is fetched implicitly.
+**OTIO** — both directions satisfy [OT-12](#rule-ot-12) against the published support profile; unsupported edits are disclosed before export and no media is fetched implicitly.
 
 **Import** — an external project import produces ArcSlate canonical data with a report of everything unmapped; nothing is silently lost.
 
@@ -470,10 +470,10 @@ ProjectCheckpoint · MediaRelink · ImportOrigin · ArcSlateArtifactReference
 | Source | Consumed as |
 |---|---|
 | `I4 §Stage 20` | The complete ArcSlate specification: reference posture, product definition and principles, domain structure, time model, media, timeline, viewer, processing graph, subtitles, audio, colour, proxy and cache, runtime, render, undo and recovery, AI integration, cloud boundary, project format, workspace, the twelve-phase rewrite plan, V1 scope, non-goals and domain model |
-| `I2 §II` | The reference reuse posture. **The migration-matrix obligation it describes is discharged by the completed Reference Coverage Matrix** (`RF-05`); no separate upstream migration matrix is required (`P2-005`) |
+| `I2 §II` | The reference reuse posture. **The migration-matrix obligation it describes is discharged by the completed Reference Coverage Matrix** ([RF-05](#rule-rf-05)); no separate upstream migration matrix is required ([P2-005](../../decisions/phase-2-specification-decisions.md#rule-p2-005)) |
 | `I4 §Stage 13 §6`, `§24–26` | ArcSlate is not a technical exception; its owned state; large media never crossing the Hub |
 | `I4 §Stage 22 §34–39`, `§197` | ArcSlate storage strategy, working store versus portable package, local structure |
 | `I3 §14`, `§15` | Large-data path, media frames and GPU staying in-process, native ABI discipline |
-| **D-002** | ArcSlate inherits product direction from ArcVideo, not its model |
-| **D-008** | Native AOT desktop deliverable with trim/AOT-safe dependencies |
-| **D-012** (as amended 2026-09-05), **D-013**, **P2-005** | ArcVideo and ArcVideoFoundation as ArcSlate's licence-gated references; upstream provenance retained |
+| **[D-002](../../decisions/phase-1-foundation-decisions.md#rule-d-002)** | ArcSlate inherits product direction from ArcVideo, not its model |
+| **[D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008)** | Native AOT desktop deliverable with trim/AOT-safe dependencies |
+| **[D-012](../../decisions/phase-1-foundation-decisions.md#rule-d-012)** (as amended 2026-09-05), **[D-013](../../decisions/phase-1-foundation-decisions.md#rule-d-013)**, **[P2-005](../../decisions/phase-2-specification-decisions.md#rule-p2-005)** | ArcVideo and ArcVideoFoundation as ArcSlate's licence-gated references; upstream provenance retained |

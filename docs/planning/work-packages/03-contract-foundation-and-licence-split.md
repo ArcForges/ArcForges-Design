@@ -1,3 +1,5 @@
+<a id="rule-wp-03"></a>
+
 # WP-03 — Contract Foundation and the Licence Boundary Split
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
@@ -15,7 +17,7 @@
 
 **Out of scope.** The content of any specific product contract — those land with their product. The local IPC transport itself (`08`). The cloud endpoint implementations (`23`).
 
-**Why this package exists.** **D-009** rejects a single ever-growing contracts assembly, and **D-004**/**D-021** require that the public interoperability surface be Apache-2.0 while everything else is AGPL-3.0-only. Both are structural decisions that are cheap now and extremely expensive after every product depends on the wrong shape.
+**Why this package exists.** **[D-009](../../decisions/phase-1-foundation-decisions.md#rule-d-009)** rejects a single ever-growing contracts assembly, and **[D-004](../../decisions/phase-1-foundation-decisions.md#rule-d-004)**/**[D-021](../../decisions/phase-1-foundation-decisions.md#rule-d-021)** require that the public interoperability surface be Apache-2.0 while everything else is AGPL-3.0-only. Both are structural decisions that are cheap now and extremely expensive after every product depends on the wrong shape.
 
 ---
 
@@ -23,13 +25,13 @@
 
 | Input | Why it matters |
 |---|---|
-| [`../../architecture/02-contracts-and-protocols.md`](../../architecture/02-contracts-and-protocols.md) | The two-layer contract model, compatibility rules and contract-authoring obligations `CA-01`–`CA-14` |
+| [`../../architecture/02-contracts-and-protocols.md`](../../architecture/02-contracts-and-protocols.md) | The two-layer contract model, compatibility rules and contract-authoring obligations [CA-01](../../architecture/02-contracts-and-protocols.md#rule-ca-01)–[CA-14](../../architecture/02-contracts-and-protocols.md#rule-ca-14) |
 | [`../../architecture/01-solution-and-project-layout.md`](../../architecture/01-solution-and-project-layout.md) `§3` | The contract project split and licence enforcement rules |
-| **D-009** | Contract granularity: split by boundary, ownership, cadence and licence |
-| **D-004**, **D-021** | Which contract material is Apache-2.0 and which is AGPL-3.0-only |
-| **V-05b** | The generated-shape obligation on every local RPC contract interface |
-| `WP-01.01` output | The type-by-type assignment to each licence boundary |
-| `WP-02` output | Generator settings, locked packages and the diagnostic posture |
+| **[D-009](../../decisions/phase-1-foundation-decisions.md#rule-d-009)** | Contract granularity: split by boundary, ownership, cadence and licence |
+| **[D-004](../../decisions/phase-1-foundation-decisions.md#rule-d-004)**, **[D-021](../../decisions/phase-1-foundation-decisions.md#rule-d-021)** | Which contract material is Apache-2.0 and which is AGPL-3.0-only |
+| **[V-05b](../../assurance/phase-1-official-verification.md#rule-v-05b)** | The generated-shape obligation on every local RPC contract interface |
+| [WP-01.01](01-repository-reconciliation-and-target-layout.md#rule-wp-01.01) output | The type-by-type assignment to each licence boundary |
+| [WP-02](02-build-governance-and-analyzer-policy.md#rule-wp-02) output | Generator settings, locked packages and the diagnostic posture |
 
 ---
 
@@ -37,16 +39,16 @@
 
 | # | Rule |
 |---|---|
-| BR-01 | **C# DTOs are the source of truth; OpenAPI and JSON Schema are generated** (**D-009**). A hand-edited wire schema is a defect. |
-| BR-02 | **Contracts split by communication boundary, product/domain ownership, release cadence and licence boundary** (**D-009**). |
-| BR-03 | **The Apache-2.0 set is exactly**: public protocol specifications, wire schemas, DTOs, public clients, contract-level validators, and the public SDK (**D-004**, **D-021**). |
-| BR-04 | **No Apache-boundary project references an AGPL project**, directly or transitively (**D-004**). |
+| BR-01 | **C# DTOs are the source of truth; OpenAPI and JSON Schema are generated** (**[D-009](../../decisions/phase-1-foundation-decisions.md#rule-d-009)**). A hand-edited wire schema is a defect. |
+| BR-02 | **Contracts split by communication boundary, product/domain ownership, release cadence and licence boundary** (**[D-009](../../decisions/phase-1-foundation-decisions.md#rule-d-009)**). |
+| BR-03 | **The Apache-2.0 set is exactly**: public protocol specifications, wire schemas, DTOs, public clients, contract-level validators, and the public SDK (**[D-004](../../decisions/phase-1-foundation-decisions.md#rule-d-004)**, **[D-021](../../decisions/phase-1-foundation-decisions.md#rule-d-021)**). |
+| <a id="rule-br-04"></a>BR-04 | **No Apache-boundary project references an AGPL project**, directly or transitively (**[D-004](../../decisions/phase-1-foundation-decisions.md#rule-d-004)**). |
 | BR-05 | **Every public DTO belongs to a source-generated serialization context.** No reflection-based serialization exists on any main path. |
-| BR-06 | **Every local RPC contract interface carries the generated-shape attribute with public instance methods included** (**V-05b**), asserted by a policy test. |
-| BR-07 | **Base ViewModel patterns are never shared between desktop and mobile** (**D-021**) — the shared boundary is contracts and semantics, not UI patterns. |
-| BR-08 | **Contract version and application version are separate axes** (`QI-04`), and a contract change without a version change fails the build. |
-| BR-09 | **Contract-level validators express wire constraints only** (**D-021**), never business policy. |
-| BR-10 | **Product-domain behaviour, server orchestration, policy decisions, persistence behaviour and entitlement authority stay outside the shared boundary** (**D-021**). |
+| BR-06 | **Every local RPC contract interface carries the generated-shape attribute with public instance methods included** (**[V-05b](../../assurance/phase-1-official-verification.md#rule-v-05b)**), asserted by a policy test. |
+| BR-07 | **Base ViewModel patterns are never shared between desktop and mobile** (**[D-021](../../decisions/phase-1-foundation-decisions.md#rule-d-021)**) — the shared boundary is contracts and semantics, not UI patterns. |
+| BR-08 | **Contract version and application version are separate axes** ([QI-04](../../requirements/12-quality-and-compatibility-contract.md#rule-qi-04)), and a contract change without a version change fails the build. |
+| BR-09 | **Contract-level validators express wire constraints only** (**[D-021](../../decisions/phase-1-foundation-decisions.md#rule-d-021)**), never business policy. |
+| BR-10 | **Product-domain behaviour, server orchestration, policy decisions, persistence behaviour and entitlement authority stay outside the shared boundary** (**[D-021](../../decisions/phase-1-foundation-decisions.md#rule-d-021)**). |
 
 ---
 
@@ -71,13 +73,17 @@
 
 ## 5. Required implementation work
 
+<a id="rule-wp-03.00"></a>
+
 ### WP-03.00 — Create the split project structure
 
-**What must be fully done.** The public and internal contract project trees are created per `§4`, each project declaring its SPDX identifier and licence boundary. Types are moved according to the `WP-01.01` assignment. No public project references an internal one.
+**What must be fully done.** The public and internal contract project trees are created per `§4`, each project declaring its SPDX identifier and licence boundary. Types are moved according to the [WP-01.01](01-repository-reconciliation-and-target-layout.md#rule-wp-01.01) assignment. No public project references an internal one.
 
-**Testing requirements.** A reference-direction test asserting `BR-04`; a licence declaration test asserting every contract project declares its boundary.
+**Testing requirements.** A reference-direction test asserting [BR-04](#rule-br-04); a licence declaration test asserting every contract project declares its boundary.
 
 **Completion gate.** The split exists, both tests pass, and the solution builds.
+
+<a id="rule-wp-03.01"></a>
 
 ### WP-03.01 — Foundation contract types
 
@@ -87,13 +93,17 @@
 
 **Completion gate.** Every foundation type round-trips, and identifier confusion is a compile error.
 
+<a id="rule-wp-03.02"></a>
+
 ### WP-03.02 — Serialization posture
 
 **What must be fully done.** Every public DTO belongs to a source-generated serialization context. The binary formatter used for local RPC has its generated type shapes in place. No reflection-based serialization path exists. The reflection package of the typed HTTP client is absent from the dependency graph, and its generator diagnostic is build-breaking.
 
 **Testing requirements.** A test asserting no reflection-based serializer is reachable; a dependency check asserting the reflection package is absent; a build test asserting the generator diagnostic is an error.
 
-**Completion gate.** All three pass. **This satisfies the packaging half of `F-026`**; the AOT publish proof completes it in `06`.
+**Completion gate.** All three pass. **This satisfies the packaging half of [F-026](../../assurance/open-gates-register.md#rule-f-026)**; the AOT publish proof completes it in `06`.
+
+<a id="rule-wp-03.03"></a>
 
 ### WP-03.03 — Capability and resource contract types
 
@@ -103,13 +113,17 @@
 
 **Completion gate.** The types exist, the prohibition is structural, and round-trips pass.
 
+<a id="rule-wp-03.04"></a>
+
 ### WP-03.04 — Local RPC contract discipline
 
-**What must be fully done.** Local RPC interfaces are defined per product boundary. Every interface carries the generated-shape attribute including public instance methods (**V-05b**). Server target registration uses explicit generated registration; reflection convenience paths are absent. Interface style follows the hard rules of the local IPC architecture — task-returning, cancellation-aware, no overloads that generated marshalling cannot express.
+**What must be fully done.** Local RPC interfaces are defined per product boundary. Every interface carries the generated-shape attribute including public instance methods (**[V-05b](../../assurance/phase-1-official-verification.md#rule-v-05b)**). Server target registration uses explicit generated registration; reflection convenience paths are absent. Interface style follows the hard rules of the local IPC architecture — task-returning, cancellation-aware, no overloads that generated marshalling cannot express.
 
 **Testing requirements.** A policy test asserting the attribute on every RPC contract interface; a compile test that a non-conforming interface fails.
 
-**Completion gate.** Every RPC contract interface conforms and the policy test guards it. **This is a precondition for `VG-04`.**
+**Completion gate.** Every RPC contract interface conforms and the policy test guards it. **This is a precondition for [VG-04](../../assurance/open-gates-register.md#rule-vg-04).**
+
+<a id="rule-wp-03.05"></a>
 
 ### WP-03.05 — Generation pipeline and the baseline gate
 
@@ -119,9 +133,11 @@
 
 **Completion gate.** Generation is deterministic and the baseline gate blocks an undeclared change.
 
+<a id="rule-wp-03.06"></a>
+
 ### WP-03.06 — Compatibility rules and the supported window
 
-**What must be fully done.** The compatibility rules `VC-01`–`VC-10` are implemented as tests: additive-only changes within a version, required-field additions as breaking, unknown-field handling, and the supported client window. Golden wire vectors are captured for the initial version.
+**What must be fully done.** The compatibility rules [VC-01](../../architecture/02-contracts-and-protocols.md#rule-vc-01)–[VC-10](../../architecture/02-contracts-and-protocols.md#rule-vc-10) are implemented as tests: additive-only changes within a version, required-field additions as breaking, unknown-field handling, and the supported client window. Golden wire vectors are captured for the initial version.
 
 **Testing requirements.** A compatibility matrix test across the declared window using the golden vectors.
 
@@ -147,12 +163,12 @@
 
 | Evidence | Produced by |
 |---|---|
-| Reference-direction and licence declaration reports | `WP-03.00` |
-| Round-trip results for every foundation and descriptor type | `WP-03.01`, `WP-03.03` |
-| Reflection-absence and generator-diagnostic reports | `WP-03.02` |
-| RPC contract policy test results | `WP-03.04` |
-| Determinism proof and negative baseline-diff test | `WP-03.05` |
-| Compatibility matrix results and the committed golden vectors | `WP-03.06` |
+| Reference-direction and licence declaration reports | [WP-03.00](#rule-wp-03.00) |
+| Round-trip results for every foundation and descriptor type | [WP-03.01](#rule-wp-03.01), [WP-03.03](#rule-wp-03.03) |
+| Reflection-absence and generator-diagnostic reports | [WP-03.02](#rule-wp-03.02) |
+| RPC contract policy test results | [WP-03.04](#rule-wp-03.04) |
+| Determinism proof and negative baseline-diff test | [WP-03.05](#rule-wp-03.05) |
+| Compatibility matrix results and the committed golden vectors | [WP-03.06](#rule-wp-03.06) |
 
 ---
 
@@ -171,20 +187,16 @@
 
 ## 9. Dependencies
 
-**Upstream.**
+**Upstream — all must be complete.**
 
-| Package | What this needs from it |
-|---|---|
-| `02` | Generator settings, locked packages, and a build that fails on diagnostics |
-| `01` (via `02`) | The type-by-type licence assignment |
+- [02 — Build Governance, Packaging Policy and Analyzers](02-build-governance-and-analyzer-policy.md)
 
-**Downstream.**
+**Downstream — these consume this package’s completed output.**
 
-| Package | What it needs from here |
-|---|---|
-| `04` — Primitives | The foundation types it extends with identity and versioning behaviour |
-| `05` — Policy tests | The contract rules to assert |
-| `06` — AOT proof | Real contracts to publish and prove |
-| `09` — Capability model | The descriptor types |
-| `21`, `23` — Cloud | The public API contract set |
-| `30` — Mobile | The Apache-2.0 contract and client set |
+- [04 — Identity, Error, Revision and Versioning Primitives](04-identity-error-and-versioning-primitives.md)
+- [05 — Architecture and Repository Policy Test Suite](05-architecture-and-repository-policy-tests.md)
+- [06 — AOT, JIT and WebAssembly Publish Proof](06-aot-jit-and-wasm-publish-proof.md)
+- [09 — Capability, Contribution and Resource Model](09-capability-contribution-and-resource-model.md)
+- [21 — Cloud Host, Modules, Persistence and Migrations](21-cloud-host-and-persistence.md)
+- [23 — Public API Surface and Generated Clients](23-public-api-and-generated-clients.md)
+- [30 — Mobile Shared Architecture and the Apache Boundary](30-mobile-shared-architecture.md)

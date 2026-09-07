@@ -1,9 +1,9 @@
 # ArcForges Normative Glossary and Invariant Catalogue
-> Current scope amendment: **[P2-006](../decisions/phase-2-specification-decisions.md)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
+> Current scope amendment: **[P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Requirements — cross-cutting, consumed by every requirements, architecture, assurance and planning document
-> Governs: **D-018** vocabulary and **V-02** term disambiguation. Earlier coverage evidence must be reconciled to P2-006 before the revised requirements claim closure.
+> Governs: **[D-018](../decisions/phase-1-foundation-decisions.md#rule-d-018)** vocabulary and **[V-02](../assurance/phase-1-official-verification.md#rule-v-02)** term disambiguation. Earlier coverage evidence must be reconciled to [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006) before the revised requirements claim closure.
 > Owner role: Architecture Owner
 
 This document is the single normative vocabulary for ArcForges. Every other authoritative document uses these terms with these meanings and no others.
@@ -27,7 +27,7 @@ This document is the single normative vocabulary for ArcForges. Every other auth
 | **Local Anonymous User** | domain | A signed-out native operator without a Cloud UserId. May use product-specific native functions; has no official AI access or account-free notebook service. |
 | **Workspace** | domain, wire | A single-user Cloud data, device, sync, billing and permission boundary. One owner in a realm; never a team/member container or panel layout. |
 | **Layout** | UI | A desktop panel/window arrangement. The mandatory term for what some products elsewhere call a "workspace". |
-| **Organization** | retired | Excluded by P2-006: no organization, team, membership, invitation or collaboration-specific schema reservation. |
+| **Organization** | retired | Excluded by [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006): no organization, team, membership, invitation or collaboration-specific schema reservation. |
 | **Device** | domain, wire | A registered client machine or handset within a realm. |
 | **Installation** / `InstallationId` | domain | One installed copy of one product on one device. Long-lived. |
 | **Instance** / `InstanceId` | domain, wire | One running process of one product. Per-launch. |
@@ -193,7 +193,7 @@ Cloud-acknowledged revisions are authoritative; native working caches preserve p
 | `ArcScope.LiveView` / `Recording` | Display versus persistence. Pausing the view never pauses the capture. |
 | `ArcScope.DisplayDecimation` | Downsampling for rendering only. Never the measurement data. |
 
-The simulator additionally defines Cloud-owned **SimulationDefinition**, immutable **ScenarioVersion**, non-agent **SimulationRun**, immutable **SimulationSegment** and ordered **SimulationEvent**. SIM-01–SIM-20 in the ArcScope requirements govern these objects; synthetic provenance is mandatory.
+The simulator additionally defines Cloud-owned **SimulationDefinition**, immutable **ScenarioVersion**, non-agent **SimulationRun**, immutable **SimulationSegment** and ordered **SimulationEvent**. [SIM-01](products/arcscope.md#rule-sim-01)–[SIM-20](products/arcscope.md#rule-sim-20) in the ArcScope requirements govern these objects; synthetic provenance is mandatory.
 
 ### 5.4 ArcSlate
 
@@ -236,503 +236,503 @@ The same word may live in more than one space. When it does, the spaces are sepa
 
 ## 7. Invariant catalogue
 
-Every active entry is binding where its concepts are in current product scope. A distinction does not itself require an excluded feature or a dedicated table/type for an otherwise unnecessary concept. Retired rows retain IDs for historical traceability and create no delivery obligation. P2-006 changes invalidate prior unchanged-coverage claims; downstream mappings must be reconciled before Stage 2 closes.
+Every active entry is binding where its concepts are in current product scope. A distinction does not itself require an excluded feature or a dedicated table/type for an otherwise unnecessary concept. Retired rows retain IDs for historical traceability and create no delivery obligation. [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006) changes invalidate prior unchanged-coverage claims; downstream mappings must be reconciled before Stage 2 closes.
 
 ### 7.1 Identity, tenancy and commerce
 
 | # | Invariant |
 |---|---|
-| I-001 | User ≠ Workspace ≠ Device ≠ Session ≠ Subscription ≠ Entitlement |
-| I-002 | Subscription cancellation ≠ Account deletion |
-| I-003 | `canceling` state ≠ use prohibited |
-| I-004 | Entitlement ≠ Feature Flag |
-| I-005 | AppId ≠ ProductScope |
-| I-006 | AppId ≠ Process |
-| I-007 | App ≠ Installation ≠ Instance |
-| I-008 | Instance ≠ Window |
-| I-009 | AppId ≠ InstanceId |
-| I-010 | Growth Analytics ≠ Entitlement ≠ Billing ≠ Policy |
-| I-011 | Provider Cost Ledger ≠ Customer Credit Ledger ≠ Payment/Revenue Ledger |
-| I-012 | Reserved Credits ≠ Charged Credits |
-| I-013 | Budget ≠ Entitlement |
-| I-014 | AI Billing Workspace ≠ Conversation Storage Scope |
-| I-015 | **Retired by P2-006:** Cloud BYOK and Local BYOK are both excluded, with no customer credential types or routes required. |
-| I-016 | Cloud Account Restriction ≠ Local Data Confiscation |
-| I-017 | ArcForges Cloud Agent ≠ free VPS |
+| <a id="rule-i-001"></a>I-001 | User ≠ Workspace ≠ Device ≠ Session ≠ Subscription ≠ Entitlement |
+| <a id="rule-i-002"></a>I-002 | Subscription cancellation ≠ Account deletion |
+| <a id="rule-i-003"></a>I-003 | `canceling` state ≠ use prohibited |
+| <a id="rule-i-004"></a>I-004 | Entitlement ≠ Feature Flag |
+| <a id="rule-i-005"></a>I-005 | AppId ≠ ProductScope |
+| <a id="rule-i-006"></a>I-006 | AppId ≠ Process |
+| <a id="rule-i-007"></a>I-007 | App ≠ Installation ≠ Instance |
+| <a id="rule-i-008"></a>I-008 | Instance ≠ Window |
+| <a id="rule-i-009"></a>I-009 | AppId ≠ InstanceId |
+| <a id="rule-i-010"></a>I-010 | Growth Analytics ≠ Entitlement ≠ Billing ≠ Policy |
+| <a id="rule-i-011"></a>I-011 | Provider Cost Ledger ≠ Customer Credit Ledger ≠ Payment/Revenue Ledger |
+| <a id="rule-i-012"></a>I-012 | Reserved Credits ≠ Charged Credits |
+| <a id="rule-i-013"></a>I-013 | Budget ≠ Entitlement |
+| <a id="rule-i-014"></a>I-014 | AI Billing Workspace ≠ Conversation Storage Scope |
+| <a id="rule-i-015"></a>I-015 | **Retired by [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006):** Cloud BYOK and Local BYOK are both excluded, with no customer credential types or routes required. |
+| <a id="rule-i-016"></a>I-016 | Cloud Account Restriction ≠ Local Data Confiscation |
+| <a id="rule-i-017"></a>I-017 | ArcForges Cloud Agent ≠ free VPS |
 
 ### 7.2 Product boundaries and ownership
 
 | # | Invariant |
 |---|---|
-| I-020 | Reference ≠ Ownership |
-| I-021 | Shared Experience ≠ Shared Shell ≠ Shared Domain |
-| I-022 | Shared Foundation ≠ Shared Domain |
-| I-023 | Task Owner ≠ Execution Location |
-| I-024 | Actor ≠ Executor ≠ Caller Instance ≠ Identity |
-| I-025 | App Version ≠ Contract Version |
-| I-026 | Semantic Contract ≠ Wire Contract |
-| I-027 | Mobile/Web Companion ≠ Professional-app Mobile/Web port |
-| I-028 | Native ArcNotes editor/working cache ≠ WebView shell; acknowledged Cloud revision ≠ pending local edit |
-| I-029 | ArcScope Report ≠ ArcNotes Document |
-| I-030 | Product AI surface ≠ agent runtime; all products use the single Cloud harness |
-| I-031 | ArcChat Federated Search ≠ a central ArcForges database |
-| I-032 | Upstream product reference ≠ ArcSlate runtime architecture |
+| <a id="rule-i-020"></a>I-020 | Reference ≠ Ownership |
+| <a id="rule-i-021"></a>I-021 | Shared Experience ≠ Shared Shell ≠ Shared Domain |
+| <a id="rule-i-022"></a>I-022 | Shared Foundation ≠ Shared Domain |
+| <a id="rule-i-023"></a>I-023 | Task Owner ≠ Execution Location |
+| <a id="rule-i-024"></a>I-024 | Actor ≠ Executor ≠ Caller Instance ≠ Identity |
+| <a id="rule-i-025"></a>I-025 | App Version ≠ Contract Version |
+| <a id="rule-i-026"></a>I-026 | Semantic Contract ≠ Wire Contract |
+| <a id="rule-i-027"></a>I-027 | Mobile/Web Companion ≠ Professional-app Mobile/Web port |
+| <a id="rule-i-028"></a>I-028 | Native ArcNotes editor/working cache ≠ WebView shell; acknowledged Cloud revision ≠ pending local edit |
+| <a id="rule-i-029"></a>I-029 | ArcScope Report ≠ ArcNotes Document |
+| <a id="rule-i-030"></a>I-030 | Product AI surface ≠ agent runtime; all products use the single Cloud harness |
+| <a id="rule-i-031"></a>I-031 | ArcChat Federated Search ≠ a central ArcForges database |
+| <a id="rule-i-032"></a>I-032 | Upstream product reference ≠ ArcSlate runtime architecture |
 
 ### 7.3 Capability, context and resource
 
 | # | Invariant |
 |---|---|
-| I-040 | Capability ≠ Action |
-| I-041 | Capability ≠ UI Command |
-| I-042 | Capability ≠ Permission |
-| I-043 | Action ≠ Capability Invocation |
-| I-044 | Capability ≠ Package |
-| I-045 | Static Capability ≠ Runtime Capability Availability |
-| I-046 | Context ≠ Resource |
-| I-047 | Context Provider ≠ Search Engine |
-| I-048 | Context Provider ≠ Resource Database |
-| I-049 | Context Freeze ≠ copy all data |
-| I-050 | Current Selection ≠ durable Resource Identity |
-| I-051 | ResourceRef ≠ Resource Content |
-| I-052 | ResourceRef ≠ File Path |
-| I-053 | ResourceRef ≠ Capability Token |
-| I-054 | ResourceRef ≠ Permission Token |
-| I-055 | ResourceRef ≠ universal domain entity |
-| I-056 | ResourceRef ≠ Resource Selection |
-| I-057 | ResourceRef ≠ Search Result |
-| I-058 | Artifact ≠ Resource |
-| I-059 | ArtifactRef ≠ ResourceRef |
-| I-077 | ArtifactRef ≠ Permission Token |
-| I-060 | Artifact Preview ≠ Artifact Authority |
-| I-061 | Cloud Artifact Copy ≠ source professional resource |
-| I-062 | Deep Link ≠ Command |
-| I-063 | Deep Link ≠ Permission Token |
-| I-064 | Event ≠ Command |
-| I-065 | Event ≠ Realtime Signal |
-| I-066 | Realtime Event Delivery ≠ Persistent Truth |
-| I-067 | Health ≠ Presence |
-| I-068 | Presence ≠ Readiness |
-| I-069 | Health ≠ Compatibility |
-| I-070 | Health ≠ Trust |
-| I-071 | Health ≠ Capability Availability |
-| I-072 | Compatibility ≠ Feature Flag |
-| I-073 | InvocationId ≠ CommandId |
-| I-074 | Invocation ≠ Task Step |
-| I-075 | TaskHandle ≠ RPC Connection |
-| I-076 | MCP Resource ≠ ArcForges Resource |
+| <a id="rule-i-040"></a>I-040 | Capability ≠ Action |
+| <a id="rule-i-041"></a>I-041 | Capability ≠ UI Command |
+| <a id="rule-i-042"></a>I-042 | Capability ≠ Permission |
+| <a id="rule-i-043"></a>I-043 | Action ≠ Capability Invocation |
+| <a id="rule-i-044"></a>I-044 | Capability ≠ Package |
+| <a id="rule-i-045"></a>I-045 | Static Capability ≠ Runtime Capability Availability |
+| <a id="rule-i-046"></a>I-046 | Context ≠ Resource |
+| <a id="rule-i-047"></a>I-047 | Context Provider ≠ Search Engine |
+| <a id="rule-i-048"></a>I-048 | Context Provider ≠ Resource Database |
+| <a id="rule-i-049"></a>I-049 | Context Freeze ≠ copy all data |
+| <a id="rule-i-050"></a>I-050 | Current Selection ≠ durable Resource Identity |
+| <a id="rule-i-051"></a>I-051 | ResourceRef ≠ Resource Content |
+| <a id="rule-i-052"></a>I-052 | ResourceRef ≠ File Path |
+| <a id="rule-i-053"></a>I-053 | ResourceRef ≠ Capability Token |
+| <a id="rule-i-054"></a>I-054 | ResourceRef ≠ Permission Token |
+| <a id="rule-i-055"></a>I-055 | ResourceRef ≠ universal domain entity |
+| <a id="rule-i-056"></a>I-056 | ResourceRef ≠ Resource Selection |
+| <a id="rule-i-057"></a>I-057 | ResourceRef ≠ Search Result |
+| <a id="rule-i-058"></a>I-058 | Artifact ≠ Resource |
+| <a id="rule-i-059"></a>I-059 | ArtifactRef ≠ ResourceRef |
+| <a id="rule-i-077"></a>I-077 | ArtifactRef ≠ Permission Token |
+| <a id="rule-i-060"></a>I-060 | Artifact Preview ≠ Artifact Authority |
+| <a id="rule-i-061"></a>I-061 | Cloud Artifact Copy ≠ source professional resource |
+| <a id="rule-i-062"></a>I-062 | Deep Link ≠ Command |
+| <a id="rule-i-063"></a>I-063 | Deep Link ≠ Permission Token |
+| <a id="rule-i-064"></a>I-064 | Event ≠ Command |
+| <a id="rule-i-065"></a>I-065 | Event ≠ Realtime Signal |
+| <a id="rule-i-066"></a>I-066 | Realtime Event Delivery ≠ Persistent Truth |
+| <a id="rule-i-067"></a>I-067 | Health ≠ Presence |
+| <a id="rule-i-068"></a>I-068 | Presence ≠ Readiness |
+| <a id="rule-i-069"></a>I-069 | Health ≠ Compatibility |
+| <a id="rule-i-070"></a>I-070 | Health ≠ Trust |
+| <a id="rule-i-071"></a>I-071 | Health ≠ Capability Availability |
+| <a id="rule-i-072"></a>I-072 | Compatibility ≠ Feature Flag |
+| <a id="rule-i-073"></a>I-073 | InvocationId ≠ CommandId |
+| <a id="rule-i-074"></a>I-074 | Invocation ≠ Task Step |
+| <a id="rule-i-075"></a>I-075 | TaskHandle ≠ RPC Connection |
+| <a id="rule-i-076"></a>I-076 | MCP Resource ≠ ArcForges Resource |
 
 ### 7.4 Execution and agent model
 
 | # | Invariant |
 |---|---|
-| I-080 | Intent ≠ Task |
-| I-081 | Task ≠ Run |
-| I-082 | Run ≠ Step |
-| I-083 | Step ≠ Attempt |
-| I-084 | Step ≠ Capability Invocation |
-| I-085 | AttemptId ≠ CommandId |
-| I-086 | Task Retry ≠ Step Retry |
-| I-087 | Retry ≠ Resume |
-| I-088 | Retry ≠ Run Again |
-| I-089 | Pause ≠ Waiting |
-| I-090 | Waiting ≠ Interrupted |
-| I-091 | Needs Attention ≠ Task State |
-| I-092 | Cancel Requested ≠ Canceled |
-| I-093 | Succeeded ≠ no exception |
-| I-094 | Canceled ≠ no side effects |
-| I-095 | Checkpoint ≠ Undo |
-| I-096 | Compensation ≠ Transaction Rollback |
-| I-097 | Approval ≠ Permission Grant |
-| I-098 | Approval ≠ Steering |
-| I-099 | Steering ≠ Conversation Message |
-| I-100 | Automation ≠ Task |
-| I-101 | Automation Occurrence ≠ Task Retry |
-| I-102 | Trigger Definition ≠ Trigger Occurrence |
-| I-103 | Automation Disable ≠ cancel running Task |
-| I-104 | Automation Concurrency ≠ Step Parallelism |
-| I-105 | Hybrid tool locality ≠ additional agent runtime |
-| I-106 | Progress Event ≠ Task Authority |
-| I-107 | Operational Trace ≠ Chain-of-Thought |
-| I-108 | Conversation ≠ Task |
-| I-109 | Message ≠ Tool Call |
-| I-110 | Attachment ≠ Context Reference |
-| I-111 | Input Attachment ≠ Artifact |
-| I-112 | Agent Profile ≠ Running Agent |
-| I-113 | Agent Profile ≠ Model |
-| I-114 | Agent Profile ≠ running agent; external-agent execution is excluded |
-| I-115 | Provider ≠ Model |
-| I-116 | Provider ≠ AI Source |
-| I-117 | Chat Mode ≠ no tools |
-| I-118 | Agent Mode ≠ unlimited permission |
-| I-119 | Task Creation Authorization ≠ lifetime authorization |
-| I-120 | Remote Task ≠ Remote Desktop |
-| I-121 | Cloud Agent Task ≠ native Product Job |
-| I-122 | Remote Task ≠ Cloud-only Task |
-| I-123 | Conversation Sync ≠ Remote Task State |
-| I-124 | Unsent local draft ≠ acknowledged Cloud conversation |
-| I-125 | Continuity ≠ mirroring UI |
+| <a id="rule-i-080"></a>I-080 | Intent ≠ Task |
+| <a id="rule-i-081"></a>I-081 | Task ≠ Run |
+| <a id="rule-i-082"></a>I-082 | Run ≠ Step |
+| <a id="rule-i-083"></a>I-083 | Step ≠ Attempt |
+| <a id="rule-i-084"></a>I-084 | Step ≠ Capability Invocation |
+| <a id="rule-i-085"></a>I-085 | AttemptId ≠ CommandId |
+| <a id="rule-i-086"></a>I-086 | Task Retry ≠ Step Retry |
+| <a id="rule-i-087"></a>I-087 | Retry ≠ Resume |
+| <a id="rule-i-088"></a>I-088 | Retry ≠ Run Again |
+| <a id="rule-i-089"></a>I-089 | Pause ≠ Waiting |
+| <a id="rule-i-090"></a>I-090 | Waiting ≠ Interrupted |
+| <a id="rule-i-091"></a>I-091 | Needs Attention ≠ Task State |
+| <a id="rule-i-092"></a>I-092 | Cancel Requested ≠ Canceled |
+| <a id="rule-i-093"></a>I-093 | Succeeded ≠ no exception |
+| <a id="rule-i-094"></a>I-094 | Canceled ≠ no side effects |
+| <a id="rule-i-095"></a>I-095 | Checkpoint ≠ Undo |
+| <a id="rule-i-096"></a>I-096 | Compensation ≠ Transaction Rollback |
+| <a id="rule-i-097"></a>I-097 | Approval ≠ Permission Grant |
+| <a id="rule-i-098"></a>I-098 | Approval ≠ Steering |
+| <a id="rule-i-099"></a>I-099 | Steering ≠ Conversation Message |
+| <a id="rule-i-100"></a>I-100 | Automation ≠ Task |
+| <a id="rule-i-101"></a>I-101 | Automation Occurrence ≠ Task Retry |
+| <a id="rule-i-102"></a>I-102 | Trigger Definition ≠ Trigger Occurrence |
+| <a id="rule-i-103"></a>I-103 | Automation Disable ≠ cancel running Task |
+| <a id="rule-i-104"></a>I-104 | Automation Concurrency ≠ Step Parallelism |
+| <a id="rule-i-105"></a>I-105 | Hybrid tool locality ≠ additional agent runtime |
+| <a id="rule-i-106"></a>I-106 | Progress Event ≠ Task Authority |
+| <a id="rule-i-107"></a>I-107 | Operational Trace ≠ Chain-of-Thought |
+| <a id="rule-i-108"></a>I-108 | Conversation ≠ Task |
+| <a id="rule-i-109"></a>I-109 | Message ≠ Tool Call |
+| <a id="rule-i-110"></a>I-110 | Attachment ≠ Context Reference |
+| <a id="rule-i-111"></a>I-111 | Input Attachment ≠ Artifact |
+| <a id="rule-i-112"></a>I-112 | Agent Profile ≠ Running Agent |
+| <a id="rule-i-113"></a>I-113 | Agent Profile ≠ Model |
+| <a id="rule-i-114"></a>I-114 | Agent Profile ≠ running agent; external-agent execution is excluded |
+| <a id="rule-i-115"></a>I-115 | Provider ≠ Model |
+| <a id="rule-i-116"></a>I-116 | Provider ≠ AI Source |
+| <a id="rule-i-117"></a>I-117 | Chat Mode ≠ no tools |
+| <a id="rule-i-118"></a>I-118 | Agent Mode ≠ unlimited permission |
+| <a id="rule-i-119"></a>I-119 | Task Creation Authorization ≠ lifetime authorization |
+| <a id="rule-i-120"></a>I-120 | Remote Task ≠ Remote Desktop |
+| <a id="rule-i-121"></a>I-121 | Cloud Agent Task ≠ native Product Job |
+| <a id="rule-i-122"></a>I-122 | Remote Task ≠ Cloud-only Task |
+| <a id="rule-i-123"></a>I-123 | Conversation Sync ≠ Remote Task State |
+| <a id="rule-i-124"></a>I-124 | Unsent local draft ≠ acknowledged Cloud conversation |
+| <a id="rule-i-125"></a>I-125 | Continuity ≠ mirroring UI |
 
 ### 7.5 Knowledge, search and retrieval
 
 | # | Invariant |
 |---|---|
-| I-130 | Knowledge Source ≠ Data Copy |
-| I-131 | Knowledge Source ≠ Context Provider |
-| I-132 | Knowledge Source ≠ Import |
-| I-133 | Knowledge Scope ≠ Index Scope |
-| I-134 | Index ≠ Canonical Data |
-| I-135 | Search Index ≠ Knowledge Authority |
-| I-136 | Search Index ≠ User Data Authority |
-| I-137 | Knowledge Index ≠ Document Copy |
-| I-138 | Semantic Index ≠ Knowledge |
-| I-139 | Embedding ≠ Permission |
-| I-140 | Cloud Sync ≠ Cloud Index |
-| I-141 | Cloud Index ≠ AI Retrieval |
-| I-142 | Cloud Search ≠ Cloud AI Indexing |
-| I-143 | AI Retrieval ≠ Managed AI Processing |
-| I-144 | Exclude from AI ≠ Exclude from Search |
-| I-145 | Keyword Search ≠ Semantic Search |
-| I-146 | Search ≠ Retrieval |
-| I-147 | Search ≠ Ask AI |
-| I-148 | Web Search ≠ ArcChat Global Search |
-| I-149 | Web Search ≠ long-term knowledge |
-| I-150 | Retrieval Candidate ≠ Evidence |
-| I-151 | Evidence ≠ Citation |
-| I-152 | Search Result ≠ Citation |
-| I-153 | Citation ≠ Vector Chunk ID |
-| I-154 | Retrieval Unit ≠ Domain Resource |
-| I-155 | Context Pack ≠ entire Knowledge Source |
-| I-156 | ArcNotes Knowledge ≠ ArcChat Memory |
-| I-157 | Personal Memory ≠ ArcNotes Knowledge |
-| I-158 | Conversation Summary ≠ Personal Memory |
-| I-159 | Conversation Context ≠ long-term knowledge |
-| I-160 | Raw Capture ≠ text knowledge chunk |
-| I-161 | Raw Video ≠ default vector corpus |
-| I-162 | AI Summary ≠ Source Evidence |
-| I-163 | AI Summary ≠ Measurement Result |
-| I-164 | Derived Knowledge Artifact ≠ Original Source |
-| I-165 | Source Revision ≠ Index Revision |
-| I-166 | Index Freshness ≠ Source Freshness |
-| I-167 | Retrieval Trace ≠ Chain-of-Thought |
-| I-168 | Source Removal ≠ delete files |
-| I-169 | Search ranking ≠ paid placement |
+| <a id="rule-i-130"></a>I-130 | Knowledge Source ≠ Data Copy |
+| <a id="rule-i-131"></a>I-131 | Knowledge Source ≠ Context Provider |
+| <a id="rule-i-132"></a>I-132 | Knowledge Source ≠ Import |
+| <a id="rule-i-133"></a>I-133 | Knowledge Scope ≠ Index Scope |
+| <a id="rule-i-134"></a>I-134 | Index ≠ Canonical Data |
+| <a id="rule-i-135"></a>I-135 | Search Index ≠ Knowledge Authority |
+| <a id="rule-i-136"></a>I-136 | Search Index ≠ User Data Authority |
+| <a id="rule-i-137"></a>I-137 | Knowledge Index ≠ Document Copy |
+| <a id="rule-i-138"></a>I-138 | Semantic Index ≠ Knowledge |
+| <a id="rule-i-139"></a>I-139 | Embedding ≠ Permission |
+| <a id="rule-i-140"></a>I-140 | Cloud Sync ≠ Cloud Index |
+| <a id="rule-i-141"></a>I-141 | Cloud Index ≠ AI Retrieval |
+| <a id="rule-i-142"></a>I-142 | Cloud Search ≠ Cloud AI Indexing |
+| <a id="rule-i-143"></a>I-143 | AI Retrieval ≠ Managed AI Processing |
+| <a id="rule-i-144"></a>I-144 | Exclude from AI ≠ Exclude from Search |
+| <a id="rule-i-145"></a>I-145 | Keyword Search ≠ Semantic Search |
+| <a id="rule-i-146"></a>I-146 | Search ≠ Retrieval |
+| <a id="rule-i-147"></a>I-147 | Search ≠ Ask AI |
+| <a id="rule-i-148"></a>I-148 | Web Search ≠ ArcChat Global Search |
+| <a id="rule-i-149"></a>I-149 | Web Search ≠ long-term knowledge |
+| <a id="rule-i-150"></a>I-150 | Retrieval Candidate ≠ Evidence |
+| <a id="rule-i-151"></a>I-151 | Evidence ≠ Citation |
+| <a id="rule-i-152"></a>I-152 | Search Result ≠ Citation |
+| <a id="rule-i-153"></a>I-153 | Citation ≠ Vector Chunk ID |
+| <a id="rule-i-154"></a>I-154 | Retrieval Unit ≠ Domain Resource |
+| <a id="rule-i-155"></a>I-155 | Context Pack ≠ entire Knowledge Source |
+| <a id="rule-i-156"></a>I-156 | ArcNotes Knowledge ≠ ArcChat Memory |
+| <a id="rule-i-157"></a>I-157 | Personal Memory ≠ ArcNotes Knowledge |
+| <a id="rule-i-158"></a>I-158 | Conversation Summary ≠ Personal Memory |
+| <a id="rule-i-159"></a>I-159 | Conversation Context ≠ long-term knowledge |
+| <a id="rule-i-160"></a>I-160 | Raw Capture ≠ text knowledge chunk |
+| <a id="rule-i-161"></a>I-161 | Raw Video ≠ default vector corpus |
+| <a id="rule-i-162"></a>I-162 | AI Summary ≠ Source Evidence |
+| <a id="rule-i-163"></a>I-163 | AI Summary ≠ Measurement Result |
+| <a id="rule-i-164"></a>I-164 | Derived Knowledge Artifact ≠ Original Source |
+| <a id="rule-i-165"></a>I-165 | Source Revision ≠ Index Revision |
+| <a id="rule-i-166"></a>I-166 | Index Freshness ≠ Source Freshness |
+| <a id="rule-i-167"></a>I-167 | Retrieval Trace ≠ Chain-of-Thought |
+| <a id="rule-i-168"></a>I-168 | Source Removal ≠ delete files |
+| <a id="rule-i-169"></a>I-169 | Search ranking ≠ paid placement |
 
 ### 7.6 Data, sync, formats and recovery
 
 | # | Invariant |
 |---|---|
-| I-180 | Sync ≠ Backup ≠ Version History ≠ Trash ≠ Export |
-| I-181 | User Data ≠ Asset ≠ Cache ≠ Search Index ≠ Secret |
-| I-182 | Sync ≠ AI upload; sync transmission ≠ AI transmission |
-| I-183 | Domain Model ≠ Database Schema |
-| I-184 | Database Schema ≠ Native File Format |
-| I-185 | Native Format ≠ Interchange Format |
-| I-186 | Native Format ≠ Cloud Sync Protocol |
-| I-187 | Runtime Storage Format ≠ User Interchange Format |
-| I-188 | Working Store ≠ Portable Package |
-| I-189 | Project ≠ single file |
-| I-190 | Document ≠ Markdown file; Canonical Document ≠ Markdown file |
-| I-191 | Raw Capture ≠ Analysis Result |
-| I-192 | MediaAsset ≠ File Path |
-| I-193 | Managed Asset ≠ External Reference |
-| I-194 | External Locator ≠ Resource Identity |
-| I-195 | File Path ≠ Resource Identity |
-| I-196 | Cache ≠ Canonical Data |
-| I-197 | Proxy ≠ Original |
-| I-198 | Autosave ≠ rewrite entire project |
-| I-199 | Saved Locally ≠ Synced to Cloud |
-| I-200 | Cloud Pending ≠ Unsaved |
-| I-201 | Undo ≠ Revision |
-| I-202 | Undo ≠ Revision History |
-| I-203 | Revision ≠ Checkpoint |
-| I-204 | Checkpoint ≠ Recovery Journal |
-| I-205 | Revision History ≠ Trash |
-| I-206 | Crash Recovery ≠ Undo |
-| I-207 | Migration Recovery ≠ user Undo; Migration Recovery Point ≠ normal Undo |
-| I-208 | App Binary Rollback ≠ Data Rollback |
-| I-209 | Import ≠ live external sync |
-| I-210 | Export ≠ Backup |
-| I-211 | Repository Projection ≠ Runtime Authority |
-| I-212 | Repository Projection ≠ Live Working Store |
-| I-213 | Git Merge ≠ Collaboration Protocol |
-| I-214 | Git Versioning ≠ Cloud Sync |
-| I-215 | Resource Delete ≠ Managed Blob garbage collection |
-| I-216 | Native Package ≠ Trusted Input |
-| I-217 | CLR Type ≠ persistent format contract |
-| I-218 | ETag ≠ ArcForges Content Hash |
-| I-219 | High Durability ≠ Backup |
-| I-220 | Permanent user deletion ≠ same-day disappearance from every disaster backup |
-| I-221 | Read compatibility ≠ safe write compatibility |
-| I-222 | Cache Recovery ≠ Canonical Data Recovery |
-| I-223 | Projection Repair ≠ Canonical Data Repair |
-| I-224 | Project Reference ≠ Resource Copy |
+| <a id="rule-i-180"></a>I-180 | Sync ≠ Backup ≠ Version History ≠ Trash ≠ Export |
+| <a id="rule-i-181"></a>I-181 | User Data ≠ Asset ≠ Cache ≠ Search Index ≠ Secret |
+| <a id="rule-i-182"></a>I-182 | Sync ≠ AI upload; sync transmission ≠ AI transmission |
+| <a id="rule-i-183"></a>I-183 | Domain Model ≠ Database Schema |
+| <a id="rule-i-184"></a>I-184 | Database Schema ≠ Native File Format |
+| <a id="rule-i-185"></a>I-185 | Native Format ≠ Interchange Format |
+| <a id="rule-i-186"></a>I-186 | Native Format ≠ Cloud Sync Protocol |
+| <a id="rule-i-187"></a>I-187 | Runtime Storage Format ≠ User Interchange Format |
+| <a id="rule-i-188"></a>I-188 | Working Store ≠ Portable Package |
+| <a id="rule-i-189"></a>I-189 | Project ≠ single file |
+| <a id="rule-i-190"></a>I-190 | Document ≠ Markdown file; Canonical Document ≠ Markdown file |
+| <a id="rule-i-191"></a>I-191 | Raw Capture ≠ Analysis Result |
+| <a id="rule-i-192"></a>I-192 | MediaAsset ≠ File Path |
+| <a id="rule-i-193"></a>I-193 | Managed Asset ≠ External Reference |
+| <a id="rule-i-194"></a>I-194 | External Locator ≠ Resource Identity |
+| <a id="rule-i-195"></a>I-195 | File Path ≠ Resource Identity |
+| <a id="rule-i-196"></a>I-196 | Cache ≠ Canonical Data |
+| <a id="rule-i-197"></a>I-197 | Proxy ≠ Original |
+| <a id="rule-i-198"></a>I-198 | Autosave ≠ rewrite entire project |
+| <a id="rule-i-199"></a>I-199 | Saved Locally ≠ Synced to Cloud |
+| <a id="rule-i-200"></a>I-200 | Cloud Pending ≠ Unsaved |
+| <a id="rule-i-201"></a>I-201 | Undo ≠ Revision |
+| <a id="rule-i-202"></a>I-202 | Undo ≠ Revision History |
+| <a id="rule-i-203"></a>I-203 | Revision ≠ Checkpoint |
+| <a id="rule-i-204"></a>I-204 | Checkpoint ≠ Recovery Journal |
+| <a id="rule-i-205"></a>I-205 | Revision History ≠ Trash |
+| <a id="rule-i-206"></a>I-206 | Crash Recovery ≠ Undo |
+| <a id="rule-i-207"></a>I-207 | Migration Recovery ≠ user Undo; Migration Recovery Point ≠ normal Undo |
+| <a id="rule-i-208"></a>I-208 | App Binary Rollback ≠ Data Rollback |
+| <a id="rule-i-209"></a>I-209 | Import ≠ live external sync |
+| <a id="rule-i-210"></a>I-210 | Export ≠ Backup |
+| <a id="rule-i-211"></a>I-211 | Repository Projection ≠ Runtime Authority |
+| <a id="rule-i-212"></a>I-212 | Repository Projection ≠ Live Working Store |
+| <a id="rule-i-213"></a>I-213 | Git Merge ≠ Collaboration Protocol |
+| <a id="rule-i-214"></a>I-214 | Git Versioning ≠ Cloud Sync |
+| <a id="rule-i-215"></a>I-215 | Resource Delete ≠ Managed Blob garbage collection |
+| <a id="rule-i-216"></a>I-216 | Native Package ≠ Trusted Input |
+| <a id="rule-i-217"></a>I-217 | CLR Type ≠ persistent format contract |
+| <a id="rule-i-218"></a>I-218 | ETag ≠ ArcForges Content Hash |
+| <a id="rule-i-219"></a>I-219 | High Durability ≠ Backup |
+| <a id="rule-i-220"></a>I-220 | Permanent user deletion ≠ same-day disappearance from every disaster backup |
+| <a id="rule-i-221"></a>I-221 | Read compatibility ≠ safe write compatibility |
+| <a id="rule-i-222"></a>I-222 | Cache Recovery ≠ Canonical Data Recovery |
+| <a id="rule-i-223"></a>I-223 | Projection Repair ≠ Canonical Data Repair |
+| <a id="rule-i-224"></a>I-224 | Project Reference ≠ Resource Copy |
 
 ### 7.7 Security, permission and trust
 
 | # | Invariant |
 |---|---|
-| I-230 | Identity ≠ Actor ≠ Executor ≠ Caller Process |
-| I-231 | App Identity ≠ Human Authority |
-| I-232 | Agent Profile ≠ Security Principal |
-| I-233 | Agent Capability Configuration ≠ Permission |
-| I-234 | Automation ≠ Principal |
-| I-235 | Automation Definition ≠ Automation Principal |
-| I-236 | Automation Creator Permission Snapshot ≠ permanent authority |
-| I-237 | Role ≠ Permission |
-| I-238 | Capability Permission ≠ Resource Authorization |
-| I-239 | Permission ≠ Approval |
-| I-240 | Permission Grant ≠ Approval |
-| I-241 | Approval ≠ Persistent Grant |
-| I-242 | Approval ≠ Step-up Authentication; Step-up ≠ Approval |
-| I-243 | Remote Approval ≠ Local Presence |
-| I-244 | Trust ≠ Permission |
-| I-245 | Trust ≠ Risk |
-| I-246 | Trust ≠ Entitlement |
-| I-247 | Package Signature ≠ Safety |
-| I-248 | Verified Publisher ≠ Unlimited Access; Verified Publisher ≠ safe capability |
-| I-249 | First-party ≠ Unlimited Access |
-| I-250 | Device Presence ≠ Device Trust |
-| I-251 | Device Online ≠ Remote Agent Enabled |
-| I-252 | Registered Device ≠ Remote-authorized Device |
-| I-253 | Knowledge Eligibility ≠ Read Permission |
-| I-254 | Read Permission ≠ Data Egress Permission |
-| I-255 | Synced Data ≠ allowed external transmission |
-| I-256 | SecretRef ≠ Secret Value |
-| I-257 | Secret Use ≠ Secret Reveal |
-| I-258 | Secret Permission ≠ general Settings permission |
-| I-259 | Extension Isolation ≠ Authorization |
-| I-260 | Out-of-process ≠ automatically safe |
-| I-261 | MCP Protocol ≠ Trust |
-| I-262 | MCP Tool Description ≠ Trusted Instruction |
-| I-263 | Retrieved Content ≠ Security Instruction |
-| I-264 | Skill Guidance ≠ Permission Grant |
-| I-265 | Workflow Definition ≠ Authorization |
-| I-266 | Delegation ≠ Privilege Amplification |
-| I-267 | Permission Revocation ≠ Undo |
-| I-268 | Revocation ≠ Compensation |
-| I-269 | Declared Permission ≠ Granted Permission |
-| I-270 | Installation ≠ authorize all operations |
-| I-271 | Developer Mode ≠ permission bypass ≠ secret bypass ≠ workspace-policy bypass |
-| I-272 | Audit ≠ Debug Log |
-| I-273 | Audit ≠ Telemetry |
-| I-274 | Audit ≠ Domain Revision History; Audit ≠ Product History |
-| I-275 | Audit ≠ Task Operational Trace |
-| I-276 | Diagnostic Log ≠ Audit |
-| I-277 | App Lock ≠ Account Authentication |
-| I-278 | Mobile Biometric Unlock ≠ high-risk authorization |
-| I-279 | HTTPS Private Link ≠ Public Share Link |
-| I-280 | Search ≠ Remote Desktop scan |
-| I-281 | Stage-25 Product Policy ≠ Stage-26 Authorization |
+| <a id="rule-i-230"></a>I-230 | Identity ≠ Actor ≠ Executor ≠ Caller Process |
+| <a id="rule-i-231"></a>I-231 | App Identity ≠ Human Authority |
+| <a id="rule-i-232"></a>I-232 | Agent Profile ≠ Security Principal |
+| <a id="rule-i-233"></a>I-233 | Agent Capability Configuration ≠ Permission |
+| <a id="rule-i-234"></a>I-234 | Automation ≠ Principal |
+| <a id="rule-i-235"></a>I-235 | Automation Definition ≠ Automation Principal |
+| <a id="rule-i-236"></a>I-236 | Automation Creator Permission Snapshot ≠ permanent authority |
+| <a id="rule-i-237"></a>I-237 | Role ≠ Permission |
+| <a id="rule-i-238"></a>I-238 | Capability Permission ≠ Resource Authorization |
+| <a id="rule-i-239"></a>I-239 | Permission ≠ Approval |
+| <a id="rule-i-240"></a>I-240 | Permission Grant ≠ Approval |
+| <a id="rule-i-241"></a>I-241 | Approval ≠ Persistent Grant |
+| <a id="rule-i-242"></a>I-242 | Approval ≠ Step-up Authentication; Step-up ≠ Approval |
+| <a id="rule-i-243"></a>I-243 | Remote Approval ≠ Local Presence |
+| <a id="rule-i-244"></a>I-244 | Trust ≠ Permission |
+| <a id="rule-i-245"></a>I-245 | Trust ≠ Risk |
+| <a id="rule-i-246"></a>I-246 | Trust ≠ Entitlement |
+| <a id="rule-i-247"></a>I-247 | Package Signature ≠ Safety |
+| <a id="rule-i-248"></a>I-248 | Verified Publisher ≠ Unlimited Access; Verified Publisher ≠ safe capability |
+| <a id="rule-i-249"></a>I-249 | First-party ≠ Unlimited Access |
+| <a id="rule-i-250"></a>I-250 | Device Presence ≠ Device Trust |
+| <a id="rule-i-251"></a>I-251 | Device Online ≠ Remote Agent Enabled |
+| <a id="rule-i-252"></a>I-252 | Registered Device ≠ Remote-authorized Device |
+| <a id="rule-i-253"></a>I-253 | Knowledge Eligibility ≠ Read Permission |
+| <a id="rule-i-254"></a>I-254 | Read Permission ≠ Data Egress Permission |
+| <a id="rule-i-255"></a>I-255 | Synced Data ≠ allowed external transmission |
+| <a id="rule-i-256"></a>I-256 | SecretRef ≠ Secret Value |
+| <a id="rule-i-257"></a>I-257 | Secret Use ≠ Secret Reveal |
+| <a id="rule-i-258"></a>I-258 | Secret Permission ≠ general Settings permission |
+| <a id="rule-i-259"></a>I-259 | Extension Isolation ≠ Authorization |
+| <a id="rule-i-260"></a>I-260 | Out-of-process ≠ automatically safe |
+| <a id="rule-i-261"></a>I-261 | MCP Protocol ≠ Trust |
+| <a id="rule-i-262"></a>I-262 | MCP Tool Description ≠ Trusted Instruction |
+| <a id="rule-i-263"></a>I-263 | Retrieved Content ≠ Security Instruction |
+| <a id="rule-i-264"></a>I-264 | Skill Guidance ≠ Permission Grant |
+| <a id="rule-i-265"></a>I-265 | Workflow Definition ≠ Authorization |
+| <a id="rule-i-266"></a>I-266 | Delegation ≠ Privilege Amplification |
+| <a id="rule-i-267"></a>I-267 | Permission Revocation ≠ Undo |
+| <a id="rule-i-268"></a>I-268 | Revocation ≠ Compensation |
+| <a id="rule-i-269"></a>I-269 | Declared Permission ≠ Granted Permission |
+| <a id="rule-i-270"></a>I-270 | Installation ≠ authorize all operations |
+| <a id="rule-i-271"></a>I-271 | Developer Mode ≠ permission bypass ≠ secret bypass ≠ workspace-policy bypass |
+| <a id="rule-i-272"></a>I-272 | Audit ≠ Debug Log |
+| <a id="rule-i-273"></a>I-273 | Audit ≠ Telemetry |
+| <a id="rule-i-274"></a>I-274 | Audit ≠ Domain Revision History; Audit ≠ Product History |
+| <a id="rule-i-275"></a>I-275 | Audit ≠ Task Operational Trace |
+| <a id="rule-i-276"></a>I-276 | Diagnostic Log ≠ Audit |
+| <a id="rule-i-277"></a>I-277 | App Lock ≠ Account Authentication |
+| <a id="rule-i-278"></a>I-278 | Mobile Biometric Unlock ≠ high-risk authorization |
+| <a id="rule-i-279"></a>I-279 | HTTPS Private Link ≠ Public Share Link |
+| <a id="rule-i-280"></a>I-280 | Search ≠ Remote Desktop scan |
+| <a id="rule-i-281"></a>I-281 | Stage-25 Product Policy ≠ Stage-26 Authorization |
 
 ### 7.8 Extensions, packages and interoperability
 
 | # | Invariant |
 |---|---|
-| I-290 | Skill ≠ Capability |
-| I-291 | Skill ≠ Extension Code |
-| I-292 | Skill ≠ MCP |
-| I-293 | Template ≠ Skill |
-| I-294 | Template ≠ live parent resource |
-| I-295 | Workflow ≠ Automation |
-| I-296 | Workflow ≠ Task |
-| I-297 | Workflow ≠ Agent Plan |
-| I-298 | Workflow ≠ arbitrary script runtime |
-| I-299 | Automation ≠ Workflow |
-| I-300 | Package ≠ Contribution |
-| I-301 | Package Version ≠ Protocol Version |
-| I-302 | Package Version ≠ App Version |
-| I-303 | Install ≠ Enable |
-| I-304 | Install ≠ Permission Grant |
-| I-305 | Compatibility ≠ Trust |
-| I-306 | Compatibility ≠ Enablement |
-| I-307 | MCP ≠ native Arc capability |
-| I-308 | MCP ≠ Connector |
-| I-309 | MCP Definition ≠ MCP Connection |
-| I-310 | MCP Prompt ≠ Skill |
-| I-311 | Connector ≠ Connection |
-| I-312 | Connector ≠ imported snapshot |
-| I-313 | **Retired by P2-006:** external-agent integration is excluded, not a separate agent-profile implementation. |
-| I-314 | **Retired by P2-006:** no external-agent task/delegation adapter is required. |
-| I-315 | ACP Session ≠ Conversation |
-| I-316 | ACP ≠ ArcChat runtime model |
-| I-317 | Extension ≠ third-party Arc App |
-| I-318 | Extension Process ≠ Host Process |
-| I-319 | Extension Private State ≠ Product Domain State |
-| I-320 | Extension Capability ≠ Permission |
-| I-321 | Third-party Package ≠ runtime DLL injection |
-| I-322 | Runtime Extension ≠ NuGet package restore |
-| I-323 | Catalog ≠ Marketplace |
-| I-324 | Catalog ≠ runtime dependency |
-| I-325 | Community Package ≠ automatically trusted |
-| I-326 | Package Dependency ≠ Capability Dependency |
-| I-327 | Public SDK Contract ≠ internal LocalRpc Contract |
-| I-328 | Extension Schema ≠ `Dictionary<string, object>` |
-| I-329 | Dynamic Extension Boundary ≠ core product capability protocol |
-| I-330 | Deprecate ≠ Revoke |
+| <a id="rule-i-290"></a>I-290 | Skill ≠ Capability |
+| <a id="rule-i-291"></a>I-291 | Skill ≠ Extension Code |
+| <a id="rule-i-292"></a>I-292 | Skill ≠ MCP |
+| <a id="rule-i-293"></a>I-293 | Template ≠ Skill |
+| <a id="rule-i-294"></a>I-294 | Template ≠ live parent resource |
+| <a id="rule-i-295"></a>I-295 | Workflow ≠ Automation |
+| <a id="rule-i-296"></a>I-296 | Workflow ≠ Task |
+| <a id="rule-i-297"></a>I-297 | Workflow ≠ Agent Plan |
+| <a id="rule-i-298"></a>I-298 | Workflow ≠ arbitrary script runtime |
+| <a id="rule-i-299"></a>I-299 | Automation ≠ Workflow |
+| <a id="rule-i-300"></a>I-300 | Package ≠ Contribution |
+| <a id="rule-i-301"></a>I-301 | Package Version ≠ Protocol Version |
+| <a id="rule-i-302"></a>I-302 | Package Version ≠ App Version |
+| <a id="rule-i-303"></a>I-303 | Install ≠ Enable |
+| <a id="rule-i-304"></a>I-304 | Install ≠ Permission Grant |
+| <a id="rule-i-305"></a>I-305 | Compatibility ≠ Trust |
+| <a id="rule-i-306"></a>I-306 | Compatibility ≠ Enablement |
+| <a id="rule-i-307"></a>I-307 | MCP ≠ native Arc capability |
+| <a id="rule-i-308"></a>I-308 | MCP ≠ Connector |
+| <a id="rule-i-309"></a>I-309 | MCP Definition ≠ MCP Connection |
+| <a id="rule-i-310"></a>I-310 | MCP Prompt ≠ Skill |
+| <a id="rule-i-311"></a>I-311 | Connector ≠ Connection |
+| <a id="rule-i-312"></a>I-312 | Connector ≠ imported snapshot |
+| <a id="rule-i-313"></a>I-313 | **Retired by [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006):** external-agent integration is excluded, not a separate agent-profile implementation. |
+| <a id="rule-i-314"></a>I-314 | **Retired by [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006):** no external-agent task/delegation adapter is required. |
+| <a id="rule-i-315"></a>I-315 | ACP Session ≠ Conversation |
+| <a id="rule-i-316"></a>I-316 | ACP ≠ ArcChat runtime model |
+| <a id="rule-i-317"></a>I-317 | Extension ≠ third-party Arc App |
+| <a id="rule-i-318"></a>I-318 | Extension Process ≠ Host Process |
+| <a id="rule-i-319"></a>I-319 | Extension Private State ≠ Product Domain State |
+| <a id="rule-i-320"></a>I-320 | Extension Capability ≠ Permission |
+| <a id="rule-i-321"></a>I-321 | Third-party Package ≠ runtime DLL injection |
+| <a id="rule-i-322"></a>I-322 | Runtime Extension ≠ NuGet package restore |
+| <a id="rule-i-323"></a>I-323 | Catalog ≠ Marketplace |
+| <a id="rule-i-324"></a>I-324 | Catalog ≠ runtime dependency |
+| <a id="rule-i-325"></a>I-325 | Community Package ≠ automatically trusted |
+| <a id="rule-i-326"></a>I-326 | Package Dependency ≠ Capability Dependency |
+| <a id="rule-i-327"></a>I-327 | Public SDK Contract ≠ internal LocalRpc Contract |
+| <a id="rule-i-328"></a>I-328 | Extension Schema ≠ `Dictionary<string, object>` |
+| <a id="rule-i-329"></a>I-329 | Dynamic Extension Boundary ≠ core product capability protocol |
+| <a id="rule-i-330"></a>I-330 | Deprecate ≠ Revoke |
 
 ### 7.9 Policy and configuration
 
 | # | Invariant |
 |---|---|
-| I-340 | Policy ≠ Setting |
-| I-341 | Policy ≠ Entitlement |
-| I-342 | Policy ≠ Permission |
-| I-343 | Policy ≠ Runtime Health |
-| I-344 | Policy ≠ Domain State |
-| I-345 | Policy Control Plane ≠ request Data Plane |
-| I-346 | Policy Scope ≠ Entitlement Scope |
-| I-347 | Feature ≠ Feature Flag |
-| I-348 | Feature Flag ≠ Rollout |
-| I-349 | Rollout ≠ Experiment |
-| I-350 | Experiment ≠ Entitlement |
-| I-351 | Experiment ≠ Security Policy |
-| I-352 | Experiment Assignment ≠ random every request |
-| I-353 | Kill Switch ≠ Feature Lifecycle |
-| I-354 | Kill Switch ≠ delete data |
-| I-355 | Remote Config ≠ User Preference |
-| I-356 | Remote Config ≠ arbitrary code |
-| I-357 | Remote Config ≠ Project Format |
-| I-358 | Remote Config ≠ transport selection |
-| I-359 | Compatibility Policy ≠ Capability Negotiation |
-| I-360 | Minimum Cloud Version ≠ Minimum Local Data Version |
-| I-361 | Provider Availability ≠ Provider Health |
-| I-362 | Model Availability ≠ Model Entitlement |
-| I-363 | Model Availability ≠ Model Capability |
-| I-364 | Recommended Model ≠ Pinned Model |
-| I-365 | Workspace Policy ≠ Workspace Permission |
-| I-366 | Policy Bundle ≠ live mutable database view |
-| I-367 | Policy Push Event ≠ Policy Authority |
-| I-368 | Last Known Good ≠ current cloud truth |
-| I-369 | Published Revision ≠ Draft |
-| I-370 | Policy Rollback ≠ rewrite history |
-| I-371 | Dynamic Policy ≠ Architecture Constitution |
-| I-372 | Dynamic Policy ≠ business-logic deployment |
+| <a id="rule-i-340"></a>I-340 | Policy ≠ Setting |
+| <a id="rule-i-341"></a>I-341 | Policy ≠ Entitlement |
+| <a id="rule-i-342"></a>I-342 | Policy ≠ Permission |
+| <a id="rule-i-343"></a>I-343 | Policy ≠ Runtime Health |
+| <a id="rule-i-344"></a>I-344 | Policy ≠ Domain State |
+| <a id="rule-i-345"></a>I-345 | Policy Control Plane ≠ request Data Plane |
+| <a id="rule-i-346"></a>I-346 | Policy Scope ≠ Entitlement Scope |
+| <a id="rule-i-347"></a>I-347 | Feature ≠ Feature Flag |
+| <a id="rule-i-348"></a>I-348 | Feature Flag ≠ Rollout |
+| <a id="rule-i-349"></a>I-349 | Rollout ≠ Experiment |
+| <a id="rule-i-350"></a>I-350 | Experiment ≠ Entitlement |
+| <a id="rule-i-351"></a>I-351 | Experiment ≠ Security Policy |
+| <a id="rule-i-352"></a>I-352 | Experiment Assignment ≠ random every request |
+| <a id="rule-i-353"></a>I-353 | Kill Switch ≠ Feature Lifecycle |
+| <a id="rule-i-354"></a>I-354 | Kill Switch ≠ delete data |
+| <a id="rule-i-355"></a>I-355 | Remote Config ≠ User Preference |
+| <a id="rule-i-356"></a>I-356 | Remote Config ≠ arbitrary code |
+| <a id="rule-i-357"></a>I-357 | Remote Config ≠ Project Format |
+| <a id="rule-i-358"></a>I-358 | Remote Config ≠ transport selection |
+| <a id="rule-i-359"></a>I-359 | Compatibility Policy ≠ Capability Negotiation |
+| <a id="rule-i-360"></a>I-360 | Minimum Cloud Version ≠ Minimum Local Data Version |
+| <a id="rule-i-361"></a>I-361 | Provider Availability ≠ Provider Health |
+| <a id="rule-i-362"></a>I-362 | Model Availability ≠ Model Entitlement |
+| <a id="rule-i-363"></a>I-363 | Model Availability ≠ Model Capability |
+| <a id="rule-i-364"></a>I-364 | Recommended Model ≠ Pinned Model |
+| <a id="rule-i-365"></a>I-365 | Workspace Policy ≠ Workspace Permission |
+| <a id="rule-i-366"></a>I-366 | Policy Bundle ≠ live mutable database view |
+| <a id="rule-i-367"></a>I-367 | Policy Push Event ≠ Policy Authority |
+| <a id="rule-i-368"></a>I-368 | Last Known Good ≠ current cloud truth |
+| <a id="rule-i-369"></a>I-369 | Published Revision ≠ Draft |
+| <a id="rule-i-370"></a>I-370 | Policy Rollback ≠ rewrite history |
+| <a id="rule-i-371"></a>I-371 | Dynamic Policy ≠ Architecture Constitution |
+| <a id="rule-i-372"></a>I-372 | Dynamic Policy ≠ business-logic deployment |
 
 ### 7.10 Quality, compatibility and platform
 
 | # | Invariant |
 |---|---|
-| I-380 | Fast in Debug ≠ Fast in Production |
-| I-381 | JIT test pass ≠ AOT compatibility |
-| I-382 | Build success ≠ runtime compatibility |
-| I-383 | App Version ≠ Contract Version |
-| I-384 | Contract Compatibility ≠ Product Policy Availability |
-| I-385 | Read Compatibility ≠ Write Compatibility |
-| I-386 | Migration Success ≠ Data Semantic Preservation |
-| I-387 | Crash-free ≠ Recoverable |
-| I-388 | Small Benchmark ≠ Scale Reliability |
-| I-389 | Startup Time ≠ Time To Usable |
-| I-390 | Managed Heap ≠ Total Memory |
-| I-391 | Process Running ≠ Healthy |
-| I-392 | Responsive Animation ≠ Responsive Product |
-| I-393 | Accessible Color ≠ Accessible Product |
-| I-394 | Keyboard Shortcut ≠ Keyboard Accessibility |
-| I-395 | Localized UI ≠ Locale-safe Data |
-| I-396 | Display Unit ≠ Canonical Quantity |
-| I-397 | Automated Test ≠ real-hardware validation |
-| I-398 | One OS passing ≠ cross-platform support |
-| I-399 | Diagnostics ≠ Telemetry Consent |
-| I-400 | Performance Target ≠ Marketing Claim |
-| I-401 | Quality Waiver ≠ permanently lower standard |
-| I-402 | Quality Requirement ≠ Engineering Suggestion |
-| I-403 | SLO ≠ external SLA |
-| I-404 | Focus ≠ Selection |
-| I-405 | Push Notification ≠ Durable Attention State |
+| <a id="rule-i-380"></a>I-380 | Fast in Debug ≠ Fast in Production |
+| <a id="rule-i-381"></a>I-381 | JIT test pass ≠ AOT compatibility |
+| <a id="rule-i-382"></a>I-382 | Build success ≠ runtime compatibility |
+| <a id="rule-i-383"></a>I-383 | App Version ≠ Contract Version |
+| <a id="rule-i-384"></a>I-384 | Contract Compatibility ≠ Product Policy Availability |
+| <a id="rule-i-385"></a>I-385 | Read Compatibility ≠ Write Compatibility |
+| <a id="rule-i-386"></a>I-386 | Migration Success ≠ Data Semantic Preservation |
+| <a id="rule-i-387"></a>I-387 | Crash-free ≠ Recoverable |
+| <a id="rule-i-388"></a>I-388 | Small Benchmark ≠ Scale Reliability |
+| <a id="rule-i-389"></a>I-389 | Startup Time ≠ Time To Usable |
+| <a id="rule-i-390"></a>I-390 | Managed Heap ≠ Total Memory |
+| <a id="rule-i-391"></a>I-391 | Process Running ≠ Healthy |
+| <a id="rule-i-392"></a>I-392 | Responsive Animation ≠ Responsive Product |
+| <a id="rule-i-393"></a>I-393 | Accessible Color ≠ Accessible Product |
+| <a id="rule-i-394"></a>I-394 | Keyboard Shortcut ≠ Keyboard Accessibility |
+| <a id="rule-i-395"></a>I-395 | Localized UI ≠ Locale-safe Data |
+| <a id="rule-i-396"></a>I-396 | Display Unit ≠ Canonical Quantity |
+| <a id="rule-i-397"></a>I-397 | Automated Test ≠ real-hardware validation |
+| <a id="rule-i-398"></a>I-398 | One OS passing ≠ cross-platform support |
+| <a id="rule-i-399"></a>I-399 | Diagnostics ≠ Telemetry Consent |
+| <a id="rule-i-400"></a>I-400 | Performance Target ≠ Marketing Claim |
+| <a id="rule-i-401"></a>I-401 | Quality Waiver ≠ permanently lower standard |
+| <a id="rule-i-402"></a>I-402 | Quality Requirement ≠ Engineering Suggestion |
+| <a id="rule-i-403"></a>I-403 | SLO ≠ external SLA |
+| <a id="rule-i-404"></a>I-404 | Focus ≠ Selection |
+| <a id="rule-i-405"></a>I-405 | Push Notification ≠ Durable Attention State |
 
 ### 7.11 Support, operations and trust & safety
 
 | # | Invariant |
 |---|---|
-| I-410 | Feedback ≠ Support Case |
-| I-411 | Bug Report ≠ Engineering Defect |
-| I-412 | Feature Request ≠ Product Commitment |
-| I-413 | Known Issue ≠ Incident |
-| I-414 | Incident ≠ Security Advisory |
-| I-415 | Support ≠ Impersonation |
-| I-416 | Operator ≠ User |
-| I-417 | Operator Role ≠ unlimited access |
-| I-418 | Support Access ≠ User Session |
-| I-419 | Support Access ≠ permanent permission |
-| I-420 | Break Glass ≠ Impersonation |
-| I-421 | Break Glass ≠ global superuser |
-| I-422 | Operator Console ≠ Database Console |
-| I-423 | Operator Console ≠ Domain Owner |
-| I-424 | Diagnostic Bundle ≠ automatic telemetry upload |
-| I-425 | Diagnostic Bundle ≠ Recovery Package |
-| I-426 | Recovery ≠ direct SQL mutation |
-| I-427 | Recovery ≠ silent overwrite |
-| I-428 | Recovery ≠ guaranteed recovery of missing data |
-| I-429 | Report ≠ Investigation ≠ Enforcement ≠ Appeal |
-| I-430 | Community Report ≠ Enforcement |
-| I-431 | Report Count ≠ Guilt |
-| I-432 | Delist ≠ Revoke |
-| I-433 | Publisher Yank ≠ platform enforcement |
-| I-434 | Package Revocation ≠ delete user project |
-| I-435 | Package Revocation ≠ delete created resources |
-| I-436 | Copyright Removal ≠ delete local canonical data |
-| I-437 | Public Share Removal ≠ delete private source |
-| I-438 | Account Cloud Restriction ≠ local data lock |
-| I-439 | Appeal ≠ delete enforcement history |
-| I-440 | Security Report ≠ public bug report |
-| I-441 | Security Advisory ≠ Kill Switch |
-| I-442 | Security Advisory ≠ Package Revocation |
-| I-443 | Official Advisory ≠ self-host policy authority; Advisory ≠ remote policy authority |
-| I-444 | Staff Access ≠ Secret Access |
-| I-445 | Support Attachment ≠ product resource authority |
-| I-446 | Audit ≠ operator-editable history |
-| I-447 | Data exists in the Cloud ≠ support has the right to browse it |
-| I-448 | Archive ≠ Delete |
+| <a id="rule-i-410"></a>I-410 | Feedback ≠ Support Case |
+| <a id="rule-i-411"></a>I-411 | Bug Report ≠ Engineering Defect |
+| <a id="rule-i-412"></a>I-412 | Feature Request ≠ Product Commitment |
+| <a id="rule-i-413"></a>I-413 | Known Issue ≠ Incident |
+| <a id="rule-i-414"></a>I-414 | Incident ≠ Security Advisory |
+| <a id="rule-i-415"></a>I-415 | Support ≠ Impersonation |
+| <a id="rule-i-416"></a>I-416 | Operator ≠ User |
+| <a id="rule-i-417"></a>I-417 | Operator Role ≠ unlimited access |
+| <a id="rule-i-418"></a>I-418 | Support Access ≠ User Session |
+| <a id="rule-i-419"></a>I-419 | Support Access ≠ permanent permission |
+| <a id="rule-i-420"></a>I-420 | Break Glass ≠ Impersonation |
+| <a id="rule-i-421"></a>I-421 | Break Glass ≠ global superuser |
+| <a id="rule-i-422"></a>I-422 | Operator Console ≠ Database Console |
+| <a id="rule-i-423"></a>I-423 | Operator Console ≠ Domain Owner |
+| <a id="rule-i-424"></a>I-424 | Diagnostic Bundle ≠ automatic telemetry upload |
+| <a id="rule-i-425"></a>I-425 | Diagnostic Bundle ≠ Recovery Package |
+| <a id="rule-i-426"></a>I-426 | Recovery ≠ direct SQL mutation |
+| <a id="rule-i-427"></a>I-427 | Recovery ≠ silent overwrite |
+| <a id="rule-i-428"></a>I-428 | Recovery ≠ guaranteed recovery of missing data |
+| <a id="rule-i-429"></a>I-429 | Report ≠ Investigation ≠ Enforcement ≠ Appeal |
+| <a id="rule-i-430"></a>I-430 | Community Report ≠ Enforcement |
+| <a id="rule-i-431"></a>I-431 | Report Count ≠ Guilt |
+| <a id="rule-i-432"></a>I-432 | Delist ≠ Revoke |
+| <a id="rule-i-433"></a>I-433 | Publisher Yank ≠ platform enforcement |
+| <a id="rule-i-434"></a>I-434 | Package Revocation ≠ delete user project |
+| <a id="rule-i-435"></a>I-435 | Package Revocation ≠ delete created resources |
+| <a id="rule-i-436"></a>I-436 | Copyright Removal ≠ delete local canonical data |
+| <a id="rule-i-437"></a>I-437 | Public Share Removal ≠ delete private source |
+| <a id="rule-i-438"></a>I-438 | Account Cloud Restriction ≠ local data lock |
+| <a id="rule-i-439"></a>I-439 | Appeal ≠ delete enforcement history |
+| <a id="rule-i-440"></a>I-440 | Security Report ≠ public bug report |
+| <a id="rule-i-441"></a>I-441 | Security Advisory ≠ Kill Switch |
+| <a id="rule-i-442"></a>I-442 | Security Advisory ≠ Package Revocation |
+| <a id="rule-i-443"></a>I-443 | Official Advisory ≠ self-host policy authority; Advisory ≠ remote policy authority |
+| <a id="rule-i-444"></a>I-444 | Staff Access ≠ Secret Access |
+| <a id="rule-i-445"></a>I-445 | Support Attachment ≠ product resource authority |
+| <a id="rule-i-446"></a>I-446 | Audit ≠ operator-editable history |
+| <a id="rule-i-447"></a>I-447 | Data exists in the Cloud ≠ support has the right to browse it |
+| <a id="rule-i-448"></a>I-448 | Archive ≠ Delete |
 
 ### 7.12 Product-local invariants
 
 | # | Invariant |
 |---|---|
-| I-460 | Notebook ≠ Workspace; Folder ≠ Tag; Document ≠ File; Block ≠ Markdown Line |
-| I-461 | Note ≠ a second content model independent of Document |
-| I-462 | Property ≠ Document Content; Saved View ≠ Ownership |
-| I-463 | Attachment ≠ embedded base64 |
-| I-464 | ArcNotes Checklist Item ≠ ArcChat Agent Task |
-| I-465 | ArcScope Project ≠ ArcForges Workspace |
-| I-466 | Device ≠ DataSource; ConnectionProfile ≠ Connection |
-| I-467 | Session ≠ Connection; Session ≠ Capture |
-| I-468 | Channel ≠ Signal; Signal ≠ Event; Raw Signal ≠ Derived Signal |
-| I-469 | Live View ≠ Recording; Pause View ≠ Pause Capture |
-| I-470 | Display Decimation ≠ Measurement Data |
-| I-471 | Measurement ≠ Analysis; Decoder Output ≠ Raw Data |
-| I-472 | Annotation ≠ data mutation; Comparison ≠ Merge |
-| I-473 | Source Profile ≠ historical Session configuration |
-| I-474 | ArcScope Cloud Sync ≠ raw capture upload |
-| I-475 | View ≠ Signal Ownership |
-| I-476 | ArcSlate Project ≠ Sequence; Project ≠ Media Folder |
-| I-477 | Source Media ≠ Timeline Clip; Clip ≠ Source Media; MediaAsset ≠ Clip |
-| I-478 | Source Time ≠ Timeline Time; Video Frame Time ≠ Audio Sample Time |
-| I-479 | Playback ≠ final render; Preview Quality ≠ Export Quality |
-| I-480 | Viewer frame drop ≠ source data loss; dropped preview frame ≠ dropped media data |
-| I-481 | Transition ≠ random clip overlap state |
-| I-482 | Effect Definition ≠ Effect Instance; Effect Stack ≠ separate effect engine |
-| I-483 | Node Graph ≠ arbitrary script runtime; Keyframe ≠ current parameter value |
-| I-484 | Proxy ≠ Render Cache; Render Cache ≠ Project Authority |
-| I-485 | Native Render Job ≠ Cloud Agent Task ≠ UI progress dialog; Rendered Artifact ≠ ArcSlate Project |
-| I-486 | Transcript ≠ Subtitle; AI Analysis ≠ Timeline Edit |
-| I-487 | Agent Context ≠ media upload; Project Sync ≠ original media upload |
-| I-488 | External Media ≠ Managed Media |
-| I-489 | ArcSlate Link ≠ shared identity |
-| I-490 | ArcSlate Sequence ≠ Timeline Clip |
+| <a id="rule-i-460"></a>I-460 | Notebook ≠ Workspace; Folder ≠ Tag; Document ≠ File; Block ≠ Markdown Line |
+| <a id="rule-i-461"></a>I-461 | Note ≠ a second content model independent of Document |
+| <a id="rule-i-462"></a>I-462 | Property ≠ Document Content; Saved View ≠ Ownership |
+| <a id="rule-i-463"></a>I-463 | Attachment ≠ embedded base64 |
+| <a id="rule-i-464"></a>I-464 | ArcNotes Checklist Item ≠ ArcChat Agent Task |
+| <a id="rule-i-465"></a>I-465 | ArcScope Project ≠ ArcForges Workspace |
+| <a id="rule-i-466"></a>I-466 | Device ≠ DataSource; ConnectionProfile ≠ Connection |
+| <a id="rule-i-467"></a>I-467 | Session ≠ Connection; Session ≠ Capture |
+| <a id="rule-i-468"></a>I-468 | Channel ≠ Signal; Signal ≠ Event; Raw Signal ≠ Derived Signal |
+| <a id="rule-i-469"></a>I-469 | Live View ≠ Recording; Pause View ≠ Pause Capture |
+| <a id="rule-i-470"></a>I-470 | Display Decimation ≠ Measurement Data |
+| <a id="rule-i-471"></a>I-471 | Measurement ≠ Analysis; Decoder Output ≠ Raw Data |
+| <a id="rule-i-472"></a>I-472 | Annotation ≠ data mutation; Comparison ≠ Merge |
+| <a id="rule-i-473"></a>I-473 | Source Profile ≠ historical Session configuration |
+| <a id="rule-i-474"></a>I-474 | ArcScope Cloud Sync ≠ raw capture upload |
+| <a id="rule-i-475"></a>I-475 | View ≠ Signal Ownership |
+| <a id="rule-i-476"></a>I-476 | ArcSlate Project ≠ Sequence; Project ≠ Media Folder |
+| <a id="rule-i-477"></a>I-477 | Source Media ≠ Timeline Clip; Clip ≠ Source Media; MediaAsset ≠ Clip |
+| <a id="rule-i-478"></a>I-478 | Source Time ≠ Timeline Time; Video Frame Time ≠ Audio Sample Time |
+| <a id="rule-i-479"></a>I-479 | Playback ≠ final render; Preview Quality ≠ Export Quality |
+| <a id="rule-i-480"></a>I-480 | Viewer frame drop ≠ source data loss; dropped preview frame ≠ dropped media data |
+| <a id="rule-i-481"></a>I-481 | Transition ≠ random clip overlap state |
+| <a id="rule-i-482"></a>I-482 | Effect Definition ≠ Effect Instance; Effect Stack ≠ separate effect engine |
+| <a id="rule-i-483"></a>I-483 | Node Graph ≠ arbitrary script runtime; Keyframe ≠ current parameter value |
+| <a id="rule-i-484"></a>I-484 | Proxy ≠ Render Cache; Render Cache ≠ Project Authority |
+| <a id="rule-i-485"></a>I-485 | Native Render Job ≠ Cloud Agent Task ≠ UI progress dialog; Rendered Artifact ≠ ArcSlate Project |
+| <a id="rule-i-486"></a>I-486 | Transcript ≠ Subtitle; AI Analysis ≠ Timeline Edit |
+| <a id="rule-i-487"></a>I-487 | Agent Context ≠ media upload; Project Sync ≠ original media upload |
+| <a id="rule-i-488"></a>I-488 | External Media ≠ Managed Media |
+| <a id="rule-i-489"></a>I-489 | ArcSlate Link ≠ shared identity |
+| <a id="rule-i-490"></a>I-490 | ArcSlate Sequence ≠ Timeline Clip |
 
 ---
 
-### 7.13 P2-006 scope and accounting invariants
+### 7.13 [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006) scope and accounting invariants
 
 | # | Invariant |
 |---|---|
-| I-491 | Model loop location ≠ tool execution location |
-| I-492 | Actual measured tokens ≠ estimated tokens; cumulative stream usage ≠ per-event delta |
-| I-493 | Included recoverable capacity ≠ purchased credits ≠ supplier cost ≠ subscription payment |
-| I-494 | Current configuration ≠ historical pricing snapshot; changing configuration ≠ resetting customer balances |
-| I-495 | Open executable policy logic ≠ private deployment values; secret mount ≠ customer BYOK |
-| I-496 | Synthetic capture ≠ hardware evidence; preview sample ≠ canonical simulation data |
-| I-497 | OTIO interchange ≠ ArcSlate working project ≠ embedded source media |
-| I-498 | Evictable acknowledged cache ≠ unacknowledged edits/uploads/tool receipts |
+| <a id="rule-i-491"></a>I-491 | Model loop location ≠ tool execution location |
+| <a id="rule-i-492"></a>I-492 | Actual measured tokens ≠ estimated tokens; cumulative stream usage ≠ per-event delta |
+| <a id="rule-i-493"></a>I-493 | Included recoverable capacity ≠ purchased credits ≠ supplier cost ≠ subscription payment |
+| <a id="rule-i-494"></a>I-494 | Current configuration ≠ historical pricing snapshot; changing configuration ≠ resetting customer balances |
+| <a id="rule-i-495"></a>I-495 | Open executable policy logic ≠ private deployment values; secret mount ≠ customer BYOK |
+| <a id="rule-i-496"></a>I-496 | Synthetic capture ≠ hardware evidence; preview sample ≠ canonical simulation data |
+| <a id="rule-i-497"></a>I-497 | OTIO interchange ≠ ArcSlate working project ≠ embedded source media |
+| <a id="rule-i-498"></a>I-498 | Evictable acknowledged cache ≠ unacknowledged edits/uploads/tool receipts |
 
 ---
 
@@ -740,25 +740,25 @@ Every active entry is binding where its concepts are in current product scope. A
 
 | Forbidden / obsolete | Reason | Use instead |
 |---|---|---|
-| `ArcCanvas`, `ArcMusic`, `ArcImage`, `ArcVideo` | `SUPERSEDED` product names (**D-002**) | No replacement canvas/slides product or capability; nothing; `ArcScope`; `ArcSlate` |
+| `ArcCanvas`, `ArcMusic`, `ArcImage`, `ArcVideo` | `SUPERSEDED` product names (**[D-002](../decisions/phase-1-foundation-decisions.md#rule-d-002)**) | No replacement canvas/slides product or capability; nothing; `ArcScope`; `ArcSlate` |
 | "Workspace" meaning a panel layout | Collides with the cloud tenancy boundary | **Layout** |
 | Bare "Project" in cross-product text | Three incompatible product meanings | `ArcChat.Project` / `ArcScope.Project` / `ArcSlate.Project` |
 | Bare "Scope" | Eight distinct meanings exist | Name the scope explicitly: Knowledge Scope, Sync Scope, Permission Scope, Policy Scope, Product Scope, Search Scope, Egress Scope, Resource Scope |
 | "ArcForges Suite 2.0" as a version | No mandatory suite release train (Stage 13 §55) | Per-product versions plus an optional release campaign name |
 | "Central desktop service", `ArcForgesService.exe` | Prohibited architecture (Stage 13 §8, §49) | ArcChat-hosted Hub |
 | Unqualified "Unlimited AI" / "unlimited storage" | Prohibited unbounded commercial claims | Disclosed AI capacity recovery/rate/concurrency/model limits and storage tier |
-| "Native AOT" applied to Android production builds | Conflates Mono AOT with CoreCLR Native AOT (**D-008**, V-04) | ".NET 10 Mono AOT" |
-| "Cloud must publish as Native AOT" | Removed by **D-008** | "Cloud is an ASP.NET Core JIT modular monolith" |
-| "SignalR is unsupported under Native AOT" | Stale .NET 8 statement (V-03) | "SignalR has Partial support under .NET 10 Native AOT" |
-| Waffo Pancake and every Waffo-specific mechanic | `SUPERSEDED` provider (**D-005**) | Paddle (MoR) and Payoneer (payout destination) |
-| "License key unlock" in ArcChat Mobile | Prohibited by Apple 3.1.1 and **D-022** | Cloud-resolved entitlement |
+| "Native AOT" applied to Android production builds | Conflates Mono AOT with CoreCLR Native AOT (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**, [V-04](../assurance/phase-1-official-verification.md#rule-v-04)) | ".NET 10 Mono AOT" |
+| "Cloud must publish as Native AOT" | Removed by **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** | "Cloud is an ASP.NET Core JIT modular monolith" |
+| "SignalR is unsupported under Native AOT" | Stale .NET 8 statement ([V-03](../assurance/phase-1-official-verification.md#rule-v-03)) | "SignalR has Partial support under .NET 10 Native AOT" |
+| Waffo Pancake and every Waffo-specific mechanic | `SUPERSEDED` provider (**[D-005](../decisions/phase-1-foundation-decisions.md#rule-d-005)**) | Paddle (MoR) and Payoneer (payout destination) |
+| "License key unlock" in ArcChat Mobile | Prohibited by Apple 3.1.1 and **[D-022](../decisions/phase-1-foundation-decisions.md#rule-d-022)** | Cloud-resolved entitlement |
 | `InvokeAsync(string, object)` / `Dictionary<string,object>` capability calls | Bypasses contracts, permissions and versioning (I3 §8.1) | Strongly typed capability interfaces |
 | `ArcForges.Foundation.Document`, `.VideoTimeline`, `.TelemetrySession` | Shared foundation must not hold domain (Stage 13 §32) | Product-owned domain types |
 | `ArcProductBase` domain hierarchy | Product classification is not inheritance (Stage 13 §85) | Independent domains + platform contracts |
 
 ---
 
-## 9. MCP disambiguation (V-02)
+## 9. MCP disambiguation ([V-02](../assurance/phase-1-official-verification.md#rule-v-02))
 
 The Model Context Protocol `2026-07-28` revision is a **stable** specification with a formal extensions framework that defines its own `Task` and `Skill` concepts. These collide with the ArcForges execution vocabulary and must be disambiguated explicitly wherever both appear.
 
@@ -766,12 +766,12 @@ The Model Context Protocol `2026-07-28` revision is a **stable** specification w
 |---|---|---|
 | `MCP.Task` | `ArcForges.Task` | **Unrelated.** An MCP task is a protocol-level unit of work at an MCP server. An ArcForges Task is a durable, owned, auditable unit in the ArcForges execution model. An MCP task never becomes an ArcForges Task implicitly; if one is created, it is created explicitly, owned by the Cloud agent module, and carries its own `TaskId`. |
 | `MCP.Skill` | `ArcChat.Skill` | **Unrelated.** MCP skills are server-published behaviour packs. `ArcChat.Skill` is ArcChat-owned configuration. An MCP skill never becomes an `ArcChat.Skill`; it is surfaced as a capability contribution subject to the ordinary trust and permission model. |
-| `MCP.Resource` | `ArcForges.Resource` | **Distinct.** `I-076`, `I-341`. An MCP resource is addressed by the MCP server's own scheme and is never an ArcForges `ResourceRef`. |
-| `MCP.Prompt` | `ArcChat.Skill` | **Distinct** (`I-310`). |
+| `MCP.Resource` | `ArcForges.Resource` | **Distinct.** [I-076](#rule-i-076), [I-341](#rule-i-341). An MCP resource is addressed by the MCP server's own scheme and is never an ArcForges `ResourceRef`. |
+| `MCP.Prompt` | `ArcChat.Skill` | **Distinct** ([I-310](#rule-i-310)). |
 | MCP statelessness | `Session` | The `2026-07-28` core is stateless: `initialize`/`initialized` removed, `Mcp-Session-Id` eliminated, capability negotiation moved per-request. ArcForges must not build session identity on MCP transport state. This is consistent with `Session ≠ Connection`. |
 | MCP Multi Round-Trip Requests (MRTR) | Callback contracts | Server-to-client requests are restructured through MRTR. This is a transport mechanism, not an ArcForges execution concept. |
 
-MCP tool descriptions, prompts, resource contents and server metadata are **untrusted data**, never instructions (`I-262`, `I-263`).
+MCP tool descriptions, prompts, resource contents and server metadata are **untrusted data**, never instructions ([I-262](#rule-i-262), [I-263](#rule-i-263)).
 
 ---
 
@@ -784,7 +784,7 @@ The glossary is enforced, not merely published.
 | Forbidden term scan | Repository-policy test failing the build on any forbidden alias or obsolete product name in `src/`, `docs/` (excluding `docs/inputs/`), identifiers and resource strings | [`../assurance/testing-and-verification-strategy.md`](../assurance/testing-and-verification-strategy.md) |
 | Invariant traceability | Every invariant maps to at least one architecture rule, one test, and one work-package completion gate | [`../assurance/traceability-matrix.md`](../assurance/traceability-matrix.md) |
 | Namespaced-term enforcement | Architecture tests asserting product-owned types are not lifted into shared foundation namespaces | [`../architecture/01-solution-and-project-layout.md`](../architecture/01-solution-and-project-layout.md) |
-| Glossary change control | A new canonical term, a changed definition, or a retired invariant requires a decision record in `docs/decisions/` | **D-018** |
+| Glossary change control | A new canonical term, a changed definition, or a retired invariant requires a decision record in `docs/decisions/` | **[D-018](../decisions/phase-1-foundation-decisions.md#rule-d-018)** |
 
 ---
 
@@ -797,5 +797,5 @@ The glossary is enforced, not merely published.
 | `I4 §Stage 19` | Intent / Task / Run / Step / Attempt / Approval / Steering / Automation model |
 | `I4 §Stage 27` | Quality invariants (§7.10) |
 | `I3 §4`, `§6`, `§13`, `§14` | Wire/domain/storage separation, TaskHandle, ResourceRef |
-| **D-018** | The requirement that this document exists and gates detailed specification |
-| **V-02** | The MCP term-collision requirement discharged in §9 |
+| **[D-018](../decisions/phase-1-foundation-decisions.md#rule-d-018)** | The requirement that this document exists and gates detailed specification |
+| **[V-02](../assurance/phase-1-official-verification.md#rule-v-02)** | The MCP term-collision requirement discharged in §9 |

@@ -2,10 +2,10 @@
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Architecture
-> Governing authority: **D-009** (contract granularity), **D-004**/**D-021** (licence boundaries), **D-011** (implementation target)
+> Governing authority: **[D-009](../decisions/phase-1-foundation-decisions.md#rule-d-009)** (contract granularity), **[D-004](../decisions/phase-1-foundation-decisions.md#rule-d-004)**/**[D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021)** (licence boundaries), **[D-011](../decisions/phase-1-foundation-decisions.md#rule-d-011)** (implementation target)
 > Companions: [`00-architecture-overview.md`](00-architecture-overview.md), [`02-contracts-and-protocols.md`](02-contracts-and-protocols.md), [`14-build-packaging-and-release.md`](14-build-packaging-and-release.md)
 
-The implementation target is the existing monorepo at `C:\MyFile\ArcForges\ArcForges` (**D-011**). This document specifies the **target layout**. It is a logical structure: migration lands one vertical slice at a time and does not require moving every directory at once.
+The implementation target is the existing monorepo at `C:\MyFile\ArcForges\ArcForges` (**[D-011](../decisions/phase-1-foundation-decisions.md#rule-d-011)**). This document specifies the **target layout**. It is a logical structure: migration lands one vertical slice at a time and does not require moving every directory at once.
 
 ---
 
@@ -118,23 +118,25 @@ ArcForges/
 
 ## 2. Project conventions
 
+**Approved helper projects ([P2-007](../decisions/phase-2-specification-decisions.md#rule-p2-007)).** `src/DesktopHelpers/ArcForges.ContentSandbox` is a signed first-party C# Native AOT executable with no product-domain/Harness/store dependency. `ArcForges.ContentSandbox.Contracts` contains only generated bounded parent-child DTOs; `ArcForges.ContentSandbox.Broker` owns launch profiles and handle/resource budgets. Product-specific approved parser wrappers are loaded only in that helper. Native library adaptation remains narrow; no C++ business host or cross-product shared pool is introduced. [WP-11.09](../planning/work-packages/11-security-foundation.md#rule-wp-11.09) supplies this boundary before [WP-18.04](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.04) or media ingestion depends on it.
+
 | # | Rule |
 |---|---|
-| PJ-01 | **One responsibility per project.** A project that is both a domain and an adapter is a defect. |
-| PJ-02 | **Every reusable library sets `IsAotCompatible`.** Every production host that is an AOT deliverable sets `PublishAot`. |
+| <a id="rule-pj-01"></a>PJ-01 | **One responsibility per project.** A project that is both a domain and an adapter is a defect. |
+| <a id="rule-pj-02"></a>PJ-02 | **Every reusable library sets `IsAotCompatible`.** Every production host that is an AOT deliverable sets `PublishAot`. |
 | PJ-03 | **Every project on a local-RPC attach chain enables the StreamJsonRpc interceptors property.** |
-| PJ-04 | **Package versions are centrally managed.** A version number in a business project file is a defect. |
-| PJ-05 | **`packages.lock.json` is committed; CI restores in locked mode.** |
-| PJ-06 | **Preview packages never enter a stable branch's core path.** |
-| PJ-07 | **Nullable reference types, implicit usings, deterministic builds, analyzers, `.editorconfig`, SourceLink and reproducible package metadata are repository-wide.** |
-| PJ-08 | **Warnings as errors**, enabled repository-wide once staged debt is cleared; trimming and AOT diagnostics are always errors on AOT deliverables. |
-| PJ-09 | **Every project declares its SPDX licence identifier and its licence boundary** (§4), and the declaration is verified by a repository-policy test. |
+| <a id="rule-pj-04"></a>PJ-04 | **Package versions are centrally managed.** A version number in a business project file is a defect. |
+| <a id="rule-pj-05"></a>PJ-05 | **`packages.lock.json` is committed; CI restores in locked mode.** |
+| <a id="rule-pj-06"></a>PJ-06 | **Preview packages never enter a stable branch's core path.** |
+| <a id="rule-pj-07"></a>PJ-07 | **Nullable reference types, implicit usings, deterministic builds, analyzers, `.editorconfig`, SourceLink and reproducible package metadata are repository-wide.** |
+| <a id="rule-pj-08"></a>PJ-08 | **Warnings as errors**, enabled repository-wide once staged debt is cleared; trimming and AOT diagnostics are always errors on AOT deliverables. |
+| <a id="rule-pj-09"></a>PJ-09 | **Every project declares its SPDX licence identifier and its licence boundary** (§4), and the declaration is verified by a repository-policy test. |
 
 ---
 
 ## 3. Contract projects
 
-**D-009** rejects a single ever-growing contracts assembly. Contracts split by **communication boundary**, **product/domain ownership**, **release cadence** and **licence boundary**.
+**[D-009](../decisions/phase-1-foundation-decisions.md#rule-d-009)** rejects a single ever-growing contracts assembly. Contracts split by **communication boundary**, **product/domain ownership**, **release cadence** and **licence boundary**.
 
 ### 3.1 Apache-2.0 — public interoperability
 
@@ -143,7 +145,7 @@ ArcForges/
 | `ArcForges.Contracts.Foundation` | Stable serialized identifiers and primitives: `AppId`, `InstanceId`, `WorkspaceId`, `ResourceId`, `CommandId`, `TaskId`, `RunId`, `StepId`, `AttemptId`, `InvocationId`; revision and sequence base types; `ArcResult<T>` and `ArcError`; `ResourceRef`, `ArtifactRef`, `TaskHandle`, `TaskSnapshot`; pagination, time and base enumerations |
 | `ArcForges.Contracts.PublicApi` | Public request/response DTOs, route and version constants, typed client interfaces, source-generated serialization contexts |
 | `ArcForges.Contracts.Realtime` | Realtime method-name constants, event envelopes, sequence and revision recovery information, source-generated serialization contexts |
-| `ArcForges.Contracts.Validation` | Contract-level validators expressing **wire-format constraints only** (**D-021**) |
+| `ArcForges.Contracts.Validation` | Contract-level validators expressing **wire-format constraints only** (**[D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021)**) |
 | `ArcForges.Sdk.*` | The public SDK surface (see [`15-extension-platform-architecture.md`](15-extension-platform-architecture.md)) |
 
 ### 3.2 AGPL-3.0-only — internal
@@ -159,9 +161,9 @@ ArcForges/
 
 | # | Rule |
 |---|---|
-| CT-01 | **A contract change owned by one product must not force an unrelated product to re-release** (**D-009**). This is why local RPC contracts are split per owning product. |
-| CT-02 | **C# DTOs and endpoint metadata are the source of truth.** OpenAPI and JSON Schema artifacts are **generated** from them; parallel handwritten schemas that can drift are prohibited (**D-009**). |
-| CT-03 | **No business implementation in a contracts package** (**D-009**). |
+| CT-01 | **A contract change owned by one product must not force an unrelated product to re-release** (**[D-009](../decisions/phase-1-foundation-decisions.md#rule-d-009)**). This is why local RPC contracts are split per owning product. |
+| CT-02 | **C# DTOs and endpoint metadata are the source of truth.** OpenAPI and JSON Schema artifacts are **generated** from them; parallel handwritten schemas that can drift are prohibited (**[D-009](../decisions/phase-1-foundation-decisions.md#rule-d-009)**). |
+| CT-03 | **No business implementation in a contracts package** (**[D-009](../decisions/phase-1-foundation-decisions.md#rule-d-009)**). |
 | CT-04 | **Contracts reference no UI type, no ORM, no database provider, no native library and no specific host.** |
 | CT-05 | **Every contracts project treats trimming and AOT compatibility as a hard gate.** |
 | CT-06 | **Local RPC contracts are never referenced by the browser or by the Cloud host.** |
@@ -176,11 +178,11 @@ ArcForges/
 |---|---|
 | LB-01 | Every project declares `PackageLicenseExpression` (or an equivalent property) matching its boundary, plus a `LicenceBoundary` property with value `Apache` or `AGPL`. |
 | LB-02 | **A repository-policy test asserts that no `AGPL` project is referenced, directly or transitively, from an `Apache` project.** |
-| LB-03 | **A dependency test asserts that the mobile distributable's complete direct and transitive closure is compatible with Apache-2.0 application distribution and applicable store terms** (**D-004** obligation 7). |
+| LB-03 | **A dependency test asserts that the mobile distributable's complete direct and transitive closure is compatible with Apache-2.0 application distribution and applicable store terms** (**[D-004](../decisions/phase-1-foundation-decisions.md#rule-d-004)** obligation 7). |
 | LB-04 | **`NOTICE` files are generated from the dependency graph**, per boundary, as part of packaging. |
 | LB-05 | **SBOM generation runs per deliverable**, and its output is a release artifact. |
-| LB-06 | **On discovery of a conflicting contribution or dependency in the mobile boundary, the issue is registered and returned for decision.** Silently adding an exception, changing the licence, or removing the mobile distribution target is prohibited (**D-004**). |
-| LB-07 | **Reference-repository reuse requires the nine-field provenance record before any copy, translation, port or structural reuse** (**D-013**), recorded in [`../assurance/reference-coverage-and-provenance.md`](../assurance/reference-coverage-and-provenance.md). |
+| LB-06 | **On discovery of a conflicting contribution or dependency in the mobile boundary, the issue is registered and returned for decision.** Silently adding an exception, changing the licence, or removing the mobile distribution target is prohibited (**[D-004](../decisions/phase-1-foundation-decisions.md#rule-d-004)**). |
+| <a id="rule-lb-07"></a>LB-07 | **Reference-repository reuse requires the nine-field provenance record before any copy, translation, port or structural reuse** (**[D-013](../decisions/phase-1-foundation-decisions.md#rule-d-013)**), recorded in [`../assurance/reference-coverage-and-provenance.md`](../assurance/reference-coverage-and-provenance.md). |
 
 ---
 
@@ -238,7 +240,7 @@ These are release gates, not advisory checks (`§23` of the quality contract).
 
 | # | Assertion |
 |---|---|
-| AT-01 | Domain references no UI, infrastructure, transport or database provider assembly |
+| <a id="rule-at-01"></a>AT-01 | Domain references no UI, infrastructure, transport or database provider assembly |
 | AT-02 | A local RPC adapter references no view model or control type |
 | AT-03 | A public API adapter references no UI type |
 | AT-04 | Contracts reference no platform-specific type |
@@ -251,13 +253,13 @@ These are release gates, not advisory checks (`§23` of the quality contract).
 | AT-11 | Every local RPC contract interface carries the required generated-proxy attributes |
 | AT-12 | Every serialized DTO belongs to a source-generated serialization context |
 | AT-13 | Every module's public surface is reachable only through its declared API |
-| AT-14 | The design system and shell reference no product domain assembly |
+| <a id="rule-at-14"></a>AT-14 | The design system and shell reference no product domain assembly |
 
 ### 7.2 Repository-policy tests
 
 | # | Assertion |
 |---|---|
-| RP-01 | **No forbidden alias or obsolete product name** appears in `src/`, `tests/`, `eng/`, identifiers or resource strings — `ArcCanvas`, `ArcMusic`, `ArcImage`, `ArcVideo`, and the superseded payment provider (**D-002**, **D-005**) |
+| <a id="rule-rp-01"></a>RP-01 | **No forbidden alias or obsolete product name** appears in `src/`, `tests/`, `eng/`, identifiers or resource strings — `ArcCanvas`, `ArcMusic`, `ArcImage`, `ArcVideo`, and the superseded payment provider (**[D-002](../decisions/phase-1-foundation-decisions.md#rule-d-002)**, **[D-005](../decisions/phase-1-foundation-decisions.md#rule-d-005)**) |
 | RP-02 | Every project declares an SPDX licence identifier and a licence boundary |
 | RP-03 | No `AGPL` project is referenced from an `Apache` project |
 | RP-04 | The mobile distributable's dependency closure passes the licence policy |
@@ -266,7 +268,7 @@ These are release gates, not advisory checks (`§23` of the quality contract).
 | RP-07 | No blanket suppression of trimming or AOT diagnostics exists |
 | RP-08 | Every glossary-forbidden term is absent from new authoritative text |
 | RP-09 | No secret-shaped literal is committed |
-| RP-10 | Every public API method has a corresponding contract test |
+| <a id="rule-rp-10"></a>RP-10 | Every public API method has a corresponding contract test |
 
 ---
 
@@ -301,14 +303,14 @@ These are release gates, not advisory checks (`§23` of the quality contract).
 
 ## 10. Migration from the existing monorepo
 
-**D-011**: the existing repository's scaffolds and code are **implementation-state evidence, never design authority**, and may be retained, restructured, replaced or removed as the accepted design requires.
+**[D-011](../decisions/phase-1-foundation-decisions.md#rule-d-011)**: the existing repository's scaffolds and code are **implementation-state evidence, never design authority**, and may be retained, restructured, replaced or removed as the accepted design requires.
 
 | # | Rule |
 |---|---|
 | MG-01 | **Migration proceeds one vertical slice at a time.** A slice is complete when its contract, application, infrastructure, adapter, tests and gates all conform. |
 | MG-02 | **The architecture and policy tests are introduced early and grow**, so conformance is ratcheted rather than promised. |
 | MG-03 | **Existing code that has not yet been migrated is fenced**, so it cannot be referenced from conforming projects. |
-| MG-04 | **The current-code reconciliation inventory is produced before restructuring begins**, and recorded in [`../assurance/implementation-state-reconciliation.md`](../assurance/implementation-state-reconciliation.md). |
+| <a id="rule-mg-04"></a>MG-04 | **The current-code reconciliation inventory is produced before restructuring begins**, and recorded in [`../assurance/implementation-state-reconciliation.md`](../assurance/implementation-state-reconciliation.md). |
 
 ---
 
@@ -320,6 +322,6 @@ These are release gates, not advisory checks (`§23` of the quality contract).
 | `I3 §24`, `§25.2` | Build governance and the architecture-test list |
 | `I4 §Stage 13 §31–35`, `§74–75` | Product boundary rules and the shared-foundation limit |
 | `I4 §Stage 21 §122–125` | Contract organisation avoiding lock-step; what may live in the foundation |
-| **D-004**, **D-013**, **D-021** | Licence boundaries and provenance gating enforced structurally |
-| **D-009** | The contract split |
-| **D-011** | The implementation target and the treatment of existing code |
+| **[D-004](../decisions/phase-1-foundation-decisions.md#rule-d-004)**, **[D-013](../decisions/phase-1-foundation-decisions.md#rule-d-013)**, **[D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021)** | Licence boundaries and provenance gating enforced structurally |
+| **[D-009](../decisions/phase-1-foundation-decisions.md#rule-d-009)** | The contract split |
+| **[D-011](../decisions/phase-1-foundation-decisions.md#rule-d-011)** | The implementation target and the treatment of existing code |

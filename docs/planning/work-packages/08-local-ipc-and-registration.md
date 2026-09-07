@@ -1,3 +1,5 @@
+<a id="rule-wp-08"></a>
+
 # WP-08 — Local IPC Transport and Registration Lifecycle
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
@@ -15,7 +17,7 @@
 
 **Out of scope.** The capability semantics carried over the transport (`09`). The Hub's product behaviour (`14`). Any cloud path.
 
-**Why this package exists.** `SQ-03` allows external vendors to be mocked but never architectural boundaries. Local IPC is the most important such boundary: ArcChat is a control plane and never a mandatory data gateway (**D-010**), and every professional product must work with ArcChat absent.
+**Why this package exists.** [SQ-03](../implementation-sequence.md#rule-sq-03) allows external vendors to be mocked but never architectural boundaries. Local IPC is the most important such boundary: ArcChat is a control plane and never a mandatory data gateway (**[D-010](../../decisions/phase-1-foundation-decisions.md#rule-d-010)**), and every professional product must work with ArcChat absent.
 
 ---
 
@@ -25,9 +27,9 @@
 |---|---|
 | [`../../architecture/03-local-ipc-and-process-model.md`](../../architecture/03-local-ipc-and-process-model.md) | Transport, manifest, registration, routing, health, backpressure, reconnection and security rules |
 | [`../../architecture/00-architecture-overview.md`](../../architecture/00-architecture-overview.md) `§3` | The three communication responsibilities and the four data paths |
-| **D-010** | ArcChat as control plane, never a mandatory data gateway; Cloud never connects to a local endpoint |
-| `WP-06.01` output | Proven bidirectional RPC between published AOT binaries |
-| `WP-07` output | Durable state behind the RPC surface |
+| **[D-010](../../decisions/phase-1-foundation-decisions.md#rule-d-010)** | ArcChat as control plane, never a mandatory data gateway; Cloud never connects to a local endpoint |
+| [WP-06.01](06-aot-jit-and-wasm-publish-proof.md#rule-wp-06.01) output | Proven bidirectional RPC between published AOT binaries |
+| [WP-07](07-local-persistence-foundation.md#rule-wp-07) output | Durable state behind the RPC surface |
 
 ---
 
@@ -35,16 +37,16 @@
 
 | # | Rule |
 |---|---|
-| BR-01 | **Named pipe on Windows, Unix domain socket elsewhere**, access-controlled to the current user, never a network endpoint. |
-| BR-02 | **A professional product must start, work and save with ArcChat absent** (**D-010**). Registration failure degrades ecosystem features only. |
-| BR-03 | **The Hub is a coordinator, not a data relay.** Large data never traverses it (`BF-05` in the native architecture). |
-| BR-04 | **Cloud never connects to localhost, a named pipe, a domain socket or local standard I/O** (**D-010**). |
+| <a id="rule-br-01"></a>BR-01 | **Named pipe on Windows, Unix domain socket elsewhere**, access-controlled to the current user, never a network endpoint. |
+| BR-02 | **A professional product must start, work and save with ArcChat absent** (**[D-010](../../decisions/phase-1-foundation-decisions.md#rule-d-010)**). Registration failure degrades ecosystem features only. |
+| <a id="rule-br-03"></a>BR-03 | **The Hub is a coordinator, not a data relay.** Large data never traverses it ([BF-05](../../architecture/12-native-interop-and-media.md#rule-bf-05) in the native architecture). |
+| BR-04 | **Cloud never connects to localhost, a named pipe, a domain socket or local standard I/O** (**[D-010](../../decisions/phase-1-foundation-decisions.md#rule-d-010)**). |
 | BR-05 | **Registration is leased with heartbeats**; a lease expires rather than leaking a dead endpoint. |
 | BR-06 | **Re-registration after Hub restart is automatic and idempotent.** |
 | BR-07 | **Backpressure is explicit**: a saturated consumer blocks, sheds with a recorded reason, or fails — never grows unbounded. |
 | BR-08 | **Reflection convenience paths are prohibited** in target registration and proxy construction (`I3 §6.8`). |
-| BR-09 | **Every RPC method is task-returning and cancellation-aware.** |
-| BR-10 | **Large payloads use a resource reference plus a controlled channel**, never an inline body. |
+| <a id="rule-br-09"></a>BR-09 | **Every RPC method is task-returning and cancellation-aware.** |
+| <a id="rule-br-10"></a>BR-10 | **Large payloads use a resource reference plus a controlled channel**, never an inline body. |
 
 ---
 
@@ -65,6 +67,8 @@
 
 ## 5. Required implementation work
 
+<a id="rule-wp-08.00"></a>
+
 ### WP-08.00 — Transport and framing
 
 **What must be fully done.** The per-platform transport with correct access control, message framing, the binary formatter with generated shapes, and a text-format fallback where diagnostics require it. Connection setup verifies the peer is the same user.
@@ -72,6 +76,8 @@
 **Testing requirements.** Cross-platform transport tests; a framing test with maximum-size and malformed messages; an access-control test asserting another user cannot connect.
 
 **Completion gate.** The transport works on every desktop platform and rejects a foreign-user connection.
+
+<a id="rule-wp-08.01"></a>
 
 ### WP-08.01 — Endpoint manifest and discovery
 
@@ -81,6 +87,8 @@
 
 **Completion gate.** Discovery is local-only, concurrent-safe and self-healing.
 
+<a id="rule-wp-08.02"></a>
+
 ### WP-08.02 — Registration lifecycle
 
 **What must be fully done.** Registration with a lease and heartbeat; graceful deregistration; lease expiry on a dead process; automatic idempotent re-registration after a Hub restart; and a product that starts fully with no Hub present.
@@ -88,6 +96,8 @@
 **Testing requirements.** Hub-restart re-registration; provider-crash lease expiry; Hub-absent product start; double-registration idempotency.
 
 **Completion gate.** A provider survives a Hub restart, a dead provider's lease expires, and a product starts and saves with no Hub present.
+
+<a id="rule-wp-08.03"></a>
 
 ### WP-08.03 — Routing and versioning
 
@@ -97,6 +107,8 @@
 
 **Completion gate.** Routing follows the fixed priority and version mismatch refuses cleanly.
 
+<a id="rule-wp-08.04"></a>
+
 ### WP-08.04 — Health, backpressure and concurrency
 
 **What must be fully done.** Health reporting across the five dimensions; per-connection and per-method concurrency limits; explicit backpressure with a recorded shed reason; ordering guarantees stated and enforced; no deadlock between bidirectional calls.
@@ -105,6 +117,8 @@
 
 **Completion gate.** Saturation is bounded and observable, and bidirectional calls cannot deadlock.
 
+<a id="rule-wp-08.05"></a>
+
 ### WP-08.05 — Disconnection, cancellation and reconnection
 
 **What must be fully done.** Disconnection produces a typed failure with effect certainty for every in-flight call. Cancellation propagates across the boundary. Reconnection is automatic with backoff, and in-flight work is either resumed by idempotency or reported as unknown-effect.
@@ -112,6 +126,8 @@
 **Testing requirements.** Fault-injection tests: mid-call disconnect, slow peer, half-open connection, and peer restart.
 
 **Completion gate.** Every fault produces a typed outcome with correct effect certainty, and no call hangs indefinitely.
+
+<a id="rule-wp-08.06"></a>
 
 ### WP-08.06 — Large-data path
 
@@ -141,13 +157,13 @@
 
 | Evidence | Produced by |
 |---|---|
-| Cross-platform transport and access-control results | `WP-08.00` |
-| Manifest concurrency and self-heal results | `WP-08.01` |
-| Lifecycle matrix: restart, crash, absent Hub, double registration | `WP-08.02` |
-| Routing priority and version negotiation matrix | `WP-08.03` |
-| Saturation, ordering and deadlock results | `WP-08.04` |
-| Fault-injection outcomes with effect certainty | `WP-08.05` |
-| Large-transfer results and the Hub no-body assertion | `WP-08.06` |
+| Cross-platform transport and access-control results | [WP-08.00](#rule-wp-08.00) |
+| Manifest concurrency and self-heal results | [WP-08.01](#rule-wp-08.01) |
+| Lifecycle matrix: restart, crash, absent Hub, double registration | [WP-08.02](#rule-wp-08.02) |
+| Routing priority and version negotiation matrix | [WP-08.03](#rule-wp-08.03) |
+| Saturation, ordering and deadlock results | [WP-08.04](#rule-wp-08.04) |
+| Fault-injection outcomes with effect certainty | [WP-08.05](#rule-wp-08.05) |
+| Large-transfer results and the Hub no-body assertion | [WP-08.06](#rule-wp-08.06) |
 
 ---
 
@@ -167,14 +183,14 @@
 
 ## 9. Dependencies
 
-**Upstream.** `06` (proven AOT RPC), `07` (durable state behind the surface).
+**Upstream — all must be complete.**
 
-**Downstream.**
+- [06 — AOT, JIT and WebAssembly Publish Proof](06-aot-jit-and-wasm-publish-proof.md)
+- [07 — Local Persistence Foundation](07-local-persistence-foundation.md)
 
-| Package | What it needs from here |
-|---|---|
-| `09` — Capability model | A transport to carry capability invocations |
-| `11` — Security | Local authentication and the enforcement point at the transport boundary |
-| `13` — Probes | The real transport the probes exercise |
-| `14` — First slice | Everything |
-| `26` — Remote bridge | The local half of the durable tool-request path |
+**Downstream — these consume this package’s completed output.**
+
+- [09 — Capability, Contribution and Resource Model](09-capability-contribution-and-resource-model.md)
+- [11 — Security Foundation](11-security-foundation.md)
+- [13 — Four High-Risk Technical Probes](13-high-risk-technical-probes.md)
+- [14 — ArcChat Hub and Minimal ArcNotes Cross-Process Slice](14-hub-and-minimal-provider-slice.md)

@@ -1,3 +1,5 @@
+<a id="rule-wp-34"></a>
+
 # WP-34 — ArcScope Visualisation, Analysis and Reporting
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
@@ -24,8 +26,8 @@
 | Input | Why it matters |
 |---|---|
 | [`../../requirements/products/arcscope.md`](../../requirements/products/arcscope.md) | Visualisation, triggers, decoders, analysis, comparison and reporting requirements |
-| `WP-33` output | Sessions, captures, the time model and effective configuration snapshots — **including the file/replay adapter, which is this package's repeatable source** (`SD-09` of the ArcScope requirements) |
-| — | **The Cloud simulator (`WP-51`) is not required here.** Reproducibility is verified against replay of a recorded capture; the simulator adds a second synthetic source later and closes `PG-14b`, which is an ArcScope *Cloud-simulation* claim, not an analysis claim |
+| [WP-33](33-arcscope-acquisition-and-session.md#rule-wp-33) output | Sessions, captures, the time model and effective configuration snapshots — **including the file/replay adapter, which is this package's repeatable source** ([SD-09](../../requirements/products/arcscope.md#rule-sd-09) of the ArcScope requirements) |
+| — | **The Cloud simulator ([WP-51](51-arcscope-cloud-simulator.md#rule-wp-51)) is not required here.** Reproducibility is verified against replay of a recorded capture; the simulator adds a second synthetic source later and closes [PG-14b](../../assurance/open-gates-register.md#rule-pg-14b), which is an ArcScope *Cloud-simulation* claim, not an analysis claim |
 | [`../../requirements/12-quality-and-compatibility-contract.md`](../../requirements/12-quality-and-compatibility-contract.md) | Responsiveness and scale budgets for visualisation |
 
 ---
@@ -63,6 +65,8 @@
 
 ## 5. Required implementation work
 
+<a id="rule-wp-34.00"></a>
+
 ### WP-34.00 — Visualisation
 
 **What must be fully done.** Time-series and event visualisation with virtualised rendering and downsampling that keeps interaction responsive at corpus scale. Cursors, markers, zoom and pan. The display states explicitly when it is showing a downsampled representation.
@@ -70,6 +74,8 @@
 **Testing requirements.** Scale corpus interaction measurements; a downsampling-disclosure assertion; a correctness test comparing downsampled and full-resolution readings at a cursor.
 
 **Completion gate.** Visualisation meets responsiveness budget at corpus scale, discloses downsampling, and cursor readings are exact regardless of display resolution.
+
+<a id="rule-wp-34.01"></a>
 
 ### WP-34.01 — Triggers
 
@@ -79,6 +85,8 @@
 
 **Completion gate.** Trigger windows are exact, samples are provably unmodified, and trigger storms are bounded.
 
+<a id="rule-wp-34.02"></a>
+
 ### WP-34.02 — Measurements
 
 **What must be fully done.** A measurement set over signals and events with units, precision and uncertainty stated. A measurement records the configuration under which it was taken so it can be reproduced.
@@ -86,6 +94,8 @@
 **Testing requirements.** Reference-value tests per measurement kind; a unit-handling test; a reproduction test from recorded configuration.
 
 **Completion gate.** Every measurement reproduces exactly from its recorded configuration, with units and precision stated.
+
+<a id="rule-wp-34.03"></a>
 
 ### WP-34.03 — Decoders
 
@@ -95,6 +105,8 @@
 
 **Completion gate.** Decoders produce structured events, surface every error class with counts and locations, and structurally cannot command hardware.
 
+<a id="rule-wp-34.04"></a>
+
 ### WP-34.04 — Analysis and recipes
 
 **What must be fully done.** Versioned analysis definitions composable into recipes. Results are derived data, reconstructable from evidence plus configuration. Long analyses run as Tasks under the execution engine with progress and cancellation.
@@ -103,6 +115,8 @@
 
 **Completion gate.** Deleting every analysis result and rebuilding produces identical output, and historical results record their definition version.
 
+<a id="rule-wp-34.05"></a>
+
 ### WP-34.05 — Annotations, findings and comparison
 
 **What must be fully done.** Annotations and findings as authored content with identity and history, never written into raw capture. Session-to-session and capture-to-capture comparison with alignment stated explicitly.
@@ -110,6 +124,8 @@
 **Testing requirements.** A structural test asserting raw capture is untouched by annotation; comparison correctness with deliberate misalignment; history tests on findings.
 
 **Completion gate.** Raw capture is provably untouched by authoring, and comparison states its alignment explicitly.
+
+<a id="rule-wp-34.06"></a>
 
 ### WP-34.06 — Reports and reproducibility
 
@@ -139,13 +155,13 @@
 
 | Evidence | Produced by |
 |---|---|
-| Scale responsiveness, downsampling disclosure and cursor exactness | `WP-34.00` |
-| Trigger window, immutability and storm-bound results | `WP-34.01` |
-| Measurement reference and reproduction results | `WP-34.02` |
-| Per-decoder fixtures, error visibility and no-write assertion | `WP-34.03` |
-| Result reconstruction and version-recording results | `WP-34.04` |
-| Raw-capture immutability and comparison alignment results | `WP-34.05` |
-| Traceability completeness and regeneration equivalence | `WP-34.06` |
+| Scale responsiveness, downsampling disclosure and cursor exactness | [WP-34.00](#rule-wp-34.00) |
+| Trigger window, immutability and storm-bound results | [WP-34.01](#rule-wp-34.01) |
+| Measurement reference and reproduction results | [WP-34.02](#rule-wp-34.02) |
+| Per-decoder fixtures, error visibility and no-write assertion | [WP-34.03](#rule-wp-34.03) |
+| Result reconstruction and version-recording results | [WP-34.04](#rule-wp-34.04) |
+| Raw-capture immutability and comparison alignment results | [WP-34.05](#rule-wp-34.05) |
+| Traceability completeness and regeneration equivalence | [WP-34.06](#rule-wp-34.06) |
 
 ---
 
@@ -165,10 +181,10 @@
 
 ## 9. Dependencies
 
-**Upstream.** `33` (evidence, sessions and the time model).
+**Upstream — all must be complete.**
 
-**Downstream.**
+- [33 — ArcScope Acquisition and Session Core](33-arcscope-acquisition-and-session.md)
 
-| Package | What it needs from here |
-|---|---|
-| `35` — Integration | Analysis results and reports as the sync and AI-context payload |
+**Downstream — these consume this package’s completed output.**
+
+- [35 — ArcScope Integration and Metadata Sync](35-arcscope-integration-and-sync.md)

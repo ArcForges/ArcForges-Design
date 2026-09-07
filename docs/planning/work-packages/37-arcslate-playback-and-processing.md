@@ -1,3 +1,5 @@
+<a id="rule-wp-37"></a>
+
 # WP-37 — ArcSlate Playback and Processing Runtime
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
@@ -15,7 +17,7 @@
 
 **Out of scope.** Final render and export (`38`); colour management as a first-class system (`38`); integration and portability (`39`).
 
-**Why this package exists.** `I2 §III.10` requires ArcSlate to follow its phase order strictly, and `WP-13.03` already proved decode, synchronisation and the native safety obligations. This package turns that proof into a product runtime.
+**Why this package exists.** `I2 §III.10` requires ArcSlate to follow its phase order strictly, and [WP-13.03](13-high-risk-technical-probes.md#rule-wp-13.03) already proved decode, synchronisation and the native safety obligations. This package turns that proof into a product runtime.
 
 ---
 
@@ -25,8 +27,8 @@
 |---|---|
 | [`../../requirements/products/arcslate.md`](../../requirements/products/arcslate.md) `§7`–`§11` | Viewer, processing graph, proxies, caches and the playback runtime |
 | [`../../architecture/12-native-interop-and-media.md`](../../architecture/12-native-interop-and-media.md) | The native boundary, buffers, threading, GPU and safety obligations |
-| `WP-13.03` output | The decode, synchronisation, sanitiser and fallback conclusions |
-| `WP-36` output | The exact domain and timebase |
+| [WP-13.03](13-high-risk-technical-probes.md#rule-wp-13.03) output | The decode, synchronisation, sanitiser and fallback conclusions |
+| [WP-36](36-arcslate-project-and-timeline.md#rule-wp-36) output | The exact domain and timebase |
 
 ---
 
@@ -38,10 +40,10 @@
 | BR-02 | **A native media foundation must never leak into the domain.** No native type, handle, enumeration or error code appears in a domain, contract or persisted type. |
 | BR-03 | **Hardware acceleration is abstract and optional.** Different machines may use different hardware paths; **output must not change because of it**, and a software fallback exists for every operation. |
 | BR-04 | **Preview prioritises real time; final render prioritises correctness** — but both share processing semantics. |
-| BR-05 | **A dropped preview frame is a playback-quality event, never data loss** (`I-480`). The audio and timeline clock stay correct. |
-| BR-06 | **`Effect Definition ≠ Effect Instance`** and **`Keyframe ≠ current parameter value`** (`I-483`). |
+| BR-05 | **A dropped preview frame is a playback-quality event, never data loss** ([I-480](../../requirements/01-normative-glossary-and-invariants.md#rule-i-480)). The audio and timeline clock stay correct. |
+| BR-06 | **`Effect Definition ≠ Effect Instance`** and **`Keyframe ≠ current parameter value`** ([I-483](../../requirements/01-normative-glossary-and-invariants.md#rule-i-483)). |
 | BR-07 | **Keyframe time belongs to its effect's scope** and never silently switches between clip-local and sequence time. |
-| BR-08 | **Proxy, render cache, thumbnail and waveform are derived** (`I-484`) and never project authority. Deleting every cache leaves the project intact. |
+| BR-08 | **Proxy, render cache, thumbnail and waveform are derived** ([I-484](../../requirements/01-normative-glossary-and-invariants.md#rule-i-484)) and never project authority. Deleting every cache leaves the project intact. |
 | BR-09 | **Switching proxy on or off never changes render output**; proxy render is an explicit, declared choice. |
 | BR-10 | **Per-frame images never cross a serialization boundary**, and GPU state stays in the process. |
 | BR-11 | **Playback quality state is visible**: realtime, reduced quality, using proxy, dropping frames, or requiring render. |
@@ -67,13 +69,17 @@
 
 ## 5. Required implementation work
 
+<a id="rule-wp-37.00"></a>
+
 ### WP-37.00 — Native media boundary
 
 **What must be fully done.** The thin C ABI shim with version negotiation at load, safe handles for every native handle, managed input validation before every call, and a sacrificial-process integration suite. Sanitiser builds run in CI. The licence position of every native dependency is recorded.
 
 **Testing requirements.** ABI conformance and version-mismatch rejection; ownership and handle-lifetime tests; sanitiser runs; sacrificial-process crash tests; a domain-purity test asserting no native type escapes.
 
-**Completion gate.** The ABI is version-negotiated, handle lifetime is proven leak-free, sanitiser runs are clean, and no native type escapes the media layer. **This satisfies `PG-03` for ArcSlate.**
+**Completion gate.** The ABI is version-negotiated, handle lifetime is proven leak-free, sanitiser runs are clean, and no native type escapes the media layer. **This satisfies [PG-03](../../assurance/open-gates-register.md#rule-pg-03) for ArcSlate.**
+
+<a id="rule-wp-37.01"></a>
 
 ### WP-37.01 — Decode and buffers
 
@@ -83,6 +89,8 @@
 
 **Completion gate.** Buffers are never leaked, exhaustion is surfaced, and the software path produces equivalent output to the accelerated path within declared tolerance.
 
+<a id="rule-wp-37.02"></a>
+
 ### WP-37.02 — Playback engine and clock
 
 **What must be fully done.** A playback engine driven by a timeline clock, decoupled from editing so an edit invalidates and re-requests incrementally without stalling. Frames may be dropped; **the audio and timeline clock stay correct**. Playback quality state is computed and visible.
@@ -90,6 +98,8 @@
 **Testing requirements.** Edit-during-playback tests; audio-video synchronisation measurement under induced load; a drift test over long playback; quality-state coverage.
 
 **Completion gate.** Audio and clock stay correct under load, editing never stalls playback, and quality state reflects reality.
+
+<a id="rule-wp-37.03"></a>
 
 ### WP-37.03 — Processing graph
 
@@ -99,13 +109,17 @@
 
 **Completion gate.** Graph evaluation is correct per node kind, keyframe scope never silently switches, and definitions and instances remain distinct.
 
+<a id="rule-wp-37.04"></a>
+
 ### WP-37.04 — Audio
 
-**What must be fully done.** Sample-precise audio editing and processing sharing the unified timeline time model. An audio processing chain with clip-level and track-level nodes. Mixing with correct gain staging.
+**What must be fully done.** Apply sample ownership per non-overlapping track cut, then mix all track/transition contributions once at each output index; retain filter padding for DSP without emitting padding independently.  Sample-precise audio editing and processing sharing the unified timeline time model. An audio processing chain with clip-level and track-level nodes. Mixing with correct gain staging.
 
-**Testing requirements.** Sample-precision tests; a mixing correctness test against reference output; a synchronisation test with video under load.
+**Testing requirements.** Two mixed tracks, a dissolve, track gap, resampler priming and the NTSC frame-one boundary each produce exactly one mixed output sample at k.  Sample-precision tests; a mixing correctness test against reference output; a synchronisation test with video under load.
 
-**Completion gate.** Audio is sample-precise, mixes correctly against reference output, and stays synchronised under load.
+**Completion gate.** No global single-clip ownership rule suppresses legal mixing.  Audio is sample-precise, mixes correctly against reference output, and stays synchronised under load.
+
+<a id="rule-wp-37.05"></a>
 
 ### WP-37.05 — Proxies and caches
 
@@ -114,6 +128,8 @@
 **Testing requirements.** A proxy-equivalence test comparing output with proxies on and off; a delete-all-caches-and-rebuild test; a clip-ignorance structural test; cache eviction under storage pressure.
 
 **Completion gate.** **Render output is identical with proxies enabled and disabled**, and deleting every cache leaves the project fully intact.
+
+<a id="rule-wp-37.06"></a>
 
 ### WP-37.06 — Viewer
 
@@ -143,13 +159,13 @@
 
 | Evidence | Produced by |
 |---|---|
-| ABI conformance, handle lifetime, sanitiser and sacrificial-process results | `WP-37.00` |
-| Buffer accounting, exhaustion and software-fallback equivalence | `WP-37.01` |
-| Synchronisation, drift and quality-state results | `WP-37.02` |
-| Graph evaluation and keyframe scope results | `WP-37.03` |
-| Sample precision and mixing reference comparison | `WP-37.04` |
-| Proxy equivalence and cache-deletion results | `WP-37.05` |
-| Transport accuracy and keyboard operation results | `WP-37.06` |
+| ABI conformance, handle lifetime, sanitiser and sacrificial-process results | [WP-37.00](#rule-wp-37.00) |
+| Buffer accounting, exhaustion and software-fallback equivalence | [WP-37.01](#rule-wp-37.01) |
+| Synchronisation, drift and quality-state results | [WP-37.02](#rule-wp-37.02) |
+| Graph evaluation and keyframe scope results | [WP-37.03](#rule-wp-37.03) |
+| Sample precision and mixing reference comparison | [WP-37.04](#rule-wp-37.04) |
+| Proxy equivalence and cache-deletion results | [WP-37.05](#rule-wp-37.05) |
+| Transport accuracy and keyboard operation results | [WP-37.06](#rule-wp-37.06) |
 
 ---
 
@@ -157,7 +173,7 @@
 
 **All of the following, with recorded evidence:**
 
-1. The native ABI is version-negotiated, handle lifetime is leak-free, sanitiser runs are clean, and **no native type escapes the media layer** — satisfying `PG-03` for ArcSlate.
+1. The native ABI is version-negotiated, handle lifetime is leak-free, sanitiser runs are clean, and **no native type escapes the media layer** — satisfying [PG-03](../../assurance/open-gates-register.md#rule-pg-03) for ArcSlate.
 2. Buffers are never leaked; pool exhaustion is surfaced; the software path matches the accelerated path within declared tolerance.
 3. Audio and the timeline clock stay correct under load; editing never stalls playback; quality state reflects reality.
 4. Graph evaluation is correct per node kind; keyframe scope never silently switches; effect definition and instance remain distinct.
@@ -169,11 +185,10 @@
 
 ## 9. Dependencies
 
-**Upstream.** `36` (the exact domain and timebase).
+**Upstream — all must be complete.**
 
-**Downstream.**
+- [36 — ArcSlate Project, Timeline and Media Model](36-arcslate-project-and-timeline.md)
 
-| Package | What it needs from here |
-|---|---|
-| `38` — Render and colour | The processing graph and its semantics |
-| `39` — Integration | A working runtime to expose capabilities over |
+**Downstream — these consume this package’s completed output.**
+
+- [38 — ArcSlate Render, Export and Colour Management](38-arcslate-render-and-colour.md)

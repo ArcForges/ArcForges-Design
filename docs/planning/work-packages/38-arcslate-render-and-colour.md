@@ -1,3 +1,5 @@
+<a id="rule-wp-38"></a>
+
 # WP-38 — ArcSlate Render, Export and Colour Management
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
@@ -25,7 +27,7 @@
 |---|---|
 | [`../../requirements/products/arcslate.md`](../../requirements/products/arcslate.md) `§9`, `§12` | Colour management and the render and export model |
 | [`../../architecture/12-native-interop-and-media.md`](../../architecture/12-native-interop-and-media.md) `§7` | Render path rules, atomic export and plan immutability |
-| `WP-37` output | The processing graph and its semantics |
+| [WP-37](37-arcslate-playback-and-processing.md#rule-wp-37) output | The processing graph and its semantics |
 
 ---
 
@@ -39,7 +41,7 @@
 | BR-04 | **The colour management backend does not become domain.** The domain holds colour semantic configuration; the backend is infrastructure. |
 | BR-05 | **Video scopes are derived views**, never authority, and are distinct from the ArcScope product. |
 | BR-06 | **A render task binds a project and sequence revision snapshot.** A render never uses half an old timeline and half a new one. |
-| BR-07 | **A render is a native Product Job owned by ArcSlate**, not a Cloud Agent Task (`RN-03` of the ArcSlate requirements, `CM-04` of the runtime architecture, `I-485`). It invokes no model, consumes no AI capacity, and ArcSlate owns its progress, cancellation and recovery. It shares the Product Job lifecycle of `WP-16`; it does not enter `task.task`. |
+| <a id="rule-br-07"></a>BR-07 | **A render is a native Product Job owned by ArcSlate**, not a Cloud Agent Task ([RN-03](../../requirements/products/arcslate.md#rule-rn-03) of the ArcSlate requirements, [CM-04](../../architecture/09-ai-and-agent-runtime-architecture.md#rule-cm-04) of the runtime architecture, [I-485](../../requirements/01-normative-glossary-and-invariants.md#rule-i-485)). It invokes no model, consumes no AI capacity, and ArcSlate owns its progress, cancellation and recovery. It shares the Product Job lifecycle of [WP-16](16-unified-execution-engine.md#rule-wp-16); it does not enter `task.task`. |
 | BR-08 | **Export writes to a temporary target and commits atomically**; a cancelled or failed render never leaves a file that looks complete. |
 | BR-09 | **Proxy render is an explicit, declared choice**, never a silent substitution. |
 | BR-10 | **Media analysis output is derived data**, rebuildable and never authority. |
@@ -64,6 +66,8 @@
 
 ## 5. Required implementation work
 
+<a id="rule-wp-38.00"></a>
+
 ### WP-38.00 — Colour management
 
 **What must be fully done.** Per-asset input colour metadata with an explicit override that never modifies the source. A project and sequence working colour configuration. Separate viewer display transform and export transform. Colour semantics live in the domain; the transform backend is infrastructure behind an interface.
@@ -71,6 +75,8 @@
 **Testing requirements.** Round-trip colour tests against reference values; an override-non-destructiveness assertion; a separation test asserting a display transform change never alters export output; a domain-purity test on the colour model.
 
 **Completion gate.** Changing a viewer display transform never alters export output, overrides never modify source media, and no backend type appears in the domain.
+
+<a id="rule-wp-38.01"></a>
 
 ### WP-38.01 — Video scopes
 
@@ -80,6 +86,8 @@
 
 **Completion gate.** Every scope reads correctly against reference signals and states its measurement point.
 
+<a id="rule-wp-38.02"></a>
+
 ### WP-38.02 — Render planning and snapshot binding
 
 **What must be fully done.** A render request captures sequence, range, preset, destination and options, and binds an immutable project and sequence revision snapshot. Editing during a render never affects the running render. Proxy render is opt-in and recorded in the output metadata.
@@ -88,13 +96,17 @@
 
 **Completion gate.** Editing during a render never affects its output, and proxy render is explicit and recorded.
 
+<a id="rule-wp-38.03"></a>
+
 ### WP-38.03 — Render execution and atomic export
 
-**What must be fully done.** Render as a **native Product Job** with progress, pause, resume and cancellation, owned and recovered by ArcSlate (`BR-07`). Output written to a temporary target and committed atomically. A failure or cancellation leaves no file that looks complete. Long renders survive machine sleep and resume where the platform permits.
+**What must be fully done.** Render as a **native Product Job** with progress, pause, resume and cancellation, owned and recovered by ArcSlate ([BR-07](#rule-br-07)). Output written to a temporary target and committed atomically. A failure or cancellation leaves no file that looks complete. Long renders survive machine sleep and resume where the platform permits.
 
 **Testing requirements.** Cancellation and failure tests asserting no complete-looking partial file; a long-render soak; a sleep-and-resume test; a disk-full test.
 
 **Completion gate.** No failure or cancellation ever leaves a complete-looking partial file, and a long render survives its soak.
+
+<a id="rule-wp-38.04"></a>
 
 ### WP-38.04 — Export presets and encoding
 
@@ -104,6 +116,8 @@
 
 **Completion gate.** An invalid preset is refused before starting, and every preset produces conformant output within declared tolerance.
 
+<a id="rule-wp-38.05"></a>
+
 ### WP-38.05 — Subtitles and captions
 
 **What must be fully done.** Subtitle cues as an independent track role, with import and export in standard formats, timed against the sequence timebase exactly.
@@ -111,6 +125,8 @@
 **Testing requirements.** Import and export round-trips per supported format; timing exactness tests; a fidelity-statement check for lossy formats.
 
 **Completion gate.** Subtitles round-trip in every supported format with exact timing.
+
+<a id="rule-wp-38.06"></a>
 
 ### WP-38.06 — Golden output stability
 
@@ -140,13 +156,13 @@
 
 | Evidence | Produced by |
 |---|---|
-| Colour round-trip, separation and domain-purity results | `WP-38.00` |
-| Scope reference readings and disclosure results | `WP-38.01` |
-| Edit-during-render and snapshot binding results | `WP-38.02` |
-| Cancellation, failure, soak, sleep and disk-full results | `WP-38.03` |
-| Preset validation and encode conformance results | `WP-38.04` |
-| Subtitle round-trip and timing results | `WP-38.05` |
-| Golden comparison results and the negative gate test | `WP-38.06` |
+| Colour round-trip, separation and domain-purity results | [WP-38.00](#rule-wp-38.00) |
+| Scope reference readings and disclosure results | [WP-38.01](#rule-wp-38.01) |
+| Edit-during-render and snapshot binding results | [WP-38.02](#rule-wp-38.02) |
+| Cancellation, failure, soak, sleep and disk-full results | [WP-38.03](#rule-wp-38.03) |
+| Preset validation and encode conformance results | [WP-38.04](#rule-wp-38.04) |
+| Subtitle round-trip and timing results | [WP-38.05](#rule-wp-38.05) |
+| Golden comparison results and the negative gate test | [WP-38.06](#rule-wp-38.06) |
 
 ---
 
@@ -166,10 +182,10 @@
 
 ## 9. Dependencies
 
-**Upstream.** `37` (the processing graph and runtime).
+**Upstream — all must be complete.**
 
-**Downstream.**
+- [37 — ArcSlate Playback and Processing Runtime](37-arcslate-playback-and-processing.md)
 
-| Package | What it needs from here |
-|---|---|
-| `39` — Integration | Render and export as capabilities and as Tasks |
+**Downstream — these consume this package’s completed output.**
+
+- [39 — ArcSlate Integration and Portability](39-arcslate-integration-and-portability.md)

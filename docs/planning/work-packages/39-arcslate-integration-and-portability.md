@@ -1,3 +1,5 @@
+<a id="rule-wp-39"></a>
+
 # WP-39 — ArcSlate Integration and Portability
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
@@ -26,7 +28,7 @@
 | `I2 §III.10` | The condition on exposing capabilities |
 | [`../../requirements/products/arcslate.md`](../../requirements/products/arcslate.md) `§13`–`§16` | Portability, cross-device behaviour, AI integration and the capability surface |
 | [`../../requirements/13-data-formats-and-portability.md`](../../requirements/13-data-formats-and-portability.md) | The portability constitution and collect/consolidate obligations |
-| `WP-25`, `WP-38` output | The sync engine and a complete render and export path |
+| [WP-25](25-sync-engine-and-blob-lifecycle.md#rule-wp-25), [WP-38](38-arcslate-render-and-colour.md#rule-wp-38) output | The sync engine and a complete render and export path |
 
 ---
 
@@ -40,7 +42,7 @@
 | BR-04 | **The same asset may resolve to different locations on different devices** and remains one logical asset. |
 | BR-05 | **Offline media is a normal state** and never blocks opening a project. |
 | BR-06 | **AI receives bounded structured context** — sequence structure, markers, selected ranges, metadata — never raw media. |
-| BR-07 | **A render is a native Product Job owned by ArcSlate** (`RN-03`, `I-485`), visible in the shared task centre alongside Cloud Agent Tasks with correct ownership attribution. |
+| BR-07 | **A render is a native Product Job owned by ArcSlate** ([RN-03](../../requirements/products/arcslate.md#rule-rn-03), [I-485](../../requirements/01-normative-glossary-and-invariants.md#rule-i-485)), visible in the shared task centre alongside Cloud Agent Tasks with correct ownership attribution. |
 | BR-08 | **Caches, proxies and analysis outputs are never synced as authority**; they are derived and rebuildable. |
 | BR-09 | **Interchange export states its fidelity** and never silently drops timeline structure. |
 
@@ -63,6 +65,8 @@
 
 ## 5. Required implementation work
 
+<a id="rule-wp-39.00"></a>
+
 ### WP-39.00 — Capability surface
 
 **What must be fully done.** Query capabilities over projects, sequences, timelines, media and markers; edit capabilities with explicit risk and approval; render and export capabilities as Tasks; and artifact production for rendered output. Each declares risk, side-effect class, reversibility and approval posture, with owner-side validation always.
@@ -70,6 +74,8 @@
 **Testing requirements.** Descriptor validation; owner-side refusal; idempotency per write capability; a stability assertion that the capability contract was frozen only after the semantics stabilised.
 
 **Completion gate.** Every capability declares its risk and approval posture with owner-side validation, and the contract was frozen only after timeline, command and undo semantics stabilised.
+
+<a id="rule-wp-39.01"></a>
 
 ### WP-39.01 — Bounded context provision
 
@@ -79,6 +85,8 @@
 
 **Completion gate.** **Raw media structurally cannot enter an AI context payload**, and oversized context is refused explicitly.
 
+<a id="rule-wp-39.02"></a>
+
 ### WP-39.02 — Collect, consolidate and the portable package
 
 **What must be fully done.** Collect or consolidate gathers external media into a managed portable form on request, reporting exactly what was gathered, what was skipped and why, without destroying originals. The portable package contains project data plus managed media and re-imports with equivalence.
@@ -86,6 +94,8 @@
 **Testing requirements.** Collect with mixed available and offline media; an originals-untouched assertion; package round-trip equivalence; a large-project performance measurement.
 
 **Completion gate.** Collect never destroys originals, reports skipped items honestly, and the portable package round-trips with equivalence.
+
+<a id="rule-wp-39.03"></a>
 
 ### WP-39.03 — Cross-device resolution and relink
 
@@ -95,6 +105,8 @@
 
 **Completion gate.** A project opens with all media offline and relinks without altering any edit decision.
 
+<a id="rule-wp-39.04"></a>
+
 ### WP-39.04 — Sync scope
 
 **What must be fully done.** Project data, sequences, markers, presets and metadata sync. Heavyweight media follows an explicit policy rather than being swept up by enabling sync. Derived data — proxies, caches, analysis — never syncs as authority. Big media never traverses the Hub.
@@ -103,13 +115,15 @@
 
 **Completion gate.** Enabling sync never implicitly transfers heavyweight media, derived data never syncs as authority, and projects converge across devices.
 
+<a id="rule-wp-39.05"></a>
+
 ### WP-39.05 — OTIO interchange
 
-**What must be fully done.** Canonical `.otio` **import and export**, both directions, in V1 (`OT-01`). A declared support profile naming the pinned library, supported schema versions and supported top-level types (`OT-02`). The supported semantic subset of `OT-03`: ordered video and audio tracks and stacks, clips, gaps, source ranges, timeline placement, rate-aware times, external and missing media references, names, markers, bounded namespaced metadata, straight cuts and explicitly mapped standard dissolves. Import staged before commit with a fidelity report the user reviews or cancels; import creating ArcSlate-owned canonical objects with provenance, never a mutable OTIO working store. Export binding a **committed** sequence revision, writing a temporary destination and publishing atomically. Item-level retained/approximated/omitted dispositions for everything outside the subset. Media relink for Offline Media. Bounded parsing with **no adapters, no Python plug-ins and no executable content**, behind an owned narrow C ABI.
+**What must be fully done.** Implement the official double value/rate ingress/egress under [OB-01](../../architecture/23-simulator-and-interchange.md#rule-ob-01)–[OB-05](../../architecture/23-simulator-and-interchange.md#rule-ob-05) of the simulator/interchange architecture, with exact binary-rational conversion, declared rate normalisation, checked range and one rounded projection.  Canonical `.otio` **import and export**, both directions, in V1 ([OT-01](../../requirements/products/arcslate.md#rule-ot-01)). A declared support profile naming the pinned library, supported schema versions and supported top-level types ([OT-02](../../requirements/products/arcslate.md#rule-ot-02)). The supported semantic subset of [OT-03](../../requirements/products/arcslate.md#rule-ot-03): ordered video and audio tracks and stacks, clips, gaps, source ranges, timeline placement, rate-aware times, external and missing media references, names, markers, bounded namespaced metadata, straight cuts and explicitly mapped standard dissolves. Import staged before commit with a fidelity report the user reviews or cancels; import creating ArcSlate-owned canonical objects with provenance, never a mutable OTIO working store. Export binding a **committed** sequence revision, writing a temporary destination and publishing atomically. Item-level retained/approximated/omitted dispositions for everything outside the subset. Media relink for Offline Media. Bounded parsing with **no adapters, no Python plug-ins and no executable content**, behind an owned narrow C ABI.
 
-**Testing requirements.** Real fixtures and the pinned official library exercising both directions; mixed and fractional frame rates proving **no silent frame shift**; gaps and stack ordering; repeated uses of one source retaining placement; missing references becoming relinkable Offline Media; supported dissolves and markers; unsupported features each producing an item-level disposition; malicious relative and absolute paths denied; malformed and oversized input rejected before commit; export cancellation leaving the project and any existing destination untouched; semantic round-trip compared on **timeline meaning and media references, not bytes or internal identifiers**; and a round-trip through external tooling that drops private ArcSlate metadata, proving core supported edits survive.
+**Testing requirements.** Test finite/nonfinite, standard 30000/1001 versus decimal 29.97, large/fractional values, metadata-stripped external files and exact/lossy export reports.  Real fixtures and the pinned official library exercising both directions; mixed and fractional frame rates proving **no silent frame shift**; gaps and stack ordering; repeated uses of one source retaining placement; missing references becoming relinkable Offline Media; supported dissolves and markers; unsupported features each producing an item-level disposition; malicious relative and absolute paths denied; malformed and oversized input rejected before commit; export cancellation leaving the project and any existing destination untouched; semantic round-trip compared on **timeline meaning and media references, not bytes or internal identifiers**; and a round-trip through external tooling that drops private ArcSlate metadata, proving core supported edits survive.
 
-**Completion gate.** **Both directions work against real fixtures and the pinned official library**, nothing is silently flattened or dropped, no frame shift occurs, and no adapter or plug-in loads. Merely opening JSON is insufficient (`OT-12`).
+**Completion gate.** No hidden floating-point position arithmetic or silent fidelity claim exists.  **Both directions work against real fixtures and the pinned official library**, nothing is silently flattened or dropped, no frame shift occurs, and no adapter or plug-in loads. Merely opening JSON is insufficient ([OT-12](../../requirements/products/arcslate.md#rule-ot-12)).
 
 ---
 
@@ -131,12 +145,12 @@
 
 | Evidence | Produced by |
 |---|---|
-| Capability descriptor, refusal and freeze-timing records | `WP-39.00` |
-| Structural media-exclusion and bounding results | `WP-39.01` |
-| Collect report, originals-untouched and round-trip results | `WP-39.02` |
-| Offline-open, relink and edit-decision preservation results | `WP-39.03` |
-| Sync exclusion, derived-data and convergence results | `WP-39.04` |
-| Per-format interchange round-trips and fidelity statements | `WP-39.05` |
+| Capability descriptor, refusal and freeze-timing records | [WP-39.00](#rule-wp-39.00) |
+| Structural media-exclusion and bounding results | [WP-39.01](#rule-wp-39.01) |
+| Collect report, originals-untouched and round-trip results | [WP-39.02](#rule-wp-39.02) |
+| Offline-open, relink and edit-decision preservation results | [WP-39.03](#rule-wp-39.03) |
+| Sync exclusion, derived-data and convergence results | [WP-39.04](#rule-wp-39.04) |
+| Per-format interchange round-trips and fidelity statements | [WP-39.05](#rule-wp-39.05) |
 
 ---
 
@@ -149,16 +163,17 @@
 3. Collect never destroys originals, reports skipped items honestly, and the portable package round-trips with equivalence.
 4. A project opens with all media offline and relinks without altering any edit decision.
 5. Enabling sync never implicitly transfers heavyweight media; derived data never syncs as authority; big media never traverses the Hub; projects converge across devices.
-6. Every claimed interchange version has a fixture, states its fidelity before writing, and never fabricates missing data — satisfying `PG-07` for ArcSlate.
+6. Every claimed interchange version has a fixture, states its fidelity before writing, and never fabricates missing data — satisfying [PG-07](../../assurance/open-gates-register.md#rule-pg-07) for ArcSlate.
 
 ---
 
 ## 9. Dependencies
 
-**Upstream.** `25` (sync engine), `38` (render and export).
+**Upstream — all must be complete.**
 
-**Downstream.**
+- [25 — Sync Engine and Blob Lifecycle](25-sync-engine-and-blob-lifecycle.md)
+- [38 — ArcSlate Render, Export and Colour Management](38-arcslate-render-and-colour.md)
 
-| Package | What it needs from here |
-|---|---|
-| `50` — Production release | ArcSlate as a complete, integrated product |
+**Downstream — these consume this package’s completed output.**
+
+- [50 — Full-Platform Production Release](50-full-platform-production-release.md)

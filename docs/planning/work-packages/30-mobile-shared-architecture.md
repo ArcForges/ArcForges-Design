@@ -1,3 +1,5 @@
+<a id="rule-wp-30"></a>
+
 # WP-30 — Mobile Shared Architecture and the Apache Boundary
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
@@ -15,7 +17,7 @@
 
 **Out of scope.** The ArcChat companion features themselves (`31`). Store submission and release (`32`).
 
-**Why this package exists.** `I2 §III.8` places mobile after the first real cloud contracts stabilise, precisely so the shared layer is built against real contracts. **D-004** makes the licence boundary a structural precondition — a violation discovered later blocks the artifact entirely (**F-023**).
+**Why this package exists.** `I2 §III.8` places mobile after the first real cloud contracts stabilise, precisely so the shared layer is built against real contracts. **[D-004](../../decisions/phase-1-foundation-decisions.md#rule-d-004)** makes the licence boundary a structural precondition — a violation discovered later blocks the artifact entirely (**[F-023](../../assurance/open-gates-register.md#rule-f-023)**).
 
 ---
 
@@ -24,10 +26,10 @@
 | Input | Why it matters |
 |---|---|
 | [`../../architecture/11-mobile-architecture.md`](../../architecture/11-mobile-architecture.md) | Layering, licence boundary, runtime and build, clients, network, outbox, storage |
-| **D-004**, **D-021** | The Apache boundary and the prohibition on shared ViewModel patterns |
-| **D-008**, **V-04** | Android Mono AOT as the production baseline; iOS build-deferred |
-| **F-023** | The provenance and dependency closure gate this package prepares for |
-| `WP-03`, `WP-23`, `WP-24` output | Contracts, generated clients and the realtime client |
+| **[D-004](../../decisions/phase-1-foundation-decisions.md#rule-d-004)**, **[D-021](../../decisions/phase-1-foundation-decisions.md#rule-d-021)** | The Apache boundary and the prohibition on shared ViewModel patterns |
+| **[D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008)**, **[V-04](../../assurance/phase-1-official-verification.md#rule-v-04)** | Android Mono AOT as the production baseline; iOS build-deferred |
+| **[F-023](../../assurance/open-gates-register.md#rule-f-023)** | The provenance and dependency closure gate this package prepares for |
+| [WP-03](03-contract-foundation-and-licence-split.md#rule-wp-03), [WP-23](23-public-api-and-generated-clients.md#rule-wp-23), [WP-24](24-realtime-and-reliable-events.md#rule-wp-24) output | Contracts, generated clients and the realtime client |
 
 ---
 
@@ -35,15 +37,15 @@
 
 | # | Rule |
 |---|---|
-| BR-01 | **Everything in the mobile tree and the public contract and SDK projects it consumes is Apache-2.0** (**D-004**). |
-| BR-02 | **No GPL-family or AGPL-only material may enter, directly or transitively** (**D-004**), and automated checks prevent it. |
-| BR-03 | **Base ViewModel patterns are not shared with desktop** (**D-021**). Each UI stack owns its implementation. |
-| BR-04 | **Product-domain behaviour, server orchestration, policy decisions, persistence behaviour and entitlement authority stay outside the shared boundary** (**D-021**). |
-| BR-05 | **The mobile client never loads the desktop native stack and never connects to a local endpoint** (**D-010**). |
-| BR-06 | **Android production uses the supported Mono AOT release path** (**D-008**, **V-04**), and the runtime selection is **explicit in the project file**, never inherited. |
+| BR-01 | **Everything in the mobile tree and the public contract and SDK projects it consumes is Apache-2.0** (**[D-004](../../decisions/phase-1-foundation-decisions.md#rule-d-004)**). |
+| BR-02 | **No GPL-family or AGPL-only material may enter, directly or transitively** (**[D-004](../../decisions/phase-1-foundation-decisions.md#rule-d-004)**), and automated checks prevent it. |
+| BR-03 | **Base ViewModel patterns are not shared with desktop** (**[D-021](../../decisions/phase-1-foundation-decisions.md#rule-d-021)**). Each UI stack owns its implementation. |
+| BR-04 | **Product-domain behaviour, server orchestration, policy decisions, persistence behaviour and entitlement authority stay outside the shared boundary** (**[D-021](../../decisions/phase-1-foundation-decisions.md#rule-d-021)**). |
+| BR-05 | **The mobile client never loads the desktop native stack and never connects to a local endpoint** (**[D-010](../../decisions/phase-1-foundation-decisions.md#rule-d-010)**). |
+| BR-06 | **Android production uses the supported Mono AOT release path** (**[D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008)**, **[V-04](../../assurance/phase-1-official-verification.md#rule-v-04)**), and the runtime selection is **explicit in the project file**, never inherited. |
 | BR-07 | **Mono AOT is never conflated with CoreCLR Native AOT** in code, comments or documentation. |
-| BR-08 | **iOS architecture is present and complete; its build is deferred** (**D-008**), and it must not be claimed as compiled or tested. |
-| BR-09 | **Every public DTO uses a source-generated serialization context**, and the typed client uses the generated-only entry point with the reflection package absent (**F-026**). |
+| BR-08 | **iOS architecture is present and complete; its build is deferred** (**[D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008)**), and it must not be claimed as compiled or tested. |
+| BR-09 | **Every public DTO uses a source-generated serialization context**, and the typed client uses the generated-only entry point with the reflection package absent (**[F-026](../../assurance/open-gates-register.md#rule-f-026)**). |
 | BR-10 | **No desktop-local secret ever reaches a mobile device.** |
 
 ---
@@ -67,6 +69,8 @@
 
 ## 5. Required implementation work
 
+<a id="rule-wp-30.00"></a>
+
 ### WP-30.00 — Project structure and licence enforcement
 
 **What must be fully done.** The mobile tree with every project declaring Apache-2.0 and its boundary. A repository policy test asserts no reference from a mobile project to an AGPL project, directly or transitively, and that every dependency's licence is on the mobile allowlist.
@@ -74,6 +78,8 @@
 **Testing requirements.** A negative fixture introducing an AGPL reference must fail the build; a transitive-closure licence report.
 
 **Completion gate.** A cross-boundary reference fails the build, and every mobile dependency's licence is on the allowlist.
+
+<a id="rule-wp-30.01"></a>
 
 ### WP-30.01 — Shared and not-shared split
 
@@ -83,6 +89,8 @@
 
 **Completion gate.** The split is enforced by a policy test and every shared type is recorded.
 
+<a id="rule-wp-30.02"></a>
+
 ### WP-30.02 — Runtime posture
 
 **What must be fully done.** The Android project declares its runtime explicitly. A release build is produced and its runtime confirmed by inspecting the artifact, not by reading the project file. Documentation and code comments never conflate the two AOT technologies. The iOS project exists with complete architecture and is explicitly marked build-deferred.
@@ -90,6 +98,8 @@
 **Testing requirements.** An evaluated-property assertion; an artifact-inspection record; a terminology scan; an iOS status assertion that no build or test claim is made.
 
 **Completion gate.** The Android runtime is confirmed from the produced artifact, terminology is unambiguous, and iOS status is honestly stated.
+
+<a id="rule-wp-30.03"></a>
 
 ### WP-30.03 — Serialization and clients
 
@@ -99,6 +109,8 @@
 
 **Completion gate.** Clients work with no reflection package present, refresh never storms, and the compatibility matrix passes from mobile.
 
+<a id="rule-wp-30.04"></a>
+
 ### WP-30.04 — Network behaviour and offline outbox
 
 **What must be fully done.** All commands and queries over HTTP with realtime carrying only updates; exponential backoff with jitter on network change; sequence-gap backfill over HTTP after reconnection; a durable outbox surviving process termination with idempotency keys; cellular policy respected for large transfers.
@@ -106,6 +118,8 @@
 **Testing requirements.** Network-transition tests; backfill after a long disconnect; outbox survival across process death; a cellular-policy test.
 
 **Completion gate.** The client converges after any disconnection, and pending actions survive process termination.
+
+<a id="rule-wp-30.05"></a>
 
 ### WP-30.05 — Secure storage and lifecycle
 
@@ -135,12 +149,12 @@
 
 | Evidence | Produced by |
 |---|---|
-| Cross-boundary negative fixture and transitive licence report | `WP-30.00` |
-| Shared/not-shared policy test and shared-type record | `WP-30.01` |
-| Evaluated-property assertion, artifact inspection, terminology scan | `WP-30.02` |
-| Dependency assertion, refresh-storm and compatibility matrix results | `WP-30.03` |
-| Network-transition, backfill, outbox-survival and cellular results | `WP-30.04` |
-| Secure-storage, log-scan and step-up negative results | `WP-30.05` |
+| Cross-boundary negative fixture and transitive licence report | [WP-30.00](#rule-wp-30.00) |
+| Shared/not-shared policy test and shared-type record | [WP-30.01](#rule-wp-30.01) |
+| Evaluated-property assertion, artifact inspection, terminology scan | [WP-30.02](#rule-wp-30.02) |
+| Dependency assertion, refresh-storm and compatibility matrix results | [WP-30.03](#rule-wp-30.03) |
+| Network-transition, backfill, outbox-survival and cellular results | [WP-30.04](#rule-wp-30.04) |
+| Secure-storage, log-scan and step-up negative results | [WP-30.05](#rule-wp-30.05) |
 
 ---
 
@@ -159,11 +173,12 @@
 
 ## 9. Dependencies
 
-**Upstream.** `03` (contracts), `23` (generated clients), `24` (realtime client).
+**Upstream — all must be complete.**
 
-**Downstream.**
+- [03 — Contract Foundation and the Licence Boundary Split](03-contract-foundation-and-licence-split.md)
+- [23 — Public API Surface and Generated Clients](23-public-api-and-generated-clients.md)
+- [24 — Realtime, Reliable Events and Recovery](24-realtime-and-reliable-events.md)
 
-| Package | What it needs from here |
-|---|---|
-| `31` — ArcChat Mobile | The entire foundation |
-| `32` — Mobile release | The boundary and runtime posture the release gates verify |
+**Downstream — these consume this package’s completed output.**
+
+- [31 — ArcChat Mobile Android Remote Closed Loop](31-arcchat-mobile-android.md)

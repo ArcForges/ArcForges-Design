@@ -16,9 +16,9 @@ Five constraints determine almost every structural decision downstream.
 | # | Constraint | Consequence |
 |---|---|---|
 | AC-01 | **State has exactly one owner** | No shared writable business database; no central service holding product state; caches record source and revision and are never write points |
-| AC-02 | **Calls cross boundaries as strongly typed contracts** | No catch-all `Invoke(string, object)`; no dictionary payloads; no runtime-discovered interfaces on the AOT path |
+| <a id="rule-ac-02"></a>AC-02 | **Calls cross boundaries as strongly typed contracts** | No catch-all `Invoke(string, object)`; no dictionary payloads; no runtime-discovered interfaces on the AOT path |
 | AC-03 | **The public internet uses standard HTTP semantics** | Ordinary HTTP/JSON, cacheable, proxyable, observable, and comprehensible to a non-.NET client |
-| AC-04 | **Every production main path must be statically analysable where it is an AOT deliverable** | Source generation everywhere; no reflection fallback; no runtime code generation on the desktop main path |
+| <a id="rule-ac-04"></a>AC-04 | **Every production main path must be statically analysable where it is an AOT deliverable** | Source generation everywhere; no reflection fallback; no runtime code generation on the desktop main path |
 | AC-05 | **Failure is recoverable, and permission is validated at the final execution point** | Journals, revisions, idempotency, compensation — and owner-side re-authorization on every invocation |
 
 **The most important constraint is not that all code lives in one repository.** It is that these five hold.
@@ -71,8 +71,8 @@ Five constraints determine almost every structural decision downstream.
 | Path | Route | Rule |
 |---|---|---|
 | **Local capability** | ArcChat Hub ↔ professional product, same machine | Strongly typed, owner-authorised, never remote UI |
-| **Cloud data** | Each product ↔ Cloud directly | **ArcChat is not a gateway** (**D-010**) |
-| **Remote agent** | Mobile/Web → Cloud → **durable `ToolRequest`** → ArcChat Desktop pulls, re-authorises, executes → idempotent `ToolResult` | **Cloud never connects to localhost, a pipe, a socket or local stdio** (**D-010**) |
+| **Cloud data** | Each product ↔ Cloud directly | **ArcChat is not a gateway** (**[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)**) |
+| **Remote agent** | Mobile/Web → Cloud → **durable `ToolRequest`** → ArcChat Desktop pulls, re-authorises, executes → idempotent `ToolResult` | **Cloud never connects to localhost, a pipe, a socket or local stdio** (**[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)**) |
 | **Handoff** | Product → product, user-directed | Resource reference plus deep link; no orchestration needed |
 
 ---
@@ -91,21 +91,21 @@ Desktop / LocalRpc / Infrastructure / MinimalApi / MAUI / WASM adapters
 
 | # | Rule |
 |---|---|
-| LY-01 | **Domain references nothing** — not Application, not Infrastructure, not UI, not Contracts, not a database provider, not a transport library, not the file system, not a native handle. |
+| <a id="rule-ly-01"></a>LY-01 | **Domain references nothing** — not Application, not Infrastructure, not UI, not Contracts, not a database provider, not a transport library, not the file system, not a native handle. |
 | LY-02 | **Application depends only on Domain plus a small set of abstractions (ports).** |
 | LY-03 | **Infrastructure implements Application's ports.** |
 | LY-04 | **Adapters are entry points only.** A local RPC adapter performs local identity, validation, DTO mapping, cancellation propagation and an application-service call — nothing else. A Minimal API adapter performs authentication, authorization, HTTP semantics, JSON mapping and an application-service call — nothing else. |
 | LY-05 | **A realtime hub never mutates domain state directly.** When a write is required it calls the same application service, preserving command identity and revision semantics. |
-| LY-06 | **Local clicks, local RPC and public HTTP produce the same domain commands, the same revisions, the same journal entries and the same notifications.** This is `SI-04` in the shared desktop requirements, expressed structurally. |
+| <a id="rule-ly-06"></a>LY-06 | **Local clicks, local RPC and public HTTP produce the same domain commands, the same revisions, the same journal entries and the same notifications.** This is [SI-04](../requirements/09-shared-desktop-experience.md#rule-si-04) in the shared desktop requirements, expressed structurally. |
 | LY-07 | **View models consume view state and call facades.** They hold no database connection, no session, no native pointer. |
 | LY-08 | **A transport DTO is never a domain entity, and a view model is never a transport DTO.** |
-| LY-09 | **A remote caller never drives another process's user interface.** Projection happens inside the owning process. |
+| <a id="rule-ly-09"></a>LY-09 | **A remote caller never drives another process's user interface.** Projection happens inside the owning process. |
 
 ---
 
 ## 4. Runtime and AOT matrix
 
-Fixed by **D-008**, evidenced by **V-03**, **V-04** and **V-05**.
+Fixed by **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**, evidenced by **[V-03](../assurance/phase-1-official-verification.md#rule-v-03)**, **[V-04](../assurance/phase-1-official-verification.md#rule-v-04)** and **[V-05](../assurance/phase-1-official-verification.md#rule-v-05)**.
 
 | Host | Mode | Notes |
 |---|---|---|
@@ -117,9 +117,9 @@ Fixed by **D-008**, evidenced by **V-03**, **V-04** and **V-05**.
 
 | # | Rule |
 |---|---|
-| AO-01 | **AOT release gates apply only to projects actually consumed by an AOT deliverable** (**D-008**). |
+| AO-01 | **AOT release gates apply only to projects actually consumed by an AOT deliverable** (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**). |
 | AO-02 | **Shared public contracts and client libraries consumed by desktop or mobile remain trim-safe and source-generation friendly**, regardless of who else consumes them. |
-| AO-03 | **The absence of an official AOT guarantee is never treated as proof of AOT compatibility** (**D-003**, **D-008**). Where documentation cannot prove a dependency's behaviour under an AOT deliverable, a real publish-and-test proof is a registered gate with an owner and trigger. |
+| AO-03 | **The absence of an official AOT guarantee is never treated as proof of AOT compatibility** (**[D-003](../decisions/phase-1-foundation-decisions.md#rule-d-003)**, **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**). Where documentation cannot prove a dependency's behaviour under an AOT deliverable, a real publish-and-test proof is a registered gate with an owner and trigger. |
 | AO-04 | **Cloud being JIT does not relax the architecture.** Source-generated serialization, explicit registration and no reflection scanning remain the Cloud convention, because they are correctness and performance practices independent of AOT. |
 
 ---
@@ -134,7 +134,7 @@ Fixed by **D-008**, evidenced by **V-03**, **V-04** and **V-05**.
 | PM-04 | **The Hub never holds product domain state**, never proxies files or media, never becomes a shared filesystem, a universal project database, or a universal undo service. |
 | PM-05 | **A product reaches a locally usable state with the Hub absent** and re-registers when it returns. |
 | PM-06 | **Products never reference one another's Domain or Application assemblies.** Interaction is through stable cross-application contracts only. |
-| PM-07 | **Three identity axes exist and are distinct**: `AppId` (stable product identity), `InstallationId` (one installed copy on one device), `InstanceId` (one running process). `AppId == ProcessId` is prohibited. |
+| <a id="rule-pm-07"></a>PM-07 | **Three identity axes exist and are distinct**: `AppId` (stable product identity), `InstallationId` (one installed copy on one device), `InstanceId` (one running process). `AppId == ProcessId` is prohibited. |
 
 ---
 
@@ -156,7 +156,7 @@ Types such as `ArcForges.Foundation.Document`, `.VideoTimeline` or `.TelemetrySe
 
 ## 7. Licence boundaries in the architecture
 
-Two boundaries, enforced by build-time checks (**D-004**, **D-021**).
+Two boundaries, enforced by build-time checks (**[D-004](../decisions/phase-1-foundation-decisions.md#rule-d-004)**, **[D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021)**).
 
 ```
 Apache-2.0 — interoperability boundary
@@ -178,8 +178,8 @@ AGPL-3.0-only — everything else
 | # | Rule |
 |---|---|
 | LB-01 | **AGPL components may consume the Apache-2.0 interoperability packages** without changing their own licence. |
-| LB-02 | **No GPL-family or AGPL-only source, project reference, package, generated artifact or transitive dependency may enter the ArcChat Mobile distributable** — enforced by architecture and dependency tests (**D-004** obligation 7). |
-| LB-03 | **Base ViewModel patterns are not shared between Avalonia desktop and MAUI mobile** (**D-021**). Each UI stack owns its implementation. |
+| LB-02 | **No GPL-family or AGPL-only source, project reference, package, generated artifact or transitive dependency may enter the ArcChat Mobile distributable** — enforced by architecture and dependency tests (**[D-004](../decisions/phase-1-foundation-decisions.md#rule-d-004)** obligation 7). |
+| LB-03 | **Base ViewModel patterns are not shared between Avalonia desktop and MAUI mobile** (**[D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021)**). Each UI stack owns its implementation. |
 | LB-04 | **Protocol communication across an explicit process or network boundary does not change a client's licence.** Desktop and server implementations remain separate works. |
 
 ---
@@ -220,7 +220,7 @@ Every write — from a local click, a local RPC call, a public HTTP request or a
 8.  Return the new revision and the minimal delta
 ```
 
-**Step 5 is a closed list, not an illustration.** Which participants may share one transaction is enumerated by operation class in `§6.1.1` of the data-model overview (`SU-01`–`SU-07`), under a single global lock order; `sync` is always a participant and never an initiator (`SU-07`), which is why its row is inside the transaction rather than after it. **Step 6 is the dispatch barrier** (`§6.1.2`, `DB-01`–`DB-03`): no provider call, object-storage write or network hop occurs before it (`SU-05`). The local elaboration of the same path is `§3` of [the persistence architecture](06-data-persistence-and-formats.md). Those two are authoritative; this is the skeleton they share, and it is not a third specification.
+**Step 5 is a closed list, not an illustration.** Which participants may share one transaction is enumerated by operation class in `§6.1.1` of the data-model overview ([SU-01](data-model/00-data-model-overview.md#rule-su-01)–[SU-07](data-model/00-data-model-overview.md#rule-su-07)), under a single global lock order; `sync` is always a participant and never an initiator ([SU-07](data-model/00-data-model-overview.md#rule-su-07)), which is why its row is inside the transaction rather than after it. **Step 6 is the dispatch barrier** (`§6.1.2`, [DB-01](data-model/00-data-model-overview.md#rule-db-01)–[DB-03](data-model/00-data-model-overview.md#rule-db-03)): no provider call, object-storage write or network hop occurs before it ([SU-05](data-model/00-data-model-overview.md#rule-su-05)). The local elaboration of the same path is `§3` of [the persistence architecture](06-data-persistence-and-formats.md). Those two are authoritative; this is the skeleton they share, and it is not a third specification.
 
 Every write command carries at minimum `CommandId`, the target identity, `ExpectedRevision`, actor and device from the authentication context, causation and correlation identifiers, business parameters, and an optional approval reference.
 
@@ -233,7 +233,7 @@ Every write command carries at minimum `CommandId`, the target identity, `Expect
 | Document | Scope |
 |---|---|
 | [`01-solution-and-project-layout.md`](01-solution-and-project-layout.md) | Repository layout, project boundaries, reference direction, licence boundaries, architecture tests |
-| [`02-contracts-and-protocols.md`](02-contracts-and-protocols.md) | Contract split (**D-009**), the cross-application semantic model, versioning and compatibility |
+| [`02-contracts-and-protocols.md`](02-contracts-and-protocols.md) | Contract split (**[D-009](../decisions/phase-1-foundation-decisions.md#rule-d-009)**), the cross-application semantic model, versioning and compatibility |
 | [`03-local-ipc-and-process-model.md`](03-local-ipc-and-process-model.md) | StreamJsonRpc, transports, Hub registration, discovery, routing, health, backpressure |
 | [`04-desktop-application-architecture.md`](04-desktop-application-architecture.md) | Avalonia host, MVVM, threading, multi-window, AOT constraints, lifecycle |
 | [`05-cloud-architecture.md`](05-cloud-architecture.md) | JIT modular monolith, module boundaries, host pipeline, persistence, outbox, realtime, background work |
@@ -301,10 +301,10 @@ Answerable before any feature merges:
 | `I3 §0–§5`, `§29`–`§31` | The communication split, layering, reference direction, shared-foundation boundary, principal risks and the review checklist |
 | `I4 §Stage 13` | Product topology, state ownership, invariants and the technical exception list |
 | `I4 §Stage 21` | The cross-application semantic model elaborated in `02-contracts-and-protocols.md` |
-| **D-004**, **D-021** | Two-boundary licensing enforced structurally |
-| **D-007** | Web rendering boundary |
-| **D-008** | The runtime and AOT matrix, including Cloud as JIT |
-| **D-009** | Contract granularity |
-| **D-010** | Cloud topology and the durable local-action model |
-| **D-011** | The implementation target monorepo |
-| **V-03**, **V-04**, **V-05** | The AOT evidence underpinning the matrix |
+| **[D-004](../decisions/phase-1-foundation-decisions.md#rule-d-004)**, **[D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021)** | Two-boundary licensing enforced structurally |
+| **[D-007](../decisions/phase-1-foundation-decisions.md#rule-d-007)** | Web rendering boundary |
+| **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** | The runtime and AOT matrix, including Cloud as JIT |
+| **[D-009](../decisions/phase-1-foundation-decisions.md#rule-d-009)** | Contract granularity |
+| **[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)** | Cloud topology and the durable local-action model |
+| **[D-011](../decisions/phase-1-foundation-decisions.md#rule-d-011)** | The implementation target monorepo |
+| **[V-03](../assurance/phase-1-official-verification.md#rule-v-03)**, **[V-04](../assurance/phase-1-official-verification.md#rule-v-04)**, **[V-05](../assurance/phase-1-official-verification.md#rule-v-05)** | The AOT evidence underpinning the matrix |

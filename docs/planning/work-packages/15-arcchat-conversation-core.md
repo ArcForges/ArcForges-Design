@@ -1,3 +1,5 @@
+<a id="rule-wp-15"></a>
+
 # WP-15 — ArcChat Conversation and Project Core
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
@@ -27,8 +29,8 @@
 | [`../../assurance/reference-coverage/arcchat-aionui.md`](../../assurance/reference-coverage/arcchat-aionui.md) | **The completed ArcChat Reference Coverage Matrix** — 30 rows, each with evidence location, source commit, requirement or exclusion, disposition, rationale, licence position, oracle and owner |
 | [`../../assurance/reference-coverage-and-provenance.md`](../../assurance/reference-coverage-and-provenance.md) | The matrix method and the ten-field provenance record that governs any future reuse |
 | [`../../architecture/04-desktop-application-architecture.md`](../../architecture/04-desktop-application-architecture.md) | Host structure, MVVM, threading and persistence |
-| `WP-07` output | The local store, journal and recovery |
-| `WP-14` output | The Hub and a working provider |
+| [WP-07](07-local-persistence-foundation.md#rule-wp-07) output | The local store, journal and recovery |
+| [WP-14](14-hub-and-minimal-provider-slice.md#rule-wp-14) output | The Hub and a working provider |
 
 ---
 
@@ -36,14 +38,14 @@
 
 | # | Rule |
 |---|---|
-| BR-01 | **The ArcChat Reference Coverage Matrix is a completed, versioned planning input** — [`../../assurance/reference-coverage/arcchat-aionui.md`](../../assurance/reference-coverage/arcchat-aionui.md), 30 item-level rows, bound to AionUi at `29c9271a5`. It was produced before this plan was derived (**D-019**). **This package consumes it and checks it for drift; it does not create it.** |
+| BR-01 | **The ArcChat Reference Coverage Matrix is a completed, versioned planning input** — [`../../assurance/reference-coverage/arcchat-aionui.md`](../../assurance/reference-coverage/arcchat-aionui.md), 30 item-level rows, bound to AionUi at `29c9271a5`. It was produced before this plan was derived (**[D-019](../../decisions/phase-1-foundation-decisions.md#rule-d-019)**). **This package consumes it and checks it for drift; it does not create it.** |
 | BR-02 | **ArcChat is fully usable with every other product absent.** |
 | BR-03 | **`Conversation ≠ Project` and `Project ≠ Workspace`.** Three distinct containers with distinct ownership. |
 | BR-04 | **A skill is declarative guidance and never code** (`I4 §Stage 24 §4`), and **a skill confers no capability** (`§5` there). |
 | BR-05 | **A branch is a first-class structure**, not a hidden copy; branching never mutates the original. |
 | BR-06 | **Streaming assembly is a presentation concern.** The durable message is written once, complete; a partial stream is never the stored fact. |
 | BR-07 | **An attachment is either managed or referenced**, and the distinction is explicit and visible. |
-| BR-08 | **Search over cached conversation content is a first-class capability**, available during a Cloud outage. Chat is Cloud-authoritative (`CW-02`), so this searches the working cache and unsent drafts; workspace-wide search is `search.query` on the public surface, and neither is presented as the other. |
+| BR-08 | **Search over cached conversation content is a first-class capability**, available during a Cloud outage. Chat is Cloud-authoritative ([CW-02](../../architecture/data-model/00-data-model-overview.md#rule-cw-02)), so this searches the working cache and unsent drafts; workspace-wide search is `search.query` on the public surface, and neither is presented as the other. |
 | BR-09 | **A provider adapter is an interface**; the real provider integration lands in `43`. |
 | BR-10 | **Hidden reasoning from a model never enters the product model** (`I4 §Stage 24 §50`). |
 
@@ -67,6 +69,8 @@
 
 ## 5. Required implementation work
 
+<a id="rule-wp-15.00"></a>
+
 ### WP-15.00 — Conversation and message model
 
 **What must be fully done.** Conversations own ordered messages composed of typed parts. Messages are immutable once committed; an edit produces a new revision with the prior one retained. Streaming produces a durable message exactly once at completion, with interruption handled explicitly rather than storing a truncated fragment as fact.
@@ -74,6 +78,8 @@
 **Testing requirements.** Immutability and revision tests; a stream-interruption test asserting no partial message is stored as complete; large-conversation performance against the scale corpus.
 
 **Completion gate.** A committed message is immutable, an interrupted stream never produces a message claiming to be complete, and large conversations meet the responsiveness budget.
+
+<a id="rule-wp-15.01"></a>
 
 ### WP-15.01 — Branching
 
@@ -83,6 +89,8 @@
 
 **Completion gate.** Branching never mutates the original and never duplicates shared history.
 
+<a id="rule-wp-15.02"></a>
+
 ### WP-15.02 — Attachments
 
 **What must be fully done.** Managed attachments enter the managed resource store with integrity verification; referenced attachments record an external location with an availability state. Neither is embedded in message content. Availability changes are surfaced rather than producing an error at read time.
@@ -90,6 +98,8 @@
 **Testing requirements.** Managed round-trip with integrity verification; reference-unavailable behaviour; a test asserting no attachment body is embedded in message storage.
 
 **Completion gate.** Attachments are stored by reference, integrity is verified, and unavailability is a visible state rather than a failure.
+
+<a id="rule-wp-15.03"></a>
 
 ### WP-15.03 — Projects and profiles
 
@@ -99,6 +109,8 @@
 
 **Completion gate.** Projects and profiles have independent lifecycles and are structurally distinct from workspaces and skills.
 
+<a id="rule-wp-15.04"></a>
+
 ### WP-15.04 — Skills
 
 **What must be fully done.** Skills are versioned declarative guidance that reference capabilities without conferring them. A skill update never modifies a historical result. Skills are manageable as first-class objects rather than buried in settings.
@@ -106,6 +118,8 @@
 **Testing requirements.** A test asserting a skill grants no capability; a versioning test asserting historical results are unchanged by an update.
 
 **Completion gate.** A skill confers no capability, and updating a skill leaves historical results untouched.
+
+<a id="rule-wp-15.05"></a>
 
 ### WP-15.05 — Local search
 
@@ -115,17 +129,21 @@
 
 **Completion gate.** Search over cached content works during a Cloud outage, the index rebuilds fully from the cache, and search never leaks what access would refuse.
 
-### WP-15.06 — History, export and recovery
+<a id="rule-wp-15.06"></a>
 
-**What must be fully done.** Conversation history with restoration; **the export client half** — request a Cloud conversation export, download the produced artifact, and present its documented JSON/text content and attachment manifest with explicit availability (`EX-01` of the ArcChat requirements); recovery after a hard kill with explicit reporting of any uncommitted loss. **`EX-01` there requires no standalone local conversation archive or recovery format**, so none is built and no local round-trip is claimed. `EX-03`: an export never carries keys or secrets.
+### WP-15.06 — History, export client and recovery
 
-**Testing requirements.** An export requested, produced and downloaded, asserting the manifest matches the delivered attachments and that unavailable items are declared rather than omitted silently; an export while unsynchronised local edits exist, asserting they are **excluded and the exclusion stated**; a secret-scanning assertion over export output (`EX-03` of the ArcChat requirements); kill-during-write recovery reporting uncommitted loss.
+**What must be fully done.** Implement the client history/download/fidelity presentation using acknowledged Chat data and pending drafts. Before the production Cloud exists, exercise transport against explicitly registered test-only export fixtures on the [WP-06.04](06-aot-jit-and-wasm-publish-proof.md#rule-wp-06.04) host. Build no local archive or provider logic. The real Cloud export producer and its end-to-end acceptance are WP-25.08.
 
-**Completion gate.** An export is complete against its manifest, honest about what it omits, and free of secrets; recovery reports loss explicitly rather than silently discarding. **No local archive format is produced, and no round-trip is asserted** — `EX-01` does not require one.
+**Testing requirements.** Read a fixture manifest, verify attachment hashes and omissions, display unsent-draft exclusion and retry interruption; assert no secrets. Kill during local pending-write recovery. Record the fixture and its removal owner.
+
+**Completion gate.** The production client and recovery path work against the declared test protocol. This gate proves client behaviour only; Cloud export completeness is not claimed until [WP-25.08](25-sync-engine-and-blob-lifecycle.md#rule-wp-25.08) removes the fixture and exercises the real producer.
+
+<a id="rule-wp-15.07"></a>
 
 ### WP-15.07 — Reference drift check
 
-> **Not a baseline audit.** The ArcChat matrix is complete and closed `PG-01` and `F-013` before this package began. This sub-step is **maintenance**, and it is the producer of the drift check the package gate requires.
+> **Not a baseline audit.** The ArcChat matrix is complete and closed [PG-01](../../assurance/open-gates-register.md#rule-pg-01) and [F-013](../../assurance/open-gates-register.md#rule-f-013) before this package began. This sub-step is **maintenance**, and it is the producer of the drift check the package gate requires.
 
 **What must be fully done.** The reference is compared against its bound commit — AionUi at `29c9271a5`. Three outputs are produced:
 
@@ -135,7 +153,7 @@
 
 **Testing requirements.** A drift report listing changed rows, new material with its assessment, and the licence comparison. A completeness check that every changed or new item has a disposition.
 
-**Completion gate.** The drift report exists, every changed and newly introduced item carries a disposition, and the licence position is re-confirmed or amended with a reason. **If the licence position changed, the affected rows' dispositions are corrected before any dependent work continues** (**D-001**).
+**Completion gate.** The drift report exists, every changed and newly introduced item carries a disposition, and the licence position is re-confirmed or amended with a reason. **If the licence position changed, the affected rows' dispositions are corrected before any dependent work continues** (**[D-001](../../decisions/phase-1-foundation-decisions.md#rule-d-001)**).
 
 ---
 
@@ -157,13 +175,13 @@
 
 | Evidence | Produced by |
 |---|---|
-| Immutability, streaming and scale results | `WP-15.00` |
-| Branch independence results | `WP-15.01` |
-| Attachment integrity and availability results | `WP-15.02` |
-| Container distinction results | `WP-15.03` |
-| Skill capability-free and versioning results | `WP-15.04` |
-| Index rebuild, relevance and permission results | `WP-15.05` |
-| Export completeness, manifest agreement, secret-scan and recovery results | `WP-15.06` |
+| Immutability, streaming and scale results | [WP-15.00](#rule-wp-15.00) |
+| Branch independence results | [WP-15.01](#rule-wp-15.01) |
+| Attachment integrity and availability results | [WP-15.02](#rule-wp-15.02) |
+| Container distinction results | [WP-15.03](#rule-wp-15.03) |
+| Skill capability-free and versioning results | [WP-15.04](#rule-wp-15.04) |
+| Index rebuild, relevance and permission results | [WP-15.05](#rule-wp-15.05) |
+| Export completeness, manifest agreement, secret-scan and recovery results | [WP-15.06](#rule-wp-15.06) |
 
 ---
 
@@ -171,26 +189,24 @@
 
 **All of the following, with recorded evidence:**
 
-1. **Drift check only**: the reference is compared against its bound commit, and any newly introduced material is assessed against the accepted ArcChat scope. The matrix and its licence audit were completed as design-stage evidence and closed `PG-01` and `F-013` before this package began. Findings carried in: **F-AC-1** records that the reference implements remote control by running a web server on the user’s machine — the shape **D-010** forbids. `WP-26` and `WP-31` already assert the prohibition structurally.
+1. **Drift check only**: the reference is compared against its bound commit, and any newly introduced material is assessed against the accepted ArcChat scope. The matrix and its licence audit were completed as design-stage evidence and closed [PG-01](../../assurance/open-gates-register.md#rule-pg-01) and [F-013](../../assurance/open-gates-register.md#rule-f-013) before this package began. Findings carried in: **F-AC-1** records that the reference implements remote control by running a web server on the user’s machine — the shape **[D-010](../../decisions/phase-1-foundation-decisions.md#rule-d-010)** forbids. [WP-26](26-remote-action-and-tool-bridge.md#rule-wp-26) and [WP-31](31-arcchat-mobile-android.md#rule-wp-31) already assert the prohibition structurally.
 2. Committed messages are immutable; an interrupted stream never stores a fragment as complete; large conversations meet the responsiveness budget.
 3. Branching shares history by reference and never mutates the original.
 4. Attachments are stored by reference with integrity verification, and unavailability is a visible state.
 5. Projects, profiles and skills are structurally distinct, with skills conferring no capability and updates not altering history.
 6. Search over cached content works during a Cloud outage, rebuilds from scratch, and leaks nothing direct access would refuse.
-7. A Cloud conversation export is complete against its manifest, excludes unsynchronised edits and says so, carries no secrets (`EX-03` there), and recovery reports uncommitted loss explicitly. **No local conversation archive format is built** (`EX-01` of the ArcChat requirements).
+7. A Cloud conversation export is complete against its manifest, excludes unsynchronised edits and says so, carries no secrets ([EX-03](../../requirements/products/arcchat.md#rule-ex-03) there), and recovery reports uncommitted loss explicitly. **No local conversation archive format is built** ([EX-01](../../requirements/products/arcchat.md#rule-ex-01) of the ArcChat requirements).
 8. **ArcChat is fully usable with every other product absent.**
 
 ---
 
 ## 9. Dependencies
 
-**Upstream.** `14` (Hub and a working provider).
+**Upstream — all must be complete.**
 
-**Downstream.**
+- [14 — ArcChat Hub and Minimal ArcNotes Cross-Process Slice](14-hub-and-minimal-provider-slice.md)
 
-| Package | What it needs from here |
-|---|---|
-| `17` — ArcChat V1A | The domain the independent core completes |
-| `20` — First workflow | Conversations and artifacts to attach a real workflow to |
-| `25` — Sync | The ArcChat schema and revision semantics |
-| `31` — Mobile | The conversation semantics the companion mirrors |
+**Downstream — these consume this package’s completed output.**
+
+- [17 — ArcChat Independent Core V1A](17-arcchat-independent-core.md)
+- [52 — The Cloud Harness](52-cloud-harness.md)

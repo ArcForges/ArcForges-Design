@@ -2,15 +2,15 @@
 
 This directory defines product requirements for the ArcForges family: product scope, user capabilities, behavior, constraints, and acceptance criteria.
 
-All content here is **authoritative for current requirements**, subject to the current amendment below. It is governed by the frozen Phase 1 decisions in [`../decisions/phase-1-foundation-decisions.md`](../decisions/phase-1-foundation-decisions.md) (D-001 … D-023) and by the verification record in [`../assurance/phase-1-official-verification.md`](../assurance/phase-1-official-verification.md) (V-01 … V-09). Where a requirement is governed by a decision, the decision is cited inline.
+All content here is **authoritative for current requirements**, subject to the current amendment below. It is governed by the frozen Phase 1 decisions in [`../decisions/phase-1-foundation-decisions.md`](../decisions/phase-1-foundation-decisions.md) ([D-001](../decisions/phase-1-foundation-decisions.md#rule-d-001) … [D-023](../decisions/phase-1-foundation-decisions.md#rule-d-023)) and by the verification record in [`../assurance/phase-1-official-verification.md`](../assurance/phase-1-official-verification.md) ([V-01](../assurance/phase-1-official-verification.md#rule-v-01) … [V-09](../assurance/phase-1-official-verification.md#rule-v-09)). Where a requirement is governed by a decision, the decision is cited inline.
 
-## Current revision — P2-006, 2026-09-06
+## Current revision — [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006), 2026-09-06
 
-The [scope amendment P2-006](../decisions/phase-2-specification-decisions.md) supersedes conflicting earlier requirements: Cloud-only single-agent AI, paid official service without end-user BYOK, single-owner multi-device workspaces, one Cloud deployment host, native Avalonia desktop UI, a narrower note/preview scope, deterministic Cloud simulation and canonical .otio interchange.
+The [scope amendment P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006) supersedes conflicting earlier requirements: Cloud-only single-agent AI, paid official service without end-user BYOK, single-owner multi-device workspaces, one Cloud deployment host, native Avalonia desktop UI, a narrower note/preview scope, deterministic Cloud simulation and canonical .otio interchange.
 
 Required metering semantics are settled in [commerce §8.4–8.6](04-commerce-entitlement-and-credits.md): actual provider usage, immutable rates, independent supplier/customer/payment accounting, recoverable included capacity and explicitly authorized extra credits. [Configuration §10.5–10.6](11-policy-and-configuration.md) requires working public code driven by mounted private deployment values, with no proprietary policy repository or mock implementation.
 
-**This revision is a requirements update, not Stage 2 completion.** Existing architecture, database/wire designs, work packages, reference coverage, invariant mapping and assurance results must be reconciled to P2-006 and reviewed before they can claim current coverage. Old completion counts are historical evidence of the earlier baseline. Preserved inputs remain unchanged; retired IDs must not be implemented merely because an old matrix references them.
+**This revision is a requirements update, not Stage 2 completion.** Existing architecture, database/wire designs, work packages, reference coverage, invariant mapping and assurance results must be reconciled to [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006) and reviewed before they can claim current coverage. Old completion counts are historical evidence of the earlier baseline. Preserved inputs remain unchanged; retired IDs must not be implemented merely because an old matrix references them.
 
 ## Reading order
 
@@ -21,7 +21,7 @@ Read [`00-product-scope-and-portfolio.md`](00-product-scope-and-portfolio.md) an
 | Document | Covers |
 |---|---|
 | [`00-product-scope-and-portfolio.md`](00-product-scope-and-portfolio.md) | The frozen four-product baseline, commercial invariants, product independence, cross-product interaction, state ownership, data and control paths, the technology constitution, licensing scope, reference repositories, and the closed list of Architecture Baseline Changes |
-| [`01-normative-glossary-and-invariants.md`](01-normative-glossary-and-invariants.md) | **The D-018 gate.** One canonical definition per cross-product term, product namespacing, the full `X ≠ Y` invariant catalogue, term spaces, forbidden aliases and obsolete terms, and the V-02 MCP disambiguation |
+| [`01-normative-glossary-and-invariants.md`](01-normative-glossary-and-invariants.md) | **The [D-018](../decisions/phase-1-foundation-decisions.md#rule-d-018) gate.** One canonical definition per cross-product term, product namespacing, the full `X ≠ Y` invariant catalogue, term spaces, forbidden aliases and obsolete terms, and the [V-02](../assurance/phase-1-official-verification.md#rule-v-02) MCP disambiguation |
 | [`02-identity-account-and-workspace.md`](02-identity-account-and-workspace.md) | Realms, users and authentication identities, workspaces, devices, installations, instances and sessions, trust and remote access, step-up, API tokens, actors, account lifecycle and deletion, the account portal, and secret ownership |
 | [`03-cloud-services-and-sync.md`](03-cloud-services-and-sync.md) | The cloud capability bundle, data classification, sync scopes and change propagation, conflicts, deletion and tombstones, assets and immutable blobs, storage accounting, baseline storage protection and excluded encryption modes, cloud search, remote and cloud execution, automation in the cloud, notifications, the subscription lifecycle for cloud data, export and import, backup and disaster recovery, data health, and schema versioning |
 | [`04-commerce-entitlement-and-credits.md`](04-commerce-entitlement-and-credits.md) | The Paddle Merchant-of-Record baseline with Payoneer payout, the product catalogue, pricing and tax posture, the purchase flow with event inbox and reconciliation, the subscription lifecycle, the grant-based entitlement model, quota and usage, actual-token metering, recoverable included capacity, additional-credit ledgers and operator credential boundaries, refunds and disputes, mainland China, mobile commerce posture, and provider portability |
@@ -42,6 +42,6 @@ See [`products/README.md`](products/README.md).
 ## Conventions
 
 - Every requirement carries a stable identifier (`AB-nn`) so architecture, assurance and work packages can cite it precisely.
-- Every numeric commercial figure is **versioned commercial policy under D-020**, never a frozen commitment. Where a corpus-proposed default is recorded, it is labelled a proposal.
+- Every numeric commercial figure is **versioned commercial policy under [D-020](../decisions/phase-1-foundation-decisions.md#rule-d-020)**, never a frozen commitment. Where a corpus-proposed default is recorded, it is labelled a proposal.
 - Every `X ≠ Y` statement cites its invariant identifier from the glossary catalogue.
-- Superseded product names (`ArcCanvas`, `ArcMusic`, `ArcImage`, `ArcVideo`) and the superseded payment provider never appear as current, per **D-002** and **D-005**.
+- Superseded product names (`ArcCanvas`, `ArcMusic`, `ArcImage`, `ArcVideo`) and the superseded payment provider never appear as current, per **[D-002](../decisions/phase-1-foundation-decisions.md#rule-d-002)** and **[D-005](../decisions/phase-1-foundation-decisions.md#rule-d-005)**.

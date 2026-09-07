@@ -1,9 +1,11 @@
+<a id="rule-wp-49"></a>
+
 # WP-49 — ArcChat Web Companion
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: K — Web and release
-> Upstream: `26`, `48` · Downstream: `50`
+> Upstream: `26`, `48`, `52` · Downstream: `50`
 
 > **Goal.** Deliver the browser companion as the second deployment profile of the same application: chat, tasks, approvals, steering, artifacts and remote control — a cloud surface, distinct from the account portal, sharing no state with it.
 
@@ -21,11 +23,13 @@
 
 ## 2. Required inputs and dependencies
 
+The Web companion verifies real generation, tool approval, stream fallback and recovery through WP-52. Portal completion alone is not a working AI service.
+
 | Input | Why it matters |
 |---|---|
 | [`../../requirements/products/arcchat-mobile-and-web.md`](../../requirements/products/arcchat-mobile-and-web.md) | The companion product model shared with mobile |
 | [`../../architecture/10-web-architecture.md`](../../architecture/10-web-architecture.md) `§3`, `§4` | The application structure and the surface matrix |
-| `WP-26`, `WP-48` output | The remote closed loop and the shared application shell |
+| [WP-26](26-remote-action-and-tool-bridge.md#rule-wp-26), [WP-48](48-account-portal.md#rule-wp-48) output | The remote closed loop and the shared application shell |
 
 ---
 
@@ -33,8 +37,8 @@
 
 | # | Rule |
 |---|---|
-| BR-01 | **The chat profile shares no state, storage or cookies with the account profile** (**D-015**). |
-| BR-02 | **The browser never connects to a local endpoint.** Remote work goes through Cloud and the durable tool bridge (**D-010**). |
+| BR-01 | **The chat profile shares no state, storage or cookies with the account profile** (**[D-015](../../decisions/phase-1-foundation-decisions.md#rule-d-015)**). |
+| BR-02 | **The browser never connects to a local endpoint.** Remote work goes through Cloud and the durable tool bridge (**[D-010](../../decisions/phase-1-foundation-decisions.md#rule-d-010)**). |
 | BR-03 | **An operation requiring local presence cannot be completed from the browser alone.** |
 | BR-04 | **A web session is shorter-lived and less trusted than a desktop session.** |
 | BR-05 | **Web offline is minimal and honest**: it states it is offline and preserves unsent input; it does not pretend to work. |
@@ -63,6 +67,8 @@
 
 ## 5. Required implementation work
 
+<a id="rule-wp-49.00"></a>
+
 ### WP-49.00 — Chat profile and isolation
 
 **What must be fully done.** The chat deployment profile with its own navigation, branding and feature set, sharing the codebase with the account profile but no state, storage or cookies.
@@ -70,6 +76,8 @@
 **Testing requirements.** A cross-profile isolation test; a build-per-profile test; a navigation-scope test.
 
 **Completion gate.** The two profiles share code and provably share no state.
+
+<a id="rule-wp-49.01"></a>
 
 ### WP-49.01 — Conversation and streaming
 
@@ -79,6 +87,8 @@
 
 **Completion gate.** An interrupted stream is always shown as interrupted, never as complete.
 
+<a id="rule-wp-49.02"></a>
+
 ### WP-49.02 — Tasks, approval and steering
 
 **What must be fully done.** Task, run, step and tool-call surfaces with progress; approve, reject, cancel, pause, retry and steer as idempotent commands; approval requests described in the user's terms; local-presence-required operations clearly refused with an explanation.
@@ -86,6 +96,8 @@
 **Testing requirements.** Idempotency per control; a local-presence negative test; approval expiry; a durable-attention test asserting a missed notification loses nothing.
 
 **Completion gate.** Every control is idempotent, local-presence-required operations are refused with an explanation, and no pending approval is lost by a missed notification.
+
+<a id="rule-wp-49.03"></a>
 
 ### WP-49.03 — Artifacts and sandboxing
 
@@ -95,6 +107,8 @@
 
 **Completion gate.** **Hostile content cannot escape the preview sandbox**, permission is verified at access, and no public share link exists.
 
+<a id="rule-wp-49.04"></a>
+
 ### WP-49.04 — Remote control
 
 **What must be fully done.** Device presence and target selection; remote task issuance through the durable tool bridge; honest state when a target is offline including queue state and expiry.
@@ -103,6 +117,8 @@
 
 **Completion gate.** Remote work reaches a desktop only through the cloud bridge, and an offline target shows an honest queued state with an expiry.
 
+<a id="rule-wp-49.05"></a>
+
 ### WP-49.05 — Offline, degradation and accessibility
 
 **What must be fully done.** Honest offline messaging with unsent input preserved; realtime loss degrading to polling with backfill; a cloud outage reporting which capabilities are unavailable rather than blanking; accessibility with keyboard-only completion of every core workflow.
@@ -110,6 +126,8 @@
 **Testing requirements.** Offline and reconnection tests; a polling-degradation test; a cloud-outage test; accessibility automated and manual passes.
 
 **Completion gate.** The application never blanks, states what is unavailable and why, converges after reconnection, and completes every core workflow by keyboard.
+
+<a id="rule-wp-49.06"></a>
 
 ### WP-49.06 — Performance budgets
 
@@ -139,13 +157,13 @@
 
 | Evidence | Produced by |
 |---|---|
-| Cross-profile isolation results | `WP-49.00` |
-| Streaming, interruption and partial-message results | `WP-49.01` |
-| Control idempotency, local-presence and attention-durability results | `WP-49.02` |
-| Sandbox escape, permission-at-access and share-link absence results | `WP-49.03` |
-| Offline-target queueing and no-local-connection results | `WP-49.04` |
-| Offline, degradation, convergence and accessibility results | `WP-49.05` |
-| Budget measurements and regression-gate negative test | `WP-49.06` |
+| Cross-profile isolation results | [WP-49.00](#rule-wp-49.00) |
+| Streaming, interruption and partial-message results | [WP-49.01](#rule-wp-49.01) |
+| Control idempotency, local-presence and attention-durability results | [WP-49.02](#rule-wp-49.02) |
+| Sandbox escape, permission-at-access and share-link absence results | [WP-49.03](#rule-wp-49.03) |
+| Offline-target queueing and no-local-connection results | [WP-49.04](#rule-wp-49.04) |
+| Offline, degradation, convergence and accessibility results | [WP-49.05](#rule-wp-49.05) |
+| Budget measurements and regression-gate negative test | [WP-49.06](#rule-wp-49.06) |
 
 ---
 
@@ -165,10 +183,12 @@
 
 ## 9. Dependencies
 
-**Upstream.** `26` (the remote closed loop), `48` (the shared application shell).
+**Upstream — all must be complete.**
 
-**Downstream.**
+- [26 — Device Presence, Remote Action and the Tool Bridge](26-remote-action-and-tool-bridge.md)
+- [48 — Account Portal](48-account-portal.md)
+- [52 — The Cloud Harness](52-cloud-harness.md)
 
-| Package | What it needs from here |
-|---|---|
-| `50` — Production release | The web companion as a shippable surface |
+**Downstream — these consume this package’s completed output.**
+
+- [50 — Full-Platform Production Release](50-full-platform-production-release.md)

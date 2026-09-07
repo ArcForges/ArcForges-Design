@@ -1,9 +1,9 @@
 # Commerce, Entitlement and AI Credits Requirements
-> Current scope amendment: **[P2-006](../decisions/phase-2-specification-decisions.md)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
+> Current scope amendment: **[P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Requirements
-> Governing authority: **D-005** (Paddle MoR, Payoneer payout), **D-020** (economic model), **D-022** (mobile commerce), **D-023** (mainland China)
+> Governing authority: **[D-005](../decisions/phase-1-foundation-decisions.md#rule-d-005)** (Paddle MoR, Payoneer payout), **[D-020](../decisions/phase-1-foundation-decisions.md#rule-d-020)** (economic model), **[D-022](../decisions/phase-1-foundation-decisions.md#rule-d-022)** (mobile commerce), **[D-023](../decisions/phase-1-foundation-decisions.md#rule-d-023)** (mainland China)
 > Companions: [`02-identity-account-and-workspace.md`](02-identity-account-and-workspace.md), [`05-ai-and-agent-execution.md`](05-ai-and-agent-execution.md), [`../architecture/16-billing-and-commerce-architecture.md`](../architecture/16-billing-and-commerce-architecture.md)
 
 Two layers, permanently separated:
@@ -21,12 +21,12 @@ Two layers, permanently separated:
 
 | # | Requirement | Authority |
 |---|---|---|
-| PV-01 | **Paddle is the sole customer-facing Merchant of Record** for ArcForges web and cloud commerce. It owns checkout, subscriptions, recurring billing, applicable sales-tax and VAT handling, compliant invoices, refunds, chargebacks and payment webhooks. | D-005, V-06 |
-| PV-02 | **Payoneer is the payout and settlement destination only.** It is not a second Merchant of Record, not an interchangeable checkout provider, and not a customer-facing fallback processor. It never appears in a customer-facing flow, never issues an entitlement, and never appears in a client authority contract. | D-005, V-07 |
-| PV-03 | **Waffo Pancake is obsolete and SUPERSEDED.** It must not be verified, recommended, integrated, or included in any specification, roadmap, dependency, runtime component or implementation step. | D-005 |
-| PV-04 | The Merchant-of-Record relationship is a **commercial and tax fact, not an architectural one**. It must not propagate into domain contracts. | V-06 |
-| PV-05 | **Provider identifiers never reach the client.** The client knows `ArcForges Cloud Monthly`, never a provider product id. Purchase flows resolve provider mapping server-side. | D-005 |
-| PV-06 | Any provider secret, API key or signing key exists **only** in the ArcForges Cloud backend. It must never enter a desktop product, a mobile build or the browser bundle. | D-005 |
+| PV-01 | **Paddle is the sole customer-facing Merchant of Record** for ArcForges web and cloud commerce. It owns checkout, subscriptions, recurring billing, applicable sales-tax and VAT handling, compliant invoices, refunds, chargebacks and payment webhooks. | [D-005](../decisions/phase-1-foundation-decisions.md#rule-d-005), [V-06](../assurance/phase-1-official-verification.md#rule-v-06) |
+| PV-02 | **Payoneer is the payout and settlement destination only.** It is not a second Merchant of Record, not an interchangeable checkout provider, and not a customer-facing fallback processor. It never appears in a customer-facing flow, never issues an entitlement, and never appears in a client authority contract. | [D-005](../decisions/phase-1-foundation-decisions.md#rule-d-005), [V-07](../assurance/phase-1-official-verification.md#rule-v-07) |
+| PV-03 | **Waffo Pancake is obsolete and SUPERSEDED.** It must not be verified, recommended, integrated, or included in any specification, roadmap, dependency, runtime component or implementation step. | [D-005](../decisions/phase-1-foundation-decisions.md#rule-d-005) |
+| PV-04 | The Merchant-of-Record relationship is a **commercial and tax fact, not an architectural one**. It must not propagate into domain contracts. | [V-06](../assurance/phase-1-official-verification.md#rule-v-06) |
+| PV-05 | **Provider identifiers never reach the client.** The client knows `ArcForges Cloud Monthly`, never a provider product id. Purchase flows resolve provider mapping server-side. | [D-005](../decisions/phase-1-foundation-decisions.md#rule-d-005) |
+| PV-06 | Any provider secret, API key or signing key exists **only** in the ArcForges Cloud backend. It must never enter a desktop product, a mobile build or the browser bundle. | [D-005](../decisions/phase-1-foundation-decisions.md#rule-d-005) |
 | PV-07 | Test and production environments are fully isolated, with separate provider credentials. A test environment must never hold a production key. | Stage 3 §43 |
 
 ### 1.1 Responsibility split
@@ -48,13 +48,13 @@ Two layers, permanently separated:
 
 ## 2. Product catalogue
 
-Structural product shapes are fixed; all amounts are versioned commercial policy (**D-020**).
+Structural product shapes are fixed; all amounts are versioned commercial policy (**[D-020](../decisions/phase-1-foundation-decisions.md#rule-d-020)**).
 
 | Offer | Shape | Purpose |
 |---|---|---|
 | **ArcForges Cloud — recurring (monthly)** | Provider subscription product | Recurring cloud entitlement |
 | **ArcForges Cloud — recurring (annual)** | Provider subscription product | Recurring cloud entitlement, discounted cadence |
-| **ArcForges Cloud Pass** | One-time product, fixed 365-day term, **no auto-renewal** | Serves users who cannot or will not use a recurring method — required by **D-023**, because WeChat Pay supports no subscriptions at all and Alipay carries a renewal ceiling |
+| **ArcForges Cloud Pass** | One-time product, fixed 365-day term, **no auto-renewal** | Serves users who cannot or will not use a recurring method — required by **[D-023](../decisions/phase-1-foundation-decisions.md#rule-d-023)**, because WeChat Pay supports no subscriptions at all and Alipay carries a renewal ceiling |
 | **Arc AI Credits** | One-time products in several denominations | Prepaid managed-AI usage credits |
 | **Storage add-ons** (later) | Recurring or one-time quota grants | Additive storage quota |
 
@@ -63,7 +63,7 @@ Structural product shapes are fixed; all amounts are versioned commercial policy
 | CT-01 | **Monthly, annual and Pass grant the same Cloud entitlement bundle.** Purchase method differs; entitlement does not. The annual advantage is price, never a different feature or quota set. |
 | CT-02 | A provider may require separate provider-side products per billing period. That is an **adapter-level** concern. ArcForges must not model monthly and annual as two different business products. |
 | CT-03 | Arc AI Credits are non-transferable prepaid service units, with no cash value or withdrawal/trading facility. Purchase and consumption require an active official paid service term; credit ownership alone never enables AI. |
-| CT-04 | V1 sells one suite offer, not per-product plans. `ProductScope` is modelled from day one (`suite`, and per-product values) so a later split needs no data-model change (`C-10`). |
+| CT-04 | V1 sells one suite offer, not per-product plans. `ProductScope` is modelled from day one (`suite`, and per-product values) so a later split needs no data-model change ([C-10](00-product-scope-and-portfolio.md#rule-c-10)). |
 | CT-05 | V1 implements the suite subscription, the existing Cloud Pass, extra credit purchases and support compensation. Trials, coupons, referrals, seats and promotional campaigns are not required. |
 | CT-06 | Duplicate-entitlement purchases are prevented: an active subscription blocks Pass purchase; an active Pass either blocks or defers a new subscription so two sources do not both set `PaidThrough`. |
 | CT-07 | Repeated Pass purchase **extends** rather than replaces: `newStart = max(currentPaidThrough, purchaseTime)`, `newPaidThrough = newStart + term`. No remaining time is lost. |
@@ -75,16 +75,16 @@ Structural product shapes are fixed; all amounts are versioned commercial policy
 
 | # | Requirement |
 |---|---|
-| PC-01 | The price model is `Offer → PriceVersion → RegionalPrice`. A price change creates a new `PriceVersion`; existing purchases retain the version they were bought under. |
+| <a id="rule-pc-01"></a>PC-01 | The price model is `Offer → PriceVersion → RegionalPrice`. A price change creates a new `PriceVersion`; existing purchases retain the version they were bought under. |
 | PC-02 | **ArcForges never computes tax.** As Merchant of Record, Paddle calculates, collects and remits applicable sales tax, VAT and GST. ArcForges supplies the offer, the suggested price and a tax category; the provider determines final checkout tax and the invoice. Reimplementing provider tax logic is prohibited. |
 | PC-03 | Every pricing surface states that final price and applicable taxes are determined at checkout. |
-| PC-04 | **CNY product pricing is required, not forbidden**, for the mainland-China route. Paddle's Alipay route requires CNY-priced products and conditions approval on it (V-08). This inverts the corpus's earlier position and is absorbed by **D-023**'s "CNY product and tax configuration" gate. |
-| PC-05 | **Provider caps, currencies, approval rules and platform limitations must never be hard-coded into domain contracts** (**D-023**). They are expressed through `BillingProviderCapabilities` and verified commercial configuration. |
+| PC-04 | **CNY product pricing is required, not forbidden**, for the mainland-China route. Paddle's Alipay route requires CNY-priced products and conditions approval on it ([V-08](../assurance/phase-1-official-verification.md#rule-v-08)). This inverts the corpus's earlier position and is absorbed by **[D-023](../decisions/phase-1-foundation-decisions.md#rule-d-023)**'s "CNY product and tax configuration" gate. |
+| PC-05 | **Provider caps, currencies, approval rules and platform limitations must never be hard-coded into domain contracts** (**[D-023](../decisions/phase-1-foundation-decisions.md#rule-d-023)**). They are expressed through `BillingProviderCapabilities` and verified commercial configuration. |
 | PC-06 | Dynamic or server-overridden pricing, where used, is decided **only** by the ArcForges server. A client must never be able to propose a price. |
 
 ### 3.1 `BillingProviderCapabilities`
 
-A first-class, load-bearing concept (**D-005**, made concrete by **V-08**), because payment methods differ materially from each other and from cards:
+A first-class, load-bearing concept (**[D-005](../decisions/phase-1-foundation-decisions.md#rule-d-005)**, made concrete by **[V-08](../assurance/phase-1-official-verification.md#rule-v-08)**), because payment methods differ materially from each other and from cards:
 
 | Capability dimension | Why it varies |
 |---|---|
@@ -131,29 +131,29 @@ Clients refresh from the Entitlement API
 
 | # | Requirement |
 |---|---|
-| PF-01 | **Checkout requires a signed-in ArcForges account and a selected Workspace.** Anonymous purchase of Cloud or AI Credits is not permitted, because entitlement must be issued to a specific Workspace. |
-| PF-02 | **Buyer identity is a stable internal billing identity**, never an email address. A payment email such as `finance@company.com` must never determine ownership. Changing the account email must never lose a subscription. |
-| PF-03 | Checkout binds BillingAccountId, WorkspaceId, OfferId, PriceVersionId, CheckoutAttemptId and PurchaseIntentId server-side. Email changes do not change ownership. Cross-owner workspace transfer is not a supported purchase path. |
-| PF-04 | **A success redirect is never payment authority.** After returning from checkout the product shows a "confirming payment" state and waits for verified provider events. Granting entitlement from a redirect URL would be forgeable. |
-| PF-05 | Purchases are idempotent end to end: one `PurchaseIntent` yields at most one valid checkout; double-clicking Buy never produces two orders. |
+| <a id="rule-pf-01"></a>PF-01 | **Checkout requires a signed-in ArcForges account and a selected Workspace.** Anonymous purchase of Cloud or AI Credits is not permitted, because entitlement must be issued to a specific Workspace. |
+| <a id="rule-pf-02"></a>PF-02 | **Buyer identity is a stable internal billing identity**, never an email address. A payment email such as `finance@company.com` must never determine ownership. Changing the account email must never lose a subscription. |
+| <a id="rule-pf-03"></a>PF-03 | Checkout binds BillingAccountId, WorkspaceId, OfferId, PriceVersionId, CheckoutAttemptId and PurchaseIntentId server-side. Email changes do not change ownership. Cross-owner workspace transfer is not a supported purchase path. |
+| <a id="rule-pf-04"></a>PF-04 | **A success redirect is never payment authority.** After returning from checkout the product shows a "confirming payment" state and waits for verified provider events. Granting entitlement from a redirect URL would be forgeable. |
+| <a id="rule-pf-05"></a>PF-05 | Purchases are idempotent end to end: one `PurchaseIntent` yields at most one valid checkout; double-clicking Buy never produces two orders. |
 
 ### 4.1 Provider Event Inbox
 
 | # | Requirement |
 |---|---|
-| EV-01 | Every provider event is persisted before processing: provider, event id, event type, received time, raw payload, signature verification result, processing status, retry count. |
-| EV-02 | **Idempotency key is `eventType + eventId`.** The same event may affect business state exactly once, however many times it is delivered. |
-| EV-03 | Signature verification is mandatory. An unverified event is recorded and rejected, never processed. |
-| EV-04 | Webhook handling returns quickly and processes asynchronously. |
-| EV-05 | **A webhook is a trigger, never unconditional belief.** The processing chain validates: signature → known provider → known store → known product mapping → known purchase intent / buyer identity → valid payment state → not already processed → grant. |
+| <a id="rule-ev-01"></a>EV-01 | Every provider event is persisted before processing: provider, event id, event type, received time, raw payload, signature verification result, processing status, retry count. |
+| <a id="rule-ev-02"></a>EV-02 | **Idempotency key is `eventType + eventId`.** The same event may affect business state exactly once, however many times it is delivered. |
+| <a id="rule-ev-03"></a>EV-03 | Signature verification is mandatory. An unverified event is recorded and rejected, never processed. |
+| <a id="rule-ev-04"></a>EV-04 | Webhook handling returns quickly and processes asynchronously. |
+| <a id="rule-ev-05"></a>EV-05 | **A webhook is a trigger, never unconditional belief.** The processing chain validates: signature → known provider → known store → known product mapping → known purchase intent / buyer identity → valid payment state → not already processed → grant. |
 
 ### 4.2 Reconciliation
 
 | # | Requirement |
 |---|---|
-| RC-01 | Periodic reconciliation compares ArcForges commercial state against provider orders and subscriptions in both directions, and repairs divergence. |
-| RC-02 | **Losing one webhook must never permanently cost a user their subscription.** Reconciliation is the second line of defence, not an optional extra. |
-| RC-03 | Settlement lags transactions materially (payout cycles run on a monthly rhythm with a further transfer delay). **The reconciliation model must not assume payout timing tracks transaction timing** (V-07). |
+| <a id="rule-rc-01"></a>RC-01 | Periodic reconciliation compares ArcForges commercial state against provider orders and subscriptions in both directions, and repairs divergence. |
+| <a id="rule-rc-02"></a>RC-02 | **Losing one webhook must never permanently cost a user their subscription.** Reconciliation is the second line of defence, not an optional extra. |
+| <a id="rule-rc-03"></a>RC-03 | Settlement lags transactions materially (payout cycles run on a monthly rhythm with a further transfer delay). **The reconciliation model must not assume payout timing tracks transaction timing** ([V-07](../assurance/phase-1-official-verification.md#rule-v-07)). |
 
 ---
 
@@ -205,8 +205,8 @@ Two further combination rules exist for later use: **MAX** (e.g. two valid devic
 | EN-01 | Entitlement belongs to a single-owner Workspace. The owner UserId and explicit actor/resource authorisation are required; no organisation workspace, member role or team credit pool exists. |
 | EN-02 | **Billing Account pays; Workspace receives.** `Billing Account → Commercial Purchase → Workspace → Entitlements`. Who pays and who uses are different concepts. |
 | EN-03 | Native editing, acquisition, playback, rendering and pending-edit recovery do not consume AI entitlement. No local AI, local embedding, local agent or BYOK capability is defined. |
-| EN-04 | **Entitlement ≠ Feature Flag** (`I-004`). A feature flag says whether a capability has shipped; entitlement says whether a workspace may use it. |
-| EN-05 | **Entitlement ≠ Authorization** (`I-238`). `cloud.notes = enabled` says the workspace may use cloud notes; it never says a given actor may read a given document. Resource access always goes through authorization. |
+| EN-04 | **Entitlement ≠ Feature Flag** ([I-004](01-normative-glossary-and-invariants.md#rule-i-004)). A feature flag says whether a capability has shipped; entitlement says whether a workspace may use it. |
+| EN-05 | **Entitlement ≠ Authorization** ([I-238](01-normative-glossary-and-invariants.md#rule-i-238)). `cloud.notes = enabled` says the workspace may use cloud notes; it never says a given actor may read a given document. Resource access always goes through authorization. |
 | EN-06 | **No product computes its own entitlement.** Every product consumes one resolved snapshot from one resolver. Per-product logic such as `if provider status == active` is prohibited. |
 
 ### 6.3 Bundles and versioning
@@ -235,12 +235,12 @@ Two further combination rules exist for later use: **MAX** (e.g. two valid devic
 | # | Requirement |
 |---|---|
 | ES-01 | Clients consume an **Effective Entitlement Snapshot**, never grants, revocations, subscriptions or provider state. |
-| ES-02 | Each entitlement in the snapshot carries a **reason** when unavailable: `available`, `no_entitlement`, `subscription_expired`, `payment_grace`, `quota_exceeded`, `temporarily_restricted`, `workspace_suspended`, `feature_unavailable`. A bare `false` produces "something went wrong" user interfaces. |
+| <a id="rule-es-02"></a>ES-02 | Each entitlement in the snapshot carries a **reason** when unavailable: `available`, `no_entitlement`, `subscription_expired`, `payment_grace`, `quota_exceeded`, `temporarily_restricted`, `workspace_suspended`, `feature_unavailable`. A bare `false` produces "something went wrong" user interfaces. |
 | ES-03 | The snapshot carries an **`EntitlementVersion`** that increments on every effective change, so clients can cheaply detect staleness. |
 | ES-04 | Realtime notification announces that entitlement changed; **it is never the source of the new state**. The client re-reads from the entitlement API. A lost realtime message, an offline app or a backgrounded phone must not produce a wrong state. |
 | ES-05 | Clients cache the last verified snapshot and tolerate a bounded offline window (proposed default: 24 hours) so a transient cloud outage does not present as "your subscription ended". The cached snapshot is a **UX** measure only. |
-| ES-06 | Cloud re-evaluates identity, paid service term, policy, capacity and authorisation before each model/paid-tool dispatch and each other protected Cloud operation. A client assertion or cached entitlement is never authority. |
-| ES-07 | An **Entitlement Explain** view exists for support: it renders the derivation ("Base Cloud +50 GB; Storage add-on +100 GB; add-on ended −100 GB; effective 50 GB") so a support agent never guesses. |
+| <a id="rule-es-06"></a>ES-06 | Cloud re-evaluates identity, paid service term, policy, capacity and authorisation before each model/paid-tool dispatch and each other protected Cloud operation. A client assertion or cached entitlement is never authority. |
+| <a id="rule-es-07"></a>ES-07 | An **Entitlement Explain** view exists for support: it renders the derivation ("Base Cloud +50 GB; Storage add-on +100 GB; add-on ended −100 GB; effective 50 GB") so a support agent never guesses. |
 
 ### 6.6 Composite availability
 
@@ -262,9 +262,11 @@ Worked example — Remote Agent: feature flag GA, entitlement yes, workspace pol
 | # | Requirement |
 |---|---|
 | QU-01 | **Quota and Usage are separate data domains.** Storing only `remaining` is prohibited; purchasing an add-on must naturally change quota while usage is untouched. |
-| QU-02 | Storage quota is workspace-shared, not per product (`C-09`). |
-| QU-03 | **A quota downgrade never deletes data.** Usage above quota enters `Over Quota`: new uploads blocked; existing files readable; downloads allowed; deletion allowed. Dropping below quota automatically restores writes. |
+| QU-02 | Storage quota is workspace-shared, not per product ([C-09](00-product-scope-and-portfolio.md#rule-c-09)). |
+| <a id="rule-qu-03"></a>QU-03 | **A quota downgrade never deletes data.** Usage above quota enters `Over Quota`: new uploads blocked; existing files readable; downloads allowed; deletion allowed. Dropping below quota automatically restores writes. |
 | QU-04 | Quota presentation is explainable, showing the base grant, each add-on, and the resulting total, plus a per-product usage breakdown including versions and trash. |
+| QU-05 | Resource admission reserves bounded storage, staging and simulator budgets atomically across devices and replicas. Committed usage, pending reservations and operator physical exposure are distinguishable; upload/cancel/expiry cannot bypass a limit or release bytes before verified cleanup. |
+| QU-06 | Supplier monetary exposure is reserved per provider attempt across all workspaces and platform-funded calls. Each Run separately enforces its authorised customer total. Unknown upstream liability survives a customer-hold timeout; retry, restart and period rollover cannot erase it. |
 
 ---
 
@@ -276,23 +278,23 @@ Worked example — Remote Agent: feature flag GA, entitlement yes, workspace pol
 |---|---|
 | CR-01 | AI credits use a **Credit Ledger with Credit Lots**, never a single balance number. |
 | CR-02 | A purchased/compensation lot records source, grant/purchase reference, original amount, available/reserved/consumed amounts, creation, applicable term version and refund status. Current numerical balance is derived from immutable entries. |
-| CR-03 | IncludedCapacity is a replenishing subscription allowance, separately recorded from purchased CreditLots. V1 purchased credits do not expire merely with time or subscription cancellation; refunds, chargebacks and account deletion follow their explicit settlement rules. Compensation lots carry disclosed expiry. |
-| CR-04 | Use available included capacity first, then eligible compensation, then purchased credits only with explicit extra-usage authorisation. Compensation consumes earliest expiry first; purchased lots consume oldest acquisition first. Reservations preserve source allocation; no silent conversion between pools. |
-| CR-05 | Purchased credits survive service expiry but cannot be spent until a paid service term is active again. Renewal re-enables the retained balance without reissuing or transferring it. Expiry never causes a credit-only AI fallback. |
+| <a id="rule-cr-03"></a>CR-03 | IncludedCapacity is a replenishing subscription allowance, separately recorded from purchased CreditLots. V1 purchased credits do not expire merely with time or subscription cancellation; refunds, chargebacks and account deletion follow their explicit settlement rules. Compensation lots carry disclosed expiry. |
+| <a id="rule-cr-04"></a>CR-04 | Use available included capacity first, then eligible compensation, then purchased credits only with explicit extra-usage authorisation. Compensation consumes earliest expiry first; purchased lots consume oldest acquisition first. Reservations preserve source allocation; no silent conversion between pools. |
+| <a id="rule-cr-05"></a>CR-05 | Purchased credits survive service expiry but cannot be spent until a paid service term is active again. Renewal re-enables the retained balance without reissuing or transferring it. Expiry never causes a credit-only AI fallback. |
 | CR-06 | Monthly, annual and prepaid service terms use the same continuous included-capacity recovery policy. Paid-period transitions do not reset consumed usage or duplicate grants. |
-| CR-07 | **Three ledgers are permanently separate** (`I-011`): the **provider cost ledger**, the **customer credit ledger**, and the **payment/revenue ledger**. |
-| CR-08 | Credit accounting uses **fixed-precision arithmetic**. Floating-point accumulation is prohibited (**D-020**). |
-| CR-09 | Each run carries a **tariff snapshot**, so a historical charge is always explainable against the rates in force at the time (**D-020**). |
-| CR-10 | Historical financial records are **immutable** (**D-020**). |
+| <a id="rule-cr-07"></a>CR-07 | **Three ledgers are permanently separate** ([I-011](01-normative-glossary-and-invariants.md#rule-i-011)): the **provider cost ledger**, the **customer credit ledger**, and the **payment/revenue ledger**. |
+| <a id="rule-cr-08"></a>CR-08 | Credit accounting uses **fixed-precision arithmetic**. Floating-point accumulation is prohibited (**[D-020](../decisions/phase-1-foundation-decisions.md#rule-d-020)**). |
+| <a id="rule-cr-09"></a>CR-09 | Each run carries a **tariff snapshot**, so a historical charge is always explainable against the rates in force at the time (**[D-020](../decisions/phase-1-foundation-decisions.md#rule-d-020)**). |
+| <a id="rule-cr-10"></a>CR-10 | Historical financial records are **immutable** (**[D-020](../decisions/phase-1-foundation-decisions.md#rule-d-020)**). |
 
 ### 8.2 Reservation and settlement
 
 | # | Requirement |
 |---|---|
-| CR-20 | Credits are **reserved before execution and settled afterwards**. Three quantities exist: `Available`, `Reserved`, `Consumed`. |
-| CR-21 | Concurrent agent runs must not each independently pass a balance check against the same unreserved balance. Reservation is what prevents overdraft under concurrency. |
+| <a id="rule-cr-20"></a>CR-20 | Credits are **reserved before execution and settled afterwards**. Three quantities exist: `Available`, `Reserved`, `Consumed`. |
+| <a id="rule-cr-21"></a>CR-21 | Concurrent agent runs must not each independently pass a balance check against the same unreserved balance. Reservation is what prevents overdraft under concurrency. |
 | CR-22 | On completion the actual consumption is debited and the unused reservation released. |
-| CR-23 | No customer overdraft. Exhausted included capacity waits for recovery, or uses explicitly authorised extra credits within the task budget. With neither available, no new provider call starts. The UI states the reason and recovery/action path; no BYOK fallback. |
+| <a id="rule-cr-23"></a>CR-23 | No customer overdraft. Exhausted included capacity waits for recovery, or uses explicitly authorised extra credits within the task budget. With neither available, no new provider call starts. The UI states the reason and recovery/action path; no BYOK fallback. |
 | CR-24 | A refund request places the corresponding lot into **`RefundHold`**, freezing the affected amount, so the balance under review cannot be spent while the request is adjudicated. |
 
 ### 8.3 Presentation
@@ -305,39 +307,39 @@ Allowance and purchased credits are **displayed separately**, never summed into 
 
 | # | Requirement |
 |---|---|
-| MT-01 | Implement a real provider-usage normaliser, price resolver, capacity/reservation evaluator, settlement path and durable ledger. Public sample configuration must exercise this same code. Interfaces, fixed success responses or in-memory mock balances are not completion evidence. |
-| MT-02 | Each LogicalAIRequest may produce multiple ProviderAttempts. Record each actual attempt and its provider request identity, concrete model/version, route, processing/context/region tier, timestamps, usage source, completeness state and cost-version reference. Do not log prompts or content in the billing evidence. |
-| MT-03 | Meter non-overlapping provider-billable categories: uncached input, cached input/read, cache creation by supported class, output and any separately billed token modality. A normaliser must state inclusion relationships; reasoning already included in output and cached tokens already included in input must not be charged twice. |
-| MT-04 | Cost is the sum of each billable quantity multiplied by its configured category rate and unit divisor. The applicable context/processing/region tier is resolved from actual request facts; no universal per-model flat token price or silent default rate. Record applied modifiers exactly once. |
-| MT-05 | Pre-call token counting is an estimate used for admission/reservation. Final consumption uses provider-reported billable usage. Local text-length estimates and client-reported counters are never final cost authority. Streaming cumulative usage replaces earlier totals for that attempt; it is not summed as independent consumption. Validate non-negative quantities, request/model identity and declared category semantics; invalid or mismatched evidence enters reconciliation, never an automatic debit. |
-| MT-06 | Cost, customer service units and collected revenue are distinct. Cost uses the supplier price version applicable at dispatch; customer units use the Run's retail tariff snapshot (per request for ordinary chat). Upstream changes never retroactively alter customer tariffs or purchased lot balances. |
-| MT-07 | Record supplier amounts as fixed-precision decimal money with currency and at least nine fractional digits internally; customer accounting uses integer micro-credits (one credit = 1,000,000 micro-credits). No binary floating point. Reserve conservatively upward; settle once per logical request by declared half-even rounding after category aggregation, never per stream fragment. Provider invoice rounding differences are reconciliation adjustments. |
-| MT-08 | Every AI call is classified by beneficiary/purpose. User-requested delivered inference consumes included capacity or authorised extra credits. Platform routing, abuse checks, health checks, admitted background indexing and platform-caused failed/retried work are recorded as platform cost without charging the user for duplicate/non-delivered work. Such overhead still has provider and workspace resource budgets. |
-| MT-09 | Caller cancellation settles verified consumption already incurred within the authorised ceiling and releases the remainder; completed provider work is not presumed refundable. Platform failure/non-delivery releases customer reservation or appends a compensating credit adjustment. Supplier cost is retained in either case. |
-| MT-10 | Independently billed search/tool/media operations use explicit quantity/unit/rate lines alongside tokens. No feature may be enabled with an unpriced billable dimension. Supporting the metering contract does not itself add image/video generation or arbitrary paid tools to product scope. |
-| MT-11 | Persist settlement idempotency for each attempt usage revision and logical request. Duplicate/reordered events never double-debit; distinct real retries remain distinct supplier-cost records. Corrections append adjustments linked to the original records. |
-| MT-12 | Missing final usage, timeout after dispatch and lost responses produce UsagePending/CostUnconfirmed, never zero cost or a fabricated exact total. Reconcile through the available provider evidence; no blind redispatch or repeat charge. After the configured reconciliation deadline, release unresolved customer holds without surprise later debit, retain the unresolved supplier liability and alert/restrict the affected route as required. |
-| MT-13 | Reconcile calculated supplier cost against provider usage statements/invoices. Reconcile payments against the payment provider separately. Estimated cost, usage-confirmed calculated cost and invoice-reconciled cost remain distinguishable. |
-| MT-14 | Metering records contain the identities linking workspace, service term, request/run, attempt, reservation, usage, supplier price, customer tariff, lot/capacity source, debit and adjustment. Historical charges must remain reproducible after model retirement or configuration replacement. |
-| MT-15 | Dispatch must have an enforceable conservative bound on input, output/reasoning and separately billed tools, using actual route/category rules. An unbounded or unpriceable route cannot enter paid service. Verified supplier overrun beyond the authorized hold is an operator cost incident, not customer overdraft; block further dispatch, reconcile and adjust without erasing the real supplier usage. |
-| MT-16 | Money always carries currency. V1 supplier budgets compare amounts in the same currency; no implicit FX conversion or addition across currencies. Customer credits are currency-independent service units. Payment/refund amounts retain the original sale currency and terms. |
+| <a id="rule-mt-01"></a>MT-01 | Implement a real provider-usage normaliser, price resolver, capacity/reservation evaluator, settlement path and durable ledger. Public sample configuration must exercise this same code. Interfaces, fixed success responses or in-memory mock balances are not completion evidence. |
+| <a id="rule-mt-02"></a>MT-02 | Each LogicalAIRequest may produce multiple ProviderAttempts. Record each actual attempt and its provider request identity, concrete model/version, route, processing/context/region tier, timestamps, usage source, completeness state and cost-version reference. Do not log prompts or content in the billing evidence. |
+| <a id="rule-mt-03"></a>MT-03 | Meter non-overlapping provider-billable categories: uncached input, cached input/read, cache creation by supported class, output and any separately billed token modality. A normaliser must state inclusion relationships; reasoning already included in output and cached tokens already included in input must not be charged twice. |
+| <a id="rule-mt-04"></a>MT-04 | Cost is the sum of each billable quantity multiplied by its configured category rate and unit divisor. The applicable context/processing/region tier is resolved from actual request facts; no universal per-model flat token price or silent default rate. Record applied modifiers exactly once. |
+| <a id="rule-mt-05"></a>MT-05 | Pre-call token counting is an estimate used for admission/reservation. Final consumption uses provider-reported billable usage. Local text-length estimates and client-reported counters are never final cost authority. Streaming cumulative usage replaces earlier totals for that attempt; it is not summed as independent consumption. Validate non-negative quantities, request/model identity and declared category semantics; invalid or mismatched evidence enters reconciliation, never an automatic debit. |
+| <a id="rule-mt-06"></a>MT-06 | Cost, customer service units and collected revenue are distinct. Cost uses the supplier price version applicable at dispatch; customer units use the Run's retail tariff snapshot (per request for ordinary chat). Upstream changes never retroactively alter customer tariffs or purchased lot balances. |
+| <a id="rule-mt-07"></a>MT-07 | Record supplier amounts as fixed-precision decimal money with currency and at least nine fractional digits internally; customer accounting uses integer micro-credits (one credit = 1,000,000 micro-credits). No binary floating point. Reserve conservatively upward; settle once per logical request by declared half-even rounding after category aggregation, never per stream fragment. Provider invoice rounding differences are reconciliation adjustments. |
+| <a id="rule-mt-08"></a>MT-08 | Every AI call is classified by beneficiary/purpose. User-requested delivered inference consumes included capacity or authorised extra credits. Platform routing, abuse checks, health checks, admitted background indexing and platform-caused failed/retried work are recorded as platform cost without charging the user for duplicate/non-delivered work. Such overhead still has provider and workspace resource budgets. |
+| <a id="rule-mt-09"></a>MT-09 | Caller cancellation settles verified consumption already incurred within the authorised ceiling and releases the remainder; completed provider work is not presumed refundable. Platform failure/non-delivery releases customer reservation or appends a compensating credit adjustment. Supplier cost is retained in either case. |
+| <a id="rule-mt-10"></a>MT-10 | Independently billed search/tool/media operations use explicit quantity/unit/rate lines alongside tokens. No feature may be enabled with an unpriced billable dimension. Supporting the metering contract does not itself add image/video generation or arbitrary paid tools to product scope. |
+| <a id="rule-mt-11"></a>MT-11 | Persist settlement idempotency for each attempt usage revision and logical request. Duplicate/reordered events never double-debit; distinct real retries remain distinct supplier-cost records. Corrections append adjustments linked to the original records. |
+| <a id="rule-mt-12"></a>MT-12 | Missing final usage, timeout after dispatch and lost responses produce UsagePending/CostUnconfirmed, never zero cost or a fabricated exact total. Reconcile through the available provider evidence; no blind redispatch or repeat charge. After the configured reconciliation deadline, release unresolved customer holds without surprise later debit, retain the unresolved supplier liability and alert/restrict the affected route as required. |
+| <a id="rule-mt-13"></a>MT-13 | Reconcile calculated supplier cost against provider usage statements/invoices. Reconcile payments against the payment provider separately. Estimated cost, usage-confirmed calculated cost and invoice-reconciled cost remain distinguishable. |
+| <a id="rule-mt-14"></a>MT-14 | Metering records contain the identities linking workspace, service term, request/run, attempt, reservation, usage, supplier price, customer tariff, lot/capacity source, debit and adjustment. Historical charges must remain reproducible after model retirement or configuration replacement. |
+| <a id="rule-mt-15"></a>MT-15 | Dispatch must have an enforceable conservative bound on input, output/reasoning and separately billed tools, using actual route/category rules. An unbounded or unpriceable route cannot enter paid service. Verified supplier overrun beyond the authorized hold is an operator cost incident, not customer overdraft; block further dispatch, reconcile and adjust without erasing the real supplier usage. |
+| <a id="rule-mt-16"></a>MT-16 | Money always carries currency. V1 supplier budgets compare amounts in the same currency; no implicit FX conversion or addition across currencies. Customer credits are currency-independent service units. Payment/refund amounts retain the original sale currency and terms. |
 
 ### 8.5 Replenishing subscription capacity and extra credits
 
 | # | Requirement |
 |---|---|
-| AC-01 | IncludedCapacity is a workspace-wide bucket denominated in the same fixed-precision customer service units as the retail tariff. Its burst capacity and recovery rate are explicit deployment parameters. They are independent of the monthly sale price and supplier-cost budget; none is inferred by treating subscription revenue as an equal amount of provider spend. |
-| AC-02 | Capacity recovers only during a valid paid service interval, up to the configured burst ceiling. Authoritative server time and durable refill/account state govern recovery; clamp backward elapsed time to zero. Reconnect, process restart, another device, replica or request cannot reset the bucket. |
+| <a id="rule-ac-01"></a>AC-01 | IncludedCapacity is a workspace-wide bucket denominated in the same fixed-precision customer service units as the retail tariff. Its burst capacity and recovery rate are explicit deployment parameters. They are independent of the monthly sale price and supplier-cost budget; none is inferred by treating subscription revenue as an equal amount of provider spend. |
+| <a id="rule-ac-02"></a>AC-02 | Capacity recovers only during a valid paid service interval, up to the configured burst ceiling. Authoritative server time and durable refill/account state govern recovery; clamp backward elapsed time to zero. Reconnect, process restart, another device, replica or request cannot reset the bucket. |
 | AC-03 | First paid activation initialises the configured capacity once under an idempotent grant. Contiguous renewal extends the eligible interval without refilling to full. On lapse, included capacity becomes unavailable and does not accumulate during the gap; a new paid term initialises once under its own source. Remaining purchased credits are unaffected. |
-| AC-04 | Admission atomically reserves capacity/credits and checks workspace concurrency, per-request/per-run ceilings, provider budget and current entitlement. A request whose bound can never fit the allowed capacity plus authorised extra credits is rejected with a smaller-request/budget action, never queued forever. |
-| AC-05 | Reserve the next bounded model/tool invocation before dispatch and settle its actual usage afterward. Long Tasks additionally have a total authorised ceiling; they cannot reserve the whole workspace indefinitely while waiting for a device or approval. Release unused holds at terminal/safe boundaries, retaining only documented unresolved-cost holds. |
-| AC-06 | Included capacity may cause WaitingForRateLimit/Capacity until a server-calculated recovery time. Extra credits are used only after a user enables extra usage with a maximum budget. Background automation obeys its previously authorised budget. No automatic purchase, recharge or unbounded paid fallback. |
-| AC-07 | All desktop, Web, Mobile and automation entry points share the same workspace capacity/credits and actor authorisation. Changing a model changes consumption through the tariff, not by granting a new independent allowance. |
+| <a id="rule-ac-04"></a>AC-04 | Admission atomically reserves capacity/credits and checks workspace concurrency, per-request/per-run ceilings, provider budget and current entitlement. A request whose bound can never fit the allowed capacity plus authorised extra credits is rejected with a smaller-request/budget action, never queued forever. |
+| <a id="rule-ac-05"></a>AC-05 | Reserve the next bounded model/tool invocation before dispatch and settle its actual usage afterward. Long Tasks additionally have a total authorised ceiling; they cannot reserve the whole workspace indefinitely while waiting for a device or approval. Release unused holds at terminal/safe boundaries, retaining only documented unresolved-cost holds. |
+| <a id="rule-ac-06"></a>AC-06 | Included capacity may cause WaitingForRateLimit/Capacity until a server-calculated recovery time. Extra credits are used only after a user enables extra usage with a maximum budget. Background automation obeys its previously authorised budget. No automatic purchase, recharge or unbounded paid fallback. |
+| <a id="rule-ac-07"></a>AC-07 | All desktop, Web, Mobile and automation entry points share the same workspace capacity/credits and actor authorisation. Changing a model changes consumption through the tariff, not by granting a new independent allowance. |
 | AC-08 | Customer-facing limits state available capacity, recovery timing, model cost class, applicable per-task/concurrency restrictions and extra-credit rules. A recurring monthly allowance cap, if later introduced, must be disclosed as a cap and requires an explicit policy/terms revision. No hidden cap is described as merely a speed restriction. |
-| AC-09 | Rate limiting, safety limits and provider availability remain enforceable even with extra credits. A new operator price/configuration release cannot retroactively lower a started Run's customer budget or silently raise its tariff. |
-| AC-10 | Subscription capacity consumption, purchased-credit consumption, compensation, supplier cost and payment revenue remain separately queryable. A user can explain which pool funded a request and why it waited, stopped or charged credits. |
-| AC-11 | Refill arithmetic counts included reservations against the burst ceiling: after accounting for eligible elapsed time, available capacity cannot exceed max(0, burst − held included capacity). Settling a hold debits actual use and releases only its unused source allocation. Returned capacity is capped; a refund must not mint spendable capacity above the burst. Purchased credits have a separate conservation ledger and never refill. |
-| AC-12 | Preserve fractional refill remainder across evaluations. Advance the durable refill watermark monotonically, never backwards; calculate only the overlap with eligible service intervals. Frequent requests, rounding, clock rollback, racing replicas or a long outage cannot increase the contractual recovery rate. Config changes apply at recorded boundaries without resetting the watermark or releasing holds. |
+| <a id="rule-ac-09"></a>AC-09 | Rate limiting, safety limits and provider availability remain enforceable even with extra credits. A new operator price/configuration release cannot retroactively lower a started Run's customer budget or silently raise its tariff. |
+| <a id="rule-ac-10"></a>AC-10 | Subscription capacity consumption, purchased-credit consumption, compensation, supplier cost and payment revenue remain separately queryable. A user can explain which pool funded a request and why it waited, stopped or charged credits. |
+| <a id="rule-ac-11"></a>AC-11 | Included reservations count against the burst ceiling. Every change of held/available capacity first accounts for eligible elapsed time under the previous state; read frequency cannot alter the result. Accrual/new issuance is bounded by max(previous available balance, max(0, current burst − held)). A reduced ceiling preserves already-issued available and held capacity, with no further above-ceiling accrual. Settlement consumes verified use and transfers unused original funding from held to available in full; this transfer creates no capacity and total available-plus-held falls only by consumption. Purchased credits have a separate conservation ledger and never refill. |
+| <a id="rule-ac-12"></a>AC-12 | Preserve fractional refill remainder across evaluations. Advance the durable refill watermark monotonically, never backwards; calculate only the overlap with eligible service intervals. Frequent requests, rounding, clock rollback, racing replicas or a long outage cannot increase the contractual recovery rate. Config changes apply at recorded boundaries without resetting the watermark or releasing holds. |
 
 ### 8.6 Configuration and acceptance
 
@@ -357,10 +359,10 @@ Official paid-service rules apply uniformly to all official AI, including chat, 
 
 | # | Requirement |
 |---|---|
-| BY-01 | Retired by P2-006: no local BYOK access path, entitlement bypass or provider-key UI. |
-| BY-02 | Retired by P2-006: no end-user Cloud BYOK product, key store or paid feature. |
+| <a id="rule-by-01"></a>BY-01 | Retired by [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006): no local BYOK access path, entitlement bypass or provider-key UI. |
+| BY-02 | Retired by [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006): no end-user Cloud BYOK product, key store or paid feature. |
 | BY-03 | Deployment-operator provider credentials fund the Cloud service; they never become end-user keys or change a user's payer mid-request. |
-| BY-04 | Independent self-host policy authorises only its own realm and operator-funded providers. No local flag or self-host grant can authorise official Cloud AI. |
+| <a id="rule-by-04"></a>BY-04 | Independent self-host policy authorises only its own realm and operator-funded providers. No local flag or self-host grant can authorise official Cloud AI. |
 
 ---
 
@@ -372,7 +374,7 @@ Official paid-service rules apply uniformly to all official AI, including chat, 
 | RF-02 | Partial refund is designed primarily for **AI credits**, where the unused proportion is naturally computable. A fixed-term Pass is treated as fully refundable or not per policy in V1; day-proportional automatic partial refunds are not implemented, because term, tax and compensation-day interactions are disproportionately complex. |
 | RF-03 | Subscription handling is cancel-at-period-end. The interface must **not** claim subscriptions are never refundable; the Merchant of Record may still refund under law, consumer protection or payment risk. The stated path is cancel plus a separate billing-support request. |
 | RF-04 | **Commercial Evidence is retained per order**: order, checkout, terms version, refund-policy version, account identity, workspace, entitlement granted, sign-in activity, cloud usage, AI usage, support history, cancellation request, refund request. Its purpose is proving delivery in a dispute, not surveillance. |
-| RF-05 | **The dispute model must not assume the card pathway.** Neither Alipay nor WeChat Pay supports chargebacks (V-08), so refund and reconciliation behaviour cannot be modelled once and assumed universal. |
+| RF-05 | **The dispute model must not assume the card pathway.** Neither Alipay nor WeChat Pay supports chargebacks ([V-08](../assurance/phase-1-official-verification.md#rule-v-08)), so refund and reconciliation behaviour cannot be modelled once and assumed universal. |
 
 ---
 
@@ -393,7 +395,7 @@ ArcForges must not reimplement an invoice engine, a tax-invoice editor or a paym
 
 ## 12. Mainland China
 
-Governed entirely by **D-023**, confirmed item-for-item by **V-08**.
+Governed entirely by **[D-023](../decisions/phase-1-foundation-decisions.md#rule-d-023)**, confirmed item-for-item by **[V-08](../assurance/phase-1-official-verification.md#rule-v-08)**.
 
 | # | Requirement |
 |---|---|
@@ -408,7 +410,7 @@ Governed entirely by **D-023**, confirmed item-for-item by **V-08**.
 
 ## 13. Mobile commerce posture
 
-Governed by **D-022**, confirmed by **V-09**.
+Governed by **[D-022](../decisions/phase-1-foundation-decisions.md#rule-d-022)**, confirmed by **[V-09](../assurance/phase-1-official-verification.md#rule-v-09)**.
 
 | ArcChat Mobile may | ArcChat Mobile must not |
 |---|---|
@@ -421,8 +423,8 @@ Governed by **D-022**, confirmed by **V-09**.
 | # | Requirement |
 |---|---|
 | MB-01 | The same conservative behaviour applies across **all** storefronts, even where a regional programme permits external links. This avoids region-specific commercial builds and continuously tracked programme eligibility. |
-| MB-02 | The entitlement architecture stays **capable of accepting a future store-originated grant** — an Apple or Google purchase would produce an ordinary `EntitlementGrant` with a different source — but that source is not implemented until a new explicit decision authorises mobile purchasing. |
-| MB-03 | A build-time and CI check asserts that no code path in a mobile build can present a purchase call to action or accept a licence key. The licence-key path is the prohibition most likely to be violated by accident, since it is a natural engineering shortcut for offline entitlement. |
+| <a id="rule-mb-02"></a>MB-02 | The entitlement architecture stays **capable of accepting a future store-originated grant** — an Apple or Google purchase would produce an ordinary `EntitlementGrant` with a different source — but that source is not implemented until a new explicit decision authorises mobile purchasing. |
+| <a id="rule-mb-03"></a>MB-03 | A build-time and CI check asserts that no code path in a mobile build can present a purchase call to action or accept a licence key. The licence-key path is the prohibition most likely to be violated by accident, since it is a natural engineering shortcut for offline entitlement. |
 
 ---
 
@@ -432,7 +434,7 @@ Governed by **D-022**, confirmed by **V-09**.
 |---|---|
 | PP-01 | All provider identifiers (`ProviderCustomerId`, `ProviderOrderId`, `ProviderPaymentId`, `ProviderSubscriptionId`, `ProviderProductId`) exist only inside a **Provider Mapping**. ArcForges' own `OfferId`, `SubscriptionId` and `EntitlementId` are always its own. |
 | PP-02 | A future additional or replacement source — Apple, Google, another Merchant of Record — produces `EntitlementGrant`s with a different `EntitlementSource`. **No client or product logic changes.** |
-| PP-03 | The architecture must not depend irreversibly on any one provider's proprietary data model (**D-005**). |
+| PP-03 | The architecture must not depend irreversibly on any one provider's proprietary data model (**[D-005](../decisions/phase-1-foundation-decisions.md#rule-d-005)**). |
 | PP-04 | Provider capability gaps are absorbed by the ArcForges layer. Where a provider cannot perform an in-place plan switch, ArcForges still models the user's intent and delivers the outcome by a supported path. |
 
 ---
@@ -516,8 +518,8 @@ Until funds are actually received, the correct statement is "technical integrati
 | `I4 §Stage 3` | Provider-independent commercial domain model, checkout and webhook discipline, evidence retention, portal division — **with every Waffo-specific mechanic excluded as SUPERSEDED** |
 | `I4 §Stage 4` | The complete entitlement model: kinds, grants, revocations, resolver, snapshot, quotas, credit ledger, grace and restriction behaviour |
 | `I4 §Stage 0`, `§Stage 8` | Commercial layering, credit accounting shape |
-| **D-005** | Paddle MoR, Payoneer payout, preserved abstraction principles |
-| **D-020** | Every amount is versioned commercial policy; fixed-precision accounting; reserve-then-settle; hard stop |
-| **D-022**, **V-09** | Mobile consumption-only posture and its traceable prohibitions |
-| **D-023**, **V-08** | Mainland-China route, capability variation, chargeback absence, CNY requirement |
-| **V-06**, **V-07** | Merchant-of-Record scope; payout relationship and settlement timing |
+| **[D-005](../decisions/phase-1-foundation-decisions.md#rule-d-005)** | Paddle MoR, Payoneer payout, preserved abstraction principles |
+| **[D-020](../decisions/phase-1-foundation-decisions.md#rule-d-020)** | Every amount is versioned commercial policy; fixed-precision accounting; reserve-then-settle; hard stop |
+| **[D-022](../decisions/phase-1-foundation-decisions.md#rule-d-022)**, **[V-09](../assurance/phase-1-official-verification.md#rule-v-09)** | Mobile consumption-only posture and its traceable prohibitions |
+| **[D-023](../decisions/phase-1-foundation-decisions.md#rule-d-023)**, **[V-08](../assurance/phase-1-official-verification.md#rule-v-08)** | Mainland-China route, capability variation, chargeback absence, CNY requirement |
+| **[V-06](../assurance/phase-1-official-verification.md#rule-v-06)**, **[V-07](../assurance/phase-1-official-verification.md#rule-v-07)** | Merchant-of-Record scope; payout relationship and settlement timing |

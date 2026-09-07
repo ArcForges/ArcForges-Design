@@ -1,9 +1,11 @@
+<a id="rule-wp-25"></a>
+
 # WP-25 — Sync Engine and Blob Lifecycle
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: E — First real cloud
-> Upstream: `19`, `24` · Downstream: `26`, `28`, `35`, `39`, `40`, `46`, `51`
+> Upstream: `19`, `24` · Downstream: `26`, `28`, `35`, `39`, `40`, `43`, `46`, `51`
 
 > **Goal.** Prove sync on ArcNotes: a client outbox, a server inbox, a change feed, five conflict policies, deletion propagation, and a blob lifecycle that never leaves a reference pointing at nothing — with multi-device convergence demonstrated, not assumed.
 
@@ -15,7 +17,7 @@
 
 **Out of scope.** ArcScope and ArcSlate sync strategies (`35`, `39`) — this package establishes the engine those extend. Backup and disaster recovery (`46`).
 
-**Why this package exists.** `SQ-05`: ArcNotes is the right product to prove the initial sync protocol — more complex than a toy, simpler than raw captures or large media, yet sufficient to validate revisions, attachments, deletions, conflicts, history and recovery (`I2 §III.6`).
+**Why this package exists.** [SQ-05](../implementation-sequence.md#rule-sq-05): ArcNotes is the right product to prove the initial sync protocol — more complex than a toy, simpler than raw captures or large media, yet sufficient to validate revisions, attachments, deletions, conflicts, history and recovery (`I2 §III.6`).
 
 ---
 
@@ -25,7 +27,7 @@
 |---|---|
 | [`../../architecture/07-sync-conflict-and-backup.md`](../../architecture/07-sync-conflict-and-backup.md) | Identity and revision, outbox/inbox, change feed, conflict policies, blob lifecycle, protection profiles, data health |
 | [`../../requirements/03-cloud-services-and-sync.md`](../../requirements/03-cloud-services-and-sync.md) | Sync scopes, per-product defaults, change propagation, tombstones, storage accounting |
-| `WP-19`, `WP-24` output | A format proven to round-trip locally, and gap-detecting change notification |
+| [WP-19](19-arcnotes-search-and-portability.md#rule-wp-19), [WP-24](24-realtime-and-reliable-events.md#rule-wp-24) output | A format proven to round-trip locally, and gap-detecting change notification |
 
 ---
 
@@ -40,7 +42,7 @@
 | BR-05 | **A conflict is never silently resolved by discarding a side.** Where a policy chooses, the discarded version remains recoverable. |
 | BR-06 | **Deletion propagates through tombstones** with a defined retention, so a deletion is not undone by a device that was offline. |
 | BR-07 | **A blob is Staged, then Verified, then Committed.** A reference is never published before its blob is committed. |
-| BR-08 | **`Cloud Sync ≠ Raw Capture Upload`** (`I-474`) — the scope model must make product-specific exclusions expressible from the start. |
+| BR-08 | **`Cloud Sync ≠ Raw Capture Upload`** ([I-474](../../requirements/01-normative-glossary-and-invariants.md#rule-i-474)) — the scope model must make product-specific exclusions expressible from the start. |
 | BR-09 | **Availability is an explicit state**: available locally, available remotely, syncing, unavailable — never an error at read time. |
 | BR-10 | **Storage accounting is computed from committed objects**, never from client-reported figures. |
 | BR-11 | **Loss of subscription never deletes user data**; it changes access, with an explicit stated behaviour. |
@@ -63,29 +65,37 @@
 
 ## 5. Required implementation work
 
-### WP-25.00 — Sync scopes
+<a id="rule-wp-25.00"></a>
 
-**What must be fully done.** Scopes declared per product with defaults, so a product can sync metadata while excluding heavyweight content. Scope changes take effect without re-uploading unchanged content. The exclusion mechanism is expressive enough for `BR-08` before ArcScope needs it.
+### WP-25.00 — Cloud Notes authority and sync scopes
 
-**Testing requirements.** Scope enable, disable and re-enable without redundant transfer; an exclusion expressiveness test using a simulated large-content scope.
+**What must be fully done.** Implement the canonical notes schema in [Cloud data model §8.4](../../architecture/data-model/01-cloud-data-model.md#84-cloud-notes-canonical-model): notebook-owned folders, document-owned blocks and values, tags, property definitions, saved views, immutable revisions, checkpoints and derived backlinks. Add the typed folder/document/history operations and their sorted-root revision checks. Cloud validates the same typed operations as the local domain; publication, receipts and Resource/Entitlement enlistment share the commit.
 
-**Completion gate.** Scopes are per-product, changeable without redundant transfer, and can express a content exclusion.
+**Testing requirements.** Folder cycle/reorder/reparent, cross-notebook move with stable document IDs, concurrent move/delete, ancestor trash/restore without restoring separately trashed documents, stale revisions, immutable history and revision/attachment pins. Verify generated API/SQLite projections against real PostgreSQL.
 
-### WP-25.01 — Client submission batch log
+**Completion gate.** A note has one complete server authority model and hierarchy, with executable operations, history and resource ownership; no client is required to create authoritative schema or assign Cloud revisions.
 
-**What must be fully done.** The submission log of `§1.3a` of the desktop data model: durable local edits taking a strictly increasing, **never reset** `local_seq`; immutable batches recording the exact `(from_local_seq, to_local_seq)` range they cover and the `expected_rev` they were built against; at most one batch in flight per aggregate; and an acknowledgement advancing `acked_local_seq` **to that range's end and no further**. Editing continues freely while a batch is in flight — new edits take the next sequence and wait for the next batch, and **editing is never blocked on network latency** (`SB-L1`).
+<a id="rule-wp-25.01"></a>
 
-**Testing requirements.** **The in-flight counterexample**: edit A durable and dispatched, edit B durable on the same aggregate while A is in flight, A acknowledged — assert B is still pending, the row is **not** evictable, and B is submitted in the next batch (`RV-C2`). A duplicate acknowledgement and a late acknowledgement arriving after a newer one, each asserting the watermark never moves backwards (`SB-L4`). A lost response re-sent under the same `batch_id` returning the original result with one effect (`SB-L5`). A restart mid-flight resuming from the log alone (`SB-L6`). A conflict asserting the watermark does not advance, the covered edits stay pending, and subsequent pending work rebases without loss (`SB-L7`, `SB-L8`). A mutation attempt on a dispatched batch, asserting it is **refused** (`SB-L2`). A latency test asserting edit throughput is unaffected by a slow acknowledgement.
+### WP-25.01 — Pending batches and conflict lineage
 
-**Completion gate.** **An acknowledgement clears exactly the work it covered and nothing more**; no path discards an unacknowledged edit; a dispatched request is never mutated under its own idempotency identity; and editing proceeds at full speed while a batch is in flight.
+**What must be fully done.** Implement the single sync_outbox schema, acked shadow plus pending journal, frozen batch hash/revision/range, and explicit supersession lineage in the desktop data model. A user conflict resolution appends a new local event and records retained/transformed/discarded dispositions; it never edits the frozen failed batch. Replacement covers the unacknowledged range, while historical superseded ranges remain auditable.
 
-### WP-25.02 — Server inbox and change feed
+**Testing requirements.** Edit during dispatch, conflict followed by keep-local/keep-Cloud/merge, dependent undispatched batches, crash at each resolution write, late old receipt and own-origin feed echo. Verify local composite version advances, original pending work remains recoverable and no old receipt acknowledges a replacement.
 
-**What must be fully done.** The inbox deduplicates by command identity. The change feed is cursor-based, stable under concurrent writes, and resumable from any retained cursor. An expired cursor produces an explicit full-resync instruction rather than silent divergence.
+**Completion gate.** Every local edit has a durable outcome and exactly one live submission lineage. Query/index tokens describe the materialised state and no conflict silently drops pending content.
 
-**Testing requirements.** Duplicate submission; feed stability under concurrent mutation; expired-cursor behaviour.
+<a id="rule-wp-25.02"></a>
 
-**Completion gate.** Duplicates have no additional effect, the feed is stable and resumable, and an expired cursor produces an explicit instruction.
+### WP-25.02 — Published feed, bootstrap and revision application
+
+**What must be fully done.** Implement the committed publication sequence and bounded bootstrap manifest/pin protocol. Capture W then a primary repeatable-read snapshot at or after W, retain bounded immutable pages, and resume the feed after W. Every client applies only a newer aggregate revision including tombstones; duplicates/older rows never replace a newer bootstrap value. Advance a page cursor only after durable processing; resolve cross-aggregate references by canonical minRevision lookup.
+
+**Testing requirements.** Bootstrap sees v2 while feed still includes v1; own-origin echo; two same-millisecond UUID revisions in reverse order; late commit above advanced cursor; page retry/cursor expiry; tombstone retention floor and missing structural dependency. Preserve pending edits through full resync.
+
+**Completion gate.** Bootstrap plus feed loses no committed change and never regresses an aggregate, even with duplicates, delayed publication, structural references and pending local work. [PG-17](../../assurance/open-gates-register.md#rule-pg-17) stays a real multi-writer test gate.
+
+<a id="rule-wp-25.03"></a>
 
 ### WP-25.03 — Conflict detection and policies
 
@@ -95,6 +105,8 @@
 
 **Completion gate.** Every conflict path is covered, every discarded version is recoverable, and user-facing conflicts present both versions.
 
+<a id="rule-wp-25.04"></a>
+
 ### WP-25.04 — Deletion and tombstones
 
 **What must be fully done.** Deletion propagates through tombstones with defined retention. A device offline beyond retention resolves deterministically rather than resurrecting deleted content silently. Local deletion, cloud deletion and unsync are distinguished.
@@ -102,6 +114,8 @@
 **Testing requirements.** Offline-beyond-retention convergence; a resurrection-prevention test; a distinction test across the three delete-like actions.
 
 **Completion gate.** Deleted content never silently resurrects, and the three delete-like actions are distinguishable.
+
+<a id="rule-wp-25.05"></a>
 
 ### WP-25.05 — Blob lifecycle
 
@@ -111,6 +125,8 @@
 
 **Completion gate.** No reference is published before commit, orphan cleanup never touches committed data, and accounting matches committed storage.
 
+<a id="rule-wp-25.06"></a>
+
 ### WP-25.06 — Availability, protection and data health
 
 **What must be fully done.** Availability states surfaced per object. Protection profiles applied per scope. A data health report detects and reports divergence, missing blobs, orphan references and stale cursors, with a repair path for each.
@@ -119,6 +135,8 @@
 
 **Completion gate.** Every induced integrity fault is detected and repaired, and availability is an explicit state rather than a read-time error.
 
+<a id="rule-wp-25.07"></a>
+
 ### WP-25.07 — Multi-device convergence
 
 **What must be fully done.** Three devices editing concurrently, one offline for an extended period, converge to identical state with all conflicts either resolved by policy or surfaced. Convergence is verified by comparison, not by absence of errors.
@@ -126,6 +144,18 @@
 **Testing requirements.** A three-device convergence harness with concurrent edits, an extended offline device, attachments, deletions and a mid-sync crash.
 
 **Completion gate.** **Three devices converge to verifiably identical state** under concurrent editing, extended offline periods, attachments, deletions and a crash.
+
+---
+
+<a id="rule-wp-25.08"></a>
+
+### WP-25.08 — Real Cloud Notes and Chat export producers
+
+**What must be fully done.** Build bounded leased Cloud export jobs for Notes and Chat. Freeze an acknowledged revision manifest, pin its content/history/attachment objects, and generate the declared Markdown/JSON/text outputs, attachments, metadata/link map and fidelity report. Publish a verified, expiring download artifact; exclude device-only pending edits. Enforce resource/egress reservations and allow retained-data export during configured read/grace periods. Delete the early [WP-15.06](15-arcchat-conversation-core.md#rule-wp-15.06) and [WP-19.05](19-arcnotes-search-and-portability.md#rule-wp-19.05) export fixtures from runtime registration.
+
+**Testing requirements.** Real host/database/object-store export across concurrent edits, notebook moves, deleted attachments, quota limit, expiry, restart, cancellation and paid-term end. Compare every delivered manifest/hash and omission; scan for secrets. Run both production clients with no fixture producer registered.
+
+**Completion gate.** Both export exit paths work against real Cloud authority, preserve a stable snapshot and honest fidelity, and release pins/reservations on all terminal paths. This is the Cloud Notes/Chat portion of PG-07.
 
 ---
 
@@ -147,14 +177,14 @@
 
 | Evidence | Produced by |
 |---|---|
-| Scope change and exclusion results | `WP-25.00` |
-| Batch-log survival, in-flight-edit, duplicate-acknowledgement and conflict-rebase results | `WP-25.01` |
-| Deduplication, feed stability and expired-cursor results | `WP-25.02` |
-| Conflict matrix and recoverability results | `WP-25.03` |
-| Tombstone convergence and resurrection-prevention results | `WP-25.04` |
-| Blob lifecycle, orphan cleanup and accounting results | `WP-25.05` |
-| Integrity fault detection and repair results | `WP-25.06` |
-| Three-device convergence comparison | `WP-25.07` |
+| Scope change and exclusion results | [WP-25.00](#rule-wp-25.00) |
+| Batch-log survival, in-flight-edit, duplicate-acknowledgement and conflict-rebase results | [WP-25.01](#rule-wp-25.01) |
+| Deduplication, feed stability and expired-cursor results | [WP-25.02](#rule-wp-25.02) |
+| Conflict matrix and recoverability results | [WP-25.03](#rule-wp-25.03) |
+| Tombstone convergence and resurrection-prevention results | [WP-25.04](#rule-wp-25.04) |
+| Blob lifecycle, orphan cleanup and accounting results | [WP-25.05](#rule-wp-25.05) |
+| Integrity fault detection and repair results | [WP-25.06](#rule-wp-25.06) |
+| Three-device convergence comparison | [WP-25.07](#rule-wp-25.07) |
 
 ---
 
@@ -175,14 +205,18 @@
 
 ## 9. Dependencies
 
-**Upstream.** `19` (a locally proven format), `24` (gap-detecting change notification).
+**Upstream — all must be complete.**
 
-**Downstream.**
+- [19 — ArcNotes Search, Import, Export and Portability](19-arcnotes-search-and-portability.md)
+- [24 — Realtime, Reliable Events and Recovery](24-realtime-and-reliable-events.md)
 
-| Package | What it needs from here |
-|---|---|
-| `26` — Remote action | Sync state as the basis for remote work |
-| `28` — Bounded properties and views | Sync for property and view content on the proven engine. **`27` is retired by P2-006** |
-| `35`, `39` | The engine ArcScope and ArcSlate extend with their own scope rules |
-| `40` — Knowledge | Synced content as a knowledge source |
-| `46` — Backup | Committed state as the backup subject |
+**Downstream — these consume this package’s completed output.**
+
+- [26 — Device Presence, Remote Action and the Tool Bridge](26-remote-action-and-tool-bridge.md)
+- [28 — ArcNotes Bounded Properties and Saved Views](28-arcnotes-properties-and-views.md)
+- [35 — ArcScope Integration and Metadata Sync](35-arcscope-integration-and-sync.md)
+- [39 — ArcSlate Integration and Portability](39-arcslate-integration-and-portability.md)
+- [40 — Knowledge, Search and Retrieval](40-knowledge-search-and-retrieval.md)
+- [43 — Cloud AI Routing, Metering and Settlement](43-managed-ai-routing-and-metering.md)
+- [46 — Backup, Disaster Recovery and Data Health](46-backup-recovery-and-data-health.md)
+- [51 — ArcScope Deterministic Cloud Simulator](51-arcscope-cloud-simulator.md)

@@ -1,3 +1,5 @@
+<a id="rule-wp-12"></a>
+
 # WP-12 — Observability Foundation
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
@@ -26,8 +28,8 @@
 | [`../../architecture/13-observability-and-operations.md`](../../architecture/13-observability-and-operations.md) | Signal architecture, dimensions, correlation, redaction, health, diagnostics |
 | [`../../requirements/07-security-privacy-and-trust.md`](../../requirements/07-security-privacy-and-trust.md) `§17` | Privacy obligations and consent |
 | [`../../requirements/12-quality-and-compatibility-contract.md`](../../requirements/12-quality-and-compatibility-contract.md) `§19` | The diagnostics contract and its tiers |
-| `WP-04` output | Correlation, causation and reason-code primitives |
-| `WP-06` output | Published hosts to instrument |
+| [WP-04](04-identity-error-and-versioning-primitives.md#rule-wp-04) output | Correlation, causation and reason-code primitives |
+| [WP-06](06-aot-jit-and-wasm-publish-proof.md#rule-wp-06) output | Published hosts to instrument |
 
 ---
 
@@ -35,16 +37,16 @@
 
 | # | Rule |
 |---|---|
-| BR-01 | **Business code never references a vendor logging type** (`OA-02`). |
-| BR-02 | **Observability is never a user-content database** (`I-273`). |
-| BR-03 | **Audit and observability are separate systems** (`I-272`) with separate storage, retention and access. |
+| BR-01 | **Business code never references a vendor logging type** ([OA-02](../../architecture/13-observability-and-operations.md#rule-oa-02)). |
+| BR-02 | **Observability is never a user-content database** ([I-273](../../requirements/01-normative-glossary-and-invariants.md#rule-i-273)). |
+| BR-03 | **Audit and observability are separate systems** ([I-272](../../requirements/01-normative-glossary-and-invariants.md#rule-i-272)) with separate storage, retention and access. |
 | BR-04 | **Desktop telemetry is minimal and opt-in**; local diagnostics are always available without any upload. |
 | BR-05 | **A crash or diagnostic report is shown to the user before it is sent**, and a full memory dump is never sent by default. |
-| BR-06 | **An unbounded identifier is never a metric label** (`SG-02`). |
-| BR-07 | **A secret-bearing or content type has no logging representation** (`RD-03`, `RD-04`). |
-| BR-08 | **A user-visible task identifier resolves to its trace** (`CR-04`). |
-| BR-09 | **Correlation propagation is implemented once**, in shared infrastructure (`CR-06`). |
-| BR-10 | **A diagnostic log is not an audit record** (`QI-23`), and **diagnostics are not telemetry consent** (`QI-24`). |
+| BR-06 | **An unbounded identifier is never a metric label** ([SG-02](../../architecture/13-observability-and-operations.md#rule-sg-02)). |
+| BR-07 | **A secret-bearing or content type has no logging representation** ([RD-03](../../architecture/13-observability-and-operations.md#rule-rd-03), [RD-04](../../architecture/13-observability-and-operations.md#rule-rd-04)). |
+| BR-08 | **A user-visible task identifier resolves to its trace** ([CR-04](../../architecture/13-observability-and-operations.md#rule-cr-04)). |
+| BR-09 | **Correlation propagation is implemented once**, in shared infrastructure ([CR-06](../../architecture/13-observability-and-operations.md#rule-cr-06)). |
+| BR-10 | **A diagnostic log is not an audit record** ([QI-23](../../requirements/12-quality-and-compatibility-contract.md#rule-qi-23)), and **diagnostics are not telemetry consent** ([QI-24](../../requirements/12-quality-and-compatibility-contract.md#rule-qi-24)). |
 
 ---
 
@@ -63,6 +65,8 @@
 
 ## 5. Required implementation work
 
+<a id="rule-wp-12.00"></a>
+
 ### WP-12.00 — Emission and dimensions
 
 **What must be fully done.** A single emission surface for metrics, traces and structured logs, with the required dimension set attached automatically from the ambient context. A dimension present in context is always attached; one absent is omitted rather than defaulted. Build identifier and instance identity are on every signal.
@@ -70,6 +74,8 @@
 **Testing requirements.** A dimension-coverage test across representative operations; a test asserting an absent dimension is omitted rather than faked.
 
 **Completion gate.** Every emitted signal carries the applicable dimension subset, with no fabricated values.
+
+<a id="rule-wp-12.01"></a>
 
 ### WP-12.01 — Correlation and causation
 
@@ -79,13 +85,17 @@
 
 **Completion gate.** One synthetic action produces one connected trace across every hop kind, and a task identifier resolves to it.
 
+<a id="rule-wp-12.02"></a>
+
 ### WP-12.02 — Redaction by construction
 
 **What must be fully done.** Secret-bearing and content types have no logging representation. A scrubbing processor removes known-sensitive header and field names as a second line of defence. URLs are recorded as route templates plus identifiers. Exception messages that can embed user input are mapped to reason codes before export.
 
 **Testing requirements.** Marker values injected as headers, tokens, prompts, note content and file paths must never appear in exported signals; a structural test asserting content types cannot be logged.
 
-**Completion gate.** The marker test finds nothing in any exported signal, and content types are structurally unloggable. **This satisfies `PG-05`.**
+**Completion gate.** The marker test finds nothing in any exported signal, and content types are structurally unloggable. **This satisfies [PG-05](../../assurance/open-gates-register.md#rule-pg-05).**
+
+<a id="rule-wp-12.03"></a>
 
 ### WP-12.03 — Cardinality and sampling
 
@@ -95,6 +105,8 @@
 
 **Completion gate.** Unbounded labels fail the build, and error paths are retained regardless of sampling rate.
 
+<a id="rule-wp-12.04"></a>
+
 ### WP-12.04 — Health probes
 
 **What must be fully done.** Liveness, readiness and capability health as three distinct probe kinds. Readiness fails closed on a missing required dependency. Capability health uses the five health dimensions shared with the contract model.
@@ -102,6 +114,8 @@
 **Testing requirements.** A dependency-outage test asserting readiness fails closed; a capability-health test reflecting a simulated degradation.
 
 **Completion gate.** Readiness fails closed per required dependency, and capability health reflects simulated degradation.
+
+<a id="rule-wp-12.05"></a>
 
 ### WP-12.05 — Desktop diagnostics and consent
 
@@ -131,12 +145,12 @@
 
 | Evidence | Produced by |
 |---|---|
-| Dimension coverage report | `WP-12.00` |
-| A single connected trace across every hop kind | `WP-12.01` |
-| Marker-injection redaction report, zero findings | `WP-12.02` |
-| Cardinality negative fixture and sampling retention results | `WP-12.03` |
-| Health probe fail-closed and degradation results | `WP-12.04` |
-| Consent-absent, crash-approval, verbose-expiry and revocation results | `WP-12.05` |
+| Dimension coverage report | [WP-12.00](#rule-wp-12.00) |
+| A single connected trace across every hop kind | [WP-12.01](#rule-wp-12.01) |
+| Marker-injection redaction report, zero findings | [WP-12.02](#rule-wp-12.02) |
+| Cardinality negative fixture and sampling retention results | [WP-12.03](#rule-wp-12.03) |
+| Health probe fail-closed and degradation results | [WP-12.04](#rule-wp-12.04) |
+| Consent-absent, crash-approval, verbose-expiry and revocation results | [WP-12.05](#rule-wp-12.05) |
 
 ---
 
@@ -146,7 +160,7 @@
 
 1. Every emitted signal carries its applicable dimension subset with no fabricated values.
 2. One synthetic end-to-end action produces one connected trace across HTTP, queue, worker, realtime and provider hops, and a task identifier resolves to it.
-3. Injected marker values never appear in exported signals, and content and secret types are structurally unloggable — satisfying `PG-05`.
+3. Injected marker values never appear in exported signals, and content and secret types are structurally unloggable — satisfying [PG-05](../../assurance/open-gates-register.md#rule-pg-05).
 4. An unbounded metric label fails the build; error paths are retained regardless of sampling rate.
 5. Readiness fails closed on each required dependency, and capability health reflects simulated degradation.
 6. With telemetry consent absent, no client signal leaves the device; a crash report is never sent without approval; a verbose diagnostic session self-disables.
@@ -155,12 +169,12 @@
 
 ## 9. Dependencies
 
-**Upstream.** `04` (correlation, causation, reason codes), `06` (published hosts to instrument).
+**Upstream — all must be complete.**
 
-**Downstream.**
+- [04 — Identity, Error, Revision and Versioning Primitives](04-identity-error-and-versioning-primitives.md)
+- [06 — AOT, JIT and WebAssembly Publish Proof](06-aot-jit-and-wasm-publish-proof.md)
 
-| Package | What it needs from here |
-|---|---|
-| `21` — Cloud host | Instrumentation of the real pipeline and modules |
-| `45` — Operations | Alerting, runbooks and the operator surface built on these signals |
-| Every product package | The instrumentation surface its features emit through |
+**Downstream — these consume this package’s completed output.**
+
+- [21 — Cloud Host, Modules, Persistence and Migrations](21-cloud-host-and-persistence.md)
+- [45 — Operations, Support and Trust & Safety](45-operations-support-and-trust-safety.md)

@@ -1,9 +1,11 @@
+<a id="rule-wp-44"></a>
+
 # WP-44 — Dynamic Policy and Configuration Control Plane
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: J — Platform completion
-> Upstream: `23`, `42` · Downstream: `45`, `48`
+> Upstream: `23`, `42` · Downstream: `40`, `43`, `45`, `48`, `51`, `52`
 
 > **Goal.** Build the control plane that lets behaviour change without a release — feature flags, deterministic rollout, kill switches, schema-constrained remote configuration and compatibility policy — while keeping compiled hard limits authoritative and remaining safe under Native AOT.
 
@@ -25,7 +27,7 @@
 |---|---|
 | [`../../requirements/11-policy-and-configuration.md`](../../requirements/11-policy-and-configuration.md) | The complete policy model, boundaries, kill switches and explainability |
 | [`../../architecture/05-cloud-architecture.md`](../../architecture/05-cloud-architecture.md) `§12` | Configuration and secret handling |
-| `WP-23`, `WP-42` output | The API surface and entitlement, which policy must not duplicate |
+| [WP-23](23-public-api-and-generated-clients.md#rule-wp-23), [WP-42](42-commerce-entitlement-and-credits.md#rule-wp-42) output | The API surface and entitlement, which policy must not duplicate |
 
 ---
 
@@ -62,6 +64,8 @@
 
 ## 5. Required implementation work
 
+<a id="rule-wp-44.00"></a>
+
 ### WP-44.00 — The four boundaries
 
 **What must be fully done.** Policy, entitlement, user settings, health and data plane kept structurally distinct. A policy value can never grant entitlement; a user setting can never override a policy limit downward; health is never expressed as policy; and no user content flows through the policy channel.
@@ -70,13 +74,17 @@
 
 **Completion gate.** Each boundary is enforced structurally with a failing negative fixture.
 
+<a id="rule-wp-44.01"></a>
+
 ### WP-44.01 — Schema-constrained configuration
 
-**What must be fully done.** Every configuration key has a typed schema with bounds. A bundle is validated wholesale before application and rejected atomically on any violation. No expression language or downloadable logic exists.
+**What must be fully done.** Use the enumerated Config/Entitlement/Commerce/Agent/Policy transaction for activation head, price snapshots and offer-policy boundaries. Workspace plan changes advance under old history first.  Every configuration key has a typed schema with bounds. A bundle is validated wholesale before application and rejected atomically on any violation. No expression language or downloadable logic exists.
 
-**Testing requirements.** Schema validation coverage; an atomic-rejection test; a structural test asserting no dynamic evaluation path exists; an AOT publish with the policy client present.
+**Testing requirements.** Inject failure between every participant write, activate while holds exist, and retry the same revision on two replicas.  Schema validation coverage; an atomic-rejection test; a structural test asserting no dynamic evaluation path exists; an AOT publish with the policy client present.
 
-**Completion gate.** An invalid bundle is rejected atomically, no dynamic evaluation exists, and the policy client publishes AOT cleanly.
+**Completion gate.** No mixed configuration or partial policy period can become visible.  An invalid bundle is rejected atomically, no dynamic evaluation exists, and the policy client publishes AOT cleanly.
+
+<a id="rule-wp-44.02"></a>
 
 ### WP-44.02 — Compiled hard limits
 
@@ -86,6 +94,8 @@
 
 **Completion gate.** **No remote configuration can loosen a compiled hard limit**, and every attempt is rejected and recorded.
 
+<a id="rule-wp-44.03"></a>
+
 ### WP-44.03 — Features, flags and deterministic rollout
 
 **What must be fully done.** Feature and flag definitions with lifecycle states from introduced through to removed. Rollout deterministic per installation so evaluation is stable, with percentage, cohort and targeted rules. A flag's effective state is explainable.
@@ -93,6 +103,8 @@
 **Testing requirements.** Determinism across repeated evaluations and restarts; distribution accuracy at target percentages; lifecycle transition tests.
 
 **Completion gate.** Rollout is stable per installation across restarts and distributes accurately.
+
+<a id="rule-wp-44.04"></a>
 
 ### WP-44.04 — Kill switches
 
@@ -102,6 +114,8 @@
 
 **Completion gate.** Every kill-switch mode propagates promptly with a user-visible reason and a complete audit record.
 
+<a id="rule-wp-44.05"></a>
+
 ### WP-44.05 — Scoped resolution and explainability
 
 **What must be fully done.** Resolution across application, workspace, device and installation scopes with a fixed order. The product can state which scope and bundle produced any effective value.
@@ -110,6 +124,8 @@
 
 **Completion gate.** Resolution order is correct and every effective value is explainable to its source scope and bundle.
 
+<a id="rule-wp-44.06"></a>
+
 ### WP-44.06 — Compatibility policy
 
 **What must be fully done.** Compatibility rules expressing supported client windows, blocked version ranges and minimum cloud versions. A bad version can be blocked without blocking neighbouring versions. A minimum-version requirement honours the grace period before enforcement.
@@ -117,6 +133,8 @@
 **Testing requirements.** Range-blocking precision tests; a grace-period enforcement test; an update-feed integration test.
 
 **Completion gate.** **A specific bad version can be blocked without affecting neighbouring versions**, and a minimum-version requirement is not enforced before the grace period elapses.
+
+<a id="rule-wp-44.07"></a>
 
 ### WP-44.07 — Publication, staleness and last-known-good
 
@@ -146,14 +164,14 @@
 
 | Evidence | Produced by |
 |---|---|
-| Four boundary negative fixtures | `WP-44.00` |
-| Schema validation, atomic rejection and AOT results | `WP-44.01` |
-| Hard-limit loosening rejection and audit results | `WP-44.02` |
-| Rollout determinism and distribution results | `WP-44.03` |
-| Per-mode kill-switch propagation, visibility and audit results | `WP-44.04` |
-| Resolution order and explainability results | `WP-44.05` |
-| Range-blocking precision and grace-period results | `WP-44.06` |
-| Fallback chain, staleness and mid-operation results | `WP-44.07` |
+| Four boundary negative fixtures | [WP-44.00](#rule-wp-44.00) |
+| Schema validation, atomic rejection and AOT results | [WP-44.01](#rule-wp-44.01) |
+| Hard-limit loosening rejection and audit results | [WP-44.02](#rule-wp-44.02) |
+| Rollout determinism and distribution results | [WP-44.03](#rule-wp-44.03) |
+| Per-mode kill-switch propagation, visibility and audit results | [WP-44.04](#rule-wp-44.04) |
+| Resolution order and explainability results | [WP-44.05](#rule-wp-44.05) |
+| Range-blocking precision and grace-period results | [WP-44.06](#rule-wp-44.06) |
+| Fallback chain, staleness and mid-operation results | [WP-44.07](#rule-wp-44.07) |
 
 ---
 
@@ -174,12 +192,16 @@
 
 ## 9. Dependencies
 
-**Upstream.** `23` (API surface), `42` (entitlement, which policy must not duplicate).
+**Upstream — all must be complete.**
 
-**Downstream.**
+- [23 — Public API Surface and Generated Clients](23-public-api-and-generated-clients.md)
+- [42 — Commerce, Entitlement and Credits](42-commerce-entitlement-and-credits.md)
 
-| Package | What it needs from here |
-|---|---|
-| `45` — Operations | Kill switches and policy as incident tools |
-| `48` — Account portal | Policy-driven feature availability |
-| `50` — Production release | The ability to halt a bad version |
+**Downstream — these consume this package’s completed output.**
+
+- [40 — Knowledge, Search and Retrieval](40-knowledge-search-and-retrieval.md)
+- [43 — Cloud AI Routing, Metering and Settlement](43-managed-ai-routing-and-metering.md)
+- [45 — Operations, Support and Trust & Safety](45-operations-support-and-trust-safety.md)
+- [48 — Account Portal](48-account-portal.md)
+- [51 — ArcScope Deterministic Cloud Simulator](51-arcscope-cloud-simulator.md)
+- [52 — The Cloud Harness](52-cloud-harness.md)

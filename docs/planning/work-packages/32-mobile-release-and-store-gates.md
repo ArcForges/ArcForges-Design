@@ -1,21 +1,23 @@
+<a id="rule-wp-32"></a>
+
 # WP-32 — Mobile Release Engineering and Store Gates
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
-> Phase: G — Mobile
+> Phase: J — Integration after real Cloud prerequisites
 > Upstream: `31` · Downstream: `50`
 
-> **Goal.** Get a real Android release artifact through every gate: dependency closure and provenance (**F-023**), consumption-only conformance (**V-09**), the runtime posture confirmed from the artifact (**V-04**), and build-verifiable commerce prohibitions — none of which is satisfied by reading a document.
+> **Goal.** Get a real Android release artifact through every gate: dependency closure and provenance (**[F-023](../../assurance/open-gates-register.md#rule-f-023)**), consumption-only conformance (**[V-09](../../assurance/phase-1-official-verification.md#rule-v-09)**), the runtime posture confirmed from the artifact (**[V-04](../../assurance/phase-1-official-verification.md#rule-v-04)**), and build-verifiable commerce prohibitions — none of which is satisfied by reading a document.
 
 ---
 
 ## 1. Scope and purpose
 
-**In scope.** The Android release build and signing; the store listing and its category-fit confirmation; the **F-023** dependency closure and provenance audit; the **V-09** consumption-only conformance confirmation; the commerce-prohibition build check; on-device release verification; and the iOS position stated honestly.
+**In scope.** The Android release build and signing; the store listing and its category-fit confirmation; the **[F-023](../../assurance/open-gates-register.md#rule-f-023)** dependency closure and provenance audit; the **[V-09](../../assurance/phase-1-official-verification.md#rule-v-09)** consumption-only conformance confirmation; the commerce-prohibition build check; on-device release verification; and the iOS position stated honestly.
 
-**Out of scope.** Any in-app purchase or billing integration — prohibited (**D-022**). iOS build activation, which remains deferred (**D-008**).
+**Out of scope.** Any in-app purchase or billing integration — prohibited (**[D-022](../../decisions/phase-1-foundation-decisions.md#rule-d-022)**). iOS build activation, which remains deferred (**[D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008)**).
 
-**Why this package exists.** Three of the register's open gates converge on the first mobile artifact. They are not documentation tasks: **F-023** requires an audited transitive closure, **V-09** requires a review outcome, and **V-04** requires inspecting a produced binary.
+**Why this package exists.** Three of the register's open gates converge on the first mobile artifact. They are not documentation tasks: **[F-023](../../assurance/open-gates-register.md#rule-f-023)** requires an audited transitive closure, **[V-09](../../assurance/phase-1-official-verification.md#rule-v-09)** requires a review outcome, and **[V-04](../../assurance/phase-1-official-verification.md#rule-v-04)** requires inspecting a produced binary.
 
 ---
 
@@ -23,11 +25,11 @@
 
 | Input | Why it matters |
 |---|---|
-| [`../../assurance/open-gates-register.md`](../../assurance/open-gates-register.md) | **F-023**, **VG-07**, **VG-13** and their owners and triggers |
+| [`../../assurance/open-gates-register.md`](../../assurance/open-gates-register.md) | **[F-023](../../assurance/open-gates-register.md#rule-f-023)**, **[VG-07](../../assurance/open-gates-register.md#rule-vg-07)**, **[VG-13](../../assurance/open-gates-register.md#rule-vg-13)** and their owners and triggers |
 | [`../../assurance/release-gates.md`](../../assurance/release-gates.md) `§6.4` | The mobile release gate set |
 | [`../../requirements/10-distribution-update-and-support.md`](../../requirements/10-distribution-update-and-support.md) `§1.1` | The mobile platform matrix and its obligations |
-| **D-022**, **V-09** | Consumption-only posture and its verification requirement |
-| `WP-31` output | A complete application to release |
+| **[D-022](../../decisions/phase-1-foundation-decisions.md#rule-d-022)**, **[V-09](../../assurance/phase-1-official-verification.md#rule-v-09)** | Consumption-only posture and its verification requirement |
+| [WP-31](31-arcchat-mobile-android.md#rule-wp-31) output | A complete application to release |
 
 ---
 
@@ -35,16 +37,16 @@
 
 | # | Rule |
 |---|---|
-| BR-01 | **The complete direct and transitive dependency closure is verified before the first artifact is produced** — **F-023**. |
-| BR-02 | **On discovering a conflicting contribution or dependency, the issue is registered and returned for decision** (**D-004**). Silently adding an exception, changing the licence or dropping the mobile target is prohibited. |
-| BR-03 | **No purchase surface, embedded checkout, store billing integration, external purchase call to action, or licence-key or purchase-token unlock path exists in any build path** (**D-022**). |
-| BR-04 | **A build-time and CI check asserts every prohibition** in `BR-03`. |
-| BR-05 | **The runtime is confirmed by inspecting the produced release artifact**, not by reading the project file (**V-04**). |
+| BR-01 | **The complete direct and transitive dependency closure is verified before the first artifact is produced** — **[F-023](../../assurance/open-gates-register.md#rule-f-023)**. |
+| BR-02 | **On discovering a conflicting contribution or dependency, the issue is registered and returned for decision** (**[D-004](../../decisions/phase-1-foundation-decisions.md#rule-d-004)**). Silently adding an exception, changing the licence or dropping the mobile target is prohibited. |
+| <a id="rule-br-03"></a>BR-03 | **No purchase surface, embedded checkout, store billing integration, external purchase call to action, or licence-key or purchase-token unlock path exists in any build path** (**[D-022](../../decisions/phase-1-foundation-decisions.md#rule-d-022)**). |
+| BR-04 | **A build-time and CI check asserts every prohibition** in [BR-03](#rule-br-03). |
+| BR-05 | **The runtime is confirmed by inspecting the produced release artifact**, not by reading the project file (**[V-04](../../assurance/phase-1-official-verification.md#rule-v-04)**). |
 | BR-06 | **CI builds the release artifact and runs on-device smoke tests.** A successful debug build is not a pass. |
 | BR-07 | **The store developer account is established under the intended long-term owning identity**, not casually under a personal account. |
 | BR-08 | **A store listing is distribution, never a commerce channel.** |
-| BR-09 | **iOS is not claimed as compiled or tested** (**D-008**). |
-| BR-10 | **The product's own update system is unaffected by store distribution** — mobile follows store update mechanics without that becoming the desktop model.
+| BR-09 | **iOS is not claimed as compiled or tested** (**[D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008)**). |
+| BR-10 | **The product's own update system is unaffected by store distribution** — mobile follows store update mechanics without that becoming the desktop model. |
 
 ---
 
@@ -57,11 +59,13 @@
 | `eng/release/mobile/` | Release procedure, store metadata and the submission checklist |
 | `eng/policy/mobile-commerce-prohibitions.json` | The machine-checkable prohibition set |
 | `tests/MobileReleaseTests/` | Commerce prohibition, artifact posture and on-device smoke suites |
-| `eng/verification/mobile/` | The **F-023** closure report and the **V-09** confirmation record |
+| `eng/verification/mobile/` | The **[F-023](../../assurance/open-gates-register.md#rule-f-023)** closure report and the **[V-09](../../assurance/phase-1-official-verification.md#rule-v-09)** confirmation record |
 
 ---
 
 ## 5. Required implementation work
+
+<a id="rule-wp-32.00"></a>
 
 ### WP-32.00 — Release build and signing
 
@@ -71,13 +75,17 @@
 
 **Completion gate.** CI produces a signed release artifact reproducibly, with credentials held only in the release credential store.
 
+<a id="rule-wp-32.01"></a>
+
 ### WP-32.01 — Runtime posture confirmation
 
 **What must be fully done.** The produced release artifact is inspected to confirm the runtime is the supported Mono AOT path. The evidence is the artifact inspection, not the project file. A framework-upgrade re-verification checklist is attached.
 
 **Testing requirements.** An artifact inspection record; an evaluated-property cross-check; the re-verification checklist recorded.
 
-**Completion gate.** The runtime is confirmed from the artifact. **This satisfies `VG-07`** and links `VG-08` to the upgrade process.
+**Completion gate.** The runtime is confirmed from the artifact. **This satisfies [VG-07](../../assurance/open-gates-register.md#rule-vg-07)** and links [VG-08](../../assurance/open-gates-register.md#rule-vg-08) to the upgrade process.
+
+<a id="rule-wp-32.02"></a>
 
 ### WP-32.02 — Dependency closure and provenance
 
@@ -85,7 +93,9 @@
 
 **Testing requirements.** A closure report covering 100 % of dependencies with a licence position each; a negative test asserting an introduced AGPL dependency fails the check.
 
-**Completion gate.** 100 % of the closure has a licence position with no unresolved item. **This satisfies `F-023`.**
+**Completion gate.** 100 % of the closure has a licence position with no unresolved item. **This satisfies [F-023](../../assurance/open-gates-register.md#rule-f-023).**
+
+<a id="rule-wp-32.03"></a>
 
 ### WP-32.03 — Commerce prohibition check
 
@@ -95,13 +105,17 @@
 
 **Completion gate.** All five prohibitions are machine-checked with negative fixtures failing the build.
 
+<a id="rule-wp-32.04"></a>
+
 ### WP-32.04 — Store category fit and consumption-only conformance
 
 **What must be fully done.** Category fit confirmed with the store's review process, and consumption-only conformance confirmed — by review outcome, not by reading a guideline. The confirmation and its date are recorded.
 
 **Testing requirements.** A recorded review outcome; a checklist mapping each store requirement to its evidence.
 
-**Completion gate.** Category fit and consumption-only conformance are confirmed by review outcome and recorded. **This satisfies `VG-13`.**
+**Completion gate.** Category fit and consumption-only conformance are confirmed by review outcome and recorded. **This satisfies [VG-13](../../assurance/open-gates-register.md#rule-vg-13).**
+
+<a id="rule-wp-32.05"></a>
 
 ### WP-32.05 — On-device verification
 
@@ -110,6 +124,8 @@
 **Testing requirements.** A device matrix run with recorded results; budget measurements; accessibility verification with the platform's assistive technology.
 
 **Completion gate.** The release artifact passes on-device smoke tests across the device matrix, meets budgets, and passes accessibility verification.
+
+<a id="rule-wp-32.06"></a>
 
 ### WP-32.06 — iOS position
 
@@ -139,13 +155,13 @@
 
 | Evidence | Produced by |
 |---|---|
-| CI release build, signature verification and version stamp | `WP-32.00` |
-| Artifact runtime inspection record | `WP-32.01` |
-| Dependency closure report with licence positions and SBOM | `WP-32.02` |
-| Five negative fixtures failing the build | `WP-32.03` |
-| Recorded review outcome and requirement checklist | `WP-32.04` |
-| Device matrix results, budget measurements, accessibility record | `WP-32.05` |
-| Documentation scan for iOS claims | `WP-32.06` |
+| CI release build, signature verification and version stamp | [WP-32.00](#rule-wp-32.00) |
+| Artifact runtime inspection record | [WP-32.01](#rule-wp-32.01) |
+| Dependency closure report with licence positions and SBOM | [WP-32.02](#rule-wp-32.02) |
+| Five negative fixtures failing the build | [WP-32.03](#rule-wp-32.03) |
+| Recorded review outcome and requirement checklist | [WP-32.04](#rule-wp-32.04) |
+| Device matrix results, budget measurements, accessibility record | [WP-32.05](#rule-wp-32.05) |
+| Documentation scan for iOS claims | [WP-32.06](#rule-wp-32.06) |
 
 ---
 
@@ -154,10 +170,10 @@
 **All of the following, with recorded evidence:**
 
 1. CI produces a signed release artifact reproducibly, with signing credentials held only in the release credential store.
-2. The runtime is confirmed from the produced artifact — satisfying `VG-07`.
-3. **100 % of the direct and transitive dependency closure has a licence position with no unresolved item** — satisfying `F-023`.
+2. The runtime is confirmed from the produced artifact — satisfying [VG-07](../../assurance/open-gates-register.md#rule-vg-07).
+3. **100 % of the direct and transitive dependency closure has a licence position with no unresolved item** — satisfying [F-023](../../assurance/open-gates-register.md#rule-f-023).
 4. All five commerce prohibitions are machine-checked with negative fixtures failing the build.
-5. Store category fit and consumption-only conformance are confirmed by review outcome — satisfying `VG-13`.
+5. Store category fit and consumption-only conformance are confirmed by review outcome — satisfying [VG-13](../../assurance/open-gates-register.md#rule-vg-13).
 6. The release artifact passes on-device smoke tests across the device matrix, meets cold-start, memory and weak-network budgets, and passes accessibility verification.
 7. No iOS build or test claim exists anywhere, and the activation re-verification obligation is recorded.
 
@@ -165,10 +181,10 @@
 
 ## 9. Dependencies
 
-**Upstream.** `31` (a complete companion application).
+**Upstream — all must be complete.**
 
-**Downstream.**
+- [31 — ArcChat Mobile Android Remote Closed Loop](31-arcchat-mobile-android.md)
 
-| Package | What it needs from here |
-|---|---|
-| `50` — Production release | A shippable mobile artifact with every mobile gate satisfied |
+**Downstream — these consume this package’s completed output.**
+
+- [50 — Full-Platform Production Release](50-full-platform-production-release.md)

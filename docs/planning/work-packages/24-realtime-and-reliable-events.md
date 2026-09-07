@@ -1,3 +1,5 @@
+<a id="rule-wp-24"></a>
+
 # WP-24 — Realtime, Reliable Events and Recovery
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
@@ -23,10 +25,10 @@
 
 | Input | Why it matters |
 |---|---|
-| [`../../architecture/05-cloud-architecture.md`](../../architecture/05-cloud-architecture.md) `§7`, `§8` | Realtime and reliable event rules, including `RL-04` backfill |
+| [`../../architecture/05-cloud-architecture.md`](../../architecture/05-cloud-architecture.md) `§7`, `§8` | Realtime and reliable event rules, including [RL-04](../../architecture/05-cloud-architecture.md#rule-rl-04) backfill |
 | [`../../requirements/products/arcforges-cloud.md`](../../requirements/products/arcforges-cloud.md) `§7` | Resilience and degradation posture |
-| **V-03** | Realtime under AOT is supported; the stale corpus claim is corrected |
-| `WP-23` output | The HTTP surface backfill uses |
+| **[V-03](../../assurance/phase-1-official-verification.md#rule-v-03)** | Realtime under AOT is supported; the stale corpus claim is corrected |
+| [WP-23](23-public-api-and-generated-clients.md#rule-wp-23) output | The HTTP surface backfill uses |
 
 ---
 
@@ -34,16 +36,16 @@
 
 | # | Rule |
 |---|---|
-| BR-01 | **Realtime carries only realtime updates.** All commands and queries go over HTTP (`NW-01` in the mobile architecture). |
-| BR-02 | **A realtime message is a hint, never authority.** A client needing full fidelity re-reads authoritative state (`RL-04`). |
+| BR-01 | **Realtime carries only realtime updates.** All commands and queries go over HTTP ([NW-01](../../architecture/11-mobile-architecture.md#rule-nw-01) in the mobile architecture). |
+| <a id="rule-br-02"></a>BR-02 | **A realtime message is a hint, never authority.** A client needing full fidelity re-reads authoritative state ([RL-04](../../architecture/05-cloud-architecture.md#rule-rl-04)). |
 | BR-03 | **Every message carries a sequence number** scoped to its subscription, so a gap is detectable. |
 | BR-04 | **A detected gap triggers HTTP backfill**, never a silent resync that hides the gap. |
 | BR-05 | **Object bodies never travel over realtime** (`I3 §14.3`). |
 | BR-06 | **Subscriptions are permission-scoped at subscribe and re-checked on change**, so a permission loss stops delivery. |
 | BR-07 | **Delivery guarantees are stated honestly**: at-most-once delivery with gap detection plus authoritative backfill, not exactly-once delivery. |
 | BR-08 | **Realtime loss degrades to polling**, and the degradation is visible to the user. |
-| BR-09 | **Transport logs redact tokens** (`WB-08` in the security architecture). |
-| BR-10 | **The client works under a published Native AOT binary** with source-generated payload metadata (**V-03**). |
+| BR-09 | **Transport logs redact tokens** ([WB-08](../../architecture/08-security-architecture.md#rule-wb-08) in the security architecture). |
+| BR-10 | **The client works under a published Native AOT binary** with source-generated payload metadata (**[V-03](../../assurance/phase-1-official-verification.md#rule-v-03)**). |
 
 ---
 
@@ -63,6 +65,8 @@
 
 ## 5. Required implementation work
 
+<a id="rule-wp-24.00"></a>
+
 ### WP-24.00 — Connection lifecycle and authentication
 
 **What must be fully done.** Connection with the same identity and tenancy resolution as HTTP. A session revocation terminates the connection. Reconnection uses exponential backoff with jitter. Connection state is visible to the user.
@@ -70,6 +74,8 @@
 **Testing requirements.** Authentication failure paths; revocation-terminates-connection; backoff distribution under mass reconnect; a token-redaction assertion in transport logs.
 
 **Completion gate.** Session revocation terminates the connection promptly, mass reconnection does not synchronise, and no token appears in transport logs.
+
+<a id="rule-wp-24.01"></a>
 
 ### WP-24.01 — Subscriptions and permission
 
@@ -79,6 +85,8 @@
 
 **Completion gate.** Permission loss stops delivery immediately, and no subscription can escape its scope.
 
+<a id="rule-wp-24.02"></a>
+
 ### WP-24.02 — Sequencing and gap detection
 
 **What must be fully done.** Every message carries a subscription-scoped sequence number. The client detects a gap deterministically and records it. A gap is never silently ignored, and a duplicate is discarded idempotently.
@@ -86,6 +94,8 @@
 **Testing requirements.** Induced-gap detection; duplicate delivery; out-of-order delivery; a counter assertion that gaps are recorded as telemetry.
 
 **Completion gate.** Every induced gap is detected and recorded; duplicates and out-of-order messages are handled without corruption.
+
+<a id="rule-wp-24.03"></a>
 
 ### WP-24.03 — HTTP backfill
 
@@ -95,6 +105,8 @@
 
 **Completion gate.** After any gap or disconnection, the client converges to authoritative state, verified by comparison.
 
+<a id="rule-wp-24.04"></a>
+
 ### WP-24.04 — Reliable event publication
 
 **What must be fully done.** Modules publish through the outbox so a state change and its notification cannot diverge. Realtime fan-out consumes published events; a fan-out failure never rolls back the state change, and the missed notification is recoverable by backfill.
@@ -103,6 +115,8 @@
 
 **Completion gate.** A fan-out failure never loses the state change, and the client still converges through backfill.
 
+<a id="rule-wp-24.05"></a>
+
 ### WP-24.05 — Degradation and offline behaviour
 
 **What must be fully done.** Realtime loss degrades to polling authoritative state at a bounded interval, with the degraded state visible. A cloud outage does not blank any client; capabilities report unavailability with reasons.
@@ -110,6 +124,8 @@
 **Testing requirements.** Realtime-down polling test; a visibility test asserting the user is told; a full-outage test asserting no client blanks.
 
 **Completion gate.** Realtime loss degrades to visible polling, and a full outage never blanks a client.
+
+<a id="rule-wp-24.06"></a>
 
 ### WP-24.06 — AOT and cross-surface client
 
@@ -139,13 +155,13 @@
 
 | Evidence | Produced by |
 |---|---|
-| Revocation, backoff distribution and redaction results | `WP-24.00` |
-| Subscription permission and scope-escape results | `WP-24.01` |
-| Gap, duplicate and out-of-order handling results | `WP-24.02` |
-| Backfill convergence comparisons | `WP-24.03` |
-| Fan-out failure divergence results | `WP-24.04` |
-| Degradation and outage visibility results | `WP-24.05` |
-| Published-AOT and WebAssembly client results | `WP-24.06` |
+| Revocation, backoff distribution and redaction results | [WP-24.00](#rule-wp-24.00) |
+| Subscription permission and scope-escape results | [WP-24.01](#rule-wp-24.01) |
+| Gap, duplicate and out-of-order handling results | [WP-24.02](#rule-wp-24.02) |
+| Backfill convergence comparisons | [WP-24.03](#rule-wp-24.03) |
+| Fan-out failure divergence results | [WP-24.04](#rule-wp-24.04) |
+| Degradation and outage visibility results | [WP-24.05](#rule-wp-24.05) |
+| Published-AOT and WebAssembly client results | [WP-24.06](#rule-wp-24.06) |
 
 ---
 
@@ -165,13 +181,12 @@
 
 ## 9. Dependencies
 
-**Upstream.** `23` (the HTTP surface backfill uses).
+**Upstream — all must be complete.**
 
-**Downstream.**
+- [23 — Public API Surface and Generated Clients](23-public-api-and-generated-clients.md)
 
-| Package | What it needs from here |
-|---|---|
-| `25` — Sync | Change notification with gap detection and backfill |
-| `26` — Remote action | Task progress and tool-request delivery |
-| `30`, `31` — Mobile | The realtime client and its reconnection semantics |
-| `42`, `44` | Entitlement and policy change notification |
+**Downstream — these consume this package’s completed output.**
+
+- [25 — Sync Engine and Blob Lifecycle](25-sync-engine-and-blob-lifecycle.md)
+- [26 — Device Presence, Remote Action and the Tool Bridge](26-remote-action-and-tool-bridge.md)
+- [30 — Mobile Shared Architecture and the Apache Boundary](30-mobile-shared-architecture.md)

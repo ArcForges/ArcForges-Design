@@ -1,3 +1,5 @@
+<a id="rule-wp-47"></a>
+
 # WP-47 — Static Public Site
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
@@ -17,7 +19,7 @@
 
 **Out of scope.** The account portal (`48`) and the web companion (`49`) — both are the Blazor application, not the static site. Any interactive application feature.
 
-**Why this package exists.** `I2 §III.12` states the static site can be built very early because it depends on nothing but content. **D-007** requires it to render without waiting for the runtime or WebAssembly.
+**Why this package exists.** `I2 §III.12` states the static site can be built very early because it depends on nothing but content. **[D-007](../../decisions/phase-1-foundation-decisions.md#rule-d-007)** requires it to render without waiting for the runtime or WebAssembly.
 
 ---
 
@@ -27,8 +29,8 @@
 |---|---|
 | [`../../architecture/10-web-architecture.md`](../../architecture/10-web-architecture.md) `§1`, `§2` | Build outputs and static generation rules |
 | [`../../requirements/products/arcforges-web.md`](../../requirements/products/arcforges-web.md) | Site scope, internationalisation, performance and analytics requirements |
-| **D-007**, **D-014** | The rendering boundary and the surface inventory |
-| `WP-00` output | Frozen product names and the content source of truth |
+| **[D-007](../../decisions/phase-1-foundation-decisions.md#rule-d-007)**, **[D-014](../../decisions/phase-1-foundation-decisions.md#rule-d-014)** | The rendering boundary and the surface inventory |
+| [WP-00](00-specification-naming-and-rights-freeze.md#rule-wp-00) output | Frozen product names and the content source of truth |
 
 ---
 
@@ -36,8 +38,8 @@
 
 | # | Rule |
 |---|---|
-| BR-01 | **Public pages render as static HTML and CSS without waiting for the runtime or WebAssembly** (**D-007**). |
-| BR-02 | **Prohibited**: server circuits, runtime server-side rendering, React, TypeScript, Node, any JavaScript package manager (**D-007**). |
+| BR-01 | **Public pages render as static HTML and CSS without waiting for the runtime or WebAssembly** (**[D-007](../../decisions/phase-1-foundation-decisions.md#rule-d-007)**). |
+| BR-02 | **Prohibited**: server circuits, runtime server-side rendering, React, TypeScript, Node, any JavaScript package manager (**[D-007](../../decisions/phase-1-foundation-decisions.md#rule-d-007)**). |
 | BR-03 | **Minimal audited JavaScript interop only**, each instance reviewed and listed. |
 | BR-04 | **Product catalogue, release metadata and pricing come from one source of truth.** The generator consumes it and never re-states versions or prices. |
 | BR-05 | **Above-the-fold content is present in the delivered HTML**; no client script is required to render it. |
@@ -67,6 +69,8 @@
 
 ## 5. Required implementation work
 
+<a id="rule-wp-47.00"></a>
+
 ### WP-47.00 — Generator and determinism
 
 **What must be fully done.** A C# build-time generator producing per-locale, per-page static output plus sitemap, metadata and redirects. Two runs over unchanged input produce byte-identical output so a diff is meaningful.
@@ -74,6 +78,8 @@
 **Testing requirements.** A determinism test comparing two full builds; a diff-meaningfulness check on a single content change.
 
 **Completion gate.** Two builds of unchanged content are byte-identical, and a single content change produces a minimal diff.
+
+<a id="rule-wp-47.01"></a>
 
 ### WP-47.01 — Content sourcing
 
@@ -83,6 +89,8 @@
 
 **Completion gate.** No version or price is hard-coded anywhere in the site.
 
+<a id="rule-wp-47.02"></a>
+
 ### WP-47.02 — Rendering and performance
 
 **What must be fully done.** Above-the-fold content present in the delivered HTML; content-hashed immutably cached assets with short-lived HTML; no blocked third-party resource on the critical path; performance measured at the 75th percentile against the product requirement.
@@ -90,6 +98,8 @@
 **Testing requirements.** A no-script render test; a critical-path resource audit; performance measurement at the required percentile; a global-reachability check on every third-party host.
 
 **Completion gate.** The page renders fully with scripting disabled, meets its performance requirement, and has no globally unreachable critical-path resource.
+
+<a id="rule-wp-47.03"></a>
 
 ### WP-47.03 — Internationalisation
 
@@ -99,6 +109,8 @@
 
 **Completion gate.** Locale routing is correct and annotated, no redirect traps a user, and pseudo-localisation reveals no hard-coded string.
 
+<a id="rule-wp-47.04"></a>
+
 ### WP-47.04 — Documentation, downloads and legal
 
 **What must be fully done.** Versioned per-product documentation; a download surface with no account gate serving signed artifacts with published hashes; the update feed surface; legal pages with versioning and effective dates.
@@ -107,6 +119,8 @@
 
 **Completion gate.** Downloads are verifiable against published hashes with no account gate, and legal documents carry versions and effective dates.
 
+<a id="rule-wp-47.05"></a>
+
 ### WP-47.05 — Accessibility and analytics
 
 **What must be fully done.** Accessibility semantics on every page with keyboard-only navigation. Analytics minimal and privacy-preserving, with no consent wall required because no consent-bearing tracking is used on the basic site.
@@ -114,6 +128,8 @@
 **Testing requirements.** Automated accessibility checks plus a dated manual verification; an analytics payload audit asserting no cross-site identifier.
 
 **Completion gate.** Accessibility checks pass with a dated manual record, and analytics carry no cross-site identifier.
+
+<a id="rule-wp-47.06"></a>
 
 ### WP-47.06 — Independence and deployment
 
@@ -143,13 +159,13 @@
 
 | Evidence | Produced by |
 |---|---|
-| Determinism comparison and diff-minimality results | `WP-47.00` |
-| Hard-coded version and price scan | `WP-47.01` |
-| No-script render, critical-path audit and performance measurements | `WP-47.02` |
-| Locale routing, no-trap and pseudo-localisation results | `WP-47.03` |
-| Download integrity, no-gate and legal versioning results | `WP-47.04` |
-| Accessibility automated plus manual record; analytics audit | `WP-47.05` |
-| Cloud-outage independence, atomic deployment and rollback results | `WP-47.06` |
+| Determinism comparison and diff-minimality results | [WP-47.00](#rule-wp-47.00) |
+| Hard-coded version and price scan | [WP-47.01](#rule-wp-47.01) |
+| No-script render, critical-path audit and performance measurements | [WP-47.02](#rule-wp-47.02) |
+| Locale routing, no-trap and pseudo-localisation results | [WP-47.03](#rule-wp-47.03) |
+| Download integrity, no-gate and legal versioning results | [WP-47.04](#rule-wp-47.04) |
+| Accessibility automated plus manual record; analytics audit | [WP-47.05](#rule-wp-47.05) |
+| Cloud-outage independence, atomic deployment and rollback results | [WP-47.06](#rule-wp-47.06) |
 
 ---
 
@@ -169,11 +185,10 @@
 
 ## 9. Dependencies
 
-**Upstream.** `00` (frozen names and the content source of truth).
+**Upstream — all must be complete.**
 
-**Downstream.**
+- [00 — Specification, Naming and Rights Freeze](00-specification-naming-and-rights-freeze.md)
 
-| Package | What it needs from here |
-|---|---|
-| `48` — Account portal | The surface boundary, redirects and shared visual language |
-| `50` — Production release | The public entry points, downloads and documentation |
+**Downstream — these consume this package’s completed output.**
+
+- [48 — Account Portal](48-account-portal.md)

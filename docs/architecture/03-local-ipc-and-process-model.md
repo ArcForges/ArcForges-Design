@@ -2,7 +2,7 @@
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Architecture
-> Governing authority: **D-010** (cloud topology and local action), **D-008** (AOT matrix), **V-05b** (StreamJsonRpc AOT evidence)
+> Governing authority: **[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)** (cloud topology and local action), **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** (AOT matrix), **[V-05b](../assurance/phase-1-official-verification.md#rule-v-05b)** (StreamJsonRpc AOT evidence)
 > Companions: [`02-contracts-and-protocols.md`](02-contracts-and-protocols.md), [`04-desktop-application-architecture.md`](04-desktop-application-architecture.md), [`08-security-architecture.md`](08-security-architecture.md)
 
 Same-machine, first-party, process-to-process communication. **StreamJsonRpc over an operating-system IPC stream is the only primary local RPC layer.**
@@ -19,7 +19,7 @@ Same-machine, first-party, process-to-process communication. **StreamJsonRpc ove
 | WH-04 | No web host is required | No Kestrel, no HTTP/2, no TCP port, no same-machine TLS certificate — which keeps the desktop AOT path simple |
 | WH-05 | A source generator and analyzer exist | Usable under Native AOT **within constraints**, which this document turns into repository rules |
 
-**The library describes itself as only partially AOT-safe.** What makes it usable is strict adherence to the generated paths — never an assumption that every API is inherently AOT-safe (**V-05b**).
+**The library describes itself as only partially AOT-safe.** What makes it usable is strict adherence to the generated paths — never an assumption that every API is inherently AOT-safe (**[V-05b](../assurance/phase-1-official-verification.md#rule-v-05b)**).
 
 ---
 
@@ -36,7 +36,7 @@ Same-machine, first-party, process-to-process communication. **StreamJsonRpc ove
 | # | Rule |
 |---|---|
 | TR-01 | **No fixed TCP port is used as the official local discovery mechanism.** |
-| TR-02 | **Local IPC endpoints are never exposed on the public internet** (**D-010**). |
+| TR-02 | **Local IPC endpoints are never exposed on the public internet** (**[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)**). |
 | TR-03 | **A debug loopback listener does not skip authentication** merely because it binds to a local address. |
 | TR-04 | Framing uses a length-prefixed message handler with the binary formatter by default. |
 
@@ -46,7 +46,7 @@ Same-machine, first-party, process-to-process communication. **StreamJsonRpc ove
 
 | # | Rule |
 |---|---|
-| WF-01 | **The local default formatter is Nerdbank.MessagePack with a generated type-shape provider** — documented as the safest Native AOT path (**V-05b**). |
+| WF-01 | **The local default formatter is Nerdbank.MessagePack with a generated type-shape provider** — documented as the safest Native AOT path (**[V-05b](../assurance/phase-1-official-verification.md#rule-v-05b)**). |
 | WF-02 | **MessagePack here is only a local wire formatter.** It is not the public API, not a cross-language IDL, does not replace HTTP/JSON, and does not require domain types to be designed around it. |
 | WF-03 | **Where UTF-8 JSON is genuinely required**, the JSON formatter is used with its resolver bound to a source-generated serialization context, and **every DTO is registered in that context**. |
 | WF-04 | **The Newtonsoft-based default formatter is never used.** |
@@ -64,7 +64,7 @@ At start-up each product writes a minimal endpoint manifest into the current use
 
 | # | Rule |
 |---|---|
-| EM-01 | **The manifest is not a credential.** Session tokens are never written into it. |
+| <a id="rule-em-01"></a>EM-01 | **The manifest is not a credential.** Session tokens are never written into it. |
 | EM-02 | **A connecting process still verifies** the peer user, the expected process, the build and contract set, and the short-lived session credential issued by the Hub. |
 | EM-03 | Stale manifests are detected and cleaned up. |
 
@@ -151,13 +151,13 @@ create / listen on the endpoint
 
 | # | Rule |
 |---|---|
-| CC-01 | **Each document session, timeline or capture session maintains write ordering** with a mailbox, an async lock, or a single-writer queue. |
+| <a id="rule-cc-01"></a>CC-01 | **Each document session, timeline or capture session maintains write ordering** with a mailbox, an async lock, or a single-writer queue. |
 | CC-02 | **Business ordering is never expressed through RPC arrival order.** |
 | CC-03 | **A domain lock is never held while awaiting a peer callback.** |
 | CC-04 | **Bidirectional callbacks must not form a cycle** in which each side synchronously waits on the other. |
 | CC-05 | **Write commands rely on `ExpectedRevision` plus `CommandId`**, never on which call happened to be sent first. |
-| CC-06 | **Optimistic revision is the default concurrency mode** (`CC-04` in the AI requirements). A long task does not hold a document lock. |
-| CC-07 | **Genuinely exclusive resources use lease and busy semantics provided by their owner** (`CC-05` there). |
+| <a id="rule-cc-06"></a>CC-06 | **Optimistic revision is the default concurrency mode** ([CC-04](../requirements/05-ai-and-agent-execution.md#rule-cc-04) in the AI requirements). A long task does not hold a document lock. |
+| CC-07 | **Genuinely exclusive resources use lease and busy semantics provided by their owner** ([CC-05](../requirements/05-ai-and-agent-execution.md#rule-cc-05) there). |
 
 ---
 
@@ -171,7 +171,7 @@ The RPC layer implements no business retry.
 | DC-02 | Connection state is driven by observing completion and disconnection. |
 | DC-03 | **Cancelling locally executing calls on connection close may be enabled per scenario**, but a long-running business task never derives cancellation from connection lifetime alone. |
 | DC-04 | **Reconnection uses exponential backoff with jitter.** |
-| DC-05 | **Queries are safe to retry. Write commands are retried only under the same `CommandId`, with the owner implementing idempotency** (`ID-01` in the AI requirements). |
+| DC-05 | **Queries are safe to retry. Write commands are retried only under the same `CommandId`, with the owner implementing idempotency** ([ID-01](../requirements/05-ai-and-agent-execution.md#rule-id-01) in the AI requirements). |
 | DC-06 | **After reconnecting**: re-authenticate, re-register capabilities, and backfill state by revision or sequence. |
 
 ---
@@ -187,9 +187,9 @@ The RPC layer implements no business retry.
 | SC-03 | **Session tokens bind `AppId`, `InstanceId`, endpoint, build identity, contract set and an expiry.** |
 | SC-04 | **Session tokens never appear in the endpoint manifest.** |
 | SC-05 | **Every call carries actor, scope and correlation context.** |
-| SC-06 | **The owner authorizes again at the final execution point** (`DP-02` in the security requirements). |
-| SC-07 | **Being "local" never automatically grants every capability**, even where an untrusted process can reach the endpoint. |
-| SC-08 | **Cloud never connects to a local endpoint** (**D-010**). |
+| SC-06 | **The owner authorizes again at the final execution point** ([DP-02](../requirements/07-security-privacy-and-trust.md#rule-dp-02) in the security requirements). |
+| <a id="rule-sc-07"></a>SC-07 | **Being "local" never automatically grants every capability**, even where an untrusted process can reach the endpoint. |
+| SC-08 | **Cloud never connects to a local endpoint** (**[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)**). |
 
 ---
 
@@ -216,13 +216,13 @@ The RPC layer implements no business retry.
 | High-frequency state streams | Prefer revision plus delta; a validated async stream where genuinely needed |
 | Large files or media frames | **Never** as ordinary RPC payloads — resource reference or controlled stream |
 
-**Events are never durable truth.** Recovery after a disconnect relies on revision and journal queries (`EV-10` in the contracts architecture).
+**Events are never durable truth.** Recovery after a disconnect relies on revision and journal queries ([EV-10](02-contracts-and-protocols.md#rule-ev-10) in the contracts architecture).
 
 ---
 
 ## 11. AOT checklist
 
-Answerable before any local RPC change merges (`§16` of `I3`, hardened by **V-05b**):
+Answerable before any local RPC change merges (`§16` of `I3`, hardened by **[V-05b](../assurance/phase-1-official-verification.md#rule-v-05b)**):
 
 - [ ] Is the interface `partial`, with the contract attribute **and** the shape-generation attribute including public instance methods?
 - [ ] Does the contracts assembly export its generated proxies?
@@ -248,7 +248,7 @@ Hub starts after the product · Hub restart · pipe or socket severed mid-call �
 
 ## 13. The remote bridge
 
-**D-010** fixes the shape:
+**[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)** fixes the shape:
 
 ```
 ArcChat Desktop opens an outbound authenticated connection to Cloud
@@ -276,7 +276,7 @@ An idempotent ToolResult is returned; cloud-persisted results go over HTTP
 | RB-02 | **Mobile and web never talk to a local endpoint.** |
 | RB-03 | **Realtime is never the sole source of truth for a remote write.** |
 | RB-04 | **A remote write still passes through the local application service, with revision and idempotency.** |
-| RB-05 | **A command left unconfirmed when a realtime connection drops is re-adjudicated through durable task state, never blindly re-executed** (`FL-06`, `FL-07` in the AI requirements). |
+| RB-05 | **A command left unconfirmed when a realtime connection drops is re-adjudicated through durable task state, never blindly re-executed** ([FL-06](../requirements/05-ai-and-agent-execution.md#rule-fl-06), [FL-07](../requirements/05-ai-and-agent-execution.md#rule-fl-07) in the AI requirements). |
 | RB-06 | **Every step carries correlation, a `CommandId` and an audit record.** |
 | RB-07 | **The user can revoke device and capability scope at any time**, taking effect at the next security boundary. |
 
@@ -290,6 +290,6 @@ An idempotent ToolResult is returned; cloud-persisted results go over HTTP
 | `I3 §7` | Transport selection, endpoint manifest, registration lifecycle, routing, health and backpressure, connection manager |
 | `I3 §14`, `§19` | Large-data path and the desktop bridging security model |
 | `I4 §Stage 13 §26–28`, `§40–41` | The Hub as coordination plane; remote path through ArcChat Desktop |
-| **D-008** | Desktop AOT deliverable constraints |
-| **D-010** | Cloud topology and the durable local-action model |
-| **V-05b** | The formatter and proxy-generation evidence, and the contract-authoring obligation |
+| **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** | Desktop AOT deliverable constraints |
+| **[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)** | Cloud topology and the durable local-action model |
+| **[V-05b](../assurance/phase-1-official-verification.md#rule-v-05b)** | The formatter and proxy-generation evidence, and the contract-authoring obligation |

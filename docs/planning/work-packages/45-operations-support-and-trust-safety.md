@@ -1,3 +1,5 @@
+<a id="rule-wp-45"></a>
+
 # WP-45 — Operations, Support and Trust & Safety
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
@@ -26,7 +28,7 @@
 | [`../../architecture/13-observability-and-operations.md`](../../architecture/13-observability-and-operations.md) | Alerting, incidents, status, operator surface, runbooks, dependency adapters |
 | [`../../requirements/10-distribution-update-and-support.md`](../../requirements/10-distribution-update-and-support.md) Part II | Support, operators, recovery, incidents, enforcement, appeals, advisories |
 | [`../../requirements/products/arcforges-cloud.md`](../../requirements/products/arcforges-cloud.md) `§9` | Service levels, incident severity and the required runbook set |
-| `WP-12`, `WP-21`, `WP-44` output | Signals, the real cloud and the policy control plane |
+| [WP-12](12-observability-foundation.md#rule-wp-12), [WP-21](21-cloud-host-and-persistence.md#rule-wp-21), [WP-44](44-dynamic-policy-and-configuration.md#rule-wp-44) output | Signals, the real cloud and the policy control plane |
 
 ---
 
@@ -66,6 +68,8 @@
 
 ## 5. Required implementation work
 
+<a id="rule-wp-45.00"></a>
+
 ### WP-45.00 — Service levels and alerting
 
 **What must be fully done.** Service-level indicators measuring user-visible success, objectives per capability group with realtime and managed AI computed independently, error-budget visibility, and the enumerated page-worthy alert set with routing that distinguishes page, ticket and dashboard.
@@ -73,6 +77,8 @@
 **Testing requirements.** Indicator correctness against synthetic failures; a dependency-attribution test asserting a provider outage does not read as full platform downtime; an alert-routing test; an alert-to-runbook completeness assertion.
 
 **Completion gate.** Indicators measure user-visible success, a provider outage is attributed correctly, and **every deployed alert names an existing runbook**.
+
+<a id="rule-wp-45.01"></a>
 
 ### WP-45.01 — Incident process
 
@@ -82,13 +88,17 @@
 
 **Completion gate.** Severity is shared and unambiguous, the incident system survives a production outage, and a possible breach classifies automatically at the highest severity.
 
+<a id="rule-wp-45.02"></a>
+
 ### WP-45.02 — Runbooks and rehearsal
 
 **What must be fully done.** Every required runbook written with preconditions, decision points, exact steps, verification and rollback. Each is executed at least once with a dated record. A runbook never executed is marked unproven.
 
 **Testing requirements.** A completeness check against the required set; a dated rehearsal record per runbook.
 
-**Completion gate.** **Every required runbook exists and has a dated rehearsal record** — satisfying `PG-04`.
+**Completion gate.** **Every required runbook exists and has a dated rehearsal record** — satisfying [PG-04](../../assurance/open-gates-register.md#rule-pg-04).
+
+<a id="rule-wp-45.03"></a>
 
 ### WP-45.03 — Status page
 
@@ -98,6 +108,8 @@
 
 **Completion gate.** The status page survives a full cloud outage, publishes only user-facing components, and its emergency alternate URL is published in at least three places.
 
+<a id="rule-wp-45.04"></a>
+
 ### WP-45.04 — Operator console and support access
 
 **What must be fully done.** The operator console on a separate origin with a separate identity system, never in public navigation. Support access is explicit, scoped, time-bounded, consented where required and audited. A destructive action affecting customer data or entitlement requires a second authorised operator. Operator tooling uses the same contracts as the product.
@@ -105,6 +117,8 @@
 **Testing requirements.** A silent-impersonation negative test; scope and expiry tests; a two-operator requirement test; an audit-completeness test; a parallel-admin-API absence assertion.
 
 **Completion gate.** **An operator can never silently become a user**, every access is scoped, expiring and audited, and no parallel unversioned admin API exists.
+
+<a id="rule-wp-45.05"></a>
 
 ### WP-45.05 — Break-glass
 
@@ -114,6 +128,8 @@
 
 **Completion gate.** Break-glass alerts immediately, expires automatically, requires review, and is visible to the affected account owner.
 
+<a id="rule-wp-45.06"></a>
+
 ### WP-45.06 — Support cases and in-product reporting
 
 **What must be fully done.** In-product problem reporting producing a support reference without attaching data by default; support cases linking to diagnostic references rather than content; the case lifecycle with response expectations.
@@ -122,6 +138,8 @@
 
 **Completion gate.** A problem report attaches no user data by default and produces a resolvable support reference.
 
+<a id="rule-wp-45.07"></a>
+
 ### WP-45.07 — Trust and safety
 
 **What must be fully done.** Community report intake; the proportionate enforcement ladder with every action recorded and communicated; account enforcement states integrated with the account model; an appeal process with a defined path and response expectation; copyright and public content handling.
@@ -129,6 +147,8 @@
 **Testing requirements.** Ladder progression tests; a communication-completeness assertion; an appeal path test; an enforcement-audit test.
 
 **Completion gate.** Every enforcement action is proportionate, recorded, communicated and appealable.
+
+<a id="rule-wp-45.08"></a>
 
 ### WP-45.08 — Security advisories and email adapters
 
@@ -158,15 +178,15 @@
 
 | Evidence | Produced by |
 |---|---|
-| Indicator, attribution, routing and runbook-completeness results | `WP-45.00` |
-| Severity, independence and breach-classification results | `WP-45.01` |
-| Runbook completeness check and dated rehearsal records | `WP-45.02` |
-| Outage-survival, mapping and vendor-absence results | `WP-45.03` |
-| Impersonation negative, scope, two-operator and audit results | `WP-45.04` |
-| Break-glass alert, expiry, review and visibility results | `WP-45.05` |
-| No-data-by-default and reference resolution results | `WP-45.06` |
-| Ladder, communication, appeal and audit results | `WP-45.07` |
-| Advisory rehearsal and email failover results | `WP-45.08` |
+| Indicator, attribution, routing and runbook-completeness results | [WP-45.00](#rule-wp-45.00) |
+| Severity, independence and breach-classification results | [WP-45.01](#rule-wp-45.01) |
+| Runbook completeness check and dated rehearsal records | [WP-45.02](#rule-wp-45.02) |
+| Outage-survival, mapping and vendor-absence results | [WP-45.03](#rule-wp-45.03) |
+| Impersonation negative, scope, two-operator and audit results | [WP-45.04](#rule-wp-45.04) |
+| Break-glass alert, expiry, review and visibility results | [WP-45.05](#rule-wp-45.05) |
+| No-data-by-default and reference resolution results | [WP-45.06](#rule-wp-45.06) |
+| Ladder, communication, appeal and audit results | [WP-45.07](#rule-wp-45.07) |
+| Advisory rehearsal and email failover results | [WP-45.08](#rule-wp-45.08) |
 
 ---
 
@@ -176,7 +196,7 @@
 
 1. Indicators measure user-visible success; a provider outage is attributed correctly; **every deployed alert names an existing runbook**.
 2. Severity is shared and unambiguous; the incident system survives a production outage; a possible breach classifies automatically at the highest severity.
-3. **Every required runbook exists and has a dated rehearsal record** — satisfying `PG-04`.
+3. **Every required runbook exists and has a dated rehearsal record** — satisfying [PG-04](../../assurance/open-gates-register.md#rule-pg-04).
 4. The status page survives a full cloud outage, publishes only user-facing components, and its emergency alternate URL is published in at least three places.
 5. **An operator can never silently become a user**; every support access is scoped, expiring and audited; no parallel unversioned admin API exists.
 6. Break-glass alerts immediately, expires automatically, requires post-hoc review, and is visible to the affected account owner.
@@ -188,11 +208,12 @@
 
 ## 9. Dependencies
 
-**Upstream.** `12` (signals), `21` (the real cloud), `44` (policy and kill switches).
+**Upstream — all must be complete.**
 
-**Downstream.**
+- [12 — Observability Foundation](12-observability-foundation.md)
+- [21 — Cloud Host, Modules, Persistence and Migrations](21-cloud-host-and-persistence.md)
+- [44 — Dynamic Policy and Configuration Control Plane](44-dynamic-policy-and-configuration.md)
 
-| Package | What it needs from here |
-|---|---|
-| `46` — Backup and recovery | The incident and runbook framework its drills run inside |
-| `50` — Production release | Operational readiness as a go-live gate |
+**Downstream — these consume this package’s completed output.**
+
+- [46 — Backup, Disaster Recovery and Data Health](46-backup-recovery-and-data-health.md)

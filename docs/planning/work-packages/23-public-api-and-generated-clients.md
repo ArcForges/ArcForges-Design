@@ -1,3 +1,5 @@
+<a id="rule-wp-23"></a>
+
 # WP-23 — Public API Surface and Generated Clients
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
@@ -25,9 +27,9 @@
 |---|---|
 | [`../../architecture/05-cloud-architecture.md`](../../architecture/05-cloud-architecture.md) `§6` | The public API surface rules |
 | [`../../architecture/02-contracts-and-protocols.md`](../../architecture/02-contracts-and-protocols.md) `§11` | Compatibility rules and the supported window |
-| **D-009** | C# as source of truth; generated wire artifacts |
-| **F-026** | Typed client entry point and reflection prohibition |
-| `WP-03`, `WP-22` output | The contract set and authenticated, tenancy-scoped requests |
+| **[D-009](../../decisions/phase-1-foundation-decisions.md#rule-d-009)** | C# as source of truth; generated wire artifacts |
+| **[F-026](../../assurance/open-gates-register.md#rule-f-026)** | Typed client entry point and reflection prohibition |
+| [WP-03](03-contract-foundation-and-licence-split.md#rule-wp-03), [WP-22](22-identity-workspace-and-device.md#rule-wp-22) output | The contract set and authenticated, tenancy-scoped requests |
 
 ---
 
@@ -35,16 +37,16 @@
 
 | # | Rule |
 |---|---|
-| BR-01 | **Endpoints are mapped from the contract set**, not hand-written in divergence from it (**D-009**). |
-| BR-02 | **The generated document is produced by the build and diffed against a baseline** (`WP-03.05`). |
-| BR-03 | **Every client uses the generated-only entry point**; the reflection package is absent (**F-026**). |
+| BR-01 | **Endpoints are mapped from the contract set**, not hand-written in divergence from it (**[D-009](../../decisions/phase-1-foundation-decisions.md#rule-d-009)**). |
+| BR-02 | **The generated document is produced by the build and diffed against a baseline** ([WP-03.05](03-contract-foundation-and-licence-split.md#rule-wp-03.05)). |
+| BR-03 | **Every client uses the generated-only entry point**; the reflection package is absent (**[F-026](../../assurance/open-gates-register.md#rule-f-026)**). |
 | BR-04 | **Every error is a problem detail with a registered reason code.** No raw exception text is ever returned. |
 | BR-05 | **The supported client window is declared and tested**, in both directions: an older client against the current server, and the current client against the minimum supported server. |
 | BR-06 | **Requests are idempotent where they change state**, keyed by command identity. |
 | BR-07 | **A response never leaks the existence of a resource the caller may not see** where existence itself is sensitive. |
 | BR-08 | **Rate limits are per identity and per capability class**, and produce a typed, explained refusal with retry guidance. |
 | BR-09 | **Object bodies go over standard HTTP upload and download, never over realtime** (`I3 §14.3`). |
-| BR-10 | **Clients never choose arbitrary storage locations**; upload targets are issued by the server. |
+| <a id="rule-br-10"></a>BR-10 | **Clients never choose arbitrary storage locations**; upload targets are issued by the server. |
 
 ---
 
@@ -65,6 +67,8 @@
 
 ## 5. Required implementation work
 
+<a id="rule-wp-23.00"></a>
+
 ### WP-23.00 — Endpoint mapping and validation
 
 **What must be fully done.** Endpoints mapped from the contract set with request validation at the boundary. A request failing validation never reaches a handler. Validation messages are reason-coded and localisable, never raw.
@@ -72,6 +76,8 @@
 **Testing requirements.** Per-endpoint validation tests; a test asserting no handler is reachable with an invalid request; a message-sourcing test.
 
 **Completion gate.** Invalid requests never reach a handler, and every validation failure carries a reason code.
+
+<a id="rule-wp-23.01"></a>
 
 ### WP-23.01 — Problem details and error mapping
 
@@ -81,6 +87,8 @@
 
 **Completion gate.** Every reason code maps to a problem detail, and no internal detail leaks in any response.
 
+<a id="rule-wp-23.02"></a>
+
 ### WP-23.02 — Pagination, filtering and conditional requests
 
 **What must be fully done.** Cursor-based pagination with stable ordering; filtering constrained to declared fields; conditional requests using revision so a client can avoid re-fetching unchanged state. A cursor is opaque and cannot be constructed by a client to escape scope.
@@ -88,6 +96,8 @@
 **Testing requirements.** Pagination stability under concurrent mutation; a cursor-forging test; conditional-request correctness.
 
 **Completion gate.** Pagination is stable under concurrent mutation and a forged cursor cannot escape scope.
+
+<a id="rule-wp-23.03"></a>
 
 ### WP-23.03 — Idempotency and rate limiting
 
@@ -97,13 +107,17 @@
 
 **Completion gate.** One command produces one effect at the API boundary, and rate limiting refuses with actionable guidance.
 
-### WP-23.04 — Object upload and download
+<a id="rule-wp-23.04"></a>
 
-**What must be fully done.** Upload through server-issued tickets with chunking, checksums, resumption and an idempotent completion commit. Download through server-issued tickets with permission checked both at issue and at consumption. Clients never choose storage locations.
+### WP-23.04 — Reserved, verified and promoted objects
 
-**Testing requirements.** Interrupted upload resumption; checksum mismatch rejection; permission-at-consumption test; a negative test asserting a client-chosen location is refused.
+**What must be fully done.** Implement upload admission with committed-storage headroom and workspace/deployment staging reservations; bounded chunk ingestion, hash/type verification and idempotent completeUpload to Verified. The owner commit promotes and converts quota atomically with references. Download checks owner visibility. Expiry/cancel schedules verified physical deletion before releasing exposure.
 
-**Completion gate.** Uploads resume and verify, permission is checked at both issue and consumption, and client-chosen locations are refused.
+**Testing requirements.** Race uploads at the limit; send oversize chunks; crash after verification/before promotion; duplicate completion/promotion; cancel with object-store timeout; expire multipart uploads; try cross-workspace dedup probes.
+
+**Completion gate.** No upload bypasses reserved headroom, no unverified/unowned object becomes downloadable, and abandoned bytes remain accounted until cleanup succeeds.
+
+<a id="rule-wp-23.05"></a>
 
 ### WP-23.05 — Generated clients
 
@@ -112,6 +126,8 @@
 **Testing requirements.** Client tests from a published AOT binary and from the WebAssembly host; a dependency assertion for the reflection package; a refresh-storm test.
 
 **Completion gate.** Generated clients work from published AOT and WebAssembly hosts with no reflection package present.
+
+<a id="rule-wp-23.06"></a>
 
 ### WP-23.06 — Compatibility window
 
@@ -141,13 +157,13 @@
 
 | Evidence | Produced by |
 |---|---|
-| Validation coverage and unreachable-handler assertion | `WP-23.00` |
-| Reason-code mapping exhaustiveness and leak test | `WP-23.01` |
-| Pagination stability and cursor-forging results | `WP-23.02` |
-| API-boundary idempotency and rate-limit results | `WP-23.03` |
-| Upload resumption, checksum and permission results | `WP-23.04` |
-| AOT and WebAssembly client results with dependency assertion | `WP-23.05` |
-| Bidirectional compatibility matrix and its negative test | `WP-23.06` |
+| Validation coverage and unreachable-handler assertion | [WP-23.00](#rule-wp-23.00) |
+| Reason-code mapping exhaustiveness and leak test | [WP-23.01](#rule-wp-23.01) |
+| Pagination stability and cursor-forging results | [WP-23.02](#rule-wp-23.02) |
+| API-boundary idempotency and rate-limit results | [WP-23.03](#rule-wp-23.03) |
+| Upload resumption, checksum and permission results | [WP-23.04](#rule-wp-23.04) |
+| AOT and WebAssembly client results with dependency assertion | [WP-23.05](#rule-wp-23.05) |
+| Bidirectional compatibility matrix and its negative test | [WP-23.06](#rule-wp-23.06) |
 
 ---
 
@@ -167,14 +183,16 @@
 
 ## 9. Dependencies
 
-**Upstream.** `03` (contracts), `22` (authenticated, tenancy-scoped requests).
+**Upstream — all must be complete.**
 
-**Downstream.**
+- [03 — Contract Foundation and the Licence Boundary Split](03-contract-foundation-and-licence-split.md)
+- [22 — Identity, Workspace, Device and Session](22-identity-workspace-and-device.md)
 
-| Package | What it needs from here |
-|---|---|
-| `24` — Realtime | The HTTP surface realtime backfills against |
-| `25` — Sync | Upload, download and conditional requests |
-| `30` — Mobile | The generated Apache-boundary clients |
-| `42`, `44` | The endpoint conventions their modules follow |
-| `48`, `49` — Web surfaces | The clients they consume |
+**Downstream — these consume this package’s completed output.**
+
+- [24 — Realtime, Reliable Events and Recovery](24-realtime-and-reliable-events.md)
+- [30 — Mobile Shared Architecture and the Apache Boundary](30-mobile-shared-architecture.md)
+- [42 — Commerce, Entitlement and Credits](42-commerce-entitlement-and-credits.md)
+- [44 — Dynamic Policy and Configuration Control Plane](44-dynamic-policy-and-configuration.md)
+- [51 — ArcScope Deterministic Cloud Simulator](51-arcscope-cloud-simulator.md)
+- [52 — The Cloud Harness](52-cloud-harness.md)

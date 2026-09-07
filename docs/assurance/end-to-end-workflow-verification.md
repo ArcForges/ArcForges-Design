@@ -1,303 +1,104 @@
 # End-to-End Workflow Verification
 
-> Status: **Authoritative** — Phase 2 (Detailed Specifications)
-> Layer: Assurance
-> Produced: 2026-09-06; **rechecked 2026-09-07 against the defect-repair pass**, which changed mechanisms several of these traces relied on. The five workflows of the previous baseline are superseded; three of them changed materially under the revised scope.
-> Method: each step is resolved against a named operation, schema, rule or gate. **A step that cannot be resolved is a finding**, not a narrative gap.
+> Status: **Authoritative** — Phase 2; reconciled under [P2-007](../decisions/phase-2-specification-decisions.md#rule-p2-007) against the fourteen repair groups.
+> Scope: executable **design traces**, not claims that product code, packaged sandboxes, databases or provider integration already passed.
 
-A specification set can satisfy every internal check and still be unimplementable, because implementability is a property of whole workflows rather than of individual documents. These eight traces cross the most boundaries in the system, and each is followed to a **terminal state on both the success and the failure path**.
+This document follows authority, commit boundaries, failure recovery and delivery ownership through the commercial product. Current rules replace the older traces at baseline c5b95a7; Git preserves that history. [Design closure evidence](phase-2-design-closure-review.md) records the counterexamples and document checks. Real implementation evidence remains in the [gate register](open-gates-register.md).
 
-**Result: eight workflows traced. 7 findings closed in the P2-006 pass; a further 13 supplied findings and 3 independently discovered defects closed on 2026-09-07 (`§12`).**
+## 1. How a trace closes
 
----
+Each trace names an authoritative operation/store, its commit unit, the uncertain interval, the recovery path and the work package that proves it with real code. A requirement alone is insufficient. A future runtime gate cannot excuse an undefined schema, contradictory algorithm or missing dependency in the current design.
 
-## 1. How to read a trace
+## 2. Purchase, service eligibility and metered AI
 
-| Column | Meaning |
-|---|---|
-| Step | What happens |
-| Resolves to | The operation, schema, or rule that specifies it. **Every cell must be resolvable** |
-| Failure branch | Where the trace continues when this step fails |
-
-A step resolving to a requirement alone is **not** sufficient — a requirement states what must be true, not how.
-
----
-
-## 2. Workflow A — purchase to settled AI usage
-
-> *A user subscribes, then immediately runs an agent turn.* Crosses commerce, entitlement, configuration, the Harness and the metering chain.
-
-| # | Step | Resolves to | Failure branch |
+| Stage | Authority and commit | Failure/recovery | Real implementation evidence |
 |---|---|---|---|
-| A-01 | Purchase intent, provider checkout, webhook persisted before processing | `purchase.createIntent`; `EI-01`; `commerce.provider_event` | Signature invalid → quarantined, never processed (`PE-05`) |
-| A-02 | Order and payment written | `commerce.order`, `commerce.payment` | Unmatched payment → quarantined, **never granted** (`PE-09`) |
-| A-03 | **A service term is created** — the only four sources are a subscription, a Pass, an audited compensation or a self-host grant | `entitlement.service_term`; `SV-02`; `UQ (kind, period_ref)` | Replayed event → **creates nothing**; a genuine renewal carries a new `period_ref` and is a new row (`TM-02`) |
-| A-04 | Capacity bucket initialised **once per contiguous run**, idempotently | `capacity_bucket.activation_term_id`; `RF-08` of the commerce architecture, `TM-03` | Contiguous renewal → no re-initialisation, no refill to full |
-| A-05 | Client hinted, then re-reads authoritatively | `serviceTerm.changed` → `entitlement.getServiceTerm`; `entitlement.getCapacity` | Event lost → converges on next read (`RE-07`) |
-| A-06 | User starts a turn | `StartAgentTurnAsync` → Cloud (`CH-01`) | No term → `entitlement.no_service_term` **before any provider call** (`CH-03`, `AD-01`) |
-| A-07 | **Admission**: refill across policy boundaries, then reserve atomically **in one shared unit of work spanning Entitlement and Commerce**, committing before dispatch | `§7.3` there; `SU-01`, `DB-01` of the data-model overview | Insufficient → `capacity_exhausted` with `recoveryAt`, or `extra_credits_required` (`AI-02`, `AI-03`) |
-| A-08 | Supplier price resolved at dispatch; customer tariff **pinned to the Run** | `agent.supplier_price_version`, `agent.tariff_version`; `MT-06`, `PR-05` | Unpriced category → **not dispatchable** (`AD-04`, `MT-15`) |
-| A-09 | Provider attempts recorded with request identity, tiers and completeness | `commerce.provider_attempt`; `MT-02` | Retry → **a distinct row with its own supplier cost** (`ST-03`) |
-| A-10 | Usage normalised into non-overlapping categories | `commerce.attempt_usage`; `§7.4`; `UQ (attempt, usage_revision, category)` | Cumulative stream → **replaces, never sums** (`UN-03`, `I-492`) |
-| A-11 | Settlement once per logical request, half-even after aggregation, **in one shared unit of work** so both pools move together | `commerce.customer_settlement`; `ST-01`, `ST-05`, `SU-01` | Write fails → idempotent per attempt usage revision, re-runs (`AI-10`) |
-| A-12 | Debit and release against **the same sources the reservation held** | `ST-05`, `CD-06` | Release → capped by the burst; **cannot mint capacity** (`RF-06` of the commerce architecture) |
-| A-13 | Supplier cost and customer cost recorded separately, in different units | `commerce.supplier_cost_entry` (decimal money) vs micro-credits; `I-493` | — |
-| A-14 | User sees capacity, purchased credits and the funding source separately | `entitlement.getCapacity`, `commerce.explainCharge`; `AC-10`, `EC-04` | — |
+| Checkout → verified payment | Commerce provider inbox deduplicates source events; order/payment and grant projection use stable source IDs | Quarantine invalid/unmatched events; replay creates no duplicate paid period | [WP-42.02](../planning/work-packages/42-commerce-entitlement-and-credits.md#rule-wp-42.02)–[WP-42.04](../planning/work-packages/42-commerce-entitlement-and-credits.md#rule-wp-42.04) |
+| Paid period → active capacity offer | Immutable service term/actions, checkout plan generation and non-overlapping capacity-plan assignments in [Cloud data model](../architecture/data-model/01-cloud-data-model.md) | Late verification never rewrites prior served history; overlap selects one plan; contiguous renewal never refills to full; actual effective gap permits one initialisation | [WP-42.11](../planning/work-packages/42-commerce-entitlement-and-credits.md#rule-wp-42.11) |
+| Capacity read/change | [Refill algorithm](../architecture/16-billing-and-commerce-architecture.md#72-the-refill-algorithm) advances under **old** held/available state before every mutation | Policy changes integrate by interval; full buckets discard excess fractional accrual; reduced ceilings preserve existing balance; query frequency changes nothing | [WP-42.11](../planning/work-packages/42-commerce-entitlement-and-credits.md#rule-wp-42.11) |
+| User message → Task | Chat acceptance and linked Task commit with receipt/publication and any resource promotion | Lost response replays the same receipt; accepted work cannot disappear between two commits | [WP-25.00](../planning/work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.00), [WP-52.00](../planning/work-packages/52-cloud-harness.md#rule-wp-52.00) |
+| Invocation admission → dispatch | Entitlement/Commerce reserve customer pools, Run ceiling and supplier exposure, and write nullable-provider-reference intent before network | Insufficient authority/budget refuses before dispatch; an intent with no outcome after crash is unknown | [WP-43.02](../planning/work-packages/43-managed-ai-routing-and-metering.md#rule-wp-43.02), [WP-52.02](../planning/work-packages/52-cloud-harness.md#rule-wp-52.02) |
+| Provider response → delivered iteration | Commerce/Task/Chat persist outcome, usage evidence and immutable output/tool proposals, with Resource/Entitlement when needed | Durable output without settlement retries settlement only; no durable outcome follows reconciliation, not blind redispatch | [WP-43.02](../planning/work-packages/43-managed-ai-routing-and-metering.md#rule-wp-43.02), [WP-52.00](../planning/work-packages/52-cloud-harness.md#rule-wp-52.00) |
+| Settlement → next invocation | Advance capacity first, debit verified aggregate usage once against its original pools, release unused allocation | Platform retry costs supplier money without a second customer charge; unknown supplier liability stays reserved even after customer deadline | [WP-43.02](../planning/work-packages/43-managed-ai-routing-and-metering.md#rule-wp-43.02), [WP-43.07](../planning/work-packages/43-managed-ai-routing-and-metering.md#rule-wp-43.07) |
+| End Turn | Final/interrupted message or explicit no-answer and terminal Task commit atomically | Previously settled invocations are not charged again; tool-only inference remains a durable iteration even if the Turn later fails | [WP-52.00](../planning/work-packages/52-cloud-harness.md#rule-wp-52.00)–[WP-52.04](../planning/work-packages/52-cloud-harness.md#rule-wp-52.04) |
 
-**Terminal states.** Success: paid, term active, capacity reserved and settled, balance explainable. Failure: every branch either grants through reconciliation or quarantines explicitly; **no branch admits inference without a verified service term**.
+The final state distinguishes customer capacity/credits, supplier cost and revenue. Operator-funded health, routing, abuse checks, admitted indexing and corrective retries have explicit operator authority and supplier budgets; they do not invent a customer's paid term or debit.
 
----
+## 3. Waiting, cancellation and streaming
 
-## 3. Workflow B — exhaustion, extra credits, cancellation, expiry mid-task
-
-| # | Step | Resolves to | Failure branch |
+| Trigger | Required path | Forbidden result | Evidence owner |
 |---|---|---|---|
-| B-01 | Capacity runs out mid-turn | Admission on the next iteration; `AI-02` | → `WaitingForCapacity` with a **server-calculated** `recoveryAt` (`EC-03`) |
-| B-02 | User has purchased credits but has not opted in | `AI-03` | → `entitlement.extra_credits_required`. **No automatic purchase or paid fallback** (`AC-06`) |
-| B-03 | User opts in with a maximum budget | `commerce.authoriseExtraUsage` | Budget exhausted → hard stop; no overdraft (`CR-23`) |
-| B-04 | Turn parks awaiting a device tool | `PL-02`, `PL-03` | **The included-capacity hold is released at the safe boundary** and re-reserved on resume (`AC-05`, `AI-15`) |
-| B-05 | User cancels mid-stream | `§6.2` of the harness; `MT-09` | Verified consumption within the ceiling settles; the remainder releases. **Completed provider work is not presumed refundable** |
-| B-06 | Paid term expires while the Task is running | Term evaluation at each dispatch; `SV-06`, `AI-14` | Further dispatch stops at a **durable boundary** with the eligibility reason. Settled work stays settled |
-| B-07 | Renewal grace begins | `service_term.grace_ends_at`; `SV-05`, `C-07` | **Data readable and downloadable; no new inference admitted.** The two windows are configured separately |
-| B-08 | User renews | New `service_term` row; `RF-08` of the commerce architecture | Contiguous renewal **extends eligibility without refilling to full** (`AC-03`) |
-| B-09 | Retained purchased credits become spendable again | `CR-05` | **Re-enabled without reissue or transfer** |
-| B-10 | Refund of a purchased lot | `RefundHold` → settlement; `AI-17` | Amount frozen then zeroed. **A refund must not mint capacity above the burst** (`AC-11`) |
+| Waiting for device/approval/capacity | Settle the completed invocation; reserve no undispatched future invocation; retain Run consumed/uncertain exposure | A parked Task freezing the workspace's included pool indefinitely | [WP-52.02](../planning/work-packages/52-cloud-harness.md#rule-wp-52.02), [WP-42.11](../planning/work-packages/42-commerce-entitlement-and-credits.md#rule-wp-42.11) |
+| Cancellation before intent | Return/release the undispatched reservation through its idempotent unit of work | Pretending a provider was called | [WP-52.02](../planning/work-packages/52-cloud-harness.md#rule-wp-52.02) |
+| Cancellation after intent | Record cancel request; stop transport where possible; settle verified delivered use or reconcile uncertainty to the deadline | Freeing upstream exposure while the call may still be billed, then silently charging later | [WP-43.02](../planning/work-packages/43-managed-ai-routing-and-metering.md#rule-wp-43.02), [WP-52.04](../planning/work-packages/52-cloud-harness.md#rule-wp-52.04) |
+| Buffer full | `truncated` presentation + authoritative running/waiting Task | `completed` stream interpreted as a final answer that does not exist | [WP-52.03](../planning/work-packages/52-cloud-harness.md#rule-wp-52.03) |
+| Invocation stream completed with tools remaining | Read durable iteration/status; follow subsequent stream when created | Treating one provider callback as terminal Task completion | [WP-52.03](../planning/work-packages/52-cloud-harness.md#rule-wp-52.03) |
+| Chunk/state TTL expired | [readStream contract](../architecture/17-agent-harness.md#72-client-read-contract) returns Task/attempt and existing output/final reference or no-answer | Infinite fabricated `open`, lost Task, or nonexistent-message fetch | [WP-52.03](../planning/work-packages/52-cloud-harness.md#rule-wp-52.03) |
+| Replica/host death | Read shared logged buffer; reconcile provider intent under a new fence | Assuming a dead provider socket survived a lease takeover | [WP-52.02](../planning/work-packages/52-cloud-harness.md#rule-wp-52.02)–[WP-52.04](../planning/work-packages/52-cloud-harness.md#rule-wp-52.04) |
+| Physical database restore | Purge transient presentation, reconcile durable Task/attempt/usage, then allow traffic | Claiming logged tables were absent from WAL/backup or repeating restored intents | [WP-46.01](../planning/work-packages/46-backup-recovery-and-data-health.md#rule-wp-46.01) |
 
-**Terminal states.** Every exhaustion path reaches a stated reason with a recovery action. **No path silently spends, silently waits forever, or silently converts one pool into another.**
+Desktop, Android and Web use the same Task/output fallback with realtime fully disabled. Presentation bytes are never client-created canonical Chat history.
 
----
+## 4. Offline Notes, structural edits, conflict and bootstrap
 
-## 4. Workflow C — Cloud task, device tool, native product job
-
-| # | Step | Resolves to | Failure branch |
+| Stage | Authority and retained evidence | Failure/recovery | Evidence owner |
 |---|---|---|---|
-| C-01 | Turn submitted from any surface; Task is Cloud-owned | `task.create`; `TO-01` | — |
-| C-02 | Model proposes a tool; it resolves to a declared capability | `MR-01`; `INotesOperations`, `ISlateOperations` | Unknown tool → typed protocol error to the model (`RC-02`) |
-| C-03 | Step declares `toolLocality = device` | `TO-02` | No eligible device → `WaitingForDevice`, **never a cloud approximation** (`PL-02`) |
-| C-04 | Approval required; turn suspends durably | `§5` of the harness; `task.approval` | Process exits → durable by construction |
-| C-05 | Cloud writes a `ToolRequest`; **does not connect to the device** | `RA-01`, `RA-02`; **D-010** | — |
-| C-06 | Desktop pulls and **re-authorises locally** | `bridge.pullRequests`; `BR-01`–`BR-03` | Local policy refuses → refusal returned; the cloud approval **does not override** |
-| C-07 | Tool starts a **native Product Job** — a render | `StartRenderAsync` → `TaskRef`; `SL-04` | — |
-| C-08 | The render is **not** adopted as an agent Step | `CM-04`, `AU-03`, `XA-07`; `I-485` | It invokes no model, debits no AI capacity, and ArcSlate owns its progress and recovery |
-| C-09 | Result submitted, idempotent on `(taskId, attemptId)` | `BI-01` | Lost response → re-submission has one effect; crash resolved by `command_log` (`BI-02`) |
-| C-10 | Cloud records the attempt; the device keeps its own `command_log` | `TO-04` | Neither writes the other's rows (`BI-03`) |
-| C-11 | Turn resumes with **revalidated** context | `SI-05` | Content changed → the model is told (`SI-03`) |
+| Native user edits a hydrated note | Working shadow plus append-only pending journal; LocalNotesVersion includes acked Cloud revision and local sequence | Kill preserves committed local events; UI distinguishes local durability from Cloud acknowledgement | [WP-07.00](../planning/work-packages/07-local-persistence-foundation.md#rule-wp-07.00), [WP-18.00](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.00) |
+| Folder/document movement | Notebook-owned folders and document placement use explicit root versions; Cloud validates the same typed operations | Reject cycles/stale moves; ancestor trash does not rewrite every child or restore independently trashed documents | [WP-18.00](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.00), [WP-25.00](../planning/work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.00) |
+| Freeze and submit batch | One immutable hash/revision/range in the single sync_outbox schema | Edits made in flight remain pending; lost response replays the frozen batch | [WP-25.01](../planning/work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.01) |
+| Conflict resolution | Retain original failed batch and later edits; append resolution event and replacement lineage with retained/transformed/discarded dispositions | Keep-Cloud may acknowledge an explicit no-content-change outcome; old receipts cannot acknowledge replacement work | [WP-25.01](../planning/work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.01), [WP-25.03](../planning/work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.03) |
+| Cloud commit | Owner state, immutable history, receipt, Resource/Entitlement promotion and sync.change commit together | No acknowledged revision refers to unavailable unverified bytes or lacks a publication row | [WP-25.00](../planning/work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.00), [WP-25.05](../planning/work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.05) |
+| Publication | Lowest unpublished revision per aggregate, fair round-robin selection, workspace watermark lock; UUID is identity only | Reversed same-millisecond UUIDs cannot reverse revisions; late commits still receive a sequence above an advanced cursor | [WP-21.05](../planning/work-packages/21-cloud-host-and-persistence.md#rule-wp-21.05), [WP-25.02](../planning/work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.02) |
+| Bootstrap then feed | W captured before a primary snapshot at/after W; bounded pinned pages; apply only newer aggregate revisions | Bootstrap v2 followed by feed v1 cannot regress state; tombstones apply by revision; expired cursor preserves pending work during full resync | [WP-25.02](../planning/work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.02), [WP-25.07](../planning/work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.07) |
+| Cross-aggregate reference | Canonical getAggregate at minimum revision or explicit unresolved reference | A folder/document publication ordering difference is not interpreted as deletion/corruption | [WP-25.02](../planning/work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.02) |
+| Agent edit against device | Cloud context is acknowledged only; matching clean shadow required for a Cloud-revision-only tool request | Pending local work gives a typed conflict; an agent cannot clobber it using an old Cloud token | [WP-26.02](../planning/work-packages/26-remote-action-and-tool-bridge.md#rule-wp-26.02), [WP-52.05](../planning/work-packages/52-cloud-harness.md#rule-wp-52.05) |
+| Index/recovery | Typed source versions on journal/checkpoints/index jobs; compare-and-swap before derived publication | An old rebuild cannot overwrite a newer local materialised projection | [WP-07.06](../planning/work-packages/07-local-persistence-foundation.md#rule-wp-07.06), [WP-19.00](../planning/work-packages/19-arcnotes-search-and-portability.md#rule-wp-19.00), [WP-40.01](../planning/work-packages/40-knowledge-search-and-retrieval.md#rule-wp-40.01) |
 
-**Terminal states.** Success: Cloud-owned task, device-executed tool, product-owned job, durable result. Failure: every branch reaches a stated reason; the one `unknown` (C-09) is resolved by the command log rather than assumed.
+Native Scope/Slate working-content revisions are distinct from the Cloud metadata replica revision. A sync acknowledgement cannot overwrite a newer native project body.
 
----
+## 5. Upload, export, restriction and deletion
 
-## 5. Workflow D — offline edit, pending journal, acknowledgement
-
-| # | Step | Resolves to | Failure branch |
+| Stage | Authority and commit | Failure/recovery | Evidence owner |
 |---|---|---|---|
-| D-01 | User edits a hydrated note offline | `EditTransaction`; journal + `sync_outbox` in one transaction (`PC-01`) | Crash → at most the coalescing window is lost; what survives is a valid document |
-| D-02 | The edit is durable **on this device**, and is **not** presented as saved to Cloud | `PE-04`, `NO-04`; `§3.1` of the product scope | — |
-| D-03 | Cache pressure occurs while the edit is pending | `EV-L1` eviction gate | **Refused** — `head_local_seq > acked_local_seq` means the row has unacknowledged work, and the same gate runs for sign-out, account switch and restriction (`EV-L3`) |
-| D-04 | Reconnect; outbox pushes with its `CommandId` and **`ExpectedRev = acked_rev`**, never `local_rev` | `sync.pushChange`; `RV-C1` | Response lost → `unknown`; idempotent re-push (`SY-01`) |
-| D-05 | **Cloud commits and assigns the revision**, writing the `sync.change` row in the same transaction | `CW-04`, `CW-06` | — |
-| D-06 | The watermark advances to **exactly the batch's covered range**; an edit made while the batch was in flight stays pending | `RV-C4`, `SB-L1`, `EV-L1` | Crash before settling → the batch is re-sent under the same `batch_id` and returns the original result (`SB-L5`, `SB-L6`) |
-| D-07 | Concurrent edit on another device raises a conflict | `sync.conflictRaised`; both branches retained | Edit-versus-delete → the delete does not silently win (`SY-06`) |
-| D-08 | Resolution produces a **new revision** | `§4` of the sync architecture | — |
-| D-09 | The second device converges by pulling from its `publish_seq` cursor | `CU-01`; `PB-02` guarantees no published change is skipped | Gap → scoped reconciliation (`SY-04`); expired cursor → full resync, never a silent clamp (`CU-03`) |
-| D-10 | The agent's context uses acknowledged revisions only | `PK-04`, `CH-04`; `I-498` | A pending edit is visible to the user, **not** to the model |
+| Begin upload | Reserve committed headroom and workspace/deployment staging budgets before a ticket exists | Concurrent devices cannot both pass against unreserved capacity; declared maximum is enforced | [WP-21.06](../planning/work-packages/21-cloud-host-and-persistence.md#rule-wp-21.06), [WP-23.04](../planning/work-packages/23-public-api-and-generated-clients.md#rule-wp-23.04) |
+| Complete upload | Verify hash/length/type; create Verified object and provisional pin | Duplicate completion returns receipt; verification alone never creates a downloadable owner reference | [WP-23.04](../planning/work-packages/23-public-api-and-generated-clients.md#rule-wp-23.04) |
+| Owner promotion | Convert quota and promote Committed with current/history/conflict/export references in the owner transaction | Crash cannot publish a reference without corresponding bytes/pin/accounting | [WP-25.05](../planning/work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.05) |
+| Cancel/expiry/GC | Mark releasing, perform external deletion idempotently, verify then release physical exposure | Timeout retains accounted bytes and retries cleanup; removing a logical reference is not physical deletion | [WP-23.04](../planning/work-packages/23-public-api-and-generated-clients.md#rule-wp-23.04), [WP-25.05](../planning/work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.05) |
+| Notes/Chat export | [Canonical export manifest](../architecture/data-model/01-cloud-data-model.md#84-cloud-notes-canonical-model) freezes acknowledged revisions and resource pins | Concurrent edits do not change the export; pending device edits are excluded explicitly; partial/unavailable items get fidelity dispositions | [WP-25.08](../planning/work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.08) |
+| Download complete/expired | Expiring verified artifact and bounded retention; release manifest pins on the declared terminal path | Cancellation/restart cannot leak permanent pins or imply a lossless Notes archive/re-import | [WP-25.08](../planning/work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.08) |
+| Term expiry/downgrade | Deny new protected writes/AI where policy requires; retain read/download/delete during data-access/grace windows | No quota downgrade deletes data; no retained credit alone re-enables official AI | [WP-42.05](../planning/work-packages/42-commerce-entitlement-and-credits.md#rule-wp-42.05)–[WP-42.11](../planning/work-packages/42-commerce-entitlement-and-credits.md#rule-wp-42.11) |
+| Sign-out/account switch | Preserve pending edits, receipts and staged recovery data; account-scoped access locks their presentation | No automatic local export/E2EE feature and no silent loss | [WP-22.07](../planning/work-packages/22-identity-workspace-and-device.md#rule-wp-22.07), [WP-25.01](../planning/work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.01) |
+| Account deletion | Immediate authoritative deny, then named outbox-driven store purge/reconciliation; financial/audit retention remains separately disclosed | Every purge target records status; backups age out under their retention; no early “deleted everywhere” claim | [WP-22.06](../planning/work-packages/22-identity-workspace-and-device.md#rule-wp-22.06), [WP-46.04](../planning/work-packages/46-backup-recovery-and-data-health.md#rule-wp-46.04) |
 
-**Terminal states.** Success: converged, acknowledged, nothing lost. Failure: **no branch discards an unacknowledged change**, and the local-versus-cloud distinction is never blurred.
+## 6. Cloud tool, native Product Job and automation
 
----
+The [durable bridge](../architecture/contracts/03-realtime-and-bridge.md) creates a ToolRequest, which Desktop pulls and re-authorises. Native render/analysis returns ProductJobRef, not an Agent Task. The product owns job checkpoints, progress and cancellation; Cloud owns the calling Step and records its result idempotently. No Cloud connection to local IPC and no local Harness is introduced. The command log resolves local effects; effects across a further external network still follow their own status/idempotency/unknown protocol. [WP-26](../planning/work-packages/26-remote-action-and-tool-bridge.md#rule-wp-26) and [WP-52.05](../planning/work-packages/52-cloud-harness.md#rule-wp-52.05) prove this with a real product process.
 
-## 6. Workflow E — restriction, deletion, retention
+Cloud automation stores immutable definition versions and unique trigger occurrences, creates each linked Task once and uses the same Harness/admission. Two replicas, catch-up, clock rollback, disable/revoke and storm limits cannot create duplicate or unbounded work. [WP-17.04](../planning/work-packages/17-arcchat-independent-core.md#rule-wp-17.04) is the client half; [WP-52.06](../planning/work-packages/52-cloud-harness.md#rule-wp-52.06) supplies and verifies the scheduler. Desktop displays automation rather than scheduling AI locally.
 
-| # | Step | Resolves to | Failure branch |
+## 7. Deterministic simulator
+
+Scenario validation, seed/execution-profile pinning and bounded duration/sample/byte/egress reservations precede work. The single Cloud host executes bounded leased slices. Every segment publication checks the current fence and atomically commits verified Resource references, quota consumption, manifest range and checkpoint. After a killed host, a new holder continues the same logical range; a stale holder cannot publish. Realtime is optional; polling the retained manifest recovers all committed segments. Cancel/term expiry records a partial or cancelled result, never success for incomplete output. Native ingestion/replay keeps synthetic provenance through analysis, report, copy and export. All of these belong to [WP-51](../planning/work-packages/51-arcscope-cloud-simulator.md#rule-wp-51); desktop capture [WP-33.06](../planning/work-packages/33-arcscope-acquisition-and-session.md#rule-wp-33.06) is not simulator evidence.
+
+## 8. Native parsing, extension isolation and media interchange
+
+| Boundary | Mechanism | Failure that must be tested | Owner |
 |---|---|---|---|
-| E-01 | Subscription lapses; workspace enters restriction | `SV-05`; `QU-03` | Data readable and downloadable; **no data deleted to enforce a downgrade** (`SU-06`) |
-| E-02 | Pending edits at the moment of restriction | `PE-03`, `C-06` | **Preserved and recoverable.** Restriction runs the same eviction gate as cache pressure |
-| E-03 | User signs out or switches account | `PE-03` | Same gate. Unacknowledged work is offered for recovery or export before anything is cleared |
-| E-04 | User requests account deletion | `identity.requestAccountDeletion`; grace period | In-flight commercial operations block completion until resolved (`DE-05`) |
-| E-05 | Deletion runs across every store | `DE-01`, `DE-04` | Partial → retried; **confirmed only when every store reports done** |
-| E-06 | Search and vector entries removed | `DE-01` | Content unreadable but findable → invariant detects and retries |
-| E-07 | Financial records survive | `DL-08`, `DE-05` | **Never deleted**; retained under their own policy with identity minimised |
-| E-08 | Audit records survive | `DL-07` | **Refused** by constraint |
-| E-09 | Local files remain | `DL-01` of the identity requirements; `I-016` | **Correct behaviour, not a failure.** A separate explicit choice deletes local data |
-| E-10 | Simulator output follows retained-data rules | `SC-07`, `SIM-19` | Retention effects on historical runs are exposed, not silent |
+| PDF/image/media/interchange parser | [C# ContentSandbox and OS profiles](../architecture/24-content-and-extension-isolation.md), brokered input and bounded output, parent-owned domain | Native access violation/hang/resource exhaustion; parent remains usable and committed state unchanged | [WP-11.09](../planning/work-packages/11-security-foundation.md#rule-wp-11.09), [WP-18.04](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.04), [WP-37.01](../planning/work-packages/37-arcslate-playback-and-processing.md#rule-wp-37.01), [WP-39.05](../planning/work-packages/39-arcslate-integration-and-portability.md#rule-wp-39.05) |
+| Executable extension | Per-package OS containment plus capability/secret broker | Direct DB/token read, network/loopback, process escape, revoke, restart; no same-user full-trust fallback | [WP-41.00](../planning/work-packages/41-extension-platform-and-integrations.md#rule-wp-41.00) |
+| Native GPU/device call that remains in process | Narrow owned C ABI, lifecycle checks, journal recovery and explicit remaining crash risk | Device/driver loss and safe-start recovery; do not claim ABI status contains access violations | [WP-33](../planning/work-packages/33-arcscope-acquisition-and-session.md#rule-wp-33), [WP-37](../planning/work-packages/37-arcslate-playback-and-processing.md#rule-wp-37) |
+| Timeline grid | Canonical integer ticks; exact output grids, reported inexact source conform | Unsupported output creation differs from valid source import | [WP-36.01](../planning/work-packages/36-arcslate-project-and-timeline.md#rule-wp-36.01) |
+| Audio | [Per-track cut contribution then mixing](../architecture/23-simulator-and-interchange.md#34-boundary-ownership--no-duplicated-and-no-missing-sample) | Adjacent NTSC cut, two simultaneous tracks, dissolve, silence gap, resampler padding | [WP-37.04](../planning/work-packages/37-arcslate-playback-and-processing.md#rule-wp-37.04) |
+| OTIO ingress/egress | Official double value/rate adapter converts once to exact binary rational/canonical ticks, with finite/range and fidelity checks | NaN/infinity, decimal versus rational rates, large/fractional values, metadata-stripped external round-trip | [WP-39.05](../planning/work-packages/39-arcslate-integration-and-portability.md#rule-wp-39.05) |
 
-**Terminal states.** Success: restricted or deleted with every store confirmed. Failure: **no subsystem silently reverses another's decision** — deletion cannot remove audit or financial records, and restriction cannot discard pending work.
+## 9. Configuration, migration and release order
 
----
+Configuration activation enlists the exact Config/Entitlement/Commerce/Agent/Policy write sets under the shared unit of work. Snapshot/head/offer-policy period changes commit together; private parameters never enter the client projection. Workspace-specific term/plan changes advance old capacity before recording new boundaries. Restart preserves balances and reservations. [WP-44.01](../planning/work-packages/44-dynamic-policy-and-configuration.md#rule-wp-44.01) and [WP-42.11](../planning/work-packages/42-commerce-entitlement-and-credits.md#rule-wp-42.11) test the actual implementation.
 
-## 7. Workflow F — simulator start, host failure, native consumption
+[Migration cutover](../architecture/22-deployment-and-release-execution.md#25-versioned-capture-backfill-and-cutover) uses per-key source versions and tombstones, guarded backfill/capture writes, a completed range manifest and an exclusive writer fence. The fence drains prior writers and all committed capture, verifies dirty ranges and changes epoch/authority atomically. A/B retain a lossless old authority through the horizon; C closes data rollback at its switch. Neither two timestamps nor an unfenced empty queue proves convergence. [WP-21.03](../planning/work-packages/21-cloud-host-and-persistence.md#rule-wp-21.03) and [WP-50.04](../planning/work-packages/50-full-platform-production-release.md#rule-wp-50.04) own the real PostgreSQL/mixed-version rehearsal.
 
-| # | Step | Resolves to | Failure branch |
-|---|---|---|---|
-| F-01 | User publishes an immutable scenario version | `simulation.publishScenarioVersion`; `SIM-02` | Invalid AST → **rejected before any lease, object or quota debit** (`SB-01`, `SO-09`) |
-| F-02 | Run started with seed and execution profile | `simulation.startRun`; `scope.simulation_run` | No service term → refused (`SIM-17`); quota exhausted → refused before side effects |
-| F-03 | A replica claims the run by lease with a fence token | `scope.simulation_lease`; `SX-03` | Two replicas contend → one wins; the other does not publish |
-| F-04 | Bounded batches generate canonical data | `RT-05`, `SIM-10` | Preview overload → **preview decimates; canonical generation does not** (`SF-03`) |
-| F-05 | Object written, verified, **then** the manifest row commits | `SX-01` | Crash between → object invisible, swept (`SX-06`) |
-| F-06 | Checkpoint advances in the same transaction | `SX-02` | Reversed order would let a takeover skip an invisible range — which is why it is one transaction |
-| F-07 | **The host is killed mid-run** | Lease expiry; `SX-04` | Another replica takes over with a higher fence token |
-| F-08 | The old host attempts a late publish | `SX-03` | **Rejected on the stale token** |
-| F-09 | Generation resumes from the checkpoint | `SIM-12` | **Same remaining canonical data; no duplicate, no missing range** |
-| F-10 | Client lists the manifest and fetches segments | `simulation.listSegments`, `getSegmentTicket` | Hash mismatch → segment rejected (`SN-02`) |
-| F-11 | Realtime is disabled entirely | `SO-05`, `RE-07`, `SIM-13` | **Polling plus manifest is a complete authoritative fallback**, not a degraded one |
-| F-12 | ArcScope ingests through the normal pipeline | `SN-01` | Session, capture, decoder, measurement, report all unchanged |
-| F-13 | Output is labelled synthetic through export and copy | `SC-06`; `I-496` | **Never enters a hardware-evidence path** |
-| F-14 | Term expires mid-run | `SC-04`, `SIM-17` | Stops at a **durable boundary** as `canceled` with the reason; committed output follows retention rules |
+The [serial work-package order](../planning/work-packages/README.md) places real exports at [WP-25.08](../planning/work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.08), commercial/policy prerequisites before provider/retrieval/simulator use, the Harness after its bridge/context/MCP/workflow dependencies, Android acceptance after [WP-52](../planning/work-packages/52-cloud-harness.md#rule-wp-52) and the Web companion after the real Harness. Early fixture endpoints exercise only client behaviour and are deleted by their named producer package. No fixture crosses a real integration gate.
 
-**Terminal states.** Success: deterministic data, recoverable across host loss, consumable natively, labelled synthetic. Failure: every branch either fails before a side effect or commits a partial outcome honestly — **never `succeeded` for an incomplete range** (`SC-05`).
+## 10. Design closure versus implementation evidence
 
----
-
-## 8. Workflow G — OTIO import, edit, export, independent verification
-
-| # | Step | Resolves to | Failure branch |
-|---|---|---|---|
-| G-01 | User previews an import | `PreviewOtioImportAsync`; `SL-05` | **Nothing mutates.** The fidelity report is produced first |
-| G-02 | Report gives item-level dispositions | `OS-01`, `OT-07` | Retained, approximated or omitted — **never a silent flatten** |
-| G-03 | User accepts; import commits | `ImportOtioAsync`; `SL-06` | Malformed or oversized → rejected before commit (`OY-01`) |
-| G-04 | Import creates ArcSlate-owned objects with provenance | `OA-02`; `I-497` | OTIO is **not** the working store |
-| G-05 | Media references resolve under an approved base | `OY-04`, `OT-08` | Missing → relinkable Offline Media (`RelinkMediaAsync`); a path outside the roots is denied |
-| G-06 | No adapter, plug-in or executable content loads | `OY-02` | The upstream adapter mechanism is exactly the path this rule closes |
-| G-07 | User edits natively; rates stay exact | `OS-03`; `frame_rate_num`/`frame_rate_den` | No float column exists to drift |
-| G-08 | Export binds a **committed** revision | `SL-07`, `OA-02` | Live editor state cannot be exported |
-| G-09 | Temporary destination, atomic publish | `OY-05` | Failure or cancellation leaves project **and** existing destination untouched |
-| G-10 | Semantic round-trip verified independently | `OR-01`, `OT-06`, `OT-12` | Compared on **timeline meaning and media references**, not bytes or internal identifiers |
-| G-11 | External tooling drops private ArcSlate metadata | `OR-03` | **Core supported edits still survive** |
-
-**Terminal states.** Success: imported, edited, exported, semantically verified by an independent library. Failure: every unsupported construct is reported at item level, and no path shifts a frame silently (`OS-04`).
-
----
-
-## 9. Workflow H — configuration replacement and upgrade under load
-
-| # | Step | Resolves to | Failure branch |
-|---|---|---|---|
-| H-01 | Operator edits the bundle outside the repository and image | `DC-02`, `CA-01` | Changing a price **does not rebuild the image** |
-| H-02 | Validation: schema, identity, cross-references, units, currency, bounds | `DC-10`, `CF-01`–`CF-03` | Rejected **before persistence**; the active revision is untouched |
-| H-03 | Environment and realm checked | `DC-04`, `CF-05` | **Production pointed at the public sample is rejected** — a sample is never silently selected |
-| H-04 | Validated snapshot persisted, then activated atomically | `config.revision`; `CG-03`, `CA-03` | Exactly one active revision per realm, by unique constraint |
-| H-05 | Replicas converge | `DC-11` | A replica that cannot load it **admits no affected work** — no fallback to a previous revision or a sample (`CF-04`) |
-| H-06 | Requests in flight keep their pinned tariff | `CA-07`, `AC-09`; `I-494` | A new revision **cannot** lower a started Run's budget or raise its rate |
-| H-07 | Usage, capacity, credits and holds are untouched | `DC-13`, `CA-06`, `AI-16` | No reset, no reissue, no release |
-| H-08 | Historical charge replayed after replacing every rate | `RP-02`, `MT-14` | **Reproduces exactly** — snapshots are persisted facts, not lookups |
-| H-09 | Application upgrade: expand, backfill, deploy, soak, switch | `§2.1` of the deployment architecture | Each phase has an entry check, exit check and failure action |
-| H-10 | Long-running tasks survive the fleet roll | `BG-03`, `MX-03` | Task authority is in the database; a drained replica releases its lease |
-| H-11 | Older clients keep working | `CM-06`, `CO-02` | Support removal is planned and communicated, **never discovered by users** |
-| H-12 | Emergency suspension | `CA-08`, `DC-11` | Bounded, **authenticated**, operator-triggered; server-enforced before dispatch; **no unauthenticated reload endpoint** |
-
-**Terminal states.** Success: new policy active, history intact, tasks and holds preserved. Failure: every branch either rejects before persistence or degrades scoped to what the gap affects (`CA-04`).
-
----
-
-## 10. Findings
-
-Seven steps failed to resolve on the first pass. All seven are closed by work in this pass.
-
-| # | Finding | Resolution | State |
-|---|---|---|---|
-| **W-04** | **A-03 could not resolve.** No schema, operation or rule expressed "an active paid service term", so `C-03` — *credits alone cannot authorise AI* — was unenforceable. Nothing distinguished a credit grant from a paid term | `entitlement.service_term` added with `UQ (kind, source_ref)`; `§5.3` of the commerce architecture; `entitlement.getServiceTerm`; `entitlement.no_service_term`; `SV-01`–`SV-07` | **Closed** |
-| **W-05** | **A-07 resolved to the wrong model.** The credit architecture described an allowance reissued per period and voided at period end — not a replenishing bucket. The refill arithmetic, the watermark, the fractional remainder and the burst ceiling had no design at all | `§7.2` of the commerce architecture with the algorithm; `§7.2` of the commerce architecture carries the algorithm; `entitlement.capacity_bucket` carries the monotonic watermark, the exact rational carry and a **bound on the increase** — corrected 2026-09-08 from a resting-value constraint, which `RF-05` contradicts; `WP-42.11` | **Closed** |
-| **W-06** | **A-10 could not resolve.** No schema recorded normalised usage, so `MT-03`'s non-overlapping categories and `MT-05`'s cumulative-stream rule had nowhere to live. Double-charging reasoning or cached tokens was not structurally prevented | The five-table metering chain; `UQ (provider_attempt_id, usage_revision, category)` as the idempotency key; `§7.4`, `§7.5`; `WP-43.07` | **Closed** |
-| **W-07** | **C-08 resolved to a contradiction.** A render was reachable as an agent Step, which would have put a native job under AI metering and Cloud recovery | `CM-04` of the runtime architecture; `AU-03`; `XA-07`; `TO-05`; `I-121` and `I-485` restated | **Closed** |
-| **W-08** | **D-03 could not resolve.** Nothing distinguished an evictable cache row from a durable pending edit, so cache pressure, sign-out and restriction could each have discarded unacknowledged work | `PE-01`–`PE-06` in the desktop data model as a schema constraint, not a convention; `I-498` | **Closed** |
-| **W-09** | **F-06 had no specified ordering.** The simulator existed only as requirements; nothing said whether the manifest or the checkpoint commits first, which is the difference between a recoverable takeover and a silently skipped range | `§1.2` of the simulator architecture; `SX-01`, `SX-02`; the six simulator tables; `WP-51` | **Closed** |
-| **W-10** | **H-04 could not resolve.** Configuration was a requirement with no owner. No module, schema or activation sequence existed, so `DC-12`'s "requests record which revision they used" was unimplementable | `§2.2` of the commerce architecture makes Configuration a top-level module; `config.revision`; `§3.1` of the deployment architecture; `CG-01`–`CG-06` | **Closed** |
-
-| # | Rule |
-|---|---|
-| WF-01 | **A workflow trace is evidence only while its steps resolve.** These traces are re-run when an operation, schema or rule they cite changes. |
-| WF-02 | **A step resolving to a requirement alone is a finding**, not a resolution. |
-| WF-03 | **These eight are representative, not exhaustive.** They were chosen for boundary crossings, not coverage. |
-| WF-04 | **The previous baseline's traces are superseded, not carried forward.** Workflows A, B and D of the earlier pass rested on a credit balance, a local harness and local-first authority — all three changed under P2-006, so re-using their results would have been false evidence. |
-
----
-
-## 11. Findings closed on 2026-09-07
-
-A subsequent review supplied thirteen findings and this pass discovered three more. **All sixteen were confirmed against the documents and closed**; none was rejected. The traces above were rechecked against the corrected mechanisms, and six steps were updated because the mechanism beneath them changed.
-
-| # | Defect | Where it would have shown | Closed by |
-|---|---|---|---|
-| F-01 | Scope amendments had not reached implementation bodies, types, tests or gates in seven packages | A gate requiring an AOT agent plan that Cloud can never satisfy | Package bodies corrected; `WP-52` created |
-| F-02 | Chat authority said Cloud both was and was not the authority | A Harness reply with no legal writer | `§4.2` commit authority |
-| F-03 | Cross-module transactions prohibited while admission required one | Concurrent overdraft between two writes | `§6.1.1` shared unit of work; `§6.1.2` dispatch barrier |
-| F-04 | `change_seq` allocated in-transaction claimed to prevent false gaps | A late-committing change never delivered | `§9.1` commit-order publication |
-| F-05 | Partial indexes described as row filtering | Trashed content returned by a query missing its predicate | `QP-05`–`QP-07` |
-| F-06 | Two billing models coexisting with different units and keys | Partial settlement across two reservation tables | `credit_lot` unified; `credit_reservation` retired |
-| F-07 | `service_term` keyed so renewal violates its own constraint | The second paid period unrecordable | `period_ref` and the three identities |
-| F-08 | Refill multiplied the whole interval by one rate | 100 units earned where 55 were owed | Policy-period integration |
-| F-09 | Absent log treated as proof of no effect; timeout as *did not happen* | A duplicated real-world effect, or an uncharged billed call | Dispatch intent; `§6.4` resolution ladder |
-| F-10 | `InvokeAsync` violating the typed-boundary test as written | An architecture test failing against the required boundary | `§3.1` decode step; `XT-05` rescoped |
-| F-11 | Streaming told clients to fetch a part that does not exist | No live output on any surface | Stream buffer; `task.readStream` |
-| F-12 | Exact frame *and* sample round trips promised on incommensurate grids | Drift at 30000/1001 fps with 48 kHz | Canonical ticks; projections with declared rounding |
-| F-13 | Backfill had no catch-up; additive schema read as data-safe rollback | Stale new representation read at switch; rollback discarding writes | `§2.5` ladder; `§2.6` data rollback window |
-| **I-01** | Render still "a Task under the unified engine" in `WP-38`, `WP-39`, `WP-20` | A render under AI metering and Cloud recovery | Product Job separated from Agent Task |
-| **I-02** | Client revision token ambiguous between `acked_rev` and `local_rev` | False conflicts, or silent clobbering between local callers | `§1.3a` two revisions; composite local token |
-| **I-03** | Turn loop and first workflow scheduled two phases before the Cloud host | An unexecutable delivery sequence | `WP-52` at its real dependency position |
-
-| # | Rule |
-|---|---|
-| WF-05 | **A trace is re-run when a mechanism beneath it changes**, not only when a step is added. Six steps above were rewritten on 2026-09-07 for that reason. |
-| WF-06 | **A finding is closed by a mechanism, not by a note.** Each row names the section that now carries the behaviour. |
-
----
-
-## 12. Findings closed on 2026-09-08
-
-A further review supplied eight problem areas; **all eight were confirmed against the documents and none was rejected**. Working outward from them, this pass found **fourteen more**, four of them defects introduced by the previous pass's own repairs. The traces above were rechecked; `A-04`, `A-12` and `B-08` were corrected because they cited a rule family that no longer existed at those numbers.
-
-### The eight supplied areas
-
-| # | Area | Closed by |
-|---|---|---|
-| **J-A** | Accepted scope had not reached the executable instructions and gates | Package bodies, `BR` rows and gate lists in `13`, `16`, `18`, `19`, `21`, `43`; then the layers `J-I1` names below |
-| **J-B** | `WP-17` and `WP-52` each required the other | `WP-17.01` rescoped to the client and device executor against a fixture endpoint that `WP-52.05` deletes; `WP-06` declared upstream |
-| **J-C** | Local edits were acknowledged by a token that could not express them | `§1.3a` of the desktop data model: four identities, `RV-C1`–`RV-C6`, the submission batch log, `EV-L1`–`EV-L3` |
-| **J-D** | Task ownership, transaction boundaries and change provenance disagreed | `§4.1`, `§4.2`, `§6.1.1`, `§6.1.2` of the data-model overview; `origin_kind`; `TK-01`–`TK-05` |
-| **J-E** | Refill ignored the ceiling in force during each window | `§7.2` of the commerce architecture; `RF-01`–`RF-11`; `CT-13` |
-| **J-F** | The ArcSlate time model promised incommensurate exact round-trips | `§3.1`–`§3.9` of the simulator and interchange architecture; the tick base; `TV-01`–`TV-12` |
-| **J-G** | The migration cutover left a window in which a write could be missed | `§2.5` capture-before-backfill; `§2.6` the data-rollback window |
-| **J-H** | Streaming assumed a buffer one replica could see | `§7.1` of the harness; `chat.stream_chunk` / `stream_state`; `task.readStream` |
-
-### Found independently in this pass
-
-| # | Defect | Where it would have shown | Closed by |
-|---|---|---|---|
-| **J-I1** | `PV-04` and release gate `P-04` required every product to be usable with no account; `ID-01` grants only that **launch** needs none, and enrolment requires Cloud | A release gate no Cloud-authoritative product can pass | `PV-04`, `P-04`, `§27` startup scenario, `AN-40` oracle |
-| **J-I2** | Release gate `P-05`, `PP-01`, `PP-02` and `DL-07` demanded a re-importable package from products whose exit path is a Cloud download | A round-trip test written against an export that cannot re-import | `P-05` per declared path; citations moved to `WP-39.02`, `WP-35.04`; `DL-07a` |
-| **J-I3** | Repository projection is retired delivery, yet `§12` of the persistence architecture specified the feature and `WP-19.06` gated it | A package building an excluded capability | `§12` is now the prohibition; `WP-19.06` asserts absence; `I-211`/`I-212` given a real oracle |
-| **J-I4** | The bridge contract still created tasks with `placement = remoteViaBridge` | A field the schema no longer has | `§5` diagram on `origin_surface` and `tool_locality` |
-| **J-I5** | The reconciliation ledger ordered a `Split` into three deployable roles, against `RT-03` | A host split that the design forbids | Disposition corrected to `Keep` |
-| **J-I6** | `WP-43` listed BYOK in scope, 79 lines above `WP-43.03`, "the absence of BYOK" | A credential path the requirements exclude | In-scope statement corrected |
-| **J-I7** | The `AL-02` oracle required a frame–sample round-trip that `§3.3` proves cannot exist | A test that can never pass | Oracle restated as tick exactness within one grid |
-| **J-I8** | Four dependency edges were declared one way only; `WP-50` omitted `40` and `41`; `WP-51`/`WP-52` sat in phases their own headers contradict; `WP-51` put native analysis behind Cloud | A production release not depending on search or extensions; an unschedulable ArcScope package | Headers and both README tables regenerated; `SV-06`, `SV-07` |
-| **J-I9** | 1,167 identifiers are defined in two or more normative documents and 1,597 citations resolve to none of them; `OG-05` recorded one instance as if unique | A rule read as the wrong rule, silently, because the wrong one reads correctly | `OG-05` generalised with the measurement; `SV-01` requires resolution, not existence; `PG-21` |
-| **J-I10** | P2-006 took the invariant catalogue to 429 rows; four `WP-05.05` gates still demanded "all 421" | A conformance report that omits eight invariants, or fails a gate for covering them | Corrected across the chain; `R-15` marked superseded |
-| **J-I11** | The Cloud data model carried a **second, divergent** refill algorithm and a `CHECK` that `RF-05` contradicts | Over-granting on a ceiling rise, confiscation on a reduction, and a stranded bucket after a downgrade | Duplicate deleted; bound moved onto the increase; `CX-11` |
-| **J-I12** | The overview's write path omitted the outbox participant and the dispatch barrier | Sync rows written outside the transaction that must contain them | Step 5 as a closed participant list; step 6 as the barrier |
-| **J-I13** | Cancellation released a reservation whose dispatch intent was already committed | Free inference, or provider usage that settles against nothing | Cancellation table split at the barrier; `CN-04`; `HV-08a` |
-| **J-I14** | The public contract kept `placement`, never enumerated the Task state set, and had no rule for a state a client does not know | An older client treating `waitingCapacity` as failure and stranding the Task | `TK-01` corrected; `§7.1` vocabulary; `TS-01`–`TS-03`; `OB-03a` |
-
-**Four of these were introduced by the previous pass**, not inherited: `J-I11` (area E corrected in one document only), `J-I13` and `J-I14` (areas D and H not carried into the contract and cancellation layers), and `J-I8`'s phase placements for `WP-51` and `WP-52`, which this session created.
-
-| # | Rule |
-|---|---|
-| WF-07 | **A correction applied in one document is not a correction.** Four of the fourteen above are places where an earlier repair in this session stopped at the first document. The check that catches it is `SV-01` plus a search for the mechanism's own vocabulary, not a reread of the document that was edited. |
-| WF-08 | **A second copy of an algorithm is a second answer.** The refill algorithm existed in two documents and they had diverged into different arithmetic. Duplicated normative content is removed in favour of one home, never re-synchronised. |
-| WF-09 | **The classes worth scanning for are now named**: retired capability still specified (`SV-08`), gate pinned to a superseded figure, citation resolving to the wrong document (`SV-01`), dependency edge declared one way (`SV-06`), and phase contradicting a header (`SV-07`). Each was found by hand in this pass and each is now a mechanical check. |
-
----
-
-## 13. What this does and does not establish
-
-| Establishes | Does not establish |
-|---|---|
-| Eight boundary-crossing workflows resolve end to end, on success and failure paths, **against the revised requirements** | That every workflow in the product family does |
-| Each traced failure path reaches a stated terminal state | That the implementation will behave as specified |
-| Seven defects were found and closed here; a further sixteen on 2026-09-07 and twenty-two on 2026-09-08 (`§11`, `§12`) | That no defects remain — the 2026-09-08 pass found fourteen the 2026-09-07 pass did not, four of which it had itself introduced |
-| The design layer is present where these workflows need it | That the design is complete in areas these workflows do not touch |
-
-| # | Rule |
-|---|---|
-| WE-01 | **This is design-stage evidence.** It closes no implementation-stage gate, and `RS-02` of the open-gates register governs. |
-| WE-02 | **Passing a trace is not passing a test.** The obligations these workflows imply are carried by the work packages each step cites — including `PG-13`, `PG-14b`, `PG-15` and `PG-16`, which require **real provider, real host and real library evidence** that no design pass can supply. |
+The traces specify mechanisms and owners now. They do not close runtime gates by assertion. SQL concurrency, actual provider usage/payment reconciliation, signed RID isolation, Android/device operation, long media/simulator soaks, restore drills and production release remain explicit implementation evidence in the gate register. Current citation/graph/schema contradictions are repaired in this design step rather than deferred to those gates.

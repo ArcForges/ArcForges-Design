@@ -1,3 +1,5 @@
+<a id="rule-wp-50"></a>
+
 # WP-50 — Full-Platform Production Release
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
@@ -13,7 +15,7 @@
 
 **In scope.** The coordinated production release: official site entry points, downloads and documentation; account portal and checkout in production; Windows, macOS and Linux desktop releases; the Android release; cloud production with migration rehearsal, backup and restore, upgrade and rollback; the licence, SBOM and copied-content release audit; observability, alerting, runbook and incident closure; and the final production gates for the whole family.
 
-**Out of scope.** iOS build activation, which remains deferred (**D-008**). Any capability whose gates are not satisfied — it ships disabled or not at all, never as a claim.
+**Out of scope.** iOS build activation, which remains deferred (**[D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008)**). Any capability whose gates are not satisfied — it ships disabled or not at all, never as a claim.
 
 **Why this package exists.** `I2 §III.13` requires these to complete **together**. A release where the site is live but the payout path is unproven, or where downloads exist but rollback is untested, is not a release — it is an incident waiting for its first customer.
 
@@ -40,7 +42,7 @@
 | BR-03 | **A gate protecting data integrity, security, licence compliance or a regulatory obligation cannot be waived.** |
 | BR-04 | **Nothing incomplete is presented as complete.** A deferred capability is stated as deferred. |
 | BR-05 | **Official pricing and checkout do not launch publicly before entitlement, refunds, webhook idempotency and a real payout path are complete** (`I2 §III.12`). |
-| BR-06 | **iOS is not claimed as compiled or tested** (**D-008**). |
+| BR-06 | **iOS is not claimed as compiled or tested** (**[D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008)**). |
 | BR-07 | **A bad version must be immediately haltable** through the update feed and compatibility policy. |
 | BR-08 | **Rollback is reserved and tested** for every shipped surface. |
 | BR-09 | **Release artifacts are immutable**; a defect produces a new version. |
@@ -63,6 +65,8 @@
 
 ## 5. Required implementation work
 
+<a id="rule-wp-50.00"></a>
+
 ### WP-50.00 — Release readiness audit
 
 **What must be fully done.** Every gate in [`release-gates.md`](../../assurance/release-gates.md) evaluated for every surface, with its evidence artifact named. Every gate in [`open-gates-register.md`](../../assurance/open-gates-register.md) either closed with evidence or explicitly recorded as still open with its blocking consequence stated.
@@ -70,6 +74,8 @@
 **Testing requirements.** A gate-coverage report asserting no gate is unevaluated; an evidence-resolution check asserting every claimed evidence artifact exists; a **cross-system failure-row coverage check** asserting that every failure row in [`../../architecture/20-cross-system-lifecycles.md`](../../architecture/20-cross-system-lifecycles.md) names a test that exists and has run.
 
 **Completion gate.** **Every gate is evaluated with a named, resolvable evidence artifact**, every open gate's blocking consequence is stated, and **no cross-system failure row lacks a run test**.
+
+<a id="rule-wp-50.01"></a>
 
 ### WP-50.01 — Licence, SBOM and copied-content audit
 
@@ -79,6 +85,8 @@
 
 **Completion gate.** Every shipped artifact has a licence inventory, SBOM, provenance attestation and verified NOTICE, and every reused item has a completed provenance record.
 
+<a id="rule-wp-50.02"></a>
+
 ### WP-50.02 — Desktop release across three platforms
 
 **What must be fully done.** Signed installers for Windows, macOS and Linux from the same CI-produced artifacts; the update feed populated with hashes, compatibility ranges and minimum versions; the full update matrix verified per platform; store and package-manager listings pointing at the same signed installer.
@@ -86,6 +94,8 @@
 **Testing requirements.** The complete update matrix per platform — fresh install, upgrade, two-version upgrade, downgrade protection, rollback, interrupted download, interrupted install, corrupted artifact rejection, update during a long task, update with documents open, uninstall preserving user data, channel switch both ways, blocked bad version.
 
 **Completion gate.** **The full update matrix passes on all three desktop platforms**, and a blocked bad version is refused by both the feed and compatibility policy.
+
+<a id="rule-wp-50.03"></a>
 
 ### WP-50.03 — Android release
 
@@ -95,13 +105,17 @@
 
 **Completion gate.** The Android release is live with every mobile gate closed and the listing consistent with the consumption-only posture.
 
+<a id="rule-wp-50.04"></a>
+
 ### WP-50.04 — Cloud production
 
-**What must be fully done.** Production deployment from a promoted artifact; migration rehearsed forward and backward; backup verified with a proven restore; upgrade and rollback rehearsed; the full go-live gate set from `L-01` to `L-15` satisfied; the status page live with its emergency alternate URL published.
+**What must be fully done.** Production deployment from a promoted artifact; migration rehearsed forward and backward; backup verified with a proven restore; upgrade and rollback rehearsed; the full go-live gate set from [L-01](../../assurance/release-gates.md#rule-l-01) to [L-15](../../assurance/release-gates.md#rule-l-15) satisfied; the status page live with its emergency alternate URL published.
 
 **Testing requirements.** A game-day exercise across the severity ladder against the real production topology; the recorded evidence for each go-live gate.
 
 **Completion gate.** **The cloud go-live threshold is met — "failure behaves correctly"** — with a completed game day and evidence for every gate.
+
+<a id="rule-wp-50.05"></a>
 
 ### WP-50.05 — Commercial launch
 
@@ -111,6 +125,8 @@
 
 **Completion gate.** **Pricing and checkout are public only after a payout has actually been received**; until then the statement is "technical integration complete". The regional route remains disabled unless its gates are met.
 
+<a id="rule-wp-50.06"></a>
+
 ### WP-50.06 — Web surfaces
 
 **What must be fully done.** The static site, account portal and web companion deployed atomically per surface from promoted artifacts, each with its own origin policy, with rollback restoring the previous artifact set and a cached-older-client path that refreshes with a grace period rather than breaking.
@@ -119,6 +135,8 @@
 
 **Completion gate.** Every web surface deploys atomically, rolls back cleanly, and handles a cached older client with a grace period.
 
+<a id="rule-wp-50.07"></a>
+
 ### WP-50.07 — Operational readiness
 
 **What must be fully done.** Alerting live with every alert mapped to a rehearsed runbook; on-call arrangement in place; incident process exercised; support entry points live; enforcement and appeal paths operable; advisory process rehearsed.
@@ -126,6 +144,8 @@
 **Testing requirements.** An alert-to-runbook completeness assertion; an on-call verification; a support-path end-to-end test.
 
 **Completion gate.** Every alert maps to a rehearsed runbook, on-call is in place, and support and appeal paths are operable.
+
+<a id="rule-wp-50.08"></a>
 
 ### WP-50.08 — Honest release statement
 
@@ -155,15 +175,15 @@
 
 | Evidence | Produced by |
 |---|---|
-| Gate coverage report with resolvable evidence artifacts | `WP-50.00` |
-| Licence inventory, SBOM, attestation, NOTICE and provenance closure | `WP-50.01` |
-| Full update matrix results per desktop platform | `WP-50.02` |
-| Store install and update verification | `WP-50.03` |
-| Game-day record and per-gate go-live evidence | `WP-50.04` |
-| Commercial gate evidence including the received payout | `WP-50.05` |
-| Atomic deployment, rollback and cached-client results | `WP-50.06` |
-| Alert-to-runbook, on-call and support-path results | `WP-50.07` |
-| Claim audit against gate evidence | `WP-50.08` |
+| Gate coverage report with resolvable evidence artifacts | [WP-50.00](#rule-wp-50.00) |
+| Licence inventory, SBOM, attestation, NOTICE and provenance closure | [WP-50.01](#rule-wp-50.01) |
+| Full update matrix results per desktop platform | [WP-50.02](#rule-wp-50.02) |
+| Store install and update verification | [WP-50.03](#rule-wp-50.03) |
+| Game-day record and per-gate go-live evidence | [WP-50.04](#rule-wp-50.04) |
+| Commercial gate evidence including the received payout | [WP-50.05](#rule-wp-50.05) |
+| Atomic deployment, rollback and cached-client results | [WP-50.06](#rule-wp-50.06) |
+| Alert-to-runbook, on-call and support-path results | [WP-50.07](#rule-wp-50.07) |
+| Claim audit against gate evidence | [WP-50.08](#rule-wp-50.08) |
 
 ---
 
@@ -175,7 +195,7 @@
 2. Every shipped artifact has a licence inventory, SBOM, provenance attestation and verified NOTICE; every reused item has a completed provenance record.
 3. **The full update matrix passes on Windows, macOS and Linux**, and a blocked bad version is refused by both the feed and compatibility policy.
 4. The Android release is live with every mobile gate closed and a listing consistent with the consumption-only posture.
-5. **The cloud go-live threshold is met** — a completed game day across the severity ladder, proven restore, rehearsed rollback and region rebuild, and evidence for every gate from `L-01` to `L-15`.
+5. **The cloud go-live threshold is met** — a completed game day across the severity ladder, proven restore, rehearsed rollback and region rebuild, and evidence for every gate from [L-01](../../assurance/release-gates.md#rule-l-01) to [L-15](../../assurance/release-gates.md#rule-l-15).
 6. **Pricing and checkout are public only after a payout has actually been received**; the regional route remains disabled unless its own gates are met.
 7. Every web surface deploys atomically, rolls back cleanly, and handles a cached older client with a grace period.
 8. Every alert maps to a rehearsed runbook; on-call is in place; support, enforcement and appeal paths are operable.
@@ -185,29 +205,21 @@
 
 ## 9. Dependencies
 
-**Upstream.**
+**Upstream — all must be complete.**
 
-| Package | What this needs from it |
-|---|---|
-| `20` | The proven cross-product workflow as a must-pass scenario |
-| `29` | ArcNotes complete per **D-006** |
-| `32` | A shippable Android artifact with every mobile gate satisfied |
-| `35` | ArcScope complete and integrated |
-| `39` | ArcSlate complete and integrated |
-| `43` | Managed AI metered and transparent |
-| `46` | Proven backup and recovery |
-| `49` | The web companion |
+- [20 — First Real Cross-Product Workflow](20-first-cross-product-workflow.md)
+- [28 — ArcNotes Bounded Properties and Saved Views](28-arcnotes-properties-and-views.md)
+- [32 — Mobile Release Engineering and Store Gates](32-mobile-release-and-store-gates.md)
+- [35 — ArcScope Integration and Metadata Sync](35-arcscope-integration-and-sync.md)
+- [39 — ArcSlate Integration and Portability](39-arcslate-integration-and-portability.md)
+- [40 — Knowledge, Search and Retrieval](40-knowledge-search-and-retrieval.md)
+- [41 — Extension Platform and Integrations](41-extension-platform-and-integrations.md)
+- [43 — Cloud AI Routing, Metering and Settlement](43-managed-ai-routing-and-metering.md)
+- [46 — Backup, Disaster Recovery and Data Health](46-backup-recovery-and-data-health.md)
+- [49 — ArcChat Web Companion](49-arcchat-web-companion.md)
+- [51 — ArcScope Deterministic Cloud Simulator](51-arcscope-cloud-simulator.md)
+- [52 — The Cloud Harness](52-cloud-harness.md)
 
-**Downstream.** None. This is the final package in the sequence.
+**Downstream — these consume this package’s completed output.**
 
----
-
-## 10. After this package
-
-The sequence ends here, but three obligations continue:
-
-| # | Continuing obligation |
-|---|---|
-| CO-01 | **`VG-08` recurs on every framework major upgrade** — the Android runtime posture is re-verified and the mobile AOT and trim proof re-run. |
-| CO-02 | **`VG-09` fires if and when iOS build activation is decided** — the release runtime is re-verified against the then-current supported baseline. |
-| CO-03 | **`VG-06` remains dormant** unless a decision moves a cloud component into an AOT deliverable, at which point its full dependency closure requires an AOT publish proof. |
+None; this is the final integration/release gate.

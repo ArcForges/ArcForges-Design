@@ -1,3 +1,5 @@
+<a id="rule-wp-48"></a>
+
 # WP-48 — Account Portal
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
@@ -15,7 +17,7 @@
 
 **Out of scope.** The ArcChat web companion (`49`) — a different deployment profile. The static site (`47`). The operator console, which is a separate origin and identity system.
 
-**Why this package exists.** **D-015** makes `account.arcforges.com` the canonical account origin and forbids a second account application. `I2 §III.12` requires the portal to follow identity, workspace, device, entitlement and billing APIs — which is why it lands after `42` and `44`.
+**Why this package exists.** **[D-015](../../decisions/phase-1-foundation-decisions.md#rule-d-015)** makes `account.arcforges.com` the canonical account origin and forbids a second account application. `I2 §III.12` requires the portal to follow identity, workspace, device, entitlement and billing APIs — which is why it lands after `42` and `44`.
 
 ---
 
@@ -25,8 +27,8 @@
 |---|---|
 | [`../../architecture/10-web-architecture.md`](../../architecture/10-web-architecture.md) `§3`–`§6` | The application structure, surface matrix, browser authentication and content security |
 | [`../../requirements/02-identity-account-and-workspace.md`](../../requirements/02-identity-account-and-workspace.md) `§12` | Portal scope |
-| **D-015**, **D-014** | Canonical account origin and the surface inventory |
-| `WP-42`, `WP-44`, `WP-47` output | Commerce, policy and the public site boundary |
+| **[D-015](../../decisions/phase-1-foundation-decisions.md#rule-d-015)**, **[D-014](../../decisions/phase-1-foundation-decisions.md#rule-d-014)** | Canonical account origin and the surface inventory |
+| [WP-42](42-commerce-entitlement-and-credits.md#rule-wp-42), [WP-44](44-dynamic-policy-and-configuration.md#rule-wp-44), [WP-47](47-static-public-site.md#rule-wp-47) output | Commerce, policy and the public site boundary |
 
 ---
 
@@ -34,10 +36,10 @@
 
 | # | Rule |
 |---|---|
-| BR-01 | **`ArcForges.Web.App` is the only interactive browser application** (**D-007**), deployed per surface profile. |
-| BR-02 | **`arcforges.com/account` is a permanent redirect, never a second account application** (**D-015**). |
-| BR-03 | **Deployments do not share state, storage or cookies**, and no broad parent-domain authentication cookie exists (**D-015**). |
-| BR-04 | **`RunAOTCompilation=false`** unless a measured benchmark and an explicit decision prove otherwise (**D-007**). |
+| BR-01 | **`ArcForges.Web.App` is the only interactive browser application** (**[D-007](../../decisions/phase-1-foundation-decisions.md#rule-d-007)**), deployed per surface profile. |
+| BR-02 | **`arcforges.com/account` is a permanent redirect, never a second account application** (**[D-015](../../decisions/phase-1-foundation-decisions.md#rule-d-015)**). |
+| BR-03 | **Deployments do not share state, storage or cookies**, and no broad parent-domain authentication cookie exists (**[D-015](../../decisions/phase-1-foundation-decisions.md#rule-d-015)**). |
+| BR-04 | **`RunAOTCompilation=false`** unless a measured benchmark and an explicit decision prove otherwise (**[D-007](../../decisions/phase-1-foundation-decisions.md#rule-d-007)**). |
 | BR-05 | **A long-lived access token is never held in storage readable by arbitrary scripts.** |
 | BR-06 | **A web session is shorter-lived and less trusted than a desktop session**, and a new browser does not immediately hold high-risk approval capability. |
 | BR-07 | **Step-up is available in the browser** for the enumerated sensitive operations. |
@@ -54,7 +56,7 @@
 |---|---|
 | `src/Web/ArcForges.Web.App/` | Shell, deployment profile selection, navigation, theming, locale |
 | `src/Web/ArcForges.Web.App/Features/Account/` | Account, security, devices, sessions, recovery |
-| `src/Web/ArcForges.Web.App/Features/Workspace/` | Workspace settings, storage, usage, capacity and service term. **No membership surface** (`WO-01`) |
+| `src/Web/ArcForges.Web.App/Features/Workspace/` | Workspace settings, storage, usage, capacity and service term. **No membership surface** ([WO-01](../../architecture/data-model/01-cloud-data-model.md#rule-wo-01)) |
 | `src/Web/ArcForges.Web.App/Features/Commerce/` | Entitlement, subscription, credits, billing history, invoices |
 | `src/Web/ArcForges.Web.App/Features/Data/` | Export, deletion, data health visibility |
 | `deploy/edge/account/` | Origin configuration: content security policy, cookie policy, CORS, CSRF posture |
@@ -66,6 +68,8 @@
 
 ## 5. Required implementation work
 
+<a id="rule-wp-48.00"></a>
+
 ### WP-48.00 — Application shell and deployment profile
 
 **What must be fully done.** One codebase with a deployment profile selecting feature set, navigation and branding. The account profile is complete and the chat profile is stubbed for `49`. Profiles share no state, storage or cookies.
@@ -73,6 +77,8 @@
 **Testing requirements.** A profile-isolation test asserting no shared storage or cookie; a profile-composition test; a build-per-profile test.
 
 **Completion gate.** One codebase produces both profiles with provably isolated state.
+
+<a id="rule-wp-48.01"></a>
 
 ### WP-48.01 — Browser authentication and step-up
 
@@ -82,6 +88,8 @@
 
 **Completion gate.** No long-lived token is script-readable, refresh never storms, and a new browser holds no immediate high-risk approval capability.
 
+<a id="rule-wp-48.02"></a>
+
 ### WP-48.02 — Account and security surfaces
 
 **What must be fully done.** Profile, authentication methods, passkey management, sessions, device list with trust levels and revocation, recovery configuration, and the security event view from the audit store.
@@ -90,13 +98,17 @@
 
 **Completion gate.** Every sensitive account action requires step-up, and device revocation propagates promptly.
 
+<a id="rule-wp-48.03"></a>
+
 ### WP-48.03 — Workspace, storage and usage
 
-**What must be fully done.** Single-owner workspace settings — **no membership, invitation, role or seat surface** (`WO-01`–`WO-05`); **service term and included-capacity display with recovery timing and the extra-credit opt-in** (`EC-01`–`EC-04`); storage consumption computed from committed objects; usage against quota with reset boundaries visible; data health visibility.
+**What must be fully done.** Single-owner workspace settings — **no membership, invitation, role or seat surface** ([WO-01](../../architecture/data-model/01-cloud-data-model.md#rule-wo-01)–[WO-05](../../architecture/data-model/01-cloud-data-model.md#rule-wo-05)); **service term and included-capacity display with recovery timing and the extra-credit opt-in** ([EC-01](../../architecture/contracts/01-public-api-operations.md#rule-ec-01)–[EC-04](../../architecture/contracts/01-public-api-operations.md#rule-ec-04)); storage consumption computed from committed objects; usage against quota with reset boundaries visible; data health visibility.
 
-**Testing requirements.** Accounting comparison against server-side figures; boundary display tests; **a structural test asserting no membership, invitation, role or seat operation is offered**; a projection test asserting the portal receives no supplier rate, route weight or other user's state (`DC-14`); a display test asserting capacity and purchased credits are never summed into one figure (`CD-07`).
+**Testing requirements.** Accounting comparison against server-side figures; boundary display tests; **a structural test asserting no membership, invitation, role or seat operation is offered**; a projection test asserting the portal receives no supplier rate, route weight or other user's state ([DC-14](../../requirements/11-policy-and-configuration.md#rule-dc-14)); a display test asserting capacity and purchased credits are never summed into one figure ([CD-07](../../architecture/16-billing-and-commerce-architecture.md#rule-cd-07)).
 
 **Completion gate.** Displayed storage and usage match server-side computed values exactly.
+
+<a id="rule-wp-48.04"></a>
 
 ### WP-48.04 — Entitlement, subscription and credits
 
@@ -106,6 +118,8 @@
 
 **Completion gate.** Entitlement shows a reason per capability, credit classes are never summed, and no payment instrument field exists in the application.
 
+<a id="rule-wp-48.05"></a>
+
 ### WP-48.05 — Data export and deletion
 
 **What must be fully done.** Export requests with progress and download; deletion requests with a grace period and an explicit statement of what is and is not deleted, including that local data is untouched.
@@ -114,6 +128,8 @@
 
 **Completion gate.** Export is complete, and deletion states accurately what it does and does not remove — including that local data is untouched.
 
+<a id="rule-wp-48.06"></a>
+
 ### WP-48.06 — Origin security and performance
 
 **What must be fully done.** A strict content security policy with no inline script by default; per-origin cookie, CORS and CSRF posture; no secret in the bundle; sandboxed preview of any user content; bundle size and first-interactive budgets with regression gates.
@@ -121,6 +137,8 @@
 **Testing requirements.** Policy header verification; a bundle secret scan; a sandbox escape test on hostile content; budget measurements with the regression gate applied.
 
 **Completion gate.** The origin enforces its own strict policy, the bundle contains no secret, and bundle and interactivity budgets pass their regression gate.
+
+<a id="rule-wp-48.07"></a>
 
 ### WP-48.07 — Offline, degradation and accessibility
 
@@ -150,14 +168,14 @@
 
 | Evidence | Produced by |
 |---|---|
-| Profile isolation and composition results | `WP-48.00` |
-| Token storage, refresh, step-up and new-browser trust results | `WP-48.01` |
-| Device revocation, passkey and step-up coverage results | `WP-48.02` |
-| Storage and usage accounting comparison | `WP-48.03` |
-| Entitlement reason coverage, credit separation and no-payment-field scan | `WP-48.04` |
-| Export completeness and deletion statement accuracy | `WP-48.05` |
-| Policy headers, bundle secret scan and budget measurements | `WP-48.06` |
-| Offline, outage and accessibility results | `WP-48.07` |
+| Profile isolation and composition results | [WP-48.00](#rule-wp-48.00) |
+| Token storage, refresh, step-up and new-browser trust results | [WP-48.01](#rule-wp-48.01) |
+| Device revocation, passkey and step-up coverage results | [WP-48.02](#rule-wp-48.02) |
+| Storage and usage accounting comparison | [WP-48.03](#rule-wp-48.03) |
+| Entitlement reason coverage, credit separation and no-payment-field scan | [WP-48.04](#rule-wp-48.04) |
+| Export completeness and deletion statement accuracy | [WP-48.05](#rule-wp-48.05) |
+| Policy headers, bundle secret scan and budget measurements | [WP-48.06](#rule-wp-48.06) |
+| Offline, outage and accessibility results | [WP-48.07](#rule-wp-48.07) |
 
 ---
 
@@ -179,11 +197,12 @@
 
 ## 9. Dependencies
 
-**Upstream.** `42` (commerce), `44` (policy), `47` (the public site boundary).
+**Upstream — all must be complete.**
 
-**Downstream.**
+- [42 — Commerce, Entitlement and Credits](42-commerce-entitlement-and-credits.md)
+- [44 — Dynamic Policy and Configuration Control Plane](44-dynamic-policy-and-configuration.md)
+- [47 — Static Public Site](47-static-public-site.md)
 
-| Package | What it needs from here |
-|---|---|
-| `49` — Web companion | The shared application shell and its authentication |
-| `50` — Production release | The account and checkout entry points |
+**Downstream — these consume this package’s completed output.**
+
+- [49 — ArcChat Web Companion](49-arcchat-web-companion.md)
