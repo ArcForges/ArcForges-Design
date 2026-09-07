@@ -167,7 +167,7 @@ Every material statement in the corpus falls into one of the classes below. Clas
 
 ### 4.1 Notable classification calls
 
-- Every version number, price, fee, quota, rate, provider capability and regulatory date in the corpus is `EXTERNAL_FACT`. The corpus carries a verification date of **2026-07-20** (I3 header) with the record written around **2026-07-21**. Per **D-003**, the foundation-critical subset was verified against current official primary sources on **2026-09-04** and is recorded in `phase-1-official-verification.md` (V-01 to V-09). All pricing, fee, quota, rate and regional-availability figures remain deliberately unverified and are deferred under D-003's first-consumption rule, with every frozen economic figure additionally invalidated by **D-020**.
+- Every version number, price, fee, quota, rate, provider capability and regulatory date in the corpus is `EXTERNAL_FACT`. The corpus carries a verification date of **2026-07-20** (I3 header) with the record written around **2026-07-21**. Per **[D-003](../decisions/phase-1-foundation-decisions.md#rule-d-003)**, the foundation-critical subset was verified against current official primary sources on **2026-09-04** and is recorded in `phase-1-official-verification.md` ([V-01](phase-1-official-verification.md#rule-v-01) to [V-09](phase-1-official-verification.md#rule-v-09)). All pricing, fee, quota, rate and regional-availability figures remain deliberately unverified and are deferred under [D-003](../decisions/phase-1-foundation-decisions.md#rule-d-003)'s first-consumption rule, with every frozen economic figure additionally invalidated by **[D-020](../decisions/phase-1-foundation-decisions.md#rule-d-020)**.
 - All C# code blocks, JSON samples, capability identifier strings, file extensions and directory names in I3 and I4 are `EXAMPLE` unless a stage explicitly freezes them. I4 repeatedly states "the specific ID set will be designed by the product contract later".
 - I3's `ArcVideo` and `ArcImage` product sections are `OBSOLETE`; I4 Stage 13 §93 lists the five amendments required.
 - I3 §28 "Phased implementation plan" (Phase 0–8) is `OBSOLETE` as a sequence; I2 §I.2 states Legacy Phase 3 and Phase 4 cannot be applied to the current portfolio.
@@ -203,33 +203,33 @@ Existence verified. No contents read, enumerated, executed, or inspected.
 
 ## 7. Official verification
 
-The foundation-critical verification mandated by **D-003**, as retargeted by **D-005**, was executed on **2026-09-04** and is recorded in full at [`phase-1-official-verification.md`](phase-1-official-verification.md).
+The foundation-critical verification mandated by **[D-003](../decisions/phase-1-foundation-decisions.md#rule-d-003)**, as retargeted by **[D-005](../decisions/phase-1-foundation-decisions.md#rule-d-005)**, was executed on **2026-09-04** and is recorded in full at [`phase-1-official-verification.md`](phase-1-official-verification.md).
 
 | ID | Subject | Result |
 |---|---|---|
-| V-01 | EU AI Act Article 50 and current Commission guidance | VERIFIED |
-| V-02 | MCP `2026-07-28` specification and official C# SDK | SUPERSEDED — RC status no longer current; now stable |
-| V-03 | ASP.NET Core Native AOT support in .NET 10 | VERIFIED |
-| V-04 | .NET MAUI Android and iOS runtime and compilation status | VERIFIED |
-| V-05 | AOT evidence for Avalonia, StreamJsonRpc, Refit, SignalR, Azure SDKs, EF Core | PARTIALLY_VERIFIED / DEFERRED per dependency |
-| V-06 | Paddle Merchant-of-Record role | VERIFIED |
-| V-07 | Paddle-to-Payoneer payout relationship | VERIFIED |
-| V-08 | Paddle mainland-China support (Alipay, WeChat Pay) | VERIFIED |
-| V-09 | Apple and Google rules for a free consumption-only companion app | Google VERIFIED; Apple PARTIALLY_VERIFIED |
+| [V-01](phase-1-official-verification.md#rule-v-01) | EU AI Act Article 50 and current Commission guidance | VERIFIED |
+| [V-02](phase-1-official-verification.md#rule-v-02) | MCP `2026-07-28` specification and official C# SDK | SUPERSEDED — RC status no longer current; now stable |
+| [V-03](phase-1-official-verification.md#rule-v-03) | ASP.NET Core Native AOT support in .NET 10 | VERIFIED |
+| [V-04](phase-1-official-verification.md#rule-v-04) | .NET MAUI Android and iOS runtime and compilation status | VERIFIED |
+| [V-05](phase-1-official-verification.md#rule-v-05) | AOT evidence for Avalonia, StreamJsonRpc, Refit, SignalR, Azure SDKs, EF Core | PARTIALLY_VERIFIED / DEFERRED per dependency |
+| [V-06](phase-1-official-verification.md#rule-v-06) | Paddle Merchant-of-Record role | VERIFIED |
+| [V-07](phase-1-official-verification.md#rule-v-07) | Paddle-to-Payoneer payout relationship | VERIFIED |
+| [V-08](phase-1-official-verification.md#rule-v-08) | Paddle mainland-China support (Alipay, WeChat Pay) | VERIFIED |
+| [V-09](phase-1-official-verification.md#rule-v-09) | Apple and Google rules for a free consumption-only companion app | Google VERIFIED; Apple PARTIALLY_VERIFIED |
 
-All nine expected conclusions in the decision package were checked against official evidence rather than substituted for it, and all held. One new implementation-critical issue was discovered (**F-026**, Refit AOT packaging) and registered as a deferred gate. No new foundation-critical conflict was uncovered.
+All nine expected conclusions in the decision package were checked against official evidence rather than substituted for it, and all held. One new implementation-critical issue was discovered (**[F-026](open-gates-register.md#rule-f-026)**, Refit AOT packaging) and registered as a deferred gate. No new foundation-critical conflict was uncovered.
 
-**Not verified, by decision:** all prices, fees, quotas, exchange rates, tax rates, provider rate cards, storage and AI rates, and store fee details. These remain deferred under D-003's first-consumption rule.
+**Not verified, by decision:** all prices, fees, quotas, exchange rates, tax rates, provider rate cards, storage and AI rates, and store fee details. These remain deferred under [D-003](../decisions/phase-1-foundation-decisions.md#rule-d-003)'s first-consumption rule.
 
 ## 8. Deferred gates
 
-Every deferred item carries a durable responsibility role and a concrete trigger, per **D-016**. "The user" is not used as an operational owner.
+Every deferred item carries a durable responsibility role and a concrete trigger, per **[D-016](../decisions/phase-1-foundation-decisions.md#rule-d-016)**. "The user" is not used as an operational owner.
 
 | Item | Responsible role | Trigger |
 |---|---|---|
-| **F-013** — reference-repository licences and file-level SPDX evidence | Licensing and Provenance Owner | Before any reference material is reused; first step of the per-product Reference Coverage Matrix |
-| **F-023** — ArcChat Mobile provenance and complete transitive dependency closure | Release Engineering Owner **and** Licensing and Provenance Owner | Before the first App Store, TestFlight, Google Play or sideloadable mobile artifact |
-| **F-026** — Refit version pin, `ForGenerated` policy, `Refit.Reflection` prohibition, `RF006` build-breaking | Owning platform work-package owner (Architecture Owner approves) | Before accepting Refit into an AOT deliverable |
+| **[F-013](open-gates-register.md#rule-f-013)** — reference-repository licences and file-level SPDX evidence | Licensing and Provenance Owner | Before any reference material is reused; first step of the per-product Reference Coverage Matrix |
+| **[F-023](open-gates-register.md#rule-f-023)** — ArcChat Mobile provenance and complete transitive dependency closure | Release Engineering Owner **and** Licensing and Provenance Owner | Before the first App Store, TestFlight, Google Play or sideloadable mobile artifact |
+| **[F-026](open-gates-register.md#rule-f-026)** — Refit version pin, `ForGenerated` policy, `Refit.Reflection` prohibition, `RF006` build-breaking | Owning platform work-package owner (Architecture Owner approves) | Before accepting Refit into an AOT deliverable |
 | Pricing, fee, quota and rate verification | Commercial Operations Owner | First authoritative pricing specification; again before launch |
 | EU AI-content marking mechanism and Code of Practice position | Security/Privacy Owner (Product Owner approves) | First EU market availability |
 | MCP SDK version pin and extension-vocabulary mapping | Architecture Owner | Start of the MCP/extension work package |
@@ -239,9 +239,9 @@ Every deferred item carries a durable responsibility role and a concrete trigger
 | Cloud component AOT proof, if any component is ever AOT-published | Architecture Owner | Any decision to AOT-publish a Cloud component |
 | Paddle supplier onboarding; sanctions and export screening | Commercial Operations Owner | Before first live transaction |
 | Payoneer eligibility and receiving-currency confirmation | Commercial Operations Owner | First authoritative pricing specification; again before launch |
-| Mainland-China enablement gates per D-023, sharpened by V-08 | Commercial Operations Owner (Product Owner approves catalogue) | Before enabling mainland-China sales |
+| Mainland-China enablement gates per [D-023](../decisions/phase-1-foundation-decisions.md#rule-d-023), sharpened by [V-08](phase-1-official-verification.md#rule-v-08) | Commercial Operations Owner (Product Owner approves catalogue) | Before enabling mainland-China sales |
 | Store category-fit and consumption-only conformance | Release Engineering Owner with Product Owner approval | First mobile store submission |
-| Normative glossary and invariant catalogue (D-018) | Architecture Owner | Before any detailed product specification is finalized |
+| Normative glossary and invariant catalogue ([D-018](../decisions/phase-1-foundation-decisions.md#rule-d-018)) | Architecture Owner | Before any detailed product specification is finalized |
 
 ## 9. Ledger status
 
@@ -251,12 +251,12 @@ Every deferred item carries a durable responsibility role and a concrete trigger
 | Complete-reading coverage recorded | Done |
 | Topic inventory established | Done |
 | Content classification scheme established | Done |
-| Material issues registered | Done — 26 issues, F-001 to F-026, every identifier used and none skipped (an earlier never-written F-022 draft is recorded as such; see the register's hygiene note) |
+| Material issues registered | Done — 26 issues, [F-001](../decisions/phase-1-foundation-decisions.md#rule-f-001) to [F-026](open-gates-register.md#rule-f-026), every identifier used and none skipped (an earlier never-written [F-022](../decisions/phase-1-foundation-decisions.md#rule-f-022) draft is recorded as such; see the register's hygiene note) |
 | Every issue resolved or validly deferred | Done — 23 resolved, 3 deferred, 0 open, 0 proposed |
 | Every deferred item has a responsible role and trigger | Done — section 8 |
-| Time-sensitive claims verified or marked unresolved | Done — foundation-critical verified per D-003 (section 7); pricing and rates deferred with owner and trigger |
-| Official verification artifact complete | Done — `phase-1-official-verification.md`, V-01 to V-09 |
-| User decisions recorded | **D-001 to D-023 recorded verbatim** in `docs/decisions/phase-1-foundation-decisions.md` |
+| Time-sensitive claims verified or marked unresolved | Done — foundation-critical verified per [D-003](../decisions/phase-1-foundation-decisions.md#rule-d-003) (section 7); pricing and rates deferred with owner and trigger |
+| Official verification artifact complete | Done — `phase-1-official-verification.md`, [V-01](phase-1-official-verification.md#rule-v-01) to [V-09](phase-1-official-verification.md#rule-v-09) |
+| User decisions recorded | **[D-001](../decisions/phase-1-foundation-decisions.md#rule-d-001) to [D-023](../decisions/phase-1-foundation-decisions.md#rule-d-023) recorded verbatim** in `docs/decisions/phase-1-foundation-decisions.md` |
 | Four raw input files byte-unchanged | Done — verified by `git status` and `git diff` scoped to exactly those four paths |
 | Decision register and ledger agree | Done |
 | New foundation-critical conflict blocking the freeze | None uncovered |
