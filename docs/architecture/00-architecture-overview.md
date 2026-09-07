@@ -205,13 +205,22 @@ Every write — from a local click, a local RPC call, a public HTTP request or a
 ```
 1.  Verify identity, permission and capability version
 2.  Check whether this CommandId has already been executed
+       already executed -> RETURN THE PRIOR RESULT, do not re-execute
 3.  Check ExpectedRevision
 4.  Enforce domain rules
-5.  Atomically write state change + command record + journal entry
-6.  Increment revision
-7.  Publish the in-process notification after commit
+5.  ONE TRANSACTION, containing every participant and no I/O:
+       state change
+       command record
+       journal entry (local) / change row (Cloud)
+       revision increment
+       outbox entry, where the write has an asynchronous effect
+6.  COMMIT and flush
+       <- THE DISPATCH BARRIER.  Nothing external has happened yet
+7.  Publish the in-process notification, and only now begin any dispatch
 8.  Return the new revision and the minimal delta
 ```
+
+**Step 5 is a closed list, not an illustration.** Which participants may share one transaction is enumerated by operation class in `§6.1.1` of the data-model overview (`SU-01`–`SU-07`), under a single global lock order; `sync` is always a participant and never an initiator (`SU-07`), which is why its row is inside the transaction rather than after it. **Step 6 is the dispatch barrier** (`§6.1.2`, `DB-01`–`DB-03`): no provider call, object-storage write or network hop occurs before it (`SU-05`). The local elaboration of the same path is `§3` of [the persistence architecture](06-data-persistence-and-formats.md). Those two are authoritative; this is the skeleton they share, and it is not a third specification.
 
 Every write command carries at minimum `CommandId`, the target identity, `ExpectedRevision`, actor and device from the authentication context, causation and correlation identifiers, business parameters, and an optional approval reference.
 

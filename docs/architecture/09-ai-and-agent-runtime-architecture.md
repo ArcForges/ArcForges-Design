@@ -148,6 +148,7 @@ Explicit attachments  ·  pinned context  ·  project context  ·  temporary con
 | CA-04 | **An automation's scope freezes into the run's evidence scope** (`AS-07` there). |
 | CA-05 | **Cache isolation is a security requirement**: user-derived prompt cache is workspace-scoped; only genuinely public content is reused across workspaces (`CO-03` in the AI requirements). |
 | CA-06 | **Conversation compaction is context engineering, not memory** (`HM-03` in the ArcChat requirements). |
+| CA-07 | **Only acknowledged Cloud revisions are packable** (`I-498`, `PK-04` of the harness). Content that exists only on a device — an unenrolled notebook, a local-only ArcScope capture, an ArcSlate media file, an edit not yet acknowledged — **is not context**, and the pack states its absence rather than quietly assembling less evidence. Enabling AI never causes an upload (`OW-08` of the AI requirements, `I-182`). |
 
 ---
 

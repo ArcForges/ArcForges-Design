@@ -305,18 +305,24 @@ approval.decide
 
 ### 6.2 Cancellation
 
-| Point | Behaviour |
-|---|---|
-| Before the model call | Immediate; reservation released |
-| During streaming | Stream aborted; partial text stored as `interrupted`; reservation settled at actual usage |
-| During an invocation | Cancellation propagates; the capability's own semantics decide; effect certainty recorded |
-| While awaiting approval | Approval withdrawn; turn ends `cancelled` |
+**The dispatch barrier divides this table.** Before it, nothing external has happened and a reservation may be released outright. After it, cancellation is a request to stop — it can never release a reservation whose dispatch intent is already committed, because `DB-01` makes an intent with no outcome mean *unknown*. Cancellation is a crash you asked for, and it gets the same treatment.
+
+| Point | Relative to the barrier | Behaviour |
+|---|---|---|
+| Queued in `waitingCapacity` | **Before** — no reservation exists | Turn ends `cancelled`; nothing to release, nothing to settle |
+| Admitted, intent **not yet committed** | **Before** | Immediate; the reserving transaction is abandoned or its reservation released outright |
+| Admitted, intent **committed**, provider not yet called | **After** | **The reservation is not released.** Dispatch is asked to abort, and the turn resolves through `§6.4`'s ladder like any other unknown — released only once an outcome or the deadline says it is safe (`DB-03`, `§7.6` of the commerce architecture) |
+| Waiting in `waitingDevice` for a device tool | **After** — a `tool_request` exists | The request is withdrawn and expires; a device that already pulled it reports its own outcome, which decides (`CN-03`) |
+| During streaming | **After** | Stream aborted; partial text stored as `interrupted`; verified consumption within the authorised ceiling settles and **only the remainder releases** — completed provider work is not presumed refundable (`MT-09`) |
+| During an invocation | **After** | Cancellation propagates; the capability's own semantics decide; effect certainty recorded |
+| While awaiting approval | **Before**, for the un-dispatched step | Approval withdrawn; turn ends `cancelled` |
 
 | # | Rule |
 |---|---|
 | CN-01 | **Cancellation is cooperative and always leaves a determinate state.** No path ends with a turn neither running nor finished. |
 | CN-02 | **A cancelled turn settles its budget at actual usage** — the user is not charged for what was not consumed, and is charged for what was. |
 | CN-03 | **Cancellation during a non-idempotent invocation records `unknownEffect`** rather than assuming it did not happen. |
+| CN-04 | **A committed dispatch intent makes release conditional, never immediate.** Releasing on the cancel request would free capacity while a provider call may still be in flight, and settlement would then have no reservation to debit — the user gets free inference or the usage goes unrecorded. **The barrier, not the user's intent, decides what may be released** (`DB-01`, `DB-03`, `AD-10` of the commerce architecture). |
 
 ### 6.3 Crash recovery
 
@@ -553,6 +559,7 @@ The Harness always runs in Cloud (`LS-02`). What varies is **where each tool exe
 | HV-06 | Stale context is detected before a write, and the model is told rather than silently corrected | `WP-20.02` |
 | HV-07 | Every loop bound ends the turn with a stated reason; no unbounded loop is reachable | `WP-52.00`, `WP-16.07` |
 | HV-08 | A cancelled turn settles verified consumption and releases the remainder | `WP-16.05`, `WP-43.02` |
+| HV-08a | **Cancellation arriving after the dispatch intent commits does not release the reservation.** The turn resolves through the unknown ladder, and a provider response arriving after the cancel still settles against the reservation it was dispatched under (`CN-04`, `DB-03`) | `WP-52.02`, `WP-43.02` |
 | HV-09 | **No client runs a model loop.** A structural test asserts no desktop, mobile or browser assembly references a provider adapter or holds a provider credential | `WP-05`, `WP-17.01` |
 | HV-10 | A capability not declarable to the model is never proposed, and never invocable if proposed | `WP-17.00` |
 | HV-11 | **No end-user BYOK path exists.** No operation, schema field, setting or UI accepts a customer provider key | `WP-05`, `WP-43.03` |
