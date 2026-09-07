@@ -123,7 +123,7 @@
 
 | Evidence | Produced by |
 |---|---|
-| AOT publish log and in-binary agent run | `WP-13.00` |
+| AOT publish log and an in-binary **device tool request** decoded and executed through generated, statically registered code — **no model loop is probed here**, it is Cloud and JIT | `WP-13.00` |
 | Kill-during-edit recovery and undo distinction results | `WP-13.01` |
 | Sustained-throughput record with overrun, gap and pause results | `WP-13.02` |
 | Frame display, synchronisation measurement, sanitiser and sacrificial-process results | `WP-13.03` |

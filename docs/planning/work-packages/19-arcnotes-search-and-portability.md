@@ -149,7 +149,7 @@
 | Saved view ownership and freshness results | `WP-19.03` |
 | Per-source import results, immutability assertion, partial-failure report | `WP-19.04` |
 | Cloud export content, attachment-hash, link-manifest and fidelity results | `WP-19.05` |
-| Export determinism and diff-readability evidence | `WP-19.06` |
+| Dependency-policy, structural and presentation results proving **no repository-projection or Git/LFS path exists** | `WP-19.06` |
 
 ---
 
@@ -161,8 +161,8 @@
 2. Permission is applied during query evaluation; refused content is invisible in results and counts.
 3. Citation anchors survive surrounding edits and report invalidity explicitly.
 4. A saved view owns no content and always reflects current data.
-5. Every declared import source has a fixture, imports correctly, never modifies the source, and reports partial failure honestly.
-6. A Cloud export is complete, verifiable and honest about what it omits; every lossy target states its losses before writing — satisfying `PG-07` for ArcNotes.
+5. Every declared import source has a fixture, imports correctly, never modifies the source, and reports partial failure honestly — **this is what satisfies `PG-07` for ArcNotes**, which is a fixture obligation on *import*, not on export.
+6. A Cloud export is complete, verifiable and honest about what it omits; every lossy target states its losses before writing.
 7. **No repository-projection or Git/LFS path exists in ArcNotes or its dependencies**, the build fails if one is added, and the exclusion is explained rather than hidden.
 8. **Search over hydrated content survives a Cloud outage**, and pending work remains durably recoverable. Export is a Cloud operation and is unavailable during an outage, which the interface states rather than failing opaquely.
 

@@ -159,7 +159,7 @@
 | Evidence | Produced by |
 |---|---|
 | Multi-sequence and structural distinction results | `WP-36.00` |
-| Exactness, drift and conversion round-trip results | `WP-36.01` |
+| Tick-base exactness per supported rate, long-sequence drift, and **within-grid** position→grid→position round-trip results — **not** a frame↔sample round-trip, which the grids make impossible | `WP-36.01` |
 | Offline-open, relink and no-native-type results | `WP-36.02` |
 | Import timing and indexing-failure results | `WP-36.03` |
 | Many-clips-one-asset and no-path results | `WP-36.04` |

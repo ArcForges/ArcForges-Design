@@ -157,7 +157,7 @@
 | Evidence | Produced by |
 |---|---|
 | Capability enumeration and reason-coverage results | `WP-17.00` |
-| Published-AOT agent run and plan-validation results | `WP-17.01` |
+| Fixture-turn client results against the real `WP-06.04` host, device `ToolRequest` decode-invoke-idempotency results, admission-refusal rendering per reason, and the structural no-turn-loop assertion | `WP-17.01` |
 | Grant, revocation and approval durability results | `WP-17.02` |
 | Cross-product task centre results | `WP-17.03` |
 | Automation trigger, cascade and permission results | `WP-17.04` |

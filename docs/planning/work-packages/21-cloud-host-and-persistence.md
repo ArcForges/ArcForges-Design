@@ -153,11 +153,11 @@
 | Evidence | Produced by |
 |---|---|
 | Pipeline order and tenancy-required assertions | `WP-21.00` |
-| Role composition results | `WP-21.01` |
+| Single-deployable assertion, multi-replica lease exclusivity, stale-token fencing, bounded-batch and drain results | `WP-21.01` |
 | Schema ownership and module reference results, plus the reconciliation record | `WP-21.02` |
 | Migration forward, backward, resume and three-phase rehearsal records | `WP-21.03` |
 | Outbox atomicity, duplicate-delivery and dead-letter results | `WP-21.04` |
-| Lease, poison-message and role-assertion results | `WP-21.05` |
+| Lease takeover, fencing, poison-message dead-letter, no-unbounded-loop and commit-ordered-feed results | `WP-21.05` |
 | Configuration secret scan and cross-tenant refusal results | `WP-21.06` |
 | Per-dependency degradation and correlation propagation results | `WP-21.07` |
 
