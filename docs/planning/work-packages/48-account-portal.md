@@ -17,7 +17,7 @@
 
 **Out of scope.** The ArcChat web companion (`49`) — a different deployment profile. The static site (`47`). The operator console, which is a separate origin and identity system.
 
-**Why this package exists.** **[D-015](../../decisions/phase-1-foundation-decisions.md#rule-d-015)** makes `account.arcforges.com` the canonical account origin and forbids a second account application. `I2 §III.12` requires the portal to follow identity, workspace, device, entitlement and billing APIs — which is why it lands after `42` and `44`.
+**Why this package exists.** **[D-015](../../decisions/phase-1-foundation-decisions.md#rule-d-015)** makes `account.arcforges.com` the canonical account origin and forbids a second account application. [the current dependency model](../implementation-sequence.md#2-phase-structure) requires the portal to follow identity, workspace, device, entitlement and billing APIs — which is why it lands after `42` and `44`.
 
 ---
 

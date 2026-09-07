@@ -12,7 +12,7 @@
 
 **[P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006) removes Edgeless Canvas, whiteboard surfaces, shapes, connectors and frames from required ArcNotes delivery**, with no mandatory future hook. The [D-006 amendment of 2026-09-06](../../decisions/phase-1-foundation-decisions.md#rule-d-006) records the same change at decision level, and the [ArcNotes requirements](../../requirements/products/arcnotes.md) no longer contain the capability.
 
-The original package existed to satisfy the previous [D-006](../../decisions/phase-1-foundation-decisions.md#rule-d-006) outcome, in which Stage 15 was a baseline rather than a ceiling and canvas was in complete scope, phased. That outcome is superseded, so the work is not deferred — it is **out of scope**.
+The original package existed to satisfy the previous [D-006](../../decisions/phase-1-foundation-decisions.md#rule-d-006) outcome, in which the notebook baseline was followed by a canvas phase. That outcome is superseded, so the work is not deferred — it is **out of scope**.
 
 ---
 

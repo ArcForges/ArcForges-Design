@@ -428,10 +428,9 @@ KnowledgeFreshness · AIEligibility · CloudIndexEligibility · SemanticIndexEli
 
 ## 17. Traceability
 
-| Source | Consumed as |
+| Current document | Relationship |
 |---|---|
-| `I4 §Stage 23` | The entire knowledge, search and retrieval architecture, including the four-dimension policy model, evidence and citation semantics, retrieval scope as the privacy boundary, and the V1 scope split |
-| `I4 §Stage 7 §22–26` | Cloud search levels, workspace scoping, respect for product data policy |
-| `I4 §Stage 9` | Derived-data classification, deletion propagation, index rebuildability |
-| `I4 §Stage 15`, `§Stage 16`, `§Stage 20` | Per-product knowledge responsibilities and citation anchors |
+| [Derived Stores](../architecture/data-model/03-derived-stores.md) | Defines rebuildable indexes, retrieval chunks, citation anchors and cache isolation |
+| [Agent Harness](../architecture/17-agent-harness.md) | Consumes permission-scoped retrieval and evidence during the model loop |
+| [WP-40 — Knowledge, Search and Retrieval](../planning/work-packages/40-knowledge-search-and-retrieval.md) | Implements and verifies search, retrieval and evidence obligations |
 | **[D-020](../decisions/phase-1-foundation-decisions.md#rule-d-020)** | Managed embedding and reranking are cost of goods, not user-credit consumption |

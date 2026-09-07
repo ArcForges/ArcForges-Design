@@ -22,9 +22,9 @@ ArcForges Cloud
 
 ## 1. Commercial policy parameters
 
-Every numeric allowance below is **versioned commercial policy under [D-020](../decisions/phase-1-foundation-decisions.md#rule-d-020)**, not a frozen figure. Each requires Commercial Operations Owner specification and Product Owner approval at first consumption and again before launch. The corpus-proposed defaults are recorded as *proposals* so that design work has a concrete shape; nothing here is a commitment.
+Every numeric allowance below is **versioned commercial policy under [D-020](../decisions/phase-1-foundation-decisions.md#rule-d-020)**, not a frozen figure. Each requires Commercial Operations Owner specification and Product Owner approval at first consumption and again before launch. The illustrative defaults in this table are *proposals* so that design work has a concrete shape; nothing here is a commitment.
 
-| Parameter | Corpus-proposed default | Status |
+| Parameter | Illustrative proposed default | Status |
 |---|---|---|
 | Included workspace shared storage | 50 GB | Proposal; requires approval |
 | Version history window | 30 days | Proposal; requires approval |
@@ -500,12 +500,11 @@ Cross-workspace object-id probe · cross-workspace blob-id probe · expired pres
 
 ## 21. Traceability
 
-| Source | Consumed as |
+| Current document | Relationship |
 |---|---|
-| `I4 §Stage 7` | Cloud positioning, capability bundle, sync scope, cloud search, execution modes, automation, notifications, retention, self-host boundaries, V1 exclusions |
-| `I4 §Stage 9` | Data classification, object identity, revisions, assets, blobs, conflicts, tombstones, quota accounting, backup and disaster recovery, data health, export/import |
-| `I4 §Stage 13 §36–42` | Direct product-to-Cloud data path; remote path via ArcChat Desktop |
-| `I3 §4`, `§12`, `§14`, `§16.7–16.9` | Consistency levels, journal/snapshot, resource path, cloud persistence and outbox |
+| [Sync, Conflict and Backup Architecture](../architecture/07-sync-conflict-and-backup.md) | Implements sync, conflict, blob, retention and recovery obligations |
+| [Cross-System Lifecycles](../architecture/20-cross-system-lifecycles.md) | Composes subscription, deletion and resource lifecycles |
+| [Cloud Data Model](../architecture/data-model/01-cloud-data-model.md) | Defines the authoritative Cloud records |
 | **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** | Cloud is an ASP.NET Core JIT modular monolith |
 | **[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)** | Cloud never touches local IPC; durable `ToolRequest`/`ToolResult` model |
 | **[D-020](../decisions/phase-1-foundation-decisions.md#rule-d-020)** | Every allowance in §1 is versioned commercial policy, not a frozen figure |

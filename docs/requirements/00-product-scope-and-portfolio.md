@@ -56,19 +56,19 @@ The Phase 1 product baseline contains **exactly four desktop products** (**[D-00
 | **ArcScope** | `arcscope` | Local-first Observation / Acquisition / Telemetry Analysis authority | Observation & Analysis product | Core |
 | **ArcSlate** | `arcslate` | Local-first Professional Non-linear Video Editing authority | Media Creation product | Second |
 
-**Roadmap priority is not architectural status.** All four are first-class products with independent installation, execution, versioning, projects, data, undo and recovery, release cadence, capability surface, cloud participation, settings and lifecycle. ArcSlate being scheduled later never makes it a second-class architectural citizen (Stage 13 §4).
+**Roadmap priority is not architectural status.** All four are first-class products with independent installation, execution, versioning, projects, data, undo and recovery, release cadence, capability surface, cloud participation, settings and lifecycle. ArcSlate being scheduled later never makes it a second-class architectural citizen.
 
-The classification above is *product classification only*. It must not become a domain inheritance hierarchy; no `ArcProductBase` domain type may be created to unify the four (Stage 13 §85).
+The classification above is *product classification only*. It must not become a domain inheritance hierarchy; no `ArcProductBase` domain type may be created to unify the four.
 
 ### 2.2 Non-desktop products and surfaces
 
 | Surface | Identity | Positioning | Notes |
 |---|---|---|---|
-| **ArcForges Cloud** | `cloud` | One logical managed platform | ASP.NET Core JIT modular monolith (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**). Not four per-product backends (Stage 13 §43). |
+| **ArcForges Cloud** | `cloud` | One logical managed platform | ASP.NET Core JIT modular monolith (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**). Not four per-product backends. |
 | **ArcForges Web** | `web` | Public static site + one interactive React/TypeScript application | Static public pages plus `ArcForges.Web.App` (**[D-007](../decisions/phase-1-foundation-decisions.md#rule-d-007)**). Account and Chat are deployment configurations of one codebase (**[D-014](../decisions/phase-1-foundation-decisions.md#rule-d-014)**). |
 | **ArcChat Mobile** | `arcchat-mobile` | ArcChat continuity/companion surface on Android (iOS architecture-present, build-deferred) | Apache-2.0 boundary (**[D-004](../decisions/phase-1-foundation-decisions.md#rule-d-004)**); consumption-only (**[D-022](../decisions/phase-1-foundation-decisions.md#rule-d-022)**); Android on .NET 10 Mono AOT (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**). |
 
-Mobile and Web are **ArcChat companion surfaces**, not mobile or web editions of the four desktop products (Stage 13 §45–46, Invariant 16). There is no ArcNotes Mobile editor, no ArcScope Mobile editor and no ArcSlate Mobile editor in this baseline. Their absence is a baseline statement, not a permanent prohibition; adding one is an Architecture Baseline Change.
+Mobile and Web are **ArcChat companion surfaces**, not mobile or web editions of the four desktop products. There is no ArcNotes Mobile editor, no ArcScope Mobile editor and no ArcSlate Mobile editor in this baseline. Their absence is a baseline statement, not a permanent prohibition; adding one is an Architecture Baseline Change.
 
 ### 2.3 Excluded product names
 
@@ -77,14 +77,14 @@ Mobile and Web are **ArcChat companion surfaces**, not mobile or web editions of
 Consequences that bind every downstream document, schema, contract, identifier, directory name, test name and CI matrix entry:
 
 - No database, table, column, enum member, runtime component, dependency, navigation entry, contract, specification, roadmap item, work package, telemetry dimension or feature flag may be created for them.
-- **ArcScope is an independently defined product, not a rename or continuation of ArcImage.** The ArcImage domain vocabulary — Canvas, Layer, Mask, Filter, image editing — must never be mechanically migrated into ArcScope (Stage 13 §2, §3; [D-002](../decisions/phase-1-foundation-decisions.md#rule-d-002)).
-- **ArcSlate inherits product *direction* from ArcVideo, not its model.** The retained high-level concepts are Project, Timeline, Track, Clip, Effect, Media, Proxy, Render, Undo/Recovery and resource ownership. The complete ArcSlate model is defined by its own product specification, informed by ArcVideo and ArcVideoFoundation as references only (**[D-012](../decisions/phase-1-foundation-decisions.md#rule-d-012)** as amended 2026-09-05, [P2-005](../decisions/phase-2-specification-decisions.md#rule-p2-005)) (Stage 13 §2, §7).
+- **ArcScope is an independently defined product, not a rename or continuation of ArcImage.** The ArcImage domain vocabulary — Canvas, Layer, Mask, Filter, image editing — must never be mechanically migrated into ArcScope ([D-002](../decisions/phase-1-foundation-decisions.md#rule-d-002)).
+- **ArcSlate inherits product *direction* from ArcVideo, not its model.** The retained high-level concepts are Project, Timeline, Track, Clip, Effect, Media, Proxy, Render, Undo/Recovery and resource ownership. The complete ArcSlate model is defined by its own product specification, informed by ArcVideo and ArcVideoFoundation as references only (**[D-012](../decisions/phase-1-foundation-decisions.md#rule-d-012)** as amended 2026-09-05, [P2-005](../decisions/phase-2-specification-decisions.md#rule-p2-005)).
 - ArcNotes Edgeless/Canvas and presentation capabilities are excluded by [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006); the historical [D-002](../decisions/phase-1-foundation-decisions.md#rule-d-002) naming distinction is not a delivery obligation.
 - The files under [`docs/deprecated-inputs/`](../deprecated-inputs/README.md) retain these names only in their unchanged historical bodies; they are excluded from current design and audit scope.
 
 ### 2.4 Adding a fifth product
 
-A future fifth first-class product is an **Architecture Baseline Change** requiring a formal decision, not a solution-file addition. Before acceptance it must answer, in writing (Stage 13 §81):
+A future fifth first-class product is an **Architecture Baseline Change** requiring a formal decision, not a solution-file addition. Before acceptance it must answer, in writing:
 
 1. What state does it own authoritatively?
 2. Can it perform its core work with ArcChat absent?
@@ -95,7 +95,7 @@ A future fifth first-class product is an **Architecture Baseline Change** requir
 7. How does it recover from crash, corruption and interrupted migration?
 8. What native boundary, if any, does it require?
 
-Adding a product must not require modifying `ArcChat.Domain`. ArcChat must recognise a new product through the cross-application capability/contribution contract, never through a compile-time `switch (appId)` (Stage 13 §82–83).
+Adding a product must not require modifying `ArcChat.Domain`. ArcChat must recognise a new product through the cross-application capability/contribution contract, never through a compile-time `switch (appId)`.
 
 ---
 
@@ -118,7 +118,7 @@ The Cloud acknowledgement is authoritative for synchronised revisions. A local d
 
 ### 3.2 Installation combinations
 
-Every subset of the four products is a legal installation, including each product alone. Requirements (Stage 13 §12):
+Every subset of the four products is a legal installation, including each product alone. Requirements:
 
 - No installer may refuse to install because another product is absent.
 - No product may require another product to be running in order to save, open, export or recover.
@@ -151,24 +151,24 @@ There is no full mesh between professional products. `ArcNotes ↔ ArcScope ↔ 
 
 ### 4.2 Reference versus copy
 
-Two cross-application semantics must be distinguished in the product surface, never blurred (Stage 13 §62):
+Two cross-application semantics must be distinguished in the product surface, never blurred:
 
 - **Reference** — ArcNotes references an ArcScope Report. Ownership stays with ArcScope.
 - **Copy / Import** — a new ArcNotes Document is created *from* an ArcScope Report. The new object is owned by ArcNotes.
 
-The system must never silently produce a shared writable object between two products. Two products must never edit the same domain object (Stage 13 §23).
+The system must never silently produce a shared writable object between two products. Two products must never edit the same domain object.
 
 > **Reference ≠ Ownership.**
 
 ### 4.3 Artifacts
 
-An **Artifact** is a meaningful work result produced by a task, agent or application — an ArcNotes Document, an ArcScope Report or Session, an ArcSlate rendered video or project, or an ordinary file. It is **not** "an ArcChat file" (Stage 13 §61).
+An **Artifact** is a meaningful work result produced by a task, agent or application — an ArcNotes Document, an ArcScope Report or Session, an ArcSlate rendered video or project, or an ordinary file. It is **not** "an ArcChat file".
 
 ArcChat may hold an `ArtifactReference`, provenance and task relationship. The underlying business object is always owned by its producing or owning application.
 
 ### 4.4 Semantic capability, never remote UI
 
-Cross-application calls transmit semantic capability invocations and references. Remotely operating another product's user interface, controls, view models or dispatcher is prohibited (Stage 13 Invariant 11; I3 §1.1).
+Cross-application calls transmit semantic capability invocations and references. Remotely operating another product's user interface, controls, view models or dispatcher is prohibited.
 
 ### 4.5 Product AI entry points
 
@@ -204,19 +204,19 @@ Ownership is a product-level requirement before it is an architectural one. The 
 
 ### 5.1 Prohibited ownership
 
-ArcChat must never own (Stage 13 §17, §28):
+ArcChat must never own:
 
 - An authoritative ArcNotes document copy, or a writable ArcNotes knowledge database.
 - An authoritative ArcScope Session, or raw ArcScope capture data.
 - An ArcSlate Timeline, or ArcSlate media asset ownership.
 - Any professional application's undo stack.
-- A global crash journal on behalf of another product (Stage 13 §65).
+- A global crash journal on behalf of another product.
 
 The Hub is a **platform coordination plane** only. It must never store professional authoritative objects, proxy professional files or media, become a shared filesystem, become a universal project database, or become a universal undo service.
 
 ### 5.2 Caching does not transfer ownership
 
-A cached projection of another product's state is permitted and must (Stage 13 §30; I3 §4.1):
+A cached projection of another product's state is permitted and must:
 
 - record its source and its revision;
 - be discardable and re-fetchable;
@@ -227,13 +227,13 @@ The moment business changes begin to be written into a cached DTO, the ownership
 
 ### 5.3 Native resources
 
-Native resources — an ArcSlate GPU texture, an ArcScope device handle — belong exclusively to the owning product process. They must never enter the ArcChat domain, a Cloud DTO, or a `ResourceRef` as a raw pointer. Only stable resource identity, metadata and controlled access cross a boundary (Stage 13 §66).
+Native resources — an ArcSlate GPU texture, an ArcScope device handle — belong exclusively to the owning product process. They must never enter the ArcChat domain, a Cloud DTO, or a `ResourceRef` as a raw pointer. Only stable resource identity, metadata and controlled access cross a boundary.
 
 ---
 
 ## 6. Data and control paths
 
-Four paths exist and are never conflated (Stage 13 §36–41, Invariants 13–15; **[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)**).
+Four paths exist and are never conflated (**[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)**).
 
 ### 6.1 Local capability path
 
@@ -256,7 +256,7 @@ Each cloud-capable product participates directly in the cloud features of **its 
 
 > **ArcChat is the local tool bridge and coordination UI; professional products access their own Cloud services directly.**
 
-Requiring ArcChat in this path would mean "ArcChat crashes → ArcNotes cloud sync stops", which is prohibited (Stage 13 §39).
+Requiring ArcChat in this path would mean "ArcChat crashes → ArcNotes cloud sync stops", which is prohibited.
 
 ### 6.3 Remote desktop agent path
 
@@ -274,31 +274,31 @@ A Cloud task needing first-party desktop capabilities uses ArcChat Desktop for d
 
 **Cloud never connects to localhost, a Named Pipe, a Unix domain socket or local stdio** (**[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)**). The Cloud issues a durable `ToolRequest`; ArcChat Desktop pulls it, re-authorises it locally, executes the approved capability and returns an idempotent `ToolResult`.
 
-Mobile and Web must never scan the LAN, discover a desktop Hub, or address a Named Pipe or UDS (Stage 13 §47).
+Mobile and Web must never scan the LAN, discover a desktop Hub, or address a Named Pipe or UDS.
 
 ### 6.4 The cloud response still goes through the owning domain
 
-A cloud sync response must never be written straight into a UI model. It enters through the owning application's Application/Sync integration and then its domain and local state, exactly as a local edit does (Stage 13 §42).
+A cloud sync response must never be written straight into a UI model. It enters through the owning application's Application/Sync integration and then its domain and local state, exactly as a local edit does.
 
 ---
 
 ## 7. Runtime and process requirements
 
-| # | Requirement | Authority |
+| # | Requirement | Current definition / implementation |
 |---|---|---|
-| P-01 | Each of the four products is a complete, autonomous operating-system application: `ArcChat`, `ArcNotes`, `ArcScope`, `ArcSlate` as separate executables (platform-appropriate package names). | Stage 13 §8, Invariant 3 |
-| P-02 | There is **no** hidden central ArcForges desktop service holding product business state, and none may be introduced. | Stage 13 §8, §91 |
-| P-03 | No professional application is a plug-in UI over an ArcChat universal database. | Stage 13 §9 |
-| P-04 | Exactly one authoritative local coordinator exists: the ArcChat Hub. Products must not each run a competing Hub. | Stage 13 §48, Invariant 6 |
-| <a id="rule-p-05"></a>P-05 | The ArcChat Hub is hosted inside the ArcChat process lifecycle. It is not installed as a system service (`ArcForgesService.exe` is prohibited). A background/tray mode is permitted and remains part of the ArcChat lifecycle. | Stage 13 §49 |
-| <a id="rule-p-06"></a>P-06 | ArcChat may request that another installed product be launched on demand. Once started, that product is an independent runtime instance with its own lifecycle; ArcChat does not own it. | Stage 13 §50 |
-| P-07 | Installed application and runtime instance are permanently distinct. `AppId == ProcessId` is prohibited. A product may have multiple runtime instances. | Stage 13 §51 |
-| P-08 | Three identities are distinct and all three exist: `ProductId`/`AppId` (stable), `InstallationId` (device installation), `InstanceId` (process lifecycle). | Stage 13 §52 |
-| <a id="rule-p-09"></a>P-09 | Each desktop product has its own local persistence. A single shared `ArcForges.db` covering all products is prohibited. Independent databases do not require different technologies. | Stage 13 §34–35, Invariant 5 |
-| <a id="rule-p-10"></a>P-10 | Products must not reference one another's Domain or Application assemblies. Cross-product interaction is via stable cross-application contracts only. | Stage 13 §31 |
-| P-11 | Shared foundation may provide **mechanism** only — identity primitives, result/error primitives, resource-reference primitives, task-reference primitives, cross-application contract primitives, observability, cloud client infrastructure, security primitives, update integration, design system. It must never hold business state and never become a fifth hidden product. Types such as `ArcForges.Foundation.Document` are prohibited. | Stage 13 §32, §74–75, Invariant 18 |
-| <a id="rule-p-12"></a>P-12 | Product versions and release lifecycles are independent (`ArcChat 2.4` with `ArcNotes 1.8` is legal). No mandatory suite release train. A marketing release campaign is permitted; the production release unit remains the individual product. | Stage 13 §53, §55, Invariant 17 |
-| <a id="rule-p-13"></a>P-13 | Application version and capability contract version are separate. Differing product version numbers must never by themselves cause a connection refusal; compatibility is negotiated on contract version. | Stage 13 §54 |
+| P-01 | Each of the four products is a complete, autonomous operating-system application: `ArcChat`, `ArcNotes`, `ArcScope`, `ArcSlate` as separate executables (platform-appropriate package names). | [Desktop process structure](../architecture/04-desktop-application-architecture.md#1-process-structure) |
+| P-02 | There is **no** hidden central ArcForges desktop service holding product business state, and none may be introduced. | [Architecture constraints](../architecture/00-architecture-overview.md) |
+| P-03 | No professional application is a plug-in UI over an ArcChat universal database. | [Product independence](#3-product-independence-requirements) |
+| P-04 | Exactly one authoritative local coordinator exists: the ArcChat Hub. Products must not each run a competing Hub. | [Hub lifecycle](../architecture/03-local-ipc-and-process-model.md#4-hub-and-registration) |
+| <a id="rule-p-05"></a>P-05 | The ArcChat Hub is hosted inside the ArcChat process lifecycle. It is not installed as a system service (`ArcForgesService.exe` is prohibited). A background/tray mode is permitted and remains part of the ArcChat lifecycle. | [Hub lifecycle](../architecture/03-local-ipc-and-process-model.md#4-hub-and-registration) |
+| <a id="rule-p-06"></a>P-06 | ArcChat may request that another installed product be launched on demand. Once started, that product is an independent runtime instance with its own lifecycle; ArcChat does not own it. | [Product lifecycle operations](../architecture/contracts/02-local-rpc-operations.md#5-resource-access-and-lifecycle) |
+| P-07 | Installed application and runtime instance are permanently distinct. `AppId == ProcessId` is prohibited. A product may have multiple runtime instances. | [Identity definitions](01-normative-glossary-and-invariants.md#1-identity-and-tenancy) |
+| P-08 | Three identities are distinct and all three exist: `ProductId`/`AppId` (stable), `InstallationId` (device installation), `InstanceId` (process lifecycle). | [Identity definitions](01-normative-glossary-and-invariants.md#1-identity-and-tenancy) |
+| <a id="rule-p-09"></a>P-09 | Each desktop product has its own local persistence. A single shared `ArcForges.db` covering all products is prohibited. Independent databases do not require different technologies. | [Desktop data model](../architecture/data-model/02-desktop-data-model.md) |
+| <a id="rule-p-10"></a>P-10 | Products must not reference one another's Domain or Application assemblies. Cross-product interaction is via stable cross-application contracts only. | [Project reference rules](../architecture/01-solution-and-project-layout.md) |
+| P-11 | Shared foundation may provide **mechanism** only — identity primitives, result/error primitives, resource-reference primitives, task-reference primitives, cross-application contract primitives, observability, cloud client infrastructure, security primitives, update integration, design system. It must never hold business state and never become a fifth hidden product. Types such as `ArcForges.Foundation.Document` are prohibited. | [Shared-foundation boundary](../architecture/00-architecture-overview.md) |
+| <a id="rule-p-12"></a>P-12 | Product versions and release lifecycles are independent (`ArcChat 2.4` with `ArcNotes 1.8` is legal). No mandatory suite release train. A marketing release campaign is permitted; the production release unit remains the individual product. | [Distribution and release requirements](10-distribution-update-and-support.md) |
+| <a id="rule-p-13"></a>P-13 | Application version and capability contract version are separate. Differing product version numbers must never by themselves cause a connection refusal; compatibility is negotiated on contract version. | [Contract compatibility](../architecture/02-contracts-and-protocols.md) |
 
 ---
 
@@ -306,24 +306,24 @@ A cloud sync response must never be written straight into a UI model. It enters 
 
 The following apply with the explicit user amendment P2-006.
 
-| Area | Baseline | Authority |
+| Area | Baseline | Current definition / decision |
 |---|---|---|
-| Language and runtime | C# / .NET 10 LTS across every product | I3 §2; Stage 13 §5 |
+| Language and runtime | Managed applications: C# / .NET 10 LTS; Web: React/TypeScript with Node.js tooling | [Runtime matrix](../architecture/00-architecture-overview.md), [Web amendment](../decisions/phase-2-specification-decisions.md#rule-p2-008) |
 | Desktop UI | Pure-native Avalonia/Skia, Windows / macOS / Linux, Native AOT; no WebView, Chromium, DOM, JavaScript engine, HTML-as-UI or loopback UI | [D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008), [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006) |
 | Cloud | One ASP.NET Core JIT modular-monolith deployment host, including bounded background services and the single Harness; replicas use the same host | [D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008), [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006) |
 | Mobile | .NET MAUI; **Android on the supported .NET 10 Mono AOT release path**; iOS architecture-present, build-deferred | **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** |
 | Web | Static React-generated public HTML/CSS plus one React/TypeScript Account/Chat application; Node.js/npm tooling; C# → OpenAPI → TS SDK | **[P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008)** |
-| Public request/response | ASP.NET Core Minimal API server; generated Refit for C#, OpenAPI-generated Fetch SDK for TypeScript; common HTTP/JSON semantics | I3 §16.3; [D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008), [P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008) |
-| Public realtime | SignalR, real-time delivery only, never the sole durable truth | I3 §16.5 |
-| Local IPC | StreamJsonRpc Interface Code First over Named Pipe / Unix domain socket | I3 §6; **[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)** |
-| Local wire format | Nerdbank.MessagePack with generated TypeShape by default | I3 §6.6 |
-| Public JSON | `System.Text.Json` source generation, no reflection fallback | I3 §2.1 |
-| Native interop | `[LibraryImport]` across a narrow C ABI, in its owning product or the approved C# content helper according to the isolation profile | I3 §15; [P2-007](../decisions/phase-2-specification-decisions.md#rule-p2-007) |
-| Prohibited | C++ workers, a central service owning all state, gRPC/Protobuf/MagicOnion/Aeron as the main RPC, Electron, Qt product bodies, Java/Kotlin desktop, reflection-based dynamic plug-ins on the AOT main path | I3 §1.2; Stage 13 §73 |
+| Public request/response | ASP.NET Core Minimal API server; generated Refit for C#, OpenAPI-generated Fetch SDK for TypeScript; common HTTP/JSON semantics | [Public API operations](../architecture/contracts/01-public-api-operations.md), [generated TS SDK](../architecture/25-web-toolchain-and-sdk.md) |
+| Public realtime | SignalR, real-time delivery only, never the sole durable truth | [Realtime contract](../architecture/contracts/03-realtime-and-bridge.md) |
+| Local IPC | StreamJsonRpc Interface Code First over Named Pipe / Unix domain socket | [Transport definition](../architecture/03-local-ipc-and-process-model.md#2-transport) |
+| Local wire format | Nerdbank.MessagePack with generated TypeShape by default | [Wire format definition](../architecture/03-local-ipc-and-process-model.md#3-wire-format) |
+| Public JSON | `System.Text.Json` source generation, no reflection fallback | [Operation contract](../architecture/contracts/00-operation-catalogue.md) |
+| Native interop | `[LibraryImport]` across a narrow C ABI, in its owning product or the approved C# content helper according to the isolation profile | [Native ABI contract](../architecture/12-native-interop-and-media.md#3-managed-to-native-calling-discipline), [isolation](../architecture/24-content-and-extension-isolation.md) |
+| Prohibited | C++ workers, a central service owning all state, gRPC/Protobuf/MagicOnion/Aeron as the main RPC, Electron, Qt product bodies, Java/Kotlin desktop, reflection-based dynamic plug-ins on the AOT main path | [Architecture constraints](../architecture/00-architecture-overview.md), [permitted exceptions](#81-permitted-technical-exceptions) |
 
 ### 8.1 Permitted technical exceptions
 
-The exception list is closed. Adding to it requires a formal decision (Stage 13 §67–73, Invariant 20).
+The exception list is closed. Adding to it requires a formal decision.
 
 | Exception | Boundary |
 |---|---|
@@ -377,7 +377,7 @@ Every product receives a **Reference Coverage Matrix** — Copy / Rewrite / Impr
 
 ## 11. Architecture Baseline Changes
 
-The following changes are **Architecture Baseline Changes**. None may be made as an ordinary change; each requires a formal decision recorded in `docs/decisions/` (Stage 13 §91).
+The following changes are **Architecture Baseline Changes**. None may be made as an ordinary change; each requires a formal decision recorded in `docs/decisions/`.
 
 1. Making ArcNotes (or any professional product) depend on ArcChat.
 2. Adding a shared writable business database.
@@ -392,13 +392,13 @@ The following changes are **Architecture Baseline Changes**. None may be made as
 11. Changing a product's domain ownership.
 12. Adding a fifth first-class product.
 
-Changes that do **not** reopen the baseline (Stage 13 §92): adding an ArcNotes block type, an ArcScope adapter, an ArcSlate effect, an ArcChat home card, a capability, an import format, an AI provider, or a cloud storage package — provided no invariant above is broken.
+Changes that do **not** reopen the baseline: adding an ArcNotes block type, an ArcScope adapter, an ArcSlate effect, an ArcChat home card, a capability, an import format, an AI provider, or a cloud storage package — provided no invariant above is broken.
 
 ---
 
 ## 12. Design-time acceptance questions
 
-Every subsequent design, specification and work package must be able to answer these immediately (Stage 13 §96):
+Every subsequent design, specification and work package must be able to answer these immediately:
 
 1. Which product does this function belong to? (Unique, or an explicit cross-application orchestrator.)
 2. Who owns its data?
@@ -414,12 +414,10 @@ A specification that cannot answer all seven is not complete.
 
 ## 13. Traceability
 
-| Source | Consumed as |
+| Current document | Relationship |
 |---|---|
-| `I4 §Stage 0` | Business model, commercial layering, free/paid boundary, AI economics shape |
-| `I4 §Stage 13` | Product portfolio freeze, state ownership, topology, invariants, baseline-change list |
-| `I3 §0–§5`, `§31` | Technology constitution, reference direction, contract split rationale |
-| `I2 §I`, `§II` | Name reconciliation, reference-repository roles, scope confirmations |
+| [ArcForges Architecture Overview](../architecture/00-architecture-overview.md) | Implements the accepted portfolio, ownership and runtime boundaries |
+| [Solution and Project Layout](../architecture/01-solution-and-project-layout.md) | Places the products and shared mechanisms in the monorepo |
 | [D-002](../decisions/phase-1-foundation-decisions.md#rule-d-002) | Four-product baseline; exclusion of ArcCanvas / ArcMusic / ArcImage |
 | [D-004](../decisions/phase-1-foundation-decisions.md#rule-d-004), [D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021) | Two-boundary licensing |
 | [D-005](../decisions/phase-1-foundation-decisions.md#rule-d-005), [D-020](../decisions/phase-1-foundation-decisions.md#rule-d-020), [D-022](../decisions/phase-1-foundation-decisions.md#rule-d-022), [D-023](../decisions/phase-1-foundation-decisions.md#rule-d-023) | Commercial posture, provider baseline, mobile commerce |

@@ -44,6 +44,6 @@ See [`products/README.md`](products/README.md).
 ## Conventions
 
 - Every requirement carries a stable identifier (`AB-nn`) so architecture, assurance and work packages can cite it precisely.
-- Every numeric commercial figure is **versioned commercial policy under [D-020](../decisions/phase-1-foundation-decisions.md#rule-d-020)**, never a frozen commitment. Where a corpus-proposed default is recorded, it is labelled a proposal.
+- Every numeric commercial figure is **versioned commercial policy under [D-020](../decisions/phase-1-foundation-decisions.md#rule-d-020)**, never a frozen commitment. An illustrative default recorded in the current requirements is labelled a proposal.
 - Every `X ≠ Y` statement cites its invariant identifier from the glossary catalogue.
 - Superseded product names (`ArcCanvas`, `ArcMusic`, `ArcImage`, `ArcVideo`) and the superseded payment provider never appear as current, per **[D-002](../decisions/phase-1-foundation-decisions.md#rule-d-002)** and **[D-005](../decisions/phase-1-foundation-decisions.md#rule-d-005)**.

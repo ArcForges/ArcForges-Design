@@ -16,7 +16,7 @@ This document answers one question with evidence: **has any commercial figure be
 | # | Obligation |
 |---|---|
 | CF-01 | Every commercial figure is **versioned commercial policy**, never a frozen commitment and never a compiled constant. |
-| <a id="rule-cf-02"></a>CF-02 | A corpus-proposed figure is a **proposal**. It requires Commercial Operations Owner specification and Product Owner approval **at first consumption and again before launch**. |
+| <a id="rule-cf-02"></a>CF-02 | An illustrative commercial figure in the current design is a **proposal**. It requires Commercial Operations Owner specification and Product Owner approval **at first consumption and again before launch**. |
 | CF-03 | **Financial history is immutable**; a price change never alters a settled charge. |
 | CF-04 | Money and credit arithmetic is **fixed-precision**. |
 | CF-05 | Exhaustion is a **hard stop at zero**; no post-paid overdraft. |
@@ -50,7 +50,7 @@ This document answers one question with evidence: **has any commercial figure be
 
 All seven appear in one place — [`../requirements/03-cloud-services-and-sync.md`](../requirements/03-cloud-services-and-sync.md) `§1` — under a heading that states the position before the table is read:
 
-> *"Every numeric allowance below is **versioned commercial policy under [D-020](../decisions/phase-1-foundation-decisions.md#rule-d-020)**, not a frozen figure. Each requires Commercial Operations Owner specification and Product Owner approval at first consumption and again before launch. The corpus-proposed defaults are recorded as *proposals* so that design work has a concrete shape; nothing here is a commitment."*
+> *"Every numeric allowance below is **versioned commercial policy under [D-020](../decisions/phase-1-foundation-decisions.md#rule-d-020)**, not a frozen figure. Each requires Commercial Operations Owner specification and Product Owner approval at first consumption and again before launch. The illustrative defaults in this table are *proposals* so that design work has a concrete shape; nothing here is a commitment."*
 
 | Parameter | Recorded value | Column value | Conforms to [CF-02](#rule-cf-02)? |
 |---|---|---|---|

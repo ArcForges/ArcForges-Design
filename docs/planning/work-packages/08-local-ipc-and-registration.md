@@ -44,7 +44,7 @@
 | BR-05 | **Registration is leased with heartbeats**; a lease expires rather than leaking a dead endpoint. |
 | BR-06 | **Re-registration after Hub restart is automatic and idempotent.** |
 | BR-07 | **Backpressure is explicit**: a saturated consumer blocks, sheds with a recorded reason, or fails — never grows unbounded. |
-| BR-08 | **Reflection convenience paths are prohibited** in target registration and proxy construction (`I3 §6.8`). |
+| BR-08 | **Reflection convenience paths are prohibited** in target registration and proxy construction. |
 | <a id="rule-br-09"></a>BR-09 | **Every RPC method is task-returning and cancellation-aware.** |
 | <a id="rule-br-10"></a>BR-10 | **Large payloads use a resource reference plus a controlled channel**, never an inline body. |
 

@@ -17,7 +17,7 @@
 
 **Out of scope.** Task execution (`16`). Ecosystem capabilities that depend on other products (`20`). Cloud sync (`25`). Managed AI economics (`43`) — providers are adapter-shaped and may be stubbed here.
 
-**Why this package exists.** `I2 §III.4` requires ArcChat to be completed **without dependencies on other products** first. An ArcChat that only works when ArcNotes is running is not an independent product.
+**Why this package exists.** [the product scope](../../requirements/00-product-scope-and-portfolio.md#3-product-independence-requirements) requires ArcChat to be completed **without dependencies on other products** first. An ArcChat that only works when ArcNotes is running is not an independent product.
 
 ---
 
@@ -41,13 +41,13 @@
 | BR-01 | **The ArcChat Reference Coverage Matrix is a completed, versioned planning input** — [`../../assurance/reference-coverage/arcchat-aionui.md`](../../assurance/reference-coverage/arcchat-aionui.md), 30 item-level rows, bound to AionUi at `29c9271a5`. It was produced before this plan was derived (**[D-019](../../decisions/phase-1-foundation-decisions.md#rule-d-019)**). **This package consumes it and checks it for drift; it does not create it.** |
 | BR-02 | **ArcChat is fully usable with every other product absent.** |
 | BR-03 | **`Conversation ≠ Project` and `Project ≠ Workspace`.** Three distinct containers with distinct ownership. |
-| BR-04 | **A skill is declarative guidance and never code** (`I4 §Stage 24 §4`), and **a skill confers no capability** (`§5` there). |
+| BR-04 | **A skill is declarative guidance and never code**, and **a skill confers no capability**. |
 | BR-05 | **A branch is a first-class structure**, not a hidden copy; branching never mutates the original. |
 | BR-06 | **Streaming assembly is a presentation concern.** The durable message is written once, complete; a partial stream is never the stored fact. |
 | BR-07 | **An attachment is either managed or referenced**, and the distinction is explicit and visible. |
 | BR-08 | **Search over cached conversation content is a first-class capability**, available during a Cloud outage. Chat is Cloud-authoritative ([CW-02](../../architecture/data-model/00-data-model-overview.md#rule-cw-02)), so this searches the working cache and unsent drafts; workspace-wide search is `search.query` on the public surface, and neither is presented as the other. |
 | BR-09 | **A provider adapter is an interface**; the real provider integration lands in `43`. |
-| BR-10 | **Hidden reasoning from a model never enters the product model** (`I4 §Stage 24 §50`). |
+| BR-10 | **Hidden reasoning from a model never enters the product model**. |
 
 ---
 

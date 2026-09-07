@@ -432,9 +432,9 @@ ArcForges Desktop Experience
 
 ## 21. Traceability
 
-| Source | Consumed as |
+| Current document | Relationship |
 |---|---|
-| `I4 §Stage 14` | The entire shared desktop experience contract: design principles, design system, windows and panels, commands and shortcuts, settings scopes, attention model, errors, deep links, file associations, drag and drop, clipboard, lifecycle, menus, account surfaces, handoff, the shared-foundation boundary, and the 28 architecture invariants |
-| `I4 §Stage 13 §58`, `§74–75` | Account experience shared without an ArcChat dependency; shared foundation must not become a fifth product |
-| `I3 §9` | Avalonia desktop architecture, MVVM boundaries, threading, multi-window and multi-instance rules |
+| [Desktop Application Architecture](../architecture/04-desktop-application-architecture.md) | Implements the native shell, threading, lifecycle and recovery |
+| [Editing, Rich Content and Preview](../architecture/18-editing-and-rich-content.md) | Defines native editing and bounded content presentation |
+| [ArcForges Product Scope and Portfolio](00-product-scope-and-portfolio.md) | Owns product independence and the shared-foundation boundary |
 | **[D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021)** | ViewModels are not shared across UI stacks |

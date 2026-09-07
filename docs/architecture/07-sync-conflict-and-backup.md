@@ -294,12 +294,10 @@ Required scenarios, all release-gating:
 
 ## 14. Traceability
 
-| Source | Consumed as |
+| Current document | Relationship |
 |---|---|
-| `I4 §Stage 9` | Identity and revision model, change propagation, conflict policies, tombstones, blob lifecycle, integrity, dedup rules, quota accounting, backup layering, data health |
-| `I4 §Stage 7` | Sync scopes, per-product policy, protection profiles, retention |
-| `I4 §Stage 22` | Local durability, working store and portable package separation |
-| `I3 §4`, `§12`, `§16.7`–`§16.8` | Consistency levels, journal and outbox discipline, reliable event flow |
-| `I4 §Stage 27` | The migration, compatibility and recovery gates applied here |
+| [Cloud Services, Sync, Assets and Data Integrity Requirements](../requirements/03-cloud-services-and-sync.md) | Owns sync scopes, revisions, conflicts, blobs, retention and backup |
+| [Working Data, Project Formats and Cloud Portability Requirements](../requirements/13-data-formats-and-portability.md) | Owns local durability and portable-format boundaries |
+| [Cloud Data Model](data-model/01-cloud-data-model.md) | Defines Cloud sync, resource, deletion and quota records |
 | **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** | Cloud persistence posture |
 | **[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)** | Direct product-to-cloud sync without an ArcChat gateway |

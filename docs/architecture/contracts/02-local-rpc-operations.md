@@ -181,7 +181,7 @@ ReleaseAsync(ResourceId, ReferrerRef)           → ArcResult<Unit>
 | # | Rule |
 |---|---|
 | <a id="rule-ra-01"></a>RA-01 | **A path is never returned.** `TransferChannel` and `TransferTicket` carry controlled access; `LocalResourceLocator` is resolved by the owner and is not a user-visible path ([XS-01](../data-model/00-data-model-overview.md#rule-xs-01), [I-192](../../requirements/01-normative-glossary-and-invariants.md#rule-i-192)). |
-| RA-02 | **Range, checksum, cancellation and rate limiting are all supported** (`I3 §14.2`). |
+| RA-02 | **Range, checksum, cancellation and rate limiting are all supported**. |
 | RA-03 | **The Hub carries no body** ([WP-14.05](../../planning/work-packages/14-hub-and-minimal-provider-slice.md#rule-wp-14.05)), and a test asserts it. |
 
 ### `IProductLifecycle` and `IDeepLinkTarget`
@@ -227,7 +227,7 @@ The methods below use the version preconditions in [NO-02](#rule-no-02). Noteboo
 | NO-03 | **`CreateDocumentAsync` takes a caller-allocated `DocumentId`**, which makes it idempotent under retry ([ID-04](../data-model/00-data-model-overview.md#rule-id-04)). |
 | NO-04 | **A write takes and returns the composite local token `(acked_rev, head_local_seq)`** ([RV-C5](../data-model/02-desktop-data-model.md#rule-rv-c5) of the desktop data model), not a bare revision ([RV-C3](../data-model/02-desktop-data-model.md#rule-rv-c3), [RV-C4](../data-model/02-desktop-data-model.md#rule-rv-c4) of the desktop data model), and enqueues a `sync_outbox` row. It does **not** return a Cloud acknowledgement ([PE-04](../data-model/02-desktop-data-model.md#rule-pe-04)): the caller learns the edit is durable on this device, which is a different fact from acknowledged by Cloud. Passing only `acked_rev` would let two local callers overwrite each other between acknowledgements; passing `local_rev` to Cloud would conflict on every second edit. |
 | <a id="rule-no-05"></a>NO-05 | **`SearchAsync` searches the hydrated local cache.** Cloud search over the whole workspace is `search.query` on the public surface; the two are separate operations with different completeness, and neither is presented as the other. |
-| <a id="rule-no-06"></a>NO-06 | **`SetPropertiesAsync` accepts only declared property definitions with bounded scalar types** (`§2.1` of the editing architecture). There is no formula, relation or rollup evaluation, so no expression reaches this path. |
+| <a id="rule-no-06"></a>NO-06 | **`SetPropertiesAsync` accepts only declared property definitions with bounded scalar types** from the [ArcNotes property requirements](../../requirements/products/arcnotes.md#7-properties-tags-and-views) and [property storage model](../data-model/02-desktop-data-model.md#property_definition-property_value). There is no formula, relation or rollup evaluation, so no expression reaches this path. |
 
 ### `IScopeOperations` — ArcScope
 
@@ -270,7 +270,7 @@ The methods below use the version preconditions in [NO-02](#rule-no-02). Noteboo
 
 | # | Rule |
 |---|---|
-| SL-01 | **The capability contract was frozen only after timeline, command and undo semantics stabilised** (`I2 §III.10`, [WP-39.00](../../planning/work-packages/39-arcslate-integration-and-portability.md#rule-wp-39.00)). This interface does not exist before [WP-39](../../planning/work-packages/39-arcslate-integration-and-portability.md#rule-wp-39). |
+| SL-01 | **The capability contract was frozen only after timeline, command and undo semantics stabilised** ([WP-39.00](../../planning/work-packages/39-arcslate-integration-and-portability.md#rule-wp-39.00)). This interface does not exist before [WP-39](../../planning/work-packages/39-arcslate-integration-and-portability.md#rule-wp-39). |
 | SL-02 | **`GetSequenceContextAsync` returns structure, markers, ranges, timecodes and metadata — never media** ([WP-39.01](../../planning/work-packages/39-arcslate-integration-and-portability.md#rule-wp-39.01)). |
 | SL-03 | **`StartRenderAsync` binds a revision snapshot** and returns a `ProductJobRef`; the render never reads live editor state ([RN-04](../../requirements/products/arcslate.md#rule-rn-04)). |
 | SL-04 | **`StartRenderAsync` produces a native Product Job, not a Cloud Agent Task** ([I-485](../../requirements/01-normative-glossary-and-invariants.md#rule-i-485), [CM-04](../09-ai-and-agent-runtime-architecture.md#rule-cm-04) of the runtime architecture). It invokes no model, consumes no AI capacity, and ArcSlate owns its progress and recovery. |

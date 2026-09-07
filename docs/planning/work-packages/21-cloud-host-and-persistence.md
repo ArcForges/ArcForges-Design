@@ -17,7 +17,7 @@
 
 **Out of scope.** Identity (`22`), the public API surface (`23`), realtime (`24`), sync (`25`), commerce (`42`), policy (`44`) and operations tooling (`45`) — this package is the substrate those land on.
 
-**Why this package exists.** `I2 §III.6` requires the first real server version to use real infrastructure — real database, real HTTP, real realtime, real disconnected recovery. The substrate must exist before any module can be real.
+**Why this package exists.** The [Cloud architecture](../../architecture/05-cloud-architecture.md) and [the mock policy](../implementation-sequence.md#3-what-may-be-mocked-and-what-may-not) require the first real server version to use real infrastructure — real database, real HTTP, real realtime, real disconnected recovery. The substrate must exist before any module can be real.
 
 ---
 
@@ -44,7 +44,7 @@
 | BR-06 | **Migrations run from a standalone migrator**, not from application start-up. |
 | BR-07 | **A deployment is reversible**; a migration that cannot be rolled back is split into expand, deploy and contract phases. |
 | BR-08 | **Every state-changing message is idempotent** through the outbox/inbox pattern. |
-| BR-09 | **The database holds metadata, ownership and lifecycle — never large binary bodies** (`I3 §14.3`). |
+| BR-09 | **The database holds metadata, ownership and lifecycle — never large binary bodies**. |
 | BR-10 | **Build once, promote the same artifact**; production never rebuilds. |
 | BR-11 | **A failure in one capability degrades that capability, not the platform** (`§13` of the cloud architecture). |
 

@@ -517,11 +517,11 @@ The commerce layer is **not**: a payment processor; a holder of card data; a pla
 
 ## 15. Traceability
 
-| Source | Consumed as |
+| Current document | Relationship |
 |---|---|
-| `I4 §Stage 3` | The commercial domain, purchase pipeline, entitlement grant model, subscription lifecycle and provider event handling |
-| `I4 §Stage 4` | The grant-based unified entitlement system and its separation from subscription state |
-| `I4 §Stage 8` | AI economics, tariff versioning, the three ledgers, and reserve-then-settle metering |
+| [Commerce, Entitlement and AI Credits Requirements](../requirements/04-commerce-entitlement-and-credits.md) | Owns the commercial, entitlement and metering contracts |
+| [Dynamic Policy and Configuration Requirements](../requirements/11-policy-and-configuration.md) | Owns private configuration and immutable policy publication |
+| [Cloud Data Model](data-model/01-cloud-data-model.md) | Defines financial ledgers, provider inbox and reconciliation records |
 | **[D-005](../decisions/phase-1-foundation-decisions.md#rule-d-005)** | Paddle as sole Merchant of Record; Payoneer as payout destination only |
 | **[D-020](../decisions/phase-1-foundation-decisions.md#rule-d-020)** | Every figure is versioned commercial policy; immutable history; fixed-precision arithmetic; hard stop at zero |
 | **[D-022](../decisions/phase-1-foundation-decisions.md#rule-d-022)**, **[V-09](../assurance/phase-1-official-verification.md#rule-v-09)** | The mobile consumption-only posture as a build-verifiable constraint |

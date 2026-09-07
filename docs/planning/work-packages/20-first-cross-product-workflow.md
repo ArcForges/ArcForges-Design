@@ -13,7 +13,7 @@
 
 ## 1. Scope and purpose
 
-**In scope.** The end-to-end workflow of `I2 §III.5`; ArcNotes as a context provider to ArcChat; ArcNotes artifact handlers; federated search across ArcChat and ArcNotes; real semantic modification through capabilities; and the closure of the corresponding V1B items declared in [WP-17.07](17-arcchat-independent-core.md#rule-wp-17.07).
+**In scope.** The native capability portion of [the canonical workflow](../../assurance/end-to-end-workflow-verification.md#first-arcchat-arcnotes-workflow); ArcNotes as a context provider to ArcChat; ArcNotes artifact handlers; federated search across ArcChat and ArcNotes; real semantic modification through capabilities; and the closure of the corresponding V1B items declared in [WP-17.07](17-arcchat-independent-core.md#rule-wp-17.07).
 
 **Out of scope.** ArcScope and ArcSlate integration (`35`, `39`). Cloud placement of the workflow (`26`). Workflow blueprints as a contribution kind (`41`).
 
@@ -25,7 +25,7 @@
 
 | Input | Why it matters |
 |---|---|
-| `I2 §III.5` | The exact scenario this package must demonstrate |
+| [First ArcChat–ArcNotes workflow acceptance](../../assurance/end-to-end-workflow-verification.md#first-arcchat-arcnotes-workflow) | The canonical scenario and failure outcomes; this package proves native capabilities, and the Cloud Harness package proves agent execution |
 | [`../../requirements/products/arcchat.md`](../../requirements/products/arcchat.md) `§16` | Handoff versus orchestration and the artifact model |
 | [`../../requirements/06-knowledge-search-and-retrieval.md`](../../requirements/06-knowledge-search-and-retrieval.md) | Federated search, evidence and citation |
 | [WP-17](17-arcchat-independent-core.md#rule-wp-17), [WP-19](19-arcnotes-search-and-portability.md#rule-wp-19) output | The ArcChat core and ArcNotes search and portability |
@@ -36,7 +36,7 @@
 
 | # | Rule |
 |---|---|
-| <a id="rule-br-01"></a>BR-01 | **ArcNotes owns every ArcNotes resource forever.** ArcChat never writes ArcNotes state directly; it invokes capabilities (`I4 §Stage 24 §14`). |
+| <a id="rule-br-01"></a>BR-01 | **ArcNotes owns every ArcNotes resource forever.** ArcChat never writes ArcNotes state directly; it invokes capabilities. |
 | <a id="rule-br-02"></a>BR-02 | **Owner-side validation refuses regardless of caller assertion**, including for the agent. |
 | BR-03 | **Approval is required before content is written**, with the operation described in the user's terms — not as a raw capability name. |
 | BR-04 | **The artifact returned to ArcChat is a reference**, never a document body ([WP-14.05](14-hub-and-minimal-provider-slice.md#rule-wp-14.05)). |

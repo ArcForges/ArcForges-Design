@@ -199,7 +199,7 @@ The RPC layer implements no business retry.
 |---|---|
 | LD-01 | **Large resources are never carried in an ordinary RPC request or response.** They cross as a `ResourceRef` plus controlled access, a file-handle strategy, or a temporary resource channel. |
 | LD-02 | **Ordinary RPC calls set a sensible message size limit.** |
-| LD-03 | **The Hub never relays media frames or large file bodies** (Stage 13 §26, §28). |
+| LD-03 | **The Hub never relays media frames or large file bodies**. |
 | LD-04 | **Resource reads support range and chunking, checksums, cancellation and rate limiting.** |
 | LD-05 | **A path is returned only after both sides explicitly authorise, and after normalisation and root-directory checks.** |
 | LD-06 | **Temporary resources use short-lived capability tokens.** |
@@ -222,7 +222,7 @@ The RPC layer implements no business retry.
 
 ## 11. AOT checklist
 
-Answerable before any local RPC change merges (`§16` of `I3`, hardened by **[V-05b](../assurance/phase-1-official-verification.md#rule-v-05b)**):
+Answerable before any local RPC change merges (with the verified constraints in **[V-05b](../assurance/phase-1-official-verification.md#rule-v-05b)**):
 
 - [ ] Is the interface `partial`, with the contract attribute **and** the shape-generation attribute including public instance methods?
 - [ ] Does the contracts assembly export its generated proxies?
@@ -240,7 +240,7 @@ Answerable before any local RPC change merges (`§16` of `I3`, hardened by **[V-
 
 ## 12. Fault injection
 
-Required scenarios (`§25.4` of `I3`):
+Required scenarios:
 
 Hub starts after the product · Hub restart · pipe or socket severed mid-call · product crashes before a command commit · product crashes after a command commit · lost heartbeats · duplicate commands · out-of-order responses · revision conflicts · potential bidirectional callback deadlock · queue overflow · slow consumer · oversized message · stale endpoint manifest · unauthorised local peer · incompatible contract set · instance restart during an in-flight task.
 
@@ -284,12 +284,11 @@ An idempotent ToolResult is returned; cloud-persisted results go over HTTP
 
 ## 14. Traceability
 
-| Source | Consumed as |
+| Current document | Relationship |
 |---|---|
-| `I3 §6` | Interface-first RPC, contract style, hard interface rules, formatter choice, target registration, framing, bidirectional patterns, concurrency, disconnection, error model, security, version compatibility and the AOT checklist |
-| `I3 §7` | Transport selection, endpoint manifest, registration lifecycle, routing, health and backpressure, connection manager |
-| `I3 §14`, `§19` | Large-data path and the desktop bridging security model |
-| `I4 §Stage 13 §26–28`, `§40–41` | The Hub as coordination plane; remote path through ArcChat Desktop |
+| [ArcForges Product Scope and Portfolio](../requirements/00-product-scope-and-portfolio.md) | Owns the local coordinator and direct Cloud data paths |
+| [Contracts, Protocols and the Cross-Application Semantic Model](02-contracts-and-protocols.md) | Defines capability, context, resource and compatibility semantics |
+| [Local RPC Operations](contracts/02-local-rpc-operations.md) | Defines the concrete typed local interfaces |
 | **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** | Desktop AOT deliverable constraints |
 | **[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)** | Cloud topology and the durable local-action model |
 | **[V-05b](../assurance/phase-1-official-verification.md#rule-v-05b)** | The formatter and proxy-generation evidence, and the contract-authoring obligation |

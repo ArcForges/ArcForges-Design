@@ -26,7 +26,7 @@
 | Input | Why it matters |
 |---|---|
 | [`../../requirements/products/arcscope.md`](../../requirements/products/arcscope.md) `§14`, `§15`, `§16` | AI integration, capability surface and cloud posture |
-| `I2 §III.9` | Raw capture local by default; metadata, analysis, annotations and reports sync |
+| [ArcScope product requirements](../../requirements/products/arcscope.md) | Raw captures stay local by default; metadata, analysis, annotations and reports participate in the declared Cloud scope |
 | [WP-25](25-sync-engine-and-blob-lifecycle.md#rule-wp-25) output | The sync engine and its scope model |
 | [WP-34](34-arcscope-analysis-and-reporting.md#rule-wp-34) output | Analysis results and reports as the payload |
 

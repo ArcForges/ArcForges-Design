@@ -17,7 +17,7 @@
 
 **Out of scope.** What is delivered over it — sync change notifications (`25`), task progress (`26`), entitlement changes (`42`), policy updates (`44`). Realtime is a channel, not a feature.
 
-**Why this package exists.** `I2 §III.6` requires HTTP snapshot, sequence gap and disconnected compensation recovery in the first real server version. A realtime channel whose recovery path is untested becomes a silent data-divergence engine.
+**Why this package exists.** The [realtime and bridge contract](../../architecture/contracts/03-realtime-and-bridge.md) requires HTTP snapshot, sequence gap and disconnected compensation recovery in the first real server version. A realtime channel whose recovery path is untested becomes a silent data-divergence engine.
 
 ---
 
@@ -44,7 +44,7 @@
 | <a id="rule-br-02"></a>BR-02 | **A realtime message is a hint, never authority.** A client needing full fidelity re-reads authoritative state ([RL-04](../../architecture/05-cloud-architecture.md#rule-rl-04)). |
 | BR-03 | **Every message carries a sequence number** scoped to its subscription, so a gap is detectable. |
 | BR-04 | **A detected gap triggers HTTP backfill**, never a silent resync that hides the gap. |
-| BR-05 | **Object bodies never travel over realtime** (`I3 §14.3`). |
+| BR-05 | **Object bodies never travel over realtime**. |
 | BR-06 | **Subscriptions are permission-scoped at subscribe and re-checked on change**, so a permission loss stops delivery. |
 | BR-07 | **Delivery guarantees are stated honestly**: at-most-once delivery with gap detection plus authoritative backfill, not exactly-once delivery. |
 | BR-08 | **Realtime loss degrades to polling**, and the degradation is visible to the user. |

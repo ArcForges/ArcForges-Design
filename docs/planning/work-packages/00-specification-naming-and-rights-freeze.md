@@ -7,7 +7,7 @@
 > Phase: A — Freeze and foundation
 > Upstream: — · Downstream: `01`, `47`
 
-> **Goal.** Make the vocabulary, the product set, the licence position and the reuse process *settled facts* before any code is written against them. This is the first hard gate: if naming, terminology, licence boundaries or product scope move later, editors, data formats, capabilities and cloud sync all rework (`I2 §III.0`).
+> **Goal.** Make the vocabulary, the product set, the licence position and the reuse process *settled facts* before any code is written against them. This is the first hard gate: if naming, terminology, licence boundaries or product scope move later, editors, data formats, capabilities and cloud sync all rework.
 
 ---
 
@@ -90,7 +90,7 @@
 
 ### WP-00.01 — Glossary and invariant enforcement data
 
-> **Design-stage prerequisite already complete.** The catalogue accounting and the item-level mapping were produced during the Stage 2 repair and are recorded in [`../../assurance/invariant-coverage.md`](../../assurance/invariant-coverage.md): 484 of 484 corpus statements accounted for, **429** catalogue rows — 421 plus the 8 [P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006) added — each with an architecture home, an enforcement mechanism, a planned verification and an owning gate. **[PG-06](../../assurance/open-gates-register.md#rule-pg-06) is closed.** This sub-step consumes that mapping; it does not re-derive it.
+> **Design-stage prerequisite already complete.** The item-level mapping is recorded in [`../../assurance/invariant-coverage.md`](../../assurance/invariant-coverage.md): **429** current catalogue rows — 421 plus the 8 [P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006) added — each with an architecture home, an enforcement mechanism, a planned verification and an owning gate. **[PG-06](../../assurance/open-gates-register.md#rule-pg-06) is closed.** This sub-step consumes the current catalogue and mapping; it does not repeat the completed historical input extraction.
 
 **What must be fully done.** The completed catalogue and its mapping are exported into machine-readable policy data the build can read: canonical terms with their term space (domain, wire, UI, storage, commercial), product namespacing, forbidden aliases, and every invariant with its identifier, its assigned mechanism and its owning package.
 

@@ -413,11 +413,10 @@ PolicyApplicationTiming · PolicyStalenessMode
 
 ## 15. Traceability
 
-| Source | Consumed as |
+| Current document | Relationship |
 |---|---|
-| `I4 §Stage 25` | The entire control plane: the four boundaries, feature and flag model, rollout, kill switch, remote config, policy scope and resolution, workspace policy, compatibility policy, provider and model availability, experiments, publication and staleness, application timing, explainability, and the non-goals |
-| `I4 §Stage 27` | Version and compatibility vocabulary shared with the quality contract |
-| `I4 §Stage 19` | Run snapshot semantics for policy and experiment assignment |
-| `I4 §Stage 8` | Model and provider catalogue relationship; pricing stays in the commercial layer |
+| [Cloud Data Model](../architecture/data-model/01-cloud-data-model.md) | Defines immutable policy snapshots, activation and financial binding |
+| [Commerce, Entitlement and AI Credits Requirements](04-commerce-entitlement-and-credits.md) | Owns pricing and metering semantics distinct from configuration |
+| [WP-44 — Dynamic Policy and Configuration Control Plane](../planning/work-packages/44-dynamic-policy-and-configuration.md) | Implements and verifies policy publication and resolution |
 | **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** | The control plane distributes data, never code — required by the Native AOT desktop main path |
 | **[D-020](../decisions/phase-1-foundation-decisions.md#rule-d-020)** | Pricing is versioned commercial policy, not remote product policy |

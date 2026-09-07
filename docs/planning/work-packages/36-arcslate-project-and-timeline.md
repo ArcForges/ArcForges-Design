@@ -17,7 +17,7 @@
 
 **Out of scope.** Playback and processing runtime (`37`); render, export and colour management (`38`); integration and portability (`39`).
 
-**Why this package exists.** `I2 §III.10` places ArcSlate last because it carries the highest complexity and performance risk — and requires it to follow the phase order strictly. The domain must be exact before any runtime touches it, because a timebase error discovered during rendering is a rewrite.
+**Why this package exists.** [the current dependency model](../implementation-sequence.md#2-phase-structure) places ArcSlate last because it carries the highest complexity and performance risk — and requires it to follow the phase order strictly. The domain must be exact before any runtime touches it, because a timebase error discovered during rendering is a rewrite.
 
 ---
 

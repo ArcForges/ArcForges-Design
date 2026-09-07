@@ -564,10 +564,10 @@ Define budget → Encode in the machine-readable contract → Measure on referen
 
 ## 29. Traceability
 
-| Source | Consumed as |
+| Current document | Relationship |
 |---|---|
-| `I4 §Stage 27` | The entire quality and compatibility contract: two-tier thresholds, reference hardware, startup, memory, soak, background budgets, accessibility, localization, units, AOT, version axes, compatibility matrix, migration testing, contract testing, crash and recovery, diagnostics, platform matrices, severity and waivers, the test pyramid, and the quality invariants |
-| `I3 §22`–`§27` | Performance and backpressure principles, release-mode matrix, build governance, test strategy, CI gates, installation and update |
-| `I4 §Stage 5`, `§Stage 9`, `§Stage 22` | Update, recovery and migration behaviour that the contract gates |
+| [Testing and Verification Strategy](../assurance/testing-and-verification-strategy.md) | Assigns verification families and evidence responsibilities |
+| [Release Gates](../assurance/release-gates.md) | Applies quality and compatibility acceptance at release boundaries |
+| [Deployment and Release Execution](../architecture/22-deployment-and-release-execution.md) | Implements migration, mixed-version and rollback constraints |
 | **[D-007](../decisions/phase-1-foundation-decisions.md#rule-d-007)**, **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** | React/TypeScript Web posture under [P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008); Cloud is JIT; desktop AOT gates; Android Mono AOT |
 | **[V-03](../assurance/phase-1-official-verification.md#rule-v-03)**, **[V-04](../assurance/phase-1-official-verification.md#rule-v-04)**, **[V-05](../assurance/phase-1-official-verification.md#rule-v-05)** | AOT support surfaces, Android runtime posture, and the per-dependency AOT gates enforced here |

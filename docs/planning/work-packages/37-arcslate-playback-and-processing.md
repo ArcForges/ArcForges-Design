@@ -17,7 +17,7 @@
 
 **Out of scope.** Final render and export (`38`); colour management as a first-class system (`38`); integration and portability (`39`).
 
-**Why this package exists.** `I2 §III.10` requires ArcSlate to follow its phase order strictly, and [WP-13.03](13-high-risk-technical-probes.md#rule-wp-13.03) already proved decode, synchronisation and the native safety obligations. This package turns that proof into a product runtime.
+**Why this package exists.** [the current dependency model](../implementation-sequence.md#2-phase-structure) requires ArcSlate to follow its phase order strictly, and [WP-13.03](13-high-risk-technical-probes.md#rule-wp-13.03) already proved decode, synchronisation and the native safety obligations. This package turns that proof into a product runtime.
 
 ---
 

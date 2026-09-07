@@ -396,10 +396,9 @@ Native backup UX here applies to Scope/Slate project data. Notes/Chat use Cloud 
 
 ## 20. Traceability
 
-| Source | Consumed as |
+| Current document | Relationship |
 |---|---|
-| `I4 §Stage 22` | The entire local data constitution: five layers, data classification, per-product storage strategy, working store versus portable package, format versioning, migration, save semantics, undo/revision/checkpoint/journal separation, crash recovery, external references and editing boundaries, import and export architecture, portability constitution, Git friendliness, backup, ownership, storage pressure and deletion |
-| `I4 §Stage 9` | Object identity, revisions, managed versus external assets, immutable blobs, tombstones, and deletion propagation on the cloud side |
-| `I4 §Stage 27` | The migration, compatibility and recovery contracts that gate this layer |
-| `I3 §10`, `§11`, `§12`, `§14` | Document identity and revisions, undo ownership, journal and snapshot design, resource path discipline |
+| [Data Persistence and Formats](../architecture/06-data-persistence-and-formats.md) | Implements local commit, recovery, migration and format rules |
+| [Sync, Conflict and Backup Architecture](../architecture/07-sync-conflict-and-backup.md) | Implements cloud continuity, deletion and backup |
+| [Desktop Local Data Model](../architecture/data-model/02-desktop-data-model.md) | Defines product working stores and supported portable packages |
 | **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** | AOT-safe persistence path constraints for desktop deliverables |

@@ -744,17 +744,17 @@ Every active entry is binding where its concepts are in current product scope. A
 | "Workspace" meaning a panel layout | Collides with the cloud tenancy boundary | **Layout** |
 | Bare "Project" in cross-product text | Three incompatible product meanings | `ArcChat.Project` / `ArcScope.Project` / `ArcSlate.Project` |
 | Bare "Scope" | Eight distinct meanings exist | Name the scope explicitly: Knowledge Scope, Sync Scope, Permission Scope, Policy Scope, Product Scope, Search Scope, Egress Scope, Resource Scope |
-| "ArcForges Suite 2.0" as a version | No mandatory suite release train (Stage 13 §55) | Per-product versions plus an optional release campaign name |
-| "Central desktop service", `ArcForgesService.exe` | Prohibited architecture (Stage 13 §8, §49) | ArcChat-hosted Hub |
+| "ArcForges Suite 2.0" as a version | No mandatory suite release train | Per-product versions plus an optional release campaign name |
+| "Central desktop service", `ArcForgesService.exe` | Prohibited architecture | ArcChat-hosted Hub |
 | Unqualified "Unlimited AI" / "unlimited storage" | Prohibited unbounded commercial claims | Disclosed AI capacity recovery/rate/concurrency/model limits and storage tier |
 | "Native AOT" applied to Android production builds | Conflates Mono AOT with CoreCLR Native AOT (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**, [V-04](../assurance/phase-1-official-verification.md#rule-v-04)) | ".NET 10 Mono AOT" |
 | "Cloud must publish as Native AOT" | Removed by **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** | "Cloud is an ASP.NET Core JIT modular monolith" |
 | "SignalR is unsupported under Native AOT" | Stale .NET 8 statement ([V-03](../assurance/phase-1-official-verification.md#rule-v-03)) | "SignalR has Partial support under .NET 10 Native AOT" |
 | Waffo Pancake and every Waffo-specific mechanic | `SUPERSEDED` provider (**[D-005](../decisions/phase-1-foundation-decisions.md#rule-d-005)**) | Paddle (MoR) and Payoneer (payout destination) |
 | "License key unlock" in ArcChat Mobile | Prohibited by Apple 3.1.1 and **[D-022](../decisions/phase-1-foundation-decisions.md#rule-d-022)** | Cloud-resolved entitlement |
-| `InvokeAsync(string, object)` / `Dictionary<string,object>` capability calls | Bypasses contracts, permissions and versioning (I3 §8.1) | Strongly typed capability interfaces |
-| `ArcForges.Foundation.Document`, `.VideoTimeline`, `.TelemetrySession` | Shared foundation must not hold domain (Stage 13 §32) | Product-owned domain types |
-| `ArcProductBase` domain hierarchy | Product classification is not inheritance (Stage 13 §85) | Independent domains + platform contracts |
+| `InvokeAsync(string, object)` / `Dictionary<string,object>` capability calls | Bypasses contracts, permissions and versioning | Strongly typed capability interfaces |
+| `ArcForges.Foundation.Document`, `.VideoTimeline`, `.TelemetrySession` | Shared foundation must not hold domain | Product-owned domain types |
+| `ArcProductBase` domain hierarchy | Product classification is not inheritance | Independent domains + platform contracts |
 
 ---
 
@@ -790,12 +790,9 @@ The glossary is enforced, not merely published.
 
 ## 11. Traceability
 
-| Source | Consumed as |
+| Current document | Relationship |
 |---|---|
-| `I4 §Stage 1, 3, 4, 9, 13–28` | The `X ≠ Y` invariant corpus (589 marked lines reduced to the catalogue in §7) |
-| `I4 §Stage 21` | Cross-application semantic vocabulary (App, Instance, Capability, Action, Context, Artifact, ResourceRef, Deep Link, Event, Health, Invocation, Compatibility) |
-| `I4 §Stage 19` | Intent / Task / Run / Step / Attempt / Approval / Steering / Automation model |
-| `I4 §Stage 27` | Quality invariants (§7.10) |
-| `I3 §4`, `§6`, `§13`, `§14` | Wire/domain/storage separation, TaskHandle, ResourceRef |
+| [Invariant Coverage](../assurance/invariant-coverage.md) | Maps the current catalogue to architecture, verification and implementation owners |
+| [Contracts, Protocols and the Cross-Application Semantic Model](../architecture/02-contracts-and-protocols.md) | Applies the canonical vocabulary to cross-product contracts |
 | **[D-018](../decisions/phase-1-foundation-decisions.md#rule-d-018)** | The requirement that this document exists and gates detailed specification |
 | **[V-02](../assurance/phase-1-official-verification.md#rule-v-02)** | The MCP term-collision requirement discharged in §9 |

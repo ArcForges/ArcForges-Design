@@ -17,7 +17,7 @@
 
 **Out of scope.** Backup and disaster recovery (`46`). Observability instrumentation (`12`).
 
-**Why this package exists.** `I2 §III.11` places operations, support and trust and safety in cloud completion. The cloud go-live threshold is "failure behaves correctly", and that threshold cannot be met without this package.
+**Why this package exists.** [the current dependency model](../implementation-sequence.md#2-phase-structure) places operations, support and trust and safety in cloud completion. The cloud go-live threshold is "failure behaves correctly", and that threshold cannot be met without this package.
 
 ---
 

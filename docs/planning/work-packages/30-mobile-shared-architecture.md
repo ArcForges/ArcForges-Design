@@ -17,7 +17,7 @@
 
 **Out of scope.** The ArcChat companion features themselves (`31`). Store submission and release (`32`).
 
-**Why this package exists.** `I2 §III.8` places mobile after the first real cloud contracts stabilise, precisely so the shared layer is built against real contracts. **[D-004](../../decisions/phase-1-foundation-decisions.md#rule-d-004)** makes the licence boundary a structural precondition — a violation discovered later blocks the artifact entirely (**[F-023](../../assurance/open-gates-register.md#rule-f-023)**).
+**Why this package exists.** [the current dependency model](../implementation-sequence.md#2-phase-structure) places mobile after the first real cloud contracts stabilise, precisely so the shared layer is built against real contracts. **[D-004](../../decisions/phase-1-foundation-decisions.md#rule-d-004)** makes the licence boundary a structural precondition — a violation discovered later blocks the artifact entirely (**[F-023](../../assurance/open-gates-register.md#rule-f-023)**).
 
 ---
 

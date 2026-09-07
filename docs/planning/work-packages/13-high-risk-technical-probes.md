@@ -7,7 +7,7 @@
 > Phase: B — Shared platform
 > Upstream: `06`, `07`, `08` · Downstream: `14`, `33`, `36`
 
-> **Goal.** Retire the four technical risks that would be most expensive to discover late — one per product — with reproducible build, test and performance evidence. ArcScope and ArcSlate are built last precisely because their risks are ascertained now (`I2 §III.2`).
+> **Goal.** Retire the four technical risks that would be most expensive to discover late — one per product — with reproducible build, test and performance evidence. ArcScope and ArcSlate are built last precisely because their risks are ascertained now.
 
 ---
 
@@ -25,7 +25,7 @@
 
 | Input | Why it matters |
 |---|---|
-| `I2 §III.2` | The four probes and the requirement for reproducible evidence |
+| [Quality and compatibility requirements](../../requirements/12-quality-and-compatibility-contract.md) | The acceptance constraints for the four probes defined in this package; native, editor and acquisition designs below supply their mechanisms |
 | [`../../architecture/09-ai-and-agent-runtime-architecture.md`](../../architecture/09-ai-and-agent-runtime-architecture.md) `§2` | The AOT resolution the agent probe must validate |
 | [`../../architecture/12-native-interop-and-media.md`](../../architecture/12-native-interop-and-media.md) | The native boundary and safety obligations the media probe must respect |
 | [`../../requirements/products/arcscope.md`](../../requirements/products/arcscope.md) `§4`, `§18` | Acquisition, overrun and rolling-buffer semantics |
@@ -39,10 +39,10 @@
 |---|---|
 | BR-01 | **A probe runs against a real published AOT binary**, not a debug host ([QI-01](../../requirements/12-quality-and-compatibility-contract.md#rule-qi-01), [QI-02](../../requirements/12-quality-and-compatibility-contract.md#rule-qi-02)). |
 | BR-02 | **Probe evidence is reproducible**: a recorded environment, a recorded procedure and a recorded result. |
-| BR-03 | **Probe code is not promoted to production without cleanup** (`I2 §III.2`). |
+| BR-03 | **Probe code is not promoted to production without cleanup**. |
 | BR-04 | **A probe that fails produces a decision, not a workaround.** A failed probe raises the conflict rather than being papered over (**[D-001](../../decisions/phase-1-foundation-decisions.md#rule-d-001)**). |
 | BR-05 | **Native probes obey the native safety obligations from the start** — validated input, sanitiser builds, sacrificial-process tests (`§6` of the native architecture). |
-| BR-06 | **The acquisition probe uses a real transport**, not an in-memory generator, for at least one configuration (`I2 §V`). |
+| BR-06 | **The acquisition probe uses a real transport**, not an in-memory generator, for at least one configuration. |
 | BR-07 | **Every native dependency the probes introduce receives a licence position** before use ([PG-03](../../assurance/open-gates-register.md#rule-pg-03)). |
 
 ---

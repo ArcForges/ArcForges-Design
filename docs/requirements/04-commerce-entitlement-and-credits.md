@@ -27,7 +27,7 @@ Two layers, permanently separated:
 | PV-04 | The Merchant-of-Record relationship is a **commercial and tax fact, not an architectural one**. It must not propagate into domain contracts. | [V-06](../assurance/phase-1-official-verification.md#rule-v-06) |
 | PV-05 | **Provider identifiers never reach the client.** The client knows `ArcForges Cloud Monthly`, never a provider product id. Purchase flows resolve provider mapping server-side. | [D-005](../decisions/phase-1-foundation-decisions.md#rule-d-005) |
 | PV-06 | Any provider secret, API key or signing key exists **only** in the ArcForges Cloud backend. It must never enter a desktop product, a mobile build or the browser bundle. | [D-005](../decisions/phase-1-foundation-decisions.md#rule-d-005) |
-| PV-07 | Test and production environments are fully isolated, with separate provider credentials. A test environment must never hold a production key. | Stage 3 §43 |
+| PV-07 | Test and production environments are fully isolated, with separate provider credentials. A test environment must never hold a production key. | [Environment and credential isolation](../architecture/08-security-architecture.md) |
 
 ### 1.1 Responsibility split
 
@@ -78,7 +78,7 @@ Structural product shapes are fixed; all amounts are versioned commercial policy
 | <a id="rule-pc-01"></a>PC-01 | The price model is `Offer → PriceVersion → RegionalPrice`. A price change creates a new `PriceVersion`; existing purchases retain the version they were bought under. |
 | PC-02 | **ArcForges never computes tax.** As Merchant of Record, Paddle calculates, collects and remits applicable sales tax, VAT and GST. ArcForges supplies the offer, the suggested price and a tax category; the provider determines final checkout tax and the invoice. Reimplementing provider tax logic is prohibited. |
 | PC-03 | Every pricing surface states that final price and applicable taxes are determined at checkout. |
-| PC-04 | **CNY product pricing is required, not forbidden**, for the mainland-China route. Paddle's Alipay route requires CNY-priced products and conditions approval on it ([V-08](../assurance/phase-1-official-verification.md#rule-v-08)). This inverts the corpus's earlier position and is absorbed by **[D-023](../decisions/phase-1-foundation-decisions.md#rule-d-023)**'s "CNY product and tax configuration" gate. |
+| PC-04 | **CNY product pricing is required, not forbidden**, for the mainland-China route. Paddle's Alipay route requires CNY-priced products and conditions approval on it ([V-08](../assurance/phase-1-official-verification.md#rule-v-08)). **[D-023](../decisions/phase-1-foundation-decisions.md#rule-d-023)**'s "CNY product and tax configuration" gate governs delivery. |
 | PC-05 | **Provider caps, currencies, approval rules and platform limitations must never be hard-coded into domain contracts** (**[D-023](../decisions/phase-1-foundation-decisions.md#rule-d-023)**). They are expressed through `BillingProviderCapabilities` and verified commercial configuration. |
 | PC-06 | Dynamic or server-overridden pricing, where used, is decided **only** by the ArcForges server. A client must never be able to propose a price. |
 
@@ -513,11 +513,11 @@ Until funds are actually received, the correct statement is "technical integrati
 
 ## 19. Traceability
 
-| Source | Consumed as |
+| Current document | Relationship |
 |---|---|
-| `I4 §Stage 3` | Provider-independent commercial domain model, checkout and webhook discipline, evidence retention, portal division — **with every Waffo-specific mechanic excluded as SUPERSEDED** |
-| `I4 §Stage 4` | The complete entitlement model: kinds, grants, revocations, resolver, snapshot, quotas, credit ledger, grace and restriction behaviour |
-| `I4 §Stage 0`, `§Stage 8` | Commercial layering, credit accounting shape |
+| [Billing and Commerce Architecture](../architecture/16-billing-and-commerce-architecture.md) | Implements entitlement, credit, reservation, settlement and reconciliation rules |
+| [Cloud Data Model](../architecture/data-model/01-cloud-data-model.md) | Defines financial records and their transactional constraints |
+| [Dynamic Policy and Configuration Requirements](11-policy-and-configuration.md) | Owns publication of private deployment values and immutable policy snapshots |
 | **[D-005](../decisions/phase-1-foundation-decisions.md#rule-d-005)** | Paddle MoR, Payoneer payout, preserved abstraction principles |
 | **[D-020](../decisions/phase-1-foundation-decisions.md#rule-d-020)** | Every amount is versioned commercial policy; fixed-precision accounting; reserve-then-settle; hard stop |
 | **[D-022](../decisions/phase-1-foundation-decisions.md#rule-d-022)**, **[V-09](../assurance/phase-1-official-verification.md#rule-v-09)** | Mobile consumption-only posture and its traceable prohibitions |

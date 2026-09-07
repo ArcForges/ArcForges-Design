@@ -340,7 +340,7 @@ The canonical shape is [Cloud Notes §8.4](01-cloud-data-model.md#84-notes--cano
 | `property_def_id` | `id` | **PK** |
 | `key` | `text NN` | |
 | `owner` | `enum(system, user) NN` | Separated, never conflated ([WP-28.00](../../planning/work-packages/28-arcnotes-properties-and-views.md#rule-wp-28.00)) |
-| `type` | `enum(text, number, date, select, multiSelect, checkbox) NN` | |
+| `type` | `enum(text, number, date, dateTime, select, multiSelect, checkbox, url) NN` | The [required scalar property kinds](../../requirements/products/arcnotes.md#7-properties-tags-and-views); `select` is single-select |
 | `config` | `json NN` | Declared options, numeric precision and scalar validation; no relation target or evaluator |
 | `rev` | `rev NN` | |
 
@@ -357,7 +357,7 @@ The canonical shape is [Cloud Notes §8.4](01-cloud-data-model.md#84-notes--cano
 | `saved_view_id` | `id` | **PK** |
 | `notebook_id` | `id?` | Scope; null means workspace-wide |
 | `kind` | `enum(list, table) NN` | **Exactly two layouts** ([P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006)). Board, gallery, calendar and timeline layouts are excluded |
-| `filter` | `json NN` | Property predicates over the bounded scalar types of `§2.1` of the editing architecture |
+| `filter` | `json NN` | Property predicates over the declared scalar kinds in [property storage](#property_definition-property_value), governed by the [ArcNotes property and view requirements](../../requirements/products/arcnotes.md#7-properties-tags-and-views) |
 | `sort` | `json NN` | Ordered sort keys |
 | `columns` | `json?` | Table layout only |
 | `rev` | `rev NN` | |

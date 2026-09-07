@@ -164,7 +164,7 @@ The catalogue in [`../requirements/01-normative-glossary-and-invariants.md`](../
 
 | Obligation | Content | Gate | State |
 |---|---|---|---|
-| **A — design completeness** | Every corpus statement preserved or explicitly dispositioned | Part of [PG-06](open-gates-register.md#rule-pg-06) | **Complete** — 484 of 484 accounted for; four invariants added; one superseded statement correctly excluded |
+| **A — original input accounting** | Completed historical extraction and authorized dispositions | Part of [PG-06](open-gates-register.md#rule-pg-06) | **Complete at that baseline** — 484 of 484 accounted for; four invariants added; one superseded statement correctly excluded. No renewed extraction is required and this count is not current design-completeness evidence |
 | **B — design traceability** | Architecture home, mechanism, planned verification, owning gate, per invariant | [PG-06](open-gates-register.md#rule-pg-06) | **Complete** — **429 of 429** mapped; **[PG-06](open-gates-register.md#rule-pg-06) closed 2026-09-05 and re-verified after [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006) added [I-491](../requirements/01-normative-glossary-and-invariants.md#rule-i-491)–[I-498](../requirements/01-normative-glossary-and-invariants.md#rule-i-498)** |
 | **C — implementation evidence** | An implemented check with a passing result | [PG-11](open-gates-register.md#rule-pg-11) | **Open**, distributed across owning packages |
 

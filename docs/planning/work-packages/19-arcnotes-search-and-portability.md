@@ -19,7 +19,7 @@
 
 **Out of scope.** Cloud search (`40` and `25`). Semantic retrieval and embeddings (`40`). Database-view queries (`28`) — saved views here are list projections only.
 
-**Why this package exists.** `I2 §V` requires local full-text indexing and citation anchors to be **real early**, because cloud search may be mocked but the local index cannot. Export is also the precondition for sync: a format that cannot round-trip locally will not round-trip through a server.
+**Why this package exists.** [the mock policy](../implementation-sequence.md#3-what-may-be-mocked-and-what-may-not) requires local full-text indexing and citation anchors to be **real early**, because cloud search may be mocked but the local index cannot. Export is also the precondition for sync: a format that cannot round-trip locally will not round-trip through a server.
 
 ---
 

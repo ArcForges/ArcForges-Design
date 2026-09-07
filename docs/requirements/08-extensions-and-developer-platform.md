@@ -458,13 +458,11 @@ DeveloperMode
 
 ## 18. Traceability
 
-| Source | Consumed as |
+| Current document | Relationship |
 |---|---|
-| `I4 §Stage 24` | The entire developer platform: skill, template, workflow, MCP, connector and extension, third-party app, dual capability boundary, package model, catalog, SDK, CLI, lifecycle, placement rules and non-goals |
-| `I4 §Stage 26` | Trust layering, permission and consent rules applied to packages and extensions |
-| `I4 §Stage 19` | Cloud execution for accepted workflows; product jobs remain distinct and external agents are excluded |
-| `I4 §Stage 23` | Extension-provided knowledge sources under the knowledge policy model |
-| `I3 §1.4`, `§9.1`, `§15` | No arbitrary third-party native plug-ins in the main process; AOT host constraints; native boundary discipline |
+| [Extension Platform Architecture](../architecture/15-extension-platform-architecture.md) | Implements contribution, package, extension, SDK and CLI requirements |
+| [Content and Extension Isolation](../architecture/24-content-and-extension-isolation.md) | Defines the executable extension isolation profiles |
+| [Security, Permission, Privacy and Trust Requirements](07-security-privacy-and-trust.md) | Owns permission, trust, lease and egress constraints |
 | **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** | The AOT host constraint that makes out-of-process extensions structural rather than stylistic |
 | **[D-009](../decisions/phase-1-foundation-decisions.md#rule-d-009)** | Public SDK contracts split by boundary, ownership and licence |
 | **[D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021)** | The public SDK surface sits inside the Apache-2.0 interoperability boundary |
