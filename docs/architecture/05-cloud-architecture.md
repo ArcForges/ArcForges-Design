@@ -19,7 +19,7 @@
 | RD-02 | **No effort is spent proving cloud-dependency AOT compatibility** (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**, honoured in **[V-05e](../assurance/phase-1-official-verification.md#rule-v-05e)**). |
 | RD-03 | **If any Cloud component is ever moved into an AOT deliverable, its full dependency closure requires a publish proof at that time.** *Owner: Architecture Owner.* |
 | RD-04 | **JIT does not relax the conventions.** Source-generated serialization, explicit registration and no reflection scanning remain the Cloud style, because they are correctness and start-up-performance practices independent of AOT. |
-| RD-05 | **The corpus statement that realtime is unsupported under AOT is stale** (a .NET 8 status). Under .NET 10 it has partial support (**[V-03](../assurance/phase-1-official-verification.md#rule-v-03)**). The stale statement must not be carried forward, and the decision is unaffected. |
+| RD-05 | **Realtime support under .NET 10 AOT is partial**, with the verified limitations recorded in **[V-03](../assurance/phase-1-official-verification.md#rule-v-03)**. The Cloud host remains JIT and native-client acceptance must prove the supported transport path; partial support is not full compatibility evidence. |
 
 ---
 
@@ -280,13 +280,11 @@ Capabilities degrade independently. The full dependency-degradation matrix is in
 
 ## 15. Traceability
 
-| Source | Consumed as |
+| Current document | Relationship |
 |---|---|
-| `I3 §16` | Modular monolith, host pipeline, public API relationship, realtime rules, database, reliable events and background tasks |
-| `I3 §19` | Cloud-to-desktop bridging security model |
-| `I4 §Stage 7` | Cloud capability responsibilities and isolation |
-| `I4 §Stage 10` | Runtime roles, deployment, migration, resilience and operations |
-| `I4 §Stage 13 §36–44` | Direct product-to-Cloud data path; Cloud as one logical platform |
+| [ArcForges Cloud — Product and Platform Requirements](../requirements/products/arcforges-cloud.md) | Owns runtime, deployment and operational obligations |
+| [Cloud Services, Sync, Assets and Data Integrity Requirements](../requirements/03-cloud-services-and-sync.md) | Owns Cloud capabilities, sync and continuity |
+| [Cloud Data Model](data-model/01-cloud-data-model.md) | Defines module data, transactions and reliable-event persistence |
 | **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** | Cloud is a JIT modular monolith; no strict AOT requirement |
 | **[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)** | Cloud never reaches local IPC; the durable request/result model |
 | **[V-03](../assurance/phase-1-official-verification.md#rule-v-03)** | The ASP.NET Core AOT support surface that made the JIT decision structural, and the stale-realtime correction |

@@ -334,12 +334,11 @@ Assert portable managed projects have no esproj reference; win.slnx contains exa
 
 ## 11. Traceability
 
-| Source | Consumed as |
+| Current document | Relationship |
 |---|---|
-| `I3 §5` | Repository layout, contract split rationale, reference direction |
-| `I3 §24`, `§25.2` | Build governance and the architecture-test list |
-| `I4 §Stage 13 §31–35`, `§74–75` | Product boundary rules and the shared-foundation limit |
-| `I4 §Stage 21 §122–125` | Contract organisation avoiding lock-step; what may live in the foundation |
+| [ArcForges Product Scope and Portfolio](../requirements/00-product-scope-and-portfolio.md) | Owns product independence, runtime boundaries and shared-foundation limits |
+| [Build, Packaging and Release Architecture](14-build-packaging-and-release.md) | Defines build governance and packaging |
+| [Web Toolchain, Generated SDK and Developer Workflow](25-web-toolchain-and-sdk.md) | Defines Node workspace, esproj integration and portable Web entry points |
 | **[D-004](../decisions/phase-1-foundation-decisions.md#rule-d-004)**, **[D-013](../decisions/phase-1-foundation-decisions.md#rule-d-013)**, **[D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021)** | Licence boundaries and provenance gating enforced structurally |
 | **[D-009](../decisions/phase-1-foundation-decisions.md#rule-d-009)** | The contract split |
 | **[D-011](../decisions/phase-1-foundation-decisions.md#rule-d-011)** | The implementation target and the treatment of existing code |

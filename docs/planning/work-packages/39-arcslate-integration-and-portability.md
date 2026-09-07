@@ -17,7 +17,7 @@
 
 **Out of scope.** Cloud-side rendering. Collaborative editing.
 
-**Why this package exists.** `I2 §III.10` is explicit: **ArcChat capabilities must only be exposed once timeline, command and undo semantics stabilise; do not lock APIs prematurely.** This package is where that condition is finally met.
+**Why this package exists.** This package’s binding rule and [ArcSlate capability acceptance](#rule-wp-39.00) require: **ArcChat capabilities must only be exposed once timeline, command and undo semantics stabilise; do not lock APIs prematurely.** This package is where that condition is finally met.
 
 ---
 
@@ -25,7 +25,7 @@
 
 | Input | Why it matters |
 |---|---|
-| `I2 §III.10` | The condition on exposing capabilities |
+| [ArcSlate product requirements](../../requirements/products/arcslate.md#15-cross-product-integration) | The capability boundary; this package’s binding rules require stable timeline, command and undo semantics before exposing it |
 | [`../../requirements/products/arcslate.md`](../../requirements/products/arcslate.md) `§13`–`§16` | Portability, cross-device behaviour, AI integration and the capability surface |
 | [`../../requirements/13-data-formats-and-portability.md`](../../requirements/13-data-formats-and-portability.md) | The portability constitution and collect/consolidate obligations |
 | [WP-25](25-sync-engine-and-blob-lifecycle.md#rule-wp-25), [WP-38](38-arcslate-render-and-colour.md#rule-wp-38) output | The sync engine and a complete render and export path |
@@ -36,7 +36,7 @@
 
 | # | Rule |
 |---|---|
-| BR-01 | **Capabilities are exposed only after timeline, command and undo semantics are stable** (`I2 §III.10`). |
+| BR-01 | **Capabilities are exposed only after timeline, command and undo semantics are stable**. |
 | BR-02 | **ArcSlate's big media never goes through the ArcChat Hub.** |
 | BR-03 | **Collect or consolidate gathers external media into a managed portable form on request, without destroying the originals.** |
 | BR-04 | **The same asset may resolve to different locations on different devices** and remains one logical asset. |

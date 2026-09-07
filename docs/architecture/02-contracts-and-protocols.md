@@ -71,12 +71,12 @@ Six contribution kinds:
 
 | # | Rule |
 |---|---|
-| CB-01 | **ArcChat must never hard-code product behaviour.** A `switch (appId)` over product identities is prohibited (Stage 13 §83). |
+| CB-01 | **ArcChat must never hard-code product behaviour.** A `switch (appId)` over product identities is prohibited. |
 | CB-02 | **Contribution is description, not authority** ([I-042](../requirements/01-normative-glossary-and-invariants.md#rule-i-042)). Declaring a capability grants the caller nothing. |
 | CB-03 | **Discovery reads contributions; it never scans a product's domain** (`§13`). |
 | CB-04 | **Static contribution metadata exists before start-up**; a running instance's registration then **overrides runtime availability**. |
 | CB-05 | **`Static Capability ≠ Runtime Capability Availability`** ([I-045](../requirements/01-normative-glossary-and-invariants.md#rule-i-045)). |
-| CB-06 | **Adding a new product must not require changing ArcChat's domain** (Stage 13 §82). |
+| CB-06 | **Adding a new product must not require changing ArcChat's domain**. |
 
 ---
 
@@ -246,7 +246,7 @@ Partial selection — a block range, a time range, a clip set — uses a **commo
 | # | Rule |
 |---|---|
 | EV-01 | **`Event ≠ Command`** ([I-064](../requirements/01-normative-glossary-and-invariants.md#rule-i-064)). A command requests; an event reports. |
-| EV-02 | **An event is produced after the business fact is committed** (`§16.8` of `I3`). |
+| EV-02 | **An event is produced after the business fact is committed**. |
 | EV-03 | **Every event carries a stable `EventId`**, because delivery is at-least-once; consumers deduplicate by `EventId`. |
 | EV-04 | **Every event carries causation and correlation**, which is what makes automation loop detection possible ([LP-01](../requirements/05-ai-and-agent-execution.md#rule-lp-01)). |
 | EV-05 | **An event references resources rather than copying large content** ([I-051](../requirements/01-normative-glossary-and-invariants.md#rule-i-051)). |
@@ -324,7 +324,7 @@ Resolve target → Negotiate compatibility → Validate input
 
 ### 13.3 Routing
 
-Fixed priority (`§7.4` of `I3`, Stage 21 §132):
+Fixed priority:
 
 1. The invocation names an `InstanceId` explicitly
 2. The target resource is already bound to an online instance (**resource affinity**)
@@ -357,7 +357,7 @@ Two success shapes:
 | **Immediate result** | The operation completed; the response carries the outcome and the new revision |
 | **`TaskHandle`** | The operation is long-running; the caller observes the task |
 
-**A long-running RPC connection held open for hours is prohibited** (`§13` of `I3`).
+**A long-running RPC connection held open for hours is prohibited**.
 
 ### 13.6 Errors
 
@@ -448,11 +448,11 @@ SuggestedTask · CorrelationId · CausationId
 
 ## 18. Traceability
 
-| Source | Consumed as |
+| Current document | Relationship |
 |---|---|
-| `I4 §Stage 21` | The entire cross-application semantic model: app/installation/instance, contribution, capability, action, context, resource and reference, artifact, deep link, event, health dimensions, compatibility, invocation and routing, suggested tasks, and relationships to search, extensions, MCP and cloud |
-| `I3 §5.3`, `§6`, `§8` | Contract split, interface-first RPC rules, capability system |
-| `I3 §6.15`, `§25.3` | Version compatibility and contract compatibility testing |
+| [ArcForges Normative Glossary and Invariant Catalogue](../requirements/01-normative-glossary-and-invariants.md) | Owns the semantic vocabulary and distinctions |
+| [ArcForges Product Scope and Portfolio](../requirements/00-product-scope-and-portfolio.md) | Owns product interaction, ownership and routing boundaries |
+| [Operation Catalogue](contracts/00-operation-catalogue.md) | Defines common operation envelopes, errors, idempotency and compatibility |
 | **[D-009](../decisions/phase-1-foundation-decisions.md#rule-d-009)** | Contract granularity and generated compatibility artifacts |
 | **[D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021)** | The Apache interoperability boundary for schemas, DTOs, clients and contract validators |
 | **[V-05b](../assurance/phase-1-official-verification.md#rule-v-05b)** | The contract-authoring obligation that makes proxies AOT- and trim-safe |

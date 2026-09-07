@@ -270,12 +270,11 @@ The web presence is **not**: an ArcNotes, ArcScope or ArcSlate web editor; a sec
 
 ## 11. Traceability
 
-| Source | Consumed as |
+| Current document | Relationship |
 |---|---|
-| `I4 §Stage 2` | The complete web presence: surface layout, marketing site positioning and navigation, product pages, download centre, account portal scope, pricing, open source, documentation, changelog, status, support, security, internationalisation, mainland access, performance, analytics, discovery metadata, key paths and content concepts |
-| `I4 §Stage 7 §54–56` | ArcChat Web as a cloud surface, separate from the account portal |
-| `I4 §Stage 5` | Download and release metadata as one source of truth |
-| `I3 §18` | Historical Web input; current technology follows [P2-008](../../decisions/phase-2-specification-decisions.md#rule-p2-008), with origin/security principles retained |
+| [Web Architecture](../../architecture/10-web-architecture.md) | Defines the current React/TypeScript public, account and Chat surfaces |
+| [Web Toolchain, Generated SDK and Developer Workflow](../../architecture/25-web-toolchain-and-sdk.md) | Defines Node tooling, generated C# OpenAPI/TS clients and browser contract behavior |
+| [Distribution, Update, Support and Trust & Safety Requirements](../10-distribution-update-and-support.md) | Owns release and download metadata obligations |
 | **[D-007](../../decisions/phase-1-foundation-decisions.md#rule-d-007)** | Static public pages and one application; technology amended by [P2-008](../../decisions/phase-2-specification-decisions.md#rule-p2-008) |
 | **[D-014](../../decisions/phase-1-foundation-decisions.md#rule-d-014)** | The twelve-entry surface inventory and "a hostname is not an application" |
 | **[D-015](../../decisions/phase-1-foundation-decisions.md#rule-d-015)** | Canonical account portal origin and boundary policy |

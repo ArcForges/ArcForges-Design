@@ -17,7 +17,7 @@
 
 **Out of scope.** Any professional product editing. Account management, which is `48`'s profile. A second account application, which is forbidden.
 
-**Why this package exists.** `I2 §III.12` requires the web companion to follow stabilisation of chat, task, approval, remote and realtime — which is why it lands after `26` and after the portal establishes the shared shell.
+**Why this package exists.** [the current dependency model](../implementation-sequence.md#2-phase-structure) requires the web companion to follow stabilisation of chat, task, approval, remote and realtime — which is why it lands after `26` and after the portal establishes the shared shell.
 
 ---
 

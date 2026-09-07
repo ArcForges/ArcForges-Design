@@ -17,7 +17,7 @@
 
 **Out of scope.** ArcChat's conversation model (`15`) and execution engine (`16`). ArcNotes' document model beyond the minimum needed to prove the slice (`18`). Anything cloud.
 
-**Why this package exists.** [SQ-04](../implementation-sequence.md#rule-sq-04) requires that the first cross-process slice be real. `I2 §III.3` is explicit: this phase may mock AI and Cloud, but it cannot mock IPC, serialization or AOT. It is the single highest-value risk retirement in the sequence.
+**Why this package exists.** [SQ-04](../implementation-sequence.md#rule-sq-04) requires that the first cross-process slice be real. [the mock policy](../implementation-sequence.md#3-what-may-be-mocked-and-what-may-not) permits AI and Cloud fixtures here; IPC, serialization and AOT must be real. It is the single highest-value risk retirement in the sequence.
 
 ---
 
@@ -25,7 +25,7 @@
 
 | Input | Why it matters |
 |---|---|
-| `I2 §III.3` | The exact verification list this slice must satisfy |
+| [Local IPC AOT and fault-injection checks](../../architecture/03-local-ipc-and-process-model.md#11-aot-checklist) | The transport proof; this package’s implementation steps and completion gate define the complete cross-process verification list |
 | [`../../architecture/03-local-ipc-and-process-model.md`](../../architecture/03-local-ipc-and-process-model.md) | Registration, routing, health and reconnection |
 | [`../../architecture/02-contracts-and-protocols.md`](../../architecture/02-contracts-and-protocols.md) | Capability descriptors, context freezing, resource references, artifacts |
 | **[D-010](../../decisions/phase-1-foundation-decisions.md#rule-d-010)** | ArcChat is a control plane and never a mandatory data gateway |
@@ -45,7 +45,7 @@
 | BR-06 | **Approval crosses the process boundary** and is enforced owner-side, whatever the caller claimed. |
 | BR-07 | **Re-registration after a Hub restart is automatic and idempotent** ([WP-08.02](08-local-ipc-and-registration.md#rule-wp-08.02)). |
 | BR-08 | **The local UI and the RPC surface use the same application service.** Two paths into one behaviour is a defect. |
-| BR-09 | **AI and Cloud may be mocked in this package** (`I2 §III.3`); IPC, serialization and AOT may not. |
+| BR-09 | **AI and Cloud may be mocked in this package**; IPC, serialization and AOT may not. |
 
 ---
 

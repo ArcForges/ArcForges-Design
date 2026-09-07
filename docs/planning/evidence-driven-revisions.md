@@ -9,6 +9,8 @@ The prerequisite evidence **[D-019](../decisions/phase-1-foundation-decisions.md
 
 **A change appears here only if evidence caused it.** Documents the evidence did not touch were not reorganised.
 
+**Historical evidence boundary.** Revision entries describe the evidence and counts at their recorded baseline. The completed input extraction in the invariant revisions is not an ongoing source-reading or reconciliation task. Current implementation consumes the [normative catalogue and its mappings](../assurance/invariant-coverage.md) and the [effective work-package sequence](work-packages/README.md); historical input accounting neither defines the current audit denominator nor overrides those definitions. Existing supersession notes continue to determine which recorded corrections are effective.
+
 ---
 
 ## 1. Revisions caused by the reference matrices

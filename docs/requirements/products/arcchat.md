@@ -445,7 +445,7 @@ ArcChatDataScope
 
 ## 24. Reference relationship
 
-**AionUi is the ArcChat reference** (**[D-012](../../decisions/phase-1-foundation-decisions.md#rule-d-012)**): a source of features, behaviour, tests and possibly reusable material — **never an architecture authority, a parity commitment, or a reason to import its runtime stack**. Its licence is Apache-2.0 (**[F-013](../../assurance/open-gates-register.md#rule-f-013)**, corrected in `I4 §Stage 6.77`), one-way compatible into the AGPL boundary with attribution and NOTICE, subject to the file-level provenance audit required by **[D-013](../../decisions/phase-1-foundation-decisions.md#rule-d-013)**.
+**AionUi is the ArcChat reference** (**[D-012](../../decisions/phase-1-foundation-decisions.md#rule-d-012)**): a source of features, behaviour, tests and possibly reusable material — **never an architecture authority, a parity commitment, or a reason to import its runtime stack**. Its licence is Apache-2.0 (**[F-013](../../assurance/open-gates-register.md#rule-f-013)**, [source evidence](../../assurance/reference-coverage/arcchat-aionui.md)), one-way compatible into the AGPL boundary with attribution and NOTICE, subject to the file-level provenance audit required by **[D-013](../../decisions/phase-1-foundation-decisions.md#rule-d-013)**.
 
 ArcChat explicitly **does not** copy AionUi's product centre of gravity. In particular, the ArcChat centre is the capability hub and task centre, with deep third-party tooling treated as **advanced integration, not the product centre**.
 
@@ -493,13 +493,11 @@ An **ArcChat Reference Coverage Matrix** is required before ArcChat implementati
 
 ## 26. Traceability
 
-| Source | Consumed as |
+| Current document | Relationship |
 |---|---|
-| `I4 §Stage 17` | The complete ArcChat product specification: information architecture, conversation, composer, context, project, task centre, artifacts, apps, profiles, skills, MCP, AI selection, search, history and memory, automations, quick bar, onboarding, settings, failure behaviour, export and V1 scope |
-| `I4 §Stage 6` | Platform positioning, thin-preview/rich-handoff, capability contribution kinds, invocation ordering, trust levels, permission posture, task and artifact first-class status, mode separation, Apache-2.0 reference correction |
-| `I4 §Stage 13` | ArcChat's owned and prohibited state; control-plane role |
-| `I4 §Stage 19` | The execution model ArcChat surfaces |
-| `I4 §Stage 23` | Retrieval orchestration responsibilities |
+| [Product Implementation Maps](../../architecture/19-product-implementation-maps.md) | Maps accepted ArcChat capabilities to components |
+| [Agent Harness](../../architecture/17-agent-harness.md) | Owns Cloud execution surfaced by ArcChat |
+| [Reference Coverage Matrix — ArcChat / AionUi](../../assurance/reference-coverage/arcchat-aionui.md) | Records the reference-source dispositions and verification oracles |
 | **[D-010](../../decisions/phase-1-foundation-decisions.md#rule-d-010)** | Control plane, never a mandatory data gateway |
 | **[D-012](../../decisions/phase-1-foundation-decisions.md#rule-d-012)**, **[D-013](../../decisions/phase-1-foundation-decisions.md#rule-d-013)** | AionUi as a reference under licence-gated reuse |
 | **[D-020](../../decisions/phase-1-foundation-decisions.md#rule-d-020)**, **[D-022](../../decisions/phase-1-foundation-decisions.md#rule-d-022)** | Credit surfaces, and mobile commerce boundaries reflected in the companion |

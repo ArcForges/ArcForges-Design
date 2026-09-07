@@ -290,11 +290,9 @@ The cloud data model is specified in [`05-cloud-architecture.md`](05-cloud-archi
 
 ## 14. Traceability
 
-| Source | Consumed as |
+| Current document | Relationship |
 |---|---|
-| `I4 §Stage 22` | Store composition, format layering, portable package structure, migration mechanics, import and export pipelines, storage pressure. **Its Git-projection material is retired delivery** (`§14` of the data-format requirements) and survives here only as the prohibition in `§12` |
-| `I3 §12` | Local persistence rules, journal, snapshot, crash recovery |
-| `I3 §10` | Document identity, write command processing, conflict semantics |
-| `I4 §Stage 9` | Blob immutability, integrity hashing, deletion propagation |
-| `I4 §Stage 27` | Migration testing, golden fixtures, downgrade behaviour |
+| [Working Data, Project Formats and Cloud Portability Requirements](../requirements/13-data-formats-and-portability.md) | Owns the working store, portable-package and recovery contracts; Git projections remain excluded |
+| [Desktop Local Data Model](data-model/02-desktop-data-model.md) | Defines concrete stores, revisions and journal records |
+| [Product Quality and Compatibility Contract](../requirements/12-quality-and-compatibility-contract.md) | Owns migration, downgrade and recovery verification |
 | **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** | AOT-safe local data access on desktop deliverables |

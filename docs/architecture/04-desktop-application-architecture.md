@@ -27,7 +27,7 @@ The Generic Host owns, in one place: dependency injection, configuration and sec
 | # | Rule |
 |---|---|
 | PS-01 | **The Avalonia lifetime and the host lifetime are explicitly coordinated.** On shutdown the process **drains** first: stop accepting new remote write commands, wait for critical transactions to reach disk, then stop the local endpoint, then the realtime connection, then the native runtime. |
-| PS-02 | **Each product process is autonomous.** Its native libraries run inside it; nothing is delegated to a separate long-lived worker process (`I3 §1.2`). |
+| PS-02 | **Each product process is autonomous.** Its native libraries run inside it; nothing is delegated to a separate long-lived worker process. |
 | PS-03 | **One infrastructure component owns the local RPC connection lifecycle** (`§5` of the local IPC architecture). |
 
 ---
@@ -99,7 +99,7 @@ The Generic Host owns, in one place: dependency injection, configuration and sec
 
 | # | Rule |
 |---|---|
-| PR-01 | **Local persistence uses an AOT-safe data access path** with explicit or generated mapping — not a reflection-driven ORM runtime as an irreplaceable dependency (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**, `I3 §12.1`). |
+| PR-01 | **Local persistence uses an AOT-safe data access path** with explicit or generated mapping — not a reflection-driven ORM runtime as an irreplaceable dependency (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**). |
 | PR-02 | **Connection and transaction lifetimes follow the unit of work.** No global singleton connection. |
 | PR-03 | **Write transactions are short.** |
 | PR-04 | **Journaling mode is enabled only after platform and file-system validation.** |
@@ -253,13 +253,11 @@ Each is elaborated in its product requirements and in [`12-native-interop-and-me
 
 ## 15. Traceability
 
-| Source | Consumed as |
+| Current document | Relationship |
 |---|---|
-| `I3 §9` | Desktop process structure, AOT constraints, MVVM, threading, multi-window and multi-instance |
-| `I3 §10`, `§11`, `§12` | Document identity, write commands, conflicts, undo ownership, journal, snapshot and crash recovery |
-| `I3 §13`, `§22` | Long task model; performance, memory and backpressure |
-| `I4 §Stage 14` | Shared shell composition and lifecycle behaviour |
-| `I4 §Stage 27` | Start-up, memory, responsiveness and recovery gates |
+| [Shared Desktop Experience Requirements](../requirements/09-shared-desktop-experience.md) | Owns the shared native user experience |
+| [Working Data, Project Formats and Cloud Portability Requirements](../requirements/13-data-formats-and-portability.md) | Owns persistence, undo, recovery and format obligations |
+| [Product Quality and Compatibility Contract](../requirements/12-quality-and-compatibility-contract.md) | Owns startup, responsiveness, memory and recovery acceptance |
 | **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** | Desktop as a Native AOT deliverable with trim/AOT-safe dependencies |
 | **[V-05a](../assurance/phase-1-official-verification.md#rule-v-05a)** | Avalonia AOT requirements and the third-party control publish gate |
 | **[F-026](../assurance/open-gates-register.md#rule-f-026)** | The typed HTTP client entry point and reflection-package prohibition |

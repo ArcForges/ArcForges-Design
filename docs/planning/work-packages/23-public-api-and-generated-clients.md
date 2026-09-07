@@ -17,7 +17,7 @@
 
 **Out of scope.** Realtime (`24`). The endpoints of modules that do not yet exist — each later module adds its own endpoints under the rules established here.
 
-**Why this package exists.** `I2 §IV` asks how far server interfaces should be designed now: far enough that clients can be written against them and mocks replaced without redesign. `I2 §V` requires real protocol compatibility tests early.
+**Why this package exists.** The [public operation catalogue](../../architecture/contracts/01-public-api-operations.md) and [generated SDK contract](../../architecture/25-web-toolchain-and-sdk.md) define the interfaces clients implement. [the mock policy](../implementation-sequence.md#3-what-may-be-mocked-and-what-may-not) requires real protocol compatibility tests before fixture evidence is replaced by production integration.
 
 ---
 
@@ -49,7 +49,7 @@
 | BR-06 | **Requests are idempotent where they change state**, keyed by command identity. |
 | BR-07 | **A response never leaks the existence of a resource the caller may not see** where existence itself is sensitive. |
 | BR-08 | **Rate limits are per identity and per capability class**, and produce a typed, explained refusal with retry guidance. |
-| BR-09 | **Object bodies go over standard HTTP upload and download, never over realtime** (`I3 §14.3`). |
+| BR-09 | **Object bodies go over standard HTTP upload and download, never over realtime**. |
 | <a id="rule-br-10"></a>BR-10 | **Clients never choose arbitrary storage locations**; upload targets are issued by the server. |
 
 ---

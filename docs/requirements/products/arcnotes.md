@@ -428,13 +428,11 @@ Advanced importers and excluded workbenches are outside the current delivery bas
 
 ## 22. Traceability
 
-| Source | Consumed as |
+| Current document | Relationship |
 |---|---|
-| `I4 §Stage 15` | The complete ArcNotes product specification: organisation model, document and block model, editor, properties and tags, links and references, attachments, search and knowledge, AI layers, history and deletion, import and export, cloud behaviour, windows, first run, non-goals, domain model and V1 scope |
-| `I2 §II` | Historical foundation input; only IDs, revisions and the accepted property/query foundation remain required under [P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006) |
-| `I4 §Stage 13 §18–20` | ArcNotes as the long-term knowledge authority and its owned state |
-| `I4 §Stage 22 §23–26`, `§195` | ArcNotes storage strategy and local structure |
-| `I4 §Stage 23 §138–139` | ArcNotes knowledge responsibilities |
+| [Editing, Rich Content and Preview](../../architecture/18-editing-and-rich-content.md) | Defines the native document editor and attachment presentation |
+| [Desktop Local Data Model](../../architecture/data-model/02-desktop-data-model.md) | Defines the native working store and note structures |
+| [Reference Coverage Matrix — ArcNotes / AFFiNE + SiYuan](../../assurance/reference-coverage/arcnotes-affine-siyuan.md) | Records accepted and excluded reference-source capabilities under the current scope |
 | **[D-002](../../decisions/phase-1-foundation-decisions.md#rule-d-002)**, **[P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006)** | Four-product portfolio; excluded canvas/presentation features do not re-enter through references |
 | **[D-006](../../decisions/phase-1-foundation-decisions.md#rule-d-006) as amended by [P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006)** | Notebook core, bounded property views, Cloud continuity and explicit exclusions |
 | **[D-012](../../decisions/phase-1-foundation-decisions.md#rule-d-012)**, **[D-013](../../decisions/phase-1-foundation-decisions.md#rule-d-013)** | AFFiNE and SiYuan as licence-gated references with a required coverage matrix |

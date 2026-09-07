@@ -5,20 +5,22 @@
 > Purpose: Record complete-reading coverage of the closed Phase 1 input corpus, the topic inventory derived from it, and the classification of material content. This ledger is evidence of review; it is not a specification and confers no authority on the material it describes.
 > Companions: `docs/decisions/phase-1-foundation-decisions.md` (issues and decisions), `docs/assurance/phase-1-official-verification.md` (official verification record).
 
+**Historical record:** This input review is complete. The four files are now [deprecated](../deprecated-inputs/README.md) and excluded from ongoing design and audit scope. The paths below identify their renamed archive locations; recorded reading ranges, counts and dispositions describe the original review, not a new review or a requirement to repeat it.
+
 ## 1. Closed input corpus
 
-Phase 1 admits exactly four input files. No other file, repository, branch, history, or planning location is an input.
+Phase 1 used exactly four input files. At that stage, no other file, repository, branch, history, or planning location was admitted as an input. This historical intake boundary does not define current reference-source or formal-design audit scope.
 
 | # | File | Lines | Bytes | Read status |
 |---|---|---:|---:|---|
-| I1 | `docs/inputs/product-discovery-overview.md` | 91 | 7,746 | Complete |
-| I2 | `docs/inputs/implementation-sequencing-notes.md` | 646 | 30,042 | Complete |
-| I3 | `docs/inputs/platform-architecture-concept.md` | 2,522 | 121,737 | Complete |
-| I4 | `docs/inputs/product-discovery-record.md` | 112,228 | 1,528,926 | Complete |
+| I1 | [product-discovery-overview-deprecated.md](../deprecated-inputs/product-discovery-overview-deprecated.md) | 91 | 7,746 | Complete |
+| I2 | [implementation-sequencing-notes-deprecated.md](../deprecated-inputs/implementation-sequencing-notes-deprecated.md) | 646 | 30,042 | Complete |
+| I3 | [platform-architecture-concept-deprecated.md](../deprecated-inputs/platform-architecture-concept-deprecated.md) | 2,522 | 121,737 | Complete |
+| I4 | [product-discovery-record-deprecated.md](../deprecated-inputs/product-discovery-record-deprecated.md) | 112,228 | 1,528,926 | Complete |
 
 Total: 115,487 lines / 1,688,451 bytes across the four files.
 
-The four input files are preserved unmodified. Accepted corrections and decisions are recorded only in `docs/decisions/`.
+The four file bodies are preserved unmodified. Their original filenames in the historical coverage headings below identify the reviewed baseline. Accepted corrections and decisions were recorded in `docs/decisions/`, not applied to those bodies.
 
 ### 1.1 Reading method
 

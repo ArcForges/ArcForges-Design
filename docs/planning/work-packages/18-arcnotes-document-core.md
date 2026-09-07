@@ -17,7 +17,7 @@
 
 **Out of scope.** Bounded properties and saved views (`28`). **Edgeless canvas and slides are excluded from delivery by [P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006)** — `27` and `29` are retired, not deferred. Search, import and export (`19`). Sync (`25`).
 
-**Why this package exists.** `I2 §III.5` starts ArcNotes from the local closed loop. [SQ-05](../implementation-sequence.md#rule-sq-05) then uses ArcNotes to prove sync, which requires a real document model with revisions, attachments, deletions and history first.
+**Why this package exists.** The [native editing design](../../architecture/18-editing-and-rich-content.md) starts with a real editor, working store, undo and crash recovery. [SQ-05](../implementation-sequence.md#rule-sq-05) then uses ArcNotes to prove sync, which requires a real document model with revisions, attachments, deletions and history first.
 
 ---
 

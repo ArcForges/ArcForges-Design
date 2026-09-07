@@ -35,7 +35,7 @@ Secure storage · Local cache · Offline outbox
 | LY-01 | **Base ViewModel patterns are not shared between Avalonia desktop and MAUI mobile** (**[D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021)**). Each UI stack owns its implementation. |
 | LY-02 | **Product-domain behaviour, server orchestration, policy decisions, persistence behaviour and entitlement authority stay outside the shared boundary** (**[D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021)**). |
 | LY-03 | **Mobile-only application behaviour is implemented independently inside the Apache mobile boundary** (**[D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021)**). |
-| LY-04 | **The mobile client never loads the desktop native media stack and never connects to a local Hub** (`I3 §17.1`). |
+| LY-04 | **The mobile client never loads the desktop native media stack and never connects to a local Hub**. |
 
 ---
 
@@ -77,7 +77,7 @@ Everything in `src/Mobile/` and the public contract and SDK projects it consumes
 | SC-01 | **Every public DTO belongs to a source-generated serialization context.** |
 | <a id="rule-sc-02"></a>SC-02 | **The typed HTTP client uses the generated-only registration and entry point**; the reflection package is absent from the dependency graph; its diagnostic is build-breaking (**[F-026](../assurance/open-gates-register.md#rule-f-026)**). |
 | SC-03 | **Realtime uses the JSON protocol with source-generated payload metadata.** |
-| SC-04 | **Reflection, dynamic assemblies and runtime code generation must not enter the iOS main path** (`I3 §17.4`) — a constraint the shared contract layer already satisfies for every platform. |
+| SC-04 | **Reflection, dynamic assemblies and runtime code generation must not enter the iOS main path** — a constraint the shared contract layer already satisfies for every platform. |
 | SC-05 | **One HTTP client factory owns client construction**, with the access token injected by a delegating handler. |
 | SC-06 | **Token refresh is serialised**, so concurrent requests never trigger a refresh storm. |
 
@@ -124,7 +124,7 @@ User action while offline
 | # | Rule |
 |---|---|
 | SS-01 | **Session material uses the platform secure storage** — keychain or keystore. |
-| SS-02 | **Sensitive tokens never enter ordinary preferences or logs** (`I3 §17.3`). |
+| SS-02 | **Sensitive tokens never enter ordinary preferences or logs**. |
 | SS-03 | **No provider credential exists on any client, desktop or mobile** ([BY-01](../requirements/04-commerce-entitlement-and-credits.md#rule-by-01)–[BY-04](../requirements/04-commerce-entitlement-and-credits.md#rule-by-04)). |
 | SS-04 | **App lock is UI access protection, not authentication** ([I-277](../requirements/01-normative-glossary-and-invariants.md#rule-i-277)); biometric unlock never substitutes for step-up ([I-278](../requirements/01-normative-glossary-and-invariants.md#rule-i-278)). |
 | SS-05 | **Provider credentials are deployment secrets held only by the Cloud host** ([DC-15](../requirements/11-policy-and-configuration.md#rule-dc-15)), used server-side and never projected to any client ([DC-14](../requirements/11-policy-and-configuration.md#rule-dc-14)). |
@@ -213,11 +213,11 @@ Mobile is **not**: an ArcNotes, ArcScope or ArcSlate editor; a general screen-an
 
 ## 14. Traceability
 
-| Source | Consumed as |
+| Current document | Relationship |
 |---|---|
-| `I3 §17` | Mobile scope, layering, network discipline, AOT and trimming rules |
-| `I4 §Stage 18` | The companion product model this architecture serves |
-| `I2 §III.8` | Implementation sequence, Android release path and the iOS deferred posture |
+| [ArcChat Mobile and ArcChat Web — Product Requirements](../requirements/products/arcchat-mobile-and-web.md) | Owns mobile companion scope, continuity, remote controls and exclusions |
+| [Realtime Events and the Durable Bridge](contracts/03-realtime-and-bridge.md) | Defines the Cloud-facing remote and realtime contract |
+| [Product Quality and Compatibility Contract](../requirements/12-quality-and-compatibility-contract.md) | Owns platform, compatibility and runtime acceptance |
 | **[D-004](../decisions/phase-1-foundation-decisions.md#rule-d-004)**, **[D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021)**, **[F-023](../assurance/open-gates-register.md#rule-f-023)** | The Apache boundary, no shared ViewModels, and the pre-distribution provenance gate |
 | **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**, **[V-04](../assurance/phase-1-official-verification.md#rule-v-04)** | Android Mono AOT as the production baseline; iOS build-deferred; the framework-upgrade re-verification gate |
 | **[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)** | Mobile connects only to Cloud |

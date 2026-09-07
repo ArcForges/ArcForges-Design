@@ -17,7 +17,7 @@
 
 **Out of scope.** ArcScope and ArcSlate sync strategies (`35`, `39`) — this package establishes the engine those extend. Backup and disaster recovery (`46`).
 
-**Why this package exists.** [SQ-05](../implementation-sequence.md#rule-sq-05): ArcNotes is the right product to prove the initial sync protocol — more complex than a toy, simpler than raw captures or large media, yet sufficient to validate revisions, attachments, deletions, conflicts, history and recovery (`I2 §III.6`).
+**Why this package exists.** [SQ-05](../implementation-sequence.md#rule-sq-05): ArcNotes is the right product to prove the initial sync protocol — more complex than a toy, simpler than raw captures or large media, yet sufficient to validate revisions, attachments, deletions, conflicts, history and recovery.
 
 ---
 

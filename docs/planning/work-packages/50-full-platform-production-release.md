@@ -17,7 +17,7 @@
 
 **Out of scope.** iOS build activation, which remains deferred (**[D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008)**). Any capability whose gates are not satisfied — it ships disabled or not at all, never as a claim.
 
-**Why this package exists.** `I2 §III.13` requires these to complete **together**. A release where the site is live but the payout path is unproven, or where downloads exist but rollback is untested, is not a release — it is an incident waiting for its first customer.
+**Why this package exists.** The [release gates](../../assurance/release-gates.md) and this package’s completion gate require these deliveries to be ready **together**. A release where the site is live but the payout path is unproven, or where downloads exist but rollback is untested, is not a release — it is an incident waiting for its first customer.
 
 ---
 
@@ -25,7 +25,7 @@
 
 | Input | Why it matters |
 |---|---|
-| `I2 §III.13` | The list of items that must complete together |
+| [Release gates](../../assurance/release-gates.md) | The production acceptance classes; this package’s §8 lists the deliveries that must be ready together |
 | [`../../assurance/release-gates.md`](../../assurance/release-gates.md) | Every gate class and its evidence |
 | [`../../assurance/open-gates-register.md`](../../assurance/open-gates-register.md) | Every open gate and whether it is now closed |
 | [`../../architecture/14-build-packaging-and-release.md`](../../architecture/14-build-packaging-and-release.md) | Build, packaging, signing, feed and promotion |
@@ -45,7 +45,7 @@
 | BR-02 | **A gate is passed with evidence or it is not passed.** There is no "passed with concerns". |
 | BR-03 | **A gate protecting data integrity, security, licence compliance or a regulatory obligation cannot be waived.** |
 | BR-04 | **Nothing incomplete is presented as complete.** A deferred capability is stated as deferred. |
-| BR-05 | **Official pricing and checkout do not launch publicly before entitlement, refunds, webhook idempotency and a real payout path are complete** (`I2 §III.12`). |
+| BR-05 | **Official pricing and checkout do not launch publicly before entitlement, refunds, webhook idempotency and a real payout path are complete**. |
 | BR-06 | **iOS is not claimed as compiled or tested** (**[D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008)**). |
 | BR-07 | **A bad version must be immediately haltable** through the update feed and compatibility policy. |
 | BR-08 | **Rollback is reserved and tested** for every shipped surface. |

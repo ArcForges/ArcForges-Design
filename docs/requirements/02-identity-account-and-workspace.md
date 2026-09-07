@@ -49,7 +49,7 @@ A **Realm** is an independent identity and data authority: the Official ArcForge
 | # | Requirement |
 |---|---|
 | <a id="rule-id-10"></a>ID-10 | Identity is `Realm + UserId`. A bare `UserId` is never globally meaningful. |
-| ID-11 | The same email address in two realms denotes two different identities. Email is never used to establish cross-realm identity ([I-465](01-normative-glossary-and-invariants.md#rule-i-465) analogue; Stage 7 §83). |
+| ID-11 | The same email address in two realms denotes two different identities. Email is never used to establish cross-realm identity ([I-465](01-normative-glossary-and-invariants.md#rule-i-465) analogue). |
 | ID-12 | No client may hard-code the official API host as the only possible realm. Clients support **Server Profiles**. V1 UI may present one Official realm plus one self-hosted realm; the model supports more. |
 | ID-13 | Self-host owns its own user system entirely and must never require reachability of the official service to authenticate. Optional OIDC federation to the official realm may be offered later; it must remain optional. |
 | ID-14 | Cross-realm objects are never the same authoritative object. Every cross-application and cross-device reference is realm-aware. |
@@ -102,7 +102,7 @@ Account Profile is deliberately minimal: Display Name, Avatar, Primary Email, Lo
 
 ## 4. Device, Installation, Instance and Session
 
-Four distinct concepts ([I-007](01-normative-glossary-and-invariants.md#rule-i-007), [I-008](01-normative-glossary-and-invariants.md#rule-i-008), [I-009](01-normative-glossary-and-invariants.md#rule-i-009), Stage 1 §15–17):
+Four distinct concepts ([I-007](01-normative-glossary-and-invariants.md#rule-i-007), [I-008](01-normative-glossary-and-invariants.md#rule-i-008), [I-009](01-normative-glossary-and-invariants.md#rule-i-009)):
 
 ```
 User
@@ -120,7 +120,7 @@ Session                     (one app's current authenticated login state)
 | DV-03 | **App Installation** is a distinct cloud-visible dimension. A process instance is never a device identity. |
 | DV-04 | **Session** is per-application authenticated state. Sessions expire; the Device survives. One device may hold several concurrent sessions (`ArcChat`, `ArcNotes`, `ArcScope`, browser). |
 | DV-05 | **Device SSO** — after a user signs in from one Arc product on a device, another Arc product on the same device offers "Continue as \<name\>" rather than re-entering an email. |
-| DV-06 | **Device SSO must not create an architecture dependency.** ArcNotes signing in must work with ArcChat absent. The unified account/session infrastructure is shared desktop foundation, never an ArcChat-private authentication service (Stage 13 §58). |
+| DV-06 | **Device SSO must not create an architecture dependency.** ArcNotes signing in must work with ArcChat absent. The unified account/session infrastructure is shared desktop foundation, never an ArcChat-private authentication service. |
 | DV-07 | Sign-out distinguishes four operations, each with different scope: **Sign out of this App** (other Arc apps stay signed in), **Sign out of this Device** (all Arc app cloud sessions revoked, local data retained), **Revoke Device** (performed from another device; stops sync, remote and cloud access), **Sign out everywhere** (all sessions cleared; the account remains). |
 
 ---
@@ -219,7 +219,7 @@ On entering DeletionPending, prohibit new Cloud writes and AI dispatch, stop ren
 | <a id="rule-dl-01"></a>DL-01 | Account deletion does not remotely erase independent native capture/media files or pending user edits/uploads. Preview their fate before confirmation and offer recovery. Explicit local cache deletion is a separate choice. A guarded recovery view for locally owned pending work must remain usable without paid Cloud access, even if the Cloud identity has been deleted; it is not a new standalone notebook mode. |
 | DL-02 | **Subscription cancellation ≠ Account deletion ≠ Cloud data deletion ≠ Workspace deletion** ([I-002](01-normative-glossary-and-invariants.md#rule-i-002)). Four distinct flows. |
 | DL-03 | A user may delete cloud data while retaining the account, AI credits and purchase history. |
-| DL-04 | Deletion propagates to derived data: full-text index entries, vector entries, derived previews and caches. A deleted document must not remain findable through semantic search ([I-165](01-normative-glossary-and-invariants.md#rule-i-165), Stage 7 §71). |
+| DL-04 | Deletion propagates to derived data: full-text index entries, vector entries, derived previews and caches. A deleted document must not remain findable through semantic search ([I-165](01-normative-glossary-and-invariants.md#rule-i-165)). |
 
 ---
 
@@ -235,7 +235,7 @@ On entering DeletionPending, prohibit new Cloud writes and AI dispatch, stop ren
 
 ## 12. Account portal
 
-The **ArcForges Account Portal** is a first-class product surface, not a marketing page (Stage 1 §44). It is canonically `account.arcforges.com` (**[D-015](../decisions/phase-1-foundation-decisions.md#rule-d-015)**), served by the single `ArcForges.Web.App` codebase (**[D-014](../decisions/phase-1-foundation-decisions.md#rule-d-014)**).
+The **ArcForges Account Portal** is a first-class product surface, not a marketing page. It is canonically `account.arcforges.com` (**[D-015](../decisions/phase-1-foundation-decisions.md#rule-d-015)**), served by the single `ArcForges.Web.App` codebase (**[D-014](../decisions/phase-1-foundation-decisions.md#rule-d-014)**).
 
 Minimum V1 portal scope:
 
@@ -248,7 +248,7 @@ Minimum V1 portal scope:
 | Billing | Plan, Subscription, Storage add-ons, AI credits |
 | Data | Export, Delete Account |
 
-**In-product account UI stays lightweight.** A desktop product shows the signed-in identity, realm, storage summary and a "Manage Account →" link to the portal. Passkeys, billing, devices, recovery and deletion are managed centrally, not reimplemented per product (Stage 1 §43).
+**In-product account UI stays lightweight.** A desktop product shows the signed-in identity, realm, storage summary and a "Manage Account →" link to the portal. Passkeys, billing, devices, recovery and deletion are managed centrally, not reimplemented per product.
 
 ---
 
@@ -307,7 +307,7 @@ Identity Realm
 └── Secret Vault
 ```
 
-Stage 1 settles **identity ownership relationships** only. Commercial rules for Billing Account, Subscription, Entitlement, Storage Quota and AI Capacity and Credit Accounts are specified in [`04-commerce-entitlement-and-credits.md`](04-commerce-entitlement-and-credits.md).
+This document settles **identity ownership relationships**; commercial rules for Billing Account, Subscription, Entitlement, Storage Quota and AI Capacity and Credit Accounts are specified in [`04-commerce-entitlement-and-credits.md`](04-commerce-entitlement-and-credits.md).
 
 ---
 
@@ -332,12 +332,11 @@ Stage 1 settles **identity ownership relationships** only. Commercial rules for 
 
 ## 17. Traceability
 
-| Source | Consumed as |
+| Current document | Relationship |
 |---|---|
-| `I4 §Stage 1` | The entire identity, device, session, workspace and portal model |
-| `I4 §Stage 7 §74–75, §80–85` | Workspace-scoped authorization, realm separation, self-host boundaries |
-| `I4 §Stage 13 §56–60` | Account-independence and realm invariants at the product-topology level |
-| `I3 §20` | Identity layering, local IPC authentication, secret storage |
+| [Security Architecture](../architecture/08-security-architecture.md) | Implements identity, authentication, authorization and realm isolation |
+| [Cloud Data Model](../architecture/data-model/01-cloud-data-model.md) | Defines persisted identity, workspace, device and session records |
+| [Public API Operations](../architecture/contracts/01-public-api-operations.md) | Defines the account and device operations consumed by clients |
 | **[D-014](../decisions/phase-1-foundation-decisions.md#rule-d-014)**, **[D-015](../decisions/phase-1-foundation-decisions.md#rule-d-015)** | Surface inventory and the canonical account portal origin |
 | **[D-005](../decisions/phase-1-foundation-decisions.md#rule-d-005)** | Billing identity separation and provider-abstraction principles |
 | **[D-022](../decisions/phase-1-foundation-decisions.md#rule-d-022)** | Mobile account/security settings limited to non-commercial operations |

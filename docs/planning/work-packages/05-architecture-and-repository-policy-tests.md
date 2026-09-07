@@ -97,7 +97,7 @@
 
 ### WP-05.02 — Forbidden terms and naming
 
-**What must be fully done.** The scan covers superseded product names, the superseded payment provider, forbidden aliases from the glossary, and obsolete architectural terms. Coverage includes type and member names, namespaces, resource strings, and implementation documentation. The preserved input corpus in this design repository is excluded.
+**What must be fully done.** The scan covers superseded product names, the superseded payment provider, forbidden aliases from the glossary, and obsolete architectural terms. Coverage includes type and member names, namespaces, resource strings, and implementation documentation. The deprecated input archive at `docs/deprecated-inputs/` in this design repository is excluded.
 
 **Testing requirements.** A negative fixture containing each forbidden term must be detected; the scan must produce zero findings on the current tree.
 
@@ -149,9 +149,9 @@
 
 ### WP-05.06 — Specification integrity
 
-**What must be fully done.** Checks over this design repository: every internal link resolves; every cited requirement, architecture rule, decision, verification finding and gate identifier exists; no superseded name appears outside the preserved inputs; every Phase 1 decision is cited by at least one Phase 2 document or its non-applicability is stated; and the work-package dependency graph is acyclic with every referenced package existing.
+**What must be fully done.** Checks over the current documentation and archive README in this design repository: every internal link resolves; every cited requirement, architecture rule, decision, verification finding and gate identifier exists; no superseded name appears as current outside `docs/deprecated-inputs/`; every Phase 1 decision is cited by at least one Phase 2 document or its non-applicability is stated; and the work-package dependency graph is acyclic with every referenced package existing. The four deprecated input bodies are excluded; their historical citations do not require a new input review or commitment mapping.
 
-**Testing requirements.** The checks run against the current design repository and produce zero findings.
+**Testing requirements.** The checks run against the current design repository and produce zero findings. Enforce [SV-09](../../assurance/testing-and-verification-strategy.md#rule-sv-09) over all current specification and planning files, including required-input tables and authority headers. Negative fixtures for an archived source shorthand, old Stage citation and archive-body path must fail; a valid current-rule reference must pass. Historical records and archive navigation remain distinguishable from active implementation inputs.
 
 **Completion gate.** Zero findings across all six checks.
 

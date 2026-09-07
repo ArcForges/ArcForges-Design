@@ -70,7 +70,7 @@ Actor → Delegation → Capability → Resource → Risk → Approval → Audit
 | PM-02 | A permission is never a bare boolean pair of principal and capability. It carries **scope** (which resources), **constraints** (conditions), and **lifetime**. |
 | PM-03 | **Capability Permission ≠ Resource Authorization** ([I-238](01-normative-glossary-and-invariants.md#rule-i-238)). Being permitted to use `arcnotes.document.edit` says nothing about whether this specific document may be edited. |
 | PM-04 | **The Resource Owner is the final authorization authority.** The owning application checks last, always. |
-| <a id="rule-pm-05"></a>PM-05 | **The Hub is not a universal ACL database** (Stage 13 §28 analogue). Professional resource access rules stay with the owner. |
+| <a id="rule-pm-05"></a>PM-05 | **The Hub is not a universal ACL database**. Professional resource access rules stay with the owner. |
 | PM-06 | For a **local personal resource**, the local human principal is the default owner and edits directly without a permission prompt per action. Delegated authority — an agent acting for them — is what requires grants. |
 | PM-07 | **Role is a permission-assignment convenience, not the authorization model** ([I-237](01-normative-glossary-and-invariants.md#rule-i-237)). The model is capability-based and scoped, not pure RBAC. |
 | <a id="rule-pm-08"></a>PM-08 | **Grants are minimised.** "Always allow" must state precisely what is always allowed; an unbounded "always allow everything" prompt is prohibited. |
@@ -562,12 +562,11 @@ PrivacyDataInventoryEntry · ProviderRegistryEntry · SubprocessorRegistryEntry
 
 ## 21. Traceability
 
-| Source | Consumed as |
+| Current document | Relationship |
 |---|---|
-| `I4 §Stage 26` | The entire security model: principals, actor chain, capability permission, resource authorization, risk R0–R4, approval, step-up, local presence, secrets, egress, instruction provenance, capability lease, typed trust, the security decision pipeline, audit, and the security centre |
-| `I4 §Stage 11` | Privacy principles, privacy data inventory, provider and subprocessor registries, user data rights, breach response, regional handling, age policy, AI transparency, legal document structure |
-| `I4 §Stage 6`, `§Stage 18` | R0–R4 origin, remote trust posture, approval versus steering |
-| `I3 §20` | Identity layering, local IPC authentication, secret storage, least privilege |
+| [Security Architecture](../architecture/08-security-architecture.md) | Implements the security pipeline, identity, grants, secrets, egress and audit |
+| [Content and Extension Isolation](../architecture/24-content-and-extension-isolation.md) | Defines OS-enforced boundaries for hostile content and extensions |
+| [Distribution, Update, Support and Trust & Safety Requirements](10-distribution-update-and-support.md) | Owns incident, support and advisory product obligations |
 | **[D-004](../decisions/phase-1-foundation-decisions.md#rule-d-004)**, **[D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021)** | Two-boundary licensing replacing the single-licence statement |
 | **[D-005](../decisions/phase-1-foundation-decisions.md#rule-d-005)** | Merchant-of-Record responsibility split, replacing the removed provider |
 | **[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)** | Cloud never reaches local IPC; the desktop re-authorises every remote request |

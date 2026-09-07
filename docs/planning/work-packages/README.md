@@ -5,7 +5,7 @@
 > Governing authority: **[D-017](../../decisions/phase-1-foundation-decisions.md#rule-d-017)** (numbered implementation work packages belong here), **[D-019](../../decisions/phase-1-foundation-decisions.md#rule-d-019)** (one serial numbered sequence, no predetermined maximum)
 > Companions: [`../implementation-sequence.md`](../implementation-sequence.md), [`../../assurance/release-gates.md`](../../assurance/release-gates.md), [`../../assurance/open-gates-register.md`](../../assurance/open-gates-register.md)
 
-**One serial dependency order, with 51 active work packages identified in `00`–`52`; `27` and `29` are retired.** Shared foundation, cloud, mobile, web and cross-product capability interleave at their real dependency positions; there is no separate per-product plan (`I2 §VI`).
+**One serial dependency order, with 51 active work packages identified in `00`–`52`; `27` and `29` are retired.** Shared foundation, cloud, mobile, web and cross-product capability interleave at their real dependency positions; there is no separate per-product plan.
 
 The number is an identity, not a schedule. Ordering is by dependency; serial execution is governed by `§4` of [`../implementation-sequence.md`](../implementation-sequence.md).
 

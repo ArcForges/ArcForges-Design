@@ -17,7 +17,7 @@
 
 **Out of scope.** Analysis, measurement, decoding, visualisation and reporting (`34`). Cloud metadata sync and ArcChat integration (`35`). Device control, which is a later, higher-permission capability class.
 
-**Why this package exists.** `I2 §III.9` fixes the order: source and adapter, then acquisition, then session and capture, then the time model, then record and replay. Evidence integrity is established before anything interprets the evidence.
+**Why this package exists.** The [ArcScope implementation map](../../architecture/19-product-implementation-maps.md) and this package fix the order: source and adapter, then acquisition, then session and capture, then the time model, then record and replay. Evidence integrity is established before anything interprets the evidence.
 
 ---
 

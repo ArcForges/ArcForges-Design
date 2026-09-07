@@ -352,12 +352,11 @@ The enforced mechanisms and RID-specific negative tests are in [Content and Exte
 
 ## 18. Traceability
 
-| Source | Consumed as |
+| Current document | Relationship |
 |---|---|
-| `I4 §Stage 26` | Principals, actor chain, permission and authorization separation, risk, approval, secrets, egress, instruction provenance, leases, trust, the decision pipeline and audit |
-| `I4 §Stage 11` | Privacy obligations and AI transparency |
-| `I4 §Stage 10 §113–119` | Operator surface separation, break-glass, webhook ingress, SSRF protection |
-| `I3 §20`, `§18.4` | Identity layering, local authentication, secret storage, web security |
+| [Security, Permission, Privacy and Trust Requirements](../requirements/07-security-privacy-and-trust.md) | Owns the security, privacy, trust, permission and audit obligations |
+| [Identity, Account, Device, Session and Workspace Requirements](../requirements/02-identity-account-and-workspace.md) | Owns identity, sessions, devices and realm isolation |
+| [Content and Extension Isolation](24-content-and-extension-isolation.md) | Defines the process and OS enforcement profiles |
 | **[D-004](../decisions/phase-1-foundation-decisions.md#rule-d-004)**, **[D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021)** | Licence boundary enforcement as a security-adjacent control |
 | **[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)** | Remote authority: cloud never reaches local; the desktop re-authorises |
 | **[D-015](../decisions/phase-1-foundation-decisions.md#rule-d-015)** | Web origin, cookie, CSP, CSRF and CORS boundaries |

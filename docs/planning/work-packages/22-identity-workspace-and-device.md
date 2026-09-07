@@ -13,11 +13,11 @@
 
 ## 1. Scope and purpose
 
-**In scope.** The identity domain and its cloud implementation: realm, user, authentication identity, **single-owner** workspace, device, installation, instance, session, device trust, API tokens, actor kinds, account states, recovery, and deletion. Authentication methods, step-up, and the session contention behaviour that must be real early (`I2 §V`).
+**In scope.** The identity domain and its cloud implementation: realm, user, authentication identity, **single-owner** workspace, device, installation, instance, session, device trust, API tokens, actor kinds, account states, recovery, and deletion. Authentication methods, step-up, and the session contention behaviour that must be real early.
 
 **Out of scope.** The account portal UI (`48`). Entitlement (`42`). **Organisations, membership, invitations, roles, seats and shared editing are excluded outright by [P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006)** — not deferred, and with no dormant schema hook ([WO-01](../../architecture/data-model/01-cloud-data-model.md#rule-wo-01)–[WO-05](../../architecture/data-model/01-cloud-data-model.md#rule-wo-05)). Historical note: the earlier baseline placed team capability beyond the first launch.
 
-**Why this package exists.** Everything cloud-side attaches to identity, and `I2 §V` marks identity, refresh and session contention as things that must be real early. Getting the separation of user from authentication identity wrong is close to unrecoverable once accounts exist.
+**Why this package exists.** Everything cloud-side attaches to identity, and [the mock policy](../implementation-sequence.md#3-what-may-be-mocked-and-what-may-not) marks identity, refresh and session contention as things that must be real early. Getting the separation of user from authentication identity wrong is close to unrecoverable once accounts exist.
 
 ---
 

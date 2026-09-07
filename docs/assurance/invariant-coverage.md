@@ -15,13 +15,15 @@
 
 **A and B are the design-stage obligations and are discharged by this document. C is implementation work and is not a Stage 2 deliverable.**
 
+**Archive boundary:** The original input extraction and its 484-statement accounting below are completed historical evidence. The source is now [deprecated](../deprecated-inputs/README.md); ongoing reviews do not reread, re-extract or remap that corpus. The current normative catalogue and its architecture, verification and implementation mappings remain active obligations. A historical input count does not define the current design-audit denominator or establish current design completeness.
+
 ---
 
 ## 1. The reviewed set
 
 | Field | Value |
 |---|---|
-| Source | The preserved input corpus, `docs/inputs/product-discovery-record.md` |
+| Source | The deprecated [product-discovery-record-deprecated.md](../deprecated-inputs/product-discovery-record-deprecated.md), retained as the original extraction source |
 | Extraction | Every line containing the distinction marker, across all 29 stages |
 | Raw marked lines | **589** |
 | Unique statements after normalisation | **484** |

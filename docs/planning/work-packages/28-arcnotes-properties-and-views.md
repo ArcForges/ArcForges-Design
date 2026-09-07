@@ -19,7 +19,7 @@
 
 **Out of scope.** Slides and canvas (retired). A general relational engine — explicitly a non-goal. Cross-workspace queries.
 
-**Why this package exists.** `I2 §III.7` places database views after typed properties, queries and saved views exist, because a view is a projection over a query and building views first would fabricate a parallel data model.
+**Why this package exists.** The work in section 5 establishes typed schemas and the query model before list/table projections, because a view is a projection over a query and building views first would fabricate a parallel data model. The [ArcNotes property and view requirements](../../requirements/products/arcnotes.md#7-properties-tags-and-views) define the accepted behavior.
 
 ---
 
@@ -27,10 +27,10 @@
 
 | Input | Why it matters |
 |---|---|
-| **[D-006](../../decisions/phase-1-foundation-decisions.md#rule-d-006)** | Phased full inclusion, of which this is the second phase |
-| `I2 §III.7` | The ordering: properties and queries before views |
+| **[D-006](../../decisions/phase-1-foundation-decisions.md#rule-d-006)** as amended by **[P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006)** | Notebook core plus bounded properties and list/table views; canvas, slides and advanced database engines are excluded |
+| [Property storage](../../architecture/data-model/02-desktop-data-model.md#property_definition-property_value), [saved-view storage](../../architecture/data-model/02-desktop-data-model.md#saved_view) and [typed property mutation](../../architecture/contracts/02-local-rpc-operations.md#rule-no-06) | Persist declared scalar properties and query projections; edits use the same revision and permission path as document edits |
 | [`../../requirements/products/arcnotes.md`](../../requirements/products/arcnotes.md) | Property, tag, view and non-goal statements |
-| [WP-18](18-arcnotes-document-core.md#rule-wp-18), [WP-19](19-arcnotes-search-and-portability.md#rule-wp-19), [WP-27](27-arcnotes-edgeless-canvas.md#rule-wp-27) output | Properties, search, saved views and unified content semantics |
+| [WP-18](18-arcnotes-document-core.md#rule-wp-18), [WP-19](19-arcnotes-search-and-portability.md#rule-wp-19) and [WP-25](25-sync-engine-and-blob-lifecycle.md#rule-wp-25) output | Document/property foundations, search and saved list queries, and the real Cloud revision/sync path |
 
 ---
 
@@ -71,7 +71,7 @@
 
 ### WP-28.00 — Typed property schemas
 
-**What must be fully done.** Property definitions with **bounded scalar types only** — text, number, date, select, multi-select, checkbox ([P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006)). **`relation` and `derived` are excluded**: a relation type implies a join engine and a derived type implies a formula evaluator, and both are outside the delivered scope. With validation and defaults. System properties are separate. A property definition has a lifecycle: creation, rename, type change with a stated migration behaviour, and deletion with a stated consequence.
+**What must be fully done.** Property definitions with **bounded scalar types only** — text, number, date/date-time, single-select, multi-select, checkbox and URL, as specified by the [ArcNotes property requirements](../../requirements/products/arcnotes.md#7-properties-tags-and-views). **`relation` and `derived` are excluded**: a relation type implies a join engine and a derived type implies a formula evaluator, and both are outside the delivered scope. With validation and defaults. System properties are separate. A property definition has a lifecycle: creation, rename, type change with a stated migration behaviour, and deletion with a stated consequence.
 
 **Testing requirements.** Type validation per kind; a rename test asserting values are preserved; a type-change test asserting the stated behaviour; a deletion test asserting the stated consequence.
 

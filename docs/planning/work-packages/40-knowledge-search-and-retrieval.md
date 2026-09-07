@@ -17,7 +17,7 @@
 
 **Out of scope.** Model interaction and economics (`43`). Product-specific search surfaces, which each product owns.
 
-**Why this package exists.** `I2 §V` permits cloud search to be mocked but requires local full-text indexing and citation anchors to be real. Retrieval is what turns those into AI-usable evidence, and it is the point where a privacy boundary is either enforced or silently crossed.
+**Why this package exists.** [the mock policy](../implementation-sequence.md#3-what-may-be-mocked-and-what-may-not) permits cloud search to be mocked but requires local full-text indexing and citation anchors to be real. Retrieval is what turns those into AI-usable evidence, and it is the point where a privacy boundary is either enforced or silently crossed.
 
 ---
 

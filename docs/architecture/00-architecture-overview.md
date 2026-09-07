@@ -296,11 +296,10 @@ Answerable before any feature merges:
 
 ## 13. Traceability
 
-| Source | Consumed as |
+| Current document | Relationship |
 |---|---|
-| `I3 §0–§5`, `§29`–`§31` | The communication split, layering, reference direction, shared-foundation boundary, principal risks and the review checklist |
-| `I4 §Stage 13` | Product topology, state ownership, invariants and the technical exception list |
-| `I4 §Stage 21` | The cross-application semantic model elaborated in `02-contracts-and-protocols.md` |
+| [ArcForges Product Scope and Portfolio](../requirements/00-product-scope-and-portfolio.md) | Owns the portfolio, ownership, topology and technical boundaries |
+| [ArcForges Normative Glossary and Invariant Catalogue](../requirements/01-normative-glossary-and-invariants.md) | Owns canonical terms and invariant definitions |
 | **[D-004](../decisions/phase-1-foundation-decisions.md#rule-d-004)**, **[D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021)** | Two-boundary licensing enforced structurally |
 | **[D-007](../decisions/phase-1-foundation-decisions.md#rule-d-007)** | Web rendering boundary |
 | **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** | The runtime and AOT matrix, including Cloud as JIT |

@@ -2,7 +2,7 @@
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning
-> Governing authority: **[D-017](../decisions/phase-1-foundation-decisions.md#rule-d-017)** (planning location and format), **[D-019](../decisions/phase-1-foundation-decisions.md#rule-d-019)** (sequence status), `I2 §III`, `I2 §V`, `I2 §VI`
+> Governing authority: **[D-017](../decisions/phase-1-foundation-decisions.md#rule-d-017)** (planning location and format), **[D-019](../decisions/phase-1-foundation-decisions.md#rule-d-019)** (sequence status)
 > Companions: [`work-packages/README.md`](work-packages/README.md), [`../assurance/release-gates.md`](../assurance/release-gates.md), [`../assurance/open-gates-register.md`](../assurance/open-gates-register.md)
 
 This document states the dependency model that produces the work-package sequence: why the order is what it is, what may be parallelised, what may be mocked, and what may never be.
@@ -15,16 +15,16 @@ This document states the dependency model that produces the work-package sequenc
 
 | # | Principle |
 |---|---|
-| SQ-01 | **Freeze before build.** Naming, terminology, licence position and product scope are frozen first, because editors, data formats, capabilities and sync all rework if they change later (`I2 §III.0`). |
-| SQ-02 | **Prove the risky mechanism before building on it.** AOT publish, local IPC, serialization and persistence recovery are proven on a skeleton before product work depends on them (`I2 §III.1`, `§III.2`). |
-| <a id="rule-sq-03"></a>SQ-03 | **External vendors may be mocked; your own architectural boundaries may not** (`I2 §V`). This single rule determines most of the ordering. |
-| <a id="rule-sq-04"></a>SQ-04 | **The first cross-process slice is real, not simulated** (`I2 §III.3`). Two genuinely AOT-published processes must talk over a real transport before either product grows. |
-| <a id="rule-sq-05"></a>SQ-05 | **ArcNotes proves sync**, because it is more complex than a toy and simpler than raw captures or large media (`I2 §III.6`). |
-| SQ-06 | **The professional products come after the platform they depend on**, and ArcSlate comes last because it carries the highest complexity and performance risk (`I2 §III.10`). |
-| SQ-07 | **Mobile architecture follows the first real Cloud contracts; runtime acceptance follows the actual Harness** (`I2 §III.8`). Deferring mobile design until every desktop product is finished would rework the contracts it depends on. |
-| <a id="rule-sq-08"></a>SQ-08 | **Commercial primitives precede paid Cloud consumers; paid go-live remains gated at final release**, after entitlement, refunds, webhook idempotency and a real payout path are proven (`I2 §III.12`). |
-| SQ-09 | **The static public site can start very early** (`I2 §III.12`) because it depends on nothing but content. |
-| SQ-10 | **Each professional product may connect directly to Cloud.** Nothing in this sequence may create a dependency in which a professional product must relay through ArcChat (**[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)**, `I2 §III.11`). |
+| SQ-01 | **Freeze before build.** Naming, terminology, licence position and product scope are frozen first, because editors, data formats, capabilities and sync all rework if they change later. |
+| SQ-02 | **Prove the risky mechanism before building on it.** AOT publish, local IPC, serialization and persistence recovery are proven on a skeleton before product work depends on them. |
+| <a id="rule-sq-03"></a>SQ-03 | **External vendors may be mocked; your own architectural boundaries may not**. This single rule determines most of the ordering. |
+| <a id="rule-sq-04"></a>SQ-04 | **The first cross-process slice is real, not simulated**. Two genuinely AOT-published processes must talk over a real transport before either product grows. |
+| <a id="rule-sq-05"></a>SQ-05 | **ArcNotes proves sync**, because it is more complex than a toy and simpler than raw captures or large media. |
+| SQ-06 | **The professional products come after the platform they depend on**, and ArcSlate comes last because it carries the highest complexity and performance risk. |
+| SQ-07 | **Mobile architecture follows the first real Cloud contracts; runtime acceptance follows the actual Harness**. Deferring mobile design until every desktop product is finished would rework the contracts it depends on. |
+| <a id="rule-sq-08"></a>SQ-08 | **Commercial primitives precede paid Cloud consumers; paid go-live remains gated at final release**, after entitlement, refunds, webhook idempotency and a real payout path are proven. |
+| SQ-09 | **The static public site can start very early** after the shared Node toolchain is available; it does not need completed commercial or agent services. |
+| SQ-10 | **Each professional product may connect directly to Cloud.** Nothing in this sequence may create a dependency in which a professional product must relay through ArcChat (**[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)**). |
 
 ### 1.1 The [D-019](../decisions/phase-1-foundation-decisions.md#rule-d-019) ordering, followed
 
@@ -81,7 +81,7 @@ The sequence is one continuous numbered series. Phases are a reading aid, not a 
 
 ## 3. What may be mocked, and what may not
 
-Directly from `I2 §V`, which is binding on every work package.
+The policy in this section is the complete, binding definition for every work package. The table defines the permitted fixture boundaries; the rules and named replacement owners below govern their removal.
 
 | May be mocked initially | Must be real early |
 |---|---|
@@ -172,6 +172,8 @@ Every work package states, without exception:
 8. **Completion gate**
 9. **Dependencies on earlier and later work packages**
 
+Required design inputs are current formal definitions, accepted decisions, declared reference-source evidence and completed upstream outputs. An input table must link to the actual definition or evidence it consumes. A historical source label or an instruction to reconstruct a rule from an archived document is not a valid input. Where a rule is defined by this package itself, its behavior and acceptance belong in sections 3, 5, 7 and 8; they are not an external prerequisite.
+
 | # | Rule |
 |---|---|
 | WF-01 | **A work package is not complete until its gate is satisfied with recorded evidence.** |
@@ -186,21 +188,21 @@ Every work package states, without exception:
 
 | # | Position |
 |---|---|
-| ND-01 | **It does not create separate multi-tier plans per product** (`I2 §VI`). One continuous sequence interleaves shared foundation, cloud, mobile, web and cross-product capability at their real dependency positions. |
+| ND-01 | **It does not create separate multi-tier plans per product**. One continuous sequence interleaves shared foundation, cloud, mobile, web and cross-product capability at their real dependency positions. |
 | ND-02 | **It does not schedule.** No dates, no durations, no capacity assumptions. |
 | ND-03 | **It does not reopen Phase 1 decisions.** Where a package touches a decided area, it implements the decision. |
 | ND-04 | **It does not defer risk to the end.** The four high-risk probes are early, precisely so that ArcSlate does not meet decoding, GPU, synchronisation and AOT problems for the first time at work package 36. |
-| <a id="rule-nd-05"></a>ND-05 | **It does not treat probe code as production code.** Probe conclusions feed the formal steps; probe code is cleaned up or discarded (`I2 §III.2`). |
+| <a id="rule-nd-05"></a>ND-05 | **It does not treat probe code as production code.** Probe conclusions feed the formal steps; probe code is cleaned up or discarded. |
 
 ---
 
 ## 8. Traceability
 
-| Source | Consumed as |
+| Current document | Relationship |
 |---|---|
-| `I2 §III.0`–`§III.13` | The high-level dependency order decomposed into the numbered sequence |
-| `I2 §V` | The mock policy, binding on every package |
-| `I2 §VI` | The required per-step fields and the prohibition on separate per-product plans |
+| [ArcForges Product Scope and Portfolio](../requirements/00-product-scope-and-portfolio.md) | Owns the accepted product scope and boundaries |
+| [Testing and Verification Strategy](../assurance/testing-and-verification-strategy.md) | Assigns the verification evidence required by the sequence |
+| [Release Gates](../assurance/release-gates.md) | Defines the release and implementation evidence gates |
 | **[D-017](../decisions/phase-1-foundation-decisions.md#rule-d-017)** | Planning location and format |
 | **[D-019](../decisions/phase-1-foundation-decisions.md#rule-d-019)** | The status of the original stage sequence as discovery, not delivery order |
 | **[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)** | The prohibition on making ArcChat a mandatory relay for professional products |

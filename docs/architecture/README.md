@@ -52,7 +52,7 @@ Documents `00`–`25` state architecture: boundaries, ownership and rules. The [
 - Every architectural rule carries a stable identifier (`AB-nn`) scoped to its document, so requirements, assurance and work packages can cite it precisely.
 - A rule states an obligation that a reviewer or a test can check. Where a rule is machine-checkable, the corresponding architecture or repository-policy test is named in [`01-solution-and-project-layout.md`](01-solution-and-project-layout.md) or in the document's own testing section.
 - Citations to Phase 1 decisions use **D-nnn**, verification findings use **V-nn**, and deferred gates use **F-nnn**.
-- Citations to preserved inputs use `I1`–`I4` with a section reference. Those files are historical evidence and are never modified.
+- Historical input provenance is retained in the completed foundation records and [deprecated archive](../deprecated-inputs/README.md), outside the active design dependency chain. Current design rules and their concrete definitions must be stated in the formal layers; the archive cannot supply a missing normative answer.
 - Superseded product names (`ArcCanvas`, `ArcMusic`, `ArcImage`, `ArcVideo`) and the superseded payment provider never appear as current, per **[D-002](../decisions/phase-1-foundation-decisions.md#rule-d-002)** and **[D-005](../decisions/phase-1-foundation-decisions.md#rule-d-005)**.
 
 The [content and extension isolation design](24-content-and-extension-isolation.md) specifies [P2-007](../decisions/phase-2-specification-decisions.md#rule-p2-007)’s C# helper, OS profiles, broker limits and packaged-RID evidence.

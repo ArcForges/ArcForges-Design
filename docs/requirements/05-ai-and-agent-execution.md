@@ -418,7 +418,7 @@ The active-service rule for official versus self-hosted realms is specified in [
 
 | # | Requirement |
 |---|---|
-| CD-01 | The **grant ratio** (how many credits a purchase amount yields) is versioned commercial policy under **[D-020](../decisions/phase-1-foundation-decisions.md#rule-d-020)**. The corpus-proposed shape is a simple linear ratio with **no bonus tiers in V1**, because that keeps refunds, lot valuation and reconciliation simple and avoids distinguishing bonus credits. |
+| CD-01 | The **grant ratio** (how many credits a purchase amount yields) is versioned commercial policy under **[D-020](../decisions/phase-1-foundation-decisions.md#rule-d-020)**. V1 uses a simple linear purchase conversion with **no bonus tiers**, because that keeps refunds, lot valuation and reconciliation simple and avoids distinguishing bonus credits. The numeric ratio remains versioned configuration. |
 | CD-02 | **A credit is not cash.** The legal and product definition is: non-transferable prepaid service usage units with no cash value, not withdrawable, not tradable, not currency, usable only for Arc Managed AI. |
 | <a id="rule-cd-03"></a>CD-03 | Internal accounting uses integer micro-credits (1 credit = 1,000,000 micro-credits). UI summaries may be compact, but detailed usage exposes the settled fractional amount and source allocations. Display rounding never changes billing or shows a positive charge as exact zero. |
 | CD-04 | **Credits must not obscure cost.** Tariffs are published, tasks are estimated, usage history is itemised, capacity recovery and compensation expiry are visible, with purchased credits retained across service lapse. Credits exist to unify billing units across providers, never to hide price. |
@@ -606,13 +606,11 @@ No local/provider-key mode or external-agent delegation · native render/capture
 
 ## 15. Traceability
 
-| Source | Consumed as |
+| Current document | Relationship |
 |---|---|
-| `I4 §Stage 19` | The entire execution model: intent/task/run/plan/step/attempt, states, ownership, checkpoints, compensation, approval, steering, budget, progress, trace, automation, concurrency |
-| `I4 §Stage 8` | AI economics: credit definition, tariff versioning, cost dimensions, routing, ledgers, reconciliation, transparency, fraud controls |
-| `I4 §Stage 6`, `§Stage 17`, `§Stage 18` | Agent product surfaces, remote task shape, approval versus steering |
-| `I4 §Stage 7 §40–53` | Execution locations, waiting-for-device, cloud runtime limits, automation in the cloud |
-| `I3 §8`, `§13` | Capability system, agent placement, `TaskHandle`, long-task model |
+| [Agent Harness](../architecture/17-agent-harness.md) | Implements the single Cloud model/tool loop and its failure handling |
+| [AI and Agent Runtime Architecture](../architecture/09-ai-and-agent-runtime-architecture.md) | Defines execution state, placement, provider routing and automation |
+| [Commerce, Entitlement and AI Credits Requirements](04-commerce-entitlement-and-credits.md) | Owns the commercial admission and metering obligations |
 | **[D-020](../decisions/phase-1-foundation-decisions.md#rule-d-020)** | Every economic figure is versioned commercial policy; reserve-then-settle; hard stop; three separate ledgers; per-run tariff snapshot |
 | **[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)** | Local action is a durable `ToolRequest` pulled and re-authorised by ArcChat Desktop |
 | **[V-02](../assurance/phase-1-official-verification.md#rule-v-02)** | MCP task/skill vocabulary is disambiguated in the glossary and never conflated with this model |

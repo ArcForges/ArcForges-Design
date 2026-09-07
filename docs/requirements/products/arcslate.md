@@ -4,7 +4,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Requirements / Products
 > Product identity: `arcslate` · Positioning: **Local-first Professional Non-linear Video Editing Workspace**
-> Governing authority: **[D-002](../../decisions/phase-1-foundation-decisions.md#rule-d-002)** (ArcSlate inherits product direction from ArcVideo, not its model), Stage 13 §6 (**ArcSlate is not a technical exception**)
+> Governing authority: **[D-002](../../decisions/phase-1-foundation-decisions.md#rule-d-002)** (ArcSlate inherits product direction from ArcVideo, not its model), [the technology constitution](../00-product-scope-and-portfolio.md#8-technology-constitution) (**ArcSlate is not a technical exception**)
 > Companions: [`../12-quality-and-compatibility-contract.md`](../12-quality-and-compatibility-contract.md), [`../13-data-formats-and-portability.md`](../13-data-formats-and-portability.md), [`../../architecture/12-native-interop-and-media.md`](../../architecture/12-native-interop-and-media.md)
 
 > **A local-first professional NLE, completely rebuilt in C# and Avalonia.**
@@ -18,7 +18,7 @@
 |---|---|
 | <a id="rule-rf-01"></a>RF-01 | **ArcVideo and ArcVideoFoundation are ArcSlate's product and behaviour references** (**[D-012](../../decisions/phase-1-foundation-decisions.md#rule-d-012)** as amended 2026-09-05, [P2-005](../../decisions/phase-2-specification-decisions.md#rule-p2-005)), not architecture authorities. They inform product concepts, editing workflows, timeline behaviour, media workflows, the feature set, project behaviour, interaction patterns and existing implementation experience. |
 | RF-02 | **Class-to-class translation is prohibited.** A reference class list is **not** a migration checklist. What transfers is **product intent, never implementation shape**. |
-| RF-03 | **ArcSlate is not a technical exception** (Stage 13 §6). Its architecture is C#, .NET, Avalonia and Native AOT, with `[LibraryImport]`/P/Invoke to native media libraries where necessary. It is **not** a Qt application, **not** a C++ product with a C# shell, and **not** a C++ worker. |
+| RF-03 | **ArcSlate is not a technical exception**. Its architecture is C#, .NET, Avalonia and Native AOT, with `[LibraryImport]`/P/Invoke to native media libraries where necessary. It is **not** a Qt application, **not** a C++ product with a C# shell, and **not** a C++ worker. |
 | <a id="rule-rf-04"></a>RF-04 | **ArcVideo and ArcVideoFoundation are ArcSlate's references** (**[D-012](../../decisions/phase-1-foundation-decisions.md#rule-d-012)** as amended, [P2-005](../../decisions/phase-2-specification-decisions.md#rule-p2-005)). Both are **GPL-3.0-only**, so both are **behavioural reference only**: **[D-013](../../decisions/phase-1-foundation-decisions.md#rule-d-013)** prohibits copying, translating or porting from either. Reuse would in any case be licence-gated and provenance-gated with file-level SPDX evidence — the **[F-013](../../assurance/open-gates-register.md#rule-f-013)** gate, closed on the recorded determinations. |
 | <a id="rule-rf-05"></a>RF-05 | **The ArcSlate Reference Coverage Matrix is complete** — [`../../assurance/reference-coverage/arcslate-arcvideo.md`](../../assurance/reference-coverage/arcslate-arcvideo.md), 31 item-level rows bound to ArcVideo `caf5651` and ArcVideoFoundation `139eeca`. It is a versioned planning input; [WP-36.07](../../planning/work-packages/36-arcslate-project-and-timeline.md#rule-wp-36.07) checks it for drift. **No separate migration matrix from an upstream project is required**, because no upstream checkout is obtained and no material is reused ([RF-04](#rule-rf-04)). |
 | <a id="rule-rf-06"></a>RF-06 | **Upstream provenance is preserved.** ArcVideo is a documented fork; its GPL-3.0 obligations, upstream copyright and attribution to the original authors stand, and are recorded wherever inherited material requires them (**[D-013](../../decisions/phase-1-foundation-decisions.md#rule-d-013)**). Removing an upstream project from the reference map never removes its provenance. |
@@ -288,7 +288,7 @@ ArcSlate Project
 |---|---|
 | XP-01 | **ArcNotes integration** is by reference: an ArcSlate project or rendered output may be referenced from an ArcNotes document, and an ArcNotes document may be referenced from an ArcSlate project, by `ResourceRef`. **Databases are never shared directly** ([P-10](../00-product-scope-and-portfolio.md#rule-p-10)). |
 | XP-02 | **An edit decision list or report may be produced** as an artifact and, on request, materialised as an ArcNotes document — a copy/import creating a new ArcNotes-owned object (`§4.2` of the product scope). |
-| XP-03 | **Large media never crosses the Hub** (Stage 13 §26). Only identity, metadata and controlled access cross boundaries. |
+| XP-03 | **Large media never crosses the Hub**. Only identity, metadata and controlled access cross boundaries. |
 
 ---
 
@@ -467,13 +467,11 @@ ProjectCheckpoint · MediaRelink · ImportOrigin · ArcSlateArtifactReference
 
 ## 24. Traceability
 
-| Source | Consumed as |
+| Current document | Relationship |
 |---|---|
-| `I4 §Stage 20` | The complete ArcSlate specification: reference posture, product definition and principles, domain structure, time model, media, timeline, viewer, processing graph, subtitles, audio, colour, proxy and cache, runtime, render, undo and recovery, AI integration, cloud boundary, project format, workspace, the twelve-phase rewrite plan, V1 scope, non-goals and domain model |
-| `I2 §II` | The reference reuse posture. **The migration-matrix obligation it describes is discharged by the completed Reference Coverage Matrix** ([RF-05](#rule-rf-05)); no separate upstream migration matrix is required ([P2-005](../../decisions/phase-2-specification-decisions.md#rule-p2-005)) |
-| `I4 §Stage 13 §6`, `§24–26` | ArcSlate is not a technical exception; its owned state; large media never crossing the Hub |
-| `I4 §Stage 22 §34–39`, `§197` | ArcSlate storage strategy, working store versus portable package, local structure |
-| `I3 §14`, `§15` | Large-data path, media frames and GPU staying in-process, native ABI discipline |
+| [Native Interoperability and Media Architecture](../../architecture/12-native-interop-and-media.md) | Defines managed ownership, media processing and native safety |
+| [Cloud Simulator, Time Model and OTIO Interchange](../../architecture/23-simulator-and-interchange.md) | Defines the canonical OTIO interchange contract |
+| [Reference Coverage Matrix — ArcSlate / ArcVideo + ArcVideoFoundation](../../assurance/reference-coverage/arcslate-arcvideo.md) | Discharges the reference-matrix obligation; no separate upstream migration matrix is required |
 | **[D-002](../../decisions/phase-1-foundation-decisions.md#rule-d-002)** | ArcSlate inherits product direction from ArcVideo, not its model |
 | **[D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008)** | Native AOT desktop deliverable with trim/AOT-safe dependencies |
 | **[D-012](../../decisions/phase-1-foundation-decisions.md#rule-d-012)** (as amended 2026-09-05), **[D-013](../../decisions/phase-1-foundation-decisions.md#rule-d-013)**, **[P2-005](../../decisions/phase-2-specification-decisions.md#rule-p2-005)** | ArcVideo and ArcVideoFoundation as ArcSlate's licence-gated references; upstream provenance retained |

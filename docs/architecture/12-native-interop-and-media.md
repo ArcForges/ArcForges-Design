@@ -2,7 +2,7 @@
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Architecture
-> Governing authority: **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** (Native AOT desktop), **[D-016](../decisions/phase-1-foundation-decisions.md#rule-d-016)** (deferred-decision ownership), the technology constitution and closed exception list (`§8` of [`../requirements/00-product-scope-and-portfolio.md`](../requirements/00-product-scope-and-portfolio.md)), `I3 §14.4`, `I3 §15`
+> Governing authority: **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** (Native AOT desktop), **[D-016](../decisions/phase-1-foundation-decisions.md#rule-d-016)** (deferred-decision ownership), the technology constitution and closed exception list (`§8` of [`../requirements/00-product-scope-and-portfolio.md`](../requirements/00-product-scope-and-portfolio.md))
 > Companions: [`04-desktop-application-architecture.md`](04-desktop-application-architecture.md), [`06-data-persistence-and-formats.md`](06-data-persistence-and-formats.md), [`../requirements/products/arcslate.md`](../requirements/products/arcslate.md), [`../requirements/products/arcscope.md`](../requirements/products/arcscope.md)
 
 Native code exists in ArcForges for one reason: some low-level capability has no reasonable managed substitute. It never exists because native code is faster in general, because the team is more familiar with it, or because an implementation already exists elsewhere. This document defines the boundary that keeps that concession small, auditable and reversible, and the media and acquisition pipelines that sit on top of it.
@@ -14,14 +14,14 @@ Native code exists in ArcForges for one reason: some low-level capability has no
 | # | Rule |
 |---|---|
 | NI-01 | No C++ business worker is permitted. Native libraries execute in the product or its explicitly approved C# Native AOT content helper according to [isolation architecture](24-content-and-extension-isolation.md). The helper holds no product logic or persistent authority. |
-| NI-02 | **Only low-level libraries with no reasonable substitute are native** (`I3 §15.1`): codecs, GPU access, device SDKs, system APIs and high-performance primitives. |
-| <a id="rule-ni-03"></a>NI-03 | **A native library must never own ArcForges domain** (`I4 §Stage 13 §70`). A native decoder is permitted; a native project manager, task scheduler, state owner or business-rule engine is not — *even where native performance would be higher*. |
-| NI-04 | **Product area, business rules, Task, state ownership, scheduling, persistence, policy and UI are C#** (`I4 §Stage 13 §70`). |
-| NI-05 | **Where a dependency offers only a C++ API, a very thin `extern "C"` ABI shim is provided under `native/`** (`I3 §15.1`). That shim is a *library adaptation*, holds no product business state, and is not a route back to a worker. |
-| <a id="rule-ni-06"></a>NI-06 | **A native resource belongs to exactly one product process** (`I4 §Stage 13 §66`). An ArcSlate GPU texture and an ArcScope device handle must never enter an ArcChat domain object, a Cloud DTO, or a `ResourceRef` as a raw pointer. |
-| NI-07 | **Only stable resource identity, metadata and controlled access cross a process boundary** (`I4 §Stage 13 §66`). |
+| NI-02 | **Only low-level libraries with no reasonable substitute are native**: codecs, GPU access, device SDKs, system APIs and high-performance primitives. |
+| <a id="rule-ni-03"></a>NI-03 | **A native library must never own ArcForges domain**. A native decoder is permitted; a native project manager, task scheduler, state owner or business-rule engine is not — *even where native performance would be higher*. |
+| NI-04 | **Product area, business rules, Task, state ownership, scheduling, persistence, policy and UI are C#**. |
+| NI-05 | **Where a dependency offers only a C++ API, a very thin `extern "C"` ABI shim is provided under `native/`**. That shim is a *library adaptation*, holds no product business state, and is not a route back to a worker. |
+| <a id="rule-ni-06"></a>NI-06 | **A native resource belongs to exactly one product process**. An ArcSlate GPU texture and an ArcScope device handle must never enter an ArcChat domain object, a Cloud DTO, or a `ResourceRef` as a raw pointer. |
+| NI-07 | **Only stable resource identity, metadata and controlled access cross a process boundary**. |
 | NI-08 | **The native surface is deliberately small.** Growth in the native ABI is a reviewed architectural change, not an implementation detail. |
-| NI-09 | **Untrusted third-party native plug-ins never load into a stable main process** (`I3 §15.6`). |
+| NI-09 | **Untrusted third-party native plug-ins never load into a stable main process**. |
 | <a id="rule-ni-10"></a>NI-10 | [P2-007](../decisions/phase-2-specification-decisions.md#rule-p2-007) exercises [D-016](../decisions/phase-1-foundation-decisions.md#rule-d-016) for the C# content-isolation helper and OS-enforced extension profiles. Other isolated hosts still require their own decision. The approved helper does not become a model loop, service, scheduler or C++ domain host. |
 
 ### 1.1 What this costs, stated plainly
@@ -45,7 +45,7 @@ A native memory error kills the process that loaded the library. Hostile parsing
 |---|---|
 | <a id="rule-np-01"></a>NP-01 | **A native dependency is introduced per product, with a named owner and a stated substitute analysis** — which managed option was evaluated, and why it was insufficient. |
 | <a id="rule-np-02"></a>NP-02 | **A native library used by two products is still loaded per process**, with no shared global state between them. |
-| NP-03 | **No global shared memory pool exists across products** (`I3 §14.4`). |
+| NP-03 | **No global shared memory pool exists across products**. |
 
 ### 2.1 ArcNotes document rendering — the one amendment, and why
 
@@ -68,13 +68,13 @@ A native memory error kills the process that loaded the library. Hostile parsing
 
 | # | Rule |
 |---|---|
-| PI-01 | **`[LibraryImport]` source-generated P/Invoke is the default** (`I3 §15.2`), required for Native AOT correctness and for compile-time marshalling diagnostics. |
+| PI-01 | **`[LibraryImport]` source-generated P/Invoke is the default**, required for Native AOT correctness and for compile-time marshalling diagnostics. |
 | PI-02 | **`[DllImport]` is used only where generated marshalling cannot cover the case**, and only with the specific usage verified and recorded. |
 | <a id="rule-pi-03"></a>PI-03 | **All P/Invoke declarations for one native library live in one `internal static partial class`** in the infrastructure project that owns it. They are never scattered across feature code. |
 | <a id="rule-pi-04"></a>PI-04 | **No feature code calls a P/Invoke declaration directly.** A managed wrapper type owns every call, so validation, handle lifetime and error translation exist in exactly one place. |
-| PI-05 | **Strings marshal as UTF-8** with `StringMarshalling.Utf8`, and allocation and free responsibility is stated at every function that returns a string (`I3 §15.3`). |
+| PI-05 | **Strings marshal as UTF-8** with `StringMarshalling.Utf8`, and allocation and free responsibility is stated at every function that returns a string. |
 | PI-06 | **Blittable structs only across the boundary.** No managed object graph, no reference type, no `bool` of unspecified width, no `char`. |
-| PI-07 | **Callbacks use function pointers with an explicitly stated lifetime**; delegate and function-pointer lifetimes are pinned for as long as native code can call them (`I3 §15.5`). |
+| PI-07 | **Callbacks use function pointers with an explicitly stated lifetime**; delegate and function-pointer lifetimes are pinned for as long as native code can call them. |
 
 ### 3.2 The C ABI contract
 
@@ -82,26 +82,26 @@ Every first-party native library, and every `extern "C"` shim over a third-party
 
 | # | Rule |
 |---|---|
-| <a id="rule-ab-01"></a>AB-01 | **The C calling convention is explicit and stable across compilers** (`I3 §15.3`). |
+| <a id="rule-ab-01"></a>AB-01 | **The C calling convention is explicit and stable across compilers**. |
 | <a id="rule-ab-02"></a>AB-02 | **Every exported function carries a fixed prefix and an ABI version** — for example `af_media_*`. |
 | AB-03 | **Every struct carries a size and version field, and fields are only appended at the end.** Reordering, resizing or repurposing an existing field is a breaking ABI change. |
 | AB-04 | **Fixed-width integer types only.** |
-| AB-05 | **C++ `bool`, STL types, exceptions, RTTI and vtables never cross the boundary** (`I3 §15.3`). |
+| AB-05 | **C++ `bool`, STL types, exceptions, RTTI and vtables never cross the boundary**. |
 | AB-06 | **Handles are opaque pointers**; the managed side always represents them as a `SafeHandle`. |
-| AB-07 | **Resource ownership is stated explicitly in every function's contract and asserted by a test** (`I3 §15.3`): who allocates, who frees, and when. |
-| <a id="rule-ab-08"></a>AB-08 | **A native exception never crosses the C ABI.** A status or error object is returned instead (`I3 §15.3`). |
-| AB-09 | **Callbacks have a defined registration, deregistration, threading, reentrancy and shutdown protocol** (`I3 §15.3`). A callback that can fire after deregistration is a defect. |
-| AB-10 | **Functions are as coarse-grained as practical.** A P/Invoke per pixel or per audio sample is prohibited (`I3 §15.3`); work is submitted in buffers, plans or batches. |
-| AB-11 | **Every length is checked for overflow and against its upper bound in managed code before the call** (`I3 §15.3`). |
+| AB-07 | **Resource ownership is stated explicitly in every function's contract and asserted by a test**: who allocates, who frees, and when. |
+| <a id="rule-ab-08"></a>AB-08 | **A native exception never crosses the C ABI.** A status or error object is returned instead. |
+| AB-09 | **Callbacks have a defined registration, deregistration, threading, reentrancy and shutdown protocol**. A callback that can fire after deregistration is a defect. |
+| AB-10 | **Functions are as coarse-grained as practical.** A P/Invoke per pixel or per audio sample is prohibited; work is submitted in buffers, plans or batches. |
+| AB-11 | **Every length is checked for overflow and against its upper bound in managed code before the call**. |
 | <a id="rule-ab-12"></a>AB-12 | **The ABI version is negotiated at load, not assumed.** A mismatch is a startup failure with an actionable message, never a crash later. |
 
 ### 3.3 Loading
 
 | # | Rule |
 |---|---|
-| <a id="rule-ld-01"></a>LD-01 | **`NativeLibrary.SetDllImportResolver` maps logical library names to RID-specific assets published and signed with the application** (`I3 §15.4`). |
-| <a id="rule-ld-02"></a>LD-02 | **Prohibited**: loading from the current working directory; loading an unsigned library from a user-writable search path; modifying the global search path to resolve dependencies; allowing a same-named system library to be picked up by accident (`I3 §15.4`). |
-| <a id="rule-ld-03"></a>LD-03 | **Startup verification confirms** ABI version, build identifier and hash, required entry points, CPU and GPU feature availability, and minimum driver or system capability (`I3 §15.4`). |
+| <a id="rule-ld-01"></a>LD-01 | **`NativeLibrary.SetDllImportResolver` maps logical library names to RID-specific assets published and signed with the application**. |
+| <a id="rule-ld-02"></a>LD-02 | **Prohibited**: loading from the current working directory; loading an unsigned library from a user-writable search path; modifying the global search path to resolve dependencies; allowing a same-named system library to be picked up by accident. |
+| <a id="rule-ld-03"></a>LD-03 | **Startup verification confirms** ABI version, build identifier and hash, required entry points, CPU and GPU feature availability, and minimum driver or system capability. |
 | <a id="rule-ld-04"></a>LD-04 | **A failed verification degrades a feature explicitly**, with a named reason surfaced to the user and recorded in diagnostics. It never silently disables a capability, and never proceeds with a partially verified library. |
 | <a id="rule-ld-05"></a>LD-05 | **Native assets are part of the signed package**, covered by the same signing and provenance requirements as managed assemblies. |
 | LD-06 | **Native asset versions, hashes and source provenance are recorded in the release record** ([`14-build-packaging-and-release.md`](14-build-packaging-and-release.md)). |
@@ -111,11 +111,11 @@ Every first-party native library, and every `extern "C"` shim over a third-party
 
 | # | Rule |
 |---|---|
-| HL-01 | **Every native handle kind has a dedicated `SafeHandle` subclass** (`I3 §15.5`). A raw pointer is never held in a field. |
-| HL-02 | **A reference-counted guard wraps every call that passes a handle**, so a handle cannot be freed while native code is using it (`I3 §15.5`). |
-| HL-03 | **Asynchronous wrappers implement `IAsyncDisposable`** (`I3 §15.5`). |
-| HL-04 | **Finalizers are a last-resort safety net**, never the normal release path (`I3 §15.5`). |
-| HL-05 | **The native runtime shuts down only after UI and RPC have stopped accepting new work** (`I3 §15.5`), so no call is in flight while teardown runs. |
+| HL-01 | **Every native handle kind has a dedicated `SafeHandle` subclass**. A raw pointer is never held in a field. |
+| HL-02 | **A reference-counted guard wraps every call that passes a handle**, so a handle cannot be freed while native code is using it. |
+| HL-03 | **Asynchronous wrappers implement `IAsyncDisposable`**. |
+| HL-04 | **Finalizers are a last-resort safety net**, never the normal release path. |
+| HL-05 | **The native runtime shuts down only after UI and RPC have stopped accepting new work**, so no call is in flight while teardown runs. |
 | HL-06 | **Handle leaks are detectable.** Debug and test builds assert that every created handle is disposed at scope exit, and handle counts are asserted in soak tests. |
 
 ---
@@ -124,13 +124,13 @@ Every first-party native library, and every `extern "C"` shim over a third-party
 
 | # | Rule |
 |---|---|
-| BF-01 | **CPU buffers use `Span<T>`, `Memory<T>`, a memory pool and controlled pinned memory** (`I3 §14.4`). |
+| BF-01 | **CPU buffers use `Span<T>`, `Memory<T>`, a memory pool and controlled pinned memory**. |
 | BF-02 | **Pinning is scoped and short.** A long-lived pinned region is a documented exception with a stated reason. |
 | BF-03 | **Pooled buffers are returned on every path including failure**, and pool exhaustion is a measured, surfaced condition rather than an unbounded allocation. |
-| BF-04 | **A per-frame image is never serialised over StreamJsonRpc, the HTTP client or the realtime channel** (`I3 §14.4`). |
-| <a id="rule-bf-05"></a>BF-05 | **The Hub never relays video frames or large file bodies** (`I3 §14.2`). |
-| <a id="rule-bf-06"></a>BF-06 | **GPU resources are shared inside the process through a platform-specific rendering bridge; the UI receives only presentable surface or bitmap abstractions** (`I3 §14.4`). |
-| BF-07 | **Cross-process large data uses `ResourceRef` plus a controlled stream, file-handle strategy or temporary resource channel** (`I3 §14.2`), never an inline payload. |
+| BF-04 | **A per-frame image is never serialised over StreamJsonRpc, the HTTP client or the realtime channel**. |
+| <a id="rule-bf-05"></a>BF-05 | **The Hub never relays video frames or large file bodies**. |
+| <a id="rule-bf-06"></a>BF-06 | **GPU resources are shared inside the process through a platform-specific rendering bridge; the UI receives only presentable surface or bitmap abstractions**. |
+| BF-07 | **Cross-process large data uses `ResourceRef` plus a controlled stream, file-handle strategy or temporary resource channel**, never an inline payload. |
 | <a id="rule-bf-08"></a>BF-08 | **`ResourceRef` never carries a raw pointer, GPU handle or device handle** ([NI-06](#rule-ni-06)). It carries identity and metadata only ([RR-01](02-contracts-and-protocols.md#rule-rr-01)–[RR-14](02-contracts-and-protocols.md#rule-rr-14) in the contract architecture). |
 | BF-09 | **Backpressure is explicit.** A producer that outruns its consumer blocks, drops with a recorded reason, or fails; it never grows without bound. |
 
@@ -204,11 +204,11 @@ Preview → presentable surface → UI     |     Render → Encode → Mux → o
 
 | # | Rule |
 |---|---|
-| GP-01 | **GPU state stays inside the owning process** (`I3 §14.4`). |
+| GP-01 | **GPU state stays inside the owning process**. |
 | GP-02 | **The device, its context and its resources have a single owning component**, with an explicit creation, loss and recreation protocol. |
 | GP-03 | **Device loss is recoverable**: resources are recreated, in-flight work fails with a typed reason, and the session continues. |
 | <a id="rule-gp-04"></a>GP-04 | **GPU acceleration is optional at every stage.** A software path exists for every operation required for correctness, so a driver problem degrades performance rather than removing a feature. |
-| GP-05 | **The UI receives presentable surfaces or bitmaps only** (`I3 §14.4`), never a GPU handle. |
+| GP-05 | **The UI receives presentable surfaces or bitmaps only**, never a GPU handle. |
 
 ---
 
@@ -271,13 +271,11 @@ The native layer is **not**: a worker process; a place for business logic that i
 
 ## 11. Traceability
 
-| Source | Consumed as |
+| Current document | Relationship |
 |---|---|
-| `I3 §14.1`–`§14.3` | `ResourceRef` discipline and the controlled large-data path |
-| `I3 §14.4` | Frames, GPU state, pooled CPU buffers, and the prohibition on serialising frames |
-| `I3 §15.1`–`§15.6` | P/Invoke discipline, the C ABI contract, loading rules, handle lifetime, and the safety obligations that make a worker-free design acceptable |
-| `I4 §Stage 13 §66`, `§69`, `§70` | Native resources belong to their product; the permitted native library scope; native code never owns domain |
-| `I4 §Stage 16`, `§Stage 20` | The acquisition and media pipelines this boundary serves |
+| [ArcSlate — Product Requirements](../requirements/products/arcslate.md) | Owns media, render, timebase, proxy and recovery semantics |
+| [ArcScope — Product Requirements](../requirements/products/arcscope.md) | Owns acquisition, evidence, device-control and replay semantics |
+| [Local RPC Operations](contracts/02-local-rpc-operations.md) | Defines ResourceRef-based controlled access across the local boundary |
 | `§8`, `§8.1` of the scope requirements | The prohibition on C++ workers and the closed technical exception list |
 | **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** | Native AOT constraints on marshalling and binding |
 | **[D-016](../decisions/phase-1-foundation-decisions.md#rule-d-016)** | Ownership of the deferred decision required before any isolated host is introduced |

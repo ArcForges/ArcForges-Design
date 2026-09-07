@@ -115,7 +115,7 @@ These are new obligations that follow from Phase 2 architecture rather than from
 
 | # | Rule |
 |---|---|
-| NV-01 | **A figure quoted from the input corpus is recorded as a corpus proposal, never as a commitment** (**[D-020](../decisions/phase-1-foundation-decisions.md#rule-d-020)**). |
+| NV-01 | **An illustrative commercial figure in the current design is a proposal until the required policy approval; it is never an implicit commitment** (**[D-020](../decisions/phase-1-foundation-decisions.md#rule-d-020)**). |
 | <a id="rule-nv-02"></a>NV-02 | **Consuming an unverified external fact triggers its verification at that moment** (**[D-003](../decisions/phase-1-foundation-decisions.md#rule-d-003)**), and the verification result is recorded in the assurance layer. |
 
 ---

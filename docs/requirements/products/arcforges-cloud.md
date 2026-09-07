@@ -17,7 +17,7 @@ Product capability requirements are specified in [`../03-cloud-services-and-sync
 | # | Requirement |
 |---|---|
 | PP-01 | **ArcForges Cloud is an ASP.NET Core JIT modular monolith** (**[D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008)**). Strict Native AOT is **not** a Cloud requirement, and every claim that it must publish as Native AOT is removed. Azure SDKs, the durable agent loop, provider adapters, realtime integration, billing, policy and operational infrastructure all run inside the JIT boundary. |
-| PP-02 | **It is one logical platform** (Stage 13 §43), internally partitioned by module — never split into per-product backends. |
+| PP-02 | **It is one logical platform**, internally partitioned by module — never split into per-product backends. |
 | <a id="rule-pp-03"></a>PP-03 | One deployable ASP.NET Core JIT Cloud host contains API handlers, the single AI harness and bounded internal background services. Independent Worker/TaskRunner deployments and microservices are not current requirements. |
 | PP-04 | **Kubernetes is not used in the first stage.** A managed container application platform is sufficient and materially cheaper to operate at this scale. |
 | PP-05 | **Cloud never connects to localhost, a named pipe, a Unix socket or local stdio** (**[D-010](../../decisions/phase-1-foundation-decisions.md#rule-d-010)**). Local action is a durable `ToolRequest` that ArcChat Desktop pulls, re-authorises locally, executes, and answers with an idempotent `ToolResult`. |
@@ -70,7 +70,7 @@ The current baseline selections. **Every provider fact — availability, region 
 | # | Requirement |
 |---|---|
 | RG-01 | **A single primary region is chosen, and the choice is a deployment configuration, never a hard-coded business assumption.** |
-| RG-02 | **A Region Preflight is mandatory at provisioning time** (`I3 §32` discipline, `I4 §Stage 10.10`): the required capabilities — zone-redundant high availability, service tiers, private networking, backup features — must be confirmed **available in the chosen region at the time of provisioning**, because regional capability tables change. |
+| RG-02 | **A Region Preflight is mandatory at provisioning time**: the required capabilities — zone-redundant high availability, service tiers, private networking, backup features — must be confirmed **available in the chosen region at the time of provisioning**, because regional capability tables change. |
 | RG-03 | **The production environment is zone-redundant from creation.** Retrofitting zone redundancy is frequently impossible without a rebuild. |
 | RG-04 | **Region is a Terraform-level parameter from day one**, so a rebuild in another region is a configuration change rather than a redesign. |
 | RG-05 | **Workspace `DataRegion` exists from day one** ([WS-09](../02-identity-account-and-workspace.md#rule-ws-09)), and **no public residency claim is made** unless infrastructure legally guaranteeing it is in use ([RG-02](../07-security-privacy-and-trust.md#rule-rg-02) in the security requirements). |
@@ -99,11 +99,11 @@ The current baseline selections. **Every provider fact — availability, region 
 | # | Requirement |
 |---|---|
 | DP-01 | **One primary relational database, with module-owned schemas or explicit table ownership** — not one database per module. |
-| DP-02 | **A module never writes another module's tables** (`I3 §16.1`). Cross-module interaction is through module APIs and events. |
+| DP-02 | **A module never writes another module's tables**. Cross-module interaction is through module APIs and events. |
 | DP-03 | **Zone-redundant high availability** on the production database. |
 | DP-04 | **Point-in-time recovery with a retention window, plus geo-redundant backup**, is configured **at creation** — several backup options cannot be changed afterwards. |
 | DP-05 | **Platform backup is not the whole backup story.** An independent, encrypted logical backup to a second provider is also required (`§14` of the cloud requirements). |
-| DP-06 | **The transactional outbox commits with the business transaction** (`I3 §16.7`), and an inbox/idempotency table guards duplicate delivery. |
+| DP-06 | **The transactional outbox commits with the business transaction**, and an inbox/idempotency table guards duplicate delivery. |
 | DP-07 | **A message broker is never the business source of truth** ([I-066](../01-normative-glossary-and-invariants.md#rule-i-066)). Losing a message must never lose a business fact. |
 | DP-08 | **Every queue consumer is idempotent.** Re-delivery must be indistinguishable from single delivery in effect. |
 | DP-09 | **Ordered sessions are used only where order genuinely matters.** Global ordering is not imposed by default. |
@@ -157,7 +157,7 @@ Four layers:
 
 | # | Requirement |
 |---|---|
-| <a id="rule-mg-01"></a>MG-01 | **Automatic migration on application startup is prohibited for all replicas** (`I3 §16.7`). Every replica racing to migrate is a defect. |
+| <a id="rule-mg-01"></a>MG-01 | **Automatic migration on application startup is prohibited for all replicas**. Every replica racing to migrate is a defect. |
 | MG-02 | **Migration is an independent, gated deployment step.** |
 | MG-03 | **Schema change uses expand/contract**, so old and new application versions coexist during a rolling deployment. |
 | <a id="rule-mg-04"></a>MG-04 | **"Migration down" is not the rollback strategy.** Rollback is an application rollback or a forward fix; a destructive down-migration is not run against production data ([MG-09](../13-data-formats-and-portability.md#rule-mg-09) in the data requirements). |
@@ -195,10 +195,10 @@ Four layers:
 | <a id="rule-ob-02"></a>OB-02 | **The application retains its own standard instrumentation**; a platform-managed agent supplements it rather than replacing it. |
 | <a id="rule-ob-03"></a>OB-03 | **Platform-native signals are retained alongside** the external platform, so a failure of one does not blind the other. |
 | <a id="rule-ob-04"></a>OB-04 | Every request carries correlation across edge, Cloud host, internal job/agent operation, database, realtime and outbound calls. |
-| <a id="rule-ob-05"></a>OB-05 | **Observability must never become a user-content database** ([I-273](../01-normative-glossary-and-invariants.md#rule-i-273)). Chat bodies, note bodies, file paths, tokens and raw prompts never enter telemetry by default (`I3 §21.2`). |
+| <a id="rule-ob-05"></a>OB-05 | **Observability must never become a user-content database** ([I-273](../01-normative-glossary-and-invariants.md#rule-i-273)). Chat bodies, note bodies, file paths, tokens and raw prompts never enter telemetry by default. |
 | <a id="rule-ob-06"></a>OB-06 | **Audit and observability logs are completely separate systems** ([I-272](../01-normative-glossary-and-invariants.md#rule-i-272), [I-273](../01-normative-glossary-and-invariants.md#rule-i-273)) with separate retention, access control and purpose. |
 | <a id="rule-ob-07"></a>OB-07 | **Desktop telemetry is stricter than cloud telemetry**: minimal, opt-in, and never carrying user content ([PV-06](../07-security-privacy-and-trust.md#rule-pv-06)). |
-| <a id="rule-ob-08"></a>OB-08 | Required signal dimensions include: application and instance identity, build id, de-identified actor, transport, service/interface/method, capability, redacted resource id, command/task ids, correlation and causation, expected and result revision, duration, queue time, result code, native ABI/build where applicable, and reconnect/sequence-gap counters (`I3 §21.2`). |
+| <a id="rule-ob-08"></a>OB-08 | Required signal dimensions include: application and instance identity, build id, de-identified actor, transport, service/interface/method, capability, redacted resource id, command/task ids, correlation and causation, expected and result revision, duration, queue time, result code, native ABI/build where applicable, and reconnect/sequence-gap counters. |
 
 ---
 
@@ -322,13 +322,11 @@ Architecture boundaries must be reconciled to [P2-006](../../decisions/phase-2-s
 
 ## 15. Traceability
 
-| Source | Consumed as |
+| Current document | Relationship |
 |---|---|
-| `I4 §Stage 10` | The complete production infrastructure specification: runtime roles, region and preflight, edge and ingress, protection layers, data platform, messaging, secrets and identity, environments, IaC discipline, deployment pipeline, migration, observability, SLOs and incident severity, status page, provider degradation, disaster recovery, cost control, operator surface, runbooks and the go-live threshold |
-| `I4 §Stage 7` | Cloud product capabilities and the capability-isolation requirement |
-| `I4 §Stage 9` | Backup layering, data health and internal recovery objectives |
-| `I4 §Stage 28` | Incident, support and operator constraints on the platform |
-| `I3 §16`, `§21` | Cloud host structure, module ownership, outbox and observability discipline |
+| [ArcForges Cloud Architecture](../../architecture/05-cloud-architecture.md) | Defines the single deployment host, modules and reliable background work |
+| [Deployment and Release Execution](../../architecture/22-deployment-and-release-execution.md) | Defines provisioning, deployment, migration and recovery procedures |
+| [Observability and Operations Architecture](../../architecture/13-observability-and-operations.md) | Implements observability, incident, support and operator obligations |
 | **[D-003](../../decisions/phase-1-foundation-decisions.md#rule-d-003)** | Provider capability and pricing facts are deferred with a first-consumption trigger |
 | **[D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008)** | Cloud is an ASP.NET Core **JIT** modular monolith; no strict AOT requirement |
 | **[D-010](../../decisions/phase-1-foundation-decisions.md#rule-d-010)** | Cloud never touches local IPC; durable `ToolRequest` / `ToolResult` model |

@@ -12,12 +12,14 @@ This register holds every material issue found while reviewing the closed Phase 
 
 Confirmed by the user as **[D-001](#rule-d-001)**.
 
+**User-directed archive boundary (2026-09-07):** The original inputs have completed their role and now live in the [deprecated input archive](../deprecated-inputs/README.md). Current work follows the formal requirements, architecture, planning and assurance under the effective accepted decisions. Archived inputs are excluded from ongoing design and design-completeness audits; their historical citations do not require rereading or reconciling them. The original decision quotations remain unchanged, and reference-source review obligations are unaffected.
+
 1. Current explicit user decisions.
 2. The user-confirmed Phase 1 decision register.
-3. Raw input documents as evidence of prior intent and exploration only.
+3. Deprecated raw input documents as historical provenance only, excluded from current design and audit scope.
 4. Current official primary sources for externally verifiable facts.
 
-**There is no automatic precedence among the raw input documents.** The sequencing notes, later stages, the architecture concept and the overview do not automatically override one another. A later or apparently more specific statement may be evidence of intended evolution, but it is not authoritative until reviewed.
+**Historical intake rule:** During Phase 1, raw input documents had no automatic precedence over one another. Their proposed evolution was resolved through accepted decisions. That completed review does not create an ongoing queue of input conflicts or unadopted commitments.
 
 Neither the existing implementation monorepo nor any undeclared historical plan is design authority. A statement is not correct merely because it appears later in a file, appears repeatedly, is written confidently, or is labelled "final", "frozen" or "recommended".
 
@@ -399,6 +401,8 @@ Decisions are recorded verbatim as given by the user. Each cites the issue it re
 
 ## D-001 — Conflict-resolution rule · resolves **[F-001](#rule-f-001)** · `USER_CONFIRMED`
 
+The original input-review wording below is retained as history. Its current application follows the [archive boundary](#authority-order); it does not reopen review of the deprecated inputs.
+
 > Do not establish automatic precedence among the raw input documents.
 >
 > The authority order is:
@@ -426,6 +430,8 @@ Decisions are recorded verbatim as given by the user. Each cites the issue it re
 <a id="rule-d-002"></a>
 
 ## D-002 — Product baseline · resolves **[F-002](#rule-f-002)** · `USER_CONFIRMED`
+
+**Current consumption.** The [current portfolio](../requirements/00-product-scope-and-portfolio.md#2-the-product-portfolio) defines the product set, obsolete names and fifth-product acceptance contract. Current ArcNotes scope follows the [P2-006](phase-2-specification-decisions.md#rule-p2-006) amendment. The original wording below does not require an archived-input lookup or restore excluded capabilities.
 
 > The current product baseline contains exactly four desktop products: ArcChat, ArcNotes, ArcScope, and ArcSlate.
 >
@@ -809,6 +815,8 @@ Every other line of the map, and every other part of [D-012](#rule-d-012) — th
 
 ## D-017 — Planning location and format · resolves **[F-018](#rule-f-018)** · `USER_CONFIRMED`
 
+**Current consumption after input deprecation:** The complete format contract is [Implementation Sequence §6](../planning/implementation-sequence.md#6-work-package-format), and its location is `docs/planning/work-packages/`. The original quotation below records how that contract was established; implementers and reviewers use the formal definition, not the archived example or sequencing notes.
+
 > All new authoritative design and planning output belongs in ArcForges-Design.
 >
 > Requirements:
@@ -840,6 +848,8 @@ Every other line of the map, and every other part of [D-012](#rule-d-012) — th
 
 ## D-018 — Normative glossary · resolves **[F-019](#rule-f-019)** · `USER_CONFIRMED`
 
+**Current consumption after input deprecation:** Accepted terms and invariants are defined in the [normative glossary](../requirements/01-normative-glossary-and-invariants.md). [Invariant coverage](../assurance/invariant-coverage.md) maps that catalogue to its current owners. The completed input-extraction history is not a new reading, extraction or audit obligation.
+
 > A single normative glossary and invariant catalogue is mandatory before detailed product specifications are finalized.
 >
 > It must:
@@ -863,6 +873,8 @@ Every other line of the map, and every other part of [D-012](#rule-d-012) — th
 <a id="rule-d-019"></a>
 
 ## D-019 — Sequence status · resolves **[F-020](#rule-f-020)** · `USER_CONFIRMED`
+
+**Current consumption after input deprecation:** [Implementation Sequence](../planning/implementation-sequence.md) and the [work-package index](../planning/work-packages/README.md) define the actual dependency order. Original stage numbers below explain the decision history and are not implementation dependencies.
 
 > Every sequence in the raw corpus is planning evidence only, not a frozen implementation plan.
 >
@@ -1038,9 +1050,9 @@ Global rules now in force. Applied to all occurrences they cover without further
 | 1 | No automatic precedence among raw input documents; they are evidence only. Conflicts are registered, explained, decided, recorded, then applied globally. | [D-001](#rule-d-001) | All |
 | 2 | Only material conflicts not already covered by an existing user decision are brought back. | [D-001](#rule-d-001) | All |
 | 3 | The product baseline is exactly ArcChat, ArcNotes, ArcScope and ArcSlate. | [D-002](#rule-d-002) | All |
-| 4 | `ArcCanvas`, `ArcMusic` and `ArcImage` are obsolete and `SUPERSEDED` wherever they appear, and are excluded from every new authoritative document. Not future, reserved, alias or re-entry-candidate products, so the `I4 §Stage 13.81` fifth-product contract does not apply to them; it remains available for a genuinely new product. | [D-002](#rule-d-002) | All |
+| 4 | `ArcCanvas`, `ArcMusic` and `ArcImage` are obsolete and `SUPERSEDED` wherever they appear, and are excluded from every new authoritative document. Not future, reserved, alias or re-entry-candidate products, so the [current fifth-product contract](../requirements/00-product-scope-and-portfolio.md#24-adding-a-fifth-product) does not apply to them; it remains available for a genuinely new product. | [D-002](#rule-d-002) | All |
 | 5 | `ArcVideo` is likewise obsolete wherever it appears; ArcSlate is the current product. | [D-002](#rule-d-002) | T01, T03 |
-| 6 | ArcScope is an independently defined product, not a rename or continuation of ArcImage. `I3 §3.5` ArcImage domain concepts must not be migrated into ArcScope. | [D-002](#rule-d-002) | T01, T03 |
+| 6 | ArcScope is an independently defined product, not a rename or continuation of ArcImage. Obsolete ArcImage domain concepts must not be migrated into ArcScope. | [D-002](#rule-d-002) | T01, T03 |
 | 7 | The former Canvas naming distinction does not require delivery. Canvas/whiteboard and presentation scope is excluded by [P2-006](phase-2-specification-decisions.md#rule-p2-006); no standalone product is introduced. | [D-002](#rule-d-002); [D-006](#rule-d-006) as amended by [P2-006](phase-2-specification-decisions.md#rule-p2-006) | T03 |
 | 8 | Raw input files remain unmodified. Dispositions are recorded here, never applied to the inputs themselves. | [D-002](#rule-d-002), [D-005](#rule-d-005) | All |
 | 9 | Foundation-critical external facts are verified now; all pricing, quota, fee, rate and regional-availability data is deferred with a first-consumption trigger. | [D-003](#rule-d-003) | All |

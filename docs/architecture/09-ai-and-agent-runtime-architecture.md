@@ -45,7 +45,7 @@ One Cloud Harness, one Task model, one metering path. Tool locality varies; the 
 
 ## 2. Agent runtime under AOT
 
-**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** and `I2 §I.3` resolve the AOT/JIT tension explicitly.
+**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** and the effective **[P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006)** boundary place the model loop in JIT Cloud and the typed device tool path in the AOT desktop.
 
 | # | Rule |
 |---|---|
@@ -54,7 +54,7 @@ One Cloud Harness, one Task model, one metering path. Tool locality varies; the 
 | AO-03 | **Third-party executable extensions run out of process by default** ([EX-01](../requirements/08-extensions-and-developer-platform.md#rule-ex-01) in the extension requirements), so they may use any runtime while the host stays a Native AOT deliverable. |
 | AO-04 | **An agent framework feature is enabled only on surfaces validated by AOT analysis and a real publish** — never assumed from a debug build. |
 | AO-05 | **A capability is exposed to the model through an explicitly generated binding**, not through runtime reflection over method signatures. |
-| AO-06 | **Where a framework feature cannot be made AOT-safe, the surface is narrowed or the feature is replaced** — the desktop is not silently downgraded to JIT while still being described as AOT (`§23.4` of `I3`). |
+| AO-06 | **Where a framework feature cannot be made AOT-safe, the surface is narrowed or the feature is replaced** — the desktop is not silently downgraded to JIT while still being described as AOT. |
 
 ---
 
@@ -350,13 +350,11 @@ Automation Definition (versioned)
 
 ## 16. Traceability
 
-| Source | Consumed as |
+| Current document | Relationship |
 |---|---|
-| `I4 §Stage 19` | The complete execution model, states, ownership, checkpoints, compensation, approval, steering, budget, trace, automation and failure classification |
-| `I4 §Stage 8` | Provider routing, tariff versioning, metering, the three ledgers, cost dimensions and transparency |
-| `I4 §Stage 6`, `§Stage 17` | Agent placement, capability registry, mode contracts, memory layering |
-| `I2 §I.3` | The ArcChat AOT/JIT resolution: static registration, no runtime scanning, out-of-process third-party extensions |
-| `I3 §8`, `§13` | Capability system, agent placement, `TaskHandle`, long-task model |
+| [AI, Agent Execution, Tasks and Automation Requirements](../requirements/05-ai-and-agent-execution.md) | Owns execution states, placement, approvals, automation and recovery |
+| [Commerce, Entitlement and AI Credits Requirements](../requirements/04-commerce-entitlement-and-credits.md) | Owns admission, metering, tariffs and reconciliation |
+| [Agent Harness](17-agent-harness.md) | Defines the concrete Cloud turn loop and tool dispatch |
 | **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** | Agent framework enabled only on AOT-validated surfaces; desktop stays a Native AOT deliverable |
 | **[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)** | Durable `ToolRequest` / `ToolResult` remote execution |
 | **[D-020](../decisions/phase-1-foundation-decisions.md#rule-d-020)** | Reserve-then-settle, fixed precision, per-run tariff snapshot, hard stop, three ledgers |

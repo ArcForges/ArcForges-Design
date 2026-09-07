@@ -7,7 +7,7 @@
 
 Phase 1 decisions remain binding except where subsequent explicit user direction amends them under D-001. **[P2-006](#rule-p2-006) records the user-directed requirements revision of 2026-09-06.**
 
-The bar for entry is deliberately high. A conclusion already stated in the preserved input corpus, or already implied by a Phase 1 decision, is implemented in the requirements, architecture or planning layers with a citation — it does not become a decision record. [P2-001](#rule-p2-001) through [P2-008](#rule-p2-008) are recorded below. [P2-002](#rule-p2-002) is withdrawn; [P2-003](#rule-p2-003) is now adopted under the Web redesign. [P2-008](#rule-p2-008) is the latest authority for Web, Node tooling and generated TypeScript clients.
+The bar for entry is deliberately high. A conclusion already established by a current formal specification or an effective accepted decision is implemented in the appropriate layer with a citation — it does not become a duplicate decision record. The [deprecated input archive](../deprecated-inputs/README.md) supplies no new requirements or authority; its citations and original quotations are historical provenance only. [P2-001](#rule-p2-001) through [P2-008](#rule-p2-008) are recorded below. [P2-002](#rule-p2-002) is withdrawn; [P2-003](#rule-p2-003) is now adopted under the Web redesign. [P2-008](#rule-p2-008) is the latest authority for Web, Node tooling and generated TypeScript clients.
 
 ---
 
@@ -32,7 +32,7 @@ The bar for entry is deliberately high. A conclusion already stated in the prese
 
 ## P2-001 — Install and update infrastructure baseline · `ADOPTED`
 
-**Decision.** A single cross-platform install and update framework is the baseline for the four desktop products on Windows, macOS and Linux. The preserved corpus records this choice explicitly (`I4 §Stage 5 §4`), and Phase 2 adopts it as the implementation baseline with three qualifications:
+**Decision.** **Velopack** is the cross-platform install and update framework baseline for the four desktop products on Windows, macOS and Linux, as specified in the [current packaging architecture](../architecture/14-build-packaging-and-release.md#5-packaging). The baseline has three qualifications:
 
 1. **It sits behind a thin build-script and integration boundary.** Product code never references the framework's types outside one update-integration component, so the framework can be replaced without touching product code.
 2. **The product's own update system remains authoritative across every distribution channel.** A platform store or package manager delivers the same signed installer; it does not become the update mechanism.
@@ -238,7 +238,7 @@ Recording a non-decision as a decision is as harmful as leaving a decision unrec
 
 | Considered | Why it is not a Phase 2 decision |
 |---|---|
-| The dual capability boundary for extensions | Stated in the preserved corpus (`I4 §Stage 24 §67`–`§73`); implemented in [`../architecture/15-extension-platform-architecture.md`](../architecture/15-extension-platform-architecture.md) `§4` with citations |
+| The dual capability boundary for extensions | Defined by [`../architecture/15-extension-platform-architecture.md`](../architecture/15-extension-platform-architecture.md) `§4`; it requires no additional decision or archived-source lookup |
 | Three cloud runtime roles | **Historical, superseded by [P2-006](#rule-p2-006):** the current requirement is one deployable host with bounded internal services. The prior three-role interpretation remains in [`../architecture/05-cloud-architecture.md`](../architecture/05-cloud-architecture.md) `§2` |
 | The eighteen test families | A design output of the quality contract, not a choice between alternatives |
 | Native shims beyond the architecture's illustrative two | Governed by the permitted-surface rule ([NP-01](../architecture/12-native-interop-and-media.md#rule-np-01)) and resolved per shim in [WP-01.03](../planning/work-packages/01-repository-reconciliation-and-target-layout.md#rule-wp-01.03); not a global decision |

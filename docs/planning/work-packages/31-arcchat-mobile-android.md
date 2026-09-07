@@ -17,7 +17,7 @@
 
 **Out of scope.** Any commerce surface (**[D-022](../../decisions/phase-1-foundation-decisions.md#rule-d-022)**) — enforced as a build check in `32`. Any professional product editing. Store submission (`32`).
 
-**Why this package exists.** `I2 §III.8` defines ArcChat Android as a chat-style computer remote controller with a complete remote control surface — not a phone edition of a professional product, and not a generic screen-and-input remote tool.
+**Why this package exists.** [the companion requirements](../../requirements/products/arcchat-mobile-and-web.md) define ArcChat Android as a chat-style computer remote controller with a complete remote control surface — not a phone edition of a professional product, and not a generic screen-and-input remote tool.
 
 ---
 
@@ -27,7 +27,7 @@ The real Task, streaming, approval and recovery gates in this package consume WP
 
 | Input | Why it matters |
 |---|---|
-| `I2 §III.8` | The product positioning, implementation sequence and the prohibited connection paths |
+| [Mobile architecture](../../architecture/11-mobile-architecture.md) | Companion positioning, Cloud-only communication, platform boundaries and the Android delivery posture |
 | [`../../requirements/products/arcchat-mobile-and-web.md`](../../requirements/products/arcchat-mobile-and-web.md) | The companion product model, offline behaviour and notification rules |
 | [`../../architecture/11-mobile-architecture.md`](../../architecture/11-mobile-architecture.md) | Network, offline, push, deep links and placement constraints |
 | [WP-26](26-remote-action-and-tool-bridge.md#rule-wp-26), [WP-30](30-mobile-shared-architecture.md#rule-wp-30) output | The remote closed loop and the mobile foundation |
@@ -38,7 +38,7 @@ The real Task, streaming, approval and recovery gates in this package consume WP
 
 | # | Rule |
 |---|---|
-| BR-01 | **Direct connection from mobile to a LAN Hub, named pipe, domain socket or professional application is prohibited** (`I2 §III.8`, **[D-010](../../decisions/phase-1-foundation-decisions.md#rule-d-010)**). The only path is mobile → Cloud → ArcChat Desktop. |
+| BR-01 | **Direct connection from mobile to a LAN Hub, named pipe, domain socket or professional application is prohibited** (**[D-010](../../decisions/phase-1-foundation-decisions.md#rule-d-010)**). The only path is mobile → Cloud → ArcChat Desktop. |
 | BR-02 | **The client never scans a network and never performs local discovery.** |
 | BR-03 | **A high-risk agent task is never auto-executed on reconnection**; it requires explicit confirmation. |
 | BR-04 | **A push notification is not durable attention state.** Missing a push never loses a pending approval. |

@@ -425,13 +425,11 @@ Security Report → Security Case / Investigation → Fix / Containment → Secu
 
 ## 18. Traceability
 
-| Source | Consumed as |
+| Current document | Relationship |
 |---|---|
-| `I4 §Stage 5` | Distribution matrix, signing, channels, versioning, release records, artifact verification, update behaviour, rollback, uninstall and the release domain model |
-| `I4 §Stage 28` | Support, operator, recovery, incident, community report, enforcement, appeal, security report and advisory model, and operational identity |
-| `I4 §Stage 10` | Incident runbook, status page and operational escalation |
-| `I4 §Stage 11` | Breach-notification obligations feeding the incident runbook |
-| `I3 §27` | Installation, update and rollback discipline; data compatibility on upgrade |
+| [Build, Packaging and Release Architecture](../architecture/14-build-packaging-and-release.md) | Implements packaging, signing, release records and updates |
+| [Deployment and Release Execution](../architecture/22-deployment-and-release-execution.md) | Defines promotion, rollback and mixed-version release procedures |
+| [Observability and Operations Architecture](../architecture/13-observability-and-operations.md) | Implements support, incident, status and operator mechanisms |
 | **[D-004](../decisions/phase-1-foundation-decisions.md#rule-d-004)**, **[F-023](../assurance/open-gates-register.md#rule-f-023)** | Mobile licensing boundary and the pre-distribution provenance gate |
 | **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** | Android production runtime; iOS build-deferred posture |
 | **[D-022](../decisions/phase-1-foundation-decisions.md#rule-d-022)**, **[V-09](../assurance/phase-1-official-verification.md#rule-v-09)** | Store distribution without commerce; the category-fit and consumption-only submission gates |

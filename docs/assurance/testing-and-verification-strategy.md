@@ -124,7 +124,7 @@ These are not additional families; they are obligations distributed across the f
 | IV-02 | **An invariant with no implemented test leaves [PG-11](open-gates-register.md#rule-pg-11) open.** Registering it as an open finding records who owes the work; it does not satisfy the gate, and it has no effect on [PG-06](open-gates-register.md#rule-pg-06). |
 | IV-03 | **Invariants are enforced by the cheapest sufficient mechanism**: a type distinction where possible, a repository-policy test where a naming or reference rule expresses it, a unit test where it is behavioural, and an end-to-end test only where nothing smaller can observe it. |
 | <a id="rule-iv-04"></a>IV-04 | **A test that enforces an invariant names it**, so a failure message identifies the violated rule rather than only the failed assertion. |
-| IV-05 | **The forbidden-alias and obsolete-name scan runs over `src/` and `docs/` excluding `docs/inputs/`**, plus identifiers and resource strings (`§10` of the glossary requirements). |
+| IV-05 | **The forbidden-alias and obsolete-name scan runs over `src/` and `docs/` excluding `docs/deprecated-inputs/`**, plus identifiers and resource strings (`§10` of the glossary requirements). |
 
 ---
 
@@ -175,13 +175,14 @@ Design defects are cheaper to catch than implementation defects.
 | # | Check | Mechanism |
 |---|---|---|
 | <a id="rule-sv-01"></a>SV-01 | Every normative citation resolves to its explicitly linked defining document and stable anchor ([OG-05](open-gates-register.md#rule-og-05)). Historical relocations and unused allocation ranges are classified explicitly and never counted as active implementation gates. | Complete corpus resolver: fail on a missing, duplicate or ambiguous definition; repeat after every normative change |
-| <a id="rule-sv-02"></a>SV-02 | Every internal document link resolves | Link check over `docs/` |
-| SV-03 | No superseded product name or superseded provider appears as current outside `docs/inputs/` | Forbidden-term scan |
+| <a id="rule-sv-02"></a>SV-02 | Every internal document link in the current documentation and archive README resolves; deprecated file bodies are excluded | Link check over `docs/` excluding the four archived input bodies |
+| SV-03 | No superseded product name or superseded provider appears as current outside `docs/deprecated-inputs/` | Forbidden-term scan |
 | SV-04 | Every Phase 1 decision is cited by at least one Phase 2 document, or its non-applicability is stated | Traceability matrix coverage check |
 | <a id="rule-sv-05"></a>SV-05 | Every deferred gate (**[F-013](open-gates-register.md#rule-f-013)**, **[F-023](open-gates-register.md#rule-f-023)**, **[F-026](open-gates-register.md#rule-f-026)**) is scheduled in a named work package | Open-gates register |
 | SV-06 | Every work package's stated dependencies refer to existing work packages, the graph is acyclic, **and every declared edge is symmetric** — an upstream declaration without its matching downstream is a defect, in either direction | Planning consistency check over the package headers and the downstream index |
 | SV-07 | **No work package sits in a phase its own header contradicts**, and no package depends on one whose phase is later than its own without the backward edge being stated and justified (`§3` of the implementation sequence) | Planning consistency check |
-| SV-08 | **A capability the requirements retired has no live specification, work-package step or completion gate anywhere** — a retired delivery is asserted absent, not left unmentioned | Retired-claim scan over `docs/` outside `docs/inputs/` |
+| SV-08 | **A capability the requirements retired has no live specification, work-package step or completion gate anywhere** — a retired delivery is asserted absent, not left unmentioned | Retired-claim scan over `docs/` outside `docs/deprecated-inputs/` |
+| <a id="rule-sv-09"></a>SV-09 | **Current requirements, architecture, contracts, data models, work packages and assurance obligations are independent of the deprecated input bodies.** Required inputs, governing authority, inline rules and acceptance must resolve within the current formal design, effective decisions or declared reference-source evidence. Historical decision quotations confer no renewed input-reading obligation. | Scan every current requirements/architecture/planning file and current assurance obligations for archived source labels, old Stage citations, original filenames and archive-body references; inspect the actual definition behind each replaced dependency. Historical extraction/verification records and checker fixtures are explicitly classified, not silently treated as current authority. Preserve rule bodies, IDs, accepted exclusions and implementation gates. Negative fixtures must detect source shorthands and renamed archive-file references in both implementation and gate inputs. |
 
 ---
 

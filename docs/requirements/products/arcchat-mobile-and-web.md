@@ -21,7 +21,7 @@ See → Approve → Steer → Continue → Start remote work → Receive results
 
 | # | Requirement |
 |---|---|
-| ID-01 | **Mobile and Web are companion surfaces, not mobile or web editions of the four desktop products** ([I-027](../01-normative-glossary-and-invariants.md#rule-i-027), Stage 13 Invariant 16). There is no ArcNotes Mobile editor, no ArcScope Mobile editor and no ArcSlate Mobile editor. |
+| ID-01 | **Mobile and Web are companion surfaces, not mobile or web editions of the four desktop products** ([I-027](../01-normative-glossary-and-invariants.md#rule-i-027)). There is no ArcNotes Mobile editor, no ArcScope Mobile editor and no ArcSlate Mobile editor. |
 | ID-02 | **Mobile and Web are not one responsive product.** They share domain semantics and contracts; their information architecture, interaction model and capability set differ deliberately. |
 | ID-03 | **Mobile and Web connect only to Cloud** (**[D-010](../../decisions/phase-1-foundation-decisions.md#rule-d-010)**). They must never scan a LAN, discover a desktop Hub, or address a named pipe or domain socket. |
 | ID-04 | **`Companion ≠ thin remote controller`** (`§20`). Both surfaces are useful with no desktop online, through cloud chat, cloud tasks, projects, search, automation and continuity. |
@@ -387,12 +387,11 @@ WorkspaceDeviceContext · RemoteSession · OfflineCachePolicy
 
 ## 24. Traceability
 
-| Source | Consumed as |
+| Current document | Relationship |
 |---|---|
-| `I4 §Stage 18` | The complete companion specification: identity and responsibility split, information architecture, device presence, remote tasks, approval, steering, notifications, artifacts, continuity, search, AI, automation, devices, workspace and realm, offline and session security, portal separation, links, non-goals and domain model |
-| `I4 §Stage 7 §54–58` | ArcChat Web as a cloud surface; shared cloud task state; mobile as companion |
-| `I4 §Stage 13 §45–47` | Mobile and Web as ArcChat continuity surfaces connecting only to Cloud |
-| `I3 §17`, `§18`, `§19` | MAUI client scope, network discipline and desktop bridging security model; historical Blazor technology is superseded by [P2-008](../../decisions/phase-2-specification-decisions.md#rule-p2-008) |
+| [Mobile Architecture](../../architecture/11-mobile-architecture.md) | Implements MAUI companion scope, networking and device security |
+| [Web Architecture](../../architecture/10-web-architecture.md) | Implements the browser companion with the current Web stack |
+| [Realtime Events and the Durable Bridge](../../architecture/contracts/03-realtime-and-bridge.md) | Defines durable remote requests, results and realtime recovery |
 | **[D-004](../../decisions/phase-1-foundation-decisions.md#rule-d-004)**, **[D-021](../../decisions/phase-1-foundation-decisions.md#rule-d-021)**, **[F-023](../../assurance/open-gates-register.md#rule-f-023)** | Apache-2.0 mobile boundary, no shared ViewModels, pre-distribution provenance gate |
 | **[D-007](../../decisions/phase-1-foundation-decisions.md#rule-d-007)**, **[D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008)**, **[V-04](../../assurance/phase-1-official-verification.md#rule-v-04)** | Web technology; Android Mono AOT; iOS build-deferred |
 | **[D-010](../../decisions/phase-1-foundation-decisions.md#rule-d-010)** | Cloud never reaches local IPC; the desktop re-authorises every remote request |

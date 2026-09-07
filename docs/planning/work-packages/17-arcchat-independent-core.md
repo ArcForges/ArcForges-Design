@@ -7,7 +7,7 @@
 > Phase: C — First real slice
 > Upstream: `06`, `15`, `16` · Downstream: `20`, `26`, `41`, `52`
 
-> **Goal.** Complete ArcChat as an independent product: chat, agent, task centre, capability hub, permission and approval, automation, local data and recovery — with **no claim** that its ecosystem tier is finished (`I2 §III.4`).
+> **Goal.** Complete ArcChat as an independent product: chat, agent, task centre, capability hub, permission and approval, automation, local data and recovery — with **no claim** that its ecosystem tier is finished.
 
 ---
 
@@ -19,7 +19,7 @@
 
 **Out of scope.** Federated search across products, product context providers, real semantic modifications, cross-application workflows and real artifact handlers — these are **V1B**, delivered progressively as the professional products come online (`20`, `35`, `39`).
 
-**Why this package exists.** `I2 §III.4` is explicit that ArcChat splits into V1A — independent chat, agent, task and hub complete — and V1B, closed progressively. Claiming ecosystem completeness now would make every later product integration a retrofit against a false baseline.
+**Why this package exists.** The [ArcChat requirements](../../requirements/products/arcchat.md) are delivered through an independent client foundation and progressive ecosystem integration. At this package, Cloud and model behavior use the explicitly named fixtures; the real agent loop is delivered by [WP-52](52-cloud-harness.md#rule-wp-52). Claiming ecosystem completeness now would make every later product integration a retrofit against a false baseline.
 
 ---
 
@@ -27,7 +27,7 @@
 
 | Input | Why it matters |
 |---|---|
-| `I2 §III.4` | The V1A/V1B split and its explicit contents |
+| [ArcChat product requirements](../../requirements/products/arcchat.md) | The independent client scope; this package defines the fixture boundary and its progressive ecosystem closure in §5 |
 | [`../../requirements/products/arcchat.md`](../../requirements/products/arcchat.md) | The product model, capability hub role and V1 scope |
 | [`../../requirements/07-security-privacy-and-trust.md`](../../requirements/07-security-privacy-and-trust.md) | Permission, approval, audit and the security centre |
 | [WP-15](15-arcchat-conversation-core.md#rule-wp-15), [WP-16](16-unified-execution-engine.md#rule-wp-16) output | The conversation domain and the execution engine |
@@ -40,12 +40,12 @@
 |---|---|
 | BR-01 | **ArcChat is a control plane, never a mandatory data gateway** (**[D-010](../../decisions/phase-1-foundation-decisions.md#rule-d-010)**). |
 | BR-02 | **V1B is not claimed complete.** The ecosystem tier is explicitly marked as progressive, with each closure attached to a named later package. |
-| BR-03 | **An agent is not a superuser** (`I3 §8.4`). It holds exactly the capabilities granted to it, subject to the same pipeline as a human actor. |
+| BR-03 | **An agent is not a superuser**. It holds exactly the capabilities granted to it, subject to the same pipeline as a human actor. |
 | BR-04 | **Every capability invocation passes the security pipeline** and is recorded in the audit and execution traces. |
-| <a id="rule-br-05"></a>BR-05 | **Automation is not a workflow** and **a workflow is not an agent runtime** (`I4 §Stage 24 §17`, `§20`). Automation decides *when*; a plan decides *how*. |
+| <a id="rule-br-05"></a>BR-05 | **Automation is not a workflow** and **a workflow is not an agent runtime**. Automation decides *when*; a plan decides *how*. |
 | BR-06 | **No provider credential exists on the client** ([BY-01](../../requirements/04-commerce-entitlement-and-credits.md#rule-by-01)–[BY-04](../../requirements/04-commerce-entitlement-and-credits.md#rule-by-04), [I-015](../../requirements/01-normative-glossary-and-invariants.md#rule-i-015) retired). Provider credentials are deployment secrets held only by the Cloud host ([DC-15](../../requirements/11-policy-and-configuration.md#rule-dc-15)). |
 | BR-07 | **Thin preview versus rich handoff**: ArcChat shows enough to act, and hands off to the owning product for real work (`§16` of the shared desktop requirements). |
-| BR-08 | **Automation in V1 stays simple** — creation, start, stop, and a bounded trigger set (`I4 §Stage 19 §62`). |
+| BR-08 | **Automation in V1 stays simple** — creation, start, stop, and a bounded trigger set. |
 
 ---
 

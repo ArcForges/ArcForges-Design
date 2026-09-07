@@ -17,7 +17,7 @@
 
 **Out of scope.** AI provider routing and tariffs (`43`) — the budget interface exists here. The account portal UI (`48`). Any mobile commerce surface, which is prohibited.
 
-**Why this package exists.** [SQ-08](../implementation-sequence.md#rule-sq-08) places commerce late because entitlement, refunds, webhook idempotency and a real payout path must all exist before pricing can be published. `I2 §V` also requires the webhook inbox, idempotency and reconciliation to be real even while provider payloads are fixtures.
+**Why this package exists.** [SQ-08](../implementation-sequence.md#rule-sq-08) places commerce late because entitlement, refunds, webhook idempotency and a real payout path must all exist before pricing can be published. [the mock policy](../implementation-sequence.md#3-what-may-be-mocked-and-what-may-not) also requires the webhook inbox, idempotency and reconciliation to be real even while provider payloads are fixtures.
 
 ---
 

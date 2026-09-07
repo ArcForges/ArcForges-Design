@@ -141,7 +141,7 @@
 
 ### WP-11.07 — Capability leases and trust
 
-**What must be fully done.** A delegation creates a lease with scope, expiry and revocation. Lease expiry is enforced at use, not only at issue. Typed trust levels are evaluated at the defined points, and trust is separate from permission (`I4 §Stage 24 §124`).
+**What must be fully done.** A delegation creates a lease with scope, expiry and revocation. Lease expiry is enforced at use, not only at issue. Typed trust levels are evaluated at the defined points, and trust is separate from permission.
 
 **Testing requirements.** Lease expiry-at-use, revocation-mid-operation and scope-escalation-attempt tests; a test asserting trust level alone never grants permission.
 

@@ -455,11 +455,10 @@ SimulationDefinition · ScenarioVersion · SimulationRun · SimulationSegment ·
 
 ## 26. Traceability
 
-| Source | Consumed as |
+| Current document | Relationship |
 |---|---|
-| `I4 §Stage 16` | The complete ArcScope product specification: sources and connections, session and capture, the time model, signals and events, visualisation, triggers, measurement and analysis, decoders, annotation, comparison, reports, import/export/replay, AI grounding, cloud posture, library and reproducibility, long-running work, extension points, non-goals, domain model and V1 scope |
-| `I2 §II` | The requirement for a licence-audited reference coverage matrix before work begins |
-| `I4 §Stage 13 §21–23` | ArcScope's identity and owned state; report versus document separation |
-| `I4 §Stage 22 §27–33`, `§196` | ArcScope storage strategy, chunked capture store and local structure |
+| [Native Interoperability and Media Architecture](../../architecture/12-native-interop-and-media.md) | Defines native acquisition and evidence boundaries |
+| [Cloud Simulator, Time Model and OTIO Interchange](../../architecture/23-simulator-and-interchange.md) | Defines deterministic Cloud simulation |
+| [Reference Coverage Matrix — ArcScope / Serial-Studio](../../assurance/reference-coverage/arcscope-serial-studio.md) | Records source dispositions, licence boundaries and verification oracles |
 | **[D-002](../../decisions/phase-1-foundation-decisions.md#rule-d-002)** | ArcScope is independently defined; ArcImage concepts must not migrate into it |
 | **[D-012](../../decisions/phase-1-foundation-decisions.md#rule-d-012)**, **[D-013](../../decisions/phase-1-foundation-decisions.md#rule-d-013)** | Serial-Studio as a licence-gated reference with a required file-level audit |

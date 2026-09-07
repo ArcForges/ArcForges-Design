@@ -7,6 +7,8 @@
 
 This record verifies the time-sensitive external claims that Phase 1 decisions depend on, against current official primary sources. It is evidence, not a specification.
 
+**Historical claim boundary.** Input labels in the original claim and consequence descriptions identify what was verified at the date above. They create no requirement to reopen the deprecated inputs. Implementers consume the current formal requirements, contracts and architecture with their cited verification results; unresolved runtime or first-consumption proof follows the [current gate register](open-gates-register.md), not historical input stage numbers.
+
 ## Scope and exclusions
 
 **In scope** ([D-003](../decisions/phase-1-foundation-decisions.md#rule-d-003), foundation-critical): regulatory applicability, protocol specification status, runtime and AOT posture, dependency AOT evidence, payment-provider role and capability, payout relationship, and mobile-storefront commerce rules.

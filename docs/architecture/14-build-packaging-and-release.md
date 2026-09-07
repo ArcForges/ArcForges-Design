@@ -2,7 +2,7 @@
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Architecture
-> Governing authority: **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** (runtime and AOT matrix), **[D-011](../decisions/phase-1-foundation-decisions.md#rule-d-011)** (target monorepo), **[D-014](../decisions/phase-1-foundation-decisions.md#rule-d-014)** (surface inventory, update and download domains), **[D-022](../decisions/phase-1-foundation-decisions.md#rule-d-022)** (mobile commerce posture), `I4 §Stage 5`
+> Governing authority: **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** (runtime and AOT matrix), **[D-011](../decisions/phase-1-foundation-decisions.md#rule-d-011)** (target monorepo), **[D-014](../decisions/phase-1-foundation-decisions.md#rule-d-014)** (surface inventory, update and download domains), **[D-022](../decisions/phase-1-foundation-decisions.md#rule-d-022)** (mobile commerce posture), [distribution requirements](../requirements/10-distribution-update-and-support.md)
 > Companions: [`../requirements/10-distribution-update-and-support.md`](../requirements/10-distribution-update-and-support.md), [`../requirements/12-quality-and-compatibility-contract.md`](../requirements/12-quality-and-compatibility-contract.md), [`01-solution-and-project-layout.md`](01-solution-and-project-layout.md)
 
 One monorepo, many independently versioned products, one coordinated build graph with managed, native and Web toolchains, and one rule that governs everything below: **the bytes a user runs are the bytes CI produced, verified end to end.**
@@ -114,7 +114,7 @@ The nine version axes (`§14` of the quality contract) are produced by the build
 | VR-02 | **Versioning is semantic**, and pre-release identifiers distinguish channel builds ([RC-02](../requirements/10-distribution-update-and-support.md#rule-rc-02) there). |
 | VR-03 | **A version is allocated once.** Re-publishing a version number with different bytes is prohibited by the artifact store and by the release record. |
 | VR-04 | **Build metadata — commit, build id, pipeline run, timestamp — is stamped into every artifact** and is retrievable from the running product for support (`§7.1` of the distribution requirements). |
-| <a id="rule-vr-05"></a>VR-05 | **A version string presented to a store, a package manager, an update feed and a checksum file is the same string.** Divergence is a defect, because stores verify installer URLs, package managers verify hashes, and the updater must resolve historical versions (`I4 §Stage 5 §3`). |
+| <a id="rule-vr-05"></a>VR-05 | **A version string presented to a store, a package manager, an update feed and a checksum file is the same string.** Divergence is a defect, because stores verify installer URLs, package managers verify hashes, and the updater must resolve historical versions. |
 
 ---
 
@@ -122,30 +122,30 @@ The nine version axes (`§14` of the quality contract) are produced by the build
 
 ### 5.1 Install and update infrastructure
 
-**Velopack is the baseline install and update infrastructure for the desktop products** (`I4 §Stage 5 §4`). It covers Windows, macOS and Linux with one framework, supports installers, automatic and delta updates, release channels, a self-hosted HTTP update source, downgrade and release notes.
+**Velopack is the baseline install and update infrastructure for the desktop products** under [P2-001](../decisions/phase-2-specification-decisions.md#rule-p2-001). It covers Windows, macOS and Linux with one framework, supports installers, automatic and delta updates, release channels, a self-hosted HTTP update source, downgrade and release notes.
 
 | # | Rule |
 |---|---|
-| <a id="rule-pk-01"></a>PK-01 | **The packaging tool consumes the publish output directory** (`I4 §Stage 5 §5`). There is no principle conflict with Native AOT, and the installed application does not require a machine-installed .NET runtime. |
+| <a id="rule-pk-01"></a>PK-01 | **The packaging tool consumes the publish output directory**. There is no principle conflict with Native AOT, and the installed application does not require a machine-installed.NET runtime. |
 | PK-02 | **The installer never bootstraps a runtime.** Self-contained means self-contained. |
 | PK-03 | **Packaging is behind a thin build-script boundary**, so the tool can be replaced without changing product code. Product code never references the update framework's types outside one update-integration component. |
-| PK-04 | **The product's own update system remains authoritative across every channel** ([PL-03](../requirements/10-distribution-update-and-support.md#rule-pl-03), `UP-*` in the distribution requirements). A store or package manager delivers the same signed installer; it does not become the update mechanism (`I4 §Stage 5 §17`). |
+| PK-04 | **The product's own update system remains authoritative across every channel** ([PL-03](../requirements/10-distribution-update-and-support.md#rule-pl-03), `UP-*` in the distribution requirements). A store or package manager delivers the same signed installer; it does not become the update mechanism. |
 
 ### 5.2 Per-platform packaging
 
 | Platform | Format | Notes |
 |---|---|---|
-| Windows | Signed `Setup.exe`, **per-user install** to a per-user application directory, no elevation required (`I4 §Stage 5 §7`) | A machine-wide MSI may be produced later for enterprise need; a package-manager manifest points at the same signed installer |
-| Windows store listing | **Unpackaged Win32**: the same signed installer, not a repackaged container (`I4 §Stage 5 §8`) | Distribution only, **never a commerce channel** (**[D-022](../decisions/phase-1-foundation-decisions.md#rule-d-022)**) |
+| Windows | Signed `Setup.exe`, **per-user install** to a per-user application directory, no elevation required | A machine-wide MSI may be produced later for enterprise need; a package-manager manifest points at the same signed installer |
+| Windows store listing | **Unpackaged Win32**: the same signed installer, not a repackaged container | Distribution only, **never a commerce channel** (**[D-022](../decisions/phase-1-foundation-decisions.md#rule-d-022)**) |
 | macOS | Signed with a Developer ID, hardened runtime, notarised, stapled | Official-site distribution first; a store route is deferred because sandboxing conflicts with professional local-file and device workflows |
-| Linux | **A single self-contained portable format as the first official format** (`I4 §Stage 5 §22`) | Additional formats later; **do not maintain many packaging formats simultaneously in the first stage** (`§24` there) |
+| Linux | **A single self-contained portable format as the first official format** | Additional formats later; **do not maintain many packaging formats simultaneously in the first stage** |
 | Android | App bundle with platform app signing, published to the official store | Consumption-only (**[D-022](../decisions/phase-1-foundation-decisions.md#rule-d-022)**); a direct download may exist but is not the primary channel |
 | iOS | **Deferred** (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**) | Packaging is designed, not built |
 
 | # | Rule |
 |---|---|
 | PP-01 | **A "full suite" is an installation experience, not a packaging unit** ([DS-02](../requirements/10-distribution-update-and-support.md#rule-ds-02) there). A bootstrapper may install selected products; a single monolithic installer must never exist. |
-| <a id="rule-pp-02"></a>PP-02 | **A macOS artifact is built and signed on a macOS runner** (`I4 §Stage 5 §26`). Cross-building and post-hoc signing are not substitutes. |
+| <a id="rule-pp-02"></a>PP-02 | **A macOS artifact is built and signed on a macOS runner**. Cross-building and post-hoc signing are not substitutes. |
 | PP-03 | **Every product's package identity is stable and distinct**, and is never reused between products or channels. |
 | PP-04 | **The executable directory is never a user data directory** ([UP-05](../requirements/10-distribution-update-and-support.md#rule-up-05) there), and packaging must make that structurally impossible. |
 
@@ -187,7 +187,7 @@ The product's own update system
 | <a id="rule-af-02"></a>AF-02 | **The update feed is data, not code**: a signed, versioned document describing available versions per channel, per platform, per architecture, with hashes, minimum OS versions, minimum cloud version and compatibility ranges. |
 | AF-03 | **The feed can immediately stop offering a bad version** ([UP-10](../requirements/10-distribution-update-and-support.md#rule-up-10) there), and the compatibility policy can block a specific version range without blocking neighbouring versions. |
 | AF-04 | **Feed changes are auditable** and carry an author, reason and timestamp. |
-| AF-05 | **A public mirror of a release may exist**, but the authoritative feed is the ArcForges-owned one (`I4 §Stage 5 §2`, `§6`). |
+| AF-05 | **A public mirror of a release may exist**, but the authoritative feed is the ArcForges-owned one. |
 | AF-06 | **Objects are immutable and content-addressed**; a delta package references exact source and target hashes. |
 | AF-07 | **The download surface has no account gate** (`§4` of the web architecture) and remains available during a cloud incident. |
 
@@ -271,11 +271,11 @@ The build and release system is **not**: a monolithic suite installer; a second 
 
 ## 13. Traceability
 
-| Source | Consumed as |
+| Current document | Relationship |
 |---|---|
-| `I4 §Stage 5 §1`–`§52` | Distribution matrix, install and update infrastructure choice, per-platform packaging routes, signing obligations, channel model, version specification, release record, artifact verification, update-source ownership, update behaviour, rollback, data-migration independence and mobile distribution |
-| `I3 §2`, `§19` | Runtime and AOT publish matrix, and the packaging consequences of self-contained AOT |
-| `I2 §III.0`, `§III.1`, `§III.13` | Specification and rights freeze, the platform skeleton AOT proof, and the full-platform production release sequence |
+| [Distribution, Update, Support and Trust & Safety Requirements](../requirements/10-distribution-update-and-support.md) | Owns signing, channels, release records, packaging and update behavior |
+| [Product Quality and Compatibility Contract](../requirements/12-quality-and-compatibility-contract.md) | Owns the runtime and release evidence matrix |
+| [Deployment and Release Execution](22-deployment-and-release-execution.md) | Defines publication, promotion, rollback and compatibility procedures |
 | **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**, **[V-03](../assurance/phase-1-official-verification.md#rule-v-03)**, **[V-04](../assurance/phase-1-official-verification.md#rule-v-04)** | The publish matrix and its verification obligations |
 | **[D-011](../decisions/phase-1-foundation-decisions.md#rule-d-011)** | One monorepo with independently released products |
 | **[D-014](../decisions/phase-1-foundation-decisions.md#rule-d-014)** | Update and download domains as owned surfaces |

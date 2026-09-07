@@ -17,7 +17,7 @@
 
 **Out of scope.** Device control, which remains a later, higher-permission capability class. Cloud sync and ArcChat integration (`35`).
 
-**Why this package exists.** `I2 §III.9` places visualisation, triggers, measurement, decoding, analysis, annotation, comparison and reporting after the evidence layer, so that every interpretation is anchored to immutable evidence and a recorded configuration.
+**Why this package exists.** [the current dependency model](../implementation-sequence.md#2-phase-structure) places visualisation, triggers, measurement, decoding, analysis, annotation, comparison and reporting after the evidence layer, so that every interpretation is anchored to immutable evidence and a recorded configuration.
 
 ---
 

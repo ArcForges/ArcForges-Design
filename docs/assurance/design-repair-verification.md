@@ -255,6 +255,8 @@ if __name__=='__main__':
 
 ## Complete corpus checker
 
+The runnable checker follows the current repository layout: it checks formal-document structure and the archive README, excluding the four deprecated input bodies before reading files or building coverage counts. Earlier results in this record describe their recorded baseline; running this updated checker does not reopen input review.
+
 ```python
 import sys,re,json,collections,posixpath
 from pathlib import Path
@@ -264,6 +266,48 @@ sys.stdout.reconfigure(encoding='utf-8')
 T=Path(__file__).parent
 LINK=re.compile(r'(?<!!)\[([^\]]+)\]\(([^)]+)\)')
 ID=re.compile(r'(?<![\w-])(?:WP-\d{2}(?:\.\d{2})?|P2-\d{3}|[A-Z][A-Z0-9]{0,5}-(?:[A-Z]\d{1,3}|\d{2,3}[a-z]?))(?![\w.-])')
+ACTIVE_LAYERS=('docs/requirements/','docs/architecture/','docs/planning/')
+HISTORICAL_ASSURANCE={
+ 'docs/assurance/phase-1-input-review-ledger.md',
+ 'docs/assurance/phase-1-official-verification.md',
+ 'docs/assurance/invariant-coverage.md',
+ 'docs/assurance/design-repair-verification.md',
+ 'docs/assurance/phase-2-design-closure-review.md',
+ 'docs/assurance/web-typescript-redesign-review.md',
+}
+LEGACY_INPUT=re.compile(r'\bI[1-4]\b|\bStage\s+\d+\s*(?:§|Invariant|\.\d)|\bdocs[/\\]inputs\b|FutureAllCSharp\.md|(?:platform-architecture-concept|product-discovery-record|product-discovery-overview|implementation-sequencing-notes)(?:-deprecated)?\.md',re.I)
+def input_dependency_problem(path,line):
+ current=path.startswith(ACTIVE_LAYERS) or (path.startswith('docs/assurance/') and path not in HISTORICAL_ASSURANCE)
+ if current and LEGACY_INPUT.search(unquote(line)):
+  return 'deprecated input reference in active specification'
+ return None
+def verify_input_dependency_guard():
+ bad=(
+  ('docs/requirements/test.md','> Governing authority: I1'),
+  ('docs/planning/work-packages/test.md','| Required input | I2 section III |'),
+  ('docs/architecture/test.md','Implement the I3 runtime rule.'),
+  ('docs/architecture/contracts/test.md','Acceptance: Stage 13 §49'),
+  ('docs/architecture/data-model/test.md','[source](../../deprecated-inputs/product-discovery-record-deprecated.md)'),
+  ('docs/requirements/test.md','[source](../inputs/platform-architecture-concept.md)'),
+  ('docs/planning/test.md','[source](../deprecated-inputs/%70roduct-discovery-overview-deprecated.md)'),
+  ('docs/requirements/test.md','Read FutureAllCSharp.md for the required types.'),
+  ('docs/assurance/open-gates-register.md','Required evidence: I4 section 19.'),
+  ('docs/assurance/release-gates.md','[acceptance](../deprecated-inputs/implementation-sequencing-notes-deprecated.md)'),
+ )
+ good=(
+  ('docs/requirements/test.md','[I-001](01-normative-glossary-and-invariants.md#rule-i-001)'),
+  ('docs/planning/README.md','The [deprecated archive](../deprecated-inputs/README.md) is excluded.'),
+  ('docs/planning/test.md','The Stage 2 repair produced this mapping.'),
+  ('docs/architecture/test.md','Validate untrusted input before committing a resource.'),
+  ('docs/planning/test.md','[D-018](../decisions/phase-1-foundation-decisions.md#rule-d-018)'),
+  ('docs/decisions/history.md','Historical quotation: I2 §III; not a current input.'),
+ )
+ for p,l in bad:
+  if not input_dependency_problem(p,l):raise RuntimeError(('missed deprecated input',p,l))
+ for p,l in good:
+  if input_dependency_problem(p,l):raise RuntimeError(('rejected valid formal reference',p,l))
+ return len(bad)+len(good)
+input_guard_fixtures=verify_input_dependency_guard()
 def visible(s):
  s=re.sub(r'<[^>]+>','',s)
  s=LINK.sub(lambda m:m[1],s)
@@ -271,7 +315,7 @@ def visible(s):
 def slug(s):
  s=visible(s).lower()
  return re.sub(r'[^\w\- ]','',s,flags=re.UNICODE).replace(' ','-')
-files={p.relative_to(ROOT).as_posix():p.read_text(encoding='utf-8-sig').splitlines() for p in ROOT.rglob('*.md') if '.git' not in p.relative_to(ROOT).parts and '.worktree' not in p.relative_to(ROOT).parts}
+files={p.relative_to(ROOT).as_posix():p.read_text(encoding='utf-8-sig').splitlines() for p in ROOT.rglob('*.md') if '.git' not in p.relative_to(ROOT).parts and '.worktree' not in p.relative_to(ROOT).parts and (not p.relative_to(ROOT).as_posix().startswith('docs/deprecated-inputs/') or p.relative_to(ROOT).as_posix()=='docs/deprecated-inputs/README.md')}
 anchors={};definitions={};errors=[];ruledefs=0
 for p,ls in files.items():
  an=set();counter=collections.Counter();dd={}
@@ -298,9 +342,10 @@ for p,ls in files.items():
  anchors[p]=an;definitions[p]=dd;ruledefs+=len([k for k in an if k.startswith('rule-')])
 links=0;rulelinks=0;rawrefs=[];literals=0
 for p,ls in files.items():
- if p.startswith('docs/inputs/'):continue
  code=False
  for i,l in enumerate(ls,1):
+  problem=input_dependency_problem(p,l)
+  if problem:errors.append((p,i,problem,l))
   if l.lstrip().startswith(chr(96)*3):code=not code;continue
   if code:continue
   matches=list(LINK.finditer(l))
@@ -372,7 +417,7 @@ for l in files[coverage]:
   first=visible(l.split('|')[1]).strip()
   if re.fullmatch(r'I-\d{3}',first):actual.add(first)
 if expected!=actual:errors.append((coverage,0,'invariant mapping mismatch',[sorted(expected-actual),sorted(actual-expected)]))
-result=dict(markdown_files=len(files),local_links=links,rule_links=rulelinks,stable_rule_anchors=ruledefs,invariant_catalogue_entries=len(expected),active_work_packages=len(active),dependency_edges=sum(map(len,deps.values())),raw_citations=rawrefs,literal_allocations_and_standards=literals,errors=errors)
+result=dict(markdown_files=len(files),local_links=links,rule_links=rulelinks,stable_rule_anchors=ruledefs,invariant_catalogue_entries=len(expected),active_work_packages=len(active),dependency_edges=sum(map(len,deps.values())),input_guard_fixtures=input_guard_fixtures,raw_citations=rawrefs,literal_allocations_and_standards=literals,errors=errors)
 (T/'design_check.json').write_text(json.dumps(result,ensure_ascii=False,indent=2),encoding='utf-8')
 print(json.dumps({k:v for k,v in result.items() if k not in ('errors','raw_citations')},ensure_ascii=False))
 print('ERRORS',len(errors),'RAW CITATIONS',len(rawrefs))
