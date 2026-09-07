@@ -201,12 +201,25 @@ Every gate in [`open-gates-register.md`](open-gates-register.md) is scheduled.
 | **PG-05** | `12.02` | `R-16` |
 | **PG-06** | **Closed by design evidence 2026-09-05** — [`invariant-coverage.md`](invariant-coverage.md) `§7` | Finalising the design baseline |
 | **PG-11** | Distributed across the owning packages in that mapping; accounting reported by `05.05` | Each owning package's gate; `P-03` per product |
-| **PG-07** | `19.05`, `35.04`, `39.05` | Public import claims |
+| **PG-07** | `19.04`, `35.04`, `39.05` | Public import claims. **`19.04` is the import step**; `19.05` is the Cloud export and carries no import-fixture obligation |
 | **PG-08** | `13.04` | `C-04` |
 | **PG-09** | `41` | Third-party extension enablement |
 | **PG-10** | `42.10`, `43.06` | `L-28`, `L-29` |
+| **PG-12** | `18.05` | `AT-05`; ArcNotes' first release claim of PDF support |
+| **PG-13** | `43.07`, `42.11` | Paid AI go-live; `PG-10` |
+| **PG-14b** | `51.00`–`51.05` | Any ArcScope claim that Cloud simulation is delivered. **Not `34`**, whose repeatable source is file/replay from `33` |
+| **PG-15** | `39.05` | ArcSlate release |
+| **PG-16** | `44.01`, `42.11` | Paid production go-live |
+| **PG-17** | `21.05`, `25.02` | Sync go-live; every client cursor guarantee |
+| **PG-18** | `52.02`, `52.04` | Paid AI go-live; any external-effect capability |
+| **PG-19** | `21.03`, `50.04` | Any schema evolution in production |
+| **PG-20** | `36.01`, `37.02` | ArcSlate release; OTIO round-trip claims |
+| **PG-21** | `00.01` | Any acceptance criterion naming a design rule; every completion gate citing another document |
+| **VG-05** | **Merged into `F-026`** and recorded there; no separate schedule | — |
 
-**Coverage: 26 of 26 gates scheduled, closed or explicitly dormant** — four closed by design evidence, twenty-two open implementation-stage obligations, plus one unresolved determination (`OC-01`) carried in [`open-gates-register.md`](open-gates-register.md) `§6`.
+**Coverage: 37 of 37 gates scheduled, closed, merged or explicitly dormant** — 3 deferred Phase 1 gates, 13 `VG` verification gates and 21 `PG` Phase 2 gates. Four are closed by design evidence (`F-013`, `PG-01`, `PG-02`, `PG-06`), one is merged (`VG-05` into `F-026`), one is dormant (`VG-06`), and the remainder are open implementation-stage obligations. One unresolved determination (`OC-01`) is carried in [`open-gates-register.md`](open-gates-register.md) `§6`, and `RS-01`–`RS-03` there are rules about gate state rather than gates.
+
+> **This count is checked, not asserted.** `SV-05` of the verification strategy requires every gate to be scheduled in a named package; before 2026-09-08 this table stopped at `PG-10` while the register held `PG-21`, so ten gates — including every gate created by the P2-006 reconciliation and the two review passes — were unscheduled here while the coverage line claimed completeness.
 
 ---
 

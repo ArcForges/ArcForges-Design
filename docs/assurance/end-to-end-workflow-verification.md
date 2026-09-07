@@ -196,7 +196,7 @@ Seven steps failed to resolve on the first pass. All seven are closed by work in
 | # | Finding | Resolution | State |
 |---|---|---|---|
 | **W-04** | **A-03 could not resolve.** No schema, operation or rule expressed "an active paid service term", so `C-03` — *credits alone cannot authorise AI* — was unenforceable. Nothing distinguished a credit grant from a paid term | `entitlement.service_term` added with `UQ (kind, source_ref)`; `§5.3` of the commerce architecture; `entitlement.getServiceTerm`; `entitlement.no_service_term`; `SV-01`–`SV-07` | **Closed** |
-| **W-05** | **A-07 resolved to the wrong model.** The credit architecture described an allowance reissued per period and voided at period end — not a replenishing bucket. The refill arithmetic, the watermark, the fractional remainder and the burst ceiling had no design at all | `§7.2` of the commerce architecture with the algorithm; `entitlement.capacity_bucket` with the monotonic watermark and the `available ≤ max(0, burst − held)` constraint; `WP-42.11` | **Closed** |
+| **W-05** | **A-07 resolved to the wrong model.** The credit architecture described an allowance reissued per period and voided at period end — not a replenishing bucket. The refill arithmetic, the watermark, the fractional remainder and the burst ceiling had no design at all | `§7.2` of the commerce architecture with the algorithm; `§7.2` of the commerce architecture carries the algorithm; `entitlement.capacity_bucket` carries the monotonic watermark, the exact rational carry and a **bound on the increase** — corrected 2026-09-08 from a resting-value constraint, which `RF-05` contradicts; `WP-42.11` | **Closed** |
 | **W-06** | **A-10 could not resolve.** No schema recorded normalised usage, so `MT-03`'s non-overlapping categories and `MT-05`'s cumulative-stream rule had nowhere to live. Double-charging reasoning or cached tokens was not structurally prevented | The five-table metering chain; `UQ (provider_attempt_id, usage_revision, category)` as the idempotency key; `§7.4`, `§7.5`; `WP-43.07` | **Closed** |
 | **W-07** | **C-08 resolved to a contradiction.** A render was reachable as an agent Step, which would have put a native job under AI metering and Cloud recovery | `CM-04` of the runtime architecture; `AU-03`; `XA-07`; `TO-05`; `I-121` and `I-485` restated | **Closed** |
 | **W-08** | **D-03 could not resolve.** Nothing distinguished an evictable cache row from a durable pending edit, so cache pressure, sign-out and restriction could each have discarded unacknowledged work | `PE-01`–`PE-06` in the desktop data model as a schema constraint, not a convention; `I-498` | **Closed** |
@@ -212,7 +212,7 @@ Seven steps failed to resolve on the first pass. All seven are closed by work in
 
 ---
 
-## 12. Findings closed on 2026-09-07
+## 11. Findings closed on 2026-09-07
 
 A subsequent review supplied thirteen findings and this pass discovered three more. **All sixteen were confirmed against the documents and closed**; none was rejected. The traces above were rechecked against the corrected mechanisms, and six steps were updated because the mechanism beneath them changed.
 
@@ -242,13 +242,59 @@ A subsequent review supplied thirteen findings and this pass discovered three mo
 
 ---
 
-## 11. What this does and does not establish
+## 12. Findings closed on 2026-09-08
+
+A further review supplied eight problem areas; **all eight were confirmed against the documents and none was rejected**. Working outward from them, this pass found **fourteen more**, four of them defects introduced by the previous pass's own repairs. The traces above were rechecked; `A-04`, `A-12` and `B-08` were corrected because they cited a rule family that no longer existed at those numbers.
+
+### The eight supplied areas
+
+| # | Area | Closed by |
+|---|---|---|
+| **J-A** | Accepted scope had not reached the executable instructions and gates | Package bodies, `BR` rows and gate lists in `13`, `16`, `18`, `19`, `21`, `43`; then the layers `J-I1` names below |
+| **J-B** | `WP-17` and `WP-52` each required the other | `WP-17.01` rescoped to the client and device executor against a fixture endpoint that `WP-52.05` deletes; `WP-06` declared upstream |
+| **J-C** | Local edits were acknowledged by a token that could not express them | `§1.3a` of the desktop data model: four identities, `RV-C1`–`RV-C6`, the submission batch log, `EV-L1`–`EV-L3` |
+| **J-D** | Task ownership, transaction boundaries and change provenance disagreed | `§4.1`, `§4.2`, `§6.1.1`, `§6.1.2` of the data-model overview; `origin_kind`; `TK-01`–`TK-05` |
+| **J-E** | Refill ignored the ceiling in force during each window | `§7.2` of the commerce architecture; `RF-01`–`RF-11`; `CT-13` |
+| **J-F** | The ArcSlate time model promised incommensurate exact round-trips | `§3.1`–`§3.9` of the simulator and interchange architecture; the tick base; `TV-01`–`TV-12` |
+| **J-G** | The migration cutover left a window in which a write could be missed | `§2.5` capture-before-backfill; `§2.6` the data-rollback window |
+| **J-H** | Streaming assumed a buffer one replica could see | `§7.1` of the harness; `chat.stream_chunk` / `stream_state`; `task.readStream` |
+
+### Found independently in this pass
+
+| # | Defect | Where it would have shown | Closed by |
+|---|---|---|---|
+| **J-I1** | `PV-04` and release gate `P-04` required every product to be usable with no account; `ID-01` grants only that **launch** needs none, and enrolment requires Cloud | A release gate no Cloud-authoritative product can pass | `PV-04`, `P-04`, `§27` startup scenario, `AN-40` oracle |
+| **J-I2** | Release gate `P-05`, `PP-01`, `PP-02` and `DL-07` demanded a re-importable package from products whose exit path is a Cloud download | A round-trip test written against an export that cannot re-import | `P-05` per declared path; citations moved to `WP-39.02`, `WP-35.04`; `DL-07a` |
+| **J-I3** | Repository projection is retired delivery, yet `§12` of the persistence architecture specified the feature and `WP-19.06` gated it | A package building an excluded capability | `§12` is now the prohibition; `WP-19.06` asserts absence; `I-211`/`I-212` given a real oracle |
+| **J-I4** | The bridge contract still created tasks with `placement = remoteViaBridge` | A field the schema no longer has | `§5` diagram on `origin_surface` and `tool_locality` |
+| **J-I5** | The reconciliation ledger ordered a `Split` into three deployable roles, against `RT-03` | A host split that the design forbids | Disposition corrected to `Keep` |
+| **J-I6** | `WP-43` listed BYOK in scope, 79 lines above `WP-43.03`, "the absence of BYOK" | A credential path the requirements exclude | In-scope statement corrected |
+| **J-I7** | The `AL-02` oracle required a frame–sample round-trip that `§3.3` proves cannot exist | A test that can never pass | Oracle restated as tick exactness within one grid |
+| **J-I8** | Four dependency edges were declared one way only; `WP-50` omitted `40` and `41`; `WP-51`/`WP-52` sat in phases their own headers contradict; `WP-51` put native analysis behind Cloud | A production release not depending on search or extensions; an unschedulable ArcScope package | Headers and both README tables regenerated; `SV-06`, `SV-07` |
+| **J-I9** | 1,167 identifiers are defined in two or more normative documents and 1,597 citations resolve to none of them; `OG-05` recorded one instance as if unique | A rule read as the wrong rule, silently, because the wrong one reads correctly | `OG-05` generalised with the measurement; `SV-01` requires resolution, not existence; `PG-21` |
+| **J-I10** | P2-006 took the invariant catalogue to 429 rows; four `WP-05.05` gates still demanded "all 421" | A conformance report that omits eight invariants, or fails a gate for covering them | Corrected across the chain; `R-15` marked superseded |
+| **J-I11** | The Cloud data model carried a **second, divergent** refill algorithm and a `CHECK` that `RF-05` contradicts | Over-granting on a ceiling rise, confiscation on a reduction, and a stranded bucket after a downgrade | Duplicate deleted; bound moved onto the increase; `CX-11` |
+| **J-I12** | The overview's write path omitted the outbox participant and the dispatch barrier | Sync rows written outside the transaction that must contain them | Step 5 as a closed participant list; step 6 as the barrier |
+| **J-I13** | Cancellation released a reservation whose dispatch intent was already committed | Free inference, or provider usage that settles against nothing | Cancellation table split at the barrier; `CN-04`; `HV-08a` |
+| **J-I14** | The public contract kept `placement`, never enumerated the Task state set, and had no rule for a state a client does not know | An older client treating `waitingCapacity` as failure and stranding the Task | `TK-01` corrected; `§7.1` vocabulary; `TS-01`–`TS-03`; `OB-03a` |
+
+**Four of these were introduced by the previous pass**, not inherited: `J-I11` (area E corrected in one document only), `J-I13` and `J-I14` (areas D and H not carried into the contract and cancellation layers), and `J-I8`'s phase placements for `WP-51` and `WP-52`, which this session created.
+
+| # | Rule |
+|---|---|
+| WF-07 | **A correction applied in one document is not a correction.** Four of the fourteen above are places where an earlier repair in this session stopped at the first document. The check that catches it is `SV-01` plus a search for the mechanism's own vocabulary, not a reread of the document that was edited. |
+| WF-08 | **A second copy of an algorithm is a second answer.** The refill algorithm existed in two documents and they had diverged into different arithmetic. Duplicated normative content is removed in favour of one home, never re-synchronised. |
+| WF-09 | **The classes worth scanning for are now named**: retired capability still specified (`SV-08`), gate pinned to a superseded figure, citation resolving to the wrong document (`SV-01`), dependency edge declared one way (`SV-06`), and phase contradicting a header (`SV-07`). Each was found by hand in this pass and each is now a mechanical check. |
+
+---
+
+## 13. What this does and does not establish
 
 | Establishes | Does not establish |
 |---|---|
 | Eight boundary-crossing workflows resolve end to end, on success and failure paths, **against the revised requirements** | That every workflow in the product family does |
 | Each traced failure path reaches a stated terminal state | That the implementation will behave as specified |
-| Seven real defects were found and closed | That no defects remain |
+| Seven defects were found and closed here; a further sixteen on 2026-09-07 and twenty-two on 2026-09-08 (`§11`, `§12`) | That no defects remain — the 2026-09-08 pass found fourteen the 2026-09-07 pass did not, four of which it had itself introduced |
 | The design layer is present where these workflows need it | That the design is complete in areas these workflows do not touch |
 
 | # | Rule |

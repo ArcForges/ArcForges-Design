@@ -527,7 +527,7 @@ The Harness always runs in Cloud (`LS-02`). What varies is **where each tool exe
 
 | # | Rule |
 |---|---|
-| PL-01 | **A Task is Cloud-owned from creation** (`TO-02` of the data-model overview). There is no local or hybrid task placement to decide. |
+| PL-01 | **A Task is Cloud-owned from creation** (`TO-01` of the data-model overview). There is no local or hybrid task placement to decide. |
 | PL-02 | **A device tool with no eligible online device enters `WaitingForDevice`** with a stated reason and a bounded wait — it never degrades to a cloud approximation. |
 | PL-03 | **Waiting consumes no model capacity.** A turn parked on a device or an approval releases its included-capacity hold at the safe boundary and re-reserves on resume (`AC-05` of the commerce requirements). This is what stops one waiting Task from reserving the whole workspace. |
 | PL-04 | **Local-only data never leaves the device to enable a cloud tool** (`OW-08` of the AI requirements). If the data cannot leave, the device tool runs or the step fails with a reason. |
