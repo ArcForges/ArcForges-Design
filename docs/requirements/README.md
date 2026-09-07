@@ -2,6 +2,8 @@
 
 This directory defines product requirements for the ArcForges family: product scope, user capabilities, behavior, constraints, and acceptance criteria.
 
+The [original inputs are deprecated](../deprecated-inputs/README.md) and excluded from ongoing requirements discovery and design-completeness audits. Their historical citations do not add requirements or require rereading the archive. Current requirements must state their own obligations; missing definitions must be resolved in the formal design.
+
 All content here is **authoritative for current requirements**, subject to the current amendment below. It is governed by the frozen Phase 1 decisions in [`../decisions/phase-1-foundation-decisions.md`](../decisions/phase-1-foundation-decisions.md) ([D-001](../decisions/phase-1-foundation-decisions.md#rule-d-001) … [D-023](../decisions/phase-1-foundation-decisions.md#rule-d-023)) and by the verification record in [`../assurance/phase-1-official-verification.md`](../assurance/phase-1-official-verification.md) ([V-01](../assurance/phase-1-official-verification.md#rule-v-01) … [V-09](../assurance/phase-1-official-verification.md#rule-v-09)). Where a requirement is governed by a decision, the decision is cited inline.
 
 ## Current revision — [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006), 2026-09-06
@@ -10,7 +12,7 @@ The [scope amendment P2-006](../decisions/phase-2-specification-decisions.md#rul
 
 Required metering semantics are settled in [commerce §8.4–8.6](04-commerce-entitlement-and-credits.md): actual provider usage, immutable rates, independent supplier/customer/payment accounting, recoverable included capacity and explicitly authorized extra credits. [Configuration §10.5–10.6](11-policy-and-configuration.md) requires working public code driven by mounted private deployment values, with no proprietary policy repository or mock implementation.
 
-**This revision is a requirements update, not Stage 2 completion.** Existing architecture, database/wire designs, work packages, reference coverage, invariant mapping and assurance results must be reconciled to [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006) and reviewed before they can claim current coverage. Old completion counts are historical evidence of the earlier baseline. Preserved inputs remain unchanged; retired IDs must not be implemented merely because an old matrix references them.
+**This revision is a requirements update, not Stage 2 completion.** Existing architecture, database/wire designs, work packages, reference coverage, invariant mapping and assurance results must be reconciled to [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006) and reviewed before they can claim current coverage. Old completion counts are historical evidence of the earlier baseline. Deprecated input bodies remain unchanged; retired IDs must not be implemented merely because an old matrix references them.
 
 ## Reading order
 

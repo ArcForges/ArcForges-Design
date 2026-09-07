@@ -255,6 +255,8 @@ if __name__=='__main__':
 
 ## Complete corpus checker
 
+The runnable checker follows the current repository layout: it checks formal-document structure and the archive README, excluding the four deprecated input bodies before reading files or building coverage counts. Earlier results in this record describe their recorded baseline; running this updated checker does not reopen input review.
+
 ```python
 import sys,re,json,collections,posixpath
 from pathlib import Path
@@ -271,7 +273,7 @@ def visible(s):
 def slug(s):
  s=visible(s).lower()
  return re.sub(r'[^\w\- ]','',s,flags=re.UNICODE).replace(' ','-')
-files={p.relative_to(ROOT).as_posix():p.read_text(encoding='utf-8-sig').splitlines() for p in ROOT.rglob('*.md') if '.git' not in p.relative_to(ROOT).parts and '.worktree' not in p.relative_to(ROOT).parts}
+files={p.relative_to(ROOT).as_posix():p.read_text(encoding='utf-8-sig').splitlines() for p in ROOT.rglob('*.md') if '.git' not in p.relative_to(ROOT).parts and '.worktree' not in p.relative_to(ROOT).parts and (not p.relative_to(ROOT).as_posix().startswith('docs/deprecated-inputs/') or p.relative_to(ROOT).as_posix()=='docs/deprecated-inputs/README.md')}
 anchors={};definitions={};errors=[];ruledefs=0
 for p,ls in files.items():
  an=set();counter=collections.Counter();dd={}
@@ -298,7 +300,6 @@ for p,ls in files.items():
  anchors[p]=an;definitions[p]=dd;ruledefs+=len([k for k in an if k.startswith('rule-')])
 links=0;rulelinks=0;rawrefs=[];literals=0
 for p,ls in files.items():
- if p.startswith('docs/inputs/'):continue
  code=False
  for i,l in enumerate(ls,1):
   if l.lstrip().startswith(chr(96)*3):code=not code;continue

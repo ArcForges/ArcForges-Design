@@ -9,7 +9,7 @@ This directory records Architecture Decision Records (ADRs) for significant stru
 
 ## Conventions
 
-- A conclusion already stated in the preserved input corpus, or already implied by a Phase 1 decision, is implemented in the requirements, architecture or planning layer **with a citation** — it does not become a decision record.
+- A conclusion already established by a current formal specification or an effective accepted decision is implemented in the appropriate layer **with a citation** — it does not become a duplicate decision record. The [deprecated input archive](../deprecated-inputs/README.md) supplies no new requirements or authority.
 - A deferred decision carries an owner, a trigger and the constraint every permitted option must satisfy — never a bare "decide later" (**[D-016](phase-1-foundation-decisions.md#rule-d-016)**).
 - A decision recorded here is cited inline wherever it is implemented, exactly as Phase 1 decisions are.
 - Authors may not silently contradict Phase 1. Subsequent explicit user decisions take precedence under **[D-001](phase-1-foundation-decisions.md#rule-d-001)** and require a dated amendment; [P2-006](phase-2-specification-decisions.md#rule-p2-006) records the current requirements revision.
@@ -19,4 +19,4 @@ This directory records Architecture Decision Records (ADRs) for significant stru
 [P2-006](phase-2-specification-decisions.md#rule-p2-006) governs the cloud subscription baseline. Its requirements and downstream reconciliation are recorded in the existing Stage 2 closure evidence; the subsequent Web amendment is governed by [P2-008](phase-2-specification-decisions.md#rule-p2-008) and the [Web redesign review](../assurance/web-typescript-redesign-review.md).
 
 
-[P2-008](phase-2-specification-decisions.md#rule-p2-008) is the current Web decision: React/TypeScript with Node/npm, C#-generated OpenAPI/TS SDK, win.slnx/esproj and portable directory workflows. It supersedes the original [D-007](phase-1-foundation-decisions.md#rule-d-007) Web technology and resolves [P2-003](phase-2-specification-decisions.md#rule-p2-003); preserved inputs remain historical evidence.
+[P2-008](phase-2-specification-decisions.md#rule-p2-008) is the current Web decision: React/TypeScript with Node/npm, C#-generated OpenAPI/TS SDK, win.slnx/esproj and portable directory workflows. It supersedes the original [D-007](phase-1-foundation-decisions.md#rule-d-007) Web technology and resolves [P2-003](phase-2-specification-decisions.md#rule-p2-003). Original input quotations and `I1`–`I4` citations are historical provenance only; they neither reopen input review nor reinstate superseded obligations.

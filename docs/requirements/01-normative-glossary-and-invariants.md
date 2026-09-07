@@ -781,7 +781,7 @@ The glossary is enforced, not merely published.
 
 | Control | Mechanism | Where specified |
 |---|---|---|
-| Forbidden term scan | Repository-policy test failing the build on any forbidden alias or obsolete product name in `src/`, `docs/` (excluding `docs/inputs/`), identifiers and resource strings | [`../assurance/testing-and-verification-strategy.md`](../assurance/testing-and-verification-strategy.md) |
+| Forbidden term scan | Repository-policy test failing the build on any forbidden alias or obsolete product name in `src/`, `docs/` (excluding `docs/deprecated-inputs/`), identifiers and resource strings | [`../assurance/testing-and-verification-strategy.md`](../assurance/testing-and-verification-strategy.md) |
 | Invariant traceability | Every invariant maps to at least one architecture rule, one test, and one work-package completion gate | [`../assurance/traceability-matrix.md`](../assurance/traceability-matrix.md) |
 | Namespaced-term enforcement | Architecture tests asserting product-owned types are not lifted into shared foundation namespaces | [`../architecture/01-solution-and-project-layout.md`](../architecture/01-solution-and-project-layout.md) |
 | Glossary change control | A new canonical term, a changed definition, or a retired invariant requires a decision record in `docs/decisions/` | **[D-018](../decisions/phase-1-foundation-decisions.md#rule-d-018)** |

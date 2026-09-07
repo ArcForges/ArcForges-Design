@@ -12,12 +12,14 @@ This register holds every material issue found while reviewing the closed Phase 
 
 Confirmed by the user as **[D-001](#rule-d-001)**.
 
+**User-directed archive boundary (2026-09-07):** The original inputs have completed their role and now live in the [deprecated input archive](../deprecated-inputs/README.md). Current work follows the formal requirements, architecture, planning and assurance under the effective accepted decisions. Archived inputs are excluded from ongoing design and design-completeness audits; their historical citations do not require rereading or reconciling them. The original decision quotations remain unchanged, and reference-source review obligations are unaffected.
+
 1. Current explicit user decisions.
 2. The user-confirmed Phase 1 decision register.
-3. Raw input documents as evidence of prior intent and exploration only.
+3. Deprecated raw input documents as historical provenance only, excluded from current design and audit scope.
 4. Current official primary sources for externally verifiable facts.
 
-**There is no automatic precedence among the raw input documents.** The sequencing notes, later stages, the architecture concept and the overview do not automatically override one another. A later or apparently more specific statement may be evidence of intended evolution, but it is not authoritative until reviewed.
+**Historical intake rule:** During Phase 1, raw input documents had no automatic precedence over one another. Their proposed evolution was resolved through accepted decisions. That completed review does not create an ongoing queue of input conflicts or unadopted commitments.
 
 Neither the existing implementation monorepo nor any undeclared historical plan is design authority. A statement is not correct merely because it appears later in a file, appears repeatedly, is written confidently, or is labelled "final", "frozen" or "recommended".
 
@@ -398,6 +400,8 @@ Decisions are recorded verbatim as given by the user. Each cites the issue it re
 <a id="rule-d-001"></a>
 
 ## D-001 — Conflict-resolution rule · resolves **[F-001](#rule-f-001)** · `USER_CONFIRMED`
+
+The original input-review wording below is retained as history. Its current application follows the [archive boundary](#authority-order); it does not reopen review of the deprecated inputs.
 
 > Do not establish automatic precedence among the raw input documents.
 >

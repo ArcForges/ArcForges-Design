@@ -8,7 +8,7 @@
 
 This document defines what ArcForges is, what it contains, what it deliberately does not contain, and the product-level boundaries that every other requirement, architecture and work-package document must respect.
 
-[P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006) is the dated user-directed amendment. Earlier decisions and inputs apply only where consistent with that amendment.
+[P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006) is the dated user-directed amendment. Earlier decisions apply only where consistent with that amendment. The [deprecated inputs](../deprecated-inputs/README.md) are historical provenance only and do not add current requirements.
 
 ---
 
@@ -80,7 +80,7 @@ Consequences that bind every downstream document, schema, contract, identifier, 
 - **ArcScope is an independently defined product, not a rename or continuation of ArcImage.** The ArcImage domain vocabulary — Canvas, Layer, Mask, Filter, image editing — must never be mechanically migrated into ArcScope (Stage 13 §2, §3; [D-002](../decisions/phase-1-foundation-decisions.md#rule-d-002)).
 - **ArcSlate inherits product *direction* from ArcVideo, not its model.** The retained high-level concepts are Project, Timeline, Track, Clip, Effect, Media, Proxy, Render, Undo/Recovery and resource ownership. The complete ArcSlate model is defined by its own product specification, informed by ArcVideo and ArcVideoFoundation as references only (**[D-012](../decisions/phase-1-foundation-decisions.md#rule-d-012)** as amended 2026-09-05, [P2-005](../decisions/phase-2-specification-decisions.md#rule-p2-005)) (Stage 13 §2, §7).
 - ArcNotes Edgeless/Canvas and presentation capabilities are excluded by [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006); the historical [D-002](../decisions/phase-1-foundation-decisions.md#rule-d-002) naming distinction is not a delivery obligation.
-- The raw input files under `docs/inputs/` retain these names as preserved historical evidence and are never edited.
+- The files under [`docs/deprecated-inputs/`](../deprecated-inputs/README.md) retain these names only in their unchanged historical bodies; they are excluded from current design and audit scope.
 
 ### 2.4 Adding a fifth product
 

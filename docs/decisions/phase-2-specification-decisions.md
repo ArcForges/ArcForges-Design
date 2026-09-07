@@ -7,7 +7,7 @@
 
 Phase 1 decisions remain binding except where subsequent explicit user direction amends them under D-001. **[P2-006](#rule-p2-006) records the user-directed requirements revision of 2026-09-06.**
 
-The bar for entry is deliberately high. A conclusion already stated in the preserved input corpus, or already implied by a Phase 1 decision, is implemented in the requirements, architecture or planning layers with a citation — it does not become a decision record. [P2-001](#rule-p2-001) through [P2-008](#rule-p2-008) are recorded below. [P2-002](#rule-p2-002) is withdrawn; [P2-003](#rule-p2-003) is now adopted under the Web redesign. [P2-008](#rule-p2-008) is the latest authority for Web, Node tooling and generated TypeScript clients.
+The bar for entry is deliberately high. A conclusion already established by a current formal specification or an effective accepted decision is implemented in the appropriate layer with a citation — it does not become a duplicate decision record. The [deprecated input archive](../deprecated-inputs/README.md) supplies no new requirements or authority; its citations and original quotations are historical provenance only. [P2-001](#rule-p2-001) through [P2-008](#rule-p2-008) are recorded below. [P2-002](#rule-p2-002) is withdrawn; [P2-003](#rule-p2-003) is now adopted under the Web redesign. [P2-008](#rule-p2-008) is the latest authority for Web, Node tooling and generated TypeScript clients.
 
 ---
 

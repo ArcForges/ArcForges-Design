@@ -2,6 +2,8 @@
 
 This directory contains the implementation dependency model and the numbered work-package sequence derived from the accepted requirements and architecture.
 
+The [deprecated inputs](../deprecated-inputs/README.md) are excluded from ongoing planning and design-completeness audits. Historical input citations do not require implementers or reviewers to reconstruct design from that archive. A missing definition must be resolved in the current formal design before implementation depends on it.
+
 All content here is **authoritative**, and is governed by **[D-017](../decisions/phase-1-foundation-decisions.md#rule-d-017)** (this is where numbered implementation work packages belong) and **[D-019](../decisions/phase-1-foundation-decisions.md#rule-d-019)** (one serial numbered sequence, `00 → 01 → 02 → … → NN`, with no predetermined maximum).
 
 ## Documents
