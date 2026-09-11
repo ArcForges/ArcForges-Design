@@ -43,8 +43,8 @@ The prerequisite evidence **[D-019](../decisions/phase-1-foundation-decisions.md
 |---|---|
 | **Evidence** | [`arcnotes-affine-siyuan.md`](../assurance/reference-coverage/arcnotes-affine-siyuan.md) `F-AN-2`. Neither AFFiNE nor SiYuan implements a presentation mode |
 | **Affected statement** | [WP-29](work-packages/29-arcnotes-slides.md#rule-wp-29) was written assuming reference oracles comparable to its sibling packages [WP-27](work-packages/27-arcnotes-edgeless-canvas.md#rule-wp-27) and [WP-28](work-packages/28-arcnotes-properties-and-views.md#rule-wp-28) |
-| **Correction** | **[WP-29](work-packages/29-arcnotes-slides.md#rule-wp-29)'s verification oracles are first-party only.** The absence is explicit in the matrix rather than an unnoticed gap |
-| **Downstream consumers** | [WP-29](work-packages/29-arcnotes-slides.md#rule-wp-29), and [WP-50.08](work-packages/50-full-platform-production-release.md#rule-wp-50.08)'s claim audit — no reference-parity claim can be made for slides |
+| **Correction** | Historical first-party slides-oracle requirement superseded by [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006): slides are excluded and the package is retired, with no future hook. The reference observation is preserved. |
+| **Downstream consumers** | Current Notes core/property packages implement the amended notebook scope. No live slides-oracle work or slides-parity claim is assigned to release. |
 | **Verification** | The completeness check in that matrix records **[D-006](../decisions/phase-1-foundation-decisions.md#rule-d-006)** phase coverage explicitly, naming slides as an absence |
 
 ### R-04 — Serial-Studio creates an authorship boundary
@@ -146,15 +146,15 @@ The prerequisite evidence **[D-019](../decisions/phase-1-foundation-decisions.md
 | **Downstream consumers** | [WP-01.03](work-packages/01-repository-reconciliation-and-target-layout.md#rule-wp-01.03) (fencing), [WP-35.04](work-packages/35-arcscope-integration-and-sync.md#rule-wp-35.04) and [WP-39.05](work-packages/39-arcslate-integration-and-portability.md#rule-wp-39.05) (the substitute analyses), [WP-37.00](work-packages/37-arcslate-playback-and-processing.md#rule-wp-37.00) (the shims that stay) |
 | **Verification** | [WP-01.03](work-packages/01-repository-reconciliation-and-target-layout.md#rule-wp-01.03)'s gate asserts the two fenced shims are unreferenceable and their analyses are scheduled against named sub-steps |
 
-### R-13 — The cloud three-role separation does not exist
+### R-13 — Preserve the single Cloud Host
 
 | Field | Content |
 |---|---|
 | **Evidence** | There, `§5.5`. `src/Cloud` holds `Host`, `AppHost`, `BackgroundJobs`, `Infrastructure`, `Migrations`, `PublicApi`, `Realtime`, `ServiceDefaults` — **no `Worker`, no `TaskRunner`** |
 | **Affected statement** | Not identified at all in the earlier inventory |
-| **Correction** | A **new priority-3 reconciliation item**: `Split` required, recorded for [WP-21.01](work-packages/21-cloud-host-and-persistence.md#rule-wp-21.01). Retrofitting role separation after modules gain behaviour is expensive |
-| **Downstream consumers** | [WP-21](work-packages/21-cloud-host-and-persistence.md#rule-wp-21), and every cloud package that assumes role isolation |
-| **Verification** | [WP-21.01](work-packages/21-cloud-host-and-persistence.md#rule-wp-21.01)'s gate asserts each role starts only its declared components, verified by inspecting the running composition |
+| **Correction** | The earlier split recommendation is withdrawn: the accepted topology is one Host containing bounded internal services and the Harness. Keep BackgroundJobs/AgentRuntime as libraries and AppHost for local development only. |
+| **Downstream consumers** | [WP-21](work-packages/21-cloud-host-and-persistence.md#rule-wp-21) and every Cloud package consume the same single-Host composition. |
+| **Verification** | [WP-21.01](work-packages/21-cloud-host-and-persistence.md#rule-wp-21.01) asserts identical replicas, all bounded hosted services in one deployable Host, no role flag/configuration leader, and lease/fencing coordination. |
 
 <a id="rule-r-14"></a>
 

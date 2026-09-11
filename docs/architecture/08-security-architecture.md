@@ -15,14 +15,14 @@ The requirements define **what** must hold. This document defines **where** it i
 |---|---|---|
 | **Realm** | A deployment's identity and data authority | Itself |
 | **Cloud User** | An account within a realm | Cloud Identity module |
-| **Workspace / Organization** | Tenancy and resource boundary | Cloud Workspace module |
+| **Workspace** | Single-owner tenancy, data, device, billing and sync boundary | Cloud Workspace module |
 | **Device** | A registered machine | Cloud Devices module |
 | **App Installation** | One installed product on one device | Cloud Devices module |
 | **App Instance** | One running process | Local Hub |
 | **Local OS User** | The local IPC security principal | The operating system |
 | **Local Profile** | The signed-out local operator | The local machine only |
 | **Agent Actor** | Acting on behalf of a user session | Never an independent principal |
-| **Service Principal** | A workspace-scoped non-human identity | Cloud Identity module |
+| **Deployment service identity** | Explicitly provisioned internal process identity; no independent customer authority | Deployment security boundary; product work still requires the Workspace owner chain |
 | **Operator Principal** | Support, operations, trust & safety, security | **A separate identity system** |
 
 | # | Rule |
@@ -212,7 +212,7 @@ Human Principal
 |---|---|
 | DG-01 | **Delegation narrows authority; it never amplifies it** ([I-266](../requirements/01-normative-glossary-and-invariants.md#rule-i-266)). |
 | DG-02 | **A lease expires automatically with its task** ([CL-02](../requirements/07-security-privacy-and-trust.md#rule-cl-02) there). |
-| DG-03 | **An automation runs as its creator with re-evaluated permissions, or as an explicit service principal** ([SP-05](../requirements/07-security-privacy-and-trust.md#rule-sp-05) there) — never on a frozen permission snapshot ([SP-06](../requirements/07-security-privacy-and-trust.md#rule-sp-06) there). |
+| DG-03 | **Automation acts for the single Workspace owner.** Current service eligibility, permissions and policy are re-evaluated at each trigger and protected invocation ([SP-05](../requirements/07-security-privacy-and-trust.md#rule-sp-05), [SP-06](../requirements/07-security-privacy-and-trust.md#rule-sp-06)). Internal deployment credentials authenticate the process and cannot bypass the owner chain; there is no customer-created service-principal alternative. |
 | DG-04 | **The actor chain is carried end to end and never truncated at a process boundary** ([AC-02](../requirements/07-security-privacy-and-trust.md#rule-ac-02), [AC-03](../requirements/07-security-privacy-and-trust.md#rule-ac-03) there). |
 
 ---
@@ -322,7 +322,7 @@ The enforced mechanisms and RID-specific negative tests are in [Content and Exte
 |---|---|
 | TA-01 | **Every AI-interaction surface carries an explicit disclosure** (`TA-01` in the security requirements). |
 | <a id="rule-ta-02"></a>TA-02 | **Machine-readable marking is applied at the point of generation**, which makes it a property of the generation pipeline and the artifact format — not a user-interface concern (`TA-02` there). |
-| <a id="rule-ta-03"></a>TA-03 | **Marking capability is therefore designed into the native format and the artifact model**, and reaches execution artifacts and generated media output (`TA-03` there). |
+| <a id="rule-ta-03"></a>TA-03 | **The [content-origin profile](../requirements/07-security-privacy-and-trust.md#content-origin-profile) and [carrier contract](../requirements/13-data-formats-and-portability.md#content-origin-carriers) define applicability, propagation, durable representation and fail-closed publication in the native format and artifact model**, and reaches execution artifacts and generated media output (`TA-03` there). |
 | TA-04 | **A gate before first EU market availability records the compliance route and the per-artifact-type marking mechanism.** *Owner: Security/Privacy Owner; Product Owner approves.* |
 
 ---

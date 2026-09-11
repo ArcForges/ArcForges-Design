@@ -94,6 +94,8 @@
 
 ### WP-21.02 — Module boundaries
 
+**Fixed ownership input.** The [Cloud schema map](../../architecture/data-model/01-cloud-data-model.md#1-schema-map) declares 20 domain owners plus platform infrastructure. Map every table to that owner, including Notes, Scope, Slate and Configuration; preserve native Scope/Slate content authority. Existing scaffold names may be split/merged internally to enforce these owners, but cannot invent a second owner or deployment role. The shared-transaction participant list remains its own explicitly narrower contract.
+
 **What must be fully done.** Each module owns its schema or explicit table set, publishes a module API and events, has independent tests, and is prevented from writing another module's tables. The module set is reconciled against the architecture's list using the [WP-01](01-repository-reconciliation-and-target-layout.md#rule-wp-01) inventory.
 
 **Testing requirements.** A schema-ownership test asserting no cross-module write; a reference test asserting no module references another's internals; a reconciliation record against the architecture module list.
@@ -182,6 +184,10 @@
 ---
 
 ## 8. Completion gate
+
+**[PG-19](../../assurance/open-gates-register.md#rule-pg-19) evidence:** [WP-21.03](#rule-wp-21.03) — Real version-guarded backfill, all-writer participation and fenced cutover; combine with release rehearsal. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
+
+**[PG-17](../../assurance/open-gates-register.md#rule-pg-17) evidence:** [WP-21.05](#rule-wp-21.05) — Real commit-ordered feed, per-aggregate revision order and fairness; combine with sync/bootstrap consumer evidence. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
 
 **All of the following, with recorded evidence, against real infrastructure:**
 

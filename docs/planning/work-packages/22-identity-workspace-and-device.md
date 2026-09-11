@@ -201,6 +201,10 @@
 
 ## 8. Completion gate
 
+**[PG-23](../../assurance/open-gates-register.md#rule-pg-23) evidence:** [WP-22.08](#rule-wp-22.08) — Real cookie-only browser identity/session/CSRF/expiry/revocation conformance. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
+
+**Identity boundary evidence.** Apply the [owner/deployment identity chain](../../architecture/08-security-architecture.md#1-identity-layering). Automation loses authorization when its owner loses permission/service eligibility even with a valid process credential; no customer service-principal or Organization authority is introduced.
+
 **All of the following, with recorded evidence:**
 
 1. Changing an authentication identity never affects user identity, workspace ownership or attached data, and no membership, role, invitation or seat concept exists.
@@ -210,7 +214,7 @@
 5. Every enumerated sensitive operation demands step-up; the window expires; app unlock never substitutes.
 6. Token scope is enforced; tokens cannot perform step-up operations; revocation is immediate.
 7. Recovery resists the modelled abuse cases; every account state has defined capability; deletion never touches local data.
-8. **No product requires an account to work locally, and no sign-out variant or account deletion removes local data.**
+8. Shell launch and native Scope/Slate work require no account; Notes and Chat content behavior passes the [offline initial-state matrix](../../assurance/testing-and-verification-strategy.md#offline-acceptance-matrix). Signout/deletion preserves native projects and pending recovery material while blocking normal signed-out Cloud content views.
 
 ---
 

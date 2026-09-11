@@ -139,10 +139,10 @@ Binary contains the code path
 
 | # | Requirement |
 |---|---|
-| [WP-01](../planning/work-packages/01-repository-reconciliation-and-target-layout.md#rule-wp-01) | **Workspace Policy ≠ Workspace Permission** ([I-365](01-normative-glossary-and-invariants.md#rule-i-365)). Policy narrows what the product may do; permission decides what an actor may do. |
-| [WP-02](../planning/work-packages/02-build-governance-and-analyzer-policy.md#rule-wp-02) | **Workspace policy may only tighten a platform restriction, never loosen one.** Hard deny wins. |
-| [WP-03](../planning/work-packages/03-contract-foundation-and-licence-split.md#rule-wp-03) | **A user cannot bypass workspace policy through local configuration.** |
-| [WP-04](../planning/work-packages/04-identity-error-and-versioning-primitives.md#rule-wp-04) | **Workspace policy cannot change local core ownership.** It cannot make ArcNotes depend on ArcChat, cannot relocate data ownership, and cannot override the architecture constitution. |
+| <a id="rule-wp-01"></a>WP-01 | **Workspace Policy ≠ Workspace Permission** ([I-365](01-normative-glossary-and-invariants.md#rule-i-365)). Policy narrows what the product may do; permission decides what an actor may do. |
+| <a id="rule-wp-02"></a>WP-02 | **Workspace policy may only tighten a platform restriction, never loosen one.** Hard deny wins. |
+| <a id="rule-wp-03"></a>WP-03 | **A user cannot bypass workspace policy through local configuration.** |
+| <a id="rule-wp-04"></a>WP-04 | **Workspace policy cannot change local core ownership.** It cannot make ArcNotes depend on ArcChat, cannot relocate data ownership, and cannot override the architecture constitution. |
 
 ### 6.2 Product invariants beyond remote reach
 

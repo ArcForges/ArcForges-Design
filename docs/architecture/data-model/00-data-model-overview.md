@@ -47,6 +47,9 @@ These documents specify data models, not DDL. An entity is given as its name, it
 
 The implementation repository already establishes the convention, and this layer adopts it unchanged: every identifier is a `readonly record struct XId(Guid Value)` with `Guid.CreateVersion7()` generation, its own JSON converter, and no implicit conversion to or from any other identifier type.
 
+<a id="canonical-id-order"></a>
+**Canonical ID-byte ordering.** When a content/query profile explicitly requires ordering, compare the 16 UUID bytes obtained from left-to-right pairs of the canonical lowercase hexadecimal UUID text, ignoring hyphens, as unsigned bytes. Host-specific Guid memory layout must not change this order. General API identifiers remain opaque; ordering is used only where a profile declares it.
+
 | # | Rule |
 |---|---|
 | ID-01 | **Version 7 identifiers** improve timestamp locality in indexes. Same-millisecond random bits, clock rollback and different writers make them unsuitable for business, revision or commit ordering; those use explicit revisions/publication sequence. |
@@ -56,7 +59,7 @@ The implementation repository already establishes the convention, and this layer
 | <a id="rule-id-05"></a>ID-05 | **An identifier is never reused**, including after hard deletion. |
 | ID-06 | **A cross-store identifier is the same value.** A document synced to Cloud keeps its local `DocumentId`; there is no separate cloud identifier and no mapping table. |
 
-**The identifier set.** `RealmId`, `UserId`, `AuthIdentityId`, `WorkspaceId`, `DeviceId`, `InstallationId`, `InstanceId`, `SessionId`, `ApiTokenId`, `BillingAccountId`, `OfferId`, `PriceVersionId`, `PurchaseIntentId`, `CheckoutAttemptId`, `OrderId`, `PaymentId`, `SubscriptionId`, `GrantId`, `RevocationId`, `CreditLotId`, `ReservationId`, `LedgerEntryId`, `ProviderEventId`, `TaskId`, `RunId`, `PlanId`, `StepId`, `AttemptId`, `CommandId`, `InvocationId`, `ApprovalId`, `AutomationId`, `ConversationId`, `BranchId`, `MessageId`, `ProjectId`, `AgentProfileId`, `SkillId`, `FolderId`, `DocumentId`, `BlockId`, `NotebookId`, `TagId`, `PropertyDefId`, `ViewId`, `SessionRecordId` (ArcScope), `CaptureId`, `SegmentId`, `ChannelId`, `SignalId`, `AnalysisId`, `FindingId`, `ReportId`, `SlateProjectId`, `SequenceId`, `TrackId`, `TimelineItemId`, `MediaAssetId`, `EffectInstanceId`, `RenderRequestId`, `ResourceId`, `BlobId`, `UploadSessionId`, `ArtifactId`, `PackageId`, `InstallationPackageId`, `NotificationId`, `AuditEventId`, `SupportCaseId`.
+**The identifier set.** `RealmId`, `UserId`, `AuthIdentityId`, `WorkspaceId`, `DeviceId`, `InstallationId`, `InstanceId`, `SessionId`, `ApiTokenId`, `BillingAccountId`, `OfferId`, `PriceVersionId`, `PurchaseIntentId`, `CheckoutAttemptId`, `OrderId`, `PaymentId`, `SubscriptionId`, `GrantId`, `RevocationId`, `CreditLotId`, `ReservationId`, `LedgerEntryId`, `ProviderEventId`, `TaskId`, `RunId`, `PlanId`, `StepId`, `AttemptId`, `CommandId`, `InvocationId`, `ApprovalId`, `AutomationId`, `ConversationId`, `BranchId`, `MessageId`, `ProjectId`, `AgentProfileId`, `SkillId`, `FolderId`, `DocumentId`, `BlockId`, `NotebookId`, `TagId`, `PropertyDefId`, `ViewId`, `SessionRecordId` (ArcScope), `CaptureId`, `SegmentId`, `ChannelId`, `SignalId`, `AnalysisId`, `FindingId`, `ReportId`, `SlateProjectId`, `SequenceId`, `TrackId`, `TimelineItemId`, `MediaAssetId`, `EffectInstanceId`, `RenderRequestId`, `ResourceId`, `BlobId`, `UploadSessionId`, `ArtifactId`, `ContentOriginId`, `ContentUnitId`, `PackageId`, `InstallationPackageId`, `NotificationId`, `AuditEventId`, `SupportCaseId`.
 
 ### 3.2 Revision, sequence and concurrency
 

@@ -54,7 +54,7 @@ ArcForges/
 │  │  ├─ ArcChat.Infrastructure/
 │  │  ├─ ArcChat.LocalRpc/                       adapter: hosts + consumes local contracts
 │  │  ├─ ArcChat.Hub/                            platform coordination plane
-│  │  ├─ ArcChat.Agent/                          agent runtime, turn loop, capability registry
+│  │  ├─ ArcChat.Agent/                          turn submission, stream presentation, steering
 │  │  ├─ ArcChat.LocalTools/                     first-party local capabilities ArcChat owns
 │  │  ├─ ArcChat.CloudClient/
 │  │  ├─ ArcChat.Desktop/                        Avalonia host — PublishAot
@@ -200,16 +200,16 @@ ArcForges/
 
 ## 5. Cloud module projects
 
-Each Cloud module is a pair: `ArcForges.Cloud.Modules.<Name>` (application and domain) and `ArcForges.Cloud.Modules.<Name>.Infrastructure` (persistence and integrations), plus tests.
+The 20 domain owners in the [Cloud schema map](data-model/01-cloud-data-model.md#1-schema-map) are authoritative; `platform` is shared infrastructure, not a domain module. The usual project arrangement is a pair: `ArcForges.Cloud.Modules.<Name>` (application and domain) and `ArcForges.Cloud.Modules.<Name>.Infrastructure` (persistence and integrations), plus tests. An equivalent bounded project partition is permitted if ownership and reference rules remain enforceable; schema ownership does not require a fixed project count.
 
-Modules: **Identity**, **Workspace**, **Devices**, **Entitlement**, **Commerce**, **Chat**, **Task**, **Agent**, **Sync**, **Resource**, **Search**, **Notification**, **Policy**, **Audit**, **Support**, **TrustSafety**.
+Modules: **Identity**, **Workspace**, **Devices**, **Entitlement**, **Commerce**, **Chat**, **Task**, **Agent**, **Sync**, **Resource**, **Search**, **Notification**, **Policy**, **Audit**, **Support**, **TrustSafety**, **Notes**, **Scope**, **Slate**, **Configuration**.
 
 | # | Rule |
 |---|---|
 | CM-01 | **A module owns its schema or its explicit table set.** No other module writes those tables. |
 | CM-02 | **Cross-module interaction is through a module's public API or its published events**, never through its persistence. |
 | CM-03 | **An architecture test asserts module persistence ownership.** |
-| CM-04 | Modules are split into separate deployment roles only when there is demonstrated need for independent scaling, isolation, security or ownership. |
+| CM-04 | **All modules ship inside the single Cloud Host.** A future change to deployment topology requires an accepted architecture decision; a project split is not permission to add deployment roles. |
 
 ---
 

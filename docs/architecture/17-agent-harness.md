@@ -427,7 +427,7 @@ Resolution is ordered from cheapest and most certain to least, and stops at the 
 
 | # | Rule |
 |---|---|
-| <a id="rule-st-01"></a>ST-01 | An invocation's completed/interrupted output is committed once to `task.iteration_output`, with parsed proposals, provider-attempt identity and checksum. Final Turn publication creates its immutable Chat message separately. |
+| <a id="rule-st-01"></a>ST-01 | An invocation's completed/interrupted output is committed once to `task.iteration_output`, with parsed proposals, provider-attempt identity and checksum. Final Turn publication creates its immutable Chat message separately. Both carry the [origin record](../requirements/13-data-formats-and-portability.md#content-origin-carriers) atomically with their payload; a provisional stream cannot establish completed delivery. |
 | ST-02 | Deltas are best effort; losing them cannot lose committed output, cause a debit without durable delivered evidence, or justify repeating an unknown provider call. |
 | ST-03 | A tool call enters execution/UI only after complete parsing and schema validation, never from partial stream syntax. |
 | ST-04 | Every surface reads the same authoritative Task/output/message path after a presentation gap. |
@@ -502,7 +502,7 @@ The Harness always runs in Cloud ([LS-02](#rule-ls-02)). What varies is **where 
 
 | # | Rule |
 |---|---|
-| TC-01 | **AI-generated content carries the marking its regime requires**, per artifact type (**[V-01](../assurance/phase-1-official-verification.md#rule-v-01)**; [TA-02](08-security-architecture.md#rule-ta-02), [TA-03](08-security-architecture.md#rule-ta-03) of the security architecture). Marking is applied at the point of generation, which makes it a property of this harness and the artifact format — not of the user interface. |
+| TC-01 | **AI-generated content carries the marking its regime requires**, per artifact type (**[V-01](../assurance/phase-1-official-verification.md#rule-v-01)**; [TA-02](08-security-architecture.md#rule-ta-02), [TA-03](08-security-architecture.md#rule-ta-03) of the security architecture). Implement the already defined [origin behavior](../requirements/07-security-privacy-and-trust.md#content-origin-profile) at generation and [carrier](../requirements/13-data-formats-and-portability.md#content-origin-carriers) at publication. Emit origin kinds before stream deltas, preserve per-part lineage, and retry failed marking without another provider attempt. Platform non-delivery uses existing customer compensation and retained supplier-cost rules. |
 | TC-02 | **A turn's cost is explainable**: which model, which tariff version, which cost dimensions — including reasoning tokens, cached input and cache writes — and which counts (`§11.3` of the AI requirements, [WP-43.04](../planning/work-packages/43-managed-ai-routing-and-metering.md#rule-wp-43.04)). |
 | TC-03 | **The user can see what context was sent** — sources and revisions — without the harness storing the prompt in telemetry. |
 | TC-04 | **A tool call and its result are visible in the conversation** as durable parts, so the user can audit what the agent did. |

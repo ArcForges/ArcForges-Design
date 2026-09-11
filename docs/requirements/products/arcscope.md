@@ -163,6 +163,51 @@ The time model is a product-level design, not an implementation detail.
 
 ---
 
+<a id="measurement-profile"></a>
+### 9.1 Measurement semantics and reference values
+
+**`scope.measurement.v1`** is the default and required numerical profile for the basic measurement family. A request pins canonical source revision/hash, channel, calibration/unit, timebase/alignment, effective configuration and a half-open window `[start,end)`, with start < end. An active capture uses a frozen committed prefix. Display decimation, viewer zoom and formatting never supply measurement inputs.
+
+**Input validity.** Timestamps strictly increase within each recorded contiguous segment. Duplicate/nonmonotonic time or invalid calibration produces an invalid result. Finite calibrated values contribute to sample statistics; nonfinite values are excluded and break pulse continuity. Recorded gaps and segment boundaries also break continuity. Irregular spacing is legal and does not invent a gap; no missing value is interpolated into the statistical sample set. Record finite count, excluded count, contiguous finite-run count, timing uncertainty and coverage. Covered duration is the sum of each finite run's last-minus-first timestamp inside the window; a single sample covers zero. Requested duration remains end-start, including gaps. This makes sparse or interrupted evidence visible.
+
+| Family | v1 definition | Empty/insufficient case and unit |
+|---|---|---|
+| Minimum, maximum | Extrema of the N finite samples | N=0: insufficient; calibrated channel unit |
+| Mean | `sum(x)/N`, sample-weighted even for irregular timestamps | N=0: insufficient; channel unit |
+| RMS | `sqrt(sum(x*x)/N)` | N=0: insufficient; channel unit, relative to the recorded calibrated zero, not a physical-energy claim for an offset unit |
+| Peak-to-peak | `max(x)-min(x)` | N=0: insufficient; channel unit |
+| Standard deviation | Population: `sqrt(sum((x-mean)^2)/N)` | N=0: insufficient; N=1: zero; channel unit. No sample-stddev or time-weighted alternative in v1 |
+| Count | N finite samples in the window | Zero is valid; integer, unitless |
+| Duration | Requested end-start | Positive by request validation; seconds, with covered duration separately reported |
+| Frequency | Complete-cycle count divided by sum of their periods, as defined below | No complete cycle: insufficient; Hz |
+| Duty cycle | Sum of complete-cycle high durations divided by sum of their periods | No complete cycle: insufficient; ratio in [0,1], UI may display percent |
+| Rise/fall time | Arithmetic mean of completed corresponding edge durations below, with edge count | No completed edge: insufficient; seconds. Zero-duration digital edges are valid |
+| Cursor delta | Signed `tB-tA` and `xB-xA`; snap each cursor to nearest finite canonical sample within its selected segment/window, ties to earlier sample | No candidate: insufficient; seconds and channel unit. Record selected sample identities |
+| Event count | Distinct stable event IDs with event start in `[start,end)`; duplicate delivery of one ID counts once | Zero is valid; integer, unitless. A duration event is counted by start, not overlap |
+
+**Pulse thresholds and crossings.** Persist finite reference levels L < H, threshold fractions 0.1/0.5/0.9 and positive low-to-high polarity. If levels are omitted, resolve L=min and H=max from the frozen finite sample set and store them in the result's effective configuration before computation. Empty/constant input makes pulse metrics insufficient. Explicit invalid levels are an invalid request. Threshold q is `L + fraction*(H-L)`.
+
+Analog channels use linear interpolation between adjacent finite samples within one run; both endpoints must be in the window. Digital channels are right-continuous steps, with crossings at the later timestamp. Rising crossing uses `x0 < q <= x1`, falling uses `x0 > q >= x1`, so a plateau counts once. Do not extrapolate across a boundary or interpolate across a gap/nonfinite sample.
+
+A complete cycle consists of consecutive rising 50% crossings and exactly one intervening falling 50% crossing in the same run. Its period is rise-to-rise; its high duration is rise50-to-fall50. Sum durations before division: averaging per-cycle reciprocals or duty percentages is not equivalent and is forbidden. A rise edge pairs rising 10% with the next rising 90% before a falling 10%; a new rising 10% replaces an unfinished candidate. A fall edge symmetrically pairs falling 90% with falling 10%, invalidated by rising 90%. Crossings within one segment are processed in temporal order, with rising thresholds low-to-high and falling thresholds high-to-low on a simultaneous digital edge. A gap cancels all pending edge/cycle candidates. Never report zero frequency or zero duty as a substitute for no complete observation.
+
+**Result and numerical contract.** Store the immutable request/config hash, profile, resolved levels, source bindings, per-family status (`ok`, `insufficient`, `invalid`), values/units, counts, coverage and uncertainty. Reasons are bounded: `noFiniteSamples`, `noCompleteCycle`, `noCompleteEdge`, `cursorUnavailable`, `invalidTimeOrder`, `invalidConfiguration`, `numericOverflow`. Invalid request syntax/configuration uses the operation catalogue's validation errors; data insufficiency is a successful typed result with no invented numeric value. Unknown profile returns `validation.unsupported_version`; historical results remain readable without recalculating them under a new default.
+
+Use at least binary64 with stable numerical algorithms. A finite scalar result passes its reference oracle when `abs(actual-expected) <= 1e-12 + 1e-9*abs(expected)` in the recorded unit. Counts, identities and window membership are exact. Never serialize NaN/Infinity as a result: overflow is invalid. UI rounding cannot change stored results. This algorithmic tolerance is independent of recorded instrument/calibration/timestamp uncertainty; the latter must still be shown. Offline recomputation, UI readouts and report values consume this same profile and tolerance.
+
+| Reference vector | Required result |
+|---|---|
+| Values [0,2] | min 0, max 2, mean 1, RMS sqrt(2), population stddev 1, peak-to-peak 2, count 2 |
+| (time,value)=(0,0),(1,2),(3,4), window [0,4) | mean 2, RMS sqrt(20/3), stddev sqrt(8/3), count 3, requested duration 4, covered duration 3; never time-weighted mean |
+| Digital values at times 0..4: 0,1,0,1,0; L 0 / H 1; window [0,5) | One complete cycle, period 2, high 1, frequency 0.5 Hz, duty 0.5; completed rise/fall times 0 |
+| Same digital vector, a gap between times 2 and 3 | No complete cycle, frequency/duty insufficient; no edge/cycle crosses the gap |
+| Analog (0,0),(1,10),(2,0),(3,10); L 0 / H 10; window [0,4) | Rise/fall 0.8 s, one complete cycle of period 2/high 1; frequency/duty 0.5 |
+| Sample/event exactly at start or end | Include start, exclude end; repeated event ID counts once |
+
+Also verify empty/constant data, nonfinite continuity breaks, irregular sampling, duplicate timestamps, numeric overflow, cursor ties, unknown profile and deletion/rebuild of derived results. Every UI/report/replay result cites its recorded profile/configuration; no new decoder or DSP subsystem is implied.
+
+---
+
 ## 10. Decoders
 
 | # | Requirement |

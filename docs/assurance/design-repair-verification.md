@@ -17,7 +17,24 @@ python check_design.py <absolute-path-to-phase-2-specifications-worktree>
 
 The corpus checker writes `design_check.json` beside its temporary script and exits nonzero on a defect. No product, reference or input file is modified. Reserved identifier headroom and standard names are vocabulary/metadata, not waived normative citations. Retired work-package identifiers resolve to their explicit retirement records.
 
-Passing arithmetic/state models establishes the stated counterexample outcomes only. Real concurrent SQL, provider reconciliation, packaged RID containment, physical restores and real OTIO/media processing remain the named implementation gates.
+Passing arithmetic/state models establishes their bounded counterexample outcomes only; illustrative assertions have the narrower proof strength recorded below. Real concurrent SQL, provider reconciliation, packaged RID containment, physical restores and real OTIO/media processing remain the named implementation gates.
+
+<a id="proof-strength"></a>
+## Proof strength of the historical counterexamples
+
+The recorded 20 passing tests are an execution fact, not 20 complete behavioral models. Classify the seven questioned tests by their actual bodies; an inline model needs no separate helper function, and a constant/assignment assertion proves less than a state transition.
+
+| Test | What executes and what it establishes | Limit and required implementation evidence |
+|---|---|---|
+| `test_supplier_unknown_survives_customer_release` | Illustrative constants and arithmetic inequalities retain70 exposure while customer hold is set to0 | Does not execute reserve/release/period-rollover transitions; real supplier exposure/admission and reconciliation remain in commerce/provider packages |
+| `test_storage_reservations_and_cleanup` | Bounded arithmetic model of committed/reserved conversion; cleanup branch is only an illustrative conditional | Does not execute database locking, object publication, crash cleanup or GC; real upload/promotion/concurrency evidence remains in API/sync packages |
+| `test_conflict_lineage_does_not_ack_later_edits` | Inline receipt filtering/set subtraction models covered local sequences and preserves later edit7 | Assumes authenticated matching receipt/range and models no transaction race; real conflict lineage and delayed acknowledgements remain in sync |
+| `test_stream_state_never_substitutes_task_state` | Enumerates the finite stream/task/final-reference product and checks the presentation action | Does not execute stream storage, transport or failover; real shared-stream recovery remains in Harness and client packages |
+| `test_intent_nullable_and_invocation_not_turn` | Illustrates nullable dispatch intent and assigns settlement from a committed flag | No dispatch barrier, usage validation or settlement state machine is executed; provider/Harness transaction/crash evidence remains required |
+| `test_audio_cut_mix_dissolve_gap` | Exact rational boundary rounding plus small mix/dissolve/silence arithmetic examples | Not an audio engine, buffer-coverage or multitrack interval enumerator; real timeline/audio/OTIO boundary fixtures remain required |
+| `test_derived_publication_requires_matching_source` | Illustrates inequality of two source tokens | No publication function, CAS or concurrent writer is exercised; real stale-result refusal and rebuild evidence remain in product/index packages |
+
+The other tests retain their stated arithmetic/state-model scope. No assertion here proves a product, provider, OS isolation profile, real SQL schedule or commercial deployment. Future completion gates require the actual producer named in the work packages; a green historical suite cannot replace that evidence.
 
 ## Executable counterexamples
 

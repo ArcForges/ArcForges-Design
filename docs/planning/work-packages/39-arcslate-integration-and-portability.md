@@ -23,6 +23,8 @@
 
 ## 2. Required inputs and dependencies
 
+**Frozen design input.** [content-origin behavior](../../requirements/07-security-privacy-and-trust.md#content-origin-profile) and [carrier schema](../../requirements/13-data-formats-and-portability.md#content-origin-carriers) is fixed before this package; implement it without choosing a different marking mechanism.
+
 | Input | Why it matters |
 |---|---|
 | [ArcSlate product requirements](../../requirements/products/arcslate.md#15-cross-product-integration) | The capability boundary; this package’s binding rules require stable timeline, command and undo semantics before exposing it |
@@ -49,6 +51,8 @@
 ---
 
 ## 4. Projects, directories, files and major types affected
+
+Content payloads use typed ContentOrigin and content-unit bindings under their existing owner revision; format/schema fixtures include that projection.
 
 | Location | Change |
 |---|---|
@@ -119,6 +123,8 @@
 
 ### WP-39.05 — OTIO interchange
 
+**Required design implementation and verification.** Preserve origin in native collect/import and OTIO metadata.arcforges.contentOrigin; hash the final output in its sidecar. Test unknown fields, export-local IDs/parent truncation and AI/non-AI mixed assets through the real OTIO round trip; no private source path enters the marker.
+
 **What must be fully done.** Implement the official double value/rate ingress/egress under [OB-01](../../architecture/23-simulator-and-interchange.md#rule-ob-01)–[OB-05](../../architecture/23-simulator-and-interchange.md#rule-ob-05) of the simulator/interchange architecture, with exact binary-rational conversion, declared rate normalisation, checked range and one rounded projection.  Canonical `.otio` **import and export**, both directions, in V1 ([OT-01](../../requirements/products/arcslate.md#rule-ot-01)). A declared support profile naming the pinned library, supported schema versions and supported top-level types ([OT-02](../../requirements/products/arcslate.md#rule-ot-02)). The supported semantic subset of [OT-03](../../requirements/products/arcslate.md#rule-ot-03): ordered video and audio tracks and stacks, clips, gaps, source ranges, timeline placement, rate-aware times, external and missing media references, names, markers, bounded namespaced metadata, straight cuts and explicitly mapped standard dissolves. Import staged before commit with a fidelity report the user reviews or cancels; import creating ArcSlate-owned canonical objects with provenance, never a mutable OTIO working store. Export binding a **committed** sequence revision, writing a temporary destination and publishing atomically. Item-level retained/approximated/omitted dispositions for everything outside the subset. Media relink for Offline Media. Bounded parsing with **no adapters, no Python plug-ins and no executable content**, behind an owned narrow C ABI.
 
 **Testing requirements.** Test finite/nonfinite, standard 30000/1001 versus decimal 29.97, large/fractional values, metadata-stripped external files and exact/lossy export reports.  Real fixtures and the pinned official library exercising both directions; mixed and fractional frame rates proving **no silent frame shift**; gaps and stack ordering; repeated uses of one source retaining placement; missing references becoming relinkable Offline Media; supported dissolves and markers; unsupported features each producing an item-level disposition; malicious relative and absolute paths denied; malformed and oversized input rejected before commit; export cancellation leaving the project and any existing destination untouched; semantic round-trip compared on **timeline meaning and media references, not bytes or internal identifiers**; and a round-trip through external tooling that drops private ArcSlate metadata, proving core supported edits survive.
@@ -143,6 +149,8 @@
 
 ## 7. Tests and verification evidence
 
+**Required evidence addition.** [WP-39.05](#rule-wp-39.05) records the carrier/propagation/failure vectors above with payload and manifest hashes; early packages use declared fixtures, while provider/Harness packages require their real integrations.
+
 | Evidence | Produced by |
 |---|---|
 | Capability descriptor, refusal and freeze-timing records | [WP-39.00](#rule-wp-39.00) |
@@ -155,6 +163,14 @@
 ---
 
 ## 8. Completion gate
+
+**[PG-20](../../assurance/open-gates-register.md#rule-pg-20) evidence:** [WP-39.05](#rule-wp-39.05) — Official OTIO double-boundary and explicit inexact-source conform evidence, combined with timeline/audio proof. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
+
+**[PG-15](../../assurance/open-gates-register.md#rule-pg-15) evidence:** [WP-39.05](#rule-wp-39.05) — Pinned official OTIO library exercises both directions, fractional/mixed rates, malicious input, fidelity and cancellation fixtures. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
+
+**[PG-03](../../assurance/open-gates-register.md#rule-pg-03) evidence:** [WP-39.05](#rule-wp-39.05) — Recorded OTIO substitute analysis and approved licence/provenance of the chosen bridge before use. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
+
+**Additional completion requirement.** The package's content paths pass the stated origin vectors, including unknown input and failed publication; a valid stored/rendered payload alone cannot satisfy the carrier requirement.
 
 **All of the following, with recorded evidence:**
 

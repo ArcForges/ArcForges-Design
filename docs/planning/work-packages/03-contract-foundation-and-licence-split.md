@@ -23,6 +23,8 @@
 
 ## 2. Required inputs and dependencies
 
+**Frozen design input.** [content-origin behavior](../../requirements/07-security-privacy-and-trust.md#content-origin-profile) and [carrier schema](../../requirements/13-data-formats-and-portability.md#content-origin-carriers), [notes.scalar.v1](../../requirements/products/arcnotes.md#notes-scalar-query-profile) and [scope.measurement.v1](../../requirements/products/arcscope.md#measurement-profile) are definitions, not decisions deferred to later product packages.
+
 | Input | Why it matters |
 |---|---|
 | [`../../architecture/02-contracts-and-protocols.md`](../../architecture/02-contracts-and-protocols.md) | The two-layer contract model, compatibility rules and contract-authoring obligations [CA-01](../../architecture/02-contracts-and-protocols.md#rule-ca-01)–[CA-14](../../architecture/02-contracts-and-protocols.md#rule-ca-14) |
@@ -58,6 +60,8 @@
 
 ## 4. Projects, directories, files and major types affected
 
+Add typed ContentOrigin, NotesQuery/profile/value unions and MeasurementRequest/MeasurementResult to their declared public/local contract boundaries.
+
 | Location | Change |
 |---|---|
 | `src/Contracts/Public/ArcForges.Contracts.Foundation/` | Apache-2.0: identifiers, error model, revision, sequence, pagination, common value types |
@@ -91,6 +95,8 @@
 
 ### WP-03.01 — Foundation contract types
 
+**Required design implementation and verification.** Freeze ContentOrigin/ContentUnit IDs and typed records; exact scalar encodings/query-profile fields and MeasurementRequest/Result projection. Commit positive and negative serialized vectors before any persistence consumer. No evaluator, raw media or private deployment field enters the public types.
+
 **What must be fully done.** The foundation types are defined: identifier types (strongly typed, not bare primitives), the error and problem model with enumerated reason codes, `Revision`, `SequenceNumber`, pagination, and common value types. Identifier types are distinct per concept so that a workspace identifier cannot be passed where a task identifier is expected.
 
 **Testing requirements.** Round-trip serialization for every type; a compile-time test that identifier types are not interchangeable.
@@ -121,6 +127,8 @@
 
 ### WP-03.04 — Local RPC contract discipline
 
+**Required design implementation and verification.** Project the bounded NotesQuery and Scope measurement DTOs through generated RPC shapes; test every declared scalar kind, missing/null distinction, enum/profile rejection and tolerant additive fields.
+
 **What must be fully done.** Local RPC interfaces are defined per product boundary. Every interface carries the generated-shape attribute including public instance methods (**[V-05b](../../assurance/phase-1-official-verification.md#rule-v-05b)**). Server target registration uses explicit generated registration; reflection convenience paths are absent. Interface style follows the hard rules of the local IPC architecture — task-returning, cancellation-aware, no overloads that generated marshalling cannot express.
 
 **Testing requirements.** A policy test asserting the attribute on every RPC contract interface; a compile test that a non-conforming interface fails.
@@ -140,6 +148,8 @@
 <a id="rule-wp-03.06"></a>
 
 ### WP-03.06 — Cross-language compatibility window
+
+**Required design implementation and verification.** Prove an older reader can preserve origin metadata; an incapable writer refuses affected mutation/export. Reject unknown query/measurement profiles explicitly. Known emitted error codes must belong to the catalogue; unknown future responses remain safe failures.
 
 **What must be fully done.** Implement additive/breaking compatibility rules and golden vectors for C#/TS. C# converters, OpenAPI and TS validators agree: 64-bit numbers and decimal prices are canonical strings, bounded int32 remains numeric, and null/omission, unions and unknown response values follow the declared contract. Initial production baseline uses the new wire shape; an already deployed numeric shape requires a versioned migration.
 
@@ -165,6 +175,8 @@
 
 ## 7. Tests and verification evidence
 
+**Required evidence addition.** Generated wire/schema vectors for origin, scalar queries and measurement results, including exact decimals/instants, statuses and unknown-field/version behavior. The contract suite checks all catalogue producer codes.
+
 | Evidence | Produced by |
 |---|---|
 | Reference-direction and licence declaration reports | [WP-03.00](#rule-wp-03.00) |
@@ -177,6 +189,12 @@
 ---
 
 ## 8. Completion gate
+
+**[VG-04](../../assurance/open-gates-register.md#rule-vg-04) evidence:** [WP-03.04](#rule-wp-03.04) — Generated-shape policy for every real RPC interface; combine with the published-host RPC proof from package 06. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
+
+**[F-026](../../assurance/open-gates-register.md#rule-f-026) evidence:** [WP-03.02](#rule-wp-03.02) — Generated-only client/version pin, reflection-package absence and build-breaking diagnostics; combine with the real AOT publish from package 06. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
+
+**Additional completion requirement.** All three profile baselines exist and round-trip before storage/product work starts; no placeholder field or later profile-selection task remains.
 
 **All of the following, with recorded evidence:**
 

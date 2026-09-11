@@ -36,7 +36,7 @@
 
 ## 2. Identifier allocation is deliberate, not gapped
 
-The catalogue is partitioned into twelve sections, each with reserved identifier headroom so a later addition lands in its own section rather than at the end of the file.
+The catalogue is partitioned into thirteen sections, each with reserved identifier headroom so a later addition lands in its own section rather than at the end of the file.
 
 | Section | Content | Rows | Last used | Reserved headroom |
 |---|---|---|---|---|
@@ -52,6 +52,7 @@ The catalogue is partitioned into twelve sections, each with reserved identifier
 | 7.10 | Quality, compatibility and platform | 26 | [I-405](../requirements/01-normative-glossary-and-invariants.md#rule-i-405) | `I-406`–`I-409` |
 | 7.11 | Support, operations and trust & safety | 39 | [I-448](../requirements/01-normative-glossary-and-invariants.md#rule-i-448) | `I-449`–`I-459` |
 | 7.12 | Product-local | 31 | [I-490](../requirements/01-normative-glossary-and-invariants.md#rule-i-490) | — |
+| 7.13 | Cloud subscription and accepted scope | 8 | [I-498](../requirements/01-normative-glossary-and-invariants.md#rule-i-498) | — |
 
 | # | Rule |
 |---|---|
@@ -134,13 +135,18 @@ Every invariant maps to an architecture home, an enforcement mechanism, a planne
 
 ### 4.2 Mechanism distribution
 
-| Mechanism | Sections | Invariants | Why |
-|---|---|---|---|
-| **Type distinction** | 7.1, 7.3 | 55 | Identity, reference and capability distinctions can be made compile errors |
-| **Repository policy test** | 7.2, 7.10 | 39 | Boundary, naming, reference-direction and platform rules are structural |
-| **Unit test** | 7.4, 7.5, 7.7, 7.9, 7.12 | 202 | Behavioural distinctions observable within one component |
-| **Integration test** | 7.6, 7.8, 7.11 | 125 | Distinctions observable only across a process, device or system boundary |
-| **Total** | | **429** | |
+| Mechanism | Invariants | Basis |
+|---|---|---|
+| **Type distinction** | 54 | Exact mechanism label in the current §7 rows |
+| **Absence test** | 3 | Exact mechanism label in the current §7 rows |
+| **Repository policy test** | 39 | Exact mechanism label in the current §7 rows |
+| **Unit test** | 202 | Exact mechanism label in the current §7 rows |
+| **Integration test** | 126 | Exact mechanism label in the current §7 rows |
+| **Structural + integration test** | 2 | Exact mechanism label in the current §7 rows |
+| **Structural test** | 1 | Exact mechanism label in the current §7 rows |
+| **Unit and integration test** | 1 | Exact mechanism label in the current §7 rows |
+| **Policy test** | 1 | Exact mechanism label in the current §7 rows |
+| **Total** | **429** | Includes all eight additions and retained absence-test rows |
 
 ### 4.3 Owning package distribution
 
@@ -166,7 +172,7 @@ Every invariant has at least one owning package. Packages carrying the largest i
 | Every corpus statement accounted for | Programmatic pair-matching against the catalogue, plus manual resolution of every residual | **484 of 484** |
 | No superseded statement promoted | Forbidden-term match over the corpus set | **1 excluded, 0 promoted** |
 | No duplicate identifier | Identifier frequency check | **0 duplicates** |
-| Identifier gaps explained | Section-boundary analysis | **All 72 gaps are reserved headroom** (`§2`) |
+| Identifier gaps explained | Section-boundary analysis | **All 69 gaps are reserved headroom** (`§2`) |
 | Every catalogue row has an architecture home | Section-to-architecture mapping applied per row | **426 of 426 active** — 3 rows are retired by [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006) and carry an absence test instead |
 | Every catalogue row has a mechanism | Per-section assignment | **429 of 429** — including an absence test for each retired row |
 | Every catalogue row has a planned verification | Derived per row from its own statement | **429 of 429** |

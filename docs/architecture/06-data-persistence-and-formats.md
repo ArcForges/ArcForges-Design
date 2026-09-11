@@ -162,6 +162,8 @@ Interchange Formats          third-party, declared round-trip level
 
 > **Scope of the layer.** `Native Portable Format` exists for **ArcScope and ArcSlate**. `§4` of the data-format requirements limits the package requirements to those native formats and states plainly that they create no Notes/Chat local archive obligation; [EP-04](../requirements/products/arcnotes.md#rule-ep-04) of the ArcNotes requirements and [EX-09](../requirements/13-data-formats-and-portability.md#rule-ex-09) of the data-format requirements confirm it per product. For ArcNotes and ArcChat the layer below `Working Store` is a **Cloud-generated download**, not a native package, and it carries no re-import promise.
 
+**Content origin projection.** The [carrier schema](../requirements/13-data-formats-and-portability.md#content-origin-carriers) and [revision storage](data-model/02-desktop-data-model.md#content-origin-storage) are required inputs to every content codec. Validate and stage payload plus origin together; publish a native package or export bundle only after both hashes and inventory validate. Unknown origin stays inert; a writer that cannot preserve it refuses the affected write/export. Marking retry never repeats content generation. No optional UI flag or sidecar cleanup may erase a retained origin record.
+
 ### 8.1 Portable package structure
 
 ```

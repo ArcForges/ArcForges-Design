@@ -76,11 +76,13 @@ Nothing in this document authorises reuse. It defines the process by which reuse
 | Product | Required references | Matrix | Rows | Status |
 |---|---|---|---|---|
 | ArcChat | AionUi | [`arcchat-aionui.md`](reference-coverage/arcchat-aionui.md) | 30 | **Complete** — 24 evidence established, 6 accepted exclusions, 0 unresolved |
-| ArcNotes | AFFiNE, SiYuan | [`arcnotes-affine-siyuan.md`](reference-coverage/arcnotes-affine-siyuan.md) | 41 | **Complete** — 32 evidence established, 9 accepted exclusions, 0 unresolved |
+| ArcNotes | AFFiNE, SiYuan | [`arcnotes-affine-siyuan.md`](reference-coverage/arcnotes-affine-siyuan.md) | 41 | **Complete** — 33 evidence established, 9 accepted exclusions, 0 unresolved |
 | ArcScope | Serial-Studio | [`arcscope-serial-studio.md`](reference-coverage/arcscope-serial-studio.md) | 31 | **Complete** — 24 evidence established, 7 accepted exclusions, 0 unresolved |
 | ArcSlate | ArcVideo, ArcVideoFoundation | [`arcslate-arcvideo.md`](reference-coverage/arcslate-arcvideo.md) | 31 | **Complete** |
 | Distribution and release | StartArcForges | [`distribution-startarcforges.md`](reference-coverage/distribution-startarcforges.md) | 12 | **Complete** within the authorized oracle boundary |
 | Whole repository | Existing ArcForges monorepo | [`implementation-state-reconciliation.md`](implementation-state-reconciliation.md) | 166 projects | **Complete** — item-level, with dispositions |
+
+**Counting rule.** The five matrices contain 145 item rows, 121 evidence dispositions and 25 exclusion dispositions (146 total). [Notes AN-14](reference-coverage/arcnotes-affine-siyuan.md#rule-an-14) has both an established quota half and excluded sharing half; row count and disposition count must not be conflated.
 
 **Gate consequence.** [PG-01](open-gates-register.md#rule-pg-01) and [F-013](open-gates-register.md#rule-f-013) are **closed** for every registered reference. [PG-02](open-gates-register.md#rule-pg-02) is **closed**. Implementation packages consume these matrices as versioned inputs and run drift checks only ([WP-15.07](../planning/work-packages/15-arcchat-conversation-core.md#rule-wp-15.07), [WP-18.08](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.08), [WP-33.07](../planning/work-packages/33-arcscope-acquisition-and-session.md#rule-wp-33.07), [WP-36.07](../planning/work-packages/36-arcslate-project-and-timeline.md#rule-wp-36.07), [WP-01.00](../planning/work-packages/01-repository-reconciliation-and-target-layout.md#rule-wp-01.00)).
 

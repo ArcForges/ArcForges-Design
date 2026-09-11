@@ -244,6 +244,8 @@ Visualisation
 
 ---
 
+**Measurement owner.** ArcScope managed Analysis/Application code implements [scope.measurement.v1](../requirements/products/arcscope.md#measurement-profile), including population statistics, sample weighting, gaps, thresholds, interpolation, units and status/tolerance. Native primitives may accelerate computation only if the same reference vectors pass. Replay, interactive readout, offline ProductJobs and reports consume the same immutable request/result projection. Neither display decimation nor a native library's default statistics defines product semantics.
+
 ## 9. Testing the native boundary
 
 | # | Test obligation |

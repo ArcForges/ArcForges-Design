@@ -177,6 +177,10 @@ The Web companion verifies real generation, tool approval, stream fallback and r
 
 ## 8. Completion gate
 
+**[PG-23](../../assurance/open-gates-register.md#rule-pg-23) evidence:** [WP-49](#rule-wp-49) — Real Chat Harness/task/stream workflows and approved visual/accessibility/performance evidence. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
+
+**Offline evidence.** Execute this product's applicable [initial-state matrix](../../assurance/testing-and-verification-strategy.md#offline-acceptance-matrix) rows, including fresh shell, hydrated outage, unavailable content, signout and restart where applicable. Record permitted local work and explicitly unavailable Cloud actions.
+
 **All of the following, with recorded evidence:**
 
 1. The chat and account profiles share code and provably share no state, storage or cookies.

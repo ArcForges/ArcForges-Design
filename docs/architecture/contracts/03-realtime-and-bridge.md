@@ -11,7 +11,7 @@ Two mechanisms, one principle: **neither carries authority**. Realtime tells a c
 
 ## 1. The realtime event set
 
-Every event carries `{ subscriptionKey, seq, workspaceId, occurredAt, correlationId }` plus its own payload. `seq` is per subscription ([RV-05](#rule-rv-05)), which is what makes a gap detectable.
+Every event carries `{ subscriptionKey, seq, workspaceId, occurredAt, correlationId }` plus its own payload. `seq` is per subscription ([SB-03](#rule-sb-03)), which is what makes a gap detectable.
 
 | Event | Payload | Consumer action |
 |---|---|---|
@@ -64,7 +64,7 @@ subscribe(subscriptionKey) → { accepted, startSeq } | refused(reason)
 |---|---|
 | <a id="rule-sb-01"></a>SB-01 | **Permission is checked at subscribe and re-checked when permission changes.** Losing permission stops delivery immediately and tells the client ([WP-24.01](../../planning/work-packages/24-realtime-and-reliable-events.md#rule-wp-24.01)). |
 | SB-02 | **A subscription cannot escape its scope**, and an attempt is refused rather than silently narrowed. |
-| SB-03 | **`startSeq` is returned at subscribe**, so a client knows where its gap detection begins. |
+| <a id="rule-sb-03"></a>SB-03 | **`startSeq` is returned at subscribe**, so a client knows where its gap detection begins. |
 
 ---
 

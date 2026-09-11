@@ -23,6 +23,8 @@
 
 ## 2. Required inputs and dependencies
 
+**Frozen design input.** [content-origin behavior](../../requirements/07-security-privacy-and-trust.md#content-origin-profile) and [carrier schema](../../requirements/13-data-formats-and-portability.md#content-origin-carriers) is fixed before this package; implement it without choosing a different marking mechanism.
+
 | Input | Why it matters |
 |---|---|
 | [First ArcChat–ArcNotes workflow acceptance](../../assurance/end-to-end-workflow-verification.md#first-arcchat-arcnotes-workflow) | The canonical scenario and failure outcomes; this package proves native capabilities, and the Cloud Harness package proves agent execution |
@@ -49,10 +51,12 @@
 
 ## 4. Projects, directories, files and major types affected
 
+Content payloads use typed ContentOrigin and content-unit bindings under their existing owner revision; format/schema fixtures include that projection.
+
 | Location | Change |
 |---|---|
 | `src/ArcNotes/ArcNotes.LocalRpc/` | Context provider and artifact handler registration |
-| `src/ArcChat/ArcChat.Agent/` | Multi-step plans that span providers; artifact reference handling |
+| `src/ArcChat/ArcChat.Agent/` | Presentation and ArtifactRef handoff for Cloud-owned multi-step plans; the Harness implements orchestration in [WP-52](52-cloud-harness.md#rule-wp-52) |
 | `src/ArcChat/ArcChat.Application/` | Federated search aggregation and result attribution |
 | `src/BuildingBlocks/ArcForges.Capabilities/` | Context provider aggregation and freezing across providers |
 | `tests/EndToEndTests/` | The full workflow suite with degradation and recovery cases |
@@ -105,6 +109,8 @@
 
 ### WP-20.04 — Artifact handlers
 
+**Required design implementation and verification.** A generated report copied into Notes creates a Notes-owned document with new owner identity and inherited origin kinds/selected lineage. Verify ArtifactRef integrity, manual edit propagation and absence of private source/workspace IDs in exported origin; the Cloud Harness remains the plan owner.
+
 **What must be fully done.** ArcNotes registers an artifact handler for its document artifacts. ArcChat displays a thin preview and offers rich handoff to ArcNotes. The artifact reference resolves with permission re-checked at access, and reports honestly when the target has since changed or been deleted.
 
 **Testing requirements.** Preview and handoff tests with the target running and not running; a stale-artifact test after deletion; a permission re-check test.
@@ -139,6 +145,8 @@
 
 ## 7. Tests and verification evidence
 
+**Required evidence addition.** [WP-20.04](#rule-wp-20.04) records the carrier/propagation/failure vectors above with payload and manifest hashes; early packages use declared fixtures, while provider/Harness packages require their real integrations.
+
 | Evidence | Produced by |
 |---|---|
 | Context contribution, bounding and visibility results | [WP-20.00](#rule-wp-20.00) |
@@ -151,6 +159,8 @@
 ---
 
 ## 8. Completion gate
+
+**Additional completion requirement.** The package's content paths pass the stated origin vectors, including unknown input and failed publication; a valid stored/rendered payload alone cannot satisfy the carrier requirement.
 
 **All of the following, with recorded evidence:**
 

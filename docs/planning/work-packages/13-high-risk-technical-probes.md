@@ -145,6 +145,8 @@
 
 ## 8. Completion gate
 
+**[PG-03](../../assurance/open-gates-register.md#rule-pg-03) evidence:** [WP-13](#rule-wp-13) — Licence/provenance approval for each native dependency admitted by the probes. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
+
 **All of the following, with recorded evidence:**
 
 1. A device tool request is decoded and executed through generated, typed, statically registered code inside a published Native AOT binary, with no reflection path present. **The model loop is not probed here** — it is Cloud and JIT ([LS-02](../../architecture/17-agent-harness.md#rule-ls-02), **[V-03](../../assurance/phase-1-official-verification.md#rule-v-03)**).

@@ -63,7 +63,7 @@
 | `src/Contracts/` | **Split** into a public Apache-2.0 set and an internal AGPL set (executed in `03`; the split decision is made here) |
 | `src/DesktopHelpers/` | Disposition assigned against the shared-foundation boundary |
 | `src/BuildingBlocks/ArcForges.Desktop.*` | Reviewed against the shared-foundation boundary; mechanism-only projects Kept, product-aware projects Split or Moved |
-| `src/Cloud/Modules.*` | **17 module projects found**; reconciled against the architecture's module set in `21`. **The three deployable roles do not exist** — `Split` required (`§5.5` of the reconciliation evidence) |
+| `src/Cloud/Modules.*` | Map the 17 observed scaffold module names to the 20 declared domain owners in `21`; preserve the single Host with internal AgentRuntime/BackgroundJobs libraries and development-only AppHost |
 | `native/` | Dispositions already assigned (`§5.2` there): four `Keep`, **two `Fence`** pending substitute analyses. All six are ABI skeletons of ~90–120 lines, not implementations |
 | `tests/` | Each suite mapped to a required test family; gaps recorded |
 | `fixtures/` | Created as an empty, documented root for golden fixtures |
@@ -133,11 +133,11 @@
 
 ### WP-01.05 — Execute the blocking moves and fence the rest
 
-**What must be fully done.** The moves that block downstream work are executed: contract project structure created (types moved in `03`), shared-foundation violations resolved, and everything else with a non-`Keep` disposition fenced so a conforming project cannot reference it. Each move is a separate commit that does not change behaviour ([BR-09](#rule-br-09)).
+**What must be fully done.** Delete the two retired Notes scaffolds and their obsolete build references exactly as [reconciliation §5.6](../../assurance/implementation-state-reconciliation.md#56-shared-boundary-and-remaining-areas) specifies; no canvas/slides schema, test or future hook remains. Verify the retained Notes core and solution graph. The moves that block downstream work are executed: contract project structure created (types moved in `03`), shared-foundation violations resolved, and everything else with a non-`Keep` disposition fenced so a conforming project cannot reference it. Each move is a separate commit that does not change behaviour ([BR-09](#rule-br-09)).
 
 **Testing requirements.** The repository builds green at every commit boundary ([BR-08](#rule-br-08)); a reference check that no conforming project references fenced code.
 
-**Completion gate.** The repository builds, fenced code is unreferenceable, and the remaining dispositions are scheduled against named packages.
+**Completion gate.** The repository builds, both retired Notes project paths are absent from the build graph, fenced code is unreferenceable, and the remaining dispositions are scheduled against named packages.
 
 ---
 
@@ -173,7 +173,7 @@ Reconcile the current Blazor App/Application/Infrastructure/Components and C# Si
 | Shared-foundation reference check, clean | [WP-01.02](#rule-wp-01.02) |
 | Native shim decision records, one per shim | [WP-01.03](#rule-wp-01.03) |
 | Test family coverage report with explicit gaps | [WP-01.04](#rule-wp-01.04) |
-| Green build at every commit boundary; fenced-reference check clean | [WP-01.05](#rule-wp-01.05) |
+| Green build at every commit boundary; retired Notes paths absent and fenced-reference check clean | [WP-01.05](#rule-wp-01.05) |
 
 ---
 
@@ -186,7 +186,7 @@ Reconcile the current Blazor App/Application/Infrastructure/Components and C# Si
 3. No product knowledge remains in the shared foundation.
 4. The two `Fence` shims are unreferenceable, and their substitute analyses are scheduled against named sub-steps.
 5. Every required test family maps to an existing suite or a named future package.
-6. The blocking moves are executed, the repository builds green, and all remaining non-`Keep` code is fenced and unreferenceable.
+6. The blocking moves and explicit deletion of `ArcNotes.Edgeless`/`ArcNotes.Slides` are executed, their obsolete solution/project/lock entries and excluded hooks are absent, the retained Notes core builds green, and all remaining non-`Keep` code is fenced and unreferenceable.
 
 ---
 

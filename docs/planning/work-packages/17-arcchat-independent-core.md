@@ -190,6 +190,8 @@
 
 ## 8. Completion gate
 
+**Offline evidence.** Execute this product's applicable [initial-state matrix](../../assurance/testing-and-verification-strategy.md#offline-acceptance-matrix) rows, including fresh shell, hydrated outage, unavailable content, signout and restart where applicable. Record permitted local work and explicitly unavailable Cloud actions.
+
 **All of the following, with recorded evidence:**
 
 1. Every registered capability is visible with risk, trust, permission and health, and unavailability always shows a reason.

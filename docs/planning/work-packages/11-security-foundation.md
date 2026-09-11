@@ -203,6 +203,8 @@
 
 ## 8. Completion gate
 
+**[PG-12](../../assurance/open-gates-register.md#rule-pg-12) evidence:** [WP-11.09](#rule-wp-11.09) — Packaged RID PDF parser containment, licence/binding and hostile-input proof; combine with Notes viewer integration. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
+
 **All of the following, with recorded evidence:**
 
 1. No operation reaches an enforcement point without a complete actor chain.

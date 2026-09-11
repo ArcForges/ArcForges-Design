@@ -74,7 +74,7 @@ The product repository currently having these C# projects is not evidence that t
 | <a id="rule-rm-03"></a>RM-03 | **Dispositions**: `Keep` · `Rename` · `Move` · `Split` · `Merge` · `Rewrite` · `Fence` · `Delete`. |
 | RM-04 | **`Keep` means the item conforms to the accepted design or has a scheduled change that will make it conform** — never merely that it exists. |
 | RM-05 | **Existing code is evidence of present state, not a competing design authority** (**[D-011](../decisions/phase-1-foundation-decisions.md#rule-d-011)**). Where existing code and the accepted design disagree, the design governs. |
-| RM-06 | **A scaffold is not an implementation.** A project with a namespace declaration and no behaviour is `Keep` on structure and carries its full implementation work in its owning package. |
+| RM-06 | **A scaffold is not an implementation.** A scaffold in accepted scope is `Keep` on structure and carries behavior in its owning package. The two retired Notes projects in §5.6 are explicit `Delete` exceptions; an excluded capability receives no future implementation hook. |
 | <a id="rule-rm-07"></a>RM-07 | **Deleting existing work requires an explicit disposition with a reason.** |
 | RM-08 | **A reconciliation change is separate from a behaviour change**, and no step leaves the repository unbuildable at a commit boundary. |
 | RM-09 | **Completing this inventory is not executing it.** Physical migration and build-time enforcement remain implementation work in [WP-01](../planning/work-packages/01-repository-reconciliation-and-target-layout.md#rule-wp-01) and [WP-02](../planning/work-packages/02-build-governance-and-analyzer-policy.md#rule-wp-02). |
@@ -170,14 +170,14 @@ Every project in the main tree, with its measured content and state. **State** i
 | `ArcNotes.CloudClient` | 1 | 8 | Stub | — |
 | `ArcNotes.Database` | 1 | 8 | Stub | — |
 | `ArcNotes.Domain` | 1 | 8 | Stub | — |
-| `ArcNotes.Edgeless` | 1 | 8 | Stub | — |
+| `ArcNotes.Edgeless` | 1 | 8 | Stub | Delete under §5.6; retired scope |
 | `ArcNotes.Editor` | 1 | 8 | Stub | — |
 | `ArcNotes.ImportExport` | 1 | 8 | Stub | — |
 | `ArcNotes.Infrastructure` | 1 | 8 | Stub | — |
 | `ArcNotes.LocalRpc` | 1 | 8 | Stub | — |
 | `ArcNotes.Presentation` | 1 | 8 | Stub | — |
 | `ArcNotes.Search` | 1 | 8 | Stub | — |
-| `ArcNotes.Slides` | 1 | 8 | Stub | — |
+| `ArcNotes.Slides` | 1 | 8 | Stub | Delete under §5.6; retired scope |
 
 #### `src/ArcScope` — 17 projects, 435 C# lines
 
@@ -409,7 +409,7 @@ All 273 `.cs` files declare `SPDX-License-Identifier: AGPL-3.0-only`, and `NOTIC
 | Historical Web WebAssembly posture | **No `web-wasm.props` found** in the inspected baseline | Former gap superseded by [P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008) | [WP-02.03](../planning/work-packages/02-build-governance-and-analyzer-policy.md#rule-wp-02.03) removes obsolete Web-only managed posture and establishes Node tooling |
 | Test runner | `global.json` selects a modern test platform | Conforms | `Keep` |
 
-**Revised conclusion.** Build governance is close to conformant. [WP-02](../planning/work-packages/02-build-governance-and-analyzer-policy.md#rule-wp-02)'s remaining work is narrower than planned: the Web posture file, the `IsAotCompatible` sweep for libraries **outside** the two central imports, effective-property assertion, and the version-axis plumbing.
+**Revised conclusion.** Build governance is close to conformant. [WP-02](../planning/work-packages/02-build-governance-and-analyzer-policy.md#rule-wp-02)'s remaining work is narrower than planned: the Node/Web posture, the `IsAotCompatible` sweep for libraries **outside** the two central imports, effective-property assertion, and the version-axis plumbing.
 
 ### 5.4 Existing tests — three real suites, twenty-five scaffolds
 
@@ -432,11 +432,13 @@ All 273 `.cs` files declare `SPDX-License-Identifier: AGPL-3.0-only`, and `NOTIC
 
 | Item | Evidence | Finding | Disposition |
 |---|---|---|---|
-| Modules present | 17: AI, Agent, Billing, Catalog, Chat, Configuration, Entitlement, Identity, Notes, Notification, Operations, Policy, Resource, Scope, Search, Slate, Sync | Close to the accepted 16-module set; the difference is a partitioning question, not a missing capability | `Keep`; reconciled item-by-item in [WP-21.02](../planning/work-packages/21-cloud-host-and-persistence.md#rule-wp-21.02) |
+| Modules present | 17: AI, Agent, Billing, Catalog, Chat, Configuration, Entitlement, Identity, Notes, Notification, Operations, Policy, Resource, Scope, Search, Slate, Sync | Existing project names are not the owner catalogue: the [Cloud schema map](../architecture/data-model/01-cloud-data-model.md#1-schema-map) declares 20 domain owners plus shared infrastructure | `Keep`; reconciled item-by-item in [WP-21.02](../planning/work-packages/21-cloud-host-and-persistence.md#rule-wp-21.02) |
 | Runtime roles | `ArcForges.Cloud.Host`, `.AppHost`, `.BackgroundJobs`, `.ServiceDefaults` — **no `Worker`, no `TaskRunner`** | **The observed structure matches the accepted design.** [PP-03](../requirements/products/arcforges-cloud.md#rule-pp-03) of the Cloud product requirements and [RT-03](../architecture/05-cloud-architecture.md#rule-rt-03) of the Cloud architecture require **one** deployable ASP.NET Core host containing API handlers, the Harness and bounded internal background services; `BackgroundJobs` is a library referenced by the single web executable, which is exactly that shape. `AppHost` is Aspire local-development orchestration only ([EN-05](../requirements/products/arcforges-cloud.md#rule-en-05) of the Cloud architecture) | **`Keep`.** [WP-21.01](../planning/work-packages/21-cloud-host-and-persistence.md#rule-wp-21.01) must assert the shape holds — identical replicas, no role flag, no configuration-chosen leader, coordination by lease with fencing — **not split the host into roles** |
 | Content | 27 projects, **233 C# lines total** | Scaffolding | `Keep` on structure; all behaviour is [WP-21](../planning/work-packages/21-cloud-host-and-persistence.md#rule-wp-21)+ |
 
 ### 5.6 Shared boundary and remaining areas
+
+**Retired Notes dispositions (current scope).** Under [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006), **Delete** `src/ArcNotes/ArcNotes.Edgeless` and `src/ArcNotes/ArcNotes.Slides`, including their project-local lockfiles and obsolete solution/project references, in [WP-01.05](../planning/work-packages/01-repository-reconciliation-and-target-layout.md#rule-wp-01.05). These are the inventoried eight-line scaffolds, not shipped data formats. Retain unrelated Notes core work. Verify the retained build graph has neither retired project nor excluded schema/test hook. This is a design disposition; implementation deletion has not run. No work is assigned to the retired canvas/slides packages.
 
 | Item | Evidence | Finding | Disposition |
 |---|---|---|---|
@@ -458,10 +460,10 @@ Derived from what blocks the most downstream work, and revised by the corrected 
 |---|---|---|---|
 | 1 | **Licence boundary correction** (`§5.1`) | 55 files actively declare a licence Phase 1 forbids for their boundary; **[F-023](open-gates-register.md#rule-f-023)** depends on it | **Raised** — it is a defect, not pending work |
 | 2 | **Contract `Public`/`Internal` split** | Governs both layout and licence header; `Contracts.Foundation` is the only substantive code to move | Unchanged |
-| 3 | **Cloud runtime-role separation** (`§5.5`) | Three roles do not exist; retrofitting after modules gain behaviour is expensive | **New** — not previously identified |
+| 3 | **Cloud owner mapping and single-Host verification** (`§5.5`) | Preserve Host plus internal libraries; map all 20 domain owners before behavior is added | **Corrected** — no deployment-role split is required |
 | 4 | **Shared-boundary moves** (`§5.6`) | Five UI-facing projects sit in mechanism-only building blocks | Unchanged |
 | 5 | **Native shim substitute analyses** ([NS-07](#rule-ns-07), [NS-08](#rule-ns-08)) | Two shims may not belong in the permitted native surface | **Narrowed** — from six shims to two questions |
-| 6 | **Build governance completion** (`§5.3`) | Only the Web posture file, the library `IsAotCompatible` sweep and version-axis plumbing remain | **Lowered** — most of it already conforms |
+| 6 | **Build governance completion** (`§5.3`) | Only the Node/Web posture, the library `IsAotCompatible` sweep and version-axis plumbing remain | **Lowered** — most of it already conforms |
 | 7 | **Architecture-rule reconciliation** (`§5.4`) | Thirteen existing rules versus the accepted twenty-four | **Lowered** — the harness exists |
 | 8 | **Fixtures root and naming** | Cheap, and unblocks compatibility claims | Unchanged |
 
@@ -472,7 +474,7 @@ Derived from what blocks the most downstream work, and revised by the corrected 
 | Check | Result |
 |---|---|
 | Every `.csproj` in the main tree appears in `§4` | **Pass** — 166 of 166 |
-| Every area has a disposition in `§5` | **Pass** — 13 areas |
+| Every inventoried area has a current disposition in `§5` | **Pass for the recorded source/project inventory** — 13 areas, including the two explicit retired Notes exceptions; not a claim about all implementation documentation or runtime completeness |
 | Every native shim has a role, consuming product, permitted-surface assessment and disposition | **Pass** — 6 of 6, plus `shared` |
 | Substitute analysis recorded where the permitted-surface assessment is open | **Pass** — [NS-07](#rule-ns-07), [NS-08](#rule-ns-08), both scheduled |
 | Every earlier conformance claim re-checked against evidence | **Pass** — 6 corrections in `§3` |

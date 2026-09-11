@@ -271,6 +271,41 @@ The following classes describe an offered export; they do not require every prod
 
 ---
 
+<a id="content-origin-carriers"></a>
+### 12.1 Content origin record and carriers
+
+The [content origin behavior](07-security-privacy-and-trust.md#content-origin-profile) uses this typed record, not an arbitrary metadata bag. The public wire projection follows the [exact-value contract](../architecture/25-web-toolchain-and-sdk.md#31-exact-wire-values).
+
+| `ContentOrigin` field | v1 contract |
+|---|---|
+| `profile` | Required literal `arcforges.content-origin.v1` |
+| `originId`, `contentUnitId` | Stable typed IDs; the origin record is immutable and scoped to one payload version |
+| `kinds` | Nonempty, duplicate-free set of `aiGenerated`, `aiManipulated`, `nonAi`, `unknown`, serialized in that order |
+| `payloadSha256` | Lowercase 64-hex SHA-256 of exact payload bytes, excluding the origin record itself; text is UTF-8, structured content uses its versioned canonical serialization, binary media uses its exact bytes |
+| `producerKind` | `model`, `human`, `deterministic` or `import`; does not substitute for the inherited kinds |
+| `createdAt` | Known UTC instant or null for an unknown historical time; never guessed |
+| `parentOriginIds` | The first 32 distinct contributing origin IDs in ascending [canonical ID-byte order](../architecture/data-model/00-data-model-overview.md#canonical-id-order), or all if fewer |
+| `omittedParentCount` | Nonnegative int32, zero unless lineage was bounded; the full kind union is retained even when parent IDs are omitted |
+
+Maximum encoded record is 64 KiB. Unknown additive fields are preserved inert; invalid required fields fail validation and unknown profile versions are preserved read-only until supported. An origin record is committed with its payload under the existing content revision and journal/sync transaction. This is an additive content feature with a declared reader capability: an older reader may preserve it, but a writer unable to preserve known origin must refuse that mutation/export rather than strip it. Schema migration labels previously unmarked data unknown and never backfills fictitious generation evidence.
+
+| Existing content/output | Required carrier |
+|---|---|
+| Chat / Harness output | Typed `contentOrigin` on durable message parts and iteration-output parts; a stream header carries origin kinds before deltas, with final origin/hash on durable publication |
+| Notes document / attachment | Origin on each block payload and attachment reference, retained in document revisions, pending edits, sync, checkpoints and restore; document summary is the union |
+| Scope / Slate native content | Origin on report sections, authored findings and media assets/derived output where applicable; native package metadata and manifest inventory retain the records. Raw instrument/simulator provenance is separate and cannot be relabelled AI merely because an agent invoked a tool |
+| Notes Markdown / Chat JSON or text download | Cloud export manifest inventories content units and origin records with the acknowledged input snapshot. Each output file is hash-bound; embedded structured records may additionally carry the same profile |
+| CSV, text, subtitles, report presentation files and rendered media | `<output-name>.arcforges-origin.json` containing the output hash, profile, union and selected unit records. A renderer inherits the contributing assets' kinds; optional container tags are supplementary |
+| OTIO | `metadata.arcforges.contentOrigin` on represented objects plus the same export sidecar, with final file hash. Unknown metadata is preserved according to the existing OTIO fidelity contract |
+
+Export origin IDs are local to that export, with an explicit stable mapping inside the manifest. Include parent references only for selected exported records and account for omitted parents. Marking carries no user/workspace/device IDs, prompts, private provider/configuration values, absolute paths, secrets or unselected source data. Import maps export-local IDs to new local origin records and retains the declared kinds and import provenance.
+
+**Atomic deliverable.** Stage and verify output plus required manifest/sidecars before publication. A multi-file export is one directory bundle published by atomic rename, or one ZIP containing those files published atomically; a raw single-file shortcut that omits a required carrier is refused. No cancellation/crash may expose a complete-looking output without its marker. Native packages include the carrier internally. Validation failure leaves a recoverable staged job, not a completed export. This changes the carrier of existing exports; it adds no Notes PDF/HTML engine or Notes/Chat native archive.
+
+**Conformance.** Verify payload bytes against each record, the enclosing kind union, parent truncation accounting, privacy exclusions, unknown-field preservation and unsupported-writer refusal. Run generation→save→copy/edit→export/import vectors from the security profile, including mixed report sections, media/OTIO propagation and failed/partial publication. Compare imported declarations as declarations, not externally authenticated authorship.
+
+---
+
 ## 13. Portability constitution
 
 | # | Requirement |

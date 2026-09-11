@@ -171,6 +171,8 @@
 
 ## 8. Completion gate
 
+**[PG-23](../../assurance/open-gates-register.md#rule-pg-23) evidence:** [WP-24.06](#rule-wp-24.06) — Real browser realtime loss/reconnect/polling convergence with correct session and byte-cursor handling. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
+
 **All of the following, with recorded evidence:**
 
 1. Session revocation terminates the connection promptly; mass reconnection does not synchronise; no token appears in transport logs.

@@ -189,6 +189,12 @@
 
 ## 8. Completion gate
 
+**[PG-08](../../assurance/open-gates-register.md#rule-pg-08) evidence:** [WP-33](#rule-wp-33) — Every claimed real hardware result names the maintained device/firmware/driver/lab inventory. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
+
+**[PG-03](../../assurance/open-gates-register.md#rule-pg-03) evidence:** [WP-33](#rule-wp-33) — Licence/provenance approval for each admitted acquisition native dependency. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
+
+**Offline evidence.** Execute this product's applicable [initial-state matrix](../../assurance/testing-and-verification-strategy.md#offline-acceptance-matrix) rows, including fresh shell, hydrated outage, unavailable content, signout and restart where applicable. Record permitted local work and explicitly unavailable Cloud actions.
+
 **All of the following, with recorded evidence:**
 
 1. **Drift check only**: the reference is compared against its bound commit, and any newly introduced material is assessed against the accepted ArcScope scope. The matrix and its licence audit were completed as design-stage evidence and closed [PG-01](../../assurance/open-gates-register.md#rule-pg-01) and [F-013](../../assurance/open-gates-register.md#rule-f-013) before this package began. Findings carried in: **F-AS-1** records an **authorship boundary**, not merely a reuse prohibition: the reference’s commercial-only modules — MQTT, XY plotting, 3D visualisation and the activation system — were deliberately **not read**, and no ArcScope capability may derive from their expression.

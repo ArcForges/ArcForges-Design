@@ -17,7 +17,7 @@
 
 **Out of scope.** Packaging artifacts and signing — those are `50`'s production concern and are specified in the build architecture; this package establishes the build *governance* they depend on. The policy test implementations themselves (`05`).
 
-**Why this package exists.** The observed inventory found `IsAotCompatible` declared on zero projects and no committed lock file. Both are prerequisites for the AOT proof in `06` being meaningful rather than accidental.
+**Why this package exists.** The corrected inventory records central desktop/contracts AOT imports and 165 committed per-project NuGet lockfiles. Validate evaluated properties and locked restore, repair uncovered AOT chains, and establish the accepted Web toolchain; file-local absence is not an effective-property defect.
 
 ---
 
@@ -62,7 +62,7 @@
 | `global.json` | Verified pinned, roll-forward disabled, prerelease disallowed |
 | `Directory.Build.props` / `.targets` | Language version, nullable, implicit usings, deterministic build, analysis level, SourceLink, licence boundary property, warnings-as-errors staging |
 | `Directory.Packages.props` | Central management with transitive pinning verified; preview packages audited |
-| `packages.lock.json` | **Created and committed** at every project; CI switched to locked restore |
+| `packages.lock.json` | Validate the 165 existing project locks and locked CI restore; create/update only for actual project/dependency changes. No root NuGet lock is required |
 | `eng/build/desktop-aot.props` | Verified: AOT publish, trim analysis, single-file diagnostics as errors, RID set |
 | `eng/build/cloud-jit.props` | Verified: JIT posture explicit; AOT properties absent by design |
 | `eng/build/android-aot.props` | Verified: explicit runtime selection, never inherited ([RT-02](../../architecture/11-mobile-architecture.md#rule-rt-02) in the mobile architecture) |
@@ -101,7 +101,7 @@
 
 ### WP-02.02 — AOT and trim declaration sweep
 
-**What must be fully done.** Every reusable library that an AOT deliverable consumes declares AOT compatibility; every AOT host declares AOT publish. The resulting diagnostics are treated as findings, triaged, and either fixed or recorded as blocking items against the package that owns the offending code. This is expected to surface real work — the observed inventory found zero declarations.
+**What must be fully done.** Every reusable library that an AOT deliverable consumes declares AOT compatibility; every AOT host declares AOT publish. The resulting diagnostics are treated as findings, triaged, and either fixed or recorded as blocking items against the package that owns the offending code. Evaluate imports before deciding whether a declaration is missing; the baseline already supplies desktop and contract AOT properties centrally.
 
 **Testing requirements.** A build producing the complete diagnostic set; a triage record for every diagnostic.
 
@@ -171,6 +171,8 @@
 ---
 
 ## 8. Completion gate
+
+**[VG-08](../../assurance/open-gates-register.md#rule-vg-08) evidence:** [WP-02.05](#rule-wp-02.05) — Retained framework-upgrade record and Android runtime/AOT/trim re-verification whenever the recurring trigger fires. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
 
 **All of the following, with recorded evidence:**
 

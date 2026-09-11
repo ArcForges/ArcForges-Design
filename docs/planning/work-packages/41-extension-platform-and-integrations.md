@@ -182,6 +182,10 @@
 
 ## 8. Completion gate
 
+**[PG-22](../../assurance/open-gates-register.md#rule-pg-22) evidence:** [WP-41.00](#rule-wp-41.00) — Executable-extension OS profile denies store/credential/network/process escape and cleans up after parent death; combine with the platform broker proof. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
+
+**Identity boundary evidence.** Apply the [owner/deployment identity chain](../../architecture/08-security-architecture.md#1-identity-layering). Automation loses authorization when its owner loses permission/service eligibility even with a valid process credential; no customer service-principal or Organization authority is introduced.
+
 **All of the following, with recorded evidence:**
 
 1. Every hostile extension-process behaviour leaves the host healthy with a typed failure; no ambient credential is inherited.

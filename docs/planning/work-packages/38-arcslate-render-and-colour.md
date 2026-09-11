@@ -23,6 +23,8 @@
 
 ## 2. Required inputs and dependencies
 
+**Frozen design input.** [content-origin behavior](../../requirements/07-security-privacy-and-trust.md#content-origin-profile) and [carrier schema](../../requirements/13-data-formats-and-portability.md#content-origin-carriers) is fixed before this package; implement it without choosing a different marking mechanism.
+
 | Input | Why it matters |
 |---|---|
 | [`../../requirements/products/arcslate.md`](../../requirements/products/arcslate.md) `§9`, `§12` | Colour management and the render and export model |
@@ -49,6 +51,8 @@
 ---
 
 ## 4. Projects, directories, files and major types affected
+
+Content payloads use typed ContentOrigin and content-unit bindings under their existing owner revision; format/schema fixtures include that projection.
 
 | Location | Change |
 |---|---|
@@ -99,6 +103,8 @@
 <a id="rule-wp-38.03"></a>
 
 ### WP-38.03 — Render execution and atomic export
+
+**Required design implementation and verification.** The frozen render snapshot includes contributing origin kinds. Publish rendered media/subtitles with required hash-bound sidecar as one staged bundle; crash/cancel/missing marker never exposes a complete-looking file. Retrying marking reuses the same render payload; proxy toggling cannot strip provenance.
 
 **What must be fully done.** Render as a **native Product Job** with progress, pause, resume and cancellation, owned and recovered by ArcSlate ([BR-07](#rule-br-07)). Output written to a temporary target and committed atomically. A failure or cancellation leaves no file that looks complete. Long renders survive machine sleep and resume where the platform permits.
 
@@ -154,6 +160,8 @@
 
 ## 7. Tests and verification evidence
 
+**Required evidence addition.** [WP-38.03](#rule-wp-38.03) records the carrier/propagation/failure vectors above with payload and manifest hashes; early packages use declared fixtures, while provider/Harness packages require their real integrations.
+
 | Evidence | Produced by |
 |---|---|
 | Colour round-trip, separation and domain-purity results | [WP-38.00](#rule-wp-38.00) |
@@ -167,6 +175,10 @@
 ---
 
 ## 8. Completion gate
+
+**[PG-08](../../assurance/open-gates-register.md#rule-pg-08) evidence:** [WP-38](#rule-wp-38) — Render/colour hardware results bind the lab inventory and software fallback comparison. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
+
+**Additional completion requirement.** The package's content paths pass the stated origin vectors, including unknown input and failed publication; a valid stored/rendered payload alone cannot satisfy the carrier requirement.
 
 **All of the following, with recorded evidence:**
 

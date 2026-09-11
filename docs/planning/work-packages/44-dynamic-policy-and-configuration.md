@@ -177,6 +177,8 @@
 
 ## 8. Completion gate
 
+**[PG-16](../../assurance/open-gates-register.md#rule-pg-16) evidence:** [WP-44.01](#rule-wp-44.01) — Atomic version activation/rejection and two-policy/no-retroactivity/concurrent-replica results, combined with durable capacity evidence from package 42. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
+
 **All of the following, with recorded evidence:**
 
 1. Each of the four boundaries is enforced structurally with a failing negative fixture.

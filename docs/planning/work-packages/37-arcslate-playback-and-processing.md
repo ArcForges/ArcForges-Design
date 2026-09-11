@@ -171,6 +171,12 @@
 
 ## 8. Completion gate
 
+**[PG-22](../../assurance/open-gates-register.md#rule-pg-22) evidence:** [WP-37.01](#rule-wp-37.01) — Real packaged hostile media parsing containment and no unrestricted fallback. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
+
+**[PG-20](../../assurance/open-gates-register.md#rule-pg-20) evidence:** [WP-37.04](#rule-wp-37.04) — Real per-track cut/mix/dissolve/gap ownership and one emitted output sample per index; combine with timeline/OTIO evidence. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
+
+**[PG-08](../../assurance/open-gates-register.md#rule-pg-08) evidence:** [WP-37](#rule-wp-37) — Playback/processing hardware evidence names device/driver/firmware and lab configuration. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
+
 **All of the following, with recorded evidence:**
 
 1. The native ABI is version-negotiated, handle lifetime is leak-free, sanitiser runs are clean, and **no native type escapes the media layer** — satisfying [PG-03](../../assurance/open-gates-register.md#rule-pg-03) for ArcSlate.

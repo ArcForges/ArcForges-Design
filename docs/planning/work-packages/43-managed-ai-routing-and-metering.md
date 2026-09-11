@@ -23,6 +23,8 @@
 
 ## 2. Required inputs and dependencies
 
+**Frozen design input.** [content-origin behavior](../../requirements/07-security-privacy-and-trust.md#content-origin-profile) and [carrier schema](../../requirements/13-data-formats-and-portability.md#content-origin-carriers) is fixed before this package; implement it without choosing a different marking mechanism.
+
 [WP-25](25-sync-engine-and-blob-lifecycle.md#rule-wp-25) provides authoritative Chat/Notes stores and durable output/resource commits; [WP-42](42-commerce-entitlement-and-credits.md#rule-wp-42) provides money/capacity admission; [WP-44](44-dynamic-policy-and-configuration.md#rule-wp-44) provides active route/policy snapshots. Single-invocation integration is tested here through those real ports without implementing a second Harness; [WP-52](52-cloud-harness.md#rule-wp-52) composes the loop.
 
 | Input | Why it matters |
@@ -54,6 +56,8 @@
 ---
 
 ## 4. Projects, directories, files and major types affected
+
+Content payloads use typed ContentOrigin and content-unit bindings under their existing owner revision; format/schema fixtures include that projection.
 
 | Location | Change |
 |---|---|
@@ -114,6 +118,8 @@
 
 ### WP-43.04 — Provider interaction records and transparency
 
+**Required design implementation and verification.** Implement the already frozen content-origin profile at the provider generation boundary. Test real provider text through durable output and downstream carrier fixtures, deterministic/non-AI and legacy controls, malformed/hash-mismatched mark and marking retry. Supplier usage remains recorded; platform non-delivery releases/compensates customer funding under existing metering rules. Record the separate [VG-01](../../assurance/open-gates-register.md#rule-vg-01) regime/adequacy approval before its market trigger.
+
 **What must be fully done.** A provider interaction record per call, separate from the execution, capability and audit traces, carrying no content beyond what policy permits. Cost transparency surfaces show what a run cost and why. AI-generated content carries the required transparency marking per artifact type.
 
 **Testing requirements.** Trace-separation test; a content-redaction test on interaction records; a cost-explainability test; a marking-coverage test per artifact type.
@@ -168,6 +174,8 @@
 
 ## 7. Tests and verification evidence
 
+**Required evidence addition.** [WP-43.04](#rule-wp-43.04) records the carrier/propagation/failure vectors above with payload and manifest hashes; early packages use declared fixtures, while provider/Harness packages require their real integrations.
+
 | Evidence | Produced by |
 |---|---|
 | Routing decision, explainability and streaming results | [WP-43.00](#rule-wp-43.00) |
@@ -182,6 +190,10 @@
 ---
 
 ## 8. Completion gate
+
+**[PG-13](../../assurance/open-gates-register.md#rule-pg-13) evidence:** [WP-43.07](#rule-wp-43.07) — Real provider usage and exact synthetic supplier/customer settlement fixture through production code; combine with payment/term evidence from package 42. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
+
+**Additional completion requirement.** The package's content paths pass the stated origin vectors, including unknown input and failed publication; a valid stored/rendered payload alone cannot satisfy the carrier requirement.
 
 **All of the following, with recorded evidence:**
 

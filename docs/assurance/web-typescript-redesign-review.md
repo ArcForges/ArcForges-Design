@@ -73,7 +73,7 @@ git -C "<design-worktree>" diff main -- docs/inputs
 | Implementation sequence | 51 active work packages, each retaining its nine mandatory sections; 135 directed dependencies, symmetric index/header/dependency declarations and no forward dependency |
 | Invariant accounting | 429 catalogue entries and the same 429 item-level coverage entries |
 | Gate recount | 39 actual register rows, including the suffixed simulator gate: 5 design-closed, 33 implementation-open, 1 merged |
-| Existing executable design counterexamples | 20 tests passed; these exercise the baseline design models, not a React/Cloud runtime |
+| Existing executable design counterexamples | 20 historical tests passed, mixing bounded models and illustrative assertions; [proof-strength limits](design-repair-verification.md#proof-strength) apply. No React/Cloud runtime was exercised |
 | Scoped diff and preserved input check | git diff --check clean; git diff main -- docs/inputs empty; 52 edited plus 2 new Markdown documents, UTF-8/LF/final newline and no trailing whitespace |
 | Read-only references | ArcForges implementation HEAD `ede43db5b2237104dd0008b99398090c54a2cf94` remains clean; the three template hashes above match the final reread |
 

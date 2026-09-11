@@ -260,7 +260,7 @@ Every side-effecting Step declares one of:
 
 | # | Requirement |
 |---|---|
-| BG-01 | **Budget ≠ Entitlement** ([I-013](01-normative-glossary-and-invariants.md#rule-i-013)). Entitlement is the maximum the user is eligible for; budget is how much this Task may spend. A workspace balance of 30,000 credits does not let one Task spend 30,000. |
+| <a id="rule-bg-01"></a>BG-01 | **Budget ≠ Entitlement** ([I-013](01-normative-glossary-and-invariants.md#rule-i-013)). Entitlement is the maximum the user is eligible for; budget is how much this Task may spend. A workspace balance of 30,000 credits does not let one Task spend 30,000. |
 | BG-02 | Budget dimensions include, at minimum: **AI credit budget**, **execution time / deadline**, **external paid tool budget**, and **operational limits** (maximum expensive capability calls, maximum generated outputs). The model must be extensible. |
 | BG-03 | A Task **reserves** its budget at start and settles afterwards. Reservation is what prevents three concurrent Tasks each independently observing a sufficient balance and collectively overdrawing it. |
 | BG-04 | Reservation is not deduction. Actual usage produces the credit debit; the unused reservation is released. |

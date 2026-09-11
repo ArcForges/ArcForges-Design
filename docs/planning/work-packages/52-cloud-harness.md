@@ -25,6 +25,8 @@ Rather than leave a package whose steps cannot run in their stated order, the Ha
 
 ## 2. Required inputs and dependencies
 
+**Frozen design input.** [content-origin behavior](../../requirements/07-security-privacy-and-trust.md#content-origin-profile) and [carrier schema](../../requirements/13-data-formats-and-portability.md#content-origin-carriers) is fixed before this package; implement it without choosing a different marking mechanism.
+
 Explicit consumers: [WP-20](20-first-cross-product-workflow.md#rule-wp-20) supplies the cross-product workflow surface, [WP-26](26-remote-action-and-tool-bridge.md#rule-wp-26) the durable device bridge, [WP-40](40-knowledge-search-and-retrieval.md#rule-wp-40) permission-aware retrieval/context, [WP-41](41-extension-platform-and-integrations.md#rule-wp-41) MCP/extension adapters, and [WP-44](44-dynamic-policy-and-configuration.md#rule-wp-44) active policy. None can be assumed merely because its contract type existed in WP-03.
 
 | Input | Why it matters |
@@ -54,6 +56,8 @@ Explicit consumers: [WP-20](20-first-cross-product-workflow.md#rule-wp-20) suppl
 ---
 
 ## 4. Projects, directories, files and major types affected
+
+Content payloads use typed ContentOrigin and content-unit bindings under their existing owner revision; format/schema fixtures include that projection.
 
 | Location | Change |
 |---|---|
@@ -104,6 +108,8 @@ Explicit consumers: [WP-20](20-first-cross-product-workflow.md#rule-wp-20) suppl
 <a id="rule-wp-52.03"></a>
 
 ### WP-52.03 — Shared streaming with durable Task fallback
+
+**Required design implementation and verification.** Emit origin kinds before generated deltas and commit per-part origin with durable iteration/final message output. Exercise missing marker/hash corruption, crash before publication and retry of marking without another model call/customer debit. All clients converge to the same marked durable output with realtime disabled.
 
 **What must be fully done.** Implement the logged shared PostgreSQL presentation tables and full readStream contract in [Harness §7](../../architecture/17-agent-harness.md#7-streaming). Distinguish stream completed/truncated/superseded/evicted from Task state. Persist each invocation output before settlement, and final/interrupted message or no-answer with terminal Task atomically. Document WAL/backup retention and restore purge; no process-socket takeover assumption.
 
@@ -161,6 +167,8 @@ Explicit consumers: [WP-20](20-first-cross-product-workflow.md#rule-wp-20) suppl
 
 ## 7. Tests and verification evidence
 
+**Required evidence addition.** [WP-52.03](#rule-wp-52.03) records the carrier/propagation/failure vectors above with payload and manifest hashes; early packages use declared fixtures, while provider/Harness packages require their real integrations.
+
 | Evidence | Produced by |
 |---|---|
 | Loop-bound, crash-resume, no-progress and conflict-batching results | [WP-52.00](#rule-wp-52.00) |
@@ -174,6 +182,10 @@ Explicit consumers: [WP-20](20-first-cross-product-workflow.md#rule-wp-20) suppl
 ---
 
 ## 8. Completion gate
+
+**[PG-18](../../assurance/open-gates-register.md#rule-pg-18) evidence:** [WP-52.04](#rule-wp-52.04) — Dispatch/crash unknown-effect resolution and unregistrable unsafe capabilities, together with cancellation/approval recovery in this package. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
+
+**Additional completion requirement.** The package's content paths pass the stated origin vectors, including unknown input and failed publication; a valid stored/rendered payload alone cannot satisfy the carrier requirement.
 
 **All of the following, with recorded evidence:**
 

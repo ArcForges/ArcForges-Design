@@ -129,6 +129,21 @@ Every fixture that stands in for a later capability is listed here with the pack
 
 ---
 
+### Frozen semantics before the first consumer
+
+The reviewed repairs establish these definitions before implementation starts. Packages implement and test them; they do not select their product meaning during coding.
+
+| Definition | Earliest implementation and downstream proof |
+|---|---|
+| [Content origin behavior](../requirements/07-security-privacy-and-trust.md#content-origin-profile) and [carriers](../requirements/13-data-formats-and-portability.md#content-origin-carriers) | Contract foundation freezes typed records/vectors; persistence commits origin with content; Chat/Notes/native report/media formats preserve it. Real Cloud export replaces runtime fixtures in [WP-25.08](work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.08); real provider/Harness marking runs in [WP-43.04](work-packages/43-managed-ai-routing-and-metering.md#rule-wp-43.04) and [WP-52.03](work-packages/52-cloud-harness.md#rule-wp-52.03). Early fixtures cannot close these real-producer gates |
+| [Notes scalar query](../requirements/products/arcnotes.md#notes-scalar-query-profile) | Foundation contracts and core values precede initial list filters, API/cursor and sync validation. [WP-28](work-packages/28-arcnotes-properties-and-views.md#rule-wp-28) completes both query evaluators; [WP-40](work-packages/40-knowledge-search-and-retrieval.md#rule-wp-40) directly depends on it for the Notes filter. The existing serial order already puts 28 before 40 |
+| [Scope measurement](../requirements/products/arcscope.md#measurement-profile) | Contract/storage projection precedes [WP-34.02](work-packages/34-arcscope-analysis-and-reporting.md#rule-wp-34.02) formulas/oracles and reports. Recorded acquisition/replay input is sufficient; the later Cloud simulator reuses this profile and does not gate earlier analysis |
+| Service term and capacity | [WP-42.11](work-packages/42-commerce-entitlement-and-credits.md#rule-wp-42.11) executes before [WP-42.10](work-packages/42-commerce-entitlement-and-credits.md#rule-wp-42.10) go-live despite numerical suffix order. AI-provider and configuration evidence complete their own shared gates later |
+
+A shared gate closes only after every scheduled producer contributes its required execution evidence. An early package records its scoped contribution in §7/§8, never a substitute global pass. The [gate index](work-packages/README.md#deferred-gate-scheduling) and each named completion gate carry the same obligation. Design-only checks do not close provider, hardware, market, isolation or commercial runtime gates.
+
+---
+
 ## 4. Serial execution and dependency freedom
 
 Implementation is one main, serial context. Execute the topological order in the work-package index; numerical identity never overrides a dependency. Independent products may have focused solution views and isolated build/test entry points without splitting authority or bypassing shared gates.

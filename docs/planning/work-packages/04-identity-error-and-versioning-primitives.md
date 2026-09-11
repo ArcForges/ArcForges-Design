@@ -23,6 +23,8 @@
 
 ## 2. Required inputs and dependencies
 
+**Frozen design input.** [error catalogue](../../architecture/contracts/00-operation-catalogue.md#3-the-error-model)
+
 | Input | Why it matters |
 |---|---|
 | [`../../requirements/01-normative-glossary-and-invariants.md`](../../requirements/01-normative-glossary-and-invariants.md) | The invariant catalogue these primitives enforce |
@@ -112,6 +114,8 @@
 
 ### WP-04.04 — Error and reason codes
 
+**Required design implementation and verification.** Register identity.last_credential and validation.ast_bounds_exceeded with no-effect/nonretryable semantics. Map simulator invalid input to validation.invalid_request. Test rejected final credential removal and rejected overbound AST before effects; validate unknown future error fallback without converting it to success/retry.
+
 **What must be fully done.** A single reason-code registry is generated from source, with each code carrying its category, its retryability, its effect certainty and its user-facing message key. The result type expresses success, typed failure and cancellation distinctly — a cancellation is never reported as a failure.
 
 **Testing requirements.** A registry completeness test; a test that every failure path returns a registered code; a test that cancellation and failure are distinguishable at every layer.
@@ -152,6 +156,8 @@ Implement the C# serializers and metadata projection for the exact wire rules in
 
 ## 7. Tests and verification evidence
 
+**Required evidence addition.** Known-producer-code closure and unknown-reader-code negative vectors.
+
 | Evidence | Produced by |
 |---|---|
 | Compile-negative test suite for identifier and axis confusion | [WP-04.00](#rule-wp-04.00), [WP-04.05](#rule-wp-04.05) |
@@ -163,6 +169,8 @@ Implement the C# serializers and metadata projection for the exact wire rules in
 ---
 
 ## 8. Completion gate
+
+**Additional completion requirement.** Generated reason vocabulary agrees with all operation declarations while clients tolerate additive unknown responses safely.
 
 **All of the following, with recorded evidence:**
 

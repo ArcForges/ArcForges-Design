@@ -282,9 +282,9 @@ Three preview layers:
 
 | # | Requirement |
 |---|---|
-| [WP-01](../../planning/work-packages/01-repository-reconciliation-and-target-layout.md#rule-wp-01) | **ArcChat Web and the Account Portal are strictly separate products** (**[D-014](../../decisions/phase-1-foundation-decisions.md#rule-d-014)**, **[D-015](../../decisions/phase-1-foundation-decisions.md#rule-d-015)**). `chat.arcforges.com` is the ArcChat surface; `account.arcforges.com` is the account, billing and security control centre. |
-| [WP-02](../../planning/work-packages/02-build-governance-and-analyzer-policy.md#rule-wp-02) | ArcChat Web may **link** to the account portal; it does not embed it. |
-| [WP-03](../../planning/work-packages/03-contract-foundation-and-licence-split.md#rule-wp-03) | **The mobile account surface is likewise a link-out**, showing identity, workspace, storage and usage, with management performed in the portal (`§12` of the identity requirements) — subject to the mobile commerce prohibitions in **[D-022](../../decisions/phase-1-foundation-decisions.md#rule-d-022)**. |
+| <a id="rule-wp-01"></a>WP-01 | **ArcChat Web and the Account Portal are strictly separate products** (**[D-014](../../decisions/phase-1-foundation-decisions.md#rule-d-014)**, **[D-015](../../decisions/phase-1-foundation-decisions.md#rule-d-015)**). `chat.arcforges.com` is the ArcChat surface; `account.arcforges.com` is the account, billing and security control centre. |
+| <a id="rule-wp-02"></a>WP-02 | ArcChat Web may **link** to the account portal; it does not embed it. |
+| <a id="rule-wp-03"></a>WP-03 | **The mobile account surface is likewise a link-out**, showing identity, workspace, storage and usage, with management performed in the portal (`§12` of the identity requirements) — subject to the mobile commerce prohibitions in **[D-022](../../decisions/phase-1-foundation-decisions.md#rule-d-022)**. |
 
 ---
 

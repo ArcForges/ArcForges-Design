@@ -170,6 +170,13 @@ Append-only, separate from telemetry ([OA-06](../13-observability-and-operations
 
 ---
 
+<a id="content-origin-storage"></a>
+### Content origin storage and revision ownership
+
+The [content origin carrier](../../requirements/13-data-formats-and-portability.md#content-origin-carriers) is an immutable typed record stored with the owning payload. A content unit has a stable `ContentUnitId`, bound to exactly one message part, Notes block/attachment, report section/finding or media asset/output; it is a child of that owner's revision, not an independently mutable aggregate. A new payload version gets a new `ContentOriginId`, payload hash and parent lineage. The owning revision references both payload and origin. Their insertion/reference update is atomic through the same journal/write/sync path. Retained revisions pin their own origin records; deletion/GC follows the owning content's history/pins, never a separate metadata expiry.
+
+Chat cache mirrors Cloud part origins. Notes pending events, conflict alternatives, undo, checkpoints and restored revisions preserve origin along with content; restoring/copying to a new payload version retains its kinds. Scope/Slate native stores own local origins; Cloud metadata replicas carry the same typed projection without taking native authority. Native packages, generated downloads and sidecars use the carrier contract. Legacy absent metadata becomes `unknown`; unknown profile/fields remain inert and readable, and a writer unable to preserve them refuses affected writes. No origin payload includes credentials or an executable type name.
+
 ## 2. ArcChat local store
 
 ### `conversation` *(aggregate root)*
@@ -341,10 +348,11 @@ The canonical shape is [Cloud Notes §8.4](01-cloud-data-model.md#84-notes--cano
 | `key` | `text NN` | |
 | `owner` | `enum(system, user) NN` | Separated, never conflated ([WP-28.00](../../planning/work-packages/28-arcnotes-properties-and-views.md#rule-wp-28.00)) |
 | `type` | `enum(text, number, date, dateTime, select, multiSelect, checkbox, url) NN` | The [required scalar property kinds](../../requirements/products/arcnotes.md#7-properties-tags-and-views); `select` is single-select |
-| `config` | `json NN` | Declared options, numeric precision and scalar validation; no relation target or evaluator |
+| `config` | `json NN` | Typed `notes.scalar.v1` profile/options and optional scale (default 9, max 9), per the [query profile](../../requirements/products/arcnotes.md#notes-scalar-query-profile); no relation/evaluator |
+| `semantic_rev` | `rev NN` | Changes for comparison-affecting config/type/option membership, not labels; normal `rev` changes for every edit |
 | `rev` | `rev NN` | |
 
-`property_value` is `(document_id, property_def_id)` with a typed value column set per type. **A document with no property rows has no property overhead** — this is what makes [WP-28.04](../../planning/work-packages/28-arcnotes-properties-and-views.md#rule-wp-28.04)'s lightness requirement structural rather than a UI choice.
+`property_value` is `(document_id, property_def_id)` with exactly one typed value column set per type. Numbers use exact decimal storage (28 significant digits, scale at most 9); date and UTC instant have distinct columns; options use stable IDs and multi-select is a bounded set. No row means missing; a null write deletes the row, while empty/false/zero remain present. The [query profile](../../requirements/products/arcnotes.md#notes-scalar-query-profile) governs write validation, type-change refusal and every comparison. **A document with no property rows has no property overhead** — this is what makes [WP-28.04](../../planning/work-packages/28-arcnotes-properties-and-views.md#rule-wp-28.04)'s lightness requirement structural rather than a UI choice.
 
 - `IX (property_def_id, value_text)`, `IX (property_def_id, value_number)`, `IX (property_def_id, value_date)` — the query-and-view paths
 
@@ -355,10 +363,12 @@ The canonical shape is [Cloud Notes §8.4](01-cloud-data-model.md#84-notes--cano
 | Field | Type | Notes |
 |---|---|---|
 | `saved_view_id` | `id` | **PK** |
-| `notebook_id` | `id?` | Scope; null means workspace-wide |
+| `notebook_id` | `id NN` | One authorized notebook, per the accepted saved-view scope |
+| `query_profile` | `text NN` | `notes.scalar.v1`; unknown version remains read-only and cannot execute |
+| `definition_semantic_revs` | `json NN` | Typed map of referenced PropertyDefId to semantic revision |
 | `kind` | `enum(list, table) NN` | **Exactly two layouts** ([P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006)). Board, gallery, calendar and timeline layouts are excluded |
-| `filter` | `json NN` | Property predicates over the declared scalar kinds in [property storage](#property_definition-property_value), governed by the [ArcNotes property and view requirements](../../requirements/products/arcnotes.md#7-properties-tags-and-views) |
-| `sort` | `json NN` | Ordered sort keys |
+| `filter` | `json?` | Null means match-all; otherwise bounded property predicates over the declared scalar kinds in [property storage](#property_definition-property_value), governed by the [ArcNotes property and view requirements](../../requirements/products/arcnotes.md#7-properties-tags-and-views) |
+| `sort` | `json NN` | At most 8 typed keys, missing last and final DocumentId ascending; [profile](../../requirements/products/arcnotes.md#notes-scalar-query-profile) |
 | `columns` | `json?` | Table layout only |
 | `rev` | `rev NN` | |
 
@@ -366,6 +376,8 @@ The canonical shape is [Cloud Notes §8.4](01-cloud-data-model.md#84-notes--cano
 - **Rule** — a view is a **query, never a container**. Deleting a view deletes no document; a document appears in a view because it matches, not because it was added
 
 > **Retired identifiers.** `canvas`, `canvas_element`, `slide_deck`, `slide` and `speaker_note` are **retired by [P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006)** and are not reused. Edgeless canvas, whiteboard surfaces, shapes, connectors, frames and presentations are excluded from delivery, with no mandatory future hook. Their historical definitions are in the git history of this document at `7ed79a6`.
+
+**Query dataset token.** The materialized Notes query source maintains a monotonically changing token for relevant notebook membership/value/trash changes; local evaluation also binds hydration and pending-local generations. Authorization is rechecked on each page. A consistent read returns its token with results; a cursor checks that token before reading the next page. Token change produces the profile's explicit restart, not a page from another dataset. Tokens are opaque equality/version evidence, never content revision values compared across different aggregates. Label-only definition rename leaves semantic bindings valid; type/config changes follow the profile's refusal/repair rules.
 
 ### `document_history`, `checkpoint`, `trash_entry`
 
@@ -429,7 +441,10 @@ Raw capture is **not** in the relational store ([SE-14](../../requirements/produ
 
 ### `channel`, `signal`, `event_record`, `analysis_definition`, `analysis_result`, `annotation`, `finding`, `report`
 
-`analysis_result` is *(derived)*: **deleting every result and rebuilding produces identical output** ([WP-34.04](../../planning/work-packages/34-arcscope-analysis-and-reporting.md#rule-wp-34.04)), so each row records its `analysis_definition_version`, its `decoder_version`, its input capture and range, and its configuration snapshot — the five things [LB-04](../../requirements/products/arcscope.md#rule-lb-04) requires for reproducibility. `annotation` and `finding` are **authored content with their own identity and history**, and are **never written into raw capture** ([WP-34.05](../../planning/work-packages/34-arcscope-analysis-and-reporting.md#rule-wp-34.05)).
+<a id="measurement-storage"></a>
+**Measurement projection.** `analysis_definition` stores the typed request: `profile=scope.measurement.v1`, source capture/channel and frozen revision/hash, start/end in the recorded timebase, alignment/calibration/unit and configuration snapshot, family set, optional cursor positions, optional reference levels. Its immutable request hash binds these fields. Execution resolves default levels against that same source/window and records them, never against a later live capture. `analysis_result` stores definition ID/version/hash, source bindings, resolved configuration, finite/excluded/run counts, requested/covered duration, timing uncertainty, and typed per-family `{status, reason?, value?, unit, observationCount}`. A numeric value exists only for `ok`; cursor delta has its two components/sample IDs. The [measurement profile](../../requirements/products/arcscope.md#measurement-profile) defines statuses, formulas and tolerance. Reports/UI reference the same result/configuration; an unsupported profile preserves historical display but refuses recomputation. Results are derived, while authored explanations and their origin are revisioned content.
+
+`analysis_result` is *(derived)*: **deleting every result and rebuilding produces equivalent output under the recorded profile tolerance** ([WP-34.04](../../planning/work-packages/34-arcscope-analysis-and-reporting.md#rule-wp-34.04)), so each row records its `analysis_definition_version`, its `decoder_version`, its input capture and range, and its configuration snapshot — the five things [LB-04](../../requirements/products/arcscope.md#rule-lb-04) requires for reproducibility. `annotation` and `finding` are **authored content with their own identity and history**, and are **never written into raw capture** ([WP-34.05](../../planning/work-packages/34-arcscope-analysis-and-reporting.md#rule-wp-34.05)).
 
 ---
 
@@ -521,7 +536,7 @@ All four are *(derived)*, in a **separate store file** from the project, so [WP-
 | `render_request_id` | `id` | **PK** |
 | `sequence_id` | `id NN` | |
 | `bound_project_rev`, `bound_sequence_rev` | `rev NN` | **The immutable snapshot binding** ([RN-04](../../requirements/products/arcslate.md#rule-rn-04)) |
-| `range_start_ticks`, `range_end_ticks` | `bigint NN` | **Canonical ticks** ([TB-01](../23-simulator-and-interchange.md#rule-tb-01)). The encoder's own grid is a projection with directional rounding ([TG-05](../../requirements/products/arcscope.md#rule-tg-05)) |
+| `range_start_ticks`, `range_end_ticks` | `bigint NN` | **Canonical ticks** ([TB-01](../23-simulator-and-interchange.md#rule-tb-01)). Output is half-open and follows [BO-01](../23-simulator-and-interchange.md#rule-bo-01) through [BO-04](../23-simulator-and-interchange.md#rule-bo-04); outward decode coverage never expands emitted sample ownership |
 | `export_preset_id` | `id NN` | |
 | `allow_proxy_render` | `bool NN` | Explicit, recorded in output metadata |
 | `job_id` | `id NN` | A render is a **native Product Job**, not a Cloud Agent Task ([CM-04](../09-ai-and-agent-runtime-architecture.md#rule-cm-04) of the runtime architecture, [I-485](../../requirements/01-normative-glossary-and-invariants.md#rule-i-485)). ArcSlate owns its progress, cancellation and recovery |

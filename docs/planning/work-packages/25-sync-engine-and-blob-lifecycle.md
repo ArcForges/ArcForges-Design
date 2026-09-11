@@ -23,6 +23,10 @@
 
 ## 2. Required inputs and dependencies
 
+**Frozen design input.** [notes.scalar.v1](../../requirements/products/arcnotes.md#notes-scalar-query-profile)
+
+**Frozen design input.** [content-origin behavior](../../requirements/07-security-privacy-and-trust.md#content-origin-profile) and [carrier schema](../../requirements/13-data-formats-and-portability.md#content-origin-carriers) is fixed before this package; implement it without choosing a different marking mechanism.
+
 | Input | Why it matters |
 |---|---|
 | [`../../architecture/07-sync-conflict-and-backup.md`](../../architecture/07-sync-conflict-and-backup.md) | Identity and revision, outbox/inbox, change feed, conflict policies, blob lifecycle, protection profiles, data health |
@@ -51,6 +55,8 @@
 
 ## 4. Projects, directories, files and major types affected
 
+Content payloads use typed ContentOrigin and content-unit bindings under their existing owner revision; format/schema fixtures include that projection.
+
 | Location | Change |
 |---|---|
 | `src/Cloud/ArcForges.Cloud.Modules.Sync/` | Server inbox, change feed, conflict evaluation, tombstones, scope registry |
@@ -68,6 +74,8 @@
 <a id="rule-wp-25.00"></a>
 
 ### WP-25.00 — Cloud Notes authority and sync scopes
+
+**Required design implementation and verification.** Canonical Notes write validators and sync projection preserve number/date values, semantic revisions and query profile/view bindings. Advance the acknowledged query dataset token in the same relevant source commit. Exercise a label rename, rejected dependent type change and stale-view restoration across local/Cloud revisions.
 
 **What must be fully done.** Implement the canonical notes schema in [Cloud data model §8.4](../../architecture/data-model/01-cloud-data-model.md#84-cloud-notes-canonical-model): notebook-owned folders, document-owned blocks and values, tags, property definitions, saved views, immutable revisions, checkpoints and derived backlinks. Add the typed folder/document/history operations and their sorted-root revision checks. Cloud validates the same typed operations as the local domain; publication, receipts and Resource/Entitlement enlistment share the commit.
 
@@ -151,6 +159,8 @@
 
 ### WP-25.08 — Real Cloud Notes and Chat export producers
 
+**Required design implementation and verification.** Implement real acknowledged-snapshot Notes/Chat exports with origin/fidelity/attachment inventory, bounded pin/retention and verified download. Stage output plus sidecars and publish one atomic bundle. Exercise failure/cancel and structurally remove runtime fixture registrations from [WP-15.06](15-arcchat-conversation-core.md#rule-wp-15.06) and [WP-19.05](19-arcnotes-search-and-portability.md#rule-wp-19.05); retained test fixtures are not runtime producers.
+
 **What must be fully done.** Build bounded leased Cloud export jobs for Notes and Chat. Freeze an acknowledged revision manifest, pin its content/history/attachment objects, and generate the declared Markdown/JSON/text outputs, attachments, metadata/link map and fidelity report. Publish a verified, expiring download artifact; exclude device-only pending edits. Enforce resource/egress reservations and allow retained-data export during configured read/grace periods. Delete the early [WP-15.06](15-arcchat-conversation-core.md#rule-wp-15.06) and [WP-19.05](19-arcnotes-search-and-portability.md#rule-wp-19.05) export fixtures from runtime registration.
 
 **Testing requirements.** Real host/database/object-store export across concurrent edits, notebook moves, deleted attachments, quota limit, expiry, restart, cancellation and paid-term end. Compare every delivered manifest/hash and omission; scan for secrets. Run both production clients with no fixture producer registered.
@@ -175,6 +185,12 @@
 
 ## 7. Tests and verification evidence
 
+**[WP-25.08](#rule-wp-25.08) producer evidence.** Real snapshot/export jobs, input revisions, attachment/origin/fidelity manifest, bounded retention/download, cancel/failure cases, and structural absence of the Notes/Chat runtime export fixture registrations.
+
+**Required evidence addition.** Canonical scalar/schema and pending/acknowledged query-token sync results.
+
+**Required evidence addition.** [WP-25.08](#rule-wp-25.08) records the carrier/propagation/failure vectors above with payload and manifest hashes; early packages use declared fixtures, while provider/Harness packages require their real integrations.
+
 | Evidence | Produced by |
 |---|---|
 | Scope change and exclusion results | [WP-25.00](#rule-wp-25.00) |
@@ -189,6 +205,16 @@
 ---
 
 ## 8. Completion gate
+
+**Producer completion.** [WP-25.08](#rule-wp-25.08) must pass with the explicit §7 artifacts above; it is not optional because other package checks pass.
+
+**[PG-17](../../assurance/open-gates-register.md#rule-pg-17) evidence:** [WP-25.07](#rule-wp-25.07) — Bootstrap/feed convergence, old revisions/tombstones/echoes, and late commit after an advanced cursor, consuming the publisher from package 21. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
+
+**Offline evidence.** Execute this product's applicable [initial-state matrix](../../assurance/testing-and-verification-strategy.md#offline-acceptance-matrix) rows, including fresh shell, hydrated outage, unavailable content, signout and restart where applicable. Record permitted local work and explicitly unavailable Cloud actions.
+
+**Additional completion requirement.** Notes sync preserves the declared semantics and origin through conflicts, restore and export; no mixed source revisions are presented as one successful query dataset.
+
+**Additional completion requirement.** The package's content paths pass the stated origin vectors, including unknown input and failed publication; a valid stored/rendered payload alone cannot satisfy the carrier requirement.
 
 **All of the following, with recorded evidence:**
 

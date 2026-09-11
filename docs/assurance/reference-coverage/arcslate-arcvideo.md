@@ -60,7 +60,7 @@
 | ArcVideoFoundation surface | complete: `include/arcvideo/foundation/**` (17 headers), `src/**` (10 sources), `docs/BUILD_GUIDE.md`, `README.md` |
 | Packaged release shape | `StartArcForges/{ArcVideo,ArcVideoFoundation}` — directory listing only, **not executed** |
 
-**Not read, and why:** `app/ts/**` and `app/shaders/**` beyond directory identification — shader and script expression is exactly what GPL-only status makes ineligible for reuse, and their existence suffices for the disposition. `docker/**` image contents — build infrastructure, not product evidence.
+**Not read, and why:** `app/ts/**` contains Qt Linguist translation resources (18 locale files, including `ar_AR`, plus `CMakeLists.txt` and `translations.qrc`), not TypeScript product code. Only resource-kind/listing metadata supports this classification; translated expression is not claimed reviewed or reused. `app/shaders/**` contains shader expression and remains excluded beyond directory identification under the existing nonreuse boundary. `docker/**` image contents are build infrastructure, not product evidence. These exclusions add no feature/coverage claim.
 
 ### 3.1 Upstream provenance — retained, not audited separately
 

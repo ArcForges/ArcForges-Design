@@ -686,7 +686,7 @@ The client schema (`§2` of [`02-desktop-data-model.md`](02-desktop-data-model.m
 
 ### `task.iteration_output` and terminal references
 
-`iteration_output` has PK output ID, unique `(run_id, iteration_ordinal)`, logical request ID, winning provider-attempt ID, state `complete/interrupted/refused/toolProposals`, immutable typed parts or verified ResourceRef, checksum and created time. It is written with the provider outcome/usage receipt before customer settlement. Tool proposal/result parts link durable invocation IDs, and can be read through the authorised Task view without pretending the Turn is terminal. Resource promotion includes Entitlement quota conversion where required.
+`iteration_output` has PK output ID, unique `(run_id, iteration_ordinal)`, logical request ID, winning provider-attempt ID, state `complete/interrupted/refused/toolProposals`, immutable typed parts or verified ResourceRef, checksum and created time. Each content part carries the [content origin record](../../requirements/13-data-formats-and-portability.md#content-origin-carriers), bound and committed with its payload before completed output publication; staged marking failure creates no delivered receipt. It is written with the provider outcome/usage receipt before customer settlement. Tool proposal/result parts link durable invocation IDs, and can be read through the authorised Task view without pretending the Turn is terminal. Resource promotion includes Entitlement quota conversion where required.
 
 `task.task` additionally carries `current_iteration`, `current_provider_attempt_id?`, `final_message_id?`, `no_answer_reason?`, and `terminal_output_commit_id?`. Terminal states require exactly one final/interrupted message reference or explicit no-answer reason in the same Chat/Task/Resource/Sync transaction. A provider callback cannot set Task succeeded merely because its own invocation finished. Updating intermediate Task state uses a typed read projection; synchronised aggregate changes still require publication.
 
@@ -1015,6 +1015,10 @@ The manifest over immutable object-storage segments ([SIM-11](../../requirements
 
 ## 8.4 `notes` — canonical Cloud knowledge store
 
+Notes scalar value/config/query semantics are fixed by [notes.scalar.v1](../../requirements/products/arcnotes.md#notes-scalar-query-profile). The [desktop logical property/view fields](02-desktop-data-model.md#property_definition-property_value), including `semantic_rev`, query profile and definition revision bindings, project identically to Cloud; Cloud rows use Cloud revisions rather than local pending tokens. Saved views require one notebook. An acknowledged Notes dataset token advances with relevant membership/value/trash changes; the query reads one consistent token and rejects a stale page cursor. There is no nullable workspace-wide saved-view variant.
+
+Every block/attachment payload and immutable revision snapshot preserves its [content origin](02-desktop-data-model.md#content-origin-storage). Direct HTTP, sync, authorized tool writes and export use the same typed validators: a caller cannot clear known AI origin, reinterpret a property type or execute an unknown query profile. Scope/Slate metadata replicas preserve origin/profile fields while leaving native content authority local.
+
 Cloud owns acknowledged Notes content. SQLite holds a projection of these shapes plus the device's pending-edit journal. `sync.change` is a publication index, not the body store. All Notes keys and references include `workspace_id`; repository APIs require the authenticated workspace, and compound foreign keys prevent cross-workspace or cross-notebook placement.
 
 | Table | Keys, fields and constraints | Read/write paths |
@@ -1255,7 +1259,7 @@ These cannot be foreign keys ([AG-01](00-data-model-overview.md#rule-ag-01), [MD
 |---|---|---|
 | CV-01 | Every table round-trips every field, including nullability and enum boundaries | [WP-21.03](../../planning/work-packages/21-cloud-host-and-persistence.md#rule-wp-21.03) |
 | CV-02 | Every declared index exists and serves its named path at scale-corpus size | [WP-21.03](../../planning/work-packages/21-cloud-host-and-persistence.md#rule-wp-21.03) |
-| CV-03 | Every check constraint refuses its negative case — negative credit, orphan reference, mismatched placement | [WP-21.02](../../planning/work-packages/21-cloud-host-and-persistence.md#rule-wp-21.02) |
+| CV-03 | Every check constraint refuses its negative case — negative credit, orphan reference, or a device-local Step lacking its required target binding | [WP-21.02](../../planning/work-packages/21-cloud-host-and-persistence.md#rule-wp-21.02) |
 | CV-04 | The `platform.command` reuse constraint refuses a reused id with different content | [WP-23.03](../../planning/work-packages/23-public-api-and-generated-clients.md#rule-wp-23.03) |
 | CV-05 | The `provider_event` composite key makes duplicate delivery a no-op | [WP-42.03](../../planning/work-packages/42-commerce-entitlement-and-credits.md#rule-wp-42.03) |
 | CV-06 | A cross-workspace read fails at the data layer with a forged scope | [WP-21.06](../../planning/work-packages/21-cloud-host-and-persistence.md#rule-wp-21.06) |
