@@ -11,8 +11,8 @@
 
 > **Dependency note.** This package consumes [WP-00](00-specification-naming-and-rights-freeze.md#rule-wp-00)'s names/content authority and [WP-02](02-build-governance-and-analyzer-policy.md#rule-wp-02)'s Node workspace/toolchain. Its first static slice can be implemented after those gates in the one serial context; final public commercial content still depends on the release gates. It is not parallel implementation authorization.
 
-> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Web. Inputs: the assigned exact Contracts packages/descriptors and actual provider artifacts; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: production React build and real C#/CF endpoints with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
-> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Web. Inputs: only the applicable published producers available at this stage under [staged artifact integration](../README.md#staged-artifact-integration). Producer candidate records precede Cloud consolidation; no future package/manifest is an input. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: production React build and real C#/CF endpoints with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> After WP03, unit mocks consume published Contracts fixtures; earlier stages verify their inventory/policy outputs. Acceptance consumes the actual providers scheduled for that stage. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
 
 ---
 
@@ -92,7 +92,7 @@
 
 ### WP-47.01 — Versioned public content and pricing inputs
 
-**What must be fully done.** Consume catalogue, release metadata, changelog, public offer projection and legal versions from declared versioned inputs. No live provider fetch during a build. Show the pricing projection's effective version/time; final checkout revalidates eligibility/tax/price through Cloud. Content can refer to released signed artifacts only.
+**What must be fully done.** Consume catalogue, release metadata, changelog, public offer projection and legal versions from declared versioned inputs. No live provider fetch during a build. Show the pricing projection's effective version/time; final checkout revalidates eligibility/tax/price through Cloud. Private candidate builds may use named test-only offer/release fixtures. Public builds use approved WP42/44 projections and released signed artifacts; that final join closes at WP50.
 
 **Testing requirements.** Assert no independently hard-coded product version/private supplier price; compare public projection to the selected approved snapshot; changed/stale offer and unavailable-checkout presentation tests.
 
@@ -167,11 +167,11 @@
 
 **What must be fully done.** Keep React-generated static Site, localization/SEO and no production Node server. Consume independently published product/version/download metadata through the fixed release contract.
 
-**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+**Execution order.** Follow [staged artifact integration](../README.md#staged-artifact-integration): consume only existing assigned producers, publish an owned capability candidate before its product consumer, and verify the declared stage against exact upstream artifacts. Record pending later owners and their closing gates; local mocks cover only that named test boundary.
 
-**Testing requirements.** Static/no-script/accessibility/link and artifact-version checks; current download links correspond to signed published product artifacts.
+**Testing requirements.** Static/no-script/accessibility/link and artifact-version checks; private candidate download fixtures are labelled; public promotion waits for signed published artifacts at WP50.
 
-**Completion gate.** Static/no-script/accessibility/link and artifact-version checks; current download links correspond to signed published product artifacts. Record exact artifacts and provider reality. The package is incomplete if an important contract/owner/recovery rule still requires design during coding.
+**Completion gate.** Static/no-script/accessibility/link and artifact-version checks; private candidate download fixtures are labelled; public promotion waits for signed published artifacts at WP50. Record exact artifacts and provider reality. The package is incomplete if an important contract/owner/recovery rule still requires design during coding.
 
 ---
 
@@ -209,7 +209,7 @@
 
 ## 8. Completion gate
 
-**[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) gate:** [WP-47.90](#rule-wp-47.90) and all inherited domain-specific gates must pass on the same candidate closure. Static/no-script/accessibility/link and artifact-version checks; current download links correspond to signed published product artifacts.
+**[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) gate:** [WP-47.90](#rule-wp-47.90) and all inherited domain-specific gates must pass on the same candidate closure. Static/no-script/accessibility/link and artifact-version checks; private candidate download fixtures are labelled; public promotion waits for signed published artifacts at WP50.
 
 **[PG-23](../../assurance/open-gates-register.md#rule-pg-23) evidence:** [WP-47](#rule-wp-47) — Static production output, applicable accessibility/visual/performance and atomic release/rollback evidence. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
 
@@ -219,7 +219,7 @@
 2. No version or price is hard-coded anywhere in the site.
 3. **The page renders fully with scripting disabled**, meets its performance requirement, and has no globally unreachable critical-path resource.
 4. Locale routing is correct and annotated; no redirect traps a user; pseudo-localisation reveals no hard-coded string.
-5. Downloads are verifiable against published hashes with no account gate; legal documents carry versions and effective dates.
+5. Candidate fixtures prove download hash/no-account behavior and legal version rendering. WP50 replaces them with actual signed release downloads and approved effective legal/price snapshots before public promotion.
 6. Accessibility checks pass with a dated manual record; analytics carry no cross-site identifier.
 7. **A full cloud outage leaves the site fully available**; deployment is atomic; rollback restores the previous artifact set.
 
@@ -229,11 +229,12 @@
 
 **Upstream — all must be complete.**
 
-- [00 specification naming and rights freeze](00-specification-naming-and-rights-freeze.md#rule-wp-00)
-- [02 build governance and analyzer policy](02-build-governance-and-analyzer-policy.md#rule-wp-02)
+- [WP-00](00-specification-naming-and-rights-freeze.md#rule-wp-00)
+- [WP-02](02-build-governance-and-analyzer-policy.md#rule-wp-02)
 
 **Downstream — consumers of these released outputs.**
 
-- [48 account portal](48-account-portal.md#rule-wp-48)
+- [WP-48](48-account-portal.md#rule-wp-48)
+
 
 ---

@@ -9,8 +9,8 @@
 
 > **Goal.** Execute the dispositions the completed inventory already records. The highest-priority item is not a move but a correction: **55 source files declare a licence Phase 1 forbids for their boundary.**
 
-> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Platform and new owners. Inputs: exact compatible Contracts packages/descriptors and applicable DesktopPlatform packages; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: owned candidate artifacts and generated contracts with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
-> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Platform and new owners. Inputs: only the applicable published producers available at this stage under [staged artifact integration](../README.md#staged-artifact-integration). Producer candidate records precede Cloud consolidation; no future package/manifest is an input. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: owned candidate artifacts and generated contracts with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> After WP03, unit mocks consume published Contracts fixtures; earlier stages verify their inventory/policy outputs. Acceptance consumes the actual providers scheduled for that stage. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
 
 ---
 
@@ -69,7 +69,7 @@
 | `src/DesktopHelpers/` | Disposition assigned against the shared-foundation boundary |
 | `src/BuildingBlocks/ArcForges.Desktop.*` | Reviewed against the shared-foundation boundary; mechanism-only projects Kept, product-aware projects Split or Moved |
 | `src/Cloud/Modules.*` | Map the 17 observed scaffold module names to the 20 declared domain owners in `21`; preserve the single Host with internal AgentRuntime/BackgroundJobs libraries and development-only AppHost |
-| `native/` | Dispositions already assigned (`§5.2` there): four `Keep`, **two `Fence`** pending substitute analyses. All six are ABI skeletons of ~90–120 lines, not implementations |
+| `native/` | Apply the current WP01.03 admission: retain admitted native mechanisms in DesktopPlatform, use the pinned official OTIO adapter, exclude MDF; old skeletons are not product implementation evidence |
 | `tests/` | Each suite mapped to a required test family; gaps recorded |
 | `fixtures/` | Created as an empty, documented root for golden fixtures |
 | `eng/policy/reconciliation/` | The inventory exported as machine-readable data for the drift check |
@@ -149,7 +149,7 @@
 
 **What must be fully done.** Assemble the owned deliverables from the preceding substeps under the selected repository, package, runtime and protocol authorities. Implement the already selected source/package graph; reuse native foundations, assign product/Cloud/Web/Mobile/SDK/test/tool ownership, retain retired-project dispositions. Resolve native fences from the frozen admission record.
 
-**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+**Execution order.** Follow [staged artifact integration](../README.md#staged-artifact-integration): consume only existing assigned producers, publish an owned capability candidate before its product consumer, and verify the declared stage against exact upstream artifacts. Record pending later owners and their closing gates; local mocks cover only that named test boundary.
 
 **Testing requirements.** Complete old-group → target-owner/disposition mapping; independently buildable roots; no product domain copied into Platform, no forced suite, no blanket retention of six shipping shims.
 
@@ -193,7 +193,7 @@
 1. Drift against the inventory's bound commit `ede43db` is enumerated, and every drifted item carries a disposition. The inventory itself was completed as design-stage evidence and closed [PG-02](../../assurance/open-gates-register.md#rule-pg-02) before this package began.
 2. Every contract type is assigned to a licence boundary, with no public type depending on an internal one.
 3. No product knowledge remains in the shared foundation.
-4. The two `Fence` shims are unreferenceable, and their substitute analyses are scheduled against named sub-steps.
+4. Current native admissions are applied: official OTIO is the selected interchange boundary, MDF is excluded, and unmigrated conflicting skeletons are unreferenceable; no pending substitute choice overrides WP01.03.
 5. Every required test family maps to an existing suite or a named future package.
 6. The blocking moves and explicit deletion of `ArcNotes.Edgeless`/`ArcNotes.Slides` are executed, their obsolete solution/project/lock entries and excluded hooks are absent, the retained Notes core builds green, and all remaining non-`Keep` code is fenced and unreferenceable.
 
@@ -203,10 +203,11 @@
 
 **Upstream — all must be complete.**
 
-- [00 specification naming and rights freeze](00-specification-naming-and-rights-freeze.md#rule-wp-00)
+- [WP-00](00-specification-naming-and-rights-freeze.md#rule-wp-00)
 
 **Downstream — consumers of these released outputs.**
 
-- [02 build governance and analyzer policy](02-build-governance-and-analyzer-policy.md#rule-wp-02)
+- [WP-02](02-build-governance-and-analyzer-policy.md#rule-wp-02)
+
 
 ---

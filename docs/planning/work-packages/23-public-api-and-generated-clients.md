@@ -9,8 +9,8 @@
 
 > **Goal.** Expose the cloud through one versioned public API generated from the handwritten proto source of truth, with typed clients that work identically from a Native AOT desktop binary, a RN/Hermes mobile artifact and a React browser application — and a compatibility window that is tested rather than promised.
 
-> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Cloud + Contracts; all clients. Inputs: the assigned exact Contracts packages/descriptors and actual provider artifacts; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: owned candidate artifacts and generated contracts with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
-> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Cloud + Contracts; all clients. Inputs: only the applicable published producers available at this stage under [staged artifact integration](../README.md#staged-artifact-integration). Producer candidate records precede Cloud consolidation; no future package/manifest is an input. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: owned candidate artifacts and generated contracts with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> After WP03, unit mocks consume published Contracts fixtures; earlier stages verify their inventory/policy outputs. Acceptance consumes the actual providers scheduled for that stage. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
 
 ---
 
@@ -155,12 +155,14 @@
 
 ---
 
+**Required implementation and closure from the final review.** Implement and independently verify [04-protobuf-wire-registry](../../architecture/contracts/04-protobuf-wire-registry.md). Maintain complete operation→real producer/fixture→closing WP coverage. Prove real implemented Identity/session/transport behavior and descriptor compatibility for all future owners; do not claim all business handlers complete. Test encodedBody outcomes and recoveryGeneration in actual C#/TS/RN framing, including revision/hash/auth failures. Record exact artifact identities and real/fixture status with the existing substeps; these cases are part of this package's completion gate.
+
 <a id="rule-wp-23.90"></a>
 ### WP-23.90 — Verify the owned artifact and real integration
 
 **What must be fully done.** Implement each frozen public operation mapping as gRPC/gRPC-Web or its explicitly retained standard HTTP endpoint. Publish versioned clients and operation-specific validation/error adapters; no business DTO authority in Cloud.
 
-**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+**Execution order.** Follow [staged artifact integration](../README.md#staged-artifact-integration): consume only existing assigned producers, publish an owned capability candidate before its product consumer, and verify the declared stage against exact upstream artifacts. Record pending later owners and their closing gates; local mocks cover only that named test boundary.
 
 **Testing requirements.** Real C#/browser/RN calls against the AOT image, previous/current compatibility and complete operation mapping, including auth, files and webhooks outside gRPC.
 
@@ -212,7 +214,7 @@
 2. Every registered reason code maps to a problem detail; no internal detail leaks in any response.
 3. Pagination is stable under concurrent mutation; a forged cursor cannot escape scope.
 4. One command produces one effect at the API boundary; rate limiting refuses with actionable guidance.
-5. Uploads resume and verify; permission is checked at ticket issue and at consumption; client-chosen storage locations are refused.
+5. Generated upload schema/transport/authorization error fixtures pass here; WP25 proves actual resume, verification and ticket consumption against R2 with client-chosen storage locations refused.
 6. Generated C# and TS clients pass the real-server, exact-value and compatibility matrix, with native reflection exclusion and browser cookie/CSRF semantics verified.
 7. The bidirectional compatibility matrix passes and catches a deliberately breaking change.
 
@@ -222,16 +224,17 @@
 
 **Upstream — all must be complete.**
 
-- [03 contract foundation and licence split](03-contract-foundation-and-licence-split.md#rule-wp-03)
-- [22 identity workspace and device](22-identity-workspace-and-device.md#rule-wp-22)
+- [WP-03](03-contract-foundation-and-licence-split.md#rule-wp-03)
+- [WP-22](22-identity-workspace-and-device.md#rule-wp-22)
 
 **Downstream — consumers of these released outputs.**
 
-- [24 realtime and reliable events](24-realtime-and-reliable-events.md#rule-wp-24)
-- [30 mobile shared architecture](30-mobile-shared-architecture.md#rule-wp-30)
-- [42 commerce entitlement and credits](42-commerce-entitlement-and-credits.md#rule-wp-42)
-- [44 dynamic policy and configuration](44-dynamic-policy-and-configuration.md#rule-wp-44)
-- [51 arcscope cloud simulator](51-arcscope-cloud-simulator.md#rule-wp-51)
-- [52 cloud harness](52-cloud-harness.md#rule-wp-52)
+- [WP-24](24-realtime-and-reliable-events.md#rule-wp-24)
+- [WP-30](30-mobile-shared-architecture.md#rule-wp-30)
+- [WP-42](42-commerce-entitlement-and-credits.md#rule-wp-42)
+- [WP-44](44-dynamic-policy-and-configuration.md#rule-wp-44)
+- [WP-51](51-arcscope-cloud-simulator.md#rule-wp-51)
+- [WP-52](52-cloud-harness.md#rule-wp-52)
+
 
 ---

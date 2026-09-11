@@ -286,3 +286,7 @@ The native layer is **not**: a worker process; a place for business logic that i
 ## P2-009 capability package adoption
 
 The [package registry](01-solution-and-project-layout.md#12-package-and-native-distribution-registry) fixes wrapper/RID package identities, exact source inputs, producer/consumer tests and OTIO/MDF dispositions. OTIO0.18.1 is selected for official interchange; MDF stays excluded from V1 distributions. All existing ABI/lifetime/buffer/error/colour/time/sandbox rules remain requirements on those packages, not alternatives that a consumer must design. Ordinary product builds are C# package consumers and do not invoke vcpkg.
+
+## Complete media package contract
+
+DesktopPlatform owns the selected decode/encode/audio/extraction C ABI and managed wrappers, packaged per capability/RID. ArcSlate consumes those packages and owns timelines, graph/business validation, subtitle editing and ProductJob recovery. [Slate profiles](23-simulator-and-interchange.md#5-slate-metadata-render-and-subtitle-profiles) fix the observable portable render, generated-source, subtitle and ASR extraction behavior. Native codec feature/licence and malformed-input tests apply to the actual package closure; a product must not compile an adjacent native source tree to pass them.

@@ -5,12 +5,12 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: I — ArcSlate
-> Upstream: `25`, `38` · Downstream: `50`
+> Upstream: `25`, `38` · Downstream: `50`, `52`
 
 > **Goal.** Connect ArcSlate to the platform once its timeline, command and undo semantics are stable — never before — and make projects genuinely portable: collect, consolidate, export, re-import and relink across machines.
 
-> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: ArcSlate + Cloud; Platform where admitted. Inputs: exact compatible Contracts packages/descriptors and applicable DesktopPlatform packages; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: Native AOT candidate packages/executables with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
-> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: ArcSlate + Cloud; Platform where admitted. Inputs: only the applicable published producers available at this stage under [staged artifact integration](../README.md#staged-artifact-integration). Producer candidate records precede Cloud consolidation; no future package/manifest is an input. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: Native AOT candidate packages/executables with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> After WP03, unit mocks consume published Contracts fixtures; earlier stages verify their inventory/policy outputs. Acceptance consumes the actual providers scheduled for that stage. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
 
 ---
 
@@ -138,12 +138,14 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 ---
 
+**Required implementation and closure from the final review.** Implement and independently verify [01-cloud-data-model](../../architecture/data-model/01-cloud-data-model.md#structural-move-and-complete-media-replica-constraints). Round-trip complete Slate metadata/archive with originals absent, explicit managed asset uploads, exact grids, graph scopes, titles/subtitles/fonts/colour and ASR source/artifact references. OTIO/SRT/WebVTT losses are reported per affected item. An older DTO cannot truncate the native project before sync. Record exact artifact identities and real/fixture status with the existing substeps; these cases are part of this package's completion gate.
+
 <a id="rule-wp-39.90"></a>
 ### WP-39.90 — Verify the owned artifact and real integration
 
 **What must be fully done.** Preserve canonical OTIO interchange, exact half-open range projection, relink/missing-media behavior and Cloud metadata/authorized assets. Use the frozen OTIO admission/fence result, not the existing shim's mere presence.
 
-**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+**Execution order.** Follow [staged artifact integration](../README.md#staged-artifact-integration): consume only existing assigned producers, publish an owned capability candidate before its product consumer, and verify the declared stage against exact upstream artifacts. Record pending later owners and their closing gates; local mocks cover only that named test boundary.
 
 **Testing requirements.** OTIO round trip/projection and relocation fixtures, package boundary, explicit R2 upload and missing-external-reference behavior.
 
@@ -207,11 +209,13 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 **Upstream — all must be complete.**
 
-- [25 sync engine and blob lifecycle](25-sync-engine-and-blob-lifecycle.md#rule-wp-25)
-- [38 arcslate render and colour](38-arcslate-render-and-colour.md#rule-wp-38)
+- [WP-25](25-sync-engine-and-blob-lifecycle.md#rule-wp-25)
+- [WP-38](38-arcslate-render-and-colour.md#rule-wp-38)
 
 **Downstream — consumers of these released outputs.**
 
-- [50 full platform production release](50-full-platform-production-release.md#rule-wp-50)
+- [WP-50](50-full-platform-production-release.md#rule-wp-50)
+- [WP-52](52-cloud-harness.md#rule-wp-52)
+
 
 ---

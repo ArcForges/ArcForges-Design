@@ -9,8 +9,8 @@
 
 > **Goal.** Build ArcSlate's domain: project and sequences, the exact time model spanning video frames and audio samples, the media library with assets referenced rather than owned, the timeline with tracks and clips, and non-destructive editing — all in C#, with no native type anywhere near the domain.
 
-> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: ArcSlate. Inputs: exact compatible Contracts packages/descriptors and applicable DesktopPlatform packages; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: Native AOT candidate packages/executables with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
-> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: ArcSlate. Inputs: only the applicable published producers available at this stage under [staged artifact integration](../README.md#staged-artifact-integration). Producer candidate records precede Cloud consolidation; no future package/manifest is an input. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: Native AOT candidate packages/executables with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> After WP03, unit mocks consume published Contracts fixtures; earlier stages verify their inventory/policy outputs. Acceptance consumes the actual providers scheduled for that stage. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
 
 ---
 
@@ -169,12 +169,14 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 ---
 
+**Required implementation and closure from the final review.** Implement and independently verify [23-simulator-and-interchange](../../architecture/23-simulator-and-interchange.md#5-slate-metadata-render-and-subtitle-profiles). Implement the complete slate.project.v1/graph.v1 model: bins, exact sequence video/audio/colour config, track roles, generators/nesting/adjustment/title/subtitle, graph definition/instance identity and keyframe time scope. Metadata-only cross-device round-trip preserves every edit with Offline Media. Reject graph/nesting cycles and preserve unknown imported effects inert. Record exact artifact identities and real/fixture status with the existing substeps; these cases are part of this package's completion gate.
+
 <a id="rule-wp-36.90"></a>
 ### WP-36.90 — Verify the owned artifact and real integration
 
 **What must be fully done.** Keep C# domain, project/timeline/edit/undo and local recovery. Use exact media/rational profiles and native-resource package interfaces without importing another product's domain.
 
-**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+**Execution order.** Follow [staged artifact integration](../README.md#staged-artifact-integration): consume only existing assigned producers, publish an owned capability candidate before its product consumer, and verify the declared stage against exact upstream artifacts. Record pending later owners and their closing gates; local mocks cover only that named test boundary.
 
 **Testing requirements.** Exact timeline/edit/recovery fixtures remain valid; package and wire boundaries do not round frame/time values.
 
@@ -239,13 +241,14 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 **Upstream — all must be complete.**
 
-- [07 local persistence foundation](07-local-persistence-foundation.md#rule-wp-07)
-- [10 design system and desktop shell](10-design-system-and-desktop-shell.md#rule-wp-10)
-- [13 high risk technical probes](13-high-risk-technical-probes.md#rule-wp-13)
-- [26 remote action and tool bridge](26-remote-action-and-tool-bridge.md#rule-wp-26)
+- [WP-07](07-local-persistence-foundation.md#rule-wp-07)
+- [WP-10](10-design-system-and-desktop-shell.md#rule-wp-10)
+- [WP-13](13-high-risk-technical-probes.md#rule-wp-13)
+- [WP-26](26-remote-action-and-tool-bridge.md#rule-wp-26)
 
 **Downstream — consumers of these released outputs.**
 
-- [37 arcslate playback and processing](37-arcslate-playback-and-processing.md#rule-wp-37)
+- [WP-37](37-arcslate-playback-and-processing.md#rule-wp-37)
+
 
 ---

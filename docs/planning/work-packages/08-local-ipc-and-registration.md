@@ -9,8 +9,8 @@
 
 > **Goal.** Make the local plane real: a transport per platform, an endpoint manifest, a registration lifecycle with leases and heartbeats, routing, health, backpressure and reconnection — all working between genuinely AOT-published processes.
 
-> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Platform mechanisms; ArcChat Hub; each provider. Inputs: exact compatible Contracts packages/descriptors and applicable DesktopPlatform packages; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: Native AOT candidate packages/executables with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
-> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Platform mechanisms; ArcChat Hub; each provider. Inputs: only the applicable published producers available at this stage under [staged artifact integration](../README.md#staged-artifact-integration). Producer candidate records precede Cloud consolidation; no future package/manifest is an input. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: Native AOT candidate packages/executables with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> After WP03, unit mocks consume published Contracts fixtures; earlier stages verify their inventory/policy outputs. Acceptance consumes the actual providers scheduled for that stage. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
 
 ---
 
@@ -151,7 +151,7 @@
 
 **What must be fully done.** Assemble the owned deliverables from the preceding substeps under the selected repository, package, runtime and protocol authorities. Replace retired IPC scaffolding using the fixed local gRPC Named Pipe/UDS design. Preserve first-party discovery, ACL/identity, leases, protocol negotiation, bounded queues/calls and registration cleanup. Hub remains in ArcChat.
 
-**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+**Execution order.** Follow [staged artifact integration](../README.md#staged-artifact-integration): consume only existing assigned producers, publish an owned capability candidate before its product consumer, and verify the declared stage against exact upstream artifacts. Record pending later owners and their closing gates; local mocks cover only that named test boundary.
 
 **Testing requirements.** Actual AOT process-to-process tests cover registration, expiry, incompatible peers, backpressure, cancellation and malformed/unauthorized calls; no public TCP listener is required.
 
@@ -207,14 +207,15 @@
 
 **Upstream — all must be complete.**
 
-- [06 aot jit and wasm publish proof](06-aot-jit-and-wasm-publish-proof.md#rule-wp-06)
-- [07 local persistence foundation](07-local-persistence-foundation.md#rule-wp-07)
+- [WP-06](06-aot-jit-and-wasm-publish-proof.md#rule-wp-06)
+- [WP-07](07-local-persistence-foundation.md#rule-wp-07)
 
 **Downstream — consumers of these released outputs.**
 
-- [09 capability contribution and resource model](09-capability-contribution-and-resource-model.md#rule-wp-09)
-- [11 security foundation](11-security-foundation.md#rule-wp-11)
-- [13 high risk technical probes](13-high-risk-technical-probes.md#rule-wp-13)
-- [14 hub and minimal provider slice](14-hub-and-minimal-provider-slice.md#rule-wp-14)
+- [WP-09](09-capability-contribution-and-resource-model.md#rule-wp-09)
+- [WP-11](11-security-foundation.md#rule-wp-11)
+- [WP-13](13-high-risk-technical-probes.md#rule-wp-13)
+- [WP-14](14-hub-and-minimal-provider-slice.md#rule-wp-14)
+
 
 ---

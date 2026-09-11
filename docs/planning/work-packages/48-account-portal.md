@@ -5,12 +5,12 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: K — Web and release
-> Upstream: `42`, `44`, `47` · Downstream: `49`
+> Upstream: `25`, `42`, `44`, `46`, `47` · Downstream: `49`
 
 > **Goal.** Deliver the canonical account origin as one deployment profile of the single React/TypeScript application: account, security, devices, workspace, storage, entitlement, billing, AI and data — with no second account application anywhere.
 
-> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Web + Cloud. Inputs: the assigned exact Contracts packages/descriptors and actual provider artifacts; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: production React build and real C#/CF endpoints with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
-> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Web + Cloud. Inputs: only the applicable published producers available at this stage under [staged artifact integration](../README.md#staged-artifact-integration). Producer candidate records precede Cloud consolidation; no future package/manifest is an input. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: production React build and real C#/CF endpoints with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> After WP03, unit mocks consume published Contracts fixtures; earlier stages verify their inventory/policy outputs. Acceptance consumes the actual providers scheduled for that stage. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
 
 ---
 
@@ -159,12 +159,14 @@
 
 ---
 
+**Required implementation and closure from the final review.** Implement and independently verify [08-security-architecture](../../architecture/08-security-architecture.md#account-and-provider-closure). Deliver all account/security flows, scoped token creation display-once, email/passkey/recovery/session controls, remote policy, workspace data deletion/health and account cancellation restricted route. Consume real WP22/25/42/44/46 APIs, including export with lapsed term and no automatic old-generation replay. No browser-only business rule or fixture remains. Record exact artifact identities and real/fixture status with the existing substeps; these cases are part of this package's completion gate.
+
 <a id="rule-wp-48.90"></a>
 ### WP-48.90 — Verify the owned artifact and real integration
 
 **What must be fully done.** Assemble the owned deliverables from the preceding substeps under the selected repository, package, runtime and protocol authorities. Retain Account profile/session/step-up/privacy/commerce behavior. Implement routes using proto/gRPC-Web and the actual AOT session adapter; expose existing CF usage/storage status through owned APIs.
 
-**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+**Execution order.** Follow [staged artifact integration](../README.md#staged-artifact-integration): consume only existing assigned producers, publish an owned capability candidate before its product consumer, and verify the declared stage against exact upstream artifacts. Record pending later owners and their closing gates; local mocks cover only that named test boundary.
 
 **Testing requirements.** Real browser against the AOT release: cookie secrecy, CSRF, expiry/revocation, privacy/export and admission/usage display. No AGPL application import into Mobile.
 
@@ -229,12 +231,15 @@
 
 **Upstream — all must be complete.**
 
-- [42 commerce entitlement and credits](42-commerce-entitlement-and-credits.md#rule-wp-42)
-- [44 dynamic policy and configuration](44-dynamic-policy-and-configuration.md#rule-wp-44)
-- [47 static public site](47-static-public-site.md#rule-wp-47)
+- [WP-25](25-sync-engine-and-blob-lifecycle.md#rule-wp-25)
+- [WP-42](42-commerce-entitlement-and-credits.md#rule-wp-42)
+- [WP-44](44-dynamic-policy-and-configuration.md#rule-wp-44)
+- [WP-46](46-backup-recovery-and-data-health.md#rule-wp-46)
+- [WP-47](47-static-public-site.md#rule-wp-47)
 
 **Downstream — consumers of these released outputs.**
 
-- [49 arcchat web companion](49-arcchat-web-companion.md#rule-wp-49)
+- [WP-49](49-arcchat-web-companion.md#rule-wp-49)
+
 
 ---

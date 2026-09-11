@@ -9,7 +9,7 @@
 
 > **Goal.** Close the first genuine ArcForges workflow end to end: ArcChat is asked to produce a report, ArcNotes creates the document and receives its content, the user approves, the result saves, undoes and recovers, and ArcChat receives an artifact reference. This is where ArcForges stops being a chat client with neighbours and becomes a platform.
 
-> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: ArcChat + ArcNotes; version manifest. Inputs: exact compatible Contracts packages/descriptors and applicable DesktopPlatform packages; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: Native AOT candidate packages/executables with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: ArcChat + ArcNotes; version manifest. Inputs: only the applicable published producers available at this stage under [staged artifact integration](../README.md#staged-artifact-integration). Producer candidate records precede Cloud consolidation; no future package/manifest is an input. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: Native AOT candidate packages/executables with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
 > Fixture AI is permitted only for the named local product slice; WP52 replaces it with real CF execution before Mobile/Web/full release.
 
 ---
@@ -139,7 +139,7 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 **What must be fully done.** Preserve the first real local typed capability workflow. Name exact released/candidate app and contract versions, retained fixture AI scope and the real AI replacement at WP-52.
 
-**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+**Execution order.** Follow [staged artifact integration](../README.md#staged-artifact-integration): consume only existing assigned producers, publish an owned capability candidate before its product consumer, and verify the declared stage against exact upstream artifacts. Record pending later owners and their closing gates; local mocks cover only that named test boundary.
 
 **Testing requirements.** Real two-product ownership/revision/error behavior; fixture tests do not imply model/Cloud/usage integration has passed.
 
@@ -198,12 +198,13 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 **Upstream — all must be complete.**
 
-- [17 arcchat independent core](17-arcchat-independent-core.md#rule-wp-17)
-- [19 arcnotes search and portability](19-arcnotes-search-and-portability.md#rule-wp-19)
+- [WP-17](17-arcchat-independent-core.md#rule-wp-17)
+- [WP-19](19-arcnotes-search-and-portability.md#rule-wp-19)
 
 **Downstream — consumers of these released outputs.**
 
-- [50 full platform production release](50-full-platform-production-release.md#rule-wp-50)
-- [52 cloud harness](52-cloud-harness.md#rule-wp-52)
+- [WP-50](50-full-platform-production-release.md#rule-wp-50)
+- [WP-52](52-cloud-harness.md#rule-wp-52)
+
 
 ---

@@ -5,12 +5,12 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: J — Integration after real Cloud prerequisites
-> Upstream: `21`, `23`, `25`, `33`, `42`, `44` · Downstream: `50`
+> Upstream: `21`, `23`, `25`, `33`, `34`, `35`, `42`, `44` · Downstream: `50`
 
 > **Goal.** Deliver the deterministic Cloud simulator of [SIM-01](../../requirements/products/arcscope.md#rule-sim-01)–[SIM-20](../../requirements/products/arcscope.md#rule-sim-20) as a **real capability running through real Cloud persistence, real object storage and the real native acquisition pipeline**. A preview, a canned response or a test fake does not satisfy this package ([SIM-20](../../requirements/products/arcscope.md#rule-sim-20)).
 
-> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Cloud C#; ArcScope consumer. Inputs: the assigned exact Contracts packages/descriptors and actual provider artifacts; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: owned candidate artifacts and generated contracts with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
-> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Cloud C#; ArcScope consumer. Inputs: only the applicable published producers available at this stage under [staged artifact integration](../README.md#staged-artifact-integration). Producer candidate records precede Cloud consolidation; no future package/manifest is an input. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: owned candidate artifacts and generated contracts with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> After WP03, unit mocks consume published Contracts fixtures; earlier stages verify their inventory/policy outputs. Acceptance consumes the actual providers scheduled for that stage. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
 
 ---
 
@@ -143,12 +143,14 @@ The official simulator consumes real paid-term and quota enforcement from [WP-42
 
 ---
 
+**Required implementation and closure from the final review.** Implement and independently verify [05-cloudflare-integration](../../architecture/contracts/05-cloudflare-integration.md#9-job-authorized-objects-control-inventory-and-resource-budgets). Use real service-authorized R2 segments and consume WP34 measurement/report and WP35 import/portability outputs. Check segment hashes/timebase/provenance through Cloud→R2→native analysis/report, and stale grant/fence refusal; no simulator fixture may stand in for a hardware claim. Record exact artifact identities and real/fixture status with the existing substeps; these cases are part of this package's completion gate.
+
 <a id="rule-wp-51.90"></a>
 ### WP-51.90 — Verify the owned artifact and real integration
 
 **What must be fully done.** Keep deterministic SimulationRun, quota/admission and segmentation in the AOT host. Use proto for control/results and R2 for verified segments; retain product measurement/input identity.
 
-**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+**Execution order.** Follow [staged artifact integration](../README.md#staged-artifact-integration): consume only existing assigned producers, publish an owned capability candidate before its product consumer, and verify the declared stage against exact upstream artifacts. Record pending later owners and their closing gates; local mocks cover only that named test boundary.
 
 **Testing requirements.** Real AOT simulation → R2 verified publication → ArcScope ingest/measurement proves deterministic results and failure recovery. No Workers AI dependency or AI debit.
 
@@ -212,15 +214,18 @@ The official simulator consumes real paid-term and quota enforcement from [WP-42
 
 **Upstream — all must be complete.**
 
-- [21 cloud host and persistence](21-cloud-host-and-persistence.md#rule-wp-21)
-- [23 public api and generated clients](23-public-api-and-generated-clients.md#rule-wp-23)
-- [25 sync engine and blob lifecycle](25-sync-engine-and-blob-lifecycle.md#rule-wp-25)
-- [33 arcscope acquisition and session](33-arcscope-acquisition-and-session.md#rule-wp-33)
-- [42 commerce entitlement and credits](42-commerce-entitlement-and-credits.md#rule-wp-42)
-- [44 dynamic policy and configuration](44-dynamic-policy-and-configuration.md#rule-wp-44)
+- [WP-21](21-cloud-host-and-persistence.md#rule-wp-21)
+- [WP-23](23-public-api-and-generated-clients.md#rule-wp-23)
+- [WP-25](25-sync-engine-and-blob-lifecycle.md#rule-wp-25)
+- [WP-33](33-arcscope-acquisition-and-session.md#rule-wp-33)
+- [WP-34](34-arcscope-analysis-and-reporting.md#rule-wp-34)
+- [WP-35](35-arcscope-integration-and-sync.md#rule-wp-35)
+- [WP-42](42-commerce-entitlement-and-credits.md#rule-wp-42)
+- [WP-44](44-dynamic-policy-and-configuration.md#rule-wp-44)
 
 **Downstream — consumers of these released outputs.**
 
-- [50 full platform production release](50-full-platform-production-release.md#rule-wp-50)
+- [WP-50](50-full-platform-production-release.md#rule-wp-50)
+
 
 ---

@@ -238,7 +238,7 @@ All 51 active packages retain their domain scope; WP27/29 stay retired. The depe
 | 07 | 04, 06 |
 | 08 | 06, 07 |
 | 09 | 03, 08 |
-| 10 | 06 |
+| 10 | 06, 09 |
 | 11 | 04, 08, 09 |
 | 12 | 04, 06 |
 | 13 | 06, 07, 08 |
@@ -271,13 +271,17 @@ All 51 active packages retain their domain scope; WP27/29 stay retired. The depe
 | 41 | 09, 11, 17 |
 | 45 | 12, 21, 44 |
 | 46 | 25, 45 |
-| 51 | 21, 23, 25, 33, 42, 44 |
-| 52 | 15, 17, 20, 21, 23, 26, 40, 41, 42, 43, 44 |
+| 51 | 21, 23, 25, 33, 34, 35, 42, 44 |
+| 52 | 15, 17, 20, 21, 23, 26, 39, 40, 41, 42, 43, 44 |
 | 31 | 26, 30, 52 |
 | 32 | 31 |
 | 47 | 00, 02 |
-| 48 | 42, 44, 47 |
+| 48 | 25, 42, 44, 46, 47 |
 | 49 | 26, 48, 52 |
 | 50 | 20, 28, 32, 35, 39, 40, 41, 43, 46, 49, 51, 52 |
 
 Serial execution: 00, 01, 02, 03, 04, 05, 06, 07, 08, 09, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 28, 30, 33, 34, 35, 36, 37, 38, 39, 42, 44, 43, 40, 41, 45, 46, 51, 52, 31, 32, 47, 48, 49, 50. WP42.11 precedes 42.10. WP02 supplies package pipelines, WP03 schema packages, WP06 actual candidate/AOT/RN/CF/R2 foundations before full features. WP17/20 use explicitly named AI fixtures; WP52 replaces them. WP46 establishes backup mechanics; WP50 tests combined recovery after 46 and52, avoiding a cycle. Independent package/product versions are joined by a tested manifest, not a suite-wide version.
+
+## Final review execution bindings
+
+[Staged artifact integration](README.md#staged-artifact-integration) is mandatory for the graph above. WP02 produces the pipeline/BuildPolicy, WP03 Contracts, WP04 values and WP06 the real native/runtime foundation; later packages never require a future Cloud manifest. The shell directly consumes WP09 contribution contracts. Account UI consumes WP25 exports and WP46 data health. Simulator acceptance consumes WP34 measurements and WP35 portability. WP52 additionally consumes WP39 for real Slate transcription/adoption; this does not move the media engine into Cloud. No full integration gate is satisfied by renaming a mock.

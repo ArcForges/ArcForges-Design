@@ -9,8 +9,8 @@
 
 > **Goal.** Deliver the browser companion as the second deployment profile of the same application: chat, tasks, approvals, steering, artifacts and remote control — a cloud surface, distinct from the account portal, sharing no state with it.
 
-> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Web + Cloud + AI. Inputs: the assigned exact Contracts packages/descriptors and actual provider artifacts; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: production React build and real C#/CF endpoints with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
-> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Web + Cloud + AI. Inputs: only the applicable published producers available at this stage under [staged artifact integration](../README.md#staged-artifact-integration). Producer candidate records precede Cloud consolidation; no future package/manifest is an input. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: production React build and real C#/CF endpoints with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> After WP03, unit mocks consume published Contracts fixtures; earlier stages verify their inventory/policy outputs. Acceptance consumes the actual providers scheduled for that stage. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
 
 ---
 
@@ -153,7 +153,7 @@ The Web companion verifies real generation, tool approval, stream fallback and r
 
 **What must be fully done.** Use the fixed same-origin session and CF AI HTTPS/WebSocket route with generated business clients. Keep the companion surface, durable task/message fallback and remote-device authorization.
 
-**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+**Execution order.** Follow [staged artifact integration](../README.md#staged-artifact-integration): consume only existing assigned producers, publish an owned capability candidate before its product consumer, and verify the declared stage against exact upstream artifacts. Record pending later owners and their closing gates; local mocks cover only that named test boundary.
 
 **Testing requirements.** Full real admitted CF turn/tool/approval/reconnect in a browser; blocked/expired live stream reconciles to the authoritative result without leaking session credentials.
 
@@ -217,12 +217,13 @@ The Web companion verifies real generation, tool approval, stream fallback and r
 
 **Upstream — all must be complete.**
 
-- [26 remote action and tool bridge](26-remote-action-and-tool-bridge.md#rule-wp-26)
-- [48 account portal](48-account-portal.md#rule-wp-48)
-- [52 cloud harness](52-cloud-harness.md#rule-wp-52)
+- [WP-26](26-remote-action-and-tool-bridge.md#rule-wp-26)
+- [WP-48](48-account-portal.md#rule-wp-48)
+- [WP-52](52-cloud-harness.md#rule-wp-52)
 
 **Downstream — consumers of these released outputs.**
 
-- [50 full platform production release](50-full-platform-production-release.md#rule-wp-50)
+- [WP-50](50-full-platform-production-release.md#rule-wp-50)
+
 
 ---

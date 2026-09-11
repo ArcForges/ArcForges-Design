@@ -9,8 +9,8 @@
 
 > **Goal.** Build the account layer: realms, users and authentication identities separated; workspaces from day one; devices, installations, instances and sessions distinguished; device trust and remote gating; step-up; recovery; and the account lifecycle through to deletion — with no product ever requiring an account to work locally.
 
-> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Cloud; client/AI adapters. Inputs: the assigned exact Contracts packages/descriptors and actual provider artifacts; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: owned candidate artifacts and generated contracts with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
-> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Cloud; client/AI adapters. Inputs: only the applicable published producers available at this stage under [staged artifact integration](../README.md#staged-artifact-integration). Producer candidate records precede Cloud consolidation; no future package/manifest is an input. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: owned candidate artifacts and generated contracts with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> After WP03, unit mocks consume published Contracts fixtures; earlier stages verify their inventory/policy outputs. Acceptance consumes the actual providers scheduled for that stage. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
 
 ---
 
@@ -170,12 +170,14 @@
 
 **Completion gate.** One server-owned session authority, no JS bearer, no cross-origin reuse or session resurrection; actual AOT closure feeds WP23 and full portal acceptance.
 
+**Required implementation and closure from the final review.** Implement and independently verify [08-security-architecture](../../architecture/08-security-architecture.md#account-and-provider-closure). Implement the complete typed account surface: profile/email, recovery-code set, scoped PAT, credential rename, session listing, four sign-out scopes, Device SSO, remote capability policy and restricted deletion-cancel reauthentication. Exercise official email/passkey and self-host password/passkey/OIDC enrollment/recovery, no email-based merging, old refresh reuse/lost response, one-use proofs and secret-free browser session replies. Wire UI consumers through the same owner ports. Record exact artifact identities and real/fixture status with the existing substeps; these cases are part of this package's completion gate.
+
 <a id="rule-wp-22.90"></a>
 ### WP-22.90 — Verify the owned artifact and real integration
 
 **What must be fully done.** Implement native/RN bearer sessions, same-origin Web opaque sessions, passkeys/recovery, workspace/device rules and authenticated CF authorization ports using selected AOT-compatible components.
 
-**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+**Execution order.** Follow [staged artifact integration](../README.md#staged-artifact-integration): consume only existing assigned producers, publish an owned capability candidate before its product consumer, and verify the declared stage against exact upstream artifacts. Record pending later owners and their closing gates; local mocks cover only that named test boundary.
 
 **Testing requirements.** Real publish-mode auth/session/CSRF/origin/rotation/revocation tests, including stale CF requests and browser credential secrecy.
 
@@ -226,7 +228,7 @@
 
 **All of the following, with recorded evidence:**
 
-1. Changing an authentication identity never affects user identity, workspace ownership or attached data, and no membership, role, invitation or seat concept exists.
+1. Changing an authentication identity never affects user identity, workspace ownership or attached data, and no customer workspace membership, role, invitation or seat concept exists; separate operator roles and self-host account enrollment retain their specified boundary.
 2. Concurrent refresh never storms; revocation is immediate; multiple passkeys work per user.
 3. Device, installation, instance and session are distinguishable everywhere; device revocation cascades correctly; device identity is not a hardware fingerprint.
 4. Remote access is off by default; a valid session alone never grants it.
@@ -241,12 +243,13 @@
 
 **Upstream — all must be complete.**
 
-- [11 security foundation](11-security-foundation.md#rule-wp-11)
-- [21 cloud host and persistence](21-cloud-host-and-persistence.md#rule-wp-21)
+- [WP-11](11-security-foundation.md#rule-wp-11)
+- [WP-21](21-cloud-host-and-persistence.md#rule-wp-21)
 
 **Downstream — consumers of these released outputs.**
 
-- [23 public api and generated clients](23-public-api-and-generated-clients.md#rule-wp-23)
-- [42 commerce entitlement and credits](42-commerce-entitlement-and-credits.md#rule-wp-42)
+- [WP-23](23-public-api-and-generated-clients.md#rule-wp-23)
+- [WP-42](42-commerce-entitlement-and-credits.md#rule-wp-42)
+
 
 ---

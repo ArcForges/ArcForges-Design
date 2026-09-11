@@ -9,8 +9,8 @@
 
 > **Goal.** Build the control plane that lets behaviour change without a release — feature flags, deterministic rollout, kill switches, schema-constrained remote configuration and compatibility policy — while keeping compiled hard limits authoritative and remaining safe under Native AOT.
 
-> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Cloud authority; AI/clients consumers. Inputs: the assigned exact Contracts packages/descriptors and actual provider artifacts; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: owned candidate artifacts and generated contracts with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
-> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Cloud authority; AI/clients consumers. Inputs: only the applicable published producers available at this stage under [staged artifact integration](../README.md#staged-artifact-integration). Producer candidate records precede Cloud consolidation; no future package/manifest is an input. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: owned candidate artifacts and generated contracts with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> After WP03, unit mocks consume published Contracts fixtures; earlier stages verify their inventory/policy outputs. Acceptance consumes the actual providers scheduled for that stage. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
 
 ---
 
@@ -156,7 +156,7 @@
 
 **What must be fully done.** Implement versioned compatibility/model/cost/security policy with explicit C#/CF activation and stale-policy behavior. Keep signed/auditable targeting and rollback horizons.
 
-**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+**Execution order.** Follow [staged artifact integration](../README.md#staged-artifact-integration): consume only existing assigned producers, publish an owned capability candidate before its product consumer, and verify the declared stage against exact upstream artifacts. Record pending later owners and their closing gates; local mocks cover only that named test boundary.
 
 **Testing requirements.** A CF run and each effect use the required policy version; stale/disallowed models or revoked permission fail deterministically, without client-side policy becoming authority.
 
@@ -216,16 +216,17 @@
 
 **Upstream — all must be complete.**
 
-- [23 public api and generated clients](23-public-api-and-generated-clients.md#rule-wp-23)
-- [42 commerce entitlement and credits](42-commerce-entitlement-and-credits.md#rule-wp-42)
+- [WP-23](23-public-api-and-generated-clients.md#rule-wp-23)
+- [WP-42](42-commerce-entitlement-and-credits.md#rule-wp-42)
 
 **Downstream — consumers of these released outputs.**
 
-- [40 knowledge search and retrieval](40-knowledge-search-and-retrieval.md#rule-wp-40)
-- [43 managed ai routing and metering](43-managed-ai-routing-and-metering.md#rule-wp-43)
-- [45 operations support and trust safety](45-operations-support-and-trust-safety.md#rule-wp-45)
-- [48 account portal](48-account-portal.md#rule-wp-48)
-- [51 arcscope cloud simulator](51-arcscope-cloud-simulator.md#rule-wp-51)
-- [52 cloud harness](52-cloud-harness.md#rule-wp-52)
+- [WP-40](40-knowledge-search-and-retrieval.md#rule-wp-40)
+- [WP-43](43-managed-ai-routing-and-metering.md#rule-wp-43)
+- [WP-45](45-operations-support-and-trust-safety.md#rule-wp-45)
+- [WP-48](48-account-portal.md#rule-wp-48)
+- [WP-51](51-arcscope-cloud-simulator.md#rule-wp-51)
+- [WP-52](52-cloud-harness.md#rule-wp-52)
+
 
 ---

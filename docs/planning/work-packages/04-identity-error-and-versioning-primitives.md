@@ -9,8 +9,8 @@
 
 > **Goal.** Fix the small things that everything else is built from — identity, idempotency, revision, sequence, time, error and reason codes — so that no later package invents its own variant and no two subsystems disagree about what "the same operation" means.
 
-> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Contracts; owner-specific adapters. Inputs: exact compatible Contracts packages/descriptors and applicable DesktopPlatform packages; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: owned candidate artifacts and generated contracts with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
-> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Contracts; owner-specific adapters. Inputs: only the applicable published producers available at this stage under [staged artifact integration](../README.md#staged-artifact-integration). Producer candidate records precede Cloud consolidation; no future package/manifest is an input. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: owned candidate artifacts and generated contracts with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> After WP03, unit mocks consume published Contracts fixtures; earlier stages verify their inventory/policy outputs. Acceptance consumes the actual providers scheduled for that stage. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
 
 ---
 
@@ -49,7 +49,7 @@
 | # | Rule |
 |---|---|
 | BR-01 | **`CommandId`, `InvocationId`, `AttemptId` and `RunId` are four distinct identities with four distinct roles.** Collapsing any two is a defect. |
-| BR-02 | **A retry reuses the command identity and allocates a new attempt identity.** This is what makes exactly-once effect achievable. |
+| BR-02 | **A retry preserves command identity and allocates a new attempt only when retry is authorized.** Storage-free primitives express identity/effect certainty; an owner transaction plus durable receipt enforces one committed effect. Unknown external effects cannot acquire an exactly-once guarantee from the primitive. |
 | BR-03 | **`Revision ≠ Version`** and **`Sequence ≠ Revision`**. A revision orders changes to one object; a sequence orders delivery on a channel. |
 | BR-04 | **A resource identity is never a file path** ([I-192](../../requirements/01-normative-glossary-and-invariants.md#rule-i-192)). |
 | BR-05 | **Canonical storage, localised presentation** ([QI-18](../../requirements/12-quality-and-compatibility-contract.md#rule-qi-18)). Time is stored as an unambiguous instant with its originating zone where the zone is meaningful; it is never stored as a formatted string. |
@@ -89,11 +89,11 @@
 
 ### WP-04.01 — Execution identity and idempotency
 
-**What must be fully done.** The four execution identities are implemented with their relationships: one command may have many attempts; one invocation belongs to one attempt; one run may contain many invocations. An idempotency helper expresses "same command, new attempt" so that retry logic is written once. Duplicate-detection semantics are defined: what counts as the same command, and for how long a result is remembered.
+**What must be fully done.** The four execution identities are implemented with their relationships: one command may have many attempts; one invocation belongs to one attempt; one run may contain many invocations. An idempotency helper validates the fixed command fingerprint and permitted retry/effect advice. Implement the retention/replay profile in the operation catalogue as constants/contracts; owner stores enforce it at WP07/14/21, never inside this storage-free helper.
 
-**Testing requirements.** A retry test asserting one effect from many attempts; a concurrency test asserting two simultaneous submissions of one command yield one effect; a retention test for the duplicate window.
+**Testing requirements.** Identity/fingerprint and retry-advice vectors, including unknown effect refusing blind retry. WP07/14 supply actual transaction/concurrent duplicate-effect proofs and the owner-defined receipt-retention policy; this storage-free package cannot claim persistence enforcement.
 
-**Completion gate.** Exactly-once effect holds under duplication, retry and concurrency.
+**Completion gate.** Identity/hash/retry-advice vectors pass and unknown effects refuse automatic resend. Owner transaction/receipt enforcement is proven by WP07/14/21; no storage-free exactly-once claim remains.
 
 <a id="rule-wp-04.02"></a>
 
@@ -150,7 +150,7 @@ Implement the C# serializers and metadata projection for the exact wire rules in
 
 **What must be fully done.** Implement the exact ID/time/decimal/rational/cursor/error/revision/idempotency profiles. Keep public primitives separate from internal authorization implementation. Map gRPC failures without fabricating domain outcomes.
 
-**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+**Execution order.** Follow [staged artifact integration](../README.md#staged-artifact-integration): consume only existing assigned producers, publish an owned capability candidate before its product consumer, and verify the declared stage against exact upstream artifacts. Record pending later owners and their closing gates; local mocks cover only that named test boundary.
 
 **Testing requirements.** C#/TS round trips include values outside JS safe integers, absence/unknown values, duplicate commands and unknown effects; existing error identifiers remain registered.
 
@@ -206,13 +206,14 @@ Implement the C# serializers and metadata projection for the exact wire rules in
 
 **Upstream — all must be complete.**
 
-- [03 contract foundation and licence split](03-contract-foundation-and-licence-split.md#rule-wp-03)
+- [WP-03](03-contract-foundation-and-licence-split.md#rule-wp-03)
 
 **Downstream — consumers of these released outputs.**
 
-- [06 aot jit and wasm publish proof](06-aot-jit-and-wasm-publish-proof.md#rule-wp-06)
-- [07 local persistence foundation](07-local-persistence-foundation.md#rule-wp-07)
-- [11 security foundation](11-security-foundation.md#rule-wp-11)
-- [12 observability foundation](12-observability-foundation.md#rule-wp-12)
+- [WP-06](06-aot-jit-and-wasm-publish-proof.md#rule-wp-06)
+- [WP-07](07-local-persistence-foundation.md#rule-wp-07)
+- [WP-11](11-security-foundation.md#rule-wp-11)
+- [WP-12](12-observability-foundation.md#rule-wp-12)
+
 
 ---

@@ -259,7 +259,7 @@ Answerable before any feature merges:
 
 **Layering** — Do local UI, local RPC and public HTTP all reach the same application service? Do adapters avoid referencing view models and controls entirely? Is Domain free of UI, database, transport and native dependencies? Are DTOs, domain models and view state kept unmixed?
 
-**Local RPC** — Is this a strongly typed contract rather than a catch-all string/object call? Are the generated-proxy attributes present? Are interceptors enabled? Are multi-interface combinations pre-generated rather than assembled at runtime? Is the formatter on an AOT-safe path? Does the target use generated metadata? Are cancellation, command identity and revision present? Has compatibility with the previous client been verified?
+**Local RPC** — Is every operation in the pinned handwritten proto set with generated messages/services/clients and explicit listener registration? Do Named Pipe/UDS peer bootstrap and reverse callbacks work in the actual AOT artifact? Are limits, cancellation, command identity, correct revision kind and previous-client compatibility verified without runtime discovery or proxy fallback?
 
 **Public HTTP** — Generated gRPC client for C# and generated proto gRPC-Web SDK for TypeScript? C# source-generated serialization and TS runtime validation agree? No reflection fallback in C#? Are verb, status, cache and version semantics correct? Do large objects use a stream or a resource reference?
 
@@ -279,7 +279,7 @@ Answerable before any feature merges:
 
 | Risk | Mitigation |
 |---|---|
-| Local RPC library is only partially AOT-safe | Turn the official restrictions into repository rules: contract attributes, shape generation, exported proxies, pre-generated interface groups, an AOT-safe formatter, generated target metadata, and a real publish test. Dynamic proxy fallback in production is prohibited. |
+| Local gRPC AOT closure | Pin generated descriptors/parsers/clients, explicitly register services and verify real Named Pipe/UDS calls and reverse callbacks in published AOT artifacts. Dynamic discovery and proxy fallback are prohibited. |
 | Bidirectional RPC produces concurrency or deadlock misjudgement | The transport is not an actor: serialize domain writes per document; never hold a lock while awaiting a callback; base writes on revision and command identity; fault-inject bidirectional callbacks and disconnects |
 | Typed HTTP client silently falls back to reflection | Generated-only API, reflection package absent from production, analyzer diagnostics escalated to errors, an AOT publish contract test per public method |
 | Realtime misused as a reliable bus | Realtime is the visibility layer; business facts land in the database, journal and outbox; clients recover by revision or sequence over HTTP |

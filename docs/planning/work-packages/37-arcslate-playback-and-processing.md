@@ -9,8 +9,8 @@
 
 > **Goal.** Make the timeline play: a decode and processing pipeline behind the native boundary, a processing graph with effects and keyframes, proxies and caches as derived data, and a viewer that keeps the clock correct even when it cannot keep every frame.
 
-> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: ArcSlate; Platform. Inputs: exact compatible Contracts packages/descriptors and applicable DesktopPlatform packages; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: Native AOT candidate packages/executables with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
-> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: ArcSlate; Platform. Inputs: only the applicable published producers available at this stage under [staged artifact integration](../README.md#staged-artifact-integration). Producer candidate records precede Cloud consolidation; no future package/manifest is an input. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: Native AOT candidate packages/executables with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> After WP03, unit mocks consume published Contracts fixtures; earlier stages verify their inventory/policy outputs. Acceptance consumes the actual providers scheduled for that stage. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
 
 ---
 
@@ -60,7 +60,7 @@
 | Location | Change |
 |---|---|
 | `src/ArcSlate/ArcSlate.Media/` | The managed wrapper over the native foundation: demux, decode, convert, resample |
-| `src/ArcSlate/ArcSlate.Native/` | The thin C ABI shim, its loader, safe handles and version negotiation |
+| ArcSlate: `src/ArcSlate/ArcSlate.Native/`; DesktopPlatform: native media capability packages | Product C# adapters consume the published loader/handles/C ABI wrappers; native build/pack ownership remains in DesktopPlatform |
 | `src/ArcSlate/ArcSlate.Playback/` | The playback engine, clock, scheduler, buffer pools and quality state |
 | `src/ArcSlate/ArcSlate.Processing/` | The processing graph, effect definitions and instances, parameters, keyframes, curves |
 | `src/ArcSlate/ArcSlate.Audio/` | Audio processing chain, mixing, sample-accurate handling |
@@ -78,7 +78,7 @@
 
 ### WP-37.00 — Native media boundary
 
-**What must be fully done.** The thin C ABI shim with version negotiation at load, safe handles for every native handle, managed input validation before every call, and a sacrificial-process integration suite. Sanitiser builds run in CI. The licence position of every native dependency is recorded.
+**What must be fully done.** DesktopPlatform implements/publishes the thin C ABI shim, managed wrappers, safe handles and version negotiation; ArcSlate consumes their exact packages with managed input validation and a sacrificial-process integration suite. Sanitiser builds run in CI. The licence position of every native dependency is recorded.
 
 **Testing requirements.** ABI conformance and version-mismatch rejection; ownership and handle-lifetime tests; sanitiser runs; sacrificial-process crash tests; a domain-purity test asserting no native type escapes.
 
@@ -146,12 +146,14 @@
 
 ---
 
+**Required implementation and closure from the final review.** Implement and independently verify [12-native-interop-and-media](../../architecture/12-native-interop-and-media.md#complete-media-package-contract). Consume actual Platform media packages and test all portable baseline render codecs, graph/source semantics and audio-grid mixing. Build C/C++/C ABI/wrappers only in DesktopPlatform. Confirm unsupported native capabilities cannot be advertised and font/colour/source identities affect the render snapshot. Record exact artifact identities and real/fixture status with the existing substeps; these cases are part of this package's completion gate.
+
 <a id="rule-wp-37.90"></a>
 ### WP-37.90 — Verify the owned artifact and real integration
 
 **What must be fully done.** Consume approved native decode/audio/image/color/graphics packages and isolated helper assets. Keep playback clock, processing/proxy and media ownership contracts.
 
-**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+**Execution order.** Follow [staged artifact integration](../README.md#staged-artifact-integration): consume only existing assigned producers, publish an owned capability candidate before its product consumer, and verify the declared stage against exact upstream artifacts. Record pending later owners and their closing gates; local mocks cover only that named test boundary.
 
 **Testing requirements.** Clean AOT package consumer plus representative decode, synchronization, cancellation, damaged-input and native dependency loading on supported RIDs.
 
@@ -213,10 +215,11 @@
 
 **Upstream — all must be complete.**
 
-- [36 arcslate project and timeline](36-arcslate-project-and-timeline.md#rule-wp-36)
+- [WP-36](36-arcslate-project-and-timeline.md#rule-wp-36)
 
 **Downstream — consumers of these released outputs.**
 
-- [38 arcslate render and colour](38-arcslate-render-and-colour.md#rule-wp-38)
+- [WP-38](38-arcslate-render-and-colour.md#rule-wp-38)
+
 
 ---

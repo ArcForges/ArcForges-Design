@@ -280,3 +280,7 @@ Each row is release-gating ([XL-07](#rule-xl-07)).
 ## P2-009 transport, storage and recovery composition
 
 The [CF/R2 lifecycle](contracts/05-cloudflare-integration.md) fixes part verification, Verified pins, authorization on consumption, release/deletion and independent immutable restore. C# owning transactions, sync cursors/tombstones/conflicts, desktop pending changes, native job snapshots and derived-source revision checks above retain their semantics. The [wire profile](contracts/04-protobuf-wire-registry.md) transports exact values without changing content-origin, Notes scalar or Scope measurement oracles. CF checkpoints/streams never become product history, and restoration cannot silently redispatch an uncertain external act.
+
+## Disaster boundary for asynchronous effects
+
+Every external-effect dispatch and acknowledged credential/data denial follows the [independent safety journal](22-deployment-and-release-execution.md#recovery-generation-and-safety-journal). The PG outbox transaction still precedes external I/O; the independent barrier precedes the external call. Restore does not trust a rolled-back queued state as permission to repeat the call. Reconcile owner receipts and retain unknown effects before any new authorization, preserving original funding and supplier liability. This applies to payment, AI, tool/device, export/deletion and simulator publication according to their existing owner effect classes; read-only idempotent polls need no new dispatch barrier.

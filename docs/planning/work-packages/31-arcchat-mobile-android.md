@@ -9,8 +9,8 @@
 
 > **Goal.** Deliver the complete remote control surface: conversation, task, approval and steering from a phone, through Cloud, to a desktop — with **no direct connection to a LAN Hub, named pipe, socket or professional application** anywhere in the design.
 
-> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Mobile; real Cloud/AI. Inputs: exact Apache Contracts npm packages/descriptors and the selected RN/native package closure; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: RN/Hermes artifact and real generated service clients with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
-> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Mobile; real Cloud/AI. Inputs: only the applicable published producers available at this stage under [staged artifact integration](../README.md#staged-artifact-integration). Producer candidate records precede Cloud consolidation; no future package/manifest is an input. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: RN/Hermes artifact and real generated service clients with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> After WP03, unit mocks consume published Contracts fixtures; earlier stages verify their inventory/policy outputs. Acceptance consumes the actual providers scheduled for that stage. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
 
 ---
 
@@ -213,12 +213,13 @@ Every feature delivers its loading/empty/offline/denied/expired/error states, lo
 
 **Upstream — all must be complete.**
 
-- [26 remote action and tool bridge](26-remote-action-and-tool-bridge.md#rule-wp-26)
-- [30 mobile shared architecture](30-mobile-shared-architecture.md#rule-wp-30)
-- [52 cloud harness](52-cloud-harness.md#rule-wp-52)
+- [WP-26](26-remote-action-and-tool-bridge.md#rule-wp-26)
+- [WP-30](30-mobile-shared-architecture.md#rule-wp-30)
+- [WP-52](52-cloud-harness.md#rule-wp-52)
 
 **Downstream — consumers of these released outputs.**
 
-- [32 mobile release and store gates](32-mobile-release-and-store-gates.md#rule-wp-32)
+- [WP-32](32-mobile-release-and-store-gates.md#rule-wp-32)
+
 
 ---

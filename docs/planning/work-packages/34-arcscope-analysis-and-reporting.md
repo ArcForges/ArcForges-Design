@@ -5,12 +5,12 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: H — ArcScope
-> Upstream: `33` · Downstream: `35`
+> Upstream: `33` · Downstream: `35`, `51`
 
 > **Goal.** Turn evidence into findings without ever altering the evidence: visualisation, triggers, measurements, decoders, analysis, annotations, comparison and reports — every result reproducible from a recorded configuration.
 
-> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: ArcScope; Contracts measurement profile. Inputs: exact compatible Contracts packages/descriptors and applicable DesktopPlatform packages; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: Native AOT candidate packages/executables with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
-> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: ArcScope; Contracts measurement profile. Inputs: only the applicable published producers available at this stage under [staged artifact integration](../README.md#staged-artifact-integration). Producer candidate records precede Cloud consolidation; no future package/manifest is an input. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: Native AOT candidate packages/executables with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> After WP03, unit mocks consume published Contracts fixtures; earlier stages verify their inventory/policy outputs. Acceptance consumes the actual providers scheduled for that stage. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
 
 ---
 
@@ -161,7 +161,7 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 **What must be fully done.** Preserve immutable measurement input, units/sample/time/non-finite handling, numerical algorithms/tolerances and report provenance. Carry the exact profile through proto and TS values.
 
-**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+**Execution order.** Follow [staged artifact integration](../README.md#staged-artifact-integration): consume only existing assigned producers, publish an owned capability candidate before its product consumer, and verify the declared stage against exact upstream artifacts. Record pending later owners and their closing gates; local mocks cover only that named test boundary.
 
 **Testing requirements.** `scope.measurement.v1` independent expected results, invalid/status cases and reporting references; native acceleration cannot redefine the result.
 
@@ -227,10 +227,12 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 **Upstream — all must be complete.**
 
-- [33 arcscope acquisition and session](33-arcscope-acquisition-and-session.md#rule-wp-33)
+- [WP-33](33-arcscope-acquisition-and-session.md#rule-wp-33)
 
 **Downstream — consumers of these released outputs.**
 
-- [35 arcscope integration and sync](35-arcscope-integration-and-sync.md#rule-wp-35)
+- [WP-35](35-arcscope-integration-and-sync.md#rule-wp-35)
+- [WP-51](51-arcscope-cloud-simulator.md#rule-wp-51)
+
 
 ---

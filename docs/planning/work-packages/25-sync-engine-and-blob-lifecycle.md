@@ -5,12 +5,12 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: E — First real cloud
-> Upstream: `19`, `24` · Downstream: `26`, `28`, `35`, `39`, `40`, `43`, `46`, `51`
+> Upstream: `19`, `24` · Downstream: `26`, `28`, `35`, `39`, `40`, `43`, `46`, `48`, `51`
 
 > **Goal.** Prove sync on ArcNotes: a client outbox, a server inbox, a change feed, five conflict policies, deletion propagation, and a blob lifecycle that never leaves a reference pointing at nothing — with multi-device convergence demonstrated, not assumed.
 
-> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Cloud; desktop/Mobile consumers. Inputs: exact compatible Contracts packages/descriptors and applicable DesktopPlatform packages; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: owned candidate artifacts and generated contracts with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
-> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Cloud; desktop/Mobile consumers. Inputs: only the applicable published producers available at this stage under [staged artifact integration](../README.md#staged-artifact-integration). Producer candidate records precede Cloud consolidation; no future package/manifest is an input. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: owned candidate artifacts and generated contracts with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> After WP03, unit mocks consume published Contracts fixtures; earlier stages verify their inventory/policy outputs. Acceptance consumes the actual providers scheduled for that stage. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
 
 ---
 
@@ -174,12 +174,14 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 ---
 
+**Required implementation and closure from the final review.** Implement and independently verify [01-cloud-data-model](../../architecture/data-model/01-cloud-data-model.md). Implement real structural move/ack/conflict transactions, full native metadata replicas, job-authorized R2 staging/verification/promotion and quarantined old-generation client commands. WP25.08 closes both Notes and Chat Cloud export manifests through actual R2; test missing permission, partial transfer, loss reports, no pending-local content and response loss. Old Notebook/Document body uploads cannot bypass placement operations. Record exact artifact identities and real/fixture status with the existing substeps; these cases are part of this package's completion gate.
+
 <a id="rule-wp-25.90"></a>
 ### WP-25.90 — Verify the owned artifact and real integration
 
 **What must be fully done.** Use R2 for the existing upload admission, multipart resume, Verified pin, owner promotion, quota and release lifecycle. Retain outbox/inbox/tombstones/conflicts/bootstrap/unknown-field behavior and export protocol.
 
-**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+**Execution order.** Follow [staged artifact integration](../README.md#staged-artifact-integration): consume only existing assigned producers, publish an owned capability candidate before its product consumer, and verify the declared stage against exact upstream artifacts. Record pending later owners and their closing gates; local mocks cover only that named test boundary.
 
 **Testing requirements.** Three-device convergence and interrupted-upload/failed-content-commit/orphan/delete cases run against actual provider adapters; [WP-25.08](#rule-wp-25.08) remains represented in its evidence and completion gate.
 
@@ -253,18 +255,20 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 **Upstream — all must be complete.**
 
-- [19 arcnotes search and portability](19-arcnotes-search-and-portability.md#rule-wp-19)
-- [24 realtime and reliable events](24-realtime-and-reliable-events.md#rule-wp-24)
+- [WP-19](19-arcnotes-search-and-portability.md#rule-wp-19)
+- [WP-24](24-realtime-and-reliable-events.md#rule-wp-24)
 
 **Downstream — consumers of these released outputs.**
 
-- [26 remote action and tool bridge](26-remote-action-and-tool-bridge.md#rule-wp-26)
-- [28 arcnotes properties and views](28-arcnotes-properties-and-views.md#rule-wp-28)
-- [35 arcscope integration and sync](35-arcscope-integration-and-sync.md#rule-wp-35)
-- [39 arcslate integration and portability](39-arcslate-integration-and-portability.md#rule-wp-39)
-- [40 knowledge search and retrieval](40-knowledge-search-and-retrieval.md#rule-wp-40)
-- [43 managed ai routing and metering](43-managed-ai-routing-and-metering.md#rule-wp-43)
-- [46 backup recovery and data health](46-backup-recovery-and-data-health.md#rule-wp-46)
-- [51 arcscope cloud simulator](51-arcscope-cloud-simulator.md#rule-wp-51)
+- [WP-26](26-remote-action-and-tool-bridge.md#rule-wp-26)
+- [WP-28](28-arcnotes-properties-and-views.md#rule-wp-28)
+- [WP-35](35-arcscope-integration-and-sync.md#rule-wp-35)
+- [WP-39](39-arcslate-integration-and-portability.md#rule-wp-39)
+- [WP-40](40-knowledge-search-and-retrieval.md#rule-wp-40)
+- [WP-43](43-managed-ai-routing-and-metering.md#rule-wp-43)
+- [WP-46](46-backup-recovery-and-data-health.md#rule-wp-46)
+- [WP-48](48-account-portal.md#rule-wp-48)
+- [WP-51](51-arcscope-cloud-simulator.md#rule-wp-51)
+
 
 ---

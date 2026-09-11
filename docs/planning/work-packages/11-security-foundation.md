@@ -9,8 +9,8 @@
 
 > **Goal.** Implement the security model as mechanism rather than convention: principals and the actor chain, the R0–R4 risk model, the four enforcement points with owner-side final validation always last, approval and step-up, the secret broker, egress control, instruction provenance, capability leases and the append-only audit.
 
-> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Platform/Cloud/AI adapters; Contracts public definitions. Inputs: exact compatible Contracts packages/descriptors and applicable DesktopPlatform packages; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: Native AOT candidate packages/executables with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
-> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Platform/Cloud/AI adapters; Contracts public definitions. Inputs: only the applicable published producers available at this stage under [staged artifact integration](../README.md#staged-artifact-integration). Producer candidate records precede Cloud consolidation; no future package/manifest is an input. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: Native AOT candidate packages/executables with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> After WP03, unit mocks consume published Contracts fixtures; earlier stages verify their inventory/policy outputs. Acceptance consumes the actual providers scheduled for that stage. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
 
 ---
 
@@ -181,7 +181,7 @@
 
 **What must be fully done.** Implement fixed actor/owner, approval, secrets, egress and provenance rules across new boundaries. Package the signed, parent-bound content helper and OS broker with its native dependencies.
 
-**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+**Execution order.** Follow [staged artifact integration](../README.md#staged-artifact-integration): consume only existing assigned producers, publish an owned capability candidate before its product consumer, and verify the declared stage against exact upstream artifacts. Record pending later owners and their closing gates; local mocks cover only that named test boundary.
 
 **Testing requirements.** Cross-boundary owner refusal, stale approval/revocation, secrets/redaction and real OS-isolation tests; no hostile parser moved into a product process by package consolidation.
 
@@ -245,15 +245,16 @@ The [WP-11.09](#rule-wp-11.09) helper and broker must additionally pass their pa
 
 **Upstream — all must be complete.**
 
-- [04 identity error and versioning primitives](04-identity-error-and-versioning-primitives.md#rule-wp-04)
-- [08 local ipc and registration](08-local-ipc-and-registration.md#rule-wp-08)
-- [09 capability contribution and resource model](09-capability-contribution-and-resource-model.md#rule-wp-09)
+- [WP-04](04-identity-error-and-versioning-primitives.md#rule-wp-04)
+- [WP-08](08-local-ipc-and-registration.md#rule-wp-08)
+- [WP-09](09-capability-contribution-and-resource-model.md#rule-wp-09)
 
 **Downstream — consumers of these released outputs.**
 
-- [14 hub and minimal provider slice](14-hub-and-minimal-provider-slice.md#rule-wp-14)
-- [16 unified execution engine](16-unified-execution-engine.md#rule-wp-16)
-- [22 identity workspace and device](22-identity-workspace-and-device.md#rule-wp-22)
-- [41 extension platform and integrations](41-extension-platform-and-integrations.md#rule-wp-41)
+- [WP-14](14-hub-and-minimal-provider-slice.md#rule-wp-14)
+- [WP-16](16-unified-execution-engine.md#rule-wp-16)
+- [WP-22](22-identity-workspace-and-device.md#rule-wp-22)
+- [WP-41](41-extension-platform-and-integrations.md#rule-wp-41)
+
 
 ---

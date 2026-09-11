@@ -9,8 +9,8 @@
 
 > **Goal.** Build ArcChat's own domain — conversation, message, branch, attachment, project, profile and skill — as durable local state with search, history and recovery, independent of any other product.
 
-> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: ArcChat. Inputs: exact compatible Contracts packages/descriptors and applicable DesktopPlatform packages; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: Native AOT candidate packages/executables with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
-> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: ArcChat. Inputs: only the applicable published producers available at this stage under [staged artifact integration](../README.md#staged-artifact-integration). Producer candidate records precede Cloud consolidation; no future package/manifest is an input. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: Native AOT candidate packages/executables with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> After WP03, unit mocks consume published Contracts fixtures; earlier stages verify their inventory/policy outputs. Acceptance consumes the actual providers scheduled for that stage. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
 
 ---
 
@@ -173,7 +173,7 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 **What must be fully done.** Keep conversation/branch/profile/skill/local-search and export-client behavior. Rebind durable Cloud reads/writes, attachments and stream projections to the new SDK/AI endpoints while preserving content origin and committed-message immutability.
 
-**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+**Execution order.** Follow [staged artifact integration](../README.md#staged-artifact-integration): consume only existing assigned producers, publish an owned capability candidate before its product consumer, and verify the declared stage against exact upstream artifacts. Record pending later owners and their closing gates; local mocks cover only that named test boundary.
 
 **Testing requirements.** Existing conversation/recovery/provenance cases pass against generated contracts; local projection is not a second authoritative AI history.
 
@@ -227,7 +227,7 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 4. Attachments are stored by reference with integrity verification, and unavailability is a visible state.
 5. Projects, profiles and skills are structurally distinct, with skills conferring no capability and updates not altering history.
 6. Search over cached content works during a Cloud outage, rebuilds from scratch, and leaks nothing direct access would refuse.
-7. A Cloud conversation export is complete against its manifest, excludes unsynchronised edits and says so, carries no secrets ([EX-03](../../requirements/products/arcchat.md#rule-ex-03) there), and recovery reports uncommitted loss explicitly. **No local conversation archive format is built** ([EX-01](../../requirements/products/arcchat.md#rule-ex-01) of the ArcChat requirements).
+7. The export client validates its declared fixture manifest here; WP25.08 proves the real Cloud conversation export. The client excludes unsynchronised edits and says so, carries no secrets ([EX-03](../../requirements/products/arcchat.md#rule-ex-03) there), and recovery reports uncommitted loss explicitly. **No local conversation archive format is built** ([EX-01](../../requirements/products/arcchat.md#rule-ex-01) of the ArcChat requirements).
 8. **ArcChat is fully usable with every other product absent.**
 
 ---
@@ -236,11 +236,12 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 **Upstream — all must be complete.**
 
-- [14 hub and minimal provider slice](14-hub-and-minimal-provider-slice.md#rule-wp-14)
+- [WP-14](14-hub-and-minimal-provider-slice.md#rule-wp-14)
 
 **Downstream — consumers of these released outputs.**
 
-- [17 arcchat independent core](17-arcchat-independent-core.md#rule-wp-17)
-- [52 cloud harness](52-cloud-harness.md#rule-wp-52)
+- [WP-17](17-arcchat-independent-core.md#rule-wp-17)
+- [WP-52](52-cloud-harness.md#rule-wp-52)
+
 
 ---

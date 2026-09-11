@@ -9,8 +9,8 @@
 
 > **Goal.** Deliver realtime updates that are useful without ever being authoritative: connect, subscribe, deliver, detect a gap, and backfill authoritative state over HTTP — with disconnected compensation recovery proven, because it is the case that actually happens.
 
-> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Cloud; clients; AI stream contract. Inputs: the assigned exact Contracts packages/descriptors and actual provider artifacts; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: owned candidate artifacts and generated contracts with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
-> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Cloud; clients; AI stream contract. Inputs: only the applicable published producers available at this stage under [staged artifact integration](../README.md#staged-artifact-integration). Producer candidate records precede Cloud consolidation; no future package/manifest is an input. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: owned candidate artifacts and generated contracts with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> After WP03, unit mocks consume published Contracts fixtures; earlier stages verify their inventory/policy outputs. Acceptance consumes the actual providers scheduled for that stage. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
 
 ---
 
@@ -156,7 +156,7 @@
 
 **What must be fully done.** Assemble the owned deliverables from the preceding substeps under the selected repository, package, runtime and protocol authorities. Replace retired SignalR scaffolding using the fixed hint/read transports and cursor/snapshot recovery. Separate durable C# facts from CF live stream projections. Implement bounded reconnect/expiry and per-client supported call shapes.
 
-**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+**Execution order.** Follow [staged artifact integration](../README.md#staged-artifact-integration): consume only existing assigned producers, publish an owned capability candidate before its product consumer, and verify the declared stage against exact upstream artifacts. Record pending later owners and their closing gates; local mocks cover only that named test boundary.
 
 **Testing requirements.** Lost, duplicated, reordered or expired hints converge through authoritative reads. Real full AI stream completion is asserted only after [WP-52](52-cloud-harness.md#rule-wp-52), not by an event fixture.
 
@@ -214,12 +214,13 @@
 
 **Upstream — all must be complete.**
 
-- [23 public api and generated clients](23-public-api-and-generated-clients.md#rule-wp-23)
+- [WP-23](23-public-api-and-generated-clients.md#rule-wp-23)
 
 **Downstream — consumers of these released outputs.**
 
-- [25 sync engine and blob lifecycle](25-sync-engine-and-blob-lifecycle.md#rule-wp-25)
-- [26 remote action and tool bridge](26-remote-action-and-tool-bridge.md#rule-wp-26)
-- [30 mobile shared architecture](30-mobile-shared-architecture.md#rule-wp-30)
+- [WP-25](25-sync-engine-and-blob-lifecycle.md#rule-wp-25)
+- [WP-26](26-remote-action-and-tool-bridge.md#rule-wp-26)
+- [WP-30](30-mobile-shared-architecture.md#rule-wp-30)
+
 
 ---

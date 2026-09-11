@@ -9,8 +9,8 @@
 
 > **Goal.** Two genuinely Native AOT-published processes, talking over a real transport, with real registration, real capability discovery, real idempotency, real approval and real resource references — and ArcNotes still fully editable with ArcChat absent. This is where ArcForges stops being a design and becomes a platform.
 
-> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: ArcChat + ArcNotes. Inputs: exact compatible Contracts packages/descriptors and applicable DesktopPlatform packages; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: Native AOT candidate packages/executables with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
-> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: ArcChat + ArcNotes. Inputs: only the applicable published producers available at this stage under [staged artifact integration](../README.md#staged-artifact-integration). Producer candidate records precede Cloud consolidation; no future package/manifest is an input. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: Native AOT candidate packages/executables with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> After WP03, unit mocks consume published Contracts fixtures; earlier stages verify their inventory/policy outputs. Acceptance consumes the actual providers scheduled for that stage. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
 
 ---
 
@@ -149,7 +149,7 @@
 
 **What must be fully done.** Implement the real minimal provider slice with pinned proto/Platform packages; exercise Hub routing inside ArcChat, Notes ownership and degraded product combinations. No CF decision loop enters this slice.
 
-**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+**Execution order.** Follow [staged artifact integration](../README.md#staged-artifact-integration): consume only existing assigned producers, publish an owned capability candidate before its product consumer, and verify the declared stage against exact upstream artifacts. Record pending later owners and their closing gates; local mocks cover only that named test boundary.
 
 **Testing requirements.** Real independently built AOT executables cover discovery, idempotency, approval, references and ArcChat/Notes absence.
 
@@ -205,16 +205,17 @@
 
 **Upstream — all must be complete.**
 
-- [08 local ipc and registration](08-local-ipc-and-registration.md#rule-wp-08)
-- [09 capability contribution and resource model](09-capability-contribution-and-resource-model.md#rule-wp-09)
-- [10 design system and desktop shell](10-design-system-and-desktop-shell.md#rule-wp-10)
-- [11 security foundation](11-security-foundation.md#rule-wp-11)
-- [13 high risk technical probes](13-high-risk-technical-probes.md#rule-wp-13)
+- [WP-08](08-local-ipc-and-registration.md#rule-wp-08)
+- [WP-09](09-capability-contribution-and-resource-model.md#rule-wp-09)
+- [WP-10](10-design-system-and-desktop-shell.md#rule-wp-10)
+- [WP-11](11-security-foundation.md#rule-wp-11)
+- [WP-13](13-high-risk-technical-probes.md#rule-wp-13)
 
 **Downstream — consumers of these released outputs.**
 
-- [15 arcchat conversation core](15-arcchat-conversation-core.md#rule-wp-15)
-- [16 unified execution engine](16-unified-execution-engine.md#rule-wp-16)
-- [18 arcnotes document core](18-arcnotes-document-core.md#rule-wp-18)
+- [WP-15](15-arcchat-conversation-core.md#rule-wp-15)
+- [WP-16](16-unified-execution-engine.md#rule-wp-16)
+- [WP-18](18-arcnotes-document-core.md#rule-wp-18)
+
 
 ---

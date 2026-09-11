@@ -9,8 +9,8 @@
 
 > **Goal.** Build the evidence layer: sources and adapters, the acquisition pipeline, sessions and captures with segments and gaps, the channel and event time model, and record and replay — with raw capture treated as evidence, immutable once finalised.
 
-> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: ArcScope; Platform. Inputs: exact compatible Contracts packages/descriptors and applicable DesktopPlatform packages; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: Native AOT candidate packages/executables with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
-> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: ArcScope; Platform. Inputs: only the applicable published producers available at this stage under [staged artifact integration](../README.md#staged-artifact-integration). Producer candidate records precede Cloud consolidation; no future package/manifest is an input. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: Native AOT candidate packages/executables with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> After WP03, unit mocks consume published Contracts fixtures; earlier stages verify their inventory/policy outputs. Acceptance consumes the actual providers scheduled for that stage. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
 
 ---
 
@@ -65,7 +65,7 @@
 | `src/ArcScope/ArcScope.Domain/` | Project, session, capture, segment, gap, channel, signal, event, configuration snapshot |
 | `src/ArcScope/ArcScope.Acquisition/` | Source adapters, the acquisition loop, rolling buffer, backpressure, overrun accounting |
 | `src/ArcScope/ArcScope.Recording/` | Durable capture writer over the chunked verifiable store |
-| `src/ArcScope/ArcScope.Native/` | Transport and device primitives behind the C ABI where required |
+| ArcScope: `src/ArcScope/ArcScope.Native/`; DesktopPlatform native capability packages | Product C# adapters consume Platform transport/device packages; all C/C++/C ABI and wrapper builds remain in DesktopPlatform |
 | `src/ArcScope/ArcScope.Infrastructure/` | Store schema, capture storage layout, migration set |
 | `src/ArcScope/ArcScope.Presentation/`, `.Desktop/` | Session, capture and live observation surfaces |
 | `tests/ArcScopePipelineTests/` | Throughput, overrun, gap, recovery and exclusivity suites |
@@ -169,7 +169,7 @@
 
 **What must be fully done.** Assemble the owned deliverables from the preceding substeps under the selected repository, package, runtime and protocol authorities. Keep capture/decoder/session/recording ownership in C#. Replace product native-source dependencies using selected capability packages and explicit managed/native acquisition boundaries.
 
-**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+**Execution order.** Follow [staged artifact integration](../README.md#staged-artifact-integration): consume only existing assigned producers, publish an owned capability candidate before its product consumer, and verify the declared stage against exact upstream artifacts. Record pending later owners and their closing gates; local mocks cover only that named test boundary.
 
 **Testing requirements.** Real packaged hardware-path and throughput/overrun/recovery acceptance; no automatic upload of raw acquisition data.
 
@@ -232,14 +232,15 @@
 
 **Upstream — all must be complete.**
 
-- [07 local persistence foundation](07-local-persistence-foundation.md#rule-wp-07)
-- [10 design system and desktop shell](10-design-system-and-desktop-shell.md#rule-wp-10)
-- [13 high risk technical probes](13-high-risk-technical-probes.md#rule-wp-13)
-- [26 remote action and tool bridge](26-remote-action-and-tool-bridge.md#rule-wp-26)
+- [WP-07](07-local-persistence-foundation.md#rule-wp-07)
+- [WP-10](10-design-system-and-desktop-shell.md#rule-wp-10)
+- [WP-13](13-high-risk-technical-probes.md#rule-wp-13)
+- [WP-26](26-remote-action-and-tool-bridge.md#rule-wp-26)
 
 **Downstream — consumers of these released outputs.**
 
-- [34 arcscope analysis and reporting](34-arcscope-analysis-and-reporting.md#rule-wp-34)
-- [51 arcscope cloud simulator](51-arcscope-cloud-simulator.md#rule-wp-51)
+- [WP-34](34-arcscope-analysis-and-reporting.md#rule-wp-34)
+- [WP-51](51-arcscope-cloud-simulator.md#rule-wp-51)
+
 
 ---

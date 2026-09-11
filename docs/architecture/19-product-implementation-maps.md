@@ -61,7 +61,7 @@ Plus per-product specialisations: `ArcChat.Hub` and presentation-only `ArcChat.A
 | **The turn loop, batching, compaction** | **`ArcForges-AI Workflow`** — Cloud, not the desktop ([LS-02](17-agent-harness.md#rule-ls-02)) | [WP-52.00](../planning/work-packages/52-cloud-harness.md#rule-wp-52.00), [WP-52.01](../planning/work-packages/52-cloud-harness.md#rule-wp-52.01) |
 | Context assembly and packing | **`ArcForges-AI Workflow`** | [WP-40.03](../planning/work-packages/40-knowledge-search-and-retrieval.md#rule-wp-40.03) |
 | Capability registry and selection | Cloud registry + `ArcChat.Hub` for device-local capabilities | [WP-17.00](../planning/work-packages/17-arcchat-independent-core.md#rule-wp-17.00) |
-| Execution engine — task, run, plan, step, attempt | **`ArcForges.Cloud.Modules.Agent`** ([TO-01](data-model/00-data-model-overview.md#rule-to-01)) | [WP-16.00](../planning/work-packages/16-unified-execution-engine.md#rule-wp-16.00)–[WP-16.07](../planning/work-packages/16-unified-execution-engine.md#rule-wp-16.07) |
+| Agent Task/run/plan/step/attempt and loop | Cloud Task owns state; ArcForges-AI RunWorkflow owns the sole loop; Agent owns profile/catalogue | [WP52](../planning/work-packages/52-cloud-harness.md#rule-wp-52); WP16 supplies shared native ProductJob mechanisms only |
 | Permission, approval, audit surfaces | `ArcChat.Application` + `ArcChat.Desktop` | [WP-17.02](../planning/work-packages/17-arcchat-independent-core.md#rule-wp-17.02) |
 | Task centre | `ArcChat.Application` + `ArcChat.Desktop` | [WP-17.03](../planning/work-packages/17-arcchat-independent-core.md#rule-wp-17.03) |
 | Automation | `ArcChat.Application` | [WP-17.04](../planning/work-packages/17-arcchat-independent-core.md#rule-wp-17.04) |

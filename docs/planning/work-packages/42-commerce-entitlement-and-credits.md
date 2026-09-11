@@ -9,8 +9,8 @@
 
 > **Goal.** Build the commercial system so that money is never lost, never double-charged and never silently wrong: a provider adapter boundary, a verify-everything event inbox, a derived entitlement resolver, credit lots with reserve-then-settle, three separate ledgers, and reconciliation as a first-class subsystem.
 
-> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Cloud; AI usage producer. Inputs: the assigned exact Contracts packages/descriptors and actual provider artifacts; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: owned candidate artifacts and generated contracts with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
-> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Cloud; AI usage producer. Inputs: only the applicable published producers available at this stage under [staged artifact integration](../README.md#staged-artifact-integration). Producer candidate records precede Cloud consolidation; no future package/manifest is an input. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: owned candidate artifacts and generated contracts with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> After WP03, unit mocks consume published Contracts fixtures; earlier stages verify their inventory/policy outputs. Acceptance consumes the actual providers scheduled for that stage. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
 
 ---
 
@@ -65,7 +65,7 @@
 | `src/Cloud/ArcForges.Cloud.Modules.Billing/` | Purchase intent, checkout, provider adapters, event inbox, reconciliation, evidence |
 | `src/Cloud/ArcForges.Cloud.Modules.Entitlement/` | Grants, revocations, resolver, snapshot, version, quota, usage, credit lots, ledgers |
 | `src/Contracts/Public/ArcForges.Contracts.PublicApi.Commerce/` | Entitlement and commerce DTOs |
-| `src/BuildingBlocks/ArcForges.Execution.Budget/` | The budget interface implemented against real credits |
+| Cloud: `src/Cloud/ArcForges.Cloud.Modules.Commerce/` and Entitlement owner ports | Actual budget/credits/admission/settlement; no shared DesktopPlatform economics |
 | `fixtures/provider/` | Recorded provider event fixtures for every event type |
 | `tests/CloudIntegrationTests/Commerce/` | Idempotency, ordering, resolver, concurrency, precision and reconciliation suites |
 
@@ -199,12 +199,14 @@
 
 ---
 
+**Required implementation and closure from the final review.** Implement and independently verify [23-simulator-and-interchange](../../architecture/23-simulator-and-interchange.md#5-slate-metadata-render-and-subtitle-profiles). Implement verified audio-duration metering for user-paid transcription, frozen supplier/customer rounding and normal reservation/unknown-effect settlement. Preserve zero customer debit for embedding/rerank. Real provider tariffs and go-live approvals remain explicit; no illustrative price becomes approved policy. Record exact artifact identities and real/fixture status with the existing substeps; these cases are part of this package's completion gate.
+
 <a id="rule-wp-42.90"></a>
 ### WP-42.90 — Verify the owned artifact and real integration
 
 **What must be fully done.** Retain current subscription/admission/credit/quota/settlement/reversal rules. Bind the CF usage/config identities and exact quantities; keep synthetic price fixtures distinct from live configuration. Do not add mandatory prepayment.
 
-**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+**Execution order.** Follow [staged artifact integration](../README.md#staged-artifact-integration): consume only existing assigned producers, publish an owned capability candidate before its product consumer, and verify the declared stage against exact upstream artifacts. Record pending later owners and their closing gates; local mocks cover only that named test boundary.
 
 **Testing requirements.** Existing concurrent admission/idempotent settlement/reversal/storage-accounting cases; keep [WP-42.11](#rule-wp-42.11) evidence and its order before WP-42.10.
 
@@ -278,15 +280,16 @@
 
 **Upstream — all must be complete.**
 
-- [22 identity workspace and device](22-identity-workspace-and-device.md#rule-wp-22)
-- [23 public api and generated clients](23-public-api-and-generated-clients.md#rule-wp-23)
+- [WP-22](22-identity-workspace-and-device.md#rule-wp-22)
+- [WP-23](23-public-api-and-generated-clients.md#rule-wp-23)
 
 **Downstream — consumers of these released outputs.**
 
-- [43 managed ai routing and metering](43-managed-ai-routing-and-metering.md#rule-wp-43)
-- [44 dynamic policy and configuration](44-dynamic-policy-and-configuration.md#rule-wp-44)
-- [48 account portal](48-account-portal.md#rule-wp-48)
-- [51 arcscope cloud simulator](51-arcscope-cloud-simulator.md#rule-wp-51)
-- [52 cloud harness](52-cloud-harness.md#rule-wp-52)
+- [WP-43](43-managed-ai-routing-and-metering.md#rule-wp-43)
+- [WP-44](44-dynamic-policy-and-configuration.md#rule-wp-44)
+- [WP-48](48-account-portal.md#rule-wp-48)
+- [WP-51](51-arcscope-cloud-simulator.md#rule-wp-51)
+- [WP-52](52-cloud-harness.md#rule-wp-52)
+
 
 ---

@@ -348,3 +348,7 @@ Every operation/event above maps to the [numbered wire registry](04-protobuf-wir
 ## Local bootstrap and read-channel binding
 
 The wire registry explicitly adds ILocalBootstrap.Challenge/Confirm and IResourceProvider.ReadChunk/GetJob as transport-support methods. Challenge/Confirm are NI, OS-peer-only, one-use five-second bootstrap before normal owner authorization; they confer no product capability. ReadChunk is Q/R1/AO on the exact immutable owned transfer/version/offset, authorizing each bounded chunk. GetJob is Q/R1/AO on an owned native ProductJob. BeginTransfer/OpenRead return LocalTransferTicket, never an HTTP bearer URL. The generated method names omit the C# Async suffix but preserve the catalogued operation's authorization, revision and effect rules.
+
+## Complete Notes and Slate method surface
+
+The [wire registry](04-protobuf-wire-registry.md#notes-structural-and-slate-operation-bindings) adds typed Notes move preview/mapping, full Slate metadata and extraction/transcript-adoption/subtitle import/export operations to this catalogue. Their exact fields, local revision preconditions, risk/class/compatibility, approval and loss semantics are defined there. Apply the same peer/actor/owner checks and generated capability allowlist as existing methods; no raw path, provider credential or generic invocation bypass is introduced.

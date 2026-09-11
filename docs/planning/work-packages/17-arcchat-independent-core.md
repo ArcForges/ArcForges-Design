@@ -9,7 +9,7 @@
 
 > **Goal.** Complete ArcChat as an independent product: chat, agent, task centre, capability hub, permission and approval, automation, local data and recovery — with **no claim** that its ecosystem tier is finished.
 
-> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: ArcChat; Contracts fixtures. Inputs: exact compatible Contracts packages/descriptors and applicable DesktopPlatform packages; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: Native AOT candidate packages/executables with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: ArcChat; Contracts fixtures. Inputs: only the applicable published producers available at this stage under [staged artifact integration](../README.md#staged-artifact-integration). Producer candidate records precede Cloud consolidation; no future package/manifest is an input. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: Native AOT candidate packages/executables with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
 > Fixture AI is permitted only for the named local product slice; WP52 replaces it with real CF execution before Mobile/Web/full release.
 
 ---
@@ -48,7 +48,7 @@
 | BR-03 | **An agent is not a superuser**. It holds exactly the capabilities granted to it, subject to the same pipeline as a human actor. |
 | BR-04 | **Every capability invocation passes the security pipeline** and is recorded in the audit and execution traces. |
 | <a id="rule-br-05"></a>BR-05 | **Automation is not a workflow** and **a workflow is not an agent runtime**. Automation decides *when*; a plan decides *how*. |
-| BR-06 | **No provider credential exists on the client** ([BY-01](../../requirements/04-commerce-entitlement-and-credits.md#rule-by-01)–[BY-04](../../requirements/04-commerce-entitlement-and-credits.md#rule-by-04), [I-015](../../requirements/01-normative-glossary-and-invariants.md#rule-i-015) retired). Provider credentials are deployment secrets held only by the Cloud host ([DC-15](../../requirements/11-policy-and-configuration.md#rule-dc-15)). |
+| BR-06 | **No provider credential exists on the client** ([BY-01](../../requirements/04-commerce-entitlement-and-credits.md#rule-by-01)–[BY-04](../../requirements/04-commerce-entitlement-and-credits.md#rule-by-04), [I-015](../../requirements/01-normative-glossary-and-invariants.md#rule-i-015) retired). Provider credentials are deployment secrets held by their selected C#/CF owner, with Workers AI using its CF binding ([DC-15](../../requirements/11-policy-and-configuration.md#rule-dc-15)). |
 | BR-07 | **Thin preview versus rich handoff**: ArcChat shows enough to act, and hands off to the owning product for real work (`§16` of the shared desktop requirements). |
 | BR-08 | **Automation in V1 stays simple** — creation, start, stop, and a bounded trigger set. |
 
@@ -169,7 +169,7 @@
 
 **What must be fully done.** Build the independent desktop client/local executor and bounded AI fixtures. Specify the exact fixture contracts and replacement obligation at [WP-52](52-cloud-harness.md#rule-wp-52); schedules are clients of the Cloud-owned occurrence/admission contract.
 
-**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+**Execution order.** Follow [staged artifact integration](../README.md#staged-artifact-integration): consume only existing assigned producers, publish an owned capability candidate before its product consumer, and verify the declared stage against exact upstream artifacts. Record pending later owners and their closing gates; local mocks cover only that named test boundary.
 
 **Testing requirements.** Independent ArcChat behavior is real; model/Harness behavior is labelled fixture-only here and cannot close the final AI workflow gate.
 
@@ -218,7 +218,7 @@
 2. The Cloud AI client and the device tool executor work against **real transport and real persistence**, and **no desktop assembly contains a turn loop, a planner or a provider adapter** ([LS-02](../../architecture/17-agent-harness.md#rule-ls-02), [HV-09](../../architecture/17-agent-harness.md#rule-hv-09)). **Multi-step plan execution is verified in [WP-52](52-cloud-harness.md#rule-wp-52)**, where the Harness exists; claiming it here would require the thing [WP-52](52-cloud-harness.md#rule-wp-52) builds.
 3. Permission is visible and revocable, revocation takes effect mid-operation, and approvals survive a restart.
 4. Tasks from more than one product appear in one task centre with correct controls and ownership attribution.
-5. Automations start, stop and record runs; cascades are detected and stopped; no implicit permission is acquired.
+5. Automation client commands/history render the registered fixture states; no implicit permission is acquired. Real occurrence persistence, execution and cascade protection close at WP52.06.
 6. **No provider credential exists on the client**, and an admission refusal states which of service term, capacity or extra-credit authorisation is missing.
 7. Handoff works with the target both running and not running; startup meets budget; recovery is clean.
 8. **Every V1B ecosystem item is enumerated with a named closing package**, and nothing incomplete is presented as complete.
@@ -231,15 +231,16 @@
 
 **Upstream — all must be complete.**
 
-- [06 aot jit and wasm publish proof](06-aot-jit-and-wasm-publish-proof.md#rule-wp-06)
-- [15 arcchat conversation core](15-arcchat-conversation-core.md#rule-wp-15)
-- [16 unified execution engine](16-unified-execution-engine.md#rule-wp-16)
+- [WP-06](06-aot-jit-and-wasm-publish-proof.md#rule-wp-06)
+- [WP-15](15-arcchat-conversation-core.md#rule-wp-15)
+- [WP-16](16-unified-execution-engine.md#rule-wp-16)
 
 **Downstream — consumers of these released outputs.**
 
-- [20 first cross product workflow](20-first-cross-product-workflow.md#rule-wp-20)
-- [26 remote action and tool bridge](26-remote-action-and-tool-bridge.md#rule-wp-26)
-- [41 extension platform and integrations](41-extension-platform-and-integrations.md#rule-wp-41)
-- [52 cloud harness](52-cloud-harness.md#rule-wp-52)
+- [WP-20](20-first-cross-product-workflow.md#rule-wp-20)
+- [WP-26](26-remote-action-and-tool-bridge.md#rule-wp-26)
+- [WP-41](41-extension-platform-and-integrations.md#rule-wp-41)
+- [WP-52](52-cloud-harness.md#rule-wp-52)
+
 
 ---

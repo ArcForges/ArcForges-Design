@@ -9,8 +9,8 @@
 
 > **Goal.** Replace the stubbed provider path with the real one: provider routing under **operator-funded credentials**, dispatch-time supplier prices and Run-pinned customer tariffs, real usage normalisation, metering that reserves before and settles after, transparency obligations, and honest failure when a provider is unavailable.
 
-> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: AI Workers AI adapter + Cloud metering. Inputs: the assigned exact Contracts packages/descriptors and actual provider artifacts; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: owned candidate artifacts and generated contracts with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
-> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: AI Workers AI adapter + Cloud metering. Inputs: only the applicable published producers available at this stage under [staged artifact integration](../README.md#staged-artifact-integration). Producer candidate records precede Cloud consolidation; no future package/manifest is an input. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: owned candidate artifacts and generated contracts with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> After WP03, unit mocks consume published Contracts fixtures; earlier stages verify their inventory/policy outputs. Acceptance consumes the actual providers scheduled for that stage. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
 
 ---
 
@@ -18,9 +18,9 @@
 
 **In scope.** Cloud provider adapters and routing under operator-funded credentials; model and provider availability as policy; supplier price versions and Run-pinned customer tariffs; real usage normalisation into non-overlapping categories; settlement and the three ledgers; the provider interaction record; metering integrated with credits; **operator-funded provider credential custody and the structural absence of any end-user key path** ([WP-43.03](#rule-wp-43.03); [AI-02](../../requirements/products/arcchat.md#rule-ai-02) of the AI requirements; [ON-03](../../requirements/products/arcchat.md#rule-on-03) of the ArcChat requirements); AI transparency obligations; and failure handling when providers degrade.
 
-**Out of scope.** The execution engine itself (`16`). Retrieval (`40`). Commercial policy authoring (`42`).
+**Out of scope.** The sole Harness itself (`52`). Retrieval (`40`). Commercial policy authoring (`42`).
 
-**Why this package exists.** [WP-17.05](17-arcchat-independent-core.md#rule-wp-17.05) deliberately stubbed the managed path and [WP-16](16-unified-execution-engine.md#rule-wp-16) built the budget interface without economics. This package closes both, and it is also where **[V-01](../../assurance/phase-1-official-verification.md#rule-v-01)**'s transparency gate attaches.
+**Why this package exists.** WP17 implements the fixture-backed AI client and WP42 the actual economic kernel. This package supplies real CF model adapters and persistent intent/outcome/metering ports for WP40/52, including the accepted ASR profile and transparency evidence.
 
 ---
 
@@ -38,7 +38,7 @@
 | [`../../architecture/09-ai-and-agent-runtime-architecture.md`](../../architecture/09-ai-and-agent-runtime-architecture.md) `§6`, `§7` | Provider routing and metering architecture |
 | **[V-01](../../assurance/phase-1-official-verification.md#rule-v-01)** | The AI transparency gate and its trigger |
 | **[D-020](../../decisions/phase-1-foundation-decisions.md#rule-d-020)** | Versioned economic policy, immutable history, hard stop at zero |
-| [WP-16](16-unified-execution-engine.md#rule-wp-16), [WP-42](42-commerce-entitlement-and-credits.md#rule-wp-42) output | The budget interface and real credits |
+| [WP-42](42-commerce-entitlement-and-credits.md#rule-wp-42) output | Real budget/credit/admission ports; native ProductJobs do not provide AI economics |
 
 ---
 
@@ -81,7 +81,7 @@ The provider implementation is confined to ArcForges-AI; C# owns canonical comme
 ### WP-43.00 — Provider adapters and routing
 
 
-**What must be fully done.** Implement only the selected Workers AI catalogue/capability profiles using env.AI.run: default/fast text, accepted image context, bge-m3 embedding and reranker. Validate model availability and frozen config, canonical request limits and supported tool/stream shapes before dispatch. C# records admission/routing and supplier version; CF executes the already admitted intent.
+**What must be fully done.** Implement only the selected Workers AI catalogue/capability profiles using env.AI.run: default/fast text, accepted image context, bge-m3 embedding, reranker and slate.transcribe.v1 Whisper ASR. Validate model availability and frozen config, canonical request limits and supported tool/stream shapes before dispatch. C# records admission/routing and supplier version; CF executes the already admitted intent.
 
 **Testing requirements.** Actual selected models/capability shapes, withdrawn/unknown/unsupported requests, request-size/output bounds and version mismatch.
 
@@ -165,12 +165,14 @@ The provider implementation is confined to ArcForges-AI; C# owns canonical comme
 
 ---
 
+**Required implementation and closure from the final review.** Implement and independently verify [05-cloudflare-integration](../../architecture/contracts/05-cloudflare-integration.md#9-job-authorized-objects-control-inventory-and-resource-budgets). Use real Workers AI Whisper plus typed audio manifests/service object grants; verify supplier metering against actual response/manifest with missing usage retained uncertain. Implement inference-late-outcome evidence-only reconciliation, exact observed versions and bounded Workflow limits. Stale results cannot publish or charge the customer. Record exact artifact identities and real/fixture status with the existing substeps; these cases are part of this package's completion gate.
+
 <a id="rule-wp-43.90"></a>
 ### WP-43.90 — Verify the owned artifact and real integration
 
 **What must be fully done.** Assemble the owned deliverables from the preceding substeps under the selected repository, package, runtime and protocol authorities. Implement the frozen Workers AI model subset/direct binding, capability matrix, normalization, limits and known/unknown usage contract. Gateway is not a required dependency.
 
-**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+**Execution order.** Follow [staged artifact integration](../README.md#staged-artifact-integration): consume only existing assigned producers, publish an owned capability candidate before its product consumer, and verify the declared stage against exact upstream artifacts. Record pending later owners and their closing gates; local mocks cover only that named test boundary.
 
 **Testing requirements.** Real selected model/tool/embedding cases and provider refusal/lost-result/usage reconciliation, tied to C# admitted call and config identity. No general external-provider integration implied.
 
@@ -222,7 +224,7 @@ The provider implementation is confined to ArcForges-AI; C# owns canonical comme
 1. Routing is policy-driven, explainable and recorded; streaming interruption never stores a partial response as complete.
 2. A rate change never alters a settled charge; every historical charge is explainable from its locked tariff snapshot.
 3. Metering never double-charges, never leaks a reservation, and never permits an overdraft under concurrency.
-4. **No end-user BYOK path exists anywhere in the product** — no operation, schema field, setting or UI accepts a customer provider key — and provider credentials are present only in the Cloud host's injected secrets.
+4. **No end-user BYOK path exists anywhere in the product** — no operation, schema field, setting or UI accepts a customer provider key — and Workers AI executes only through the provisioned CF binding, with direction-scoped C#/CF service keys and no credentials in clients.
 5. Provider interaction records are a separate, redacted trace system; run cost is explainable to the user; every artifact type has a defined transparency marking — satisfying [VG-01](../../assurance/open-gates-register.md#rule-vg-01) once the regime determination is recorded.
 6. A provider outage never silently consumes credit; a withdrawn model degrades with a stated reason; all-routes-unavailable alerts.
 7. Every provider is exercised against its test environment with recorded fixtures — satisfying [PG-10](../../assurance/open-gates-register.md#rule-pg-10) for AI providers.
@@ -233,15 +235,16 @@ The provider implementation is confined to ArcForges-AI; C# owns canonical comme
 
 **Upstream — all must be complete.**
 
-- [25 sync engine and blob lifecycle](25-sync-engine-and-blob-lifecycle.md#rule-wp-25)
-- [42 commerce entitlement and credits](42-commerce-entitlement-and-credits.md#rule-wp-42)
-- [44 dynamic policy and configuration](44-dynamic-policy-and-configuration.md#rule-wp-44)
+- [WP-25](25-sync-engine-and-blob-lifecycle.md#rule-wp-25)
+- [WP-42](42-commerce-entitlement-and-credits.md#rule-wp-42)
+- [WP-44](44-dynamic-policy-and-configuration.md#rule-wp-44)
 
 **Downstream — consumers of these released outputs.**
 
-- [40 knowledge search and retrieval](40-knowledge-search-and-retrieval.md#rule-wp-40)
-- [50 full platform production release](50-full-platform-production-release.md#rule-wp-50)
-- [52 cloud harness](52-cloud-harness.md#rule-wp-52)
+- [WP-40](40-knowledge-search-and-retrieval.md#rule-wp-40)
+- [WP-50](50-full-platform-production-release.md#rule-wp-50)
+- [WP-52](52-cloud-harness.md#rule-wp-52)
+
 
 ---
 

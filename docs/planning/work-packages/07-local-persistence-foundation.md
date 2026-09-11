@@ -9,8 +9,8 @@
 
 > **Goal.** Build the local storage foundation every desktop product shares: the canonical commit unit, the journal, snapshots, the migration runner, the managed resource store and the derived-store separation — with crash recovery proven, not assumed.
 
-> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Platform managed mechanisms; product owners. Inputs: exact compatible Contracts packages/descriptors and applicable DesktopPlatform packages; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: Native AOT candidate packages/executables with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
-> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Platform managed mechanisms; product owners. Inputs: only the applicable published producers available at this stage under [staged artifact integration](../README.md#staged-artifact-integration). Producer candidate records precede Cloud consolidation; no future package/manifest is an input. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: Native AOT candidate packages/executables with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> After WP03, unit mocks consume published Contracts fixtures; earlier stages verify their inventory/policy outputs. Acceptance consumes the actual providers scheduled for that stage. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
 
 ---
 
@@ -84,7 +84,7 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 **Required design implementation and verification.** Commit payload and origin in the same owner transaction/journal boundary, with history pins and bounded GC. Kill between staging and commit: neither an origin-less completed payload nor a marker referencing absent bytes becomes visible. Migration records unknown for legacy input; unsupported writers refuse destructive round trips.
 
-**What must be fully done.** Use typed LocalNotesVersion(acked_rev, head_local_seq), NativeContentRevision and CloudRevision separately; the materialised body/journal/index token must agree.  The store abstraction with the eight-step write path implemented once: validate → authorize → begin commit unit → apply → journal → advance revision → publish change → commit. Every caller uses it. Persistence types do not leak past the repository boundary. Writes are serialised; reads are concurrent.
+**What must be fully done.** Use typed LocalNotesVersion(acked_rev, head_local_seq), NativeContentRevision and CloudRevision separately; the materialised body/journal/index token must agree.  The store abstraction with the transactional write path implemented once: validate → authorize → begin commit unit → apply → journal → advance revision → enqueue publication/outbox → commit → notify from committed state. Every caller uses it. Persistence types do not leak past the repository boundary. Writes are serialised; reads are concurrent.
 
 **Testing requirements.** Replay pending edits and remote-shadow advances, then verify query/index stale-work CAS rejects the old composite token.  A test asserting no alternative write path exists (policy test); concurrency tests for serialised writes and concurrent reads; a boundary test that no storage type appears in an application signature.
 
@@ -157,7 +157,7 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 **What must be fully done.** Package desktop persistence mechanisms; retain product-owned canonical schemas, journal/snapshot/pending-edit distinctions and corruption/recovery rules. RN storage follows the same public semantics through Mobile's implementation.
 
-**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+**Execution order.** Follow [staged artifact integration](../README.md#staged-artifact-integration): consume only existing assigned producers, publish an owned capability candidate before its product consumer, and verify the declared stage against exact upstream artifacts. Record pending later owners and their closing gates; local mocks cover only that named test boundary.
 
 **Testing requirements.** Package consumption does not centralize product data ownership; pending edits, interrupted commits and unknown-schema behavior retain their current profile results.
 
@@ -217,15 +217,16 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 **Upstream — all must be complete.**
 
-- [04 identity error and versioning primitives](04-identity-error-and-versioning-primitives.md#rule-wp-04)
-- [06 aot jit and wasm publish proof](06-aot-jit-and-wasm-publish-proof.md#rule-wp-06)
+- [WP-04](04-identity-error-and-versioning-primitives.md#rule-wp-04)
+- [WP-06](06-aot-jit-and-wasm-publish-proof.md#rule-wp-06)
 
 **Downstream — consumers of these released outputs.**
 
-- [08 local ipc and registration](08-local-ipc-and-registration.md#rule-wp-08)
-- [13 high risk technical probes](13-high-risk-technical-probes.md#rule-wp-13)
-- [18 arcnotes document core](18-arcnotes-document-core.md#rule-wp-18)
-- [33 arcscope acquisition and session](33-arcscope-acquisition-and-session.md#rule-wp-33)
-- [36 arcslate project and timeline](36-arcslate-project-and-timeline.md#rule-wp-36)
+- [WP-08](08-local-ipc-and-registration.md#rule-wp-08)
+- [WP-13](13-high-risk-technical-probes.md#rule-wp-13)
+- [WP-18](18-arcnotes-document-core.md#rule-wp-18)
+- [WP-33](33-arcscope-acquisition-and-session.md#rule-wp-33)
+- [WP-36](36-arcslate-project-and-timeline.md#rule-wp-36)
+
 
 ---
