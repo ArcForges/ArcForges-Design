@@ -31,7 +31,7 @@ ObjectRevision                        immutable, parented, actor-attributed
 ```
 Product  →  Sync Scope  →  Objects
               ├── enabled state
-              ├── protection profile (Standard | Enhanced)
+              ├── protection profile (Standard)
               ├── large-asset policy
               ├── selective-sync policy
               └── conflict policy
@@ -305,3 +305,7 @@ Required scenarios, all release-gating:
 ## P2-009 transport, storage and recovery composition
 
 The [CF/R2 lifecycle](contracts/05-cloudflare-integration.md) fixes part verification, Verified pins, authorization on consumption, release/deletion and independent immutable restore. C# owning transactions, sync cursors/tombstones/conflicts, desktop pending changes, native job snapshots and derived-source revision checks above retain their semantics. The [wire profile](contracts/04-protobuf-wire-registry.md) transports exact values without changing content-origin, Notes scalar or Scope measurement oracles. CF checkpoints/streams never become product history, and restoration cannot silently redispatch an uncertain external act.
+
+## Restored realm and client pending state
+
+The [recovery generation and safety journal](22-deployment-and-release-execution.md#recovery-generation-and-safety-journal) governs disaster recovery and prevents acknowledged post-backup deletion/revocation or possibly executed commands from disappearing silently. A new generation invalidates read cursors and quarantines old client mutations before bootstrap. Preserved pending edits are compared and explicitly reapplied as new commands; no automatically re-labelled outbox can resurrect deleted content. This extends the existing pending-edit recovery view and does not create a second local Notes authority.

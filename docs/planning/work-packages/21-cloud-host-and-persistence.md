@@ -9,8 +9,8 @@
 
 > **Goal.** Stand up the real cloud: a Native AOT modular business host as **one deployable host** with lease-fenced internal services (**[P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006)**), a fixed host pipeline order, module boundaries with owned schemas, a real database with a standalone migrator, reliable events, and background work — running against real infrastructure, not stubs.
 
-> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Cloud. Inputs: the assigned exact Contracts packages/descriptors and actual provider artifacts; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: owned candidate artifacts and generated contracts with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
-> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Cloud. Inputs: only the applicable published producers available at this stage under [staged artifact integration](../README.md#staged-artifact-integration). Producer candidate records precede Cloud consolidation; no future package/manifest is an input. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: owned candidate artifacts and generated contracts with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> After WP03, unit mocks consume published Contracts fixtures; earlier stages verify their inventory/policy outputs. Acceptance consumes the actual providers scheduled for that stage. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
 
 ---
 
@@ -163,12 +163,14 @@
 
 ---
 
+**Required implementation and closure from the final review.** Implement and independently verify [00-data-model-overview](../../architecture/data-model/00-data-model-overview.md). Implement expanded signup/account shared units and lock order, unique personal workspace/initial-grant keys, spent refresh hashes, service-object/CF inventory records and recovery quarantine states. Verify duplicate signup and transaction rollback without duplicate workspace/grants; persist journal receipt obligations without external I/O in a PG transaction. Record exact artifact identities and real/fixture status with the existing substeps; these cases are part of this package's completion gate.
+
 <a id="rule-wp-21.90"></a>
 ### WP-21.90 — Verify the owned artifact and real integration
 
 **What must be fully done.** Implement the one AOT host, 20 module-owner topology, explicit PostgreSQL/SQL, migrations, transactional outbox, leases and CF integration-port foundations. Canonical Task/Chat/Commerce state remains here; the loop does not.
 
-**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+**Execution order.** Follow [staged artifact integration](../README.md#staged-artifact-integration): consume only existing assigned producers, publish an owned capability candidate before its product consumer, and verify the declared stage against exact upstream artifacts. Record pending later owners and their closing gates; local mocks cover only that named test boundary.
 
 **Testing requirements.** Real AOT image plus database tests demonstrate module ownership, transaction/idempotency/fencing boundaries, restart and one-shot migrations.
 
@@ -232,15 +234,16 @@
 
 **Upstream — all must be complete.**
 
-- [03 contract foundation and licence split](03-contract-foundation-and-licence-split.md#rule-wp-03)
-- [05 architecture and repository policy tests](05-architecture-and-repository-policy-tests.md#rule-wp-05)
-- [12 observability foundation](12-observability-foundation.md#rule-wp-12)
+- [WP-03](03-contract-foundation-and-licence-split.md#rule-wp-03)
+- [WP-05](05-architecture-and-repository-policy-tests.md#rule-wp-05)
+- [WP-12](12-observability-foundation.md#rule-wp-12)
 
 **Downstream — consumers of these released outputs.**
 
-- [22 identity workspace and device](22-identity-workspace-and-device.md#rule-wp-22)
-- [45 operations support and trust safety](45-operations-support-and-trust-safety.md#rule-wp-45)
-- [51 arcscope cloud simulator](51-arcscope-cloud-simulator.md#rule-wp-51)
-- [52 cloud harness](52-cloud-harness.md#rule-wp-52)
+- [WP-22](22-identity-workspace-and-device.md#rule-wp-22)
+- [WP-45](45-operations-support-and-trust-safety.md#rule-wp-45)
+- [WP-51](51-arcscope-cloud-simulator.md#rule-wp-51)
+- [WP-52](52-cloud-harness.md#rule-wp-52)
+
 
 ---

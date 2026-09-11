@@ -34,3 +34,23 @@ The [frozen-semantic consumer order](implementation-sequence.md#frozen-semantics
 ## P2-009 implementation entry
 
 Implement the adopted [architecture amendment](../decisions/phase-2-specification-decisions.md#rule-p2-009) through the [complete sequence/graph](implementation-sequence.md#9-p2-009-complete-artifact-dependency-graph). Contracts/Platform publish pinned inputs before consumers; C# Cloud is Native AOT, Mobile RN/Hermes, and WP52 owns the sole CF loop. Every active package has an explicit repository/artifact/provider binding and WPxx.90 acceptance. Formal schema/state choices are already fixed; early proof validates the selected choices rather than authorizing ad-hoc redesign.
+
+## Staged artifact integration
+
+Producer existence is a prerequisite, not something every package may assume. A candidate is published to a private immutable feed/channel with its final package version, hash, source and evidence. Promotion changes channel access, never embedded version/bytes. The following stages govern every execution binding and WPxx.90 gate.
+
+| Stage / first producer | Required input | Output and actual proof |
+|---|---|---|
+| WP00 authority freeze | Accepted Design and permitted inventory evidence | Rules/owner/rights inventory; no generated package or Cloud manifest dependency. |
+| WP01 independent roots | WP00 and read-only source disposition inventory | Each root builds its retained source closure using existing locked dependencies; no invented future consumer package. Fenced old code is unreachable. |
+| WP02 build/publication governance | WP01 roots and selected build policy | BuildPolicy candidate plus usable isolated restore/pack/feed/signing metadata pipelines. Packaging mechanisms belong here; product signatures/store/public promotion remain WP50. Schema generation and real native capability package proofs have later producers. |
+| WP03 Contracts; WP04 foundation values | WP02 policy/pipeline | Handwritten proto/HTTP schemas, descriptors, generated C#/TS public/internal packages and independent fixtures; then Foundation value packages. Each publishes a real candidate; no circular self-restore. |
+| WP05/06 policy and actual runtime foundation | Published WP02–04 candidates | Real AOT/native capability packages and minimal host, RN/Hermes/browser/CF/R2 proof. Missing future business handlers are explicitly labelled foundation fixtures. |
+| WP07 onward capability/product owners | Only applicable already-produced Contracts/Platform/provider candidates | Publish changed capability packages before the consuming product build, even within one WP. Product clean checkout consumes the feed, never Platform source; record separate producer/consumer commits and hashes. |
+| WP21 Cloud consolidation | Prior producer manifests | Cloud assembles the progressively complete integration manifest; future owners are pending. WP23 proves transport/Identity handlers; every later business owner supplies its actual handler/contract proof. |
+| WP47 early static slice | WP00/02 content/toolchain and private fixture metadata | Static and design-system proof may use visibly test-only approved-shape offer/download fixtures; no public release/download/price claim. Actual public projection from WP42/44 and released artifacts join at WP50. |
+| WP50 family release | Every scheduled real owner and joined manifest | Complete product/RID/Web/Cloud/AI/Contracts closure, real integration/recovery and applicable commercial/store evidence; promote tested immutable artifacts. Partial manifests and mocks cannot close this gate. |
+
+Each package records operation/capability → provider package/version/hash → test scenario → real or fixture → closing WP. At WP23 the real endpoint set is Identity/Workspace/Device plus transport foundation; future Sync/commerce/search/task/simulator handlers remain marked pending for WP25/42/40/52/51. Real object lifecycle closes at WP25. A registered descriptor and a mock HTTP response alone are never that owner's completion evidence. Generated SDK compatibility covers the whole schema from WP03, while real behavioral coverage grows with actual owners. WP50 rejects a missing or fixture-backed release operation.
+
+WP15/19 export-client fixture acceptance closes locally; WP25.08 runs real Cloud Notes/Chat exports. WP17 automation UI closes locally; WP52.06 runs real occurrences/cascade protection and replaces all AI turn fixtures. WP45 rehearses operations already implemented and records remaining recovery/CF cases as pending; WP46 runs actual backup/data restoration, WP52 actual Harness failures and WP50 the combined active/waiting/unknown-effect disaster drill. PG04/L13/paid go-live close only when those combined required records exist.

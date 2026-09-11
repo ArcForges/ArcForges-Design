@@ -25,13 +25,13 @@ Every Cloud business operation and explicit HTTP exception. Columns follow `§2`
 | `identity.redeemEmailCode` | Verify a code | **anonymous** | `NI` | `state.invalid_transition` | `FR` |
 | `identity.refreshSession` | Rotate the refresh token | refresh token | `NI` | `auth.session_expired` | `FR` |
 | `identity.revokeSession` | End one session | session, `R2` | `DE` | `state.not_found` | `FR` |
-| `identity.revokeAllSessions` | End every session but the caller's | session, `R3`, step-up | `DE` | — | `FR` |
+| `identity.revokeAllSessions` | End every session, including the caller and device SSO grants | session, `R3`, step-up | `DE` | — | `FR` |
 | `identity.listAuthIdentities` | The user's credentials | session, `R1` | `Q` | — | `AO` |
 | `identity.removeAuthIdentity` | Remove a credential | session, `R3`, step-up | `DE` | `identity.last_credential` | `FR` |
 | `identity.beginStepUp` / `identity.completeStepUp` | Satisfy a step-up challenge | session | `NI` | `auth.step_up_required` | `FR` |
 | `identity.beginRecovery` / `identity.completeRecovery` | Account recovery | **anonymous**, heavily rate-limited, fully audited | `NI` | `capacity.rate_limited` | `FR` |
 | `identity.requestAccountDeletion` | Start the grace period | session, `R4`, step-up | `IW` | — | `FR` |
-| `identity.cancelAccountDeletion` | Stop it within grace | session, `R3`, step-up | `IW` | `state.invalid_transition` | `FR` |
+| `identity.cancelAccountDeletion` | Stop it within grace | restricted purpose=cancelDeletion reauthentication, `R3` | `IW` | `state.invalid_transition` | `FR` |
 
 | # | Rule |
 |---|---|
@@ -433,3 +433,7 @@ These complete existing accepted flows. The [numbered registry](04-protobuf-wire
 | `automation.resolveMissed` | Apply the existing explicit missed-occurrence decision to named keys | R2 | IW | state.invalid_transition | FR |
 
 The existing browser.*, commerce.providerWebhook, resource.uploadChunk and task.readStream catalogue entries retain their semantic IDs but use the explicitly declared HTTP/CF routes in the wire/CF exception tables. They are not missing business gRPC methods and cannot authorize a parallel REST service. All inherited error codes remain available where the owner flow already declares them.
+
+## Complete account surface
+
+The [wire registry account operations](04-protobuf-wire-registry.md#account-operation-semantics) are part of this catalogue, with their explicitly stated classes, risk, compatibility and proof rules. They implement profile/email/credentials/recovery codes, session and PAT management, device SSO/sign-out/remote scopes, security activity, self-host provider discovery and workspace data health/deletion. Their stable names and typed fields are defined once in that registry. Identity and Device own security changes; Workspace coordinates content deletion through existing owner jobs. No Web-only substitute endpoint may implement a business rule missing from these owners.

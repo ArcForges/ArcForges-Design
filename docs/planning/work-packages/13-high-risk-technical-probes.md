@@ -9,8 +9,8 @@
 
 > **Goal.** Retire the four technical risks that would be most expensive to discover late — one per product — with reproducible build, test and performance evidence. ArcScope and ArcSlate are built last precisely because their risks are ascertained now.
 
-> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Platform and affected products. Inputs: exact compatible Contracts packages/descriptors and applicable DesktopPlatform packages; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: Native AOT candidate packages/executables with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
-> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Platform and affected products. Inputs: only the applicable published producers available at this stage under [staged artifact integration](../README.md#staged-artifact-integration). Producer candidate records precede Cloud consolidation; no future package/manifest is an input. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: Native AOT candidate packages/executables with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> After WP03, unit mocks consume published Contracts fixtures; earlier stages verify their inventory/policy outputs. Acceptance consumes the actual providers scheduled for that stage. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
 
 ---
 
@@ -127,7 +127,7 @@
 
 **What must be fully done.** Retain the four accepted probes: AOT device execution, Notes editor/recovery, acquisition throughput and media decode/synchronization. Consume real package candidates and generated contracts; use current reference boundaries.
 
-**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+**Execution order.** Follow [staged artifact integration](../README.md#staged-artifact-integration): consume only existing assigned producers, publish an owned capability candidate before its product consumer, and verify the declared stage against exact upstream artifacts. Record pending later owners and their closing gates; local mocks cover only that named test boundary.
 
 **Testing requirements.** Probe results are tied to package/RID/native graph identities and existing independent behavioral oracles; no full new reference audit or reference execution is added.
 
@@ -182,14 +182,15 @@
 
 **Upstream — all must be complete.**
 
-- [06 aot jit and wasm publish proof](06-aot-jit-and-wasm-publish-proof.md#rule-wp-06)
-- [07 local persistence foundation](07-local-persistence-foundation.md#rule-wp-07)
-- [08 local ipc and registration](08-local-ipc-and-registration.md#rule-wp-08)
+- [WP-06](06-aot-jit-and-wasm-publish-proof.md#rule-wp-06)
+- [WP-07](07-local-persistence-foundation.md#rule-wp-07)
+- [WP-08](08-local-ipc-and-registration.md#rule-wp-08)
 
 **Downstream — consumers of these released outputs.**
 
-- [14 hub and minimal provider slice](14-hub-and-minimal-provider-slice.md#rule-wp-14)
-- [33 arcscope acquisition and session](33-arcscope-acquisition-and-session.md#rule-wp-33)
-- [36 arcslate project and timeline](36-arcslate-project-and-timeline.md#rule-wp-36)
+- [WP-14](14-hub-and-minimal-provider-slice.md#rule-wp-14)
+- [WP-33](33-arcscope-acquisition-and-session.md#rule-wp-33)
+- [WP-36](36-arcslate-project-and-timeline.md#rule-wp-36)
+
 
 ---

@@ -5,12 +5,12 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: B — Shared platform
-> Upstream: `06` · Downstream: `14`, `18`, `33`, `36`
+> Upstream: `06`, `09` · Downstream: `14`, `18`, `33`, `36`
 
 > **Goal.** Build the shared desktop foundation once — tokens, windows, panels, commands, settings, attention, errors, lifecycle — so that four products feel like one family without any of them depending on another, and so that every control in it survives Native AOT.
 
-> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Platform; four applications. Inputs: exact compatible Contracts packages/descriptors and applicable DesktopPlatform packages; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: Native AOT candidate packages/executables with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
-> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Platform; four applications. Inputs: only the applicable published producers available at this stage under [staged artifact integration](../README.md#staged-artifact-integration). Producer candidate records precede Cloud consolidation; no future package/manifest is an input. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: Native AOT candidate packages/executables with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> After WP03, unit mocks consume published Contracts fixtures; earlier stages verify their inventory/policy outputs. Acceptance consumes the actual providers scheduled for that stage. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
 
 ---
 
@@ -169,7 +169,7 @@
 
 **What must be fully done.** Package shared Avalonia tokens, shell, commands, error/attention/settings and accessibility mechanisms; applications supply product flows. Do not turn shared UI into Web/RN or require a family installation.
 
-**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+**Execution order.** Follow [staged artifact integration](../README.md#staged-artifact-integration): consume only existing assigned producers, publish an owned capability candidate before its product consumer, and verify the declared stage against exact upstream artifacts. Record pending later owners and their closing gates; local mocks cover only that named test boundary.
 
 **Testing requirements.** Each app restores only needed UI/mechanism packages and passes existing command, lifecycle and accessibility acceptance independently.
 
@@ -231,13 +231,15 @@
 
 **Upstream — all must be complete.**
 
-- [06 aot jit and wasm publish proof](06-aot-jit-and-wasm-publish-proof.md#rule-wp-06)
+- [WP-06](06-aot-jit-and-wasm-publish-proof.md#rule-wp-06)
+- [WP-09](09-capability-contribution-and-resource-model.md#rule-wp-09)
 
 **Downstream — consumers of these released outputs.**
 
-- [14 hub and minimal provider slice](14-hub-and-minimal-provider-slice.md#rule-wp-14)
-- [18 arcnotes document core](18-arcnotes-document-core.md#rule-wp-18)
-- [33 arcscope acquisition and session](33-arcscope-acquisition-and-session.md#rule-wp-33)
-- [36 arcslate project and timeline](36-arcslate-project-and-timeline.md#rule-wp-36)
+- [WP-14](14-hub-and-minimal-provider-slice.md#rule-wp-14)
+- [WP-18](18-arcnotes-document-core.md#rule-wp-18)
+- [WP-33](33-arcscope-acquisition-and-session.md#rule-wp-33)
+- [WP-36](36-arcslate-project-and-timeline.md#rule-wp-36)
+
 
 ---

@@ -9,8 +9,8 @@
 
 > **Goal.** Turn the architecture into build failures. Every structural rule that a reviewer would otherwise have to remember becomes a test, so that a violation is caught at the moment it is introduced rather than at a release gate months later.
 
-> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Each repository; shared tooling in Platform/Contracts. Inputs: exact compatible Contracts packages/descriptors and applicable DesktopPlatform packages; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: owned candidate artifacts and generated contracts with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
-> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Each repository; shared tooling in Platform/Contracts. Inputs: only the applicable published producers available at this stage under [staged artifact integration](../README.md#staged-artifact-integration). Producer candidate records precede Cloud consolidation; no future package/manifest is an input. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: owned candidate artifacts and generated contracts with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> After WP03, unit mocks consume published Contracts fixtures; earlier stages verify their inventory/policy outputs. Acceptance consumes the actual providers scheduled for that stage. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
 
 ---
 
@@ -176,7 +176,7 @@ Add Node/TS import and dependency checks to the existing policy suite: one Web w
 
 **What must be fully done.** Assemble the owned deliverables from the preceding substeps under the selected repository, package, runtime and protocol authorities. Implement intra-repository rules and package/licence closure tests. Enforce no cross-repository project/source dependency, no Mobile import of AGPL implementation, no desktop native/UI assets in Cloud and one Harness owner.
 
-**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+**Execution order.** Follow [staged artifact integration](../README.md#staged-artifact-integration): consume only existing assigned producers, publish an owned capability candidate before its product consumer, and verify the declared stage against exact upstream artifacts. Record pending later owners and their closing gates; local mocks cover only that named test boundary.
 
 **Testing requirements.** Each repository can enforce its boundary independently; the integration graph detects a forbidden transitive edge without cloning every reference or product repository.
 
@@ -234,12 +234,13 @@ Add Node/TS import and dependency checks to the existing policy suite: one Web w
 
 **Upstream — all must be complete.**
 
-- [02 build governance and analyzer policy](02-build-governance-and-analyzer-policy.md#rule-wp-02)
-- [03 contract foundation and licence split](03-contract-foundation-and-licence-split.md#rule-wp-03)
+- [WP-02](02-build-governance-and-analyzer-policy.md#rule-wp-02)
+- [WP-03](03-contract-foundation-and-licence-split.md#rule-wp-03)
 
 **Downstream — consumers of these released outputs.**
 
-- [06 aot jit and wasm publish proof](06-aot-jit-and-wasm-publish-proof.md#rule-wp-06)
-- [21 cloud host and persistence](21-cloud-host-and-persistence.md#rule-wp-21)
+- [WP-06](06-aot-jit-and-wasm-publish-proof.md#rule-wp-06)
+- [WP-21](21-cloud-host-and-persistence.md#rule-wp-21)
+
 
 ---

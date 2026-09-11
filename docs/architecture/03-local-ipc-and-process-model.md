@@ -38,7 +38,7 @@ At start-up each product writes a minimal endpoint manifest into the current use
 | # | Rule |
 |---|---|
 | <a id="rule-em-01"></a>EM-01 | **The manifest is not a credential.** Session tokens are never written into it. |
-| EM-02 | **A connecting process still verifies** the peer user, the expected process, the build and contract set, and the short-lived session credential issued by the Hub. |
+| EM-02 | **A connecting process verifies** peer user/process/build/contracts and the in-memory nonce credential established through the OS-authenticated peer bootstrap. Hub introductions are optional scoped routing hints, not the sole credential issuer. |
 | EM-03 | Stale manifests are detected and cleaned up. |
 
 ### 4.2 Registration lifecycle
@@ -50,7 +50,7 @@ Product starts
   → connects to the Hub
   → authenticates
   → registers instance, endpoint, capabilities, contract set, versions, features
-  → Hub returns RegistrationAccepted with a lease and a session token
+  → Hub returns RegistrationAccepted with a lease; the authenticated peer bootstrap has already established its in-memory credential
   → heartbeats while the lease is active
 ```
 
@@ -93,25 +93,24 @@ Priority is fixed (`§13.3` of the contracts architecture): explicit `InstanceId
 Each product has exactly one infrastructure component owning the RPC connection lifecycle:
 
 ```
-create / listen on the endpoint
-  → create formatter + message handler
-  → register the local target through generated metadata
-  → StartListening()
-  → create strongly typed proxies
-  → observe Completion / Disconnected
+configure private Named Pipe / UDS endpoint and explicit generated gRPC services
+  → start the Kestrel HTTP/2 listener, including the peer callback services
+  → verify OS peer identity and complete the nonce bootstrap
+  → create GrpcChannel with ConnectCallback and generated typed clients
+  → register scoped capabilities and renew the peer lease
+  → observe call/lease failure and connection health
   → reconnect with exponential backoff and jitter
-  → re-authenticate, re-register, re-attach proxies
-  → update connection health state
+  → repeat peer authentication, registration and authoritative reconciliation
 ```
 
 | # | Rule |
 |---|---|
 | CN-01 | **Business code never creates a pipe, a socket or an RPC instance, and never writes a method-name string.** |
-| CN-02 | **Exactly one RPC instance per transport.** Calling the static attach helper more than once on one stream is prohibited — each call creates a separate RPC instance. |
-| CN-03 | **When several proxies are needed, one RPC instance is created and the instance-level attach is used per interface.** |
-| CN-04 | **Every multi-interface combination required under AOT is pre-generated** via the proxy interface group attribute. |
-| CN-05 | **Runtime assembly scanning followed by dynamic attachment is prohibited.** |
-| CN-06 | **Server targets are registered through generated target metadata**, never through reflection-enumerating convenience overloads. |
+| CN-02 | **Infrastructure owns one reusable gRPC channel per authenticated peer endpoint/lease.** Business code cannot create competing channels or listeners. |
+| CN-03 | **Generated clients for several services share that channel.** Callbacks use the receiving process's own registered service and channel in the reverse direction. |
+| CN-04 | **Every service, message parser and client is generated from the pinned local proto descriptor set before build.** No runtime proxy generation. |
+| CN-05 | **Runtime assembly scanning and dynamic service discovery are prohibited.** |
+| CN-06 | **Server services are registered explicitly with generated gRPC bindings.** Reflection service enumeration is absent from shipped listeners. |
 | CN-07 | **All targets are registered before listening starts.** |
 | CN-08 | **RPC adapters hold no UI objects.** |
 | CN-09 | Target lifetimes are explicitly tied to the connection and application lifetime. |
@@ -140,7 +139,7 @@ The RPC layer implements no business retry.
 
 | # | Rule |
 |---|---|
-| DC-01 | Calls in flight when a connection drops may fail with a connection-lost error; remote exceptions surface as remote-invocation errors; **business failures still use `ArcResult<T>`** (`§13.6` of the contracts architecture). |
+| DC-01 | Transport failure uses gRPC status; acknowledged business failures use the generated ArcResult outcome. Deadline/cancellation/disconnection after dispatch never proves an effect absent. |
 | DC-02 | Connection state is driven by observing completion and disconnection. |
 | DC-03 | **Cancelling locally executing calls on connection close may be enabled per scenario**, but a long-running business task never derives cancellation from connection lifetime alone. |
 | DC-04 | **Reconnection uses exponential backoff with jitter.** |
@@ -197,17 +196,13 @@ The RPC layer implements no business retry.
 
 Answerable before any local RPC change merges (with the verified constraints in **[V-05b](../assurance/phase-1-official-verification.md#rule-v-05b)**):
 
-- [ ] Is the interface `partial`, with the contract attribute **and** the shape-generation attribute including public instance methods?
-- [ ] Does the contracts assembly export its generated proxies?
-- [ ] Is the interceptors property enabled on every project in the attach chain?
-- [ ] Is dynamic interface or type discovery absent?
-- [ ] Are multi-interface combinations pre-generated?
-- [ ] Is the formatter Protocol Buffers with generated shapes, or JSON with a source-generated context?
-- [ ] Is the target registered through generated metadata?
-- [ ] Has a real AOT publish run with at least one RPC round trip?
-- [ ] Have disconnection, reconnection, duplicate `CommandId`, revision conflict and callback deadlock all been tested?
+- [ ] Do handwritten proto and pinned generated descriptors cover every service/client/callback?
+- [ ] Are listener registration and message parsing static, with no reflection/proxy fallback?
+- [ ] Do channels use the actual Named Pipe/UDS OS identity and nonce bootstrap?
+- [ ] Do authentication, lease expiry, framing, limits and callback listeners work in the published AOT artifact?
+- [ ] Have disconnection, duplicate commands, revision conflicts and callback deadlock been tested?
 
-**A missing generated proxy is a build-time or start-time error, not a silent runtime fallback.** With interceptors enabled, an attach for an interface without a generated proxy fails early — turning a missed contract generation into a testable failure rather than a production surprise.
+**Missing generated service/client code fails compilation or startup.** A real published AOT round trip, including the reverse callback direction, is required by WP06 and WP08; a generated-source inspection alone cannot pass it.
 
 ---
 

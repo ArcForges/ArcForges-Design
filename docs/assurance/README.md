@@ -28,6 +28,7 @@ Prices, fees, quotas and rates are deliberately **not** verified in these artifa
 | [phase-2-design-closure-review.md](phase-2-design-closure-review.md) | Fourteen review groups, final mechanisms, owning work packages and the boundary between design closure and runtime proof |
 | [design-repair-verification.md](design-repair-verification.md) | Reproducible standard-library design counterexamples and complete citation/dependency checks |
 | [deprecated-input-independence-review.md](deprecated-input-independence-review.md) | Removal of active archived-input dependencies, necessary formal supplements, preserved historical boundaries and focused verification evidence |
+| [final-design-review.md](final-design-review.md) | Independent post-amendment review of all 51 active packages and the accepted family; frozen repair groups, corrected authorities/producer gates, document verification and remaining runtime evidence |
 
 ## Conventions
 

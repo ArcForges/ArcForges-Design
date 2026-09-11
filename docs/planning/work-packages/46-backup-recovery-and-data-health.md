@@ -5,12 +5,12 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: J — Platform completion
-> Upstream: `25`, `45` · Downstream: `50`
+> Upstream: `25`, `45` · Downstream: `48`, `50`
 
 > **Goal.** Make recovery a proven fact rather than a configured intention: five backup layers, cross-provider and cross-region copies, point-in-time restore, a rehearsed region rebuild, and continuous data-health detection — with a **green backup job never counting as a proven restore**.
 
-> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Cloud operations; AI execution recovery. Inputs: the assigned exact Contracts packages/descriptors and actual provider artifacts; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: owned candidate artifacts and generated contracts with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
-> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Cloud operations; AI execution recovery. Inputs: only the applicable published producers available at this stage under [staged artifact integration](../README.md#staged-artifact-integration). Producer candidate records precede Cloud consolidation; no future package/manifest is an input. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: owned candidate artifacts and generated contracts with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> After WP03, unit mocks consume published Contracts fixtures; earlier stages verify their inventory/policy outputs. Acceptance consumes the actual providers scheduled for that stage. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
 
 ---
 
@@ -85,9 +85,9 @@
 
 ### WP-46.01 — Point-in-time and blob restore
 
-**What must be fully done.** Account for logged stream rows in physical backup/WAL retention; purge restored presentation before traffic and reconcile unknown provider intents without repeating calls.  Point-in-time database restore to a chosen instant, and blob restore including cross-provider restore. A restore is scoped, explicit and audited, and never silently overwrites newer data.
+**What must be fully done.** Back up canonical Task pointers/receipts, not disposable DO stream bytes; implement the independent safety journal, monotonic generation and restored-outbox quarantine before traffic.  Point-in-time database restore to a chosen instant, and blob restore including cross-provider restore. A restore is scoped, explicit and audited, and never silently overwrites newer data.
 
-**Testing requirements.** Restore while a stream/attempt is in flight and verify durable Task fallback, retained liability and no automatic dispatch.  A point-in-time restore to a chosen instant with verification; a cross-provider blob restore; a negative test asserting a restore cannot silently overwrite newer data.
+**Testing requirements.** Use recorded CF contract fixtures for in-flight attempts at this stage; WP50 repeats with WP52 real running/waiting/unknown CF work. Assert durable Task fallback, retained liability and no automatic dispatch.  A point-in-time restore to a chosen instant with verification; a cross-provider blob restore; a negative test asserting a restore cannot silently overwrite newer data.
 
 **Completion gate.** TTL is not falsely presented as deletion from physical backups.  **A point-in-time restore and a cross-provider blob restore are both proven by execution**, and no restore silently overwrites newer data.
 
@@ -109,7 +109,7 @@
 
 **Testing requirements.** A completed drill cycle with dated records; a runbook-update assertion for every correction found.
 
-**Completion gate.** A complete drill cycle is executed with dated records, and every correction found updated its runbook.
+**Completion gate.** The implemented backup/rebuild/data-health drill subset executes with dated records; full active Harness disaster recovery closes at WP50 after WP52. Every concrete failure updates its runbook.
 
 <a id="rule-wp-46.04"></a>
 
@@ -139,16 +139,18 @@
 
 **Testing requirements.** A lag-alert test; assembled evidence linking each backup layer to a dated restore proof.
 
-**Completion gate.** The backup health gate is satisfied by dated restore proofs, not by job success — supplying the evidence for [L-13](../../assurance/release-gates.md#rule-l-13).
+**Completion gate.** The backup health gate is satisfied by dated restore proofs, not by job success — supplying its scoped evidence for [L-13](../../assurance/release-gates.md#rule-l-13).
 
 ---
+
+**Required implementation and closure from the final review.** Implement and independently verify [22-deployment-and-release-execution](../../architecture/22-deployment-and-release-execution.md#recovery-generation-and-safety-journal). Implement independent signed safety receipts/head, fail-closed dispatch/denial acknowledgement, monotonic generation, restrictive replay and client/outbox quarantine. Actual cross-provider restore includes post-backup deletion/revocation and uncertain command fixtures. Full live CF cases are joined at WP50 after WP52; recovery objectives are measured, not assumed. Record exact artifact identities and real/fixture status with the existing substeps; these cases are part of this package's completion gate.
 
 <a id="rule-wp-46.90"></a>
 ### WP-46.90 — Verify the owned artifact and real integration
 
 **What must be fully done.** Adapt primary storage and restore inventories to R2 and CF state. Preserve independent immutable disaster copies, data-health reconciliation, expiry and restore identity/fencing/session invalidation.
 
-**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+**Execution order.** Follow [staged artifact integration](../README.md#staged-artifact-integration): consume only existing assigned producers, publish an owned capability candidate before its product consumer, and verify the declared stage against exact upstream artifacts. Record pending later owners and their closing gates; local mocks cover only that named test boundary.
 
 **Testing requirements.** Restore from exact protected metadata/objects and required CF state; lost/duplicate execution cannot create duplicate effects or broken references. Provider durability is not accepted as restore evidence.
 
@@ -193,10 +195,10 @@
 1. Every backup layer backs up, verifies and retains per policy, with cross-provider copies verified.
 2. **A point-in-time restore and a cross-provider blob restore are both proven by execution**; no restore silently overwrites newer data.
 3. A region rebuild from infrastructure definitions plus backups produces a verified working environment.
-4. A complete drill cycle is executed with dated records, and every correction found updated its runbook.
+4. The implemented backup/rebuild/data-health drill subset executes with dated records; full active Harness disaster recovery closes at WP50 after WP52. Every concrete failure updates its runbook.
 5. **Every data-health anomaly class is detected and repaired**, and the dashboard reflects verified state rather than job success.
 6. Export is complete and available with a lapsed subscription; realm migration verifies its result.
-7. **The backup health gate is satisfied by dated restore proofs**, supplying the evidence for [L-13](../../assurance/release-gates.md#rule-l-13).
+7. **The backup health gate is satisfied by dated restore proofs**, supplying its scoped evidence for [L-13](../../assurance/release-gates.md#rule-l-13).
 
 ---
 
@@ -204,11 +206,13 @@
 
 **Upstream — all must be complete.**
 
-- [25 sync engine and blob lifecycle](25-sync-engine-and-blob-lifecycle.md#rule-wp-25)
-- [45 operations support and trust safety](45-operations-support-and-trust-safety.md#rule-wp-45)
+- [WP-25](25-sync-engine-and-blob-lifecycle.md#rule-wp-25)
+- [WP-45](45-operations-support-and-trust-safety.md#rule-wp-45)
 
 **Downstream — consumers of these released outputs.**
 
-- [50 full platform production release](50-full-platform-production-release.md#rule-wp-50)
+- [WP-48](48-account-portal.md#rule-wp-48)
+- [WP-50](50-full-platform-production-release.md#rule-wp-50)
+
 
 ---

@@ -9,8 +9,8 @@
 
 > **Goal.** Instrument once, correctly: standard signals with a bounded dimension set, correlation that survives every hop, redaction enforced by construction, and desktop diagnostics that never leave the machine without consent.
 
-> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Shared headless tooling; all emitters. Inputs: exact compatible Contracts packages/descriptors and applicable DesktopPlatform packages; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: Native AOT candidate packages/executables with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
-> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Shared headless tooling; all emitters. Inputs: only the applicable published producers available at this stage under [staged artifact integration](../README.md#staged-artifact-integration). Producer candidate records precede Cloud consolidation; no future package/manifest is an input. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: Native AOT candidate packages/executables with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> After WP03, unit mocks consume published Contracts fixtures; earlier stages verify their inventory/policy outputs. Acceptance consumes the actual providers scheduled for that stage. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
 
 ---
 
@@ -137,7 +137,7 @@
 
 **What must be fully done.** Carry correlation/causation, run/attempt, model-call and artifact identities through C# ↔ CF ↔ device. Apply existing redaction, bounded cardinality and desktop consent; define selected AOT/Worker exporters.
 
-**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+**Execution order.** Follow [staged artifact integration](../README.md#staged-artifact-integration): consume only existing assigned producers, publish an owned capability candidate before its product consumer, and verify the declared stage against exact upstream artifacts. Record pending later owners and their closing gates; local mocks cover only that named test boundary.
 
 **Testing requirements.** A trace can join one request across owners without logging prompts, credentials or unbounded payloads; health distinguishes backend, CF/model and R2 failures.
 
@@ -191,12 +191,13 @@
 
 **Upstream — all must be complete.**
 
-- [04 identity error and versioning primitives](04-identity-error-and-versioning-primitives.md#rule-wp-04)
-- [06 aot jit and wasm publish proof](06-aot-jit-and-wasm-publish-proof.md#rule-wp-06)
+- [WP-04](04-identity-error-and-versioning-primitives.md#rule-wp-04)
+- [WP-06](06-aot-jit-and-wasm-publish-proof.md#rule-wp-06)
 
 **Downstream — consumers of these released outputs.**
 
-- [21 cloud host and persistence](21-cloud-host-and-persistence.md#rule-wp-21)
-- [45 operations support and trust safety](45-operations-support-and-trust-safety.md#rule-wp-45)
+- [WP-21](21-cloud-host-and-persistence.md#rule-wp-21)
+- [WP-45](45-operations-support-and-trust-safety.md#rule-wp-45)
+
 
 ---

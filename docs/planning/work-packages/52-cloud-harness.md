@@ -5,12 +5,12 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: J — Platform completion *(sequenced after `43`; numbered `52` because `00`–`51` are allocated and a retired identifier is never reused)*
-> Upstream: `15`, `17`, `20`, `21`, `23`, `26`, `40`, `41`, `42`, `43`, `44` · Downstream: `31`, `49`, `50`
+> Upstream: `15`, `17`, `20`, `21`, `23`, `26`, `39`, `40`, `41`, `42`, `43`, `44` · Downstream: `31`, `49`, `50`
 
 > **Goal.** Build the **single Cloud Harness** of [`../../architecture/17-agent-harness.md`](../../architecture/17-agent-harness.md): the turn loop, tool batching, context assembly, compaction, approval interleaving, streaming, cancellation and recovery — running in the ArcForges-AI CF Workflow, against real admission and real metering.
 
-> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: AI sole loop; Cloud business ports; clients/tools. Inputs: the assigned exact Contracts packages/descriptors and actual provider artifacts; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: owned candidate artifacts and generated contracts with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
-> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: AI sole loop; Cloud business ports; clients/tools. Inputs: only the applicable published producers available at this stage under [staged artifact integration](../README.md#staged-artifact-integration). Producer candidate records precede Cloud consolidation; no future package/manifest is an input. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: owned candidate artifacts and generated contracts with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> After WP03, unit mocks consume published Contracts fixtures; earlier stages verify their inventory/policy outputs. Acceptance consumes the actual providers scheduled for that stage. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
 
 ---
 
@@ -158,12 +158,14 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 **Completion gate.** Automation uses the single Harness and canonical occurrence ledger with the accepted commercial and recovery rules.
 
+**Required implementation and closure from the final review.** Implement and independently verify [05-cloudflare-integration](../../architecture/contracts/05-cloudflare-integration.md). Close paid Slate transcription from actual WP39 selected-audio upload through CF Whisper, normal C# metering/final artifact and explicit local subtitle adoption. Exercise partial/unknown outcome, cancellation, budget bound, origin and no raw video upload. Verify paged exact CF purge inventory, stale controls/late evidence, seven-day wait budget guards and post-backup unsafe-effect quarantine. Provide real active/waiting/unknown states for WP50 recovery; permit declared waiting/unknown terminality rather than forcing success/failure. Record exact artifact identities and real/fixture status with the existing substeps; these cases are part of this package's completion gate.
+
 <a id="rule-wp-52.90"></a>
 ### WP-52.90 — Verify the owned artifact and real integration
 
 **What must be fully done.** Assemble the owned deliverables from the preceding substeps under the selected repository, package, runtime and protocol authorities. Implement the specified Worker/Workflow/DO roles. Implement context, model/tool loop, approval, retries, cancel, streams and schedule execution against real C# transactions/ports and selected Workers AI. Remove the named [WP-17](17-arcchat-independent-core.md#rule-wp-17)/[WP-20](20-first-cross-product-workflow.md#rule-wp-20) fixtures and own the first complete AI cross-product workflow.
 
-**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+**Execution order.** Follow [staged artifact integration](../README.md#staged-artifact-integration): consume only existing assigned producers, publish an owned capability candidate before its product consumer, and verify the declared stage against exact upstream artifacts. Record pending later owners and their closing gates; local mocks cover only that named test boundary.
 
 **Testing requirements.** Real C#/CF/R2/device integration, duplicate/lost ack/approval/restart/stream-tail/terminal-commit cases, usage and provenance. One loop and one canonical business outcome; no unexplained provider retry.
 
@@ -211,7 +213,7 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 **All of the following, with recorded evidence:**
 
-1. Multi-step turns execute in the single Cloud host against a real provider, and **no desktop, mobile or browser assembly contains a turn loop, a planner or a provider adapter**.
+1. Multi-step turns execute in the sole CF RunWorkflow against the selected Workers AI binding, with C# owning canonical admission/state/settlement, and **no desktop, mobile or browser assembly contains a turn loop, a planner or a provider adapter**.
 2. No unbounded loop is reachable; every bound ends the turn with a stated reason.
 3. Parallel batching never violates a declared conflict, and a failure returns its siblings' real results.
 4. Only acknowledged Cloud revisions enter the context pack; a pending client edit never reaches the model.
@@ -219,8 +221,8 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 6. An approval-suspended turn survives restart of either side and resumes with revalidated context.
 7. **No crash or failure path resolves an uncertain external effect to *did not happen***, and no non-idempotent capability is retried without a resolution step.
 8. A capability that can produce an external effect and declares neither idempotency nor a status operation **cannot be registered**.
-9. Every surface reaches identical streamed output **with realtime fully disabled**; **a read served by a replica that never wrote the stream returns correct data**; a miss is never reported as an eviction; and no buffer byte is persisted as a message.
-10. The full cross-product workflow passes end to end with every failure variant reaching a stated terminal state, and **the [WP-17.01](17-arcchat-independent-core.md#rule-wp-17.01) fixture turn endpoint no longer exists in the codebase** — asserted structurally.
+9. Every surface converges to the same authoritative final answer/artifact with realtime disabled. Disposable CF tails may be truncated/expired with explicit state; any C# replica reads canonical Task pointers/final outcome, and no buffer byte becomes a message without owner commit.
+10. The full cross-product workflow passes end to end with every failure variant reaching its specified terminal, waiting, paused or unknown-effect state and an executable recovery path, and **the [WP-17.01](17-arcchat-independent-core.md#rule-wp-17.01) fixture turn endpoint no longer exists in the codebase** — asserted structurally.
 
 11. [WP-52.06](#rule-wp-52.06) passes against the real host, persistent occurrence records and real admission; no desktop automation scheduler or fixture runtime endpoint remains.
 
@@ -230,22 +232,24 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 **Upstream — all must be complete.**
 
-- [15 arcchat conversation core](15-arcchat-conversation-core.md#rule-wp-15)
-- [17 arcchat independent core](17-arcchat-independent-core.md#rule-wp-17)
-- [20 first cross product workflow](20-first-cross-product-workflow.md#rule-wp-20)
-- [21 cloud host and persistence](21-cloud-host-and-persistence.md#rule-wp-21)
-- [23 public api and generated clients](23-public-api-and-generated-clients.md#rule-wp-23)
-- [26 remote action and tool bridge](26-remote-action-and-tool-bridge.md#rule-wp-26)
-- [40 knowledge search and retrieval](40-knowledge-search-and-retrieval.md#rule-wp-40)
-- [41 extension platform and integrations](41-extension-platform-and-integrations.md#rule-wp-41)
-- [42 commerce entitlement and credits](42-commerce-entitlement-and-credits.md#rule-wp-42)
-- [43 managed ai routing and metering](43-managed-ai-routing-and-metering.md#rule-wp-43)
-- [44 dynamic policy and configuration](44-dynamic-policy-and-configuration.md#rule-wp-44)
+- [WP-15](15-arcchat-conversation-core.md#rule-wp-15)
+- [WP-17](17-arcchat-independent-core.md#rule-wp-17)
+- [WP-20](20-first-cross-product-workflow.md#rule-wp-20)
+- [WP-21](21-cloud-host-and-persistence.md#rule-wp-21)
+- [WP-23](23-public-api-and-generated-clients.md#rule-wp-23)
+- [WP-26](26-remote-action-and-tool-bridge.md#rule-wp-26)
+- [WP-39](39-arcslate-integration-and-portability.md#rule-wp-39)
+- [WP-40](40-knowledge-search-and-retrieval.md#rule-wp-40)
+- [WP-41](41-extension-platform-and-integrations.md#rule-wp-41)
+- [WP-42](42-commerce-entitlement-and-credits.md#rule-wp-42)
+- [WP-43](43-managed-ai-routing-and-metering.md#rule-wp-43)
+- [WP-44](44-dynamic-policy-and-configuration.md#rule-wp-44)
 
 **Downstream — consumers of these released outputs.**
 
-- [31 arcchat mobile android](31-arcchat-mobile-android.md#rule-wp-31)
-- [49 arcchat web companion](49-arcchat-web-companion.md#rule-wp-49)
-- [50 full platform production release](50-full-platform-production-release.md#rule-wp-50)
+- [WP-31](31-arcchat-mobile-android.md#rule-wp-31)
+- [WP-49](49-arcchat-web-companion.md#rule-wp-49)
+- [WP-50](50-full-platform-production-release.md#rule-wp-50)
+
 
 ---

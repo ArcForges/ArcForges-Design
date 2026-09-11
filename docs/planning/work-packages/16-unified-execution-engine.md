@@ -9,8 +9,8 @@
 
 > **Goal.** Implement the **native Product Job** model — the lifecycle every long-running *product* operation shares: render, capture, index, import, export. Cloud Agent Tasks are a **different** model owned by [WP-52](52-cloud-harness.md#rule-wp-52) ([CM-04](../../architecture/09-ai-and-agent-runtime-architecture.md#rule-cm-04), [I-121](../../requirements/01-normative-glossary-and-invariants.md#rule-i-121), [I-485](../../requirements/01-normative-glossary-and-invariants.md#rule-i-485)). This package delivers lifecycle states, failure classification, checkpoints, compensation, approval, steering and budget — durable, resumable and identical wherever it runs.
 
-> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Product-owned executors; shared mechanisms. Inputs: exact compatible Contracts packages/descriptors and applicable DesktopPlatform packages; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: Native AOT candidate packages/executables with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
-> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Product-owned executors; shared mechanisms. Inputs: only the applicable published producers available at this stage under [staged artifact integration](../README.md#staged-artifact-integration). Producer candidate records precede Cloud consolidation; no future package/manifest is an input. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: Native AOT candidate packages/executables with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> After WP03, unit mocks consume published Contracts fixtures; earlier stages verify their inventory/policy outputs. Acceptance consumes the actual providers scheduled for that stage. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
 
 ---
 
@@ -170,7 +170,7 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 **What must be fully done.** Preserve the repaired ProductJob-only responsibility. Update shared execution vocabulary/package references, dispatch/error profiles and cancellation. Cloud AI Task/Run execution belongs to [WP-52](52-cloud-harness.md#rule-wp-52), not a new reusable desktop agent engine.
 
-**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+**Execution order.** Follow [staged artifact integration](../README.md#staged-artifact-integration): consume only existing assigned producers, publish an owned capability candidate before its product consumer, and verify the declared stage against exact upstream artifacts. Record pending later owners and their closing gates; local mocks cover only that named test boundary.
 
 **Testing requirements.** Product-job lifecycle/compensation/unknown-effect tests remain; architecture evidence shows no local model loop or Cloud budget/Task ownership in the shared engine.
 
@@ -232,12 +232,13 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 **Upstream — all must be complete.**
 
-- [09 capability contribution and resource model](09-capability-contribution-and-resource-model.md#rule-wp-09)
-- [11 security foundation](11-security-foundation.md#rule-wp-11)
-- [14 hub and minimal provider slice](14-hub-and-minimal-provider-slice.md#rule-wp-14)
+- [WP-09](09-capability-contribution-and-resource-model.md#rule-wp-09)
+- [WP-11](11-security-foundation.md#rule-wp-11)
+- [WP-14](14-hub-and-minimal-provider-slice.md#rule-wp-14)
 
 **Downstream — consumers of these released outputs.**
 
-- [17 arcchat independent core](17-arcchat-independent-core.md#rule-wp-17)
+- [WP-17](17-arcchat-independent-core.md#rule-wp-17)
+
 
 ---

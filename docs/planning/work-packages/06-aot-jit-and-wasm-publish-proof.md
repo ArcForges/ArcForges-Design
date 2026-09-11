@@ -9,8 +9,8 @@
 
 > **Goal.** Prove the runtime matrix on real published artifacts, not on intentions. Every desktop product publishes Native AOT and launches; Cloud publishes Native AOT and runs its full pipeline; the React application builds into production browser assets. Until this holds, every downstream design choice is a hypothesis.
 
-> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Platform, Contracts, Cloud, AI, Web, Mobile. Inputs: exact compatible Contracts packages/descriptors and applicable DesktopPlatform packages; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: owned candidate artifacts and generated contracts with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
-> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Platform, Contracts, Cloud, AI, Web, Mobile. Inputs: only the applicable published producers available at this stage under [staged artifact integration](../README.md#staged-artifact-integration). Producer candidate records precede Cloud consolidation; no future package/manifest is an input. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: owned candidate artifacts and generated contracts with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> After WP03, unit mocks consume published Contracts fixtures; earlier stages verify their inventory/policy outputs. Acceptance consumes the actual providers scheduled for that stage. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
 
 ---
 
@@ -161,12 +161,14 @@
 
 **Completion gate.** First-artifact [F-023](../../assurance/open-gates-register.md#rule-f-023), selected RN/Hermes/native compatibility and actual AOT/CF transport proofs exist before WP30 starts. Product feature and final store gates remain WP31/WP32.
 
+**Required implementation and closure from the final review.** Implement and independently verify [05-cloudflare-integration](../../architecture/contracts/05-cloudflare-integration.md). Prove generated service/callback and large-body framing with published candidates, including owner job R2 read/write grants, actual observed Worker version and explicit Workflow subrequest configuration. Add self-host password/OIDC libraries to the actual AOT closure; auth/business behavior still closes at WP22. Native media capability package proof uses Platform build output and a product clean restore. Record exact artifact identities and real/fixture status with the existing substeps; these cases are part of this package's completion gate.
+
 <a id="rule-wp-06.90"></a>
 ### WP-06.90 — Verify the owned artifact and real integration
 
 **What must be fully done.** Assemble the owned deliverables from the preceding substeps under the selected repository, package, runtime and protocol authorities. Prove actual candidate NuGet restore/native loading and desktop AOT; C# AOT gRPC/gRPC-Web plus selected auth/storage/SQL adapters; RN/Hermes generated-client calls; React client calls; a minimal deployed CF ↔ reachable C# ↔ R2 chain. This is a bounded foundation probe, not the full [WP-52](52-cloud-harness.md#rule-wp-52) Harness.
 
-**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+**Execution order.** Follow [staged artifact integration](../README.md#staged-artifact-integration): consume only existing assigned producers, publish an owned capability candidate before its product consumer, and verify the declared stage against exact upstream artifacts. Record pending later owners and their closing gates; local mocks cover only that named test boundary.
 
 **Testing requirements.** Published binaries/artifacts run in clean consumer environments; no JIT exemption, SignalR or production Node sidecar. Record real CF and native/device evidence separately from fixtures. Selected adapters work without losing exact values.
 
@@ -229,18 +231,19 @@
 
 **Upstream — all must be complete.**
 
-- [03 contract foundation and licence split](03-contract-foundation-and-licence-split.md#rule-wp-03)
-- [04 identity error and versioning primitives](04-identity-error-and-versioning-primitives.md#rule-wp-04)
-- [05 architecture and repository policy tests](05-architecture-and-repository-policy-tests.md#rule-wp-05)
+- [WP-03](03-contract-foundation-and-licence-split.md#rule-wp-03)
+- [WP-04](04-identity-error-and-versioning-primitives.md#rule-wp-04)
+- [WP-05](05-architecture-and-repository-policy-tests.md#rule-wp-05)
 
 **Downstream — consumers of these released outputs.**
 
-- [07 local persistence foundation](07-local-persistence-foundation.md#rule-wp-07)
-- [08 local ipc and registration](08-local-ipc-and-registration.md#rule-wp-08)
-- [10 design system and desktop shell](10-design-system-and-desktop-shell.md#rule-wp-10)
-- [12 observability foundation](12-observability-foundation.md#rule-wp-12)
-- [13 high risk technical probes](13-high-risk-technical-probes.md#rule-wp-13)
-- [17 arcchat independent core](17-arcchat-independent-core.md#rule-wp-17)
-- [30 mobile shared architecture](30-mobile-shared-architecture.md#rule-wp-30)
+- [WP-07](07-local-persistence-foundation.md#rule-wp-07)
+- [WP-08](08-local-ipc-and-registration.md#rule-wp-08)
+- [WP-10](10-design-system-and-desktop-shell.md#rule-wp-10)
+- [WP-12](12-observability-foundation.md#rule-wp-12)
+- [WP-13](13-high-risk-technical-probes.md#rule-wp-13)
+- [WP-17](17-arcchat-independent-core.md#rule-wp-17)
+- [WP-30](30-mobile-shared-architecture.md#rule-wp-30)
+
 
 ---

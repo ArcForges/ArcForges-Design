@@ -9,8 +9,8 @@
 
 > **Goal.** Make the build tell the truth. Until diagnostics are real, warnings are errors, versions are locked and the runtime split is expressed in the build itself, every later AOT proof and every later quality claim rests on unverified ground.
 
-> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Platform, Contracts, each consumer. Inputs: exact compatible Contracts packages/descriptors and applicable DesktopPlatform packages; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: owned candidate artifacts and generated contracts with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
-> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Platform, Contracts, each consumer. Inputs: only the applicable published producers available at this stage under [staged artifact integration](../README.md#staged-artifact-integration). Producer candidate records precede Cloud consolidation; no future package/manifest is an input. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: owned candidate artifacts and generated contracts with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> After WP03, unit mocks consume published Contracts fixtures; earlier stages verify their inventory/policy outputs. Acceptance consumes the actual providers scheduled for that stage. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
 
 ---
 
@@ -18,7 +18,7 @@
 
 **In scope.** Repository-wide build properties, central package management with locked restore, analyzer and diagnostic policy, the AOT/trim/single-file diagnostic posture, the per-target runtime property sets, deterministic build configuration, and the build stage ordering.
 
-**Out of scope.** Packaging artifacts and signing — those are `50`'s production concern and are specified in the build architecture; this package establishes the build *governance* they depend on. The policy test implementations themselves (`05`).
+**Out of scope.** Final product/store signing and public promotion belong to WP50. This package implements candidate publication/signing metadata mechanisms and BuildPolicy packaging; actual Contracts/native capability producers are WP03/06. Policy test implementations belong to WP05.
 
 **Why this package exists.** The corrected inventory records central desktop/contracts AOT imports and 165 committed per-project NuGet lockfiles. Validate evaluated properties and locked restore, repair uncovered AOT chains, and establish the accepted Web toolchain; file-local absence is not an effective-property defect.
 
@@ -148,13 +148,13 @@
 <a id="rule-wp-02.90"></a>
 ### WP-02.90 — Verify the owned artifact and real integration
 
-**What must be fully done.** Assemble the owned deliverables from the preceding substeps under the selected repository, package, runtime and protocol authorities. Apply pinned per-toolchain build/lock/analyzer settings, shared workflow/tooling consumption, native module build/pack and candidate feeds, npm schema publication and OCI/Worker artifact metadata. Align local/CI vcpkg inputs. Publication mechanisms arrive here; final product release remains WP-50.
+**What must be fully done.** Assemble the owned deliverables from the preceding substeps under the selected repository, package, runtime and protocol authorities. Apply pinned per-toolchain build/lock/analyzer settings, shared workflow/tooling consumption, native module build/pack pipeline and candidate feeds, npm schema publication pipeline and OCI/Worker artifact metadata. Align local/CI vcpkg inputs. Publication mechanisms arrive here; final product release remains WP-50.
 
-**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+**Execution order.** Follow [staged artifact integration](../README.md#staged-artifact-integration): consume only existing assigned producers, publish an owned capability candidate before its product consumer, and verify the declared stage against exact upstream artifacts. Record pending later owners and their closing gates; local mocks cover only that named test boundary.
 
-**Testing requirements.** Selected pins and licence/AOT policy agree across owners; one native capability can produce an identifiable candidate package; consumers need no CMake/vcpkg for ordinary restore.
+**Testing requirements.** Selected pins and licence/AOT policy agree across owners; the BuildPolicy produces an identifiable candidate and the native pack pipeline is configured; real native capability proof is WP06; consumers need no CMake/vcpkg for ordinary restore.
 
-**Completion gate.** Selected pins and licence/AOT policy agree across owners; one native capability can produce an identifiable candidate package; consumers need no CMake/vcpkg for ordinary restore. Record exact artifacts and provider reality. The package is incomplete if an important contract/owner/recovery rule still requires design during coding.
+**Completion gate.** Selected pins and licence/AOT policy agree across owners; the BuildPolicy produces an identifiable candidate and the native pack pipeline is configured; real native capability proof is WP06; consumers need no CMake/vcpkg for ordinary restore. Record exact artifacts and provider reality. The package is incomplete if an important contract/owner/recovery rule still requires design during coding.
 
 ---
 
@@ -191,7 +191,7 @@
 
 ## 8. Completion gate
 
-**[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) gate:** [WP-02.90](#rule-wp-02.90) and all inherited domain-specific gates must pass on the same candidate closure. Selected pins and licence/AOT policy agree across owners; one native capability can produce an identifiable candidate package; consumers need no CMake/vcpkg for ordinary restore.
+**[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) gate:** [WP-02.90](#rule-wp-02.90) and all inherited domain-specific gates must pass on the same candidate closure. Selected pins and licence/AOT policy agree across owners; the BuildPolicy produces an identifiable candidate and the native pack pipeline is configured; real native capability proof is WP06; consumers need no CMake/vcpkg for ordinary restore.
 
 **[VG-08](../../assurance/open-gates-register.md#rule-vg-08) evidence:** [WP-02.05](#rule-wp-02.05) — Retained framework-upgrade record and Android runtime/AOT/trim re-verification whenever the recurring trigger fires. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
 
@@ -210,12 +210,13 @@
 
 **Upstream — all must be complete.**
 
-- [01 repository reconciliation and target layout](01-repository-reconciliation-and-target-layout.md#rule-wp-01)
+- [WP-01](01-repository-reconciliation-and-target-layout.md#rule-wp-01)
 
 **Downstream — consumers of these released outputs.**
 
-- [03 contract foundation and licence split](03-contract-foundation-and-licence-split.md#rule-wp-03)
-- [05 architecture and repository policy tests](05-architecture-and-repository-policy-tests.md#rule-wp-05)
-- [47 static public site](47-static-public-site.md#rule-wp-47)
+- [WP-03](03-contract-foundation-and-licence-split.md#rule-wp-03)
+- [WP-05](05-architecture-and-repository-policy-tests.md#rule-wp-05)
+- [WP-47](47-static-public-site.md#rule-wp-47)
+
 
 ---

@@ -5,12 +5,12 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: H — ArcScope
-> Upstream: `25`, `34` · Downstream: `50`
+> Upstream: `25`, `34` · Downstream: `50`, `51`
 
 > **Goal.** Connect ArcScope to the platform on its own terms: metadata, analysis, annotations and reports sync by default; **raw capture stays local unless explicitly uploaded**; and ArcChat receives bounded structured context, never a raw capture.
 
-> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: ArcScope + Cloud; AI context consumer. Inputs: exact compatible Contracts packages/descriptors and applicable DesktopPlatform packages; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: Native AOT candidate packages/executables with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
-> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: ArcScope + Cloud; AI context consumer. Inputs: only the applicable published producers available at this stage under [staged artifact integration](../README.md#staged-artifact-integration). Producer candidate records precede Cloud consolidation; no future package/manifest is an input. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: Native AOT candidate packages/executables with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> After WP03, unit mocks consume published Contracts fixtures; earlier stages verify their inventory/policy outputs. Acceptance consumes the actual providers scheduled for that stage. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
 
 ---
 
@@ -147,7 +147,7 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 **What must be fully done.** Bind bounded context, managed metadata, explicit raw-data uploads and resource references to gRPC/R2/CF. Preserve input selection and source authorization.
 
-**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+**Execution order.** Follow [staged artifact integration](../README.md#staged-artifact-integration): consume only existing assigned producers, publish an owned capability candidate before its product consumer, and verify the declared stage against exact upstream artifacts. Record pending later owners and their closing gates; local mocks cover only that named test boundary.
 
 **Testing requirements.** Metadata sync and explicit-upload behavior remain distinct; context/report data retain measurement identity and ownership across real service calls.
 
@@ -211,11 +211,13 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 **Upstream — all must be complete.**
 
-- [25 sync engine and blob lifecycle](25-sync-engine-and-blob-lifecycle.md#rule-wp-25)
-- [34 arcscope analysis and reporting](34-arcscope-analysis-and-reporting.md#rule-wp-34)
+- [WP-25](25-sync-engine-and-blob-lifecycle.md#rule-wp-25)
+- [WP-34](34-arcscope-analysis-and-reporting.md#rule-wp-34)
 
 **Downstream — consumers of these released outputs.**
 
-- [50 full platform production release](50-full-platform-production-release.md#rule-wp-50)
+- [WP-50](50-full-platform-production-release.md#rule-wp-50)
+- [WP-51](51-arcscope-cloud-simulator.md#rule-wp-51)
+
 
 ---

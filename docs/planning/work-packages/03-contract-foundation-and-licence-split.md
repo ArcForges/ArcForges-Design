@@ -9,8 +9,8 @@
 
 > **Goal.** Publish the handwritten proto authority and generated C#/TS public/internal package closure, exact-value fixtures and compatibility baselines before product/persistence consumers.
 
-> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Contracts. Inputs: the assigned exact Contracts packages/descriptors and actual provider artifacts; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: owned candidate artifacts and generated contracts with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
-> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Contracts. Inputs: only the applicable published producers available at this stage under [staged artifact integration](../README.md#staged-artifact-integration). Producer candidate records precede Cloud consolidation; no future package/manifest is an input. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: owned candidate artifacts and generated contracts with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> After WP03, unit mocks consume published Contracts fixtures; earlier stages verify their inventory/policy outputs. Acceptance consumes the actual providers scheduled for that stage. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
 
 ---
 
@@ -159,12 +159,14 @@ The complete initial Resource/owner/query/measurement/simulator, public operatio
 
 **Completion gate.** Breaking schema changes fail before publication and all selected values retain meaning across clients.
 
+**Required implementation and closure from the final review.** Implement and independently verify [04-protobuf-wire-registry](../../architecture/contracts/04-protobuf-wire-registry.md). Generate every added account/provider, structural move, full Slate/ASR and encodedBody operation/record. Preserve field tags, exact ticks/integers and ModelId grammar. Independently decode >4 MiB Document/Timeline/Task bodies and reject wrong descriptor/hash/generation. Include all public/local methods in descriptor compatibility and the real-provider coverage map. Record exact artifact identities and real/fixture status with the existing substeps; these cases are part of this package's completion gate.
+
 <a id="rule-wp-03.90"></a>
 ### WP-03.90 — Verify the owned artifact and real integration
 
 **What must be fully done.** Create handwritten proto from the frozen first-version schema registry, public/internal package split, AI HTTP/event definitions and generated C#/TS artifacts. Publish profiles, independent fixtures and version metadata before consumers. Remove C# → OpenAPI as business wire authority.
 
-**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+**Execution order.** Follow [staged artifact integration](../README.md#staged-artifact-integration): consume only existing assigned producers, publish an owned capability candidate before its product consumer, and verify the declared stage against exact upstream artifacts. Record pending later owners and their closing gates; local mocks cover only that named test boundary.
 
 **Testing requirements.** Deterministic generation, compatibility/reserved-field checks, Apache closure and independent precise-value/error/profile vectors; both generated client ecosystems restore actual candidate artifacts.
 
@@ -226,16 +228,17 @@ The complete initial Resource/owner/query/measurement/simulator, public operatio
 
 **Upstream — all must be complete.**
 
-- [02 build governance and analyzer policy](02-build-governance-and-analyzer-policy.md#rule-wp-02)
+- [WP-02](02-build-governance-and-analyzer-policy.md#rule-wp-02)
 
 **Downstream — consumers of these released outputs.**
 
-- [04 identity error and versioning primitives](04-identity-error-and-versioning-primitives.md#rule-wp-04)
-- [05 architecture and repository policy tests](05-architecture-and-repository-policy-tests.md#rule-wp-05)
-- [06 aot jit and wasm publish proof](06-aot-jit-and-wasm-publish-proof.md#rule-wp-06)
-- [09 capability contribution and resource model](09-capability-contribution-and-resource-model.md#rule-wp-09)
-- [21 cloud host and persistence](21-cloud-host-and-persistence.md#rule-wp-21)
-- [23 public api and generated clients](23-public-api-and-generated-clients.md#rule-wp-23)
-- [30 mobile shared architecture](30-mobile-shared-architecture.md#rule-wp-30)
+- [WP-04](04-identity-error-and-versioning-primitives.md#rule-wp-04)
+- [WP-05](05-architecture-and-repository-policy-tests.md#rule-wp-05)
+- [WP-06](06-aot-jit-and-wasm-publish-proof.md#rule-wp-06)
+- [WP-09](09-capability-contribution-and-resource-model.md#rule-wp-09)
+- [WP-21](21-cloud-host-and-persistence.md#rule-wp-21)
+- [WP-23](23-public-api-and-generated-clients.md#rule-wp-23)
+- [WP-30](30-mobile-shared-architecture.md#rule-wp-30)
+
 
 ---

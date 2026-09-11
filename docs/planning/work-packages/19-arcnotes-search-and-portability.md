@@ -9,8 +9,8 @@
 
 > **Goal.** Make ArcNotes content findable and portable **within the accepted exit path** (`§13` of the ArcNotes requirements): search over hydrated content with citation anchors, non-destructive Markdown and plain-text import, and the **Cloud-generated notebook download** — proving the exit path rather than asserting it.
 
-> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: ArcNotes; Cloud export interfaces. Inputs: exact compatible Contracts packages/descriptors and applicable DesktopPlatform packages; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: Native AOT candidate packages/executables with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
-> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: ArcNotes; Cloud export interfaces. Inputs: only the applicable published producers available at this stage under [staged artifact integration](../README.md#staged-artifact-integration). Producer candidate records precede Cloud consolidation; no future package/manifest is an input. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: Native AOT candidate packages/executables with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> After WP03, unit mocks consume published Contracts fixtures; earlier stages verify their inventory/policy outputs. Acceptance consumes the actual providers scheduled for that stage. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
 
 ---
 
@@ -163,7 +163,7 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 **What must be fully done.** Preserve lexical search, Markdown/plain-text import and the accepted Cloud export client. Use exact initial query semantics and generated resource/export contracts. No Git mirror, DOCX or newly invented export suite.
 
-**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+**Execution order.** Follow [staged artifact integration](../README.md#staged-artifact-integration): consume only existing assigned producers, publish an owned capability candidate before its product consumer, and verify the declared stage against exact upstream artifacts. Record pending later owners and their closing gates; local mocks cover only that named test boundary.
 
 **Testing requirements.** Independent import/search/export and missing-resource outcomes; public value profiles and owner authorization remain compatible.
 
@@ -218,7 +218,7 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 3. Citation anchors survive surrounding edits and report invalidity explicitly.
 4. A saved view owns no content and always reflects current data.
 5. Every declared import source has a fixture, imports correctly, never modifies the source, and reports partial failure honestly — **this is what satisfies [PG-07](../../assurance/open-gates-register.md#rule-pg-07) for ArcNotes**, which is a fixture obligation on *import*, not on export.
-6. A Cloud export is complete, verifiable and honest about what it omits; every lossy target states its losses before writing.
+6. The export client validates fixture manifests and loss/omission/error presentation here. WP25.08 supplies real Cloud export completeness, including Notes/Chat content, permission and pinning evidence before release.
 7. **No repository-projection or Git/LFS path exists in ArcNotes or its dependencies**, the build fails if one is added, and the exclusion is explained rather than hidden.
 8. **Search over hydrated content survives a Cloud outage**, and pending work remains durably recoverable. Export is a Cloud operation and is unavailable during an outage, which the interface states rather than failing opaquely.
 
@@ -228,13 +228,14 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 **Upstream — all must be complete.**
 
-- [18 arcnotes document core](18-arcnotes-document-core.md#rule-wp-18)
+- [WP-18](18-arcnotes-document-core.md#rule-wp-18)
 
 **Downstream — consumers of these released outputs.**
 
-- [20 first cross product workflow](20-first-cross-product-workflow.md#rule-wp-20)
-- [25 sync engine and blob lifecycle](25-sync-engine-and-blob-lifecycle.md#rule-wp-25)
-- [28 arcnotes properties and views](28-arcnotes-properties-and-views.md#rule-wp-28)
-- [40 knowledge search and retrieval](40-knowledge-search-and-retrieval.md#rule-wp-40)
+- [WP-20](20-first-cross-product-workflow.md#rule-wp-20)
+- [WP-25](25-sync-engine-and-blob-lifecycle.md#rule-wp-25)
+- [WP-28](28-arcnotes-properties-and-views.md#rule-wp-28)
+- [WP-40](40-knowledge-search-and-retrieval.md#rule-wp-40)
+
 
 ---

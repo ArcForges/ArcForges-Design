@@ -32,7 +32,7 @@ The number is an identity, not a schedule. Ordering is by dependency; serial exe
 |---|---|---|
 | 08 | [Local IPC transport and registration lifecycle](08-local-ipc-and-registration.md) | `06`, `07` |
 | 09 | [Capability, contribution and resource model](09-capability-contribution-and-resource-model.md) | `03`, `08` |
-| 10 | [Design system and desktop shell foundation](10-design-system-and-desktop-shell.md) | `06` |
+| 10 | [Design system and desktop shell foundation](10-design-system-and-desktop-shell.md) | `06`, `09` |
 | 11 | [Security foundation](11-security-foundation.md) | `04`, `08`, `09` |
 | 12 | [Observability foundation](12-observability-foundation.md) | `04`, `06` |
 | 13 | [Four high-risk technical probes](13-high-risk-technical-probes.md) | `06`, `07`, `08` |
@@ -105,8 +105,8 @@ The number is an identity, not a schedule. Ordering is by dependency; serial exe
 | 41 | [Extension platform and integrations](41-extension-platform-and-integrations.md) | `09`, `11`, `17` |
 | 45 | [Operations, support and trust & safety](45-operations-support-and-trust-safety.md) | `12`, `21`, `44` |
 | 46 | [Backup, disaster recovery and data health](46-backup-recovery-and-data-health.md) | `25`, `45` |
-| 51 | [ArcScope deterministic Cloud simulator](51-arcscope-cloud-simulator.md) | `21`, `23`, `25`, `33`, `42`, `44` |
-| 52 | [The Cloud Harness](52-cloud-harness.md) | `15`, `17`, `20`, `21`, `23`, `26`, `40`, `41`, `42`, `43`, `44` |
+| 51 | [ArcScope deterministic Cloud simulator](51-arcscope-cloud-simulator.md) | `21`, `23`, `25`, `33`, `34`, `35`, `42`, `44` |
+| 52 | [The Cloud Harness](52-cloud-harness.md) | `15`, `17`, `20`, `21`, `23`, `26`, `39`, `40`, `41`, `42`, `43`, `44` |
 | 31 | [ArcChat Mobile Android remote closed loop](31-arcchat-mobile-android.md) | `26`, `30`, `52` |
 | 32 | [Mobile release engineering and store gates](32-mobile-release-and-store-gates.md) | `31` |
 
@@ -115,7 +115,7 @@ The number is an identity, not a schedule. Ordering is by dependency; serial exe
 | # | Work package | Depends on |
 |---|---|---|
 | 47 | [Static public site](47-static-public-site.md) | `00`, `02` |
-| 48 | [Account portal](48-account-portal.md) | `42`, `44`, `47` |
+| 48 | [Account portal](48-account-portal.md) | `25`, `42`, `44`, `46`, `47` |
 | 49 | [ArcChat Web companion](49-arcchat-web-companion.md) | `26`, `48`, `52` |
 | 50 | [Full-platform production release](50-full-platform-production-release.md) | `20`, `28`, `32`, `35`, `39`, `40`, `41`, `43`, `46`, `49`, `51`, `52` |
 
@@ -133,10 +133,10 @@ The number is an identity, not a schedule. Ordering is by dependency; serial exe
 | 03 | 04, 05, 06, 09, 21, 23, 30 |
 | 04 | 06, 07, 11, 12 |
 | 05 | 06, 21 |
-| 06 | 07, 08, 10, 12, 13, 17 |
+| 06 | 07, 08, 10, 12, 13, 17, 30 |
 | 07 | 08, 13, 18, 33, 36 |
 | 08 | 09, 11, 13, 14 |
-| 09 | 11, 14, 16, 41 |
+| 09 | 10, 11, 14, 16, 41 |
 | 10 | 14, 18, 33, 36 |
 | 11 | 14, 16, 22, 41 |
 | 12 | 21, 45 |
@@ -152,26 +152,26 @@ The number is an identity, not a schedule. Ordering is by dependency; serial exe
 | 22 | 23, 42 |
 | 23 | 24, 30, 42, 44, 51, 52 |
 | 24 | 25, 26, 30 |
-| 25 | 26, 28, 35, 39, 40, 43, 46, 51 |
+| 25 | 26, 28, 35, 39, 40, 43, 46, 48, 51 |
 | 26 | 31, 33, 36, 49, 52 |
 | 28 | 40, 50 |
 | 30 | 31 |
 | 31 | 32 |
 | 32 | 50 |
 | 33 | 34, 51 |
-| 34 | 35 |
-| 35 | 50 |
+| 34 | 35, 51 |
+| 35 | 50, 51 |
 | 36 | 37 |
 | 37 | 38 |
 | 38 | 39 |
-| 39 | 50 |
+| 39 | 50, 52 |
 | 40 | 50, 52 |
 | 41 | 50, 52 |
 | 42 | 43, 44, 48, 51, 52 |
 | 43 | 40, 50, 52 |
 | 44 | 40, 43, 45, 48, 51, 52 |
 | 45 | 46 |
-| 46 | 50 |
+| 46 | 48, 50 |
 | 47 | 48 |
 | 48 | 49 |
 | 49 | 50 |

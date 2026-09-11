@@ -5,7 +5,7 @@
 > Governing authority: **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** (runtime and AOT matrix), **[D-011](../decisions/phase-1-foundation-decisions.md#rule-d-011)** (ten-repository target under [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009)), **[D-014](../decisions/phase-1-foundation-decisions.md#rule-d-014)** (surface inventory, update and download domains), **[D-022](../decisions/phase-1-foundation-decisions.md#rule-d-022)** (mobile commerce posture), [distribution requirements](../requirements/10-distribution-update-and-support.md)
 > Companions: [`../requirements/10-distribution-update-and-support.md`](../requirements/10-distribution-update-and-support.md), [`../requirements/12-quality-and-compatibility-contract.md`](../requirements/12-quality-and-compatibility-contract.md), [`01-solution-and-project-layout.md`](01-solution-and-project-layout.md)
 
-One monorepo, many independently versioned products, one coordinated build graph with managed, native and Web toolchains, and one rule that governs everything below: **the bytes a user runs are the bytes CI produced, verified end to end.**
+Ten independently built repositories, versioned capability packages and immutable integration artifacts, and one rule that governs everything below: **the bytes a user runs are the bytes CI produced, verified end to end.**
 
 ---
 
@@ -14,7 +14,7 @@ One monorepo, many independently versioned products, one coordinated build graph
 | # | Rule |
 |---|---|
 | <a id="rule-br-01"></a>BR-01 | **Build once, promote the same artifact.** No environment or channel rebuilds from source; promotion moves artifacts and metadata, never triggers a new compile. |
-| BR-02 | **Each product has an independent release lifecycle** ([DS-01](../requirements/10-distribution-update-and-support.md#rule-ds-01) in the distribution requirements). A monorepo is not a monolithic release. |
+| BR-02 | **Each product has an independent release lifecycle** ([DS-01](../requirements/10-distribution-update-and-support.md#rule-ds-01) in the distribution requirements). A repository release does not force the rest of the family to rebuild. |
 | BR-03 | **A source-hosting platform is a build and release automation platform, not the primary distribution channel** ([DS-04](../requirements/10-distribution-update-and-support.md#rule-ds-04) there). Artifacts and update feeds are served from ArcForges-controlled infrastructure. |
 | BR-04 | **Release artifacts are immutable** ([DS-05](../requirements/10-distribution-update-and-support.md#rule-ds-05) there). A published version's bytes never change; a defect produces a new version, never a replaced file. |
 | BR-05 | **Every artifact is signed, hashed, attested and recorded** before it can be promoted ([RC-03](../requirements/10-distribution-update-and-support.md#rule-rc-03), [RC-04](../requirements/10-distribution-update-and-support.md#rule-rc-04) there). |
@@ -27,6 +27,8 @@ One monorepo, many independently versioned products, one coordinated build graph
 ## 2. Repository build model
 
 ### 2.1 Structure
+
+The following files belong to each applicable repository root. DesktopPlatform publishes shared BuildPolicy; C# owners consume its pinned policy and retain their own SDK/package manifests. Web, AI and Mobile own independent locked npm roots. Only DesktopPlatform restores native toolchains; Contracts alone runs business proto generation.
 
 ```
 Directory.Build.props / .targets      one place for language version, nullable,
@@ -240,7 +242,7 @@ A release cannot be promoted to a channel until every applicable gate passes. Ga
 | # | Rule |
 |---|---|
 | <a id="rule-ci-01"></a>CI-01 | **Pull-request builds run the fast gates**: build, unit tests, architecture and policy tests, contract baseline check. |
-| CI-02 | **Main-branch builds run the full gates** including AOT publish for every desktop product and the integration suites. |
+| CI-02 | **Each main build runs the full gates for its owned artifact and changed dependency closure.** Cross-repository CI restores published candidates by immutable identity; the family integration manifest records downstream checks without rebuilding unrelated sources. WP50 closes the full product matrix. |
 | CI-03 | **Release builds additionally package, sign, attest and record.** |
 | CI-04 | **Scheduled builds run the long gates**: soak, scale corpus, fuzzing, sanitiser builds, dependency audit, and the cross-platform matrix (`§20` there). |
 | <a id="rule-ci-05"></a>CI-05 | **Platform-specific work runs on the matching platform runner** ([PP-02](#rule-pp-02)), and the matrix covers every supported platform and architecture. |
@@ -277,7 +279,7 @@ The build and release system is **not**: a monolithic suite installer; a second 
 | [Product Quality and Compatibility Contract](../requirements/12-quality-and-compatibility-contract.md) | Owns the runtime and release evidence matrix |
 | [Deployment and Release Execution](22-deployment-and-release-execution.md) | Defines publication, promotion, rollback and compatibility procedures |
 | **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**, **[V-03](../assurance/phase-1-official-verification.md#rule-v-03)**, **[V-04](../assurance/phase-1-official-verification.md#rule-v-04)** | The publish matrix and its verification obligations |
-| **[D-011](../decisions/phase-1-foundation-decisions.md#rule-d-011)** | One monorepo with independently released products |
+| **[D-011](../decisions/phase-1-foundation-decisions.md#rule-d-011)** | Ten independently built repositories integrated through versioned packages and immutable artifacts |
 | **[D-014](../decisions/phase-1-foundation-decisions.md#rule-d-014)** | Update and download domains as owned surfaces |
 | **[D-022](../decisions/phase-1-foundation-decisions.md#rule-d-022)**, **[V-09](../assurance/phase-1-official-verification.md#rule-v-09)**, **[F-023](../assurance/open-gates-register.md#rule-f-023)** | Mobile release gates |
 | **[D-004](../decisions/phase-1-foundation-decisions.md#rule-d-004)**, **[D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021)**, **[F-013](../assurance/open-gates-register.md#rule-f-013)** | Licence and provenance verification in the supply chain |
@@ -295,3 +297,7 @@ Use [the CF/object recovery contract](contracts/05-cloudflare-integration.md#6-r
 ## Producer bootstrap and candidate manifests
 
 Before a complete Cloud exists, each producer publishes a candidate manifest with source commit, artifact hashes, exact Contracts/Platform dependencies, RID/runtime and evidence. WP02 supplies this format/pipeline, WP03 publishes schemas and WP06 composes the first foundation integration manifest in ArcForges-Cloud. Early packages may consume this manifest without depending on later business features. WP21 and later packages extend it with real owner behavior; WP50 requires the final complete manifest. No package is required to restore an artifact that its own current step has not yet produced.
+
+## Immutable candidate publication
+
+Allocate the actual NuGet/npm/product version before compilation and signing. A candidate channel is an access/promotion state, not a version suffix that can later be renamed. Promoting version 1.0.0 moves the same 1.0.0 bytes and attestation from private candidate to the approved channel. An artifact compiled as 1.0.0-ci.42 retains that version permanently; a 1.0.0 build is a new candidate requiring its own checks. Mutable tags are pointers only; restore and integration manifests bind version plus hash. Bootstrap stages and partial versus full manifest closure are fixed in [planning](../planning/README.md#staged-artifact-integration).

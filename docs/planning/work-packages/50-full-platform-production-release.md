@@ -9,8 +9,8 @@
 
 > **Goal.** Ship everything together, once every gate is genuinely satisfied: four desktop products across three platforms, the Android companion, the cloud, the web surfaces, and the commercial loop — with the release audit, the production gates and the honest statement of what is and is not shipped.
 
-> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Each publisher; Cloud coordinated evidence. Inputs: exact compatible Contracts packages/descriptors and applicable DesktopPlatform packages; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: owned candidate artifacts and generated contracts with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
-> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Each publisher; Cloud coordinated evidence. Inputs: only the applicable published producers available at this stage under [staged artifact integration](../README.md#staged-artifact-integration). Producer candidate records precede Cloud consolidation; no future package/manifest is an input. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: owned candidate artifacts and generated contracts with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> After WP03, unit mocks consume published Contracts fixtures; earlier stages verify their inventory/policy outputs. Acceptance consumes the actual providers scheduled for that stage. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
 
 ---
 
@@ -166,12 +166,14 @@
 
 ---
 
+**Required implementation and closure from the final review.** Implement and independently verify [22-deployment-and-release-execution](../../architecture/22-deployment-and-release-execution.md#partial-integration-manifests-and-mobile-rescue-release). Require complete products[] and web[] plus source/package/descriptor/image/Worker/config/database identities in the family manifest, with no pending/mock release operation. Replace WP47 private metadata fixtures with approved offers and actual signed downloads. Join WP46+52 real running/waiting/unknown-effect restore, post-backup revocation/deletion and offline-client quarantine. Prove A/B/C-safe rollback, Android greater-versionCode rescue, all portable Slate output/subtitle/transcription and applicable commercial gates on the declared artifacts. Record exact artifact identities and real/fixture status with the existing substeps; these cases are part of this package's completion gate.
+
 <a id="rule-wp-50.90"></a>
 ### WP-50.90 — Verify the owned artifact and real integration
 
 **What must be fully done.** Assemble the owned deliverables from the preceding substeps under the selected repository, package, runtime and protocol authorities. Implement release coordination using per-repository immutable artifacts and the compatible integration/deployment manifest. Assemble licences, signing, migrations, update/rollback, support, commercial and restore gates from actual owner evidence.
 
-**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+**Execution order.** Follow [staged artifact integration](../README.md#staged-artifact-integration): consume only existing assigned producers, publish an owned capability candidate before its product consumer, and verify the declared stage against exact upstream artifacts. Record pending later owners and their closing gates; local mocks cover only that named test boundary.
 
 **Testing requirements.** Clean install/update/rollback and mixed-version acceptance across supported products; real Cloud+CF+R2 paths; no mandatory lockstep product versions or invented iOS build evidence.
 
@@ -237,21 +239,22 @@
 
 **Upstream — all must be complete.**
 
-- [20 first cross product workflow](20-first-cross-product-workflow.md#rule-wp-20)
-- [28 arcnotes properties and views](28-arcnotes-properties-and-views.md#rule-wp-28)
-- [32 mobile release and store gates](32-mobile-release-and-store-gates.md#rule-wp-32)
-- [35 arcscope integration and sync](35-arcscope-integration-and-sync.md#rule-wp-35)
-- [39 arcslate integration and portability](39-arcslate-integration-and-portability.md#rule-wp-39)
-- [40 knowledge search and retrieval](40-knowledge-search-and-retrieval.md#rule-wp-40)
-- [41 extension platform and integrations](41-extension-platform-and-integrations.md#rule-wp-41)
-- [43 managed ai routing and metering](43-managed-ai-routing-and-metering.md#rule-wp-43)
-- [46 backup recovery and data health](46-backup-recovery-and-data-health.md#rule-wp-46)
-- [49 arcchat web companion](49-arcchat-web-companion.md#rule-wp-49)
-- [51 arcscope cloud simulator](51-arcscope-cloud-simulator.md#rule-wp-51)
-- [52 cloud harness](52-cloud-harness.md#rule-wp-52)
+- [WP-20](20-first-cross-product-workflow.md#rule-wp-20)
+- [WP-28](28-arcnotes-properties-and-views.md#rule-wp-28)
+- [WP-32](32-mobile-release-and-store-gates.md#rule-wp-32)
+- [WP-35](35-arcscope-integration-and-sync.md#rule-wp-35)
+- [WP-39](39-arcslate-integration-and-portability.md#rule-wp-39)
+- [WP-40](40-knowledge-search-and-retrieval.md#rule-wp-40)
+- [WP-41](41-extension-platform-and-integrations.md#rule-wp-41)
+- [WP-43](43-managed-ai-routing-and-metering.md#rule-wp-43)
+- [WP-46](46-backup-recovery-and-data-health.md#rule-wp-46)
+- [WP-49](49-arcchat-web-companion.md#rule-wp-49)
+- [WP-51](51-arcscope-cloud-simulator.md#rule-wp-51)
+- [WP-52](52-cloud-harness.md#rule-wp-52)
 
 **Downstream — consumers of these released outputs.**
 
-Final commercial release; subsequent maintenance follows the release policy.
+None.
+
 
 ---

@@ -95,7 +95,7 @@ Intent
 | TE-04 | **Plan revisions are retained with categorised reasons** ([EX-06](../requirements/05-ai-and-agent-execution.md#rule-ex-06) there). |
 | TE-05 | One model loop advances per Run. Bounded independent tool calls may run concurrently and join before the loop continues; dependency records support recovery without requiring a general DAG scheduler ([EX-08](../requirements/05-ai-and-agent-execution.md#rule-ex-08) of the AI requirements). |
 | TE-06 | **State is `LifecycleState + Reason facet`**, so adding a wait reason never changes the state machine (`§2.1` there). |
-| TE-07 | **Task authority never migrates** ([OW-02](../requirements/05-ai-and-agent-execution.md#rule-ow-02) there). Remote continuation is a cloud root task referencing a local child task. |
+| TE-07 | **Task authority never migrates** ([OW-02](../requirements/05-ai-and-agent-execution.md#rule-ow-02)). All agent Tasks are Cloud-owned. Device execution is an owner command or ProductJob referenced by the Cloud step, never a local agent child Task. |
 
 ### 4.2 Persistence
 
@@ -155,7 +155,7 @@ Logical AI Request  (Cloud, authorised, service term verified)
    -> resolve supplier price version applicable at dispatch
    -> resolve customer retail tariff snapshot and pin it to the Run/request
    -> admission: capacity + credits + concurrency + provider budget, reserved atomically
-   -> resolve provider route (direct primary; aggregator for long tail and fallback)
+   -> resolve the pinned Workers AI binding/model in the sole CF RunWorkflow
    -> Provider Attempt 1 ... N
    -> usage normalisation -> supplier cost record + customer settlement + ledger entries
 ```
@@ -239,7 +239,7 @@ Placement no longer describes where the model loop runs — it always runs in Cl
 ```
 Parent Step invokes a long-running capability
   → the owner returns a TaskHandle
-  → the parent step enters Waiting(ChildTask)
+  → the parent step enters Waiting(ProductJob)
   → the parent observes the child by snapshot and events
   → completion: the parent receives result, ResourceRef, ArtifactRef, outcome
 ```
@@ -364,3 +364,7 @@ Supplier request ID is nullable until CF returns one; ArcForges attempt identity
 Search keeps PostgreSQL full-text/pgvector projections and query-time authorization; no Vectorize/D1 migration. Projection key(sourceId,sourceRev,embeddingModelId,embeddingProfileVersion,chunkHash), tombstone/source-denial before counts/citations. Model dimension/profile change builds separate index from authorized acknowledged sources, catches up journal, switches reader atomically and retains rollback window; no mixing vectors or changing canonical Notes scalar order. C# config activation creates immutable snapshot, Worker acknowledges supported schema/model/limits and version hash, then C# atomically moves active head; stale Worker cannot admit a new call. Emergency denial applies immediately even to a frozen Run; existing tariff snapshot remains for already admitted work.
 
 The [sole Workflow and transactional ports](contracts/05-cloudflare-integration.md) supply the concrete placement, transitions, retry/approval/cancellation and restore rules. C# schedules deterministic occurrences and owns their Task record; CF advances the model/tool loop. ProductJob remains product-owned.
+
+## Slate transcription within the sole Harness
+
+The accepted [slate.transcribe.v1 profile](23-simulator-and-interchange.md#5-slate-metadata-render-and-subtitle-profiles) adds Workers AI whisper-large-v3-turbo to the selected catalogue for audio transcription only. Task.startTranscription creates a normal Cloud Task with immutable uploaded-audio input pins, explicit paid budget and a fixed chunk-processing plan. RunWorkflow executes it using existing claim/model-intent/model-outcome/settle/finalize ports and unknown-effect rules. It does not invoke Search InferenceWorkflow, create another agent loop or execute render code in CF. Final Task output is a TranscriptRecord artifact or explicit partial/no-result outcome; adopting subtitles remains a separately approved local NativeContentRev edit.

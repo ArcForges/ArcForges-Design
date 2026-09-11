@@ -9,8 +9,8 @@
 
 > **Goal.** Establish the mobile foundation under a strictly enforced Apache-2.0 boundary: the shared contract and client layer, the mobile-owned presentation layer that shares no ViewModel patterns with desktop, and the Android runtime posture stated explicitly rather than inherited.
 
-> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Mobile; Apache Contracts. Inputs: exact Apache Contracts npm packages/descriptors and the selected RN/native package closure; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: RN/Hermes artifact and real generated service clients with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
-> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Mobile; Apache Contracts. Inputs: only the applicable published producers available at this stage under [staged artifact integration](../README.md#staged-artifact-integration). Producer candidate records precede Cloud consolidation; no future package/manifest is an input. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: RN/Hermes artifact and real generated service clients with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> After WP03, unit mocks consume published Contracts fixtures; earlier stages verify their inventory/policy outputs. Acceptance consumes the actual providers scheduled for that stage. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
 
 ---
 
@@ -139,6 +139,8 @@ Application types are TypeScript records/hooks/services: MobileSession, MobileOu
 
 **Completion gate.** Each selected adapter and recovery state is implemented and independently tested with the real service boundary.
 
+**Required implementation and closure from the final review.** Implement and independently verify [08-security-architecture](../../architecture/08-security-architecture.md#account-and-provider-closure). Use the generated complete account/session projection. A generation change stops outgoing commands before fresh bootstrap and preserves pending user input for explicit review; no token is copied into JS persistence. Deletion cancellation uses restricted fresh proof and cannot open ordinary data routes. Record exact artifact identities and real/fixture status with the existing substeps; these cases are part of this package's completion gate.
+
 <a id="rule-wp-30.90"></a>
 ### WP-30.90 — Verify the owned artifact and real integration
 
@@ -197,13 +199,14 @@ Application types are TypeScript records/hooks/services: MobileSession, MobileOu
 
 **Upstream — all must be complete.**
 
-- [03 contract foundation and licence split](03-contract-foundation-and-licence-split.md#rule-wp-03)
-- [06 aot jit and wasm publish proof](06-aot-jit-and-wasm-publish-proof.md#rule-wp-06)
-- [23 public api and generated clients](23-public-api-and-generated-clients.md#rule-wp-23)
-- [24 realtime and reliable events](24-realtime-and-reliable-events.md#rule-wp-24)
+- [WP-03](03-contract-foundation-and-licence-split.md#rule-wp-03)
+- [WP-06](06-aot-jit-and-wasm-publish-proof.md#rule-wp-06)
+- [WP-23](23-public-api-and-generated-clients.md#rule-wp-23)
+- [WP-24](24-realtime-and-reliable-events.md#rule-wp-24)
 
 **Downstream — consumers of these released outputs.**
 
-- [31 arcchat mobile android](31-arcchat-mobile-android.md#rule-wp-31)
+- [WP-31](31-arcchat-mobile-android.md#rule-wp-31)
+
 
 ---

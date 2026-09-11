@@ -9,8 +9,8 @@
 
 > **Goal.** Get a real Android release artifact through every gate: dependency closure and provenance (**[F-023](../../assurance/open-gates-register.md#rule-f-023)**), consumption-only conformance (**[V-09](../../assurance/phase-1-official-verification.md#rule-v-09)**), the runtime posture confirmed from the artifact (**[V-04](../../assurance/phase-1-official-verification.md#rule-v-04)**), and build-verifiable commerce prohibitions — none of which is satisfied by reading a document.
 
-> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Mobile. Inputs: exact Apache Contracts npm packages/descriptors and the selected RN/native package closure; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: RN/Hermes artifact and real generated service clients with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
-> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Mobile. Inputs: only the applicable published producers available at this stage under [staged artifact integration](../README.md#staged-artifact-integration). Producer candidate records precede Cloud consolidation; no future package/manifest is an input. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: RN/Hermes artifact and real generated service clients with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> After WP03, unit mocks consume published Contracts fixtures; earlier stages verify their inventory/policy outputs. Acceptance consumes the actual providers scheduled for that stage. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
 
 ---
 
@@ -123,7 +123,7 @@ All paths are relative to ArcForges-Mobile.
 ### WP-32.04 — Store category fit and consumption-only conformance
 
 
-**What must be fully done.** Submit under the intended long-term owning store identity with category, privacy/data collection, deletion/support, notification/file permissions and consumption-only metadata matched to behavior. Record actual review outcome. Establish staged rollout, supported-version communication and rollback to a compatible prior signed release; server compatibility preserves the public client window and pending commands.
+**What must be fully done.** Submit under the intended long-term owning store identity with category, privacy/data collection, deletion/support, notification/file permissions and consumption-only metadata matched to behavior. Record actual review outcome. Establish staged rollout, supported-version communication and a forward rescue release restoring prior behavior with a greater versionCode and verified current-data compatibility; server compatibility preserves the public client window and pending commands.
 
 **Testing requirements.** Store review evidence, privacy/support links, staged rollout/rollback exercise and previous-version migration/device result.
 
@@ -209,10 +209,11 @@ All paths are relative to ArcForges-Mobile.
 
 **Upstream — all must be complete.**
 
-- [31 arcchat mobile android](31-arcchat-mobile-android.md#rule-wp-31)
+- [WP-31](31-arcchat-mobile-android.md#rule-wp-31)
 
 **Downstream — consumers of these released outputs.**
 
-- [50 full platform production release](50-full-platform-production-release.md#rule-wp-50)
+- [WP-50](50-full-platform-production-release.md#rule-wp-50)
+
 
 ---

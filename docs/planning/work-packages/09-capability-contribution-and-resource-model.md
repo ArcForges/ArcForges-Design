@@ -5,12 +5,12 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: B — Shared platform
-> Upstream: `03`, `08` · Downstream: `11`, `14`, `16`, `41`
+> Upstream: `03`, `08` · Downstream: `10`, `11`, `14`, `16`, `41`
 
 > **Goal.** Implement the cross-application semantic model — App, Installation, Instance, Contribution, Capability, Action, Context, `ResourceRef`, Artifact, Deep Link, Event, Health and Invocation — so that every product, extension and agent describes and reaches every other through one vocabulary.
 
-> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Contracts; Platform; products. Inputs: exact compatible Contracts packages/descriptors and applicable DesktopPlatform packages; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: Native AOT candidate packages/executables with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
-> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Contracts; Platform; products. Inputs: only the applicable published producers available at this stage under [staged artifact integration](../README.md#staged-artifact-integration). Producer candidate records precede Cloud consolidation; no future package/manifest is an input. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: Native AOT candidate packages/executables with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> After WP03, unit mocks consume published Contracts fixtures; earlier stages verify their inventory/policy outputs. Acceptance consumes the actual providers scheduled for that stage. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
 
 ---
 
@@ -158,7 +158,7 @@
 
 **What must be fully done.** Consume generated capability/resource/contribution contracts. Preserve typed invocation, owner semantics, resource affinity/availability, preflight/compensation and large-artifact references. Generate AI tool projections from the same definitions.
 
-**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+**Execution order.** Follow [staged artifact integration](../README.md#staged-artifact-integration): consume only existing assigned producers, publish an owned capability candidate before its product consumer, and verify the declared stage against exact upstream artifacts. Record pending later owners and their closing gates; local mocks cover only that named test boundary.
 
 **Testing requirements.** Independent descriptor/argument/result checks; owner refuses invalid/stale invocations and opaque references do not grant access. No universal untyped business invocation replaces the catalogue.
 
@@ -215,14 +215,16 @@
 
 **Upstream — all must be complete.**
 
-- [03 contract foundation and licence split](03-contract-foundation-and-licence-split.md#rule-wp-03)
-- [08 local ipc and registration](08-local-ipc-and-registration.md#rule-wp-08)
+- [WP-03](03-contract-foundation-and-licence-split.md#rule-wp-03)
+- [WP-08](08-local-ipc-and-registration.md#rule-wp-08)
 
 **Downstream — consumers of these released outputs.**
 
-- [11 security foundation](11-security-foundation.md#rule-wp-11)
-- [14 hub and minimal provider slice](14-hub-and-minimal-provider-slice.md#rule-wp-14)
-- [16 unified execution engine](16-unified-execution-engine.md#rule-wp-16)
-- [41 extension platform and integrations](41-extension-platform-and-integrations.md#rule-wp-41)
+- [WP-10](10-design-system-and-desktop-shell.md#rule-wp-10)
+- [WP-11](11-security-foundation.md#rule-wp-11)
+- [WP-14](14-hub-and-minimal-provider-slice.md#rule-wp-14)
+- [WP-16](16-unified-execution-engine.md#rule-wp-16)
+- [WP-41](41-extension-platform-and-integrations.md#rule-wp-41)
+
 
 ---

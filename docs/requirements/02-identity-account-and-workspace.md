@@ -60,7 +60,7 @@ A **Realm** is an independent identity and data authority: the Official ArcForge
 | # | Requirement |
 |---|---|
 | ID-20 | **Authentication Identity is a separate entity from User.** `User.Email = Identity` is prohibited. A User owns a set of Authentication Identities. |
-| ID-21 | Supported identity kinds: Email, Passkey, and — as later additions — Apple, Google and enterprise SSO. Adding or removing an identity never changes the User. |
+| ID-21 | Official identity kinds: Email and Passkey; Apple, Google and enterprise sign-in products are later additions. Self-host configured generic OIDC/password providers follow ID-25 and are independent of official sign-in offerings. Adding or removing an identity never changes the User. |
 | ID-22 | **Multiple Passkeys per User are mandatory.** `one Account = one Passkey` is prohibited. Each Passkey is renameable and shows created time and last-used time, and can be removed. |
 | ID-23 | The official Cloud primary authentication method is **Email OTP + Passkey**. Email OTP performs first verification and recovery; Passkey performs daily sign-in. |
 | ID-24 | The official Cloud V1 has **no password**. Password reset, credential-stuffing and breach-response flows therefore do not exist for it. |

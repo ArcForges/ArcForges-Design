@@ -9,8 +9,8 @@
 
 > **Goal.** Make ArcNotes a complete local product: block editing, links and backlinks, properties and tags, attachments, undo, history, checkpoints and trash — with crash recovery and upgrade migration proven, and large-document performance measured.
 
-> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: ArcNotes; Platform packages. Inputs: exact compatible Contracts packages/descriptors and applicable DesktopPlatform packages; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: Native AOT candidate packages/executables with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
-> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: ArcNotes; Platform packages. Inputs: only the applicable published producers available at this stage under [staged artifact integration](../README.md#staged-artifact-integration). Producer candidate records precede Cloud consolidation; no future package/manifest is an input. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: Native AOT candidate packages/executables with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> After WP03, unit mocks consume published Contracts fixtures; earlier stages verify their inventory/policy outputs. Acceptance consumes the actual providers scheduled for that stage. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
 
 ---
 
@@ -187,12 +187,14 @@ Session undo follows `§3.2` of the editing architecture: **selection is restore
 
 ---
 
+**Required implementation and closure from the final review.** Implement and independently verify [02-desktop-data-model](../../architecture/data-model/02-desktop-data-model.md). Implement typed structural outbox entries, multi-root local tokens and complete move classification mapping/preview. Exercise offline create→move→edit and crash before/after acknowledgement without rewriting an entry into a body upload. Scalar-definition fixtures follow the fixed profile; WP28 repeats with real property/view UI. Record exact artifact identities and real/fixture status with the existing substeps; these cases are part of this package's completion gate.
+
 <a id="rule-wp-18.90"></a>
 ### WP-18.90 — Verify the owned artifact and real integration
 
 **What must be fully done.** Keep block/document/editor, scalar base, attachment/PDF isolation, undo/history/pending-work behavior. Rebind shared resources and storage contracts; preserve accepted no-account launch and hydrated notebook outage behavior.
 
-**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+**Execution order.** Follow [staged artifact integration](../README.md#staged-artifact-integration): consume only existing assigned producers, publish an owned capability candidate before its product consumer, and verify the declared stage against exact upstream artifacts. Record pending later owners and their closing gates; local mocks cover only that named test boundary.
 
 **Testing requirements.** Independent editor/store/recovery fixtures, helper isolation and content-origin/attachment checks; no new edgeless or slide scope.
 
@@ -268,12 +270,13 @@ Session undo follows `§3.2` of the editing architecture: **selection is restore
 
 **Upstream — all must be complete.**
 
-- [07 local persistence foundation](07-local-persistence-foundation.md#rule-wp-07)
-- [10 design system and desktop shell](10-design-system-and-desktop-shell.md#rule-wp-10)
-- [14 hub and minimal provider slice](14-hub-and-minimal-provider-slice.md#rule-wp-14)
+- [WP-07](07-local-persistence-foundation.md#rule-wp-07)
+- [WP-10](10-design-system-and-desktop-shell.md#rule-wp-10)
+- [WP-14](14-hub-and-minimal-provider-slice.md#rule-wp-14)
 
 **Downstream — consumers of these released outputs.**
 
-- [19 arcnotes search and portability](19-arcnotes-search-and-portability.md#rule-wp-19)
+- [WP-19](19-arcnotes-search-and-portability.md#rule-wp-19)
+
 
 ---

@@ -9,8 +9,8 @@
 
 > **Goal.** Produce final output that is correct rather than merely fast: colour management as a first-class system, render as a Task bound to an immutable snapshot, export presets, and subtitles — with preview and final render sharing one set of semantics.
 
-> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: ArcSlate; Platform. Inputs: exact compatible Contracts packages/descriptors and applicable DesktopPlatform packages; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: Native AOT candidate packages/executables with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
-> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: ArcSlate; Platform. Inputs: only the applicable published producers available at this stage under [staged artifact integration](../README.md#staged-artifact-integration). Producer candidate records precede Cloud consolidation; no future package/manifest is an input. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: Native AOT candidate packages/executables with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> After WP03, unit mocks consume published Contracts fixtures; earlier stages verify their inventory/policy outputs. Acceptance consumes the actual providers scheduled for that stage. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
 
 ---
 
@@ -69,7 +69,7 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 | `fixtures/media/golden/` | Golden render fixtures with declared tolerances |
 | `tests/ArcSlateMediaTests/` | Colour, render, export, subtitle and long-export suites |
 
-**Major types introduced.** `ColorSemanticConfiguration`, `InputColorInterpretation`, `WorkingColorConfiguration`, `DisplayTransform`, `ExportTransform`, `VideoScope`, `ExportPreset`, `RenderRequest`, `RenderPlan`, `RenderTaskReference`, `SubtitleTrack`, `SubtitleCue`.
+**Major types introduced.** `ColorSemanticConfiguration`, `InputColorInterpretation`, `WorkingColorConfiguration`, `DisplayTransform`, `ExportTransform`, `VideoScope`, `ExportPreset`, `RenderRequest`, `RenderPlan`, `ProductJobRef`, `SubtitleTrack`, `SubtitleCue`.
 
 ---
 
@@ -149,12 +149,14 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 ---
 
+**Required implementation and closure from the final review.** Implement and independently verify [23-simulator-and-interchange](../../architecture/23-simulator-and-interchange.md#5-slate-metadata-render-and-subtitle-profiles). Implement SRT/WebVTT preview/import/export, visible endpoint/style loss reports and collapsed-cue refusal, independent subtitle tracks and explicit burn-in choice. Implement local extraction ProductJob and TranscriptRecord review/adoption under expectedNative/undo/origin. ASR output uses published fixtures here; WP43 provides real model output and WP52 closes the paid end-to-end path. Record exact artifact identities and real/fixture status with the existing substeps; these cases are part of this package's completion gate.
+
 <a id="rule-wp-38.90"></a>
 ### WP-38.90 — Verify the owned artifact and real integration
 
 **What must be fully done.** Preserve render snapshot, color/subtitle/output and publication rules. State explicitly that local rendering is a ProductJob, correcting ambiguous generic Task wording; integrate package versions.
 
-**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+**Execution order.** Follow [staged artifact integration](../README.md#staged-artifact-integration): consume only existing assigned producers, publish an owned capability candidate before its product consumer, and verify the declared stage against exact upstream artifacts. Record pending later owners and their closing gates; local mocks cover only that named test boundary.
 
 **Testing requirements.** Independent render/range/color/output checks and cancel/failure/atomic-publish recovery. No CF Harness or AI budget is required for native render execution.
 
@@ -216,10 +218,11 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 **Upstream — all must be complete.**
 
-- [37 arcslate playback and processing](37-arcslate-playback-and-processing.md#rule-wp-37)
+- [WP-37](37-arcslate-playback-and-processing.md#rule-wp-37)
 
 **Downstream — consumers of these released outputs.**
 
-- [39 arcslate integration and portability](39-arcslate-integration-and-portability.md#rule-wp-39)
+- [WP-39](39-arcslate-integration-and-portability.md#rule-wp-39)
+
 
 ---

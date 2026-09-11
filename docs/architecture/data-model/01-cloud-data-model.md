@@ -140,7 +140,7 @@ These exist once and are used by every module. They are the mechanism behind [TX
 |---|---|---|
 | `auth_identity_id` | `id` | **PK** |
 | `user_id` | `id NN` | `FK →` `identity.user`; restrict |
-| `method` | `enum(passkey, emailCode) NN` | |
+| `method` | `enum(passkey, emailCode, password, oidc) NN` | |
 | `subject` | `text NN` | Credential identifier — for passkey, the credential id |
 | `public_key` | `text?` | Passkey only |
 | `sign_count` | `bigint?` | Passkey replay defence |
@@ -149,7 +149,7 @@ These exist once and are used by every module. They are the mechanism behind [TX
 | `last_used_at` | `instant?` | |
 | `revoked_at` | `instant?` | |
 
-- `UQ (method, subject)` — one credential belongs to one user
+- `UQ (realm_id, provider_id, subject)` — one configured-provider credential belongs to one user; password stores a versioned salted hash, OIDC subject is the verified issuer subject
 - `IX (user_id, revoked_at)` — listing a user's credentials
 - **Constraint** — a user must retain **at least one** usable authentication identity or an active recovery path; removing the last one is refused as `identity.last_credential`
 
@@ -234,7 +234,7 @@ Short-lived rows with `expires_at`, an attempt counter, and a rate-limit key. Bo
 | `owner_user_id` | `id NN` | `FK →` `identity.user`; restrict |
 | `name` | `text NN` | |
 | `data_region` | `text NN` | Immutable after creation |
-| `protection_profile` | `enum(standard, enhanced) NN` | |
+| `protection_profile` | `enum(standard) NN` | |
 | `state` | `enum(active, suspended, pendingDeletion) NN` | |
 | `created_at` | `instant NN` | |
 | `rev` | `rev NN` | |
@@ -252,7 +252,7 @@ Short-lived rows with `expires_at`, an attempt counter, and a rate-limit key. Bo
 | <a id="rule-wo-02"></a>WO-02 | **Authorization is `Actor → owns → Workspace → Resource`.** The previous `Actor → Membership → Workspace → Resource` chain collapses to a direct ownership check ([MT-02](../../requirements/04-commerce-entitlement-and-credits.md#rule-mt-02) of the cloud architecture is amended accordingly). |
 | WO-03 | **A workspace is a multi-device boundary, not a collaboration unit.** Several devices of one owner share it; no second principal ever holds rights in it. |
 | <a id="rule-wo-04"></a>WO-04 | **Re-introducing membership is an architecture baseline change**, not an additive migration. Retaining a dormant table would have made it look like a configuration switch, which is precisely the ambiguity [P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006) removes. |
-| <a id="rule-wo-05"></a>WO-05 | **A repository policy test asserts no schema, contract or operation carries a membership, role, invitation, seat or shared-editor concept** ([WP-05](../../planning/work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05)). |
+| <a id="rule-wo-05"></a>WO-05 | **A repository policy test rejects customer workspace membership, role, invitation, seat and shared-editor concepts.** Separate operator authorization roles and self-host account enrollment are not workspace membership. |
 
 > **Retired identifier.** `workspace.membership` is retired by [P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006) and is not reused for another purpose. Its historical definition is in the git history of this document at `7ed79a6`.
 
@@ -1290,3 +1290,31 @@ Stable job_id comes from the committed Search source/query command, reused on ou
 The two enumerated Search families in the [transaction authority](00-data-model-overview.md#611-shared-units-of-work) use each module's own SQL port on one connection; no external CF/R2 call occurs inside the commit. Search is after Task and before Notification in lock order. The dispatch outbox creates/gets the exact Workflow; CF input fetch rechecks current source permissions, active service term and AI-exclusion policy. Source deletion/revocation cancels queued jobs and invalidates derived publication even when a late output is complete.
 
 Record every supplier attempt and keep unresolved exposure through expiry/period closure. A complete result may coexist with costUnconfirmed; it cannot create a customer debit or release conservative liability. Retain accounting identity/receipt under existing commerce retention; source text/result pins use Resource content/deletion policy, never extend user-content retention merely to retain cost evidence. A completed projection consumer releases ephemeral pins; interrupted consumers retry idempotently and rebuild readiness from current authoritative source, never from CF checkpoint data.
+
+## Account state and proof constraints
+
+Identity user/profile and credential rows carry owner revisions; profile/avatar reference changes enlist Resource when required. auth_identity adds realm_id/provider_id and password_hash (password only, no raw secret); provider configuration is versioned and secrets referenced only from the secret store. UQ(workspace.realm_id, owner_user_id) enforces one personal workspace. Initial grants are unique by owner and configured grant identity, not session or installation.
+
+| Identity-owned record | Required fields and constraints |
+|---|---|
+| spent_refresh | token_hash PK, session_id/family_id FK, generation, consumed_at, family_expires_at; unique family/generation. Retain through family expiry plus the 60-second validation skew. Rotation locks the family, inserts spent hash and replaces current hash atomically. |
+| recovery_code | set_id, code_hash PK, user_id, issued_at, consumed_at, invalidated_at; one live set per user, consumption conditional on both code and set remaining active. |
+| api_token | token_id PK, user_id, workspace_id, secret_hash unique, name, scopes, created_at, expires_at, last_used_at, revoked_at, rev, auth_epoch, recovery_generation. Receipt persists safe summary only; no reusable plaintext. |
+| security_flow | flow_id PK, kind/provider/purpose, user_id if known, installation/device/origin binding, proof_hash, target payload hash, expires_at, attempts, consumed_at; email-change, SSO, enrollment, provider callback and deletion reauth use mutually exclusive typed payloads. Consumption and its owner/session effect share one transaction. |
+| session additions | purpose, recovery_generation, auth_epoch, rev; cancelDeletion purpose enforces an API allowlist independent of ordinary ownership. Every family can be revoked through user/device/session indexes. |
+| device remote policy | device_id PK/FK, allowed_capabilities, local_confirmation_capabilities, rev; part of Device ownership, not a claim supplied by a heartbeat. |
+| workspace data deletion | deletion_id PK, workspace_id, preview_hash, captured_revision, state, owner_job_inventory, completed_at, rev; bounded owner jobs record restartable progress, purge fence and reference release receipts. |
+
+Account proof changes and their Notification outbox are one Identity + Notification shared unit; profile avatar changes additionally enlist Resource/Entitlement. Workspace data deletion uses the existing owner content/reference-release shared family per batch and a Workspace coordinator outbox, never a transaction spanning all content and object storage. Security flow completion that creates a session uses the authentication family. The independently retained safety receipts in deployment architecture fence post-restore reuse and access resurrection.
+
+## Structural move and complete media replica constraints
+
+A Notes cross-notebook move validates one explicit disposition for every used property/tag. Destination properties must have the same scalar type/scale, matching semantic revision, and complete mappings for used select options. Duplicate destination assignments, missing/trashed targets, implicit label matching or numeric conversion refuse. Explicit removal is previewed and retained in immutable history; document/block IDs and original values in old revisions survive. The preview hash binds all participating revisions and mapping. Under the existing sorted locks, commit updates the document placement/classification and source/destination membership publications atomically. Named structural operations retain their typed command payload and results; a generic sync NotesDocument replacement cannot move an existing document.
+
+Slate replicas encode the complete [slate.project.v1 wire projection](../contracts/04-protobuf-wire-registry.md#4-shared-record-field-registry), including every sequence timeline/graph, exact grids, colour/input assignments, bins, markers, text/subtitles, generators/nesting, keyframe scopes and managed small-asset references. Validate identity, referential closure, type/graph/nesting cycles and source contentRev before storing the immutable replica. sequence summaries cannot substitute for timelines. Originals remain opt-in; absent bytes produce Offline Media without losing edit metadata. TranscriptRecord is an immutable derived Resource artifact linked to Task/source revision; adopting it creates ordinary authored native content with retained AI origin, never a server-side rewrite of a Slate project.
+
+## Service object and recovery persistence
+
+Resource service_object_grant stores grant_id PK, owner_kind/job_id, attempt_id?, realm/workspace, epoch, recovery_generation, direction, resource/upload_id, byte_limit, expires_at and revoked_at. It uses the existing upload reservations/verification pins, not a second object lifecycle. Every grant authorization validates its current owner job and fence. Task/Search/Resource keep cf_instance_inventory keyed by kind/instance_id/generation with owner workspace/job, actual worker version and deletion receipt; each module writes only its owned rows and exposes inventory through the deletion coordinator.
+
+platform.safety_receipt records immutable external journal record ID/hash, related owner command/intent ID, generation, kind and pending/verified status. It is a local receipt/cache, never authority over the independent signed journal head. Outbox dispatch cannot pass its external boundary before verified barrier; security denial cannot return durable success before verified fence. platform.recovery_epoch records the installed independent generation, recovery point, journal inventory hash and reopening state. Restored outstanding effects have explicit quarantined/unknown reconciliation records, retaining original identities even when their newer PG outcome was outside the recovery point.

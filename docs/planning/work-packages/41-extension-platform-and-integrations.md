@@ -9,14 +9,14 @@
 
 > **Goal.** Open the platform without weakening it: out-of-process extensions contributing **tools, never planners** ([EA-08](../../requirements/08-extensions-and-developer-platform.md#rule-ea-08)), the dual capability boundary with a closed AOT-safe value model, declarative UI contribution, the Arc Package runtime, the catalog, and the MCP, connector and artifact handoff and standard MCP integrations — all under the same security pipeline as first-party code.
 
-> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Contracts public SDK/CLI; Platform host; ArcChat MCP; Cloud catalog. Inputs: exact compatible Contracts packages/descriptors and applicable DesktopPlatform packages; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: Native AOT candidate packages/executables with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
-> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Contracts public SDK/CLI; Platform host; ArcChat MCP; Cloud catalog. Inputs: only the applicable published producers available at this stage under [staged artifact integration](../README.md#staged-artifact-integration). Producer candidate records precede Cloud consolidation; no future package/manifest is an input. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: Native AOT candidate packages/executables with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> After WP03, unit mocks consume published Contracts fixtures; earlier stages verify their inventory/policy outputs. Acceptance consumes the actual providers scheduled for that stage. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
 
 ---
 
 ## 1. Scope and purpose
 
-**In scope.** The extension host and its supervision; the handshake and protocol versioning; the typed extension-point layer and the schema-described dynamic layer; declarative panel and settings contribution; the Arc Package model and lifecycle; the catalog client; the public SDK and CLI; and the integration kinds — MCP, connectors and external agents.
+**In scope.** The extension host and its supervision; the handshake and protocol versioning; the typed extension-point layer and the schema-described dynamic layer; declarative panel and settings contribution; the Arc Package model and lifecycle; the catalog client; the public SDK and CLI; and the integration kinds — MCP and connectors; external-agent delegation is excluded.
 
 **Out of scope.** A paid marketplace, explicitly not in V1. A general WebView platform, explicitly a non-goal.
 
@@ -68,7 +68,7 @@
 | `src/ArcChat/ArcChat.McpClient/` | MCP integration with the vocabulary mapping |
 | `tests/McpAotTests/`, `tests/ExtensionPlatformTests/` | Conformance, isolation, security, lifecycle and catalog suites |
 
-**Major types introduced.** `ExtensionHost`, `ExtensionProcess`, `Handshake`, `ProtocolVersion`, `StructuredValue`, `ValueSchema`, `SchemaValidator`, `PanelDeclaration`, `SettingsSchema`, `ArcPackage`, `PackageManifest`, `PackageInstallation`, `PackageState`, `CatalogClient`, `TrustLevel`, `ReviewStatus`, `McpAdapter`, `ConnectorDefinition`, `ConnectionInstance`, `ExternalAgentAdapter`.
+**Major types introduced.** `ExtensionHost`, `ExtensionProcess`, `Handshake`, `ProtocolVersion`, `StructuredValue`, `ValueSchema`, `SchemaValidator`, `PanelDeclaration`, `SettingsSchema`, `ArcPackage`, `PackageManifest`, `PackageInstallation`, `PackageState`, `CatalogClient`, `TrustLevel`, `ReviewStatus`, `McpAdapter`, `ConnectorDefinition`, `ConnectionInstance`.
 
 ---
 
@@ -161,7 +161,7 @@
 
 **What must be fully done.** Split SDK/protocol, desktop host/runtime and Cloud registry ownership. Preserve standard MCP transports and out-of-process extensions. Remove the old external-agent integration wording rather than expanding accepted scope.
 
-**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+**Execution order.** Follow [staged artifact integration](../README.md#staged-artifact-integration): consume only existing assigned producers, publish an owned capability candidate before its product consumer, and verify the declared stage against exact upstream artifacts. Record pending later owners and their closing gates; local mocks cover only that named test boundary.
 
 **Testing requirements.** SDK licence/protocol compatibility, capability checks, hostile-extension/process isolation and owner execution; no external-agent delegation or in-process third-party plugin.
 
@@ -224,13 +224,14 @@
 
 **Upstream — all must be complete.**
 
-- [09 capability contribution and resource model](09-capability-contribution-and-resource-model.md#rule-wp-09)
-- [11 security foundation](11-security-foundation.md#rule-wp-11)
-- [17 arcchat independent core](17-arcchat-independent-core.md#rule-wp-17)
+- [WP-09](09-capability-contribution-and-resource-model.md#rule-wp-09)
+- [WP-11](11-security-foundation.md#rule-wp-11)
+- [WP-17](17-arcchat-independent-core.md#rule-wp-17)
 
 **Downstream — consumers of these released outputs.**
 
-- [50 full platform production release](50-full-platform-production-release.md#rule-wp-50)
-- [52 cloud harness](52-cloud-harness.md#rule-wp-52)
+- [WP-50](50-full-platform-production-release.md#rule-wp-50)
+- [WP-52](52-cloud-harness.md#rule-wp-52)
+
 
 ---

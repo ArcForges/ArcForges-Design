@@ -9,8 +9,8 @@
 
 > **Goal.** Make the platform operable: alerting that is worth waking someone for, runbooks that have actually been executed, a status page that survives an outage, support access that never silently impersonates a user, and an enforcement ladder with appeals.
 
-> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Cloud APIs; Web operator/status surfaces; AI emitters. Inputs: the assigned exact Contracts packages/descriptors and actual provider artifacts; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: owned candidate artifacts and generated contracts with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
-> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Cloud APIs; Web operator/status surfaces; AI emitters. Inputs: only the applicable published producers available at this stage under [staged artifact integration](../README.md#staged-artifact-integration). Producer candidate records precede Cloud consolidation; no future package/manifest is an input. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: owned candidate artifacts and generated contracts with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> After WP03, unit mocks consume published Contracts fixtures; earlier stages verify their inventory/policy outputs. Acceptance consumes the actual providers scheduled for that stage. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
 
 ---
 
@@ -101,7 +101,7 @@
 
 **Testing requirements.** A completeness check against the required set; a dated rehearsal record per runbook.
 
-**Completion gate.** **Every required runbook exists and has a dated rehearsal record** — satisfying [PG-04](../../assurance/open-gates-register.md#rule-pg-04).
+**Completion gate.** **Every runbook for an implemented owner has a dated rehearsal record; recovery/CF cases awaiting WP46/52 remain explicitly pending until WP50 joins them** — contributing to [PG-04](../../assurance/open-gates-register.md#rule-pg-04).
 
 <a id="rule-wp-45.03"></a>
 
@@ -165,12 +165,14 @@
 
 ---
 
+**Required implementation and closure from the final review.** Implement and independently verify [22-deployment-and-release-execution](../../architecture/22-deployment-and-release-execution.md#recovery-generation-and-safety-journal). Provide pending/verified safety-journal diagnostics, independently hosted incident status and runbooks for incomplete journal or generation conflict. Rehearse currently implemented owners; name WP46/52/50 as the remaining real restoration/CF drill producers. Record exact artifact identities and real/fixture status with the existing substeps; these cases are part of this package's completion gate.
+
 <a id="rule-wp-45.90"></a>
 ### WP-45.90 — Verify the owned artifact and real integration
 
 **What must be fully done.** Assign frontend ownership to Web and backend authority to Cloud. Add CF execution/model/R2 status, correlated incident traces, support permissions and outage actions to existing operational workflows.
 
-**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+**Execution order.** Follow [staged artifact integration](../README.md#staged-artifact-integration): consume only existing assigned producers, publish an owned capability candidate before its product consumer, and verify the declared stage against exact upstream artifacts. Record pending later owners and their closing gates; local mocks cover only that named test boundary.
 
 **Testing requirements.** Actual role/redaction/status/support cases and actionable CF/R2 failure diagnostics; no second Node/operations business host.
 
@@ -216,7 +218,7 @@
 
 1. Indicators measure user-visible success; a provider outage is attributed correctly; **every deployed alert names an existing runbook**.
 2. Severity is shared and unambiguous; the incident system survives a production outage; a possible breach classifies automatically at the highest severity.
-3. **Every required runbook exists and has a dated rehearsal record** — satisfying [PG-04](../../assurance/open-gates-register.md#rule-pg-04).
+3. **Every runbook for an implemented owner has a dated rehearsal record; recovery/CF cases awaiting WP46/52 remain explicitly pending until WP50 joins them** — contributing to [PG-04](../../assurance/open-gates-register.md#rule-pg-04).
 4. The status page survives a full cloud outage, publishes only user-facing components, and its emergency alternate URL is published in at least three places.
 5. **An operator can never silently become a user**; every support access is scoped, expiring and audited; no parallel unversioned admin API exists.
 6. Break-glass alerts immediately, expires automatically, requires post-hoc review, and is visible to the affected account owner.
@@ -230,12 +232,13 @@
 
 **Upstream — all must be complete.**
 
-- [12 observability foundation](12-observability-foundation.md#rule-wp-12)
-- [21 cloud host and persistence](21-cloud-host-and-persistence.md#rule-wp-21)
-- [44 dynamic policy and configuration](44-dynamic-policy-and-configuration.md#rule-wp-44)
+- [WP-12](12-observability-foundation.md#rule-wp-12)
+- [WP-21](21-cloud-host-and-persistence.md#rule-wp-21)
+- [WP-44](44-dynamic-policy-and-configuration.md#rule-wp-44)
 
 **Downstream — consumers of these released outputs.**
 
-- [46 backup recovery and data health](46-backup-recovery-and-data-health.md#rule-wp-46)
+- [WP-46](46-backup-recovery-and-data-health.md#rule-wp-46)
+
 
 ---
