@@ -1,5 +1,6 @@
 # Design Repair Verification
 
+> **Historical evidence boundary.** Results and technology claims below belong to their recorded baseline. [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) amends current repository, protocol, Cloud and Mobile decisions; current implementation obligations are in the [gate register](open-gates-register.md). This amendment does not rewrite the earlier finding evidence or turn a design check into runtime proof.
 > Scope: Stage 2 design evidence. These checks do not execute the product, database transactions, providers, native libraries or OS isolation profiles.
 
 The [closure review](phase-2-design-closure-review.md) records the fourteen repaired groups and their future runtime evidence. This artifact makes the counterexamples and the complete document-integrity check reproducible with Python's standard library.

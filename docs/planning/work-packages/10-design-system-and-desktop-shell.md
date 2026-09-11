@@ -9,6 +9,9 @@
 
 > **Goal.** Build the shared desktop foundation once — tokens, windows, panels, commands, settings, attention, errors, lifecycle — so that four products feel like one family without any of them depending on another, and so that every control in it survives Native AOT.
 
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Platform; four applications. Inputs: exact compatible Contracts packages/descriptors and applicable DesktopPlatform packages; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: Native AOT candidate packages/executables with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+
 ---
 
 ## 1. Scope and purpose
@@ -22,6 +25,8 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+**Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
 | Input | Why it matters |
 |---|---|
@@ -159,6 +164,19 @@
 
 ---
 
+<a id="rule-wp-10.90"></a>
+### WP-10.90 — Verify the owned artifact and real integration
+
+**What must be fully done.** Package shared Avalonia tokens, shell, commands, error/attention/settings and accessibility mechanisms; applications supply product flows. Do not turn shared UI into Web/RN or require a family installation.
+
+**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+
+**Testing requirements.** Each app restores only needed UI/mechanism packages and passes existing command, lifecycle and accessibility acceptance independently.
+
+**Completion gate.** Each app restores only needed UI/mechanism packages and passes existing command, lifecycle and accessibility acceptance independently. Record exact artifacts and provider reality. The package is incomplete if an important contract/owner/recovery rule still requires design during coding.
+
+---
+
 ## 6. Impacts
 
 | Dimension | Impact |
@@ -191,6 +209,8 @@
 
 ## 8. Completion gate
 
+**[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) gate:** [WP-10.90](#rule-wp-10.90) and all inherited domain-specific gates must pass on the same candidate closure. Each app restores only needed UI/mechanism packages and passes existing command, lifecycle and accessibility acceptance independently.
+
 **Offline evidence.** Execute this product's applicable [initial-state matrix](../../assurance/testing-and-verification-strategy.md#offline-acceptance-matrix) rows, including fresh shell, hydrated outage, unavailable content, signout and restart where applicable. Record permitted local work and explicitly unavailable Cloud actions.
 
 **All of the following, with recorded evidence:**
@@ -211,11 +231,13 @@
 
 **Upstream — all must be complete.**
 
-- [06 — AOT, JIT and Web Publish Proof](06-aot-jit-and-wasm-publish-proof.md)
+- [06 aot jit and wasm publish proof](06-aot-jit-and-wasm-publish-proof.md#rule-wp-06)
 
-**Downstream — these consume this package’s completed output.**
+**Downstream — consumers of these released outputs.**
 
-- [14 — ArcChat Hub and Minimal ArcNotes Cross-Process Slice](14-hub-and-minimal-provider-slice.md)
-- [18 — ArcNotes Document Core](18-arcnotes-document-core.md)
-- [33 — ArcScope Acquisition and Session Core](33-arcscope-acquisition-and-session.md)
-- [36 — ArcSlate Project, Timeline and Media Model](36-arcslate-project-and-timeline.md)
+- [14 hub and minimal provider slice](14-hub-and-minimal-provider-slice.md#rule-wp-14)
+- [18 arcnotes document core](18-arcnotes-document-core.md#rule-wp-18)
+- [33 arcscope acquisition and session](33-arcscope-acquisition-and-session.md#rule-wp-33)
+- [36 arcslate project and timeline](36-arcslate-project-and-timeline.md#rule-wp-36)
+
+---

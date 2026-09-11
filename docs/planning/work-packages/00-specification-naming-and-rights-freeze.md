@@ -9,6 +9,9 @@
 
 > **Goal.** Make the vocabulary, the product set, the licence position and the reuse process *settled facts* before any code is written against them. This is the first hard gate: if naming, terminology, licence boundaries or product scope move later, editors, data formats, capabilities and cloud sync all rework.
 
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: All repositories; Design authority. Inputs: exact compatible Contracts packages/descriptors and applicable DesktopPlatform packages; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: owned candidate artifacts and generated contracts with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+
 ---
 
 ## 1. Scope and purpose
@@ -22,6 +25,8 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+**Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
 | Input | Why it matters |
 |---|---|
@@ -136,11 +141,23 @@
 
 ### WP-00.05 — Stale-claim reconciliation
 
-**What must be fully done.** Every claim in existing repository documentation that conflicts with the frozen position is corrected: the ArcChat AOT position ([BR-11](#rule-br-11)), the ArcNotes scope position ([BR-12](#rule-br-12)), any statement that Cloud must publish as Native AOT (contradicted by **[D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008)** and **[V-03](../../assurance/phase-1-official-verification.md#rule-v-03)**), any statement that realtime is unsupported under AOT (contradicted by **[V-03](../../assurance/phase-1-official-verification.md#rule-v-03)**), and any reference to the superseded payment provider or superseded products.
 
-**Testing requirements.** The forbidden-term scan plus a manual review of every implementation document that states a runtime, licence or scope position.
+**What must be fully done.** Apply the current naming/scope/runtime authority to implementation repository manifests and policies: four desktop AOT products, Native AOT Cloud, React Web, RN/Hermes Mobile and CF-only Harness. Record the ten repository owners and retired implementation scaffold dispositions; historical evidence stays dated and cannot override the accepted design.
 
-**Completion gate.** No stale claim remains in the implementation repository.
+**Testing requirements.** Repository-policy checks reject superseded product/provider names outside registered reference provenance, old runtime configuration and unassigned source ownership.
+
+**Completion gate.** Implementation policy data matches current formal decisions; no new scope or architecture decision is delegated to downstream packages.
+
+<a id="rule-wp-00.90"></a>
+### WP-00.90 — Verify the owned artifact and real integration
+
+**What must be fully done.** Assemble the owned deliverables from the preceding substeps under the selected repository, package, runtime and protocol authorities. Enforce the ten-repository, proto, AOT, RN, CF/R2 amendment. Carry licence boundaries and current product exclusions. Reconcile old implementation instructions as historical inputs; preserve the design-repair baseline.
+
+**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+
+**Testing requirements.** A named authority/licence/runtime/ownership table, with each repository's instructions derived from the revised design. No archived-input or old implementation document becomes authority.
+
+**Completion gate.** A named authority/licence/runtime/ownership table, with each repository's instructions derived from the revised design. No archived-input or old implementation document becomes authority. Record exact artifacts and provider reality. The package is incomplete if an important contract/owner/recovery rule still requires design during coding.
 
 ---
 
@@ -173,6 +190,8 @@
 
 ## 8. Completion gate
 
+**[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) gate:** [WP-00.90](#rule-wp-00.90) and all inherited domain-specific gates must pass on the same candidate closure. A named authority/licence/runtime/ownership table, with each repository's instructions derived from the revised design. No archived-input or old implementation document becomes authority.
+
 **[PG-21](../../assurance/open-gates-register.md#rule-pg-21) evidence:** [WP-00.01](#rule-wp-00.01) — Current corpus paths/anchors and document-scoped semantic citation check; subsequent normative edits repeat the check. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
 
 **All of the following, with recorded evidence:**
@@ -190,9 +209,11 @@
 
 **Upstream — all must be complete.**
 
-None; this is the specification freeze.
+None.
 
-**Downstream — these consume this package’s completed output.**
+**Downstream — consumers of these released outputs.**
 
-- [01 — Repository Reconciliation and Target Layout](01-repository-reconciliation-and-target-layout.md)
-- [47 — Static Public Site](47-static-public-site.md)
+- [01 repository reconciliation and target layout](01-repository-reconciliation-and-target-layout.md#rule-wp-01)
+- [47 static public site](47-static-public-site.md#rule-wp-47)
+
+---

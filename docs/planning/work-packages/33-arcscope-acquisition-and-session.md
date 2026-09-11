@@ -9,6 +9,9 @@
 
 > **Goal.** Build the evidence layer: sources and adapters, the acquisition pipeline, sessions and captures with segments and gaps, the channel and event time model, and record and replay — with raw capture treated as evidence, immutable once finalised.
 
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: ArcScope; Platform. Inputs: exact compatible Contracts packages/descriptors and applicable DesktopPlatform packages; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: Native AOT candidate packages/executables with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+
 ---
 
 ## 1. Scope and purpose
@@ -22,6 +25,8 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+**Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
 | Input | Why it matters |
 |---|---|
@@ -159,6 +164,19 @@
 
 ---
 
+<a id="rule-wp-33.90"></a>
+### WP-33.90 — Verify the owned artifact and real integration
+
+**What must be fully done.** Assemble the owned deliverables from the preceding substeps under the selected repository, package, runtime and protocol authorities. Keep capture/decoder/session/recording ownership in C#. Replace product native-source dependencies using selected capability packages and explicit managed/native acquisition boundaries.
+
+**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+
+**Testing requirements.** Real packaged hardware-path and throughput/overrun/recovery acceptance; no automatic upload of raw acquisition data.
+
+**Completion gate.** Real packaged hardware-path and throughput/overrun/recovery acceptance; no automatic upload of raw acquisition data. Record exact artifacts and provider reality. The package is incomplete if an important contract/owner/recovery rule still requires design during coding.
+
+---
+
 ## 6. Impacts
 
 | Dimension | Impact |
@@ -189,6 +207,8 @@
 
 ## 8. Completion gate
 
+**[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) gate:** [WP-33.90](#rule-wp-33.90) and all inherited domain-specific gates must pass on the same candidate closure. Real packaged hardware-path and throughput/overrun/recovery acceptance; no automatic upload of raw acquisition data.
+
 **[PG-08](../../assurance/open-gates-register.md#rule-pg-08) evidence:** [WP-33](#rule-wp-33) — Every claimed real hardware result names the maintained device/firmware/driver/lab inventory. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
 
 **[PG-03](../../assurance/open-gates-register.md#rule-pg-03) evidence:** [WP-33](#rule-wp-33) — Licence/provenance approval for each admitted acquisition native dependency. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
@@ -212,12 +232,14 @@
 
 **Upstream — all must be complete.**
 
-- [07 — Local Persistence Foundation](07-local-persistence-foundation.md)
-- [10 — Design System and Desktop Shell Foundation](10-design-system-and-desktop-shell.md)
-- [13 — Four High-Risk Technical Probes](13-high-risk-technical-probes.md)
-- [26 — Device Presence, Remote Action and the Tool Bridge](26-remote-action-and-tool-bridge.md)
+- [07 local persistence foundation](07-local-persistence-foundation.md#rule-wp-07)
+- [10 design system and desktop shell](10-design-system-and-desktop-shell.md#rule-wp-10)
+- [13 high risk technical probes](13-high-risk-technical-probes.md#rule-wp-13)
+- [26 remote action and tool bridge](26-remote-action-and-tool-bridge.md#rule-wp-26)
 
-**Downstream — these consume this package’s completed output.**
+**Downstream — consumers of these released outputs.**
 
-- [34 — ArcScope Visualisation, Analysis and Reporting](34-arcscope-analysis-and-reporting.md)
-- [51 — ArcScope Deterministic Cloud Simulator](51-arcscope-cloud-simulator.md)
+- [34 arcscope analysis and reporting](34-arcscope-analysis-and-reporting.md#rule-wp-34)
+- [51 arcscope cloud simulator](51-arcscope-cloud-simulator.md#rule-wp-51)
+
+---

@@ -1,6 +1,6 @@
 <a id="rule-wp-43"></a>
 
-# WP-43 — Cloud AI Routing, Metering and Settlement
+# WP-43 — Workers AI Routing and Metering
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
@@ -8,6 +8,9 @@
 > Upstream: `25`, `42`, `44` · Downstream: `40`, `50`, `52`
 
 > **Goal.** Replace the stubbed provider path with the real one: provider routing under **operator-funded credentials**, dispatch-time supplier prices and Run-pinned customer tariffs, real usage normalisation, metering that reserves before and settles after, transparency obligations, and honest failure when a provider is unavailable.
+
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: AI Workers AI adapter + Cloud metering. Inputs: the assigned exact Contracts packages/descriptors and actual provider artifacts; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: owned candidate artifacts and generated contracts with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
 
 ---
 
@@ -22,6 +25,8 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+**Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
 **Frozen design input.** [content-origin behavior](../../requirements/07-security-privacy-and-trust.md#content-origin-profile) and [carrier schema](../../requirements/13-data-formats-and-portability.md#content-origin-carriers) is fixed before this package; implement it without choosing a different marking mechanism.
 
@@ -44,31 +49,28 @@
 | BR-01 | **Every run locks a tariff snapshot at start**; a rate change never alters a settled charge (**[D-020](../../decisions/phase-1-foundation-decisions.md#rule-d-020)**). |
 | BR-02 | **Credits are reserved before execution and settled after**, with a hard stop at zero (**[D-020](../../decisions/phase-1-foundation-decisions.md#rule-d-020)**). |
 | BR-03 | **The three ledgers stay separate** ([I-011](../../requirements/01-normative-glossary-and-invariants.md#rule-i-011)): provider cost, customer credit, payment and revenue. |
-| BR-04 | **Provider credentials exist only as Cloud deployment secrets** ([DC-15](../../requirements/11-policy-and-configuration.md#rule-dc-15)), injected by secret manager or Docker secret with least privilege. They never appear in the policy file, the image, the logs, the public sample or any client projection ([DC-14](../../requirements/11-policy-and-configuration.md#rule-dc-14)). |
+| BR-04 | Workers AI calls use the AI binding in the CF deployment. C#/CF service authentication and other designated provider secrets remain in their owning deployment secret stores; never in images, policy values, public samples or clients. |
 | <a id="rule-br-05"></a>BR-05 | **There is no end-user BYOK** ([BY-01](../../requirements/04-commerce-entitlement-and-credits.md#rule-by-01)–[BY-04](../../requirements/04-commerce-entitlement-and-credits.md#rule-by-04), [I-015](../../requirements/01-normative-glossary-and-invariants.md#rule-i-015) retired). Provider credentials are deployment secrets ([DC-15](../../requirements/11-policy-and-configuration.md#rule-dc-15)); a self-host operator provisioning server credentials is infrastructure provisioning, not customer BYOK ([I-495](../../requirements/01-normative-glossary-and-invariants.md#rule-i-495)). |
-| BR-06 | **Provider and model availability is policy**, not a compiled list, and a withdrawn model degrades explicitly. |
+| BR-06 | Policy may activate only models/capabilities in the selected Workers AI catalogue/profile. Withdrawal produces an explicit unavailable state; an unvalidated model is not admitted by changing a string. |
 | BR-07 | **Provider interaction records are a separate trace system** from execution, capability and audit traces. |
 | BR-08 | **Hidden model reasoning never enters the product model.** |
 | BR-09 | **Cost transparency is a product obligation**: a user can see what a run cost and why. |
-| BR-10 | **A provider outage degrades AI capability with a reason and releases reservations**; it never silently consumes credit. |
+| BR-10 | Provider failure before dispatch releases unused reservations; possible dispatch/outcome loss retains the existing unknown-usage hold/reconciliation deadline. No outage is silently treated as free, charged twice or safely replayable. |
 | BR-11 | **AI-generated content carries the transparency marking the applicable regime requires** (**[V-01](../../assurance/phase-1-official-verification.md#rule-v-01)**). |
 
 ---
 
 ## 4. Projects, directories, files and major types affected
 
-Content payloads use typed ContentOrigin and content-unit bindings under their existing owner revision; format/schema fixtures include that projection.
-
-| Location | Change |
+| Owner / location | Deliverable |
 |---|---|
-| `src/Cloud/ArcForges.Cloud.Modules.AI/` | Provider adapters, routing, tariffs, metering, interaction records |
-| `src/Cloud/ArcForges.Cloud.Modules.Entitlement/` | Credit settlement integration |
-| `src/Cloud/ArcForges.Cloud.Modules.AI/` | Provider adapters, routing, normalisation, settlement. **No desktop project participates** |
-| `src/BuildingBlocks/ArcForges.Execution.Budget/` | Real reserve, settle and release against credits |
-| `src/Contracts/Public/ArcForges.Contracts.PublicApi.AI/` | AI request, response and metering DTOs |
-| `tests/CloudIntegrationTests/AI/` | Routing, supplier price, customer tariff, normalisation, settlement, uncertain-usage, outage and transparency suites |
+| AI: src/providers/workers-ai/, src/inference/ | Selected Workers AI catalogue adapter, model/text/embedding/rerank request/response normalization and service ports |
+| Cloud: src/Cloud/ArcForges.Cloud.Modules.Agent/ | Catalogue/policy validation, routing decision, intent/outcome/usage/supplier records |
+| Cloud: Modules.Task, Modules.Commerce, Modules.Entitlement | Their owned run, tariff, reservation, credit/settlement and audit transaction participants |
+| Contracts: public Agent/usage and internal AI HTTP profiles | Generated types and independent fixtures from the fixed registry |
+| Cloud/AI integration tests | Real provider capability, usage, unknown outcome, tariff, funding and recovery evidence |
 
-**Major types introduced.** `AiProviderAdapter`, `ProviderCapabilityDescriptor`, `ModelDescriptor`, `RoutingPolicy`, `RoutingDecision`, `TariffVersion`, `TariffSnapshot`, `CostDimension`, `ProviderInteractionRecord`, `MeteringResult`, `SupplierPriceVersion`, `AttemptUsage`, `CustomerSettlement`, `TransparencyMarking`. **`ByokBinding` is retired** — no customer credential type exists ([BR-05](#rule-br-05)).
+The provider implementation is confined to ArcForges-AI; C# owns canonical commerce/authority and typed integration ports. No desktop/mobile model SDK or second loop is introduced.
 
 ---
 
@@ -78,11 +80,12 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 ### WP-43.00 — Provider adapters and routing
 
-**What must be fully done.** Adapters per provider with typed capability descriptors. Routing selects a provider and model from policy, considering availability, capability fit, entitlement and cost. The decision is recorded and explainable. Streaming is supported where the provider offers it, with interruption handled explicitly.
 
-**Testing requirements.** Routing decision tests across policy configurations; an explainability assertion; streaming interruption tests; an adapter-substitution test.
+**What must be fully done.** Implement only the selected Workers AI catalogue/capability profiles using env.AI.run: default/fast text, accepted image context, bge-m3 embedding and reranker. Validate model availability and frozen config, canonical request limits and supported tool/stream shapes before dispatch. C# records admission/routing and supplier version; CF executes the already admitted intent.
 
-**Completion gate.** Routing is policy-driven, explainable and recorded, and streaming interruption never stores a partial response as complete.
+**Testing requirements.** Actual selected models/capability shapes, withdrawn/unknown/unsupported requests, request-size/output bounds and version mismatch.
+
+**Completion gate.** The validated CF catalogue supplies every accepted AI call kind; no external provider, BYOK, Gateway or Node sidecar is required.
 
 <a id="rule-wp-43.01"></a>
 
@@ -98,21 +101,23 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 ### WP-43.02 — Metering and settlement
 
-**What must be fully done.** Persist provider intent with nullable provider reference/outcome before network I/O; reserve supplier exposure per attempt and Run customer total atomically. Platform jobs use operator authority without a customer term/hold. Settle one durable invocation, not an unfinished whole Turn.  Estimate, reserve, execute, settle actual, release unused — atomic against the credit lots. Settlement is idempotent per attempt. A crashed run's reservation is swept. Exhaustion is a hard stop with a clear remediation prompt.
 
-**Testing requirements.** Crash before provider response ID, then reconcile; race workspaces and platform retries at a supplier cap; release a customer hold while preserving unknown supplier/Run exposure; settle tool-only output before the next call.  Reserve-settle-release accounting; idempotent settlement under retry; sweep after a crashed run; a hard-stop test; a concurrency test asserting no overdraft.
+**What must be fully done.** Implement C# reservation/intent before CF I/O, outcome receipt before settlement and immutable attempt usage revisions under the existing transaction families. Cover interactive runs and bounded inference jobs; operator maintenance remains separately funded. Use stable attempt identity, supplier exposure, Run customer total and exact credit lots. Unknown usage follows its existing deadline/liability ladder, never an automatic model resend.
 
-**Completion gate.** Every dispatch has committed bounded exposure and every customer debit has durable delivered evidence; unknown liability survives deadline/restart/rollover.  Metering never double-charges, never leaks a reservation, and never permits an overdraft.
+**Testing requirements.** Actual CF normal/interrupted/lost outcome with concurrent duplicates and replayed receipts; cancelled/unknown hold sweep, tariff change and operator-job isolation.
+
+**Completion gate.** Each possible invocation is accounted once; holds and unknown liability reconcile without duplicate effect or unapproved spend.
 
 <a id="rule-wp-43.03"></a>
 
 ### WP-43.03 — Operator provider credentials and the absence of BYOK
 
-**What must be fully done.** **End-user BYOK is excluded in every form** ([BY-01](../../requirements/04-commerce-entitlement-and-credits.md#rule-by-01)–[BY-04](../../requirements/04-commerce-entitlement-and-credits.md#rule-by-04), [I-015](../../requirements/01-normative-glossary-and-invariants.md#rule-i-015) retired). Provider credentials belong to the deployment operator and are injected by secret manager or Docker secret with least privilege ([DC-15](../../requirements/11-policy-and-configuration.md#rule-dc-15)); they never appear in the policy file, the image, the logs, the public sample or any client projection ([DC-14](../../requirements/11-policy-and-configuration.md#rule-dc-14)). Self-host operators provision their own server credentials the same way — that is infrastructure provisioning, not customer BYOK ([I-495](../../requirements/01-normative-glossary-and-invariants.md#rule-i-495)).
 
-**Testing requirements.** A contract policy test asserting **no operation, schema field, setting or UI accepts a customer provider key, model endpoint or credential**; a structural test asserting no desktop, mobile or browser assembly references a provider adapter; a projection test asserting no supplier rate, route weight or credential reaches a client ([DC-14](../../requirements/11-policy-and-configuration.md#rule-dc-14)); a secret-handling test asserting credentials are absent from the image, the sample configuration and the logs.
+**What must be fully done.** Provision the Workers AI binding and restricted service credentials as deployment inputs, with dual-key HMAC rotation/clock/nonces from the CF contract. C# does not receive an end-user provider key. Self-host installation provisions its own CF resources and same typed integration/config contract.
 
-**Completion gate.** **No end-user BYOK path exists anywhere in the product**, and provider credentials are present only in the Cloud host's injected secrets.
+**Testing requirements.** Deployment secret/source/log/client projection checks and key-rotation/replay/forged callback tests.
+
+**Completion gate.** Only authorized service deployments can invoke admitted jobs or acknowledge outcomes; customer BYOK remains structurally absent.
 
 <a id="rule-wp-43.04"></a>
 
@@ -130,21 +135,23 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 ### WP-43.05 — Availability and failure
 
-**What must be fully done.** Provider and model availability driven by policy, with a withdrawn model degrading explicitly rather than disappearing. A provider outage fails runs with a typed reason, releases reservations, and offers a fallback where policy permits. All-routes-unavailable is a page-worthy condition.
 
-**Testing requirements.** Model-withdrawal degradation; provider-outage reservation release; fallback routing; an alert assertion for all-routes-unavailable.
+**What must be fully done.** Implement catalogue health, explicit model withdrawal, pre-dispatch failure and possible-dispatch unknown classification. Use only the selected fallback policy within the catalogue and a new authorized intent when permitted; never retry an uncertain model effect automatically. Keep keyword/local work available when all AI routes fail.
 
-**Completion gate.** A provider outage never silently consumes credit, and a withdrawn model degrades with a stated reason.
+**Testing requirements.** Rate limit, timeout before/after effect, partial usage, unavailable catalogue and all-models-unavailable alert/recovery.
+
+**Completion gate.** Visible AI degradation retains correct reservation and effect certainty without affecting unrelated product capabilities.
 
 <a id="rule-wp-43.07"></a>
 
 ### WP-43.07 — Real-provider metering evidence
 
-**What must be fully done.** The complete path exercised against a **real provider**, not a fixture: normalisation of that provider's actual usage report into non-overlapping categories with its declared inclusion relationships; cumulative stream snapshots replacing rather than summing; supplier cost at the dispatch-time price version; customer cost at the Run's pinned tariff snapshot; idempotent settlement keyed on `(provider_attempt_id, usage_revision, category)`; and the `§8.6` worked fixture asserted exactly — USD 0.00244 supplier cost, 4,880,000 micro-credits customer cost, 1.12 credits released to the original funding sources.
 
-**Testing requirements.** Two providers whose cache and reasoning fields overlap differently, both settling correctly; a duplicate usage event proving no double debit; an undeclared usage field entering reconciliation rather than a debit; a cancellation settling verified consumption and releasing the remainder; a lost final usage producing `UsagePending` and, at the deadline, releasing the customer hold while **retaining the supplier liability**; a platform-caused retry charged once to the customer and fully visible in supplier cost; a token-category and tier price change applying to future dispatch only; historical replay after replacing every current rate, reproducing the original charge exactly.
+**What must be fully done.** Record actual Workers AI responses for each selected capability and normalize them into independent sanitized fixtures. Run deterministic fixtures on ordinary CI and the credentialed real-CF candidate gate with exact Worker/model/config identities; fixtures never replace supplier/usage proof.
 
-**Completion gate.** **One real provider usage response and one real payment-provider event are reconciled through the same code as the fixtures** ([MT-01](../../requirements/04-commerce-entitlement-and-credits.md#rule-mt-01), `§10.6` of the configuration requirements). Deterministic fixtures supplement this evidence; they do not replace it.
+**Testing requirements.** Model response drift, missing category, cumulative stream and embedding/rerank result validation, plus controlled real-provider run.
+
+**Completion gate.** The selected provider closure has both repeatable protocol tests and actual integration evidence.
 
 <a id="rule-wp-43.06"></a>
 
@@ -155,6 +162,19 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 **Testing requirements.** A per-provider test-environment run; a fixture-driven CI run with the provider unreachable.
 
 **Completion gate.** Every provider is exercised against its test environment and has recorded fixtures — **satisfying [PG-10](../../assurance/open-gates-register.md#rule-pg-10) for AI providers**.
+
+---
+
+<a id="rule-wp-43.90"></a>
+### WP-43.90 — Verify the owned artifact and real integration
+
+**What must be fully done.** Assemble the owned deliverables from the preceding substeps under the selected repository, package, runtime and protocol authorities. Implement the frozen Workers AI model subset/direct binding, capability matrix, normalization, limits and known/unknown usage contract. Gateway is not a required dependency.
+
+**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+
+**Testing requirements.** Real selected model/tool/embedding cases and provider refusal/lost-result/usage reconciliation, tied to C# admitted call and config identity. No general external-provider integration implied.
+
+**Completion gate.** Real selected model/tool/embedding cases and provider refusal/lost-result/usage reconciliation, tied to C# admitted call and config identity. No general external-provider integration implied. Record exact artifacts and provider reality. The package is incomplete if an important contract/owner/recovery rule still requires design during coding.
 
 ---
 
@@ -191,6 +211,8 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 ## 8. Completion gate
 
+**[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) gate:** [WP-43.90](#rule-wp-43.90) and all inherited domain-specific gates must pass on the same candidate closure. Real selected model/tool/embedding cases and provider refusal/lost-result/usage reconciliation, tied to C# admitted call and config identity. No general external-provider integration implied.
+
 **[PG-13](../../assurance/open-gates-register.md#rule-pg-13) evidence:** [WP-43.07](#rule-wp-43.07) — Real provider usage and exact synthetic supplier/customer settlement fixture through production code; combine with payment/term evidence from package 42. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
 
 **Additional completion requirement.** The package's content paths pass the stated origin vectors, including unknown input and failed publication; a valid stored/rendered payload alone cannot satisfy the carrier requirement.
@@ -211,12 +233,21 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 **Upstream — all must be complete.**
 
-- [25 — Sync Engine and Blob Lifecycle](25-sync-engine-and-blob-lifecycle.md)
-- [42 — Commerce, Entitlement and Credits](42-commerce-entitlement-and-credits.md)
-- [44 — Dynamic Policy and Configuration Control Plane](44-dynamic-policy-and-configuration.md)
+- [25 sync engine and blob lifecycle](25-sync-engine-and-blob-lifecycle.md#rule-wp-25)
+- [42 commerce entitlement and credits](42-commerce-entitlement-and-credits.md#rule-wp-42)
+- [44 dynamic policy and configuration](44-dynamic-policy-and-configuration.md#rule-wp-44)
 
-**Downstream — these consume this package’s completed output.**
+**Downstream — consumers of these released outputs.**
 
-- [40 — Knowledge, Search and Retrieval](40-knowledge-search-and-retrieval.md)
-- [50 — Full-Platform Production Release](50-full-platform-production-release.md)
-- [52 — The Cloud Harness](52-cloud-harness.md)
+- [40 knowledge search and retrieval](40-knowledge-search-and-retrieval.md#rule-wp-40)
+- [50 full platform production release](50-full-platform-production-release.md#rule-wp-50)
+- [52 cloud harness](52-cloud-harness.md#rule-wp-52)
+
+---
+
+
+### Inference-job implementation binding
+
+In the existing adapter/admission substeps, implement AI src/workflows/InferenceWorkflow.ts and src/inference/ for fixed-stage embedding/rerank jobs, and Cloud Search/Commerce typed ports for the [canonical job and receipt record](../../architecture/data-model/01-cloud-data-model.md#search-inference-job-execution-record). Add its binding to the same Worker artifact. Apply the exact inference-job/lease/input/outcome/state HTTP schemas, conditional60-second lease renewed20 seconds,120-second job deadline, deterministic Workflow ID, zero model-step retries and observed deployment-version gate. This is an additional bounded job handler inside the same deployment, with no agent planning/tool loop.
+
+Prove duplicate start, lost receipt, stale fence/generation, active-term expiry, source revocation, complete output with unconfirmed supplier cost, and partial/unknown output. The existing Commerce platformJob chain records supplier exposure once; assert zero customer reservation, customer settlement and credit debit for every embedding/rerank scenario. WP40 consumes these real adapters/receipts before testing index readiness/fallback; WP52 remains the first full model/tool Harness.

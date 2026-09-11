@@ -1,13 +1,16 @@
 <a id="rule-wp-52"></a>
 
-# WP-52 — The Cloud Harness
+# WP-52 — Sole Cloudflare Workflow Harness
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: J — Platform completion *(sequenced after `43`; numbered `52` because `00`–`51` are allocated and a retired identifier is never reused)*
 > Upstream: `15`, `17`, `20`, `21`, `23`, `26`, `40`, `41`, `42`, `43`, `44` · Downstream: `31`, `49`, `50`
 
-> **Goal.** Build the **single Cloud Harness** of [`../../architecture/17-agent-harness.md`](../../architecture/17-agent-harness.md): the turn loop, tool batching, context assembly, compaction, approval interleaving, streaming, cancellation and recovery — running in `ArcForges.Cloud.Host`, against real admission and real metering.
+> **Goal.** Build the **single Cloud Harness** of [`../../architecture/17-agent-harness.md`](../../architecture/17-agent-harness.md): the turn loop, tool batching, context assembly, compaction, approval interleaving, streaming, cancellation and recovery — running in the ArcForges-AI CF Workflow, against real admission and real metering.
+
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: AI sole loop; Cloud business ports; clients/tools. Inputs: the assigned exact Contracts packages/descriptors and actual provider artifacts; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: owned candidate artifacts and generated contracts with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
 
 ---
 
@@ -24,6 +27,8 @@ Rather than leave a package whose steps cannot run in their stated order, the Ha
 ---
 
 ## 2. Required inputs and dependencies
+
+**Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
 **Frozen design input.** [content-origin behavior](../../requirements/07-security-privacy-and-trust.md#content-origin-profile) and [carrier schema](../../requirements/13-data-formats-and-portability.md#content-origin-carriers) is fixed before this package; implement it without choosing a different marking mechanism.
 
@@ -46,7 +51,7 @@ Explicit consumers: [WP-20](20-first-cross-product-workflow.md#rule-wp-20) suppl
 | # | Rule |
 |---|---|
 | BR-01 | **One Harness, Cloud-only** ([LS-02](../../architecture/17-agent-harness.md#rule-ls-02)). No desktop, mobile or browser assembly contains a turn loop, a planner or a provider adapter. |
-| BR-02 | **The Cloud host is JIT, not AOT** (**[D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008)**, **[V-03](../../assurance/phase-1-official-verification.md#rule-v-03)**). No AOT constraint applies to Harness code, and no gate here asks for an AOT publish. |
+| BR-02 | **The Cloud business host is Native AOT; Harness TypeScript runs on CF** (**[D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008)**, **[V-03](../../assurance/phase-1-official-verification.md#rule-v-03)**). CF Worker deployment tests apply to the loop; all C# integration ports retain the AOT artifact gate. |
 | BR-03 | **A Cloud Agent Task is not a native Product Job** ([CM-04](../../architecture/09-ai-and-agent-runtime-architecture.md#rule-cm-04), [I-121](../../requirements/01-normative-glossary-and-invariants.md#rule-i-121), [I-485](../../requirements/01-normative-glossary-and-invariants.md#rule-i-485)). This package owns the former; [WP-16](16-unified-execution-engine.md#rule-wp-16) owns the latter. |
 | BR-04 | **Admission commits before dispatch** (`§6.1.2` of the data-model overview). Nothing crosses the dispatch barrier inside a transaction. |
 | BR-05 | **Recovery is decided by dispatch intent, never by outcome absence** (`§6.3` of the harness). Retry safety is a declared capability property ([FL-08](../../requirements/05-ai-and-agent-execution.md#rule-fl-08)). |
@@ -61,12 +66,13 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 | Location | Change |
 |---|---|
-| `src/Cloud/ArcForges.Cloud.AgentRuntime/` | The turn loop, batching, context assembly, compaction, recovery |
+| `ArcForges-AI/src/workflows/RunWorkflow.ts` | The turn loop, batching, context assembly, compaction, recovery |
 | `src/Cloud/ArcForges.Cloud.Modules.Task/` | Task/run/step/iteration, automation occurrence and approval persistence; owns the `task` schema and exposes its module API |
 | `src/Cloud/ArcForges.Cloud.Modules.Agent/` | Reuses provider/model/routing policy APIs from the routing package; it does not write Task tables |
-| `src/Cloud/ArcForges.Cloud.Modules.Chat/` | The stream buffer and the committed message write path ([CW-02](../../architecture/data-model/00-data-model-overview.md#rule-cw-02)) |
-| `src/Cloud/ArcForges.Cloud.PublicApi/` | `task.readStream` and the turn operations |
-| `src/Cloud/ArcForges.Cloud.BackgroundJobs/` | The harness runner as a lease-fenced hosted service |
+| `src/Cloud/ArcForges.Cloud.Modules.Chat/` | The canonical committed message write path ([CW-02](../../architecture/data-model/00-data-model-overview.md#rule-cw-02)) |
+| `src/Cloud/ArcForges.Cloud.PublicApi/` | Canonical Task/Chat operations and authenticated internal business ports |
+| `ArcForges-AI/src/streams/RunStream.ts` | Disposable bounded presentation tail, authenticated live/catch-up and terminal markers |
+| `src/Cloud/ArcForges.Cloud.BackgroundJobs/` | C# dispatch/control/reconciliation jobs; CF alone owns the loop |
 | `tests/Cloud.Tests.Integration/` | Loop, recovery, streaming, compaction and workflow suites |
 
 **Major types introduced.** `TurnLoop`, `TurnIteration`, `ToolCallBatch`, `ConflictSet`, `ContextPack`, `CompactionRecord`, `StreamBuffer`, `DispatchIntent`, `EffectCertainty`, `ResolutionLadder`.
@@ -79,43 +85,45 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 ### WP-52.00 — The turn loop, batching and bounds
 
-**What must be fully done.** The durable turn loop of `§2`: every iteration persisted before the next begins; response classification and continuation decisions (`§3.2`); every loop bound ending the turn with a stated reason (`§3.3`); no-progress detection (`§3.4`); and parallel tool batching against declared conflict sets with an undeclared capability treated as exclusive (`§2.1`).
 
-**Testing requirements.** A crash-injection suite resuming from each loop point with no duplicate effect and no duplicate charge; a bounds suite proving no unbounded loop is reachable; a repetition test proving no-progress termination; a conflict suite proving two writes to one target never run in parallel while two independent reads do; a partial-failure test proving a failing call returns its siblings' real results.
+**What must be fully done.** Implement the sole RunWorkflow with deterministic Workflow identity, C# claim/epoch/generation and actual deployed Worker version. Persist iteration/context references and model/tool dispatch intent before effects; record immutable outcome receipts before continuation. Apply selected model/tool/parallel/progress/time/step budgets and declared conflict sets, including 60-second execution lease renewed every 20 seconds during long awaits.
 
-**Completion gate.** No unbounded loop is reachable, every bound ends the turn with a stated reason, and parallel batching never violates a declared conflict.
+**Testing requirements.** Real Workflow with forced duplicate start, replay, 120-second model await, lease loss/stale outcome, no-progress and every bound; no automatic effect retry after intent.
+
+**Completion gate.** Exactly one fenced loop advances a Task under its frozen config with bounded checkpoints and a visible reason for every stop/wait.
 
 <a id="rule-wp-52.01"></a>
 
 ### WP-52.01 — Context assembly and compaction
 
-**What must be fully done.** Assembly in the order of `§4.2` — references first, content last — with permission applied per source; revision stamping and staleness invalidation before a write (`§4.3`); tool-declaration filtering so an uninvocable capability is never declared (`§4.4`); budget and disclosed truncation (`§4.5`); and history compaction as a derived `CompactionRecord` (`§4.6`).
 
-**Testing requirements.** A permission test asserting a refused source contributes nothing including to counts; a staleness test asserting a changed revision is reported to the model rather than silently substituted; **a test asserting only acknowledged Cloud revisions enter the pack** and a pending client edit never does ([PK-04](../../architecture/17-agent-harness.md#rule-pk-04), [I-498](../../requirements/01-normative-glossary-and-invariants.md#rule-i-498)); a long-conversation suite proving the stored branch is byte-identical before and after compaction; a decision-retention test proving a refused proposal is not re-proposed.
+**What must be fully done.** Assemble context through authorized C# ports in the fixed order, page under one snapshot hash and retain immutable source pins/content origins. Filter invocable capabilities before model declaration, disclose budget truncation and store derived compaction refs. Before mutation, revalidate the source/revision and active grant.
 
-**Completion gate.** Context is bounded, permission-filtered and revision-stamped; compaction reduces what is sent without altering what is stored and never loses an approval, a refusal or a user correction.
+**Testing requirements.** Large context paging, permission loss, stale source, prior compaction version and unsupported capability; no raw prompts in Workflow checkpoints.
+
+**Completion gate.** All effect decisions refer to authorized immutable context and the loop never writes stale source implicitly.
 
 <a id="rule-wp-52.02"></a>
 
 ### WP-52.02 — Approval, cancellation and crash recovery
 
-**What must be fully done.** Durable approval suspension surviving a restart of either side, with context revalidated on resume (`§5`); cancellation at every point leaving a determinate state (`§6.2`); and recovery decided by **dispatch intent** with the resolution ladder of `§6.4` — declared idempotency, owner status operation, provider record, deadline, user decision.
 
-**Testing requirements.** An approval-suspended turn surviving restart of both sides; cancellation at each loop point; **a crash after dispatch but before any outcome, asserting the state is `unknown` and is not retried automatically**; a capability declaring neither idempotency nor a status operation, asserting it **cannot be registered** ([UR-02](../../architecture/17-agent-harness.md#rule-ur-02)); a device-tool crash resolved by the device command log.
+**What must be fully done.** Implement approval waiting with at most the selected wait/reconcile steps and seven-day bound, reauthorization on resume, explicit cancel/pause/steer controls and C# reconciliation. Use intent→owner/provider evidence→deadline→user-decision ladder; request lifetime and UI session closure do not cancel a durable Task.
 
-**Completion gate.** No crash path resolves an uncertain external effect to *did not happen*, and no non-idempotent capability is retried without a resolution step.
+**Testing requirements.** Restart Workflow/Cloud during wait/model/tool, missed wake event, expired/stale proposal, cancel race, generation rotation and late evidence.
+
+**Completion gate.** Wait/cancel/recovery retains one canonical outcome or explicit unknownEffect; no presumed safe replay or missing hold resolution.
 
 <a id="rule-wp-52.03"></a>
 
 ### WP-52.03 — Shared streaming with durable Task fallback
 
-**Required design implementation and verification.** Emit origin kinds before generated deltas and commit per-part origin with durable iteration/final message output. Exercise missing marker/hash corruption, crash before publication and retry of marking without another model call/customer debit. All clients converge to the same marked durable output with realtime disabled.
 
-**What must be fully done.** Implement the logged shared PostgreSQL presentation tables and full readStream contract in [Harness §7](../../architecture/17-agent-harness.md#7-streaming). Distinguish stream completed/truncated/superseded/evicted from Task state. Persist each invocation output before settlement, and final/interrupted message or no-answer with terminal Task atomically. Document WAL/backup retention and restore purge; no process-socket takeover assumption.
+**What must be fully done.** Implement RunStream DO with the selected 4 MiB tail, 64 KiB frames, flush/TTL/marker limits and authenticated first-frame connection binding. Reauthorize every delivered frame/range through C#; stream IDs/UTF-8 byte offsets distinguish interruption, truncation, supersession and eviction. Persist invocation output before settlement and terminal Task plus final/interrupted/no-answer Chat atomically through C# ports.
 
-**Testing requirements.** Different replica read, no chunk yet, full buffer while Task running, completed tool-only invocation, expired state marker, lost provider process, cancellation, Unicode offset boundary, stale fence and restored database. With realtime disabled all clients reach authoritative output/status; no nonexistent final-message fetch or blind redispatch.
+**Testing requirements.** CF connection loss/DO eviction, slow consumer, permission/session revoke, duplicated offsets, output-before-settlement and final-commit crash points; replay from canonical Chat.
 
-**Completion gate.** Every stream loss/state has a bounded authoritative fallback, each billed delivered invocation has durable evidence, and Task completion has its final-message/no-answer receipt. Presentation retention and physical backups make consistent claims.
+**Completion gate.** Stream projection never acts as message authority or determines Task state; durable final content survives loss of all CF presentation state.
 
 <a id="rule-wp-52.04"></a>
 
@@ -143,11 +151,23 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 ### WP-52.06 — Durable Cloud automation and authorised scheduling
 
-**What must be fully done.** Implement the Cloud automation definition/version, trigger schedule/event cursor, unique occurrence receipt, grant/budget snapshot and Task linkage. The same single Harness executes occurrences. Use one bounded lease/fence per schedule partition, transactional occurrence deduplication and catch-up/coalescing policy; re-evaluate service, consent and limits before dispatch. Disable/revoke stops future occurrences and explicitly handles in-flight work. Remove [WP-17.04](17-arcchat-independent-core.md#rule-wp-17.04) fixture transitions.
 
-**Testing requirements.** Two replicas fire the same occurrence; crash after occurrence creation/before Task start; missed schedule and clock rollback; cascade and concurrency saturation; disable during run; expired grant/service and exhausted Run budget. Test with the real host/provider and desktop client, and no fixture scheduler.
+**What must be fully done.** Implement automation definition/version, trigger schedule/event cursor, occurrence dedup and grant/budget snapshot in C# Task-owned tables. Bounded leased jobs dispatch the same RunWorkflow identity through the existing outbox; disabled/revoked automation stops future occurrences and uses defined controls for active work. Remove only the labelled WP17 automation fixture.
 
-**Completion gate.** Every authorised occurrence has at most one durable Task, no event storm creates unbounded work and no desktop executes AI scheduling. Failed/blocked occurrences have visible history and remediation.
+**Testing requirements.** Duplicate schedule/event, catch-up/coalescing, service/grant expiry, disable during wait and actual CF occurrence/usage with one linked Task.
+
+**Completion gate.** Automation uses the single Harness and canonical occurrence ledger with the accepted commercial and recovery rules.
+
+<a id="rule-wp-52.90"></a>
+### WP-52.90 — Verify the owned artifact and real integration
+
+**What must be fully done.** Assemble the owned deliverables from the preceding substeps under the selected repository, package, runtime and protocol authorities. Implement the specified Worker/Workflow/DO roles. Implement context, model/tool loop, approval, retries, cancel, streams and schedule execution against real C# transactions/ports and selected Workers AI. Remove the named [WP-17](17-arcchat-independent-core.md#rule-wp-17)/[WP-20](20-first-cross-product-workflow.md#rule-wp-20) fixtures and own the first complete AI cross-product workflow.
+
+**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+
+**Testing requirements.** Real C#/CF/R2/device integration, duplicate/lost ack/approval/restart/stream-tail/terminal-commit cases, usage and provenance. One loop and one canonical business outcome; no unexplained provider retry.
+
+**Completion gate.** Real C#/CF/R2/device integration, duplicate/lost ack/approval/restart/stream-tail/terminal-commit cases, usage and provenance. One loop and one canonical business outcome; no unexplained provider retry. Record exact artifacts and provider reality. The package is incomplete if an important contract/owner/recovery rule still requires design during coding.
 
 ---
 
@@ -159,7 +179,7 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 | Protocol | `task.readStream`; `task.outputAppended` payload; the turn operations |
 | UI | Streaming display, approval prompts, admission reasons — all client-side rendering of Cloud state |
 | Security | Every tool invocation passes the pipeline; MCP content stays untrusted data |
-| Platform | Cloud JIT only; **no AOT constraint applies to this package** |
+| Platform | C# ports require Native AOT proof; TypeScript Workflow requires actual CF deployment proof |
 | Migration | `CompactionRecord` is derived and rebuildable; losing it costs compute, never content |
 | Compatibility | The turn and stream contracts are consumed by Desktop, Web and Mobile alike |
 
@@ -182,6 +202,8 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 ---
 
 ## 8. Completion gate
+
+**[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) gate:** [WP-52.90](#rule-wp-52.90) and all inherited domain-specific gates must pass on the same candidate closure. Real C#/CF/R2/device integration, duplicate/lost ack/approval/restart/stream-tail/terminal-commit cases, usage and provenance. One loop and one canonical business outcome; no unexplained provider retry.
 
 **[PG-18](../../assurance/open-gates-register.md#rule-pg-18) evidence:** [WP-52.04](#rule-wp-52.04) — Dispatch/crash unknown-effect resolution and unregistrable unsafe capabilities, together with cancellation/approval recovery in this package. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
 
@@ -208,20 +230,22 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 **Upstream — all must be complete.**
 
-- [15 — ArcChat Conversation and Project Core](15-arcchat-conversation-core.md)
-- [17 — ArcChat Independent Core V1A](17-arcchat-independent-core.md)
-- [20 — First Real Cross-Product Workflow](20-first-cross-product-workflow.md)
-- [21 — Cloud Host, Modules, Persistence and Migrations](21-cloud-host-and-persistence.md)
-- [23 — Public API Surface and Generated Clients](23-public-api-and-generated-clients.md)
-- [26 — Device Presence, Remote Action and the Tool Bridge](26-remote-action-and-tool-bridge.md)
-- [40 — Knowledge, Search and Retrieval](40-knowledge-search-and-retrieval.md)
-- [41 — Extension Platform and Integrations](41-extension-platform-and-integrations.md)
-- [42 — Commerce, Entitlement and Credits](42-commerce-entitlement-and-credits.md)
-- [43 — Cloud AI Routing, Metering and Settlement](43-managed-ai-routing-and-metering.md)
-- [44 — Dynamic Policy and Configuration Control Plane](44-dynamic-policy-and-configuration.md)
+- [15 arcchat conversation core](15-arcchat-conversation-core.md#rule-wp-15)
+- [17 arcchat independent core](17-arcchat-independent-core.md#rule-wp-17)
+- [20 first cross product workflow](20-first-cross-product-workflow.md#rule-wp-20)
+- [21 cloud host and persistence](21-cloud-host-and-persistence.md#rule-wp-21)
+- [23 public api and generated clients](23-public-api-and-generated-clients.md#rule-wp-23)
+- [26 remote action and tool bridge](26-remote-action-and-tool-bridge.md#rule-wp-26)
+- [40 knowledge search and retrieval](40-knowledge-search-and-retrieval.md#rule-wp-40)
+- [41 extension platform and integrations](41-extension-platform-and-integrations.md#rule-wp-41)
+- [42 commerce entitlement and credits](42-commerce-entitlement-and-credits.md#rule-wp-42)
+- [43 managed ai routing and metering](43-managed-ai-routing-and-metering.md#rule-wp-43)
+- [44 dynamic policy and configuration](44-dynamic-policy-and-configuration.md#rule-wp-44)
 
-**Downstream — these consume this package’s completed output.**
+**Downstream — consumers of these released outputs.**
 
-- [31 — ArcChat Mobile Android Remote Closed Loop](31-arcchat-mobile-android.md)
-- [49 — ArcChat Web Companion](49-arcchat-web-companion.md)
-- [50 — Full-Platform Production Release](50-full-platform-production-release.md)
+- [31 arcchat mobile android](31-arcchat-mobile-android.md#rule-wp-31)
+- [49 arcchat web companion](49-arcchat-web-companion.md#rule-wp-49)
+- [50 full platform production release](50-full-platform-production-release.md#rule-wp-50)
+
+---

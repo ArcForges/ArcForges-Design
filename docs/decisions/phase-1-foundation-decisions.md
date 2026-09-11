@@ -1,5 +1,7 @@
 # Phase 1 Foundation Decision Register
 
+> **Current technology amendment (2026-09-11): [P2-009](phase-2-specification-decisions.md#rule-p2-009).** Historical monorepo, C# wire source, local legacy RPC, Cloud JIT, in-host Harness and MAUI quotations below are superseded as specified there. Product scope, license, access exclusions and preserved evidence remain traceable.
+
 > Status: **Foundation Freeze requested** — Phase 1 (Input Review and Foundation Decision Freeze)
 > Branch: `design/phase-1-foundation`
 > Companions: `docs/assurance/phase-1-input-review-ledger.md`, `docs/assurance/phase-1-official-verification.md`
@@ -169,9 +171,9 @@ This is the single active statement of [D-003](#rule-d-003)'s applied scope. It 
 
 **Type** `CONTRADICTION` · **Status** `USER_CONFIRMED` · **Resolved by** [D-007](#rule-d-007)
 
-**Where** `I3 §18.1` and `§31` mandate Blazor WebAssembly with WASM AOT and rule out Blazor Server as a core mode. `I4 §Stage 2.27` requires the public marketing page to render above the fold *without JS/WASM fully started*, at LCP ≤2.5s / INP ≤200ms / CLS ≤0.1 (p75), and states that a marketing site must not require multi-MB WASM before Hero. Blazor WASM cannot satisfy that. `I2 §III.12` splits web into static site / account portal / chat companion and calls web a separate project, noting the static site "V0 can be built very early".
+**Where** `I3 §18.1` and `§31` mandate Blazor WebAssembly with WASM AOT and rule out Blazor Server as a core mode. `I4 §Stage 2.27` requires the public marketing page to render above the fold *without JS/WASM fully started*, at LCP ≤2.5s / INP ≤200 ms / CLS ≤0.1 (p75), and states that a marketing site must not require multi-MB WASM before Hero. Blazor WASM cannot satisfy that. `I2 §III.12` splits web into static site / account portal / chat companion and calls web a separate project, noting the static site "V0 can be built very early".
 
-**Current outcome (amended 2026-09-06).** Static public pages plus one React/TypeScript Account/Chat application; Node.js/npm tooling; generated C# → OpenAPI → TS SDK; Windows esproj integration. The original Blazor outcome is superseded by [P2-008](phase-2-specification-decisions.md#rule-p2-008).
+**Historical outcome (2026-09-06; technology amended by [P2-009](phase-2-specification-decisions.md#rule-p2-009)).** Static public pages plus one React/TypeScript Account/Chat application; Node.js/npm tooling; generated C# → OpenAPI → TS SDK; Windows esproj integration. The original Blazor outcome is superseded by [P2-008](phase-2-specification-decisions.md#rule-p2-008).
 
 ## [F-007](#rule-f-007) — Runtime and AOT matrix
 
@@ -585,6 +587,8 @@ The current effective applied scope of this decision is recorded under **[F-004]
 
 ## D-008 — Runtime and AOT matrix · resolves **[F-007](#rule-f-007)** · `USER_CONFIRMED`
 
+**Effective amendment:** [P2-009](phase-2-specification-decisions.md#rule-p2-009) supplies the current runtime, protocol and repository choices; the original decision below is retained as dated provenance.
+
 > ArcForges Cloud is an ASP.NET Core JIT modular monolith. Strict Native AOT is not a Cloud requirement.
 >
 > Azure SDKs, the durable agent loop, provider adapters, SignalR integration, billing, policy and operational infrastructure run inside the JIT Cloud boundary.
@@ -610,6 +614,8 @@ The current effective applied scope of this decision is recorded under **[F-004]
 <a id="rule-d-009"></a>
 
 ## D-009 — Contract granularity · resolves **[F-008](#rule-f-008)** · `USER_CONFIRMED`
+
+**Effective amendment:** [P2-009](phase-2-specification-decisions.md#rule-p2-009) supplies the current runtime, protocol and repository choices; the original decision below is retained as dated provenance.
 
 > Reject a single ever-growing contracts assembly.
 >
@@ -659,6 +665,8 @@ The current effective applied scope of this decision is recorded under **[F-004]
 <a id="rule-d-011"></a>
 
 ## D-011 — Target monorepo · resolves **[F-010](#rule-f-010)** · `USER_CONFIRMED`
+
+**Effective amendment:** [P2-009](phase-2-specification-decisions.md#rule-p2-009) supplies the current runtime, protocol and repository choices; the original decision below is retained as dated provenance.
 
 > The implementation target is the existing monorepo:
 >

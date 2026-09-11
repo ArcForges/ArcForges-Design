@@ -7,7 +7,10 @@
 > Phase: J — Platform completion
 > Upstream: `09`, `11`, `17` · Downstream: `50`, `52`
 
-> **Goal.** Open the platform without weakening it: out-of-process extensions contributing **tools, never planners** ([EA-08](../../requirements/08-extensions-and-developer-platform.md#rule-ea-08)), the dual capability boundary with a closed AOT-safe value model, declarative UI contribution, the Arc Package runtime, the catalog, and the MCP, connector and external-agent integrations — all under the same security pipeline as first-party code.
+> **Goal.** Open the platform without weakening it: out-of-process extensions contributing **tools, never planners** ([EA-08](../../requirements/08-extensions-and-developer-platform.md#rule-ea-08)), the dual capability boundary with a closed AOT-safe value model, declarative UI contribution, the Arc Package runtime, the catalog, and the MCP, connector and artifact handoff and standard MCP integrations — all under the same security pipeline as first-party code.
+
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Contracts public SDK/CLI; Platform host; ArcChat MCP; Cloud catalog. Inputs: exact compatible Contracts packages/descriptors and applicable DesktopPlatform packages; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: Native AOT candidate packages/executables with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
 
 ---
 
@@ -22,6 +25,8 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+**Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
 | Input | Why it matters |
 |---|---|
@@ -151,6 +156,19 @@
 
 ---
 
+<a id="rule-wp-41.90"></a>
+### WP-41.90 — Verify the owned artifact and real integration
+
+**What must be fully done.** Split SDK/protocol, desktop host/runtime and Cloud registry ownership. Preserve standard MCP transports and out-of-process extensions. Remove the old external-agent integration wording rather than expanding accepted scope.
+
+**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+
+**Testing requirements.** SDK licence/protocol compatibility, capability checks, hostile-extension/process isolation and owner execution; no external-agent delegation or in-process third-party plugin.
+
+**Completion gate.** SDK licence/protocol compatibility, capability checks, hostile-extension/process isolation and owner execution; no external-agent delegation or in-process third-party plugin. Record exact artifacts and provider reality. The package is incomplete if an important contract/owner/recovery rule still requires design during coding.
+
+---
+
 ## 6. Impacts
 
 | Dimension | Impact |
@@ -182,6 +200,8 @@
 
 ## 8. Completion gate
 
+**[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) gate:** [WP-41.90](#rule-wp-41.90) and all inherited domain-specific gates must pass on the same candidate closure. SDK licence/protocol compatibility, capability checks, hostile-extension/process isolation and owner execution; no external-agent delegation or in-process third-party plugin.
+
 **[PG-22](../../assurance/open-gates-register.md#rule-pg-22) evidence:** [WP-41.00](#rule-wp-41.00) — Executable-extension OS profile denies store/credential/network/process escape and cleans up after parent death; combine with the platform broker proof. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
 
 **Identity boundary evidence.** Apply the [owner/deployment identity chain](../../architecture/08-security-architecture.md#1-identity-layering). Automation loses authorization when its owner loses permission/service eligibility even with a valid process credential; no customer service-principal or Organization authority is introduced.
@@ -204,11 +224,13 @@
 
 **Upstream — all must be complete.**
 
-- [09 — Capability, Contribution and Resource Model](09-capability-contribution-and-resource-model.md)
-- [11 — Security Foundation](11-security-foundation.md)
-- [17 — ArcChat Independent Core V1A](17-arcchat-independent-core.md)
+- [09 capability contribution and resource model](09-capability-contribution-and-resource-model.md#rule-wp-09)
+- [11 security foundation](11-security-foundation.md#rule-wp-11)
+- [17 arcchat independent core](17-arcchat-independent-core.md#rule-wp-17)
 
-**Downstream — these consume this package’s completed output.**
+**Downstream — consumers of these released outputs.**
 
-- [50 — Full-Platform Production Release](50-full-platform-production-release.md)
-- [52 — The Cloud Harness](52-cloud-harness.md)
+- [50 full platform production release](50-full-platform-production-release.md#rule-wp-50)
+- [52 cloud harness](52-cloud-harness.md#rule-wp-52)
+
+---

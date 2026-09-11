@@ -9,6 +9,9 @@
 
 > **Goal.** Fix the small things that everything else is built from — identity, idempotency, revision, sequence, time, error and reason codes — so that no later package invents its own variant and no two subsystems disagree about what "the same operation" means.
 
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Contracts; owner-specific adapters. Inputs: exact compatible Contracts packages/descriptors and applicable DesktopPlatform packages; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: owned candidate artifacts and generated contracts with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+
 ---
 
 ## 1. Scope and purpose
@@ -22,6 +25,8 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+**Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
 **Frozen design input.** [error catalogue](../../architecture/contracts/00-operation-catalogue.md#3-the-error-model)
 
@@ -140,6 +145,19 @@ Implement the C# serializers and metadata projection for the exact wire rules in
 
 ---
 
+<a id="rule-wp-04.90"></a>
+### WP-04.90 — Verify the owned artifact and real integration
+
+**What must be fully done.** Implement the exact ID/time/decimal/rational/cursor/error/revision/idempotency profiles. Keep public primitives separate from internal authorization implementation. Map gRPC failures without fabricating domain outcomes.
+
+**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+
+**Testing requirements.** C#/TS round trips include values outside JS safe integers, absence/unknown values, duplicate commands and unknown effects; existing error identifiers remain registered.
+
+**Completion gate.** C#/TS round trips include values outside JS safe integers, absence/unknown values, duplicate commands and unknown effects; existing error identifiers remain registered. Record exact artifacts and provider reality. The package is incomplete if an important contract/owner/recovery rule still requires design during coding.
+
+---
+
 ## 6. Impacts
 
 | Dimension | Impact |
@@ -170,6 +188,8 @@ Implement the C# serializers and metadata projection for the exact wire rules in
 
 ## 8. Completion gate
 
+**[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) gate:** [WP-04.90](#rule-wp-04.90) and all inherited domain-specific gates must pass on the same candidate closure. C#/TS round trips include values outside JS safe integers, absence/unknown values, duplicate commands and unknown effects; existing error identifiers remain registered.
+
 **Additional completion requirement.** Generated reason vocabulary agrees with all operation declarations while clients tolerate additive unknown responses safely.
 
 **All of the following, with recorded evidence:**
@@ -186,11 +206,13 @@ Implement the C# serializers and metadata projection for the exact wire rules in
 
 **Upstream — all must be complete.**
 
-- [03 — Contract Foundation and the Licence Boundary Split](03-contract-foundation-and-licence-split.md)
+- [03 contract foundation and licence split](03-contract-foundation-and-licence-split.md#rule-wp-03)
 
-**Downstream — these consume this package’s completed output.**
+**Downstream — consumers of these released outputs.**
 
-- [06 — AOT, JIT and Web Publish Proof](06-aot-jit-and-wasm-publish-proof.md)
-- [07 — Local Persistence Foundation](07-local-persistence-foundation.md)
-- [11 — Security Foundation](11-security-foundation.md)
-- [12 — Observability Foundation](12-observability-foundation.md)
+- [06 aot jit and wasm publish proof](06-aot-jit-and-wasm-publish-proof.md#rule-wp-06)
+- [07 local persistence foundation](07-local-persistence-foundation.md#rule-wp-07)
+- [11 security foundation](11-security-foundation.md#rule-wp-11)
+- [12 observability foundation](12-observability-foundation.md#rule-wp-12)
+
+---

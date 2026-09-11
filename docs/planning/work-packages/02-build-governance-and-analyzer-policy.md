@@ -9,6 +9,9 @@
 
 > **Goal.** Make the build tell the truth. Until diagnostics are real, warnings are errors, versions are locked and the runtime split is expressed in the build itself, every later AOT proof and every later quality claim rests on unverified ground.
 
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Platform, Contracts, each consumer. Inputs: exact compatible Contracts packages/descriptors and applicable DesktopPlatform packages; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: owned candidate artifacts and generated contracts with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+
 ---
 
 ## 1. Scope and purpose
@@ -22,6 +25,8 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+**Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
 | Input | Why it matters |
 |---|---|
@@ -46,8 +51,8 @@
 | BR-03 | **The lock file is committed and CI restores in locked mode** ([PJ-05](../../architecture/01-solution-and-project-layout.md#rule-pj-05)). |
 | BR-04 | **Warnings are errors on the main path**; trim and AOT diagnostics are always errors on AOT deliverables ([PJ-08](../../architecture/01-solution-and-project-layout.md#rule-pj-08)). |
 | BR-05 | **Every reusable library consumed by an AOT deliverable declares AOT compatibility; every AOT host declares AOT publish** ([PJ-02](../../architecture/01-solution-and-project-layout.md#rule-pj-02)). |
-| BR-06 | **Desktop is Native AOT; Cloud is ASP.NET Core JIT; Android is Mono AOT; Web is React/TypeScript built by Node/npm.** No esproj or TS package inherits .NET runtime properties ([P2-008](../../decisions/phase-2-specification-decisions.md#rule-p2-008)). |
-| BR-07 | **Cloud must not be packaged as Native AOT** for consistency's sake (**[D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008)**, **[V-03](../../assurance/phase-1-official-verification.md#rule-v-03)**). |
+| BR-06 | **Desktop is Native AOT; Cloud is ASP.NET Core Native AOT; Android is RN/Hermes; Web is React/TypeScript built by Node/npm.** No esproj or TS package inherits .NET runtime properties ([P2-008](../../decisions/phase-2-specification-decisions.md#rule-p2-008)). |
+| BR-07 | The Cloud host must publish Native AOT using the complete selected adapter/dependency closure; zero trim/AOT diagnostics and the activated [VG-06](../../assurance/open-gates-register.md#rule-vg-06) gate apply. |
 | BR-08 | **Preview packages never enter a stable branch's core path** ([PJ-06](../../architecture/01-solution-and-project-layout.md#rule-pj-06)). |
 | BR-09 | **The build must not depend on machine state** ([BM-05](../../architecture/14-build-packaging-and-release.md#rule-bm-05)) and must work offline after restore ([BM-07](../../architecture/14-build-packaging-and-release.md#rule-bm-07)). |
 | BR-10 | **Generated code is generated at build time, not committed**, except deliberate compatibility fixtures ([BM-06](../../architecture/14-build-packaging-and-release.md#rule-bm-06)). |
@@ -64,8 +69,8 @@
 | `Directory.Packages.props` | Central management with transitive pinning verified; preview packages audited |
 | `packages.lock.json` | Validate the 165 existing project locks and locked CI restore; create/update only for actual project/dependency changes. No root NuGet lock is required |
 | `eng/build/desktop-aot.props` | Verified: AOT publish, trim analysis, single-file diagnostics as errors, RID set |
-| `eng/build/cloud-jit.props` | Verified: JIT posture explicit; AOT properties absent by design |
-| `eng/build/android-aot.props` | Verified: explicit runtime selection, never inherited ([RT-02](../../architecture/11-mobile-architecture.md#rule-rt-02) in the mobile architecture) |
+| `eng/build/cloud-aot.props` | Create: PublishAot enabled and AOT/trim diagnostics treated as errors |
+| `ArcForges-Mobile/android/gradle.properties` | Selected RN/Hermes/New Architecture settings plus native template locks ([RT-02](../../architecture/11-mobile-architecture.md#rule-rt-02) in the mobile architecture) |
 | `src/Web/package.json`, `package-lock.json`, `.node-version`, `.npmrc`, `ArcForges.Web.esproj` | Create the one Node/npm workspace, exact toolchain/dependency pins, portable commands and Windows adapter; remove obsolete Web WASM property imports |
 | `eng/build/contracts.props` | Verified: source-generated serialization and generator settings for contract projects |
 | `.editorconfig` | Analyzer severities as build policy |
@@ -81,11 +86,12 @@
 
 ### WP-02.00 — Pin and lock each toolchain
 
-**What must be fully done.** Verify the .NET SDK and central NuGet pins, locked project restores and stable dependency policy. Establish the Web root manifest/lock, exact supported Node 24 LTS patch and npm version, exact generator/framework pins and reviewed JavaScript SDK. Disable implicit npm install in esproj; its explicit restore calls root npm ci once.
 
-**Testing requirements.** Clean-cache locked .NET restore and npm ci; reject lock drift, nested npm locks and wrong engine versions; verify no accidental package overrides.
+**What must be fully done.** Pin the exact toolchain/package versions in the platform matrix: each .NET owner has SDK/central NuGet/locked restore; each TS owner has Node/npm and one root package-lock; DesktopPlatform has the same vcpkg baseline/overlays in local and CI. Contracts owns protoc/generator pins and generated package metadata. Web esproj delegates to its own npm commands without implicit restore.
 
-**Completion gate.** Both restored graphs are reproducible and declared; changing a lock or toolchain requires review.
+**Testing requirements.** Clean isolated restores and offline repeat from fetched caches; altered lock/baseline or floating dependency fails.
+
+**Completion gate.** Every selected toolchain is reproducible from committed pins with no dependency on sibling checkout state.
 
 <a id="rule-wp-02.01"></a>
 
@@ -111,11 +117,12 @@
 
 ### WP-02.03 — Runtime and directory boundaries
 
-**What must be fully done.** Express desktop Native AOT, Cloud JIT and Android Mono AOT in the managed build. Create the independent Node/TS workspace and thin esproj commands; win.slnx composes it, while Cloud.csproj/ArcForges.slnx have no esproj dependency. Implement typed portable orchestration, explicit restore/health-aware dev configuration and separate account/chat development hostnames. Initial commands may target foundation shells; real SDK/runtime proof belongs to [WP-06](06-aot-jit-and-wasm-publish-proof.md#rule-wp-06).
 
-**Testing requirements.** Evaluated .NET property assertions; inspect project references/imports; Windows esproj load/restore/build command dispatch; direct npm invocation on non-Windows; assert no duplicate dev server, implicit install or production dev proxy.
+**What must be fully done.** Apply Native AOT/analyzer settings to desktop and the Cloud host. Build Web and AI with their selected TS commands and Mobile through its RN/Gradle template; mobile runtime settings never enter MSBuild. Use owner-local solution/IDE entry points and typed portable tooling; local orchestration consumes exact producer artifacts in the integration manifest.
 
-**Completion gate.** Each build graph has the correct runtime/toolchain; Windows and CLI commands share one Web implementation and portable .NET build does not evaluate esproj.
+**Testing requirements.** Run Windows IDE delegation and supported non-Windows CLI commands; verify Cloud never builds Web/Mobile/native targets and each product builds without another product source.
+
+**Completion gate.** Runtime and build entry points match the fixed repository graph and produce foundation candidates for WP06.
 
 <a id="rule-wp-02.04"></a>
 
@@ -131,11 +138,23 @@
 
 ### WP-02.05 — Dependency policy
 
-**What must be fully done.** A dependency policy exists as data: the allowlist per licence boundary, the preview-package rule, and the evidence required for an addition or an upgrade — licence, provenance, maintenance status, transitive closure, and for AOT chains an AOT compatibility statement. The framework-upgrade re-verification obligation ([VG-08](../../assurance/open-gates-register.md#rule-vg-08)) is recorded as a recurring checklist attached to the policy.
 
-**Testing requirements.** A policy check over the current dependency set; a dry run of the addition process for one new dependency.
+**What must be fully done.** Encode the selected licence/import and dependency-admission rules as owner policy data, including exact source hashes, generated public/internal separation, native gates and the framework-upgrade re-verification obligation. Configure candidate/stable package feeds and restricted publisher credentials, immutable versions and checksum/signature verification.
 
-**Completion gate.** The policy exists as machine-readable data, the current dependency set passes it, and the framework-upgrade checklist is recorded. **This schedules [VG-08](../../assurance/open-gates-register.md#rule-vg-08).**
+**Testing requirements.** Negative forbidden-license, floating-tag, mutable-version and wrong-publisher fixtures; actual tooling-package publication/restore round trip. Generated Contracts and runtime consumers follow WP03/WP06.
+
+**Completion gate.** Publication mechanisms and dependency policies are usable before consumer work; production release remains WP50.
+
+<a id="rule-wp-02.90"></a>
+### WP-02.90 — Verify the owned artifact and real integration
+
+**What must be fully done.** Assemble the owned deliverables from the preceding substeps under the selected repository, package, runtime and protocol authorities. Apply pinned per-toolchain build/lock/analyzer settings, shared workflow/tooling consumption, native module build/pack and candidate feeds, npm schema publication and OCI/Worker artifact metadata. Align local/CI vcpkg inputs. Publication mechanisms arrive here; final product release remains WP-50.
+
+**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+
+**Testing requirements.** Selected pins and licence/AOT policy agree across owners; one native capability can produce an identifiable candidate package; consumers need no CMake/vcpkg for ordinary restore.
+
+**Completion gate.** Selected pins and licence/AOT policy agree across owners; one native capability can produce an identifiable candidate package; consumers need no CMake/vcpkg for ordinary restore. Record exact artifacts and provider reality. The package is incomplete if an important contract/owner/recovery rule still requires design during coding.
 
 ---
 
@@ -172,6 +191,8 @@
 
 ## 8. Completion gate
 
+**[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) gate:** [WP-02.90](#rule-wp-02.90) and all inherited domain-specific gates must pass on the same candidate closure. Selected pins and licence/AOT policy agree across owners; one native capability can produce an identifiable candidate package; consumers need no CMake/vcpkg for ordinary restore.
+
 **[VG-08](../../assurance/open-gates-register.md#rule-vg-08) evidence:** [WP-02.05](#rule-wp-02.05) — Retained framework-upgrade record and Android runtime/AOT/trim re-verification whenever the recurring trigger fires. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
 
 **All of the following, with recorded evidence:**
@@ -189,10 +210,12 @@
 
 **Upstream — all must be complete.**
 
-- [01 — Repository Reconciliation and Target Layout](01-repository-reconciliation-and-target-layout.md)
+- [01 repository reconciliation and target layout](01-repository-reconciliation-and-target-layout.md#rule-wp-01)
 
-**Downstream — these consume this package’s completed output.**
+**Downstream — consumers of these released outputs.**
 
-- [03 — Contract Foundation and the Licence Boundary Split](03-contract-foundation-and-licence-split.md)
-- [05 — Architecture and Repository Policy Test Suite](05-architecture-and-repository-policy-tests.md)
-- [47 — Static Public Site](47-static-public-site.md)
+- [03 contract foundation and licence split](03-contract-foundation-and-licence-split.md#rule-wp-03)
+- [05 architecture and repository policy tests](05-architecture-and-repository-policy-tests.md#rule-wp-05)
+- [47 static public site](47-static-public-site.md#rule-wp-47)
+
+---

@@ -143,7 +143,7 @@ date/time · ResourceRef · list<Value> · record<name, Value>
 | # | Rule |
 |---|---|
 | <a id="rule-cf-01"></a>CF-01 | **Developers write C# records with attributes**; a source generator produces the schema, the codec and the client and server binding ([DB-03](../requirements/08-extensions-and-developer-platform.md#rule-db-03) there). |
-| CF-02 | **Developers never hand-maintain three schemas**. The C# model is the source; manifest schema and wire schema are generated and verified from it. |
+| CF-02 | C# extension authors may generate their declared parameter/settings schema and codec from attributed records. The enclosing public extension service/messages remain the handwritten proto authority; this convenience never generates first-party business wire contracts from C#. |
 | <a id="rule-cf-03"></a>CF-03 | **The manifest still has a language-independent canonical representation**, so non-C# authors and the host tooling are not excluded. |
 | CF-04 | **Generated artifacts are verified in CI against the committed baseline**, exactly as product contracts are (`§2.2` of the build architecture). |
 
@@ -367,3 +367,7 @@ The extension platform is **not**: an in-process plug-in system; a scripting lan
 | **[D-009](../decisions/phase-1-foundation-decisions.md#rule-d-009)** | Extension points and capability contracts as versioned contracts |
 | **[D-004](../decisions/phase-1-foundation-decisions.md#rule-d-004)**, **[D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021)** | The public SDK on the Apache boundary |
 | **[V-02](../assurance/phase-1-official-verification.md#rule-v-02)** | MCP term disambiguation wherever MCP appears in this platform |
+
+## Selected extension protocol composition
+
+The public IExtensionHost service, StructuredValue and typed extension message envelopes come from the Contracts proto registry. Code-first extension parameter schema generation above composes into that fixed envelope; it does not introduce a second first-party RPC protocol or expose foreign CLR types. MCP remains its explicitly accepted external standard and cannot choose the internal transport.

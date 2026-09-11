@@ -9,6 +9,9 @@
 
 > **Goal.** Build ArcSlate's domain: project and sequences, the exact time model spanning video frames and audio samples, the media library with assets referenced rather than owned, the timeline with tracks and clips, and non-destructive editing — all in C#, with no native type anywhere near the domain.
 
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: ArcSlate. Inputs: exact compatible Contracts packages/descriptors and applicable DesktopPlatform packages; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: Native AOT candidate packages/executables with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+
 ---
 
 ## 1. Scope and purpose
@@ -22,6 +25,8 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+**Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
 **Frozen design input.** [content-origin behavior](../../requirements/07-security-privacy-and-trust.md#content-origin-profile) and [carrier schema](../../requirements/13-data-formats-and-portability.md#content-origin-carriers) is fixed before this package; implement it without choosing a different marking mechanism.
 
@@ -164,6 +169,19 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 ---
 
+<a id="rule-wp-36.90"></a>
+### WP-36.90 — Verify the owned artifact and real integration
+
+**What must be fully done.** Keep C# domain, project/timeline/edit/undo and local recovery. Use exact media/rational profiles and native-resource package interfaces without importing another product's domain.
+
+**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+
+**Testing requirements.** Exact timeline/edit/recovery fixtures remain valid; package and wire boundaries do not round frame/time values.
+
+**Completion gate.** Exact timeline/edit/recovery fixtures remain valid; package and wire boundaries do not round frame/time values. Record exact artifacts and provider reality. The package is incomplete if an important contract/owner/recovery rule still requires design during coding.
+
+---
+
 ## 6. Impacts
 
 | Dimension | Impact |
@@ -196,6 +214,8 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 ## 8. Completion gate
 
+**[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) gate:** [WP-36.90](#rule-wp-36.90) and all inherited domain-specific gates must pass on the same candidate closure. Exact timeline/edit/recovery fixtures remain valid; package and wire boundaries do not round frame/time values.
+
 **[PG-20](../../assurance/open-gates-register.md#rule-pg-20) evidence:** [WP-36.01](#rule-wp-36.01) — Exact supported grids and adjacent sample ownership; combine with real audio and OTIO boundary evidence. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
 
 **Offline evidence.** Execute this product's applicable [initial-state matrix](../../assurance/testing-and-verification-strategy.md#offline-acceptance-matrix) rows, including fresh shell, hydrated outage, unavailable content, signout and restart where applicable. Record permitted local work and explicitly unavailable Cloud actions.
@@ -219,11 +239,13 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 **Upstream — all must be complete.**
 
-- [07 — Local Persistence Foundation](07-local-persistence-foundation.md)
-- [10 — Design System and Desktop Shell Foundation](10-design-system-and-desktop-shell.md)
-- [13 — Four High-Risk Technical Probes](13-high-risk-technical-probes.md)
-- [26 — Device Presence, Remote Action and the Tool Bridge](26-remote-action-and-tool-bridge.md)
+- [07 local persistence foundation](07-local-persistence-foundation.md#rule-wp-07)
+- [10 design system and desktop shell](10-design-system-and-desktop-shell.md#rule-wp-10)
+- [13 high risk technical probes](13-high-risk-technical-probes.md#rule-wp-13)
+- [26 remote action and tool bridge](26-remote-action-and-tool-bridge.md#rule-wp-26)
 
-**Downstream — these consume this package’s completed output.**
+**Downstream — consumers of these released outputs.**
 
-- [37 — ArcSlate Playback and Processing Runtime](37-arcslate-playback-and-processing.md)
+- [37 arcslate playback and processing](37-arcslate-playback-and-processing.md#rule-wp-37)
+
+---

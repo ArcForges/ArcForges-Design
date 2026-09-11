@@ -5,7 +5,7 @@
 > Governing authority: [P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008) amends [D-007](../decisions/phase-1-foundation-decisions.md#rule-d-007); [D-014](../decisions/phase-1-foundation-decisions.md#rule-d-014) defines the surfaces and [D-015](../decisions/phase-1-foundation-decisions.md#rule-d-015) the canonical account origin
 > Companions: [Web requirements](../requirements/products/arcforges-web.md), [Web toolchain and SDK](25-web-toolchain-and-sdk.md), [security](08-security-architecture.md), [Cloud](05-cloud-architecture.md)
 
-React/TypeScript implements the browser experiences. Node.js provides the shared build/development toolchain. One existing ASP.NET Core Cloud host owns the APIs, browser session adapter, billing, persistence and single agent Harness.
+React/TypeScript implements the browser experiences. Node.js provides the shared build/development toolchain. One Native AOT C# Cloud host owns business RPC, browser sessions, billing and canonical persistence. The single agent Harness runs in the separate CF Workflow deployment.
 
 ## 1. Build outputs
 
@@ -50,8 +50,8 @@ Content, catalogue, release manifests, legal versions, locales and an approved p
 | <a id="rule-wa-01"></a>WA-01 | **One application codebase, two explicit build profiles.** Shared shell, error handling, locale and UI primitives have one implementation; account/chat feature route imports are selected at build time. Route exclusion is a bundle boundary, never authorization. |
 | <a id="rule-wa-02"></a>WA-02 | **Origins have independent sessions, storage and in-memory state.** A workspace/user switch aborts old requests and clears scoped queries; late replies cannot contaminate the new context. |
 | <a id="rule-wa-03"></a>WA-03 | **C# DTOs and endpoint metadata generate OpenAPI, then TS types, SDK and runtime validators.** No UI model or database entity becomes a wire contract. |
-| <a id="rule-wa-04"></a>WA-04 | **React consumes the generated Fetch SDK through one transport wrapper.** C# clients retain generated Refit; its AOT entry-point rule does not describe JavaScript. |
-| <a id="rule-wa-05"></a>WA-05 | **Realtime uses the official JS SignalR client with generated JSON payload validation.** Stream byte positions, sequence gaps and backfill follow the shared contracts. |
+| <a id="rule-wa-04"></a>WA-04 | **React consumes the generated gRPC-Web SDK through one transport wrapper.** C# clients retain generated gRPC client; its AOT entry-point rule does not describe JavaScript. |
+| <a id="rule-wa-05"></a>WA-05 | **Realtime uses the official JS gRPC hint polling client with generated JSON payload validation.** Stream byte positions, sequence gaps and backfill follow the shared contracts. |
 | <a id="rule-wa-06"></a>WA-06 | **Browser authentication is an opaque server-side cookie session**, resolved in §5. Browser JavaScript holds no bearer/refresh credential and performs no refresh-token loop. |
 | <a id="rule-wa-07"></a>WA-07 | **TanStack Query caches projections and invalidates them on authoritative changes.** Entitlement events and optimistic presentation never approve a paid action or settle a charge. |
 | <a id="rule-wa-08"></a>WA-08 | **Route chunks, initial transfer, first usable interaction and sustained chat memory have recorded budgets.** [WP-06](../planning/work-packages/06-aot-jit-and-wasm-publish-proof.md#rule-wp-06) establishes the production baseline; later releases enforce regressions. |
@@ -67,8 +67,8 @@ Shared components live in `packages/ui`. React state models navigation and prese
 |---|---|---|
 | `arcforges.com` | Static public pages | Versioned content; no login requirement |
 | `www.arcforges.com` | Permanent redirect | Canonical public origin |
-| `account.arcforges.com` | Account static JS/HTML assets; `/api/*`, `/session/*`, `/realtime/*` forwarded to Cloud | Canonical account surface |
-| `chat.arcforges.com` | Chat static JS/HTML assets; same route categories forwarded to Cloud | Independent browser session, same Cloud business services |
+| `account.arcforges.com` | Account static assets; /rpc and /session to Cloud; /ai and /objects to CF | Canonical account surface |
+| `chat.arcforges.com` | Chat static JS/HTML assets; /rpc and /session to Cloud; /ai and /objects to CF | Independent browser session, same Cloud business services |
 | `docs.arcforges.com` | Static versioned documentation | Independent of Cloud availability |
 | `status.arcforges.com` | Independently hosted status | Separate failure domain and emergency alternate URL |
 | `downloads.arcforges.com` / `updates.arcforges.com` | Signed artifacts/manifests | Existing distribution authority |
@@ -82,7 +82,7 @@ Shared components live in `packages/ui`. React state models navigation and prese
 | <a id="rule-sm-02"></a>SM-02 | **Each origin has explicit CSP, cookie, CORS, CSRF and edge route rules.** The edge forwards only declared routes to the configured Cloud service and preserves a validated external-origin identity. Untrusted forwarded headers cannot select a session realm. |
 | <a id="rule-sm-03"></a>SM-03 | **No parent-domain auth cookie or cross-origin credential sharing.** Browser requests use same-origin allowlisted routes with fixed Cloud targets. The browser edge never exposes native bearer issuance/refresh routes; browser login/recovery returns the safe cookie-session projection. The native public API does not accept browser cookies as bearer credentials. |
 | <a id="rule-sm-04"></a>SM-04 | **Static public and status surfaces survive Cloud failure.** Their already published content remains available; current checkout and live account state truthfully report unavailability. |
-| <a id="rule-sm-05"></a>SM-05 | **SPA fallback applies only to declared UI navigation.** API/session errors keep their JSON/status, missing assets remain 404, protected responses are never cached as HTML, and direct account/chat deep links load the correct profile. |
+| <a id="rule-sm-05"></a>SM-05 | **SPA fallback applies only to declared UI navigation.** RPC errors keep their gRPC framing/trailers; session/AI/object errors keep their declared HTTP status/body, missing assets remain 404, protected responses are never cached as HTML, and direct account/chat deep links load the correct profile. |
 
 ## 5. Browser session architecture — P2-003 resolved
 
@@ -97,9 +97,9 @@ Shared components live in `packages/ui`. React state models navigation and prese
 | <a id="rule-au-05"></a>AU-05 | **A new browser has the lowest applicable trust.** Creating a browser device/installation during successful authentication never grants desktop local-tool access or high-risk approval authority. |
 | <a id="rule-au-06"></a>AU-06 | **Sensitive actions require the existing server-side step-up operation classes.** A biometric device unlock, visible confirmation dialog or frontend role flag is not step-up evidence. |
 | <a id="rule-au-07"></a>AU-07 | **Passkeys remain primary, with existing email verification/recovery.** Use a server challenge tied to the pre-auth flow, expected origin and RP ID. Account and Chat authenticate independently; redirects carry no credentials and use an exact allowlist. |
-| <a id="rule-au-08"></a>AU-08 | **CSRF checks are explicit for every cookie-authenticated unsafe operation**, including JSON, multipart, login/logout and SignalR negotiation. Require the ASP.NET antiforgery request header plus exact Origin validation; SameSite and CORS alone are insufficient. Refresh the antiforgery request token after login without rotating a session on every request. |
-| <a id="rule-au-09"></a>AU-09 | **SignalR/WebSocket handshakes enforce the origin allowlist and live session.** Browser connections use WebSockets-only with skipNegotiation; blocked upgrades use bounded public HTTP recovery, not SignalR long polling. Disabled browser negotiation routes cannot bypass CSRF or issue credentials. Live connections revalidate expiry/revocation and close at the applicable deadline; reconnect cannot extend it. |
-| <a id="rule-au-10"></a>AU-10 | **All Cloud replicas use the same authoritative session store and shared protected Data Protection key ring.** Authentication has no session-affinity or replica-local state requirement. The browser's WebSocket-only transport and HTTP fallback avoid a hidden negotiate/long-poll affinity requirement. Key retention covers live antiforgery/cookie material and follows deployment secret policy. |
+| <a id="rule-au-08"></a>AU-08 | Every cookie-authenticated unsafe operation, including unary POST RPC and AI/object POST/PUT, requires X-AF-CSRF matching the hashed token bound to the current session/pre-auth flow plus exact Origin. A new login invalidates pre-auth CSRF; SameSite/CORS alone are insufficient. |
+| <a id="rule-au-09"></a>AU-09 | CF WebSocket upgrades check exact Origin immediately, then accept only the one-use session-bound authentication frame within five seconds; no Task content is delivered before validation. Blocked upgrades use the bounded authenticated stream-read route. Unary Poll requires no socket negotiation. |
+| <a id="rule-au-10"></a>AU-10 | All replicas share PostgreSQL opaque session and hashed CSRF state. No CookieAuthenticationHandler, Data Protection cookie payload or framework antiforgery key ring is required. CF authorizes against the same current session for every frame/range. |
 
 **Storage and lifecycle.** [Cloud data model §identity.session](data-model/01-cloud-data-model.md#browser-session-storage) defines native/browser credential exclusivity, hashed handles, origin binding, idle/absolute expiry, browser-device creation, lookup indices and revocation. Public session/bootstrap/logout endpoint shapes are recorded in the [operation catalogue](contracts/01-public-api-operations.md#browser-session-operations). Cookies carry a cryptographically random handle; neither business state nor an authorization snapshot is trusted from the client.
 
@@ -155,14 +155,14 @@ Concurrent browser tabs share only their own origin's cookie session. No periodi
 |---|---|
 | <a id="rule-bd-01"></a>BD-01 | **Build once, promote the same release set.** Node builds are deterministic jobs, not production request handlers. |
 | <a id="rule-bd-02"></a>BD-02 | **Atomic deployment per surface with retained previous assets, manifests and compatible security headers.** |
-| <a id="rule-bd-03"></a>BD-03 | **C# contracts → schema compatibility → TS SDK → Web build** is the enforced producer/consumer order. Old clients remain supported for the declared window; simultaneous frontend/backend deployment is not a compatibility strategy. |
+| <a id="rule-bd-03"></a>BD-03 | **Proto → descriptor compatibility → released C#/TS SDKs → consumer build** is the enforced producer/consumer order. Old clients remain supported for the declared window; simultaneous frontend/backend deployment is not a compatibility strategy. |
 | <a id="rule-bd-04"></a>BD-04 | **Cached old clients receive a supported upgrade path.** Chunk failure, API incompatibility and draft preservation have explicit UI behavior; no infinite reload loop. |
 | <a id="rule-bd-05"></a>BD-05 | **Production Node-built assets and browser behavior are Web release evidence.** A .NET/WASM publish is neither required nor an alternative proof. |
-| <a id="rule-bd-06"></a>BD-06 | **Windows uses win.slnx + one esproj; other platforms use npm in src/Web.** Cloud.csproj and the portable managed solution never depend on that esproj. See the [toolchain workflow](25-web-toolchain-and-sdk.md). |
+| <a id="rule-bd-06"></a>BD-06 | ArcForges-Web owns win.slnx and one esproj delegating to the same portable root npm commands. No Cloud/desktop solution requires Web sources, and ordinary consumer builds restore released Contracts packages. |
 
 ## 11. Non-goals
 
-No ArcNotes/ArcScope/ArcSlate browser editor, public sharing, React Native migration, desktop WebView, browser agent authority, supplier key handling, private policy bundle, or separate Node business backend is introduced. Private operator functions remain outside consumer deployment profiles.
+No ArcNotes/ArcScope/ArcSlate browser editor, public sharing, desktop WebView, browser agent authority, supplier key handling, private policy bundle, or separate Node business backend is introduced. Private operator functions remain outside consumer deployment profiles.
 
 ## 12. Traceability
 

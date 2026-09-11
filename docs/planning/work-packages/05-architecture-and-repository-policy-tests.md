@@ -9,6 +9,9 @@
 
 > **Goal.** Turn the architecture into build failures. Every structural rule that a reviewer would otherwise have to remember becomes a test, so that a violation is caught at the moment it is introduced rather than at a release gate months later.
 
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Each repository; shared tooling in Platform/Contracts. Inputs: exact compatible Contracts packages/descriptors and applicable DesktopPlatform packages; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: owned candidate artifacts and generated contracts with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+
 ---
 
 ## 1. Scope and purpose
@@ -24,6 +27,8 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+**Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
 | Input | Why it matters |
 |---|---|
@@ -107,7 +112,7 @@
 
 ### WP-05.03 — Contract and serialization policy
 
-**What must be fully done.** Tests asserting: every public DTO belongs to a source-generated context; no reflection-based serializer is reachable; every local RPC contract interface carries the generated-shape attribute (**[V-05b](../../assurance/phase-1-official-verification.md#rule-v-05b)**); the typed HTTP client's reflection package is absent; and every contract project's generated artifacts match the committed baseline.
+**What must be fully done.** Tests asserting: every public business DTO is generated from proto and HTTP exceptions have explicit JSON metadata; no reflection-based serializer is reachable; every local RPC contract interface carries the generated service/descriptor identity (**[V-05b](../../assurance/phase-1-official-verification.md#rule-v-05b)**); unregistered dynamic/reflection serializer paths are absent; and every contract project's generated artifacts match the committed baseline.
 
 **Testing requirements.** Negative fixtures for each assertion.
 
@@ -166,6 +171,19 @@ Add Node/TS import and dependency checks to the existing policy suite: one Web w
 
 ---
 
+<a id="rule-wp-05.90"></a>
+### WP-05.90 — Verify the owned artifact and real integration
+
+**What must be fully done.** Assemble the owned deliverables from the preceding substeps under the selected repository, package, runtime and protocol authorities. Implement intra-repository rules and package/licence closure tests. Enforce no cross-repository project/source dependency, no Mobile import of AGPL implementation, no desktop native/UI assets in Cloud and one Harness owner.
+
+**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+
+**Testing requirements.** Each repository can enforce its boundary independently; the integration graph detects a forbidden transitive edge without cloning every reference or product repository.
+
+**Completion gate.** Each repository can enforce its boundary independently; the integration graph detects a forbidden transitive edge without cloning every reference or product repository. Record exact artifacts and provider reality. The package is incomplete if an important contract/owner/recovery rule still requires design during coding.
+
+---
+
 ## 6. Impacts
 
 | Dimension | Impact |
@@ -196,6 +214,8 @@ Add Node/TS import and dependency checks to the existing policy suite: one Web w
 
 ## 8. Completion gate
 
+**[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) gate:** [WP-05.90](#rule-wp-05.90) and all inherited domain-specific gates must pass on the same candidate closure. Each repository can enforce its boundary independently; the integration graph detects a forbidden transitive edge without cloning every reference or product repository.
+
 **Identity boundary evidence.** Apply the [owner/deployment identity chain](../../architecture/08-security-architecture.md#1-identity-layering). Automation loses authorization when its owner loses permission/service eligibility even with a valid process credential; no customer service-principal or Organization authority is introduced.
 
 **All of the following, with recorded evidence:**
@@ -214,10 +234,12 @@ Add Node/TS import and dependency checks to the existing policy suite: one Web w
 
 **Upstream — all must be complete.**
 
-- [02 — Build Governance, Packaging Policy and Analyzers](02-build-governance-and-analyzer-policy.md)
-- [03 — Contract Foundation and the Licence Boundary Split](03-contract-foundation-and-licence-split.md)
+- [02 build governance and analyzer policy](02-build-governance-and-analyzer-policy.md#rule-wp-02)
+- [03 contract foundation and licence split](03-contract-foundation-and-licence-split.md#rule-wp-03)
 
-**Downstream — these consume this package’s completed output.**
+**Downstream — consumers of these released outputs.**
 
-- [06 — AOT, JIT and Web Publish Proof](06-aot-jit-and-wasm-publish-proof.md)
-- [21 — Cloud Host, Modules, Persistence and Migrations](21-cloud-host-and-persistence.md)
+- [06 aot jit and wasm publish proof](06-aot-jit-and-wasm-publish-proof.md#rule-wp-06)
+- [21 cloud host and persistence](21-cloud-host-and-persistence.md#rule-wp-21)
+
+---

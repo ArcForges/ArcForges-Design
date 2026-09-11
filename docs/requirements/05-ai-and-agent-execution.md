@@ -8,7 +8,7 @@
 
 This document defines the Cloud Agent Task model and Cloud AI economics. Native product activities and jobs retain their own lifecycles.
 
-**One Cloud Harness.** All model loops, durable agent tasks and AI automation run inside the Cloud JIT host. Native acquisition, editing, rendering and background maintenance are ordinary product jobs; an agent may invoke and observe them without converting them into a second agent runtime.
+**One Cloud Harness.** The sole model/tool loop runs in CF Workflow. C# Native AOT owns canonical Task state, deterministic scheduling, admission and business transactions. Native acquisition, editing, rendering and background maintenance are ordinary product jobs; an agent may invoke and observe them without converting them into a second agent runtime.
 
 ---
 
@@ -158,7 +158,7 @@ Tasks carry a limited priority: `Background`, `Normal`, `High`. Automation defau
 
 ## 3. Ownership and execution location
 
-The single Harness is hosted by ArcForges.Cloud.Host (JIT). Microsoft.Agents.AI and Microsoft.Extensions.AI are a thin adapter; ArcForges owns durable state, authorisation, metering and recovery. SDK objects are not wire or persistence authority. One Harness design supports many isolated users/tasks; it does not mean one global active task.
+The single Harness executes in the ArcForges-AI Cloudflare Workflow through Workers AI bindings. C# Cloud owns durable business state, authorization, admission, metering and recovery ports. SDK objects are not wire or persistence authority. One Harness design supports many isolated users/tasks; it does not mean one global active task.
 
 | # | Requirement |
 |---|---|
@@ -383,7 +383,7 @@ Supported trigger families: `Manual / Run Now`, `One-time`, `Interval`, `Cron / 
 | # | Requirement |
 |---|---|
 | <a id="rule-la-01"></a>LA-01 | Retired by [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006): no desktop AI automation scheduler or offline autonomous agent mode. Ordinary native jobs may run without AI. |
-| LA-02 | AI automation is scheduled by the Cloud Harness and requires an active paid service term plus capacity/budget. Device-originated events become durable deduplicated Cloud triggers. |
+| LA-02 | AI automation is scheduled by the C# Cloud Task module and requires an active paid service term plus capacity/budget. Device-originated events become durable deduplicated Cloud triggers. |
 | LA-03 | A Cloud automation requiring an offline desktop waits on that device under its bounded missed-run policy. It never starts a local agent as fallback. |
 
 ### 10.6 One Task Center

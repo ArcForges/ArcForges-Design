@@ -91,7 +91,7 @@ User action (desktop / web / mobile)
 | <a id="rule-cr-04"></a>CR-04 | **A user-visible task or run identifier resolves to its trace.** When a user reports "task 7PM3 failed", an operator reaches the API request, queue hop, worker attempt and provider call without guesswork. |
 | CR-05 | **A provider request identifier is captured for every outbound provider call**, so a provider-side investigation is possible. |
 | <a id="rule-cr-06"></a>CR-06 | **Correlation propagation is implemented once**, in the shared telemetry infrastructure, not per module. |
-| CR-07 | **Realtime connections carry correlation** for connect, negotiate, subscribe and message-delivery events, including reconnection and sequence-gap events. |
+| CR-07 | Trace Poll scope/cursor/reset, authoritative reconciliation and CF connect/authenticate/frame/catch-up, with correlation and stream/attempt identity; no prompt or credential in events. |
 
 ---
 
@@ -279,3 +279,7 @@ Observability is **not**: a place to store user content; a substitute for the au
 | [Security, Permission, Privacy and Trust Requirements](../requirements/07-security-privacy-and-trust.md) | Owns redaction, audit and privacy constraints |
 | **[D-014](../decisions/phase-1-foundation-decisions.md#rule-d-014)** | The status, notification and operator surfaces as distinct surfaces with distinct policy |
 | [I-272](../requirements/01-normative-glossary-and-invariants.md#rule-i-272), [I-273](../requirements/01-normative-glossary-and-invariants.md#rule-i-273), [I-403](../requirements/01-normative-glossary-and-invariants.md#rule-i-403) | Audit ≠ observability; observability ≠ user content; SLO ≠ SLA |
+
+## P2-009 trace and service boundaries
+
+Cloud owns business audit and bounded Activity/Meter events; CF owns Workflow/DO inference/connection/transfer telemetry. Join W3C traceparent with correlation, Task/Run/Attempt, command/outbox/receipt, Worker version and manifest ID; never log prompt/output/secret/token/absolute local paths. Record model admission versus CF availability versus object availability as separate causes. Metrics include dispatch lag, stale fences, unresolved supplier attempts, stream truncation, R2 verification failure and independent backup lag. [Deployment and recovery](contracts/05-cloudflare-integration.md#6-r2-lifecycle-and-independent-recovery) supplies outage/restore actions. Operator console is a separate Web profile/Entra scheme; customer support access stays scoped/audited and dual control remains required.

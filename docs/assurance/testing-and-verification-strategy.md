@@ -44,7 +44,7 @@ Each family below states its unique responsibility, where it runs, and its evide
 |---|---|---|---|
 | <a id="rule-f-03"></a>F-03 | **Persistence tests against real stores** | Defects an in-memory double hides: transaction semantics, isolation, constraint behaviour, index behaviour, migration effects | Test results per supported store version |
 | <a id="rule-f-05"></a>F-05 | **Local RPC integration tests over real named pipes and domain sockets** | Framing, concurrency, ordering, cancellation, disconnection and reconnection defects (`§3` of the local IPC architecture) | Test results per platform |
-| <a id="rule-f-06"></a>F-06 | **Public API contract tests: generated client against a real server** | Divergence between the C# source of truth, the generated document and the running implementation (**[D-009](../decisions/phase-1-foundation-decisions.md#rule-d-009)**) | Contract diff plus test results |
+| <a id="rule-f-06"></a>F-06 | **Public API contract tests: generated client against a real server** | Divergence between handwritten proto, generated C#/TS packages and the running service (**[D-009](../decisions/phase-1-foundation-decisions.md#rule-d-009)**) | Contract diff plus test results |
 | <a id="rule-f-07"></a>F-07 | **Realtime integration tests** | Connect, disconnect, reconnect, sequence-gap recovery and backfill defects (`§7` of the cloud architecture) | Test results including induced gap scenarios |
 | <a id="rule-f-11"></a>F-11 | **Multi-process end-to-end tests** | Defects that only appear when the products, Hub, extension host and cloud all run together | Scenario results with process logs |
 | <a id="rule-f-12"></a>F-12 | **Migration and golden-fixture tests** | Data loss, semantic drift and irreversible migration defects ([QI-07](../requirements/12-quality-and-compatibility-contract.md#rule-qi-07)) | Fixture set plus before/after comparison |
@@ -75,7 +75,7 @@ Each family below states its unique responsibility, where it runs, and its evide
 
 | Boundary | Required evidence | What does not substitute |
 |---|---|---|
-| C# → OpenAPI → TS SDK | Fresh C# export/baseline diff, deterministic TS generation, real-server C#/TS calls and exact-value/unknown-field/error/header vectors | TypeScript compilation or a hand-authored matching fixture |
+| proto → C#/TypeScript SDKs | Fresh descriptor/breaking-change diff, deterministic C#/TS generation, real-server C#/TS calls and exact-value/unknown-field/error/header vectors | TypeScript compilation or a hand-authored matching fixture |
 | Browser session | Real cookie/CSRF/origin, concurrent logout/expiry, replica failover, step-up, passkey matrix and no-credential-leak tests | A unit test of a frontend auth state flag |
 | Realtime/stream | Both language adapters, duplicate/gap/reconnect, byte-offset correctness, polling equivalence and revocation | A component playing pre-recorded chunks only |
 | Consumer interface | Approved representative production-rendered visual baselines, responsive/locale/theme states, keyboard/assistive review and interaction checks | Installing a UI library or accepting screenshots alone |
@@ -94,10 +94,10 @@ These are not additional families; they are obligations distributed across the f
 
 | # | Theme | Where it is proved |
 |---|---|---|
-| CV-01 | **AOT correctness** | [F-16](#rule-f-16) and [F-17](#rule-f-17) publish AOT for every desktop product with zero trim or AOT diagnostics; [F-05](#rule-f-05), [F-06](#rule-f-06) and [F-08](#rule-f-08) run against AOT-published binaries, not JIT test hosts ([QI-02](../requirements/12-quality-and-compatibility-contract.md#rule-qi-02)) |
+| CV-01 | **AOT correctness** | [F-16](#rule-f-16) and [F-17](#rule-f-17) publish AOT for every desktop product and the C# Cloud host with zero trim or AOT diagnostics; [F-05](#rule-f-05), [F-06](#rule-f-06) and [F-08](#rule-f-08) run against AOT-published binaries, not JIT test hosts ([QI-02](../requirements/12-quality-and-compatibility-contract.md#rule-qi-02)) |
 | CV-02 | **Mobile runtime posture** | The Android release artifact is built by CI, its runtime confirmed by inspecting the artifact, and smoke-tested on a real device ([RT-07](../architecture/11-mobile-architecture.md#rule-rt-07), [RT-08](../architecture/11-mobile-architecture.md#rule-rt-08) in the mobile architecture) |
 | CV-03 | **Contract compatibility across the supported window** | [F-06](#rule-f-06) runs the current client against the previous and minimum supported server, and the reverse (`§15` of the quality contract) |
-| CV-04 | **Idempotency** | [F-02](#rule-f-02), [F-03](#rule-f-03) and [F-11](#rule-f-11) assert that every command, event and settlement path is exactly-once in effect under duplication and retry |
+| CV-04 | **Idempotency** | [F-02](#rule-f-02), [F-03](#rule-f-03) and [F-11](#rule-f-11) assert that internal commands/events/settlement deduplicate in their authoritative transaction, and externally uncertain effects enter reconciliation rather than automatic replay |
 | CV-05 | **Security enforcement** | [F-02](#rule-f-02) and [F-11](#rule-f-11) assert refusal paths: exceeded grant, missing approval, expired lease, egress without authorization, and owner-side final validation |
 | CV-06 | **Redaction** | [F-11](#rule-f-11) asserts that marker values never appear in exported telemetry (`§14` of the observability architecture) |
 | CV-07 | **Licence and provenance** | [F-17](#rule-f-17) asserts boundary compliance; the release pipeline asserts SBOM, NOTICE and dependency closure (`§4.2` of the provenance document) |
@@ -245,3 +245,8 @@ Design defects are cheaper to catch than implementation defects.
 | **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**, **[V-03](phase-1-official-verification.md#rule-v-03)**, **[V-04](phase-1-official-verification.md#rule-v-04)**, **[V-05](phase-1-official-verification.md#rule-v-05)** | AOT and runtime verification obligations |
 | **[D-009](../decisions/phase-1-foundation-decisions.md#rule-d-009)** | Contract tests against the generated artifacts and the running implementation |
 | **[D-013](../decisions/phase-1-foundation-decisions.md#rule-d-013)**, **[F-013](open-gates-register.md#rule-f-013)**, **[F-023](open-gates-register.md#rule-f-023)** | Fixture provenance and licence verification obligations |
+
+
+## P2-009 real artifact evidence
+
+The same eighteen families run in each owning repository. Contract fixtures unblock development but cannot close provider, packaged native, mobile-device or AOT gates. [WP-06](../planning/work-packages/06-aot-jit-and-wasm-publish-proof.md#rule-wp-06) first consumes actual candidate NuGet/npm packages and the AOT image, with a reachable test Cloud, deployed CF Workflow/DO and isolated R2. Later consumers pin exact artifacts from the [integration manifest](../architecture/14-build-packaging-and-release.md#14-independent-producer-and-consumer-artifact-gates). Evidence records descriptor hash, source SHA, package/image/Worker identity, OS/RID and provider reality. The CF failure/state/restore cases in [the integration contract](../architecture/contracts/05-cloudflare-integration.md) and the exact-value/profile vectors in [the wire registry](../architecture/contracts/04-protobuf-wire-registry.md) are mandatory; live customer data is excluded.

@@ -9,6 +9,9 @@
 
 > **Goal.** Retire the four technical risks that would be most expensive to discover late — one per product — with reproducible build, test and performance evidence. ArcScope and ArcSlate are built last precisely because their risks are ascertained now.
 
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Platform and affected products. Inputs: exact compatible Contracts packages/descriptors and applicable DesktopPlatform packages; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: Native AOT candidate packages/executables with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+
 ---
 
 ## 1. Scope and purpose
@@ -22,6 +25,8 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+**Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
 | Input | Why it matters |
 |---|---|
@@ -69,7 +74,7 @@
 
 ### WP-13.00 — Probe A: device tool execution under Native AOT
 
-**What must be fully done.** The **device side** of the Harness runs inside a published Native AOT desktop binary: it pulls a stub `ToolRequest`, re-authorises it locally, resolves a `CapabilityKey` through the **generated allowlist**, decodes structured arguments into a **typed** product request (`§3.1` of the local RPC contract), invokes it, and returns an idempotent result. **The model loop is not probed here — it is Cloud and JIT** ([LS-02](../../architecture/17-agent-harness.md#rule-ls-02), **[V-03](../../assurance/phase-1-official-verification.md#rule-v-03)**). What is at risk under AOT is the generated decode and static registration path, not the loop. No reflection, no dynamic assembly, no runtime code generation is involved. Static registration and out-of-process extensibility are both exercised.
+**What must be fully done.** The **device side** of the Harness runs inside a published Native AOT desktop binary: it pulls a stub `ToolRequest`, re-authorises it locally, resolves a `CapabilityKey` through the **generated allowlist**, decodes structured arguments into a **typed** product request (`§3.1` of the local RPC contract), invokes it, and returns an idempotent result. **The model loop is not probed here — it is the CF Workflow** ([LS-02](../../architecture/17-agent-harness.md#rule-ls-02), **[V-03](../../assurance/phase-1-official-verification.md#rule-v-03)**). What is at risk under AOT is the generated decode and static registration path, not the loop. No reflection, no dynamic assembly, no runtime code generation is involved. Static registration and out-of-process extensibility are both exercised.
 
 **Testing requirements.** An AOT publish log with zero diagnostics; an end-to-end `ToolRequest` → decode → typed invocation → result run inside the published binary; a negative test confirming a reflection-based registration or decode path fails to compile or is absent; a containment test confirming the structured value type appears only in the boundary dispatch assembly ([DP-02](../../architecture/contracts/02-local-rpc-operations.md#rule-dp-02)).
 
@@ -117,6 +122,19 @@
 
 ---
 
+<a id="rule-wp-13.90"></a>
+### WP-13.90 — Verify the owned artifact and real integration
+
+**What must be fully done.** Retain the four accepted probes: AOT device execution, Notes editor/recovery, acquisition throughput and media decode/synchronization. Consume real package candidates and generated contracts; use current reference boundaries.
+
+**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+
+**Testing requirements.** Probe results are tied to package/RID/native graph identities and existing independent behavioral oracles; no full new reference audit or reference execution is added.
+
+**Completion gate.** Probe results are tied to package/RID/native graph identities and existing independent behavioral oracles; no full new reference audit or reference execution is added. Record exact artifacts and provider reality. The package is incomplete if an important contract/owner/recovery rule still requires design during coding.
+
+---
+
 ## 6. Impacts
 
 | Dimension | Impact |
@@ -135,7 +153,7 @@
 
 | Evidence | Produced by |
 |---|---|
-| AOT publish log and an in-binary **device tool request** decoded and executed through generated, statically registered code — **no model loop is probed here**, it is Cloud and JIT | [WP-13.00](#rule-wp-13.00) |
+| AOT publish log and an in-binary **device tool request** decoded and executed through generated, statically registered code — **no model loop is probed here**, it is the CF Workflow | [WP-13.00](#rule-wp-13.00) |
 | Kill-during-edit recovery and undo distinction results | [WP-13.01](#rule-wp-13.01) |
 | Sustained-throughput record with overrun, gap and pause results | [WP-13.02](#rule-wp-13.02) |
 | Frame display, synchronisation measurement, sanitiser and sacrificial-process results | [WP-13.03](#rule-wp-13.03) |
@@ -145,11 +163,13 @@
 
 ## 8. Completion gate
 
+**[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) gate:** [WP-13.90](#rule-wp-13.90) and all inherited domain-specific gates must pass on the same candidate closure. Probe results are tied to package/RID/native graph identities and existing independent behavioral oracles; no full new reference audit or reference execution is added.
+
 **[PG-03](../../assurance/open-gates-register.md#rule-pg-03) evidence:** [WP-13](#rule-wp-13) — Licence/provenance approval for each native dependency admitted by the probes. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
 
 **All of the following, with recorded evidence:**
 
-1. A device tool request is decoded and executed through generated, typed, statically registered code inside a published Native AOT binary, with no reflection path present. **The model loop is not probed here** — it is Cloud and JIT ([LS-02](../../architecture/17-agent-harness.md#rule-ls-02), **[V-03](../../assurance/phase-1-official-verification.md#rule-v-03)**).
+1. A device tool request is decoded and executed through generated, typed, statically registered code inside a published Native AOT binary, with no reflection path present. **The model loop is not probed here** — it is the CF Workflow ([LS-02](../../architecture/17-agent-harness.md#rule-ls-02), **[V-03](../../assurance/phase-1-official-verification.md#rule-v-03)**).
 2. A kill during editing recovers to a committed boundary with explicit loss reporting, and undo is demonstrably not crash recovery.
 3. Sustained acquisition above the product target runs with bounded memory, and every overrun, gap and disconnect is explicitly reported.
 4. A decoded frame displays with synchronised audio; the sanitiser run is clean; the software fallback works with acceleration disabled.
@@ -162,12 +182,14 @@
 
 **Upstream — all must be complete.**
 
-- [06 — AOT, JIT and Web Publish Proof](06-aot-jit-and-wasm-publish-proof.md)
-- [07 — Local Persistence Foundation](07-local-persistence-foundation.md)
-- [08 — Local IPC Transport and Registration Lifecycle](08-local-ipc-and-registration.md)
+- [06 aot jit and wasm publish proof](06-aot-jit-and-wasm-publish-proof.md#rule-wp-06)
+- [07 local persistence foundation](07-local-persistence-foundation.md#rule-wp-07)
+- [08 local ipc and registration](08-local-ipc-and-registration.md#rule-wp-08)
 
-**Downstream — these consume this package’s completed output.**
+**Downstream — consumers of these released outputs.**
 
-- [14 — ArcChat Hub and Minimal ArcNotes Cross-Process Slice](14-hub-and-minimal-provider-slice.md)
-- [33 — ArcScope Acquisition and Session Core](33-arcscope-acquisition-and-session.md)
-- [36 — ArcSlate Project, Timeline and Media Model](36-arcslate-project-and-timeline.md)
+- [14 hub and minimal provider slice](14-hub-and-minimal-provider-slice.md#rule-wp-14)
+- [33 arcscope acquisition and session](33-arcscope-acquisition-and-session.md#rule-wp-33)
+- [36 arcslate project and timeline](36-arcslate-project-and-timeline.md#rule-wp-36)
+
+---

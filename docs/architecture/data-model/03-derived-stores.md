@@ -165,3 +165,33 @@ Deterministic per installation, so it is **recomputable rather than stored**. Wh
 | DR-06 | Changing the embedding model invalidates every chunk from the previous model | [WP-40.01](../../planning/work-packages/40-knowledge-search-and-retrieval.md#rule-wp-40.01) |
 | DR-07 | Render output is identical with proxies enabled and disabled | [WP-37.05](../../planning/work-packages/37-arcslate-playback-and-processing.md#rule-wp-37.05) |
 | DR-08 | Eviction under pressure never removes canonical data | [WP-07.06](../../planning/work-packages/07-local-persistence-foundation.md#rule-wp-07.06) |
+
+## P2-009 transport, storage and recovery composition
+
+The [CF/R2 lifecycle](../contracts/05-cloudflare-integration.md) fixes part verification, Verified pins, authorization on consumption, release/deletion and independent immutable restore. C# owning transactions, sync cursors/tombstones/conflicts, desktop pending changes, native job snapshots and derived-source revision checks above retain their semantics. The [wire profile](../contracts/04-protobuf-wire-registry.md) transports exact values without changing content-origin, Notes scalar or Scope measurement oracles. CF checkpoints/streams never become product history, and restoration cannot silently redispatch an uncertain external act.
+
+## Selected retrieval profile: retrieval.hybrid.v1
+
+This profile implements the existing [hybrid and retrieval-budget requirements](../../requirements/06-knowledge-search-and-retrieval.md#5-search-versus-retrieval) without changing owner-local lexical/scalar semantics. Freeze profile, query, principal/scope/policy, source versions and index/model/config versions into the dataset/context token; changes invalidate that token rather than mixing pages.
+
+1. Filter current permissions, metadata and search/AI-exclusion policy before candidates or counts. Owner-local lexical ranking remains its existing profile; Cloud semantic candidates use cosine similarity over complete same-version 1024-dimensional vectors. Zero-norm vectors are unrankable. Normalize each list to one-based ranks, tie-breaking by lower-case resource UUID then canonical anchor bytes. Prefer the local current version when a permitted native search also has a duplicate Cloud hit; only acknowledged versions are eligible for Cloud model context.
+2. Deduplicate by resource identity, source version, anchor and canonical content fingerprint. For hybrid ordering use reciprocal rank fusion RRF(x)=sum(1/(60+rank_i(x))) over the lexical and semantic lists, absent contribution0. Never add raw lexical and vector scores. Metadata-only search orders by the owner's declared sort, default modified descending then stable ID.
+3. Exact matches precede other automatic hits. Exact means an ordinal NFC occurrence of the entire nonempty query in indexed title/text; no locale-dependent case folding is introduced here. Within each priority group sort descending fusion score, then stable resource/anchor tie. Keyword-only and semantic-only modes retain their corresponding list order, with the same exact-match priority where source text establishes it.
+4. Optional CF rerank operates on at most the first 200 authorized candidates and sorts by descending returned score inside each exactness group, tie-breaking by prior fused order. Candidates outside that bounded prefix retain their prior order after that group's reranked prefix. Refused/partial/unknown/unavailable reranking falls back to the complete pre-rerank order and reports that degradation; it never fails keyword retrieval.
+5. Context assembly processes explicit permitted pins first, then automatic exact and non-exact groups. Automatic evidence uses round-robin source queues ordered by each source's highest-ranked remaining hit, with the per-source cap; each queue preserves hit order. Identity/content duplicates consume no second evidence slot. Graph expansion follows canonical link-target order, deduplicates visited identities, and obeys depth/edge/candidate limits. Links do not acquire exact-match or pinned priority.
+6. Pack within all effective evidence/token/byte bounds, carrying source/revision/anchor/origin for every item and reporting omitted/truncated/ineligible reasons. Explicit pins consume the global budget but not the automatic per-source cap; if pins alone exceed the admitted budget, report the overflow for reduction before model dispatch. Token counts use the selected model adapter's conservative counter; a final provider limit refusal never silently cuts a source or drops provenance.
+
+| RetrievalBudget field | Default / hard maximum |
+|---|---|
+| candidates | 200 / 500 combined authorized deduplicated candidates |
+| evidence | 20 / 100 context items |
+| contextTokens | 8192 / 24000, also bounded by the selected model and remaining Run context allowance |
+| contextBytes | 131072 / 262144 |
+| perSource | 5 / 20 automatic items from one aggregate resource |
+| graphDepth; graphEdges | 1 / 3; 64 / 256 (depth0 disables expansion) |
+
+The effective value is the minimum of the caller's supplied budget (or these defaults), active product/resource policy, model limits and remaining Run allowance. Budgets govern candidate discovery and context assembly; an ordinary result page still follows its PageRequest/dataset contract and must disclose a bounded/incomplete candidate set. No fixed Top-K replaces this budget.
+
+Independent ranking vectors: lexical A,B and semantic B,C produce B>A>C under RRF60; marking A exact produces A>B>C. Equal scores tie by resource UUID/anchor, independent of arrival order. Revoked B contributes neither rank nor count; duplicate local/cloud A resolves once to the current local version for native search. A failed reranker reproduces pre-rerank order. Pinned content precedes automatic content but cannot bypass source permission, current Cloud acknowledgement or a budget refusal.
+
+Embedding/rerank jobs use the [canonical Search execution record](01-cloud-data-model.md#search-inference-job-execution-record) and existing platform-funded supplier accounting. Keyword/scalar search and rebuilding native lexical indexes remain usable without a model. Supplied weights behind a CF model ID may change: exact vector bytes are not a provider guarantee; fixture vectors test deterministic fusion, while provider evaluation/versioned rebuild gates cover model changes.

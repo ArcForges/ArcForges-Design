@@ -747,9 +747,9 @@ Every active entry is binding where its concepts are in current product scope. A
 | "ArcForges Suite 2.0" as a version | No mandatory suite release train | Per-product versions plus an optional release campaign name |
 | "Central desktop service", `ArcForgesService.exe` | Prohibited architecture | ArcChat-hosted Hub |
 | Unqualified "Unlimited AI" / "unlimited storage" | Prohibited unbounded commercial claims | Disclosed AI capacity recovery/rate/concurrency/model limits and storage tier |
-| "Native AOT" applied to Android production builds | Conflates Mono AOT with CoreCLR Native AOT (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**, [V-04](../assurance/phase-1-official-verification.md#rule-v-04)) | ".NET 10 Mono AOT" |
-| "Cloud must publish as Native AOT" | Removed by **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** | "Cloud is an ASP.NET Core JIT modular monolith" |
-| "SignalR is unsupported under Native AOT" | Stale .NET 8 statement ([V-03](../assurance/phase-1-official-verification.md#rule-v-03)) | "SignalR has Partial support under .NET 10 Native AOT" |
+| ".NET AOT" applied to RN Android | RN/Hermes is its own runtime under [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) | "React Native/Hermes release build" |
+| "Cloud may remain JIT" | Superseded by [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) | "C# Cloud publishes Native AOT" |
+| "A realtime connection is durable authority" | Hints are projections | "Reconcile using the typed authoritative read" |
 | Waffo Pancake and every Waffo-specific mechanic | `SUPERSEDED` provider (**[D-005](../decisions/phase-1-foundation-decisions.md#rule-d-005)**) | Paddle (MoR) and Payoneer (payout destination) |
 | "License key unlock" in ArcChat Mobile | Prohibited by Apple 3.1.1 and **[D-022](../decisions/phase-1-foundation-decisions.md#rule-d-022)** | Cloud-resolved entitlement |
 | `InvokeAsync(string, object)` / `Dictionary<string,object>` capability calls | Bypasses contracts, permissions and versioning | Strongly typed capability interfaces |
@@ -796,3 +796,7 @@ The glossary is enforced, not merely published.
 | [Contracts, Protocols and the Cross-Application Semantic Model](../architecture/02-contracts-and-protocols.md) | Applies the canonical vocabulary to cross-product contracts |
 | **[D-018](../decisions/phase-1-foundation-decisions.md#rule-d-018)** | The requirement that this document exists and gates detailed specification |
 | **[V-02](../assurance/phase-1-official-verification.md#rule-v-02)** | The MCP term-collision requirement discharged in §9 |
+
+## P2-009 technology invariants
+
+Proto is authored wire authority; the sole model loop is CF Workflow; canonical business state is C#/PostgreSQL; object bytes are R2; product repositories consume immutable packages; Mobile is RN/Hermes. These replace superseded technology examples without renumbering inherited invariant IDs. Content-origin, Notes scalar queries, Scope measurement and Slate rational/tick meaning remain unchanged.

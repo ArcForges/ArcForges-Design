@@ -18,3 +18,7 @@ Historical `I1`–`I4` and input Stage citations identify the archived origin of
 ## License
 
 ArcForges Design is licensed under the GNU Affero General Public License v3.0. See [`LICENSE`](LICENSE).
+
+## Current architecture amendment
+
+[P2-009](docs/decisions/phase-2-specification-decisions.md#rule-p2-009) adopts independent repositories and versioned native/managed packages, handwritten proto business RPC, a Native AOT C# business host, React Native mobile, and a sole Cloudflare AI Harness with Workers AI and R2. Start implementation at the [planning entry](docs/planning/README.md); formal design decisions precede implementation and runtime proof.

@@ -1,6 +1,6 @@
 <a id="rule-wp-08"></a>
 
-# WP-08 — Local IPC Transport and Registration Lifecycle
+# WP-08 — Local gRPC and Registration
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
@@ -8,6 +8,9 @@
 > Upstream: `06`, `07` · Downstream: `09`, `11`, `13`, `14`
 
 > **Goal.** Make the local plane real: a transport per platform, an endpoint manifest, a registration lifecycle with leases and heartbeats, routing, health, backpressure and reconnection — all working between genuinely AOT-published processes.
+
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Platform mechanisms; ArcChat Hub; each provider. Inputs: exact compatible Contracts packages/descriptors and applicable DesktopPlatform packages; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: Native AOT candidate packages/executables with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
 
 ---
 
@@ -22,6 +25,8 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+**Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
 | Input | Why it matters |
 |---|---|
@@ -71,11 +76,12 @@
 
 ### WP-08.00 — Transport and framing
 
-**What must be fully done.** The per-platform transport with correct access control, message framing, the binary formatter with generated shapes, and a text-format fallback where diagnostics require it. Connection setup verifies the peer is the same user.
 
-**Testing requirements.** Cross-platform transport tests; a framing test with maximum-size and malformed messages; an access-control test asserting another user cannot connect.
+**What must be fully done.** Implement Kestrel HTTP/2 over named pipes on Windows and UDS elsewhere, explicit generated gRPC registration and ConnectCallback clients. Apply owner-only ACL/peer OS identity and the selected LocalBootstrap nonce/epoch binding before ordinary methods. Use protobuf wire framing only; readable diagnostics are logs, never an alternate accepted protocol.
 
-**Completion gate.** The transport works on every desktop platform and rejects a foreign-user connection.
+**Testing requirements.** Actual AOT processes on each OS: foreign-user/forged-manifest/expired-nonce/malformed-frame and size-limit failures.
+
+**Completion gate.** The selected OS-authenticated local transport works with no public TCP listener or text fallback.
 
 <a id="rule-wp-08.01"></a>
 
@@ -91,11 +97,12 @@
 
 ### WP-08.02 — Registration lifecycle
 
-**What must be fully done.** Registration with a lease and heartbeat; graceful deregistration; lease expiry on a dead process; automatic idempotent re-registration after a Hub restart; and a product that starts fully with no Hub present.
 
-**Testing requirements.** Hub-restart re-registration; provider-crash lease expiry; Hub-absent product start; double-registration idempotency.
+**What must be fully done.** Implement registration lease 30 seconds, renewal 10 seconds and generation/epoch fencing from the IPC contract. Publish/remove endpoint manifests atomically, expire dead registrations and re-register idempotently after Hub restart; products start and save with Hub absent.
 
-**Completion gate.** A provider survives a Hub restart, a dead provider's lease expires, and a product starts and saves with no Hub present.
+**Testing requirements.** Restart both sides at registration/renewal/expiry boundaries; stale callback and duplicate registration; Hub-absent product persistence.
+
+**Completion gate.** No dead endpoint or stale generation remains eligible and Hub loss cannot block local product work.
 
 <a id="rule-wp-08.03"></a>
 
@@ -111,11 +118,12 @@
 
 ### WP-08.04 — Health, backpressure and concurrency
 
-**What must be fully done.** Health reporting across the five dimensions; per-connection and per-method concurrency limits; explicit backpressure with a recorded shed reason; ordering guarantees stated and enforced; no deadlock between bidirectional calls.
 
-**Testing requirements.** Saturation tests asserting bounded memory; an ordering test; a bidirectional-call deadlock test.
+**What must be fully done.** Enforce the selected 16 active/64 queued call limits, deadlines and declared capability ordering/conflict rules. Use separate owned listeners for bidirectional calls; never hold a synchronous callback waiting on the same saturated lane. Emit five-dimension health and typed overload reason.
 
-**Completion gate.** Saturation is bounded and observable, and bidirectional calls cannot deadlock.
+**Testing requirements.** Saturation/bounded-memory, cross-direction cancellation/deadlock and priority/order tests against published peers.
+
+**Completion gate.** Queue/call/memory limits and failure behavior match the fixed local profile.
 
 <a id="rule-wp-08.05"></a>
 
@@ -131,11 +139,23 @@
 
 ### WP-08.06 — Large-data path
 
-**What must be fully done.** A controlled transfer channel for large payloads, using a resource reference with range, checksum, cancellation and rate limiting. The Hub never relays the body. A payload exceeding the inline limit is rejected with guidance rather than silently truncated.
 
-**Testing requirements.** Large-transfer tests with interruption and resumption; a negative test asserting an oversized inline payload is refused; an assertion that the Hub carries no body.
+**What must be fully done.** Implement LocalTransferTicket, BeginTransfer/ReadChunk/OpenRead/GetJob with immutable ResourceVersionRef, offset/hash/range, expiry, cancellation and selected bounds. Transfer directly between authorized owning peers; Hub only routes references.
 
-**Completion gate.** Large transfers work with interruption and resumption, and the Hub demonstrably carries no payload body.
+**Testing requirements.** Interrupted/resumed read, wrong owner/version/hash, expired ticket, oversized inline body and unauthorized range.
+
+**Completion gate.** Large data remains owner-scoped, verifiable and resumable without entering Hub control payloads.
+
+<a id="rule-wp-08.90"></a>
+### WP-08.90 — Verify the owned artifact and real integration
+
+**What must be fully done.** Assemble the owned deliverables from the preceding substeps under the selected repository, package, runtime and protocol authorities. Replace retired IPC scaffolding using the fixed local gRPC Named Pipe/UDS design. Preserve first-party discovery, ACL/identity, leases, protocol negotiation, bounded queues/calls and registration cleanup. Hub remains in ArcChat.
+
+**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+
+**Testing requirements.** Actual AOT process-to-process tests cover registration, expiry, incompatible peers, backpressure, cancellation and malformed/unauthorized calls; no public TCP listener is required.
+
+**Completion gate.** Actual AOT process-to-process tests cover registration, expiry, incompatible peers, backpressure, cancellation and malformed/unauthorized calls; no public TCP listener is required. Record exact artifacts and provider reality. The package is incomplete if an important contract/owner/recovery rule still requires design during coding.
 
 ---
 
@@ -169,6 +189,8 @@
 
 ## 8. Completion gate
 
+**[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) gate:** [WP-08.90](#rule-wp-08.90) and all inherited domain-specific gates must pass on the same candidate closure. Actual AOT process-to-process tests cover registration, expiry, incompatible peers, backpressure, cancellation and malformed/unauthorized calls; no public TCP listener is required.
+
 **All of the following, with recorded evidence, between genuinely AOT-published binaries:**
 
 1. The transport works on every desktop platform and rejects a foreign-user connection.
@@ -185,12 +207,14 @@
 
 **Upstream — all must be complete.**
 
-- [06 — AOT, JIT and Web Publish Proof](06-aot-jit-and-wasm-publish-proof.md)
-- [07 — Local Persistence Foundation](07-local-persistence-foundation.md)
+- [06 aot jit and wasm publish proof](06-aot-jit-and-wasm-publish-proof.md#rule-wp-06)
+- [07 local persistence foundation](07-local-persistence-foundation.md#rule-wp-07)
 
-**Downstream — these consume this package’s completed output.**
+**Downstream — consumers of these released outputs.**
 
-- [09 — Capability, Contribution and Resource Model](09-capability-contribution-and-resource-model.md)
-- [11 — Security Foundation](11-security-foundation.md)
-- [13 — Four High-Risk Technical Probes](13-high-risk-technical-probes.md)
-- [14 — ArcChat Hub and Minimal ArcNotes Cross-Process Slice](14-hub-and-minimal-provider-slice.md)
+- [09 capability contribution and resource model](09-capability-contribution-and-resource-model.md#rule-wp-09)
+- [11 security foundation](11-security-foundation.md#rule-wp-11)
+- [13 high risk technical probes](13-high-risk-technical-probes.md#rule-wp-13)
+- [14 hub and minimal provider slice](14-hub-and-minimal-provider-slice.md#rule-wp-14)
+
+---

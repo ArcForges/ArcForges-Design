@@ -45,9 +45,9 @@ This document is a **capability inventory and a platform commitment structure**,
 
 | Target | Runtime | Architecture posture |
 |---|---|---|
-| **ArcForges Cloud** | ASP.NET Core JIT container | The container's target architecture is a deployment decision, not a product surface |
+| **ArcForges Cloud** | ASP.NET Core Native AOT container | Linux x64 Native AOT container; identical replicas, one process per instance |
 | **ArcForges.Web.App** | React/TypeScript browser assets; Node.js/npm build tooling | Supported browser matrix; no .NET WASM host. win.slnx/esproj on Windows; npm directory workflow elsewhere ([P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008)) |
-| **ArcChat Mobile — Android** | .NET 10 Mono AOT | arm64 Tier 1; x64 for emulator use only, never a release claim |
+| **ArcChat Mobile — Android** | React Native/Hermes | arm64 Tier 1; x64 for emulator use only, never a release claim |
 | **ArcChat Mobile — iOS** | **Architecture present, build deferred** (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**) | **Never claimed as compiled or tested** |
 
 | # | Rule |
@@ -67,7 +67,7 @@ This document is a **capability inventory and a platform commitment structure**,
 | Field | Meaning |
 |---|---|
 | **Slot** | The capability the product needs |
-| **Owner** | The project holding the managed wrapper — always a `*.Infrastructure` or a product-specific native project ([CP-02](19-product-implementation-maps.md#rule-cp-02) of the implementation maps) |
+| **Owner** | The project holding the managed wrapper — a DesktopPlatform capability package; products consume it through their C# infrastructure adapters ([CP-02](19-product-implementation-maps.md#rule-cp-02) of the implementation maps) |
 | **ABI** | Whether ArcForges owns the C ABI shim (`af_*`) or consumes a library's own C API directly |
 | **Required by** | What breaks without it |
 | **Gate** | The open gate that governs its adoption |
@@ -76,13 +76,13 @@ This document is a **capability inventory and a platform commitment structure**,
 
 | Slot | Owner | ABI | Required by | Gate |
 |---|---|---|---|---|
-| **Media demux and decode** | `ArcSlate.Media` | **ArcForges-owned `af_media_*` shim** over the chosen foundation | ArcSlate playback, proxy generation, thumbnails, waveforms | [PG-03](../assurance/open-gates-register.md#rule-pg-03) |
-| **Media encode and mux** | `ArcSlate.Media` | Same shim | ArcSlate export and render | [PG-03](../assurance/open-gates-register.md#rule-pg-03) |
-| **Colour conversion, scale, resample** | `ArcSlate.Media` | Same shim | Playback and render correctness; **preview and render share semantics** ([MP-03](12-native-interop-and-media.md#rule-mp-03)) | [PG-03](../assurance/open-gates-register.md#rule-pg-03) |
-| **Colour management transforms** | `ArcSlate.Media` | ArcForges-owned shim | ArcSlate colour pipeline ([WP-38](../planning/work-packages/38-arcslate-render-and-colour.md#rule-wp-38)) | [PG-03](../assurance/open-gates-register.md#rule-pg-03) |
-| **GPU device and surface access** | `ArcSlate.Media` | Platform-specific rendering bridge ([BF-06](12-native-interop-and-media.md#rule-bf-06)) | Accelerated preview; **optional at every stage** ([GP-04](12-native-interop-and-media.md#rule-gp-04)) | [PG-03](../assurance/open-gates-register.md#rule-pg-03) |
-| **Serial and device transports** | `ArcScope.Acquisition` | Platform APIs and vendor SDKs, each behind its own wrapper | ArcScope acquisition ([WP-33](../planning/work-packages/33-arcscope-acquisition-and-session.md#rule-wp-33)) | [PG-03](../assurance/open-gates-register.md#rule-pg-03), [PG-08](../assurance/open-gates-register.md#rule-pg-08) |
-| **High-rate acquisition and signal primitives** | `ArcScope.Acquisition` | ArcForges-owned shim where a managed path cannot meet the rate | ArcScope hot path | [PG-03](../assurance/open-gates-register.md#rule-pg-03) |
+| **Media demux and decode** | `ArcForges.Native.Media` / DesktopPlatform | **ArcForges-owned `af_media_*` shim** over the chosen foundation | ArcSlate playback, proxy generation, thumbnails, waveforms | [PG-03](../assurance/open-gates-register.md#rule-pg-03) |
+| **Media encode and mux** | `ArcForges.Native.Media` / DesktopPlatform | Same shim | ArcSlate export and render | [PG-03](../assurance/open-gates-register.md#rule-pg-03) |
+| **Colour conversion, scale, resample** | `ArcForges.Native.Media` / DesktopPlatform | Same shim | Playback and render correctness; **preview and render share semantics** ([MP-03](12-native-interop-and-media.md#rule-mp-03)) | [PG-03](../assurance/open-gates-register.md#rule-pg-03) |
+| **Colour management transforms** | `ArcForges.Native.Colour` / DesktopPlatform | ArcForges-owned shim | ArcSlate colour pipeline ([WP-38](../planning/work-packages/38-arcslate-render-and-colour.md#rule-wp-38)) | [PG-03](../assurance/open-gates-register.md#rule-pg-03) |
+| **GPU device and surface access** | `ArcForges.Native.Media` / DesktopPlatform | Platform-specific rendering bridge ([BF-06](12-native-interop-and-media.md#rule-bf-06)) | Accelerated preview; **optional at every stage** ([GP-04](12-native-interop-and-media.md#rule-gp-04)) | [PG-03](../assurance/open-gates-register.md#rule-pg-03) |
+| **Serial and device transports** | `ArcForges.Native.Instruments` / DesktopPlatform | Platform APIs and vendor SDKs, each behind its own wrapper | ArcScope acquisition ([WP-33](../planning/work-packages/33-arcscope-acquisition-and-session.md#rule-wp-33)) | [PG-03](../assurance/open-gates-register.md#rule-pg-03), [PG-08](../assurance/open-gates-register.md#rule-pg-08) |
+| **High-rate acquisition and signal primitives** | `ArcForges.Native.Instruments` / DesktopPlatform | ArcForges-owned shim where a managed path cannot meet the rate | ArcScope hot path | [PG-03](../assurance/open-gates-register.md#rule-pg-03) |
 | **Document rendering and text extraction** | `ArcForges.ContentSandbox` with the desktop broker in `ArcNotes.Infrastructure` | Native library loaded only in the isolated helper; **two operations only** ([DR-01](12-native-interop-and-media.md#rule-dr-01)) | ArcNotes PDF viewing ([AT-05](../requirements/products/arcnotes.md#rule-at-05)) | **[PG-12](../assurance/open-gates-register.md#rule-pg-12)** |
 | **Secure storage** | Per-product `*.Infrastructure` | Platform APIs | Secret broker backing (`§6` of the security architecture) | — |
 | **Shell integration, global hotkey, notification** | Per-product `*.Infrastructure` | Platform APIs | Desktop shell behaviours | — |
@@ -91,7 +91,7 @@ This document is a **capability inventory and a platform commitment structure**,
 | # | Rule |
 |---|---|
 | NS-01 | **There is no first-party C++ worker process.** Native code runs in-process behind the ABI (`§1` of the native interop architecture), which is why `§6` there carries the safety obligations that make a worker-free design acceptable. |
-| NS-02 | **Cloud has no native slot** (`§2` there). Cloud is managed code on a managed hosting platform. |
+| NS-02 | **Cloud has no desktop native slot** (`§2` there). Cloud is a Native AOT executable using platform crypto/SQL/HTTP without the desktop media stack. |
 | NS-03 | **Mobile and Web have no first-party native ABI** (`§2` there). A capability that needs one is a desktop capability. |
 | NS-04 | **A slot filled for one product is not thereby available to another.** A native library used by two products is still loaded per process with no shared global state ([NP-02](12-native-interop-and-media.md#rule-np-02) there), and the second product's use is its own adoption decision. |
 | NS-05 | **Every ArcForges-owned shim carries a fixed prefix and an ABI version** ([AB-02](12-native-interop-and-media.md#rule-ab-02) there), negotiated at load rather than assumed ([AB-12](12-native-interop-and-media.md#rule-ab-12) there). |
@@ -124,7 +124,7 @@ Filling a slot is not a code change. Before a dependency enters a deliverable:
 | Class | Constraint | Examples of the class |
 |---|---|---|
 | **In a desktop AOT deliverable** | Must publish AOT with zero trim/AOT warnings (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**, **[V-05](../assurance/phase-1-official-verification.md#rule-v-05)**); no reflection-driven runtime construction | UI, contracts, persistence, HTTP, realtime |
-| **In Cloud only** | JIT permitted; **strict AOT is explicitly not required** (**[V-03](../assurance/phase-1-official-verification.md#rule-v-03)**) | Hosting, ORM, provider SDKs, operational infrastructure |
+| **In Cloud only** | Native AOT required; explicit generated serializers/registration and zero-warning publish (**[V-03](../assurance/phase-1-official-verification.md#rule-v-03)**) | Explicit hosting, Npgsql SQL, typed provider HTTP and telemetry |
 | **In the Apache-2.0 boundary** | Licence-compatible with Apache-2.0 redistribution (**[D-004](../decisions/phase-1-foundation-decisions.md#rule-d-004)**, **[D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021)**) | Contracts, SDK, mobile core |
 | **Build-time only** | Never shipped; may be more permissive about runtime constraints | Generators, analyzers, test tooling |
 
@@ -199,3 +199,18 @@ dependency adopted (§3.3)
 | PV-08 | A Cloud-class dependency cannot be referenced from a desktop project | [WP-05](../planning/work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05) |
 | PV-09 | An AGPL-boundary assembly cannot be referenced from an Apache-2.0 project | [WP-03](../planning/work-packages/03-contract-foundation-and-licence-split.md#rule-wp-03), [WP-05](../planning/work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05) |
 | PV-10 | The SBOM resolves for every shipped artifact, with a licence position for every entry | [WP-50.01](../planning/work-packages/50-full-platform-production-release.md#rule-wp-50.01) |
+
+## 7. Selected P2-009 runtime and dependency closure
+
+Cloud uses .NET SDK 10.0.400, .NET10 runtime10.0.12, Grpc.AspNetCore/Web2.83.0 and Npgsql 10.0.3, PostgreSQL 18.6. One Linux-x64 Native AOT executable, chiseled Ubuntu runtime-deps image with ICU/tzdata/CA certificates, non-root, read-only root and declared scratch, no dynamic plugin assemblies, EF/dynamic ORM, ASP.NET Session or CookieAuthenticationHandler. ASP.NET Core Minimal API endpoints and explicit generated metadata handle only allowed HTTP exceptions. NpgsqlDataSource with fixed SQL and explicit parameter/reader mapping; SQL migrations shipped as one-shot bundle. DB pool max 32, max 128 active RPCs, bounded queue 256, drain 30s; liveness process-only, readiness DB/config/private-port binding, degraded CF/R2 reported separately.
+
+Authentication is first-party explicit session/challenge state over .NET cryptography and System.Formats.Cbor, avoiding a reflection/native dependency closure from a full Identity/FIDO framework. WebAuthn RP offers ES256 only, resident/discoverable credentials, UV required, attestation none; verify type/challenge/exact origin/RP hash/UP+UV/credential ownership/signature per W3C, bounded CBOR/JSON, reject duplicates/trailing malformed structures. Parse only COSE EC2 NIST P256 keys; ECDsa verifies signature, no ad-hoc cryptographic algorithm. Non-backup counter rollback rejects; synced credential backup flags/counter changes follow explicit suspicious-auth step-up and audit, never count as proof of compromise by themselves. Email/recovery remain existing one-use challenge/rate-limit flow, no enumeration. WP06 tests real passkey ceremony and negative vectors under AOT; failed chosen-path proof requires a focused design correction, not automatic JIT.
+
+Native access handles are random256-bit opaque bearer values (PG access_token_hash + expiry), fifteen-minute expiry; native refresh token family thirty-day max with existing rotation/reuse revocation. Browser session random256-bit handle, host-only Secure/HttpOnly/SameSite=Lax, twelve-hour absolute/thirty-minute idle; CSRF token random256-bit bound to session/preauth flow hash, Origin+header checks on unsafe routes. C# validates current user/device/workspace/expiry on every command. No JavaScript-accessible browser credential. Secret handling never depends on ASP.NET Data Protection automatic cookie auth; same PG/hash-based session works on identical replicas. Browser login challenge state and session creation retain the existing Identity→Device shared transaction.
+
+Other adapters: Paddle raw-body HMAC and typed source-generated HttpClient, no provider SDK reflection; R2/backup S3 uses typed HTTP and .NET crypto/SigV4; CF HMAC ports use source-generated STJ from the JSON schema; compression through framework streams; crypto through .NET platform primitives; telemetry through ActivitySource/Meter plus explicitly registered OTLP exporters; simulator pure deterministic C# under current AST. Domain store authority and all 20 modules stay unchanged. Early WP06 proves complete selected host dependency publish+auth/gRPC/SQL/CF/R2 path with zero trim/AOT diagnostics; product functions follow their later WPs.
+
+Operator access uses the separate Entra OIDC/operator opaque-session scheme and typed internal operator methods fixed in [the internal operator schema](contracts/04-protobuf-wire-registry.md#9-operator-control-and-separate-identity-boundary). The same AOT host enforces both schemes with disjoint audiences/origins; no customer token can authorize administration. Public status remains independently hosted static output with an alternate provider URL under the existing operations rule.
+
+
+Native dependency selection and resolved OTIO/MDF dispositions are in [package registry](01-solution-and-project-layout.md#12-package-and-native-distribution-registry). RN native OS modules are Mobile dependencies, not desktop ABI packages. All actual candidate/RID/admission proofs remain required; the selected route is fixed before coding.

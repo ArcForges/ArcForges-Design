@@ -7,7 +7,7 @@
 
 Phase 1 decisions remain binding except where subsequent explicit user direction amends them under D-001. **[P2-006](#rule-p2-006) records the user-directed requirements revision of 2026-09-06.**
 
-The bar for entry is deliberately high. A conclusion already established by a current formal specification or an effective accepted decision is implemented in the appropriate layer with a citation — it does not become a duplicate decision record. The [deprecated input archive](../deprecated-inputs/README.md) supplies no new requirements or authority; its citations and original quotations are historical provenance only. [P2-001](#rule-p2-001) through [P2-008](#rule-p2-008) are recorded below. [P2-002](#rule-p2-002) is withdrawn; [P2-003](#rule-p2-003) is now adopted under the Web redesign. [P2-008](#rule-p2-008) is the latest authority for Web, Node tooling and generated TypeScript clients.
+The bar for entry is deliberately high. A conclusion already established by a current formal specification or an effective accepted decision is implemented in the appropriate layer with a citation — it does not become a duplicate decision record. The [deprecated input archive](../deprecated-inputs/README.md) supplies no new requirements or authority; its citations and original quotations are historical provenance only. [P2-001](#rule-p2-001) through [P2-009](#rule-p2-009) are recorded below. [P2-002](#rule-p2-002) is withdrawn; [P2-003](#rule-p2-003) is adopted under the Web redesign. [P2-009](#rule-p2-009) now amends repository ownership, proto, Cloud/AI and Mobile technology. Earlier runtime/transport outcomes are historical where that decision explicitly supersedes them; the accepted product and commercial scope remains binding.
 
 ---
 
@@ -278,3 +278,22 @@ The following earlier-baseline tensions were recorded before P2-006. Their evide
 | Every commercial figure in the corpus is a proposal, not a commitment | Recorded as versioned commercial policy with corpus defaults labelled proposals (**[D-020](phase-1-foundation-decisions.md#rule-d-020)**); no figure has been consumed as an authoritative specification | [`../requirements/04-commerce-entitlement-and-credits.md`](../requirements/04-commerce-entitlement-and-credits.md); [`../assurance/commercial-figure-status.md`](../assurance/commercial-figure-status.md) |
 
 Should implementation surface a further material conflict, **[D-001](phase-1-foundation-decisions.md#rule-d-001)** governs: the work stops, the conflict is registered, and it is returned for decision rather than resolved locally.
+
+<!-- Architecture amendment 2026-09-11 -->
+
+<a id="rule-p2-009"></a>
+## P2-009 — Independent repositories, proto, Native AOT and Cloudflare execution · ADOPTED
+
+**Authority/date.** Explicit user architecture direction and authorization to apply it, 2026-09-11. This is the coordinated amendment prepared in Plan/architecture-change-plan; the formal definitions linked here are the current implementation authority.
+
+**Decisions.** Ten peer implementation/contract repositories under [solution ownership](../architecture/01-solution-and-project-layout.md); reuse existing implementation history for DesktopPlatform, with capability-specific managed/RID NuGet packages. Handwritten proto in Contracts governs business RPC and generated C#/TS clients. Desktop and the single C# Cloud business host publish Native AOT. Mobile is Apache React Native/TypeScript/Hermes Android companion; iOS stays build-deferred. React Web keeps static profiles and isolated origins.
+
+The sole AI loop is a Cloudflare Workflow in ArcForges-AI, using selected Workers AI models directly. A Durable Object coordinates bounded live presentation. C# retains all 20 business owners and canonical PostgreSQL transactions; R2 holds primary bytes behind consumption-time authorization. No production Node/Deno/Bun AI sidecar, local AI, extra Harness or generic gateway. Independent immutable disaster copy remains mandatory.
+
+**Precise authorities.** [Wire registry](../architecture/contracts/04-protobuf-wire-registry.md), [CF/state/object contract](../architecture/contracts/05-cloudflare-integration.md), [runtime/dependency matrix](../architecture/21-platform-and-dependency-matrix.md), [implementation sequence](../planning/implementation-sequence.md).
+
+**Specific supersession.** Amend [D-007](phase-1-foundation-decisions.md#rule-d-007)/[P2-008](#rule-p2-008) C# wire-source rule to proto; [D-008](phase-1-foundation-decisions.md#rule-d-008)/[V-03](../assurance/phase-1-official-verification.md#rule-v-03)/[V-04](../assurance/phase-1-official-verification.md#rule-v-04) Cloud JIT and Mono-AOT mobile choices to the selected Cloud Native AOT and RN runtime; [D-009](phase-1-foundation-decisions.md#rule-d-009) contract authoring/transport to proto; [D-011](phase-1-foundation-decisions.md#rule-d-011) monorepo target to the ten-repository ownership graph. [P2-006](#rule-p2-006)'s single in-host C# Harness placement becomes sole CF Workflow with C# business authority. [P2-008](#rule-p2-008)'s prohibition on RN is replaced for Mobile. The preserved quotations/dated verification in those records describe their historical decision and are not current implementation instructions.
+
+[D-004](phase-1-foundation-decisions.md#rule-d-004)/[D-013](phase-1-foundation-decisions.md#rule-d-013)/[D-021](phase-1-foundation-decisions.md#rule-d-021) license and reference boundaries, [D-010](phase-1-foundation-decisions.md#rule-d-010) direct professional-product access and in-process ArcChat Hub, [D-014](phase-1-foundation-decisions.md#rule-d-014)/015 origins, [D-016](phase-1-foundation-decisions.md#rule-d-016)/[P2-007](#rule-p2-007) isolation, [P2-006](#rule-p2-006) accepted commercial/product scope and all three repaired semantic profiles remain binding. No organizations, BYOK, extra agent, professional mobile editor, Notes canvas/slides/formulas/E2EE or mandatory prepayment is added.
+
+**Implementation consequence.** WP02/03 establish exact producer artifacts; WP06 proves selected AOT/gRPC/RN/CF/R2 paths early. WP52 implements the sole CF loop after real business admission/bridge/retrieval, and WP50 joins real deployment/restore evidence. Documentation review does not satisfy those runtime gates.

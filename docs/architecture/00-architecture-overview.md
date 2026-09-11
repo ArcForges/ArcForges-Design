@@ -17,7 +17,7 @@ Five constraints determine almost every structural decision downstream.
 |---|---|---|
 | AC-01 | **State has exactly one owner** | No shared writable business database; no central service holding product state; caches record source and revision and are never write points |
 | <a id="rule-ac-02"></a>AC-02 | **Calls cross boundaries as strongly typed contracts** | No catch-all `Invoke(string, object)`; no dictionary payloads; no runtime-discovered interfaces on the AOT path |
-| AC-03 | **The public internet uses standard HTTP semantics** | Ordinary HTTP/JSON, cacheable, proxyable, observable, and comprehensible to a non-.NET client |
+| AC-03 | **Public business RPC uses handwritten proto over gRPC/gRPC-Web** | Typed interoperable C#/TS clients, explicit standard HTTP exceptions, authenticated bounded reads and observable error semantics |
 | <a id="rule-ac-04"></a>AC-04 | **Every production main path must be statically analysable where it is an AOT deliverable** | Source generation everywhere; no reflection fallback; no runtime code generation on the desktop main path |
 | AC-05 | **Failure is recoverable, and permission is validated at the final execution point** | Journals, revisions, idempotency, compensation — and owner-side re-authorization on every invocation |
 
@@ -34,16 +34,16 @@ Five constraints determine almost every structural decision downstream.
 │   Avalonia · Hub · Client     Avalonia        Avalonia       Avalonia    │
 │   Native AOT                 Native AOT      Native AOT     Native AOT  │
 │        │                          │               │              │      │
-│        └──── StreamJsonRpc over Named Pipe / Unix domain socket ─┘      │
+│        └──── gRPC over Named Pipe / Unix domain socket ─┘      │
 │              (semantic capability invocation, first-party, same machine)│
 └────────┬───────────────────┬──────────────┬──────────────┬─────────────┘
          │                   │              │              │
-         │  HTTPS: HTTP/JSON (Refit client) + realtime (SignalR)
+         │  HTTPS: HTTP/JSON (generated gRPC client client) + realtime (gRPC hint polling)
          │                   │              │              │
          ▼                   ▼              ▼              ▼
 ┌────────────────────────────────────────────────────────────────────────┐
 │                          ArcForges Cloud                               │
-│              ASP.NET Core JIT modular monolith  (D-008)                │
+│              ASP.NET Core Native AOT modular monolith  (D-008)                │
 │  Identity · Workspace · Devices · Entitlement · Chat · Task · Agent     │
 │  Sync · Resource · Search · Notification · Policy · Audit · Support     │
 └──────────────▲──────────────────────────────────────▲──────────────────┘
@@ -51,7 +51,7 @@ Five constraints determine almost every structural decision downstream.
      HTTPS + realtime                        HTTPS + realtime
                │                                      │
         ArcChat Mobile                          Browser
-        .NET MAUI · Android Mono AOT            React/TypeScript
+        .NET React Native · Android React Native/Hermes            React/TypeScript
         (iOS architecture-present,              static public pages
          build deferred)                        + ArcForges.Web.App
 ```
@@ -60,11 +60,11 @@ Five constraints determine almost every structural decision downstream.
 
 | Path | Technology | Carries |
 |---|---|---|
-| **Same-machine, first-party, process-to-process** | StreamJsonRpc over Named Pipe / UDS, Nerdbank.MessagePack formatter | Semantic capability invocation, Hub registration, local events |
-| **Public request/response** | ASP.NET Core Minimal API server; generated Refit for C#, generated Fetch SDK for TypeScript | Commands, queries, durable state, uploads and downloads |
-| **Public realtime** | SignalR | Presence, notifications, progress, chat deltas, remote wake-up |
+| **Same-machine, first-party, process-to-process** | gRPC over Named Pipe / UDS, Protocol Buffers formatter | Semantic capability invocation, Hub registration, local events |
+| **Public request/response** | ASP.NET Core Minimal API server; generated gRPC client for C#, generated gRPC-Web SDK for TypeScript | Commands, queries, durable state, uploads and downloads |
+| **Public realtime** | gRPC hint polling | Presence, notifications, progress, chat deltas, remote wake-up |
 
-**Prohibited:** routing local traffic over HTTP "for uniformity"; letting a business write command exist only inside a realtime message "for latency"; exposing local IPC on the public internet; starting a local HTTP host for same-machine RPC.
+**Prohibited:** public TCP listeners for local business IPC; authoritative mutations carried only by lossy hints; C++ pointers in RPC; bypassing the owner with direct database writes. Local Kestrel HTTP/2 over authenticated named pipes/UDS is the selected gRPC transport.
 
 ### 2.2 Four paths, four purposes
 
@@ -82,7 +82,7 @@ Five constraints determine almost every structural decision downstream.
 Identical in every product and in Cloud:
 
 ```
-Desktop / LocalRpc / Infrastructure / MinimalApi / MAUI adapters
+Desktop / LocalRpc / Infrastructure / MinimalApi / React Native adapters
                               ↓
                        Application Services
                               ↓
@@ -110,8 +110,8 @@ Fixed by **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**, e
 | Host | Mode | Notes |
 |---|---|---|
 | **ArcChat / ArcNotes / ArcScope / ArcSlate desktop** | **Native AOT** | Trim/AOT-safe dependency rules; real publish proof per RID per release |
-| **ArcForges Cloud** | **ASP.NET Core JIT modular monolith** | Strict Native AOT is **not** a Cloud requirement; every obsolete claim that it must be is removed |
-| **ArcChat Mobile — Android** | **.NET 10 Mono AOT** | `UseMonoRuntime` explicit; Android CoreCLR and Android Native AOT are experimental and are **not** production baselines |
+| **ArcForges Cloud** | **ASP.NET Core Native AOT modular monolith** | Native AOT is mandatory; every dependency and real adapter participates in publish/run proof |
+| **ArcChat Mobile — Android** | **React Native/Hermes** | Pinned RN/Hermes and native modules; release artifact inspected and exercised on a real Android device |
 | **ArcChat Mobile — iOS** | Architecture present, **build deferred** | Release runtime re-verified against the then-current supported baseline before activation |
 | **ArcForges Web** | **React/TypeScript; Node.js/npm build tooling** | Production browser matrix; static public pre-rendering; [P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008) |
 
@@ -120,7 +120,7 @@ Fixed by **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**, e
 | AO-01 | **AOT release gates apply only to projects actually consumed by an AOT deliverable** (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**). |
 | AO-02 | **Shared public contracts and client libraries consumed by desktop or mobile remain trim-safe and source-generation friendly**, regardless of who else consumes them. |
 | AO-03 | **The absence of an official AOT guarantee is never treated as proof of AOT compatibility** (**[D-003](../decisions/phase-1-foundation-decisions.md#rule-d-003)**, **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**). Where documentation cannot prove a dependency's behaviour under an AOT deliverable, a real publish-and-test proof is a registered gate with an owner and trigger. |
-| AO-04 | **Cloud being JIT does not relax the architecture.** Source-generated serialization, explicit registration and no reflection scanning remain the Cloud convention, because they are correctness and performance practices independent of AOT. |
+| AO-04 | Cloud publishes the complete selected Native AOT closure. CF Workflow executes TypeScript remotely; this does not create a C# JIT exemption. |
 
 ---
 
@@ -179,7 +179,7 @@ AGPL-3.0-only — everything else
 |---|---|
 | LB-01 | **AGPL components may consume the Apache-2.0 interoperability packages** without changing their own licence. |
 | LB-02 | **No GPL-family or AGPL-only source, project reference, package, generated artifact or transitive dependency may enter the ArcChat Mobile distributable** — enforced by architecture and dependency tests (**[D-004](../decisions/phase-1-foundation-decisions.md#rule-d-004)** obligation 7). |
-| LB-03 | **Base ViewModel patterns are not shared between Avalonia desktop and MAUI mobile** (**[D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021)**). Each UI stack owns its implementation. |
+| LB-03 | **Base ViewModel patterns are not shared between Avalonia desktop and React Native mobile** (**[D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021)**). Each UI stack owns its implementation. |
 | LB-04 | **Protocol communication across an explicit process or network boundary does not change a client's licence.** Desktop and server implementations remain separate works. |
 
 ---
@@ -234,15 +234,15 @@ Every write command carries at minimum `CommandId`, the target identity, `Expect
 |---|---|
 | [`01-solution-and-project-layout.md`](01-solution-and-project-layout.md) | Repository layout, project boundaries, reference direction, licence boundaries, architecture tests |
 | [`02-contracts-and-protocols.md`](02-contracts-and-protocols.md) | Contract split (**[D-009](../decisions/phase-1-foundation-decisions.md#rule-d-009)**), the cross-application semantic model, versioning and compatibility |
-| [`03-local-ipc-and-process-model.md`](03-local-ipc-and-process-model.md) | StreamJsonRpc, transports, Hub registration, discovery, routing, health, backpressure |
+| [`03-local-ipc-and-process-model.md`](03-local-ipc-and-process-model.md) | gRPC, transports, Hub registration, discovery, routing, health, backpressure |
 | [`04-desktop-application-architecture.md`](04-desktop-application-architecture.md) | Avalonia host, MVVM, threading, multi-window, AOT constraints, lifecycle |
-| [`05-cloud-architecture.md`](05-cloud-architecture.md) | JIT modular monolith, module boundaries, host pipeline, persistence, outbox, realtime, background work |
+| [`05-cloud-architecture.md`](05-cloud-architecture.md) | Native AOT modular business host, module boundaries, host pipeline, persistence, outbox, realtime, background work |
 | [`06-data-persistence-and-formats.md`](06-data-persistence-and-formats.md) | Local stores, journals and snapshots, native formats, migration mechanics |
 | [`07-sync-conflict-and-backup.md`](07-sync-conflict-and-backup.md) | Sync protocol, change feed, conflict policies, tombstones, blob lifecycle, backup topology |
 | [`08-security-architecture.md`](08-security-architecture.md) | Identity layering, authorization enforcement points, secret handling, egress, audit |
 | [`09-ai-and-agent-runtime-architecture.md`](09-ai-and-agent-runtime-architecture.md) | Agent runtime, capability registry, task engine, provider routing, credit metering |
 | [`10-web-architecture.md`](10-web-architecture.md) | Static generation, React/TypeScript application, per-surface deployment and security |
-| [`11-mobile-architecture.md`](11-mobile-architecture.md) | MAUI structure, Apache boundary, offline outbox, push, secure storage |
+| [`11-mobile-architecture.md`](11-mobile-architecture.md) | React Native structure, Apache boundary, offline outbox, push, secure storage |
 | [`12-native-interop-and-media.md`](12-native-interop-and-media.md) | P/Invoke discipline, the C ABI, SafeHandle, media and acquisition pipelines |
 | [`13-observability-and-operations.md`](13-observability-and-operations.md) | Telemetry, correlation, health, incident tooling, operator surface |
 | [`14-build-packaging-and-release.md`](14-build-packaging-and-release.md) | Build governance, versioning axes, packaging, signing, update feed, CI gates |
@@ -261,7 +261,7 @@ Answerable before any feature merges:
 
 **Local RPC** — Is this a strongly typed contract rather than a catch-all string/object call? Are the generated-proxy attributes present? Are interceptors enabled? Are multi-interface combinations pre-generated rather than assembled at runtime? Is the formatter on an AOT-safe path? Does the target use generated metadata? Are cancellation, command identity and revision present? Has compatibility with the previous client been verified?
 
-**Public HTTP** — Generated Refit for C# and OpenAPI-generated Fetch SDK for TypeScript? C# source-generated serialization and TS runtime validation agree? No reflection fallback in C#? Are verb, status, cache and version semantics correct? Do large objects use a stream or a resource reference?
+**Public HTTP** — Generated gRPC client for C# and generated proto gRPC-Web SDK for TypeScript? C# source-generated serialization and TS runtime validation agree? No reflection fallback in C#? Are verb, status, cache and version semantics correct? Do large objects use a stream or a resource reference?
 
 **Realtime** — Used only for realtime need, never as the sole durable fact? C# and TS payloads generated from the same authored contract? Recoverable through HTTP by revision or sequence after a disconnect?
 
@@ -271,7 +271,7 @@ Answerable before any feature merges:
 
 **UI and tasks** — Does the UI thread do only lightweight work? Is every queue bounded and back-pressured? Does long work return a `TaskHandle`? Is the task queryable, recoverable and cancellable — or explicitly non-cancellable?
 
-**AOT and publishing** — Does the host genuinely publish AOT where applicable? Are there no unreviewed trimming or AOT warnings? Does Android clearly distinguish Mono AOT from Native AOT? Are native and managed shipped as one version set? Are updates, rollbacks, schema and document formats compatible? Are signing, SBOM, dependency and secret scans present?
+**AOT and publishing** — Does the host genuinely publish AOT where applicable? Are there no unreviewed trimming or AOT warnings? Does Android use the pinned RN/Hermes release artifact? Are native and managed shipped as one version set? Are updates, rollbacks, schema and document formats compatible? Are signing, SBOM, dependency and secret scans present?
 
 ---
 
@@ -283,7 +283,7 @@ Answerable before any feature merges:
 | Bidirectional RPC produces concurrency or deadlock misjudgement | The transport is not an actor: serialize domain writes per document; never hold a lock while awaiting a callback; base writes on revision and command identity; fault-inject bidirectional callbacks and disconnects |
 | Typed HTTP client silently falls back to reflection | Generated-only API, reflection package absent from production, analyzer diagnostics escalated to errors, an AOT publish contract test per public method |
 | Realtime misused as a reliable bus | Realtime is the visibility layer; business facts land in the database, journal and outbox; clients recover by revision or sequence over HTTP |
-| Android strict AOT misrepresented | Documentation states the Mono AOT versus CoreCLR Native AOT distinction explicitly; no wording papers over it |
+| Android strict AOT misrepresented | Documentation and inspected artifact state RN/Hermes; server Native AOT is a separate target |
 | ORM blocks strict AOT on a desktop deliverable | Desktop persistence uses an AOT-safe access path; a heavyweight ORM runtime is not a hard dependency of an AOT host |
 | In-process native library crash | Narrow C ABI, `SafeHandle`, input validation, fuzzing and sanitizers, sacrificial-process tests, crash dumps, journal recovery |
 | Over-sharing produces a giant monolith | A shared language is not a shared model: split contracts by boundary and ownership, enforce module ownership, ban cross-product infrastructure references |
@@ -302,8 +302,8 @@ Answerable before any feature merges:
 | [ArcForges Normative Glossary and Invariant Catalogue](../requirements/01-normative-glossary-and-invariants.md) | Owns canonical terms and invariant definitions |
 | **[D-004](../decisions/phase-1-foundation-decisions.md#rule-d-004)**, **[D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021)** | Two-boundary licensing enforced structurally |
 | **[D-007](../decisions/phase-1-foundation-decisions.md#rule-d-007)** | Web rendering boundary |
-| **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** | The runtime and AOT matrix, including Cloud as JIT |
+| **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** | The runtime and AOT matrix, including Cloud as Native AOT under [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) |
 | **[D-009](../decisions/phase-1-foundation-decisions.md#rule-d-009)** | Contract granularity |
 | **[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)** | Cloud topology and the durable local-action model |
-| **[D-011](../decisions/phase-1-foundation-decisions.md#rule-d-011)** | The implementation target monorepo |
+| **[D-011](../decisions/phase-1-foundation-decisions.md#rule-d-011)** | The implementation ten-repository target under [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) |
 | **[V-03](../assurance/phase-1-official-verification.md#rule-v-03)**, **[V-04](../assurance/phase-1-official-verification.md#rule-v-04)**, **[V-05](../assurance/phase-1-official-verification.md#rule-v-05)** | The AOT evidence underpinning the matrix |

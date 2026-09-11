@@ -2,7 +2,7 @@
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Architecture
-> Governing authority: **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** (runtime and AOT matrix), **[D-011](../decisions/phase-1-foundation-decisions.md#rule-d-011)** (target monorepo), **[D-014](../decisions/phase-1-foundation-decisions.md#rule-d-014)** (surface inventory, update and download domains), **[D-022](../decisions/phase-1-foundation-decisions.md#rule-d-022)** (mobile commerce posture), [distribution requirements](../requirements/10-distribution-update-and-support.md)
+> Governing authority: **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** (runtime and AOT matrix), **[D-011](../decisions/phase-1-foundation-decisions.md#rule-d-011)** (ten-repository target under [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009)), **[D-014](../decisions/phase-1-foundation-decisions.md#rule-d-014)** (surface inventory, update and download domains), **[D-022](../decisions/phase-1-foundation-decisions.md#rule-d-022)** (mobile commerce posture), [distribution requirements](../requirements/10-distribution-update-and-support.md)
 > Companions: [`../requirements/10-distribution-update-and-support.md`](../requirements/10-distribution-update-and-support.md), [`../requirements/12-quality-and-compatibility-contract.md`](../requirements/12-quality-and-compatibility-contract.md), [`01-solution-and-project-layout.md`](01-solution-and-project-layout.md)
 
 One monorepo, many independently versioned products, one coordinated build graph with managed, native and Web toolchains, and one rule that governs everything below: **the bytes a user runs are the bytes CI produced, verified end to end.**
@@ -44,20 +44,20 @@ build/                                the build orchestration entry points
 | BM-03 | **Compiler/analyzer policy applies per language:** .NET warnings/AOT diagnostics and TS strict typechecking/lint/import boundaries, with owned time-bounded exceptions. |
 | BM-04 | **Trim, AOT and single-file analyzers are enabled on every project that participates in an AOT publish** (`§12` of the quality contract), and their diagnostics are build-breaking. |
 | <a id="rule-bm-05"></a>BM-05 | **A build must not depend on machine state** — no globally installed tool that is not restored by the repository, no environment variable that is not declared, no network fetch outside restore. |
-| <a id="rule-bm-06"></a>BM-06 | **Generated source is produced at build time and not committed.** Generated OpenAPI/JSON Schema baselines are deliberate committed compatibility fixtures; Web-only developers generate the SDK from these while CI verifies them against fresh C# export. |
+| <a id="rule-bm-06"></a>BM-06 | Handwritten proto is committed in Contracts. Generated C#/TS source is built and packaged; descriptor sets, HTTP-exception schema and independent vectors are committed compatibility fixtures. Consumers restore pinned packages and never regenerate business schemas from their own handlers. |
 | <a id="rule-bm-07"></a>BM-07 | **The build works offline after restore**, so a transient registry outage does not stop a release. |
 
 ### 2.1.1 Web entry points and release artifacts
 
-[Web toolchain and SDK](25-web-toolchain-and-sdk.md) defines the exact directory/command contract. Windows win.slnx composes native projects, managed projects and one Web esproj. The portable managed graph excludes esproj; non-Windows Web work runs npm from src/Web, independently of CMake. JS SDK restore invokes root npm ci explicitly and Build never silently installs. Node runs only build/dev/test work; production assets are static artifacts served by the edge, and Cloud remains the C# host.
+[Web toolchain and SDK](25-web-toolchain-and-sdk.md) defines the exact directory/command contract. Each repository has its own solution/build entry. Web win.slnx contains its esproj; DesktopPlatform alone composes CMake/native builds. The portable managed graph excludes esproj; non-Windows Web work runs npm from ArcForges-Web root, independently of CMake. JS SDK restore invokes root npm ci explicitly and Build never silently installs. Node runs only build/dev/test work; production assets are static artifacts served by the edge, and Cloud remains the C# host.
 
-CI retains generated OpenAPI/schema fingerprints, Node/npm and lock versions, generated SDK provenance, browser/visual reports and an npm-aware SBOM. Changed C# endpoint/serializer contracts trigger both native and TS compatibility checks. The full solution's C# test pass is insufficient for Web. Existing Windows VS/native hooks and cross-platform CMake jobs retain separate obligations.
+CI retains generated descriptor/schema fingerprints, Node/npm and lock versions, generated SDK provenance, browser/visual reports and an npm-aware SBOM. Changed proto descriptors/HTTP exception schemas trigger both native and TS compatibility checks. The full solution's C# test pass is insufficient for Web. Existing Windows VS/native hooks and cross-platform CMake jobs retain separate obligations.
 
 
 ### 2.2 Build stages
 
 ```
-locked restores (.NET/native/npm) → C# compile and metadata export
+locked restores (.NET/native/npm) → proto compilation and descriptor export
    → contract compatibility diff → TS SDK/event generation → language checks/tests
    → architecture/policy → production .NET/native/Web builds → integration/browser tests
    → package → sign → verify → attest → record → promote
@@ -66,7 +66,7 @@ locked restores (.NET/native/npm) → C# compile and metadata export
 | # | Rule |
 |---|---|
 | <a id="rule-bs-01"></a>BS-01 | **Architecture tests and repository policy tests run as ordinary build stages** ([AT-01](01-solution-and-project-layout.md#rule-at-01)–[AT-14](01-solution-and-project-layout.md#rule-at-14), [RP-01](01-solution-and-project-layout.md#rule-rp-01)–[RP-10](01-solution-and-project-layout.md#rule-rp-10) in the solution layout), and a violation fails the build. |
-| <a id="rule-bs-02"></a>BS-02 | **Contract artifacts — OpenAPI documents, JSON Schema, capability descriptors — are generated from the C# source of truth** (**[D-009](../decisions/phase-1-foundation-decisions.md#rule-d-009)**) and compared against the committed baseline. An undeclared contract change fails the build (`§4`). |
+| <a id="rule-bs-02"></a>BS-02 | **Contract artifacts — Proto descriptors, HTTP-exception schemas and capability descriptors — are generated from the handwritten proto source of truth** (**[D-009](../decisions/phase-1-foundation-decisions.md#rule-d-009)**) and compared against the committed baseline. An undeclared contract change fails the build (`§4`). |
 | BS-03 | **Publish is per runtime identifier**, and the produced output is the input to packaging; packaging never recompiles. |
 | BS-04 | **Verification runs against the packaged artifact**, not against the build output directory: signature, hash, entry point, runtime posture and launch smoke test. |
 
@@ -77,18 +77,18 @@ locked restores (.NET/native/npm) → C# compile and metadata export
 | Target | Publish mode | Verification obligation |
 |---|---|---|
 | ArcChat, ArcNotes, ArcScope, ArcSlate desktop | **Native AOT**, self-contained (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**) | AOT publish succeeds with zero trim/AOT warnings; the produced binary launches without a machine-installed runtime |
-| ArcForges Cloud | **ASP.NET Core JIT**, container image (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**) | Strict AOT is explicitly not required (**[V-03](../assurance/phase-1-official-verification.md#rule-v-03)**); the image runs the same pipeline in every environment |
+| ArcForges Cloud | **ASP.NET Core Native AOT**, container image (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**) | Native AOT publish and real-adapter verification are mandatory (**[V-03](../assurance/phase-1-official-verification.md#rule-v-03)**); the image runs the same pipeline in every environment |
 | ArcForges.Web.App | **React/TypeScript browser assets**, Node/npm production build ([P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008)) | Account/Chat profile artifacts, generated SDK round trip, browser/CSP/visual/bundle evidence |
 | ArcForges.Web.Site output | React/TS build-time pre-rendered static artifacts | No-script content, deterministic build, locale/SEO/accessibility and performance |
-| ArcChat Mobile — Android | **.NET 10 Mono AOT** release build (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**, **[V-04](../assurance/phase-1-official-verification.md#rule-v-04)**) | The runtime posture is confirmed by inspecting the produced artifact ([RT-07](11-mobile-architecture.md#rule-rt-07) in the mobile architecture); CI builds the release artifact and smoke-tests on a real device |
+| ArcChat Mobile — Android | **React Native/Hermes** release build (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**, **[V-04](../assurance/phase-1-official-verification.md#rule-v-04)**) | The runtime posture is confirmed by inspecting the produced artifact ([RT-07](11-mobile-architecture.md#rule-rt-07) in the mobile architecture); CI builds the release artifact and smoke-tests on a real device |
 | ArcChat Mobile — iOS | **Architecture present, build deferred** (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**) | Never claimed as compiled or tested; re-verified against the then-current supported baseline before activation |
 
 | # | Rule |
 |---|---|
 | <a id="rule-pm-01"></a>PM-01 | **A debug build passing is never evidence for a release target.** Every AOT and mobile gate is evaluated against the release artifact ([PM-03](../requirements/12-quality-and-compatibility-contract.md#rule-pm-03) in the quality contract). |
-| <a id="rule-pm-02"></a>PM-02 | **The AOT proof is continuous, not a one-off.** Every desktop product publishes AOT in CI on every main-branch build. |
-| PM-03 | **A framework major upgrade re-runs the whole runtime matrix**, including the mobile AOT and trim proof ([RT-06](11-mobile-architecture.md#rule-rt-06) in the mobile architecture). |
-| PM-04 | **Cloud must not be packaged as Native AOT** in an attempt to be consistent with desktop. The matrix is deliberate (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**, **[V-03](../assurance/phase-1-official-verification.md#rule-v-03)**). |
+| <a id="rule-pm-02"></a>PM-02 | Every desktop product and the Cloud business host continuously publish Native AOT against their actual changed dependency closure; a previous passing artifact cannot certify a new dependency. |
+| PM-03 | **A framework major upgrade re-runs the whole runtime matrix**, including the RN/Hermes native-module and transport proof ([RT-06](11-mobile-architecture.md#rule-rt-06) in the mobile architecture). |
+| PM-04 | The C# Cloud host must publish Native AOT with the full selected adapter closure. The CF Worker is a separate TypeScript deployment; it creates no C# JIT exception. |
 
 ---
 
@@ -281,3 +281,17 @@ The build and release system is **not**: a monolithic suite installer; a second 
 | **[D-014](../decisions/phase-1-foundation-decisions.md#rule-d-014)** | Update and download domains as owned surfaces |
 | **[D-022](../decisions/phase-1-foundation-decisions.md#rule-d-022)**, **[V-09](../assurance/phase-1-official-verification.md#rule-v-09)**, **[F-023](../assurance/open-gates-register.md#rule-f-023)** | Mobile release gates |
 | **[D-004](../decisions/phase-1-foundation-decisions.md#rule-d-004)**, **[D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021)**, **[F-013](../assurance/open-gates-register.md#rule-f-013)** | Licence and provenance verification in the supply chain |
+
+## 14. Independent producer and consumer artifact gates
+
+Cloud owns deploy/integration-manifest.v1.json with schemaVersion1, manifestId, sourceCommits{repo:sha}, packages[{id,version,sha256,license,rid?}], contracts[{package,major,descriptorSha256}], cloudImage:{registry:"ghcr.io/arcforges/cloud",digest,rid:"linux-x64"}, worker:{name,versionId,sourceSha,compatibilityDate:"2026-09-11",migrationTag}, web:{profile,artifactHash,configSchema}, database:{engine:"18.6",migrationFrom,migrationTo,rollbackFloor}, configVersion, testEvidence[{scenario,artifactHash,result}], createdAt, signer, signature. Cloud OCI and release executables published on GHCR/GitHub releases; Worker4.131.0 Wrangler, fixed compatibility date. IDs/digests come from actual build/deploy, never placeholders considered proof.
+
+Per-repo locked restore/build/mock tests → immutable producer candidate → consumer candidate restore/AOT/Hermes/browser tests → isolated real C#/PG/CF/R2 deployment → exact manifest integration suite → approve/promote same bytes. Fork/untrusted PR code gets no deployment secrets; trusted CI promotes reviewed commit with short-lived credentials and dedicated test realm/service account, unique resources,24h cleanup TTL. Workers require a public TLS test C# endpoint reachable from CF, not runnerlocalhost. Test artifacts use no real customer content. No submodules/latest/floating branch fixtures.
+
+Rolling upgrade: expand DB/internal/public read schemas → backfill from watermark → deploy C# dual readers → deploy compatible Worker (old workflows drain on their pinned worker version) → canary/soak ≥24h → activate config reader head → clients independently update within supported window → contract only after all old workflows drained and rollback horizon closed. Incompatible Worker code is a new workflow class/migration tag; no hot reinterpretation of checkpoints. Rollback before contract restores prior image/Worker/config/assets; after destructive contraction use verified forward repair or fresh-environment restore, not blind old binary startup. Selfhost operator supplies own CF resources/AWS disaster copy/DB/secrets/origins/realm, same one-host architecture.
+
+Use [the CF/object recovery contract](contracts/05-cloudflare-integration.md#6-r2-lifecycle-and-independent-recovery) for the independent S3 COMPLIANCE 30-day backup, WAL/base backup/object manifests and recovery generation. Observability join request/task/run/attempt/outbox IDs over W3C traceparent across C#/Worker/device with redaction; expose CF dispatch lag/unknown attempts/R2 transfer failures/backup lag/lease conflicts. CF/R2 outage leaves hydrated desktop editing/acquisition/rendering usable within existing per-product offline rules; AI pauses/fails with durable reasons and support/export stay truthful. Full recovery tested after WP46+52 and before 50.
+
+## Producer bootstrap and candidate manifests
+
+Before a complete Cloud exists, each producer publishes a candidate manifest with source commit, artifact hashes, exact Contracts/Platform dependencies, RID/runtime and evidence. WP02 supplies this format/pipeline, WP03 publishes schemas and WP06 composes the first foundation integration manifest in ArcForges-Cloud. Early packages may consume this manifest without depending on later business features. WP21 and later packages extend it with real owner behavior; WP50 requires the final complete manifest. No package is required to restore an artifact that its own current step has not yet produced.

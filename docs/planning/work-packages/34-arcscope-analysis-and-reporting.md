@@ -9,6 +9,9 @@
 
 > **Goal.** Turn evidence into findings without ever altering the evidence: visualisation, triggers, measurements, decoders, analysis, annotations, comparison and reports — every result reproducible from a recorded configuration.
 
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: ArcScope; Contracts measurement profile. Inputs: exact compatible Contracts packages/descriptors and applicable DesktopPlatform packages; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: Native AOT candidate packages/executables with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+
 ---
 
 ## 1. Scope and purpose
@@ -22,6 +25,8 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+**Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
 **Frozen design input.** [scope.measurement.v1](../../requirements/products/arcscope.md#measurement-profile) and [measurement storage](../../architecture/data-model/02-desktop-data-model.md#measurement-storage)
 
@@ -151,6 +156,19 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 ---
 
+<a id="rule-wp-34.90"></a>
+### WP-34.90 — Verify the owned artifact and real integration
+
+**What must be fully done.** Preserve immutable measurement input, units/sample/time/non-finite handling, numerical algorithms/tolerances and report provenance. Carry the exact profile through proto and TS values.
+
+**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+
+**Testing requirements.** `scope.measurement.v1` independent expected results, invalid/status cases and reporting references; native acceleration cannot redefine the result.
+
+**Completion gate.** `scope.measurement.v1` independent expected results, invalid/status cases and reporting references; native acceleration cannot redefine the result. Record exact artifacts and provider reality. The package is incomplete if an important contract/owner/recovery rule still requires design during coding.
+
+---
+
 ## 6. Impacts
 
 | Dimension | Impact |
@@ -185,6 +203,8 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 ## 8. Completion gate
 
+**[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) gate:** [WP-34.90](#rule-wp-34.90) and all inherited domain-specific gates must pass on the same candidate closure. `scope.measurement.v1` independent expected results, invalid/status cases and reporting references; native acceleration cannot redefine the result.
+
 **[PG-08](../../assurance/open-gates-register.md#rule-pg-08) evidence:** [WP-34](#rule-wp-34) — Hardware-based measurement/analysis evidence names the lab inventory; synthetic/replay algorithm fixtures cannot substitute for hardware results. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
 
 **Additional completion requirement.** Every basic family has its formula/status oracle; reproduction uses the defined tolerance rather than an undefined byte-equality claim.
@@ -207,8 +227,10 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 **Upstream — all must be complete.**
 
-- [33 — ArcScope Acquisition and Session Core](33-arcscope-acquisition-and-session.md)
+- [33 arcscope acquisition and session](33-arcscope-acquisition-and-session.md#rule-wp-33)
 
-**Downstream — these consume this package’s completed output.**
+**Downstream — consumers of these released outputs.**
 
-- [35 — ArcScope Integration and Metadata Sync](35-arcscope-integration-and-sync.md)
+- [35 arcscope integration and sync](35-arcscope-integration-and-sync.md#rule-wp-35)
+
+---

@@ -9,6 +9,9 @@
 
 > **Goal.** Two genuinely Native AOT-published processes, talking over a real transport, with real registration, real capability discovery, real idempotency, real approval and real resource references — and ArcNotes still fully editable with ArcChat absent. This is where ArcForges stops being a design and becomes a platform.
 
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: ArcChat + ArcNotes. Inputs: exact compatible Contracts packages/descriptors and applicable DesktopPlatform packages; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: Native AOT candidate packages/executables with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+
 ---
 
 ## 1. Scope and purpose
@@ -22,6 +25,8 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+**Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
 | Input | Why it matters |
 |---|---|
@@ -40,7 +45,7 @@
 | <a id="rule-br-01"></a>BR-01 | **ArcNotes remains fully editable and saveable with ArcChat absent** (**[D-010](../../decisions/phase-1-foundation-decisions.md#rule-d-010)**). This is a hard gate, not a degradation nicety. |
 | BR-02 | **The Hub is a coordinator, never a data relay** (**[D-010](../../decisions/phase-1-foundation-decisions.md#rule-d-010)**). No document body traverses it. |
 | BR-03 | **Both processes are Native AOT release publishes.** A debug-host demonstration does not satisfy this package. |
-| BR-04 | **Generated proxies, generated type shapes and the binary formatter are used** — no reflection-based marshalling. |
+| BR-04 | **Generated proxies, generated type shapes and the protobuf framing are used** — no reflection-based marshalling. |
 | BR-05 | **Every write carries a command identity and is idempotent under retry** ([WP-04.01](04-identity-error-and-versioning-primitives.md#rule-wp-04.01)). |
 | BR-06 | **Approval crosses the process boundary** and is enforced owner-side, whatever the caller claimed. |
 | BR-07 | **Re-registration after a Hub restart is automatic and idempotent** ([WP-08.02](08-local-ipc-and-registration.md#rule-wp-08.02)). |
@@ -139,6 +144,19 @@
 
 ---
 
+<a id="rule-wp-14.90"></a>
+### WP-14.90 — Verify the owned artifact and real integration
+
+**What must be fully done.** Implement the real minimal provider slice with pinned proto/Platform packages; exercise Hub routing inside ArcChat, Notes ownership and degraded product combinations. No CF decision loop enters this slice.
+
+**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+
+**Testing requirements.** Real independently built AOT executables cover discovery, idempotency, approval, references and ArcChat/Notes absence.
+
+**Completion gate.** Real independently built AOT executables cover discovery, idempotency, approval, references and ArcChat/Notes absence. Record exact artifacts and provider reality. The package is incomplete if an important contract/owner/recovery rule still requires design during coding.
+
+---
+
 ## 6. Impacts
 
 | Dimension | Impact |
@@ -169,6 +187,8 @@
 
 ## 8. Completion gate
 
+**[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) gate:** [WP-14.90](#rule-wp-14.90) and all inherited domain-specific gates must pass on the same candidate closure. Real independently built AOT executables cover discovery, idempotency, approval, references and ArcChat/Notes absence.
+
 **All of the following, between two genuinely Native AOT-published processes, with recorded evidence:**
 
 1. Registration, lease, heartbeat and automatic re-registration after Hub restart all work.
@@ -177,7 +197,7 @@
 4. ArcNotes refuses an unapproved high-risk operation regardless of ArcChat's assertion, and pending approval survives a restart of either process.
 5. Artifacts cross as references with permission re-checked at access, and the Hub carries no payload body.
 6. **ArcNotes starts, edits, saves and recovers fully with ArcChat absent**, and ArcChat starts cleanly with no providers present.
-7. Generated proxies, generated type shapes and the binary formatter are used throughout; no reflection-based marshalling exists on the path.
+7. Generated proxies, generated type shapes and the protobuf framing are used throughout; no reflection-based marshalling exists on the path.
 
 ---
 
@@ -185,14 +205,16 @@
 
 **Upstream — all must be complete.**
 
-- [08 — Local IPC Transport and Registration Lifecycle](08-local-ipc-and-registration.md)
-- [09 — Capability, Contribution and Resource Model](09-capability-contribution-and-resource-model.md)
-- [10 — Design System and Desktop Shell Foundation](10-design-system-and-desktop-shell.md)
-- [11 — Security Foundation](11-security-foundation.md)
-- [13 — Four High-Risk Technical Probes](13-high-risk-technical-probes.md)
+- [08 local ipc and registration](08-local-ipc-and-registration.md#rule-wp-08)
+- [09 capability contribution and resource model](09-capability-contribution-and-resource-model.md#rule-wp-09)
+- [10 design system and desktop shell](10-design-system-and-desktop-shell.md#rule-wp-10)
+- [11 security foundation](11-security-foundation.md#rule-wp-11)
+- [13 high risk technical probes](13-high-risk-technical-probes.md#rule-wp-13)
 
-**Downstream — these consume this package’s completed output.**
+**Downstream — consumers of these released outputs.**
 
-- [15 — ArcChat Conversation and Project Core](15-arcchat-conversation-core.md)
-- [16 — Unified Execution Engine](16-unified-execution-engine.md)
-- [18 — ArcNotes Document Core](18-arcnotes-document-core.md)
+- [15 arcchat conversation core](15-arcchat-conversation-core.md#rule-wp-15)
+- [16 unified execution engine](16-unified-execution-engine.md#rule-wp-16)
+- [18 arcnotes document core](18-arcnotes-document-core.md#rule-wp-18)
+
+---

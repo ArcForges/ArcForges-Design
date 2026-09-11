@@ -127,7 +127,7 @@ Every first-party native library, and every `extern "C"` shim over a third-party
 | BF-01 | **CPU buffers use `Span<T>`, `Memory<T>`, a memory pool and controlled pinned memory**. |
 | BF-02 | **Pinning is scoped and short.** A long-lived pinned region is a documented exception with a stated reason. |
 | BF-03 | **Pooled buffers are returned on every path including failure**, and pool exhaustion is a measured, surfaced condition rather than an unbounded allocation. |
-| BF-04 | **A per-frame image is never serialised over StreamJsonRpc, the HTTP client or the realtime channel**. |
+| BF-04 | **A per-frame image is never serialised over gRPC, the HTTP client or the realtime channel**. |
 | <a id="rule-bf-05"></a>BF-05 | **The Hub never relays video frames or large file bodies**. |
 | <a id="rule-bf-06"></a>BF-06 | **GPU resources are shared inside the process through a platform-specific rendering bridge; the UI receives only presentable surface or bitmap abstractions**. |
 | BF-07 | **Cross-process large data uses `ResourceRef` plus a controlled stream, file-handle strategy or temporary resource channel**, never an inline payload. |
@@ -282,3 +282,7 @@ The native layer is **not**: a worker process; a place for business logic that i
 | **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** | Native AOT constraints on marshalling and binding |
 | **[D-016](../decisions/phase-1-foundation-decisions.md#rule-d-016)** | Ownership of the deferred decision required before any isolated host is introduced |
 | **[D-004](../decisions/phase-1-foundation-decisions.md#rule-d-004)**, **[F-013](../assurance/open-gates-register.md#rule-f-013)** | Native dependency licence review against each product's licence boundary |
+
+## P2-009 capability package adoption
+
+The [package registry](01-solution-and-project-layout.md#12-package-and-native-distribution-registry) fixes wrapper/RID package identities, exact source inputs, producer/consumer tests and OTIO/MDF dispositions. OTIO0.18.1 is selected for official interchange; MDF stays excluded from V1 distributions. All existing ABI/lifetime/buffer/error/colour/time/sandbox rules remain requirements on those packages, not alternatives that a consumer must design. Ordinary product builds are C# package consumers and do not invoke vcpkg.

@@ -9,6 +9,9 @@
 
 > **Goal.** Make the platform operable: alerting that is worth waking someone for, runbooks that have actually been executed, a status page that survives an outage, support access that never silently impersonates a user, and an enforcement ladder with appeals.
 
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Cloud APIs; Web operator/status surfaces; AI emitters. Inputs: the assigned exact Contracts packages/descriptors and actual provider artifacts; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: owned candidate artifacts and generated contracts with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+
 ---
 
 ## 1. Scope and purpose
@@ -22,6 +25,8 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+**Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
 | Input | Why it matters |
 |---|---|
@@ -160,6 +165,19 @@
 
 ---
 
+<a id="rule-wp-45.90"></a>
+### WP-45.90 — Verify the owned artifact and real integration
+
+**What must be fully done.** Assign frontend ownership to Web and backend authority to Cloud. Add CF execution/model/R2 status, correlated incident traces, support permissions and outage actions to existing operational workflows.
+
+**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+
+**Testing requirements.** Actual role/redaction/status/support cases and actionable CF/R2 failure diagnostics; no second Node/operations business host.
+
+**Completion gate.** Actual role/redaction/status/support cases and actionable CF/R2 failure diagnostics; no second Node/operations business host. Record exact artifacts and provider reality. The package is incomplete if an important contract/owner/recovery rule still requires design during coding.
+
+---
+
 ## 6. Impacts
 
 | Dimension | Impact |
@@ -192,6 +210,8 @@
 
 ## 8. Completion gate
 
+**[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) gate:** [WP-45.90](#rule-wp-45.90) and all inherited domain-specific gates must pass on the same candidate closure. Actual role/redaction/status/support cases and actionable CF/R2 failure diagnostics; no second Node/operations business host.
+
 **All of the following, with recorded evidence:**
 
 1. Indicators measure user-visible success; a provider outage is attributed correctly; **every deployed alert names an existing runbook**.
@@ -210,10 +230,12 @@
 
 **Upstream — all must be complete.**
 
-- [12 — Observability Foundation](12-observability-foundation.md)
-- [21 — Cloud Host, Modules, Persistence and Migrations](21-cloud-host-and-persistence.md)
-- [44 — Dynamic Policy and Configuration Control Plane](44-dynamic-policy-and-configuration.md)
+- [12 observability foundation](12-observability-foundation.md#rule-wp-12)
+- [21 cloud host and persistence](21-cloud-host-and-persistence.md#rule-wp-21)
+- [44 dynamic policy and configuration](44-dynamic-policy-and-configuration.md#rule-wp-44)
 
-**Downstream — these consume this package’s completed output.**
+**Downstream — consumers of these released outputs.**
 
-- [46 — Backup, Disaster Recovery and Data Health](46-backup-recovery-and-data-health.md)
+- [46 backup recovery and data health](46-backup-recovery-and-data-health.md#rule-wp-46)
+
+---

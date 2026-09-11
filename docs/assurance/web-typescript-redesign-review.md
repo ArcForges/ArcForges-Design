@@ -1,5 +1,6 @@
 # React/TypeScript Web Redesign — Stage 2 Review
 
+> **Historical evidence boundary.** Results and technology claims below belong to their recorded baseline. [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) amends current repository, protocol, Cloud and Mobile decisions; current implementation obligations are in the [gate register](open-gates-register.md). This amendment does not rewrite the earlier finding evidence or turn a design check into runtime proof.
 > Status: **Design amendment reviewed**; implementation evidence remains open
 > Reviewed on: 2026-09-07
 > Layer: Assurance

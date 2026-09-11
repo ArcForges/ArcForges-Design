@@ -41,7 +41,7 @@ Every event carries `{ subscriptionKey, seq, workspaceId, occurredAt, correlatio
 | RE-04 | **`approval.raised` is a hint over durable state.** Missing it never loses a pending approval ([PD-02](../11-mobile-architecture.md#rule-pd-02)). |
 | RE-05 | **`bridge.requestAvailable` carries a count, not content** — the desktop pulls, which keeps **[D-010](../../decisions/phase-1-foundation-decisions.md#rule-d-010)** true even in the notification. |
 | <a id="rule-re-06"></a>RE-06 | **A missed event is always recoverable by re-reading**, and every event above names what to re-read. |
-| <a id="rule-re-07"></a>RE-07 | **Realtime is optional, and its absence is a complete-fallback case, not a degraded one.** Every event above has a polling or cursor equivalent on the HTTP surface, and a client with realtime permanently disabled reaches the same state — later, not less completely ([SO-05](01-public-api-operations.md#rule-so-05), [SIM-13](../../requirements/products/arcscope.md#rule-sim-13)). |
+| <a id="rule-re-07"></a>RE-07 | **Realtime is optional, and its absence is a complete-fallback case, not a degraded one.** Every event above has a polling or cursor equivalent on the typed authoritative RPC surface, and a client with realtime permanently disabled reaches the same state — later, not less completely ([SO-05](01-public-api-operations.md#rule-so-05), [SIM-13](../../requirements/products/arcscope.md#rule-sim-13)). |
 | RE-08 | **No commercial decision is ever taken from an event.** `capacity.changed` and `serviceTerm.changed` are refresh hints; admission is server-side and atomic ([AD-01](../16-billing-and-commerce-architecture.md#rule-ad-01), [EC-02](01-public-api-operations.md#rule-ec-02)). A client that admitted work because an event said capacity was available would be wrong under concurrency. |
 | RE-09 | **Bulk data never flows over realtime** ([SO-04](01-public-api-operations.md#rule-so-04)): no simulator segment, object body, message body or document content. |
 
@@ -50,7 +50,9 @@ Every event carries `{ subscriptionKey, seq, workspaceId, occurredAt, correlatio
 ## 2. Subscriptions
 
 ```
-subscribe(subscriptionKey) → { accepted, startSeq } | refused(reason)
+EventService.Poll(subscriptionKey, absent cursor) → { events:[], nextCursor, resetRequired:true }
+read the authoritative scoped snapshot, retaining nextCursor
+EventService.Poll(subscriptionKey, nextCursor) → bounded hints + nextCursor | ArcError
 ```
 
 | Subscription key | Scope | Permission |
@@ -64,7 +66,7 @@ subscribe(subscriptionKey) → { accepted, startSeq } | refused(reason)
 |---|---|
 | <a id="rule-sb-01"></a>SB-01 | **Permission is checked at subscribe and re-checked when permission changes.** Losing permission stops delivery immediately and tells the client ([WP-24.01](../../planning/work-packages/24-realtime-and-reliable-events.md#rule-wp-24.01)). |
 | SB-02 | **A subscription cannot escape its scope**, and an attempt is refused rather than silently narrowed. |
-| <a id="rule-sb-03"></a>SB-03 | **`startSeq` is returned at subscribe**, so a client knows where its gap detection begins. |
+| <a id="rule-sb-03"></a>SB-03 | **The first Poll returns a signed current cursor and resetRequired.** Establish the scoped authoritative snapshot before continuing from that cursor. Poll itself establishes subscription scope; no separate Subscribe method or startSeq response exists. Subsequent signed cursors and event sequence gaps drive scoped repair. |
 
 ---
 
@@ -74,7 +76,7 @@ subscribe(subscriptionKey) → { accepted, startSeq } | refused(reason)
 client tracks lastSeq per subscription
    ↓ receives seq
       seq == lastSeq + 1  → apply, advance
-      seq  > lastSeq + 1  → GAP: record it, then reconcile over HTTP
+      seq  > lastSeq + 1  → GAP: record it, then reconcile through the owner RPC
       seq <= lastSeq      → duplicate: discard idempotently
 ```
 
@@ -193,7 +195,7 @@ Cloud updates the task; realtime hints the requester; the requester re-reads
 
 ### 6.1 Browser adapter
 
-The browser uses the official SignalR JavaScript client with DTOs, event names and runtime validators generated from C#-exported JSON Schema. C# clients retain their AOT-aware implementation; both run the same sequence/duplicate/reconnect/backfill conformance vectors. Browser transport uses same-origin cookies, WebSocket Origin checks, WebSockets-only and skipNegotiation, never an access token in a query URL. Upgrade failure uses bounded authoritative HTTP polling, not SignalR long polling; periodic catch-up covers a wakeup emitted on another replica. No replica affinity or backplane is required for browser correctness. The Task stream keeps byte offsets and bounded buffers; JavaScript UTF-16 string length is not a cursor. See [Web realtime rules](../25-web-toolchain-and-sdk.md#32-realtime-and-streaming).
+Desktop, React and RN use generated EventService.Poll with the bounded cadence in [CF integration](05-cloudflare-integration.md#5-live-presentation-and-client-recovery). These17 hints have generated protobuf payloads. Every reconnect repairs authoritative cursors/snapshots; no replica affinity/backplane or browser streaming API is required. AI presentation separately uses the same-origin CF WebSocket/HTTP range contract; a live connection never grants effect authority.
 
 ---
 
@@ -210,3 +212,7 @@ The browser uses the official SignalR JavaScript client with DTOs, event names a
 | RV-07 | One request produces one effect under duplicate delivery, lost result and mid-execution crash | [WP-26.03](../../planning/work-packages/26-remote-action-and-tool-bridge.md#rule-wp-26.03) |
 | RV-08 | A local-presence operation cannot be completed through the bridge | [WP-26.04](../../planning/work-packages/26-remote-action-and-tool-bridge.md#rule-wp-26.04) |
 | RV-09 | An offline target queues visibly and expires with a typed reason | [WP-26.05](../../planning/work-packages/26-remote-action-and-tool-bridge.md#rule-wp-26.05) |
+
+## P2-009 executable wire and transport binding
+
+Every operation/event above maps to the [numbered wire registry](04-protobuf-wire-registry.md). It fixes requests/results, record fields, enums, exact values, local counterpart preconditions, service names and compatibility. [CF integration](05-cloudflare-integration.md) fixes AI/object HTTP exceptions, frame/state recovery and authorization. New supporting bootstrap, upload-status, automation and conversation-create methods are enumerated there with their authorization/idempotency classes; none is left for endpoint invention during implementation.

@@ -528,3 +528,7 @@ The commerce layer is **not**: a payment processor; a holder of card data; a pla
 | **[D-023](../decisions/phase-1-foundation-decisions.md#rule-d-023)** | The Mainland China conditional route and its pre-enablement gates |
 | **[V-07](../assurance/phase-1-official-verification.md#rule-v-07)** | Settlement timing does not track transaction timing |
 | [I-011](../requirements/01-normative-glossary-and-invariants.md#rule-i-011) | The three ledgers are permanently separate |
+
+## P2-009 Workers AI supplier binding
+
+The accounting algorithms, three ledgers, exact integer microcredits, funding order, subscription/service-term actions and all worked examples above remain unchanged. [Selected CF model routes](09-ai-and-agent-runtime-architecture.md#p2-009-execution-placement-and-supplier-binding) bind each provider_attempt to the exact Workers AI model/config/supplier-price version. C# reserves and records intent before the Worker dispatches. Complete/interrupted output and any verified usage commit before customer settlement; missing counts remain unknown. CF aggregate bills are supplier evidence, never a replacement customer ledger or proof of one missing request. No mandatory prepayment or AI Gateway project is introduced; after the existing customer deadline a late supplier charge cannot create a new customer debit.

@@ -9,6 +9,9 @@
 
 > **Goal.** Close the first genuine ArcForges workflow end to end: ArcChat is asked to produce a report, ArcNotes creates the document and receives its content, the user approves, the result saves, undoes and recovers, and ArcChat receives an artifact reference. This is where ArcForges stops being a chat client with neighbours and becomes a platform.
 
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: ArcChat + ArcNotes; version manifest. Inputs: exact compatible Contracts packages/descriptors and applicable DesktopPlatform packages; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: Native AOT candidate packages/executables with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> Fixture AI is permitted only for the named local product slice; WP52 replaces it with real CF execution before Mobile/Web/full release.
+
 ---
 
 ## 1. Scope and purpose
@@ -22,6 +25,8 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+**Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
 **Frozen design input.** [content-origin behavior](../../requirements/07-security-privacy-and-trust.md#content-origin-profile) and [carrier schema](../../requirements/13-data-formats-and-portability.md#content-origin-carriers) is fixed before this package; implement it without choosing a different marking mechanism.
 
@@ -129,6 +134,19 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 ---
 
+<a id="rule-wp-20.90"></a>
+### WP-20.90 — Verify the owned artifact and real integration
+
+**What must be fully done.** Preserve the first real local typed capability workflow. Name exact released/candidate app and contract versions, retained fixture AI scope and the real AI replacement at WP-52.
+
+**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+
+**Testing requirements.** Real two-product ownership/revision/error behavior; fixture tests do not imply model/Cloud/usage integration has passed.
+
+**Completion gate.** Real two-product ownership/revision/error behavior; fixture tests do not imply model/Cloud/usage integration has passed. Record exact artifacts and provider reality. The package is incomplete if an important contract/owner/recovery rule still requires design during coding.
+
+---
+
 ## 6. Impacts
 
 | Dimension | Impact |
@@ -160,6 +178,8 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 ## 8. Completion gate
 
+**[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) gate:** [WP-20.90](#rule-wp-20.90) and all inherited domain-specific gates must pass on the same candidate closure. Real two-product ownership/revision/error behavior; fixture tests do not imply model/Cloud/usage integration has passed.
+
 **Additional completion requirement.** The package's content paths pass the stated origin vectors, including unknown input and failed publication; a valid stored/rendered payload alone cannot satisfy the carrier requirement.
 
 **All of the following, with recorded evidence:**
@@ -178,10 +198,12 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 **Upstream — all must be complete.**
 
-- [17 — ArcChat Independent Core V1A](17-arcchat-independent-core.md)
-- [19 — ArcNotes Search, Import, Export and Portability](19-arcnotes-search-and-portability.md)
+- [17 arcchat independent core](17-arcchat-independent-core.md#rule-wp-17)
+- [19 arcnotes search and portability](19-arcnotes-search-and-portability.md#rule-wp-19)
 
-**Downstream — these consume this package’s completed output.**
+**Downstream — consumers of these released outputs.**
 
-- [50 — Full-Platform Production Release](50-full-platform-production-release.md)
-- [52 — The Cloud Harness](52-cloud-harness.md)
+- [50 full platform production release](50-full-platform-production-release.md#rule-wp-50)
+- [52 cloud harness](52-cloud-harness.md#rule-wp-52)
+
+---

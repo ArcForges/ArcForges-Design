@@ -4,7 +4,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Requirements / Products
 > Product identities: `arcchat-mobile`, `chat.arcforges.com`
-> Governing authority: **[D-004](../../decisions/phase-1-foundation-decisions.md#rule-d-004)**/**[D-021](../../decisions/phase-1-foundation-decisions.md#rule-d-021)** (Apache-2.0 mobile boundary), **[D-007](../../decisions/phase-1-foundation-decisions.md#rule-d-007)** (web technology), **[D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008)** (Android Mono AOT; iOS build-deferred), **[D-014](../../decisions/phase-1-foundation-decisions.md#rule-d-014)**/**[D-015](../../decisions/phase-1-foundation-decisions.md#rule-d-015)** (surfaces), **[D-022](../../decisions/phase-1-foundation-decisions.md#rule-d-022)**/**[V-09](../../assurance/phase-1-official-verification.md#rule-v-09)** (consumption-only)
+> Governing authority: **[D-004](../../decisions/phase-1-foundation-decisions.md#rule-d-004)**/**[D-021](../../decisions/phase-1-foundation-decisions.md#rule-d-021)** (Apache-2.0 mobile boundary), **[D-007](../../decisions/phase-1-foundation-decisions.md#rule-d-007)** (web technology), **[D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008)** (Android React Native/Hermes; iOS build-deferred), **[D-014](../../decisions/phase-1-foundation-decisions.md#rule-d-014)**/**[D-015](../../decisions/phase-1-foundation-decisions.md#rule-d-015)** (surfaces), **[D-022](../../decisions/phase-1-foundation-decisions.md#rule-d-022)**/**[V-09](../../assurance/phase-1-official-verification.md#rule-v-09)** (consumption-only)
 > Companions: [`arcchat.md`](arcchat.md), [`arcforges-web.md`](arcforges-web.md), [`../03-cloud-services-and-sync.md`](../03-cloud-services-and-sync.md), [`../05-ai-and-agent-execution.md`](../05-ai-and-agent-execution.md)
 
 > **ArcChat Mobile and ArcChat Web are the Cloud Continuity and Remote Agent Companion for ArcChat.**
@@ -27,8 +27,8 @@ See → Approve → Steer → Continue → Start remote work → Receive results
 | ID-04 | **`Companion ≠ thin remote controller`** (`§20`). Both surfaces are useful with no desktop online, through cloud chat, cloud tasks, projects, search, automation and continuity. |
 | ID-05 | **A `Remote Task` is not remote desktop** ([I-120](../01-normative-glossary-and-invariants.md#rule-i-120)). ArcForges provides a **semantic remote agent**, never a general screen-and-input remote tool. |
 | ID-06 | **ArcChat Mobile is Apache-2.0** (**[D-004](../../decisions/phase-1-foundation-decisions.md#rule-d-004)**), together with the mobile-only libraries, the ArcForges-owned public protocol specifications required for its interoperability, and their wire schemas, DTOs and client libraries. It must not contain, link to, copy from, port from or reference any GPL-family or AGPL-only implementation, directly or transitively. |
-| ID-07 | **Base ViewModel patterns are not shared between Avalonia desktop and MAUI mobile** (**[D-021](../../decisions/phase-1-foundation-decisions.md#rule-d-021)**). Each UI stack owns its implementation. |
-| ID-08 | **Android production uses the supported .NET 10 Mono AOT release path** (**[D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008)**, **[V-04](../../assurance/phase-1-official-verification.md#rule-v-04)**). **iOS architecture is present and complete; its build is deferred**, and its release runtime is re-verified against the then-current supported baseline before activation. |
+| ID-07 | **Base ViewModel patterns are not shared between Avalonia desktop and React Native mobile** (**[D-021](../../decisions/phase-1-foundation-decisions.md#rule-d-021)**). Each UI stack owns its implementation. |
+| ID-08 | Android production uses React Native/TypeScript with bundled Hermes and the pinned native template. iOS architecture remains present with build/release deferred; no successful iOS build is implied. |
 | ID-09 | **ArcChat Web is a deployment of the single `ArcForges.Web.App` React/TypeScript codebase** (**[D-007](../../decisions/phase-1-foundation-decisions.md#rule-d-007)**, **[D-014](../../decisions/phase-1-foundation-decisions.md#rule-d-014)**), served at `chat.arcforges.com`. |
 
 ### 1.1 Responsibility split
@@ -342,12 +342,12 @@ WorkspaceDeviceContext · RemoteSession · OfflineCachePolicy
 
 | # | Requirement |
 |---|---|
-| PF-01 | **Android is the V1 mobile platform**, on the supported .NET 10 Mono AOT release path, with `UseMonoRuntime` explicit in the project file rather than relying on a default that changes in a later framework version (**[V-04](../../assurance/phase-1-official-verification.md#rule-v-04)**). |
+| PF-01 | Android arm64 is the delivered mobile platform, using the pinned RN/Hermes release build. x64 is emulator-only. No MAUI/Mono runtime flag enters this project. |
 | PF-02 | **iOS is architecture-present and build-deferred** (**[D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008)**). Its lifecycle, permissions, notifications, secure storage, signing, release and testing are fully planned. **It must not be claimed as compiled or tested.** |
 | PF-03 | **Mobile and Web never load executable extensions** ([PL-01](../08-extensions-and-developer-platform.md#rule-pl-01) in the extension requirements). |
 | PF-04 | Mobile secure storage holds authorized session material. Model-provider credentials and private deployment policy never reach the phone. |
 | PF-05 | **Weak-network behaviour is a release gate** ([PM-03](../12-quality-and-compatibility-contract.md#rule-pm-03) in the quality contract): background resume, reconnection with sequence backfill, and offline queueing all verified on real devices. |
-| PF-06 | **Web uses React/TypeScript and Node.js/npm tooling under [P2-008](../../decisions/phase-2-specification-decisions.md#rule-p2-008).** It consumes the generated TS SDK and same-origin C# browser sessions; mobile retains MAUI and generated C# clients. Both obey the same business/recovery contracts with language-specific adapters. |
+| PF-06 | Web uses React/TypeScript static profiles; Mobile uses RN/TypeScript/Hermes. Both consume Apache generated proto SDKs, current Cloud authorization and the same CF presentation/recovery semantics through their selected adapters. |
 | PF-07 | **The mobile provenance and dependency-closure audit ([F-023](../../assurance/open-gates-register.md#rule-f-023)) must pass before the first mobile artifact is produced** ([PL-06](../10-distribution-update-and-support.md#rule-pl-06) in the distribution requirements). |
 | PF-08 | **Automated architecture and dependency checks prevent GPL-family or AGPL-only source, project references, packages, generated artifacts and transitive dependencies from entering the mobile distributable** (**[D-004](../../decisions/phase-1-foundation-decisions.md#rule-d-004)** obligation 7). |
 
@@ -389,11 +389,11 @@ WorkspaceDeviceContext · RemoteSession · OfflineCachePolicy
 
 | Current document | Relationship |
 |---|---|
-| [Mobile Architecture](../../architecture/11-mobile-architecture.md) | Implements MAUI companion scope, networking and device security |
+| [Mobile Architecture](../../architecture/11-mobile-architecture.md) | Implements React Native companion scope, networking and device security |
 | [Web Architecture](../../architecture/10-web-architecture.md) | Implements the browser companion with the current Web stack |
 | [Realtime Events and the Durable Bridge](../../architecture/contracts/03-realtime-and-bridge.md) | Defines durable remote requests, results and realtime recovery |
 | **[D-004](../../decisions/phase-1-foundation-decisions.md#rule-d-004)**, **[D-021](../../decisions/phase-1-foundation-decisions.md#rule-d-021)**, **[F-023](../../assurance/open-gates-register.md#rule-f-023)** | Apache-2.0 mobile boundary, no shared ViewModels, pre-distribution provenance gate |
-| **[D-007](../../decisions/phase-1-foundation-decisions.md#rule-d-007)**, **[D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008)**, **[V-04](../../assurance/phase-1-official-verification.md#rule-v-04)** | Web technology; Android Mono AOT; iOS build-deferred |
+| **[D-007](../../decisions/phase-1-foundation-decisions.md#rule-d-007)**, **[D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008)**, **[V-04](../../assurance/phase-1-official-verification.md#rule-v-04)** | Web technology; Android React Native/Hermes; iOS build-deferred |
 | **[D-010](../../decisions/phase-1-foundation-decisions.md#rule-d-010)** | Cloud never reaches local IPC; the desktop re-authorises every remote request |
 | **[D-014](../../decisions/phase-1-foundation-decisions.md#rule-d-014)**, **[D-015](../../decisions/phase-1-foundation-decisions.md#rule-d-015)** | Surface inventory; ArcChat Web separate from the account portal |
 | **[D-022](../../decisions/phase-1-foundation-decisions.md#rule-d-022)**, **[V-09](../../assurance/phase-1-official-verification.md#rule-v-09)** | Consumption-only commerce posture and its traceable prohibitions |

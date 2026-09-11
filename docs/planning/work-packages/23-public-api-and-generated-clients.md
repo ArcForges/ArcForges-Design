@@ -1,13 +1,16 @@
 <a id="rule-wp-23"></a>
 
-# WP-23 — Public API Surface and Generated Clients
+# WP-23 — Public Proto APIs and Generated Clients
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: E — First real cloud
 > Upstream: `03`, `22` · Downstream: `24`, `30`, `42`, `44`, `51`, `52`
 
-> **Goal.** Expose the cloud through one versioned public API generated from the C# source of truth, with typed clients that work identically from a Native AOT desktop binary, a Mono AOT mobile binary and a React browser application — and a compatibility window that is tested rather than promised.
+> **Goal.** Expose the cloud through one versioned public API generated from the handwritten proto source of truth, with typed clients that work identically from a Native AOT desktop binary, a RN/Hermes mobile artifact and a React browser application — and a compatibility window that is tested rather than promised.
+
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Cloud + Contracts; all clients. Inputs: the assigned exact Contracts packages/descriptors and actual provider artifacts; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: owned candidate artifacts and generated contracts with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
 
 ---
 
@@ -23,13 +26,15 @@
 
 ## 2. Required inputs and dependencies
 
+**Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
+
 **Frozen design input.** [notes.scalar.v1](../../requirements/products/arcnotes.md#notes-scalar-query-profile) and the [shared errors/cursors](../../architecture/contracts/00-operation-catalogue.md)
 
 | Input | Why it matters |
 |---|---|
 | [`../../architecture/05-cloud-architecture.md`](../../architecture/05-cloud-architecture.md) `§6` | The public API surface rules |
 | [`../../architecture/02-contracts-and-protocols.md`](../../architecture/02-contracts-and-protocols.md) `§11` | Compatibility rules and the supported window |
-| **[D-009](../../decisions/phase-1-foundation-decisions.md#rule-d-009)** | C# as source of truth; generated wire artifacts |
+| **[D-009](../../decisions/phase-1-foundation-decisions.md#rule-d-009)** | Handwritten proto authority; generated C#/TS wire artifacts |
 | **[F-026](../../assurance/open-gates-register.md#rule-f-026)** | Typed client entry point and reflection prohibition |
 | [WP-03](03-contract-foundation-and-licence-split.md#rule-wp-03), [WP-22](22-identity-workspace-and-device.md#rule-wp-22) output | The contract set and authenticated, tenancy-scoped requests |
 
@@ -45,7 +50,7 @@
 |---|---|
 | BR-01 | **Endpoints are mapped from the contract set**, not hand-written in divergence from it (**[D-009](../../decisions/phase-1-foundation-decisions.md#rule-d-009)**). |
 | BR-02 | **The generated document is produced by the build and diffed against a baseline** ([WP-03.05](03-contract-foundation-and-licence-split.md#rule-wp-03.05)). |
-| BR-03 | **C# clients use generated-only Refit with no reflection package; TypeScript uses the OpenAPI-generated Fetch SDK.** Both obey one public operation contract; their authentication adapters are language/surface-specific. |
+| BR-03 | **C# clients use generated-only generated gRPC client with no reflection package; TypeScript uses the generated proto gRPC-Web SDK.** Both obey one public operation contract; their authentication adapters are language/surface-specific. |
 | BR-04 | **Every error is a problem detail with a registered reason code.** No raw exception text is ever returned. |
 | BR-05 | **The supported client window is declared and tested**, in both directions: an older client against the current server, and the current client against the minimum supported server. |
 | BR-06 | **Requests are idempotent where they change state**, keyed by command identity. |
@@ -77,35 +82,34 @@
 
 ### WP-23.00 — Endpoint mapping and validation
 
-**Required design implementation and verification.** Export the Notes scalar/typed-query schema and validate profile/type/AST bounds before a handler; reject unknown emitted producer codes in the contract baseline. Do not reject additive unknown response codes at clients.
 
-**What must be fully done.** Endpoints mapped from the contract set with request validation at the boundary. A request failing validation never reaches a handler. Validation messages are reason-coded and localisable, never raw.
+**What must be fully done.** Register generated proto service methods with exact request/reply/semantic validation from the registry. Use native gRPC and unary gRPC-Web through the same owner handlers; register only the listed standard HTTP exceptions separately. Map owner mutations and Sync allowlist exactly.
 
-**Testing requirements.** Per-endpoint validation tests; a test asserting no handler is reachable with an invalid request; a message-sourcing test.
+**Testing requirements.** Exercise each method category through native and TS transport, malformed/unknown request values and denied scope before handler.
 
-**Completion gate.** Invalid requests never reach a handler, and every validation failure carries a reason code.
+**Completion gate.** Every selected operation has a concrete typed endpoint and owner; no ad-hoc REST business API is introduced.
 
 <a id="rule-wp-23.01"></a>
 
 ### WP-23.01 — Problem details and error mapping
 
-**What must be fully done.** Every failure maps to a problem detail with a registered reason code, an HTTP status, and where applicable a retry indication. No exception text, stack trace or internal identifier is exposed.
 
-**Testing requirements.** An exhaustive mapping test over the reason-code registry; a leak test asserting no internal detail appears in any response.
+**What must be fully done.** Implement the selected transport status/domain ProblemDetail mapping, reason categories, retry guidance and effect certainty. gRPC trailers carry status/details; HTTP exceptions use the declared HTTP status/schema. Never treat an unknown post-dispatch outcome as safe-to-retry transport failure.
 
-**Completion gate.** Every reason code maps to a problem detail, and no internal detail leaks in any response.
+**Testing requirements.** Common native/browser/RN error vectors including malformed trailers, cancellation, unknown enum and correlation; secret/internal detail redaction.
+
+**Completion gate.** Error/recovery meaning is identical across the declared transports.
 
 <a id="rule-wp-23.02"></a>
 
 ### WP-23.02 — Pagination, filtering and conditional requests
 
-**Required design implementation and verification.** Implement signed Notes cursor bindings and 15-minute expiry. Test changed filters/scope, dataset mutation, definition semantic revision and view revision: stale pages return an explicit restart, never mixed-page success. Contract fixtures suffice here; full query execution is owned by [WP-28](28-arcnotes-properties-and-views.md#rule-wp-28).
 
-**What must be fully done.** Cursor-based pagination with stable ordering; filtering constrained to declared fields; conditional requests using revision so a client can avoid re-fetching unchanged state. A cursor is opaque and cannot be constructed by a client to escape scope.
+**What must be fully done.** Implement the fixed page/sort/filter/cursor and expected-revision contracts per operation. Scope all cursors, apply selected Notes query and general Search variants, enforce limits and return typed reset/conflict where needed.
 
-**Testing requirements.** Pagination stability under concurrent mutation; a cursor-forging test; conditional-request correctness.
+**Testing requirements.** Stable order/page replay, current permission changes, wrong scope/revision and page-limit cases.
 
-**Completion gate.** Pagination is stable under concurrent mutation and a forged cursor cannot escape scope.
+**Completion gate.** Reads and conditional writes use the predesigned profiles without consumer-defined query languages.
 
 <a id="rule-wp-23.03"></a>
 
@@ -121,21 +125,23 @@
 
 ### WP-23.04 — Reserved, verified and promoted objects
 
-**What must be fully done.** Implement upload admission with committed-storage headroom and workspace/deployment staging reservations; bounded chunk ingestion, hash/type verification and idempotent completeUpload to Verified. The owner commit promotes and converts quota atomically with references. Download checks owner visibility. Expiry/cancel schedules verified physical deletion before releasing exposure.
 
-**Testing requirements.** Race uploads at the limit; send oversize chunks; crash after verification/before promotion; duplicate completion/promotion; cancel with object-store timeout; expire multipart uploads; try cross-workspace dedup probes.
+**What must be fully done.** Implement C# upload admission/status/ticket-renew/complete owner operations and real CF staged multipart verification from the object contract. Reserve committed/staging quotas before bytes, verify immutable whole hash/type, pin Verified state, then publish in the owning transaction. Enforce authenticated download/range and cleanup receipts before releasing exposure.
 
-**Completion gate.** No upload bypasses reserved headroom, no unverified/unowned object becomes downloadable, and abandoned bytes remain accounted until cleanup succeeds.
+**Testing requirements.** Real R2 multipart/retry/status/expiry/permission/deletion checks, verifier restart and largest-admitted-object capacity proof; quota and owner-commit crash points.
+
+**Completion gate.** No Verified object is visible as Published early, no raw permanent R2 URL is public, and quota/references/deletion converge.
 
 <a id="rule-wp-23.05"></a>
 
 ### WP-23.05 — Generated C# and TypeScript clients
 
-**What must be fully done.** Produce generated C# native/mobile clients and the generated TS SDK from the real endpoint/serializer metadata. C# uses its bearer handler and serialized refresh; browser uses the [WP-22](22-identity-workspace-and-device.md#rule-wp-22) cookie-session adapter plus CSRF headers and safe same-origin routing. Keep cancellation/retry/error/query policy outside generated files. Include all declared success/failure/status/header shapes, exact primitive mappings and client-version behavior.
 
-**Testing requirements.** Published AOT C# and production React clients against the real Cloud test host/PostgreSQL; native refresh race and browser session expiry/revocation; no-store/auth cookies/CSRF; int64/decimal bidirectional vectors; 401/403/409/429, ETag, Retry-After, cancellation, uncertain mutation with same CommandId, and previous/current SDK compatibility.
+**What must be fully done.** Consume released Contracts C# native clients and TS React/RN clients against these actual endpoints. Compose opaque bearer and single-flight refresh for native/RN, browser opaque cookie plus CSRF/Origin, cancellation/backoff and generation-scoped callbacks outside generated code.
 
-**Completion gate.** Both generated client families work against the real server with the same business semantics and exact values. No browser bearer credential, hand-authored duplicate model or C# reflection fallback.
+**Testing requirements.** Exact-value and current/previous contract matrix from AOT desktop, production React and physical RN release; concurrent refresh/session revoke.
+
+**Completion gate.** All actual consumer runtimes use the selected public protocol and authentication without handwritten wire authority.
 
 <a id="rule-wp-23.06"></a>
 
@@ -146,6 +152,19 @@
 **Testing requirements.** The bidirectional matrix; a negative test asserting a breaking change fails the matrix.
 
 **Completion gate.** The bidirectional compatibility matrix passes and a deliberately breaking change is caught by it.
+
+---
+
+<a id="rule-wp-23.90"></a>
+### WP-23.90 — Verify the owned artifact and real integration
+
+**What must be fully done.** Implement each frozen public operation mapping as gRPC/gRPC-Web or its explicitly retained standard HTTP endpoint. Publish versioned clients and operation-specific validation/error adapters; no business DTO authority in Cloud.
+
+**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+
+**Testing requirements.** Real C#/browser/RN calls against the AOT image, previous/current compatibility and complete operation mapping, including auth, files and webhooks outside gRPC.
+
+**Completion gate.** Real C#/browser/RN calls against the AOT image, previous/current compatibility and complete operation mapping, including auth, files and webhooks outside gRPC. Record exact artifacts and provider reality. The package is incomplete if an important contract/owner/recovery rule still requires design during coding.
 
 ---
 
@@ -181,6 +200,8 @@
 
 ## 8. Completion gate
 
+**[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) gate:** [WP-23.90](#rule-wp-23.90) and all inherited domain-specific gates must pass on the same candidate closure. Real C#/browser/RN calls against the AOT image, previous/current compatibility and complete operation mapping, including auth, files and webhooks outside gRPC.
+
 **[PG-23](../../assurance/open-gates-register.md#rule-pg-23) evidence:** [WP-23.05](#rule-wp-23.05) — Generated C#/TS contracts and real-server exact-value/error/header/client conformance. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
 
 **Additional completion requirement.** Notes cursor/error semantics are implemented before the full query consumer; general cursor tests honor the operation-specific stable-or-restart guarantee.
@@ -201,14 +222,16 @@
 
 **Upstream — all must be complete.**
 
-- [03 — Contract Foundation and the Licence Boundary Split](03-contract-foundation-and-licence-split.md)
-- [22 — Identity, Workspace, Device and Session](22-identity-workspace-and-device.md)
+- [03 contract foundation and licence split](03-contract-foundation-and-licence-split.md#rule-wp-03)
+- [22 identity workspace and device](22-identity-workspace-and-device.md#rule-wp-22)
 
-**Downstream — these consume this package’s completed output.**
+**Downstream — consumers of these released outputs.**
 
-- [24 — Realtime, Reliable Events and Recovery](24-realtime-and-reliable-events.md)
-- [30 — Mobile Shared Architecture and the Apache Boundary](30-mobile-shared-architecture.md)
-- [42 — Commerce, Entitlement and Credits](42-commerce-entitlement-and-credits.md)
-- [44 — Dynamic Policy and Configuration Control Plane](44-dynamic-policy-and-configuration.md)
-- [51 — ArcScope Deterministic Cloud Simulator](51-arcscope-cloud-simulator.md)
-- [52 — The Cloud Harness](52-cloud-harness.md)
+- [24 realtime and reliable events](24-realtime-and-reliable-events.md#rule-wp-24)
+- [30 mobile shared architecture](30-mobile-shared-architecture.md#rule-wp-30)
+- [42 commerce entitlement and credits](42-commerce-entitlement-and-credits.md#rule-wp-42)
+- [44 dynamic policy and configuration](44-dynamic-policy-and-configuration.md#rule-wp-44)
+- [51 arcscope cloud simulator](51-arcscope-cloud-simulator.md#rule-wp-51)
+- [52 cloud harness](52-cloud-harness.md#rule-wp-52)
+
+---

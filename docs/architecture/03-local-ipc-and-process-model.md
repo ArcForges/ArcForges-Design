@@ -2,57 +2,30 @@
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Architecture
-> Governing authority: **[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)** (cloud topology and local action), **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** (AOT matrix), **[V-05b](../assurance/phase-1-official-verification.md#rule-v-05b)** (StreamJsonRpc AOT evidence)
+> Governing authority: **[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)** (cloud topology and local action), **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** (AOT matrix), **[V-05b](../assurance/phase-1-official-verification.md#rule-v-05b)** (gRPC AOT evidence)
 > Companions: [`02-contracts-and-protocols.md`](02-contracts-and-protocols.md), [`04-desktop-application-architecture.md`](04-desktop-application-architecture.md), [`08-security-architecture.md`](08-security-architecture.md)
 
-Same-machine, first-party, process-to-process communication. **StreamJsonRpc over an operating-system IPC stream is the only primary local RPC layer.**
+Same-machine first-party business RPC uses generated gRPC over authenticated operating-system IPC, under P2-009.**
 
 ---
 
-## 1. Why this shape
+## 1. Generated service shape
 
-| # | Property | Consequence |
-|---|---|---|
-| WH-01 | The RPC API is a .NET interface | True interface-first RPC — the caller's proxy and the implementation satisfy the same contract |
-| WH-02 | Full-duplex peer protocol | Either side may initiate calls and notifications on one connection |
-| WH-03 | Transport is decoupled from protocol | Runs directly over a `Stream`: named pipe, Unix domain socket, or an in-process loopback for tests |
-| WH-04 | No web host is required | No Kestrel, no HTTP/2, no TCP port, no same-machine TLS certificate — which keeps the desktop AOT path simple |
-| WH-05 | A source generator and analyzer exist | Usable under Native AOT **within constraints**, which this document turns into repository rules |
-
-**The library describes itself as only partially AOT-safe.** What makes it usable is strict adherence to the generated paths — never an assumption that every API is inherently AOT-safe (**[V-05b](../assurance/phase-1-official-verification.md#rule-v-05b)**).
+Each process hosts explicitly registered generated protobuf services in a minimal Kestrel HTTP/2 listener. Callers use Grpc.Net.Client and ConnectCallback for the OS stream. Each side hosts its own listener for reverse calls; gRPC is not the old symmetric peer channel. ArcChat Hub is a library inside ArcChat, not another executable or a mandatory professional-product relay. The [wire registry](contracts/04-protobuf-wire-registry.md#8-transport-and-generation-acceptance) fixes exact methods, fields, framing, versions and bounded calls.
 
 ---
 
-## 2. Transport
+## 2. Authenticated local transport
 
-| Platform | Transport | Identity control | Notes |
-|---|---|---|---|
-| **Windows** | Named pipe | Current-user ACL; a service SID or app-container restriction where required | **The pipe must be created with the asynchronous option**, or async RPC blocks |
-| **Linux** | Unix domain socket | Private runtime directory plus socket file permissions | Watch socket path length; clean up stale sockets |
-| **macOS** | Unix domain socket | User directory plus socket file permissions | Verify container paths separately under sandboxing and signing |
-| **Tests** | In-process full-duplex stream | — | Never a production path |
-| **Development diagnostics** | Loopback TCP on a random port, **only when explicitly enabled** | Session token still required | **Must never become a production default** |
+Windows uses asynchronous Named Pipes with current-user ACL; inspect the actual client/server process identity through the named-pipe OS connection, not a claimed PID. Linux uses private directory0700/socket0600 and SO_PEERCRED; macOS uses peer credentials/PID and signed-code identity where available. UDS path is at most100 UTF-8 bytes. All production listeners are pipe/UDS, no fixed TCP port and no public interface. Tests exercise actual published processes, not only in-memory streams.
 
-| # | Rule |
-|---|---|
-| TR-01 | **No fixed TCP port is used as the official local discovery mechanism.** |
-| TR-02 | **Local IPC endpoints are never exposed on the public internet** (**[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)**). |
-| TR-03 | **A debug loopback listener does not skip authentication** merely because it binds to a local address. |
-| TR-04 | Framing uses a length-prefixed message handler with the binary formatter by default. |
+Verify user/process/build against the selected registered application before exchanging a random32-byte session nonce through the authenticated bootstrap. Nonces live in memory, expire with the30-second registration lease (renew10s), and are never written to the endpoint manifest. Per-peer scopes and capability grants are checked on every call. The Hub may issue a scoped peer introduction; the actual owner still authenticates and authorizes. Hub absence preserves product local use and direct Cloud access. macOS content sandbox uses its separate XPC protocol, not this general product listener.
 
 ---
 
-## 3. Wire format
+## 3. Wire and flow-control profile
 
-| # | Rule |
-|---|---|
-| WF-01 | **The local default formatter is Nerdbank.MessagePack with a generated type-shape provider** — documented as the safest Native AOT path (**[V-05b](../assurance/phase-1-official-verification.md#rule-v-05b)**). |
-| WF-02 | **MessagePack here is only a local wire formatter.** It is not the public API, not a cross-language IDL, does not replace HTTP/JSON, and does not require domain types to be designed around it. |
-| WF-03 | **Where UTF-8 JSON is genuinely required**, the JSON formatter is used with its resolver bound to a source-generated serialization context, and **every DTO is registered in that context**. |
-| WF-04 | **The Newtonsoft-based default formatter is never used.** |
-| WF-05 | **RPC-marshalable objects are not relied upon under the JSON formatter**; where that capability is needed, the MessagePack path is used. |
-| WF-06 | **No runtime type resolver scans for unknown types in production.** |
-| WF-07 | **Every new DTO gets an AOT publish test.** |
+Use the handwritten proto/generated C# services from Contracts, HTTP/2 protobuf framing and explicit registration. No MessagePack/JSON-RPC formatter, dynamically marshaled object or runtime proxy construction. Business unary messages <=4 MiB, normal replies10s, permitted synchronous measurement30s,16 concurrent calls and64 queued per peer; refuse overflow before dispatch. Long jobs return handles and bulk content uses authorized references/transfer channels. Timeouts/cancellation after dispatch retain effect uncertainty. Reconnect rebuilds authenticated channels and typed clients; it never resends a non-idempotent command automatically.
 
 ---
 
@@ -90,7 +63,7 @@ Product starts
 | RG-05 | **Re-registration is idempotent.** |
 | RG-06 | **Application-level information survives instance death**; only instance-scoped state is removed. |
 | RG-07 | **A normal exit unregisters proactively; a crash is cleaned up by lease expiry.** |
-| RG-08 | **After a connection is re-established, generated proxies are attached again.** Old proxies are never reused. |
+| RG-08 | **After a connection is re-established, new generated clients are bound to freshly authenticated channels.** Old proxies are never reused. |
 
 ### 4.3 Health and backpressure
 
@@ -229,7 +202,7 @@ Answerable before any local RPC change merges (with the verified constraints in 
 - [ ] Is the interceptors property enabled on every project in the attach chain?
 - [ ] Is dynamic interface or type discovery absent?
 - [ ] Are multi-interface combinations pre-generated?
-- [ ] Is the formatter MessagePack with generated shapes, or JSON with a source-generated context?
+- [ ] Is the formatter Protocol Buffers with generated shapes, or JSON with a source-generated context?
 - [ ] Is the target registered through generated metadata?
 - [ ] Has a real AOT publish run with at least one RPC round trip?
 - [ ] Have disconnection, reconnection, duplicate `CommandId`, revision conflict and callback deadlock all been tested?

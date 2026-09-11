@@ -1,13 +1,16 @@
 <a id="rule-wp-21"></a>
 
-# WP-21 — Cloud Host, Modules, Persistence and Migrations
+# WP-21 — Native AOT Cloud Host and Persistence
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: E — First real cloud
 > Upstream: `03`, `05`, `12` · Downstream: `22`, `45`, `51`, `52`
 
-> **Goal.** Stand up the real cloud: a JIT modular monolith as **one deployable host** with lease-fenced internal services (**[P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006)**), a fixed host pipeline order, module boundaries with owned schemas, a real database with a standalone migrator, reliable events, and background work — running against real infrastructure, not stubs.
+> **Goal.** Stand up the real cloud: a Native AOT modular business host as **one deployable host** with lease-fenced internal services (**[P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006)**), a fixed host pipeline order, module boundaries with owned schemas, a real database with a standalone migrator, reliable events, and background work — running against real infrastructure, not stubs.
+
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Cloud. Inputs: the assigned exact Contracts packages/descriptors and actual provider artifacts; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: owned candidate artifacts and generated contracts with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
 
 ---
 
@@ -23,11 +26,13 @@
 
 ## 2. Required inputs and dependencies
 
+**Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
+
 | Input | Why it matters |
 |---|---|
-| [`../../architecture/05-cloud-architecture.md`](../../architecture/05-cloud-architecture.md) | The JIT decision, roles, pipeline order, modules, persistence, events, background work, isolation |
+| [`../../architecture/05-cloud-architecture.md`](../../architecture/05-cloud-architecture.md) | The Native AOT decision, roles, pipeline order, modules, persistence, events, background work, isolation |
 | [`../../requirements/products/arcforges-cloud.md`](../../requirements/products/arcforges-cloud.md) | Platform posture, dependency baseline, environments, resilience and the module list |
-| **[D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008)**, **[V-03](../../assurance/phase-1-official-verification.md#rule-v-03)** | Cloud is JIT; strict AOT is explicitly not required |
+| **[D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008)**, **[V-03](../../assurance/phase-1-official-verification.md#rule-v-03)** | Cloud requires Native AOT across the selected production dependency closure |
 | [WP-03](03-contract-foundation-and-licence-split.md#rule-wp-03), [WP-05](05-architecture-and-repository-policy-tests.md#rule-wp-05), [WP-12](12-observability-foundation.md#rule-wp-12) output | Contracts, policy tests and instrumentation |
 
 ---
@@ -36,7 +41,7 @@
 
 | # | Rule |
 |---|---|
-| BR-01 | **Cloud is an ASP.NET Core JIT modular monolith** (**[D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008)**). It must not be packaged as Native AOT for consistency (**[V-03](../../assurance/phase-1-official-verification.md#rule-v-03)**). |
+| BR-01 | Cloud is one ASP.NET Core Native AOT business executable per replica, with the selected explicit auth/SQL/gRPC/HTTP adapter closure and zero trim/AOT diagnostics. CF owns the separate managed AI loop. |
 | BR-02 | **Cloud never connects to localhost, a named pipe, a domain socket or local standard I/O** (**[D-010](../../decisions/phase-1-foundation-decisions.md#rule-d-010)**). |
 | BR-03 | **A module owns its schema or its explicit table set.** No module writes another module's tables. |
 | BR-04 | **Modules communicate through a published module API or events**, never through direct data access. |
@@ -56,7 +61,7 @@
 |---|---|
 | `src/Cloud/ArcForges.Cloud.Host/` | The API role and its fixed pipeline |
 | `src/Cloud/ArcForges.Cloud.BackgroundJobs/` | Hosted services — a **library** referenced by the host, not a deployable |
-| `src/Cloud/ArcForges.Cloud.AgentRuntime/` | The single Harness — a **library** referenced by the host |
+| `src/Cloud/ArcForges.Cloud.AgentRuntime/` | Canonical Agent/Task integration ports, dispatch and reconciliation only; no loop. The AI repository owns RunWorkflow. |
 | `src/Cloud/ArcForges.Cloud.AppHost/` | Aspire orchestration for **local development only** ([EN-05](../../requirements/products/arcforges-cloud.md#rule-en-05)) |
 | `src/Cloud/ArcForges.Cloud.Persistence/` | Store abstraction, unit of work, outbox and inbox |
 | `src/Cloud/ArcForges.Cloud.Migrations/` | The standalone migrator and the numbered migration set |
@@ -74,21 +79,23 @@
 
 ### WP-21.00 — Host and pipeline
 
-**What must be fully done.** The API host with the fixed pipeline order: correlation, request limits, authentication, tenancy resolution, authorization, validation, handling, and problem-detail mapping. The order is asserted by a test. The JIT posture is explicit and no AOT properties are set.
 
-**Testing requirements.** A pipeline-order assertion test; a negative test asserting a request cannot reach a handler with tenancy unresolved; a posture inspection.
+**What must be fully done.** Implement the exact host pipeline in Cloud architecture: bounded trusted ingress, correlation/error wrapper, routing/gRPC-Web/CORS, authentication/CSRF, realm/workspace/device scope, authorization/admission/rate limit, validation/revision/idempotency and owner handler. Explicitly register all selected source-generated serializers/services and session/WebAuthn/OIDC adapters.
 
-**Completion gate.** The pipeline order is asserted, no handler is reachable without tenancy resolution, and the JIT posture is explicit.
+**Testing requirements.** AOT image inspection with zero diagnostics; ordered middleware/handler probes and missing/wrong-scope/CSRF/service-auth negative tests.
+
+**Completion gate.** No business handler executes without its declared scope/authorization; the production closure contributes [VG-06](../../assurance/open-gates-register.md#rule-vg-06) proof.
 
 <a id="rule-wp-21.01"></a>
 
 ### WP-21.01 — One host and its bounded hosted services
 
-**What must be fully done.** **One deployable host** — `ArcForges.Cloud.Host` — running the request pipeline, realtime hubs, the single Harness and every bounded background service as libraries (**[P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006)**, [RT-03](../../architecture/05-cloud-architecture.md#rule-rt-03) of the cloud architecture). Every replica is identical: no role flag, no worker-only deployment, no leader chosen by configuration. Cross-replica concurrency is controlled by **durable leases with fencing** ([RT-04](../../architecture/05-cloud-architecture.md#rule-rt-04)), and every hosted service claims a bounded batch and yields — no unbounded loop exists in a request handler or a hosted service ([RT-05](../../architecture/05-cloud-architecture.md#rule-rt-05)). **Scaling is by adding identical replicas**, and every replica has the same failure characteristics — there is no role whose loss removes a capability, which is the property that makes lease takeover sufficient.
 
-**Testing requirements.** A structural test asserting exactly one web executable exists and no second deployable is produced; a multi-replica test proving two identical replicas do not both claim the same leased work; a fencing test proving a stale token cannot publish; a bounded-batch test asserting no hosted-service iteration exceeds its budget; a drain test proving a shutting-down replica completes or releases its in-flight work rather than abandoning a lease.
+**What must be fully done.** Run request handlers, unary hints, canonical Agent/Task control ports and bounded DB-leased jobs inside the one C# host. CF RunWorkflow alone plans/invokes models/tools; no C# loop, Node sidecar or separate C# worker deployment. Replicas are identical; claim, renewal and fence checks occur at each selected transaction barrier.
 
-**Completion gate.** **N identical replicas run every hosted service safely under lease fencing**, no unbounded loop is reachable, and no second deployable exists.
+**Testing requirements.** Two identical replicas contend and drain; stale holder cannot publish; actual CF dispatch/reconcile receipts deduplicate; bounded jobs yield.
+
+**Completion gate.** Single C# process topology and fenced concurrency hold across replica loss without creating a second Harness.
 
 <a id="rule-wp-21.02"></a>
 
@@ -106,21 +113,23 @@
 
 ### WP-21.03 — Versioned SQL migration and fenced cutover
 
-**What must be fully done.** Implement explicit PostgreSQL SQL, standalone migrator roles and the migration epoch/range/capture tables in [deployment §2.5](../../architecture/22-deployment-and-release-execution.md#25-versioned-capture-backfill-and-cutover). Capture every old/new writer transactionally; compare source revision on both backfill and capture, retain delete tombstones, and fence all writers during final drain/verification and reader/authority switch. Declare mode A/B/C and separate schema/data rollback horizons.
 
-**Testing requirements.** Run real PostgreSQL concurrent old/new writers, delayed v1 backfill after v2 capture, delete-after-snapshot, applier failure, crash/restart and a writer between drain check and switch. Prove A/B conversion and rollback; refuse C rollback after new-only facts. Measure the bounded fence at production-shaped scale.
+**What must be fully done.** Implement the selected fixed SQL/Npgsql typed mappings, per-owner schemas/indexes, shared transaction families and standalone one-shot migrator. Use explicit column/type maps and revision predicates; no dynamic ORM/reflection mapping. Follow expand/contract and record restore-compatible schema/checkpoint versions.
 
-**Completion gate.** No stale backfill replaces newer data, no write crosses cutover unaccounted, all ranges/dirty keys are verified, and rollback tooling follows the durable authority epoch. [PG-19](../../assurance/open-gates-register.md#rule-pg-19) requires these actual database results.
+**Testing requirements.** Real PostgreSQL integration, clean/upgrade/rollback-or-forward-repair migration corpus, concurrent revision conflicts and query plans.
+
+**Completion gate.** Owned persistence and the migrator run from actual AOT artifacts with the defined consistency boundaries.
 
 <a id="rule-wp-21.04"></a>
 
 ### WP-21.04 — Outbox, inbox and idempotency
 
-**What must be fully done.** State changes and their outbound messages commit atomically through an outbox. Inbound messages deduplicate through an inbox keyed by message identity. A dead-letter path exists with replay. Message ordering guarantees are stated and enforced where required.
 
-**Testing requirements.** Atomic commit test with an induced failure between state change and publish; duplicate-delivery test; dead-letter and replay test.
+**What must be fully done.** Implement transactional outbox/inbox and command dedup. Publish hint rows and CF dispatch/control intents only after commit; each consumer has immutable message/input identity, bounded retries/dead-letter and typed reconciliation. Replay only operations whose declared effect certainty permits it.
 
-**Completion gate.** A failure between state change and publish never produces a lost or phantom message, and duplicate delivery has no additional effect.
+**Testing requirements.** Kill around commit/publish/ack, duplicate deliveries and ambiguous CF outcomes; verify one durable effect and visible dead-letter state.
+
+**Completion gate.** Business state, notifications, dispatch and receipts cannot diverge through loss or duplicate delivery.
 
 <a id="rule-wp-21.05"></a>
 
@@ -151,6 +160,19 @@
 **Testing requirements.** Per-dependency outage tests asserting scoped degradation; a correlation propagation test through queue and worker.
 
 **Completion gate.** Each simulated dependency outage degrades only its dependent capabilities, and correlation survives every hop.
+
+---
+
+<a id="rule-wp-21.90"></a>
+### WP-21.90 — Verify the owned artifact and real integration
+
+**What must be fully done.** Implement the one AOT host, 20 module-owner topology, explicit PostgreSQL/SQL, migrations, transactional outbox, leases and CF integration-port foundations. Canonical Task/Chat/Commerce state remains here; the loop does not.
+
+**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+
+**Testing requirements.** Real AOT image plus database tests demonstrate module ownership, transaction/idempotency/fencing boundaries, restart and one-shot migrations.
+
+**Completion gate.** Real AOT image plus database tests demonstrate module ownership, transaction/idempotency/fencing boundaries, restart and one-shot migrations. Record exact artifacts and provider reality. The package is incomplete if an important contract/owner/recovery rule still requires design during coding.
 
 ---
 
@@ -185,13 +207,17 @@
 
 ## 8. Completion gate
 
+**Runtime/closure producers.** [VG-06](../../assurance/open-gates-register.md#rule-vg-06) through [WP-21.00](#rule-wp-21.00). The named candidate must supply actual passing evidence; documentation does not close these gates.
+
+**[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) gate:** [WP-21.90](#rule-wp-21.90) and all inherited domain-specific gates must pass on the same candidate closure. Real AOT image plus database tests demonstrate module ownership, transaction/idempotency/fencing boundaries, restart and one-shot migrations.
+
 **[PG-19](../../assurance/open-gates-register.md#rule-pg-19) evidence:** [WP-21.03](#rule-wp-21.03) — Real version-guarded backfill, all-writer participation and fenced cutover; combine with release rehearsal. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
 
 **[PG-17](../../assurance/open-gates-register.md#rule-pg-17) evidence:** [WP-21.05](#rule-wp-21.05) — Real commit-ordered feed, per-aggregate revision order and fairness; combine with sync/bootstrap consumer evidence. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
 
 **All of the following, with recorded evidence, against real infrastructure:**
 
-1. The host pipeline order is asserted; no handler is reachable with tenancy unresolved; the JIT posture is explicit with no AOT properties.
+1. The host pipeline order is asserted; no handler is reachable with tenancy unresolved; Native AOT publish and the selected dependency closure pass.
 2. **One deployable host runs every bounded hosted service** ([RT-03](../../architecture/05-cloud-architecture.md#rule-rt-03)); every replica is identical, with no role flag and no leader chosen by configuration.
 3. No module writes another module's tables or references its internals; the module set is reconciled and recorded.
 4. Migration is transactional, idempotent, resumable, and rehearsed forward and backward, with the three-phase pattern demonstrated.
@@ -206,13 +232,15 @@
 
 **Upstream — all must be complete.**
 
-- [03 — Contract Foundation and the Licence Boundary Split](03-contract-foundation-and-licence-split.md)
-- [05 — Architecture and Repository Policy Test Suite](05-architecture-and-repository-policy-tests.md)
-- [12 — Observability Foundation](12-observability-foundation.md)
+- [03 contract foundation and licence split](03-contract-foundation-and-licence-split.md#rule-wp-03)
+- [05 architecture and repository policy tests](05-architecture-and-repository-policy-tests.md#rule-wp-05)
+- [12 observability foundation](12-observability-foundation.md#rule-wp-12)
 
-**Downstream — these consume this package’s completed output.**
+**Downstream — consumers of these released outputs.**
 
-- [22 — Identity, Workspace, Device and Session](22-identity-workspace-and-device.md)
-- [45 — Operations, Support and Trust & Safety](45-operations-support-and-trust-safety.md)
-- [51 — ArcScope Deterministic Cloud Simulator](51-arcscope-cloud-simulator.md)
-- [52 — The Cloud Harness](52-cloud-harness.md)
+- [22 identity workspace and device](22-identity-workspace-and-device.md#rule-wp-22)
+- [45 operations support and trust safety](45-operations-support-and-trust-safety.md#rule-wp-45)
+- [51 arcscope cloud simulator](51-arcscope-cloud-simulator.md#rule-wp-51)
+- [52 cloud harness](52-cloud-harness.md#rule-wp-52)
+
+---

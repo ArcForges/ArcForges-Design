@@ -9,6 +9,9 @@
 
 > **Goal.** Complete ArcChat as an independent product: chat, agent, task centre, capability hub, permission and approval, automation, local data and recovery — with **no claim** that its ecosystem tier is finished.
 
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: ArcChat; Contracts fixtures. Inputs: exact compatible Contracts packages/descriptors and applicable DesktopPlatform packages; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: Native AOT candidate packages/executables with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> Fixture AI is permitted only for the named local product slice; WP52 replaces it with real CF execution before Mobile/Web/full release.
+
 ---
 
 ## 1. Scope and purpose
@@ -24,6 +27,8 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+**Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
 | Input | Why it matters |
 |---|---|
@@ -53,7 +58,7 @@
 
 | Location | Change |
 |---|---|
-| `src/ArcChat/ArcChat.Agent/` | **Presentation-side agent surfaces only** — turn submission, streaming display, steering controls. The turn loop, batching, planning, selection and compaction are **Cloud** (`ArcForges.Cloud.AgentRuntime`, [LS-02](../../architecture/17-agent-harness.md#rule-ls-02)) |
+| `src/ArcChat/ArcChat.Agent/` | **Presentation-side agent surfaces only** — turn submission, streaming display, steering controls. The turn loop, batching, planning, selection and compaction are **Cloud** (`ArcForges-AI/src/workflows/RunWorkflow`, [LS-02](../../architecture/17-agent-harness.md#rule-ls-02)) |
 | `src/ArcChat/ArcChat.Application/` | Task centre, automation, permission and approval services |
 | `src/ArcChat/ArcChat.LocalTools/` | First-party local capabilities ArcChat itself owns |
 | `src/ArcChat/ArcChat.Presentation/`, `.Desktop/` | Task centre, capability hub, security centre, automation and handoff surfaces |
@@ -62,7 +67,7 @@
 
 **Major types introduced.** `CapabilityHub`, `AgentSessionView`, `TaskCentreView`, `AutomationDefinition`, `AutomationTrigger`, `AutomationRun`, `ToolRequestExecutor`, `AdmissionReasonView`, `PermissionGrantView`, `SecurityCentre`, `HandoffRequest`, `PreviewDescriptor`, `CloudAiClient`.
 
-**Types that moved to Cloud under P2-006.** `TurnLoop`, `ToolCallBatch`, `ConflictSet`, `CompactionRecord`, `PlanBuilder` and `ProviderAdapter` belong to `ArcForges.Cloud.AgentRuntime` and `ArcForges.Cloud.Modules.AI`, not to any desktop project.
+**Types that moved to Cloud under P2-006.** `TurnLoop`, `ToolCallBatch`, `ConflictSet`, `CompactionRecord`, `PlanBuilder` and `ProviderAdapter` belong to `ArcForges-AI/src/workflows/RunWorkflow` ; C# Agent/Task modules hold canonical business records, not to any desktop project.
 
 ---
 
@@ -159,6 +164,19 @@
 
 ---
 
+<a id="rule-wp-17.90"></a>
+### WP-17.90 — Verify the owned artifact and real integration
+
+**What must be fully done.** Build the independent desktop client/local executor and bounded AI fixtures. Specify the exact fixture contracts and replacement obligation at [WP-52](52-cloud-harness.md#rule-wp-52); schedules are clients of the Cloud-owned occurrence/admission contract.
+
+**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+
+**Testing requirements.** Independent ArcChat behavior is real; model/Harness behavior is labelled fixture-only here and cannot close the final AI workflow gate.
+
+**Completion gate.** Independent ArcChat behavior is real; model/Harness behavior is labelled fixture-only here and cannot close the final AI workflow gate. Record exact artifacts and provider reality. The package is incomplete if an important contract/owner/recovery rule still requires design during coding.
+
+---
+
 ## 6. Impacts
 
 | Dimension | Impact |
@@ -190,6 +208,8 @@
 
 ## 8. Completion gate
 
+**[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) gate:** [WP-17.90](#rule-wp-17.90) and all inherited domain-specific gates must pass on the same candidate closure. Independent ArcChat behavior is real; model/Harness behavior is labelled fixture-only here and cannot close the final AI workflow gate.
+
 **Offline evidence.** Execute this product's applicable [initial-state matrix](../../assurance/testing-and-verification-strategy.md#offline-acceptance-matrix) rows, including fresh shell, hydrated outage, unavailable content, signout and restart where applicable. Record permitted local work and explicitly unavailable Cloud actions.
 
 **All of the following, with recorded evidence:**
@@ -202,7 +222,7 @@
 6. **No provider credential exists on the client**, and an admission refusal states which of service term, capacity or extra-credit authorisation is missing.
 7. Handoff works with the target both running and not running; startup meets budget; recovery is clean.
 8. **Every V1B ecosystem item is enumerated with a named closing package**, and nothing incomplete is presented as complete.
-9. *(Moved to [WP-52](52-cloud-harness.md#rule-wp-52) — the Cloud Harness. The turn loop, batching and bounds run in the Cloud host and admit through Commerce, so they cannot be built in Phase C.)*
+9. *(Moved to [WP-52](52-cloud-harness.md#rule-wp-52) — the Cloud Harness. The turn loop, batching and bounds run in CF Workflow and admit through C# Commerce, so they cannot be built in Phase C.)*
 10. *(Moved to [WP-52](52-cloud-harness.md#rule-wp-52) — the Cloud Harness. Compaction is a Cloud concern for the same reason.)*
 
 ---
@@ -211,13 +231,15 @@
 
 **Upstream — all must be complete.**
 
-- [06 — AOT, JIT and Web Publish Proof](06-aot-jit-and-wasm-publish-proof.md)
-- [15 — ArcChat Conversation and Project Core](15-arcchat-conversation-core.md)
-- [16 — Unified Execution Engine](16-unified-execution-engine.md)
+- [06 aot jit and wasm publish proof](06-aot-jit-and-wasm-publish-proof.md#rule-wp-06)
+- [15 arcchat conversation core](15-arcchat-conversation-core.md#rule-wp-15)
+- [16 unified execution engine](16-unified-execution-engine.md#rule-wp-16)
 
-**Downstream — these consume this package’s completed output.**
+**Downstream — consumers of these released outputs.**
 
-- [20 — First Real Cross-Product Workflow](20-first-cross-product-workflow.md)
-- [26 — Device Presence, Remote Action and the Tool Bridge](26-remote-action-and-tool-bridge.md)
-- [41 — Extension Platform and Integrations](41-extension-platform-and-integrations.md)
-- [52 — The Cloud Harness](52-cloud-harness.md)
+- [20 first cross product workflow](20-first-cross-product-workflow.md#rule-wp-20)
+- [26 remote action and tool bridge](26-remote-action-and-tool-bridge.md#rule-wp-26)
+- [41 extension platform and integrations](41-extension-platform-and-integrations.md#rule-wp-41)
+- [52 cloud harness](52-cloud-harness.md#rule-wp-52)
+
+---

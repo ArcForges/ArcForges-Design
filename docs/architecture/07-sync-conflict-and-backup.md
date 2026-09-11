@@ -301,3 +301,7 @@ Required scenarios, all release-gating:
 | [Cloud Data Model](data-model/01-cloud-data-model.md) | Defines Cloud sync, resource, deletion and quota records |
 | **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** | Cloud persistence posture |
 | **[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)** | Direct product-to-cloud sync without an ArcChat gateway |
+
+## P2-009 transport, storage and recovery composition
+
+The [CF/R2 lifecycle](contracts/05-cloudflare-integration.md) fixes part verification, Verified pins, authorization on consumption, release/deletion and independent immutable restore. C# owning transactions, sync cursors/tombstones/conflicts, desktop pending changes, native job snapshots and derived-source revision checks above retain their semantics. The [wire profile](contracts/04-protobuf-wire-registry.md) transports exact values without changing content-origin, Notes scalar or Scope measurement oracles. CF checkpoints/streams never become product history, and restoration cannot silently redispatch an uncertain external act.

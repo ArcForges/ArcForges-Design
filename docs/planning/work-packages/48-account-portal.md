@@ -9,6 +9,9 @@
 
 > **Goal.** Deliver the canonical account origin as one deployment profile of the single React/TypeScript application: account, security, devices, workspace, storage, entitlement, billing, AI and data — with no second account application anywhere.
 
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Web + Cloud. Inputs: the assigned exact Contracts packages/descriptors and actual provider artifacts; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: production React build and real C#/CF endpoints with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+
 ---
 
 ## 1. Scope and purpose
@@ -22,6 +25,8 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+**Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
 | Input | Why it matters |
 |---|---|
@@ -154,6 +159,19 @@
 
 ---
 
+<a id="rule-wp-48.90"></a>
+### WP-48.90 — Verify the owned artifact and real integration
+
+**What must be fully done.** Assemble the owned deliverables from the preceding substeps under the selected repository, package, runtime and protocol authorities. Retain Account profile/session/step-up/privacy/commerce behavior. Implement routes using proto/gRPC-Web and the actual AOT session adapter; expose existing CF usage/storage status through owned APIs.
+
+**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+
+**Testing requirements.** Real browser against the AOT release: cookie secrecy, CSRF, expiry/revocation, privacy/export and admission/usage display. No AGPL application import into Mobile.
+
+**Completion gate.** Real browser against the AOT release: cookie secrecy, CSRF, expiry/revocation, privacy/export and admission/usage display. No AGPL application import into Mobile. Record exact artifacts and provider reality. The package is incomplete if an important contract/owner/recovery rule still requires design during coding.
+
+---
+
 ## 6. Impacts
 
 | Dimension | Impact |
@@ -189,6 +207,8 @@
 
 ## 8. Completion gate
 
+**[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) gate:** [WP-48.90](#rule-wp-48.90) and all inherited domain-specific gates must pass on the same candidate closure. Real browser against the AOT release: cookie secrecy, CSRF, expiry/revocation, privacy/export and admission/usage display. No AGPL application import into Mobile.
+
 **[PG-23](../../assurance/open-gates-register.md#rule-pg-23) evidence:** [WP-48](#rule-wp-48) — Real Account commercial/session workflows and approved visual/accessibility/performance evidence. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
 
 **All of the following, with recorded evidence:**
@@ -209,10 +229,12 @@
 
 **Upstream — all must be complete.**
 
-- [42 — Commerce, Entitlement and Credits](42-commerce-entitlement-and-credits.md)
-- [44 — Dynamic Policy and Configuration Control Plane](44-dynamic-policy-and-configuration.md)
-- [47 — Static Public Site](47-static-public-site.md)
+- [42 commerce entitlement and credits](42-commerce-entitlement-and-credits.md#rule-wp-42)
+- [44 dynamic policy and configuration](44-dynamic-policy-and-configuration.md#rule-wp-44)
+- [47 static public site](47-static-public-site.md#rule-wp-47)
 
-**Downstream — these consume this package’s completed output.**
+**Downstream — consumers of these released outputs.**
 
-- [49 — ArcChat Web Companion](49-arcchat-web-companion.md)
+- [49 arcchat web companion](49-arcchat-web-companion.md#rule-wp-49)
+
+---

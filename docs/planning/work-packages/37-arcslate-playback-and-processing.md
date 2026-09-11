@@ -9,6 +9,9 @@
 
 > **Goal.** Make the timeline play: a decode and processing pipeline behind the native boundary, a processing graph with effects and keyframes, proxies and caches as derived data, and a viewer that keeps the clock correct even when it cannot keep every frame.
 
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: ArcSlate; Platform. Inputs: exact compatible Contracts packages/descriptors and applicable DesktopPlatform packages; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: Native AOT candidate packages/executables with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+
 ---
 
 ## 1. Scope and purpose
@@ -22,6 +25,8 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+**Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
 | Input | Why it matters |
 |---|---|
@@ -141,6 +146,19 @@
 
 ---
 
+<a id="rule-wp-37.90"></a>
+### WP-37.90 — Verify the owned artifact and real integration
+
+**What must be fully done.** Consume approved native decode/audio/image/color/graphics packages and isolated helper assets. Keep playback clock, processing/proxy and media ownership contracts.
+
+**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+
+**Testing requirements.** Clean AOT package consumer plus representative decode, synchronization, cancellation, damaged-input and native dependency loading on supported RIDs.
+
+**Completion gate.** Clean AOT package consumer plus representative decode, synchronization, cancellation, damaged-input and native dependency loading on supported RIDs. Record exact artifacts and provider reality. The package is incomplete if an important contract/owner/recovery rule still requires design during coding.
+
+---
+
 ## 6. Impacts
 
 | Dimension | Impact |
@@ -171,6 +189,8 @@
 
 ## 8. Completion gate
 
+**[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) gate:** [WP-37.90](#rule-wp-37.90) and all inherited domain-specific gates must pass on the same candidate closure. Clean AOT package consumer plus representative decode, synchronization, cancellation, damaged-input and native dependency loading on supported RIDs.
+
 **[PG-22](../../assurance/open-gates-register.md#rule-pg-22) evidence:** [WP-37.01](#rule-wp-37.01) — Real packaged hostile media parsing containment and no unrestricted fallback. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
 
 **[PG-20](../../assurance/open-gates-register.md#rule-pg-20) evidence:** [WP-37.04](#rule-wp-37.04) — Real per-track cut/mix/dissolve/gap ownership and one emitted output sample per index; combine with timeline/OTIO evidence. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
@@ -193,8 +213,10 @@
 
 **Upstream — all must be complete.**
 
-- [36 — ArcSlate Project, Timeline and Media Model](36-arcslate-project-and-timeline.md)
+- [36 arcslate project and timeline](36-arcslate-project-and-timeline.md#rule-wp-36)
 
-**Downstream — these consume this package’s completed output.**
+**Downstream — consumers of these released outputs.**
 
-- [38 — ArcSlate Render, Export and Colour Management](38-arcslate-render-and-colour.md)
+- [38 arcslate render and colour](38-arcslate-render-and-colour.md#rule-wp-38)
+
+---

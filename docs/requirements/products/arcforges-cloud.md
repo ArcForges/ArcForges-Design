@@ -3,7 +3,7 @@
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Requirements / Products
-> Governing authority: **[D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008)** (ASP.NET Core **JIT** modular monolith), **[D-010](../../decisions/phase-1-foundation-decisions.md#rule-d-010)** (cloud topology and local action), **[D-003](../../decisions/phase-1-foundation-decisions.md#rule-d-003)** (provider facts deferred with a first-consumption trigger)
+> Governing authority: **[D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008)** (ASP.NET Core **Native AOT** modular monolith), **[D-010](../../decisions/phase-1-foundation-decisions.md#rule-d-010)** (cloud topology and local action), **[D-003](../../decisions/phase-1-foundation-decisions.md#rule-d-003)** (provider facts deferred with a first-consumption trigger)
 > Companions: [`../03-cloud-services-and-sync.md`](../03-cloud-services-and-sync.md), [`../04-commerce-entitlement-and-credits.md`](../04-commerce-entitlement-and-credits.md), [`../10-distribution-update-and-support.md`](../10-distribution-update-and-support.md), [`../../architecture/05-cloud-architecture.md`](../../architecture/05-cloud-architecture.md), [`../../architecture/13-observability-and-operations.md`](../../architecture/13-observability-and-operations.md)
 
 > **ArcForges Cloud is the continuity and remote-execution layer of ArcForges — one logical platform, never four per-product backends.**
@@ -16,9 +16,9 @@ Product capability requirements are specified in [`../03-cloud-services-and-sync
 
 | # | Requirement |
 |---|---|
-| PP-01 | **ArcForges Cloud is an ASP.NET Core JIT modular monolith** (**[D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008)**). Strict Native AOT is **not** a Cloud requirement, and every claim that it must publish as Native AOT is removed. Azure SDKs, the durable agent loop, provider adapters, realtime integration, billing, policy and operational infrastructure all run inside the JIT boundary. |
+| PP-01 | ArcForges Cloud is one C# Native AOT modular monolith per instance under P2-009. All 20 business modules and ordinary bounded jobs run in that process. PostgreSQL, CF Workflow/Workers AI and R2 are external managed services; no runtime Node sidecar. |
 | PP-02 | **It is one logical platform**, internally partitioned by module — never split into per-product backends. |
-| <a id="rule-pp-03"></a>PP-03 | One deployable ASP.NET Core JIT Cloud host contains API handlers, the single AI harness and bounded internal background services. Independent Worker/TaskRunner deployments and microservices are not current requirements. |
+| <a id="rule-pp-03"></a>PP-03 | One deployable C# Native AOT host contains business APIs, admission, canonical Task/Agent stores, simulator and bounded leased jobs. The sole model/tool loop runs in the separate CF Worker deployment; identical C# replicas are allowed, no role-selected Worker/TaskRunner. |
 | PP-04 | **Kubernetes is not used in the first stage.** A managed container application platform is sufficient and materially cheaper to operate at this scale. |
 | PP-05 | **Cloud never connects to localhost, a named pipe, a Unix socket or local stdio** (**[D-010](../../decisions/phase-1-foundation-decisions.md#rule-d-010)**). Local action is a durable `ToolRequest` that ArcChat Desktop pulls, re-authorises locally, executes, and answers with an idempotent `ToolResult`. |
 | PP-06 | **Cloud never scans a LAN** and never addresses a desktop directly. |
@@ -328,7 +328,7 @@ Architecture boundaries must be reconciled to [P2-006](../../decisions/phase-2-s
 | [Deployment and Release Execution](../../architecture/22-deployment-and-release-execution.md) | Defines provisioning, deployment, migration and recovery procedures |
 | [Observability and Operations Architecture](../../architecture/13-observability-and-operations.md) | Implements observability, incident, support and operator obligations |
 | **[D-003](../../decisions/phase-1-foundation-decisions.md#rule-d-003)** | Provider capability and pricing facts are deferred with a first-consumption trigger |
-| **[D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008)** | Cloud is an ASP.NET Core **JIT** modular monolith; no strict AOT requirement |
+| **[D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008)** | Cloud is an ASP.NET Core **Native AOT** modular monolith; no strict AOT requirement |
 | **[D-010](../../decisions/phase-1-foundation-decisions.md#rule-d-010)** | Cloud never touches local IPC; durable `ToolRequest` / `ToolResult` model |
 | **[D-014](../../decisions/phase-1-foundation-decisions.md#rule-d-014)** | Surface inventory including the private operator surface |
-| **[V-03](../../assurance/phase-1-official-verification.md#rule-v-03)**, **[V-05e](../../assurance/phase-1-official-verification.md#rule-v-05e)** | The AOT evidence that made the JIT decision structural, and the instruction not to spend effort proving Azure SDK AOT compatibility |
+| **[V-03](../../assurance/phase-1-official-verification.md#rule-v-03)**, **[V-05e](../../assurance/phase-1-official-verification.md#rule-v-05e)** | The AOT evidence that made the Native AOT decision structural, and the instruction not to spend effort proving Azure SDK AOT compatibility |

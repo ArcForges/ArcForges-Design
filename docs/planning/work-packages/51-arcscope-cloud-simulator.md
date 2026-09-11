@@ -9,9 +9,14 @@
 
 > **Goal.** Deliver the deterministic Cloud simulator of [SIM-01](../../requirements/products/arcscope.md#rule-sim-01)–[SIM-20](../../requirements/products/arcscope.md#rule-sim-20) as a **real capability running through real Cloud persistence, real object storage and the real native acquisition pipeline**. A preview, a canned response or a test fake does not satisfy this package ([SIM-20](../../requirements/products/arcscope.md#rule-sim-20)).
 
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Cloud C#; ArcScope consumer. Inputs: the assigned exact Contracts packages/descriptors and actual provider artifacts; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: owned candidate artifacts and generated contracts with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+
 ---
 
 ## 1. Scope and purpose
+
+**Selected execution input.** [The initial simulator profile](../../architecture/23-simulator-and-interchange.md#4-initial-simulator-execution-profile) and [numbered wire/segment registry](../../architecture/contracts/04-protobuf-wire-registry.md) fix generator formulas, seeded RNG, AST, CSV, fault ordering, encoding and limits before coding. Implement and verify that profile; internal evaluator organization remains an implementation choice.
 
 **In scope.** Cloud-owned simulation definitions and immutable scenario versions; the bounded expression AST and its validator; the generator set; fault profiles; lease-fenced execution inside the single Cloud host; canonical segment publication to object storage with a manifest; durable checkpoints; the authorised client fetch path; and ArcScope's native ingestion of simulated data through its normal session, capture, decoder, measurement and report workflows.
 
@@ -22,6 +27,8 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+**Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
 **Frozen design input.** [scope.measurement.v1](../../requirements/products/arcscope.md#measurement-profile)
 
@@ -136,6 +143,19 @@ The official simulator consumes real paid-term and quota enforcement from [WP-42
 
 ---
 
+<a id="rule-wp-51.90"></a>
+### WP-51.90 — Verify the owned artifact and real integration
+
+**What must be fully done.** Keep deterministic SimulationRun, quota/admission and segmentation in the AOT host. Use proto for control/results and R2 for verified segments; retain product measurement/input identity.
+
+**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+
+**Testing requirements.** Real AOT simulation → R2 verified publication → ArcScope ingest/measurement proves deterministic results and failure recovery. No Workers AI dependency or AI debit.
+
+**Completion gate.** Real AOT simulation → R2 verified publication → ArcScope ingest/measurement proves deterministic results and failure recovery. No Workers AI dependency or AI debit. Record exact artifacts and provider reality. The package is incomplete if an important contract/owner/recovery rule still requires design during coding.
+
+---
+
 ## 6. Impacts
 
 | Dimension | Impact |
@@ -167,6 +187,8 @@ The official simulator consumes real paid-term and quota enforcement from [WP-42
 
 ## 8. Completion gate
 
+**[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) gate:** [WP-51.90](#rule-wp-51.90) and all inherited domain-specific gates must pass on the same candidate closure. Real AOT simulation → R2 verified publication → ArcScope ingest/measurement proves deterministic results and failure recovery. No Workers AI dependency or AI debit.
+
 **[PG-14b](../../assurance/open-gates-register.md#rule-pg-14b) evidence:** [WP-51](#rule-wp-51) — All real-host/storage/native-adapter simulator scenarios in this completion gate, including 24-hour soak; preview/test fakes are insufficient. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
 
 **Additional completion requirement.** The simulator remains an optional later source for already defined measurement semantics, never a prerequisite for the earlier replay-based analysis package.
@@ -190,13 +212,15 @@ The official simulator consumes real paid-term and quota enforcement from [WP-42
 
 **Upstream — all must be complete.**
 
-- [21 — Cloud Host, Modules, Persistence and Migrations](21-cloud-host-and-persistence.md)
-- [23 — Public API Surface and Generated Clients](23-public-api-and-generated-clients.md)
-- [25 — Sync Engine and Blob Lifecycle](25-sync-engine-and-blob-lifecycle.md)
-- [33 — ArcScope Acquisition and Session Core](33-arcscope-acquisition-and-session.md)
-- [42 — Commerce, Entitlement and Credits](42-commerce-entitlement-and-credits.md)
-- [44 — Dynamic Policy and Configuration Control Plane](44-dynamic-policy-and-configuration.md)
+- [21 cloud host and persistence](21-cloud-host-and-persistence.md#rule-wp-21)
+- [23 public api and generated clients](23-public-api-and-generated-clients.md#rule-wp-23)
+- [25 sync engine and blob lifecycle](25-sync-engine-and-blob-lifecycle.md#rule-wp-25)
+- [33 arcscope acquisition and session](33-arcscope-acquisition-and-session.md#rule-wp-33)
+- [42 commerce entitlement and credits](42-commerce-entitlement-and-credits.md#rule-wp-42)
+- [44 dynamic policy and configuration](44-dynamic-policy-and-configuration.md#rule-wp-44)
 
-**Downstream — these consume this package’s completed output.**
+**Downstream — consumers of these released outputs.**
 
-- [50 — Full-Platform Production Release](50-full-platform-production-release.md)
+- [50 full platform production release](50-full-platform-production-release.md#rule-wp-50)
+
+---
