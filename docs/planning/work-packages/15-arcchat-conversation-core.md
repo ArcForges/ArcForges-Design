@@ -23,6 +23,8 @@
 
 ## 2. Required inputs and dependencies
 
+**Frozen design input.** [content-origin behavior](../../requirements/07-security-privacy-and-trust.md#content-origin-profile) and [carrier schema](../../requirements/13-data-formats-and-portability.md#content-origin-carriers) is fixed before this package; implement it without choosing a different marking mechanism.
+
 | Input | Why it matters |
 |---|---|
 | [`../../requirements/products/arcchat.md`](../../requirements/products/arcchat.md) | The full ArcChat product model, V1 scope and acceptance scenarios |
@@ -53,6 +55,8 @@
 
 ## 4. Projects, directories, files and major types affected
 
+Content payloads use typed ContentOrigin and content-unit bindings under their existing owner revision; format/schema fixtures include that projection.
+
 | Location | Change |
 |---|---|
 | `src/ArcChat/ArcChat.Domain/` | Conversation, message, branch, attachment, project, profile, skill |
@@ -72,6 +76,8 @@
 <a id="rule-wp-15.00"></a>
 
 ### WP-15.00 — Conversation and message model
+
+**Required design implementation and verification.** Persist origin per message part with the immutable payload; branching/copy retains kind union and new payload versions receive new records. Test model text and unknown imported text, provisional stream headers and final hash binding. The export client verifies the manifest/sidecar from the acknowledged snapshot.
 
 **What must be fully done.** Conversations own ordered messages composed of typed parts. Messages are immutable once committed; an edit produces a new revision with the prior one retained. Streaming produces a durable message exactly once at completion, with interruption handled explicitly rather than storing a truncated fragment as fact.
 
@@ -173,6 +179,8 @@
 
 ## 7. Tests and verification evidence
 
+**Required evidence addition.** [WP-15.00](#rule-wp-15.00) records the carrier/propagation/failure vectors above with payload and manifest hashes; early packages use declared fixtures, while provider/Harness packages require their real integrations.
+
 | Evidence | Produced by |
 |---|---|
 | Immutability, streaming and scale results | [WP-15.00](#rule-wp-15.00) |
@@ -186,6 +194,10 @@
 ---
 
 ## 8. Completion gate
+
+**Offline evidence.** Execute this product's applicable [initial-state matrix](../../assurance/testing-and-verification-strategy.md#offline-acceptance-matrix) rows, including fresh shell, hydrated outage, unavailable content, signout and restart where applicable. Record permitted local work and explicitly unavailable Cloud actions.
+
+**Additional completion requirement.** The package's content paths pass the stated origin vectors, including unknown input and failed publication; a valid stored/rendered payload alone cannot satisfy the carrier requirement.
 
 **All of the following, with recorded evidence:**
 

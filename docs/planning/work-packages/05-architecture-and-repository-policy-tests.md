@@ -149,6 +149,9 @@
 
 ### WP-05.06 — Specification integrity
 
+**Decision coverage check.** Verify 23 Phase 1 and eight Phase 2 decision rows against the [traceability matrix](../../assurance/traceability-matrix.md#11-phase-2-decisions), including the withdrawn ordering's effective successor and all fourteen closure groups. A valid anchor at the wrong decision is a semantic failure, not a pass.
+
+
 **What must be fully done.** Checks over the current documentation and archive README in this design repository: every internal link resolves; every cited requirement, architecture rule, decision, verification finding and gate identifier exists; no superseded name appears as current outside `docs/deprecated-inputs/`; every Phase 1 decision is cited by at least one Phase 2 document or its non-applicability is stated; and the work-package dependency graph is acyclic with every referenced package existing. The four deprecated input bodies are excluded; their historical citations do not require a new input review or commitment mapping.
 
 **Testing requirements.** The checks run against the current design repository and produce zero findings. Enforce [SV-09](../../assurance/testing-and-verification-strategy.md#rule-sv-09) over all current specification and planning files, including required-input tables and authority headers. Negative fixtures for an archived source shorthand, old Stage citation and archive-body path must fail; a valid current-rule reference must pass. Historical records and archive navigation remain distinguishable from active implementation inputs.
@@ -192,6 +195,8 @@ Add Node/TS import and dependency checks to the existing policy suite: one Web w
 ---
 
 ## 8. Completion gate
+
+**Identity boundary evidence.** Apply the [owner/deployment identity chain](../../architecture/08-security-architecture.md#1-identity-layering). Automation loses authorization when its owner loses permission/service eligibility even with a valid process credential; no customer service-principal or Organization authority is introduced.
 
 **All of the following, with recorded evidence:**
 

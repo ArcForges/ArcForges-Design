@@ -291,6 +291,8 @@ Structural writes return the new revisions of **all** affected roots and the imm
 | CH-02 | **`agent.listModels` returns availability with a reason.** A withdrawn model degrades explicitly rather than vanishing ([WP-43.05](../../planning/work-packages/43-managed-ai-routing-and-metering.md#rule-wp-43.05)). |
 | CH-03 | **`search.query` failing never affects local search** ([WP-40.06](../../planning/work-packages/40-knowledge-search-and-retrieval.md#rule-wp-40.06)). |
 
+The Notes branch of `search.query` accepts the typed `NotesQuery` [profile](02-local-rpc-operations.md#notes-query-contract): property comparisons, saved-view scope/order and cursor revision bindings are identical to native evaluation. Cloud completeness covers authorized acknowledged content; the local cache operation declares its smaller scope. Other search modes keep their declared ranking. Invalid profile/type/AST/cursor uses the shared catalogue errors, before query execution.
+
 ---
 
 ## 9. Policy, notification and support
@@ -323,8 +325,8 @@ Structural writes return the new revisions of **all** affected roots and the imm
 |---|---|---|---|---|---|
 | `simulation.listDefinitions` | The workspace's scenario definitions | `R1` | `Q` | — | `AO` |
 | `simulation.getDefinition` | One definition with its versions | `R1` | `Q` | `state.not_found` | `AO` |
-| `simulation.createDefinition` | Create a definition | `R2` | `CC` | `validation.failed` | `FR` |
-| `simulation.publishScenarioVersion` | Freeze an **immutable** version; validates the channel schema, AST bounds and CSV reference | `R2` | `CC` | `validation.failed`, `validation.ast_bounds_exceeded` | `FR` |
+| `simulation.createDefinition` | Create a definition | `R2` | `CC` | `validation.invalid_request` | `FR` |
+| `simulation.publishScenarioVersion` | Freeze an **immutable** version; validates the channel schema, AST bounds and CSV reference | `R2` | `CC` | `validation.invalid_request`, `validation.ast_bounds_exceeded` | `FR` |
 | `simulation.startRun` | Start a run against a scenario version, seed and execution profile | `R2` | `CC` | `entitlement.no_service_term`, `entitlement.quota_exceeded`, `capacity.rate_limited` | `FR` |
 | `simulation.pauseRun` / `simulation.resumeRun` | Pause and resume at a durable boundary | `R2` | `IW` | `state.invalid_transition` | `FR` |
 | `simulation.cancelRun` | Cancel; commits a **partial** outcome | `R2` | `IW` | `state.invalid_transition` | `FR` |

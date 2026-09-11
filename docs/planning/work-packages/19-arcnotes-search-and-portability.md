@@ -25,6 +25,10 @@
 
 ## 2. Required inputs and dependencies
 
+**Frozen design input.** [notes.scalar.v1](../../requirements/products/arcnotes.md#notes-scalar-query-profile)
+
+**Frozen design input.** [content-origin behavior](../../requirements/07-security-privacy-and-trust.md#content-origin-profile) and [carrier schema](../../requirements/13-data-formats-and-portability.md#content-origin-carriers) is fixed before this package; implement it without choosing a different marking mechanism.
+
 | Input | Why it matters |
 |---|---|
 | [`../../requirements/06-knowledge-search-and-retrieval.md`](../../requirements/06-knowledge-search-and-retrieval.md) | Search versus retrieval, evidence and citation anchors, permission-aware retrieval |
@@ -51,6 +55,8 @@
 ---
 
 ## 4. Projects, directories, files and major types affected
+
+Content payloads use typed ContentOrigin and content-unit bindings under their existing owner revision; format/schema fixtures include that projection.
 
 | Location | Change |
 |---|---|
@@ -81,6 +87,8 @@
 
 ### WP-19.01 — Query, ranking and permission
 
+**Required design implementation and verification.** Apply the profile to bounded scalar predicates in the local hydrated query path; ordinary full-text ranking stays separate. Include source token and explicit completeness/pending status.
+
 **What must be fully done.** Query supporting text, property, tag and structural filters. Ranking is explainable at a basic level. Permission is applied during query evaluation so that a refused document never influences results, including result counts.
 
 **Testing requirements.** Filter coverage tests; a permission test asserting refused content affects neither results nor counts; a ranking stability test.
@@ -101,6 +109,8 @@
 
 ### WP-19.03 — Saved views
 
+**Required design implementation and verification.** Persist notebook scope, query profile, semantic definition bindings and view revision. The initial list projection implements eq/ne/isMissing/isPresent for all declared scalar kinds, all/any/not composition and DocumentId ordering under the same bounds; later value operators and property sorting are explicitly unavailable until the full query package. Full typed query/table delivery is completed in [WP-28](28-arcnotes-properties-and-views.md#rule-wp-28), not silently emulated here.
+
 **What must be fully done.** A saved view is a saved query plus sort and filter configuration, producing a list projection. A saved view does not own documents; deleting it never deletes content.
 
 **Testing requirements.** Ownership test asserting deletion is non-destructive; a re-evaluation test asserting results reflect current content.
@@ -120,6 +130,8 @@
 <a id="rule-wp-19.05"></a>
 
 ### WP-19.05 — Cloud notebook-export client
+
+**Required design implementation and verification.** Validate Cloud Markdown export inventory and origin sidecars before presenting a completed download. Test missing marker/hash mismatch and unknown-origin Markdown import without inventing human authorship. Fixture endpoints remain labelled scaffolding until the real producer in [WP-25.08](25-sync-engine-and-blob-lifecycle.md#rule-wp-25.08) deletes them.
 
 **What must be fully done.** Implement the production request/download client for Markdown, attachments, metadata/link manifest and fidelity report. Use a named test-only producer at this stage, registered for deletion in WP-25.08. Acknowledged revisions are eligible; pending device-only edits are explicitly excluded. No native Notes package, lossless re-import promise, HTML/PDF/DOCX export or custom encryption is added.
 
@@ -157,6 +169,10 @@
 
 ## 7. Tests and verification evidence
 
+**Required evidence addition.** Initial saved-list/missing/case/number vectors and honest unsupported-operator/completeness results.
+
+**Required evidence addition.** [WP-19.05](#rule-wp-19.05) records the carrier/propagation/failure vectors above with payload and manifest hashes; early packages use declared fixtures, while provider/Harness packages require their real integrations.
+
 | Evidence | Produced by |
 |---|---|
 | Index divergence, rebuild equivalence and latency results | [WP-19.00](#rule-wp-19.00) |
@@ -170,6 +186,10 @@
 ---
 
 ## 8. Completion gate
+
+**Additional completion requirement.** The initial view stores the final profile and bindings; it neither invents a temporary semantic profile nor claims full table/query delivery before its owning package.
+
+**Additional completion requirement.** The package's content paths pass the stated origin vectors, including unknown input and failed publication; a valid stored/rendered payload alone cannot satisfy the carrier requirement.
 
 **All of the following, with recorded evidence:**
 

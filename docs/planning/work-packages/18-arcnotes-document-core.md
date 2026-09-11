@@ -23,6 +23,10 @@
 
 ## 2. Required inputs and dependencies
 
+**Frozen design input.** [notes.scalar.v1](../../requirements/products/arcnotes.md#notes-scalar-query-profile)
+
+**Frozen design input.** [content-origin behavior](../../requirements/07-security-privacy-and-trust.md#content-origin-profile) and [carrier schema](../../requirements/13-data-formats-and-portability.md#content-origin-carriers) is fixed before this package; implement it without choosing a different marking mechanism.
+
 | Input | Why it matters |
 |---|---|
 | [`../../requirements/products/arcnotes.md`](../../requirements/products/arcnotes.md) | The full product model, domain concepts and V1 scope |
@@ -54,6 +58,8 @@
 
 ## 4. Projects, directories, files and major types affected
 
+Content payloads use typed ContentOrigin and content-unit bindings under their existing owner revision; format/schema fixtures include that projection.
+
 | Location | Change |
 |---|---|
 | `src/ArcNotes/ArcNotes.Domain/` | Document, block, link, property, tag, attachment, checkpoint, trash |
@@ -73,6 +79,8 @@
 <a id="rule-wp-18.00"></a>
 
 ### WP-18.00 — Block document model
+
+**Required design implementation and verification.** Preserve block/attachment origin in edits, copy, split/merge, undo, history, conflict alternatives and restore. A retained AI block remains marked after manual edits; removing the whole block removes only its contribution to the current document union. Commit content and metadata atomically, and test unknown profile preservation/refusal.
 
 **What must be fully done.** Implement notebook→folder hierarchy→document placement, stable folder IDs, notebook-owned structural commands and the matching Cloud canonical schema contract; documents do not contain documents.  A document is an ordered tree of typed blocks with stable block identities. The typed inline content model and the closed block-kind set of [`../../architecture/18-editing-and-rich-content.md`](../../architecture/18-editing-and-rich-content.md) `§2`, with **no markup string on any internal path**. The closed `EditTransaction` operation set (`§3.1` there): atomic application, computed inverses, fractional ordinal insertion, and declared kind-conversion mappings including their stated losses. Multi-block selection is first-class. Block drag and drop distinguishes move from reference and from copy. An unknown block kind and an unknown mark survive a read-modify-write cycle unchanged.
 
@@ -103,6 +111,8 @@
 <a id="rule-wp-18.03"></a>
 
 ### WP-18.03 — Properties and tags
+
+**Required design implementation and verification.** Implement exact scalar storage/validation and stable option IDs before exposing properties. Test missing/empty/false/zero, decimal/date/offset validation, label rename and refused dependent type changes. Persist semantic revision separately from label-only definition revisions.
 
 **What must be fully done.** Typed properties with system and user properties separated. Tags as cross-cutting classification that carry no hierarchical position and whose deletion removes classification only. Light notes stay light: properties are optional and never imposed.
 
@@ -182,11 +192,15 @@ Session undo follows `§3.2` of the editing architecture: **selection is restore
 | Security | Attachment handling, link resolution and owner-side validation |
 | Platform | Composition input, text shaping and bidi, drag and drop, and file handling per platform; the document-rendering dependency of [PG-12](../../assurance/open-gates-register.md#rule-pg-12) where adopted |
 | Migration | The V1 format fixture every later phase must still read |
-| Compatibility | The V1 data compatibility baseline for `27`, `28` and `29` |
+| Compatibility | The supported notebook-core schema baseline consumed by `28`; canvas/slides packages are retired |
 
 ---
 
 ## 7. Tests and verification evidence
+
+**Required evidence addition.** Property write vectors from the profile, including loss-preview/refusal and compatible rename.
+
+**Required evidence addition.** [WP-18.00](#rule-wp-18.00) records the carrier/propagation/failure vectors above with payload and manifest hashes; early packages use declared fixtures, while provider/Harness packages require their real integrations.
 
 | Evidence | Produced by |
 |---|---|
@@ -204,9 +218,19 @@ Session undo follows `§3.2` of the editing architecture: **selection is restore
 
 ## 8. Completion gate
 
+**[PG-22](../../assurance/open-gates-register.md#rule-pg-22) evidence:** [WP-18.04](#rule-wp-18.04) — Real packaged PDF/image parser isolation integration; combine with the platform broker proof. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
+
+**[PG-12](../../assurance/open-gates-register.md#rule-pg-12) evidence:** [WP-18.04](#rule-wp-18.04) — Real PDF viewer integration and malformed native input containment, consuming the packaged sandbox proof. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
+
+**Offline evidence.** Execute this product's applicable [initial-state matrix](../../assurance/testing-and-verification-strategy.md#offline-acceptance-matrix) rows, including fresh shell, hydrated outage, unavailable content, signout and restart where applicable. Record permitted local work and explicitly unavailable Cloud actions.
+
+**Additional completion requirement.** Property types and persistence agree with the frozen query profile; no local culture defaults affect stored meaning.
+
+**Additional completion requirement.** The package's content paths pass the stated origin vectors, including unknown input and failed publication; a valid stored/rendered payload alone cannot satisfy the carrier requirement.
+
 **All of the following, with recorded evidence:**
 
-1. **Drift check only**: the reference is compared against its bound commit, and any newly introduced material is assessed against the accepted ArcNotes scope. The matrix and its licence audit were completed as design-stage evidence and closed [PG-01](../../assurance/open-gates-register.md#rule-pg-01) and [F-013](../../assurance/open-gates-register.md#rule-f-013) before this package began. Findings carried in: **F-AN-1** records that AFFiNE’s `packages/backend/**` and `packages/common/native/**` are **proprietary**, not MIT — permanently ineligible for reuse and deliberately unread. **F-AN-2** records that **neither reference implements slides**, so [WP-29](29-arcnotes-slides.md#rule-wp-29)’s oracles are first-party only.
+1. **Drift check only**: the reference is compared against its bound commit, and any newly introduced material is assessed against the accepted ArcNotes scope. The matrix and its licence audit were completed as design-stage evidence and closed [PG-01](../../assurance/open-gates-register.md#rule-pg-01) and [F-013](../../assurance/open-gates-register.md#rule-f-013) before this package began. Findings carried in: **F-AN-1** records that AFFiNE’s `packages/backend/**` and `packages/common/native/**` are **proprietary**, not MIT — permanently ineligible for reuse and deliberately unread. **F-AN-2** is historical: its slides-oracle obligation is superseded by [P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006), which excludes slides with no future hook.
 2. Every editing operation is a single-write-path command; block identity survives structural change.
 3. Editing meets the responsiveness budget on the scale corpus; text handling is grapheme- and bidi-correct; composition input works on every platform without loss and is never interrupted by a concurrent edit.
 3a. **No internal path round-trips content through a markup string**, and every kind conversion applies its declared mapping with its stated loss shown first.

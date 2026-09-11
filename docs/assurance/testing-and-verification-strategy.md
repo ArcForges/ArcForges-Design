@@ -102,7 +102,7 @@ These are not additional families; they are obligations distributed across the f
 | CV-06 | **Redaction** | [F-11](#rule-f-11) asserts that marker values never appear in exported telemetry (`§14` of the observability architecture) |
 | CV-07 | **Licence and provenance** | [F-17](#rule-f-17) asserts boundary compliance; the release pipeline asserts SBOM, NOTICE and dependency closure (`§4.2` of the provenance document) |
 | CV-08 | **Glossary and invariant enforcement** | [F-17](#rule-f-17) runs the forbidden-term scan; [F-01](#rule-f-01) maps each `X ≠ Y` invariant to an assertion (**[D-018](../decisions/phase-1-foundation-decisions.md#rule-d-018)**) |
-| CV-09 | **Offline and degradation honesty** | [F-11](#rule-f-11) asserts that every product starts, works and saves with Cloud entirely unavailable, and that degraded capabilities are named rather than silently missing |
+| CV-09 | **Offline and degradation honesty** | [F-11](#rule-f-11) executes the [product/initial-state matrix](#offline-acceptance-matrix); shell launch, cached work and Cloud-dependent creation/AI have different acceptance outcomes |
 | CV-10 | **Localisation and locale-safe data** | [F-09](#rule-f-09) and [F-12](#rule-f-12) assert canonical storage with localised presentation, and that a locale change never alters stored data ([QI-18](../requirements/12-quality-and-compatibility-contract.md#rule-qi-18)) |
 
 ---
@@ -125,6 +125,26 @@ These are not additional families; they are obligations distributed across the f
 | IV-03 | **Invariants are enforced by the cheapest sufficient mechanism**: a type distinction where possible, a repository-policy test where a naming or reference rule expresses it, a unit test where it is behavioural, and an end-to-end test only where nothing smaller can observe it. |
 | <a id="rule-iv-04"></a>IV-04 | **A test that enforces an invariant names it**, so a failure message identifies the violated rule rather than only the failed assertion. |
 | IV-05 | **The forbidden-alias and obsolete-name scan runs over `src/` and `docs/` excluding `docs/deprecated-inputs/`**, plus identifiers and resource strings (`§10` of the glossary requirements). |
+
+---
+
+<a id="offline-acceptance-matrix"></a>
+### Product and initial-state offline acceptance
+
+Run the applicable rows with Cloud unreachable, including process restart. Record initial enrollment/cache/authorization state rather than using one account-free workspace assertion for every product.
+
+| Product / initial state | Expected result | Evidence owner |
+|---|---|---|
+| Four desktop shells, fresh install and no account | Launch and local shell/settings remain usable; no automatic workspace/content entitlement is implied | Desktop shell package |
+| ArcScope/ArcSlate, new or existing local project, no account | Native capture/analysis/edit/save/render work on available local inputs; offline external assets remain explicitly unavailable | Acquisition/analysis and timeline/render packages |
+| ArcNotes, no enrolled realm/workspace or requested uncached content | Shell works; initial enrollment and unavailable content report Cloud dependency, with no empty substitute notebook or fabricated download | Notes core/sync packages |
+| ArcNotes, enrolled and authorized, hydrated notebook during outage | Open/edit/search available content without an interactive reauthentication prompt. Pending changes are visibly local, durable through crash/restart and later reconcile through normal conflicts; missing attachments remain unavailable | Notes core, query and sync packages |
+| ArcNotes after explicit signout/revocation | Normal workspace views are blocked. Preserve pending edits and expose only the existing [narrow recovery/export path](../requirements/02-identity-account-and-workspace.md#rule-dl-01); this is not account-free notebook creation | Identity/security and Notes packages |
+| ArcChat desktop, previously authorized cache and draft | Cached acknowledged conversation/task content is readable and drafts remain recoverable where permitted; no Cloud AI/turn execution or fabricated completed answer. New submission/export waits for Cloud | Conversation/core packages |
+| ArcChat Mobile/Web, previously loaded authorized state | Preserve the declared bounded cache/draft/pending-attention presentation and report offline capability reasons; reconnect fetches authoritative state. No local agent runtime or general offline Notes workspace editor | Mobile/Web packages |
+| Mobile/Web, fresh session or signed out | Authentication-dependent data/actions remain unavailable. Public static pages retain their separately specified Cloud independence | Identity, Site and companion packages |
+
+These are product-state assertions, not permissions to retain data after an explicit security action beyond its stated policy. Account deletion/signout does not delete native Scope/Slate projects or unacknowledged recovery material; it does not leave normal signed-out Cloud views open.
 
 ---
 

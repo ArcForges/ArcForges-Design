@@ -231,10 +231,10 @@ Output sample ownership is therefore assigned, not rounded.
 
 | # | Rule |
 |---|---|
-| BO-01 | **A rendered range is half-open in ticks: `[start, end)`.** Adjacency means `A.end == B.start` exactly, in ticks. |
+| <a id="rule-bo-01"></a>BO-01 | **A rendered range is half-open in ticks: `[start, end)`.** Adjacency means `A.end == B.start` exactly, in ticks. |
 | <a id="rule-bo-02"></a>BO-02 | For adjacent non-overlapping clips **on one track**, sample k contributes from the clip whose half-open range contains `k·T`; a gap contributes silence. This is a per-track cut rule. Multiple tracks and a dissolve intentionally supply multiple weighted contributions at k; the mixer sums them into **one emitted output sample**, rather than selecting one clip globally. |
-| BO-03 | Decoder padding primes resamplers/filters and may affect valid output through their kernels. Padding samples are not independently emitted as timeline contributions. After DSP, each contribution is evaluated on its permitted track/transition range, then mixed once at each output index. |
-| <a id="rule-bo-04"></a>BO-04 | **[TG-05](../requirements/products/arcscope.md#rule-tg-05)'s outward rounding is retained only for *coverage* requests** — deciding what to decode — and is explicitly **not** used to decide what to emit. |
+| <a id="rule-bo-03"></a>BO-03 | Decoder padding primes resamplers/filters and may affect valid output through their kernels. Padding samples are not independently emitted as timeline contributions. After DSP, each contribution is evaluated on its permitted track/transition range, then mixed once at each output index. |
+| <a id="rule-bo-04"></a>BO-04 | **Decode coverage may round its start outward down and end outward up on the source decode grid.** This only selects buffers to decode. Emitted half-open ranges and per-track boundary sample ownership follow [BO-01](#rule-bo-01), [BO-02](#rule-bo-02) and [BO-03](#rule-bo-03), never the padded coverage range. |
 | <a id="rule-bo-05"></a>BO-05 | **The boundary sample is verified, not assumed.** A fixture at 30000/1001 fps and 48 kHz asserts that a cut at frame 1 emits sample 1601 exactly once and sample 1602 exactly once, across the join ([TV-08](#rule-tv-08)). |
 
 ### 3.5 Representability — three different rules
@@ -252,7 +252,7 @@ Output sample ownership is therefore assigned, not rounded.
 | Output-grid application | [TB-02](#rule-tb-02) forbids creating an inexact **sequence output grid**, without forbidding import/conform of an inexact source base. |
 | <a id="rule-sm-03"></a>SM-03 | **A source stream whose base does not divide the tick base is supported**, with per-sample rounding recorded in the conform report. **It is never rejected** — real media includes such sources. |
 | <a id="rule-rp-01"></a>RP-01 | **Retiming composes rationals and projects once** ([SM-05](#rule-sm-05)). A non-unit speed generally produces source positions off the source grid; the projection rounds once, at the decode boundary, and the fidelity report records any speed whose mapping is inexact. |
-| <a id="rule-rp-02"></a>RP-02 | **Every rounding site is enumerated**: source PTS mapping ([SM-03](#rule-sm-03)), retiming projection ([RP-01](#rule-rp-01)), output-grid projection for display ([TG-01](#rule-tg-01)), encoder-grid projection at export, and the controlled OTIO floating-point boundary (§3.10). **No other code path rounds a position**, and a policy test asserts it ([TV-02](#rule-tv-02)). |
+| <a id="rule-rp-02"></a>RP-02 | **Every rounding site is enumerated**: source PTS mapping ([SM-03](#rule-sm-03)), retiming projection ([RP-01](#rule-rp-01)), output-grid projection for display ([TG-01](#rule-tg-01)), encoder-grid projection at export, decode coverage bounds ([BO-04](#rule-bo-04)), and the controlled OTIO floating-point boundary (§3.10). **No other code path rounds a position**, and a policy test asserts it ([TV-02](#rule-tv-02)). |
 
 ### 3.6 Timecode presentation is not position arithmetic
 

@@ -172,6 +172,8 @@
 
 ## 8. Completion gate
 
+**[PG-23](../../assurance/open-gates-register.md#rule-pg-23) evidence:** [WP-06.05](#rule-wp-06.05) — Production Web foundation artifacts, generated SDK/exact values and IDE/portable CLI proof; this is the foundation contribution only. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
+
 **All of the following, with recorded evidence:**
 
 1. All four desktop hosts publish Native AOT with zero trim, AOT and single-file diagnostics, and launch on every supported platform without a machine-installed runtime.

@@ -41,7 +41,7 @@ This concludes the requested Stage 2 repair. It does not execute or replace the 
 
 ## 4. Verification record
 
-The executable design-model suite passed 20 tests, including 200 seeded read-partition schedules. Models establish the counterexample outcomes; they do not prove transaction scheduling, OS isolation, a provider's behaviour or production performance.
+The historical mixed model/illustration suite passed 20 tests, including 200 seeded read-partition schedules. The [proof-strength classification](design-repair-verification.md#proof-strength) limits each questioned case; models establish only their bounded outcomes; they do not prove transaction scheduling, OS isolation, a provider's behaviour or production performance.
 
 The complete corpus check and repository-boundary verification are recorded with their measured results below. The reproducible code is preserved in [the verification artifact](design-repair-verification.md).
 
@@ -52,7 +52,7 @@ The complete corpus check and repository-boundary verification are recorded with
 | Rule citations | 8,618 linked references, 2,497 stable defining anchors; zero unqualified active citations and zero duplicate defining anchors |
 | Invariant mapping | All 429 current catalogue entries mapped; no missing or extra entry |
 | Implementation order | 51 active packages, 134 direct dependency edges; nine mandatory fields per package, matching header/index edges, symmetric downstream lists and no forward dependency in the published serial order |
-| Executable design models | 20 tests passed, including 200 seeded read-partition schedules and the held-capacity downgrade/cancellation counterexample |
+| Historical models and illustrative assertions | 20 tests passed, including 200 seeded read-partition schedules and the held-capacity downgrade/cancellation counterexample |
 | Gate inventory | 38 entries = 5 design closures + 32 open implementation obligations + 1 merged entry; 2 of the open entries are dormant |
 | Patch integrity | `git diff --check` passed |
 | Protected inputs | `git diff main -- docs/inputs` empty |

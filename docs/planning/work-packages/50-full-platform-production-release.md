@@ -193,6 +193,10 @@
 
 ## 8. Completion gate
 
+**[PG-23](../../assurance/open-gates-register.md#rule-pg-23) evidence:** [WP-50.06](#rule-wp-50.06) — Combine all contributing Web evidence into coherent production assets/config/edge release and rollback; no fixture-only release. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
+
+**[PG-19](../../assurance/open-gates-register.md#rule-pg-19) evidence:** [WP-50.04](#rule-wp-50.04) — Production-shaped migration/rollback rehearsal consumes the versioned backfill/cutover proof from package 21. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
+
 **All of the following, with recorded evidence:**
 
 1. **Every gate in the release-gate set is evaluated with a named, resolvable evidence artifact**, and every still-open gate's blocking consequence is stated.

@@ -227,7 +227,7 @@ Shutdown requested
 
 | Product | Additional host concerns |
 |---|---|
-| **ArcChat** | Hub hosting, agent runtime, capability registry, provider routing, tray/background mode, remote bridge connection |
+| **ArcChat** | Hub hosting and local capability discovery/routing, Cloud turn submission/stream/steering presentation, tray/background mode and outbound remote bridge; the Cloud Harness owns planning and provider routing |
 | **ArcNotes** | Block editor infrastructure, link index, search index host, attachment store |
 | **ArcScope** | Acquisition pipeline, ring buffers, decoder host, chunked capture store, real-time visualisation pipeline, device adapters |
 | **ArcSlate** | Media runtime, decode and playback pipeline, audio clock, processing graph engine, proxy and cache managers, render queue |

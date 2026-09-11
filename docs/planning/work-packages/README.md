@@ -101,7 +101,7 @@ The number is an identity, not a schedule. Ordering is by dependency; serial exe
 | 42 | [Commerce, entitlement and credits](42-commerce-entitlement-and-credits.md) | 22, 23 |
 | 44 | [Dynamic policy and configuration control plane](44-dynamic-policy-and-configuration.md) | 23, 42 |
 | 43 | [Cloud AI routing, metering and settlement](43-managed-ai-routing-and-metering.md) | 25, 42, 44 |
-| 40 | [Knowledge, search and retrieval](40-knowledge-search-and-retrieval.md) | 19, 25, 43, 44 |
+| 40 | [Knowledge, search and retrieval](40-knowledge-search-and-retrieval.md) | 19, 25, 28, 43, 44 |
 | 41 | [Extension platform and integrations](41-extension-platform-and-integrations.md) | 09, 11, 17 |
 | 45 | [Operations, support and trust & safety](45-operations-support-and-trust-safety.md) | 12, 21, 44 |
 | 46 | [Backup, disaster recovery and data health](46-backup-recovery-and-data-health.md) | 25, 45 |
@@ -154,7 +154,7 @@ The number is an identity, not a schedule. Ordering is by dependency; serial exe
 | 24 | 25, 26, 30 |
 | 25 | 26, 28, 35, 39, 40, 43, 46, 51 |
 | 26 | 31, 33, 36, 49, 52 |
-| 28 | 50 |
+| 28 | 40, 50 |
 | 30 | 31 |
 | 31 | 32 |
 | 32 | 50 |
@@ -189,11 +189,12 @@ Every gate in [`../../assurance/open-gates-register.md`](../../assurance/open-ga
 |---|---|
 | **[F-013](../../assurance/open-gates-register.md#rule-f-013)** — reference licence determinations | **Closed 2026-09-05 by design-stage evidence** — the five matrices in [`../../assurance/reference-coverage/`](../../assurance/reference-coverage/README.md). Drift maintenance only: `15.07`, `18.08`, `33.07`, `36.07` |
 | **[F-023](../../assurance/open-gates-register.md#rule-f-023)** — mobile provenance and dependency closure | 32 |
-| **[F-026](../../assurance/open-gates-register.md#rule-f-026)** — typed HTTP client AOT packaging | 06 |
+| **[F-026](../../assurance/open-gates-register.md#rule-f-026)** — typed HTTP client AOT packaging | 03.02, 06.02 |
 | **[VG-01](../../assurance/open-gates-register.md#rule-vg-01)** — AI transparency marking | 43 |
 | **[VG-02](../../assurance/open-gates-register.md#rule-vg-02)** — MCP SDK pin and vocabulary mapping | 41 |
 | **[VG-03](../../assurance/open-gates-register.md#rule-vg-03)** — third-party control AOT proof | 10 |
-| **[VG-04](../../assurance/open-gates-register.md#rule-vg-04)** — desktop host AOT proof with the real contract set | 06 |
+| **[VG-04](../../assurance/open-gates-register.md#rule-vg-04)** — desktop host AOT proof with the real contract set | 03.04, 06.01 |
+| **[VG-05](../../assurance/open-gates-register.md#rule-vg-05)** — typed client verification | Merged into [F-026](../../assurance/open-gates-register.md#rule-f-026); no separate closure |
 | **[VG-06](../../assurance/open-gates-register.md#rule-vg-06)** — cloud AOT closure (dormant) | not scheduled; conditional on a decision not taken |
 | **[VG-07](../../assurance/open-gates-register.md#rule-vg-07)** — Android runtime posture confirmed from the artifact | 32 |
 | **[VG-08](../../assurance/open-gates-register.md#rule-vg-08)** — framework upgrade re-verification (recurring) | 02, and re-run on each upgrade |
@@ -204,13 +205,13 @@ Every gate in [`../../assurance/open-gates-register.md`](../../assurance/open-ga
 | **[VG-13](../../assurance/open-gates-register.md#rule-vg-13)** — store category fit and consumption-only | 32 |
 | **[PG-01](../../assurance/open-gates-register.md#rule-pg-01)** — per-product Reference Coverage Matrix | **Closed 2026-09-05 by design-stage evidence.** Registered as versioned inputs in `00.04`; drift maintenance in `15.07`, `18.08`, `33.07`, `36.07` |
 | **[PG-02](../../assurance/open-gates-register.md#rule-pg-02)** — item-level reconciliation inventory | **Closed 2026-09-05 by design-stage evidence** — [`../../assurance/implementation-state-reconciliation.md`](../../assurance/implementation-state-reconciliation.md). Drift validation in `01.00`; disposition execution in `01.01`–`01.05` |
-| **[PG-03](../../assurance/open-gates-register.md#rule-pg-03)** — native dependency licence review | 13, then 33 and 37. Shim-level dispositions already assigned (`§5.2` of the reconciliation evidence); two shims fenced pending substitute analyses in `35.04` and `39.05` |
+| **[PG-03](../../assurance/open-gates-register.md#rule-pg-03)** — native dependency licence review | 13.04, 33, 35.04, 37.00, 39.05; each admitted native dependency has its licence/substitute-analysis evidence |
 | **[PG-04](../../assurance/open-gates-register.md#rule-pg-04)** — runbook rehearsal evidence | 45 |
 | **[PG-05](../../assurance/open-gates-register.md#rule-pg-05)** — telemetry redaction proof | 12 |
 | **[PG-06](../../assurance/open-gates-register.md#rule-pg-06)** — design-stage invariant traceability | **Closed 2026-09-05 by design-stage evidence** — [`../../assurance/invariant-coverage.md`](../../assurance/invariant-coverage.md) `§7`, **429 of 429** mapped after [P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006) added [I-491](../../requirements/01-normative-glossary-and-invariants.md#rule-i-491)–[I-498](../../requirements/01-normative-glossary-and-invariants.md#rule-i-498) |
 | **[PG-11](../../assurance/open-gates-register.md#rule-pg-11)** — implementation-stage invariant enforcement | **Open.** Distributed across the owning packages named in the coverage mapping; accounting reported by `05.05`, which closes neither gate |
 | **[PG-07](../../assurance/open-gates-register.md#rule-pg-07)** — format fixture completeness | 19.04 (Notes import), 35.04, 39.05; real Cloud Notes/Chat export separately closes at 25.08 |
-| **[PG-08](../../assurance/open-gates-register.md#rule-pg-08)** — hardware lab inventory | 13 |
+| **[PG-08](../../assurance/open-gates-register.md#rule-pg-08)** — hardware lab inventory | 13 establishes inventory; 33, 34, 37, 38 bind each hardware result to it |
 | **[PG-09](../../assurance/open-gates-register.md#rule-pg-09)** — extension protocol conformance | 41 |
 | **[PG-10](../../assurance/open-gates-register.md#rule-pg-10)** — provider test-environment coverage | 42, 43 |
 | **[PG-12](../../assurance/open-gates-register.md#rule-pg-12)** — PDF dependency and containment | 11.09, 18.04 |
@@ -224,6 +225,7 @@ Every gate in [`../../assurance/open-gates-register.md`](../../assurance/open-ga
 | **[PG-20](../../assurance/open-gates-register.md#rule-pg-20)** — time model and official OTIO boundary | 36.01, 37.04, 39.05 |
 | **[PG-21](../../assurance/open-gates-register.md#rule-pg-21)** — current design citation integrity | Current corpus closed by [repair verification](../../assurance/design-repair-verification.md); continuing drift check in 00.01 |
 | **[PG-22](../../assurance/open-gates-register.md#rule-pg-22)** — OS-enforced content/extension isolation | 11.09, 18.04, 37.01, 41.00 |
+| **[PG-23](../../assurance/open-gates-register.md#rule-pg-23)** — commercial Web | 06.05, 22.08, 23.05, 24.06, 47, 48, 49, 50.06; combine all applicable producer evidence |
 
 ---
 

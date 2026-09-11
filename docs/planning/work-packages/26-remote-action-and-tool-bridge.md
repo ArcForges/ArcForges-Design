@@ -56,7 +56,7 @@
 | `src/Cloud/ArcForges.Cloud.Modules.Agent/` | Tool request queue, per-Step locality, result reconciliation |
 | `src/Cloud/ArcForges.Cloud.Modules.Identity/` | Device presence tracking and trust-gated remote eligibility |
 | `src/ArcChat/ArcChat.CloudClient/` | The pull loop, local re-authorisation, result submission |
-| `src/ArcChat/ArcChat.Agent/` | Remote task integration with the local execution engine |
+| `src/ArcChat/ArcChat.Agent/` | Cloud task projection and device-tool bridge presentation; no local agent execution engine |
 | `src/BuildingBlocks/ArcForges.Execution/` | Per-Step locality recording and remote attempt semantics |
 | `tests/RemoteToolBridgeTests/` | Bridge, re-authorisation, offline, duplicate and expiry suites |
 

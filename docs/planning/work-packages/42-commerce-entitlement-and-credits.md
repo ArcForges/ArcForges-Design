@@ -184,6 +184,8 @@
 
 ### WP-42.10 — Go-live gates
 
+**Precondition.** [WP-42.11](#rule-wp-42.11) term/capacity and payment-event evidence passes first. Step identity does not override this order. Shared AI/configuration gates retain their later producers; payment technical completion cannot close them alone.
+
 **What must be fully done.** Supplier onboarding and account approval; sanctions and export screening for the intended market set; payout eligibility and receiving-currency confirmation; one real payment, subscription, renewal, cancellation, reactivation and refund; the webhook duplicate-and-loss test; the reconciliation repair test; and a **completed payout received**. The regional route stays disabled by configuration until its own gates are met.
 
 **Testing requirements.** Recorded evidence per gate; a configuration assertion that the regional route is disabled.
@@ -208,6 +210,8 @@
 
 ## 7. Tests and verification evidence
 
+**[WP-42.11](#rule-wp-42.11) producer evidence.** Real payment-event reconciliation, immutable term/offer history, exact refill/hold fixtures and durable multi-replica restart evidence. This producer must pass before commercial go-live; later AI/configuration producers supply their remaining shared-gate evidence.
+
 | Evidence | Produced by |
 |---|---|
 | Provider containment and capability-adaptation results | [WP-42.00](#rule-wp-42.00) |
@@ -225,6 +229,14 @@
 ---
 
 ## 8. Completion gate
+
+**Producer completion.** [WP-42.11](#rule-wp-42.11) must pass with the explicit §7 artifacts above; it is not optional because other package checks pass.
+
+**[PG-16](../../assurance/open-gates-register.md#rule-pg-16) evidence:** [WP-42.11](#rule-wp-42.11) — Durable term/capacity/refill state survives concurrent requests and restart without double grant; combine with configuration activation evidence from package 44. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
+
+**[PG-13](../../assurance/open-gates-register.md#rule-pg-13) evidence:** [WP-42.11](#rule-wp-42.11) — Real payment event normalized through persistent term/capacity code; combine with provider usage and the exact monetary fixture from package 43. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
+
+**[PG-10](../../assurance/open-gates-register.md#rule-pg-10) evidence:** [WP-42.10](#rule-wp-42.10) — Recorded payment-provider test-environment scenarios and contract fixtures, including event duplication/loss; retain the separate real commercial go-live evidence. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
 
 **All of the following, with recorded evidence:**
 

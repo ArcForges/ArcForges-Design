@@ -7,7 +7,7 @@
 
 This matrix answers four questions with evidence rather than assertion:
 
-1. **Is every Phase 1 decision carried into Phase 2?**
+1. **Is every Phase 1 and Phase 2 decision traced with its effective status?**
 2. **Is every verification finding enforced somewhere, and gated where required?**
 3. **Does every requirement have an architecture, a test family and a work package?**
 4. **Is every invariant enforceable?**
@@ -46,7 +46,23 @@ Every decision is carried. The **Primary home** column names where the decision 
 | **[D-022](../decisions/phase-1-foundation-decisions.md#rule-d-022)** | Mobile-store commerce | `../architecture/11-mobile-architecture.md` `§9` | Commerce architecture `§10`; [WP-31](../planning/work-packages/31-arcchat-mobile-android.md#rule-wp-31), [WP-32](../planning/work-packages/32-mobile-release-and-store-gates.md#rule-wp-32) | Five commerce-prohibition build checks ([WP-32.03](../planning/work-packages/32-mobile-release-and-store-gates.md#rule-wp-32.03)) |
 | **[D-023](../decisions/phase-1-foundation-decisions.md#rule-d-023)** | Mainland China payment route | `../architecture/16-billing-and-commerce-architecture.md` `§11` | Commerce requirements `§12`; [WP-42.10](../planning/work-packages/42-commerce-entitlement-and-credits.md#rule-wp-42.10) | Configuration assertion; gate [L-40](release-gates.md#rule-l-40) |
 
-**Coverage: 23 of 23 decisions carried, each with a named enforcement mechanism.**
+**Phase 1 coverage: 23 of 23 decisions carried.**
+
+### 1.1 Phase 2 decisions
+
+| Decision | Effective status / subject | Primary home | Also enforced in | Enforced by |
+|---|---|---|---|---|
+| [P2-001](../decisions/phase-2-specification-decisions.md#rule-p2-001) | Adopted: desktop installation/update baseline | [Packaging](../architecture/14-build-packaging-and-release.md#5-packaging) | Distribution requirements; build and release packages | Real signed update/channel/rollback evidence in packaging and full-platform release |
+| [P2-002](../decisions/phase-2-specification-decisions.md#rule-p2-002) | Withdrawn: substitute sequence ordering | [Effective P2-004](../decisions/phase-2-specification-decisions.md#rule-p2-004) | Historical provenance only; no executable obligation | Sequence follows completed prerequisite evidence, not this withdrawn ordering |
+| [P2-003](../decisions/phase-2-specification-decisions.md#rule-p2-003) | Adopted: browser session deployment | [Web session architecture](../architecture/10-web-architecture.md#5-browser-session-architecture--p2-003-resolved) | Identity storage; browser-session/public/realtime contracts; Account/Chat | Identity/API/session and Web origin/CSRF/expiry/revocation gates; updated Web toolchain follows [P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008) |
+| [P2-004](../decisions/phase-2-specification-decisions.md#rule-p2-004) | Adopted: derive sequence from completed evidence | [Implementation sequence](../planning/implementation-sequence.md#11-the-d-019-ordering-followed) | Work-package inputs; reference matrices; reconciliation | Specification integrity and input/drift checks in foundation packages |
+| [P2-005](../decisions/phase-2-specification-decisions.md#rule-p2-005) | Adopted: ArcVideo/ArcVideoFoundation reference map | [ArcSlate reference matrix](reference-coverage/arcslate-arcvideo.md) | ArcSlate requirements; provenance; native/OTIO packages | Bounded source drift/licence/oracle evidence; no additional Olive checkout |
+| [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006) | Adopted: subscription and product scope revision | [Portfolio requirements](../requirements/00-product-scope-and-portfolio.md) | Commerce, single-owner/Cloud Harness, Notes list/table, simulator, OTIO and configuration designs | The decision enumerates all affected requirements/packages; native exclusions, paid service/capacity and real-provider/simulator/interchange acceptance remain explicit |
+| [P2-007](../decisions/phase-2-specification-decisions.md#rule-p2-007) | Adopted: fourteen Stage 2 closure groups | [Fourteen-group closure record](phase-2-design-closure-review.md) | Cloud/desktop data models, shared transactions, feed, capacity, provider/stream, migrations, time/OTIO and isolation | All fourteen recorded producer/gate mappings apply; [verification proof limits](design-repair-verification.md#proof-strength) distinguish design models from runtime evidence |
+| [P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008) | Adopted: React/TypeScript Web and generated C# contracts | [Web toolchain/SDK](../architecture/25-web-toolchain-and-sdk.md) | Web requirements; solution/build, browser contracts, Site/Account/Chat and release plan | [PG-23](open-gates-register.md#rule-pg-23) real Web evidence plus the detailed amendment table below |
+
+**Phase 2 coverage: 8 of 8 recorded decisions; seven adopted and one explicitly withdrawn.** The primary/consumer mapping is checked by the specification-integrity package together with the Phase 1 rows.
+
 
 ---
 

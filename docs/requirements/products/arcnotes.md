@@ -153,6 +153,37 @@ Notebook
 
 ---
 
+<a id="notes-scalar-query-profile"></a>
+### 7.1 Scalar values and query profile
+
+**`notes.scalar.v1`** is the required comparison and saved-view profile. It governs native cached queries and the Notes filter on Cloud search. Every ID comparison uses the [canonical ID-byte order](../../architecture/data-model/00-data-model-overview.md#canonical-id-order). Saved list/table views select authorized, nontrashed documents in one notebook. Cloud search outside a saved view keeps its separately declared retrieval/ranking behavior. A local result explicitly states its hydrated-cache scope and pending state; it never implies complete Cloud coverage.
+
+| Kind | Value and comparison | Value operators |
+|---|---|---|
+| `text`, `url` | Valid Unicode; ordinal Unicode scalar comparison, case-sensitive; no normalization, trimming, culture collation or URL fetch. Empty string is present | `eq/ne/lt/le/gt/ge/in`, `contains/startsWith/endsWith` |
+| `number` | Exact decimal string, at most 28 significant digits and scale 0–9. Canonical form: no exponent, plus, leading zeroes, trailing fractional zeroes or negative zero; reject excess precision, never round on write/query | `eq/ne/lt/le/gt/ge/in` |
+| `date` | Valid Gregorian `YYYY-MM-DD`, years 0001–9999; compare calendar dates, no timezone | `eq/ne/lt/le/gt/ge/in` |
+| `dateTime` | Explicit UTC or numeric offset required; no leap seconds; up to seven fractional digits; canonical storage is UTC with seven digits. Compare instants; entered offset may be retained only for display | `eq/ne/lt/le/gt/ge/in` |
+| `checkbox` | Boolean, false before true | `eq/ne/lt/le/gt/ge/in` |
+| `select` | Existing stable option ID, compared by canonical ID bytes; changing a label never changes equality/order | `eq/ne/lt/le/gt/ge/in` |
+| `multiSelect` | Duplicate-free set of at most 100 existing option IDs, serialized in ID-byte order; equality is set equality | `eq/ne`, `hasAny/hasAll` |
+
+Every kind also supports `isMissing` and `isPresent`. Missing means no property value row. A null write removes the row; a null filter literal is invalid. Empty string, empty set, false and zero are present. Every value predicate, **including `ne`**, is false for missing values. Boolean `not` negates its child's full result: `not(eq(...))` therefore includes missing, deliberately unlike `ne`. `in`, `hasAny` and `hasAll` accept 1–100 typed literals. Text operations use the same case-sensitive scalar sequence as equality; no regex or evaluator is implied.
+
+Definition config carries `profile`, declared type, and options (at most 1000 stable IDs); optional number scale restricts the v1 maximum and defaults to 9. Other comparison modes are not offered in v1. Unknown additive metadata is preserved but cannot activate an operator. A literal or value of the wrong type, an unknown/deleted definition or option, or an unsupported operator returns `validation.invalid_request` before evaluation. Authorization is checked before revealing identifier validity. No implicit string/number/boolean conversion occurs.
+
+**Filter and projection bounds.** The typed AST is `all`/`any` (1–32 children), unary `not`, or a typed property predicate. An absent or null filter field means match-all; null predicate literals remain invalid. Maximum depth is 8 including the root and leaf, total nodes 128, encoded query 64 KiB, string literal 4096 Unicode scalars, sort keys 8 and projected property IDs 64. Complexity overflow returns `validation.ast_bounds_exceeded`; syntax/type error returns invalid-request; unknown profile returns `validation.unsupported_version`. No failing predicate is silently dropped or reinterpreted. Existing tag/link/text search selectors remain typed separate query fields; they cannot smuggle an expression into a property predicate.
+
+**Ordering.** Apply sort keys in declared order using the table's comparison. Missing sorts last for both ascending and descending order. Multi-select sorting compares the sorted ID arrays lexicographically, with a shorter equal prefix first. Append DocumentId ascending by canonical ID bytes as the final tie-break regardless of requested directions. Default order is DocumentId ascending. Page size defaults to 100, maximum 500; larger sizes clamp with the catalogue's warning, nonpositive sizes are invalid.
+
+**Definition changes.** Rename preserves identity, values and view bindings. `semanticRev` changes for type/option membership/comparison-affecting config, not label-only changes; the normal definition `rev` still changes for every mutation. A v1 type change has an impact/loss preview and is refused while any value or saved-view predicate, sort or projection references the definition. Users may explicitly remove dependencies through normal revisioned commands and then change it; there is no implicit conversion. Removing a referenced option is likewise refused. Trashing a definition leaves dependent views visibly invalid until explicitly repaired, never broadened. Saved views store profile, own revision and referenced semantic revisions. Unknown historical profiles remain readable/preservable but cannot execute or be rewritten by guessing a newer profile; migration must explicitly validate the view and write a new revision.
+
+**Stable pages or explicit restart.** A signed opaque cursor expires after 15 minutes and binds principal/realm/workspace/notebook, profile, query fingerprint, saved-view revision, referenced semantic revisions, last composite sort key/DocumentId and dataset token. The dataset token identifies the authorized Notes source set at an acknowledged revision; locally it additionally binds hydration and pending-local generations. It changes on relevant membership/value/trash/authorization changes, including a newly matching document. At each page, reauthorize, validate the bindings and read one consistent dataset. A changed dataset/view/semantic revision returns `conflict.revision_mismatch` and a restart instruction, without a partial success page. Expired cursor/unsupported profile returns unsupported-version; forged scope or changed query is refused. Thus concurrent mutation cannot silently duplicate or omit a row across successful pages. This specializes the [shared cursor rules](../../architecture/contracts/00-operation-catalogue.md#6-cursors-and-pagination); physical indexes, token construction and storage snapshots remain internal choices.
+
+**Acceptance vectors.** For increasing document IDs D1–D4 with text values missing, empty, `A`, `a`, ascending text order is D2,D3,D4,D1 and `ne("A")` returns D2,D4. Numeric 0,2,10 sorts numerically; checkbox false is present; `2026-01-01T01:00:00+01:00` equals `2026-01-01T00:00:00Z`. Equal sort keys use ascending IDs even for descending keys. Compare complete page concatenation between Cloud and a fully hydrated, acknowledged local set with identical authorization/revisions. Verify label rename stability, type-change refusal, option removal, invalid definition, each AST bound and a restart after concurrent value/insertion/trash changes. Partial hydration is reported as partial and is not used to assert equality to the complete Cloud set.
+
+---
+
 ## 8. Links and references
 
 | # | Requirement |
@@ -326,7 +357,7 @@ Import a Markdown folder with nested links and attachments; retry without duplic
 | # | Requirement |
 |---|---|
 | WN-01 | Multi-window and split view are supported ([WN-02](../09-shared-desktop-experience.md#rule-wn-02)). |
-| WN-02 | **The same document open in several windows of one process shares one logical document session and one write authority** ([WN-04](#rule-wn-04)). |
+| WN-02 | **The same document open in several windows of one process shares one logical document session and one write authority** ([WN-04](../09-shared-desktop-experience.md#rule-wn-04)). |
 | WN-03 | **Window physical coordinates are device-local** ([WN-05](../09-shared-desktop-experience.md#rule-wn-05)); a named layout is the syncable concept ([LY-03](../09-shared-desktop-experience.md#rule-ly-03)). |
 | <a id="rule-wn-04"></a>WN-04 | Document tabs, breadcrumb and an inspector panel (properties, backlinks, outline, history, attachments) are provided. |
 | WN-05 | **Breadcrumb shows the ArcNotes location** — notebook and folder — not a cloud workspace path. |

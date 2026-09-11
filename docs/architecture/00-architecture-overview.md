@@ -31,7 +31,7 @@ Five constraints determine almost every structural decision downstream.
 ┌──────────────────────────── User's machine ────────────────────────────┐
 │                                                                        │
 │   ArcChat.exe                ArcNotes.exe    ArcScope.exe   ArcSlate.exe│
-│   Avalonia · Hub · Agent     Avalonia        Avalonia       Avalonia    │
+│   Avalonia · Hub · Client     Avalonia        Avalonia       Avalonia    │
 │   Native AOT                 Native AOT      Native AOT     Native AOT  │
 │        │                          │               │              │      │
 │        └──── StreamJsonRpc over Named Pipe / Unix domain socket ─┘      │
@@ -130,7 +130,7 @@ Fixed by **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**, e
 |---|---|
 | PM-01 | **Each product instance is a complete, autonomous operating-system process.** "Single process" means the product plus its native libraries in one process — never all products merged into one. |
 | PM-02 | **ArcChat hosts the Hub inside its own process**; no system service is installed. |
-| PM-03 | **The Hub manages platform state only**: application and instance catalogue, capability registry, routing, health, permission and approval coordination, cross-application orchestration, saga coordination, operational trace, local audit coordination, and the remote bridge. |
+| PM-03 | **The Hub manages platform state only**: application/instance catalogue, capability registry, routing, health, local permission/approval coordination, operational trace, local audit coordination and the outbound remote bridge. The [Cloud Harness](17-agent-harness.md) owns agent plans, cross-product orchestration and compensation; native product jobs retain their product owner. |
 | PM-04 | **The Hub never holds product domain state**, never proxies files or media, never becomes a shared filesystem, a universal project database, or a universal undo service. |
 | PM-05 | **A product reaches a locally usable state with the Hub absent** and re-registers when it returns. |
 | PM-06 | **Products never reference one another's Domain or Application assemblies.** Interaction is through stable cross-application contracts only. |

@@ -98,7 +98,7 @@ Fixed order:
 
 ## 4. Modules
 
-Sixteen modules, each owning an application and domain boundary, its schema or explicit table set, a public module API and published events, and independent tests.
+Twenty domain modules, following the [Cloud schema ownership map](data-model/01-cloud-data-model.md#1-schema-map), each owning an application and domain boundary, its schema or explicit table set, a public module API and published events, and independent tests.
 
 | Module | Owns |
 |---|---|
@@ -118,6 +118,10 @@ Sixteen modules, each owning an application and domain boundary, its schema or e
 | **Audit** | Security and high-value audit events |
 | **Support** | Feedback, bug reports, support cases, access grants, diagnostic bundles, recovery cases |
 | **TrustSafety** | Community reports, investigations, enforcement actions, appeals, security reports, advisories |
+| **Notes** | Canonical notebooks, documents/blocks, properties, saved views and immutable history |
+| **Scope** | Cloud simulator state and authorized metadata replicas; native capture/analysis authority remains in ArcScope |
+| **Slate** | Authorized metadata replicas; native project/edit/render authority remains in ArcSlate |
+| **Configuration** | Immutable deployment configuration revisions and atomic activation; Policy owns the governed policy projection and evaluation surface |
 
 | # | Rule |
 |---|---|

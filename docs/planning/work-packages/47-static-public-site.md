@@ -191,6 +191,8 @@
 
 ## 8. Completion gate
 
+**[PG-23](../../assurance/open-gates-register.md#rule-pg-23) evidence:** [WP-47](#rule-wp-47) — Static production output, applicable accessibility/visual/performance and atomic release/rollback evidence. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
+
 **All of the following, with recorded evidence:**
 
 1. Two builds of unchanged content are byte-identical; a single content change produces a minimal diff.

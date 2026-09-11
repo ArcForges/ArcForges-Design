@@ -27,6 +27,8 @@
 
 ## 2. Required inputs and dependencies
 
+**Frozen design input.** [content-origin behavior](../../requirements/07-security-privacy-and-trust.md#content-origin-profile) and [carrier schema](../../requirements/13-data-formats-and-portability.md#content-origin-carriers) is fixed before this package; implement it without choosing a different marking mechanism.
+
 | Input | Why it matters |
 |---|---|
 | [`../../requirements/05-ai-and-agent-execution.md`](../../requirements/05-ai-and-agent-execution.md) | The full execution chain, lifecycle, ownership, checkpoints, approval and budget model |
@@ -57,6 +59,8 @@
 ---
 
 ## 4. Projects, directories, files and major types affected
+
+Content payloads use typed ContentOrigin and content-unit bindings under their existing owner revision; format/schema fixtures include that projection.
 
 | Location | Change |
 |---|---|
@@ -136,6 +140,8 @@
 
 ### WP-16.06 — Progress, outcome and trace
 
+**Required design implementation and verification.** Artifact publication requires the verified payload and origin carrier together. Test staging failure, cancellation and marking retry with one original product job/output, no new provider attempt or delivered receipt; preserve ordinary ProductJob versus Cloud AgentTask ownership.
+
 **What must be fully done.** Progress is a separate best-effort channel; outcome is durable fact. Four separate trace systems are maintained without conflation: execution trace, capability trace, and audit; provider interaction records belong only to Cloud. A user-visible task identifier resolves to its execution trace.
 
 **Testing requirements.** A conflation test asserting progress loss never affects outcome; a resolution test from task identifier to trace; a separation test across the declared trace systems.
@@ -170,6 +176,8 @@
 
 ## 7. Tests and verification evidence
 
+**Required evidence addition.** [WP-16.06](#rule-wp-16.06) records the carrier/propagation/failure vectors above with payload and manifest hashes; early packages use declared fixtures, while provider/Harness packages require their real integrations.
+
 | Evidence | Produced by |
 |---|---|
 | State-machine and kill-at-transition results | [WP-16.00](#rule-wp-16.00) |
@@ -184,6 +192,8 @@
 ---
 
 ## 8. Completion gate
+
+**Additional completion requirement.** The package's content paths pass the stated origin vectors, including unknown input and failed publication; a valid stored/rendered payload alone cannot satisfy the carrier requirement.
 
 **All of the following, with recorded evidence:**
 

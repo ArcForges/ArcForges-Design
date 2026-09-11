@@ -229,6 +229,9 @@ The methods below use the version preconditions in [NO-02](#rule-no-02). Noteboo
 | <a id="rule-no-05"></a>NO-05 | **`SearchAsync` searches the hydrated local cache.** Cloud search over the whole workspace is `search.query` on the public surface; the two are separate operations with different completeness, and neither is presented as the other. |
 | <a id="rule-no-06"></a>NO-06 | **`SetPropertiesAsync` accepts only declared property definitions with bounded scalar types** from the [ArcNotes property requirements](../../requirements/products/arcnotes.md#7-properties-tags-and-views) and [property storage model](../data-model/02-desktop-data-model.md#property_definition-property_value). There is no formula, relation or rollup evaluation, so no expression reaches this path. |
 
+<a id="notes-query-contract"></a>
+**NotesQuery.** Required `profile`, notebook ID, optional saved-view ID/revision, typed filter/sort/projection and referenced definition semantic revisions; optional cursor/page size. [notes.scalar.v1](../../requirements/products/arcnotes.md#notes-scalar-query-profile) fixes value encodings, operators, limits, ordering and revision behavior. The result includes typed DocumentSummary values, source dataset token, `scope=hydratedLocal` or `acknowledgedCloud`, pending/completeness indicators and next cursor. An ad-hoc query binds current definitions at first evaluation; a saved query validates its persisted bindings. No unknown operator/type is ignored. Expected errors are `validation.invalid_request`, `validation.ast_bounds_exceeded`, `validation.unsupported_version`, `conflict.revision_mismatch` and permission-safe `state.not_found`. A stale cursor instructs restart without a partial success page.
+
 ### `IScopeOperations` — ArcScope
 
 | Operation | Risk / approval | Class |
@@ -250,6 +253,8 @@ The methods below use the version preconditions in [NO-02](#rule-no-02). Noteboo
 | SO-02 | **There is no operation that returns raw capture.** `GetStructuredContextAsync` returns measurements, analysis outputs, decoded event summaries and selected ranges — **raw capture structurally cannot enter it** ([WP-35.01](../../planning/work-packages/35-arcscope-integration-and-sync.md#rule-wp-35.01)). |
 | <a id="rule-so-03"></a>SO-03 | **There is no device-control operation in V1.** Device control is a separate, later, higher-permission class and does not appear on this interface ([DC-02](../../requirements/products/arcscope.md#rule-dc-02) there). |
 | <a id="rule-so-04"></a>SO-04 | **No operation writes raw capture.** ArcScope alone writes it, from its acquisition loop ([WP-35.05](../../planning/work-packages/35-arcscope-integration-and-sync.md#rule-wp-35.05)). |
+
+**MeasurementRequest/MeasurementResult.** Use the [measurement storage projection](../data-model/02-desktop-data-model.md#measurement-storage) and [scope.measurement.v1](../../requirements/products/arcscope.md#measurement-profile) verbatim: frozen source/window/configuration, explicit family set, optional cursor/threshold input, resolved thresholds and per-family status/value/unit/count. A long analysis returns the existing ProductJobRef and the same eventual result shape. Insufficient data is a typed successful result with absent value, not zero or an RPC error. Invalid envelope/config is `validation.invalid_request`, unknown profile is `validation.unsupported_version`; stale requested source revision is `conflict.revision_mismatch`. Structured context and report APIs carry the profile, source bindings, quality and content origin without raw capture.
 
 ### `ISlateOperations` — ArcSlate
 

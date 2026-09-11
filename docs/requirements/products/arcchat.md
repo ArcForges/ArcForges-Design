@@ -91,7 +91,7 @@ Primary surfaces:
 | Mode | Contract |
 |---|---|
 | **Chat Mode** | **Answer-first, minimal side effects.** Tools are not forbidden; the side-effect contract is narrow, and anything with a durable external effect requires explicit escalation. |
-| **Agent Mode** | **Do the work.** Creates a Task by default ([EX-02](#rule-ex-02)). |
+| **Agent Mode** | **Do the work.** Creates a Task by default ([EX-02](../05-ai-and-agent-execution.md#rule-ex-02)). |
 
 | # | Requirement |
 |---|---|
@@ -242,7 +242,7 @@ The agent's preference order is fixed:
 | IN-01 | **MCP is external capability integration** ([MC-01](../08-extensions-and-developer-platform.md#rule-mc-01)). |
 | IN-02 | The MCP management surface shows: server identity, connection state, declared tools, granted tools, secrets by reference, health, and last error. |
 | IN-03 | **Adding a server does not let the agent call all its tools.** Tools are enabled deliberately ([MC-10](../08-extensions-and-developer-platform.md#rule-mc-10)). |
-| IN-04 | **MCP credentials are secrets**, not configuration strings ([SE-01](#rule-se-01)). |
+| IN-04 | **MCP credentials are secrets**, not configuration strings ([SE-01](../07-security-privacy-and-trust.md#rule-se-01)). |
 | <a id="rule-in-05"></a>IN-05 | **A down MCP server must not break ArcChat.** The product continues; the integration shows degraded. |
 | IN-06 | **An MCP resource does not automatically become AI context** ([I-076](../01-normative-glossary-and-invariants.md#rule-i-076)). |
 | IN-07 | MCP servers and connectors share an Integrations surface. External agent/ACP adapters, handoff and agent delegation are excluded. |

@@ -5,7 +5,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: F — ArcNotes completion
-> Upstream: `19`, `25` · Downstream: `50`
+> Upstream: `19`, `25` · Downstream: `40`, `50`
 
 > **Goal.** Add **bounded** typed properties, queries and saved **list and table** views — the depth [P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006) retains — without turning ArcNotes into a database platform and without making a plain note heavier.
 
@@ -24,6 +24,8 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+**Frozen design input.** [notes.scalar.v1](../../requirements/products/arcnotes.md#notes-scalar-query-profile) and [NotesQuery](../../architecture/contracts/02-local-rpc-operations.md#notes-query-contract)
 
 | Input | Why it matters |
 |---|---|
@@ -55,13 +57,13 @@
 |---|---|
 | `src/ArcNotes/ArcNotes.Domain/` | Property definition and value model extended to typed schemas |
 | `src/ArcNotes/ArcNotes.Database/` | Query model, view definitions, view configuration, projections |
-| `src/ArcNotes/ArcNotes.Search/` | Query evaluation extended with property predicates and sorting |
+| `src/ArcNotes/ArcNotes.Search/` and Cloud Notes/Search query adapters | Native and Cloud evaluators of the same scalar profile, with common conformance vectors and permission/dataset binding |
 | `src/ArcNotes/ArcNotes.Infrastructure/` | Property indexes and the schema migration |
 | `src/ArcNotes/ArcNotes.Presentation/` | **Table and list** view surfaces only ([P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006)) |
-| `fixtures/formats/arcnotes/v3/` | The views-era fixture, with V1 and V2 retained |
+| `fixtures/formats/arcnotes/` | Supported shipped schema fixtures plus notes.scalar.v1 conformance vectors; no invented historical versions |
 | `tests/ArcNotes.Tests.Integration/` | Query, view, migration and performance suites |
 
-**Major types introduced.** `PropertySchema`, `PropertyType`, `PropertyIndex`, `Query`, `QueryPredicate`, `QuerySort`, `ViewDefinition`, `ViewKind`, `ViewConfiguration`, `Projection`, `GroupingRule`.
+**Major types introduced.** `PropertySchema`, `PropertyType`, `PropertyIndex`, `Query`, `QueryPredicate`, `QuerySort`, `ViewDefinition`, `ViewKind`, `ViewConfiguration`, `Projection`, `QueryProfile`, `QueryDatasetToken`.
 
 ---
 
@@ -71,7 +73,9 @@
 
 ### WP-28.00 — Typed property schemas
 
-**What must be fully done.** Property definitions with **bounded scalar types only** — text, number, date/date-time, single-select, multi-select, checkbox and URL, as specified by the [ArcNotes property requirements](../../requirements/products/arcnotes.md#7-properties-tags-and-views). **`relation` and `derived` are excluded**: a relation type implies a join engine and a derived type implies a formula evaluator, and both are outside the delivered scope. With validation and defaults. System properties are separate. A property definition has a lifecycle: creation, rename, type change with a stated migration behaviour, and deletion with a stated consequence.
+**Required design implementation and verification.** Implement all eight declared scalar kinds/config bounds and exact encodings. Rename preserves semantic bindings; dependent type/option changes are refused after the required preview; trashed definitions make views visibly invalid.
+
+**What must be fully done.** Property definitions with **bounded scalar types only** — text, number, date/date-time, single-select, multi-select, checkbox and URL, as specified by the [ArcNotes property requirements](../../requirements/products/arcnotes.md#7-properties-tags-and-views). **`relation` and `derived` are excluded**: a relation type implies a join engine and a derived type implies a formula evaluator, and both are outside the delivered scope. Validation follows the scalar profile; missing values receive no implicit default. System properties are separate. A property definition has a lifecycle: creation, rename, type change with a stated migration behaviour, and deletion with a stated consequence.
 
 **Testing requirements.** Type validation per kind; a rename test asserting values are preserved; a type-change test asserting the stated behaviour; a deletion test asserting the stated consequence.
 
@@ -81,7 +85,9 @@
 
 ### WP-28.01 — Query model
 
-**What must be fully done.** A query with predicates over properties, tags, links, content and structure, with sorting and grouping. Permission is applied during evaluation. Query results are stable and paginated for large result sets.
+**Required design implementation and verification.** Implement every v1 operator, boolean/missing behavior, AST limit, ordinal/decimal/instant comparison and signed dataset-bound pagination exactly as defined. Use one semantic conformance suite against native cache and Cloud evaluators; storage/index algorithms may differ.
+
+**What must be fully done.** A query with predicates over properties, tags, links, content and structure, with the declared stable sorting and scalar query profile. Permission is applied during evaluation. Query results are stable and paginated for large result sets.
 
 **Testing requirements.** Predicate coverage; a permission test asserting refused documents affect neither results nor counts; stability under concurrent mutation.
 
@@ -90,6 +96,8 @@
 <a id="rule-wp-28.02"></a>
 
 ### WP-28.02 — View kinds
+
+**Required design implementation and verification.** List and table share identical query ordering with missing last and ascending DocumentId tie-break. Commit the D1–D4, numeric/checkbox/offset, equal-key and mutation-restart vectors, including two-page comparisons and declared partial hydration.
 
 **What must be fully done.** **Table and list** views as projections over a query, each with its own configuration — visible properties, sorting and filtering over scalar properties ([P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006)). **Board, gallery, calendar and timeline layouts are excluded**, and no grouping engine that presupposes them is built. A view kind change preserves the underlying query.
 
@@ -143,17 +151,19 @@
 
 | Dimension | Impact |
 |---|---|
-| Database | Property indexes and schema version 3 |
+| Database | Property indexes, query profile/semantic revision fields and the next actual schema migration |
 | Protocol | Query and view definitions in export and sync |
-| UI | Four view surfaces and a property editing experience |
+| UI | Two view surfaces (list and table) and a property editing experience |
 | Security | Query-time permission and view-edit permission |
 | Platform | View rendering performance per platform |
-| Migration | Third schema version with two retained prior fixtures |
-| Compatibility | V1, V2 and V3 all readable |
+| Migration | Migration from each supported shipped schema, preserving unknown metadata |
+| Compatibility | All supported shipped schemas and known query profiles readable; unknown query profiles preserved but not executed |
 
 ---
 
 ## 7. Tests and verification evidence
+
+**Required evidence addition.** Complete Cloud/local match-set, sort and page equality on identical authorized fully hydrated revisions, plus all profile boundary/rename/type-change/unknown-version tests.
 
 | Evidence | Produced by |
 |---|---|
@@ -168,6 +178,8 @@
 ---
 
 ## 8. Completion gate
+
+**Additional completion requirement.** Every scalar/query/profile vector passes on both owners; all supported list/table operations are implemented without new product design choices.
 
 **All of the following, with recorded evidence:**
 
@@ -189,5 +201,7 @@
 - [25 — Sync Engine and Blob Lifecycle](25-sync-engine-and-blob-lifecycle.md)
 
 **Downstream — these consume this package’s completed output.**
+
+- [40 — Knowledge, Search and Retrieval](40-knowledge-search-and-retrieval.md)
 
 - [50 — Full-Platform Production Release](50-full-platform-production-release.md)

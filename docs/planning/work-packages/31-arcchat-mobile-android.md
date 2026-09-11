@@ -169,6 +169,8 @@ The real Task, streaming, approval and recovery gates in this package consume WP
 
 ## 8. Completion gate
 
+**Offline evidence.** Execute this product's applicable [initial-state matrix](../../assurance/testing-and-verification-strategy.md#offline-acceptance-matrix) rows, including fresh shell, hydrated outage, unavailable content, signout and restart where applicable. Record permitted local work and explicitly unavailable Cloud actions.
+
 **All of the following, with recorded evidence:**
 
 1. Sign-in, workspace selection and device binding work; revoking the device elsewhere terminates it promptly.

@@ -23,6 +23,8 @@
 
 ## 2. Required inputs and dependencies
 
+**Frozen design input.** [content-origin behavior](../../requirements/07-security-privacy-and-trust.md#content-origin-profile) and [carrier schema](../../requirements/13-data-formats-and-portability.md#content-origin-carriers) is fixed before this package; implement it without choosing a different marking mechanism.
+
 | Input | Why it matters |
 |---|---|
 | [`../../architecture/06-data-persistence-and-formats.md`](../../architecture/06-data-persistence-and-formats.md) | Store composition, canonical commit unit, journal, snapshot, migration mechanics, storage pressure |
@@ -53,6 +55,8 @@
 
 ## 4. Projects, directories, files and major types affected
 
+Content payloads use typed ContentOrigin and content-unit bindings under their existing owner revision; format/schema fixtures include that projection.
+
 | Location | Change |
 |---|---|
 | `src/BuildingBlocks/ArcForges.Persistence/` | Created or reconciled: store abstraction, write path, journal, snapshot, migration runner |
@@ -72,6 +76,8 @@
 <a id="rule-wp-07.00"></a>
 
 ### WP-07.00 — Store abstraction and the single write path
+
+**Required design implementation and verification.** Commit payload and origin in the same owner transaction/journal boundary, with history pins and bounded GC. Kill between staging and commit: neither an origin-less completed payload nor a marker referencing absent bytes becomes visible. Migration records unknown for legacy input; unsupported writers refuse destructive round trips.
 
 **What must be fully done.** Use typed LocalNotesVersion(acked_rev, head_local_seq), NativeContentRevision and CloudRevision separately; the materialised body/journal/index token must agree.  The store abstraction with the eight-step write path implemented once: validate → authorize → begin commit unit → apply → journal → advance revision → publish change → commit. Every caller uses it. Persistence types do not leak past the repository boundary. Writes are serialised; reads are concurrent.
 
@@ -157,6 +163,8 @@
 
 ## 7. Tests and verification evidence
 
+**Required evidence addition.** [WP-07.00](#rule-wp-07.00) records the carrier/propagation/failure vectors above with payload and manifest hashes; early packages use declared fixtures, while provider/Harness packages require their real integrations.
+
 | Evidence | Produced by |
 |---|---|
 | Single-write-path policy test result | [WP-07.00](#rule-wp-07.00) |
@@ -170,6 +178,8 @@
 ---
 
 ## 8. Completion gate
+
+**Additional completion requirement.** The package's content paths pass the stated origin vectors, including unknown input and failed publication; a valid stored/rendered payload alone cannot satisfy the carrier requirement.
 
 **All of the following, with recorded evidence:**
 

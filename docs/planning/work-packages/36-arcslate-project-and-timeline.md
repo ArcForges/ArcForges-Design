@@ -23,6 +23,8 @@
 
 ## 2. Required inputs and dependencies
 
+**Frozen design input.** [content-origin behavior](../../requirements/07-security-privacy-and-trust.md#content-origin-profile) and [carrier schema](../../requirements/13-data-formats-and-portability.md#content-origin-carriers) is fixed before this package; implement it without choosing a different marking mechanism.
+
 | Input | Why it matters |
 |---|---|
 | [`../../requirements/products/arcslate.md`](../../requirements/products/arcslate.md) | The full product model, domain concepts and V1 scope |
@@ -53,6 +55,8 @@
 ---
 
 ## 4. Projects, directories, files and major types affected
+
+Content payloads use typed ContentOrigin and content-unit bindings under their existing owner revision; format/schema fixtures include that projection.
 
 | Location | Change |
 |---|---|
@@ -93,6 +97,8 @@
 <a id="rule-wp-36.02"></a>
 
 ### WP-36.02 — Media assets and availability
+
+**Required design implementation and verification.** Media assets and derived outputs preserve origin on import, relink, proxy, edit and native revision history. A relink verifies bytes before reusing an origin hash; missing imported metadata remains unknown. Test known AI and non-AI assets in the same project without modifying originals.
 
 **What must be fully done.** Deliver the real metadata/read adapter needed here using the approved owned ABI and ContentSandbox; [WP-37](37-arcslate-playback-and-processing.md#rule-wp-37) extends playback rather than being an undeclared prerequisite for this step.  Media assets with stable logical identity, typed metadata (streams, codecs, dimensions, rate, duration, colour metadata, timecode, channel layout) and an explicit availability state. Assets are referenced externally by default with managed copies as an explicit choice. Offline media is a normal state.
 
@@ -174,6 +180,8 @@
 
 ## 7. Tests and verification evidence
 
+**Required evidence addition.** [WP-36.02](#rule-wp-36.02) records the carrier/propagation/failure vectors above with payload and manifest hashes; early packages use declared fixtures, while provider/Harness packages require their real integrations.
+
 | Evidence | Produced by |
 |---|---|
 | Multi-sequence and structural distinction results | [WP-36.00](#rule-wp-36.00) |
@@ -187,6 +195,12 @@
 ---
 
 ## 8. Completion gate
+
+**[PG-20](../../assurance/open-gates-register.md#rule-pg-20) evidence:** [WP-36.01](#rule-wp-36.01) — Exact supported grids and adjacent sample ownership; combine with real audio and OTIO boundary evidence. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
+
+**Offline evidence.** Execute this product's applicable [initial-state matrix](../../assurance/testing-and-verification-strategy.md#offline-acceptance-matrix) rows, including fresh shell, hydrated outage, unavailable content, signout and restart where applicable. Record permitted local work and explicitly unavailable Cloud actions.
+
+**Additional completion requirement.** The package's content paths pass the stated origin vectors, including unknown input and failed publication; a valid stored/rendered payload alone cannot satisfy the carrier requirement.
 
 **All of the following, with recorded evidence:**
 

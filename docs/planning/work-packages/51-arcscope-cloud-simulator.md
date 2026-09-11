@@ -23,6 +23,8 @@
 
 ## 2. Required inputs and dependencies
 
+**Frozen design input.** [scope.measurement.v1](../../requirements/products/arcscope.md#measurement-profile)
+
 The official simulator consumes real paid-term and quota enforcement from [WP-42](42-commerce-entitlement-and-credits.md#rule-wp-42) and policy activation from WP-44. Desktop replay/analysis does not depend on it. It therefore executes in J rather than claiming real commercial admission in H.
 
 | Input | Why it matters |
@@ -114,6 +116,8 @@ The official simulator consumes real paid-term and quota enforcement from [WP-42
 
 ### WP-51.04 — Client access and native ingestion
 
+**Required design implementation and verification.** Feed retained canonical simulator output through the existing Scope measurement/replay consumer using its recorded profile and configuration. Simulation labels remain synthetic, separate from AI origin. Recompute the statistical/pulse fixtures without changing measurement meaning or treating simulation as hardware evidence.
+
 **What must be fully done.** Reserve bounded duration/samples/bytes/egress and recheck effective term at durable boundaries without AI tokens.  The eleven `simulation.*` operations with durable, idempotent, expected-state commands; authorised manifest listing; resumable hash-verifiable segment fetch over HTTP or object storage; revision- or cursor-based state polling; ArcScope's clearly synthetic `DataSource` feeding the **normal** acquisition pipeline; seed and profile provenance surviving export and copy.
 
 **Testing requirements.** Exhaust each quota independently across concurrent workspaces/replicas; expire term and retry cleanup.  Duplicate, stale and out-of-order commands; a terminal run resisting resurrection; a hash-mismatched segment rejected; **reconnect with realtime disabled entirely, proving the polling path is a complete authoritative fallback**; simulated data flowing through session, capture, decoder, measurement and report unchanged; synthetic labelling surviving export.
@@ -148,6 +152,8 @@ The official simulator consumes real paid-term and quota enforcement from [WP-42
 
 ## 7. Tests and verification evidence
 
+**Required evidence addition.** Canonical simulator replay retains measurement profile and synthetic provenance.
+
 | Evidence | Produced by |
 |---|---|
 | AST bounds, cyclic-dependency and sandbox-denial results | [WP-51.00](#rule-wp-51.00) |
@@ -160,6 +166,10 @@ The official simulator consumes real paid-term and quota enforcement from [WP-42
 ---
 
 ## 8. Completion gate
+
+**[PG-14b](../../assurance/open-gates-register.md#rule-pg-14b) evidence:** [WP-51](#rule-wp-51) — All real-host/storage/native-adapter simulator scenarios in this completion gate, including 24-hour soak; preview/test fakes are insufficient. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
+
+**Additional completion requirement.** The simulator remains an optional later source for already defined measurement semantics, never a prerequisite for the earlier replay-based analysis package.
 
 **All of the following, with recorded evidence, against the real Cloud host, real storage and the real native adapter ([SIM-20](../../requirements/products/arcscope.md#rule-sim-20)):**
 

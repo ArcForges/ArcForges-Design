@@ -55,7 +55,7 @@ The bar for entry is deliberately high. A conclusion already established by a cu
 
 ---
 
-<a id="rule-p2-002"></a><a id="rule-p2-004"></a>
+<a id="rule-p2-002"></a>
 
 ## P2-002 — Sequence derivation under [D-019](phase-1-foundation-decisions.md#rule-d-019) · `WITHDRAWN — SUPERSEDED BY P2-004`
 
@@ -104,6 +104,8 @@ The withdrawn rule anticipated rewriting "a package"; the evidence in fact chang
 **History.** Originally deferred to [WP-48.01](../planning/work-packages/48-account-portal.md#rule-wp-48.01) between cookie-based BFF and in-memory access tokens. The 2026-09-06 redesign adopts the cookie-session form. The historical deferral is not an outstanding design choice, and this decision is not evidence that browser authentication has been implemented.
 
 ---
+
+<a id="rule-p2-004"></a>
 
 ## [P2-004](#rule-p2-004) — Sequence derivation from completed prerequisite evidence · `ADOPTED`
 

@@ -5,7 +5,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: J — Platform completion
-> Upstream: `19`, `25`, `43`, `44` · Downstream: `50`, `52`
+> Upstream: `19`, `25`, `28`, `43`, `44` · Downstream: `50`, `52`
 
 > **Goal.** Build the retrieval layer on top of search: knowledge sources, scopes, indexes as derived projections, hybrid retrieval with budgets, permission-aware assembly, and evidence with citations that anchor back to real content.
 
@@ -22,6 +22,8 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+**Frozen design input.** [notes.scalar.v1](../../requirements/products/arcnotes.md#notes-scalar-query-profile) and completed [WP-28](28-arcnotes-properties-and-views.md#rule-wp-28) evaluators
 
 Cloud embeddings/retrieval consume operator-funded provider adapters and admission from [WP-43](43-managed-ai-routing-and-metering.md#rule-wp-43) and the policy resolver from WP-44. Local text indexing was already completed in [WP-19](19-arcnotes-search-and-portability.md#rule-wp-19); it does not substitute for the Cloud semantic path.
 
@@ -56,7 +58,7 @@ Cloud embeddings/retrieval consume operator-funded provider adapters and admissi
 | `src/BuildingBlocks/ArcForges.Knowledge/` | Knowledge source registry, scope resolution, retrieval pipeline, evidence assembly |
 | `src/BuildingBlocks/ArcForges.Knowledge.Index/` | Index abstraction with lexical and semantic implementations, rebuild semantics |
 | `src/Cloud/ArcForges.Cloud.Modules.Search/` | Cloud index and query, entitlement-gated |
-| `src/ArcChat/ArcChat.Agent/` | Retrieval integration into context assembly |
+| `src/Cloud/ArcForges.Cloud.AgentRuntime/` | Retrieval integration into authoritative Cloud context assembly |
 | `src/*/[Product].LocalRpc/` | Each product registers its knowledge sources |
 | `tests/KnowledgeRetrievalTests/` | Permission, budget, citation, isolation and rebuild suites |
 
@@ -130,6 +132,8 @@ Cloud embeddings/retrieval consume operator-funded provider adapters and admissi
 
 ### WP-40.06 — Cloud search
 
+**Required design implementation and verification.** Reuse the completed scalar query semantics for the Notes filter on search.query. Compare with native cache on an identical authorized fully hydrated acknowledged dataset; preserve other search ranking modes and explicit local/Cloud completeness. Do not create a second collation or scalar evaluator profile.
+
 **What must be fully done.** Cloud-side indexing and query over synced content, entitlement-gated, with the same permission model. Cloud search degradation never breaks local search.
 
 **Testing requirements.** Entitlement-gating tests; a cloud-outage test asserting local search is unaffected; a parity test on permission behaviour.
@@ -154,6 +158,8 @@ Cloud embeddings/retrieval consume operator-funded provider adapters and admissi
 
 ## 7. Tests and verification evidence
 
+**Required evidence addition.** Notes typed-filter real Cloud/local equivalence and cursor restart tests consuming the completed query engine.
+
 | Evidence | Produced by |
 |---|---|
 | Scope composition, visibility and policy coverage results | [WP-40.00](#rule-wp-40.00) |
@@ -167,6 +173,8 @@ Cloud embeddings/retrieval consume operator-funded provider adapters and admissi
 ---
 
 ## 8. Completion gate
+
+**Additional completion requirement.** Cloud retrieval consumes the existing scalar semantics; no product comparison behavior is left to the search implementation.
 
 **All of the following, with recorded evidence:**
 
@@ -183,6 +191,8 @@ Cloud embeddings/retrieval consume operator-funded provider adapters and admissi
 ## 9. Dependencies
 
 **Upstream — all must be complete.**
+
+- [28 — ArcNotes Bounded Properties and Saved Views](28-arcnotes-properties-and-views.md)
 
 - [19 — ArcNotes Search, Import, Export and Portability](19-arcnotes-search-and-portability.md)
 - [25 — Sync Engine and Blob Lifecycle](25-sync-engine-and-blob-lifecycle.md)

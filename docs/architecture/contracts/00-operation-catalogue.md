@@ -91,6 +91,8 @@ Every operation's failures map into these. An operation may not invent a conditi
 | `entitlement.extra_credits_required` | Capacity is spent and purchased credits exist, but extra usage is not authorised | No — the user must opt in with a maximum budget ([AC-06](../../requirements/04-commerce-entitlement-and-credits.md#rule-ac-06)) | Did not happen |
 | `entitlement.credits_exhausted` | Authorised extra credits are also spent — a **hard stop** | No — purchase, or wait for capacity recovery | Did not happen |
 | `validation.invalid_request` | Failed boundary validation | No | Did not happen |
+| `validation.ast_bounds_exceeded` | Typed query/simulator AST exceeds declared structural or size bounds; reject before handler, lease, object creation or quota debit | No — reduce complexity | Did not happen |
+| `identity.last_credential` | Removing this credential would leave no usable authentication credential | No — establish another usable credential first | Did not happen |
 | `validation.unsupported_version` | Contract version outside the window | No | Did not happen |
 | `conflict.revision_mismatch` | `expectedRev` did not match | Yes, after re-reading | Did not happen |
 | `conflict.local_changes_pending` | Cloud-derived tool context cannot overwrite pending local Notes edits | Synchronise/resolve, then refresh context and authorisation | Did not happen |
@@ -123,7 +125,7 @@ Every operation's failures map into these. An operation may not invent a conditi
 | <a id="rule-er-01"></a>ER-01 | **`state.not_found` is used for both absence and refusal** where distinguishing them would let a caller enumerate what it cannot see. This is deliberate, and `Detail` carries nothing that reverses it. |
 | ER-02 | **Effect certainty is part of the contract**, not an inference. A caller retrying an `unknown` failure on a non-idempotent operation is a defect the engine prevents ([WP-16.02](../../planning/work-packages/16-unified-execution-engine.md#rule-wp-16.02)). |
 | ER-03 | **`retryAfter` is present on every retryable capacity failure**, and clients honour it rather than choosing their own backoff. |
-| ER-04 | **A new code is added here before it is returned anywhere.** A code appearing in an implementation but not in this table fails the contract baseline check. |
+| ER-04 | **A new producer code is registered here before use.** Author-time operation/implementation baselines reject unregistered emitted codes. Readers remain additive-compatible: an unknown future code uses a safe generic failure display and preserves correlation/effect certainty; it is never success or an automatic retry of an unknown effect. |
 
 ---
 
@@ -174,7 +176,7 @@ Every operation carries this block. It is the contract's half of the security pi
 | # | Rule |
 |---|---|
 | CP-01 | **A cursor is opaque, signed and scope-bound.** A client cannot construct or mutate one to escape its scope ([WP-23.02](../../planning/work-packages/23-public-api-and-generated-clients.md#rule-wp-23.02)). |
-| CP-02 | **A cursor encodes the sort key, not an offset**, so pagination is stable under concurrent insertion and deletion. |
+| CP-02 | **A cursor encodes the sort key, not an offset.** The operation declares its concurrent-mutation behavior. [Notes scalar queries](../../requirements/products/arcnotes.md#notes-scalar-query-profile) bind a dataset token and explicitly restart on a changed source set, so successful pages never silently mix revisions or duplicate/omit rows. |
 | CP-03 | **A cursor carries the query shape's fingerprint.** Presenting it with different filters is rejected rather than silently reinterpreted. |
 | CP-04 | **A cursor expires**, and an expired cursor returns `validation.unsupported_version` with an instruction to restart the listing — never a partial result presented as complete. |
 | CP-05 | **Every list declares a maximum page size**, and a larger request is clamped with a warning rather than refused. |

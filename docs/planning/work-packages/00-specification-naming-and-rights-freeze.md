@@ -173,6 +173,8 @@
 
 ## 8. Completion gate
 
+**[PG-21](../../assurance/open-gates-register.md#rule-pg-21) evidence:** [WP-00.01](#rule-wp-00.01) — Current corpus paths/anchors and document-scoped semantic citation check; subsequent normative edits repeat the check. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
+
 **All of the following, with recorded evidence:**
 
 1. The four-product baseline and forbidden-name set are enforced by a scan that runs clean.

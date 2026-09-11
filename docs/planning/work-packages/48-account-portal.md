@@ -189,6 +189,8 @@
 
 ## 8. Completion gate
 
+**[PG-23](../../assurance/open-gates-register.md#rule-pg-23) evidence:** [WP-48](#rule-wp-48) — Real Account commercial/session workflows and approved visual/accessibility/performance evidence. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
+
 **All of the following, with recorded evidence:**
 
 1. One codebase produces both deployment profiles with provably isolated state, storage and cookies.

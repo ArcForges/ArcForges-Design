@@ -23,6 +23,10 @@
 
 ## 2. Required inputs and dependencies
 
+**Frozen design input.** [scope.measurement.v1](../../requirements/products/arcscope.md#measurement-profile)
+
+**Frozen design input.** [content-origin behavior](../../requirements/07-security-privacy-and-trust.md#content-origin-profile) and [carrier schema](../../requirements/13-data-formats-and-portability.md#content-origin-carriers) is fixed before this package; implement it without choosing a different marking mechanism.
+
 | Input | Why it matters |
 |---|---|
 | [`../../requirements/products/arcscope.md`](../../requirements/products/arcscope.md) `§14`, `§15`, `§16` | AI integration, capability surface and cloud posture |
@@ -49,6 +53,8 @@
 ---
 
 ## 4. Projects, directories, files and major types affected
+
+Content payloads use typed ContentOrigin and content-unit bindings under their existing owner revision; format/schema fixtures include that projection.
 
 | Location | Change |
 |---|---|
@@ -79,6 +85,8 @@
 
 ### WP-35.01 — Bounded context provision
 
+**Required design implementation and verification.** Project measurement values with profile, immutable source/configuration binding, counts, coverage and status into bounded context/report references. Test that unknown-profile and insufficient results are never silently rendered as a numeric zero.
+
 **What must be fully done.** ArcScope contributes structured results — measurements, analysis outputs, decoded event summaries and selected ranges — as bounded context. A raw capture is never a context payload. Context size is visible and oversized context is refused explicitly.
 
 **Testing requirements.** A structural test asserting raw capture cannot enter a context payload; a bounding test; a visibility test.
@@ -108,6 +116,8 @@
 <a id="rule-wp-35.04"></a>
 
 ### WP-35.04 — Import, export and fixtures
+
+**Required design implementation and verification.** Native bundles preserve origin, measurement profile/configuration and simulator provenance separately. CSV/JSON/report export publishes required sidecars atomically; structured context carries selected origins and measurement quality, never raw capture.
 
 **What must be fully done.** Native full-fidelity bundle export and import with equivalence; tabular export with explicit precision warnings; import entering the unified session model with a recorded origin, never disguised as a live device. A fixture exists for every claimed import version.
 
@@ -143,6 +153,10 @@
 
 ## 7. Tests and verification evidence
 
+**Required evidence addition.** Structured context and bundle round-trip retain measurement meaning without raw capture leakage.
+
+**Required evidence addition.** [WP-35.04](#rule-wp-35.04) records the carrier/propagation/failure vectors above with payload and manifest hashes; early packages use declared fixtures, while provider/Harness packages require their real integrations.
+
 | Evidence | Produced by |
 |---|---|
 | Capability descriptor and refusal results | [WP-35.00](#rule-wp-35.00) |
@@ -155,6 +169,12 @@
 ---
 
 ## 8. Completion gate
+
+**[PG-03](../../assurance/open-gates-register.md#rule-pg-03) evidence:** [WP-35.04](#rule-wp-35.04) — Recorded substitute analysis and native import dependency licence disposition before use. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
+
+**Additional completion requirement.** Reported/imported measurement meaning and numerical profile survive the declared portability path.
+
+**Additional completion requirement.** The package's content paths pass the stated origin vectors, including unknown input and failed publication; a valid stored/rendered payload alone cannot satisfy the carrier requirement.
 
 **All of the following, with recorded evidence:**
 

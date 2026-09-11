@@ -23,6 +23,8 @@
 
 ## 2. Required inputs and dependencies
 
+**Frozen design input.** [notes.scalar.v1](../../requirements/products/arcnotes.md#notes-scalar-query-profile) and the [shared errors/cursors](../../architecture/contracts/00-operation-catalogue.md)
+
 | Input | Why it matters |
 |---|---|
 | [`../../architecture/05-cloud-architecture.md`](../../architecture/05-cloud-architecture.md) `§6` | The public API surface rules |
@@ -75,6 +77,8 @@
 
 ### WP-23.00 — Endpoint mapping and validation
 
+**Required design implementation and verification.** Export the Notes scalar/typed-query schema and validate profile/type/AST bounds before a handler; reject unknown emitted producer codes in the contract baseline. Do not reject additive unknown response codes at clients.
+
 **What must be fully done.** Endpoints mapped from the contract set with request validation at the boundary. A request failing validation never reaches a handler. Validation messages are reason-coded and localisable, never raw.
 
 **Testing requirements.** Per-endpoint validation tests; a test asserting no handler is reachable with an invalid request; a message-sourcing test.
@@ -94,6 +98,8 @@
 <a id="rule-wp-23.02"></a>
 
 ### WP-23.02 — Pagination, filtering and conditional requests
+
+**Required design implementation and verification.** Implement signed Notes cursor bindings and 15-minute expiry. Test changed filters/scope, dataset mutation, definition semantic revision and view revision: stale pages return an explicit restart, never mixed-page success. Contract fixtures suffice here; full query execution is owned by [WP-28](28-arcnotes-properties-and-views.md#rule-wp-28).
 
 **What must be fully done.** Cursor-based pagination with stable ordering; filtering constrained to declared fields; conditional requests using revision so a client can avoid re-fetching unchanged state. A cursor is opaque and cannot be constructed by a client to escape scope.
 
@@ -159,6 +165,8 @@
 
 ## 7. Tests and verification evidence
 
+**Required evidence addition.** Real boundary error/cursor tests and generated C#/TS exact-value vectors; no runtime query engine is claimed from fixtures.
+
 | Evidence | Produced by |
 |---|---|
 | Validation coverage and unreachable-handler assertion | [WP-23.00](#rule-wp-23.00) |
@@ -172,6 +180,10 @@
 ---
 
 ## 8. Completion gate
+
+**[PG-23](../../assurance/open-gates-register.md#rule-pg-23) evidence:** [WP-23.05](#rule-wp-23.05) — Generated C#/TS contracts and real-server exact-value/error/header/client conformance. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
+
+**Additional completion requirement.** Notes cursor/error semantics are implemented before the full query consumer; general cursor tests honor the operation-specific stable-or-restart guarantee.
 
 **All of the following, with recorded evidence:**
 
