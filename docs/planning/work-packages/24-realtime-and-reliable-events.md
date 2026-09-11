@@ -1,6 +1,6 @@
 <a id="rule-wp-24"></a>
 
-# WP-24 — Realtime, Reliable Events and Recovery
+# WP-24 — Bounded Hints and Reliable Events
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
@@ -8,6 +8,9 @@
 > Upstream: `23` · Downstream: `25`, `26`, `30`
 
 > **Goal.** Deliver realtime updates that are useful without ever being authoritative: connect, subscribe, deliver, detect a gap, and backfill authoritative state over HTTP — with disconnected compensation recovery proven, because it is the case that actually happens.
+
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Cloud; clients; AI stream contract. Inputs: the assigned exact Contracts packages/descriptors and actual provider artifacts; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: owned candidate artifacts and generated contracts with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
 
 ---
 
@@ -22,6 +25,8 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+**Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
 | Input | Why it matters |
 |---|---|
@@ -49,7 +54,7 @@
 | BR-07 | **Delivery guarantees are stated honestly**: at-most-once delivery with gap detection plus authoritative backfill, not exactly-once delivery. |
 | BR-08 | **Realtime loss degrades to polling**, and the degradation is visible to the user. |
 | BR-09 | **Transport logs redact tokens** ([WB-08](../../architecture/08-security-architecture.md#rule-wb-08) in the security architecture). |
-| BR-10 | **The client works under a published Native AOT binary** with source-generated payload metadata (**[V-03](../../assurance/phase-1-official-verification.md#rule-v-03)**). |
+| BR-10 | **The client works under a published Native AOT binary** with generated protobuf payload types (**[V-03](../../assurance/phase-1-official-verification.md#rule-v-03)**). |
 
 ---
 
@@ -73,71 +78,89 @@
 
 ### WP-24.00 — Connection lifecycle and authentication
 
-**What must be fully done.** Connection with the same identity and tenancy resolution as HTTP. A session revocation terminates the connection. Reconnection uses exponential backoff with jitter. Connection state is visible to the user.
 
-**Testing requirements.** Authentication failure paths; revocation-terminates-connection; backoff distribution under mass reconnect; a token-redaction assertion in transport logs.
+**What must be fully done.** Implement EventService.Poll through the ordinary auth/scope pipeline; each call is bounded and reauthorizes. Clients display polling/reconnecting state, suspend background mobile polling and use the selected jitter/backoff profile. CF live presentation has the separate session-binding/first-frame nonce protocol.
 
-**Completion gate.** Session revocation terminates the connection promptly, mass reconnection does not synchronise, and no token appears in transport logs.
+**Testing requirements.** Real native/Web/RN session expiry/revoke/Origin and request cancellation; no SignalR negotiation or bearer URL.
+
+**Completion gate.** Hint polling and optional live presentation use their exact authenticated boundaries.
 
 <a id="rule-wp-24.01"></a>
 
 ### WP-24.01 — Subscriptions and permission
 
-**What must be fully done.** Subscriptions scoped to workspace, resource or task, checked at subscribe and re-checked when permission changes. Losing permission stops delivery immediately and informs the client.
 
-**Testing requirements.** Subscribe-refusal tests; a mid-stream permission revocation test; a scope-escape attempt test.
+**What must be fully done.** Implement the catalogue allowlist of event/scope kinds. Initial empty cursor returns an empty hint page, current scoped cursor and resetRequired; the client then reads authorized owner snapshots before continuing; scope/session change discards it. Every next page rechecks current permission; unsupported scope refuses rather than expanding subscription.
 
-**Completion gate.** Permission loss stops delivery immediately, and no subscription can escape its scope.
+**Testing requirements.** Wrong workspace/device/task scope, mid-page revocation and first-call/reset behavior.
+
+**Completion gate.** No hint or snapshot crosses an unauthorized scope and initialization is unambiguous.
 
 <a id="rule-wp-24.02"></a>
 
 ### WP-24.02 — Sequencing and gap detection
 
-**What must be fully done.** Every message carries a subscription-scoped sequence number. The client detects a gap deterministically and records it. A gap is never silently ignored, and a duplicate is discarded idempotently.
 
-**Testing requirements.** Induced-gap detection; duplicate delivery; out-of-order delivery; a counter assertion that gaps are recorded as telemetry.
+**What must be fully done.** Persist the selected 24-hour/10000-row per-scope hint log, allocate monotonic sequence under row lock in the same publication transaction and return bounded pages. Duplicates are harmless; expired/lost cursor yields explicit reset to authoritative snapshot.
 
-**Completion gate.** Every induced gap is detected and recorded; duplicates and out-of-order messages are handled without corruption.
+**Testing requirements.** Concurrent writers, crash before/after commit, duplicate pages, retention expiry and out-of-order client delivery.
+
+**Completion gate.** No permanently skipped committed hint; loss never implies lost business state.
 
 <a id="rule-wp-24.03"></a>
 
 ### WP-24.03 — HTTP backfill
 
-**What must be fully done.** On a detected gap, or on reconnection, the client queries authoritative state over HTTP from its last known sequence and revision, converging without a full resynchronisation where a scoped query suffices. Convergence is verifiable.
 
-**Testing requirements.** Backfill after a gap, after a long disconnection, and after a server restart; a convergence assertion comparing client and server state.
+**What must be fully done.** Implement client snapshot/read reconciliation through generated owner RPCs. A reset/backlog or permission change invalidates affected projections; chat/task final state comes from C#, while CF catch-up may report completed/truncated/superseded/evicted stream presentation separately.
 
-**Completion gate.** After any gap or disconnection, the client converges to authoritative state, verified by comparison.
+**Testing requirements.** Long disconnect/cursor expiry/stream eviction and final-message replacement on all selected clients.
+
+**Completion gate.** Clients converge to canonical owner state without inferring task outcome from stream completion.
 
 <a id="rule-wp-24.04"></a>
 
 ### WP-24.04 — Reliable event publication
 
-**What must be fully done.** Modules publish through the outbox so a state change and its notification cannot diverge. Realtime fan-out consumes published events; a fan-out failure never rolls back the state change, and the missed notification is recoverable by backfill.
 
-**Testing requirements.** A divergence test with fan-out failing; an ordering test per subscription; a load test on fan-out.
+**What must be fully done.** Publish hint rows from committed owner outbox events with inbox dedup and bounded fan-out. Keep Task/Chat/Sync data canonical in PostgreSQL; CF DO retains only disposable stream tails and markers.
 
-**Completion gate.** A fan-out failure never loses the state change, and the client still converges through backfill.
+**Testing requirements.** Publication crash/duplicate/DO loss and database restore recovery; authoritative reads survive missing presentation.
+
+**Completion gate.** A missed hint or discarded CF projection never rolls back or substitutes for an owner transaction.
 
 <a id="rule-wp-24.05"></a>
 
 ### WP-24.05 — Degradation and offline behaviour
 
-**What must be fully done.** Realtime loss degrades to polling authoritative state at a bounded interval, with the degraded state visible. A cloud outage does not blank any client; capabilities report unavailability with reasons.
 
-**Testing requirements.** Realtime-down polling test; a visibility test asserting the user is told; a full-outage test asserting no client blanks.
+**What must be fully done.** Use the selected Poll intervals (active Task/bridge 2s, ordinary foreground 15s, idle 60s, 20% jitter and failure backoff capped30s) and bounded page sizes. Distinguish offline/denied/cursor-reset; no busy retry or blanking authorized local work.
 
-**Completion gate.** Realtime loss degrades to visible polling, and a full outage never blanks a client.
+**Testing requirements.** Network outage, rate-limit/retry guidance, foreground/background and degraded partial capability tests.
+
+**Completion gate.** Polling and recovery are bounded and visible on each runtime.
 
 <a id="rule-wp-24.06"></a>
 
 ### WP-24.06 — C# and TypeScript realtime adapters
 
-**What must be fully done.** Share C#-authored event contracts and conformance vectors; keep one reusable C# client for native/mobile and one TS adapter using the official SignalR JS client. Generate TS names/DTOs/validators from exported schema; implement same-origin browser cookies, WebSockets-only with skipNegotiation, ordinary HTTP fallback, explicit antiforgery on unsafe HTTP operations and WebSocket Origin/expiry checks. Preserve event hints versus durable HTTP authority, byte stream positions and bounded backfill.
 
-**Testing requirements.** Browser WebSockets-only/skip-negotiation across two replicas without affinity; blocked upgrade falls back to ordinary HTTP, and cross-replica lost hints converge through periodic catch-up. Published-AOT and production React real-server connections; disconnect/duplicate/gap/reconnect, permanently disabled realtime polling equivalence, UTF-8 stream offsets, browser revocation/expiry and negative origin checks; assert no manually duplicated event model.
+**What must be fully done.** Publish event/poll DTOs from Contracts and compose one native C# consumer and TS browser/RN adapters against their respective transports. Apply browser cookie/CSRF and native secure bearer rules; CF socket uses first-frame nonce plus C# authorization for every frame/range.
 
-**Completion gate.** Both language adapters reach the same authoritative state under the conformance matrix. Shared semantics do not require a C# client to run inside the browser.
+**Testing requirements.** Common event/exact-value vectors plus actual AOT/React/RN polling and CF stream interruption/revocation tests.
+
+**Completion gate.** All consumers agree on hint versus canonical state and preserve stream byte/cursor semantics.
+
+<a id="rule-wp-24.90"></a>
+### WP-24.90 — Verify the owned artifact and real integration
+
+**What must be fully done.** Assemble the owned deliverables from the preceding substeps under the selected repository, package, runtime and protocol authorities. Replace retired SignalR scaffolding using the fixed hint/read transports and cursor/snapshot recovery. Separate durable C# facts from CF live stream projections. Implement bounded reconnect/expiry and per-client supported call shapes.
+
+**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+
+**Testing requirements.** Lost, duplicated, reordered or expired hints converge through authoritative reads. Real full AI stream completion is asserted only after [WP-52](52-cloud-harness.md#rule-wp-52), not by an event fixture.
+
+**Completion gate.** Lost, duplicated, reordered or expired hints converge through authoritative reads. Real full AI stream completion is asserted only after [WP-52](52-cloud-harness.md#rule-wp-52), not by an event fixture. Record exact artifacts and provider reality. The package is incomplete if an important contract/owner/recovery rule still requires design during coding.
 
 ---
 
@@ -171,6 +194,8 @@
 
 ## 8. Completion gate
 
+**[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) gate:** [WP-24.90](#rule-wp-24.90) and all inherited domain-specific gates must pass on the same candidate closure. Lost, duplicated, reordered or expired hints converge through authoritative reads. Real full AI stream completion is asserted only after [WP-52](52-cloud-harness.md#rule-wp-52), not by an event fixture.
+
 **[PG-23](../../assurance/open-gates-register.md#rule-pg-23) evidence:** [WP-24.06](#rule-wp-24.06) — Real browser realtime loss/reconnect/polling convergence with correct session and byte-cursor handling. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
 
 **All of the following, with recorded evidence:**
@@ -189,10 +214,12 @@
 
 **Upstream — all must be complete.**
 
-- [23 — Public API Surface and Generated Clients](23-public-api-and-generated-clients.md)
+- [23 public api and generated clients](23-public-api-and-generated-clients.md#rule-wp-23)
 
-**Downstream — these consume this package’s completed output.**
+**Downstream — consumers of these released outputs.**
 
-- [25 — Sync Engine and Blob Lifecycle](25-sync-engine-and-blob-lifecycle.md)
-- [26 — Device Presence, Remote Action and the Tool Bridge](26-remote-action-and-tool-bridge.md)
-- [30 — Mobile Shared Architecture and the Apache Boundary](30-mobile-shared-architecture.md)
+- [25 sync engine and blob lifecycle](25-sync-engine-and-blob-lifecycle.md#rule-wp-25)
+- [26 remote action and tool bridge](26-remote-action-and-tool-bridge.md#rule-wp-26)
+- [30 mobile shared architecture](30-mobile-shared-architecture.md#rule-wp-30)
+
+---

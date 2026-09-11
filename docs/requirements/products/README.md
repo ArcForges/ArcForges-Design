@@ -19,9 +19,9 @@ The frozen baseline is exactly four desktop products (**[D-002](../../decisions/
 
 | Document | Surface | Positioning |
 |---|---|---|
-| [`arcforges-cloud.md`](arcforges-cloud.md) | **ArcForges Cloud** | The continuity and remote-execution platform: an ASP.NET Core **JIT modular monolith** (**[D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008)**), one deployment host with bounded internal work, dependency posture, environments, deployment, operations, resilience and go-live threshold |
+| [`arcforges-cloud.md`](arcforges-cloud.md) | **ArcForges Cloud** | The continuity and remote-execution platform: an ASP.NET Core **Native AOT modular business host** (**[D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008)**), one deployment host with bounded internal work, dependency posture, environments, deployment, operations, resilience and go-live threshold |
 | [`arcforges-web.md`](arcforges-web.md) | **ArcForges Web** | The twelve-surface web presence: static public pages plus one React/TypeScript application (**[D-007](../../decisions/phase-1-foundation-decisions.md#rule-d-007)**, **[D-014](../../decisions/phase-1-foundation-decisions.md#rule-d-014)**, **[D-015](../../decisions/phase-1-foundation-decisions.md#rule-d-015)**) |
-| [`arcchat-mobile-and-web.md`](arcchat-mobile-and-web.md) | **ArcChat Mobile / ArcChat Web** | Cloud continuity and remote-agent companion — Apache-2.0 mobile boundary (**[D-004](../../decisions/phase-1-foundation-decisions.md#rule-d-004)**), Android on Mono AOT with iOS build-deferred (**[D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008)**), consumption-only commerce (**[D-022](../../decisions/phase-1-foundation-decisions.md#rule-d-022)**) |
+| [`arcchat-mobile-and-web.md`](arcchat-mobile-and-web.md) | **ArcChat Mobile / ArcChat Web** | Cloud continuity and remote-agent companion — Apache-2.0 mobile boundary (**[D-004](../../decisions/phase-1-foundation-decisions.md#rule-d-004)**), Android on React Native/Hermes with iOS build-deferred (**[D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008)**), consumption-only commerce (**[D-022](../../decisions/phase-1-foundation-decisions.md#rule-d-022)**) |
 
 ## Rules that apply to every product document
 

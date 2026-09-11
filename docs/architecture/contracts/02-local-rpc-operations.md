@@ -340,3 +340,11 @@ The methods below use the version preconditions in [NO-02](#rule-no-02). Noteboo
 | LV-06 | The Hub demonstrably carries no payload body | [WP-14.05](../../planning/work-packages/14-hub-and-minimal-provider-slice.md#rule-wp-14.05) |
 | LV-07 | No interface exposes a path, a secret, or a raw capture read | Contract policy test |
 | LV-08 | Every product starts, works and saves with the Hub absent | [WP-14.06](../../planning/work-packages/14-hub-and-minimal-provider-slice.md#rule-wp-14.06) |
+
+## P2-009 executable wire and transport binding
+
+Every operation/event above maps to the [numbered wire registry](04-protobuf-wire-registry.md). It fixes requests/results, record fields, enums, exact values, local counterpart preconditions, service names and compatibility. [CF integration](05-cloudflare-integration.md) fixes AI/object HTTP exceptions, frame/state recovery and authorization. New supporting bootstrap, upload-status, automation and conversation-create methods are enumerated there with their authorization/idempotency classes; none is left for endpoint invention during implementation.
+
+## Local bootstrap and read-channel binding
+
+The wire registry explicitly adds ILocalBootstrap.Challenge/Confirm and IResourceProvider.ReadChunk/GetJob as transport-support methods. Challenge/Confirm are NI, OS-peer-only, one-use five-second bootstrap before normal owner authorization; they confer no product capability. ReadChunk is Q/R1/AO on the exact immutable owned transfer/version/offset, authorizing each bounded chunk. GetJob is Q/R1/AO on an owned native ProductJob. BeginTransfer/OpenRead return LocalTransferTicket, never an HTTP bearer URL. The generated method names omit the C# Async suffix but preserve the catalogued operation's authorization, revision and effect rules.

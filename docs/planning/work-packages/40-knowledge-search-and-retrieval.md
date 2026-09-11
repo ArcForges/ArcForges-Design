@@ -9,6 +9,9 @@
 
 > **Goal.** Build the retrieval layer on top of search: knowledge sources, scopes, indexes as derived projections, hybrid retrieval with budgets, permission-aware assembly, and evidence with citations that anchor back to real content.
 
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Cloud search authority; AI model adapter; clients. Inputs: the assigned exact Contracts packages/descriptors and actual provider artifacts; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: owned candidate artifacts and generated contracts with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+
 ---
 
 ## 1. Scope and purpose
@@ -22,6 +25,8 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+**Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
 **Frozen design input.** [notes.scalar.v1](../../requirements/products/arcnotes.md#notes-scalar-query-profile) and completed [WP-28](28-arcnotes-properties-and-views.md#rule-wp-28) evaluators
 
@@ -53,16 +58,16 @@ Cloud embeddings/retrieval consume operator-funded provider adapters and admissi
 
 ## 4. Projects, directories, files and major types affected
 
-| Location | Change |
+| Owner / location | Deliverable |
 |---|---|
-| `src/BuildingBlocks/ArcForges.Knowledge/` | Knowledge source registry, scope resolution, retrieval pipeline, evidence assembly |
-| `src/BuildingBlocks/ArcForges.Knowledge.Index/` | Index abstraction with lexical and semantic implementations, rebuild semantics |
-| `src/Cloud/ArcForges.Cloud.Modules.Search/` | Cloud index and query, entitlement-gated |
-| `src/Cloud/ArcForges.Cloud.AgentRuntime/` | Retrieval integration into authoritative Cloud context assembly |
-| `src/*/[Product].LocalRpc/` | Each product registers its knowledge sources |
-| `tests/KnowledgeRetrievalTests/` | Permission, budget, citation, isolation and rebuild suites |
+| Cloud: src/Cloud/ArcForges.Cloud.Modules.Search/ | Permission-filtered source/query/index state, queued inference jobs and published derived results |
+| AI: src/inference/ | Bounded Workers AI embedding/reranking adapter using the selected job ports; no planner |
+| AI: src/workflows/RunWorkflow.ts | Consumes authorized context refs/results for the sole Harness |
+| Each desktop product: its own index/source and LocalRpc adapters | Real local lexical/source behavior, exact citations and owner permissions |
+| Contracts: public generated Search/knowledge records | The selected SearchQuery and immutable source/result profile |
+| Owner tests and Cloud integration suite | Real CF job/usage/index/revoke/rebuild, local source and citation tests |
 
-**Major types introduced.** `KnowledgeSource`, `KnowledgeScope`, `KnowledgePolicy`, `IndexProjection`, `RetrievalRequest`, `RetrievalBudget`, `RetrievalResult`, `Evidence`, `Citation`, `CitationAnchorState`, `ContextAssembly`, `RetrievalCacheKey`.
+No shared mechanism package owns product knowledge policy, authorization or persistence behavior.
 
 ---
 
@@ -82,21 +87,23 @@ Cloud embeddings/retrieval consume operator-funded provider adapters and admissi
 
 ### WP-40.01 — Indexes as derived projections
 
-**What must be fully done.** Lexical and semantic indexes as derived stores with full rebuild semantics. An index update follows the write path so it cannot diverge. Semantic index content is subject to the same permission rules as its source.
 
-**Testing requirements.** Rebuild equivalence for each index kind; divergence test after a crash mid-update; a permission test over the semantic index.
+**What must be fully done.** Implement lexical and semantic derived index lifecycle owned by Search, keyed by source version/hash, permission scope, model/profile/dimension and config version. Use the selected C# inference job outbox and CF embedding ports; publish only complete validated 1024-dimension results after the shared Search/Commerce outcome receipt, retaining any unresolved supplier liability. Stale/revoked/deleted source results are discarded and indexes rebuild from authorized source.
 
-**Completion gate.** Every index rebuilds to an equivalent state and cannot diverge after a crash; semantic content honours source permission.
+**Testing requirements.** Real bge-m3 embedding job with immutable source pins, partial/duplicate/unknown usage, crash before result publication, model/profile change and full rebuild; no source mutation or duplicate debit.
+
+**Completion gate.** Semantic readiness is explicit and derived; keyword search remains available when CF/semantic indexing fails.
 
 <a id="rule-wp-40.02"></a>
 
 ### WP-40.02 — Hybrid retrieval and budgets
 
-**What must be fully done.** Retrieval combining lexical and semantic signals with explicit token, item and latency budgets. Exceeding a budget truncates with disclosure. Retrieval is deterministic given the same inputs and index state.
 
-**Testing requirements.** Budget enforcement per dimension; a truncation-disclosure assertion; a determinism test.
+**What must be fully done.** Implement the selected general SearchQuery lexical/metadata/semantic/hybrid modes and bounded retrieval budgets. Use permission-filtered lexical/vector candidates, the [retrieval.hybrid.v1](../../architecture/data-model/03-derived-stores.md#selected-retrieval-profile-retrievalhybridv1) ranking/tie-break and typed budget rules and the declared rerank inference job when enabled; no dynamic provider selection. Disclose truncation and retain source/model/config pins.
 
-**Completion gate.** Budgets are enforced with disclosure, and retrieval is deterministic given fixed inputs.
+**Testing requirements.** Stable query/input/index vectors, ties, over-budget candidate set, actual reranker and unavailable/unknown provider outcomes; use the independent RRF60/exact/tie/dedup/source-cap vectors from the authority.
+
+**Completion gate.** The selected ranked result semantics and fallback are reproducible within their fixed profile; no unauthorized or unaccounted candidate influences output.
 
 <a id="rule-wp-40.03"></a>
 
@@ -132,13 +139,23 @@ Cloud embeddings/retrieval consume operator-funded provider adapters and admissi
 
 ### WP-40.06 — Cloud search
 
-**Required design implementation and verification.** Reuse the completed scalar query semantics for the Notes filter on search.query. Compare with native cache on an identical authorized fully hydrated acknowledged dataset; preserve other search ranking modes and explicit local/Cloud completeness. Do not create a second collation or scalar evaluator profile.
 
-**What must be fully done.** Cloud-side indexing and query over synced content, entitlement-gated, with the same permission model. Cloud search degradation never breaks local search.
+**What must be fully done.** Run Cloud search only on authorized synced sources and current entitlement. Implement inference-input/outcome/state receipts, queue limits and selected funding policy through WP43; Search jobs use the enumerated admission/outcome transactions and existing operator supplier budgets, with no customer capacity reservation, settlement or credit debit. Implement the source/version/lease/receipt fields from the canonical Search record. Preserve independent local lexical/scalar search.
 
-**Testing requirements.** Entitlement-gating tests; a cloud-outage test asserting local search is unaffected; a parity test on permission behaviour.
+**Testing requirements.** Actual C#→CF inference→C# outcome/index publication and usage ledger; service expiry, revoked source and Cloud/CF loss with local search still usable.
 
-**Completion gate.** Cloud search is entitlement-gated, applies the same permission model, and its outage never affects local search.
+**Completion gate.** Cloud semantic/rerank is operationally complete without a second Harness or an AOT-incompatible C# model adapter.
+
+<a id="rule-wp-40.90"></a>
+### WP-40.90 — Verify the owned artifact and real integration
+
+**What must be fully done.** Assemble the owned deliverables from the preceding substeps under the selected repository, package, runtime and protocol authorities. Keep lexical/scalar/source authorization in their owners; bind embedding/model calls to selected Workers AI and the internal integration contract. Implement index/version/backfill and citation/content-origin behavior from the frozen design.
+
+**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+
+**Testing requirements.** [WP-28](28-arcnotes-properties-and-views.md#rule-wp-28) precedes full retrieval; permission-at-query, deletion/revocation, exact scalar filtering and independent retrieval/embedding-version fixtures remain.
+
+**Completion gate.** [WP-28](28-arcnotes-properties-and-views.md#rule-wp-28) precedes full retrieval; permission-at-query, deletion/revocation, exact scalar filtering and independent retrieval/embedding-version fixtures remain. Record exact artifacts and provider reality. The package is incomplete if an important contract/owner/recovery rule still requires design during coding.
 
 ---
 
@@ -174,6 +191,8 @@ Cloud embeddings/retrieval consume operator-funded provider adapters and admissi
 
 ## 8. Completion gate
 
+**[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) gate:** [WP-40.90](#rule-wp-40.90) and all inherited domain-specific gates must pass on the same candidate closure. [WP-28](28-arcnotes-properties-and-views.md#rule-wp-28) precedes full retrieval; permission-at-query, deletion/revocation, exact scalar filtering and independent retrieval/embedding-version fixtures remain.
+
 **Additional completion requirement.** Cloud retrieval consumes the existing scalar semantics; no product comparison behavior is left to the search implementation.
 
 **All of the following, with recorded evidence:**
@@ -192,14 +211,15 @@ Cloud embeddings/retrieval consume operator-funded provider adapters and admissi
 
 **Upstream — all must be complete.**
 
-- [28 — ArcNotes Bounded Properties and Saved Views](28-arcnotes-properties-and-views.md)
+- [19 arcnotes search and portability](19-arcnotes-search-and-portability.md#rule-wp-19)
+- [25 sync engine and blob lifecycle](25-sync-engine-and-blob-lifecycle.md#rule-wp-25)
+- [28 arcnotes properties and views](28-arcnotes-properties-and-views.md#rule-wp-28)
+- [43 managed ai routing and metering](43-managed-ai-routing-and-metering.md#rule-wp-43)
+- [44 dynamic policy and configuration](44-dynamic-policy-and-configuration.md#rule-wp-44)
 
-- [19 — ArcNotes Search, Import, Export and Portability](19-arcnotes-search-and-portability.md)
-- [25 — Sync Engine and Blob Lifecycle](25-sync-engine-and-blob-lifecycle.md)
-- [43 — Cloud AI Routing, Metering and Settlement](43-managed-ai-routing-and-metering.md)
-- [44 — Dynamic Policy and Configuration Control Plane](44-dynamic-policy-and-configuration.md)
+**Downstream — consumers of these released outputs.**
 
-**Downstream — these consume this package’s completed output.**
+- [50 full platform production release](50-full-platform-production-release.md#rule-wp-50)
+- [52 cloud harness](52-cloud-harness.md#rule-wp-52)
 
-- [50 — Full-Platform Production Release](50-full-platform-production-release.md)
-- [52 — The Cloud Harness](52-cloud-harness.md)
+---

@@ -1,13 +1,16 @@
 <a id="rule-wp-06"></a>
 
-# WP-06 — AOT, JIT and Web Publish Proof
+# WP-06 — AOT, RN, CF and Real Artifact Publish Proof
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: A — Freeze and foundation
-> Upstream: `03`, `04`, `05` · Downstream: `07`, `08`, `10`, `12`, `13`, `17`
+> Upstream: `03`, `04`, `05` · Downstream: `07`, `08`, `10`, `12`, `13`, `17`, `30`
 
-> **Goal.** Prove the runtime matrix on real published artifacts, not on intentions. Every desktop product publishes Native AOT and launches; Cloud publishes JIT and runs its full pipeline; the React application builds into production browser assets. Until this holds, every downstream design choice is a hypothesis.
+> **Goal.** Prove the runtime matrix on real published artifacts, not on intentions. Every desktop product publishes Native AOT and launches; Cloud publishes Native AOT and runs its full pipeline; the React application builds into production browser assets. Until this holds, every downstream design choice is a hypothesis.
+
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Platform, Contracts, Cloud, AI, Web, Mobile. Inputs: exact compatible Contracts packages/descriptors and applicable DesktopPlatform packages; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: owned candidate artifacts and generated contracts with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
 
 ---
 
@@ -15,7 +18,7 @@
 
 **In scope.** A minimal but *real* deliverable per target that publishes with the production posture and runs: a desktop host with the real contract set and local RPC attach, a cloud host with its real pipeline order, a production React application with a generated TypeScript SDK call, and the toolchain evidence for each.
 
-**Out of scope.** Product features. UI beyond what is required to prove a window opens and a command runs. The mobile targets — Android's proof is `30`/`32`, because it depends on the mobile boundary that does not exist yet.
+**Out of scope.** Product features. UI beyond what is required to prove a window opens and a command runs. Full mobile business features; this package includes the minimal selected RN/Hermes transport/native-module proof before WP30.
 
 **Why this package exists.** [QI-02](../../requirements/12-quality-and-compatibility-contract.md#rule-qi-02) states plainly that a JIT test pass is not AOT compatibility. **[V-05](../../assurance/phase-1-official-verification.md#rule-v-05)** left several dependency-level questions open precisely because they can only be answered by a real publish. This is where they are answered.
 
@@ -23,13 +26,15 @@
 
 ## 2. Required inputs and dependencies
 
+**Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
+
 | Input | Why it matters |
 |---|---|
 | **[D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008)** | The runtime matrix being proven |
 | **[V-03](../../assurance/phase-1-official-verification.md#rule-v-03)**, **[V-05a](../../assurance/phase-1-official-verification.md#rule-v-05a)**–**[V-05e](../../assurance/phase-1-official-verification.md#rule-v-05e)** | The specific evidence obligations and their gates |
 | [`../../architecture/14-build-packaging-and-release.md`](../../architecture/14-build-packaging-and-release.md) `§3` | The publish matrix and its verification obligations |
 | [`../../architecture/04-desktop-application-architecture.md`](../../architecture/04-desktop-application-architecture.md) `§2` | Desktop AOT constraints [AO-01](../../architecture/04-desktop-application-architecture.md#rule-ao-01)–[AO-12](../../architecture/04-desktop-application-architecture.md#rule-ao-12) |
-| [`../../architecture/05-cloud-architecture.md`](../../architecture/05-cloud-architecture.md) `§1`, `§3` | The JIT decision and the host pipeline order |
+| [`../../architecture/05-cloud-architecture.md`](../../architecture/05-cloud-architecture.md) `§1`, `§3` | The selected Cloud AOT closure and host pipeline order |
 | [WP-03](03-contract-foundation-and-licence-split.md#rule-wp-03), [WP-04](04-identity-error-and-versioning-primitives.md#rule-wp-04), [WP-05](05-architecture-and-repository-policy-tests.md#rule-wp-05) output | Real contracts, real primitives, and policy tests that keep the proof true |
 
 ---
@@ -43,13 +48,13 @@
 | # | Rule |
 |---|---|
 | BR-01 | **Desktop products are Native AOT deliverables** (**[D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008)**). |
-| BR-02 | **Cloud is ASP.NET Core JIT. Strict AOT is explicitly not required and must not be attempted for consistency** (**[D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008)**, **[V-03](../../assurance/phase-1-official-verification.md#rule-v-03)**). |
-| BR-03 | **The web application publishes with AOT compilation disabled** unless a measured benchmark and an explicit decision prove otherwise (**[D-007](../../decisions/phase-1-foundation-decisions.md#rule-d-007)**). |
+| BR-02 | **Cloud is ASP.NET Core Native AOT with explicit session/SQL/HTTP adapters and zero publish diagnostics** (**[D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008)**, **[V-03](../../assurance/phase-1-official-verification.md#rule-v-03)**). |
+| BR-03 | Web produces React/TypeScript browser assets with the pinned Node/npm build; no .NET WASM/AOT flags apply. |
 | BR-04 | **Zero trim and AOT diagnostics on the AOT path.** A suppressed diagnostic is not a pass ([PJ-08](../../architecture/01-solution-and-project-layout.md#rule-pj-08)). |
 | BR-05 | **A debug build passing is never evidence for a release target** ([PM-01](../../architecture/14-build-packaging-and-release.md#rule-pm-01) in the build architecture). |
 | BR-06 | **The proof is continuous**, re-run on every main-branch build ([PM-02](../../architecture/14-build-packaging-and-release.md#rule-pm-02) there), not a one-off milestone. |
 | BR-07 | **Every third-party control entering an AOT deliverable requires its own publish proof** (**[V-05a](../../assurance/phase-1-official-verification.md#rule-v-05a)**). |
-| BR-08 | **The reflection package of the typed HTTP client is absent and its generator diagnostic is build-breaking** (**[F-026](../../assurance/open-gates-register.md#rule-f-026)**). |
+| BR-08 | Generated native gRPC clients and explicit HTTP-exception adapters must pass their real AOT dependency/registration gate; browser/RN use their selected generated TS closure. |
 
 ---
 
@@ -84,51 +89,56 @@
 
 ### WP-06.01 — Local RPC under AOT
 
-**What must be fully done.** Two published AOT binaries attach over the real transport using generated proxies and the binary formatter, invoke a contract method in both directions, propagate cancellation, and detach cleanly. No reflection-based marshalling is involved.
 
-**Testing requirements.** An AOT-published integration test covering attach, bidirectional invoke, cancellation, disconnect and reattach; the policy test from [WP-05.03](05-architecture-and-repository-policy-tests.md#rule-wp-05.03) asserting the generated-shape attribute.
+**What must be fully done.** Publish two AOT desktop probe processes using the selected Kestrel HTTP/2 named-pipe/UDS listeners and client ConnectCallback. Authenticate same-user peers, complete LocalBootstrap, register both endpoint directions, invoke generated services, cancel, disconnect and reattach.
 
-**Completion gate.** Bidirectional RPC works between two published AOT binaries. **This satisfies [VG-04](../../assurance/open-gates-register.md#rule-vg-04).**
+**Testing requirements.** Actual Windows/Linux/macOS process-to-process runs with malformed input, unauthorized peer and bounded resource tests.
+
+**Completion gate.** [VG-04](../../assurance/open-gates-register.md#rule-vg-04) is supported by working generated gRPC over the exact local OS transports, not an in-memory or TCP substitute.
 
 <a id="rule-wp-06.02"></a>
 
-### WP-06.02 — Typed HTTP client under AOT
+### WP-06.02 — Generated gRPC client under AOT
 
-**What must be fully done.** The typed HTTP client is exercised from a published AOT desktop binary against the cloud host, using the generated-only registration path. The reflection package is absent from the dependency graph and its generator diagnostic is build-breaking. The client version is pinned deliberately.
 
-**Testing requirements.** A dependency-graph assertion; a negative build test proving the diagnostic breaks the build; an AOT-published call against the real host.
+**What must be fully done.** From a published AOT desktop binary consume the actual released generated native gRPC client and source-generated HTTP-exception adapters against the AOT Cloud probe. Verify explicit registration, opaque native session handler, deadlines/status/details and exact primitive values.
 
-**Completion gate.** A published AOT binary makes a successful typed call with no reflection path present. **This satisfies [F-026](../../assurance/open-gates-register.md#rule-f-026).**
+**Testing requirements.** Real TLS call, negative dynamic/reflection dependency check, invalid protocol response, expiry/refresh and supported contract vectors.
+
+**Completion gate.** [F-026](../../assurance/open-gates-register.md#rule-f-026) passes on the actual generated-client AOT closure.
 
 <a id="rule-wp-06.03"></a>
 
 ### WP-06.03 — Realtime under AOT
 
-**What must be fully done.** A published AOT desktop binary connects to the cloud realtime endpoint using the text protocol with source-generated payload metadata, receives a message, survives a disconnect, and reconnects with sequence backfill over HTTP.
 
-**Testing requirements.** An AOT-published reconnection test with an induced disconnect and a sequence gap.
+**What must be fully done.** From the AOT probe use EventService.Poll with scoped cursor initialization, bounded event pages and snapshot/backfill. Drop connections, expire the cursor and revoke scope; verify current authoritative reads recover hints.
 
-**Completion gate.** Realtime works from a published AOT binary including reconnection. **This closes the stale corpus claim that realtime is unsupported under AOT, consistent with V-03.**
+**Testing requirements.** Actual host reconnect/reset/duplicate/out-of-order and revoked-session runs.
+
+**Completion gate.** Generated unary hints and durable reads work under AOT; no SignalR dependency or claimed hint durability.
 
 <a id="rule-wp-06.04"></a>
 
-### WP-06.04 — Cloud JIT publish
+### WP-06.04 — Cloud Native AOT publish
 
-**What must be fully done.** The cloud host publishes as a container image running the real pipeline order, serves a health endpoint and one contract endpoint, and connects to a real database and a real object store in the integration environment. **No AOT publish is attempted.**
 
-**Testing requirements.** An image build and run test; a pipeline-order assertion test; an integration test against real dependencies.
+**What must be fully done.** Publish the single Native AOT Cloud OCI image with the selected Linux base, Npgsql/SQL and explicit session/WebAuthn/OIDC/HTTP adapters. Run real PostgreSQL migrations, transaction/outbox/lease and auth/CSRF/revoke probes. Deploy the exact CF Worker/Workflow/DO bindings and R2 test buckets, use reachable authenticated C# callback ports and exercise one bounded model intent/outcome and one staged/verified object. Measure the admitted verifier envelope.
 
-**Completion gate.** The cloud host runs its real pipeline and serves a contract endpoint, with the JIT posture explicit and no AOT properties present.
+**Testing requirements.** Zero AOT/trim diagnostics; pipeline order, cookie/native auth and WebAuthn proof vectors under published code; real DB/CF/R2/lease-loss and provider version acknowledgement.
+
+**Completion gate.** [VG-06](../../assurance/open-gates-register.md#rule-vg-06) foundation proof covers the entire selected dependency closure and deployed provider boundary; no full product Harness claim is made.
 
 <a id="rule-wp-06.05"></a>
 
 ### WP-06.05 — React production build and generated SDK proof
 
-**What must be fully done.** Build the minimal Account/Chat profiles through the Node workspace, serve production assets, and call the real C# contract endpoint from [WP-06.04](#rule-wp-06.04) using the generated Fetch SDK and runtime validators. Exercise public exact-value vectors, a typed failure and a cancelled request. Establish initial route/transfer/interaction budgets and prove Windows esproj plus non-Windows npm entry points. The endpoint is a labelled foundation probe; production identity/business/checkout remains [WP-22](22-identity-workspace-and-device.md#rule-wp-22), [WP-23](23-public-api-and-generated-clients.md#rule-wp-23), [WP-48](48-account-portal.md#rule-wp-48), [WP-49](49-arcchat-web-companion.md#rule-wp-49).
 
-**Testing requirements.** Production browser load and real HTTP round trip; above-safe-integer/decimal values; schema failure/cancellation; dependency/CSP/secret scan; Windows IDE command and non-Windows CLI checks; measured asset budgets.
+**What must be fully done.** Build minimal Account/Chat production React profiles from Web root locks and exact released generated gRPC-Web SDK. Call the actual AOT probe through same-origin routing/cookie/CSRF and exercise exact values, typed failures, cancellation and CF authenticated presentation. Measure existing asset/interaction budgets; prove own esproj and portable npm entry points.
 
-**Completion gate.** Node-built profiles load and call the real C# probe with generated TS contracts. No .NET WASM payload, handwritten DTO, fixture-only network proof or unmeasured production-build claim.
+**Testing requirements.** Production browser round trips with real AOT host and deployed CF, no frontend dev server or handwritten DTO; malformed frame/status, session expiry and asset/CSP checks.
+
+**Completion gate.** The foundation contributes real [PG-23](../../assurance/open-gates-register.md#rule-pg-23) evidence; production identity/business/checkout remain their scheduled packages.
 
 <a id="rule-wp-06.06"></a>
 
@@ -139,6 +149,28 @@
 **Testing requirements.** The probe publish log for the first candidate.
 
 **Completion gate.** The process exists and has been exercised once. **This schedules [VG-03](../../assurance/open-gates-register.md#rule-vg-03) for `10`.**
+
+---
+
+<a id="rule-wp-06.07"></a>
+### WP-06.07 — RN native and transport foundation proof
+
+**What must be fully done.** Before producing the first Mobile artifact, enumerate and clear the exact Apache npm/Gradle/native public closure under [F-023](../../assurance/open-gates-register.md#rule-f-023). Build the pinned RN/Hermes arm64 release probe and run native navigation, OP-SQLite atomic write/reopen, secure storage, passkey result binding and the generated unary gRPC-Web adapter on a physical Android device. Call the actual AOT host, handle trailers/status/cancellation and bigint; authenticate the CF first-frame nonce and recover after process death. Record iOS as deferred.
+
+**Testing requirements.** Dependency/source/NOTICE closure and prohibited-import negatives precede build; real artifact/device/protocol/native-adapter results follow it. CF and Cloud identities match the candidate manifest; no mock closes this proof.
+
+**Completion gate.** First-artifact [F-023](../../assurance/open-gates-register.md#rule-f-023), selected RN/Hermes/native compatibility and actual AOT/CF transport proofs exist before WP30 starts. Product feature and final store gates remain WP31/WP32.
+
+<a id="rule-wp-06.90"></a>
+### WP-06.90 — Verify the owned artifact and real integration
+
+**What must be fully done.** Assemble the owned deliverables from the preceding substeps under the selected repository, package, runtime and protocol authorities. Prove actual candidate NuGet restore/native loading and desktop AOT; C# AOT gRPC/gRPC-Web plus selected auth/storage/SQL adapters; RN/Hermes generated-client calls; React client calls; a minimal deployed CF ↔ reachable C# ↔ R2 chain. This is a bounded foundation probe, not the full [WP-52](52-cloud-harness.md#rule-wp-52) Harness.
+
+**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+
+**Testing requirements.** Published binaries/artifacts run in clean consumer environments; no JIT exemption, SignalR or production Node sidecar. Record real CF and native/device evidence separately from fixtures. Selected adapters work without losing exact values.
+
+**Completion gate.** Published binaries/artifacts run in clean consumer environments; no JIT exemption, SignalR or production Node sidecar. Record real CF and native/device evidence separately from fixtures. Selected adapters work without losing exact values. Record exact artifacts and provider reality. The package is incomplete if an important contract/owner/recovery rule still requires design during coding.
 
 ---
 
@@ -167,10 +199,15 @@
 | Cloud image build, pipeline order and integration results | [WP-06.04](#rule-wp-06.04) |
 | production Web build, load and bundle baseline | [WP-06.05](#rule-wp-06.05) |
 | Third-party control probe log | [WP-06.06](#rule-wp-06.06) |
+| Pre-artifact Apache closure and RN/device/native/CF proof | [WP-06.07](#rule-wp-06.07) |
 
 ---
 
 ## 8. Completion gate
+
+**Runtime/closure producers.** [VG-06](../../assurance/open-gates-register.md#rule-vg-06) through [WP-06.04](#rule-wp-06.04); [VG-07](../../assurance/open-gates-register.md#rule-vg-07) through [WP-06.07](#rule-wp-06.07); [F-023](../../assurance/open-gates-register.md#rule-f-023) through [WP-06.07](#rule-wp-06.07). The named candidate must supply actual passing evidence; documentation does not close these gates.
+
+**[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) gate:** [WP-06.90](#rule-wp-06.90) and all inherited domain-specific gates must pass on the same candidate closure. Published binaries/artifacts run in clean consumer environments; no JIT exemption, SignalR or production Node sidecar. Record real CF and native/device evidence separately from fixtures. Selected adapters work without losing exact values.
 
 **[PG-23](../../assurance/open-gates-register.md#rule-pg-23) evidence:** [WP-06.05](#rule-wp-06.05) — Production Web foundation artifacts, generated SDK/exact values and IDE/portable CLI proof; this is the foundation contribution only. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
 
@@ -178,12 +215,13 @@
 
 1. All four desktop hosts publish Native AOT with zero trim, AOT and single-file diagnostics, and launch on every supported platform without a machine-installed runtime.
 2. Bidirectional local RPC works between two published AOT binaries with generated proxies — satisfying [VG-04](../../assurance/open-gates-register.md#rule-vg-04).
-3. A published AOT binary makes a typed HTTP call with the reflection package absent and its diagnostic build-breaking — satisfying [F-026](../../assurance/open-gates-register.md#rule-f-026).
+3. A published AOT binary makes a generated gRPC call with the selected explicit AOT-compatible adapters — satisfying [F-026](../../assurance/open-gates-register.md#rule-f-026).
 4. Realtime connects, receives, disconnects and reconnects with sequence backfill from a published AOT binary.
-5. The cloud host publishes and runs JIT with its real pipeline order and no AOT properties.
+5. The cloud host publishes and runs Native AOT with explicit adapters and zero trim/AOT diagnostics.
 6. Production React assets load and call the real C# probe through the generated TS SDK with exact-value vectors, Windows/CLI workflow evidence and recorded budgets.
 7. The third-party control admission process exists and has been exercised once.
-8. All of the above run on every main-branch build, not once.
+8. The selected RN/Hermes release probe passes first-artifact closure and actual device/service/native-adapter tests.
+9. All of the above run on every main-branch build, not once.
 
 ---
 
@@ -191,15 +229,18 @@
 
 **Upstream — all must be complete.**
 
-- [03 — Contract Foundation and the Licence Boundary Split](03-contract-foundation-and-licence-split.md)
-- [04 — Identity, Error, Revision and Versioning Primitives](04-identity-error-and-versioning-primitives.md)
-- [05 — Architecture and Repository Policy Test Suite](05-architecture-and-repository-policy-tests.md)
+- [03 contract foundation and licence split](03-contract-foundation-and-licence-split.md#rule-wp-03)
+- [04 identity error and versioning primitives](04-identity-error-and-versioning-primitives.md#rule-wp-04)
+- [05 architecture and repository policy tests](05-architecture-and-repository-policy-tests.md#rule-wp-05)
 
-**Downstream — these consume this package’s completed output.**
+**Downstream — consumers of these released outputs.**
 
-- [07 — Local Persistence Foundation](07-local-persistence-foundation.md)
-- [08 — Local IPC Transport and Registration Lifecycle](08-local-ipc-and-registration.md)
-- [10 — Design System and Desktop Shell Foundation](10-design-system-and-desktop-shell.md)
-- [12 — Observability Foundation](12-observability-foundation.md)
-- [13 — Four High-Risk Technical Probes](13-high-risk-technical-probes.md)
-- [17 — ArcChat Independent Core V1A](17-arcchat-independent-core.md)
+- [07 local persistence foundation](07-local-persistence-foundation.md#rule-wp-07)
+- [08 local ipc and registration](08-local-ipc-and-registration.md#rule-wp-08)
+- [10 design system and desktop shell](10-design-system-and-desktop-shell.md#rule-wp-10)
+- [12 observability foundation](12-observability-foundation.md#rule-wp-12)
+- [13 high risk technical probes](13-high-risk-technical-probes.md#rule-wp-13)
+- [17 arcchat independent core](17-arcchat-independent-core.md#rule-wp-17)
+- [30 mobile shared architecture](30-mobile-shared-architecture.md#rule-wp-30)
+
+---

@@ -9,6 +9,9 @@
 
 > **Goal.** Get a real Android release artifact through every gate: dependency closure and provenance (**[F-023](../../assurance/open-gates-register.md#rule-f-023)**), consumption-only conformance (**[V-09](../../assurance/phase-1-official-verification.md#rule-v-09)**), the runtime posture confirmed from the artifact (**[V-04](../../assurance/phase-1-official-verification.md#rule-v-04)**), and build-verifiable commerce prohibitions — none of which is satisfied by reading a document.
 
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Mobile. Inputs: exact Apache Contracts npm packages/descriptors and the selected RN/native package closure; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: RN/Hermes artifact and real generated service clients with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+
 ---
 
 ## 1. Scope and purpose
@@ -17,11 +20,13 @@
 
 **Out of scope.** Any in-app purchase or billing integration — prohibited (**[D-022](../../decisions/phase-1-foundation-decisions.md#rule-d-022)**). iOS build activation, which remains deferred (**[D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008)**).
 
-**Why this package exists.** Three of the register's open gates converge on the first mobile artifact. They are not documentation tasks: **[F-023](../../assurance/open-gates-register.md#rule-f-023)** requires an audited transitive closure, **[V-09](../../assurance/phase-1-official-verification.md#rule-v-09)** requires a review outcome, and **[V-04](../../assurance/phase-1-official-verification.md#rule-v-04)** requires inspecting a produced binary.
+**Why this package exists.** The initial closure gate executes before the first mobile artifact in WP06, repeats for dependency changes in WP30, and converges here with runtime/store gates for the final distributable. They are not documentation tasks: **[F-023](../../assurance/open-gates-register.md#rule-f-023)** requires an audited transitive closure, **[V-09](../../assurance/phase-1-official-verification.md#rule-v-09)** requires a review outcome, and **[V-04](../../assurance/phase-1-official-verification.md#rule-v-04)** requires inspecting a produced binary.
 
 ---
 
 ## 2. Required inputs and dependencies
+
+**Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
 | Input | Why it matters |
 |---|---|
@@ -52,90 +57,109 @@
 
 ## 4. Projects, directories, files and major types affected
 
-| Location | Change |
+All paths are relative to ArcForges-Mobile.
+
+| Location | Deliverable |
 |---|---|
-| `eng/build/android-aot.props` | Release configuration, verified from evaluated properties |
-| `eng/signing/` | Android signing configuration with credentials held in the release credential store |
-| `eng/release/mobile/` | Release procedure, store metadata and the submission checklist |
-| `eng/policy/mobile-commerce-prohibitions.json` | The machine-checkable prohibition set |
-| `tests/MobileReleaseTests/` | Commerce prohibition, artifact posture and on-device smoke suites |
-| `eng/verification/mobile/` | The **[F-023](../../assurance/open-gates-register.md#rule-f-023)** closure report and the **[V-09](../../assurance/phase-1-official-verification.md#rule-v-09)** confirmation record |
+| android/, package.json, package-lock.json | Locked release variant, version code/name, Hermes and native module closure |
+| eng/signing/, eng/release/ | CI-only signing, signed AAB and device-test APK, store metadata/privacy/support/update/rollback procedure |
+| eng/policy/ | Consumption-only route/import checks and source/licence closure |
+| tests/device/, tests/contract/ | Release-artifact runtime, migration, recovery and full provider loop |
+| eng/verification/ | NOTICE/SBOM/provenance, device measurements, store review and exact artifact receipts |
+| ios/ | Deferred Apple adapter/entitlement/signing/store/device activation specification |
 
 ---
 
 ## 5. Required implementation work
 
+**Order:** [WP-32.02](#rule-wp-32.02) validates the final locked closure before [WP-32.00](#rule-wp-32.00) produces its artifact; run [WP-32.01](#rule-wp-32.01)/03/05 on that artifact, then [WP-32.04](#rule-wp-32.04) submission and [WP-32.06](#rule-wp-32.06) status verification. The earlier first-artifact gate in WP06 is not deferred until this package.
+
 <a id="rule-wp-32.00"></a>
 
 ### WP-32.00 — Release build and signing
 
-**What must be fully done.** A CI-produced release artifact with platform app signing, reproducible from a commit, with its version stamped from the version-axis plumbing. Signing credentials are never on a developer machine.
 
-**Testing requirements.** A CI release build from a clean checkout; a signature verification; a version-stamp assertion.
+**What must be fully done.** After final closure approval, build the pinned RN Android release in clean CI. Produce signed AAB for store and signed release APK for device tests with identical JS/native dependency closure; stamp app/protocol/config/artifact identities. Signing keys stay in the release credential store. Attach NOTICE, source/SBOM and hashes.
 
-**Completion gate.** CI produces a signed release artifact reproducibly, with credentials held only in the release credential store.
+**Testing requirements.** Verify signatures, version stamps, reproducible dependency/asset closure and installation/upgrade from the supported previous version; record any nondeterministic signing envelope separately.
+
+**Completion gate.** Signed installable release artifacts have exact source/lock/build provenance and pass the prior closure gate.
 
 <a id="rule-wp-32.01"></a>
 
 ### WP-32.01 — Runtime posture confirmation
 
-**What must be fully done.** The produced release artifact is inspected to confirm the runtime is the supported Mono AOT path. The evidence is the artifact inspection, not the project file. A framework-upgrade re-verification checklist is attached.
 
-**Testing requirements.** An artifact inspection record; an evaluated-property cross-check; the re-verification checklist recorded.
+**What must be fully done.** Inspect the packaged Hermes bytecode, Hermes/native libraries, arm64 ABI and release/debug settings; run the exact release APK on physical devices. Record RN/New Architecture/native template identities and the framework-upgrade re-verification trigger.
 
-**Completion gate.** The runtime is confirmed from the artifact. **This satisfies [VG-07](../../assurance/open-gates-register.md#rule-vg-07)** and links [VG-08](../../assurance/open-gates-register.md#rule-vg-08) to the upgrade process.
+**Testing requirements.** Artifact inspection plus device navigation/storage/passkey/transport/push exercise; no Mono/.NET mobile runtime or desktop native package; iOS remains unbuilt.
+
+**Completion gate.** The real RN/Hermes artifact closes [VG-07](../../assurance/open-gates-register.md#rule-vg-07) and records the [VG-08](../../assurance/open-gates-register.md#rule-vg-08) upgrade obligation.
 
 <a id="rule-wp-32.02"></a>
 
 ### WP-32.02 — Dependency closure and provenance
 
-**What must be fully done.** The complete direct and transitive dependency closure is enumerated with each dependency's licence, source and provenance. Any GPL-family or AGPL-only item is registered and returned for decision rather than excepted. An SBOM is produced for the artifact.
 
-**Testing requirements.** A closure report covering 100 % of dependencies with a licence position each; a negative test asserting an introduced AGPL dependency fails the check.
+**What must be fully done.** Before [WP-32.00](#rule-wp-32.00), revalidate the final npm/Gradle/native/generated public closure including source and NOTICE. Compare with WP06/WP30 evidence, review all differences and produce the final SBOM; reject unresolved licence/provenance items.
 
-**Completion gate.** 100 % of the closure has a licence position with no unresolved item. **This satisfies [F-023](../../assurance/open-gates-register.md#rule-f-023).**
+**Testing requirements.** Complete transitive closure with licence/source positions and negative AGPL/unknown-native import fixtures.
+
+**Completion gate.** [F-023](../../assurance/open-gates-register.md#rule-f-023) is passed for the exact final closure before its first build and any changed closure is gated again.
 
 <a id="rule-wp-32.03"></a>
 
 ### WP-32.03 — Commerce prohibition check
 
-**What must be fully done.** A machine check asserting no purchase surface, embedded checkout, store billing integration, external purchase call to action, or licence-key or purchase-token unlock path exists in any build path. The licence-key path is called out explicitly as the prohibition most likely to be violated by accident.
 
-**Testing requirements.** Negative fixtures for each of the five prohibitions, each of which must fail the build.
+**What must be fully done.** Enforce all five existing consumption-only prohibitions in native routes, deep links, bundles, dependencies and store metadata: purchase surface, embedded checkout, store billing, external purchase CTA and licence/purchase-token unlock. Allow only the designated non-commerce account/security/support routes.
 
-**Completion gate.** All five prohibitions are machine-checked with negative fixtures failing the build.
+**Testing requirements.** One negative fixture per prohibition, including remote-config/link attempts and hidden route navigation.
+
+**Completion gate.** All prohibited paths fail policy checks and are absent from the actual release artifact.
 
 <a id="rule-wp-32.04"></a>
 
 ### WP-32.04 — Store category fit and consumption-only conformance
 
-**What must be fully done.** Category fit confirmed with the store's review process, and consumption-only conformance confirmed — by review outcome, not by reading a guideline. The confirmation and its date are recorded.
 
-**Testing requirements.** A recorded review outcome; a checklist mapping each store requirement to its evidence.
+**What must be fully done.** Submit under the intended long-term owning store identity with category, privacy/data collection, deletion/support, notification/file permissions and consumption-only metadata matched to behavior. Record actual review outcome. Establish staged rollout, supported-version communication and rollback to a compatible prior signed release; server compatibility preserves the public client window and pending commands.
 
-**Completion gate.** Category fit and consumption-only conformance are confirmed by review outcome and recorded. **This satisfies [VG-13](../../assurance/open-gates-register.md#rule-vg-13).**
+**Testing requirements.** Store review evidence, privacy/support links, staged rollout/rollback exercise and previous-version migration/device result.
+
+**Completion gate.** Actual category-fit and consumption-only review closes [VG-13](../../assurance/open-gates-register.md#rule-vg-13); no guideline reading is reported as store approval.
 
 <a id="rule-wp-32.05"></a>
 
 ### WP-32.05 — On-device verification
 
-**What must be fully done.** The release artifact is smoke-tested on real devices covering the supported version and form-factor range: cold start, sign-in, conversation, task, approval, background resume, weak network, push and deep link. Cold start, memory and weak-network behaviour are measured against budget.
 
-**Testing requirements.** A device matrix run with recorded results; budget measurements; accessibility verification with the platform's assistive technology.
+**What must be fully done.** Run the full WP31 product/CF/desktop loop and all mobile initial-state/recovery scenarios on supported physical low/mid-tier arm64 devices using the release APK. Measure launch/RAM/frame behavior, long lists/streams, weak network, storage pressure and screen-reader/dynamic-text behavior against the existing quality contract.
 
-**Completion gate.** The release artifact passes on-device smoke tests across the device matrix, meets budgets, and passes accessibility verification.
+**Testing requirements.** Record exact devices/OS/artifact and real providers; exercise kill during send/refresh/migration, expiry/revoke, missed push, hostile links, pending approvals and rollback upgrade.
+
+**Completion gate.** Every applicable quality, accessibility, compatibility and commercial companion gate passes on the release closure.
 
 <a id="rule-wp-32.06"></a>
 
 ### WP-32.06 — iOS position
 
-**What must be fully done.** The iOS project's architecture is complete and its build status is stated as deferred, in the repository and in any public material. No claim of compilation or testing is made. The re-verification obligation before activation is recorded.
 
-**Testing requirements.** A documentation scan asserting no compiled-or-tested claim exists.
+**What must be fully done.** Keep the selected iOS template, app/service/storage interfaces, AuthenticationServices/Keychain/APNs/app-link/file adapter mapping, signing/entitlements/store metadata and physical-device activation matrix documented. CI build/submission remain disabled until the existing activation gates run.
 
-**Completion gate.** No iOS build or test claim exists anywhere, and the activation re-verification obligation is recorded.
+**Testing requirements.** Check repository/release metadata claims and gate triggers; no successful iOS compile or test is asserted.
 
----
+**Completion gate.** iOS is architecture-present/build-deferred with a concrete activation procedure and truthful status.
+
+<a id="rule-wp-32.90"></a>
+### WP-32.90 — Verify the owned artifact and real integration
+
+
+**What must be fully done.** Collect the exact signed RN artifact and all preceding release, provider, store and support/rollback receipts in the candidate manifest.
+
+**Testing requirements.** Verify receipts identify that same closure and no gate is satisfied by a mock or a debug build.
+
+**Completion gate.** Android is deliverable only when every applicable runtime, licence, device, commerce and store gate is actually passed; iOS remains deferred.
 
 ## 6. Impacts
 
@@ -167,6 +191,8 @@
 
 ## 8. Completion gate
 
+**[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) gate:** [WP-32.90](#rule-wp-32.90) and all inherited domain-specific gates must pass on the same candidate closure. Inspect and run the real signed Android artifact; verify compiled JS bytecode/runtime and platform behavior without claiming machine-code AOT equivalence or iOS delivery.
+
 **All of the following, with recorded evidence:**
 
 1. CI produces a signed release artifact reproducibly, with signing credentials held only in the release credential store.
@@ -183,8 +209,10 @@
 
 **Upstream — all must be complete.**
 
-- [31 — ArcChat Mobile Android Remote Closed Loop](31-arcchat-mobile-android.md)
+- [31 arcchat mobile android](31-arcchat-mobile-android.md#rule-wp-31)
 
-**Downstream — these consume this package’s completed output.**
+**Downstream — consumers of these released outputs.**
 
-- [50 — Full-Platform Production Release](50-full-platform-production-release.md)
+- [50 full platform production release](50-full-platform-production-release.md#rule-wp-50)
+
+---

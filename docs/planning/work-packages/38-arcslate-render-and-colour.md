@@ -9,6 +9,9 @@
 
 > **Goal.** Produce final output that is correct rather than merely fast: colour management as a first-class system, render as a Task bound to an immutable snapshot, export presets, and subtitles — with preview and final render sharing one set of semantics.
 
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: ArcSlate; Platform. Inputs: exact compatible Contracts packages/descriptors and applicable DesktopPlatform packages; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: Native AOT candidate packages/executables with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+
 ---
 
 ## 1. Scope and purpose
@@ -22,6 +25,8 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+**Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
 **Frozen design input.** [content-origin behavior](../../requirements/07-security-privacy-and-trust.md#content-origin-profile) and [carrier schema](../../requirements/13-data-formats-and-portability.md#content-origin-carriers) is fixed before this package; implement it without choosing a different marking mechanism.
 
@@ -144,6 +149,19 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 ---
 
+<a id="rule-wp-38.90"></a>
+### WP-38.90 — Verify the owned artifact and real integration
+
+**What must be fully done.** Preserve render snapshot, color/subtitle/output and publication rules. State explicitly that local rendering is a ProductJob, correcting ambiguous generic Task wording; integrate package versions.
+
+**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+
+**Testing requirements.** Independent render/range/color/output checks and cancel/failure/atomic-publish recovery. No CF Harness or AI budget is required for native render execution.
+
+**Completion gate.** Independent render/range/color/output checks and cancel/failure/atomic-publish recovery. No CF Harness or AI budget is required for native render execution. Record exact artifacts and provider reality. The package is incomplete if an important contract/owner/recovery rule still requires design during coding.
+
+---
+
 ## 6. Impacts
 
 | Dimension | Impact |
@@ -176,6 +194,8 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 ## 8. Completion gate
 
+**[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) gate:** [WP-38.90](#rule-wp-38.90) and all inherited domain-specific gates must pass on the same candidate closure. Independent render/range/color/output checks and cancel/failure/atomic-publish recovery. No CF Harness or AI budget is required for native render execution.
+
 **[PG-08](../../assurance/open-gates-register.md#rule-pg-08) evidence:** [WP-38](#rule-wp-38) — Render/colour hardware results bind the lab inventory and software fallback comparison. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
 
 **Additional completion requirement.** The package's content paths pass the stated origin vectors, including unknown input and failed publication; a valid stored/rendered payload alone cannot satisfy the carrier requirement.
@@ -196,8 +216,10 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 **Upstream — all must be complete.**
 
-- [37 — ArcSlate Playback and Processing Runtime](37-arcslate-playback-and-processing.md)
+- [37 arcslate playback and processing](37-arcslate-playback-and-processing.md#rule-wp-37)
 
-**Downstream — these consume this package’s completed output.**
+**Downstream — consumers of these released outputs.**
 
-- [39 — ArcSlate Integration and Portability](39-arcslate-integration-and-portability.md)
+- [39 arcslate integration and portability](39-arcslate-integration-and-portability.md#rule-wp-39)
+
+---

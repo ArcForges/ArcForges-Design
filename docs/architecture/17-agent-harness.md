@@ -7,7 +7,7 @@
 
 The runtime architecture describes the task engine, tool locality, metering and tracing. **It does not describe the loop.** This document specifies the concrete mechanism by which a model is given context, proposes actions, has them executed against real ArcForges operations, and produces durable results.
 
-**What this is.** The single ArcForges-owned Harness, running in `ArcForges.Cloud.Host`: the turn loop, the tool protocol, context assembly and compaction, capability selection, approval interleaving, streaming, cancellation and recovery.
+**What this is.** The single ArcForges-owned Harness, running in the ArcForges-AI CF Workflow: the turn loop, the tool protocol, context assembly and compaction, capability selection, approval interleaving, streaming, cancellation and recovery.
 
 **What this is not.** A general-purpose coding agent, a client-side loop, or a delegation platform. ArcForges uses **models** from providers with operator-funded credentials. There are no agent teams, no sub-agents, no external-agent delegation and no end-user provider keys (`§9`).
 
@@ -19,15 +19,15 @@ The runtime architecture describes the task engine, tool locality, metering and 
 
 | Layer | What it is | Who owns it | Replaceable? |
 |---|---|---|---|
-| **Provider transport** | HTTP to a model provider using **operator-funded credentials**; request and response shapes; streaming framing | Provider adapter, in Cloud (`§6` of the runtime architecture) | Yes — per provider |
+| **Provider transport** | HTTP to a model provider using **operator-funded credentials**; request and response shapes; streaming framing | Workers AI adapter in ArcForges-AI (`§6` of the runtime architecture) | Within the selected Workers AI model set |
 | **Reusable mechanism** | Token counting, message serialisation, streaming parsing, retry primitives | A library **or** first-party code, chosen on merit | Yes |
-| **The ArcForges Harness** | The turn loop, tool protocol, context assembly, compaction, selection, approval, durability, recovery, admission and metering | **ArcForges Cloud, always** | **No** |
+| **The ArcForges Harness** | The turn loop, tool protocol, context assembly, compaction, selection, approval, durability, recovery, admission and metering | **ArcForges-AI Workflow; C# business ports** | **No** |
 
 | # | Rule |
 |---|---|
 | LS-01 | **Using a provider's model is not depending on that vendor's agent product.** The Harness speaks a provider's completion or messages API; it does not embed a coding agent. |
-| <a id="rule-ls-02"></a>LS-02 | **There is exactly one Harness, and it runs in `ArcForges.Cloud.Host`** ([RT-03](05-cloud-architecture.md#rule-rt-03) of the cloud architecture). No desktop, mobile or browser client runs a model loop ([CM-02](09-ai-and-agent-runtime-architecture.md#rule-cm-02) of the runtime architecture, [I-491](../requirements/01-normative-glossary-and-invariants.md#rule-i-491)). |
-| LS-03 | **A reusable library may be adopted for a mechanism layer** where it is licence-compatible (**[D-004](../decisions/phase-1-foundation-decisions.md#rule-d-004)**) and passes the dependency policy. It may **never** own the Harness layer. The Cloud AOT constraint does not apply here (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**, **[V-03](../assurance/phase-1-official-verification.md#rule-v-03)**). |
+| <a id="rule-ls-02"></a>LS-02 | **There is exactly one Harness, and it runs in the ArcForges-AI CF Workflow** ([RT-03](05-cloud-architecture.md#rule-rt-03) of the cloud architecture). No desktop, mobile or browser client runs a model loop ([CM-02](09-ai-and-agent-runtime-architecture.md#rule-cm-02) of the runtime architecture, [I-491](../requirements/01-normative-glossary-and-invariants.md#rule-i-491)). |
+| LS-03 | **A reusable library may be adopted for a mechanism layer** where it is licence-compatible (**[D-004](../decisions/phase-1-foundation-decisions.md#rule-d-004)**) and passes the dependency policy. It may **never** own the Harness layer. The CF Worker runtime governs this TS implementation; C# integration ports remain Native AOT (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**, **[V-03](../assurance/phase-1-official-verification.md#rule-v-03)**). |
 | LS-04 | **No end-user provider credential exists** in any layer ([BY-01](../requirements/04-commerce-entitlement-and-credits.md#rule-by-01)–[BY-04](../requirements/04-commerce-entitlement-and-credits.md#rule-by-04) of the commerce requirements; [I-015](../requirements/01-normative-glossary-and-invariants.md#rule-i-015) retired). Provider credentials are deployment secrets injected per [DC-15](../requirements/11-policy-and-configuration.md#rule-dc-15). |
 | LS-05 | **Agent teams, sub-agents and external-agent delegation are excluded** ([EA-01](../requirements/08-extensions-and-developer-platform.md#rule-ea-01)–[EA-08](../requirements/08-extensions-and-developer-platform.md#rule-ea-08) of the extension requirements). See `§9`. |
 
@@ -355,7 +355,7 @@ The asymmetry is the point: **the intent is written before the act, so its absen
 | CR-01 | **A local command log decides recovery only for effects that commit with it.** For an ArcNotes edit on the same device, the log write and the edit are one transaction and absence is proof. For anything crossing a process, a device or a network, it is not, and the design says so rather than relying on a convenient assumption. |
 | CR-02 | The sweeper releases an orphaned **customer** hold at its reconciliation deadline ([UU-03](20-cross-system-lifecycles.md#rule-uu-03) of the cross-system lifecycles). It records a terminal no-later-customer-debit disposition. An unresolved supplier liability remains reserved and reconciled independently ([UC-02](16-billing-and-commerce-architecture.md#rule-uc-02) of the commerce architecture). |
 | CR-03 | **Recovery is verifiable**: after restart, every task is in a valid state with a reason facet, and none is stuck in a transient state ([WP-16.00](../planning/work-packages/16-unified-execution-engine.md#rule-wp-16.00)). |
-| CR-04 | **`Unknown` is a terminal-until-resolved state, not a synonym for failure.** It has its own reason facet, its own resolution path (`§6.4`) and its own user-visible presentation. Collapsing it into success or failure is what produces either a duplicated effect or a lost one. |
+| CR-04 | **Task unknownEffect is nonterminal until explicitly resolved, not a synonym for failure.** It has its own reason facet, its own resolution path (`§6.4`) and its own user-visible presentation. Collapsing it into success or failure is what produces either a duplicated effect or a lost one. |
 
 ### 6.4 Resolving an unknown effect
 
@@ -382,28 +382,23 @@ Resolution is ordered from cheapest and most certain to least, and stops at the 
 
 ### 7.1 Shared presentation storage and retention
 
-`chat.stream_chunk` and `chat.stream_state` are short-lived **ordinary logged PostgreSQL tables** shared by every identical Cloud replica. They are presentation projections, have no aggregate revision and never appear in sync. They **are included in WAL/physical backups** with the rest of the database; calling them transient does not exclude their bytes. Online TTL and backup/PITR retention are distinct privacy boundaries. Access, encryption at rest, backup access and erasure-after-backup-expiry follow the deployment data policy. Restore purges transient rows and reconciles Task/attempt authority before serving traffic; no restored stream restarts provider work.
-
-| Table | Required columns and constraints |
-|---|---|
-| `stream_chunk` | `(task_id, stream_id, from_offset)` PK; UTF-8 payload, end offset, created/expiry times; contiguous append, bounded bytes, immutable within a stream. Offset is measured in UTF-8 bytes, at code-point boundaries. |
-| `stream_state` | `(task_id, stream_id)` PK; provider attempt ID, owner fence, state `open/completed/truncated/superseded/evicted`, next offset, optional successor stream ID, current flag, expiry. Unique current stream per Task; append locks this row and verifies the current Task lease/fence. |
+The stream_chunk and stream_state projection tables live in the per-run CF Durable Object SQLite store under [CF integration §5](contracts/05-cloudflare-integration.md#5-live-presentation-and-client-recovery). C# stores only canonical Task/attempt/output and current stream pointers. DO text is absent from PostgreSQL WAL/backups. CF storage deletion/retention and independent restore are explicit in that contract; deleting a projection never deletes an iteration/final message.
 
 | # | Rule |
 |---|---|
 | <a id="rule-sb-01"></a>SB-01 | Presentation is not canonical Chat history. Complete model responses/tool proposals become immutable `task.iteration_output` before customer settlement; terminal Task publication separately creates the final/interrupted message. Loss of presentation cannot erase either durable fact. |
 | SB-02 | Each provider attempt has a new stream ID. Retrying or starting a later model invocation cannot concatenate two attempts into one answer. The previous stream identifies its successor where one exists. |
 | SB-03 | Initial limits: 64 KiB per chunk/read, 4 MiB per stream, flush at 250 ms or the chunk bound, ten-minute tail TTL and 24-hour state-marker retention, all bounded validated deployment parameters. Unicode boundary-safe appends update chunk + next offset together. |
-| <a id="rule-sb-04"></a>SB-04 | Reads use the shared primary authority. A replica has no private cache whose miss can be mistaken for eviction. Database unavailability is a transport failure with retry, not an empty successful stream. |
+| <a id="rule-sb-04"></a>SB-04 | Read the stable per-run DO projection and C# Task authority through the CF HTTP contract. DO/C# unavailability is explicit; it is never an empty successful stream or fabricated Task completion. |
 | SB-05 | Missing chunks do not determine Task state. Missing/expired stream metadata resolves through the authoritative Task and provider-attempt receipt; it never fabricates `open` indefinitely or a nonexistent final message. |
 | SB-06 | The sweeper marks eviction before removing chunks. A later reader still gets Task state, current attempt, durable output/final-message references and a retry/reconciliation action. State-marker expiry cannot delete Task authority. |
 | SB-07 | A size/time bound sets **truncated**, never `completed`. Generation may continue. The client displays unavailable live output and polls Task status; it requests a final message only when that reference exists. |
 | SB-08 | Lease takeover preserves readable buffered bytes, not a dead process's provider socket. Only a surviving fenced attempt or a provider's verified resume protocol may continue that invocation. Otherwise record interrupted/unknown, reconcile supplier usage, and require the declared retry authority before a new invocation. |
-| SB-09 | Append, state transition and Task outcome publication reject a stale fence. Each model invocation's stream can complete while the Task is waiting for tools or another model call. Stream completion never implies Turn completion. |
+| <a id="rule-sb-09"></a>SB-09 | Append, state transition and Task outcome publication reject a stale fence. Each model invocation's stream can complete while the Task is waiting for tools or another model call. Stream completion never implies Turn completion. |
 
 ### 7.2 Client read contract
 
-`task.readStream(taskId, streamId?, fromOffset)` returns a bounded JSON object:
+`task.readStream(taskId, streamId?, fromOffset)` is the typed CF HTTP exception and returns this bounded JSON object:
 
 ```
 { streamId?, fromOffset, text, nextOffset, streamState,
@@ -415,7 +410,7 @@ Resolution is ordered from cheapest and most certain to least, and stops at the 
 
 | # | Rule |
 |---|---|
-| <a id="rule-sr-01"></a>SR-01 | `task.outputAppended` remains an optional identifier/offset hint with no content. Polling the same read contract works without SignalR. |
+| <a id="rule-sr-01"></a>SR-01 | `task.outputAppended` remains an optional identifier/offset hint with no content. Polling the same read contract works without gRPC hint polling. |
 | SR-02 | `open` means this attempt may append; `completed` means this attempt's stream ended; `truncated` means buffering stopped; `superseded` names a replacement; `evicted` means retained presentation expired. **None alone states that the Task completed.** No stream yet uses a null stream ID and the durable Task status. |
 | SR-03 | Reconnect resumes at the last returned offset for the same stream. A successor resets presentation to its own origin; the client does not concatenate a retry with old text. An expired range requests the authoritative iteration/message view, with a visible live-output gap where necessary. |
 | <a id="rule-sr-04"></a>SR-04 | Only a non-null final-message reference authorises fetching a final answer. A terminal no-answer Task shows its reason; running/waiting Task with completed/truncated/evicted presentation continues bounded status polling. |
@@ -485,7 +480,7 @@ The Harness always runs in Cloud ([LS-02](#rule-ls-02)). What varies is **where 
 
 | Tool locality | When | Constraint |
 |---|---|---|
-| **Cloud tool** | The capability is Cloud-owned | Executes in-process inside the turn |
+| **Cloud tool** | The capability is Cloud-owned | CF calls the C# typed cloud-tool port; the owner executes its bounded operation |
 | **Device tool** | The capability requires a desktop | Each invocation is a durable `ToolRequest` pulled by the device (`§5` of the bridge contract) |
 
 | # | Rule |
@@ -540,3 +535,7 @@ The Harness always runs in Cloud ([LS-02](#rule-ls-02)). What varies is **where 
 | HV-23 | A `CompactionRecord` never becomes personal memory and never crosses a branch or a conversation | [WP-52.01](../planning/work-packages/52-cloud-harness.md#rule-wp-52.01), [WP-15.01](../planning/work-packages/15-arcchat-conversation-core.md#rule-wp-15.01) |
 | HV-24 | Official inference is refused without an active paid service term, whatever the credit balance | [WP-42.11](../planning/work-packages/42-commerce-entitlement-and-credits.md#rule-wp-42.11), [WP-43.02](../planning/work-packages/43-managed-ai-routing-and-metering.md#rule-wp-43.02) |
 | HV-25 | Only acknowledged Cloud revisions enter the context pack; a pending client edit never reaches the model as context | [WP-25.01](../planning/work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.01), [WP-20.02](../planning/work-packages/20-first-cross-product-workflow.md#rule-wp-20.02) |
+
+## P2-009 Workflow execution contract
+
+Implement every turn/context/batching/approval rule above in the [single CF Workflow](contracts/05-cloudflare-integration.md). That contract supplies exact private ports, durable intent/ack points, lease epochs, bounds, one-use public stream connection, schema/policy pinning, lost-output handling and migration. No C# background service may advance a model loop; it dispatches/reconciles receipts. Model retries after possible dispatch are disabled, including automatic platform retries.

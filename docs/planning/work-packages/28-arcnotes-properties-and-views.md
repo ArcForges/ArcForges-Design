@@ -11,6 +11,9 @@
 
 > **Scope amendment, 2026-09-06 ([P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006)).** Board, gallery, calendar and timeline layouts, formula evaluation, relation and rollup engines are **excluded from delivery**, with no mandatory future hook. Required depth is common scalar property types plus saved list and table views with filtering and sorting.
 
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: ArcNotes + Cloud; Contracts profile. Inputs: exact compatible Contracts packages/descriptors and applicable DesktopPlatform packages; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: Native AOT candidate packages/executables with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+
 ---
 
 ## 1. Scope and purpose
@@ -24,6 +27,8 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+**Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
 **Frozen design input.** [notes.scalar.v1](../../requirements/products/arcnotes.md#notes-scalar-query-profile) and [NotesQuery](../../architecture/contracts/02-local-rpc-operations.md#notes-query-contract)
 
@@ -147,6 +152,19 @@
 
 ---
 
+<a id="rule-wp-28.90"></a>
+### WP-28.90 — Verify the owned artifact and real integration
+
+**What must be fully done.** Keep scalar properties, list/table projections and the full `notes.scalar.v1` evaluator semantics. Bind field/presence/order/cursor rules to proto and the TS public representation.
+
+**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+
+**Testing requirements.** Independent local/Cloud query vectors, null/missing/invalid values, sorting/tie-breaks and snapshot pagination. Keep the producer edge to WP-40.
+
+**Completion gate.** Independent local/Cloud query vectors, null/missing/invalid values, sorting/tie-breaks and snapshot pagination. Keep the producer edge to WP-40. Record exact artifacts and provider reality. The package is incomplete if an important contract/owner/recovery rule still requires design during coding.
+
+---
+
 ## 6. Impacts
 
 | Dimension | Impact |
@@ -179,6 +197,8 @@
 
 ## 8. Completion gate
 
+**[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) gate:** [WP-28.90](#rule-wp-28.90) and all inherited domain-specific gates must pass on the same candidate closure. Independent local/Cloud query vectors, null/missing/invalid values, sorting/tie-breaks and snapshot pagination. Keep the producer edge to WP-40.
+
 **Additional completion requirement.** Every scalar/query/profile vector passes on both owners; all supported list/table operations are implemented without new product design choices.
 
 **All of the following, with recorded evidence:**
@@ -197,11 +217,12 @@
 
 **Upstream — all must be complete.**
 
-- [19 — ArcNotes Search, Import, Export and Portability](19-arcnotes-search-and-portability.md)
-- [25 — Sync Engine and Blob Lifecycle](25-sync-engine-and-blob-lifecycle.md)
+- [19 arcnotes search and portability](19-arcnotes-search-and-portability.md#rule-wp-19)
+- [25 sync engine and blob lifecycle](25-sync-engine-and-blob-lifecycle.md#rule-wp-25)
 
-**Downstream — these consume this package’s completed output.**
+**Downstream — consumers of these released outputs.**
 
-- [40 — Knowledge, Search and Retrieval](40-knowledge-search-and-retrieval.md)
+- [40 knowledge search and retrieval](40-knowledge-search-and-retrieval.md#rule-wp-40)
+- [50 full platform production release](50-full-platform-production-release.md#rule-wp-50)
 
-- [50 — Full-Platform Production Release](50-full-platform-production-release.md)
+---

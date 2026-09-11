@@ -9,6 +9,9 @@
 
 > **Goal.** Connect ArcSlate to the platform once its timeline, command and undo semantics are stable — never before — and make projects genuinely portable: collect, consolidate, export, re-import and relink across machines.
 
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: ArcSlate + Cloud; Platform where admitted. Inputs: exact compatible Contracts packages/descriptors and applicable DesktopPlatform packages; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: Native AOT candidate packages/executables with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+
 ---
 
 ## 1. Scope and purpose
@@ -22,6 +25,8 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+**Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
 **Frozen design input.** [content-origin behavior](../../requirements/07-security-privacy-and-trust.md#content-origin-profile) and [carrier schema](../../requirements/13-data-formats-and-portability.md#content-origin-carriers) is fixed before this package; implement it without choosing a different marking mechanism.
 
@@ -133,6 +138,19 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 ---
 
+<a id="rule-wp-39.90"></a>
+### WP-39.90 — Verify the owned artifact and real integration
+
+**What must be fully done.** Preserve canonical OTIO interchange, exact half-open range projection, relink/missing-media behavior and Cloud metadata/authorized assets. Use the frozen OTIO admission/fence result, not the existing shim's mere presence.
+
+**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+
+**Testing requirements.** OTIO round trip/projection and relocation fixtures, package boundary, explicit R2 upload and missing-external-reference behavior.
+
+**Completion gate.** OTIO round trip/projection and relocation fixtures, package boundary, explicit R2 upload and missing-external-reference behavior. Record exact artifacts and provider reality. The package is incomplete if an important contract/owner/recovery rule still requires design during coding.
+
+---
+
 ## 6. Impacts
 
 | Dimension | Impact |
@@ -164,6 +182,8 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 ## 8. Completion gate
 
+**[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) gate:** [WP-39.90](#rule-wp-39.90) and all inherited domain-specific gates must pass on the same candidate closure. OTIO round trip/projection and relocation fixtures, package boundary, explicit R2 upload and missing-external-reference behavior.
+
 **[PG-20](../../assurance/open-gates-register.md#rule-pg-20) evidence:** [WP-39.05](#rule-wp-39.05) — Official OTIO double-boundary and explicit inexact-source conform evidence, combined with timeline/audio proof. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
 
 **[PG-15](../../assurance/open-gates-register.md#rule-pg-15) evidence:** [WP-39.05](#rule-wp-39.05) — Pinned official OTIO library exercises both directions, fractional/mixed rates, malicious input, fidelity and cancellation fixtures. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
@@ -187,9 +207,11 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 **Upstream — all must be complete.**
 
-- [25 — Sync Engine and Blob Lifecycle](25-sync-engine-and-blob-lifecycle.md)
-- [38 — ArcSlate Render, Export and Colour Management](38-arcslate-render-and-colour.md)
+- [25 sync engine and blob lifecycle](25-sync-engine-and-blob-lifecycle.md#rule-wp-25)
+- [38 arcslate render and colour](38-arcslate-render-and-colour.md#rule-wp-38)
 
-**Downstream — these consume this package’s completed output.**
+**Downstream — consumers of these released outputs.**
 
-- [50 — Full-Platform Production Release](50-full-platform-production-release.md)
+- [50 full platform production release](50-full-platform-production-release.md#rule-wp-50)
+
+---

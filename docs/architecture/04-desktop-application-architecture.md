@@ -161,7 +161,7 @@ Because native libraries share the process, an access violation terminates the a
 | # | Rule |
 |---|---|
 | CC-01 | **Each product owns its own cloud client** for its own data (**[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)**). ArcChat is not a proxy. |
-| CC-02 | **The typed HTTP client uses the generated-only registration and entry point.** The reflection package is absent; its diagnostic is build-breaking (**[F-026](../assurance/open-gates-register.md#rule-f-026)**). |
+| CC-02 | Consume released generated native gRPC clients with explicit registration and AOT-compatible serializers. Source-generated typed HTTP adapters are limited to the declared exceptions; [F-026](../assurance/open-gates-register.md#rule-f-026) proves the actual closure. |
 | CC-03 | **One factory manages the HTTP client**, with the access token injected by a delegating handler and **token refresh serialised**. |
 | CC-04 | **Timeout, cancellation and retry are explicit policies.** A write retry requires `CommandId` idempotency. |
 | CC-05 | **Realtime reconnection uses exponential backoff with jitter**, then backfills gaps by sequence and revision over HTTP. |

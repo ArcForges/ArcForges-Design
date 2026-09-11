@@ -9,6 +9,9 @@
 
 > **Goal.** Connect ArcScope to the platform on its own terms: metadata, analysis, annotations and reports sync by default; **raw capture stays local unless explicitly uploaded**; and ArcChat receives bounded structured context, never a raw capture.
 
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: ArcScope + Cloud; AI context consumer. Inputs: exact compatible Contracts packages/descriptors and applicable DesktopPlatform packages; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: Native AOT candidate packages/executables with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+
 ---
 
 ## 1. Scope and purpose
@@ -22,6 +25,8 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+**Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
 **Frozen design input.** [scope.measurement.v1](../../requirements/products/arcscope.md#measurement-profile)
 
@@ -137,6 +142,19 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 ---
 
+<a id="rule-wp-35.90"></a>
+### WP-35.90 — Verify the owned artifact and real integration
+
+**What must be fully done.** Bind bounded context, managed metadata, explicit raw-data uploads and resource references to gRPC/R2/CF. Preserve input selection and source authorization.
+
+**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+
+**Testing requirements.** Metadata sync and explicit-upload behavior remain distinct; context/report data retain measurement identity and ownership across real service calls.
+
+**Completion gate.** Metadata sync and explicit-upload behavior remain distinct; context/report data retain measurement identity and ownership across real service calls. Record exact artifacts and provider reality. The package is incomplete if an important contract/owner/recovery rule still requires design during coding.
+
+---
+
 ## 6. Impacts
 
 | Dimension | Impact |
@@ -170,6 +188,8 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 ## 8. Completion gate
 
+**[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) gate:** [WP-35.90](#rule-wp-35.90) and all inherited domain-specific gates must pass on the same candidate closure. Metadata sync and explicit-upload behavior remain distinct; context/report data retain measurement identity and ownership across real service calls.
+
 **[PG-03](../../assurance/open-gates-register.md#rule-pg-03) evidence:** [WP-35.04](#rule-wp-35.04) — Recorded substitute analysis and native import dependency licence disposition before use. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
 
 **Additional completion requirement.** Reported/imported measurement meaning and numerical profile survive the declared portability path.
@@ -191,9 +211,11 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 **Upstream — all must be complete.**
 
-- [25 — Sync Engine and Blob Lifecycle](25-sync-engine-and-blob-lifecycle.md)
-- [34 — ArcScope Visualisation, Analysis and Reporting](34-arcscope-analysis-and-reporting.md)
+- [25 sync engine and blob lifecycle](25-sync-engine-and-blob-lifecycle.md#rule-wp-25)
+- [34 arcscope analysis and reporting](34-arcscope-analysis-and-reporting.md#rule-wp-34)
 
-**Downstream — these consume this package’s completed output.**
+**Downstream — consumers of these released outputs.**
 
-- [50 — Full-Platform Production Release](50-full-platform-production-release.md)
+- [50 full platform production release](50-full-platform-production-release.md#rule-wp-50)
+
+---

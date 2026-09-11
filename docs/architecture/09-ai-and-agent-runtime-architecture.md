@@ -14,22 +14,15 @@ One Cloud Harness, one Task model, one metering path. Tool locality varies; the 
 **Every model call, the single Harness and all durable agent orchestration are Cloud** (**[P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006)**). The desktop contributes UI, authorised local tool execution and product-local jobs. There is no second agent runtime anywhere.
 
 ```
-+----------- ArcChat / product desktop -----------+   +------- ArcForges Cloud Host -------+
-| Presentation and command surfaces               |   | THE HARNESS  (single, Cloud-only)  |
-|  - conversation, task and approval UI           |   |  - turn loop and tool protocol     |
-|  - product AI entry points (selection-scoped)   |   |  - context assembly                |
-|                                                 |   |  - capability selection            |
-| Local tool executor                             |   |  - approval interleaving           |
-|  - pulls authorised ToolRequests                |<--|  - ToolRequest issuer              |
-|  - re-authorises locally, executes, returns     |-->|  - trace recorder                  |
-|                                                 |   |                                    |
-| Product job runner  (NOT an agent runtime)      |   | AI control plane                   |
-|  - render, capture, index, export               |   |  - routing and tariff resolution   |
-|  - owns its own progress and recovery           |   |  - admission, capacity, credits    |
-+-------------------------------------------------+   |  - usage and supplier cost records |
-                                                       |  - provider adapters (operator-    |
-                                                       |    funded credentials only)        |
-                                                       +------------------------------------+
+Desktop / React / RN: intent, Task/approval UI, draft/ack state
+    -> C# Native AOT: Task/Chat/Agent/Commerce/Entitlement authority
+        -> transactional dispatch outbox -> CF RunWorkflow
+            -> authorized context + typed tool proposals + Workers AI
+            -> C# intent/outcome/settlement/finalization ports
+Desktop tool executor pulls durable ToolRequests from C#,
+re-authorizes through the owner, commits, and reports actual effect.
+Native ProductJobs own capture/render/analysis; no model loop.
+CF RunStream DO carries live presentation only; C# owns final facts.
 ```
 
 | # | Rule |
@@ -45,7 +38,7 @@ One Cloud Harness, one Task model, one metering path. Tool locality varies; the 
 
 ## 2. Agent runtime under AOT
 
-**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** and the effective **[P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006)** boundary place the model loop in JIT Cloud and the typed device tool path in the AOT desktop.
+[P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) places the only model/tool loop in CF Workflow. Both the C# business ports and desktop typed tool path are Native AOT; framework constraints below apply to the C# boundary, while CF execution follows [the integration contract](contracts/05-cloudflare-integration.md).
 
 | # | Rule |
 |---|---|
@@ -226,7 +219,7 @@ Placement no longer describes where the model loop runs — it always runs in Cl
 
 | Tool locality | Executed by | Reached how |
 |---|---|---|
-| **Cloud tool** | The Cloud host itself | In-process, inside the Harness turn |
+| **Cloud tool** | The owning C# module | CF invokes the typed tool/admission port; C# executes its owner handler and commits an outcome |
 | **Device tool** | An authorised desktop, through ArcChat Desktop's local tool executor | Durable `ToolRequest` pulled by the device (**[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)**) |
 
 | # | Rule |
@@ -359,3 +352,15 @@ Automation Definition (versioned)
 | **[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)** | Durable `ToolRequest` / `ToolResult` remote execution |
 | **[D-020](../decisions/phase-1-foundation-decisions.md#rule-d-020)** | Reserve-then-settle, fixed precision, per-run tariff snapshot, hard stop, three ledgers |
 | **[V-02](../assurance/phase-1-official-verification.md#rule-v-02)** | MCP stability, statelessness and vocabulary disambiguation |
+
+## P2-009 execution placement and supplier binding
+
+Selected Workers AI routes: @cf/openai/gpt-oss-120b for default text/tool work; @cf/openai/gpt-oss-20b as explicit lower-latency text profile; @cf/google/gemma-4-26b-a4b-it only for accepted authorized image-context understanding; @cf/baai/bge-m3 for multilingual1024-dimensional embeddings; @cf/baai/bge-reranker-base for bounded reranking. No text-to-image/voice product feature added. Direct bindings, no mandatory AI Gateway/Agents SDK/Vercel SDK/external provider. Text input cap24,000 tokens, output4096, tools32, total context<=256 KiB default; vision max 4 approved images <=1024px longest side/1 MiB each, no raw media/capture egress. Embedding chunk512tokens/overlap64, batch16,1024 finite float components; query/doc use same version, max 200rerank candidates. Model max limits may be higher; product limits stay these bounded values.
+
+Model route/config pins exact CF model ID and adapter profile v1. CF does not promise immutable weights behind an ID: a supplier change triggers eval/versioned embedding rebuild. No silent fallback across modality/tool capabilities. Operator can activate another supported selected model only through versioned config/canary; unavailable route returns named availability reason, no external-provider reroute. Model output classification stays Harness§3; tools decoded/validated through generated capability schema before proposing approval. No embedded function executor can bypass C# authorization. Rerank/scientific measurement remains advisory versus deterministic scalar/unit meanings.
+
+Supplier request ID is nullable until CF returns one; ArcForges attempt identity exists first. Usage counts come from per-call response if supplied; missing/partial measurements stay unknown. Normalize input/output/cached counts and exact decimal supplier price version; existing customer tariff, admission/hold/settlement/refund examples unchanged. No promise that CF aggregate billing can resolve one missing call; late supplier totals reconcile operator liability separately, never debit a customer after its existing terminal hold deadline. Production prices are operator input snapshots of published CF rates, synthetic testprices explicitly labeled.
+
+Search keeps PostgreSQL full-text/pgvector projections and query-time authorization; no Vectorize/D1 migration. Projection key(sourceId,sourceRev,embeddingModelId,embeddingProfileVersion,chunkHash), tombstone/source-denial before counts/citations. Model dimension/profile change builds separate index from authorized acknowledged sources, catches up journal, switches reader atomically and retains rollback window; no mixing vectors or changing canonical Notes scalar order. C# config activation creates immutable snapshot, Worker acknowledges supported schema/model/limits and version hash, then C# atomically moves active head; stale Worker cannot admit a new call. Emergency denial applies immediately even to a frozen Run; existing tariff snapshot remains for already admitted work.
+
+The [sole Workflow and transactional ports](contracts/05-cloudflare-integration.md) supply the concrete placement, transitions, retry/approval/cancellation and restore rules. C# schedules deterministic occurrences and owns their Task record; CF advances the model/tool loop. ProductJob remains product-owned.

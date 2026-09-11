@@ -9,6 +9,9 @@
 
 > **Goal.** Build the local storage foundation every desktop product shares: the canonical commit unit, the journal, snapshots, the migration runner, the managed resource store and the derived-store separation — with crash recovery proven, not assumed.
 
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Platform managed mechanisms; product owners. Inputs: exact compatible Contracts packages/descriptors and applicable DesktopPlatform packages; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: Native AOT candidate packages/executables with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+
 ---
 
 ## 1. Scope and purpose
@@ -22,6 +25,8 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+**Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
 **Frozen design input.** [content-origin behavior](../../requirements/07-security-privacy-and-trust.md#content-origin-profile) and [carrier schema](../../requirements/13-data-formats-and-portability.md#content-origin-carriers) is fixed before this package; implement it without choosing a different marking mechanism.
 
@@ -147,6 +152,19 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 ---
 
+<a id="rule-wp-07.90"></a>
+### WP-07.90 — Verify the owned artifact and real integration
+
+**What must be fully done.** Package desktop persistence mechanisms; retain product-owned canonical schemas, journal/snapshot/pending-edit distinctions and corruption/recovery rules. RN storage follows the same public semantics through Mobile's implementation.
+
+**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+
+**Testing requirements.** Package consumption does not centralize product data ownership; pending edits, interrupted commits and unknown-schema behavior retain their current profile results.
+
+**Completion gate.** Package consumption does not centralize product data ownership; pending edits, interrupted commits and unknown-schema behavior retain their current profile results. Record exact artifacts and provider reality. The package is incomplete if an important contract/owner/recovery rule still requires design during coding.
+
+---
+
 ## 6. Impacts
 
 | Dimension | Impact |
@@ -179,6 +197,8 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 ## 8. Completion gate
 
+**[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) gate:** [WP-07.90](#rule-wp-07.90) and all inherited domain-specific gates must pass on the same candidate closure. Package consumption does not centralize product data ownership; pending edits, interrupted commits and unknown-schema behavior retain their current profile results.
+
 **Additional completion requirement.** The package's content paths pass the stated origin vectors, including unknown input and failed publication; a valid stored/rendered payload alone cannot satisfy the carrier requirement.
 
 **All of the following, with recorded evidence:**
@@ -197,13 +217,15 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 **Upstream — all must be complete.**
 
-- [04 — Identity, Error, Revision and Versioning Primitives](04-identity-error-and-versioning-primitives.md)
-- [06 — AOT, JIT and Web Publish Proof](06-aot-jit-and-wasm-publish-proof.md)
+- [04 identity error and versioning primitives](04-identity-error-and-versioning-primitives.md#rule-wp-04)
+- [06 aot jit and wasm publish proof](06-aot-jit-and-wasm-publish-proof.md#rule-wp-06)
 
-**Downstream — these consume this package’s completed output.**
+**Downstream — consumers of these released outputs.**
 
-- [08 — Local IPC Transport and Registration Lifecycle](08-local-ipc-and-registration.md)
-- [13 — Four High-Risk Technical Probes](13-high-risk-technical-probes.md)
-- [18 — ArcNotes Document Core](18-arcnotes-document-core.md)
-- [33 — ArcScope Acquisition and Session Core](33-arcscope-acquisition-and-session.md)
-- [36 — ArcSlate Project, Timeline and Media Model](36-arcslate-project-and-timeline.md)
+- [08 local ipc and registration](08-local-ipc-and-registration.md#rule-wp-08)
+- [13 high risk technical probes](13-high-risk-technical-probes.md#rule-wp-13)
+- [18 arcnotes document core](18-arcnotes-document-core.md#rule-wp-18)
+- [33 arcscope acquisition and session](33-arcscope-acquisition-and-session.md#rule-wp-33)
+- [36 arcslate project and timeline](36-arcslate-project-and-timeline.md#rule-wp-36)
+
+---

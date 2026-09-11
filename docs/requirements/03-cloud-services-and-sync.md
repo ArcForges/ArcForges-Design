@@ -268,7 +268,7 @@ Three tool-location shapes under one Cloud agent runtime, always visible to the 
 | RX-04 | Remote access defaults to off and requires explicit enablement per device, with per-capability grants (see [`02-identity-account-and-workspace.md`](02-identity-account-and-workspace.md) §5). |
 | RX-05 | **Device Presence** is an ephemeral cloud capability showing device online state, app version, remote-enabled flag and per-product readiness. It is not durable data and is never trust ([I-250](01-normative-glossary-and-invariants.md#rule-i-250)). |
 | RX-06 | **Cloud task runtime is not a general-purpose VPS.** It carries a maximum runtime, CPU and memory limits, disk limits, network policy, AI budget and output limits. |
-| <a id="rule-rx-07"></a>RX-07 | Trusted Cloud tools run as bounded internal jobs in the single JIT host, with per-job workspace scope, cancellation and temporary resources. No arbitrary user code or per-task container/TaskRunner deployment is required. Durable task/usage records survive process failure. |
+| <a id="rule-rx-07"></a>RX-07 | Trusted Cloud tools run as bounded internal jobs in the single Native AOT host, with per-job workspace scope, cancellation and temporary resources. No arbitrary user code or per-task container/TaskRunner deployment is required. Durable task/usage records survive process failure. |
 | RX-08 | Secrets are injected per capability, never as a whole vault. A task needing one connector receives only that connector's secret handle. |
 | RX-09 | **Cloud execution does not mean unlimited permission.** Every risk-tiered capability check still applies, and R4-class operations still require local confirmation on a trusted device. |
 | <a id="rule-rx-10"></a>RX-10 | The server re-authorises independently. It never trusts that the desktop already checked. Session, workspace, entitlement, permission, device trust and capability are all re-validated server-side. **The client is never the security authority.** |
@@ -505,6 +505,6 @@ Cross-workspace object-id probe · cross-workspace blob-id probe · expired pres
 | [Sync, Conflict and Backup Architecture](../architecture/07-sync-conflict-and-backup.md) | Implements sync, conflict, blob, retention and recovery obligations |
 | [Cross-System Lifecycles](../architecture/20-cross-system-lifecycles.md) | Composes subscription, deletion and resource lifecycles |
 | [Cloud Data Model](../architecture/data-model/01-cloud-data-model.md) | Defines the authoritative Cloud records |
-| **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** | Cloud is an ASP.NET Core JIT modular monolith |
+| **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** | Cloud is an ASP.NET Core Native AOT modular monolith |
 | **[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)** | Cloud never touches local IPC; durable `ToolRequest`/`ToolResult` model |
 | **[D-020](../decisions/phase-1-foundation-decisions.md#rule-d-020)** | Every allowance in §1 is versioned commercial policy, not a frozen figure |

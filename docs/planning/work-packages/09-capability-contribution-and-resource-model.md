@@ -9,6 +9,9 @@
 
 > **Goal.** Implement the cross-application semantic model — App, Installation, Instance, Contribution, Capability, Action, Context, `ResourceRef`, Artifact, Deep Link, Event, Health and Invocation — so that every product, extension and agent describes and reaches every other through one vocabulary.
 
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Contracts; Platform; products. Inputs: exact compatible Contracts packages/descriptors and applicable DesktopPlatform packages; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: Native AOT candidate packages/executables with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+
 ---
 
 ## 1. Scope and purpose
@@ -22,6 +25,8 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+**Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
 | Input | Why it matters |
 |---|---|
@@ -148,6 +153,19 @@
 
 ---
 
+<a id="rule-wp-09.90"></a>
+### WP-09.90 — Verify the owned artifact and real integration
+
+**What must be fully done.** Consume generated capability/resource/contribution contracts. Preserve typed invocation, owner semantics, resource affinity/availability, preflight/compensation and large-artifact references. Generate AI tool projections from the same definitions.
+
+**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+
+**Testing requirements.** Independent descriptor/argument/result checks; owner refuses invalid/stale invocations and opaque references do not grant access. No universal untyped business invocation replaces the catalogue.
+
+**Completion gate.** Independent descriptor/argument/result checks; owner refuses invalid/stale invocations and opaque references do not grant access. No universal untyped business invocation replaces the catalogue. Record exact artifacts and provider reality. The package is incomplete if an important contract/owner/recovery rule still requires design during coding.
+
+---
+
 ## 6. Impacts
 
 | Dimension | Impact |
@@ -179,6 +197,8 @@
 
 ## 8. Completion gate
 
+**[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) gate:** [WP-09.90](#rule-wp-09.90) and all inherited domain-specific gates must pass on the same candidate closure. Independent descriptor/argument/result checks; owner refuses invalid/stale invocations and opaque references do not grant access. No universal untyped business invocation replaces the catalogue.
+
 **All of the following, with recorded evidence:**
 
 1. App, installation and instance are distinguishable at every decision point.
@@ -195,12 +215,14 @@
 
 **Upstream — all must be complete.**
 
-- [03 — Contract Foundation and the Licence Boundary Split](03-contract-foundation-and-licence-split.md)
-- [08 — Local IPC Transport and Registration Lifecycle](08-local-ipc-and-registration.md)
+- [03 contract foundation and licence split](03-contract-foundation-and-licence-split.md#rule-wp-03)
+- [08 local ipc and registration](08-local-ipc-and-registration.md#rule-wp-08)
 
-**Downstream — these consume this package’s completed output.**
+**Downstream — consumers of these released outputs.**
 
-- [11 — Security Foundation](11-security-foundation.md)
-- [14 — ArcChat Hub and Minimal ArcNotes Cross-Process Slice](14-hub-and-minimal-provider-slice.md)
-- [16 — Unified Execution Engine](16-unified-execution-engine.md)
-- [41 — Extension Platform and Integrations](41-extension-platform-and-integrations.md)
+- [11 security foundation](11-security-foundation.md#rule-wp-11)
+- [14 hub and minimal provider slice](14-hub-and-minimal-provider-slice.md#rule-wp-14)
+- [16 unified execution engine](16-unified-execution-engine.md#rule-wp-16)
+- [41 extension platform and integrations](41-extension-platform-and-integrations.md#rule-wp-41)
+
+---

@@ -9,6 +9,9 @@
 
 > **Goal.** Execute the dispositions the completed inventory already records. The highest-priority item is not a move but a correction: **55 source files declare a licence Phase 1 forbids for their boundary.**
 
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Platform and new owners. Inputs: exact compatible Contracts packages/descriptors and applicable DesktopPlatform packages; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: owned candidate artifacts and generated contracts with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+
 ---
 
 ## 1. Scope and purpose
@@ -22,6 +25,8 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+**Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
 | Input | Why it matters |
 |---|---|
@@ -89,9 +94,9 @@
 
 <a id="rule-wp-01.01"></a>
 
-### WP-01.01 — Decide the contract split
+### WP-01.01 — Implement the frozen contract split
 
-**What must be fully done.** Every type in the existing contract projects is assigned to the public Apache-2.0 set or the internal AGPL set, using the enumerated Apache set from [WP-00.02](00-specification-naming-and-rights-freeze.md#rule-wp-00.02). Types that are currently public but should not be, and types that are currently internal but must be public for interoperability, are both identified. The split is decided here and executed in `03`.
+**What must be fully done.** Every type in the existing contract projects is assigned to the public Apache-2.0 set or the internal AGPL set, using the enumerated Apache set from [WP-00.02](00-specification-naming-and-rights-freeze.md#rule-wp-00.02). Types that are currently public but should not be, and types that are currently internal but must be public for interoperability, are both identified. Apply the already selected package/schema licence split from the layout and wire registry; WP03 generates it.
 
 **Testing requirements.** A review that every contract type has an assignment; a check that no type assigned to the public set transitively depends on an internal type.
 
@@ -111,13 +116,12 @@
 
 ### WP-01.03 — Execute the native surface dispositions
 
-> **Assessment already complete.** `§5.2` of the reconciliation evidence records, per shim: role, consuming product, permitted-surface assessment, licence position and disposition. Four are `Keep`; **two are `Fence` pending a substitute analysis** — `arcslate-otio-abi` (interchange parsing may have a managed substitute) and `arcscope-mdf-abi` (same question).
 
-**What must be fully done.** The four `Keep` shims are confirmed against current head. The two `Fence` shims are made unreferenceable from conforming projects until their substitute analyses complete in [WP-39.05](39-arcslate-integration-and-portability.md#rule-wp-39.05) and [WP-35.04](35-arcscope-integration-and-sync.md#rule-wp-35.04) respectively. No shim is deleted.
+**What must be fully done.** Retain the approved native foundations in DesktopPlatform; apply the selected vcpkg/official OTIO admission and MDF exclusion from the native registry. Migrate capability-specific managed wrappers into their DesktopPlatform packages; consume risky parsers only through the existing signed PlatformBroker isolation. Remove product copies only after exact source/NOTICE and package tests prove the transfer.
 
-**Testing requirements.** A reference check that no conforming project references a fenced shim; a confirmation that every shipped native asset still carries its recorded licence position.
+**Testing requirements.** Compare native source/import manifests and reference dispositions; reject direct MDF use, duplicate wrappers, cross-product source links and unadmitted native binaries.
 
-**Completion gate.** The two `Fence` shims are unreferenceable and their substitute analyses are scheduled against named sub-steps. **[PG-03](../../assurance/open-gates-register.md#rule-pg-03) is not closed here** — it closes per product when the native dependency licence review for that product completes (`13`, `33`, `37`).
+**Completion gate.** Every retained native component has the selected package owner and admission state; no substitute selection is deferred to product integration.
 
 <a id="rule-wp-01.04"></a>
 
@@ -133,22 +137,25 @@
 
 ### WP-01.05 — Execute the blocking moves and fence the rest
 
-**What must be fully done.** Delete the two retired Notes scaffolds and their obsolete build references exactly as [reconciliation §5.6](../../assurance/implementation-state-reconciliation.md#56-shared-boundary-and-remaining-areas) specifies; no canvas/slides schema, test or future hook remains. Verify the retained Notes core and solution graph. The moves that block downstream work are executed: contract project structure created (types moved in `03`), shared-foundation violations resolved, and everything else with a non-`Keep` disposition fenced so a conforming project cannot reference it. Each move is a separate commit that does not change behaviour ([BR-09](#rule-br-09)).
 
-**Testing requirements.** The repository builds green at every commit boundary ([BR-08](#rule-br-08)); a reference check that no conforming project references fenced code.
+**What must be fully done.** Create the ten owner repositories with the fixed source/package mapping. The current implementation history becomes DesktopPlatform; migrate only licensed selected native/mechanism material, with explicit provenance. Other owners receive new application shells and released dependencies. Remove retired Notes canvas/slides scaffolds and obsolete monorepo source/solution references according to the existing disposition; preserve unrelated work and reference histories.
 
-**Completion gate.** The repository builds, both retired Notes project paths are absent from the build graph, fenced code is unreferenceable, and the remaining dispositions are scheduled against named packages.
+**Testing requirements.** Validate owner entry points and dependency-free shells in isolation; forbidden sibling ProjectReference/submodule/source import fixtures fail. Generated package-consuming builds occur after WP03 publication in WP06; verify retired scope remains absent.
+
+**Completion gate.** The selected repository graph exists without changing accepted product behavior or importing old placeholders as implemented features.
+
+<a id="rule-wp-01.90"></a>
+### WP-01.90 — Verify the owned artifact and real integration
+
+**What must be fully done.** Assemble the owned deliverables from the preceding substeps under the selected repository, package, runtime and protocol authorities. Implement the already selected source/package graph; reuse native foundations, assign product/Cloud/Web/Mobile/SDK/test/tool ownership, retain retired-project dispositions. Resolve native fences from the frozen admission record.
+
+**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+
+**Testing requirements.** Complete old-group → target-owner/disposition mapping; independently buildable roots; no product domain copied into Platform, no forced suite, no blanket retention of six shipping shims.
+
+**Completion gate.** Complete old-group → target-owner/disposition mapping; independently buildable roots; no product domain copied into Platform, no forced suite, no blanket retention of six shipping shims. Record exact artifacts and provider reality. The package is incomplete if an important contract/owner/recovery rule still requires design during coding.
 
 ---
-
-### Web reconciliation disposition
-
-Reconcile the current Blazor App/Application/Infrastructure/Components and C# SiteGenerator projects by capability, not by retaining empty project names. Replace Web UI/rendering/build paths with `src/Web/ArcForges.Web.App`, `ArcForges.Web.Site` and owned TS packages. Retain reusable public C# DTOs/server behavior in their proper boundary; replace .NET-only Web UI component/unit tests with TS suites while retaining useful C# API/server tests. Remove obsolete Web WASM properties, package references and test/solution entries when their replacement slice lands. Windows win.slnx gains the one workspace esproj; the portable managed solution excludes all esproj references. Inventory and update implementation README/AGENTS/CLAUDE/build-policy instructions whose Web prohibition or all-C# wording conflicts with [P2-008](../../decisions/phase-2-specification-decisions.md#rule-p2-008).
-
-**Completion addition.** Every affected existing Web project/test/build entry has a replace/retain/remove disposition and a target, and the Web directory/esproj/managed/native boundary is explicit. Existing scaffold project counts are not evidence of React behavior.
-
----
-
 
 ## 6. Impacts
 
@@ -179,6 +186,8 @@ Reconcile the current Blazor App/Application/Infrastructure/Components and C# Si
 
 ## 8. Completion gate
 
+**[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) gate:** [WP-01.90](#rule-wp-01.90) and all inherited domain-specific gates must pass on the same candidate closure. Complete old-group → target-owner/disposition mapping; independently buildable roots; no product domain copied into Platform, no forced suite, no blanket retention of six shipping shims.
+
 **All of the following, with recorded evidence:**
 
 1. Drift against the inventory's bound commit `ede43db` is enumerated, and every drifted item carries a disposition. The inventory itself was completed as design-stage evidence and closed [PG-02](../../assurance/open-gates-register.md#rule-pg-02) before this package began.
@@ -194,8 +203,10 @@ Reconcile the current Blazor App/Application/Infrastructure/Components and C# Si
 
 **Upstream — all must be complete.**
 
-- [00 — Specification, Naming and Rights Freeze](00-specification-naming-and-rights-freeze.md)
+- [00 specification naming and rights freeze](00-specification-naming-and-rights-freeze.md#rule-wp-00)
 
-**Downstream — these consume this package’s completed output.**
+**Downstream — consumers of these released outputs.**
 
-- [02 — Build Governance, Packaging Policy and Analyzers](02-build-governance-and-analyzer-policy.md)
+- [02 build governance and analyzer policy](02-build-governance-and-analyzer-policy.md#rule-wp-02)
+
+---

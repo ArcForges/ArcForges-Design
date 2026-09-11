@@ -5,7 +5,7 @@
 > Governing authority: **[D-009](../../decisions/phase-1-foundation-decisions.md#rule-d-009)** (contract granularity), **[D-010](../../decisions/phase-1-foundation-decisions.md#rule-d-010)** (topology), [`../02-contracts-and-protocols.md`](../02-contracts-and-protocols.md)
 > Companions: [`01-public-api-operations.md`](01-public-api-operations.md), [`02-local-rpc-operations.md`](02-local-rpc-operations.md), [`03-realtime-and-bridge.md`](03-realtime-and-bridge.md)
 
-The contract architecture states how contracts are *shaped, versioned and generated*. This layer states **which business operations exist**. A generated OpenAPI document describes operations someone decided on; this is where they are decided.
+The contract architecture states how contracts are *shaped, versioned and generated*. This layer states **which business operations exist**. A generated service descriptor describes operations someone decided on; this is where they are decided.
 
 **Why this layer exists.** Without it an implementer inventing an endpoint must also invent its authorization context, its idempotency semantics, its error set and its revision behaviour — and two implementers would invent differently. The result would be a surface that is internally inconsistent in exactly the places that matter under failure.
 
@@ -16,7 +16,7 @@ The contract architecture states how contracts are *shaped, versioned and genera
 | Document | Covers |
 |---|---|
 | `00-operation-catalogue.md` (this) | The shared operation contract: shape, authorization, idempotency, errors, cursors, compatibility |
-| [`01-public-api-operations.md`](01-public-api-operations.md) | Every cloud HTTP operation |
+| [`01-public-api-operations.md`](01-public-api-operations.md) | Every Cloud business operation and explicit HTTP exception |
 | [`02-local-rpc-operations.md`](02-local-rpc-operations.md) | Every same-machine RPC interface |
 | [`03-realtime-and-bridge.md`](03-realtime-and-bridge.md) | Realtime events, the change feed, and the durable tool bridge |
 
@@ -29,8 +29,8 @@ Every operation on every surface — HTTP, local RPC, realtime — obeys the sam
 | # | Rule |
 |---|---|
 | OC-01 | **An operation is a named business action**, not a resource-shaped CRUD verb. `chat.appendMessage` is an operation; "PATCH conversation" is not. The name is stable and is what appears in telemetry, audit and the command log. |
-| OC-02 | **Every mutating operation carries a `CommandId`** allocated by the caller, and is exactly-once in effect ([TX-01](../data-model/00-data-model-overview.md#rule-tx-01)–[TX-06](../data-model/00-data-model-overview.md#rule-tx-06)). |
-| OC-03 | **Every mutating operation on a versioned aggregate carries `expectedRev`**, and returns the resulting revision. `expectedRev = 0` means create. |
+| OC-02 | **Every mutating operation carries a `CommandId`** allocated by the caller, and is deduplicated at its declared owner commit; external effects retain explicit uncertainty ([TX-01](../data-model/00-data-model-overview.md#rule-tx-01)–[TX-06](../data-model/00-data-model-overview.md#rule-tx-06)). |
+| OC-03 | A mutating versioned owner operation supplies its exact Cloud Revision, LocalNotesVersion or NativeContentRev precondition; these are not interchangeable. Create uses the owner-defined absent-root value. |
 | OC-04 | **Every operation returns `ArcResult<T>`** — success with a payload, or a typed `ArcError`. Business failure is a value; transport and protocol failure is an exception (`ErrorCategory`). |
 | OC-05 | **Every operation declares its authorization requirement** as a capability, a risk level and an approval posture — never "authenticated" alone. |
 | OC-06 | **Every list operation is cursor-paginated** with an opaque, scope-bound cursor. |
@@ -229,3 +229,11 @@ Every operation carries this block. It is the contract's half of the security pi
 | OV-05 | A forged or cross-scope cursor is refused | [WP-23.02](../../planning/work-packages/23-public-api-and-generated-clients.md#rule-wp-23.02) |
 | OV-06 | The bidirectional compatibility matrix passes and catches a deliberate break | [WP-23.06](../../planning/work-packages/23-public-api-and-generated-clients.md#rule-wp-23.06) |
 | OV-07 | No operation appears on two surfaces | Contract policy test |
+
+## P2-009 executable wire and transport binding
+
+Every operation/event above maps to the [numbered wire registry](04-protobuf-wire-registry.md). It fixes requests/results, record fields, enums, exact values, local counterpart preconditions, service names and compatibility. [CF integration](05-cloudflare-integration.md) fixes AI/object HTTP exceptions, frame/state recovery and authorization. New supporting bootstrap, upload-status, automation and conversation-create methods are enumerated there with their authorization/idempotency classes; none is left for endpoint invention during implementation.
+
+## Error category projection
+
+The [numbered ArcError profile](04-protobuf-wire-registry.md#3-primitive-aliases-and-enums) uses nine categories. Map all validation.* and media.time_not_representable to validation; auth.* to authentication except auth.local_presence_required to authorization; perm.* to authorization; entitlement.* and commerce.supplier_budget_exhausted to entitlement; conflict.* and command.reused_identifier to conflict; state.*, sync.* and identity.last_credential to state; resource.* and capacity.* to resource; dependency.*, provider.* and security.isolation_unavailable to execution; internal.* to internal. The existing code-specific effect/retry rules above remain decisive. This projection changes no code meaning and is complete for the registered initial code set.

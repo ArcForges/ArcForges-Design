@@ -75,7 +75,7 @@ The sequence is one continuous numbered series. Phases are a reading aid, not a 
 
 ### 2.1 Web redesign producers and consumers
 
-[P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008) preserves package identity while changing its Web implementation: [WP-01](work-packages/01-repository-reconciliation-and-target-layout.md#rule-wp-01), [WP-02](work-packages/02-build-governance-and-analyzer-policy.md#rule-wp-02) produce the npm/esproj/toolchain boundary; [WP-03](work-packages/03-contract-foundation-and-licence-split.md#rule-wp-03), [WP-04](work-packages/04-identity-error-and-versioning-primitives.md#rule-wp-04) produce C#-exported schemas and exact TS wire values; [WP-06.05](work-packages/06-aot-jit-and-wasm-publish-proof.md#rule-wp-06.05) proves a production React call against the real foundation host. [WP-22.08](work-packages/22-identity-workspace-and-device.md#rule-wp-22.08) supplies the production cookie-session adapter before [WP-23](work-packages/23-public-api-and-generated-clients.md#rule-wp-23)'s generated clients and [WP-24](work-packages/24-realtime-and-reliable-events.md#rule-wp-24)'s TS realtime adapter. [WP-47](work-packages/47-static-public-site.md#rule-wp-47) now also depends on [WP-02](work-packages/02-build-governance-and-analyzer-policy.md#rule-wp-02) and supplies the shared consumer design system before [WP-48](work-packages/48-account-portal.md#rule-wp-48), [WP-49](work-packages/49-arcchat-web-companion.md#rule-wp-49). Commercial/Chat release acceptance still consumes the real Cloud/Harness, then [WP-50](work-packages/50-full-platform-production-release.md#rule-wp-50). One new edge, [WP-02](work-packages/02-build-governance-and-analyzer-policy.md#rule-wp-02) → [WP-47](work-packages/47-static-public-site.md#rule-wp-47), prevents the static site from assuming a Node toolchain that no package has built.
+[P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008) preserves package identity while changing its Web implementation: [WP-01](work-packages/01-repository-reconciliation-and-target-layout.md#rule-wp-01), [WP-02](work-packages/02-build-governance-and-analyzer-policy.md#rule-wp-02) produce the npm/esproj/toolchain boundary; [WP-03](work-packages/03-contract-foundation-and-licence-split.md#rule-wp-03), [WP-04](work-packages/04-identity-error-and-versioning-primitives.md#rule-wp-04) produce handwritten proto descriptors/generated C#/TS packages and exact values; [WP-06.05](work-packages/06-aot-jit-and-wasm-publish-proof.md#rule-wp-06.05) proves a production React call against the real foundation host. [WP-22.08](work-packages/22-identity-workspace-and-device.md#rule-wp-22.08) supplies the production cookie-session adapter before [WP-23](work-packages/23-public-api-and-generated-clients.md#rule-wp-23)'s generated clients and [WP-24](work-packages/24-realtime-and-reliable-events.md#rule-wp-24)'s TS realtime adapter. [WP-47](work-packages/47-static-public-site.md#rule-wp-47) now also depends on [WP-02](work-packages/02-build-governance-and-analyzer-policy.md#rule-wp-02) and supplies the shared consumer design system before [WP-48](work-packages/48-account-portal.md#rule-wp-48), [WP-49](work-packages/49-arcchat-web-companion.md#rule-wp-49). Commercial/Chat release acceptance still consumes the real Cloud/Harness, then [WP-50](work-packages/50-full-platform-production-release.md#rule-wp-50). One new edge, [WP-02](work-packages/02-build-governance-and-analyzer-policy.md#rule-wp-02) → [WP-47](work-packages/47-static-public-site.md#rule-wp-47), prevents the static site from assuming a Node toolchain that no package has built.
 
 ---
 
@@ -85,7 +85,7 @@ The policy in this section is the complete, binding definition for every work pa
 
 | May be mocked initially | Must be real early |
 |---|---|
-| AI providers, streaming responses, token billing | **The device tool path inside a real AOT release binary** — pull, local re-authorisation, generated decode, typed invocation, idempotent result. **The agent loop itself is Cloud and JIT** ([LS-02](../architecture/17-agent-harness.md#rule-ls-02), **[V-03](../assurance/phase-1-official-verification.md#rule-v-03)**), so no AOT gate applies to it |
+| AI providers, streaming responses, token billing | **The device tool path inside a real AOT release binary** — pull, local re-authorisation, generated decode, typed invocation, idempotent result. **The agent loop itself is the CF Workflow** ([LS-02](../architecture/17-agent-harness.md#rule-ls-02), **[V-03](../assurance/phase-1-official-verification.md#rule-v-03)**), so no AOT gate applies to it |
 | Email delivery and one-time codes; push | **Identity, refresh and session contention** |
 | Payment provider webhook payloads (as fixtures) | **The webhook inbox, idempotency and reconciliation** |
 | Object storage adapters | **Upload interruption, hashing, resumption and quota** |
@@ -221,3 +221,63 @@ Required design inputs are current formal definitions, accepted decisions, decla
 | **[D-017](../decisions/phase-1-foundation-decisions.md#rule-d-017)** | Planning location and format |
 | **[D-019](../decisions/phase-1-foundation-decisions.md#rule-d-019)** | The status of the original stage sequence as discovery, not delivery order |
 | **[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)** | The prohibition on making ArcChat a mandatory relay for professional products |
+
+## 9. P2-009 complete artifact dependency graph
+
+All 51 active packages retain their domain scope; WP27/29 stay retired. The dependency table below is the current complete directed graph. Header and dependency sections of each package are generated from this same frozen set. Source ownership and immutable inputs are in each package; no cross-repository source dependency is implied.
+
+| WP | Required upstream |
+|---|---|
+| 00 | None |
+| 01 | 00 |
+| 02 | 01 |
+| 03 | 02 |
+| 04 | 03 |
+| 05 | 02, 03 |
+| 06 | 03, 04, 05 |
+| 07 | 04, 06 |
+| 08 | 06, 07 |
+| 09 | 03, 08 |
+| 10 | 06 |
+| 11 | 04, 08, 09 |
+| 12 | 04, 06 |
+| 13 | 06, 07, 08 |
+| 14 | 08, 09, 10, 11, 13 |
+| 15 | 14 |
+| 16 | 09, 11, 14 |
+| 17 | 06, 15, 16 |
+| 18 | 07, 10, 14 |
+| 19 | 18 |
+| 20 | 17, 19 |
+| 21 | 03, 05, 12 |
+| 22 | 11, 21 |
+| 23 | 03, 22 |
+| 24 | 23 |
+| 25 | 19, 24 |
+| 26 | 17, 24, 25 |
+| 28 | 19, 25 |
+| 30 | 03, 06, 23, 24 |
+| 33 | 07, 10, 13, 26 |
+| 34 | 33 |
+| 35 | 25, 34 |
+| 36 | 07, 10, 13, 26 |
+| 37 | 36 |
+| 38 | 37 |
+| 39 | 25, 38 |
+| 42 | 22, 23 |
+| 44 | 23, 42 |
+| 43 | 25, 42, 44 |
+| 40 | 19, 25, 28, 43, 44 |
+| 41 | 09, 11, 17 |
+| 45 | 12, 21, 44 |
+| 46 | 25, 45 |
+| 51 | 21, 23, 25, 33, 42, 44 |
+| 52 | 15, 17, 20, 21, 23, 26, 40, 41, 42, 43, 44 |
+| 31 | 26, 30, 52 |
+| 32 | 31 |
+| 47 | 00, 02 |
+| 48 | 42, 44, 47 |
+| 49 | 26, 48, 52 |
+| 50 | 20, 28, 32, 35, 39, 40, 41, 43, 46, 49, 51, 52 |
+
+Serial execution: 00, 01, 02, 03, 04, 05, 06, 07, 08, 09, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 28, 30, 33, 34, 35, 36, 37, 38, 39, 42, 44, 43, 40, 41, 45, 46, 51, 52, 31, 32, 47, 48, 49, 50. WP42.11 precedes 42.10. WP02 supplies package pipelines, WP03 schema packages, WP06 actual candidate/AOT/RN/CF/R2 foundations before full features. WP17/20 use explicitly named AI fixtures; WP52 replaces them. WP46 establishes backup mechanics; WP50 tests combined recovery after 46 and52, avoiding a cycle. Independent package/product versions are joined by a tested manifest, not a suite-wide version.

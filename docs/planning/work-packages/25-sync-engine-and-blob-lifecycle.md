@@ -9,6 +9,9 @@
 
 > **Goal.** Prove sync on ArcNotes: a client outbox, a server inbox, a change feed, five conflict policies, deletion propagation, and a blob lifecycle that never leaves a reference pointing at nothing — with multi-device convergence demonstrated, not assumed.
 
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Cloud; desktop/Mobile consumers. Inputs: exact compatible Contracts packages/descriptors and applicable DesktopPlatform packages; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: owned candidate artifacts and generated contracts with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+
 ---
 
 ## 1. Scope and purpose
@@ -22,6 +25,8 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+**Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
 **Frozen design input.** [notes.scalar.v1](../../requirements/products/arcnotes.md#notes-scalar-query-profile)
 
@@ -169,6 +174,19 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 ---
 
+<a id="rule-wp-25.90"></a>
+### WP-25.90 — Verify the owned artifact and real integration
+
+**What must be fully done.** Use R2 for the existing upload admission, multipart resume, Verified pin, owner promotion, quota and release lifecycle. Retain outbox/inbox/tombstones/conflicts/bootstrap/unknown-field behavior and export protocol.
+
+**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+
+**Testing requirements.** Three-device convergence and interrupted-upload/failed-content-commit/orphan/delete cases run against actual provider adapters; [WP-25.08](#rule-wp-25.08) remains represented in its evidence and completion gate.
+
+**Completion gate.** Three-device convergence and interrupted-upload/failed-content-commit/orphan/delete cases run against actual provider adapters; [WP-25.08](#rule-wp-25.08) remains represented in its evidence and completion gate. Record exact artifacts and provider reality. The package is incomplete if an important contract/owner/recovery rule still requires design during coding.
+
+---
+
 ## 6. Impacts
 
 | Dimension | Impact |
@@ -206,7 +224,9 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 ## 8. Completion gate
 
-**Producer completion.** [WP-25.08](#rule-wp-25.08) must pass with the explicit §7 artifacts above; it is not optional because other package checks pass.
+**[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) gate:** [WP-25.90](#rule-wp-25.90) and all inherited domain-specific gates must pass on the same candidate closure. Three-device convergence and interrupted-upload/failed-content-commit/orphan/delete cases run against actual provider adapters; [WP-25.08](#rule-wp-25.08) remains represented in its evidence and completion gate.
+
+**Producer completion.** [WP-25.08](#rule-wp-25.08) must pass with the explicit §7 artifacts above; it is not optional because other package checks pass. Its real Cloud Notes/Chat export format, origin-carrier and fidelity fixtures provide this package's [PG-07](../../assurance/open-gates-register.md#rule-pg-07) contribution; import/interchange producers retain their separately scheduled obligations.
 
 **[PG-17](../../assurance/open-gates-register.md#rule-pg-17) evidence:** [WP-25.07](#rule-wp-25.07) — Bootstrap/feed convergence, old revisions/tombstones/echoes, and late commit after an advanced cursor, consuming the publisher from package 21. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
 
@@ -233,16 +253,18 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 **Upstream — all must be complete.**
 
-- [19 — ArcNotes Search, Import, Export and Portability](19-arcnotes-search-and-portability.md)
-- [24 — Realtime, Reliable Events and Recovery](24-realtime-and-reliable-events.md)
+- [19 arcnotes search and portability](19-arcnotes-search-and-portability.md#rule-wp-19)
+- [24 realtime and reliable events](24-realtime-and-reliable-events.md#rule-wp-24)
 
-**Downstream — these consume this package’s completed output.**
+**Downstream — consumers of these released outputs.**
 
-- [26 — Device Presence, Remote Action and the Tool Bridge](26-remote-action-and-tool-bridge.md)
-- [28 — ArcNotes Bounded Properties and Saved Views](28-arcnotes-properties-and-views.md)
-- [35 — ArcScope Integration and Metadata Sync](35-arcscope-integration-and-sync.md)
-- [39 — ArcSlate Integration and Portability](39-arcslate-integration-and-portability.md)
-- [40 — Knowledge, Search and Retrieval](40-knowledge-search-and-retrieval.md)
-- [43 — Cloud AI Routing, Metering and Settlement](43-managed-ai-routing-and-metering.md)
-- [46 — Backup, Disaster Recovery and Data Health](46-backup-recovery-and-data-health.md)
-- [51 — ArcScope Deterministic Cloud Simulator](51-arcscope-cloud-simulator.md)
+- [26 remote action and tool bridge](26-remote-action-and-tool-bridge.md#rule-wp-26)
+- [28 arcnotes properties and views](28-arcnotes-properties-and-views.md#rule-wp-28)
+- [35 arcscope integration and sync](35-arcscope-integration-and-sync.md#rule-wp-35)
+- [39 arcslate integration and portability](39-arcslate-integration-and-portability.md#rule-wp-39)
+- [40 knowledge search and retrieval](40-knowledge-search-and-retrieval.md#rule-wp-40)
+- [43 managed ai routing and metering](43-managed-ai-routing-and-metering.md#rule-wp-43)
+- [46 backup recovery and data health](46-backup-recovery-and-data-health.md#rule-wp-46)
+- [51 arcscope cloud simulator](51-arcscope-cloud-simulator.md#rule-wp-51)
+
+---

@@ -398,24 +398,24 @@ Business failures use `ArcResult<T>` / `ArcError` with a **stable semantic code*
 
 ## 16. Contract-authoring obligations
 
-These are **hard authoring rules**, not optimisations. **[V-05b](../assurance/phase-1-official-verification.md#rule-v-05b)** established that omitting them fails silently into a non-AOT-safe path.
+These are **hard authoring rules**, not optimisations. [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) replaces the historical local-RPC generator rules with the following proto rules.
 
 | # | Obligation |
 |---|---|
-| <a id="rule-ca-01"></a>CA-01 | Every local RPC contract interface is `partial`, carries the JSON-RPC contract attribute, **and carries the shape-generation attribute including public instance methods** — the attribute that actually makes the proxy source-generated |
-| CA-02 | Standalone contract assemblies export their generated proxies at assembly level |
-| <a id="rule-ca-03"></a>CA-03 | Every project on an attach chain enables the interceptors property |
-| CA-04 | Multi-interface proxy combinations are pre-declared, never assembled at runtime |
-| CA-05 | Contract interfaces contain no properties, no generic methods, no overloads on outward-facing methods |
-| CA-06 | Methods return `Task`, `Task<T>`, `ValueTask`, `ValueTask<T>` or a validated `IAsyncEnumerable<T>`; a cancellation token is last where present |
-| CA-07 | Events use only the standard event handler shapes |
-| CA-08 | Contract interfaces prefer `IDisposable` so proxy lifetimes are explicit |
-| CA-09 | Every write method takes a request DTO carrying `CommandId`, the target identity and `ExpectedRevision` |
-| CA-10 | **Never pass** `object`, `dynamic`, `Type`, an arbitrary dictionary graph, a database context, an ORM entity, a view model, a control, a native pointer or a `SafeHandle` |
-| <a id="rule-ca-11"></a>CA-11 | Every public C# API DTO belongs to a source-generated serialization context; TypeScript DTOs/validators derive from its generated OpenAPI/schema. |
-| CA-12 | Every realtime C# payload belongs to a source-generated context; the TS adapter consumes generated names, DTOs and validators from the same event schema. |
-| <a id="rule-ca-13"></a>CA-13 | C# typed HTTP clients use generated-only registration with no reflection package ([F-026](../assurance/open-gates-register.md#rule-f-026)); Web uses the generated TypeScript Fetch SDK, with equivalent operation/error/revision semantics. |
-| <a id="rule-ca-14"></a>CA-14 | Interface and method names are part of the wire compatibility surface and are not renamed at will after release |
+| <a id="rule-ca-01"></a>CA-01 | Author business wire services/messages in Contracts handwritten proto, using the complete field registry. |
+| CA-02 | Generate C#/TS bindings and released descriptors from that source; never edit generated code. |
+| <a id="rule-ca-03"></a>CA-03 | Explicitly register generated services/serializers; no runtime contract scanning. |
+| CA-04 | Preserve per-owner service/package boundaries, independent versions and license closure. |
+| CA-05 | Use explicit request/result messages; no overloaded wire method, CLR property or generic service. |
+| CA-06 | Unary methods use bounded async generated clients and cancellation/deadline propagation. |
+| CA-07 | Events are typed hints in EventService.Poll; owner snapshots/cursors decide state. |
+| CA-08 | Dispose channels/leases on peer restart and rebuild authenticated bindings. |
+| CA-09 | Writes carry CommandId, target identity and the exact owner revision kind. |
+| CA-10 | No object/dynamic/Type/ORM/view model/native pointer crosses a wire boundary. |
+| <a id="rule-ca-11"></a>CA-11 | C# and TS values follow the exact protobuf/JSON projection profile and independent vectors. |
+| CA-12 | All 17 hint payloads are generated from the same event registry. |
+| <a id="rule-ca-13"></a>CA-13 | C# uses generated gRPC, React generated gRPC-Web, RN the bounded unary adapter; HTTP exceptions are separately typed. |
+| <a id="rule-ca-14"></a>CA-14 | Published service, method, field names/numbers are permanent; reserve removals and check previous/current compatibility. |
 
 **A repository-policy test asserts [CA-01](#rule-ca-01) through [CA-03](#rule-ca-03) and [CA-11](#rule-ca-11) through [CA-13](#rule-ca-13) mechanically** (`§7.2` of the layout architecture).
 
@@ -423,7 +423,7 @@ These are **hard authoring rules**, not optimisations. **[V-05b](../assurance/ph
 
 ### 16.1 TypeScript consumers and exact JSON values
 
-[P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008) adds the C# → OpenAPI 3.1 / JSON Schema → TS SDK pipeline specified in [Web toolchain and SDK §3](25-web-toolchain-and-sdk.md#3-c--openapi--typescript). C# remains the authored schema source; serializers and schemas must emit the same wire shape. Int64 revisions/counters/offsets/microcredits and decimal prices use canonical strings, with exact cross-language vectors and migration rules. An SDK generation success does not prove auth, idempotency, streaming or compatibility; real C#/TS clients exercise the same operation catalogue.
+[P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) selects handwritten proto and generated C#/TS packages in [the wire registry](contracts/04-protobuf-wire-registry.md). Native/TS binary values and their JSON-exception projections follow that exact-value profile. SDK generation is followed by real client tests of auth, idempotency, streaming and compatibility against the same operation catalogue.
 
 ---
 

@@ -9,6 +9,9 @@
 
 > **Goal.** Make ArcNotes a complete local product: block editing, links and backlinks, properties and tags, attachments, undo, history, checkpoints and trash — with crash recovery and upgrade migration proven, and large-document performance measured.
 
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: ArcNotes; Platform packages. Inputs: exact compatible Contracts packages/descriptors and applicable DesktopPlatform packages; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: Native AOT candidate packages/executables with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+
 ---
 
 ## 1. Scope and purpose
@@ -22,6 +25,8 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+**Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
 **Frozen design input.** [notes.scalar.v1](../../requirements/products/arcnotes.md#notes-scalar-query-profile)
 
@@ -182,6 +187,19 @@ Session undo follows `§3.2` of the editing architecture: **selection is restore
 
 ---
 
+<a id="rule-wp-18.90"></a>
+### WP-18.90 — Verify the owned artifact and real integration
+
+**What must be fully done.** Keep block/document/editor, scalar base, attachment/PDF isolation, undo/history/pending-work behavior. Rebind shared resources and storage contracts; preserve accepted no-account launch and hydrated notebook outage behavior.
+
+**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+
+**Testing requirements.** Independent editor/store/recovery fixtures, helper isolation and content-origin/attachment checks; no new edgeless or slide scope.
+
+**Completion gate.** Independent editor/store/recovery fixtures, helper isolation and content-origin/attachment checks; no new edgeless or slide scope. Record exact artifacts and provider reality. The package is incomplete if an important contract/owner/recovery rule still requires design during coding.
+
+---
+
 ## 6. Impacts
 
 | Dimension | Impact |
@@ -218,6 +236,8 @@ Session undo follows `§3.2` of the editing architecture: **selection is restore
 
 ## 8. Completion gate
 
+**[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) gate:** [WP-18.90](#rule-wp-18.90) and all inherited domain-specific gates must pass on the same candidate closure. Independent editor/store/recovery fixtures, helper isolation and content-origin/attachment checks; no new edgeless or slide scope.
+
 **[PG-22](../../assurance/open-gates-register.md#rule-pg-22) evidence:** [WP-18.04](#rule-wp-18.04) — Real packaged PDF/image parser isolation integration; combine with the platform broker proof. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
 
 **[PG-12](../../assurance/open-gates-register.md#rule-pg-12) evidence:** [WP-18.04](#rule-wp-18.04) — Real PDF viewer integration and malformed native input containment, consuming the packaged sandbox proof. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
@@ -248,10 +268,12 @@ Session undo follows `§3.2` of the editing architecture: **selection is restore
 
 **Upstream — all must be complete.**
 
-- [07 — Local Persistence Foundation](07-local-persistence-foundation.md)
-- [10 — Design System and Desktop Shell Foundation](10-design-system-and-desktop-shell.md)
-- [14 — ArcChat Hub and Minimal ArcNotes Cross-Process Slice](14-hub-and-minimal-provider-slice.md)
+- [07 local persistence foundation](07-local-persistence-foundation.md#rule-wp-07)
+- [10 design system and desktop shell](10-design-system-and-desktop-shell.md#rule-wp-10)
+- [14 hub and minimal provider slice](14-hub-and-minimal-provider-slice.md#rule-wp-14)
 
-**Downstream — these consume this package’s completed output.**
+**Downstream — consumers of these released outputs.**
 
-- [19 — ArcNotes Search, Import, Export and Portability](19-arcnotes-search-and-portability.md)
+- [19 arcnotes search and portability](19-arcnotes-search-and-portability.md#rule-wp-19)
+
+---

@@ -22,7 +22,7 @@ Notation is defined in [`00-data-model-overview.md`](00-data-model-overview.md) 
 | `commerce` | Commerce | `billing_account`, `order`, `subscription`, `credit_lot`, `provider_event`, `logical_ai_request`, `provider_attempt`, `attempt_usage`, `supplier_cost_entry`, `customer_settlement` |
 | `notes` | Notes | `notebook` (owns `folder`), `document` (owns `block` and document metadata), `tag`, `property_definition`, `saved_view`; immutable revision records |
 | `slate` | ArcSlate Cloud | Revisioned metadata replicas; native working authority remains local |
-| `chat` | Chat | `conversation`, `message`; plus the **transient** `stream_chunk`/`stream_state` (`§7.1` of the harness) |
+| `chat` | Chat | `conversation`, `message` and their committed content; Task owns iteration output, CF DO owns transient stream projection |
 | `task` | Task | `task`, `automation` |
 | `agent` | Agent | `agent_profile`, `model_descriptor`, `tariff_version`, `supplier_price_version` |
 | `sync` | Sync | `sync_scope`, `change` |
@@ -197,8 +197,8 @@ These exist once and are used by every module. They are the mechanism behind [TX
 - **Native constraint:** presenting a superseded refresh generation revokes the family and raises a security audit event.
 - **Browser constraint:** exact origin, unrevoked user/device/installation/session, absolute expiry and idle expiry are checked before authorization. The random handle is issued only in a host-only HttpOnly cookie and stored as a hash; no plaintext refresh token is stored for the browser.
 - **Browser creation:** verified authentication consumes its one-use pre-auth challenge and creates/validates the lowest-trust browser device and installation through the owning modules, then creates the session in the same enlisted transaction. Follow the declared Identity → Device lock order; the browser cannot supply a trusted device assertion. Lost login responses may require reauthentication; they never cause an operation replay with increased authority.
-- **Activity:** update idle expiry with a conditional write only for an unrevoked, currently unexpired session, bounded by absolute expires_at. Concurrent requests cannot revive expired/revoked rows; passive SignalR heartbeats do not extend session life. Logout/revocation sets revoked_at before cookie deletion and terminates live connections. Already committed commands keep their recorded result.
-- **Replica/restore:** every Cloud replica validates the same store. Database restore invalidates browser sessions under the existing security recovery procedure; shared protected ASP.NET Data Protection keys support antiforgery across replicas. Authentication needs no replica affinity or in-memory-only session authority; browser transport follows the WebSocket-only/HTTP-fallback deployment contract.
+- **Activity:** update idle expiry with a conditional write only for an unrevoked, currently unexpired session, bounded by absolute expires_at. Concurrent requests cannot revive expired/revoked rows; passive hint polls/CF stream frames do not extend session life. Logout/revocation sets revoked_at before cookie deletion and terminates live connections. Already committed commands keep their recorded result.
+- **Replica/restore:** every Cloud replica validates the same store. Database restore invalidates browser sessions under the existing security recovery procedure; explicit hashed CSRF tokens and session/pre-auth state support antiforgery across replicas. Authentication needs no replica affinity or in-memory-only session authority; business transport uses gRPC-Web unary reads; AI presentation follows the CF WS/HTTP contract.
 - **Cleanup:** expired handles and pre-auth challenges are purged by bounded Identity jobs after the security retention interval; secret hashes never enter application logs. User/device purge follows existing session FK/cascade rules.
 
 
@@ -215,7 +215,7 @@ These exist once and are used by every module. They are the mechanism behind [TX
 | `attempts` / `max_attempts` | `int NN` | Atomically bounded, with existing rate-limit keys |
 | `consumed_at` | `instant?` | One-way terminal consumption; no client reset |
 
-The row plus its separate cookie binding and antiforgery validation bind a browser challenge; a flow ID alone grants no authority. Verify the existing method proof, then atomically compare the unconsumed/unexpired row, consume it and create the session/device in the registered transaction family. Duplicate completions fail safely. Expired/consumed rows are purged under the short challenge retention policy; logs never contain challenge proofs or binding secrets. Session bootstrap does not allocate an unbounded flow on every GET: beginAuthentication creates one under abuse limits. Shared ASP.NET antiforgery keys remain required across replicas.
+The row plus its separate cookie binding and antiforgery validation bind a browser challenge; a flow ID alone grants no authority. Verify the existing method proof, then atomically compare the unconsumed/unexpired row, consume it and create the session/device in the registered transaction family. Duplicate completions fail safely. Expired/consumed rows are purged under the short challenge retention policy; logs never contain challenge proofs or binding secrets. Session bootstrap does not allocate an unbounded flow on every GET: beginAuthentication creates one under abuse limits. Explicit CSRF/session state is shared in PostgreSQL; no framework Session/cookie-auth serialization is required.
 
 ### `identity.step_up_challenge`, `identity.recovery_flow`
 
@@ -682,7 +682,7 @@ The client schema (`§2` of [`02-desktop-data-model.md`](02-desktop-data-model.m
 | CH-D3 | **Every commit writes its `sync.change` row in the same transaction** ([CW-06](00-data-model-overview.md#rule-cw-06)), so a message can never exist without being publishable. |
 | CH-D4 | **An unsent draft is not a row here.** It lives only on the device that composed it ([I-124](../../requirements/01-normative-glossary-and-invariants.md#rule-i-124)), and is therefore never a competing revision. |
 | CH-D5 | A committed Chat message is immutable; edit creates a branch. Stream chunks are presentation, each invocation has immutable `task.iteration_output`, and the terminal Turn publishes a separate final/interrupted message or explicit no-answer outcome. |
-| CH-D6 | Short-lived `chat.stream_chunk` / `stream_state` are shared, logged PostgreSQL presentation tables. They are swept by TTL and excluded from sync, **included in WAL/physical backup**. Online and backup retention differ; restore purges presentation and reconciles durable attempts before traffic. Their contract and bounded retention are defined in the Harness streaming section. |
+| CH-D6 | Stream chunks/state live in the CF RunStream DO with bounded TTL, excluded from PostgreSQL WAL and backup. C# stores only canonical iteration/final content and stream pointers. Restore discards projections and reconciles durable attempts under [CF integration](../contracts/05-cloudflare-integration.md). |
 
 ### `task.iteration_output` and terminal references
 
@@ -757,7 +757,7 @@ Durable pending state with `expires_at`, the operation described in user terms, 
 
 ### `task.automation_definition` and `automation_occurrence`
 
-`automation_definition` stores stable ID, workspace, immutable definition version, enabled state/revision, trigger kind, UTC schedule with timezone policy or durable event cursor, authorised grant/budget snapshot, misfire/coalescing bounds and next due instant. `automation_occurrence` has unique `(automation_id, definition_version, occurrence_key)`, scheduled time/event identity, admission outcome, Task ID and completion reason. A transaction in the Task module records occurrence and Task together; a leased runner resumes from that receipt after crash. Definition changes invalidate future old-version occurrences, without rewriting past runs. Disable/revoke has an explicit in-flight cancellation policy; neither resets usage nor grants permission.
+`automation_definition` stores stable ID, workspace, immutable definition version, enabled state/revision, trigger kind, UTC schedule with timezone policy or durable event cursor, authorised grant/budget snapshot, misfire/coalescing bounds and next due instant. `automation_occurrence` has unique `(automation_id, definition_version, occurrence_key)`, scheduled time/event identity, admission outcome, Task ID and completion reason. The enumerated automation shared transaction records occurrence, Task, context pins and dispatch outbox together; a leased runner resumes from that receipt after crash. Definition changes invalidate future old-version occurrences, without rewriting past runs. Disable/revoke has an explicit in-flight cancellation policy; neither resets usage nor grants permission.
 
 ### `task.tool_request`, `task.tool_result`
 
@@ -804,7 +804,7 @@ Supplier exposure cannot expire merely because a customer hold expires. Confirme
 |---|---|---|
 | `logical_request_id` | `id` | **PK** |
 | `workspace_id` | `id?` | Required for user/data-scoped work; absent only for deployment health with no customer data |
-| `service_term_id` | `id?` | Required for user-benefiting official inference; absent for an operator-funded platform job |
+| `service_term_id` | `id?` | Required for user-delivered official inference and workspace indexing/reranking eligibility; may be absent only for separately authorized deployment platform work without customer service dependency |
 | `operator_job_ref` | `id?` | Required and authorised for platform beneficiaries; never a substitute for user inference eligibility |
 | `run_id`, `step_id`, `attempt_id` | `id?` | Required for every Cloud user chat/agent invocation; absent only for separately authorised platform jobs |
 | `beneficiary` | `enum(userDelivered, platformRouting, platformAbuse, platformHealth, platformIndexing, platformRetry) NN` | Decides who pays ([ST-07](../16-billing-and-commerce-architecture.md#rule-st-07), [MT-08](../../requirements/04-commerce-entitlement-and-credits.md#rule-mt-08)) |
@@ -835,7 +835,7 @@ Supplier exposure cannot expire merely because a customer hold expires. Confirme
 | `usage_source` | `enum(providerFinal, providerStream, invoice, unresolved) NN` | ([MT-05](../../requirements/04-commerce-entitlement-and-credits.md#rule-mt-05)) |
 | `completeness` | `enum(complete, pending, unconfirmed, mismatched) NN` | ([MT-12](../../requirements/04-commerce-entitlement-and-credits.md#rule-mt-12)) |
 | `outcome` | `enum(delivered, providerError, platformError, cancelled, timeout)?` | NULL at intent and while unknown |
-| `output_commit_ref` | `id?` | Durable Task iteration / Chat output receipt; required before customer settlement of delivered use |
+| `output_commit_ref` | `id?` | Durable Task iteration / Chat output receipt, or Search inference outcome receipt for platformIndexing; required before customer settlement of delivered user use. A Search receipt never creates customer settlement |
 
 - `UQ (logical_request_id, attempt_ordinal)`; `UQ (client_dispatch_key)`; provider identity uniqueness is conditional on non-NULL and scoped to the provider account
 - **Constraint** — **no prompt or response content** is stored here ([MT-02](../../requirements/04-commerce-entitlement-and-credits.md#rule-mt-02)); content lives in the product store, counts live here
@@ -1265,3 +1265,28 @@ These cannot be foreign keys ([AG-01](00-data-model-overview.md#rule-ag-01), [MD
 | CV-06 | A cross-workspace read fails at the data layer with a forged scope | [WP-21.06](../../planning/work-packages/21-cloud-host-and-persistence.md#rule-wp-21.06) |
 | CV-07 | Every cross-module invariant in `§12` has a detection check that fires on an induced violation | [WP-46.04](../../planning/work-packages/46-backup-recovery-and-data-health.md#rule-wp-46.04) |
 | CV-08 | Entitlement resolves correctly with the entire `commerce` schema absent ([EO-05](../16-billing-and-commerce-architecture.md#rule-eo-05)) | [WP-42.00](../../planning/work-packages/42-commerce-entitlement-and-credits.md#rule-wp-42.00) |
+
+## P2-009 state additions and projection relocation
+
+Implement exact [execution/receipt records](../contracts/05-cloudflare-integration.md#1-deployment-and-authority), late-outcome evidence constraints and object verification receipts. identity.session gains nullable access_token_hash/access_expires_at for nativeBearer, null for browserCookie; unique access hash, native refresh rotation unchanged. Add csrf_hash to session/preauth flow (never plaintext), auth_epoch and recovery_generation checked by every endpoint. Identity owns disjoint operator_session/operator_access/operator_action approval records with tenant/operator subject and proposal hash; only operator scheme can create/read them. Upload sessions retain sealed part manifest, verification job ID/status and immutable part receipts; completeUpload returns verifying while the content is not readable. Resource/Entitlement final verification and owner promotion remain separate commits. DO stream_chunk/state are not PG tables; task.run keeps only stream IDs/status/pointers. No other canonical owner changes.
+
+## Search inference job execution record
+
+Search owns search.inference_job as the canonical business control/receipt record; vectors and reranked candidates remain derived. It is a bounded platform Job, not task.task or a second AI loop. The private [CF inference ports](../contracts/05-cloudflare-integration.md#8-session-bindings-inference-jobs-and-deployment-transitions) carry this identity.
+
+| Fields | Type and invariant |
+|---|---|
+| job_id; workspace_id; principal_id; service_term_id | id PK and non-null scoped owner/eligibility identities; scheduled indexing uses its explicit operator-job grant for that workspace, never a fabricated interactive session |
+| purpose; input_hash; source_manifest_ref; source_set_hash | embedding/rerank; exact hash plus immutable ResourceVersionRef; input hash includes kind, normalized input, ordered source revisions/hashes, principal/scope/policy snapshot, model/profile/config and effective budget |
+| model_descriptor_id; config_revision_id; profile | Pinned activated catalogue/config and selected inference profile; no dynamic provider fallback |
+| state; reason; rev; created_at; updated_at; deadline | queued/running/unknown/succeeded/failed/cancelled; named reason, monotonic revision and UTC instants. Admission-to-result deadline120 seconds; before-dispatch expiry refuses, possible-dispatch expiry is unknown |
+| logical_request_id; provider_attempt_id; intent_receipt | Existing Commerce identities, one bounded invocation per admitted job; beneficiary=platformIndexing, funding_class=platformJob, operator_job_ref=job_id. No customer capacity reservation/tariff/settlement |
+| workflow_id; worker_version; recovery_generation; lease_holder; lease_epoch; lease_expires_at | Same deterministic CF ID and observed version as the private contract; conditional60-second claim, renewal20 seconds; old epoch cannot act after takeover/expiry |
+| result_ref?; outcome_receipt?; outcome_hash?; source_publication_ref? | Immutable validated result and canonical outcome digest/receipt. succeeded requires complete result; unknown has no claim of completion. Projection delivery receipt records publish/discard under current source/policy; never provider content in Commerce |
+| cancellation_requested_at?; completed_at? | Cancellation blocks new dispatch/publication; an already-sent invocation still records supplier facts under the existing uncertainty policy |
+
+Stable job_id comes from the committed Search source/query command, reused on outbox/redelivery. Reusing it with a different input hash is conflict. Unique logical request/attempt references and the outcome hash make receipts idempotent. Model calls never retry merely because a job/lease expired; a proven pre-dispatch refusal may be rescheduled by a new authorized job, and unknown attempts stay in supplier reconciliation. New source/model/config revisions produce new input identities, not edits to old outcomes.
+
+The two enumerated Search families in the [transaction authority](00-data-model-overview.md#611-shared-units-of-work) use each module's own SQL port on one connection; no external CF/R2 call occurs inside the commit. Search is after Task and before Notification in lock order. The dispatch outbox creates/gets the exact Workflow; CF input fetch rechecks current source permissions, active service term and AI-exclusion policy. Source deletion/revocation cancels queued jobs and invalidates derived publication even when a late output is complete.
+
+Record every supplier attempt and keep unresolved exposure through expiry/period closure. A complete result may coexist with costUnconfirmed; it cannot create a customer debit or release conservative liability. Retain accounting identity/receipt under existing commerce retention; source text/result pins use Resource content/deletion policy, never extend user-content retention merely to retain cost evidence. A completed projection consumer releases ephemeral pins; interrupted consumers retry idempotently and rebuild readiness from current authoritative source, never from CF checkpoint data.

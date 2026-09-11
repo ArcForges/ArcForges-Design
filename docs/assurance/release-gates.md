@@ -54,7 +54,7 @@ This document consolidates every gate that stands between work and users, in one
 |---|---|---|
 | R-01 | All continuous gates pass on the release commit | Gate report |
 | R-02 | Integration families pass: persistence, local RPC, public API contract, realtime, multi-process ([F-03](testing-and-verification-strategy.md#rule-f-03), [F-05](testing-and-verification-strategy.md#rule-f-05), [F-06](testing-and-verification-strategy.md#rule-f-06), [F-07](testing-and-verification-strategy.md#rule-f-07), [F-11](testing-and-verification-strategy.md#rule-f-11)) | Test results |
-| <a id="rule-r-03"></a>R-03 | **AOT publish succeeds for every desktop product and the published artifact launches** (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**, **[V-05](phase-1-official-verification.md#rule-v-05)**) | Publish log plus launch smoke result |
+| <a id="rule-r-03"></a>R-03 | **AOT publish succeeds for every desktop product and the C# Cloud host; the published artifacts launch and their real adapters pass** (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**, **[V-05](phase-1-official-verification.md#rule-v-05)**) | Publish log plus launch smoke result |
 | R-04 | Migration and golden-fixture tests pass, forward and — where reversibility is claimed — backward ([F-12](testing-and-verification-strategy.md#rule-f-12)) | Fixture comparison |
 | R-05 | Crash, fault-injection and recovery tests pass ([F-13](testing-and-verification-strategy.md#rule-f-13)) | Recovery outcomes |
 | R-06 | Performance budgets met with the regression gate applied: startup, memory, responsiveness, bundle size (`§2`–`§6` of the quality contract) | Measured values versus budget and previous release |
@@ -179,7 +179,7 @@ This document consolidates every gate that stands between work and users, in one
 |---|---|---|---|
 | **[F-013](open-gates-register.md#rule-f-013)** — reference licence determinations | The first step of a product's Reference Coverage Matrix and licence audit, before substantive reference source is used for planning or implementation (**[D-013](../decisions/phase-1-foundation-decisions.md#rule-d-013)**) | Licensing and Provenance Owner | [P-02](#rule-p-02) for that product |
 | **[F-023](open-gates-register.md#rule-f-023)** — mobile provenance and dependency closure | Before the first mobile artifact is produced (**[D-004](../decisions/phase-1-foundation-decisions.md#rule-d-004)**) | Release Engineering Owner and Licensing and Provenance Owner; Product Owner approves | [L-50](#rule-l-50) |
-| **[F-026](open-gates-register.md#rule-f-026)** — typed HTTP client AOT packaging | First use of the typed HTTP client on an AOT or trimmed target | Architecture Owner | [R-03](#rule-r-03) for any target consuming it |
+| **[F-026](open-gates-register.md#rule-f-026)** — generated protobuf/gRPC client AOT packaging | First use of the generated protobuf/gRPC client on an AOT or trimmed target | Architecture Owner | [R-03](#rule-r-03) for any target consuming it |
 
 Full state is tracked in [`open-gates-register.md`](open-gates-register.md).
 
@@ -220,9 +220,14 @@ Full state is tracked in [`open-gates-register.md`](open-gates-register.md).
 | **[D-012](../decisions/phase-1-foundation-decisions.md#rule-d-012)**, **[D-013](../decisions/phase-1-foundation-decisions.md#rule-d-013)**, **[F-013](open-gates-register.md#rule-f-013)** | Product first-release reference and licence gates |
 | **[D-022](../decisions/phase-1-foundation-decisions.md#rule-d-022)**, **[V-09](phase-1-official-verification.md#rule-v-09)**, **[F-023](open-gates-register.md#rule-f-023)** | Mobile release gates |
 | **[D-023](../decisions/phase-1-foundation-decisions.md#rule-d-023)** | Regional enablement gates |
-| **[F-026](open-gates-register.md#rule-f-026)** | The typed HTTP client packaging gate |
+| **[F-026](open-gates-register.md#rule-f-026)** | The generated protobuf/gRPC client packaging gate |
 
 
 ## React/TypeScript Web release evidence
 
 [P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008) replaces the Web runtime proof with Node-built Site/Account/Chat artifacts. [PG-23](open-gates-register.md#rule-pg-23) requires real C#/TS SDK and session/realtime compatibility, consumer visual/accessibility/performance evidence, esproj/CLI workflow checks, exact-value correctness, npm provenance/SBOM and coherent edge/asset rollback. Existing native AOT and real commercial provider gates remain independent.
+
+
+## P2-009 deployment closure
+
+Release consumes one tested immutable [integration manifest](../architecture/14-build-packaging-and-release.md#14-independent-producer-and-consumer-artifact-gates): independent product and package versions, Cloud image, Worker version, proto descriptor and storage/migration compatibility. The full gate includes the activated [VG-06](open-gates-register.md#rule-vg-06), RN/Hermes Android proof, real CF inference/R2 transfer and cross-provider recovery after both [WP-46](../planning/work-packages/46-backup-recovery-and-data-health.md#rule-wp-46) and [WP-52](../planning/work-packages/52-cloud-harness.md#rule-wp-52). Provider uncertainty, object verification, user revocation and rollback cannot pass with mocks. First-party native packages retain every RID, isolation, provenance and hardware gate. Product release versions need not move together.

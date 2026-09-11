@@ -9,6 +9,9 @@
 
 > **Goal.** Ship everything together, once every gate is genuinely satisfied: four desktop products across three platforms, the Android companion, the cloud, the web surfaces, and the commercial loop — with the release audit, the production gates and the honest statement of what is and is not shipped.
 
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Each publisher; Cloud coordinated evidence. Inputs: exact compatible Contracts packages/descriptors and applicable DesktopPlatform packages; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: owned candidate artifacts and generated contracts with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+
 ---
 
 ## 1. Scope and purpose
@@ -22,6 +25,8 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+**Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
 | Input | Why it matters |
 |---|---|
@@ -117,7 +122,7 @@
 
 **Testing requirements.** A game-day exercise across the severity ladder against the real production topology; the recorded evidence for each go-live gate.
 
-**Completion gate.** **The cloud go-live threshold is met — "failure behaves correctly"** — with a completed game day and evidence for every gate.
+**Completion gate.** **The cloud go-live threshold is met — "failure behaves correctly"** — with a completed game day and evidence for every gate, including [VG-06](../../assurance/open-gates-register.md#rule-vg-06) on the promoted Native AOT host and real CF/R2/recovery closure.
 
 <a id="rule-wp-50.05"></a>
 
@@ -133,7 +138,7 @@
 
 ### WP-50.06 — Node-built Web release set and real-browser verification
 
-**What must be fully done.** Build Site/Account/Chat once through the pinned Node/npm pipeline after current C# export/TS SDK compatibility checks; promote the same artifacts with their manifest and safe runtime-config schema. Deploy per-origin edge routing, opaque cookie/CSRF policy, CSP and shared Cloud session prerequisites. Preserve old hashed chunks for the compatibility window; rollback headers/assets/config coherently. Keep production Node servers and esproj/npm installs out of Cloud runtime.
+**What must be fully done.** Build Site/Account/Chat once through the pinned Node/npm pipeline after current released proto descriptor/C#/TS compatibility checks; promote the same artifacts with their manifest and safe runtime-config schema. Deploy per-origin edge routing, opaque cookie/CSRF policy, CSP and shared Cloud session prerequisites. Preserve old hashed chunks for the compatibility window; rollback headers/assets/config coherently. Keep production Node servers and esproj/npm installs out of Cloud runtime.
 
 **Testing requirements.** Production asset/real C# integration in the supported browser matrix; public no-script content, auth/CSRF/expiry/replica revocation, paid checkout return and Task recovery; visual/accessibility/performance budgets; atomic switch/rollback, cached client/chunk failure, route fallback/API error separation; npm SBOM/provenance and Windows/CLI evidence. No fixture-only substitution.
 
@@ -158,6 +163,19 @@
 **Testing requirements.** A claim-audit comparing every public statement against the gate evidence.
 
 **Completion gate.** **Every public claim is backed by gate evidence**, and every deferred or disabled capability is stated as such.
+
+---
+
+<a id="rule-wp-50.90"></a>
+### WP-50.90 — Verify the owned artifact and real integration
+
+**What must be fully done.** Assemble the owned deliverables from the preceding substeps under the selected repository, package, runtime and protocol authorities. Implement release coordination using per-repository immutable artifacts and the compatible integration/deployment manifest. Assemble licences, signing, migrations, update/rollback, support, commercial and restore gates from actual owner evidence.
+
+**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+
+**Testing requirements.** Clean install/update/rollback and mixed-version acceptance across supported products; real Cloud+CF+R2 paths; no mandatory lockstep product versions or invented iOS build evidence.
+
+**Completion gate.** Clean install/update/rollback and mixed-version acceptance across supported products; real Cloud+CF+R2 paths; no mandatory lockstep product versions or invented iOS build evidence. Record exact artifacts and provider reality. The package is incomplete if an important contract/owner/recovery rule still requires design during coding.
 
 ---
 
@@ -193,6 +211,10 @@
 
 ## 8. Completion gate
 
+**Runtime/closure producers.** [VG-06](../../assurance/open-gates-register.md#rule-vg-06) through [WP-50.04](#rule-wp-50.04). The named candidate must supply actual passing evidence; documentation does not close these gates.
+
+**[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) gate:** [WP-50.90](#rule-wp-50.90) and all inherited domain-specific gates must pass on the same candidate closure. Clean install/update/rollback and mixed-version acceptance across supported products; real Cloud+CF+R2 paths; no mandatory lockstep product versions or invented iOS build evidence.
+
 **[PG-23](../../assurance/open-gates-register.md#rule-pg-23) evidence:** [WP-50.06](#rule-wp-50.06) — Combine all contributing Web evidence into coherent production assets/config/edge release and rollback; no fixture-only release. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
 
 **[PG-19](../../assurance/open-gates-register.md#rule-pg-19) evidence:** [WP-50.04](#rule-wp-50.04) — Production-shaped migration/rollback rehearsal consumes the versioned backfill/cutover proof from package 21. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
@@ -215,19 +237,21 @@
 
 **Upstream — all must be complete.**
 
-- [20 — First Real Cross-Product Workflow](20-first-cross-product-workflow.md)
-- [28 — ArcNotes Bounded Properties and Saved Views](28-arcnotes-properties-and-views.md)
-- [32 — Mobile Release Engineering and Store Gates](32-mobile-release-and-store-gates.md)
-- [35 — ArcScope Integration and Metadata Sync](35-arcscope-integration-and-sync.md)
-- [39 — ArcSlate Integration and Portability](39-arcslate-integration-and-portability.md)
-- [40 — Knowledge, Search and Retrieval](40-knowledge-search-and-retrieval.md)
-- [41 — Extension Platform and Integrations](41-extension-platform-and-integrations.md)
-- [43 — Cloud AI Routing, Metering and Settlement](43-managed-ai-routing-and-metering.md)
-- [46 — Backup, Disaster Recovery and Data Health](46-backup-recovery-and-data-health.md)
-- [49 — ArcChat Web Companion](49-arcchat-web-companion.md)
-- [51 — ArcScope Deterministic Cloud Simulator](51-arcscope-cloud-simulator.md)
-- [52 — The Cloud Harness](52-cloud-harness.md)
+- [20 first cross product workflow](20-first-cross-product-workflow.md#rule-wp-20)
+- [28 arcnotes properties and views](28-arcnotes-properties-and-views.md#rule-wp-28)
+- [32 mobile release and store gates](32-mobile-release-and-store-gates.md#rule-wp-32)
+- [35 arcscope integration and sync](35-arcscope-integration-and-sync.md#rule-wp-35)
+- [39 arcslate integration and portability](39-arcslate-integration-and-portability.md#rule-wp-39)
+- [40 knowledge search and retrieval](40-knowledge-search-and-retrieval.md#rule-wp-40)
+- [41 extension platform and integrations](41-extension-platform-and-integrations.md#rule-wp-41)
+- [43 managed ai routing and metering](43-managed-ai-routing-and-metering.md#rule-wp-43)
+- [46 backup recovery and data health](46-backup-recovery-and-data-health.md#rule-wp-46)
+- [49 arcchat web companion](49-arcchat-web-companion.md#rule-wp-49)
+- [51 arcscope cloud simulator](51-arcscope-cloud-simulator.md#rule-wp-51)
+- [52 cloud harness](52-cloud-harness.md#rule-wp-52)
 
-**Downstream — these consume this package’s completed output.**
+**Downstream — consumers of these released outputs.**
 
-None; this is the final integration/release gate.
+Final commercial release; subsequent maintenance follows the release policy.
+
+---

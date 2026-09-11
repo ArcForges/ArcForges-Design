@@ -168,7 +168,7 @@ Specified in [`arcchat-mobile-and-web.md`](arcchat-mobile-and-web.md). Two bound
 
 | # | Requirement |
 |---|---|
-| <a id="rule-web-01"></a>WEB-01 | **C# public DTOs/endpoints generate OpenAPI 3.1, JSON Schema and the TypeScript SDK.** No duplicate handwritten TS business contract or React-specific business backend; runtime response validation and version compatibility are required. |
+| <a id="rule-web-01"></a>WEB-01 | Handwritten proto in Contracts generates C#/TS business SDKs and tool/validation projections. Browser uses gRPC-Web and same-origin session/AI/object exceptions; no independent handwritten TS DTO or business backend. |
 | <a id="rule-web-02"></a>WEB-02 | **Exact values survive C# and JavaScript.** Int64 revisions/token counts/microcredits and decimal prices use the specified canonical string wire encoding; UI display never rounds accounting values through JS Number. |
 | <a id="rule-web-03"></a>WEB-03 | **One Web npm workspace can be developed independently.** Windows win.slnx includes its esproj; non-Windows developers run Node/npm in the Web directory without loading the managed/native solution. |
 | <a id="rule-web-04"></a>WEB-04 | **Fixture development and real integration are separate modes.** Tests of the generated SDK against real C# APIs, browser sessions, PostgreSQL state and approved provider test flows are release evidence; fixture success alone is not. |
@@ -260,7 +260,7 @@ The web presence is **not**: an ArcNotes, ArcScope or ArcSlate web editor; a sec
 
 ---
 
-**Generated-client interoperability** — C# emits the contract, TS regenerates without handwritten DTOs, exact large integers/decimals round-trip, and stale clients follow the compatibility window.
+**Generated-client interoperability** — Contracts publishes the authored proto contract, TS regenerates without handwritten DTOs, exact large integers/decimals round-trip, and stale clients follow the compatibility window.
 
 **Independent developer workflow** — Windows opens/builds the Web esproj in win.slnx; Linux/macOS run the same npm commands directly. Real-browser API and fixture modes are distinguishable.
 
@@ -273,7 +273,7 @@ The web presence is **not**: an ArcNotes, ArcScope or ArcSlate web editor; a sec
 | Current document | Relationship |
 |---|---|
 | [Web Architecture](../../architecture/10-web-architecture.md) | Defines the current React/TypeScript public, account and Chat surfaces |
-| [Web Toolchain, Generated SDK and Developer Workflow](../../architecture/25-web-toolchain-and-sdk.md) | Defines Node tooling, generated C# OpenAPI/TS clients and browser contract behavior |
+| [Web Toolchain, Generated SDK and Developer Workflow](../../architecture/25-web-toolchain-and-sdk.md) | Defines Node tooling, generated proto C#/TS clients and browser contract behavior |
 | [Distribution, Update, Support and Trust & Safety Requirements](../10-distribution-update-and-support.md) | Owns release and download metadata obligations |
 | **[D-007](../../decisions/phase-1-foundation-decisions.md#rule-d-007)** | Static public pages and one application; technology amended by [P2-008](../../decisions/phase-2-specification-decisions.md#rule-p2-008) |
 | **[D-014](../../decisions/phase-1-foundation-decisions.md#rule-d-014)** | The twelve-entry surface inventory and "a hostname is not an application" |

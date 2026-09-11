@@ -9,6 +9,9 @@
 
 > **Goal.** Implement the security model as mechanism rather than convention: principals and the actor chain, the R0–R4 risk model, the four enforcement points with owner-side final validation always last, approval and step-up, the secret broker, egress control, instruction provenance, capability leases and the append-only audit.
 
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Platform/Cloud/AI adapters; Contracts public definitions. Inputs: exact compatible Contracts packages/descriptors and applicable DesktopPlatform packages; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: Native AOT candidate packages/executables with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+
 ---
 
 ## 1. Scope and purpose
@@ -22,6 +25,8 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+**Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
 | Input | Why it matters |
 |---|---|
@@ -171,6 +176,19 @@
 
 ---
 
+<a id="rule-wp-11.90"></a>
+### WP-11.90 — Verify the owned artifact and real integration
+
+**What must be fully done.** Implement fixed actor/owner, approval, secrets, egress and provenance rules across new boundaries. Package the signed, parent-bound content helper and OS broker with its native dependencies.
+
+**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+
+**Testing requirements.** Cross-boundary owner refusal, stale approval/revocation, secrets/redaction and real OS-isolation tests; no hostile parser moved into a product process by package consolidation.
+
+**Completion gate.** Cross-boundary owner refusal, stale approval/revocation, secrets/redaction and real OS-isolation tests; no hostile parser moved into a product process by package consolidation. Record exact artifacts and provider reality. The package is incomplete if an important contract/owner/recovery rule still requires design during coding.
+
+---
+
 ## 6. Impacts
 
 | Dimension | Impact |
@@ -203,6 +221,8 @@
 
 ## 8. Completion gate
 
+**[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) gate:** [WP-11.90](#rule-wp-11.90) and all inherited domain-specific gates must pass on the same candidate closure. Cross-boundary owner refusal, stale approval/revocation, secrets/redaction and real OS-isolation tests; no hostile parser moved into a product process by package consolidation.
+
 **[PG-12](../../assurance/open-gates-register.md#rule-pg-12) evidence:** [WP-11.09](#rule-wp-11.09) — Packaged RID PDF parser containment, licence/binding and hostile-input proof; combine with Notes viewer integration. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
 
 **All of the following, with recorded evidence:**
@@ -225,13 +245,15 @@ The [WP-11.09](#rule-wp-11.09) helper and broker must additionally pass their pa
 
 **Upstream — all must be complete.**
 
-- [04 — Identity, Error, Revision and Versioning Primitives](04-identity-error-and-versioning-primitives.md)
-- [08 — Local IPC Transport and Registration Lifecycle](08-local-ipc-and-registration.md)
-- [09 — Capability, Contribution and Resource Model](09-capability-contribution-and-resource-model.md)
+- [04 identity error and versioning primitives](04-identity-error-and-versioning-primitives.md#rule-wp-04)
+- [08 local ipc and registration](08-local-ipc-and-registration.md#rule-wp-08)
+- [09 capability contribution and resource model](09-capability-contribution-and-resource-model.md#rule-wp-09)
 
-**Downstream — these consume this package’s completed output.**
+**Downstream — consumers of these released outputs.**
 
-- [14 — ArcChat Hub and Minimal ArcNotes Cross-Process Slice](14-hub-and-minimal-provider-slice.md)
-- [16 — Unified Execution Engine](16-unified-execution-engine.md)
-- [22 — Identity, Workspace, Device and Session](22-identity-workspace-and-device.md)
-- [41 — Extension Platform and Integrations](41-extension-platform-and-integrations.md)
+- [14 hub and minimal provider slice](14-hub-and-minimal-provider-slice.md#rule-wp-14)
+- [16 unified execution engine](16-unified-execution-engine.md#rule-wp-16)
+- [22 identity workspace and device](22-identity-workspace-and-device.md#rule-wp-22)
+- [41 extension platform and integrations](41-extension-platform-and-integrations.md#rule-wp-41)
+
+---

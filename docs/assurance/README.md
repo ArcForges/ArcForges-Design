@@ -17,7 +17,7 @@ Prices, fees, quotas and rates are deliberately **not** verified in these artifa
 |---|---|
 | [`testing-and-verification-strategy.md`](testing-and-verification-strategy.md) | The eighteen test families with their unique responsibility, placement and evidence; cross-cutting verification themes; the invariant-to-test obligation; test environments; fixtures and corpora; verification of the specification itself; and what each family may not substitute for |
 | [`release-gates.md`](release-gates.md) | Every gate between work and users, consolidated: continuous, per-release, channel-promotion, product first-release, go-live (cloud, commercial, regional, mobile, extension) and deferred-gate closure — each with evidence and an accountable role |
-| [open-gates-register.md](open-gates-register.md) | The authoritative register: 39 entries, five design closures, 33 open implementation obligations including two dormant entries, one merged entry and zero unresolved owner determinations |
+| [open-gates-register.md](open-gates-register.md) | The authoritative register: 39 entries, five design closures, 33 open implementation obligations including one dormant iOS entry, one merged entry and zero unresolved owner determinations |
 | [`reference-coverage-and-provenance.md`](reference-coverage-and-provenance.md) | **The method**: the reference map and what a reference repository is not; the matrix columns; the ten-field provenance record required by [D-013](../decisions/phase-1-foundation-decisions.md#rule-d-013); the licence decision table; automated enforcement; and verification oracles. The completed matrices are in [`reference-coverage/`](reference-coverage/README.md) |
 | [`implementation-state-reconciliation.md`](implementation-state-reconciliation.md) | **The completed item-level inventory**: 166 projects with measured content and dispositions, six corrections to earlier false conformance findings, per-shim native reconciliation, the effective build configuration, the measured test harness, and the revised priority order |
 | [`traceability-matrix.md`](traceability-matrix.md) | Decision-to-document, verification-to-enforcement, requirement-to-architecture-to-test, and invariant coverage mappings |
@@ -38,3 +38,6 @@ Prices, fees, quotas and rates are deliberately **not** verified in these artifa
 
 
 The [React/TypeScript Web redesign review](web-typescript-redesign-review.md) records the [P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008) migration, its contract/toolchain/session/visual scope and the current verification evidence.
+
+
+The current [P2-009 amendment](../decisions/phase-2-specification-decisions.md#rule-p2-009) updates runtime/protocol/repository assumptions and activates the Cloud AOT gate. Prior review records are dated evidence; use the current requirements, contracts, planning and gate register for implementation. Product/runtime/commercial execution gates remain unclosed until their real evidence exists.

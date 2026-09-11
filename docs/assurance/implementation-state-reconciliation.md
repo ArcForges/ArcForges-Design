@@ -496,3 +496,12 @@ Derived from what blocks the most downstream work, and revised by the corrected 
 | ND-03 | **It does not treat existing code as design authority** (**[D-011](../decisions/phase-1-foundation-decisions.md#rule-d-011)**). |
 | ND-04 | **It does not measure quality.** Line counts measure presence, not correctness. |
 | ND-05 | **It is bound to commit `ede43db`.** [WP-01](../planning/work-packages/01-repository-reconciliation-and-target-layout.md#rule-wp-01) re-checks for drift before executing. |
+
+## Architecture ownership amendment — 2026-09-11
+
+The dated measurements above remain implementation-state evidence at their recorded revisions. [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) supersedes their monorepo/JIT/in-host Harness target dispositions, without changing the old measured counts or inventing a design gap from placeholder code.
+
+
+Current source ownership, repository roots and dependencies are defined only in [the layout authority](../architecture/01-solution-and-project-layout.md#1-repository-ownership-and-dependency-graph). WP01 applies that mapping to the measured baseline; the old inventory rows remain historical evidence rather than competing target instructions.
+
+Native dispositions are in [the package registry](../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry): retain approved foundations in DesktopPlatform, admit the selected official OTIO overlay, and exclude MDF from V1 published closures. No implementation file was changed by this documentation amendment.

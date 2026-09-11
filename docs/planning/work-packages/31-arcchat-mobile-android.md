@@ -9,6 +9,9 @@
 
 > **Goal.** Deliver the complete remote control surface: conversation, task, approval and steering from a phone, through Cloud, to a desktop — with **no direct connection to a LAN Hub, named pipe, socket or professional application** anywhere in the design.
 
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Mobile; real Cloud/AI. Inputs: exact Apache Contracts npm packages/descriptors and the selected RN/native package closure; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: RN/Hermes artifact and real generated service clients with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+
 ---
 
 ## 1. Scope and purpose
@@ -22,6 +25,8 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+**Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
 The real Task, streaming, approval and recovery gates in this package consume WP-52. A scripted Cloud endpoint cannot close the Android product loop, so this package executes in J after the Harness; [WP-30](30-mobile-shared-architecture.md#rule-wp-30) preserves early mobile contract work.
 
@@ -45,7 +50,7 @@ The real Task, streaming, approval and recovery gates in this package consume WP
 | BR-05 | **A push action opens a surface; it never carries authorization.** |
 | BR-06 | **An operation requiring local presence cannot be completed from mobile alone** ([WP-26.04](26-remote-action-and-tool-bridge.md#rule-wp-26.04)). |
 | BR-07 | **Mobile holds no professional product's writable domain state.** |
-| BR-08 | **No provider credential exists on any client** ([BY-01](../../requirements/04-commerce-entitlement-and-credits.md#rule-by-01)–[BY-04](../../requirements/04-commerce-entitlement-and-credits.md#rule-by-04)). Provider credentials are deployment secrets held only by the Cloud host ([DC-15](../../requirements/11-policy-and-configuration.md#rule-dc-15)) and never projected to a client ([DC-14](../../requirements/11-policy-and-configuration.md#rule-dc-14)). |
+| BR-08 | **No provider credential exists on any client** ([BY-01](../../requirements/04-commerce-entitlement-and-credits.md#rule-by-01)–[BY-04](../../requirements/04-commerce-entitlement-and-credits.md#rule-by-04)). Provider credentials are held by their designated C# or CF deployment ([DC-15](../../requirements/11-policy-and-configuration.md#rule-dc-15)) and never projected to a client ([DC-14](../../requirements/11-policy-and-configuration.md#rule-dc-14)). |
 | BR-09 | **Offline caching is restrained and bounded**: recent task state, recent conversation summaries, pending attention items and small previews — evictable and never authoritative. |
 | BR-10 | **Complex configuration surfaces live on desktop and web**, not on mobile. |
 
@@ -53,15 +58,19 @@ The real Task, streaming, approval and recovery gates in this package consume WP
 
 ## 4. Projects, directories, files and major types affected
 
-| Location | Change |
-|---|---|
-| `src/Mobile/ArcChat.Mobile/` | Application shell, navigation, platform integration |
-| `src/Mobile/ArcChat.Mobile.Presentation/` | Conversation, task, approval, steering, artifact and device surfaces |
-| `src/Mobile/ArcChat.Mobile.Application/` | Companion application services over the shared clients |
-| `src/Mobile/ArcChat.Mobile.Persistence/` | Bounded cache and the outbox |
-| `tests/AndroidUiTests/`, `tests/MobileContractTests/` | Interaction, offline, reconnection and contract suites |
+All paths are in ArcForges-Mobile. [The mobile surface and state table](../../architecture/11-mobile-architecture.md#15-mobile-repository-screens-and-execution-state) is binding.
 
-**Major types introduced.** `CompanionSession`, `ConversationView`, `SlashCommand`, `ContextMention`, `TaskView`, `ApprovalCard`, `SteeringControl`, `ArtifactPreview`, `TargetDevice`, `PushRegistration`, `DeepLinkRoute`.
+| Location | Deliverable |
+|---|---|
+| src/app/ | Authentication stack, four tabs, typed nested routes, account/realm guards |
+| src/features/auth/, devices/, settings/ | Sign-in/recovery, workspace and installation binding, target presence, account/settings surfaces |
+| src/features/conversations/ | Paginated list/detail/branch, composer, slash/context/model/profile choices, live/final rendering |
+| src/features/tasks/, approvals/ | Task/run/step/tool/progress, reason and recovery actions, explicit control and approval cards |
+| src/features/artifacts/ | Bounded read-only accepted previews, authorized downloads and OS file/share integration |
+| src/services/, src/storage/, src/platform/ | Foundation service composition, projections/outbox and platform integrations reused by these slices |
+| tests/unit/, tests/contract/, tests/device/ | Feature state, compatibility and actual Android/Cloud/CF/desktop loops |
+
+Every feature delivers its loading/empty/offline/denied/expired/error states, localization and accessibility with its happy path.
 
 ---
 
@@ -71,73 +80,88 @@ The real Task, streaming, approval and recovery gates in this package consume WP
 
 ### WP-31.00 — Authentication, workspace and device binding
 
-**What must be fully done.** Sign-in with passkey and email code; workspace selection; device registration with its own trust level; and target-device selection for remote work. The device's remote eligibility is visible.
 
-**Testing requirements.** Sign-in paths; workspace switch; device registration and revocation from another device taking effect; a target-selection test with a device offline.
+**What must be fully done.** Implement the realm/sign-in/recovery stack, workspace selector, installation registration and Devices/Settings tabs using the selected identity/workspace/device/entitlement RPCs. Enforce generation-bound navigation and state partitioning. Show target offline/eligibility and read-only account/usage, with only the allowed portal link-outs.
 
-**Completion gate.** Sign-in, workspace selection and device binding work, and revoking this device elsewhere terminates it promptly.
+**Testing requirements.** Passkey/email/recovery, workspace change, offline target and remote revoke; launch with no account and with hydrated offline state; prohibited commerce route negative cases.
+
+**Completion gate.** All authentication and account/device entry states lead to the specified next surface or a recoverable reason; no stale session is reused.
 
 <a id="rule-wp-31.01"></a>
 
 ### WP-31.01 — Conversation surface
 
-**What must be fully done.** Conversation and message display with streaming assembly, slash commands, context mentions, and model, mode and agent profile selection. Message composition works offline into the outbox with a visible pending state.
 
-**Testing requirements.** Streaming, interruption and resume; offline composition and send-on-reconnect; profile and model switching.
+**What must be fully done.** Implement Conversations list/detail/branch and composer using chat operations and model/profile catalogues. Preserve context origins, stable IDs and branch pins; queue only explicit Send; show draft/pending/partial/committed states. CF live and catch-up use the Task stream identity; committed Chat replaces transient text.
 
-**Completion gate.** Conversation works online and composes offline with an explicit pending state.
+**Testing requirements.** Real CF model turn, branch and profile selection, attachments/context, 1000-message virtualized list, 4 MiB live answer, interrupted stream and lost append acknowledgement with one canonical message/turn.
+
+**Completion gate.** All accepted conversation functions work through released public clients; no draft is lost or duplicate AI turn created by recovery.
 
 <a id="rule-wp-31.02"></a>
 
 ### WP-31.02 — Task, approval and steering
 
-**What must be fully done.** Task, run, step and tool-call display with progress; approve, reject, cancel, pause, retry and steer, each producing an idempotent command. Approval cards state what is being approved in the user's terms. Operations requiring local presence are shown as requiring the desktop.
 
-**Testing requirements.** Each control's idempotency under retry; a local-presence-required negative test; an approval-expiry test.
+**What must be fully done.** Implement Tasks list/detail with run/step/tool/progress, blocking reason and recovery state; Approvals/attention routes show proposal, risk, target, expiry, scope and budget. Bind cancel/pause/resume/retry/steer/decide RPCs to current revision and explicit command identity. Requery stale proposals; require current foreground confirmation for high-risk actions and show desktop-presence requirements.
 
-**Completion gate.** Every control is idempotent, and a local-presence-required operation is clearly refused with an explanation.
+**Testing requirements.** Duplicate each control, stale revision/proposal, expired approval, unknown nonterminal state, desktop offline/return and actual mixed Cloud/desktop turn.
+
+**Completion gate.** Controls preserve task/attempt/approval semantics and never infer success from a notification or connection state.
 
 <a id="rule-wp-31.03"></a>
 
 ### WP-31.03 — Artifacts and previews
 
-**What must be fully done.** Artifact, file and result previews as bounded, read-only representations. A preview never becomes an editing surface for a professional product's state. Downloads respect cellular policy.
 
-**Testing requirements.** Preview per artifact kind; a structural test asserting no writable professional state exists on device; a cellular-policy test.
+**What must be fully done.** Implement the accepted Notes excerpt/PDF, Scope chart/table/measurement and Slate media/result previews from Resource metadata/version pins. Obtain authenticated CF download tickets, support bounded range/cellular policy and explicit OS save/share. Keep professional domain state read-only.
 
-**Completion gate.** Previews are read-only and bounded, and no professional writable state exists on the device.
+**Testing requirements.** Each preview kind, missing local-only source, invalid/revoked ticket, mid-range revocation, large download denial and unavailable-content fallback.
+
+**Completion gate.** Previews and exports remain authorized, bounded and read-only; missing content is honestly identified.
 
 <a id="rule-wp-31.04"></a>
 
 ### WP-31.04 — Presence, push and deep links
 
-**What must be fully done.** Device presence display with honest offline state; push registration per device and installation, revoked with the device; push actions opening the right surface without carrying authorization; universal links opening the installed application; deep links treated as untrusted input carrying no secret.
 
-**Testing requirements.** Presence transitions; push registration and revocation; a push-authorization negative test; a hostile deep-link test; a missed-push test asserting durable attention survives.
+**What must be fully done.** Wire durable notifications/approvals and device presence polling to badges/routes. Register push per installation; revoke/unregister on sign-out/device revoke. Parse canonical HTTPS app links with an allowlist and current realm/permission checks. Notification actions only navigate.
 
-**Completion gate.** Push carries no authorization, deep links reject hostile input, and missing a push never loses a pending approval.
+**Testing requirements.** No push and missed push retain attention; hostile link and wrong realm refuse; revoked/expired target displays recovery; device presence changes update eligibility.
+
+**Completion gate.** Push is an optional hint; every attention item and remote target state is recoverable by current RPC reads.
 
 <a id="rule-wp-31.05"></a>
 
 ### WP-31.05 — Background, weak network and reconnection
 
-**What must be fully done.** Foreground and background transitions rebuilding or restoring the realtime session; sequence-gap backfill over HTTP on resume; exponential backoff with jitter; and a high-risk task requiring explicit confirmation rather than auto-executing on reconnection.
 
-**Testing requirements.** Background-resume with an induced gap; weak-network and flapping-connection tests; a high-risk auto-execution negative test.
+**What must be fully done.** Apply the foundation generation/outbox lifecycle to every feature. Resume validates session, polls authoritative state, handles cursor reset then connects to CF tail. Preserve cached read/draft behavior offline; queued ordinary sends reconcile, while high-risk controls wait for renewed explicit confirmation.
 
-**Completion gate.** The client converges after background resume and weak network, and never auto-executes a high-risk task on reconnection.
+**Testing requirements.** Kill during send/refresh, airplane/flapping network, background process removal, sign-out/revoke during an in-flight read and expired approval on reconnect.
+
+**Completion gate.** All feature states converge without lost durable user work, stale-account data or repeated external effect.
 
 <a id="rule-wp-31.06"></a>
 
 ### WP-31.06 — Prohibited-path enforcement
 
-**What must be fully done.** A structural assertion that no code path performs network discovery, addresses a named pipe or socket, or connects to anything other than the cloud endpoints. This is asserted as a policy test, not merely reviewed.
 
-**Testing requirements.** A policy test with a negative fixture; a runtime network-observation test asserting only cloud endpoints are contacted.
+**What must be fully done.** Enforce the exact remote path Mobile → public C# admission/control and CF presentation/object facade → Cloud bridge → ArcChat desktop. Native OS passkey/push/file interactions are the declared platform exceptions; no local discovery/Hub RPC/professional editor/provider secret or executable extension enters Mobile.
 
-**Completion gate.** **No prohibited connection path exists**, verified both structurally and by runtime observation.
+**Testing requirements.** Import/route policy negative fixtures and runtime network observation over the complete product loop; five commerce prohibitions and no local network target.
 
----
+**Completion gate.** The independent Apache app implements only the accepted companion capabilities and declared endpoints.
+
+<a id="rule-wp-31.90"></a>
+### WP-31.90 — Verify the owned artifact and real integration
+
+
+**What must be fully done.** Run the complete signed-candidate Android companion against the actual Cloud OCI, deployed CF Worker/R2 and ArcChat bridge from the integration manifest after WP52.
+
+**Testing requirements.** Create a Cloud-only turn with desktop off, then a desktop-tool turn with approval, network interruption and device return; verify durable final message/Task and usage outcome.
+
+**Completion gate.** Every surface, failure/recovery state and prohibited-path condition above passes on actual Android; no product behavior remains for implementation-time design.
 
 ## 6. Impacts
 
@@ -169,6 +193,8 @@ The real Task, streaming, approval and recovery gates in this package consume WP
 
 ## 8. Completion gate
 
+**[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) gate:** [WP-31.90](#rule-wp-31.90) and all inherited domain-specific gates must pass on the same candidate closure. Android device tests cover full admitted AI turn, pending/expired approval, dropped network, process restart, duplicate send and durable final answer. No professional editor or local-LAN execution path.
+
 **Offline evidence.** Execute this product's applicable [initial-state matrix](../../assurance/testing-and-verification-strategy.md#offline-acceptance-matrix) rows, including fresh shell, hydrated outage, unavailable content, signout and restart where applicable. Record permitted local work and explicitly unavailable Cloud actions.
 
 **All of the following, with recorded evidence:**
@@ -187,10 +213,12 @@ The real Task, streaming, approval and recovery gates in this package consume WP
 
 **Upstream — all must be complete.**
 
-- [26 — Device Presence, Remote Action and the Tool Bridge](26-remote-action-and-tool-bridge.md)
-- [30 — Mobile Shared Architecture and the Apache Boundary](30-mobile-shared-architecture.md)
-- [52 — The Cloud Harness](52-cloud-harness.md)
+- [26 remote action and tool bridge](26-remote-action-and-tool-bridge.md#rule-wp-26)
+- [30 mobile shared architecture](30-mobile-shared-architecture.md#rule-wp-30)
+- [52 cloud harness](52-cloud-harness.md#rule-wp-52)
 
-**Downstream — these consume this package’s completed output.**
+**Downstream — consumers of these released outputs.**
 
-- [32 — Mobile Release Engineering and Store Gates](32-mobile-release-and-store-gates.md)
+- [32 mobile release and store gates](32-mobile-release-and-store-gates.md#rule-wp-32)
+
+---

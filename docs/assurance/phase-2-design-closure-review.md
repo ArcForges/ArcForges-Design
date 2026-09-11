@@ -1,5 +1,6 @@
 # Phase 2 Design Closure Review
 
+> **Historical evidence boundary.** Results and technology claims below belong to their recorded baseline. [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) amends current repository, protocol, Cloud and Mobile decisions; current implementation obligations are in the [gate register](open-gates-register.md). This amendment does not rewrite the earlier finding evidence or turn a design check into runtime proof.
 > Status: Fourteen repair groups resolved in the Stage 2 design baseline.
 > Baseline reviewed: `c5b95a7` on `design/phase-2-specifications`.
 > Scope: specifications, architecture, contracts, data models, assurance and implementation planning. This is not product implementation or Stage 3.
@@ -60,3 +61,23 @@ The complete corpus check and repository-boundary verification are recorded with
 | Git boundary | Existing `design/phase-2-specifications` branch and worktree; no new branch/worktree, commit or push |
 
 The check programs were also extracted from the verification document and executed again successfully. This verifies the preserved runnable evidence, not merely a temporary draft of the programs. The rule-link count is a structural measurement, not a substitute for the semantic dispositions in section 2 or future implementation evidence.
+
+## 5. Architecture amendment review — 2026-09-11
+
+The [accepted architecture amendment](../decisions/phase-2-specification-decisions.md#rule-p2-009) was prepared completely before its serial formal-writing batch. Its baseline was 0bb5e0b1d7bc67a376f1ae1f9109dd739719731b. After that batch, two read-only passes collected the complete repair list before remediation: accepted product/commercial closure, then implementer readiness across contracts, owners, recovery, artifacts, package order and acceptance. Sixteen grouped issues were frozen in Plan/architecture-change-plan/execution-review.md and repaired together; validation corrected only concrete inconsistencies within those groups.
+
+| Collected groups | Actual formal closure |
+|---|---|
+| AR01/12 — current technology and owners | The [layout](../architecture/01-solution-and-project-layout.md), runtime/dependency matrix, Cloud and desktop/native authorities now agree on ten repositories, capability packages, one AOT C# business host and the sole CF agent loop. Preserved historical decisions are explicitly superseded. |
+| AR02/04/05/06 — typed contracts and retained data meanings | The [wire registry](../architecture/contracts/04-protobuf-wire-registry.md) supplies numbered records, exact values, oneofs, owner projections, commands and sync write restrictions. Notes keeps its thirteen block kinds/UTF-16 editing offsets and scalar query profile; Scope keeps precise measurement and source identity; Slate keeps exact media time/placement and immutable source references. |
+| AR03/07/08/10 — authentication and recovery | The [CF contract](../architecture/contracts/05-cloudflare-integration.md), security and realtime authorities specify session-bound CSRF/nonce flows, actual Poll/bootstrap/local transfer, lease renewal through long awaits, bounded step/stream/object verification, duplicate receipts and independent restore. |
+| AR09/11 — simulator and inference execution | Simulator generators/faults/CSV/segments have fixed profiles. The [Search record](../architecture/data-model/01-cloud-data-model.md#search-inference-job-execution-record) and [retrieval profile](../architecture/data-model/03-derived-stores.md#selected-retrieval-profile-retrievalhybridv1) supply fixed CF inference stages, source/usage receipts, platform funding and bounded ranking/fallback. |
+| AR13 — operator/support control | Internal operator/configuration schema, separate identity, revisioned dual approvals and bounded customer content consent complete the existing support/appeal/activation paths. |
+| AR14/15 — executable packages and gates | All 51 active packages have assigned owners, released artifact inputs, concrete implementation actions and acceptance. Mobile architecture plus [foundation](../planning/work-packages/30-mobile-shared-architecture.md), [features](../planning/work-packages/31-arcchat-mobile-android.md) and [release](../planning/work-packages/32-mobile-release-and-store-gates.md) are RN-specific, with real-provider prerequisites and early/final licence/runtime gates. |
+| AR16 — references and evidence | Existing structural validation, schema cross-checks and focused diff review resolve broken/current citations, table/wording errors and stale authority pointers. Historical evidence and archived input bodies remain unchanged apart from explicit historical-boundary notes in active assurance documents. |
+
+The completed review leaves no unresolved key design prerequisite within this amendment. The prior 31 audit finding dispositions are retained: 25 repaired, three merged, two withdrawn and one evidence-insufficient historical allegation. This review does not turn that allegation into a confirmed defect or source-audit pass.
+
+Actual documentation checks cover 146 non-archived Markdown files; all local paths/fragments/rule citations; 429 invariant mappings; all nine required fields, matching header/index/reciprocal dependencies and serial order for 51 active packages with137 edges; and16 archived-input guard fixtures. Wire checks cover259 records/1295 numbered fields/14 enums,147 tabulated public methods plus Event.Poll,91 local service methods,17 event payloads,18 operator methods and seven declared business HTTP exceptions. No undefined field type, duplicate tag/operation or forbidden private record in the public method closure remains. The patch passes git diff --check.
+
+These are design/document checks. No generated proto compilation, package publication, product build, Native AOT/device/provider execution or commercial/restore rehearsal was performed. The33 unclosed implementation obligations remain open/triggered, including actual CF/R2/model and Android store evidence; iOS build activation remains deferred. Their named producers and completion gates, rather than this review, determine product readiness.

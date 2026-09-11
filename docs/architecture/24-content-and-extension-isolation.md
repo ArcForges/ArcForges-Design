@@ -48,3 +48,7 @@ The exact syscall/entitlement/handle allowlists are versioned packaging inputs a
 | Executable extension | Malicious real package cannot read another package/product store or call the network outside the broker; revoke during invocation, restart and uninstall preserve denial | [WP-41.00](../planning/work-packages/41-extension-platform-and-integrations.md#rule-wp-41.00) and [PG-22](../assurance/open-gates-register.md#rule-pg-22) |
 
 Pure managed unit tests or a mocked launcher cannot satisfy OS isolation evidence. A first-party parser library's ABI, licence, package hashes and Native AOT publish remain separate required gates. GPU/device-driver calls that necessarily remain in the product process still have an acknowledged crash/recovery risk; that is not reused as a promise that an in-process hostile parser is contained.
+
+## P2-009 packaged helper ownership
+
+DesktopPlatform publishes the signed ContentSandbox/Broker/Contracts and per-RID parser assets through the [package registry](01-solution-and-project-layout.md#12-package-and-native-distribution-registry). Each product selects only its approved parser profile. The existing OS-enforced handle, filesystem, network, process and lifetime rules above are unchanged. Product parsing never moves into the UI process merely because a native dependency became a NuGet package. This private helper protocol (including XPC on macOS) is an explicit exception to business gRPC.

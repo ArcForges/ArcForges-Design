@@ -9,6 +9,9 @@
 
 > **Goal.** Build the account layer: realms, users and authentication identities separated; workspaces from day one; devices, installations, instances and sessions distinguished; device trust and remote gating; step-up; recovery; and the account lifecycle through to deletion — with no product ever requiring an account to work locally.
 
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Cloud; client/AI adapters. Inputs: the assigned exact Contracts packages/descriptors and actual provider artifacts; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: owned candidate artifacts and generated contracts with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+
 ---
 
 ## 1. Scope and purpose
@@ -22,6 +25,8 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+**Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
 | Input | Why it matters |
 |---|---|
@@ -158,11 +163,23 @@
 
 ### WP-22.08 — Browser cookie-session adapter
 
-**What must be fully done.** Implement the adopted [P2-003](../../decisions/phase-2-specification-decisions.md#rule-p2-003) same-origin C# adapter in the existing Cloud host. Add the browser/native exclusive session schema, random handle hashing, origin binding, idle/absolute expiry, lowest-trust browser device/installation creation, the bounded browser_auth_flow store/cookie binding and shared Data Protection keys. Expose the C#-described bootstrap/authentication/logout operations and cookie/antiforgery middleware; all other operations call existing application services.
 
-**Testing requirements.** Real PostgreSQL tests for one-use challenge, concurrent idle update vs revoke/expiry, complete/login response loss, user/device revocation and replica failover. Browser tests for host-only cookies, no JS bearer secrets, cross-origin/sibling-origin CSRF on JSON/multipart/negotiation, WebSocket Origin, expiry and no elevated browser trust. Native refresh regression; native token issuance/refresh paths rejected at the browser edge, while cookie-shaped login/recovery succeeds.
+**What must be fully done.** Implement the same-origin browser adapter in the AOT host using the selected random hashed session/preauth/CSRF records. Preserve the browser/native exclusive schema, exact Origin, idle/absolute expiry, lowest-trust browser installation and one-use auth flow. Map the declared /session bootstrap/auth/logout endpoints to existing application services. Use explicit cookie parsing/writing and X-AF-CSRF validation; no ASP.NET Data Protection/cookie-auth middleware dependency.
 
-**Completion gate.** Authentication has one server authority, no extra deployment, no credential leakage, no session resurrection and no cross-origin credential sharing. This is a producer for [WP-23](23-public-api-and-generated-clients.md#rule-wp-23) and [WP-48](48-account-portal.md#rule-wp-48); full portal acceptance remains [WP-48.01](48-account-portal.md#rule-wp-48.01).
+**Testing requirements.** Real PostgreSQL one-use challenge, lost login response, idle-versus-revoke race, expiry and replica failover; browser exact Origin/CSRF on unsafe RPC/session/CF-connect/object operations, native-token route refusal and WebSocket first-frame auth.
+
+**Completion gate.** One server-owned session authority, no JS bearer, no cross-origin reuse or session resurrection; actual AOT closure feeds WP23 and full portal acceptance.
+
+<a id="rule-wp-22.90"></a>
+### WP-22.90 — Verify the owned artifact and real integration
+
+**What must be fully done.** Implement native/RN bearer sessions, same-origin Web opaque sessions, passkeys/recovery, workspace/device rules and authenticated CF authorization ports using selected AOT-compatible components.
+
+**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+
+**Testing requirements.** Real publish-mode auth/session/CSRF/origin/rotation/revocation tests, including stale CF requests and browser credential secrecy.
+
+**Completion gate.** Real publish-mode auth/session/CSRF/origin/rotation/revocation tests, including stale CF requests and browser credential secrecy. Record exact artifacts and provider reality. The package is incomplete if an important contract/owner/recovery rule still requires design during coding.
 
 ---
 
@@ -201,6 +218,8 @@
 
 ## 8. Completion gate
 
+**[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) gate:** [WP-22.90](#rule-wp-22.90) and all inherited domain-specific gates must pass on the same candidate closure. Real publish-mode auth/session/CSRF/origin/rotation/revocation tests, including stale CF requests and browser credential secrecy.
+
 **[PG-23](../../assurance/open-gates-register.md#rule-pg-23) evidence:** [WP-22.08](#rule-wp-22.08) — Real cookie-only browser identity/session/CSRF/expiry/revocation conformance. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
 
 **Identity boundary evidence.** Apply the [owner/deployment identity chain](../../architecture/08-security-architecture.md#1-identity-layering). Automation loses authorization when its owner loses permission/service eligibility even with a valid process credential; no customer service-principal or Organization authority is introduced.
@@ -222,10 +241,12 @@
 
 **Upstream — all must be complete.**
 
-- [11 — Security Foundation](11-security-foundation.md)
-- [21 — Cloud Host, Modules, Persistence and Migrations](21-cloud-host-and-persistence.md)
+- [11 security foundation](11-security-foundation.md#rule-wp-11)
+- [21 cloud host and persistence](21-cloud-host-and-persistence.md#rule-wp-21)
 
-**Downstream — these consume this package’s completed output.**
+**Downstream — consumers of these released outputs.**
 
-- [23 — Public API Surface and Generated Clients](23-public-api-and-generated-clients.md)
-- [42 — Commerce, Entitlement and Credits](42-commerce-entitlement-and-credits.md)
+- [23 public api and generated clients](23-public-api-and-generated-clients.md#rule-wp-23)
+- [42 commerce entitlement and credits](42-commerce-entitlement-and-credits.md#rule-wp-42)
+
+---

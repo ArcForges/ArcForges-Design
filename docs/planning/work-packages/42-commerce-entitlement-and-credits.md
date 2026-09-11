@@ -9,6 +9,9 @@
 
 > **Goal.** Build the commercial system so that money is never lost, never double-charged and never silently wrong: a provider adapter boundary, a verify-everything event inbox, a derived entitlement resolver, credit lots with reserve-then-settle, three separate ledgers, and reconciliation as a first-class subsystem.
 
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Cloud; AI usage producer. Inputs: the assigned exact Contracts packages/descriptors and actual provider artifacts; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: owned candidate artifacts and generated contracts with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+
 ---
 
 ## 1. Scope and purpose
@@ -22,6 +25,8 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+**Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
 | Input | Why it matters |
 |---|---|
@@ -194,6 +199,19 @@
 
 ---
 
+<a id="rule-wp-42.90"></a>
+### WP-42.90 — Verify the owned artifact and real integration
+
+**What must be fully done.** Retain current subscription/admission/credit/quota/settlement/reversal rules. Bind the CF usage/config identities and exact quantities; keep synthetic price fixtures distinct from live configuration. Do not add mandatory prepayment.
+
+**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+
+**Testing requirements.** Existing concurrent admission/idempotent settlement/reversal/storage-accounting cases; keep [WP-42.11](#rule-wp-42.11) evidence and its order before WP-42.10.
+
+**Completion gate.** Existing concurrent admission/idempotent settlement/reversal/storage-accounting cases; keep [WP-42.11](#rule-wp-42.11) evidence and its order before WP-42.10. Record exact artifacts and provider reality. The package is incomplete if an important contract/owner/recovery rule still requires design during coding.
+
+---
+
 ## 6. Impacts
 
 | Dimension | Impact |
@@ -230,6 +248,8 @@
 
 ## 8. Completion gate
 
+**[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) gate:** [WP-42.90](#rule-wp-42.90) and all inherited domain-specific gates must pass on the same candidate closure. Existing concurrent admission/idempotent settlement/reversal/storage-accounting cases; keep [WP-42.11](#rule-wp-42.11) evidence and its order before WP-42.10.
+
 **Producer completion.** [WP-42.11](#rule-wp-42.11) must pass with the explicit §7 artifacts above; it is not optional because other package checks pass.
 
 **[PG-16](../../assurance/open-gates-register.md#rule-pg-16) evidence:** [WP-42.11](#rule-wp-42.11) — Durable term/capacity/refill state survives concurrent requests and restart without double grant; combine with configuration activation evidence from package 44. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
@@ -258,13 +278,15 @@
 
 **Upstream — all must be complete.**
 
-- [22 — Identity, Workspace, Device and Session](22-identity-workspace-and-device.md)
-- [23 — Public API Surface and Generated Clients](23-public-api-and-generated-clients.md)
+- [22 identity workspace and device](22-identity-workspace-and-device.md#rule-wp-22)
+- [23 public api and generated clients](23-public-api-and-generated-clients.md#rule-wp-23)
 
-**Downstream — these consume this package’s completed output.**
+**Downstream — consumers of these released outputs.**
 
-- [43 — Cloud AI Routing, Metering and Settlement](43-managed-ai-routing-and-metering.md)
-- [44 — Dynamic Policy and Configuration Control Plane](44-dynamic-policy-and-configuration.md)
-- [48 — Account Portal](48-account-portal.md)
-- [51 — ArcScope Deterministic Cloud Simulator](51-arcscope-cloud-simulator.md)
-- [52 — The Cloud Harness](52-cloud-harness.md)
+- [43 managed ai routing and metering](43-managed-ai-routing-and-metering.md#rule-wp-43)
+- [44 dynamic policy and configuration](44-dynamic-policy-and-configuration.md#rule-wp-44)
+- [48 account portal](48-account-portal.md#rule-wp-48)
+- [51 arcscope cloud simulator](51-arcscope-cloud-simulator.md#rule-wp-51)
+- [52 cloud harness](52-cloud-harness.md#rule-wp-52)
+
+---

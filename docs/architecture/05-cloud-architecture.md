@@ -2,57 +2,33 @@
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Architecture
-> Governing authority: **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** (ASP.NET Core **JIT** modular monolith), **[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)** (topology), **[V-03](../assurance/phase-1-official-verification.md#rule-v-03)**/**[V-05e](../assurance/phase-1-official-verification.md#rule-v-05e)** (the evidence)
+> Governing authority: **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** (ASP.NET Core **Native AOT** modular monolith), **[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)** (topology), **[V-03](../assurance/phase-1-official-verification.md#rule-v-03)**/**[V-05e](../assurance/phase-1-official-verification.md#rule-v-05e)** (the evidence)
 > Companions: [`../requirements/products/arcforges-cloud.md`](../requirements/products/arcforges-cloud.md), [`02-contracts-and-protocols.md`](02-contracts-and-protocols.md), [`13-observability-and-operations.md`](13-observability-and-operations.md)
 
 ---
 
 ## 1. Runtime decision
 
-**ArcForges Cloud is an ASP.NET Core JIT modular monolith. Strict Native AOT is not a Cloud requirement** (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**).
-
-**[V-03](../assurance/phase-1-official-verification.md#rule-v-03)** made this structural rather than preferential. Under .NET 10 Native AOT, ASP.NET Core marks **"Other Authentication", MVC, Blazor Server, OData, Session and Spa as Not supported**, with **Minimal APIs and SignalR at Partial support**; the slim host omits HTTPS endpoints, HTTP/3, several logging providers and various routing constraints; reflection is unsupported, so every body type must be registered on a source-generated serialization context; and **not all runtime libraries are fully annotated for AOT compatibility**. A Cloud requiring anything beyond bearer-token authentication would be blocked outright.
-
-| # | Consequence |
-|---|---|
-| RD-01 | **Azure SDKs, the durable agent loop, provider adapters, realtime integration, billing, policy and operational infrastructure all run inside the JIT boundary** (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**). |
-| RD-02 | **No effort is spent proving cloud-dependency AOT compatibility** (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**, honoured in **[V-05e](../assurance/phase-1-official-verification.md#rule-v-05e)**). |
-| RD-03 | **If any Cloud component is ever moved into an AOT deliverable, its full dependency closure requires a publish proof at that time.** *Owner: Architecture Owner.* |
-| RD-04 | **JIT does not relax the conventions.** Source-generated serialization, explicit registration and no reflection scanning remain the Cloud style, because they are correctness and start-up-performance practices independent of AOT. |
-| RD-05 | **Realtime support under .NET 10 AOT is partial**, with the verified limitations recorded in **[V-03](../assurance/phase-1-official-verification.md#rule-v-03)**. The Cloud host remains JIT and native-client acceptance must prove the supported transport path; partial support is not full compatibility evidence. |
-
----
-
-### 1.1 React/TypeScript browser boundary
-
-[P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008) adds a C# same-origin browser-session adapter inside this host's PublicApi/Identity boundary. Edge routing serves React assets independently and forwards only declared API/session/realtime paths. The adapter calls existing application services, uses server-side session records and explicit cookie/CSRF/origin checks, and never duplicates entitlement, pricing, Harness or persistence behavior in Node. Native/mobile retain their bearer API scheme; the TS SDK derives from C# metadata. [Web architecture §5](10-web-architecture.md#5-browser-session-architecture--p2-003-resolved) and [session storage](data-model/01-cloud-data-model.md#browser-session-storage) define the lifecycle.
+[P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) requires Native AOT for the complete C# business host. The selected dependency/session/SQL/HTTP adapter closure is in [the platform matrix](21-platform-and-dependency-matrix.md#7-selected-p2-009-runtime-and-dependency-closure). Use explicit gRPC service/serializer registration, Minimal API exceptions, Npgsql fixed SQL and supported cryptography. No automatic ASP.NET Session, dynamic ORM, runtime assembly scanning or JIT exception is allowed. WP06 publishes and exercises the real dependency closure; prose cannot satisfy that gate.
 
 ---
 
 ## 2. Deployment host and internal services
 
-**One deployable host** (**[P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006)**; `§8` of the product scope). `ArcForges.Cloud.Host` is the single ASP.NET Core JIT executable. Request handling, realtime hubs, the single Harness and every bounded background service run inside it as libraries. Horizontal scale is **replicas of that one host**, never a second deployable with a different job.
+**One deployable host** (**[P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006)**; `§8` of the product scope). `ArcForges.Cloud.Host` is the single ASP.NET Core Native AOT executable. Business request handlers, bounded hint reads, canonical Task/Agent ports and ordinary leased background jobs run inside it as libraries. The sole model loop runs in CF Workflow, outside this process. Horizontal scale is **replicas of that one host**, never a second deployable with a different job.
 
 ```
-                      Edge (TLS, WAF, rate limit)
-                                 |
-                      private ingress only
-                                 v
-+--------------- ArcForges.Cloud.Host  --  N identical replicas ----------------+
-| REQUEST PIPELINE                                                              |
-|   forwarded headers -> request limits -> correlation -> exception normalise    |
-|   -> authentication -> authorization -> rate limiting -> endpoints -> hubs     |
-|                                                                               |
-| HOSTED SERVICES  (bounded, lease-fenced; never an unbounded loop in a handler) |
-|   outbox dispatcher | harness runner | reconciliation | indexing               |
-|   notification fan-out | deletion propagation | capacity refill | simulator    |
-|   usage reconciliation | retention and maintenance                             |
-+------+----------------------------------------------------------+------------+
-       |                                                          |
-       v                                                          v
-   PostgreSQL                                              Object storage
-   - durable work queues and leases                        - simulator segments
-   - outbox                                                - blobs, export artifacts
+Desktop native gRPC / Web and RN gRPC-Web
+                   -> TLS ingress -> C# Native AOT Cloud (identical replicas)
+                      explicit auth/tenancy/authorization/validation
+                      business owners + leased bounded jobs
+                      PostgreSQL + transactional outbox
+                   -> same-origin /ai, /objects -> CF Worker router
+                      RunWorkflow: only model/tool loop -> Workers AI
+                      RunStream DO: bounded disposable stream tail
+                      R2: private immutable objects and staged transfers
+C# <-> CF: authenticated typed HTTP ports, leases and idempotent receipts.
+Cloud clients never connect inbound to a desktop; device tools pull from Cloud.
 ```
 
 | # | Rule |
@@ -72,18 +48,18 @@
 
 ## 3. Host pipeline
 
-Fixed order:
+Fixed request order (service registration remains explicit at startup):
 
-1. Forwarded headers and trusted proxy configuration
-2. Request limits (body size, header size, timeouts)
-3. Correlation and trace establishment
-4. Exception normalisation into the semantic error contract
-5. Authentication
-6. Authorization
-7. Rate limiting
-8. Endpoint routing (Minimal API)
-9. Realtime hubs
-10. Health, readiness and liveness endpoints
+1. Trusted forwarded headers/TLS context and bounded request/header/deadline limits.
+2. Correlation and exception/status normalization wrapping all later work.
+3. Routing and the declared gRPC-Web/CORS protocol adapter, with exact allowed Origin.
+4. Native/browser/operator or CF service authentication; browser unsafe calls validate session-bound CSRF.
+5. Realm/workspace/device scope resolution from authenticated identity and request metadata.
+6. Current authorization, entitlement/capability admission and per-identity/capability rate limiting.
+7. Generated contract validation, conditional revision/idempotency and the owning handler/transaction.
+8. Typed reply/status and audit/trace completion. Health/readiness have their explicit minimal allowlist.
+
+EventService.Poll uses the same pipeline. CF public presentation/object routes are authenticated through the selected C# ports and never acquire an alternate business authorization path.
 
 | # | Rule |
 |---|---|
@@ -148,7 +124,7 @@ Twenty domain modules, following the [Cloud schema ownership map](data-model/01-
 | PS-09 | **Migration is a separate, gated deployment step.** Automatic migration on replica start-up is prohibited ([MG-01](../requirements/products/arcforges-cloud.md#rule-mg-01) in the cloud product requirements). |
 | <a id="rule-ps-10"></a>PS-10 | **Schema change uses expand/contract**, so two application versions coexist during a rolling deployment. |
 | PS-11 | **A mapping and SQL-generation enhancement layer may be adopted after benchmarking**; it is not a prerequisite. |
-| PS-12 | **A heavyweight reflection-driven ORM runtime is not required by the JIT decision, and its adoption remains a deliberate, benchmarked choice** rather than a default. |
+| PS-12 | Use the selected Npgsql fixed-SQL mapping; no reflection-driven ORM enters the AOT host. |
 
 ---
 
@@ -156,13 +132,13 @@ Twenty domain modules, following the [Cloud schema ownership map](data-model/01-
 
 | # | Rule |
 |---|---|
-| AP-01 | **The server is an ordinary REST-ish HTTP/JSON Minimal API.** The typed client is a **client-side generation layer only** — the server never "implements the client interface" to imitate local RPC. |
+| AP-01 | Public business services implement the handwritten proto service definitions using native gRPC and unary gRPC-Web. Only the enumerated browser-auth/provider/object/AI/platform protocol exceptions use HTTP/JSON or their standard wire format. |
 | AP-02 | **Standard web semantics are preserved**: status codes, headers, cache control, ETag and conditional requests, so proxies, browsers and non-.NET clients all work. |
-| AP-03 | **OpenAPI is generated from the C# contracts** for observation and third parties — never maintained as a parallel handwritten source (**[D-009](../decisions/phase-1-foundation-decisions.md#rule-d-009)**). |
+| AP-03 | **OpenAPI is generated from the proto descriptors** for observation and third parties — never maintained as a parallel handwritten source (**[D-009](../decisions/phase-1-foundation-decisions.md#rule-d-009)**). |
 | AP-04 | **API drift is controlled by** shared DTO and route constants, generated description artifacts, server-client contract integration tests, and a compatibility matrix of the previous stable client against the current server. |
 | AP-05 | **File upload and download use standard HTTP content and streams.** Large objects are never base64-encoded into JSON. |
 | AP-06 | **Timeout, cancellation and retry are explicit client policies**; a write retry requires `CommandId` idempotency. |
-| AP-07 | **Every public DTO belongs to a source-generated serialization context.** |
+| AP-07 | Public protobuf types use generated C#/TS serializers; declared HTTP exceptions use explicit source-generated JSON metadata. The same semantic validators apply before owner dispatch. |
 | AP-08 | **Route versioning is explicit**, and the supported client set is declared by compatibility policy (`§7` of the policy requirements). |
 
 ---
@@ -289,7 +265,11 @@ Capabilities degrade independently. The full dependency-degradation matrix is in
 | [ArcForges Cloud — Product and Platform Requirements](../requirements/products/arcforges-cloud.md) | Owns runtime, deployment and operational obligations |
 | [Cloud Services, Sync, Assets and Data Integrity Requirements](../requirements/03-cloud-services-and-sync.md) | Owns Cloud capabilities, sync and continuity |
 | [Cloud Data Model](data-model/01-cloud-data-model.md) | Defines module data, transactions and reliable-event persistence |
-| **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** | Cloud is a JIT modular monolith; no strict AOT requirement |
+| **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** | Cloud is the Native AOT modular monolith under [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) |
 | **[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)** | Cloud never reaches local IPC; the durable request/result model |
-| **[V-03](../assurance/phase-1-official-verification.md#rule-v-03)** | The ASP.NET Core AOT support surface that made the JIT decision structural, and the stale-realtime correction |
-| **[V-05e](../assurance/phase-1-official-verification.md#rule-v-05e)** | The instruction not to spend effort proving cloud-dependency AOT compatibility |
+| **[V-03](../assurance/phase-1-official-verification.md#rule-v-03)** | The ASP.NET Core AOT support surface that made the Native AOT decision structural, and the stale-realtime correction |
+| **[V-05e](../assurance/phase-1-official-verification.md#rule-v-05e)** | Historical non-AOT evidence, superseded by the activated Cloud AOT proof under [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) |
+
+## Selected host dependencies and integration
+
+[Platform runtime closure](21-platform-and-dependency-matrix.md#7-selected-p2-009-runtime-and-dependency-closure) owns the AOT/auth/SQL/HTTP adapter selection. [CF integration](contracts/05-cloudflare-integration.md) owns external execution/object ports and commit boundaries. This host implements those ports and canonical module operations; it runs no model loop.

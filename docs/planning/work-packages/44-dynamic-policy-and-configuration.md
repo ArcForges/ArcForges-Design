@@ -9,6 +9,9 @@
 
 > **Goal.** Build the control plane that lets behaviour change without a release — feature flags, deterministic rollout, kill switches, schema-constrained remote configuration and compatibility policy — while keeping compiled hard limits authoritative and remaining safe under Native AOT.
 
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Cloud authority; AI/clients consumers. Inputs: the assigned exact Contracts packages/descriptors and actual provider artifacts; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: owned candidate artifacts and generated contracts with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+
 ---
 
 ## 1. Scope and purpose
@@ -22,6 +25,8 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+**Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
 | Input | Why it matters |
 |---|---|
@@ -146,6 +151,19 @@
 
 ---
 
+<a id="rule-wp-44.90"></a>
+### WP-44.90 — Verify the owned artifact and real integration
+
+**What must be fully done.** Implement versioned compatibility/model/cost/security policy with explicit C#/CF activation and stale-policy behavior. Keep signed/auditable targeting and rollback horizons.
+
+**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+
+**Testing requirements.** A CF run and each effect use the required policy version; stale/disallowed models or revoked permission fail deterministically, without client-side policy becoming authority.
+
+**Completion gate.** A CF run and each effect use the required policy version; stale/disallowed models or revoked permission fail deterministically, without client-side policy becoming authority. Record exact artifacts and provider reality. The package is incomplete if an important contract/owner/recovery rule still requires design during coding.
+
+---
+
 ## 6. Impacts
 
 | Dimension | Impact |
@@ -177,6 +195,8 @@
 
 ## 8. Completion gate
 
+**[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) gate:** [WP-44.90](#rule-wp-44.90) and all inherited domain-specific gates must pass on the same candidate closure. A CF run and each effect use the required policy version; stale/disallowed models or revoked permission fail deterministically, without client-side policy becoming authority.
+
 **[PG-16](../../assurance/open-gates-register.md#rule-pg-16) evidence:** [WP-44.01](#rule-wp-44.01) — Atomic version activation/rejection and two-policy/no-retroactivity/concurrent-replica results, combined with durable capacity evidence from package 42. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
 
 **All of the following, with recorded evidence:**
@@ -196,14 +216,16 @@
 
 **Upstream — all must be complete.**
 
-- [23 — Public API Surface and Generated Clients](23-public-api-and-generated-clients.md)
-- [42 — Commerce, Entitlement and Credits](42-commerce-entitlement-and-credits.md)
+- [23 public api and generated clients](23-public-api-and-generated-clients.md#rule-wp-23)
+- [42 commerce entitlement and credits](42-commerce-entitlement-and-credits.md#rule-wp-42)
 
-**Downstream — these consume this package’s completed output.**
+**Downstream — consumers of these released outputs.**
 
-- [40 — Knowledge, Search and Retrieval](40-knowledge-search-and-retrieval.md)
-- [43 — Cloud AI Routing, Metering and Settlement](43-managed-ai-routing-and-metering.md)
-- [45 — Operations, Support and Trust & Safety](45-operations-support-and-trust-safety.md)
-- [48 — Account Portal](48-account-portal.md)
-- [51 — ArcScope Deterministic Cloud Simulator](51-arcscope-cloud-simulator.md)
-- [52 — The Cloud Harness](52-cloud-harness.md)
+- [40 knowledge search and retrieval](40-knowledge-search-and-retrieval.md#rule-wp-40)
+- [43 managed ai routing and metering](43-managed-ai-routing-and-metering.md#rule-wp-43)
+- [45 operations support and trust safety](45-operations-support-and-trust-safety.md#rule-wp-45)
+- [48 account portal](48-account-portal.md#rule-wp-48)
+- [51 arcscope cloud simulator](51-arcscope-cloud-simulator.md#rule-wp-51)
+- [52 cloud harness](52-cloud-harness.md#rule-wp-52)
+
+---

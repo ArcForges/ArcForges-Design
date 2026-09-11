@@ -5,7 +5,7 @@
 > Governing authority: [`00-operation-catalogue.md`](00-operation-catalogue.md), [`../05-cloud-architecture.md`](../05-cloud-architecture.md) `§6`
 > Companions: [`../data-model/01-cloud-data-model.md`](../data-model/01-cloud-data-model.md)
 
-Every cloud HTTP operation. Columns follow `§2` of the catalogue: each operation names its capability, risk, approval posture, idempotency class, its primary errors beyond the universal set, and its compatibility class.
+Every Cloud business operation and explicit HTTP exception. Columns follow `§2` of the catalogue: each operation names its capability, risk, approval posture, idempotency class, its primary errors beyond the universal set, and its compatibility class.
 
 **Universal errors** omitted from each row: `auth.unauthenticated`, `auth.session_expired`, `validation.invalid_request`, `capacity.rate_limited`, `internal.unexpected`.
 
@@ -45,7 +45,7 @@ Every cloud HTTP operation. Columns follow `§2` of the catalogue: each operatio
 
 ### 1.1 Browser session transport operations
 
-These C# endpoint mappings live inside the existing Cloud host, exposed through the Account/Chat same-origin edge. They share Identity application services and do not duplicate native authentication logic or other business operations. Their generated baseline is `contracts/browser-session/v1/openapi.json`; normal business endpoints still consume the same public API DTOs. Native bearer issuance/refresh endpoints are absent from the browser edge allowlist. Browser authentication and recovery use the same underlying Identity services with cookie-only response shaping; they cannot accidentally return a native token response. The native `identity.refreshSession` operation is not a browser refresh route.
+These C# endpoint mappings live inside the existing Cloud host, exposed through the Account/Chat same-origin edge. They share Identity application services and do not duplicate native authentication logic or other business operations. Their authoritative standard-HTTP schema is in Contracts public/http/v1 with the browser auth mappings in the wire registry; normal business endpoints consume the generated public proto types. Native bearer issuance/refresh endpoints are absent from the browser edge allowlist. Browser authentication and recovery use the same underlying Identity services with cookie-only response shaping; they cannot accidentally return a native token response. The native `identity.refreshSession` operation is not a browser refresh route.
 
 | OperationId / verb and path | Auth/input | Output and effect |
 |---|---|---|
@@ -196,7 +196,7 @@ Structural writes return the new revisions of **all** affected roots and the imm
 |---|---|---|---|---|---|
 | `resource.beginUpload` | Server-issued upload ticket and storage key | `R2` | `CC` | `entitlement.quota_exceeded` | `FR` |
 | `resource.uploadChunk` | One chunk, resumable | `R2` | `IW` | `resource.integrity_failed` | `FR` |
-| `resource.completeUpload` | Verify hash/length/type and return a provisionally pinned verified object | `R2` | `IW` | `resource.integrity_failed` | `FR` |
+| `resource.completeUpload` | Seal upload and return typed verifying/verified status; poll getUploadStatus until a provisionally pinned verified object exists | `R2` | `IW` | `resource.integrity_failed` | `FR` |
 | `resource.getDownloadTicket` | Short-lived download authorisation | `R1` | `NI` | `perm.resource_denied`, `state.not_found` | `FR` |
 | `resource.getMetadata` | Size, hash, type, availability | `R1` | `Q` | `state.not_found` | `AO` |
 | `resource.release` | Release one reference | `R2` | `IW` | — | `FR` |
@@ -204,7 +204,7 @@ Structural writes return the new revisions of **all** affected roots and the imm
 | # | Rule |
 |---|---|
 | RS-01 | **The client never chooses a storage key** ([BR-10](../../planning/work-packages/23-public-api-and-generated-clients.md#rule-br-10) of [WP-23](../../planning/work-packages/23-public-api-and-generated-clients.md#rule-wp-23)). `beginUpload` issues it. |
-| RS-02 | **Permission is checked at ticket issue and again at consumption** ([WP-23.04](../../planning/work-packages/23-public-api-and-generated-clients.md#rule-wp-23.04)). A ticket is not a bearer capability that outlives a revocation. |
+| <a id="rule-rs-02"></a>RS-02 | **Permission is checked at ticket issue and again at consumption** ([WP-23.04](../../planning/work-packages/23-public-api-and-generated-clients.md#rule-wp-23.04)). A ticket is not a bearer capability that outlives a revocation. |
 | RS-03 | **`completeUpload` transitions staged to verified, never to committed.** The referencing owner transaction promotes a verified object, converts its quota reservation and adds its reference atomically. Only then is it downloadable through that owner. Completion and promotion are independently idempotent; verification alone does not publish a reference. |
 | RS-04 | **A denied download returns `state.not_found`** where existence itself is sensitive ([ER-01](00-operation-catalogue.md#rule-er-01)). |
 
@@ -280,7 +280,7 @@ Structural writes return the new revisions of **all** affected roots and the imm
 | `chat.getConversation` | Messages in a branch, paginated | `R1` | `Q` | `state.not_found` | `AO` |
 | `chat.appendMessage` | Add a user message and optionally its linked Task atomically | `R2` | `AP` | `conflict.revision_mismatch` | `FR` |
 | `chat.createBranch` | Branch from a message | `R2` | `CC` | `state.invalid_transition` | `AC` |
-| `agent.listModels` | Available providers and models, with availability reasons | `R1` | `Q` | — | `AO` |
+| `agent.listModels` | Selected Workers AI models, with availability reasons | `R1` | `Q` | — | `AO` |
 | `agent.listProfiles` | Agent profiles | `R1` | `Q` | — | `AO` |
 | `agent.getUsage` | AI usage and cost with the locked tariff | `R1` | `Q` | — | `FR` |
 | `search.query` | Cloud search over synced content | `R1`, entitlement-gated | `Q` | `entitlement.not_entitled` | `AO` |
@@ -340,7 +340,7 @@ The Notes branch of `search.query` accepts the typed `NotesQuery` [profile](02-l
 | SO-01 | **Start, pause, resume and cancel are durable, authorised, idempotent commands carrying expected state and revision** ([SIM-09](../../requirements/products/arcscope.md#rule-sim-09)). A stale command is refused; a duplicate start creates no second run and cannot resurrect a terminal run. |
 | SO-02 | **`simulation.getRun` distinguishes complete from partial** ([SIM-08](../../requirements/products/arcscope.md#rule-sim-08)). A cancelled run reports `canceled` with its committed extent — never `succeeded` for an incomplete range. |
 | <a id="rule-so-03"></a>SO-03 | **The manifest is the authority; the object is not.** `listSegments` returns only committed rows, and an incomplete object is invisible ([SIM-11](../../requirements/products/arcscope.md#rule-sim-11)). |
-| <a id="rule-so-04"></a>SO-04 | **Bulk data never flows over realtime.** Segments are fetched by HTTP or object storage with a hash the client verifies; SignalR is an optional wakeup or preview hint ([SIM-13](../../requirements/products/arcscope.md#rule-sim-13)). |
+| <a id="rule-so-04"></a>SO-04 | **Bulk data never flows over realtime.** Segments are fetched by HTTP or object storage with a hash the client verifies; gRPC hint polling is an optional wakeup or preview hint ([SIM-13](../../requirements/products/arcscope.md#rule-sim-13)). |
 | <a id="rule-so-05"></a>SO-05 | **Disabling realtime entirely must not reduce access to retained committed data** ([SIM-13](../../requirements/products/arcscope.md#rule-sim-13)). `pollState` plus `listSegments` is a complete authoritative fallback, and this is verified rather than assumed. |
 | SO-06 | **A scenario cannot fetch a URL, read a host file or cross a workspace boundary** ([SIM-18](../../requirements/products/arcscope.md#rule-sim-18)). CSV replay reads an explicitly uploaded, workspace-owned resource identified by content hash. |
 | SO-07 | **An exported scenario contains no deployment secret or policy value** ([SIM-18](../../requirements/products/arcscope.md#rule-sim-18)). |
@@ -381,3 +381,55 @@ The Notes branch of `search.query` accepts the typed `NotesQuery` [profile](02-l
 | PV-05 | A denied resource returns `state.not_found` and discloses nothing by timing or shape | [WP-23.01](../../planning/work-packages/23-public-api-and-generated-clients.md#rule-wp-23.01) |
 | PV-06 | No operation accepts a payment instrument field | [WP-42.02](../../planning/work-packages/42-commerce-entitlement-and-credits.md#rule-wp-42.02) scan |
 | PV-07 | Entitlement operations resolve with the `commerce` schema absent | [WP-42.00](../../planning/work-packages/42-commerce-entitlement-and-credits.md#rule-wp-42.00) |
+
+## P2-009 executable wire and transport binding
+
+Every operation/event above maps to the [numbered wire registry](04-protobuf-wire-registry.md). It fixes requests/results, record fields, enums, exact values, local counterpart preconditions, service names and compatibility. [CF integration](05-cloudflare-integration.md) fixes AI/object HTTP exceptions, frame/state recovery and authorization. New supporting bootstrap, upload-status, automation and conversation-create methods are enumerated there with their authorization/idempotency classes; none is left for endpoint invention during implementation.
+
+## Supporting operations under the selected wire profile
+
+These complete existing accepted flows. The [numbered registry](04-protobuf-wire-registry.md) owns their exact request/result fields. Owner reads require current resource visibility; mutations require the same capability/risk/approval/actor policy as the owning domain and exact declared revision/command identity. Profile/project/skill/preference creates use expectedRev=0 plus a stable ID. Automation edits never grant a capability or budget; run/enable rechecks its existing grant and service term. Human-only approval, settings and consent actions do not become Agent tools merely by appearing here.
+
+| Operation | Owner behavior / authorization | Risk | Class | Declared failure | Compatibility |
+|---|---|---|---|---|---|
+| `identity.completeStepUp` | Consume current one-use flow and record operation-class step-up | R2 | NI | auth.step_up_required | FR |
+| `identity.completeRecovery` | Complete current recovery proof and replacement credential under the existing recovery lifecycle | R3 | NI | validation.invalid_request | FR |
+| `notes.listFolders` | Read owner notebook tree | R1 | Q | state.not_found | AO |
+| `notes.createFolder` | Create under same notebook with parent revision | R2 | CC | conflict.revision_mismatch | FR |
+| `notes.moveFolder` | Move in the fixed notebook tree; reject cycles | R2 | IW | conflict.revision_mismatch | FR |
+| `notes.reorderFolder` | Change declared sibling order | R2 | IW | conflict.revision_mismatch | FR |
+| `notes.restoreFolder` | Restore ancestor visibility without restoring independently trashed documents | R2 | IW | conflict.revision_mismatch | FR |
+| `notes.getDocument` | Read authorized current document projection | R1 | Q | state.not_found | AO |
+| `notes.getRevision` | Read immutable acknowledged history | R1 | Q | state.not_found | AO |
+| `notes.restoreRevision` | Create new current revision from retained history; preserve history | R2 | IW | conflict.revision_mismatch | FR |
+| `sync.getBootstrapPage` | Read the existing pinned scoped bootstrap page | R1 | Q | sync.bootstrap_expired | AO |
+| `task.resume` | Reauthorize current paused Task and enqueue continuation, never replay unknown effects | R2 | IW | state.invalid_transition | FR |
+| `simulation.resumeRun` | Resume current nonterminal simulation from its committed checkpoint | R2 | IW | state.invalid_transition | FR |
+| `chat.createConversation` | Create caller-stable conversation in owner workspace | R2 | CC | conflict.duplicate_identifier | FR |
+| `chat.requestExport` | Create bounded owner-authorized export job | R2 | CC | perm.capability_denied | FR |
+| `export.getDownload` | Issue short-lived authenticated facade authorization for retained output | R1 | NI | state.gone | FR |
+| `export.cancel` | Cancel current nonterminal owner job | R2 | IW | state.invalid_transition | FR |
+| `support.appendMessage` | Append owner-authored case message; no implicit diagnostic upload | R2 | AP | state.not_found | FR |
+| `support.decideAccess` | Consent/refuse exact unexpired content-access proposal; no operator privilege | R2 | IW | perm.approval_expired | FR |
+| `resource.getUploadStatus` | Read paged receipt/verification state of own upload | R1 | Q | resource.upload_expired | AO |
+| `resource.renewUploadTicket` | Renew transport ticket after current authorization without extending upload lifetime | R1 | NI | resource.upload_expired | FR |
+| `agent.putProfile` | Write declared owner profile under expected revision; no permission grant | R2 | IW | conflict.revision_mismatch | FR |
+| `agent.deleteProfile` | Retire owner profile, retaining pinned running/history versions | R2 | DE | conflict.revision_mismatch | FR |
+| `agent.putSkill` | Write declared content-only skill under expected revision | R2 | IW | validation.invalid_request | FR |
+| `agent.deleteSkill` | Retire owner skill with existing retention | R2 | DE | conflict.revision_mismatch | FR |
+| `chat.putProject` | Write owner project/context/membership under expected revision | R2 | IW | conflict.revision_mismatch | FR |
+| `chat.deleteProject` | Retire owner project without deleting unrelated conversation history | R2 | DE | conflict.revision_mismatch | FR |
+| `chat.putMemory` | Write user-approved memory content under expected revision | R2 | IW | conflict.revision_mismatch | FR |
+| `chat.deleteMemory` | Delete current memory participation with history retention | R2 | DE | conflict.revision_mismatch | FR |
+| `preference.put` | Write only declared syncable user preference keys | R2 | IW | validation.invalid_request | FR |
+| `automation.list` | Read owner automation summaries | R1 | Q | state.not_found | AO |
+| `automation.get` | Read current definition and version | R1 | Q | state.not_found | AO |
+| `automation.create` | Create caller-stable declarative definition and grant references | R2 | CC | validation.invalid_request | FR |
+| `automation.update` | Write next immutable definition version under expected revision | R2 | IW | conflict.revision_mismatch | FR |
+| `automation.setEnabled` | Reauthorize and change future trigger eligibility | R2 | IW | entitlement.no_service_term | FR |
+| `automation.delete` | Disable/retire future occurrences; active Task uses explicit control policy | R2 | DE | conflict.revision_mismatch | FR |
+| `automation.runNow` | Admit one caller-stable occurrence through the same Harness | R2 | CC | entitlement.no_service_term | FR |
+| `automation.submitEvent` | Accept only a declared event capability from authorized owner/device with source revision/causation; not arbitrary trigger injection | R2 | AP | perm.capability_denied | FR |
+| `automation.resolveMissed` | Apply the existing explicit missed-occurrence decision to named keys | R2 | IW | state.invalid_transition | FR |
+
+The existing browser.*, commerce.providerWebhook, resource.uploadChunk and task.readStream catalogue entries retain their semantic IDs but use the explicitly declared HTTP/CF routes in the wire/CF exception tables. They are not missing business gRPC methods and cannot authorize a parallel REST service. All inherited error codes remain available where the owner flow already declares them.

@@ -9,6 +9,9 @@
 
 > **Goal.** Instrument once, correctly: standard signals with a bounded dimension set, correlation that survives every hop, redaction enforced by construction, and desktop diagnostics that never leave the machine without consent.
 
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Shared headless tooling; all emitters. Inputs: exact compatible Contracts packages/descriptors and applicable DesktopPlatform packages; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: Native AOT candidate packages/executables with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+
 ---
 
 ## 1. Scope and purpose
@@ -22,6 +25,8 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+**Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
 | Input | Why it matters |
 |---|---|
@@ -127,6 +132,19 @@
 
 ---
 
+<a id="rule-wp-12.90"></a>
+### WP-12.90 — Verify the owned artifact and real integration
+
+**What must be fully done.** Carry correlation/causation, run/attempt, model-call and artifact identities through C# ↔ CF ↔ device. Apply existing redaction, bounded cardinality and desktop consent; define selected AOT/Worker exporters.
+
+**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+
+**Testing requirements.** A trace can join one request across owners without logging prompts, credentials or unbounded payloads; health distinguishes backend, CF/model and R2 failures.
+
+**Completion gate.** A trace can join one request across owners without logging prompts, credentials or unbounded payloads; health distinguishes backend, CF/model and R2 failures. Record exact artifacts and provider reality. The package is incomplete if an important contract/owner/recovery rule still requires design during coding.
+
+---
+
 ## 6. Impacts
 
 | Dimension | Impact |
@@ -156,6 +174,8 @@
 
 ## 8. Completion gate
 
+**[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) gate:** [WP-12.90](#rule-wp-12.90) and all inherited domain-specific gates must pass on the same candidate closure. A trace can join one request across owners without logging prompts, credentials or unbounded payloads; health distinguishes backend, CF/model and R2 failures.
+
 **All of the following, with recorded evidence:**
 
 1. Every emitted signal carries its applicable dimension subset with no fabricated values.
@@ -171,10 +191,12 @@
 
 **Upstream — all must be complete.**
 
-- [04 — Identity, Error, Revision and Versioning Primitives](04-identity-error-and-versioning-primitives.md)
-- [06 — AOT, JIT and Web Publish Proof](06-aot-jit-and-wasm-publish-proof.md)
+- [04 identity error and versioning primitives](04-identity-error-and-versioning-primitives.md#rule-wp-04)
+- [06 aot jit and wasm publish proof](06-aot-jit-and-wasm-publish-proof.md#rule-wp-06)
 
-**Downstream — these consume this package’s completed output.**
+**Downstream — consumers of these released outputs.**
 
-- [21 — Cloud Host, Modules, Persistence and Migrations](21-cloud-host-and-persistence.md)
-- [45 — Operations, Support and Trust & Safety](45-operations-support-and-trust-safety.md)
+- [21 cloud host and persistence](21-cloud-host-and-persistence.md#rule-wp-21)
+- [45 operations support and trust safety](45-operations-support-and-trust-safety.md#rule-wp-45)
+
+---

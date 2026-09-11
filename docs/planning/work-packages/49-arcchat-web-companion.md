@@ -9,6 +9,9 @@
 
 > **Goal.** Deliver the browser companion as the second deployment profile of the same application: chat, tasks, approvals, steering, artifacts and remote control — a cloud surface, distinct from the account portal, sharing no state with it.
 
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Web + Cloud + AI. Inputs: the assigned exact Contracts packages/descriptors and actual provider artifacts; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: production React build and real C#/CF endpoints with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+
 ---
 
 ## 1. Scope and purpose
@@ -22,6 +25,8 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+**Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
 The Web companion verifies real generation, tool approval, stream fallback and recovery through WP-52. Portal completion alone is not a working AI service.
 
@@ -143,6 +148,19 @@ The Web companion verifies real generation, tool approval, stream fallback and r
 
 ---
 
+<a id="rule-wp-49.90"></a>
+### WP-49.90 — Verify the owned artifact and real integration
+
+**What must be fully done.** Use the fixed same-origin session and CF AI HTTPS/WebSocket route with generated business clients. Keep the companion surface, durable task/message fallback and remote-device authorization.
+
+**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+
+**Testing requirements.** Full real admitted CF turn/tool/approval/reconnect in a browser; blocked/expired live stream reconciles to the authoritative result without leaking session credentials.
+
+**Completion gate.** Full real admitted CF turn/tool/approval/reconnect in a browser; blocked/expired live stream reconciles to the authoritative result without leaking session credentials. Record exact artifacts and provider reality. The package is incomplete if an important contract/owner/recovery rule still requires design during coding.
+
+---
+
 ## 6. Impacts
 
 | Dimension | Impact |
@@ -177,6 +195,8 @@ The Web companion verifies real generation, tool approval, stream fallback and r
 
 ## 8. Completion gate
 
+**[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) gate:** [WP-49.90](#rule-wp-49.90) and all inherited domain-specific gates must pass on the same candidate closure. Full real admitted CF turn/tool/approval/reconnect in a browser; blocked/expired live stream reconciles to the authoritative result without leaking session credentials.
+
 **[PG-23](../../assurance/open-gates-register.md#rule-pg-23) evidence:** [WP-49](#rule-wp-49) — Real Chat Harness/task/stream workflows and approved visual/accessibility/performance evidence. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
 
 **Offline evidence.** Execute this product's applicable [initial-state matrix](../../assurance/testing-and-verification-strategy.md#offline-acceptance-matrix) rows, including fresh shell, hydrated outage, unavailable content, signout and restart where applicable. Record permitted local work and explicitly unavailable Cloud actions.
@@ -197,10 +217,12 @@ The Web companion verifies real generation, tool approval, stream fallback and r
 
 **Upstream — all must be complete.**
 
-- [26 — Device Presence, Remote Action and the Tool Bridge](26-remote-action-and-tool-bridge.md)
-- [48 — Account Portal](48-account-portal.md)
-- [52 — The Cloud Harness](52-cloud-harness.md)
+- [26 remote action and tool bridge](26-remote-action-and-tool-bridge.md#rule-wp-26)
+- [48 account portal](48-account-portal.md#rule-wp-48)
+- [52 cloud harness](52-cloud-harness.md#rule-wp-52)
 
-**Downstream — these consume this package’s completed output.**
+**Downstream — consumers of these released outputs.**
 
-- [50 — Full-Platform Production Release](50-full-platform-production-release.md)
+- [50 full platform production release](50-full-platform-production-release.md#rule-wp-50)
+
+---

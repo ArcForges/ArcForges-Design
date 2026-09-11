@@ -9,6 +9,9 @@
 
 > **Goal.** Implement the **native Product Job** model — the lifecycle every long-running *product* operation shares: render, capture, index, import, export. Cloud Agent Tasks are a **different** model owned by [WP-52](52-cloud-harness.md#rule-wp-52) ([CM-04](../../architecture/09-ai-and-agent-runtime-architecture.md#rule-cm-04), [I-121](../../requirements/01-normative-glossary-and-invariants.md#rule-i-121), [I-485](../../requirements/01-normative-glossary-and-invariants.md#rule-i-485)). This package delivers lifecycle states, failure classification, checkpoints, compensation, approval, steering and budget — durable, resumable and identical wherever it runs.
 
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Product-owned executors; shared mechanisms. Inputs: exact compatible Contracts packages/descriptors and applicable DesktopPlatform packages; upstream artifacts are selected by Cloud's integration manifest. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: Native AOT candidate packages/executables with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> Unit mocks use released Contracts fixtures; acceptance consumes actual pinned candidate providers. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
+
 ---
 
 ## 1. Scope and purpose
@@ -26,6 +29,8 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+**Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
 **Frozen design input.** [content-origin behavior](../../requirements/07-security-privacy-and-trust.md#content-origin-profile) and [carrier schema](../../requirements/13-data-formats-and-portability.md#content-origin-carriers) is fixed before this package; implement it without choosing a different marking mechanism.
 
@@ -160,6 +165,19 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 ---
 
+<a id="rule-wp-16.90"></a>
+### WP-16.90 — Verify the owned artifact and real integration
+
+**What must be fully done.** Preserve the repaired ProductJob-only responsibility. Update shared execution vocabulary/package references, dispatch/error profiles and cancellation. Cloud AI Task/Run execution belongs to [WP-52](52-cloud-harness.md#rule-wp-52), not a new reusable desktop agent engine.
+
+**Execution order.** Restore the pinned producer outputs assigned above, implement the preceding substeps using the fixed formal contracts, then verify this candidate against the actual upstream artifacts. Local mocks cover only the declared test boundary.
+
+**Testing requirements.** Product-job lifecycle/compensation/unknown-effect tests remain; architecture evidence shows no local model loop or Cloud budget/Task ownership in the shared engine.
+
+**Completion gate.** Product-job lifecycle/compensation/unknown-effect tests remain; architecture evidence shows no local model loop or Cloud budget/Task ownership in the shared engine. Record exact artifacts and provider reality. The package is incomplete if an important contract/owner/recovery rule still requires design during coding.
+
+---
+
 ## 6. Impacts
 
 | Dimension | Impact |
@@ -193,6 +211,8 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 ## 8. Completion gate
 
+**[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) gate:** [WP-16.90](#rule-wp-16.90) and all inherited domain-specific gates must pass on the same candidate closure. Product-job lifecycle/compensation/unknown-effect tests remain; architecture evidence shows no local model loop or Cloud budget/Task ownership in the shared engine.
+
 **Additional completion requirement.** The package's content paths pass the stated origin vectors, including unknown input and failed publication; a valid stored/rendered payload alone cannot satisfy the carrier requirement.
 
 **All of the following, with recorded evidence:**
@@ -212,10 +232,12 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 **Upstream — all must be complete.**
 
-- [09 — Capability, Contribution and Resource Model](09-capability-contribution-and-resource-model.md)
-- [11 — Security Foundation](11-security-foundation.md)
-- [14 — ArcChat Hub and Minimal ArcNotes Cross-Process Slice](14-hub-and-minimal-provider-slice.md)
+- [09 capability contribution and resource model](09-capability-contribution-and-resource-model.md#rule-wp-09)
+- [11 security foundation](11-security-foundation.md#rule-wp-11)
+- [14 hub and minimal provider slice](14-hub-and-minimal-provider-slice.md#rule-wp-14)
 
-**Downstream — these consume this package’s completed output.**
+**Downstream — consumers of these released outputs.**
 
-- [17 — ArcChat Independent Core V1A](17-arcchat-independent-core.md)
+- [17 arcchat independent core](17-arcchat-independent-core.md#rule-wp-17)
+
+---
