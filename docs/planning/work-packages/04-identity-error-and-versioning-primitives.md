@@ -5,7 +5,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: A — Freeze and foundation
-> Upstream: `03` · Downstream: `06`, `07`, `11`, `12`
+> Upstream: `03` · Downstream: `06` · `07` · `11` · `12`
 
 > **Goal.** Fix the small things that everything else is built from — identity, idempotency, revision, sequence, time, error and reason codes — so that no later package invents its own variant and no two subsystems disagree about what "the same operation" means.
 
@@ -25,6 +25,9 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+[Producer artifacts and real integration](../producer-artifacts-and-integration.md) is a required input. Use this WP's row to identify exact released artifacts, permitted fixtures and the owner that must replace each fixture; completion requires the stated evidence class.
+
 
 **Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
@@ -89,11 +92,11 @@
 
 ### WP-04.01 — Execution identity and idempotency
 
-**What must be fully done.** The four execution identities are implemented with their relationships: one command may have many attempts; one invocation belongs to one attempt; one run may contain many invocations. An idempotency helper validates the fixed command fingerprint and permitted retry/effect advice. Implement the retention/replay profile in the operation catalogue as constants/contracts; owner stores enforce it at WP07/14/21, never inside this storage-free helper.
+**What must be fully done.** Implement immutable execution owner/command/run/step/attempt IDs, canonical hash and retry/effect primitives with explicit clock/cancellation interfaces. No storage adapter is required in this primitive WP.
 
-**Testing requirements.** Identity/fingerprint and retry-advice vectors, including unknown effect refusing blind retry. WP07/14 supply actual transaction/concurrent duplicate-effect proofs and the owner-defined receipt-retention policy; this storage-free package cannot claim persistence enforcement.
+**Testing requirements.** Independent ID/hash/exact-value and state/retry algebra tests using memory-only fixtures.
 
-**Completion gate.** Identity/hash/retry-advice vectors pass and unknown effects refuse automatic resend. Owner transaction/receipt enforcement is proven by WP07/14/21; no storage-free exactly-once claim remains.
+**Completion gate.** Storage-free package complete; durable receipts/leases and crash tests belong to WP07/21/52.
 
 <a id="rule-wp-04.02"></a>
 
@@ -179,7 +182,7 @@ Implement the C# serializers and metadata projection for the exact wire rules in
 | Evidence | Produced by |
 |---|---|
 | Compile-negative test suite for identifier and axis confusion | [WP-04.00](#rule-wp-04.00), [WP-04.05](#rule-wp-04.05) |
-| Exactly-once effect proof under duplication, retry and concurrency | [WP-04.01](#rule-wp-04.01) |
+| Storage-free command/attempt/effect identity vectors under duplication; durable owner proof at WP07/21 | [WP-04.01](#rule-wp-04.01) |
 | Optimistic concurrency and sequence gap test results | [WP-04.02](#rule-wp-04.02) |
 | Locale, time-zone and daylight-saving test results | [WP-04.03](#rule-wp-04.03) |
 | Reason-code registry with a completeness report | [WP-04.04](#rule-wp-04.04) |
@@ -195,7 +198,7 @@ Implement the C# serializers and metadata projection for the exact wire rules in
 **All of the following, with recorded evidence:**
 
 1. Identifier and version-axis confusion is a compile error, and every primitive round-trips.
-2. Exactly-once effect holds for one command under duplication, retry and concurrency.
+2. Command and attempt identities, canonical hashes and uncertainty/retry types are unambiguous; durable single-effect/receipt proof is deferred explicitly to owner persistence in07/21/52.
 3. Revision and sequence implement conflict and gap semantics correctly and are non-interchangeable.
 4. A locale or time-zone change never alters stored data, and durations use monotonic time.
 5. Every failure path returns a registered reason code with a category, retryability and effect certainty; cancellation is never reported as failure.
@@ -204,16 +207,6 @@ Implement the C# serializers and metadata projection for the exact wire rules in
 
 ## 9. Dependencies
 
-**Upstream — all must be complete.**
+**Upstream:** `03`. All stage outputs must be complete.
 
-- [WP-03](03-contract-foundation-and-licence-split.md#rule-wp-03)
-
-**Downstream — consumers of these released outputs.**
-
-- [WP-06](06-aot-jit-and-wasm-publish-proof.md#rule-wp-06)
-- [WP-07](07-local-persistence-foundation.md#rule-wp-07)
-- [WP-11](11-security-foundation.md#rule-wp-11)
-- [WP-12](12-observability-foundation.md#rule-wp-12)
-
-
----
+**Downstream:** `06` · `07` · `11` · `12`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.

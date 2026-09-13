@@ -5,7 +5,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: B — Shared platform
-> Upstream: `06`, `07`, `08` · Downstream: `14`, `33`, `36`
+> Upstream: `06` · `07` · `08` · `09` · `10` · `11` · `12` · Downstream: `14` · `33` · `36`
 
 > **Goal.** Retire the four technical risks that would be most expensive to discover late — one per product — with reproducible build, test and performance evidence. ArcScope and ArcSlate are built last precisely because their risks are ascertained now.
 
@@ -25,6 +25,9 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+[Producer artifacts and real integration](../producer-artifacts-and-integration.md) is a required input. Use this WP's row to identify exact released artifacts, permitted fixtures and the owner that must replace each fixture; completion requires the stated evidence class.
+
 
 **Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
@@ -125,15 +128,11 @@
 <a id="rule-wp-13.90"></a>
 ### WP-13.90 — Verify the owned artifact and real integration
 
-**What must be fully done.** Retain the four accepted probes: AOT device execution, Notes editor/recovery, acquisition throughput and media decode/synchronization. Consume real package candidates and generated contracts; use current reference boundaries.
+**What must be fully done.** Deliver every functional ABI/wrapper/RID/runtime/helper in native annex06 and the producer matrix. Compile native dependencies first, run ABI/behavior tests, pack once, run independent package-only C17/C# AOT consumers, then promote complete immutable artifacts. Consume actual07–12 mechanisms.
 
-**Execution order.** Follow [staged artifact integration](../README.md#staged-artifact-integration): consume only existing assigned producers, publish an owned capability candidate before its product consumer, and verify the declared stage against exact upstream artifacts. Record pending later owners and their closing gates; local mocks cover only that named test boundary.
+**Testing requirements.** Decode/seek/drain, encode→independent decode, image tiles, colour, OTIO, PDF, instruments, graphics CPU/fallback, cancel/lifetime/hostile-helper vectors and missing-DLL/wrong-RID negative consumers.
 
-**Testing requirements.** Probe results are tied to package/RID/native graph identities and existing independent behavioral oracles; no full new reference audit or reference execution is added.
-
-**Completion gate.** Probe results are tied to package/RID/native graph identities and existing independent behavioral oracles; no full new reference audit or reference execution is added. Record exact artifacts and provider reality. The package is incomplete if an important contract/owner/recovery rule still requires design during coding.
-
----
+**Completion gate.** Probe-only exports never pass; complete portable functional producers and required per-RID closure verified before product WPs.
 
 ## 6. Impacts
 
@@ -180,17 +179,6 @@
 
 ## 9. Dependencies
 
-**Upstream — all must be complete.**
+**Upstream:** `06` · `07` · `08` · `09` · `10` · `11` · `12`. All stage outputs must be complete.
 
-- [WP-06](06-aot-jit-and-wasm-publish-proof.md#rule-wp-06)
-- [WP-07](07-local-persistence-foundation.md#rule-wp-07)
-- [WP-08](08-local-ipc-and-registration.md#rule-wp-08)
-
-**Downstream — consumers of these released outputs.**
-
-- [WP-14](14-hub-and-minimal-provider-slice.md#rule-wp-14)
-- [WP-33](33-arcscope-acquisition-and-session.md#rule-wp-33)
-- [WP-36](36-arcslate-project-and-timeline.md#rule-wp-36)
-
-
----
+**Downstream:** `14` · `33` · `36`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.

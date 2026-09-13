@@ -5,7 +5,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: J — Integration after real Cloud prerequisites
-> Upstream: `21`, `23`, `25`, `33`, `34`, `35`, `42`, `44` · Downstream: `50`
+> Upstream: `21` · `23` · `25` · `33` · `34` · `35` · `42` · `44` · Downstream: `50`
 
 > **Goal.** Deliver the deterministic Cloud simulator of [SIM-01](../../requirements/products/arcscope.md#rule-sim-01)–[SIM-20](../../requirements/products/arcscope.md#rule-sim-20) as a **real capability running through real Cloud persistence, real object storage and the real native acquisition pipeline**. A preview, a canned response or a test fake does not satisfy this package ([SIM-20](../../requirements/products/arcscope.md#rule-sim-20)).
 
@@ -27,6 +27,9 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+[Producer artifacts and real integration](../producer-artifacts-and-integration.md) is a required input. Use this WP's row to identify exact released artifacts, permitted fixtures and the owner that must replace each fixture; completion requires the stated evidence class.
+
 
 **Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
@@ -212,20 +215,6 @@ The official simulator consumes real paid-term and quota enforcement from [WP-42
 
 ## 9. Dependencies
 
-**Upstream — all must be complete.**
+**Upstream:** `21` · `23` · `25` · `33` · `34` · `35` · `42` · `44`. All stage outputs must be complete.
 
-- [WP-21](21-cloud-host-and-persistence.md#rule-wp-21)
-- [WP-23](23-public-api-and-generated-clients.md#rule-wp-23)
-- [WP-25](25-sync-engine-and-blob-lifecycle.md#rule-wp-25)
-- [WP-33](33-arcscope-acquisition-and-session.md#rule-wp-33)
-- [WP-34](34-arcscope-analysis-and-reporting.md#rule-wp-34)
-- [WP-35](35-arcscope-integration-and-sync.md#rule-wp-35)
-- [WP-42](42-commerce-entitlement-and-credits.md#rule-wp-42)
-- [WP-44](44-dynamic-policy-and-configuration.md#rule-wp-44)
-
-**Downstream — consumers of these released outputs.**
-
-- [WP-50](50-full-platform-production-release.md#rule-wp-50)
-
-
----
+**Downstream:** `50`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.

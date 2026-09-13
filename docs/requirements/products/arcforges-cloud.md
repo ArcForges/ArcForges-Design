@@ -296,7 +296,7 @@ Architecture boundaries must be reconciled to [P2-006](../../decisions/phase-2-s
 
 **Migration** — a rolling deployment with an expand/contract migration succeeds with mixed application versions live; no replica attempts migration at startup.
 
-**Deployment** — the same image digest built once is promoted through staging to production; rollback is one action and restores service.
+**Deployment** — the same image digest built once is promoted through staging to production; rollback follows the verified migration-mode compatibility horizon; an incompatible persisted state requires forward repair or independent fenced restore, with the stated RPO/RTO.
 
 **Realtime** — realtime is disabled entirely; clients continue by querying authoritative state; reconnection backfills the sequence gap exactly.
 
@@ -306,7 +306,7 @@ Architecture boundaries must be reconciled to [P2-006](../../decisions/phase-2-s
 
 **Database** — a failover occurs and the service recovers; a point-in-time restore is proven to a specific timestamp.
 
-**Email** — the primary provider fails, the secondary delivers, and the user receives exactly one one-time code.
+**Email** — after primary failure/unknown acceptance, reconcile before secondary delivery; retain one authoritative challenge and stable logical notification/dedup key. Duplicate physical messages may occur but contain the same still-valid one-use proof; retry cannot create extra valid codes or misleading delivered status.
 
 **Edge** — Cloud is unreachable; cached editing/search and native capture/render remain available, new Cloud AI cannot start, and pending changes synchronize safely after recovery.
 

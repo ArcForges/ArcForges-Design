@@ -31,13 +31,12 @@ Two halves of one lifecycle: how software reaches users, and what happens when s
 | **macOS** | Official site distribution, signed with a Developer ID, hardened runtime, notarised | — | A store route is deferred: it would force sandboxing that conflicts with professional local-file and device workflows |
 | **Linux** | A single self-contained portable format as the first official format | Additional package formats later | **Do not maintain many packaging formats simultaneously in the first stage** |
 | **Android** | The official app store, as an app bundle with platform app signing | A directly downloadable package may exist, and is not the primary channel | **[D-022](../decisions/phase-1-foundation-decisions.md#rule-d-022)**: consumption-only, no in-app purchase |
-| **iOS** | Architecture present, **build deferred** (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**) | — | Release runtime re-verified against the then-current supported baseline before activation |
 
 | # | Requirement |
 |---|---|
 | <a id="rule-pl-01"></a>PL-01 | **All Windows executables and installers are signed and timestamped.** |
 | <a id="rule-pl-02"></a>PL-02 | **macOS artifacts are signed, hardened-runtime enabled and notarised**; Linux artifacts carry checksums and repository signing where a repository is used. |
-| <a id="rule-pl-03"></a>PL-03 | **A store listing must not become the update mechanism.** The product's own update system remains authoritative, so update behaviour is identical across channels. |
+| <a id="rule-pl-03"></a>PL-03 | Desktop product update authority remains the signed ArcForges updater across its channels. Android uses its declared direct-APK or Play channel and monotonically increasing versionCode/signing lineage; store delivery and policy gates are explicit. A higher-version rescue release, not downgrade installation, is the normal Android rollback path. |
 | <a id="rule-pl-04"></a>PL-04 | **The signing identity and the brand identity are distinct concerns.** Where a signing certificate displays an individual name, the product surfaces and documentation must still present the product brand consistently, and the discrepancy must be anticipated rather than discovered at first release. |
 | <a id="rule-pl-05"></a>PL-05 | **Store developer accounts must be established under the intended long-term owning identity**, not casually under a personal account that later requires a brand transfer. |
 | <a id="rule-pl-06"></a>PL-06 | **Mobile provenance and the complete direct and transitive dependency closure are verified before the first mobile artifact is produced** — the **[F-023](../assurance/open-gates-register.md#rule-f-023)** gate. *Owners: Release Engineering Owner and Licensing and Provenance Owner; Product Owner approves.* |
@@ -431,5 +430,5 @@ Security Report → Security Case / Investigation → Fix / Containment → Secu
 | [Deployment and Release Execution](../architecture/22-deployment-and-release-execution.md) | Defines promotion, rollback and mixed-version release procedures |
 | [Observability and Operations Architecture](../architecture/13-observability-and-operations.md) | Implements support, incident, status and operator mechanisms |
 | **[D-004](../decisions/phase-1-foundation-decisions.md#rule-d-004)**, **[F-023](../assurance/open-gates-register.md#rule-f-023)** | Mobile licensing boundary and the pre-distribution provenance gate |
-| **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** | Android production runtime; iOS build-deferred posture |
+| **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** | Android production runtime; Android-only delivery posture |
 | **[D-022](../decisions/phase-1-foundation-decisions.md#rule-d-022)**, **[V-09](../assurance/phase-1-official-verification.md#rule-v-09)** | Store distribution without commerce; the category-fit and consumption-only submission gates |

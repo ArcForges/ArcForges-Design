@@ -26,6 +26,9 @@
 
 ## 2. Required inputs and dependencies
 
+[Producer artifacts and real integration](../producer-artifacts-and-integration.md) is a required input. Use this WP's row to identify exact released artifacts, permitted fixtures and the owner that must replace each fixture; completion requires the stated evidence class.
+
+
 **Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
 | Input | Why it matters |
@@ -213,13 +216,10 @@
 
 ## 9. Dependencies
 
-**Upstream — all must be complete.**
+**Upstream:** `36`. All stage outputs must be complete.
 
-- [WP-36](36-arcslate-project-and-timeline.md#rule-wp-36)
+**Downstream:** `38`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.
 
-**Downstream — consumers of these released outputs.**
+## P2-010 required behavior and closure
 
-- [WP-38](38-arcslate-render-and-colour.md#rule-wp-38)
-
-
----
+Implement full retime/hold-linear-bezier keyframe, colour/effect/audio profiles from26; keep exact source/sequence time and typed graph semantics. No default-library result replaces a declared numeric rule. The referenced normative profile and producer stage matrix are binding inputs. Record independent positive/negative vectors and actual owner integration at this WP's assigned stage; a mock cannot close a real-provider/device requirement.

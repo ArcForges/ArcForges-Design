@@ -52,3 +52,7 @@ Pure managed unit tests or a mocked launcher cannot satisfy OS isolation evidenc
 ## P2-009 packaged helper ownership
 
 DesktopPlatform publishes the signed ContentSandbox/Broker/Contracts and per-RID parser assets through the [package registry](01-solution-and-project-layout.md#12-package-and-native-distribution-registry). Each product selects only its approved parser profile. The existing OS-enforced handle, filesystem, network, process and lifetime rules above are unchanged. Product parsing never moves into the UI process merely because a native dependency became a NuGet package. This private helper protocol (including XPC on macOS) is an explicit exception to business gRPC.
+
+## Initial helper buffer schema
+
+The [native annex](contracts/06-native-functional-abi.md#5-package-and-process-closure) and wire SandboxBufferDescriptor/Ack fix the private sandbox.buffer.v1 control exchange, exact field tags and slot lease lifecycle. Contracts authors the internal helper schema; Platform's ContentSandbox.Contracts package contains those generated bounded DTOs and no separate handwritten business schema. Parent allocates and transfers only the admitted OS handles out of band, then binds slot IDs to that authenticated invocation/generation. No raw frame goes through public/product RPC; no helper result can refer to unregistered memory or silently expand its OS budget. WP03 freezes the DTOs,08/11 implement channel/isolation,13 proves native producer transfer and product WPs exercise their actual owner behavior.

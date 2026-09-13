@@ -35,7 +35,7 @@ This document states the dependency model that produces the work-package sequenc
 | Requirements | [`../requirements/`](../requirements/README.md) | Complete |
 | Architecture | [`../architecture/`](../architecture/README.md) | Complete |
 | Licence matrices, per product | [`../assurance/reference-coverage/`](../assurance/reference-coverage/README.md) — five matrices, 145 item-level rows | **Complete** |
-| Current-code reconciliation | [`../assurance/implementation-state-reconciliation.md`](../assurance/implementation-state-reconciliation.md) — 166 projects, item-level | **Complete** |
+| Current-code reconciliation | [`../assurance/implementation-state-reconciliation.md`](../assurance/implementation-state-reconciliation.md) — historical166-project inventory at ede43db; current repository snapshot in family completion review | **Historical evidence; revalidated per current source** |
 
 > **A correction is recorded here rather than hidden.** An earlier Phase 2 decision ([P2-002](../decisions/phase-2-specification-decisions.md#rule-p2-002)) substituted a different process — derive the plan first, perform the prerequisite audits during implementation, rewrite afterwards — and presented that substitution as satisfying **[D-019](../decisions/phase-1-foundation-decisions.md#rule-d-019)**. It did not. That entry is **withdrawn** and retained as the record of the error; [P2-004](../decisions/phase-2-specification-decisions.md#rule-p2-004) records the re-derivation from the completed evidence. The changes the evidence caused are in [`evidence-driven-revisions.md`](evidence-driven-revisions.md).
 
@@ -56,15 +56,15 @@ The sequence is one continuous numbered series. Phases are a reading aid, not a 
 | Phase | Work packages | What becomes true at the end |
 |---|---|---|
 | **A — Freeze and foundation** | 00 – 07 | Terminology, licence position and layout are settled; the build enforces the architecture; AOT is proven; contracts, serialization and persistence primitives exist |
-| **B — Shared platform** | 08 – 13 | Local IPC, the capability and resource model, the desktop shell, security, observability, and the four high-risk probes |
+| **B — Shared platform** | 08 – 13 | Local IPC, capability/resource model, desktop shell, security, observability and complete functional native producers with technical probes |
 | **C — First real slice** | 14 – 17 | Two real processes talk; ArcChat has a domain, an execution engine and an independent core |
 | **D — ArcNotes core** | 18 – 20 | ArcNotes native editor/recovery and non-agent cross-product commands work; acknowledged Cloud authority and real exports arrive in E, AI workflow in J |
 | **E — First real cloud** | 21 – 26 | Identity, public API, realtime, sync and remote action exist against real infrastructure |
 | **F — ArcNotes completion** | 28 | Bounded typed properties and saved list/table views land. **`27` and `29` are retired by [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006)** — canvas and slides are excluded from delivery, not deferred |
-| **G — Mobile shared foundation** | 30 | Early mobile contracts, Apache boundary and platform architecture; the real Android closed loop is delivered after the Harness in J |
+| **G — Kotlin Android foundation** | 30 | Early mobile contracts, Apache boundary and platform architecture; the real Android closed loop is delivered after the Harness in J |
 | **H — ArcScope desktop** | 33 – 35 | Real acquisition, replay, analysis and metadata integration; the real Cloud simulator follows paid-term/quota/policy prerequisites in J |
 | **I — ArcSlate** | 36 – 39 | Timeline, runtime, render and integration |
-| **J — Platform and client integration** | 42, 44, 43, 40, 41, 45, 46, 51, 52, 31, 32 | Commercial/policy kernel, real provider metering and Cloud retrieval, extensions, operations, simulator, Harness/automation, then real Android Task/stream and signed-device acceptance |
+| **J — Platform and client integration** | 41, 42, 44, 43, 40, 47, 45, 46, 48, 51, 52, 31, 32, 49 | Commercial/policy kernel, real provider metering and Cloud retrieval, extensions, operations, simulator, Harness/automation, then real Android Task/stream and signed-device acceptance |
 | **K — Web and release** | 47 – 50 | Public site, account portal, web companion and the full-platform production release |
 
 ---
@@ -241,7 +241,7 @@ All 51 active packages retain their domain scope; WP27/29 stay retired. The depe
 | 10 | 06, 09 |
 | 11 | 04, 08, 09 |
 | 12 | 04, 06 |
-| 13 | 06, 07, 08 |
+| 13 | 06, 07, 08, 09, 10, 11, 12 |
 | 14 | 08, 09, 10, 11, 13 |
 | 15 | 14 |
 | 16 | 09, 11, 14 |
@@ -256,7 +256,7 @@ All 51 active packages retain their domain scope; WP27/29 stay retired. The depe
 | 25 | 19, 24 |
 | 26 | 17, 24, 25 |
 | 28 | 19, 25 |
-| 30 | 03, 06, 23, 24 |
+| 30 | 03, 06, 23, 24, 25 |
 | 33 | 07, 10, 13, 26 |
 | 34 | 33 |
 | 35 | 25, 34 |
@@ -268,8 +268,8 @@ All 51 active packages retain their domain scope; WP27/29 stay retired. The depe
 | 44 | 23, 42 |
 | 43 | 25, 42, 44 |
 | 40 | 19, 25, 28, 43, 44 |
-| 41 | 09, 11, 17 |
-| 45 | 12, 21, 44 |
+| 41 | 09, 11, 17, 22, 25 |
+| 45 | 12, 21, 44, 47 |
 | 46 | 25, 45 |
 | 51 | 21, 23, 25, 33, 34, 35, 42, 44 |
 | 52 | 15, 17, 20, 21, 23, 26, 39, 40, 41, 42, 43, 44 |
@@ -280,7 +280,7 @@ All 51 active packages retain their domain scope; WP27/29 stay retired. The depe
 | 49 | 26, 48, 52 |
 | 50 | 20, 28, 32, 35, 39, 40, 41, 43, 46, 49, 51, 52 |
 
-Serial execution: 00, 01, 02, 03, 04, 05, 06, 07, 08, 09, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 28, 30, 33, 34, 35, 36, 37, 38, 39, 42, 44, 43, 40, 41, 45, 46, 51, 52, 31, 32, 47, 48, 49, 50. WP42.11 precedes 42.10. WP02 supplies package pipelines, WP03 schema packages, WP06 actual candidate/AOT/RN/CF/R2 foundations before full features. WP17/20 use explicitly named AI fixtures; WP52 replaces them. WP46 establishes backup mechanics; WP50 tests combined recovery after 46 and52, avoiding a cycle. Independent package/product versions are joined by a tested manifest, not a suite-wide version.
+Serial execution: 00, 01, 02, 03, 04, 05, 06, 07, 08, 09, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 28, 30, 33, 34, 35, 36, 37, 38, 39, 41, 42, 44, 43, 40, 47, 45, 46, 48, 51, 52, 31, 32, 49, 50. WP42.11 precedes42.10. Follow the [producer artifact/stage matrix](producer-artifacts-and-integration.md): WP06 proves minimal real transports; WP13 complete functional native packages; WP52 replaces AI fixtures;31/32/49/50 require real product integration. Independent products use a tested manifest, not lockstep versions.
 
 ## Final review execution bindings
 

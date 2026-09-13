@@ -14,7 +14,7 @@ One Cloud Harness, one Task model, one metering path. Tool locality varies; the 
 **Every model call, the single Harness and all durable agent orchestration are Cloud** (**[P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006)**). The desktop contributes UI, authorised local tool execution and product-local jobs. There is no second agent runtime anywhere.
 
 ```
-Desktop / React / RN: intent, Task/approval UI, draft/ack state
+Desktop / React / Kotlin Android: intent, Task/approval UI, draft/ack state
     -> C# Native AOT: Task/Chat/Agent/Commerce/Entitlement authority
         -> transactional dispatch outbox -> CF RunWorkflow
             -> authorized context + typed tool proposals + Workers AI
@@ -141,7 +141,7 @@ Explicit attachments  ·  pinned context  ·  project context  ·  temporary con
 | <a id="rule-ca-04"></a>CA-04 | **An automation's scope freezes into the run's evidence scope** ([AS-07](../requirements/06-knowledge-search-and-retrieval.md#rule-as-07) there). |
 | <a id="rule-ca-05"></a>CA-05 | **Cache isolation is a security requirement**: user-derived prompt cache is workspace-scoped; only genuinely public content is reused across workspaces ([CO-03](../requirements/05-ai-and-agent-execution.md#rule-co-03) in the AI requirements). |
 | <a id="rule-ca-06"></a>CA-06 | **Conversation compaction is context engineering, not memory** ([HM-03](../requirements/products/arcchat.md#rule-hm-03) in the ArcChat requirements). |
-| CA-07 | **Only acknowledged Cloud revisions are packable** ([I-498](../requirements/01-normative-glossary-and-invariants.md#rule-i-498), [PK-04](17-agent-harness.md#rule-pk-04) of the harness). Content that exists only on a device — an unenrolled notebook, a local-only ArcScope capture, an ArcSlate media file, an edit not yet acknowledged — **is not context**, and the pack states its absence rather than quietly assembling less evidence. Enabling AI never causes an upload ([OW-08](../requirements/05-ai-and-agent-execution.md#rule-ow-08) of the AI requirements, [I-182](../requirements/01-normative-glossary-and-invariants.md#rule-i-182)). |
+| CA-07 | Indexed knowledge uses acknowledged owner revisions. Separately approved bounded transient input uses SourceConsentRef and the exact source/purpose/hash/expiry profile; it is not sync or index enrollment. Pending Notes edits cannot be passed off as an acknowledged revision. Missing/denied context is disclosed, and enabling AI alone never uploads local content. |
 
 ---
 
@@ -368,3 +368,7 @@ The [sole Workflow and transactional ports](contracts/05-cloudflare-integration.
 ## Slate transcription within the sole Harness
 
 The accepted [slate.transcribe.v1 profile](23-simulator-and-interchange.md#5-slate-metadata-render-and-subtitle-profiles) adds Workers AI whisper-large-v3-turbo to the selected catalogue for audio transcription only. Task.startTranscription creates a normal Cloud Task with immutable uploaded-audio input pins, explicit paid budget and a fixed chunk-processing plan. RunWorkflow executes it using existing claim/model-intent/model-outcome/settle/finalize ports and unknown-effect rules. It does not invoke Search InferenceWorkflow, create another agent loop or execute render code in CF. Final Task output is a TranscriptRecord artifact or explicit partial/no-result outcome; adopting subtitles remains a separately approved local NativeContentRev edit.
+
+## Ordinary and temporary execution authority
+
+The Task engine sections govern AgentTask. Ordinary ChatTurn uses the same sole CF Harness and owner-discriminated C# ports, with pure-read capabilities only and explicit promotion before any effectful tool. [Harness owner/context lifecycle](17-agent-harness.md#execution-owners-protected-context-and-temporary-cleanup) and [client journeys](contracts/07-client-journeys-and-ports.md) fix persistent/temporary storage, mode transitions, platform-funded compaction, transient consent and Brave search. Every financial attempt references its actual execution owner. Temporary mode does not imply an on-device model, zero cost or provider non-processing.

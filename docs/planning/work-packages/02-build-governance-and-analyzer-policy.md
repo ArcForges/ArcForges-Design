@@ -5,7 +5,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: A — Freeze and foundation
-> Upstream: `01` · Downstream: `03`, `05`, `47`
+> Upstream: `01` · Downstream: `03` · `05` · `47`
 
 > **Goal.** Make the build tell the truth. Until diagnostics are real, warnings are errors, versions are locked and the runtime split is expressed in the build itself, every later AOT proof and every later quality claim rests on unverified ground.
 
@@ -25,6 +25,9 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+[Producer artifacts and real integration](../producer-artifacts-and-integration.md) is a required input. Use this WP's row to identify exact released artifacts, permitted fixtures and the owner that must replace each fixture; completion requires the stated evidence class.
+
 
 **Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
@@ -51,7 +54,7 @@
 | BR-03 | **The lock file is committed and CI restores in locked mode** ([PJ-05](../../architecture/01-solution-and-project-layout.md#rule-pj-05)). |
 | BR-04 | **Warnings are errors on the main path**; trim and AOT diagnostics are always errors on AOT deliverables ([PJ-08](../../architecture/01-solution-and-project-layout.md#rule-pj-08)). |
 | BR-05 | **Every reusable library consumed by an AOT deliverable declares AOT compatibility; every AOT host declares AOT publish** ([PJ-02](../../architecture/01-solution-and-project-layout.md#rule-pj-02)). |
-| BR-06 | **Desktop is Native AOT; Cloud is ASP.NET Core Native AOT; Android is RN/Hermes; Web is React/TypeScript built by Node/npm.** No esproj or TS package inherits .NET runtime properties ([P2-008](../../decisions/phase-2-specification-decisions.md#rule-p2-008)). |
+| BR-06 | **Desktop is Native AOT; Cloud is ASP.NET Core Native AOT; Android is Kotlin/Jetpack Compose; Web is React/TypeScript built by Node/npm.** No esproj or TS package inherits .NET runtime properties ([P2-008](../../decisions/phase-2-specification-decisions.md#rule-p2-008)). |
 | BR-07 | The Cloud host must publish Native AOT using the complete selected adapter/dependency closure; zero trim/AOT diagnostics and the activated [VG-06](../../assurance/open-gates-register.md#rule-vg-06) gate apply. |
 | BR-08 | **Preview packages never enter a stable branch's core path** ([PJ-06](../../architecture/01-solution-and-project-layout.md#rule-pj-06)). |
 | BR-09 | **The build must not depend on machine state** ([BM-05](../../architecture/14-build-packaging-and-release.md#rule-bm-05)) and must work offline after restore ([BM-07](../../architecture/14-build-packaging-and-release.md#rule-bm-07)). |
@@ -70,7 +73,7 @@
 | `packages.lock.json` | Validate the 165 existing project locks and locked CI restore; create/update only for actual project/dependency changes. No root NuGet lock is required |
 | `eng/build/desktop-aot.props` | Verified: AOT publish, trim analysis, single-file diagnostics as errors, RID set |
 | `eng/build/cloud-aot.props` | Create: PublishAot enabled and AOT/trim diagnostics treated as errors |
-| `ArcForges-Mobile/android/gradle.properties` | Selected RN/Hermes/New Architecture settings plus native template locks ([RT-02](../../architecture/11-mobile-architecture.md#rule-rt-02) in the mobile architecture) |
+| `ArcForges-Mobile/android/gradle.properties` | Selected Kotlin/Jetpack Compose/New Architecture settings plus native template locks ([RT-02](../../architecture/11-mobile-architecture.md#rule-rt-02) in the mobile architecture) |
 | `src/Web/package.json`, `package-lock.json`, `.node-version`, `.npmrc`, `ArcForges.Web.esproj` | Create the one Node/npm workspace, exact toolchain/dependency pins, portable commands and Windows adapter; remove obsolete Web WASM property imports |
 | `eng/build/contracts.props` | Verified: source-generated serialization and generator settings for contract projects |
 | `.editorconfig` | Analyzer severities as build policy |
@@ -118,7 +121,7 @@
 ### WP-02.03 — Runtime and directory boundaries
 
 
-**What must be fully done.** Apply Native AOT/analyzer settings to desktop and the Cloud host. Build Web and AI with their selected TS commands and Mobile through its RN/Gradle template; mobile runtime settings never enter MSBuild. Use owner-local solution/IDE entry points and typed portable tooling; local orchestration consumes exact producer artifacts in the integration manifest.
+**What must be fully done.** Apply Native AOT/analyzer settings to desktop and the Cloud host. Build Web and AI with their selected TS commands and Mobile through its Kotlin/Gradle Android project; mobile runtime settings never enter MSBuild. Use owner-local solution/IDE entry points and typed portable tooling; local orchestration consumes exact producer artifacts in the integration manifest.
 
 **Testing requirements.** Run Windows IDE delegation and supported non-Windows CLI commands; verify Cloud never builds Web/Mobile/native targets and each product builds without another product source.
 
@@ -208,15 +211,10 @@
 
 ## 9. Dependencies
 
-**Upstream — all must be complete.**
+**Upstream:** `01`. All stage outputs must be complete.
 
-- [WP-01](01-repository-reconciliation-and-target-layout.md#rule-wp-01)
+**Downstream:** `03` · `05` · `47`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.
 
-**Downstream — consumers of these released outputs.**
+## Current source baseline and migration input
 
-- [WP-03](03-contract-foundation-and-licence-split.md#rule-wp-03)
-- [WP-05](05-architecture-and-repository-policy-tests.md#rule-wp-05)
-- [WP-47](47-static-public-site.md#rule-wp-47)
-
-
----
+The166-project ede43db monorepo inventory is historical disposition evidence, not the current checkout shape. [Family completion review](../../assurance/family-design-completion-review.md) records the separate DesktopPlatform/Contracts/Mobile bootstrap evidence and scope. Before coding, verify each actual source HEAD/dirty state and map only retained required mechanisms to its owning repository/package; preserve existing published Hello/probe compatibility and Mobile app/signing/version identity. Do not recreate deleted scaffolds, copy every legacy project, or treat unpublished implementation as missing design. Generated protocol artifacts follow the tracked authored-schema/generator baseline and immutable producer manifest from WP03; generated outputs are not categorically forbidden from version control.

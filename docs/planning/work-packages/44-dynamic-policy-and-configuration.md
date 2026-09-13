@@ -5,7 +5,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: J — Platform completion
-> Upstream: `23`, `42` · Downstream: `40`, `43`, `45`, `48`, `51`, `52`
+> Upstream: `23` · `42` · Downstream: `40` · `43` · `45` · `48` · `51` · `52`
 
 > **Goal.** Build the control plane that lets behaviour change without a release — feature flags, deterministic rollout, kill switches, schema-constrained remote configuration and compatibility policy — while keeping compiled hard limits authoritative and remaining safe under Native AOT.
 
@@ -25,6 +25,9 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+[Producer artifacts and real integration](../producer-artifacts-and-integration.md) is a required input. Use this WP's row to identify exact released artifacts, permitted fixtures and the owner that must replace each fixture; completion requires the stated evidence class.
+
 
 **Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
@@ -83,11 +86,11 @@
 
 ### WP-44.01 — Schema-constrained configuration
 
-**What must be fully done.** Use the enumerated Config/Entitlement/Commerce/Agent/Policy transaction for activation head, price snapshots and offer-policy boundaries. Workspace plan changes advance under old history first.  Every configuration key has a typed schema with bounds. A bundle is validated wholesale before application and rejected atomically on any violation. No expression language or downloadable logic exists.
+**What must be fully done.** Consume policy.body.v1 and configuration.v1 from annex08; implement full exact-key/type/scope/limit/cross-reference validation and dry-run proposal/dual-approval/activation CAS.
 
-**Testing requirements.** Inject failure between every participant write, activate while holds exist, and retry the same revision on two replicas.  Schema validation coverage; an atomic-rejection test; a structural test asserting no dynamic evaluation path exists; an AOT publish with the policy client present.
+**Testing requirements.** Unknown key/field/version, invalid commercial route, secret-in-body, conflicting rule priority, stale parent, mixed-replica version and rollback tests.
 
-**Completion gate.** No mixed configuration or partial policy period can become visible.  An invalid bundle is rejected atomically, no dynamic evaluation exists, and the policy client publishes AOT cleanly.
+**Completion gate.** No JSON payload with implementer-defined keys can activate.
 
 <a id="rule-wp-44.02"></a>
 
@@ -103,11 +106,11 @@
 
 ### WP-44.03 — Features, flags and deterministic rollout
 
-**What must be fully done.** Feature and flag definitions with lifecycle states from introduced through to removed. Rollout deterministic per installation so evaluation is stable, with percentage, cohort and targeted rules. A flag's effective state is explainable.
+**What must be fully done.** Implement deterministic target predicate/percent hashing, exclusion groups, sticky experiment allocation and explicit-setting/entitlement priority from annex08; preserve past variant evidence.
 
-**Testing requirements.** Determinism across repeated evaluations and restarts; distribution accuracy at target percentages; lifecycle transition tests.
+**Testing requirements.** Independent byte/hash/bucket vectors, boundary0/9999, holdout, overlapping exclusion group, account/device change and cached signed bundle expiry.
 
-**Completion gate.** Rollout is stable per installation across restarts and distributes accurately.
+**Completion gate.** Same stable subject/version selects the same result across languages and cannot grant commercial/security authority.
 
 <a id="rule-wp-44.04"></a>
 
@@ -214,19 +217,6 @@
 
 ## 9. Dependencies
 
-**Upstream — all must be complete.**
+**Upstream:** `23` · `42`. All stage outputs must be complete.
 
-- [WP-23](23-public-api-and-generated-clients.md#rule-wp-23)
-- [WP-42](42-commerce-entitlement-and-credits.md#rule-wp-42)
-
-**Downstream — consumers of these released outputs.**
-
-- [WP-40](40-knowledge-search-and-retrieval.md#rule-wp-40)
-- [WP-43](43-managed-ai-routing-and-metering.md#rule-wp-43)
-- [WP-45](45-operations-support-and-trust-safety.md#rule-wp-45)
-- [WP-48](48-account-portal.md#rule-wp-48)
-- [WP-51](51-arcscope-cloud-simulator.md#rule-wp-51)
-- [WP-52](52-cloud-harness.md#rule-wp-52)
-
-
----
+**Downstream:** `40` · `43` · `45` · `48` · `51` · `52`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.

@@ -295,7 +295,7 @@ Every side-effecting Step declares one of:
 | <a id="rule-sn-01"></a>SN-01 | **Task Snapshot is the authoritative read surface.** Live events are notifications only. |
 | <a id="rule-sn-02"></a>SN-02 | Task Snapshot carries revision and sequence, so a client can detect that its view is at 42 while the server is at 47, and backfill. |
 | <a id="rule-sn-03"></a>SN-03 | **A lost event must never damage a Task.** Re-reading the snapshot restores the correct state. |
-| SN-04 | Cloud Task snapshots are read over the public HTTP/JSON authority surface. Local IPC carries tool requests and product job references, not a second authoritative Task store. |
+| SN-04 | Cloud Task snapshots are read over the public protobuf/gRPC authority surface. Local IPC carries tool requests and product job references, not a second authoritative Task store. |
 
 ### 8.2 Crash recovery
 

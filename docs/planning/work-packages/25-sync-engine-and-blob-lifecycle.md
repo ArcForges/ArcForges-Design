@@ -5,7 +5,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: E — First real cloud
-> Upstream: `19`, `24` · Downstream: `26`, `28`, `35`, `39`, `40`, `43`, `46`, `48`, `51`
+> Upstream: `19` · `24` · Downstream: `26` · `28` · `30` · `35` · `39` · `40` · `41` · `43` · `46` · `48` · `51`
 
 > **Goal.** Prove sync on ArcNotes: a client outbox, a server inbox, a change feed, five conflict policies, deletion propagation, and a blob lifecycle that never leaves a reference pointing at nothing — with multi-device convergence demonstrated, not assumed.
 
@@ -25,6 +25,9 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+[Producer artifacts and real integration](../producer-artifacts-and-integration.md) is a required input. Use this WP's row to identify exact released artifacts, permitted fixtures and the owner that must replace each fixture; completion requires the stated evidence class.
+
 
 **Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
@@ -142,11 +145,11 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 ### WP-25.06 — Availability, protection and data health
 
-**What must be fully done.** Availability states surfaced per object. Protection profiles applied per scope. A data health report detects and reports divergence, missing blobs, orphan references and stale cursors, with a repair path for each.
+**What must be fully done.** Implement hydration/cache pause versus explicit Cloud deletion, source-consent/transient inputs, health states and full realm-transfer export/preview/commit/status/cancel workflow from client journeys. Rebuild or verify actual missing-object outcomes; irrecoverable retains evidence and recovery/export actions.
 
-**Testing requirements.** Induced divergence, induced missing blob and induced orphan reference, each detected and repaired; an availability-state test per object state.
+**Testing requirements.** Real R2/PG, resume after100-root batch, repeated command, missing object, partial cancellation, denied current scope, transfer credential/ledger exclusion and restore generation.
 
-**Completion gate.** Every induced integrity fault is detected and repaired, and availability is an explicit state rather than a read-time error.
+**Completion gate.** No Unsync deletion of authoritative Notes/Chat, no empty success for irrecoverable data and no manual migration rule invented.
 
 <a id="rule-wp-25.07"></a>
 
@@ -253,22 +256,6 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 ## 9. Dependencies
 
-**Upstream — all must be complete.**
+**Upstream:** `19` · `24`. All stage outputs must be complete.
 
-- [WP-19](19-arcnotes-search-and-portability.md#rule-wp-19)
-- [WP-24](24-realtime-and-reliable-events.md#rule-wp-24)
-
-**Downstream — consumers of these released outputs.**
-
-- [WP-26](26-remote-action-and-tool-bridge.md#rule-wp-26)
-- [WP-28](28-arcnotes-properties-and-views.md#rule-wp-28)
-- [WP-35](35-arcscope-integration-and-sync.md#rule-wp-35)
-- [WP-39](39-arcslate-integration-and-portability.md#rule-wp-39)
-- [WP-40](40-knowledge-search-and-retrieval.md#rule-wp-40)
-- [WP-43](43-managed-ai-routing-and-metering.md#rule-wp-43)
-- [WP-46](46-backup-recovery-and-data-health.md#rule-wp-46)
-- [WP-48](48-account-portal.md#rule-wp-48)
-- [WP-51](51-arcscope-cloud-simulator.md#rule-wp-51)
-
-
----
+**Downstream:** `26` · `28` · `30` · `35` · `39` · `40` · `41` · `43` · `46` · `48` · `51`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.

@@ -150,9 +150,9 @@ The authority map says *where the authoritative copy lives*. It does not by itse
 
 | | Chat | Notes |
 |---|---|---|
-| Origination | Any client, **or Cloud itself** (an assistant message) | A client only |
-| Staged locally before submission | An unsent draft is local ([I-124](../../requirements/01-normative-glossary-and-invariants.md#rule-i-124)); a submitted message is not re-staged | **Yes** — a durable pending edit survives offline ([PE-01](02-desktop-data-model.md#rule-pe-01)) |
-| Submitted through | `chat.appendMessage` | `sync.pushChange` |
+| Origination | Any admitted client or authorized Cloud execution | Native client edits or authorized Cloud owner tools/import/restore |
+| Staged locally before submission | An unsent draft is local ([I-124](../../requirements/01-normative-glossary-and-invariants.md#rule-i-124)); a submitted message is not re-staged | Native edits are durable pending work; Cloud-originated commands have durable owner command receipts and no invented device journal |
+| Submitted through | `chat.appendMessage` or the fenced Chat execution-owner port | `sync.pushChange`, declared Notes API, or authorized typed Cloud owner capability using the same Notes validators |
 | Committer | Cloud | Cloud |
 | Revision assigned by | Cloud | Cloud |
 
@@ -161,24 +161,24 @@ The authority map says *where the authoritative copy lives*. It does not by itse
 | <a id="rule-cw-01"></a>CW-01 | **A client never assigns a Cloud acknowledgement.** Notes stages edits with `local_seq`; its local optimistic token is `(acked_rev, head_local_seq)`. Native Scope/Slate operations use their own `content_rev`, while the replication envelope separately carries `expected_cloud_rev`. These version domains are distinct contract types. |
 | <a id="rule-cw-02"></a>CW-02 | **Cloud writes Chat directly.** `chat.appendMessage` commits the user message in Cloud; the Harness commits the assistant message in Cloud. **There is no rule that Cloud may only apply a client change** — that statement described a Notes-shaped replica model and was wrong for Chat. |
 | <a id="rule-cw-03"></a>CW-03 | **A Cloud-originated row needs no client.** With every device offline, a Web user's message and the Harness's reply both commit normally; devices discover them through the change feed when they return. |
-| CW-04 | **Notes changes originate on a device and are staged durably before submission** ([PE-01](02-desktop-data-model.md#rule-pe-01)), which is what makes offline editing safe. Cloud still commits, and the client's pending row clears only on the acknowledgement ([PE-02](02-desktop-data-model.md#rule-pe-02)). |
+| CW-04 | **Native Notes edits are staged durably before submission** ([PE-01](02-desktop-data-model.md#rule-pe-01)); their pending rows clear only on acknowledgement. Authorized Cloud tools/import/restore originate directly through Notes owner ports, with current permission, expected revision, origin and idempotency. They use the same validation/publication transaction and never fabricate a device-local edit. |
 | CW-05 | **One writer per aggregate per transaction.** The module that owns the schema executes the write; no other module and no client writes those tables ([MD-02](../05-cloud-architecture.md#rule-md-02), [SU-02](#rule-su-02)). |
 | <a id="rule-cw-06"></a>CW-06 | **Every commit that changes a synchronised aggregate writes its `sync.change` row in the same transaction** (`§9`), so a change can never be committed and un-publishable. |
 
-#### 4.2.1 Worked path — Web message and Cloud reply with Desktop offline
+#### 4.2.1 Worked path — agent-mode Web message and Cloud reply with Desktop offline
 
 | # | Step | Committer | Transaction contents | Revision |
 |---|---|---|---|---|
 | 1 | Web calls `chat.appendMessage` | **Cloud — Chat**, enlisting Sync | `chat.message` (user), its command record, its `sync.change` row (`origin_kind = cloud`, since Web is not a sync device) | `rev = r1`, assigned by Cloud |
-| 2 | Task creation is part of step 1 when the selected profile starts a Turn | **Cloud — Task**, enlisted by Chat | `task.task` linked to the message and original command receipt in the same commit | Separate aggregate, atomic acceptance |
-| 3 | Admission reserves (`§6.1.1`) | Entitlement + Commerce | shared unit of work; commits **before** dispatch ([DB-01](#rule-db-01)) | — |
+| 2 | Agent-mode Task creation is part of step 1 | **Cloud — Task**, enlisted by Chat | `task.task` linked to the message and original command receipt in the same commit | Separate aggregate, atomic acceptance |
+| 3 | Admission reserves (`§6.1.1`) | Entitlement + Commerce + Task, plus Resource when pins change | shared unit of work; commits **before** dispatch ([DB-01](#rule-db-01)) | — |
 | 4 | Provider streams, then each invocation output is persisted and settled | **Cloud — Commerce/Task/Chat** | Transient presentation chunks, then immutable iteration output and usage evidence; separate idempotent settlement | No final conversation revision yet |
 | 5 | Turn completes; the assistant message is committed once | **Cloud — Chat**, enlisting Sync and Task in one shared unit of work (`§6.1.1a`) | `chat.message` (assistant) + its `sync.change` row (`origin_kind = cloud`, **no device**) + the Task's terminal state | `rev = r2`, assigned by Cloud |
 | 6 | Reconciliation if any usage remains unknown | Entitlement + Commerce | Customer deadline and supplier liability are tracked independently; ordinary per-call settlement already occurred in step 4 | — |
 | 7 | Desktop reconnects and pulls from its cursor | — | reads `r1` and `r2` in publication order (`§9`). **Neither is suppressed as its own echo**, because `origin_device_id` is null and a null never matches | — |
 | 8 | Desktop had an unsent draft for the same conversation | Desktop, locally | the draft is local-only and is **not** a competing revision ([I-124](../../requirements/01-normative-glossary-and-invariants.md#rule-i-124)) | none |
 
-**Nothing in this path requires a device.** Step 8 is the only place a device holds state, and a draft is deliberately outside the revision model.
+**Nothing in this agent-mode path requires a device.** Ordinary mode uses a Chat-owned ChatTurn instead of Task in the same admission/output families; no generation means no execution owner at all. Temporary mode follows the non-history body profile in the client journeys. Step 8 is the only device-owned draft state in this example.
 
 #### 4.2.2 Worked path — offline note edit
 
@@ -241,13 +241,16 @@ Cloud is one deployable host and one PostgreSQL database. A unit of work owns on
 | Operation family | Write participants | Commit invariant |
 |---|---|---|
 | Synchronised content or structural mutation, history restore, or reference release | Entitlement when quota changes + owning content module + Resource when references/pins change + Sync | Current body, immutable revision, command receipt, exact reference set and publication row agree; Notes may lock several roots for a declared structural command |
+| Verified purchase, renewal, credit issue or refund/revocation recognition | Entitlement + Commerce | Provider inbox application, normalized order/payment/period, applicable immutable term/grant/credit adjustment, entitlement version and notification outbox commit together. Provider verification is outside the transaction; failure retries the complete idempotent local commit. |
+| Chat acceptance that starts an ordinary or temporary ChatTurn | Entitlement when quota changes + Chat + Resource when attachments are pinned + Sync for durable conversation content | User input and its ChatTurn/command receipt agree; temporary bodies remain in the bounded non-history store and publish no Sync/history record. Model dispatch uses the separate admission family below. |
+| Realm-transfer root commit | Workspace + Entitlement + one content owner + Resource + Sync | Root, mapped identity/receipt, visibility state, quota/reference set and publication agree; the Workspace coordinator cannot write content tables. A batch is at most100roots, each root transaction bounded. |
 | Chat acceptance that starts an Agent Task | Entitlement when quota changes + Chat + Task + Resource when attachments are pinned + Sync | User message and its linked Task are created once with one command receipt; accepted work cannot disappear between message and task creation |
-| AI admission and provider dispatch intent | Entitlement + Commerce | Customer reservation when applicable, total Run budget, concurrency permits, supplier exposure reservation and provider intent all exist before dispatch |
-| Provider-call durable outcome | Entitlement when quota changes + Commerce + Chat + Task, plus Resource for a staged body | Attempt/usage evidence and immutable iteration output/tool proposals agree; this is not final Turn completion |
+| AI admission and provider dispatch intent | Entitlement + Commerce + execution owner Chat or Task + Resource when pins change | Owner dispatch/fence/outbox, applicable customer reservation, Run budget, concurrency permits, supplier exposure and provider intent commit before I/O. ChatTurn does not require a Task row. |
+| Provider-call durable outcome | Entitlement when quota changes + Commerce + execution owner Chat or Task + Chat when a real conversation receives output + Resource when needed | Attempt/usage/output/proposal receipt agrees atomically; enlisting an owner never authorizes writing another module table. No phantom Task for ordinary ChatTurn. |
 | Search inference admission and dispatch intent | Entitlement for product permits + Commerce + Search + Resource for input pins | Search job, current source/funding authority, platform logical request/provider intent, supplier exposure and dispatch outbox commit together; no customer credit reservation |
 | Search inference outcome, cancellation and result release | Entitlement for permit/quota changes + Commerce + Search + Resource for output/input pins | Complete immutable result or explicit no-result outcome, attempt/usage/supplier evidence and projection outbox agree; no Chat/Task write or customer settlement; uncertain supplier liability survives |
 | Customer settlement, cancellation/sweep of customer holds, refund adjustment | Entitlement + Commerce | Advance accrual before changing holds, then debit/release against original funding sources and append accounting entries once; supplier liability remains independent |
-| Agent Turn terminal outcome | Entitlement when quota changes + Chat + Task + Resource when needed + Sync | Terminal Task carries its committed final/interrupted message for a conversation, or committed artifact/explicit no-result for a non-conversation Task such as transcription; Chat enlists only for a real conversation, and no completed Task points at uncommitted output |
+| Execution-owner terminal outcome | Entitlement when quota changes + execution owner Chat or Task + Chat for a durable conversation + Resource when needed + Sync for durable content | Terminal owner carries its final/interrupted message, committed artifact or explicit no-result. ChatTurn creates no Task. Temporary bodies use only the transient profile, not Sync/history; an owner never points at an uncommitted result. |
 | Resource upload admission, verified-object promotion, final release/GC accounting | Entitlement + Resource | Staging/storage/egress reservations and committed-byte accounting transition once with object state; network deletion is separate and retryable |
 | Simulator admission, bounded segment publication, cancellation and permit release | Entitlement + Scope + Resource | Product permits and bytes are reserved; manifest/checkpoint and segment references commit together under the current fence; AI credits are untouched |
 | Policy-file activation | Config + Entitlement + Commerce + Agent + Policy | Active head, immutable route/tariff/offer/client projections and capacity-policy intervals agree on one revision; no workspace balance moves during activation |
@@ -261,14 +264,14 @@ Cloud is one deployable host and one PostgreSQL database. A unit of work owns on
 |---|---|
 | TU-01 | **A logical AI request is one bounded model invocation.** A Turn can contain many such requests. Persist the invocation's durable output/tool proposals and usage evidence before its customer settlement. A tool-only response used by the Harness is delivered work; it need not terminate the Task. |
 | TU-02 | **Settle that request before admitting the next model invocation.** A restart can reconstruct an unsettled request from its immutable output and usage identity. It never needs to re-call the model to learn whether an answer was stored. Unknown usage follows the deadline policy; moving to the next invocation requires the remaining authorised Run budget and cannot erase unresolved supplier exposure. |
-| TU-03 | **Final Turn completion is a separate shared transaction.** It assembles the final answer from durable iteration parts, commits its Chat revision/publication and the terminal Task together. Cancellation/failure may commit an interrupted message or an explicit `noAnswer` outcome. Already delivered, authorised per-call usage is not contingent on the Turn later succeeding. |
+| TU-03 | **Final Turn completion is a separate shared transaction.** It commits the assembled answer/reference and terminal execution owner together: ChatTurn for ordinary/temporary mode, Task for agent mode. Durable conversations enlist Chat/Sync; temporary text follows its non-history retention and metadata-only receipt. Cancellation/failure may publish an interrupted message or explicit noAnswer. Already delivered authorized usage does not depend on eventual success. |
 | TU-04 | **A crash at every seam has a durable discriminator.** Intent without outcome means unknown effect; persisted output without settlement means settlement pending; settled iterations without terminal Turn mean resume the Harness from those iterations. None authorises blind provider redispatch. |
 
 #### 6.1.1b Asynchronous recovery
 
 | Effect | Producer / consumer | Durable completion and recovery |
 |---|---|---|
-| Purchase → entitlement term/grant | Commerce `platform.outbox` → Entitlement inbox | Every completed order maps to an idempotent term/grant; reconciliation repairs a missing delivery |
+| Committed purchase → customer notification/report | Commerce outbox → Notification/reporting consumer | Order, applicable term/grant/credit adjustment and entitlement version are already atomic; only presentation/report delivery is asynchronous. Provider reconciliation retries absent recognition, never a second grant. |
 | Content → search/index projections | Content outbox → Search indexer | Version-guarded derived projection; rebuild and journal/feed catch-up |
 | Search inference outcome → vector/rerank projection | Search outbox → Search projection consumer | Match job/result receipt, exact source/model/config and current policy; publish complete results or discard stale output, then release job pins idempotently |
 | Content/Task → notifications | Owner outbox → Notification inbox | Durable attention is readable even if push fails |
@@ -329,7 +332,7 @@ Deletion is where data models usually fail, because five different meanings get 
 |---|---|---|---|
 | **Trash** | Sets an aggregate's state to `trashed` with a timestamp; content intact | Yes, until purge | Yes, as a state change |
 | **Purge** | Removes content, leaves a **tombstone** carrying identity, deletion time and deleting actor | No | Yes, as a tombstone |
-| **Unsync** | Removes the cloud replica; the local authoritative copy is untouched | Yes, by re-enabling scope | Yes, as a scope change — **not** a deletion |
+| **Unsync / pause hydration** | Notes/Chat retain Cloud authority; stop hydration or evict acknowledged cache only after preserving pending work. Scope/Slate may detach their selective Cloud replica while local native authority remains. | Re-enable hydration/detached scope | Scope metadata only; Cloud deletion requires its explicit command |
 | **Cloud deletion** | Removes the cloud replica **and** records a deletion that propagates to other devices | Only within the recovery window | Yes |
 | **Account deletion** | Removes cloud-side account data after a grace period; **local data is never touched** | Within the grace period only | Terminates sync |
 
@@ -451,3 +454,13 @@ An index exists because a named query path needs it. The per-entity documents li
 ## P2-009 external execution and additional enlisted families
 
 PostgreSQL remains canonical for all 20 owners. [CF integration §1–4](../contracts/05-cloudflare-integration.md) fixes execution_lease/command, Workflow/DO projections, current stream pointer and recovery_generation. Automation occurrence admission adds the closed shared family Entitlement + Task + Resource when context pins change, with occurrence/Task/outbox atomic. Operator mutations enlist their affected owner family and an Audit receipt participant; operator access/approval state is Identity-owned, incident/support state Support-owned. Lock order places Audit after Sync; collect all locks before writes. No network act occurs within any transaction. New Task dispatch outbox→CF, control outbox→CF and deletion outbox→CF use stable delivery IDs and recorded receipts, with periodic reconciliation independent of hints.
+
+## Execution owner, transient consent and transfer transactions
+
+An ExecutionOwner is exactly one ChatTurn (Chat) or AgentTask (Task). Owner-specific admission/control/output tables are written only by that module inside the named shared family. Ordinary ChatTurn admission enlists Entitlement+Commerce+Chat+Resource when pins change+Sync when durable content publishes; temporary content excludes Sync/history but retains metadata-only accounting. Order locks under SU-04; no network action in a transaction.
+
+Resource owns source_consent and transient byte pins; current source owner authorizes an override before receipt consumption. Transfer import uses Workspace+Entitlement+one content owner+Resource+Sync per bounded root and its durable transfer receipt, with dependency mappings staged before visibility. No new unbounded all-workspace transaction or imported credentials/financial authority. The [journey profile](../contracts/07-client-journeys-and-ports.md) fixes exact scope/fidelity/state.
+
+Commerce owns provider-specific mapping IDs. Entitlement accepts a normalized logical request/service-period identity and can execute its tests without a Commerce schema. Such logical IDs are not foreign keys into Commerce. Actual shared participants, not a cross-module repository shortcut, enforce all-or-nothing admission.
+
+Source-policy setting/clear is an enumerated Policy+Audit shared transaction: validate target owner/read authority, lock policy revision, persist command/result+policy+audit+index-reconciliation outbox. Search is the async derived consumer, not another table writer in that transaction. First-use source/AI consent writes this typed policy explicitly; synchronization enrollment alone cannot set AI/index flags.

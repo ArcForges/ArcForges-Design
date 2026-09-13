@@ -65,7 +65,7 @@ Structural product shapes are fixed; all amounts are versioned commercial policy
 | CT-03 | Arc AI Credits are non-transferable prepaid service units, with no cash value or withdrawal/trading facility. Purchase and consumption require an active official paid service term; credit ownership alone never enables AI. |
 | CT-04 | V1 sells one suite offer, not per-product plans. `ProductScope` is modelled from day one (`suite`, and per-product values) so a later split needs no data-model change ([C-10](00-product-scope-and-portfolio.md#rule-c-10)). |
 | CT-05 | V1 implements the suite subscription, the existing Cloud Pass, extra credit purchases and support compensation. Trials, coupons, referrals, seats and promotional campaigns are not required. |
-| CT-06 | Duplicate-entitlement purchases are prevented: an active subscription blocks Pass purchase; an active Pass either blocks or defers a new subscription so two sources do not both set `PaidThrough`. |
+| CT-06 | An active subscription blocks Pass purchase; an active Pass blocks new subscription until expiry. V1 does not defer overlapping purchases. Plan changes take effect at next renewal with no immediate proration; duplicate/late provider periods reconcile without duplicate grants. |
 | CT-07 | Repeated Pass purchase **extends** rather than replaces: `newStart = max(currentPaidThrough, purchaseTime)`, `newPaidThrough = newStart + term`. No remaining time is lost. |
 | CT-08 | Pass accrual is capped (proposed default: 36 months into the future) because cloud costs, prices and product shape change. Purchases beyond the cap are refused. |
 

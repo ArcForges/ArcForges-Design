@@ -5,7 +5,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: K — Web and release
-> Upstream: `25`, `42`, `44`, `46`, `47` · Downstream: `49`
+> Upstream: `25` · `42` · `44` · `46` · `47` · Downstream: `49`
 
 > **Goal.** Deliver the canonical account origin as one deployment profile of the single React/TypeScript application: account, security, devices, workspace, storage, entitlement, billing, AI and data — with no second account application anywhere.
 
@@ -25,6 +25,9 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+[Producer artifacts and real integration](../producer-artifacts-and-integration.md) is a required input. Use this WP's row to identify exact released artifacts, permitted fixtures and the owner that must replace each fixture; completion requires the stated evidence class.
+
 
 **Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
@@ -229,17 +232,6 @@
 
 ## 9. Dependencies
 
-**Upstream — all must be complete.**
+**Upstream:** `25` · `42` · `44` · `46` · `47`. All stage outputs must be complete.
 
-- [WP-25](25-sync-engine-and-blob-lifecycle.md#rule-wp-25)
-- [WP-42](42-commerce-entitlement-and-credits.md#rule-wp-42)
-- [WP-44](44-dynamic-policy-and-configuration.md#rule-wp-44)
-- [WP-46](46-backup-recovery-and-data-health.md#rule-wp-46)
-- [WP-47](47-static-public-site.md#rule-wp-47)
-
-**Downstream — consumers of these released outputs.**
-
-- [WP-49](49-arcchat-web-companion.md#rule-wp-49)
-
-
----
+**Downstream:** `49`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.

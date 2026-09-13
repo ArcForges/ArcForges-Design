@@ -5,7 +5,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: B — Shared platform
-> Upstream: `03`, `08` · Downstream: `10`, `11`, `14`, `16`, `41`
+> Upstream: `03` · `08` · Downstream: `10` · `11` · `13` · `14` · `16` · `41`
 
 > **Goal.** Implement the cross-application semantic model — App, Installation, Instance, Contribution, Capability, Action, Context, `ResourceRef`, Artifact, Deep Link, Event, Health and Invocation — so that every product, extension and agent describes and reaches every other through one vocabulary.
 
@@ -25,6 +25,9 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+[Producer artifacts and real integration](../producer-artifacts-and-integration.md) is a required input. Use this WP's row to identify exact released artifacts, permitted fixtures and the owner that must replace each fixture; completion requires the stated evidence class.
+
 
 **Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
@@ -95,11 +98,11 @@
 
 ### WP-09.02 — Capability registry and selection
 
-**What must be fully done.** The registry stores descriptors with their full field set. The selection pipeline resolves a requested capability to a concrete provider using the fixed routing priority, considering availability, health, version compatibility and placement. Selection is deterministic and explainable — the pipeline can state why it chose what it chose.
+**What must be fully done.** Implement the wire CapabilityDescriptor/OperationBinding/effect/locus/context/cancellation schema and complete initial first-party binding matrix. Register exactly the product and Cloud tool methods declared by Contracts; validate per-operation risk and grant posture.
 
-**Testing requirements.** Selection tests across every priority tier; an explainability test asserting a reason is produced; a determinism test.
+**Testing requirements.** Enumerate expected bindings; reject missing/extra methods, unsupported major, inconsistent pureRead/write classification, readiness mismatch and ambiguous target.
 
-**Completion gate.** Selection follows the fixed priority, is deterministic, and explains itself.
+**Completion gate.** No implementer invents binding fields or capability behavior to join products.
 
 <a id="rule-wp-09.03"></a>
 
@@ -213,18 +216,6 @@
 
 ## 9. Dependencies
 
-**Upstream — all must be complete.**
+**Upstream:** `03` · `08`. All stage outputs must be complete.
 
-- [WP-03](03-contract-foundation-and-licence-split.md#rule-wp-03)
-- [WP-08](08-local-ipc-and-registration.md#rule-wp-08)
-
-**Downstream — consumers of these released outputs.**
-
-- [WP-10](10-design-system-and-desktop-shell.md#rule-wp-10)
-- [WP-11](11-security-foundation.md#rule-wp-11)
-- [WP-14](14-hub-and-minimal-provider-slice.md#rule-wp-14)
-- [WP-16](16-unified-execution-engine.md#rule-wp-16)
-- [WP-41](41-extension-platform-and-integrations.md#rule-wp-41)
-
-
----
+**Downstream:** `10` · `11` · `13` · `14` · `16` · `41`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.

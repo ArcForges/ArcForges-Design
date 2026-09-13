@@ -5,7 +5,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: E — First real cloud
-> Upstream: `23` · Downstream: `25`, `26`, `30`
+> Upstream: `23` · Downstream: `25` · `26` · `30`
 
 > **Goal.** Deliver realtime updates that are useful without ever being authoritative: connect, subscribe, deliver, detect a gap, and backfill authoritative state over HTTP — with disconnected compensation recovery proven, because it is the case that actually happens.
 
@@ -25,6 +25,9 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+[Producer artifacts and real integration](../producer-artifacts-and-integration.md) is a required input. Use this WP's row to identify exact released artifacts, permitted fixtures and the owner that must replace each fixture; completion requires the stated evidence class.
+
 
 **Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
@@ -81,7 +84,7 @@
 
 **What must be fully done.** Implement EventService.Poll through the ordinary auth/scope pipeline; each call is bounded and reauthorizes. Clients display polling/reconnecting state, suspend background mobile polling and use the selected jitter/backoff profile. CF live presentation has the separate session-binding/first-frame nonce protocol.
 
-**Testing requirements.** Real native/Web/RN session expiry/revoke/Origin and request cancellation; no SignalR negotiation or bearer URL.
+**Testing requirements.** Real native/Web/Android session expiry/revoke/Origin and request cancellation; no SignalR negotiation or bearer URL.
 
 **Completion gate.** Hint polling and optional live presentation use their exact authenticated boundaries.
 
@@ -145,9 +148,9 @@
 ### WP-24.06 — C# and TypeScript realtime adapters
 
 
-**What must be fully done.** Publish event/poll DTOs from Contracts and compose one native C# consumer and TS browser/RN adapters against their respective transports. Apply browser cookie/CSRF and native secure bearer rules; CF socket uses first-frame nonce plus C# authorization for every frame/range.
+**What must be fully done.** Publish event/poll DTOs from Contracts and compose one native C# consumer and TS browser and Kotlin Android adapters against their respective transports. Apply browser cookie/CSRF and native secure bearer rules; CF socket uses first-frame nonce plus C# authorization for every frame/range.
 
-**Testing requirements.** Common event/exact-value vectors plus actual AOT/React/RN polling and CF stream interruption/revocation tests.
+**Testing requirements.** Common event/exact-value vectors plus actual AOT/React/Android polling and CF stream interruption/revocation tests.
 
 **Completion gate.** All consumers agree on hint versus canonical state and preserve stream byte/cursor semantics.
 
@@ -212,15 +215,6 @@
 
 ## 9. Dependencies
 
-**Upstream — all must be complete.**
+**Upstream:** `23`. All stage outputs must be complete.
 
-- [WP-23](23-public-api-and-generated-clients.md#rule-wp-23)
-
-**Downstream — consumers of these released outputs.**
-
-- [WP-25](25-sync-engine-and-blob-lifecycle.md#rule-wp-25)
-- [WP-26](26-remote-action-and-tool-bridge.md#rule-wp-26)
-- [WP-30](30-mobile-shared-architecture.md#rule-wp-30)
-
-
----
+**Downstream:** `25` · `26` · `30`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.

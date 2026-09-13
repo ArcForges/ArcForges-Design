@@ -237,7 +237,7 @@ Every gate in [`open-gates-register.md`](open-gates-register.md) is scheduled.
 | **[PG-23](open-gates-register.md#rule-pg-23)** | 06.05, 22.08, 23.05, 24.06, 47, 48, 49, 50.06 | Production React/TS, generated SDK, browser sessions, visual quality, toolchains and release/rollback |
 | **[VG-05](open-gates-register.md#rule-vg-05)** | **Merged into [F-026](open-gates-register.md#rule-f-026)** and recorded there; no separate schedule | — |
 
-**Coverage: 39 register entries** — 3 deferred Phase 1, 13 verification entries and 23 Phase 2 entries. Five are closed on design evidence; 33 remain open for implementation, including one dormant iOS entry; one verification entry is merged into its deferred gate. There are zero unresolved owner determinations. Every entry has an owner, trigger and implementation or evidence location in the [gate register](open-gates-register.md).
+**Coverage: 39 register entries** — 3 deferred Phase 1, 13 verification entries and 23 Phase 2 entries. Five are closed on design evidence; 33 remain open for implementation, with one retired iOS entry; one verification entry is merged into its deferred gate. There are zero unresolved owner determinations. Every entry has an owner, trigger and implementation or evidence location in the [gate register](open-gates-register.md).
 
 > **This count is checked, not asserted.** [SV-05](testing-and-verification-strategy.md#rule-sv-05) of the verification strategy requires every gate to be scheduled in a named package; before 2026-09-08 this table stopped at [PG-10](open-gates-register.md#rule-pg-10) while the register held [PG-21](open-gates-register.md#rule-pg-21), so ten gates — including every gate created by the [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006) reconciliation and the two review passes — were unscheduled here while the coverage line claimed completeness.
 
@@ -283,7 +283,7 @@ Every gate in [`open-gates-register.md`](open-gates-register.md) is scheduled.
 | Consumer visual and interaction quality | [Web requirements](../requirements/products/arcforges-web.md); [WP-47.07](../planning/work-packages/47-static-public-site.md#rule-wp-47.07) | [WP-48](../planning/work-packages/48-account-portal.md#rule-wp-48), [WP-49](../planning/work-packages/49-arcchat-web-companion.md#rule-wp-49) approved responsive/theme/state/locale visuals, keyboard/assistive and performance results |
 | Complete commercial Web release | [Deployment architecture](../architecture/22-deployment-and-release-execution.md); [WP-50.06](../planning/work-packages/50-full-platform-production-release.md#rule-wp-50.06) | [PG-23](open-gates-register.md#rule-pg-23); production artifacts and real Cloud workflows, not fixtures |
 
-Current register reconciliation after this amendment: 39 entries = 5 design-closed + 33 implementation-open (including one dormant iOS entry) + 1 merged. The new Web implementation gate is not closed by this design review.
+Current register reconciliation after this amendment: 39 entries = 5 design-closed + 33 implementation-open (with one retired iOS entry) + 1 merged. The new Web implementation gate is not closed by this design review.
 
 
 ## P2-009 amendment coverage
@@ -300,3 +300,16 @@ The 23 foundation decisions and nine Phase 2 decisions remain traceable. [P2-009
 | Preserved accepted product workflows | [Product maps](../architecture/19-product-implementation-maps.md) and existing requirements | All 51 active packages; Notes query/content-origin/Scope measurement profiles and commercial fixtures retained |
 
 The two new contract companions are formal architecture inputs. Existing invariant IDs and the item-level reference dispositions are unchanged by repository relocation. The [complete dependency graph](../planning/implementation-sequence.md#9-p2-009-complete-artifact-dependency-graph) carries 51 active packages and 137 edges, with WP27/29 still retired.
+
+## P2-010 completion map
+
+| Authority | Implementing WPs | Independent acceptance |
+|---|---|---|
+| Contracts wire/journeys/extension-policy schemas04/07/08 |03,06,09,22–26,40–44,52 | Complete generated types/methods/closed profiles and exact C#/TS/Kotlin vectors; actual owners at assigned stages |
+| Native functional ABI06 and package registry |03,06,08–13,33–39 | Existing probe compatibility, typed functional exports, full dependency closure, clean packaged AOT/RID consumers |
+| Android architecture11 |30–32,49,50,52 | Full surface/state/recovery matrix and real signed physical-device app |
+| Product behavior26 |18/19/28,33–39/51/52 | Independent edit/undo, framing/analysis, time/retime/render/fidelity examples |
+| Execution owner/consent/transactions/transfer |15/17/20/22/25/26/40/42/43/46/52 | No phantom Task, one effect/charge receipt, preserved pending work, explicit irrecoverable state and fenced restore |
+| Producer stage matrix | All51 active packages | Acyclic symmetric graph, immutable package-only inputs, named fixture replacement and full required release scope |
+
+Document validation is recorded in [family completion review](family-design-completion-review.md); implementation receipts remain future obligations.

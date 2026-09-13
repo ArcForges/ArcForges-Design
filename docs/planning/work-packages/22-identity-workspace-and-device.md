@@ -5,7 +5,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: E — First real cloud
-> Upstream: `11`, `21` · Downstream: `23`, `42`
+> Upstream: `11` · `21` · Downstream: `23` · `41` · `42`
 
 > **Goal.** Build the account layer: realms, users and authentication identities separated; workspaces from day one; devices, installations, instances and sessions distinguished; device trust and remote gating; step-up; recovery; and the account lifecycle through to deletion — with no product ever requiring an account to work locally.
 
@@ -25,6 +25,9 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+[Producer artifacts and real integration](../producer-artifacts-and-integration.md) is a required input. Use this WP's row to identify exact released artifacts, permitted fixtures and the owner that must replace each fixture; completion requires the stated evidence class.
+
 
 **Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
@@ -55,7 +58,7 @@
 | <a id="rule-br-08"></a>BR-08 | **Device identity is not a hardware fingerprint.** |
 | BR-09 | **Sign-out distinguishes four actions** and never silently deletes local data. |
 | BR-10 | **Remote access is gated by device trust**, defaulting to off. |
-| BR-11 | **Passkey is the primary method**, with email one-time codes for first verification and recovery; the first version requires no password. |
+| BR-11 | **Passkey is the primary method**, with email one-time codes for first verification and recovery; the official realm uses no password; self-host password/OIDC remains supported. |
 | BR-12 | **Step-up is required for the enumerated sensitive operations**, and an app unlock never substitutes for it ([I-278](../../requirements/01-normative-glossary-and-invariants.md#rule-i-278)). |
 | BR-13 | **Recovery is designed from the first version**, not retrofitted. |
 
@@ -91,7 +94,7 @@
 
 ### WP-22.01 — Authentication
 
-**What must be fully done.** Passkey registration and authentication with multiple passkeys per user; email one-time codes for first verification and recovery; no password in the first version. Session issue, refresh with rotation, and revocation. Refresh is serialised so concurrent requests never trigger a storm.
+**What must be fully done.** Passkey registration and authentication with multiple passkeys per user; email one-time codes for first verification and recovery; official passkey/email; supported self-host enrollment includes explicitly configured password/OIDC. Session issue, refresh with rotation, and revocation. Refresh is serialised so concurrent requests never trigger a storm.
 
 **Testing requirements.** Multi-passkey registration and authentication; concurrent-refresh contention under load; revocation taking effect immediately; a rate-limit test on code delivery.
 
@@ -175,7 +178,7 @@
 <a id="rule-wp-22.90"></a>
 ### WP-22.90 — Verify the owned artifact and real integration
 
-**What must be fully done.** Implement native/RN bearer sessions, same-origin Web opaque sessions, passkeys/recovery, workspace/device rules and authenticated CF authorization ports using selected AOT-compatible components.
+**What must be fully done.** Implement native/Android bearer sessions, same-origin Web opaque sessions, passkeys/recovery, workspace/device rules and authenticated CF authorization ports using selected AOT-compatible components.
 
 **Execution order.** Follow [staged artifact integration](../README.md#staged-artifact-integration): consume only existing assigned producers, publish an owned capability candidate before its product consumer, and verify the declared stage against exact upstream artifacts. Record pending later owners and their closing gates; local mocks cover only that named test boundary.
 
@@ -241,15 +244,10 @@
 
 ## 9. Dependencies
 
-**Upstream — all must be complete.**
+**Upstream:** `11` · `21`. All stage outputs must be complete.
 
-- [WP-11](11-security-foundation.md#rule-wp-11)
-- [WP-21](21-cloud-host-and-persistence.md#rule-wp-21)
+**Downstream:** `23` · `41` · `42`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.
 
-**Downstream — consumers of these released outputs.**
+## P2-010 required behavior and closure
 
-- [WP-23](23-public-api-and-generated-clients.md#rule-wp-23)
-- [WP-42](42-commerce-entitlement-and-credits.md#rule-wp-42)
-
-
----
+Complete all initial enrollment/recovery/provider/account/SSO methods in client journeys and wire04. Official passwordless and self-host configured password/OIDC are distinct; account-free startup is not account-free creation of Cloud-authoritative content. The referenced normative profile and producer stage matrix are binding inputs. Record independent positive/negative vectors and actual owner integration at this WP's assigned stage; a mock cannot close a real-provider/device requirement.

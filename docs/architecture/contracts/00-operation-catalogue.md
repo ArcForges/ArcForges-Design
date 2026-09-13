@@ -24,7 +24,7 @@ The contract architecture states how contracts are *shaped, versioned and genera
 
 ## 2. The shared operation contract
 
-Every operation on every surface — HTTP, local RPC, realtime — obeys the same seven rules. This uniformity supplies one semantic contract for retry/error/conflict behavior. C# and TypeScript have separate generated clients and language-specific adapters, verified by shared conformance vectors; they do not share a compiled client implementation.
+Every operation on every surface — HTTP, local RPC, realtime — obeys the same seven rules. This uniformity supplies one semantic contract for retry/error/conflict behavior. C#, TypeScript and Kotlin have separate generated clients and language-specific adapters, verified by shared conformance vectors; they do not share a compiled client implementation.
 
 | # | Rule |
 |---|---|

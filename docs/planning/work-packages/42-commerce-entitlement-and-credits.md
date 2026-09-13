@@ -5,7 +5,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: J — Platform completion
-> Upstream: `22`, `23` · Downstream: `43`, `44`, `48`, `51`, `52`
+> Upstream: `22` · `23` · Downstream: `43` · `44` · `48` · `51` · `52`
 
 > **Goal.** Build the commercial system so that money is never lost, never double-charged and never silently wrong: a provider adapter boundary, a verify-everything event inbox, a derived entitlement resolver, credit lots with reserve-then-settle, three separate ledgers, and reconciliation as a first-class subsystem.
 
@@ -25,6 +25,9 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+[Producer artifacts and real integration](../producer-artifacts-and-integration.md) is a required input. Use this WP's row to identify exact released artifacts, permitted fixtures and the owner that must replace each fixture; completion requires the stated evidence class.
+
 
 **Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
@@ -189,17 +192,11 @@
 
 ### WP-42.10 — Go-live gates
 
-**Precondition.** [WP-42.11](#rule-wp-42.11) term/capacity and payment-event evidence passes first. Step identity does not override this order. Shared AI/configuration gates retain their later producers; payment technical completion cannot close them alone.
+**What must be fully done.** Produce technical commerce gate receipts for actual ledger/provider adapter/test-mode flows, exact Pass/subscription exclusivity/period/renewal and unknown-effect handling. Provide the activation checklist to WP48/50.
 
-**What must be fully done.** Supplier onboarding and account approval; sanctions and export screening for the intended market set; payout eligibility and receiving-currency confirmation; one real payment, subscription, renewal, cancellation, reactivation and refund; the webhook duplicate-and-loss test; the reconciliation repair test; and a **completed payout received**. The regional route stays disabled by configuration until its own gates are met.
+**Testing requirements.** Test-mode charge/refund/webhook replay and actual ledger integrity, plus explicit missing-live-evidence rejection.
 
-**Testing requirements.** Recorded evidence per gate; a configuration assertion that the regional route is disabled.
-
-**Completion gate.** Every commercial go-live gate is satisfied with recorded evidence, **including a payout actually received** — satisfying [VG-10](../../assurance/open-gates-register.md#rule-vg-10) and [VG-11](../../assurance/open-gates-register.md#rule-vg-11). Until then the correct statement is "technical integration complete", not "the commercial loop is closed". The regional route remains disabled pending [VG-12](../../assurance/open-gates-register.md#rule-vg-12).
-
----
-
-**Required implementation and closure from the final review.** Implement and independently verify [23-simulator-and-interchange](../../architecture/23-simulator-and-interchange.md#5-slate-metadata-render-and-subtitle-profiles). Implement verified audio-duration metering for user-paid transcription, frozen supplier/customer rounding and normal reservation/unknown-effect settlement. Preserve zero customer debit for embedding/rerank. Real provider tariffs and go-live approvals remain explicit; no illustrative price becomes approved policy. Record exact artifact identities and real/fixture status with the existing substeps; these cases are part of this package's completion gate.
+**Completion gate.** Technical integration complete only; real customer checkout and received payout are mandatory48/50 gates, not an upstream prerequisite that creates a cycle.
 
 <a id="rule-wp-42.90"></a>
 ### WP-42.90 — Verify the owned artifact and real integration
@@ -278,18 +275,10 @@
 
 ## 9. Dependencies
 
-**Upstream — all must be complete.**
+**Upstream:** `22` · `23`. All stage outputs must be complete.
 
-- [WP-22](22-identity-workspace-and-device.md#rule-wp-22)
-- [WP-23](23-public-api-and-generated-clients.md#rule-wp-23)
+**Downstream:** `43` · `44` · `48` · `51` · `52`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.
 
-**Downstream — consumers of these released outputs.**
+## P2-010 required behavior and closure
 
-- [WP-43](43-managed-ai-routing-and-metering.md#rule-wp-43)
-- [WP-44](44-dynamic-policy-and-configuration.md#rule-wp-44)
-- [WP-48](48-account-portal.md#rule-wp-48)
-- [WP-51](51-arcscope-cloud-simulator.md#rule-wp-51)
-- [WP-52](52-cloud-harness.md#rule-wp-52)
-
-
----
+Test active Pass/subscription mutual exclusion, no immediate proration, exact renewal/reset periods and three ledgers with unresolved holds through their existing deadline. The referenced normative profile and producer stage matrix are binding inputs. Record independent positive/negative vectors and actual owner integration at this WP's assigned stage; a mock cannot close a real-provider/device requirement.

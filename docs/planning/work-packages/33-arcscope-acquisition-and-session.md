@@ -5,7 +5,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: H — ArcScope
-> Upstream: `07`, `10`, `13`, `26` · Downstream: `34`, `51`
+> Upstream: `07` · `10` · `13` · `26` · Downstream: `34` · `51`
 
 > **Goal.** Build the evidence layer: sources and adapters, the acquisition pipeline, sessions and captures with segments and gaps, the channel and event time model, and record and replay — with raw capture treated as evidence, immutable once finalised.
 
@@ -25,6 +25,9 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+[Producer artifacts and real integration](../producer-artifacts-and-integration.md) is a required input. Use this WP's row to identify exact released artifacts, permitted fixtures and the owner that must replace each fixture; completion requires the stated evidence class.
+
 
 **Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
@@ -230,17 +233,10 @@
 
 ## 9. Dependencies
 
-**Upstream — all must be complete.**
+**Upstream:** `07` · `10` · `13` · `26`. All stage outputs must be complete.
 
-- [WP-07](07-local-persistence-foundation.md#rule-wp-07)
-- [WP-10](10-design-system-and-desktop-shell.md#rule-wp-10)
-- [WP-13](13-high-risk-technical-probes.md#rule-wp-13)
-- [WP-26](26-remote-action-and-tool-bridge.md#rule-wp-26)
+**Downstream:** `34` · `51`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.
 
-**Downstream — consumers of these released outputs.**
+## P2-010 required behavior and closure
 
-- [WP-34](34-arcscope-analysis-and-reporting.md#rule-wp-34)
-- [WP-51](51-arcscope-cloud-simulator.md#rule-wp-51)
-
-
----
+Use acquisition.source/framing/trigger profiles in architecture26 and wire04, with explicit gap/loss/durable capture manifests and all accepted serial/network/file/USB sources. The referenced normative profile and producer stage matrix are binding inputs. Record independent positive/negative vectors and actual owner integration at this WP's assigned stage; a mock cannot close a real-provider/device requirement.

@@ -5,7 +5,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: I — ArcSlate
-> Upstream: `07`, `10`, `13`, `26` · Downstream: `37`
+> Upstream: `07` · `10` · `13` · `26` · Downstream: `37`
 
 > **Goal.** Build ArcSlate's domain: project and sequences, the exact time model spanning video frames and audio samples, the media library with assets referenced rather than owned, the timeline with tracks and clips, and non-destructive editing — all in C#, with no native type anywhere near the domain.
 
@@ -25,6 +25,9 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+[Producer artifacts and real integration](../producer-artifacts-and-integration.md) is a required input. Use this WP's row to identify exact released artifacts, permitted fixtures and the owner that must replace each fixture; completion requires the stated evidence class.
+
 
 **Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
@@ -93,11 +96,11 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 ### WP-36.01 — The exact time model
 
-**What must be fully done.** Use the single [TB-02](../../architecture/23-simulator-and-interchange.md#rule-tb-02) definition: exact sequence output grid, with explicit inexact-source conform; raw source PTS metadata is not a second canonical edit position.  **Canonical positions as integer ticks at 705 600 000 Hz** ([TB-01](../../architecture/23-simulator-and-interchange.md#rule-tb-01) of the time model). Rational sequence output grids — video and audio — each exactly representable in ticks, with their exact divisors materialised ([SG-02](../../architecture/23-simulator-and-interchange.md#rule-sg-02)). Source stream rates and PTS bases stored **per stream**, never on the sequence ([SG-01](../../architecture/23-simulator-and-interchange.md#rule-sg-01)), and a stream whose base does not divide the tick base **imports successfully** with its rounding reported ([SM-03](../../architecture/23-simulator-and-interchange.md#rule-sm-03)). Output sample ownership by [BO-02](../../architecture/23-simulator-and-interchange.md#rule-bo-02), so an adjacent cut duplicates and drops nothing. The four enumerated rounding sites and no others ([RP-02](../../architecture/23-simulator-and-interchange.md#rule-rp-02)). Timecode display and parsing that never introduces drift.
+**What must be fully done.** Implement705600000tick time, exact source rational/grid mapping and sequence interval algebra under architecture23/26. Use source-PTS ingress, output frame/sample projection, display and interchange conversion boundaries exactly; no blanket four-rounding-site rule.
 
-**Testing requirements.** Create an unsupported output grid and import a valid inexact source base, asserting different outcomes.  Frame↔tick and sample↔tick round-trip exactness across every supported rate including drop-frame; long-duration accumulation tests asserting zero drift; **a boundary fixture at 30000/1001 fps with 48 kHz asserting a cut at frame 1 emits sample 1601 exactly once and 1602 exactly once** ([TV-08](../../architecture/23-simulator-and-interchange.md#rule-tv-08)); a negative test asserting a non-representable **sequence** grid cannot be created while a source stream with an inexact PTS base imports with its rounding reported ([TV-10](../../architecture/23-simulator-and-interchange.md#rule-tv-10)); a policy test asserting no stored position is a frame, a sample, a float or a duration type, and that no code path outside [RP-02](../../architecture/23-simulator-and-interchange.md#rule-rp-02)'s four sites rounds a position ([TV-02](../../architecture/23-simulator-and-interchange.md#rule-tv-02), [TV-12](../../architecture/23-simulator-and-interchange.md#rule-tv-12)).
+**Testing requirements.** Independent NTSC/audio/negative/source-inexact/ties-even/half-open and overflow vectors; no intermediate double owner arithmetic.
 
-**Completion gate.** No import rule contradicts the supported conform path.  **No drift accumulates over long durations in any supported rate**; frame↔tick and sample↔tick round-trip exactly on their own grids; **an adjacent cut emits every boundary sample exactly once**; and a non-representable sequence grid is refused while inexact source media still imports. **Frame↔sample round-tripping is not claimed** — at 30000/1001 fps and 48 kHz one frame is 1601.6 samples, so it is not achievable and nothing depends on it ([TG-02](../../architecture/23-simulator-and-interchange.md#rule-tg-02)).
+**Completion gate.** All conversions use their declared profile and no competing rounding authority.
 
 <a id="rule-wp-36.02"></a>
 
@@ -135,11 +138,11 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 ### WP-36.05 — Editing operations
 
-**What must be fully done.** The professional edit operation set — insert, overwrite, trim, ripple, roll, slip, slide, split, group and ungroup — each exact at frame and sample precision, each non-destructive, and each a command through the single write path.
+**What must be fully done.** Implement every TL-06 operation using TimelineCommand and slate.edits.v1: links/locks, ripple/roll/slip/slide/split/overwrite/group/duplicate/retime/markers/track state with fixed affected sets and one undo transaction.
 
-**Testing requirements.** Exactness tests per operation at boundary conditions; a non-destructiveness assertion on source media; a write-path assertion.
+**Testing requirements.** Independent operation examples, collision/source handles, reverse/freeze retime, linked-track refusal and undo/restart vectors from26.
 
-**Completion gate.** Every edit operation is frame- and sample-exact, non-destructive, and routed through the single write path.
+**Completion gate.** All accepted edit operations complete, not only low-level insert/remove/replace.
 
 <a id="rule-wp-36.06"></a>
 
@@ -239,16 +242,6 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 ## 9. Dependencies
 
-**Upstream — all must be complete.**
+**Upstream:** `07` · `10` · `13` · `26`. All stage outputs must be complete.
 
-- [WP-07](07-local-persistence-foundation.md#rule-wp-07)
-- [WP-10](10-design-system-and-desktop-shell.md#rule-wp-10)
-- [WP-13](13-high-risk-technical-probes.md#rule-wp-13)
-- [WP-26](26-remote-action-and-tool-bridge.md#rule-wp-26)
-
-**Downstream — consumers of these released outputs.**
-
-- [WP-37](37-arcslate-playback-and-processing.md#rule-wp-37)
-
-
----
+**Downstream:** `37`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.

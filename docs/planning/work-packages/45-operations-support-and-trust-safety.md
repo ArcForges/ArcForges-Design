@@ -5,7 +5,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: J — Platform completion
-> Upstream: `12`, `21`, `44` · Downstream: `46`
+> Upstream: `12` · `21` · `44` · `47` · Downstream: `46`
 
 > **Goal.** Make the platform operable: alerting that is worth waking someone for, runbooks that have actually been executed, a status page that survives an outage, support access that never silently impersonates a user, and an enforcement ladder with appeals.
 
@@ -25,6 +25,9 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+[Producer artifacts and real integration](../producer-artifacts-and-integration.md) is a required input. Use this WP's row to identify exact released artifacts, permitted fixtures and the owner that must replace each fixture; completion requires the stated evidence class.
+
 
 **Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
@@ -157,15 +160,11 @@
 
 ### WP-45.08 — Security advisories and email adapters
 
-**What must be fully done.** A defined advisory process coordinated with the expedited update path and the kill-switch mechanism. Transactional and broadcast email separated by stream and sending subdomain, with a prepared secondary path for security-critical mail and delivery outcome observable.
+**What must be fully done.** Implement private security advisory intake and transactional email notification outbox/status/reconciliation. One logical notification uses a stable provider dedup key; unknown provider acceptance is queried before resend/failover. Duplicate physical delivery is possible and explicitly handled.
 
-**Testing requirements.** An advisory publication rehearsal; an email failover test asserting no duplicate one-time codes; a stream-separation assertion; a delivery-failure alert test.
+**Testing requirements.** Lost acceptance reply, duplicate/reordered callback, bounce/complaint, ambiguous provider, failover with unchanged one-use code and no content in logs.
 
-**Completion gate.** An advisory can be published and coordinated with an expedited update, and **email failover produces no duplicate one-time codes**.
-
----
-
-**Required implementation and closure from the final review.** Implement and independently verify [22-deployment-and-release-execution](../../architecture/22-deployment-and-release-execution.md#recovery-generation-and-safety-journal). Provide pending/verified safety-journal diagnostics, independently hosted incident status and runbooks for incomplete journal or generation conflict. Rehearse currently implemented owners; name WP46/52/50 as the remaining real restoration/CF drill producers. Record exact artifact identities and real/fixture status with the existing substeps; these cases are part of this package's completion gate.
+**Completion gate.** One logical notification/effect history; no impossible physical exactly-once promise or regenerated valid code on retry.
 
 <a id="rule-wp-45.90"></a>
 ### WP-45.90 — Verify the owned artifact and real integration
@@ -230,15 +229,6 @@
 
 ## 9. Dependencies
 
-**Upstream — all must be complete.**
+**Upstream:** `12` · `21` · `44` · `47`. All stage outputs must be complete.
 
-- [WP-12](12-observability-foundation.md#rule-wp-12)
-- [WP-21](21-cloud-host-and-persistence.md#rule-wp-21)
-- [WP-44](44-dynamic-policy-and-configuration.md#rule-wp-44)
-
-**Downstream — consumers of these released outputs.**
-
-- [WP-46](46-backup-recovery-and-data-health.md#rule-wp-46)
-
-
----
+**Downstream:** `46`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.

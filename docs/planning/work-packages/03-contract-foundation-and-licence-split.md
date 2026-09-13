@@ -5,7 +5,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: A — Freeze and foundation
-> Upstream: `02` · Downstream: `04`, `05`, `06`, `09`, `21`, `23`, `30`
+> Upstream: `02` · Downstream: `04` · `05` · `06` · `09` · `21` · `23` · `30`
 
 > **Goal.** Publish the handwritten proto authority and generated C#/TS public/internal package closure, exact-value fixtures and compatibility baselines before product/persistence consumers.
 
@@ -20,11 +20,14 @@
 
 **Out of scope.** Product behavior implementations; the complete selected initial wire records and operation signatures are already specified and generated here. The local IPC transport itself (`08`). The cloud endpoint implementations (`23`).
 
-**Why this package exists.** **[D-009](../../decisions/phase-1-foundation-decisions.md#rule-d-009)** rejects a single ever-growing contracts assembly, and **[D-004](../../decisions/phase-1-foundation-decisions.md#rule-d-004)**/**[D-021](../../decisions/phase-1-foundation-decisions.md#rule-d-021)** require that the public interoperability surface be Apache-2.0 while everything else is AGPL-3.0-only. Both are structural decisions that are cheap now and extremely expensive after every product depends on the wrong shape.
+**Why this package exists.** **[D-009](../../decisions/phase-1-foundation-decisions.md#rule-d-009)** rejects a single ever-growing contracts assembly, and **[D-004](../../decisions/phase-1-foundation-decisions.md#rule-d-004)**/**[D-021](../../decisions/phase-1-foundation-decisions.md#rule-d-021)** require that the entire Contracts repository be Apache-2.0 under P2-010 while product implementations keep their own licence. Both are structural decisions that are cheap now and extremely expensive after every product depends on the wrong shape.
 
 ---
 
 ## 2. Required inputs and dependencies
+
+[Producer artifacts and real integration](../producer-artifacts-and-integration.md) is a required input. Use this WP's row to identify exact released artifacts, permitted fixtures and the owner that must replace each fixture; completion requires the stated evidence class.
+
 
 **Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
@@ -35,8 +38,8 @@
 | [`../../architecture/02-contracts-and-protocols.md`](../../architecture/02-contracts-and-protocols.md) | The two-layer contract model, compatibility rules and contract-authoring obligations [CA-01](../../architecture/02-contracts-and-protocols.md#rule-ca-01)–[CA-14](../../architecture/02-contracts-and-protocols.md#rule-ca-14) |
 | [`../../architecture/01-solution-and-project-layout.md`](../../architecture/01-solution-and-project-layout.md) `§3` | The contract project split and licence enforcement rules |
 | **[D-009](../../decisions/phase-1-foundation-decisions.md#rule-d-009)** | Contract granularity: split by boundary, ownership, cadence and licence |
-| **[D-004](../../decisions/phase-1-foundation-decisions.md#rule-d-004)**, **[D-021](../../decisions/phase-1-foundation-decisions.md#rule-d-021)** | Which contract material is Apache-2.0 and which is AGPL-3.0-only |
-| **[V-05b](../../assurance/phase-1-official-verification.md#rule-v-05b)** | The generated-shape obligation on every local RPC contract interface |
+| **[D-004](../../decisions/phase-1-foundation-decisions.md#rule-d-004)**, **[D-021](../../decisions/phase-1-foundation-decisions.md#rule-d-021)** | All Contracts material is Apache-2.0 under P2-010; public/internal import access remains separate |
+| **[V-05b](../../assurance/phase-1-official-verification.md#rule-v-05b)** | Historical verification superseded by authored proto and explicit generated service registration under P2-009/010 |
 | [WP-01.01](01-repository-reconciliation-and-target-layout.md#rule-wp-01.01) output | The type-by-type assignment to each licence boundary |
 | [WP-02](02-build-governance-and-analyzer-policy.md#rule-wp-02) output | Generator settings, locked packages and the diagnostic posture |
 
@@ -69,10 +72,10 @@ All paths are in ArcForges-Contracts under the [selected package registry](../..
 
 | Location | Deliverable |
 |---|---|
-| public/proto/, internal/proto/ | Handwritten initial schema/service/field/enum profiles from the wire registry; Apache versus AGPL dependency closure |
+| public/proto/, internal/proto/ | Handwritten initial schema/service/field/enum profiles from the wire registry; public versus internal Apache-2.0 import closure |
 | public/http/, internal/ai-http/, fixtures/public/, fixtures/internal/ | Selected CF/auth/provider HTTP exceptions, independent canonical positive/negative vectors |
 | generated/csharp/, generated/typescript/ | Generated DTOs, service descriptors/clients and wire validators; never hand edited |
-| src/transport/ | Apache RN unary gRPC-Web adapter and selected public C# transport composition only |
+| src/transport/ | Apache Kotlin native gRPC adapter and selected public C# transport composition only |
 | eng/, artifacts/contracts/ | Pinned generation, descriptor/breaking-change baselines, signed versioned package manifests and candidate publication |
 | tests/ | Schema closure, exact-value/unknown-field/conformance vectors and C#/TS compatibility |
 
@@ -86,12 +89,11 @@ The complete initial Resource/owner/query/measurement/simulator, public operatio
 
 ### WP-03.00 — Create the split project structure
 
+**What must be fully done.** Create public/local/internal/SDK/HTTP schema projects and exact package outputs from the producer matrix. All authored schemas/tools/fixtures are Apache-2.0; public imports cannot reach local/operator/internal protocols.
 
-**What must be fully done.** Author the selected proto files and package dependencies from the fixed public/internal record and operation registry. Carry SPDX, source ownership and reserved field/enum numbers. Public packages cannot depend on internal packages; generate named product schemas without moving behavior into Contracts.
+**Testing requirements.** Negative public→internal/GPL import fixture, package identity/SPDX and generated-header tests.
 
-**Testing requirements.** Compile all schemas with the pinned compiler, validate imports/licence closure and generate both languages in a clean checkout.
-
-**Completion gate.** Every selected schema/service has its assigned package and compiles without an untyped placeholder.
+**Completion gate.** All package boundaries and generators exist with no implementation dependency.
 
 <a id="rule-wp-03.01"></a>
 
@@ -139,14 +141,13 @@ The complete initial Resource/owner/query/measurement/simulator, public operatio
 
 <a id="rule-wp-03.05"></a>
 
-### WP-03.05 — C# export, TS generation and baseline gate
+### WP-03.05 — Complete C#/TypeScript/Kotlin generation and candidate gate
 
+**What must be fully done.** Generate all initial C#, TypeScript and Java/Kotlin-lite messages/clients/validators from authored proto and declared HTTP/extension/policy schemas; export descriptor/ABI/profile fixtures. Produce complete immutable NuGet/npm/Maven candidate set with hashes and notices.
 
-**What must be fully done.** Run network-free protoc/C#/TS generation from handwritten source, including public gRPC/gRPC-Web clients, the selected RN adapter package and HTTP-exception schemas. Export descriptor hashes and independent fixtures; publish immutable candidate NuGet/npm bundles before consumers. CI compares regeneration to committed baselines.
+**Testing requirements.** Network-free regeneration after locked tool restore; all numbered types/operations/profiles resolve, independent exact-value and error vectors, isolated C#/React/Kotlin consumers.
 
-**Testing requirements.** Generator drift and public-to-internal leak negative fixtures; independent fresh-checkout package restore in C#, React and RN probes.
-
-**Completion gate.** Released packages/descriptors/fixtures match the hand-authored source; no C#→OpenAPI business generation remains.
+**Completion gate.** Every accepted first-party consumer contract exists before its implementation; Hello is only an example. All matching artifacts pass codec/build checks.
 
 <a id="rule-wp-03.06"></a>
 
@@ -226,19 +227,10 @@ The complete initial Resource/owner/query/measurement/simulator, public operatio
 
 ## 9. Dependencies
 
-**Upstream — all must be complete.**
+**Upstream:** `02`. All stage outputs must be complete.
 
-- [WP-02](02-build-governance-and-analyzer-policy.md#rule-wp-02)
+**Downstream:** `04` · `05` · `06` · `09` · `21` · `23` · `30`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.
 
-**Downstream — consumers of these released outputs.**
+## P2-010 required behavior and closure
 
-- [WP-04](04-identity-error-and-versioning-primitives.md#rule-wp-04)
-- [WP-05](05-architecture-and-repository-policy-tests.md#rule-wp-05)
-- [WP-06](06-aot-jit-and-wasm-publish-proof.md#rule-wp-06)
-- [WP-09](09-capability-contribution-and-resource-model.md#rule-wp-09)
-- [WP-21](21-cloud-host-and-persistence.md#rule-wp-21)
-- [WP-23](23-public-api-and-generated-clients.md#rule-wp-23)
-- [WP-30](30-mobile-shared-architecture.md#rule-wp-30)
-
-
----
+Include source KnowledgePolicy/Patch/View, typed one-use overrides, stable Notes run/atom/table-cell positions and all complete initial owner/profile records. Descriptor fixtures and cross-language validation must enumerate them. The referenced normative profile and producer stage matrix are binding inputs. Record independent positive/negative vectors and actual owner integration at this WP's assigned stage; a mock cannot close a real-provider/device requirement.

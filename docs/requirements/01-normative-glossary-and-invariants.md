@@ -553,8 +553,8 @@ Every active entry is binding where its concepts are in current product scope. A
 | <a id="rule-i-312"></a>I-312 | Connector ≠ imported snapshot |
 | <a id="rule-i-313"></a>I-313 | **Retired by [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006):** external-agent integration is excluded, not a separate agent-profile implementation. |
 | <a id="rule-i-314"></a>I-314 | **Retired by [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006):** no external-agent task/delegation adapter is required. |
-| <a id="rule-i-315"></a>I-315 | ACP Session ≠ Conversation |
-| <a id="rule-i-316"></a>I-316 | ACP ≠ ArcChat runtime model |
+| <a id="rule-i-315"></a>I-315 | Retained historical distinction: ACP Session ≠ Conversation; ACP integration excluded by P2-006 |
+| <a id="rule-i-316"></a>I-316 | ACP ≠ ArcChat runtime model; no external-agent runtime is implemented |
 | <a id="rule-i-317"></a>I-317 | Extension ≠ third-party Arc App |
 | <a id="rule-i-318"></a>I-318 | Extension Process ≠ Host Process |
 | <a id="rule-i-319"></a>I-319 | Extension Private State ≠ Product Domain State |
@@ -747,7 +747,7 @@ Every active entry is binding where its concepts are in current product scope. A
 | "ArcForges Suite 2.0" as a version | No mandatory suite release train | Per-product versions plus an optional release campaign name |
 | "Central desktop service", `ArcForgesService.exe` | Prohibited architecture | ArcChat-hosted Hub |
 | Unqualified "Unlimited AI" / "unlimited storage" | Prohibited unbounded commercial claims | Disclosed AI capacity recovery/rate/concurrency/model limits and storage tier |
-| ".NET AOT" applied to RN Android | RN/Hermes is its own runtime under [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) | "React Native/Hermes release build" |
+| ".NET AOT" applied to Kotlin Android | Kotlin/Jetpack Compose is its own runtime under [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) | "Kotlin/Jetpack Compose release build" |
 | "Cloud may remain JIT" | Superseded by [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) | "C# Cloud publishes Native AOT" |
 | "A realtime connection is durable authority" | Hints are projections | "Reconcile using the typed authoritative read" |
 | Waffo Pancake and every Waffo-specific mechanic | `SUPERSEDED` provider (**[D-005](../decisions/phase-1-foundation-decisions.md#rule-d-005)**) | Paddle (MoR) and Payoneer (payout destination) |
@@ -799,4 +799,4 @@ The glossary is enforced, not merely published.
 
 ## P2-009 technology invariants
 
-Proto is authored wire authority; the sole model loop is CF Workflow; canonical business state is C#/PostgreSQL; object bytes are R2; product repositories consume immutable packages; Mobile is RN/Hermes. These replace superseded technology examples without renumbering inherited invariant IDs. Content-origin, Notes scalar queries, Scope measurement and Slate rational/tick meaning remain unchanged.
+Proto is authored wire authority; the sole model loop is CF Workflow; canonical business state is C#/PostgreSQL; object bytes are R2; product repositories consume immutable packages; Mobile is Kotlin/Jetpack Compose. These replace superseded technology examples without renumbering inherited invariant IDs. Content-origin, Notes scalar queries, Scope measurement and Slate rational/tick meaning remain unchanged.

@@ -71,7 +71,7 @@ A **Lower-bound Supported Hardware Class** is maintained in parallel, to answer 
 
 | # | Requirement |
 |---|---|
-| RH-01 | **Benchmarks run against real release artifacts:** the production Native AOT desktop package, release Android Hermes package and production Node-built Web assets. A Debug/dev-server result, or a JIT desktop substitute for its required AOT artifact, is not evidence. Cloud and browser measurements use their own supported production runtimes ([I-380](01-normative-glossary-and-invariants.md#rule-i-380), [I-381](01-normative-glossary-and-invariants.md#rule-i-381)). |
+| RH-01 | **Benchmarks run against real release artifacts:** the production Native AOT desktop package, release Android Kotlin/ART package and production Node-built Web assets. A Debug/dev-server result, or a JIT desktop substitute for its required AOT artifact, is not evidence. Cloud and browser measurements use their own supported production runtimes ([I-380](01-normative-glossary-and-invariants.md#rule-i-380), [I-381](01-normative-glossary-and-invariants.md#rule-i-381)). |
 
 ---
 
@@ -237,9 +237,9 @@ The product metric is **Time To Usable** ([I-389](01-normative-glossary-and-inva
 | AO-02 | **`IL2026` / `IL3050` and equivalent trimming/AOT warnings are release-blocking by default** on any project consumed by an AOT deliverable. |
 | AO-03 | **Suppression is permitted but audited**: each suppression is narrow, justified, attributed, and carries a revalidation trigger. A blanket global suppression is prohibited. |
 | AO-04 | **AOT tests use the final published artifact**, not a Debug or JIT build ([I-381](01-normative-glossary-and-invariants.md#rule-i-381)). |
-| AO-05 | Native AOT gates apply to every desktop and C# Cloud deliverable and their complete managed dependency closures under P2-009. React Native/Hermes and browser assets have their own measured release gates. |
+| AO-05 | Native AOT gates apply to every desktop and C# Cloud deliverable and their complete managed dependency closures under P2-009. Kotlin/Jetpack Compose and browser assets have their own measured release gates. |
 | AO-06 | **A third-party extension does not change this contract.** The host stays a Native AOT deliverable; an extension runs out of process with its own runtime and does not affect the host's AOT metrics ([EX-04](08-extensions-and-developer-platform.md#rule-ex-04) in the extension requirements). |
-| AO-07 | Android uses the pinned React Native/Hermes release profile. No .NET mobile runtime/AOT flag is applied; iOS remains architecture-present/build-deferred. |
+| AO-07 | Android uses the pinned Kotlin/Jetpack Compose release profile. No .NET mobile runtime/AOT flag is applied; iOS is outside the current scope. |
 | AO-08 | **Web is React/TypeScript production browser assets built with the pinned Node.js/npm toolchain** ([P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008)); .NET WebAssembly/AOT flags do not apply. Type safety, generated-contract drift, browser/visual/accessibility behavior and asset budgets are release gates. |
 | AO-09 | Publish real generated gRPC/Protobuf clients and servers, explicit serializers/auth/SQL adapters, Avalonia and every admitted native/control dependency with zero trimming/AOT diagnostics; WP06 proves actual candidate artifacts. |
 
@@ -375,7 +375,7 @@ Three tiers of matrix, running at different cadences:
 |---|---|
 | <a id="rule-pm-01"></a>PM-01 | **Desktop Tier-1 platforms genuinely enter build, AOT publish, install, UI, recovery, compatibility, performance and release matrices.** A platform that only compiles is not supported. |
 | <a id="rule-pm-02"></a>PM-02 | **The supported OS range is a versioned matrix** published as release metadata, not folklore. |
-| <a id="rule-pm-03"></a>PM-03 | **ArcChat Mobile is verified on real devices**, not only emulators — the RN/Hermes release artifact, cold start, weak network, background resume, and store-package verification. |
+| <a id="rule-pm-03"></a>PM-03 | **ArcChat Mobile is verified on real devices**, not only emulators — the Kotlin/Jetpack Compose release artifact, cold start, weak network, background resume, and store-package verification. |
 | <a id="rule-pm-04"></a>PM-04 | **ArcChat Web is verified against a maintained browser matrix**, including the production Web build, first load, caching and realtime reconnection. |
 | PM-05 | **A hardware lab is mandatory for ArcScope and ArcSlate.** Real serial, network and device interfaces; real media, codecs and GPUs. A CI virtual machine cannot detect the failures these products actually have. |
 | <a id="rule-pm-06"></a>PM-06 | **Native hardware paths require fallback tests**: missing GPU, unsupported codec, absent device, driver failure — each must degrade explicitly rather than crash. |
@@ -569,5 +569,5 @@ Define budget → Encode in the machine-readable contract → Measure on referen
 | [Testing and Verification Strategy](../assurance/testing-and-verification-strategy.md) | Assigns verification families and evidence responsibilities |
 | [Release Gates](../assurance/release-gates.md) | Applies quality and compatibility acceptance at release boundaries |
 | [Deployment and Release Execution](../architecture/22-deployment-and-release-execution.md) | Implements migration, mixed-version and rollback constraints |
-| **[D-007](../decisions/phase-1-foundation-decisions.md#rule-d-007)**, **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** | React/TypeScript Web posture under [P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008); Cloud is Native AOT; desktop AOT gates; Android React Native/Hermes |
+| **[D-007](../decisions/phase-1-foundation-decisions.md#rule-d-007)**, **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** | React/TypeScript Web posture under [P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008); Cloud is Native AOT; desktop AOT gates; Android Kotlin/Jetpack Compose |
 | **[V-03](../assurance/phase-1-official-verification.md#rule-v-03)**, **[V-04](../assurance/phase-1-official-verification.md#rule-v-04)**, **[V-05](../assurance/phase-1-official-verification.md#rule-v-05)** | AOT support surfaces, Android runtime posture, and the per-dependency AOT gates enforced here |

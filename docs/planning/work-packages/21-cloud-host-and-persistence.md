@@ -5,7 +5,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: E — First real cloud
-> Upstream: `03`, `05`, `12` · Downstream: `22`, `45`, `51`, `52`
+> Upstream: `03` · `05` · `12` · Downstream: `22` · `45` · `51` · `52`
 
 > **Goal.** Stand up the real cloud: a Native AOT modular business host as **one deployable host** with lease-fenced internal services (**[P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006)**), a fixed host pipeline order, module boundaries with owned schemas, a real database with a standalone migrator, reliable events, and background work — running against real infrastructure, not stubs.
 
@@ -25,6 +25,9 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+[Producer artifacts and real integration](../producer-artifacts-and-integration.md) is a required input. Use this WP's row to identify exact released artifacts, permitted fixtures and the owner that must replace each fixture; completion requires the stated evidence class.
+
 
 **Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
@@ -168,15 +171,11 @@
 <a id="rule-wp-21.90"></a>
 ### WP-21.90 — Verify the owned artifact and real integration
 
-**What must be fully done.** Implement the one AOT host, 20 module-owner topology, explicit PostgreSQL/SQL, migrations, transactional outbox, leases and CF integration-port foundations. Canonical Task/Chat/Commerce state remains here; the loop does not.
+**What must be fully done.** Verify actual AOT host/PG/transaction ownership/lease/outbox/migrator/config-secret mechanics using WP06 minimal service probes. Future domain and full CF Harness handlers are named fixtures at this stage.
 
-**Execution order.** Follow [staged artifact integration](../README.md#staged-artifact-integration): consume only existing assigned producers, publish an owned capability candidate before its product consumer, and verify the declared stage against exact upstream artifacts. Record pending later owners and their closing gates; local mocks cover only that named test boundary.
+**Testing requirements.** Real host startup/database loss, concurrent transactions, fencing and migrator tests; no reflection/JIT exemption.
 
-**Testing requirements.** Real AOT image plus database tests demonstrate module ownership, transaction/idempotency/fencing boundaries, restart and one-shot migrations.
-
-**Completion gate.** Real AOT image plus database tests demonstrate module ownership, transaction/idempotency/fencing boundaries, restart and one-shot migrations. Record exact artifacts and provider reality. The package is incomplete if an important contract/owner/recovery rule still requires design during coding.
-
----
+**Completion gate.** Host foundation is real; full business/CF product completion belongs to25/42/43/52, so later dependencies do not create an early cycle.
 
 ## 6. Impacts
 
@@ -232,18 +231,6 @@
 
 ## 9. Dependencies
 
-**Upstream — all must be complete.**
+**Upstream:** `03` · `05` · `12`. All stage outputs must be complete.
 
-- [WP-03](03-contract-foundation-and-licence-split.md#rule-wp-03)
-- [WP-05](05-architecture-and-repository-policy-tests.md#rule-wp-05)
-- [WP-12](12-observability-foundation.md#rule-wp-12)
-
-**Downstream — consumers of these released outputs.**
-
-- [WP-22](22-identity-workspace-and-device.md#rule-wp-22)
-- [WP-45](45-operations-support-and-trust-safety.md#rule-wp-45)
-- [WP-51](51-arcscope-cloud-simulator.md#rule-wp-51)
-- [WP-52](52-cloud-harness.md#rule-wp-52)
-
-
----
+**Downstream:** `22` · `45` · `51` · `52`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.

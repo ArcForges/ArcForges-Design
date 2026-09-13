@@ -5,7 +5,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: B — Shared platform
-> Upstream: `04`, `08`, `09` · Downstream: `14`, `16`, `22`, `41`
+> Upstream: `04` · `08` · `09` · Downstream: `13` · `14` · `16` · `22` · `41`
 
 > **Goal.** Implement the security model as mechanism rather than convention: principals and the actor chain, the R0–R4 risk model, the four enforcement points with owner-side final validation always last, approval and step-up, the secret broker, egress control, instruction provenance, capability leases and the append-only audit.
 
@@ -25,6 +25,9 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+[Producer artifacts and real integration](../producer-artifacts-and-integration.md) is a required input. Use this WP's row to identify exact released artifacts, permitted fixtures and the owner that must replace each fixture; completion requires the stated evidence class.
+
 
 **Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
@@ -156,13 +159,11 @@
 
 ### WP-11.08 — Audit
 
-**What must be fully done.** An append-only audit store, separate from telemetry, recording the enumerated security and business-state events with the full actor chain. No update or delete path exists. Audit access is itself audited.
+**What must be fully done.** Implement append-only audit append/query and dedicated policy-retention maintenance authority. Ordinary application/operator roles cannot update/delete; audited retention purge can remove only expired unheld partitions under the declared policy.
 
-**Testing requirements.** An immutability test asserting update and delete fail; a completeness test asserting every enumerated event is written; a separation test asserting no audit event lands in telemetry storage and no telemetry event lands in audit storage.
+**Testing requirements.** Reject ordinary UPDATE/DELETE and forged retention role; verify approved expiry purge, legal hold, complete security events and telemetry separation.
 
-**Completion gate.** Audit is structurally append-only, complete for the enumerated event set, and provably separate from telemetry.
-
----
+**Completion gate.** Audit remains immutable during retention and bounded by actual retention policy.
 
 <a id="rule-wp-11.09"></a>
 
@@ -243,18 +244,6 @@ The [WP-11.09](#rule-wp-11.09) helper and broker must additionally pass their pa
 
 ## 9. Dependencies
 
-**Upstream — all must be complete.**
+**Upstream:** `04` · `08` · `09`. All stage outputs must be complete.
 
-- [WP-04](04-identity-error-and-versioning-primitives.md#rule-wp-04)
-- [WP-08](08-local-ipc-and-registration.md#rule-wp-08)
-- [WP-09](09-capability-contribution-and-resource-model.md#rule-wp-09)
-
-**Downstream — consumers of these released outputs.**
-
-- [WP-14](14-hub-and-minimal-provider-slice.md#rule-wp-14)
-- [WP-16](16-unified-execution-engine.md#rule-wp-16)
-- [WP-22](22-identity-workspace-and-device.md#rule-wp-22)
-- [WP-41](41-extension-platform-and-integrations.md#rule-wp-41)
-
-
----
+**Downstream:** `13` · `14` · `16` · `22` · `41`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.

@@ -38,7 +38,7 @@ Observability answers *why is the system slow or failing*. It is a separate syst
 |---|---|
 | SG-01 | **A structured log event is a typed record, not an interpolated sentence.** Fields are named and stable so they can be queried. |
 | <a id="rule-sg-02"></a>SG-02 | **An identifier that can grow without bound is never a metric label** — no workspace id, actor id, task id, resource id or provider request id on a metric. Those live on spans and log records. |
-| SG-03 | **Trace sampling is head-based with tail retention for errors and slow requests**: an error path or a request exceeding its latency objective is retained even when the sample rate would have dropped it. |
+| SG-03 | Trace sampling uses head selection plus a bounded diagnostic buffer (default8MiB, hard16MiB; retention30seconds per trace). Error/slow traces promote only spans still recorded. Buffer loss/overflow/late-span loss is counted and visible; no guarantee of retaining all error traces. Redacted error counters/logs remain independent under the same consent and cost policy. |
 | SG-04 | **A task, sync operation or automation run is traceable end to end**, including across queue hops and provider calls (`§3`). |
 | SG-05 | **Every signal carries the build identifier and instance identity**, so a regression can be attributed to a release. |
 
@@ -118,7 +118,7 @@ Audit is a **product security record**, not a diagnostic aid.
 
 | # | Rule |
 |---|---|
-| <a id="rule-au-01"></a>AU-01 | **Audit is append-only.** No update, no delete, no operator edit (`§13` of the security architecture). |
+| <a id="rule-au-01"></a>AU-01 | Audit is append-only during its stated retention: normal application/operator roles cannot UPDATE or DELETE. A separate audited retention-maintenance role may purge expired unheld partitions under approved policy, retaining purge scope/hash/authority receipt. Legal/financial holds and account-deletion rules remain enforced; arbitrary editing is never allowed. |
 | AU-02 | **Audit retention is governed by policy and does not expire with the observability retention window**. |
 | AU-03 | **Audit events are enumerated, not incidental**: device revoked, passkey added or removed, session revoked, step-up performed, administrative grant, entitlement change, refund, secret created, rotated or deleted, remote action approved, break-glass access, enforcement action, export requested, deletion requested. |
 | AU-04 | **Every audit event records the full actor chain** — human principal, device, installation, session, and any agent acting on the principal's behalf (`§2` of the security architecture). |

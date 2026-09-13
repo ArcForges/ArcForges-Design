@@ -5,7 +5,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: B — Shared platform
-> Upstream: `06`, `09` · Downstream: `14`, `18`, `33`, `36`
+> Upstream: `06` · `09` · Downstream: `13` · `14` · `18` · `33` · `36`
 
 > **Goal.** Build the shared desktop foundation once — tokens, windows, panels, commands, settings, attention, errors, lifecycle — so that four products feel like one family without any of them depending on another, and so that every control in it survives Native AOT.
 
@@ -25,6 +25,9 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+[Producer artifacts and real integration](../producer-artifacts-and-integration.md) is a required input. Use this WP's row to identify exact released artifacts, permitted fixtures and the owner that must replace each fixture; completion requires the stated evidence class.
+
 
 **Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
@@ -167,7 +170,7 @@
 <a id="rule-wp-10.90"></a>
 ### WP-10.90 — Verify the owned artifact and real integration
 
-**What must be fully done.** Package shared Avalonia tokens, shell, commands, error/attention/settings and accessibility mechanisms; applications supply product flows. Do not turn shared UI into Web/RN or require a family installation.
+**What must be fully done.** Package shared Avalonia tokens, shell, commands, error/attention/settings and accessibility mechanisms; applications supply product flows. Do not turn shared UI into Web/Android or require a family installation.
 
 **Execution order.** Follow [staged artifact integration](../README.md#staged-artifact-integration): consume only existing assigned producers, publish an owned capability candidate before its product consumer, and verify the declared stage against exact upstream artifacts. Record pending later owners and their closing gates; local mocks cover only that named test boundary.
 
@@ -229,17 +232,6 @@
 
 ## 9. Dependencies
 
-**Upstream — all must be complete.**
+**Upstream:** `06` · `09`. All stage outputs must be complete.
 
-- [WP-06](06-aot-jit-and-wasm-publish-proof.md#rule-wp-06)
-- [WP-09](09-capability-contribution-and-resource-model.md#rule-wp-09)
-
-**Downstream — consumers of these released outputs.**
-
-- [WP-14](14-hub-and-minimal-provider-slice.md#rule-wp-14)
-- [WP-18](18-arcnotes-document-core.md#rule-wp-18)
-- [WP-33](33-arcscope-acquisition-and-session.md#rule-wp-33)
-- [WP-36](36-arcslate-project-and-timeline.md#rule-wp-36)
-
-
----
+**Downstream:** `13` · `14` · `18` · `33` · `36`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.

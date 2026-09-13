@@ -195,7 +195,7 @@ Cloud updates the task; realtime hints the requester; the requester re-reads
 
 ### 6.1 Browser adapter
 
-Desktop, React and RN use generated EventService.Poll with the bounded cadence in [CF integration](05-cloudflare-integration.md#5-live-presentation-and-client-recovery). These17 hints have generated protobuf payloads. Every reconnect repairs authoritative cursors/snapshots; no replica affinity/backplane or browser streaming API is required. AI presentation separately uses the same-origin CF WebSocket/HTTP range contract; a live connection never grants effect authority.
+Desktop, React and Kotlin Android use generated EventService.Poll with the bounded cadence in [CF integration](05-cloudflare-integration.md#5-live-presentation-and-client-recovery). These17 hints have generated protobuf payloads. Every reconnect repairs authoritative cursors/snapshots; no replica affinity/backplane or browser streaming API is required. AI presentation separately uses the same-origin CF WebSocket/HTTP range contract; a live connection never grants effect authority.
 
 ---
 

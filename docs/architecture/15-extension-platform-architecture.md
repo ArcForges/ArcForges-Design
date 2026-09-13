@@ -371,3 +371,7 @@ The extension platform is **not**: an in-process plug-in system; a scripting lan
 ## Selected extension protocol composition
 
 The public IExtensionHost service, StructuredValue and typed extension message envelopes come from the Contracts proto registry. Code-first extension parameter schema generation above composes into that fixed envelope; it does not introduce a second first-party RPC protocol or expose foreign CLR types. MCP remains its explicitly accepted external standard and cannot choose the internal transport.
+
+## Initial schemas and owner lifecycle
+
+[Extension/policy profiles](contracts/08-extension-and-policy-profiles.md) fixes the six package contribution kinds, complete manifest, template/workflow/panel schemas, connector lifecycle and staged/drained update. Author those closed schemas in Contracts and generate validators before owner implementations. Dynamic schema generation is permitted only within the already declared extension-only argument boundary; it cannot replace handwritten business proto or invent first-party product operations. Catalog, signing, immutable package Resource hosting and existing owner/grant/policy validation are actual WP41 outputs, not a filesystem-only install demo.

@@ -5,7 +5,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: J — Platform completion
-> Upstream: `09`, `11`, `17` · Downstream: `50`, `52`
+> Upstream: `09` · `11` · `17` · `22` · `25` · Downstream: `50` · `52`
 
 > **Goal.** Open the platform without weakening it: out-of-process extensions contributing **tools, never planners** ([EA-08](../../requirements/08-extensions-and-developer-platform.md#rule-ea-08)), the dual capability boundary with a closed AOT-safe value model, declarative UI contribution, the Arc Package runtime, the catalog, and the MCP, connector and artifact handoff and standard MCP integrations — all under the same security pipeline as first-party code.
 
@@ -25,6 +25,9 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+[Producer artifacts and real integration](../producer-artifacts-and-integration.md) is a required input. Use this WP's row to identify exact released artifacts, permitted fixtures and the owner that must replace each fixture; completion requires the stated evidence class.
+
 
 **Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
@@ -118,11 +121,11 @@
 
 ### WP-41.04 — Package runtime
 
-**What must be fully done.** Integrity verification, manifest parsing before any code runs, compatibility resolution, permission presentation and grant, install, enable, update with re-consent, disable, uninstall with a private-data prompt, rollback, yank, deprecate and revoke. Installation never executes package-provided scripts.
+**What must be fully done.** Implement manifest.v1/workflow.v1/panel.v1 validators from published Contracts, all six families and immutable staged install/update/drain/migration/revocation/rollback states in annex08.
 
-**Testing requirements.** Full lifecycle matrix; a re-consent test on new permissions; an uninstall test asserting professional resources survive; a revoke test reaching an installed client.
+**Testing requirements.** Archive traversal/size/signature, DAG bounds, increased permissions, active old job, private-state rollback incompatibility and unknown-effect tests.
 
-**Completion gate.** The full lifecycle works, new permissions force re-consent, uninstall never cascade-deletes professional resources, and revoke reaches an installed client.
+**Completion gate.** No second autonomous planner, arbitrary UI/code eval, or update that resets effect fences.
 
 <a id="rule-wp-41.05"></a>
 
@@ -148,13 +151,11 @@
 
 ### WP-41.07 — MCP and connectors
 
-**What must be fully done.** **External-agent integration is excluded** ([EA-01](../../requirements/08-extensions-and-developer-platform.md#rule-ea-01)–[EA-06](../../requirements/08-extensions-and-developer-platform.md#rule-ea-06)): no provider, adapter, session mapping, delegation lease or result adapter is built, and a structural test asserts no delegation contribution kind exists ([EA-08](../../requirements/08-extensions-and-developer-platform.md#rule-ea-08)). MCP remains as an external **tool** adapter with the SDK version pinned and an explicit mapping between MCP extension concepts and the ArcForges execution vocabulary. Connectors with definition and connection instance separated and secrets held as references.
+**What must be fully done.** Implement MCP and connector owner lifecycle/typed bindings from annex08 and wire04, actual22 identity and25 immutable catalog/blob inputs, SecretRef broker and provider OAuth/egress/revocation.
 
-**Testing requirements.** MCP tool and resource mapping tests; a vocabulary-mapping record; connector secret-handling tests; **a structural test asserting no external-agent contribution kind, delegation adapter or second planner exists** ([EA-08](../../requirements/08-extensions-and-developer-platform.md#rule-ea-08), [HV-18](../../architecture/17-agent-harness.md#rule-hv-18)); a hidden-reasoning exclusion assertion.
+**Testing requirements.** Real configured connector callback and token refresh; malicious manifest, scope expansion, disconnection during request and unknown provider effect.
 
-**Completion gate.** MCP terms are explicitly mapped and the SDK version pinned — **satisfying [VG-02](../../assurance/open-gates-register.md#rule-vg-02)** — connectors never store plaintext secrets, and **no external-agent delegation path exists**; an integration contributes tools, never a planner.
-
----
+**Completion gate.** Catalog/package/connection/owner actions form a complete authorized path; no model BYOK or phantom task.
 
 <a id="rule-wp-41.90"></a>
 ### WP-41.90 — Verify the owned artifact and real integration
@@ -222,16 +223,6 @@
 
 ## 9. Dependencies
 
-**Upstream — all must be complete.**
+**Upstream:** `09` · `11` · `17` · `22` · `25`. All stage outputs must be complete.
 
-- [WP-09](09-capability-contribution-and-resource-model.md#rule-wp-09)
-- [WP-11](11-security-foundation.md#rule-wp-11)
-- [WP-17](17-arcchat-independent-core.md#rule-wp-17)
-
-**Downstream — consumers of these released outputs.**
-
-- [WP-50](50-full-platform-production-release.md#rule-wp-50)
-- [WP-52](52-cloud-harness.md#rule-wp-52)
-
-
----
+**Downstream:** `50` · `52`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.

@@ -5,7 +5,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: J — Platform completion *(sequenced after `43`; numbered `52` because `00`–`51` are allocated and a retired identifier is never reused)*
-> Upstream: `15`, `17`, `20`, `21`, `23`, `26`, `39`, `40`, `41`, `42`, `43`, `44` · Downstream: `31`, `49`, `50`
+> Upstream: `15` · `17` · `20` · `21` · `23` · `26` · `39` · `40` · `41` · `42` · `43` · `44` · Downstream: `31` · `49` · `50`
 
 > **Goal.** Build the **single Cloud Harness** of [`../../architecture/17-agent-harness.md`](../../architecture/17-agent-harness.md): the turn loop, tool batching, context assembly, compaction, approval interleaving, streaming, cancellation and recovery — running in the ArcForges-AI CF Workflow, against real admission and real metering.
 
@@ -27,6 +27,9 @@ Rather than leave a package whose steps cannot run in their stated order, the Ha
 ---
 
 ## 2. Required inputs and dependencies
+
+[Producer artifacts and real integration](../producer-artifacts-and-integration.md) is a required input. Use this WP's row to identify exact released artifacts, permitted fixtures and the owner that must replace each fixture; completion requires the stated evidence class.
+
 
 **Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
@@ -230,26 +233,10 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 ## 9. Dependencies
 
-**Upstream — all must be complete.**
+**Upstream:** `15` · `17` · `20` · `21` · `23` · `26` · `39` · `40` · `41` · `42` · `43` · `44`. All stage outputs must be complete.
 
-- [WP-15](15-arcchat-conversation-core.md#rule-wp-15)
-- [WP-17](17-arcchat-independent-core.md#rule-wp-17)
-- [WP-20](20-first-cross-product-workflow.md#rule-wp-20)
-- [WP-21](21-cloud-host-and-persistence.md#rule-wp-21)
-- [WP-23](23-public-api-and-generated-clients.md#rule-wp-23)
-- [WP-26](26-remote-action-and-tool-bridge.md#rule-wp-26)
-- [WP-39](39-arcslate-integration-and-portability.md#rule-wp-39)
-- [WP-40](40-knowledge-search-and-retrieval.md#rule-wp-40)
-- [WP-41](41-extension-platform-and-integrations.md#rule-wp-41)
-- [WP-42](42-commerce-entitlement-and-credits.md#rule-wp-42)
-- [WP-43](43-managed-ai-routing-and-metering.md#rule-wp-43)
-- [WP-44](44-dynamic-policy-and-configuration.md#rule-wp-44)
+**Downstream:** `31` · `49` · `50`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.
 
-**Downstream — consumers of these released outputs.**
+## P2-010 required behavior and closure
 
-- [WP-31](31-arcchat-mobile-android.md#rule-wp-31)
-- [WP-49](49-arcchat-web-companion.md#rule-wp-49)
-- [WP-50](50-full-platform-production-release.md#rule-wp-50)
-
-
----
+Execute ordinary persistent/temporary ChatTurn and AgentTask through the same real RunWorkflow, pure-read vs promoted effectful mode, transient source expiry/cleanup and platform-funded protected compaction. Every prior client/bridge fixture is replaced by actual C#/CF/model/R2 owner integration. The referenced normative profile and producer stage matrix are binding inputs. Record independent positive/negative vectors and actual owner integration at this WP's assigned stage; a mock cannot close a real-provider/device requirement.

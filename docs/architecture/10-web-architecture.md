@@ -170,7 +170,7 @@ No ArcNotes/ArcScope/ArcSlate browser editor, public sharing, desktop WebView, b
 |---|---|
 | [P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008) and the dated [D-007](../decisions/phase-1-foundation-decisions.md#rule-d-007) amendment | React/TS, Node/npm, C# generated SDK, esproj/CLI split and supersession of Blazor-only Web requirements |
 | [D-014](../decisions/phase-1-foundation-decisions.md#rule-d-014) / [D-015](../decisions/phase-1-foundation-decisions.md#rule-d-015) | Existing surface inventory, one account/chat codebase, canonical account origin and isolated browser sessions |
-| [D-009](../decisions/phase-1-foundation-decisions.md#rule-d-009) / [D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021) | C# authored public contracts; generated Apache SDK and wire validation separated from AGPL product UI |
+| [D-009](../decisions/phase-1-foundation-decisions.md#rule-d-009) / [D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021) | Authored public proto contracts; generated Apache SDK and wire validation separated from AGPL product UI |
 | [P2-003](../decisions/phase-2-specification-decisions.md#rule-p2-003) resolution | Same-origin C# browser-session adapter, live server sessions, CSRF and revocation |
 | Current product requirements | Account, paid subscription/capacity and Cloud ArcChat scope; static public content and quality requirements |
 

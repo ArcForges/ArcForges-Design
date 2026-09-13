@@ -144,6 +144,8 @@ Clients refresh from the Entitlement API
 | <a id="rule-pu-05"></a>PU-05 | **Checkout is hosted by the provider.** ArcForges never handles card data, and no payment instrument field exists in any ArcForges surface. |
 | PU-06 | **Tax, currency and price presentation come from the provider's capability description and the versioned catalogue** (`§3` there), never from client-side computation. |
 
+Verified payment recognition calls the [enumerated purchase transaction](data-model/00-data-model-overview.md#611-shared-units-of-work): Entitlement and Commerce commit normalized order/payment/period, the applicable grant/term/credit adjustment, entitlement version and outbox together. Network verification is outside that transaction. An absent local commit is retried from the durable provider inbox; after commit only notification/report delivery is asynchronous. A completed order without its grant is not an admitted recovery state.
+
 ### 4.1 Provider Event Inbox
 
 | # | Rule |
@@ -532,3 +534,9 @@ The commerce layer is **not**: a payment processor; a holder of card data; a pla
 ## P2-009 Workers AI supplier binding
 
 The accounting algorithms, three ledgers, exact integer microcredits, funding order, subscription/service-term actions and all worked examples above remain unchanged. [Selected CF model routes](09-ai-and-agent-runtime-architecture.md#p2-009-execution-placement-and-supplier-binding) bind each provider_attempt to the exact Workers AI model/config/supplier-price version. C# reserves and records intent before the Worker dispatches. Complete/interrupted output and any verified usage commit before customer settlement; missing counts remain unknown. CF aggregate bills are supplier evidence, never a replacement customer ledger or proof of one missing request. No mandatory prepayment or AI Gateway project is introduced; after the existing customer deadline a late supplier charge cannot create a new customer debit.
+
+## Closed purchase, period and execution-owner profile
+
+Active subscription blocks Pass purchase; active Pass blocks subscription until expiry. Plan changes are scheduled at next renewal, no immediate proration. Provider events for an unexpected overlapping purchase are quarantined and reconciled through the adapter, never summed into additional capacity. Verified paid periods map to normalized service-period IDs; provider IDs stay in Commerce. Immutable term actions and existing refill/carry/selection examples remain unchanged.
+
+Storage/device gauges are stocks and do not reset at billing boundaries. Time-window usage counters have one period ID and monotonic receipt; switching policy cannot erase historical usage, duplicate a reset/grant or discard a live reservation. Unknown provider dispatch retains original funding/supplier evidence through the established deadline, even after restart. Ordinary/temporary ChatTurn uses the same metering/dispatch owner profile as AgentTask; no Task-only FK or hidden customer compaction/search charge. Compaction and web-search request cost are operator-funded and supplier-budgeted; the user's main model generation remains metered normally.

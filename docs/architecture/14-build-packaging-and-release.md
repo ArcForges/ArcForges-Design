@@ -82,14 +82,13 @@ locked restores (.NET/native/npm) → proto compilation and descriptor export
 | ArcForges Cloud | **ASP.NET Core Native AOT**, container image (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**) | Native AOT publish and real-adapter verification are mandatory (**[V-03](../assurance/phase-1-official-verification.md#rule-v-03)**); the image runs the same pipeline in every environment |
 | ArcForges.Web.App | **React/TypeScript browser assets**, Node/npm production build ([P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008)) | Account/Chat profile artifacts, generated SDK round trip, browser/CSP/visual/bundle evidence |
 | ArcForges.Web.Site output | React/TS build-time pre-rendered static artifacts | No-script content, deterministic build, locale/SEO/accessibility and performance |
-| ArcChat Mobile — Android | **React Native/Hermes** release build (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**, **[V-04](../assurance/phase-1-official-verification.md#rule-v-04)**) | The runtime posture is confirmed by inspecting the produced artifact ([RT-07](11-mobile-architecture.md#rule-rt-07) in the mobile architecture); CI builds the release artifact and smoke-tests on a real device |
-| ArcChat Mobile — iOS | **Architecture present, build deferred** (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**) | Never claimed as compiled or tested; re-verified against the then-current supported baseline before activation |
+| ArcChat Mobile — Android | **Kotlin/Jetpack Compose** release build (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**, **[V-04](../assurance/phase-1-official-verification.md#rule-v-04)**) | The runtime posture is confirmed by inspecting the produced artifact ([RT-07](11-mobile-architecture.md#rule-rt-07) in the mobile architecture); CI builds the release artifact and smoke-tests on a real device |
 
 | # | Rule |
 |---|---|
 | <a id="rule-pm-01"></a>PM-01 | **A debug build passing is never evidence for a release target.** Every AOT and mobile gate is evaluated against the release artifact ([PM-03](../requirements/12-quality-and-compatibility-contract.md#rule-pm-03) in the quality contract). |
 | <a id="rule-pm-02"></a>PM-02 | Every desktop product and the Cloud business host continuously publish Native AOT against their actual changed dependency closure; a previous passing artifact cannot certify a new dependency. |
-| PM-03 | **A framework major upgrade re-runs the whole runtime matrix**, including the RN/Hermes native-module and transport proof ([RT-06](11-mobile-architecture.md#rule-rt-06) in the mobile architecture). |
+| PM-03 | **A framework major upgrade re-runs the whole runtime matrix**, including the Kotlin/Jetpack Compose native-module and transport proof ([RT-06](11-mobile-architecture.md#rule-rt-06) in the mobile architecture). |
 | PM-04 | The C# Cloud host must publish Native AOT with the full selected adapter closure. The CF Worker is a separate TypeScript deployment; it creates no C# JIT exception. |
 
 ---
@@ -131,7 +130,7 @@ The nine version axes (`§14` of the quality contract) are produced by the build
 | <a id="rule-pk-01"></a>PK-01 | **The packaging tool consumes the publish output directory**. There is no principle conflict with Native AOT, and the installed application does not require a machine-installed.NET runtime. |
 | PK-02 | **The installer never bootstraps a runtime.** Self-contained means self-contained. |
 | PK-03 | **Packaging is behind a thin build-script boundary**, so the tool can be replaced without changing product code. Product code never references the update framework's types outside one update-integration component. |
-| PK-04 | **The product's own update system remains authoritative across every channel** ([PL-03](../requirements/10-distribution-update-and-support.md#rule-pl-03), `UP-*` in the distribution requirements). A store or package manager delivers the same signed installer; it does not become the update mechanism. |
+| PK-04 | Desktop channels deliver the same signed installer under the product updater. Android follows the declared APK/Play distribution channel, stable signing lineage and monotonic versionCode in Mobile architecture; installer/feed rules cannot override Android package-manager/store authority. |
 
 ### 5.2 Per-platform packaging
 
@@ -142,7 +141,6 @@ The nine version axes (`§14` of the quality contract) are produced by the build
 | macOS | Signed with a Developer ID, hardened runtime, notarised, stapled | Official-site distribution first; a store route is deferred because sandboxing conflicts with professional local-file and device workflows |
 | Linux | **A single self-contained portable format as the first official format** | Additional formats later; **do not maintain many packaging formats simultaneously in the first stage** |
 | Android | App bundle with platform app signing, published to the official store | Consumption-only (**[D-022](../decisions/phase-1-foundation-decisions.md#rule-d-022)**); a direct download may exist but is not the primary channel |
-| iOS | **Deferred** (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**) | Packaging is designed, not built |
 
 | # | Rule |
 |---|---|
@@ -232,7 +230,7 @@ A release cannot be promoted to a channel until every applicable gate passes. Ga
 | RG-12 | Release record complete and immutable ([RC-03](../requirements/10-distribution-update-and-support.md#rule-rc-03) there) |
 | RG-13 | Mobile only: **[F-023](../assurance/open-gates-register.md#rule-f-023)** dependency closure and provenance audit passed ([PL-06](../requirements/10-distribution-update-and-support.md#rule-pl-06) there) |
 | RG-14 | Mobile only: **[V-09](../assurance/phase-1-official-verification.md#rule-v-09)** store category fit and consumption-only conformance confirmed, and the commerce-prohibition build check passed ([MC-06](11-mobile-architecture.md#rule-mc-06) in the mobile architecture) |
-| <a id="rule-rg-15"></a>RG-15 | Cloud only: migration forward and backward rehearsal passed, and the deployment is reversible (`§6.1` of the cloud product requirements) |
+| <a id="rule-rg-15"></a>RG-15 | Cloud migration and rollback rehearsal passes the selected modeA/B/C: compatible binary rollback only inside the proven write/schema horizon; outside it use verified forward repair or independent fresh-environment restore with safety-journal/generation fencing. No universal down-migration promise. |
 | RG-16 | No open severity-blocking quality issue and no expired quality waiver (`§21` there) |
 
 ---
@@ -259,7 +257,7 @@ A release cannot be promoted to a channel until every applicable gate passes. Ga
 |---|---|
 | <a id="rule-ep-01"></a>EP-01 | **Environments are configuration, not builds** ([BR-01](#rule-br-01)). |
 | EP-02 | **Promotion order is fixed** — development → staging → production for Cloud; nightly → beta → stable for clients — and skipping a stage is an explicit, recorded exception. |
-| EP-03 | **A production deployment is reversible.** A deployment whose database migration cannot be rolled back forward-only is separated into an expand phase, a deploy phase and a contract phase (`§6.1` of the cloud product requirements). |
+| EP-03 | A production deployment has a verified recovery route appropriate to migration mode. ModeC pauses incompatible writes, fences cutover and ends old-binary rollback at its declared horizon. After that boundary forward repair or verified fresh-environment restore is required; expanding/contracting schemas cannot make incompatible persisted writes reversible by flag alone. |
 | <a id="rule-ep-04"></a>EP-04 | **Client and cloud releases are decoupled**, and the compatibility window governs their interaction (`§15` of the quality contract). A cloud release must not require a client release on the same day. |
 | <a id="rule-ep-05"></a>EP-05 | **A minimum-cloud-version requirement is imposed only after every channel has had a genuine opportunity to update**, with the grace period honoured ([UP-11](../requirements/10-distribution-update-and-support.md#rule-up-11) there). |
 
@@ -288,7 +286,7 @@ The build and release system is **not**: a monolithic suite installer; a second 
 
 Cloud owns deploy/integration-manifest.v1.json with schemaVersion1, manifestId, sourceCommits{repo:sha}, packages[{id,version,sha256,license,rid?}], contracts[{package,major,descriptorSha256}], cloudImage:{registry:"ghcr.io/arcforges/cloud",digest,rid:"linux-x64"}, worker:{name,versionId,sourceSha,compatibilityDate:"2026-09-11",migrationTag}, web:{profile,artifactHash,configSchema}, database:{engine:"18.6",migrationFrom,migrationTo,rollbackFloor}, configVersion, testEvidence[{scenario,artifactHash,result}], createdAt, signer, signature. Cloud OCI and release executables published on GHCR/GitHub releases; Worker4.131.0 Wrangler, fixed compatibility date. IDs/digests come from actual build/deploy, never placeholders considered proof.
 
-Per-repo locked restore/build/mock tests → immutable producer candidate → consumer candidate restore/AOT/Hermes/browser tests → isolated real C#/PG/CF/R2 deployment → exact manifest integration suite → approve/promote same bytes. Fork/untrusted PR code gets no deployment secrets; trusted CI promotes reviewed commit with short-lived credentials and dedicated test realm/service account, unique resources,24h cleanup TTL. Workers require a public TLS test C# endpoint reachable from CF, not runnerlocalhost. Test artifacts use no real customer content. No submodules/latest/floating branch fixtures.
+Per-repo locked restore/build/mock tests → immutable producer candidate → consumer candidate restore/AOT/Kotlin Android/browser tests → isolated real C#/PG/CF/R2 deployment → exact manifest integration suite → approve/promote same bytes. Fork/untrusted PR code gets no deployment secrets; trusted CI promotes reviewed commit with short-lived credentials and dedicated test realm/service account, unique resources,24h cleanup TTL. Workers require a public TLS test C# endpoint reachable from CF, not runnerlocalhost. Test artifacts use no real customer content. No submodules/latest/floating branch fixtures.
 
 Rolling upgrade: expand DB/internal/public read schemas → backfill from watermark → deploy C# dual readers → deploy compatible Worker (old workflows drain on their pinned worker version) → canary/soak ≥24h → activate config reader head → clients independently update within supported window → contract only after all old workflows drained and rollback horizon closed. Incompatible Worker code is a new workflow class/migration tag; no hot reinterpretation of checkpoints. Rollback before contract restores prior image/Worker/config/assets; after destructive contraction use verified forward repair or fresh-environment restore, not blind old binary startup. Selfhost operator supplies own CF resources/AWS disaster copy/DB/secrets/origins/realm, same one-host architecture.
 
@@ -301,3 +299,13 @@ Before a complete Cloud exists, each producer publishes a candidate manifest wit
 ## Immutable candidate publication
 
 Allocate the actual NuGet/npm/product version before compilation and signing. A candidate channel is an access/promotion state, not a version suffix that can later be renamed. Promoting version 1.0.0 moves the same 1.0.0 bytes and attestation from private candidate to the approved channel. An artifact compiled as 1.0.0-ci.42 retains that version permanently; a 1.0.0 build is a new candidate requiring its own checks. Mutable tags are pointers only; restore and integration manifests bind version plus hash. Bootstrap stages and partial versus full manifest closure are fixed in [planning](../planning/README.md#staged-artifact-integration).
+
+## Complete producer candidate and promotion protocol
+
+[Producer artifacts and integration](../planning/producer-artifacts-and-integration.md) owns the complete package/stage matrix. Contracts delivers every initial field/profile and C#/TS/Kotlin artifact before consumer WPs; DesktopPlatform compiles the full required native RID closure before packing any wrapper/runtime candidate. A candidate is the actual immutable release input, not a dummy package. The same candidate bytes are tested in clean isolated consumers and then published, with package hashes, descriptors/ABI, SPDX/NOTICE/SBOM and source commit in its manifest.
+
+PR CI validates/generates/builds/packs/tests but has no registry publish authority. Merge to main automatically allocates 1.0.0-ci.<run>.<attempt> (configured base version), creates the complete candidate, verifies every required output/consumer, then promotes that version. Explicit stable version configuration/tag passes the same graph; no manual publish job is needed. Use a single non-canceling publication concurrency group and immutable version claim. NuGet prerelease remains explicit; npm latest is moved to the newest fully verified main candidate only after all npm packages of that release are available. Consumers pin exact versions and committed locks, never float latest on each restore. Dependency update PRs refresh the whole compatible producer set, test and commit locks.
+
+NuGet/npm/Maven registries are not one transaction. Persist release state allocated/built/verified/publishing/complete or partial, expected asset inventory and per-registry receipts. Publish only the already-verified bytes; retries reuse each existing identical version and compare its content/manifest identity, allowing registry signing metadata transformations explicitly. A differing existing payload fails. On partial publication keep promotion manifest and dist-tag updates blocked, resume missing outputs from the preserved signed candidate; do not rebuild or delete/reuse versions. If unrecoverable, abandon that candidate and publish a new version while consumers remain on the last complete release. A deployment manifest can reference only complete producer releases. npm dist-tag rollback points to the prior complete version; it does not remove packages or rewrite consumer locks.
+
+GitHub Environments and OIDC trust are repository-specific. NuGet policy binds exact repository/workflow/environment/package scope; npm trusted publisher binds each package and workflow/environment after its one-time bootstrap. Bootstrap granular token is revoked after successful OIDC verification and removed from CI; normal runs contain no npm static publish token. Maven Central requires organization namespace verification, publisher credentials/signing setup and immutable JAR/POM/module/sources/javadoc/signature/checksum output. CI secrets remain environment-bound; namespace ownership, real push and registry availability are implementation gates, not evidence established by this document. Signing identity and artifact provenance are checked before any registry accepts a candidate.

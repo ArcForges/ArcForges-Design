@@ -5,7 +5,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: K — Web and release
-> Upstream: `20`, `28`, `32`, `35`, `39`, `40`, `41`, `43`, `46`, `49`, `51`, `52` · Downstream: —
+> Upstream: `20` · `28` · `32` · `35` · `39` · `40` · `41` · `43` · `46` · `49` · `51` · `52` · Downstream: none
 
 > **Goal.** Ship everything together, once every gate is genuinely satisfied: four desktop products across three platforms, the Android companion, the cloud, the web surfaces, and the commercial loop — with the release audit, the production gates and the honest statement of what is and is not shipped.
 
@@ -18,13 +18,16 @@
 
 **In scope.** The coordinated production release: official site entry points, downloads and documentation; account portal and checkout in production; Windows, macOS and Linux desktop releases; the Android release; cloud production with migration rehearsal, backup and restore, upgrade and rollback; the licence, SBOM and copied-content release audit; observability, alerting, runbook and incident closure; and the final production gates for the whole family.
 
-**Out of scope.** iOS build activation, which remains deferred (**[D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008)**). Any capability whose gates are not satisfied — it ships disabled or not at all, never as a claim.
+**Out of scope.** iOS under P2-010 and the already accepted excluded features. Any unfinished required feature blocks release; only explicitly conditional facilities may remain disabled under their named gates.
 
 **Why this package exists.** The [release gates](../../assurance/release-gates.md) and this package’s completion gate require these deliveries to be ready **together**. A release where the site is live but the payout path is unproven, or where downloads exist but rollback is untested, is not a release — it is an incident waiting for its first customer.
 
 ---
 
 ## 2. Required inputs and dependencies
+
+[Producer artifacts and real integration](../producer-artifacts-and-integration.md) is a required input. Use this WP's row to identify exact released artifacts, permitted fixtures and the owner that must replace each fixture; completion requires the stated evidence class.
+
 
 **Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
@@ -158,15 +161,11 @@
 
 ### WP-50.08 — Honest release statement
 
-**What must be fully done.** A published statement of what ships, what is deferred and what is disabled: iOS as planned and build-deferred; any capability whose gates are unmet as disabled rather than claimed; the supported platform, browser and device matrices; and the supported client window.
+**What must be fully done.** Publish evidence-backed full required product scope, supported matrices and compatibility windows. Android only; iOS is outside current delivery. Explicitly conditional acceleration/CNY may be unavailable only under their existing rules.
 
-**Testing requirements.** A claim-audit comparing every public statement against the gate evidence.
+**Testing requirements.** Compare every required feature and owner WP to real gate receipts and public claims; detect any production fixture/unfinished required route.
 
-**Completion gate.** **Every public claim is backed by gate evidence**, and every deferred or disabled capability is stated as such.
-
----
-
-**Required implementation and closure from the final review.** Implement and independently verify [22-deployment-and-release-execution](../../architecture/22-deployment-and-release-execution.md#partial-integration-manifests-and-mobile-rescue-release). Require complete products[] and web[] plus source/package/descriptor/image/Worker/config/database identities in the family manifest, with no pending/mock release operation. Replace WP47 private metadata fixtures with approved offers and actual signed downloads. Join WP46+52 real running/waiting/unknown-effect restore, post-backup revocation/deletion and offline-client quarantine. Prove A/B/C-safe rollback, Android greater-versionCode rescue, all portable Slate output/subtitle/transcription and applicable commercial gates on the declared artifacts. Record exact artifact identities and real/fixture status with the existing substeps; these cases are part of this package's completion gate.
+**Completion gate.** An unfinished required capability blocks release; disabled UI or honest disclaimer cannot substitute for required scope.
 
 <a id="rule-wp-50.90"></a>
 ### WP-50.90 — Verify the owned artifact and real integration
@@ -231,30 +230,12 @@
 6. **Pricing and checkout are public only after a payout has actually been received**; the regional route remains disabled unless its own gates are met.
 7. Every web surface deploys atomically, rolls back cleanly, and handles a cached older client with a grace period.
 8. Every alert maps to a rehearsed runbook; on-call is in place; support, enforcement and appeal paths are operable.
-9. **Every public claim is backed by gate evidence**; iOS is stated as planned and build-deferred; nothing incomplete is presented as complete.
+9. **Every public claim is backed by gate evidence**; iOS is explicitly outside current scope; nothing incomplete is presented as complete.
 
 ---
 
 ## 9. Dependencies
 
-**Upstream — all must be complete.**
+**Upstream:** `20` · `28` · `32` · `35` · `39` · `40` · `41` · `43` · `46` · `49` · `51` · `52`. All stage outputs must be complete.
 
-- [WP-20](20-first-cross-product-workflow.md#rule-wp-20)
-- [WP-28](28-arcnotes-properties-and-views.md#rule-wp-28)
-- [WP-32](32-mobile-release-and-store-gates.md#rule-wp-32)
-- [WP-35](35-arcscope-integration-and-sync.md#rule-wp-35)
-- [WP-39](39-arcslate-integration-and-portability.md#rule-wp-39)
-- [WP-40](40-knowledge-search-and-retrieval.md#rule-wp-40)
-- [WP-41](41-extension-platform-and-integrations.md#rule-wp-41)
-- [WP-43](43-managed-ai-routing-and-metering.md#rule-wp-43)
-- [WP-46](46-backup-recovery-and-data-health.md#rule-wp-46)
-- [WP-49](49-arcchat-web-companion.md#rule-wp-49)
-- [WP-51](51-arcscope-cloud-simulator.md#rule-wp-51)
-- [WP-52](52-cloud-harness.md#rule-wp-52)
-
-**Downstream — consumers of these released outputs.**
-
-None.
-
-
----
+**Downstream:** none. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.

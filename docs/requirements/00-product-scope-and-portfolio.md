@@ -66,7 +66,7 @@ The classification above is *product classification only*. It must not become a 
 |---|---|---|---|
 | **ArcForges Cloud** | `cloud` | One logical managed platform | ASP.NET Core Native AOT modular monolith (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**). Not four per-product backends. |
 | **ArcForges Web** | `web` | Public static site + one interactive React/TypeScript application | Static public pages plus `ArcForges.Web.App` (**[D-007](../decisions/phase-1-foundation-decisions.md#rule-d-007)**). Account and Chat are deployment configurations of one codebase (**[D-014](../decisions/phase-1-foundation-decisions.md#rule-d-014)**). |
-| **ArcChat Mobile** | `arcchat-mobile` | ArcChat continuity/companion surface on Android (iOS architecture-present, build-deferred) | Apache-2.0 boundary (**[D-004](../decisions/phase-1-foundation-decisions.md#rule-d-004)**); consumption-only (**[D-022](../decisions/phase-1-foundation-decisions.md#rule-d-022)**); Android on React Native/Hermes (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**). |
+| **ArcChat Mobile** | `arcchat-mobile` | ArcChat continuity/companion surface on Android (iOS outside the current scope) | Apache-2.0 boundary (**[D-004](../decisions/phase-1-foundation-decisions.md#rule-d-004)**); consumption-only (**[D-022](../decisions/phase-1-foundation-decisions.md#rule-d-022)**); Android on Kotlin/Jetpack Compose (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**). |
 
 Mobile and Web are **ArcChat companion surfaces**, not mobile or web editions of the four desktop products. There is no ArcNotes Mobile editor, no ArcScope Mobile editor and no ArcSlate Mobile editor in this baseline. Their absence is a baseline statement, not a permanent prohibition; adding one is an Architecture Baseline Change.
 
@@ -248,7 +248,7 @@ Same-machine, first-party, strongly typed semantic capability calls.
 ```
 ArcChat ────┐
 ArcNotes ───┤
-ArcScope ───┼── HTTPS (HTTP/JSON, + realtime where required) ──  ArcForges Cloud
+ArcScope ───┼── TLS native gRPC (plus declared standard-protocol exceptions) ──  ArcForges Cloud
 ArcSlate ───┘
 ```
 
@@ -308,15 +308,15 @@ The following apply with the explicit user amendment P2-006.
 
 | Area | Baseline | Current definition / decision |
 |---|---|---|
-| Language and runtime | Managed applications: C# / .NET 10 LTS; Web: React/TypeScript with Node.js tooling | [Runtime matrix](../architecture/00-architecture-overview.md), [Web amendment](../decisions/phase-2-specification-decisions.md#rule-p2-008) |
+| Language and runtime | Desktop/Cloud: C# / .NET10 LTS; Mobile: Kotlin/JVM/Compose Android; Web/AI: TypeScript with Node.js build tooling | [Runtime matrix](../architecture/00-architecture-overview.md), [Web amendment](../decisions/phase-2-specification-decisions.md#rule-p2-008) |
 | Desktop UI | Pure-native Avalonia/Skia, Windows / macOS / Linux, Native AOT; no WebView, Chromium, DOM, JavaScript engine, HTML-as-UI or loopback UI | [D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008), [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006) |
 | Cloud | One ASP.NET Core Native AOT modular-monolith deployment host, including bounded business background services and canonical Task/Agent ports; replicas use the same host. CF Workflow owns the sole model/tool loop | [D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008), [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006) |
-| Mobile | .NET React Native; **Android on the supported React Native/Hermes release path**; iOS architecture-present, build-deferred | **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** |
+| Mobile | Kotlin/Jetpack Compose; **Android on the supported Kotlin/Jetpack Compose release path**; iOS outside the current scope | **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** |
 | Web | Static React-generated public HTML/CSS plus one React/TypeScript Account/Chat application; Node.js/npm tooling; proto → C#/TypeScript SDKs | **[P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008)** |
-| Public request/response | Handwritten proto; generated C# native gRPC and TS/RN unary gRPC-Web; same owner errors/revisions | [Wire registry](../architecture/contracts/04-protobuf-wire-registry.md) |
+| Public request/response | Handwritten proto; generated C#/Kotlin native gRPC and TS unary gRPC-Web; same owner errors/revisions | [Wire registry](../architecture/contracts/04-protobuf-wire-registry.md) |
 | Public realtime | gRPC hint polling, real-time delivery only, never the sole durable truth | [Realtime contract](../architecture/contracts/03-realtime-and-bridge.md) |
 | Local IPC | gRPC Interface Code First over Named Pipe / Unix domain socket | [Transport definition](../architecture/03-local-ipc-and-process-model.md#2-authenticated-local-transport) |
-| Local wire format | Protocol Buffers with generated TypeShape by default | [Wire format definition](../architecture/03-local-ipc-and-process-model.md#3-wire-and-flow-control-profile) |
+| Local wire format | Authored proto with generated language messages and services | [Wire format definition](../architecture/03-local-ipc-and-process-model.md#3-wire-and-flow-control-profile) |
 | Public JSON | `System.Text.Json` source generation, no reflection fallback | [Operation contract](../architecture/contracts/00-operation-catalogue.md) |
 | Native interop | `[LibraryImport]` across a narrow C ABI, in its owning product or the approved C# content helper according to the isolation profile | [Native ABI contract](../architecture/12-native-interop-and-media.md#3-managed-to-native-calling-discipline), [isolation](../architecture/24-content-and-extension-isolation.md) |
 | Prohibited | C++ workers, a central service owning all state, gRPC/Protobuf/MagicOnion/Aeron as the main RPC, Electron, Qt product bodies, Java/Kotlin desktop, reflection-based dynamic plug-ins on the AOT main path | [Architecture constraints](../architecture/00-architecture-overview.md), [permitted exceptions](#81-permitted-technical-exceptions) |
@@ -327,7 +327,7 @@ The exception list is closed. Adding to it requires a formal decision.
 
 | Exception | Boundary |
 |---|---|
-| **A — Android runtime** | React Native/Hermes is the selected Android runtime under [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009). Server Native AOT imposes no .NET runtime requirement on Mobile. iOS architecture remains build-deferred. |
+| **A — Android runtime** | Kotlin/Jetpack Compose is the selected Android runtime under [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009). Server Native AOT imposes no .NET runtime requirement on Mobile. iOS is outside the current scope. |
 | **B — EF Core** | A strict Native AOT production host does not treat the EF Core runtime as irreplaceable infrastructure. Under **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** Cloud is Native AOT, so this constrains only AOT deliverables. Migration and build tooling may be isolated. |
 | **C — Native libraries** | Codecs, FFmpeg, GPU, device SDKs, system APIs and high-performance primitives may enter the owning product process via `[LibraryImport]`/P/Invoke and a thin C ABI where required. **A native library must never own an ArcForges domain**: a native decoder is permitted, a native ArcSlate project manager is not. Product domain, business rules, tasks and state ownership are C#. |
 | **D — Build/migration tooling** | Build tools, SDK tools and migration helpers need not themselves be Native AOT production processes. The production main path still follows the constitution. |
@@ -341,7 +341,7 @@ Two boundaries, per **[D-004](../decisions/phase-1-foundation-decisions.md#rule-
 
 | Boundary | Contents | Licence |
 |---|---|---|
-| **Apache-2.0 (interoperability)** | ArcChat Mobile application; mobile-only libraries, tests, packaging and platform integrations; ArcForges-owned public protocol specifications required for mobile interoperability; the corresponding wire schemas, DTOs and generated or handwritten client libraries; validation rules that express wire-format constraints; public protocol state semantics required for independent interoperability; the future public SDK surface | `Apache-2.0` |
+| **Apache-2.0 (interoperability)** | Entire Contracts repository, including public/internal schemas, tools, generators, SDK/CLI and fixtures under P2-010; ArcChat Mobile application; mobile-only libraries, tests, packaging and platform integrations; ArcForges-owned public protocol specifications required for mobile interoperability; the corresponding wire schemas, DTOs and generated or handwritten client libraries; validation rules that express wire-format constraints; public protocol state semantics required for independent interoperability; the future public SDK surface | `Apache-2.0` |
 | **AGPL-3.0-only (everything else)** | ArcChat Desktop, ArcNotes, ArcScope, ArcSlate, ArcForges Cloud and all server implementations, product-domain behaviour, server orchestration, desktop application use cases, policy decisions, persistence behaviour, entitlement authority, base ViewModel implementations and UI scaffolding, and everything not explicitly assigned to the Apache-2.0 boundary | `AGPL-3.0-only` |
 
 Binding rules:
@@ -349,7 +349,7 @@ Binding rules:
 - AGPL components may consume the Apache-2.0 interoperability packages without changing their own licence.
 - **ArcChat Mobile must not contain, link to, copy from, port from or reference any GPL-family or AGPL-only implementation**, directly or transitively.
 - No App Store exception, dual licensing, proprietary grant or CLA. DCO continues with inbound-equals-outbound per scope.
-- **Base ViewModel patterns are not shared between Avalonia desktop and React Native mobile.** Each UI stack owns its implementation (**[D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021)**).
+- **Base ViewModel patterns are not shared between Avalonia desktop and Kotlin Android mobile.** Each UI stack owns its implementation (**[D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021)**).
 - Protocol communication across an explicit process or network boundary does not change the mobile client's licence.
 
 Reuse of reference-repository material is licence-gated and provenance-gated under **[D-013](../decisions/phase-1-foundation-decisions.md#rule-d-013)**; see [`../assurance/reference-coverage-and-provenance.md`](../assurance/reference-coverage-and-provenance.md).
@@ -427,4 +427,4 @@ A specification that cannot answer all seven is not complete.
 
 ## Technology ownership amendment — P2-009
 
-The ten-repository, Native AOT/proto/RN/CF/R2 boundary is fixed in [solution ownership](../architecture/01-solution-and-project-layout.md) and [CF integration](../architecture/contracts/05-cloudflare-integration.md). C# keeps canonical business rules; CF executes the sole model loop. Scope, permissions, data meanings, independent professional products and commercial recovery remain the accepted requirements above.
+The ten-repository, Native AOT/proto/Android/CF/R2 boundary is fixed in [solution ownership](../architecture/01-solution-and-project-layout.md) and [CF integration](../architecture/contracts/05-cloudflare-integration.md). C# keeps canonical business rules; CF executes the sole model loop. Scope, permissions, data meanings, independent professional products and commercial recovery remain the accepted requirements above.

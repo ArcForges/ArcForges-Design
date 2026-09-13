@@ -5,7 +5,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: C — First real slice
-> Upstream: `14` · Downstream: `17`, `52`
+> Upstream: `14` · Downstream: `17` · `52`
 
 > **Goal.** Build ArcChat's own domain — conversation, message, branch, attachment, project, profile and skill — as durable local state with search, history and recovery, independent of any other product.
 
@@ -25,6 +25,9 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+[Producer artifacts and real integration](../producer-artifacts-and-integration.md) is a required input. Use this WP's row to identify exact released artifacts, permitted fixtures and the owner that must replace each fixture; completion requires the stated evidence class.
+
 
 **Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
@@ -234,14 +237,10 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 ## 9. Dependencies
 
-**Upstream — all must be complete.**
+**Upstream:** `14`. All stage outputs must be complete.
 
-- [WP-14](14-hub-and-minimal-provider-slice.md#rule-wp-14)
+**Downstream:** `17` · `52`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.
 
-**Downstream — consumers of these released outputs.**
+## P2-010 required behavior and closure
 
-- [WP-17](17-arcchat-independent-core.md#rule-wp-17)
-- [WP-52](52-cloud-harness.md#rule-wp-52)
-
-
----
+Ordinary/agent/temporary mode dispatch, projects/memory controls and current-source policy/consent use real published ports; future model replies are explicitly fixtures until52. The referenced normative profile and producer stage matrix are binding inputs. Record independent positive/negative vectors and actual owner integration at this WP's assigned stage; a mock cannot close a real-provider/device requirement.

@@ -1,212 +1,107 @@
 <a id="rule-wp-30"></a>
+# WP-30 — Kotlin Android Foundation
 
-# WP-30 — React Native Companion Foundation
-
-> Status: **Authoritative** — Phase 2 (Detailed Specifications)
-> Layer: Planning · Work package
-> Phase: G — Mobile
-> Upstream: `03`, `06`, `23`, `24` · Downstream: `31`
-
-> **Goal.** Establish the mobile foundation under a strictly enforced Apache-2.0 boundary: the shared contract and client layer, the mobile-owned presentation layer that shares no ViewModel patterns with desktop, and the Android runtime posture stated explicitly rather than inherited.
-
-> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Mobile; Apache Contracts. Inputs: only the applicable published producers available at this stage under [staged artifact integration](../README.md#staged-artifact-integration). Producer candidate records precede Cloud consolidation; no future package/manifest is an input. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: RN/Hermes artifact and real generated service clients with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
-> After WP03, unit mocks consume published Contracts fixtures; earlier stages verify their inventory/policy outputs. Acceptance consumes the actual providers scheduled for that stage. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
-
----
+> Status: Authoritative implementation plan under P2-010
+> Upstream: `03` · `06` · `23` · `24` · `25` · Downstream: `31`
 
 ## 1. Scope and purpose
 
-**In scope.** The mobile project structure and its licence boundary enforcement; the shared and not-shared split; generated TypeScript protobuf types and the selected RN unary gRPC-Web transport; the realtime client on mobile; the durable offline outbox; secure storage; and the Android runtime posture with iOS architecture present but build-deferred.
-
-**Out of scope.** The ArcChat companion features themselves (`31`). Store submission and release (`32`).
-
-**Why this package exists.** [the current dependency model](../implementation-sequence.md#2-phase-structure) places mobile after the first real cloud contracts stabilise, precisely so the shared layer is built against real contracts. **[D-004](../../decisions/phase-1-foundation-decisions.md#rule-d-004)** makes the licence boundary a structural precondition — a violation discovered later blocks the artifact entirely (**[F-023](../../assurance/open-gates-register.md#rule-f-023)**).
-
----
+Implement this stage of the complete Android ArcChat companion. [Mobile architecture](../../architecture/11-mobile-architecture.md), [client journeys](../../architecture/contracts/07-client-journeys-and-ports.md), [companion requirements](../../requirements/products/arcchat-mobile-and-web.md) and [producer stages](../producer-artifacts-and-integration.md) fix scope, behavior and evidence. Source repositories are implementation/reference evidence only; their hello scaffolds do not define completion.
 
 ## 2. Required inputs and dependencies
 
-**Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
+[Producer artifacts and real integration](../producer-artifacts-and-integration.md) is a required input. Use this WP's row to identify exact released artifacts, permitted fixtures and the owner that must replace each fixture; completion requires the stated evidence class.
 
-| Input | Why it matters |
-|---|---|
-| [`../../architecture/11-mobile-architecture.md`](../../architecture/11-mobile-architecture.md) | Layering, licence boundary, runtime and build, clients, network, outbox, storage |
-| **[D-004](../../decisions/phase-1-foundation-decisions.md#rule-d-004)**, **[D-021](../../decisions/phase-1-foundation-decisions.md#rule-d-021)** | The Apache boundary and the prohibition on shared ViewModel patterns |
-| **[D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008)**, **[V-04](../../assurance/phase-1-official-verification.md#rule-v-04)** | Android React Native/Hermes as the production baseline; iOS build-deferred |
-| **[F-023](../../assurance/open-gates-register.md#rule-f-023)** | The provenance and dependency closure gate this package prepares for |
-| [WP-03](03-contract-foundation-and-licence-split.md#rule-wp-03), [WP-23](23-public-api-and-generated-clients.md#rule-wp-23), [WP-24](24-realtime-and-reliable-events.md#rule-wp-24) output | Contracts, generated clients and the realtime client |
 
----
+Use the exact released Contracts Maven package/descriptor/fixture set, compatible Cloud/AI manifest and completed upstream owner outputs. Android toolchain and OS decisions come from Mobile architecture and WP06 proof; a blocking local toolchain/Android environment problem is reported before dependent execution. No producer source checkout or browser TS runtime is an input.
 
 ## 3. Binding rules and decisions
 
-| # | Rule |
-|---|---|
-| BR-01 | **Everything in the mobile tree and the public contract and SDK projects it consumes is Apache-2.0** (**[D-004](../../decisions/phase-1-foundation-decisions.md#rule-d-004)**). |
-| BR-02 | **No GPL-family or AGPL-only material may enter, directly or transitively** (**[D-004](../../decisions/phase-1-foundation-decisions.md#rule-d-004)**), and automated checks prevent it. |
-| BR-03 | **Base ViewModel patterns are not shared with desktop** (**[D-021](../../decisions/phase-1-foundation-decisions.md#rule-d-021)**). Each UI stack owns its implementation. |
-| BR-04 | **Product-domain behaviour, server orchestration, policy decisions, persistence behaviour and entitlement authority stay outside the shared boundary** (**[D-021](../../decisions/phase-1-foundation-decisions.md#rule-d-021)**). |
-| BR-05 | **The mobile client never loads the desktop native stack and never connects to a local endpoint** (**[D-010](../../decisions/phase-1-foundation-decisions.md#rule-d-010)**). |
-| BR-06 | Android production pins the RN template, New Architecture and bundled Hermes in Gradle/npm lock files; release artifact inspection proves that selection. |
-| BR-07 | Hermes bytecode/native modules are the mobile runtime. CoreCLR Native AOT governs C# desktop/Cloud only; no .NET mobile runtime settings enter this repository. |
-| BR-08 | **iOS architecture is present and complete; its build is deferred** (**[D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008)**), and it must not be claimed as compiled or tested. |
-| BR-09 | Consume only the released Apache public proto/SDK/RN transport closure; contract drift, trailer/status decoding, bigint and refresh behavior are tested on Hermes. |
-| BR-10 | **No desktop-local secret ever reaches a mobile device.** |
-
----
+Android only, Kotlin/JVM/Jetpack Compose, Apache-2.0; no GPL-family implementation in the app. Command/owner/recovery identity, explicit permissions/consent, exact values, immutable producer artifacts, full accepted companion scope and consumption-only commercial restrictions are mandatory. [Wire registry](../../architecture/contracts/04-protobuf-wire-registry.md) owns the complete field and operation inventory. Equivalent internal classes/layout choices may vary only when observable behavior and acceptance remain identical.
 
 ## 4. Projects, directories, files and major types affected
 
-Paths resolve in ArcForges-Mobile under [the selected repository and screen design](../../architecture/11-mobile-architecture.md#15-mobile-repository-screens-and-execution-state).
-
-| Location | Deliverable |
-|---|---|
-| package.json, package-lock.json, android/, ios/ | Pinned RN template; Android release profile; deferred iOS source/adapters |
-| src/app/, src/services/ | Boot/navigation/session generation, generated RPC composition and CF presentation |
-| src/storage/ | Versioned SQLite migrations, durable drafts/outbox, bounded acknowledged projections |
-| src/platform/ | Secure storage, passkey, push, links, pickers and lifecycle adapters |
-| eng/policy/, tests/unit/, tests/contract/, tests/device/ | Apache import/closure controls, deterministic protocol/recovery tests and actual device proof |
-
-Application types are TypeScript records/hooks/services: MobileSession, MobileOutbox, OutboxItem, SecureSessionStore, MobileRealtimeClient, ConnectivityState and CellularPolicy. Native adapters expose bounded typed values; no C# or desktop domain import is used.
-
----
+Mobile owns app/, core/domain, core/data, core/network, core/security, core/designsystem, feature/home, feature/chat, feature/tasks, feature/library and feature/settings, tests and Android build/release governance. An equivalent module partition may preserve the same boundaries. No edits in other implementation repositories are required to bypass their published artifact boundary.
 
 ## 5. Required implementation work
 
 <a id="rule-wp-30.00"></a>
+### WP-30.00 — Repository, build and Apache boundary
 
-### WP-30.00 — Project structure and licence enforcement
+**What must be fully done.** Create Android Kotlin/JVM/Compose app/, core/ and feature/ modules with Gradle Kotlin DSL, version catalog, verified wrapper, exact dependency locks/checksums, .gitignore/.gitattributes/.editorconfig, Apache LICENSE/NOTICE/SPDX, SECURITY/CONTRIBUTING/CODEOWNERS, issue/PR templates, local hooks and CI parity. Pin the proven toolchain from WP06; signed app identity remains com.arcforges.mobile. No implementation repo is a source dependency.
 
+**Testing requirements.** Fresh checkout, hook bypass in CI, LF/binary attributes, Gradle locked restore and negative GPL-family/import fixtures.
 
-**What must be fully done.** Create the Apache RN repository from the pinned template. Enforce the released public-only npm import boundary and enumerate npm/Gradle/native transitive source and licences before any artifact. Consume the first-artifact closure from WP06, rerunning it for changes; isolate policy negative fixtures from distributables.
-
-**Testing requirements.** Reject direct/transitive AGPL imports, local sibling paths and unrecorded native binaries; verify exact lock/source hashes.
-
-**Completion gate.** [F-023](../../assurance/open-gates-register.md#rule-f-023) has an actual complete closure for this candidate before build; no unresolved licence item enters the app.
+**Completion gate.** Complete reproducible Android repository and compatible direct/transitive closure; no RN/npm runtime or iOS deliverable.
 
 <a id="rule-wp-30.01"></a>
+### WP-30.01 — Domain and presentation boundaries
 
-### WP-30.01 — Shared and not-shared split
+**What must be fully done.** Implement Kotlin domain/application ports, generated Java/Kotlin DTO adapters, repositories/ViewModels/StateFlow and Compose screens. Separate identity/network/resource/task adapters from UI and domain. Reuse Contracts public fixtures only; Web TS and desktop implementation are not shared source.
 
+**Testing requirements.** Architecture/import tests and state reducer cases from Mobile architecture.
 
-**What must be fully done.** Construct src/app, services, storage, platform and feature boundaries exactly as the mobile architecture specifies. Share only Apache generated public types/clients and wire validators; mobile presentation, session, persistence and application behavior are mobile-owned.
-
-**Testing requirements.** Import-policy tests reject desktop IPC/native/domain/ViewModel and AGPL Web application imports.
-
-**Completion gate.** Every module has its selected owner and generated/public boundary; the independent checkout builds without sibling source.
+**Completion gate.** Transport records do not become mutable domain/UI owners; all module boundaries enforceable.
 
 <a id="rule-wp-30.02"></a>
+### WP-30.02 — Android runtime and OS adapters
 
-### WP-30.02 — Runtime posture
+**What must be fully done.** Use the exact API/RID/runtime profile in Mobile architecture: arm64 release, x64 emulator; Compose, Credential Manager/passkey fallback, Keystore, WorkManager, notifications/FCM with non-GMS fallback, SAF/MediaStore/FileProvider. OS callbacks use generation and account scope.
 
+**Testing requirements.** Install real release build on physical Android, permission refusal, process death, missing Play services and callback after account switch.
 
-**What must be fully done.** Build Android arm64 release with RN 0.87.1 bundled Hermes/New Architecture and the selected Gradle template. Inspect packaged Hermes bytecode/runtime/native modules and exercise a native view, navigation, OP-SQLite transaction, secure storage and passkey adapter. Retain the iOS source/platform mapping with build jobs disabled.
-
-**Testing requirements.** Use the first-artifact gated closure; run the exact artifact on a physical Android device, retain package/runtime inspection and measured launch/memory results.
-
-**Completion gate.** Hermes and every selected native adapter load under the release build; iOS remains explicitly unbuilt.
+**Completion gate.** Produced APK uses Kotlin/ART with complete supported adapters and no unsafe fallback.
 
 <a id="rule-wp-30.03"></a>
+### WP-30.03 — Published contracts and transport
 
-### WP-30.03 — Serialization and clients
+**What must be fully done.** Consume exact contracts-proto/contracts-client Maven release through grpc-okhttp TLS and coroutine clients. Supply bearer/refresh single-flight, cancellation/deadline/structured error/exact UInt64 adapters, CF HTTP live stream/object exceptions and foreground polling. Use actual Identity/Event/Resource endpoints from23/24/25.
 
+**Testing requirements.** Wire independent vectors, 64bit maximum, gRPC trailers, auth refresh lost reply/reuse, no bearer URL, actual upload/hash/verify/download and generation fencing.
 
-**What must be fully done.** Wire exact released public protobuf-es clients and the Apache RN unary gRPC-Web adapter: frame/trailer parsing, binary status/details, cancellation/deadline, uint64 bigint, exact decimals/origin, maximum bytes, opaque bearer handler and single-flight refresh. CF presentation uses the selected first-message nonce, byte offsets and catch-up.
-
-**Testing requirements.** Against actual AOT Cloud, test success/domain/transport errors, trailers, malformed frames, clock/expiry, refresh storms and supported version window; test CF revocation and stream interruption.
-
-**Completion gate.** Real RN transport passes the common C#/TS vectors and current/previous contract matrix without browser ReadableStream assumptions.
+**Completion gate.** Real packaged Maven consumer and service/device evidence passes; missing TLS/transport support blocks.
 
 <a id="rule-wp-30.04"></a>
+### WP-30.04 — Persistence, drafts and bounded outbox
 
-### WP-30.04 — Network behaviour and offline outbox
+**What must be fully done.** Implement encrypted Room records, acknowledged-cache eviction, drafts/outbox bounds and explicit queued/sending/reconcile/blocked transitions from Mobile architecture. Command IDs never change after uncertain send. WorkManager handles admitted bounded retries and foreground attention; no hidden background high-risk action.
 
+**Testing requirements.** Kill after local commit and after server commit before reply; cache pressure, stale revision, offline queue limit, revoked generation, migration and disk full.
 
-**What must be fully done.** Implement the specified SQLite tables/migrations and outbox transitions. Persist exact scoped command/input/IDs before sending; atomically acknowledge; preserve draft and unknown-command work across death, disk full and cache eviction. Read known chat/task identities and use the permitted same-ID replay to obtain the stored dedup receipt as fixed in the mobile architecture; high-risk work stays blocked for confirmation.
-
-**Testing requirements.** Kill before send, after send/before acknowledgement and during migration; reopen offline then reconnect; verify one server effect and retained user work. Test cellular refusal and cache pressure.
-
-**Completion gate.** No duplicate effect, silently lost draft or cross-account queued send; bounded projections can be discarded independently.
+**Completion gate.** Drafts/pending work survive; retries reconcile exact owner command and never fabricate a completed side effect.
 
 <a id="rule-wp-30.05"></a>
+### WP-30.05 — Secure lifecycle and permissions
 
-### WP-30.05 — Secure storage and lifecycle
+**What must be fully done.** Implement per-account Keystore encryption, no-backup secret/pending-store policy, session/logout/revoke purge versus unsent-work quarantine/export, same-generation deep link validation and current foreground consent. No credential in logs/crash/notification/analytics.
 
+**Testing requirements.** Device restore without key, logout/switch while requests run, deep-link spoof, notification click after revocation, secret scan of release logs/backup.
 
-**What must be fully done.** Implement session generation, secure token storage, passkey/platform lifecycle, notification permission, app links, picker and sharing adapters. Foreground reauthorizes/reconciles; background stops polling/live reads; notification actions navigate only. App lock never satisfies server step-up.
-
-**Testing requirements.** Physical-device suspend/kill/refresh/revoke/sign-out/workspace-switch tests; late callbacks ignored; secrets absent from ordinary files/logs; permissions denied and push disabled still allow durable attention.
-
-**Completion gate.** Each selected adapter and recovery state is implemented and independently tested with the real service boundary.
-
-**Required implementation and closure from the final review.** Implement and independently verify [08-security-architecture](../../architecture/08-security-architecture.md#account-and-provider-closure). Use the generated complete account/session projection. A generation change stops outgoing commands before fresh bootstrap and preserves pending user input for explicit review; no token is copied into JS persistence. Deletion cancellation uses restricted fresh proof and cannot open ordinary data routes. Record exact artifact identities and real/fixture status with the existing substeps; these cases are part of this package's completion gate.
+**Completion gate.** Security/lifecycle behavior matches Mobile architecture and client journeys with recoverable local user work.
 
 <a id="rule-wp-30.90"></a>
-### WP-30.90 — Verify the owned artifact and real integration
+### WP-30.90 — Foundation integration evidence
 
+**What must be fully done.** Publish/test the exact candidate APK against real22/23/24/25 and released Maven packages. Future Task/AI fixtures must be named in evidence and compiled out of production at31.
 
-**What must be fully done.** Assemble the foundation from the preceding substeps against the pinned AOT Cloud/CF candidate. Record Contracts/npm, Cloud OCI and deployed Worker identities with the mobile commit.
+**Testing requirements.** Clean-cache restore/build/install and actual sign-in/hydration/upload/reconnect on device.
 
-**Testing requirements.** Run the foundation device/protocol/death scenarios with production RN transport and actual providers.
-
-**Completion gate.** Foundation is ready for the feature work in WP31; no template, storage, auth or transport decision remains open.
+**Completion gate.** Foundation complete; full companion and AI are explicitly gated by31/52, not counted here.
 
 ## 6. Impacts
 
-| Dimension | Impact |
-|---|---|
-| Database | Mobile local cache and the outbox store |
-| Protocol | Mobile becomes a contract consumer in the compatibility window |
-| UI | Mobile presentation foundation, sharing nothing with desktop |
-| Security | Licence boundary, secure storage and the no-desktop-secret rule |
-| Platform | Android runtime posture; iOS architecture present, build deferred |
-| Migration | Mobile cache schema versioning |
-| Compatibility | Mobile enters the supported client window |
-
----
+Contracts delivers the complete public Kotlin package; Cloud/AI deliver the same owner behavior as desktop/Web. Mobile maintains its own lifecycle/storage/UI. Changes in package/signing/schema versions require an explicit compatible manifest and tested migration.
 
 ## 7. Tests and verification evidence
 
-| Evidence | Produced by |
-|---|---|
-| Cross-boundary negative fixture and transitive licence report | [WP-30.00](#rule-wp-30.00) |
-| Shared/not-shared policy test and shared-type record | [WP-30.01](#rule-wp-30.01) |
-| Evaluated-property assertion, artifact inspection, terminology scan | [WP-30.02](#rule-wp-30.02) |
-| Dependency assertion, refresh-storm and compatibility matrix results | [WP-30.03](#rule-wp-30.03) |
-| Network-transition, backfill, outbox-survival and cellular results | [WP-30.04](#rule-wp-30.04) |
-| Secure-storage, log-scan and step-up negative results | [WP-30.05](#rule-wp-30.05) |
-
----
+Separate unit/schema/fixture tests, clean packaged consumers, actual Cloud/CF/desktop interactions, physical-device release evidence and distribution/store evidence. Record exact hashes/versions/device identity and limitations. A green build cannot substitute for a missing stage.
 
 ## 8. Completion gate
 
-**Runtime/closure producers.** [F-023](../../assurance/open-gates-register.md#rule-f-023) through [WP-30.00](#rule-wp-30.00); [VG-07](../../assurance/open-gates-register.md#rule-vg-07) through [WP-30.02](#rule-wp-30.02). The named candidate must supply actual passing evidence; documentation does not close these gates.
-
-**[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) gate:** [WP-30.90](#rule-wp-30.90) and all inherited domain-specific gates must pass on the same candidate closure. Real generated SDK/RN runtime, secure-storage and process-death/outbox proofs; no desktop native/AGPL dependency enters the app.
-
-**All of the following, with recorded evidence:**
-
-1. A cross-boundary reference fails the build; every mobile dependency's licence is on the mobile allowlist.
-2. The shared and not-shared split is enforced by a policy test, with **no base ViewModel pattern shared with desktop**.
-3. The Android runtime posture is confirmed by inspecting the produced release artifact; terminology never conflates the selected Hermes and C# runtime boundaries; iOS is honestly marked build-deferred.
-4. Clients use the released generated public closure and selected RN transport; refresh never storms; the compatibility matrix passes from the mobile client.
-5. The client converges after any disconnection; pending actions survive process termination.
-6. Session material lives only in platform secure storage; no token appears in logs; app lock never satisfies step-up.
-
----
+Every numbered substep and applicable inherited requirement passes; the complete surface/action/state matrix is exercised. Unfinished required behavior blocks completion. Candidate and producer identities are immutable and all temporary fixtures have the named replacement stage. No scope reduction or design decision is deferred to consumer coding.
 
 ## 9. Dependencies
 
-**Upstream — all must be complete.**
+**Upstream:** `03` · `06` · `23` · `24` · `25`. All stage outputs must be complete.
 
-- [WP-03](03-contract-foundation-and-licence-split.md#rule-wp-03)
-- [WP-06](06-aot-jit-and-wasm-publish-proof.md#rule-wp-06)
-- [WP-23](23-public-api-and-generated-clients.md#rule-wp-23)
-- [WP-24](24-realtime-and-reliable-events.md#rule-wp-24)
-
-**Downstream — consumers of these released outputs.**
-
-- [WP-31](31-arcchat-mobile-android.md#rule-wp-31)
-
-
----
+**Downstream:** `31`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.

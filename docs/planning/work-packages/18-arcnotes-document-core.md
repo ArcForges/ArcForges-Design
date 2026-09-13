@@ -5,7 +5,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: D — ArcNotes core
-> Upstream: `07`, `10`, `14` · Downstream: `19`
+> Upstream: `07` · `10` · `14` · Downstream: `19`
 
 > **Goal.** Make ArcNotes a complete local product: block editing, links and backlinks, properties and tags, attachments, undo, history, checkpoints and trash — with crash recovery and upgrade migration proven, and large-document performance measured.
 
@@ -25,6 +25,9 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+[Producer artifacts and real integration](../producer-artifacts-and-integration.md) is a required input. Use this WP's row to identify exact released artifacts, permitted fixtures and the owner that must replace each fixture; completion requires the stated evidence class.
+
 
 **Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
@@ -268,15 +271,10 @@ Session undo follows `§3.2` of the editing architecture: **selection is restore
 
 ## 9. Dependencies
 
-**Upstream — all must be complete.**
+**Upstream:** `07` · `10` · `14`. All stage outputs must be complete.
 
-- [WP-07](07-local-persistence-foundation.md#rule-wp-07)
-- [WP-10](10-design-system-and-desktop-shell.md#rule-wp-10)
-- [WP-14](14-hub-and-minimal-provider-slice.md#rule-wp-14)
+**Downstream:** `19`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.
 
-**Downstream — consumers of these released outputs.**
+## P2-010 required behavior and closure
 
-- [WP-19](19-arcnotes-search-and-portability.md#rule-wp-19)
-
-
----
+Implement stable run/atom/cell IDs and NotesTextPosition/NotesCommand, explicit IME conflict preservation and disabled stale undo with original recoverable inverse; no unspecified rebase. The referenced normative profile and producer stage matrix are binding inputs. Record independent positive/negative vectors and actual owner integration at this WP's assigned stage; a mock cannot close a real-provider/device requirement.

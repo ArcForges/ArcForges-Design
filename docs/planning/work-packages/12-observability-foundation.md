@@ -5,7 +5,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: B — Shared platform
-> Upstream: `04`, `06` · Downstream: `21`, `45`
+> Upstream: `04` · `06` · Downstream: `13` · `21` · `45`
 
 > **Goal.** Instrument once, correctly: standard signals with a bounded dimension set, correlation that survives every hop, redaction enforced by construction, and desktop diagnostics that never leave the machine without consent.
 
@@ -25,6 +25,9 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+[Producer artifacts and real integration](../producer-artifacts-and-integration.md) is a required input. Use this WP's row to identify exact released artifacts, permitted fixtures and the owner that must replace each fixture; completion requires the stated evidence class.
+
 
 **Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
@@ -104,11 +107,11 @@
 
 ### WP-12.03 — Cardinality and sampling
 
-**What must be fully done.** Metric label sets are constrained to an allowlist, and an unbounded identifier used as a label fails the build. Sampling is head-based with tail retention for errors and slow requests, configurable per signal and per route without a code change.
+**What must be fully done.** Enforce metric labels and bounded trace policy from observability13: head sample plus a bounded diagnostic buffer, error/slow promotion only for spans still retained, explicit overflow/loss counters. Unsampled mandatory error facts remain redacted logs/metrics under consent.
 
-**Testing requirements.** A cardinality policy test with a negative fixture; a sampling test asserting error paths are retained regardless of rate.
+**Testing requirements.** Cardinality negative fixture, sampled/unsampled error, slow-span buffer expiry, overflow and disabled-consent tests.
 
-**Completion gate.** Unbounded labels fail the build, and error paths are retained regardless of sampling rate.
+**Completion gate.** No false all-errors trace retention guarantee; bounded cost and observable loss.
 
 <a id="rule-wp-12.04"></a>
 
@@ -189,15 +192,6 @@
 
 ## 9. Dependencies
 
-**Upstream — all must be complete.**
+**Upstream:** `04` · `06`. All stage outputs must be complete.
 
-- [WP-04](04-identity-error-and-versioning-primitives.md#rule-wp-04)
-- [WP-06](06-aot-jit-and-wasm-publish-proof.md#rule-wp-06)
-
-**Downstream — consumers of these released outputs.**
-
-- [WP-21](21-cloud-host-and-persistence.md#rule-wp-21)
-- [WP-45](45-operations-support-and-trust-safety.md#rule-wp-45)
-
-
----
+**Downstream:** `13` · `21` · `45`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.
