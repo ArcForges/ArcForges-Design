@@ -207,7 +207,7 @@ An unattached upload is Verified, not Committed. A standalone saved attachment o
 | # | Rule |
 |---|---|
 | PR-01 | Standard authenticated Cloud processing is the only protection profile. No E2EE mode, key-sharing protocol or future encryption-profile column is introduced ([PR-02](../requirements/03-cloud-services-and-sync.md#rule-pr-02) of the cloud requirements). |
-| PR-02 | The service states where content is processed, its retention and access protections. Custom local encrypted stores and encrypted exports are excluded ([PR-03](../requirements/03-cloud-services-and-sync.md#rule-pr-03) of the cloud requirements). |
+| PR-02 | The service states where content is processed, its retention and access protections. User-managed custom encrypted content stores and encrypted exports are excluded; OS-Keystore-bound Android session/draft values and expiring temporary execution protection follow P2-010 ([PR-03](../requirements/03-cloud-services-and-sync.md#rule-pr-03) of the cloud requirements). |
 | PR-03 | **No zero-knowledge claim is made while Standard is the operating mode** ([PR-04](../requirements/03-cloud-services-and-sync.md#rule-pr-04) there). |
 
 ---
@@ -309,3 +309,11 @@ The [CF/R2 lifecycle](contracts/05-cloudflare-integration.md) fixes part verific
 ## Restored realm and client pending state
 
 The [recovery generation and safety journal](22-deployment-and-release-execution.md#recovery-generation-and-safety-journal) governs disaster recovery and prevents acknowledged post-backup deletion/revocation or possibly executed commands from disappearing silently. A new generation invalidates read cursors and quarantines old client mutations before bootstrap. Preserved pending edits are compared and explicitly reapplied as new commands; no automatically re-labelled outbox can resurrect deleted content. This extends the existing pending-edit recovery view and does not create a second local Notes authority.
+
+## Transfer and hydration closure
+
+Notes/Chat Unsync pauses hydration or evicts acknowledged cache only; pending local edits remain in same-owner recovery. It never deletes Cloud authority. Native Scope/Slate can detach their selective replica without changing native ownership. Explicit Cloud deletion has its own preview/tombstone/retention, independent from cache policy.
+
+Realm migration uses the complete [realm-transfer.v1 owner-data profile](contracts/07-client-journeys-and-ports.md#5-realm-transfer-and-data-health): manifested typed roots/blobs, new receiving IDs, exact reference mapping, preview/fidelity, bounded per-root commit/resume and no source deletion. It is distinct from ordinary Markdown/Chat JSON user export and from disaster backup. Missing-all-copies content becomes irrecoverable with retained evidence, never a successful repair.
+
+Operational objectives are PG5minute/blob15minute RPO,4hour RTO and30day protected independent copies. Restore and rollback follow modeA/B/C in deployment22; a modeC migration past its write-fenced horizon cannot promise application-only rollback.

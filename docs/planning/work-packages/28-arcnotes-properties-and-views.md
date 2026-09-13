@@ -5,7 +5,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: F — ArcNotes completion
-> Upstream: `19`, `25` · Downstream: `40`, `50`
+> Upstream: `19` · `25` · Downstream: `40` · `50`
 
 > **Goal.** Add **bounded** typed properties, queries and saved **list and table** views — the depth [P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006) retains — without turning ArcNotes into a database platform and without making a plain note heavier.
 
@@ -27,6 +27,9 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+[Producer artifacts and real integration](../producer-artifacts-and-integration.md) is a required input. Use this WP's row to identify exact released artifacts, permitted fixtures and the owner that must replace each fixture; completion requires the stated evidence class.
+
 
 **Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
@@ -217,15 +220,10 @@
 
 ## 9. Dependencies
 
-**Upstream — all must be complete.**
+**Upstream:** `19` · `25`. All stage outputs must be complete.
 
-- [WP-19](19-arcnotes-search-and-portability.md#rule-wp-19)
-- [WP-25](25-sync-engine-and-blob-lifecycle.md#rule-wp-25)
+**Downstream:** `40` · `50`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.
 
-**Downstream — consumers of these released outputs.**
+## P2-010 required behavior and closure
 
-- [WP-40](40-knowledge-search-and-retrieval.md#rule-wp-40)
-- [WP-50](50-full-platform-production-release.md#rule-wp-50)
-
-
----
+Verify both local hydrated/pending export and actual Cloud export, complete source-policy/one-use context permission and notebook/document/query/structural conflict behavior. The referenced normative profile and producer stage matrix are binding inputs. Record independent positive/negative vectors and actual owner integration at this WP's assigned stage; a mock cannot close a real-provider/device requirement.

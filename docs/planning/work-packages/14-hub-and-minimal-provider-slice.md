@@ -5,7 +5,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: C — First real slice
-> Upstream: `08`, `09`, `10`, `11`, `13` · Downstream: `15`, `16`, `18`
+> Upstream: `08` · `09` · `10` · `11` · `13` · Downstream: `15` · `16` · `18`
 
 > **Goal.** Two genuinely Native AOT-published processes, talking over a real transport, with real registration, real capability discovery, real idempotency, real approval and real resource references — and ArcNotes still fully editable with ArcChat absent. This is where ArcForges stops being a design and becomes a platform.
 
@@ -25,6 +25,9 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+[Producer artifacts and real integration](../producer-artifacts-and-integration.md) is a required input. Use this WP's row to identify exact released artifacts, permitted fixtures and the owner that must replace each fixture; completion requires the stated evidence class.
+
 
 **Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
@@ -203,19 +206,6 @@
 
 ## 9. Dependencies
 
-**Upstream — all must be complete.**
+**Upstream:** `08` · `09` · `10` · `11` · `13`. All stage outputs must be complete.
 
-- [WP-08](08-local-ipc-and-registration.md#rule-wp-08)
-- [WP-09](09-capability-contribution-and-resource-model.md#rule-wp-09)
-- [WP-10](10-design-system-and-desktop-shell.md#rule-wp-10)
-- [WP-11](11-security-foundation.md#rule-wp-11)
-- [WP-13](13-high-risk-technical-probes.md#rule-wp-13)
-
-**Downstream — consumers of these released outputs.**
-
-- [WP-15](15-arcchat-conversation-core.md#rule-wp-15)
-- [WP-16](16-unified-execution-engine.md#rule-wp-16)
-- [WP-18](18-arcnotes-document-core.md#rule-wp-18)
-
-
----
+**Downstream:** `15` · `16` · `18`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.

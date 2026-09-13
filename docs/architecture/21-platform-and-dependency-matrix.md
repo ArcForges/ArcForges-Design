@@ -47,8 +47,7 @@ This document is a **capability inventory and a platform commitment structure**,
 |---|---|---|
 | **ArcForges Cloud** | ASP.NET Core Native AOT container | Linux x64 Native AOT container; identical replicas, one process per instance |
 | **ArcForges.Web.App** | React/TypeScript browser assets; Node.js/npm build tooling | Supported browser matrix; no .NET WASM host. win.slnx/esproj on Windows; npm directory workflow elsewhere ([P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008)) |
-| **ArcChat Mobile — Android** | React Native/Hermes | arm64 Tier 1; x64 for emulator use only, never a release claim |
-| **ArcChat Mobile — iOS** | **Architecture present, build deferred** (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**) | **Never claimed as compiled or tested** |
+| **ArcChat Mobile — Android** | Kotlin/Jetpack Compose | arm64 Tier 1; x64 for emulator use only, never a release claim |
 
 | # | Rule |
 |---|---|
@@ -213,4 +212,10 @@ Other adapters: Paddle raw-body HMAC and typed source-generated HttpClient, no p
 Operator access uses the separate Entra OIDC/operator opaque-session scheme and typed internal operator methods fixed in [the internal operator schema](contracts/04-protobuf-wire-registry.md#9-operator-control-and-separate-identity-boundary). The same AOT host enforces both schemes with disjoint audiences/origins; no customer token can authorize administration. Public status remains independently hosted static output with an alternate provider URL under the existing operations rule.
 
 
-Native dependency selection and resolved OTIO/MDF dispositions are in [package registry](01-solution-and-project-layout.md#12-package-and-native-distribution-registry). RN native OS modules are Mobile dependencies, not desktop ABI packages. All actual candidate/RID/admission proofs remain required; the selected route is fixed before coding.
+Native dependency selection and resolved OTIO/MDF dispositions are in [package registry](01-solution-and-project-layout.md#12-package-and-native-distribution-registry). Android OS adapters are Mobile dependencies, not desktop ABI packages. All actual candidate/RID/admission proofs remain required; the selected route is fixed before coding.
+
+## P2-010 producer and Android closure
+
+Android Kotlin/JVM/Compose toolchain, API/RID and OS adapter decisions are in [Mobile architecture](11-mobile-architecture.md#3-runtime-libraries-and-lifecycle-baseline). All versions are candidate pins until WP06 proves actual tool availability and release-device behavior; failed compatibility is a focused gate failure, never permission to silently switch runtime. Gradle version catalog, lock files and verification checksums cover build plugins, Java/Kotlin/protobuf/grpc-lite and app dependencies. iOS/KMP is outside this delivery. TypeScript remains Web/AI and public npm bindings, not Mobile runtime.
+
+Every native slot in section3 has fixed functions, C# wrapper ownership, error/lifetime/bulk-buffer and package closure in [functional ABI](contracts/06-native-functional-abi.md). Current probe-only DLLs do not satisfy functional producer completion. WP13 proves each required RID or retains the existing explicitly conditional tier status; mandatory portable functionality cannot be hidden behind an optional acceleration gate. [Producer stage matrix](../planning/producer-artifacts-and-integration.md) governs publication and isolated consumer evidence.

@@ -1,5 +1,8 @@
 # Independent Final Design Review
 
+> Historical evidence at the source/design revision recorded below. P2-010 and [family completion review](family-design-completion-review.md) define the current Android, producer, contract and evidence amendments. Earlier runtime/contract/count conclusions are not current implementation proof; no deprecated input is reopened.
+
+
 > Review date: 2026-09-11. Base: `eae16e62afbb581053fed0ac19f38f255277aced`, after the accepted ten-repository/CF/RN amendment. This record is document evidence; implementation and release gates retain their own triggers.
 
 The review followed all 51 active work packages in dependency order and traced the accepted product family through identity, database/transactions, sync/conflict, task/tool/approval, AI/R2, Notes, Scope, Slate, Web/Android, commerce and release/recovery. Discovery completed before formal edits. The separate Plan record froze one repair matrix; repairs then proceeded together and validation corrected only affected inconsistencies. No subagents, deprecated-input bodies, excluded source trees or new reference-derived product requirements were used.
@@ -25,7 +28,7 @@ Completeness means the accepted family can be delivered and commercially operate
 
 ## Evidence and limits
 
-The validator checks current tracked Markdown excluding `docs/deprecated-inputs/`; links to that archive are exempt from body/fragment inspection. It checks local links and explicit/generated heading anchors, unique wire record/method/field identities, referenced field types, the 51-package topological order, all headers and forward/reverse dependency views, and required repaired boundary records. Code examples are excluded from link scanning. The executable validator and its result are retained with the separate `architecture-change-plan/final-review.md` record in Plan. `git diff --check` also passes. These are consistency checks, not a proof that every possible runtime defect is absent.
+The validator checks current tracked Markdown excluding `docs/deprecated-inputs/`; links to that archive are exempt from body/fragment inspection. It checks local links and explicit/generated heading anchors, unique wire record/method/field identities, referenced field types, the 51-package topological order, all headers and forward/reverse dependency views, and required repaired boundary records. Code examples are excluded from link scanning. That earlier validator depended on the former Plan repository, which is no longer an implementation input. The current self-contained executable validation recipe and observed results are in [family completion review](family-design-completion-review.md). `git diff --check` also passes. These are consistency checks, not a proof that every possible runtime defect is absent.
 
 Read-only implementation/reference HEAD and dirty-state checks before and after match: ArcForges `ede43db`, AionUi `29c9271`, AFFiNE `81df475`, siyuan `eef1056`, Serial-Studio `639daaf`, ArcVideo `caf5651`, ArcVideoFoundation `139eeca`. Existing AionUi/ArcVideo/ArcVideoFoundation modifications were left intact. Bounded source reads settled current build-pin ownership and media subtitle/audio behavior only; no source was copied or modified. The primary Design checkout remains unchanged; formal edits are isolated in the review worktree.
 

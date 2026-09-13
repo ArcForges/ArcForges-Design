@@ -84,7 +84,7 @@ Every first-party native library, and every `extern "C"` shim over a third-party
 |---|---|
 | <a id="rule-ab-01"></a>AB-01 | **The C calling convention is explicit and stable across compilers**. |
 | <a id="rule-ab-02"></a>AB-02 | **Every exported function carries a fixed prefix and an ABI version** — for example `af_media_*`. |
-| AB-03 | **Every struct carries a size and version field, and fields are only appended at the end.** Reordering, resizing or repurposing an existing field is a breaking ABI change. |
+| AB-03 | **Existing frozen POD views/buffers/rationals keep their ABI1.0 layout.** New extensible records carry size/version and append-only compatible tails. Existing field order/size/meaning never changes. [Functional ABI](contracts/06-native-functional-abi.md) supplies exact declarations and wrapper/package mapping. |
 | AB-04 | **Fixed-width integer types only.** |
 | AB-05 | **C++ `bool`, STL types, exceptions, RTTI and vtables never cross the boundary**. |
 | AB-06 | **Handles are opaque pointers**; the managed side always represents them as a `SafeHandle`. |
@@ -290,3 +290,7 @@ The [package registry](01-solution-and-project-layout.md#12-package-and-native-d
 ## Complete media package contract
 
 DesktopPlatform owns the selected decode/encode/audio/extraction C ABI and managed wrappers, packaged per capability/RID. ArcSlate consumes those packages and owns timelines, graph/business validation, subtitle editing and ProductJob recovery. [Slate profiles](23-simulator-and-interchange.md#5-slate-metadata-render-and-subtitle-profiles) fix the observable portable render, generated-source, subtitle and ASR extraction behavior. Native codec feature/licence and malformed-input tests apply to the actual package closure; a product must not compile an adjacent native source tree to pass them.
+
+## Functional producer closure
+
+[The initial functional ABI](contracts/06-native-functional-abi.md) is the required complete surface, including native library calls, states, ownership, wrappers, packages and sandbox bulk buffers. Published probe DLLs are not implementation of these functions. WP13 produces verified capability packages before product consumers; product domain decisions stay in C#.

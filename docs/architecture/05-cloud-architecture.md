@@ -18,7 +18,7 @@
 **One deployable host** (**[P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006)**; `§8` of the product scope). `ArcForges.Cloud.Host` is the single ASP.NET Core Native AOT executable. Business request handlers, bounded hint reads, canonical Task/Agent ports and ordinary leased background jobs run inside it as libraries. The sole model loop runs in CF Workflow, outside this process. Horizontal scale is **replicas of that one host**, never a second deployable with a different job.
 
 ```
-Desktop native gRPC / Web and RN gRPC-Web
+Desktop native gRPC / Web gRPC-Web / Kotlin Android native gRPC
                    -> TLS ingress -> C# Native AOT Cloud (identical replicas)
                       explicit auth/tenancy/authorization/validation
                       business owners + leased bounded jobs

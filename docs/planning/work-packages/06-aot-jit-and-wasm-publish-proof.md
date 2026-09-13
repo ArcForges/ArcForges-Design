@@ -1,11 +1,11 @@
 <a id="rule-wp-06"></a>
 
-# WP-06 — AOT, RN, CF and Real Artifact Publish Proof
+# WP-06 — AOT, Android, CF and Real Artifact Publish Proof
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: A — Freeze and foundation
-> Upstream: `03`, `04`, `05` · Downstream: `07`, `08`, `10`, `12`, `13`, `17`, `30`
+> Upstream: `03` · `04` · `05` · Downstream: `07` · `08` · `10` · `12` · `13` · `17` · `30`
 
 > **Goal.** Prove the runtime matrix on real published artifacts, not on intentions. Every desktop product publishes Native AOT and launches; Cloud publishes Native AOT and runs its full pipeline; the React application builds into production browser assets. Until this holds, every downstream design choice is a hypothesis.
 
@@ -18,13 +18,16 @@
 
 **In scope.** A minimal but *real* deliverable per target that publishes with the production posture and runs: a desktop host with the real contract set and local RPC attach, a cloud host with its real pipeline order, a production React application with a generated TypeScript SDK call, and the toolchain evidence for each.
 
-**Out of scope.** Product features. UI beyond what is required to prove a window opens and a command runs. Full mobile business features; this package includes the minimal selected RN/Hermes transport/native-module proof before WP30.
+**Out of scope.** Product features. UI beyond what is required to prove a window opens and a command runs. Full mobile business features; this package includes the minimal selected Kotlin/Jetpack Compose transport/native-module proof before WP30.
 
 **Why this package exists.** [QI-02](../../requirements/12-quality-and-compatibility-contract.md#rule-qi-02) states plainly that a JIT test pass is not AOT compatibility. **[V-05](../../assurance/phase-1-official-verification.md#rule-v-05)** left several dependency-level questions open precisely because they can only be answered by a real publish. This is where they are answered.
 
 ---
 
 ## 2. Required inputs and dependencies
+
+[Producer artifacts and real integration](../producer-artifacts-and-integration.md) is a required input. Use this WP's row to identify exact released artifacts, permitted fixtures and the owner that must replace each fixture; completion requires the stated evidence class.
+
 
 **Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
@@ -54,7 +57,7 @@
 | BR-05 | **A debug build passing is never evidence for a release target** ([PM-01](../../architecture/14-build-packaging-and-release.md#rule-pm-01) in the build architecture). |
 | BR-06 | **The proof is continuous**, re-run on every main-branch build ([PM-02](../../architecture/14-build-packaging-and-release.md#rule-pm-02) there), not a one-off milestone. |
 | BR-07 | **Every third-party control entering an AOT deliverable requires its own publish proof** (**[V-05a](../../assurance/phase-1-official-verification.md#rule-v-05a)**). |
-| BR-08 | Generated native gRPC clients and explicit HTTP-exception adapters must pass their real AOT dependency/registration gate; browser/RN use their selected generated TS closure. |
+| BR-08 | Generated native gRPC clients and explicit HTTP-exception adapters must pass their real AOT dependency/registration gate; browser/Android use their selected generated TS closure. |
 
 ---
 
@@ -153,20 +156,18 @@
 ---
 
 <a id="rule-wp-06.07"></a>
-### WP-06.07 — RN native and transport foundation proof
+### WP-06.07 — Android and minimal CF/R2 transport proof
 
-**What must be fully done.** Before producing the first Mobile artifact, enumerate and clear the exact Apache npm/Gradle/native public closure under [F-023](../../assurance/open-gates-register.md#rule-f-023). Build the pinned RN/Hermes arm64 release probe and run native navigation, OP-SQLite atomic write/reopen, secure storage, passkey result binding and the generated unary gRPC-Web adapter on a physical Android device. Call the actual AOT host, handle trailers/status/cancellation and bigint; authenticate the CF first-frame nonce and recover after process death. Record iOS as deferred.
+**What must be fully done.** Build/install actual Kotlin Android release probe consuming WP03 Maven artifacts; prove exact64bit values, grpc-okhttp/TLS/trailers/cancellation, credentials/Keystore and CF standard HTTP exceptions. Build a minimal test-only deployed Worker/DO/R2 plus AOT host probe with fixed schemas, leases/hash/offset/expiry. Pin actual compatible toolchain versions after this proof.
 
-**Testing requirements.** Dependency/source/NOTICE closure and prohibited-import negatives precede build; real artifact/device/protocol/native-adapter results follow it. CF and Cloud identities match the candidate manifest; no mock closes this proof.
+**Testing requirements.** Physical device and clean-browser/AOT clients; real reachable Worker/R2 and negative stale fence/size/hash cases. Record tool versions and provider identities.
 
-**Completion gate.** First-artifact [F-023](../../assurance/open-gates-register.md#rule-f-023), selected RN/Hermes/native compatibility and actual AOT/CF transport proofs exist before WP30 starts. Product feature and final store gates remain WP31/WP32.
-
-**Required implementation and closure from the final review.** Implement and independently verify [05-cloudflare-integration](../../architecture/contracts/05-cloudflare-integration.md). Prove generated service/callback and large-body framing with published candidates, including owner job R2 read/write grants, actual observed Worker version and explicit Workflow subrequest configuration. Add self-host password/OIDC libraries to the actual AOT closure; auth/business behavior still closes at WP22. Native media capability package proof uses Platform build output and a product clean restore. Record exact artifact identities and real/fixture status with the existing substeps; these cases are part of this package's completion gate.
+**Completion gate.** Selected runtime and transport are proven; this minimal probe requires no future full Harness, product native package or WP30 app.
 
 <a id="rule-wp-06.90"></a>
 ### WP-06.90 — Verify the owned artifact and real integration
 
-**What must be fully done.** Assemble the owned deliverables from the preceding substeps under the selected repository, package, runtime and protocol authorities. Prove actual candidate NuGet restore/native loading and desktop AOT; C# AOT gRPC/gRPC-Web plus selected auth/storage/SQL adapters; RN/Hermes generated-client calls; React client calls; a minimal deployed CF ↔ reachable C# ↔ R2 chain. This is a bounded foundation probe, not the full [WP-52](52-cloud-harness.md#rule-wp-52) Harness.
+**What must be fully done.** Assemble the owned deliverables from the preceding substeps under the selected repository, package, runtime and protocol authorities. Prove actual candidate NuGet restore/native loading and desktop AOT; C# AOT gRPC/gRPC-Web plus selected auth/storage/SQL adapters; Kotlin/Jetpack Compose generated-client calls; React client calls; a minimal deployed CF ↔ reachable C# ↔ R2 chain. This is a bounded foundation probe, not the full [WP-52](52-cloud-harness.md#rule-wp-52) Harness.
 
 **Execution order.** Follow [staged artifact integration](../README.md#staged-artifact-integration): consume only existing assigned producers, publish an owned capability candidate before its product consumer, and verify the declared stage against exact upstream artifacts. Record pending later owners and their closing gates; local mocks cover only that named test boundary.
 
@@ -201,7 +202,7 @@
 | Cloud image build, pipeline order and integration results | [WP-06.04](#rule-wp-06.04) |
 | production Web build, load and bundle baseline | [WP-06.05](#rule-wp-06.05) |
 | Third-party control probe log | [WP-06.06](#rule-wp-06.06) |
-| Pre-artifact Apache closure and RN/device/native/CF proof | [WP-06.07](#rule-wp-06.07) |
+| Pre-artifact Apache closure and Android/device/native/CF proof | [WP-06.07](#rule-wp-06.07) |
 
 ---
 
@@ -222,28 +223,13 @@
 5. The cloud host publishes and runs Native AOT with explicit adapters and zero trim/AOT diagnostics.
 6. Production React assets load and call the real C# probe through the generated TS SDK with exact-value vectors, Windows/CLI workflow evidence and recorded budgets.
 7. The third-party control admission process exists and has been exercised once.
-8. The selected RN/Hermes release probe passes first-artifact closure and actual device/service/native-adapter tests.
+8. The selected Kotlin/Jetpack Compose release probe passes first-artifact closure and actual device/service/native-adapter tests.
 9. All of the above run on every main-branch build, not once.
 
 ---
 
 ## 9. Dependencies
 
-**Upstream — all must be complete.**
+**Upstream:** `03` · `04` · `05`. All stage outputs must be complete.
 
-- [WP-03](03-contract-foundation-and-licence-split.md#rule-wp-03)
-- [WP-04](04-identity-error-and-versioning-primitives.md#rule-wp-04)
-- [WP-05](05-architecture-and-repository-policy-tests.md#rule-wp-05)
-
-**Downstream — consumers of these released outputs.**
-
-- [WP-07](07-local-persistence-foundation.md#rule-wp-07)
-- [WP-08](08-local-ipc-and-registration.md#rule-wp-08)
-- [WP-10](10-design-system-and-desktop-shell.md#rule-wp-10)
-- [WP-12](12-observability-foundation.md#rule-wp-12)
-- [WP-13](13-high-risk-technical-probes.md#rule-wp-13)
-- [WP-17](17-arcchat-independent-core.md#rule-wp-17)
-- [WP-30](30-mobile-shared-architecture.md#rule-wp-30)
-
-
----
+**Downstream:** `07` · `08` · `10` · `12` · `13` · `17` · `30`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.

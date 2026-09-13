@@ -141,7 +141,7 @@ The operation set is closed:
 | UN-02 | **Typing coalesces into one undo entry** while the origin, block and adjacency hold, and breaks on a caret jump, a different block, a non-typing operation, a save point or an idle interval. This is why the undo entry carries `selectionBefore`. |
 | UN-03 | **Undo restores selection as well as content.** An undo that leaves the caret elsewhere is experienced as data loss even when nothing was lost. |
 | UN-04 | **An agent transaction is undoable like any other**, and is labelled with its origin so the entry reads as the agent's action rather than the user's ([TX-05](#rule-tx-05)). |
-| UN-05 | **A remote change arriving mid-session is not an undo entry.** It applies outside the stack, and it rebases pending undo entries whose target blocks it touched; an entry whose target no longer exists is dropped rather than silently retargeted. |
+| UN-05 | Remote changes are never local undo entries. Apply only to a clean acknowledged document. If a pending/undo target revision no longer matches, preserve the original inverse and affected content, disable that entry with a conflict explanation and offer explicit conflict-copy/review recovery. Never silently drop or retarget it. Cursor mapping is permitted only through the exact accepted local operation map under notes.commands.v1. |
 | UN-06 | **Redo is cleared by a new transaction**, with one exception: a remote change alone does not clear it. |
 
 ### 3.3 Kind conversion
@@ -213,7 +213,7 @@ Two modes, permanently distinct:
 | IM-02 | **The composition window is positioned from the caret's real screen rectangle**, recomputed on layout change. |
 | IM-03 | **A commit produces exactly one `ReplaceInlineRange`**, and one undo entry. |
 | IM-04 | **Cancelling a composition leaves the model untouched**, because it was never touched. |
-| IM-05 | **A remote or agent edit arriving during a composition does not interrupt it.** The change applies to other blocks; a change to the composing block is deferred until commit, then rebased — interrupting a composition loses the user's in-flight word. |
+| IM-05 | Keep IME composition in its original document/run/cell revision. Defer applying an incoming document snapshot while composing; commit or explicitly cancel the local composition first. On changed base preserve local committed text in the normal pending/conflict-copy path and then display the authoritative remote version. Never invent a text rebase or lose the in-flight word. |
 | IM-06 | **Dictation and handwriting input use the same commit path**, so their behaviour is defined rather than emergent. |
 
 ### 4.4 Markdown-friendly input
@@ -485,3 +485,7 @@ Naming these prevents a "rich editor" from silently becoming an unbounded commit
 | VF-16 | Paste of Markdown, HTML and an internal payload each follow the declared mapping with no silent loss | [WP-19.04](../planning/work-packages/19-arcnotes-search-and-portability.md#rule-wp-19.04), [WP-18.00](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.00) |
 | VF-17 | An unsupported math construct renders as source with an explicit marker, never silently wrong | [WP-18.01](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.01) |
 | VF-18 | An unknown block kind and an unknown mark survive a read-modify-write cycle unchanged | [WP-18.00](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.00) |
+
+## Initial command and rendering profile binding
+
+[Product behavior profiles](26-product-behavior-profiles.md#1-notes-editing-and-conflict-profile) and wire NotesCommand/NotesSelection are the initial Notes command authority. UTF16 boundaries/atomic inlines, IME composition, split/merge/move/table/list and inverse undo grouping must follow those rules; a widget's default editing behavior cannot redefine persisted meaning. Remote change uses expected local/cloud revision and explicit whole-document conflict copy; the editor may map a cursor through its own acknowledged operation but cannot silently rebase an unacknowledged edit onto a different owner revision. Rendering remains Avalonia-owned text shaping; the native helper rasterizes PDF/media within the fixed isolated ABI.

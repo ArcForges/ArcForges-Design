@@ -5,7 +5,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: A — Freeze and foundation
-> Upstream: — · Downstream: `01`, `47`
+> Upstream: none · Downstream: `01` · `47`
 
 > **Goal.** Make the vocabulary, the product set, the licence position and the reuse process *settled facts* before any code is written against them. This is the first hard gate: if naming, terminology, licence boundaries or product scope move later, editors, data formats, capabilities and cloud sync all rework.
 
@@ -25,6 +25,9 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+[Producer artifacts and real integration](../producer-artifacts-and-integration.md) is a required input. Use this WP's row to identify exact released artifacts, permitted fixtures and the owner that must replace each fixture; completion requires the stated evidence class.
+
 
 **Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
@@ -109,7 +112,7 @@
 
 ### WP-00.02 — Licence boundary declaration
 
-**What must be fully done.** Every project declares its SPDX identifier and its licence boundary as a build property. The Apache-2.0 set is enumerated explicitly: public protocol specifications, wire schemas, DTOs, public clients, contract-level validators, the public SDK, mobile-only libraries and ArcChat Mobile. Everything else is AGPL-3.0-only. The boundary is expressed as data that a policy test can read.
+**What must be fully done.** Every project declares its SPDX identifier and its licence boundary as a build property. The Apache-2.0 set includes all Contracts public/internal schemas/tools/generators/fixtures/SDK/CLI under P2-010 and public protocol specifications, wire schemas, DTOs, public clients, contract-level validators, the public SDK, mobile-only libraries and ArcChat Mobile. Everything else is AGPL-3.0-only. The boundary is expressed as data that a policy test can read.
 
 **Testing requirements.** A check that every project declares a boundary; a check that the declared boundary matches the enumerated set; a reference-direction check that no AGPL project is referenced from an Apache project.
 
@@ -142,7 +145,7 @@
 ### WP-00.05 — Stale-claim reconciliation
 
 
-**What must be fully done.** Apply the current naming/scope/runtime authority to implementation repository manifests and policies: four desktop AOT products, Native AOT Cloud, React Web, RN/Hermes Mobile and CF-only Harness. Record the ten repository owners and retired implementation scaffold dispositions; historical evidence stays dated and cannot override the accepted design.
+**What must be fully done.** Apply the current naming/scope/runtime authority to implementation repository manifests and policies: four desktop AOT products, Native AOT Cloud, React Web, Kotlin/Jetpack Compose Mobile and CF-only Harness. Record the ten repository owners and retired implementation scaffold dispositions; historical evidence stays dated and cannot override the accepted design.
 
 **Testing requirements.** Repository-policy checks reject superseded product/provider names outside registered reference provenance, old runtime configuration and unassigned source ownership.
 
@@ -151,7 +154,7 @@
 <a id="rule-wp-00.90"></a>
 ### WP-00.90 — Verify the owned artifact and real integration
 
-**What must be fully done.** Assemble the owned deliverables from the preceding substeps under the selected repository, package, runtime and protocol authorities. Enforce the ten-repository, proto, AOT, RN, CF/R2 amendment. Carry licence boundaries and current product exclusions. Reconcile old implementation instructions as historical inputs; preserve the design-repair baseline.
+**What must be fully done.** Assemble the owned deliverables from the preceding substeps under the selected repository, package, runtime and protocol authorities. Enforce the ten-repository, proto, AOT, Android, CF/R2 amendment. Carry licence boundaries and current product exclusions. Reconcile old implementation instructions as historical inputs; preserve the design-repair baseline.
 
 **Execution order.** Follow [staged artifact integration](../README.md#staged-artifact-integration): consume only existing assigned producers, publish an owned capability candidate before its product consumer, and verify the declared stage against exact upstream artifacts. Record pending later owners and their closing gates; local mocks cover only that named test boundary.
 
@@ -207,14 +210,10 @@
 
 ## 9. Dependencies
 
-**Upstream — all must be complete.**
+**Upstream:** none. All stage outputs must be complete.
 
-None.
+**Downstream:** `01` · `47`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.
 
-**Downstream — consumers of these released outputs.**
+## Current source baseline and migration input
 
-- [WP-01](01-repository-reconciliation-and-target-layout.md#rule-wp-01)
-- [WP-47](47-static-public-site.md#rule-wp-47)
-
-
----
+The166-project ede43db monorepo inventory is historical disposition evidence, not the current checkout shape. [Family completion review](../../assurance/family-design-completion-review.md) records the separate DesktopPlatform/Contracts/Mobile bootstrap evidence and scope. Before coding, verify each actual source HEAD/dirty state and map only retained required mechanisms to its owning repository/package; preserve existing published Hello/probe compatibility and Mobile app/signing/version identity. Do not recreate deleted scaffolds, copy every legacy project, or treat unpublished implementation as missing design. Generated protocol artifacts follow the tracked authored-schema/generator baseline and immutable producer manifest from WP03; generated outputs are not categorically forbidden from version control.

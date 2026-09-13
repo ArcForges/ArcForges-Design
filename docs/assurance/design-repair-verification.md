@@ -1,5 +1,8 @@
 # Design Repair Verification
 
+> Historical evidence at the source/design revision recorded below. P2-010 and [family completion review](family-design-completion-review.md) define the current Android, producer, contract and evidence amendments. Earlier runtime/contract/count conclusions are not current implementation proof; no deprecated input is reopened.
+
+
 > **Historical evidence boundary.** Results and technology claims below belong to their recorded baseline. [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) amends current repository, protocol, Cloud and Mobile decisions; current implementation obligations are in the [gate register](open-gates-register.md). This amendment does not rewrite the earlier finding evidence or turn a design check into runtime proof.
 > Scope: Stage 2 design evidence. These checks do not execute the product, database transactions, providers, native libraries or OS isolation profiles.
 

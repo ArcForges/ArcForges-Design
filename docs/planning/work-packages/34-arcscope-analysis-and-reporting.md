@@ -5,7 +5,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: H — ArcScope
-> Upstream: `33` · Downstream: `35`, `51`
+> Upstream: `33` · Downstream: `35` · `51`
 
 > **Goal.** Turn evidence into findings without ever altering the evidence: visualisation, triggers, measurements, decoders, analysis, annotations, comparison and reports — every result reproducible from a recorded configuration.
 
@@ -25,6 +25,9 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+[Producer artifacts and real integration](../producer-artifacts-and-integration.md) is a required input. Use this WP's row to identify exact released artifacts, permitted fixtures and the owner that must replace each fixture; completion requires the stated evidence class.
+
 
 **Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
@@ -225,14 +228,10 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 ## 9. Dependencies
 
-**Upstream — all must be complete.**
+**Upstream:** `33`. All stage outputs must be complete.
 
-- [WP-33](33-arcscope-acquisition-and-session.md#rule-wp-33)
+**Downstream:** `35` · `51`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.
 
-**Downstream — consumers of these released outputs.**
+## P2-010 required behavior and closure
 
-- [WP-35](35-arcscope-integration-and-sync.md#rule-wp-35)
-- [WP-51](51-arcscope-cloud-simulator.md#rule-wp-51)
-
-
----
+Implement every remaining spectrum/correlation/threshold/event-pattern/decoder analysis profile in architecture26 with independent numeric and gap/error vectors, not only measurements.v1. The referenced normative profile and producer stage matrix are binding inputs. Record independent positive/negative vectors and actual owner integration at this WP's assigned stage; a mock cannot close a real-provider/device requirement.

@@ -5,7 +5,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: B — Shared platform
-> Upstream: `06`, `07` · Downstream: `09`, `11`, `13`, `14`
+> Upstream: `06` · `07` · Downstream: `09` · `11` · `13` · `14`
 
 > **Goal.** Make the local plane real: a transport per platform, an endpoint manifest, a registration lifecycle with leases and heartbeats, routing, health, backpressure and reconnection — all working between genuinely AOT-published processes.
 
@@ -25,6 +25,9 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+[Producer artifacts and real integration](../producer-artifacts-and-integration.md) is a required input. Use this WP's row to identify exact released artifacts, permitted fixtures and the owner that must replace each fixture; completion requires the stated evidence class.
+
 
 **Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
@@ -205,17 +208,6 @@
 
 ## 9. Dependencies
 
-**Upstream — all must be complete.**
+**Upstream:** `06` · `07`. All stage outputs must be complete.
 
-- [WP-06](06-aot-jit-and-wasm-publish-proof.md#rule-wp-06)
-- [WP-07](07-local-persistence-foundation.md#rule-wp-07)
-
-**Downstream — consumers of these released outputs.**
-
-- [WP-09](09-capability-contribution-and-resource-model.md#rule-wp-09)
-- [WP-11](11-security-foundation.md#rule-wp-11)
-- [WP-13](13-high-risk-technical-probes.md#rule-wp-13)
-- [WP-14](14-hub-and-minimal-provider-slice.md#rule-wp-14)
-
-
----
+**Downstream:** `09` · `11` · `13` · `14`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.

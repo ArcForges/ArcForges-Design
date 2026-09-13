@@ -38,7 +38,7 @@ Five constraints determine almost every structural decision downstream.
 │              (semantic capability invocation, first-party, same machine)│
 └────────┬───────────────────┬──────────────┬──────────────┬─────────────┘
          │                   │              │              │
-         │  HTTPS: HTTP/JSON (generated gRPC client client) + realtime (gRPC hint polling)
+         │  TLS: native gRPC + bounded EventService hint polling
          │                   │              │              │
          ▼                   ▼              ▼              ▼
 ┌────────────────────────────────────────────────────────────────────────┐
@@ -51,9 +51,9 @@ Five constraints determine almost every structural decision downstream.
      HTTPS + realtime                        HTTPS + realtime
                │                                      │
         ArcChat Mobile                          Browser
-        .NET React Native · Android React Native/Hermes            React/TypeScript
-        (iOS architecture-present,              static public pages
-         build deferred)                        + ArcForges.Web.App
+        Kotlin/Jetpack Compose · Android            React/TypeScript
+        (Android only)                         static public pages
+                                                + ArcForges.Web.App
 ```
 
 ### 2.1 Three communication responsibilities, never conflated
@@ -82,7 +82,7 @@ Five constraints determine almost every structural decision downstream.
 Identical in every product and in Cloud:
 
 ```
-Desktop / LocalRpc / Infrastructure / MinimalApi / React Native adapters
+Desktop / LocalRpc / Infrastructure / MinimalApi / Kotlin Android adapters
                               ↓
                        Application Services
                               ↓
@@ -111,8 +111,7 @@ Fixed by **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**, e
 |---|---|---|
 | **ArcChat / ArcNotes / ArcScope / ArcSlate desktop** | **Native AOT** | Trim/AOT-safe dependency rules; real publish proof per RID per release |
 | **ArcForges Cloud** | **ASP.NET Core Native AOT modular monolith** | Native AOT is mandatory; every dependency and real adapter participates in publish/run proof |
-| **ArcChat Mobile — Android** | **React Native/Hermes** | Pinned RN/Hermes and native modules; release artifact inspected and exercised on a real Android device |
-| **ArcChat Mobile — iOS** | Architecture present, **build deferred** | Release runtime re-verified against the then-current supported baseline before activation |
+| **ArcChat Mobile — Android** | **Kotlin/Jetpack Compose** | Pinned Kotlin/Jetpack Compose and native modules; release artifact inspected and exercised on a real Android device |
 | **ArcForges Web** | **React/TypeScript; Node.js/npm build tooling** | Production browser matrix; static public pre-rendering; [P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008) |
 
 | # | Rule |
@@ -167,7 +166,7 @@ Apache-2.0 — interoperability boundary
 ├── Public protocol state semantics required for independent interoperability
 └── The public SDK surface
 
-AGPL-3.0-only — everything else
+AGPL-3.0-only — remaining product/platform/server implementation (all Contracts is Apache-2.0 under P2-010)
 ├── ArcChat Desktop, ArcNotes, ArcScope, ArcSlate
 ├── ArcForges Cloud and every server implementation
 ├── Product-domain behaviour, server orchestration, desktop use cases
@@ -179,7 +178,7 @@ AGPL-3.0-only — everything else
 |---|---|
 | LB-01 | **AGPL components may consume the Apache-2.0 interoperability packages** without changing their own licence. |
 | LB-02 | **No GPL-family or AGPL-only source, project reference, package, generated artifact or transitive dependency may enter the ArcChat Mobile distributable** — enforced by architecture and dependency tests (**[D-004](../decisions/phase-1-foundation-decisions.md#rule-d-004)** obligation 7). |
-| LB-03 | **Base ViewModel patterns are not shared between Avalonia desktop and React Native mobile** (**[D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021)**). Each UI stack owns its implementation. |
+| LB-03 | **Base ViewModel patterns are not shared between Avalonia desktop and Kotlin Android mobile** (**[D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021)**). Each UI stack owns its implementation. |
 | LB-04 | **Protocol communication across an explicit process or network boundary does not change a client's licence.** Desktop and server implementations remain separate works. |
 
 ---
@@ -242,7 +241,7 @@ Every write command carries at minimum `CommandId`, the target identity, `Expect
 | [`08-security-architecture.md`](08-security-architecture.md) | Identity layering, authorization enforcement points, secret handling, egress, audit |
 | [`09-ai-and-agent-runtime-architecture.md`](09-ai-and-agent-runtime-architecture.md) | Agent runtime, capability registry, task engine, provider routing, credit metering |
 | [`10-web-architecture.md`](10-web-architecture.md) | Static generation, React/TypeScript application, per-surface deployment and security |
-| [`11-mobile-architecture.md`](11-mobile-architecture.md) | React Native structure, Apache boundary, offline outbox, push, secure storage |
+| [`11-mobile-architecture.md`](11-mobile-architecture.md) | Kotlin Android structure, Apache boundary, offline outbox, push, secure storage |
 | [`12-native-interop-and-media.md`](12-native-interop-and-media.md) | P/Invoke discipline, the C ABI, SafeHandle, media and acquisition pipelines |
 | [`13-observability-and-operations.md`](13-observability-and-operations.md) | Telemetry, correlation, health, incident tooling, operator surface |
 | [`14-build-packaging-and-release.md`](14-build-packaging-and-release.md) | Build governance, versioning axes, packaging, signing, update feed, CI gates |
@@ -271,7 +270,7 @@ Answerable before any feature merges:
 
 **UI and tasks** — Does the UI thread do only lightweight work? Is every queue bounded and back-pressured? Does long work return a `TaskHandle`? Is the task queryable, recoverable and cancellable — or explicitly non-cancellable?
 
-**AOT and publishing** — Does the host genuinely publish AOT where applicable? Are there no unreviewed trimming or AOT warnings? Does Android use the pinned RN/Hermes release artifact? Are native and managed shipped as one version set? Are updates, rollbacks, schema and document formats compatible? Are signing, SBOM, dependency and secret scans present?
+**AOT and publishing** — Does the host genuinely publish AOT where applicable? Are there no unreviewed trimming or AOT warnings? Does Android use the pinned Kotlin/Jetpack Compose release artifact? Are native and managed shipped as one version set? Are updates, rollbacks, schema and document formats compatible? Are signing, SBOM, dependency and secret scans present?
 
 ---
 
@@ -283,7 +282,7 @@ Answerable before any feature merges:
 | Bidirectional RPC produces concurrency or deadlock misjudgement | The transport is not an actor: serialize domain writes per document; never hold a lock while awaiting a callback; base writes on revision and command identity; fault-inject bidirectional callbacks and disconnects |
 | Typed HTTP client silently falls back to reflection | Generated-only API, reflection package absent from production, analyzer diagnostics escalated to errors, an AOT publish contract test per public method |
 | Realtime misused as a reliable bus | Realtime is the visibility layer; business facts land in the database, journal and outbox; clients recover by revision or sequence over HTTP |
-| Android strict AOT misrepresented | Documentation and inspected artifact state RN/Hermes; server Native AOT is a separate target |
+| Android strict AOT misrepresented | Documentation and inspected artifact state Kotlin/Jetpack Compose; server Native AOT is a separate target |
 | ORM blocks strict AOT on a desktop deliverable | Desktop persistence uses an AOT-safe access path; a heavyweight ORM runtime is not a hard dependency of an AOT host |
 | In-process native library crash | Narrow C ABI, `SafeHandle`, input validation, fuzzing and sanitizers, sacrificial-process tests, crash dumps, journal recovery |
 | Over-sharing produces a giant monolith | A shared language is not a shared model: split contracts by boundary and ownership, enforce module ownership, ban cross-product infrastructure references |

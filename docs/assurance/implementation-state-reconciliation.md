@@ -1,5 +1,8 @@
 # Implementation-State Reconciliation
 
+> Historical evidence at the source/design revision recorded below. P2-010 and [family completion review](family-design-completion-review.md) define the current Android, producer, contract and evidence amendments. Earlier runtime/contract/count conclusions are not current implementation proof; no deprecated input is reopened.
+
+
 > Status: **Authoritative** — Phase 2 design-stage evidence · **Complete**
 > Layer: Assurance
 > Governing authority: **[D-011](../decisions/phase-1-foundation-decisions.md#rule-d-011)** (the existing monorepo is the implementation target and is inspected in the reconciliation phase), **[D-012](../decisions/phase-1-foundation-decisions.md#rule-d-012)** (it is an implementation-state inventory and reconciliation target)

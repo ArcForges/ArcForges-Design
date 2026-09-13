@@ -26,15 +26,18 @@
 
 ## 2. Required inputs and dependencies
 
+[Producer artifacts and real integration](../producer-artifacts-and-integration.md) is a required input. Use this WP's row to identify exact released artifacts, permitted fixtures and the owner that must replace each fixture; completion requires the stated evidence class.
+
+
 **Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
 | Input | Why it matters |
 |---|---|
-| [`../../assurance/implementation-state-reconciliation.md`](../../assurance/implementation-state-reconciliation.md) | **The completed item-level inventory** — 166 rows, per-shim dispositions, six corrections, and the revised priority order. A versioned planning input, not work to be done |
+| [`../../assurance/implementation-state-reconciliation.md`](../../assurance/implementation-state-reconciliation.md) | **The historical item-level inventory at ede43db** — 166 rows, per-shim dispositions, six corrections, and the revised priority order. A versioned planning input, not work to be done |
 | [`../../architecture/01-solution-and-project-layout.md`](../../architecture/01-solution-and-project-layout.md) | The target layout, project conventions and reference-direction rules that dispositions are measured against |
 | [`../../architecture/00-architecture-overview.md`](../../architecture/00-architecture-overview.md) | The layering rules and the shared-foundation boundary |
 | [WP-00](00-specification-naming-and-rights-freeze.md#rule-wp-00) output | The licence boundary declaration and naming freeze |
-| The existing monorepo at `ede43db` | **166 projects**, 28 test-suite projects, 6 native shims, and the `eng/` build property set — measured, not estimated |
+| The existing monorepo at `ede43db` | **historical166 projects at ede43db**, 28 test-suite projects, 6 native shims, and the `eng/` build property set — measured, not estimated |
 
 ---
 
@@ -65,7 +68,7 @@
 | Location | Change |
 |---|---|
 | Every `.csproj` under `src/` and `tests/` | Receives a disposition; those Kept receive the boundary and convention properties |
-| `src/Contracts/` | **Split** into a public Apache-2.0 set and an internal AGPL set (executed in `03`; the split decision is made here) |
+| `src/Contracts/` | **Split** into a public Apache-2.0 set and an internal Apache-2.0 set with restricted imports (executed in `03`; the split decision is made here) |
 | `src/DesktopHelpers/` | Disposition assigned against the shared-foundation boundary |
 | `src/BuildingBlocks/ArcForges.Desktop.*` | Reviewed against the shared-foundation boundary; mechanism-only projects Kept, product-aware projects Split or Moved |
 | `src/Cloud/Modules.*` | Map the 17 observed scaffold module names to the 20 declared domain owners in `21`; preserve the single Host with internal AgentRuntime/BackgroundJobs libraries and development-only AppHost |
@@ -96,7 +99,7 @@
 
 ### WP-01.01 — Implement the frozen contract split
 
-**What must be fully done.** Every type in the existing contract projects is assigned to the public Apache-2.0 set or the internal AGPL set, using the enumerated Apache set from [WP-00.02](00-specification-naming-and-rights-freeze.md#rule-wp-00.02). Types that are currently public but should not be, and types that are currently internal but must be public for interoperability, are both identified. Apply the already selected package/schema licence split from the layout and wire registry; WP03 generates it.
+**What must be fully done.** Every type in the existing contract projects is assigned to the public Apache-2.0 set or the internal Apache-2.0 set with restricted imports, using the enumerated Apache set from [WP-00.02](00-specification-naming-and-rights-freeze.md#rule-wp-00.02). Types that are currently public but should not be, and types that are currently internal but must be public for interoperability, are both identified. Apply the already selected package/schema licence split from the layout and wire registry; WP03 generates it.
 
 **Testing requirements.** A review that every contract type has an assignment; a check that no type assigned to the public set transitively depends on an internal type.
 
@@ -201,13 +204,10 @@
 
 ## 9. Dependencies
 
-**Upstream — all must be complete.**
+**Upstream:** `00`. All stage outputs must be complete.
 
-- [WP-00](00-specification-naming-and-rights-freeze.md#rule-wp-00)
+**Downstream:** `02`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.
 
-**Downstream — consumers of these released outputs.**
+## Current source baseline and migration input
 
-- [WP-02](02-build-governance-and-analyzer-policy.md#rule-wp-02)
-
-
----
+The166-project ede43db monorepo inventory is historical disposition evidence, not the current checkout shape. [Family completion review](../../assurance/family-design-completion-review.md) records the separate DesktopPlatform/Contracts/Mobile bootstrap evidence and scope. Before coding, verify each actual source HEAD/dirty state and map only retained required mechanisms to its owning repository/package; preserve existing published Hello/probe compatibility and Mobile app/signing/version identity. Do not recreate deleted scaffolds, copy every legacy project, or treat unpublished implementation as missing design. Generated protocol artifacts follow the tracked authored-schema/generator baseline and immutable producer manifest from WP03; generated outputs are not categorically forbidden from version control.

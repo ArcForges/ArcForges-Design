@@ -414,7 +414,7 @@ These are **hard authoring rules**, not optimisations. [P2-009](../decisions/pha
 | CA-10 | No object/dynamic/Type/ORM/view model/native pointer crosses a wire boundary. |
 | <a id="rule-ca-11"></a>CA-11 | C# and TS values follow the exact protobuf/JSON projection profile and independent vectors. |
 | CA-12 | All 17 hint payloads are generated from the same event registry. |
-| <a id="rule-ca-13"></a>CA-13 | C# uses generated gRPC, React generated gRPC-Web, RN the bounded unary adapter; HTTP exceptions are separately typed. |
+| <a id="rule-ca-13"></a>CA-13 | C# uses generated gRPC, React generated gRPC-Web, Kotlin Android generated native gRPC; HTTP exceptions are separately typed. |
 | <a id="rule-ca-14"></a>CA-14 | Published service, method, field names/numbers are permanent; reserve removals and check previous/current compatibility. |
 
 **A repository-policy test asserts [CA-01](#rule-ca-01) through [CA-03](#rule-ca-03) and [CA-11](#rule-ca-11) through [CA-13](#rule-ca-13) mechanically** (`§7.2` of the layout architecture).

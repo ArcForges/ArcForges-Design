@@ -5,7 +5,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: A — Freeze and foundation
-> Upstream: `04`, `06` · Downstream: `08`, `13`, `18`, `33`, `36`
+> Upstream: `04` · `06` · Downstream: `08` · `13` · `18` · `33` · `36`
 
 > **Goal.** Build the local storage foundation every desktop product shares: the canonical commit unit, the journal, snapshots, the migration runner, the managed resource store and the derived-store separation — with crash recovery proven, not assumed.
 
@@ -25,6 +25,9 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+[Producer artifacts and real integration](../producer-artifacts-and-integration.md) is a required input. Use this WP's row to identify exact released artifacts, permitted fixtures and the owner that must replace each fixture; completion requires the stated evidence class.
+
 
 **Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
@@ -155,7 +158,7 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 <a id="rule-wp-07.90"></a>
 ### WP-07.90 — Verify the owned artifact and real integration
 
-**What must be fully done.** Package desktop persistence mechanisms; retain product-owned canonical schemas, journal/snapshot/pending-edit distinctions and corruption/recovery rules. RN storage follows the same public semantics through Mobile's implementation.
+**What must be fully done.** Package desktop persistence mechanisms; retain product-owned canonical schemas, journal/snapshot/pending-edit distinctions and corruption/recovery rules. Android storage follows the same public semantics through Mobile's implementation.
 
 **Execution order.** Follow [staged artifact integration](../README.md#staged-artifact-integration): consume only existing assigned producers, publish an owned capability candidate before its product consumer, and verify the declared stage against exact upstream artifacts. Record pending later owners and their closing gates; local mocks cover only that named test boundary.
 
@@ -215,18 +218,6 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 ## 9. Dependencies
 
-**Upstream — all must be complete.**
+**Upstream:** `04` · `06`. All stage outputs must be complete.
 
-- [WP-04](04-identity-error-and-versioning-primitives.md#rule-wp-04)
-- [WP-06](06-aot-jit-and-wasm-publish-proof.md#rule-wp-06)
-
-**Downstream — consumers of these released outputs.**
-
-- [WP-08](08-local-ipc-and-registration.md#rule-wp-08)
-- [WP-13](13-high-risk-technical-probes.md#rule-wp-13)
-- [WP-18](18-arcnotes-document-core.md#rule-wp-18)
-- [WP-33](33-arcscope-acquisition-and-session.md#rule-wp-33)
-- [WP-36](36-arcslate-project-and-timeline.md#rule-wp-36)
-
-
----
+**Downstream:** `08` · `13` · `18` · `33` · `36`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.

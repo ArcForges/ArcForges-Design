@@ -400,7 +400,7 @@ The gate before every AI decision (`§5.3` of the commerce architecture). An int
 | `realm_id` | `id NN` | **Realm-scoped**; a term is never visible outside its realm ([SV-04](../16-billing-and-commerce-architecture.md#rule-sv-04)) |
 | `kind` | `enum(subscription, pass, compensation, selfHostGrant) NN` | The only four sources ([SV-02](../16-billing-and-commerce-architecture.md#rule-sv-02)) |
 | `subscription_ref` | `text?` | The provider subscription, for `kind = subscription`. **Stable across renewals** |
-| `period_ref` | `text NN` | **The paid period's own identity** — the provider's invoice or billing-period id for a subscription; the order id for a pass; the grant id for a compensation or self-host term |
+| `period_ref` | `text NN` | **Normalized domain service-period identity**, minted once by the owner admission/adapter mapping; provider invoice/billing identifiers stay in Commerce. Pass/order and grant references are normalized domain IDs. |
 | `starts_at` | `instant NN` | |
 | `ends_at` | `instant NN` | Exclusive |
 | `grace_ends_at` | `instant?` | Data-access grace; **never extends AI admission** ([SV-05](../16-billing-and-commerce-architecture.md#rule-sv-05)) |
@@ -490,7 +490,7 @@ Immutable policy history. One row per `(realm, offer, activation interval)` in w
 |---|---|---|
 | `reservation_id` | `id` | **PK** |
 | `workspace_id` | `id NN` | `FK →` `entitlement.capacity_bucket` |
-| `logical_request_id` | `id NN` | `FK →` `commerce.logical_ai_request` |
+| `logical_request_id` | `id NN` | Normalized request identity; no Commerce FK. Entitlement standalone owner operations preserve the same uniqueness/fence. |
 | `from_capacity_micro` | `int64 NN` | Portion held against the bucket |
 | `from_compensation_micro` | `int64 NN` | Portion held against compensation lots |
 | `from_purchased_micro` | `int64 NN` | Portion held against purchased lots — **non-zero only under an extra-usage authorisation** ([AD-05](../16-billing-and-commerce-architecture.md#rule-ad-05)) |
@@ -537,7 +537,7 @@ Simulation admission reserves bounded duration, sample count, output bytes and e
 | `external_customer_ref` | `text NN` | The provider's identifier, held as an external reference ([MB-03](../16-billing-and-commerce-architecture.md#rule-mb-03)) |
 
 - `UQ (provider, external_customer_ref)`
-- **Rule** — this is the **only** table where a provider identifier appears as a key component
+- **Rule** — provider-specific key components stay inside Commerce adapter/mapping tables; Entitlement has no provider identifier dependency
 
 ### `commerce.offer`, `commerce.price_version`
 
@@ -699,8 +699,8 @@ The client schema (`§2` of [`02-desktop-data-model.md`](02-desktop-data-model.m
 | `owning_product` | `text NN` | Whose **domain** the work concerns. It never transfers, and it does **not** move the authoritative store ([TO-01](00-data-model-overview.md#rule-to-01)) |
 | `origin_surface` | `enum(desktop, web, mobile, automation) NN` | Where the request came from. Provenance only — it confers no authority ([TO-03](00-data-model-overview.md#rule-to-03)) |
 | `origin_device_id` | `id?` | Present when a device originated it; **null for Web, Mobile and automation** |
-| `state` | `enum(created, queued, running, waitingApproval, waitingDevice, waitingCapacity, paused, succeeded, failed, cancelled, unknownEffect) NN` | |
-| `reason_facet` | `text?` | *Why* it is in that state ([WP-16.01](../../planning/work-packages/16-unified-execution-engine.md#rule-wp-16.01)) |
+| `state` | `enum(queued, running, waiting, paused, interrupted, succeeded, partiallySucceeded, failed, canceled) NN` | |
+| `reason_facet` | `text?` | Waiting/interruption reason; execution owner and control progress follow WP52, not the local ProductJob engine. |
 | `intent_summary` | `text NN` | User-facing |
 | `created_at`, `updated_at` | `instant NN` | |
 | `rev` | `rev NN` | |
@@ -1226,7 +1226,7 @@ Expiry forbids new writes and starts idempotent physical cleanup. The sweeper ve
 | `notification.push_registration` | Per device **and** installation; revoked with the device ([PD-01](../11-mobile-architecture.md#rule-pd-01)). `UQ (device_id, installation_id)` |
 | `policy.policy_bundle` | Versioned, signed, append-only. Carries `schema_version` and the full validated document. A bundle is applied atomically or not at all ([WP-44.01](../../planning/work-packages/44-dynamic-policy-and-configuration.md#rule-wp-44.01)) |
 | `policy.rollout_assignment` | *(derived)* — deterministic per installation, so it can be recomputed rather than stored; stored only as a cache with the rule version it came from |
-| `audit.audit_event` | **Append-only, no update, no delete** ([AU-01](../13-observability-and-operations.md#rule-au-01)). Carries the full actor chain, the enumerated event type, the reason code and the correlation identifier. `IX (workspace_id, occurred_at)`; `IX (actor_ref, occurred_at)`. Retention exceeds every other window (`§7.1`) |
+| `audit.audit_event` | **Append-only under normal application/operator roles; only approved expired-partition retention purge may delete** ([AU-01](../13-observability-and-operations.md#rule-au-01)). Carries the full actor chain, the enumerated event type, the reason code and the correlation identifier. `IX (workspace_id, occurred_at)`; `IX (actor_ref, occurred_at)`. Retention follows the explicit security/financial policy and holds, independently of short telemetry windows |
 | `support.support_case` | Links to a **diagnostic reference**, never to content ([WP-45.06](../../planning/work-packages/45-operations-support-and-trust-safety.md#rule-wp-45.06)) |
 | `support.access_grant` | Scoped, expiring, consented where required, and **itself audited** ([OP-04](../13-observability-and-operations.md#rule-op-04)). `IX (expires_at)` |
 | `trustsafety.enforcement_action` | Records the ladder position, the reason, the communication sent and the appeal state |
@@ -1240,7 +1240,7 @@ These cannot be foreign keys ([AG-01](00-data-model-overview.md#rule-ag-01), [MD
 | # | Invariant | Enforced at | Detected by |
 |---|---|---|---|
 | CX-01 | Every `entitlement.grant` with `source = purchase` corresponds to a completed `commerce.order` | Commerce's grant issue call | Reconciliation ([WP-42.08](../../planning/work-packages/42-commerce-entitlement-and-credits.md#rule-wp-42.08)) |
-| CX-02 | Every `entitlement.capacity_reservation` in `held` belongs to a live `commerce.logical_ai_request` that has not settled | Reservation creation, in the shared unit of work ([SU-01](00-data-model-overview.md#rule-su-01)) | The reservation sweeper ([UU-03](../20-cross-system-lifecycles.md#rule-uu-03) of the cross-system lifecycles) |
+| CX-02 | With Commerce enabled, every customer AI capacity reservation in `held` maps to one unsettled normalized logical request; Entitlement-only operation validates its own admission receipt without a Commerce schema/FK | Reservation creation, in the shared unit of work ([SU-01](00-data-model-overview.md#rule-su-01)) | The reservation sweeper ([UU-03](../20-cross-system-lifecycles.md#rule-uu-03) of the cross-system lifecycles) |
 | <a id="rule-cx-08"></a>CX-08 | For every workspace, the sum of live `capacity_reservation.from_capacity_micro` equals `capacity_bucket.held_micro`, and the sum of `from_compensation_micro` + `from_purchased_micro` per lot equals that lot's `held_micro` | The shared unit of work ([FU-04](#rule-fu-04)) | Accounting comparison ([WP-42.11](../../planning/work-packages/42-commerce-entitlement-and-credits.md#rule-wp-42.11)) |
 | CX-09 | Every customer-benefiting settled `logical_ai_request` has exactly one non-adjusting `customer_settlement`, and at least one `provider_attempt`; **the counts are not required to match** ([FU-03](#rule-fu-03)) | Settlement, in the shared unit of work | Reconciliation ([WP-43.07](../../planning/work-packages/43-managed-ai-routing-and-metering.md#rule-wp-43.07)) |
 | CX-10 | Every `sync.change` row with a non-null `publish_seq` has a `publish_seq` less than or equal to its workspace's `publication_watermark.last_seq` | The publisher's transaction ([PB-03](#rule-pb-03)) | Feed integrity check |
@@ -1318,3 +1318,29 @@ Slate replicas encode the complete [slate.project.v1 wire projection](../contrac
 Resource service_object_grant stores grant_id PK, owner_kind/job_id, attempt_id?, realm/workspace, epoch, recovery_generation, direction, resource/upload_id, byte_limit, expires_at and revoked_at. It uses the existing upload reservations/verification pins, not a second object lifecycle. Every grant authorization validates its current owner job and fence. Task/Search/Resource keep cf_instance_inventory keyed by kind/instance_id/generation with owner workspace/job, actual worker version and deletion receipt; each module writes only its owned rows and exposes inventory through the deletion coordinator.
 
 platform.safety_receipt records immutable external journal record ID/hash, related owner command/intent ID, generation, kind and pending/verified status. It is a local receipt/cache, never authority over the independent signed journal head. Outbox dispatch cannot pass its external boundary before verified barrier; security denial cannot return durable success before verified fence. platform.recovery_epoch records the installed independent generation, recovery point, journal inventory hash and reopening state. Restored outstanding effects have explicit quarantined/unknown reconciliation records, retaining original identities even when their newer PG outcome was outside the recovery point.
+
+## P2-010 execution, consent and transfer records
+
+### Chat-owned ordinary and temporary execution
+
+`chat.turn(turn_id PK,workspace_id,conversation_id,input_message_id,mode,state,rev,run_id?,stream_id?,final_message_id?,reason?,created_at,expires_at?,has_unknown_effect)` uses wire ChatMode/ChatTurnState. `UQ(workspace_id,input_message_id)` prevents duplicate generation admission. Final success requires a committed final message or explicit no-answer outcome. A turn cannot change ordinary/temporary into agent in place; promotion creates a linked Task once using `chat.turn_promotion(turn_id,task_id UNIQUE,preview_hash,command_id UNIQUE)`.
+
+`chat.execution_lease`, `chat.execution_command` and `chat.iteration_output` use the same closed lease/fence/receipt fields as their Task counterparts with turn_id instead of task_id, written only by Chat. Shared CF records carry `owner_kind enum(chatTurn,agentTask)` and `owner_id`; unique keys include workspace/ownerKind/ownerId/runId/attempt as applicable. Commerce logical/provider requests carry this pair, not a mandatory Task FK. Existing Task-only fields remain on actual Task records; no row is minted merely to satisfy an FK. The owner route is validated against the matching table inside the shared transaction; arbitrary polymorphic IDs cannot bypass ownership.
+
+Temporary body storage is `chat.transient_content(resource_id PK,turn_id?,conversation_id,key_ref,ciphertext_ref,sha256,size,expires_at,closed_at?,purged_at?)`. Prompt/output/attachment text is encrypted, excluded from ordinary history, Sync, Knowledge and backups, and expires within24hours; close marks it inaccessible immediately and purges within1hour. CF checkpoints carry IDs only. Account deletion/revocation denies access immediately regardless of physical purge delay. Metadata-only owner/financial rows keep the normal retention, no text in telemetry or compact receipts. Temporary compaction summaries never enter this table.
+
+Task/Chat control uses `control_receipt(command_id PK,owner_id,kind,state,requested_at,acknowledged_at?,reason?,request_hash)` and the existing owner command fence. One latest projection does not erase previous receipts. Interrupted/partial success and unknown effect are distinct, following wire04.
+
+### Purpose-bound source consent
+
+`resource.source_consent(consent_id PK,realm_id,workspace_id,actor_id,operation_id,purpose,source_manifest_hash,policy_rev,max_bytes,expires_at,consumed_at?,revoked_at?,generation)` has `UQ(workspace_id,operation_id,source_manifest_hash,purpose)`. `resource.source_consent_item(consent_id,source_owner,source_id,source_rev,selection_hash)` stores the bounded exact source set. Admission locks receipt+current source policy, validates actor/operation/generation/bytes/expiry/revocation, consumes once and creates execution pins atomically. Replay of the same owner admission returns its existing receipt; it does not grant a second operation. Source revocation is restrictive even for an already-consumed receipt.
+
+### Resumable owner-data transfer
+
+`workspace.transfer_job(transfer_id PK,workspace_id,direction,state,manifest_hash,manifest_resource_id?,preview_hash?,rev,created_at,expires_at?,committed_roots,total_roots,reason?)`; `workspace.transfer_mapping(transfer_id,source_kind,source_id,target_kind,target_id,state,source_hash,target_rev?,receipt_id?,PRIMARY KEY(transfer_id,source_kind,source_id),UNIQUE(transfer_id,target_kind,target_id))`; `workspace.transfer_issue(transfer_id,ordinal,code,source_kind?,source_id?,blocks_commit,accepted_at?)`. Job owner may coordinate but each imported content handler writes only its own tables in the declared shared family. Batch<=100roots and complete mapping validation precede visibility; committed root receipts and IDs survive retry. Policy/quota/revision change invalidates preview or blocks the next root without rewriting past receipts. All mappings/issues are paged. Excluded authority and missing/unsupported bytes follow the journey profile, not blind copying of DB rows.
+
+Data-health states detected/repairing/repaired/irrecoverable/acknowledged preserve last evidence/source hashes. Irrecoverable is not repaired; explicit replacement creates a new resource revision. No recovery job fabricates missing bytes or erases the anomaly to make a gate green.
+
+## Source knowledge policy persistence
+
+Policy owns policy.source_policy: workspace_id, target_kind, target_id composite PK; revision bigint, four nullable boolean overrides, updated_by, updated_at, command_id. Owner/resource existence and authorization are checked through owner ports; no cross-module write. Command receipt, policy revision, audit event and index-reconciliation outbox commit atomically under Policy+Audit with the target's current scope/recovery generation. Clear creates a versioned inherited-state row rather than deleting the command fence. Source consent records reference exact policy revision, explicit temporary patch, operation/source hash and expiry; no durable policy write occurs when the receipt is used. Search and dispatch always read current effective policy; source.getPolicy gives the client its current projection. No generic sync body can write this table.

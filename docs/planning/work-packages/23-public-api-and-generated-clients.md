@@ -5,9 +5,9 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: E — First real cloud
-> Upstream: `03`, `22` · Downstream: `24`, `30`, `42`, `44`, `51`, `52`
+> Upstream: `03` · `22` · Downstream: `24` · `30` · `42` · `44` · `51` · `52`
 
-> **Goal.** Expose the cloud through one versioned public API generated from the handwritten proto source of truth, with typed clients that work identically from a Native AOT desktop binary, a RN/Hermes mobile artifact and a React browser application — and a compatibility window that is tested rather than promised.
+> **Goal.** Expose the cloud through one versioned public API generated from the handwritten proto source of truth, with typed clients that work identically from a Native AOT desktop binary, a Kotlin/Jetpack Compose mobile artifact and a React browser application — and a compatibility window that is tested rather than promised.
 
 > **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Cloud + Contracts; all clients. Inputs: only the applicable published producers available at this stage under [staged artifact integration](../README.md#staged-artifact-integration). Producer candidate records precede Cloud consolidation; no future package/manifest is an input. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: owned candidate artifacts and generated contracts with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
 > After WP03, unit mocks consume published Contracts fixtures; earlier stages verify their inventory/policy outputs. Acceptance consumes the actual providers scheduled for that stage. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
@@ -25,6 +25,9 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+[Producer artifacts and real integration](../producer-artifacts-and-integration.md) is a required input. Use this WP's row to identify exact released artifacts, permitted fixtures and the owner that must replace each fixture; completion requires the stated evidence class.
+
 
 **Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
@@ -96,7 +99,7 @@
 
 **What must be fully done.** Implement the selected transport status/domain ProblemDetail mapping, reason categories, retry guidance and effect certainty. gRPC trailers carry status/details; HTTP exceptions use the declared HTTP status/schema. Never treat an unknown post-dispatch outcome as safe-to-retry transport failure.
 
-**Testing requirements.** Common native/browser/RN error vectors including malformed trailers, cancellation, unknown enum and correlation; secret/internal detail redaction.
+**Testing requirements.** Common native/browser/Android error vectors including malformed trailers, cancellation, unknown enum and correlation; secret/internal detail redaction.
 
 **Completion gate.** Error/recovery meaning is identical across the declared transports.
 
@@ -123,25 +126,23 @@
 
 <a id="rule-wp-23.04"></a>
 
-### WP-23.04 — Reserved, verified and promoted objects
+### WP-23.04 — Resource transport and future-owner boundary
 
+**What must be fully done.** Register the complete generated upload/status/ticket/verification/owner-promotion schema and permission/error envelope; exercise it through declared protocol fixtures. The minimal actual R2 transport is already proved by WP06. Full Resource/Entitlement/sync owner tables, staged verification and real R2 multipart behavior are owned by WP25.
 
-**What must be fully done.** Implement C# upload admission/status/ticket-renew/complete owner operations and real CF staged multipart verification from the object contract. Reserve committed/staging quotas before bytes, verify immutable whole hash/type, pin Verified state, then publish in the owning transaction. Enforce authenticated download/range and cleanup receipts before releasing exposure.
+**Testing requirements.** Independent request/result/expiry/hash/denied-scope and encoded-body fixtures across C#/TS/Kotlin; release excludes fixture handlers. Record every endpoint's real owner/fixture/replacement WP.
 
-**Testing requirements.** Real R2 multipart/retry/status/expiry/permission/deletion checks, verifier restart and largest-admitted-object capacity proof; quota and owner-commit crash points.
-
-**Completion gate.** No Verified object is visible as Published early, no raw permanent R2 URL is public, and quota/references/deletion converge.
+**Completion gate.** No missing resource schema; no claim that WP23 alone delivered Resource/R2 owner behavior. WP25 actual integration is mandatory before resource-consuming products complete.
 
 <a id="rule-wp-23.05"></a>
 
-### WP-23.05 — Generated C# and TypeScript clients
+### WP-23.05 — Generated C#/TypeScript/Kotlin clients
 
+**What must be fully done.** Consume released C# native, TypeScript gRPC-Web and Kotlin native clients against actual Identity/Workspace/Device endpoints. Supply native single-flight refresh, Web cookie/CSRF/Origin and generation-scoped callbacks outside generated code. Use WP06 Android probe, not the future complete app.
 
-**What must be fully done.** Consume released Contracts C# native clients and TS React/RN clients against these actual endpoints. Compose opaque bearer and single-flight refresh for native/RN, browser opaque cookie plus CSRF/Origin, cancellation/backoff and generation-scoped callbacks outside generated code.
+**Testing requirements.** Independent exact-value/current-previous-major vectors, actual22 session expiry/revoke/refresh, public/internal leak rejection; future domain fixtures labeled and excluded from production.
 
-**Testing requirements.** Exact-value and current/previous contract matrix from AOT desktop, production React and physical RN release; concurrent refresh/session revoke.
-
-**Completion gate.** All actual consumer runtimes use the selected public protocol and authentication without handwritten wire authority.
+**Completion gate.** Three ecosystem clients work against the actual host; owner implementations are replaced by25/42/52 before full release.
 
 <a id="rule-wp-23.06"></a>
 
@@ -155,7 +156,7 @@
 
 ---
 
-**Required implementation and closure from the final review.** Implement and independently verify [04-protobuf-wire-registry](../../architecture/contracts/04-protobuf-wire-registry.md). Maintain complete operation→real producer/fixture→closing WP coverage. Prove real implemented Identity/session/transport behavior and descriptor compatibility for all future owners; do not claim all business handlers complete. Test encodedBody outcomes and recoveryGeneration in actual C#/TS/RN framing, including revision/hash/auth failures. Record exact artifact identities and real/fixture status with the existing substeps; these cases are part of this package's completion gate.
+**Required implementation and closure from the final review.** Implement and independently verify [04-protobuf-wire-registry](../../architecture/contracts/04-protobuf-wire-registry.md). Maintain complete operation→real producer/fixture→closing WP coverage. Prove real implemented Identity/session/transport behavior and descriptor compatibility for all future owners; do not claim all business handlers complete. Test encodedBody outcomes and recoveryGeneration in actual C#/TS/Kotlin framing, including revision/hash/auth failures. Record exact artifact identities and real/fixture status with the existing substeps; these cases are part of this package's completion gate.
 
 <a id="rule-wp-23.90"></a>
 ### WP-23.90 — Verify the owned artifact and real integration
@@ -164,9 +165,9 @@
 
 **Execution order.** Follow [staged artifact integration](../README.md#staged-artifact-integration): consume only existing assigned producers, publish an owned capability candidate before its product consumer, and verify the declared stage against exact upstream artifacts. Record pending later owners and their closing gates; local mocks cover only that named test boundary.
 
-**Testing requirements.** Real C#/browser/RN calls against the AOT image, previous/current compatibility and complete operation mapping, including auth, files and webhooks outside gRPC.
+**Testing requirements.** Real C#/browser/Kotlin calls against the AOT image, previous/current compatibility and complete operation mapping, including auth, files and webhooks outside gRPC.
 
-**Completion gate.** Real C#/browser/RN calls against the AOT image, previous/current compatibility and complete operation mapping, including auth, files and webhooks outside gRPC. Record exact artifacts and provider reality. The package is incomplete if an important contract/owner/recovery rule still requires design during coding.
+**Completion gate.** Real C#/browser/Kotlin calls against the AOT image, previous/current compatibility and complete operation mapping, including auth, files and webhooks outside gRPC. Record exact artifacts and provider reality. The package is incomplete if an important contract/owner/recovery rule still requires design during coding.
 
 ---
 
@@ -202,7 +203,7 @@
 
 ## 8. Completion gate
 
-**[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) gate:** [WP-23.90](#rule-wp-23.90) and all inherited domain-specific gates must pass on the same candidate closure. Real C#/browser/RN calls against the AOT image, previous/current compatibility and complete operation mapping, including auth, files and webhooks outside gRPC.
+**[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) gate:** [WP-23.90](#rule-wp-23.90) and all inherited domain-specific gates must pass on the same candidate closure. Real C#/browser/Kotlin calls against the AOT image, previous/current compatibility and complete operation mapping, including auth, files and webhooks outside gRPC.
 
 **[PG-23](../../assurance/open-gates-register.md#rule-pg-23) evidence:** [WP-23.05](#rule-wp-23.05) — Generated C#/TS contracts and real-server exact-value/error/header/client conformance. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
 
@@ -222,19 +223,6 @@
 
 ## 9. Dependencies
 
-**Upstream — all must be complete.**
+**Upstream:** `03` · `22`. All stage outputs must be complete.
 
-- [WP-03](03-contract-foundation-and-licence-split.md#rule-wp-03)
-- [WP-22](22-identity-workspace-and-device.md#rule-wp-22)
-
-**Downstream — consumers of these released outputs.**
-
-- [WP-24](24-realtime-and-reliable-events.md#rule-wp-24)
-- [WP-30](30-mobile-shared-architecture.md#rule-wp-30)
-- [WP-42](42-commerce-entitlement-and-credits.md#rule-wp-42)
-- [WP-44](44-dynamic-policy-and-configuration.md#rule-wp-44)
-- [WP-51](51-arcscope-cloud-simulator.md#rule-wp-51)
-- [WP-52](52-cloud-harness.md#rule-wp-52)
-
-
----
+**Downstream:** `24` · `30` · `42` · `44` · `51` · `52`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.

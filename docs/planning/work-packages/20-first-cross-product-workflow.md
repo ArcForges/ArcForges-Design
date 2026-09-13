@@ -5,7 +5,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: D — ArcNotes core
-> Upstream: `17`, `19` · Downstream: `50`, `52`
+> Upstream: `17` · `19` · Downstream: `50` · `52`
 
 > **Goal.** Close the first genuine ArcForges workflow end to end: ArcChat is asked to produce a report, ArcNotes creates the document and receives its content, the user approves, the result saves, undoes and recovers, and ArcChat receives an artifact reference. This is where ArcForges stops being a chat client with neighbours and becomes a platform.
 
@@ -25,6 +25,9 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+[Producer artifacts and real integration](../producer-artifacts-and-integration.md) is a required input. Use this WP's row to identify exact released artifacts, permitted fixtures and the owner that must replace each fixture; completion requires the stated evidence class.
+
 
 **Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
@@ -196,15 +199,6 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 ## 9. Dependencies
 
-**Upstream — all must be complete.**
+**Upstream:** `17` · `19`. All stage outputs must be complete.
 
-- [WP-17](17-arcchat-independent-core.md#rule-wp-17)
-- [WP-19](19-arcnotes-search-and-portability.md#rule-wp-19)
-
-**Downstream — consumers of these released outputs.**
-
-- [WP-50](50-full-platform-production-release.md#rule-wp-50)
-- [WP-52](52-cloud-harness.md#rule-wp-52)
-
-
----
+**Downstream:** `50` · `52`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.

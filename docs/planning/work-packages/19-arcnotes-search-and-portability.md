@@ -5,7 +5,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: D — ArcNotes core
-> Upstream: `18` · Downstream: `20`, `25`, `28`, `40`
+> Upstream: `18` · Downstream: `20` · `25` · `28` · `40`
 
 > **Goal.** Make ArcNotes content findable and portable **within the accepted exit path** (`§13` of the ArcNotes requirements): search over hydrated content with citation anchors, non-destructive Markdown and plain-text import, and the **Cloud-generated notebook download** — proving the exit path rather than asserting it.
 
@@ -27,6 +27,9 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+[Producer artifacts and real integration](../producer-artifacts-and-integration.md) is a required input. Use this WP's row to identify exact released artifacts, permitted fixtures and the owner that must replace each fixture; completion requires the stated evidence class.
+
 
 **Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
@@ -134,15 +137,13 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 <a id="rule-wp-19.05"></a>
 
-### WP-19.05 — Cloud notebook-export client
+### WP-19.05 — Cloud and hydrated local export clients
 
-**Required design implementation and verification.** Validate Cloud Markdown export inventory and origin sidecars before presenting a completed download. Test missing marker/hash mismatch and unknown-origin Markdown import without inventing human authorship. Fixture endpoints remain labelled scaffolding until the real producer in [WP-25.08](25-sync-engine-and-blob-lifecycle.md#rule-wp-25.08) deletes them.
+**What must be fully done.** Implement revision-pinned Cloud export client and offline export of already hydrated Notes including preserved pending edits. Cloud export job is fixture-bound until WP25; local export uses typed native format/fidelity/origin and never pretends all unhydrated data is present. Full realm transfer is its separate owner workflow.
 
-**What must be fully done.** Implement the production request/download client for Markdown, attachments, metadata/link manifest and fidelity report. Use a named test-only producer at this stage, registered for deletion in WP-25.08. Acknowledged revisions are eligible; pending device-only edits are explicitly excluded. No native Notes package, lossless re-import promise, HTML/PDF/DOCX export or custom encryption is added.
+**Testing requirements.** Offline complete/partial-hydration and pending-edit export, no local-file projection sync, lost Cloud job reply, missing resources and origin fidelity.
 
-**Testing requirements.** Validate fixture hashes, names, link mapping, omissions and expiry/retry UI; cover service-grace presentation and pending-edit exclusion. Product integration with the real snapshot/export worker is executed in WP-25.08.
-
-**Completion gate.** The client handles the bounded export contract and states fidelity honestly. [PG-07](../../assurance/open-gates-register.md#rule-pg-07) for real Notes export closes only in [WP-25.08](25-sync-engine-and-blob-lifecycle.md#rule-wp-25.08), after the Cloud producer exists.
+**Completion gate.** Both accepted local recoverability and Cloud export paths exist; no Cloud-only claim removes offline export.
 
 <a id="rule-wp-19.06"></a>
 
@@ -226,16 +227,6 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 ## 9. Dependencies
 
-**Upstream — all must be complete.**
+**Upstream:** `18`. All stage outputs must be complete.
 
-- [WP-18](18-arcnotes-document-core.md#rule-wp-18)
-
-**Downstream — consumers of these released outputs.**
-
-- [WP-20](20-first-cross-product-workflow.md#rule-wp-20)
-- [WP-25](25-sync-engine-and-blob-lifecycle.md#rule-wp-25)
-- [WP-28](28-arcnotes-properties-and-views.md#rule-wp-28)
-- [WP-40](40-knowledge-search-and-retrieval.md#rule-wp-40)
-
-
----
+**Downstream:** `20` · `25` · `28` · `40`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.

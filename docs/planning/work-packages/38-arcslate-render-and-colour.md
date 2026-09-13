@@ -26,6 +26,9 @@
 
 ## 2. Required inputs and dependencies
 
+[Producer artifacts and real integration](../producer-artifacts-and-integration.md) is a required input. Use this WP's row to identify exact released artifacts, permitted fixtures and the owner that must replace each fixture; completion requires the stated evidence class.
+
+
 **Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
 **Frozen design input.** [content-origin behavior](../../requirements/07-security-privacy-and-trust.md#content-origin-profile) and [carrier schema](../../requirements/13-data-formats-and-portability.md#content-origin-carriers) is fixed before this package; implement it without choosing a different marking mechanism.
@@ -131,11 +134,11 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 ### WP-38.05 — Subtitles and captions
 
-**What must be fully done.** Subtitle cues as an independent track role, with import and export in standard formats, timed against the sequence timebase exactly.
+**What must be fully done.** Implement authored subtitles and SRT/WebVTT import/export under architecture23, exact canonical internal ticks and declared nearest-ms bounded loss. Preview <=0.5ms conversion, explicit collapsed-interval adjustment/refusal and retained sidecar/origin.
 
-**Testing requirements.** Import and export round-trips per supported format; timing exactness tests; a fidelity-statement check for lossy formats.
+**Testing requirements.** Independent sub-ms/negative/out-of-range/overlap/collapse cases and round-trip fidelity report; no blanket byte/time identity claim for lossy standard formats.
 
-**Completion gate.** Subtitles round-trip in every supported format with exact timing.
+**Completion gate.** Export obeys the fixed representable profile with acknowledged losses.
 
 <a id="rule-wp-38.06"></a>
 
@@ -216,13 +219,10 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 ## 9. Dependencies
 
-**Upstream — all must be complete.**
+**Upstream:** `37`. All stage outputs must be complete.
 
-- [WP-37](37-arcslate-playback-and-processing.md#rule-wp-37)
+**Downstream:** `39`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.
 
-**Downstream — consumers of these released outputs.**
+## P2-010 required behavior and closure
 
-- [WP-39](39-arcslate-integration-and-portability.md#rule-wp-39)
-
-
----
+Verify native real encode/decode, pixel-tile/color/audio/loudness/analysis output and existing render/subtitle profiles together; byte-identical encoding across libraries is not promised. The referenced normative profile and producer stage matrix are binding inputs. Record independent positive/negative vectors and actual owner integration at this WP's assigned stage; a mock cannot close a real-provider/device requirement.

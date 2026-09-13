@@ -17,7 +17,7 @@ The number is an identity, not a schedule. Ordering is by dependency; serial exe
 
 | # | Work package | Depends on |
 |---|---|---|
-| 00 | [Specification, naming and rights freeze](00-specification-naming-and-rights-freeze.md) | — |
+| 00 | [Specification, naming and rights freeze](00-specification-naming-and-rights-freeze.md) | none |
 | 01 | [Repository reconciliation and target layout](01-repository-reconciliation-and-target-layout.md) | `00` |
 | 02 | [Build governance, packaging policy and analyzers](02-build-governance-and-analyzer-policy.md) | `01` |
 | 03 | [Contract foundation and the licence boundary split](03-contract-foundation-and-licence-split.md) | `02` |
@@ -35,7 +35,7 @@ The number is an identity, not a schedule. Ordering is by dependency; serial exe
 | 10 | [Design system and desktop shell foundation](10-design-system-and-desktop-shell.md) | `06`, `09` |
 | 11 | [Security foundation](11-security-foundation.md) | `04`, `08`, `09` |
 | 12 | [Observability foundation](12-observability-foundation.md) | `04`, `06` |
-| 13 | [Four high-risk technical probes](13-high-risk-technical-probes.md) | `06`, `07`, `08` |
+| 13 | [Complete native producers and technical probes](13-high-risk-technical-probes.md) | `06`, `07`, `08`, `09`, `10`, `11`, `12` |
 
 ### Phase C — First real slice
 
@@ -75,7 +75,7 @@ The number is an identity, not a schedule. Ordering is by dependency; serial exe
 
 | # | Work package | Depends on |
 |---|---|---|
-| 30 | [Mobile shared architecture and Apache boundary](30-mobile-shared-architecture.md) | `03`, `06`, `23`, `24` |
+| 30 | [Kotlin Android foundation and Apache boundary](30-mobile-shared-architecture.md) | `03`, `06`, `23`, `24`, `25` |
 
 ### Phase H — ArcScope desktop
 
@@ -102,8 +102,8 @@ The number is an identity, not a schedule. Ordering is by dependency; serial exe
 | 44 | [Dynamic policy and configuration control plane](44-dynamic-policy-and-configuration.md) | `23`, `42` |
 | 43 | [Cloud AI routing, metering and settlement](43-managed-ai-routing-and-metering.md) | `25`, `42`, `44` |
 | 40 | [Knowledge, search and retrieval](40-knowledge-search-and-retrieval.md) | `19`, `25`, `28`, `43`, `44` |
-| 41 | [Extension platform and integrations](41-extension-platform-and-integrations.md) | `09`, `11`, `17` |
-| 45 | [Operations, support and trust & safety](45-operations-support-and-trust-safety.md) | `12`, `21`, `44` |
+| 41 | [Extension platform and integrations](41-extension-platform-and-integrations.md) | `09`, `11`, `17`, `22`, `25` |
+| 45 | [Operations, support and trust & safety](45-operations-support-and-trust-safety.md) | `12`, `21`, `44`, `47` |
 | 46 | [Backup, disaster recovery and data health](46-backup-recovery-and-data-health.md) | `25`, `45` |
 | 51 | [ArcScope deterministic Cloud simulator](51-arcscope-cloud-simulator.md) | `21`, `23`, `25`, `33`, `34`, `35`, `42`, `44` |
 | 52 | [The Cloud Harness](52-cloud-harness.md) | `15`, `17`, `20`, `21`, `23`, `26`, `39`, `40`, `41`, `42`, `43`, `44` |
@@ -198,7 +198,7 @@ Every gate in [`../../assurance/open-gates-register.md`](../../assurance/open-ga
 | **[VG-06](../../assurance/open-gates-register.md#rule-vg-06)** — Cloud Native AOT closure (triggered) | 06.04, 21.00, 50.04 |
 | **[VG-07](../../assurance/open-gates-register.md#rule-vg-07)** — Android runtime posture confirmed from the artifact | 06.07, 30.02, 32.01 |
 | **[VG-08](../../assurance/open-gates-register.md#rule-vg-08)** — framework upgrade re-verification (recurring) | 02, and re-run on each upgrade |
-| **[VG-09](../../assurance/open-gates-register.md#rule-vg-09)** — iOS runtime re-verification (dormant) | deferred with the iOS build |
+| **[VG-09](../../assurance/open-gates-register.md#rule-vg-09)** — historical iOS gate (retired by P2-010) | outside current Android-only scope |
 | **[VG-10](../../assurance/open-gates-register.md#rule-vg-10)** — supplier onboarding and screening | 42 |
 | **[VG-11](../../assurance/open-gates-register.md#rule-vg-11)** — payout eligibility and currency | 42 |
 | **[VG-12](../../assurance/open-gates-register.md#rule-vg-12)** — regional enablement gates (conditional) | 42 |
@@ -243,3 +243,6 @@ Every gate in [`../../assurance/open-gates-register.md`](../../assurance/open-ga
 ## P2-009 package boundaries
 
 The51 active packages follow the current [complete artifact graph](../implementation-sequence.md#9-p2-009-complete-artifact-dependency-graph). WP27/29 remain retired. Package numbering/anchors are stable; titles and runtime/contract responsibilities reflect P2-009. New .90 substeps are the explicit repository/integration acceptance attached to inherited domain work.
+
+
+[Producer artifacts and real integration](../producer-artifacts-and-integration.md) defines this WP's exact producer inputs, permitted fixtures and real replacement gates.

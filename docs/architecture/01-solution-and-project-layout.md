@@ -24,7 +24,7 @@ The ten repositories are ArcForges-DesktopPlatform, ArcChat, ArcNotes, ArcScope,
 | Cloud.Host/PublicApi/Persistence/Modules/BackgroundJobs/Migrations | Cloud / single AOT host, one-shot migrator, ordinary leased jobs; no role-selected Worker/AgentHost |
 | Cloud.AgentRuntime | Retire the loop scaffold; AI owns the TS Workflow. Cloud may retain this C# library name for typed Agent/Task dispatch/control/reconciliation ports only |
 | Cloud.Realtime | Cloud EventService bounded hint polling; AI stream DO in AI |
-| Mobile.Core/ArcChat.Mobile | Mobile / RN application and Apache TS domain/client state; retire MAUI projects |
+| Mobile.Core/ArcChat.Mobile | Mobile / Kotlin Android application and Apache Kotlin domain/client state; historical bootstrap is migration evidence only |
 | Web apps/UI/testing/esproj | Web / Site, Account, Chat, operator and status build profiles, one npm lock |
 | ContentSandbox/helper broker | DesktopPlatform / per-RID packaged restricted helper; product invocation stays in product |
 | eng/build/packaging/policy | DesktopPlatform reusable tooling package/workflow, owner-specific thin invocation files |
@@ -33,11 +33,11 @@ The ten repositories are ArcForges-DesktopPlatform, ArcChat, ArcNotes, ArcScope,
 | Product/native/format/performance fixtures and tests | Owning product or Platform; cross-provider integration orchestrated by Cloud manifest |
 | StartArcForges outputs / ReactApp2 template references | Read-only evidence only, no build dependency or extra repository |
 
-Within each C# product: Domain ← Application ← Infrastructure/LocalRpc/CloudClient/Desktop. Domain imports no transport/UI/native code. Across repositories only exact packages/artifacts/workflow commits; no ProjectReference, source-link import, submodule or sibling checkout build. Platform depends on Contracts, never on a product/Cloud/AI implementation; product/Cloud depends on selected Platform/Contracts packages; AI/Web/Mobile depend on allowed Contracts npm artifacts. Cloud never depends on native/UI/helper packages. An integration manifest is evidence about compatible independent versions, not a family release lockstep.
+Within each C# product: Domain ← Application ← Infrastructure/LocalRpc/CloudClient/Desktop. Domain imports no transport/UI/native code. Across repositories only exact packages/artifacts/workflow commits; no ProjectReference, source-link import, submodule or sibling checkout build. Platform depends on Contracts, never on a product/Cloud/AI implementation; product/Cloud depends on selected Platform/Contracts packages; AI/Web depend on allowed Contracts npm artifacts; Mobile depends on public Contracts Maven artifacts. Cloud never depends on native/UI/helper packages. An integration manifest is evidence about compatible independent versions, not a family release lockstep.
 
 ### Root and logical-path convention
 
-Each .NET repository owns global.json, Directory.Build.props/targets, Directory.Packages.props, NuGet.config, committed per-project package locks, a managed .slnx, eng/, src/ and tests/. DesktopPlatform additionally owns native/, CMakePresets and vcpkg inputs; only its Windows IDE solution composes native builds. Each TS repository owns package.json/package-lock.json, .node-version, tooling/ and tests/. Web owns its esproj/win.slnx; no Cloud project references that esproj. Mobile owns android/ and deferred ios/; AI owns src/worker.ts, src/workflows/, src/streams/, src/providers/workers-ai/, src/inference/ and wrangler.jsonc. RunWorkflow is the sole agent loop; InferenceWorkflow and object verification are fixed-stage bounded job handlers in that same deployment.
+Each .NET repository owns global.json, Directory.Build.props/targets, Directory.Packages.props, NuGet.config, committed per-project package locks, a managed .slnx, eng/, src/ and tests/. DesktopPlatform additionally owns native/, CMakePresets and vcpkg inputs; only its Windows IDE solution composes native builds. Each TS repository owns package.json/package-lock.json, .node-version, tooling/ and tests/. Web owns its esproj/win.slnx; no Cloud project references that esproj. Mobile owns app/, core/, feature/, gradle/libs.versions.toml, Gradle wrapper/checksum, committed locks and dependency-verification metadata; no npm runtime or iOS source tree is required; AI owns src/worker.ts, src/workflows/, src/streams/, src/providers/workers-ai/, src/inference/ and wrangler.jsonc. RunWorkflow is the sole agent loop; InferenceWorkflow and object verification are fixed-stage bounded job handlers in that same deployment.
 
 Logical .NET suffixes such as src/ArcNotes/ArcNotes.Domain and src/Cloud/ArcForges.Cloud.Modules.Task are relative to the sole repository assigned in the table above. They do not identify a shared checkout. Contracts uses public/proto, internal/proto, public/http, internal/ai-http, src/public, src/internal and fixtures/public|internal; Web uses apps/site, apps/app and packages/ui. This convention applies to the remaining diagrams and work-package paths. Source suffix renaming inside an owner is an internal implementation choice; owner/package boundaries are fixed.
 
@@ -63,16 +63,16 @@ Logical .NET suffixes such as src/ArcNotes/ArcNotes.Domain and src/Cloud/ArcForg
 
 ## 3. Contract packages
 
-Mobile and Contracts public/proto, public/http, src/public, public SDK/CLI and public fixtures are Apache-2.0. Internal proto/HTTP and implementation in Platform/Cloud/AI/Web/four desktop repositories retain AGPL-3.0-only; upstream dependencies keep their original notices. Public SDK extension protocol is Apache even though first-party product RPC is internal AGPL. Generated files inherit the authored schema boundary and generator's required runtime notices; tools do not relabel input expression. Mobile cannot import Web application/UI/testing expression; shared public tests originate in Contracts public fixtures. Internal tests may consume public fixtures, never the reverse.
+Mobile and the entire Contracts repository (public/internal proto, HTTP schemas, generators, SDK/CLI, validators and fixtures) are Apache-2.0 under P2-010. Public/internal remains an access and import-direction separation. Platform/Cloud/AI/Web/four desktop implementation retains its existing licence; dependencies keep their own notices. Generated files preserve authored-schema and generator/runtime notices. Mobile imports only public artifacts and public fixtures; it cannot import Web application expression or any GPL-family implementation.
 
 Package metadata declares owner/SPDX/source commit, schema/package version, dependency closure, NOTICE and SBOM. Public npm access=public, NuGet public registry; AGPL packages may be publicly distributed with source/notice obligations. Per-RID native license closure includes static dependencies and optional codec features, not merely the wrapper's license. Six reference-source access/exclusion/provenance boundaries and all archive prohibitions stay unchanged. Source review and actual distributable license gate remain evidence obligations; this amendment does not claim third-party code has been copied or audited by a runtime test.
 
-The [wire registry](contracts/04-protobuf-wire-registry.md) defines every service/message/field and the public/internal package split. Generated C# and TS output is not hand-edited. The [CF HTTP schema](contracts/05-cloudflare-integration.md) is the explicit AI/object exception. Contract validators validate shape/profile; business validation remains in the owner.
+The [wire registry](contracts/04-protobuf-wire-registry.md) defines every service/message/field and the public/internal package split. Generated C#, TypeScript and Java/Kotlin output is not hand-edited. The [CF HTTP schema](contracts/05-cloudflare-integration.md) is the explicit AI/object exception. Contract validators validate shape/profile; business validation remains in the owner.
 
 | # | Rule |
 |---|---|
 | CT-01 | Independent product changes cannot force unrelated product releases. |
-| CT-02 | Handwritten proto in Contracts is the sole business wire source; C#/TS clients are generated. |
+| CT-02 | Handwritten proto in Contracts is the sole business wire source; C#/TS/Kotlin clients are generated. |
 | CT-03 | Contracts contain no business implementation. |
 | CT-04 | Contracts have no UI/ORM/native/host dependency. |
 | CT-05 | C# contract libraries satisfy the Native AOT gate. |
@@ -114,7 +114,7 @@ Modules: **Identity**, **Workspace**, **Devices**, **Entitlement**, **Commerce**
 ## 6. Reference direction
 
 ```
-Desktop / LocalRpc / Infrastructure / MinimalApi / React Native adapters
+Desktop / LocalRpc / Infrastructure / MinimalApi / Kotlin Android adapters
                                  ↓
                           Application
                                  ↓
@@ -243,11 +243,12 @@ Assert portable managed projects have no esproj reference; win.slnx contains exa
 
 ## 12. Package and native distribution registry
 
-Publish the following package identities. Managed package versions and their compatible ABI range are independent from product versions. A native candidate has version 1.0.0-ci.<run>, stable starts1.0.0; never overwrite an existing package/version. Producer release manifests list SHA256 and exact dependencies.
+Publish the following package identities. Managed package versions and their compatible ABI range are independent from product versions. A producer candidate has version 1.0.0-ci.<run>.<attempt>, stable starts1.0.0; never overwrite an existing package/version. Producer release manifests list SHA256 and exact dependencies.
 
 | Package family | Dependencies / public C# capability | Native RID assets |
 |---|---|---|
 | ArcForges.Foundation, .Application.Abstractions | Contracts.Foundation; IDs are adapters, not duplicate wire types | None; headless |
+| ArcForges.LocalRpc, .Capabilities | Foundation and exact local Contracts; IPC, descriptor/selection mechanisms from WP08/09 | No product implementation or native payload transport |
 | ArcForges.Observability | Foundation; bounded Activity/Meter/logging, no product telemetry schema | None; headless |
 | ArcForges.Persistence | Foundation; desktop SQLite/journal mechanics, no product schema/Cloud Npgsql | None in managed package; SQLite runtime independently selected |
 | ArcForges.Security, .Update, .Execution | Foundation; OS secret/approval adapters, signed updates, ProductJob mechanics | Explicit OS adapters; Cloud may consume only documented headless subpackages |
@@ -262,15 +263,18 @@ Publish the following package identities. Managed package versions and their com
 | ArcForges.ContentSandbox.Contracts, .Broker | Foundation + bounded helper DTOs; Broker references helper Contracts only; isolated helper references selected parser wrappers | .ContentSandbox.Runtime.<rid>: signed AOT helper + OS enforcement profile |
 | ArcForges.Build.Policy | Build-only, source/pin/NOTICE checks | No runtime dependency |
 | ArcForges.Contracts.Foundation/PublicApi/Events/Validation/LocalRpc.<owner>/CloudInternal; ArcForges.Sdk.* and ArcForges.Cli | Contracts-owned generated/public vs internal graph | No desktop native dependency |
-| @arcforges/proto, @arcforges/api-client, @arcforges/rn-transport, @arcforges/contract-fixtures | Apache; protobuf-es + selected transport; no AGPL app import | No desktop native dependency |
-| @arcforges/ai-internal | Internal HTTP generated types and validators | AGPL; AI/Cloud integration only |
+| @arcforges/proto, @arcforges/api-client, @arcforges/contract-fixtures | Apache; protobuf-es + selected transport; no AGPL app import | No desktop native dependency |
+| @arcforges/ai-internal | Internal HTTP generated types and validators | Apache-2.0; AI/Cloud import boundary only |
+| io.github.arcforges:contracts-proto, :contracts-client, :contract-fixtures | Public Java/Kotlin lite messages, coroutine native gRPC stubs, independent fixtures respectively | Apache-2.0 JARs; grpc-okhttp transport is selected by Android consumer, no desktop dependency |
 
 Native.Abstractions holds status/ABI/build-manifest and safe lifetime wrappers, not media/domain entities. Consumers explicitly reference the managed package and exactly one matching .Runtime.<rid> package through RID-conditioned PackageReference; NuGet does not magically select a sibling RID package. Assets live runtimes/<rid>/native, signed in final app, load only app-owned read-only paths, with no PATH/user-writable fallback. RID set remains win-x64/win-arm64/osx-arm64/osx-x64/linux-x64/linux-arm64 under existing tiers. Normal consumer restore/build/publish never calls CMake/vcpkg; no “all desktop dependencies” metapackage.
 
-Existing version/build-info/error ABI preambles stay compatible; capability ABI major1 adds functions under owned prefixes. C ABI uses fixed widths, explicit lengths, opaque handles, status+bounded error data, explicit allocation/free and callback deregistration before owner disposal. LibraryImport/SafeHandle wrappers own memory; no C++ exception, STL, native pointer or domain object crosses. Buffers may not outlive their handle unless explicitly copied; one handle is single-caller unless capability documents concurrent read. Existing native architecture remains the lifetime/concurrency/error authority.
+Existing version/build-info/error ABI preambles stay compatible; functional ABI1.1 adds the complete typed functions under owned prefixes in [native ABI](contracts/06-native-functional-abi.md), preserving the published1.0 probe/POD layout. C ABI uses fixed widths, explicit lengths, opaque handles, status+bounded error data, explicit allocation/free and callback deregistration before owner disposal. LibraryImport/SafeHandle wrappers own memory; no C++ exception, STL, native pointer or domain object crosses. Buffers may not outlive their handle unless explicitly copied; one handle is single-caller unless capability documents concurrent read. Existing native architecture remains the lifetime/concurrency/error authority.
 
 **Admission dispositions resolved now.** OTIO selected as required official format interoperability, using upstream0.18.1 and the existing pinned overlay (Apache-2.0, Imath/RapidJSON notices). A first-party managed JSON reader could parse a subset but would duplicate official schema upgrade/fidelity behavior; it is not the selected interoperability engine. Hostile parsing remains isolated. MDF is not a V1 required interchange format: keep arcscope-mdf-abi fenced/excluded from all release/package closures, and implement accepted tabular/event/native formats with managed adapters. This is an explicit no-adoption disposition, not “decide during WP35”. No unrelated acquisition feature is removed.
 
 Native build record native-build.v1 fixes vcpkg36677bbd0b3bf11da7376e62e14bffcc54d2eaeb (current CI input); deployREADME9e593... is superseded. CMake 4.3.3/Ninja 1.13.1, C++20/C17 ABI; classic vcpkg standard triplets, no new manifest/custom triplets/local installed tree. Pin gives FFmpeg 9.0.1, OpenColorIO 2.5.2, OpenImageIO 3.1.14.0, libusb1.0.30/miniaudio0.11.25; overlay OTIO0.18.1 includes existing source SHA512. FFmpeg core LGPL configuration disables GPL/nonfree components; no optional GPU SDK silently changes redistribution closure. PDFium uses verified chromium/8044 source/build identity and full BSD/third-party notices; build in Platform isolated profile, not a dependency downloaded by clients. The exact platform library closure/signatures/SBOM are candidate build outputs and release gates, not a claim already built here.
 
 CI order: module tests/fuzz+ABI → produce candidate managed/RID packages → isolated feed restore into clean consumer → Native AOT publish/run per RID with sandbox on → compare ABI/NOTICE/SBOM → publish same tested bytes to nuget.org. ABI major change requires new package major and all affected consumers' compatibility proof; compatible patch retests all consumers of that capability, not unrelated products.
+
+Each functional native managed package includes its versioned C17 headers under build/native/include/arc and ABI fixture manifest; the matching RID runtime contains the actual shared libraries. A clean C17 consumer dynamically resolves only the declared exports from those packaged assets (no adjacent headers or source). Header/descriptor and binary ABI manifest versions must agree before load.

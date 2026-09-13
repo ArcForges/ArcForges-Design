@@ -31,7 +31,7 @@ Every numeric allowance below is **versioned commercial policy under [D-020](../
 | Deleted-item recovery window | 30 days | Proposal; requires approval |
 | Payment grace period | 7 days | Proposal; requires approval |
 | Post-entitlement cloud retention | 30 days | Proposal; requires approval |
-| Infrastructure backup retention | ≈ 35 days | Proposal; requires approval |
+| Infrastructure backup retention | 30 days protected independent copies | Engineering objective; CF integration backup profile governs |
 | Storage add-on tiers | +100 GB / +500 GB / +1 TB | Proposal; requires approval |
 
 Two figures are **structural**, not policy, and are binding: storage is **workspace-shared, not per-product**, and storage/AI constraints are honestly disclosed under [C-04](00-product-scope-and-portfolio.md#rule-c-04)/C-09. Replenishing AI capacity is specified by commerce [AC-01](04-commerce-entitlement-and-credits.md#rule-ac-01)–AC-12.
@@ -367,10 +367,10 @@ These are **internal engineering objectives, not an external SLA** ([I-403](01-n
 | Objective | Target |
 |---|---|
 | Metadata RPO | ≤ 5 minutes |
-| Blob backup RPO | ≤ 1 hour (alert when lag > 4 hours) |
+| Blob backup RPO | <=15minutes; alert before violation, release/restore drill verifies the bound |
 | Critical service RTO | ≤ 4 hours |
 | Full blob recovery / provider switch | ≤ 24 hours |
-| Backup retention | ≈ 35 days (policy parameter, §1) |
+| Backup retention | 30days immutable independent copies under the protected backup profile |
 
 No public claim of seconds-scale cross-cloud failover may be made.
 

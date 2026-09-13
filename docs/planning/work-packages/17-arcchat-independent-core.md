@@ -5,7 +5,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: C — First real slice
-> Upstream: `06`, `15`, `16` · Downstream: `20`, `26`, `41`, `52`
+> Upstream: `06` · `15` · `16` · Downstream: `20` · `26` · `41` · `52`
 
 > **Goal.** Complete ArcChat as an independent product: chat, agent, task centre, capability hub, permission and approval, automation, local data and recovery — with **no claim** that its ecosystem tier is finished.
 
@@ -27,6 +27,9 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+[Producer artifacts and real integration](../producer-artifacts-and-integration.md) is a required input. Use this WP's row to identify exact released artifacts, permitted fixtures and the owner that must replace each fixture; completion requires the stated evidence class.
+
 
 **Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
@@ -229,18 +232,10 @@
 
 ## 9. Dependencies
 
-**Upstream — all must be complete.**
+**Upstream:** `06` · `15` · `16`. All stage outputs must be complete.
 
-- [WP-06](06-aot-jit-and-wasm-publish-proof.md#rule-wp-06)
-- [WP-15](15-arcchat-conversation-core.md#rule-wp-15)
-- [WP-16](16-unified-execution-engine.md#rule-wp-16)
+**Downstream:** `20` · `26` · `41` · `52`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.
 
-**Downstream — consumers of these released outputs.**
+## P2-010 required behavior and closure
 
-- [WP-20](20-first-cross-product-workflow.md#rule-wp-20)
-- [WP-26](26-remote-action-and-tool-bridge.md#rule-wp-26)
-- [WP-41](41-extension-platform-and-integrations.md#rule-wp-41)
-- [WP-52](52-cloud-harness.md#rule-wp-52)
-
-
----
+Implement every desktop ChatTurn/Task/temporary flow in client journeys, including source-policy setup, one-time override, Web search and protected-context refusal. No local planner or synthetic Task; actual Harness closes52. The referenced normative profile and producer stage matrix are binding inputs. Record independent positive/negative vectors and actual owner integration at this WP's assigned stage; a mock cannot close a real-provider/device requirement.

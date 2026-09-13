@@ -28,8 +28,10 @@ Every Cloud business operation and explicit HTTP exception. Columns follow `§2`
 | `identity.revokeAllSessions` | End every session, including the caller and device SSO grants | session, `R3`, step-up | `DE` | — | `FR` |
 | `identity.listAuthIdentities` | The user's credentials | session, `R1` | `Q` | — | `AO` |
 | `identity.removeAuthIdentity` | Remove a credential | session, `R3`, step-up | `DE` | `identity.last_credential` | `FR` |
-| `identity.beginStepUp` / `identity.completeStepUp` | Satisfy a step-up challenge | session | `NI` | `auth.step_up_required` | `FR` |
-| `identity.beginRecovery` / `identity.completeRecovery` | Account recovery | **anonymous**, heavily rate-limited, fully audited | `NI` | `capacity.rate_limited` | `FR` |
+| `identity.beginStepUp` | Satisfy a step-up challenge | session | `NI` | `auth.step_up_required` | `FR` |
+| `identity.completeStepUp` | Satisfy a step-up challenge | session | `NI` | `auth.step_up_required` | `FR` |
+| `identity.beginRecovery` | Account recovery | **anonymous**, heavily rate-limited, fully audited | `NI` | `capacity.rate_limited` | `FR` |
+| `identity.completeRecovery` | Account recovery | **anonymous**, heavily rate-limited, fully audited | `NI` | `capacity.rate_limited` | `FR` |
 | `identity.requestAccountDeletion` | Start the grace period | session, `R4`, step-up | `IW` | — | `FR` |
 | `identity.cancelAccountDeletion` | Stop it within grace | restricted purpose=cancelDeletion reauthentication, `R3` | `IW` | `state.invalid_transition` | `FR` |
 
@@ -49,10 +51,10 @@ These C# endpoint mappings live inside the existing Cloud host, exposed through 
 
 | OperationId / verb and path | Auth/input | Output and effect |
 |---|---|---|
-| `browser.bootstrap` · GET `/session/v1/bootstrap` | Anonymous or live cookie session; exact configured origin | No-store CSRF request token, authenticated flag and safe session/expiry/profile projection. Pre-auth material is bounded/expiring; no bearer/session secret in JSON |
-| `browser.beginAuthentication` · POST `/session/v1/authentication/begin` | Pre-auth flow + CSRF/Origin; existing passkey/email policy | Expiring, rate-limited challenge bound to method/origin/RP/flow; no user-existence leak |
-| `browser.completeAuthentication` · POST `/session/v1/authentication/complete` | One-use challenge response + CSRF/Origin | Creates lowest-trust browser device/session, Set-Cookie only, safe session projection; invalidate pre-auth flow |
-| `browser.logout` · POST `/session/v1/logout` | Cookie + CSRF/Origin; replay against already-ended session is harmless | Revoke before cookie deletion; no-store result; never logout by GET |
+| `browser.bootstrap` | Anonymous or live cookie session; exact configured origin | No-store CSRF request token, authenticated flag and safe session/expiry/profile projection. Pre-auth material is bounded/expiring; no bearer/session secret in JSON |
+| `browser.beginAuthentication` | Pre-auth flow + CSRF/Origin; existing passkey/email policy | Expiring, rate-limited challenge bound to method/origin/RP/flow; no user-existence leak |
+| `browser.completeAuthentication` | One-use challenge response + CSRF/Origin | Creates lowest-trust browser device/session, Set-Cookie only, safe session projection; invalidate pre-auth flow |
+| `browser.logout` | Cookie + CSRF/Origin; replay against already-ended session is harmless | Revoke before cookie deletion; no-store result; never logout by GET |
 
 Step-up, credential management, recovery, revoking other sessions and workspace selection use the existing public Identity/Workspace operations through the cookie-auth adapter with the same authorization and idempotency rules. WebSocket origin validation and negotiation antiforgery are explicit transport requirements, not new business operations. No endpoint accepts a caller-supplied forwarding URL.
 
@@ -178,15 +180,26 @@ The typed requests use the canonical Notes schema in [the Cloud data model](../d
 
 | Operation | Purpose | Auth | Class | Key errors | Compat |
 |---|---|---|---|---|---|
-| `notes.listNotebooks` / `notes.listFolders` / `notes.getDocument` | Bounded owner-filtered hierarchy/content at an acknowledged revision | `R1` | `Q` | `state.not_found` | `AO` |
-| `notes.createNotebook` / `notes.createFolder` | Caller-stable ID, notebook expected revision, nullable folder parent and sibling order | `R2` | `CC` | `conflict.revision_mismatch`, `validation.invalid_request` | `FR` |
-| `notes.renameFolder` / `notes.moveFolder` / `notes.reorderFolder` | Validate notebook revision, cycle/parent and deterministic order | `R2` | `IW` | `conflict.revision_mismatch`, `validation.invalid_request` | `FR` |
+| `notes.listNotebooks` | Bounded owner-filtered hierarchy/content at an acknowledged revision | `R1` | `Q` | `state.not_found` | `AO` |
+| `notes.listFolders` | Bounded owner-filtered hierarchy/content at an acknowledged revision | `R1` | `Q` | `state.not_found` | `AO` |
+| `notes.getDocument` | Bounded owner-filtered hierarchy/content at an acknowledged revision | `R1` | `Q` | `state.not_found` | `AO` |
+| `notes.createNotebook` | Caller-stable ID, notebook expected revision, nullable folder parent and sibling order | `R2` | `CC` | `conflict.revision_mismatch`, `validation.invalid_request` | `FR` |
+| `notes.createFolder` | Caller-stable ID, notebook expected revision, nullable folder parent and sibling order | `R2` | `CC` | `conflict.revision_mismatch`, `validation.invalid_request` | `FR` |
+| `notes.renameFolder` | Validate notebook revision, cycle/parent and deterministic order | `R2` | `IW` | `conflict.revision_mismatch`, `validation.invalid_request` | `FR` |
+| `notes.moveFolder` | Validate notebook revision, cycle/parent and deterministic order | `R2` | `IW` | `conflict.revision_mismatch`, `validation.invalid_request` | `FR` |
+| `notes.reorderFolder` | Validate notebook revision, cycle/parent and deterministic order | `R2` | `IW` | `conflict.revision_mismatch`, `validation.invalid_request` | `FR` |
 | `notes.moveDocument` | Atomically validate source/destination notebook revisions and document revision; preserve document/history IDs | `R2` | `IW` | `conflict.revision_mismatch`, `state.not_found` | `FR` |
-| `notes.trashFolder` / `notes.restoreFolder` | Ancestor visibility, preserving each descendant's independent trash state | `R3` | `IW` | `conflict.revision_mismatch` | `FR` |
-| `notes.listRevisions` / `notes.getRevision` | Bounded immutable history including attachment references | `R1` | `Q` | `state.not_found`, `state.gone` | `AO` |
-| `notes.createCheckpoint` / `notes.restoreRevision` | Named revision pin or a new current revision derived from a retained revision; never rewrite history | `R2` / `R3` | `IW` | `conflict.revision_mismatch`, `resource.unavailable` | `FR` |
-| `notes.requestExport` / `chat.requestExport` | Snapshot acknowledged scope and return a bounded export-job reference | `R1` + data-export permission | `CC` | `entitlement.quota_exceeded`, `state.not_found` | `FR` |
-| `export.getStatus` / `export.cancel` / `export.getDownload` | Owner-filtered progress, idempotent cancel and an expiring verified artifact | `R1` (cancel requires owning actor) | `Q` / `IW` | `state.not_found`, `resource.unavailable` | `AO` |
+| `notes.trashFolder` | Ancestor visibility, preserving each descendant's independent trash state | `R3` | `IW` | `conflict.revision_mismatch` | `FR` |
+| `notes.restoreFolder` | Restore ancestor visibility; preserve independently trashed descendants | R3 | IW | conflict.revision_mismatch | FR |
+| `notes.listRevisions` | Bounded immutable history including attachment references | `R1` | `Q` | `state.not_found`, `state.gone` | `AO` |
+| `notes.getRevision` | Bounded immutable history including attachment references | `R1` | `Q` | `state.not_found`, `state.gone` | `AO` |
+| `notes.createCheckpoint` | Create a named pin of the acknowledged revision | R2 | IW | conflict.revision_mismatch | FR |
+| `notes.restoreRevision` | Create a new current revision from retained history without rewriting history | R3 | IW | conflict.revision_mismatch, resource.unavailable | FR |
+| `notes.requestExport` | Create bounded revision-pinned owner export with explicit data-export permission | R2 | CC | entitlement.quota_exceeded, state.not_found | FR |
+| `chat.requestExport` | Create bounded revision-pinned owner export with explicit data-export permission | R2 | CC | entitlement.quota_exceeded, state.not_found | FR |
+| `export.getStatus` | Read owner-filtered export progress | R1 | Q | state.not_found | AO |
+| `export.cancel` | Idempotent owner cancellation, preserving already committed output state | R2 | IW | state.invalid_transition | FR |
+| `export.getDownload` | Issue a new short-lived authenticated ticket for the retained verified artifact | R1 | NI | state.gone, resource.unavailable | FR |
 
 Structural writes return the new revisions of **all** affected roots and the immutable command receipt. A cross-notebook folder move is a bounded explicit move plan, not an unbounded recursive transaction; the V1 `moveFolder` operation stays within its notebook. A nonempty folder is not physically removed by the simple mutation API: trash changes visibility, and separately tracked retention/purge uses the deletion lifecycle. `restoreRevision` promotes a new current revision after revalidating resources and quota; old revisions remain immutable. Export manifests pin their inputs through bounded completion/retention and exclude pending local work.
 
@@ -218,7 +231,8 @@ Structural writes return the new revisions of **all** affected roots and the imm
 | `task.get` | One task with its runs, steps and attempts | `R1` | `Q` | `state.not_found` | `AO` |
 | `task.create` | Create a Cloud task; each Step declares its tool locality ([TO-02](../data-model/00-data-model-overview.md#rule-to-02)) | `R2`+ (the invoked capability's risk) | `CC` | `entitlement.credits_exhausted`, `perm.approval_required` | `FR` |
 | `task.cancel` | Request cancellation | `R2` | `IW` | `state.invalid_transition` | `FR` |
-| `task.pause` / `task.resume` | Suspend and continue | `R2` | `IW` | `state.invalid_transition` | `AC` |
+| `task.pause` | Request cooperative pause; control progress is separate from Task state | R2 | IW | state.invalid_transition | FR |
+| `task.resume` | Reauthorize current paused/interrupted Task and reconcile unknown effects before continuation | R2 | IW | state.invalid_transition | FR |
 | `task.retryAttempt` | Retry a failed attempt | `R2` | `NI` | `state.invalid_transition` | `FR` |
 | `task.readStream` | In-progress turn output from a byte offset; `streamId` optional and resolves the current attempt | session, read on the task | `Q` | `state.not_found` | `AO` |
 | `task.steer` | Adjust a running task — **grants nothing** | `R1` | `AP` | `state.invalid_transition` | `AC` |
@@ -305,7 +319,8 @@ The Notes branch of `search.query` accepts the typed `NotesQuery` [profile](02-l
 | `notification.registerPush` | Register a push token | `R2` | `IW` | `FR` |
 | `notification.unregisterPush` | Remove one | `R2` | `DE` | `FR` |
 | `support.createCase` | Open a case with a **diagnostic reference, never content** | `R2` | `CC` | `AC` |
-| `support.listCases` / `support.appendMessage` | Case interaction | `R1` / `R2` | `Q` / `AP` | `AO` |
+| `support.listCases` | Read owner support cases | R1 | Q | state.not_found | AO |
+| `support.appendMessage` | Append owner-authored message with stable command ID and explicit diagnostic consent | R2 | AP | state.not_found | FR |
 | `data.requestExport` | Full user-data export | `R3`, step-up | `NI` | `FR` |
 | `data.getExportState` | Progress and download ticket | `R1` | `Q` | `AO` |
 
@@ -328,7 +343,8 @@ The Notes branch of `search.query` accepts the typed `NotesQuery` [profile](02-l
 | `simulation.createDefinition` | Create a definition | `R2` | `CC` | `validation.invalid_request` | `FR` |
 | `simulation.publishScenarioVersion` | Freeze an **immutable** version; validates the channel schema, AST bounds and CSV reference | `R2` | `CC` | `validation.invalid_request`, `validation.ast_bounds_exceeded` | `FR` |
 | `simulation.startRun` | Start a run against a scenario version, seed and execution profile | `R2` | `CC` | `entitlement.no_service_term`, `entitlement.quota_exceeded`, `capacity.rate_limited` | `FR` |
-| `simulation.pauseRun` / `simulation.resumeRun` | Pause and resume at a durable boundary | `R2` | `IW` | `state.invalid_transition` | `FR` |
+| `simulation.pauseRun` | Pause and resume at a durable boundary | `R2` | `IW` | `state.invalid_transition` | `FR` |
+| `simulation.resumeRun` | Pause and resume at a durable boundary | `R2` | `IW` | `state.invalid_transition` | `FR` |
 | `simulation.cancelRun` | Cancel; commits a **partial** outcome | `R2` | `IW` | `state.invalid_transition` | `FR` |
 | `simulation.getRun` | State, terminal reason and **complete-or-partial extent** | `R1` | `Q` | `state.not_found` | `AO` |
 | `simulation.listSegments` | The authorised manifest: sequence, logical range, count, encoding, byte length, hash | `R1` | `Q` | `state.not_found` | `AO` |
@@ -392,24 +408,8 @@ These complete existing accepted flows. The [numbered registry](04-protobuf-wire
 
 | Operation | Owner behavior / authorization | Risk | Class | Declared failure | Compatibility |
 |---|---|---|---|---|---|
-| `identity.completeStepUp` | Consume current one-use flow and record operation-class step-up | R2 | NI | auth.step_up_required | FR |
-| `identity.completeRecovery` | Complete current recovery proof and replacement credential under the existing recovery lifecycle | R3 | NI | validation.invalid_request | FR |
-| `notes.listFolders` | Read owner notebook tree | R1 | Q | state.not_found | AO |
-| `notes.createFolder` | Create under same notebook with parent revision | R2 | CC | conflict.revision_mismatch | FR |
-| `notes.moveFolder` | Move in the fixed notebook tree; reject cycles | R2 | IW | conflict.revision_mismatch | FR |
-| `notes.reorderFolder` | Change declared sibling order | R2 | IW | conflict.revision_mismatch | FR |
-| `notes.restoreFolder` | Restore ancestor visibility without restoring independently trashed documents | R2 | IW | conflict.revision_mismatch | FR |
-| `notes.getDocument` | Read authorized current document projection | R1 | Q | state.not_found | AO |
-| `notes.getRevision` | Read immutable acknowledged history | R1 | Q | state.not_found | AO |
-| `notes.restoreRevision` | Create new current revision from retained history; preserve history | R2 | IW | conflict.revision_mismatch | FR |
 | `sync.getBootstrapPage` | Read the existing pinned scoped bootstrap page | R1 | Q | sync.bootstrap_expired | AO |
-| `task.resume` | Reauthorize current paused Task and enqueue continuation, never replay unknown effects | R2 | IW | state.invalid_transition | FR |
-| `simulation.resumeRun` | Resume current nonterminal simulation from its committed checkpoint | R2 | IW | state.invalid_transition | FR |
 | `chat.createConversation` | Create caller-stable conversation in owner workspace | R2 | CC | conflict.duplicate_identifier | FR |
-| `chat.requestExport` | Create bounded owner-authorized export job | R2 | CC | perm.capability_denied | FR |
-| `export.getDownload` | Issue short-lived authenticated facade authorization for retained output | R1 | NI | state.gone | FR |
-| `export.cancel` | Cancel current nonterminal owner job | R2 | IW | state.invalid_transition | FR |
-| `support.appendMessage` | Append owner-authored case message; no implicit diagnostic upload | R2 | AP | state.not_found | FR |
 | `support.decideAccess` | Consent/refuse exact unexpired content-access proposal; no operator privilege | R2 | IW | perm.approval_expired | FR |
 | `resource.getUploadStatus` | Read paged receipt/verification state of own upload | R1 | Q | resource.upload_expired | AO |
 | `resource.renewUploadTicket` | Renew transport ticket after current authorization without extending upload lifetime | R1 | NI | resource.upload_expired | FR |
@@ -437,3 +437,7 @@ The existing browser.*, commerce.providerWebhook, resource.uploadChunk and task.
 ## Complete account surface
 
 The [wire registry account operations](04-protobuf-wire-registry.md#account-operation-semantics) are part of this catalogue, with their explicitly stated classes, risk, compatibility and proof rules. They implement profile/email/credentials/recovery codes, session and PAT management, device SSO/sign-out/remote scopes, security activity, self-host provider discovery and workspace data health/deletion. Their stable names and typed fields are defined once in that registry. Identity and Device own security changes; Workspace coordinates content deletion through existing owner jobs. No Web-only substitute endpoint may implement a business rule missing from these owners.
+
+## Complete initial journey operations
+
+The additional identity enrollment, ChatTurn/promotion/temporary/project/memory, paged Task detail, source consent, realm transfer and connector methods are individually numbered in [wire registry sections5 and10](04-protobuf-wire-registry.md#5-public-business-operation-registry); their authorization/idempotency/risk is specified in its supporting-operation and added-owner rules. They are mandatory initial services, not optional later endpoints. [Client journeys](07-client-journeys-and-ports.md) fixes each standard browser-auth projection and provider callback, including enrollment/recovery/step-up and device SSO. All normal business operations use native C#/Kotlin gRPC or TypeScript gRPC-Web; no parallel JSON business CRUD API.

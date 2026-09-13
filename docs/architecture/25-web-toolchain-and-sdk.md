@@ -45,7 +45,7 @@ Development may start an exact released Cloud container or explicit built candid
 <a id="3-c--openapi--typescript"></a>
 ## 3. Proto to C# and TypeScript
 
-Contracts handwritten public proto → pinned protoc/C#/protobuf-es generation → released descriptors and compatibility fixtures → Apache generated API client → Web/RN consumers. [Wire registry](contracts/04-protobuf-wire-registry.md) fixes every numbered field, method, exact value, error and previous/current case. Business proto is not generated from C# handlers/OpenAPI.
+Contracts handwritten public proto → pinned protoc/C#/protobuf-es generation → released descriptors and compatibility fixtures → Apache generated API client → Web/Android consumers. [Wire registry](contracts/04-protobuf-wire-registry.md) fixes every numbered field, method, exact value, error and previous/current case. Business proto is not generated from C# handlers/OpenAPI.
 
 <a id="31-exact-wire-values"></a>
 ### 3.1 Exact wire values
@@ -103,4 +103,4 @@ These establish the selected mechanisms, not a completed production build. Exact
 
 Web retains React/Vite/React Router static profiles, selects React 19.3.0/Router 8.3.1/Vite 8.3.0/TS7.0.2 with existing UI/query/accessibility choices. Root paths apps/site, apps/app, packages/ui, tooling, tests, win.slnx + ArcForges.Web.esproj; no SDK source in Web (consume Apache Contracts package). Account/Chat/operator/status are explicit separately built route graphs; no runtime SSR. Pin other existing direct UI/test deps from their own approved manifest during initial build, without changing architecture; equivalent patch lock resolution is an implementation detail. Origins/runtime config/CSP/CSRF/cookie segregation and asset rollback rules remain.
 
-[Mobile](11-mobile-architecture.md#3-runtime-libraries-and-lifecycle-baseline) owns the RN stack; Web consumes only its declared package/route profile. [Wire registry](contracts/04-protobuf-wire-registry.md) owns public schemas and adapters.
+[Mobile](11-mobile-architecture.md#3-runtime-libraries-and-lifecycle-baseline) owns the Kotlin Android stack; Web consumes only its declared package/route profile. [Wire registry](contracts/04-protobuf-wire-registry.md) owns public schemas and adapters.

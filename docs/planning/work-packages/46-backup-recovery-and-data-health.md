@@ -5,7 +5,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: J — Platform completion
-> Upstream: `25`, `45` · Downstream: `48`, `50`
+> Upstream: `25` · `45` · Downstream: `48` · `50`
 
 > **Goal.** Make recovery a proven fact rather than a configured intention: five backup layers, cross-provider and cross-region copies, point-in-time restore, a rehearsed region rebuild, and continuous data-health detection — with a **green backup job never counting as a proven restore**.
 
@@ -25,6 +25,9 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+[Producer artifacts and real integration](../producer-artifacts-and-integration.md) is a required input. Use this WP's row to identify exact released artifacts, permitted fixtures and the owner that must replace each fixture; completion requires the stated evidence class.
+
 
 **Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
@@ -204,15 +207,10 @@
 
 ## 9. Dependencies
 
-**Upstream — all must be complete.**
+**Upstream:** `25` · `45`. All stage outputs must be complete.
 
-- [WP-25](25-sync-engine-and-blob-lifecycle.md#rule-wp-25)
-- [WP-45](45-operations-support-and-trust-safety.md#rule-wp-45)
+**Downstream:** `48` · `50`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.
 
-**Downstream — consumers of these released outputs.**
+## P2-010 required behavior and closure
 
-- [WP-48](48-account-portal.md#rule-wp-48)
-- [WP-50](50-full-platform-production-release.md#rule-wp-50)
-
-
----
+Implement full realm-transfer job/manifest/fidelity/ID mapping and independent fenced restore, preserving source data and excluding credentials/grants/ledgers/live automations; irrecoverable state is explicit. The referenced normative profile and producer stage matrix are binding inputs. Record independent positive/negative vectors and actual owner integration at this WP's assigned stage; a mock cannot close a real-provider/device requirement.

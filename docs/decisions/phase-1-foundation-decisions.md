@@ -1,6 +1,6 @@
 # Phase 1 Foundation Decision Register
 
-> **Current technology amendment (2026-09-11): [P2-009](phase-2-specification-decisions.md#rule-p2-009).** Historical monorepo, C# wire source, local legacy RPC, Cloud JIT, in-host Harness and MAUI quotations below are superseded as specified there. Product scope, license, access exclusions and preserved evidence remain traceable.
+> **Current amendments: [P2-009](phase-2-specification-decisions.md#rule-p2-009) (2026-09-11) and [P2-010](phase-2-specification-decisions.md#rule-p2-010) (2026-09-13).** P2-010 selects Kotlin/Compose Android only and Apache-2.0 for the complete Contracts repository; original licence/runtime quotations below do not reverse it. Historical monorepo, C# wire source, local legacy RPC, Cloud JIT, in-host Harness and MAUI quotations below are superseded as specified there. Product scope, license, access exclusions and preserved evidence remain traceable.
 
 > Status: **Foundation Freeze requested** — Phase 1 (Input Review and Foundation Decision Freeze)
 > Branch: `design/phase-1-foundation`

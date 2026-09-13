@@ -5,7 +5,7 @@
 > Governing authority: [`00-operation-catalogue.md`](00-operation-catalogue.md), [`../03-local-ipc-and-process-model.md`](../03-local-ipc-and-process-model.md), **[V-05b](../../assurance/phase-1-official-verification.md#rule-v-05b)**
 > Companions: [`../02-contracts-and-protocols.md`](../02-contracts-and-protocols.md), [`../data-model/02-desktop-data-model.md`](../data-model/02-desktop-data-model.md)
 
-The same-machine surface. Every interface here is a source-generated RPC contract carrying the generated-shape attribute with public instance methods included (**[V-05b](../../assurance/phase-1-official-verification.md#rule-v-05b)**), hosted over a named pipe or Unix domain socket, never over a network.
+The same-machine surface. Every interface here is a authored proto RPC contract with generated C# service registration (**[V-05b](../../assurance/phase-1-official-verification.md#rule-v-05b)**), hosted over a named pipe or Unix domain socket, never over a network.
 
 **Every method is task-returning and cancellation-aware** ([BR-09](../../planning/work-packages/08-local-ipc-and-registration.md#rule-br-09) of [WP-08](../../planning/work-packages/08-local-ipc-and-registration.md#rule-wp-08)). Signatures below omit the trailing cancellation token for brevity; it is present on all of them.
 
@@ -222,7 +222,7 @@ The methods below use the version preconditions in [NO-02](#rule-no-02). Noteboo
 
 | # | Rule |
 |---|---|
-| <a id="rule-no-01"></a>NO-01 | **`ApplyBlockEditsAsync` takes a typed edit list**, not a document body. A whole-document replace is not offered, because it would destroy concurrent edits and defeat per-block sync. |
+| <a id="rule-no-01"></a>NO-01 | ApplyBlockEdits takes the typed notes.commands.v1 edit list and validates the whole document at expected LocalNotesVersion before one owner commit/undo/outbox publication. Local block commands do not imply per-block Cloud sync. Whole-document conflict preservation and admitted Cloud owner writes follow Notes authority; no blind document replacement bypasses the revision guard. |
 | <a id="rule-no-02"></a>NO-02 | **Local Notes edits use LocalNotesVersion(acked_rev, head_local_seq).** A Cloud tool with only an acknowledged revision requires a clean matching shadow; if local edits are pending it returns `conflict.local_changes_pending` until sync/resolution supplies a fresh context. It cannot silently overwrite pending content. Writes return the resulting local token and pending status; Cloud ack is a later, distinct event. |
 | NO-03 | **`CreateDocumentAsync` takes a caller-allocated `DocumentId`**, which makes it idempotent under retry ([ID-04](../data-model/00-data-model-overview.md#rule-id-04)). |
 | NO-04 | **A write takes and returns the composite local token `(acked_rev, head_local_seq)`** ([RV-C5](../data-model/02-desktop-data-model.md#rule-rv-c5) of the desktop data model), not a bare revision ([RV-C3](../data-model/02-desktop-data-model.md#rule-rv-c3), [RV-C4](../data-model/02-desktop-data-model.md#rule-rv-c4) of the desktop data model), and enqueues a `sync_outbox` row. It does **not** return a Cloud acknowledgement ([PE-04](../data-model/02-desktop-data-model.md#rule-pe-04)): the caller learns the edit is durable on this device, which is a different fact from acknowledged by Cloud. Passing only `acked_rev` would let two local callers overwrite each other between acknowledgements; passing `local_rev` to Cloud would conflict on every second edit. |
@@ -320,7 +320,7 @@ The methods below use the version preconditions in [NO-02](#rule-no-02). Noteboo
 | A device-control operation | [SO-03](#rule-so-03) |
 | A relay operation on the Hub | [RT-02](#rule-rt-02) — the Hub carries no body |
 | Any local model, embedding or inference operation | **[P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006)** — all inference is Cloud ([C-02](../../requirements/00-product-scope-and-portfolio.md#rule-c-02), [CM-02](../09-ai-and-agent-runtime-architecture.md#rule-cm-02)) |
-| Any operation accepting or storing a provider key | **[P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006)** — no end-user BYOK ([BY-01](../../requirements/04-commerce-entitlement-and-credits.md#rule-by-01)–[BY-04](../../requirements/04-commerce-entitlement-and-credits.md#rule-by-04)) |
+| Any operation accepting or storing an end-user model-provider key | **[P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006)** — no end-user BYOK ([BY-01](../../requirements/04-commerce-entitlement-and-credits.md#rule-by-01)–[BY-04](../../requirements/04-commerce-entitlement-and-credits.md#rule-by-04)) |
 | Any local planning, tool-selection or turn-loop operation | The Harness is Cloud-only ([LS-02](../17-agent-harness.md#rule-ls-02)). The desktop executes authorised tools; it does not choose them |
 | Any operation delegating to an external agent or sub-agent | **[P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006)** ([EA-01](../../requirements/08-extensions-and-developer-platform.md#rule-ea-01)–[EA-08](../../requirements/08-extensions-and-developer-platform.md#rule-ea-08)) |
 | A canvas, whiteboard, frame, slide or presentation operation | **[P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006)** — excluded from ArcNotes delivery |
@@ -332,7 +332,7 @@ The methods below use the version preconditions in [NO-02](#rule-no-02). Noteboo
 
 | # | Obligation | Where |
 |---|---|---|
-| LV-01 | Every interface carries the generated-shape attribute; a non-conforming interface fails the build | [WP-03.04](../../planning/work-packages/03-contract-foundation-and-licence-split.md#rule-wp-03.04), [WP-05.03](../../planning/work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05.03) |
+| LV-01 | Every initial method has an authored proto service/field binding and explicit generated registration; missing/extra/reflection-only methods fail the build | [WP-03.04](../../planning/work-packages/03-contract-foundation-and-licence-split.md#rule-wp-03.04), [WP-05.03](../../planning/work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05.03) |
 | LV-02 | Bidirectional invocation works between two published AOT binaries with generated proxies | [WP-06.01](../../planning/work-packages/06-aot-jit-and-wasm-publish-proof.md#rule-wp-06.01) |
 | LV-03 | Owner-side validation refuses regardless of caller assertion, including a forged approval token | [WP-14.04](../../planning/work-packages/14-hub-and-minimal-provider-slice.md#rule-wp-14.04) |
 | LV-04 | Every write is idempotent on `CommandId` under retry, disconnection and concurrency | [WP-14.03](../../planning/work-packages/14-hub-and-minimal-provider-slice.md#rule-wp-14.03) |
@@ -347,8 +347,12 @@ Every operation/event above maps to the [numbered wire registry](04-protobuf-wir
 
 ## Local bootstrap and read-channel binding
 
-The wire registry explicitly adds ILocalBootstrap.Challenge/Confirm and IResourceProvider.ReadChunk/GetJob as transport-support methods. Challenge/Confirm are NI, OS-peer-only, one-use five-second bootstrap before normal owner authorization; they confer no product capability. ReadChunk is Q/R1/AO on the exact immutable owned transfer/version/offset, authorizing each bounded chunk. GetJob is Q/R1/AO on an owned native ProductJob. BeginTransfer/OpenRead return LocalTransferTicket, never an HTTP bearer URL. The generated method names omit the C# Async suffix but preserve the catalogued operation's authorization, revision and effect rules.
+The wire registry explicitly adds ILocalBootstrap.Challenge/Confirm and IResourceAccess.ReadChunk and IProductLifecycle.GetJob as transport-support methods. Challenge/Confirm are NI, OS-peer-only, one-use five-second bootstrap before normal owner authorization; they confer no product capability. ReadChunk is Q/R1/AO on the exact immutable owned transfer/version/offset, authorizing each bounded chunk. GetJob is Q/R1/AO on an owned native ProductJob. BeginTransfer/OpenRead return LocalTransferTicket, never an HTTP bearer URL. The generated method names omit the C# Async suffix but preserve the catalogued operation's authorization, revision and effect rules.
 
 ## Complete Notes and Slate method surface
 
 The [wire registry](04-protobuf-wire-registry.md#notes-structural-and-slate-operation-bindings) adds typed Notes move preview/mapping, full Slate metadata and extraction/transcript-adoption/subtitle import/export operations to this catalogue. Their exact fields, local revision preconditions, risk/class/compatibility, approval and loss semantics are defined there. Apply the same peer/actor/owner checks and generated capability allowlist as existing methods; no raw path, provider credential or generic invocation bypass is introduced.
+
+## Initial producer and broker bindings
+
+Every local signature, capability descriptor and OS broker method is a WP03 producer output. Later product WPs implement these published ports; they do not first define their request/response shape. [Wire local registry](04-protobuf-wire-registry.md#6-local-and-extension-operation-registry) also fixes DeviceSsoBroker, exact semantic Notes/Scope/Slate commands and resource/job transport support. The [native annex](06-native-functional-abi.md) owns helper bulk-buffer handles/lengths/leases and typed native exports; ordinary RPC frames do not carry full pixel/audio buffers. No obsolete IResourceProvider interface or generated-shape/code-first service is part of the current protocol.

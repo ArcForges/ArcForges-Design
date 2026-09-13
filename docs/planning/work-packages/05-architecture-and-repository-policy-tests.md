@@ -5,7 +5,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: A — Freeze and foundation
-> Upstream: `02`, `03` · Downstream: `06`, `21`
+> Upstream: `02` · `03` · Downstream: `06` · `21`
 
 > **Goal.** Turn the architecture into build failures. Every structural rule that a reviewer would otherwise have to remember becomes a test, so that a violation is caught at the moment it is introduced rather than at a release gate months later.
 
@@ -27,6 +27,9 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+[Producer artifacts and real integration](../producer-artifacts-and-integration.md) is a required input. Use this WP's row to identify exact released artifacts, permitted fixtures and the owner that must replace each fixture; completion requires the stated evidence class.
+
 
 **Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
@@ -232,15 +235,10 @@ Add Node/TS import and dependency checks to the existing policy suite: one Web w
 
 ## 9. Dependencies
 
-**Upstream — all must be complete.**
+**Upstream:** `02` · `03`. All stage outputs must be complete.
 
-- [WP-02](02-build-governance-and-analyzer-policy.md#rule-wp-02)
-- [WP-03](03-contract-foundation-and-licence-split.md#rule-wp-03)
+**Downstream:** `06` · `21`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.
 
-**Downstream — consumers of these released outputs.**
+## Current source baseline and migration input
 
-- [WP-06](06-aot-jit-and-wasm-publish-proof.md#rule-wp-06)
-- [WP-21](21-cloud-host-and-persistence.md#rule-wp-21)
-
-
----
+The166-project ede43db monorepo inventory is historical disposition evidence, not the current checkout shape. [Family completion review](../../assurance/family-design-completion-review.md) records the separate DesktopPlatform/Contracts/Mobile bootstrap evidence and scope. Before coding, verify each actual source HEAD/dirty state and map only retained required mechanisms to its owning repository/package; preserve existing published Hello/probe compatibility and Mobile app/signing/version identity. Do not recreate deleted scaffolds, copy every legacy project, or treat unpublished implementation as missing design. Generated protocol artifacts follow the tracked authored-schema/generator baseline and immutable producer manifest from WP03; generated outputs are not categorically forbidden from version control.

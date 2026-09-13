@@ -5,7 +5,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: J — Platform completion
-> Upstream: `19`, `25`, `28`, `43`, `44` · Downstream: `50`, `52`
+> Upstream: `19` · `25` · `28` · `43` · `44` · Downstream: `50` · `52`
 
 > **Goal.** Build the retrieval layer on top of search: knowledge sources, scopes, indexes as derived projections, hybrid retrieval with budgets, permission-aware assembly, and evidence with citations that anchor back to real content.
 
@@ -25,6 +25,9 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+[Producer artifacts and real integration](../producer-artifacts-and-integration.md) is a required input. Use this WP's row to identify exact released artifacts, permitted fixtures and the owner that must replace each fixture; completion requires the stated evidence class.
+
 
 **Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
@@ -209,18 +212,10 @@ No shared mechanism package owns product knowledge policy, authorization or pers
 
 ## 9. Dependencies
 
-**Upstream — all must be complete.**
+**Upstream:** `19` · `25` · `28` · `43` · `44`. All stage outputs must be complete.
 
-- [WP-19](19-arcnotes-search-and-portability.md#rule-wp-19)
-- [WP-25](25-sync-engine-and-blob-lifecycle.md#rule-wp-25)
-- [WP-28](28-arcnotes-properties-and-views.md#rule-wp-28)
-- [WP-43](43-managed-ai-routing-and-metering.md#rule-wp-43)
-- [WP-44](44-dynamic-policy-and-configuration.md#rule-wp-44)
+**Downstream:** `50` · `52`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.
 
-**Downstream — consumers of these released outputs.**
+## P2-010 required behavior and closure
 
-- [WP-50](50-full-platform-production-release.md#rule-wp-50)
-- [WP-52](52-cloud-harness.md#rule-wp-52)
-
-
----
+Implement current KnowledgePolicy inheritance/one-use override receipts and immediate current Cloud permission filtering. Transient input is not indexed corpus; Brave Web search uses the exact declared provider boundary. The referenced normative profile and producer stage matrix are binding inputs. Record independent positive/negative vectors and actual owner integration at this WP's assigned stage; a mock cannot close a real-provider/device requirement.

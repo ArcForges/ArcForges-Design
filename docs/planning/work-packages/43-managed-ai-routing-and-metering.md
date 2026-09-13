@@ -5,7 +5,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: J — Platform completion
-> Upstream: `25`, `42`, `44` · Downstream: `40`, `50`, `52`
+> Upstream: `25` · `42` · `44` · Downstream: `40` · `50` · `52`
 
 > **Goal.** Replace the stubbed provider path with the real one: provider routing under **operator-funded credentials**, dispatch-time supplier prices and Run-pinned customer tariffs, real usage normalisation, metering that reserves before and settles after, transparency obligations, and honest failure when a provider is unavailable.
 
@@ -25,6 +25,9 @@
 ---
 
 ## 2. Required inputs and dependencies
+
+[Producer artifacts and real integration](../producer-artifacts-and-integration.md) is a required input. Use this WP's row to identify exact released artifacts, permitted fixtures and the owner that must replace each fixture; completion requires the stated evidence class.
+
 
 **Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
@@ -233,24 +236,10 @@ The provider implementation is confined to ArcForges-AI; C# owns canonical comme
 
 ## 9. Dependencies
 
-**Upstream — all must be complete.**
+**Upstream:** `25` · `42` · `44`. All stage outputs must be complete.
 
-- [WP-25](25-sync-engine-and-blob-lifecycle.md#rule-wp-25)
-- [WP-42](42-commerce-entitlement-and-credits.md#rule-wp-42)
-- [WP-44](44-dynamic-policy-and-configuration.md#rule-wp-44)
+**Downstream:** `40` · `50` · `52`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.
 
-**Downstream — consumers of these released outputs.**
+## P2-010 required behavior and closure
 
-- [WP-40](40-knowledge-search-and-retrieval.md#rule-wp-40)
-- [WP-50](50-full-platform-production-release.md#rule-wp-50)
-- [WP-52](52-cloud-harness.md#rule-wp-52)
-
-
----
-
-
-### Inference-job implementation binding
-
-In the existing adapter/admission substeps, implement AI src/workflows/InferenceWorkflow.ts and src/inference/ for fixed-stage embedding/rerank jobs, and Cloud Search/Commerce typed ports for the [canonical job and receipt record](../../architecture/data-model/01-cloud-data-model.md#search-inference-job-execution-record). Add its binding to the same Worker artifact. Apply the exact inference-job/lease/input/outcome/state HTTP schemas, conditional60-second lease renewed20 seconds,120-second job deadline, deterministic Workflow ID, zero model-step retries and observed deployment-version gate. This is an additional bounded job handler inside the same deployment, with no agent planning/tool loop.
-
-Prove duplicate start, lost receipt, stale fence/generation, active-term expiry, source revocation, complete output with unconfirmed supplier cost, and partial/unknown output. The existing Commerce platformJob chain records supplier exposure once; assert zero customer reservation, customer settlement and credit debit for every embedding/rerank scenario. WP40 consumes these real adapters/receipts before testing index readiness/fallback; WP52 remains the first full model/tool Harness.
+Model intent/outcome/settlement supports real ExecutionOwner task/turn and operator-funded compaction/search. Temporary bodies stay outside PG/history/backup/checkpoints; durable receipts keep actual supplier/customer facts. The referenced normative profile and producer stage matrix are binding inputs. Record independent positive/negative vectors and actual owner integration at this WP's assigned stage; a mock cannot close a real-provider/device requirement.
