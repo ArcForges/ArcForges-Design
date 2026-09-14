@@ -5,13 +5,13 @@
 > Governing authority: **[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)** (cloud topology and local action), **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** (AOT matrix), **[V-05b](../assurance/phase-1-official-verification.md#rule-v-05b)** (gRPC AOT evidence)
 > Companions: [`02-contracts-and-protocols.md`](02-contracts-and-protocols.md), [`04-desktop-application-architecture.md`](04-desktop-application-architecture.md), [`08-security-architecture.md`](08-security-architecture.md)
 
-Same-machine first-party business RPC uses generated gRPC over authenticated operating-system IPC, under P2-009.**
+All same-machine first-party application/control RPC uses authored proto and generated native gRPC under P2-011, including restricted helpers. The [complete local profile](contracts/09-local-grpc-and-sandbox.md) fixes wire ownership, peer/launch authentication, resource boundaries and recovery.
 
 ---
 
 ## 1. Generated service shape
 
-Each process hosts explicitly registered generated protobuf services in a minimal Kestrel HTTP/2 listener. Callers use Grpc.Net.Client and ConnectCallback for the OS stream. Each side hosts its own listener for reverse calls; gRPC is not the old symmetric peer channel. ArcChat Hub is a library inside ArcChat, not another executable or a mandatory professional-product relay. The [wire registry](contracts/04-protobuf-wire-registry.md#8-transport-and-generation-acceptance) fixes exact methods, fields, framing, versions and bounded calls.
+Each ordinary product hosts explicitly registered generated protobuf services in a minimal Kestrel HTTP/2 listener. Callers use Grpc.Net.Client and ConnectCallback for the OS stream. Each side hosts its own listener for reverse calls; gRPC is not the old symmetric peer channel. ArcChat Hub is a library inside ArcChat, not another executable or a mandatory professional-product relay. The [wire registry](contracts/04-protobuf-wire-registry.md#8-transport-and-generation-acceptance) fixes exact methods, fields, framing, versions and bounded calls.
 
 ---
 
@@ -19,7 +19,7 @@ Each process hosts explicitly registered generated protobuf services in a minima
 
 Windows uses asynchronous Named Pipes with current-user ACL; inspect the actual client/server process identity through the named-pipe OS connection, not a claimed PID. Linux uses private directory0700/socket0600 and SO_PEERCRED; macOS uses peer credentials/PID and signed-code identity where available. UDS path is at most100 UTF-8 bytes. All production listeners are pipe/UDS, no fixed TCP port and no public interface. Tests exercise actual published processes, not only in-memory streams.
 
-Verify user/process/build against the selected registered application before exchanging a random32-byte session nonce through the authenticated bootstrap. Nonces live in memory, expire with the30-second registration lease (renew10s), and are never written to the endpoint manifest. Per-peer scopes and capability grants are checked on every call. The Hub may issue a scoped peer introduction; the actual owner still authenticates and authorizes. Hub absence preserves product local use and direct Cloud access. macOS content sandbox uses its separate XPC protocol, not this general product listener.
+Verify user/process/build against the selected registered application before exchanging a random32-byte session nonce through the authenticated bootstrap. Nonces live in memory, expire with the independent30-second peer lease (renew10s), separate from Hub registration, and are never written to the endpoint manifest. Per-peer scopes and capability grants are checked on every call. The Hub may issue a scoped peer introduction; the actual owner still authenticates and authorizes. Hub absence preserves product local use and direct Cloud access. Restricted helper and extension control follows the same gRPC protocol over parent-provisioned streams. macOS XPC is limited to initial OS activation/descriptor handoff; it carries no business or helper command.
 
 ---
 
@@ -33,13 +33,13 @@ Use the handwritten proto/generated C# services from Contracts, HTTP/2 protobuf 
 
 ### 4.1 Endpoint manifest
 
-At start-up each product writes a minimal endpoint manifest into the current user's private runtime directory, carrying: `AppId`, `InstanceId`, process id, transport kind, endpoint name, build identity, contract set identity, and start time.
+At start-up each product atomically writes the generated EndpointManifest protobuf after its listener is ready. [Local profile §2](contracts/09-local-grpc-and-sandbox.md#2-discovery-peer-verification-and-bootstrap) fixes every field, size, OS identity check and safe stale cleanup rule; it is never a credential.
 
 | # | Rule |
 |---|---|
 | <a id="rule-em-01"></a>EM-01 | **The manifest is not a credential.** Session tokens are never written into it. |
 | EM-02 | **A connecting process verifies** peer user/process/build/contracts and the in-memory nonce credential established through the OS-authenticated peer bootstrap. Hub introductions are optional scoped routing hints, not the sole credential issuer. |
-| EM-03 | Stale manifests are detected and cleaned up. |
+| EM-03 | Cleanup checks process-start identity, exact manifest and exclusive runtime-directory lock; connection failure alone never authorizes unlinking another endpoint. |
 
 ### 4.2 Registration lifecycle
 
@@ -95,8 +95,9 @@ Each product has exactly one infrastructure component owning the RPC connection 
 ```
 configure private Named Pipe / UDS endpoint and explicit generated gRPC services
   → start the Kestrel HTTP/2 listener, including the peer callback services
-  → verify OS peer identity and complete the nonce bootstrap
+  → verify OS peer identity inside the transport callback
   → create GrpcChannel with ConnectCallback and generated typed clients
+  → complete LocalBootstrap on that same connection before ordinary calls
   → register scoped capabilities and renew the peer lease
   → observe call/lease failure and connection health
   → reconnect with exponential backoff and jitter
@@ -158,7 +159,7 @@ The RPC layer implements no business retry.
 | SC-02 | **A session handshake completes as the first stage after connecting.** |
 | SC-03 | **Session tokens bind `AppId`, `InstanceId`, endpoint, build identity, contract set and an expiry.** |
 | SC-04 | **Session tokens never appear in the endpoint manifest.** |
-| SC-05 | **Every call carries actor, scope and correlation context.** |
+| SC-05 | **Every call uses generated LocalCallContext metadata and RequestMeta correlation/scope under [local09](contracts/09-local-grpc-and-sandbox.md#2-discovery-peer-verification-and-bootstrap).** Business actors and evidence references must agree with the typed request; infrastructure-only roles cannot impersonate them. |
 | SC-06 | **The owner authorizes again at the final execution point** ([DP-02](../requirements/07-security-privacy-and-trust.md#rule-dp-02) in the security requirements). |
 | <a id="rule-sc-07"></a>SC-07 | **Being "local" never automatically grants every capability**, even where an untrusted process can reach the endpoint. |
 | SC-08 | **Cloud never connects to a local endpoint** (**[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)**). |
@@ -175,7 +176,7 @@ The RPC layer implements no business retry.
 | LD-04 | **Resource reads support range and chunking, checksums, cancellation and rate limiting.** |
 | LD-05 | **A path is returned only after both sides explicitly authorise, and after normalisation and root-directory checks.** |
 | LD-06 | **Temporary resources use short-lived capability tokens.** |
-| LD-07 | **Per-frame images and GPU state never cross a process boundary** (`§12` of the native interop architecture). |
+| LD-07 | Product-to-product RPC never relays frames or GPU state. Restricted content-helper CPU tiles use the finite parent-owned slots in local profile09; no GPU pointer or global media bus is introduced. |
 
 ---
 
@@ -184,8 +185,8 @@ The RPC layer implements no business retry.
 | Traffic | Mechanism |
 |---|---|
 | Commands and queries | Strongly typed methods |
-| Low-frequency connection-level notifications | Interface events or an explicit callback contract |
-| High-frequency state streams | Prefer revision plus delta; a validated async stream where genuinely needed |
+| Low-frequency connection-level notifications | Generated LocalEventsService.Poll hints; authoritative reread after reset or lost lease |
+| High-frequency state streams | Bounded hints and owner revision/status reads; no undeclared async-stream wire type |
 | Large files or media frames | **Never** as ordinary RPC payloads — resource reference or controlled stream |
 
 **Events are never durable truth.** Recovery after a disconnect relies on revision and journal queries ([EV-10](02-contracts-and-protocols.md#rule-ev-10) in the contracts architecture).
@@ -235,7 +236,7 @@ The owner validates and authorises again, then executes
   ↓
 Durable business results are written into the owner's own state
   ↓
-An idempotent ToolResult is returned; cloud-persisted results go over HTTP
+An idempotent ToolResult is returned; cloud-persisted results use the generated Cloud gRPC API
 ```
 
 | # | Rule |

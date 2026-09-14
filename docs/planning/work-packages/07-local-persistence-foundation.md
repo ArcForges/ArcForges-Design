@@ -5,7 +5,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: A — Freeze and foundation
-> Upstream: `04` · `06` · Downstream: `08` · `13` · `18` · `33` · `36`
+> Upstream: `04` · `06` · Downstream: `08` · `13` · `18` · `33` · `36` · `53`
 
 > **Goal.** Build the local storage foundation every desktop product shares: the canonical commit unit, the journal, snapshots, the migration runner, the managed resource store and the derived-store separation — with crash recovery proven, not assumed.
 
@@ -195,6 +195,7 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 | Integrity, reference-counting and garbage-collection safety results | [WP-07.04](#rule-wp-07.04) |
 | Append-under-kill results with loss records | [WP-07.05](#rule-wp-07.05) |
 | Rebuild and eviction results | [WP-07.06](#rule-wp-07.06) |
+| Owned artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/OS/device/provider, scenario, result, limitations and real-versus-fixture status; inapplicable fields explicitly marked | [WP-07.90](#rule-wp-07.90) |
 
 ---
 
@@ -218,6 +219,6 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 ## 9. Dependencies
 
-**Upstream:** `04` · `06`. All stage outputs must be complete.
+**Upstream:** `04` · `06`. Consume completed stage outputs.
 
-**Downstream:** `08` · `13` · `18` · `33` · `36`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.
+**Downstream:** `08` · `13` · `18` · `33` · `36` · `53`. Consumers use exact released artifacts.

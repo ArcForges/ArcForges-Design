@@ -5,7 +5,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: A — Freeze and foundation
-> Upstream: `03` · `04` · `05` · Downstream: `07` · `08` · `10` · `12` · `13` · `17` · `30`
+> Upstream: `03` · `04` · `05` · Downstream: `07` · `08` · `10` · `12` · `13` · `17` · `30` · `53`
 
 > **Goal.** Prove the runtime matrix on real published artifacts, not on intentions. Every desktop product publishes Native AOT and launches; Cloud publishes Native AOT and runs its full pipeline; the React application builds into production browser assets. Until this holds, every downstream design choice is a hypothesis.
 
@@ -193,6 +193,8 @@
 
 ## 7. Tests and verification evidence
 
+[Local gRPC closure](../../architecture/contracts/09-local-grpc-and-sandbox.md): Run actual Windows Named Pipe/Linux and macOS UDS AOT peers with bootstrap/renew/reconnect, reverse generated invocation and zero TCP listeners. A memory stream is insufficient; full restricted launch remains WP11-owned.
+
 | Evidence | Produced by |
 |---|---|
 | Per-RID AOT publish logs with zero-diagnostic assertions | [WP-06.00](#rule-wp-06.00) |
@@ -203,6 +205,7 @@
 | production Web build, load and bundle baseline | [WP-06.05](#rule-wp-06.05) |
 | Third-party control probe log | [WP-06.06](#rule-wp-06.06) |
 | Pre-artifact Apache closure and Android/device/native/CF proof | [WP-06.07](#rule-wp-06.07) |
+| Owned artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/OS/device/provider, scenario, result, limitations and real-versus-fixture status; inapplicable fields explicitly marked | [WP-06.90](#rule-wp-06.90) |
 
 ---
 
@@ -230,6 +233,6 @@
 
 ## 9. Dependencies
 
-**Upstream:** `03` · `04` · `05`. All stage outputs must be complete.
+**Upstream:** `03` · `04` · `05`. Consume completed stage outputs.
 
-**Downstream:** `07` · `08` · `10` · `12` · `13` · `17` · `30`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.
+**Downstream:** `07` · `08` · `10` · `12` · `13` · `17` · `30` · `53`. Consumers use exact released artifacts.

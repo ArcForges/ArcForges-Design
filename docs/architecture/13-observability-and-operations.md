@@ -215,7 +215,7 @@ Audit is a **product security record**, not a diagnostic aid.
 
 | # | Rule |
 |---|---|
-| OD-01 | **Every external operational provider sits behind an adapter interface** — transactional email, observability export, incident notification, status publication. A provider call is never scattered through business code. |
+| OD-01 | **Every external operational provider sits behind an adapter interface** — transactional email, Android push delivery, observability export, incident notification, status publication. A provider call is never scattered through business code. |
 | OD-02 | **Transactional and broadcast email are separated by stream and by sending subdomain**, so marketing reputation can never affect delivery of one-time codes and security alerts. |
 | OD-03 | **Security-critical email has a prepared secondary path**, because failure of a single email provider must not lock users out of their accounts. |
 | OD-04 | **Email delivery outcome is observable** — accepted, delivered, bounced, complained — and a delivery-failure spike is a page-worthy condition ([AL-02](#rule-al-02)). |

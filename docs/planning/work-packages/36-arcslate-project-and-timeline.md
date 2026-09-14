@@ -214,6 +214,9 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 | Many-clips-one-asset and no-path results | [WP-36.04](#rule-wp-36.04) |
 | Per-operation exactness and non-destructiveness results | [WP-36.05](#rule-wp-36.05) |
 | Three-mechanism distinction and recovery results | [WP-36.06](#rule-wp-36.06) |
+| Owned artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/OS/device/provider, scenario, result, limitations and real-versus-fixture status; inapplicable fields explicitly marked | [WP-36.90](#rule-wp-36.90) |
+
+
 
 ---
 
@@ -242,6 +245,6 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 ## 9. Dependencies
 
-**Upstream:** `07` · `10` · `13` · `26`. All stage outputs must be complete.
+**Upstream:** `07` · `10` · `13` · `26`. Consume completed stage outputs.
 
-**Downstream:** `37`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.
+**Downstream:** `37`. Consumers use exact released artifacts.

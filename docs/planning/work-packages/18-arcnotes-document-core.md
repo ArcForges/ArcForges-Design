@@ -236,6 +236,7 @@ Session undo follows `§3.2` of the editing architecture: **selection is restore
 | Four-mechanism distinction matrix, undo-selection and undo-rebase results | [WP-18.05](#rule-wp-18.05) |
 | Recovery matrix and migration semantic comparison | [WP-18.06](#rule-wp-18.06) |
 | Capability descriptor and owner-side refusal results | [WP-18.07](#rule-wp-18.07) |
+| Owned artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/OS/device/provider, scenario, result, limitations and real-versus-fixture status; inapplicable fields explicitly marked | [WP-18.90](#rule-wp-18.90) |
 
 ---
 
@@ -271,9 +272,9 @@ Session undo follows `§3.2` of the editing architecture: **selection is restore
 
 ## 9. Dependencies
 
-**Upstream:** `07` · `10` · `14`. All stage outputs must be complete.
+**Upstream:** `07` · `10` · `14`. Consume completed stage outputs.
 
-**Downstream:** `19`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.
+**Downstream:** `19`. Consumers use exact released artifacts.
 
 ## P2-010 required behavior and closure
 

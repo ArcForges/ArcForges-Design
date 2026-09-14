@@ -16,7 +16,7 @@
 
 ## 1. Scope and purpose
 
-**Selected execution input.** [The initial simulator profile](../../architecture/23-simulator-and-interchange.md#4-initial-simulator-execution-profile) and [numbered wire/segment registry](../../architecture/contracts/04-protobuf-wire-registry.md) fix generator formulas, seeded RNG, AST, CSV, fault ordering, encoding and limits before coding. Implement and verify that profile; internal evaluator organization remains an implementation choice.
+**Selected execution input.** [The initial simulator profile](../../architecture/23-simulator-and-interchange.md#6-initial-simulator-execution-profile) and [numbered wire/segment registry](../../architecture/contracts/04-protobuf-wire-registry.md) fix generator formulas, seeded RNG, AST, CSV, fault ordering, encoding and limits before coding. Implement and verify that profile; internal evaluator organization remains an implementation choice.
 
 **In scope.** Cloud-owned simulation definitions and immutable scenario versions; the bounded expression AST and its validator; the generator set; fault profiles; lease-fenced execution inside the single Cloud host; canonical segment publication to object storage with a manifest; durable checkpoints; the authorised client fetch path; and ArcScope's native ingestion of simulated data through its normal session, capture, decoder, measurement and report workflows.
 
@@ -187,6 +187,9 @@ The official simulator consumes real paid-term and quota enforcement from [WP-42
 | Recovery equality across pause, host loss and takeover | [WP-51.03](#rule-wp-51.03) |
 | Command idempotency, realtime-disabled fallback and native ingestion results | [WP-51.04](#rule-wp-51.04) |
 | Limit enforcement, entitlement, expiry and 24-hour soak results | [WP-51.05](#rule-wp-51.05) |
+| Owned artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/OS/device/provider, scenario, result, limitations and real-versus-fixture status; inapplicable fields explicitly marked | [WP-51.90](#rule-wp-51.90) |
+
+
 
 ---
 
@@ -215,6 +218,6 @@ The official simulator consumes real paid-term and quota enforcement from [WP-42
 
 ## 9. Dependencies
 
-**Upstream:** `21` · `23` · `25` · `33` · `34` · `35` · `42` · `44`. All stage outputs must be complete.
+**Upstream:** `21` · `23` · `25` · `33` · `34` · `35` · `42` · `44`. Consume completed stage outputs.
 
-**Downstream:** `50`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.
+**Downstream:** `50`. Consumers use exact released artifacts.

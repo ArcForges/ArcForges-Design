@@ -186,6 +186,7 @@ Implement the C# serializers and metadata projection for the exact wire rules in
 | Optimistic concurrency and sequence gap test results | [WP-04.02](#rule-wp-04.02) |
 | Locale, time-zone and daylight-saving test results | [WP-04.03](#rule-wp-04.03) |
 | Reason-code registry with a completeness report | [WP-04.04](#rule-wp-04.04) |
+| Owned artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/OS/device/provider, scenario, result, limitations and real-versus-fixture status; inapplicable fields explicitly marked | [WP-04.90](#rule-wp-04.90) |
 
 ---
 
@@ -207,6 +208,6 @@ Implement the C# serializers and metadata projection for the exact wire rules in
 
 ## 9. Dependencies
 
-**Upstream:** `03`. All stage outputs must be complete.
+**Upstream:** `03`. Consume completed stage outputs.
 
-**Downstream:** `06` · `07` · `11` · `12`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.
+**Downstream:** `06` · `07` · `11` · `12`. Consumers use exact released artifacts.

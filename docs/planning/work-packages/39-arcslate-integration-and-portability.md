@@ -26,6 +26,8 @@
 
 ## 2. Required inputs and dependencies
 
+Consume the exact WP03 ArcForges.Contracts.LocalRpc.Slate candidate and its operation fixtures; this package implements its frozen service, not a new wire shape.
+
 [Producer artifacts and real integration](../producer-artifacts-and-integration.md) is a required input. Use this WP's row to identify exact released artifacts, permitted fixtures and the owner that must replace each fixture; completion requires the stated evidence class.
 
 
@@ -182,6 +184,9 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 | Offline-open, relink and edit-decision preservation results | [WP-39.03](#rule-wp-39.03) |
 | Sync exclusion, derived-data and convergence results | [WP-39.04](#rule-wp-39.04) |
 | Per-format interchange round-trips and fidelity statements | [WP-39.05](#rule-wp-39.05) |
+| Owned artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/OS/device/provider, scenario, result, limitations and real-versus-fixture status; inapplicable fields explicitly marked | [WP-39.90](#rule-wp-39.90) |
+
+
 
 ---
 
@@ -210,6 +215,6 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 ## 9. Dependencies
 
-**Upstream:** `25` · `38`. All stage outputs must be complete.
+**Upstream:** `25` · `38`. Consume completed stage outputs.
 
-**Downstream:** `50` · `52`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.
+**Downstream:** `50` · `52`. Consumers use exact released artifacts.

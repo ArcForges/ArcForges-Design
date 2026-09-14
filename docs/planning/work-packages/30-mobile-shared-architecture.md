@@ -2,6 +2,7 @@
 # WP-30 — Kotlin Android Foundation
 
 > Status: Authoritative implementation plan under P2-010
+> Phase: G — Kotlin Android foundation
 > Upstream: `03` · `06` · `23` · `24` · `25` · Downstream: `31`
 
 ## 1. Scope and purpose
@@ -96,12 +97,17 @@ Contracts delivers the complete public Kotlin package; Cloud/AI deliver the same
 
 Separate unit/schema/fixture tests, clean packaged consumers, actual Cloud/CF/desktop interactions, physical-device release evidence and distribution/store evidence. Record exact hashes/versions/device identity and limitations. A green build cannot substitute for a missing stage.
 
+
+| Evidence | Produced by |
+|---|---|
+| Owned artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/OS/device/provider, scenario, result, limitations and real-versus-fixture status; inapplicable fields explicitly marked | [WP-30.90](#rule-wp-30.90) |
+
 ## 8. Completion gate
 
 Every numbered substep and applicable inherited requirement passes; the complete surface/action/state matrix is exercised. Unfinished required behavior blocks completion. Candidate and producer identities are immutable and all temporary fixtures have the named replacement stage. No scope reduction or design decision is deferred to consumer coding.
 
 ## 9. Dependencies
 
-**Upstream:** `03` · `06` · `23` · `24` · `25`. All stage outputs must be complete.
+**Upstream:** `03` · `06` · `23` · `24` · `25`. Consume completed stage outputs.
 
-**Downstream:** `31`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.
+**Downstream:** `31`. Consumers use exact released artifacts.

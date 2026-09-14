@@ -203,6 +203,9 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 | Effect-certainty classification and deadline-release results | [WP-52.04](#rule-wp-52.04) |
 | Full cross-product workflow with every failure variant | [WP-52.05](#rule-wp-52.05) |
 | Real automation scheduling, missed-run policy, occurrence deduplication, cancellation and fixture removal | [WP-52.06](#rule-wp-52.06) |
+| Owned artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/OS/device/provider, scenario, result, limitations and real-versus-fixture status; inapplicable fields explicitly marked | [WP-52.90](#rule-wp-52.90) |
+
+
 
 ---
 
@@ -233,9 +236,9 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 ## 9. Dependencies
 
-**Upstream:** `15` · `17` · `20` · `21` · `23` · `26` · `39` · `40` · `41` · `42` · `43` · `44`. All stage outputs must be complete.
+**Upstream:** `15` · `17` · `20` · `21` · `23` · `26` · `39` · `40` · `41` · `42` · `43` · `44`. Consume completed stage outputs.
 
-**Downstream:** `31` · `49` · `50`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.
+**Downstream:** `31` · `49` · `50`. Consumers use exact released artifacts.
 
 ## P2-010 required behavior and closure
 

@@ -5,7 +5,7 @@
 > Governing authority: [`00-operation-catalogue.md`](00-operation-catalogue.md), [`../03-local-ipc-and-process-model.md`](../03-local-ipc-and-process-model.md), **[V-05b](../../assurance/phase-1-official-verification.md#rule-v-05b)**
 > Companions: [`../02-contracts-and-protocols.md`](../02-contracts-and-protocols.md), [`../data-model/02-desktop-data-model.md`](../data-model/02-desktop-data-model.md)
 
-The same-machine surface. Every interface here is a authored proto RPC contract with generated C# service registration (**[V-05b](../../assurance/phase-1-official-verification.md#rule-v-05b)**), hosted over a named pipe or Unix domain socket, never over a network.
+The same-machine surface. Every interface here is an authored proto RPC contract with generated C# service registration (**[V-05b](../../assurance/phase-1-official-verification.md#rule-v-05b)**), hosted over a named pipe or Unix domain socket, never over a network.
 
 **Every method is task-returning and cancellation-aware** ([BR-09](../../planning/work-packages/08-local-ipc-and-registration.md#rule-br-09) of [WP-08](../../planning/work-packages/08-local-ipc-and-registration.md#rule-wp-08)). Signatures below omit the trailing cancellation token for brevity; it is present on all of them.
 
@@ -15,6 +15,9 @@ The same-machine surface. Every interface here is a authored proto RPC contract 
 
 | Interface | Hosted by | Consumed by |
 |---|---|---|
+| `ILocalBootstrap`, `ILocalEvents` | Each normal product | Verified peers; lease and bounded hints |
+| `IDeviceSsoBroker`, `IConnectorBroker` | Owning security/connector adapter | Verified peer on behalf of foreground human |
+| `IContentSandbox` | Restricted helper | Exact launch-bound parent only |
 | `IHubRegistry` | ArcChat Hub | Every product |
 | `IHubRouting` | ArcChat Hub | Every product |
 | `ICapabilityProvider` | Every product | Hub, on behalf of callers |
@@ -74,12 +77,12 @@ EvaluateAvailabilityAsync(ActionKey, FrozenContext)
 InvokeAsync(InvocationRequest)               → ArcResult<InvocationOutcome>
 ```
 
-`InvocationRequest` = `{ InvocationId, CommandId, CapabilityKey, FrozenContext, Arguments (structured value), ActorChain, ApprovalToken?, LeaseToken?, ExpectedVersion? }`.
+`InvocationRequest` is the generated registry04 `Invocation`: invocationId, commandId, capability, FrozenContext (including ActorChain), typed CapabilityArguments, optional approvalId/leaseId and exactly one declared expected-version field. [LocalCallContext](09-local-grpc-and-sandbox.md#2-discovery-peer-verification-and-bootstrap) carries the same validated actor/evidence references through transport and typed forwarding. It is not a second hand-authored DTO or an unspecified ApprovalToken/LeaseToken wire format.
 
 | # | Rule |
 |---|---|
 | CI-01 | **`EvaluateAvailabilityAsync` is side-effect free** and cheap enough to run on UI enumeration ([WP-09.03](../../planning/work-packages/09-capability-contribution-and-resource-model.md#rule-wp-09.03)). |
-| CI-02 | **`InvokeAsync` performs owner-side final validation regardless of what the caller asserts** ([BR-02](../../planning/work-packages/20-first-cross-product-workflow.md#rule-br-02) of [WP-20](../../planning/work-packages/20-first-cross-product-workflow.md#rule-wp-20)). An `ApprovalToken` is evidence, never authority. |
+| CI-02 | **`InvokeAsync` performs owner-side final validation regardless of what the caller asserts** ([BR-02](../../planning/work-packages/20-first-cross-product-workflow.md#rule-br-02) of [WP-20](../../planning/work-packages/20-first-cross-product-workflow.md#rule-wp-20)). An approval reference is evidence resolved by the owner, never authority by possession. |
 | CI-07 | **`InvokeAsync` is the boundary, not a product contract.** It decodes into a generated typed request and calls the product's typed operation (`§3.1`). The structured value never travels past the decode step, so [AC-02](../00-architecture-overview.md#rule-ac-02)'s prohibition on a catch-all first-party call holds where it matters — in the product's own contracts. |
 | CI-03 | **Context is frozen by the caller and immutable in transit** ([WP-09.04](../../planning/work-packages/09-capability-contribution-and-resource-model.md#rule-wp-09.04)). The provider never re-reads live context mid-invocation. |
 | CI-04 | **The outcome carries the resulting authority-specific version**, so the caller can chain without re-reading. |
@@ -117,11 +120,11 @@ model tool call  /  extension invocation
 |---|---|
 | DP-01 | **The structured value model is permitted at exactly one place: the boundary dispatch contract** (`ICapabilityProvider`). It appears in no domain type, no application service signature, no product operation interface and no persisted schema. |
 | <a id="rule-dp-02"></a>DP-02 | **[XT-05](../15-extension-platform-architecture.md#rule-xt-05) is scoped accordingly**: the containment test asserts the structured value type is absent from every **domain, application and product-operation** assembly, and permitted **only** in the boundary dispatch assembly. A test that simply forbade it everywhere would fail against the boundary the design requires, which is why the previous unscoped wording was a defect rather than a stricter rule. |
-| DP-03 | **The decoder is generated, never hand-written and never reflective.** A source generator reads each product operation's request record and emits: the descriptor's schema, the allowlist entry, and the decode function. Adding an operation therefore cannot forget to update any of the three ([CF-01](../15-extension-platform-architecture.md#rule-cf-01) of the extension architecture). |
+| DP-03 | **The decoder is generated, never hand-written and never reflective.** The pinned contract generator reads each authored proto request/service descriptor and its declared operation profile and emits: the descriptor's schema, the allowlist entry, and the decode function. Adding an operation therefore cannot forget to update any of the three ([CF-01](../15-extension-platform-architecture.md#rule-cf-01) of the extension architecture). |
 | <a id="rule-dp-04"></a>DP-04 | **`CapabilityKey` resolves through a closed generated allowlist**, not a dictionary lookup at runtime and not a name-to-type map. An unknown key is a typed protocol error before any validation ([RC-02](../17-agent-harness.md#rule-rc-02) of the harness). |
 | DP-05 | **Decode failure is a typed protocol error attributed to the caller** ([L2-05](../15-extension-platform-architecture.md#rule-l2-05)), never a host exception and never a partially applied operation. Validation completes before the typed request is constructed. |
 | DP-06 | **AOT holds because nothing is discovered at runtime**: the allowlist, the schemas and the decoders are all generated at compile time, so there is no reflection, no `MakeGenericType` and no assembly scanning on the invocation path ([AC-04](../00-architecture-overview.md#rule-ac-04)). |
-| DP-07 | **Versioning lives on the typed request record.** The schema is generated from it, so a field added to the record is a schema change by construction, and the compatibility class of the operation governs whether that addition is permitted (`§6` of the operation catalogue). The schema is never edited independently of the record. |
+| DP-07 | **Versioning lives on the authored proto contract.** Typed records and tool schemas are generated from it, so a field added to the record is a schema change by construction, and the compatibility class of the operation governs whether that addition is permitted (`§6` of the operation catalogue). The schema is never edited independently of the record. |
 | DP-08 | **The same decode step serves a model tool call and an extension invocation.** There is one boundary, not two, which is what keeps the security pipeline, the validation rules and the audit trail identical for both. |
 
 | # | Rule |
@@ -275,7 +278,7 @@ The methods below use the version preconditions in [NO-02](#rule-no-02). Noteboo
 
 | # | Rule |
 |---|---|
-| SL-01 | **The capability contract was frozen only after timeline, command and undo semantics stabilised** ([WP-39.00](../../planning/work-packages/39-arcslate-integration-and-portability.md#rule-wp-39.00)). This interface does not exist before [WP-39](../../planning/work-packages/39-arcslate-integration-and-portability.md#rule-wp-39). |
+| SL-01 | The Slate local contract is published by WP03 with all other local signatures using the fixed wire/timeline/undo profiles. WP39.00 implements and exposes those semantics; it does not first define or create the interface. |
 | SL-02 | **`GetSequenceContextAsync` returns structure, markers, ranges, timecodes and metadata — never media** ([WP-39.01](../../planning/work-packages/39-arcslate-integration-and-portability.md#rule-wp-39.01)). |
 | SL-03 | **`StartRenderAsync` binds a revision snapshot** and returns a `ProductJobRef`; the render never reads live editor state ([RN-04](../../requirements/products/arcslate.md#rule-rn-04)). |
 | SL-04 | **`StartRenderAsync` produces a native Product Job, not a Cloud Agent Task** ([I-485](../../requirements/01-normative-glossary-and-invariants.md#rule-i-485), [CM-04](../09-ai-and-agent-runtime-architecture.md#rule-cm-04) of the runtime architecture). It invokes no model, consumes no AI capacity, and ArcSlate owns its progress and recovery. |
@@ -346,6 +349,8 @@ The methods below use the version preconditions in [NO-02](#rule-no-02). Noteboo
 Every operation/event above maps to the [numbered wire registry](04-protobuf-wire-registry.md). It fixes requests/results, record fields, enums, exact values, local counterpart preconditions, service names and compatibility. [CF integration](05-cloudflare-integration.md) fixes AI/object HTTP exceptions, frame/state recovery and authorization. New supporting bootstrap, upload-status, automation and conversation-create methods are enumerated there with their authorization/idempotency classes; none is left for endpoint invention during implementation.
 
 ## Local bootstrap and read-channel binding
+
+The [complete local profile09](09-local-grpc-and-sandbox.md) and numbered registry04 add Renew, LocalEvents.Poll, ConnectorBroker and every typed ContentSandbox operation. No untyped event, private helper command or unspecified bootstrap proof remains; all are initial WP03 outputs.
 
 The wire registry explicitly adds ILocalBootstrap.Challenge/Confirm and IResourceAccess.ReadChunk and IProductLifecycle.GetJob as transport-support methods. Challenge/Confirm are NI, OS-peer-only, one-use five-second bootstrap before normal owner authorization; they confer no product capability. ReadChunk is Q/R1/AO on the exact immutable owned transfer/version/offset, authorizing each bounded chunk. GetJob is Q/R1/AO on an owned native ProductJob. BeginTransfer/OpenRead return LocalTransferTicket, never an HTTP bearer URL. The generated method names omit the C# Async suffix but preserve the catalogued operation's authorization, revision and effect rules.
 

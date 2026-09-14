@@ -224,6 +224,7 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 | Blob lifecycle, orphan cleanup and accounting results | [WP-25.05](#rule-wp-25.05) |
 | Integrity fault detection and repair results | [WP-25.06](#rule-wp-25.06) |
 | Three-device convergence comparison | [WP-25.07](#rule-wp-25.07) |
+| Owned artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/OS/device/provider, scenario, result, limitations and real-versus-fixture status; inapplicable fields explicitly marked | [WP-25.90](#rule-wp-25.90) |
 
 ---
 
@@ -256,6 +257,6 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 ## 9. Dependencies
 
-**Upstream:** `19` · `24`. All stage outputs must be complete.
+**Upstream:** `19` · `24`. Consume completed stage outputs.
 
-**Downstream:** `26` · `28` · `30` · `35` · `39` · `40` · `41` · `43` · `46` · `48` · `51`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.
+**Downstream:** `26` · `28` · `30` · `35` · `39` · `40` · `41` · `43` · `46` · `48` · `51`. Consumers use exact released artifacts.

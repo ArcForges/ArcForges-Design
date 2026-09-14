@@ -4,7 +4,7 @@
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
-> Phase: K — Web and release
+> Phase: A — Freeze and foundation
 > Upstream: `00` · `02` · Downstream: `45` · `48`
 
 > **Goal.** Ship the public face early and keep it independent: marketing, documentation, downloads and legal pages as static HTML and CSS generated from one source of truth, requiring no runtime, no account and no cloud.
@@ -203,6 +203,9 @@
 | Download integrity, no-gate and legal versioning results | [WP-47.04](#rule-wp-47.04) |
 | Accessibility automated plus manual record; analytics audit | [WP-47.05](#rule-wp-47.05) |
 | Cloud-outage independence, atomic deployment and rollback results | [WP-47.06](#rule-wp-47.06) |
+| Owned artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/OS/device/provider, scenario, result, limitations and real-versus-fixture status; inapplicable fields explicitly marked | [WP-47.90](#rule-wp-47.90) |
+
+
 
 ---
 
@@ -230,6 +233,6 @@
 
 ## 9. Dependencies
 
-**Upstream:** `00` · `02`. All stage outputs must be complete.
+**Upstream:** `00` · `02`. Consume completed stage outputs.
 
-**Downstream:** `45` · `48`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.
+**Downstream:** `45` · `48`. Consumers use exact released artifacts.

@@ -209,6 +209,7 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 | Approval-across-restart, steering and budget accounting results | [WP-16.05](#rule-wp-16.05) |
 | Progress/outcome separation and trace separation results | [WP-16.06](#rule-wp-16.06) |
 | Loop, cascade and saturation results | [WP-16.07](#rule-wp-16.07) |
+| Owned artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/OS/device/provider, scenario, result, limitations and real-versus-fixture status; inapplicable fields explicitly marked | [WP-16.90](#rule-wp-16.90) |
 
 ---
 
@@ -233,6 +234,6 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 ## 9. Dependencies
 
-**Upstream:** `09` · `11` · `14`. All stage outputs must be complete.
+**Upstream:** `09` · `11` · `14`. Consume completed stage outputs.
 
-**Downstream:** `17`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.
+**Downstream:** `17`. Consumers use exact released artifacts.

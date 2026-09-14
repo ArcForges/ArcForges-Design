@@ -176,6 +176,7 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 | The full agent-driven scenario plus every failure variant | **[WP-52.05](52-cloud-harness.md#rule-wp-52.05)** *(relocated)* |
 | Preview, handoff, staleness and permission re-check results | [WP-20.04](#rule-wp-20.04) |
 | V1B closure record | [WP-20.05](#rule-wp-20.05) |
+| Owned artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/OS/device/provider, scenario, result, limitations and real-versus-fixture status; inapplicable fields explicitly marked | [WP-20.90](#rule-wp-20.90) |
 
 ---
 
@@ -199,6 +200,6 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 ## 9. Dependencies
 
-**Upstream:** `17` · `19`. All stage outputs must be complete.
+**Upstream:** `17` · `19`. Consume completed stage outputs.
 
-**Downstream:** `50` · `52`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.
+**Downstream:** `50` · `52`. Consumers use exact released artifacts.

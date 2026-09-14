@@ -76,11 +76,13 @@ Product process (Native AOT)                     Extension process (any runtime)
 
 | # | Rule |
 |---|---|
-| TR-01 | **The extension protocol runs over the same local IPC transport as the rest of the product** — named pipe on Windows, Unix domain socket elsewhere (`§2` of the local IPC architecture). |
+| TR-01 | **The extension protocol is authored proto and native gRPC over the same OS IPC as the rest of the product** — named pipe on Windows, Unix domain socket elsewhere (`§2` of the local IPC architecture). |
 | TR-02 | **The channel is per process and access-controlled to the current user**; it is never a network endpoint. |
 | TR-03 | **Payload size is bounded.** Large content crosses as a `ResourceRef` with controlled access ([DB-06](../requirements/08-extensions-and-developer-platform.md#rule-db-06) there). |
 | TR-04 | **Cancellation, timeout and backpressure are first-class protocol concerns**, not conventions. |
 | TR-05 | **The host never blocks its UI thread on an extension** (`§4` of the desktop architecture). |
+
+[Local profile09](contracts/09-local-grpc-and-sandbox.md) fixes both receiver directions, launch-bound credentials, generated services and restricted-stream hosting. Host Handshake/RenewLease and bidirectional Invoke/Stop roles never use an untyped symmetric channel.
 
 ### 3.3 Handshake and negotiation
 

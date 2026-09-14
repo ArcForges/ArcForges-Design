@@ -11,7 +11,7 @@ All content here is **authoritative**, and is governed by **[D-017](../decisions
 | Document | Covers |
 |---|---|
 | [`implementation-sequence.md`](implementation-sequence.md) | The ordering principles that produce the sequence, the completed **[D-019](../decisions/phase-1-foundation-decisions.md#rule-d-019)** ordering and its prerequisite evidence, the phase structure, the binding mock policy, parallelisation rules, roles, the required per-package format, and what the sequence deliberately does not do |
-| [`work-packages/README.md`](work-packages/README.md) | The sequence itself: 51 active packages in `00`–`52` (`27`/`29` retired), in their actual dependency order, each with its upstream dependencies, plus the downstream dependency index and the scheduling of every open gate |
+| [`work-packages/README.md`](work-packages/README.md) | The sequence itself: 52 active packages in `00`–`53` (`27`/`29` retired), in their actual dependency order, each with its upstream dependencies, plus the downstream dependency index and the scheduling of every open gate |
 | [`evidence-driven-revisions.md`](evidence-driven-revisions.md) | Every change the completed prerequisite evidence caused, with the evidence, the affected statement, the correction, the downstream consumers and the verification |
 
 ## How to read this layer
@@ -55,4 +55,6 @@ Each package records operation/capability → provider package/version/hash → 
 
 WP15/19 export-client fixture acceptance closes locally; WP25.08 runs real Cloud Notes/Chat exports. WP17 automation UI closes locally; WP52.06 runs real occurrences/cascade protection and replaces all AI turn fixtures. WP45 rehearses operations already implemented and records remaining recovery/CF cases as pending; WP46 runs actual backup/data restoration, WP52 actual Harness failures and WP50 the combined active/waiting/unknown-effect disaster drill. PG04/L13/paid go-live close only when those combined required records exist.
 
-Start with [producer artifacts and real integration](producer-artifacts-and-integration.md) and the topological order in implementation-sequence. P2-010 fixes complete initial C#/TS/Kotlin contracts, complete functional native package delivery, Android-only implementation and explicit mock replacement. All51 active packages remain required under their accepted scope. [Family completion review](../assurance/family-design-completion-review.md) records this document review and the remaining actual implementation gates.
+Start with [producer artifacts and real integration](producer-artifacts-and-integration.md) and the topological order in implementation-sequence. P2-010 fixes complete initial C#/TS/Kotlin contracts, complete functional native package delivery, Android-only implementation and explicit mock replacement. All52 active packages remain required under their accepted scope. [Family completion review](../assurance/family-design-completion-review.md) records this document review and the remaining actual implementation gates.
+
+Current producer and local gRPC amendment: [closure review](../assurance/producer-and-local-grpc-closure-review.md). Use its current graph/contract evidence; earlier dated reviews retain their historical baselines.

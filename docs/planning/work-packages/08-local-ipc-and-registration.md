@@ -178,8 +178,11 @@
 
 ## 7. Tests and verification evidence
 
+[Local gRPC closure](../../architecture/contracts/09-local-grpc-and-sandbox.md): Implement EndpointManifest, connection-bound Challenge/Confirm/Renew, independent peer and Hub leases, LocalEvents.Poll, role-aware reverse services and restricted connected-stream transport adapter. Inject endpoint squatting, PID reuse, symlink escape, stale nonce, saturated work queues and canceled callbacks.
+
 | Evidence | Produced by |
 |---|---|
+| Local actor context | Generated LocalCallContext header survives typed forwarding; forged human role, mismatched actor/invocation, unavailable/revoked owner evidence and attempted scope expansion refuse before effect; RequestMeta correlation survives both directions. |
 | Cross-platform transport and access-control results | [WP-08.00](#rule-wp-08.00) |
 | Manifest concurrency and self-heal results | [WP-08.01](#rule-wp-08.01) |
 | Lifecycle matrix: restart, crash, absent Hub, double registration | [WP-08.02](#rule-wp-08.02) |
@@ -187,6 +190,7 @@
 | Saturation, ordering and deadlock results | [WP-08.04](#rule-wp-08.04) |
 | Fault-injection outcomes with effect certainty | [WP-08.05](#rule-wp-08.05) |
 | Large-transfer results and the Hub no-body assertion | [WP-08.06](#rule-wp-08.06) |
+| Owned artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/OS/device/provider, scenario, result, limitations and real-versus-fixture status; inapplicable fields explicitly marked | [WP-08.90](#rule-wp-08.90) |
 
 ---
 
@@ -208,6 +212,6 @@
 
 ## 9. Dependencies
 
-**Upstream:** `06` · `07`. All stage outputs must be complete.
+**Upstream:** `06` · `07`. Consume completed stage outputs.
 
-**Downstream:** `09` · `11` · `13` · `14`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.
+**Downstream:** `09` · `11` · `13` · `14`. Consumers use exact released artifacts.

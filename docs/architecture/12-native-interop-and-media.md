@@ -83,7 +83,7 @@ Every first-party native library, and every `extern "C"` shim over a third-party
 | # | Rule |
 |---|---|
 | <a id="rule-ab-01"></a>AB-01 | **The C calling convention is explicit and stable across compilers**. |
-| <a id="rule-ab-02"></a>AB-02 | **Every exported function carries a fixed prefix and an ABI version** — for example `af_media_*`. |
+| <a id="rule-ab-02"></a>AB-02 | **Every exported function carries a fixed prefix and an ABI version** — for example `arc_media_*`. |
 | AB-03 | **Existing frozen POD views/buffers/rationals keep their ABI1.0 layout.** New extensible records carry size/version and append-only compatible tails. Existing field order/size/meaning never changes. [Functional ABI](contracts/06-native-functional-abi.md) supplies exact declarations and wrapper/package mapping. |
 | AB-04 | **Fixed-width integer types only.** |
 | AB-05 | **C++ `bool`, STL types, exceptions, RTTI and vtables never cross the boundary**. |

@@ -185,6 +185,8 @@
 
 ## 7. Tests and verification evidence
 
+[Local gRPC closure](../../architecture/contracts/09-local-grpc-and-sandbox.md): Bind every capability/resource/context port to generated local gRPC and AZ04 eligibility/egress metadata; no model-callable infrastructure or untyped callback path.
+
 | Evidence | Produced by |
 |---|---|
 | Identity lifecycle matrix | [WP-09.00](#rule-wp-09.00) |
@@ -195,6 +197,7 @@
 | Resource resolution matrix and structural path prohibition | [WP-09.05](#rule-wp-09.05) |
 | Deep-link hostile-input, event and health results | [WP-09.06](#rule-wp-09.06) |
 | Pipeline bypass-prohibition, error-mapping and tracing results | [WP-09.07](#rule-wp-09.07) |
+| Owned artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/OS/device/provider, scenario, result, limitations and real-versus-fixture status; inapplicable fields explicitly marked | [WP-09.90](#rule-wp-09.90) |
 
 ---
 
@@ -216,6 +219,6 @@
 
 ## 9. Dependencies
 
-**Upstream:** `03` · `08`. All stage outputs must be complete.
+**Upstream:** `03` · `08`. Consume completed stage outputs.
 
-**Downstream:** `10` · `11` · `13` · `14` · `16` · `41`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.
+**Downstream:** `10` · `11` · `13` · `14` · `16` · `41`. Consumers use exact released artifacts.

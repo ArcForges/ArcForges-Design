@@ -203,6 +203,9 @@
 | Export completeness and deletion statement accuracy | [WP-48.05](#rule-wp-48.05) |
 | Policy headers, bundle secret scan and budget measurements | [WP-48.06](#rule-wp-48.06) |
 | Offline, outage and accessibility results | [WP-48.07](#rule-wp-48.07) |
+| Owned artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/OS/device/provider, scenario, result, limitations and real-versus-fixture status; inapplicable fields explicitly marked | [WP-48.90](#rule-wp-48.90) |
+
+
 
 ---
 
@@ -232,6 +235,6 @@
 
 ## 9. Dependencies
 
-**Upstream:** `25` · `42` · `44` · `46` · `47`. All stage outputs must be complete.
+**Upstream:** `25` · `42` · `44` · `46` · `47`. Consume completed stage outputs.
 
-**Downstream:** `49`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.
+**Downstream:** `49`. Consumers use exact released artifacts.

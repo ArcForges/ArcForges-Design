@@ -211,6 +211,9 @@ The provider implementation is confined to ArcForges-AI; C# owns canonical comme
 | Trace separation, redaction, cost explainability and marking coverage | [WP-43.04](#rule-wp-43.04) |
 | Degradation, reservation release and alert results | [WP-43.05](#rule-wp-43.05) |
 | Per-provider test-environment runs and fixture-driven CI results | [WP-43.06](#rule-wp-43.06) |
+| Owned artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/OS/device/provider, scenario, result, limitations and real-versus-fixture status; inapplicable fields explicitly marked | [WP-43.90](#rule-wp-43.90) |
+
+
 
 ---
 
@@ -236,9 +239,9 @@ The provider implementation is confined to ArcForges-AI; C# owns canonical comme
 
 ## 9. Dependencies
 
-**Upstream:** `25` · `42` · `44`. All stage outputs must be complete.
+**Upstream:** `25` · `42` · `44`. Consume completed stage outputs.
 
-**Downstream:** `40` · `50` · `52`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.
+**Downstream:** `40` · `50` · `52`. Consumers use exact released artifacts.
 
 ## P2-010 required behavior and closure
 

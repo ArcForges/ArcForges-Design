@@ -5,7 +5,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: B — Shared platform
-> Upstream: `04` · `06` · Downstream: `13` · `21` · `45`
+> Upstream: `04` · `06` · Downstream: `13` · `21` · `45` · `53`
 
 > **Goal.** Instrument once, correctly: standard signals with a bounded dimension set, correlation that survives every hop, redaction enforced by construction, and desktop diagnostics that never leave the machine without consent.
 
@@ -172,6 +172,7 @@
 | Cardinality negative fixture and sampling retention results | [WP-12.03](#rule-wp-12.03) |
 | Health probe fail-closed and degradation results | [WP-12.04](#rule-wp-12.04) |
 | Consent-absent, crash-approval, verbose-expiry and revocation results | [WP-12.05](#rule-wp-12.05) |
+| Owned artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/OS/device/provider, scenario, result, limitations and real-versus-fixture status; inapplicable fields explicitly marked | [WP-12.90](#rule-wp-12.90) |
 
 ---
 
@@ -192,6 +193,6 @@
 
 ## 9. Dependencies
 
-**Upstream:** `04` · `06`. All stage outputs must be complete.
+**Upstream:** `04` · `06`. Consume completed stage outputs.
 
-**Downstream:** `13` · `21` · `45`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.
+**Downstream:** `13` · `21` · `45` · `53`. Consumers use exact released artifacts.

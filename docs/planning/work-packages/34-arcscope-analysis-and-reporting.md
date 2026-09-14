@@ -201,6 +201,9 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 | Result reconstruction and version-recording results | [WP-34.04](#rule-wp-34.04) |
 | Raw-capture immutability and comparison alignment results | [WP-34.05](#rule-wp-34.05) |
 | Traceability completeness and regeneration equivalence | [WP-34.06](#rule-wp-34.06) |
+| Owned artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/OS/device/provider, scenario, result, limitations and real-versus-fixture status; inapplicable fields explicitly marked | [WP-34.90](#rule-wp-34.90) |
+
+
 
 ---
 
@@ -228,9 +231,9 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 ## 9. Dependencies
 
-**Upstream:** `33`. All stage outputs must be complete.
+**Upstream:** `33`. Consume completed stage outputs.
 
-**Downstream:** `35` · `51`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.
+**Downstream:** `35` · `51`. Consumers use exact released artifacts.
 
 ## P2-010 required behavior and closure
 

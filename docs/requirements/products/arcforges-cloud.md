@@ -26,7 +26,7 @@ Product capability requirements are specified in [`../03-cloud-services-and-sync
 
 ### 1.1 One deployable host, bounded internal work
 
-API ingress, webhook processing, sync, AI model execution, scheduling, outbox dispatch, indexing, reconciliation, simulation and maintenance are internal responsibilities of the same host. Replicas run the same deployable application. Module boundaries, leases, resource budgets and recovery protect correctness without adding independent deployment roles.
+API ingress, webhook processing, sync, AI dispatch/admission and result recording, scheduling, outbox dispatch, indexing, reconciliation, simulation and maintenance are internal responsibilities of the same host. Replicas run the same deployable application. Module boundaries, leases, resource budgets and recovery protect correctness without adding independent deployment roles.
 
 | # | Requirement |
 |---|---|
@@ -48,8 +48,10 @@ The current baseline selections. **Every provider fact — availability, region 
 | Public edge | A CDN/WAF edge provider | Terminates TLS, applies WAF and rate limiting, fronts every public surface |
 | Application platform | A managed container application platform | Zone-redundant from creation |
 | Relational store | Managed PostgreSQL | One primary database, module-owned schemas |
-| Realtime | A managed realtime service | Delivery only; never a state store |
-| Async messaging | A managed message broker | Never the business source of truth |
+| Event hints | PostgreSQL hint rows read by EventService.Poll | Bounded unary polling; hints never own business state |
+| Asynchronous effects | PostgreSQL transactional outbox/inbox | Bounded retries/dead-letter; no separate managed broker in V1 |
+| Live AI presentation | Cloudflare Durable Object | Presentation only; Workflow and C# retain their existing authorities |
+| Mobile push | FCM HTTP v1 behind Notification adapter | Android data-only wake; durable attention survives provider loss |
 | Object storage | Primary object store plus an **independent second-provider** disaster copy | Per `§14` of the cloud requirements |
 | Secrets | A managed key vault with RBAC and purge protection | Plus workload identity for service-to-service auth |
 | Observability | An external observability and incident platform | Plus the platform's native signals |
@@ -104,10 +106,10 @@ The current baseline selections. **Every provider fact — availability, region 
 | DP-04 | **Point-in-time recovery with a retention window, plus geo-redundant backup**, is configured **at creation** — several backup options cannot be changed afterwards. |
 | DP-05 | **Platform backup is not the whole backup story.** An independent, encrypted logical backup to a second provider is also required (`§14` of the cloud requirements). |
 | DP-06 | **The transactional outbox commits with the business transaction**, and an inbox/idempotency table guards duplicate delivery. |
-| DP-07 | **A message broker is never the business source of truth** ([I-066](../01-normative-glossary-and-invariants.md#rule-i-066)). Losing a message must never lose a business fact. |
+| DP-07 | **Outbox/inbox dispatch is never the business source of truth.** Lost or replayed delivery cannot lose or duplicate a business fact. |
 | DP-08 | **Every queue consumer is idempotent.** Re-delivery must be indistinguishable from single delivery in effect. |
-| DP-09 | **Ordered sessions are used only where order genuinely matters.** Global ordering is not imposed by default. |
-| DP-10 | **The dead-letter queue is a first-class operational object**, monitored, alerted, inspectable and replayable. |
+| DP-09 | **Per-owner ordered dispatch is used only where the owner requires it**, through the declared outbox/inbox sequence and fence. No broker session or global ordering is introduced. |
+| DP-10 | **PostgreSQL outbox/inbox dead-letter state is a first-class operational object**, monitored, inspectable and replayable with duplicate effects prevented. |
 | DP-11 | **Realtime is not a task state database** ([I-066](../01-normative-glossary-and-invariants.md#rule-i-066), [SN-01](../05-ai-and-agent-execution.md#rule-sn-01)). State is queried; realtime accelerates. |
 
 ---
@@ -172,7 +174,8 @@ Four layers:
 |---|---|
 | **Object storage unavailable** | Metadata operations continue where possible; uploads and downloads queue or fail cleanly with a specific reason; no partial commit; existing local data unaffected |
 | **Database unavailable** | The API returns an honest degraded state; nothing is silently accepted; native tools and cached editing/search continue; Cloud AI and fresh Cloud data remain unavailable, and pending edits are clearly unsynced |
-| **Realtime unavailable** | Clients fall back to polling the authoritative state; **no business fact is lost** ([SN-03](../05-ai-and-agent-execution.md#rule-sn-03)); reconnection backfills by sequence |
+| **Event hints unavailable** | Clients keep bounded authoritative reads; expired cursors reset and reread without presenting partial history as complete. AI presentation reconnect follows the CF frame/range profile; no separate realtime-service failover |
+| **Push provider unavailable** | Pending attention remains durable and readable via notification.list; foreground/reconnect polling recovers it. Alert operations; bounded TTL retries. Background delivery without GMS/permission is unavailable and stated; never mark an approval resolved from a send result |
 | **AI provider unavailable** | Reserved credits are released; routing falls back within the cost class or asks; **the user is not charged for platform-caused retries** ([CU-03](../05-ai-and-agent-execution.md#rule-cu-03)) |
 | **AI gateway unavailable** | A direct-provider bypass path exists and is exercised, so the gateway is not a single point of failure |
 | **Observability platform unavailable** | The product continues operating normally; only visibility is degraded |
@@ -216,7 +219,7 @@ Four layers:
 
 ### 9.1 Required runbooks
 
-Database failover and restore · point-in-time recovery · object-store outage · cross-provider blob restore · realtime outage · message-broker backlog and dead-letter replay · AI provider outage and gateway bypass · edge or tunnel outage · email provider failover · secret compromise and rotation · deployment rollback · migration failure · region rebuild · entitlement reconciliation repair · webhook loss recovery · data-health anomaly · security advisory publication · package containment.
+Database failover and restore · point-in-time recovery · object-store outage · cross-provider blob restore · event-hint degradation and cursor reset · outbox/inbox backlog and dead-letter replay · AI provider outage and gateway bypass · edge or tunnel outage · email provider failover · secret compromise and rotation · deployment rollback · migration failure · region rebuild · entitlement reconciliation repair · webhook loss recovery · data-health anomaly · security advisory publication · package containment.
 
 ### 9.2 Disaster recovery
 
@@ -261,8 +264,8 @@ Before the paid cloud goes live:
 1. A full **Game Day** exercising SEV0 through SEV2 scenarios against the real production topology.
 2. Database failover exercised; point-in-time restore proven.
 3. Cross-provider blob restore proven.
-4. Message-broker backlog and dead-letter replay proven.
-5. Realtime outage with client fallback and sequence backfill proven.
+4. Outbox/inbox backlog and dead-letter replay proven.
+5. Event-hint degradation with authoritative reread and cursor reset proven.
 6. AI provider outage with credit release and fallback proven.
 7. Edge/tunnel outage with durable cached work and native jobs preserved, Cloud AI correctly unavailable, and reconnection recovery verified.
 8. Email failover proven **without duplicate one-time codes**.
@@ -298,9 +301,9 @@ Architecture boundaries must be reconciled to [P2-006](../../decisions/phase-2-s
 
 **Deployment** — the same image digest built once is promoted through staging to production; rollback follows the verified migration-mode compatibility horizon; an incompatible persisted state requires forward repair or independent fenced restore, with the stated RPO/RTO.
 
-**Realtime** — realtime is disabled entirely; clients continue by querying authoritative state; reconnection backfills the sequence gap exactly.
+**Event hints and live presentation** — disable hint delivery and verify bounded authoritative reads; expired cursors return an explicit reset followed by a fresh snapshot. Interrupt CF presentation separately and recover its retained byte range or authoritative Task state under contracts05; no fabricated complete sequence backfill.
 
-**Broker** — a consumer receives a message five times and produces one effect; a poisoned message lands in the dead-letter queue, is inspectable and is replayable.
+**Outbox/inbox** — a consumer receives a message five times and produces one effect; a poisoned message lands in the dead-letter queue, is inspectable and is replayable.
 
 **Storage** — the primary object store is unavailable; uploads fail cleanly with a specific reason and no partial commit; a cross-provider restore recovers a blob.
 

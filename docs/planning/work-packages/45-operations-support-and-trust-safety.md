@@ -5,7 +5,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: J — Platform completion
-> Upstream: `12` · `21` · `44` · `47` · Downstream: `46`
+> Upstream: `12` · `21` · `44` · `47` · Downstream: `31` · `46` · `53`
 
 > **Goal.** Make the platform operable: alerting that is worth waking someone for, runbooks that have actually been executed, a status page that survives an outage, support access that never silently impersonates a user, and an enforcement ladder with appeals.
 
@@ -166,6 +166,16 @@
 
 **Completion gate.** One logical notification/effect history; no impossible physical exactly-once promise or regenerated valid code on retry.
 
+<a id="rule-wp-45.09"></a>
+
+### WP-45.09 — Customer push delivery and registration lifecycle
+
+**What must be fully done.** Implement Notification IPushSender, typed FCM HTTP v1 credential adapter, unique delivery intents/outbox, generation/revocation checks and exact push.v1 profile. Preserve current business transactions and durable attention independently of sending.
+
+**Testing requirements.** Live isolated Firebase project send and recorded invalid-token/payload/project/rate-limit responses; token rotation race, crash-after-acceptance duplicates, TTL expiry, revoke-before-send and no secret logging. WP32 provides physical receipt.
+
+**Completion gate.** Actual sender works with bounded/fenced recovery; provider acceptance is labeled separately from device delivery. PG24 remains open until WP32 physical/no-GMS/permission evidence.
+
 <a id="rule-wp-45.90"></a>
 ### WP-45.90 — Verify the owned artifact and real integration
 
@@ -195,6 +205,8 @@
 
 ## 7. Tests and verification evidence
 
+WP45.09 records live FCM sending, failure/rotation/generation vectors and credential/project identities without secrets; WP32 closes physical receipt under PG24.
+
 | Evidence | Produced by |
 |---|---|
 | Indicator, attribution, routing and runbook-completeness results | [WP-45.00](#rule-wp-45.00) |
@@ -206,6 +218,9 @@
 | No-data-by-default and reference resolution results | [WP-45.06](#rule-wp-45.06) |
 | Ladder, communication, appeal and audit results | [WP-45.07](#rule-wp-45.07) |
 | Advisory rehearsal and email failover results | [WP-45.08](#rule-wp-45.08) |
+| Owned artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/OS/device/provider, scenario, result, limitations and real-versus-fixture status; inapplicable fields explicitly marked | [WP-45.90](#rule-wp-45.90) |
+
+
 
 ---
 
@@ -229,6 +244,6 @@
 
 ## 9. Dependencies
 
-**Upstream:** `12` · `21` · `44` · `47`. All stage outputs must be complete.
+**Upstream:** `12` · `21` · `44` · `47`. Consume completed stage outputs.
 
-**Downstream:** `46`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.
+**Downstream:** `31` · `46` · `53`. Consumers use exact released artifacts.

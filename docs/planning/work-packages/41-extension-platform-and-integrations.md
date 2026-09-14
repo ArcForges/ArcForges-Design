@@ -186,6 +186,8 @@
 
 ## 7. Tests and verification evidence
 
+[Local gRPC closure](../../architecture/contracts/09-local-grpc-and-sandbox.md): Run real extension host↔child generated gRPC roles and ConnectorBroker consent/secret rotation/revocation; deny forged first-party identity and direct SSO/control access. No custom symmetric-event protocol.
+
 | Evidence | Produced by |
 |---|---|
 | Hostile-process behaviour and credential-absence results | [WP-41.00](#rule-wp-41.00) |
@@ -196,6 +198,9 @@
 | Hostile catalog and unreachable-catalog results | [WP-41.05](#rule-wp-41.05) |
 | Generator, validate-parity and first-party build results | [WP-41.06](#rule-wp-41.06) |
 | MCP mapping record, connector secret and no-delegation structural results | [WP-41.07](#rule-wp-41.07) |
+| Owned artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/OS/device/provider, scenario, result, limitations and real-versus-fixture status; inapplicable fields explicitly marked | [WP-41.90](#rule-wp-41.90) |
+
+
 
 ---
 
@@ -223,6 +228,6 @@
 
 ## 9. Dependencies
 
-**Upstream:** `09` · `11` · `17` · `22` · `25`. All stage outputs must be complete.
+**Upstream:** `09` · `11` · `17` · `22` · `25`. Consume completed stage outputs.
 
-**Downstream:** `50` · `52`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.
+**Downstream:** `50` · `52`. Consumers use exact released artifacts.

@@ -189,6 +189,9 @@
 | Sample precision and mixing reference comparison | [WP-37.04](#rule-wp-37.04) |
 | Proxy equivalence and cache-deletion results | [WP-37.05](#rule-wp-37.05) |
 | Transport accuracy and keyboard operation results | [WP-37.06](#rule-wp-37.06) |
+| Owned artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/OS/device/provider, scenario, result, limitations and real-versus-fixture status; inapplicable fields explicitly marked | [WP-37.90](#rule-wp-37.90) |
+
+
 
 ---
 
@@ -216,9 +219,9 @@
 
 ## 9. Dependencies
 
-**Upstream:** `36`. All stage outputs must be complete.
+**Upstream:** `36`. Consume completed stage outputs.
 
-**Downstream:** `38`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.
+**Downstream:** `38`. Consumers use exact released artifacts.
 
 ## P2-010 required behavior and closure
 

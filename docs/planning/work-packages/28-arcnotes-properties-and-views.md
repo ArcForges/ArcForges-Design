@@ -197,6 +197,7 @@
 | Lightness default and performance comparison | [WP-28.04](#rule-wp-28.04) |
 | Supported-schema migration and Cloud-export fidelity results | [WP-28.05](#rule-wp-28.05) |
 | Scale corpus and soak results per view kind | [WP-28.06](#rule-wp-28.06) |
+| Owned artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/OS/device/provider, scenario, result, limitations and real-versus-fixture status; inapplicable fields explicitly marked | [WP-28.90](#rule-wp-28.90) |
 
 ---
 
@@ -220,9 +221,9 @@
 
 ## 9. Dependencies
 
-**Upstream:** `19` · `25`. All stage outputs must be complete.
+**Upstream:** `19` · `25`. Consume completed stage outputs.
 
-**Downstream:** `40` · `50`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.
+**Downstream:** `40` · `50`. Consumers use exact released artifacts.
 
 ## P2-010 required behavior and closure
 

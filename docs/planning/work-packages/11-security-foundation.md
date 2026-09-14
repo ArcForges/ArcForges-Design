@@ -5,7 +5,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: B — Shared platform
-> Upstream: `04` · `08` · `09` · Downstream: `13` · `14` · `16` · `22` · `41`
+> Upstream: `04` · `08` · `09` · Downstream: `13` · `14` · `16` · `22` · `41` · `53`
 
 > **Goal.** Implement the security model as mechanism rather than convention: principals and the actor chain, the R0–R4 risk model, the four enforcement points with owner-side final validation always last, approval and step-up, the secret broker, egress control, instruction provenance, capability leases and the append-only audit.
 
@@ -169,7 +169,7 @@
 
 ### WP-11.09 — Content helper and OS-enforced isolation
 
-**What must be fully done.** Build the first-party C# Native AOT ContentSandbox, brokered bounded DTO/buffer protocol, parent-bound lifecycle and all RID profiles in [the isolation architecture](../../architecture/24-content-and-extension-isolation.md). Launch restrictions must apply before any parser/extension code runs. Add the signed helper/package inputs and typed isolation-unavailable result; the product retains all domain/agent authority.
+**What must be fully done.** Build and solely own the first-party C# Native AOT ContentSandbox, generated gRPC broker/control bindings and all restricted RID launch profiles in [isolation24](../../architecture/24-content-and-extension-isolation.md). Publish ContentSandbox.Contracts, Broker and the foundation Runtime.<rid> before WP13 consumes them. WP13 later adds production parser composition to the same host and publishes a new immutable Runtime version; this stage has no reverse dependency on those parsers. Prove OS containment with a deliberately hostile first-party test parser; production PDF/image/media/OTIO libraries are supplied and retested by WP13, never an upstream input here.
 
 **Testing requirements.** Publish and execute the real restricted helper on every supported RID. Attempt product-store/secret reads, loopback/external networking, process escape and descriptor abuse; inject native crash, hang, output overflow and parent death. Verify OS denial, resource bounds and cleanup. Test missing profile without an unsafe fallback.
 
@@ -180,7 +180,7 @@
 <a id="rule-wp-11.90"></a>
 ### WP-11.90 — Verify the owned artifact and real integration
 
-**What must be fully done.** Implement fixed actor/owner, approval, secrets, egress and provenance rules across new boundaries. Package the signed, parent-bound content helper and OS broker with its native dependencies.
+**What must be fully done.** Implement fixed actor/owner, approval, secrets, egress and provenance rules across new boundaries. Package the signed parent-bound helper and OS broker with only this stage's existing dependencies and test-only parser fixture. WP13 provides production parser assets and their real containment evidence; no dependency back on WP13.
 
 **Execution order.** Follow [staged artifact integration](../README.md#staged-artifact-integration): consume only existing assigned producers, publish an owned capability candidate before its product consumer, and verify the declared stage against exact upstream artifacts. Record pending later owners and their closing gates; local mocks cover only that named test boundary.
 
@@ -206,6 +206,8 @@
 
 ## 7. Tests and verification evidence
 
+[Local gRPC closure](../../architecture/contracts/09-local-grpc-and-sandbox.md): Own actual signed restricted gRPC helper and launch-secret/OS-descriptor allowlist; prove hostile fixture containment and private-copy/digest validation. Implement DeviceSsoBroker mechanics and generated ConnectorBroker security boundary; real connector providers are WP41.
+
 | Evidence | Produced by |
 |---|---|
 | Actor chain propagation and completeness results | [WP-11.00](#rule-wp-11.00) |
@@ -217,6 +219,7 @@
 | Injection corpus results and marking coverage | [WP-11.06](#rule-wp-11.06) |
 | Lease expiry, revocation and trust-separation results | [WP-11.07](#rule-wp-11.07) |
 | Audit immutability, completeness and separation results | [WP-11.08](#rule-wp-11.08) |
+| Owned artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/OS/device/provider, scenario, result, limitations and real-versus-fixture status; inapplicable fields explicitly marked | [WP-11.90](#rule-wp-11.90) |
 
 ---
 
@@ -244,6 +247,6 @@ The [WP-11.09](#rule-wp-11.09) helper and broker must additionally pass their pa
 
 ## 9. Dependencies
 
-**Upstream:** `04` · `08` · `09`. All stage outputs must be complete.
+**Upstream:** `04` · `08` · `09`. Consume completed stage outputs.
 
-**Downstream:** `13` · `14` · `16` · `22` · `41`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.
+**Downstream:** `13` · `14` · `16` · `22` · `41` · `53`. Consumers use exact released artifacts.

@@ -2,6 +2,7 @@
 # WP-32 — Android Signing, Distribution and Store Gates
 
 > Status: Authoritative implementation plan under P2-010
+> Phase: J — Platform and client integration
 > Upstream: `31` · Downstream: `50`
 
 ## 1. Scope and purpose
@@ -106,12 +107,19 @@ Contracts delivers the complete public Kotlin package; Cloud/AI deliver the same
 
 Separate unit/schema/fixture tests, clean packaged consumers, actual Cloud/CF/desktop interactions, physical-device release evidence and distribution/store evidence. Record exact hashes/versions/device identity and limitations. A green build cannot substitute for a missing stage.
 
+
+| Evidence | Produced by |
+|---|---|
+| Owned artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/OS/device/provider, scenario, result, limitations and real-versus-fixture status; inapplicable fields explicitly marked | [WP-32.90](#rule-wp-32.90) |
+
 ## 8. Completion gate
+
+[PG-24](../../assurance/open-gates-register.md#rule-pg-24): exercise the actual WP45.09 sender and push.v1 on a physical arm64 Android device, including Doze/background generic attention, authoritative detail/approval, duplicate suppression, rotation/revocation, no-GMS and denied-permission foreground recovery. Provider acceptance alone is insufficient.
 
 Every numbered substep and applicable inherited requirement passes; the complete surface/action/state matrix is exercised. Unfinished required behavior blocks completion. Candidate and producer identities are immutable and all temporary fixtures have the named replacement stage. No scope reduction or design decision is deferred to consumer coding.
 
 ## 9. Dependencies
 
-**Upstream:** `31`. All stage outputs must be complete.
+**Upstream:** `31`. Consume completed stage outputs.
 
-**Downstream:** `50`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.
+**Downstream:** `50`. Consumers use exact released artifacts.

@@ -211,6 +211,7 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 | Skill capability-free and versioning results | [WP-15.04](#rule-wp-15.04) |
 | Index rebuild, relevance and permission results | [WP-15.05](#rule-wp-15.05) |
 | Export completeness, manifest agreement, secret-scan and recovery results | [WP-15.06](#rule-wp-15.06) |
+| Owned artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/OS/device/provider, scenario, result, limitations and real-versus-fixture status; inapplicable fields explicitly marked | [WP-15.90](#rule-wp-15.90) |
 
 ---
 
@@ -237,9 +238,9 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 ## 9. Dependencies
 
-**Upstream:** `14`. All stage outputs must be complete.
+**Upstream:** `14`. Consume completed stage outputs.
 
-**Downstream:** `17` · `52`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.
+**Downstream:** `17` · `52`. Consumers use exact released artifacts.
 
 ## P2-010 required behavior and closure
 

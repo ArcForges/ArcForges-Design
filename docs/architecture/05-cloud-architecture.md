@@ -9,7 +9,7 @@
 
 ## 1. Runtime decision
 
-[P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) requires Native AOT for the complete C# business host. The selected dependency/session/SQL/HTTP adapter closure is in [the platform matrix](21-platform-and-dependency-matrix.md#7-selected-p2-009-runtime-and-dependency-closure). Use explicit gRPC service/serializer registration, Minimal API exceptions, Npgsql fixed SQL and supported cryptography. No automatic ASP.NET Session, dynamic ORM, runtime assembly scanning or JIT exception is allowed. WP06 publishes and exercises the real dependency closure; prose cannot satisfy that gate.
+[P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) requires Native AOT for the complete C# business host. The selected dependency/session/SQL/HTTP adapter closure is in [the platform matrix](21-platform-and-dependency-matrix.md#8-selected-p2-009-runtime-and-dependency-closure). Use explicit gRPC service/serializer registration, Minimal API exceptions, Npgsql fixed SQL and supported cryptography. No automatic ASP.NET Session, dynamic ORM, runtime assembly scanning or JIT exception is allowed. WP06 publishes and exercises the real dependency closure; prose cannot satisfy that gate.
 
 ---
 
@@ -143,20 +143,20 @@ Twenty domain modules, following the [Cloud schema ownership map](data-model/01-
 
 ---
 
-## 7. Realtime
+## 7. Event hints and live presentation
 
 | # | Rule |
 |---|---|
-| RL-01 | **Realtime carries presence, chat deltas, task progress, approval resolution, device and session state, remote wake intents, and low-latency notifications.** |
-| RL-02 | **Realtime is never**: the sole durable command log, a transaction mechanism, a large-file channel, a media path, the only means of state recovery, or a replacement for the HTTP API. |
-| RL-03 | **Every significant event carries** event kind, sequence and revision, correlation, occurrence time, and the relevant resource, document or task identity. |
-| <a id="rule-rl-04"></a>RL-04 | **After reconnection a client queries the current snapshot, revision and sequence over HTTP, then resumes deltas** ([SN-01](../requirements/05-ai-and-agent-execution.md#rule-sn-01)–[SN-03](../requirements/05-ai-and-agent-execution.md#rule-sn-03) in the AI requirements). |
-| RL-05 | **Realtime is fed from the post-commit outbox and application notifications** (`§8`), never from a pre-commit path. |
-| RL-06 | **A client acknowledgement is not a business commit.** |
-| RL-07 | **Losing realtime never loses a business fact.** |
-| RL-08 | **Realtime payloads use source-generated serialization** and centralised method-name constants — no scattered magic strings. |
-| RL-09 | **Transport negotiation and fallback are permitted; the application layer's consistency semantics never change as a result.** |
-| RL-10 | **Realtime connections and hub methods use the same identity model and explicit authorization** as HTTP endpoints. |
+| RL-01 | EventService.Poll carries the17 typed hints in the wire registry. Live AI text deltas use the separate CF presentation channel. |
+| RL-02 | Hints and AI presentation never own durable commands, transactions, large objects, task outcomes or the only recovery path. |
+| RL-03 | Hints carry the numbered event envelope and the revision/identities declared by their payload; they never invent a global sequence. |
+| <a id="rule-rl-04"></a>RL-04 | After loss or expired cursor, query current authoritative snapshots and resume from the returned cursor; no hidden partial backfill. |
+| RL-05 | Publish hints only after the owning transaction commits. Event delivery cannot commit domain state. |
+| RL-06 | A client acknowledgement is not a business commit. |
+| RL-07 | Losing hints never loses a business fact. |
+| RL-08 | Hints are generated proto on EventService.Poll; there are no SignalR hub methods or source-generated JSON hint bodies. |
+| RL-09 | Initial clients use bounded unary polling with the cadence/backoff in contracts05; no required backplane, affinity or transport negotiation. |
+| RL-10 | The CF Durable Object presentation WebSocket uses the existing token, authorization/revocation and expiry checks in contracts05. It is presentation-only and does not require a new authorization HTTP call for every frame. |
 
 ---
 
@@ -167,19 +167,20 @@ Business transaction commits (state + outbox row, atomically)
         ↓
 Outbox dispatcher (a hosted service in the host)
         ↓
-├── internal reliable processing and projections
-├── message broker for cross-module and deferred work
-└── realtime broadcast to online clients
+├── module inbox consumers and versioned projections
+├── CF dispatch/control and object-verification effects
+├── Notification outbox → FCM adapter (wake only)
+└── committed hint rows read by EventService.Poll
 ```
 
 | # | Rule |
 |---|---|
-| EV-01 | **A broker is never the business source of truth** ([I-066](../requirements/01-normative-glossary-and-invariants.md#rule-i-066)). |
+| EV-01 | **Outbox/inbox delivery is never business authority**; owner state and the emitting outbox row commit atomically. |
 | EV-02 | **Every consumer is idempotent**, keyed by `EventId`. |
-| EV-03 | **Ordered sessions are used only where order genuinely matters.** |
-| EV-04 | **The dead-letter queue is a first-class operational object**: monitored, alerted, inspectable, replayable. |
+| EV-03 | **Required ordering uses the owning outbox/inbox stream and fence**, never an undeclared broker session or global sequence. |
+| EV-04 | **PostgreSQL outbox/inbox dead-letter state** is monitored, inspectable and replayable. |
 | EV-05 | **There is no global event sequence** ([EV-09](02-contracts-and-protocols.md#rule-ev-09) in the contracts architecture). Sequences are per stream or per resource. |
-| EV-06 | **Backplane or additional messaging infrastructure is added on empirical need**, not pre-emptively. |
+| EV-06 | **No separate broker or backplane is provisioned in V1.** A later addition requires measured need and an explicit design decision. |
 
 ---
 
@@ -272,4 +273,4 @@ Capabilities degrade independently. The full dependency-degradation matrix is in
 
 ## Selected host dependencies and integration
 
-[Platform runtime closure](21-platform-and-dependency-matrix.md#7-selected-p2-009-runtime-and-dependency-closure) owns the AOT/auth/SQL/HTTP adapter selection. [CF integration](contracts/05-cloudflare-integration.md) owns external execution/object ports and commit boundaries. This host implements those ports and canonical module operations; it runs no model loop.
+[Platform runtime closure](21-platform-and-dependency-matrix.md#8-selected-p2-009-runtime-and-dependency-closure) owns the AOT/auth/SQL/HTTP adapter selection. [CF integration](contracts/05-cloudflare-integration.md) owns external execution/object ports and commit boundaries. This host implements those ports and canonical module operations; it runs no model loop.

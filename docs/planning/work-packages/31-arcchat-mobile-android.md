@@ -2,7 +2,8 @@
 # WP-31 — Complete ArcChat Android Companion
 
 > Status: Authoritative implementation plan under P2-010
-> Upstream: `26` · `30` · `52` · Downstream: `32`
+> Phase: J — Platform and client integration
+> Upstream: `26` · `30` · `45` · `52` · Downstream: `32`
 
 ## 1. Scope and purpose
 
@@ -91,7 +92,7 @@ Mobile owns app/, core/domain, core/data, core/network, core/security, core/desi
 <a id="rule-wp-31.90"></a>
 ### WP-31.90 — Complete companion acceptance
 
-**What must be fully done.** Join actual31 evidence with producer manifests, signed candidate and full52/26/25/42 compatible integration manifest.
+**What must be fully done.** Join actual31 evidence with producer manifests, signed candidate and full52/26/25/42/45 compatible integration manifest.
 
 **Testing requirements.** Run full physical-device release scenarios and injected failure matrix; record exact device/OS/server/worker/package identities.
 
@@ -105,12 +106,19 @@ Contracts delivers the complete public Kotlin package; Cloud/AI deliver the same
 
 Separate unit/schema/fixture tests, clean packaged consumers, actual Cloud/CF/desktop interactions, physical-device release evidence and distribution/store evidence. Record exact hashes/versions/device identity and limitations. A green build cannot substitute for a missing stage.
 
+
+| Evidence | Produced by |
+|---|---|
+| Owned artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/OS/device/provider, scenario, result, limitations and real-versus-fixture status; inapplicable fields explicitly marked | [WP-31.90](#rule-wp-31.90) |
+
 ## 8. Completion gate
+
+[PG-24](../../assurance/open-gates-register.md#rule-pg-24): exercise the actual WP45.09 sender and push.v1 on a physical arm64 Android device, including Doze/background generic attention, authoritative detail/approval, duplicate suppression, rotation/revocation, no-GMS and denied-permission foreground recovery. Provider acceptance alone is insufficient.
 
 Every numbered substep and applicable inherited requirement passes; the complete surface/action/state matrix is exercised. Unfinished required behavior blocks completion. Candidate and producer identities are immutable and all temporary fixtures have the named replacement stage. No scope reduction or design decision is deferred to consumer coding.
 
 ## 9. Dependencies
 
-**Upstream:** `26` · `30` · `52`. All stage outputs must be complete.
+**Upstream:** `26` · `30` · `45` · `52`. Consume completed stage outputs.
 
-**Downstream:** `32`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.
+**Downstream:** `32`. Consumers use exact released artifacts.

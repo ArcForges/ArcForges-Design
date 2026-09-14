@@ -108,7 +108,7 @@
 
 ### WP-46.03 — Drill programme
 
-**What must be fully done.** A recurring disaster-recovery drill programme covering database failover, point-in-time restore, blob restore, broker backlog and dead-letter replay, realtime outage, provider outage, deployment rollback, migration failure and region rebuild. Each drill produces a dated record and any runbook corrections it revealed.
+**What must be fully done.** A recurring disaster-recovery drill programme covering database failover, point-in-time restore, blob restore, outbox/inbox backlog and dead-letter replay, event-hint degradation/cursor reset and Durable Object eviction with durable Task fallback, provider outage, deployment rollback, migration failure and region rebuild. Each drill produces a dated record and any runbook corrections it revealed.
 
 **Testing requirements.** A completed drill cycle with dated records; a runbook-update assertion for every correction found.
 
@@ -186,6 +186,9 @@
 | Per-anomaly detection and repair results; dashboard truthfulness | [WP-46.04](#rule-wp-46.04) |
 | Export completeness and realm migration verification | [WP-46.05](#rule-wp-46.05) |
 | Backup lag alert and assembled restore-proof evidence | [WP-46.06](#rule-wp-46.06) |
+| Owned artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/OS/device/provider, scenario, result, limitations and real-versus-fixture status; inapplicable fields explicitly marked | [WP-46.90](#rule-wp-46.90) |
+
+
 
 ---
 
@@ -207,9 +210,9 @@
 
 ## 9. Dependencies
 
-**Upstream:** `25` · `45`. All stage outputs must be complete.
+**Upstream:** `25` · `45`. Consume completed stage outputs.
 
-**Downstream:** `48` · `50`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.
+**Downstream:** `48` · `50`. Consumers use exact released artifacts.
 
 ## P2-010 required behavior and closure
 

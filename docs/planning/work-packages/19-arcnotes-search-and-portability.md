@@ -201,6 +201,7 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 | Per-source import results, immutability assertion, partial-failure report | [WP-19.04](#rule-wp-19.04) |
 | Cloud export content, attachment-hash, link-manifest and fidelity results | [WP-19.05](#rule-wp-19.05) |
 | Dependency-policy, structural and presentation results proving **no repository-projection or Git/LFS path exists** | [WP-19.06](#rule-wp-19.06) |
+| Owned artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/OS/device/provider, scenario, result, limitations and real-versus-fixture status; inapplicable fields explicitly marked | [WP-19.90](#rule-wp-19.90) |
 
 ---
 
@@ -227,6 +228,6 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 ## 9. Dependencies
 
-**Upstream:** `18`. All stage outputs must be complete.
+**Upstream:** `18`. Consume completed stage outputs.
 
-**Downstream:** `20` · `25` · `28` · `40`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.
+**Downstream:** `20` · `25` · `28` · `40`. Consumers use exact released artifacts.

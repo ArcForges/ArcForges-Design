@@ -184,6 +184,7 @@
 | Remote approval and local-presence negative results | [WP-26.04](#rule-wp-26.04) |
 | Offline queue, delivery and expiry results | [WP-26.05](#rule-wp-26.05) |
 | Per-Step locality, no-cloud-substitute and waiting-device results | [WP-26.06](#rule-wp-26.06) |
+| Owned artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/OS/device/provider, scenario, result, limitations and real-versus-fixture status; inapplicable fields explicitly marked | [WP-26.90](#rule-wp-26.90) |
 
 ---
 
@@ -205,6 +206,6 @@
 
 ## 9. Dependencies
 
-**Upstream:** `17` · `24` · `25`. All stage outputs must be complete.
+**Upstream:** `17` · `24` · `25`. Consume completed stage outputs.
 
-**Downstream:** `31` · `33` · `36` · `49` · `52`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.
+**Downstream:** `31` · `33` · `36` · `49` · `52`. Consumers use exact released artifacts.

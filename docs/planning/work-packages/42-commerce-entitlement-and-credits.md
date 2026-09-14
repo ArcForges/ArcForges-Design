@@ -241,7 +241,10 @@
 | Lot ordering, concurrency, sweep, hard-stop and precision results | [WP-42.07](#rule-wp-42.07) |
 | Repair-without-edit and ledger-separation results | [WP-42.08](#rule-wp-42.08) |
 | Refund rollback and evidence export results | [WP-42.09](#rule-wp-42.09) |
-| Recorded go-live gate evidence including the received payout | [WP-42.10](#rule-wp-42.10) |
+| Technical commerce receipts: ledger integrity, test-mode charge/refund/webhook replay, period/renewal/exclusivity and unknown effects; activation checklist handed to WP48/WP50. Actual checkout and received payout are verified there | [WP-42.10](#rule-wp-42.10) |
+| Owned artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/OS/device/provider, scenario, result, limitations and real-versus-fixture status; inapplicable fields explicitly marked | [WP-42.90](#rule-wp-42.90) |
+
+
 
 ---
 
@@ -275,9 +278,9 @@
 
 ## 9. Dependencies
 
-**Upstream:** `22` · `23`. All stage outputs must be complete.
+**Upstream:** `22` · `23`. Consume completed stage outputs.
 
-**Downstream:** `43` · `44` · `48` · `51` · `52`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.
+**Downstream:** `43` · `44` · `48` · `51` · `52`. Consumers use exact released artifacts.
 
 ## P2-010 required behavior and closure
 

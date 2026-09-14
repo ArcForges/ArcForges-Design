@@ -275,6 +275,7 @@ Cloud is one deployable host and one PostgreSQL database. A unit of work owns on
 | Content → search/index projections | Content outbox → Search indexer | Version-guarded derived projection; rebuild and journal/feed catch-up |
 | Search inference outcome → vector/rerank projection | Search outbox → Search projection consumer | Match job/result receipt, exact source/model/config and current policy; publish complete results or discard stale output, then release job pins idempotently |
 | Content/Task → notifications | Owner outbox → Notification inbox | Durable attention is readable even if push fails |
+| Durable notification → Android wake | Notification transaction/outbox → FCM sender | Atomically create unique push_delivery intents; bounded retry/fenced receipt, current registration/generation/TTL check. Provider acceptance is not physical receipt; duplicate sends replace one client attention identity |
 | Account/device denial → queued work withdrawal | Identity/Device outbox → Task inbox | Admission and device execution recheck denial immediately; cancellation consumer drains queued work idempotently |
 | Deletion → per-store purge | Deletion coordinator outbox → named module purgers | Per-store completion records, retries and retention; no false global completion |
 | Logical object release → physical object removal | Resource outbox → Resource deletion worker | `releasing` object is inaccessible; delete external bytes idempotently, then commit deletion and release physical-capacity accounting |

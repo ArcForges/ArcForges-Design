@@ -17,7 +17,7 @@ Prices, fees, quotas and rates are deliberately **not** verified in these artifa
 |---|---|
 | [`testing-and-verification-strategy.md`](testing-and-verification-strategy.md) | The eighteen test families with their unique responsibility, placement and evidence; cross-cutting verification themes; the invariant-to-test obligation; test environments; fixtures and corpora; verification of the specification itself; and what each family may not substitute for |
 | [`release-gates.md`](release-gates.md) | Every gate between work and users, consolidated: continuous, per-release, channel-promotion, product first-release, go-live (cloud, commercial, regional, mobile, extension) and deferred-gate closure — each with evidence and an accountable role |
-| [open-gates-register.md](open-gates-register.md) | The authoritative register: 39 entries, five design closures, 32 open implementation obligations with one retired iOS entry, one merged entry and zero unresolved owner determinations |
+| [open-gates-register.md](open-gates-register.md) | The authoritative register: 40 entries, five design closures, 33 open implementation obligations with one retired iOS entry, one merged entry and zero unresolved owner determinations |
 | [`reference-coverage-and-provenance.md`](reference-coverage-and-provenance.md) | **The method**: the reference map and what a reference repository is not; the matrix columns; the ten-field provenance record required by [D-013](../decisions/phase-1-foundation-decisions.md#rule-d-013); the licence decision table; automated enforcement; and verification oracles. The completed matrices are in [`reference-coverage/`](reference-coverage/README.md) |
 | [`implementation-state-reconciliation.md`](implementation-state-reconciliation.md) | **The completed item-level inventory**: historical166 projects at ede43db with measured content and dispositions, six corrections to earlier false conformance findings, per-shim native reconciliation, the effective build configuration, the measured test harness, and the revised priority order |
 | [`traceability-matrix.md`](traceability-matrix.md) | Decision-to-document, verification-to-enforcement, requirement-to-architecture-to-test, and invariant coverage mappings |
@@ -28,7 +28,8 @@ Prices, fees, quotas and rates are deliberately **not** verified in these artifa
 | [phase-2-design-closure-review.md](phase-2-design-closure-review.md) | Fourteen review groups, final mechanisms, owning work packages and the boundary between design closure and runtime proof |
 | [design-repair-verification.md](design-repair-verification.md) | Reproducible standard-library design counterexamples and complete citation/dependency checks |
 | [deprecated-input-independence-review.md](deprecated-input-independence-review.md) | Removal of active archived-input dependencies, necessary formal supplements, preserved historical boundaries and focused verification evidence |
-| [final-design-review.md](final-design-review.md) | Independent post-amendment review of all 51 active packages and the accepted family; frozen repair groups, corrected authorities/producer gates, document verification and remaining runtime evidence |
+| [final-design-review.md](final-design-review.md) | Historical independent post-amendment review of all 51 active packages and the accepted family; frozen repair groups, corrected authorities/producer gates, document verification and remaining runtime evidence |
+| [producer-and-local-grpc-closure-review.md](producer-and-local-grpc-closure-review.md) | Current AF01–AF18 and local IPC closure: corrected source snapshots, 52-WP/161-edge graph, numbered gRPC/OS-stream design, bounded final review and reproducible document checks; runtime gates remain open |
 
 ## Conventions
 

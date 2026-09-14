@@ -189,6 +189,9 @@ The Web companion verifies real generation, tool approval, stream fallback and r
 | Offline-target queueing and no-local-connection results | [WP-49.04](#rule-wp-49.04) |
 | Offline, degradation, convergence and accessibility results | [WP-49.05](#rule-wp-49.05) |
 | Budget measurements and regression-gate negative test | [WP-49.06](#rule-wp-49.06) |
+| Owned artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/OS/device/provider, scenario, result, limitations and real-versus-fixture status; inapplicable fields explicitly marked | [WP-49.90](#rule-wp-49.90) |
+
+
 
 ---
 
@@ -218,6 +221,6 @@ The Web companion verifies real generation, tool approval, stream fallback and r
 
 ## 9. Dependencies
 
-**Upstream:** `26` · `48` · `52`. All stage outputs must be complete.
+**Upstream:** `26` · `48` · `52`. Consume completed stage outputs.
 
-**Downstream:** `50`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.
+**Downstream:** `50`. Consumers use exact released artifacts.

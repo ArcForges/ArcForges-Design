@@ -191,6 +191,10 @@ The complete initial Resource/owner/query/measurement/simulator, public operatio
 
 ## 7. Tests and verification evidence
 
+[Local gRPC closure](../../architecture/contracts/09-local-grpc-and-sandbox.md): Publish complete .LocalRpc.Platform/.Sandbox and all typed parser/connector/hint/bootstrap methods before consumers. Descriptor fixture checks include every field in local09 and wire04.
+
+Generate an operation-by-actor reachability matrix for every public/local/operator/CF/exception binding under catalogue00 AZ-04, with all seven effective authorization fields and source profile. Fail unclassified/ambiguous fields, nonexistent idempotency examples, public imports of local schema and tool reachability of human-only approval/credential/commerce/policy methods. Include resource/context/connector egress denials and hostile actor-chain cases.
+
 **Required evidence addition.** Generated wire/schema vectors for origin, scalar queries and measurement results, including exact decimals/instants, statuses and unknown-field/version behavior. The contract suite checks all catalogue producer codes.
 
 | Evidence | Produced by |
@@ -201,6 +205,7 @@ The complete initial Resource/owner/query/measurement/simulator, public operatio
 | RPC contract policy test results | [WP-03.04](#rule-wp-03.04) |
 | Determinism proof and negative baseline-diff test | [WP-03.05](#rule-wp-03.05) |
 | Compatibility matrix results and the committed golden vectors | [WP-03.06](#rule-wp-03.06) |
+| Owned artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/OS/device/provider, scenario, result, limitations and real-versus-fixture status; inapplicable fields explicitly marked | [WP-03.90](#rule-wp-03.90) |
 
 ---
 
@@ -227,9 +232,9 @@ The complete initial Resource/owner/query/measurement/simulator, public operatio
 
 ## 9. Dependencies
 
-**Upstream:** `02`. All stage outputs must be complete.
+**Upstream:** `02`. Consume completed stage outputs.
 
-**Downstream:** `04` · `05` · `06` · `09` · `21` · `23` · `30`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.
+**Downstream:** `04` · `05` · `06` · `09` · `21` · `23` · `30`. Consumers use exact released artifacts.
 
 ## P2-010 required behavior and closure
 
