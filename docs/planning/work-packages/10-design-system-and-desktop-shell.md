@@ -5,7 +5,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: B — Shared platform
-> Upstream: `06` · `09` · Downstream: `13` · `14` · `18` · `33` · `36`
+> Upstream: `06` · `09` · Downstream: `13` · `14` · `18` · `33` · `36` · `53`
 
 > **Goal.** Build the shared desktop foundation once — tokens, windows, panels, commands, settings, attention, errors, lifecycle — so that four products feel like one family without any of them depending on another, and so that every control in it survives Native AOT.
 
@@ -207,6 +207,7 @@
 | Startup budget measurements and shutdown-during-work result | [WP-10.06](#rule-wp-10.06) |
 | Accessibility automated plus dated manual record; pseudo-localisation report | [WP-10.07](#rule-wp-10.07) |
 | Per-control AOT proofs and licence records | [WP-10.08](#rule-wp-10.08) |
+| Owned artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/OS/device/provider, scenario, result, limitations and real-versus-fixture status; inapplicable fields explicitly marked | [WP-10.90](#rule-wp-10.90) |
 
 ---
 
@@ -232,6 +233,6 @@
 
 ## 9. Dependencies
 
-**Upstream:** `06` · `09`. All stage outputs must be complete.
+**Upstream:** `06` · `09`. Consume completed stage outputs.
 
-**Downstream:** `13` · `14` · `18` · `33` · `36`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.
+**Downstream:** `13` · `14` · `18` · `33` · `36` · `53`. Consumers use exact released artifacts.

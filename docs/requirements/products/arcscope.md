@@ -57,7 +57,7 @@ ArcScope Project
 | SD-06 | **`Session ≠ Connection`** ([I-467](../01-normative-glossary-and-invariants.md#rule-i-467)). A session may involve several data sources and may outlive individual connections. |
 | SD-07 | **A source disconnect must not close the session** (`§4`). The session survives; the interruption is recorded as an explicit gap. |
 | <a id="rule-sd-08"></a>SD-08 | **The same source must not be silently claimed by two captures.** Exclusive access is coordinated by the capability owner with lease/busy semantics ([CC-05](../05-ai-and-agent-execution.md#rule-cc-05)). |
-| <a id="rule-sd-09"></a>SD-09 | V1 adapters cover serial, TCP, UDP, file/replay and Cloud Simulation (§17.1). Device-specific SDKs remain later; simulation is a real product capability, not a mock hardware driver. |
+| <a id="rule-sd-09"></a>SD-09 | V1 adapters cover serial, USB with explicit interface/endpoint, TCP, UDP, file/replay and Cloud Simulation (§17.1). Device-specific SDKs remain later; simulation is a real product capability, not a mock hardware driver. |
 | <a id="rule-sd-10"></a>SD-10 | **Replay must never impersonate a real device.** Replayed data is explicitly labelled as replay, with its origin. |
 
 ---
@@ -431,7 +431,7 @@ SimulationDefinition · ScenarioVersion · SimulationRun · SimulationSegment ·
 
 | Area | V1 |
 |---|---|
-| **Sources** | Reusable source definitions, connect/disconnect, generic first-party adapters (serial, TCP, UDP), file/replay |
+| **Sources** | Reusable source definitions, connect/disconnect, generic first-party adapters (serial, USB with explicit interface/endpoint, TCP, UDP), file/replay |
 | **Session / Capture** | Session, live observation, record, multiple capture segments, disconnect and gap, recovery |
 | **Data** | Channel, numeric signal, digital/boolean signal, events, units, timestamps |
 | **Visualisation** | Time-series, digital track, event timeline and table, zoom and pan, cursor, range selection, live follow |

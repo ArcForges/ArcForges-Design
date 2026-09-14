@@ -186,6 +186,9 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 | Explicit upload, no-auto-trigger and resumption results | [WP-35.03](#rule-wp-35.03) |
 | Bundle round-trip, precision warnings, origin and fixture coverage | [WP-35.04](#rule-wp-35.04) |
 | Extension no-write structural results | [WP-35.05](#rule-wp-35.05) |
+| Owned artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/OS/device/provider, scenario, result, limitations and real-versus-fixture status; inapplicable fields explicitly marked | [WP-35.90](#rule-wp-35.90) |
+
+
 
 ---
 
@@ -212,6 +215,6 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 ## 9. Dependencies
 
-**Upstream:** `25` · `34`. All stage outputs must be complete.
+**Upstream:** `25` · `34`. Consume completed stage outputs.
 
-**Downstream:** `50` · `51`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.
+**Downstream:** `50` · `51`. Consumers use exact released artifacts.

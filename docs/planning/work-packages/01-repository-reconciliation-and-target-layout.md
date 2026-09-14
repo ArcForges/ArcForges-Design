@@ -184,6 +184,7 @@
 | Native shim decision records, one per shim | [WP-01.03](#rule-wp-01.03) |
 | Test family coverage report with explicit gaps | [WP-01.04](#rule-wp-01.04) |
 | Green build at every commit boundary; retired Notes paths absent and fenced-reference check clean | [WP-01.05](#rule-wp-01.05) |
+| Owned artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/OS/device/provider, scenario, result, limitations and real-versus-fixture status; inapplicable fields explicitly marked | [WP-01.90](#rule-wp-01.90) |
 
 ---
 
@@ -204,9 +205,9 @@
 
 ## 9. Dependencies
 
-**Upstream:** `00`. All stage outputs must be complete.
+**Upstream:** `00`. Consume completed stage outputs.
 
-**Downstream:** `02`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.
+**Downstream:** `02`. Consumers use exact released artifacts.
 
 ## Current source baseline and migration input
 

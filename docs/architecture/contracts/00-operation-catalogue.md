@@ -32,7 +32,7 @@ Every operation on every surface — HTTP, local RPC, realtime — obeys the sam
 | OC-02 | **Every mutating operation carries a `CommandId`** allocated by the caller, and is deduplicated at its declared owner commit; external effects retain explicit uncertainty ([TX-01](../data-model/00-data-model-overview.md#rule-tx-01)–[TX-06](../data-model/00-data-model-overview.md#rule-tx-06)). |
 | OC-03 | A mutating versioned owner operation supplies its exact Cloud Revision, LocalNotesVersion or NativeContentRev precondition; these are not interchangeable. Create uses the owner-defined absent-root value. |
 | OC-04 | **Every operation returns `ArcResult<T>`** — success with a payload, or a typed `ArcError`. Business failure is a value; transport and protocol failure is an exception (`ErrorCategory`). |
-| OC-05 | **Every operation declares its authorization requirement** as a capability, a risk level and an approval posture — never "authenticated" alone. |
+| OC-05 | **Every operation declares its authorization profile**, risk and approval posture under §4; only tool bindings have a capability key. Authentication alone is insufficient. |
 | OC-06 | **Every list operation is cursor-paginated** with an opaque, scope-bound cursor. |
 | OC-07 | **Every operation declares its compatibility class** (`§7`), which determines what may change without a version bump. |
 
@@ -131,23 +131,49 @@ Every operation's failures map into these. An operation may not invent a conditi
 
 ## 4. Authorization declaration
 
-Every operation carries this block. It is the contract's half of the security pipeline (`§12` of the security requirements); the owner-side final validation is the other half and is never skipped.
+Every operation has seven **effective** authorization fields. WP03 exports their concrete values from the numbered catalogue plus the closed profiles below; omitted metadata is not an implementation default. Owner authorization, entitlement, revision and source policy are always additional checks.
 
-| Field | Values |
+| Field | Deterministic source |
 |---|---|
-| `capability` | The capability key the caller must hold |
-| `risk` | `R0` … `R4` |
-| `approval` | `none` \| `perOperation` \| `perSession` \| `perScope` |
-| `stepUp` | `no` \| `yes` |
-| `localPresence` | `no` \| `yes` — `yes` makes the operation **unreachable from mobile or web** ([BR-06](../../planning/work-packages/26-remote-action-and-tool-bridge.md#rule-br-06) of [WP-26](../../planning/work-packages/26-remote-action-and-tool-bridge.md#rule-wp-26)) |
-| `egress` | `none` \| `declared` — a separate authorization from read ([BR-05](../../planning/work-packages/11-security-foundation.md#rule-br-05) of [WP-11](../../planning/work-packages/11-security-foundation.md#rule-wp-11)) |
-| `actorKinds` | Which of human, agent, automation, extension, operator, service may invoke it |
+| capability | Exact stable operation ID only for generated first-party tool bindings; absent for infrastructure, customer account/control and internal ports. No invented capability grants replace authentication. |
+| risk | The operation's catalogue risk; local infrastructure/bootstrap/helper risk is fixed in contracts09. Missing risk or conflicting declarations fail generation. |
+| approval | Declared operation posture; reads default none, mutations retain their declared risk/approval policy, never infer authorization from a method name. Human-only consent/approval decisions require their exact foreground/proposal binding. |
+| stepUp | Declared yes for authority expansion/sensitive account/financial controls; otherwise no, subject to stricter current owner policy. |
+| localPresence | Yes exactly for operations explicitly requiring local presence in catalogue02/security/device broker profiles; no public/client binding may expose those operations. |
+| egress | Derived by the explicit boundary table below; read permission alone cannot authorize crossing a new destination boundary. |
+| actorKinds | Derived by AZ-04; emitted for every service method in the generated operation metadata. No unclassified operation is reachable. |
 
 | # | Rule |
 |---|---|
-| <a id="rule-az-01"></a>AZ-01 | **An operation with `localPresence = yes` has no remote path at all.** It is not merely refused remotely; the remote surface does not offer it. |
-| <a id="rule-az-02"></a>AZ-02 | **An operation invocable by `agent` declares it explicitly.** Absence of `agent` in `actorKinds` means an agent can never reach it, whatever capability it holds. |
-| AZ-03 | **`egress = declared` operations name the destination class**, and the egress decision is recorded separately from the operation's own audit row. |
+| <a id="rule-az-01"></a>AZ-01 | LocalPresence=yes has no Mobile/Web or remote-agent path. It is not merely a client-side hidden action. |
+| <a id="rule-az-02"></a>AZ-02 | Agent, automation and extension reach only the generated approved tool subset under AZ-04. Absence from that subset denies, regardless of a caller's claimed actor chain. |
+| AZ-03 | Declared egress requires a separately audited destination/source authorization at the final owner and again before actual outbound effect. |
+| <a id="rule-az-04"></a>AZ-04 | Apply the disjoint identity profiles below before capability selection. Human-only denials override any catalogue inclusion. An operator/customer/CF/peer credential cannot be substituted for another identity class. Unclassified or contradictory metadata fails producer generation and server startup. |
+
+| Surface/operation class | Eligible identity and delegation |
+|---|---|
+| Public customer services and standard browser adapters | Human owner through the declared session/API-token scope, or the exact enrollment/authentication/recovery one-use flow where no session exists yet. Never grant a preauth caller other customer methods. |
+| Generated Cloud tool bindings | Above owner, plus agent/automation/extension only when explicitly in the first-party tool catalogue and admitted through its owner/delegation/grant pipeline. No ambient CF service token may call arbitrary public customer APIs. |
+| Local Notes/Scope/Slate/Chat product methods | OS-authenticated product peer on behalf of a verified human; permitted agent/automation/extension chains only for the generated tool subset. Preserve every operation's local presence, effect, resource and approval conditions. |
+| LocalBootstrap and peer lease, Hub/provider/resource/lifecycle/local-hint methods | Verified OS peer or restricted launch-bound parent/child identity under contracts09, carrying the original validated actor where applicable. They are infrastructure ports; model/extension callers cannot directly bootstrap as first-party applications. CapabilityProvider.Invoke decodes only an admitted tool; infrastructure reachability is not domain authority. |
+| DeviceSsoBroker and ConnectorBroker, all approval/consent/credential/commerce/policy configuration decisions (including IChatOperations.SubmitApproval) | Human-only action with the exact foreground, step-up and one-use proposal/flow bindings. Excluded from agent/automation/extension tool generation even if named in a product interface. Status/read paths retain their narrower declared permissions. |
+| ExtensionHost and ContentSandbox services | Only the authenticated installation/host or exact helper parent/session roles and method directions in contracts09. They cannot acquire a customer session from being local. |
+| OperatorService | Operator identity only; method-specific role and dual-approval rules in registry04 §9. Public human sessions never qualify. |
+| CF internal HTTP ports | Service identity only under contracts05, exact port/lease/epoch/generation and delegated owner scope; never an unrestricted customer token. |
+| Provider webhook/callback exceptions | That provider's verified signature or original state/PKCE/one-use flow, normalized at the adapter. A generic service or user session cannot forge provider identity. |
+
+Public customer and tool classifications are a base profile plus explicit tool opt-in, not competing identities. Within local methods the sensitive broker/decision and helper/extension profiles override the general peer profile. The emitted profile ID, source rule and all seven values are part of the frozen descriptor/fixture manifest. New methods require a declared profile before release.
+
+| Boundary / exact binding class | Egress destination and check |
+|---|---|
+| INotesOperations.Export, ISlateOperations.Export/ExportOtio/ExportSubtitles and declared export jobs | User-selected destination or owned export resource; preserve export/source policy and accepted loss/report semantics. |
+| IContextProvider.ProvideContext, IArtifactHandler.Resolve/RenderPreview/Open, IResourceAccess.OpenRead/ReadChunk/BeginTransfer, product Handoff and attachment/extraction/adoption operations | Exact receiving peer/owner/resource/AI context; bind current source version, allowed range, purpose and destination grant. A ResourceRef or successful read is never egress consent. Raw Scope captures/Slate media remain excluded from context. |
+| Public resource upload/download/transfer, sync/exports and content-bearing chat/task input | Same authenticated owner/workspace replica is permitted only by its existing Sync/content/source policy; any transfer to another purpose/AI context requires that purpose's separate authorization. No implicit Cloud index/AI opt-in. |
+| search.query with configured external Web search, and declared Web-search tool | Activated provider origin plus explicit query egress/source policy; ordinary local/internal index search is none. |
+| connector.beginConnection/completeConnection, local ConnectorBroker equivalents and admitted connector capability invocation | Exact definition-hash-bound provider origins/scopes under existing consent, SSRF/redirect and secret-broker checks. |
+| commerce.createCheckoutAttempt and provider-effect adapters | Selected hosted payment/provider origin; no customer-supplied redirect or second commerce authority. |
+| Managed AI dispatch and declared machine/device/provider tools | The already-authorized destination class in contracts05/07/08 and the capability descriptor; recheck source/AI preference and physical-effect approval before dispatch. |
+| All remaining typed methods | No additional external destination. Normal protocol response still enforces caller read authorization and redaction; any newly introduced data destination must first add a declared binding here. |
 
 ---
 
@@ -156,12 +182,12 @@ Every operation carries this block. It is the contract's half of the security pi
 | Class | Example | Idempotency mechanism | Safe to auto-retry on unknown effect? |
 |---|---|---|---|
 | **Pure query** | `chat.getConversation` | Naturally idempotent | Yes |
-| **Idempotent write** | `notes.setDocumentTitle` | `CommandId` + `expectedRev` | Yes |
-| **Create with client identifier** | `notes.createDocument` | Caller-allocated id makes re-issue a no-op | Yes |
+| **Idempotent write** | `notes.renameFolder` | `CommandId` + `expectedRev` | Yes |
+| **Create with client identifier** | `notes.createNotebook` | Caller-allocated id makes re-issue a no-op | Yes |
 | **Append** | `chat.appendMessage` | `CommandId` — a duplicate returns the original message | Yes |
-| **Non-idempotent effect** | `slate.startRender`, `scope.startCapture` | `CommandId` **plus** a live-instance constraint | **No** — surfaces a decision |
-| **External side effect** | `commerce.createCheckout`, capability invocation with egress | `CommandId` **plus** provider-side idempotency where available | **No** |
-| **Destructive** | `notes.purgeDocument`, `identity.revokeDevice` | `CommandId`; the second call reports already-done rather than failing | Yes — but never without the original approval |
+| **Non-idempotent effect** | `ISlateOperations.StartRender`, `IScopeOperations.StartCapture` | `CommandId` **plus** a live-instance constraint | **No** — surfaces a decision |
+| **External side effect** | `commerce.createCheckoutAttempt`, capability invocation with egress | `CommandId` **plus** provider-side idempotency where available | **No** |
+| **Destructive** | `identity.revokeApiToken`, `identity.revokeDevice` | `CommandId`; the second call reports already-done rather than failing | Yes — but never without the original approval |
 
 | # | Rule |
 |---|---|
@@ -170,6 +196,8 @@ Every operation carries this block. It is the contract's half of the security pi
 | IR-03 | **A duplicate destructive call reports the already-done state**, so a retried delete after a lost response does not look like a failure. |
 
 ---
+
+Notes document body creation/mutation uses the closed Sync mutation allowlist; structural operations use the named Notes commands. These examples do not create alternate public document-write APIs.
 
 ## 6. Cursors and pagination
 
@@ -222,7 +250,7 @@ Every operation carries this block. It is the contract's half of the security pi
 
 | # | Obligation | Where |
 |---|---|---|
-| OV-01 | Every operation in `01`–`03` declares all seven contract elements: name, class, authorization block, idempotency class, error set, compatibility class, surface | Contract baseline check ([WP-03.05](../../planning/work-packages/03-contract-foundation-and-licence-split.md#rule-wp-03.05)) |
+| OV-01 | Every operation in catalogues01–03, numbered registry04 and local profile09 has a concrete name/class/idempotency/errors/compatibility/surface and seven effective authorization fields exported under §4; unresolved/contradictory profile, nonexistent example or forbidden actor reachability fails | Contract baseline check ([WP-03.05](../../planning/work-packages/03-contract-foundation-and-licence-split.md#rule-wp-03.05)) |
 | OV-02 | Every error an implementation returns exists in `§3.2` | [WP-23.01](../../planning/work-packages/23-public-api-and-generated-clients.md#rule-wp-23.01) |
 | OV-03 | Every `localPresence = yes` operation is absent from the mobile and web client surfaces | [WP-31.06](../../planning/work-packages/31-arcchat-mobile-android.md#rule-wp-31.06), [WP-49.02](../../planning/work-packages/49-arcchat-web-companion.md#rule-wp-49.02) |
 | OV-04 | Every mutating operation is exactly-once under duplicate submission and lost response | [WP-23.03](../../planning/work-packages/23-public-api-and-generated-clients.md#rule-wp-23.03) |

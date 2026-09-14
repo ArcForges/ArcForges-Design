@@ -214,6 +214,7 @@
 | Token scope and revocation results | [WP-22.05](#rule-wp-22.05) |
 | Recovery abuse-resistance, state matrix and deletion results | [WP-22.06](#rule-wp-22.06) |
 | Cross-product sign-in and local-data-survival results | [WP-22.07](#rule-wp-22.07) |
+| Owned artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/OS/device/provider, scenario, result, limitations and real-versus-fixture status; inapplicable fields explicitly marked | [WP-22.90](#rule-wp-22.90) |
 
 ---
 
@@ -244,9 +245,9 @@
 
 ## 9. Dependencies
 
-**Upstream:** `11` · `21`. All stage outputs must be complete.
+**Upstream:** `11` · `21`. Consume completed stage outputs.
 
-**Downstream:** `23` · `41` · `42`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.
+**Downstream:** `23` · `41` · `42`. Consumers use exact released artifacts.
 
 ## P2-010 required behavior and closure
 

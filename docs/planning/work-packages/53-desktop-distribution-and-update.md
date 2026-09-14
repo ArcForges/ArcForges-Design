@@ -1,0 +1,150 @@
+<a id="rule-wp-53"></a>
+
+# WP-53 — Desktop Distribution, Update Client and Channels
+
+> Status: **Authoritative** — Phase 2
+> Layer: Planning · Work package
+> Phase: J — Platform and client integration
+> Upstream: `02` · `06` · `07` · `10` · `11` · `12` · `44` · `45` · Downstream: `50`
+
+> **Goal.** Deliver ArcForges.Update as a real shared producer for all four desktop products before final release verification. Execute after45 and before46 in the serial schedule.
+
+## 1. Scope and purpose
+
+Own desktop update discovery, verified download/delta, staging, safe application, rollback interlock, channels, rollout and update diagnostics. Use the selected Velopack adapter; Android/Play remains Mobile-owned. Product UI/domain state and Cloud policy production stay with their existing owners. WP50 consumes this implementation and proves the production release matrix.
+
+## 2. Required inputs and dependencies
+
+| Input | Why |
+|---|---|
+| [Distribution requirements](../../requirements/10-distribution-update-and-support.md), UP-01–UP-11 | All accepted update, recovery and support behavior |
+| [Build/update architecture](../../architecture/14-build-packaging-and-release.md#8-update-client-architecture), UC-01–UC-10 and §8.1 | Fixed client, signed-feed and recovery profile |
+| [Producer matrix](../producer-artifacts-and-integration.md) | Exact packages, fixture scope and real replacement |
+| WP02/06 | Signed candidate pipeline and real AOT applications to install |
+| WP07/10/11/12 | Migration journal, lifecycle shell, signature/security mechanisms and reason-code registry |
+| WP44/45 | Activated compatibility/rollout policy and security advisory process |
+
+## 3. Binding rules and decisions
+
+| # | Rule |
+|---|---|
+| BR-01 | Build/pack once; install only the immutable tested bytes. |
+| BR-02 | Launch/local saves are not blocked by a failed update check. Apply never forces loss of work. |
+| BR-03 | Recheck product/RID/signatures/policy and data-compatibility immediately before apply or rollback. |
+| BR-04 | A test feed proves updater mechanics; it does not prove production signing or commercial activation. |
+| BR-05 | The updater never writes product data or implements schema migration. |
+
+## 4. Projects, directories, files and major types affected
+
+| Owner-relative location | Output |
+|---|---|
+| DesktopPlatform `src/Update/ArcForges.Update/` | Domain-free feed, staged update and Velopack adapter; fixed update-state and reason projections |
+| DesktopPlatform `eng/packaging/`, `tests/UpdateConsumers/` | Package admission, signed test-feed fixtures, actual install/apply/rollback receipts |
+| Each desktop product `*.Infrastructure/`, `*.Desktop/` | Consume exact Update package, expose pending/deferred update and channel selection through its native shell |
+| Existing WP02 release metadata and WP44 policy | Feed signing/configuration inputs; no new Cloud update daemon |
+
+## 5. Required implementation work
+
+<a id="rule-wp-53.00"></a>
+
+### WP-53.00 — Signed feed and applicable target
+
+**What must be fully done.** Implement architecture14 §8.1 feed validation, trust, product/RID/channel selection, compatibility and anti-replay. AF-01–AF-07 and UC-07 apply.
+
+**Testing requirements.** Unsigned/expired/duplicate/hash-invalid feed, removed and policy-blocked version independently, wrong product/RID and older signed feed.
+
+**Completion gate.** Only an admitted target from a current trusted feed can enter download.
+
+<a id="rule-wp-53.01"></a>
+
+### WP-53.01 — Background download and staging
+
+**What must be fully done.** Implement UP-01/02 and UC-01: background check, range resume, delta reconstruct with verified full fallback, bounded staging and final hash/signature checks.
+
+**Testing requirements.** Interrupt every transfer boundary, tamper base/delta/target, storage exhaustion; ensure launch remains available.
+
+**Completion gate.** A complete verified candidate is staged without changing the active installation.
+
+<a id="rule-wp-53.02"></a>
+
+### WP-53.02 — Safe apply and atomic activation
+
+**What must be fully done.** Implement UC-02/03, UP-03/04 and LF-08/09 via the real lifecycle shutdown handshake and selected Velopack adapter. Await all affected instances exiting; do not wait while holding domain locks.
+
+**Testing requirements.** Long render/capture, unsaved edit, peer unavailable, canceled restart and kill at each activation boundary.
+
+**Completion gate.** Busy work defers apply; restart sees either previous verified installation or new verified installation, never a partial one.
+
+<a id="rule-wp-53.03"></a>
+
+### WP-53.03 — Rollback and migration interlock
+
+**What must be fully done.** Implement UC-04/05/06 and UP-05/06/08. Persist the update journal outside install/data files; use the existing data-store migration read/write compatibility horizon before rollback.
+
+**Testing requirements.** Fail pre-migration startup, fail during migration, current store outside previous reader/writer horizon and interrupted rollback.
+
+**Completion gate.** User data survives; incompatible automatic rollback refuses with a recovery reason instead of opening data with the old binary.
+
+<a id="rule-wp-53.04"></a>
+
+### WP-53.04 — Channels, staged rollout and security updates
+
+**What must be fully done.** Implement UC-07/08/09, RC-01 and UP-09/10/11 using actual44 policy and45 advisory process. Explicit channel selection, stable installation assignment, halt bad versions and respect minimum-version grace.
+
+**Testing requirements.** Both channel directions, unchanged rollout assignment across restart, blocked target after download, emergency offer during critical work and expired grace.
+
+**Completion gate.** Urgency cannot force unsafe restart; denied Cloud operations explain the update/grace requirement while permitted local work remains available.
+
+<a id="rule-wp-53.05"></a>
+
+### WP-53.05 — Diagnostics and preserving data on uninstall
+
+**What must be fully done.** Implement UC-10, UP-07 and existing support activity policy. Record check/download/verify/stage/apply/defer/fail/rollback with stable reasons and correlation; no user content.
+
+**Testing requirements.** Independent expected activity sequence and uninstall/reinstall preserving product data and recovery journal.
+
+**Completion gate.** Every outcome is diagnosable and uninstall never removes user data implicitly.
+
+<a id="rule-wp-53.90"></a>
+
+### WP-53.90 — Verify the owned artifact and real integration
+
+**What must be fully done.** Pack ArcForges.Update with its verified closure, restore it into clean consumer applications and exercise the complete update lifecycle through the actual installed artifacts. Record exact producer/consumer identities and all UC/UP rule evidence.
+
+**Testing requirements.** Real Tier1 install→staged update→restart→rollback against test-signed feed, with interrupted download/apply, blocked versions, signature corruption and wrong data horizon. Tier2 follows the existing recorded waiver process.
+
+**Completion gate.** All numbered substeps and package-only updater consumers pass. WP50.02 remains responsible for real product installers, production domains/signing and the full release matrix; no placeholder producer is admitted.
+
+## 6. Impacts
+
+| Dimension | Impact |
+|---|---|
+| Persistence | Versioned installation update journal and existing migration compatibility interlock; no product-data mutation by updater |
+| Protocol | Signed immutable feed profile in architecture14; lifecycle coordination uses existing local proto |
+| Security | Verify trust, hashes, anti-replay and artifact identity before executing any updater action |
+| UI | Background update/pending/deferred/failure/channel consequences with native shell |
+| Recovery | Keep previous verified package and stable launch path until healthy startup; no blind rollback after incompatible migration |
+
+## 7. Tests and verification evidence
+
+| Evidence | Produced by |
+|---|---|
+| Signed feed schema, replay and blocked-version cases | [WP-53.00](#rule-wp-53.00) |
+| Actual resumed download, delta/full reconstruction and tamper refusal | [WP-53.01](#rule-wp-53.01) |
+| Busy/unsaved work deferral and interrupted apply | [WP-53.02](#rule-wp-53.02) |
+| Compatible rollback, incompatible migration refusal and launch recovery | [WP-53.03](#rule-wp-53.03) |
+| Stable rollout, channels and expedited security/grace behavior | [WP-53.04](#rule-wp-53.04) |
+| Update reason-code sequence and data-preserving uninstall | [WP-53.05](#rule-wp-53.05) |
+| Owned artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/OS/device/provider, scenario, result, limitations and real-versus-fixture status; inapplicable fields explicitly marked | [WP-53.90](#rule-wp-53.90) |
+
+
+
+## 8. Completion gate
+
+Every53.00–53.05 and53.90 gate passes with recorded evidence on the admitted platform set. UP-01–UP-11 and UC-01–UC-10 each resolve to the tests above. Required product/data behavior cannot remain an implementation-time design decision. Production release evidence remains WP50-owned.
+
+## 9. Dependencies
+
+**Upstream:** `02` · `06` · `07` · `10` · `11` · `12` · `44` · `45`. Consume completed stage outputs.
+
+**Downstream:** `50`. Consumers use exact released artifacts.

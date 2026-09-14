@@ -60,7 +60,7 @@ Five constraints determine almost every structural decision downstream.
 
 | Path | Technology | Carries |
 |---|---|---|
-| **Same-machine, first-party, process-to-process** | gRPC over Named Pipe / UDS, Protocol Buffers formatter | Semantic capability invocation, Hub registration, local events |
+| **Same-machine, first-party, process-to-process** | Authored proto + generated native gRPC over Named Pipe / UDS | Semantic capability invocation, Hub registration, local events |
 | **Public request/response** | ASP.NET Core Minimal API server; generated gRPC client for C#, generated gRPC-Web SDK for TypeScript | Commands, queries, durable state, uploads and downloads |
 | **Public realtime** | gRPC hint polling | Presence, notifications, progress, chat deltas, remote wake-up |
 

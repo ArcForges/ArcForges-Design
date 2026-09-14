@@ -198,6 +198,7 @@
 | Upload resumption, checksum and permission results | [WP-23.04](#rule-wp-23.04) |
 | C# AOT and generated TS browser contract results | [WP-23.05](#rule-wp-23.05) |
 | Bidirectional compatibility matrix and its negative test | [WP-23.06](#rule-wp-23.06) |
+| Owned artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/OS/device/provider, scenario, result, limitations and real-versus-fixture status; inapplicable fields explicitly marked | [WP-23.90](#rule-wp-23.90) |
 
 ---
 
@@ -223,6 +224,6 @@
 
 ## 9. Dependencies
 
-**Upstream:** `03` · `22`. All stage outputs must be complete.
+**Upstream:** `03` · `22`. Consume completed stage outputs.
 
-**Downstream:** `24` · `30` · `42` · `44` · `51` · `52`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.
+**Downstream:** `24` · `30` · `42` · `44` · `51` · `52`. Consumers use exact released artifacts.

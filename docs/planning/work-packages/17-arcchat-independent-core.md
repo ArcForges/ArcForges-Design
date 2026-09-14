@@ -206,6 +206,7 @@
 | Cloud admission reason rendering and no-client-provider-credential results | [WP-17.05](#rule-wp-17.05) |
 | Handoff, startup budget and recovery results | [WP-17.06](#rule-wp-17.06) |
 | V1B enumeration completeness check | [WP-17.07](#rule-wp-17.07) |
+| Owned artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/OS/device/provider, scenario, result, limitations and real-versus-fixture status; inapplicable fields explicitly marked | [WP-17.90](#rule-wp-17.90) |
 
 ---
 
@@ -232,9 +233,9 @@
 
 ## 9. Dependencies
 
-**Upstream:** `06` · `15` · `16`. All stage outputs must be complete.
+**Upstream:** `06` · `15` · `16`. Consume completed stage outputs.
 
-**Downstream:** `20` · `26` · `41` · `52`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.
+**Downstream:** `20` · `26` · `41` · `52`. Consumers use exact released artifacts.
 
 ## P2-010 required behavior and closure
 

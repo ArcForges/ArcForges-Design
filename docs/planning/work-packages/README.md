@@ -5,9 +5,9 @@
 > Governing authority: **[D-017](../../decisions/phase-1-foundation-decisions.md#rule-d-017)** (numbered implementation work packages belong here), **[D-019](../../decisions/phase-1-foundation-decisions.md#rule-d-019)** (one serial numbered sequence, no predetermined maximum)
 > Companions: [`../implementation-sequence.md`](../implementation-sequence.md), [`../../assurance/release-gates.md`](../../assurance/release-gates.md), [`../../assurance/open-gates-register.md`](../../assurance/open-gates-register.md)
 
-**One serial dependency order, with 51 active work packages identified in `00`–`52`; `27` and `29` are retired.** Shared foundation, cloud, mobile, web and cross-product capability interleave at their real dependency positions; there is no separate per-product plan.
+**One serial dependency order, with 52 active work packages identified in `00`–`53`; `27` and `29` are retired.** Shared foundation, cloud, mobile, web and cross-product capability interleave at their real dependency positions; there is no separate per-product plan.
 
-The number is an identity, not a schedule. Ordering is by dependency; serial execution is governed by `§4` of [`../implementation-sequence.md`](../implementation-sequence.md).
+The number is an identity, not a schedule. Ordering is by dependency; serial execution is governed by `§9` of [`../implementation-sequence.md`](../implementation-sequence.md).
 
 ---
 
@@ -25,6 +25,10 @@ The number is an identity, not a schedule. Ordering is by dependency; serial exe
 | 05 | [Architecture and repository policy test suite](05-architecture-and-repository-policy-tests.md) | `02`, `03` |
 | 06 | [AOT, JIT and Web publish proof](06-aot-jit-and-wasm-publish-proof.md) | `03`, `04`, `05` |
 | 07 | [Local persistence foundation](07-local-persistence-foundation.md) | `04`, `06` |
+| 47 | [Static public site](47-static-public-site.md) | `00`, `02` |
+
+
+WP47 is an early Web tooling producer; the explicit serial schedule places it before45. Phase grouping is not execution order.
 
 ### Phase B — Shared platform
 
@@ -104,22 +108,23 @@ The number is an identity, not a schedule. Ordering is by dependency; serial exe
 | 40 | [Knowledge, search and retrieval](40-knowledge-search-and-retrieval.md) | `19`, `25`, `28`, `43`, `44` |
 | 41 | [Extension platform and integrations](41-extension-platform-and-integrations.md) | `09`, `11`, `17`, `22`, `25` |
 | 45 | [Operations, support and trust & safety](45-operations-support-and-trust-safety.md) | `12`, `21`, `44`, `47` |
+| 53 | [Desktop distribution, update client and channels](53-desktop-distribution-and-update.md) | `02`, `06`, `07`, `10`, `11`, `12`, `44`, `45` |
 | 46 | [Backup, disaster recovery and data health](46-backup-recovery-and-data-health.md) | `25`, `45` |
 | 51 | [ArcScope deterministic Cloud simulator](51-arcscope-cloud-simulator.md) | `21`, `23`, `25`, `33`, `34`, `35`, `42`, `44` |
 | 52 | [The Cloud Harness](52-cloud-harness.md) | `15`, `17`, `20`, `21`, `23`, `26`, `39`, `40`, `41`, `42`, `43`, `44` |
-| 31 | [ArcChat Mobile Android remote closed loop](31-arcchat-mobile-android.md) | `26`, `30`, `52` |
+| 31 | [ArcChat Mobile Android remote closed loop](31-arcchat-mobile-android.md) | `26`, `30`, `45`, `52` |
 | 32 | [Mobile release engineering and store gates](32-mobile-release-and-store-gates.md) | `31` |
+
 
 ### Phase K — Web and release
 
 | # | Work package | Depends on |
 |---|---|---|
-| 47 | [Static public site](47-static-public-site.md) | `00`, `02` |
 | 48 | [Account portal](48-account-portal.md) | `25`, `42`, `44`, `46`, `47` |
 | 49 | [ArcChat Web companion](49-arcchat-web-companion.md) | `26`, `48`, `52` |
-| 50 | [Full-platform production release](50-full-platform-production-release.md) | `20`, `28`, `32`, `35`, `39`, `40`, `41`, `43`, `46`, `49`, `51`, `52` |
+| 50 | [Full-platform production release](50-full-platform-production-release.md) | `20`, `28`, `32`, `35`, `39`, `40`, `41`, `43`, `46`, `49`, `51`, `52`, `53` |
 
-`27` (canvas) and `29` (slides) are retired; their identifiers are not reused. The listed order is an executable serial topological order. Shared mobile architecture stays early; real Android Task/stream acceptance follows the Harness.
+`27` (canvas) and `29` (slides) are retired; their identifiers are not reused. The phase tables group ownership; use implementation-sequence §9 for the executable serial topological order. Shared mobile architecture stays early; real Android Task/stream acceptance follows the Harness.
 
 ---
 
@@ -129,17 +134,17 @@ The number is an identity, not a schedule. Ordering is by dependency; serial exe
 |---|---|
 | 00 | 01, 47 |
 | 01 | 02 |
-| 02 | 03, 05, 47 |
+| 02 | 03, 05, 47, 53 |
 | 03 | 04, 05, 06, 09, 21, 23, 30 |
 | 04 | 06, 07, 11, 12 |
 | 05 | 06, 21 |
-| 06 | 07, 08, 10, 12, 13, 17, 30 |
-| 07 | 08, 13, 18, 33, 36 |
+| 06 | 07, 08, 10, 12, 13, 17, 30, 53 |
+| 07 | 08, 13, 18, 33, 36, 53 |
 | 08 | 09, 11, 13, 14 |
-| 09 | 10, 11, 14, 16, 41 |
-| 10 | 14, 18, 33, 36 |
-| 11 | 14, 16, 22, 41 |
-| 12 | 21, 45 |
+| 09 | 10, 11, 13, 14, 16, 41 |
+| 10 | 13, 14, 18, 33, 36, 53 |
+| 11 | 13, 14, 16, 22, 41, 53 |
+| 12 | 13, 21, 45, 53 |
 | 13 | 14, 33, 36 |
 | 14 | 15, 16, 18 |
 | 15 | 17, 52 |
@@ -149,10 +154,10 @@ The number is an identity, not a schedule. Ordering is by dependency; serial exe
 | 19 | 20, 25, 28, 40 |
 | 20 | 50, 52 |
 | 21 | 22, 45, 51, 52 |
-| 22 | 23, 42 |
+| 22 | 23, 41, 42 |
 | 23 | 24, 30, 42, 44, 51, 52 |
 | 24 | 25, 26, 30 |
-| 25 | 26, 28, 35, 39, 40, 43, 46, 48, 51 |
+| 25 | 26, 28, 30, 35, 39, 40, 41, 43, 46, 48, 51 |
 | 26 | 31, 33, 36, 49, 52 |
 | 28 | 40, 50 |
 | 30 | 31 |
@@ -169,15 +174,16 @@ The number is an identity, not a schedule. Ordering is by dependency; serial exe
 | 41 | 50, 52 |
 | 42 | 43, 44, 48, 51, 52 |
 | 43 | 40, 50, 52 |
-| 44 | 40, 43, 45, 48, 51, 52 |
-| 45 | 46 |
+| 44 | 40, 43, 45, 48, 51, 52, 53 |
+| 45 | 31, 46, 53 |
 | 46 | 48, 50 |
-| 47 | 48 |
+| 47 | 45, 48 |
 | 48 | 49 |
 | 49 | 50 |
-| 50 | — |
+| 50 | none |
 | 51 | 50 |
 | 52 | 31, 49, 50 |
+| 53 | 50 |
 
 ---
 
@@ -214,7 +220,7 @@ Every gate in [`../../assurance/open-gates-register.md`](../../assurance/open-ga
 | **[PG-08](../../assurance/open-gates-register.md#rule-pg-08)** — hardware lab inventory | 13 establishes inventory; 33, 34, 37, 38 bind each hardware result to it |
 | **[PG-09](../../assurance/open-gates-register.md#rule-pg-09)** — extension protocol conformance | 41 |
 | **[PG-10](../../assurance/open-gates-register.md#rule-pg-10)** — provider test-environment coverage | 42, 43 |
-| **[PG-12](../../assurance/open-gates-register.md#rule-pg-12)** — PDF dependency and containment | 11.09, 18.04 |
+| **[PG-12](../../assurance/open-gates-register.md#rule-pg-12)** — PDF dependency and containment | 11.09, 13.13, 18.04 |
 | **[PG-13](../../assurance/open-gates-register.md#rule-pg-13)** — real-provider metering | 43.07, 42.11 |
 | **[PG-14b](../../assurance/open-gates-register.md#rule-pg-14b)** — real Cloud simulator | 51 |
 | **[PG-15](../../assurance/open-gates-register.md#rule-pg-15)** — bidirectional OTIO | 39.05 |
@@ -224,8 +230,9 @@ Every gate in [`../../assurance/open-gates-register.md`](../../assurance/open-ga
 | **[PG-19](../../assurance/open-gates-register.md#rule-pg-19)** — versioned migration and cutover | 21.03, 50.04 |
 | **[PG-20](../../assurance/open-gates-register.md#rule-pg-20)** — time model and official OTIO boundary | 36.01, 37.04, 39.05 |
 | **[PG-21](../../assurance/open-gates-register.md#rule-pg-21)** — current design citation integrity | Current corpus closed by [repair verification](../../assurance/design-repair-verification.md); continuing drift check in 00.01 |
-| **[PG-22](../../assurance/open-gates-register.md#rule-pg-22)** — OS-enforced content/extension isolation | 11.09, 18.04, 37.01, 41.00 |
+| **[PG-22](../../assurance/open-gates-register.md#rule-pg-22)** — OS-enforced content/extension isolation | 11.09, 13.13, 18.04, 37.01, 41.00 |
 | **[PG-23](../../assurance/open-gates-register.md#rule-pg-23)** — commercial Web | 06.05, 22.08, 23.05, 24.06, 47, 48, 49, 50.06; combine all applicable producer evidence |
+| **[PG-24](../../assurance/open-gates-register.md#rule-pg-24)** — real Android push | 45.09 live sender;32 physical receipt and fallback |
 
 ---
 
@@ -238,11 +245,12 @@ Every gate in [`../../assurance/open-gates-register.md`](../../assurance/open-ga
 - **A package never re-creates a completed baseline audit.** The reference matrices and the code inventory are versioned planning inputs; packages consume them and check for drift ([`../evidence-driven-revisions.md`](../evidence-driven-revisions.md)).
 - One main context advances the sequence serially (**[D-019](../../decisions/phase-1-foundation-decisions.md#rule-d-019)**). Implementation ownership is not split across autonomous agent teams.
 - **A package identifier is stable and never reused.** `27` and `29` are retired by [P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006); their files remain as retirement records so an older citation resolves to an explanation rather than a broken reference.
-- **Numbering is allocation order, not execution order, above `50`.** `00`–`50` were allocated when the sequence was derived, and a retired identifier is never recycled, so a package added afterwards takes the next free number. **`51` and `52` execute in Phase J after their complete Cloud prerequisites; `31` and `32` follow `52`. All precede `50`.** The dependency graph in this file and each package's own header are authoritative for order; the numeral is not.
+- **Numbering is allocation order, not execution order, above `50`.** `00`–`50` were allocated when the sequence was derived, and a retired identifier is never recycled, so a package added afterwards takes the next free number. **`51`, `52` and `53` execute in Phase J after their complete prerequisites; `31` and `32` follow `52`. All precede `50`.** The dependency graph in this file and each package's own header are authoritative for order; the numeral is not.
+
 
 ## P2-009 package boundaries
 
-The51 active packages follow the current [complete artifact graph](../implementation-sequence.md#9-p2-009-complete-artifact-dependency-graph). WP27/29 remain retired. Package numbering/anchors are stable; titles and runtime/contract responsibilities reflect P2-009. New .90 substeps are the explicit repository/integration acceptance attached to inherited domain work.
+The52 active packages follow the current [complete artifact graph](../implementation-sequence.md#9-p2-009-complete-artifact-dependency-graph). WP27/29 remain retired. Package numbering/anchors are stable; titles and runtime/contract responsibilities reflect P2-009. New .90 substeps are the explicit repository/integration acceptance attached to inherited domain work.
 
 
 [Producer artifacts and real integration](../producer-artifacts-and-integration.md) defines this WP's exact producer inputs, permitted fixtures and real replacement gates.

@@ -45,7 +45,7 @@ Logical .NET suffixes such as src/ArcNotes/ArcNotes.Domain and src/Cloud/ArcForg
 
 ## 2. Project conventions
 
-**Approved helper projects ([P2-007](../decisions/phase-2-specification-decisions.md#rule-p2-007)).** `src/DesktopHelpers/ArcForges.ContentSandbox` is a signed first-party C# Native AOT executable with no product-domain/Harness/store dependency. `ArcForges.ContentSandbox.Contracts` contains only generated bounded parent-child DTOs; `ArcForges.ContentSandbox.Broker` owns launch profiles and handle/resource budgets. Product-specific approved parser wrappers are loaded only in that helper. Native library adaptation remains narrow; no C++ business host or cross-product shared pool is introduced. [WP-11.09](../planning/work-packages/11-security-foundation.md#rule-wp-11.09) supplies this boundary before [WP-18.04](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.04) or media ingestion depends on it.
+**Approved helper projects ([P2-007](../decisions/phase-2-specification-decisions.md#rule-p2-007)).** `src/DesktopHelpers/ArcForges.ContentSandbox` is a signed first-party C# Native AOT executable with no product-domain/Harness/store dependency. `ArcForges.ContentSandbox.Contracts` is a thin facade over Contracts-owned `.LocalRpc.Sandbox` generated messages/services; `ArcForges.ContentSandbox.Broker` owns launch profiles and handle/resource budgets. Product-specific approved parser wrappers are loaded only in that helper. Native library adaptation remains narrow; no C++ business host or cross-product shared pool is introduced. [WP-11.09](../planning/work-packages/11-security-foundation.md#rule-wp-11.09) supplies this boundary before [WP-18.04](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.04) or media ingestion depends on it.
 
 | # | Rule |
 |---|---|
@@ -260,8 +260,9 @@ Publish the following package identities. Managed package versions and their com
 | ArcForges.Native.Instruments | Native.Abstractions; device transport buffers/USB | .Native.Instruments.Runtime.<rid>: libusb; serial OS adapter |
 | ArcForges.Native.Otio | Native.Abstractions; parse/serialize official Timeline plus fidelity report | .Native.Otio.Runtime.<rid>: official OTIO0.18.1 |
 | ArcForges.Native.Pdf | Native.Abstractions; render page and extract bounded text only | .Native.Pdf.Runtime.<rid>: PDFium chromium/8044 |
-| ArcForges.ContentSandbox.Contracts, .Broker | Foundation + bounded helper DTOs; Broker references helper Contracts only; isolated helper references selected parser wrappers | .ContentSandbox.Runtime.<rid>: signed AOT helper + OS enforcement profile |
+| ArcForges.ContentSandbox.Contracts, .Broker | Exact ArcForges.Contracts.LocalRpc.Sandbox/Platform plus Foundation; Contracts facade has no duplicate authored/generated wire types. Broker owns restricted launch and buffer grants; helper loads selected parser wrappers | .ContentSandbox.Runtime.<rid>: signed AOT helper + OS enforcement profile, sole producer WP11 |
 | ArcForges.Build.Policy | Build-only, source/pin/NOTICE checks | No runtime dependency |
+| ArcForges.Contracts.LocalRpc.Platform, .LocalRpc.Sandbox | Contracts-owned internal local records/services, peer/bootstrap/lease/hints/connector and complete parser controls; public clients cannot import | Generated C# messages/client/server bindings from authored proto, WP03 |
 | ArcForges.Contracts.Foundation/PublicApi/Events/Validation/LocalRpc.<owner>/CloudInternal; ArcForges.Sdk.* and ArcForges.Cli | Contracts-owned generated/public vs internal graph | No desktop native dependency |
 | @arcforges/proto, @arcforges/api-client, @arcforges/contract-fixtures | Apache; protobuf-es + selected transport; no AGPL app import | No desktop native dependency |
 | @arcforges/ai-internal | Internal HTTP generated types and validators | Apache-2.0; AI/Cloud import boundary only |

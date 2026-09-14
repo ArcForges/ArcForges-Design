@@ -189,6 +189,9 @@ No shared mechanism package owns product knowledge policy, authorization or pers
 | Citation resolution and invalidation results | [WP-40.04](#rule-wp-40.04) |
 | Local-only negative test and cache isolation results | [WP-40.05](#rule-wp-40.05) |
 | Entitlement gating and cloud-outage independence results | [WP-40.06](#rule-wp-40.06) |
+| Owned artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/OS/device/provider, scenario, result, limitations and real-versus-fixture status; inapplicable fields explicitly marked | [WP-40.90](#rule-wp-40.90) |
+
+
 
 ---
 
@@ -212,9 +215,9 @@ No shared mechanism package owns product knowledge policy, authorization or pers
 
 ## 9. Dependencies
 
-**Upstream:** `19` · `25` · `28` · `43` · `44`. All stage outputs must be complete.
+**Upstream:** `19` · `25` · `28` · `43` · `44`. Consume completed stage outputs.
 
-**Downstream:** `50` · `52`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.
+**Downstream:** `50` · `52`. Consumers use exact released artifacts.
 
 ## P2-010 required behavior and closure
 

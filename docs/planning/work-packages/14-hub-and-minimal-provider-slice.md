@@ -185,6 +185,7 @@
 | Owner-side refusal, expiry and restart-survival results | [WP-14.04](#rule-wp-14.04) |
 | Artifact reference, permission re-check and no-body assertions | [WP-14.05](#rule-wp-14.05) |
 | Hub-absent and provider-absent workflow results | [WP-14.06](#rule-wp-14.06) |
+| Owned artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/OS/device/provider, scenario, result, limitations and real-versus-fixture status; inapplicable fields explicitly marked | [WP-14.90](#rule-wp-14.90) |
 
 ---
 
@@ -206,6 +207,6 @@
 
 ## 9. Dependencies
 
-**Upstream:** `08` · `09` · `10` · `11` · `13`. All stage outputs must be complete.
+**Upstream:** `08` · `09` · `10` · `11` · `13`. Consume completed stage outputs.
 
-**Downstream:** `15` · `16` · `18`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.
+**Downstream:** `15` · `16` · `18`. Consumers use exact released artifacts.

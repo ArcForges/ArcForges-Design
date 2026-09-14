@@ -102,7 +102,7 @@ Every decision is carried. The **Primary home** column names where the decision 
 | `07-security-privacy-and-trust` | `08-security-architecture` | [F-02](testing-and-verification-strategy.md#rule-f-02), [F-11](testing-and-verification-strategy.md#rule-f-11), [F-17](testing-and-verification-strategy.md#rule-f-17) | `11`, `22`, `41`, `45` |
 | `08-extensions-and-developer-platform` | `15-extension-platform-architecture` | [F-05](testing-and-verification-strategy.md#rule-f-05), [F-11](testing-and-verification-strategy.md#rule-f-11), [F-17](testing-and-verification-strategy.md#rule-f-17) | `41` |
 | `09-shared-desktop-experience` | `04-desktop-application-architecture`; `18-editing-and-rich-content` `§8` (preview levels) | [F-09](testing-and-verification-strategy.md#rule-f-09), [F-10](testing-and-verification-strategy.md#rule-f-10), [F-15](testing-and-verification-strategy.md#rule-f-15) | `10` |
-| `10-distribution-update-and-support` | `14-build-packaging-and-release`; `13-observability-and-operations`; **`22-deployment-and-release-execution`** | [F-16](testing-and-verification-strategy.md#rule-f-16), [F-11](testing-and-verification-strategy.md#rule-f-11) | `02`, `32`, `45`, `50` |
+| `10-distribution-update-and-support` | `14-build-packaging-and-release`; `13-observability-and-operations`; **`22-deployment-and-release-execution`** | [F-16](testing-and-verification-strategy.md#rule-f-16), [F-11](testing-and-verification-strategy.md#rule-f-11) | `02`, `32`, `45`, `50`, `53` |
 | `11-policy-and-configuration` | `16-billing-and-commerce-architecture` `§2.2`; `22-deployment-and-release-execution` `§3.1`; `data-model/01` `§8.2`; `05-cloud-architecture` `§12` | [F-02](testing-and-verification-strategy.md#rule-f-02), [F-06](testing-and-verification-strategy.md#rule-f-06), [F-11](testing-and-verification-strategy.md#rule-f-11) | `44`, `42` |
 | `12-quality-and-compatibility-contract` | All (budgets and gates); `21-platform-and-dependency-matrix` `§2`; `22-deployment-and-release-execution` `§5` | Every family | `02`, `05`, `06`, and each product package |
 | `13-data-formats-and-portability` | `06-data-persistence-and-formats`; `18-editing-and-rich-content` `§10`; `data-model/02` | [F-03](testing-and-verification-strategy.md#rule-f-03), [F-12](testing-and-verification-strategy.md#rule-f-12), [F-13](testing-and-verification-strategy.md#rule-f-13) | `07`, `19`, `35`, `39` |
@@ -146,7 +146,7 @@ Test family identifiers are those of [`testing-and-verification-strategy.md`](te
 | `21-platform-and-dependency-matrix` | `06`, `13`, `33`, `37`, `50` |
 | `22-deployment-and-release-execution` | `21`, `23`, `44`, `45`, `50` |
 | `23-simulator-and-interchange` *(also the ArcSlate time model, `§3`)* | `33`, `36`, `37`, `38`, `39`, **`51`** |
-| [24-content-and-extension-isolation](../architecture/24-content-and-extension-isolation.md) | 11.09, 18.04, 37.01, 41.00 |
+| [24-content-and-extension-isolation](../architecture/24-content-and-extension-isolation.md) | 11.09, 13.13, 18.04, 37.01, 41.00 |
 | [25-web-toolchain-and-sdk](../architecture/25-web-toolchain-and-sdk.md) | `01`, `02`, `03`, `04`, `05`, `06`, `22`, `23`, `24`, `47`, `48`, `49`, `50` |
 | `contracts/00-operation-catalogue` | `03`, `04`, `09`, `23` |
 | `contracts/01-public-api-operations` | `22`, `23`, `25`, `42` |
@@ -220,10 +220,10 @@ Every gate in [`open-gates-register.md`](open-gates-register.md) is scheduled.
 | **[PG-06](open-gates-register.md#rule-pg-06)** | **Closed by design evidence 2026-09-05** — [`invariant-coverage.md`](invariant-coverage.md) `§7` | Finalising the design baseline |
 | **[PG-11](open-gates-register.md#rule-pg-11)** | Distributed across the owning packages in that mapping; accounting reported by `05.05` | Each owning package's gate; [P-03](release-gates.md#rule-p-03) per product |
 | **[PG-07](open-gates-register.md#rule-pg-07)** | 19.04, 35.04, 39.05 | Public import-format claims. Early export UI fixtures in 15.06/19.05 do not prove the real Cloud download; that gate is 25.08 |
-| **[PG-08](open-gates-register.md#rule-pg-08)** | 13.04 establishes the inventory; 33/34 and 37/38 consume and maintain it | [C-04](release-gates.md#rule-c-04) |
+| **[PG-08](open-gates-register.md#rule-pg-08)** | 13.04 seeds and13.16 completes the inventory; 33/34 and 37/38 consume and maintain it | [C-04](release-gates.md#rule-c-04) |
 | **[PG-09](open-gates-register.md#rule-pg-09)** | `41` | Third-party extension enablement |
 | **[PG-10](open-gates-register.md#rule-pg-10)** | `42.10`, `43.06` | [L-28](release-gates.md#rule-l-28), [L-29](release-gates.md#rule-l-29) |
-| **[PG-12](open-gates-register.md#rule-pg-12)** | 11.09, 18.04 | [ArcNotes PDF requirement](../requirements/products/arcnotes.md#rule-at-05); first PDF release claim |
+| **[PG-12](open-gates-register.md#rule-pg-12)** | 11.09, 13.13, 18.04 | [ArcNotes PDF requirement](../requirements/products/arcnotes.md#rule-at-05); first PDF release claim |
 | **[PG-13](open-gates-register.md#rule-pg-13)** | `43.07`, `42.11` | Paid AI go-live; [PG-10](open-gates-register.md#rule-pg-10) |
 | **[PG-14b](open-gates-register.md#rule-pg-14b)** | `51.00`–`51.05` | Any ArcScope claim that Cloud simulation is delivered. **Not `34`**, whose repeatable source is file/replay from `33` |
 | **[PG-15](open-gates-register.md#rule-pg-15)** | `39.05` | ArcSlate release |
@@ -233,7 +233,7 @@ Every gate in [`open-gates-register.md`](open-gates-register.md) is scheduled.
 | **[PG-19](open-gates-register.md#rule-pg-19)** | `21.03`, `50.04` | Any schema evolution in production |
 | **[PG-20](open-gates-register.md#rule-pg-20)** | 36.01, 37.04, 39.05 | Source conform, per-track mixing and OTIO boundaries |
 | **[PG-21](open-gates-register.md#rule-pg-21)** | Current corpus closed by [repair verification](design-repair-verification.md); continuing drift check in 00.01 | Every later normative edit re-runs the complete citation check |
-| **[PG-22](open-gates-register.md#rule-pg-22)** | 11.09, 18.04, 37.01, 41.00 | Packaged OS containment and extension permissions on each supported RID |
+| **[PG-22](open-gates-register.md#rule-pg-22)** | 11.09, 13.13, 18.04, 37.01, 41.00 | Packaged OS containment and extension permissions on each supported RID |
 | **[PG-23](open-gates-register.md#rule-pg-23)** | 06.05, 22.08, 23.05, 24.06, 47, 48, 49, 50.06 | Production React/TS, generated SDK, browser sessions, visual quality, toolchains and release/rollback |
 | **[VG-05](open-gates-register.md#rule-vg-05)** | **Merged into [F-026](open-gates-register.md#rule-f-026)** and recorded there; no separate schedule | — |
 
@@ -283,7 +283,7 @@ Every gate in [`open-gates-register.md`](open-gates-register.md) is scheduled.
 | Consumer visual and interaction quality | [Web requirements](../requirements/products/arcforges-web.md); [WP-47.07](../planning/work-packages/47-static-public-site.md#rule-wp-47.07) | [WP-48](../planning/work-packages/48-account-portal.md#rule-wp-48), [WP-49](../planning/work-packages/49-arcchat-web-companion.md#rule-wp-49) approved responsive/theme/state/locale visuals, keyboard/assistive and performance results |
 | Complete commercial Web release | [Deployment architecture](../architecture/22-deployment-and-release-execution.md); [WP-50.06](../planning/work-packages/50-full-platform-production-release.md#rule-wp-50.06) | [PG-23](open-gates-register.md#rule-pg-23); production artifacts and real Cloud workflows, not fixtures |
 
-Current register reconciliation after this amendment: 39 entries = 5 design-closed + 33 implementation-open (with one retired iOS entry) + 1 merged. The new Web implementation gate is not closed by this design review.
+Current register reconciliation under P2-011:40 entries =5 design-closed +33 implementation-open/triggered +1 retired iOS entry +1 merged entry. Neither the Web gate nor the Android push gate is closed by document review.
 
 
 ## P2-009 amendment coverage
@@ -295,11 +295,11 @@ The 23 foundation decisions and nine Phase 2 decisions remain traceable. [P2-009
 | Ten owners, native and managed packages, licenses | [Layout and registry](../architecture/01-solution-and-project-layout.md) | WP01/02/03/06, product consumers and WP50; immutable isolated package consumption |
 | Handwritten proto, exact values, all service bodies | [Wire registry](../architecture/contracts/04-protobuf-wire-registry.md) | WP03/04/08/23/24/30, product owner implementations; generated language/runtime vectors |
 | One AOT C# business process, explicit adapters | [Runtime matrix](../architecture/21-platform-and-dependency-matrix.md) and [Cloud](../architecture/05-cloud-architecture.md) | WP06/21/22/23/44/45 and [VG-06](open-gates-register.md#rule-vg-06); real published closure |
-| RN mobile and React browser | [Mobile](../architecture/11-mobile-architecture.md), [Web toolchain](../architecture/25-web-toolchain-and-sdk.md) | WP06/30/31/32/47/48/49; artifact, device, session and real-server proof |
+| Kotlin/Compose Android mobile and React browser | [Mobile](../architecture/11-mobile-architecture.md), [Web toolchain](../architecture/25-web-toolchain-and-sdk.md) | WP06/30/31/32/47/48/49; artifact, device, session and real-server proof |
 | Sole CF Harness, Workers AI, R2 and recovery | [CF integration](../architecture/contracts/05-cloudflare-integration.md), [Harness](../architecture/17-agent-harness.md) | WP25/40/43/46/52 and WP50; real provider effects, committed business state and restored manifest |
-| Preserved accepted product workflows | [Product maps](../architecture/19-product-implementation-maps.md) and existing requirements | All 51 active packages; Notes query/content-origin/Scope measurement profiles and commercial fixtures retained |
+| Preserved accepted product workflows | [Product maps](../architecture/19-product-implementation-maps.md) and existing requirements | All 52 active packages; Notes query/content-origin/Scope measurement profiles and commercial fixtures retained |
 
-The two new contract companions are formal architecture inputs. Existing invariant IDs and the item-level reference dispositions are unchanged by repository relocation. The [complete dependency graph](../planning/implementation-sequence.md#9-p2-009-complete-artifact-dependency-graph) carries 51 active packages and 137 edges, with WP27/29 still retired.
+The two new contract companions are formal architecture inputs. Existing invariant IDs and the item-level reference dispositions are unchanged by repository relocation. The [complete dependency graph](../planning/implementation-sequence.md#9-p2-009-complete-artifact-dependency-graph) carries 52 active packages and 161 directed edges, with WP27/29 still retired.
 
 ## P2-010 completion map
 
@@ -310,6 +310,8 @@ The two new contract companions are formal architecture inputs. Existing invaria
 | Android architecture11 |30–32,49,50,52 | Full surface/state/recovery matrix and real signed physical-device app |
 | Product behavior26 |18/19/28,33–39/51/52 | Independent edit/undo, framing/analysis, time/retime/render/fidelity examples |
 | Execution owner/consent/transactions/transfer |15/17/20/22/25/26/40/42/43/46/52 | No phantom Task, one effect/charge receipt, preserved pending work, explicit irrecoverable state and fenced restore |
-| Producer stage matrix | All51 active packages | Acyclic symmetric graph, immutable package-only inputs, named fixture replacement and full required release scope |
+| Producer stage matrix | All52 active packages | Acyclic symmetric graph, immutable package-only inputs, named fixture replacement and full required release scope |
 
 Document validation is recorded in [family completion review](family-design-completion-review.md); implementation receipts remain future obligations.
+
+PG24 Android push: WP45.09 produces the real sender; WP32 closes physical receipt, denial and fallback evidence. Desktop distribution requirements are implemented by WP53 and production-verified by WP50.

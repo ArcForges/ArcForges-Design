@@ -1,13 +1,13 @@
 <a id="rule-wp-13"></a>
 
-# WP-13 — Four High-Risk Technical Probes
+# WP-13 — Complete Native Producers and Technical Probes
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: B — Shared platform
 > Upstream: `06` · `07` · `08` · `09` · `10` · `11` · `12` · Downstream: `14` · `33` · `36`
 
-> **Goal.** Retire the four technical risks that would be most expensive to discover late — one per product — with reproducible build, test and performance evidence. ArcScope and ArcSlate are built last precisely because their risks are ascertained now.
+> **Goal.** Retire the four early technical risks and deliver the complete functional native producer set before product implementation consumes it. Probe evidence and production package evidence are distinct required outputs.
 
 > **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Platform and affected products. Inputs: only the applicable published producers available at this stage under [staged artifact integration](../README.md#staged-artifact-integration). Producer candidate records precede Cloud consolidation; no future package/manifest is an input. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: Native AOT candidate packages/executables with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
 > After WP03, unit mocks consume published Contracts fixtures; earlier stages verify their inventory/policy outputs. Acceptance consumes the actual providers scheduled for that stage. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
@@ -16,11 +16,11 @@
 
 ## 1. Scope and purpose
 
-**In scope.** Four isolated probes producing evidence: an agent running inside a real Native AOT release binary; a block editor over the local store with undo and crash recovery; high-throughput acquisition with a ring buffer and plot downsampling; and native decoding with audio/video synchronisation displaying a frame.
+**In scope.** Four isolated technical probes followed by the seven functional native libraries, eight managed native packages, seven runtime package families across the six declared desktop RIDs, and integration with the WP11 restricted helper. The functional ABI, algorithms, formats and limits are fixed by [native annex06](../../architecture/contracts/06-native-functional-abi.md); no missing function is deferred to product coding.
 
-**Out of scope.** Product features. Probe code is not production code ([ND-05](../implementation-sequence.md#rule-nd-05) in the implementation sequence) — conclusions feed the formal steps, and the code is cleaned up or discarded.
+**Out of scope.** Product UI, editing commands, Cloud business handlers and the AI model loop. Probe scaffolds are cleaned up or kept as isolated regression fixtures. Production ABI/wrapper/runtime code from13.05–13.16 is retained and published; ND-05 does not discard those deliverables.
 
-**Why this package exists.** Each probe answers a question whose wrong answer invalidates a later package's design. Answering them in verification projects costs days; answering them in `36` costs the schedule.
+**Why this package exists.** Every downstream native consumer needs working, versioned packages with their actual dependencies. Neither a probe-only DLL nor an appended verification instruction can substitute for implementing that producer here.
 
 ---
 
@@ -47,7 +47,7 @@
 |---|---|
 | BR-01 | **A probe runs against a real published AOT binary**, not a debug host ([QI-01](../../requirements/12-quality-and-compatibility-contract.md#rule-qi-01), [QI-02](../../requirements/12-quality-and-compatibility-contract.md#rule-qi-02)). |
 | BR-02 | **Probe evidence is reproducible**: a recorded environment, a recorded procedure and a recorded result. |
-| BR-03 | **Probe code is not promoted to production without cleanup**. |
+| BR-03 | **Probe scaffolds and production deliverables are separate.** Production13.05–13.16 is maintained; probe code reaches production only after the same functional, safety and package gates. |
 | BR-04 | **A probe that fails produces a decision, not a workaround.** A failed probe raises the conflict rather than being papered over (**[D-001](../../decisions/phase-1-foundation-decisions.md#rule-d-001)**). |
 | BR-05 | **Native probes obey the native safety obligations from the start** — validated input, sanitiser builds, sacrificial-process tests (`§6` of the native architecture). |
 | BR-06 | **The acquisition probe uses a real transport**, not an in-memory generator, for at least one configuration. |
@@ -63,11 +63,16 @@
 | `benchmarks/probes/editor-store/` | Probe B workspace and evidence |
 | `benchmarks/probes/acquisition/` | Probe C workspace and evidence |
 | `benchmarks/probes/media/` | Probe D workspace and evidence |
-| `native/` | Any shim the media probe requires, with its licence position recorded |
+| `native/arcmedia-ffmpeg-abi/`, `arcslate-color-abi/`, `arcslate-image-abi/`, `arcslate-otio-abi/` | Extend the existing owned shims without renaming their published symbols |
+| `native/arcinstruments-abi/`, `arcpdf-abi/`, `arcgraphics-abi/` | New functional libraries with the fixed annex06 declarations |
+| `src/Native/ArcForges.Native.Abstractions/` and `ArcForges.Native.Media/Colour/Image/Otio/Instruments/Pdf/Graphics` | Eight managed status/handle/wrapper packages; slash-separated names here expand to separate projects |
+| `src/Native/ArcForges.Native.<Capability>.Runtime.<rid>/` | Seven families × six RID package definitions, each carrying its admitted native dependency closure |
+| `src/DesktopHelpers/` | Consume WP11 helper/Broker/Contracts; add only the approved native parser composition, not a second helper owner |
+| `eng/packaging/`, `tests/NativeConsumers/` | Exact package allowlist, headers/import libraries, SBOMs and independent C17/C# AOT package-only consumers |
 | `eng/verification/probe-evidence/` | The recorded environments, procedures and results |
 | `tests/HardwareLab/` | Created: the device inventory the later hardware families depend on |
 
-**Major types introduced:** probe-local only; nothing promoted.
+**Major types introduced:** the fixed annex06 status, safe handle, reader/writer, image, colour, OTIO, instrument, PDF and graphics wrappers. No native pointer becomes a managed domain identifier or a wire field.
 
 ---
 
@@ -121,14 +126,134 @@
 
 **Testing requirements.** A completeness check that each probe has a recorded environment, procedure, result and conclusion.
 
-**Completion gate.** Four conclusions exist, every native dependency has a licence position, and the hardware inventory exists. **This satisfies [PG-08](../../assurance/open-gates-register.md#rule-pg-08)** and partially satisfies [PG-03](../../assurance/open-gates-register.md#rule-pg-03).
+**Completion gate.** Four conclusions exist, every native dependency has a licence position, and the hardware inventory exists. This seeds [PG-08](../../assurance/open-gates-register.md#rule-pg-08);13.16 completes its production inventory and the full [PG-03](../../assurance/open-gates-register.md#rule-pg-03) dependency obligations.
 
 ---
+
+<a id="rule-wp-13.05"></a>
+
+### WP-13.05 — Common ABI and deterministic failure surface
+
+**What must be fully done.** Implement annex06 common preambles, fixed numeric keys, pack8 records, ownership, cancellation and bounded-buffer helpers underlying the ABI1.1 declarations. This step compiles all declarations; the family bodies are implemented in13.06–13.14 and their complete runtime export set is accepted in13.15/13.90. Retain the five existing probe-library identities, including arc_metal_*; compatibility is not evidence of functional graphics.
+
+**Testing requirements.** Compile C17/C++20 headers and C# layouts; assert every field offset and all17 sizes, wrong-size/version/null/closed-handle cases and zero leaked output on failure.
+
+**Completion gate.** The common helpers, complete header/layout declarations and common failure rules are independently verified; later family implementation is not required to pass this first substep.
+
+<a id="rule-wp-13.06"></a>
+
+### WP-13.06 — Media reader, probe, frame and seek
+
+**What must be fully done.** Implement arc_media_reader_* and frame access through the selected FFmpeg demux/decode path, restricted helper and exact time model. Preserve stream metadata, delayed frames, EOF and seek epochs.
+
+**Testing requirements.** Known two-frame seek, malformed input, B-frame/drain, tiled copy, exact audio sample bounds and repeated cancel/close with the actual dependency build.
+
+**Completion gate.** Every reader/probe/frame/seek export has a behavioral oracle and bounded isolated execution.
+
+<a id="rule-wp-13.07"></a>
+
+### WP-13.07 — Convert, resample and media writer
+
+**What must be fully done.** Implement conversion/resampling and writer open/write/finish/abort with the fixed portable profiles. Preserve resampler delay and PTS; commit only after complete output/sidecars/hash.
+
+**Testing requirements.** Independent fresh decode of FFV1/PCM/WAV and MP4 MPEG4-AAC; resample length, finish twice, cancel/abort and disk-full corruption rejection.
+
+**Completion gate.** All portable writer profiles and exact conversion semantics pass actual package consumers.
+
+<a id="rule-wp-13.08"></a>
+
+### WP-13.08 — Audio devices
+
+**What must be fully done.** Implement miniaudio-backed capture/playback and explicit negotiation, bounded rings, counters and disconnect/reopen. Missing output devices permit video-only playback with a stated reason and do not block offline export.
+
+**Testing requirements.** Physical output/input, underflow, overflow, device loss, exclusive-use refusal, no-device video clock and offline render.
+
+**Completion gate.** Audio effects and degraded behavior are measured; no silently selected replacement device.
+
+<a id="rule-wp-13.09"></a>
+
+### WP-13.09 — Colour transforms
+
+**What must be fully done.** Implement immutable OCIO config/processor assets and alpha-correct CPU transforms; no ambient file/network config lookup.
+
+**Testing requirements.** Independent RGB/alpha vectors, alpha0, unknown space, tampered bundle and preview/render agreement.
+
+**Completion gate.** Colour functions and pinned asset provenance pass with named refusal of invalid transforms.
+
+<a id="rule-wp-13.10"></a>
+
+### WP-13.10 — Still-image codecs
+
+**What must be fully done.** Implement PNG/TIFF/EXR metadata, bounded tile reads and writes with OIIO/OpenEXR/Imath; hostile reads execute only in WP11 helper.
+
+**Testing requirements.** Bit depth/metadata round trip, edge tiles, decompression bomb, failed codec and incomplete-output refusal.
+
+**Completion gate.** All image exports and named codec degradation pass without silent image loss.
+
+<a id="rule-wp-13.11"></a>
+
+### WP-13.11 — OTIO interchange
+
+**What must be fully done.** Implement official OTIO0.18.1 read/write under the selected schema allowlist and fidelity report; preserve exact tick conversion and inert unknown fields.
+
+**Testing requirements.** Mixed/fractional rate round trip, unsupported schema, malicious path, parser death and reported loss before commit.
+
+**Completion gate.** Both directions preserve the declared timeline semantics or refuse explicitly.
+
+<a id="rule-wp-13.12"></a>
+
+### WP-13.12 — Serial and USB instruments
+
+**What must be fully done.** Implement generic OS serial and explicit USB interface/endpoint open/read/write/cancel/close; identity is revalidated at open. Do not auto-detach unrelated drivers or enable vendor SDKs.
+
+**Testing requirements.** Enumeration, explicit interface claim, control/bulk/interrupt transfers, partial writes, cancellation callback, hot unplug, driver absence and permission denial on Tier1.
+
+**Completion gate.** Native instrument functions and permission/loss semantics pass against the hardware inventory.
+
+<a id="rule-wp-13.13"></a>
+
+### WP-13.13 — PDF and production parser containment
+
+**What must be fully done.** Compose actual PDFium and all approved parser wrappers into the WP11 helper using generated local gRPC controls. WP11 remains the helper host/protocol/launcher authority. This step implements the production parser composition in that same DesktopPlatform helper and publishes the next immutable ContentSandbox.Runtime.<rid> version with its exact native closure. Broker/Contracts and launcher mechanics are consumed from11; no second helper design or duplicate DTO owner is created. Remove test-parser production registration, retain hostile regression fixtures.
+
+**Testing requirements.** Packaged PDF page/text/tile fixtures, malformed/native-crash/hang and parent-death cleanup on every admitted RID; rerun actual image/media/OTIO parser containment.
+
+**Completion gate.** Actual PDF dependency and containment evidence contributes to PG12; WP18.04 separately closes the real viewer path. No mock parser closes native producer acceptance.
+
+<a id="rule-wp-13.14"></a>
+
+### WP-13.14 — Portable graphics and optional OS backends
+
+**What must be fully done.** Implement ArcGraphicsNative CPU surface/upload/present/fence/device-loss behavior on all admitted RIDs. Preserve ArcGraphicsMetalNative probe ABI unchanged; optional Metal code is a private backend of the new functional library, not functionality obtained through the three probe methods. Other admitted OS acceleration remains optional.
+
+**Testing requirements.** CPU display/readback, ownership and fence lifetime, device loss and forced software path; exercise each advertised accelerator with its actual driver.
+
+**Completion gate.** Required CPU functionality passes on every admitted RID; absent optional acceleration has a visible reason.
+
+<a id="rule-wp-13.15"></a>
+
+### WP-13.15 — Immutable native package production
+
+**What must be fully done.** Publish ArcForges.Native.Abstractions plus Media/Colour/Image/Otio/Instruments/Pdf/Graphics and their Runtime.<rid> families: win-x64,win-arm64,osx-arm64,osx-x64,linux-x64,linux-arm64. Expand the allowlist explicitly; record any Tier2 waiver and omit unusable capability claims. These eight managed and42 runtime definitions are additional to other Platform mechanisms. Build native dependencies before pack; pack once; use the WP11 host/broker and the newly signed production helper version composed in13.13. Never alter already released WP11 package bytes.
+
+**Testing requirements.** Isolated clean-cache C17 and C# AOT consumers on each admitted RID; missing/transitive/wrong-RID library, hash collision, absent export, revoked artifact and source-unavailable negatives.
+
+**Completion gate.** Same tested bytes, headers/import libraries, native manifests and complete dependency closures are promoted together; placeholders never satisfy a family.
+
+<a id="rule-wp-13.16"></a>
+
+### WP-13.16 — Dependency adoption and hardware receipts
+
+**What must be fully done.** Record AD01–AD08 for FFmpeg, miniaudio, OCIO, OIIO, OpenEXR, Imath, OTIO, libusb and PDFium plus every shipped transitive dependency. Inventory serial/audio/GPU and an actual USB device with vendor/product identity, explicit interface/endpoint, firmware and driver versions.
+
+**Testing requirements.** Match SBOM/license/source and enabled-feature lists to actual packaged files. Bind every physical result and each simulated absence to its evidence class.
+
+**Completion gate.** PG03 and PG08 contributions cover the complete shipped graph and physical fixtures; remaining product/per-RID evidence stays explicitly assigned.
 
 <a id="rule-wp-13.90"></a>
 ### WP-13.90 — Verify the owned artifact and real integration
 
-**What must be fully done.** Deliver every functional ABI/wrapper/RID/runtime/helper in native annex06 and the producer matrix. Compile native dependencies first, run ABI/behavior tests, pack once, run independent package-only C17/C# AOT consumers, then promote complete immutable artifacts. Consume actual07–12 mechanisms.
+**What must be fully done.** Verify the production outputs of13.05–13.16 as one immutable candidate using actual07–12 mechanisms. This step accepts completed implementations; it does not first design or implement the native families.
 
 **Testing requirements.** Decode/seek/drain, encode→independent decode, image tiles, colour, OTIO, PDF, instruments, graphics CPU/fallback, cancel/lifetime/hostile-helper vectors and missing-DLL/wrong-RID negative consumers.
 
@@ -150,13 +275,28 @@
 
 ## 7. Tests and verification evidence
 
+[Local gRPC closure](../../architecture/contracts/09-local-grpc-and-sandbox.md): Invoke each real packaged media/image/PDF/OTIO helper method through generated gRPC over the restricted OS stream; verify slot races, generation/ack/cancel cleanup and throughput. No private XPC control or fake parser receipt.
+
 | Evidence | Produced by |
 |---|---|
 | AOT publish log and an in-binary **device tool request** decoded and executed through generated, statically registered code — **no model loop is probed here**, it is the CF Workflow | [WP-13.00](#rule-wp-13.00) |
 | Kill-during-edit recovery and undo distinction results | [WP-13.01](#rule-wp-13.01) |
 | Sustained-throughput record with overrun, gap and pause results | [WP-13.02](#rule-wp-13.02) |
 | Frame display, synchronisation measurement, sanitiser and sacrificial-process results | [WP-13.03](#rule-wp-13.03) |
-| Four written conclusions, licence positions, hardware inventory | [WP-13.04](#rule-wp-13.04) |
+| Four written probe conclusions | [WP-13.04](#rule-wp-13.04) |
+| Common ABI and deterministic failure surface: behavioral, failure and package evidence | [WP-13.05](#rule-wp-13.05) |
+| Media reader, probe, frame and seek: behavioral, failure and package evidence | [WP-13.06](#rule-wp-13.06) |
+| Convert, resample and media writer: behavioral, failure and package evidence | [WP-13.07](#rule-wp-13.07) |
+| Audio devices: behavioral, failure and package evidence | [WP-13.08](#rule-wp-13.08) |
+| Colour transforms: behavioral, failure and package evidence | [WP-13.09](#rule-wp-13.09) |
+| Still-image codecs: behavioral, failure and package evidence | [WP-13.10](#rule-wp-13.10) |
+| OTIO interchange: behavioral, failure and package evidence | [WP-13.11](#rule-wp-13.11) |
+| Serial and USB instruments: behavioral, failure and package evidence | [WP-13.12](#rule-wp-13.12) |
+| PDF and production parser containment: behavioral, failure and package evidence | [WP-13.13](#rule-wp-13.13) |
+| Portable graphics and optional OS backends: behavioral, failure and package evidence | [WP-13.14](#rule-wp-13.14) |
+| Immutable native package production: behavioral, failure and package evidence | [WP-13.15](#rule-wp-13.15) |
+| Dependency adoption and hardware receipts: behavioral, failure and package evidence | [WP-13.16](#rule-wp-13.16) |
+| Owned artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/OS/device/provider, scenario, result, limitations and real-versus-fixture status; inapplicable fields explicitly marked | [WP-13.90](#rule-wp-13.90) |
 
 ---
 
@@ -173,12 +313,12 @@
 3. Sustained acquisition above the product target runs with bounded memory, and every overrun, gap and disconnect is explicitly reported.
 4. A decoded frame displays with synchronised audio; the sanitiser run is clean; the software fallback works with acceleration disabled.
 5. Each probe has a written conclusion stating what it proved, what it did not, and what constraint it imposes downstream.
-6. Every native dependency introduced has a recorded licence position, and the hardware-lab inventory exists — satisfying [PG-08](../../assurance/open-gates-register.md#rule-pg-08).
+6. Every shipped dependency has a recorded licence position and the13.16 hardware inventory exists, contributing to [PG-08](../../assurance/open-gates-register.md#rule-pg-08).
 
----
+7. All58 functional exports, eight managed native packages and every admitted runtime family are verified through clean package-only consumers; actual helper containment and all13.05–13.16 gates pass. No probe-only export set passes production closure.
 
 ## 9. Dependencies
 
-**Upstream:** `06` · `07` · `08` · `09` · `10` · `11` · `12`. All stage outputs must be complete.
+**Upstream:** `06` · `07` · `08` · `09` · `10` · `11` · `12`. Consume completed stage outputs.
 
-**Downstream:** `14` · `33` · `36`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.
+**Downstream:** `14` · `33` · `36`. Consumers use exact released artifacts.

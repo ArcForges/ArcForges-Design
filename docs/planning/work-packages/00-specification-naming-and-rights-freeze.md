@@ -104,7 +104,7 @@
 
 **And the identifier index** ([PG-21](../../assurance/open-gates-register.md#rule-pg-21), [SV-01](../../assurance/testing-and-verification-strategy.md#rule-sv-01)): regenerate the defining-document and stable-anchor index and check all active citations. The design repair already closes the current corpus; this step verifies drift and installs the continuing check. Same-spelled rules in different documents must remain distinguishable ([OG-05](../../assurance/open-gates-register.md#rule-og-05)).
 
-**Testing requirements.** A round-trip consistency check that the exported data matches [`../../requirements/01-normative-glossary-and-invariants.md`](../../requirements/01-normative-glossary-and-invariants.md) and `§7` of the coverage document exactly, in both directions — no term or invariant present in one and absent from the other. **A resolver run over every citation in `docs/`**, reporting each one's defining document and failing on a citation that resolves to zero definitions, or to several with no named home; the **1,597 citations ambiguous at this baseline** are worked to zero or individually waived with a reason.
+**Testing requirements.** Compare both forward dependency tables, every WP header/section9 and the exact reverse transpose; validate the explicit topological schedule and current counts. Require unique top-level section numbers, resolvable links/anchors and one .90 evidence row per active WP. Historical review fixtures are scoped separately. A round-trip consistency check that the exported data matches [`../../requirements/01-normative-glossary-and-invariants.md`](../../requirements/01-normative-glossary-and-invariants.md) and `§7` of the coverage document exactly, in both directions — no term or invariant present in one and absent from the other. **A resolver run over every citation in `docs/`**, reporting each one's defining document and failing on a citation that resolves to zero definitions, or to several with no named home; the **1,597 citations ambiguous at this baseline** are worked to zero or individually waived with a reason.
 
 **Completion gate.** The exported policy data matches both source documents exactly, **and every citation in `docs/` resolves to exactly one definition or carries a recorded waiver** ([PG-21](../../assurance/open-gates-register.md#rule-pg-21)). **This does not close [PG-06](../../assurance/open-gates-register.md#rule-pg-06), which is already closed by design evidence, and it does not close [PG-11](../../assurance/open-gates-register.md#rule-pg-11), which requires implemented, passing checks.**
 
@@ -188,6 +188,7 @@
 | Provenance record set with a completeness check | [WP-00.03](#rule-wp-00.03) |
 | The ArcChat Reference Coverage Matrix, complete | [WP-00.04](#rule-wp-00.04) |
 | A review record for every corrected stale claim | [WP-00.05](#rule-wp-00.05) |
+| Owned artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/OS/device/provider, scenario, result, limitations and real-versus-fixture status; inapplicable fields explicitly marked | [WP-00.90](#rule-wp-00.90) |
 
 ---
 
@@ -210,9 +211,9 @@
 
 ## 9. Dependencies
 
-**Upstream:** none. All stage outputs must be complete.
+**Upstream:** none. Consume completed stage outputs.
 
-**Downstream:** `01` · `47`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.
+**Downstream:** `01` · `47`. Consumers use exact released artifacts.
 
 ## Current source baseline and migration input
 

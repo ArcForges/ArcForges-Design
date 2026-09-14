@@ -5,7 +5,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: A — Freeze and foundation
-> Upstream: `01` · Downstream: `03` · `05` · `47`
+> Upstream: `01` · Downstream: `03` · `05` · `47` · `53`
 
 > **Goal.** Make the build tell the truth. Until diagnostics are real, warnings are errors, versions are locked and the runtime split is expressed in the build itself, every later AOT proof and every later quality claim rests on unverified ground.
 
@@ -185,6 +185,7 @@
 | Evaluated-property report per target | [WP-02.03](#rule-wp-02.03) |
 | Version axis report and a runtime metadata retrieval test | [WP-02.04](#rule-wp-02.04) |
 | Dependency policy check report | [WP-02.05](#rule-wp-02.05) |
+| Owned artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/OS/device/provider, scenario, result, limitations and real-versus-fixture status; inapplicable fields explicitly marked | [WP-02.90](#rule-wp-02.90) |
 
 ---
 
@@ -211,9 +212,9 @@
 
 ## 9. Dependencies
 
-**Upstream:** `01`. All stage outputs must be complete.
+**Upstream:** `01`. Consume completed stage outputs.
 
-**Downstream:** `03` · `05` · `47`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.
+**Downstream:** `03` · `05` · `47` · `53`. Consumers use exact released artifacts.
 
 ## Current source baseline and migration input
 

@@ -7,7 +7,7 @@
 
 The publish matrix says which runtime each target uses. The native interop architecture says how a native call must be made. **Neither says which native capabilities the product family actually needs, which platform and architecture each is available on, what happens where it is absent, or how a dependency reaches the signed artifact.** A product with a real media pipeline and a real acquisition pipeline cannot be planned without that.
 
-This document is a **capability inventory and a platform commitment structure**, not a list of chosen libraries. Choosing a library is an adoption decision with obligations (`§3.3`), and this document states those obligations rather than pre-empting them.
+This inventory states capability and degradation obligations. The package registry and functional ABI fix the selected initial libraries; WP13 records their adoption evidence under §3.3. Implementation cannot postpone those selections.
 
 ---
 
@@ -67,7 +67,7 @@ This document is a **capability inventory and a platform commitment structure**,
 |---|---|
 | **Slot** | The capability the product needs |
 | **Owner** | The project holding the managed wrapper — a DesktopPlatform capability package; products consume it through their C# infrastructure adapters ([CP-02](19-product-implementation-maps.md#rule-cp-02) of the implementation maps) |
-| **ABI** | Whether ArcForges owns the C ABI shim (`af_*`) or consumes a library's own C API directly |
+| **ABI** | Whether ArcForges owns the C ABI shim (`arc_*`) or consumes a library's own C API directly |
 | **Required by** | What breaks without it |
 | **Gate** | The open gate that governs its adoption |
 
@@ -75,14 +75,17 @@ This document is a **capability inventory and a platform commitment structure**,
 
 | Slot | Owner | ABI | Required by | Gate |
 |---|---|---|---|---|
-| **Media demux and decode** | `ArcForges.Native.Media` / DesktopPlatform | **ArcForges-owned `af_media_*` shim** over the chosen foundation | ArcSlate playback, proxy generation, thumbnails, waveforms | [PG-03](../assurance/open-gates-register.md#rule-pg-03) |
+| **Media demux and decode** | `ArcForges.Native.Media` / DesktopPlatform | **ArcForges-owned `arc_media_*` shim** over the chosen foundation | ArcSlate playback, proxy generation, thumbnails, waveforms | [PG-03](../assurance/open-gates-register.md#rule-pg-03) |
 | **Media encode and mux** | `ArcForges.Native.Media` / DesktopPlatform | Same shim | ArcSlate export and render | [PG-03](../assurance/open-gates-register.md#rule-pg-03) |
 | **Colour conversion, scale, resample** | `ArcForges.Native.Media` / DesktopPlatform | Same shim | Playback and render correctness; **preview and render share semantics** ([MP-03](12-native-interop-and-media.md#rule-mp-03)) | [PG-03](../assurance/open-gates-register.md#rule-pg-03) |
 | **Colour management transforms** | `ArcForges.Native.Colour` / DesktopPlatform | ArcForges-owned shim | ArcSlate colour pipeline ([WP-38](../planning/work-packages/38-arcslate-render-and-colour.md#rule-wp-38)) | [PG-03](../assurance/open-gates-register.md#rule-pg-03) |
-| **GPU device and surface access** | `ArcForges.Native.Media` / DesktopPlatform | Platform-specific rendering bridge ([BF-06](12-native-interop-and-media.md#rule-bf-06)) | Accelerated preview; **optional at every stage** ([GP-04](12-native-interop-and-media.md#rule-gp-04)) | [PG-03](../assurance/open-gates-register.md#rule-pg-03) |
-| **Serial and device transports** | `ArcForges.Native.Instruments` / DesktopPlatform | Platform APIs and vendor SDKs, each behind its own wrapper | ArcScope acquisition ([WP-33](../planning/work-packages/33-arcscope-acquisition-and-session.md#rule-wp-33)) | [PG-03](../assurance/open-gates-register.md#rule-pg-03), [PG-08](../assurance/open-gates-register.md#rule-pg-08) |
+| **GPU device and surface access** | `ArcForges.Native.Graphics` / DesktopPlatform | Owned arc_graphics_* with mandatory CPU and optional OS backends | Portable preview; acceleration optional | [PG-03](../assurance/open-gates-register.md#rule-pg-03) |
+| **Serial and device transports** | `ArcForges.Native.Instruments` / DesktopPlatform | arc_instruments_* over OS serial and libusb; no vendor SDK in V1 | ArcScope generic serial and explicit-interface USB acquisition | [PG-03](../assurance/open-gates-register.md#rule-pg-03), [PG-08](../assurance/open-gates-register.md#rule-pg-08) |
 | **High-rate acquisition and signal primitives** | `ArcForges.Native.Instruments` / DesktopPlatform | ArcForges-owned shim where a managed path cannot meet the rate | ArcScope hot path | [PG-03](../assurance/open-gates-register.md#rule-pg-03) |
-| **Document rendering and text extraction** | `ArcForges.ContentSandbox` with the desktop broker in `ArcNotes.Infrastructure` | Native library loaded only in the isolated helper; **two operations only** ([DR-01](12-native-interop-and-media.md#rule-dr-01)) | ArcNotes PDF viewing ([AT-05](../requirements/products/arcnotes.md#rule-at-05)) | **[PG-12](../assurance/open-gates-register.md#rule-pg-12)** |
+| **Document rendering and text extraction** | `ArcForges.Native.Pdf` inside WP11 ContentSandbox, brokered by ArcNotes.Infrastructure | Owned arc_pdf_* over PDFium; only bounded text and raster output | ArcNotes PDF viewing | [PG-03](../assurance/open-gates-register.md#rule-pg-03), [PG-12](../assurance/open-gates-register.md#rule-pg-12) |
+| **Still-image codecs** | `ArcForges.Native.Image` | arc_image_* over OIIO/OpenEXR/Imath | Slate stills and Notes images | [PG-03](../assurance/open-gates-register.md#rule-pg-03) |
+| **Timeline interchange** | `ArcForges.Native.Otio` | arc_otio_* over official OTIO | Slate import/export | [PG-03](../assurance/open-gates-register.md#rule-pg-03) |
+| **Audio devices** | `ArcForges.Native.Media` | arc_media_audio_* over miniaudio | Slate monitoring and capture where accepted | [PG-03](../assurance/open-gates-register.md#rule-pg-03) |
 | **Secure storage** | Per-product `*.Infrastructure` | Platform APIs | Secret broker backing (`§6` of the security architecture) | — |
 | **Shell integration, global hotkey, notification** | Per-product `*.Infrastructure` | Platform APIs | Desktop shell behaviours | — |
 | **Text shaping, font fallback, glyph rasterisation** | **Not ArcForges'** — Avalonia's platform backends | — | All text rendering ([RN-02](18-editing-and-rich-content.md#rule-rn-02) of the editing architecture) | — |
@@ -105,7 +108,7 @@ Filling a slot is not a code change. Before a dependency enters a deliverable:
 | AD-02 | A **substitute analysis** — which managed option was evaluated and why it was insufficient | [NP-01](12-native-interop-and-media.md#rule-np-01) |
 | AD-03 | A **licence review against that product's licence boundary**, with the file-level position established rather than inferred from a repository root | [PG-03](../assurance/open-gates-register.md#rule-pg-03), **[D-013](../decisions/phase-1-foundation-decisions.md#rule-d-013)** |
 | AD-04 | A **provenance record** carrying **[D-013](../decisions/phase-1-foundation-decisions.md#rule-d-013)**'s ten fields | **[D-013](../decisions/phase-1-foundation-decisions.md#rule-d-013)** |
-| AD-05 | An **ABI decision**: an ArcForges-owned `af_*` shim, or direct consumption of a stable C API — with the reason | `§3.2` of the native interop architecture |
+| AD-05 | An **ABI decision**: an ArcForges-owned `arc_*` shim, or direct consumption of a stable C API — with the reason | `§3.2` of the native interop architecture |
 | AD-06 | A **per-platform availability statement** and the degradation for every platform where it is absent | [PD-04](#rule-pd-04), `§5` |
 | AD-07 | A **supply-chain position**: how the binary is obtained, verified, signed and reproduced | `§5` of the build architecture |
 | <a id="rule-ad-08"></a>AD-08 | An **AOT compatibility statement** for any dependency in a desktop deliverable | [PD-06](#rule-pd-06), **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** |
@@ -149,17 +152,25 @@ What the user sees when a slot is unavailable — absent library, unsupported pl
 | Serial or device transport | That transport is listed unavailable with its reason; others remain usable ([PM-06](../requirements/12-quality-and-compatibility-contract.md#rule-pm-06) of the quality contract) | The device list is silently short |
 | High-rate acquisition | Rate ceiling reduced and **stated before capture starts**, not discovered afterwards | A capture that silently drops samples |
 | Document rendering | **Metadata card** with open-in-system-application (`§8.2` of the editing architecture); [AT-05](../requirements/products/arcnotes.md#rule-at-05) is **not met** and [PG-12](../assurance/open-gates-register.md#rule-pg-12) stays open | A blank viewer, or the gap concealed by calling it a preview |
+| Colour conversion, scale, resample | Preview/render requiring conversion refuses with a named reason; unchanged-format operations remain available | Wrong colour, geometry or sample timing |
+| Still-image codecs | Affected formats are named unavailable; projects open with explicit missing-image state; export containing unsupported stills refuses | A silently missing image or omitted still in successful export |
+| Timeline interchange | OTIO import/export unavailable with reason; editing/playback remain usable; PG15 remains open | Partial or approximated OTIO claimed complete |
+| Audio devices | Visible video-only playback uses the monotonic host clock; capture/monitoring unavailable with reason; offline render/export unaffected | Silence presented as normal or export refused for missing output device |
+| USB instrument transport | Device remains listed with driver/permission/interface-busy reason; other transports remain usable | Silently short enumeration or automatic kernel-driver detach |
+| Text shaping, font fallback, glyph rasterisation | Use verified bundled fallback fonts, mark unsupported glyphs explicitly; broken rendering backend blocks that platform release | Silent text omission or corrupted layout |
 | Secure storage | Start-up fails with an actionable message | A secret stored unprotected |
 | Shell integration | That integration is unavailable; the product runs | Start-up failure |
 
 | # | Rule |
 |---|---|
-| DG-01 | **A degradation is discovered at start-up verification, not at first use** ([LD-03](12-native-interop-and-media.md#rule-ld-03) there), so a user learns what is unavailable before committing work to it. |
+| DG-01 | **Library/profile degradation is discovered at startup; hotplug, device loss and later corruption are detected again at use** ([LD-03](12-native-interop-and-media.md#rule-ld-03) there), so a user learns what is unavailable before committing work to it. |
 | DG-02 | **A failed verification never proceeds with a partially verified library** ([LD-04](12-native-interop-and-media.md#rule-ld-04) there). |
 | DG-03 | **A degradation is recorded in diagnostics as well as shown**, so a support case does not depend on the user remembering the message. |
 | DG-04 | **Secure storage is the one slot whose absence is fatal.** Everything else degrades; a product that cannot protect a secret does not start. |
 
 ---
+
+The slot-to-degradation mapping is explicit: Media demux/decode→Media decode; encode/mux→Media encode; conversion/scale/resample→same-named row; colour management→Colour transforms; GPU/surface→GPU acceleration; serial/device→Serial or device transport plus USB instrument transport; high-rate→High-rate acquisition; document rendering→Document rendering; still-image, timeline interchange, audio devices, secure storage, shell integration and text shaping→their named rows. Native.Abstractions is common ownership infrastructure, not a physical slot. Every stated degradation preserves local data; a required Tier1 feature that is unavailable still fails its release gate.
 
 ## 6. Build and packaging linkage
 
@@ -199,7 +210,7 @@ dependency adopted (§3.3)
 | PV-09 | An AGPL-boundary assembly cannot be referenced from an Apache-2.0 project | [WP-03](../planning/work-packages/03-contract-foundation-and-licence-split.md#rule-wp-03), [WP-05](../planning/work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05) |
 | PV-10 | The SBOM resolves for every shipped artifact, with a licence position for every entry | [WP-50.01](../planning/work-packages/50-full-platform-production-release.md#rule-wp-50.01) |
 
-## 7. Selected P2-009 runtime and dependency closure
+## 8. Selected P2-009 runtime and dependency closure
 
 Cloud uses .NET SDK 10.0.400, .NET10 runtime10.0.12, Grpc.AspNetCore/Web2.83.0 and Npgsql 10.0.3, PostgreSQL 18.6. One Linux-x64 Native AOT executable, chiseled Ubuntu runtime-deps image with ICU/tzdata/CA certificates, non-root, read-only root and declared scratch, no dynamic plugin assemblies, EF/dynamic ORM, ASP.NET Session or CookieAuthenticationHandler. ASP.NET Core Minimal API endpoints and explicit generated metadata handle only allowed HTTP exceptions. NpgsqlDataSource with fixed SQL and explicit parameter/reader mapping; SQL migrations shipped as one-shot bundle. DB pool max 32, max 128 active RPCs, bounded queue 256, drain 30s; liveness process-only, readiness DB/config/private-port binding, degraded CF/R2 reported separately.
 
@@ -214,7 +225,7 @@ Operator access uses the separate Entra OIDC/operator opaque-session scheme and 
 
 Native dependency selection and resolved OTIO/MDF dispositions are in [package registry](01-solution-and-project-layout.md#12-package-and-native-distribution-registry). Android OS adapters are Mobile dependencies, not desktop ABI packages. All actual candidate/RID/admission proofs remain required; the selected route is fixed before coding.
 
-## P2-010 producer and Android closure
+## 9. P2-010 producer and Android closure
 
 Android Kotlin/JVM/Compose toolchain, API/RID and OS adapter decisions are in [Mobile architecture](11-mobile-architecture.md#3-runtime-libraries-and-lifecycle-baseline). All versions are candidate pins until WP06 proves actual tool availability and release-device behavior; failed compatibility is a focused gate failure, never permission to silently switch runtime. Gradle version catalog, lock files and verification checksums cover build plugins, Java/Kotlin/protobuf/grpc-lite and app dependencies. iOS/KMP is outside this delivery. TypeScript remains Web/AI and public npm bindings, not Mobile runtime.
 

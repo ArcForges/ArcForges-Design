@@ -111,8 +111,8 @@ This document consolidates every gate that stands between work and users, in one
 | <a id="rule-l-01"></a>L-01 | A full **Game Day** exercising SEV0 through SEV2 scenarios against the real production topology |
 | L-02 | Database failover exercised; point-in-time restore proven |
 | L-03 | Cross-provider blob restore proven |
-| L-04 | Message-broker backlog and dead-letter replay proven |
-| L-05 | Realtime outage with client fallback and sequence backfill proven |
+| L-04 | PostgreSQL outbox/inbox backlog and dead-letter replay proven; duplicate delivery produces one effect (WP21/24, drill46.03) |
+| L-05 | Event-hint degradation/cursor reset with authoritative reread; CF presentation outage recovers through bounded range/Task reads (WP24/52, drill46.03) |
 | L-06 | AI provider outage with credit release and fallback proven |
 | L-07 | Edge or tunnel outage with local products fully unaffected, verified |
 | L-08 | Email failover proven **without duplicate one-time codes** |
@@ -172,6 +172,8 @@ This document consolidates every gate that stands between work and users, in one
 | L-64 | Public SDK compatibility commitment published, with the protocol and SDK versions separated (`§10` there) |
 
 ---
+
+Commercial activation evidence for L-23–L-30 is produced by WP48/WP50. WP42.10 supplies technical/test-mode receipts and the activation checklist; a real customer checkout and received payout are not prerequisites of WP42.
 
 ## 7. D — Deferred-gate closure
 

@@ -5,7 +5,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: K — Web and release
-> Upstream: `20` · `28` · `32` · `35` · `39` · `40` · `41` · `43` · `46` · `49` · `51` · `52` · Downstream: none
+> Upstream: `20` · `28` · `32` · `35` · `39` · `40` · `41` · `43` · `46` · `49` · `51` · `52` · `53` · Downstream: none
 
 > **Goal.** Ship everything together, once every gate is genuinely satisfied: four desktop products across three platforms, the Android companion, the cloud, the web surfaces, and the commercial loop — with the release audit, the production gates and the honest statement of what is and is not shipped.
 
@@ -101,7 +101,7 @@
 
 ### WP-50.02 — Desktop release across three platforms
 
-**What must be fully done.** Signed installers for Windows, macOS and Linux from the same CI-produced artifacts; the update feed populated with hashes, compatibility ranges and minimum versions; the full update matrix verified per platform; store and package-manager listings pointing at the same signed installer.
+**What must be fully done.** Consume the actual ArcForges.Update package from WP53; verify its existing behavior against production feed/signing and each real desktop product. This step does not first implement an updater. Signed installers for Windows, macOS and Linux from the same CI-produced artifacts; the update feed populated with hashes, compatibility ranges and minimum versions; the full update matrix verified per platform; store and package-manager listings pointing at the same signed installer.
 
 **Testing requirements.** The complete update matrix per platform — fresh install, upgrade, two-version upgrade, downgrade protection, rollback, interrupted download, interrupted install, corrupted artifact rejection, update during a long task, update with documents open, uninstall preserving user data, channel switch both ways, blocked bad version.
 
@@ -207,6 +207,9 @@
 | Atomic deployment, rollback and cached-client results | [WP-50.06](#rule-wp-50.06) |
 | Alert-to-runbook, on-call and support-path results | [WP-50.07](#rule-wp-50.07) |
 | Claim audit against gate evidence | [WP-50.08](#rule-wp-50.08) |
+| Owned artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/OS/device/provider, scenario, result, limitations and real-versus-fixture status; inapplicable fields explicitly marked | [WP-50.90](#rule-wp-50.90) |
+
+
 
 ---
 
@@ -236,6 +239,6 @@
 
 ## 9. Dependencies
 
-**Upstream:** `20` · `28` · `32` · `35` · `39` · `40` · `41` · `43` · `46` · `49` · `51` · `52`. All stage outputs must be complete.
+**Upstream:** `20` · `28` · `32` · `35` · `39` · `40` · `41` · `43` · `46` · `49` · `51` · `52` · `53`. Consume completed stage outputs.
 
-**Downstream:** none. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.
+**Downstream:** none. Consumers use exact released artifacts.

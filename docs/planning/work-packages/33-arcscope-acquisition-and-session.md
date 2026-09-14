@@ -194,6 +194,8 @@
 
 ---
 
+Generic USB is V1: verify enumeration, explicit interface/endpoint open, control/bulk/interrupt transfers, partial writes, cancellation and driver/permission/busy refusal on each Tier1 RID. Bind device/firmware/driver identity to PG08; never automatically detach a kernel driver. Hot unplug records an explicit capture gap.
+
 ## 7. Tests and verification evidence
 
 | Evidence | Produced by |
@@ -205,6 +207,9 @@
 | Crash-recovery prefix verification and immutability results | [WP-33.04](#rule-wp-33.04) |
 | Replay equivalence and labelling results | [WP-33.05](#rule-wp-33.05) |
 | Window-close, background and visibility results | [WP-33.06](#rule-wp-33.06) |
+| Owned artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/OS/device/provider, scenario, result, limitations and real-versus-fixture status; inapplicable fields explicitly marked | [WP-33.90](#rule-wp-33.90) |
+
+
 
 ---
 
@@ -233,9 +238,9 @@
 
 ## 9. Dependencies
 
-**Upstream:** `07` · `10` · `13` · `26`. All stage outputs must be complete.
+**Upstream:** `07` · `10` · `13` · `26`. Consume completed stage outputs.
 
-**Downstream:** `34` · `51`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.
+**Downstream:** `34` · `51`. Consumers use exact released artifacts.
 
 ## P2-010 required behavior and closure
 

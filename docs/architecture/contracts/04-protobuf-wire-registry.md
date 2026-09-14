@@ -346,6 +346,8 @@ The owner-profile payload constraints compose with these fields: blocks, propert
 **Resource shapes remain distinct.** The numbered records above govern. Every immutable reader validates the pinned owner revision and BlobRef/hash; a floating ResourceRef is never silently treated as immutable bytes.
 
 
+| Record | Numbered fields | Constraints |
+|---|---|---|
 | `OperationBinding` | `1 operationId:Key`; `2 protocol:BindingProtocol`; `3 service:Key`; `4 method:Key`; `5 contractMajor:uint32` | Exact registered binding; not an arbitrary endpoint URL. |
 | `CancelSupport` | `1 accepted:bool`; `2 beforeDispatchOnly:bool`; `3 statusOperation:Key?` | Post-dispatch cancel is a request, never proof of no effect. |
 | `CapabilityLimits` | `1 maxInputBytes:uint64`; `2 maxOutputBytes:uint64`; `3 maxDurationMs:uint64`; `4 maxConcurrency:uint32`; `5 maxContextItems:uint32` | Positive bounded declared values; context<=64, input/output use owner limits. |
@@ -376,6 +378,8 @@ The owner-profile payload constraints compose with these fields: blocks, propert
 | `TransferJob` | `1 transferId:Id`; `2 state:TransferState`; `3 revision:Revision`; `4 manifest:ResourceVersionRef?`; `5 previewHash:Hash?`; `6 committedRoots:uint64`; `7 totalRoots:uint64`; `8 issues:TransferIssue[]`; `9 page:PageState`; `10 expiresAt:Instant?` | Summary<=100issues; remaining issues/status use pages. Per-root receipts survive restart, no workspace-wide atomic claim. |
 | `TransferMapping` | `1 source:AggregateRef`; `2 target:AggregateRef`; `3 targetRevision:Revision`; `4 state:Key` | planned/committed/skipped/failed; same target IDs on resume. |
 
+| Record | Numbered fields | Constraints |
+|---|---|---|
 | `NotesCommand` | `1 kind:Key`; `2 selection:NotesSelection?`; `3 text:Text?`; `4 blocks:Block[]`; `5 blockIds:Id[]`; `6 parentId:Id?`; `7 beforeSiblingId:Id?`; `8 newIds:Id[]`; `9 table:NotesTableAction?`; `10 marks:Key[]`; `11 blockKind:Key?`; `12 link:LinkSpec?`; `13 atom:InlineAtom?` | notes.commands.v1 kind insertText/deleteSelection/splitBlock/mergeBlock/insertBlocks/moveBlocks/replaceBlocks/setMarks/setBlockKind/setLink/insertAtom/listIndent/listOutdent/listExit/table. Closed required fields by architecture26; unused fields refuse, no guessed ID/target. |
 | `NotesTableAction` | `1 tableId:Id`; `2 kind:Key`; `3 row:uint32`; `4 column:uint32`; `5 count:uint32`; `6 newIds:Id[]` | insertRows/deleteRows/insertColumns/deleteColumns; count positive, insertion before index (end allowed), <=200rows/50columns, all cell blocks preserved in undo. |
 | `AcquisitionSource` | `1 kind:Key`; `2 deviceId:Key?`; `3 serial:SerialSource?`; `4 endpoint:SourceEndpoint?`; `5 file:ResourceVersionRef?`; `6 usb:UsbSource?` | serial/tcp/udp/file/usb; exactly selected configuration, local-only endpoint details never Cloud metadata. Permission and reconnect decision explicit. |
@@ -400,17 +404,47 @@ The owner-profile payload constraints compose with these fields: blocks, propert
 | `ConnectorProof` | `1 callbackReceipt:SecretText`; `2 personalToken:SecretText` | oneof; submitted only to secret boundary, no telemetry/persistence except encrypted secret store. |
 | `DeviceSsoAccount` | `1 realmId:Id`; `2 userId:Id`; `3 displayName:Name`; `4 sourceInstallationId:Id`; `5 expiresAt:Instant` | Same OS user verified peer; eligibility only, no secret or session transferable between applications. |
 
+| Record | Numbered fields | Constraints |
+|---|---|---|
 | `ExecutionSnapshot` | `1 task:TaskSnapshot`; `2 turn:ChatTurnView` | oneof; exact ExecutionOwner discriminator, no simultaneous or phantom owner. |
 
+| Record | Numbered fields | Constraints |
+|---|---|---|
 | `TextRunSegment` | `1 runId:Id`; `2 from:uint32`; `3 until:uint32` | Half-open UTF16 offsets into RichText.text, stable owner run identity; only the empty text run may have zero length. |
 | `TableCell` | `1 cellId:Id`; `2 content:RichText` | Stable identity survives neighboring row/column edits; same rectangular column count per row. |
 
+| Record | Numbered fields | Constraints |
+|---|---|---|
 | `KnowledgePolicy` | `1 searchable:bool`; `2 cloudIndexAllowed:bool`; `3 aiRetrievalAllowed:bool`; `4 managedAiProcessingAllowed:bool` | Four independent effective permissions; sync consent is separate. Explicit selection never implies an override. |
 | `KnowledgePolicyPatch` | `1 searchable:bool?`; `2 cloudIndexAllowed:bool?`; `3 aiRetrievalAllowed:bool?`; `4 managedAiProcessingAllowed:bool?` | Absent inherits; present is explicit override. Temporary source consent permits only fields3/4, never index enrollment or discoverability. Governing deny always wins. |
 | `SourcePolicyView` | `1 target:AggregateRef`; `2 revision:Revision`; `3 local:KnowledgePolicyPatch`; `4 effective:KnowledgePolicy`; `5 governingDenials:Key[]`; `6 inheritedFrom:AggregateRef?` | Current owner-filtered policy; revision0 means no explicit target override. No permission or content existence leaked to unauthorized callers. |
 
-| `SandboxBufferDescriptor` | `1 version:uint32`; `2 invocationId:Id`; `3 leaseId:Id`; `4 generation:uint64`; `5 slotId:uint32`; `6 sequence:uint64`; `7 frameId:uint64`; `8 kind:uint32`; `9 format:uint32`; `10 fullWidth:uint32`; `11 fullHeight:uint32`; `12 tileX:uint32`; `13 tileY:uint32`; `14 tileWidth:uint32`; `15 tileHeight:uint32`; `16 sampleStart:uint64`; `17 sampleCount:uint64`; `18 offset:uint64`; `19 length:uint64`; `20 rowStride:uint64`; `21 sha256:Hash` | Internal sandbox.buffer.v1; exact native format keys and leased-slot transition rules from native annex06. No pointer, raw OS handle, path or caller-minted slot. |
+| Record | Numbered fields | Constraints |
+|---|---|---|
+| `SandboxBufferDescriptor` | `1 version:uint32`; `2 invocationId:Id`; `3 leaseId:Id`; `4 generation:uint64`; `5 slotId:uint32`; `6 sequence:uint64`; `7 frameId:Id?`; `8 kind:uint32`; `9 format:uint32`; `10 fullWidth:uint32`; `11 fullHeight:uint32`; `12 tileX:uint32`; `13 tileY:uint32`; `14 tileWidth:uint32`; `15 tileHeight:uint32`; `16 sampleStart:uint64`; `17 sampleCount:uint64`; `18 offset:uint64`; `19 length:uint64`; `20 rowStride:uint64`; `21 sha256:Hash` | Internal sandbox.buffer.v1 seal on ContentSandboxService; frameId is the matching media RPC frame ID (absent for image/PDF); other tiles are bound to their request and slot grant; exact native format keys and leased-slot transition rules from native annex06. No pointer, raw OS handle, path or caller-minted slot. |
 | `SandboxBufferAck` | `1 invocationId:Id`; `2 leaseId:Id`; `3 generation:uint64`; `4 slotId:uint32`; `5 sequence:uint64`; `6 digest:Hash` | Release only the consumed matching slot generation/sequence; duplicate identical ack harmless, stale/different ack refuses. |
+
+| Record | Numbered fields | Constraints |
+|---|---|---|
+| `LocalCallContext` | `1 actor:ActorChain?`; `2 scope:AggregateRef[]`; `3 invocationId:Id?`; `4 approvalId:Id?`; `5 leaseId:Id?`; `6 executionOwner:ExecutionOwner?` | Local proto metadata, <=4KiB and32 scope roots; infrastructure may omit actor, product business calls may not. IDs are references to validated owner evidence, never bearer grants; binding and forwarding rules in local09. |
+| `EndpointManifest` | `1 schemaVersion:Key`; `2 appId:Key`; `3 installationId:Id`; `4 instanceId:Id`; `5 processId:uint64`; `6 processStartedAt:Instant`; `7 endpoint:LocalEndpoint`; `8 buildHash:Hash`; `9 contractSetHash:Hash`; `10 contractMajors:uint32[]` | local.endpoint.v1; discovery hint only, <=16KiB, OS/start/build verification required. |
+| `LocalHint` | `1 sequence:uint64`; `2 kind:Key`; `3 instanceId:Id`; `4 resourceId:Id?`; `5 jobId:Id?` | kind=contextChanged/resourceChanged/capabilitiesChanged/healthChanged/jobChanged; required target matches kind; IDs only. |
+| `SandboxLimits` | `1 maxInputBytes:uint64`; `2 maxMemoryBytes:uint64`; `3 maxOutputBytes:uint64`; `4 maxWidth:uint32`; `5 maxHeight:uint32`; `6 maxItems:uint32`; `7 timeoutMs:uint32` | Positive and <=native06/launch hard limits; no budget expansion. |
+| `SandboxInput` | `1 invocationId:Id`; `2 generation:uint64`; `3 inputId:Id`; `4 length:uint64`; `5 sha256:Hash` | Must exactly match read-only resource in launch inventory; no path or handle number. |
+| `SandboxSlotGrant` | `1 slotId:uint32`; `2 sequence:uint64`; `3 capacity:uint64` | Slot0..2; positive monotonic sequence, capacity<=64MiB and allocated slot capacity. |
+| `SandboxSession` | `1 sessionId:Id`; `2 invocationId:Id`; `3 leaseId:Id`; `4 generation:uint64`; `5 expiresAt:Instant`; `6 input:SandboxInput`; `7 limits:SandboxLimits` | One launch/input/parent connection;30second lease renewed10seconds. |
+| `SandboxStreamInfo` | `1 index:uint32`; `2 kind:uint32`; `3 codecName:Name`; `4 timeBase:Rational`; `5 startPts:sint64?`; `6 durationPts:sint64?`; `7 frameRate:Rational?`; `8 width:uint32?`; `9 height:uint32?`; `10 sampleRate:uint32?`; `11 channels:uint32?`; `12 channelLayout:Key?`; `13 colourPrimaries:Key?`; `14 transfer:Key?`; `15 matrix:Key?`; `16 range:Key?`; `17 rotation:uint32?`; `18 tags:SandboxTag[]` | Native06 stream keys/time profile; bounded metadata, no untrusted path. |
+| `SandboxTag` | `1 key:Key`; `2 value:string` | <=128tags, value<=4096UTF8bytes, untrusted inert metadata. |
+| `SandboxMediaInfo` | `1 streams:SandboxStreamInfo[]`; `2 warnings:ReasonCode[]` | <=64streams, <=256KiB; native.metadata.v1 parsed into typed fields inside helper. |
+| `SandboxFrame` | `1 frameId:Id`; `2 sequence:uint64`; `3 pts:sint64`; `4 duration:sint64`; `5 timeBase:Rational`; `6 kind:uint32`; `7 format:uint32`; `8 width:uint32`; `9 height:uint32`; `10 sampleRate:uint32`; `11 channels:uint32`; `12 sampleCount:uint64`; `13 byteLength:uint64`; `14 flags:uint32` | Native06 exact frame keys, random RPC ID mapped to helper-local handle; invalidated on seek/session death. |
+| `SandboxReadResult` | `1 frame:SandboxFrame`; `2 eof:bool` | oneof frame/eof; eof must be true; command receipt preserves consuming read result. |
+| `SandboxRegion` | `1 x:uint32`; `2 y:uint32`; `3 width:uint32`; `4 height:uint32`; `5 firstSample:uint64`; `6 sampleCount:uint64`; `7 rowStride:uint64` | Native06 geometry/sample checks, unused video/audio fields zero; positive applicable extent. |
+| `SandboxImageChannel` | `1 name:Name`; `2 sampleType:Key` | Closed sample type uint8/int8/uint16/int16/uint32/int32/uint64/int64/half/float/double; unsupported explicit, no silent conversion. |
+| `SandboxImageInfo` | `1 width:uint32`; `2 height:uint32`; `3 subimageCount:uint32`; `4 mipCount:uint32`; `5 channels:SandboxImageChannel[]`; `6 tags:SandboxTag[]`; `7 warnings:ReasonCode[]` | Native06 pixel-count/dimension/metadata limits, <=64channels. |
+| `SandboxPdfPage` | `1 pageIndex:uint32`; `2 rotation:uint32`; `3 widthPoints:double`; `4 heightPoints:double` | Finite positive points; rotation0/90/180/270. |
+| `SandboxTextBox` | `1 start:uint32`; `2 length:uint32`; `3 x:double`; `4 y:double`; `5 width:double`; `6 height:double` | UTF16 offsets relative to full page text; finite geometry, checked bounds. |
+| `SandboxPdfText` | `1 pageIndex:uint32`; `2 start:uint32`; `3 next:uint32?`; `4 text:string`; `5 boxes:SandboxTextBox[]` | <=64KiB encoded response, explicit next position, no surrogate split; <=1024boxes per page chunk. |
+| `SandboxOutput` | `1 outputId:Id`; `2 length:uint64`; `3 sha256:Hash`; `4 fidelity:OtioFidelityReport` | Immutable bounded helper output; lifetime <=session; length <=admitted maxOutputBytes. |
 
 ## 5. Public business operation registry
 
@@ -595,6 +629,8 @@ Resource upload status is owner-authorized Q/R1/AO; renewal is NI/R1/FR transpor
 
 
 
+| Operation ID | Generated method | Request additions | Success additions |
+|---|---|---|---|
 | `identity.completeEnrollment` | `IdentityService.CompleteEnrollment` | `10 flowId:Id`; `11 proof:EnrollmentProof`; `12 credential:CredentialReplacement?`; `13 profile:ProfileUpdate` | `10 session:NativeSession` |
 | `device.getCapabilities` | `DeviceService.GetCapabilities` | `10 deviceId:Id`; `11 page:PageRequest` | `10 capabilities:DeviceCapabilityView[]`; `11 page:PageState` |
 | `source.createConsent` | `SourceService.CreateConsent` | `10 consentId:Id`; `11 scope:SourceConsentSpec` | `10 consent:SourceConsentRef` |
@@ -618,6 +654,8 @@ Resource upload status is owner-authorized Q/R1/AO; renewal is NI/R1/FR transpor
 | `transfer.list` | `TransferService.List` | `10 page:PageRequest` | `10 jobs:TransferJob[]`; `11 page:PageState` |
 | `transfer.cancel` | `TransferService.Cancel` | `10 transferId:Id` | `10 job:TransferJob` |
 
+| Operation ID | Generated method | Request additions | Success additions |
+|---|---|---|---|
 | `connector.listDefinitions` | `ConnectorService.ListDefinitions` | `10 page:PageRequest` | `10 items:ConnectorDefinition[]`; `11 page:PageState` |
 | `connector.listConnections` | `ConnectorService.ListConnections` | `10 page:PageRequest` | `10 items:ConnectorConnection[]`; `11 page:PageState` |
 | `connector.beginConnection` | `ConnectorService.BeginConnection` | `10 connectionId:Id`; `11 definitionId:Key`; `12 name:Name` | `10 challenge:ConnectorChallenge` |
@@ -625,6 +663,8 @@ Resource upload status is owner-authorized Q/R1/AO; renewal is NI/R1/FR transpor
 | `connector.getConnection` | `ConnectorService.GetConnection` | `10 connectionId:Id` | `10 connection:ConnectorConnection` |
 | `connector.revokeConnection` | `ConnectorService.RevokeConnection` | `10 connectionId:Id` | `10 connection:ConnectorConnection` |
 
+| Operation ID | Generated method | Request additions | Success additions |
+|---|---|---|---|
 | `source.getPolicy` | `SourceService.GetPolicy` | `10 target:AggregateRef` | `10 policy:SourcePolicyView` |
 | `source.setPolicy` | `SourceService.SetPolicy` | `10 target:AggregateRef`; `11 patch:KnowledgePolicyPatch` | `10 policy:SourcePolicyView` |
 | `source.clearPolicy` | `SourceService.ClearPolicy` | `10 target:AggregateRef` | `10 policy:SourcePolicyView` |
@@ -729,13 +769,56 @@ Existing catalogue02 authorization and expected revision rules apply. C# Async s
 | `IExtensionHost.Stop` | `ExtensionHostService.Stop` | `10 leaseId:Id`; `11 reason:Key` | `10 receipt:Receipt` |
 | `IResourceAccess.ReadChunk` | `ResourceAccessService.ReadChunk` | `10 transferId:Id`; `11 offset:UInt64`; `12 length:UInt64` | `10 chunk:LocalChunk` |
 | `IProductLifecycle.GetJob` | `ProductLifecycleService.GetJob` | `10 jobId:Id` | `10 job:ProductJobRef` |
-| `ILocalBootstrap.Challenge` | `LocalBootstrapService.Challenge` | `10 instanceId:Id`; `11 challenge:Bytes` | `10 challengeId:Id`; `11 serverChallenge:Bytes`; `12 expiresAt:Instant` |
+| `ILocalBootstrap.Challenge` | `LocalBootstrapService.Challenge` | `10 instanceId:Id`; `11 challenge:Bytes`; `12 caller:EndpointManifest` | `10 challengeId:Id`; `11 serverChallenge:Bytes`; `12 expiresAt:Instant`; `13 server:EndpointManifest` |
 | `ILocalBootstrap.Confirm` | `LocalBootstrapService.Confirm` | `10 challengeId:Id`; `11 proof:Bytes` | `10 peerNonce:Bytes`; `11 expiresAt:Instant` |
 
 INotesOperations.Export returns ArtifactRef(jobId) for the Cloud export accepted-snapshot workflow, not immediate local bytes. All local Notes structural operations use expectedLocal composite tokens; moveDocument additionally supplies source/destination notebook local tokens (same positions as the Cloud revision fields, local message types differ). Raw captures/media never enter ContextContribution. StartRender/RunAnalysis/Export return durable ProductJob/artifact handles before long work. Local operation names preserve their existing risk/idempotency class: declaring them unary does not make a non-idempotent effect safe to retry.
 
+| Operation ID | Generated method | Request additions | Success additions |
+|---|---|---|---|
 | `IDeviceSsoBroker.GetEligibleAccounts` | `DeviceSsoBrokerService.GetEligibleAccounts` | `10 target:InstallationClaim` | `10 accounts:DeviceSsoAccount[]` |
 | `IDeviceSsoBroker.SignChallenge` | `DeviceSsoBrokerService.SignChallenge` | `10 challenge:DeviceSsoChallenge` | `10 deviceSignature:Bytes` |
+
+### Local transport, broker and parser completion
+
+The [local profile09](09-local-grpc-and-sandbox.md) fixes authentication, roles, lifetime, method classification and bounds. Requests use meta1 and reserved2–9; fields below start10. Platform records/services publish in .LocalRpc.Platform; Sandbox-prefixed records and ContentSandboxService in .LocalRpc.Sandbox.
+
+| Stable interface.method | Proto service.method | Request fields (meta at1) | Success value fields |
+|---|---|---|---|
+| `ILocalBootstrap.Renew` | `LocalBootstrapService.Renew` | — | `10 expiresAt:Instant` |
+| `ILocalEvents.Poll` | `LocalEventsService.Poll` | `10 cursor:Cursor?`; `11 limit:uint32?` | `10 events:LocalHint[]`; `11 cursor:Cursor`; `12 resetRequired:bool` |
+| `IConnectorBroker.ListDefinitions` | `ConnectorBrokerService.ListDefinitions` | `10 page:PageRequest` | `10 items:ConnectorDefinition[]`; `11 page:PageState` |
+| `IConnectorBroker.ListConnections` | `ConnectorBrokerService.ListConnections` | `10 page:PageRequest` | `10 items:ConnectorConnection[]`; `11 page:PageState` |
+| `IConnectorBroker.BeginConnection` | `ConnectorBrokerService.BeginConnection` | `10 connectionId:Id`; `11 definitionId:Key`; `12 name:Name` | `10 challenge:ConnectorChallenge` |
+| `IConnectorBroker.CompleteConnection` | `ConnectorBrokerService.CompleteConnection` | `10 flowId:Id`; `11 proof:ConnectorProof` | `10 connection:ConnectorConnection` |
+| `IConnectorBroker.GetConnection` | `ConnectorBrokerService.GetConnection` | `10 connectionId:Id` | `10 connection:ConnectorConnection` |
+| `IConnectorBroker.RevokeConnection` | `ConnectorBrokerService.RevokeConnection` | `10 connectionId:Id` | `10 connection:ConnectorConnection` |
+| `IContentSandbox.OpenSession` | `ContentSandboxService.OpenSession` | `10 input:SandboxInput`; `11 limits:SandboxLimits` | `10 session:SandboxSession` |
+| `IContentSandbox.RenewSession` | `ContentSandboxService.RenewSession` | `10 sessionId:Id` | `10 expiresAt:Instant` |
+| `IContentSandbox.GrantSlot` | `ContentSandboxService.GrantSlot` | `10 sessionId:Id`; `11 grant:SandboxSlotGrant` | `10 receipt:Receipt` |
+| `IContentSandbox.AckBuffer` | `ContentSandboxService.AckBuffer` | `10 sessionId:Id`; `11 ack:SandboxBufferAck` | `10 receipt:Receipt` |
+| `IContentSandbox.ProbeMedia` | `ContentSandboxService.ProbeMedia` | `10 sessionId:Id` | `10 info:SandboxMediaInfo` |
+| `IContentSandbox.OpenMediaReader` | `ContentSandboxService.OpenMediaReader` | `10 sessionId:Id`; `11 readerId:Id`; `12 streamIndex:uint32`; `13 outputFormat:uint32` | `10 readerId:Id` |
+| `IContentSandbox.ReadMediaFrame` | `ContentSandboxService.ReadMediaFrame` | `10 sessionId:Id`; `11 readerId:Id`; `12 expectedSequence:uint64` | `10 result:SandboxReadResult` |
+| `IContentSandbox.SeekMedia` | `ContentSandboxService.SeekMedia` | `10 sessionId:Id`; `11 readerId:Id`; `12 time:MediaTime`; `13 expectedSequence:uint64` | `10 receipt:Receipt`; `11 nextSequence:uint64` |
+| `IContentSandbox.CopyVideoFrame` | `ContentSandboxService.CopyVideoFrame` | `10 sessionId:Id`; `11 frameId:Id`; `12 region:SandboxRegion`; `13 grant:SandboxSlotGrant` | `10 buffer:SandboxBufferDescriptor` |
+| `IContentSandbox.CopyAudioFrame` | `ContentSandboxService.CopyAudioFrame` | `10 sessionId:Id`; `11 frameId:Id`; `12 region:SandboxRegion`; `13 grant:SandboxSlotGrant` | `10 buffer:SandboxBufferDescriptor` |
+| `IContentSandbox.CloseFrame` | `ContentSandboxService.CloseFrame` | `10 sessionId:Id`; `11 frameId:Id` | `10 receipt:Receipt` |
+| `IContentSandbox.CloseReader` | `ContentSandboxService.CloseReader` | `10 sessionId:Id`; `11 readerId:Id` | `10 receipt:Receipt` |
+| `IContentSandbox.OpenImage` | `ContentSandboxService.OpenImage` | `10 sessionId:Id`; `11 imageId:Id`; `12 subimage:uint32`; `13 mip:uint32`; `14 outputFormat:uint32` | `10 imageId:Id` |
+| `IContentSandbox.GetImageInfo` | `ContentSandboxService.GetImageInfo` | `10 sessionId:Id`; `11 imageId:Id` | `10 info:SandboxImageInfo` |
+| `IContentSandbox.ReadImageTile` | `ContentSandboxService.ReadImageTile` | `10 sessionId:Id`; `11 imageId:Id`; `12 region:SandboxRegion`; `13 grant:SandboxSlotGrant` | `10 buffer:SandboxBufferDescriptor` |
+| `IContentSandbox.CloseImage` | `ContentSandboxService.CloseImage` | `10 sessionId:Id`; `11 imageId:Id` | `10 receipt:Receipt` |
+| `IContentSandbox.OpenPdf` | `ContentSandboxService.OpenPdf` | `10 sessionId:Id`; `11 documentId:Id` | `10 documentId:Id`; `11 pageCount:uint32` |
+| `IContentSandbox.GetPdfPage` | `ContentSandboxService.GetPdfPage` | `10 sessionId:Id`; `11 documentId:Id`; `12 pageIndex:uint32` | `10 page:SandboxPdfPage` |
+| `IContentSandbox.ExtractPdfText` | `ContentSandboxService.ExtractPdfText` | `10 sessionId:Id`; `11 documentId:Id`; `12 pageIndex:uint32`; `13 start:uint32` | `10 text:SandboxPdfText` |
+| `IContentSandbox.RenderPdfTile` | `ContentSandboxService.RenderPdfTile` | `10 sessionId:Id`; `11 documentId:Id`; `12 page:SandboxPdfPage`; `13 region:SandboxRegion`; `14 grant:SandboxSlotGrant`; `15 fullWidth:uint32`; `16 fullHeight:uint32` | `10 buffer:SandboxBufferDescriptor` |
+| `IContentSandbox.ClosePdf` | `ContentSandboxService.ClosePdf` | `10 sessionId:Id`; `11 documentId:Id` | `10 receipt:Receipt` |
+| `IContentSandbox.ReadOtio` | `ContentSandboxService.ReadOtio` | `10 sessionId:Id`; `11 outputId:Id` | `10 output:SandboxOutput` |
+| `IContentSandbox.WriteOtio` | `ContentSandboxService.WriteOtio` | `10 sessionId:Id`; `11 outputId:Id` | `10 output:SandboxOutput` |
+| `IContentSandbox.OtioReadChunk` | `ContentSandboxService.OtioReadChunk` | `10 sessionId:Id`; `11 outputId:Id`; `12 offset:uint64`; `13 length:uint32` | `10 chunk:LocalChunk` |
+| `IContentSandbox.CancelSession` | `ContentSandboxService.CancelSession` | `10 sessionId:Id` | `10 receipt:Receipt` |
+| `IContentSandbox.CloseSession` | `ContentSandboxService.CloseSession` | `10 sessionId:Id` | `10 receipt:Receipt` |
 
 ## 7. Event and exception registries
 
@@ -768,7 +851,19 @@ EventService.Poll request meta1 plus10 subscriptionKey:Key,11 cursor:Cursor?,12 
 | resource.uploadChunk | PUT /objects/v1/{ticketId}/parts/{partNumber} | Bytes + PartReceipt; bounded and authenticated per contracts05 |
 | task.readStream | GET /ai/v1/tasks/{taskId}/stream | Precise bounded StreamRead in contracts05; C# Task.get remains business authority |
 | MCP/device protocols | Standard MCP/device transport at declared owner adapter | Generated capability projection; no new first-party wire authority |
-| content helper/macOS XPC and C ABI | Isolation/native authorities | Typed bounded private control; no forced gRPC/pointer serialization |
+| Same-process C ABI and OS resource provisioning | Native06 and local09 §4 | Direct ABI and finite OS handle handoff only; all first-party helper application/control RPC uses proto/gRPC |
+
+### Android push provider payload
+
+`push.v1` is the closed data-only FCM HTTP v1 payload. Every data value is a string: `v="push.v1"`, `kind` in approvalRaised/securityEvent/notificationRaised, `workspaceId`, `notificationId`, optional `taskId`, optional `approvalId`, and `route` in approval/security/notification. IDs use canonical UUID strings. approvalRaised requires approvalId and taskId; other kinds omit approvalId. Route must match kind. No server text/title, body, credential, cursor or arbitrary URL; no FCM notification block. Total serialized message<=4KiB. Scope is one registered Android installation, never a topic or a workspace-wide credential.
+
+Priority HIGH only for approvalRaised/securityEvent, NORMAL otherwise. TTL is remaining time to min(notification.createdAt+15minutes, approval.expiresAt when applicable); discard expired/resolved/revoked or wrong-generation intent before send. Android displays generic bundled local text immediately for permitted HIGH messages, keyed by notificationId; detail fetch/route execution requires current account/scope and authoritative read. Permission denial or missing GMS reports background push unavailable; foreground/reconnect polling is the recovery path, not a guaranteed background schedule. Ordinary replies/progress do not generate push. No delivery result approves or resolves anything.
+
+Notification's `IPushSender` uses typed HTTP v1 and a least-privilege project-bound service-account SecretRef to obtain short-lived OAuth access credentials; keys/tokens are never in config, artifacts or telemetry. Enqueue one delivery intent per(notificationId, registrationId, registrationRevision, recoveryGeneration) in the transaction that persists the durable notification. External I/O occurs only after commit and fresh device/registration/policy checks. A send accepted by FCM is providerAccepted, not delivered. Lost replies may resend within TTL and can duplicate physical delivery; the client replaces the same notification identity and rereads owner state. Final receipts and attempts use the durable delivery table defined in data-model01, with fencing for competing workers.
+
+Confirmed FCM UNREGISTERED or a token-specific FcmError INVALID_ARGUMENT on an otherwise valid payload retires only the exact sent registration revision/hash/generation; never delete a replacement token. Generic404, malformed payload, project/credential mismatch and other INVALID_ARGUMENT are adapter/config failures and retain registrations. UNAVAILABLE/INTERNAL use exponential backoff with jitter starting1second and capped60seconds, honoring longer Retry-After; quota exhaustion starts at least60seconds and respects provider retry-after. Stop at TTL; persistent configuration failures alert and await repair, never spin. Token rotation creates a new revision and supersedes pending old-revision intents. In the same registration transaction, enqueue the still-authorized unresolved notifications within their original TTL for the new revision using the same unique-intent key; do not extend expiry or resurrect resolved attention. Revoked devices invalidate all pending deliveries. Delivery state is not durable notification state.
+
+WP45.09 owns sending; WP31/32 consume the profile and PG24 requires a physical Android receipt, revoked/rotated token cases and explicit non-GMS/denied-permission behavior. See [FCM error classification](https://firebase.google.com/docs/cloud-messaging/error-codes) and [Android priority](https://firebase.google.com/docs/cloud-messaging/android-message-priority). These provider mechanics are distinct from ArcForges' application choices above.
 
 ## 8. Transport and generation acceptance
 
@@ -776,7 +871,7 @@ C# uses Grpc.Tools 2.83.0, Google.Protobuf 3.36.1, Grpc.AspNetCore/Grpc.Net.Clie
 
 Browser unary gRPC-Web uses the generated descriptors and Connect transport above. Wire fixtures exercise binary application/grpc-web+proto, five-byte data-frame headers and terminal status trailers: reject oversized/truncated frames, invalid unary message counts and nonzero grpc-status; HTTP success alone is not RPC success. Request/response max 4 MiB; list/event bodies remain <=256 KiB. Timeout/cancellation never proves an external effect absent. Android uses generated Java/Kotlin-lite messages and coroutine native-gRPC stubs over grpc-okhttp as defined in [Mobile serialization](../11-mobile-architecture.md#4-generated-serialization-and-clients). The same descriptor and cross-language fixtures are generated by WP03, with actual browser and signed Android release consumers against the C# AOT host in WP06/23/30. Mobile has no TS/Hermes or gRPC-Web runtime.
 
-Native Cloud TLS HTTP/2 endpoint is /arcforges.<domain>.v1.<Service>/<Method>; same-origin browser /rpc routing preserves that gRPC path. Local Kestrel listens HTTP/2 over Named Pipe/UDS, Grpc.Net.Client uses ConnectCallback; no public TCP listener or local TLS required inside authenticated OS IPC. Each process exposes its own server, starts it before Hub registration and rebuilds channels after peer restart. OS peer PID/user/code signature, private directory ACL and nonce challenge establish identity; registration lease then grants only its declared peer scope.
+Native Cloud TLS HTTP/2 endpoint is /arcforges.<domain>.v1.<Service>/<Method>; same-origin browser /rpc routing preserves that gRPC path. The [complete local profile09](09-local-grpc-and-sandbox.md) governs all first-party local control. Local Kestrel listens HTTP/2 over Named Pipe/UDS, Grpc.Net.Client uses ConnectCallback; no public TCP listener or local TLS required inside authenticated OS IPC. Each ordinary product exposes its own server, starts it before Hub registration and rebuilds channels after peer restart. OS peer PID/user/code signature, private directory ACL and nonce challenge establish identity; registration lease then grants only its declared peer scope.
 
 Default unary deadline10s (owner-approved synchronous measurement max 30s), concurrency16 per peer/session, queue 64, local message max 4 MiB; return typed busy/resource limit before dispatch when full. Large results use ResourceRef/handle, not larger arbitrary frames. Named pipe current-user ACL/asynchronous; UDS directory0700/socket0600, path<=100 UTF-8 bytes; nonce bootstrap uses OS-verified peer with short-lived32-byte credential held only in memory, lease30s/renew10s. Hub absence does not prevent a professional product starting or synchronizing directly to Cloud. Resource affinity and existing resolution order remain unchanged.
 
@@ -825,7 +920,7 @@ Notes owner sync validators apply the frozen property semantic-revision, option-
 
 Support access consent is IW/R2/FR, restricted to the case's current workspace owner, exact proposal hash and unexpired requested resource scope. Consent records permission for that scope only; operator access still needs its separate role/approval. Case category/action reference cannot select an arbitrary privileged operation. GetCase and support list results paginate messages before byte limits.
 
-Local bootstrap authenticates both OS peers before any credential exchange. Challenge returns a fresh server challenge bound to both connection identities; Confirm echoes that challenge as proof of channel possession, returns a random per-peer nonce, and consumes the challenge once (five seconds). It is not a cryptographic substitute for OS identity. Send the nonce only in local gRPC metadata x-af-peer on later calls, bind it to peer identity/lease and invalidate at disconnect/expiry. No credential is stored in a manifest. Local reads authorize each <=64 KiB chunk and checked offset; same transfer/offset repeats return identical immutable bytes. GetJob is Q/R1/AO on an owned ProductJob.
+Local bootstrap, the exact SHA256/HMAC transcript, connection-bound nonce, renewal and proto call-context metadata follow [local09 §§2–4](09-local-grpc-and-sandbox.md#2-discovery-peer-verification-and-bootstrap). Confirm does not echo a raw challenge. Subsequent calls use x-af-peer-bin, x-af-instance-bin, x-af-contract-set and x-af-call-bin as defined there; no credential is stored in a manifest. Local reads authorize each <=64KiB chunk and checked offset; the same transfer/offset repeats return identical immutable bytes. GetJob is Q/R1/AO on an owned ProductJob.
 
 EventService.Poll itself establishes one of the four existing subscription scopes; no Subscribe RPC or negotiation route. With absent cursor it returns an empty page and signed current cursor with resetRequired=true; client performs its authoritative snapshot before continuing. PostgreSQL holds bounded non-authoritative hint envelopes per subscription (24-hour TTL, latest10,000 events). Publishing advances a row-locked per-subscription sequence with the inserted hint; missing/expired intervals or a changed auth epoch produce resetRequired, never a successful incomplete page. A positive empty poll advances only to the observed committed head. Every call rechecks scope/owner/device, and byte-limit paging returns the last delivered cursor. Loss of the entire hint store still converges through the established authoritative reads.
 
@@ -873,7 +968,7 @@ task.get returns at most100 detail entries and detailPage; getDetails pages the 
 
 ## Initial capability binding and added owner rules
 
-The initial first-party catalogue is mechanically complete: one CapabilityDescriptor for every method in section6 on INotesOperations, IScopeOperations, ISlateOperations and IChatOperations, plus each declared Cloud tool in the public catalogue. Its stable capability ID is the exact stable operation ID; binding.protocol is localGrpc/publicGrpc, service/method/request/result descriptor and hash are those of that row. Owner product is the service owner. Other Hub/security/resource protocol methods are infrastructure ports, not model-callable tools. Dynamic extension invocation remains extension-only.
+The initial first-party catalogue is mechanically complete: one CapabilityDescriptor for each tool-eligible method in section6 on INotesOperations, IScopeOperations, ISlateOperations and IChatOperations, plus each declared Cloud tool in the public catalogue. Human-only approval, consent, credentials, commerce and policy decisions under catalogue00 AZ-04 are excluded, including IChatOperations.SubmitApproval; exclusion is verified, not left to a caller UI. Its stable capability ID is the exact stable operation ID; binding.protocol is localGrpc/publicGrpc, service/method/request/result descriptor and hash are those of that row. Owner product is the service owner. Other Hub/security/resource protocol methods are infrastructure ports, not model-callable tools. Dynamic extension invocation remains extension-only.
 
 Read/status/list/describe/preview operations have pureRead, risk R1 and no mutation approval, except the explicit source-egress/credential cases. Mutations keep the per-operation catalogue risk/approval and exact revision, localWrite for product owner storage, cloudWrite for Cloud storage, externalWrite for physical/provider dispatch. ProductJobs have cooperative cancellation and owner status reconciliation; unknown physical/provider effects have RetryMode.reconcile. Output kinds/context selectors are the typed response/request records, not inferred from English names at runtime. Every descriptor includes explicit timeout/size/parallel bounds from its operation profile; the default is30seconds,256KiB arguments/results and4parallel pure reads,1mutation per target owner. Long work must return a ProductJob and poll; no30second forced retry of physical effect. A producer test enumerates all registered first-party methods against these descriptors and fails missing/extra bindings.
 

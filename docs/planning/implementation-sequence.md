@@ -51,11 +51,11 @@ This document states the dependency model that produces the work-package sequenc
 
 ## 2. Phase structure
 
-The sequence is one continuous numbered series. Phases are a reading aid, not a gate structure — the gates are per work package.
+The sequence is one continuous numbered series. Phases group ownership for reading; they are not the serial schedule. Each package belongs to exactly one phase. The executable serial order is in §9. WP47 may start after00/02 and must precede45; WP53 executes after45 and before46.
 
 | Phase | Work packages | What becomes true at the end |
 |---|---|---|
-| **A — Freeze and foundation** | 00 – 07 | Terminology, licence position and layout are settled; the build enforces the architecture; AOT is proven; contracts, serialization and persistence primitives exist |
+| **A — Freeze and foundation** | 00 – 07, 47 | Terminology, licence position and layout are settled; the build enforces the architecture; AOT is proven; contracts, serialization and persistence primitives exist |
 | **B — Shared platform** | 08 – 13 | Local IPC, capability/resource model, desktop shell, security, observability and complete functional native producers with technical probes |
 | **C — First real slice** | 14 – 17 | Two real processes talk; ArcChat has a domain, an execution engine and an independent core |
 | **D — ArcNotes core** | 18 – 20 | ArcNotes native editor/recovery and non-agent cross-product commands work; acknowledged Cloud authority and real exports arrive in E, AI workflow in J |
@@ -64,12 +64,12 @@ The sequence is one continuous numbered series. Phases are a reading aid, not a 
 | **G — Kotlin Android foundation** | 30 | Early mobile contracts, Apache boundary and platform architecture; the real Android closed loop is delivered after the Harness in J |
 | **H — ArcScope desktop** | 33 – 35 | Real acquisition, replay, analysis and metadata integration; the real Cloud simulator follows paid-term/quota/policy prerequisites in J |
 | **I — ArcSlate** | 36 – 39 | Timeline, runtime, render and integration |
-| **J — Platform and client integration** | 41, 42, 44, 43, 40, 47, 45, 46, 48, 51, 52, 31, 32, 49 | Commercial/policy kernel, real provider metering and Cloud retrieval, extensions, operations, simulator, Harness/automation, then real Android Task/stream and signed-device acceptance |
-| **K — Web and release** | 47 – 50 | Public site, account portal, web companion and the full-platform production release |
+| **J — Platform and client integration** | 41, 42, 44, 43, 40, 45, 53, 46, 51, 52, 31, 32 | Commercial/policy kernel, providers/retrieval, extensions, operations, desktop updater, simulator, Harness and actual Android acceptance |
+| **K — Web and release** | 48 – 50 | Account portal, web companion and the full-platform production release |
 
 ---
 
-> **Numbering above `50`.** `00`–`50` were allocated when the sequence was first derived, and a retired identifier is never recycled (`27`, `29`). A package added afterwards therefore takes the next free number while executing at its real dependency position: **`51` and `52` run in Phase J; Android execution acceptance `31`/`32` follows `52`, and all gate `50`.** Where the numeral and the dependency graph disagree, **the dependency graph governs**.
+> **Numbering above `50`.** `00`–`50` were allocated when the sequence was first derived, and a retired identifier is never recycled (`27`, `29`). A package added afterwards therefore takes the next free number while executing at its real dependency position: **`51`, `52` and `53` run in Phase J; Android execution acceptance `31`/`32` follows `52`, and all gate `50`.** Where the numeral and the dependency graph disagree, **the dependency graph governs**.
 
 ---
 
@@ -95,7 +95,7 @@ The policy in this section is the complete, binding definition for every work pa
 | ArcSlate test media | **Real decoding, audio/video synchronisation and long exports** |
 | Application-port fakes | **The local store journal, crash recovery and migration** |
 | Cloud API stubs and generated-contract MSW UI fixtures | **Real C#/TS generated clients, exact JSON values, browser sessions, serialization and realtime compatibility tests** |
-| Capability test providers | **Real named pipes and domain sockets, generated proxies and the binary formatter** |
+| Capability test providers | **Real named pipes/UDS, authored proto and generated native-gRPC clients/services** |
 
 | # | Rule |
 |---|---|
@@ -117,6 +117,9 @@ Every fixture that stands in for a later capability is listed here with the pack
 | Payment-provider fixture adapter (recorded event fixtures remain regression inputs) | [WP-42.03](work-packages/42-commerce-entitlement-and-credits.md#rule-wp-42.03) | Live adapter/event ingestion | Remove runtime fixture registration at [WP-42.10](work-packages/42-commerce-entitlement-and-credits.md#rule-wp-42.10); retain recorded test cases |
 | Local device test-source substitution | [WP-33.00](work-packages/33-arcscope-acquisition-and-session.md#rule-wp-33.00) | Real hardware acceptance | [WP-33](work-packages/33-arcscope-acquisition-and-session.md#rule-wp-33) hardware-lab gate ([PG-08](../assurance/open-gates-register.md#rule-pg-08)); replay and test sources remain explicitly labelled |
 | No-op media adapter, if used during a unit test | [WP-37.01](work-packages/37-arcslate-playback-and-processing.md#rule-wp-37.01) | Real codec integration | [WP-37](work-packages/37-arcslate-playback-and-processing.md#rule-wp-37)/[WP-38](work-packages/38-arcslate-render-and-colour.md#rule-wp-38) use real decode/export; golden media inputs are retained, never deleted as scaffolding |
+| Test-signed desktop update feed | WP53 | Production feed and real product signing | WP50.02 replaces the test source in release configuration; negative fixtures remain tests |
+| Hostile test parser inside real restricted helper | WP11.09 | Production native parser composition | WP13.13 replaces production fixture registration; malicious regression fixture remains test-only |
+| Recorded FCM sender responses | WP45.09 | Live provider and physical Android receipt | WP45.09 proves live sending; WP32 proves real device receipt under PG24 |
 
 | # | Rule |
 |---|---|
@@ -183,7 +186,7 @@ Every work package states, without exception:
 4. **Projects, directories, files and major types affected**
 5. **Required implementation work** — as numbered sub-steps, each with what must be fully done, its tests, and its own completion gate
 6. **Impacts** — database, protocol, UI, security, platform, migration and compatibility, where applicable
-7. **Tests and verification evidence**
+7. **Tests and verification evidence**, including the .90 owned-artifact and real-integration receipt
 8. **Completion gate**
 9. **Dependencies on earlier and later work packages**
 
@@ -207,7 +210,7 @@ Required design inputs are current formal definitions, accepted decisions, decla
 | ND-02 | **It does not schedule.** No dates, no durations, no capacity assumptions. |
 | ND-03 | **It does not reopen Phase 1 decisions.** Where a package touches a decided area, it implements the decision. |
 | ND-04 | **It does not defer risk to the end.** The four high-risk probes are early, precisely so that ArcSlate does not meet decoding, GPU, synchronisation and AOT problems for the first time at work package 36. |
-| <a id="rule-nd-05"></a>ND-05 | **It does not treat probe code as production code.** Probe conclusions feed the formal steps; probe code is cleaned up or discarded. |
+| <a id="rule-nd-05"></a>ND-05 | **Probe scaffolding does not become production by relabeling.** Probe conclusions feed implementation; scaffolds are cleaned up or discarded. Explicitly assigned functional producer code (WP13.05–13.16) is production code, retained and maintained. |
 
 ---
 
@@ -224,7 +227,7 @@ Required design inputs are current formal definitions, accepted decisions, decla
 
 ## 9. P2-009 complete artifact dependency graph
 
-All 51 active packages retain their domain scope; WP27/29 stay retired. The dependency table below is the current complete directed graph. Header and dependency sections of each package are generated from this same frozen set. Source ownership and immutable inputs are in each package; no cross-repository source dependency is implied.
+All 52 active packages retain their domain scope; WP27/29 stay retired. The dependency table below is the current complete directed graph. Header and dependency sections of each package are generated from this same frozen set. Source ownership and immutable inputs are in each package; no cross-repository source dependency is implied.
 
 | WP | Required upstream |
 |---|---|
@@ -273,14 +276,15 @@ All 51 active packages retain their domain scope; WP27/29 stay retired. The depe
 | 46 | 25, 45 |
 | 51 | 21, 23, 25, 33, 34, 35, 42, 44 |
 | 52 | 15, 17, 20, 21, 23, 26, 39, 40, 41, 42, 43, 44 |
-| 31 | 26, 30, 52 |
+| 31 | 26, 30, 45, 52 |
 | 32 | 31 |
 | 47 | 00, 02 |
 | 48 | 25, 42, 44, 46, 47 |
 | 49 | 26, 48, 52 |
-| 50 | 20, 28, 32, 35, 39, 40, 41, 43, 46, 49, 51, 52 |
+| 50 | 20, 28, 32, 35, 39, 40, 41, 43, 46, 49, 51, 52, 53 |
+| 53 | 02, 06, 07, 10, 11, 12, 44, 45 |
 
-Serial execution: 00, 01, 02, 03, 04, 05, 06, 07, 08, 09, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 28, 30, 33, 34, 35, 36, 37, 38, 39, 41, 42, 44, 43, 40, 47, 45, 46, 48, 51, 52, 31, 32, 49, 50. WP42.11 precedes42.10. Follow the [producer artifact/stage matrix](producer-artifacts-and-integration.md): WP06 proves minimal real transports; WP13 complete functional native packages; WP52 replaces AI fixtures;31/32/49/50 require real product integration. Independent products use a tested manifest, not lockstep versions.
+Serial execution: 00, 01, 02, 03, 04, 05, 06, 07, 08, 09, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 28, 30, 33, 34, 35, 36, 37, 38, 39, 41, 42, 44, 43, 40, 47, 45, 53, 46, 48, 51, 52, 31, 32, 49, 50. WP42.11 precedes42.10. Follow the [producer artifact/stage matrix](producer-artifacts-and-integration.md): WP06 proves minimal real transports; WP13 complete functional native packages; WP52 replaces AI fixtures;31/32/49/50 require real product integration. Independent products use a tested manifest, not lockstep versions.
 
 ## Final review execution bindings
 

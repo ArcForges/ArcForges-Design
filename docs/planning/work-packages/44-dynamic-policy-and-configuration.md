@@ -5,7 +5,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: J — Platform completion
-> Upstream: `23` · `42` · Downstream: `40` · `43` · `45` · `48` · `51` · `52`
+> Upstream: `23` · `42` · Downstream: `40` · `43` · `45` · `48` · `51` · `52` · `53`
 
 > **Goal.** Build the control plane that lets behaviour change without a release — feature flags, deterministic rollout, kill switches, schema-constrained remote configuration and compatibility policy — while keeping compiled hard limits authoritative and remaining safe under Native AOT.
 
@@ -193,6 +193,9 @@
 | Resolution order and explainability results | [WP-44.05](#rule-wp-44.05) |
 | Range-blocking precision and grace-period results | [WP-44.06](#rule-wp-44.06) |
 | Fallback chain, staleness and mid-operation results | [WP-44.07](#rule-wp-44.07) |
+| Owned artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/OS/device/provider, scenario, result, limitations and real-versus-fixture status; inapplicable fields explicitly marked | [WP-44.90](#rule-wp-44.90) |
+
+
 
 ---
 
@@ -217,6 +220,6 @@
 
 ## 9. Dependencies
 
-**Upstream:** `23` · `42`. All stage outputs must be complete.
+**Upstream:** `23` · `42`. Consume completed stage outputs.
 
-**Downstream:** `40` · `43` · `45` · `48` · `51` · `52`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.
+**Downstream:** `40` · `43` · `45` · `48` · `51` · `52` · `53`. Consumers use exact released artifacts.

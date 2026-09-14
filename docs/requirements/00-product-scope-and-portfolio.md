@@ -315,7 +315,7 @@ The following apply with the explicit user amendment P2-006.
 | Web | Static React-generated public HTML/CSS plus one React/TypeScript Account/Chat application; Node.js/npm tooling; proto → C#/TypeScript SDKs | **[P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008)** |
 | Public request/response | Handwritten proto; generated C#/Kotlin native gRPC and TS unary gRPC-Web; same owner errors/revisions | [Wire registry](../architecture/contracts/04-protobuf-wire-registry.md) |
 | Public realtime | gRPC hint polling, real-time delivery only, never the sole durable truth | [Realtime contract](../architecture/contracts/03-realtime-and-bridge.md) |
-| Local IPC | gRPC Interface Code First over Named Pipe / Unix domain socket | [Transport definition](../architecture/03-local-ipc-and-process-model.md#2-authenticated-local-transport) |
+| Local IPC | Handwritten proto + generated native gRPC over Named Pipe / Unix domain socket, including helper control | [Transport definition](../architecture/03-local-ipc-and-process-model.md#2-authenticated-local-transport) |
 | Local wire format | Authored proto with generated language messages and services | [Wire format definition](../architecture/03-local-ipc-and-process-model.md#3-wire-and-flow-control-profile) |
 | Public JSON | `System.Text.Json` source generation, no reflection fallback | [Operation contract](../architecture/contracts/00-operation-catalogue.md) |
 | Native interop | `[LibraryImport]` across a narrow C ABI, in its owning product or the approved C# content helper according to the isolation profile | [Native ABI contract](../architecture/12-native-interop-and-media.md#3-managed-to-native-calling-discipline), [isolation](../architecture/24-content-and-extension-isolation.md) |

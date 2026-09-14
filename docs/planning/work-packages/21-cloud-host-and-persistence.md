@@ -203,6 +203,7 @@
 | Lease takeover, fencing, poison-message dead-letter, no-unbounded-loop and commit-ordered-feed results | [WP-21.05](#rule-wp-21.05) |
 | Configuration secret scan and cross-tenant refusal results | [WP-21.06](#rule-wp-21.06) |
 | Per-dependency degradation and correlation propagation results | [WP-21.07](#rule-wp-21.07) |
+| Owned artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/OS/device/provider, scenario, result, limitations and real-versus-fixture status; inapplicable fields explicitly marked | [WP-21.90](#rule-wp-21.90) |
 
 ---
 
@@ -231,6 +232,6 @@
 
 ## 9. Dependencies
 
-**Upstream:** `03` · `05` · `12`. All stage outputs must be complete.
+**Upstream:** `03` · `05` · `12`. Consume completed stage outputs.
 
-**Downstream:** `22` · `45` · `51` · `52`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.
+**Downstream:** `22` · `45` · `51` · `52`. Consumers use exact released artifacts.

@@ -203,6 +203,8 @@ Add Node/TS import and dependency checks to the existing policy suite: one Web w
 
 ## 7. Tests and verification evidence
 
+Generate an operation-by-actor reachability matrix for every public/local/operator/CF/exception binding under catalogue00 AZ-04, with all seven effective authorization fields and source profile. Fail unclassified/ambiguous fields, nonexistent idempotency examples, public imports of local schema and tool reachability of human-only approval/credential/commerce/policy methods. Include resource/context/connector egress denials and hostile actor-chain cases.
+
 | Evidence | Produced by |
 |---|---|
 | Layering test results with negative fixtures | [WP-05.00](#rule-wp-05.00) |
@@ -212,6 +214,7 @@ Add Node/TS import and dependency checks to the existing policy suite: one Web w
 | Banned-symbol detection results | [WP-05.04](#rule-wp-05.04) |
 | Invariant enforcement accounting report, **429 of 429** classified from real results | [WP-05.05](#rule-wp-05.05) |
 | Specification integrity report, zero findings | [WP-05.06](#rule-wp-05.06) |
+| Owned artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/OS/device/provider, scenario, result, limitations and real-versus-fixture status; inapplicable fields explicitly marked | [WP-05.90](#rule-wp-05.90) |
 
 ---
 
@@ -235,9 +238,9 @@ Add Node/TS import and dependency checks to the existing policy suite: one Web w
 
 ## 9. Dependencies
 
-**Upstream:** `02` · `03`. All stage outputs must be complete.
+**Upstream:** `02` · `03`. Consume completed stage outputs.
 
-**Downstream:** `06` · `21`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.
+**Downstream:** `06` · `21`. Consumers use exact released artifacts.
 
 ## Current source baseline and migration input
 

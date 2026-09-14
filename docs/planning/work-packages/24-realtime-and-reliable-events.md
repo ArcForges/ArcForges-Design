@@ -192,6 +192,7 @@
 | Fan-out failure divergence results | [WP-24.04](#rule-wp-24.04) |
 | Degradation and outage visibility results | [WP-24.05](#rule-wp-24.05) |
 | Published-AOT and React browser client results | [WP-24.06](#rule-wp-24.06) |
+| Owned artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/OS/device/provider, scenario, result, limitations and real-versus-fixture status; inapplicable fields explicitly marked | [WP-24.90](#rule-wp-24.90) |
 
 ---
 
@@ -215,6 +216,6 @@
 
 ## 9. Dependencies
 
-**Upstream:** `23`. All stage outputs must be complete.
+**Upstream:** `23`. Consume completed stage outputs.
 
-**Downstream:** `25` · `26` · `30`. Consumers use the released outputs in the [producer stage matrix](../producer-artifacts-and-integration.md), never adjacent source.
+**Downstream:** `25` · `26` · `30`. Consumers use exact released artifacts.
