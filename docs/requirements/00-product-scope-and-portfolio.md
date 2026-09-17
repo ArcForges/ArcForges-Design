@@ -47,11 +47,11 @@ Official operating values are external deployment configuration, not compiled co
 
 ### 2.1 Frozen desktop portfolio
 
-The Phase 1 product baseline contains **exactly four desktop products** (**[D-002](../decisions/phase-1-foundation-decisions.md#rule-d-002)**).
+The Phase 1 product baseline contains **exactly three professional desktop products** (**[D-002](../decisions/phase-1-foundation-decisions.md#rule-d-002)**).
 
 | Product | Stable product identity | Positioning | Business classification | Roadmap priority |
 |---|---|---|---|---|
-| **ArcChat** | `arcchat` | AI Agent Command Center / Chat / Task / Automation / Local Hub / Remote Control Plane | Coordination & Agent product | Core |
+| **Application Assistant (legacy ArcChat feature IDs)** | `assistant` | Complete reusable chat/task/project/automation UI in DesktopPlatform | Embedded in each professional app; Web/Android companions | Core |
 | **ArcNotes** | `arcnotes` | Cloud-backed Knowledge & Document workspace | Knowledge product | Core |
 | **ArcScope** | `arcscope` | Local-first Observation / Acquisition / Telemetry Analysis authority | Observation & Analysis product | Core |
 | **ArcSlate** | `arcslate` | Local-first Professional Non-linear Video Editing authority | Media Creation product | Second |
@@ -68,7 +68,7 @@ The classification above is *product classification only*. It must not become a 
 | **ArcForges Web** | `web` | Public static site + one interactive React/TypeScript application | Static public pages plus `ArcForges.Web.App` (**[D-007](../decisions/phase-1-foundation-decisions.md#rule-d-007)**). Account and Chat are deployment configurations of one codebase (**[D-014](../decisions/phase-1-foundation-decisions.md#rule-d-014)**). |
 | **ArcChat Mobile** | `arcchat-mobile` | ArcChat continuity/companion surface on Android (iOS outside the current scope) | Apache-2.0 boundary (**[D-004](../decisions/phase-1-foundation-decisions.md#rule-d-004)**); consumption-only (**[D-022](../decisions/phase-1-foundation-decisions.md#rule-d-022)**); Android on Kotlin/Jetpack Compose (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**). |
 
-Mobile and Web are **ArcChat companion surfaces**, not mobile or web editions of the four desktop products. There is no ArcNotes Mobile editor, no ArcScope Mobile editor and no ArcSlate Mobile editor in this baseline. Their absence is a baseline statement, not a permanent prohibition; adding one is an Architecture Baseline Change.
+Mobile and Web are **ArcChat companion surfaces**, not mobile or web editions of the three professional desktop products. There is no ArcNotes Mobile editor, no ArcScope Mobile editor and no ArcSlate Mobile editor in this baseline. Their absence is a baseline statement, not a permanent prohibition; adding one is an Architecture Baseline Change.
 
 ### 2.3 Excluded product names
 
@@ -87,7 +87,7 @@ Consequences that bind every downstream document, schema, contract, identifier, 
 A future fifth first-class product is an **Architecture Baseline Change** requiring a formal decision, not a solution-file addition. Before acceptance it must answer, in writing:
 
 1. What state does it own authoritatively?
-2. Can it perform its core work with ArcChat absent?
+2. Can it perform its core work without another application?
 3. What are its resources and their lifecycle?
 4. What does it synchronise, and under which sync scope?
 5. What capabilities does it expose, at what risk levels?
@@ -95,7 +95,7 @@ A future fifth first-class product is an **Architecture Baseline Change** requir
 7. How does it recover from crash, corruption and interrupted migration?
 8. What native boundary, if any, does it require?
 
-Adding a product must not require modifying `ArcChat.Domain`. ArcChat must recognise a new product through the cross-application capability/contribution contract, never through a compile-time `switch (appId)`.
+Adding a product must not require modifying `ArcForges.Assistant.Core`. ArcChat must recognise a new product through the cross-application capability/contribution contract, never through a compile-time `switch (appId)`.
 
 ---
 
@@ -105,7 +105,7 @@ Adding a product must not require modifying `ArcChat.Domain`. ArcChat must recog
 
 Every product installs and runs without another product. Cloud features can depend on the selected Cloud realm; they must not depend on ArcChat being installed.
 
-| Product | Native responsibility with ArcChat absent or Cloud unavailable |
+| Product | Native responsibility without another application or Cloud unavailable |
 |---|---|
 | ArcNotes | Open authorised cached content; edit and search hydrated notes; durably preserve pending edits and recover after a crash. Initial notebook creation/enrolment and uncached content require Cloud. |
 | ArcScope | Connect a local source, capture, inspect, analyse, save and produce outputs. A Cloud simulation requires Cloud; already downloaded capture data remains usable. |
@@ -118,7 +118,7 @@ The Cloud acknowledgement is authoritative for synchronised revisions. A local d
 
 ### 3.2 Installation combinations
 
-Every subset of the four products is a legal installation, including each product alone. Requirements:
+Every subset of the three professional products is a legal installation, including each product alone. Requirements:
 
 - No installer may refuse to install because another product is absent.
 - No product may require another product to be running in order to save, open, export or recover.
@@ -136,7 +136,7 @@ When ArcChat is absent, user-directed deep links and direct product Cloud access
 
 ---
 
-## 4. Cross-product interaction model
+## 4. same-application interaction model
 
 ### 4.1 Two distinct interaction shapes
 
@@ -186,8 +186,8 @@ Ownership is a product-level requirement before it is an architectural one. The 
 | Agent task orchestration | Cloud Agent module / single Harness |
 | Agent Profile, Skill configuration | Cloud Agent module; clients edit authorised configuration |
 | ArcChat Projects | Cloud Chat module |
-| Local application/instance registry and capability registry | ArcChat Hub |
-| Local approval coordination and local permission coordination | ArcChat Hub |
+| Local application/instance registry and capability registry | application-scoped capability registry |
+| Local approval coordination and local permission coordination | application-scoped capability registry |
 | ArcNotes Documents, Notes, knowledge organisation | Cloud Notes module for acknowledged revisions; ArcNotes for local pending edits and editor state |
 | ArcNotes attachments and document metadata | Cloud Notes module; native clients keep scoped caches and pending upload staging |
 | ArcScope Sessions and Capture state | ArcScope |
@@ -212,7 +212,7 @@ ArcChat must never own:
 - Any professional application's undo stack.
 - A global crash journal on behalf of another product.
 
-The Hub is a **platform coordination plane** only. It must never store professional authoritative objects, proxy professional files or media, become a shared filesystem, become a universal project database, or become a universal undo service.
+The shared Platform is a package producer. Each application composes its own assistant and professional services; no separate coordination process or shared database is installed. Platform must never become a universal professional project/filesystem/undo service. Current Cloud device control acts on one explicit application; cross-product collaboration is future-only.
 
 ### 5.2 Caching does not transfer ownership
 
@@ -237,19 +237,28 @@ Four paths exist and are never conflated (**[D-010](../decisions/phase-1-foundat
 
 ### 6.1 Local capability path
 
-```
-ArcChat (Hub)  ── gRPC over Named Pipe / UDS ──  ArcNotes / ArcScope / ArcSlate
+```text
+ArcNotes + own assistant/store ─┐
+ArcScope + own assistant/store ─┤
+ArcSlate + own assistant/store ─┼─ HTTPS gRPC-Web → Worker → C# Container
+Android / Web companions ───────┘                           ↓
+                                            D1 / DO / Queues / R2
+                                            AI Workflow / Workers AI
+Private parser/extension children: own parent ↔ gRPC Named Pipe/UDS
 ```
 
 Same-machine, first-party, strongly typed semantic capability calls.
 
 ### 6.2 Cloud data path
 
-```
-ArcChat ────┐
-ArcNotes ───┤
-ArcScope ───┼── TLS native gRPC (plus declared standard-protocol exceptions) ──  ArcForges Cloud
-ArcSlate ───┘
+```text
+ArcNotes + own assistant/store ─┐
+ArcScope + own assistant/store ─┤
+ArcSlate + own assistant/store ─┼─ HTTPS gRPC-Web → Worker → C# Container
+Android / Web companions ───────┘                           ↓
+                                            D1 / DO / Queues / R2
+                                            AI Workflow / Workers AI
+Private parser/extension children: own parent ↔ gRPC Named Pipe/UDS
 ```
 
 Each cloud-capable product participates directly in the cloud features of **its own data** — sync participation, upload and download, workspace object state, cloud storage participation. ArcChat is not required to be installed or running.
@@ -260,21 +269,21 @@ Requiring ArcChat in this path would mean "ArcChat crashes → ArcNotes cloud sy
 
 ### 6.3 Remote desktop agent path
 
-```
-ArcChat Mobile / ArcChat Web
-        ↓ HTTPS + realtime
-   ArcForges Cloud
-        ↓ durable ToolRequest, pulled by the desktop
-   ArcChat Desktop  (re-authorises locally)
-        ↓ gRPC capability call
-   ArcNotes / ArcScope / ArcSlate
+```text
+ArcNotes + own assistant/store ─┐
+ArcScope + own assistant/store ─┤
+ArcSlate + own assistant/store ─┼─ HTTPS gRPC-Web → Worker → C# Container
+Android / Web companions ───────┘                           ↓
+                                            D1 / DO / Queues / R2
+                                            AI Workflow / Workers AI
+Private parser/extension children: own parent ↔ gRPC Named Pipe/UDS
 ```
 
 A Cloud task needing first-party desktop capabilities uses ArcChat Desktop for device-side authorisation and IPC. Durable task, approval and trace authority stays in Cloud. Both desktop-originated and companion-originated AI use this same path.
 
 **Cloud never connects to localhost, a Named Pipe, a Unix domain socket or local stdio** (**[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)**). The Cloud issues a durable `ToolRequest`; ArcChat Desktop pulls it, re-authorises it locally, executes the approved capability and returns an idempotent `ToolResult`.
 
-Mobile and Web must never scan the LAN, discover a desktop Hub, or address a Named Pipe or UDS.
+Mobile and Web must never scan the LAN, discover a desktop application runtime, or address a Named Pipe or UDS.
 
 ### 6.4 The cloud response still goes through the owning domain
 
@@ -286,12 +295,12 @@ A cloud sync response must never be written straight into a UI model. It enters 
 
 | # | Requirement | Current definition / implementation |
 |---|---|---|
-| P-01 | Each of the four products is a complete, autonomous operating-system application: `ArcChat`, `ArcNotes`, `ArcScope`, `ArcSlate` as separate executables (platform-appropriate package names). | [Desktop process structure](../architecture/04-desktop-application-architecture.md#1-process-structure) |
+| P-01 | ArcNotes, ArcScope and ArcSlate are complete independent OS applications. Each embeds the shared Platform assistant packages; there is no fourth standalone assistant executable. | [Composition](../architecture/27-platform-projects-and-application-assistants.md) |
 | P-02 | There is **no** hidden central ArcForges desktop service holding product business state, and none may be introduced. | [Architecture constraints](../architecture/00-architecture-overview.md) |
 | P-03 | No professional application is a plug-in UI over an ArcChat universal database. | [Product independence](#3-product-independence-requirements) |
-| P-04 | Exactly one authoritative local coordinator exists: the ArcChat Hub. Products must not each run a competing Hub. | [Hub lifecycle](../architecture/03-local-ipc-and-process-model.md#4-hub-and-registration) |
-| <a id="rule-p-05"></a>P-05 | The ArcChat Hub is hosted inside the ArcChat process lifecycle. It is not installed as a system service (`ArcForgesService.exe` is prohibited). A background/tray mode is permitted and remains part of the ArcChat lifecycle. | [Hub lifecycle](../architecture/03-local-ipc-and-process-model.md#4-hub-and-registration) |
-| <a id="rule-p-06"></a>P-06 | ArcChat may request that another installed product be launched on demand. Once started, that product is an independent runtime instance with its own lifecycle; ArcChat does not own it. | [Product lifecycle operations](../architecture/contracts/02-local-rpc-operations.md#5-resource-access-and-lifecycle) |
+| P-04 | Each application owns its own capability registry, assistant store/service and Cloud connection. No shared desktop coordinator exists. | [Composition](../architecture/27-platform-projects-and-application-assistants.md) |
+| <a id="rule-p-05"></a>P-05 | Assistant windows live inside the owning application lifecycle. No standalone assistant process or system service is required. | [Lifetime](../architecture/27-platform-projects-and-application-assistants.md#3-host-integration-contract) |
+| <a id="rule-p-06"></a>P-06 | Cross-product launch/handoff is future-only. Current assistant navigation opens resources inside its own application; remote operations target an already authorized application through Cloud. | [Future boundary](../future/cross-product-collaboration/README.md) |
 | P-07 | Installed application and runtime instance are permanently distinct. `AppId == ProcessId` is prohibited. A product may have multiple runtime instances. | [Identity definitions](01-normative-glossary-and-invariants.md#1-identity-and-tenancy) |
 | P-08 | Three identities are distinct and all three exist: `ProductId`/`AppId` (stable), `InstallationId` (device installation), `InstanceId` (process lifecycle). | [Identity definitions](01-normative-glossary-and-invariants.md#1-identity-and-tenancy) |
 | <a id="rule-p-09"></a>P-09 | Each desktop product has its own local persistence. A single shared `ArcForges.db` covering all products is prohibited. Independent databases do not require different technologies. | [Desktop data model](../architecture/data-model/02-desktop-data-model.md) |
@@ -313,7 +322,7 @@ The following apply with the explicit user amendment P2-006.
 | Cloud | One ASP.NET Core Native AOT modular-monolith deployment host, including bounded business background services and canonical Task/Agent ports; replicas use the same host. CF Workflow owns the sole model/tool loop | [D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008), [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006) |
 | Mobile | Kotlin/Jetpack Compose; **Android on the supported Kotlin/Jetpack Compose release path**; iOS outside the current scope | **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** |
 | Web | Static React-generated public HTML/CSS plus one React/TypeScript Account/Chat application; Node.js/npm tooling; proto → C#/TypeScript SDKs | **[P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008)** |
-| Public request/response | Handwritten proto; generated C#/Kotlin native gRPC and TS unary gRPC-Web; same owner errors/revisions | [Wire registry](../architecture/contracts/04-protobuf-wire-registry.md) |
+| Public request/response | Handwritten proto; generated C#/Kotlin/TS gRPC-Web unary and server-streaming; same owner errors/revisions | [Wire registry](../architecture/contracts/04-protobuf-wire-registry.md) |
 | Public realtime | gRPC hint polling, real-time delivery only, never the sole durable truth | [Realtime contract](../architecture/contracts/03-realtime-and-bridge.md) |
 | Local IPC | Handwritten proto + generated native gRPC over Named Pipe / Unix domain socket, including helper control | [Transport definition](../architecture/03-local-ipc-and-process-model.md#2-authenticated-local-transport) |
 | Local wire format | Authored proto with generated language messages and services | [Wire format definition](../architecture/03-local-ipc-and-process-model.md#3-wire-and-flow-control-profile) |
@@ -400,12 +409,12 @@ Changes that do **not** reopen the baseline: adding an ArcNotes block type, an A
 
 Every subsequent design, specification and work package must be able to answer these immediately:
 
-1. Which product does this function belong to? (Unique, or an explicit cross-application orchestrator.)
+1. Which product does this function belong to? (Unique, or an explicit same-application orchestrator.)
 2. Who owns its data?
 3. Is ArcChat the owner, or a reference-holder/orchestrator?
 4. Can the product still do its core work without ArcChat? (For a professional product: **yes**.)
 5. Which cached/native operations work without Cloud, and which require an account, fresh Cloud data or active service? The answer follows §3.1, not a blanket offline promise.
-6. Is this cross-application behaviour a Handoff or an Orchestration?
+6. Is this same-application behaviour a Handoff or an Orchestration?
 7. Is this an ordinary implementation choice, or is it creating a new architecture exception?
 
 A specification that cannot answer all seven is not complete.
@@ -427,4 +436,4 @@ A specification that cannot answer all seven is not complete.
 
 ## Technology ownership amendment — P2-009
 
-The ten-repository, Native AOT/proto/Android/CF/R2 boundary is fixed in [solution ownership](../architecture/01-solution-and-project-layout.md) and [CF integration](../architecture/contracts/05-cloudflare-integration.md). C# keeps canonical business rules; CF executes the sole model loop. Scope, permissions, data meanings, independent professional products and commercial recovery remain the accepted requirements above.
+The nine-repository, Native AOT/proto/Android/CF/R2 boundary is fixed in [solution ownership](../architecture/01-solution-and-project-layout.md) and [CF integration](../architecture/contracts/05-cloudflare-integration.md). C# keeps canonical business rules; CF executes the sole model loop. Scope, permissions, data meanings, independent professional products and commercial recovery remain the accepted requirements above.

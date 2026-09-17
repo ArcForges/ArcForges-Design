@@ -94,7 +94,7 @@ This document consolidates every gate that stands between work and users, in one
 | <a id="rule-p-03"></a>P-03 | The product's Quality Contract instance is populated with measured values, not targets (`§1` of the quality contract) | Quality report |
 | P-04 | Must-pass release scenarios pass for this product, including every applicable initial-state row of the [offline acceptance matrix](testing-and-verification-strategy.md#offline-acceptance-matrix). Record enrollment/hydration/authorization and restart outcomes; no generic Cloud-authoritative editable-workspace assumption substitutes for the product behavior | Scenario results |
 | P-05 | The product's **declared** exit path is met. **ArcScope and ArcSlate**: a portable package that re-imports completely and serialises deterministically ([WS-01](../requirements/13-data-formats-and-portability.md#rule-ws-01)–[WS-06](../requirements/13-data-formats-and-portability.md#rule-ws-06) of the data-format requirements; [WP-35.04](../planning/work-packages/35-arcscope-integration-and-sync.md#rule-wp-35.04), [WP-39.02](../planning/work-packages/39-arcslate-integration-and-portability.md#rule-wp-39.02)). **ArcNotes and ArcChat**: a Cloud-generated download over acknowledged revisions with an attachment manifest and a stated fidelity/exclusion report — **re-import is not an obligation for these two** ([EP-04](../requirements/products/arcnotes.md#rule-ep-04) of the ArcNotes requirements, [EX-01](../requirements/products/arcchat.md#rule-ex-01) of the ArcChat requirements), so a round-trip result is not the evidence and must not be demanded | Round-trip result, or export completeness and fidelity report, per the product's declared path |
-| <a id="rule-p-06"></a>P-06 | The product's capability set, risk levels and approval postures are reviewed and recorded (`§4` of the security requirements) | Capability register |
+| <a id="rule-p-06"></a>P-06 | Cross-product launch/handoff is future-only. Current assistant navigation opens resources inside its own application; remote operations target an already authorized application through Cloud. | [Future boundary](../future/cross-product-collaboration/README.md) |
 | P-07 | Deep links, file associations and single-instance routing verified (`§7`, `§8` of the shared desktop requirements) | Test results |
 | P-08 | Diagnostics, crash reporting and consent behaviour verified (`§9` of the observability architecture) | Test results |
 
@@ -111,8 +111,8 @@ This document consolidates every gate that stands between work and users, in one
 | <a id="rule-l-01"></a>L-01 | A full **Game Day** exercising SEV0 through SEV2 scenarios against the real production topology |
 | L-02 | Database failover exercised; point-in-time restore proven |
 | L-03 | Cross-provider blob restore proven |
-| L-04 | PostgreSQL outbox/inbox backlog and dead-letter replay proven; duplicate delivery produces one effect (WP21/24, drill46.03) |
-| L-05 | Event-hint degradation/cursor reset with authoritative reread; CF presentation outage recovers through bounded range/Task reads (WP24/52, drill46.03) |
+| L-04 | D1 outbox/inbox backlog and dead-letter replay proven; duplicate delivery produces one effect (WP21/24, drill46.03) |
+| L-05 | EventService.Watch/Poll degradation and cursor reset with authorized reread; ExecutionService.WatchOutput interruption recovers through ReadOutput or explicit retention reset (WP24/52, drill46.03) |
 | L-06 | AI provider outage with credit release and fallback proven |
 | L-07 | Edge or tunnel outage with local products fully unaffected, verified |
 | L-08 | Email failover proven **without duplicate one-time codes** |

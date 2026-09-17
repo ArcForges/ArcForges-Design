@@ -86,7 +86,7 @@
 ### WP-23.00 — Endpoint mapping and validation
 
 
-**What must be fully done.** Register generated proto service methods with exact request/reply/semantic validation from the registry. Use native gRPC and unary gRPC-Web through the same owner handlers; register only the listed standard HTTP exceptions separately. Map owner mutations and Sync allowlist exactly.
+**What must be fully done.** Register generated proto service methods with exact request/reply/semantic validation from the registry. Use binary gRPC-Web unary calls and declared server streams through the same owner handlers; register only the listed standard HTTP exceptions separately. Map owner mutations and Sync allowlist exactly.
 
 **Testing requirements.** Exercise each method category through native and TS transport, malformed/unknown request values and denied scope before handler.
 

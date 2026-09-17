@@ -7,7 +7,7 @@
 > Phase: J — Platform and client integration
 > Upstream: `02` · `06` · `07` · `10` · `11` · `12` · `44` · `45` · Downstream: `50`
 
-> **Goal.** Deliver ArcForges.Update as a real shared producer for all four desktop products before final release verification. Execute after45 and before46 in the serial schedule.
+> **Goal.** Deliver ArcForges.Update as a real shared producer for all three professional desktop products before final release verification. Execute after45 and before46 in the serial schedule.
 
 ## 1. Scope and purpose
 

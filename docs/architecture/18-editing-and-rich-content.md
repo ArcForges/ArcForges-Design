@@ -445,7 +445,7 @@ Naming these prevents a "rich editor" from silently becoming an unbounded commit
 
 ---
 
-## 11. Cross-product application
+## 11. same-application application
 
 | Product | What this document governs |
 |---|---|
@@ -477,7 +477,7 @@ Naming these prevents a "rich editor" from silently becoming an unbounded commit
 | VF-08 | A ten-thousand-block document opens interactive and scrolls without re-measuring measured blocks | [WP-18.01](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.01) |
 | VF-09 | Content never round-trips through a markup string on any internal path | Repository policy test |
 | VF-10 | Every kind conversion applies its declared mapping, and a lossy conversion states its loss first | [WP-18.00](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.00) |
-| VF-11 | An agent edit is one transaction, is attributed, and is undoable | [WP-20.02](../planning/work-packages/20-first-cross-product-workflow.md#rule-wp-20.02), [WP-18.07](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.07) |
+| VF-11 | An agent edit is one transaction, is attributed, and is undoable | [WP-17](../planning/work-packages/17-arcchat-independent-core.md#rule-wp-17), [WP-18.07](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.07) |
 | VF-12 | A malformed image, PDF and embed each degrade to a placeholder with a reason and no crash | [WP-18.04](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.04) |
 | VF-13 | No preview path fetches a remote resource or evaluates embedded program content | [WP-11.05](../planning/work-packages/11-security-foundation.md#rule-wp-11.05), [WP-18.04](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.04) |
 | VF-14 | Extracted PDF and image text carries untrusted provenance before it can reach the agent | [WP-11.06](../planning/work-packages/11-security-foundation.md#rule-wp-11.06) |

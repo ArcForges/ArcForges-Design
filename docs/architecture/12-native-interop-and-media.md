@@ -128,7 +128,7 @@ Every first-party native library, and every `extern "C"` shim over a third-party
 | BF-02 | **Pinning is scoped and short.** A long-lived pinned region is a documented exception with a stated reason. |
 | BF-03 | **Pooled buffers are returned on every path including failure**, and pool exhaustion is a measured, surfaced condition rather than an unbounded allocation. |
 | BF-04 | **A per-frame image is never serialised over gRPC, the HTTP client or the realtime channel**. |
-| <a id="rule-bf-05"></a>BF-05 | **The Hub never relays video frames or large file bodies**. |
+| <a id="rule-bf-05"></a>BF-05 | **The application runtime never relays video frames or large file bodies**. |
 | <a id="rule-bf-06"></a>BF-06 | **GPU resources are shared inside the process through a platform-specific rendering bridge; the UI receives only presentable surface or bitmap abstractions**. |
 | BF-07 | **Cross-process large data uses `ResourceRef` plus a controlled stream, file-handle strategy or temporary resource channel**, never an inline payload. |
 | <a id="rule-bf-08"></a>BF-08 | **`ResourceRef` never carries a raw pointer, GPU handle or device handle** ([NI-06](#rule-ni-06)). It carries identity and metadata only ([RR-01](02-contracts-and-protocols.md#rule-rr-01)–[RR-14](02-contracts-and-protocols.md#rule-rr-14) in the contract architecture). |

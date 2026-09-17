@@ -282,13 +282,13 @@ ArcSlate Project
 
 ---
 
-## 15. Cross-product integration
+## 15. same-application integration
 
 | # | Requirement |
 |---|---|
 | XP-01 | **ArcNotes integration** is by reference: an ArcSlate project or rendered output may be referenced from an ArcNotes document, and an ArcNotes document may be referenced from an ArcSlate project, by `ResourceRef`. **Databases are never shared directly** ([P-10](../00-product-scope-and-portfolio.md#rule-p-10)). |
 | XP-02 | **An edit decision list or report may be produced** as an artifact and, on request, materialised as an ArcNotes document — a copy/import creating a new ArcNotes-owned object (`§4.2` of the product scope). |
-| XP-03 | **Large media never crosses the Hub**. Only identity, metadata and controlled access cross boundaries. |
+| XP-03 | **Large media never crosses the application runtime**. Only identity, metadata and controlled access cross boundaries. |
 
 ---
 

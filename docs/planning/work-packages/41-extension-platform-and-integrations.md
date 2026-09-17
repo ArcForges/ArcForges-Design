@@ -68,7 +68,7 @@
 | `src/Extensions/ArcForges.Extensions.Registry/` | Contribution registration, compatibility resolution, catalog client |
 | `src/Extensions/ArcForges.Extensions.Packaging/` | Package format, integrity, install, update, disable, uninstall |
 | `src/SDK/ArcForges.SDK.*`, `src/SDK/ArcForges.Cli/` | Public SDK, source generators, testing helpers and the CLI |
-| `src/ArcChat/ArcChat.McpClient/` | MCP integration with the vocabulary mapping |
+| `DesktopPlatform/src/Communication/` + owning app integration | Parent-bound extension/connector and standardized MCP adapters; exact packages and bounded credentials |
 | `tests/McpAotTests/`, `tests/ExtensionPlatformTests/` | Conformance, isolation, security, lifecycle and catalog suites |
 
 **Major types introduced.** `ExtensionHost`, `ExtensionProcess`, `Handshake`, `ProtocolVersion`, `StructuredValue`, `ValueSchema`, `SchemaValidator`, `PanelDeclaration`, `SettingsSchema`, `ArcPackage`, `PackageManifest`, `PackageInstallation`, `PackageState`, `CatalogClient`, `TrustLevel`, `ReviewStatus`, `McpAdapter`, `ConnectorDefinition`, `ConnectionInstance`.

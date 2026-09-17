@@ -1,9 +1,11 @@
 # ArcChat — Product Requirements
+
+P2-012 current implementation authorities: [Complete assistant surface specification](../../experience/01-embedded-assistant.md); [Independent application history modes](../../architecture/data-model/05-application-history.md).
 > Current scope amendment: **[P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Requirements / Products
-> Product identity: `arcchat` · Positioning: **AI Agent Command Center / Local Hub / Task Center / Cross-App Orchestrator**
+> Feature identity: legacy `arcchat` requirement IDs; implementation is the application-owned assistant in DesktopPlatform, not a standalone desktop product. Product partitions are arcnotes/arcscope/arcslate; companion chats use companion.
 > Companions: [`../05-ai-and-agent-execution.md`](../05-ai-and-agent-execution.md), [`../06-knowledge-search-and-retrieval.md`](../06-knowledge-search-and-retrieval.md), [`../08-extensions-and-developer-platform.md`](../08-extensions-and-developer-platform.md), [`../09-shared-desktop-experience.md`](../09-shared-desktop-experience.md), [`arcchat-mobile-and-web.md`](arcchat-mobile-and-web.md)
 
 > **ArcChat = Chat-first interface + Agent execution surface + Task control centre + ArcForges capability hub.**
@@ -25,7 +27,7 @@ Six sentences that decide almost every design question:
 |---|---|
 | PB-01 | ArcChat serves **three depths of use in one product**: a quick answer, a directed piece of work, and a long-running orchestrated workflow. It must not fork into three products or three modes of a shell. |
 | PB-02 | **ArcChat is a control plane, never a mandatory data gateway** (**[D-010](../../decisions/phase-1-foundation-decisions.md#rule-d-010)**). Professional products reach Cloud directly for their own data. |
-| PB-03 | The ArcChat product domain owns conversations, messages, projects, profiles, skills, memory and automation definitions in Cloud. Cloud owns all agent execution and orchestration state. Desktop owns cached projections, drafts, the local application/capability registry, permission checks and idempotent local tool receipts. |
+| PB-03 | Platform assistant packages implement full per-app conversations/messages/projects/profiles/skills. Local history and drafts are app-owned; opted-in Cloud histories and Cloud automation/execution retain server authority under model05. No shared assistant database/service across products. |
 | PB-04 | **ArcChat never owns**: an authoritative ArcNotes document copy, a writable ArcNotes knowledge database, an authoritative ArcScope session, raw ArcScope capture, an ArcSlate timeline, ArcSlate media ownership, or any professional product's undo stack ([I-020](../01-normative-glossary-and-invariants.md#rule-i-020)). |
 | <a id="rule-pb-05"></a>PB-05 | Thin Preview + Rich Handoff governs results. Native text/image previews and document/media metadata or thumbnails are sufficient; a code/Diff/Office/PDF editing or full media preview workbench is not required. Professional editing opens the owning product; required edit-approval previews remain reviewable. |
 | PB-06 | The native client and local capability bridge are open-source product functionality. Official AI requires an active paid service term with replenishing capacity and optional credits. Local AI, end-user BYOK and a desktop agent scheduler are excluded. |
@@ -178,7 +180,7 @@ Primary surfaces:
 | AP-08 | **Every capability carries a trust level** (§9). |
 | AP-09 | **Capability version compatibility exists from the first release** ([P-13](../00-product-scope-and-portfolio.md#rule-p-13), [CM-01](../12-quality-and-compatibility-contract.md#rule-cm-01)). |
 | AP-10 | **Application events may drive agent automation** — the event feeds an ordinary automation trigger with deduplication, causation and throttling ([EP-05](../08-extensions-and-developer-platform.md#rule-ep-05)). **V1 keeps event automation simple**; time triggers are the baseline. |
-| AP-11 | AI cross-product orchestration runs in the single Cloud harness. ArcChat bridges authorized desktop tools; simple user-directed handoffs can go directly to the owning product. |
+| AP-11 | AI same-application orchestration runs in the single Cloud harness. ArcChat bridges authorized desktop tools; simple user-directed handoffs can go directly to the owning product. |
 
 ### 8.1 Capability invocation ordering
 
@@ -392,10 +394,10 @@ Cloud service access has one customer mode: subscribed, operator-managed AI. The
 
 | # | Requirement |
 |---|---|
-| BL-01 | ArcChat may visibly run in the background for the local Hub and Cloud ToolRequest bridge. Automation scheduling and the model loop remain in Cloud; stopping the bridge makes local tools unavailable without ending Cloud-only work. |
+| BL-01 | The owning product may use its existing visible background/tray lifecycle for its own device tools. Cloud owns schedules and the model loop; quitting that app makes only its tools unavailable. |
 | BL-02 | **It must never reside in the background secretly.** The state is visible, and the user can stop it. |
 | BL-03 | Restart recovers Cloud task projections and durable local tool receipts. A lost reply reconciles by operation identity; the desktop never recreates or blindly reruns the Cloud agent loop. |
-| BL-04 | **The Hub is hosted in the ArcChat process** ([P-05](../00-product-scope-and-portfolio.md#rule-p-05)); no system service is installed. |
+| BL-04 | Each assistant surface is owned by its application process; no standalone assistant/system service or cross-product runtime is installed. |
 
 ---
 
@@ -432,7 +434,7 @@ ArcChatDataScope
 | **Apps** | Detect Arc products, installed/running state, capabilities, launch on demand |
 | **Profiles / Skills** | A default profile, user profiles, user skills, skill assignment |
 | **AI** | Cloud subscription service, Auto/explicit model, actual usage, capacity recovery and opt-in extra credits |
-| **Search** | ArcChat data search plus the federated search foundation |
+| **Search** | ArcChat data search plus the application-scoped search foundation |
 | **Memory** | Transparent personal memory, project context, conversation context |
 | **Automation** | List, enable/disable, create, "automate this" |
 | **Cloud** | Authoritative conversations/projects, single-owner workspace, AI tasks and local-tool integration |
@@ -469,7 +471,7 @@ An **ArcChat Reference Coverage Matrix** is required before ArcChat implementati
 
 **Approval** — an approval names the resource and revision, shows the impact, and is invalidated by a revision change.
 
-**Cross-application** — ArcChat requests a report; ArcNotes creates the document; ArcChat receives an `ArtifactRef`; the document is owned by ArcNotes; deleting the artifact entry does not delete the document.
+**same-application** — ArcChat requests a report; ArcNotes creates the document; ArcChat receives an `ArtifactRef`; the document is owned by ArcNotes; deleting the artifact entry does not delete the document.
 
 **Application not running** — the capability launches ArcNotes on demand, or reports unavailability with a clear route.
 
@@ -481,7 +483,7 @@ An **ArcChat Reference Coverage Matrix** is required before ArcChat implementati
 
 **Memory** — personal memory is inspectable and deletable; a temporary chat is honest about what the model received.
 
-**Search** — federated results show owners; ArcChat holds no second copy of another product's corpus; workspace scoping holds.
+**Search** — application-scoped results show owners; ArcChat holds no second copy of another product's corpus; workspace scoping holds.
 
 **Automation** — "automate this" from a successful task produces a template with dynamic input, and each run appears in the Task Center.
 

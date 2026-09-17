@@ -115,7 +115,7 @@ Separate from lexical search, and subject to the **same permission and scope rul
 | `analysis_result` | ArcScope | Capture + definition version + config | Any of the three | Expensive |
 | `decoded_event_index` | ArcScope | Capture + decoder version | Either | Expensive |
 | `task_projection` | ArcChat, all | Authoritative task store | Authoritative revision | Cheap |
-| `capability_registry_cache` | ArcChat | Live registrations | Registration change | Cheap; rebuilt on Hub restart |
+| `capability_registry_cache` | ArcChat | Live registrations | Registration change | Cheap; rebuilt on application runtime restart |
 
 | # | Rule |
 |---|---|

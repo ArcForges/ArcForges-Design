@@ -201,7 +201,7 @@ The single Harness executes in the ArcForges-AI Cloudflare Workflow through Work
 
 | # | Requirement |
 |---|---|
-| <a id="rule-ck-01"></a>CK-01 | **ArcChat can never create a system-wide snapshot.** Each product owns its own data authority. A cross-application agent requests a checkpoint from the owner and receives a `CheckpointRef`. |
+| <a id="rule-ck-01"></a>CK-01 | **ArcChat can never create a system-wide snapshot.** Each product owns its own data authority. An assistant requests a checkpoint only from its own product owner and receives a `CheckpointRef`. |
 | <a id="rule-ck-02"></a>CK-02 | A Domain Checkpoint is created **before** any high-risk batch modification. |
 | CK-03 | **Checkpoint ≠ Undo** ([I-095](01-normative-glossary-and-invariants.md#rule-i-095)). Undo is high-frequency local edit history; a checkpoint is an explicit recovery boundary. Agent-scale changes use checkpoints. |
 
@@ -220,7 +220,7 @@ Every side-effecting Step declares one of:
 | # | Requirement |
 |---|---|
 | CP-01 | **Compensation is a business-reasonable reverse or remedial action, never a database rollback** ([I-096](01-normative-glossary-and-invariants.md#rule-i-096)). |
-| <a id="rule-cp-02"></a>CP-02 | Cross-application unwinding is a **Saga**, executed in reverse through each owner. Cross-process ACID transactions are not simulated. |
+| <a id="rule-cp-02"></a>CP-02 | same-application unwinding is a **Saga**, executed in reverse through each owner. Cross-process ACID transactions are not simulated. |
 | <a id="rule-cp-03"></a>CP-03 | **Compensation is itself traced and visible**, never executed silently. The trace shows each compensating action and its result, including failures ("unable to retract external email ⚠"). |
 | <a id="rule-cp-04"></a>CP-04 | **Compensation can fail.** A failed compensation yields Needs Attention or PartiallySucceeded. Claiming a successful rollback that did not occur is prohibited. |
 | <a id="rule-cp-05"></a>CP-05 | **Failure does not automatically trigger compensation.** Task policy chooses: keep partial result, attempt compensation, or ask the user. Analysis succeeding while report creation fails usually warrants keeping the analysis, not discarding everything. |

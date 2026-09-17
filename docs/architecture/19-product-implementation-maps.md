@@ -2,10 +2,10 @@
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Architecture
-> Governing authority: **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** (Desktop is a Native AOT deliverable), **[D-011](../decisions/phase-1-foundation-decisions.md#rule-d-011)** (ten-repository target under [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009)), **[D-012](../decisions/phase-1-foundation-decisions.md#rule-d-012)** (reference coverage), **[D-013](../decisions/phase-1-foundation-decisions.md#rule-d-013)** (provenance)
+> Governing authority: **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** (Desktop is a Native AOT deliverable), **[D-011](../decisions/phase-1-foundation-decisions.md#rule-d-011)** (nine-repository target under [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009)), **[D-012](../decisions/phase-1-foundation-decisions.md#rule-d-012)** (reference coverage), **[D-013](../decisions/phase-1-foundation-decisions.md#rule-d-013)** (provenance)
 > Companions: [`01-solution-and-project-layout.md`](01-solution-and-project-layout.md), [`../assurance/reference-coverage/README.md`](../assurance/reference-coverage/README.md)
 
-The project layout says which projects exist. The reference coverage matrices say which reference capabilities were reviewed and how they were disposed. **Neither says where each accepted capability actually lives in ArcForges.** This document closes that gap for the four desktop products, and verifies the claim that matters most: that every reference capability ArcForges accepted has a real home, and that every one it declined is declined on the record rather than by omission.
+The project layout says which projects exist. The reference coverage matrices say which reference capabilities were reviewed and how they were disposed. **Neither says where each accepted capability actually lives in ArcForges.** This document closes that gap for the three professional desktop products, and verifies the claim that matters most: that every reference capability ArcForges accepted has a real home, and that every one it declined is declined on the record rather than by omission.
 
 ---
 
@@ -38,7 +38,7 @@ Every desktop product uses the same five-layer shape, which is why a capability'
 | `*.LocalRpc` | Contract hosting and consumption, capability descriptors | Business logic — it delegates (`§4` of the local RPC contract) |
 | `*.Desktop` | Avalonia host, views, view models, shell composition | Any authoritative state |
 
-Plus per-product specialisations: `ArcChat.Hub` and presentation-only `ArcChat.Agent`; `ArcScope.Acquisition`; `ArcSlate.Media`.
+Plus per-product specialisations: `ArcForges.Capabilities` and presentation-only `ArcForges.Assistant.Cloud`; `ArcScope.Acquisition`; `ArcSlate.Media`.
 
 | # | Rule |
 |---|---|
@@ -54,22 +54,22 @@ Plus per-product specialisations: `ArcChat.Hub` and presentation-only `ArcChat.A
 
 | Capability | Component | Package |
 |---|---|---|
-| Conversation, message, branch, part model | `ArcChat.Domain` | [WP-15.00](../planning/work-packages/15-arcchat-conversation-core.md#rule-wp-15.00), [WP-15.01](../planning/work-packages/15-arcchat-conversation-core.md#rule-wp-15.01) |
-| Attachments by reference | `ArcChat.Domain` + `ArcChat.Infrastructure` | [WP-15.02](../planning/work-packages/15-arcchat-conversation-core.md#rule-wp-15.02) |
-| Projects, agent profiles, skills | `ArcChat.Domain` + `ArcChat.Application` | [WP-15.03](../planning/work-packages/15-arcchat-conversation-core.md#rule-wp-15.03), [WP-15.04](../planning/work-packages/15-arcchat-conversation-core.md#rule-wp-15.04) |
-| Local search over conversations | `ArcChat.Infrastructure` (derived store) | [WP-15.05](../planning/work-packages/15-arcchat-conversation-core.md#rule-wp-15.05) |
+| Conversation, message, branch, part model | `ArcForges.Assistant.Core` | [WP-15.00](../planning/work-packages/15-arcchat-conversation-core.md#rule-wp-15.00), [WP-15.01](../planning/work-packages/15-arcchat-conversation-core.md#rule-wp-15.01) |
+| Attachments by reference | `ArcForges.Assistant.Core` + `ArcForges.Assistant.Persistence.Sqlite` | [WP-15.02](../planning/work-packages/15-arcchat-conversation-core.md#rule-wp-15.02) |
+| Projects, agent profiles, skills | `ArcForges.Assistant.Core` + `ArcForges.Assistant.Core` | [WP-15.03](../planning/work-packages/15-arcchat-conversation-core.md#rule-wp-15.03), [WP-15.04](../planning/work-packages/15-arcchat-conversation-core.md#rule-wp-15.04) |
+| Local search over conversations | `ArcForges.Assistant.Persistence.Sqlite` (derived store) | [WP-15.05](../planning/work-packages/15-arcchat-conversation-core.md#rule-wp-15.05) |
 | **The turn loop, batching, compaction** | **`ArcForges-AI Workflow`** — Cloud, not the desktop ([LS-02](17-agent-harness.md#rule-ls-02)) | [WP-52.00](../planning/work-packages/52-cloud-harness.md#rule-wp-52.00), [WP-52.01](../planning/work-packages/52-cloud-harness.md#rule-wp-52.01) |
 | Context assembly and packing | **`ArcForges-AI Workflow`** | [WP-40.03](../planning/work-packages/40-knowledge-search-and-retrieval.md#rule-wp-40.03) |
-| Capability registry and selection | Cloud registry + `ArcChat.Hub` for device-local capabilities | [WP-17.00](../planning/work-packages/17-arcchat-independent-core.md#rule-wp-17.00) |
+| Capability registry and selection | Cloud registry + `ArcForges.Capabilities` for device-local capabilities | [WP-17.00](../planning/work-packages/17-arcchat-independent-core.md#rule-wp-17.00) |
 | Agent Task/run/plan/step/attempt and loop | Cloud Task owns state; ArcForges-AI RunWorkflow owns the sole loop; Agent owns profile/catalogue | [WP52](../planning/work-packages/52-cloud-harness.md#rule-wp-52); WP16 supplies shared native ProductJob mechanisms only |
-| Permission, approval, audit surfaces | `ArcChat.Application` + `ArcChat.Desktop` | [WP-17.02](../planning/work-packages/17-arcchat-independent-core.md#rule-wp-17.02) |
-| Task centre | `ArcChat.Application` + `ArcChat.Desktop` | [WP-17.03](../planning/work-packages/17-arcchat-independent-core.md#rule-wp-17.03) |
-| Automation | `ArcChat.Application` | [WP-17.04](../planning/work-packages/17-arcchat-independent-core.md#rule-wp-17.04) |
-| Cloud AI client — submit a turn, read task state, surface admission reasons | `ArcChat.CloudClient` | [WP-17.05](../planning/work-packages/17-arcchat-independent-core.md#rule-wp-17.05) |
-| Hub registration, routing, health | `ArcChat.Hub` | [WP-14.00](../planning/work-packages/14-hub-and-minimal-provider-slice.md#rule-wp-14.00)–[WP-14.06](../planning/work-packages/14-hub-and-minimal-provider-slice.md#rule-wp-14.06) |
-| Thin preview and handoff | `ArcChat.Desktop` (`§8.1` of the editing architecture) | [WP-17.06](../planning/work-packages/17-arcchat-independent-core.md#rule-wp-17.06) |
-| Cloud client, sync, bridge consumption | `ArcChat.CloudClient` | [WP-25](../planning/work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25), [WP-26](../planning/work-packages/26-remote-action-and-tool-bridge.md#rule-wp-26) |
-| First-party local capabilities and the ToolRequest executor | `ArcChat.LocalTools` | [WP-17.00](../planning/work-packages/17-arcchat-independent-core.md#rule-wp-17.00), [WP-26.02](../planning/work-packages/26-remote-action-and-tool-bridge.md#rule-wp-26.02) |
+| Permission, approval, audit surfaces | `ArcForges.Assistant.Core` + `ArcForges.Assistant.Avalonia` | [WP-17.02](../planning/work-packages/17-arcchat-independent-core.md#rule-wp-17.02) |
+| Task centre | `ArcForges.Assistant.Core` + `ArcForges.Assistant.Avalonia` | [WP-17.03](../planning/work-packages/17-arcchat-independent-core.md#rule-wp-17.03) |
+| Automation | `ArcForges.Assistant.Core` | [WP-17.04](../planning/work-packages/17-arcchat-independent-core.md#rule-wp-17.04) |
+| Cloud AI client — submit a turn, read task state, surface admission reasons | `ArcForges.Cloud.Client` | [WP-17.05](../planning/work-packages/17-arcchat-independent-core.md#rule-wp-17.05) |
+| own-app capability registration, typed invocation and health | `ArcForges.Capabilities` | [WP-14.00](../planning/work-packages/14-hub-and-minimal-provider-slice.md#rule-wp-14.00)–[WP-14.06](../planning/work-packages/14-hub-and-minimal-provider-slice.md#rule-wp-14.06) |
+| Thin preview and handoff | `ArcForges.Assistant.Avalonia` (`§8.1` of the editing architecture) | [WP-17.06](../planning/work-packages/17-arcchat-independent-core.md#rule-wp-17.06) |
+| Cloud client, sync, bridge consumption | `ArcForges.Cloud.Client` | [WP-25](../planning/work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25), [WP-26](../planning/work-packages/26-remote-action-and-tool-bridge.md#rule-wp-26) |
+| First-party local capabilities and the ToolRequest executor | `ArcForges.Device.Runtime` | [WP-17.00](../planning/work-packages/17-arcchat-independent-core.md#rule-wp-17.00), [WP-26.02](../planning/work-packages/26-remote-action-and-tool-bridge.md#rule-wp-26.02) |
 
 ### 3.2 AionUI reference verification
 
@@ -77,18 +77,18 @@ The matrix records 30 items at commit `29c9271a5` — **24 evidence established,
 
 | # | Reference capability | ArcForges position | Where |
 |---|---|---|---|
-| <a id="rule-ac-01"></a>AC-01 | Conversation, message, streaming assembly | Present, and **stricter** — a message is immutable on commit and an interrupted stream is stored as `interrupted`, never as complete | `ArcChat.Domain`; [WP-15.00](../planning/work-packages/15-arcchat-conversation-core.md#rule-wp-15.00), [ST-01](17-agent-harness.md#rule-st-01) of the harness |
-| AC-02 | Slash commands and availability | Present, and **routed through the capability registry** rather than a static list, so availability is computed with a reason | `ArcChat.Hub`; [WP-17.00](../planning/work-packages/17-arcchat-independent-core.md#rule-wp-17.00), [MK-05](18-editing-and-rich-content.md#rule-mk-05) of the editing architecture |
+| <a id="rule-ac-01"></a>AC-01 | Conversation, message, streaming assembly | Present, and **stricter** — a message is immutable on commit and an interrupted stream is stored as `interrupted`, never as complete | `ArcForges.Assistant.Core`; [WP-15.00](../planning/work-packages/15-arcchat-conversation-core.md#rule-wp-15.00), [ST-01](17-agent-harness.md#rule-st-01) of the harness |
+| AC-02 | Slash commands and availability | Present, and **routed through the capability registry** rather than a static list, so availability is computed with a reason | `ArcForges.Capabilities`; [WP-17.00](../planning/work-packages/17-arcchat-independent-core.md#rule-wp-17.00), [MK-05](18-editing-and-rich-content.md#rule-mk-05) of the editing architecture |
 | AC-03 | `@`-mention context binding | Present, and **bounded, frozen and permission-filtered** at assembly | `ArcForges-AI Workflow`; `§4` of the harness, [WP-40.03](../planning/work-packages/40-knowledge-search-and-retrieval.md#rule-wp-40.03) |
 | AC-04 | Tool-call normalisation | Present as the resolve-and-validate step of the turn loop, normalising into the typed capability model | `ArcForges-AI Workflow`; `§2` of the harness, [MR-01](17-agent-harness.md#rule-mr-01) |
-| <a id="rule-ac-05"></a>AC-05 | Approval store | Present, and **owner-side enforced** — an approval is a durable object, and a cloud approval never substitutes for local re-authorization | `ArcChat.Application`; `§5` of the harness, [BR-01](../planning/work-packages/26-remote-action-and-tool-bridge.md#rule-br-01)–[BR-03](../planning/work-packages/26-remote-action-and-tool-bridge.md#rule-br-03) |
+| <a id="rule-ac-05"></a>AC-05 | Approval store | Present, and **owner-side enforced** — an approval is a durable object, and a cloud approval never substitutes for local re-authorization | `ArcForges.Assistant.Core`; `§5` of the harness, [BR-01](../planning/work-packages/26-remote-action-and-tool-bridge.md#rule-br-01)–[BR-03](../planning/work-packages/26-remote-action-and-tool-bridge.md#rule-br-03) |
 | AC-06 | ACP external-agent integration | **Excluded by [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006)** ([EA-01](../requirements/08-extensions-and-developer-platform.md#rule-ea-01)–[EA-06](../requirements/08-extensions-and-developer-platform.md#rule-ea-06)). An integration contributes tools, never a planner | `§9` of the harness; [XA-01](17-agent-harness.md#rule-xa-01), [XA-03](17-agent-harness.md#rule-xa-03) of the harness |
 | AC-07 | MCP client and built-in MCP server | Present as an **edge adapter**, never the internal protocol (**[V-02](../assurance/phase-1-official-verification.md#rule-v-02)**). A built-in MCP **server** is not built | [WP-41.07](../planning/work-packages/41-extension-platform-and-integrations.md#rule-wp-41.07); [XA-06](17-agent-harness.md#rule-xa-06), [XA-07](17-agent-harness.md#rule-xa-07) |
-| AC-08 | Agent detection and hub types | Present, and **contract-typed and lease-based** rather than discovered | `ArcChat.Hub`; [WP-17.00](../planning/work-packages/17-arcchat-independent-core.md#rule-wp-17.00) |
+| AC-08 | Agent detection and hub types | Present, and **contract-typed and lease-based** rather than discovered | `ArcForges.Capabilities`; [WP-17.00](../planning/work-packages/17-arcchat-independent-core.md#rule-wp-17.00) |
 | AC-09 | Assistant / agent profile | Present, **Cloud-owned** (`§5` of the product scope); clients edit authorised configuration | `ArcForges.Cloud.Modules.Agent`; [WP-15.03](../planning/work-packages/15-arcchat-conversation-core.md#rule-wp-15.03) |
 | AC-10 | Workspaces | Present, and **an entitlement and data scope from day one** | `ArcForges.Cloud.Modules.Workspace`; [WP-22](../planning/work-packages/22-identity-workspace-and-device.md#rule-wp-22) |
 | AC-11 | Teams / multi-agent | **Excluded by [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006)** ([EA-08](../requirements/08-extensions-and-developer-platform.md#rule-ea-08) of the extension requirements). Bounded parallel Steps and product Job references stay inside the one Harness; no child agent Tasks | `§12` of the harness; [XA-02](17-agent-harness.md#rule-xa-02) |
-| AC-12 | Cron / scheduled tasks | Present as Automation, **kept distinct from a Plan**: automation decides *when*, a plan decides *how* | `ArcChat.Application`; [WP-17.04](../planning/work-packages/17-arcchat-independent-core.md#rule-wp-17.04), [BR-05](../planning/work-packages/17-arcchat-independent-core.md#rule-br-05) of [WP-17](../planning/work-packages/17-arcchat-independent-core.md#rule-wp-17) |
+| AC-12 | Cron / scheduled tasks | Present as Automation, **kept distinct from a Plan**: automation decides *when*, a plan decides *how* | `ArcForges.Assistant.Core`; [WP-17.04](../planning/work-packages/17-arcchat-independent-core.md#rule-wp-17.04), [BR-05](../planning/work-packages/17-arcchat-independent-core.md#rule-br-05) of [WP-17](../planning/work-packages/17-arcchat-independent-core.md#rule-wp-17) |
 | <a id="rule-ac-13"></a>AC-13 | Remote access via a host-side web server | **Refused by design.** The bridge is pull-and-answer; Cloud never connects to a device (**[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)**) | `§5` of the realtime and bridge contract; [WP-26](../planning/work-packages/26-remote-action-and-tool-bridge.md#rule-wp-26), [RV-05](contracts/03-realtime-and-bridge.md#rule-rv-05) there |
 | AC-14 | Previews | Present as the three honest levels, with rich handoff added | `§8.1` of the editing architecture; [WP-17.06](../planning/work-packages/17-arcchat-independent-core.md#rule-wp-17.06) |
 | AC-15 | Desktop pet | **Accepted exclusion** — no requirement establishes an ambient companion surface | Matrix `AC-15` |
@@ -99,14 +99,14 @@ The matrix records 30 items at commit `29c9271a5` — **24 evidence established,
 | AC-20 | Theming | Present as design tokens, with **no raw colour literal permitted in a component** | [WP-10.00](../planning/work-packages/10-design-system-and-desktop-shell.md#rule-wp-10.00); repository policy test |
 | AC-21 | Crash and feedback | Present, and **stricter** — generate, show, approve, then send | [WP-12.05](../planning/work-packages/12-observability-foundation.md#rule-wp-12.05) |
 | <a id="rule-ac-22"></a>AC-22 | Search adapter | Present, with **permission applied during query evaluation**, so refused content is invisible in results and in counts | [WP-15.05](../planning/work-packages/15-arcchat-conversation-core.md#rule-wp-15.05), [WP-40.03](../planning/work-packages/40-knowledge-search-and-retrieval.md#rule-wp-40.03) |
-| <a id="rule-ac-23"></a>AC-23 | Mobile companion on a separate stack | Present as Kotlin/Jetpack Compose Android under P2-010, superseding **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**; the separate-stack outcome **confirms [D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021)** rather than contradicting it | `ArcChat.Mobile`; [WP-30](../planning/work-packages/30-mobile-shared-architecture.md#rule-wp-30), [WP-31](../planning/work-packages/31-arcchat-mobile-android.md#rule-wp-31) |
+| <a id="rule-ac-23"></a>AC-23 | Mobile companion on a separate stack | Present as Kotlin/Jetpack Compose Android under P2-010, superseding **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**; the separate-stack outcome **confirms [D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021)** rather than contradicting it | `Mobile/app`; [WP-30](../planning/work-packages/30-mobile-shared-architecture.md#rule-wp-30), [WP-31](../planning/work-packages/31-arcchat-mobile-android.md#rule-wp-31) |
 | AC-24 | Web CLI admin-password bootstrap | **Accepted exclusion** — contradicts the passkey-first identity model | Matrix `AC-24` |
 | AC-25 | CDP browser automation | **Accepted exclusion** — not a first-party capability in the accepted scope | Matrix `AC-25` |
 | AC-26 | Self-hosted server deployment | Present, bounded by ArcForges' own self-host boundary | [WP-45](../planning/work-packages/45-operations-support-and-trust-safety.md#rule-wp-45) |
 | AC-27 | First-party image generation via MCP | **Accepted exclusion as a capability**; retained as MCP evidence | Matrix `AC-27` |
 | AC-28 | Document handling in chat | Present, **by reference with integrity verification** and never an embedded body | [WP-15.02](../planning/work-packages/15-arcchat-conversation-core.md#rule-wp-15.02); [AT-03](../requirements/products/arcnotes.md#rule-at-03) of the ArcNotes requirements applies the same rule product-wide |
 | AC-29 | Packaging configuration | Present; the toolchain differs entirely | `§4` of the build architecture; [WP-50.02](../planning/work-packages/50-full-platform-production-release.md#rule-wp-50.02) |
-| AC-30 | Hub testing scenarios | Present as the first-slice hub suite — registration, restart, reconnection | [WP-14.00](../planning/work-packages/14-hub-and-minimal-provider-slice.md#rule-wp-14.00)–[WP-14.06](../planning/work-packages/14-hub-and-minimal-provider-slice.md#rule-wp-14.06) |
+| AC-30 | application runtime testing scenarios | Present as the first-slice application composition suite — isolated ownership, restart, context and typed invocation | [WP-14.00](../planning/work-packages/14-hub-and-minimal-provider-slice.md#rule-wp-14.00)–[WP-14.06](../planning/work-packages/14-hub-and-minimal-provider-slice.md#rule-wp-14.06) |
 
 | # | Result |
 |---|---|
@@ -214,7 +214,7 @@ The matrix records 30 items at commit `29c9271a5` — **24 evidence established,
 
 | Check | Result |
 |---|---|
-| Every product has a capability map naming components and packages | **Pass** — four products, `§3.1`, `§4.1`, `§5.1`, `§6.1` |
+| Every product has a capability map naming components and packages | **Pass** — three professional products plus shared assistant, `§3.1`, `§4.1`, `§5.1`, `§6.1` |
 | Every non-excluded reference row has an ArcForges home | **Pass** — all 30 ArcChat rows verified individually in `§3.2`; the remaining 115 rows verified by capability area in `§4.2`, `§5.2`, `§6.2` against the maps in `§4.1`, `§5.1`, `§6.1` |
 | Every excluded reference row is excluded on the record | **Pass** — **25 accepted exclusion dispositions** across 145 rows (ArcChat 6, ArcNotes 9, ArcScope 7, ArcSlate 2, distribution 1); 121 evidence dispositions plus 25 exclusions make 146 dispositions because [Notes AN-14](../assurance/reference-coverage/arcnotes-affine-siyuan.md#rule-an-14) is compound, each with a stated reason |
 | Any row proposing reuse carries a provenance record | **Not applicable** — **no row in any matrix proposes reuse** ([PM-02](#rule-pm-02)) |
@@ -249,13 +249,13 @@ The matrix records 30 items at commit `29c9271a5` — **24 evidence established,
 
 ## P2-009 product ownership and invariants
 
-ArcChat product owns conversations, local Hub, context/approval/task UI and authorized device bridge; no local model. Notes owns blocks/scalar properties/list/table, notebook/folder operations and durable local pending cache, with Cloud acknowledged authority. Scope owns raw acquisition, sessions, deterministic scope.measurement.v1, native ProductJob/report paths; Cloud simulator remains C# non-AI, no MDF shipping requirement. Slate owns editable native timeline with705600000 Hz signed ticks, rational rates, half-open ranges, immutable render snapshots, isolated media/OTIO consumers. OTIO0.18.1 remains interchange, never editable working store. Professional apps work without ArcChat and use Cloud directly; local jobs never acquire AI charges.
+Platform assistant packages own application-scoped conversations, own-application capability registry, context/approval/task UI and authorized device bridge; no local model. Notes owns blocks/scalar properties/list/table, notebook/folder operations and durable local pending cache, with Cloud acknowledged authority. Scope owns raw acquisition, sessions, deterministic scope.measurement.v1, native ProductJob/report paths; Cloud simulator remains C# non-AI, no MDF shipping requirement. Slate owns editable native timeline with705600000 Hz signed ticks, rational rates, half-open ranges, immutable render snapshots, isolated media/OTIO consumers. OTIO0.18.1 remains interchange, never editable working store. Professional apps work without ArcChat and use Cloud directly; local jobs never acquire AI charges.
 
 Protect exact arcforges.content-origin.v1 fields/parent bounds/payload hash/carriers, notes.scalar.v1 missing/null/order/snapshot cursor, and scope.measurement.v1 finite sample/gap/pulse/count/unit/tolerance oracles. Do not replace them with a simplified protocol restatement. New wire profile explicitly transports their complete inputs; unexpected source unknown fields remain inert and preserved/read-only as required. No organizations, team/seat UI, external-agent delegation, local AI, Notes canvas/slides/relations/formulas/E2EE/linked Git or professional Mobile/Web editors. Correct existing contradictory prose about terminal unknownEffect: Task unknownEffect is nonterminal until its explicit resolution, not succeeded/failed.
 
 Owner local Notes Export now returns ArtifactRef with export-job identity until the accepted Cloud snapshot/export finishes; it never invents an excluded local export engine. Local Notes structural preconditions remain composite local tokens; Cloud counterparts use acknowledged revision. Cross-repository package relocation changes no product permission/recovery/measurement/format semantics.
 
-Logical src/ArcChat, src/ArcNotes, src/ArcScope and src/ArcSlate paths in the existing maps resolve inside their corresponding repositories under [the layout convention](01-solution-and-project-layout.md#root-and-logical-path-convention). Shared mechanism implementations and native adapters are consumed as Platform packages; contracts are produced by Contracts. Cloud/AI integration never imports a desktop domain assembly.
+Assistant projects resolve inside DesktopPlatform; professional product paths resolve inside ArcNotes/ArcScope/ArcSlate under [the layout convention](01-solution-and-project-layout.md#root-and-logical-path-convention). Shared mechanism implementations and native adapters are consumed as Platform packages; contracts are produced by Contracts. Cloud/AI integration never imports a desktop domain assembly.
 
 ## Complete initial implementation profiles
 

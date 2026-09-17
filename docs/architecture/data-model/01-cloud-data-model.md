@@ -1,11 +1,13 @@
 # Cloud Data Model
 
+P2-012 current implementation authorities: [Physical D1 mapping, fixed plans and recovery](04-d1-execution-profile.md); [Cloud opt-in and transient local-history body exclusion](05-application-history.md).
+
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Architecture · Data model
 > Governing authority: [`00-data-model-overview.md`](00-data-model-overview.md), [`../05-cloud-architecture.md`](../05-cloud-architecture.md) `§4`, `§5`
 > Companions: [`../16-billing-and-commerce-architecture.md`](../16-billing-and-commerce-architecture.md), [`../08-security-architecture.md`](../08-security-architecture.md)
 
-One PostgreSQL database, one schema per module ([PS-01](../05-cloud-architecture.md#rule-ps-01)). A module owns its schema exclusively: no other module reads or writes its tables, and cross-module reference is by identifier plus a published module API ([MD-02](../05-cloud-architecture.md#rule-md-02), [MD-03](../05-cloud-architecture.md#rule-md-03)).
+One D1 database, one schema per module ([PS-01](../05-cloud-architecture.md#rule-ps-01)). A module owns its schema exclusively: no other module reads or writes its tables, and cross-module reference is by identifier plus a published module API ([MD-02](../05-cloud-architecture.md#rule-md-02), [MD-03](../05-cloud-architecture.md#rule-md-03)).
 
 Notation is defined in [`00-data-model-overview.md`](00-data-model-overview.md) `§2`.
 
@@ -107,7 +109,7 @@ These exist once and are used by every module. They are the mechanism behind [TX
 | `holder` | `text?` | Instance identity while leased |
 | `leased_until` | `instant?` | |
 | `attempts` | `int NN` | |
-| `fence_token` | `bigint NN` | Incremented on each acquisition; checked under the lease-row lock by every effect publication |
+| `fence_token` | `bigint NN` | Incremented on each acquisition; checked under the lease-atomic D1 batch guard by every effect publication |
 | `state` | `enum(ready, leased, succeeded, deadLettered) NN` | |
 | `payload` | `json NN` | |
 | `available_at` | `instant NN` | Backoff scheduling |
@@ -215,7 +217,7 @@ These exist once and are used by every module. They are the mechanism behind [TX
 | `attempts` / `max_attempts` | `int NN` | Atomically bounded, with existing rate-limit keys |
 | `consumed_at` | `instant?` | One-way terminal consumption; no client reset |
 
-The row plus its separate cookie binding and antiforgery validation bind a browser challenge; a flow ID alone grants no authority. Verify the existing method proof, then atomically compare the unconsumed/unexpired row, consume it and create the session/device in the registered transaction family. Duplicate completions fail safely. Expired/consumed rows are purged under the short challenge retention policy; logs never contain challenge proofs or binding secrets. Session bootstrap does not allocate an unbounded flow on every GET: beginAuthentication creates one under abuse limits. Explicit CSRF/session state is shared in PostgreSQL; no framework Session/cookie-auth serialization is required.
+The row plus its separate cookie binding and antiforgery validation bind a browser challenge; a flow ID alone grants no authority. Verify the existing method proof, then atomically compare the unconsumed/unexpired row, consume it and create the session/device in the registered transaction family. Duplicate completions fail safely. Expired/consumed rows are purged under the short challenge retention policy; logs never contain challenge proofs or binding secrets. Session bootstrap does not allocate an unbounded flow on every GET: beginAuthentication creates one under abuse limits. Explicit CSRF/session state is shared in D1; no framework Session/cookie-auth serialization is required.
 
 ### `identity.step_up_challenge`, `identity.recovery_flow`
 
@@ -479,7 +481,7 @@ Immutable policy history. One row per `(realm, offer, activation interval)` in w
 | The eligible-service interval set | `entitlement.service_term`, unioned by [TM-01](#rule-tm-01) |
 | The selected offer and its policy at each instant | `capacity_plan_assignment` joined to `capacity_policy_period`; both non-overlapping for their scope |
 | Held capacity, constant between bucket mutations | `capacity_bucket.held_micro`; every mutation advances under the old value first; reconciled by [CX-08](#rule-cx-08) |
-| Serialisation of racing replicas | The `capacity_bucket` row lock ([RF-02](../16-billing-and-commerce-architecture.md#rule-rf-02)) |
+| Serialisation of racing replicas | The `capacity_bucket` atomic D1 batch guard ([RF-02](../16-billing-and-commerce-architecture.md#rule-rf-02)) |
 | The one contiguous run, so initialisation happens once | `capacity_bucket.activation_term_id` with [TM-03](#rule-tm-03) ([RF-08](../16-billing-and-commerce-architecture.md#rule-rf-08)) |
 
 **Cross-checks this schema owes the algorithm.** [CX-08](#rule-cx-08) reconciles `held_micro` against live reservations. [CX-11](#rule-cx-11) asserts that no stored `available_micro` was produced by an increase past the bound above — the property the removed `CHECK` was reaching for, expressed where it is actually true.
@@ -669,11 +671,11 @@ Three separately balanced ledgers share a discriminated table ([LG-01](../16-bil
 
 ## 8. `chat`, `task`, `agent`
 
-**Cloud commits every row in this schema** (`§4.2` of the overview). Chat and Task are Cloud-authoritative; clients hold read projections plus, for Chat, unsent local drafts.
+**Cloud commits every row in this Cloud schema.** Cloud-history Chat and all execution metadata remain Cloud-authoritative. Local assistant bodies are independently canonical under [model05](05-application-history.md); they do not become Chat rows merely because Cloud executes an AI request.
 
 ### `chat.conversation`, `chat.message`
 
-The client schema (`§2` of [`02-desktop-data-model.md`](02-desktop-data-model.md)) mirrors these, not the reverse. **Cloud holds the authoritative acknowledged revision and is its committer** ([AU-01](00-data-model-overview.md#rule-au-01), [CW-02](00-data-model-overview.md#rule-cw-02)); the client copy is a working cache plus unsent drafts.
+For Cloud-history mode, the client projection in [`02-desktop-data-model.md`](02-desktop-data-model.md) mirrors these rows. Local-history stores instead follow model05. **Cloud holds the authoritative acknowledged revision and is its committer** ([AU-01](00-data-model-overview.md#rule-au-01), [CW-02](00-data-model-overview.md#rule-cw-02)); the client copy is a working cache plus unsent drafts.
 
 | # | Rule |
 |---|---|
@@ -682,13 +684,13 @@ The client schema (`§2` of [`02-desktop-data-model.md`](02-desktop-data-model.m
 | CH-D3 | **Every commit writes its `sync.change` row in the same transaction** ([CW-06](00-data-model-overview.md#rule-cw-06)), so a message can never exist without being publishable. |
 | CH-D4 | **An unsent draft is not a row here.** It lives only on the device that composed it ([I-124](../../requirements/01-normative-glossary-and-invariants.md#rule-i-124)), and is therefore never a competing revision. |
 | CH-D5 | A committed Chat message is immutable; edit creates a branch. Stream chunks are presentation, each invocation has immutable `task.iteration_output`, and the terminal Turn publishes a separate final/interrupted message or explicit no-answer outcome. |
-| CH-D6 | Stream chunks/state live in the CF RunStream DO with bounded TTL, excluded from PostgreSQL WAL and backup. C# stores only canonical iteration/final content and stream pointers. Restore discards projections and reconciles durable attempts under [CF integration](../contracts/05-cloudflare-integration.md). |
+| CH-D6 | Stream chunks/state live in the CF RunStream DO with bounded TTL, excluded from D1 change archives and business backups. C# stores Cloud-history canonical iteration/final content and pointers; local/temporary bodies use model05 transient storage. Restore discards projections and reconciles durable attempts under [CF integration](../contracts/05-cloudflare-integration.md). |
 
 ### `task.iteration_output` and terminal references
 
 `iteration_output` has PK output ID, unique `(run_id, iteration_ordinal)`, logical request ID, winning provider-attempt ID, state `complete/interrupted/refused/toolProposals`, immutable typed parts or verified ResourceRef, checksum and created time. Each content part carries the [content origin record](../../requirements/13-data-formats-and-portability.md#content-origin-carriers), bound and committed with its payload before completed output publication; staged marking failure creates no delivered receipt. It is written with the provider outcome/usage receipt before customer settlement. Tool proposal/result parts link durable invocation IDs, and can be read through the authorised Task view without pretending the Turn is terminal. Resource promotion includes Entitlement quota conversion where required.
 
-`task.task` additionally carries `current_iteration`, `current_provider_attempt_id?`, `final_message_id?`, `no_answer_reason?`, and `terminal_output_commit_id?`. Terminal states require exactly one final/interrupted message reference or explicit no-answer reason in the same Chat/Task/Resource/Sync transaction. A provider callback cannot set Task succeeded merely because its own invocation finished. Updating intermediate Task state uses a typed read projection; synchronised aggregate changes still require publication.
+`task.task` additionally carries `current_iteration`, `current_provider_attempt_id?`, `final_message_id?`, `no_answer_reason?`, and `terminal_output_commit_id?`. Cloud-history terminal states require exactly one final/interrupted message reference or explicit no-answer reason in the same Chat/Task/Resource/Sync atomic batch. Local/temporary mode instead requires a verified transient-output commit receipt or explicit no-answer reason under model05; it never creates a dummy Cloud message. A provider callback cannot set Task succeeded merely because its own invocation finished. Updating intermediate Task state uses a typed read projection; synchronised aggregate changes still require publication.
 
 ### `task.task`
 
@@ -1033,7 +1035,7 @@ Cloud owns acknowledged Notes content. SQLite holds a projection of these shapes
 | `notes.checkpoint` | PK `(workspace_id, checkpoint_id)`; target aggregate and revision, label, creator/time; references an existing revision | User checkpoint listing and restore as a new revision |
 | `notes.link_index` | Derived backlink rows keyed by stable source/target identity and source revision | Rebuilt from document links; not canonical and not a second writer |
 
-The child field shapes for blocks, links, tags and scalar values are shared with [the desktop model](02-desktop-data-model.md#3-arcnotes-local-store). PostgreSQL uses typed columns and `jsonb` for the declared content structures; SQLite uses equivalent explicit SQL and validated JSON. Provider-specific storage types never enter contracts. Notebook/folder placement, revision ownership and the server-side constraints are defined here, not inferred from a local table name.
+The child field shapes for blocks, links, tags and scalar values are shared with [the desktop model](02-desktop-data-model.md#3-arcnotes-local-store). D1 uses typed columns and `jsonb` for the declared content structures; SQLite uses equivalent explicit SQL and validated JSON. Provider-specific storage types never enter contracts. Notebook/folder placement, revision ownership and the server-side constraints are defined here, not inferred from a local table name.
 
 | # | Rule |
 |---|---|
@@ -1045,7 +1047,7 @@ The child field shapes for blocks, links, tags and scalar values are shared with
 | ND-06 | **Local edits and remote updates share domain validation.** The client catches invalid structure early; Cloud repeats all checks as the final owner. A document's `rev` governs blocks and document metadata. Folder and document operations use explicit typed requests, with bounded bulk operations and per-operation receipts. |
 | ND-07 | **All durable payloads are accounted for.** Large revision bodies are staged as verified Resource objects before the Notes commit; that commit promotes them and adds a revision reference. Current content, retained history, conflict branches and active export manifests each pin the objects they need. Garbage collection starts only after the last pin and reader lease ends. |
 
-Required operations: `CreateNotebook`, `UpdateNotebook`, `CreateFolder`, `MoveFolder`, `TrashFolder`, `RestoreFolder`, `MoveDocument`, `GetNotebookTree`, `GetDocumentRevision`, `ListHistory` and `RestoreRevision`, alongside the typed block/property operations. These are Notes application operations reached through local RPC and typed sync proposals; no professional editor is added to Web or Mobile. A batch with a structural dependency submits the parent operation first and binds its acknowledgement before submitting the dependent operation. [WP-18.00](../../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.00) owns client/domain semantics; [WP-25.00](../../planning/work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.00) owns the real PostgreSQL counterpart and API integration.
+Required operations: `CreateNotebook`, `UpdateNotebook`, `CreateFolder`, `MoveFolder`, `TrashFolder`, `RestoreFolder`, `MoveDocument`, `GetNotebookTree`, `GetDocumentRevision`, `ListHistory` and `RestoreRevision`, alongside the typed block/property operations. These are Notes application operations reached through local RPC and typed sync proposals; no professional editor is added to Web or Mobile. A batch with a structural dependency submits the parent operation first and binds its acknowledgement before submitting the dependent operation. [WP-18.00](../../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.00) owns client/domain semantics; [WP-25.00](../../planning/work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.00) owns the real D1 counterpart and API integration.
 
 ### 8.5 Native-product metadata replicas
 
@@ -1128,7 +1130,7 @@ Each batch admits at most one revision per selected aggregate; subsequent passes
 | PB-04 | **Per-aggregate revision order is explicit.** The owner serialises its revision commits and writes each publication row in that commit. The publisher selects the lowest unpublished revision of that aggregate; it never uses UUID or timestamp order as a substitute. |
 | PB-05 | **Scheduling is bounded and fair.** A persisted round-robin aggregate key prevents a hot aggregate from starving another; unpublished age and publication lag are monitored. |
 | PB-06 | **There is no global business-commit-order or cross-aggregate atomic-observation guarantee.** Clients can split a publication batch across pages. Referential dependencies are resolved by stable identifiers and canonical reads, not by assuming a parent is on the preceding page. |
-| PB-07 | **Publication reads immutable change fields after locking the watermark.** Business writers do not lock the watermark. There is no `SKIP LOCKED` claim scan over change rows; the current fence and lowest-unpublished predicate supply the exclusion/order. This is a design algorithm, with PostgreSQL fault-injection evidence still required by [PG-17](../../assurance/open-gates-register.md#rule-pg-17). |
+| PB-07 | **Publication reads immutable change fields after guarding the watermark revision.** Business writers do not mutate the watermark. There is no `SKIP LOCKED` claim scan over change rows; the current fence and lowest-unpublished predicate supply the exclusion/order. This is a design algorithm, with D1 fault-injection evidence still required by [PG-17](../../assurance/open-gates-register.md#rule-pg-17). |
 
 #### 9.2 Bootstrap, application and retention
 
@@ -1155,7 +1157,7 @@ Each batch admits at most one revision per selected aggregate; subsequent passes
 | `lease_expires_at` | `instant?` | Authoritative database time |
 | `updated_at` | `instant NN` | |
 
-Acquisition updates holder/expiry and increments the fence under a conditional row lock. Publication rechecks them in its own locked transaction. `last_seq` never decreases. `sync.bootstrap_manifest` records workspace/scope, W, immutable page references, build state, expiry and the retention pin; partial manifests are invisible and their staged objects are swept. This is bounded background work in the existing host.
+Acquisition updates holder/expiry and increments the fence under a conditional atomic D1 batch guard. Publication rechecks them in its own guarded D1 batch. `last_seq` never decreases. `sync.bootstrap_manifest` records workspace/scope, W, immutable page references, build state, expiry and the retention pin; partial manifests are invisible and their staged objects are swept. This is bounded background work in the existing host.
 
 ### `sync.tombstone`
 
@@ -1324,11 +1326,11 @@ platform.safety_receipt records immutable external journal record ID/hash, relat
 
 ### Chat-owned ordinary and temporary execution
 
-`chat.turn(turn_id PK,workspace_id,conversation_id,input_message_id,mode,state,rev,run_id?,stream_id?,final_message_id?,reason?,created_at,expires_at?,has_unknown_effect)` uses wire ChatMode/ChatTurnState. `UQ(workspace_id,input_message_id)` prevents duplicate generation admission. Final success requires a committed final message or explicit no-answer outcome. A turn cannot change ordinary/temporary into agent in place; promotion creates a linked Task once using `chat.turn_promotion(turn_id,task_id UNIQUE,preview_hash,command_id UNIQUE)`.
+`chat.turn(turn_id PK,workspace_id,conversation_id?,input_message_id?,mode,state,rev,run_id?,stream_id?,final_message_id?,reason?,created_at,expires_at?,has_unknown_effect)` uses wire ChatMode/ChatTurnState. `UQ(workspace_id,input_message_id)` prevents duplicate generation admission. For Cloud history, final success requires a committed final message or explicit no-answer outcome. Local/temporary metadata-only turns have null conversation/input/final message FKs and use the verified transient output receipt in model05. A turn cannot change ordinary/temporary into agent in place; promotion creates a linked Task once using `chat.turn_promotion(turn_id,task_id UNIQUE,preview_hash,command_id UNIQUE)`.
 
 `chat.execution_lease`, `chat.execution_command` and `chat.iteration_output` use the same closed lease/fence/receipt fields as their Task counterparts with turn_id instead of task_id, written only by Chat. Shared CF records carry `owner_kind enum(chatTurn,agentTask)` and `owner_id`; unique keys include workspace/ownerKind/ownerId/runId/attempt as applicable. Commerce logical/provider requests carry this pair, not a mandatory Task FK. Existing Task-only fields remain on actual Task records; no row is minted merely to satisfy an FK. The owner route is validated against the matching table inside the shared transaction; arbitrary polymorphic IDs cannot bypass ownership.
 
-Temporary body storage is `chat.transient_content(resource_id PK,turn_id?,conversation_id,key_ref,ciphertext_ref,sha256,size,expires_at,closed_at?,purged_at?)`. Prompt/output/attachment text is encrypted, excluded from ordinary history, Sync, Knowledge and backups, and expires within24hours; close marks it inaccessible immediately and purges within1hour. CF checkpoints carry IDs only. Account deletion/revocation denies access immediately regardless of physical purge delay. Metadata-only owner/financial rows keep the normal retention, no text in telemetry or compact receipts. Temporary compaction summaries never enter this table.
+Temporary body storage is `chat.transient_content(resource_id PK,turn_id?,conversation_id?,key_ref,ciphertext_ref,sha256,size,expires_at,closed_at?,purged_at?)`. Prompt/output/attachment text is encrypted, excluded from ordinary history, Sync, Knowledge and backups, and expires within24hours; close marks it inaccessible immediately and purges within1hour. CF checkpoints carry IDs only. Account deletion/revocation denies access immediately regardless of physical purge delay. Metadata-only owner/financial rows keep the normal retention, no text in telemetry or compact receipts. Temporary compaction summaries never enter this table.
 
 Task/Chat control uses `control_receipt(command_id PK,owner_id,kind,state,requested_at,acknowledged_at?,reason?,request_hash)` and the existing owner command fence. One latest projection does not erase previous receipts. Interrupted/partial success and unknown effect are distinct, following wire04.
 

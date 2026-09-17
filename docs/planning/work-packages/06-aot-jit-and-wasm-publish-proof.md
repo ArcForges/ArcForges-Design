@@ -57,7 +57,7 @@
 | BR-05 | **A debug build passing is never evidence for a release target** ([PM-01](../../architecture/14-build-packaging-and-release.md#rule-pm-01) in the build architecture). |
 | BR-06 | **The proof is continuous**, re-run on every main-branch build ([PM-02](../../architecture/14-build-packaging-and-release.md#rule-pm-02) there), not a one-off milestone. |
 | BR-07 | **Every third-party control entering an AOT deliverable requires its own publish proof** (**[V-05a](../../assurance/phase-1-official-verification.md#rule-v-05a)**). |
-| BR-08 | Generated native gRPC clients and explicit HTTP-exception adapters must pass their real AOT dependency/registration gate; browser/Android use their selected generated TS closure. |
+| BR-08 | Generated gRPC-Web clients and explicit HTTP-exception adapters must pass their real AOT dependency/registration gate; browser/Android use their selected generated TS closure. |
 
 ---
 
@@ -65,14 +65,14 @@
 
 | Location | Change |
 |---|---|
-| `src/ArcChat/ArcChat.Desktop/` | Minimal AOT-publishable host: window, one command, local RPC attach, cloud client construction |
+| `DesktopPlatform/samples/AssistantHost/` | Minimal AOT shell/typed-port probe; full assistant implementation follows WP15/17, with no dependency on those future packages |
 | `src/ArcNotes/ArcNotes.Desktop/`, `src/ArcScope/ArcScope.Desktop/`, `src/ArcSlate/ArcSlate.Desktop/` | Equivalent minimal AOT-publishable hosts |
 | `src/Cloud/ArcForges.Cloud.Host/` | Minimal host running the real pipeline order with a health endpoint and one contract endpoint |
 | `src/Web/ArcForges.Web.App/` | Minimal React browser application making one typed client call |
 | `tests/LocalRpcAotTests/` | Extended: attach, invoke and detach against a published AOT binary |
 | `tests/ReleaseArtifactTests/` | Extended: published-artifact launch and posture inspection |
 | `eng/verification/` | The publish proof scripts and their evidence output |
-| CI | AOT publish added to the main-branch pipeline for all four desktop products |
+| CI | AOT publish added to the main-branch pipeline for all three professional desktop products |
 
 ---
 
@@ -86,7 +86,7 @@
 
 **Testing requirements.** A publish log per RID with a zero-diagnostic assertion; a launch smoke test executed against the published artifact on each platform; a clean-machine test confirming no runtime prerequisite.
 
-**Completion gate.** All four hosts publish AOT with zero diagnostics and launch on every supported platform.
+**Completion gate.** All three professional hosts publish AOT with zero diagnostics and launch on every supported platform.
 
 <a id="rule-wp-06.01"></a>
 
@@ -101,12 +101,12 @@
 
 <a id="rule-wp-06.02"></a>
 
-### WP-06.02 — Generated gRPC client under AOT
+### WP-06.02 — Generated gRPC-Web under AOT
 
 
-**What must be fully done.** From a published AOT desktop binary consume the actual released generated native gRPC client and source-generated HTTP-exception adapters against the AOT Cloud probe. Verify explicit registration, opaque native session handler, deadlines/status/details and exact primitive values.
+**What must be fully done.** Consume exact generated binary gRPC-Web client from published AOT desktop against actual Worker/Container ingress; prove headers, trailers, cancellation, scoped errors and exact primitives.
 
-**Testing requirements.** Real TLS call, negative dynamic/reflection dependency check, invalid protocol response, expiry/refresh and supported contract vectors.
+**Testing requirements.** Verify the stated behavior against the exact real artifact/owner boundary. Include scope/permission, wrong or stale target, loss/retry, expiry and applicable native UI cases from experience03; named later-provider fixtures cannot close real integration.
 
 **Completion gate.** [F-026](../../assurance/open-gates-register.md#rule-f-026) passes on the actual generated-client AOT closure.
 
@@ -115,20 +115,20 @@
 ### WP-06.03 — Realtime under AOT
 
 
-**What must be fully done.** From the AOT probe use EventService.Poll with scoped cursor initialization, bounded event pages and snapshot/backfill. Drop connections, expire the cursor and revoke scope; verify current authoritative reads recover hints.
+**What must be fully done.** Prove EventService.Watch and output server streams plus Poll/readOutput recovery from annex10 on actual Worker/Container/DO; drop/expire/revoke and recover through authoritative reads.
 
-**Testing requirements.** Actual host reconnect/reset/duplicate/out-of-order and revoked-session runs.
+**Testing requirements.** Verify the stated behavior against the exact real artifact/owner boundary. Include scope/permission, wrong or stale target, loss/retry, expiry and applicable native UI cases from experience03; named later-provider fixtures cannot close real integration.
 
 **Completion gate.** Generated unary hints and durable reads work under AOT; no SignalR dependency or claimed hint durability.
 
 <a id="rule-wp-06.04"></a>
 
-### WP-06.04 — Cloud Native AOT publish
+### WP-06.04 — Cloudflare Native AOT and D1 proof
 
 
-**What must be fully done.** Publish the single Native AOT Cloud OCI image with the selected Linux base, Npgsql/SQL and explicit session/WebAuthn/OIDC/HTTP adapters. Run real PostgreSQL migrations, transaction/outbox/lease and auth/CSRF/revoke probes. Deploy the exact CF Worker/Workflow/DO bindings and R2 test buckets, use reachable authenticated C# callback ports and exercise one bounded model intent/outcome and one staged/verified object. Measure the admitted verifier envelope.
+**What must be fully done.** Publish/deploy the actual C# Container, private Worker D1 named-plan binding, DO/Queue/R2 foundation; prove rollback on guard failure, exact64bit/decimal, session/CSRF/revoke and bounded checkpoint/restart. No full product Harness claim.
 
-**Testing requirements.** Zero AOT/trim diagnostics; pipeline order, cookie/native auth and WebAuthn proof vectors under published code; real DB/CF/R2/lease-loss and provider version acknowledgement.
+**Testing requirements.** Verify the stated behavior against the exact real artifact/owner boundary. Include scope/permission, wrong or stale target, loss/retry, expiry and applicable native UI cases from experience03; named later-provider fixtures cannot close real integration.
 
 **Completion gate.** [VG-06](../../assurance/open-gates-register.md#rule-vg-06) foundation proof covers the entire selected dependency closure and deployed provider boundary; no full product Harness claim is made.
 
@@ -156,11 +156,11 @@
 ---
 
 <a id="rule-wp-06.07"></a>
-### WP-06.07 — Android and minimal CF/R2 transport proof
+### WP-06.07 — Android gRPC-Web and CF proof
 
-**What must be fully done.** Build/install actual Kotlin Android release probe consuming WP03 Maven artifacts; prove exact64bit values, grpc-okhttp/TLS/trailers/cancellation, credentials/Keystore and CF standard HTTP exceptions. Build a minimal test-only deployed Worker/DO/R2 plus AOT host probe with fixed schemas, leases/hash/offset/expiry. Pin actual compatible toolchain versions after this proof.
+**What must be fully done.** Build/install Kotlin Android release consuming actual Maven Connect Kotlin gRPC-Web clients; exercise unary/server-stream/trailers/cancel/Keystore and real Worker/Container/D1/DO/R2 foundation. Pin the compatible actual toolchain after proof.
 
-**Testing requirements.** Physical device and clean-browser/AOT clients; real reachable Worker/R2 and negative stale fence/size/hash cases. Record tool versions and provider identities.
+**Testing requirements.** Verify the stated behavior against the exact real artifact/owner boundary. Include scope/permission, wrong or stale target, loss/retry, expiry and applicable native UI cases from experience03; named later-provider fixtures cannot close real integration.
 
 **Completion gate.** Selected runtime and transport are proven; this minimal probe requires no future full Harness, product native package or WP30 app.
 

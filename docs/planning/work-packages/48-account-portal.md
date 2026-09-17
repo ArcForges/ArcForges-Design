@@ -96,7 +96,7 @@
 
 **What must be fully done.** Use the [P2-003](../../decisions/phase-2-specification-decisions.md#rule-p2-003) adapter implemented in [WP-22.08](22-identity-workspace-and-device.md#rule-wp-22.08), not a new auth choice. Complete passkey/email verification/recovery, live opaque cookie session, server-controlled expiry/revocation and sensitive-action step-up on the real account origin topology. Fetch CSRF state safely and never hold bearer/refresh tokens in the app. Coordinate tabs without rotating credentials per request; require fresh authentication after absolute expiry.
 
-**Testing requirements.** Playwright against production assets/edge/real Cloud and PostgreSQL: login/logout, two origins and two tabs, sibling-origin CSRF on JSON/multipart, passkey expected origin, replica restart, expiry/revoke races, no token in storage/URL/logs, no cookie leakage, step-up failure, no elevated new-browser trust. Manual passkey/browser matrix evidence supplements automation.
+**Testing requirements.** Playwright against production assets/edge/real Cloud and D1: login/logout, two origins and two tabs, sibling-origin CSRF on JSON/multipart, passkey expected origin, replica restart, expiry/revoke races, no token in storage/URL/logs, no cookie leakage, step-up failure, no elevated new-browser trust. Manual passkey/browser matrix evidence supplements automation.
 
 **Completion gate.** Browser authentication and sensitive actions work through the adopted server session authority with no credential leaks, session resurrection, CSRF bypass or high-risk trust shortcut.
 

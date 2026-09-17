@@ -67,7 +67,7 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 | Location | Change |
 |---|---|
-| `src/BuildingBlocks/ArcForges.Persistence/` | Created or reconciled: store abstraction, write path, journal, snapshot, migration runner |
+| `src/BuildingBlocks/ArcForges.Persistence.Sqlite/` | Created or reconciled: store abstraction, write path, journal, snapshot, migration runner |
 | `src/BuildingBlocks/ArcForges.Persistence.Sqlite/` | The local working store provider |
 | `src/BuildingBlocks/ArcForges.Persistence.Resources/` | The managed resource store and the large append store |
 | `src/BuildingBlocks/ArcForges.Persistence.Derived/` | The derived-store abstraction with rebuild semantics |

@@ -1,5 +1,7 @@
 # ArcForges Cloud Architecture
 
+P2-012 current implementation authorities: [Complete D1/Container transaction and recovery profile](data-model/04-d1-execution-profile.md); [Public gRPC-Web and application scopes](contracts/10-application-scope-and-streams.md).
+
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Architecture
 > Governing authority: **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** (ASP.NET Core **Native AOT** modular monolith), **[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)** (topology), **[V-03](../assurance/phase-1-official-verification.md#rule-v-03)**/**[V-05e](../assurance/phase-1-official-verification.md#rule-v-05e)** (the evidence)
@@ -9,7 +11,7 @@
 
 ## 1. Runtime decision
 
-[P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) requires Native AOT for the complete C# business host. The selected dependency/session/SQL/HTTP adapter closure is in [the platform matrix](21-platform-and-dependency-matrix.md#8-selected-p2-009-runtime-and-dependency-closure). Use explicit gRPC service/serializer registration, Minimal API exceptions, Npgsql fixed SQL and supported cryptography. No automatic ASP.NET Session, dynamic ORM, runtime assembly scanning or JIT exception is allowed. WP06 publishes and exercises the real dependency closure; prose cannot satisfy that gate.
+[P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) requires Native AOT for the complete C# business host. The selected dependency/session/SQL/HTTP adapter closure is in [the platform matrix](21-platform-and-dependency-matrix.md#8-selected-p2-009-runtime-and-dependency-closure). Use explicit gRPC service/serializer registration, Minimal API exceptions, D1 binding adapter fixed SQL and supported cryptography. No automatic ASP.NET Session, dynamic ORM, runtime assembly scanning or JIT exception is allowed. WP06 publishes and exercises the real dependency closure; prose cannot satisfy that gate.
 
 ---
 
@@ -18,11 +20,11 @@
 **One deployable host** (**[P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006)**; `§8` of the product scope). `ArcForges.Cloud.Host` is the single ASP.NET Core Native AOT executable. Business request handlers, bounded hint reads, canonical Task/Agent ports and ordinary leased background jobs run inside it as libraries. The sole model loop runs in CF Workflow, outside this process. Horizontal scale is **replicas of that one host**, never a second deployable with a different job.
 
 ```
-Desktop native gRPC / Web gRPC-Web / Kotlin Android native gRPC
+Desktop gRPC-Web / Web gRPC-Web / Kotlin Android gRPC-Web
                    -> TLS ingress -> C# Native AOT Cloud (identical replicas)
                       explicit auth/tenancy/authorization/validation
                       business owners + leased bounded jobs
-                      PostgreSQL + transactional outbox
+                      D1 + transactional outbox
                    -> same-origin /ai, /objects -> CF Worker router
                       RunWorkflow: only model/tool loop -> Workers AI
                       RunStream DO: bounded disposable stream tail
@@ -34,7 +36,7 @@ Cloud clients never connect inbound to a desktop; device tools pull from Cloud.
 | # | Rule |
 |---|---|
 | RT-01 | **The host is stateless between requests.** Anything that must survive a request lives in the database or object storage. |
-| RT-02 | **The host never scales to zero and runs at least two replicas**, so a single instance is never a correctness assumption. |
+| RT-02 | **C# runs in restartable Cloudflare Containers that may sleep.** Worker ingress wakes ready instances; D1/DO/Queues preserve durable work. No minimum replica count is a correctness assumption. |
 | <a id="rule-rt-03"></a>RT-03 | **Every replica is identical and runs the same hosted services.** There is no role flag, no worker-only deployment and no leader instance chosen by configuration. |
 | <a id="rule-rt-04"></a>RT-04 | **Concurrency across replicas is controlled by durable leases with fencing**, not by deploying exactly one instance. A hosted service claims work by lease, renews while working, and loses it cleanly on expiry (`§9`). |
 | <a id="rule-rt-05"></a>RT-05 | **A hosted service is bounded.** It claims a batch, processes it and yields. An unbounded generation loop inside a request handler or a hosted service is prohibited ([SIM-10](../requirements/products/arcscope.md#rule-sim-10) of the ArcScope requirements). |
@@ -113,7 +115,7 @@ Twenty domain modules, following the [Cloud schema ownership map](data-model/01-
 
 | # | Rule |
 |---|---|
-| <a id="rule-ps-01"></a>PS-01 | **One primary PostgreSQL database, partitioned by module-owned schemas.** |
+| <a id="rule-ps-01"></a>PS-01 | **One primary D1 database per realm, partitioned by module-owned table prefixes; atomic families stay in that database.** |
 | PS-02 | **Short-lived connection and transaction per request or unit of work.** |
 | PS-03 | **Optimistic concurrency by revision token** on every mutable aggregate. |
 | <a id="rule-ps-04"></a>PS-04 | **The outbox commits inside the business transaction** — this is what makes "no lost business fact" true. |
@@ -124,7 +126,7 @@ Twenty domain modules, following the [Cloud schema ownership map](data-model/01-
 | PS-09 | **Migration is a separate, gated deployment step.** Automatic migration on replica start-up is prohibited ([MG-01](../requirements/products/arcforges-cloud.md#rule-mg-01) in the cloud product requirements). |
 | <a id="rule-ps-10"></a>PS-10 | **Schema change uses expand/contract**, so two application versions coexist during a rolling deployment. |
 | PS-11 | **A mapping and SQL-generation enhancement layer may be adopted after benchmarking**; it is not a prerequisite. |
-| PS-12 | Use the selected Npgsql fixed-SQL mapping; no reflection-driven ORM enters the AOT host. |
+| PS-12 | Use the selected D1 binding adapter fixed-SQL mapping; no reflection-driven ORM enters the AOT host. |
 
 ---
 
@@ -132,7 +134,7 @@ Twenty domain modules, following the [Cloud schema ownership map](data-model/01-
 
 | # | Rule |
 |---|---|
-| AP-01 | Public business services implement the handwritten proto service definitions using native gRPC and unary gRPC-Web. Only the enumerated browser-auth/provider/object/AI/platform protocol exceptions use HTTP/JSON or their standard wire format. |
+| AP-01 | Public business services implement handwritten proto through binary gRPC-Web unary methods and bounded server streams for all client platforms. Only the enumerated browser-auth/provider/object/AI/platform protocol exceptions use HTTP/JSON or their standard wire format. |
 | AP-02 | **Standard web semantics are preserved**: status codes, headers, cache control, ETag and conditional requests, so proxies, browsers and non-.NET clients all work. |
 | AP-03 | **OpenAPI is generated from the proto descriptors** for observation and third parties — never maintained as a parallel handwritten source (**[D-009](../decisions/phase-1-foundation-decisions.md#rule-d-009)**). |
 | AP-04 | **API drift is controlled by** shared DTO and route constants, generated description artifacts, server-client contract integration tests, and a compatibility matrix of the previous stable client against the current server. |
@@ -147,16 +149,16 @@ Twenty domain modules, following the [Cloud schema ownership map](data-model/01-
 
 | # | Rule |
 |---|---|
-| RL-01 | EventService.Poll carries the17 typed hints in the wire registry. Live AI text deltas use the separate CF presentation channel. |
+| RL-01 | EventService.Poll/Watch carry the 17 existing typed hints. Live AI text uses ExecutionService.ReadOutput/WatchOutput over the same public gRPC-Web boundary; D1 task/message authority and transient-body rules remain separate. |
 | RL-02 | Hints and AI presentation never own durable commands, transactions, large objects, task outcomes or the only recovery path. |
 | RL-03 | Hints carry the numbered event envelope and the revision/identities declared by their payload; they never invent a global sequence. |
 | <a id="rule-rl-04"></a>RL-04 | After loss or expired cursor, query current authoritative snapshots and resume from the returned cursor; no hidden partial backfill. |
 | RL-05 | Publish hints only after the owning transaction commits. Event delivery cannot commit domain state. |
 | RL-06 | A client acknowledgement is not a business commit. |
 | RL-07 | Losing hints never loses a business fact. |
-| RL-08 | Hints are generated proto on EventService.Poll; there are no SignalR hub methods or source-generated JSON hint bodies. |
+| RL-08 | EventService.Watch/Poll and ExecutionService.WatchOutput/ReadOutput use generated proto and durable owner/cursor recovery. |
 | RL-09 | Initial clients use bounded unary polling with the cadence/backoff in contracts05; no required backplane, affinity or transport negotiation. |
-| RL-10 | The CF Durable Object presentation WebSocket uses the existing token, authorization/revocation and expiry checks in contracts05. It is presentation-only and does not require a new authorization HTTP call for every frame. |
+| RL-10 | C# gRPC-Web server streams expose authorized DO projections with finite lifetime and current authorization refresh under annex10; no public AI WebSocket. |
 
 ---
 
@@ -178,7 +180,7 @@ Outbox dispatcher (a hosted service in the host)
 | EV-01 | **Outbox/inbox delivery is never business authority**; owner state and the emitting outbox row commit atomically. |
 | EV-02 | **Every consumer is idempotent**, keyed by `EventId`. |
 | EV-03 | **Required ordering uses the owning outbox/inbox stream and fence**, never an undeclared broker session or global sequence. |
-| EV-04 | **PostgreSQL outbox/inbox dead-letter state** is monitored, inspectable and replayable. |
+| EV-04 | **D1 outbox/inbox dead-letter state** is monitored, inspectable and replayable. |
 | EV-05 | **There is no global event sequence** ([EV-09](02-contracts-and-protocols.md#rule-ev-09) in the contracts architecture). Sequences are per stream or per resource. |
 | EV-06 | **No separate broker or backplane is provisioned in V1.** A later addition requires measured need and an explicit design decision. |
 

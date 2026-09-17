@@ -11,7 +11,7 @@ Two mechanisms, one principle: **neither carries authority**. Realtime tells a c
 
 ## 1. The realtime event set
 
-Every event carries `{ subscriptionKey, seq, workspaceId, occurredAt, correlationId }` plus its own payload. `seq` is per subscription ([SB-03](#rule-sb-03)), which is what makes a gap detectable.
+Every event carries `{ subscriptionKey, seq, workspaceId, occurredAt, correlationId }` with application scope bound by its subscription/owner plus its own payload. `seq` is per subscription ([SB-03](#rule-sb-03)), which is what makes a gap detectable.
 
 | Event | Payload | Consumer action |
 |---|---|---|
@@ -116,7 +116,7 @@ Cloud ── writes task.tool_request (durable, expiring) ──▶ queue
    │
    │  realtime: bridge.requestAvailable { count }        ── a hint only
    ▼
-ArcChat Desktop
+Targeted professional application
    │  bridge.pullRequests                                ── the desktop initiates
    ▼
 LOCAL RE-AUTHORIZATION  ── local policy, local registry, local grants, local actor chain
@@ -195,7 +195,7 @@ Cloud updates the task; realtime hints the requester; the requester re-reads
 
 ### 6.1 Browser adapter
 
-Desktop, React and Kotlin Android use generated EventService.Poll with the bounded cadence in [CF integration](05-cloudflare-integration.md#5-live-presentation-and-client-recovery). These17 hints have generated protobuf payloads. Every reconnect repairs authoritative cursors/snapshots; no replica affinity/backplane or browser streaming API is required. AI presentation separately uses the same-origin CF WebSocket/HTTP range contract; a live connection never grants effect authority.
+Desktop, React and Kotlin Android use generated EventService.Watch with Poll recovery and ExecutionService.WatchOutput/ReadOutput under [annex10](10-application-scope-and-streams.md). All17 hints retain generated payloads and durable reread. Scope, product/installation/instance epoch and current authorization bind every remote request/result. The C# gRPC-Web service exposes DO projections; there is no public AI WebSocket or local product peer. A live connection never grants effect authority.
 
 ---
 

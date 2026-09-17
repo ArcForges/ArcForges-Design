@@ -18,53 +18,23 @@ The same-machine surface. Every interface here is an authored proto RPC contract
 | `ILocalBootstrap`, `ILocalEvents` | Each normal product | Verified peers; lease and bounded hints |
 | `IDeviceSsoBroker`, `IConnectorBroker` | Owning security/connector adapter | Verified peer on behalf of foreground human |
 | `IContentSandbox` | Restricted helper | Exact launch-bound parent only |
-| `IHubRegistry` | ArcChat Hub | Every product |
-| `IHubRouting` | ArcChat Hub | Every product |
-| `ICapabilityProvider` | Every product | Hub, on behalf of callers |
+| `ICapabilityProvider` | Every product | owning application composition, for its authorized callers |
 | `IContextProvider` | Every product | ArcChat |
 | `IArtifactHandler` | Every product | ArcChat |
 | `IResourceAccess` | Every product | Any authorised peer |
-| `IProductLifecycle` | Every product | Hub |
-| `IDeepLinkTarget` | Every product | Hub |
-| `INotesOperations`, `IScopeOperations`, `ISlateOperations`, `IChatOperations` | The owning product | Hub, on behalf of callers |
+| `IProductLifecycle` | Every product | owning application composition |
+| `IDeepLinkTarget` | Every product | owning application composition |
+| `INotesOperations`, `IScopeOperations`, `ISlateOperations`, `IChatOperations` | The owning product | owning application composition, for its authorized callers |
 | `IExtensionHost` | Product process | Extension process *(the protocol of [`../15-extension-platform-architecture.md`](../15-extension-platform-architecture.md), listed here for completeness)* |
 
 ---
 
+<a id="rule-rt-02"></a>
 ## 2. Registration and routing
 
-### `IHubRegistry`
+`IHubRegistry` and `IHubRouting` are reserved historical names, excluded from current generated server registration and runtime. There is no application-to-application discovery or routing. Their future use requires activation of the [cross-product plan](../../future/cross-product-collaboration/README.md).
 
-```
-RegisterAsync(RegistrationRequest)        → ArcResult<RegistrationLease>
-RenewLeaseAsync(LeaseId)                  → ArcResult<RegistrationLease>
-DeregisterAsync(LeaseId)                  → ArcResult<Unit>
-ReportHealthAsync(LeaseId, HealthReport)  → ArcResult<Unit>
-```
-
-`RegistrationRequest` carries `AppIdentity`, `InstallationId`, `InstanceId`, the contract set version, the contributed `CapabilityDescriptor[]`, `ActionDescriptor[]`, context-provider kinds, artifact kinds and deep-link patterns.
-
-| # | Rule |
-|---|---|
-| RG-01 | **Registration is idempotent.** Re-registering the same instance renews rather than duplicating ([WP-08.02](../../planning/work-packages/08-local-ipc-and-registration.md#rule-wp-08.02)). |
-| RG-02 | **A lease expires without renewal**, so a killed provider disappears without the Hub polling. |
-| RG-03 | **Re-registration after a Hub restart is automatic**, driven by the provider's reconnect loop, and requires no user action. |
-| RG-04 | **A provider that cannot reach the Hub continues to work fully.** Registration failure degrades ecosystem features only ([BR-01](../../planning/work-packages/14-hub-and-minimal-provider-slice.md#rule-br-01) of [WP-14](../../planning/work-packages/14-hub-and-minimal-provider-slice.md#rule-wp-14)). |
-
-### `IHubRouting`
-
-```
-ResolveCapabilityAsync(CapabilityKey, ResolutionContext) → ArcResult<CapabilityBinding>
-ListContributionsAsync(ContributionFilter)               → ArcResult<Page<ContributionSummary>>
-GetHealthAsync(AppIdentity?)                             → ArcResult<AggregateHealth>
-```
-
-| # | Rule |
-|---|---|
-| RT-01 | **Resolution is deterministic and explainable** — `CapabilityBinding` carries *why* this provider was chosen ([WP-09.02](../../planning/work-packages/09-capability-contribution-and-resource-model.md#rule-wp-09.02)). |
-| <a id="rule-rt-02"></a>RT-02 | **The Hub routes; it never relays a payload body** ([BR-03](../../planning/work-packages/08-local-ipc-and-registration.md#rule-br-03) of [WP-08](../../planning/work-packages/08-local-ipc-and-registration.md#rule-wp-08)). A binding names an endpoint; the caller connects to it. |
-
----
+Current product services below are typed in-process Application ports. The Platform assistant registers only its own application's operations; Cloud's tool bridge dispatches to one authenticated application installation and the owner calls the same handlers. Private parent/helper discovery and bootstrap are separately specified in annex09.
 
 ## 3. Capability invocation
 
@@ -82,7 +52,7 @@ InvokeAsync(InvocationRequest)               → ArcResult<InvocationOutcome>
 | # | Rule |
 |---|---|
 | CI-01 | **`EvaluateAvailabilityAsync` is side-effect free** and cheap enough to run on UI enumeration ([WP-09.03](../../planning/work-packages/09-capability-contribution-and-resource-model.md#rule-wp-09.03)). |
-| CI-02 | **`InvokeAsync` performs owner-side final validation regardless of what the caller asserts** ([BR-02](../../planning/work-packages/20-first-cross-product-workflow.md#rule-br-02) of [WP-20](../../planning/work-packages/20-first-cross-product-workflow.md#rule-wp-20)). An approval reference is evidence resolved by the owner, never authority by possession. |
+| CI-02 | InvokeAsync always performs owner-side final validation under WP14.04/WP26.02. An approval reference is resolved by the owner, never authority by possession. |
 | CI-07 | **`InvokeAsync` is the boundary, not a product contract.** It decodes into a generated typed request and calls the product's typed operation (`§3.1`). The structured value never travels past the decode step, so [AC-02](../00-architecture-overview.md#rule-ac-02)'s prohibition on a catch-all first-party call holds where it matters — in the product's own contracts. |
 | CI-03 | **Context is frozen by the caller and immutable in transit** ([WP-09.04](../../planning/work-packages/09-capability-contribution-and-resource-model.md#rule-wp-09.04)). The provider never re-reads live context mid-invocation. |
 | CI-04 | **The outcome carries the resulting authority-specific version**, so the caller can chain without re-reading. |
@@ -147,8 +117,8 @@ ProvideContextAsync(ContextRequest)             → ArcResult<ContextContributio
 
 | # | Rule |
 |---|---|
-| CX-01 | **Oversized context is refused explicitly**, never silently truncated ([WP-20.00](../../planning/work-packages/20-first-cross-product-workflow.md#rule-wp-20.00)). The refusal names what was requested and what the budget allows. |
-| CX-02 | **A contribution states its size before it is used**, so the user can see what is being shared ([WP-20.00](../../planning/work-packages/20-first-cross-product-workflow.md#rule-wp-20.00)). |
+| CX-01 | **Oversized context is refused explicitly**, never silently truncated ([WP-17](../../planning/work-packages/17-arcchat-independent-core.md#rule-wp-17)). The refusal names what was requested and what the budget allows. |
+| CX-02 | **A contribution states its size before it is used**, so the user can see what is being shared ([WP-17](../../planning/work-packages/17-arcchat-independent-core.md#rule-wp-17)). |
 | CX-03 | **Raw evidence never enters a contribution** where the product's rules forbid it — ArcScope raw capture and ArcSlate media are structurally excluded ([WP-35.01](../../planning/work-packages/35-arcscope-integration-and-sync.md#rule-wp-35.01), [WP-39.01](../../planning/work-packages/39-arcslate-integration-and-portability.md#rule-wp-39.01)). |
 
 ### `IArtifactHandler`
@@ -164,9 +134,9 @@ OpenAsync(ArtifactRef, OpenIntent)    → ArcResult<Unit>
 | # | Rule |
 |---|---|
 | AR-01 | **`ResolveAsync` re-checks permission at access** ([WP-14.05](../../planning/work-packages/14-hub-and-minimal-provider-slice.md#rule-wp-14.05)), never trusting that the reference was obtained legitimately. |
-| AR-02 | **A stale or deleted target is reported honestly** — `state.gone` rather than a plausible-looking empty result ([WP-20.04](../../planning/work-packages/20-first-cross-product-workflow.md#rule-wp-20.04)). |
+| AR-02 | **A stale or deleted target is reported honestly** — `state.gone` rather than a plausible-looking empty result ([WP-17](../../planning/work-packages/17-arcchat-independent-core.md#rule-wp-17)). |
 | AR-03 | **`RenderPreviewAsync` returns a bounded presentable form**, never the underlying body (`§4` of the rich-content architecture). |
-| AR-04 | **`OpenAsync` is rich handoff**: it activates the owning product on the right object, and works whether or not that product is already running ([WP-17.06](../../planning/work-packages/17-arcchat-independent-core.md#rule-wp-17.06)). |
+| AR-04 | An assistant-generated artifact belongs to its frozen application/Cloud execution scope and existing resource owner. Shared UI does not create a separate ArcChat owner or another product's write permission. |
 
 ---
 
@@ -185,7 +155,7 @@ ReleaseAsync(ResourceId, ReferrerRef)           → ArcResult<Unit>
 |---|---|
 | <a id="rule-ra-01"></a>RA-01 | **A path is never returned.** `TransferChannel` and `TransferTicket` carry controlled access; `LocalResourceLocator` is resolved by the owner and is not a user-visible path ([XS-01](../data-model/00-data-model-overview.md#rule-xs-01), [I-192](../../requirements/01-normative-glossary-and-invariants.md#rule-i-192)). |
 | RA-02 | **Range, checksum, cancellation and rate limiting are all supported**. |
-| RA-03 | **The Hub carries no body** ([WP-14.05](../../planning/work-packages/14-hub-and-minimal-provider-slice.md#rule-wp-14.05)), and a test asserts it. |
+| RA-03 | **Resource bodies stay with the owning product adapter.** The assistant consumes a bounded authorized preview or opaque handle; no shared process, path-based relay or cross-product body route exists. |
 
 ### `IProductLifecycle` and `IDeepLinkTarget`
 
@@ -304,7 +274,7 @@ The methods below use the version preconditions in [NO-02](#rule-no-02). Noteboo
 | # | Rule |
 |---|---|
 | <a id="rule-ch-01"></a>CH-01 | **`StartAgentTurnAsync` submits the turn to Cloud and returns a `TaskRef` immediately.** It does **not** start a local loop: the Harness is Cloud-only ([LS-02](../17-agent-harness.md#rule-ls-02) of the harness). Generation is durable Cloud execution. |
-| CH-02 | **ArcChat exposes no operation that writes another product's state.** It invokes their capabilities ([BR-01](../../planning/work-packages/20-first-cross-product-workflow.md#rule-br-01) of [WP-20](../../planning/work-packages/20-first-cross-product-workflow.md#rule-wp-20)). |
+| CH-02 | The assistant invokes only the current product's typed in-process handlers or authorized same-product Cloud tools; cross-product writes and handoff remain future-only. |
 | CH-03 | **A turn submitted with no active paid service term is refused with `entitlement.no_service_term`** before any provider call ([AD-01](../16-billing-and-commerce-architecture.md#rule-ad-01)). The desktop surfaces the reason and the action; it never retries into a paid path on its own. |
 | CH-04 | **Only acknowledged content is submitted as context.** An unsent draft or an unacknowledged local edit is visible to the user, not to the model ([PK-04](../17-agent-harness.md#rule-pk-04) of the harness, [I-124](../../requirements/01-normative-glossary-and-invariants.md#rule-i-124), [I-498](../../requirements/01-normative-glossary-and-invariants.md#rule-i-498)). |
 
@@ -321,7 +291,7 @@ The methods below use the version preconditions in [NO-02](#rule-no-02). Noteboo
 | Any whole-document or whole-project replace | [NO-01](#rule-no-01) — it would destroy concurrent edits |
 | Any operation that writes raw capture | [SO-04](#rule-so-04) |
 | A device-control operation | [SO-03](#rule-so-03) |
-| A relay operation on the Hub | [RT-02](#rule-rt-02) — the Hub carries no body |
+| Any cross-product relay operation | Current product ports stay in process; future Cloud collaboration has no active endpoint. |
 | Any local model, embedding or inference operation | **[P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006)** — all inference is Cloud ([C-02](../../requirements/00-product-scope-and-portfolio.md#rule-c-02), [CM-02](../09-ai-and-agent-runtime-architecture.md#rule-cm-02)) |
 | Any operation accepting or storing an end-user model-provider key | **[P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006)** — no end-user BYOK ([BY-01](../../requirements/04-commerce-entitlement-and-credits.md#rule-by-01)–[BY-04](../../requirements/04-commerce-entitlement-and-credits.md#rule-by-04)) |
 | Any local planning, tool-selection or turn-loop operation | The Harness is Cloud-only ([LS-02](../17-agent-harness.md#rule-ls-02)). The desktop executes authorised tools; it does not choose them |
@@ -335,20 +305,20 @@ The methods below use the version preconditions in [NO-02](#rule-no-02). Noteboo
 
 | # | Obligation | Where |
 |---|---|---|
-| LV-01 | Every initial method has an authored proto service/field binding and explicit generated registration; missing/extra/reflection-only methods fail the build | [WP-03.04](../../planning/work-packages/03-contract-foundation-and-licence-split.md#rule-wp-03.04), [WP-05.03](../../planning/work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05.03) |
-| LV-02 | Bidirectional invocation works between two published AOT binaries with generated proxies | [WP-06.01](../../planning/work-packages/06-aot-jit-and-wasm-publish-proof.md#rule-wp-06.01) |
+| LV-01 | Every typed product operation has an authored record binding and static delegate; only helper/extension methods have RPC registrations | WP03.04 and WP05.03 |
+| LV-02 | Parent/helper control works between published AOT binaries; product calls use typed in-process ports | WP06/08 and WP14 |
 | LV-03 | Owner-side validation refuses regardless of caller assertion, including a forged approval token | [WP-14.04](../../planning/work-packages/14-hub-and-minimal-provider-slice.md#rule-wp-14.04) |
 | LV-04 | Every write is idempotent on `CommandId` under retry, disconnection and concurrency | [WP-14.03](../../planning/work-packages/14-hub-and-minimal-provider-slice.md#rule-wp-14.03) |
 | LV-05 | Context freezing is provable: a mutation during invocation does not affect the frozen snapshot | [WP-09.04](../../planning/work-packages/09-capability-contribution-and-resource-model.md#rule-wp-09.04) |
-| LV-06 | The Hub demonstrably carries no payload body | [WP-14.05](../../planning/work-packages/14-hub-and-minimal-provider-slice.md#rule-wp-14.05) |
+| LV-06 | Resource previews stay within the declared bounds and no cross-product body relay exists | WP14.05 |
 | LV-07 | No interface exposes a path, a secret, or a raw capture read | Contract policy test |
-| LV-08 | Every product starts, works and saves with the Hub absent | [WP-14.06](../../planning/work-packages/14-hub-and-minimal-provider-slice.md#rule-wp-14.06) |
+| LV-08 | Each product starts, works and saves with Cloud offline and other products absent | WP14.06 |
 
-## P2-009 executable wire and transport binding
+## P2-012 executable wire and transport binding
 
 Every operation/event above maps to the [numbered wire registry](04-protobuf-wire-registry.md). It fixes requests/results, record fields, enums, exact values, local counterpart preconditions, service names and compatibility. [CF integration](05-cloudflare-integration.md) fixes AI/object HTTP exceptions, frame/state recovery and authorization. New supporting bootstrap, upload-status, automation and conversation-create methods are enumerated there with their authorization/idempotency classes; none is left for endpoint invention during implementation.
 
-## Local bootstrap and read-channel binding
+## Helper bootstrap and read-channel binding
 
 The [complete local profile09](09-local-grpc-and-sandbox.md) and numbered registry04 add Renew, LocalEvents.Poll, ConnectorBroker and every typed ContentSandbox operation. No untyped event, private helper command or unspecified bootstrap proof remains; all are initial WP03 outputs.
 

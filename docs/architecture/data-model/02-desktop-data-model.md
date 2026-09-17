@@ -1,11 +1,13 @@
 # Desktop Local Data Model
 
+P2-012 current implementation authorities: [Canonical local assistant history, complete schema and mode lifecycle](05-application-history.md).
+
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Architecture · Data model
 > Governing authority: [`00-data-model-overview.md`](00-data-model-overview.md), [`../06-data-persistence-and-formats.md`](../06-data-persistence-and-formats.md)
 > Companions: [`../04-desktop-application-architecture.md`](../04-desktop-application-architecture.md), [`../07-sync-conflict-and-backup.md`](../07-sync-conflict-and-backup.md)
 
-Each desktop product owns its SQLite store. Chat/Notes hold acknowledged Cloud projections plus durable unsent/pending work. Scope/Slate retain local authority for native working content and jobs, with separately revisioned Cloud metadata replicas. The version domains are defined in [the authority map](00-data-model-overview.md#4-authority-map--where-the-authoritative-copy-lives).
+Each desktop product owns its SQLite store. Cloud-mode assistant history and Notes hold acknowledged Cloud projections plus durable pending work; local-mode assistant history is canonical in its own app store under model05. Scope/Slate retain local authority for native working content and jobs, with separately revisioned Cloud metadata replicas. The version domains are defined in [the authority map](00-data-model-overview.md#4-authority-map--where-the-authoritative-copy-lives).
 
 **Store technology.** An embedded relational store with an AOT-safe access path ([CS-01](../06-data-persistence-and-formats.md#rule-cs-01)). Journaling is enabled only after per-platform and per-filesystem validation ([CS-04](../06-data-persistence-and-formats.md#rule-cs-04)), because network volumes, removable media and container filesystems each break different assumptions.
 
@@ -13,7 +15,7 @@ Each desktop product owns its SQLite store. Chat/Notes hold acknowledged Cloud p
 
 ## 1. What every product store contains
 
-Five table groups are identical in shape across all four products. They are specified once here and referenced, not repeated.
+Five table groups are identical in shape across the three professional products and shared assistant. They are specified once here and referenced, not repeated.
 
 ### 1.1 `sys_meta`
 

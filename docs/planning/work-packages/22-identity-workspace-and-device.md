@@ -154,9 +154,9 @@
 
 ### WP-22.07 — Local integration
 
-**What must be fully done.** Desktop sign-in with device registration, secure session storage through the broker, and a unified sign-in experience across the four products on one device. Sign-out distinguishes its four actions and never deletes local data.
+**What must be fully done.** Desktop sign-in with device registration, secure session storage through the broker, and a unified sign-in experience across the three professional products on one device. Sign-out distinguishes its four actions and never deletes local data.
 
-**Testing requirements.** Cross-product sign-in on one device; sign-out variants; a test asserting local data survives every sign-out variant and account deletion.
+**Testing requirements.** same-application sign-in on one device; sign-out variants; a test asserting local data survives every sign-out variant and account deletion.
 
 **Completion gate.** Sign-in is unified per device, and no sign-out variant nor account deletion removes local data.
 
@@ -169,7 +169,7 @@
 
 **What must be fully done.** Implement the same-origin browser adapter in the AOT host using the selected random hashed session/preauth/CSRF records. Preserve the browser/native exclusive schema, exact Origin, idle/absolute expiry, lowest-trust browser installation and one-use auth flow. Map the declared /session bootstrap/auth/logout endpoints to existing application services. Use explicit cookie parsing/writing and X-AF-CSRF validation; no ASP.NET Data Protection/cookie-auth middleware dependency.
 
-**Testing requirements.** Real PostgreSQL one-use challenge, lost login response, idle-versus-revoke race, expiry and replica failover; browser exact Origin/CSRF on unsafe RPC/session/CF-connect/object operations, native-token route refusal and WebSocket first-frame auth.
+**Testing requirements.** Real D1 one-use challenge, lost login response, idle-versus-revoke race, expiry and replica failover; browser exact Origin/CSRF on unsafe RPC/session/stream/object operations, native-token route refusal and gRPC-Web stream authorization.
 
 **Completion gate.** One server-owned session authority, no JS bearer, no cross-origin reuse or session resurrection; actual AOT closure feeds WP23 and full portal acceptance.
 
@@ -213,7 +213,7 @@
 | Step-up coverage, expiry and non-substitution results | [WP-22.04](#rule-wp-22.04) |
 | Token scope and revocation results | [WP-22.05](#rule-wp-22.05) |
 | Recovery abuse-resistance, state matrix and deletion results | [WP-22.06](#rule-wp-22.06) |
-| Cross-product sign-in and local-data-survival results | [WP-22.07](#rule-wp-22.07) |
+| same-application sign-in and local-data-survival results | [WP-22.07](#rule-wp-22.07) |
 | Owned artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/OS/device/provider, scenario, result, limitations and real-versus-fixture status; inapplicable fields explicitly marked | [WP-22.90](#rule-wp-22.90) |
 
 ---

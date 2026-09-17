@@ -27,40 +27,21 @@ Five constraints determine almost every structural decision downstream.
 
 ## 2. Runtime topology
 
-```
-┌──────────────────────────── User's machine ────────────────────────────┐
-│                                                                        │
-│   ArcChat.exe                ArcNotes.exe    ArcScope.exe   ArcSlate.exe│
-│   Avalonia · Hub · Client     Avalonia        Avalonia       Avalonia    │
-│   Native AOT                 Native AOT      Native AOT     Native AOT  │
-│        │                          │               │              │      │
-│        └──── gRPC over Named Pipe / Unix domain socket ─┘      │
-│              (semantic capability invocation, first-party, same machine)│
-└────────┬───────────────────┬──────────────┬──────────────┬─────────────┘
-         │                   │              │              │
-         │  TLS: native gRPC + bounded EventService hint polling
-         │                   │              │              │
-         ▼                   ▼              ▼              ▼
-┌────────────────────────────────────────────────────────────────────────┐
-│                          ArcForges Cloud                               │
-│              ASP.NET Core Native AOT modular monolith  (D-008)                │
-│  Identity · Workspace · Devices · Entitlement · Chat · Task · Agent     │
-│  Sync · Resource · Search · Notification · Policy · Audit · Support     │
-└──────────────▲──────────────────────────────────────▲──────────────────┘
-               │                                      │
-     HTTPS + realtime                        HTTPS + realtime
-               │                                      │
-        ArcChat Mobile                          Browser
-        Kotlin/Jetpack Compose · Android            React/TypeScript
-        (Android only)                         static public pages
-                                                + ArcForges.Web.App
+```text
+ArcNotes + own assistant/store ─┐
+ArcScope + own assistant/store ─┤
+ArcSlate + own assistant/store ─┼─ HTTPS gRPC-Web → Worker → C# Container
+Android / Web companions ───────┘                           ↓
+                                            D1 / DO / Queues / R2
+                                            AI Workflow / Workers AI
+Private parser/extension children: own parent ↔ gRPC Named Pipe/UDS
 ```
 
 ### 2.1 Three communication responsibilities, never conflated
 
 | Path | Technology | Carries |
 |---|---|---|
-| **Same-machine, first-party, process-to-process** | Authored proto + generated native gRPC over Named Pipe / UDS | Semantic capability invocation, Hub registration, local events |
+| **Private parent/child process boundary** | Authored proto + generated native gRPC over Named Pipe / UDS | Restricted parser/extension controls only; product handlers execute in process |
 | **Public request/response** | ASP.NET Core Minimal API server; generated gRPC client for C#, generated gRPC-Web SDK for TypeScript | Commands, queries, durable state, uploads and downloads |
 | **Public realtime** | gRPC hint polling | Presence, notifications, progress, chat deltas, remote wake-up |
 
@@ -70,7 +51,7 @@ Five constraints determine almost every structural decision downstream.
 
 | Path | Route | Rule |
 |---|---|---|
-| **Local capability** | ArcChat Hub ↔ professional product, same machine | Strongly typed, owner-authorised, never remote UI |
+| **Local capability** | application-scoped capability registry ↔ professional product, same machine | Strongly typed, owner-authorised, never remote UI |
 | **Cloud data** | Each product ↔ Cloud directly | **ArcChat is not a gateway** (**[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)**) |
 | **Remote agent** | Mobile/Web → Cloud → **durable `ToolRequest`** → ArcChat Desktop pulls, re-authorises, executes → idempotent `ToolResult` | **Cloud never connects to localhost, a pipe, a socket or local stdio** (**[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)**) |
 | **Handoff** | Product → product, user-directed | Resource reference plus deep link; no orchestration needed |
@@ -128,11 +109,11 @@ Fixed by **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**, e
 | # | Rule |
 |---|---|
 | PM-01 | **Each product instance is a complete, autonomous operating-system process.** "Single process" means the product plus its native libraries in one process — never all products merged into one. |
-| PM-02 | **ArcChat hosts the Hub inside its own process**; no system service is installed. |
-| PM-03 | **The Hub manages platform state only**: application/instance catalogue, capability registry, routing, health, local permission/approval coordination, operational trace, local audit coordination and the outbound remote bridge. The [Cloud Harness](17-agent-harness.md) owns agent plans, cross-product orchestration and compensation; native product jobs retain their product owner. |
-| PM-04 | **The Hub never holds product domain state**, never proxies files or media, never becomes a shared filesystem, a universal project database, or a universal undo service. |
-| PM-05 | **A product reaches a locally usable state with the Hub absent** and re-registers when it returns. |
-| PM-06 | **Products never reference one another's Domain or Application assemblies.** Interaction is through stable cross-application contracts only. |
+| PM-02 | Each professional application hosts its own assistant window/service, SQLite store and Cloud connection through Platform packages. |
+| PM-03 | Capabilities, context, approvals and local tool execution are registered only inside the owning application. Cloud holds authorized application presence/remote queue state. |
+| PM-04 | Platform shares code and mechanisms, never a cross-product domain database, filesystem, undo stack or live singleton. |
+| PM-05 | A professional application starts/saves locally without Cloud; its own Cloud session/presence reconnects in the background. |
+| PM-06 | **Products never reference another product's Domain or Application assemblies.** Shared mechanisms come from Platform packages; current remote control targets one application. Cross-product collaboration is future-only. |
 | <a id="rule-pm-07"></a>PM-07 | **Three identity axes exist and are distinct**: `AppId` (stable product identity), `InstallationId` (one installed copy on one device), `InstanceId` (one running process). `AppId == ProcessId` is prohibited. |
 
 ---
@@ -157,21 +138,14 @@ Types such as `ArcForges.Foundation.Document`, `.VideoTimeline` or `.TelemetrySe
 
 Two boundaries, enforced by build-time checks (**[D-004](../decisions/phase-1-foundation-decisions.md#rule-d-004)**, **[D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021)**).
 
-```
-Apache-2.0 — interoperability boundary
-├── ArcChat Mobile application, mobile-only libraries, tests, packaging, platform integrations
-├── Public protocol specifications required for mobile interoperability
-├── Public wire schemas, public/mobile DTOs, generated and handwritten public clients
-├── Validation rules expressing wire-format constraints
-├── Public protocol state semantics required for independent interoperability
-└── The public SDK surface
-
-AGPL-3.0-only — remaining product/platform/server implementation (all Contracts is Apache-2.0 under P2-010)
-├── ArcChat Desktop, ArcNotes, ArcScope, ArcSlate
-├── ArcForges Cloud and every server implementation
-├── Product-domain behaviour, server orchestration, desktop use cases
-├── Policy decisions, persistence behaviour, entitlement authority
-└── Base ViewModel implementations and UI scaffolding
+```text
+ArcNotes + own assistant/store ─┐
+ArcScope + own assistant/store ─┤
+ArcSlate + own assistant/store ─┼─ HTTPS gRPC-Web → Worker → C# Container
+Android / Web companions ───────┘                           ↓
+                                            D1 / DO / Queues / R2
+                                            AI Workflow / Workers AI
+Private parser/extension children: own parent ↔ gRPC Named Pipe/UDS
 ```
 
 | # | Rule |
@@ -189,7 +163,7 @@ AGPL-3.0-only — remaining product/platform/server implementation (all Contract
 |---|---|
 | Commands within one document | Strongly consistent under a local transaction |
 | Multiple documents in one product | Per-document transactions coordinated by an application-level saga |
-| Cross-product | Eventually consistent: sagas, idempotent commands, compensation, visible state |
+| same-application | Eventually consistent: sagas, idempotent commands, compensation, visible state |
 | Public HTTP | A success response means the server completed or accepted the request as defined; long work returns a `TaskHandle` |
 | Realtime | Visibility only, never the sole source of truth; gaps backfill by revision/sequence over HTTP |
 | Cross-device | The sync protocol plus revisions; **synchronising a database file is prohibited** |
@@ -232,8 +206,8 @@ Every write command carries at minimum `CommandId`, the target identity, `Expect
 | Document | Scope |
 |---|---|
 | [`01-solution-and-project-layout.md`](01-solution-and-project-layout.md) | Repository layout, project boundaries, reference direction, licence boundaries, architecture tests |
-| [`02-contracts-and-protocols.md`](02-contracts-and-protocols.md) | Contract split (**[D-009](../decisions/phase-1-foundation-decisions.md#rule-d-009)**), the cross-application semantic model, versioning and compatibility |
-| [`03-local-ipc-and-process-model.md`](03-local-ipc-and-process-model.md) | gRPC, transports, Hub registration, discovery, routing, health, backpressure |
+| [`02-contracts-and-protocols.md`](02-contracts-and-protocols.md) | Contract split (**[D-009](../decisions/phase-1-foundation-decisions.md#rule-d-009)**), the same-application semantic model, versioning and compatibility |
+| [`03-local-ipc-and-process-model.md`](03-local-ipc-and-process-model.md) | gRPC, transports, private helper registration, authentication and routing, health, backpressure |
 | [`04-desktop-application-architecture.md`](04-desktop-application-architecture.md) | Avalonia host, MVVM, threading, multi-window, AOT constraints, lifecycle |
 | [`05-cloud-architecture.md`](05-cloud-architecture.md) | Native AOT modular business host, module boundaries, host pipeline, persistence, outbox, realtime, background work |
 | [`06-data-persistence-and-formats.md`](06-data-persistence-and-formats.md) | Local stores, journals and snapshots, native formats, migration mechanics |
@@ -254,7 +228,7 @@ Every write command carries at minimum `CommandId`, the target identity, `Expect
 
 Answerable before any feature merges:
 
-**Products and state** — Who is the sole authoritative owner of this state? Is the Hub wrongly holding product domain state? Do core product features still work with the Hub offline? Are cross-application paths eventually consistent and compensatable?
+**Products and state** — Is the authoritative owner explicit? Are reusable assistant state and professional domain state separated within each application? Do local editing, saved history and recovery work offline? Does each remote action keep its frozen application target and reconcile unknown effects?
 
 **Layering** — Do local UI, local RPC and public HTTP all reach the same application service? Do adapters avoid referencing view models and controls entirely? Is Domain free of UI, database, transport and native dependencies? Are DTOs, domain models and view state kept unmixed?
 
@@ -287,7 +261,7 @@ Answerable before any feature merges:
 | In-process native library crash | Narrow C ABI, `SafeHandle`, input validation, fuzzing and sanitizers, sacrificial-process tests, crash dumps, journal recovery |
 | Over-sharing produces a giant monolith | A shared language is not a shared model: split contracts by boundary and ownership, enforce module ownership, ban cross-product infrastructure references |
 | Breaking renames under interface-first RPC | Contract versioning rules, V1/V2 coexistence, an old-client matrix, and API diffs |
-| The Hub becomes a central business service | The Hub data model admits platform state only; product tables, documents and undo stacks never enter it; periodic architecture audits |
+| Platform becomes a universal business database | Assistant packages own reusable assistant state only; professional tables/documents/undo belong to the product. Package reference and schema ownership tests enforce this boundary |
 | An agent bypasses permission | Agents call only ordinary typed capabilities; the owner performs final authorization; high-risk approvals bind a parameter digest; auditing is end to end |
 | Premature microservices and messaging infrastructure | Cloud starts as a modular monolith; splitting requires demonstrated need; no distributed messaging on the local machine |
 
@@ -304,5 +278,5 @@ Answerable before any feature merges:
 | **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** | The runtime and AOT matrix, including Cloud as Native AOT under [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) |
 | **[D-009](../decisions/phase-1-foundation-decisions.md#rule-d-009)** | Contract granularity |
 | **[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)** | Cloud topology and the durable local-action model |
-| **[D-011](../decisions/phase-1-foundation-decisions.md#rule-d-011)** | The implementation ten-repository target under [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) |
+| **[D-011](../decisions/phase-1-foundation-decisions.md#rule-d-011)** | The implementation nine-repository target under [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) |
 | **[V-03](../assurance/phase-1-official-verification.md#rule-v-03)**, **[V-04](../assurance/phase-1-official-verification.md#rule-v-04)**, **[V-05](../assurance/phase-1-official-verification.md#rule-v-05)** | The AOT evidence underpinning the matrix |

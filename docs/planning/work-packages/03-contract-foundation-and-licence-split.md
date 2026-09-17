@@ -133,17 +133,17 @@ The complete initial Resource/owner/query/measurement/simulator, public operatio
 ### WP-03.04 — Local RPC contract discipline
 
 
-**What must be fully done.** Generate local services, request/reply types, LocalBootstrap, lease and controlled transfer/read-chunk contracts. Map each selected method to the exact service descriptor and cancellation/deadline/error shape; runtime peer authentication belongs to WP08.
+**What must be fully done.** Generate parent/helper bootstrap, extension and sandbox services under annex09, plus typed in-process product-port records. Register only methods marked private-helper in annex11; Hub/DeviceSsoBroker descriptors are reserved future schemas and ordinary product ports create no RPC listeners. Preserve cancellation, deadline, error and buffer semantics; runtime parent/child authentication belongs to WP08.
 
 **Testing requirements.** Compile every local operation, descriptor-registration policy checks, wrong-oneof and malformed-transfer fixtures.
 
-**Completion gate.** All local contracts needed by products have concrete generated signatures and explicit registration paths.
+**Completion gate.** Every helper method and in-process product port has concrete generated signatures; registration tests reject future or in-process descriptors on an RPC host.
 
 <a id="rule-wp-03.05"></a>
 
 ### WP-03.05 — Complete C#/TypeScript/Kotlin generation and candidate gate
 
-**What must be fully done.** Generate all initial C#, TypeScript and Java/Kotlin-lite messages/clients/validators from authored proto and declared HTTP/extension/policy schemas; export descriptor/ABI/profile fixtures. Produce complete immutable NuGet/npm/Maven candidate set with hashes and notices.
+**What must be fully done.** Generate all initial C#, TypeScript and Java/Kotlin messages, Connect Kotlin and C#/TS gRPC-Web clients, and validators from authored proto and declared exception/extension/policy schemas. Include all 335 legacy operation bindings classified by annex11, all 13 new annex10 operations, appended scope/history fields and the archive record format. Export descriptor/ABI/profile fixtures and complete immutable NuGet/npm/Maven candidates with hashes and notices.
 
 **Testing requirements.** Network-free regeneration after locked tool restore; all numbered types/operations/profiles resolve, independent exact-value and error vectors, isolated C#/React/Kotlin consumers.
 
@@ -169,9 +169,9 @@ The complete initial Resource/owner/query/measurement/simulator, public operatio
 
 **Execution order.** Follow [staged artifact integration](../README.md#staged-artifact-integration): consume only existing assigned producers, publish an owned capability candidate before its product consumer, and verify the declared stage against exact upstream artifacts. Record pending later owners and their closing gates; local mocks cover only that named test boundary.
 
-**Testing requirements.** Deterministic generation, compatibility/reserved-field checks, Apache closure and independent precise-value/error/profile vectors; both generated client ecosystems restore actual candidate artifacts.
+**Testing requirements.** Deterministic generation, compatibility/reserved-field checks, Apache closure and independent precise-value/error/profile vectors; all three generated client ecosystems restore actual candidate artifacts.
 
-**Completion gate.** Deterministic generation, compatibility/reserved-field checks, Apache closure and independent precise-value/error/profile vectors; both generated client ecosystems restore actual candidate artifacts. Record exact artifacts and provider reality. The package is incomplete if an important contract/owner/recovery rule still requires design during coding.
+**Completion gate.** Deterministic generation, compatibility/reserved-field checks, Apache closure and independent precise-value/error/profile vectors; all three generated client ecosystems restore actual candidate artifacts. Record exact artifacts and provider reality. The package is incomplete if an important contract/owner/recovery rule still requires design during coding.
 
 ---
 
@@ -203,7 +203,7 @@ Generate an operation-by-actor reachability matrix for every public/local/operat
 | Round-trip results for every foundation and descriptor type | [WP-03.01](#rule-wp-03.01), [WP-03.03](#rule-wp-03.03) |
 | Reflection-absence and generator-diagnostic reports | [WP-03.02](#rule-wp-03.02) |
 | RPC contract policy test results | [WP-03.04](#rule-wp-03.04) |
-| Determinism proof and negative baseline-diff test | [WP-03.05](#rule-wp-03.05) |
+| Determinism, complete application-scope manifest, new stream/history records and negative baseline-diff test | [WP-03.05](#rule-wp-03.05) |
 | Compatibility matrix results and the committed golden vectors | [WP-03.06](#rule-wp-03.06) |
 | Owned artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/OS/device/provider, scenario, result, limitations and real-versus-fixture status; inapplicable fields explicitly marked | [WP-03.90](#rule-wp-03.90) |
 
@@ -211,7 +211,7 @@ Generate an operation-by-actor reachability matrix for every public/local/operat
 
 ## 8. Completion gate
 
-**[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) gate:** [WP-03.90](#rule-wp-03.90) and all inherited domain-specific gates must pass on the same candidate closure. Deterministic generation, compatibility/reserved-field checks, Apache closure and independent precise-value/error/profile vectors; both generated client ecosystems restore actual candidate artifacts.
+**[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) gate:** [WP-03.90](#rule-wp-03.90) and all inherited domain-specific gates must pass on the same candidate closure. Deterministic generation, compatibility/reserved-field checks, Apache closure and independent precise-value/error/profile vectors; all three generated client ecosystems restore actual candidate artifacts.
 
 **[VG-04](../../assurance/open-gates-register.md#rule-vg-04) evidence:** [WP-03.04](#rule-wp-03.04) — Generated-shape policy for every real RPC interface; combine with the published-host RPC proof from package 06. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
 
@@ -239,3 +239,7 @@ Generate an operation-by-actor reachability matrix for every public/local/operat
 ## P2-010 required behavior and closure
 
 Include source KnowledgePolicy/Patch/View, typed one-use overrides, stable Notes run/atom/table-cell positions and all complete initial owner/profile records. Descriptor fixtures and cross-language validation must enumerate them. The referenced normative profile and producer stage matrix are binding inputs. Record independent positive/negative vectors and actual owner integration at this WP's assigned stage; a mock cannot close a real-provider/device requirement.
+
+## Current application and stream contract completeness
+
+WP03.05 implements [annex10](../../architecture/contracts/10-application-scope-and-streams.md) and the exhaustive [scope manifest11](../../architecture/contracts/11-operation-scope-manifest.md) together with the existing registry. Generate all appended fields, history-import archive records,13 new operations, EventService.Poll and operator bindings. Verify every operation has one current scope/transport class; reserved future Hub/DeviceSso methods are absent from active service registration and tool allowlists. Public connector management remains an application-scoped Cloud API, not helper IPC. C#/TS/Kotlin fixtures include binary unary/stream frames and scope/presence/unknown fields; clean consumers must use current published contracts-connect-client rather than the older native-grpc-only Android client. This is required before03 completion, not a .90 design task.

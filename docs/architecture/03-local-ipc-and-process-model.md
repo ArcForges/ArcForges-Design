@@ -1,263 +1,46 @@
-# Local IPC, Hub and Process Model
+# Application Process and Private Helper IPC
 
-> Status: **Authoritative** — Phase 2 (Detailed Specifications)
-> Layer: Architecture
-> Governing authority: **[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)** (cloud topology and local action), **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** (AOT matrix), **[V-05b](../assurance/phase-1-official-verification.md#rule-v-05b)** (gRPC AOT evidence)
-> Companions: [`02-contracts-and-protocols.md`](02-contracts-and-protocols.md), [`04-desktop-application-architecture.md`](04-desktop-application-architecture.md), [`08-security-architecture.md`](08-security-architecture.md)
+Authority: P2-012. Professional applications host their own UI, domain, assistant service/store and Cloud client. There is no shared Hub, shared coordinator, product discovery, cross-product local listener or peer data relay. [Architecture27](27-platform-projects-and-application-assistants.md) fixes process/project ownership; [annex10](contracts/10-application-scope-and-streams.md) fixes Cloud targeting and public gRPC-Web.
 
-All same-machine first-party application/control RPC uses authored proto and generated native gRPC under P2-011, including restricted helpers. The [complete local profile](contracts/09-local-grpc-and-sandbox.md) fixes wire ownership, peer/launch authentication, resource boundaries and recovery.
+## Current process topology
 
----
+Product UI/assistant → typed in-process Application handlers → owned domain/store/native wrappers. Each app → Worker ingress → C# Container over gRPC-Web. A Cloud tool request targets exactly one application installation and is reauthorized in that application's process. Android/Web never connect to a desktop local endpoint.
 
-## 1. Generated service shape
+Only parent-owned ContentSandbox and admitted extension/connector children use local RPC. Use authored proto/generated native gRPC, Kestrel HTTP/2 over owner-only Windows Named Pipe or Unix domain socket, and ConnectCallback clients. No TCP port is opened for this local boundary. The parent supplies a private endpoint/launch identity; no directory/LAN/global registry scan occurs. Child crash/parent exit revokes the launch grants and removes the endpoint.
 
-Each ordinary product hosts explicitly registered generated protobuf services in a minimal Kestrel HTTP/2 listener. Callers use Grpc.Net.Client and ConnectCallback for the OS stream. Each side hosts its own listener for reverse calls; gRPC is not the old symmetric peer channel. ArcChat Hub is a library inside ArcChat, not another executable or a mandatory professional-product relay. The [wire registry](contracts/04-protobuf-wire-registry.md#8-transport-and-generation-acceptance) fixes exact methods, fields, framing, versions and bounded calls.
+## Private boundary rules
 
----
+OS identity/ACL and authenticated LocalBootstrap bind parent/child, build/protocol and fresh nonce/epoch. Names are not authentication. Helpers use restricted OS tokens/profiles and only brokered resource/buffer grants; unrestricted same-user children do not satisfy containment. Opposite-direction callbacks use explicitly parent-created bounded channels, never a peer application registry. Keep the30s lease/10s renewal and16active/64queued bounds for admitted helper connections, with deadlines and typed overload/cancel/effect results.
 
-## 2. Authenticated local transport
+Large parser input/output uses bounded broker resource grants and verified transfer/buffer mechanisms in [annex09](contracts/09-local-grpc-and-sandbox.md), not arbitrary filesystem paths or cross-product transfer tickets. Signed parser/helper runtime and native libraries come from tested Platform packages. Product UI remains responsive and canonical data remains recoverable if a helper fails. Ordinary in-process app handlers need no RPC bootstrap, heartbeat or network serialization.
 
-Windows uses asynchronous Named Pipes with current-user ACL; inspect the actual client/server process identity through the named-pipe OS connection, not a claimed PID. Linux uses private directory0700/socket0600 and SO_PEERCRED; macOS uses peer credentials/PID and signed-code identity where available. UDS path is at most100 UTF-8 bytes. All production listeners are pipe/UDS, no fixed TCP port and no public interface. Tests exercise actual published processes, not only in-memory streams.
+## Required verification
 
-Verify user/process/build against the selected registered application before exchanging a random32-byte session nonce through the authenticated bootstrap. Nonces live in memory, expire with the independent30-second peer lease (renew10s), separate from Hub registration, and are never written to the endpoint manifest. Per-peer scopes and capability grants are checked on every call. The Hub may issue a scoped peer introduction; the actual owner still authenticates and authorizes. Hub absence preserves product local use and direct Cloud access. Restricted helper and extension control follows the same gRPC protocol over parent-provisioned streams. macOS XPC is limited to initial OS activation/descriptor handoff; it carries no business or helper command.
+WP06 proves two real AOT helper-probe processes over each exact OS transport; WP08 implements the parent-bound mechanics; WP11 proves hostile-child containment; WP13 composes actual parser libraries. Tests cover wrong OS user/nonce/build, stale epoch, malformed/truncated protobuf, queue saturation, cancellation, lost acknowledgement, parent death, orphan cleanup and repeated restricted relaunch. No first-party product-to-product fixture is a current requirement. WP26/52 separately prove Cloud-targeted same-app tools, and professional products remain locally usable when Cloud is unavailable.
 
----
+## Stable rule and section references
 
-## 3. Wire and flow-control profile
+The following legacy anchors are retained for existing links. Their current normative meaning is the helper-only topology, authentication, bounds, lifetime and verification above; none retains the retired application runtime/discovery behavior. Cross-product examples are [future only](../future/cross-product-collaboration/README.md).
 
-Use the handwritten proto/generated C# services from Contracts, HTTP/2 protobuf framing and explicit registration. No MessagePack/JSON-RPC formatter, dynamically marshaled object or runtime proxy construction. Business unary messages <=4 MiB, normal replies10s, permitted synchronous measurement30s,16 concurrent calls and64 queued per peer; refuse overflow before dispatch. Long jobs return handles and bulk content uses authorized references/transfer channels. Timeouts/cancellation after dispatch retain effect uncertainty. Reconnect rebuilds authenticated channels and typed clients; it never resends a non-idempotent command automatically.
-
----
-
-## 4. Hub and registration
-
-### 4.1 Endpoint manifest
-
-At start-up each product atomically writes the generated EndpointManifest protobuf after its listener is ready. [Local profile §2](contracts/09-local-grpc-and-sandbox.md#2-discovery-peer-verification-and-bootstrap) fixes every field, size, OS identity check and safe stale cleanup rule; it is never a credential.
-
-| # | Rule |
-|---|---|
-| <a id="rule-em-01"></a>EM-01 | **The manifest is not a credential.** Session tokens are never written into it. |
-| EM-02 | **A connecting process verifies** peer user/process/build/contracts and the in-memory nonce credential established through the OS-authenticated peer bootstrap. Hub introductions are optional scoped routing hints, not the sole credential issuer. |
-| EM-03 | Cleanup checks process-start identity, exact manifest and exclusive runtime-directory lock; connection failure alone never authorizes unlinking another endpoint. |
-
-### 4.2 Registration lifecycle
-
-```
-Product starts
-  → creates its own endpoint and RPC target
-  → reaches a locally usable state (independent of the Hub)
-  → connects to the Hub
-  → authenticates
-  → registers instance, endpoint, capabilities, contract set, versions, features
-  → Hub returns RegistrationAccepted with a lease; the authenticated peer bootstrap has already established its in-memory credential
-  → heartbeats while the lease is active
-```
-
-| # | Rule |
-|---|---|
-| RG-01 | **A product starts its own endpoint first, then connects to the Hub.** |
-| RG-02 | **Hub unavailability never prevents a product reaching a locally usable state** (`§3.1` of the product scope). |
-| RG-03 | **The Hub evicts out-of-contact instances by lease**, not by inference. |
-| RG-04 | **On reconnect a product uses a new session identity and idempotently replaces its old registration** (`§12` of the contracts architecture). |
-| RG-05 | **Re-registration is idempotent.** |
-| RG-06 | **Application-level information survives instance death**; only instance-scoped state is removed. |
-| RG-07 | **A normal exit unregisters proactively; a crash is cleaned up by lease expiry.** |
-| RG-08 | **After a connection is re-established, new generated clients are bound to freshly authenticated channels.** Old proxies are never reused. |
-
-### 4.3 Health and backpressure
-
-Instances report: `Ready` / `Busy` / `Degraded` / `Draining`, current task count, queue depth, an optional load level, the supported contract set and feature flags, and the last successful heartbeat plus process start time.
-
-| # | Rule |
-|---|---|
-| HB-01 | **Callers must handle `Busy`, a retry-after hint and a queue ceiling.** |
-| HB-02 | **An unbounded queue is not a fault-tolerance strategy.** Every channel and queue has a capacity and an overflow policy. |
-| HB-03 | **A provider that drops offline is marked unroutable within a small, bounded number of heartbeat cycles.** |
-| HB-04 | Health, presence, readiness and compatibility remain five separate dimensions (`§11` of the contracts architecture). |
-
-### 4.4 Routing
-
-Priority is fixed (`§13.3` of the contracts architecture): explicit `InstanceId` → resource affinity → user-selected default → the single healthy instance → `SelectionRequired`.
-
-| # | Rule |
-|---|---|
-| RT-01 | **The Hub's document routing index stores only "which instance currently has which document open"** — never document content. |
-| RT-02 | **The Hub never picks at random among several candidates.** |
-| RT-03 | **Where several instances of one product exist, routing carries `InstanceId` or the target resource identity.** |
-
----
-
-## 5. Connection management
-
-Each product has exactly one infrastructure component owning the RPC connection lifecycle:
-
-```
-configure private Named Pipe / UDS endpoint and explicit generated gRPC services
-  → start the Kestrel HTTP/2 listener, including the peer callback services
-  → verify OS peer identity inside the transport callback
-  → create GrpcChannel with ConnectCallback and generated typed clients
-  → complete LocalBootstrap on that same connection before ordinary calls
-  → register scoped capabilities and renew the peer lease
-  → observe call/lease failure and connection health
-  → reconnect with exponential backoff and jitter
-  → repeat peer authentication, registration and authoritative reconciliation
-```
-
-| # | Rule |
-|---|---|
-| CN-01 | **Business code never creates a pipe, a socket or an RPC instance, and never writes a method-name string.** |
-| CN-02 | **Infrastructure owns one reusable gRPC channel per authenticated peer endpoint/lease.** Business code cannot create competing channels or listeners. |
-| CN-03 | **Generated clients for several services share that channel.** Callbacks use the receiving process's own registered service and channel in the reverse direction. |
-| CN-04 | **Every service, message parser and client is generated from the pinned local proto descriptor set before build.** No runtime proxy generation. |
-| CN-05 | **Runtime assembly scanning and dynamic service discovery are prohibited.** |
-| CN-06 | **Server services are registered explicitly with generated gRPC bindings.** Reflection service enumeration is absent from shipped listeners. |
-| CN-07 | **All targets are registered before listening starts.** |
-| CN-08 | **RPC adapters hold no UI objects.** |
-| CN-09 | Target lifetimes are explicitly tied to the connection and application lifetime. |
-
----
-
-## 6. Concurrency and ordering
-
-**The transport is not an actor.** It supports concurrent calls, and synchronization-context behaviour is no substitute for domain concurrency control.
-
-| # | Rule |
-|---|---|
-| <a id="rule-cc-01"></a>CC-01 | **Each document session, timeline or capture session maintains write ordering** with a mailbox, an async lock, or a single-writer queue. |
-| CC-02 | **Business ordering is never expressed through RPC arrival order.** |
-| CC-03 | **A domain lock is never held while awaiting a peer callback.** |
-| CC-04 | **Bidirectional callbacks must not form a cycle** in which each side synchronously waits on the other. |
-| CC-05 | **Write commands rely on `ExpectedRevision` plus `CommandId`**, never on which call happened to be sent first. |
-| <a id="rule-cc-06"></a>CC-06 | **Optimistic revision is the default concurrency mode** ([CC-04](../requirements/05-ai-and-agent-execution.md#rule-cc-04) in the AI requirements). A long task does not hold a document lock. |
-| CC-07 | **Genuinely exclusive resources use lease and busy semantics provided by their owner** ([CC-05](../requirements/05-ai-and-agent-execution.md#rule-cc-05) there). |
-
----
-
-## 7. Disconnection, cancellation and retry
-
-The RPC layer implements no business retry.
-
-| # | Rule |
-|---|---|
-| DC-01 | Transport failure uses gRPC status; acknowledged business failures use the generated ArcResult outcome. Deadline/cancellation/disconnection after dispatch never proves an effect absent. |
-| DC-02 | Connection state is driven by observing completion and disconnection. |
-| DC-03 | **Cancelling locally executing calls on connection close may be enabled per scenario**, but a long-running business task never derives cancellation from connection lifetime alone. |
-| DC-04 | **Reconnection uses exponential backoff with jitter.** |
-| DC-05 | **Queries are safe to retry. Write commands are retried only under the same `CommandId`, with the owner implementing idempotency** ([ID-01](../requirements/05-ai-and-agent-execution.md#rule-id-01) in the AI requirements). |
-| DC-06 | **After reconnecting**: re-authenticate, re-register capabilities, and backfill state by revision or sequence. |
-
----
-
-## 8. Security of the local boundary
-
-**Local IPC is not itself an authentication or authorization system.**
-
-| # | Rule |
-|---|---|
-| SC-01 | **Operating-system permissions restrict access first**: pipe ACLs, socket file permissions, a private runtime directory. |
-| SC-02 | **A session handshake completes as the first stage after connecting.** |
-| SC-03 | **Session tokens bind `AppId`, `InstanceId`, endpoint, build identity, contract set and an expiry.** |
-| SC-04 | **Session tokens never appear in the endpoint manifest.** |
-| SC-05 | **Every call uses generated LocalCallContext metadata and RequestMeta correlation/scope under [local09](contracts/09-local-grpc-and-sandbox.md#2-discovery-peer-verification-and-bootstrap).** Business actors and evidence references must agree with the typed request; infrastructure-only roles cannot impersonate them. |
-| SC-06 | **The owner authorizes again at the final execution point** ([DP-02](../requirements/07-security-privacy-and-trust.md#rule-dp-02) in the security requirements). |
-| <a id="rule-sc-07"></a>SC-07 | **Being "local" never automatically grants every capability**, even where an untrusted process can reach the endpoint. |
-| SC-08 | **Cloud never connects to a local endpoint** (**[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)**). |
-
----
-
-## 9. Large data across the local boundary
-
-| # | Rule |
-|---|---|
-| LD-01 | **Large resources are never carried in an ordinary RPC request or response.** They cross as a `ResourceRef` plus controlled access, a file-handle strategy, or a temporary resource channel. |
-| LD-02 | **Ordinary RPC calls set a sensible message size limit.** |
-| LD-03 | **The Hub never relays media frames or large file bodies**. |
-| LD-04 | **Resource reads support range and chunking, checksums, cancellation and rate limiting.** |
-| LD-05 | **A path is returned only after both sides explicitly authorise, and after normalisation and root-directory checks.** |
-| LD-06 | **Temporary resources use short-lived capability tokens.** |
-| LD-07 | Product-to-product RPC never relays frames or GPU state. Restricted content-helper CPU tiles use the finite parent-owned slots in local profile09; no GPU pointer or global media bus is introduced. |
-
----
-
-## 10. Bidirectional communication
-
-| Traffic | Mechanism |
-|---|---|
-| Commands and queries | Strongly typed methods |
-| Low-frequency connection-level notifications | Generated LocalEventsService.Poll hints; authoritative reread after reset or lost lease |
-| High-frequency state streams | Bounded hints and owner revision/status reads; no undeclared async-stream wire type |
-| Large files or media frames | **Never** as ordinary RPC payloads — resource reference or controlled stream |
-
-**Events are never durable truth.** Recovery after a disconnect relies on revision and journal queries ([EV-10](02-contracts-and-protocols.md#rule-ev-10) in the contracts architecture).
-
----
-
-## 11. AOT checklist
-
-Answerable before any local RPC change merges (with the verified constraints in **[V-05b](../assurance/phase-1-official-verification.md#rule-v-05b)**):
-
-- [ ] Do handwritten proto and pinned generated descriptors cover every service/client/callback?
-- [ ] Are listener registration and message parsing static, with no reflection/proxy fallback?
-- [ ] Do channels use the actual Named Pipe/UDS OS identity and nonce bootstrap?
-- [ ] Do authentication, lease expiry, framing, limits and callback listeners work in the published AOT artifact?
-- [ ] Have disconnection, duplicate commands, revision conflicts and callback deadlock been tested?
-
-**Missing generated service/client code fails compilation or startup.** A real published AOT round trip, including the reverse callback direction, is required by WP06 and WP08; a generated-source inspection alone cannot pass it.
-
----
-
-## 12. Fault injection
-
-Required scenarios:
-
-Hub starts after the product · Hub restart · pipe or socket severed mid-call · product crashes before a command commit · product crashes after a command commit · lost heartbeats · duplicate commands · out-of-order responses · revision conflicts · potential bidirectional callback deadlock · queue overflow · slow consumer · oversized message · stale endpoint manifest · unauthorised local peer · incompatible contract set · instance restart during an in-flight task.
-
----
-
-## 13. The remote bridge
-
-**[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)** fixes the shape:
-
-```
-ArcChat Desktop opens an outbound authenticated connection to Cloud
-  ↓
-The user confirms device binding on the desktop
-  ↓
-Cloud delivers only restricted wake or intent messages to bound devices
-  ↓
-ArcChat Desktop pulls a durable ToolRequest
-  ↓
-ArcChat re-authorises locally: actor, capability, resource, risk, approval
-  ↓
-ArcChat routes to the owning product over local RPC
-  ↓
-The owner validates and authorises again, then executes
-  ↓
-Durable business results are written into the owner's own state
-  ↓
-An idempotent ToolResult is returned; cloud-persisted results use the generated Cloud gRPC API
-```
-
-| # | Rule |
-|---|---|
-| RB-01 | **Cloud never scans the LAN**, never opens an inbound connection to a user machine, and never addresses a local endpoint. |
-| RB-02 | **Mobile and web never talk to a local endpoint.** |
-| RB-03 | **Realtime is never the sole source of truth for a remote write.** |
-| RB-04 | **A remote write still passes through the local application service, with revision and idempotency.** |
-| RB-05 | **A command left unconfirmed when a realtime connection drops is re-adjudicated through durable task state, never blindly re-executed** ([FL-06](../requirements/05-ai-and-agent-execution.md#rule-fl-06), [FL-07](../requirements/05-ai-and-agent-execution.md#rule-fl-07) in the AI requirements). |
-| RB-06 | **Every step carries correlation, a `CommandId` and an audit record.** |
-| RB-07 | **The user can revoke device and capability scope at any time**, taking effect at the next security boundary. |
-
----
-
-## 14. Traceability
-
-| Current document | Relationship |
-|---|---|
-| [ArcForges Product Scope and Portfolio](../requirements/00-product-scope-and-portfolio.md) | Owns the local coordinator and direct Cloud data paths |
-| [Contracts, Protocols and the Cross-Application Semantic Model](02-contracts-and-protocols.md) | Defines capability, context, resource and compatibility semantics |
-| [Local RPC Operations](contracts/02-local-rpc-operations.md) | Defines the concrete typed local interfaces |
-| **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** | Desktop AOT deliverable constraints |
-| **[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)** | Cloud topology and the durable local-action model |
-| **[V-05b](../assurance/phase-1-official-verification.md#rule-v-05b)** | The formatter and proxy-generation evidence, and the contract-authoring obligation |
+<a id="1-generated-service-shape"></a>
+<a id="10-bidirectional-communication"></a>
+<a id="11-aot-checklist"></a>
+<a id="12-fault-injection"></a>
+<a id="13-the-remote-bridge"></a>
+<a id="14-traceability"></a>
+<a id="2-authenticated-local-transport"></a>
+<a id="3-wire-and-flow-control-profile"></a>
+<a id="4-hub-and-registration"></a>
+<a id="41-endpoint-manifest"></a>
+<a id="42-registration-lifecycle"></a>
+<a id="43-health-and-backpressure"></a>
+<a id="44-routing"></a>
+<a id="5-connection-management"></a>
+<a id="6-concurrency-and-ordering"></a>
+<a id="7-disconnection-cancellation-and-retry"></a>
+<a id="8-security-of-the-local-boundary"></a>
+<a id="9-large-data-across-the-local-boundary"></a>
+<a id="rule-cc-01"></a>
+<a id="rule-cc-06"></a>
+<a id="rule-em-01"></a>
+<a id="rule-sc-07"></a>

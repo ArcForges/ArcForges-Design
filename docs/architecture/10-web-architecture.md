@@ -67,8 +67,8 @@ Shared components live in `packages/ui`. React state models navigation and prese
 |---|---|---|
 | `arcforges.com` | Static public pages | Versioned content; no login requirement |
 | `www.arcforges.com` | Permanent redirect | Canonical public origin |
-| `account.arcforges.com` | Account static assets; /rpc and /session to Cloud; /ai and /objects to CF | Canonical account surface |
-| `chat.arcforges.com` | Chat static JS/HTML assets; /rpc and /session to Cloud; /ai and /objects to CF | Independent browser session, same Cloud business services |
+| `account.arcforges.com` | Account static assets; /api and /session to Cloud; /objects to authorized Worker handlers; AI control/output through /api | Canonical account surface |
+| `chat.arcforges.com` | Chat static JS/HTML assets; /api and /session to Cloud; /objects to authorized Worker handlers; AI control/output through /api | Independent browser session, same Cloud business services |
 | `docs.arcforges.com` | Static versioned documentation | Independent of Cloud availability |
 | `status.arcforges.com` | Independently hosted status | Separate failure domain and emergency alternate URL |
 | `downloads.arcforges.com` / `updates.arcforges.com` | Signed artifacts/manifests | Existing distribution authority |
@@ -98,8 +98,8 @@ Shared components live in `packages/ui`. React state models navigation and prese
 | <a id="rule-au-06"></a>AU-06 | **Sensitive actions require the existing server-side step-up operation classes.** A biometric device unlock, visible confirmation dialog or frontend role flag is not step-up evidence. |
 | <a id="rule-au-07"></a>AU-07 | **Passkeys remain primary, with existing email verification/recovery.** Use a server challenge tied to the pre-auth flow, expected origin and RP ID. Account and Chat authenticate independently; redirects carry no credentials and use an exact allowlist. |
 | <a id="rule-au-08"></a>AU-08 | Every cookie-authenticated unsafe operation, including unary POST RPC and AI/object POST/PUT, requires X-AF-CSRF matching the hashed token bound to the current session/pre-auth flow plus exact Origin. A new login invalidates pre-auth CSRF; SameSite/CORS alone are insufficient. |
-| <a id="rule-au-09"></a>AU-09 | CF WebSocket upgrades check exact Origin immediately, then accept only the one-use session-bound authentication frame within five seconds; no Task content is delivered before validation. Blocked upgrades use the bounded authenticated stream-read route. Unary Poll requires no socket negotiation. |
-| <a id="rule-au-10"></a>AU-10 | All replicas share PostgreSQL opaque session and hashed CSRF state. No CookieAuthenticationHandler, Data Protection cookie payload or framework antiforgery key ring is required. CF authorizes against the same current session for every frame/range. |
+| <a id="rule-au-09"></a>AU-09 | Public gRPC-Web server streams use [the complete scope/stream contract](contracts/10-application-scope-and-streams.md); current authorization, CSRF/Origin, cursor recovery and bounded queues are required. |
+| <a id="rule-au-10"></a>AU-10 | All replicas share D1 opaque session and hashed CSRF state. No CookieAuthenticationHandler, Data Protection cookie payload or framework antiforgery key ring is required. CF authorizes against the same current session for every frame/range. |
 
 **Storage and lifecycle.** [Cloud data model §identity.session](data-model/01-cloud-data-model.md#browser-session-storage) defines native/browser credential exclusivity, hashed handles, origin binding, idle/absolute expiry, browser-device creation, lookup indices and revocation. Public session/bootstrap/logout endpoint shapes are recorded in the [operation catalogue](contracts/01-public-api-operations.md#browser-session-operations). Cookies carry a cryptographically random handle; neither business state nor an authorization snapshot is trusted from the client.
 

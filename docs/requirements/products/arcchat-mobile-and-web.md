@@ -1,4 +1,6 @@
 # ArcChat Mobile and ArcChat Web — Product Requirements
+
+P2-012 current implementation authorities: [Complete Android experience](../../experience/02-android-companion.md); [One-application targeting and transport](../../architecture/contracts/10-application-scope-and-streams.md).
 > Current scope amendment: **[P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
@@ -21,9 +23,9 @@ See → Approve → Steer → Continue → Start remote work → Receive results
 
 | # | Requirement |
 |---|---|
-| ID-01 | **Mobile and Web are companion surfaces, not mobile or web editions of the four desktop products** ([I-027](../01-normative-glossary-and-invariants.md#rule-i-027)). There is no ArcNotes Mobile editor, no ArcScope Mobile editor and no ArcSlate Mobile editor. |
+| ID-01 | **Mobile and Web are companion surfaces, not mobile or web editions of the three professional desktop products** ([I-027](../01-normative-glossary-and-invariants.md#rule-i-027)). There is no ArcNotes Mobile editor, no ArcScope Mobile editor and no ArcSlate Mobile editor. |
 | ID-02 | **Mobile and Web are not one responsive product.** They share domain semantics and contracts; their information architecture, interaction model and capability set differ deliberately. |
-| ID-03 | **Mobile and Web connect only to Cloud** (**[D-010](../../decisions/phase-1-foundation-decisions.md#rule-d-010)**). They must never scan a LAN, discover a desktop Hub, or address a named pipe or domain socket. |
+| ID-03 | **Mobile and Web connect only to Cloud** (**[D-010](../../decisions/phase-1-foundation-decisions.md#rule-d-010)**). They must never scan a LAN, discover a desktop application runtime, or address a named pipe or domain socket. |
 | ID-04 | **`Companion ≠ thin remote controller`** (`§20`). Both surfaces are useful with no desktop online, through cloud chat, cloud tasks, projects, search, automation and continuity. |
 | ID-05 | **A `Remote Task` is not remote desktop** ([I-120](../01-normative-glossary-and-invariants.md#rule-i-120)). ArcForges provides a **semantic remote agent**, never a general screen-and-input remote tool. |
 | ID-06 | **ArcChat Mobile is Apache-2.0** (**[D-004](../../decisions/phase-1-foundation-decisions.md#rule-d-004)**), together with the mobile-only libraries, the ArcForges-owned public protocol specifications required for its interoperability, and their wire schemas, DTOs and client libraries. It must not contain, link to, copy from, port from or reference any GPL-family or AGPL-only implementation, directly or transitively. |
@@ -35,7 +37,7 @@ See → Approve → Steer → Continue → Start remote work → Receive results
 
 | Surface | Responsibility |
 |---|---|
-| **Desktop** | Native product surface, cached projections/drafts, local tool execution and the Hub; Cloud owns AI execution |
+| **Desktop** | Native product surface, cached projections/drafts, local tool execution and the application runtime; Cloud owns AI execution |
 | **Mobile** | Attention, approval, remote control, result consumption — with cloud chat and tasks in their own right |
 | **Web** | Cloud chat, tasks, projects, search, automation, continuity — closer to desktop in depth, without local capability |
 
@@ -174,7 +176,7 @@ Three preview layers:
 | AR-01 | **Mobile must not attempt to fully edit an ArcNotes document.** No complete block editor on mobile. |
 | <a id="rule-ar-02"></a>AR-02 | **ArcChat Web must not quietly become an ArcNotes Web editor.** Its role is preview, continuity and agent. |
 | AR-03 | **Artifact availability is shown truthfully**: available in cloud, on a device only, requires download, requires the owning product, or unavailable. |
-| AR-04 | **A cloud artifact copy is distinguished from the source artifact** ([I-061](../01-normative-glossary-and-invariants.md#rule-i-061)). |
+| AR-04 | An assistant-generated artifact belongs to its frozen application/Cloud execution scope and existing resource owner. Shared UI does not create a separate ArcChat owner or another product's write permission. |
 | AR-05 | **Remote result delivery prefers small results with large source data kept local.** A summary, a report, a rendered excerpt — not the whole source. |
 | AR-06 | **Artifact handoff to desktop is a Handoff, not an agent task** (`§4.1` of the product scope). It opens the artifact in its owning product. |
 | AR-07 | **"Request download" must not be presented as though the content is already in the cloud.** Fetching from a device is a transfer task with its own state. |

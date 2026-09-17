@@ -5,7 +5,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: J — Platform completion *(sequenced after `43`; numbered `52` because `00`–`51` are allocated and a retired identifier is never reused)*
-> Upstream: `15` · `17` · `20` · `21` · `23` · `26` · `39` · `40` · `41` · `42` · `43` · `44` · Downstream: `31` · `49` · `50`
+> Upstream: `15` · `17` · `21` · `23` · `26` · `39` · `40` · `41` · `42` · `43` · `44` · Downstream: `31` · `49` · `50`
 
 > **Goal.** Build the **single Cloud Harness** of [`../../architecture/17-agent-harness.md`](../../architecture/17-agent-harness.md): the turn loop, tool batching, context assembly, compaction, approval interleaving, streaming, cancellation and recovery — running in the ArcForges-AI CF Workflow, against real admission and real metering.
 
@@ -16,13 +16,13 @@
 
 ## 1. Scope and purpose
 
-**Why this package exists, and why it is here.** [P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006) moved the model loop to Cloud ([LS-02](../../architecture/17-agent-harness.md#rule-ls-02)). Its work was previously distributed across [WP-13.00](13-high-risk-technical-probes.md#rule-wp-13.00) (a Native AOT desktop agent probe), [WP-16](16-unified-execution-engine.md#rule-wp-16) (a unified Task engine that also covered agent runs), [WP-17.08](17-arcchat-independent-core.md#rule-wp-17.08)/[WP-17.09](17-arcchat-independent-core.md#rule-wp-17.09) (the turn loop and compaction, in a **Phase C** desktop package) and [WP-20.03](20-first-cross-product-workflow.md#rule-wp-20.03) (the first agent-driven workflow, in **Phase D**). **Every one of those placements is now unexecutable.** A *minimal real* Cloud host exists from [WP-06.04](06-aot-jit-and-wasm-publish-proof.md#rule-wp-06.04) — real pipeline, real database, one contract endpoint — but the Harness needs the **production** host and its lease-fenced hosted services (`21`), the public surface (`23`), admission and capacity (`42`), and provider routing and settlement (`43`). None of those exists before Phase J, and a turn loop cannot admit, dispatch or settle without them.
+**Why this package exists.** WP52 produces the sole real CF model/tool loop after production Cloud/admission/metering and product capabilities. WP17 supplies named UI/transport fixtures only. Current acceptance uses independent same-application workflows; no earlier local cross-product milestone supplies a prerequisite.
 
 Rather than leave a package whose steps cannot run in their stated order, the Harness is one package at its real dependency position.
 
-**In scope.** The turn loop and its durable iteration; response classification and continuation; loop bounds and progress detection; parallel tool batching against declared conflict sets; context assembly, staleness invalidation and tool-declaration filtering; history compaction; approval interleaving across restarts; the stream buffer and its read path; crash recovery by dispatch intent; provider failure classification; and the first agent-driven cross-product workflow.
+**In scope.** The turn loop and its durable iteration; response classification and continuation; loop bounds and progress detection; parallel tool batching against declared conflict sets; context assembly, staleness invalidation and tool-declaration filtering; history compaction; approval interleaving across restarts; the stream buffer and its read path; crash recovery by dispatch intent; provider failure classification; and the first agent-driven same-application workflow.
 
-**Out of scope.** Provider routing, tariffs, normalisation and settlement (`43`). Admission, capacity and service terms (`42`). The device-side tool executor (`17`, `26`). Product capability surfaces (`18`, `20`, `33`, `36`).
+**Out of scope.** Provider routing, tariffs, normalisation and settlement (`43`). Admission, capacity and service terms (`42`). The device-side tool executor (`17`, `26`). Product capability surfaces (`18`, `33`, `36`, `39`).
 
 ---
 
@@ -35,7 +35,7 @@ Rather than leave a package whose steps cannot run in their stated order, the Ha
 
 **Frozen design input.** [content-origin behavior](../../requirements/07-security-privacy-and-trust.md#content-origin-profile) and [carrier schema](../../requirements/13-data-formats-and-portability.md#content-origin-carriers) is fixed before this package; implement it without choosing a different marking mechanism.
 
-Explicit consumers: [WP-20](20-first-cross-product-workflow.md#rule-wp-20) supplies the cross-product workflow surface, [WP-26](26-remote-action-and-tool-bridge.md#rule-wp-26) the durable device bridge, [WP-40](40-knowledge-search-and-retrieval.md#rule-wp-40) permission-aware retrieval/context, [WP-41](41-extension-platform-and-integrations.md#rule-wp-41) MCP/extension adapters, and [WP-44](44-dynamic-policy-and-configuration.md#rule-wp-44) active policy. None can be assumed merely because its contract type existed in WP-03.
+Explicit inputs: WP17 assistant client, WP26 one-application bridge, WP39 Slate capabilities, WP40 permission-aware own-app retrieval, WP41 extensions and WP44 policy. All are exact artifacts with real owner evidence; WP20 is future-only.
 
 | Input | Why it matters |
 |---|---|
@@ -119,14 +119,14 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 <a id="rule-wp-52.03"></a>
 
-### WP-52.03 — Shared streaming with durable Task fallback
+### WP-52.03 — Generated streaming and durable output
 
 
-**What must be fully done.** Implement RunStream DO with the selected 4 MiB tail, 64 KiB frames, flush/TTL/marker limits and authenticated first-frame connection binding. Reauthorize every delivered frame/range through C#; stream IDs/UTF-8 byte offsets distinguish interruption, truncation, supersession and eviction. Persist invocation output before settlement and terminal Task plus final/interrupted/no-answer Chat atomically through C# ports.
+**What must be fully done.** Implement execution.readOutput/watchOutput, transient-turn admission/ack/purge and DO projections from annex10/model05; Cloud histories commit canonically, local histories recover verified transient output without Cloud Chat bodies.
 
-**Testing requirements.** CF connection loss/DO eviction, slow consumer, permission/session revoke, duplicated offsets, output-before-settlement and final-commit crash points; replay from canonical Chat.
+**Testing requirements.** Verify the stated behavior against the exact real artifact/owner boundary. Include scope/permission, wrong or stale target, loss/retry, expiry and applicable native UI cases from experience03; named later-provider fixtures cannot close real integration.
 
-**Completion gate.** Stream projection never acts as message authority or determines Task state; durable final content survives loss of all CF presentation state.
+**Completion gate.** Stream projection never acts as message authority or determines Task state; Cloud-history final content survives projection loss. Local/temporary output survives reconnect within its declared retention while key/body exist; missing/expired content produces the explicit unavailable state without losing its durable outcome/usage receipt or rerunning the request.
 
 <a id="rule-wp-52.04"></a>
 
@@ -140,11 +140,11 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 <a id="rule-wp-52.05"></a>
 
-### WP-52.05 — The first agent-driven cross-product workflow
+### WP-52.05 — First real same-application AI workflows
 
-**What must be fully done.** **Delete the [WP-17.01](17-arcchat-independent-core.md#rule-wp-17.01) fixture turn endpoint** and prove the same client and device paths against the real Harness — the fixture is removed, never adapted into production code. *(This step is also where [WP-20.03](20-first-cross-product-workflow.md#rule-wp-20.03) was relocated from, having been in Phase D where no Harness existed.)* The [canonical workflow and failure outcomes](../../assurance/end-to-end-workflow-verification.md#first-arcchat-arcnotes-workflow) apply: ArcChat is asked to produce a report; the owning product checks authorization and obtains required approval before each affected mutation; ArcNotes creates and populates the document through typed device tools; the result saves, undoes and recovers, and an artifact reference resolves.
+**What must be fully done.** Replace WP17 named AI fixtures with actual CF model/usage/approval/tool paths separately in Notes, Scope and Slate. Example Notes own-selection summarize/edit, Scope own-range report, Slate own-sequence summary/render status. No step accesses another product; future WP20 is not an input.
 
-**Testing requirements.** The full workflow end to end — request, admission, dispatch, owner authorization and required approval before mutation, document creation and block insertion, save, undo, kill, recovery and artifact resolution — with **every failure variant** exercised: device offline, approval expired, capacity exhausted mid-turn, term expiring mid-turn, and a crash after dispatch. Include the concurrent-edit/revocation and native-commit-before-Cloud-acknowledgement cases in the canonical scenario.
+**Testing requirements.** Verify the stated behavior against the exact real artifact/owner boundary. Include scope/permission, wrong or stale target, loss/retry, expiry and applicable native UI cases from experience03; named later-provider fixtures cannot close real integration.
 
 **Completion gate.** The full workflow passes end to end against the real Cloud host, real admission and a real provider. Every failure variant in the [canonical acceptance scenario](../../assurance/end-to-end-workflow-verification.md#first-arcchat-arcnotes-workflow) reaches its specified waiting, refusal or terminal outcome; waiting is never reported as completion, and recovery produces no duplicate effect or charge.
 
@@ -166,7 +166,7 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 <a id="rule-wp-52.90"></a>
 ### WP-52.90 — Verify the owned artifact and real integration
 
-**What must be fully done.** Assemble the owned deliverables from the preceding substeps under the selected repository, package, runtime and protocol authorities. Implement the specified Worker/Workflow/DO roles. Implement context, model/tool loop, approval, retries, cancel, streams and schedule execution against real C# transactions/ports and selected Workers AI. Remove the named [WP-17](17-arcchat-independent-core.md#rule-wp-17)/[WP-20](20-first-cross-product-workflow.md#rule-wp-20) fixtures and own the first complete AI cross-product workflow.
+**What must be fully done.** Assemble the owned deliverables from the preceding substeps under the selected repository, package, runtime and protocol authorities. Implement the specified Worker/Workflow/DO roles. Implement context, model/tool loop, approval, retries, cancel, streams and schedule execution against real C# transactions/ports and selected Workers AI. Remove the named [WP-17](17-arcchat-independent-core.md#rule-wp-17)/[WP-17](17-arcchat-independent-core.md#rule-wp-17) fixtures and own the first complete AI same-application workflow.
 
 **Execution order.** Follow [staged artifact integration](../README.md#staged-artifact-integration): consume only existing assigned producers, publish an owned capability candidate before its product consumer, and verify the declared stage against exact upstream artifacts. Record pending later owners and their closing gates; local mocks cover only that named test boundary.
 
@@ -201,7 +201,7 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 | Approval-across-restart, cancellation and uncertain-effect results | [WP-52.02](#rule-wp-52.02) |
 | Cross-replica read, miss-is-not-eviction, takeover, realtime-disabled equivalence and buffer-lifecycle results | [WP-52.03](#rule-wp-52.03) |
 | Effect-certainty classification and deadline-release results | [WP-52.04](#rule-wp-52.04) |
-| Full cross-product workflow with every failure variant | [WP-52.05](#rule-wp-52.05) |
+| Full same-application workflow with every failure variant | [WP-52.05](#rule-wp-52.05) |
 | Real automation scheduling, missed-run policy, occurrence deduplication, cancellation and fixture removal | [WP-52.06](#rule-wp-52.06) |
 | Owned artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/OS/device/provider, scenario, result, limitations and real-versus-fixture status; inapplicable fields explicitly marked | [WP-52.90](#rule-wp-52.90) |
 
@@ -228,7 +228,7 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 7. **No crash or failure path resolves an uncertain external effect to *did not happen***, and no non-idempotent capability is retried without a resolution step.
 8. A capability that can produce an external effect and declares neither idempotency nor a status operation **cannot be registered**.
 9. Every surface converges to the same authoritative final answer/artifact with realtime disabled. Disposable CF tails may be truncated/expired with explicit state; any C# replica reads canonical Task pointers/final outcome, and no buffer byte becomes a message without owner commit.
-10. The full cross-product workflow passes end to end with every failure variant reaching its specified terminal, waiting, paused or unknown-effect state and an executable recovery path, and **the [WP-17.01](17-arcchat-independent-core.md#rule-wp-17.01) fixture turn endpoint no longer exists in the codebase** — asserted structurally.
+10. The full same-application workflow passes end to end with every failure variant reaching its specified terminal, waiting, paused or unknown-effect state and an executable recovery path, and **the [WP-17.01](17-arcchat-independent-core.md#rule-wp-17.01) fixture turn endpoint no longer exists in the codebase** — asserted structurally.
 
 11. [WP-52.06](#rule-wp-52.06) passes against the real host, persistent occurrence records and real admission; no desktop automation scheduler or fixture runtime endpoint remains.
 
@@ -236,7 +236,7 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 ## 9. Dependencies
 
-**Upstream:** `15` · `17` · `20` · `21` · `23` · `26` · `39` · `40` · `41` · `42` · `43` · `44`. Consume completed stage outputs.
+**Upstream:** `15` · `17` · `21` · `23` · `26` · `39` · `40` · `41` · `42` · `43` · `44`. Consume completed stage outputs.
 
 **Downstream:** `31` · `49` · `50`. Consumers use exact released artifacts.
 

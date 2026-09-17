@@ -110,7 +110,7 @@ The product metric is **Time To Usable** ([I-389](01-normative-glossary-and-inva
 |---|---|
 | SU-01 | ArcScope and ArcSlate may continue device scanning, media indexing and derived-cache loading in the background — **but must never block first workspace availability on them**. |
 | SU-02 | Native startup opens the shell and authorized cached work without waiting on Cloud. First-run or missing-content views state sign-in/network requirements honestly; Cloud refresh is asynchronous and does not promise account-free local AI or a standalone notebook. |
-| <a id="rule-su-03"></a>SU-03 | **Startup must not require ArcChat to be online.** ArcNotes, ArcScope and ArcSlate open their core workspace first; the Hub connection is background recovery. |
+| <a id="rule-su-03"></a>SU-03 | **Startup must not require ArcChat to be online.** ArcNotes, ArcScope and ArcSlate open their core workspace first; this app's Cloud session reconnects in the background. |
 
 ---
 
@@ -120,7 +120,7 @@ The product metric is **Time To Usable** ([I-389](01-normative-glossary-and-inva
 
 | Product | Ceiling |
 |---|---|
-| ArcChat + local Hub | ≤ 250 MiB |
+| ArcChat + own-application capability registry | ≤ 250 MiB |
 | ArcNotes | ≤ 250 MiB |
 | ArcScope | ≤ 320 MiB |
 | ArcSlate | ≤ 450 MiB |
@@ -276,7 +276,7 @@ The native boundary is a compatibility contract in its own right: exported ABI v
 | # | Requirement |
 |---|---|
 | <a id="rule-cm-01"></a>CM-01 | **Every release produces a Compatibility Manifest as a release artifact**, answering: which product versions can this interoperate with locally; which contract sets it speaks; which native formats it can read and write; which cloud API versions it can reach; which extension protocol versions it supports; which native ABI it requires. |
-| <a id="rule-cm-02"></a>CM-02 | **The four desktop products version independently** ([P-12](00-product-scope-and-portfolio.md#rule-p-12)), and **mixed-version combinations must actually be tested**. Nominal independent release plus de facto lockstep upgrade is a failed contract. |
+| <a id="rule-cm-02"></a>CM-02 | **The three professional desktop products version independently** ([P-12](00-product-scope-and-portfolio.md#rule-p-12)), and **mixed-version combinations must actually be tested**. Nominal independent release plus de facto lockstep upgrade is a failed contract. |
 | <a id="rule-cm-03"></a>CM-03 | **Minimum first-party local interoperability window: current stable plus the immediately previous supported stable line**, in **both** directions — new ArcChat with previous ArcNotes, and previous ArcChat with new ArcNotes. |
 | CM-04 | A contract major upgrade requires an explicit **coexistence migration window** in which V1 and V2 both operate. |
 | <a id="rule-cm-05"></a>CM-05 | **"Previous version" is a floor, not a ceiling.** Some contracts may be supported longer; a security-driven sunset may be scheduled earlier through the policy control plane. |
@@ -511,7 +511,7 @@ The traditional three layers are insufficient here. The required families, each 
 
 **Startup** — launching the application requires no account ([`ID-01`](02-identity-account-and-workspace.md#rule-id-01)). With an **already enrolled and hydrated** notebook and Cloud entirely offline: ArcNotes starts, the hydrated workspace is editable within budget, pending edits are durably saved and visibly unsynchronised, cloud state refreshes in the background when Cloud returns, and **a cached session is never forced into an interactive re-authentication prompt merely because Cloud is unreachable**. Enrolment itself requires Cloud and sign-in ([PR-02](products/arcnotes.md#rule-pr-02) and [CL-02](products/arcnotes.md#rule-cl-02) of [the ArcNotes requirements](products/arcnotes.md)), so an unenrolled first run is a different scenario and is not this one.
 
-**ArcChat Hub** — ArcChat absent; the professional product starts, works and saves; ArcChat starts later and registration recovers.
+**Independent assistant ownership** — two professional apps launch with separate stores/connections; each saves with Cloud offline. Closing/restarting one cannot alter the other's history or pending work.
 
 **Responsiveness** — under scale-corpus load, input to acknowledgement stays within budget; no UI-thread block exceeds the threshold.
 

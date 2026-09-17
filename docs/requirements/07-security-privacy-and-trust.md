@@ -70,7 +70,7 @@ Actor → Delegation → Capability → Resource → Risk → Approval → Audit
 | PM-02 | A permission is never a bare boolean pair of principal and capability. It carries **scope** (which resources), **constraints** (conditions), and **lifetime**. |
 | PM-03 | **Capability Permission ≠ Resource Authorization** ([I-238](01-normative-glossary-and-invariants.md#rule-i-238)). Being permitted to use `arcnotes.document.edit` says nothing about whether this specific document may be edited. |
 | PM-04 | **The Resource Owner is the final authorization authority.** The owning application checks last, always. |
-| <a id="rule-pm-05"></a>PM-05 | **The Hub is not a universal ACL database**. Professional resource access rules stay with the owner. |
+| <a id="rule-pm-05"></a>PM-05 | **The application runtime is not a universal ACL database**. Professional resource access rules stay with the owner. |
 | PM-06 | For a **local personal resource**, the local human principal is the default owner and edits directly without a permission prompt per action. Delegated authority — an agent acting for them — is what requires grants. |
 | PM-07 | **Role is a permission-assignment convenience, not the authorization model** ([I-237](01-normative-glossary-and-invariants.md#rule-i-237)). The model is capability-based and scoped, not pure RBAC. |
 | <a id="rule-pm-08"></a>PM-08 | **Grants are minimised.** "Always allow" must state precisely what is always allowed; an unbounded "always allow everything" prompt is prohibited. |
@@ -143,7 +143,7 @@ Actor → Delegation → Capability → Resource → Risk → Approval → Audit
 |---|---|
 | <a id="rule-lp-01"></a>LP-01 | **Local Presence is a first-class security attribute**: "requires local presence on the target device". |
 | <a id="rule-lp-02"></a>LP-02 | **Remote approval does not satisfy local presence** ([I-243](01-normative-glossary-and-invariants.md#rule-i-243)). A user may approve from mobile, and that approval still does not substitute for a required local presence on the target machine. |
-| LP-03 | **Mobile and web can never become a super-administrator of a local professional application.** Every remote effect traverses ArcChat Desktop, the Hub and a capability. |
+| LP-03 | **Mobile and web can never become a super-administrator of a local professional application.** Every remote effect traverses Cloud and the specifically targeted application's authorized typed capability. |
 | <a id="rule-lp-04"></a>LP-04 | **Remote origin is a risk modifier**, raising approval requirements. |
 | LP-05 | A remote session must be **revocable at any time**. The default effect of revocation on in-flight work is a safe pause or safe termination, not an abrupt kill mid-effect. |
 | LP-06 | **The cloud remote channel carries no permanent business permission.** It transports an authenticated request; the desktop re-authorises independently (**[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)**). |
@@ -280,7 +280,7 @@ Every real capability invocation passes through, in order:
 | # | Requirement |
 |---|---|
 | <a id="rule-dp-01"></a>DP-01 | **Entitlement is a separate gate** and is evaluated independently. Entitlement must never be deposited into permission ([I-246](01-normative-glossary-and-invariants.md#rule-i-246)). |
-| <a id="rule-dp-02"></a>DP-02 | **Step 11 is mandatory.** Steps 5–10 may execute inside ArcChat, the Hub or the Cloud; the owner validates again at the point of execution. This is defence in depth without central ownership. |
+| <a id="rule-dp-02"></a>DP-02 | **Step 11 is mandatory.** Steps 5–10 may execute inside ArcChat, the application runtime or the Cloud; the owner validates again at the point of execution. This is defence in depth without central ownership. |
 | DP-03 | **Permission cannot be bypassed through UI automation.** Driving another product's user interface to achieve an effect is a security-boundary violation, not a clever workaround. |
 | DP-04 | **Direct human interface actions use the same domain authorization.** The local interface may present a friendlier confirmation, but it calls the same application service and the same authorization path. |
 
@@ -473,7 +473,7 @@ The technical profile is **`arcforges.content-origin.v1`**, used for newly produ
 | A model rewrites or transforms existing content | Retain the input origin kinds and add `aiManipulated`. A model producing a new passage also adds `aiGenerated`. |
 | Human-authored new content; deterministic capture, measurement, decoding, extraction, simulation or rendering | Record `nonAi` for new known non-AI content; derived output also inherits contributing input kinds. An agent invoking a deterministic tool does not by itself make its result AI generated. Simulator/synthetic-data labels remain a separate provenance dimension. |
 | Import or historical content without a trustworthy origin record | Record `unknown`; never infer human authorship from missing metadata. Preserve known AI origin from other available evidence. Do not invent a historical generation date or retroactive verification. |
-| Copy, cross-product import, manual edit, format conversion, proxy, render or export | Retain the union of the contributing units' origin kinds. Manual editing a retained unit cannot clear known AI origin. Removing a whole content unit removes its contribution from the enclosing union; it does not rewrite the unit's historical record. |
+| Copy, same-application import, manual edit, format conversion, proxy, render or export | Retain the union of the contributing units' origin kinds. Manual editing a retained unit cannot clear known AI origin. Removing a whole content unit removes its contribution from the enclosing union; it does not rewrite the unit's historical record. |
 | Mixed content | Mark at message-part, block, attachment, report-section or media-asset granularity, with an enclosing union. A report can contain non-AI measurements and an AI explanation without asserting that the measurements were generated by AI. |
 | Unsupported or malformed imported origin | Preserve it inert and show origin as unverified/unknown, together with any independently known AI kinds. An unknown profile cannot be emitted as a newly verified v1 record. |
 

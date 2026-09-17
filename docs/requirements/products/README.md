@@ -6,7 +6,7 @@ The current [P2-006 amendment](../../decisions/phase-2-specification-decisions.m
 
 ## Desktop products
 
-The frozen baseline is exactly four desktop products (**[D-002](../../decisions/phase-1-foundation-decisions.md#rule-d-002)**).
+The frozen baseline is exactly three professional desktop products (**[D-002](../../decisions/phase-1-foundation-decisions.md#rule-d-002)**).
 
 | Document | Product | Positioning |
 |---|---|---|

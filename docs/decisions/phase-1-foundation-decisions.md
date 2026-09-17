@@ -96,7 +96,7 @@ Totals: **26 registered** ([F-001](#rule-f-001) to [F-026](../assurance/open-gat
 
 **Where** `I4 §Stage 0.1`, `§0.14` list six-plus products; `§Stage 2.3` and `§2.20` place ArcCanvas and ArcMusic in navigation and docs; `§Stage 1.2` shows a six-product account diagram; `§Stage 13.1` freezes the portfolio to four and `§13.3` places ArcImage at "Not in Current Product Baseline"; `I3` line 5 and `§3` still describe ArcVideo and ArcImage as current.
 
-**Outcome** Four desktop products only. ArcCanvas, ArcMusic and ArcImage are not current, future, reserved, alias or re-entry-candidate products.
+**Outcome** Three professional desktop products only. ArcCanvas, ArcMusic and ArcImage are not current, future, reserved, alias or re-entry-candidate products.
 
 ## [F-003](#rule-f-003) — ArcNotes complete scope
 
@@ -435,7 +435,7 @@ The original input-review wording below is retained as history. Its current appl
 
 **Current consumption.** The [current portfolio](../requirements/00-product-scope-and-portfolio.md#2-the-product-portfolio) defines the product set, obsolete names and fifth-product acceptance contract. Current ArcNotes scope follows the [P2-006](phase-2-specification-decisions.md#rule-p2-006) amendment. The original wording below does not require an archived-input lookup or restore excluded capabilities.
 
-> The current product baseline contains exactly four desktop products: ArcChat, ArcNotes, ArcScope, and ArcSlate.
+> The current product baseline contains exactly three professional desktop products: ArcChat, ArcNotes, ArcScope, and ArcSlate.
 >
 > ArcCanvas, ArcMusic, and ArcImage are not current products, future products, reserved products, aliases, or re-entry candidates. Mark every occurrence in the raw inputs as obsolete and SUPERSEDED. Do not create any database, runtime component, dependency, navigation entry, contract, specification, roadmap item, or implementation step for them.
 >
@@ -862,7 +862,7 @@ Every other line of the map, and every other part of [D-012](#rule-d-012) — th
 >
 > It must:
 >
-> - define each canonical cross-product term once;
+> - define each canonical same-application term once;
 > - namespace product-specific meanings;
 > - preserve every accepted X ≠ Y invariant;
 > - distinguish wire terms, domain terms, UI terms, storage terms and commercial terms;

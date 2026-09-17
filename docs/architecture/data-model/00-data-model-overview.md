@@ -1,5 +1,7 @@
 # Data Model Overview
 
+P2-012 current implementation authorities: [D1 execution/atomic plan profile](04-d1-execution-profile.md); [Application history modes](05-application-history.md).
+
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Architecture · Data model
 > Governing authority: **[D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008)** (runtime matrix), **[D-009](../../decisions/phase-1-foundation-decisions.md#rule-d-009)** (contract granularity), **[D-010](../../decisions/phase-1-foundation-decisions.md#rule-d-010)** (topology), **[D-011](../../decisions/phase-1-foundation-decisions.md#rule-d-011)** (implementation target)
@@ -226,7 +228,7 @@ Four store kinds coexist: the local structured store, the Cloud database, object
 
 #### 6.1.1 Shared units of work
 
-Cloud is one deployable host and one PostgreSQL database. A unit of work owns one connection and transaction. A participant exposes a transaction-aware application port and accesses only its own schema. Ordinary effects use outbox/inbox; the following operation families require a shared commit because partial visibility would violate an existing product invariant.
+Cloud is one C# Container image and one D1 authority database per realm. A unit of work assembles one fixed, guarded D1 batch through the private binding bridge. Participants expose owner ports and contribute only declared table writes; no connection/transaction is held across binding requests. Ordinary effects use outbox/inbox; the following operation families require a shared commit because partial visibility would violate an existing product invariant.
 
 | # | Rule |
 |---|---|
@@ -300,7 +302,7 @@ Cloud is one deployable host and one PostgreSQL database. A unit of work owns on
 | <a id="rule-db-01"></a>DB-01 | **A provider intent is an actual `commerce.provider_attempt` row in `intentCommitted` state**, bound to its logical request, lease fence and supplier reservation. The provider's own request reference is nullable until received. Device/MCP intent similarly names the durable tool request/attempt before sending. |
 | <a id="rule-db-02"></a>DB-02 | **No network act occurs before its intent commit.** The dispatcher's current fence and cancellation/availability policy are checked at admission to dispatch; already committed/in-flight acts follow uncertain-effect recovery. |
 | <a id="rule-db-03"></a>DB-03 | **Intent without a recorded outcome is unknown.** Reconcile by declared provider/owner idempotency or status, then the configured deadline; never infer no effect from a missing result. |
-| DB-04 | **Infrastructure leases carry a monotonically increasing fence token.** Every effect-publication transaction checks the current holder/token and expiry under the lease row lock. An expired process cannot publish after another holder takes over. |
+| DB-04 | **Infrastructure leases carry a monotonically increasing fence token.** Every effect-publication transaction checks the current holder/token and expiry under the lease atomic D1 batch guard. An expired process cannot publish after another holder takes over. |
 
 ### 6.2 Idempotency
 
@@ -454,7 +456,7 @@ An index exists because a named query path needs it. The per-entity documents li
 
 ## P2-009 external execution and additional enlisted families
 
-PostgreSQL remains canonical for all 20 owners. [CF integration §1–4](../contracts/05-cloudflare-integration.md) fixes execution_lease/command, Workflow/DO projections, current stream pointer and recovery_generation. Automation occurrence admission adds the closed shared family Entitlement + Task + Resource when context pins change, with occurrence/Task/outbox atomic. Operator mutations enlist their affected owner family and an Audit receipt participant; operator access/approval state is Identity-owned, incident/support state Support-owned. Lock order places Audit after Sync; collect all locks before writes. No network act occurs within any transaction. New Task dispatch outbox→CF, control outbox→CF and deletion outbox→CF use stable delivery IDs and recorded receipts, with periodic reconciliation independent of hints.
+D1 remains canonical for all 20 owners. [CF integration §1–4](../contracts/05-cloudflare-integration.md) fixes execution_lease/command, Workflow/DO projections, current stream pointer and recovery_generation. Automation occurrence admission adds the closed shared family Entitlement + Task + Resource when context pins change, with occurrence/Task/outbox atomic. Operator mutations enlist their affected owner family and an Audit receipt participant; operator access/approval state is Identity-owned, incident/support state Support-owned. Lock order places Audit after Sync; collect all locks before writes. No network act occurs within any transaction. New Task dispatch outbox→CF, control outbox→CF and deletion outbox→CF use stable delivery IDs and recorded receipts, with periodic reconciliation independent of hints.
 
 ## Execution owner, transient consent and transfer transactions
 
