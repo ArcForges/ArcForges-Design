@@ -27,56 +27,56 @@ Mobile owns app/, core/domain, core/data, core/network, core/security, core/desi
 ## 5. Required implementation work
 
 <a id="rule-wp-31.00"></a>
-### WP-31.00 — Identity, Home and workspace
+### WP-31.00 — Authentication, Home and workspace
 
-**What must be fully done.** Implement full identity/enrollment/recovery/profile/sign-out and workspace/device binding plus Home attention/inbox from Mobile architecture. Navigation Home/Conversations/Tasks/Library/Settings preserves unread/approval/blocked/error states and access explanations.
+**What must be fully done.** Complete AN01–AN06 native routes, system authentication, five-destination navigation and per-device application selection, with real Cloud identity/presence and explicit history disclosure.
 
-**Testing requirements.** Actual official and supported self-host flows; no-workspace first run, restricted account, expired/revoked sessions, duplicate attention hints.
+**Testing requirements.** Verify the stated behavior against the exact real artifact/owner boundary. Include scope/permission, wrong or stale target, loss/retry, expiry and applicable native UI cases from experience03; named later-provider fixtures cannot close real integration.
 
 **Completion gate.** All accepted account/attention paths complete and accessible; no hello-world scope substitution.
 
 <a id="rule-wp-31.01"></a>
-### WP-31.01 — Conversations, projects and retrieval
+### WP-31.01 — Conversations and context
 
-**What must be fully done.** Implement ordinary/agent/temporary turns, history/branch/search/filter/pin/archive, drafts/attachments, projects/memory controls, selected-source consent, citations and explicit Web search. Fetch real Contracts/CF owner states and preserve modes/temporary expiry.
+**What must be fully done.** Complete AN07–AN10/15/16 with native composer/IME/branch/context, history modes/promotion, real binary output streams and exact own-application scope; no desktop local-history access.
 
-**Testing requirements.** Actual selected Workers AI, paid admission and protected-context overflow; save/close temporary, offline drafts, no accidental Task, query egress rejection.
+**Testing requirements.** Verify the stated behavior against the exact real artifact/owner boundary. Include scope/permission, wrong or stale target, loss/retry, expiry and applicable native UI cases from experience03; named later-provider fixtures cannot close real integration.
 
 **Completion gate.** Every conversation/project/retrieval row in Mobile architecture works with actual52 owner outputs.
 
 <a id="rule-wp-31.02"></a>
-### WP-31.02 — Tasks, tools, approvals and automation
+### WP-31.02 — Tasks, approvals and automation
 
-**What must be fully done.** Implement task list/details/paged steps/logs/artifacts, steering/cancel/pause/resume, explicit promotion from ordinary turn, approvals with proposal revision/expiry/target, eligible-device/capability choices and narrow remote grants. Implement simple automation list/create/edit/enable/run/history within accepted companion scope.
+**What must be fully done.** Complete AN11–AN13/19/25 against real Task/bridge/Harness/commerce; preserve current action, risk, credit-consent and consumption-only rules.
 
-**Testing requirements.** Real desktop bridge and owner tools; offline/stale device, refused permission, expiry, timeout after external effect, duplicate delivery and ambiguous status.
+**Testing requirements.** Verify the stated behavior against the exact real artifact/owner boundary. Include scope/permission, wrong or stale target, loss/retry, expiry and applicable native UI cases from experience03; named later-provider fixtures cannot close real integration.
 
 **Completion gate.** One actual owner outcome/settlement per command, no broad implicit grant or hidden background write.
 
 <a id="rule-wp-31.03"></a>
-### WP-31.03 — Library, resources and portability
+### WP-31.03 — Library and resources
 
-**What must be fully done.** Implement approved Notes/cloud resource preview/search/citation/deep-link/handoff, upload/download/sharing, export/import status and fidelity, data health and irrecoverable guidance. No full Notes/Scope/Slate editor is introduced on Mobile.
+**What must be fully done.** Complete AN14–AN18/22 native preview/import/export/transfers, missing/denied/unsupported states, local/cloud copy and deletion semantics.
 
-**Testing requirements.** Real R2 range/part/hash/expiry, absent owning desktop, denied preview, missing blob, cancellation and resumable transfer.
+**Testing requirements.** Verify the stated behavior against the exact real artifact/owner boundary. Include scope/permission, wrong or stale target, loss/retry, expiry and applicable native UI cases from experience03; named later-provider fixtures cannot close real integration.
 
 **Completion gate.** All resource/Library journeys complete; no unavailable bytes represented as empty success.
 
 <a id="rule-wp-31.04"></a>
-### WP-31.04 — Presence, push, deep links and settings
+### WP-31.04 — Presence, push, links and settings
 
-**What must be fully done.** Implement visible device readiness, installation and capability availability, push token registration/rotation/revocation, notification channel controls, settings/accessibility/localization/account-data actions and consumption-only capacity/credit consent. Push contains identifiers only and always re-fetches authorized state.
+**What must be fully done.** Complete AN20–AN24 plus FCM/current permissions and one-application targets; background reconnect reads durable attention and cannot expose a revoked resource.
 
-**Testing requirements.** Physical foreground/background/non-GMS tests, doze/process kill, stale push, account change, screen reader/font scaling and expired approval link.
+**Testing requirements.** Verify the stated behavior against the exact real artifact/owner boundary. Include scope/permission, wrong or stale target, loss/retry, expiry and applicable native UI cases from experience03; named later-provider fixtures cannot close real integration.
 
 **Completion gate.** Companion stays usable through declared polling/notification fallback; purchase/store billing remains absent.
 
 <a id="rule-wp-31.05"></a>
-### WP-31.05 — Offline and recovery integration
+### WP-31.05 — Native interaction and recovery
 
-**What must be fully done.** Exercise the complete Mobile storage/outbox/network rules against real Cloud/CF and desktop, including restore generation, unknown external result, transient input TTL, partially completed export and client update.
+**What must be fully done.** Pass full experience02 phone/tablet/back/IME/TalkBack/large-text/process-death/account-switch/denied-permission/no-GMS matrix with real services; preserve typed effect uncertainty and drafts.
 
-**Testing requirements.** Independent journey matrix at least login→ordinary→Task promotion→approval→artifact; search→citation; automation→attention; logout/revoke→quarantine recovery.
+**Testing requirements.** Verify the stated behavior against the exact real artifact/owner boundary. Include scope/permission, wrong or stale target, loss/retry, expiry and applicable native UI cases from experience03; named later-provider fixtures cannot close real integration.
 
 **Completion gate.** Real52/26/25 evidence passes on release APK; mocks do not close any required journey.
 

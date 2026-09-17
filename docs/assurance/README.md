@@ -4,6 +4,10 @@ This directory defines criteria and specifications for quality, safety, security
 
 The [deprecated input archive](../deprecated-inputs/README.md) is excluded from ongoing design-completeness audits. Completed input-reading and extraction records are historical provenance, not a new audit denominator or an obligation to repeat input review. The current invariant catalogue, its design/implementation obligations and reference-source review remain in scope under the effective design.
 
+## Current design review
+
+[Cloudflare and application assistants](cloudflare-app-assistants-review.md) records the P2-012 closure matrix, final corrections, document validation and remaining real implementation gates. Earlier dated reviews retain their original evidence baselines.
+
 ## Phase 1 — foundation record
 
 - [`phase-1-input-review-ledger.md`](phase-1-input-review-ledger.md) — Historical Phase 1 input-reading coverage and topic inventory, with the deferred-gate register and Foundation Freeze status recorded at that baseline. It does not reopen review of the deprecated inputs.

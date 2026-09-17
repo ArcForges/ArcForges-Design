@@ -18,7 +18,7 @@ The requirements define **what** must hold. This document defines **where** it i
 | **Workspace** | Single-owner tenancy, data, device, billing and sync boundary | Cloud Workspace module |
 | **Device** | A registered machine | Cloud Devices module |
 | **App Installation** | One installed product on one device | Cloud Devices module |
-| **App Instance** | One running process | Local Hub |
+| **App Instance** | One running process | Own-application capability registry |
 | **Local OS User** | The local IPC security principal | The operating system |
 | **Local Profile** | The signed-out local operator | The local machine only |
 | **Agent Actor** | Acting on behalf of a user session | Never an independent principal |
@@ -42,7 +42,7 @@ Authorization is enforced at **four** points, and each is mandatory.
       ↓                           user experience and early failure — never authority
 2. Transport boundary            local IPC handshake, or cloud authentication
       ↓                           who is connected, at all
-3. Service-side decision         Cloud module, or the Hub for local coordination
+3. Service-side decision         Cloud module, or the application runtime for local coordination
       ↓                           the substantive decision for cloud operations
 4. Owner-side final validation   the product that owns the resource
                                   ALWAYS — the last word
@@ -50,7 +50,7 @@ Authorization is enforced at **four** points, and each is mandatory.
 
 | # | Rule |
 |---|---|
-| EP-01 | **Point 4 is never skipped** ([DP-02](../requirements/07-security-privacy-and-trust.md#rule-dp-02) in the security requirements). Points 1–3 may execute in ArcChat, the Hub or Cloud; the owner validates again at execution. |
+| EP-01 | **Point 4 is never skipped** ([DP-02](../requirements/07-security-privacy-and-trust.md#rule-dp-02) in the security requirements). Points 1–3 may execute in ArcChat, the application runtime or Cloud; the owner validates again at execution. |
 | EP-02 | **A caller-side check is a user-experience optimisation only.** A client-asserted entitlement or permission is never trusted ([ES-06](../requirements/04-commerce-entitlement-and-credits.md#rule-es-06) in the commerce requirements, [RX-10](../requirements/03-cloud-services-and-sync.md#rule-rx-10) in the cloud requirements). |
 | EP-03 | **Workspace scoping is enforced in the data access layer**, so a missing filter is structurally impossible rather than a review finding ([MT-03](05-cloud-architecture.md#rule-mt-03) in the cloud architecture). |
 | EP-04 | **The security decision pipeline runs in the stated order** (`§11` of the security requirements), and each step's outcome is recorded for explanation and audit. |
@@ -103,7 +103,7 @@ Principal
 | # | Rule |
 |---|---|
 | AZ-01 | **Capability permission and resource authorization are separate decisions** ([I-238](../requirements/01-normative-glossary-and-invariants.md#rule-i-238)). |
-| AZ-02 | **The Hub is not a universal ACL database** ([PM-05](../requirements/07-security-privacy-and-trust.md#rule-pm-05) in the security requirements). Professional resource rules stay with their owner. |
+| AZ-02 | **The application runtime is not a universal ACL database** ([PM-05](../requirements/07-security-privacy-and-trust.md#rule-pm-05) in the security requirements). Professional resource rules stay with their owner. |
 | AZ-03 | **Role is an assignment convenience, not the model** ([I-237](../requirements/01-normative-glossary-and-invariants.md#rule-i-237)). |
 | AZ-04 | **Effective risk is computed per invocation** from the capability baseline plus runtime modifiers, and may only be raised by third-party metadata ([RK-02](../requirements/07-security-privacy-and-trust.md#rule-rk-02), [RK-03](../requirements/07-security-privacy-and-trust.md#rule-rk-03) there). |
 | AZ-05 | **Permission cache is optimisation only**; revocation invalidates it ([PM-12](../requirements/07-security-privacy-and-trust.md#rule-pm-12) there). |
@@ -365,7 +365,7 @@ The enforced mechanisms and RID-specific negative tests are in [Content and Exte
 
 ## P2-009 Cloud, CF and operator authentication composition
 
-[The selected session profile](21-platform-and-dependency-matrix.md#8-selected-p2-009-runtime-and-dependency-closure) owns session shapes; [the CF contract](contracts/05-cloudflare-integration.md) owns HMAC service authentication, origin routing, per-frame/range authorization, fencing and revoke/cancel ordering. Browser Account/Chat origins are independent exact allowlist entries, /rpc and /session go C#, /ai/v1 and /objects/v1 go Worker under the same visible origin. No general token in JavaScript or URL. C# admission derives owner/actor/workspace from session, not CF/client assertions; every tool owner rechecks current grants and local presence. Service key IDs are direction-specific, rotate with15min overlap, signed timestamp skew60s and nonce120s, not ambient Cloudflare account tokens.
+[The selected session profile](21-platform-and-dependency-matrix.md#8-selected-p2-009-runtime-and-dependency-closure) owns session shapes; [the CF contract](contracts/05-cloudflare-integration.md) owns HMAC service authentication, origin routing, per-frame/range authorization, fencing and revoke/cancel ordering. Browser Account/Chat origins are independent exact allowlist entries, /api and /session go C#, /ai/v1 and /objects/v1 go Worker under the same visible origin. No general token in JavaScript or URL. C# admission derives owner/actor/workspace from session, not CF/client assertions; every tool owner rechecks current grants and local presence. Service key IDs are direction-specific, rotate with15min overlap, signed timestamp skew60s and nonce120s, not ambient Cloudflare account tokens.
 
 A frame/range already authorized before revocation is an in-flight read; subsequent delivery authorizes again and fails closed if C# is unreachable. This is the concrete interpretation of immediate revocation, not a ten-minute presigned URL authority leak. R2 tickets use a session-bound facade precisely because [RS-02](contracts/01-public-api-operations.md#rule-rs-02) requires consumption-time checks. Logs expose only operation/correlation/run/attempt IDs, receipt hashes and bounded reasons; no prompt/output/cookie/secret/absolute local path. Existing content-origin and source-authorization profile survives all protocol projections.
 

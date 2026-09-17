@@ -224,7 +224,7 @@ Inputs                                     Output
 | QA-03 | Committed storage is measured from server-verified objects, including retained history and trash. Uploads first reserve their bounded declared maximum against committed-storage headroom **and** separate workspace/deployment staging limits. A client-reported size is an admission bound, never a measured usage value. Verified bytes remain reserved until promotion or physical cleanup. |
 | QA-04 | **Exceeding a quota is a typed, explained refusal with a remediation path**, never a silent failure or an unbounded overage. |
 | QA-05 | **Quota checks are evaluated at the same enforcement point as the operation they bound**, so a check cannot be bypassed by a different entry path. |
-| QA-06 | `used + held + requested <= limit` is checked under the quota-budget row locks, with one idempotent reservation per operation. Simulator duration, samples, output bytes and egress use separately typed budgets; only measured consumption settles, and unused reservations release. No simulator work consumes model tokens. |
+| QA-06 | `used + held + requested <= limit` is checked under the quota-budget atomic D1 batch guards, with one idempotent reservation per operation. Simulator duration, samples, output bytes and egress use separately typed budgets; only measured consumption settles, and unused reservations release. No simulator work consumes model tokens. |
 | QA-07 | Cancellation and expiry schedule idempotent cleanup; they do not pretend bytes disappeared. Staging and physical-storage accounting releases only after deletion is verified. A downgrade admits no new over-limit reservation but preserves reads, downloads, deletion and already admitted bounded work. |
 | QA-08 | One workspace's content-address deduplication cannot expose another workspace's object existence or bypass permission checks. Quota counts each physical object once per owning workspace, with durable pins from current revisions, retained history, conflicts and exports. |
 
@@ -260,7 +260,7 @@ Conflating any two of these is the defect class this section exists to prevent (
 
 ### 7.2 The refill algorithm
 
-Refill is a state transition, including on a balance read. Entitlement owns it. All instants use PostgreSQL UTC microsecond precision; rates are integer micro-credits per second. Intermediate multiplication uses checked arbitrary-precision integers; the stored fractional remainder is a reduced rational with denominator dividing 1,000,000. No floating-point or per-window rounding enters accounting.
+Refill is a state transition, including on a balance read. Entitlement owns it. All instants use D1 UTC microsecond precision; rates are integer micro-credits per second. Intermediate multiplication uses checked arbitrary-precision integers; the stored fractional remainder is a reduced rational with denominator dividing 1,000,000. No floating-point or per-window rounding enters accounting.
 
 ```
 advance(bucket, effective_now):

@@ -20,3 +20,5 @@ This directory records Architecture Decision Records (ADRs) for significant stru
 
 
 [P2-008](phase-2-specification-decisions.md#rule-p2-008) is the current Web decision: React/TypeScript with Node/npm, C#-generated OpenAPI/TS SDK, win.slnx/esproj and portable directory workflows. It supersedes the original [D-007](phase-1-foundation-decisions.md#rule-d-007) Web technology and resolves [P2-003](phase-2-specification-decisions.md#rule-p2-003). Original input quotations and `I1`–`I4` citations are historical provenance only; they neither reopen input review nor reinstate superseded obligations.
+
+Current topology and assistant ownership: [P2-012](phase-2-specification-decisions.md#rule-p2-012).

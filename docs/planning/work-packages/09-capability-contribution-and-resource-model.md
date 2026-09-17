@@ -20,7 +20,7 @@
 
 **Out of scope.** The agent runtime that consumes capabilities (`16`). Product-specific capability implementations. Extension hosting (`41`).
 
-**Why this package exists.** Without one semantic model, each product invents its own, and every cross-product feature becomes a bespoke integration. This is also the layer where the permission model attaches, so it must exist before security enforcement is wired.
+**Why this package exists.** Without one semantic model, each product invents its own, and every same-application feature becomes a bespoke integration. This is also the layer where the permission model attaches, so it must exist before security enforcement is wired.
 
 ---
 
@@ -88,7 +88,7 @@
 
 ### WP-09.01 — Contribution registration
 
-**What must be fully done.** The six contribution kinds register through one path with a declared kind, identity, version and owner. Registration is idempotent, survives a Hub restart, and a contribution from an unknown or unverified source is refused.
+**What must be fully done.** The six contribution kinds register through one path with a declared kind, identity, version and owner. Registration is idempotent, survives an application service restart, and a contribution from an unknown or unverified source is refused.
 
 **Testing requirements.** Registration idempotency; restart recovery; refusal of an unowned or reserved namespace claim.
 

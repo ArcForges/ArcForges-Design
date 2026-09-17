@@ -1,47 +1,16 @@
 # Solution and Project Layout
 
-> Status: **Authoritative** — Phase 2 (Detailed Specifications)
-> Layer: Architecture
-> Governing authority: **[D-009](../decisions/phase-1-foundation-decisions.md#rule-d-009)** (contract granularity), **[D-004](../decisions/phase-1-foundation-decisions.md#rule-d-004)**/**[D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021)** (licence boundaries), **[D-011](../decisions/phase-1-foundation-decisions.md#rule-d-011)** (implementation target)
-> Companions: [`00-architecture-overview.md`](00-architecture-overview.md), [`02-contracts-and-protocols.md`](02-contracts-and-protocols.md), [`14-build-packaging-and-release.md`](14-build-packaging-and-release.md)
+Authority: P2-012. The [concrete project/package tree and host contracts](27-platform-projects-and-application-assistants.md) are the implementation directory authority for every repository, particularly DesktopPlatform.
 
-The implementation targets are the ten repositories selected by [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009). This document fixes source ownership and package boundaries before WP01 creates/reconciles those roots.
+<a id="1-repository-ownership-and-dependency-graph"></a>
+## 1. Independent repository roots
 
----
+DesktopPlatform, Contracts, ArcNotes, ArcScope, ArcSlate, Cloud, AI, Web and Mobile build independently. ArcChat is a reusable assistant feature family inside DesktopPlatform, not another desktop process/repository. Each product owns its domain/application/infrastructure/UI integration. Shared code never implies a shared database or live singleton across applications.
 
-## 1. Repository ownership and dependency graph
+<a id="root-and-logical-path-convention"></a>
+### Root and logical path convention
 
-The ten repositories are ArcForges-DesktopPlatform, ArcChat, ArcNotes, ArcScope, ArcSlate, ArcForges-Cloud, ArcForges-AI, ArcForges-Web, ArcForges-Mobile and ArcForges-Contracts. Keep Design and Plan separately. The existing implementation history becomes DesktopPlatform; other roots are new. Retire old monorepo application scaffolds after their disposition is recorded, without treating placeholders as missing design.
-
-| Existing group | Sole target / disposition |
-|---|---|
-| native/, CMake, vcpkg overlay/toolchain, native tests | DesktopPlatform / retained foundation, selected packages below |
-| BuildingBlocks Foundation/Application.Abstractions/Execution/Persistence/Observability/Security/Update; DesignSystem/Desktop.Shell | DesktopPlatform / mechanism-only managed packages; separate headless vs desktop closures |
-| BuildingBlocks CloudClient and public value/validator types | Contracts / generated public C# and TS clients and Apache primitives |
-| Public/Internal Contracts and Sdk/CLI/generators | Contracts / handwritten proto, explicit license directories, released tools/fixtures |
-| ArcChat domain/application/adapters/Hub/Agent/LocalTools | ArcChat / product-owned rewrite or relocate; Hub stays in-process, Agent is a Cloud client |
-| ArcNotes, ArcScope, ArcSlate groups | Matching product / no cross-product project reference; owned domain/storage/native consumer adapters |
-| Cloud.Host/PublicApi/Persistence/Modules/BackgroundJobs/Migrations | Cloud / single AOT host, one-shot migrator, ordinary leased jobs; no role-selected Worker/AgentHost |
-| Cloud.AgentRuntime | Retire the loop scaffold; AI owns the TS Workflow. Cloud may retain this C# library name for typed Agent/Task dispatch/control/reconciliation ports only |
-| Cloud.Realtime | Cloud EventService bounded hint polling; AI stream DO in AI |
-| Mobile.Core/ArcChat.Mobile | Mobile / Kotlin Android application and Apache Kotlin domain/client state; historical bootstrap is migration evidence only |
-| Web apps/UI/testing/esproj | Web / Site, Account, Chat, operator and status build profiles, one npm lock |
-| ContentSandbox/helper broker | DesktopPlatform / per-RID packaged restricted helper; product invocation stays in product |
-| eng/build/packaging/policy | DesktopPlatform reusable tooling package/workflow, owner-specific thin invocation files |
-| eng/terraform/deploy/migrations/integration E2E | Cloud / environment infra and integration manifest; AI owns wrangler config, Web owns asset build |
-| Contract fixtures | Contracts / immutable public/internal wire/profile vectors |
-| Product/native/format/performance fixtures and tests | Owning product or Platform; cross-provider integration orchestrated by Cloud manifest |
-| StartArcForges outputs / ReactApp2 template references | Read-only evidence only, no build dependency or extra repository |
-
-Within each C# product: Domain ← Application ← Infrastructure/LocalRpc/CloudClient/Desktop. Domain imports no transport/UI/native code. Across repositories only exact packages/artifacts/workflow commits; no ProjectReference, source-link import, submodule or sibling checkout build. Platform depends on Contracts, never on a product/Cloud/AI implementation; product/Cloud depends on selected Platform/Contracts packages; AI/Web depend on allowed Contracts npm artifacts; Mobile depends on public Contracts Maven artifacts. Cloud never depends on native/UI/helper packages. An integration manifest is evidence about compatible independent versions, not a family release lockstep.
-
-### Root and logical-path convention
-
-Each .NET repository owns global.json, Directory.Build.props/targets, Directory.Packages.props, NuGet.config, committed per-project package locks, a managed .slnx, eng/, src/ and tests/. DesktopPlatform additionally owns native/, CMakePresets and vcpkg inputs; only its Windows IDE solution composes native builds. Each TS repository owns package.json/package-lock.json, .node-version, tooling/ and tests/. Web owns its esproj/win.slnx; no Cloud project references that esproj. Mobile owns app/, core/, feature/, gradle/libs.versions.toml, Gradle wrapper/checksum, committed locks and dependency-verification metadata; no npm runtime or iOS source tree is required; AI owns src/worker.ts, src/workflows/, src/streams/, src/providers/workers-ai/, src/inference/ and wrangler.jsonc. RunWorkflow is the sole agent loop; InferenceWorkflow and object verification are fixed-stage bounded job handlers in that same deployment.
-
-Logical .NET suffixes such as src/ArcNotes/ArcNotes.Domain and src/Cloud/ArcForges.Cloud.Modules.Task are relative to the sole repository assigned in the table above. They do not identify a shared checkout. Contracts uses public/proto, internal/proto, public/http, internal/ai-http, src/public, src/internal and fixtures/public|internal; Web uses apps/site, apps/app and packages/ui. This convention applies to the remaining diagrams and work-package paths. Source suffix renaming inside an owner is an internal implementation choice; owner/package boundaries are fixed.
-
----
+Use the exact repository/project trees in architecture27. Remaining logical suffixes in older rule examples identify their single owning repository; they do not authorize adjacent-source references. Current work-package project sections select those concrete trees. Contracts produces generated clients; ArcForges.Cloud.Client implements reusable session/transport/recovery behavior above them. No product CloudClient implementation is duplicated into Contracts.
 
 ## 2. Project conventions
 
@@ -63,7 +32,7 @@ Logical .NET suffixes such as src/ArcNotes/ArcNotes.Domain and src/Cloud/ArcForg
 
 ## 3. Contract packages
 
-Mobile and the entire Contracts repository (public/internal proto, HTTP schemas, generators, SDK/CLI, validators and fixtures) are Apache-2.0 under P2-010. Public/internal remains an access and import-direction separation. Platform/Cloud/AI/Web/four desktop implementation retains its existing licence; dependencies keep their own notices. Generated files preserve authored-schema and generator/runtime notices. Mobile imports only public artifacts and public fixtures; it cannot import Web application expression or any GPL-family implementation.
+Mobile and the entire Contracts repository (public/internal proto, HTTP schemas, generators, SDK/CLI, validators and fixtures) are Apache-2.0 under P2-010. Public/internal remains an access and import-direction separation. Platform/Cloud/AI/Web/three professional desktop implementations retains its existing licence; dependencies keep their own notices. Generated files preserve authored-schema and generator/runtime notices. Mobile imports only public artifacts and public fixtures; it cannot import Web application expression or any GPL-family implementation.
 
 Package metadata declares owner/SPDX/source commit, schema/package version, dependency closure, NOTICE and SBOM. Public npm access=public, NuGet public registry; AGPL packages may be publicly distributed with source/notice obligations. Per-RID native license closure includes static dependencies and optional codec features, not merely the wrapper's license. Six reference-source access/exclusion/provenance boundaries and all archive prohibitions stay unchanged. Source review and actual distributable license gate remain evidence obligations; this amendment does not claim third-party code has been copied or audited by a runtime test.
 
@@ -75,7 +44,7 @@ The [wire registry](contracts/04-protobuf-wire-registry.md) defines every servic
 | CT-02 | Handwritten proto in Contracts is the sole business wire source; C#/TS/Kotlin clients are generated. |
 | CT-03 | Contracts contain no business implementation. |
 | CT-04 | Contracts have no UI/ORM/native/host dependency. |
-| CT-05 | C# contract libraries satisfy the Native AOT gate. |
+| CT-05 | C# contract libraries satisfy the Native AOT gate; public clients all select gRPC-Web. |
 | CT-06 | Cloud/public browser clients never import local product RPC packages. |
 | CT-07 | Public business records expose no local IPC/native handles. |
 | CT-08 | Foundation remains stable and bounded; domain services own their own types. |
@@ -98,7 +67,7 @@ The [wire registry](contracts/04-protobuf-wire-registry.md) defines every servic
 
 ## 5. Cloud module projects
 
-The 20 domain owners in the [Cloud schema map](data-model/01-cloud-data-model.md#1-schema-map) are authoritative; `platform` is shared infrastructure, not a domain module. The usual project arrangement is a pair: `ArcForges.Cloud.Modules.<Name>` (application and domain) and `ArcForges.Cloud.Modules.<Name>.Infrastructure` (persistence and integrations), plus tests. An equivalent bounded project partition is permitted if ownership and reference rules remain enforceable; schema ownership does not require a fixed project count.
+The 20 domain owners in the [Cloud schema map](data-model/01-cloud-data-model.md#1-schema-map) are authoritative; `platform` is shared infrastructure, not a domain module. The concrete arrangement is `src/Modules/<Name>/<Name>.Domain`, `<Name>.Application`, `<Name>.Infrastructure` and module tests. Cloud.Host composes them; Cloud.Storage.D1 owns the named-plan binding mechanism, while module owners own their plans/tables. Private implementation folders within these projects remain implementation choices.
 
 Modules: **Identity**, **Workspace**, **Devices**, **Entitlement**, **Commerce**, **Chat**, **Task**, **Agent**, **Sync**, **Resource**, **Search**, **Notification**, **Policy**, **Audit**, **Support**, **TrustSafety**, **Notes**, **Scope**, **Slate**, **Configuration**.
 
@@ -250,9 +219,16 @@ Publish the following package identities. Managed package versions and their com
 | ArcForges.Foundation, .Application.Abstractions | Contracts.Foundation; IDs are adapters, not duplicate wire types | None; headless |
 | ArcForges.LocalRpc, .Capabilities | Foundation and exact local Contracts; IPC, descriptor/selection mechanisms from WP08/09 | No product implementation or native payload transport |
 | ArcForges.Observability | Foundation; bounded Activity/Meter/logging, no product telemetry schema | None; headless |
-| ArcForges.Persistence | Foundation; desktop SQLite/journal mechanics, no product schema/Cloud Npgsql | None in managed package; SQLite runtime independently selected |
+| ArcForges.Persistence.Sqlite | Foundation; desktop SQLite/journal mechanics, no product schema/Cloud D1 binding adapter | None in managed package; SQLite runtime independently selected |
 | ArcForges.Security, .Update, .Execution | Foundation; OS secret/approval adapters, signed updates, ProductJob mechanics | Explicit OS adapters; Cloud may consume only documented headless subpackages |
 | ArcForges.DesignSystem, .Desktop.Shell | Foundation plus Avalonia; shell also DesignSystem | Avalonia asset closure; product apps own flows |
+| ArcForges.Cloud.Client | Foundation/Security + exact public Contracts; sessions, gRPC-Web, streams and transfers | No desktop native closure; WP06 minimal, WP23–25 complete |
+| ArcForges.Device.Runtime | Cloud.Client, Capabilities, Security, Execution; own-application registration/tool dispatch | No cross-app listener; WP17 fixture and WP26 real |
+| ArcForges.Assistant.Abstractions | Foundation/Application.Abstractions; typed host ports and identities | None; WP14 |
+| ArcForges.Assistant.Core | Assistant.Abstractions, Foundation, Capabilities; complete reusable assistant behavior | None; WP15 |
+| ArcForges.Assistant.Persistence.Sqlite | Assistant.Core, Persistence.Sqlite; complete assistant schema/repositories/migrations | Existing SQLite runtime policy; WP15 |
+| ArcForges.Assistant.Cloud | Assistant.Core, Cloud.Client, Device.Runtime; history/execution/recovery adapters | None; WP17, real WP26/52 |
+| ArcForges.Assistant.Avalonia | Core, Cloud, Persistence.Sqlite, Desktop.Shell; complete embedded window | No implicit FFmpeg/OTIO dependency; WP17 |
 | ArcForges.Native.Media | Foundation + Native.Abstractions; Probe/Decode/Encode/Audio/Resample capabilities | .Native.Media.Runtime.<rid>: FFmpeg and miniaudio |
 | ArcForges.Native.Colour | Native.Abstractions; bounded immutable colour transforms | .Native.Colour.Runtime.<rid>: OpenColorIO |
 | ArcForges.Native.Image | Native.Abstractions; image probe/decode/encode | .Native.Image.Runtime.<rid>: OpenImageIO/OpenEXR/Imath |
@@ -260,13 +236,13 @@ Publish the following package identities. Managed package versions and their com
 | ArcForges.Native.Instruments | Native.Abstractions; device transport buffers/USB | .Native.Instruments.Runtime.<rid>: libusb; serial OS adapter |
 | ArcForges.Native.Otio | Native.Abstractions; parse/serialize official Timeline plus fidelity report | .Native.Otio.Runtime.<rid>: official OTIO0.18.1 |
 | ArcForges.Native.Pdf | Native.Abstractions; render page and extract bounded text only | .Native.Pdf.Runtime.<rid>: PDFium chromium/8044 |
-| ArcForges.ContentSandbox.Contracts, .Broker | Exact ArcForges.Contracts.LocalRpc.Sandbox/Platform plus Foundation; Contracts facade has no duplicate authored/generated wire types. Broker owns restricted launch and buffer grants; helper loads selected parser wrappers | .ContentSandbox.Runtime.<rid>: signed AOT helper + OS enforcement profile, sole producer WP11 |
+| ArcForges.ContentSandbox.Contracts, .Broker | Exact ArcForges.Contracts.LocalRpc.Sandbox/Platform plus Foundation; Contracts facade has no duplicate authored/generated wire types. Broker owns restricted launch and buffer grants; helper loads selected parser wrappers | .ContentSandbox.Runtime.<rid>: signed AOT helper + OS enforcement profile, WP11 host/profile; WP13 production-parser composition |
 | ArcForges.Build.Policy | Build-only, source/pin/NOTICE checks | No runtime dependency |
 | ArcForges.Contracts.LocalRpc.Platform, .LocalRpc.Sandbox | Contracts-owned internal local records/services, peer/bootstrap/lease/hints/connector and complete parser controls; public clients cannot import | Generated C# messages/client/server bindings from authored proto, WP03 |
 | ArcForges.Contracts.Foundation/PublicApi/Events/Validation/LocalRpc.<owner>/CloudInternal; ArcForges.Sdk.* and ArcForges.Cli | Contracts-owned generated/public vs internal graph | No desktop native dependency |
 | @arcforges/proto, @arcforges/api-client, @arcforges/contract-fixtures | Apache; protobuf-es + selected transport; no AGPL app import | No desktop native dependency |
 | @arcforges/ai-internal | Internal HTTP generated types and validators | Apache-2.0; AI/Cloud import boundary only |
-| io.github.arcforges:contracts-proto, :contracts-client, :contract-fixtures | Public Java/Kotlin lite messages, coroutine native gRPC stubs, independent fixtures respectively | Apache-2.0 JARs; grpc-okhttp transport is selected by Android consumer, no desktop dependency |
+| io.github.arcforges:contracts-proto, :contracts-connect-client, :contract-fixtures | Public Java/Kotlin lite messages, Connect Kotlin gRPC-Web clients, independent fixtures respectively | Apache-2.0 JARs; Connect Kotlin gRPC-Web transport is selected by Android consumer, no desktop dependency |
 
 Native.Abstractions holds status/ABI/build-manifest and safe lifetime wrappers, not media/domain entities. Consumers explicitly reference the managed package and exactly one matching .Runtime.<rid> package through RID-conditioned PackageReference; NuGet does not magically select a sibling RID package. Assets live runtimes/<rid>/native, signed in final app, load only app-owned read-only paths, with no PATH/user-writable fallback. RID set remains win-x64/win-arm64/osx-arm64/osx-x64/linux-x64/linux-arm64 under existing tiers. Normal consumer restore/build/publish never calls CMake/vcpkg; no “all desktop dependencies” metapackage.
 

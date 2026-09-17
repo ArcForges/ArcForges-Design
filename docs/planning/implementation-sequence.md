@@ -18,7 +18,7 @@ This document states the dependency model that produces the work-package sequenc
 | SQ-01 | **Freeze before build.** Naming, terminology, licence position and product scope are frozen first, because editors, data formats, capabilities and sync all rework if they change later. |
 | SQ-02 | **Prove the risky mechanism before building on it.** AOT publish, local IPC, serialization and persistence recovery are proven on a skeleton before product work depends on them. |
 | <a id="rule-sq-03"></a>SQ-03 | **External vendors may be mocked; your own architectural boundaries may not**. This single rule determines most of the ordering. |
-| <a id="rule-sq-04"></a>SQ-04 | **The first cross-process slice is real, not simulated**. Two genuinely AOT-published processes must talk over a real transport before either product grows. |
+| <a id="rule-sq-04"></a>SQ-04 | **Prove each real boundary before its consumers.** WP06/08 prove parent/helper AOT gRPC over OS streams; WP14 proves independent product hosts and typed in-process calls. Product-to-product IPC is not a prerequisite. |
 | <a id="rule-sq-05"></a>SQ-05 | **ArcNotes proves sync**, because it is more complex than a toy and simpler than raw captures or large media. |
 | SQ-06 | **The professional products come after the platform they depend on**, and ArcSlate comes last because it carries the highest complexity and performance risk. |
 | SQ-07 | **Mobile architecture follows the first real Cloud contracts; runtime acceptance follows the actual Harness**. Deferring mobile design until every desktop product is finished would rework the contracts it depends on. |
@@ -57,8 +57,8 @@ The sequence is one continuous numbered series. Phases group ownership for readi
 |---|---|---|
 | **A — Freeze and foundation** | 00 – 07, 47 | Terminology, licence position and layout are settled; the build enforces the architecture; AOT is proven; contracts, serialization and persistence primitives exist |
 | **B — Shared platform** | 08 – 13 | Local IPC, capability/resource model, desktop shell, security, observability and complete functional native producers with technical probes |
-| **C — First real slice** | 14 – 17 | Two real processes talk; ArcChat has a domain, an execution engine and an independent core |
-| **D — ArcNotes core** | 18 – 20 | ArcNotes native editor/recovery and non-agent cross-product commands work; acknowledged Cloud authority and real exports arrive in E, AI workflow in J |
+| **C — Independent applications and assistant** | 14 – 17 | Real independent application composition, assistant SQLite/core, execution mechanisms and the complete reusable Avalonia assistant exist; Cloud fixture replacement has named later producers |
+| **D — ArcNotes core** | 18 – 19 | ArcNotes native editor/recovery and own-product search/export work; acknowledged Cloud authority and real exports arrive in E, AI workflow in J. WP20 is future-only |
 | **E — First real cloud** | 21 – 26 | Identity, public API, realtime, sync and remote action exist against real infrastructure |
 | **F — ArcNotes completion** | 28 | Bounded typed properties and saved list/table views land. **`27` and `29` are retired by [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006)** — canvas and slides are excluded from delivery, not deferred |
 | **G — Kotlin Android foundation** | 30 | Early mobile contracts, Apache boundary and platform architecture; the real Android closed loop is delivered after the Harness in J |
@@ -95,7 +95,7 @@ The policy in this section is the complete, binding definition for every work pa
 | ArcSlate test media | **Real decoding, audio/video synchronisation and long exports** |
 | Application-port fakes | **The local store journal, crash recovery and migration** |
 | Cloud API stubs and generated-contract MSW UI fixtures | **Real C#/TS generated clients, exact JSON values, browser sessions, serialization and realtime compatibility tests** |
-| Capability test providers | **Real named pipes/UDS, authored proto and generated native-gRPC clients/services** |
+| Capability test providers | **Real typed in-process product ports, isolated application stores and parent/helper Named Pipe/UDS gRPC** |
 
 | # | Rule |
 |---|---|
@@ -206,7 +206,7 @@ Required design inputs are current formal definitions, accepted decisions, decla
 
 | # | Position |
 |---|---|
-| ND-01 | **It does not create separate multi-tier plans per product**. One continuous sequence interleaves shared foundation, cloud, mobile, web and cross-product capability at their real dependency positions. |
+| ND-01 | **It does not create separate multi-tier plans per product**. One continuous sequence interleaves shared foundation, Cloud, mobile, Web and application-owned capabilities at their real dependency positions. |
 | ND-02 | **It does not schedule.** No dates, no durations, no capacity assumptions. |
 | ND-03 | **It does not reopen Phase 1 decisions.** Where a package touches a decided area, it implements the decision. |
 | ND-04 | **It does not defer risk to the end.** The four high-risk probes are early, precisely so that ArcSlate does not meet decoding, GPU, synchronisation and AOT problems for the first time at work package 36. |
@@ -227,64 +227,63 @@ Required design inputs are current formal definitions, accepted decisions, decla
 
 ## 9. P2-009 complete artifact dependency graph
 
-All 52 active packages retain their domain scope; WP27/29 stay retired. The dependency table below is the current complete directed graph. Header and dependency sections of each package are generated from this same frozen set. Source ownership and immutable inputs are in each package; no cross-repository source dependency is implied.
+All 51 active packages retain the current accepted scope; WP20 is future-only; WP27/29 remain retired. The dependency table below is the current complete directed graph. Header and dependency sections of each package are generated from this same frozen set. Source ownership and immutable inputs are in each package; no cross-repository source dependency is implied.
 
 | WP | Required upstream |
 |---|---|
 | 00 | None |
-| 01 | 00 |
-| 02 | 01 |
-| 03 | 02 |
-| 04 | 03 |
-| 05 | 02, 03 |
-| 06 | 03, 04, 05 |
-| 07 | 04, 06 |
-| 08 | 06, 07 |
-| 09 | 03, 08 |
-| 10 | 06, 09 |
-| 11 | 04, 08, 09 |
-| 12 | 04, 06 |
-| 13 | 06, 07, 08, 09, 10, 11, 12 |
-| 14 | 08, 09, 10, 11, 13 |
-| 15 | 14 |
-| 16 | 09, 11, 14 |
-| 17 | 06, 15, 16 |
-| 18 | 07, 10, 14 |
-| 19 | 18 |
-| 20 | 17, 19 |
-| 21 | 03, 05, 12 |
-| 22 | 11, 21 |
-| 23 | 03, 22 |
-| 24 | 23 |
-| 25 | 19, 24 |
-| 26 | 17, 24, 25 |
-| 28 | 19, 25 |
-| 30 | 03, 06, 23, 24, 25 |
-| 33 | 07, 10, 13, 26 |
-| 34 | 33 |
-| 35 | 25, 34 |
-| 36 | 07, 10, 13, 26 |
-| 37 | 36 |
-| 38 | 37 |
-| 39 | 25, 38 |
-| 42 | 22, 23 |
-| 44 | 23, 42 |
-| 43 | 25, 42, 44 |
-| 40 | 19, 25, 28, 43, 44 |
-| 41 | 09, 11, 17, 22, 25 |
-| 45 | 12, 21, 44, 47 |
-| 46 | 25, 45 |
-| 51 | 21, 23, 25, 33, 34, 35, 42, 44 |
-| 52 | 15, 17, 20, 21, 23, 26, 39, 40, 41, 42, 43, 44 |
-| 31 | 26, 30, 45, 52 |
-| 32 | 31 |
-| 47 | 00, 02 |
-| 48 | 25, 42, 44, 46, 47 |
-| 49 | 26, 48, 52 |
-| 50 | 20, 28, 32, 35, 39, 40, 41, 43, 46, 49, 51, 52, 53 |
-| 53 | 02, 06, 07, 10, 11, 12, 44, 45 |
+| 01 | `00` |
+| 02 | `01` |
+| 03 | `02` |
+| 04 | `03` |
+| 05 | `02`, `03` |
+| 06 | `03`, `04`, `05` |
+| 07 | `04`, `06` |
+| 08 | `06`, `07` |
+| 09 | `03`, `08` |
+| 10 | `06`, `09` |
+| 11 | `04`, `08`, `09` |
+| 12 | `04`, `06` |
+| 13 | `06`, `07`, `08`, `09`, `10`, `11`, `12` |
+| 14 | `08`, `09`, `10`, `11`, `13` |
+| 15 | `14` |
+| 16 | `09`, `11`, `14` |
+| 17 | `06`, `15`, `16` |
+| 18 | `07`, `10`, `14` |
+| 19 | `18` |
+| 21 | `03`, `05`, `12` |
+| 22 | `11`, `21` |
+| 23 | `03`, `22` |
+| 24 | `23` |
+| 25 | `19`, `24` |
+| 26 | `17`, `24`, `25` |
+| 28 | `19`, `25` |
+| 30 | `03`, `06`, `23`, `24`, `25` |
+| 31 | `26`, `30`, `45`, `52` |
+| 32 | `31` |
+| 33 | `07`, `10`, `13`, `26` |
+| 34 | `33` |
+| 35 | `25`, `34` |
+| 36 | `07`, `10`, `13`, `26` |
+| 37 | `36` |
+| 38 | `37` |
+| 39 | `25`, `38` |
+| 40 | `19`, `25`, `28`, `43`, `44` |
+| 41 | `09`, `11`, `17`, `22`, `25` |
+| 42 | `22`, `23` |
+| 43 | `25`, `42`, `44` |
+| 44 | `23`, `42` |
+| 45 | `12`, `21`, `44`, `47` |
+| 46 | `25`, `45` |
+| 47 | `00`, `02` |
+| 48 | `25`, `42`, `44`, `46`, `47` |
+| 49 | `26`, `48`, `52` |
+| 50 | `28`, `32`, `35`, `39`, `40`, `41`, `43`, `46`, `49`, `51`, `52`, `53` |
+| 51 | `21`, `23`, `25`, `33`, `34`, `35`, `42`, `44` |
+| 52 | `15`, `17`, `21`, `23`, `26`, `39`, `40`, `41`, `42`, `43`, `44` |
+| 53 | `02`, `06`, `07`, `10`, `11`, `12`, `44`, `45` |
 
-Serial execution: 00, 01, 02, 03, 04, 05, 06, 07, 08, 09, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 28, 30, 33, 34, 35, 36, 37, 38, 39, 41, 42, 44, 43, 40, 47, 45, 53, 46, 48, 51, 52, 31, 32, 49, 50. WP42.11 precedes42.10. Follow the [producer artifact/stage matrix](producer-artifacts-and-integration.md): WP06 proves minimal real transports; WP13 complete functional native packages; WP52 replaces AI fixtures;31/32/49/50 require real product integration. Independent products use a tested manifest, not lockstep versions.
+Serial execution: 00, 01, 02, 03, 04, 05, 06, 07, 08, 09, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 21, 22, 23, 24, 25, 26, 28, 30, 33, 34, 35, 36, 37, 38, 39, 41, 42, 44, 43, 40, 47, 45, 53, 46, 48, 51, 52, 31, 32, 49, 50. WP42.11 precedes42.10. Follow the [producer artifact/stage matrix](producer-artifacts-and-integration.md): WP06 proves minimal real transports; WP13 complete functional native packages; WP52 replaces AI fixtures;31/32/49/50 require real product integration. Independent products use a tested manifest, not lockstep versions.
 
 ## Final review execution bindings
 

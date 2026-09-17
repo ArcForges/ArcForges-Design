@@ -7,7 +7,7 @@
 
 All desktop UI is native Avalonia/Skia under Native AOT. WebView, DOM/JavaScript, HTML-as-UI and localhost UI are prohibited, including previews and account/payment screens; external account/checkout links use the system browser.
 
-The four desktop products are neither four independently designed applications nor one shared shell with swapped content. The pattern is:
+The three professional desktop products are neither four independently designed applications nor one shared shell with swapped content. The pattern is:
 
 > **One design language, four professional workspaces.**
 
@@ -33,10 +33,10 @@ Founding invariant: **Shared Experience ≠ Shared Shell ≠ Shared Domain** ([I
 |---|---|
 | DS-01 | **What is unified is semantic design tokens, not literal colours.** Products consume tokens with meaning (surface, elevated surface, accent, danger, warning, success, informational, disabled, focus ring), never raw hex values. |
 | DS-02 | **Product code must not invent colour semantics.** A product needing a new semantic adds a token to the system; it does not hard-code a colour. |
-| DS-03 | **Product state colours are a defined, closed semantic set**, shared across all four products, so a warning means the same thing everywhere. |
-| DS-04 | **Typography establishes a semantic hierarchy** — not a list of sizes. Numeric and tabular presentation is a distinct, stable typographic role, because three of the four products display precise numbers. |
+| DS-03 | **Product state colours are a defined, closed semantic set**, shared across the three professional products and shared assistant, so a warning means the same thing everywhere. |
+| DS-04 | **Typography establishes a semantic hierarchy** — not a list of sizes. Numeric and tabular presentation is a distinct, stable typographic role, because three of the three professional products display precise numbers. |
 | DS-05 | **Density is a first-class design-system capability**, not a per-product hack. At minimum: Comfortable, Compact, and a professional-dense mode for panel-heavy products. |
-| DS-06 | **Iconography is one visual language** across all four products. |
+| DS-06 | **Iconography is one visual language** across the three professional products and shared assistant. |
 | <a id="rule-ds-07"></a>DS-07 | **An icon is never the only carrier of information** ([I-393](01-normative-glossary-and-invariants.md#rule-i-393) family). Every icon-only control has a label, tooltip or accessible name. |
 | DS-08 | **Motion is restrained and never load-bearing.** No state may be understandable *only* through animation. |
 
@@ -85,8 +85,8 @@ Founding invariant: **Shared Experience ≠ Shared Shell ≠ Shared Domain** ([I
 | CM-04 | **A command knows its own availability**: enabled, disabled with reason, hidden, or requiring elevation/approval. A disabled command explains why. |
 | CM-05 | **Command scope is explicit** — application, window, document/session, panel, selection — and resolution priority is fixed and documented, from most specific to least. |
 | <a id="rule-cm-06"></a>CM-06 | **Undo/redo uses unified command identity, but undo state belongs to the owning product** ([I-201](01-normative-glossary-and-invariants.md#rule-i-201)). **There is no global ArcForges undo service.** |
-| <a id="rule-cm-07"></a>CM-07 | **A command palette is a shared capability of all four products**, with the same invocation gesture and behaviour. |
-| CM-08 | **A quick-entry bar** (find, jump, run) is available in all four products with consistent semantics. |
+| <a id="rule-cm-07"></a>CM-07 | **A command palette is a shared capability of all three professional products**, with the same invocation gesture and behaviour. |
+| CM-08 | **A quick-entry bar** (find, jump, run) is available in all three professional products with consistent semantics. |
 
 ### 4.1 Shortcuts
 
@@ -154,7 +154,7 @@ Five channels, chosen by **durability**, not only by severity:
 | AT-01 | **A toast must never carry attention that requires later action.** Anything needing follow-up becomes a persistent attention item. |
 | AT-02 | Severity is a **unified, closed set**, and error red is not overused. Informational states are visually distinct from failure states. |
 | <a id="rule-at-03"></a>AT-03 | **Notifications deduplicate**: a continuing condition updates one status item rather than emitting a stream. |
-| AT-04 | **ArcChat may aggregate cross-application attention without taking ownership.** An ArcScope condition displayed in ArcChat is still owned, resolved and cleared by ArcScope. |
+| AT-04 | **ArcChat may aggregate same-application attention without taking ownership.** An ArcScope condition displayed in ArcChat is still owned, resolved and cleared by ArcScope. |
 | AT-05 | Notification content respects the sensitivity rules in [`03-cloud-services-and-sync.md`](03-cloud-services-and-sync.md) §11. |
 
 ### 6.2 Save and sync status
@@ -268,7 +268,7 @@ Four semantics:
 
 | # | Requirement |
 |---|---|
-| MN-01 | A **shared menu architecture** gives the four products the same top-level organisation for shared concerns (application, file/project, edit, view, window, help), with product-specific menus in between. |
+| MN-01 | A **shared menu architecture** gives the three professional products the same top-level organisation for shared concerns (application, file/project, edit, view, window, help), with product-specific menus in between. |
 | MN-02 | **Platform desktop conventions are respected**, notably on macOS. The goal is **semantic consistency, not pixel-identical interfaces**. |
 | <a id="rule-mn-03"></a>MN-03 | **Context menus are built from the current selection** and the command system, never from a static list. |
 | MN-04 | **A toolbar is not a command dump.** It carries the highest-frequency, most important commands for the current context. |
@@ -299,7 +299,7 @@ Four semantics:
 
 ---
 
-## 14. Cross-application handoff experience
+## 14. same-application handoff experience
 
 | # | Requirement |
 |---|---|
@@ -307,7 +307,7 @@ Four semantics:
 | <a id="rule-ho-02"></a>HO-02 | **Target not installed** — explain and offer the download route; never fail silently. |
 | HO-03 | **Target version too old** — state the required version specifically ([FL-05](05-ai-and-agent-execution.md#rule-fl-05)), never "tool failed". |
 | <a id="rule-ho-04"></a>HO-04 | **Target not running** — launch on demand where permitted, with the launch visible to the user. |
-| HO-05 | **Cross-application progress is attributed to the owner** ([AV-04](#rule-av-04)). |
+| HO-05 | **same-application progress is attributed to the owner** ([AV-04](#rule-av-04)). |
 
 ---
 
@@ -317,7 +317,7 @@ Four semantics:
 |---|---|
 | SF-01 | **The shared foundation must not become a giant shared UI library.** It provides mechanism and experience primitives; product-specific composition stays in the product. |
 | SF-02 | **Shared UI may never hold professional domain state** ([I-022](01-normative-glossary-and-invariants.md#rule-i-022)). |
-| SF-03 | The judgement rule: something belongs in the shared foundation when it is (a) experienced identically by users across products, (b) free of domain semantics, and (c) stable enough that a change is a deliberate cross-product event. Anything else stays in the product. |
+| SF-03 | The judgement rule: something belongs in the shared foundation when it is (a) experienced identically by users across products, (b) free of domain semantics, and (c) stable enough that a change is a deliberate same-application event. Anything else stays in the product. |
 | SF-04 | **A shared business ViewModel is prohibited.** ViewModels are product-owned, and per **[D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021)** are not shared with mobile either. |
 
 ---
@@ -368,7 +368,7 @@ Stage-14 shared experience does **not** own:
 | SI-14 | A deep link cannot bypass confirmation to perform a dangerous operation. |
 | SI-15 | Common file formats do not seize system default associations. |
 | SI-16 | Drag and drop specifies Open / Import / Copy / Reference / Move semantics. |
-| SI-17 | Cross-application drop is non-destructive by default. |
+| SI-17 | same-application drop is non-destructive by default. |
 | SI-18 | Drag and clipboard never move large payloads across applications. |
 | SI-19 | Window close, application quit and background work are distinct. |
 | SI-20 | No product silently resides in the background, except ArcChat or explicitly active work. |
@@ -378,7 +378,7 @@ Stage-14 shared experience does **not** own:
 | <a id="rule-si-24"></a>SI-24 | Window and layout physical state is device-local by default. |
 | SI-25 | Account and service requirements are stated per capability; direct download and native product operations are not purchase-gated. |
 | SI-26 | Cloud outage preserves cached work and native jobs while explicitly disabling unavailable Cloud capabilities. |
-| SI-27 | Cross-application user interface always shows the owning product doing the work. |
+| SI-27 | same-application user interface always shows the owning product doing the work. |
 | <a id="rule-si-28"></a>SI-28 | Shared UI shares mechanism and experience only, never professional domain state. |
 
 ---
@@ -400,7 +400,7 @@ ArcForges Desktop Experience
 
 ## 20. Acceptance scenarios
 
-**Consistency** — a user moving between the four products finds settings in the same place, invokes the command palette the same way, and encounters logically consistent shortcuts.
+**Consistency** — a user moving between the three professional products finds settings in the same place, invokes the command palette the same way, and encounters logically consistent shortcuts.
 
 **Command parity** — the same action from menu, toolbar, context menu, shortcut and palette produces one identical domain command and one identical audit outcome.
 

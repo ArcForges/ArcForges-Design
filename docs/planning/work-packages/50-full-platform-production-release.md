@@ -5,9 +5,9 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: K — Web and release
-> Upstream: `20` · `28` · `32` · `35` · `39` · `40` · `41` · `43` · `46` · `49` · `51` · `52` · `53` · Downstream: none
+> Upstream: `28` · `32` · `35` · `39` · `40` · `41` · `43` · `46` · `49` · `51` · `52` · `53` · Downstream: none
 
-> **Goal.** Ship everything together, once every gate is genuinely satisfied: four desktop products across three platforms, the Android companion, the cloud, the web surfaces, and the commercial loop — with the release audit, the production gates and the honest statement of what is and is not shipped.
+> **Goal.** Ship everything together, once every gate is genuinely satisfied: three professional desktop products across three platforms, the Android companion, the cloud, the web surfaces, and the commercial loop — with the release audit, the production gates and the honest statement of what is and is not shipped.
 
 > **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Each publisher; Cloud coordinated evidence. Inputs: only the applicable published producers available at this stage under [staged artifact integration](../README.md#staged-artifact-integration). Producer candidate records precede Cloud consolidation; no future package/manifest is an input. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: owned candidate artifacts and generated contracts with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
 > After WP03, unit mocks consume published Contracts fixtures; earlier stages verify their inventory/policy outputs. Acceptance consumes the actual providers scheduled for that stage. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
@@ -239,6 +239,6 @@
 
 ## 9. Dependencies
 
-**Upstream:** `20` · `28` · `32` · `35` · `39` · `40` · `41` · `43` · `46` · `49` · `51` · `52` · `53`. Consume completed stage outputs.
+**Upstream:** `28` · `32` · `35` · `39` · `40` · `41` · `43` · `46` · `49` · `51` · `52` · `53`. Consume completed stage outputs.
 
 **Downstream:** none. Consumers use exact released artifacts.

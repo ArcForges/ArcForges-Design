@@ -138,17 +138,17 @@ CancelRequested/Canceling and PauseRequested/Pausing describe control-request pr
 
 ### 5.1 ArcChat
 
-The ArcChat product domain is Cloud-owned unless explicitly designated as native UI, draft, cache, Hub or local permission/tool state.
+The assistant feature family has application-owned local histories or explicitly opted-in Cloud histories under [the history profile](../architecture/data-model/05-application-history.md). Cloud owns AI execution/effects/usage; each application owns its local UI, drafts, credentials, capability ports and tool receipts.
 
 | Term | Definition |
 |---|---|
 | `ArcChat.Conversation` | An ordered thread of Messages. Not a Task. |
 | `ArcChat.Message` | One turn in a Conversation. Not a Tool Call. |
 | `ArcChat.Project` | An ArcChat-scoped grouping of conversations, context references and settings. **Not** a Workspace, **not** an `ArcScope.Project`, **not** an `ArcSlate.Project`. |
-| `ArcChat.AgentProfile` | A saved configuration of model, tools, instructions and limits. Not a running agent; not a model; not a security principal. |
+| `ArcForges.Assistant.CloudProfile` | A saved configuration of model, tools, instructions and limits. Not a running agent; not a model; not a security principal. |
 | `ArcChat.Skill` | Reusable guidance and configuration that shapes agent behaviour. Not a Capability; not extension code; not MCP; not a permission grant. |
 | `ArcChat.PersonalMemory` | ArcChat-owned durable user-preference recall. Not ArcNotes knowledge; not a conversation summary. |
-| `ArcChat.Hub` | The local platform coordination plane hosted inside the ArcChat process. |
+| `ArcForges.Capabilities` | The local platform coordination plane hosted inside the owning professional application process. |
 | `ArcChat.Artifact` | An `ArtifactRef` held by ArcChat. Never the underlying owned object. |
 
 ### 5.2 ArcNotes
@@ -166,7 +166,7 @@ Cloud-acknowledged revisions are authoritative; native working caches preserve p
 | `ArcNotes.SavedView` | A stored query and presentation over typed properties. Confers **no ownership** of the objects it lists. |
 | `ArcNotes.Attachment` | A referenced binary managed by ArcNotes. Never base64 embedded in canonical content. |
 | `ArcNotes.Canvas` (Edgeless) | Retired by P2-006. Edgeless, whiteboard, shape/connector/frame workspaces are excluded. |
-| `ArcNotes.Database` | Bounded note organization through scalar properties, queries and table/list Saved Views; not the SQLite/PostgreSQL storage schema or a formula/relation/rollup platform. |
+| `ArcNotes.Database` | Bounded note organization through scalar properties, queries and table/list Saved Views; not the SQLite/D1 storage schema or a formula/relation/rollup platform. |
 | `ArcNotes.Slides` | Retired by P2-006. Presentations, slide generation, frame ordering and presentation navigation are excluded. |
 | `ArcNotes.ChecklistItem` | A document-local task item. **Not** an ArcChat Agent Task. |
 
@@ -275,7 +275,7 @@ Every active entry is binding where its concepts are in current product scope. A
 | <a id="rule-i-028"></a>I-028 | Native ArcNotes editor/working cache ≠ WebView shell; acknowledged Cloud revision ≠ pending local edit |
 | <a id="rule-i-029"></a>I-029 | ArcScope Report ≠ ArcNotes Document |
 | <a id="rule-i-030"></a>I-030 | Product AI surface ≠ agent runtime; all products use the single Cloud harness |
-| <a id="rule-i-031"></a>I-031 | ArcChat Federated Search ≠ a central ArcForges database |
+| <a id="rule-i-031"></a>I-031 | ArcChat application-scoped Search ≠ a central ArcForges database |
 | <a id="rule-i-032"></a>I-032 | Upstream product reference ≠ ArcSlate runtime architecture |
 
 ### 7.3 Capability, context and resource
@@ -742,10 +742,10 @@ Every active entry is binding where its concepts are in current product scope. A
 |---|---|---|
 | `ArcCanvas`, `ArcMusic`, `ArcImage`, `ArcVideo` | `SUPERSEDED` product names (**[D-002](../decisions/phase-1-foundation-decisions.md#rule-d-002)**) | No replacement canvas/slides product or capability; nothing; `ArcScope`; `ArcSlate` |
 | "Workspace" meaning a panel layout | Collides with the cloud tenancy boundary | **Layout** |
-| Bare "Project" in cross-product text | Three incompatible product meanings | `ArcChat.Project` / `ArcScope.Project` / `ArcSlate.Project` |
+| Bare "Project" in same-application text | Three incompatible product meanings | `ArcChat.Project` / `ArcScope.Project` / `ArcSlate.Project` |
 | Bare "Scope" | Eight distinct meanings exist | Name the scope explicitly: Knowledge Scope, Sync Scope, Permission Scope, Policy Scope, Product Scope, Search Scope, Egress Scope, Resource Scope |
 | "ArcForges Suite 2.0" as a version | No mandatory suite release train | Per-product versions plus an optional release campaign name |
-| "Central desktop service", `ArcForgesService.exe` | Prohibited architecture | ArcChat-hosted Hub |
+| "Central desktop service", `ArcForgesService.exe` | Prohibited architecture | application-owned assistant |
 | Unqualified "Unlimited AI" / "unlimited storage" | Prohibited unbounded commercial claims | Disclosed AI capacity recovery/rate/concurrency/model limits and storage tier |
 | ".NET AOT" applied to Kotlin Android | Kotlin/Jetpack Compose is its own runtime under [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) | "Kotlin/Jetpack Compose release build" |
 | "Cloud may remain JIT" | Superseded by [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) | "C# Cloud publishes Native AOT" |
@@ -793,10 +793,10 @@ The glossary is enforced, not merely published.
 | Current document | Relationship |
 |---|---|
 | [Invariant Coverage](../assurance/invariant-coverage.md) | Maps the current catalogue to architecture, verification and implementation owners |
-| [Contracts, Protocols and the Cross-Application Semantic Model](../architecture/02-contracts-and-protocols.md) | Applies the canonical vocabulary to cross-product contracts |
+| [Contracts, Protocols and the same-application Semantic Model](../architecture/02-contracts-and-protocols.md) | Applies the canonical vocabulary to same-application contracts |
 | **[D-018](../decisions/phase-1-foundation-decisions.md#rule-d-018)** | The requirement that this document exists and gates detailed specification |
 | **[V-02](../assurance/phase-1-official-verification.md#rule-v-02)** | The MCP term-collision requirement discharged in §9 |
 
 ## P2-009 technology invariants
 
-Proto is authored wire authority; the sole model loop is CF Workflow; canonical business state is C#/PostgreSQL; object bytes are R2; product repositories consume immutable packages; Mobile is Kotlin/Jetpack Compose. These replace superseded technology examples without renumbering inherited invariant IDs. Content-origin, Notes scalar queries, Scope measurement and Slate rational/tick meaning remain unchanged.
+Proto is authored wire authority; the sole model loop is CF Workflow; canonical business state is C#/D1; object bytes are R2; product repositories consume immutable packages; Mobile is Kotlin/Jetpack Compose. These replace superseded technology examples without renumbering inherited invariant IDs. Content-origin, Notes scalar queries, Scope measurement and Slate rational/tick meaning remain unchanged.

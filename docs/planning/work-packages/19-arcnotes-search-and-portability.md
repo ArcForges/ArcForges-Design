@@ -5,7 +5,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: D — ArcNotes core
-> Upstream: `18` · Downstream: `20` · `25` · `28` · `40`
+> Upstream: `18` · Downstream: `25` · `28` · `40`
 
 > **Goal.** Make ArcNotes content findable and portable **within the accepted exit path** (`§13` of the ArcNotes requirements): search over hydrated content with citation anchors, non-destructive Markdown and plain-text import, and the **Cloud-generated notebook download** — proving the exit path rather than asserting it.
 
@@ -230,4 +230,4 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 **Upstream:** `18`. Consume completed stage outputs.
 
-**Downstream:** `20` · `25` · `28` · `40`. Consumers use exact released artifacts.
+**Downstream:** `25` · `28` · `40`. Consumers use exact released artifacts.

@@ -146,9 +146,9 @@ Search visibility, Cloud indexing, AI retrieval and provider processing have dis
 |---|---|
 | SR-01 | **Search ≠ Retrieval** ([I-146](01-normative-glossary-and-invariants.md#rule-i-146)) and **Search ≠ Ask AI** ([I-147](01-normative-glossary-and-invariants.md#rule-i-147)). Search need not invoke any generative model. |
 | SR-02 | **`SearchResult` is not a `Citation`** ([I-152](01-normative-glossary-and-invariants.md#rule-i-152)). |
-| <a id="rule-sr-03"></a>SR-03 | **ArcChat Global Search is federated**, querying each owning product and merging results. ArcChat does **not** maintain a central local full-text index of all products' data ([I-031](01-normative-glossary-and-invariants.md#rule-i-031)). |
+| <a id="rule-sr-03"></a>SR-03 | **ArcChat Global Search is application-scoped**, querying each owning product and merging results. ArcChat does **not** maintain a central local full-text index of all products' data ([I-031](01-normative-glossary-and-invariants.md#rule-i-031)). |
 | <a id="rule-sr-04"></a>SR-04 | **ArcChat must not read another product's index database directly.** Federation goes through capability calls. |
-| SR-05 | When an owning product is not running, ArcChat may **launch it on demand** to serve a federated query, subject to the ordinary capability and permission model. |
+| SR-05 | When an owning product is not running, ArcChat may **launch it on demand** to serve a application-scoped query, subject to the ordinary capability and permission model. |
 | SR-06 | A lightweight federated-search cache is permitted; it is **disposable**, records source and revision, and is never a write point. |
 | SR-07 | **Cloud Search is a derived cloud projection** over data that legitimately entered the cloud and is permitted to be cloud-indexed. It is never business authority. |
 | <a id="rule-sr-08"></a>SR-08 | **A local-only resource never appears in cloud search.** The cloud does not know its content, and must not acquire it in order to make search work. |
@@ -363,7 +363,7 @@ This is the most consequential privacy control in the product.
 - A global knowledge-graph engine
 - Automatic whole-filesystem indexing
 - Advanced graph RAG
-- Cross-owner or cross-realm federated search
+- Cross-owner or cross-realm application-scoped search
 - Every external SaaS connector
 - Complex learned reranking
 - Real-time collaborative knowledge curation
@@ -404,7 +404,7 @@ KnowledgeFreshness · AIEligibility · CloudIndexEligibility · SemanticIndexEli
 
 **Local-only source** — never appears in cloud search; a mobile search does not surface it; an explicit remote search Task can find it without uploading it.
 
-**Federated search** — results merged across products with owners shown; a closed application is launched on demand or reported as unavailable.
+**application-scoped search** — results merged across products with owners shown; a closed application is launched on demand or reported as unavailable.
 
 **Citation** — a citation opens the exact block, page region, session range or timecode; a citation to a changed revision reports the change; a citation to a deleted resource remains as provenance and is marked.
 

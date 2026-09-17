@@ -87,7 +87,7 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 **What must be fully done.** Implement the canonical notes schema in [Cloud data model §8.4](../../architecture/data-model/01-cloud-data-model.md#84-cloud-notes-canonical-model): notebook-owned folders, document-owned blocks and values, tags, property definitions, saved views, immutable revisions, checkpoints and derived backlinks. Add the typed folder/document/history operations and their sorted-root revision checks. Cloud validates the same typed operations as the local domain; publication, receipts and Resource/Entitlement enlistment share the commit.
 
-**Testing requirements.** Folder cycle/reorder/reparent, cross-notebook move with stable document IDs, concurrent move/delete, ancestor trash/restore without restoring separately trashed documents, stale revisions, immutable history and revision/attachment pins. Verify generated API/SQLite projections against real PostgreSQL.
+**Testing requirements.** Folder cycle/reorder/reparent, cross-notebook move with stable document IDs, concurrent move/delete, ancestor trash/restore without restoring separately trashed documents, stale revisions, immutable history and revision/attachment pins. Verify generated API/SQLite projections against real D1.
 
 **Completion gate.** A note has one complete server authority model and hierarchy, with executable operations, history and resource ownership; no client is required to create authoritative schema or assign Cloud revisions.
 
@@ -179,6 +179,15 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 **Required implementation and closure from the final review.** Implement and independently verify [01-cloud-data-model](../../architecture/data-model/01-cloud-data-model.md). Implement real structural move/ack/conflict transactions, full native metadata replicas, job-authorized R2 staging/verification/promotion and quarantined old-generation client commands. WP25.08 closes both Notes and Chat Cloud export manifests through actual R2; test missing permission, partial transfer, loss reports, no pending-local content and response loss. Old Notebook/Document body uploads cannot bypass placement operations. Record exact artifact identities and real/fixture status with the existing substeps; these cases are part of this package's completion gate.
 
+<a id="rule-wp-25.09"></a>
+### WP-25.09 — Application Cloud history and restartable import
+
+**What must be fully done.** Implement HistoryService.BeginImport/FinalizeImport/GetImport/CancelImport from annex10; fixed product scope, verified staged archive/typed rows and atomic visibility/receipt. Complete opted-in per-app Cloud history synchronization, tombstone/export and promotion status used by WP15/17 clients. Replace their named HistoryService fixture with the real Worker/Container/D1/R2 owner. Local-only history bodies never enter Cloud Chat or search through this path without explicit promotion.
+
+**Testing requirements.** Actual archive/manifest hashes, staged object authorization, parent/branch mapping, lost finalization acknowledgement, duplicate import, source edit during promotion, quota/permission loss and expiry; Cloud copy remains distinct when the local snapshot revision changed.
+
+**Completion gate.** Clean published desktop/Kotlin/TS consumers recover a real interrupted import, see no partial visible conversation, and keep local/Cloud/temporary retention distinct.
+
 <a id="rule-wp-25.90"></a>
 ### WP-25.90 — Verify the owned artifact and real integration
 
@@ -224,9 +233,11 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 | Blob lifecycle, orphan cleanup and accounting results | [WP-25.05](#rule-wp-25.05) |
 | Integrity fault detection and repair results | [WP-25.06](#rule-wp-25.06) |
 | Three-device convergence comparison | [WP-25.07](#rule-wp-25.07) |
+| Application history import, explicit promotion and no partial visibility | [WP-25.09](#rule-wp-25.09) |
 | Owned artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/OS/device/provider, scenario, result, limitations and real-versus-fixture status; inapplicable fields explicitly marked | [WP-25.90](#rule-wp-25.90) |
 
 ---
+
 
 ## 8. Completion gate
 
@@ -260,3 +271,5 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 **Upstream:** `19` · `24`. Consume completed stage outputs.
 
 **Downstream:** `26` · `28` · `30` · `35` · `39` · `40` · `41` · `43` · `46` · `48` · `51`. Consumers use exact released artifacts.
+
+Completion also requires the real25.09 producer and its consumer receipt; the .90 stage cannot leave HistoryService as a fixture.

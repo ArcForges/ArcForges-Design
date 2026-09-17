@@ -180,7 +180,7 @@ The unresolved tension — a strongly typed AOT product versus unknown third-par
 | # | Requirement |
 |---|---|
 | TA-01 | **A third-party Arc App is a standalone complete application** with its own process, domain, storage and lifecycle — distinct from an Extension ([I-317](01-normative-glossary-and-invariants.md#rule-i-317)). |
-| TA-02 | It participates through the cross-application contribution model, exactly as a first-party product does. |
+| TA-02 | It participates through the same-application contribution model, exactly as a first-party product does. |
 | TA-03 | **It is not a first-party application.** Publisher and trust are distinct, and reserved official identifiers and namespaces cannot be claimed. |
 | TA-04 | It may hold higher permission than an extension — because it is a peer application — and it is still governed by the same security pipeline. |
 

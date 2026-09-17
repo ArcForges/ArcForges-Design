@@ -1,5 +1,7 @@
 # Platform and Dependency Matrix
 
+P2-012 current implementation authorities: [Exact package/project producers](27-platform-projects-and-application-assistants.md); [Container/D1 binding dependency closure](data-model/04-d1-execution-profile.md).
+
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Architecture
 > Governing authority: **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** (publish matrix), **[D-013](../decisions/phase-1-foundation-decisions.md#rule-d-013)** (provenance), **[D-014](../decisions/phase-1-foundation-decisions.md#rule-d-014)** (owned distribution surfaces), [PM-02](../requirements/12-quality-and-compatibility-contract.md#rule-pm-02) and `§20` of the quality contract
@@ -51,7 +53,7 @@ This inventory states capability and degradation obligations. The package regist
 
 | # | Rule |
 |---|---|
-| PT-01 | **Every desktop product ships the same platform set.** A product supported on fewer platforms than its siblings would break the cross-product workflows the family is built on. |
+| PT-01 | **Every desktop product ships the same platform set.** A product supported on fewer platforms than its siblings would break the same-application workflows the family is built on. |
 | PT-02 | **A Tier-2 platform is a real build, not a promise.** It publishes AOT in CI; what it does not carry is release-blocking authority. |
 | PT-03 | **Tier promotion is a decision with evidence** — full matrix participation demonstrated — not a marketing choice. |
 | PT-04 | **The mobile emulator architecture is never a release claim** ([PM-03](../requirements/12-quality-and-compatibility-contract.md#rule-pm-03) there). |
@@ -126,7 +128,7 @@ Filling a slot is not a code change. Before a dependency enters a deliverable:
 | Class | Constraint | Examples of the class |
 |---|---|---|
 | **In a desktop AOT deliverable** | Must publish AOT with zero trim/AOT warnings (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**, **[V-05](../assurance/phase-1-official-verification.md#rule-v-05)**); no reflection-driven runtime construction | UI, contracts, persistence, HTTP, realtime |
-| **In Cloud only** | Native AOT required; explicit generated serializers/registration and zero-warning publish (**[V-03](../assurance/phase-1-official-verification.md#rule-v-03)**) | Explicit hosting, Npgsql SQL, typed provider HTTP and telemetry |
+| **In Cloud only** | Native AOT required; explicit generated serializers/registration and zero-warning publish (**[V-03](../assurance/phase-1-official-verification.md#rule-v-03)**) | Explicit hosting, D1 binding adapter SQL, typed provider HTTP and telemetry |
 | **In the Apache-2.0 boundary** | Licence-compatible with Apache-2.0 redistribution (**[D-004](../decisions/phase-1-foundation-decisions.md#rule-d-004)**, **[D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021)**) | Contracts, SDK, mobile core |
 | **Build-time only** | Never shipped; may be more permissive about runtime constraints | Generators, analyzers, test tooling |
 
@@ -212,7 +214,7 @@ dependency adopted (§3.3)
 
 ## 8. Selected P2-009 runtime and dependency closure
 
-Cloud uses .NET SDK 10.0.400, .NET10 runtime10.0.12, Grpc.AspNetCore/Web2.83.0 and Npgsql 10.0.3, PostgreSQL 18.6. One Linux-x64 Native AOT executable, chiseled Ubuntu runtime-deps image with ICU/tzdata/CA certificates, non-root, read-only root and declared scratch, no dynamic plugin assemblies, EF/dynamic ORM, ASP.NET Session or CookieAuthenticationHandler. ASP.NET Core Minimal API endpoints and explicit generated metadata handle only allowed HTTP exceptions. NpgsqlDataSource with fixed SQL and explicit parameter/reader mapping; SQL migrations shipped as one-shot bundle. DB pool max 32, max 128 active RPCs, bounded queue 256, drain 30s; liveness process-only, readiness DB/config/private-port binding, degraded CF/R2 reported separately.
+Cloud uses .NET SDK 10.0.400, .NET10 runtime10.0.12, Grpc.AspNetCore/Web2.83.0 and the private Worker D1 binding adapter. One Linux-x64 Native AOT executable in Cloudflare Containers, chiseled Ubuntu runtime-deps image with ICU/tzdata/CA certificates, non-root, read-only root and declared scratch, no dynamic plugin assemblies, EF/dynamic ORM, ASP.NET Session or CookieAuthenticationHandler. ASP.NET Core Minimal API endpoints and explicit generated metadata handle only allowed HTTP exceptions. The private Worker binding bridge with versioned named SQL plans and exact typed results; SQL migrations shipped as one-shot bundle. Private binding requests max6 per Worker invocation, max128 active RPCs per Container, bounded queue256, drain30s; liveness process-only, readiness DB/config/private-port binding, degraded CF/R2 reported separately.
 
 Authentication is first-party explicit session/challenge state over .NET cryptography and System.Formats.Cbor, avoiding a reflection/native dependency closure from a full Identity/FIDO framework. WebAuthn RP offers ES256 only, resident/discoverable credentials, UV required, attestation none; verify type/challenge/exact origin/RP hash/UP+UV/credential ownership/signature per W3C, bounded CBOR/JSON, reject duplicates/trailing malformed structures. Parse only COSE EC2 NIST P256 keys; ECDsa verifies signature, no ad-hoc cryptographic algorithm. Non-backup counter rollback rejects; synced credential backup flags/counter changes follow explicit suspicious-auth step-up and audit, never count as proof of compromise by themselves. Email/recovery remain existing one-use challenge/rate-limit flow, no enumeration. WP06 tests real passkey ceremony and negative vectors under AOT; failed chosen-path proof requires a focused design correction, not automatic JIT.
 

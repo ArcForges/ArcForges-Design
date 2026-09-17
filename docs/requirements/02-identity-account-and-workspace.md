@@ -120,7 +120,7 @@ Session                     (one app's current authenticated login state)
 | DV-03 | **App Installation** is a distinct cloud-visible dimension. A process instance is never a device identity. |
 | DV-04 | **Session** is per-application authenticated state. Sessions expire; the Device survives. One device may hold several concurrent sessions (`ArcChat`, `ArcNotes`, `ArcScope`, browser). |
 | DV-05 | **Device SSO** — after a user signs in from one Arc product on a device, another Arc product on the same device offers "Continue as \<name\>" rather than re-entering an email. |
-| DV-06 | **Device SSO must not create an architecture dependency.** ArcNotes signing in must work with ArcChat absent. The unified account/session infrastructure is shared desktop foundation, never an ArcChat-private authentication service. |
+| DV-06 | **Device SSO must not create an architecture dependency.** ArcNotes signing in must work without another application. The unified account/session infrastructure is shared desktop foundation, never an ArcChat-private authentication service. |
 | DV-07 | Sign-out distinguishes four operations, each with different scope: **Sign out of this App** (other Arc apps stay signed in), **Sign out of this Device** (all Arc app cloud sessions revoked, local data retained), **Revoke Device** (performed from another device; stops sync, remote and cloud access), **Sign out everywhere** (all sessions cleared; the account remains). |
 
 ---

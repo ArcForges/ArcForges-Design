@@ -16,7 +16,7 @@ Mobile Presentation (ViewModel / StateFlow)          mobile-owned; NOT shared wi
         ↓
 Mobile Application Services               mobile-only application behaviour
         ↓
-Generated proto unary client + CF presentation adapter
+Generated proto unary/server-stream gRPC-Web client
         ↓
 Secure storage · Local cache · Offline outbox
 ```
@@ -35,7 +35,7 @@ Secure storage · Local cache · Offline outbox
 | LY-01 | **Base ViewModel patterns are not shared between Avalonia desktop and Kotlin Android mobile** (**[D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021)**). Each UI stack owns its implementation. |
 | LY-02 | **Product-domain behaviour, server orchestration, policy decisions, persistence behaviour and entitlement authority stay outside the shared boundary** (**[D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021)**). |
 | LY-03 | **Mobile-only application behaviour is implemented independently inside the Apache mobile boundary** (**[D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021)**). |
-| LY-04 | **The mobile client never loads the desktop native media stack and never connects to a local Hub**. |
+| LY-04 | **The mobile client never loads the desktop native media stack and never opens a desktop-local endpoint**. |
 
 ---
 
@@ -64,28 +64,28 @@ Kotlin/JVM and Jetpack Compose Material3 on Android ART implement the complete [
 
 The initial toolchain candidate is AGP9.3.2, Gradle9.5.0, JDK17, Kotlin/Compose compiler2.3.21 and Compose BOM2026.08.00. Use AGP built-in Kotlin, the matching Compose compiler plugin and no legacy kotlin-android plugin. The resolved Kotlin compiler and Compose plugin versions must match in the WP06 manifest; do not assume a version-catalog declaration changes AGP's resolved compiler. [AGP9.3 release compatibility](https://developer.android.com/build/releases/agp-9-3-0-release-notes) supplies the stable AGP/Gradle/JDK baseline; preview AGP9.4 is not selected. A version catalog pins every direct dependency; committed Gradle locks and dependency-verification metadata pin the resolved graph; wrapper URL and SHA256 are paired. Room/KSP, Lifecycle/ViewModel, Navigation Compose, WorkManager, Credential Manager, Biometric, OkHttp and Firebase Messaging are selected Android adapters. Their exact compatible patch versions are recorded by WP06 in the immutable toolchain manifest after a real release build; equivalent patch selection changes no product rule. An update PR changes the coherent toolchain/catalog/locks/checksums together and repeats affected tests.
 
-Use coroutines with structured cancellation, immutable StateFlow screen state, lifecycle-aware collection, repository-scoped I/O dispatchers and Room transactions. A ViewModel owns presentation only. Losing an Activity does not allocate a second command or task. Foreground revalidates session/recoveryGeneration, reconciles durable owner state and then joins CF presentation. Background closes presentation polling/socket; bounded WorkManager work reconciles previously authorized uploads/messages under network constraints. It does not start model work, approve a proposal or run a desktop tool because the app resumed.
+Use coroutines with structured cancellation, immutable StateFlow screen state, lifecycle-aware collection, repository-scoped I/O dispatchers and Room transactions. A ViewModel owns presentation only. Losing an Activity does not allocate a second command or task. Foreground revalidates session/recoveryGeneration, reconciles durable owner state and then resumes authorized gRPC-Web streams. Background closes streams; bounded WorkManager work reconciles previously authorized uploads/messages under network constraints. It does not start model work, approve a proposal or run a desktop tool because the app resumed.
 
 The [official Android build guidance](https://developer.android.com/build/migrate-to-built-in-kotlin) and [Compose compiler guidance](https://developer.android.com/develop/ui/compose/setup-compose-dependencies-and-compiler) establish the mechanism. This candidate tuple has not been built by this documentation task; WP06/30/32 own actual compatibility evidence.
 
 <a id="rule-sc-02"></a>
 ## 4. Generated serialization and clients
 
-Consume exactly `io.github.arcforges:contracts-proto` and `io.github.arcforges:contracts-client` from the same verified Contracts manifest. Generated Java/Kotlin-lite messages and coroutine gRPC stubs contain public schemas only. Mobile supplies grpc-okhttp and interceptors; it never generates a private fork of proto or depends on adjacent Contracts source. JVM17 library consumption, R8 shrinker retention and release APK execution are tested, not inferred from JVM unit tests.
+Consume exactly `io.github.arcforges:contracts-proto` and `io.github.arcforges:contracts-connect-client` from the same verified Contracts manifest. Generated Java/Kotlin-lite messages and Connect Kotlin gRPC-Web clients contain public schemas only. Mobile supplies Connect Kotlin gRPC-Web and interceptors; it never generates a private fork of proto or depends on adjacent Contracts source. JVM17 library consumption, R8 shrinker retention and release APK execution are tested, not inferred from JVM unit tests.
 
-One channel per authenticated realm uses TLS/HTTP2, system trust, bounded message sizes/deadlines and opaque native bearer metadata. Self-host private CAs require explicit administrator configuration and identity validation; no trust-all callback. Refresh is single-flight and excluded from automatic business retries. gRPC status/details map through ArcError; cancellation is explicit and an HTTP transport failure does not prove an effect failed. CF presentation/file/auth/provider routes keep their [typed exceptions](contracts/05-cloudflare-integration.md); no gRPC-Web parser is embedded in Android.
+One Connect Kotlin client per authenticated application profile uses binary gRPC-Web over HTTPS, system trust, bounded messages/deadlines and bearer metadata. A custom Cloud realm uses an explicitly configured HTTPS origin; no trust-all callback. Refresh is single-flight and excluded from automatic business retries. Status/trailers map through ArcError; an HTTP failure does not prove an effect failed. The generated client implements gRPC-Web framing; there is no handwritten Android framing fork. Only file bytes, OAuth and provider adapters retain the [declared standard-protocol exceptions](contracts/05-cloudflare-integration.md). Event and AI output recovery use annex10 RPCs.
 
-Map signed64 to Long; protobuf uint64 generated Long bits to ULong at the checked application boundary. Preserve high-bit values and unsigned base10 JSON strings. Money/Notes decimals stay canonical strings with checked arithmetic; UUID bytes are network order. Generated enums retain unknown values. Current/previous client vectors include uint64 max, negative ticks, absent/default fields, unknown enums, ArcError details, content origin, oversized/truncated bodies and canceled calls. This uses the [official gRPC Kotlin lite profile](https://github.com/grpc/grpc-kotlin/blob/master/examples/stub-lite/build.gradle.kts), not a TS runtime bridge.
+Map signed64 to Long; protobuf uint64 generated Long bits to ULong at the checked application boundary. Preserve high-bit values and unsigned base10 JSON strings. Money/Notes decimals stay canonical strings with checked arithmetic; UUID bytes are network order. Generated enums retain unknown values. Current/previous client vectors include uint64 max, negative ticks, absent/default fields, unknown enums, ArcError details, content origin, oversized/truncated bodies and canceled calls. Connect Kotlin service clients use the producer's generated Java/Kotlin protobuf messages and the explicit gRPC-Web protocol; no TypeScript runtime is embedded.
 
 ## 5. Network behaviour
 
 | # | Rule |
 |---|---|
-| <a id="rule-nw-01"></a>NW-01 | All business commands and queries use generated binary native gRPC over TLS/HTTP2. CF WebSocket/HTTP stream reads carry presentation; file/auth/provider exceptions retain their declared HTTP protocol. |
+| <a id="rule-nw-01"></a>NW-01 | Public gRPC-Web server streams use [the complete scope/stream contract](contracts/10-application-scope-and-streams.md); current authorization, CSRF/Origin, cursor recovery and bounded queues are required. |
 | NW-02 | **Foreground and background transitions rebuild or restore the realtime session per platform policy.** |
 | NW-03 | **Network changes use exponential backoff with jitter.** |
-| NW-04 | **After reconnection, durable state is backfilled by generated unary RPC; CF presentation gaps use the declared HTTP catch-up** ([RL-04](05-cloud-architecture.md#rule-rl-04) in the cloud architecture). |
-| NW-05 | **The client never scans a LAN, never discovers a desktop Hub, and never addresses a named pipe or socket** (**[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)**). |
+| NW-04 | **After reconnecting, reread durable state with generated unary RPC and resume EventService.Watch/ExecutionService.WatchOutput at the last accepted cursor.** Expired retention takes the snapshot/reset path in [annex10](contracts/10-application-scope-and-streams.md). |
+| NW-05 | **The client never scans a LAN, never discovers a desktop application runtime, and never addresses a named pipe or socket** (**[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)**). |
 | NW-06 | **Cellular policy is respected** for downloads and large transfers ([AR-09](../requirements/products/arcchat-mobile-and-web.md#rule-ar-09) in the companion requirements). |
 
 ---
@@ -267,3 +267,7 @@ Android rollback follows the [forward rescue release](22-deployment-and-release-
 PR CI resolves locked dependencies, regenerates/compares any derived resources, runs unit/lint/Java-Kotlin security checks, builds a release candidate and runs emulator smoke. Main verifies the same gates, builds one signed APK/AAB pair from identical inputs, records APK/AAB hashes, signing-certificate digest, versionName/versionCode, toolchain and Contracts manifest, then publishes immutable GitHub release artifacts automatically. Store submission/promotion additionally requires WP32's account/listing/consumption-only and physical-device receipts; an uploaded artifact is not a Play-approved product.
 
 versionName follows the product release manifest; versionCode is an allocated monotonic integer in the repository release ledger, above every previously distributed code including the RN bootstrap. Re-run reuses the candidate or allocates a new code; no overwrite. CI signing keys live in protected repository environment secrets with backup/recovery ownership; they are not regenerated per build. Distribution signing identity and Play upload key are distinct when Play App Signing is used. A rescue release has a greater code, compatible current data and rollback-mode evidence. Never instruct users to downgrade database-bearing APKs in place.
+
+## Complete native UX and application targeting
+
+The [Android route/layout/action specification](../experience/02-android-companion.md) resolves the navigation inventory: Home, Chats, Tasks, Library, Settings; Devices is nested under Home. It is normative for AN01–AN25 and native Back/IME/accessibility/lifecycle behavior. [Application scope](contracts/10-application-scope-and-streams.md) and [history modes](data-model/05-application-history.md) govern Room, own chats, explicit desktop Cloud history and frozen one-application remote control. No local-only desktop history is remotely exposed.

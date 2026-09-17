@@ -1,210 +1,126 @@
 <a id="rule-wp-26"></a>
+# WP-26 — Application Presence and One-Application Tool Bridge
 
-# WP-26 — Device Presence, Remote Action and the Tool Bridge
-
-> Status: **Authoritative** — Phase 2 (Detailed Specifications)
-> Layer: Planning · Work package
-> Phase: E — First real cloud
+> Status: Authoritative — P2-012
 > Upstream: `17` · `24` · `25` · Downstream: `31` · `33` · `36` · `49` · `52`
-
-> **Goal.** Let a remote surface ask a desktop to do something, without Cloud ever reaching into a machine: a durable `ToolRequest` pulled by ArcChat Desktop, re-authorised locally, and answered with an idempotent `ToolResult`.
-
-> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Cloud + AI ports; ArcChat and product owners. Inputs: only the applicable published producers available at this stage under [staged artifact integration](../README.md#staged-artifact-integration). Producer candidate records precede Cloud consolidation; no future package/manifest is an input. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: owned candidate artifacts and generated contracts with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
-> After WP03, unit mocks consume published Contracts fixtures; earlier stages verify their inventory/policy outputs. Acceptance consumes the actual providers scheduled for that stage. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
-
----
+> Repositories: Cloud + DesktopPlatform. Consume only exact published upstream artifacts; no adjacent sources.
 
 ## 1. Scope and purpose
 
-**In scope.** Device presence; **per-Step tool locality and device targeting** ([TK-02](../../architecture/data-model/01-cloud-data-model.md#rule-tk-02)); the durable tool-request bridge and its local re-authorisation; remote approval and steering; result and artifact return; and the honest degradation when the target desktop is offline.
-
-**Out of scope.** The mobile client that uses it (`31`). The web companion (`49`). Cloud-side AI execution economics (`43`).
-
-**Why this package exists.** **[D-010](../../decisions/phase-1-foundation-decisions.md#rule-d-010)** forbids Cloud from connecting to localhost, a named pipe, a domain socket or local standard I/O. Remote action therefore cannot be a reverse tunnel; it must be a durable pull-and-answer protocol. Getting this shape right is what makes the mobile companion possible at all.
-
----
+Deliver the complete owned behavior below under the [current project/package plan](../../architecture/27-platform-projects-and-application-assistants.md). Professional product semantics, security, exact values and recovery requirements remain binding. A completed Hello World or fixture cannot substitute for the listed production capability.
 
 ## 2. Required inputs and dependencies
 
-[Producer artifacts and real integration](../producer-artifacts-and-integration.md) is a required input. Use this WP's row to identify exact released artifacts, permitted fixtures and the owner that must replace each fixture; completion requires the stated evidence class.
-
-
-**Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
-
-| Input | Why it matters |
-|---|---|
-| **[D-010](../../decisions/phase-1-foundation-decisions.md#rule-d-010)** | The prohibition that determines the entire design |
-| [`../../architecture/05-cloud-architecture.md`](../../architecture/05-cloud-architecture.md) `§10` | The remote action model |
-| [`../../architecture/09-ai-and-agent-runtime-architecture.md`](../../architecture/09-ai-and-agent-runtime-architecture.md) | Placement, remote execution and idempotency |
-| [`../../requirements/02-identity-account-and-workspace.md`](../../requirements/02-identity-account-and-workspace.md) `§5` | Device trust as the gate for remote access |
-| [WP-17](17-arcchat-independent-core.md#rule-wp-17), [WP-24](24-realtime-and-reliable-events.md#rule-wp-24), [WP-25](25-sync-engine-and-blob-lifecycle.md#rule-wp-25) output | ArcChat Desktop, realtime and sync |
-
----
+[Producer registry](../producer-artifacts-and-integration.md), [wire registry](../../architecture/contracts/04-protobuf-wire-registry.md), [application/protocol profile](../../architecture/contracts/10-application-scope-and-streams.md), [D1 execution](../../architecture/data-model/04-d1-execution-profile.md), [history](../../architecture/data-model/05-application-history.md), [experience/acceptance](../../experience/README.md) and exact artifacts from the upstream WPs above. Later domain/AI fixtures are allowed only where explicitly named below and must be removed at their owning real integration gate.
 
 ## 3. Binding rules and decisions
 
-| # | Rule |
-|---|---|
-| <a id="rule-br-01"></a>BR-01 | **Cloud never initiates a connection to a local endpoint** (**[D-010](../../decisions/phase-1-foundation-decisions.md#rule-d-010)**). The desktop pulls. |
-| BR-02 | **A tool request is durable.** It survives a desktop being offline and is delivered when it returns. |
-| <a id="rule-br-03"></a>BR-03 | **Local re-authorisation is mandatory.** A cloud-side approval is not a local authorisation; the desktop re-evaluates against local policy and the local actor chain. |
-| BR-04 | **A tool result is idempotent**: answering twice has one effect, and a lost result is recoverable by re-answering. |
-| BR-05 | **Remote access requires device trust** and is off by default ([WP-22.03](22-identity-workspace-and-device.md#rule-wp-22.03)). |
-| <a id="rule-br-06"></a>BR-06 | **A high-risk operation is not executed remotely without the approval its risk level demands**, including local presence where required. |
-| BR-07 | **An offline target degrades honestly**: the request is queued with a visible state and an expiry, never silently dropped or falsely reported as running. |
-| BR-08 | **The tool request carries a bounded payload**; large data crosses by reference through the resource path. |
-| BR-09 | **Locality is explicit per Step** ([TK-02](../../architecture/data-model/01-cloud-data-model.md#rule-tk-02)): a Step records where it ran, and a Step that must run locally never silently runs in the cloud. |
+Own-application composition and state, public binary gRPC-Web, helper-only local RPC, fixed D1 atomic plans, no hidden cross-product dependency. Use existing command/revision/permission/effect/format profiles. All necessary product behavior is fixed in the linked authorities; private helper implementation choices remain within those constraints.
 
----
+<a id="rule-br-01"></a>
+<a id="rule-br-03"></a>
+<a id="rule-br-06"></a>
 
 ## 4. Projects, directories, files and major types affected
 
-| Location | Change |
-|---|---|
-| `src/Cloud/ArcForges.Cloud.Modules.Agent/` | Tool request queue, per-Step locality, result reconciliation |
-| `src/Cloud/ArcForges.Cloud.Modules.Identity/` | Device presence tracking and trust-gated remote eligibility |
-| `src/ArcChat/ArcChat.CloudClient/` | The pull loop, local re-authorisation, result submission |
-| `src/ArcChat/ArcChat.Agent/` | Cloud task projection and device-tool bridge presentation; no local agent execution engine |
-| Cloud: `src/Cloud/ArcForges.Cloud.Modules.Task/` | Per-Step locality, remote attempt and bridge business authority; Platform supplies storage-free execution mechanisms only |
-| `tests/RemoteToolBridgeTests/` | Bridge, re-authorisation, offline, duplicate and expiry suites |
-
-**Major types introduced.** `DevicePresence`, `RemoteEligibility`, `ToolRequest`, `ToolRequestState`, `ToolResult`, `LocalReauthorization`, `PlacementDecision`, `RemoteApproval`, `RequestExpiry`.
-
----
+Use the exact projects assigned to this WP in [architecture27](../../architecture/27-platform-projects-and-application-assistants.md#2-desktopplatform-tree-and-actual-projects) and its product/Cloud/Mobile trees. Implement their owned named services, typed records, schema migrations and tests; do not introduce a new repository, generic SQL facade or shared runtime to connect them. Versioned generated schema definitions remain in Contracts.
 
 ## 5. Required implementation work
 
 <a id="rule-wp-26.00"></a>
+### WP-26.00 — Application presence
 
-### WP-26.00 — Device presence
+**What must be fully done.** Implement ApplicationService.List/Heartbeat/Disconnect and DO projection of D1 installation authority; separate app rows per device.
 
-**What must be fully done.** Presence reflecting whether a device's ArcChat Desktop is connected and eligible for remote work, with a heartbeat and a stale-presence timeout. Presence is a capability of Cloud, visible to the user, and never inferred from a stale session.
+**Testing requirements.** 30s expiry/10s renewal, restarted epoch, app offline without device-wide false availability.
 
-**Testing requirements.** Presence transition tests; stale-timeout accuracy; a test asserting a valid session with no live connection does not report present.
-
-**Completion gate.** Presence reflects live connectivity and never reports present from a stale session.
+**Completion gate.** The stated behavior and oracle pass using the actual owned implementation. Evidence names source commit, artifact versions/hashes, environment and any later fixture replacement.
 
 <a id="rule-wp-26.01"></a>
+### WP-26.01 — Durable target queue
 
-### WP-26.01 — Tool request queue
+**What must be fully done.** ToolRequest freezes product/device/installation and current instance epoch; commands/receipts remain in D1.
 
-**What must be fully done.** A durable per-device queue with ordering, expiry and visible state. The desktop pulls with a long-poll or realtime signal plus HTTP fetch. A request survives cloud restarts and desktop restarts.
+**Testing requirements.** Another application cannot claim; duplicate/lost ack/expiry and per-owner budget.
 
-**Testing requirements.** Queue survival across restarts of both sides; ordering; expiry; a test asserting no cloud-initiated connection to the device occurs.
-
-**Completion gate.** Requests survive restarts on both sides and no cloud-initiated local connection exists.
+**Completion gate.** The stated behavior and oracle pass using the actual owned implementation. Evidence names source commit, artifact versions/hashes, environment and any later fixture replacement.
 
 <a id="rule-wp-26.02"></a>
+### WP-26.02 — Owner reauthorization
 
-### WP-26.02 — Local re-authorisation
+**What must be fully done.** Device.Runtime invokes registered typed in-process product handlers after current grant/resource/revision/egress checks.
 
-**What must be fully done.** On receipt, ArcChat Desktop re-evaluates the request against local policy, the local capability registry, local permission grants and the local actor chain. A request the cloud accepted may still be refused locally, with a reason returned.
+**Testing requirements.** No local product RPC, shared database or delegation through an shared coordinator.
 
-**Testing requirements.** A refusal matrix covering local policy denial, missing capability, revoked grant, and risk requiring local presence; a forged-approval test.
-
-**Completion gate.** A cloud-approved request is still refused locally when local policy denies it, and the reason is returned.
+**Completion gate.** The stated behavior and oracle pass using the actual owned implementation. Evidence names source commit, artifact versions/hashes, environment and any later fixture replacement.
 
 <a id="rule-wp-26.03"></a>
-
 ### WP-26.03 — Execution and result
 
-**What must be fully done.** An accepted request invokes the typed local product capability after re-authorisation. A long-running product operation returns a product-owned ProductJobRef; the Cloud Agent Task remains in Cloud. Progress is projected back and an idempotent ToolResult is submitted. A duplicate result submission has one effect. A lost result is recoverable by re-submission without duplicating the effect.
+**What must be fully done.** Preserve ProductJob/tool result/effect certainty, hash/receipt and immutable artifact references.
 
-**Testing requirements.** Duplicate submission; lost-result recovery; kill-during-execution followed by reconnect; an effect-certainty assertion for each failure mode.
+**Testing requirements.** Crash before/after effect, checkpoint, cancel and stale epoch reconciliation.
 
-**Completion gate.** One request produces one effect, and a lost result is recoverable without duplication.
+**Completion gate.** The stated behavior and oracle pass using the actual owned implementation. Evidence names source commit, artifact versions/hashes, environment and any later fixture replacement.
 
 <a id="rule-wp-26.04"></a>
+### WP-26.04 — Remote approval and steering
 
-### WP-26.04 — Remote approval, steering and presence-gated risk
+**What must be fully done.** Preserve one-target approvals, sensitive local-presence requirements and ordinary steering bounds.
 
-**What must be fully done.** Approval and steering delivered from a remote surface, with high-risk operations demanding the approval their risk level requires. An operation requiring local presence cannot be approved remotely.
+**Testing requirements.** Mobile biometric cannot substitute for target presence; stale approval fails.
 
-**Testing requirements.** Remote approval and steering paths; a negative test asserting a local-presence-required operation cannot complete via remote approval alone.
-
-**Completion gate.** Remote approval works for permitted risk levels and cannot satisfy a local-presence requirement.
+**Completion gate.** The stated behavior and oracle pass using the actual owned implementation. Evidence names source commit, artifact versions/hashes, environment and any later fixture replacement.
 
 <a id="rule-wp-26.05"></a>
+### WP-26.05 — Offline expiry and recovery
 
-### WP-26.05 — Offline degradation and expiry
+**What must be fully done.** Keep explicit offline queue expiry/reconciliation; changing selected app cannot retarget queued work.
 
-**What must be fully done.** With the target offline, the request queues with a visible state and a stated expiry. The requesting surface is told honestly. On expiry the request is closed with a typed reason, never left ambiguous.
+**Testing requirements.** Disconnect/revoke/reinstall, no silent alternate product/device selection.
 
-**Testing requirements.** Offline queue-and-deliver; expiry-while-offline; a state-visibility test on the requesting surface.
-
-**Completion gate.** An offline target queues visibly with an expiry, and expiry closes the request with a typed reason.
+**Completion gate.** The stated behavior and oracle pass using the actual owned implementation. Evidence names source commit, artifact versions/hashes, environment and any later fixture replacement.
 
 <a id="rule-wp-26.06"></a>
+### WP-26.06 — Frozen application locality
 
-### WP-26.06 — Per-Step tool locality and device targeting
+**What must be fully done.** Cloud-only steps may run without a desktop; every device step in one execution remains in the frozen product scope.
 
-**What must be fully done.** **Every Task is Cloud-owned** ([TO-01](../../architecture/data-model/00-data-model-overview.md#rule-to-01)); there is no task placement to record. **Each Step records its `tool_locality ∈ {cloud, device}`** with `target_device_id` on the Step, since one Task routinely mixes both ([TK-02](../../architecture/data-model/01-cloud-data-model.md#rule-tk-02)). A Step declared `device` is never satisfied by a cloud substitute; with no eligible device online it enters `waitingDevice` with a stated reason and a bounded wait, holding no included capacity ([PL-03](../../architecture/09-ai-and-agent-runtime-architecture.md#rule-pl-03)). Locality is visible in the task centre and in the trace.
+**Testing requirements.** Own-app multi-tool workflow passes; cross-product capability is absent/future.
 
-**Testing requirements.** A negative test asserting a `device` Step is **never** satisfied by a cloud substitute; a mixed-locality Task exercising both Step kinds; a `waitingDevice` test asserting a bounded wait, a stated reason and **no capacity held** while waiting; a schema test asserting no `placement` or `authoritative_store` column exists on `task.task` ([TK-01](../../architecture/data-model/01-cloud-data-model.md#rule-tk-01)).
-
-**Completion gate.** Every Step's locality is recorded and visible; a `device` Step is never satisfied by a cloud substitute; a Task with no eligible device waits with a stated reason holding no capacity; and no `placement` or `authoritative_store` column exists on `task.task` ([TK-01](../../architecture/data-model/01-cloud-data-model.md#rule-tk-01)).
-
----
+**Completion gate.** The stated behavior and oracle pass using the actual owned implementation. Evidence names source commit, artifact versions/hashes, environment and any later fixture replacement.
 
 <a id="rule-wp-26.90"></a>
-### WP-26.90 — Verify the owned artifact and real integration
+### WP-26.90 — Owned artifacts and real integration
 
-**What must be fully done.** Preserve durable pull-based ToolRequest/ToolResult authority and per-step locality. Connect CF through authenticated C# ports; connect desktop through generated gRPC and product local owners.
+**What must be fully done.** Complete every preceding substep, build/pack once, consume exact candidate bytes from a clean environment and record all applicable [UX acceptance groups](../../experience/03-state-and-acceptance.md). This is acceptance of implemented capabilities, not a deferred place to design them.
 
-**Execution order.** Follow [staged artifact integration](../README.md#staged-artifact-integration): consume only existing assigned producers, publish an owned capability candidate before its product consumer, and verify the declared stage against exact upstream artifacts. Record pending later owners and their closing gates; local mocks cover only that named test boundary.
+**Testing requirements.** Package/contract/owner/version compatibility, failure/recovery and the real boundaries required above. A named later-provider fixture cannot close that provider's real gate.
 
-**Testing requirements.** Duplicate delivery, device absence, stale permission, approval expiry, timeout-after-dispatch and result reconciliation are tested without Cloud/CF dialing a local endpoint.
-
-**Completion gate.** Duplicate delivery, device absence, stale permission, approval expiry, timeout-after-dispatch and result reconciliation are tested without Cloud/CF dialing a local endpoint. Record exact artifacts and provider reality. The package is incomplete if an important contract/owner/recovery rule still requires design during coding.
-
----
+**Completion gate.** All owned actions, schemas, public interfaces and tests are complete; later external evidence remains named. Publish/promote only the tested immutable bytes in the producer CI sequence.
 
 ## 6. Impacts
 
-| Dimension | Impact |
-|---|---|
-| Database | Tool request queue, presence, and **per-Step tool locality** ([TK-02](../../architecture/data-model/01-cloud-data-model.md#rule-tk-02)) |
-| Protocol | The tool-request and tool-result contracts |
-| UI | Presence, remote task state, remote approval and expiry surfaces |
-| Security | Local re-authorisation is the central control; trust gates eligibility |
-| Platform | Desktop pull behaviour under sleep, network change and restart |
-| Migration | Tool request contract versioning across desktop versions |
-| Compatibility | A desktop older than the cloud must still answer or refuse cleanly |
-
----
+Changed application scope, storage, transport, UI and deployment behavior are governed by the authorities in §2. Preserve existing business rules and formats. Migration/compatibility manifests include source/schema/plan/ABI/runtime versions; current cross-product collaboration is deferred and contributes no release input.
 
 ## 7. Tests and verification evidence
 
 | Evidence | Produced by |
 |---|---|
-| Presence transition and stale-session results | [WP-26.00](#rule-wp-26.00) |
-| Queue survival, ordering, expiry and no-inbound-connection assertion | [WP-26.01](#rule-wp-26.01) |
-| Local refusal matrix and forged-approval results | [WP-26.02](#rule-wp-26.02) |
-| Duplicate, lost-result and kill-during-execution results | [WP-26.03](#rule-wp-26.03) |
-| Remote approval and local-presence negative results | [WP-26.04](#rule-wp-26.04) |
-| Offline queue, delivery and expiry results | [WP-26.05](#rule-wp-26.05) |
-| Per-Step locality, no-cloud-substitute and waiting-device results | [WP-26.06](#rule-wp-26.06) |
-| Owned artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/OS/device/provider, scenario, result, limitations and real-versus-fixture status; inapplicable fields explicitly marked | [WP-26.90](#rule-wp-26.90) |
-
----
+| Application presence: 30s expiry/10s renewal, restarted epoch, app offline without device-wide false availability. | [WP-26.00](#rule-wp-26.00) |
+| Durable target queue: Another application cannot claim; duplicate/lost ack/expiry and per-owner budget. | [WP-26.01](#rule-wp-26.01) |
+| Owner reauthorization: No local product RPC, shared database or delegation through an shared coordinator. | [WP-26.02](#rule-wp-26.02) |
+| Execution and result: Crash before/after effect, checkpoint, cancel and stale epoch reconciliation. | [WP-26.03](#rule-wp-26.03) |
+| Remote approval and steering: Mobile biometric cannot substitute for target presence; stale approval fails. | [WP-26.04](#rule-wp-26.04) |
+| Offline expiry and recovery: Disconnect/revoke/reinstall, no silent alternate product/device selection. | [WP-26.05](#rule-wp-26.05) |
+| Frozen application locality: Own-app multi-tool workflow passes; cross-product capability is absent/future. | [WP-26.06](#rule-wp-26.06) |
+| Exact artifact/consumer and applicable UX acceptance ledger | [WP-26.90](#rule-wp-26.90) |
 
 ## 8. Completion gate
 
-**[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) gate:** [WP-26.90](#rule-wp-26.90) and all inherited domain-specific gates must pass on the same candidate closure. Duplicate delivery, device absence, stale permission, approval expiry, timeout-after-dispatch and result reconciliation are tested without Cloud/CF dialing a local endpoint.
+All §7 evidence is attached, failed cases are resolved, actual vs fixture/provider evidence is labelled, and no required interface/state/recovery decision is delegated to the next implementer. Runtime and commercial gates close only with their stated real environment evidence.
 
-**All of the following, with recorded evidence:**
-
-1. Presence reflects live connectivity and never reports present from a stale session.
-2. Tool requests survive restarts on both sides; **no cloud-initiated connection to a local endpoint exists anywhere in the implementation.**
-3. A cloud-approved request is still refused locally when local policy denies it, with the reason returned.
-4. One request produces one effect; a lost result is recoverable without duplicating the effect.
-5. Remote approval works for permitted risk levels and can never satisfy a local-presence requirement.
-6. An offline target queues visibly with an expiry, and expiry closes the request with a typed reason.
-7. Every Step's locality is recorded and visible; a `device` Step is never satisfied by a cloud substitute; and no task-level placement column exists.
-
----
-
-## 9. Dependencies
+## 9. Dependency consequences
 
 **Upstream:** `17` · `24` · `25`. Consume completed stage outputs.
 

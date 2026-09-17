@@ -116,7 +116,7 @@ Binary contains the code path
 | <a id="rule-rc-06"></a>RC-06 | **Remote Config ≠ User Setting** ([I-355](01-normative-glossary-and-invariants.md#rule-i-355)). A setting declares whether it is policy-controllable at all; some settings are never remotely forceable. |
 | <a id="rule-rc-07"></a>RC-07 | **Remote Config ≠ Project Format** ([I-357](01-normative-glossary-and-invariants.md#rule-i-357)) and **≠ transport selection** ([I-358](01-normative-glossary-and-invariants.md#rule-i-358)). Neither the persistent format nor the communication architecture is remotely configurable. |
 | <a id="rule-rc-08"></a>RC-08 | **Every policy key has an owning product.** Unowned keys accumulate into an unmaintainable surface and are rejected at publication. |
-| RC-09 | Platform-level policy keys carry only genuinely cross-product semantics; everything else lives in a product namespace. |
+| RC-09 | Platform-level policy keys carry only genuinely same-application semantics; everything else lives in a product namespace. |
 | RC-10 | **No global key is exposed to a third-party extension.** An extension operates in its own namespace and **cannot set a platform kill switch**. |
 
 ---

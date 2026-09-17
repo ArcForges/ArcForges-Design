@@ -1,5 +1,7 @@
 # Data Persistence and Formats
 
+P2-012 current implementation authorities: [D1 physical profile](data-model/04-d1-execution-profile.md); [Application-owned assistant history](data-model/05-application-history.md).
+
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Architecture
 > Companions: [`../requirements/13-data-formats-and-portability.md`](../requirements/13-data-formats-and-portability.md), [`07-sync-conflict-and-backup.md`](07-sync-conflict-and-backup.md), [`04-desktop-application-architecture.md`](04-desktop-application-architecture.md)

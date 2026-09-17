@@ -46,7 +46,7 @@ Each family below states its unique responsibility, where it runs, and its evide
 | <a id="rule-f-05"></a>F-05 | **Local RPC integration tests over real named pipes and domain sockets** | Framing, concurrency, ordering, cancellation, disconnection and reconnection defects (`§3` of the local IPC architecture) | Test results per platform |
 | <a id="rule-f-06"></a>F-06 | **Public API contract tests: generated client against a real server** | Divergence between handwritten proto, generated C#/TS packages and the running service (**[D-009](../decisions/phase-1-foundation-decisions.md#rule-d-009)**) | Contract diff plus test results |
 | <a id="rule-f-07"></a>F-07 | **Realtime integration tests** | Connect, disconnect, reconnect, sequence-gap recovery and backfill defects (`§7` of the cloud architecture) | Test results including induced gap scenarios |
-| <a id="rule-f-11"></a>F-11 | **Multi-process end-to-end tests** | Defects that only appear when the products, Hub, extension host and cloud all run together | Scenario results with process logs |
+| <a id="rule-f-11"></a>F-11 | **Integrated boundary tests** | Defects across one professional host, its packaged assistant, restricted helpers, Cloud and a companion targeting that host | Independent-app isolation plus real transport/process logs |
 | <a id="rule-f-12"></a>F-12 | **Migration and golden-fixture tests** | Data loss, semantic drift and irreversible migration defects ([QI-07](../requirements/12-quality-and-compatibility-contract.md#rule-qi-07)) | Fixture set plus before/after comparison |
 | <a id="rule-f-16"></a>F-16 | **Publish, install, update, downgrade-protection and rollback tests** | Packaging, staging, atomic switch, rollback and data-directory defects (`§10` of the build architecture) | Matrix results per platform |
 
@@ -135,7 +135,7 @@ Run the applicable rows with Cloud unreachable, including process restart. Recor
 
 | Product / initial state | Expected result | Evidence owner |
 |---|---|---|
-| Four desktop shells, fresh install and no account | Launch and local shell/settings remain usable; no automatic workspace/content entitlement is implied | Desktop shell package |
+| Three professional desktop shells, fresh install and no account | Launch and local shell/settings remain usable; no automatic workspace/content entitlement is implied | Desktop shell package |
 | ArcScope/ArcSlate, new or existing local project, no account | Native capture/analysis/edit/save/render work on available local inputs; offline external assets remain explicitly unavailable | Acquisition/analysis and timeline/render packages |
 | ArcNotes, no enrolled realm/workspace or requested uncached content | Shell works; initial enrollment and unavailable content report Cloud dependency, with no empty substitute notebook or fabricated download | Notes core/sync packages |
 | ArcNotes, enrolled and authorized, hydrated notebook during outage | Open/edit/search available content without an interactive reauthentication prompt. Pending changes are visibly local, durable through crash/restart and later reconcile through normal conflicts; missing attachments remain unavailable | Notes core, query and sync packages |

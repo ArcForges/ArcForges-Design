@@ -1,5 +1,7 @@
 # Desktop Application Architecture
 
+P2-012 current implementation authorities: [Concrete Platform/product projects and lifetime](27-platform-projects-and-application-assistants.md); [Complete embedded assistant UX](../experience/01-embedded-assistant.md).
+
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Architecture
 > Governing authority: **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** (desktop is a Native AOT deliverable), **[V-05a](../assurance/phase-1-official-verification.md#rule-v-05a)** (Avalonia AOT evidence)
@@ -14,7 +16,7 @@ One structure, used identically by ArcChat, ArcNotes, ArcScope and ArcSlate.
 ```
 .NET Generic Host  (Native AOT)
 ├── Avalonia UI                     ── view state only
-├── Local RPC endpoint + Hub client ── adapters
+├── Own-app typed ports + Cloud client ── adapters
 ├── Cloud client (HTTP + realtime)  ── adapters
 ├── Application Services            ── the single write path
 ├── Domain                          ── pure
@@ -132,7 +134,7 @@ Because native libraries share the process, an access violation terminates the a
 3. Recover to the last committed revision
 4. **Quarantine the media, plug-in or operation that may have triggered the crash**
 5. Present a recovery report and offer an optional diagnostic bundle
-6. Re-register with the Hub and rebuild proxies
+6. Reopen this app's Cloud session/presence and recreate parent-owned helper channels
 7. Re-establish the realtime session and query missing state over HTTP
 8. **Never report unfinished work as successful**
 
@@ -151,7 +153,7 @@ Because native libraries share the process, an access violation terminates the a
 | LT-05 | **Local progress surfaces through local RPC events and queries; public progress goes over realtime**, with an HTTP query always available for compensation and final state. |
 | LT-06 | **Cancellation is a request** ([CN-01](../requirements/05-ai-and-agent-execution.md#rule-cn-01) there). |
 | LT-07 | **Task output uses a `ResourceRef`.** |
-| LT-08 | **The Hub aggregates task summaries only** and never takes over execution state. |
+| LT-08 | **The assistant presents its own application's task projections.** It never takes over authoritative execution state or aggregates another product's task store. |
 | LT-09 | In-process background services and channel consumers are part of the host — never a reintroduced separate worker process. |
 
 ---
@@ -161,7 +163,7 @@ Because native libraries share the process, an access violation terminates the a
 | # | Rule |
 |---|---|
 | CC-01 | **Each product owns its own cloud client** for its own data (**[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)**). ArcChat is not a proxy. |
-| CC-02 | Consume released generated native gRPC clients with explicit registration and AOT-compatible serializers. Source-generated typed HTTP adapters are limited to the declared exceptions; [F-026](../assurance/open-gates-register.md#rule-f-026) proves the actual closure. |
+| CC-02 | Consume released generated gRPC-Web clients with explicit registration and AOT-compatible serializers. Source-generated typed HTTP adapters are limited to the declared exceptions; [F-026](../assurance/open-gates-register.md#rule-f-026) proves the actual closure. |
 | CC-03 | **One factory manages the HTTP client**, with the access token injected by a delegating handler and **token refresh serialised**. |
 | CC-04 | **Timeout, cancellation and retry are explicit policies.** A write retry requires `CommandId` idempotency. |
 | CC-05 | **Realtime reconnection uses exponential backoff with jitter**, then backfills gaps by sequence and revision over HTTP. |
@@ -192,7 +194,7 @@ Process start
  → detect abnormal exit; run recovery if required
  → show the first window
  → reach a usable workspace                    ← the measured Time To Usable
- → [background] create the local endpoint; connect to the Hub; register
+ → [background] connect this app to Cloud; register its own presence; start required private helpers
  → [background] restore the cloud session; refresh entitlement and policy
  → [background] resume sync; resume interrupted tasks; rebuild derived data
 ```
@@ -213,7 +215,7 @@ Shutdown requested
  → stop accepting new remote write commands (Draining)
  → cancel or checkpoint cancellable work; let non-cancellable work reach a safe point
  → flush critical transactions to disk
- → unregister from the Hub; stop the local endpoint
+ → disconnect this app's presence; stop owned helper endpoints
  → close the realtime connection; drain the sync outbox opportunistically
  → shut down the native runtime
  → exit
@@ -227,7 +229,7 @@ Shutdown requested
 
 | Product | Additional host concerns |
 |---|---|
-| **ArcChat** | Hub hosting and local capability discovery/routing, Cloud turn submission/stream/steering presentation, tray/background mode and outbound remote bridge; the Cloud Harness owns planning and provider routing |
+| **Embedded assistant** | Own-app chat/task/project/automation/approval/context UI, local or Cloud history, independent Cloud connection and device bridge; all packaged by DesktopPlatform |
 | **ArcNotes** | Block editor infrastructure, link index, search index host, attachment store |
 | **ArcScope** | Acquisition pipeline, ring buffers, decoder host, chunked capture store, real-time visualisation pipeline, device adapters |
 | **ArcSlate** | Media runtime, decode and playback pipeline, audio clock, processing graph engine, proxy and cache managers, render queue |

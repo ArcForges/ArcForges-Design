@@ -37,7 +37,7 @@ Consume the exact WP03 ArcForges.Contracts.LocalRpc.Slate candidate and its oper
 
 | Input | Why it matters |
 |---|---|
-| [ArcSlate product requirements](../../requirements/products/arcslate.md#15-cross-product-integration) | The capability boundary; this package’s binding rules require stable timeline, command and undo semantics before exposing it |
+| [ArcSlate product requirements](../../requirements/products/arcslate.md#15-same-application-integration) | The capability boundary; this package’s binding rules require stable timeline, command and undo semantics before exposing it |
 | [`../../requirements/products/arcslate.md`](../../requirements/products/arcslate.md) `§13`–`§16` | Portability, cross-device behaviour, AI integration and the capability surface |
 | [`../../requirements/13-data-formats-and-portability.md`](../../requirements/13-data-formats-and-portability.md) | The portability constitution and collect/consolidate obligations |
 | [WP-25](25-sync-engine-and-blob-lifecycle.md#rule-wp-25), [WP-38](38-arcslate-render-and-colour.md#rule-wp-38) output | The sync engine and a complete render and export path |
@@ -49,7 +49,7 @@ Consume the exact WP03 ArcForges.Contracts.LocalRpc.Slate candidate and its oper
 | # | Rule |
 |---|---|
 | BR-01 | **Capabilities are exposed only after timeline, command and undo semantics are stable**. |
-| BR-02 | **ArcSlate's big media never goes through the ArcChat Hub.** |
+| BR-02 | **ArcSlate's big media never goes through the application-scoped capability registry.** |
 | BR-03 | **Collect or consolidate gathers external media into a managed portable form on request, without destroying the originals.** |
 | BR-04 | **The same asset may resolve to different locations on different devices** and remains one logical asset. |
 | BR-05 | **Offline media is a normal state** and never blocks opening a project. |
@@ -123,9 +123,9 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 ### WP-39.04 — Sync scope
 
-**What must be fully done.** Project data, sequences, markers, presets and metadata sync. Heavyweight media follows an explicit policy rather than being swept up by enabling sync. Derived data — proxies, caches, analysis — never syncs as authority. Big media never traverses the Hub.
+**What must be fully done.** Project data, sequences, markers, presets and metadata sync. Heavyweight media follows an explicit policy rather than being swept up by enabling sync. Derived data — proxies, caches, analysis — never syncs as authority. Big media never traverses the application runtime.
 
-**Testing requirements.** An enable-sync test asserting no heavyweight media is transferred implicitly; a derived-data exclusion assertion; a Hub no-body assertion; multi-device project convergence.
+**Testing requirements.** An enable-sync test asserting no heavyweight media is transferred implicitly; a derived-data exclusion assertion; an application service no-body assertion; multi-device project convergence.
 
 **Completion gate.** Enabling sync never implicitly transfers heavyweight media, derived data never syncs as authority, and projects converge across devices.
 
@@ -208,7 +208,7 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 2. **Raw media structurally cannot enter an AI context payload**; oversized context is refused explicitly.
 3. Collect never destroys originals, reports skipped items honestly, and the portable package round-trips with equivalence.
 4. A project opens with all media offline and relinks without altering any edit decision.
-5. Enabling sync never implicitly transfers heavyweight media; derived data never syncs as authority; big media never traverses the Hub; projects converge across devices.
+5. Enabling sync never implicitly transfers heavyweight media; derived data never syncs as authority; big media never traverses the application runtime; projects converge across devices.
 6. Every claimed interchange version has a fixture, states its fidelity before writing, and never fabricates missing data — satisfying [PG-07](../../assurance/open-gates-register.md#rule-pg-07) for ArcSlate.
 
 ---

@@ -350,7 +350,7 @@ No layer may be described as making another unnecessary.
 
 | # | Requirement |
 |---|---|
-| BK-01 | The metadata database supports **point-in-time recovery** via continuous WAL archiving plus base backups. A nightly dump alone is insufficient. |
+| BK-01 | The metadata database supports **point-in-time recovery** via D1 Time Travel plus verified exports and an independent contiguous transaction change archive. A nightly dump alone is insufficient. |
 | BK-02 | **High durability is not backup** ([I-219](01-normative-glossary-and-invariants.md#rule-i-219)). Provider durability does not protect against a mistaken deletion script, stolen credentials, a wrong lifecycle rule, operator error or an account-level disaster. |
 | BK-03 | The primary object store uses an immutability control (bucket/object lock) on backup snapshots and backup prefixes as the first protection layer. |
 | <a id="rule-bk-04"></a>BK-04 | **Disaster backup is replicated to an independent provider in a different fault domain.** Primary and only-backup must not share a provider or account. The second copy uses object lock with a retention period. |

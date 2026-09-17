@@ -26,3 +26,7 @@ ArcForges Design is licensed under the GNU Affero General Public License v3.0. S
 [P2-010](docs/decisions/phase-2-specification-decisions.md#rule-p2-010) completes Android-only Kotlin/Compose planning, all Apache Contracts outputs including Maven, functional native ABI, full product/extension/policy behavior and cross-repository integration. [Producer stages](docs/planning/producer-artifacts-and-integration.md) and the [family completion review](docs/assurance/family-design-completion-review.md) distinguish document closure from actual product/runtime/commercial evidence.
 
 Current producer and local gRPC amendment: [closure review](docs/assurance/producer-and-local-grpc-closure-review.md). Use its current graph/contract evidence; earlier dated reviews retain their historical baselines.
+
+## Current design entry points
+
+[P2-012](docs/decisions/phase-2-specification-decisions.md#rule-p2-012) defines Cloudflare hosting and independent embedded assistants. Start with [project/package directories](docs/architecture/27-platform-projects-and-application-assistants.md), [client UX](docs/experience/README.md), [D1](docs/architecture/data-model/04-d1-execution-profile.md), [history](docs/architecture/data-model/05-application-history.md), and [scope/streams](docs/architecture/contracts/10-application-scope-and-streams.md). The [implementation sequence](docs/planning/implementation-sequence.md) contains51 active work packages; [cross-product collaboration](docs/future/cross-product-collaboration/README.md) is future only.

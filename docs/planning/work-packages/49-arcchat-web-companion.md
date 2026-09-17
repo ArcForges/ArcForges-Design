@@ -91,11 +91,11 @@ The Web companion verifies real generation, tool approval, stream fallback and r
 
 <a id="rule-wp-49.01"></a>
 
-### WP-49.01 — Conversation, exact streaming and recovery
+### WP-49.01 — Conversation and generated output streams
 
-**What must be fully done.** Use the real Cloud Chat/Harness from [WP-52](52-cloud-harness.md#rule-wp-52) for conversation history, submission, bounded output streams and canonical persisted messages. The generated SDK and TS realtime adapter preserve CommandId, exact revisions and UTF-8 byte offsets. Distinguish open/completed/truncated/evicted/superseded stream outcomes from Task terminal state; reconnect/backfill never resubmits the turn. Preserve in-memory unsent input on transient loss, clear scoped state on logout/revocation.
+**What must be fully done.** Implement the full Chat UI using annex10 gRPC-Web binary output/event streams and durable recovery; Cloud history only except memory-only temporary UI. Product scope remains explicit.
 
-**Testing requirements.** Real Cloud/Harness test configuration with production browser assets: multibyte split boundaries, duplicate/delayed chunks, final-message race, window truncation, attempt replacement, polling-only recovery, expired session and concurrent tabs; peak memory and long-message rendering budgets; verify one customer operation despite reconnect.
+**Testing requirements.** Verify the stated behavior against the exact real artifact/owner boundary. Include scope/permission, wrong or stale target, loss/retry, expiry and applicable native UI cases from experience03; named later-provider fixtures cannot close real integration.
 
 **Completion gate.** History, pending input, stream and final-message presentation stay consistent with the Cloud authority under every declared recovery outcome and retain exact positions without duplicate execution.
 
@@ -121,11 +121,11 @@ The Web companion verifies real generation, tool approval, stream fallback and r
 
 <a id="rule-wp-49.04"></a>
 
-### WP-49.04 — Remote control
+### WP-49.04 — One-application remote control
 
-**What must be fully done.** Device presence and target selection; remote task issuance through the durable tool bridge; honest state when a target is offline including queue state and expiry.
+**What must be fully done.** List device applications, select an explicit authorized product/installation and freeze each task target; no browser local connection, another-product tool or local-only desktop chat access.
 
-**Testing requirements.** Offline-target queueing; presence transitions; a no-local-connection assertion for the browser client.
+**Testing requirements.** Verify the stated behavior against the exact real artifact/owner boundary. Include scope/permission, wrong or stale target, loss/retry, expiry and applicable native UI cases from experience03; named later-provider fixtures cannot close real integration.
 
 **Completion gate.** Remote work reaches a desktop only through the cloud bridge, and an offline target shows an honest queued state with an expiry.
 
@@ -154,7 +154,7 @@ The Web companion verifies real generation, tool approval, stream fallback and r
 <a id="rule-wp-49.90"></a>
 ### WP-49.90 — Verify the owned artifact and real integration
 
-**What must be fully done.** Use the fixed same-origin session and CF AI HTTPS/WebSocket route with generated business clients. Keep the companion surface, durable task/message fallback and remote-device authorization.
+**What must be fully done.** Use the fixed same-origin session and generated AI gRPC-Web route with generated business clients. Keep the companion surface, durable task/message fallback and remote-device authorization.
 
 **Execution order.** Follow [staged artifact integration](../README.md#staged-artifact-integration): consume only existing assigned producers, publish an owned capability candidate before its product consumer, and verify the declared stage against exact upstream artifacts. Record pending later owners and their closing gates; local mocks cover only that named test boundary.
 

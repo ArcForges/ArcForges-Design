@@ -1,4 +1,4 @@
-# Contracts, Protocols and the Cross-Application Semantic Model
+# Contracts, Protocols and the same-application Semantic Model
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Architecture
@@ -212,7 +212,7 @@ Partial selection — a block range, a time range, a clip set — uses a **commo
 | AR-01 | **`Artifact ≠ Resource`** ([I-058](../requirements/01-normative-glossary-and-invariants.md#rule-i-058)) and **`ArtifactRef ≠ ResourceRef`** ([I-059](../requirements/01-normative-glossary-and-invariants.md#rule-i-059)). |
 | AR-02 | **An artifact record carries**: identity, namespaced `ArtifactKind`, producing task and run, actor chain, time, provenance, a reference to the underlying resource where one exists, and availability. |
 | AR-03 | **A professional product's artifact is owned by that product**; ArcChat records the artifact relationship, not the content. |
-| AR-04 | **An ArcChat-native artifact is owned by ArcChat**, which then owns the corresponding resource or payload. |
+| AR-04 | An assistant-generated artifact belongs to its frozen application/Cloud execution scope and existing resource owner. Shared UI does not create a separate ArcChat owner or another product's write permission. |
 | AR-05 | **Deleting an artifact record never deletes the resource** ([I-060](../requirements/01-normative-glossary-and-invariants.md#rule-i-060)). Deleting the resource requires calling the owner's capability explicitly. |
 | AR-06 | **`Artifact Handler` declares which artifact kinds a product can handle** and with which capabilities — open, preview, import, convert, edit. |
 | AR-07 | **When several products can handle an artifact, resolution is deterministic** ([EP-06](../requirements/08-extensions-and-developer-platform.md#rule-ep-06)): explicit preference, then a documented rule, never a random pick. |
@@ -338,14 +338,14 @@ Fixed priority:
 | RT-02 | **Resource affinity is a routing hint, not an ownership migration.** |
 | RT-03 | **If the product is installed but not running**, the caller may request a launch, subject to permission, and then retry. |
 | RT-04 | **If the product is not installed**, the result is `NotInstalled`, with a route to obtain it. |
-| RT-05 | **The Hub never picks silently at random when several candidates exist.** |
+| RT-05 | **The application runtime never picks silently at random when several candidates exist.** |
 
 ### 13.4 Authorization
 
 | # | Rule |
 |---|---|
 | AU-01 | **Validation and authorization are separate.** Shape validity is not permission. |
-| AU-02 | **The owner authorizes again at the final execution point** ([DP-02](../requirements/07-security-privacy-and-trust.md#rule-dp-02) in the security requirements). Steps performed in ArcChat, the Hub or Cloud never substitute for owner-side authorization. |
+| AU-02 | **The owner authorizes again at the final execution point** ([DP-02](../requirements/07-security-privacy-and-trust.md#rule-dp-02) in the security requirements). Steps performed in ArcChat, the application runtime or Cloud never substitute for owner-side authorization. |
 | AU-03 | **A capability invocation never carries a UI object**, a control, a view model, a native pointer or a `SafeHandle`. Input is semantic. |
 
 ### 13.5 Results
@@ -388,9 +388,9 @@ Business failures use `ArcResult<T>` / `ArcError` with a **stable semantic code*
 | Pair | Relationship |
 |---|---|
 | **Cross-application model ↔ Search** | A search result is a projection, not resource authority ([SR-03](../requirements/06-knowledge-search-and-retrieval.md#rule-sr-03)). |
-| **Cross-application model ↔ Extensions** | Native products and third-party extensions may share semantics; **trust differs** (`§9` of the security requirements). |
+| **same-application model ↔ Extensions** | Native products and third-party extensions may share semantics; **trust differs** (`§9` of the security requirements). |
 | **Cross-application model ↔ MCP** | **MCP is an edge adapter, never the internal protocol** ([I-307](../requirements/01-normative-glossary-and-invariants.md#rule-i-307)). **`MCP Resource ≠ ArcForges Resource`** ([I-076](../requirements/01-normative-glossary-and-invariants.md#rule-i-076)). MCP's own `Task` and `Skill` never conflate with ArcForges' (**[V-02](../assurance/phase-1-official-verification.md#rule-v-02)**, glossary §9). |
-| **Cross-application model ↔ Cloud** | **Local RPC and the public API are not required to share one wire contract.** Each carries the appropriate versioned DTO for its boundary. |
+| **same-application model ↔ Cloud** | **Local RPC and the public API are not required to share one wire contract.** Each carries the appropriate versioned DTO for its boundary. |
 
 **A universal protocol is not reinvented for the sake of a unified semantic model.** Three transports remain, each with its own DTOs.
 
@@ -414,7 +414,7 @@ These are **hard authoring rules**, not optimisations. [P2-009](../decisions/pha
 | CA-10 | No object/dynamic/Type/ORM/view model/native pointer crosses a wire boundary. |
 | <a id="rule-ca-11"></a>CA-11 | C# and TS values follow the exact protobuf/JSON projection profile and independent vectors. |
 | CA-12 | All 17 hint payloads are generated from the same event registry. |
-| <a id="rule-ca-13"></a>CA-13 | C# uses generated gRPC, React generated gRPC-Web, Kotlin Android generated native gRPC; HTTP exceptions are separately typed. |
+| <a id="rule-ca-13"></a>CA-13 | C# uses generated gRPC-Web, React generated gRPC-Web, Kotlin Android generated gRPC-Web; HTTP exceptions are separately typed. |
 | <a id="rule-ca-14"></a>CA-14 | Published service, method, field names/numbers are permanent; reserve removals and check previous/current compatibility. |
 
 **A repository-policy test asserts [CA-01](#rule-ca-01) through [CA-03](#rule-ca-03) and [CA-11](#rule-ca-11) through [CA-13](#rule-ca-13) mechanically** (`§7.2` of the layout architecture).

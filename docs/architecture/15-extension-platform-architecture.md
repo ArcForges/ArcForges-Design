@@ -162,7 +162,7 @@ date/time · ResourceRef · list<Value> · record<name, Value>
 | **Connector** | Out of process | Definition and connection instance separated; secrets held as `SecretRef` only (`§6` there) |
 | ~~External agent~~ | — | **Retired by P2-006.** External-agent providers, ACP adapters, session mapping, delegation leases and result adapters are excluded ([EA-01](../requirements/08-extensions-and-developer-platform.md#rule-ea-01)–[EA-06](../requirements/08-extensions-and-developer-platform.md#rule-ea-06) of the extension requirements). **There is no external-agent contribution kind**, and a package, connector or MCP tool cannot start an autonomous delegated agent ([EA-08](../requirements/08-extensions-and-developer-platform.md#rule-ea-08) there). An integration contributes tools; it never contributes a planner |
 | **Extension** | **Yes** | The extension process model of `§3` |
-| **Third-party Arc App** | Yes, as a peer app | Participates through the cross-application contribution model, not through the extension host (`§8.4` there) |
+| **Third-party Arc App** | Yes, as a peer app | Participates through the same-application contribution model, not through the extension host (`§8.4` there) |
 
 | # | Rule |
 |---|---|
