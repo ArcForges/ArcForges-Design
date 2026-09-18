@@ -1,6 +1,6 @@
 # Producer and Local gRPC Closure Review
 
-Review date:2026-09-14. Baseline: merged Design f85c5b76313e3fb7c337d1e4a8792e083d093bd5. Scope: independently adopt/correct AF01–AF18 and close the specifically requested local RPC migration, under P2-011. Work was serial; no subagents. Formal edits were made only after the collection/adoption checkpoint in Plan. The reference/archive reading exclusions were retained.
+Review date:2026-09-14. Baseline: merged Design f85c5b76313e3fb7c337d1e4a8792e083d093bd5. Scope: independently adopt/correct AF01–AF18 and close the specifically requested local RPC migration, under [P2-011](../decisions/phase-2-specification-decisions.md#rule-p2-011). Work was serial; no subagents. Formal edits were made only after the collection/adoption checkpoint in Plan. The reference/archive reading exclusions were retained.
 
 ## 1. Correct source interpretation
 

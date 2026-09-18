@@ -30,7 +30,7 @@ See → Approve → Steer → Continue → Start remote work → Receive results
 | <a id="rule-id-05"></a>ID-05 | **A `Remote Task` is not remote desktop** ([I-120](../01-normative-glossary-and-invariants.md#rule-i-120)). ArcForges provides a **semantic remote agent**, never a general screen-and-input remote tool. |
 | <a id="rule-id-06"></a>ID-06 | **Android companion is Apache-2.0** (**[D-004](../../decisions/phase-1-foundation-decisions.md#rule-d-004)**), together with the mobile-only libraries, the ArcForges-owned public protocol specifications required for its interoperability, and their wire schemas, DTOs and client libraries. It must not contain, link to, copy from, port from or reference any GPL-family or AGPL-only implementation, directly or transitively. |
 | <a id="rule-id-07"></a>ID-07 | **Base ViewModel patterns are not shared between Avalonia desktop and Kotlin Android mobile** (**[D-021](../../decisions/phase-1-foundation-decisions.md#rule-d-021)**). Each UI stack owns its implementation. |
-| <a id="rule-id-08"></a>ID-08 | Android production uses Kotlin/Jetpack Compose on Android ART. iOS and multiplatform sharing are outside the current scope under P2-010. |
+| <a id="rule-id-08"></a>ID-08 | Android production uses Kotlin/Jetpack Compose on Android ART. iOS and multiplatform sharing are outside the current scope under [P2-010](../../decisions/phase-2-specification-decisions.md#rule-p2-010). |
 | <a id="rule-id-09"></a>ID-09 | **Web companion is a deployment of the single `ArcForges.Web.App` React/TypeScript codebase** (**[D-007](../../decisions/phase-1-foundation-decisions.md#rule-d-007)**, **[D-014](../../decisions/phase-1-foundation-decisions.md#rule-d-014)**), served at `chat.arcforges.com`. |
 
 ### 1.1 Responsibility split
@@ -345,7 +345,7 @@ WorkspaceDeviceContext · RemoteSession · OfflineCachePolicy
 | # | Requirement |
 |---|---|
 | <a id="rule-pf-01"></a>PF-01 | Android arm64 is the delivered mobile platform, using the pinned Kotlin/Jetpack Compose release build. x64 is emulator-only. No MAUI/Mono runtime flag enters this project. |
-| <a id="rule-pf-02"></a>PF-02 | **Android only.** No iOS architecture, implementation, build or store deliverable is required under P2-010. A future target needs its own scope decision. |
+| <a id="rule-pf-02"></a>PF-02 | **Android only.** No iOS architecture, implementation, build or store deliverable is required under [P2-010](../../decisions/phase-2-specification-decisions.md#rule-p2-010). A future target needs its own scope decision. |
 | <a id="rule-pf-03"></a>PF-03 | **Mobile and Web never load executable extensions** ([PL-01](../08-extensions-and-developer-platform.md#rule-pl-01) in the extension requirements). |
 | <a id="rule-pf-04"></a>PF-04 | Mobile secure storage holds authorized session material. Model-provider credentials and private deployment policy never reach the phone. |
 | <a id="rule-pf-05"></a>PF-05 | **Weak-network behaviour is a release gate** ([PM-03](../12-quality-and-compatibility-contract.md#rule-pm-03) in the quality contract): background resume, reconnection with sequence backfill, and offline queueing all verified on real devices. |

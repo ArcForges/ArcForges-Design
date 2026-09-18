@@ -1,6 +1,6 @@
 # Kotlin Android Companion Experience
 
-Authority: P2-012. Native Kotlin/Jetpack Compose, Android only. Production module plan is in [architecture 27](../architecture/27-platform-projects-and-application-assistants.md); wire/target behavior in [annex 10](../architecture/contracts/10-application-scope-and-streams.md). Preserve the complete companion capabilities and consumption-only commerce boundary.
+Authority: [P2-012](../decisions/phase-2-specification-decisions.md#rule-p2-012). Native Kotlin/Jetpack Compose, Android only. Production module plan is in [architecture 27](../architecture/27-platform-projects-and-application-assistants.md); wire/target behavior in [annex 10](../architecture/contracts/10-application-scope-and-streams.md). Preserve the complete companion capabilities and consumption-only commerce boundary.
 
 ## 1. Navigation and top-level layout
 

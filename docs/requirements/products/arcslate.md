@@ -269,7 +269,7 @@ ArcSlate Project
 | <a id="rule-ai-03"></a>AI-03 | **A simple agent edit does not require heavy approval every time**: an R1 reversible operation proceeds inside an authorised scope; higher-risk operations require approval (`§4` of the security requirements). |
 | <a id="rule-ai-04"></a>AI-04 | **AI media understanding applies data minimisation** ([AS-08](../06-knowledge-search-and-retrieval.md#rule-as-08)): the model receives transcripts, metadata, timecodes, detected scenes and selected frames — **not raw video** ([I-161](../01-normative-glossary-and-invariants.md#rule-i-161), [I-487](../01-normative-glossary-and-invariants.md#rule-i-487)). |
 | <a id="rule-ai-05"></a>AI-05 | All model-based media understanding uses subscribed Cloud AI. Only authorized, bounded transcripts, metadata, frames or audio extracts leave the device; deterministic decoding and signal processing remain native. |
-| <a id="rule-ai-06"></a>AI-06 | AI uses Cloud admission, budgets and actual provider-usage metering. Duration estimates scope, not measured tokens; non-token-billed routes require their declared units under commerce MT-10. |
+| <a id="rule-ai-06"></a>AI-06 | AI uses Cloud admission, budgets and actual provider-usage metering. Duration estimates scope, not measured tokens; non-token-billed routes require their declared units under commerce [MT-10](../04-commerce-entitlement-and-credits.md#rule-mt-10). |
 | <a id="rule-ai-07"></a>AI-07 | **AI transcription is a natural ArcSlate capability**, producing searchable transcript metadata as **derived data**. |
 | <a id="rule-ai-08"></a>AI-08 | **Scene/shot detection, silence detection and highlight detection are derived analysis**, presented as suggestions. |
 | <a id="rule-ai-09"></a>AI-09 | **AI analysis results and actual edits are layered** ([I-486](../01-normative-glossary-and-invariants.md#rule-i-486)): an analysis proposes; an edit is an explicit, undoable, semantic command. |
@@ -405,7 +405,7 @@ The source-format basis is the [official OTIO file specification](https://openti
 
 ### 20.1 Not V1 blockers — but not blocked by the domain either
 
-Multicam, compound clips beyond nested sequences, advanced adjustment-layer workflows, advanced motion graphics, third-party audio plug-in hosting and cloud render are **not V1 requirements**. Multi-user collaborative editing is excluded by P2-006.
+Multicam, compound clips beyond nested sequences, advanced adjustment-layer workflows, advanced motion graphics, third-party audio plug-in hosting and cloud render are **not V1 requirements**. Multi-user collaborative editing is excluded by [P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006).
 
 **The domain must not preclude them**: multicam, compound clips and adjustment layers must all be expressible in the existing model — a nested sequence, a generated/special clip plus a processing graph — rather than requiring a later structural change.
 

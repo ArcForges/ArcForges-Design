@@ -1,6 +1,6 @@
 # Producer Artifacts and Real Integration
 
-Authoritative under P2-010. This is an implementation input to every active work package, together with its numbered substeps. A work package completes only its declared stage. A generated schema, a passing fixture, a registry package, an actual transport probe and an integrated product have different evidence. None substitutes for the next stage. The full product requirements remain the release scope.
+Authoritative under [P2-010](../decisions/phase-2-specification-decisions.md#rule-p2-010). This is an implementation input to every active work package, together with its numbered substeps. A work package completes only its declared stage. A generated schema, a passing fixture, a registry package, an actual transport probe and an integrated product have different evidence. None substitutes for the next stage. The full product requirements remain the release scope.
 
 ## 1. Complete initial producers
 

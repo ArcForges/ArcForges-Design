@@ -205,9 +205,9 @@
 
 **Execution order.** Follow [staged artifact integration](../README.md#staged-artifact-integration): consume only existing assigned producers, publish an owned capability candidate before its product consumer, and verify the declared stage against exact upstream artifacts. Record pending later owners and their closing gates; local mocks cover only that named test boundary.
 
-**Testing requirements.** Existing concurrent admission/idempotent settlement/reversal/storage-accounting cases; keep [WP-42.11](#rule-wp-42.11) evidence and its order before WP-42.10.
+**Testing requirements.** Existing concurrent admission/idempotent settlement/reversal/storage-accounting cases; keep [WP-42.11](#rule-wp-42.11) evidence and its order before [WP-42.10](#rule-wp-42.10).
 
-**Completion gate.** Existing concurrent admission/idempotent settlement/reversal/storage-accounting cases; keep [WP-42.11](#rule-wp-42.11) evidence and its order before WP-42.10. Record exact artifacts and provider reality. The package is incomplete if an important contract/owner/recovery rule still requires design during coding.
+**Completion gate.** Existing concurrent admission/idempotent settlement/reversal/storage-accounting cases; keep [WP-42.11](#rule-wp-42.11) evidence and its order before [WP-42.10](#rule-wp-42.10). Record exact artifacts and provider reality. The package is incomplete if an important contract/owner/recovery rule still requires design during coding.
 
 ---
 
@@ -252,7 +252,7 @@ Acceptance includes every amended §5 producer/consumer and [WP-42.90](#rule-wp-
 
 ## 8. Completion gate
 
-**[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) gate:** [WP-42.90](#rule-wp-42.90) and all inherited domain-specific gates must pass on the same candidate closure. Existing concurrent admission/idempotent settlement/reversal/storage-accounting cases; keep [WP-42.11](#rule-wp-42.11) evidence and its order before WP-42.10.
+**[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) gate:** [WP-42.90](#rule-wp-42.90) and all inherited domain-specific gates must pass on the same candidate closure. Existing concurrent admission/idempotent settlement/reversal/storage-accounting cases; keep [WP-42.11](#rule-wp-42.11) evidence and its order before [WP-42.10](#rule-wp-42.10).
 
 **Producer completion.** [WP-42.11](#rule-wp-42.11) must pass with the explicit §7 artifacts above; it is not optional because other package checks pass.
 
@@ -274,7 +274,7 @@ Acceptance includes every amended §5 producer/consumer and [WP-42.90](#rule-wp-
 8. **Concurrent runs never overdraw; the balance never goes negative; no floating-point path exists in money or credit arithmetic.**
 9. **A dropped webhook is recovered by reconciliation without editing history**; the three ledgers remain provably separate.
 10. A refund rolls entitlement back correctly; evidence export is complete and free of payment instrument data.
-11. Test-mode commerce and the activation checklist are complete. Production merchant eligibility, checkout/refund and received-payout evidence remain at WP50, including [L-30](../../assurance/release-gates.md#rule-l-30); WP42 does not claim [VG-10](../../assurance/open-gates-register.md#rule-vg-10)/[VG-11](../../assurance/open-gates-register.md#rule-vg-11) closed. The regional route remains disabled pending VG-12.
+11. Test-mode commerce and the activation checklist are complete. Production merchant eligibility, checkout/refund and received-payout evidence remain at WP50, including [L-30](../../assurance/release-gates.md#rule-l-30); WP42 does not claim [VG-10](../../assurance/open-gates-register.md#rule-vg-10)/[VG-11](../../assurance/open-gates-register.md#rule-vg-11) closed. The regional route remains disabled pending [VG-12](../../assurance/open-gates-register.md#rule-vg-12).
 
 ---
 

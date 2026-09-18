@@ -151,7 +151,7 @@
 <a id="rule-wp-02.90"></a>
 ### WP-02.90 — Verify the owned artifact and real integration
 
-**What must be fully done.** Assemble the owned deliverables from the preceding substeps under the selected repository, package, runtime and protocol authorities. Apply pinned per-toolchain build/lock/analyzer settings, shared workflow/tooling consumption, native module build/pack pipeline and candidate feeds, npm schema publication pipeline and OCI/Worker artifact metadata. Align local/CI vcpkg inputs. Publication mechanisms arrive here; final product release remains WP-50.
+**What must be fully done.** Assemble the owned deliverables from the preceding substeps under the selected repository, package, runtime and protocol authorities. Apply pinned per-toolchain build/lock/analyzer settings, shared workflow/tooling consumption, native module build/pack pipeline and candidate feeds, npm schema publication pipeline and OCI/Worker artifact metadata. Align local/CI vcpkg inputs. Publication mechanisms arrive here; final product release remains [WP-50](50-full-platform-production-release.md#rule-wp-50).
 
 **Execution order.** Follow [staged artifact integration](../README.md#staged-artifact-integration): consume only existing assigned producers, publish an owned capability candidate before its product consumer, and verify the declared stage against exact upstream artifacts. Record pending later owners and their closing gates; local mocks cover only that named test boundary.
 

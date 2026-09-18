@@ -502,8 +502,8 @@ The gate before every AI decision (`§5.3` of the commerce architecture). An int
 
 | Table | Required fields / constraints |
 |---|---|
-| entitlement.service_term_action | term_action_id:id PK; term_id:id FK NN; kind:enum(supersede,revoke) NN; effective_at/recorded_at:instant NN; source_ref:text NN UNIQUE; replacement_term_id:id? FK; supersede requires replacement_term_id, revoke forbids it; both terms share realm/workspace; append-only under TM-04. |
-| entitlement.capacity_plan_assignment | assignment_id:id PK; workspace_id/offer_id/term_id:id FK NN; selection_priority:bigint NN; effective_from:instant NN; effective_to:instant?; cause_ref:id NN; UQ(workspace_id,effective_from); IX(workspace_id,effective_to); non-overlap and closing/appending are guarded by the workspace bucket revision under TM-06. |
+| entitlement.service_term_action | term_action_id:id PK; term_id:id FK NN; kind:enum(supersede,revoke) NN; effective_at/recorded_at:instant NN; source_ref:text NN UNIQUE; replacement_term_id:id? FK; supersede requires replacement_term_id, revoke forbids it; both terms share realm/workspace; append-only under [TM-04](#rule-tm-04). |
+| entitlement.capacity_plan_assignment | assignment_id:id PK; workspace_id/offer_id/term_id:id FK NN; selection_priority:bigint NN; effective_from:instant NN; effective_to:instant?; cause_ref:id NN; UQ(workspace_id,effective_from); IX(workspace_id,effective_to); non-overlap and closing/appending are guarded by the workspace bucket revision under [TM-06](#rule-tm-06). |
 
 ### `entitlement.capacity_bucket` *(new — [P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006); refill corrected 2026-09-07)*
 

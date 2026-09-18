@@ -965,7 +965,7 @@
     },
     {
       "path": "docs/decisions/phase-1-foundation-decisions.md",
-      "lineSha256": "ff1a93b9cb7a7f19266b106178c5f2ac230dc5d97ddc60f9dca82fa5704bc984",
+      "lineSha256": "45a0fa0886cb7736fcf6e4874b889d1d33d81d118e9f32ff4664c1741d5aca1d",
       "token": "P2-009",
       "occurrences": 1,
       "kind": "historical-quotation",
@@ -1135,7 +1135,7 @@
     },
     {
       "path": "docs/decisions/phase-2-specification-decisions.md",
-      "lineSha256": "d5c7d49c755c7764ff6905bd5299eaa8617223631cd4ca4a553f606a50a2ead0",
+      "lineSha256": "be4a2a646279ad9ee76e6de3cf6280900bf45e7448e5db553b416c32d69ed2b0",
       "token": "IRF-15",
       "occurrences": 1,
       "kind": "historical-review-finding",
@@ -1185,7 +1185,7 @@
     },
     {
       "path": "docs/decisions/phase-2-specification-decisions.md",
-      "lineSha256": "d58f0fd285275db0d39111d4d5c25dcabf61d1033443e236c06160d20f4c5db6",
+      "lineSha256": "317517a01c513ded4bd17a7c938355414103c90ffee71b28b1672687f475c535",
       "token": "IRF-20",
       "occurrences": 1,
       "kind": "historical-review-finding",
@@ -1475,7 +1475,7 @@
     },
     {
       "path": "docs/architecture/28-product-naming-policy.md",
-      "lineSha256": "f5f5b4aaf99010ff39f155b0db6d11b48e9e9f5402c12bb3a4f1ca881e0e5a3e",
+      "lineSha256": "e659d893cd79eee32ee71d2f8210654c5244cdc42b45e1ffbbd8c35c12d49388",
       "token": "SHA-256",
       "occurrences": 2,
       "kind": "standard-name",
@@ -1611,6 +1611,46 @@
       "kind": "standard-name",
       "reason": "Standard algorithm, encoding, floating-point format or curve name; not an ArcForges document-scoped rule identifier.",
       "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/architecture/contracts/05-cloudflare-integration.md",
+      "lineSha256": "8b4cc08d829473f893a95732e8d5185a700228b141bfcd703b030efb567872f4",
+      "token": "SHA-256",
+      "occurrences": 1,
+      "kind": "standard-name",
+      "reason": "Standard or algorithm name; not an ArcForges rule identifier.",
+      "reviewOwner": "ArcForges WP00.01 implementation reviewer",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "2270754838286f363e6d3d0848785c29097d8584c1edf9917b30397f9f7aab43",
+      "token": "IRS-03",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact preserved baseline term-review occurrence; the historical remediation shorthand is not a current rule home.",
+      "reviewOwner": "ArcForges WP00.01 implementation reviewer",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "52c30d4e1259f28d7ab1dea29d0aab4aed200fdb51208a146551b2fd7d2248de",
+      "token": "IRS-03",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact preserved baseline term-review occurrence; the historical remediation shorthand is not a current rule home.",
+      "reviewOwner": "ArcForges WP00.01 implementation reviewer",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "8f9ba37b50ec8019a028d269fdd797120cb21c1555dffc04e98f2885d1bc4ff9",
+      "token": "IRS-03",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact preserved baseline term-review occurrence; the historical remediation shorthand is not a current rule home.",
+      "reviewOwner": "ArcForges WP00.01 implementation reviewer",
       "reviewed": "2026-09-18"
     }
   ]

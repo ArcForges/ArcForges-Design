@@ -144,7 +144,7 @@ date/time · ResourceRef · list<Value> · record<name, Value>
 
 | # | Rule |
 |---|---|
-| <a id="rule-cf-01"></a>CF-01 | C# attributed records feed only the declared extension parameter/settings schema and codec described by CF-02. Public service envelopes and method bindings are generated from authored Contracts proto. |
+| <a id="rule-cf-01"></a>CF-01 | C# attributed records feed only the declared extension parameter/settings schema and codec described by [CF-02](#rule-cf-02). Public service envelopes and method bindings are generated from authored Contracts proto. |
 | <a id="rule-cf-02"></a>CF-02 | C# extension authors may generate their declared parameter/settings schema and codec from attributed records. The enclosing public extension service/messages remain the handwritten proto authority; this convenience never generates first-party business wire contracts from C#. |
 | <a id="rule-cf-03"></a>CF-03 | **The manifest still has a language-independent canonical representation**, so non-C# authors and the host tooling are not excluded. |
 | <a id="rule-cf-04"></a>CF-04 | **Generated artifacts are verified in CI against the committed baseline**, exactly as product contracts are (`§2.2` of the build architecture). |
@@ -160,7 +160,7 @@ date/time · ResourceRef · list<Value> · record<name, Value>
 | **Workflow** | No | A blueprint compiled into Plan and Step objects of the unified execution model; never a second agent runtime (`§3` there) |
 | **MCP integration** | Out of process | An external capability adapter; MCP terms are disambiguated per **[V-02](../assurance/phase-1-official-verification.md#rule-v-02)** and never become the internal protocol (`§5` there) |
 | **Connector** | Out of process | Definition and connection instance separated; secrets held as `SecretRef` only (`§6` there) |
-| ~~External agent~~ | — | **Retired by P2-006.** External-agent providers, ACP adapters, session mapping, delegation leases and result adapters are excluded ([EA-01](../requirements/08-extensions-and-developer-platform.md#rule-ea-01)–[EA-06](../requirements/08-extensions-and-developer-platform.md#rule-ea-06) of the extension requirements). **There is no external-agent contribution kind**, and a package, connector or MCP tool cannot start an autonomous delegated agent ([EA-08](../requirements/08-extensions-and-developer-platform.md#rule-ea-08) there). An integration contributes tools; it never contributes a planner |
+| ~~External agent~~ | — | **Retired by [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006).** External-agent providers, ACP adapters, session mapping, delegation leases and result adapters are excluded ([EA-01](../requirements/08-extensions-and-developer-platform.md#rule-ea-01)–[EA-06](../requirements/08-extensions-and-developer-platform.md#rule-ea-06) of the extension requirements). **There is no external-agent contribution kind**, and a package, connector or MCP tool cannot start an autonomous delegated agent ([EA-08](../requirements/08-extensions-and-developer-platform.md#rule-ea-08) there). An integration contributes tools; it never contributes a planner |
 | **Extension** | **Yes** | The extension process model of `§3` |
 | **Third-party Arc App** | Future scope | Peer-application discovery/contribution is not registered in this release. Current third-party executable contributions use the admitted extension host and its permissions. |
 

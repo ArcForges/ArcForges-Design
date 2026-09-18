@@ -1,6 +1,6 @@
 # Content and Extension Isolation
 
-> Status: **Authoritative** — Phase 2; [P2-007](../decisions/phase-2-specification-decisions.md#rule-p2-007) exercises the controlled isolation exception under D-016.
+> Status: **Authoritative** — Phase 2; [P2-007](../decisions/phase-2-specification-decisions.md#rule-p2-007) exercises the controlled isolation exception under [D-016](../decisions/phase-1-foundation-decisions.md#rule-d-016).
 > Companions: [native boundary](12-native-interop-and-media.md), [extension platform](15-extension-platform-architecture.md), [security](08-security-architecture.md).
 
 ## 1. Ownership and trust boundary

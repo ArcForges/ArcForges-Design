@@ -1,6 +1,6 @@
 # Platform Projects and Application Assistants
 
-Authority: P2-012. This is the concrete project, package, composition and lifetime contract. Native function/layout authority remains [annex 06](contracts/06-native-functional-abi.md); product semantics remain [profiles 26](26-product-behavior-profiles.md). [Assistant UX](../experience/01-embedded-assistant.md) defines presentation and [history storage](data-model/05-application-history.md) defines persistence.
+Authority: [P2-012](../decisions/phase-2-specification-decisions.md#rule-p2-012). This is the concrete project, package, composition and lifetime contract. Native function/layout authority remains [annex 06](contracts/06-native-functional-abi.md); product semantics remain [profiles 26](26-product-behavior-profiles.md). [Assistant UX](../experience/01-embedded-assistant.md) defines presentation and [history storage](data-model/05-application-history.md) defines persistence.
 
 ## 1. Repository and runtime ownership
 

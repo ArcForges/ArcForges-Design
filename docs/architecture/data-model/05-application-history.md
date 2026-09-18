@@ -1,6 +1,6 @@
 # Application-Owned Assistant History
 
-Authority: P2-012. Applies to Platform Assistant.Persistence.Sqlite and Android Room's equivalent owner/projection rules. It extends [desktop model 02](02-desktop-data-model.md) without changing Notes/Scope/Slate professional canonical data. Public operations and new fields are in [annex 10](../contracts/10-application-scope-and-streams.md).
+Authority: [P2-012](../../decisions/phase-2-specification-decisions.md#rule-p2-012). Applies to Platform Assistant.Persistence.Sqlite and Android Room's equivalent owner/projection rules. It extends [desktop model 02](02-desktop-data-model.md) without changing Notes/Scope/Slate professional canonical data. Public operations and new fields are in [annex 10](../contracts/10-application-scope-and-streams.md).
 
 ## 1. Partition and ownership
 

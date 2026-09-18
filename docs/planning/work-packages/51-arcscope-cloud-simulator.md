@@ -35,7 +35,7 @@
 
 **Frozen design input.** [scope.measurement.v1](../../requirements/products/arcscope.md#measurement-profile)
 
-The official simulator consumes real paid-term and quota enforcement from [WP-42](42-commerce-entitlement-and-credits.md#rule-wp-42) and policy activation from WP-44. Desktop replay/analysis does not depend on it. It therefore executes in J rather than claiming real commercial admission in H.
+The official simulator consumes real paid-term and quota enforcement from [WP-42](42-commerce-entitlement-and-credits.md#rule-wp-42) and policy activation from [WP-44](44-dynamic-policy-and-configuration.md#rule-wp-44). Desktop replay/analysis does not depend on it. It therefore executes in J rather than claiming real commercial admission in H.
 
 | Input | Why it matters |
 |---|---|

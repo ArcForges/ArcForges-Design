@@ -28,7 +28,7 @@ The thirteen reported findings were collected and reconciled with their original
 - Capacity and browser choices were selected under the user's existing authorization. Actual price, performance and commercial acceptance still need evidence; no approval or achieved latency was invented.
 - The proposed native-export wording would have preserved the scope contradiction. The original WP19 body and model02 ownership statement were repaired as well as its [BR-07](../planning/work-packages/19-arcnotes-search-and-portability.md#rule-br-07) row.
 - Device SSO also remained in registry04, catalogue01 and WP22. Those executable instructions were removed, not merely contradicted by another introductory sentence.
-- Dated historical reviews and their PG24 spellings remain unchanged. Current prose and links use PG-24. Historical claims of closure do not override the findings or this amendment.
+- Dated historical reviews and their PG24 spellings remain unchanged. Current prose and links use [PG-24](open-gates-register.md#rule-pg-24). Historical claims of closure do not override the findings or this amendment.
 
 ## Independent verification and corrections
 

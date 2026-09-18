@@ -147,7 +147,7 @@ Every operation has eight **effective** authorization fields. WP03 exports their
 | # | Rule |
 |---|---|
 | <a id="rule-az-01"></a>AZ-01 | LocalPresence=yes has no Mobile/Web or remote-agent path. It is not merely a client-side hidden action. |
-| <a id="rule-az-02"></a>AZ-02 | Agent, automation and extension reach only the generated approved tool subset under AZ-04. Absence from that subset denies, regardless of a caller's claimed actor chain. |
+| <a id="rule-az-02"></a>AZ-02 | Agent, automation and extension reach only the generated approved tool subset under [AZ-04](#rule-az-04). Absence from that subset denies, regardless of a caller's claimed actor chain. |
 | <a id="rule-az-03"></a>AZ-03 | Declared egress requires a separately audited destination/source authorization at the final owner and again before actual outbound effect. |
 | <a id="rule-az-04"></a>AZ-04 | Apply the disjoint identity profiles below before capability selection. Human-only denials override any catalogue inclusion. An operator/customer/CF/peer credential cannot be substituted for another identity class. Unclassified or contradictory metadata fails producer generation and server startup. |
 
