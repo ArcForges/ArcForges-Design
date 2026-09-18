@@ -48,17 +48,17 @@
 
 | # | Rule |
 |---|---|
-| BR-01 | **The ArcSlate Reference Coverage Matrix is a completed, versioned planning input** — [`../../assurance/reference-coverage/arcslate-arcvideo.md`](../../assurance/reference-coverage/arcslate-arcvideo.md), 31 item-level rows, bound to ArcVideo at `caf5651` and ArcVideoFoundation at `139eeca` — ArcSlate's complete reference set under **[D-012](../../decisions/phase-1-foundation-decisions.md#rule-d-012)** as amended ([P2-005](../../decisions/phase-2-specification-decisions.md#rule-p2-005)). It was produced before this plan was derived (**[D-019](../../decisions/phase-1-foundation-decisions.md#rule-d-019)**). **This package consumes it and checks it for drift; it does not create it.** |
-| BR-02 | **ArcSlate is not a technical exception.** Its architecture is C#, Avalonia and Native AOT with P/Invoke to native media libraries. It is not a Qt application, not a C++ product with a C# shell, and not a C++ worker. |
-| BR-03 | **Editing is non-destructive.** Source media is never modified. |
-| BR-04 | **`Project ≠ Sequence`** and **`Project ≠ media folder`** ([I-476](../../requirements/01-normative-glossary-and-invariants.md#rule-i-476)). |
-| BR-05 | **`MediaAsset ≠ File`** ([I-477](../../requirements/01-normative-glossary-and-invariants.md#rule-i-477)), and an asset identifier is never a file path ([I-192](../../requirements/01-normative-glossary-and-invariants.md#rule-i-192)). |
-| BR-06 | **Video frame precision and audio sample precision coexist** ([I-478](../../requirements/01-normative-glossary-and-invariants.md#rule-i-478)), each exact in its own rate domain with explicit conversion. |
-| BR-07 | **Sequence frame rate is rational**; drop-frame and non-integer rates are exact, never approximated. |
-| BR-08 | **Offline media is a normal product state, not an error** ([I-481](../../requirements/01-normative-glossary-and-invariants.md#rule-i-481)). The project opens, structure is preserved, edit decisions are retained. |
-| BR-09 | **A clip must not know which physical file is in use.** It references the asset; the asset resolves at runtime. |
-| BR-10 | **No native type, handle, enumeration or error code appears in a domain, contract or persisted type.** |
-| BR-11 | **The same asset may have different locations on different devices** and remains one logical asset. |
+| <a id="rule-br-01"></a>BR-01 | **The ArcSlate Reference Coverage Matrix is a completed, versioned planning input** — [`../../assurance/reference-coverage/arcslate-arcvideo.md`](../../assurance/reference-coverage/arcslate-arcvideo.md), 31 item-level rows, bound to ArcVideo at `caf5651` and ArcVideoFoundation at `139eeca` — ArcSlate's complete reference set under **[D-012](../../decisions/phase-1-foundation-decisions.md#rule-d-012)** as amended ([P2-005](../../decisions/phase-2-specification-decisions.md#rule-p2-005)). It was produced before this plan was derived (**[D-019](../../decisions/phase-1-foundation-decisions.md#rule-d-019)**). **This package consumes it and checks it for drift; it does not create it.** |
+| <a id="rule-br-02"></a>BR-02 | **ArcSlate is not a technical exception.** Its architecture is C#, Avalonia and Native AOT with P/Invoke to native media libraries. It is not a Qt application, not a C++ product with a C# shell, and not a C++ worker. |
+| <a id="rule-br-03"></a>BR-03 | **Editing is non-destructive.** Source media is never modified. |
+| <a id="rule-br-04"></a>BR-04 | **`Project ≠ Sequence`** and **`Project ≠ media folder`** ([I-476](../../requirements/01-normative-glossary-and-invariants.md#rule-i-476)). |
+| <a id="rule-br-05"></a>BR-05 | **`MediaAsset ≠ File`** ([I-477](../../requirements/01-normative-glossary-and-invariants.md#rule-i-477)), and an asset identifier is never a file path ([I-192](../../requirements/01-normative-glossary-and-invariants.md#rule-i-192)). |
+| <a id="rule-br-06"></a>BR-06 | **Video frame precision and audio sample precision coexist** ([I-478](../../requirements/01-normative-glossary-and-invariants.md#rule-i-478)), each exact in its own rate domain with explicit conversion. |
+| <a id="rule-br-07"></a>BR-07 | **Sequence frame rate is rational**; drop-frame and non-integer rates are exact, never approximated. |
+| <a id="rule-br-08"></a>BR-08 | **Offline media is a normal product state, not an error** ([I-481](../../requirements/01-normative-glossary-and-invariants.md#rule-i-481)). The project opens, structure is preserved, edit decisions are retained. |
+| <a id="rule-br-09"></a>BR-09 | **A clip must not know which physical file is in use.** It references the asset; the asset resolves at runtime. |
+| <a id="rule-br-10"></a>BR-10 | **No native type, handle, enumeration or error code appears in a domain, contract or persisted type.** |
+| <a id="rule-br-11"></a>BR-11 | **The same asset may have different locations on different devices** and remains one logical asset. |
 
 ---
 
@@ -138,7 +138,7 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 ### WP-36.05 — Editing operations
 
-**What must be fully done.** Implement every TL-06 operation using TimelineCommand and slate.edits.v1: links/locks, ripple/roll/slip/slide/split/overwrite/group/duplicate/retime/markers/track state with fixed affected sets and one undo transaction.
+**What must be fully done.** Implement every [TL-06](../../requirements/products/arcslate.md#rule-tl-06) operation using TimelineCommand and slate.edits.v1: links/locks, ripple/roll/slip/slide/split/overwrite/group/duplicate/retime/markers/track state with fixed affected sets and one undo transaction.
 
 **Testing requirements.** Independent operation examples, collision/source handles, reverse/freeze retime, linked-track refusal and undo/restart vectors from 26.
 

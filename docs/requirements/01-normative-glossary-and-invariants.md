@@ -1,5 +1,5 @@
 # ArcForges Normative Glossary and Invariant Catalogue
-> Effective scope: P2-012 and P2-013 amend the technology and application ownership below. **[P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
+> Effective scope: [P2-012](../decisions/phase-2-specification-decisions.md#rule-p2-012) and [P2-013](../decisions/phase-2-specification-decisions.md#rule-p2-013) amend the technology and application ownership below. **[P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Requirements — cross-cutting, consumed by every requirements, architecture, assurance and planning document
@@ -12,7 +12,7 @@ This document is the single normative vocabulary for ArcForges. Every other auth
 
 1. **One definition per canonical term.** If a term appears in a specification, contract, schema, UI string, telemetry dimension, database column, test name or work package, it carries the meaning defined here.
 2. **Product-specific meanings are namespaced.** Where a word means different things in different products, the bare word is not usable; the namespaced form is mandatory (`ArcChat.Project`, `ArcScope.Project`, `ArcSlate.Project`).
-3. **Every active `X ≠ Y` invariant in §7 is binding within current scope. Retired entries are historical only.**** Merging two sides of an invariant into one type, one table, one column, one flag, one enum, one endpoint, one event or one permission is an architecture violation, not a simplification.
+3. **Every active `X ≠ Y` invariant in §7 is binding within current scope. Retired entries are historical only.** Merging two sides of an invariant into one type, one table, one column, one flag, one enum, one endpoint, one event or one permission is an architecture violation, not a simplification.
 4. **Forbidden aliases (§8) must not appear as current names** in identifiers or user-visible strings. Their definitions and historical dispositions are enforcement data, not runtime aliases. The [naming policy](../architecture/28-product-naming-policy.md) defines the narrow implementation scan treatment.
 5. Terms are classified by space — **wire**, **domain**, **UI**, **storage**, **commercial** — in §6. A term may exist in more than one space; when it does, the spaces are distinct types and are never the same object.
 
@@ -140,81 +140,90 @@ CancelRequested/Canceling and PauseRequested/Pausing describe control-request pr
 
 The assistant feature family has application-owned local histories or explicitly opted-in Cloud histories under [the history profile](../architecture/data-model/05-application-history.md). Cloud owns AI execution/effects/usage; each application owns its local UI, drafts, credentials, capability ports and tool receipts.
 
-| Term | Definition |
-|---|---|
-| `ArcChat.Conversation` | An ordered thread of Messages. Not a Task. |
-| `ArcChat.Message` | One turn in a Conversation. Not a Tool Call. |
-| `ArcChat.Project` | An ArcChat-scoped grouping of conversations, context references and settings. **Not** a Workspace, **not** an `ArcScope.Project`, **not** an `ArcSlate.Project`. |
-| `ArcForges.Assistant.CloudProfile` | A saved configuration of model, tools, instructions and limits. Not a running agent; not a model; not a security principal. |
-| `ArcChat.Skill` | Reusable guidance and configuration that shapes agent behaviour. Not a Capability; not extension code; not MCP; not a permission grant. |
-| `ArcChat.PersonalMemory` | ArcChat-owned durable user-preference recall. Not ArcNotes knowledge; not a conversation summary. |
-| `ArcForges.Capabilities` | The local platform coordination plane hosted inside the owning professional application process. |
-| `ArcChat.Artifact` | An `ArtifactRef` held by ArcChat. Never the underlying owned object. |
+| Term | Space | Definition |
+|---|---|---|
+| `ArcChat.Conversation` | domain | An ordered thread of Messages. Not a Task. |
+| `ArcChat.Message` | domain | One turn in a Conversation. Not a Tool Call. |
+| `ArcChat.Project` | domain | An ArcChat-scoped grouping of conversations, context references and settings. **Not** a Workspace, **not** an `ArcScope.Project`, **not** an `ArcSlate.Project`. |
+| `ArcForges.Assistant.CloudProfile` | domain | A saved configuration of model, tools, instructions and limits. Not a running agent; not a model; not a security principal. |
+| `ArcChat.Skill` | domain | Reusable guidance and configuration that shapes agent behaviour. Not a Capability; not extension code; not MCP; not a permission grant. |
+| `ArcChat.PersonalMemory` | domain | ArcChat-owned durable user-preference recall. Not ArcNotes knowledge; not a conversation summary. |
+| `ArcForges.Capabilities` | domain | The local platform coordination plane hosted inside the owning professional application process. |
+| `ArcChat.Artifact` | domain | An `ArtifactRef` held by ArcChat. Never the underlying owned object. |
 
 ### 5.2 ArcNotes
 
 Cloud-acknowledged revisions are authoritative; native working caches preserve pending edits without becoming a separate account-free product.
 
-| Term | Definition |
-|---|---|
-| `ArcNotes.Notebook` | The top-level ArcNotes container. **Not** a Workspace. |
-| `ArcNotes.Folder` | A hierarchical container. **Not** a Tag. |
-| `ArcNotes.Document` | The canonical document object. **Not** a file; **not** a Markdown file. |
-| `ArcNotes.Block` | The addressable unit inside a Document, with a stable `BlockId`. **Not** a Markdown line. |
-| `ArcNotes.Property` | Typed metadata on a Document or Block. **Not** document content. |
-| `ArcNotes.Tag` | A non-hierarchical label. |
-| `ArcNotes.SavedView` | A stored query and presentation over typed properties. Confers **no ownership** of the objects it lists. |
-| `ArcNotes.Attachment` | A referenced binary managed by ArcNotes. Never base64 embedded in canonical content. |
-| `ArcNotes.Canvas` (Edgeless) | Retired by P2-006. Edgeless, whiteboard, shape/connector/frame workspaces are excluded. |
-| `ArcNotes.Database` | Bounded note organization through scalar properties, queries and table/list Saved Views; not the SQLite/D1 storage schema or a formula/relation/rollup platform. |
-| `ArcNotes.Slides` | Retired by P2-006. Presentations, slide generation, frame ordering and presentation navigation are excluded. |
-| `ArcNotes.ChecklistItem` | A document-local task item. **Not** an ArcChat Agent Task. |
+| Term | Space | Definition |
+|---|---|---|
+| `ArcNotes.Notebook` | domain | The top-level ArcNotes container. **Not** a Workspace. |
+| `ArcNotes.Folder` | domain | A hierarchical container. **Not** a Tag. |
+| `ArcNotes.Document` | domain | The canonical document object. **Not** a file; **not** a Markdown file. |
+| `ArcNotes.Block` | domain | The addressable unit inside a Document, with a stable `BlockId`. **Not** a Markdown line. |
+| `ArcNotes.Property` | domain | Typed metadata on a Document or Block. **Not** document content. |
+| `ArcNotes.Tag` | domain | A non-hierarchical label. |
+| `ArcNotes.SavedView` | domain | A stored query and presentation over typed properties. Confers **no ownership** of the objects it lists. |
+| `ArcNotes.Attachment` | domain | A referenced binary managed by ArcNotes. Never base64 embedded in canonical content. |
+| `ArcNotes.Canvas` (Edgeless) | retired | Retired by P2-006. Edgeless, whiteboard, shape/connector/frame workspaces are excluded. |
+| `ArcNotes.Database` | domain | Bounded note organization through scalar properties, queries and table/list Saved Views; not the SQLite/D1 storage schema or a formula/relation/rollup platform. |
+| `ArcNotes.Slides` | retired | Retired by P2-006. Presentations, slide generation, frame ordering and presentation navigation are excluded. |
+| `ArcNotes.ChecklistItem` | domain | A document-local task item. **Not** an ArcChat Agent Task. |
 
 ### 5.3 ArcScope
 
-| Term | Definition |
-|---|---|
-| `ArcScope.Project` | An ArcScope-scoped container of sources, sessions and analyses. **Not** an ArcForges Workspace. |
-| `ArcScope.Device` | Physical or logical hardware. **Not** a DataSource. |
-| `ArcScope.DataSource` | A configured source definition. |
-| `ArcScope.ConnectionProfile` | Stored connection settings. **Not** a live Connection. |
-| `ArcScope.Session` | An observation lifetime. **Not** a Connection; **not** a Capture. |
-| `ArcScope.Capture` | A recorded data acquisition within a Session. |
-| `ArcScope.Channel` | A transport-level stream of values. **Not** a Signal. |
-| `ArcScope.Signal` | A semantically typed, named quantity. **Not** an Event. |
-| `ArcScope.Event` | A discrete occurrence in time. |
-| `ArcScope.RawSignal` / `DerivedSignal` | Acquired versus computed. Never conflated. |
-| `ArcScope.Measurement` | A quantified reading with units and uncertainty. **Not** an Analysis. |
-| `ArcScope.Analysis` | An interpretation over measurements. |
-| `ArcScope.Decoder` | A protocol interpreter producing Decoder Output. **Decoder Output ≠ Raw Data.** |
-| `ArcScope.Annotation` | A non-destructive marking. **Never** a data mutation. |
-| `ArcScope.Comparison` | A side-by-side relation between sessions or captures. **Not** a merge. |
-| `ArcScope.Report` | An ArcScope-owned report artifact. **Not** an ArcNotes Document. |
-| `ArcScope.LiveView` / `Recording` | Display versus persistence. Pausing the view never pauses the capture. |
-| `ArcScope.DisplayDecimation` | Downsampling for rendering only. Never the measurement data. |
+| Term | Space | Definition |
+|---|---|---|
+| `ArcScope.Project` | domain | An ArcScope-scoped container of sources, sessions and analyses. **Not** an ArcForges Workspace. |
+| `ArcScope.Device` | domain | Physical or logical hardware. **Not** a DataSource. |
+| `ArcScope.DataSource` | domain | A configured source definition. |
+| `ArcScope.ConnectionProfile` | domain | Stored connection settings. **Not** a live Connection. |
+| `ArcScope.Session` | domain | An observation lifetime. **Not** a Connection; **not** a Capture. |
+| `ArcScope.Capture` | domain | A recorded data acquisition within a Session. |
+| `ArcScope.Channel` | domain | A transport-level stream of values. **Not** a Signal. |
+| `ArcScope.Signal` | domain | A semantically typed, named quantity. **Not** an Event. |
+| `ArcScope.Event` | domain | A discrete occurrence in time. |
+| `ArcScope.RawSignal` / `ArcScope.DerivedSignal` | domain | Acquired versus computed. Never conflated. |
+| `ArcScope.Measurement` | domain | A quantified reading with units and uncertainty. **Not** an Analysis. |
+| `ArcScope.Analysis` | domain | An interpretation over measurements. |
+| `ArcScope.Decoder` | domain | A protocol interpreter producing Decoder Output. **Decoder Output ≠ Raw Data.** |
+| `ArcScope.Annotation` | domain | A non-destructive marking. **Never** a data mutation. |
+| `ArcScope.Comparison` | domain | A side-by-side relation between sessions or captures. **Not** a merge. |
+| `ArcScope.Report` | domain | An ArcScope-owned report artifact. **Not** an ArcNotes Document. |
+| `ArcScope.LiveView` | UI | Display state. Pausing the view never pauses the capture. |
+| `ArcScope.Recording` | storage | Persisted capture data, distinct from LiveView display state. |
+| `ArcScope.DisplayDecimation` | domain | Downsampling for rendering only. Never the measurement data. |
 
-The simulator additionally defines Cloud-owned **SimulationDefinition**, immutable **ScenarioVersion**, non-agent **SimulationRun**, immutable **SimulationSegment** and ordered **SimulationEvent**. [SIM-01](products/arcscope.md#rule-sim-01)–[SIM-20](products/arcscope.md#rule-sim-20) in the ArcScope requirements govern these objects; synthetic provenance is mandatory.
+The following simulator domain terms are Cloud-owned under the ArcScope namespace. [SIM-01](products/arcscope.md#rule-sim-01)–[SIM-20](products/arcscope.md#rule-sim-20) in the ArcScope requirements govern these objects; synthetic provenance is mandatory.
+
+| Term | Space | Definition |
+|---|---|---|
+| `ArcScope.SimulationDefinition` | domain | A Cloud-owned simulator definition. |
+| `ArcScope.ScenarioVersion` | domain | An immutable scenario version. |
+| `ArcScope.SimulationRun` | domain | A non-agent simulator product job. |
+| `ArcScope.SimulationSegment` | domain | An immutable segment of a simulation result. |
+| `ArcScope.SimulationEvent` | domain | An ordered event in a simulation run. |
 
 ### 5.4 ArcSlate
 
-| Term | Definition |
-|---|---|
-| `ArcSlate.Project` | The editing project. **Not** a Sequence; **not** a media folder. |
-| `ArcSlate.Sequence` | A timeline composition. **Not** a Timeline Clip. |
-| `ArcSlate.Timeline` | The temporal arrangement inside a Sequence. |
-| `ArcSlate.Track` | A lane within a Timeline. |
-| `ArcSlate.Clip` | A placed reference to source media with in/out points. **Not** the source media. |
-| `ArcSlate.MediaAsset` | The managed identity of a piece of media. **Not** a file path; **not** a Clip. |
-| `ArcSlate.SourceTime` / `TimelineTime` | Source-relative versus composition-relative time. Never interchangeable. |
-| `ArcSlate.VideoFrameTime` / `AudioSampleTime` | Distinct rate domains. Never the same clock. |
-| `ArcSlate.Transition` | A declared relation between adjacent clips. **Not** an incidental overlap. |
-| `ArcSlate.EffectDefinition` / `EffectInstance` | Type versus applied instance with parameters. |
-| `ArcSlate.Keyframe` | A time-anchored parameter value. **Not** the current parameter value. |
-| `ArcSlate.Proxy` | A lower-cost stand-in for original media. **Not** the original; **not** a render cache. |
-| `ArcSlate.RenderCache` | Rebuildable rendered output. **Never** project authority. |
-| `ArcSlate.RenderJob` | An ArcSlate-owned native product render/export Job, distinct from a Cloud Agent Task and UI progress dialog. |
-| `ArcSlate.RenderedArtifact` | The produced media file. **Not** the ArcSlate Project. |
-| `ArcSlate.Transcript` / `Subtitle` | Machine text versus authored, timed, styled display text. |
+| Term | Space | Definition |
+|---|---|---|
+| `ArcSlate.Project` | domain | The editing project. **Not** a Sequence; **not** a media folder. |
+| `ArcSlate.Sequence` | domain | A timeline composition. **Not** a Timeline Clip. |
+| `ArcSlate.Timeline` | domain | The temporal arrangement inside a Sequence. |
+| `ArcSlate.Track` | domain | A lane within a Timeline. |
+| `ArcSlate.Clip` | domain | A placed reference to source media with in/out points. **Not** the source media. |
+| `ArcSlate.MediaAsset` | domain | The managed identity of a piece of media. **Not** a file path; **not** a Clip. |
+| `ArcSlate.SourceTime` / `ArcSlate.TimelineTime` | domain | Source-relative versus composition-relative time. Never interchangeable. |
+| `ArcSlate.VideoFrameTime` / `ArcSlate.AudioSampleTime` | domain | Distinct rate domains. Never the same clock. |
+| `ArcSlate.Transition` | domain | A declared relation between adjacent clips. **Not** an incidental overlap. |
+| `ArcSlate.EffectDefinition` / `ArcSlate.EffectInstance` | domain | Type versus applied instance with parameters. |
+| `ArcSlate.Keyframe` | domain | A time-anchored parameter value. **Not** the current parameter value. |
+| `ArcSlate.Proxy` | storage | A lower-cost stand-in for original media. **Not** the original; **not** a render cache. |
+| `ArcSlate.RenderCache` | storage | Rebuildable rendered output. **Never** project authority. |
+| `ArcSlate.RenderJob` | domain | An ArcSlate-owned native product render/export Job, distinct from a Cloud Agent Task and UI progress dialog. |
+| `ArcSlate.RenderedArtifact` | domain | The produced media file. **Not** the ArcSlate Project. |
+| `ArcSlate.Transcript` / `ArcSlate.Subtitle` | domain | Machine text versus authored, timed, styled display text. |
 
 ---
 
@@ -553,7 +562,7 @@ Every active entry is binding where its concepts are in current product scope. A
 | <a id="rule-i-312"></a>I-312 | Connector ≠ imported snapshot |
 | <a id="rule-i-313"></a>I-313 | **Retired by [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006):** external-agent integration is excluded, not a separate agent-profile implementation. |
 | <a id="rule-i-314"></a>I-314 | **Retired by [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006):** no external-agent task/delegation adapter is required. |
-| <a id="rule-i-315"></a>I-315 | Retained historical distinction: ACP Session ≠ Conversation; ACP integration excluded by P2-006 |
+| <a id="rule-i-315"></a>I-315 | Retained historical distinction: ACP Session ≠ Conversation; ACP integration excluded by [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006) |
 | <a id="rule-i-316"></a>I-316 | ACP ≠ ArcChat runtime model; no external-agent runtime is implemented |
 | <a id="rule-i-317"></a>I-317 | Extension ≠ third-party Arc App |
 | <a id="rule-i-318"></a>I-318 | Extension Process ≠ Host Process |
@@ -778,7 +787,7 @@ MCP tool descriptions, prompts, resource contents and server metadata are **untr
 
 ## 10. Enforcement
 
-The glossary is enforced, not merely published.
+The glossary is enforced, not merely published. The [policy export profile](../architecture/29-design-policy-export.md) defines row-preserving exports, term spaces, retirement handling and the continuing corpus check.
 
 | Control | Mechanism | Where specified |
 |---|---|---|
@@ -798,6 +807,6 @@ The glossary is enforced, not merely published.
 | **[D-018](../decisions/phase-1-foundation-decisions.md#rule-d-018)** | The requirement that this document exists and gates detailed specification |
 | **[V-02](../assurance/phase-1-official-verification.md#rule-v-02)** | The MCP term-collision requirement discharged in §9 |
 
-## P2-009 technology invariants
+## [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) technology invariants
 
 Proto is authored wire authority; the sole model loop is CF Workflow; canonical business state is C#/D1; object bytes are R2; product repositories consume immutable packages; Mobile is Kotlin/Jetpack Compose. These replace superseded technology examples without renumbering inherited invariant IDs. Content-origin, Notes scalar queries, Scope measurement and Slate rational/tick meaning remain unchanged.

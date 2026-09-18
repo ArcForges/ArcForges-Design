@@ -1,6 +1,6 @@
 # Implementation-State Reconciliation
 
-> Historical evidence at the source/design revision recorded below. P2-010 and [family completion review](family-design-completion-review.md) define the current Android, producer, contract and evidence amendments. Earlier runtime/contract/count conclusions are not current implementation proof; no deprecated input is reopened.
+> Historical evidence at the source/design revision recorded below. [P2-010](../decisions/phase-2-specification-decisions.md#rule-p2-010) and [family completion review](family-design-completion-review.md) define the current Android, producer, contract and evidence amendments. Earlier runtime/contract/count conclusions are not current implementation proof; no deprecated input is reopened.
 
 
 > Status: **Authoritative** — Phase 2 design-stage evidence · **Complete**
@@ -14,7 +14,7 @@ This is the **item-level reconciliation evidence** required before implementatio
 
 ---
 
-### Current Web disposition — P2-008
+### Current Web disposition — [P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008)
 
 The item-level inventory below remains evidence of the inspected C# baseline. Its Blazor/WebAssembly conformance labels are historical and do not describe the new target. [P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008) changes the current disposition:
 
@@ -72,15 +72,15 @@ The product repository currently having these C# projects is not evidence that t
 
 | # | Rule |
 |---|---|
-| RM-01 | **The inventory precedes restructuring.** This document is that inventory. |
-| RM-02 | **Reconciliation is per project, per test suite and per native shim** — not per directory. |
+| <a id="rule-rm-01"></a>RM-01 | **The inventory precedes restructuring.** This document is that inventory. |
+| <a id="rule-rm-02"></a>RM-02 | **Reconciliation is per project, per test suite and per native shim** — not per directory. |
 | <a id="rule-rm-03"></a>RM-03 | **Dispositions**: `Keep` · `Rename` · `Move` · `Split` · `Merge` · `Rewrite` · `Fence` · `Delete`. |
-| RM-04 | **`Keep` means the item conforms to the accepted design or has a scheduled change that will make it conform** — never merely that it exists. |
-| RM-05 | **Existing code is evidence of present state, not a competing design authority** (**[D-011](../decisions/phase-1-foundation-decisions.md#rule-d-011)**). Where existing code and the accepted design disagree, the design governs. |
-| RM-06 | **A scaffold is not an implementation.** A scaffold in accepted scope is `Keep` on structure and carries behavior in its owning package. The two retired Notes projects in §5.6 are explicit `Delete` exceptions; an excluded capability receives no future implementation hook. |
+| <a id="rule-rm-04"></a>RM-04 | **`Keep` means the item conforms to the accepted design or has a scheduled change that will make it conform** — never merely that it exists. |
+| <a id="rule-rm-05"></a>RM-05 | **Existing code is evidence of present state, not a competing design authority** (**[D-011](../decisions/phase-1-foundation-decisions.md#rule-d-011)**). Where existing code and the accepted design disagree, the design governs. |
+| <a id="rule-rm-06"></a>RM-06 | **A scaffold is not an implementation.** A scaffold in accepted scope is `Keep` on structure and carries behavior in its owning package. The two retired Notes projects in §5.6 are explicit `Delete` exceptions; an excluded capability receives no future implementation hook. |
 | <a id="rule-rm-07"></a>RM-07 | **Deleting existing work requires an explicit disposition with a reason.** |
-| RM-08 | **A reconciliation change is separate from a behaviour change**, and no step leaves the repository unbuildable at a commit boundary. |
-| RM-09 | **Completing this inventory is not executing it.** Physical migration and build-time enforcement remain implementation work in [WP-01](../planning/work-packages/01-repository-reconciliation-and-target-layout.md#rule-wp-01) and [WP-02](../planning/work-packages/02-build-governance-and-analyzer-policy.md#rule-wp-02). |
+| <a id="rule-rm-08"></a>RM-08 | **A reconciliation change is separate from a behaviour change**, and no step leaves the repository unbuildable at a commit boundary. |
+| <a id="rule-rm-09"></a>RM-09 | **Completing this inventory is not executing it.** Physical migration and build-time enforcement remain implementation work in [WP-01](../planning/work-packages/01-repository-reconciliation-and-target-layout.md#rule-wp-01) and [WP-02](../planning/work-packages/02-build-governance-and-analyzer-policy.md#rule-wp-02). |
 
 ---
 
@@ -93,8 +93,8 @@ The first-pass inventory made six claims the evidence does not support. Each is 
 | <a id="rule-c-01"></a>C-01 | "**332** projects" | Enumeration excluding the nested worktree | **166 projects.** The earlier count double-counted `.worktree/af02-01-contracts-localrpc`, a working branch checkout inside the repository. Every count derived from 332 was inflated by roughly half |
 | <a id="rule-c-02"></a>C-02 | Per-area alignment described as "**Close**", implying substance | 8,638 C# lines total; 151 of 166 projects at or under 60 lines | **Alignment is structural only.** The directory shape anticipates the target layout; the behaviour does not exist. "Close" was a statement about names, presented as if it were about implementation |
 | <a id="rule-c-03"></a>C-03 | "`IsAotCompatible` present in **0** project files → does not satisfy [PJ-02](../architecture/01-solution-and-project-layout.md#rule-pj-02)" | `eng/build/desktop-aot.props` sets `IsAotCompatible`, `PublishAot`, `PublishTrimmed`, `TrimMode=full`; `eng/build/contracts.props` sets `IsAotCompatible` and `EnableTrimAnalyzer` | **False finding.** The property is set **centrally** for the projects that need it. A per-`csproj` grep cannot see central imports. [PJ-02](../architecture/01-solution-and-project-layout.md#rule-pj-02) is substantially satisfied for the AOT chain already |
-| C-04 | "No committed `packages.lock.json` → does not satisfy [PJ-05](../architecture/01-solution-and-project-layout.md#rule-pj-05)" | **165 lock files** present, one per project | **False finding.** Locked restore is already in place. Only the root-level absence was observed, and the wrong conclusion drawn from it |
-| C-05 | "The repository-policy suite is **not separately identifiable**" | `tests/ArchitectureTests/RepositoryPolicyTests.cs` — **19 test methods**, alongside `ArchitectureRuleTests.cs` with **28** | **False finding.** The suite exists as a file within the ArchitectureTests project rather than as a separate project. That is a packaging difference, not an absence |
+| <a id="rule-c-04"></a>C-04 | "No committed `packages.lock.json` → does not satisfy [PJ-05](../architecture/01-solution-and-project-layout.md#rule-pj-05)" | **165 lock files** present, one per project | **False finding.** Locked restore is already in place. Only the root-level absence was observed, and the wrong conclusion drawn from it |
+| <a id="rule-c-05"></a>C-05 | "The repository-policy suite is **not separately identifiable**" | `tests/ArchitectureTests/RepositoryPolicyTests.cs` — **19 test methods**, alongside `ArchitectureRuleTests.cs` with **28** | **False finding.** The suite exists as a file within the ArchitectureTests project rather than as a separate project. That is a packaging difference, not an absence |
 | <a id="rule-c-06"></a>C-06 | "Every project declares its SPDX identifier and its licence boundary" (stated as target, read as near-conformance) | 0 `.csproj` carry SPDX; **all 273 `.cs` files carry `SPDX-License-Identifier: AGPL-3.0-only`** | **Both halves wrong, in opposite directions.** SPDX *is* declared — at file level, universally. But the *boundary* is not declared anywhere, and the single blanket identifier is itself a defect (`§5.1`) |
 
 **What this pattern shows.** Four of the six errors came from treating a `grep` count over project files as a conformance measurement. Presence of a token is weak evidence; absence of a token is weaker still. The corrected method reads effective configuration and file contents.
@@ -360,11 +360,11 @@ All 273 `.cs` files declare `SPDX-License-Identifier: AGPL-3.0-only`, and `NOTIC
 
 | # | Finding |
 |---|---|
-| LB-01 | **This is a declared-wrong condition, not an undone task.** The files assert a licence that Phase 1 forbids for their boundary. |
-| LB-02 | **It is also cheap to fix now and expensive later.** The material is 55 files totalling a small fraction of the repository; after external contribution it would require contributor agreement. |
-| LB-03 | **`src/Contracts` has no `Public`/`Internal` split** — verified: no such directories exist. The split decision therefore governs both the physical layout and the licence header of each type. |
-| LB-04 | **Disposition: `Split` for `src/Contracts`, `Relicense-in-place` for `src/Mobile` and `src/SDK`** — the latter recorded as a `Rewrite` of the header only, executed by the owning packages, never by a bulk automated pass without per-file review. |
-| LB-05 | **`NOTICE.md` must gain the boundary statement** so the repository's own declaration matches **[D-004](../decisions/phase-1-foundation-decisions.md#rule-d-004)**. |
+| <a id="rule-lb-01"></a>LB-01 | **This is a declared-wrong condition, not an undone task.** The files assert a licence that Phase 1 forbids for their boundary. |
+| <a id="rule-lb-02"></a>LB-02 | **It is also cheap to fix now and expensive later.** The material is 55 files totalling a small fraction of the repository; after external contribution it would require contributor agreement. |
+| <a id="rule-lb-03"></a>LB-03 | **`src/Contracts` has no `Public`/`Internal` split** — verified: no such directories exist. The split decision therefore governs both the physical layout and the licence header of each type. |
+| <a id="rule-lb-04"></a>LB-04 | **Disposition: `Split` for `src/Contracts`, `Relicense-in-place` for `src/Mobile` and `src/SDK`** — the latter recorded as a `Rewrite` of the header only, executed by the owning packages, never by a bulk automated pass without per-file review. |
+| <a id="rule-lb-05"></a>LB-05 | **`NOTICE.md` must gain the boundary statement** so the repository's own declaration matches **[D-004](../decisions/phase-1-foundation-decisions.md#rule-d-004)**. |
 
 **This is the highest-priority reconciliation item**, and it is why [WP-01](../planning/work-packages/01-repository-reconciliation-and-target-layout.md#rule-wp-01) precedes every product package.
 
@@ -384,17 +384,17 @@ All 273 `.cs` files declare `SPDX-License-Identifier: AGPL-3.0-only`, and `NOTIC
 
 | # | Finding | Disposition |
 |---|---|---|
-| NS-01 | **The earlier framing — "a broader native surface than the architecture illustrates" — was wrong.** These are six *named placeholders* sharing one ABI convention, not six implemented surfaces | Corrected here |
-| NS-02 | The shared preamble already implements version negotiation, build info and last-error — exactly what [AB-02](../architecture/12-native-interop-and-media.md#rule-ab-02), [AB-08](../architecture/12-native-interop-and-media.md#rule-ab-08) and [AB-12](../architecture/12-native-interop-and-media.md#rule-ab-12) require | `Keep` — the convention conforms |
-| NS-03 | Each shim carries `exports/{linux.map,macos.exports,windows.def}`, an `include/`, `src/`, `generated/`, `tests/` and `fuzz/` layout | `Keep` — the layout anticipates [NT-01](../architecture/12-native-interop-and-media.md#rule-nt-01)–[NT-05](../architecture/12-native-interop-and-media.md#rule-nt-05) |
-| NS-04 | `arcmedia-ffmpeg-abi` → ArcSlate decode/encode. Permitted under `§2` of the native architecture | `Keep`; substantive work in [WP-37.00](../planning/work-packages/37-arcslate-playback-and-processing.md#rule-wp-37.00) |
-| NS-05 | `arcslate-color-abi` → ArcSlate colour management. Permitted | `Keep`; work in [WP-38.00](../planning/work-packages/38-arcslate-render-and-colour.md#rule-wp-38.00) |
-| NS-06 | `arcslate-image-abi` → ArcSlate still-image I/O. Permitted | `Keep`; work in [WP-37.01](../planning/work-packages/37-arcslate-playback-and-processing.md#rule-wp-37.01) |
+| <a id="rule-ns-01"></a>NS-01 | **The earlier framing — "a broader native surface than the architecture illustrates" — was wrong.** These are six *named placeholders* sharing one ABI convention, not six implemented surfaces | Corrected here |
+| <a id="rule-ns-02"></a>NS-02 | The shared preamble already implements version negotiation, build info and last-error — exactly what [AB-02](../architecture/12-native-interop-and-media.md#rule-ab-02), [AB-08](../architecture/12-native-interop-and-media.md#rule-ab-08) and [AB-12](../architecture/12-native-interop-and-media.md#rule-ab-12) require | `Keep` — the convention conforms |
+| <a id="rule-ns-03"></a>NS-03 | Each shim carries `exports/{linux.map,macos.exports,windows.def}`, an `include/`, `src/`, `generated/`, `tests/` and `fuzz/` layout | `Keep` — the layout anticipates [NT-01](../architecture/12-native-interop-and-media.md#rule-nt-01)–[NT-05](../architecture/12-native-interop-and-media.md#rule-nt-05) |
+| <a id="rule-ns-04"></a>NS-04 | `arcmedia-ffmpeg-abi` → ArcSlate decode/encode. Permitted under `§2` of the native architecture | `Keep`; substantive work in [WP-37.00](../planning/work-packages/37-arcslate-playback-and-processing.md#rule-wp-37.00) |
+| <a id="rule-ns-05"></a>NS-05 | `arcslate-color-abi` → ArcSlate colour management. Permitted | `Keep`; work in [WP-38.00](../planning/work-packages/38-arcslate-render-and-colour.md#rule-wp-38.00) |
+| <a id="rule-ns-06"></a>NS-06 | `arcslate-image-abi` → ArcSlate still-image I/O. Permitted | `Keep`; work in [WP-37.01](../planning/work-packages/37-arcslate-playback-and-processing.md#rule-wp-37.01) |
 | <a id="rule-ns-07"></a>NS-07 | `arcslate-otio-abi` → ArcSlate timeline interchange. **Permitted-surface question**: interchange parsing is a *format* concern, and the native architecture permits native code only where no reasonable managed substitute exists. A managed interchange reader is plausible | **`Fence` pending a substitute analysis in [WP-39.05](../planning/work-packages/39-arcslate-integration-and-portability.md#rule-wp-39.05).** Not deleted — the exports and layout are reusable if the analysis favours native |
 | <a id="rule-ns-08"></a>NS-08 | `arcscope-mdf-abi` → ArcScope measurement-format I/O. Same question as [NS-07](#rule-ns-07), same treatment | **`Fence` pending a substitute analysis in [WP-35.04](../planning/work-packages/35-arcscope-integration-and-sync.md#rule-wp-35.04)** |
-| NS-09 | `arcgraphics-metal-abi` → GPU surface access on one platform. Permitted under `§2` (GPU device and surface access) | `Keep`; work in [WP-37.02](../planning/work-packages/37-arcslate-playback-and-processing.md#rule-wp-37.02) |
-| NS-10 | Every shim's `.h` declares `SPDX-License-Identifier: AGPL-3.0-only`. Native shims sit inside the AGPL boundary and are not consumed by mobile or the public SDK | **Conforms** — no change |
-| NS-11 | **No third-party native dependency is vendored into any shim.** The FFmpeg, OpenColorIO and image dependencies named in `NOTICE.md` are external | Licence review of those externals remains [PG-03](open-gates-register.md#rule-pg-03), per product |
+| <a id="rule-ns-09"></a>NS-09 | `arcgraphics-metal-abi` → GPU surface access on one platform. Permitted under `§2` (GPU device and surface access) | `Keep`; work in [WP-37.02](../planning/work-packages/37-arcslate-playback-and-processing.md#rule-wp-37.02) |
+| <a id="rule-ns-10"></a>NS-10 | Every shim's `.h` declares `SPDX-License-Identifier: AGPL-3.0-only`. Native shims sit inside the AGPL boundary and are not consumed by mobile or the public SDK | **Conforms** — no change |
+| <a id="rule-ns-11"></a>NS-11 | **No third-party native dependency is vendored into any shim.** The FFmpeg, OpenColorIO and image dependencies named in `NOTICE.md` are external | Licence review of those externals remains [PG-03](open-gates-register.md#rule-pg-03), per product |
 
 ### 5.3 Build governance — better than the first pass claimed
 
@@ -426,10 +426,10 @@ All 273 `.cs` files declare `SPDX-License-Identifier: AGPL-3.0-only`, and `NOTIC
 
 | # | Finding | Disposition |
 |---|---|---|
-| TS-01 | The architecture-test approach is real and already uses negative fixtures — the mechanism [WP-05](../planning/work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05) specifies | `Keep` and extend. **[WP-05](../planning/work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05) is materially smaller than planned**: the harness exists |
-| TS-02 | The file header names **thirteen** rules; the accepted design specifies **fourteen** architecture rules and **ten** repository-policy rules | `Keep`; [WP-05.00](../planning/work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05.00)–[WP-05.04](../planning/work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05.04) reconcile rule-by-rule rather than starting from nothing |
-| TS-03 | **Twenty-five test-suite directories exist with no meaningful content.** Directory presence was previously read as coverage | **Corrected.** Each maps to a required family in [WP-01.04](../planning/work-packages/01-repository-reconciliation-and-target-layout.md#rule-wp-01.04), and its implementation stays with the owning package |
-| TS-04 | **No test result, pass rate or execution record was observed**, and none is claimed | Test execution is implementation evidence, not design evidence |
+| <a id="rule-ts-01"></a>TS-01 | The architecture-test approach is real and already uses negative fixtures — the mechanism [WP-05](../planning/work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05) specifies | `Keep` and extend. **[WP-05](../planning/work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05) is materially smaller than planned**: the harness exists |
+| <a id="rule-ts-02"></a>TS-02 | The file header names **thirteen** rules; the accepted design specifies **fourteen** architecture rules and **ten** repository-policy rules | `Keep`; [WP-05.00](../planning/work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05.00)–[WP-05.04](../planning/work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05.04) reconcile rule-by-rule rather than starting from nothing |
+| <a id="rule-ts-03"></a>TS-03 | **Twenty-five test-suite directories exist with no meaningful content.** Directory presence was previously read as coverage | **Corrected.** Each maps to a required family in [WP-01.04](../planning/work-packages/01-repository-reconciliation-and-target-layout.md#rule-wp-01.04), and its implementation stays with the owning package |
+| <a id="rule-ts-04"></a>TS-04 | **No test result, pass rate or execution record was observed**, and none is claimed | Test execution is implementation evidence, not design evidence |
 
 ### 5.5 Cloud module set
 
@@ -494,11 +494,11 @@ Derived from what blocks the most downstream work, and revised by the corrected 
 
 | # | Statement |
 |---|---|
-| ND-01 | **It does not execute the dispositions.** Physical migration is [WP-01](../planning/work-packages/01-repository-reconciliation-and-target-layout.md#rule-wp-01); build-time enforcement is [WP-02](../planning/work-packages/02-build-governance-and-analyzer-policy.md#rule-wp-02) and [WP-05](../planning/work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05). |
-| ND-02 | **It does not claim any behaviour works.** No build was run, no test executed, no artifact produced. |
-| ND-03 | **It does not treat existing code as design authority** (**[D-011](../decisions/phase-1-foundation-decisions.md#rule-d-011)**). |
-| ND-04 | **It does not measure quality.** Line counts measure presence, not correctness. |
-| ND-05 | **It is bound to commit `ede43db`.** [WP-01](../planning/work-packages/01-repository-reconciliation-and-target-layout.md#rule-wp-01) re-checks for drift before executing. |
+| <a id="rule-nd-01"></a>ND-01 | **It does not execute the dispositions.** Physical migration is [WP-01](../planning/work-packages/01-repository-reconciliation-and-target-layout.md#rule-wp-01); build-time enforcement is [WP-02](../planning/work-packages/02-build-governance-and-analyzer-policy.md#rule-wp-02) and [WP-05](../planning/work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05). |
+| <a id="rule-nd-02"></a>ND-02 | **It does not claim any behaviour works.** No build was run, no test executed, no artifact produced. |
+| <a id="rule-nd-03"></a>ND-03 | **It does not treat existing code as design authority** (**[D-011](../decisions/phase-1-foundation-decisions.md#rule-d-011)**). |
+| <a id="rule-nd-04"></a>ND-04 | **It does not measure quality.** Line counts measure presence, not correctness. |
+| <a id="rule-nd-05"></a>ND-05 | **It is bound to commit `ede43db`.** [WP-01](../planning/work-packages/01-repository-reconciliation-and-target-layout.md#rule-wp-01) re-checks for drift before executing. |
 
 ## Architecture ownership amendment — 2026-09-11
 

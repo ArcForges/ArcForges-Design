@@ -1,5 +1,5 @@
 # Extensions, Integrations and Developer Platform Requirements
-> Effective scope: P2-012 and P2-013 amend the technology and application ownership below. **[P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
+> Effective scope: [P2-012](../decisions/phase-2-specification-decisions.md#rule-p2-012) and [P2-013](../decisions/phase-2-specification-decisions.md#rule-p2-013) amend the technology and application ownership below. **[P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Requirements
@@ -27,12 +27,12 @@ Third-party App  standalone Arc application         its own product, own domain
 
 | # | Requirement |
 |---|---|
-| SK-01 | **A Skill is never code** ([I-291](01-normative-glossary-and-invariants.md#rule-i-291)). It is declarative agent guidance, not a runtime plug-in. |
-| SK-02 | **A Skill confers no capability** ([I-290](01-normative-glossary-and-invariants.md#rule-i-290)) and **grants no permission** ([I-264](01-normative-glossary-and-invariants.md#rule-i-264)). It may *refer to* capabilities; using them still requires the ordinary permission and approval path. |
-| SK-03 | Skills are **versioned**. A skill update does not modify historical results; a completed Run keeps the skill version it executed under. |
-| SK-04 | **Skill ≠ MCP** ([I-292](01-normative-glossary-and-invariants.md#rule-i-292)) and **MCP Prompt ≠ Skill** ([I-310](01-normative-glossary-and-invariants.md#rule-i-310)). An MCP prompt does not automatically become a Skill. |
-| SK-05 | A user may **fork** a community skill; the fork becomes a user-owned skill with its own lifecycle. |
-| SK-06 | A packaged skill's content is **read-only managed content**; customising it produces an independent user-owned resource rather than mutating the package. |
+| <a id="rule-sk-01"></a>SK-01 | **A Skill is never code** ([I-291](01-normative-glossary-and-invariants.md#rule-i-291)). It is declarative agent guidance, not a runtime plug-in. |
+| <a id="rule-sk-02"></a>SK-02 | **A Skill confers no capability** ([I-290](01-normative-glossary-and-invariants.md#rule-i-290)) and **grants no permission** ([I-264](01-normative-glossary-and-invariants.md#rule-i-264)). It may *refer to* capabilities; using them still requires the ordinary permission and approval path. |
+| <a id="rule-sk-03"></a>SK-03 | Skills are **versioned**. A skill update does not modify historical results; a completed Run keeps the skill version it executed under. |
+| <a id="rule-sk-04"></a>SK-04 | **Skill ≠ MCP** ([I-292](01-normative-glossary-and-invariants.md#rule-i-292)) and **MCP Prompt ≠ Skill** ([I-310](01-normative-glossary-and-invariants.md#rule-i-310)). An MCP prompt does not automatically become a Skill. |
+| <a id="rule-sk-05"></a>SK-05 | A user may **fork** a community skill; the fork becomes a user-owned skill with its own lifecycle. |
+| <a id="rule-sk-06"></a>SK-06 | A packaged skill's content is **read-only managed content**; customising it produces an independent user-owned resource rather than mutating the package. |
 
 ## 2. Template
 
@@ -40,12 +40,12 @@ Third-party App  standalone Arc application         its own product, own domain
 
 | # | Requirement |
 |---|---|
-| TP-01 | **Template ≠ Skill** ([I-293](01-normative-glossary-and-invariants.md#rule-i-293)). A template shapes a created resource; a skill shapes agent behaviour. |
-| TP-02 | **Templates materialise by default.** The created resource exists independently of the template. |
-| TP-03 | **A template update must not silently change existing user documents** ([I-294](01-normative-glossary-and-invariants.md#rule-i-294)). A linked-template model, if ever offered, is an explicit opt-in with explicit update semantics. |
-| TP-04 | Template parameters are **typed and declared**, not free-form substitution. |
-| TP-05 | **Materialisation goes through the owning product's capability**, never a direct write into that product's store. |
-| TP-06 | A template may declare **requirements**; unmet requirements are shown before use. |
+| <a id="rule-tp-01"></a>TP-01 | **Template ≠ Skill** ([I-293](01-normative-glossary-and-invariants.md#rule-i-293)). A template shapes a created resource; a skill shapes agent behaviour. |
+| <a id="rule-tp-02"></a>TP-02 | **Templates materialise by default.** The created resource exists independently of the template. |
+| <a id="rule-tp-03"></a>TP-03 | **A template update must not silently change existing user documents** ([I-294](01-normative-glossary-and-invariants.md#rule-i-294)). A linked-template model, if ever offered, is an explicit opt-in with explicit update semantics. |
+| <a id="rule-tp-04"></a>TP-04 | Template parameters are **typed and declared**, not free-form substitution. |
+| <a id="rule-tp-05"></a>TP-05 | **Materialisation goes through the owning product's capability**, never a direct write into that product's store. |
+| <a id="rule-tp-06"></a>TP-06 | A template may declare **requirements**; unmet requirements are shown before use. |
 
 ## 3. Workflow
 
@@ -53,16 +53,16 @@ Third-party App  standalone Arc application         its own product, own domain
 
 | # | Requirement |
 |---|---|
-| WF-01 | **Workflow ≠ Task** ([I-296](01-normative-glossary-and-invariants.md#rule-i-296)). Running a workflow creates a Task under the Stage-19 model; the workflow is the blueprint. |
-| WF-02 | **Workflow ≠ Automation** ([I-295](01-normative-glossary-and-invariants.md#rule-i-295), [I-299](01-normative-glossary-and-invariants.md#rule-i-299)). A workflow says *how*; an automation says *when*. |
-| WF-03 | **Workflow ≠ Agent Plan** ([I-297](01-normative-glossary-and-invariants.md#rule-i-297)). A workflow is authored and deterministic in structure; an agent plan is generated per run and revisable. |
-| WF-04 | **A workflow update does not change a running Task.** Running Tasks keep their frozen execution snapshot. |
-| WF-05 | **A workflow is not a second agent runtime.** It compiles into ordinary Steps in the one execution model. |
-| WF-06 | **No scripting language is introduced** ([I-298](01-normative-glossary-and-invariants.md#rule-i-298)). Workflow steps are declared, typed and closed: invoke capability, branch on a declared condition, iterate a bounded collection, wait for approval, wait for a product job, produce an artifact. |
-| WF-07 | **Unbounded looping is not a workflow capability.** Recurrence belongs to Automation triggers. |
-| WF-08 | **A community workflow obtains no implicit permission** ([I-265](01-normative-glossary-and-invariants.md#rule-i-265)). Each step passes the full security pipeline. |
-| WF-09 | A workflow may depend on **connector capabilities**; the resulting run is an ordinary root Task. |
-| WF-10 | Missing requirements are surfaced at install time with a legible "why can't this run" explanation. |
+| <a id="rule-wf-01"></a>WF-01 | **Workflow ≠ Task** ([I-296](01-normative-glossary-and-invariants.md#rule-i-296)). Running a workflow creates a Task under the Stage-19 model; the workflow is the blueprint. |
+| <a id="rule-wf-02"></a>WF-02 | **Workflow ≠ Automation** ([I-295](01-normative-glossary-and-invariants.md#rule-i-295), [I-299](01-normative-glossary-and-invariants.md#rule-i-299)). A workflow says *how*; an automation says *when*. |
+| <a id="rule-wf-03"></a>WF-03 | **Workflow ≠ Agent Plan** ([I-297](01-normative-glossary-and-invariants.md#rule-i-297)). A workflow is authored and deterministic in structure; an agent plan is generated per run and revisable. |
+| <a id="rule-wf-04"></a>WF-04 | **A workflow update does not change a running Task.** Running Tasks keep their frozen execution snapshot. |
+| <a id="rule-wf-05"></a>WF-05 | **A workflow is not a second agent runtime.** It compiles into ordinary Steps in the one execution model. |
+| <a id="rule-wf-06"></a>WF-06 | **No scripting language is introduced** ([I-298](01-normative-glossary-and-invariants.md#rule-i-298)). Workflow steps are declared, typed and closed: invoke capability, branch on a declared condition, iterate a bounded collection, wait for approval, wait for a product job, produce an artifact. |
+| <a id="rule-wf-07"></a>WF-07 | **Unbounded looping is not a workflow capability.** Recurrence belongs to Automation triggers. |
+| <a id="rule-wf-08"></a>WF-08 | **A community workflow obtains no implicit permission** ([I-265](01-normative-glossary-and-invariants.md#rule-i-265)). Each step passes the full security pipeline. |
+| <a id="rule-wf-09"></a>WF-09 | A workflow may depend on **connector capabilities**; the resulting run is an ordinary root Task. |
+| <a id="rule-wf-10"></a>WF-10 | Missing requirements are surfaced at install time with a legible "why can't this run" explanation. |
 
 ## 4. Automation
 
@@ -78,13 +78,13 @@ Automation is specified in [`05-ai-and-agent-execution.md`](05-ai-and-agent-exec
 |---|---|
 | <a id="rule-mc-01"></a>MC-01 | **MCP never becomes the internal protocol of ArcForges** ([I-307](01-normative-glossary-and-invariants.md#rule-i-307)). Internal application capability remains typed application ports. MCP is an edge adapter. |
 | <a id="rule-mc-02"></a>MC-02 | **An MCP tool maps to a capability** in the ArcForges model, carrying declared risk, permission requirements and provenance — it is not injected as a raw tool into the agent. |
-| MC-03 | **An MCP resource is not an ArcForges resource** ([I-076](01-normative-glossary-and-invariants.md#rule-i-076), [I-309](01-normative-glossary-and-invariants.md#rule-i-309)). It is addressed by the server's own scheme and surfaced as an external source. |
-| MC-04 | **MCP Definition ≠ MCP Connection** ([I-309](01-normative-glossary-and-invariants.md#rule-i-309)). The integration definition or package is distinct from a live connection instance. |
-| MC-05 | **MCP ≠ Connector** ([I-308](01-normative-glossary-and-invariants.md#rule-i-308)). MCP may be used *inside* a connector; a connector is a higher-level relationship. |
-| MC-06 | **MCP is not a marketplace package ABI.** An MCP server is reached through an integration package, not treated as ArcForges' extension binary format. |
+| <a id="rule-mc-03"></a>MC-03 | **An MCP resource is not an ArcForges resource** ([I-076](01-normative-glossary-and-invariants.md#rule-i-076), [I-309](01-normative-glossary-and-invariants.md#rule-i-309)). It is addressed by the server's own scheme and surfaced as an external source. |
+| <a id="rule-mc-04"></a>MC-04 | **MCP Definition ≠ MCP Connection** ([I-309](01-normative-glossary-and-invariants.md#rule-i-309)). The integration definition or package is distinct from a live connection instance. |
+| <a id="rule-mc-05"></a>MC-05 | **MCP ≠ Connector** ([I-308](01-normative-glossary-and-invariants.md#rule-i-308)). MCP may be used *inside* a connector; a connector is a higher-level relationship. |
+| <a id="rule-mc-06"></a>MC-06 | **MCP is not a marketplace package ABI.** An MCP server is reached through an integration package, not treated as ArcForges' extension binary format. |
 | <a id="rule-mc-07"></a>MC-07 | **MCP tool descriptions, prompts and resource contents are untrusted data** ([I-262](01-normative-glossary-and-invariants.md#rule-i-262)), never instructions. |
-| MC-08 | Per **[V-02](../assurance/phase-1-official-verification.md#rule-v-02)**: the `2026-07-28` revision is stable and the official C# SDK is stable. The protocol core is **stateless** — no `initialize` exchange, no session header, per-request capability negotiation — so **ArcForges must not build session identity on MCP transport state**. Server-to-client requests use multi round-trip requests, which is a transport mechanism and not an ArcForges execution concept. |
-| MC-09 | **The exact MCP C# SDK version is pinned at first consumption**, and an explicit mapping between MCP extension concepts (its own `Task`, `Skill`) and the ArcForges execution vocabulary is recorded (see glossary §9). *Owner: Architecture Owner. Trigger: start of the MCP/extension work package.* |
+| <a id="rule-mc-08"></a>MC-08 | Per **[V-02](../assurance/phase-1-official-verification.md#rule-v-02)**: the `2026-07-28` revision is stable and the official C# SDK is stable. The protocol core is **stateless** — no `initialize` exchange, no session header, per-request capability negotiation — so **ArcForges must not build session identity on MCP transport state**. Server-to-client requests use multi round-trip requests, which is a transport mechanism and not an ArcForges execution concept. |
+| <a id="rule-mc-09"></a>MC-09 | **The exact MCP C# SDK version is pinned at first consumption**, and an explicit mapping between MCP extension concepts (its own `Task`, `Skill`) and the ArcForges execution vocabulary is recorded (see glossary §9). *Owner: Architecture Owner. Trigger: start of the MCP/extension work package.* |
 | <a id="rule-mc-10"></a>MC-10 | An MCP server changing its tool set **re-enters permission review** ([TR-10](07-security-privacy-and-trust.md#rule-tr-10) in the security requirements). |
 
 MCP placement is explicit: stdio servers run only in an owned desktop connector child; streamableHttp connections run either in that local child or in the AI Worker tool adapter for a Cloud connection. Cloud calls use the exact admitted HTTPS origin and Cloud SecretRef. Local calls pass through the device bridge; neither transport grants tool permission.
@@ -95,24 +95,24 @@ MCP placement is explicit: stdio servers run only in an owned desktop connector 
 
 | # | Requirement |
 |---|---|
-| CN-01 | **Connector Definition ≠ Connection Instance** ([I-311](01-normative-glossary-and-invariants.md#rule-i-311)). One definition supports many connections. |
-| CN-02 | A connection owns: its external identity binding, its credentials **by reference only**, its scope, its sync state, its health, and its audit trail. |
-| CN-03 | **A secret never enters connector configuration** ([SE-01](07-security-privacy-and-trust.md#rule-se-01)). Configuration holds `SecretRef`; plaintext keys are never stored in it. |
-| CN-04 | A connector may contribute capabilities, resources, knowledge sources and events. |
-| CN-05 | **Live Connector ≠ Imported Resource** ([I-312](01-normative-glossary-and-invariants.md#rule-i-312)). Querying an external system live is different from importing, which creates a new owned resource in an owning product. |
-| CN-06 | **A connector sync projection is not external authority.** It is a derived, replica-semantics projection. |
-| CN-07 | A connector may use MCP internally, or a public API directly; either way it remains a connector. |
-| CN-08 | **Connector content is data, never instruction** ([I-263](01-normative-glossary-and-invariants.md#rule-i-263)). |
-| CN-09 | An OAuth scope expansion requires re-consent ([TR-11](07-security-privacy-and-trust.md#rule-tr-11)). |
+| <a id="rule-cn-01"></a>CN-01 | **Connector Definition ≠ Connection Instance** ([I-311](01-normative-glossary-and-invariants.md#rule-i-311)). One definition supports many connections. |
+| <a id="rule-cn-02"></a>CN-02 | A connection owns: its external identity binding, its credentials **by reference only**, its scope, its sync state, its health, and its audit trail. |
+| <a id="rule-cn-03"></a>CN-03 | **A secret never enters connector configuration** ([SE-01](07-security-privacy-and-trust.md#rule-se-01)). Configuration holds `SecretRef`; plaintext keys are never stored in it. |
+| <a id="rule-cn-04"></a>CN-04 | A connector may contribute capabilities, resources, knowledge sources and events. |
+| <a id="rule-cn-05"></a>CN-05 | **Live Connector ≠ Imported Resource** ([I-312](01-normative-glossary-and-invariants.md#rule-i-312)). Querying an external system live is different from importing, which creates a new owned resource in an owning product. |
+| <a id="rule-cn-06"></a>CN-06 | **A connector sync projection is not external authority.** It is a derived, replica-semantics projection. |
+| <a id="rule-cn-07"></a>CN-07 | A connector may use MCP internally, or a public API directly; either way it remains a connector. |
+| <a id="rule-cn-08"></a>CN-08 | **Connector content is data, never instruction** ([I-263](01-normative-glossary-and-invariants.md#rule-i-263)). |
+| <a id="rule-cn-09"></a>CN-09 | An OAuth scope expansion requires re-consent ([TR-11](07-security-privacy-and-trust.md#rule-tr-11)). |
 
 ## 7. External-agent exclusion
 
 | # | Requirement |
 |---|---|
 | <a id="rule-ea-01"></a>EA-01 | Retired by [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006): external-agent providers and profile-to-external-agent modes are excluded. |
-| EA-02 | Retired by [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006): no ACP external-agent adapter. |
-| EA-03 | Retired by [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006): no external-agent session mapping. |
-| EA-04 | Retired by [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006): no delegation into another agent runtime or independently planning child Task. |
+| <a id="rule-ea-02"></a>EA-02 | Retired by [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006): no ACP external-agent adapter. |
+| <a id="rule-ea-03"></a>EA-03 | Retired by [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006): no external-agent session mapping. |
+| <a id="rule-ea-04"></a>EA-04 | Retired by [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006): no delegation into another agent runtime or independently planning child Task. |
 | <a id="rule-ea-05"></a>EA-05 | Retired by [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006): no external-agent delegation lease. Ordinary bounded tool leases retain security requirements. |
 | <a id="rule-ea-06"></a>EA-06 | Retired by [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006): no external-agent result adapter; ordinary tool results use the accepted result contract. |
 | <a id="rule-ea-07"></a>EA-07 | Hidden reasoning is never an extension result or audit requirement. |
@@ -140,8 +140,8 @@ The single Cloud Harness may call authorised tools concurrently within one budge
 | <a id="rule-ex-06"></a>EX-06 | **Background execution must be explicitly declared** in the manifest and separately consented. Adding it in an update is a permission expansion requiring re-consent ([TR-08](07-security-privacy-and-trust.md#rule-tr-08)). |
 | <a id="rule-ex-07"></a>EX-07 | **An extension never connects to a product database.** It calls capabilities. |
 | <a id="rule-ex-08"></a>EX-08 | **Extension private state is not product canonical domain state** ([I-319](01-normative-glossary-and-invariants.md#rule-i-319)). It has its own store and its own `SchemaVersion`. |
-| EX-09 | **An extension creating a professional resource goes through the owner's capability** ([EX-07](#rule-ex-07)), and the resource is owned by that product forever ([I-489](01-normative-glossary-and-invariants.md#rule-i-489) analogue). |
-| EX-10 | **Extension isolation is not authorization** ([I-259](01-normative-glossary-and-invariants.md#rule-i-259)); **out-of-process is not automatically safe** ([I-260](01-normative-glossary-and-invariants.md#rule-i-260)). Capability-based access still governs everything. |
+| <a id="rule-ex-09"></a>EX-09 | **An extension creating a professional resource goes through the owner's capability** ([EX-07](#rule-ex-07)), and the resource is owned by that product forever ([I-489](01-normative-glossary-and-invariants.md#rule-i-489) analogue). |
+| <a id="rule-ex-10"></a>EX-10 | **Extension isolation is not authorization** ([I-259](01-normative-glossary-and-invariants.md#rule-i-259)); **out-of-process is not automatically safe** ([I-260](01-normative-glossary-and-invariants.md#rule-i-260)). Capability-based access still governs everything. |
 | <a id="rule-ex-11"></a>EX-11 | **An extension crash must not crash the owning application.** The product remains open; the affected capability degrades with a clear state. |
 | <a id="rule-ex-12"></a>EX-12 | **Extension process identity is bound to the package installation.** A process cannot claim to be a different package, and cannot register a reserved official capability namespace. |
 | <a id="rule-ex-13"></a>EX-13 | **Extension output is validated** against its declared schema before entering the product. |
@@ -171,7 +171,7 @@ The unresolved tension — a strongly typed AOT product versus unknown third-par
 
 | # | Requirement |
 |---|---|
-| UI-01 | **Arbitrary embedding of third-party Avalonia controls is prohibited.** |
+| <a id="rule-ui-01"></a>UI-01 | **Arbitrary embedding of third-party Avalonia controls is prohibited.** |
 | <a id="rule-ui-02"></a>UI-02 | Extension UI contribution uses a **declarative panel protocol** and declarative settings schema. |
 | <a id="rule-ui-03"></a>UI-03 | Complex third-party interfaces belong in a **standalone third-party Arc application**, not embedded in a first-party product's process. |
 | <a id="rule-ui-04"></a>UI-04 | **A secret settings field returns a `SecretRef`.** Plaintext is never stored in extension configuration. |
@@ -181,10 +181,10 @@ The unresolved tension — a strongly typed AOT product versus unknown third-par
 
 | # | Requirement |
 |---|---|
-| TA-01 | **A third-party Arc App is a standalone complete application** with its own process, domain, storage and lifecycle — distinct from an Extension ([I-317](01-normative-glossary-and-invariants.md#rule-i-317)). |
-| TA-02 | A third-party Arc App integrates through the public Cloud API with eligible scoped PATs, published file formats and explicit OS open/share. It does not contribute a local peer service into first-party applications. |
-| TA-03 | **It is not a first-party application.** Publisher and trust are distinct, and reserved official identifiers and namespaces cannot be claimed. |
-| TA-04 | It may hold higher permission than an extension — because it is a peer application — and it is still governed by the same security pipeline. |
+| <a id="rule-ta-01"></a>TA-01 | **A third-party Arc App is a standalone complete application** with its own process, domain, storage and lifecycle — distinct from an Extension ([I-317](01-normative-glossary-and-invariants.md#rule-i-317)). |
+| <a id="rule-ta-02"></a>TA-02 | A third-party Arc App integrates through the public Cloud API with eligible scoped PATs, published file formats and explicit OS open/share. It does not contribute a local peer service into first-party applications. |
+| <a id="rule-ta-03"></a>TA-03 | **It is not a first-party application.** Publisher and trust are distinct, and reserved official identifiers and namespaces cannot be claimed. |
+| <a id="rule-ta-04"></a>TA-04 | It may hold higher permission than an extension — because it is a peer application — and it is still governed by the same security pipeline. |
 
 ---
 
@@ -194,28 +194,28 @@ The unresolved tension — a strongly typed AOT product versus unknown third-par
 
 | # | Requirement |
 |---|---|
-| PK-01 | **Package ≠ Contribution** ([I-300](01-normative-glossary-and-invariants.md#rule-i-300)). One package may carry several contributions: skills, templates, workflows, an integration, an extension. |
-| PK-02 | A package declares a **primary category** in its manifest, so discovery and trust behave predictably. |
+| <a id="rule-pk-01"></a>PK-01 | **Package ≠ Contribution** ([I-300](01-normative-glossary-and-invariants.md#rule-i-300)). One package may carry several contributions: skills, templates, workflows, an integration, an extension. |
+| <a id="rule-pk-02"></a>PK-02 | A package declares a **primary category** in its manifest, so discovery and trust behave predictably. |
 | <a id="rule-pk-03"></a>PK-03 | **`PackageId` never changes across versions**, and `PublisherId` is stable. |
-| PK-04 | **Local sideload requires no cloud account.** Publishing to the official community catalog requires a publisher account with verification. |
+| <a id="rule-pk-04"></a>PK-04 | **Local sideload requires no cloud account.** Publishing to the official community catalog requires a publisher account with verification. |
 | <a id="rule-pk-05"></a>PK-05 | **Package version uses semantic versioning** but **`PackageVersion` is not the compatibility mechanism** ([I-301](01-normative-glossary-and-invariants.md#rule-i-301), [I-302](01-normative-glossary-and-invariants.md#rule-i-302)). Package version, extension protocol version, contract version and host application version are four separate things and must never be conflated. |
-| PK-06 | **A published version is immutable.** Files for a given version can never be overwritten. |
-| PK-07 | **Yank ≠ Revoke** ([I-433](01-normative-glossary-and-invariants.md#rule-i-433), [I-330](01-normative-glossary-and-invariants.md#rule-i-330)). *Yank* removes it from new installation and recommendation; *Revoke* blocks or quarantines execution. *Deprecate* is neither — it signals a successor. |
-| PK-08 | A manifest expresses at least: identity, publisher, version, category, contributions, declared permission surface, capability requirements, package dependencies, compatibility, platform targets, licence, security contact, and integrity metadata. |
-| PK-09 | **A manifest never contains a secret.** |
-| PK-10 | **The manifest must be readable before any extension code executes.** Trust, compatibility and permission decisions all precede execution. |
-| PK-11 | **Compatibility is expressed richly**, not as a single "compatible" flag: per-contribution compatibility, allowing "partially usable" states. |
-| PK-12 | **Compatibility is ultimately judged per contribution**, not per suite. There is no lockstep suite compatibility requirement. |
-| PK-13 | A manifest compatibility check is a **preflight**; the runtime handshake is the ultimate fact. |
-| PK-14 | **Platform targets are declared.** Content-only packages are usually cross-platform; executable packages are not assumed to be. |
-| PK-15 | **Package dependency ≠ capability dependency** ([I-326](01-normative-glossary-and-invariants.md#rule-i-326)). Capability requirements are preferred because they are more portable; a package dependency binds to a specific package. |
-| PK-16 | **No npm-style transitive dependency tree.** An executable package is self-contained as far as practical, with its runtime dependencies bundled at publish time. **Dependency hell must not appear on a user's machine.** |
-| PK-17 | **Dependency cycles are rejected at validation.** |
-| PK-18 | **A package must not execute arbitrary scripts at install time.** Installation is performed by the ArcForges installer under its own control. |
-| PK-19 | Where a system dependency is genuinely required, it is declared and surfaced to the user, never silently installed. |
+| <a id="rule-pk-06"></a>PK-06 | **A published version is immutable.** Files for a given version can never be overwritten. |
+| <a id="rule-pk-07"></a>PK-07 | **Yank ≠ Revoke** ([I-433](01-normative-glossary-and-invariants.md#rule-i-433), [I-330](01-normative-glossary-and-invariants.md#rule-i-330)). *Yank* removes it from new installation and recommendation; *Revoke* blocks or quarantines execution. *Deprecate* is neither — it signals a successor. |
+| <a id="rule-pk-08"></a>PK-08 | A manifest expresses at least: identity, publisher, version, category, contributions, declared permission surface, capability requirements, package dependencies, compatibility, platform targets, licence, security contact, and integrity metadata. |
+| <a id="rule-pk-09"></a>PK-09 | **A manifest never contains a secret.** |
+| <a id="rule-pk-10"></a>PK-10 | **The manifest must be readable before any extension code executes.** Trust, compatibility and permission decisions all precede execution. |
+| <a id="rule-pk-11"></a>PK-11 | **Compatibility is expressed richly**, not as a single "compatible" flag: per-contribution compatibility, allowing "partially usable" states. |
+| <a id="rule-pk-12"></a>PK-12 | **Compatibility is ultimately judged per contribution**, not per suite. There is no lockstep suite compatibility requirement. |
+| <a id="rule-pk-13"></a>PK-13 | A manifest compatibility check is a **preflight**; the runtime handshake is the ultimate fact. |
+| <a id="rule-pk-14"></a>PK-14 | **Platform targets are declared.** Content-only packages are usually cross-platform; executable packages are not assumed to be. |
+| <a id="rule-pk-15"></a>PK-15 | **Package dependency ≠ capability dependency** ([I-326](01-normative-glossary-and-invariants.md#rule-i-326)). Capability requirements are preferred because they are more portable; a package dependency binds to a specific package. |
+| <a id="rule-pk-16"></a>PK-16 | **No npm-style transitive dependency tree.** An executable package is self-contained as far as practical, with its runtime dependencies bundled at publish time. **Dependency hell must not appear on a user's machine.** |
+| <a id="rule-pk-17"></a>PK-17 | **Dependency cycles are rejected at validation.** |
+| <a id="rule-pk-18"></a>PK-18 | **A package must not execute arbitrary scripts at install time.** Installation is performed by the ArcForges installer under its own control. |
+| <a id="rule-pk-19"></a>PK-19 | Where a system dependency is genuinely required, it is declared and surfaced to the user, never silently installed. |
 | <a id="rule-pk-20"></a>PK-20 | **Executable packages carry an SBOM**, signature and integrity metadata, verified before installation. The community package supply chain follows the same discipline as ArcForges' own release pipeline. |
-| PK-21 | **Package licence is declared** and surfaced. Community packages are not required to be open source, but their licence must be stated. |
-| PK-22 | **A package security contact is required** for executable packages. |
+| <a id="rule-pk-21"></a>PK-21 | **Package licence is declared** and surfaced. Community packages are not required to be open source, but their licence must be stated. |
+| <a id="rule-pk-22"></a>PK-22 | **A package security contact is required** for executable packages. |
 
 ### 9.1 Package lifecycle
 
@@ -232,14 +232,14 @@ The unresolved tension — a strongly typed AOT product versus unknown third-par
 
 | # | Requirement |
 |---|---|
-| LC-01 | **A running Task freezes the package version it started with.** An update mid-task does not change the executing snapshot. |
-| LC-02 | **Side-by-side versions are not supported.** One installed version per package per installation scope. |
-| LC-03 | **Package rollback is a binary rollback, not a data rollback** ([I-208](01-normative-glossary-and-invariants.md#rule-i-208)). Extension private data carries its own `SchemaVersion` and its own migration story. |
-| LC-04 | **A running extension cannot be uninstalled outright.** It is stopped or drained first. |
+| <a id="rule-lc-01"></a>LC-01 | **A running Task freezes the package version it started with.** An update mid-task does not change the executing snapshot. |
+| <a id="rule-lc-02"></a>LC-02 | **Side-by-side versions are not supported.** One installed version per package per installation scope. |
+| <a id="rule-lc-03"></a>LC-03 | **Package rollback is a binary rollback, not a data rollback** ([I-208](01-normative-glossary-and-invariants.md#rule-i-208)). Extension private data carries its own `SchemaVersion` and its own migration story. |
+| <a id="rule-lc-04"></a>LC-04 | **A running extension cannot be uninstalled outright.** It is stopped or drained first. |
 | <a id="rule-lc-05"></a>LC-05 | **Uninstall does not delete resources the extension created in professional products.** A document created through an extension remains an ArcNotes document. |
 | <a id="rule-lc-06"></a>LC-06 | **A missing or revoked contribution degrades gracefully.** An ArcSlate project referencing a revoked effect still opens, states clearly what is unavailable, and preserves the state so it can be restored if the package returns. |
 | <a id="rule-lc-07"></a>LC-07 | **Unknown package data is preserved, not executed.** Data for a contribution that is not currently installed is retained and clearly marked, never silently trusted or discarded. |
-| LC-08 | **Package provenance flows into tasks and artifacts.** An artifact produced through a community workflow records which package and version produced it; the owning resource's owner is unchanged. |
+| <a id="rule-lc-08"></a>LC-08 | **Package provenance flows into tasks and artifacts.** An artifact produced through a community workflow records which package and version produced it; the owning resource's owner is unchanged. |
 
 ---
 
@@ -249,18 +249,18 @@ The unresolved tension — a strongly typed AOT product versus unknown third-par
 
 | # | Requirement |
 |---|---|
-| CA-01 | **Catalog ≠ Marketplace** ([I-323](01-normative-glossary-and-invariants.md#rule-i-323)). It is not a paid marketplace in this baseline. |
-| CA-02 | **Catalog ≠ runtime dependency** ([I-324](01-normative-glossary-and-invariants.md#rule-i-324)). Local products keep working with the catalog unreachable; installed non-AI native capabilities remain available offline; Cloud AI never falls back to local execution. |
-| CA-03 | Three catalog source classes are supported: the **official** catalog, a **self-hosted** catalog, and **local/sideload**. |
-| CA-04 | **A self-hosted realm must not be locked to the official catalog.** |
-| CA-05 | A catalog package page shows: identity, publisher, trust state, review status, category, contributions, **declared permission surface**, compatibility, platform targets, licence, version history and security contact. |
-| CA-06 | **Permissions are visible before installation** ([UX-02](07-security-privacy-and-trust.md#rule-ux-02)). |
-| CA-07 | **Trust, review status and permission are three separate axes** ([I-305](01-normative-glossary-and-invariants.md#rule-i-305), [I-247](01-normative-glossary-and-invariants.md#rule-i-247), [I-248](01-normative-glossary-and-invariants.md#rule-i-248)). A signature proves origin, a review status describes process, neither implies safety, and none of them grants permission. |
-| CA-08 | **Community packages are never automatically trusted** ([I-325](01-normative-glossary-and-invariants.md#rule-i-325)). |
+| <a id="rule-ca-01"></a>CA-01 | **Catalog ≠ Marketplace** ([I-323](01-normative-glossary-and-invariants.md#rule-i-323)). It is not a paid marketplace in this baseline. |
+| <a id="rule-ca-02"></a>CA-02 | **Catalog ≠ runtime dependency** ([I-324](01-normative-glossary-and-invariants.md#rule-i-324)). Local products keep working with the catalog unreachable; installed non-AI native capabilities remain available offline; Cloud AI never falls back to local execution. |
+| <a id="rule-ca-03"></a>CA-03 | Three catalog source classes are supported: the **official** catalog, a **self-hosted** catalog, and **local/sideload**. |
+| <a id="rule-ca-04"></a>CA-04 | **A self-hosted realm must not be locked to the official catalog.** |
+| <a id="rule-ca-05"></a>CA-05 | A catalog package page shows: identity, publisher, trust state, review status, category, contributions, **declared permission surface**, compatibility, platform targets, licence, version history and security contact. |
+| <a id="rule-ca-06"></a>CA-06 | **Permissions are visible before installation** ([UX-02](07-security-privacy-and-trust.md#rule-ux-02)). |
+| <a id="rule-ca-07"></a>CA-07 | **Trust, review status and permission are three separate axes** ([I-305](01-normative-glossary-and-invariants.md#rule-i-305), [I-247](01-normative-glossary-and-invariants.md#rule-i-247), [I-248](01-normative-glossary-and-invariants.md#rule-i-248)). A signature proves origin, a review status describes process, neither implies safety, and none of them grants permission. |
+| <a id="rule-ca-08"></a>CA-08 | **Community packages are never automatically trusted** ([I-325](01-normative-glossary-and-invariants.md#rule-i-325)). |
 | <a id="rule-ca-09"></a>CA-09 | **A recommendation never installs anything automatically** and never becomes advertising pressure. |
-| CA-10 | **An agent must never auto-install or auto-trust a community package.** |
-| CA-11 | **Community ratings and reviews are not runtime authority.** |
-| CA-12 | A **realm or owner workspace policy** may restrict which catalogs, publishers, categories or trust levels are permitted (see [`11-policy-and-configuration.md`](11-policy-and-configuration.md)). |
+| <a id="rule-ca-10"></a>CA-10 | **An agent must never auto-install or auto-trust a community package.** |
+| <a id="rule-ca-11"></a>CA-11 | **Community ratings and reviews are not runtime authority.** |
+| <a id="rule-ca-12"></a>CA-12 | A **realm or owner workspace policy** may restrict which catalogs, publishers, categories or trust levels are permitted (see [`11-policy-and-configuration.md`](11-policy-and-configuration.md)). |
 | <a id="rule-ca-13"></a>CA-13 | **Package revocation reaches installed users** as an actionable Needs Attention state, coordinated with the security-advisory process, and never deletes user work. |
 
 ---
@@ -271,15 +271,15 @@ The unresolved tension — a strongly typed AOT product versus unknown third-par
 
 | # | Requirement |
 |---|---|
-| SD-01 | **An internal interface does not automatically become SDK.** The public SDK is a deliberate, separately versioned, long-term-compatibility surface. |
-| SD-02 | Public SDK payload declarations are distinct from internal application ports and do not grant first-party trust. |
-| SD-03 | The SDK lives in the **Apache-2.0 interoperability boundary** (**[D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021)**), together with public wire schemas, public DTOs, public clients and contract-level validators. |
-| SD-04 | **SDK Foundation contains only genuinely stable types**: identity primitives, result and error primitives, `ResourceRef`, `ArtifactRef`, `TaskHandle`, capability descriptors, the structured value model and the schema attributes. |
-| SD-05 | **The SDK major version is separate from the extension protocol version** ([PK-05](#rule-pk-05)). |
-| SD-06 | **The extension protocol itself is versioned**, and the host supports a compatibility window across protocol versions. |
-| SD-07 | Authored Contracts proto owns the extension wire protocol. The SDK generator maps C# records/attributes only to ValueSchema/StructuredValue payload declarations and manifest contributions. It never generates an alternate RPC schema; other languages consume the published proto and manifest schema. |
-| SD-08 | **The manifest has a language-independent canonical representation** (a static document), but **the manifest schema is generated and validated from the SDK model** rather than maintained twice by hand. |
-| SD-09 | **C# is the first-class SDK language.** Other languages may integrate through the documented wire protocol and manifest; the best developer experience is C#. |
+| <a id="rule-sd-01"></a>SD-01 | **An internal interface does not automatically become SDK.** The public SDK is a deliberate, separately versioned, long-term-compatibility surface. |
+| <a id="rule-sd-02"></a>SD-02 | Public SDK payload declarations are distinct from internal application ports and do not grant first-party trust. |
+| <a id="rule-sd-03"></a>SD-03 | The SDK lives in the **Apache-2.0 interoperability boundary** (**[D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021)**), together with public wire schemas, public DTOs, public clients and contract-level validators. |
+| <a id="rule-sd-04"></a>SD-04 | **SDK Foundation contains only genuinely stable types**: identity primitives, result and error primitives, `ResourceRef`, `ArtifactRef`, `TaskHandle`, capability descriptors, the structured value model and the schema attributes. |
+| <a id="rule-sd-05"></a>SD-05 | **The SDK major version is separate from the extension protocol version** ([PK-05](#rule-pk-05)). |
+| <a id="rule-sd-06"></a>SD-06 | **The extension protocol itself is versioned**, and the host supports a compatibility window across protocol versions. |
+| <a id="rule-sd-07"></a>SD-07 | Authored Contracts proto owns the extension wire protocol. The SDK generator maps C# records/attributes only to ValueSchema/StructuredValue payload declarations and manifest contributions. It never generates an alternate RPC schema; other languages consume the published proto and manifest schema. |
+| <a id="rule-sd-08"></a>SD-08 | **The manifest has a language-independent canonical representation** (a static document), but **the manifest schema is generated and validated from the SDK model** rather than maintained twice by hand. |
+| <a id="rule-sd-09"></a>SD-09 | **C# is the first-class SDK language.** Other languages may integrate through the documented wire protocol and manifest; the best developer experience is C#. |
 
 ### 11.2 CLI
 
@@ -297,21 +297,21 @@ The official CLI is part of the developer platform, not a side tool. Its long-te
 
 | # | Requirement |
 |---|---|
-| CL-01 | **`validate` is a gate, not advice.** A package failing validation cannot be packed or published. |
-| CL-02 | **Extension validation additionally checks** the declared permission surface against the actual contribution set, forbidden constructs at the boundary, background-execution declarations, and platform target consistency. |
-| CL-03 | **A first-party C# extension runs through the same public SDK path**, and does not reference ArcForges internal assemblies. This keeps the public contract honest by making it the only route. |
+| <a id="rule-cl-01"></a>CL-01 | **`validate` is a gate, not advice.** A package failing validation cannot be packed or published. |
+| <a id="rule-cl-02"></a>CL-02 | **Extension validation additionally checks** the declared permission surface against the actual contribution set, forbidden constructs at the boundary, background-execution declarations, and platform target consistency. |
+| <a id="rule-cl-03"></a>CL-03 | **A first-party C# extension runs through the same public SDK path**, and does not reference ArcForges internal assemblies. This keeps the public contract honest by making it the only route. |
 
 ### 11.3 Developer experience
 
 | # | Requirement |
 |---|---|
-| DX-01 | **Developer Mode** exists, is user- or administrator-enabled only (never enabled by a package), is clearly visible in the interface, and permits running a local unsigned package. |
-| DX-02 | **Developer Mode does not bypass permission, secret rules or workspace policy** ([I-271](01-normative-glossary-and-invariants.md#rule-i-271)). Its trust level is *lower*, not higher. |
-| DX-03 | A **lightweight extension test host** is provided for fast iteration, and **integration tests must still run against the real product** — an ArcSlate contribution is tested in ArcSlate. |
-| DX-04 | A **compatibility test matrix** is published: available host versions and contract fixtures a developer can test against. |
-| DX-05 | **Certification is not compatibility** and neither is trust. A certified package may still be incompatible with a given host version. |
-| DX-06 | Sample packages and a conformance test suite are published as part of the platform. |
-| DX-07 | Developer documentation covers the contribution model, the security model, the schema model, the manifest, the lifecycle, the publish pipeline and the compatibility policy. |
+| <a id="rule-dx-01"></a>DX-01 | **Developer Mode** exists, is user- or administrator-enabled only (never enabled by a package), is clearly visible in the interface, and permits running a local unsigned package. |
+| <a id="rule-dx-02"></a>DX-02 | **Developer Mode does not bypass permission, secret rules or workspace policy** ([I-271](01-normative-glossary-and-invariants.md#rule-i-271)). Its trust level is *lower*, not higher. |
+| <a id="rule-dx-03"></a>DX-03 | A **lightweight extension test host** is provided for fast iteration, and **integration tests must still run against the real product** — an ArcSlate contribution is tested in ArcSlate. |
+| <a id="rule-dx-04"></a>DX-04 | A **compatibility test matrix** is published: available host versions and contract fixtures a developer can test against. |
+| <a id="rule-dx-05"></a>DX-05 | **Certification is not compatibility** and neither is trust. A certified package may still be incompatible with a given host version. |
+| <a id="rule-dx-06"></a>DX-06 | Sample packages and a conformance test suite are published as part of the platform. |
+| <a id="rule-dx-07"></a>DX-07 | Developer documentation covers the contribution model, the security model, the schema model, the manifest, the lifecycle, the publish pipeline and the compatibility policy. |
 
 ---
 
@@ -320,11 +320,11 @@ The official CLI is part of the developer platform, not a side tool. Its long-te
 | # | Requirement |
 |---|---|
 | <a id="rule-pl-01"></a>PL-01 | **Mobile and web never load executable extensions.** No community executable plug-in is loaded into the mobile or web client. |
-| PL-02 | **Content packages may sync across devices** (skills, templates, workflows); executable packages are re-obtained and installed per platform. |
-| PL-03 | **Cloud connector execution runs cloud-side** and **runs no third-party binaries** in the ArcForges cloud host by default; where a cloud-side extension ever exists it is isolated to the same standard as a cloud task ([RX-07](03-cloud-services-and-sync.md#rule-rx-07)). |
-| PL-04 | **Extension installation scope and connection scope are separate.** Installation is per device; a connection may be per workspace. |
-| PL-05 | **Package identity does not change with realm.** The same package identity is meaningful in an official and a self-hosted realm; installation and trust decisions are per realm. |
-| PL-06 | **Package data scope is explicit**: which workspace's data a package may touch, honouring workspace isolation. |
+| <a id="rule-pl-02"></a>PL-02 | **Content packages may sync across devices** (skills, templates, workflows); executable packages are re-obtained and installed per platform. |
+| <a id="rule-pl-03"></a>PL-03 | **Cloud connector execution runs cloud-side** and **runs no third-party binaries** in the ArcForges cloud host by default; where a cloud-side extension ever exists it is isolated to the same standard as a cloud task ([RX-07](03-cloud-services-and-sync.md#rule-rx-07)). |
+| <a id="rule-pl-04"></a>PL-04 | **Extension installation scope and connection scope are separate.** Installation is per device; a connection may be per workspace. |
+| <a id="rule-pl-05"></a>PL-05 | **Package identity does not change with realm.** The same package identity is meaningful in an official and a self-hosted realm; installation and trust decisions are per realm. |
+| <a id="rule-pl-06"></a>PL-06 | **Package data scope is explicit**: which workspace's data a package may touch, honouring workspace isolation. |
 
 ---
 
@@ -356,13 +356,13 @@ Extension points are typed and versioned per product. Not every point must open 
 
 | # | Requirement |
 |---|---|
-| EP-01 | **Extension points are versioned independently** of the host product version. |
-| EP-02 | **Official reserved capability namespaces are protected** and cannot be registered by an extension ([EX-12](#rule-ex-12)). |
-| EP-03 | **Outside a known extension point**, contribution goes through the level-2 schema-described capability protocol. |
-| EP-04 | **Extension-generated knowledge sources are ordinary knowledge sources** subject to the current four-dimension policy model — declaring one does not mean AI indexes everything behind it. |
+| <a id="rule-ep-01"></a>EP-01 | **Extension points are versioned independently** of the host product version. |
+| <a id="rule-ep-02"></a>EP-02 | **Official reserved capability namespaces are protected** and cannot be registered by an extension ([EX-12](#rule-ex-12)). |
+| <a id="rule-ep-03"></a>EP-03 | **Outside a known extension point**, contribution goes through the level-2 schema-described capability protocol. |
+| <a id="rule-ep-04"></a>EP-04 | **Extension-generated knowledge sources are ordinary knowledge sources** subject to the current four-dimension policy model — declaring one does not mean AI indexes everything behind it. |
 | <a id="rule-ep-05"></a>EP-05 | **Connector events feed ordinary automation triggers**, with mandatory throttling, `EventId` deduplication and causation, because a high-rate external event stream must not create a task storm ([LP-04](05-ai-and-agent-execution.md#rule-lp-04)). |
 | <a id="rule-ep-06"></a>EP-06 | **Capability resolution must be deterministic** when several providers offer the same capability: an explicit preference, then a documented rule — never a random pick. |
-| EP-07 | **A package cannot expand its permission through a dependency**. Authority belongs to the actual executor and is evaluated per invocation. |
+| <a id="rule-ep-07"></a>EP-07 | **A package cannot expand its permission through a dependency**. Authority belongs to the actual executor and is evaluated per invocation. |
 
 ---
 

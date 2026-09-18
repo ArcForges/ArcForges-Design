@@ -49,17 +49,17 @@
 
 | # | Rule |
 |---|---|
-| BR-01 | **The SDK version is pinned and upgrading it is a reviewed change** ([BM-01](../../architecture/14-build-packaging-and-release.md#rule-bm-01) in the build architecture). |
-| BR-02 | **Central package management governs NuGet; exact npm manifests and one root lock govern Web.** Node/npm and the JavaScript SDK have reviewed pins. |
-| BR-03 | **The lock file is committed and CI restores in locked mode** ([PJ-05](../../architecture/01-solution-and-project-layout.md#rule-pj-05)). |
-| BR-04 | **Warnings are errors on the main path**; trim and AOT diagnostics are always errors on AOT deliverables ([PJ-08](../../architecture/01-solution-and-project-layout.md#rule-pj-08)). |
-| BR-05 | **Every reusable library consumed by an AOT deliverable declares AOT compatibility; every AOT host declares AOT publish** ([PJ-02](../../architecture/01-solution-and-project-layout.md#rule-pj-02)). |
-| BR-06 | **Desktop is Native AOT; Cloud is ASP.NET Core Native AOT; Android is Kotlin/Jetpack Compose; Web is React/TypeScript built by Node/npm.** No esproj or TS package inherits .NET runtime properties ([P2-008](../../decisions/phase-2-specification-decisions.md#rule-p2-008)). |
-| BR-07 | The Cloud host must publish Native AOT using the complete selected adapter/dependency closure; zero trim/AOT diagnostics and the activated [VG-06](../../assurance/open-gates-register.md#rule-vg-06) gate apply. |
-| BR-08 | **Preview packages never enter a stable branch's core path** ([PJ-06](../../architecture/01-solution-and-project-layout.md#rule-pj-06)). |
-| BR-09 | **The build must not depend on machine state** ([BM-05](../../architecture/14-build-packaging-and-release.md#rule-bm-05)) and must work offline after restore ([BM-07](../../architecture/14-build-packaging-and-release.md#rule-bm-07)). |
-| BR-10 | Contracts generated source is committed; locked regeneration must produce no diff. Other generated build intermediates remain uncommitted unless they are explicit versioned compatibility fixtures. The toolchain manifest records exact generators and descriptor hashes. |
-| BR-11 | **A dependency addition is a reviewed change** with licence, provenance, maintenance status and transitive closure recorded ([SP-10](../../architecture/14-build-packaging-and-release.md#rule-sp-10)). |
+| <a id="rule-br-01"></a>BR-01 | **The SDK version is pinned and upgrading it is a reviewed change** ([BM-01](../../architecture/14-build-packaging-and-release.md#rule-bm-01) in the build architecture). |
+| <a id="rule-br-02"></a>BR-02 | **Central package management governs NuGet; exact npm manifests and one root lock govern Web.** Node/npm and the JavaScript SDK have reviewed pins. |
+| <a id="rule-br-03"></a>BR-03 | **The lock file is committed and CI restores in locked mode** ([PJ-05](../../architecture/01-solution-and-project-layout.md#rule-pj-05)). |
+| <a id="rule-br-04"></a>BR-04 | **Warnings are errors on the main path**; trim and AOT diagnostics are always errors on AOT deliverables ([PJ-08](../../architecture/01-solution-and-project-layout.md#rule-pj-08)). |
+| <a id="rule-br-05"></a>BR-05 | **Every reusable library consumed by an AOT deliverable declares AOT compatibility; every AOT host declares AOT publish** ([PJ-02](../../architecture/01-solution-and-project-layout.md#rule-pj-02)). |
+| <a id="rule-br-06"></a>BR-06 | **Desktop is Native AOT; Cloud is ASP.NET Core Native AOT; Android is Kotlin/Jetpack Compose; Web is React/TypeScript built by Node/npm.** No esproj or TS package inherits .NET runtime properties ([P2-008](../../decisions/phase-2-specification-decisions.md#rule-p2-008)). |
+| <a id="rule-br-07"></a>BR-07 | The Cloud host must publish Native AOT using the complete selected adapter/dependency closure; zero trim/AOT diagnostics and the activated [VG-06](../../assurance/open-gates-register.md#rule-vg-06) gate apply. |
+| <a id="rule-br-08"></a>BR-08 | **Preview packages never enter a stable branch's core path** ([PJ-06](../../architecture/01-solution-and-project-layout.md#rule-pj-06)). |
+| <a id="rule-br-09"></a>BR-09 | **The build must not depend on machine state** ([BM-05](../../architecture/14-build-packaging-and-release.md#rule-bm-05)) and must work offline after restore ([BM-07](../../architecture/14-build-packaging-and-release.md#rule-bm-07)). |
+| <a id="rule-br-10"></a>BR-10 | Contracts generated source is committed; locked regeneration must produce no diff. Other generated build intermediates remain uncommitted unless they are explicit versioned compatibility fixtures. The toolchain manifest records exact generators and descriptor hashes. |
+| <a id="rule-br-11"></a>BR-11 | **A dependency addition is a reviewed change** with licence, provenance, maintenance status and transitive closure recorded ([SP-10](../../architecture/14-build-packaging-and-release.md#rule-sp-10)). |
 
 ---
 

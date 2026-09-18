@@ -15,11 +15,11 @@ This document answers one question with evidence: **has any commercial figure be
 
 | # | Obligation |
 |---|---|
-| CF-01 | Every commercial figure is **versioned commercial policy**, never a frozen commitment and never a compiled constant. |
+| <a id="rule-cf-01"></a>CF-01 | Every commercial figure is **versioned commercial policy**, never a frozen commitment and never a compiled constant. |
 | <a id="rule-cf-02"></a>CF-02 | An illustrative commercial figure in the current design is a **proposal**. It requires Commercial Operations Owner specification and Product Owner approval **at first consumption and again before launch**. |
-| CF-03 | **Financial history is immutable**; a price change never alters a settled charge. |
-| CF-04 | Money and credit arithmetic is **fixed-precision**. |
-| CF-05 | Exhaustion is a **hard stop at zero**; no post-paid overdraft. |
+| <a id="rule-cf-03"></a>CF-03 | **Financial history is immutable**; a price change never alters a settled charge. |
+| <a id="rule-cf-04"></a>CF-04 | Money and credit arithmetic is **fixed-precision**. |
+| <a id="rule-cf-05"></a>CF-05 | Exhaustion is a **hard stop at zero**; no post-paid overdraft. |
 
 ---
 
@@ -87,11 +87,11 @@ All seven appear in one place — [`../requirements/03-cloud-services-and-sync.m
 
 | # | Statement |
 |---|---|
-| CN-01 | The seven recorded allowances remain proposals; the six metering rates and budget scenario are explicitly synthetic/illustrative. This record establishes their design status, not runtime or commercial approval. |
-| CN-02 | Price/rate numbers do occur in authoritative documents as test data. Their arithmetic is normative for the fixture; their numeric prices are not production defaults or a launch offer. |
-| CN-03 | First consumption as real commercial policy still requires the designated specification/approval under [D-020](../decisions/phase-1-foundation-decisions.md#rule-d-020); synthetic testing does not satisfy or waive it. |
-| CN-04 | **No figure was invented or frozen during this repair** to make the documents appear complete. |
-| CN-05 | The approval obligation is carried as [VG-10](open-gates-register.md#rule-vg-10) and [VG-11](open-gates-register.md#rule-vg-11) in [`open-gates-register.md`](open-gates-register.md), and as gates [L-20](release-gates.md#rule-l-20)–[L-31](release-gates.md#rule-l-31) in [`release-gates.md`](release-gates.md). Those are legitimate future obligations whose trigger — first live transaction, and the first authoritative pricing specification — has not fired. |
+| <a id="rule-cn-01"></a>CN-01 | The seven recorded allowances remain proposals; the six metering rates and budget scenario are explicitly synthetic/illustrative. This record establishes their design status, not runtime or commercial approval. |
+| <a id="rule-cn-02"></a>CN-02 | Price/rate numbers do occur in authoritative documents as test data. Their arithmetic is normative for the fixture; their numeric prices are not production defaults or a launch offer. |
+| <a id="rule-cn-03"></a>CN-03 | First consumption as real commercial policy still requires the designated specification/approval under [D-020](../decisions/phase-1-foundation-decisions.md#rule-d-020); synthetic testing does not satisfy or waive it. |
+| <a id="rule-cn-04"></a>CN-04 | **No figure was invented or frozen during this repair** to make the documents appear complete. |
+| <a id="rule-cn-05"></a>CN-05 | The approval obligation is carried as [VG-10](open-gates-register.md#rule-vg-10) and [VG-11](open-gates-register.md#rule-vg-11) in [`open-gates-register.md`](open-gates-register.md), and as gates [L-20](release-gates.md#rule-l-20)–[L-31](release-gates.md#rule-l-31) in [`release-gates.md`](release-gates.md). Those are legitimate future obligations whose trigger — first live transaction, and the first authoritative pricing specification — has not fired. |
 
 ---
 
@@ -99,6 +99,6 @@ All seven appear in one place — [`../requirements/03-cloud-services-and-sync.m
 
 | # | Rule |
 |---|---|
-| MT-01 | **A figure moving from proposal to specification fires [CF-02](#rule-cf-02).** It must gain Commercial Operations Owner specification and Product Owner approval at that moment, not at launch. |
-| MT-02 | **A new numeric occurrence is classified before it is added.** If it is commercial policy, it enters `§4` with the proposal status. |
-| MT-03 | Recheck the affected classification when allowance, tariff/capacity, budget or worked-fixture sections change; retain dated historical inventories without presenting them as current counts. |
+| <a id="rule-mt-01"></a>MT-01 | **A figure moving from proposal to specification fires [CF-02](#rule-cf-02).** It must gain Commercial Operations Owner specification and Product Owner approval at that moment, not at launch. |
+| <a id="rule-mt-02"></a>MT-02 | **A new numeric occurrence is classified before it is added.** If it is commercial policy, it enters `§4` with the proposal status. |
+| <a id="rule-mt-03"></a>MT-03 | Recheck the affected classification when allowance, tariff/capacity, budget or worked-fixture sections change; retain dated historical inventories without presenting them as current counts. |

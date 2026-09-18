@@ -1,7 +1,7 @@
 <a id="rule-wp-46"></a>
 # WP-46 — D1, R2 and Independent Disaster Recovery
 
-> Status: Authoritative — P2-012
+> Status: Authoritative — [P2-012](../../decisions/phase-2-specification-decisions.md#rule-p2-012)
 > Upstream: `25` · `45` · Downstream: `48` · `50`
 > Repositories: Cloud + AI + Web. Consume only exact published upstream artifacts; no adjacent sources.
 
@@ -103,7 +103,7 @@ Changed application scope, storage, transport, UI and deployment behavior are go
 
 ## 7. Tests and verification evidence
 
-Acceptance includes every amended §5 producer/consumer and WP-46.90 evidence. Current P2-013 contracts/data/runtime rules are tested in the original owner implementation, not a detached explanatory sample.
+Acceptance includes every amended §5 producer/consumer and [WP-46.90](#rule-wp-46.90) evidence. Current [P2-013](../../decisions/phase-2-specification-decisions.md#rule-p2-013) contracts/data/runtime rules are tested in the original owner implementation, not a detached explanatory sample.
 
 | Evidence | Produced by |
 |---|---|

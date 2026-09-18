@@ -31,7 +31,7 @@ All content here is **authoritative**, and is governed by **[D-017](../decisions
 
 The [frozen-semantic consumer order](implementation-sequence.md#frozen-semantics-before-the-first-consumer) is binding: content origin, Notes scalar queries and Scope measurement profiles are fully defined before their first schema/contract consumer. Implementers consume those definitions and the per-package vectors; they do not reopen these design decisions.
 
-## P2-009 implementation entry
+## [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) implementation entry
 
 Implement the adopted [architecture amendment](../decisions/phase-2-specification-decisions.md#rule-p2-009) through the [complete sequence/graph](implementation-sequence.md#9-p2-009-complete-artifact-dependency-graph). Contracts/Platform publish pinned inputs before consumers; C# Cloud is Native AOT, Mobile Kotlin/Jetpack Compose, and WP52 owns the sole CF loop. Every active package has an explicit repository/artifact/provider binding and WPxx.90 acceptance. Formal schema/state choices are already fixed; early proof validates the selected choices rather than authorizing ad-hoc redesign.
 
@@ -55,12 +55,12 @@ Each package records operation/capability → provider package/version/hash → 
 
 WP15/19 export-client fixture acceptance closes locally; WP25.08 runs real Cloud Notes/Chat exports. WP17 automation UI closes locally; WP52.06 runs real occurrences/cascade protection and replaces all AI turn fixtures. WP45 rehearses operations already implemented and records remaining recovery/CF cases as pending; WP46 runs actual backup/data restoration, WP52 actual Harness failures and WP50 the combined active/waiting/unknown-effect disaster drill. PG04/L13/paid go-live close only when those combined required records exist.
 
-Start with [producer artifacts and real integration](producer-artifacts-and-integration.md) and the topological order in implementation-sequence. P2-010 fixes complete initial C#/TS/Kotlin contracts, complete functional native package delivery, Android-only implementation and explicit mock replacement. All 51 active packages remain required under their accepted scope. [Family completion review](../assurance/family-design-completion-review.md) records this document review and the remaining actual implementation gates.
+Start with [producer artifacts and real integration](producer-artifacts-and-integration.md) and the topological order in implementation-sequence. [P2-010](../decisions/phase-2-specification-decisions.md#rule-p2-010) fixes complete initial C#/TS/Kotlin contracts, complete functional native package delivery, Android-only implementation and explicit mock replacement. All 51 active packages remain required under their accepted scope. [Family completion review](../assurance/family-design-completion-review.md) records this document review and the remaining actual implementation gates.
 
 The earlier [producer and local gRPC review](../assurance/producer-and-local-grpc-closure-review.md) remains historical evidence. The current [Cloudflare and application assistant review](../assurance/cloudflare-app-assistants-review.md) records the updated graph, contracts, package producers and evidence limits.
 
 ## Current implementation profiles
 
-P2-012 uses [concrete project/package producers](../architecture/27-platform-projects-and-application-assistants.md), [D1](../architecture/data-model/04-d1-execution-profile.md), [history](../architecture/data-model/05-application-history.md), [scope/streams](../architecture/contracts/10-application-scope-and-streams.md) and [complete client UX](../experience/README.md). All 51 active WPs include these where applicable. WP20 is [future only](../future/cross-product-collaboration/README.md), with no current dependency or gate.
+[P2-012](../decisions/phase-2-specification-decisions.md#rule-p2-012) uses [concrete project/package producers](../architecture/27-platform-projects-and-application-assistants.md), [D1](../architecture/data-model/04-d1-execution-profile.md), [history](../architecture/data-model/05-application-history.md), [scope/streams](../architecture/contracts/10-application-scope-and-streams.md) and [complete client UX](../experience/README.md). All 51 active WPs include these where applicable. WP20 is [future only](../future/cross-product-collaboration/README.md), with no current dependency or gate.
 
-Current coordinated repair: P2-014; see [final findings verification](../assurance/final-findings-remediation-verification.md). Earlier dated reviews retain their evidence baselines; real runtime and commercial gates remain separate and open.
+Current coordinated repair: [P2-014](../decisions/phase-2-specification-decisions.md#rule-p2-014); see [final findings verification](../assurance/final-findings-remediation-verification.md). Earlier dated reviews retain their evidence baselines; real runtime and commercial gates remain separate and open.

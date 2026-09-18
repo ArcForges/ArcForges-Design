@@ -1,7 +1,7 @@
 <a id="rule-wp-24"></a>
 # WP-24 — gRPC-Web Streams and Durable Event Recovery
 
-> Status: Authoritative — P2-012
+> Status: Authoritative — [P2-012](../../decisions/phase-2-specification-decisions.md#rule-p2-012)
 > Upstream: `23` · Downstream: `25` · `26` · `30`
 > Repositories: Cloud + DesktopPlatform + Contracts. Consume only exact published upstream artifacts; no adjacent sources.
 
@@ -97,7 +97,7 @@ Use the exact projects assigned to this WP in [architecture 27](../../architectu
 
 **Completion gate.** All owned actions, schemas, public interfaces and tests are complete; later external evidence remains named. Publish/promote only the tested immutable bytes in the producer CI sequence.
 
-**Tool-result acceptance.** Submit two distinct toolRequestIds in one attempt (for both Task and ChatTurn owners), then replay each original command/hash: both results persist and each replay returns its own original receipt. A changed result under the same `(toolRequestId, attemptId, commandId)` refuses with `command.reused_identifier`; lost acknowledgement never allocates a fresh command or drops the second result. Bind the wire registry, TK-05 and `task.tool_result` to this same key.
+**Tool-result acceptance.** Submit two distinct toolRequestIds in one attempt (for both Task and ChatTurn owners), then replay each original command/hash: both results persist and each replay returns its own original receipt. A changed result under the same `(toolRequestId, attemptId, commandId)` refuses with `command.reused_identifier`; lost acknowledgement never allocates a fresh command or drops the second result. Bind the wire registry, [TK-05](../../architecture/contracts/01-public-api-operations.md#rule-tk-05) and `task.tool_result` to this same key.
 
 ## 6. Impacts
 

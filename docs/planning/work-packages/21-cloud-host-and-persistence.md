@@ -1,7 +1,7 @@
 <a id="rule-wp-21"></a>
 # WP-21 — Cloudflare Container, D1 Authority and Binding Plans
 
-> Status: Authoritative — P2-012
+> Status: Authoritative — [P2-012](../../decisions/phase-2-specification-decisions.md#rule-p2-012)
 > Upstream: `03` · `05` · `12` · Downstream: `22` · `45` · `51` · `52`
 > Repositories: Cloud. Consume only exact published upstream artifacts; no adjacent sources.
 
@@ -81,7 +81,7 @@ Use the exact projects assigned to this WP in [architecture 27](../../architectu
 <a id="rule-wp-21.06"></a>
 ### WP-21.06 — Capacity and Container/D1 integration producer
 
-**What must be fully done.** Implement model 04 named plans, guarded batch fixtures, primary authorization, route/service-binding/outbound-handler matrix, job slice and SimulationPacer infrastructure. Produce L-16 measurement harness/config and proposed capacity report.
+**What must be fully done.** Implement model 04 named plans, guarded batch fixtures, primary authorization, route/service-binding/outbound-handler matrix, job slice and SimulationPacer infrastructure. Produce [L-16](../../assurance/release-gates.md#rule-l-16) measurement harness/config and proposed capacity report.
 
 **Testing requirements.** Real D1 rollback/duplicate/competing-writer/cold-start tests; public /internal denial, blocked egress, forged service headers, stream limits and headroom measurement.
 
@@ -104,7 +104,7 @@ Use the exact projects assigned to this WP in [architecture 27](../../architectu
 
 **Testing requirements.** Fresh development account/realm provisioning, missing binding/secret/unsupported descriptor/redirect failures and no official token acceptance.
 
-**Completion gate.** WP46 receives a runnable deployment and complete configuration inventory; production PG-25 remains external evidence.
+**Completion gate.** WP46 receives a runnable deployment and complete configuration inventory; production [PG-25](../../assurance/open-gates-register.md#rule-pg-25) remains external evidence.
 
 <a id="rule-wp-21.90"></a>
 ### WP-21.90 — Owned artifacts and real integration
@@ -123,7 +123,7 @@ Changed application scope, storage, transport, UI and deployment behavior are go
 
 ## 7. Tests and verification evidence
 
-Acceptance includes every amended §5 producer/consumer and WP-21.90 evidence. Current P2-013 contracts/data/runtime rules are tested in the original owner implementation, not a detached explanatory sample.
+Acceptance includes every amended §5 producer/consumer and [WP-21.90](#rule-wp-21.90) evidence. Current [P2-013](../../decisions/phase-2-specification-decisions.md#rule-p2-013) contracts/data/runtime rules are tested in the original owner implementation, not a detached explanatory sample.
 
 | Evidence | Produced by |
 |---|---|

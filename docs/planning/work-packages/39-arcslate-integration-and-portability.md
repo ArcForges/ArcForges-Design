@@ -48,15 +48,15 @@ Consume the exact WP03 ArcForges.Contracts.LocalRpc.Slate candidate and its oper
 
 | # | Rule |
 |---|---|
-| BR-01 | **Capabilities are exposed only after timeline, command and undo semantics are stable**. |
-| BR-02 | **ArcSlate's big media never goes through the application-scoped capability registry.** |
-| BR-03 | **Collect or consolidate gathers external media into a managed portable form on request, without destroying the originals.** |
-| BR-04 | **The same asset may resolve to different locations on different devices** and remains one logical asset. |
-| BR-05 | **Offline media is a normal state** and never blocks opening a project. |
-| BR-06 | **AI receives bounded structured context** — sequence structure, markers, selected ranges, metadata — never raw media. |
-| BR-07 | **A render is a native Product Job owned by ArcSlate** ([RN-03](../../requirements/products/arcslate.md#rule-rn-03), [I-485](../../requirements/01-normative-glossary-and-invariants.md#rule-i-485)), visible in the shared task centre alongside Cloud Agent Tasks with correct ownership attribution. |
-| BR-08 | **Caches, proxies and analysis outputs are never synced as authority**; they are derived and rebuildable. |
-| BR-09 | **Interchange export states its fidelity** and never silently drops timeline structure. |
+| <a id="rule-br-01"></a>BR-01 | **Capabilities are exposed only after timeline, command and undo semantics are stable**. |
+| <a id="rule-br-02"></a>BR-02 | **ArcSlate's big media never goes through the application-scoped capability registry.** |
+| <a id="rule-br-03"></a>BR-03 | **Collect or consolidate gathers external media into a managed portable form on request, without destroying the originals.** |
+| <a id="rule-br-04"></a>BR-04 | **The same asset may resolve to different locations on different devices** and remains one logical asset. |
+| <a id="rule-br-05"></a>BR-05 | **Offline media is a normal state** and never blocks opening a project. |
+| <a id="rule-br-06"></a>BR-06 | **AI receives bounded structured context** — sequence structure, markers, selected ranges, metadata — never raw media. |
+| <a id="rule-br-07"></a>BR-07 | **A render is a native Product Job owned by ArcSlate** ([RN-03](../../requirements/products/arcslate.md#rule-rn-03), [I-485](../../requirements/01-normative-glossary-and-invariants.md#rule-i-485)), visible in the shared task centre alongside Cloud Agent Tasks with correct ownership attribution. |
+| <a id="rule-br-08"></a>BR-08 | **Caches, proxies and analysis outputs are never synced as authority**; they are derived and rebuildable. |
+| <a id="rule-br-09"></a>BR-09 | **Interchange export states its fidelity** and never silently drops timeline structure. |
 
 ---
 

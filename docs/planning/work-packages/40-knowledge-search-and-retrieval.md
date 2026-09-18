@@ -1,7 +1,7 @@
 <a id="rule-wp-40"></a>
 # WP-40 — Application-Scoped Knowledge Search and Retrieval
 
-> Status: Authoritative — P2-012
+> Status: Authoritative — [P2-012](../../decisions/phase-2-specification-decisions.md#rule-p2-012)
 > Upstream: `19` · `25` · `28` · `43` · `44` · Downstream: `50` · `52`
 > Repositories: Cloud + AI + DesktopPlatform. Consume only exact published upstream artifacts; no adjacent sources.
 
@@ -38,7 +38,7 @@ Use the exact projects assigned to this WP in [architecture 27](../../architectu
 
 **What must be fully done.** Implement D1 FTS scoped queries and Vectorize per-workspace namespaces with mandatory realm/product/model-generation filters per model 04 §8. Preserve source revision/policy checks and rebuild pointers.
 
-**Testing requirements.** Cross-product/tenant isolation before topK, stale deletion, unavailable canonical owner, lexical fallback and L-16 index/namespace footprint.
+**Testing requirements.** Cross-product/tenant isolation before topK, stale deletion, unavailable canonical owner, lexical fallback and [L-16](../../assurance/release-gates.md#rule-l-16) index/namespace footprint.
 
 **Completion gate.** No global vector query followed only by UI filtering; measured index limits match the capacity profile.
 
@@ -104,7 +104,7 @@ Changed application scope, storage, transport, UI and deployment behavior are go
 
 ## 7. Tests and verification evidence
 
-Acceptance includes every amended §5 producer/consumer and WP-40.90 evidence. Current P2-013 contracts/data/runtime rules are tested in the original owner implementation, not a detached explanatory sample.
+Acceptance includes every amended §5 producer/consumer and [WP-40.90](#rule-wp-40.90) evidence. Current [P2-013](../../decisions/phase-2-specification-decisions.md#rule-p2-013) contracts/data/runtime rules are tested in the original owner implementation, not a detached explanatory sample.
 
 | Evidence | Produced by |
 |---|---|

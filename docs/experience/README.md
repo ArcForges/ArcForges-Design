@@ -1,6 +1,6 @@
 # Client Experience Specifications
 
-These are implementation authorities under P2-012, alongside existing product requirements and the shared design system. They specify surfaces, actions, state, persistence and acceptance; they do not import additional reference-product scope.
+These are implementation authorities under [P2-012](../decisions/phase-2-specification-decisions.md#rule-p2-012), alongside existing product requirements and the shared design system. They specify surfaces, actions, state, persistence and acceptance; they do not import additional reference-product scope.
 
 - [Embedded application assistant](01-embedded-assistant.md): complete Avalonia package and host integration UX.
 - [Kotlin Android companion](02-android-companion.md): routes, layouts, native interaction and one-application targeting.

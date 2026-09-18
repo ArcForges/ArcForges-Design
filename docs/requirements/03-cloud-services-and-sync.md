@@ -1,5 +1,5 @@
 # Cloud Services, Sync, Assets and Data Integrity Requirements
-> Effective scope: P2-012 and P2-013 amend the technology and application ownership below. **[P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
+> Effective scope: [P2-012](../decisions/phase-2-specification-decisions.md#rule-p2-012) and [P2-013](../decisions/phase-2-specification-decisions.md#rule-p2-013) amend the technology and application ownership below. **[P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Requirements
@@ -50,8 +50,8 @@ Two figures are **structural**, not policy, and are binding: storage is **worksp
 
 | # | Requirement |
 |---|---|
-| CL-01 | Purchased credits remain recorded after subscription expiry but are spendable only during an active paid service term. |
-| CL-02 | After PaidThrough, new official AI/model-based jobs stop and capacity does not replenish. Native pending work is preserved; retained Cloud data stays readable/exportable under the published retention lifecycle. |
+| <a id="rule-cl-01"></a>CL-01 | Purchased credits remain recorded after subscription expiry but are spendable only during an active paid service term. |
+| <a id="rule-cl-02"></a>CL-02 | After PaidThrough, new official AI/model-based jobs stop and capacity does not replenish. Native pending work is preserved; retained Cloud data stays readable/exportable under the published retention lifecycle. |
 | <a id="rule-cl-03"></a>CL-03 | Capability health is independent. An AI provider outage does not stop note sync, keyword search or native editing; status distinguishes Identity, Sync, Storage, Search, Tools, Tasks, AI and Billing. |
 
 ---
@@ -99,8 +99,8 @@ Sync is never "the app directory is uploaded". The unit of participation is a **
 |---|---|
 | <a id="rule-sy-01"></a>SY-01 | A sync scope declares owner realm/workspace, enrolled resources, local hydration/large-asset policy and conflict semantics. No encryption mode or collaboration profile is required. |
 | <a id="rule-sy-02"></a>SY-02 | **Sync Scope ≠ ArcChat Project.** An ArcChat Project is agent context/work topic; a Sync Scope is which data participates in cloud replication. One ArcChat Project may reference three objects with three different sync states. |
-| SY-03 | Per-product default sync policy: see §4.1. Defaults are conservative for large data. |
-| SY-04 | Expose Synced, Syncing, Offline, PendingChanges, Conflict, StorageFull and Error with last Cloud acknowledgement, pending transfers and next action. LocalOnly applies to unuploaded capture/media resources, not a separate notebook or Agent mode. |
+| <a id="rule-sy-03"></a>SY-03 | Per-product default sync policy: see §4.1. Defaults are conservative for large data. |
+| <a id="rule-sy-04"></a>SY-04 | Expose Synced, Syncing, Offline, PendingChanges, Conflict, StorageFull and Error with last Cloud acknowledgement, pending transfers and next action. LocalOnly applies to unuploaded capture/media resources, not a separate notebook or Agent mode. |
 | <a id="rule-sy-05"></a>SY-05 | Pausing sync/hydration preserves pending edits. Evicting acknowledged cache requires an explicit local-space action and cannot delete Cloud data. Leaving a realm or deleting Cloud content is a separate confirmed operation. |
 
 ### 4.1 Per-product default sync policy
@@ -137,13 +137,13 @@ ArcSlate is never a single Sync On/Off toggle ([I-487](01-normative-glossary-and
 | # | Requirement |
 |---|---|
 | <a id="rule-sy-30"></a>SY-30 | Sync is **change-based**, never a full scan. A `SyncCursor` plus a server change feed drives convergence. Enumerating a million cloud objects at startup is prohibited. |
-| SY-31 | Every change is idempotent, carrying `ChangeId`, `ObjectId` and `RevisionId`. A change received twice applies once. |
+| <a id="rule-sy-31"></a>SY-31 | Every change is idempotent, carrying `ChangeId`, `ObjectId` and `RevisionId`. A change received twice applies once. |
 | <a id="rule-sy-32"></a>SY-32 | The client holds a **durable Sync Outbox**. A local edit commits to local durable storage first, then enqueues an outbox entry. A crash immediately after save must leave the outbox intact for the next launch. An in-memory task is not an outbox. |
-| SY-33 | The server holds an **Inbox / idempotency** record. Five retries of the same client change produce exactly one Revision. |
+| <a id="rule-sy-33"></a>SY-33 | The server holds an **Inbox / idempotency** record. Five retries of the same client change produce exactly one Revision. |
 | <a id="rule-sy-34"></a>SY-34 | **Local save can never fail because Cloud failed.** The path is `local edit → local durable commit → sync outbox → cloud when available`. |
 | <a id="rule-sy-35"></a>SY-35 | Sync priority separates metadata from large blobs: project metadata, notes and conversations first; large media afterwards. A second machine must show the user's projects within seconds, not after a 40 GB upload. |
 | <a id="rule-sy-36"></a>SY-36 | Users control network policy: sync over metered connections, upload large assets on Wi-Fi only, bandwidth limit, pause media sync. |
-| SY-37 | Sync progress is expressed in human terms — files in flight, per-file bytes, queue depth, estimate — with Pause, Resume and Prioritize. A bare percentage is insufficient for ArcSlate-scale data. |
+| <a id="rule-sy-37"></a>SY-37 | Sync progress is expressed in human terms — files in flight, per-file bytes, queue depth, estimate — with Pause, Resume and Prioritize. A bare percentage is insufficient for ArcSlate-scale data. |
 | <a id="rule-sy-38"></a>SY-38 | **Cloud search indexing must never block sync success.** Canonical data syncs, sync reports success, indexing proceeds asynchronously. An index outage degrades search, never sync. |
 
 ### 4.5 Conflicts
@@ -160,7 +160,7 @@ ArcSlate is never a single Sync On/Off toggle ([I-487](01-normative-glossary-and
 | # | Requirement |
 |---|---|
 | <a id="rule-de-01"></a>DE-01 | Deletion produces a **Tombstone** (`ObjectId`, deleted-at, delete revision), never a bare server-side row removal. Without tombstones an offline device resurrects deleted objects on reconnect. |
-| DE-02 | Trash is built on tombstones. During the recovery window the object is restorable, its blobs are retained, its history is retained, and it still counts toward storage. |
+| <a id="rule-de-02"></a>DE-02 | Trash is built on tombstones. During the recovery window the object is restorable, its blobs are retained, its history is retained, and it still counts toward storage. |
 | <a id="rule-de-03"></a>DE-03 | **Restore restores the original `ObjectId`.** Allocating a new id would sever ArcChat project references, deep links and artifact links. Restore is a new Revision that revokes the tombstone state. |
 | <a id="rule-de-04"></a>DE-04 | **Permanent delete is a propagation process**, not a row delete. It must clear: canonical metadata, blob references, now-unused blobs, version references, search documents, vector index entries, previews and caches, future share/access state, and schedule backup expiry. |
 | <a id="rule-de-05"></a>DE-05 | **Deletion propagation is tracked to completion.** A permanently deleted document must not remain discoverable through semantic search ([I-165](01-normative-glossary-and-invariants.md#rule-i-165)). |
@@ -174,7 +174,7 @@ ArcSlate is never a single Sync On/Off toggle ([I-487](01-normative-glossary-and
 
 | # | Requirement |
 |---|---|
-| AS-01 | **Managed Asset** — the user chose to import content into ArcForges. ArcForges owns its `AssetId`, lifecycle, hash, sync, relocation and backup. |
+| <a id="rule-as-01"></a>AS-01 | **Managed Asset** — the user chose to import content into ArcForges. ArcForges owns its `AssetId`, lifecycle, hash, sync, relocation and backup. |
 | <a id="rule-as-02"></a>AS-02 | **External Reference** — the user chose to leave the file where it is. ArcForges stores an `ExternalAssetReference` and **does not own the file**. |
 | <a id="rule-as-03"></a>AS-03 | **External assets are never silently copied to Cloud.** Enabling sync on a project must never begin uploading a 200 GB external library. The user is given an explicit choice: keep local only / make managed / upload original. This is a privacy boundary as well as a bandwidth one. |
 | <a id="rule-as-04"></a>AS-04 | An unavailable external asset yields **Missing / Unavailable Asset**, and the project still opens. Recovery affordances: Locate file, Relink, Find by content, Use proxy. "Project corrupted" is not acceptable. |
@@ -188,10 +188,10 @@ ArcSlate is never a single Sync On/Off toggle ([I-487](01-normative-glossary-and
 | # | Requirement |
 |---|---|
 | <a id="rule-bl-01"></a>BL-01 | Managed blobs use an **immutable** model: a blob carries `BlobId`, content hash and length, and is never overwritten in place. Editing produces a new blob; the project Revision changes which blob it references. |
-| BL-02 | This makes conflict a **domain-revision** question rather than an object-store last-writer-wins race, and it makes backup incremental by construction. |
+| <a id="rule-bl-02"></a>BL-02 | This makes conflict a **domain-revision** question rather than an object-store last-writer-wins race, and it makes backup incremental by construction. |
 | <a id="rule-bl-03"></a>BL-03 | **Blob keys must not expose user filenames.** The key is internal and unguessable; the filename lives in domain metadata. Renaming therefore does not move a blob, special characters cause no key problems, and URLs leak no titles. |
 | <a id="rule-bl-04"></a>BL-04 | Integrity uses a standard cross-platform hash — **SHA-256** as the recorded integrity hash. Faster internal fingerprints may exist, but the published integrity check uses the standard hash. |
-| BL-05 | **A multipart ETag is never a content hash** ([I-218](01-normative-glossary-and-invariants.md#rule-i-218)). The real checksum is computed and stored by ArcForges. |
+| <a id="rule-bl-05"></a>BL-05 | **A multipart ETag is never a content hash** ([I-218](01-normative-glossary-and-invariants.md#rule-i-218)). The real checksum is computed and stored by ArcForges. |
 | <a id="rule-bl-06"></a>BL-06 | Large assets use resumable multipart upload. A failure at 99 % re-sends only the failed parts, never the whole object. |
 | <a id="rule-bl-07"></a>BL-07 | **The client never receives a permanent object-storage credential.** The flow is `client requests upload authorization → Cloud issues a short-lived, object-scoped, operation-scoped authorization → client uploads`. Presigned authorizations are bearer capabilities: short TTL, one object, limited operations. |
 | <a id="rule-bl-08"></a>BL-08 | An **Upload Session** has an explicit lifecycle: `Staged → Verified → Committed`, or `Abandoned`. A Revision may reference a blob **only after** checksum and integrity verification succeed. This is what prevents orphan blobs and broken references from half-successful uploads. |
@@ -204,13 +204,13 @@ ArcSlate is never a single Sync On/Off toggle ([I-487](01-normative-glossary-and
 
 | # | Requirement |
 |---|---|
-| ST-01 | Quota counts **canonical synced user data, attachments, managed originals, explicitly stored proxies, trashed items still recoverable, and historical user blobs that remain restorable**. |
-| ST-02 | Quota does **not** count ArcForges-generated derived data: vector index, embeddings, search index, internal DB metadata, thumbnails, operational logs, temporary agent files. A user who uploaded 40 GB must not see 47 GB. |
-| ST-03 | The same managed blob reused across three projects in one workspace counts **once**. |
-| ST-04 | Explicit user-requested cloud proxies count toward quota; pure implementation caches do not. |
-| ST-05 | Storage is presented by product plus versions/trash, and is explainable: a per-product breakdown plus a "Manage storage" affordance. |
+| <a id="rule-st-01"></a>ST-01 | Quota counts **canonical synced user data, attachments, managed originals, explicitly stored proxies, trashed items still recoverable, and historical user blobs that remain restorable**. |
+| <a id="rule-st-02"></a>ST-02 | Quota does **not** count ArcForges-generated derived data: vector index, embeddings, search index, internal DB metadata, thumbnails, operational logs, temporary agent files. A user who uploaded 40 GB must not see 47 GB. |
+| <a id="rule-st-03"></a>ST-03 | The same managed blob reused across three projects in one workspace counts **once**. |
+| <a id="rule-st-04"></a>ST-04 | Explicit user-requested cloud proxies count toward quota; pure implementation caches do not. |
+| <a id="rule-st-05"></a>ST-05 | Storage is presented by product plus versions/trash, and is explainable: a per-product breakdown plus a "Manage storage" affordance. |
 | <a id="rule-st-06"></a>ST-06 | **Storage full never destroys local work.** Local save, local edit and reads of existing cloud data all continue; only cloud upload and sync writes pause. The message is explicit: "Cloud storage is full. Your local work is safe." |
-| ST-07 | **Quota downgrade never deletes data.** A workspace over quota enters `Over Quota`, which limits new cloud writes only. Automatic deletion to fit a smaller quota is prohibited. |
+| <a id="rule-st-07"></a>ST-07 | **Quota downgrade never deletes data.** A workspace over quota enters `Over Quota`, which limits new cloud writes only. Automatic deletion to fit a smaller quota is prohibited. |
 
 ---
 
@@ -218,7 +218,7 @@ ArcSlate is never a single Sync On/Off toggle ([I-487](01-normative-glossary-and
 
 | # | Requirement |
 |---|---|
-| PR-01 | V1 ships **Standard Protected Cloud**: TLS in transit, encryption at rest, workspace isolation, strict service authorization, secret separation. This is what makes cloud search, semantic indexing, cloud agent, managed AI context and web access possible. |
+| <a id="rule-pr-01"></a>PR-01 | V1 ships **Standard Protected Cloud**: TLS in transit, encryption at rest, workspace isolation, strict service authorization, secret separation. This is what makes cloud search, semantic indexing, cloud agent, managed AI context and web access possible. |
 | <a id="rule-pr-02"></a>PR-02 | Retired by [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006): no E2EE mode, profile field, key-sharing protocol or deferred delivery requirement. |
 | <a id="rule-pr-03"></a>PR-03 | Custom local encrypted stores and encrypted portable exports are excluded. Login/device secret protection and encrypted operator backups remain infrastructure requirements; no zero-knowledge claim. |
 | <a id="rule-pr-04"></a>PR-04 | No claim of "zero-knowledge cloud" may be made while `Standard` is the operating mode. |
@@ -231,9 +231,9 @@ ArcSlate is never a single Sync On/Off toggle ([I-487](01-normative-glossary-and
 
 | # | Requirement |
 |---|---|
-| AI-01 | Sending a local file to managed AI as explicit context does **not** enrol it in cloud sync. |
-| AI-02 | Enabling sync for a scope does **not** make its contents available to AI retrieval. Eligibility for AI is a separate, explicit decision (see [`06-knowledge-search-and-retrieval.md`](06-knowledge-search-and-retrieval.md)). |
-| AI-03 | Cloud search must respect product data policy: unsynced ArcScope raw telemetry is not searchable in the cloud, and must never be uploaded in the background to make search work. |
+| <a id="rule-ai-01"></a>AI-01 | Sending a local file to managed AI as explicit context does **not** enrol it in cloud sync. |
+| <a id="rule-ai-02"></a>AI-02 | Enabling sync for a scope does **not** make its contents available to AI retrieval. Eligibility for AI is a separate, explicit decision (see [`06-knowledge-search-and-retrieval.md`](06-knowledge-search-and-retrieval.md)). |
+| <a id="rule-ai-03"></a>AI-03 | Cloud search must respect product data policy: unsynced ArcScope raw telemetry is not searchable in the cloud, and must never be uploaded in the background to make search work. |
 
 ---
 
@@ -241,12 +241,12 @@ ArcSlate is never a single Sync On/Off toggle ([I-487](01-normative-glossary-and
 
 | # | Requirement |
 |---|---|
-| CS-01 | Cloud search is scoped to one authenticated workspace and product. It searches that product's admitted acknowledged content and Cloud assistant histories; local/temporary transcripts are excluded. Titles, snippets, provenance and object targets are returned only after owner authorization. |
-| CS-02 | Three levels exist and are distinguished: **metadata search**, **full-text search**, **semantic search** ([I-145](01-normative-glossary-and-invariants.md#rule-i-145)). |
-| CS-03 | **The search index is never data authority** ([I-135](01-normative-glossary-and-invariants.md#rule-i-135)). The chain is `canonical object → search document → full-text index → vector index`, all derived, all deletable and rebuildable at any time. This is what makes changing the vector backend possible later. |
-| CS-04 | The ArcForges search API must not expose any vendor's vector-database concepts. |
+| <a id="rule-cs-01"></a>CS-01 | Cloud search is scoped to one authenticated workspace and product. It searches that product's admitted acknowledged content and Cloud assistant histories; local/temporary transcripts are excluded. Titles, snippets, provenance and object targets are returned only after owner authorization. |
+| <a id="rule-cs-02"></a>CS-02 | Three levels exist and are distinguished: **metadata search**, **full-text search**, **semantic search** ([I-145](01-normative-glossary-and-invariants.md#rule-i-145)). |
+| <a id="rule-cs-03"></a>CS-03 | **The search index is never data authority** ([I-135](01-normative-glossary-and-invariants.md#rule-i-135)). The chain is `canonical object → search document → full-text index → vector index`, all derived, all deletable and rebuildable at any time. This is what makes changing the vector backend possible later. |
+| <a id="rule-cs-04"></a>CS-04 | The ArcForges search API must not expose any vendor's vector-database concepts. |
 | <a id="rule-cs-05"></a>CS-05 | Cloud search is restricted to the authenticated owner workspace and authorised resources. Another realm/workspace is never included implicitly. |
-| CS-06 | Deleting a source object removes its search document, vector entries and derived previews ([DE-04](#rule-de-04), [DE-05](#rule-de-05)). |
+| <a id="rule-cs-06"></a>CS-06 | Deleting a source object removes its search document, vector entries and derived previews ([DE-04](#rule-de-04), [DE-05](#rule-de-05)). |
 
 ---
 
@@ -262,15 +262,15 @@ Three tool-location shapes under one Cloud agent runtime, always visible to the 
 
 | # | Requirement |
 |---|---|
-| RX-01 | Task details distinguish Cloud agent orchestration from each tool target, including a named desktop/product. A desktop target never denotes a desktop model loop. |
+| <a id="rule-rx-01"></a>RX-01 | Task details distinguish Cloud agent orchestration from each tool target, including a named desktop/product. A desktop target never denotes a desktop model loop. |
 | <a id="rule-rx-02"></a>RX-02 | A task targeted at an offline device enters **`WaitingForDevice`**, not `Failed`. The user may wait, run when online, cancel, or choose another device. |
-| RX-03 | Remote desktop access uses a **desktop-initiated outbound authenticated connection**. Opening an inbound public port on a user machine is prohibited. |
-| RX-04 | Remote access defaults to off and requires explicit enablement per device, with per-capability grants (see [`02-identity-account-and-workspace.md`](02-identity-account-and-workspace.md) §5). |
-| RX-05 | **Device Presence** is an ephemeral cloud capability showing device online state, app version, remote-enabled flag and per-product readiness. It is not durable data and is never trust ([I-250](01-normative-glossary-and-invariants.md#rule-i-250)). |
-| RX-06 | **Cloud task runtime is not a general-purpose VPS.** It carries a maximum runtime, CPU and memory limits, disk limits, network policy, AI budget and output limits. |
+| <a id="rule-rx-03"></a>RX-03 | Remote desktop access uses a **desktop-initiated outbound authenticated connection**. Opening an inbound public port on a user machine is prohibited. |
+| <a id="rule-rx-04"></a>RX-04 | Remote access defaults to off and requires explicit enablement per device, with per-capability grants (see [`02-identity-account-and-workspace.md`](02-identity-account-and-workspace.md) §5). |
+| <a id="rule-rx-05"></a>RX-05 | **Device Presence** is an ephemeral cloud capability showing device online state, app version, remote-enabled flag and per-product readiness. It is not durable data and is never trust ([I-250](01-normative-glossary-and-invariants.md#rule-i-250)). |
+| <a id="rule-rx-06"></a>RX-06 | **Cloud task runtime is not a general-purpose VPS.** It carries a maximum runtime, CPU and memory limits, disk limits, network policy, AI budget and output limits. |
 | <a id="rule-rx-07"></a>RX-07 | Trusted Cloud tools run as bounded internal jobs in the single Native AOT host, with per-job workspace scope, cancellation and temporary resources. No arbitrary user code or per-task container/TaskRunner deployment is required. Durable task/usage records survive process failure. |
-| RX-08 | Secrets are injected per capability, never as a whole vault. A task needing one connector receives only that connector's secret handle. |
-| RX-09 | **Cloud execution does not mean unlimited permission.** Every risk-tiered capability check still applies, and R4-class operations still require local confirmation on a trusted device. |
+| <a id="rule-rx-08"></a>RX-08 | Secrets are injected per capability, never as a whole vault. A task needing one connector receives only that connector's secret handle. |
+| <a id="rule-rx-09"></a>RX-09 | **Cloud execution does not mean unlimited permission.** Every risk-tiered capability check still applies, and R4-class operations still require local confirmation on a trusted device. |
 | <a id="rule-rx-10"></a>RX-10 | The server re-authorises independently. It never trusts that the desktop already checked. Session, workspace, entitlement, permission, device trust and capability are all re-validated server-side. **The client is never the security authority.** |
 
 ---
@@ -279,11 +279,11 @@ Three tool-location shapes under one Cloud agent runtime, always visible to the 
 
 | # | Requirement |
 |---|---|
-| AU-01 | Every AI automation is Cloud-scheduled. Its tools may target Cloud or an explicitly authorised device/product; no local automation Harness. |
-| AU-02 | Every Automation declares a **Missed Run Policy**: `Run when device returns`, `Skip missed run`, or `Ask me`. Silent guessing is prohibited. |
-| AU-03 | Every Automation declares a **Concurrency Policy**: `Skip`, `Queue`, `Replace`, or `Allow concurrent`. |
-| AU-04 | Every Automation is bound to an **AI Budget**: max credits per run, per day and per month. On reaching the budget the automation **pauses and asks**; it never continues spending. |
-| AU-05 | **Automation ≠ Task** ([I-100](01-normative-glossary-and-invariants.md#rule-i-100)); **Automation Occurrence ≠ Task Retry** ([I-101](01-normative-glossary-and-invariants.md#rule-i-101)); disabling an Automation does not cancel a task already running ([I-103](01-normative-glossary-and-invariants.md#rule-i-103)). |
+| <a id="rule-au-01"></a>AU-01 | Every AI automation is Cloud-scheduled. Its tools may target Cloud or an explicitly authorised device/product; no local automation Harness. |
+| <a id="rule-au-02"></a>AU-02 | Every Automation declares a **Missed Run Policy**: `Run when device returns`, `Skip missed run`, or `Ask me`. Silent guessing is prohibited. |
+| <a id="rule-au-03"></a>AU-03 | Every Automation declares a **Concurrency Policy**: `Skip`, `Queue`, `Replace`, or `Allow concurrent`. |
+| <a id="rule-au-04"></a>AU-04 | Every Automation is bound to an **AI Budget**: max credits per run, per day and per month. On reaching the budget the automation **pauses and asks**; it never continues spending. |
+| <a id="rule-au-05"></a>AU-05 | **Automation ≠ Task** ([I-100](01-normative-glossary-and-invariants.md#rule-i-100)); **Automation Occurrence ≠ Task Retry** ([I-101](01-normative-glossary-and-invariants.md#rule-i-101)); disabling an Automation does not cancel a task already running ([I-103](01-normative-glossary-and-invariants.md#rule-i-103)). |
 
 ---
 
@@ -291,9 +291,9 @@ Three tool-location shapes under one Cloud agent runtime, always visible to the 
 
 | # | Requirement |
 |---|---|
-| NT-01 | A Cloud Notification Center is a first-class product surface, covering: task completed, task failed, approval needed, desktop offline, automation missed, storage near quota, storage full, AI credits low, subscription issue, security event. |
-| NT-02 | Three channels with distinct purposes: **in-app** (desktop, web, mobile), **push** (Android companion), **email** (security, billing, critical account issues only). Email is not sent for ordinary task completion. |
-| NT-03 | **Lock-screen and preview notifications must not leak sensitive content by default.** The default text is generic ("An ArcChat task needs your attention"); full content requires an explicit "show notification previews" opt-in. |
+| <a id="rule-nt-01"></a>NT-01 | A Cloud Notification Center is a first-class product surface, covering: task completed, task failed, approval needed, desktop offline, automation missed, storage near quota, storage full, AI credits low, subscription issue, security event. |
+| <a id="rule-nt-02"></a>NT-02 | Three channels with distinct purposes: **in-app** (desktop, web, mobile), **push** (Android companion), **email** (security, billing, critical account issues only). Email is not sent for ordinary task completion. |
+| <a id="rule-nt-03"></a>NT-03 | **Lock-screen and preview notifications must not leak sensitive content by default.** The default text is generic ("An ArcChat task needs your attention"); full content requires an explicit "show notification previews" opt-in. |
 | <a id="rule-nt-04"></a>NT-04 | **Push Notification ≠ Durable Attention State** ([I-448](01-normative-glossary-and-invariants.md#rule-i-448) family). Missing a push never loses the underlying pending approval or task state. |
 
 ---
@@ -309,9 +309,9 @@ Three tool-location shapes under one Cloud agent runtime, always visible to the 
 
 | # | Requirement |
 |---|---|
-| SB-01 | Re-subscribing during the retention window reactivates cloud immediately, with no re-upload of everything. |
+| <a id="rule-sb-01"></a>SB-01 | Re-subscribing during the retention window reactivates cloud immediately, with no re-upload of everything. |
 | <a id="rule-sb-02"></a>SB-02 | **Export must remain available throughout retention.** "Pay first to get your data back" is prohibited. |
-| SB-03 | **Cloud data deletion is a separate operation from account deletion.** A user may delete cloud data while retaining the account, AI credits and purchase history. |
+| <a id="rule-sb-03"></a>SB-03 | **Cloud data deletion is a separate operation from account deletion.** A user may delete cloud data while retaining the account, AI credits and purchase history. |
 
 ---
 
@@ -319,7 +319,7 @@ Three tool-location shapes under one Cloud agent runtime, always visible to the 
 
 | # | Requirement |
 |---|---|
-| EX-01 | V1 offers the product-specific exports in [data §12](13-data-formats-and-portability.md): Notes Markdown/attachments/metadata, Chat history/task summaries, Scope data/reports and Slate project/OTIO/media as applicable. Cloud exports only data it actually holds. |
+| <a id="rule-ex-01"></a>EX-01 | V1 offers the product-specific exports in [data §12](13-data-formats-and-portability.md): Notes Markdown/attachments/metadata, Chat history/task summaries, Scope data/reports and Slate project/OTIO/media as applicable. Cloud exports only data it actually holds. |
 | <a id="rule-ex-02"></a>EX-02 | Workspace export coordinates the supported per-product Cloud exports with one inventory/checksum/fidelity manifest. It declares included revisions, attachment availability and omitted device-only/pending content. It is not a universal native archive or a promise to restore execution, credentials or billing state. |
 | <a id="rule-ex-03"></a>EX-03 | The export manifest format is **documented and public**, covering manifest, schema version, objects, references, assets and checksums. A convenience container extension may exist; an undocumented opaque archive is prohibited, because the product's premise is that data is not locked in. |
 | <a id="rule-ex-04"></a>EX-04 | Device-only/external assets are listed by availability and safe provenance, not silently fetched or bundled. Including permitted missing assets requires a separately authorized transfer; a user library is never copied automatically. |
@@ -350,9 +350,9 @@ No layer may be described as making another unnecessary.
 
 | # | Requirement |
 |---|---|
-| BK-01 | The metadata database supports **point-in-time recovery** via D1 Time Travel plus verified exports and an independent contiguous transaction change archive. A nightly dump alone is insufficient. |
-| BK-02 | **High durability is not backup** ([I-219](01-normative-glossary-and-invariants.md#rule-i-219)). Provider durability does not protect against a mistaken deletion script, stolen credentials, a wrong lifecycle rule, operator error or an account-level disaster. |
-| BK-03 | The primary object store uses an immutability control (bucket/object lock) on backup snapshots and backup prefixes as the first protection layer. |
+| <a id="rule-bk-01"></a>BK-01 | The metadata database supports **point-in-time recovery** via D1 Time Travel plus verified exports and an independent contiguous transaction change archive. A nightly dump alone is insufficient. |
+| <a id="rule-bk-02"></a>BK-02 | **High durability is not backup** ([I-219](01-normative-glossary-and-invariants.md#rule-i-219)). Provider durability does not protect against a mistaken deletion script, stolen credentials, a wrong lifecycle rule, operator error or an account-level disaster. |
+| <a id="rule-bk-03"></a>BK-03 | The primary object store uses an immutability control (bucket/object lock) on backup snapshots and backup prefixes as the first protection layer. |
 | <a id="rule-bk-04"></a>BK-04 | **Disaster backup is replicated to an independent provider in a different fault domain.** Primary and only-backup must not share a provider or account. The second copy uses object lock with a retention period. |
 | <a id="rule-bk-05"></a>BK-05 | Because blobs are immutable, backup is naturally incremental: each new blob is copied once and never re-copied. |
 | <a id="rule-bk-06"></a>BK-06 | **A backup exists only once a restore has been proven.** Required verification cadence: automated daily sample metadata restore, sample blob restore and checksum verification; a monthly small-scale restore drill; a quarterly full disaster-recovery exercise into a fresh environment, restoring the database, restoring/accessing the object backup, and verifying a workspace end to end. |
@@ -388,7 +388,7 @@ Tracked indicators: `BrokenReferences`, `OrphanBlobs`, `ConflictRate`, `SyncBack
 
 | # | Requirement |
 |---|---|
-| SV-01 | Every syncable domain payload carries `ObjectType` and `SchemaVersion`. Products release independently, so mixed versions across a user's devices are the normal case, not an edge case. |
+| <a id="rule-sv-01"></a>SV-01 | Every syncable domain payload carries `ObjectType` and `SchemaVersion`. Products release independently, so mixed versions across a user's devices are the normal case, not an edge case. |
 | <a id="rule-sv-02"></a>SV-02 | **An older client must never silently destroy newer data.** Opening and saving a `v4` object from a `v3`-only client must not drop the `v4` fields. |
 | <a id="rule-sv-03"></a>SV-03 | Compatibility negotiation expresses at least `Readable`, `Writable`, `RequiresUpgrade` ([I-385](01-normative-glossary-and-invariants.md#rule-i-385): **Read Compatibility ≠ Write Compatibility**). |
 | <a id="rule-sv-04"></a>SV-04 | A breaking migration is preceded by a local recovery snapshot **and** a cloud revision checkpoint, and provides a **Migration Recovery** path ([I-207](01-normative-glossary-and-invariants.md#rule-i-207)). |
@@ -400,8 +400,8 @@ Tracked indicators: `BrokenReferences`, `OrphanBlobs`, `ConflictRate`, `SyncBack
 
 | # | Requirement |
 |---|---|
-| SH-01 | The same self-hosted Cloud provides identity, single-owner workspaces, sync, storage, search, bounded tasks/automation, simulator and operator-funded remote-provider AI. |
-| SH-02 | The deployment operator supplies provider credentials and a validated realm policy. End users have no BYOK interface. Payment collection may be disabled for that realm; usage, budget and authorisation remain real. No local models or official entitlement bypass. |
+| <a id="rule-sh-01"></a>SH-01 | The same self-hosted Cloud provides identity, single-owner workspaces, sync, storage, search, bounded tasks/automation, simulator and operator-funded remote-provider AI. |
+| <a id="rule-sh-02"></a>SH-02 | The deployment operator supplies provider credentials and a validated realm policy. End users have no BYOK interface. Payment collection may be disabled for that realm; usage, budget and authorisation remain real. No local models or official entitlement bypass. |
 | <a id="rule-sh-03"></a>SH-03 | Self-host uses the same implementation, public contracts and data semantics. Public sample deployment policy is sufficient for testing with operator credentials; production private values are not a code dependency. |
 | <a id="rule-sh-04"></a>SH-04 | Realms never share object-identity authority. An imported object may retain an **origin identity** for provenance, but the receiving realm mints its own realm-local identity and mapping. |
 | <a id="rule-sh-05"></a>SH-05 | V1 realm portability uses the supported product export/import formats with disclosed fidelity and new destination identities. It does not migrate billing grants, live agent execution, device trust or secrets. Full-state realm cloning and live bidirectional official/self-host sync are excluded. |

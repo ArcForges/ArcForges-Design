@@ -18,7 +18,7 @@
 
 **In scope.** The coordinated production release: official site entry points, downloads and documentation; account portal and checkout in production; Windows, macOS and Linux desktop releases; the Android release; cloud production with migration rehearsal, backup and restore, upgrade and rollback; the licence, SBOM and copied-content release audit; observability, alerting, runbook and incident closure; and the final production gates for the whole family.
 
-**Out of scope.** iOS under P2-010 and the already accepted excluded features. Any unfinished required feature blocks release; only explicitly conditional facilities may remain disabled under their named gates.
+**Out of scope.** iOS under [P2-010](../../decisions/phase-2-specification-decisions.md#rule-p2-010) and the already accepted excluded features. Any unfinished required feature blocks release; only explicitly conditional facilities may remain disabled under their named gates.
 
 **Why this package exists.** The [release gates](../../assurance/release-gates.md) and this package’s completion gate require these deliveries to be ready **together**. A release where the site is live but the payout path is unproven, or where downloads exist but rollback is untested, is not a release — it is an incident waiting for its first customer.
 
@@ -49,16 +49,16 @@
 
 | # | Rule |
 |---|---|
-| BR-01 | **Build once, promote the same artifact.** Production never rebuilds. |
-| BR-02 | **A gate is passed with evidence or it is not passed.** There is no "passed with concerns". |
-| BR-03 | **A gate protecting data integrity, security, licence compliance or a regulatory obligation cannot be waived.** |
-| BR-04 | **Nothing incomplete is presented as complete.** A deferred capability is stated as deferred. |
-| BR-05 | **Official pricing and checkout do not launch publicly before entitlement, refunds, webhook idempotency and a real payout path are complete**. |
-| BR-06 | **iOS is not claimed as compiled or tested** (**[D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008)**). |
-| BR-07 | **A bad version must be immediately haltable** through the update feed and compatibility policy. |
-| BR-08 | **Rollback is reserved and tested** for every shipped surface. |
-| BR-09 | **Release artifacts are immutable**; a defect produces a new version. |
-| BR-10 | **The release record is complete and immutable**, and every gate result names its evidence artifact. |
+| <a id="rule-br-01"></a>BR-01 | **Build once, promote the same artifact.** Production never rebuilds. |
+| <a id="rule-br-02"></a>BR-02 | **A gate is passed with evidence or it is not passed.** There is no "passed with concerns". |
+| <a id="rule-br-03"></a>BR-03 | **A gate protecting data integrity, security, licence compliance or a regulatory obligation cannot be waived.** |
+| <a id="rule-br-04"></a>BR-04 | **Nothing incomplete is presented as complete.** A deferred capability is stated as deferred. |
+| <a id="rule-br-05"></a>BR-05 | **Official pricing and checkout do not launch publicly before entitlement, refunds, webhook idempotency and a real payout path are complete**. |
+| <a id="rule-br-06"></a>BR-06 | **iOS is not claimed as compiled or tested** (**[D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008)**). |
+| <a id="rule-br-07"></a>BR-07 | **A bad version must be immediately haltable** through the update feed and compatibility policy. |
+| <a id="rule-br-08"></a>BR-08 | **Rollback is reserved and tested** for every shipped surface. |
+| <a id="rule-br-09"></a>BR-09 | **Release artifacts are immutable**; a defect produces a new version. |
+| <a id="rule-br-10"></a>BR-10 | **The release record is complete and immutable**, and every gate result names its evidence artifact. |
 
 ---
 
@@ -121,9 +121,9 @@
 
 ### WP-50.04 — Cloud production
 
-**What must be fully done.** Production deployment from a promoted artifact; expand/contract migration and compatible application rollback rehearsed; backup verified with a proven restore; upgrade and rollback rehearsed; the full go-live gate set from [L-01](../../assurance/release-gates.md#rule-l-01) to [L-16](../../assurance/release-gates.md#rule-l-16) satisfied; the status page live with its emergency alternate URL published. L-16 also requires the approved/measured capacity envelope and the independently operated self-host deployment (PG-25/26), using the same released artifact family.
+**What must be fully done.** Production deployment from a promoted artifact; expand/contract migration and compatible application rollback rehearsed; backup verified with a proven restore; upgrade and rollback rehearsed; the full go-live gate set from [L-01](../../assurance/release-gates.md#rule-l-01) to [L-16](../../assurance/release-gates.md#rule-l-16) satisfied; the status page live with its emergency alternate URL published. [L-16](../../assurance/release-gates.md#rule-l-16) also requires the approved/measured capacity envelope and the independently operated self-host deployment ([PG-25](../../assurance/open-gates-register.md#rule-pg-25)/26), using the same released artifact family.
 
-**Testing requirements.** A game-day exercise across the severity ladder against the real production topology; the recorded evidence for each go-live gate. Archive the launch-capacity.v1 hash, actual standard-2 allocation/four global slots/ten-minute sleep, warm/cold/burst and fallback-read workload, all D1/Vectorize/R2 dimensions and provider prices/duty-cycle costs. Explicit Product/Operations approval plus real results are required for L-16/PG-26; do not mark those gates complete from document checks.
+**Testing requirements.** A game-day exercise across the severity ladder against the real production topology; the recorded evidence for each go-live gate. Archive the launch-capacity.v1 hash, actual standard-2 allocation/four global slots/ten-minute sleep, warm/cold/burst and fallback-read workload, all D1/Vectorize/R2 dimensions and provider prices/duty-cycle costs. Explicit Product/Operations approval plus real results are required for [L-16](../../assurance/release-gates.md#rule-l-16)/[PG-26](../../assurance/open-gates-register.md#rule-pg-26); do not mark those gates complete from document checks.
 
 **Completion gate.** **The cloud go-live threshold is met — "failure behaves correctly"** — with a completed game day and evidence for every gate, including [VG-06](../../assurance/open-gates-register.md#rule-vg-06) on the promoted Native AOT host and real CF/R2/recovery closure.
 

@@ -15,16 +15,16 @@ This document states the dependency model that produces the work-package sequenc
 
 | # | Principle |
 |---|---|
-| SQ-01 | **Freeze before build.** Naming, terminology, licence position and product scope are frozen first, because editors, data formats, capabilities and sync all rework if they change later. |
-| SQ-02 | **Prove the risky mechanism before building on it.** AOT publish, local IPC, serialization and persistence recovery are proven on a skeleton before product work depends on them. |
+| <a id="rule-sq-01"></a>SQ-01 | **Freeze before build.** Naming, terminology, licence position and product scope are frozen first, because editors, data formats, capabilities and sync all rework if they change later. |
+| <a id="rule-sq-02"></a>SQ-02 | **Prove the risky mechanism before building on it.** AOT publish, local IPC, serialization and persistence recovery are proven on a skeleton before product work depends on them. |
 | <a id="rule-sq-03"></a>SQ-03 | **External vendors may be mocked; your own architectural boundaries may not**. This single rule determines most of the ordering. |
 | <a id="rule-sq-04"></a>SQ-04 | **Prove each real boundary before its consumers.** WP06/08 prove parent/helper AOT gRPC over OS streams; WP14 proves independent product hosts and typed in-process calls. Product-to-product IPC is not a prerequisite. |
 | <a id="rule-sq-05"></a>SQ-05 | **ArcNotes proves sync**, because it is more complex than a toy and simpler than raw captures or large media. |
-| SQ-06 | **The professional products come after the platform they depend on**, and ArcSlate comes last because it carries the highest complexity and performance risk. |
-| SQ-07 | **Mobile architecture follows the first real Cloud contracts; runtime acceptance follows the actual Harness**. Deferring mobile design until every desktop product is finished would rework the contracts it depends on. |
+| <a id="rule-sq-06"></a>SQ-06 | **The professional products come after the platform they depend on**, and ArcSlate comes last because it carries the highest complexity and performance risk. |
+| <a id="rule-sq-07"></a>SQ-07 | **Mobile architecture follows the first real Cloud contracts; runtime acceptance follows the actual Harness**. Deferring mobile design until every desktop product is finished would rework the contracts it depends on. |
 | <a id="rule-sq-08"></a>SQ-08 | **Commercial primitives precede paid Cloud consumers; paid go-live remains gated at final release**, after entitlement, refunds, webhook idempotency and a real payout path are proven. |
-| SQ-09 | **The static public site can start very early** after the shared Node toolchain is available; it does not need completed commercial or agent services. |
-| SQ-10 | **Each professional product may connect directly to Cloud.** Nothing in this sequence may create a dependency in which a professional product must relay through ArcChat (**[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)**). |
+| <a id="rule-sq-09"></a>SQ-09 | **The static public site can start very early** after the shared Node toolchain is available; it does not need completed commercial or agent services. |
+| <a id="rule-sq-10"></a>SQ-10 | **Each professional product may connect directly to Cloud.** Nothing in this sequence may create a dependency in which a professional product must relay through ArcChat (**[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)**). |
 
 ### 1.1 The [D-019](../decisions/phase-1-foundation-decisions.md#rule-d-019) ordering, followed
 
@@ -41,11 +41,11 @@ This document states the dependency model that produces the work-package sequenc
 
 | # | Position |
 |---|---|
-| DD-01 | **The sequence is derived, not provisional.** Every package's scope rests on evidence that existed before the package was written. |
-| DD-02 | **The matrices and the inventory are versioned planning inputs.** Implementation packages consume them; **no implementation package re-creates a baseline audit.** |
-| DD-03 | **Implementation packages retain drift checks only** — source drift against the recorded commit, changed scope, and newly introduced material. Each has a named producing sub-step: [WP-15.07](work-packages/15-arcchat-conversation-core.md#rule-wp-15.07), [WP-18.08](work-packages/18-arcnotes-document-core.md#rule-wp-18.08), [WP-33.07](work-packages/33-arcscope-acquisition-and-session.md#rule-wp-33.07), [WP-36.07](work-packages/36-arcslate-project-and-timeline.md#rule-wp-36.07) for references, and [WP-01.00](work-packages/01-repository-reconciliation-and-target-layout.md#rule-wp-01.00) for the code inventory. |
-| DD-04 | **Baseline creation and later maintenance are different obligations** and are never conflated in a gate. |
-| DD-05 | **No unresolved determination remains.** [OC-01](../assurance/open-gates-register.md#rule-oc-01) — the ArcSlate reference baseline — was closed by user decision on 2026-09-05 ([P2-005](../decisions/phase-2-specification-decisions.md#rule-p2-005)), which amended **[D-012](../decisions/phase-1-foundation-decisions.md#rule-d-012)**'s reference map to ArcVideo and ArcVideoFoundation. |
+| <a id="rule-dd-01"></a>DD-01 | **The sequence is derived, not provisional.** Every package's scope rests on evidence that existed before the package was written. |
+| <a id="rule-dd-02"></a>DD-02 | **The matrices and the inventory are versioned planning inputs.** Implementation packages consume them; **no implementation package re-creates a baseline audit.** |
+| <a id="rule-dd-03"></a>DD-03 | **Implementation packages retain drift checks only** — source drift against the recorded commit, changed scope, and newly introduced material. Each has a named producing sub-step: [WP-15.07](work-packages/15-arcchat-conversation-core.md#rule-wp-15.07), [WP-18.08](work-packages/18-arcnotes-document-core.md#rule-wp-18.08), [WP-33.07](work-packages/33-arcscope-acquisition-and-session.md#rule-wp-33.07), [WP-36.07](work-packages/36-arcslate-project-and-timeline.md#rule-wp-36.07) for references, and [WP-01.00](work-packages/01-repository-reconciliation-and-target-layout.md#rule-wp-01.00) for the code inventory. |
+| <a id="rule-dd-04"></a>DD-04 | **Baseline creation and later maintenance are different obligations** and are never conflated in a gate. |
+| <a id="rule-dd-05"></a>DD-05 | **No unresolved determination remains.** [OC-01](../assurance/open-gates-register.md#rule-oc-01) — the ArcSlate reference baseline — was closed by user decision on 2026-09-05 ([P2-005](../decisions/phase-2-specification-decisions.md#rule-p2-005)), which amended **[D-012](../decisions/phase-1-foundation-decisions.md#rule-d-012)**'s reference map to ArcVideo and ArcVideoFoundation. |
 
 ---
 
@@ -100,9 +100,9 @@ The policy in this section is the complete, binding definition for every work pa
 | # | Rule |
 |---|---|
 | <a id="rule-mk-01"></a>MK-01 | **A mock is temporary and named.** Every mock introduced by a work package is listed in that package, with the later package that replaces it. |
-| MK-02 | **A mock never crosses a completion gate that the real thing is supposed to prove.** |
-| MK-03 | **A test that only ever runs against a mock does not satisfy a gate for the real integration.** |
-| MK-04 | **A package may not gate on a capability a later package builds.** Where an early package needs a Cloud behaviour that does not exist yet, it uses a named fixture and **states in its own gate that the real verification belongs to the later package**. [WP-17.01](work-packages/17-arcchat-independent-core.md#rule-wp-17.01) and [WP-52](work-packages/52-cloud-harness.md#rule-wp-52) are the worked case. |
+| <a id="rule-mk-02"></a>MK-02 | **A mock never crosses a completion gate that the real thing is supposed to prove.** |
+| <a id="rule-mk-03"></a>MK-03 | **A test that only ever runs against a mock does not satisfy a gate for the real integration.** |
+| <a id="rule-mk-04"></a>MK-04 | **A package may not gate on a capability a later package builds.** Where an early package needs a Cloud behaviour that does not exist yet, it uses a named fixture and **states in its own gate that the real verification belongs to the later package**. [WP-17.01](work-packages/17-arcchat-independent-core.md#rule-wp-17.01) and [WP-52](work-packages/52-cloud-harness.md#rule-wp-52) are the worked case. |
 
 ### 3.1 Named temporary scaffolding
 
@@ -124,8 +124,8 @@ Every fixture that stands in for a later capability is listed here with the pack
 
 | # | Rule |
 |---|---|
-| TS-01 | **Scaffolding is deleted, never adapted.** A fixture that graduates into production code stops being visible as a fixture, which is how a mock ends up serving real traffic. |
-| TS-02 | **The deleting package asserts the deletion structurally**, so the removal is verified rather than assumed. |
+| <a id="rule-ts-01"></a>TS-01 | **Scaffolding is deleted, never adapted.** A fixture that graduates into production code stops being visible as a fixture, which is how a mock ends up serving real traffic. |
+| <a id="rule-ts-02"></a>TS-02 | **The deleting package asserts the deletion structurally**, so the removal is verified rather than assumed. |
 
 ---
 
@@ -154,9 +154,9 @@ Implementation is one main, serial context. Execute the topological order in the
 
 | # | Rule |
 |---|---|
-| PA-01 | A package starts only after **all** direct upstream completion gates pass; the header, dependency section and index name the same edges. |
-| PA-02 | A change to a shared contract follows its ownership/compatibility process before dependent work proceeds. |
-| PA-03 | No delegated/background implementation agents or parallel package execution is required or authorised by this plan. Independent technical test cases can run concurrently inside a verification command where appropriate. |
+| <a id="rule-pa-01"></a>PA-01 | A package starts only after **all** direct upstream completion gates pass; the header, dependency section and index name the same edges. |
+| <a id="rule-pa-02"></a>PA-02 | A change to a shared contract follows its ownership/compatibility process before dependent work proceeds. |
+| <a id="rule-pa-03"></a>PA-03 | No delegated/background implementation agents or parallel package execution is required or authorised by this plan. Independent technical test cases can run concurrently inside a verification command where appropriate. |
 
 ---
 
@@ -195,11 +195,11 @@ Required design inputs are current formal definitions, accepted decisions, decla
 
 | # | Rule |
 |---|---|
-| WF-01 | **A work package is not complete until its gate is satisfied with recorded evidence.** |
-| WF-02 | **A work package may not silently absorb another's scope.** Moving scope between packages is a recorded change. |
+| <a id="rule-wf-01"></a>WF-01 | **A work package is not complete until its gate is satisfied with recorded evidence.** |
+| <a id="rule-wf-02"></a>WF-02 | **A work package may not silently absorb another's scope.** Moving scope between packages is a recorded change. |
 | <a id="rule-wf-03"></a>WF-03 | **A work package that discovers a genuine architecture conflict stops and raises it** (**[D-001](../decisions/phase-1-foundation-decisions.md#rule-d-001)**), rather than resolving it locally. |
-| WF-04 | **Sub-steps execute serially in dependency order.** Independent verification cases may run concurrently without dividing implementation ownership. |
-| WF-05 | **Every deferred gate that a package is scheduled to satisfy is named in that package's gate section** ([`../assurance/open-gates-register.md`](../assurance/open-gates-register.md)). |
+| <a id="rule-wf-04"></a>WF-04 | **Sub-steps execute serially in dependency order.** Independent verification cases may run concurrently without dividing implementation ownership. |
+| <a id="rule-wf-05"></a>WF-05 | **Every deferred gate that a package is scheduled to satisfy is named in that package's gate section** ([`../assurance/open-gates-register.md`](../assurance/open-gates-register.md)). |
 
 ---
 
@@ -207,10 +207,10 @@ Required design inputs are current formal definitions, accepted decisions, decla
 
 | # | Position |
 |---|---|
-| ND-01 | **It does not create separate multi-tier plans per product**. One continuous sequence interleaves shared foundation, Cloud, mobile, Web and application-owned capabilities at their real dependency positions. |
-| ND-02 | **It does not schedule.** No dates, no durations, no capacity assumptions. |
-| ND-03 | **It does not reopen Phase 1 decisions.** Where a package touches a decided area, it implements the decision. |
-| ND-04 | **It does not defer risk to the end.** The four high-risk probes are early, precisely so that ArcSlate does not meet decoding, GPU, synchronisation and AOT problems for the first time at work package 36. |
+| <a id="rule-nd-01"></a>ND-01 | **It does not create separate multi-tier plans per product**. One continuous sequence interleaves shared foundation, Cloud, mobile, Web and application-owned capabilities at their real dependency positions. |
+| <a id="rule-nd-02"></a>ND-02 | **It does not schedule.** No dates, no durations, no capacity assumptions. |
+| <a id="rule-nd-03"></a>ND-03 | **It does not reopen Phase 1 decisions.** Where a package touches a decided area, it implements the decision. |
+| <a id="rule-nd-04"></a>ND-04 | **It does not defer risk to the end.** The four high-risk probes are early, precisely so that ArcSlate does not meet decoding, GPU, synchronisation and AOT problems for the first time at work package 36. |
 | <a id="rule-nd-05"></a>ND-05 | **Probe scaffolding does not become production by relabeling.** Probe conclusions feed implementation; scaffolds are cleaned up or discarded. Explicitly assigned functional producer code (WP13.05–13.16) is production code, retained and maintained. |
 
 ---
@@ -226,7 +226,7 @@ Required design inputs are current formal definitions, accepted decisions, decla
 | **[D-019](../decisions/phase-1-foundation-decisions.md#rule-d-019)** | The status of the original stage sequence as discovery, not delivery order |
 | **[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)** | The prohibition on making ArcChat a mandatory relay for professional products |
 
-## 9. P2-009 complete artifact dependency graph
+## 9. [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) complete artifact dependency graph
 
 All 51 active packages retain the current accepted scope; WP20 is future-only; WP27/29 remain retired. The dependency table below is the current complete directed graph. Header and dependency sections of each package are generated from this same frozen set. Source ownership and immutable inputs are in each package; no cross-repository source dependency is implied.
 
@@ -289,4 +289,4 @@ Serial execution: 00, 01, 02, 03, 04, 05, 06, 07, 08, 09, 10, 11, 12, 13, 14, 15
 ## Final review execution bindings
 
 [Staged artifact integration](README.md#staged-artifact-integration) is mandatory for the graph above. WP02 produces the pipeline/BuildPolicy, WP03 Contracts, WP04 values and WP06 the real native/runtime foundation; later packages never require a future Cloud manifest. The shell directly consumes WP09 contribution contracts. Account UI consumes WP25 exports and WP46 data health. Simulator acceptance consumes WP34 measurements and WP35 portability. WP52 additionally consumes WP39 for real Slate transcription/adoption; this does not move the media engine into Cloud. No full integration gate is satisfied by renaming a mock.
-P2-013 adds the PackageCatalog producer edge 41→45. Native login/mail originates at 22, fixture signing formats at 03, production trust at 53. The existing serial order already places 41 before 45 and remains valid. Total active dependency edges: 158.
+[P2-013](../decisions/phase-2-specification-decisions.md#rule-p2-013) adds the PackageCatalog producer edge 41→45. Native login/mail originates at 22, fixture signing formats at 03, production trust at 53. The existing serial order already places 41 before 45 and remains valid. Total active dependency edges: 158.

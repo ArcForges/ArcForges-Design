@@ -15,12 +15,12 @@ Nothing in this document authorises reuse. It defines the process by which reuse
 
 | # | Rule |
 |---|---|
-| RR-01 | **A reference repository is a source of features, behaviour, tests, migration evidence and possibly reusable material** (**[D-012](../decisions/phase-1-foundation-decisions.md#rule-d-012)**). |
-| RR-02 | **A reference repository is not an architecture authority.** Its structure, layering, technology stack and runtime choices carry no weight in ArcForges design decisions. |
-| RR-03 | **A reference repository is not a parity commitment.** Its feature set is evidence about a problem space, not a scope obligation. |
-| RR-04 | **A reference repository is not a reason to import its runtime stack** (**[D-012](../decisions/phase-1-foundation-decisions.md#rule-d-012)**). |
-| RR-05 | **Reading a reference repository is always permitted; reusing its material is not** — reuse requires `§3` and `§4`. |
-| RR-06 | **Reference repositories are never modified.** This is a documentation repository, and the reference checkouts are read-only evidence. |
+| <a id="rule-rr-01"></a>RR-01 | **A reference repository is a source of features, behaviour, tests, migration evidence and possibly reusable material** (**[D-012](../decisions/phase-1-foundation-decisions.md#rule-d-012)**). |
+| <a id="rule-rr-02"></a>RR-02 | **A reference repository is not an architecture authority.** Its structure, layering, technology stack and runtime choices carry no weight in ArcForges design decisions. |
+| <a id="rule-rr-03"></a>RR-03 | **A reference repository is not a parity commitment.** Its feature set is evidence about a problem space, not a scope obligation. |
+| <a id="rule-rr-04"></a>RR-04 | **A reference repository is not a reason to import its runtime stack** (**[D-012](../decisions/phase-1-foundation-decisions.md#rule-d-012)**). |
+| <a id="rule-rr-05"></a>RR-05 | **Reading a reference repository is always permitted; reusing its material is not** — reuse requires `§3` and `§4`. |
+| <a id="rule-rr-06"></a>RR-06 | **Reference repositories are never modified.** This is a documentation repository, and the reference checkouts are read-only evidence. |
 
 ### 1.1 The reference map (**[D-012](../decisions/phase-1-foundation-decisions.md#rule-d-012)**, as amended 2026-09-05 by [P2-005](../decisions/phase-2-specification-decisions.md#rule-p2-005))
 
@@ -61,12 +61,12 @@ Nothing in this document authorises reuse. It defines the process by which reuse
 
 | # | Rule |
 |---|---|
-| CM-01 | **Every item has a disposition.** "Not yet decided" is not a disposition; an undecided item blocks the matrix. |
-| CM-02 | **A disposition of Copy, Rewrite, Improve or Replace requires a completed provenance record** (`§3`) before any material is used. |
-| CM-03 | **A disposition of Reference Only means behavioural evidence only** — read it, learn from it, cite it in the matrix, and write original code. |
-| CM-04 | **A disposition of Drop is recorded with a reason**, so the decision is not silently revisited later. |
-| CM-05 | **An item with no corresponding ArcForges requirement is either dropped or produces a requirement change**, never an unrequested feature. |
-| CM-06 | **The matrix is a living document per product** and is updated whenever a disposition changes. A changed disposition records who changed it and why. |
+| <a id="rule-cm-01"></a>CM-01 | **Every item has a disposition.** "Not yet decided" is not a disposition; an undecided item blocks the matrix. |
+| <a id="rule-cm-02"></a>CM-02 | **A disposition of Copy, Rewrite, Improve or Replace requires a completed provenance record** (`§3`) before any material is used. |
+| <a id="rule-cm-03"></a>CM-03 | **A disposition of Reference Only means behavioural evidence only** — read it, learn from it, cite it in the matrix, and write original code. |
+| <a id="rule-cm-04"></a>CM-04 | **A disposition of Drop is recorded with a reason**, so the decision is not silently revisited later. |
+| <a id="rule-cm-05"></a>CM-05 | **An item with no corresponding ArcForges requirement is either dropped or produces a requirement change**, never an unrequested feature. |
+| <a id="rule-cm-06"></a>CM-06 | **The matrix is a living document per product** and is updated whenever a disposition changes. A changed disposition records who changed it and why. |
 | <a id="rule-cm-07"></a>CM-07 | **The matrix is complete before the product's implementation-planning work package is closed** — this is the completion gate that **[D-012](../decisions/phase-1-foundation-decisions.md#rule-d-012)** requires. |
 
 ### 2.2 Per-product matrix status
@@ -107,11 +107,11 @@ Nothing in this document authorises reuse. It defines the process by which reuse
 
 | # | Rule |
 |---|---|
-| PR-01 | **No material is copied before its record exists.** The record is a precondition, not documentation written afterwards. |
-| PR-02 | **A temporary reuse carries a removal trigger and an owner**, so "temporary" does not quietly become permanent. |
-| PR-03 | **A record is immutable once material is used under it.** A changed intent produces a new record. |
+| <a id="rule-pr-01"></a>PR-01 | **No material is copied before its record exists.** The record is a precondition, not documentation written afterwards. |
+| <a id="rule-pr-02"></a>PR-02 | **A temporary reuse carries a removal trigger and an owner**, so "temporary" does not quietly become permanent. |
+| <a id="rule-pr-03"></a>PR-03 | **A record is immutable once material is used under it.** A changed intent produces a new record. |
 | <a id="rule-pr-04"></a>PR-04 | **Tests and assets require their own licence checks** (**[D-013](../decisions/phase-1-foundation-decisions.md#rule-d-013)**). A test file, fixture, icon, font or sample media file is not covered by an assumption about source code. |
-| PR-05 | **Generated artifacts inherit the licence position of their generator and inputs**, and that position is recorded explicitly. |
+| <a id="rule-pr-05"></a>PR-05 | **Generated artifacts inherit the licence position of their generator and inputs**, and that position is recorded explicitly. |
 
 ---
 
@@ -129,11 +129,11 @@ Nothing in this document authorises reuse. It defines the process by which reuse
 
 | # | Rule |
 |---|---|
-| LG-01 | **Prohibited material may still be used as controlled behavioural or reference evidence**, until an explicit compatibility decision says otherwise (**[D-013](../decisions/phase-1-foundation-decisions.md#rule-d-013)**). Reading is not reuse. |
-| LG-02 | **No GPL-family or AGPL-only material may enter the Apache-2.0 mobile or public-client boundary** (**[D-004](../decisions/phase-1-foundation-decisions.md#rule-d-004)**), directly or transitively. |
-| LG-03 | **Protocol communication across an explicit process or network boundary does not change a client's licence** (**[D-004](../decisions/phase-1-foundation-decisions.md#rule-d-004)**). |
-| LG-04 | **On discovering a conflicting contribution or dependency, the issue is registered and returned for decision** (**[D-004](../decisions/phase-1-foundation-decisions.md#rule-d-004)**). Silently adding an exception, changing the licence, or dropping the mobile target is prohibited. |
-| LG-05 | **No App Store exception, dual licensing, proprietary grant or CLA** (**[D-004](../decisions/phase-1-foundation-decisions.md#rule-d-004)**). DCO continues with inbound-equals-outbound per scope. |
+| <a id="rule-lg-01"></a>LG-01 | **Prohibited material may still be used as controlled behavioural or reference evidence**, until an explicit compatibility decision says otherwise (**[D-013](../decisions/phase-1-foundation-decisions.md#rule-d-013)**). Reading is not reuse. |
+| <a id="rule-lg-02"></a>LG-02 | **No GPL-family or AGPL-only material may enter the Apache-2.0 mobile or public-client boundary** (**[D-004](../decisions/phase-1-foundation-decisions.md#rule-d-004)**), directly or transitively. |
+| <a id="rule-lg-03"></a>LG-03 | **Protocol communication across an explicit process or network boundary does not change a client's licence** (**[D-004](../decisions/phase-1-foundation-decisions.md#rule-d-004)**). |
+| <a id="rule-lg-04"></a>LG-04 | **On discovering a conflicting contribution or dependency, the issue is registered and returned for decision** (**[D-004](../decisions/phase-1-foundation-decisions.md#rule-d-004)**). Silently adding an exception, changing the licence, or dropping the mobile target is prohibited. |
+| <a id="rule-lg-05"></a>LG-05 | **No App Store exception, dual licensing, proprietary grant or CLA** (**[D-004](../decisions/phase-1-foundation-decisions.md#rule-d-004)**). DCO continues with inbound-equals-outbound per scope. |
 
 ### 4.2 Automated enforcement
 
@@ -141,11 +141,11 @@ Licence compliance is automated, not remembered ([LG-06](../requirements/07-secu
 
 | # | Mechanism | Where it runs |
 |---|---|---|
-| AE-01 | Generated licence inventory for every project and every dependency | Build |
-| AE-02 | Dependency policy check against the per-boundary allowlist, build-breaking on violation | Build (`RP-*` repository policy tests) |
-| AE-03 | SBOM generation per artifact | Release pipeline ([SP-06](../architecture/14-build-packaging-and-release.md#rule-sp-06) in the build architecture) |
+| <a id="rule-ae-01"></a>AE-01 | Generated licence inventory for every project and every dependency | Build |
+| <a id="rule-ae-02"></a>AE-02 | Dependency policy check against the per-boundary allowlist, build-breaking on violation | Build (`RP-*` repository policy tests) |
+| <a id="rule-ae-03"></a>AE-03 | SBOM generation per artifact | Release pipeline ([SP-06](../architecture/14-build-packaging-and-release.md#rule-sp-06) in the build architecture) |
 | <a id="rule-ae-04"></a>AE-04 | Transitive closure verification for the mobile boundary — the **[F-023](open-gates-register.md#rule-f-023)** gate | Before the first mobile artifact |
-| AE-05 | NOTICE generation and verification against the recorded attribution obligations | Release pipeline |
+| <a id="rule-ae-05"></a>AE-05 | NOTICE generation and verification against the recorded attribution obligations | Release pipeline |
 | <a id="rule-ae-06"></a>AE-06 | Provenance-record presence check: a file whose provenance record is missing fails the audit | Repository policy test |
 
 ---
@@ -165,10 +165,10 @@ A verification oracle answers: *how do we know our implementation is correct?* I
 
 | # | Rule |
 |---|---|
-| VO-01 | **An oracle is named before implementation begins**, not chosen afterwards to fit what was built. |
-| VO-02 | **A reference's behaviour is evidence, not a requirement.** Where a reference's behaviour conflicts with an ArcForges requirement, the requirement wins and the divergence is recorded in the matrix. |
+| <a id="rule-vo-01"></a>VO-01 | **An oracle is named before implementation begins**, not chosen afterwards to fit what was built. |
+| <a id="rule-vo-02"></a>VO-02 | **A reference's behaviour is evidence, not a requirement.** Where a reference's behaviour conflicts with an ArcForges requirement, the requirement wins and the divergence is recorded in the matrix. |
 | <a id="rule-vo-03"></a>VO-03 | **A fixture is checked into the repository with its provenance record**, because a fixture is reused material. |
-| VO-04 | **An oracle that cannot be automated is recorded as a manual verification step** with an owner, never omitted. |
+| <a id="rule-vo-04"></a>VO-04 | **An oracle that cannot be automated is recorded as a manual verification step** with an owner, never omitted. |
 
 ---
 
@@ -178,10 +178,10 @@ Reference repositories are also the source of migration evidence — what existi
 
 | # | Rule |
 |---|---|
-| ME-01 | **Import compatibility targets are derived from real reference-produced files**, not from documentation of those formats alone. |
-| ME-02 | **A format fixture set is versioned**, covering the reference versions ArcForges claims to import. |
+| <a id="rule-me-01"></a>ME-01 | **Import compatibility targets are derived from real reference-produced files**, not from documentation of those formats alone. |
+| <a id="rule-me-02"></a>ME-02 | **A format fixture set is versioned**, covering the reference versions ArcForges claims to import. |
 | <a id="rule-me-03"></a>ME-03 | **An import claim is only made for versions with fixtures** (`§17` of the quality contract). A claim without a fixture is removed from the product surface, not left unverified. |
-| ME-04 | **Data used as a fixture is either synthetic or licence-cleared** ([PR-04](#rule-pr-04)). Real user content is never checked in. |
+| <a id="rule-me-04"></a>ME-04 | **Data used as a fixture is either synthetic or licence-cleared** ([PR-04](#rule-pr-04)). Real user content is never checked in. |
 
 ---
 
@@ -201,10 +201,10 @@ Reference repositories are also the source of migration evidence — what existi
 
 | # | Rule |
 |---|---|
-| FG-01 | **[F-013](open-gates-register.md#rule-f-013) closed on evidence, not on assertion.** The evidence is the five matrices and their per-row licence positions. |
-| FG-02 | **A per-file determination is still required before any future reuse.** Closing [F-013](open-gates-register.md#rule-f-013) records that none is currently proposed; it does not pre-authorise reuse. |
-| FG-03 | **A licence position can change upstream.** Each product's drift-check sub-step re-reads the reference's licence files, and a changed subtree licence corrects the affected dispositions before dependent work continues. |
-| FG-04 | **Upstream provenance survives a reference-map amendment.** [P2-005](../decisions/phase-2-specification-decisions.md#rule-p2-005) removed Olive as a separate required reference; ArcVideo's fork relationship, GPL-3.0 obligations and upstream attribution are unaffected and are preserved wherever inherited material requires them. |
+| <a id="rule-fg-01"></a>FG-01 | **[F-013](open-gates-register.md#rule-f-013) closed on evidence, not on assertion.** The evidence is the five matrices and their per-row licence positions. |
+| <a id="rule-fg-02"></a>FG-02 | **A per-file determination is still required before any future reuse.** Closing [F-013](open-gates-register.md#rule-f-013) records that none is currently proposed; it does not pre-authorise reuse. |
+| <a id="rule-fg-03"></a>FG-03 | **A licence position can change upstream.** Each product's drift-check sub-step re-reads the reference's licence files, and a changed subtree licence corrects the affected dispositions before dependent work continues. |
+| <a id="rule-fg-04"></a>FG-04 | **Upstream provenance survives a reference-map amendment.** [P2-005](../decisions/phase-2-specification-decisions.md#rule-p2-005) removed Olive as a separate required reference; ArcVideo's fork relationship, GPL-3.0 obligations and upstream attribution are unaffected and are preserved wherever inherited material requires them. |
 
 ---
 

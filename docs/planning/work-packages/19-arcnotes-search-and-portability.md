@@ -51,14 +51,14 @@
 | # | Rule |
 |---|---|
 | <a id="rule-br-01"></a>BR-01 | **Search over hydrated content works during a Cloud outage.** Workspace-wide search is `search.query` on the public surface; the two are separate operations with different completeness and neither is presented as the other ([NO-05](../../architecture/contracts/02-local-rpc-operations.md#rule-no-05)). |
-| BR-02 | **`Search ≠ Retrieval`.** Search serves a person; retrieval assembles evidence for a model. They share an index but not a contract. |
-| BR-03 | **The index is a derived store**: deleting it rebuilds completely ([QI-10](../../requirements/12-quality-and-compatibility-contract.md#rule-qi-10)). |
-| BR-04 | **Search reveals nothing direct access would refuse** — permission is applied at query, not after ranking. |
-| BR-05 | **A citation anchor is stable**, surviving edits around it where the cited content still exists, and reporting explicitly when it does not. |
-| BR-06 | **Import is non-destructive**: the source is never modified, and a partial import is reported rather than silently completed. |
-| BR-07 | **Export declares its fidelity.** The Cloud exit path is Markdown documents, authorized attachments, metadata/link manifest and explicit loss report, under [EP-04](../../requirements/products/arcnotes.md#rule-ep-04) and [EX-01/EX-02](../../requirements/13-data-formats-and-portability.md#rule-ex-01). Verify the declared content/link/attachment fidelity; do not build a native portable package, encrypted local export or bit-for-bit archive re-import promise. |
-| BR-08 | **An export never silently loses fidelity.** A lossy target format states what it drops. |
-| BR-09 | **No repository projection, Git synchronisation, linked-repository mode or LFS path is built** (`§14` and [EX-09](../../requirements/13-data-formats-and-portability.md#rule-ex-09) of the data-format requirements; [EE-04](../../requirements/13-data-formats-and-portability.md#rule-ee-04) there). [GT-01](../../requirements/13-data-formats-and-portability.md#rule-gt-01)–[GT-09](../../requirements/13-data-formats-and-portability.md#rule-gt-09) are retired, explicitly including their acceptance gates, so no Git-friendliness level is declared and none may be demanded. |
+| <a id="rule-br-02"></a>BR-02 | **`Search ≠ Retrieval`.** Search serves a person; retrieval assembles evidence for a model. They share an index but not a contract. |
+| <a id="rule-br-03"></a>BR-03 | **The index is a derived store**: deleting it rebuilds completely ([QI-10](../../requirements/12-quality-and-compatibility-contract.md#rule-qi-10)). |
+| <a id="rule-br-04"></a>BR-04 | **Search reveals nothing direct access would refuse** — permission is applied at query, not after ranking. |
+| <a id="rule-br-05"></a>BR-05 | **A citation anchor is stable**, surviving edits around it where the cited content still exists, and reporting explicitly when it does not. |
+| <a id="rule-br-06"></a>BR-06 | **Import is non-destructive**: the source is never modified, and a partial import is reported rather than silently completed. |
+| <a id="rule-br-07"></a>BR-07 | **Export declares its fidelity.** The Cloud exit path is Markdown documents, authorized attachments, metadata/link manifest and explicit loss report, under [EP-04](../../requirements/products/arcnotes.md#rule-ep-04) and [EX-01/EX-02](../../requirements/13-data-formats-and-portability.md#rule-ex-01). Verify the declared content/link/attachment fidelity; do not build a native portable package, encrypted local export or bit-for-bit archive re-import promise. |
+| <a id="rule-br-08"></a>BR-08 | **An export never silently loses fidelity.** A lossy target format states what it drops. |
+| <a id="rule-br-09"></a>BR-09 | **No repository projection, Git synchronisation, linked-repository mode or LFS path is built** (`§14` and [EX-09](../../requirements/13-data-formats-and-portability.md#rule-ex-09) of the data-format requirements; [EE-04](../../requirements/13-data-formats-and-portability.md#rule-ee-04) there). [GT-01](../../requirements/13-data-formats-and-portability.md#rule-gt-01)–[GT-09](../../requirements/13-data-formats-and-portability.md#rule-gt-09) are retired, explicitly including their acceptance gates, so no Git-friendliness level is declared and none may be demanded. |
 
 ---
 
@@ -188,7 +188,7 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 ## 7. Tests and verification evidence
 
-Acceptance includes every amended §5 producer/consumer and WP-19.90 evidence. Current P2-013 contracts/data/runtime rules are tested in the original owner implementation, not a detached explanatory sample.
+Acceptance includes every amended §5 producer/consumer and [WP-19.90](#rule-wp-19.90) evidence. Current [P2-013](../../decisions/phase-2-specification-decisions.md#rule-p2-013) contracts/data/runtime rules are tested in the original owner implementation, not a detached explanatory sample.
 
 **Required evidence addition.** Initial saved-list/missing/case/number vectors and honest unsupported-operator/completeness results.
 

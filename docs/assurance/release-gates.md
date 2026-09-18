@@ -24,11 +24,11 @@ This document consolidates every gate that stands between work and users, in one
 
 | # | Rule |
 |---|---|
-| GA-01 | **A gate result is recorded with its evidence artifact** in the release record ([RC-03](../requirements/10-distribution-update-and-support.md#rule-rc-03) in the distribution requirements). |
-| GA-02 | **A gate is either passed or blocked.** There is no "passed with concerns"; a concern is either a defect or a waiver. |
-| GA-03 | **A waiver is explicit, owned and expiring** (`§21.1` of the quality contract). An expired waiver blocks release automatically. |
-| GA-04 | **A gate may not be waived if it protects data integrity, security, licence compliance or a regulatory obligation.** |
-| GA-05 | **Adding a gate is cheap; removing one requires a recorded decision.** |
+| <a id="rule-ga-01"></a>GA-01 | **A gate result is recorded with its evidence artifact** in the release record ([RC-03](../requirements/10-distribution-update-and-support.md#rule-rc-03) in the distribution requirements). |
+| <a id="rule-ga-02"></a>GA-02 | **A gate is either passed or blocked.** There is no "passed with concerns"; a concern is either a defect or a waiver. |
+| <a id="rule-ga-03"></a>GA-03 | **A waiver is explicit, owned and expiring** (`§21.1` of the quality contract). An expired waiver blocks release automatically. |
+| <a id="rule-ga-04"></a>GA-04 | **A gate may not be waived if it protects data integrity, security, licence compliance or a regulatory obligation.** |
+| <a id="rule-ga-05"></a>GA-05 | **Adding a gate is cheap; removing one requires a recorded decision.** |
 
 ---
 
@@ -36,15 +36,15 @@ This document consolidates every gate that stands between work and users, in one
 
 | # | Gate | Evidence |
 |---|---|---|
-| G-01 | Build clean: zero errors; zero warnings-as-errors; no suppressed AOT, trim or single-file diagnostic on the main path | Build log |
-| G-02 | Architecture tests pass ([AT-01](../architecture/01-solution-and-project-layout.md#rule-at-01)–[AT-14](../architecture/01-solution-and-project-layout.md#rule-at-14)) | Test results |
+| <a id="rule-g-01"></a>G-01 | Build clean: zero errors; zero warnings-as-errors; no suppressed AOT, trim or single-file diagnostic on the main path | Build log |
+| <a id="rule-g-02"></a>G-02 | Architecture tests pass ([AT-01](../architecture/01-solution-and-project-layout.md#rule-at-01)–[AT-14](../architecture/01-solution-and-project-layout.md#rule-at-14)) | Test results |
 | <a id="rule-g-03"></a>G-03 | Repository policy tests pass ([RP-01](../architecture/01-solution-and-project-layout.md#rule-rp-01)–[RP-10](../architecture/01-solution-and-project-layout.md#rule-rp-10)), including licence boundary, forbidden references and banned APIs | Test results |
 | <a id="rule-g-04"></a>G-04 | Forbidden-term scan clean: no forbidden alias, no superseded product name, no superseded payment provider outside `docs/deprecated-inputs/` (**[D-002](../decisions/phase-1-foundation-decisions.md#rule-d-002)**, **[D-005](../decisions/phase-1-foundation-decisions.md#rule-d-005)**, **[D-018](../decisions/phase-1-foundation-decisions.md#rule-d-018)**) | Scan report |
 | <a id="rule-g-05"></a>G-05 | Contract baseline check: any change to a generated contract artifact is accompanied by a version change and a compatibility note (**[D-009](../decisions/phase-1-foundation-decisions.md#rule-d-009)**) | Contract diff |
-| G-06 | Domain, application and serialization test families pass ([F-01](testing-and-verification-strategy.md#rule-f-01), [F-02](testing-and-verification-strategy.md#rule-f-02), [F-04](testing-and-verification-strategy.md#rule-f-04)) | Test results |
-| G-07 | Type-shape and serialization compatibility baseline unchanged, or changed with a declared version bump | Baseline diff |
-| G-08 | No new dependency without a licence, provenance and closure record (`§4.2` of the provenance document) | Dependency report |
-| G-09 | Documentation link and identifier integrity: every cross-reference resolves ([SV-01](testing-and-verification-strategy.md#rule-sv-01), [SV-02](testing-and-verification-strategy.md#rule-sv-02) in the testing strategy) | Link report |
+| <a id="rule-g-06"></a>G-06 | Domain, application and serialization test families pass ([F-01](testing-and-verification-strategy.md#rule-f-01), [F-02](testing-and-verification-strategy.md#rule-f-02), [F-04](testing-and-verification-strategy.md#rule-f-04)) | Test results |
+| <a id="rule-g-07"></a>G-07 | Type-shape and serialization compatibility baseline unchanged, or changed with a declared version bump | Baseline diff |
+| <a id="rule-g-08"></a>G-08 | No new dependency without a licence, provenance and closure record (`§4.2` of the provenance document) | Dependency report |
+| <a id="rule-g-09"></a>G-09 | Documentation link and identifier integrity: every cross-reference resolves ([SV-01](testing-and-verification-strategy.md#rule-sv-01), [SV-02](testing-and-verification-strategy.md#rule-sv-02) in the testing strategy) | Link report |
 
 ---
 
@@ -52,21 +52,21 @@ This document consolidates every gate that stands between work and users, in one
 
 | # | Gate | Evidence |
 |---|---|---|
-| R-01 | All continuous gates pass on the release commit | Gate report |
-| R-02 | Integration families pass: persistence, local RPC, public API contract, realtime, multi-process ([F-03](testing-and-verification-strategy.md#rule-f-03), [F-05](testing-and-verification-strategy.md#rule-f-05), [F-06](testing-and-verification-strategy.md#rule-f-06), [F-07](testing-and-verification-strategy.md#rule-f-07), [F-11](testing-and-verification-strategy.md#rule-f-11)) | Test results |
+| <a id="rule-r-01"></a>R-01 | All continuous gates pass on the release commit | Gate report |
+| <a id="rule-r-02"></a>R-02 | Integration families pass: persistence, local RPC, public API contract, realtime, multi-process ([F-03](testing-and-verification-strategy.md#rule-f-03), [F-05](testing-and-verification-strategy.md#rule-f-05), [F-06](testing-and-verification-strategy.md#rule-f-06), [F-07](testing-and-verification-strategy.md#rule-f-07), [F-11](testing-and-verification-strategy.md#rule-f-11)) | Test results |
 | <a id="rule-r-03"></a>R-03 | **AOT publish succeeds for every desktop product and the C# Cloud host; the published artifacts launch and their real adapters pass** (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**, **[V-05](phase-1-official-verification.md#rule-v-05)**) | Publish log plus launch smoke result |
-| R-04 | Migration and golden-fixture tests pass, forward and — where reversibility is claimed — backward ([F-12](testing-and-verification-strategy.md#rule-f-12)) | Fixture comparison |
-| R-05 | Crash, fault-injection and recovery tests pass ([F-13](testing-and-verification-strategy.md#rule-f-13)) | Recovery outcomes |
-| R-06 | Performance budgets met with the regression gate applied: startup, memory, responsiveness, bundle size (`§2`–`§6` of the quality contract) | Measured values versus budget and previous release |
-| R-07 | Accessibility gates pass, automated and assistive-technology-verified ([F-10](testing-and-verification-strategy.md#rule-f-10)) | Automated results plus dated manual record |
+| <a id="rule-r-04"></a>R-04 | Migration and golden-fixture tests pass, forward and — where reversibility is claimed — backward ([F-12](testing-and-verification-strategy.md#rule-f-12)) | Fixture comparison |
+| <a id="rule-r-05"></a>R-05 | Crash, fault-injection and recovery tests pass ([F-13](testing-and-verification-strategy.md#rule-f-13)) | Recovery outcomes |
+| <a id="rule-r-06"></a>R-06 | Performance budgets met with the regression gate applied: startup, memory, responsiveness, bundle size (`§2`–`§6` of the quality contract) | Measured values versus budget and previous release |
+| <a id="rule-r-07"></a>R-07 | Accessibility gates pass, automated and assistive-technology-verified ([F-10](testing-and-verification-strategy.md#rule-f-10)) | Automated results plus dated manual record |
 | <a id="rule-r-08"></a>R-08 | Localisation gates pass: no hard-coded user-visible string, locale-safe data handling (`§11` there) | Scan plus test results |
-| R-09 | Native ABI tests pass per runtime identifier, including error paths ([F-08](testing-and-verification-strategy.md#rule-f-08)) | Per-RID results |
-| R-10 | Install, update, downgrade-protection and rollback matrix passes ([F-16](testing-and-verification-strategy.md#rule-f-16)) | Matrix results |
-| R-11 | Signing complete and verified on the packaged artifact; macOS notarised and stapled | Verification output |
-| R-12 | SBOM, provenance attestation, licence inventory and NOTICE produced and verified | Artifacts |
-| R-13 | Compatibility manifest published: minimum OS, minimum cloud version, supported client window (`§15` there) | Manifest |
-| R-14 | Release record complete and immutable ([RC-03](../requirements/10-distribution-update-and-support.md#rule-rc-03) there) | Release record |
-| R-15 | No open severity-blocking quality issue; no expired waiver (`§21` there) | Quality report |
+| <a id="rule-r-09"></a>R-09 | Native ABI tests pass per runtime identifier, including error paths ([F-08](testing-and-verification-strategy.md#rule-f-08)) | Per-RID results |
+| <a id="rule-r-10"></a>R-10 | Install, update, downgrade-protection and rollback matrix passes ([F-16](testing-and-verification-strategy.md#rule-f-16)) | Matrix results |
+| <a id="rule-r-11"></a>R-11 | Signing complete and verified on the packaged artifact; macOS notarised and stapled | Verification output |
+| <a id="rule-r-12"></a>R-12 | SBOM, provenance attestation, licence inventory and NOTICE produced and verified | Artifacts |
+| <a id="rule-r-13"></a>R-13 | Compatibility manifest published: minimum OS, minimum cloud version, supported client window (`§15` there) | Manifest |
+| <a id="rule-r-14"></a>R-14 | Release record complete and immutable ([RC-03](../requirements/10-distribution-update-and-support.md#rule-rc-03) there) | Release record |
+| <a id="rule-r-15"></a>R-15 | No open severity-blocking quality issue; no expired waiver (`§21` there) | Quality report |
 | <a id="rule-r-16"></a>R-16 | Telemetry redaction test passes: no marker value in exported signals (`§14` of the observability architecture) | Redaction report |
 
 ---
@@ -75,13 +75,13 @@ This document consolidates every gate that stands between work and users, in one
 
 | # | Gate | Applies to |
 |---|---|---|
-| C-01 | All per-release gates passed for this exact artifact — no rebuild ([BR-01](../architecture/14-build-packaging-and-release.md#rule-br-01) in the build architecture) | Every promotion |
-| C-02 | Soak and scale results within budget for the promotion's duration requirement ([F-14](testing-and-verification-strategy.md#rule-f-14)) | Beta → Stable |
-| C-03 | Cross-platform matrix complete for every supported platform and architecture (`§20` of the quality contract) | Beta → Stable |
+| <a id="rule-c-01"></a>C-01 | All per-release gates passed for this exact artifact — no rebuild ([BR-01](../architecture/14-build-packaging-and-release.md#rule-br-01) in the build architecture) | Every promotion |
+| <a id="rule-c-02"></a>C-02 | Soak and scale results within budget for the promotion's duration requirement ([F-14](testing-and-verification-strategy.md#rule-f-14)) | Beta → Stable |
+| <a id="rule-c-03"></a>C-03 | Cross-platform matrix complete for every supported platform and architecture (`§20` of the quality contract) | Beta → Stable |
 | <a id="rule-c-04"></a>C-04 | Hardware-lab verification complete for ArcScope and ArcSlate ([F-18](testing-and-verification-strategy.md#rule-f-18)) | Beta → Stable for those products |
-| C-05 | Update feed entry prepared with hashes, compatibility ranges and minimum versions (`§7` of the build architecture) | Every promotion |
-| C-06 | Rollback path verified for this specific version pair | Every promotion |
-| C-07 | Nightly and canary artifacts are never submitted to a platform store (`§2` of the distribution requirements) | Store submission |
+| <a id="rule-c-05"></a>C-05 | Update feed entry prepared with hashes, compatibility ranges and minimum versions (`§7` of the build architecture) | Every promotion |
+| <a id="rule-c-06"></a>C-06 | Rollback path verified for this specific version pair | Every promotion |
+| <a id="rule-c-07"></a>C-07 | Nightly and canary artifacts are never submitted to a platform store (`§2` of the distribution requirements) | Store submission |
 
 ---
 
@@ -92,11 +92,11 @@ This document consolidates every gate that stands between work and users, in one
 | <a id="rule-p-01"></a>P-01 | The product's **Reference Coverage Matrix** is complete, with a disposition for every item (**[D-012](../decisions/phase-1-foundation-decisions.md#rule-d-012)**; [CM-07](reference-coverage-and-provenance.md#rule-cm-07) in the provenance document) | Matrix |
 | <a id="rule-p-02"></a>P-02 | The product's **licence audit** is complete — the **[F-013](open-gates-register.md#rule-f-013)** trigger has fired and been satisfied for this product (**[D-013](../decisions/phase-1-foundation-decisions.md#rule-d-013)**) | Audit record |
 | <a id="rule-p-03"></a>P-03 | The product's Quality Contract instance is populated with measured values, not targets (`§1` of the quality contract) | Quality report |
-| P-04 | Must-pass release scenarios pass for this product, including every applicable initial-state row of the [offline acceptance matrix](testing-and-verification-strategy.md#offline-acceptance-matrix). Record enrollment/hydration/authorization and restart outcomes; no generic Cloud-authoritative editable-workspace assumption substitutes for the product behavior | Scenario results |
-| P-05 | ArcScope/ArcSlate portable packages round-trip completely. Notes Cloud/cached export reports declared fidelity and missing resources. Every application assistant exports/imports assistant-history.v1 locally or from its admitted Cloud scope under model 05, without implicit promotion. | Owner-specific round-trip or complete fidelity/exclusion report |
+| <a id="rule-p-04"></a>P-04 | Must-pass release scenarios pass for this product, including every applicable initial-state row of the [offline acceptance matrix](testing-and-verification-strategy.md#offline-acceptance-matrix). Record enrollment/hydration/authorization and restart outcomes; no generic Cloud-authoritative editable-workspace assumption substitutes for the product behavior | Scenario results |
+| <a id="rule-p-05"></a>P-05 | ArcScope/ArcSlate portable packages round-trip completely. Notes Cloud/cached export reports declared fidelity and missing resources. Every application assistant exports/imports assistant-history.v1 locally or from its admitted Cloud scope under model 05, without implicit promotion. | Owner-specific round-trip or complete fidelity/exclusion report |
 | <a id="rule-p-06"></a>P-06 | Cross-product launch/handoff is future-only. Current assistant navigation opens resources inside its own application; remote operations target an already authorized application through Cloud. | [Future boundary](../future/cross-product-collaboration/README.md) |
-| P-07 | Deep links, file associations and single-instance routing verified (`§7`, `§8` of the shared desktop requirements) | Test results |
-| P-08 | Diagnostics, crash reporting and consent behaviour verified (`§9` of the observability architecture) | Test results |
+| <a id="rule-p-07"></a>P-07 | Deep links, file associations and single-instance routing verified (`§7`, `§8` of the shared desktop requirements) | Test results |
+| <a id="rule-p-08"></a>P-08 | Diagnostics, crash reporting and consent behaviour verified (`§9` of the observability architecture) | Test results |
 
 ---
 
@@ -109,21 +109,21 @@ This document consolidates every gate that stands between work and users, in one
 | # | Gate |
 |---|---|
 | <a id="rule-l-01"></a>L-01 | A full **Game Day** exercising SEV0 through SEV2 scenarios against the real production topology |
-| L-02 | Real D1 Time Travel recovery and independent export/import plus contiguous replay into a fresh D1 database proven; validate generation, restrictive journal and object integrity. |
-| L-03 | Cross-provider blob restore proven |
-| L-04 | D1 outbox/inbox backlog and dead-letter replay proven; duplicate delivery produces one effect (WP21/24, drill46.03) |
-| L-05 | EventService.Watch/Poll degradation and cursor reset with authorized reread; ExecutionService.WatchOutput interruption recovers through ReadOutput or explicit retention reset (WP24/52, drill46.03) |
-| L-06 | Workers AI outage and unknown dispatch preserve customer-hold deadline/supplier liability; proven pre-dispatch reservation release and explicit user model selection tested. No automatic provider/model fallback. |
-| L-07 | Cloudflare ingress/Container/binding outage preserves each product's declared hydrated local behavior; independently hosted status and incident path remain usable. |
-| L-08 | Email failover proven **without duplicate one-time codes** |
-| L-09 | Deployment rollback exercised, and a migration failure recovered |
-| L-10 | Fresh operator-owned Cloudflare account/realm rebuilt from signed artifacts, infrastructure/configuration and independent backups; selfhost.v1 identity/route/key isolation passes PG-25. |
-| L-11 | Webhook loss recovered by reconciliation; entitlement repair verified |
+| <a id="rule-l-02"></a>L-02 | Real D1 Time Travel recovery and independent export/import plus contiguous replay into a fresh D1 database proven; validate generation, restrictive journal and object integrity. |
+| <a id="rule-l-03"></a>L-03 | Cross-provider blob restore proven |
+| <a id="rule-l-04"></a>L-04 | D1 outbox/inbox backlog and dead-letter replay proven; duplicate delivery produces one effect (WP21/24, drill46.03) |
+| <a id="rule-l-05"></a>L-05 | EventService.Watch/Poll degradation and cursor reset with authorized reread; ExecutionService.WatchOutput interruption recovers through ReadOutput or explicit retention reset (WP24/52, drill46.03) |
+| <a id="rule-l-06"></a>L-06 | Workers AI outage and unknown dispatch preserve customer-hold deadline/supplier liability; proven pre-dispatch reservation release and explicit user model selection tested. No automatic provider/model fallback. |
+| <a id="rule-l-07"></a>L-07 | Cloudflare ingress/Container/binding outage preserves each product's declared hydrated local behavior; independently hosted status and incident path remain usable. |
+| <a id="rule-l-08"></a>L-08 | Email failover proven **without duplicate one-time codes** |
+| <a id="rule-l-09"></a>L-09 | Deployment rollback exercised, and a migration failure recovered |
+| <a id="rule-l-10"></a>L-10 | Fresh operator-owned Cloudflare account/realm rebuilt from signed artifacts, infrastructure/configuration and independent backups; selfhost.v1 identity/route/key isolation passes PG-25. |
+| <a id="rule-l-11"></a>L-11 | Webhook loss recovered by reconciliation; entitlement repair verified |
 | <a id="rule-l-12"></a>L-12 | Every required runbook written, assigned and rehearsed at least once (`§9.1` there) |
 | <a id="rule-l-13"></a>L-13 | Backup health dashboard green **with a proven restore**, not merely a green backup job |
-| L-14 | Status page live, independently hosted, with the emergency alternate URL published (`§8` of the observability architecture) |
+| <a id="rule-l-14"></a>L-14 | Status page live, independently hosted, with the emergency alternate URL published (`§8` of the observability architecture) |
 | <a id="rule-l-15"></a>L-15 | Alert-to-runbook mapping complete; on-call responder arrangement in place (`§7` there) |
-| <a id="rule-l-16"></a>L-16 | The selected [launch-capacity.v1](../architecture/data-model/04-d1-execution-profile.md#launch-capacity-profile-v1) has recorded Product/Operations cost/performance approval and real production-shaped evidence: standard-2/four-slot routing, ten-minute idle sleep and cold first response, exact workload/stream/D1 footprint, Vectorize vector/namespace and R2 byte/object/Class A/Class B/served-byte budgets, threshold reservations/rescue and 30-day headroom. Include actual configuration hashes and unit-cost/duty-cycle results. PG-26 remains open until these pass; document/SQLite checks cannot close it. |
+| <a id="rule-l-16"></a>L-16 | The selected [launch-capacity.v1](../architecture/data-model/04-d1-execution-profile.md#launch-capacity-profile-v1) has recorded Product/Operations cost/performance approval and real production-shaped evidence: standard-2/four-slot routing, ten-minute idle sleep and cold first response, exact workload/stream/D1 footprint, Vectorize vector/namespace and R2 byte/object/Class A/Class B/served-byte budgets, threshold reservations/rescue and 30-day headroom. Include actual configuration hashes and unit-cost/duty-cycle results. [PG-26](open-gates-register.md#rule-pg-26) remains open until these pass; document/SQLite checks cannot close it. |
 
 ### 6.2 Commercial go-live
 
@@ -134,14 +134,14 @@ This document consolidates every gate that stands between work and users, in one
 | <a id="rule-l-20"></a>L-20 | Supplier onboarding and account approval complete |
 | <a id="rule-l-21"></a>L-21 | Sanctions and export screening completed for the intended market set |
 | <a id="rule-l-22"></a>L-22 | Payout eligibility and receiving-currency confirmed |
-| L-23 | One real card payment completed |
-| L-24 | One real subscription created |
-| L-25 | One real renewal observed |
-| L-26 | One cancellation and one reactivation completed |
-| L-27 | One refund completed **with entitlement rollback verified** |
+| <a id="rule-l-23"></a>L-23 | One real card payment completed |
+| <a id="rule-l-24"></a>L-24 | One real subscription created |
+| <a id="rule-l-25"></a>L-25 | One real renewal observed |
+| <a id="rule-l-26"></a>L-26 | One cancellation and one reactivation completed |
+| <a id="rule-l-27"></a>L-27 | One refund completed **with entitlement rollback verified** |
 | <a id="rule-l-28"></a>L-28 | Webhook duplicate-and-loss recovery test passed |
 | <a id="rule-l-29"></a>L-29 | Reconciliation repair test passed |
-| L-30 | **A completed payout received** |
+| <a id="rule-l-30"></a>L-30 | **A completed payout received** |
 | <a id="rule-l-31"></a>L-31 | Credit lifecycle demonstrated end to end: reservation, settlement, release, expiry, refund hold (`§13` of the commerce architecture) |
 
 ### 6.3 Regional enablement
@@ -149,7 +149,7 @@ This document consolidates every gate that stands between work and users, in one
 | # | Gate |
 |---|---|
 | <a id="rule-l-40"></a>L-40 | Every one of the eight Mainland China pre-enablement gates recorded as met before that route is enabled (**[D-023](../decisions/phase-1-foundation-decisions.md#rule-d-023)**) |
-| L-41 | The route remains disabled by configuration until [L-40](#rule-l-40) is satisfied, and the configuration state is verified in the release gate ([RG-04](../architecture/16-billing-and-commerce-architecture.md#rule-rg-04) in the commerce architecture) |
+| <a id="rule-l-41"></a>L-41 | The route remains disabled by configuration until [L-40](#rule-l-40) is satisfied, and the configuration state is verified in the release gate ([RG-04](../architecture/16-billing-and-commerce-architecture.md#rule-rg-04) in the commerce architecture) |
 
 ### 6.4 Mobile release
 
@@ -159,22 +159,22 @@ This document consolidates every gate that stands between work and users, in one
 | <a id="rule-l-51"></a>L-51 | **[V-09](phase-1-official-verification.md#rule-v-09)**: store category fit and consumption-only conformance confirmed by review, not by reading the guideline ([PL-07](../requirements/10-distribution-update-and-support.md#rule-pl-07) there) |
 | <a id="rule-l-52"></a>L-52 | Commerce-prohibition build check passes: no purchase surface, no embedded checkout, no store billing, no external purchase call to action, **no licence-key or purchase-token unlock path** ([MC-01](../architecture/11-mobile-architecture.md#rule-mc-01)–[MC-06](../architecture/11-mobile-architecture.md#rule-mc-06) in the mobile architecture) |
 | <a id="rule-l-53"></a>L-53 | Android runtime posture confirmed by inspecting the produced release artifact, not the project file ([RT-07](../architecture/11-mobile-architecture.md#rule-rt-07) there) |
-| L-54 | Release artifact built by CI and smoke-tested on a real device ([RT-08](../architecture/11-mobile-architecture.md#rule-rt-08) there) |
-| L-55 | Store developer account established under the intended long-term owning identity ([PL-05](../requirements/10-distribution-update-and-support.md#rule-pl-05) in the distribution requirements) |
+| <a id="rule-l-54"></a>L-54 | Release artifact built by CI and smoke-tested on a real device ([RT-08](../architecture/11-mobile-architecture.md#rule-rt-08) there) |
+| <a id="rule-l-55"></a>L-55 | Store developer account established under the intended long-term owning identity ([PL-05](../requirements/10-distribution-update-and-support.md#rule-pl-05) in the distribution requirements) |
 
 ### 6.5 Extension platform opening
 
 | # | Gate |
 |---|---|
 | <a id="rule-l-60"></a>L-60 | Extension protocol conformance suite passes against a reference extension covering every contribution kind ([XT-01](../architecture/15-extension-platform-architecture.md#rule-xt-01) in the extension architecture) |
-| L-61 | Isolation suite passes: crash, hang, memory exhaustion and unbounded output each leave the host healthy |
-| L-62 | Permission presentation, grant, re-consent and revocation verified end to end |
-| L-63 | Catalog-as-untrusted suite passes |
-| L-64 | Public SDK compatibility commitment published, with the protocol and SDK versions separated (`§10` there) |
+| <a id="rule-l-61"></a>L-61 | Isolation suite passes: crash, hang, memory exhaustion and unbounded output each leave the host healthy |
+| <a id="rule-l-62"></a>L-62 | Permission presentation, grant, re-consent and revocation verified end to end |
+| <a id="rule-l-63"></a>L-63 | Catalog-as-untrusted suite passes |
+| <a id="rule-l-64"></a>L-64 | Public SDK compatibility commitment published, with the protocol and SDK versions separated (`§10` there) |
 
 ---
 
-Commercial activation evidence for L-23–L-30 is produced by WP48/WP50. WP42.10 supplies technical/test-mode receipts and the activation checklist; a real customer checkout and received payout are not prerequisites of WP42.
+Commercial activation evidence for [L-23](#rule-l-23)–[L-30](#rule-l-30) is produced by WP48/WP50. WP42.10 supplies technical/test-mode receipts and the activation checklist; a real customer checkout and received payout are not prerequisites of WP42.
 
 ## 7. D — Deferred-gate closure
 
@@ -205,9 +205,9 @@ Full state is tracked in [`open-gates-register.md`](open-gates-register.md).
 
 | # | Rule |
 |---|---|
-| GO-01 | **A gate without a named accountable role is not deployed.** |
-| GO-02 | **The accountable role approves the evidence, not the intention.** |
-| GO-03 | **Roles are functions, not individuals**, and the current holder is recorded in the planning layer. |
+| <a id="rule-go-01"></a>GO-01 | **A gate without a named accountable role is not deployed.** |
+| <a id="rule-go-02"></a>GO-02 | **The accountable role approves the evidence, not the intention.** |
+| <a id="rule-go-03"></a>GO-03 | **Roles are functions, not individuals**, and the current holder is recorded in the planning layer. |
 
 ---
 
@@ -231,6 +231,6 @@ Full state is tracked in [`open-gates-register.md`](open-gates-register.md).
 [P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008) replaces the Web runtime proof with Node-built Site/Account/Chat artifacts. [PG-23](open-gates-register.md#rule-pg-23) requires real C#/TS SDK and session/realtime compatibility, consumer visual/accessibility/performance evidence, esproj/CLI workflow checks, exact-value correctness, npm provenance/SBOM and coherent edge/asset rollback. Existing native AOT and real commercial provider gates remain independent.
 
 
-## P2-009 deployment closure
+## [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) deployment closure
 
 Release consumes one tested immutable [integration manifest](../architecture/14-build-packaging-and-release.md#14-independent-producer-and-consumer-artifact-gates): independent product and package versions, Cloud image, Worker version, proto descriptor and storage/migration compatibility. The full gate includes the activated [VG-06](open-gates-register.md#rule-vg-06), Kotlin/ART Android proof, real CF inference/R2 transfer and cross-provider recovery after both [WP-46](../planning/work-packages/46-backup-recovery-and-data-health.md#rule-wp-46) and [WP-52](../planning/work-packages/52-cloud-harness.md#rule-wp-52). Provider uncertainty, object verification, user revocation and rollback cannot pass with mocks. First-party native packages retain every RID, isolation, provenance and hardware gate. Product release versions need not move together.

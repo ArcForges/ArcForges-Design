@@ -1,5 +1,5 @@
 # ArcForges Cloud — Product and Platform Requirements
-> Effective scope: P2-012 and P2-013 amend the technology and application ownership below. **[P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
+> Effective scope: [P2-012](../../decisions/phase-2-specification-decisions.md#rule-p2-012) and [P2-013](../../decisions/phase-2-specification-decisions.md#rule-p2-013) amend the technology and application ownership below. **[P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Requirements / Products
@@ -16,13 +16,13 @@ Product capability requirements are specified in [`../03-cloud-services-and-sync
 
 | # | Requirement |
 |---|---|
-| PP-01 | ArcForges Cloud is one C# Native AOT modular monolith per Container instance under P2-009/P2-012. The 21 module owners are enumerated in architecture 05, including PackageCatalog. D1, Durable Objects, Queues, Workflow/Workers AI and R2 are bound managed resources; no Node sidecar or second business host. |
-| PP-02 | **It is one logical platform**, internally partitioned by module — never split into per-product backends. |
+| <a id="rule-pp-01"></a>PP-01 | ArcForges Cloud is one C# Native AOT modular monolith per Container instance under [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009)/P2-012. The 21 module owners are enumerated in architecture 05, including PackageCatalog. D1, Durable Objects, Queues, Workflow/Workers AI and R2 are bound managed resources; no Node sidecar or second business host. |
+| <a id="rule-pp-02"></a>PP-02 | **It is one logical platform**, internally partitioned by module — never split into per-product backends. |
 | <a id="rule-pp-03"></a>PP-03 | One deployable C# Native AOT host contains business APIs, admission, canonical Task/Agent stores, simulator and bounded leased jobs. The sole model/tool loop runs in the separate CF Worker deployment; identical C# replicas are allowed, no role-selected Worker/TaskRunner. |
-| PP-04 | The first deployment uses Cloudflare Workers and Containers. Kubernetes and an independently operated container platform are outside this profile. |
-| PP-05 | **Cloud never connects to localhost, a named pipe, a Unix socket or local stdio** (**[D-010](../../decisions/phase-1-foundation-decisions.md#rule-d-010)**). Local action is a durable `ToolRequest` that the owning desktop application pulls, re-authorises locally, executes, and answers with an idempotent `ToolResult`. |
-| PP-06 | **Cloud never scans a LAN** and never addresses a desktop directly. |
-| PP-07 | **Professional products reach Cloud directly** for their own identity, sync, storage and product-domain APIs; ArcChat is not a mandatory data gateway (**[D-010](../../decisions/phase-1-foundation-decisions.md#rule-d-010)**). |
+| <a id="rule-pp-04"></a>PP-04 | The first deployment uses Cloudflare Workers and Containers. Kubernetes and an independently operated container platform are outside this profile. |
+| <a id="rule-pp-05"></a>PP-05 | **Cloud never connects to localhost, a named pipe, a Unix socket or local stdio** (**[D-010](../../decisions/phase-1-foundation-decisions.md#rule-d-010)**). Local action is a durable `ToolRequest` that the owning desktop application pulls, re-authorises locally, executes, and answers with an idempotent `ToolResult`. |
+| <a id="rule-pp-06"></a>PP-06 | **Cloud never scans a LAN** and never addresses a desktop directly. |
+| <a id="rule-pp-07"></a>PP-07 | **Professional products reach Cloud directly** for their own identity, sync, storage and product-domain APIs; ArcChat is not a mandatory data gateway (**[D-010](../../decisions/phase-1-foundation-decisions.md#rule-d-010)**). |
 
 ### 1.1 One deployable host, bounded internal work
 
@@ -31,11 +31,11 @@ API ingress, webhook processing, sync, AI dispatch/admission and result recordin
 | # | Requirement |
 |---|---|
 | <a id="rule-rr-01"></a>RR-01 | User automations are Cloud domain objects with concurrency and missed-run policies, not per-user infrastructure cron entries. Their scheduler runs inside the host. |
-| RR-02 | The official host runs in Cloudflare Containers and may scale to zero; bounded cold-start/availability acceptance is required. Worker routing, durable wake sources and D1 checkpoints replace always-on process assumptions. |
-| RR-03 | Internal work has bounded concurrency, memory, time and temporary storage. Durable claims, fencing and idempotency prevent duplicate model dispatch, charge settlement, simulation publication and maintenance effects after host loss. No background loop depends on an HTTP connection staying open. |
-| RR-04 | Arbitrary untrusted server-side code execution is excluded. A bounded simulator expression interpreter or trusted tool adapter does not authorize general code execution in the host. |
+| <a id="rule-rr-02"></a>RR-02 | The official host runs in Cloudflare Containers and may scale to zero; bounded cold-start/availability acceptance is required. Worker routing, durable wake sources and D1 checkpoints replace always-on process assumptions. |
+| <a id="rule-rr-03"></a>RR-03 | Internal work has bounded concurrency, memory, time and temporary storage. Durable claims, fencing and idempotency prevent duplicate model dispatch, charge settlement, simulation publication and maintenance effects after host loss. No background loop depends on an HTTP connection staying open. |
+| <a id="rule-rr-04"></a>RR-04 | Arbitrary untrusted server-side code execution is excluded. A bounded simulator expression interpreter or trusted tool adapter does not authorize general code execution in the host. |
 | <a id="rule-rr-05"></a>RR-05 | Secrets and resource access are purpose-bound to the admitted operation; no user input obtains the host identity or arbitrary host file/network access. |
-| RR-06 | AI activity, sync and ordinary product jobs have separate capacity budgets within the host. Load shedding and graceful drain prevent an agent or simulator from starving identity, billing webhooks and sync. |
+| <a id="rule-rr-06"></a>RR-06 | AI activity, sync and ordinary product jobs have separate capacity budgets within the host. Load shedding and graceful drain prevent an agent or simulator from starving identity, billing webhooks and sync. |
 
 ---
 
@@ -57,25 +57,25 @@ The current baseline selections. **Every provider fact — availability, region 
 | Observability | An external observability and incident platform | Plus the platform's native signals |
 | Transactional email | Postmark primary; SES emergency secondary | Notification owns correlated delivery intents and ambiguity reconciliation under architecture 13 |
 | Infrastructure as code | A declarative IaC tool with pinned providers | State stored securely, never in version control |
-| CI/CD | The build platform with provider-supported deployment authentication under EN-08 | Protected short-lived or expiring deployment credentials |
+| CI/CD | The build platform with provider-supported deployment authentication under [EN-08](#rule-en-08) | Protected short-lived or expiring deployment credentials |
 
 | # | Requirement |
 |---|---|
-| DB-01 | **No provider name may enter a domain contract.** Storage is `ObjectStorage`, not a vendor type; realtime is a transport, not a domain concept; the AI gateway is infrastructure, not a product model ([RT-01](../05-ai-and-agent-execution.md#rule-rt-01) in the AI requirements). |
-| DB-02 | **Every external dependency has an adapter and a stated degradation behaviour** (`§7`). |
-| DB-03 | **Redis is not a V1 dependency.** Caching that a single-region deployment can do without is not introduced pre-emptively. |
-| DB-04 | **A dedicated search cluster is not a V1 dependency.** Search sits behind an abstraction so the backend can change without a domain change ([IX-10](../06-knowledge-search-and-retrieval.md#rule-ix-10)). |
-| DB-05 | **Do not install expensive infrastructure in advance "for performance."** Capacity is added against measured need. |
+| <a id="rule-db-01"></a>DB-01 | **No provider name may enter a domain contract.** Storage is `ObjectStorage`, not a vendor type; realtime is a transport, not a domain concept; the AI gateway is infrastructure, not a product model ([RT-01](../05-ai-and-agent-execution.md#rule-rt-01) in the AI requirements). |
+| <a id="rule-db-02"></a>DB-02 | **Every external dependency has an adapter and a stated degradation behaviour** (`§7`). |
+| <a id="rule-db-03"></a>DB-03 | **Redis is not a V1 dependency.** Caching that a single-region deployment can do without is not introduced pre-emptively. |
+| <a id="rule-db-04"></a>DB-04 | **A dedicated search cluster is not a V1 dependency.** Search sits behind an abstraction so the backend can change without a domain change ([IX-10](../06-knowledge-search-and-retrieval.md#rule-ix-10)). |
+| <a id="rule-db-05"></a>DB-05 | **Do not install expensive infrastructure in advance "for performance."** Capacity is added against measured need. |
 
 ### 2.1 Region
 
 | # | Requirement |
 |---|---|
-| RG-01 | A deployment declares its Cloudflare jurisdiction/location settings and any legally supported residency promises. D1 is a single primary authority per realm; Worker placement is not a region-pinned business assumption. |
-| RG-02 | Provisioning preflight verifies the actual account plan and availability of Workers, Containers, D1, Durable Objects, Queues, R2, Workflows, Workers AI and Vectorize; record current quotas, retention, jurisdiction and outbound restrictions. Missing required capabilities block provisioning rather than silently choosing another topology. |
-| RG-03 | Resilience uses the managed service guarantees and explicit application retry/fence/recovery design. Do not claim operator-configured availability zones or customer-controlled D1 failover. |
-| RG-04 | Jurisdiction and supported location hints are versioned IaC inputs. Disaster recovery provisions a fresh fenced realm/resource set from the independent manifest; it never assumes a SQL region switch or unchanged resource IDs. |
-| RG-05 | **Workspace `DataRegion` exists from day one** ([WS-09](../02-identity-account-and-workspace.md#rule-ws-09)), and **no public residency claim is made** unless infrastructure legally guaranteeing it is in use ([RG-02](../07-security-privacy-and-trust.md#rule-rg-02) in the security requirements). |
+| <a id="rule-rg-01"></a>RG-01 | A deployment declares its Cloudflare jurisdiction/location settings and any legally supported residency promises. D1 is a single primary authority per realm; Worker placement is not a region-pinned business assumption. |
+| <a id="rule-rg-02"></a>RG-02 | Provisioning preflight verifies the actual account plan and availability of Workers, Containers, D1, Durable Objects, Queues, R2, Workflows, Workers AI and Vectorize; record current quotas, retention, jurisdiction and outbound restrictions. Missing required capabilities block provisioning rather than silently choosing another topology. |
+| <a id="rule-rg-03"></a>RG-03 | Resilience uses the managed service guarantees and explicit application retry/fence/recovery design. Do not claim operator-configured availability zones or customer-controlled D1 failover. |
+| <a id="rule-rg-04"></a>RG-04 | Jurisdiction and supported location hints are versioned IaC inputs. Disaster recovery provisions a fresh fenced realm/resource set from the independent manifest; it never assumes a SQL region switch or unchanged resource IDs. |
+| <a id="rule-rg-05"></a>RG-05 | **Workspace `DataRegion` exists from day one** ([WS-09](../02-identity-account-and-workspace.md#rule-ws-09)), and **no public residency claim is made** unless infrastructure legally guaranteeing it is in use ([RG-02](../07-security-privacy-and-trust.md#rule-rg-02) in the security requirements). |
 
 ---
 
@@ -84,13 +84,13 @@ The current baseline selections. **Every provider fact — availability, region 
 | # | Requirement |
 |---|---|
 | <a id="rule-nw-01"></a>NW-01 | **The API origin is never directly exposed to the public internet.** It uses internal ingress, reached only through the edge. |
-| NW-02 | Only the bound Worker can route to the Container. A failed or restarting instance is replaced within the configured capacity; callers receive bounded unavailability and reconcile commands through D1. There is no cloudflared connector pair to operate. |
-| NW-03 | Worker origin routing and private Container/service bindings require no cloudflared tunnel host or separate relay VM. |
+| <a id="rule-nw-02"></a>NW-02 | Only the bound Worker can route to the Container. A failed or restarting instance is replaced within the configured capacity; callers receive bounded unavailability and reconcile commands through D1. There is no cloudflared connector pair to operate. |
+| <a id="rule-nw-03"></a>NW-03 | Worker origin routing and private Container/service bindings require no cloudflared tunnel host or separate relay VM. |
 | <a id="rule-nw-04"></a>NW-04 | **Three protection layers coexist**: edge WAF, a human-verification challenge on abuse-prone endpoints only, and **application-level rate limiting**. |
-| NW-05 | **A human-verification challenge must not be applied everywhere.** It belongs on sign-up, sign-in, recovery, support submission and other abuse-prone endpoints — never on ordinary product API traffic. |
+| <a id="rule-nw-05"></a>NW-05 | **A human-verification challenge must not be applied everywhere.** It belongs on sign-up, sign-in, recovery, support submission and other abuse-prone endpoints — never on ordinary product API traffic. |
 | <a id="rule-nw-06"></a>NW-06 | **Rate limiting is never IP-only.** It is dimensioned by identity, workspace, device, endpoint class and cost class, because IP alone punishes shared networks and fails against distributed abuse. |
 | <a id="rule-nw-07"></a>NW-07 | D1 is accessible only through the private Worker execution adapter with its deployment binding. No public SQL endpoint or general SQL-over-HTTP route is admitted. |
-| NW-08 | Use the bounded registered D1 plans and service-binding adapter in model 04. There is no PostgreSQL connection pool, arbitrary SQL proxy or per-request interactive transaction. |
+| <a id="rule-nw-08"></a>NW-08 | Use the bounded registered D1 plans and service-binding adapter in model 04. There is no PostgreSQL connection pool, arbitrary SQL proxy or per-request interactive transaction. |
 | <a id="rule-nw-09"></a>NW-09 | Provider callbacks are a separate allowlisted ingress class: verify each provider-specific authentication mechanism before durable idempotent acceptance. Payment signatures and SES SNS signatures are verified; Postmark uses its dedicated HTTPS credential/IP policy and correlation, not a fabricated signature. Callback payloads never authorize a user action. |
 | <a id="rule-nw-10"></a>NW-10 | **Cloud tasks require SSRF protection**: outbound destinations are validated against an allow policy, internal address ranges and metadata endpoints are blocked, and redirects are re-validated. |
 
@@ -100,17 +100,17 @@ The current baseline selections. **Every provider fact — availability, region 
 
 | # | Requirement |
 |---|---|
-| DP-01 | **One primary relational database, with module-owned schemas or explicit table ownership** — not one database per module. |
-| DP-02 | **A module never writes another module's tables**. Cross-module interaction is through module APIs and events. |
-| DP-03 | D1 service failure is explicit unavailability. Guarded batches, durable receipts and primary-read reconciliation prevent duplicate or partially accepted business effects after retry; no customer-controlled database failover is assumed. |
-| DP-04 | Provision and verify the selected plan's D1 Time Travel retention and record its bookmark in the backup manifest. Independently export the fenced logical database and referenced object versions under model 04; restore evidence, not configured retention alone, satisfies recovery. |
-| DP-05 | **Platform backup is not the whole backup story.** An independent, encrypted logical backup to a second provider is also required (`§14` of the cloud requirements). |
-| DP-06 | **The transactional outbox commits with the business transaction**, and an inbox/idempotency table guards duplicate delivery. |
-| DP-07 | **Outbox/inbox dispatch is never the business source of truth.** Lost or replayed delivery cannot lose or duplicate a business fact. |
-| DP-08 | **Every queue consumer is idempotent.** Re-delivery must be indistinguishable from single delivery in effect. |
-| DP-09 | **Per-owner ordered dispatch is used only where the owner requires it**, through the declared outbox/inbox sequence and fence. No broker session or global ordering is introduced. |
-| DP-10 | **D1 outbox/inbox dead-letter state is a first-class operational object**, monitored, inspectable and replayable with duplicate effects prevented. |
-| DP-11 | **Realtime is not a task state database** ([I-066](../01-normative-glossary-and-invariants.md#rule-i-066), [SN-01](../05-ai-and-agent-execution.md#rule-sn-01)). State is queried; realtime accelerates. |
+| <a id="rule-dp-01"></a>DP-01 | **One primary relational database, with module-owned schemas or explicit table ownership** — not one database per module. |
+| <a id="rule-dp-02"></a>DP-02 | **A module never writes another module's tables**. Cross-module interaction is through module APIs and events. |
+| <a id="rule-dp-03"></a>DP-03 | D1 service failure is explicit unavailability. Guarded batches, durable receipts and primary-read reconciliation prevent duplicate or partially accepted business effects after retry; no customer-controlled database failover is assumed. |
+| <a id="rule-dp-04"></a>DP-04 | Provision and verify the selected plan's D1 Time Travel retention and record its bookmark in the backup manifest. Independently export the fenced logical database and referenced object versions under model 04; restore evidence, not configured retention alone, satisfies recovery. |
+| <a id="rule-dp-05"></a>DP-05 | **Platform backup is not the whole backup story.** An independent, encrypted logical backup to a second provider is also required (`§14` of the cloud requirements). |
+| <a id="rule-dp-06"></a>DP-06 | **The transactional outbox commits with the business transaction**, and an inbox/idempotency table guards duplicate delivery. |
+| <a id="rule-dp-07"></a>DP-07 | **Outbox/inbox dispatch is never the business source of truth.** Lost or replayed delivery cannot lose or duplicate a business fact. |
+| <a id="rule-dp-08"></a>DP-08 | **Every queue consumer is idempotent.** Re-delivery must be indistinguishable from single delivery in effect. |
+| <a id="rule-dp-09"></a>DP-09 | **Per-owner ordered dispatch is used only where the owner requires it**, through the declared outbox/inbox sequence and fence. No broker session or global ordering is introduced. |
+| <a id="rule-dp-10"></a>DP-10 | **D1 outbox/inbox dead-letter state is a first-class operational object**, monitored, inspectable and replayable with duplicate effects prevented. |
+| <a id="rule-dp-11"></a>DP-11 | **Realtime is not a task state database** ([I-066](../01-normative-glossary-and-invariants.md#rule-i-066), [SN-01](../05-ai-and-agent-execution.md#rule-sn-01)). State is queried; realtime accelerates. |
 
 ---
 
@@ -118,12 +118,12 @@ The current baseline selections. **Every provider fact — availability, region 
 
 | # | Requirement |
 |---|---|
-| SC-01 | Production secrets are injected through deployment secret references or a managed secret store, with least privilege, rotation and audited access. Non-secret operational policy is the mounted versioned configuration in [DC-01](../11-policy-and-configuration.md#rule-dc-01)–[DC-17](../11-policy-and-configuration.md#rule-dc-17), not a secret-store entry per business value. |
-| SC-02 | **Service-to-service authentication uses workload identity, not secrets**, wherever the platform supports it. |
+| <a id="rule-sc-01"></a>SC-01 | Production secrets are injected through deployment secret references or a managed secret store, with least privilege, rotation and audited access. Non-secret operational policy is the mounted versioned configuration in [DC-01](../11-policy-and-configuration.md#rule-dc-01)–[DC-17](../11-policy-and-configuration.md#rule-dc-17), not a secret-store entry per business value. |
+| <a id="rule-sc-02"></a>SC-02 | **Service-to-service authentication uses workload identity, not secrets**, wherever the platform supports it. |
 | <a id="rule-sc-03"></a>SC-03 | Provider credentials belong to the deployment operator and are resolved server-side. There is no customer Cloud BYOK submission, key vault or reveal API. Self-hosting uses operator-funded remote credentials with the same host implementation. |
 | <a id="rule-sc-04"></a>SC-04 | **Operator identity is independent of customer identity.** The operator surface must not authenticate through the customer identity system (`§10` of the distribution requirements). |
-| SC-05 | **Break-glass administrative access exists with two independent recovery routes**, under the constraints in `§9` of the distribution requirements. |
-| SC-06 | **Support staff can never silently become a user** (`SC-06` there). |
+| <a id="rule-sc-05"></a>SC-05 | **Break-glass administrative access exists with two independent recovery routes**, under the constraints in `§9` of the distribution requirements. |
+| <a id="rule-sc-06"></a>SC-06 | **Support staff can never silently become a user** ([`SC-06`](../10-distribution-update-and-support.md#rule-sc-06) there). |
 
 ---
 
@@ -140,10 +140,10 @@ Four layers:
 
 | # | Requirement |
 |---|---|
-| EN-01 | **Staging is topology-compatible with production** — same shapes, same boundaries, same deployment mechanism — even at smaller scale. |
-| EN-02 | **Production and non-production live in separate cloud subscriptions or accounts.** |
-| EN-03 | **Production data is never copied to staging.** Staging uses synthetic data. |
-| EN-04 | **Infrastructure is defined as code**, with pinned provider versions. |
+| <a id="rule-en-01"></a>EN-01 | **Staging is topology-compatible with production** — same shapes, same boundaries, same deployment mechanism — even at smaller scale. |
+| <a id="rule-en-02"></a>EN-02 | **Production and non-production live in separate cloud subscriptions or accounts.** |
+| <a id="rule-en-03"></a>EN-03 | **Production data is never copied to staging.** Staging uses synthetic data. |
+| <a id="rule-en-04"></a>EN-04 | **Infrastructure is defined as code**, with pinned provider versions. |
 | <a id="rule-en-05"></a>EN-05 | **Local development orchestration is not replaced by, and does not replace, production IaC.** They serve different purposes and both exist. |
 | <a id="rule-en-06"></a>EN-06 | **IaC state is a secret**: stored in a secured backend, never in version control, and separated per environment. |
 | <a id="rule-en-07"></a>EN-07 | **Portal-driven infrastructure changes are prohibited in production.** An emergency manual change is reconciled back into IaC promptly, and drift detection runs regularly. |
@@ -151,7 +151,7 @@ Four layers:
 | <a id="rule-en-09"></a>EN-09 | **Staging and production use different deployment identities**, and neither holds subscription-owner rights. |
 | <a id="rule-en-10"></a>EN-10 | **Container images are published to a private registry**, and **production never rebuilds**: the same digest built once is promoted through environments. |
 | <a id="rule-en-11"></a>EN-11 | **Deployment references an image digest, never a mutable tag.** |
-| EN-12 | **Server builds produce an SBOM and provenance attestation** ([PK-20](../08-extensions-and-developer-platform.md#rule-pk-20) in the extension requirements, applied to first-party builds). |
+| <a id="rule-en-12"></a>EN-12 | **Server builds produce an SBOM and provenance attestation** ([PK-20](../08-extensions-and-developer-platform.md#rule-pk-20) in the extension requirements, applied to first-party builds). |
 | <a id="rule-en-13"></a>EN-13 | **Production deployment passes through a gated environment approval.** |
 | <a id="rule-en-14"></a>EN-14 | **Rollback is one action.** Platform revisions retain the previous release so a rollback is immediate. |
 
@@ -160,8 +160,8 @@ Four layers:
 | # | Requirement |
 |---|---|
 | <a id="rule-mg-01"></a>MG-01 | **Automatic migration on application startup is prohibited for all replicas**. Every replica racing to migrate is a defect. |
-| MG-02 | **Migration is an independent, gated deployment step.** |
-| MG-03 | **Schema change uses expand/contract**, so old and new application versions coexist during a rolling deployment. |
+| <a id="rule-mg-02"></a>MG-02 | **Migration is an independent, gated deployment step.** |
+| <a id="rule-mg-03"></a>MG-03 | **Schema change uses expand/contract**, so old and new application versions coexist during a rolling deployment. |
 | <a id="rule-mg-04"></a>MG-04 | **"Migration down" is not the rollback strategy.** Rollback is an application rollback or a forward fix; a destructive down-migration is not run against production data ([MG-09](../13-data-formats-and-portability.md#rule-mg-09) in the data requirements). |
 
 ---
@@ -184,9 +184,9 @@ Four layers:
 
 | # | Requirement |
 |---|---|
-| RS-01 | **Capabilities degrade independently** ([CL-03](../03-cloud-services-and-sync.md#rule-cl-03)). An AI outage must never stop ArcNotes sync. |
-| RS-02 | **Passkey authentication means an email outage does not lock every user out** (`§2.2` of the identity requirements). |
-| RS-03 | **Every dependency has a documented degradation path and a runbook** (`§9`). |
+| <a id="rule-rs-01"></a>RS-01 | **Capabilities degrade independently** ([CL-03](../03-cloud-services-and-sync.md#rule-cl-03)). An AI outage must never stop ArcNotes sync. |
+| <a id="rule-rs-02"></a>RS-02 | **Passkey authentication means an email outage does not lock every user out** (`§2.2` of the identity requirements). |
+| <a id="rule-rs-03"></a>RS-03 | **Every dependency has a documented degradation path and a runbook** (`§9`). |
 
 ---
 
@@ -210,8 +210,8 @@ Four layers:
 | # | Requirement |
 |---|---|
 | <a id="rule-sl-01"></a>SL-01 | **An internal SLO set exists and is defined by user experience, not by "the process is running"** ([I-391](../01-normative-glossary-and-invariants.md#rule-i-391)). A responding server that cannot serve a sync request is down. |
-| SL-02 | **SLO ≠ external SLA** ([I-403](../01-normative-glossary-and-invariants.md#rule-i-403)). Publishing a commitment requires a deliberate decision and demonstrated performance. |
-| SL-03 | **Alerts are symptom-based, not exception-based.** Waking someone for every exception destroys the alerting channel's value. |
+| <a id="rule-sl-02"></a>SL-02 | **SLO ≠ external SLA** ([I-403](../01-normative-glossary-and-invariants.md#rule-i-403)). Publishing a commitment requires a deliberate decision and demonstrated performance. |
+| <a id="rule-sl-03"></a>SL-03 | **Alerts are symptom-based, not exception-based.** Waking someone for every exception destroys the alerting channel's value. |
 | <a id="rule-sl-04"></a>SL-04 | Incident severity is fixed: **SEV0** security or potential data loss; **SEV1** major paid cloud outage; **SEV2** critical functionality degraded; **SEV3** limited impact. |
 | <a id="rule-sl-05"></a>SL-05 | **A possible personal-data breach is automatically SEV0** with the statutory notification clock as a hard deadline ([IN-06](../10-distribution-update-and-support.md#rule-in-06) in the distribution requirements). |
 | <a id="rule-sl-06"></a>SL-06 | **Every SEV1-capable dependency has a runbook.** |
@@ -225,9 +225,9 @@ D1 unavailability and guarded retry · Time Travel recovery · independent fresh
 
 | # | Requirement |
 |---|---|
-| DR-01 | Disaster recovery uses one authoritative D1 realm plus independent encrypted logical/object backup and a rehearsed fresh Cloudflare resource deployment. It is not active-active and cannot rely on the failed original database remaining accessible. |
-| DR-02 | Exercise fresh-resource restore from IaC, secrets recovery and independent backups in the quarterly drill. Validate schema/hash counts, object inventory, new recovery generation, invalidated sessions/leases and reconciliation before reopening traffic. |
-| DR-03 | **Internal recovery objectives** are those in `§14.2` of the cloud requirements, and remain internal engineering objectives until a drill justifies publishing anything. |
+| <a id="rule-dr-01"></a>DR-01 | Disaster recovery uses one authoritative D1 realm plus independent encrypted logical/object backup and a rehearsed fresh Cloudflare resource deployment. It is not active-active and cannot rely on the failed original database remaining accessible. |
+| <a id="rule-dr-02"></a>DR-02 | Exercise fresh-resource restore from IaC, secrets recovery and independent backups in the quarterly drill. Validate schema/hash counts, object inventory, new recovery generation, invalidated sessions/leases and reconciliation before reopening traffic. |
+| <a id="rule-dr-03"></a>DR-03 | **Internal recovery objectives** are those in `§14.2` of the cloud requirements, and remain internal engineering objectives until a drill justifies publishing anything. |
 | <a id="rule-dr-04"></a>DR-04 | **`backup.zip` is not a backup strategy.** Backups are structured, verified, restorable and drilled (`§14` there). |
 
 ---
@@ -236,12 +236,12 @@ D1 unavailability and guarded retry · Time Travel recovery · independent fresh
 
 | # | Requirement |
 |---|---|
-| CC-01 | **Cost control is an infrastructure function, not a monthly surprise.** |
-| CC-02 | **Budget alerts and anomaly detection are configured** across cloud spend, AI spend and storage growth. |
+| <a id="rule-cc-01"></a>CC-01 | **Cost control is an infrastructure function, not a monthly surprise.** |
+| <a id="rule-cc-02"></a>CC-02 | **Budget alerts and anomaly detection are configured** across cloud spend, AI spend and storage growth. |
 | <a id="rule-cc-03"></a>CC-03 | **Autoscaling has a maximum cap.** An unbounded scale-out is an availability risk and a financial one. |
-| CC-04 | **Cloud tasks have maximum concurrency**, per workspace and globally ([LP-04](../05-ai-and-agent-execution.md#rule-lp-04)). |
-| CC-05 | The authoritative usage, capacity, credit and supplier-cost ledgers belong to ArcForges. Adapter/gateway caps are secondary guards. The mounted configuration supplies real model rates, plan terms, capacity recovery and bounded resource policies under the commerce and configuration requirements. |
-| CC-06 | **Provider prepaid balance is monitored and alerted** ([LG-09](../05-ai-and-agent-execution.md#rule-lg-09) there). |
+| <a id="rule-cc-04"></a>CC-04 | **Cloud tasks have maximum concurrency**, per workspace and globally ([LP-04](../05-ai-and-agent-execution.md#rule-lp-04)). |
+| <a id="rule-cc-05"></a>CC-05 | The authoritative usage, capacity, credit and supplier-cost ledgers belong to ArcForges. Adapter/gateway caps are secondary guards. The mounted configuration supplies real model rates, plan terms, capacity recovery and bounded resource policies under the commerce and configuration requirements. |
+| <a id="rule-cc-06"></a>CC-06 | **Provider prepaid balance is monitored and alerted** ([LG-09](../05-ai-and-agent-execution.md#rule-lg-09) there). |
 
 ---
 
@@ -249,9 +249,9 @@ D1 unavailability and guarded retry · Time Travel recovery · independent fresh
 
 | # | Requirement |
 |---|---|
-| OP-01 | **`ops.arcforges.com` is never as publicly reachable as the customer surface.** It is protected at the edge by an independent access layer in addition to application authorization. |
-| OP-02 | **Operator authentication does not use the customer identity system** ([SC-04](#rule-sc-04)). |
-| OP-03 | The operator console's capabilities, role separation, purpose binding, prohibition on arbitrary SQL and audit requirements are specified in `§10` of the distribution requirements. |
+| <a id="rule-op-01"></a>OP-01 | **`ops.arcforges.com` is never as publicly reachable as the customer surface.** It is protected at the edge by an independent access layer in addition to application authorization. |
+| <a id="rule-op-02"></a>OP-02 | **Operator authentication does not use the customer identity system** ([SC-04](#rule-sc-04)). |
+| <a id="rule-op-03"></a>OP-03 | The operator console's capabilities, role separation, purpose binding, prohibition on arbitrary SQL and audit requirements are specified in `§10` of the distribution requirements. |
 
 ---
 
@@ -331,10 +331,10 @@ Architecture boundaries must be reconciled to [P2-006](../../decisions/phase-2-s
 | [Deployment and Release Execution](../../architecture/22-deployment-and-release-execution.md) | Defines provisioning, deployment, migration and recovery procedures |
 | [Observability and Operations Architecture](../../architecture/13-observability-and-operations.md) | Implements observability, incident, support and operator obligations |
 | **[D-003](../../decisions/phase-1-foundation-decisions.md#rule-d-003)** | Provider capability and pricing facts are deferred with a first-consumption trigger |
-| **[D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008)** | D-008 is amended by P2-009/P2-012: Cloud is an ASP.NET Core Native AOT Container; real AOT integration is a required gate |
+| **[D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008)** | [D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008) is amended by [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009)/[P2-012](../../decisions/phase-2-specification-decisions.md#rule-p2-012): Cloud is an ASP.NET Core Native AOT Container; real AOT integration is a required gate |
 | **[D-010](../../decisions/phase-1-foundation-decisions.md#rule-d-010)** | Cloud never touches local IPC; durable `ToolRequest` / `ToolResult` model |
 | **[D-014](../../decisions/phase-1-foundation-decisions.md#rule-d-014)** | Surface inventory including the private operator surface |
-| **[V-03](../../assurance/phase-1-official-verification.md#rule-v-03)**, **[V-05e](../../assurance/phase-1-official-verification.md#rule-v-05e)** | Historical evidence for the earlier runtime decision; P2-009/P2-012 supersede its runtime/dependency conclusions |
+| **[V-03](../../assurance/phase-1-official-verification.md#rule-v-03)**, **[V-05e](../../assurance/phase-1-official-verification.md#rule-v-05e)** | Historical evidence for the earlier runtime decision; [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009)/[P2-012](../../decisions/phase-2-specification-decisions.md#rule-p2-012) supersede its runtime/dependency conclusions |
 
 ## Cloudflare deployment profile
 

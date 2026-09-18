@@ -45,16 +45,16 @@
 
 | # | Rule |
 |---|---|
-| BR-01 | **`App ≠ Installation ≠ Instance`.** Three distinct identities with three distinct lifecycles. |
-| BR-02 | **`Capability ≠ Action`.** A capability is an invocable semantic operation; an action is a user-facing offer with availability. |
-| BR-03 | **`ResourceRef` floats; `ResourceVersionRef` pins.** Choosing the wrong one is a semantic defect, not a style choice. |
-| BR-04 | **A resource is owned by exactly one product forever.** Ownership does not transfer with a reference. |
-| BR-05 | **Context is frozen at invocation.** A capability sees the context as it was when the invocation began, never a later mutation. |
-| BR-06 | **Availability is computed, not assumed.** An action unavailable for a stated reason is shown as unavailable with that reason, never silently missing. |
-| BR-07 | **Routing priority is fixed** and identical on every platform (`§10` of the contract architecture). |
-| BR-08 | **The semantic error set is closed**, and every invocation failure maps to it. |
-| BR-09 | **Health has five dimensions** — reachable, ready, healthy, degraded, capacity — used identically locally and in the cloud. |
-| BR-10 | **A capability descriptor is richer than a tool description**: it carries risk level, trust requirement, side-effect class, reversibility and approval posture. |
+| <a id="rule-br-01"></a>BR-01 | **`App ≠ Installation ≠ Instance`.** Three distinct identities with three distinct lifecycles. |
+| <a id="rule-br-02"></a>BR-02 | **`Capability ≠ Action`.** A capability is an invocable semantic operation; an action is a user-facing offer with availability. |
+| <a id="rule-br-03"></a>BR-03 | **`ResourceRef` floats; `ResourceVersionRef` pins.** Choosing the wrong one is a semantic defect, not a style choice. |
+| <a id="rule-br-04"></a>BR-04 | **A resource is owned by exactly one product forever.** Ownership does not transfer with a reference. |
+| <a id="rule-br-05"></a>BR-05 | **Context is frozen at invocation.** A capability sees the context as it was when the invocation began, never a later mutation. |
+| <a id="rule-br-06"></a>BR-06 | **Availability is computed, not assumed.** An action unavailable for a stated reason is shown as unavailable with that reason, never silently missing. |
+| <a id="rule-br-07"></a>BR-07 | **Routing priority is fixed** and identical on every platform (`§10` of the contract architecture). |
+| <a id="rule-br-08"></a>BR-08 | **The semantic error set is closed**, and every invocation failure maps to it. |
+| <a id="rule-br-09"></a>BR-09 | **Health has five dimensions** — reachable, ready, healthy, degraded, capacity — used identically locally and in the cloud. |
+| <a id="rule-br-10"></a>BR-10 | **A capability descriptor is richer than a tool description**: it carries risk level, trust requirement, side-effect class, reversibility and approval posture. |
 
 ---
 

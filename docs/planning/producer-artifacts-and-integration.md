@@ -19,7 +19,7 @@ Authoritative under P2-010. This is an implementation input to every active work
 | Contracts / WP03.07; fixture keys WP02/06 | Native auth exceptions, catalog/index/revocation/update/realm schemas and independent signed vectors | No production key prerequisite; WP32/WP41 consume fixture roots, WP53 replaces production signing at WP50 |
 | Cloud / WP22.01 | Real Postmark/SES identity-delivery adapters and minimal system-browser authorization ceremony | Provider accounts/DNS are external setup; WP45 adds drills and WP48 the full portal; neither is a backwards producer dependency |
 | Cloud / WP41.05 | PackageCatalog DB/API/scanning/review-state/index producer and CLI consumer | WP45.10 review console consumes these real APIs (explicit 41→45 edge); WP53 supplies production distribution trust |
-| Cloud / WP21.08,46 | selfhost.v1 runnable profile/realm descriptor and independent restore | Production operator account/key custody and PG-25 evidence remain open |
+| Cloud / WP21.08,46 | selfhost.v1 runnable profile/realm descriptor and independent restore | Production operator account/key custody and [PG-25](../assurance/open-gates-register.md#rule-pg-25) evidence remain open |
 
 The ContentSandbox producer is staged, not duplicated: WP11 owns host, protocol and launch mechanics and publishes a real restricted fixture-parser runtime. WP13 implements the production parser composition in that same DesktopPlatform source, rebuilds/signs once against its completed native packages, and publishes a new immutable Runtime.<rid> version. Products consume that WP13 runtime. No future parser is an input to WP11 and no already-published artifact is modified.
 

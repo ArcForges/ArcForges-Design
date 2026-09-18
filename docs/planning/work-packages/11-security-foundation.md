@@ -45,17 +45,17 @@
 
 | # | Rule |
 |---|---|
-| BR-01 | **Owner-side final validation always applies.** Whatever earlier enforcement point allowed a call, the capability owner validates again. |
-| BR-02 | **Isolation is not authorization** ([I-259](../../requirements/01-normative-glossary-and-invariants.md#rule-i-259)); **out-of-process is not automatically safe** ([I-260](../../requirements/01-normative-glossary-and-invariants.md#rule-i-260)). |
-| BR-03 | **Capability permission and resource authorization are separate.** Holding a capability grant never implies access to a specific resource. |
+| <a id="rule-br-01"></a>BR-01 | **Owner-side final validation always applies.** Whatever earlier enforcement point allowed a call, the capability owner validates again. |
+| <a id="rule-br-02"></a>BR-02 | **Isolation is not authorization** ([I-259](../../requirements/01-normative-glossary-and-invariants.md#rule-i-259)); **out-of-process is not automatically safe** ([I-260](../../requirements/01-normative-glossary-and-invariants.md#rule-i-260)). |
+| <a id="rule-br-03"></a>BR-03 | **Capability permission and resource authorization are separate.** Holding a capability grant never implies access to a specific resource. |
 | <a id="rule-br-04"></a>BR-04 | **Use ≠ Reveal.** A `SecretRef` permits use of a secret without disclosing its value; no code path returns a plaintext secret to a caller that only needs to use it. |
 | <a id="rule-br-05"></a>BR-05 | **Data egress is a separate authorization** from read access. |
-| BR-06 | **Every input that can carry instructions is marked with its provenance**, and untrusted provenance never gains authority. |
-| BR-07 | **A delegation creates a lease**: scoped, expiring, revocable and audited. |
-| BR-08 | **Audit is append-only** and separate from observability ([OA-06](../../architecture/13-observability-and-operations.md#rule-oa-06) in the observability architecture). |
-| BR-09 | **A refusal is explained with a registered reason code**, never a silent failure. |
-| BR-10 | **Approval is not steering.** Approving an operation is a discrete authorization; steering adjusts a running operation and is not an authorization. |
-| BR-11 | **Local presence is required for the highest risk class**, and a biometric app-unlock never substitutes for step-up ([I-277](../../requirements/01-normative-glossary-and-invariants.md#rule-i-277), [I-278](../../requirements/01-normative-glossary-and-invariants.md#rule-i-278)). |
+| <a id="rule-br-06"></a>BR-06 | **Every input that can carry instructions is marked with its provenance**, and untrusted provenance never gains authority. |
+| <a id="rule-br-07"></a>BR-07 | **A delegation creates a lease**: scoped, expiring, revocable and audited. |
+| <a id="rule-br-08"></a>BR-08 | **Audit is append-only** and separate from observability ([OA-06](../../architecture/13-observability-and-operations.md#rule-oa-06) in the observability architecture). |
+| <a id="rule-br-09"></a>BR-09 | **A refusal is explained with a registered reason code**, never a silent failure. |
+| <a id="rule-br-10"></a>BR-10 | **Approval is not steering.** Approving an operation is a discrete authorization; steering adjusts a running operation and is not an authorization. |
+| <a id="rule-br-11"></a>BR-11 | **Local presence is required for the highest risk class**, and a biometric app-unlock never substitutes for step-up ([I-277](../../requirements/01-normative-glossary-and-invariants.md#rule-i-277), [I-278](../../requirements/01-normative-glossary-and-invariants.md#rule-i-278)). |
 
 ---
 

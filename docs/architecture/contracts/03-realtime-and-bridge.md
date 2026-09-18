@@ -37,15 +37,15 @@ Every event carries `{ subscriptionKey, seq, workspaceId, occurredAt, correlatio
 
 | # | Rule |
 |---|---|
-| RE-01 | **No event carries authoritative state** ([SO-02](00-operation-catalogue.md#rule-so-02)). Every payload above is an identifier plus enough metadata to decide whether to act. |
+| <a id="rule-re-01"></a>RE-01 | **No event carries authoritative state** ([SO-02](00-operation-catalogue.md#rule-so-02)). Every payload above is an identifier plus enough metadata to decide whether to act. |
 | <a id="rule-re-02"></a>RE-02 | **No event carries an object body, a message body, or document content.** |
-| RE-03 | **`task.progress` is explicitly lossy.** Losing every progress event must not affect the recorded outcome ([WP-16.06](../../planning/work-packages/16-unified-execution-engine.md#rule-wp-16.06)). |
-| RE-04 | **`approval.raised` is a hint over durable state.** Missing it never loses a pending approval ([PD-02](../11-mobile-architecture.md#rule-pd-02)). |
-| RE-05 | **`bridge.requestAvailable` carries a count, not content** — the desktop pulls, which keeps **[D-010](../../decisions/phase-1-foundation-decisions.md#rule-d-010)** true even in the notification. |
+| <a id="rule-re-03"></a>RE-03 | **`task.progress` is explicitly lossy.** Losing every progress event must not affect the recorded outcome ([WP-16.06](../../planning/work-packages/16-unified-execution-engine.md#rule-wp-16.06)). |
+| <a id="rule-re-04"></a>RE-04 | **`approval.raised` is a hint over durable state.** Missing it never loses a pending approval ([PD-02](../11-mobile-architecture.md#rule-pd-02)). |
+| <a id="rule-re-05"></a>RE-05 | **`bridge.requestAvailable` carries a count, not content** — the desktop pulls, which keeps **[D-010](../../decisions/phase-1-foundation-decisions.md#rule-d-010)** true even in the notification. |
 | <a id="rule-re-06"></a>RE-06 | **A missed event is always recoverable by re-reading**, and every event above names what to re-read. |
 | <a id="rule-re-07"></a>RE-07 | **Realtime is optional, and its absence is a complete-fallback case, not a degraded one.** Every event above has a polling or cursor equivalent on the typed authoritative RPC surface, and a client with realtime permanently disabled reaches the same state — later, not less completely ([SO-05](01-public-api-operations.md#rule-so-05), [SIM-13](../../requirements/products/arcscope.md#rule-sim-13)). |
-| RE-08 | **No commercial decision is ever taken from an event.** `capacity.changed` and `serviceTerm.changed` are refresh hints; admission is server-side and atomic ([AD-01](../16-billing-and-commerce-architecture.md#rule-ad-01), [EC-02](01-public-api-operations.md#rule-ec-02)). A client that admitted work because an event said capacity was available would be wrong under concurrency. |
-| RE-09 | **Bulk data never flows over realtime** ([SO-04](01-public-api-operations.md#rule-so-04)): no simulator segment, object body, message body or document content. |
+| <a id="rule-re-08"></a>RE-08 | **No commercial decision is ever taken from an event.** `capacity.changed` and `serviceTerm.changed` are refresh hints; admission is server-side and atomic ([AD-01](../16-billing-and-commerce-architecture.md#rule-ad-01), [EC-02](01-public-api-operations.md#rule-ec-02)). A client that admitted work because an event said capacity was available would be wrong under concurrency. |
+| <a id="rule-re-09"></a>RE-09 | **Bulk data never flows over realtime** ([SO-04](01-public-api-operations.md#rule-so-04)): no simulator segment, object body, message body or document content. |
 
 ---
 
@@ -67,7 +67,7 @@ EventService.Poll(subscriptionKey, nextCursor) → bounded hints + nextCursor | 
 | # | Rule |
 |---|---|
 | <a id="rule-sb-01"></a>SB-01 | **Permission is checked at subscribe and re-checked when permission changes.** Losing permission stops delivery immediately and tells the client ([WP-24.01](../../planning/work-packages/24-realtime-and-reliable-events.md#rule-wp-24.01)). |
-| SB-02 | **A subscription cannot escape its scope**, and an attempt is refused rather than silently narrowed. |
+| <a id="rule-sb-02"></a>SB-02 | **A subscription cannot escape its scope**, and an attempt is refused rather than silently narrowed. |
 | <a id="rule-sb-03"></a>SB-03 | **The first Poll returns a signed current cursor and resetRequired.** Establish the scoped authoritative snapshot before continuing from that cursor. Poll itself establishes subscription scope; no separate Subscribe method or startSeq response exists. Subsequent signed cursors and event sequence gaps drive scoped repair. |
 
 ---
@@ -84,11 +84,11 @@ client tracks lastSeq per subscription
 
 | # | Rule |
 |---|---|
-| GP-01 | **A gap is never ignored.** It is recorded as telemetry and triggers reconciliation ([WP-24.02](../../planning/work-packages/24-realtime-and-reliable-events.md#rule-wp-24.02)). |
+| <a id="rule-gp-01"></a>GP-01 | **A gap is never ignored.** It is recorded as telemetry and triggers reconciliation ([WP-24.02](../../planning/work-packages/24-realtime-and-reliable-events.md#rule-wp-24.02)). |
 | <a id="rule-gp-02"></a>GP-02 | **Reconciliation is scoped, not a blanket resync.** A `sync.changed` gap pulls the change feed from the last cursor; a `task` gap re-reads that task. |
 | <a id="rule-gp-03"></a>GP-03 | **Reconnection reconciles unconditionally**, because the client cannot know what it missed while disconnected. |
 | <a id="rule-gp-04"></a>GP-04 | **Convergence is verifiable** — after reconciliation, client and server state compare equal for the subscription's scope ([WP-24.03](../../planning/work-packages/24-realtime-and-reliable-events.md#rule-wp-24.03)). |
-| GP-05 | **Out-of-order and duplicate delivery cause no corruption**, because application is idempotent by `(aggregateKind, aggregateId, aggregateRev)`. |
+| <a id="rule-gp-05"></a>GP-05 | **Out-of-order and duplicate delivery cause no corruption**, because application is idempotent by `(aggregateKind, aggregateId, aggregateRev)`. |
 
 ---
 
@@ -141,16 +141,16 @@ Use registry 04 `ToolRequest` exactly: toolRequestId, optional taskId, runId, st
 | # | Rule |
 |---|---|
 | <a id="rule-br-01"></a>BR-01 | **The desktop re-evaluates every request against local policy, the local capability registry, local permission grants and the local actor chain** ([WP-26.02](../../planning/work-packages/26-remote-action-and-tool-bridge.md#rule-wp-26.02)). |
-| BR-02 | **A cloud-approved request may still be refused locally**, and the refusal reason is returned rather than swallowed. |
-| BR-03 | **A `cloudApprovalToken` is never sufficient.** It is one input to the local decision. |
-| BR-04 | **An operation requiring local presence cannot be satisfied through the bridge** ([AZ-01](00-operation-catalogue.md#rule-az-01)), because the requester is by definition not present. |
-| BR-05 | **The bridge never bypasses owner-side validation.** The desktop still calls `ICapabilityProvider.InvokeAsync`, which validates again. |
+| <a id="rule-br-02"></a>BR-02 | **A cloud-approved request may still be refused locally**, and the refusal reason is returned rather than swallowed. |
+| <a id="rule-br-03"></a>BR-03 | **A `cloudApprovalToken` is never sufficient.** It is one input to the local decision. |
+| <a id="rule-br-04"></a>BR-04 | **An operation requiring local presence cannot be satisfied through the bridge** ([AZ-01](00-operation-catalogue.md#rule-az-01)), because the requester is by definition not present. |
+| <a id="rule-br-05"></a>BR-05 | **The bridge never bypasses owner-side validation.** The desktop still calls `ICapabilityProvider.InvokeAsync`, which validates again. |
 
 ### 5.3 Idempotency and lost answers
 
 | # | Rule |
 |---|---|
-| BI-01 | **`bridge.submitResult` is idempotent on `(toolRequestId, attemptId, commandId)` plus the canonical result hash under TK-05 and `task.tool_result`; each distinct tool result in an attempt has its own receipt.** Re-submission after a lost response has one effect ([WP-26.03](../../planning/work-packages/26-remote-action-and-tool-bridge.md#rule-wp-26.03)). |
+| <a id="rule-bi-01"></a>BI-01 | **`bridge.submitResult` is idempotent on `(toolRequestId, attemptId, commandId)` plus the canonical result hash under [TK-05](01-public-api-operations.md#rule-tk-05) and `task.tool_result`; each distinct tool result in an attempt has its own receipt.** Re-submission after a lost response has one effect ([WP-26.03](../../planning/work-packages/26-remote-action-and-tool-bridge.md#rule-wp-26.03)). |
 | <a id="rule-bi-02"></a>BI-02 | **A request delivered but unanswered before a desktop crash is re-delivered** on the next pull, and the local command log makes re-execution a no-op if it already ran (`§1.2` of the desktop data model). |
 | <a id="rule-bi-03"></a>BI-03 | **This is the one place where local and cloud idempotency must agree**: the desktop's `command_log` and Cloud's `attempt` row both key on the same `CommandId`. A mismatch here is the defect class most likely to cause a duplicate real-world effect, and [WP-26.03](../../planning/work-packages/26-remote-action-and-tool-bridge.md#rule-wp-26.03) tests it specifically. |
 | <a id="rule-bi-04"></a>BI-04 | **An expired request closes with a typed reason**, never ambiguously ([WP-26.05](../../planning/work-packages/26-remote-action-and-tool-bridge.md#rule-wp-26.05)). |
@@ -169,7 +169,7 @@ Use registry 04 `ToolRequest` exactly: toolRequestId, optional taskId, runId, st
 | # | Rule |
 |---|---|
 | <a id="rule-be-01"></a>BE-01 | **An `unknown` effect on a non-idempotent capability surfaces a decision** rather than retrying ([WP-16.02](../../planning/work-packages/16-unified-execution-engine.md#rule-wp-16.02)). |
-| BE-02 | **The command log resolves most `unknown` cases automatically**, which is why it is written in the same transaction as the effect. |
+| <a id="rule-be-02"></a>BE-02 | **The command log resolves most `unknown` cases automatically**, which is why it is written in the same transaction as the effect. |
 
 ---
 
@@ -195,16 +195,16 @@ Desktop, React and Kotlin Android use generated EventService.Watch with Poll rec
 
 | # | Obligation | Where |
 |---|---|---|
-| RV-01 | Every induced gap is detected, recorded, and reconciled to verified convergence | [WP-24.02](../../planning/work-packages/24-realtime-and-reliable-events.md#rule-wp-24.02), [WP-24.03](../../planning/work-packages/24-realtime-and-reliable-events.md#rule-wp-24.03) |
-| RV-02 | Duplicate and out-of-order delivery cause no corruption | [WP-24.02](../../planning/work-packages/24-realtime-and-reliable-events.md#rule-wp-24.02) |
-| RV-03 | Permission loss stops delivery immediately | [WP-24.01](../../planning/work-packages/24-realtime-and-reliable-events.md#rule-wp-24.01) |
-| RV-04 | No event payload carries authoritative state or a body | Contract policy test |
+| <a id="rule-rv-01"></a>RV-01 | Every induced gap is detected, recorded, and reconciled to verified convergence | [WP-24.02](../../planning/work-packages/24-realtime-and-reliable-events.md#rule-wp-24.02), [WP-24.03](../../planning/work-packages/24-realtime-and-reliable-events.md#rule-wp-24.03) |
+| <a id="rule-rv-02"></a>RV-02 | Duplicate and out-of-order delivery cause no corruption | [WP-24.02](../../planning/work-packages/24-realtime-and-reliable-events.md#rule-wp-24.02) |
+| <a id="rule-rv-03"></a>RV-03 | Permission loss stops delivery immediately | [WP-24.01](../../planning/work-packages/24-realtime-and-reliable-events.md#rule-wp-24.01) |
+| <a id="rule-rv-04"></a>RV-04 | No event payload carries authoritative state or a body | Contract policy test |
 | <a id="rule-rv-05"></a>RV-05 | **No cloud-initiated connection to a device exists anywhere**, verified structurally and by runtime network observation | [WP-26.01](../../planning/work-packages/26-remote-action-and-tool-bridge.md#rule-wp-26.01), [WP-31.06](../../planning/work-packages/31-arcchat-mobile-android.md#rule-wp-31.06) |
-| RV-06 | A cloud-approved request is still refused when local policy denies it | [WP-26.02](../../planning/work-packages/26-remote-action-and-tool-bridge.md#rule-wp-26.02) |
-| RV-07 | One request produces one effect under duplicate delivery, lost result and mid-execution crash | [WP-26.03](../../planning/work-packages/26-remote-action-and-tool-bridge.md#rule-wp-26.03) |
-| RV-08 | A local-presence operation cannot be completed through the bridge | [WP-26.04](../../planning/work-packages/26-remote-action-and-tool-bridge.md#rule-wp-26.04) |
-| RV-09 | An offline target queues visibly and expires with a typed reason | [WP-26.05](../../planning/work-packages/26-remote-action-and-tool-bridge.md#rule-wp-26.05) |
+| <a id="rule-rv-06"></a>RV-06 | A cloud-approved request is still refused when local policy denies it | [WP-26.02](../../planning/work-packages/26-remote-action-and-tool-bridge.md#rule-wp-26.02) |
+| <a id="rule-rv-07"></a>RV-07 | One request produces one effect under duplicate delivery, lost result and mid-execution crash | [WP-26.03](../../planning/work-packages/26-remote-action-and-tool-bridge.md#rule-wp-26.03) |
+| <a id="rule-rv-08"></a>RV-08 | A local-presence operation cannot be completed through the bridge | [WP-26.04](../../planning/work-packages/26-remote-action-and-tool-bridge.md#rule-wp-26.04) |
+| <a id="rule-rv-09"></a>RV-09 | An offline target queues visibly and expires with a typed reason | [WP-26.05](../../planning/work-packages/26-remote-action-and-tool-bridge.md#rule-wp-26.05) |
 
-## P2-009 executable wire and transport binding
+## [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) executable wire and transport binding
 
 Every operation/event above maps to the [numbered wire registry](04-protobuf-wire-registry.md). It fixes requests/results, record fields, enums, exact values, local counterpart preconditions, service names and compatibility. [CF integration](05-cloudflare-integration.md) fixes private Cloud/AI bindings and signed object-transfer exceptions; annex10 owns public output/control framing, state recovery and authorization. New supporting bootstrap, upload-status, automation and conversation-create methods are enumerated there with their authorization/idempotency classes; none is left for endpoint invention during implementation.

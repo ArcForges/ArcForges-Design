@@ -45,17 +45,17 @@
 
 | # | Rule |
 |---|---|
-| BR-01 | **The shared foundation contains mechanism, never product knowledge** (`§7` of the architecture overview). |
-| BR-02 | **No product depends on another product** to render its own UI. |
-| BR-03 | **Base ViewModel patterns are not shared with mobile** (**[D-021](../../decisions/phase-1-foundation-decisions.md#rule-d-021)**). |
-| BR-04 | **Every third-party control requires its own AOT publish proof with zero diagnostics before adoption** (**[V-05a](../../assurance/phase-1-official-verification.md#rule-v-05a)**). |
-| BR-05 | **Colour is never the only carrier of meaning**, and contrast, focus order and assistive-technology semantics are contract, not polish (`§10` of the quality contract). |
-| BR-06 | **Every core workflow is completable by keyboard alone** ([AL-02](../../architecture/10-web-architecture.md#rule-al-02) in the web architecture; the desktop equivalent in `§10` there). |
-| BR-07 | **Every user-visible string is localisable**, and no string is composed by concatenation that breaks under translation. |
-| BR-08 | **Notifications are classified by durability, not severity alone.** A missed transient notification never loses durable attention state. |
-| BR-09 | **Settings are scoped** — application, workspace, device, instance — and resolution order is fixed and explainable. |
-| BR-10 | **Startup never blocks on the network or on sign-in** (`§27` of the quality contract). |
-| BR-11 | **UI work happens on the UI thread; everything else does not** (`§3` of the desktop architecture). |
+| <a id="rule-br-01"></a>BR-01 | **The shared foundation contains mechanism, never product knowledge** (`§7` of the architecture overview). |
+| <a id="rule-br-02"></a>BR-02 | **No product depends on another product** to render its own UI. |
+| <a id="rule-br-03"></a>BR-03 | **Base ViewModel patterns are not shared with mobile** (**[D-021](../../decisions/phase-1-foundation-decisions.md#rule-d-021)**). |
+| <a id="rule-br-04"></a>BR-04 | **Every third-party control requires its own AOT publish proof with zero diagnostics before adoption** (**[V-05a](../../assurance/phase-1-official-verification.md#rule-v-05a)**). |
+| <a id="rule-br-05"></a>BR-05 | **Colour is never the only carrier of meaning**, and contrast, focus order and assistive-technology semantics are contract, not polish (`§10` of the quality contract). |
+| <a id="rule-br-06"></a>BR-06 | **Every core workflow is completable by keyboard alone** ([AL-02](../../architecture/10-web-architecture.md#rule-al-02) in the web architecture; the desktop equivalent in `§10` there). |
+| <a id="rule-br-07"></a>BR-07 | **Every user-visible string is localisable**, and no string is composed by concatenation that breaks under translation. |
+| <a id="rule-br-08"></a>BR-08 | **Notifications are classified by durability, not severity alone.** A missed transient notification never loses durable attention state. |
+| <a id="rule-br-09"></a>BR-09 | **Settings are scoped** — application, workspace, device, instance — and resolution order is fixed and explainable. |
+| <a id="rule-br-10"></a>BR-10 | **Startup never blocks on the network or on sign-in** (`§27` of the quality contract). |
+| <a id="rule-br-11"></a>BR-11 | **UI work happens on the UI thread; everything else does not** (`§3` of the desktop architecture). |
 
 ---
 

@@ -44,19 +44,19 @@
 
 | # | Rule |
 |---|---|
-| BR-01 | **Paddle is the sole customer-facing Merchant of Record; Payoneer is a payout destination only** (**[D-005](../../decisions/phase-1-foundation-decisions.md#rule-d-005)**). |
+| <a id="rule-br-01"></a>BR-01 | **Paddle is the sole customer-facing Merchant of Record; Payoneer is a payout destination only** (**[D-005](../../decisions/phase-1-foundation-decisions.md#rule-d-005)**). |
 | <a id="rule-br-02"></a>BR-02 | **Every commercial figure is versioned policy** (**[D-020](../../decisions/phase-1-foundation-decisions.md#rule-d-020)**), never a compiled constant and never retroactive. |
-| BR-03 | **A provider event is a trigger, never unconditional belief.** The eight-step verification chain is mandatory. |
-| BR-04 | **A success redirect is never payment authority.** |
-| BR-05 | **Buyer identity is a stable internal billing identity, never an email address.** |
-| BR-06 | **Entitlement is derived from immutable grants and revocations** and can always be rebuilt. |
-| BR-07 | **Money and credit arithmetic is fixed-precision**; floating point is prohibited and policy-tested. |
-| BR-08 | **Credits are reserved before execution and settled after**, with a hard stop at zero and no overdraft. |
-| BR-09 | **The three ledgers are permanently separate** ([I-011](../../requirements/01-normative-glossary-and-invariants.md#rule-i-011)). |
-| BR-10 | **Financial history is immutable**; corrections are new records. |
-| BR-11 | **Reconciliation is a first-class subsystem**, and losing one webhook must never permanently cost a user their subscription. |
-| BR-12 | **Settlement lags transactions materially** (**[V-07](../../assurance/phase-1-official-verification.md#rule-v-07)**); the model must not assume payout timing tracks transaction timing. |
-| BR-13 | **No provider type or identifier format appears outside the provider adapter.** |
+| <a id="rule-br-03"></a>BR-03 | **A provider event is a trigger, never unconditional belief.** The eight-step verification chain is mandatory. |
+| <a id="rule-br-04"></a>BR-04 | **A success redirect is never payment authority.** |
+| <a id="rule-br-05"></a>BR-05 | **Buyer identity is a stable internal billing identity, never an email address.** |
+| <a id="rule-br-06"></a>BR-06 | **Entitlement is derived from immutable grants and revocations** and can always be rebuilt. |
+| <a id="rule-br-07"></a>BR-07 | **Money and credit arithmetic is fixed-precision**; floating point is prohibited and policy-tested. |
+| <a id="rule-br-08"></a>BR-08 | **Credits are reserved before execution and settled after**, with a hard stop at zero and no overdraft. |
+| <a id="rule-br-09"></a>BR-09 | **The three ledgers are permanently separate** ([I-011](../../requirements/01-normative-glossary-and-invariants.md#rule-i-011)). |
+| <a id="rule-br-10"></a>BR-10 | **Financial history is immutable**; corrections are new records. |
+| <a id="rule-br-11"></a>BR-11 | **Reconciliation is a first-class subsystem**, and losing one webhook must never permanently cost a user their subscription. |
+| <a id="rule-br-12"></a>BR-12 | **Settlement lags transactions materially** (**[V-07](../../assurance/phase-1-official-verification.md#rule-v-07)**); the model must not assume payout timing tracks transaction timing. |
+| <a id="rule-br-13"></a>BR-13 | **No provider type or identifier format appears outside the provider adapter.** |
 
 ---
 
@@ -211,7 +211,7 @@
 
 ---
 
-**Operator contract closure.** Consume [registry04 §9](../../architecture/contracts/04-protobuf-wire-registry.md#9-operator-control-and-separate-identity-boundary) and [model01 operator state](../../architecture/data-model/01-cloud-data-model.md#operator-proposal-approval-and-financial-owner-closure). Generate/implement every operation exactly once with its eight authorization fields, operator scope and OC-03 role binding. Public customer/PAT/agent access refuses. Verify distinct approver, stale hash/revision/configuration, role revocation, expiry, concurrent consumption and lost receipt; no direct SQL or public-SDK operator import. WP03 produces schema/negative vectors, WP23 real identity/dispatch conformance, WP42 the financial owners, WP44 configuration/policy owners, and WP45 the real console join. Earlier packages retain their named fixture boundary until the existing downstream join.
+**Operator contract closure.** Consume [registry04 §9](../../architecture/contracts/04-protobuf-wire-registry.md#9-operator-control-and-separate-identity-boundary) and [model01 operator state](../../architecture/data-model/01-cloud-data-model.md#operator-proposal-approval-and-financial-owner-closure). Generate/implement every operation exactly once with its eight authorization fields, operator scope and [OC-03](../../requirements/10-distribution-update-and-support.md#rule-oc-03) role binding. Public customer/PAT/agent access refuses. Verify distinct approver, stale hash/revision/configuration, role revocation, expiry, concurrent consumption and lost receipt; no direct SQL or public-SDK operator import. WP03 produces schema/negative vectors, WP23 real identity/dispatch conformance, WP42 the financial owners, WP44 configuration/policy owners, and WP45 the real console join. Earlier packages retain their named fixture boundary until the existing downstream join.
 
 ## 6. Impacts
 
@@ -229,7 +229,7 @@
 
 ## 7. Tests and verification evidence
 
-Acceptance includes every amended §5 producer/consumer and WP-42.90 evidence. Current P2-013 contracts/data/runtime rules are tested in the original owner implementation, not a detached explanatory sample.
+Acceptance includes every amended §5 producer/consumer and [WP-42.90](#rule-wp-42.90) evidence. Current [P2-013](../../decisions/phase-2-specification-decisions.md#rule-p2-013) contracts/data/runtime rules are tested in the original owner implementation, not a detached explanatory sample.
 
 **[WP-42.11](#rule-wp-42.11) producer evidence.** Real payment-event reconciliation, immutable term/offer history, exact refill/hold fixtures and durable multi-replica restart evidence. This producer must pass before commercial go-live; later AI/configuration producers supply their remaining shared-gate evidence.
 
@@ -274,7 +274,7 @@ Acceptance includes every amended §5 producer/consumer and WP-42.90 evidence. C
 8. **Concurrent runs never overdraw; the balance never goes negative; no floating-point path exists in money or credit arithmetic.**
 9. **A dropped webhook is recovered by reconciliation without editing history**; the three ledgers remain provably separate.
 10. A refund rolls entitlement back correctly; evidence export is complete and free of payment instrument data.
-11. Test-mode commerce and the activation checklist are complete. Production merchant eligibility, checkout/refund and received-payout evidence remain at WP50, including [L-30](../../assurance/release-gates.md#62-commercial-go-live); WP42 does not claim VG-10/VG-11 closed. The regional route remains disabled pending VG-12.
+11. Test-mode commerce and the activation checklist are complete. Production merchant eligibility, checkout/refund and received-payout evidence remain at WP50, including [L-30](../../assurance/release-gates.md#rule-l-30); WP42 does not claim [VG-10](../../assurance/open-gates-register.md#rule-vg-10)/[VG-11](../../assurance/open-gates-register.md#rule-vg-11) closed. The regional route remains disabled pending VG-12.
 
 ---
 
@@ -284,6 +284,6 @@ Acceptance includes every amended §5 producer/consumer and WP-42.90 evidence. C
 
 **Downstream:** `43` · `44` · `48` · `51` · `52`. Consumers use exact released artifacts.
 
-## P2-010 required behavior and closure
+## [P2-010](../../decisions/phase-2-specification-decisions.md#rule-p2-010) required behavior and closure
 
 Test active Pass/subscription mutual exclusion, no immediate proration, exact renewal/reset periods and three ledgers with unresolved holds through their existing deadline. The referenced normative profile and producer stage matrix are binding inputs. Record independent positive/negative vectors and actual owner integration at this WP's assigned stage; a mock cannot close a real-provider/device requirement.

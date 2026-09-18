@@ -1,5 +1,5 @@
 # ArcScope — Product Requirements
-> Effective scope: P2-012 and P2-013 amend the technology and application ownership below. **[P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
+> Effective scope: [P2-012](../../decisions/phase-2-specification-decisions.md#rule-p2-012) and [P2-013](../../decisions/phase-2-specification-decisions.md#rule-p2-013) amend the technology and application ownership below. **[P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Requirements / Products
@@ -15,9 +15,9 @@
 
 | # | Requirement |
 |---|---|
-| ID-01 | **ArcScope is an independently defined product.** It is **not** a rename or continuation of ArcImage, and the ArcImage domain vocabulary — Canvas, Layer, Mask, Filter, image editing — **must never be migrated into it** (**[D-002](../../decisions/phase-1-foundation-decisions.md#rule-d-002)**). |
-| ID-02 | **ArcScope must not be locked to one industry.** Not "a serial monitor", not "an oscilloscope", not "an IoT dashboard". Its core is **time-related data**. |
-| ID-03 | The product's real core is **Signal + Event over time**, with acquisition, observation, recording, decoding, measurement, analysis, annotation, comparison and reporting built around it. |
+| <a id="rule-id-01"></a>ID-01 | **ArcScope is an independently defined product.** It is **not** a rename or continuation of ArcImage, and the ArcImage domain vocabulary — Canvas, Layer, Mask, Filter, image editing — **must never be migrated into it** (**[D-002](../../decisions/phase-1-foundation-decisions.md#rule-d-002)**). |
+| <a id="rule-id-02"></a>ID-02 | **ArcScope must not be locked to one industry.** Not "a serial monitor", not "an oscilloscope", not "an IoT dashboard". Its core is **time-related data**. |
+| <a id="rule-id-03"></a>ID-03 | The product's real core is **Signal + Event over time**, with acquisition, observation, recording, decoding, measurement, analysis, annotation, comparison and reporting built around it. |
 | <a id="rule-id-04"></a>ID-04 | **V1 is observation-first**: read, acquire, analyse. **Device control is a separate, later, higher-permission capability class** (§13). |
 
 ---
@@ -39,9 +39,9 @@ ArcScope Project
 
 | # | Requirement |
 |---|---|
-| DM-01 | **`ArcScope.Project ≠ ArcForges Workspace`** ([I-465](../01-normative-glossary-and-invariants.md#rule-i-465)). |
-| DM-02 | **Project = a long-term professional container for a related set of observations, captures, analyses and reports.** |
-| DM-03 | **Quick capture must not be sacrificed to the project model.** A **Quick Session** may exist unfiled and be filed into a project later. |
+| <a id="rule-dm-01"></a>DM-01 | **`ArcScope.Project ≠ ArcForges Workspace`** ([I-465](../01-normative-glossary-and-invariants.md#rule-i-465)). |
+| <a id="rule-dm-02"></a>DM-02 | **Project = a long-term professional container for a related set of observations, captures, analyses and reports.** |
+| <a id="rule-dm-03"></a>DM-03 | **Quick capture must not be sacrificed to the project model.** A **Quick Session** may exist unfiled and be filed into a project later. |
 
 ---
 
@@ -50,12 +50,12 @@ ArcScope Project
 | # | Requirement |
 |---|---|
 | <a id="rule-sd-01"></a>SD-01 | **`Device ≠ DataSource`** ([I-466](../01-normative-glossary-and-invariants.md#rule-i-466)). A device is an **optional identity** describing physical or logical hardware; **the DataSource is ArcScope's real data entry point**. |
-| SD-02 | **`DataSource` = a logical source that can provide time-related data, events or raw streams to ArcScope.** |
-| SD-03 | **File replay is a DataSource.** The pipeline is always `Source → Session → Analysis`, whether the source is live hardware or a recorded file. |
-| SD-04 | **`ConnectionProfile ≠ Connection`** ([I-466](../01-normative-glossary-and-invariants.md#rule-i-466)). A profile is reusable stored configuration; a connection is a live, transient link. |
+| <a id="rule-sd-02"></a>SD-02 | **`DataSource` = a logical source that can provide time-related data, events or raw streams to ArcScope.** |
+| <a id="rule-sd-03"></a>SD-03 | **File replay is a DataSource.** The pipeline is always `Source → Session → Analysis`, whether the source is live hardware or a recorded file. |
+| <a id="rule-sd-04"></a>SD-04 | **`ConnectionProfile ≠ Connection`** ([I-466](../01-normative-glossary-and-invariants.md#rule-i-466)). A profile is reusable stored configuration; a connection is a live, transient link. |
 | <a id="rule-sd-05"></a>SD-05 | **Changing a connection profile must never rewrite a historical session.** Every session records an **Effective Configuration Snapshot** — the settings actually in force at the time. Knowing that a capture genuinely ran at a particular rate is essential evidence. |
-| SD-06 | **`Session ≠ Connection`** ([I-467](../01-normative-glossary-and-invariants.md#rule-i-467)). A session may involve several data sources and may outlive individual connections. |
-| SD-07 | **A source disconnect must not close the session** (`§4`). The session survives; the interruption is recorded as an explicit gap. |
+| <a id="rule-sd-06"></a>SD-06 | **`Session ≠ Connection`** ([I-467](../01-normative-glossary-and-invariants.md#rule-i-467)). A session may involve several data sources and may outlive individual connections. |
+| <a id="rule-sd-07"></a>SD-07 | **A source disconnect must not close the session** (`§4`). The session survives; the interruption is recorded as an explicit gap. |
 | <a id="rule-sd-08"></a>SD-08 | **The same source must not be silently claimed by two captures.** Exclusive access is coordinated by the capability owner with lease/busy semantics ([CC-05](../05-ai-and-agent-execution.md#rule-cc-05)). |
 | <a id="rule-sd-09"></a>SD-09 | V1 adapters cover serial, USB with explicit interface/endpoint, TCP, UDP, file/replay and Cloud Simulation (§17.1). Device-specific SDKs remain later; simulation is a real product capability, not a mock hardware driver. |
 | <a id="rule-sd-10"></a>SD-10 | **Replay must never impersonate a real device.** Replayed data is explicitly labelled as replay, with its origin. |
@@ -66,19 +66,19 @@ ArcScope Project
 
 | # | Requirement |
 |---|---|
-| SE-01 | **`Session` = a complete unit of work with a common observation goal, temporal context and analysis context.** |
-| SE-02 | **`Session ≠ Capture`** ([I-467](../01-normative-glossary-and-invariants.md#rule-i-467)). One session may contain several captures. |
-| SE-03 | **Capture segments exist** because acquisition is interrupted, paused, resumed and triggered. A capture is a sequence of segments plus explicit gaps. |
+| <a id="rule-se-01"></a>SE-01 | **`Session` = a complete unit of work with a common observation goal, temporal context and analysis context.** |
+| <a id="rule-se-02"></a>SE-02 | **`Session ≠ Capture`** ([I-467](../01-normative-glossary-and-invariants.md#rule-i-467)). One session may contain several captures. |
+| <a id="rule-se-03"></a>SE-03 | **Capture segments exist** because acquisition is interrupted, paused, resumed and triggered. A capture is a sequence of segments plus explicit gaps. |
 | <a id="rule-se-04"></a>SE-04 | **Live observation and capture are separate** ([I-469](../01-normative-glossary-and-invariants.md#rule-i-469)). Live view uses a rolling buffer; **Record** creates persistent capture. |
 | <a id="rule-se-05"></a>SE-05 | **`Pause View ≠ Pause Capture`** ([I-469](../01-normative-glossary-and-invariants.md#rule-i-469)). Freezing the display must never stop recording. |
-| SE-06 | Capture lifecycle: `Armed → Running → Paused → Stopped → Finalized`, plus `Interrupted`. |
-| SE-07 | **`Interrupted` is not `Failed`.** Interrupted data that was durably written **is valid data** and must be preserved and presented as such. |
-| SE-08 | **Recorded data must never be discarded during crash recovery** ([CR-04](../12-quality-and-compatibility-contract.md#rule-cr-04) in the quality contract). Recovery restores to the last durably committed boundary. |
+| <a id="rule-se-06"></a>SE-06 | Capture lifecycle: `Armed → Running → Paused → Stopped → Finalized`, plus `Interrupted`. |
+| <a id="rule-se-07"></a>SE-07 | **`Interrupted` is not `Failed`.** Interrupted data that was durably written **is valid data** and must be preserved and presented as such. |
+| <a id="rule-se-08"></a>SE-08 | **Recorded data must never be discarded during crash recovery** ([CR-04](../12-quality-and-compatibility-contract.md#rule-cr-04) in the quality contract). Recovery restores to the last durably committed boundary. |
 | <a id="rule-se-09"></a>SE-09 | **A disconnect and reconnect must produce an explicit Gap.** |
 | <a id="rule-se-10"></a>SE-10 | **No silent data loss.** Any data loss that cannot be confirmed as recorded **must be explicitly indicated** — a gap, an overflow marker, a dropped-sample count. |
-| SE-11 | **If acquisition cannot keep up**, the condition is surfaced explicitly with its policy — drop, buffer, back-pressure the source, or stop — never hidden. |
+| <a id="rule-se-11"></a>SE-11 | **If acquisition cannot keep up**, the condition is surfaced explicitly with its policy — drop, buffer, back-pressure the source, or stop — never hidden. |
 | <a id="rule-se-12"></a>SE-12 | **Raw capture, once finalised, is immutable by default.** **Raw Capture = evidence = source of truth.** |
-| SE-13 | **Trim is non-destructive by default.** Trimming produces a derived view or a new managed representation; the original is not silently reduced. |
+| <a id="rule-se-13"></a>SE-13 | **Trim is non-destructive by default.** Trimming produces a derived view or a new managed representation; the original is not silently reduced. |
 | <a id="rule-se-14"></a>SE-14 | **Raw capture uses chunked, verifiable large-scale storage**, not database blobs ([LD-01](../13-data-formats-and-portability.md#rule-ld-01)–[LD-05](../13-data-formats-and-portability.md#rule-ld-05)). |
 
 ---
@@ -89,11 +89,11 @@ The time model is a product-level design, not an implementation detail.
 
 | # | Requirement |
 |---|---|
-| TM-01 | ArcScope retains at least three time semantics: **source time** (as reported by the source), **host time** (when ArcScope received it), and **session time** (relative to the session origin). |
-| TM-02 | **Source time must never be forced to equal host time.** Their relationship is a recorded clock mapping. |
+| <a id="rule-tm-01"></a>TM-01 | ArcScope retains at least three time semantics: **source time** (as reported by the source), **host time** (when ArcScope received it), and **session time** (relative to the session origin). |
+| <a id="rule-tm-02"></a>TM-02 | **Source time must never be forced to equal host time.** Their relationship is a recorded clock mapping. |
 | <a id="rule-tm-03"></a>TM-03 | **Multi-source sessions support time alignment**, and **alignment never overwrites raw timestamps** ([I-472](../01-normative-glossary-and-invariants.md#rule-i-472) family) — it is an analysis and view transformation. |
-| TM-04 | **Time accuracy and trustworthiness are expressible**: resolution, known offset, drift, synchronisation quality and confidence. |
-| TM-05 | Storage is a stable instant plus source semantics; display is localised ([TZ-01](../12-quality-and-compatibility-contract.md#rule-tz-01)–[TZ-03](../12-quality-and-compatibility-contract.md#rule-tz-03)). |
+| <a id="rule-tm-04"></a>TM-04 | **Time accuracy and trustworthiness are expressible**: resolution, known offset, drift, synchronisation quality and confidence. |
+| <a id="rule-tm-05"></a>TM-05 | Storage is a stable instant plus source semantics; display is localised ([TZ-01](../12-quality-and-compatibility-contract.md#rule-tz-01)–[TZ-03](../12-quality-and-compatibility-contract.md#rule-tz-03)). |
 
 ---
 
@@ -101,17 +101,17 @@ The time model is a product-level design, not an implementation detail.
 
 | # | Requirement |
 |---|---|
-| CS-01 | **`Channel` = a logical data channel exposed by a DataSource** — a source-level concept. |
-| CS-02 | **`Signal` = a temporal value with type, time and semantics.** |
-| CS-03 | **`Channel ≠ Signal`** ([I-468](../01-normative-glossary-and-invariants.md#rule-i-468)). One channel may yield several signals; a signal may be composed from several channels. |
-| CS-04 | **`Signal ≠ Event`** ([I-468](../01-normative-glossary-and-invariants.md#rule-i-468)). **`Event` = a discrete, timestamped, structured occurrence.** |
-| CS-05 | **Decoder output — packets, frames, records — is modelled as structured events**, not as raw channel data. |
-| CS-06 | **Signals are not floating-point only.** Integer, unsigned, boolean/digital, enumerated and string-valued signals are all supported. |
-| CS-07 | **Sample rate must not be assumed constant.** Irregular, event-driven and burst sampling are first-class. |
-| CS-08 | **Units are first-class signal metadata** ([UN-01](../12-quality-and-compatibility-contract.md#rule-un-01)–[UN-04](../12-quality-and-compatibility-contract.md#rule-un-04)). |
-| CS-09 | **Display unit conversion never changes the raw value** ([I-470](../01-normative-glossary-and-invariants.md#rule-i-470), [UN-01](../12-quality-and-compatibility-contract.md#rule-un-01)). A converted value shown in the interface is a display conversion; producing a converted series is a **Derived Signal**. |
-| CS-10 | **`Raw Signal ≠ Derived Signal`** ([I-468](../01-normative-glossary-and-invariants.md#rule-i-468)). Any series produced by a decoder, transform, analysis or maths expression is derived, reproducible, and never raw authority. |
-| CS-11 | **Derived signals can be recomputed**, and their definition is retained so they can be. |
+| <a id="rule-cs-01"></a>CS-01 | **`Channel` = a logical data channel exposed by a DataSource** — a source-level concept. |
+| <a id="rule-cs-02"></a>CS-02 | **`Signal` = a temporal value with type, time and semantics.** |
+| <a id="rule-cs-03"></a>CS-03 | **`Channel ≠ Signal`** ([I-468](../01-normative-glossary-and-invariants.md#rule-i-468)). One channel may yield several signals; a signal may be composed from several channels. |
+| <a id="rule-cs-04"></a>CS-04 | **`Signal ≠ Event`** ([I-468](../01-normative-glossary-and-invariants.md#rule-i-468)). **`Event` = a discrete, timestamped, structured occurrence.** |
+| <a id="rule-cs-05"></a>CS-05 | **Decoder output — packets, frames, records — is modelled as structured events**, not as raw channel data. |
+| <a id="rule-cs-06"></a>CS-06 | **Signals are not floating-point only.** Integer, unsigned, boolean/digital, enumerated and string-valued signals are all supported. |
+| <a id="rule-cs-07"></a>CS-07 | **Sample rate must not be assumed constant.** Irregular, event-driven and burst sampling are first-class. |
+| <a id="rule-cs-08"></a>CS-08 | **Units are first-class signal metadata** ([UN-01](../12-quality-and-compatibility-contract.md#rule-un-01)–[UN-04](../12-quality-and-compatibility-contract.md#rule-un-04)). |
+| <a id="rule-cs-09"></a>CS-09 | **Display unit conversion never changes the raw value** ([I-470](../01-normative-glossary-and-invariants.md#rule-i-470), [UN-01](../12-quality-and-compatibility-contract.md#rule-un-01)). A converted value shown in the interface is a display conversion; producing a converted series is a **Derived Signal**. |
+| <a id="rule-cs-10"></a>CS-10 | **`Raw Signal ≠ Derived Signal`** ([I-468](../01-normative-glossary-and-invariants.md#rule-i-468)). Any series produced by a decoder, transform, analysis or maths expression is derived, reproducible, and never raw authority. |
+| <a id="rule-cs-11"></a>CS-11 | **Derived signals can be recomputed**, and their definition is retained so they can be. |
 
 ---
 
@@ -119,17 +119,17 @@ The time model is a product-level design, not an implementation detail.
 
 | # | Requirement |
 |---|---|
-| VZ-01 | Live visualisation supports at minimum: time-series plots, digital/logic tracks, event timelines, event tables, and multi-signal views. |
-| VZ-02 | **One view may display several signals**, and **signals of incompatible dimensions do not silently share one axis** ([UN-04](../12-quality-and-compatibility-contract.md#rule-un-04)). |
-| VZ-03 | **`View ≠ Signal ownership`** ([I-475](../01-normative-glossary-and-invariants.md#rule-i-475)). Removing a signal from a view does not delete data. |
-| VZ-04 | **Display decimation is strictly separated from real data** ([I-470](../01-normative-glossary-and-invariants.md#rule-i-470)). **Measurement and analysis operate on canonical data, never on screen-sampled pixels.** |
-| VZ-05 | **An approximate measurement must be labelled approximate**, with the reason. |
-| VZ-06 | **Zoom and pan are core capabilities**, at professional precision, including keyboard navigation. |
-| VZ-07 | **Cursors are core to professional analysis**: single, dual, delta, and value readouts with units. |
-| VZ-08 | **Selection is the core of ArcScope agent context**: a **stable selected time range** (and signal set) that can be passed as a durable context reference ([IB-01](../05-ai-and-agent-execution.md#rule-ib-01)). |
-| VZ-09 | **Multi-signal selection is supported.** |
-| VZ-10 | **Live follow** (auto-scroll) is a view mode, independent of recording state ([SE-05](#rule-se-05)). |
-| VZ-11 | Panel layout is device-local; **Saved Analysis Views are session/project work content**, not window geometry ([LY-03](../09-shared-desktop-experience.md#rule-ly-03), `§17`). |
+| <a id="rule-vz-01"></a>VZ-01 | Live visualisation supports at minimum: time-series plots, digital/logic tracks, event timelines, event tables, and multi-signal views. |
+| <a id="rule-vz-02"></a>VZ-02 | **One view may display several signals**, and **signals of incompatible dimensions do not silently share one axis** ([UN-04](../12-quality-and-compatibility-contract.md#rule-un-04)). |
+| <a id="rule-vz-03"></a>VZ-03 | **`View ≠ Signal ownership`** ([I-475](../01-normative-glossary-and-invariants.md#rule-i-475)). Removing a signal from a view does not delete data. |
+| <a id="rule-vz-04"></a>VZ-04 | **Display decimation is strictly separated from real data** ([I-470](../01-normative-glossary-and-invariants.md#rule-i-470)). **Measurement and analysis operate on canonical data, never on screen-sampled pixels.** |
+| <a id="rule-vz-05"></a>VZ-05 | **An approximate measurement must be labelled approximate**, with the reason. |
+| <a id="rule-vz-06"></a>VZ-06 | **Zoom and pan are core capabilities**, at professional precision, including keyboard navigation. |
+| <a id="rule-vz-07"></a>VZ-07 | **Cursors are core to professional analysis**: single, dual, delta, and value readouts with units. |
+| <a id="rule-vz-08"></a>VZ-08 | **Selection is the core of ArcScope agent context**: a **stable selected time range** (and signal set) that can be passed as a durable context reference ([IB-01](../05-ai-and-agent-execution.md#rule-ib-01)). |
+| <a id="rule-vz-09"></a>VZ-09 | **Multi-signal selection is supported.** |
+| <a id="rule-vz-10"></a>VZ-10 | **Live follow** (auto-scroll) is a view mode, independent of recording state ([SE-05](#rule-se-05)). |
+| <a id="rule-vz-11"></a>VZ-11 | Panel layout is device-local; **Saved Analysis Views are session/project work content**, not window geometry ([LY-03](../09-shared-desktop-experience.md#rule-ly-03), `§17`). |
 
 ---
 
@@ -137,12 +137,12 @@ The time model is a product-level design, not an implementation detail.
 
 | # | Requirement |
 |---|---|
-| TG-01 | **`Trigger` = a rule that controls capture, or generates significant time events, based on data or event conditions.** |
-| TG-02 | The trigger family is extensible; V1 provides at minimum **manual** and **basic threshold/edge** triggers. |
-| TG-03 | **Triggered capture supports pre-trigger and post-trigger windows**, served by the rolling buffer. |
-| TG-04 | **`TriggerDefinition ≠ TriggerOccurrence`** ([I-471](../01-normative-glossary-and-invariants.md#rule-i-471) family). |
+| <a id="rule-tg-01"></a>TG-01 | **`Trigger` = a rule that controls capture, or generates significant time events, based on data or event conditions.** |
+| <a id="rule-tg-02"></a>TG-02 | The trigger family is extensible; V1 provides at minimum **manual** and **basic threshold/edge** triggers. |
+| <a id="rule-tg-03"></a>TG-03 | **Triggered capture supports pre-trigger and post-trigger windows**, served by the rolling buffer. |
+| <a id="rule-tg-04"></a>TG-04 | **`TriggerDefinition ≠ TriggerOccurrence`** ([I-471](../01-normative-glossary-and-invariants.md#rule-i-471) family). |
 | <a id="rule-tg-05"></a>TG-05 | **A trigger must never modify data.** It controls capture and marks time; samples are unchanged. |
-| TG-06 | **Trigger presets are reusable**, and each occurrence records the **effective trigger snapshot** in force at the time. |
+| <a id="rule-tg-06"></a>TG-06 | **Trigger presets are reusable**, and each occurrence records the **effective trigger snapshot** in force at the time. |
 
 ---
 
@@ -150,16 +150,16 @@ The time model is a product-level design, not an implementation detail.
 
 | # | Requirement |
 |---|---|
-| MA-01 | **`Measurement ≠ Analysis`** ([I-471](../01-normative-glossary-and-invariants.md#rule-i-471)). A measurement is a quantified reading; an analysis is an interpretation. |
-| MA-02 | Measurements are of two kinds: **transient** (a live readout) and **persisted** (repeatable, placeable in a report). |
-| MA-03 | **Every measurement records its scope**: signals, time range, alignment, source revision and configuration. |
+| <a id="rule-ma-01"></a>MA-01 | **`Measurement ≠ Analysis`** ([I-471](../01-normative-glossary-and-invariants.md#rule-i-471)). A measurement is a quantified reading; an analysis is an interpretation. |
+| <a id="rule-ma-02"></a>MA-02 | Measurements are of two kinds: **transient** (a live readout) and **persisted** (repeatable, placeable in a report). |
+| <a id="rule-ma-03"></a>MA-03 | **Every measurement records its scope**: signals, time range, alignment, source revision and configuration. |
 | <a id="rule-ma-04"></a>MA-04 | Basic measurement family: minimum, maximum, mean, RMS, peak-to-peak, standard deviation, count, duration, frequency, duty cycle, rise/fall time, delta between cursors, and event counts. |
-| MA-05 | **Every measurement result carries a unit** ([UN-01](../12-quality-and-compatibility-contract.md#rule-un-01)). |
-| MA-06 | Basic analysis family: statistics over ranges, thresholds and violations, edge and pulse analysis, spectral analysis, correlation between signals, event sequence analysis, and protocol decode summaries. |
-| MA-07 | **Analysis is non-destructive** ([I-472](../01-normative-glossary-and-invariants.md#rule-i-472)). |
+| <a id="rule-ma-05"></a>MA-05 | **Every measurement result carries a unit** ([UN-01](../12-quality-and-compatibility-contract.md#rule-un-01)). |
+| <a id="rule-ma-06"></a>MA-06 | Basic analysis family: statistics over ranges, thresholds and violations, edge and pulse analysis, spectral analysis, correlation between signals, event sequence analysis, and protocol decode summaries. |
+| <a id="rule-ma-07"></a>MA-07 | **Analysis is non-destructive** ([I-472](../01-normative-glossary-and-invariants.md#rule-i-472)). |
 | <a id="rule-ma-08"></a>MA-08 | **Analysis is reproducible**: the definition, inputs, source revision, configuration snapshot and version are retained so the result can be recomputed. |
-| MA-09 | **`AnalysisRecipe` = a reusable set of analysis and measurement configurations**, applicable to another session and shareable with automation, community packages and ArcChat. |
-| MA-10 | **A recipe stores the process definition, not old results.** |
+| <a id="rule-ma-09"></a>MA-09 | **`AnalysisRecipe` = a reusable set of analysis and measurement configurations**, applicable to another session and shareable with automation, community packages and ArcChat. |
+| <a id="rule-ma-10"></a>MA-10 | **A recipe stores the process definition, not old results.** |
 
 ---
 
@@ -212,11 +212,11 @@ Also verify empty/constant data, nonfinite continuity breaks, irregular sampling
 
 | # | Requirement |
 |---|---|
-| DE-01 | **`Decoder` = a semantic processor converting raw channel or event streams into structured events, fields and signals.** |
-| DE-02 | **Decoder output is derived data** ([I-471](../01-normative-glossary-and-invariants.md#rule-i-471)) and may be retained, but never becomes raw authority. |
-| DE-03 | **Decoders are versioned**, and every decoded result records the decoder version and its **configuration snapshot**. |
-| DE-04 | **Decoder chains are supported** — the output of one decoder feeding another. |
-| DE-05 | **Decoder errors are displayed**, not silently dropped: malformed frames, checksum failures and unknown fields are visible with counts and locations. |
+| <a id="rule-de-01"></a>DE-01 | **`Decoder` = a semantic processor converting raw channel or event streams into structured events, fields and signals.** |
+| <a id="rule-de-02"></a>DE-02 | **Decoder output is derived data** ([I-471](../01-normative-glossary-and-invariants.md#rule-i-471)) and may be retained, but never becomes raw authority. |
+| <a id="rule-de-03"></a>DE-03 | **Decoders are versioned**, and every decoded result records the decoder version and its **configuration snapshot**. |
+| <a id="rule-de-04"></a>DE-04 | **Decoder chains are supported** — the output of one decoder feeding another. |
+| <a id="rule-de-05"></a>DE-05 | **Decoder errors are displayed**, not silently dropped: malformed frames, checksum failures and unknown fields are visible with counts and locations. |
 | <a id="rule-de-06"></a>DE-06 | **A decoder is not device control** ([ID-04](#rule-id-04)). It interprets data; it does not command hardware. |
 
 ---
@@ -225,12 +225,12 @@ Also verify empty/constant data, nonfinite continuity breaks, irregular sampling
 
 | # | Requirement |
 |---|---|
-| AN-01 | **Annotation is first-class ArcScope data.** |
-| AN-02 | Basic annotation types: **marker** (a point in time), **region annotation** (a time range), **note**, and **finding**. |
-| AN-03 | **`Finding`** is an owned, structured conclusion with severity, evidence references and status. |
-| AN-04 | **Annotations may be created by a human or an agent**, and the **actor is always recorded**. |
-| AN-05 | **An agent-created finding must never impersonate a user conclusion** ([AC-02](../02-identity-account-and-workspace.md#rule-ac-02)). It is labelled as agent-produced, with its task and evidence. |
-| AN-06 | **Annotation never changes raw data** ([I-472](../01-normative-glossary-and-invariants.md#rule-i-472)). It is an overlay and semantic layer. |
+| <a id="rule-an-01"></a>AN-01 | **Annotation is first-class ArcScope data.** |
+| <a id="rule-an-02"></a>AN-02 | Basic annotation types: **marker** (a point in time), **region annotation** (a time range), **note**, and **finding**. |
+| <a id="rule-an-03"></a>AN-03 | **`Finding`** is an owned, structured conclusion with severity, evidence references and status. |
+| <a id="rule-an-04"></a>AN-04 | **Annotations may be created by a human or an agent**, and the **actor is always recorded**. |
+| <a id="rule-an-05"></a>AN-05 | **An agent-created finding must never impersonate a user conclusion** ([AC-02](../02-identity-account-and-workspace.md#rule-ac-02)). It is labelled as agent-produced, with its task and evidence. |
+| <a id="rule-an-06"></a>AN-06 | **Annotation never changes raw data** ([I-472](../01-normative-glossary-and-invariants.md#rule-i-472)). It is an overlay and semantic layer. |
 
 ---
 
@@ -238,13 +238,13 @@ Also verify empty/constant data, nonfinite continuity breaks, irregular sampling
 
 | # | Requirement |
 |---|---|
-| CM-01 | **Comparison is a core professional capability**: session-to-session and capture-to-capture. |
-| CM-02 | **`Comparison ≠ Merge`** ([I-472](../01-normative-glossary-and-invariants.md#rule-i-472)). Comparison never produces a combined authoritative dataset. |
-| CM-03 | **Alignment is first-class configuration** — by absolute time, by trigger, by event, or by manual offset — and is retained with the comparison. |
-| CM-04 | **Alignment never modifies the compared sessions** ([TM-03](#rule-tm-03)). |
-| CM-05 | **Signals with incompatible units do not compare automatically** ([UN-04](../12-quality-and-compatibility-contract.md#rule-un-04)); an explicit conversion or an explicit acknowledgement is required. |
-| CM-06 | **Baseline is a reference**, not an authority: a designated session or analysis result used for comparison, which never rewrites what it is compared against. |
-| CM-07 | **A comparison may be re-run with new analysis**, and the older result retains its own source and configuration. |
+| <a id="rule-cm-01"></a>CM-01 | **Comparison is a core professional capability**: session-to-session and capture-to-capture. |
+| <a id="rule-cm-02"></a>CM-02 | **`Comparison ≠ Merge`** ([I-472](../01-normative-glossary-and-invariants.md#rule-i-472)). Comparison never produces a combined authoritative dataset. |
+| <a id="rule-cm-03"></a>CM-03 | **Alignment is first-class configuration** — by absolute time, by trigger, by event, or by manual offset — and is retained with the comparison. |
+| <a id="rule-cm-04"></a>CM-04 | **Alignment never modifies the compared sessions** ([TM-03](#rule-tm-03)). |
+| <a id="rule-cm-05"></a>CM-05 | **Signals with incompatible units do not compare automatically** ([UN-04](../12-quality-and-compatibility-contract.md#rule-un-04)); an explicit conversion or an explicit acknowledgement is required. |
+| <a id="rule-cm-06"></a>CM-06 | **Baseline is a reference**, not an authority: a designated session or analysis result used for comparison, which never rewrites what it is compared against. |
+| <a id="rule-cm-07"></a>CM-07 | **A comparison may be re-run with new analysis**, and the older result retains its own source and configuration. |
 
 ---
 
@@ -252,7 +252,7 @@ Also verify empty/constant data, nonfinite continuity breaks, irregular sampling
 
 | # | Requirement |
 |---|---|
-| DC-01 | **Observation and control are different capability classes** ([ID-04](#rule-id-04)). |
+| <a id="rule-dc-01"></a>DC-01 | **Observation and control are different capability classes** ([ID-04](#rule-id-04)). |
 | <a id="rule-dc-02"></a>DC-02 | **Device control carries stricter permission than capture**, because it has real physical or system side effects. It is an R3-or-above capability with explicit approval, and typically local presence. |
 | <a id="rule-dc-03"></a>DC-03 | Start capture and stop capture may be exposed as capabilities, and are treated as operations with real side effects — not as read-only conveniences. |
 
@@ -262,12 +262,12 @@ Also verify empty/constant data, nonfinite continuity breaks, irregular sampling
 
 | # | Requirement |
 |---|---|
-| RP-01 | **`ArcScope Report` = a structured, traceable technical analysis result.** |
-| RP-02 | **`ArcScope Report ≠ ArcNotes Document`** ([I-029](../01-normative-glossary-and-invariants.md#rule-i-029), [I-471](../01-normative-glossary-and-invariants.md#rule-i-471)). It is not an alias. |
-| RP-03 | A report may contain: session and configuration provenance, measurements, analysis results, charts, annotations, findings and narrative. |
-| RP-04 | **A chart in a report is best stored as a reproducible view definition**, so it can be regenerated from data — with an exported report additionally able to carry a static snapshot. |
-| RP-05 | **Sources must be traceable from a report** back to session, capture, time range, configuration snapshot and analysis version. |
-| RP-06 | ArcScope owns its reports and explicit supported exports. Creating an ArcNotes document from a report is future-only; no current cross-product capability or release gate is required. |
+| <a id="rule-rp-01"></a>RP-01 | **`ArcScope Report` = a structured, traceable technical analysis result.** |
+| <a id="rule-rp-02"></a>RP-02 | **`ArcScope Report ≠ ArcNotes Document`** ([I-029](../01-normative-glossary-and-invariants.md#rule-i-029), [I-471](../01-normative-glossary-and-invariants.md#rule-i-471)). It is not an alias. |
+| <a id="rule-rp-03"></a>RP-03 | A report may contain: session and configuration provenance, measurements, analysis results, charts, annotations, findings and narrative. |
+| <a id="rule-rp-04"></a>RP-04 | **A chart in a report is best stored as a reproducible view definition**, so it can be regenerated from data — with an exported report additionally able to carry a static snapshot. |
+| <a id="rule-rp-05"></a>RP-05 | **Sources must be traceable from a report** back to session, capture, time range, configuration snapshot and analysis version. |
+| <a id="rule-rp-06"></a>RP-06 | ArcScope owns its reports and explicit supported exports. Creating an ArcNotes document from a report is future-only; no current cross-product capability or release gate is required. |
 
 ---
 
@@ -284,12 +284,12 @@ Export is in four classes:
 
 | # | Requirement |
 |---|---|
-| IE-01 | **CSV export must not lose precision without telling the user.** An export warning or manifest declares the representation used and any loss ([EX-02](../13-data-formats-and-portability.md#rule-ex-02) in the data requirements). |
-| IE-02 | **Native export is the complete data migration format** ([EX-01](../13-data-formats-and-portability.md#rule-ex-01) in the data requirements). |
-| IE-03 | **Import and replay are first-class**, and imported data enters the **unified session model** with a recorded **origin** — it becomes an ArcScope session and capture, not a foreign object. |
-| IE-04 | Generic import adapters cover common tabular and event formats; more are added through the same adapter contract. |
-| IE-05 | **Replay never disguises itself as a live device** ([SD-10](#rule-sd-10)). |
-| IE-06 | **Collect Investigation Bundle** gathers a project, its managed assets and, on request, its external references into a portable bundle without destroying originals ([EX-08](../13-data-formats-and-portability.md#rule-ex-08) in the data requirements). |
+| <a id="rule-ie-01"></a>IE-01 | **CSV export must not lose precision without telling the user.** An export warning or manifest declares the representation used and any loss ([EX-02](../13-data-formats-and-portability.md#rule-ex-02) in the data requirements). |
+| <a id="rule-ie-02"></a>IE-02 | **Native export is the complete data migration format** ([EX-01](../13-data-formats-and-portability.md#rule-ex-01) in the data requirements). |
+| <a id="rule-ie-03"></a>IE-03 | **Import and replay are first-class**, and imported data enters the **unified session model** with a recorded **origin** — it becomes an ArcScope session and capture, not a foreign object. |
+| <a id="rule-ie-04"></a>IE-04 | Generic import adapters cover common tabular and event formats; more are added through the same adapter contract. |
+| <a id="rule-ie-05"></a>IE-05 | **Replay never disguises itself as a live device** ([SD-10](#rule-sd-10)). |
+| <a id="rule-ie-06"></a>IE-06 | **Collect Investigation Bundle** gathers a project, its managed assets and, on request, its external references into a portable bundle without destroying originals ([EX-08](../13-data-formats-and-portability.md#rule-ex-08) in the data requirements). |
 
 ---
 
@@ -299,17 +299,17 @@ Export is in four classes:
 
 | # | Requirement |
 |---|---|
-| AI-01 | **Deterministic tools produce numbers; the model provides understanding and orchestration.** A model must never be the authority for a precise numerical result. |
+| <a id="rule-ai-01"></a>AI-01 | **Deterministic tools produce numbers; the model provides understanding and orchestration.** A model must never be the authority for a precise numerical result. |
 | <a id="rule-ai-02"></a>AI-02 | **AI does not process an entire raw capture.** It receives necessary structured results — measurements, analysis outputs, decoded event summaries, selected ranges ([CP-03](../06-knowledge-search-and-retrieval.md#rule-cp-03) in the knowledge requirements). |
-| AI-03 | **When AI states a number it must cite its source** — measurement, analysis result, range and revision ([EC-09](../06-knowledge-search-and-retrieval.md#rule-ec-09)). |
-| AI-04 | Internal AI actions are selection- and result-scoped: explain this range, summarise these findings, suggest a measurement, draft a report section. |
-| AI-05 | ArcScope has no agent Harness. Its embedded assistant and selected actions use the sole Cloud Harness; ArcScope's own bridge validates and executes local tools. |
-| AI-06 | **"Ask ArcChat" passes a bounded context reference** — session, range, signals, results — never the raw capture. |
-| AI-07 | **The user must see the scope the AI used** ([RT-03](../06-knowledge-search-and-retrieval.md#rule-rt-03) in the knowledge requirements). |
+| <a id="rule-ai-03"></a>AI-03 | **When AI states a number it must cite its source** — measurement, analysis result, range and revision ([EC-09](../06-knowledge-search-and-retrieval.md#rule-ec-09)). |
+| <a id="rule-ai-04"></a>AI-04 | Internal AI actions are selection- and result-scoped: explain this range, summarise these findings, suggest a measurement, draft a report section. |
+| <a id="rule-ai-05"></a>AI-05 | ArcScope has no agent Harness. Its embedded assistant and selected actions use the sole Cloud Harness; ArcScope's own bridge validates and executes local tools. |
+| <a id="rule-ai-06"></a>AI-06 | **"Ask ArcChat" passes a bounded context reference** — session, range, signals, results — never the raw capture. |
+| <a id="rule-ai-07"></a>AI-07 | **The user must see the scope the AI used** ([RT-03](../06-knowledge-search-and-retrieval.md#rule-rt-03) in the knowledge requirements). |
 | <a id="rule-ai-08"></a>AI-08 | **A local-only capture must not be uploaded because an AI button was pressed** ([I-182](../01-normative-glossary-and-invariants.md#rule-i-182)). |
-| AI-09 | **AI-generated analysis must be reproducible** like any other analysis ([MA-08](#rule-ma-08)), or clearly marked as narrative. |
-| AI-10 | **`AI Summary ≠ Measurement Result`** ([I-163](../01-normative-glossary-and-invariants.md#rule-i-163)). Summary is narrative; analysis result is evidence. |
-| AI-11 | All AI uses the subscribed Cloud service and actual-usage metering. Deterministic local measurement and analysis are ordinary product computation, not local AI. |
+| <a id="rule-ai-09"></a>AI-09 | **AI-generated analysis must be reproducible** like any other analysis ([MA-08](#rule-ma-08)), or clearly marked as narrative. |
+| <a id="rule-ai-10"></a>AI-10 | **`AI Summary ≠ Measurement Result`** ([I-163](../01-normative-glossary-and-invariants.md#rule-i-163)). Summary is narrative; analysis result is evidence. |
+| <a id="rule-ai-11"></a>AI-11 | All AI uses the subscribed Cloud service and actual-usage metering. Deterministic local measurement and analysis are ordinary product computation, not local AI. |
 
 ### 16.1 Capabilities exposed to ArcChat
 
@@ -321,13 +321,13 @@ Query capabilities (list projects, sessions, captures, channels, signals, events
 
 | # | Requirement |
 |---|---|
-| CL-01 | **`Cloud Sync ≠ Raw Capture Upload`** ([I-474](../01-normative-glossary-and-invariants.md#rule-i-474)). |
-| CL-02 | Default sync covers project, session metadata, annotations, findings, analysis results, reports and configurations. Hardware capture is local by default. Simulator output originates in Cloud under [SIM-01](#rule-sim-01)–[SIM-20](#rule-sim-20) and is labelled synthetic. |
-| CL-03 | **Enabling project cloud sync does not upload raw capture.** Raw upload is an explicit per-session act. |
-| CL-04 | **The raw-capture cloud policy is explicit and visible** per project and per session. |
-| CL-05 | **Cloud metadata present with raw data missing locally is a normal state**, clearly presented — **never "corrupted"** ([AS-04](../03-cloud-services-and-sync.md#rule-as-04)). |
-| CL-06 | Hardware acquisition and local capture analysis remain native. Cloud targets ArcScope's own bridge for authorized tools; the simulator runs in Cloud without an online desktop. |
-| CL-07 | A remote agent may use an online desktop ArcScope to run analyses, subject to the full remote authorization model. |
+| <a id="rule-cl-01"></a>CL-01 | **`Cloud Sync ≠ Raw Capture Upload`** ([I-474](../01-normative-glossary-and-invariants.md#rule-i-474)). |
+| <a id="rule-cl-02"></a>CL-02 | Default sync covers project, session metadata, annotations, findings, analysis results, reports and configurations. Hardware capture is local by default. Simulator output originates in Cloud under [SIM-01](#rule-sim-01)–[SIM-20](#rule-sim-20) and is labelled synthetic. |
+| <a id="rule-cl-03"></a>CL-03 | **Enabling project cloud sync does not upload raw capture.** Raw upload is an explicit per-session act. |
+| <a id="rule-cl-04"></a>CL-04 | **The raw-capture cloud policy is explicit and visible** per project and per session. |
+| <a id="rule-cl-05"></a>CL-05 | **Cloud metadata present with raw data missing locally is a normal state**, clearly presented — **never "corrupted"** ([AS-04](../03-cloud-services-and-sync.md#rule-as-04)). |
+| <a id="rule-cl-06"></a>CL-06 | Hardware acquisition and local capture analysis remain native. Cloud targets ArcScope's own bridge for authorized tools; the simulator runs in Cloud without an online desktop. |
+| <a id="rule-cl-07"></a>CL-07 | A remote agent may use an online desktop ArcScope to run analyses, subject to the full remote authorization model. |
 
 ---
 
@@ -364,12 +364,12 @@ The simulator supplies repeatable signal/event data through real Cloud persisten
 
 | # | Requirement |
 |---|---|
-| LB-01 | ArcScope has a searchable library over projects, sessions, captures, findings and reports, with filters by time, source, tag and metadata. |
-| LB-02 | Simple **tags** organise sessions and projects. |
-| LB-03 | **Session metadata is moderately structured**, including custom user metadata fields. |
+| <a id="rule-lb-01"></a>LB-01 | ArcScope has a searchable library over projects, sessions, captures, findings and reports, with filters by time, source, tag and metadata. |
+| <a id="rule-lb-02"></a>LB-02 | Simple **tags** organise sessions and projects. |
+| <a id="rule-lb-03"></a>LB-03 | **Session metadata is moderately structured**, including custom user metadata fields. |
 | <a id="rule-lb-04"></a>LB-04 | **Reproducibility is a core product value.** A result must be reconstructable from: session, capture, configuration snapshot, decoder version and configuration, analysis definition and version, alignment, and calibration version. |
-| LB-05 | **A session configuration snapshot is indispensable** ([SD-05](#rule-sd-05)). |
-| LB-06 | **Calibration is modelled as a traceable transform**, not as a mutation of raw data, and its **version is part of provenance**. |
+| <a id="rule-lb-05"></a>LB-05 | **A session configuration snapshot is indispensable** ([SD-05](#rule-sd-05)). |
+| <a id="rule-lb-06"></a>LB-06 | **Calibration is modelled as a traceable transform**, not as a mutation of raw data, and its **version is part of provenance**. |
 
 ---
 
@@ -377,12 +377,12 @@ The simulator supplies repeatable signal/event data through real Cloud persisten
 
 | # | Requirement |
 |---|---|
-| LR-01 | Capture, decode, analysis, import and export are product Activity/Job operations in the shared activity surface. SimulationRun is a Cloud-owned product job. None creates a second AI scheduler. |
-| LR-02 | **Capture is a special long-running activity with a permanently visible recording state.** |
-| LR-03 | **The recording indicator is safety-critical UI.** It must be unmistakable, always visible while recording, and must never be obscured or ambiguous. |
-| LR-04 | **Closing a window during capture must not silently stop or silently continue.** The user is asked, with the consequences stated ([LF-04](../09-shared-desktop-experience.md#rule-lf-04)). |
-| LR-05 | **Background capture is not permanent background residency** ([LF-02](../09-shared-desktop-experience.md#rule-lf-02)). It persists only while genuine work is active. |
-| LR-06 | **Several windows on one session share one authority** ([WN-04](../09-shared-desktop-experience.md#rule-wn-04)). |
+| <a id="rule-lr-01"></a>LR-01 | Capture, decode, analysis, import and export are product Activity/Job operations in the shared activity surface. SimulationRun is a Cloud-owned product job. None creates a second AI scheduler. |
+| <a id="rule-lr-02"></a>LR-02 | **Capture is a special long-running activity with a permanently visible recording state.** |
+| <a id="rule-lr-03"></a>LR-03 | **The recording indicator is safety-critical UI.** It must be unmistakable, always visible while recording, and must never be obscured or ambiguous. |
+| <a id="rule-lr-04"></a>LR-04 | **Closing a window during capture must not silently stop or silently continue.** The user is asked, with the consequences stated ([LF-04](../09-shared-desktop-experience.md#rule-lf-04)). |
+| <a id="rule-lr-05"></a>LR-05 | **Background capture is not permanent background residency** ([LF-02](../09-shared-desktop-experience.md#rule-lf-02)). It persists only while genuine work is active. |
+| <a id="rule-lr-06"></a>LR-06 | **Several windows on one session share one authority** ([WN-04](../09-shared-desktop-experience.md#rule-wn-04)). |
 
 ---
 
@@ -393,7 +393,7 @@ Reserved contribution points: **source adapters**, **decoders**, **measurement k
 | # | Requirement |
 |---|---|
 | <a id="rule-ep-01"></a>EP-01 | **A third-party extension can never write raw capture arbitrarily.** Raw capture is written by ArcScope alone. |
-| EP-02 | **V1 does not admit arbitrary scripting for the sake of extensibility** (`§13` of the extension requirements). Extension goes through typed extension points and the schema-described capability protocol, out of process. |
+| <a id="rule-ep-02"></a>EP-02 | **V1 does not admit arbitrary scripting for the sake of extensibility** (`§13` of the extension requirements). Extension goes through typed extension points and the schema-described capability protocol, out of process. |
 
 ---
 
@@ -453,10 +453,10 @@ SimulationDefinition · ScenarioVersion · SimulationRun · SimulationSegment ·
 
 | # | Requirement |
 |---|---|
-| RF-01 | **Its licence must be re-verified against the local repository baseline with file-level SPDX evidence**, not against a repository-root licence or an external page — the **[F-013](../../assurance/open-gates-register.md#rule-f-013)** gate (**[D-013](../../decisions/phase-1-foundation-decisions.md#rule-d-013)**). |
-| RF-02 | An **ArcScope Reference Coverage Matrix** is required before ArcScope implementation planning is finalised, mapping each feature to Copy / Rewrite / Improve / Replace / Reference Only / Drop, to a target ArcScope module and path, to temporary/permanent/replacement status, to V1 or later, and to a test and completion gate. |
-| RF-03 | **Protocol, transport and format areas — messaging protocols, fieldbus and CAN handling, measurement data formats, reporting, database logging, and 3D/XY/waterfall visualisation — are audited file by file for licence and origin.** Licence analysis must not silently abandon a confirmed reuse strategy, and commercial release must close NOTICE, source records, retained content and mandatory-replacement obligations. |
-| RF-04 | **The target runtime architecture is ArcForges' own** — C#, Avalonia, Native AOT, its own domain model, acquisition pipeline and visualisation system. |
+| <a id="rule-rf-01"></a>RF-01 | **Its licence must be re-verified against the local repository baseline with file-level SPDX evidence**, not against a repository-root licence or an external page — the **[F-013](../../assurance/open-gates-register.md#rule-f-013)** gate (**[D-013](../../decisions/phase-1-foundation-decisions.md#rule-d-013)**). |
+| <a id="rule-rf-02"></a>RF-02 | An **ArcScope Reference Coverage Matrix** is required before ArcScope implementation planning is finalised, mapping each feature to Copy / Rewrite / Improve / Replace / Reference Only / Drop, to a target ArcScope module and path, to temporary/permanent/replacement status, to V1 or later, and to a test and completion gate. |
+| <a id="rule-rf-03"></a>RF-03 | **Protocol, transport and format areas — messaging protocols, fieldbus and CAN handling, measurement data formats, reporting, database logging, and 3D/XY/waterfall visualisation — are audited file by file for licence and origin.** Licence analysis must not silently abandon a confirmed reuse strategy, and commercial release must close NOTICE, source records, retained content and mandatory-replacement obligations. |
+| <a id="rule-rf-04"></a>RF-04 | **The target runtime architecture is ArcForges' own** — C#, Avalonia, Native AOT, its own domain model, acquisition pipeline and visualisation system. |
 
 ---
 

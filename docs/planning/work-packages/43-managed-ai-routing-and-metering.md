@@ -49,17 +49,17 @@
 
 | # | Rule |
 |---|---|
-| BR-01 | **Every run locks a tariff snapshot at start**; a rate change never alters a settled charge (**[D-020](../../decisions/phase-1-foundation-decisions.md#rule-d-020)**). |
-| BR-02 | **Credits are reserved before execution and settled after**, with a hard stop at zero (**[D-020](../../decisions/phase-1-foundation-decisions.md#rule-d-020)**). |
-| BR-03 | **The three ledgers stay separate** ([I-011](../../requirements/01-normative-glossary-and-invariants.md#rule-i-011)): provider cost, customer credit, payment and revenue. |
-| BR-04 | Workers AI calls use the AI binding in the CF deployment. C#/CF service authentication and other designated provider secrets remain in their owning deployment secret stores; never in images, policy values, public samples or clients. |
+| <a id="rule-br-01"></a>BR-01 | **Every run locks a tariff snapshot at start**; a rate change never alters a settled charge (**[D-020](../../decisions/phase-1-foundation-decisions.md#rule-d-020)**). |
+| <a id="rule-br-02"></a>BR-02 | **Credits are reserved before execution and settled after**, with a hard stop at zero (**[D-020](../../decisions/phase-1-foundation-decisions.md#rule-d-020)**). |
+| <a id="rule-br-03"></a>BR-03 | **The three ledgers stay separate** ([I-011](../../requirements/01-normative-glossary-and-invariants.md#rule-i-011)): provider cost, customer credit, payment and revenue. |
+| <a id="rule-br-04"></a>BR-04 | Workers AI calls use the AI binding in the CF deployment. C#/CF service authentication and other designated provider secrets remain in their owning deployment secret stores; never in images, policy values, public samples or clients. |
 | <a id="rule-br-05"></a>BR-05 | **There is no end-user BYOK** ([BY-01](../../requirements/04-commerce-entitlement-and-credits.md#rule-by-01)–[BY-04](../../requirements/04-commerce-entitlement-and-credits.md#rule-by-04), [I-015](../../requirements/01-normative-glossary-and-invariants.md#rule-i-015) retired). Provider credentials are deployment secrets ([DC-15](../../requirements/11-policy-and-configuration.md#rule-dc-15)); a self-host operator provisioning server credentials is infrastructure provisioning, not customer BYOK ([I-495](../../requirements/01-normative-glossary-and-invariants.md#rule-i-495)). |
-| BR-06 | Policy may activate only models/capabilities in the selected Workers AI catalogue/profile. Withdrawal produces an explicit unavailable state; an unvalidated model is not admitted by changing a string. |
-| BR-07 | **Provider interaction records are a separate trace system** from execution, capability and audit traces. |
-| BR-08 | **Hidden model reasoning never enters the product model.** |
-| BR-09 | **Cost transparency is a product obligation**: a user can see what a run cost and why. |
-| BR-10 | Provider failure before dispatch releases unused reservations; possible dispatch/outcome loss retains the existing unknown-usage hold/reconciliation deadline. No outage is silently treated as free, charged twice or safely replayable. |
-| BR-11 | **AI-generated content carries the transparency marking the applicable regime requires** (**[V-01](../../assurance/phase-1-official-verification.md#rule-v-01)**). |
+| <a id="rule-br-06"></a>BR-06 | Policy may activate only models/capabilities in the selected Workers AI catalogue/profile. Withdrawal produces an explicit unavailable state; an unvalidated model is not admitted by changing a string. |
+| <a id="rule-br-07"></a>BR-07 | **Provider interaction records are a separate trace system** from execution, capability and audit traces. |
+| <a id="rule-br-08"></a>BR-08 | **Hidden model reasoning never enters the product model.** |
+| <a id="rule-br-09"></a>BR-09 | **Cost transparency is a product obligation**: a user can see what a run cost and why. |
+| <a id="rule-br-10"></a>BR-10 | Provider failure before dispatch releases unused reservations; possible dispatch/outcome loss retains the existing unknown-usage hold/reconciliation deadline. No outage is silently treated as free, charged twice or safely replayable. |
+| <a id="rule-br-11"></a>BR-11 | **AI-generated content carries the transparency marking the applicable regime requires** (**[V-01](../../assurance/phase-1-official-verification.md#rule-v-01)**). |
 
 ---
 
@@ -197,7 +197,7 @@ The provider implementation is confined to ArcForges-AI; C# owns canonical comme
 
 ## 7. Tests and verification evidence
 
-Acceptance includes every amended §5 producer/consumer and WP-43.90 evidence. Current P2-013 contracts/data/runtime rules are tested in the original owner implementation, not a detached explanatory sample.
+Acceptance includes every amended §5 producer/consumer and [WP-43.90](#rule-wp-43.90) evidence. Current [P2-013](../../decisions/phase-2-specification-decisions.md#rule-p2-013) contracts/data/runtime rules are tested in the original owner implementation, not a detached explanatory sample.
 
 **Required evidence addition.** [WP-43.04](#rule-wp-43.04) records the carrier/propagation/failure vectors above with payload and manifest hashes; early packages use declared fixtures, while provider/Harness packages require their real integrations.
 
@@ -241,6 +241,6 @@ Acceptance includes every amended §5 producer/consumer and WP-43.90 evidence. C
 
 **Downstream:** `40` · `50` · `52`. Consumers use exact released artifacts.
 
-## P2-010 required behavior and closure
+## [P2-010](../../decisions/phase-2-specification-decisions.md#rule-p2-010) required behavior and closure
 
 Model intent/outcome/settlement supports real ExecutionOwner task/turn and operator-funded compaction/search. Temporary bodies stay outside durable D1 and SQLite history, backups and Workflow checkpoints; durable receipts keep actual supplier/customer facts. The referenced normative profile and producer stage matrix are binding inputs. Record independent positive/negative vectors and actual owner integration at this WP's assigned stage; a mock cannot close a real-provider/device requirement.

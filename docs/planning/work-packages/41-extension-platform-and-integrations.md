@@ -44,18 +44,18 @@
 
 | # | Rule |
 |---|---|
-| BR-01 | **Third-party executable extensions run out-of-process by default.** No third-party assembly loads into a product's main process. |
-| BR-02 | **An extension's own implementation need not be AOT**; the host stays AOT. |
-| BR-03 | **Isolation is not authorization** ([I-259](../../requirements/01-normative-glossary-and-invariants.md#rule-i-259)); every extension call passes the full security pipeline with owner-side validation last. |
-| BR-04 | **The structured value model is closed and AOT-safe.** `Dictionary<string, object>` is not the protocol ([I-328](../../requirements/01-normative-glossary-and-invariants.md#rule-i-328)). |
-| BR-05 | **The schema-described boundary never propagates inward** ([I-329](../../requirements/01-normative-glossary-and-invariants.md#rule-i-329)) into first-party product capabilities. |
-| BR-06 | **No third-party control is instantiated in a product process.** UI contribution is declarative from a closed vocabulary. |
-| BR-07 | **A secret settings field yields a reference only**; plaintext is never stored or returned. |
-| BR-08 | **Installation is not authorization.** Permissions are presented before installation and granted explicitly; a new permission in an update forces re-consent. |
-| BR-09 | **Yank, deprecate and revoke are three different operations** ([I-433](../../requirements/01-normative-glossary-and-invariants.md#rule-i-433), [I-330](../../requirements/01-normative-glossary-and-invariants.md#rule-i-330)). |
-| BR-10 | **A running task freezes the package version it started with.** |
-| BR-11 | **Uninstall never cascade-deletes professional resources the extension created.** |
-| BR-12 | **MCP is an external capability adapter and never becomes the internal protocol** (**[V-02](../../assurance/phase-1-official-verification.md#rule-v-02)**). |
+| <a id="rule-br-01"></a>BR-01 | **Third-party executable extensions run out-of-process by default.** No third-party assembly loads into a product's main process. |
+| <a id="rule-br-02"></a>BR-02 | **An extension's own implementation need not be AOT**; the host stays AOT. |
+| <a id="rule-br-03"></a>BR-03 | **Isolation is not authorization** ([I-259](../../requirements/01-normative-glossary-and-invariants.md#rule-i-259)); every extension call passes the full security pipeline with owner-side validation last. |
+| <a id="rule-br-04"></a>BR-04 | **The structured value model is closed and AOT-safe.** `Dictionary<string, object>` is not the protocol ([I-328](../../requirements/01-normative-glossary-and-invariants.md#rule-i-328)). |
+| <a id="rule-br-05"></a>BR-05 | **The schema-described boundary never propagates inward** ([I-329](../../requirements/01-normative-glossary-and-invariants.md#rule-i-329)) into first-party product capabilities. |
+| <a id="rule-br-06"></a>BR-06 | **No third-party control is instantiated in a product process.** UI contribution is declarative from a closed vocabulary. |
+| <a id="rule-br-07"></a>BR-07 | **A secret settings field yields a reference only**; plaintext is never stored or returned. |
+| <a id="rule-br-08"></a>BR-08 | **Installation is not authorization.** Permissions are presented before installation and granted explicitly; a new permission in an update forces re-consent. |
+| <a id="rule-br-09"></a>BR-09 | **Yank, deprecate and revoke are three different operations** ([I-433](../../requirements/01-normative-glossary-and-invariants.md#rule-i-433), [I-330](../../requirements/01-normative-glossary-and-invariants.md#rule-i-330)). |
+| <a id="rule-br-10"></a>BR-10 | **A running task freezes the package version it started with.** |
+| <a id="rule-br-11"></a>BR-11 | **Uninstall never cascade-deletes professional resources the extension created.** |
+| <a id="rule-br-12"></a>BR-12 | **MCP is an external capability adapter and never becomes the internal protocol** (**[V-02](../../assurance/phase-1-official-verification.md#rule-v-02)**). |
 
 ---
 
@@ -188,7 +188,7 @@
 
 ## 7. Tests and verification evidence
 
-Acceptance includes every amended §5 producer/consumer and WP-41.90 evidence. Current P2-013 contracts/data/runtime rules are tested in the original owner implementation, not a detached explanatory sample.
+Acceptance includes every amended §5 producer/consumer and [WP-41.90](#rule-wp-41.90) evidence. Current [P2-013](../../decisions/phase-2-specification-decisions.md#rule-p2-013) contracts/data/runtime rules are tested in the original owner implementation, not a detached explanatory sample.
 
 [Local gRPC closure](../../architecture/contracts/09-local-grpc-and-sandbox.md): Run real extension host↔child generated gRPC roles and ConnectorBroker consent/secret rotation/revocation; deny forged first-party identity and direct SSO/control access. No custom symmetric-event protocol.
 
@@ -232,4 +232,4 @@ Acceptance includes every amended §5 producer/consumer and WP-41.90 evidence. C
 
 **Upstream:** `09` · `11` · `17` · `22` · `25`. Consume completed stage outputs.
 
-**Downstream:** `50` · `52`. Consumers use exact released artifacts.
+**Downstream:** `45` · `50` · `52`. Consumers use exact released artifacts.

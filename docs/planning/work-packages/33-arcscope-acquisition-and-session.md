@@ -46,18 +46,18 @@
 
 | # | Rule |
 |---|---|
-| BR-01 | **The ArcScope Reference Coverage Matrix is a completed, versioned planning input** — [`../../assurance/reference-coverage/arcscope-serial-studio.md`](../../assurance/reference-coverage/arcscope-serial-studio.md), 31 item-level rows, bound to Serial-Studio at `639daafb`. It was produced before this plan was derived (**[D-019](../../decisions/phase-1-foundation-decisions.md#rule-d-019)**). **This package consumes it and checks it for drift; it does not create it.** |
-| BR-02 | **`Device ≠ DataSource`** ([I-466](../../requirements/01-normative-glossary-and-invariants.md#rule-i-466)). The data source is the real entry point; the device is an optional identity. |
-| BR-03 | **`Session ≠ Capture`** ([I-467](../../requirements/01-normative-glossary-and-invariants.md#rule-i-467)) and live observation is separate from capture ([I-469](../../requirements/01-normative-glossary-and-invariants.md#rule-i-469)). |
-| BR-04 | **Pausing the view never stops recording** ([I-469](../../requirements/01-normative-glossary-and-invariants.md#rule-i-469)). |
-| BR-05 | **Raw capture, once finalised, is immutable.** Raw capture is evidence and the source of truth. |
-| BR-06 | **Every session records an effective configuration snapshot** — the settings actually in force. Changing a profile never rewrites a historical session. |
-| BR-07 | **An acquisition overrun is surfaced, never hidden**: counted, timestamped and recorded as a gap. |
-| BR-08 | **Replay never impersonates a real device** ([I-470](../../requirements/01-normative-glossary-and-invariants.md#rule-i-470)), and its origin is always recorded. |
-| BR-09 | **The same source is never silently claimed by two captures**; exclusive access uses lease and busy semantics. |
-| BR-10 | **The acquisition loop, capture lifecycle and trigger semantics are C#**; native code supplies transport, device access, timestamps and primitives only. |
-| BR-11 | **Raw capture uses the chunked verifiable store**, never database blobs. |
-| BR-12 | **A crash mid-capture recovers to the last committed boundary with an honest end marker.** |
+| <a id="rule-br-01"></a>BR-01 | **The ArcScope Reference Coverage Matrix is a completed, versioned planning input** — [`../../assurance/reference-coverage/arcscope-serial-studio.md`](../../assurance/reference-coverage/arcscope-serial-studio.md), 31 item-level rows, bound to Serial-Studio at `639daafb`. It was produced before this plan was derived (**[D-019](../../decisions/phase-1-foundation-decisions.md#rule-d-019)**). **This package consumes it and checks it for drift; it does not create it.** |
+| <a id="rule-br-02"></a>BR-02 | **`Device ≠ DataSource`** ([I-466](../../requirements/01-normative-glossary-and-invariants.md#rule-i-466)). The data source is the real entry point; the device is an optional identity. |
+| <a id="rule-br-03"></a>BR-03 | **`Session ≠ Capture`** ([I-467](../../requirements/01-normative-glossary-and-invariants.md#rule-i-467)) and live observation is separate from capture ([I-469](../../requirements/01-normative-glossary-and-invariants.md#rule-i-469)). |
+| <a id="rule-br-04"></a>BR-04 | **Pausing the view never stops recording** ([I-469](../../requirements/01-normative-glossary-and-invariants.md#rule-i-469)). |
+| <a id="rule-br-05"></a>BR-05 | **Raw capture, once finalised, is immutable.** Raw capture is evidence and the source of truth. |
+| <a id="rule-br-06"></a>BR-06 | **Every session records an effective configuration snapshot** — the settings actually in force. Changing a profile never rewrites a historical session. |
+| <a id="rule-br-07"></a>BR-07 | **An acquisition overrun is surfaced, never hidden**: counted, timestamped and recorded as a gap. |
+| <a id="rule-br-08"></a>BR-08 | **Replay never impersonates a real device** ([I-470](../../requirements/01-normative-glossary-and-invariants.md#rule-i-470)), and its origin is always recorded. |
+| <a id="rule-br-09"></a>BR-09 | **The same source is never silently claimed by two captures**; exclusive access uses lease and busy semantics. |
+| <a id="rule-br-10"></a>BR-10 | **The acquisition loop, capture lifecycle and trigger semantics are C#**; native code supplies transport, device access, timestamps and primitives only. |
+| <a id="rule-br-11"></a>BR-11 | **Raw capture uses the chunked verifiable store**, never database blobs. |
+| <a id="rule-br-12"></a>BR-12 | **A crash mid-capture recovers to the last committed boundary with an honest end marker.** |
 
 ---
 
@@ -242,6 +242,6 @@ Generic USB is V1: verify enumeration, explicit interface/endpoint open, control
 
 **Downstream:** `34` · `51`. Consumers use exact released artifacts.
 
-## P2-010 required behavior and closure
+## [P2-010](../../decisions/phase-2-specification-decisions.md#rule-p2-010) required behavior and closure
 
 Use acquisition.source/framing/trigger profiles in architecture 26 and wire 04, with explicit gap/loss/durable capture manifests and all accepted serial/network/file/USB sources. The referenced normative profile and producer stage matrix are binding inputs. Record independent positive/negative vectors and actual owner integration at this WP's assigned stage; a mock cannot close a real-provider/device requirement.

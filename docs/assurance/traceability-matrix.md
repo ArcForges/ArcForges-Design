@@ -186,9 +186,9 @@ The catalogue in [`../requirements/01-normative-glossary-and-invariants.md`](../
 
 | # | Rule |
 |---|---|
-| IE-01 | **[PG-06](open-gates-register.md#rule-pg-06) and [PG-11](open-gates-register.md#rule-pg-11) are different gates with different evidence.** [PG-06](open-gates-register.md#rule-pg-06) closing has no effect on [PG-11](open-gates-register.md#rule-pg-11). |
-| IE-02 | **An owned open finding never closes either.** [WP-05.05](../planning/work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05.05) produces an accounting report; a faithful report of unimplemented checks is a complete report and a failing [PG-11](open-gates-register.md#rule-pg-11). |
-| IE-03 | **A planned verification is not evidence that an invariant holds.** It is evidence that the invariant is verifiable and that someone owns proving it. |
+| <a id="rule-ie-01"></a>IE-01 | **[PG-06](open-gates-register.md#rule-pg-06) and [PG-11](open-gates-register.md#rule-pg-11) are different gates with different evidence.** [PG-06](open-gates-register.md#rule-pg-06) closing has no effect on [PG-11](open-gates-register.md#rule-pg-11). |
+| <a id="rule-ie-02"></a>IE-02 | **An owned open finding never closes either.** [WP-05.05](../planning/work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05.05) produces an accounting report; a faithful report of unimplemented checks is a complete report and a failing [PG-11](open-gates-register.md#rule-pg-11). |
+| <a id="rule-ie-03"></a>IE-03 | **A planned verification is not evidence that an invariant holds.** It is evidence that the invariant is verifiable and that someone owns proving it. |
 
 ---
 
@@ -247,16 +247,16 @@ Every gate in [`open-gates-register.md`](open-gates-register.md) is scheduled.
 
 | # | Statement |
 |---|---|
-| NC-01 | **No gate is closed by this document.** Five gates are closed by the design-stage artifacts they name; this matrix records that, it does not effect it. |
-| NC-02 | **Design traceability is complete; implementation enforcement is not.** [PG-06](open-gates-register.md#rule-pg-06) is closed on the mapping; [PG-11](open-gates-register.md#rule-pg-11) requires implemented, passing checks and is open. |
-| NC-03 | **All five Reference Coverage Matrices exist**, with 145 item-level rows, and **no unresolved determination remains** — [OC-01](open-gates-register.md#rule-oc-01) was closed by user decision ([P2-005](../decisions/phase-2-specification-decisions.md#rule-p2-005)). |
-| NC-04 | **The item-level code inventory exists** — 166 of 166 projects, measured. Its dispositions are **not executed**; that is [WP-01](../planning/work-packages/01-repository-reconciliation-and-target-layout.md#rule-wp-01)'s work. |
-| NC-05 | **No test in this matrix has been run.** This is a specification repository; the test families and gates are defined here and executed in the implementation repository. |
-| NC-06 | **A resolving citation is not a designed mechanism.** This matrix records that a requirement has an architecture home; whether that home specifies a mechanism rather than restating the requirement is checked by [`end-to-end-workflow-verification.md`](end-to-end-workflow-verification.md), with the complete fourteen-group repair recorded in [the closure review](phase-2-design-closure-review.md). |
-| NC-07 | **Row counts prove nothing about completeness.** Every architecture document being realised in a work package says every document is claimed by someone, not that every subject is designed. |
-| NC-08 | **This matrix was recomputed on 2026-09-06 against the revised requirements**, not carried forward. [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006)'s downstream reconciliation statement is explicit that prior completion claims do not demonstrate coverage of the amended scope, so every count here is a fresh derivation. |
-| NC-09 | **A retired package still appears.** `27` and `29` are listed as retired rather than deleted, so a reader following an older citation finds the retirement record instead of a broken reference. |
-| NC-10 | This matrix was reconciled on 2026-09-17 against the P2-013 repair, current invariant catalogue and the 51-node/158-edge active work-package graph. The current proof is documentary mapping and mechanical consistency only. WP20/27/29 remain deferred/retired, and no oracle may use them as current implementation inputs. |
+| <a id="rule-nc-01"></a>NC-01 | **No gate is closed by this document.** Five gates are closed by the design-stage artifacts they name; this matrix records that, it does not effect it. |
+| <a id="rule-nc-02"></a>NC-02 | **Design traceability is complete; implementation enforcement is not.** [PG-06](open-gates-register.md#rule-pg-06) is closed on the mapping; [PG-11](open-gates-register.md#rule-pg-11) requires implemented, passing checks and is open. |
+| <a id="rule-nc-03"></a>NC-03 | **All five Reference Coverage Matrices exist**, with 145 item-level rows, and **no unresolved determination remains** — [OC-01](open-gates-register.md#rule-oc-01) was closed by user decision ([P2-005](../decisions/phase-2-specification-decisions.md#rule-p2-005)). |
+| <a id="rule-nc-04"></a>NC-04 | **The item-level code inventory exists** — 166 of 166 projects, measured. Its dispositions are **not executed**; that is [WP-01](../planning/work-packages/01-repository-reconciliation-and-target-layout.md#rule-wp-01)'s work. |
+| <a id="rule-nc-05"></a>NC-05 | **No test in this matrix has been run.** This is a specification repository; the test families and gates are defined here and executed in the implementation repository. |
+| <a id="rule-nc-06"></a>NC-06 | **A resolving citation is not a designed mechanism.** This matrix records that a requirement has an architecture home; whether that home specifies a mechanism rather than restating the requirement is checked by [`end-to-end-workflow-verification.md`](end-to-end-workflow-verification.md), with the complete fourteen-group repair recorded in [the closure review](phase-2-design-closure-review.md). |
+| <a id="rule-nc-07"></a>NC-07 | **Row counts prove nothing about completeness.** Every architecture document being realised in a work package says every document is claimed by someone, not that every subject is designed. |
+| <a id="rule-nc-08"></a>NC-08 | **This matrix was recomputed on 2026-09-06 against the revised requirements**, not carried forward. [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006)'s downstream reconciliation statement is explicit that prior completion claims do not demonstrate coverage of the amended scope, so every count here is a fresh derivation. |
+| <a id="rule-nc-09"></a>NC-09 | **A retired package still appears.** `27` and `29` are listed as retired rather than deleted, so a reader following an older citation finds the retirement record instead of a broken reference. |
+| <a id="rule-nc-10"></a>NC-10 | This matrix was reconciled on 2026-09-17 against the [P2-013](../decisions/phase-2-specification-decisions.md#rule-p2-013) repair, current invariant catalogue and the 51-node/158-edge active work-package graph. The current proof is documentary mapping and mechanical consistency only. WP20/27/29 remain deferred/retired, and no oracle may use them as current implementation inputs. |
 
 ---
 
@@ -264,10 +264,10 @@ Every gate in [`open-gates-register.md`](open-gates-register.md) is scheduled.
 
 | # | Rule |
 |---|---|
-| MT-01 | **This matrix is updated whenever a document, gate or work package is added, removed or renamed.** |
-| MT-02 | **[WP-05.06](../planning/work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05.06) asserts its integrity**: every identifier cited here must exist, and every architecture document, requirement document and gate must appear. |
-| MT-03 | **A decision added in Phase 2** ([`../decisions/`](../decisions/README.md)) is added to `§1` with its enforcement mechanism. |
-| MT-04 | **A gate discovered during implementation** is added to the register and to `§6` with its scheduling. |
+| <a id="rule-mt-01"></a>MT-01 | **This matrix is updated whenever a document, gate or work package is added, removed or renamed.** |
+| <a id="rule-mt-02"></a>MT-02 | **[WP-05.06](../planning/work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05.06) asserts its integrity**: every identifier cited here must exist, and every architecture document, requirement document and gate must appear. |
+| <a id="rule-mt-03"></a>MT-03 | **A decision added in Phase 2** ([`../decisions/`](../decisions/README.md)) is added to `§1` with its enforcement mechanism. |
+| <a id="rule-mt-04"></a>MT-04 | **A gate discovered during implementation** is added to the register and to `§6` with its scheduling. |
 
 
 ## React/TypeScript Web amendment traceability
@@ -283,10 +283,10 @@ Every gate in [`open-gates-register.md`](open-gates-register.md) is scheduled.
 | Consumer visual and interaction quality | [Web requirements](../requirements/products/arcforges-web.md); [WP-47.07](../planning/work-packages/47-static-public-site.md#rule-wp-47.07) | [WP-48](../planning/work-packages/48-account-portal.md#rule-wp-48), [WP-49](../planning/work-packages/49-arcchat-web-companion.md#rule-wp-49) approved responsive/theme/state/locale visuals, keyboard/assistive and performance results |
 | Complete commercial Web release | [Deployment architecture](../architecture/22-deployment-and-release-execution.md); [WP-50.06](../planning/work-packages/50-full-platform-production-release.md#rule-wp-50.06) | [PG-23](open-gates-register.md#rule-pg-23); production artifacts and real Cloud workflows, not fixtures |
 
-Current register reconciliation under P2-011:40 entries =5 design-closed +33 implementation-open/triggered +1 retired iOS entry +1 merged entry. Neither the Web gate nor the Android push gate is closed by document review.
+Current register reconciliation under [P2-011](../decisions/phase-2-specification-decisions.md#rule-p2-011):40 entries =5 design-closed +33 implementation-open/triggered +1 retired iOS entry +1 merged entry. Neither the Web gate nor the Android push gate is closed by document review.
 
 
-## P2-009 amendment coverage
+## [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) amendment coverage
 
 The 23 foundation decisions and fourteen Phase 2 decisions remain traceable. [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) supersedes the repository/runtime/protocol/provider portions of earlier decisions; their product and semantic obligations remain effective.
 
@@ -301,7 +301,7 @@ The 23 foundation decisions and fourteen Phase 2 decisions remain traceable. [P2
 
 The two new contract companions are formal architecture inputs. Existing invariant IDs and the item-level reference dispositions are unchanged by repository relocation. The [complete dependency graph](../planning/implementation-sequence.md#9-p2-009-complete-artifact-dependency-graph) carries 51 active packages and 158 directed edges, with WP20 future-only and WP27/29 retired.
 
-## P2-010 completion map
+## [P2-010](../decisions/phase-2-specification-decisions.md#rule-p2-010) completion map
 
 | Authority | Implementing WPs | Independent acceptance |
 |---|---|---|
@@ -316,9 +316,9 @@ Document validation is recorded in [family completion review](family-design-comp
 
 [PG-24](open-gates-register.md#rule-pg-24) Android push: WP45.09 produces the real sender; WP32 closes physical receipt, denial and fallback evidence. Desktop distribution requirements are implemented by WP53 and production-verified by WP50.
 
-## P2-013 repair trace and current acceptance
+## [P2-013](../decisions/phase-2-specification-decisions.md#rule-p2-013) repair trace and current acceptance
 
-Historical decisions D-002/007/008/009/010/011/014/021/022 and P2-006/008/009/010/011 apply only with their inline amendments. P2-012 owns the current product/Cloudflare topology; P2-013 closes the coordinated review. The following current rows govern affected scenarios, with unchanged product invariants retained above.
+Historical decisions [D-002](../decisions/phase-1-foundation-decisions.md#rule-d-002)/007/008/009/010/011/014/021/022 and [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006)/008/009/010/011 apply only with their inline amendments. [P2-012](../decisions/phase-2-specification-decisions.md#rule-p2-012) owns the current product/Cloudflare topology; [P2-013](../decisions/phase-2-specification-decisions.md#rule-p2-013) closes the coordinated review. The following current rows govern affected scenarios, with unchanged product invariants retained above.
 
 | Requirement / decision | Authority | Producer and independent oracle |
 |---|---|---|
@@ -328,12 +328,12 @@ Historical decisions D-002/007/008/009/010/011/014/021/022 and P2-006/008/009/01
 | D1 concurrent sync and recovery | models00/01/04; deployment22 | WP21/25/46: guarded two-writer cases, lower-bound replay, fresh export/import and no stale authority |
 | Official catalog and revocation | req08; registry04; model01; arch15 | WP41/45/53: producer submission/review plus signed consumer revoke/rollback/offline cases |
 | Android channels and Web profiles | arch11/27; req companions | WP30/32/47–49: package/certificate, signed direct update, four output origin/security checks |
-| Self-hosted realm | deployment22 selfhost.v1 | WP21.08/46/50 and OPEN PG-25/L-10: separate account and key custody, no official token acceptance |
-| Launch capacity | model04 proposed profile | WP21.06/40.01/50.04 and OPEN PG-26/L-16: actual footprint, limits, latency and headroom |
-| Simulator pacing | reqScope SIM-10; arch23 | WP51: duplicate/late/exhausted alarms, checkpoint/fence and deterministic catch-up |
-| Commercial offer/search funding | req04/05/06; arch16/20 | WP42/43: no-term access, domain enums, operator search and customer inference, uncertain effects; live L-20…L-31 remain open |
+| Self-hosted realm | deployment22 selfhost.v1 | WP21.08/46/50 and OPEN [PG-25](open-gates-register.md#rule-pg-25)/[L-10](release-gates.md#rule-l-10): separate account and key custody, no official token acceptance |
+| Launch capacity | model04 proposed profile | WP21.06/40.01/50.04 and OPEN [PG-26](open-gates-register.md#rule-pg-26)/[L-16](release-gates.md#rule-l-16): actual footprint, limits, latency and headroom |
+| Simulator pacing | reqScope [SIM-10](../requirements/products/arcscope.md#rule-sim-10); arch23 | WP51: duplicate/late/exhausted alarms, checkpoint/fence and deterministic catch-up |
+| Commercial offer/search funding | req04/05/06; arch16/20 | WP42/43: no-term access, domain enums, operator search and customer inference, uncertain effects; live [L-20](release-gates.md#rule-l-20)…[L-31](release-gates.md#rule-l-31) remain open |
 
 
-## P2-014 final findings closure
+## [P2-014](../decisions/phase-2-specification-decisions.md#rule-p2-014) final findings closure
 
-[The final findings ledger](final-findings-remediation-verification.md) maps NRF-01–13 to repaired authorities and producer/consumer gates. Registry04/manifest11 now contain 373 active mappings plus seven reserved future IDs, including 31 operator methods. Model04 launch-capacity.v1 and requirements12 browser-support.v1 supply concrete release inputs. This amendment preserves the 51-node/158-edge implementation graph and keeps real service/device/commercial evidence gates open.
+[The final findings ledger](final-findings-remediation-verification.md) maps [NRF-01](final-findings-remediation-verification.md#rule-nrf-01)–13 to repaired authorities and producer/consumer gates. Registry04/manifest11 now contain 373 active mappings plus seven reserved future IDs, including 31 operator methods. Model04 launch-capacity.v1 and requirements12 browser-support.v1 supply concrete release inputs. This amendment preserves the 51-node/158-edge implementation graph and keeps real service/device/commercial evidence gates open.

@@ -13,7 +13,7 @@ The runtime architecture describes the task engine, tool locality, metering and 
 
 ---
 
-**Tool-result identity.** The owner deduplicates `(toolRequestId, attemptId, commandId)` with the canonical result hash (TK-05), not the enclosing task/attempt. Several tool results may complete inside one attempt. A duplicate with the same hash returns its recorded receipt; a changed hash refuses. Task and ChatTurn tool requests use the same rule.
+**Tool-result identity.** The owner deduplicates `(toolRequestId, attemptId, commandId)` with the canonical result hash ([TK-05](contracts/01-public-api-operations.md#rule-tk-05)), not the enclosing task/attempt. Several tool results may complete inside one attempt. A duplicate with the same hash returns its recorded receipt; a changed hash refuses. Task and ChatTurn tool requests use the same rule.
 
 ## 1. Layer separation
 
@@ -27,11 +27,11 @@ The runtime architecture describes the task engine, tool locality, metering and 
 
 | # | Rule |
 |---|---|
-| LS-01 | **Using a provider's model is not depending on that vendor's agent product.** The Harness speaks a provider's completion or messages API; it does not embed a coding agent. |
+| <a id="rule-ls-01"></a>LS-01 | **Using a provider's model is not depending on that vendor's agent product.** The Harness speaks a provider's completion or messages API; it does not embed a coding agent. |
 | <a id="rule-ls-02"></a>LS-02 | **There is exactly one Harness, and it runs in the ArcForges-AI CF Workflow** ([RT-03](05-cloud-architecture.md#rule-rt-03) of the cloud architecture). No desktop, mobile or browser client runs a model loop ([CM-02](09-ai-and-agent-runtime-architecture.md#rule-cm-02) of the runtime architecture, [I-491](../requirements/01-normative-glossary-and-invariants.md#rule-i-491)). |
-| LS-03 | **A reusable library may be adopted for a mechanism layer** where it is licence-compatible (**[D-004](../decisions/phase-1-foundation-decisions.md#rule-d-004)**) and passes the dependency policy. It may **never** own the Harness layer. The CF Worker runtime governs this TS implementation; C# integration ports remain Native AOT (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**, **[V-03](../assurance/phase-1-official-verification.md#rule-v-03)**). |
-| LS-04 | **No end-user provider credential exists** in any layer ([BY-01](../requirements/04-commerce-entitlement-and-credits.md#rule-by-01)–[BY-04](../requirements/04-commerce-entitlement-and-credits.md#rule-by-04) of the commerce requirements; [I-015](../requirements/01-normative-glossary-and-invariants.md#rule-i-015) retired). Provider credentials are deployment secrets injected per [DC-15](../requirements/11-policy-and-configuration.md#rule-dc-15). |
-| LS-05 | **Agent teams, sub-agents and external-agent delegation are excluded** ([EA-01](../requirements/08-extensions-and-developer-platform.md#rule-ea-01)–[EA-08](../requirements/08-extensions-and-developer-platform.md#rule-ea-08) of the extension requirements). See `§9`. |
+| <a id="rule-ls-03"></a>LS-03 | **A reusable library may be adopted for a mechanism layer** where it is licence-compatible (**[D-004](../decisions/phase-1-foundation-decisions.md#rule-d-004)**) and passes the dependency policy. It may **never** own the Harness layer. The CF Worker runtime governs this TS implementation; C# integration ports remain Native AOT (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**, **[V-03](../assurance/phase-1-official-verification.md#rule-v-03)**). |
+| <a id="rule-ls-04"></a>LS-04 | **No end-user provider credential exists** in any layer ([BY-01](../requirements/04-commerce-entitlement-and-credits.md#rule-by-01)–[BY-04](../requirements/04-commerce-entitlement-and-credits.md#rule-by-04) of the commerce requirements; [I-015](../requirements/01-normative-glossary-and-invariants.md#rule-i-015) retired). Provider credentials are deployment secrets injected per [DC-15](../requirements/11-policy-and-configuration.md#rule-dc-15). |
+| <a id="rule-ls-05"></a>LS-05 | **Agent teams, sub-agents and external-agent delegation are excluded** ([EA-01](../requirements/08-extensions-and-developer-platform.md#rule-ea-01)–[EA-08](../requirements/08-extensions-and-developer-platform.md#rule-ea-08) of the extension requirements). See `§9`. |
 
 ---
 
@@ -69,13 +69,13 @@ atomically commit final/interrupted message (or explicit no-answer) + terminal T
 
 | # | Rule |
 |---|---|
-| TN-01 | **`StartAgentTurnAsync` returns immediately with a `TaskRef`.** Generation is durable execution, never a long synchronous call ([CH-01](contracts/02-local-rpc-operations.md#rule-ch-01) of the local RPC contract). |
-| TN-02 | **Every loop iteration is persisted before the next begins.** A crash resumes at the last completed step, not at the start of the turn (`§6`). |
-| TN-03 | **The loop is the harness's, not the model's.** The model proposes; the harness decides whether, when and in what order to act. |
-| TN-04 | **A model response is never applied directly to product state.** Every effect goes through a capability invocation with its full security pipeline. |
-| TN-05 | **One iteration's tool calls become Steps of the run's plan**, and retrying one produces a new Attempt inside that Step, never a new Step ([EX-09](../requirements/05-ai-and-agent-execution.md#rule-ex-09) of the AI requirements). The loop is not a second execution model beside the task engine; it is how the engine's plan is populated for an agent-driven run. |
-| TN-06 | One `logical_ai_request` is one bounded model invocation; its provider retries share one customer hold and have separate supplier exposure. A Turn can have many logical requests. Commit complete/interrupted iteration output and parsed tool proposals before settling delivered usage; settle or explicitly resolve uncertainty before the next invocation. A durable tool proposal used by the Harness is delivered inference even when the Turn later fails. |
-| TN-07 | Terminal Task and final/interrupted Chat message, or an explicit no-answer reason, commit atomically. Previously settled iterations are not charged again at Turn completion. A crash with durable output but no settlement retries only settlement; a crash with settled output resumes the next durable step; an intent without outcome follows unknown-effect reconciliation and never blind redispatch. |
+| <a id="rule-tn-01"></a>TN-01 | **`StartAgentTurnAsync` returns immediately with a `TaskRef`.** Generation is durable execution, never a long synchronous call ([CH-01](contracts/02-local-rpc-operations.md#rule-ch-01) of the local RPC contract). |
+| <a id="rule-tn-02"></a>TN-02 | **Every loop iteration is persisted before the next begins.** A crash resumes at the last completed step, not at the start of the turn (`§6`). |
+| <a id="rule-tn-03"></a>TN-03 | **The loop is the harness's, not the model's.** The model proposes; the harness decides whether, when and in what order to act. |
+| <a id="rule-tn-04"></a>TN-04 | **A model response is never applied directly to product state.** Every effect goes through a capability invocation with its full security pipeline. |
+| <a id="rule-tn-05"></a>TN-05 | **One iteration's tool calls become Steps of the run's plan**, and retrying one produces a new Attempt inside that Step, never a new Step ([EX-09](../requirements/05-ai-and-agent-execution.md#rule-ex-09) of the AI requirements). The loop is not a second execution model beside the task engine; it is how the engine's plan is populated for an agent-driven run. |
+| <a id="rule-tn-06"></a>TN-06 | One `logical_ai_request` is one bounded model invocation; its provider retries share one customer hold and have separate supplier exposure. A Turn can have many logical requests. Commit complete/interrupted iteration output and parsed tool proposals before settling delivered usage; settle or explicitly resolve uncertainty before the next invocation. A durable tool proposal used by the Harness is delivered inference even when the Turn later fails. |
+| <a id="rule-tn-07"></a>TN-07 | Terminal Task and final/interrupted Chat message, or an explicit no-answer reason, commit atomically. Previously settled iterations are not charged again at Turn completion. A crash with durable output but no settlement retries only settlement; a crash with settled output resumes the next durable step; an intent without outcome follows unknown-effect reconciliation and never blind redispatch. |
 
 ### 2.1 Parallel tool calls and resource conflict
 
@@ -91,13 +91,13 @@ proposed calls
 
 | # | Rule |
 |---|---|
-| PA-01 | **Parallelism respects resource conflict** ([CC-02](../requirements/05-ai-and-agent-execution.md#rule-cc-02) of the AI requirements). Reading two ArcScope sessions may run in parallel; two calls editing the same ArcNotes document must not. |
-| PA-02 | **The conflict set is declared by the capability owner**, not inferred from arguments. An undeclared capability is treated as exclusive, which is the safe default. |
-| PA-03 | **A capability declared non-parallelisable runs alone**, whatever the model proposed. |
-| PA-04 | **Group order preserves the model's relative order** where the graph permits, so a model that intended a sequence gets one. |
-| PA-05 | **An approval suspension suspends the whole batch**, not one call. Resuming re-evaluates the remaining groups against revalidated context ([SI-05](#rule-si-05)), because an approval may have taken hours. |
-| PA-06 | **A failure inside a group does not silently abandon its siblings.** Completed siblings' results are persisted and returned to the model with the failure, so the model sees the true state. |
-| PA-07 | **Task-step parallelism and automation concurrency are different layers** and are never conflated ([CC-01](../requirements/05-ai-and-agent-execution.md#rule-cc-01) of the AI requirements, [I-104](../requirements/01-normative-glossary-and-invariants.md#rule-i-104)). |
+| <a id="rule-pa-01"></a>PA-01 | **Parallelism respects resource conflict** ([CC-02](../requirements/05-ai-and-agent-execution.md#rule-cc-02) of the AI requirements). Reading two ArcScope sessions may run in parallel; two calls editing the same ArcNotes document must not. |
+| <a id="rule-pa-02"></a>PA-02 | **The conflict set is declared by the capability owner**, not inferred from arguments. An undeclared capability is treated as exclusive, which is the safe default. |
+| <a id="rule-pa-03"></a>PA-03 | **A capability declared non-parallelisable runs alone**, whatever the model proposed. |
+| <a id="rule-pa-04"></a>PA-04 | **Group order preserves the model's relative order** where the graph permits, so a model that intended a sequence gets one. |
+| <a id="rule-pa-05"></a>PA-05 | **An approval suspension suspends the whole batch**, not one call. Resuming re-evaluates the remaining groups against revalidated context ([SI-05](#rule-si-05)), because an approval may have taken hours. |
+| <a id="rule-pa-06"></a>PA-06 | **A failure inside a group does not silently abandon its siblings.** Completed siblings' results are persisted and returned to the model with the failure, so the model sees the true state. |
+| <a id="rule-pa-07"></a>PA-07 | **Task-step parallelism and automation concurrency are different layers** and are never conflated ([CC-01](../requirements/05-ai-and-agent-execution.md#rule-cc-01) of the AI requirements, [I-104](../requirements/01-normative-glossary-and-invariants.md#rule-i-104)). |
 
 ---
 
@@ -116,9 +116,9 @@ proposed calls
 | # | Rule |
 |---|---|
 | <a id="rule-mr-01"></a>MR-01 | **Tool declarations are generated from `CapabilityDescriptor`**, never hand-maintained. A capability the caller may not invoke is **not declared**, so the model cannot propose it. |
-| MR-02 | **The declared schema is the closed structured value model** (`§4.2` of the extension architecture) — AOT-safe and validatable, and [L2-04](15-extension-platform-architecture.md#rule-l2-04) there validates it in both directions. |
-| MR-03 | **Provider-specific shaping happens in the adapter.** The harness constructs one neutral request; the adapter maps it. |
-| MR-04 | **A tariff snapshot is pinned to the Run before the call** ([MT-06](../requirements/04-commerce-entitlement-and-credits.md#rule-mt-06) of the commerce requirements, [MB-05](09-ai-and-agent-runtime-architecture.md#rule-mb-05) of the runtime architecture), so the charge is explainable afterwards. |
+| <a id="rule-mr-02"></a>MR-02 | **The declared schema is the closed structured value model** (`§4.2` of the extension architecture) — AOT-safe and validatable, and [L2-04](15-extension-platform-architecture.md#rule-l2-04) there validates it in both directions. |
+| <a id="rule-mr-03"></a>MR-03 | **Provider-specific shaping happens in the adapter.** The harness constructs one neutral request; the adapter maps it. |
+| <a id="rule-mr-04"></a>MR-04 | **A tariff snapshot is pinned to the Run before the call** ([MT-06](../requirements/04-commerce-entitlement-and-credits.md#rule-mt-06) of the commerce requirements, [MB-05](09-ai-and-agent-runtime-architecture.md#rule-mb-05) of the runtime architecture), so the charge is explainable afterwards. |
 
 ### 3.2 Response classification and continuation
 
@@ -134,9 +134,9 @@ proposed calls
 
 | # | Rule |
 |---|---|
-| RC-01 | **An interrupted stream is stored as `interrupted`, never as `complete`** ([WP-15.00](../planning/work-packages/15-arcchat-conversation-core.md#rule-wp-15.00)). This is why `message.state` exists. |
+| <a id="rule-rc-01"></a>RC-01 | **An interrupted stream is stored as `interrupted`, never as `complete`** ([WP-15.00](../planning/work-packages/15-arcchat-conversation-core.md#rule-wp-15.00)). This is why `message.state` exists. |
 | <a id="rule-rc-02"></a>RC-02 | **A malformed tool call is answered, not crashed.** The model receives a structured error and may correct itself. |
-| RC-03 | **Continuation is the harness's decision**, governed by `§3.3` — not the model's assertion that it wants to continue. |
+| <a id="rule-rc-03"></a>RC-03 | **Continuation is the harness's decision**, governed by `§3.3` — not the model's assertion that it wants to continue. |
 
 ### 3.3 Loop bounds
 
@@ -155,9 +155,9 @@ Every bound is policy-configurable within compiled hard limits (`§4.2` of the p
 
 | # | Rule |
 |---|---|
-| PD-01 | **An iteration makes progress if it produced durable text, a successful invocation, or a distinct new tool call.** |
-| PD-02 | **Repeating an identical tool call with identical arguments and an unchanged result is not progress**, and the counter advances. |
-| PD-03 | **Exceeding the no-progress bound ends the turn with `agent.no_progress`**, showing what was attempted. This is loop protection at the semantic level, above the same Run's bounded execution counters ([WP-52.00](../planning/work-packages/52-cloud-harness.md#rule-wp-52.00)). |
+| <a id="rule-pd-01"></a>PD-01 | **An iteration makes progress if it produced durable text, a successful invocation, or a distinct new tool call.** |
+| <a id="rule-pd-02"></a>PD-02 | **Repeating an identical tool call with identical arguments and an unchanged result is not progress**, and the counter advances. |
+| <a id="rule-pd-03"></a>PD-03 | **Exceeding the no-progress bound ends the turn with `agent.no_progress`**, showing what was attempted. This is loop protection at the semantic level, above the same Run's bounded execution counters ([WP-52.00](../planning/work-packages/52-cloud-harness.md#rule-wp-52.00)). |
 
 ---
 
@@ -191,9 +191,9 @@ collect references          (identity only — no content yet)
 
 | # | Rule |
 |---|---|
-| PK-01 | **References first, content last.** A reference that fails revalidation never causes its content to be fetched. |
-| PK-02 | **Every packed item carries source, revision and anchor**, which is what makes a citation resolvable afterwards ([WP-19.02](../planning/work-packages/19-arcnotes-search-and-portability.md#rule-wp-19.02)). |
-| PK-03 | **Permission is applied per source during assembly.** A refused source contributes nothing, including to counts ([WP-40.03](../planning/work-packages/40-knowledge-search-and-retrieval.md#rule-wp-40.03)). |
+| <a id="rule-pk-01"></a>PK-01 | **References first, content last.** A reference that fails revalidation never causes its content to be fetched. |
+| <a id="rule-pk-02"></a>PK-02 | **Every packed item carries source, revision and anchor**, which is what makes a citation resolvable afterwards ([WP-19.02](../planning/work-packages/19-arcnotes-search-and-portability.md#rule-wp-19.02)). |
+| <a id="rule-pk-03"></a>PK-03 | **Permission is applied per source during assembly.** A refused source contributes nothing, including to counts ([WP-40.03](../planning/work-packages/40-knowledge-search-and-retrieval.md#rule-wp-40.03)). |
 | <a id="rule-pk-04"></a>PK-04 | Indexed/pinned owner context requires an acknowledged Cloud revision. A separately selected small local text/image/audio input may enter only through the one-use source-consent and transientInput profile in [client journeys](contracts/07-client-journeys-and-ports.md). This creates neither sync enrollment nor an index entry; pending local Notes content cannot masquerade as acknowledged context. Missing/denied content is disclosed. Enabling AI alone never uploads it. |
 
 ### 4.3 Staleness and invalidation
@@ -202,12 +202,12 @@ The hardest correctness problem in the loop: context assembled at step 1 may be 
 
 | # | Rule |
 |---|---|
-| SI-01 | **Every packed item records the revision it was read at.** |
-| SI-02 | **Before a capability invocation that reads or writes an item in the pack, its revision is re-checked.** A changed revision invalidates that item. |
-| SI-03 | **An invalidated item is refreshed and the model is told**, as a structured tool result: *this content changed since you were shown it*. It is never silently substituted, because the model's reasoning may depend on what it saw. |
+| <a id="rule-si-01"></a>SI-01 | **Every packed item records the revision it was read at.** |
+| <a id="rule-si-02"></a>SI-02 | **Before a capability invocation that reads or writes an item in the pack, its revision is re-checked.** A changed revision invalidates that item. |
+| <a id="rule-si-03"></a>SI-03 | **An invalidated item is refreshed and the model is told**, as a structured tool result: *this content changed since you were shown it*. It is never silently substituted, because the model's reasoning may depend on what it saw. |
 | <a id="rule-si-04"></a>SI-04 | **A write against a stale revision fails with `conflict.revision_mismatch`** ([NO-02](contracts/02-local-rpc-operations.md#rule-no-02)) and is surfaced to the model as a correctable error. |
 | <a id="rule-si-05"></a>SI-05 | **Approval-suspended turns revalidate on resume** (`§5`), because a suspension may last hours. |
-| SI-06 | **An automation's scope freezes at run start** ([CA-04](09-ai-and-agent-runtime-architecture.md#rule-ca-04) of the runtime architecture) — an automation must not silently widen because content changed. |
+| <a id="rule-si-06"></a>SI-06 | **An automation's scope freezes at run start** ([CA-04](09-ai-and-agent-runtime-architecture.md#rule-ca-04) of the runtime architecture) — an automation must not silently widen because content changed. |
 
 ### 4.4 Tool declaration filtering
 
@@ -226,9 +226,9 @@ The hardest correctness problem in the loop: context assembled at step 1 may be 
 
 | # | Rule |
 |---|---|
-| CB-01 | **The pack has a token, item and byte budget**, and assembly stops at the first exceeded. |
-| CB-02 | **Truncation is disclosed in the pack**, naming what was omitted and why. A silently truncated context produces confidently wrong output. |
-| CB-03 | **Priority order is**: explicit attachments, pinned, then retrieved by score. Explicit user intent is never dropped in favour of retrieval. |
+| <a id="rule-cb-01"></a>CB-01 | **The pack has a token, item and byte budget**, and assembly stops at the first exceeded. |
+| <a id="rule-cb-02"></a>CB-02 | **Truncation is disclosed in the pack**, naming what was omitted and why. A silently truncated context produces confidently wrong output. |
+| <a id="rule-cb-03"></a>CB-03 | **Priority order is**: explicit attachments, pinned, then retrieved by score. Explicit user intent is never dropped in favour of retrieval. |
 
 ### 4.6 History and compaction
 
@@ -246,18 +246,18 @@ branch message sequence (immutable, authoritative)
 
 | # | Rule |
 |---|---|
-| HC-01 | **Compaction never mutates or deletes a stored message.** It produces a `CompactionRecord` — a derived artifact keyed to `(branchId, fromMessageId, toMessageId, compactionModelId, promptVersion)`. The branch is unchanged and re-readable in full. |
-| HC-02 | CompactionRecord is derived from a frozen branch prefix and hash. Cloud history uses chat.compaction_record; local history uses assistant_compaction; temporary execution uses only ephemeral storage. model 05 owns deterministic window assembly and annex 10 the typed records. Deleting summaries never deletes canonical history or receipts. |
-| HC-03 | **The most recent turns are always verbatim.** A configurable tail — never zero — is never compacted, because the immediate work is what the model most needs exactly. |
-| HC-04 | **The opening intent is retained.** The head of a branch carries what the user actually asked for, and losing it is how a long agent run drifts from its objective. |
-| HC-05 | **Compaction is disclosed.** The user can see that a span was compacted, see the record, and expand the underlying messages. A silently shortened history is indistinguishable from a model that forgot. |
-| HC-06 | **A tool call and its result are compacted as a unit or not at all.** Keeping a call without its result, or a result without its call, produces a transcript the model reads as a failure. |
-| HC-07 | **An approval, a refusal and a user correction are never compacted away.** They are decision points, and a model that loses them re-proposes what the user already refused. |
-| HC-08 | Compaction is operator-funded platform work with its own supplier intent/usage/outcome, no customer capacity/compensation/purchased-credit debit. It runs inside the sole Harness using the pinned permitted model and platformCompaction purpose; it counts toward run call/time limits. A failure or repeated ambiguous supplier call cannot be silently charged to the user. |
+| <a id="rule-hc-01"></a>HC-01 | **Compaction never mutates or deletes a stored message.** It produces a `CompactionRecord` — a derived artifact keyed to `(branchId, fromMessageId, toMessageId, compactionModelId, promptVersion)`. The branch is unchanged and re-readable in full. |
+| <a id="rule-hc-02"></a>HC-02 | CompactionRecord is derived from a frozen branch prefix and hash. Cloud history uses chat.compaction_record; local history uses assistant_compaction; temporary execution uses only ephemeral storage. model 05 owns deterministic window assembly and annex 10 the typed records. Deleting summaries never deletes canonical history or receipts. |
+| <a id="rule-hc-03"></a>HC-03 | **The most recent turns are always verbatim.** A configurable tail — never zero — is never compacted, because the immediate work is what the model most needs exactly. |
+| <a id="rule-hc-04"></a>HC-04 | **The opening intent is retained.** The head of a branch carries what the user actually asked for, and losing it is how a long agent run drifts from its objective. |
+| <a id="rule-hc-05"></a>HC-05 | **Compaction is disclosed.** The user can see that a span was compacted, see the record, and expand the underlying messages. A silently shortened history is indistinguishable from a model that forgot. |
+| <a id="rule-hc-06"></a>HC-06 | **A tool call and its result are compacted as a unit or not at all.** Keeping a call without its result, or a result without its call, produces a transcript the model reads as a failure. |
+| <a id="rule-hc-07"></a>HC-07 | **An approval, a refusal and a user correction are never compacted away.** They are decision points, and a model that loses them re-proposes what the user already refused. |
+| <a id="rule-hc-08"></a>HC-08 | Compaction is operator-funded platform work with its own supplier intent/usage/outcome, no customer capacity/compensation/purchased-credit debit. It runs inside the sole Harness using the pinned permitted model and platformCompaction purpose; it counts toward run call/time limits. A failure or repeated ambiguous supplier call cannot be silently charged to the user. |
 | <a id="rule-hc-09"></a>HC-09 | Compaction failure removes only complete oldest unprotected units, with disclosed omitted span IDs. Opening intent, latest two full user/assistant turns, unresolved tool-call/result units and approval/refusal/correction records remain verbatim. If that protected set plus requested output cannot fit the exact model budget, refuse dispatch with validation.invalid_request with reason context.protected_overflow and ask the user to narrow context or start a new branch. Never truncate inside a protected unit or continue with hidden decision loss. |
-| HC-10 | **A `CompactionRecord` is scoped to its branch.** Branching from a compacted point inherits the records covering the shared prefix; it never inherits a record covering messages the new branch does not contain. |
-| HC-11 | **A `CompactionRecord` is not personal memory** ([HM-03](../requirements/products/arcchat.md#rule-hm-03) there). It is never promoted into durable preference recall, never carried into another conversation, and never survives the branch it belongs to. |
-| HC-12 | **Temporary Chat compacts in memory only.** No `CompactionRecord` is persisted, consistent with the mode's promise ([HM-06](../requirements/products/arcchat.md#rule-hm-06) there) — and the mode still says honestly that the model received the data. |
+| <a id="rule-hc-10"></a>HC-10 | **A `CompactionRecord` is scoped to its branch.** Branching from a compacted point inherits the records covering the shared prefix; it never inherits a record covering messages the new branch does not contain. |
+| <a id="rule-hc-11"></a>HC-11 | **A `CompactionRecord` is not personal memory** ([HM-03](../requirements/products/arcchat.md#rule-hm-03) there). It is never promoted into durable preference recall, never carried into another conversation, and never survives the branch it belongs to. |
+| <a id="rule-hc-12"></a>HC-12 | **Temporary Chat compacts in memory only.** No `CompactionRecord` is persisted, consistent with the mode's promise ([HM-06](../requirements/products/arcchat.md#rule-hm-06) there) — and the mode still says honestly that the model received the data. |
 
 ---
 
@@ -284,11 +284,11 @@ approval.decide
 
 | # | Rule |
 |---|---|
-| AP-01 | **The suspended turn is fully durable**, because the approval is a durable object rather than a notification (`AP-01` of the security architecture). It survives a restart of either side ([WP-14.04](../planning/work-packages/14-hub-and-minimal-provider-slice.md#rule-wp-14.04)). |
-| AP-02 | **A rejection is a tool result, not a turn failure.** The model is told and may propose an alternative — which is what makes approval feel like collaboration rather than a dead end. |
-| AP-03 | **Resume revalidates context** ([SI-05](#rule-si-05)). |
-| AP-04 | **An operation requiring local presence cannot be approved remotely** ([AZ-01](contracts/00-operation-catalogue.md#rule-az-01) of the operation catalogue), and the harness does not offer remote approval for it. |
-| AP-05 | **Approval is per invocation unless the descriptor declares a broader posture**, and a broader posture is itself an authorization decision (`§5` of the security requirements). |
+| <a id="rule-ap-01"></a>AP-01 | **The suspended turn is fully durable**, because the approval is a durable object rather than a notification ([`AP-01`](08-security-architecture.md#rule-ap-01) of the security architecture). It survives a restart of either side ([WP-14.04](../planning/work-packages/14-hub-and-minimal-provider-slice.md#rule-wp-14.04)). |
+| <a id="rule-ap-02"></a>AP-02 | **A rejection is a tool result, not a turn failure.** The model is told and may propose an alternative — which is what makes approval feel like collaboration rather than a dead end. |
+| <a id="rule-ap-03"></a>AP-03 | **Resume revalidates context** ([SI-05](#rule-si-05)). |
+| <a id="rule-ap-04"></a>AP-04 | **An operation requiring local presence cannot be approved remotely** ([AZ-01](contracts/00-operation-catalogue.md#rule-az-01) of the operation catalogue), and the harness does not offer remote approval for it. |
+| <a id="rule-ap-05"></a>AP-05 | **Approval is per invocation unless the descriptor declares a broader posture**, and a broader posture is itself an authorization decision (`§5` of the security requirements). |
 
 ---
 
@@ -323,8 +323,8 @@ approval.decide
 
 | # | Rule |
 |---|---|
-| CN-01 | **Cancellation is cooperative and always leaves a determinate state.** No path ends with a turn neither running nor finished. |
-| CN-02 | **A cancelled turn settles its budget at actual usage** — the user is not charged for what was not consumed, and is charged for what was. |
+| <a id="rule-cn-01"></a>CN-01 | **Cancellation is cooperative and always leaves a determinate state.** No path ends with a turn neither running nor finished. |
+| <a id="rule-cn-02"></a>CN-02 | **A cancelled turn settles its budget at actual usage** — the user is not charged for what was not consumed, and is charged for what was. |
 | <a id="rule-cn-03"></a>CN-03 | **Cancellation during a non-idempotent invocation records `unknownEffect`** rather than assuming it did not happen. |
 | <a id="rule-cn-04"></a>CN-04 | **A committed dispatch intent makes release conditional, never immediate.** Releasing on the cancel request would free capacity while a provider call may still be in flight, and settlement would then have no reservation to debit — the user gets free inference or the usage goes unrecorded. **The barrier, not the user's intent, decides what may be released** ([DB-01](data-model/00-data-model-overview.md#rule-db-01), [DB-03](data-model/00-data-model-overview.md#rule-db-03), [AD-10](16-billing-and-commerce-architecture.md#rule-ad-10) of the commerce architecture). |
 
@@ -354,10 +354,10 @@ The asymmetry is the point: **the intent is written before the act, so its absen
 
 | # | Rule |
 |---|---|
-| CR-01 | **A local command log decides recovery only for effects that commit with it.** For an ArcNotes edit on the same device, the log write and the edit are one transaction and absence is proof. For anything crossing a process, a device or a network, it is not, and the design says so rather than relying on a convenient assumption. |
-| CR-02 | The sweeper releases an orphaned **customer** hold at its reconciliation deadline ([UU-03](20-cross-system-lifecycles.md#rule-uu-03) of the cross-system lifecycles). It records a terminal no-later-customer-debit disposition. An unresolved supplier liability remains reserved and reconciled independently ([UC-02](16-billing-and-commerce-architecture.md#rule-uc-02) of the commerce architecture). |
-| CR-03 | **Recovery is verifiable**: after restart, every task is in a valid state with a reason facet, and none is stuck in a transient state ([WP-16.00](../planning/work-packages/16-unified-execution-engine.md#rule-wp-16.00)). |
-| CR-04 | Unknown effect is a nonterminal reason facet (waiting with reconciliation facet, or interrupted as appropriate), never a TaskState enum member or synonym for failure. Its explicit reconciliation path is §6.4; unresolved effects cannot be silently classified as success or repeated. |
+| <a id="rule-cr-01"></a>CR-01 | **A local command log decides recovery only for effects that commit with it.** For an ArcNotes edit on the same device, the log write and the edit are one transaction and absence is proof. For anything crossing a process, a device or a network, it is not, and the design says so rather than relying on a convenient assumption. |
+| <a id="rule-cr-02"></a>CR-02 | The sweeper releases an orphaned **customer** hold at its reconciliation deadline ([UU-03](20-cross-system-lifecycles.md#rule-uu-03) of the cross-system lifecycles). It records a terminal no-later-customer-debit disposition. An unresolved supplier liability remains reserved and reconciled independently ([UC-02](16-billing-and-commerce-architecture.md#rule-uc-02) of the commerce architecture). |
+| <a id="rule-cr-03"></a>CR-03 | **Recovery is verifiable**: after restart, every task is in a valid state with a reason facet, and none is stuck in a transient state ([WP-16.00](../planning/work-packages/16-unified-execution-engine.md#rule-wp-16.00)). |
+| <a id="rule-cr-04"></a>CR-04 | Unknown effect is a nonterminal reason facet (waiting with reconciliation facet, or interrupted as appropriate), never a TaskState enum member or synonym for failure. Its explicit reconciliation path is §6.4; unresolved effects cannot be silently classified as success or repeated. |
 
 ### 6.4 Resolving an unknown effect
 
@@ -375,7 +375,7 @@ Resolution is ordered from cheapest and most certain to least, and stops at the 
 |---|---|
 | <a id="rule-ur-01"></a>UR-01 | **Retry safety is a declared property of the capability, never inferred from the absence of a record** ([FL-08](../requirements/05-ai-and-agent-execution.md#rule-fl-08)). This is the rule the previous recovery table violated. |
 | <a id="rule-ur-02"></a>UR-02 | **A capability that can produce an external effect and declares neither idempotency nor a status operation cannot be invoked by the Harness at all.** Such a capability would make every crash an unresolvable ambiguity, so the descriptor requirement is a precondition of registration, not a nicety ([WP-17.00](../planning/work-packages/17-arcchat-independent-core.md#rule-wp-17.00)). |
-| UR-03 | **Step 2 is why `CapabilityDescriptor` carries a status operation reference.** Without it there is no mechanical way to answer "did it happen", and every uncertain case escalates to a human. |
+| <a id="rule-ur-03"></a>UR-03 | **Step 2 is why `CapabilityDescriptor` carries a status operation reference.** Without it there is no mechanical way to answer "did it happen", and every uncertain case escalates to a human. |
 | <a id="rule-ur-04"></a>UR-04 | **The bridge's command log resolves the device case at step 1**, because the device's log commits with the device-local effect ([BI-02](contracts/03-realtime-and-bridge.md#rule-bi-02), [BI-03](contracts/03-realtime-and-bridge.md#rule-bi-03) of the bridge contract). It does not resolve an effect the device itself made across a further network. |
 
 ---
@@ -389,13 +389,13 @@ The stream_chunk and stream_state projection tables live in the per-run CF Durab
 | # | Rule |
 |---|---|
 | <a id="rule-sb-01"></a>SB-01 | Presentation is not canonical Chat history. AgentTask responses use task.iteration_output; persistent ordinary ChatTurn responses use chat.iteration_output. Temporary responses use encrypted expiring transient storage excluded from history/search/backups. In all cases a hash/usage/owner receipt precedes customer settlement; only persistent owners create durable Chat message bodies. See the owner lifecycle below. |
-| SB-02 | Each provider attempt has a new stream ID. Retrying or starting a later model invocation cannot concatenate two attempts into one answer. The previous stream identifies its successor where one exists. |
-| SB-03 | Initial limits: 64 KiB per chunk/read, 4 MiB per stream, flush at 250 ms or the chunk bound, ten-minute tail TTL and 24-hour state-marker retention, all bounded validated deployment parameters. Unicode boundary-safe appends update chunk + next offset together. |
+| <a id="rule-sb-02"></a>SB-02 | Each provider attempt has a new stream ID. Retrying or starting a later model invocation cannot concatenate two attempts into one answer. The previous stream identifies its successor where one exists. |
+| <a id="rule-sb-03"></a>SB-03 | Initial limits: 64 KiB per chunk/read, 4 MiB per stream, flush at 250 ms or the chunk bound, ten-minute tail TTL and 24-hour state-marker retention, all bounded validated deployment parameters. Unicode boundary-safe appends update chunk + next offset together. |
 | <a id="rule-sb-04"></a>SB-04 | Read the stable per-run DO projection privately and expose C# owner-authorized generated gRPC-Web output frames under annex 10. DO/C# unavailability is explicit; it is never an empty successful stream or fabricated Task completion. |
-| SB-05 | Missing chunks do not determine Task state. Missing/expired stream metadata resolves through the authoritative Task and provider-attempt receipt; it never fabricates `open` indefinitely or a nonexistent final message. |
-| SB-06 | The sweeper marks eviction before removing chunks. A later reader still gets Task state, current attempt, durable output/final-message references and a retry/reconciliation action. State-marker expiry cannot delete Task authority. |
-| SB-07 | A size/time bound sets **truncated**, never `completed`. Generation may continue. The client displays unavailable live output and polls Task status; it requests a final message only when that reference exists. |
-| SB-08 | Lease takeover preserves readable buffered bytes, not a dead process's provider socket. Only a surviving fenced attempt or a provider's verified resume protocol may continue that invocation. Otherwise record interrupted/unknown, reconcile supplier usage, and require the declared retry authority before a new invocation. |
+| <a id="rule-sb-05"></a>SB-05 | Missing chunks do not determine Task state. Missing/expired stream metadata resolves through the authoritative Task and provider-attempt receipt; it never fabricates `open` indefinitely or a nonexistent final message. |
+| <a id="rule-sb-06"></a>SB-06 | The sweeper marks eviction before removing chunks. A later reader still gets Task state, current attempt, durable output/final-message references and a retry/reconciliation action. State-marker expiry cannot delete Task authority. |
+| <a id="rule-sb-07"></a>SB-07 | A size/time bound sets **truncated**, never `completed`. Generation may continue. The client displays unavailable live output and polls Task status; it requests a final message only when that reference exists. |
+| <a id="rule-sb-08"></a>SB-08 | Lease takeover preserves readable buffered bytes, not a dead process's provider socket. Only a surviving fenced attempt or a provider's verified resume protocol may continue that invocation. Otherwise record interrupted/unknown, reconcile supplier usage, and require the declared retry authority before a new invocation. |
 | <a id="rule-sb-09"></a>SB-09 | Append, state transition and Task outcome publication reject a stale fence. Each model invocation's stream can complete while the Task is waiting for tools or another model call. Stream completion never implies Turn completion. |
 
 ### 7.2 Client read contract
@@ -422,22 +422,22 @@ The retired JSON presentation fields have these exact generated replacements; th
 | # | Rule |
 |---|---|
 | <a id="rule-sr-01"></a>SR-01 | `task.outputAppended` remains an optional identifier/offset hint with no content. Polling the same read contract works without gRPC hint polling. |
-| SR-02 | `open` means this attempt may append; `completed` means this attempt's stream ended; `truncated` means buffering stopped; `superseded` names a replacement; `evicted` means retained presentation expired. **None alone states that the Task completed.** No stream yet uses a null stream ID and the durable Task status. |
-| SR-03 | Reconnect resumes at the last returned offset for the same stream. A successor resets presentation to its own origin; the client does not concatenate a retry with old text. An expired range requests the authoritative iteration/message view, with a visible live-output gap where necessary. |
+| <a id="rule-sr-02"></a>SR-02 | `open` means this attempt may append; `completed` means this attempt's stream ended; `truncated` means buffering stopped; `superseded` names a replacement; `evicted` means retained presentation expired. **None alone states that the Task completed.** No stream yet uses a null stream ID and the durable Task status. |
+| <a id="rule-sr-03"></a>SR-03 | Reconnect resumes at the last returned offset for the same stream. A successor resets presentation to its own origin; the client does not concatenate a retry with old text. An expired range requests the authoritative iteration/message view, with a visible live-output gap where necessary. |
 | <a id="rule-sr-04"></a>SR-04 | Only a non-null final-message reference authorises fetching a final answer. A terminal no-answer Task shows its reason; running/waiting Task with completed/truncated/evicted presentation continues bounded status polling. |
-| SR-05 | Auth is rechecked on each read. A lost buffer/metadata row, lease death, cancellation and database restore all return a resolvable durable Task state or an explicit unavailable error. |
-| SR-06 | Clients never persist concatenated presentation as the canonical message. They replace it with the committed output/message identified by Cloud. |
-| SR-07 | Desktop, Mobile and Web use the identical fallback. No client model loop, sticky routing, or second streaming service is introduced. |
+| <a id="rule-sr-05"></a>SR-05 | Auth is rechecked on each read. A lost buffer/metadata row, lease death, cancellation and database restore all return a resolvable durable Task state or an explicit unavailable error. |
+| <a id="rule-sr-06"></a>SR-06 | Clients never persist concatenated presentation as the canonical message. They replace it with the committed output/message identified by Cloud. |
+| <a id="rule-sr-07"></a>SR-07 | Desktop, Mobile and Web use the identical fallback. No client model loop, sticky routing, or second streaming service is introduced. |
 
 ### 7.3 Durable output
 
 | # | Rule |
 |---|---|
 | <a id="rule-st-01"></a>ST-01 | Each completed/interrupted response has one immutable output receipt with content-origin hash, provider intent and usage before settlement. Body placement is selected by ExecutionOwner and temporary mode, as defined below. Final message publication is separate and idempotent; temporary mode never inserts a permanent message unless explicitly saved. A provisional stream cannot establish complete delivery. |
-| ST-02 | Deltas are best effort; losing them cannot lose committed output, cause a debit without durable delivered evidence, or justify repeating an unknown provider call. |
-| ST-03 | A tool call enters execution/UI only after complete parsing and schema validation, never from partial stream syntax. |
-| ST-04 | Every surface reads the same authoritative Task/output/message path after a presentation gap. |
-| ST-05 | Interrupted text remains explicitly interrupted; a stream state never relabels it complete. |
+| <a id="rule-st-02"></a>ST-02 | Deltas are best effort; losing them cannot lose committed output, cause a debit without durable delivered evidence, or justify repeating an unknown provider call. |
+| <a id="rule-st-03"></a>ST-03 | A tool call enters execution/UI only after complete parsing and schema validation, never from partial stream syntax. |
+| <a id="rule-st-04"></a>ST-04 | Every surface reads the same authoritative Task/output/message path after a presentation gap. |
+| <a id="rule-st-05"></a>ST-05 | Interrupted text remains explicitly interrupted; a stream state never relabels it complete. |
 
 ---
 
@@ -461,13 +461,13 @@ The retired JSON presentation fields have these exact generated replacements; th
 
 | # | Rule |
 |---|---|
-| PF-01 | **A provider outage that never reached a route consumes no credit** ([WP-43.05](../planning/work-packages/43-managed-ai-routing-and-metering.md#rule-wp-43.05)), because nothing was dispatched. An outage *after* dispatch is an `unknown`, and its customer hold is released at the reconciliation deadline while the supplier liability is retained ([UU-03](20-cross-system-lifecycles.md#rule-uu-03) of the lifecycles). |
-| PF-06 | **The dividing line is the dispatch barrier** ([DB-01](data-model/00-data-model-overview.md#rule-db-01) of the data-model overview), not the arrival of bytes. Before it, absence is proof; after it, absence is `unknown`. |
-| PF-07 | **An `unknown` is never retried automatically**, whatever the transport reported. It enters `§6.4`, which resolves it by declared idempotency, an owner status operation, the provider's own record, the deadline, or a user decision — in that order. |
-| PF-02 | No automatic model/provider fallback exists. Explicit user selection of another admitted Workers AI model creates a separately authorized request; unknown dispatch outcomes still reconcile the original attempt. |
-| PF-03 | **A retry produces a new Attempt inside the same Step, never a new Step** ([EX-09](../requirements/05-ai-and-agent-execution.md#rule-ex-09) there), and the `CommandId` is unchanged because the business action is unchanged ([ID-01](../requirements/05-ai-and-agent-execution.md#rule-id-01) there, [I-085](../requirements/01-normative-glossary-and-invariants.md#rule-i-085)). |
-| PF-04 | **A platform-caused retry is not charged to the user** ([CU-03](../requirements/05-ai-and-agent-execution.md#rule-cu-03) there). A logical AI request whose first provider attempt failed and whose second succeeded is charged for the useful work only. |
-| PF-05 | **Retry safety is declared by the capability owner, never guessed** ([FL-08](../requirements/05-ai-and-agent-execution.md#rule-fl-08) there), which is why the harness never infers idempotency from an operation's name. |
+| <a id="rule-pf-01"></a>PF-01 | **A provider outage that never reached a route consumes no credit** ([WP-43.05](../planning/work-packages/43-managed-ai-routing-and-metering.md#rule-wp-43.05)), because nothing was dispatched. An outage *after* dispatch is an `unknown`, and its customer hold is released at the reconciliation deadline while the supplier liability is retained ([UU-03](20-cross-system-lifecycles.md#rule-uu-03) of the lifecycles). |
+| <a id="rule-pf-06"></a>PF-06 | **The dividing line is the dispatch barrier** ([DB-01](data-model/00-data-model-overview.md#rule-db-01) of the data-model overview), not the arrival of bytes. Before it, absence is proof; after it, absence is `unknown`. |
+| <a id="rule-pf-07"></a>PF-07 | **An `unknown` is never retried automatically**, whatever the transport reported. It enters `§6.4`, which resolves it by declared idempotency, an owner status operation, the provider's own record, the deadline, or a user decision — in that order. |
+| <a id="rule-pf-02"></a>PF-02 | No automatic model/provider fallback exists. Explicit user selection of another admitted Workers AI model creates a separately authorized request; unknown dispatch outcomes still reconcile the original attempt. |
+| <a id="rule-pf-03"></a>PF-03 | **A retry produces a new Attempt inside the same Step, never a new Step** ([EX-09](../requirements/05-ai-and-agent-execution.md#rule-ex-09) there), and the `CommandId` is unchanged because the business action is unchanged ([ID-01](../requirements/05-ai-and-agent-execution.md#rule-id-01) there, [I-085](../requirements/01-normative-glossary-and-invariants.md#rule-i-085)). |
+| <a id="rule-pf-04"></a>PF-04 | **A platform-caused retry is not charged to the user** ([CU-03](../requirements/05-ai-and-agent-execution.md#rule-cu-03) there). A logical AI request whose first provider attempt failed and whose second succeeded is charged for the useful work only. |
+| <a id="rule-pf-05"></a>PF-05 | **Retry safety is declared by the capability owner, never guessed** ([FL-08](../requirements/05-ai-and-agent-execution.md#rule-fl-08) there), which is why the harness never infers idempotency from an operation's name. |
 
 ---
 
@@ -478,8 +478,8 @@ The retired JSON presentation fields have these exact generated replacements; th
 | <a id="rule-xa-01"></a>XA-01 | **There is no external-agent integration.** External-agent providers, ACP adapters, session mapping, delegation leases and result adapters are all retired ([EA-01](../requirements/08-extensions-and-developer-platform.md#rule-ea-01)–[EA-06](../requirements/08-extensions-and-developer-platform.md#rule-ea-06) of the extension requirements, [I-313](../requirements/01-normative-glossary-and-invariants.md#rule-i-313), [I-314](../requirements/01-normative-glossary-and-invariants.md#rule-i-314) retired). |
 | <a id="rule-xa-02"></a>XA-02 | There are no agent teams, sub-agents or delegated agent Tasks ([EA-08](../requirements/08-extensions-and-developer-platform.md#rule-ea-08) of the extension requirements). Bounded parallel tool calls remain Steps inside the same Run. Long native or Cloud product operations return ProductJob references with their own status, cancellation and owner; they contain no model loop ([CT-01](../requirements/05-ai-and-agent-execution.md#rule-ct-01)–[CT-07](../requirements/05-ai-and-agent-execution.md#rule-ct-07) of the AI requirements). |
 | <a id="rule-xa-03"></a>XA-03 | **A package, connector or MCP tool cannot start an autonomous delegated agent** ([EA-08](../requirements/08-extensions-and-developer-platform.md#rule-ea-08) there). An integration contributes tools; it never contributes a planner. |
-| XA-04 | **MCP remains a tool-integration edge adapter**, never the internal protocol (**[V-02](../assurance/phase-1-official-verification.md#rule-v-02)**, [MC-01](../requirements/08-extensions-and-developer-platform.md#rule-mc-01) of the extension requirements). An MCP tool maps to a declared capability carrying risk, permission and provenance — it is never injected as a raw tool ([MC-02](../requirements/08-extensions-and-developer-platform.md#rule-mc-02) there). |
-| XA-05 | **MCP tool descriptions, prompts and resource contents are untrusted data** ([MC-07](../requirements/08-extensions-and-developer-platform.md#rule-mc-07) there, [I-262](../requirements/01-normative-glossary-and-invariants.md#rule-i-262), [I-263](../requirements/01-normative-glossary-and-invariants.md#rule-i-263)), and an MCP server changing its tool set re-enters permission review ([MC-10](../requirements/08-extensions-and-developer-platform.md#rule-mc-10) there). |
+| <a id="rule-xa-04"></a>XA-04 | **MCP remains a tool-integration edge adapter**, never the internal protocol (**[V-02](../assurance/phase-1-official-verification.md#rule-v-02)**, [MC-01](../requirements/08-extensions-and-developer-platform.md#rule-mc-01) of the extension requirements). An MCP tool maps to a declared capability carrying risk, permission and provenance — it is never injected as a raw tool ([MC-02](../requirements/08-extensions-and-developer-platform.md#rule-mc-02) there). |
+| <a id="rule-xa-05"></a>XA-05 | **MCP tool descriptions, prompts and resource contents are untrusted data** ([MC-07](../requirements/08-extensions-and-developer-platform.md#rule-mc-07) there, [I-262](../requirements/01-normative-glossary-and-invariants.md#rule-i-262), [I-263](../requirements/01-normative-glossary-and-invariants.md#rule-i-263)), and an MCP server changing its tool set re-enters permission review ([MC-10](../requirements/08-extensions-and-developer-platform.md#rule-mc-10) there). |
 | <a id="rule-xa-06"></a>XA-06 | **Hidden model reasoning never enters the product model** ([EA-07](../requirements/08-extensions-and-developer-platform.md#rule-ea-07) there, [PR-10](../requirements/05-ai-and-agent-execution.md#rule-pr-10) of the AI requirements, [I-107](../requirements/01-normative-glossary-and-invariants.md#rule-i-107)). Reasoning appears as a metered cost category ([MT-03](../requirements/04-commerce-entitlement-and-credits.md#rule-mt-03)), never as content or trace. |
 | <a id="rule-xa-07"></a>XA-07 | **The Harness is not a native Product Job runner.** A render, capture, index or export is owned by its product ([CM-04](09-ai-and-agent-runtime-architecture.md#rule-cm-04) of the runtime architecture, [I-121](../requirements/01-normative-glossary-and-invariants.md#rule-i-121), [I-485](../requirements/01-normative-glossary-and-invariants.md#rule-i-485)); the Harness may observe one through a status tool, never adopt it as a Step. |
 
@@ -496,11 +496,11 @@ The Harness always runs in Cloud ([LS-02](#rule-ls-02)). What varies is **where 
 
 | # | Rule |
 |---|---|
-| PL-01 | **A Task is Cloud-owned from creation** ([TO-01](data-model/00-data-model-overview.md#rule-to-01) of the data-model overview). There is no local or hybrid task placement to decide. |
+| <a id="rule-pl-01"></a>PL-01 | **A Task is Cloud-owned from creation** ([TO-01](data-model/00-data-model-overview.md#rule-to-01) of the data-model overview). There is no local or hybrid task placement to decide. |
 | <a id="rule-pl-02"></a>PL-02 | **A device tool with no eligible online device enters `WaitingForDevice`** with a stated reason and a bounded wait — it never degrades to a cloud approximation. |
 | <a id="rule-pl-03"></a>PL-03 | **Waiting consumes no model capacity.** A turn parked on a device or an approval releases its included-capacity hold at the safe boundary and re-reserves on resume ([AC-05](../requirements/04-commerce-entitlement-and-credits.md#rule-ac-05) of the commerce requirements). This is what stops one waiting Task from reserving the whole workspace. |
-| PL-04 | Local-only sources stay local unless the user explicitly selects a bounded transient input and authorizes that egress under [client journeys](contracts/07-client-journeys-and-ports.md). Local search/analysis runs on the authorized device; a returned summary still crosses the declared egress boundary. A forbidden source is unavailable, never auto-uploaded. |
-| PL-05 | **Cached, unacknowledged client state is never treated as Cloud context.** Only acknowledged Cloud revisions enter the context pack ([I-498](../requirements/01-normative-glossary-and-invariants.md#rule-i-498)); a pending local edit is visible to the user, not to the model, until it is acknowledged. |
+| <a id="rule-pl-04"></a>PL-04 | Local-only sources stay local unless the user explicitly selects a bounded transient input and authorizes that egress under [client journeys](contracts/07-client-journeys-and-ports.md). Local search/analysis runs on the authorized device; a returned summary still crosses the declared egress boundary. A forbidden source is unavailable, never auto-uploaded. |
+| <a id="rule-pl-05"></a>PL-05 | **Cached, unacknowledged client state is never treated as Cloud context.** Only acknowledged Cloud revisions enter the context pack ([I-498](../requirements/01-normative-glossary-and-invariants.md#rule-i-498)); a pending local edit is visible to the user, not to the model, until it is acknowledged. |
 
 ---
 
@@ -508,11 +508,11 @@ The Harness always runs in Cloud ([LS-02](#rule-ls-02)). What varies is **where 
 
 | # | Rule |
 |---|---|
-| TC-01 | **AI-generated content carries the marking its regime requires**, per artifact type (**[V-01](../assurance/phase-1-official-verification.md#rule-v-01)**; [TA-02](08-security-architecture.md#rule-ta-02), [TA-03](08-security-architecture.md#rule-ta-03) of the security architecture). Implement the already defined [origin behavior](../requirements/07-security-privacy-and-trust.md#content-origin-profile) at generation and [carrier](../requirements/13-data-formats-and-portability.md#content-origin-carriers) at publication. Emit origin kinds before stream deltas, preserve per-part lineage, and retry failed marking without another provider attempt. Platform non-delivery uses existing customer compensation and retained supplier-cost rules. |
-| TC-02 | **A turn's cost is explainable**: which model, which tariff version, which cost dimensions — including reasoning tokens, cached input and cache writes — and which counts (`§11.3` of the AI requirements, [WP-43.04](../planning/work-packages/43-managed-ai-routing-and-metering.md#rule-wp-43.04)). |
-| TC-03 | **The user can see what context was sent** — sources and revisions — without the harness storing the prompt in telemetry. |
-| TC-04 | **A tool call and its result are visible in the conversation** as durable parts, so the user can audit what the agent did. |
-| TC-05 | **Trace is not chain-of-thought** ([PR-10](../requirements/05-ai-and-agent-execution.md#rule-pr-10) of the AI requirements, [I-107](../requirements/01-normative-glossary-and-invariants.md#rule-i-107)). Hidden model reasoning is never surfaced as trace, and reasoning tokens appear as a cost dimension rather than as content. |
+| <a id="rule-tc-01"></a>TC-01 | **AI-generated content carries the marking its regime requires**, per artifact type (**[V-01](../assurance/phase-1-official-verification.md#rule-v-01)**; [TA-02](08-security-architecture.md#rule-ta-02), [TA-03](08-security-architecture.md#rule-ta-03) of the security architecture). Implement the already defined [origin behavior](../requirements/07-security-privacy-and-trust.md#content-origin-profile) at generation and [carrier](../requirements/13-data-formats-and-portability.md#content-origin-carriers) at publication. Emit origin kinds before stream deltas, preserve per-part lineage, and retry failed marking without another provider attempt. Platform non-delivery uses existing customer compensation and retained supplier-cost rules. |
+| <a id="rule-tc-02"></a>TC-02 | **A turn's cost is explainable**: which model, which tariff version, which cost dimensions — including reasoning tokens, cached input and cache writes — and which counts (`§11.3` of the AI requirements, [WP-43.04](../planning/work-packages/43-managed-ai-routing-and-metering.md#rule-wp-43.04)). |
+| <a id="rule-tc-03"></a>TC-03 | **The user can see what context was sent** — sources and revisions — without the harness storing the prompt in telemetry. |
+| <a id="rule-tc-04"></a>TC-04 | **A tool call and its result are visible in the conversation** as durable parts, so the user can audit what the agent did. |
+| <a id="rule-tc-05"></a>TC-05 | **Trace is not chain-of-thought** ([PR-10](../requirements/05-ai-and-agent-execution.md#rule-pr-10) of the AI requirements, [I-107](../requirements/01-normative-glossary-and-invariants.md#rule-i-107)). Hidden model reasoning is never surfaced as trace, and reasoning tokens appear as a cost dimension rather than as content. |
 
 ---
 
@@ -520,34 +520,34 @@ The Harness always runs in Cloud ([LS-02](#rule-ls-02)). What varies is **where 
 
 | # | Obligation | Where |
 |---|---|---|
-| HV-01 | A multi-step turn completes through the sole CF RunWorkflow, real Workers AI and C# authoritative state/admission/settlement | [WP52](../planning/work-packages/52-cloud-harness.md#rule-wp-52), using [WP43](../planning/work-packages/43-managed-ai-routing-and-metering.md#rule-wp-43) |
-| HV-02 | A model-proposed action reaches a real product operation through the full security pipeline | [WP-17](../planning/work-packages/17-arcchat-independent-core.md#rule-wp-17); [WP52 real integration](../planning/work-packages/52-cloud-harness.md#rule-wp-52) |
-| HV-03 | A crash at each loop point resumes correctly, with no duplicate effect and no duplicate charge | [WP-52.00](../planning/work-packages/52-cloud-harness.md#rule-wp-52.00), [WP-52](../planning/work-packages/52-cloud-harness.md#rule-wp-52), [WP-26.03](../planning/work-packages/26-remote-action-and-tool-bridge.md#rule-wp-26.03) |
-| HV-04 | An approval-suspended turn survives restart of either side and resumes with revalidated context | [WP-14.04](../planning/work-packages/14-hub-and-minimal-provider-slice.md#rule-wp-14.04), [WP-52](../planning/work-packages/52-cloud-harness.md#rule-wp-52); [WP52 real integration](../planning/work-packages/52-cloud-harness.md#rule-wp-52) |
-| HV-05 | An interrupted stream is never stored as complete, and cumulative stream usage is not summed as independent consumption | [WP-15.00](../planning/work-packages/15-arcchat-conversation-core.md#rule-wp-15.00), [WP-43.02](../planning/work-packages/43-managed-ai-routing-and-metering.md#rule-wp-43.02); [WP52 real integration](../planning/work-packages/52-cloud-harness.md#rule-wp-52) |
-| HV-06 | Stale context is detected before a write, and the model is told rather than silently corrected | [WP-17](../planning/work-packages/17-arcchat-independent-core.md#rule-wp-17); [WP52 real integration](../planning/work-packages/52-cloud-harness.md#rule-wp-52) |
-| HV-07 | Every loop bound ends the turn with a stated reason; no unbounded loop is reachable | [WP-52.00](../planning/work-packages/52-cloud-harness.md#rule-wp-52.00), [WP-52](../planning/work-packages/52-cloud-harness.md#rule-wp-52) |
-| HV-08 | A cancelled turn settles verified consumption and releases the remainder | [WP-52](../planning/work-packages/52-cloud-harness.md#rule-wp-52), [WP-43.02](../planning/work-packages/43-managed-ai-routing-and-metering.md#rule-wp-43.02) |
-| HV-08a | **Cancellation arriving after the dispatch intent commits does not release the reservation.** The turn resolves through the unknown ladder, and a provider response arriving after the cancel still settles against the reservation it was dispatched under ([CN-04](#rule-cn-04), [DB-03](data-model/00-data-model-overview.md#rule-db-03)) | [WP-52.02](../planning/work-packages/52-cloud-harness.md#rule-wp-52.02), [WP-43.02](../planning/work-packages/43-managed-ai-routing-and-metering.md#rule-wp-43.02) |
+| <a id="rule-hv-01"></a>HV-01 | A multi-step turn completes through the sole CF RunWorkflow, real Workers AI and C# authoritative state/admission/settlement | [WP52](../planning/work-packages/52-cloud-harness.md#rule-wp-52), using [WP43](../planning/work-packages/43-managed-ai-routing-and-metering.md#rule-wp-43) |
+| <a id="rule-hv-02"></a>HV-02 | A model-proposed action reaches a real product operation through the full security pipeline | [WP-17](../planning/work-packages/17-arcchat-independent-core.md#rule-wp-17); [WP52 real integration](../planning/work-packages/52-cloud-harness.md#rule-wp-52) |
+| <a id="rule-hv-03"></a>HV-03 | A crash at each loop point resumes correctly, with no duplicate effect and no duplicate charge | [WP-52.00](../planning/work-packages/52-cloud-harness.md#rule-wp-52.00), [WP-52](../planning/work-packages/52-cloud-harness.md#rule-wp-52), [WP-26.03](../planning/work-packages/26-remote-action-and-tool-bridge.md#rule-wp-26.03) |
+| <a id="rule-hv-04"></a>HV-04 | An approval-suspended turn survives restart of either side and resumes with revalidated context | [WP-14.04](../planning/work-packages/14-hub-and-minimal-provider-slice.md#rule-wp-14.04), [WP-52](../planning/work-packages/52-cloud-harness.md#rule-wp-52); [WP52 real integration](../planning/work-packages/52-cloud-harness.md#rule-wp-52) |
+| <a id="rule-hv-05"></a>HV-05 | An interrupted stream is never stored as complete, and cumulative stream usage is not summed as independent consumption | [WP-15.00](../planning/work-packages/15-arcchat-conversation-core.md#rule-wp-15.00), [WP-43.02](../planning/work-packages/43-managed-ai-routing-and-metering.md#rule-wp-43.02); [WP52 real integration](../planning/work-packages/52-cloud-harness.md#rule-wp-52) |
+| <a id="rule-hv-06"></a>HV-06 | Stale context is detected before a write, and the model is told rather than silently corrected | [WP-17](../planning/work-packages/17-arcchat-independent-core.md#rule-wp-17); [WP52 real integration](../planning/work-packages/52-cloud-harness.md#rule-wp-52) |
+| <a id="rule-hv-07"></a>HV-07 | Every loop bound ends the turn with a stated reason; no unbounded loop is reachable | [WP-52.00](../planning/work-packages/52-cloud-harness.md#rule-wp-52.00), [WP-52](../planning/work-packages/52-cloud-harness.md#rule-wp-52) |
+| <a id="rule-hv-08"></a>HV-08 | A cancelled turn settles verified consumption and releases the remainder | [WP-52](../planning/work-packages/52-cloud-harness.md#rule-wp-52), [WP-43.02](../planning/work-packages/43-managed-ai-routing-and-metering.md#rule-wp-43.02) |
+| <a id="rule-hv-08a"></a>HV-08a | **Cancellation arriving after the dispatch intent commits does not release the reservation.** The turn resolves through the unknown ladder, and a provider response arriving after the cancel still settles against the reservation it was dispatched under ([CN-04](#rule-cn-04), [DB-03](data-model/00-data-model-overview.md#rule-db-03)) | [WP-52.02](../planning/work-packages/52-cloud-harness.md#rule-wp-52.02), [WP-43.02](../planning/work-packages/43-managed-ai-routing-and-metering.md#rule-wp-43.02) |
 | <a id="rule-hv-09"></a>HV-09 | **No client runs a model loop.** A structural test asserts no desktop, mobile or browser assembly references a provider adapter or holds a provider credential | [WP-05](../planning/work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05), [WP-17.01](../planning/work-packages/17-arcchat-independent-core.md#rule-wp-17.01) |
-| HV-10 | A capability not declarable to the model is never proposed, and never invocable if proposed | [WP-17.00](../planning/work-packages/17-arcchat-independent-core.md#rule-wp-17.00); [WP52 real integration](../planning/work-packages/52-cloud-harness.md#rule-wp-52) |
-| HV-11 | **No end-user BYOK path exists.** No operation, schema field, setting or UI accepts a customer provider key | [WP-05](../planning/work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05), [WP-43.03](../planning/work-packages/43-managed-ai-routing-and-metering.md#rule-wp-43.03) |
-| HV-12 | A provider outage releases the customer reservation or appends a compensating adjustment, and retains the supplier cost | [WP-43.05](../planning/work-packages/43-managed-ai-routing-and-metering.md#rule-wp-43.05) |
-| HV-13 | Two tool calls writing the same target never execute in parallel; two reads of independent targets do | [WP-52.00](../planning/work-packages/52-cloud-harness.md#rule-wp-52.00), [WP-17](../planning/work-packages/17-arcchat-independent-core.md#rule-wp-17) |
-| HV-14 | An approval mid-batch suspends the whole batch, and resume re-evaluates the remainder against revalidated context | [WP-52.00](../planning/work-packages/52-cloud-harness.md#rule-wp-52.00), [WP-52](../planning/work-packages/52-cloud-harness.md#rule-wp-52) |
-| HV-15 | A failure inside a parallel group returns the siblings' real results alongside the failure | [WP-52.00](../planning/work-packages/52-cloud-harness.md#rule-wp-52.00), [WP-52](../planning/work-packages/52-cloud-harness.md#rule-wp-52) |
-| HV-16 | A platform-caused provider retry is charged once to the customer and remains fully visible in supplier cost | [WP-43.02](../planning/work-packages/43-managed-ai-routing-and-metering.md#rule-wp-43.02), [WP-43.04](../planning/work-packages/43-managed-ai-routing-and-metering.md#rule-wp-43.04) |
-| HV-17 | A turn waiting for a device or an approval holds no included capacity, and cannot reserve the workspace indefinitely | [WP-52](../planning/work-packages/52-cloud-harness.md#rule-wp-52), [WP-43.02](../planning/work-packages/43-managed-ai-routing-and-metering.md#rule-wp-43.02) |
+| <a id="rule-hv-10"></a>HV-10 | A capability not declarable to the model is never proposed, and never invocable if proposed | [WP-17.00](../planning/work-packages/17-arcchat-independent-core.md#rule-wp-17.00); [WP52 real integration](../planning/work-packages/52-cloud-harness.md#rule-wp-52) |
+| <a id="rule-hv-11"></a>HV-11 | **No end-user BYOK path exists.** No operation, schema field, setting or UI accepts a customer provider key | [WP-05](../planning/work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05), [WP-43.03](../planning/work-packages/43-managed-ai-routing-and-metering.md#rule-wp-43.03) |
+| <a id="rule-hv-12"></a>HV-12 | A provider outage releases the customer reservation or appends a compensating adjustment, and retains the supplier cost | [WP-43.05](../planning/work-packages/43-managed-ai-routing-and-metering.md#rule-wp-43.05) |
+| <a id="rule-hv-13"></a>HV-13 | Two tool calls writing the same target never execute in parallel; two reads of independent targets do | [WP-52.00](../planning/work-packages/52-cloud-harness.md#rule-wp-52.00), [WP-17](../planning/work-packages/17-arcchat-independent-core.md#rule-wp-17) |
+| <a id="rule-hv-14"></a>HV-14 | An approval mid-batch suspends the whole batch, and resume re-evaluates the remainder against revalidated context | [WP-52.00](../planning/work-packages/52-cloud-harness.md#rule-wp-52.00), [WP-52](../planning/work-packages/52-cloud-harness.md#rule-wp-52) |
+| <a id="rule-hv-15"></a>HV-15 | A failure inside a parallel group returns the siblings' real results alongside the failure | [WP-52.00](../planning/work-packages/52-cloud-harness.md#rule-wp-52.00), [WP-52](../planning/work-packages/52-cloud-harness.md#rule-wp-52) |
+| <a id="rule-hv-16"></a>HV-16 | A platform-caused provider retry is charged once to the customer and remains fully visible in supplier cost | [WP-43.02](../planning/work-packages/43-managed-ai-routing-and-metering.md#rule-wp-43.02), [WP-43.04](../planning/work-packages/43-managed-ai-routing-and-metering.md#rule-wp-43.04) |
+| <a id="rule-hv-17"></a>HV-17 | A turn waiting for a device or an approval holds no included capacity, and cannot reserve the workspace indefinitely | [WP-52](../planning/work-packages/52-cloud-harness.md#rule-wp-52), [WP-43.02](../planning/work-packages/43-managed-ai-routing-and-metering.md#rule-wp-43.02) |
 | <a id="rule-hv-18"></a>HV-18 | **No agent team, sub-agent or external-agent delegation is reachable.** A structural test asserts no delegation contribution kind and no second planner exists | [WP-05](../planning/work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05), [WP-41.07](../planning/work-packages/41-extension-platform-and-integrations.md#rule-wp-41.07) |
-| HV-19 | MCP tool descriptions and retrieved content are treated as data; an instruction inside them changes no behaviour | [WP-11.06](../planning/work-packages/11-security-foundation.md#rule-wp-11.06), [WP-41.07](../planning/work-packages/41-extension-platform-and-integrations.md#rule-wp-41.07) |
-| HV-20 | Hidden model reasoning never appears in trace, and reasoning tokens appear only as a metered cost category | [WP-52](../planning/work-packages/52-cloud-harness.md#rule-wp-52), [WP-43.02](../planning/work-packages/43-managed-ai-routing-and-metering.md#rule-wp-43.02) |
-| HV-21 | The stored branch is byte-identical before and after compaction, and losing every `CompactionRecord` costs no content | [WP-52.01](../planning/work-packages/52-cloud-harness.md#rule-wp-52.01) |
-| HV-22 | A compacted span never loses an approval, a refusal or a user correction, and never separates a tool call from its result | [WP-52.01](../planning/work-packages/52-cloud-harness.md#rule-wp-52.01) |
-| HV-23 | A `CompactionRecord` never becomes personal memory and never crosses a branch or a conversation | [WP-52.01](../planning/work-packages/52-cloud-harness.md#rule-wp-52.01), [WP-15.01](../planning/work-packages/15-arcchat-conversation-core.md#rule-wp-15.01) |
-| HV-24 | Official inference is refused without an active paid service term, whatever the credit balance | [WP-42.11](../planning/work-packages/42-commerce-entitlement-and-credits.md#rule-wp-42.11), [WP-43.02](../planning/work-packages/43-managed-ai-routing-and-metering.md#rule-wp-43.02) |
-| HV-25 | Only acknowledged Cloud revisions enter the context pack; a pending client edit never reaches the model as context | [WP-25.01](../planning/work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.01), [WP-17](../planning/work-packages/17-arcchat-independent-core.md#rule-wp-17) |
+| <a id="rule-hv-19"></a>HV-19 | MCP tool descriptions and retrieved content are treated as data; an instruction inside them changes no behaviour | [WP-11.06](../planning/work-packages/11-security-foundation.md#rule-wp-11.06), [WP-41.07](../planning/work-packages/41-extension-platform-and-integrations.md#rule-wp-41.07) |
+| <a id="rule-hv-20"></a>HV-20 | Hidden model reasoning never appears in trace, and reasoning tokens appear only as a metered cost category | [WP-52](../planning/work-packages/52-cloud-harness.md#rule-wp-52), [WP-43.02](../planning/work-packages/43-managed-ai-routing-and-metering.md#rule-wp-43.02) |
+| <a id="rule-hv-21"></a>HV-21 | The stored branch is byte-identical before and after compaction, and losing every `CompactionRecord` costs no content | [WP-52.01](../planning/work-packages/52-cloud-harness.md#rule-wp-52.01) |
+| <a id="rule-hv-22"></a>HV-22 | A compacted span never loses an approval, a refusal or a user correction, and never separates a tool call from its result | [WP-52.01](../planning/work-packages/52-cloud-harness.md#rule-wp-52.01) |
+| <a id="rule-hv-23"></a>HV-23 | A `CompactionRecord` never becomes personal memory and never crosses a branch or a conversation | [WP-52.01](../planning/work-packages/52-cloud-harness.md#rule-wp-52.01), [WP-15.01](../planning/work-packages/15-arcchat-conversation-core.md#rule-wp-15.01) |
+| <a id="rule-hv-24"></a>HV-24 | Official inference is refused without an active paid service term, whatever the credit balance | [WP-42.11](../planning/work-packages/42-commerce-entitlement-and-credits.md#rule-wp-42.11), [WP-43.02](../planning/work-packages/43-managed-ai-routing-and-metering.md#rule-wp-43.02) |
+| <a id="rule-hv-25"></a>HV-25 | Only acknowledged Cloud revisions enter the context pack; a pending client edit never reaches the model as context | [WP-25.01](../planning/work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.01), [WP-17](../planning/work-packages/17-arcchat-independent-core.md#rule-wp-17) |
 
-## P2-009 Workflow execution contract
+## [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) Workflow execution contract
 
 Implement every turn/context/batching/approval rule above in the [single CF Workflow](contracts/05-cloudflare-integration.md). That contract supplies exact private ports, durable intent/ack points, lease epochs, bounds, one-use public stream connection, schema/policy pinning, lost-output handling and migration. No C# background service may advance a model loop; it dispatches/reconciles receipts. Model retries after possible dispatch are disabled, including automatic platform retries.
 

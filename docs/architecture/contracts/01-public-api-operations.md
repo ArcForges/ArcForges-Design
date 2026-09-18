@@ -37,9 +37,9 @@ Every Cloud business operation and explicit HTTP exception. Columns follow `§2`
 
 | # | Rule |
 |---|---|
-| ID-01 | **`identity.removeAuthIdentity` refuses the last usable credential** (`identity.last_credential`), because succeeding would lock the user out irrecoverably. |
-| ID-02 | **Native identity.refreshSession rotates.** Reusing a superseded generation revokes its bearer family and raises a security audit event. BrowserCookie sessions use the separate adopted opaque-cookie lifecycle and never call this refresh endpoint. |
-| ID-03 | **Account deletion never touches local data** ([ED-05](../16-billing-and-commerce-architecture.md#rule-ed-05)), and the response says so explicitly so the client can show it. |
+| <a id="rule-id-01"></a>ID-01 | **`identity.removeAuthIdentity` refuses the last usable credential** (`identity.last_credential`), because succeeding would lock the user out irrecoverably. |
+| <a id="rule-id-02"></a>ID-02 | **Native identity.refreshSession rotates.** Reusing a superseded generation revokes its bearer family and raises a security audit event. BrowserCookie sessions use the separate adopted opaque-cookie lifecycle and never call this refresh endpoint. |
+| <a id="rule-id-03"></a>ID-03 | **Account deletion never touches local data** ([ED-05](../16-billing-and-commerce-architecture.md#rule-ed-05)), and the response says so explicitly so the client can show it. |
 
 ---
 
@@ -81,8 +81,8 @@ Authentication challenge creation/completion uses the catalogue's NI classificat
 
 | # | Rule |
 |---|---|
-| DV-01 | **`device.setRemoteEnabled` refuses without trust**, so remote capability can never be reached by a single mis-click ([WP-22.03](../../planning/work-packages/22-identity-workspace-and-device.md#rule-wp-22.03)). |
-| DV-02 | **`device.revoke` cascades to sessions and push registrations in one transaction**, so a revoked device cannot act during a partial cascade. |
+| <a id="rule-dv-01"></a>DV-01 | **`device.setRemoteEnabled` refuses without trust**, so remote capability can never be reached by a single mis-click ([WP-22.03](../../planning/work-packages/22-identity-workspace-and-device.md#rule-wp-22.03)). |
+| <a id="rule-dv-02"></a>DV-02 | **`device.revoke` cascades to sessions and push registrations in one transaction**, so a revoked device cannot act during a partial cascade. |
 
 ---
 
@@ -113,8 +113,8 @@ Owned by the **Entitlement** module, independent of Commerce ([EO-01](../16-bill
 | # | Rule |
 |---|---|
 | <a id="rule-en-01"></a>EN-01 | **There is no public grant-issuing operation.** Grants are issued through the module API by Commerce or by an operator path, never over the public surface ([EO-03](../16-billing-and-commerce-architecture.md#rule-eo-03)). |
-| EN-02 | **`getSnapshot` always returns `entitlementVersion`**, and clients cache against it. Realtime is a refresh hint, never authority ([ED-02](../16-billing-and-commerce-architecture.md#rule-ed-02)). |
-| EN-03 | **`check` exists so a client can grey an action rather than offering and failing it.** It is a UX affordance; the enforcement is still server-side at the operation ([ED-04](../16-billing-and-commerce-architecture.md#rule-ed-04)). |
+| <a id="rule-en-02"></a>EN-02 | **`getSnapshot` always returns `entitlementVersion`**, and clients cache against it. Realtime is a refresh hint, never authority ([ED-02](../16-billing-and-commerce-architecture.md#rule-ed-02)). |
+| <a id="rule-en-03"></a>EN-03 | **`check` exists so a client can grey an action rather than offering and failing it.** It is a UX affordance; the enforcement is still server-side at the operation ([ED-04](../16-billing-and-commerce-architecture.md#rule-ed-04)). |
 
 ---
 
@@ -138,9 +138,9 @@ Owned by the **Entitlement** module, independent of Commerce ([EO-01](../16-bill
 | # | Rule |
 |---|---|
 | <a id="rule-co-01"></a>CO-01 | **No operation accepts a payment instrument.** There is no card field anywhere in the surface ([PU-05](../16-billing-and-commerce-architecture.md#rule-pu-05)). |
-| CO-02 | **`commerce.getPurchaseState` is the only thing a post-checkout redirect may call.** A redirect grants nothing ([PU-01](../16-billing-and-commerce-architecture.md#rule-pu-01)). |
-| CO-03 | **`commerce.providerWebhook` persists before processing** and returns quickly ([EI-01](../16-billing-and-commerce-architecture.md#rule-ei-01), [EI-04](../16-billing-and-commerce-architecture.md#rule-ei-04)). It is isolated, rate-limited and signature-gated ([SR-03](../16-billing-and-commerce-architecture.md#rule-sr-03)). |
-| CO-04 | **`getCredits` never returns a summed balance** ([CD-07](../16-billing-and-commerce-architecture.md#rule-cd-07) of the commerce architecture). Replenishing included capacity and purchased lots are separate fields: only the former recovers; purchased credits do not expire with time or cancellation. |
+| <a id="rule-co-02"></a>CO-02 | **`commerce.getPurchaseState` is the only thing a post-checkout redirect may call.** A redirect grants nothing ([PU-01](../16-billing-and-commerce-architecture.md#rule-pu-01)). |
+| <a id="rule-co-03"></a>CO-03 | **`commerce.providerWebhook` persists before processing** and returns quickly ([EI-01](../16-billing-and-commerce-architecture.md#rule-ei-01), [EI-04](../16-billing-and-commerce-architecture.md#rule-ei-04)). It is isolated, rate-limited and signature-gated ([SR-03](../16-billing-and-commerce-architecture.md#rule-sr-03)). |
+| <a id="rule-co-04"></a>CO-04 | **`getCredits` never returns a summed balance** ([CD-07](../16-billing-and-commerce-architecture.md#rule-cd-07) of the commerce architecture). Replenishing included capacity and purchased lots are separate fields: only the former recovers; purchased credits do not expire with time or cancellation. |
 
 ---
 
@@ -160,14 +160,14 @@ Owned by the **Entitlement** module, independent of Commerce ([EO-01](../16-bill
 
 | # | Rule |
 |---|---|
-| SY-01 | **`sync.pushBatch` returns a per-item result.** A batch is a transport optimisation, never a transaction — one item's conflict must not roll back the rest. |
-| SY-02 | **`sync.pullChanges` returns `(changes, nextCursor, hasMore)`** and never a partial page presented as complete. |
-| SY-03 | **`sync.cursor_expired` instructs a full resync explicitly** rather than returning a silently incomplete delta ([WP-25.02](../../planning/work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.02)). |
-| SY-04 | **`sync.pushChange` carries the authenticated originating `deviceId` and immutable batch receipt identity.** Own-origin feed records still reconcile revisions/receipts; only duplicate UI notification may be suppressed. |
-| SY-05 | **A conflict is never auto-resolved by the client.** The server applies the scope's policy; where the policy defers to the user, `listConflicts` surfaces it and the discarded version stays recoverable ([WP-25.03](../../planning/work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.03)). |
-| SY-06 | **Pull/apply uses the Cloud model's §9.2 protocol.** Pages are durably staged before cursor advance; per-aggregate revisions only advance; bootstrap manifests have a fixed snapshot, lower-bound cursor and bounded pin. Dependencies crossing pages are resolved by canonical reads, not assumed publication order. |
-| SY-07 | **`sync.getAggregate` accepts `minRevision`.** It returns a canonical version at least that new, including an explicit tombstone, or an expired-history/resync response. The request is scope-checked and never exposes a pending device edit. |
-| SY-08 | **Conflict replacement has a new batch identity and explicit lineage.** The original receipt is stable; an acknowledged no-content-change resolution may settle a local range without incrementing Cloud content revision. |
+| <a id="rule-sy-01"></a>SY-01 | **`sync.pushBatch` returns a per-item result.** A batch is a transport optimisation, never a transaction — one item's conflict must not roll back the rest. |
+| <a id="rule-sy-02"></a>SY-02 | **`sync.pullChanges` returns `(changes, nextCursor, hasMore)`** and never a partial page presented as complete. |
+| <a id="rule-sy-03"></a>SY-03 | **`sync.cursor_expired` instructs a full resync explicitly** rather than returning a silently incomplete delta ([WP-25.02](../../planning/work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.02)). |
+| <a id="rule-sy-04"></a>SY-04 | **`sync.pushChange` carries the authenticated originating `deviceId` and immutable batch receipt identity.** Own-origin feed records still reconcile revisions/receipts; only duplicate UI notification may be suppressed. |
+| <a id="rule-sy-05"></a>SY-05 | **A conflict is never auto-resolved by the client.** The server applies the scope's policy; where the policy defers to the user, `listConflicts` surfaces it and the discarded version stays recoverable ([WP-25.03](../../planning/work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.03)). |
+| <a id="rule-sy-06"></a>SY-06 | **Pull/apply uses the Cloud model's §9.2 protocol.** Pages are durably staged before cursor advance; per-aggregate revisions only advance; bootstrap manifests have a fixed snapshot, lower-bound cursor and bounded pin. Dependencies crossing pages are resolved by canonical reads, not assumed publication order. |
+| <a id="rule-sy-07"></a>SY-07 | **`sync.getAggregate` accepts `minRevision`.** It returns a canonical version at least that new, including an explicit tombstone, or an expired-history/resync response. The request is scope-checked and never exposes a pending device edit. |
+| <a id="rule-sy-08"></a>SY-08 | **Conflict replacement has a new batch identity and explicit lineage.** The original receipt is stable; an acknowledged no-content-change resolution may settle a local range without incrementing Cloud content revision. |
 
 ---
 
@@ -213,10 +213,10 @@ Structural writes return the new revisions of **all** affected roots and the imm
 
 | # | Rule |
 |---|---|
-| RS-01 | **The client never chooses a storage key** ([BR-10](../../planning/work-packages/23-public-api-and-generated-clients.md#rule-br-10) of [WP-23](../../planning/work-packages/23-public-api-and-generated-clients.md#rule-wp-23)). `beginUpload` issues it. |
+| <a id="rule-rs-01"></a>RS-01 | **The client never chooses a storage key** ([BR-10](../../planning/work-packages/23-public-api-and-generated-clients.md#rule-br-10) of [WP-23](../../planning/work-packages/23-public-api-and-generated-clients.md#rule-wp-23)). `beginUpload` issues it. |
 | <a id="rule-rs-02"></a>RS-02 | **Permission is checked at ticket issue and again at consumption** ([WP-23.04](../../planning/work-packages/23-public-api-and-generated-clients.md#rule-wp-23.04)). A ticket is not a bearer capability that outlives a revocation. |
-| RS-03 | **`completeUpload` transitions staged to verified, never to committed.** The referencing owner transaction promotes a verified object, converts its quota reservation and adds its reference atomically. Only then is it downloadable through that owner. Completion and promotion are independently idempotent; verification alone does not publish a reference. |
-| RS-04 | **A denied download returns `state.not_found`** where existence itself is sensitive ([ER-01](00-operation-catalogue.md#rule-er-01)). |
+| <a id="rule-rs-03"></a>RS-03 | **`completeUpload` transitions staged to verified, never to committed.** The referencing owner transaction promotes a verified object, converts its quota reservation and adds its reference atomically. Only then is it downloadable through that owner. Completion and promotion are independently idempotent; verification alone does not publish a reference. |
+| <a id="rule-rs-04"></a>RS-04 | **A denied download returns `state.not_found`** where existence itself is sensitive ([ER-01](00-operation-catalogue.md#rule-er-01)). |
 
 ---
 
@@ -241,11 +241,11 @@ Structural writes return the new revisions of **all** affected roots and the imm
 
 | # | Rule |
 |---|---|
-| TK-01 | **`task.create` records no placement.** The field is retired: a Task is always Cloud-owned ([TO-01](../data-model/00-data-model-overview.md#rule-to-01)), the surface it came from is provenance only ([TK-04](../data-model/01-cloud-data-model.md#rule-tk-04) of the Cloud data model), and **locality is declared per Step** as `toolLocality ∈ {cloud, device}` ([TO-02](../data-model/00-data-model-overview.md#rule-to-02), [TO-06](../data-model/00-data-model-overview.md#rule-to-06)). One Task may mix both. A Step declared `device` is never silently satisfied by a cloud approximation; with no eligible device online the Task is `waiting` with `reasonFacet=device` and says so. |
-| TK-02 | **`approval.decide` inherits the underlying operation's requirements**, including local presence. An operation needing local presence **cannot** be approved from mobile or web ([AZ-01](00-operation-catalogue.md#rule-az-01)). |
-| TK-03 | **`task.steer` is an append, not an authorization.** It can never escalate ([WP-16.05](../../planning/work-packages/16-unified-execution-engine.md#rule-wp-16.05)). |
-| TK-04 | **`bridge.pullRequests` is the only direction.** There is no cloud-to-device push of work (**[D-010](../../decisions/phase-1-foundation-decisions.md#rule-d-010)**), and no operation in this catalogue lets Cloud initiate one. |
-| TK-05 | `bridge.submitResult` deduplicates `(toolRequestId, attemptId, commandId)` plus the canonical result hash. Identical replay returns the same receipt; different content refuses. One attempt may contain multiple tool requests; task identity alone is never a result key. |
+| <a id="rule-tk-01"></a>TK-01 | **`task.create` records no placement.** The field is retired: a Task is always Cloud-owned ([TO-01](../data-model/00-data-model-overview.md#rule-to-01)), the surface it came from is provenance only ([TK-04](../data-model/01-cloud-data-model.md#rule-tk-04) of the Cloud data model), and **locality is declared per Step** as `toolLocality ∈ {cloud, device}` ([TO-02](../data-model/00-data-model-overview.md#rule-to-02), [TO-06](../data-model/00-data-model-overview.md#rule-to-06)). One Task may mix both. A Step declared `device` is never silently satisfied by a cloud approximation; with no eligible device online the Task is `waiting` with `reasonFacet=device` and says so. |
+| <a id="rule-tk-02"></a>TK-02 | **`approval.decide` inherits the underlying operation's requirements**, including local presence. An operation needing local presence **cannot** be approved from mobile or web ([AZ-01](00-operation-catalogue.md#rule-az-01)). |
+| <a id="rule-tk-03"></a>TK-03 | **`task.steer` is an append, not an authorization.** It can never escalate ([WP-16.05](../../planning/work-packages/16-unified-execution-engine.md#rule-wp-16.05)). |
+| <a id="rule-tk-04"></a>TK-04 | **`bridge.pullRequests` is the only direction.** There is no cloud-to-device push of work (**[D-010](../../decisions/phase-1-foundation-decisions.md#rule-d-010)**), and no operation in this catalogue lets Cloud initiate one. |
+| <a id="rule-tk-05"></a>TK-05 | `bridge.submitResult` deduplicates `(toolRequestId, attemptId, commandId)` plus the canonical result hash. Identical replay returns the same receipt; different content refuses. One attempt may contain multiple tool requests; task identity alone is never a result key. |
 
 ---
 
@@ -256,18 +256,18 @@ The only wire and persistence enum is registry 04 `TaskState`: queued, running, 
 | # | Rule |
 |---|---|
 | <a id="rule-ts-01"></a>TS-01 | Unknown enum values display an unknown read-only state and keep reconciling authority. Do not infer terminality. |
-| TS-02 | Only succeeded, partiallySucceeded, failed and canceled are terminal. Partially succeeded shows completed/missing outputs; interrupted remains recoverable. |
-| TS-03 | WaitingForDevice/WaitingForApproval/WaitingForCapacity are UI labels for waiting plus the matching facet, never extra proto values. Uncertainty is a separate badge and reconciliation action. |
+| <a id="rule-ts-02"></a>TS-02 | Only succeeded, partiallySucceeded, failed and canceled are terminal. Partially succeeded shows completed/missing outputs; interrupted remains recoverable. |
+| <a id="rule-ts-03"></a>TS-03 | WaitingForDevice/WaitingForApproval/WaitingForCapacity are UI labels for waiting plus the matching facet, never extra proto values. Uncertainty is a separate badge and reconciliation action. |
 
 ---
 
 | # | Rule |
 |---|---|
-| STR-01 | `task.readStream` is the compatibility alias of `execution.readOutput` for a Task ExecutionOwner. Annex 10 defines attempt/stream/successor identity, offsets, truncation, terminal references and no-answer reason; Harness consumes that schema without a second JSON stream API. |
-| STR-02 | Stream state answers presentation availability; Task state answers execution progress. Empty/missing chunks never imply completion. Expired stream metadata falls back to Task/attempt authority, and only an existing final-message reference is fetched as an answer. |
-| STR-03 | Any authorized Cloud Container can read the shared private DO projection and durable owner output. No public sticky routing or Container-local buffer is authoritative. |
+| <a id="rule-str-01"></a>STR-01 | `task.readStream` is the compatibility alias of `execution.readOutput` for a Task ExecutionOwner. Annex 10 defines attempt/stream/successor identity, offsets, truncation, terminal references and no-answer reason; Harness consumes that schema without a second JSON stream API. |
+| <a id="rule-str-02"></a>STR-02 | Stream state answers presentation availability; Task state answers execution progress. Empty/missing chunks never imply completion. Expired stream metadata falls back to Task/attempt authority, and only an existing final-message reference is fetched as an answer. |
+| <a id="rule-str-03"></a>STR-03 | Any authorized Cloud Container can read the shared private DO projection and durable owner output. No public sticky routing or Container-local buffer is authoritative. |
 | <a id="rule-str-04"></a>STR-04 | **`evicted` does not imply the turn ended.** A client checks the Task's own state to distinguish *the answer is ready* from *live presentation was lost while work continues* ([SR-04](../17-agent-harness.md#rule-sr-04) of the harness). |
-| STR-05 | **Polling with `retryAfter` is equivalent to realtime**, and a client with realtime disabled reaches identical output ([SR-01](../17-agent-harness.md#rule-sr-01) of the harness, [RE-07](03-realtime-and-bridge.md#rule-re-07)). |
+| <a id="rule-str-05"></a>STR-05 | **Polling with `retryAfter` is equivalent to realtime**, and a client with realtime disabled reaches identical output ([SR-01](../17-agent-harness.md#rule-sr-01) of the harness, [RE-07](03-realtime-and-bridge.md#rule-re-07)). |
 
 ---
 
@@ -286,9 +286,9 @@ The only wire and persistence enum is registry 04 `TaskState`: queued, running, 
 
 | # | Rule |
 |---|---|
-| CH-01 | **`chat.appendMessage` atomically appends the user turn and creates its linked Task where requested**, with one retained command result. It runs no model. AI admission happens afterwards in the Harness; a refusal leaves the accepted message and a visible Task reason, not a missing Task. |
-| CH-02 | **`agent.listModels` returns availability with a reason.** A withdrawn model degrades explicitly rather than vanishing ([WP-43.05](../../planning/work-packages/43-managed-ai-routing-and-metering.md#rule-wp-43.05)). |
-| CH-03 | Cloud search failure never disables own-application hydrated local search; WP17 and WP19 prove this independently of WP40 Cloud retrieval. |
+| <a id="rule-ch-01"></a>CH-01 | **`chat.appendMessage` atomically appends the user turn and creates its linked Task where requested**, with one retained command result. It runs no model. AI admission happens afterwards in the Harness; a refusal leaves the accepted message and a visible Task reason, not a missing Task. |
+| <a id="rule-ch-02"></a>CH-02 | **`agent.listModels` returns availability with a reason.** A withdrawn model degrades explicitly rather than vanishing ([WP-43.05](../../planning/work-packages/43-managed-ai-routing-and-metering.md#rule-wp-43.05)). |
+| <a id="rule-ch-03"></a>CH-03 | Cloud search failure never disables own-application hydrated local search; WP17 and WP19 prove this independently of WP40 Cloud retrieval. |
 
 The Notes branch of `search.query` accepts the typed `NotesQuery` [profile](02-local-rpc-operations.md#notes-query-contract): property comparisons, saved-view scope/order and cursor revision bindings are identical to native evaluation. Cloud completeness covers authorized acknowledged content; the local cache operation declares its smaller scope. Other search modes keep their declared ranking. Invalid profile/type/AST/cursor uses the shared catalogue errors, before query execution.
 
@@ -311,9 +311,9 @@ The Notes branch of `search.query` accepts the typed `NotesQuery` [profile](02-l
 
 | # | Rule |
 |---|---|
-| PN-01 | **`policy.getBundle` is validated wholesale by the client and applied atomically or rejected** ([WP-44.01](../../planning/work-packages/44-dynamic-policy-and-configuration.md#rule-wp-44.01)). A partially applied bundle is impossible. |
-| PN-02 | **A push token is never an authorization.** `notification.registerPush` grants nothing ([PD-03](../11-mobile-architecture.md#rule-pd-03)). |
-| PN-03 | **`data.requestExport` remains available with a lapsed subscription** where the data is the user's own ([BR-08](../../planning/work-packages/46-backup-recovery-and-data-health.md#rule-br-08) of [WP-46](../../planning/work-packages/46-backup-recovery-and-data-health.md#rule-wp-46)). |
+| <a id="rule-pn-01"></a>PN-01 | **`policy.getBundle` is validated wholesale by the client and applied atomically or rejected** ([WP-44.01](../../planning/work-packages/44-dynamic-policy-and-configuration.md#rule-wp-44.01)). A partially applied bundle is impossible. |
+| <a id="rule-pn-02"></a>PN-02 | **A push token is never an authorization.** `notification.registerPush` grants nothing ([PD-03](../11-mobile-architecture.md#rule-pd-03)). |
+| <a id="rule-pn-03"></a>PN-03 | **`data.requestExport` remains available with a lapsed subscription** where the data is the user's own ([BR-08](../../planning/work-packages/46-backup-recovery-and-data-health.md#rule-br-08) of [WP-46](../../planning/work-packages/46-backup-recovery-and-data-health.md#rule-wp-46)). |
 
 ---
 
@@ -338,14 +338,14 @@ The Notes branch of `search.query` accepts the typed `NotesQuery` [profile](02-l
 
 | # | Rule |
 |---|---|
-| SO-01 | **Start, pause, resume and cancel are durable, authorised, idempotent commands carrying expected state and revision** ([SIM-09](../../requirements/products/arcscope.md#rule-sim-09)). A stale command is refused; a duplicate start creates no second run and cannot resurrect a terminal run. |
-| SO-02 | **`simulation.getRun` distinguishes complete from partial** ([SIM-08](../../requirements/products/arcscope.md#rule-sim-08)). A cancelled run reports `canceled` with its committed extent — never `succeeded` for an incomplete range. |
+| <a id="rule-so-01"></a>SO-01 | **Start, pause, resume and cancel are durable, authorised, idempotent commands carrying expected state and revision** ([SIM-09](../../requirements/products/arcscope.md#rule-sim-09)). A stale command is refused; a duplicate start creates no second run and cannot resurrect a terminal run. |
+| <a id="rule-so-02"></a>SO-02 | **`simulation.getRun` distinguishes complete from partial** ([SIM-08](../../requirements/products/arcscope.md#rule-sim-08)). A cancelled run reports `canceled` with its committed extent — never `succeeded` for an incomplete range. |
 | <a id="rule-so-03"></a>SO-03 | **The manifest is the authority; the object is not.** `listSegments` returns only committed rows, and an incomplete object is invisible ([SIM-11](../../requirements/products/arcscope.md#rule-sim-11)). |
 | <a id="rule-so-04"></a>SO-04 | **Bulk data never flows over realtime.** Segments are fetched by HTTP or object storage with a hash the client verifies; gRPC hint polling is an optional wakeup or preview hint ([SIM-13](../../requirements/products/arcscope.md#rule-sim-13)). |
 | <a id="rule-so-05"></a>SO-05 | **Disabling realtime entirely must not reduce access to retained committed data** ([SIM-13](../../requirements/products/arcscope.md#rule-sim-13)). `pollState` plus `listSegments` is a complete authoritative fallback, and this is verified rather than assumed. |
-| SO-06 | **A scenario cannot fetch a URL, read a host file or cross a workspace boundary** ([SIM-18](../../requirements/products/arcscope.md#rule-sim-18)). CSV replay reads an explicitly uploaded, workspace-owned resource identified by content hash. |
-| SO-07 | **An exported scenario contains no deployment secret or policy value** ([SIM-18](../../requirements/products/arcscope.md#rule-sim-18)). |
-| SO-08 | **Term expiry or suspension stops generation at a durable boundary** as `canceled` with the explicit eligibility reason; committed output then follows retained-data access rules ([SIM-17](../../requirements/products/arcscope.md#rule-sim-17)). |
+| <a id="rule-so-06"></a>SO-06 | **A scenario cannot fetch a URL, read a host file or cross a workspace boundary** ([SIM-18](../../requirements/products/arcscope.md#rule-sim-18)). CSV replay reads an explicitly uploaded, workspace-owned resource identified by content hash. |
+| <a id="rule-so-07"></a>SO-07 | **An exported scenario contains no deployment secret or policy value** ([SIM-18](../../requirements/products/arcscope.md#rule-sim-18)). |
+| <a id="rule-so-08"></a>SO-08 | **Term expiry or suspension stops generation at a durable boundary** as `canceled` with the explicit eligibility reason; committed output then follows retained-data access rules ([SIM-17](../../requirements/products/arcscope.md#rule-sim-17)). |
 | <a id="rule-so-09"></a>SO-09 | **Unauthorised or impossible requests fail before any side effect** ([SIM-16](../../requirements/products/arcscope.md#rule-sim-16)) — before a lease, before an object, before a quota debit. |
 
 ---
@@ -375,15 +375,15 @@ The Notes branch of `search.query` accepts the typed `NotesQuery` [profile](02-l
 
 | # | Obligation | Where |
 |---|---|---|
-| PV-01 | Every operation here has a generated contract artifact, and every artifact traces to a row here | [WP-03.05](../../planning/work-packages/03-contract-foundation-and-licence-split.md#rule-wp-03.05), [WP-23.00](../../planning/work-packages/23-public-api-and-generated-clients.md#rule-wp-23.00) |
-| PV-02 | Every `localPresence` operation is absent from the mobile and web surfaces | [WP-31.06](../../planning/work-packages/31-arcchat-mobile-android.md#rule-wp-31.06), [WP-49.02](../../planning/work-packages/49-arcchat-web-companion.md#rule-wp-49.02) |
-| PV-03 | Every mutating operation is exactly-once under duplicate submission and lost response | [WP-23.03](../../planning/work-packages/23-public-api-and-generated-clients.md#rule-wp-23.03) |
-| PV-04 | `bridge.submitResult` is idempotent on `(toolRequestId, attemptId, commandId)` plus canonical result hash | [WP-26.03](../../planning/work-packages/26-remote-action-and-tool-bridge.md#rule-wp-26.03) |
-| PV-05 | A denied resource returns `state.not_found` and discloses nothing by timing or shape | [WP-23.01](../../planning/work-packages/23-public-api-and-generated-clients.md#rule-wp-23.01) |
-| PV-06 | No operation accepts a payment instrument field | [WP-42.02](../../planning/work-packages/42-commerce-entitlement-and-credits.md#rule-wp-42.02) scan |
-| PV-07 | Entitlement operations resolve with the `commerce` schema absent | [WP-42.00](../../planning/work-packages/42-commerce-entitlement-and-credits.md#rule-wp-42.00) |
+| <a id="rule-pv-01"></a>PV-01 | Every operation here has a generated contract artifact, and every artifact traces to a row here | [WP-03.05](../../planning/work-packages/03-contract-foundation-and-licence-split.md#rule-wp-03.05), [WP-23.00](../../planning/work-packages/23-public-api-and-generated-clients.md#rule-wp-23.00) |
+| <a id="rule-pv-02"></a>PV-02 | Every `localPresence` operation is absent from the mobile and web surfaces | [WP-31.06](../../planning/work-packages/31-arcchat-mobile-android.md#rule-wp-31.06), [WP-49.02](../../planning/work-packages/49-arcchat-web-companion.md#rule-wp-49.02) |
+| <a id="rule-pv-03"></a>PV-03 | Every mutating operation is exactly-once under duplicate submission and lost response | [WP-23.03](../../planning/work-packages/23-public-api-and-generated-clients.md#rule-wp-23.03) |
+| <a id="rule-pv-04"></a>PV-04 | `bridge.submitResult` is idempotent on `(toolRequestId, attemptId, commandId)` plus canonical result hash | [WP-26.03](../../planning/work-packages/26-remote-action-and-tool-bridge.md#rule-wp-26.03) |
+| <a id="rule-pv-05"></a>PV-05 | A denied resource returns `state.not_found` and discloses nothing by timing or shape | [WP-23.01](../../planning/work-packages/23-public-api-and-generated-clients.md#rule-wp-23.01) |
+| <a id="rule-pv-06"></a>PV-06 | No operation accepts a payment instrument field | [WP-42.02](../../planning/work-packages/42-commerce-entitlement-and-credits.md#rule-wp-42.02) scan |
+| <a id="rule-pv-07"></a>PV-07 | Entitlement operations resolve with the `commerce` schema absent | [WP-42.00](../../planning/work-packages/42-commerce-entitlement-and-credits.md#rule-wp-42.00) |
 
-## P2-009 executable wire and transport binding
+## [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) executable wire and transport binding
 
 Every operation/event above maps to the [numbered wire registry](04-protobuf-wire-registry.md). It fixes requests/results, record fields, enums, exact values, local counterpart preconditions, service names and compatibility. [CF integration](05-cloudflare-integration.md) fixes private Cloud/AI bindings and signed object-transfer exceptions; annex10 owns public output/control framing, state recovery and authorization. New supporting bootstrap, upload-status, automation and conversation-create methods are enumerated there with their authorization/idempotency classes; none is left for endpoint invention during implementation.
 

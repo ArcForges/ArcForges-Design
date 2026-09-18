@@ -49,16 +49,16 @@ The Web companion verifies real generation, tool approval, stream fallback and r
 
 | # | Rule |
 |---|---|
-| BR-01 | **The chat profile shares no state, storage or cookies with the account profile** (**[D-015](../../decisions/phase-1-foundation-decisions.md#rule-d-015)**). |
-| BR-02 | **The browser never connects to a local endpoint.** Remote work goes through Cloud and the durable tool bridge (**[D-010](../../decisions/phase-1-foundation-decisions.md#rule-d-010)**). |
-| BR-03 | **An operation requiring local presence cannot be completed from the browser alone.** |
-| BR-04 | **A web session is shorter-lived and less trusted than a desktop session.** |
-| BR-05 | **Web offline is minimal and honest**: it states it is offline and preserves unsent input; it does not pretend to work. |
-| BR-06 | **Realtime loss degrades to polling authoritative state**, then backfills on reconnection. |
-| BR-07 | **Preview rendering of user content is sandboxed**; untrusted content never executes in the application origin. |
-| BR-08 | **There are no public share links in V1.** Links are authenticated and private. |
-| BR-09 | **A cloud resource URL verifies permission at access**, and a denial does not disclose existence where that would leak. |
-| BR-10 | **Bundle size and interactivity budgets apply**, with a regression gate. |
+| <a id="rule-br-01"></a>BR-01 | **The chat profile shares no state, storage or cookies with the account profile** (**[D-015](../../decisions/phase-1-foundation-decisions.md#rule-d-015)**). |
+| <a id="rule-br-02"></a>BR-02 | **The browser never connects to a local endpoint.** Remote work goes through Cloud and the durable tool bridge (**[D-010](../../decisions/phase-1-foundation-decisions.md#rule-d-010)**). |
+| <a id="rule-br-03"></a>BR-03 | **An operation requiring local presence cannot be completed from the browser alone.** |
+| <a id="rule-br-04"></a>BR-04 | **A web session is shorter-lived and less trusted than a desktop session.** |
+| <a id="rule-br-05"></a>BR-05 | **Web offline is minimal and honest**: it states it is offline and preserves unsent input; it does not pretend to work. |
+| <a id="rule-br-06"></a>BR-06 | **Realtime loss degrades to polling authoritative state**, then backfills on reconnection. |
+| <a id="rule-br-07"></a>BR-07 | **Preview rendering of user content is sandboxed**; untrusted content never executes in the application origin. |
+| <a id="rule-br-08"></a>BR-08 | **There are no public share links in V1.** Links are authenticated and private. |
+| <a id="rule-br-09"></a>BR-09 | **A cloud resource URL verifies permission at access**, and a denial does not disclose existence where that would leak. |
+| <a id="rule-br-10"></a>BR-10 | **Bundle size and interactivity budgets apply**, with a regression gate. |
 
 ---
 

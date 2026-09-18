@@ -17,13 +17,13 @@ An editor is where a document product is won or lost. A wrong content model, a c
 
 | # | Rule |
 |---|---|
-| EC-01 | **The document model is the authority; the view is a projection.** No visual state is the source of any content fact. |
+| <a id="rule-ec-01"></a>EC-01 | **The document model is the authority; the view is a projection.** No visual state is the source of any content fact. |
 | <a id="rule-ec-02"></a>EC-02 | **Inline content is a typed structure, never a markup string** ([BL-07](../requirements/products/arcnotes.md#rule-bl-07)). No path stores or round-trips content as Markdown, HTML or RTF. Those are import and export formats only (`§10`). |
-| EC-03 | **Every content change is a transaction** (`§3`). There is no path that mutates a block outside one. |
+| <a id="rule-ec-03"></a>EC-03 | **Every content change is a transaction** (`§3`). There is no path that mutates a block outside one. |
 | <a id="rule-ec-04"></a>EC-04 | **A `BlockId` is stable under every ordinary edit** ([BL-01](../requirements/products/arcnotes.md#rule-bl-01)) — typing, moving, indenting, splitting a sibling, converting a neighbour. |
 | <a id="rule-ec-05"></a>EC-05 | **Rendering is virtualised** (`§6`). Opening a large document never realises every block. |
 | <a id="rule-ec-06"></a>EC-06 | **User content never executes** ([CS-06](10-web-architecture.md#rule-cs-06) of the web architecture; [FA-07](06-data-persistence-and-formats.md#rule-fa-07) and [IE-06](06-data-persistence-and-formats.md#rule-ie-06) of the persistence architecture). Every preview path in `§8` is a decode-and-render path, never an evaluation path. |
-| EC-07 | **A capability requiring a native dependency is declared as such** ([NP-01](12-native-interop-and-media.md#rule-np-01) of the native interop architecture), with the substitute analysis recorded. Calling something "preview" does not exempt it. |
+| <a id="rule-ec-07"></a>EC-07 | **A capability requiring a native dependency is declared as such** ([NP-01](12-native-interop-and-media.md#rule-np-01) of the native interop architecture), with the substitute analysis recorded. Calling something "preview" does not exempt it. |
 | <a id="rule-ec-08"></a>EC-08 | **An agent edit and a human edit use the same transaction path** (`§3.4`). There is no privileged write. |
 
 ---
@@ -52,10 +52,10 @@ A `block` row stores `kind` plus a `content` structure typed by that kind (`§3`
 
 | # | Rule |
 |---|---|
-| BK-01 | **The kind set is closed and statically registered** ([BL-08](../requirements/products/arcnotes.md#rule-bl-08)). Adding a kind is a schema-evolution event ([SE-01](data-model/00-data-model-overview.md#rule-se-01)–[SE-07](data-model/00-data-model-overview.md#rule-se-07) of the data-model overview), not a runtime registration. |
-| BK-02 | **An unknown kind read from storage is preserved inert and shown as unsupported** ([FA-07](06-data-persistence-and-formats.md#rule-fa-07) of the persistence architecture), never dropped and never executed. This is what makes a forward-compatible read possible. |
-| BK-03 | **No kind is `html` or `script`** ([BL-06](../requirements/products/arcnotes.md#rule-bl-06)). Extensibility goes through the extension platform, out of process. |
-| BK-04 | **Children are structural, not content.** A block's children are `block` rows with `parent_block_id`, so hierarchy survives independently of any kind's content shape ([BL-02](../requirements/products/arcnotes.md#rule-bl-02)). |
+| <a id="rule-bk-01"></a>BK-01 | **The kind set is closed and statically registered** ([BL-08](../requirements/products/arcnotes.md#rule-bl-08)). Adding a kind is a schema-evolution event ([SE-01](data-model/00-data-model-overview.md#rule-se-01)–[SE-07](data-model/00-data-model-overview.md#rule-se-07) of the data-model overview), not a runtime registration. |
+| <a id="rule-bk-02"></a>BK-02 | **An unknown kind read from storage is preserved inert and shown as unsupported** ([FA-07](06-data-persistence-and-formats.md#rule-fa-07) of the persistence architecture), never dropped and never executed. This is what makes a forward-compatible read possible. |
+| <a id="rule-bk-03"></a>BK-03 | **No kind is `html` or `script`** ([BL-06](../requirements/products/arcnotes.md#rule-bl-06)). Extensibility goes through the extension platform, out of process. |
+| <a id="rule-bk-04"></a>BK-04 | **Children are structural, not content.** A block's children are `block` rows with `parent_block_id`, so hierarchy survives independently of any kind's content shape ([BL-02](../requirements/products/arcnotes.md#rule-bl-02)). |
 
 ### 2.2 Inline content
 
@@ -73,14 +73,14 @@ Mark          := bold | italic | strikethrough | underline | code
 
 | # | Rule |
 |---|---|
-| IN-01 | **Marks are a closed enumeration**, versioned with the schema. An unknown mark is preserved and ignored for rendering, never dropped. |
-| IN-02 | **Text is stored NFC-normalised UTF-8.** Normalisation happens at the transaction boundary, once, so comparison, search and diff never face two encodings of one string. |
-| IN-03 | **Offsets are UTF-16 code-unit indices into a run's `text`**, matching the .NET string the editor manipulates. Converting to and from grapheme positions is the caret's job (`§4.2`), not the model's. |
-| IN-04 | **Adjacent runs with identical mark sets are merged at the transaction boundary.** Without this, a long editing session fragments a paragraph into thousands of runs and every subsequent operation slows down. |
-| IN-05 | **A `Link` carries `InlineContent`, so a link can contain formatted text**, but a link never nests inside a link. |
-| IN-06 | **A `Mention` and a `Link` to a document both store identity, never a title** ([BR-04](../planning/work-packages/18-arcnotes-document-core.md#rule-br-04) of [WP-18](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18)). The title is resolved at render time, so renaming a document updates every reference without a write. |
+| <a id="rule-in-01"></a>IN-01 | **Marks are a closed enumeration**, versioned with the schema. An unknown mark is preserved and ignored for rendering, never dropped. |
+| <a id="rule-in-02"></a>IN-02 | **Text is stored NFC-normalised UTF-8.** Normalisation happens at the transaction boundary, once, so comparison, search and diff never face two encodings of one string. |
+| <a id="rule-in-03"></a>IN-03 | **Offsets are UTF-16 code-unit indices into a run's `text`**, matching the .NET string the editor manipulates. Converting to and from grapheme positions is the caret's job (`§4.2`), not the model's. |
+| <a id="rule-in-04"></a>IN-04 | **Adjacent runs with identical mark sets are merged at the transaction boundary.** Without this, a long editing session fragments a paragraph into thousands of runs and every subsequent operation slows down. |
+| <a id="rule-in-05"></a>IN-05 | **A `Link` carries `InlineContent`, so a link can contain formatted text**, but a link never nests inside a link. |
+| <a id="rule-in-06"></a>IN-06 | **A `Mention` and a `Link` to a document both store identity, never a title** ([BR-04](../planning/work-packages/18-arcnotes-document-core.md#rule-br-04) of [WP-18](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18)). The title is resolved at render time, so renaming a document updates every reference without a write. |
 | <a id="rule-in-07"></a>IN-07 | **`InlineMath` stores TeX source as the authority**; its rendered form is derived and cached (`§7.2`). |
-| IN-08 | **An empty run is never persisted.** Empty `InlineContent` is an empty list, which is how an empty paragraph is represented — not a run containing `""`. |
+| <a id="rule-in-08"></a>IN-08 | **An empty run is never persisted.** Empty `InlineContent` is an empty list, which is how an empty paragraph is represented — not a run containing `""`. |
 
 ### 2.3 What the model deliberately excludes
 
@@ -126,23 +126,23 @@ The operation set is closed:
 
 | # | Rule |
 |---|---|
-| TX-01 | **A transaction is atomic**: every operation applies, or none does. A validation failure at operation four leaves the document exactly as it was. |
-| TX-02 | **A transaction is the undo granularity** (`§3.2`). One gesture that produces four operations undoes as one. |
-| TX-03 | **Every operation is invertible by construction.** The inverse is computed at apply time, when the prior state is known, and stored with the transaction. Undo never re-derives the old state by diffing. |
-| TX-04 | **Ordinals are fractional** (`§3` of the desktop data model). `InsertBlock` and `MoveBlock` compute a key between neighbours and touch no sibling. A rebalance is an ordinary transaction, and it is the only operation that rewrites sibling ordinals. |
+| <a id="rule-tx-01"></a>TX-01 | **A transaction is atomic**: every operation applies, or none does. A validation failure at operation four leaves the document exactly as it was. |
+| <a id="rule-tx-02"></a>TX-02 | **A transaction is the undo granularity** (`§3.2`). One gesture that produces four operations undoes as one. |
+| <a id="rule-tx-03"></a>TX-03 | **Every operation is invertible by construction.** The inverse is computed at apply time, when the prior state is known, and stored with the transaction. Undo never re-derives the old state by diffing. |
+| <a id="rule-tx-04"></a>TX-04 | **Ordinals are fractional** (`§3` of the desktop data model). `InsertBlock` and `MoveBlock` compute a key between neighbours and touch no sibling. A rebalance is an ordinary transaction, and it is the only operation that rewrites sibling ordinals. |
 | <a id="rule-tx-05"></a>TX-05 | **A transaction records its origin**: `user`, `agent`, `import`, `sync`, `migration`, `automation`. Origin drives labelling, undo grouping and audit, and it is never inferred later. |
-| TX-06 | **Structural validity is checked, taste is not.** An empty document, an empty heading and a table with one cell are all legal. Illegal is a cycle in the block tree, a duplicate ordinal, a child of a kind that declares no children, or a mark on `code` content. |
+| <a id="rule-tx-06"></a>TX-06 | **Structural validity is checked, taste is not.** An empty document, an empty heading and a table with one cell are all legal. Illegal is a cycle in the block tree, a duplicate ordinal, a child of a kind that declares no children, or a mark on `code` content. |
 
 ### 3.2 Undo and redo
 
 | # | Rule |
 |---|---|
-| UN-01 | **The undo stack is per document and per session.** It is not persisted, is not synced, and is not a version history — the document's own history (`§12` of the ArcNotes requirements) is the durable mechanism, and the two are never conflated. |
-| UN-02 | **Typing coalesces into one undo entry** while the origin, block and adjacency hold, and breaks on a caret jump, a different block, a non-typing operation, a save point or an idle interval. This is why the undo entry carries `selectionBefore`. |
-| UN-03 | **Undo restores selection as well as content.** An undo that leaves the caret elsewhere is experienced as data loss even when nothing was lost. |
-| UN-04 | **An agent transaction is undoable like any other**, and is labelled with its origin so the entry reads as the agent's action rather than the user's ([TX-05](#rule-tx-05)). |
-| UN-05 | Remote changes are never local undo entries. Apply only to a clean acknowledged document. If a pending/undo target revision no longer matches, preserve the original inverse and affected content, disable that entry with a conflict explanation and offer explicit conflict-copy/review recovery. Never silently drop or retarget it. Cursor mapping is permitted only through the exact accepted local operation map under notes.commands.v1. |
-| UN-06 | **Redo is cleared by a new transaction**, with one exception: a remote change alone does not clear it. |
+| <a id="rule-un-01"></a>UN-01 | **The undo stack is per document and per session.** It is not persisted, is not synced, and is not a version history — the document's own history (`§12` of the ArcNotes requirements) is the durable mechanism, and the two are never conflated. |
+| <a id="rule-un-02"></a>UN-02 | **Typing coalesces into one undo entry** while the origin, block and adjacency hold, and breaks on a caret jump, a different block, a non-typing operation, a save point or an idle interval. This is why the undo entry carries `selectionBefore`. |
+| <a id="rule-un-03"></a>UN-03 | **Undo restores selection as well as content.** An undo that leaves the caret elsewhere is experienced as data loss even when nothing was lost. |
+| <a id="rule-un-04"></a>UN-04 | **An agent transaction is undoable like any other**, and is labelled with its origin so the entry reads as the agent's action rather than the user's ([TX-05](#rule-tx-05)). |
+| <a id="rule-un-05"></a>UN-05 | Remote changes are never local undo entries. Apply only to a clean acknowledged document. If a pending/undo target revision no longer matches, preserve the original inverse and affected content, disable that entry with a conflict explanation and offer explicit conflict-copy/review recovery. Never silently drop or retarget it. Cursor mapping is permitted only through the exact accepted local operation map under notes.commands.v1. |
+| <a id="rule-un-06"></a>UN-06 | **Redo is cleared by a new transaction**, with one exception: a remote change alone does not clear it. |
 
 ### 3.3 Kind conversion
 
@@ -159,9 +159,9 @@ Conversion is where content is quietly lost in most editors, so the mapping is d
 
 | # | Rule |
 |---|---|
-| CV-01 | **Every conversion declares its mapping**, and a mapping that loses content states what is lost before it is applied. |
-| CV-02 | **A refused conversion is refused with a reason**, never silently performed differently from what was asked. |
-| CV-03 | **Conversion preserves `BlockId`** ([EC-04](#rule-ec-04)), so links and citations into that block survive. |
+| <a id="rule-cv-01"></a>CV-01 | **Every conversion declares its mapping**, and a mapping that loses content states what is lost before it is applied. |
+| <a id="rule-cv-02"></a>CV-02 | **A refused conversion is refused with a reason**, never silently performed differently from what was asked. |
+| <a id="rule-cv-03"></a>CV-03 | **Conversion preserves `BlockId`** ([EC-04](#rule-ec-04)), so links and citations into that block survive. |
 
 ### 3.4 The agent editing path
 
@@ -169,11 +169,11 @@ The agent reaches this layer through `INotesOperations` (`§4` of the local RPC 
 
 | # | Rule |
 |---|---|
-| AE-01 | **An agent operation becomes an `EditTransaction`** with `origin = agent`. There is no second write path ([EC-08](#rule-ec-08)). |
-| AE-02 | **A stale `ExpectedRev` fails with `conflict.revision_mismatch`** and is surfaced to the model as correctable ([SI-04](17-agent-harness.md#rule-si-04) of the harness). |
-| AE-03 | **An agent edit to an open document appears live**, and does not require the user to reload. This follows from the change notification carrying the op list. |
-| AE-04 | **An agent edit is visibly attributed** in the interface and in history. A user must be able to see what the agent changed, not only that something changed. |
-| AE-05 | **A multi-block agent edit is one transaction**, so undo reverses the whole intent rather than fragments of it. |
+| <a id="rule-ae-01"></a>AE-01 | **An agent operation becomes an `EditTransaction`** with `origin = agent`. There is no second write path ([EC-08](#rule-ec-08)). |
+| <a id="rule-ae-02"></a>AE-02 | **A stale `ExpectedRev` fails with `conflict.revision_mismatch`** and is surfaced to the model as correctable ([SI-04](17-agent-harness.md#rule-si-04) of the harness). |
+| <a id="rule-ae-03"></a>AE-03 | **An agent edit to an open document appears live**, and does not require the user to reload. This follows from the change notification carrying the op list. |
+| <a id="rule-ae-04"></a>AE-04 | **An agent edit is visibly attributed** in the interface and in history. A user must be able to see what the agent changed, not only that something changed. |
+| <a id="rule-ae-05"></a>AE-05 | **A multi-block agent edit is one transaction**, so undo reverses the whole intent rather than fragments of it. |
 
 ---
 
@@ -190,39 +190,39 @@ Two modes, permanently distinct:
 
 | # | Rule |
 |---|---|
-| SL-01 | **Block selection is first-class, not a degenerate text selection** ([ED-05](../requirements/products/arcnotes.md#rule-ed-05)). Every block operation is available across a multi-block selection. |
-| SL-02 | **A cross-block text selection has a defined normal form**: the partial head and tail blocks plus the fully covered middle. Every operation states its behaviour on all three parts. |
+| <a id="rule-sl-01"></a>SL-01 | **Block selection is first-class, not a degenerate text selection** ([ED-05](../requirements/products/arcnotes.md#rule-ed-05)). Every block operation is available across a multi-block selection. |
+| <a id="rule-sl-02"></a>SL-02 | **A cross-block text selection has a defined normal form**: the partial head and tail blocks plus the fully covered middle. Every operation states its behaviour on all three parts. |
 | <a id="rule-sl-03"></a>SL-03 | **Selection is view state, not content**, and is never persisted into the document or synced. |
-| SL-04 | **Selection survives a remote change where it can**, by anchoring to `(blockId, offset)` and re-resolving; where the block is gone it collapses to the nearest surviving position rather than jumping to the document start. |
+| <a id="rule-sl-04"></a>SL-04 | **Selection survives a remote change where it can**, by anchoring to `(blockId, offset)` and re-resolving; where the block is gone it collapses to the nearest surviving position rather than jumping to the document start. |
 
 ### 4.2 Caret and grapheme correctness
 
 | # | Rule |
 |---|---|
-| CT-01 | **The caret rests only on grapheme-cluster boundaries.** Arrow keys, backspace and delete move by grapheme, not by code unit or code point — otherwise an emoji with a skin-tone modifier or a Devanagari cluster breaks apart. |
-| CT-02 | **Word movement uses Unicode word-boundary rules**, not whitespace splitting. |
-| CT-03 | **Bidirectional text is supported for display and caret movement.** Logical order is the storage order; visual order is a layout concern. Caret movement is **visual** for arrow keys and **logical** for home/end, which is what users of mixed-direction text expect. |
-| CT-04 | **Vertical movement preserves a desired column** across lines of differing length, and the desired column resets on any horizontal movement. |
-| CT-05 | **Selection painting handles bidi runs**, so a selection across a direction boundary paints as the discontiguous ranges it really is. |
+| <a id="rule-ct-01"></a>CT-01 | **The caret rests only on grapheme-cluster boundaries.** Arrow keys, backspace and delete move by grapheme, not by code unit or code point — otherwise an emoji with a skin-tone modifier or a Devanagari cluster breaks apart. |
+| <a id="rule-ct-02"></a>CT-02 | **Word movement uses Unicode word-boundary rules**, not whitespace splitting. |
+| <a id="rule-ct-03"></a>CT-03 | **Bidirectional text is supported for display and caret movement.** Logical order is the storage order; visual order is a layout concern. Caret movement is **visual** for arrow keys and **logical** for home/end, which is what users of mixed-direction text expect. |
+| <a id="rule-ct-04"></a>CT-04 | **Vertical movement preserves a desired column** across lines of differing length, and the desired column resets on any horizontal movement. |
+| <a id="rule-ct-05"></a>CT-05 | **Selection painting handles bidi runs**, so a selection across a direction boundary paints as the discontiguous ranges it really is. |
 
 ### 4.3 IME and composition
 
 | # | Rule |
 |---|---|
-| IM-01 | **A composition in progress is not a transaction.** Preedit text is view state; only the committed string enters the model. This is what keeps CJK, Korean and dictation input from producing hundreds of undo entries and hundreds of journal writes. |
-| IM-02 | **The composition window is positioned from the caret's real screen rectangle**, recomputed on layout change. |
-| IM-03 | **A commit produces exactly one `ReplaceInlineRange`**, and one undo entry. |
-| IM-04 | **Cancelling a composition leaves the model untouched**, because it was never touched. |
-| IM-05 | Keep IME composition in its original document/run/cell revision. Defer applying an incoming document snapshot while composing; commit or explicitly cancel the local composition first. On changed base preserve local committed text in the normal pending/conflict-copy path and then display the authoritative remote version. Never invent a text rebase or lose the in-flight word. |
-| IM-06 | **Dictation and handwriting input use the same commit path**, so their behaviour is defined rather than emergent. |
+| <a id="rule-im-01"></a>IM-01 | **A composition in progress is not a transaction.** Preedit text is view state; only the committed string enters the model. This is what keeps CJK, Korean and dictation input from producing hundreds of undo entries and hundreds of journal writes. |
+| <a id="rule-im-02"></a>IM-02 | **The composition window is positioned from the caret's real screen rectangle**, recomputed on layout change. |
+| <a id="rule-im-03"></a>IM-03 | **A commit produces exactly one `ReplaceInlineRange`**, and one undo entry. |
+| <a id="rule-im-04"></a>IM-04 | **Cancelling a composition leaves the model untouched**, because it was never touched. |
+| <a id="rule-im-05"></a>IM-05 | Keep IME composition in its original document/run/cell revision. Defer applying an incoming document snapshot while composing; commit or explicitly cancel the local composition first. On changed base preserve local committed text in the normal pending/conflict-copy path and then display the authoritative remote version. Never invent a text rebase or lose the in-flight word. |
+| <a id="rule-im-06"></a>IM-06 | **Dictation and handwriting input use the same commit path**, so their behaviour is defined rather than emergent. |
 
 ### 4.4 Markdown-friendly input
 
 | # | Rule |
 |---|---|
-| MK-01 | **Markdown syntax is input, never storage** ([ED-01](../requirements/products/arcnotes.md#rule-ed-01)). Typing `## ` at the start of an empty paragraph converts the block to a heading and consumes the trigger. |
-| MK-02 | **Every input rule is undoable in one step back to the literal text typed**, so a user who wanted a literal `# ` gets it by pressing undo once. |
-| MK-03 | **Input rules are a closed, statically registered set**, not a user-extensible grammar. |
+| <a id="rule-mk-01"></a>MK-01 | **Markdown syntax is input, never storage** ([ED-01](../requirements/products/arcnotes.md#rule-ed-01)). Typing `## ` at the start of an empty paragraph converts the block to a heading and consumes the trigger. |
+| <a id="rule-mk-02"></a>MK-02 | **Every input rule is undoable in one step back to the literal text typed**, so a user who wanted a literal `# ` gets it by pressing undo once. |
+| <a id="rule-mk-03"></a>MK-03 | **Input rules are a closed, statically registered set**, not a user-extensible grammar. |
 | <a id="rule-mk-04"></a>MK-04 | **Paste of Markdown text is a conversion with a choice** — as rich content or as literal text — and never silently reinterprets what the user pasted (`§10`). |
 | <a id="rule-mk-05"></a>MK-05 | **The slash menu inserts and transforms content; the command palette runs product commands** ([ED-03](../requirements/products/arcnotes.md#rule-ed-03)). They share no registry, so a command can never appear as a block type. |
 
@@ -241,11 +241,11 @@ Two modes, permanently distinct:
 
 | # | Rule |
 |---|---|
-| RN-01 | **No reflection-based templating, no runtime XAML loading, no dynamic control construction from a string** ([AC-04](00-architecture-overview.md#rule-ac-04) of the architecture overview, **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**). Block presenters are resolved through a statically registered kind-to-presenter map. |
+| <a id="rule-rn-01"></a>RN-01 | **No reflection-based templating, no runtime XAML loading, no dynamic control construction from a string** ([AC-04](00-architecture-overview.md#rule-ac-04) of the architecture overview, **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**). Block presenters are resolved through a statically registered kind-to-presenter map. |
 | <a id="rule-rn-02"></a>RN-02 | **ArcForges does not implement text shaping.** Shaping, font fallback and glyph rasterisation belong to the platform stack; reimplementing them is out of scope and would be a multi-year commitment (`§9`). |
-| RN-03 | **A custom-drawn control is used where a composed control cannot meet the measured budget**, and that choice is recorded with its measurement — never taken by default. |
-| RN-04 | **No WebView, no Chromium, no browser engine, no DOM, no JavaScript engine, no HTML-as-UI and no loopback UI server** (**[P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006)**, `§8` of the product scope). This is a technology-constitution prohibition, not a preference, and a repository policy test asserts that no desktop project references a web-view package ([WP-05](../planning/work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05)). |
-| RN-05 | **[I-028](../requirements/01-normative-glossary-and-invariants.md#rule-i-028) — a native editor with a working cache is not a WebView shell.** The prohibition exists because a browser-hosted editor would make the AOT constraint, the input model and the accessibility model all unenforceable. |
+| <a id="rule-rn-03"></a>RN-03 | **A custom-drawn control is used where a composed control cannot meet the measured budget**, and that choice is recorded with its measurement — never taken by default. |
+| <a id="rule-rn-04"></a>RN-04 | **No WebView, no Chromium, no browser engine, no DOM, no JavaScript engine, no HTML-as-UI and no loopback UI server** (**[P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006)**, `§8` of the product scope). This is a technology-constitution prohibition, not a preference, and a repository policy test asserts that no desktop project references a web-view package ([WP-05](../planning/work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05)). |
+| <a id="rule-rn-05"></a>RN-05 | **[I-028](../requirements/01-normative-glossary-and-invariants.md#rule-i-028) — a native editor with a working cache is not a WebView shell.** The prohibition exists because a browser-hosted editor would make the AOT constraint, the input model and the accessibility model all unenforceable. |
 
 ### 5.2 Block layout and virtualisation
 
@@ -259,12 +259,12 @@ document → block sequence (in ordinal order, hierarchy flattened with depth)
 
 | # | Rule |
 |---|---|
-| LY-01 | **Virtualisation is mandatory** ([EC-05](#rule-ec-05)). A ten-thousand-block document realises a viewport's worth of presenters, not ten thousand. |
-| LY-02 | **Measurement is cached and invalidated by fingerprint**, so scrolling back does not re-measure. |
-| LY-03 | **Height estimation error is corrected without visible jump.** A scroll anchor is held on a stable block, and corrections apply around it — an estimate that shifts content under the user's cursor is a defect. |
-| LY-04 | **Scroll position anchors to `(blockId, offsetWithinBlock)`**, never to a pixel offset, so a remote edit above the viewport does not move the reader. |
-| LY-05 | **Deeply nested and very large single blocks are bounded**: nesting depth has a compiled maximum, and an oversized single block is itself internally virtualised or truncated with an explicit expand affordance. |
-| LY-06 | **Find-in-document searches the model, not realised views** — otherwise a match outside the viewport would be invisible to a feature that exists to find it. |
+| <a id="rule-ly-01"></a>LY-01 | **Virtualisation is mandatory** ([EC-05](#rule-ec-05)). A ten-thousand-block document realises a viewport's worth of presenters, not ten thousand. |
+| <a id="rule-ly-02"></a>LY-02 | **Measurement is cached and invalidated by fingerprint**, so scrolling back does not re-measure. |
+| <a id="rule-ly-03"></a>LY-03 | **Height estimation error is corrected without visible jump.** A scroll anchor is held on a stable block, and corrections apply around it — an estimate that shifts content under the user's cursor is a defect. |
+| <a id="rule-ly-04"></a>LY-04 | **Scroll position anchors to `(blockId, offsetWithinBlock)`**, never to a pixel offset, so a remote edit above the viewport does not move the reader. |
+| <a id="rule-ly-05"></a>LY-05 | **Deeply nested and very large single blocks are bounded**: nesting depth has a compiled maximum, and an oversized single block is itself internally virtualised or truncated with an explicit expand affordance. |
+| <a id="rule-ly-06"></a>LY-06 | **Find-in-document searches the model, not realised views** — otherwise a match outside the viewport would be invisible to a feature that exists to find it. |
 
 ### 5.3 Performance obligations
 
@@ -277,8 +277,8 @@ document → block sequence (in ordinal order, hierarchy flattened with depth)
 
 | # | Rule |
 |---|---|
-| PF-01 | **Editing performance is measured on a defined large-document corpus**, committed as a fixture, and regressions fail the gate ([WP-18.06](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.06)). |
-| PF-02 | **A performance target without a measurement is not a target**, and none is claimed here that [WP-18](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18) does not measure. |
+| <a id="rule-pf-01"></a>PF-01 | **Editing performance is measured on a defined large-document corpus**, committed as a fixture, and regressions fail the gate ([WP-18.06](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.06)). |
+| <a id="rule-pf-02"></a>PF-02 | **A performance target without a measurement is not a target**, and none is claimed here that [WP-18](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18) does not measure. |
 
 ---
 
@@ -286,11 +286,11 @@ document → block sequence (in ordinal order, hierarchy flattened with depth)
 
 | # | Rule |
 |---|---|
-| PC-01 | **A transaction does not equal a write.** Transactions coalesce into the canonical commit unit (`§2` of the persistence architecture), so typing does not produce one disk write per keystroke. |
-| PC-02 | **The journal makes an uncommitted edit recoverable** (`§3` there). A crash mid-paragraph loses at most the coalescing window, and what survives is a valid document, never a half-applied transaction. |
-| PC-03 | **The document's revision advances per commit unit, not per transaction**, which is what keeps sync change volume proportional to work rather than to keystrokes. |
-| PC-04 | **A large paste is one transaction and one commit**, not a stream of thousands. |
-| PC-05 | **Derived stores are updated after commit, never inside the transaction** ([DS-06](data-model/03-derived-stores.md#rule-ds-06) of the derived-store architecture): the search index, the link index, and the outline. |
+| <a id="rule-pc-01"></a>PC-01 | **A transaction does not equal a write.** Transactions coalesce into the canonical commit unit (`§2` of the persistence architecture), so typing does not produce one disk write per keystroke. |
+| <a id="rule-pc-02"></a>PC-02 | **The journal makes an uncommitted edit recoverable** (`§3` there). A crash mid-paragraph loses at most the coalescing window, and what survives is a valid document, never a half-applied transaction. |
+| <a id="rule-pc-03"></a>PC-03 | **The document's revision advances per commit unit, not per transaction**, which is what keeps sync change volume proportional to work rather than to keystrokes. |
+| <a id="rule-pc-04"></a>PC-04 | **A large paste is one transaction and one commit**, not a stream of thousands. |
+| <a id="rule-pc-05"></a>PC-05 | **Derived stores are updated after commit, never inside the transaction** ([DS-06](data-model/03-derived-stores.md#rule-ds-06) of the derived-store architecture): the search index, the link index, and the outline. |
 
 ---
 
@@ -300,34 +300,34 @@ document → block sequence (in ordinal order, hierarchy flattened with depth)
 
 | # | Rule |
 |---|---|
-| CD-01 | **Code content is plain text with a language identifier.** No marks, no inline structure — a mark inside code is meaningless and would corrupt copy-out fidelity. |
-| CD-02 | **Syntax highlighting is a derived presentation overlay**, computed from the text and never stored in content. |
-| CD-03 | **The grammar set is bounded and statically registered.** No grammar is downloaded, compiled at runtime, or loaded from user content — that path is code execution wearing a highlighting costume ([EC-06](#rule-ec-06)). |
-| CD-04 | **Highlighting is incremental and cancellable**, computed off the UI thread, and a slow or failed highlight degrades to unhighlighted text rather than blocking input. |
-| CD-05 | **An unknown language renders as plain text with the identifier preserved**, so a later release can highlight it without a migration. |
-| CD-06 | **Copy from a code block yields the exact source text**, with no smart quotes, no reflow and no injected indentation. |
+| <a id="rule-cd-01"></a>CD-01 | **Code content is plain text with a language identifier.** No marks, no inline structure — a mark inside code is meaningless and would corrupt copy-out fidelity. |
+| <a id="rule-cd-02"></a>CD-02 | **Syntax highlighting is a derived presentation overlay**, computed from the text and never stored in content. |
+| <a id="rule-cd-03"></a>CD-03 | **The grammar set is bounded and statically registered.** No grammar is downloaded, compiled at runtime, or loaded from user content — that path is code execution wearing a highlighting costume ([EC-06](#rule-ec-06)). |
+| <a id="rule-cd-04"></a>CD-04 | **Highlighting is incremental and cancellable**, computed off the UI thread, and a slow or failed highlight degrades to unhighlighted text rather than blocking input. |
+| <a id="rule-cd-05"></a>CD-05 | **An unknown language renders as plain text with the identifier preserved**, so a later release can highlight it without a migration. |
+| <a id="rule-cd-06"></a>CD-06 | **Copy from a code block yields the exact source text**, with no smart quotes, no reflow and no injected indentation. |
 
 ### 7.2 Math
 
 | # | Rule |
 |---|---|
-| MT-01 | **TeX source is the authority** ([IN-07](#rule-in-07)); the rendered form is derived and cached by `(source, fontScale, theme)`. |
-| MT-02 | **The supported subset is declared and versioned.** A construct outside it renders as its source with an explicit "unsupported construct" marker, never silently wrong — a silently mis-rendered formula is worse than an unrendered one. |
-| MT-03 | **Math layout is a managed component**, chosen against the AOT and licence constraints; it introduces no native dependency. |
-| MT-04 | **No TeX macro expansion from document content is executed as a general macro language** ([EC-06](#rule-ec-06)). The supported subset is fixed. |
-| MT-05 | V1 math is a block construct under notes.math.v1. Use bounded block measurement, baseline metrics inside the math box, accessibility source text and reflow; no separate inline-math editing construct is implied. |
-| MT-06 | **Math is copyable as its TeX source**, and exports as source in Markdown and as source plus rendering in HTML (`§10`). |
+| <a id="rule-mt-01"></a>MT-01 | **TeX source is the authority** ([IN-07](#rule-in-07)); the rendered form is derived and cached by `(source, fontScale, theme)`. |
+| <a id="rule-mt-02"></a>MT-02 | **The supported subset is declared and versioned.** A construct outside it renders as its source with an explicit "unsupported construct" marker, never silently wrong — a silently mis-rendered formula is worse than an unrendered one. |
+| <a id="rule-mt-03"></a>MT-03 | **Math layout is a managed component**, chosen against the AOT and licence constraints; it introduces no native dependency. |
+| <a id="rule-mt-04"></a>MT-04 | **No TeX macro expansion from document content is executed as a general macro language** ([EC-06](#rule-ec-06)). The supported subset is fixed. |
+| <a id="rule-mt-05"></a>MT-05 | V1 math is a block construct under notes.math.v1. Use bounded block measurement, baseline metrics inside the math box, accessibility source text and reflow; no separate inline-math editing construct is implied. |
+| <a id="rule-mt-06"></a>MT-06 | **Math is copyable as its TeX source**, and exports as source in Markdown and as source plus rendering in HTML (`§10`). |
 
 ### 7.3 Images
 
 | # | Rule |
 |---|---|
-| IG-01 | **An image block references a managed attachment or an external reference** ([AT-03](../requirements/products/arcnotes.md#rule-at-03), [AT-04](../requirements/products/arcnotes.md#rule-at-04)). No image bytes are ever in content. |
-| IG-02 | **Decode is off the UI thread, bounded, and downsampled to display size.** A 100-megapixel image is decoded to what the viewport needs, never in full into UI memory. |
-| IG-03 | **EXIF orientation is applied; embedded colour profiles are honoured or explicitly ignored with a stated policy.** An image that displays rotated is a correctness defect, not a nicety. |
-| IG-04 | **A malformed image fails to a placeholder with a reason** and never crashes the process or the layout pass. |
-| IG-05 | **Animated formats play only on explicit user action** and respect the platform's reduced-motion setting. |
-| IG-06 | **Decoded images live in a bounded cache** with eviction ([EV-01](data-model/03-derived-stores.md#rule-ev-01)–[EV-05](data-model/03-derived-stores.md#rule-ev-05) of the derived-store architecture), keyed by attachment content hash and target size. |
+| <a id="rule-ig-01"></a>IG-01 | **An image block references a managed attachment or an external reference** ([AT-03](../requirements/products/arcnotes.md#rule-at-03), [AT-04](../requirements/products/arcnotes.md#rule-at-04)). No image bytes are ever in content. |
+| <a id="rule-ig-02"></a>IG-02 | **Decode is off the UI thread, bounded, and downsampled to display size.** A 100-megapixel image is decoded to what the viewport needs, never in full into UI memory. |
+| <a id="rule-ig-03"></a>IG-03 | **EXIF orientation is applied; embedded colour profiles are honoured or explicitly ignored with a stated policy.** An image that displays rotated is a correctness defect, not a nicety. |
+| <a id="rule-ig-04"></a>IG-04 | **A malformed image fails to a placeholder with a reason** and never crashes the process or the layout pass. |
+| <a id="rule-ig-05"></a>IG-05 | **Animated formats play only on explicit user action** and respect the platform's reduced-motion setting. |
+| <a id="rule-ig-06"></a>IG-06 | **Decoded images live in a bounded cache** with eviction ([EV-01](data-model/03-derived-stores.md#rule-ev-01)–[EV-05](data-model/03-derived-stores.md#rule-ev-05) of the derived-store architecture), keyed by attachment content hash and target size. |
 | <a id="rule-ig-07"></a>IG-07 | **Image editing is not part of ArcNotes** (`§17` of its requirements). Crop-on-insert and resize are layout attributes, not pixel edits. |
 
 ### 7.4 Tables
@@ -335,20 +335,20 @@ document → block sequence (in ordinal order, hierarchy flattened with depth)
 | # | Rule |
 |---|---|
 | <a id="rule-tb-01"></a>TB-01 | **A table is a document table, not a relational engine** ([ED-07](../requirements/products/arcnotes.md#rule-ed-07)). It has no formulas, no queries, no relations and no computed columns in V1. |
-| TB-02 | **A cell holds `InlineContent`**, not arbitrary blocks, in V1. This keeps layout tractable and keeps the table from becoming a second document model. |
-| TB-03 | **Row and column identity is stable**, so a column insert does not renumber and invalidate anything anchored to a column. |
-| TB-04 | **Merged cells are modelled as spans on the owning cell**, with a validation rule that spans never overlap. |
-| TB-05 | **A wide table scrolls within its own bounds** and never forces the document to scroll horizontally. |
-| TB-06 | **Copy of a table region produces a table**, and paste of a tabular clipboard payload produces a table with the shape the source had. |
+| <a id="rule-tb-02"></a>TB-02 | **A cell holds `InlineContent`**, not arbitrary blocks, in V1. This keeps layout tractable and keeps the table from becoming a second document model. |
+| <a id="rule-tb-03"></a>TB-03 | **Row and column identity is stable**, so a column insert does not renumber and invalidate anything anchored to a column. |
+| <a id="rule-tb-04"></a>TB-04 | **Merged cells are modelled as spans on the owning cell**, with a validation rule that spans never overlap. |
+| <a id="rule-tb-05"></a>TB-05 | **A wide table scrolls within its own bounds** and never forces the document to scroll horizontally. |
+| <a id="rule-tb-06"></a>TB-06 | **Copy of a table region produces a table**, and paste of a tabular clipboard payload produces a table with the shape the source had. |
 
 ### 7.5 Embeds and references
 
 | # | Rule |
 |---|---|
-| EM-01 | **An embed is a reference, never a copy** ([I-224](../requirements/01-normative-glossary-and-invariants.md#rule-i-224), [WP-18.02](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.02)). Editing the source updates every embed. |
-| EM-02 | **An embed renders at a bounded depth.** A cycle is detected and the inner occurrence renders as a link with a stated reason, never as infinite recursion. |
-| EM-03 | **An embed re-checks permission at render**, so an embed of content the reader may not see resolves to an unavailable placeholder rather than leaking it. |
-| EM-04 | **A broken reference is an explicit state** (`state = broken` in `document_link`), never a silent blank. |
+| <a id="rule-em-01"></a>EM-01 | **An embed is a reference, never a copy** ([I-224](../requirements/01-normative-glossary-and-invariants.md#rule-i-224), [WP-18.02](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.02)). Editing the source updates every embed. |
+| <a id="rule-em-02"></a>EM-02 | **An embed renders at a bounded depth.** A cycle is detected and the inner occurrence renders as a link with a stated reason, never as infinite recursion. |
+| <a id="rule-em-03"></a>EM-03 | **An embed re-checks permission at render**, so an embed of content the reader may not see resolves to an unavailable placeholder rather than leaking it. |
+| <a id="rule-em-04"></a>EM-04 | **A broken reference is an explicit state** (`state = broken` in `document_link`), never a silent blank. |
 
 ---
 
@@ -366,12 +366,12 @@ This is where "preview" most often conceals missing capability, so each surface 
 
 | # | Rule |
 |---|---|
-| PV-01 | Thin preview remains read-only and bounded inside the owning application assistant; opening a supported artifact invokes that same application's handler, never embeds another product editor. |
-| PV-02 | **A thin preview never claims to be authoritative** ([I-060](../requirements/01-normative-glossary-and-invariants.md#rule-i-060), [AR-04](../requirements/products/arcchat.md#rule-ar-04) of the ArcChat requirements). |
-| PV-03 | **Where a level is not implemented, the surface degrades to the level below and says so** — a metadata card labelled as such is honest; a blank rectangle is not. |
-| PV-04 | **A preview never executes content** ([EC-06](#rule-ec-06)) and never fetches a remote resource referenced by the content (`§7` of the security architecture). A document that phones home when previewed is an exfiltration channel. |
-| PV-05 | **Preview generation is bounded in time, memory and output size**, runs off the UI thread, and a timeout degrades to the level below with a reason. |
-| PV-06 | **Preview output is a derived store** ([DS-01](data-model/03-derived-stores.md#rule-ds-01)–[DS-07](data-model/03-derived-stores.md#rule-ds-07) of the derived-store architecture), cached by content hash and evictable. |
+| <a id="rule-pv-01"></a>PV-01 | Thin preview remains read-only and bounded inside the owning application assistant; opening a supported artifact invokes that same application's handler, never embeds another product editor. |
+| <a id="rule-pv-02"></a>PV-02 | **A thin preview never claims to be authoritative** ([I-060](../requirements/01-normative-glossary-and-invariants.md#rule-i-060), [AR-04](../requirements/products/arcchat.md#rule-ar-04) of the ArcChat requirements). |
+| <a id="rule-pv-03"></a>PV-03 | **Where a level is not implemented, the surface degrades to the level below and says so** — a metadata card labelled as such is honest; a blank rectangle is not. |
+| <a id="rule-pv-04"></a>PV-04 | **A preview never executes content** ([EC-06](#rule-ec-06)) and never fetches a remote resource referenced by the content (`§7` of the security architecture). A document that phones home when previewed is an exfiltration channel. |
+| <a id="rule-pv-05"></a>PV-05 | **Preview generation is bounded in time, memory and output size**, runs off the UI thread, and a timeout degrades to the level below with a reason. |
+| <a id="rule-pv-06"></a>PV-06 | **Preview output is a derived store** ([DS-01](data-model/03-derived-stores.md#rule-ds-01)–[DS-07](data-model/03-derived-stores.md#rule-ds-07) of the derived-store architecture), cached by content hash and evictable. |
 
 ### 8.2 PDF — and the dependency it really carries
 
@@ -379,40 +379,40 @@ This is where "preview" most often conceals missing capability, so each surface 
 
 | # | Rule |
 |---|---|
-| PD-01 | PDFium through ArcForges.Native.Pdf is selected for bounded PDF render/text extraction. Platform owns build/license inventory and ContentSandbox containment; Notes owns its viewer/anchors. No implementation-time parser selection remains. |
-| PD-02 | **The permitted native surface for ArcNotes is extended to document rendering and text extraction** (`§2` of the native interop architecture, amended), and to nothing else. The note, block, link and search models remain fully managed. |
-| PD-03 | **The renderer is isolated behind a managed wrapper with the full C ABI discipline** ([AB-01](12-native-interop-and-media.md#rule-ab-01)–[AB-12](12-native-interop-and-media.md#rule-ab-12)), because a PDF renderer parses hostile input by definition. |
-| PD-04 | **A malformed or hostile PDF degrades to a metadata card** and never affects process stability or the document that references it. |
-| PD-05 | **Extracted text is derived data** ([AT-06](../requirements/products/arcnotes.md#rule-at-06), [IP-09](../requirements/06-knowledge-search-and-retrieval.md#rule-ip-09) of the ArcNotes requirements), rebuildable and never canonical. |
-| PD-06 | **A page anchor is `(attachmentContentHash, pageIndex, rectOrTextRange)`**, so an annotation anchor survives re-open and is invalidated honestly if the attachment content changes. |
-| PD-07 | PDFium selection is fixed. Its real build, licence inventory and hostile-input containment evidence must close [PG-12](../assurance/open-gates-register.md#rule-pg-12) before the viewer satisfies [AT-05](../requirements/products/arcnotes.md#rule-at-05). A metadata fallback does not close that delivery gate. |
+| <a id="rule-pd-01"></a>PD-01 | PDFium through ArcForges.Native.Pdf is selected for bounded PDF render/text extraction. Platform owns build/license inventory and ContentSandbox containment; Notes owns its viewer/anchors. No implementation-time parser selection remains. |
+| <a id="rule-pd-02"></a>PD-02 | **The permitted native surface for ArcNotes is extended to document rendering and text extraction** (`§2` of the native interop architecture, amended), and to nothing else. The note, block, link and search models remain fully managed. |
+| <a id="rule-pd-03"></a>PD-03 | **The renderer is isolated behind a managed wrapper with the full C ABI discipline** ([AB-01](12-native-interop-and-media.md#rule-ab-01)–[AB-12](12-native-interop-and-media.md#rule-ab-12)), because a PDF renderer parses hostile input by definition. |
+| <a id="rule-pd-04"></a>PD-04 | **A malformed or hostile PDF degrades to a metadata card** and never affects process stability or the document that references it. |
+| <a id="rule-pd-05"></a>PD-05 | **Extracted text is derived data** ([AT-06](../requirements/products/arcnotes.md#rule-at-06), [IP-09](../requirements/06-knowledge-search-and-retrieval.md#rule-ip-09) of the ArcNotes requirements), rebuildable and never canonical. |
+| <a id="rule-pd-06"></a>PD-06 | **A page anchor is `(attachmentContentHash, pageIndex, rectOrTextRange)`**, so an annotation anchor survives re-open and is invalidated honestly if the attachment content changes. |
+| <a id="rule-pd-07"></a>PD-07 | PDFium selection is fixed. Its real build, licence inventory and hostile-input containment evidence must close [PG-12](../assurance/open-gates-register.md#rule-pg-12) before the viewer satisfies [AT-05](../requirements/products/arcnotes.md#rule-at-05). A metadata fallback does not close that delivery gate. |
 
 ### 8.3 Office documents — excluded from delivery
 
 | # | Rule |
 |---|---|
-| OF-01 | **DOCX import is excluded by [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006)**, not merely deferred. An Office attachment is presented as a metadata card with an open-in-system-application action. |
-| OF-02 | **The architecture accommodates it**: import maps to blocks through the same `EditTransaction` path, and unsupported constructs are preserved inert and marked ([IE-06](06-data-persistence-and-formats.md#rule-ie-06) of the persistence architecture). |
+| <a id="rule-of-01"></a>OF-01 | **DOCX import is excluded by [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006)**, not merely deferred. An Office attachment is presented as a metadata card with an open-in-system-application action. |
+| <a id="rule-of-02"></a>OF-02 | **The architecture accommodates it**: import maps to blocks through the same `EditTransaction` path, and unsupported constructs are preserved inert and marked ([IE-06](06-data-persistence-and-formats.md#rule-ie-06) of the persistence architecture). |
 | <a id="rule-of-03"></a>OF-03 | **No Office rendering engine is embedded**, and no Office application is automated. |
-| OF-04 | **Required import is Markdown and plain text** (**[P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006)**); required export is a Cloud data export. A full-fidelity local package ecosystem is not a delivery obligation. |
-| OF-05 | **The block model does not carry a DOCX-shaped construct** so that a future import would be additive. Adding DOCX later is a scope decision with its own design, not a hook waiting to be switched on. |
+| <a id="rule-of-04"></a>OF-04 | **Required import is Markdown and plain text** (**[P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006)**); required export is a Cloud data export. A full-fidelity local package ecosystem is not a delivery obligation. |
+| <a id="rule-of-05"></a>OF-05 | **The block model does not carry a DOCX-shaped construct** so that a future import would be additive. Adding DOCX later is a scope decision with its own design, not a hook waiting to be switched on. |
 
 ### 8.4 Audio and video in a document
 
 | # | Rule |
 |---|---|
-| AV-01 | Own-application media attachments show bounded poster/waveform/duration previews using the owner's admitted Platform parser packages. Full editing remains in that application's supported feature set; no cross-product handoff dependency. |
-| AV-02 | Platform owns native media wrappers and signed ContentSandbox runtime. Notes consumes only the preview capability it needs, with its own broker and resource grants; it never requests a running ArcSlate process for a thumbnail. |
-| AV-03 | **Where no owning application is installed, the surface degrades to a metadata card with a stated reason** ([AR-07](../requirements/products/arcchat.md#rule-ar-07) of the ArcChat requirements). |
+| <a id="rule-av-01"></a>AV-01 | Own-application media attachments show bounded poster/waveform/duration previews using the owner's admitted Platform parser packages. Full editing remains in that application's supported feature set; no cross-product handoff dependency. |
+| <a id="rule-av-02"></a>AV-02 | Platform owns native media wrappers and signed ContentSandbox runtime. Notes consumes only the preview capability it needs, with its own broker and resource grants; it never requests a running ArcSlate process for a thumbnail. |
+| <a id="rule-av-03"></a>AV-03 | **Where no owning application is installed, the surface degrades to a metadata card with a stated reason** ([AR-07](../requirements/products/arcchat.md#rule-ar-07) of the ArcChat requirements). |
 
 ### 8.5 Untrusted content boundaries
 
 | # | Rule |
 |---|---|
-| UT-01 | **Every parser reached from user content is treated as an attack surface**: bounded input size, bounded recursion, bounded time, and failure to a placeholder. |
-| UT-02 | Hostile complex-format and compressed-image parsing uses the mandatory [C# ContentSandbox](24-content-and-extension-isolation.md), independently of whether extensions are enabled. An unavailable enforced profile refuses that parsing operation; it never falls back to parsing in the main process. |
-| UT-03 | **Content instructions are never instructions** ([I-262](../requirements/01-normative-glossary-and-invariants.md#rule-i-262), [I-263](../requirements/01-normative-glossary-and-invariants.md#rule-i-263)). Text extracted from a PDF or an image is data with untrusted provenance, marked as such before it can reach the agent ([WP-11.06](../planning/work-packages/11-security-foundation.md#rule-wp-11.06)). |
-| UT-04 | **No preview path evaluates script, macro, formula or embedded program content** in any format ([EC-06](#rule-ec-06)). |
+| <a id="rule-ut-01"></a>UT-01 | **Every parser reached from user content is treated as an attack surface**: bounded input size, bounded recursion, bounded time, and failure to a placeholder. |
+| <a id="rule-ut-02"></a>UT-02 | Hostile complex-format and compressed-image parsing uses the mandatory [C# ContentSandbox](24-content-and-extension-isolation.md), independently of whether extensions are enabled. An unavailable enforced profile refuses that parsing operation; it never falls back to parsing in the main process. |
+| <a id="rule-ut-03"></a>UT-03 | **Content instructions are never instructions** ([I-262](../requirements/01-normative-glossary-and-invariants.md#rule-i-262), [I-263](../requirements/01-normative-glossary-and-invariants.md#rule-i-263)). Text extracted from a PDF or an image is data with untrusted provenance, marked as such before it can reach the agent ([WP-11.06](../planning/work-packages/11-security-foundation.md#rule-wp-11.06)). |
+| <a id="rule-ut-04"></a>UT-04 | **No preview path evaluates script, macro, formula or embedded program content** in any format ([EC-06](#rule-ec-06)). |
 
 ---
 
@@ -436,12 +436,12 @@ Naming these prevents a "rich editor" from silently becoming an unbounded commit
 
 | # | Rule |
 |---|---|
-| PT-01 | **Markdown and HTML are conversion formats at the boundary** ([EC-02](#rule-ec-02)), never storage. Import and export are `§13` of the ArcNotes requirements and `§8` of the persistence architecture. |
-| PT-02 | **Paste is a conversion with a declared mapping and a choice** ([MK-04](#rule-mk-04)): rich content, plain text, or — where the source is another ArcNotes document — a reference rather than a copy ([ED-06](../requirements/products/arcnotes.md#rule-ed-06); [DD-01](../requirements/09-shared-desktop-experience.md#rule-dd-01)–[DD-03](../requirements/09-shared-desktop-experience.md#rule-dd-03) of the shared desktop requirements). |
-| PT-03 | **Pasted HTML is sanitised to the closed inline and block model** before it enters a transaction. Anything unmapped is dropped explicitly and reported, never carried as an opaque attribute. |
-| PT-04 | **Copy produces multiple clipboard flavours**: the native structured form, Markdown, plain text and HTML, so paste into another application behaves as the user expects. |
-| PT-05 | **Round-trip fidelity is stated per format, not assumed.** A format that cannot express a construct says so at export (`§13` there). |
-| PT-06 | **Pasted content that references an attachment imports the attachment or references it by the shared rule** ([AT-01](../requirements/products/arcnotes.md#rule-at-01), [AT-02](../requirements/products/arcnotes.md#rule-at-02)), and never silently copies a large file. |
+| <a id="rule-pt-01"></a>PT-01 | **Markdown and HTML are conversion formats at the boundary** ([EC-02](#rule-ec-02)), never storage. Import and export are `§13` of the ArcNotes requirements and `§8` of the persistence architecture. |
+| <a id="rule-pt-02"></a>PT-02 | **Paste is a conversion with a declared mapping and a choice** ([MK-04](#rule-mk-04)): rich content, plain text, or — where the source is another ArcNotes document — a reference rather than a copy ([ED-06](../requirements/products/arcnotes.md#rule-ed-06); [DD-01](../requirements/09-shared-desktop-experience.md#rule-dd-01)–[DD-03](../requirements/09-shared-desktop-experience.md#rule-dd-03) of the shared desktop requirements). |
+| <a id="rule-pt-03"></a>PT-03 | **Pasted HTML is sanitised to the closed inline and block model** before it enters a transaction. Anything unmapped is dropped explicitly and reported, never carried as an opaque attribute. |
+| <a id="rule-pt-04"></a>PT-04 | **Copy produces multiple clipboard flavours**: the native structured form, Markdown, plain text and HTML, so paste into another application behaves as the user expects. |
+| <a id="rule-pt-05"></a>PT-05 | **Round-trip fidelity is stated per format, not assumed.** A format that cannot express a construct says so at export (`§13` there). |
+| <a id="rule-pt-06"></a>PT-06 | **Pasted content that references an attachment imports the attachment or references it by the shared rule** ([AT-01](../requirements/products/arcnotes.md#rule-at-01), [AT-02](../requirements/products/arcnotes.md#rule-at-02)), and never silently copies a large file. |
 
 ---
 
@@ -457,9 +457,9 @@ Naming these prevents a "rich editor" from silently becoming an unbounded commit
 
 | # | Rule |
 |---|---|
-| XP-01 | **The content model is shared; the presenters are not.** A shared model in the contract layer, product-specific rendering per platform. |
-| XP-02 | **ArcSlate's text overlay is not this editor.** Conflating them would drag the block model into the render pipeline. |
-| XP-03 | **A mobile or web editing surface implements a declared subset** and states what it cannot do, rather than silently discarding what it cannot represent. |
+| <a id="rule-xp-01"></a>XP-01 | **The content model is shared; the presenters are not.** A shared model in the contract layer, product-specific rendering per platform. |
+| <a id="rule-xp-02"></a>XP-02 | **ArcSlate's text overlay is not this editor.** Conflating them would drag the block model into the render pipeline. |
+| <a id="rule-xp-03"></a>XP-03 | **A mobile or web editing surface implements a declared subset** and states what it cannot do, rather than silently discarding what it cannot represent. |
 
 ---
 
@@ -467,24 +467,24 @@ Naming these prevents a "rich editor" from silently becoming an unbounded commit
 
 | # | Obligation | Where |
 |---|---|---|
-| VF-01 | `BlockId` is stable across typing, move, indent, split of a sibling, conversion and merge | [WP-18.00](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.00) |
-| VF-02 | Every transaction is atomic, and a failure at any operation leaves the document unchanged | [WP-18.00](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.00) |
-| VF-03 | Undo restores content and selection, and one gesture undoes as one entry | [WP-18.05](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.05) |
-| VF-04 | A conflicting remote change preserves the original undo inverse and content, disables the stale entry with an explanation and offers conflict-copy/review recovery; no automatic rebase onto another revision. | WP18.05 / UN-05 |
-| VF-05 | Caret movement, deletion and selection are grapheme-correct on an emoji, Devanagari, Thai and combining-mark corpus | [WP-18.01](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.01) |
-| VF-06 | A CJK composition produces one undo entry and one transaction, and is not interrupted by a concurrent remote edit | [WP-18.01](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.01) |
-| VF-07 | Bidirectional text has correct visual caret movement and discontiguous selection painting | [WP-18.01](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.01) |
-| VF-08 | A ten-thousand-block document opens interactive and scrolls without re-measuring measured blocks | [WP-18.01](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.01) |
-| VF-09 | Content never round-trips through a markup string on any internal path | Repository policy test |
-| VF-10 | Every kind conversion applies its declared mapping, and a lossy conversion states its loss first | [WP-18.00](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.00) |
-| VF-11 | An agent edit is one transaction, is attributed, and is undoable | [WP-17](../planning/work-packages/17-arcchat-independent-core.md#rule-wp-17), [WP-18.07](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.07) |
-| VF-12 | A malformed image, PDF and embed each degrade to a placeholder with a reason and no crash | [WP-18.04](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.04) |
-| VF-13 | No preview path fetches a remote resource or evaluates embedded program content | [WP-11.05](../planning/work-packages/11-security-foundation.md#rule-wp-11.05), [WP-18.04](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.04) |
-| VF-14 | Extracted PDF and image text carries untrusted provenance before it can reach the agent | [WP-11.06](../planning/work-packages/11-security-foundation.md#rule-wp-11.06) |
-| VF-15 | Copy from a code block reproduces the source exactly; copy of a table region produces a table | [WP-18.00](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.00) |
-| VF-16 | Paste of Markdown, HTML and an internal payload each follow the declared mapping with no silent loss | [WP-19.04](../planning/work-packages/19-arcnotes-search-and-portability.md#rule-wp-19.04), [WP-18.00](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.00) |
-| VF-17 | An unsupported math construct renders as source with an explicit marker, never silently wrong | [WP-18.01](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.01) |
-| VF-18 | An unknown block kind and an unknown mark survive a read-modify-write cycle unchanged | [WP-18.00](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.00) |
+| <a id="rule-vf-01"></a>VF-01 | `BlockId` is stable across typing, move, indent, split of a sibling, conversion and merge | [WP-18.00](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.00) |
+| <a id="rule-vf-02"></a>VF-02 | Every transaction is atomic, and a failure at any operation leaves the document unchanged | [WP-18.00](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.00) |
+| <a id="rule-vf-03"></a>VF-03 | Undo restores content and selection, and one gesture undoes as one entry | [WP-18.05](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.05) |
+| <a id="rule-vf-04"></a>VF-04 | A conflicting remote change preserves the original undo inverse and content, disables the stale entry with an explanation and offers conflict-copy/review recovery; no automatic rebase onto another revision. | WP18.05 / [UN-05](#rule-un-05) |
+| <a id="rule-vf-05"></a>VF-05 | Caret movement, deletion and selection are grapheme-correct on an emoji, Devanagari, Thai and combining-mark corpus | [WP-18.01](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.01) |
+| <a id="rule-vf-06"></a>VF-06 | A CJK composition produces one undo entry and one transaction, and is not interrupted by a concurrent remote edit | [WP-18.01](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.01) |
+| <a id="rule-vf-07"></a>VF-07 | Bidirectional text has correct visual caret movement and discontiguous selection painting | [WP-18.01](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.01) |
+| <a id="rule-vf-08"></a>VF-08 | A ten-thousand-block document opens interactive and scrolls without re-measuring measured blocks | [WP-18.01](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.01) |
+| <a id="rule-vf-09"></a>VF-09 | Content never round-trips through a markup string on any internal path | Repository policy test |
+| <a id="rule-vf-10"></a>VF-10 | Every kind conversion applies its declared mapping, and a lossy conversion states its loss first | [WP-18.00](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.00) |
+| <a id="rule-vf-11"></a>VF-11 | An agent edit is one transaction, is attributed, and is undoable | [WP-17](../planning/work-packages/17-arcchat-independent-core.md#rule-wp-17), [WP-18.07](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.07) |
+| <a id="rule-vf-12"></a>VF-12 | A malformed image, PDF and embed each degrade to a placeholder with a reason and no crash | [WP-18.04](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.04) |
+| <a id="rule-vf-13"></a>VF-13 | No preview path fetches a remote resource or evaluates embedded program content | [WP-11.05](../planning/work-packages/11-security-foundation.md#rule-wp-11.05), [WP-18.04](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.04) |
+| <a id="rule-vf-14"></a>VF-14 | Extracted PDF and image text carries untrusted provenance before it can reach the agent | [WP-11.06](../planning/work-packages/11-security-foundation.md#rule-wp-11.06) |
+| <a id="rule-vf-15"></a>VF-15 | Copy from a code block reproduces the source exactly; copy of a table region produces a table | [WP-18.00](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.00) |
+| <a id="rule-vf-16"></a>VF-16 | Paste of Markdown, HTML and an internal payload each follow the declared mapping with no silent loss | [WP-19.04](../planning/work-packages/19-arcnotes-search-and-portability.md#rule-wp-19.04), [WP-18.00](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.00) |
+| <a id="rule-vf-17"></a>VF-17 | An unsupported math construct renders as source with an explicit marker, never silently wrong | [WP-18.01](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.01) |
+| <a id="rule-vf-18"></a>VF-18 | An unknown block kind and an unknown mark survive a read-modify-write cycle unchanged | [WP-18.00](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.00) |
 
 ## Initial command and rendering profile binding
 

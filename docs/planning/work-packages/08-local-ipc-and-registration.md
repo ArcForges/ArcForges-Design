@@ -1,7 +1,7 @@
 <a id="rule-wp-08"></a>
 # WP-08 — Private Helper gRPC and Parent Registration
 
-> Status: Authoritative — P2-012
+> Status: Authoritative — [P2-012](../../decisions/phase-2-specification-decisions.md#rule-p2-012)
 > Upstream: `06` · `07` · Downstream: `09` · `11` · `13` · `14`
 > Repositories: DesktopPlatform. Consume only exact published upstream artifacts; no adjacent sources.
 

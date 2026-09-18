@@ -1,5 +1,5 @@
 # Identity, Account, Device, Session and Workspace Requirements
-> Effective scope: P2-012 and P2-013 amend the technology and application ownership below. **[P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
+> Effective scope: [P2-012](../decisions/phase-2-specification-decisions.md#rule-p2-012) and [P2-013](../decisions/phase-2-specification-decisions.md#rule-p2-013) amend the technology and application ownership below. **[P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Requirements
@@ -32,11 +32,11 @@ Six responsibilities, never merged:
 | <a id="rule-id-01"></a>ID-01 | Installing and launching native applications requires no account. Cloud notebook enrolment, AI and continuity require sign-in; previously authorised hydrated content and pending edits follow the offline/cache rules. |
 | <a id="rule-id-02"></a>ID-02 | The signed-out operator is a **Local Profile**: the local application identity of the current OS user on the current device. It has no server-side representation. |
 | <a id="rule-id-03"></a>ID-03 | A Local Profile is **never** silently registered as a cloud "Anonymous User" or "Guest Account". No hidden server record is created on first launch. |
-| ID-04 | A Local Profile owns device settings and ordinary native jobs/files. Authenticated workspace caches and pending edits remain scoped to their realm/owner; no local agent history or provider-key mode. |
-| ID-05 | Sign-in identifies the selected Cloud realm/workspace for notes, sync, search, AI and remote tools. Service entitlement is checked separately; provider-key configuration is not an onboarding option. |
-| ID-06 | Sign-in alone does not upload unrelated device files. Creating/importing into an enrolled Cloud notebook explicitly consents to storing those notes/managed attachments in that workspace; captures/original media require their own upload choice. |
-| ID-07 | Sign-out stops Cloud access and clears active session credentials. Workspace views are locked until authentication; pending edits are retained safely and are never silently deleted or reassigned to a later account. |
-| ID-08 | Service expiry blocks protected Cloud writes/AI according to the commerce lifecycle. Existing native work and pending edits remain recoverable; it does not enable an offline AI mode. |
+| <a id="rule-id-04"></a>ID-04 | A Local Profile owns device settings and ordinary native jobs/files. Authenticated workspace caches and pending edits remain scoped to their realm/owner; no local agent history or provider-key mode. |
+| <a id="rule-id-05"></a>ID-05 | Sign-in identifies the selected Cloud realm/workspace for notes, sync, search, AI and remote tools. Service entitlement is checked separately; provider-key configuration is not an onboarding option. |
+| <a id="rule-id-06"></a>ID-06 | Sign-in alone does not upload unrelated device files. Creating/importing into an enrolled Cloud notebook explicitly consents to storing those notes/managed attachments in that workspace; captures/original media require their own upload choice. |
+| <a id="rule-id-07"></a>ID-07 | Sign-out stops Cloud access and clears active session credentials. Workspace views are locked until authentication; pending edits are retained safely and are never silently deleted or reassigned to a later account. |
+| <a id="rule-id-08"></a>ID-08 | Service expiry blocks protected Cloud writes/AI according to the commerce lifecycle. Existing native work and pending edits remain recoverable; it does not enable an offline AI mode. |
 
 ---
 
@@ -49,33 +49,33 @@ A **Realm** is an independent identity and data authority: the Official ArcForge
 | # | Requirement |
 |---|---|
 | <a id="rule-id-10"></a>ID-10 | Identity is `Realm + UserId`. A bare `UserId` is never globally meaningful. |
-| ID-11 | The same email address in two realms denotes two different identities. Email is never used to establish cross-realm identity ([I-465](01-normative-glossary-and-invariants.md#rule-i-465) analogue). |
-| ID-12 | No client may hard-code the official API host as the only possible realm. Clients support **Server Profiles**. V1 UI may present one Official realm plus one self-hosted realm; the model supports more. |
-| ID-13 | Self-host owns its own user system entirely and must never require reachability of the official service to authenticate. Optional OIDC federation to the official realm may be offered later; it must remain optional. |
-| ID-14 | Cross-realm objects are never the same authoritative object. Every cross-application and cross-device reference is realm-aware. |
-| ID-15 | Cross-realm movement in V1 is **Export → Import**, not live bidirectional sync. |
+| <a id="rule-id-11"></a>ID-11 | The same email address in two realms denotes two different identities. Email is never used to establish cross-realm identity ([I-465](01-normative-glossary-and-invariants.md#rule-i-465) analogue). |
+| <a id="rule-id-12"></a>ID-12 | No client may hard-code the official API host as the only possible realm. Clients support **Server Profiles**. V1 UI may present one Official realm plus one self-hosted realm; the model supports more. |
+| <a id="rule-id-13"></a>ID-13 | Self-host owns its own user system entirely and must never require reachability of the official service to authenticate. Optional OIDC federation to the official realm may be offered later; it must remain optional. |
+| <a id="rule-id-14"></a>ID-14 | Cross-realm objects are never the same authoritative object. Every cross-application and cross-device reference is realm-aware. |
+| <a id="rule-id-15"></a>ID-15 | Cross-realm movement in V1 is **Export → Import**, not live bidirectional sync. |
 
 ### 2.2 User and Authentication Identity
 
 | # | Requirement |
 |---|---|
-| ID-20 | **Authentication Identity is a separate entity from User.** `User.Email = Identity` is prohibited. A User owns a set of Authentication Identities. |
-| ID-21 | Official identity kinds: Email and Passkey; Apple, Google and enterprise sign-in products are later additions. Self-host configured generic OIDC/password providers follow ID-25 and are independent of official sign-in offerings. Adding or removing an identity never changes the User. |
-| ID-22 | **Multiple Passkeys per User are mandatory.** `one Account = one Passkey` is prohibited. Each Passkey is renameable and shows created time and last-used time, and can be removed. |
-| ID-23 | The official Cloud primary authentication method is **Email OTP + Passkey**. Email OTP performs first verification and recovery; Passkey performs daily sign-in. |
-| ID-24 | The official Cloud V1 has **no password**. Password reset, credential-stuffing and breach-response flows therefore do not exist for it. |
-| ID-25 | Self-host must be able to offer additional authentication providers: local password, Passkey, OIDC, enterprise identity provider. The identity domain must not assume email OTP is available to everyone. `AuthenticationProvider` is an extensible concept. |
-| ID-26 | V1 does **not** implement Google, Apple or other social sign-in. The model supports adding them without a schema change. |
-| ID-27 | Email verification uses a **verification code** as the primary mechanism. Magic links may be offered as a convenience but must never be the only route, because ArcForges spans desktop, mobile and web with deep-link complications. |
-| ID-28 | No phone number or SMS in the first stage. No global username. No security questions. |
-| ID-29 | V1 does not implement account merging. A matching email never merges realm/user identities or moves notes, devices, subscription sources or credits. |
+| <a id="rule-id-20"></a>ID-20 | **Authentication Identity is a separate entity from User.** `User.Email = Identity` is prohibited. A User owns a set of Authentication Identities. |
+| <a id="rule-id-21"></a>ID-21 | Official identity kinds: Email and Passkey; Apple, Google and enterprise sign-in products are later additions. Self-host configured generic OIDC/password providers follow [ID-25](#rule-id-25) and are independent of official sign-in offerings. Adding or removing an identity never changes the User. |
+| <a id="rule-id-22"></a>ID-22 | **Multiple Passkeys per User are mandatory.** `one Account = one Passkey` is prohibited. Each Passkey is renameable and shows created time and last-used time, and can be removed. |
+| <a id="rule-id-23"></a>ID-23 | The official Cloud primary authentication method is **Email OTP + Passkey**. Email OTP performs first verification and recovery; Passkey performs daily sign-in. |
+| <a id="rule-id-24"></a>ID-24 | The official Cloud V1 has **no password**. Password reset, credential-stuffing and breach-response flows therefore do not exist for it. |
+| <a id="rule-id-25"></a>ID-25 | Self-host must be able to offer additional authentication providers: local password, Passkey, OIDC, enterprise identity provider. The identity domain must not assume email OTP is available to everyone. `AuthenticationProvider` is an extensible concept. |
+| <a id="rule-id-26"></a>ID-26 | V1 does **not** implement Google, Apple or other social sign-in. The model supports adding them without a schema change. |
+| <a id="rule-id-27"></a>ID-27 | Email verification uses a **verification code** as the primary mechanism. Magic links may be offered as a convenience but must never be the only route, because ArcForges spans desktop, mobile and web with deep-link complications. |
+| <a id="rule-id-28"></a>ID-28 | No phone number or SMS in the first stage. No global username. No security questions. |
+| <a id="rule-id-29"></a>ID-29 | V1 does not implement account merging. A matching email never merges realm/user identities or moves notes, devices, subscription sources or credits. |
 
 ### 2.3 Recovery
 
 | # | Requirement |
 |---|---|
-| ID-30 | Recovery exists from the first release. Primary recovery is Email; secondary recovery is one-time **Recovery Codes** (a generated set, displayed once, individually consumable). |
-| ID-31 | Recovery Code generation is a step-up-authenticated operation and produces a security notification. |
+| <a id="rule-id-30"></a>ID-30 | Recovery exists from the first release. Primary recovery is Email; secondary recovery is one-time **Recovery Codes** (a generated set, displayed once, individually consumable). |
+| <a id="rule-id-31"></a>ID-31 | Recovery Code generation is a step-up-authenticated operation and produces a security notification. |
 
 ### 2.4 Profile
 
@@ -87,16 +87,16 @@ Account Profile is deliberately minimal: Display Name, Avatar, Primary Email, Lo
 
 | # | Requirement |
 |---|---|
-| WS-01 | **All cloud data belongs to a Workspace, never directly to a User.** `User.Notes`, `User.Storage`, `User.SubscriptionId` and equivalents are prohibited. |
-| WS-02 | On registration a **Personal Workspace** is created automatically and owned by the User. |
-| WS-03 | Workspace is the single-owner boundary for data, device access, storage, AI usage/budget, sync, authorisation and entitlement. |
-| WS-04 | Organisations, team workspaces, membership roles and invitation models are excluded. V1 provisions one personal workspace per user in each realm. |
-| WS-05 | Cross-user workspace access and shared credit pools are excluded. Device access belongs to the same owner and is independently revocable. |
-| WS-06 | Account deletion applies to the owner personal workspace; no organisation ownership transfer or membership departure prerequisite exists. |
+| <a id="rule-ws-01"></a>WS-01 | **All cloud data belongs to a Workspace, never directly to a User.** `User.Notes`, `User.Storage`, `User.SubscriptionId` and equivalents are prohibited. |
+| <a id="rule-ws-02"></a>WS-02 | On registration a **Personal Workspace** is created automatically and owned by the User. |
+| <a id="rule-ws-03"></a>WS-03 | Workspace is the single-owner boundary for data, device access, storage, AI usage/budget, sync, authorisation and entitlement. |
+| <a id="rule-ws-04"></a>WS-04 | Organisations, team workspaces, membership roles and invitation models are excluded. V1 provisions one personal workspace per user in each realm. |
+| <a id="rule-ws-05"></a>WS-05 | Cross-user workspace access and shared credit pools are excluded. Device access belongs to the same owner and is independently revocable. |
+| <a id="rule-ws-06"></a>WS-06 | Account deletion applies to the owner personal workspace; no organisation ownership transfer or membership departure prerequisite exists. |
 | <a id="rule-ws-07"></a>WS-07 | Every Cloud object belongs to a workspace. Authorisation checks authenticated realm/user → workspace OwnerUserId → resource permission, plus current service/device constraints. ObjectId knowledge is never permission. |
-| WS-08 | An AI session has one explicit active realm/workspace. Another owner workspace or another realm is never searched or accessed implicitly. |
+| <a id="rule-ws-08"></a>WS-08 | An AI session has one explicit active realm/workspace. Another owner workspace or another realm is never searched or accessed implicitly. |
 | <a id="rule-ws-09"></a>WS-09 | Workspace carries a **DataRegion** attribute from day one, defaulting to `Automatic`. It exists so regional requirements can be met later without a data-model migration. No public claim of a specific storage jurisdiction may be made unless infrastructure that legally guarantees it is actually in use. |
-| WS-10 | Standard Cloud protection applies: authenticated access, workspace isolation, TLS and encryption at rest. No E2EE profile, encrypted-export mode or future encryption-profile field is required. |
+| <a id="rule-ws-10"></a>WS-10 | Standard Cloud protection applies: authenticated access, workspace isolation, TLS and encryption at rest. No E2EE profile, encrypted-export mode or future encryption-profile field is required. |
 
 ---
 
@@ -115,13 +115,13 @@ Session                     (one app's current authenticated login state)
 
 | # | Requirement |
 |---|---|
-| DV-01 | **Device** carries: name, platform, created time, last-seen time, trust status, remote-enabled flag, and a revoke action. |
-| DV-02 | Device identity is **created by user authorization**, not derived from a hardware fingerprint. CPU serial, motherboard ID and MAC address must not be used to identify a device — they break under virtualisation, reinstall, hardware replacement, and are privacy-hostile. A device may be renamed, revoked and re-registered. |
-| DV-03 | **App Installation** is a distinct cloud-visible dimension. A process instance is never a device identity. |
-| DV-04 | Session is authenticated state of one application installation/profile. A device can hold independent ArcNotes, ArcScope, ArcSlate, Android or browser sessions; revocation never transfers credentials between them. |
-| DV-05 | Each application signs in independently. Native clients use the system-browser authorization-code/PKCE journey or in-app email code; existing browser login may be reused after consent. There is no local cross-application SSO broker. |
-| DV-06 | Each application must authenticate without another ArcForges application or local broker. Shared NuGet code is a library inside its owner process; application credentials and histories remain independent. |
-| DV-07 | Sign-out distinguishes four operations, each with different scope: **Sign out of this App** (other Arc apps stay signed in), **Sign out of this Device** (all Arc app cloud sessions revoked, local data retained), **Revoke Device** (performed from another device; stops sync, remote and cloud access), **Sign out everywhere** (all sessions cleared; the account remains). |
+| <a id="rule-dv-01"></a>DV-01 | **Device** carries: name, platform, created time, last-seen time, trust status, remote-enabled flag, and a revoke action. |
+| <a id="rule-dv-02"></a>DV-02 | Device identity is **created by user authorization**, not derived from a hardware fingerprint. CPU serial, motherboard ID and MAC address must not be used to identify a device — they break under virtualisation, reinstall, hardware replacement, and are privacy-hostile. A device may be renamed, revoked and re-registered. |
+| <a id="rule-dv-03"></a>DV-03 | **App Installation** is a distinct cloud-visible dimension. A process instance is never a device identity. |
+| <a id="rule-dv-04"></a>DV-04 | Session is authenticated state of one application installation/profile. A device can hold independent ArcNotes, ArcScope, ArcSlate, Android or browser sessions; revocation never transfers credentials between them. |
+| <a id="rule-dv-05"></a>DV-05 | Each application signs in independently. Native clients use the system-browser authorization-code/PKCE journey or in-app email code; existing browser login may be reused after consent. There is no local cross-application SSO broker. |
+| <a id="rule-dv-06"></a>DV-06 | Each application must authenticate without another ArcForges application or local broker. Shared NuGet code is a library inside its owner process; application credentials and histories remain independent. |
+| <a id="rule-dv-07"></a>DV-07 | Sign-out distinguishes four operations, each with different scope: **Sign out of this App** (other Arc apps stay signed in), **Sign out of this Device** (all Arc app cloud sessions revoked, local data retained), **Revoke Device** (performed from another device; stops sync, remote and cloud access), **Sign out everywhere** (all sessions cleared; the account remains). |
 
 ---
 
@@ -129,14 +129,14 @@ Session                     (one app's current authenticated login state)
 
 | # | Requirement |
 |---|---|
-| TR-01 | **Device Presence ≠ Device Trust** ([I-250](01-normative-glossary-and-invariants.md#rule-i-250)). Presence is ephemeral; trust is a durable, user-granted state. |
-| TR-02 | **Device Online ≠ Remote Agent Enabled** ([I-251](01-normative-glossary-and-invariants.md#rule-i-251)). |
-| TR-03 | **Registered Device ≠ Remote-authorized Device** ([I-252](01-normative-glossary-and-invariants.md#rule-i-252)). |
+| <a id="rule-tr-01"></a>TR-01 | **Device Presence ≠ Device Trust** ([I-250](01-normative-glossary-and-invariants.md#rule-i-250)). Presence is ephemeral; trust is a durable, user-granted state. |
+| <a id="rule-tr-02"></a>TR-02 | **Device Online ≠ Remote Agent Enabled** ([I-251](01-normative-glossary-and-invariants.md#rule-i-251)). |
+| <a id="rule-tr-03"></a>TR-03 | **Registered Device ≠ Remote-authorized Device** ([I-252](01-normative-glossary-and-invariants.md#rule-i-252)). |
 | <a id="rule-tr-04"></a>TR-04 | Remote access defaults to **off**. The chain is `Account → Trusted Device → Remote Enabled → Allowed Capabilities`. |
-| TR-05 | Remote capability grants are per-product and per-capability-class, individually toggleable (for example ArcNotes and ArcScope enabled, ArcSlate export not). |
-| TR-06 | High-risk capabilities may additionally require local confirmation on the desktop even when remote access is enabled. R4-class operations — credential changes, security settings, high-risk device operations — are **never remotely releasable by default**; cloud and mobile may only prompt the user to return to a trusted device. |
-| TR-07 | Remote access is delivered by a desktop-initiated authenticated **outbound** connection to Cloud. **No inbound public port is opened on the user's machine.** |
-| TR-08 | The user can revoke a device, disable remote access and revoke capability scope at any time, from any signed-in surface. |
+| <a id="rule-tr-05"></a>TR-05 | Remote capability grants are per-product and per-capability-class, individually toggleable (for example ArcNotes and ArcScope enabled, ArcSlate export not). |
+| <a id="rule-tr-06"></a>TR-06 | High-risk capabilities may additionally require local confirmation on the desktop even when remote access is enabled. R4-class operations — credential changes, security settings, high-risk device operations — are **never remotely releasable by default**; cloud and mobile may only prompt the user to return to a trusted device. |
+| <a id="rule-tr-07"></a>TR-07 | Remote access is delivered by a desktop-initiated authenticated **outbound** connection to Cloud. **No inbound public port is opened on the user's machine.** |
+| <a id="rule-tr-08"></a>TR-08 | The user can revoke a device, disable remote access and revoke capability scope at any time, from any signed-in surface. |
 
 ---
 
@@ -165,10 +165,10 @@ Operations requiring step-up:
 
 | # | Requirement |
 |---|---|
-| AT-01 | Personal Access Tokens exist in the model from the first release, for CLI, automation, third-party agents and integrations. |
-| AT-02 | Every token is **named**, **scoped**, **expirable**, **revocable**, and displays last-used time. |
-| AT-03 | A permanent, unscoped master API key is prohibited. |
-| AT-04 | Token scopes are drawn from the same capability/permission vocabulary as the rest of the system (for example `notes.read`, `notes.write`). |
+| <a id="rule-at-01"></a>AT-01 | Personal Access Tokens exist in the model from the first release, for CLI, automation, third-party agents and integrations. |
+| <a id="rule-at-02"></a>AT-02 | Every token is **named**, **scoped**, **expirable**, **revocable**, and displays last-used time. |
+| <a id="rule-at-03"></a>AT-03 | A permanent, unscoped master API key is prohibited. |
+| <a id="rule-at-04"></a>AT-04 | Token scopes are drawn from the same capability/permission vocabulary as the rest of the system (for example `notes.read`, `notes.write`). |
 
 ---
 
@@ -176,11 +176,11 @@ Operations requiring step-up:
 
 | # | Requirement |
 |---|---|
-| AC-01 | Human users and machine actors are never conflated. `Actor` has kinds: **User**, **Agent**, **Device**, **ServiceAccount**. |
+| <a id="rule-ac-01"></a>AC-01 | Human users and machine actors are never conflated. `Actor` has kinds: **User**, **Agent**, **Device**, **ServiceAccount**. |
 | <a id="rule-ac-02"></a>AC-02 | Audit records the true actor kind. An agent-performed action must never be recorded as if the human performed it directly. |
-| AC-03 | **Identity ≠ Actor ≠ Executor ≠ Caller Process** ([I-230](01-normative-glossary-and-invariants.md#rule-i-230)). |
-| AC-04 | An Agent Profile is configuration, never a security principal ([I-232](01-normative-glossary-and-invariants.md#rule-i-232)). |
-| AC-05 | An Automation is not a principal ([I-234](01-normative-glossary-and-invariants.md#rule-i-234)); it carries a creator permission snapshot which is **not** permanent authority ([I-236](01-normative-glossary-and-invariants.md#rule-i-236)). |
+| <a id="rule-ac-03"></a>AC-03 | **Identity ≠ Actor ≠ Executor ≠ Caller Process** ([I-230](01-normative-glossary-and-invariants.md#rule-i-230)). |
+| <a id="rule-ac-04"></a>AC-04 | An Agent Profile is configuration, never a security principal ([I-232](01-normative-glossary-and-invariants.md#rule-i-232)). |
+| <a id="rule-ac-05"></a>AC-05 | An Automation is not a principal ([I-234](01-normative-glossary-and-invariants.md#rule-i-234)); it carries a creator permission snapshot which is **not** permanent authority ([I-236](01-normative-glossary-and-invariants.md#rule-i-236)). |
 
 ---
 
@@ -217,9 +217,9 @@ On entering DeletionPending, prohibit new Cloud writes and AI dispatch, stop ren
 | # | Requirement |
 |---|---|
 | <a id="rule-dl-01"></a>DL-01 | Account deletion does not remotely erase independent native capture/media files or pending user edits/uploads. Preview their fate before confirmation and offer recovery. Explicit local cache deletion is a separate choice. A guarded recovery view for locally owned pending work must remain usable without paid Cloud access, even if the Cloud identity has been deleted; it is not a new standalone notebook mode. |
-| DL-02 | **Subscription cancellation ≠ Account deletion ≠ Cloud data deletion ≠ Workspace deletion** ([I-002](01-normative-glossary-and-invariants.md#rule-i-002)). Four distinct flows. |
-| DL-03 | A user may delete cloud data while retaining the account, AI credits and purchase history. |
-| DL-04 | Deletion propagates to derived data: full-text index entries, vector entries, derived previews and caches. A deleted document must not remain findable through semantic search ([I-165](01-normative-glossary-and-invariants.md#rule-i-165)). |
+| <a id="rule-dl-02"></a>DL-02 | **Subscription cancellation ≠ Account deletion ≠ Cloud data deletion ≠ Workspace deletion** ([I-002](01-normative-glossary-and-invariants.md#rule-i-002)). Four distinct flows. |
+| <a id="rule-dl-03"></a>DL-03 | A user may delete cloud data while retaining the account, AI credits and purchase history. |
+| <a id="rule-dl-04"></a>DL-04 | Deletion propagates to derived data: full-text index entries, vector entries, derived previews and caches. A deleted document must not remain findable through semantic search ([I-165](01-normative-glossary-and-invariants.md#rule-i-165)). |
 
 ---
 
@@ -227,9 +227,9 @@ On entering DeletionPending, prohibit new Cloud writes and AI dispatch, stop ren
 
 | # | Requirement |
 |---|---|
-| SN-01 | The account portal exposes security activity: device sign-in/revocation, passkey/email/recovery changes, connector authorisation and remote access enablement. No BYOK event class is required. |
+| <a id="rule-sn-01"></a>SN-01 | The account portal exposes security activity: device sign-in/revocation, passkey/email/recovery changes, connector authorisation and remote access enablement. No BYOK event class is required. |
 | <a id="rule-sn-02"></a>SN-02 | Security notifications are **not opt-out**: new sign-in, email changed, passkey removed, recovery used, remote access enabled, account deletion requested. |
-| SN-03 | Marketing email is separately opt-in and opt-out and must never be bundled with security notification preferences. |
+| <a id="rule-sn-03"></a>SN-03 | Marketing email is separately opt-in and opt-out and must never be bundled with security notification preferences. |
 
 ---
 
@@ -256,9 +256,9 @@ Minimum V1 portal scope:
 
 | # | Requirement |
 |---|---|
-| BI-01 | **Billing Account is a separate entity from User.** `User.SubscriptionId` is prohibited. The chain is `Billing Account → Subscription → Entitlement → Workspace`. |
-| BI-02 | **Billing identity is never matched by email.** A payment email such as `finance@company.com` must never be used to decide which account a subscription belongs to. A stable internal billing identity is the buyer identity; email is contact information only. Changing the account email must never lose a subscription (**[D-005](../decisions/phase-1-foundation-decisions.md#rule-d-005)** preserved principles). |
-| BI-03 | Provider identifiers never enter client authority contracts (**[D-005](../decisions/phase-1-foundation-decisions.md#rule-d-005)**). |
+| <a id="rule-bi-01"></a>BI-01 | **Billing Account is a separate entity from User.** `User.SubscriptionId` is prohibited. The chain is `Billing Account → Subscription → Entitlement → Workspace`. |
+| <a id="rule-bi-02"></a>BI-02 | **Billing identity is never matched by email.** A payment email such as `finance@company.com` must never be used to decide which account a subscription belongs to. A stable internal billing identity is the buyer identity; email is contact information only. Changing the account email must never lose a subscription (**[D-005](../decisions/phase-1-foundation-decisions.md#rule-d-005)** preserved principles). |
+| <a id="rule-bi-03"></a>BI-03 | Provider identifiers never enter client authority contracts (**[D-005](../decisions/phase-1-foundation-decisions.md#rule-d-005)**). |
 
 ---
 
@@ -266,10 +266,10 @@ Minimum V1 portal scope:
 
 | # | Requirement |
 |---|---|
-| SC-01 | Client login/device credentials use OS secure storage. Operator model/payment/signing credentials live only in Cloud deployment secret storage; no end-user AI provider-key vault or reveal API exists. |
-| SC-02 | External connector credentials, where an accepted integration needs them, are workspace-scoped and distinct from operator AI-provider credentials. Removing BYOK does not remove connector authentication or device identity. |
-| SC-03 | Secret management exposes authorised replacement/revocation/status, never full secret retrieval. Operator deployment credentials are not editable through a customer settings screen. |
-| SC-04 | **SecretRef ≠ Secret Value** ([I-256](01-normative-glossary-and-invariants.md#rule-i-256)) and **Secret Use ≠ Secret Reveal** ([I-257](01-normative-glossary-and-invariants.md#rule-i-257)). |
+| <a id="rule-sc-01"></a>SC-01 | Client login/device credentials use OS secure storage. Operator model/payment/signing credentials live only in Cloud deployment secret storage; no end-user AI provider-key vault or reveal API exists. |
+| <a id="rule-sc-02"></a>SC-02 | External connector credentials, where an accepted integration needs them, are workspace-scoped and distinct from operator AI-provider credentials. Removing BYOK does not remove connector authentication or device identity. |
+| <a id="rule-sc-03"></a>SC-03 | Secret management exposes authorised replacement/revocation/status, never full secret retrieval. Operator deployment credentials are not editable through a customer settings screen. |
+| <a id="rule-sc-04"></a>SC-04 | **SecretRef ≠ Secret Value** ([I-256](01-normative-glossary-and-invariants.md#rule-i-256)) and **Secret Use ≠ Secret Reveal** ([I-257](01-normative-glossary-and-invariants.md#rule-i-257)). |
 
 ---
 
@@ -315,18 +315,18 @@ This document settles **identity ownership relationships**; commercial rules for
 
 | # | Scenario | Required outcome |
 |---|---|---|
-| A-01 | Fresh install, no network/account | Native UI starts within budget; local capture/media operations are usable; initial Cloud notebook enrolment and AI show their sign-in/network requirement |
-| A-02 | Sign in with unrelated local files present | Nothing is automatically imported/uploaded; explicit notebook enrolment and file selection define participation |
-| A-03 | Sign out of ArcNotes while ArcScope is signed in | ArcScope session unaffected; ArcNotes local data intact |
-| A-04 | Revoke a device from another device | The revoked device loses sync, remote and cloud access; its local data is intact |
-| A-05 | Enable remote access, then attempt an R4 operation from mobile | The operation is refused remotely and the user is directed to confirm on a trusted device |
-| A-06 | Sign in to Official and to a self-hosted realm with the same email | Two distinct identities; no data or entitlement crosses between them |
-| A-07 | Delete all Passkeys, then recover via Email | Recovery succeeds; a security notification is emitted; the user is prompted to add a Passkey |
-| A-08 | Account moves to Suspended | Cloud/AI access is denied; native files and pending edits are preserved; the product accurately distinguishes available local operations |
-| A-09 | Request account deletion | Step-up is required; export is offered; on confirmation, cloud identity, workspace data, index entries and vault entries are removed; local files remain |
-| A-10 | Change account email while subscribed | Subscription and entitlement are unaffected |
-| A-11 | Cross-owner workspace ObjectId probe | Access denied regardless of a known object ID or valid subscription on another workspace |
-| A-12 | Switch realm/workspace while an AI task or local edit is pending | The original scope remains fixed; another account cannot read its cache, spend its credits or redirect its pending operation |
+| <a id="rule-a-01"></a>A-01 | Fresh install, no network/account | Native UI starts within budget; local capture/media operations are usable; initial Cloud notebook enrolment and AI show their sign-in/network requirement |
+| <a id="rule-a-02"></a>A-02 | Sign in with unrelated local files present | Nothing is automatically imported/uploaded; explicit notebook enrolment and file selection define participation |
+| <a id="rule-a-03"></a>A-03 | Sign out of ArcNotes while ArcScope is signed in | ArcScope session unaffected; ArcNotes local data intact |
+| <a id="rule-a-04"></a>A-04 | Revoke a device from another device | The revoked device loses sync, remote and cloud access; its local data is intact |
+| <a id="rule-a-05"></a>A-05 | Enable remote access, then attempt an R4 operation from mobile | The operation is refused remotely and the user is directed to confirm on a trusted device |
+| <a id="rule-a-06"></a>A-06 | Sign in to Official and to a self-hosted realm with the same email | Two distinct identities; no data or entitlement crosses between them |
+| <a id="rule-a-07"></a>A-07 | Delete all Passkeys, then recover via Email | Recovery succeeds; a security notification is emitted; the user is prompted to add a Passkey |
+| <a id="rule-a-08"></a>A-08 | Account moves to Suspended | Cloud/AI access is denied; native files and pending edits are preserved; the product accurately distinguishes available local operations |
+| <a id="rule-a-09"></a>A-09 | Request account deletion | Step-up is required; export is offered; on confirmation, cloud identity, workspace data, index entries and vault entries are removed; local files remain |
+| <a id="rule-a-10"></a>A-10 | Change account email while subscribed | Subscription and entitlement are unaffected |
+| <a id="rule-a-11"></a>A-11 | Cross-owner workspace ObjectId probe | Access denied regardless of a known object ID or valid subscription on another workspace |
+| <a id="rule-a-12"></a>A-12 | Switch realm/workspace while an AI task or local edit is pending | The original scope remains fixed; another account cannot read its cache, spend its credits or redirect its pending operation |
 
 ---
 

@@ -55,11 +55,11 @@ Every row carries exactly one of three states. They are not interchangeable, and
 
 | # | Rule |
 |---|---|
-| RC-01 | **A disposition is never inferred from the repository-root licence** (**[D-013](../../decisions/phase-1-foundation-decisions.md#rule-d-013)**). Where a subtree carries a different licence, the subtree's licence governs. |
+| <a id="rule-rc-01"></a>RC-01 | **A disposition is never inferred from the repository-root licence** (**[D-013](../../decisions/phase-1-foundation-decisions.md#rule-d-013)**). Where a subtree carries a different licence, the subtree's licence governs. |
 | <a id="rule-rc-02"></a>RC-02 | **Reference capability ≠ ArcForges requirement.** An item maps to an existing requirement, or it is an accepted exclusion. It does not create a requirement by existing. |
 | <a id="rule-rc-03"></a>RC-03 | **`Reference Only` is the default disposition** where the licence prohibits reuse or where ArcForges' own design already governs the area. |
-| RC-04 | **A `Copy`, `Rewrite`, `Improve` or `Replace` disposition additionally requires the full ten-field provenance record of [D-013](../../decisions/phase-1-foundation-decisions.md#rule-d-013)** before any material moves. No row in this matrix set carries such a disposition without that requirement stated. |
-| RC-05 | **These matrices are versioned planning inputs.** Implementation packages consume them; they do not re-create them. Later drift, changed scope and newly introduced material are handled by the maintenance check in each product package, not by a second baseline audit. |
+| <a id="rule-rc-04"></a>RC-04 | **A `Copy`, `Rewrite`, `Improve` or `Replace` disposition additionally requires the full ten-field provenance record of [D-013](../../decisions/phase-1-foundation-decisions.md#rule-d-013)** before any material moves. No row in this matrix set carries such a disposition without that requirement stated. |
+| <a id="rule-rc-05"></a>RC-05 | **These matrices are versioned planning inputs.** Implementation packages consume them; they do not re-create them. Later drift, changed scope and newly introduced material are handled by the maintenance check in each product package, not by a second baseline audit. |
 
 ---
 
@@ -85,9 +85,9 @@ The single most consequential finding across all five matrices — six registere
 
 | # | Statement |
 |---|---|
-| ND-01 | **They record the [F-013](../open-gates-register.md#rule-f-013) determinations**; the gate is closed on that evidence ([`../open-gates-register.md`](../open-gates-register.md)). |
+| <a id="rule-nd-01"></a>ND-01 | **They record the [F-013](../open-gates-register.md#rule-f-013) determinations**; the gate is closed on that evidence ([`../open-gates-register.md`](../open-gates-register.md)). |
 | <a id="rule-nd-02"></a>ND-02 | **They do not authorize any reuse.** No row proposes reuse; if one ever did, the ten-field provenance record would still be required first. |
-| ND-03 | **They do not create requirements.** Items map to existing requirements or become accepted exclusions. |
-| ND-04 | **They do not replace drift checking.** Each product's implementation package re-checks the recorded commit for drift and newly introduced material. |
-| ND-05 | **No reference repository was modified, and no packaged binary was executed.** |
-| ND-06 | **They do not remove upstream provenance.** Where a reference is itself a fork, its upstream copyright, licence obligations and attribution are recorded and retained, independently of which repositories the reference map registers. |
+| <a id="rule-nd-03"></a>ND-03 | **They do not create requirements.** Items map to existing requirements or become accepted exclusions. |
+| <a id="rule-nd-04"></a>ND-04 | **They do not replace drift checking.** Each product's implementation package re-checks the recorded commit for drift and newly introduced material. |
+| <a id="rule-nd-05"></a>ND-05 | **No reference repository was modified, and no packaged binary was executed.** |
+| <a id="rule-nd-06"></a>ND-06 | **They do not remove upstream provenance.** Where a reference is itself a fork, its upstream copyright, licence obligations and attribution are recorded and retained, independently of which repositories the reference map registers. |

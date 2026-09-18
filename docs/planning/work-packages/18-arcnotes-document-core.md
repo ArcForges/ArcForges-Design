@@ -50,16 +50,16 @@
 
 | # | Rule |
 |---|---|
-| BR-01 | **The ArcNotes Reference Coverage Matrix is a completed, versioned planning input** — [`../../assurance/reference-coverage/arcnotes-affine-siyuan.md`](../../assurance/reference-coverage/arcnotes-affine-siyuan.md), 41 item-level rows, bound to AFFiNE at `81df4751a3` and SiYuan at `eef105683`. It was produced before this plan was derived (**[D-019](../../decisions/phase-1-foundation-decisions.md#rule-d-019)**). **This package consumes it and checks it for drift; it does not create it.** |
-| BR-02 | **ArcNotes scope is the notebook core plus bounded properties and saved views** (**[D-006](../../decisions/phase-1-foundation-decisions.md#rule-d-006)** as amended by **[P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006)**). This package builds the V1 baseline every later phase must preserve. |
-| BR-03 | **Undo, history, checkpoint and journal are four distinct mechanisms** ([QI-09](../../requirements/12-quality-and-compatibility-contract.md#rule-qi-09)) and never substitute for one another. |
+| <a id="rule-br-01"></a>BR-01 | **The ArcNotes Reference Coverage Matrix is a completed, versioned planning input** — [`../../assurance/reference-coverage/arcnotes-affine-siyuan.md`](../../assurance/reference-coverage/arcnotes-affine-siyuan.md), 41 item-level rows, bound to AFFiNE at `81df4751a3` and SiYuan at `eef105683`. It was produced before this plan was derived (**[D-019](../../decisions/phase-1-foundation-decisions.md#rule-d-019)**). **This package consumes it and checks it for drift; it does not create it.** |
+| <a id="rule-br-02"></a>BR-02 | **ArcNotes scope is the notebook core plus bounded properties and saved views** (**[D-006](../../decisions/phase-1-foundation-decisions.md#rule-d-006)** as amended by **[P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006)**). This package builds the V1 baseline every later phase must preserve. |
+| <a id="rule-br-03"></a>BR-03 | **Undo, history, checkpoint and journal are four distinct mechanisms** ([QI-09](../../requirements/12-quality-and-compatibility-contract.md#rule-qi-09)) and never substitute for one another. |
 | <a id="rule-br-04"></a>BR-04 | **A document rename never breaks a link** — links target a stable identity, not a name. |
-| BR-05 | **Backlinks are derived** from a link index and are never written into document content. |
-| BR-06 | **A broken link has an explicit state**, never a silent failure or a deleted reference. |
+| <a id="rule-br-05"></a>BR-05 | **Backlinks are derived** from a link index and are never written into document content. |
+| <a id="rule-br-06"></a>BR-06 | **A broken link has an explicit state**, never a silent failure or a deleted reference. |
 | <a id="rule-br-07"></a>BR-07 | **Deleting a tag never deletes a document**; it removes classification. |
-| BR-08 | **An attachment is never base64-embedded in document content.** |
-| BR-09 | **The editing authority of an embedded reference stays with the original object** — there is no second writable block. |
-| BR-10 | **Table blocks are document tables, not a relational database engine** in V1. |
+| <a id="rule-br-08"></a>BR-08 | **An attachment is never base64-embedded in document content.** |
+| <a id="rule-br-09"></a>BR-09 | **The editing authority of an embedded reference stays with the original object** — there is no second writable block. |
+| <a id="rule-br-10"></a>BR-10 | **Table blocks are document tables, not a relational database engine** in V1. |
 | <a id="rule-br-11"></a>BR-11 | **An enrolled, hydrated notebook remains editable and searchable during a Cloud outage**, and pending edits are durably recoverable (`§3.1` of the product scope). **This is outage tolerance, not an account-free product**: initial notebook creation and enrolment require Cloud, and uncached content is unavailable until it is fetched ([C-05](../../requirements/00-product-scope-and-portfolio.md#rule-c-05)). |
 
 ---
@@ -276,6 +276,6 @@ Session undo follows `§3.2` of the editing architecture: **selection is restore
 
 **Downstream:** `19`. Consumers use exact released artifacts.
 
-## P2-010 required behavior and closure
+## [P2-010](../../decisions/phase-2-specification-decisions.md#rule-p2-010) required behavior and closure
 
 Implement stable run/atom/cell IDs and NotesTextPosition/NotesCommand, explicit IME conflict preservation and disabled stale undo with original recoverable inverse; no unspecified rebase. The referenced normative profile and producer stage matrix are binding inputs. Record independent positive/negative vectors and actual owner integration at this WP's assigned stage; a mock cannot close a real-provider/device requirement.

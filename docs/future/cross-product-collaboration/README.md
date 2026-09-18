@@ -1,6 +1,6 @@
 # Future Cross-Product Collaboration
 
-Status: **FUTURE — not part of current implementation or release acceptance**. P2-012 explicitly defers collaboration between Notes, Scope and Slate. WP20 is reserved, has no active dependency edges, and is not a release prerequisite. Current one-application Android/Web control is separate and remains required.
+Status: **FUTURE — not part of current implementation or release acceptance**. [P2-012](../../decisions/phase-2-specification-decisions.md#rule-p2-012) explicitly defers collaboration between Notes, Scope and Slate. WP20 is reserved, has no active dependency edges, and is not a release prerequisite. Current one-application Android/Web control is separate and remains required.
 
 No current app-to-app RPC, Hub, discovery, peer transfer, multi-product agent capability or mandatory collaboration package is produced. The following examples describe intended future behavior only. They do not assign active proto field numbers, public APIs, databases, producer deadlines or customer commitments. Existing history/resource/product IDs are reused conceptually; a future adopted plan must freeze the detailed contracts before implementation.
 

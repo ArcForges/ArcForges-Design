@@ -1,7 +1,7 @@
 <a id="rule-wp-31"></a>
 # WP-31 — Complete ArcChat Android Companion
 
-> Status: Authoritative implementation plan under P2-010
+> Status: Authoritative implementation plan under [P2-010](../../decisions/phase-2-specification-decisions.md#rule-p2-010)
 > Phase: J — Platform and client integration
 > Upstream: `26` · `30` · `45` · `52` · Downstream: `32`
 

@@ -32,7 +32,7 @@ The original package existed to satisfy the previous [D-006](../../decisions/pha
 
 | # | Rule |
 |---|---|
-| RT-01 | **The identifier [WP-27](#rule-wp-27) is retired and never reused.** A future spatial-editing capability would receive a new identifier and its own scope decision. |
-| RT-02 | **Nothing downstream may depend on this package.** [WP-28](28-arcnotes-properties-and-views.md#rule-wp-28) now takes its upstream from `19` and `25` directly, and [WP-50](50-full-platform-production-release.md#rule-wp-50) no longer routes through it. |
-| RT-03 | **No dormant hook remains.** Retaining an empty canvas table or a reserved block kind would make an excluded capability look like a configuration switch, which is precisely the ambiguity [P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006) removes ([WO-04](../../architecture/data-model/01-cloud-data-model.md#rule-wo-04) analogue). |
-| RT-04 | **This file is the record, not a placeholder.** It is not revived by editing; reintroducing the capability requires a new decision under **[D-001](../../decisions/phase-1-foundation-decisions.md#rule-d-001)**. |
+| <a id="rule-rt-01"></a>RT-01 | **The identifier [WP-27](#rule-wp-27) is retired and never reused.** A future spatial-editing capability would receive a new identifier and its own scope decision. |
+| <a id="rule-rt-02"></a>RT-02 | **Nothing downstream may depend on this package.** [WP-28](28-arcnotes-properties-and-views.md#rule-wp-28) now takes its upstream from `19` and `25` directly, and [WP-50](50-full-platform-production-release.md#rule-wp-50) no longer routes through it. |
+| <a id="rule-rt-03"></a>RT-03 | **No dormant hook remains.** Retaining an empty canvas table or a reserved block kind would make an excluded capability look like a configuration switch, which is precisely the ambiguity [P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006) removes ([WO-04](../../architecture/data-model/01-cloud-data-model.md#rule-wo-04) analogue). |
+| <a id="rule-rt-04"></a>RT-04 | **This file is the record, not a placeholder.** It is not revived by editing; reintroducing the capability requires a new decision under **[D-001](../../decisions/phase-1-foundation-decisions.md#rule-d-001)**. |

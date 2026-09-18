@@ -47,17 +47,17 @@
 
 | # | Rule |
 |---|---|
-| BR-01 | **Sync is per scope, not all-or-nothing**, with explicit per-product defaults. |
-| BR-02 | **The client outbox is durable** and survives process termination; every entry carries a command identity. |
-| BR-03 | **The server inbox deduplicates** so a replayed entry has no additional effect. |
-| BR-04 | **A conflict is detected by revision**, never by timestamp comparison alone. |
-| BR-05 | **A conflict is never silently resolved by discarding a side.** Where a policy chooses, the discarded version remains recoverable. |
-| BR-06 | **Deletion propagates through tombstones** with a defined retention, so a deletion is not undone by a device that was offline. |
-| BR-07 | **A blob is Staged, then Verified, then Committed.** A reference is never published before its blob is committed. |
-| BR-08 | **`Cloud Sync ≠ Raw Capture Upload`** ([I-474](../../requirements/01-normative-glossary-and-invariants.md#rule-i-474)) — the scope model must make product-specific exclusions expressible from the start. |
-| BR-09 | **Availability is an explicit state**: available locally, available remotely, syncing, unavailable — never an error at read time. |
-| BR-10 | **Storage accounting is computed from committed objects**, never from client-reported figures. |
-| BR-11 | **Loss of subscription never deletes user data**; it changes access, with an explicit stated behaviour. |
+| <a id="rule-br-01"></a>BR-01 | **Sync is per scope, not all-or-nothing**, with explicit per-product defaults. |
+| <a id="rule-br-02"></a>BR-02 | **The client outbox is durable** and survives process termination; every entry carries a command identity. |
+| <a id="rule-br-03"></a>BR-03 | **The server inbox deduplicates** so a replayed entry has no additional effect. |
+| <a id="rule-br-04"></a>BR-04 | **A conflict is detected by revision**, never by timestamp comparison alone. |
+| <a id="rule-br-05"></a>BR-05 | **A conflict is never silently resolved by discarding a side.** Where a policy chooses, the discarded version remains recoverable. |
+| <a id="rule-br-06"></a>BR-06 | **Deletion propagates through tombstones** with a defined retention, so a deletion is not undone by a device that was offline. |
+| <a id="rule-br-07"></a>BR-07 | **A blob is Staged, then Verified, then Committed.** A reference is never published before its blob is committed. |
+| <a id="rule-br-08"></a>BR-08 | **`Cloud Sync ≠ Raw Capture Upload`** ([I-474](../../requirements/01-normative-glossary-and-invariants.md#rule-i-474)) — the scope model must make product-specific exclusions expressible from the start. |
+| <a id="rule-br-09"></a>BR-09 | **Availability is an explicit state**: available locally, available remotely, syncing, unavailable — never an error at read time. |
+| <a id="rule-br-10"></a>BR-10 | **Storage accounting is computed from committed objects**, never from client-reported figures. |
+| <a id="rule-br-11"></a>BR-11 | **Loss of subscription never deletes user data**; it changes access, with an explicit stated behaviour. |
 
 ---
 
@@ -217,7 +217,7 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 ## 7. Tests and verification evidence
 
-Acceptance includes every amended §5 producer/consumer and WP-25.90 evidence. Current P2-013 contracts/data/runtime rules are tested in the original owner implementation, not a detached explanatory sample.
+Acceptance includes every amended §5 producer/consumer and [WP-25.90](#rule-wp-25.90) evidence. Current [P2-013](../../decisions/phase-2-specification-decisions.md#rule-p2-013) contracts/data/runtime rules are tested in the original owner implementation, not a detached explanatory sample.
 
 **[WP-25.08](#rule-wp-25.08) producer evidence.** Real snapshot/export jobs, input revisions, attachment/origin/fidelity manifest, bounded retention/download, cancel/failure cases, and structural absence of the Notes/Chat runtime export fixture registrations.
 

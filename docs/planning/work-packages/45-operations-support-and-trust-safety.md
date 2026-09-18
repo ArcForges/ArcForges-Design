@@ -44,18 +44,18 @@
 
 | # | Rule |
 |---|---|
-| BR-01 | **Alerts are symptom-based.** A single unexpected exception is a defect signal, not a page. |
-| BR-02 | **Every alert names its runbook.** An alert without a runbook is not deployed. |
-| BR-03 | **A runbook is executable in an incident** and is exercised, not merely written. |
-| BR-04 | **The status page is hosted independently of ArcForges Cloud**, with an emergency alternate URL published. |
-| BR-05 | **Status components are user-facing capabilities**, never internal vendors or regions. |
-| BR-06 | **An operator never silently becomes a user.** Support access is explicit, consented where required, time-bounded, scoped and audited. |
-| BR-07 | **Break-glass is a distinct, alarmed path** with mandatory justification, automatic expiry and post-hoc review. |
-| BR-08 | **Operator actions are audited to the audit system**, never only to telemetry. |
-| BR-09 | **A possible personal-data breach is automatically the highest severity**, with the statutory notification clock as a hard deadline. |
-| BR-10 | **The enforcement ladder is proportionate and appealable**, with every action recorded and communicated. |
-| BR-11 | **Security advisories follow a defined disclosure process** coordinated with the expedited update path. |
-| BR-12 | **Transactional and broadcast email are separated by stream and sending subdomain**, and security-critical email has a prepared secondary path. |
+| <a id="rule-br-01"></a>BR-01 | **Alerts are symptom-based.** A single unexpected exception is a defect signal, not a page. |
+| <a id="rule-br-02"></a>BR-02 | **Every alert names its runbook.** An alert without a runbook is not deployed. |
+| <a id="rule-br-03"></a>BR-03 | **A runbook is executable in an incident** and is exercised, not merely written. |
+| <a id="rule-br-04"></a>BR-04 | **The status page is hosted independently of ArcForges Cloud**, with an emergency alternate URL published. |
+| <a id="rule-br-05"></a>BR-05 | **Status components are user-facing capabilities**, never internal vendors or regions. |
+| <a id="rule-br-06"></a>BR-06 | **An operator never silently becomes a user.** Support access is explicit, consented where required, time-bounded, scoped and audited. |
+| <a id="rule-br-07"></a>BR-07 | **Break-glass is a distinct, alarmed path** with mandatory justification, automatic expiry and post-hoc review. |
+| <a id="rule-br-08"></a>BR-08 | **Operator actions are audited to the audit system**, never only to telemetry. |
+| <a id="rule-br-09"></a>BR-09 | **A possible personal-data breach is automatically the highest severity**, with the statutory notification clock as a hard deadline. |
+| <a id="rule-br-10"></a>BR-10 | **The enforcement ladder is proportionate and appealable**, with every action recorded and communicated. |
+| <a id="rule-br-11"></a>BR-11 | **Security advisories follow a defined disclosure process** coordinated with the expedited update path. |
+| <a id="rule-br-12"></a>BR-12 | **Transactional and broadcast email are separated by stream and sending subdomain**, and security-critical email has a prepared secondary path. |
 
 ---
 
@@ -201,7 +201,7 @@
 
 **Producer prerequisites.** WP45.08 consumes WP22 real mail artifacts and its live-delivery/recovery record; it cannot be used to defer WP22’s gate. Runtime mail fixtures are absent. Recorded failures remain test-only.
 
-**Operator contract closure.** Consume [registry04 §9](../../architecture/contracts/04-protobuf-wire-registry.md#9-operator-control-and-separate-identity-boundary) and [model01 operator state](../../architecture/data-model/01-cloud-data-model.md#operator-proposal-approval-and-financial-owner-closure). Generate/implement every operation exactly once with its eight authorization fields, operator scope and OC-03 role binding. Public customer/PAT/agent access refuses. Verify distinct approver, stale hash/revision/configuration, role revocation, expiry, concurrent consumption and lost receipt; no direct SQL or public-SDK operator import. WP03 produces schema/negative vectors, WP23 real identity/dispatch conformance, WP42 the financial owners, WP44 configuration/policy owners, and WP45 the real console join. Earlier packages retain their named fixture boundary until the existing downstream join.
+**Operator contract closure.** Consume [registry04 §9](../../architecture/contracts/04-protobuf-wire-registry.md#9-operator-control-and-separate-identity-boundary) and [model01 operator state](../../architecture/data-model/01-cloud-data-model.md#operator-proposal-approval-and-financial-owner-closure). Generate/implement every operation exactly once with its eight authorization fields, operator scope and [OC-03](../../requirements/10-distribution-update-and-support.md#rule-oc-03) role binding. Public customer/PAT/agent access refuses. Verify distinct approver, stale hash/revision/configuration, role revocation, expiry, concurrent consumption and lost receipt; no direct SQL or public-SDK operator import. WP03 produces schema/negative vectors, WP23 real identity/dispatch conformance, WP42 the financial owners, WP44 configuration/policy owners, and WP45 the real console join. Earlier packages retain their named fixture boundary until the existing downstream join.
 
 **Browser matrix acceptance.** Use [browser-support.v1](../../requirements/12-quality-and-compatibility-contract.md#202-browser-supportv1) and the exact release artifact/OS/browser patches. For each output’s existing flows, verify supported/degraded/blocked browser behavior: delayed-stream polling where streaming exists, refusal of unavailable required authentication/step-up, safe-preview refusal and preserved pending work. Static site acceptance includes no-JavaScript readability; it does not invent interactive account/stream APIs. Operator step-up retains its separate Entra/MFA authority. WP23 proves generated transports; WP45/47/48/49 prove their respective operations/site/account/chat output; WP50 joins all four production hashes and real browser evidence. A Playwright WebKit run alone does not claim Safari/OS authenticator proof.
 
@@ -221,7 +221,7 @@
 
 ## 7. Tests and verification evidence
 
-Acceptance includes every amended §5 producer/consumer and WP-45.90 evidence. Current P2-013 contracts/data/runtime rules are tested in the original owner implementation, not a detached explanatory sample.
+Acceptance includes every amended §5 producer/consumer and [WP-45.90](#rule-wp-45.90) evidence. Current [P2-013](../../decisions/phase-2-specification-decisions.md#rule-p2-013) contracts/data/runtime rules are tested in the original owner implementation, not a detached explanatory sample.
 
 WP45.09 records live FCM sending, failure/rotation/generation vectors and credential/project identities without secrets; WP32 closes physical receipt under [PG-24](../../assurance/open-gates-register.md#rule-pg-24).
 
@@ -260,6 +260,6 @@ WP45.09 records live FCM sending, failure/rotation/generation vectors and creden
 
 ## 9. Dependencies
 
-**Upstream:** `12` · `21` · `44` · `47`. Consume completed stage outputs.
+**Upstream:** `12` · `21` · `41` · `44` · `47`. Consume completed stage outputs.
 
 **Downstream:** `31` · `46` · `53`. Consumers use exact released artifacts.

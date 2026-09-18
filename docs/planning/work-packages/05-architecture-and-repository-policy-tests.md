@@ -54,13 +54,13 @@
 
 | # | Rule |
 |---|---|
-| BR-01 | **A structural rule is tested, not reviewed** ([TS-04](../../assurance/testing-and-verification-strategy.md#rule-ts-04) in the testing strategy). |
-| BR-02 | **A policy test failure is a build failure**, never a warning. |
-| BR-03 | **Design-stage traceability is complete and is an input, not an output** (**[D-018](../../decisions/phase-1-foundation-decisions.md#rule-d-018)** obligation B; [PG-06](../../assurance/open-gates-register.md#rule-pg-06) closed). This package builds enforcement, and reports on it — it does not re-derive the mapping. |
-| BR-04 | **The forbidden-term scan covers source, identifiers, resource strings and implementation documentation**, excluding preserved historical inputs. |
-| BR-05 | **A test that enforces an invariant names it**, so a failure identifies the violated rule ([IV-04](../../assurance/testing-and-verification-strategy.md#rule-iv-04) there). |
-| BR-06 | **An exception to a policy test is data, owned and expiring** — never a code comment that disables the check. |
-| BR-07 | **Policy tests run in pull-request builds** ([CI-01](../../architecture/14-build-packaging-and-release.md#rule-ci-01) in the build architecture), so a violation never reaches the main branch. |
+| <a id="rule-br-01"></a>BR-01 | **A structural rule is tested, not reviewed** ([TS-04](../../assurance/testing-and-verification-strategy.md#rule-ts-04) in the testing strategy). |
+| <a id="rule-br-02"></a>BR-02 | **A policy test failure is a build failure**, never a warning. |
+| <a id="rule-br-03"></a>BR-03 | **Design-stage traceability is complete and is an input, not an output** (**[D-018](../../decisions/phase-1-foundation-decisions.md#rule-d-018)** obligation B; [PG-06](../../assurance/open-gates-register.md#rule-pg-06) closed). This package builds enforcement, and reports on it — it does not re-derive the mapping. |
+| <a id="rule-br-04"></a>BR-04 | **The forbidden-term scan covers source, identifiers, resource strings and implementation documentation**, excluding preserved historical inputs. |
+| <a id="rule-br-05"></a>BR-05 | **A test that enforces an invariant names it**, so a failure identifies the violated rule ([IV-04](../../assurance/testing-and-verification-strategy.md#rule-iv-04) there). |
+| <a id="rule-br-06"></a>BR-06 | **An exception to a policy test is data, owned and expiring** — never a code comment that disables the check. |
+| <a id="rule-br-07"></a>BR-07 | **Policy tests run in pull-request builds** ([CI-01](../../architecture/14-build-packaging-and-release.md#rule-ci-01) in the build architecture), so a violation never reaches the main branch. |
 
 ---
 
@@ -203,7 +203,7 @@ Add Node/TS import and dependency checks to the existing policy suite: one Web w
 
 ## 7. Tests and verification evidence
 
-Generate an operation-by-actor reachability matrix for every public/local/operator/CF/exception binding under catalogue 00 AZ-04, with all seven effective authorization fields and source profile. Fail unclassified/ambiguous fields, nonexistent idempotency examples, public imports of local schema and tool reachability of human-only approval/credential/commerce/policy methods. Include resource/context/connector egress denials and hostile actor-chain cases.
+Generate an operation-by-actor reachability matrix for every public/local/operator/CF/exception binding under catalogue 00 [AZ-04](../../architecture/contracts/00-operation-catalogue.md#rule-az-04), with all seven effective authorization fields and source profile. Fail unclassified/ambiguous fields, nonexistent idempotency examples, public imports of local schema and tool reachability of human-only approval/credential/commerce/policy methods. Include resource/context/connector egress denials and hostile actor-chain cases.
 
 | Evidence | Produced by |
 |---|---|

@@ -27,6 +27,7 @@ The prerequisite evidence **[D-019](../decisions/phase-1-foundation-decisions.md
 | **Downstream consumers** | [WP-15](work-packages/15-arcchat-conversation-core.md#rule-wp-15), [WP-18](work-packages/18-arcnotes-document-core.md#rule-wp-18), [WP-33](work-packages/33-arcscope-acquisition-and-session.md#rule-wp-33), [WP-36](work-packages/36-arcslate-project-and-timeline.md#rule-wp-36) — each package's first binding rule now states the matrix is a consumed input with no reuse authorised; [WP-00.03](work-packages/00-specification-naming-and-rights-freeze.md#rule-wp-00.03)'s provenance process remains, but has no pending subject |
 | **Verification** | The completeness check in each matrix asserts *"any row proposing reuse carries a provenance obligation"* and records **Not applicable — no row proposes reuse** |
 
+<a id="rule-r-02"></a>
 ### R-02 — AFFiNE's server subtree is proprietary
 
 | Field | Content |
@@ -37,6 +38,7 @@ The prerequisite evidence **[D-019](../decisions/phase-1-foundation-decisions.md
 | **Downstream consumers** | [WP-18](work-packages/18-arcnotes-document-core.md#rule-wp-18), [WP-25](work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25) — sync-shape evidence comes only from the MIT `packages/common/{nbstore,realtime,s3-compat}`, not from the server |
 | **Verification** | [MT-02](../assurance/reference-coverage/arcnotes-affine-siyuan.md#rule-mt-02) of that matrix requires the licence split to be re-verified on every drift check, because a subtree licence can change upstream |
 
+<a id="rule-r-03"></a>
 ### R-03 — ArcNotes slides have no reference evidence
 
 | Field | Content |
@@ -47,6 +49,7 @@ The prerequisite evidence **[D-019](../decisions/phase-1-foundation-decisions.md
 | **Downstream consumers** | Current Notes core/property packages implement the amended notebook scope. No live slides-oracle work or slides-parity claim is assigned to release. |
 | **Verification** | The completeness check in that matrix records **[D-006](../decisions/phase-1-foundation-decisions.md#rule-d-006)** phase coverage explicitly, naming slides as an absence |
 
+<a id="rule-r-04"></a>
 ### R-04 — Serial-Studio creates an authorship boundary
 
 | Field | Content |
@@ -57,6 +60,7 @@ The prerequisite evidence **[D-019](../decisions/phase-1-foundation-decisions.md
 | **Downstream consumers** | [WP-33](work-packages/33-arcscope-acquisition-and-session.md#rule-wp-33), [WP-34](work-packages/34-arcscope-analysis-and-reporting.md#rule-wp-34) — no ArcScope capability may derive from those modules' expression |
 | **Verification** | [MT-02](../assurance/reference-coverage/arcscope-serial-studio.md#rule-mt-02) of that matrix requires the §4 Pro-module list to be re-read on every drift check, because a feature can move into or out of it |
 
+<a id="rule-r-05"></a>
 ### R-05 — ArcVideoFoundation is not a reusable core
 
 | Field | Content |
@@ -67,6 +71,7 @@ The prerequisite evidence **[D-019](../decisions/phase-1-foundation-decisions.md
 | **Downstream consumers** | [WP-36](work-packages/36-arcslate-project-and-timeline.md#rule-wp-36), [WP-37](work-packages/37-arcslate-playback-and-processing.md#rule-wp-37) |
 | **Verification** | [MT-02](../assurance/reference-coverage/arcslate-arcvideo.md#rule-mt-02) of that matrix re-checks [AL-30](../assurance/reference-coverage/arcslate-arcvideo.md#rule-al-30) on drift: if the Foundation grows into the core its README describes, the assumption changes |
 
+<a id="rule-r-06"></a>
 ### R-06 — ArcSlate's reference baseline narrowed to the two actual repositories
 
 | Field | Content |
@@ -78,6 +83,7 @@ The prerequisite evidence **[D-019](../decisions/phase-1-foundation-decisions.md
 | **Downstream consumers** | [WP-36](work-packages/36-arcslate-project-and-timeline.md#rule-wp-36)–[WP-39](work-packages/39-arcslate-integration-and-portability.md#rule-wp-39); [`../assurance/reference-coverage-and-provenance.md`](../assurance/reference-coverage-and-provenance.md) `§1.1`, `§2.2`, `§7`; [`../requirements/products/arcslate.md`](../requirements/products/arcslate.md) `§1`; [`../requirements/00-product-scope-and-portfolio.md`](../requirements/00-product-scope-and-portfolio.md) `§9` |
 | **Verification** | The matrix completeness check now records **0 unresolved determinations**; the gates register records [OC-01](../assurance/open-gates-register.md#rule-oc-01) closed; no document claims Olive coverage or requires an Olive checkout |
 
+<a id="rule-r-07"></a>
 ### R-07 — Native NOTICE obligation extends to native assets
 
 | Field | Content |
@@ -116,6 +122,7 @@ The prerequisite evidence **[D-019](../decisions/phase-1-foundation-decisions.md
 | **Downstream consumers** | Every package that touches `src/`; principally [WP-01](work-packages/01-repository-reconciliation-and-target-layout.md#rule-wp-01), [WP-02](work-packages/02-build-governance-and-analyzer-policy.md#rule-wp-02), [WP-05](work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05), [WP-21](work-packages/21-cloud-host-and-persistence.md#rule-wp-21) |
 | **Verification** | The item-level table in `§4` of that document lists all 166 projects with measured content, so the claim is checkable rather than asserted |
 
+<a id="rule-r-10"></a>
 ### R-10 — Three licence-boundary defects, not pending work
 
 | Field | Content |
@@ -126,6 +133,7 @@ The prerequisite evidence **[D-019](../decisions/phase-1-foundation-decisions.md
 | **Downstream consumers** | [WP-01](work-packages/01-repository-reconciliation-and-target-layout.md#rule-wp-01), [WP-03](work-packages/03-contract-foundation-and-licence-split.md#rule-wp-03), [WP-30](work-packages/30-mobile-shared-architecture.md#rule-wp-30), [WP-32](work-packages/32-mobile-release-and-store-gates.md#rule-wp-32) — **[F-023](../assurance/open-gates-register.md#rule-f-023)** cannot pass while mobile files declare AGPL |
 | **Verification** | [WP-05.01](work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05.01)'s licence-boundary tests, with a negative fixture; and the [F-023](../assurance/open-gates-register.md#rule-f-023) dependency-closure audit in [WP-32.02](work-packages/32-mobile-release-and-store-gates.md#rule-wp-32.02) |
 
+<a id="rule-r-11"></a>
 ### R-11 — Four false conformance findings withdrawn
 
 | Field | Content |
@@ -136,9 +144,10 @@ The prerequisite evidence **[D-019](../decisions/phase-1-foundation-decisions.md
 | **Downstream consumers** | [WP-02](work-packages/02-build-governance-and-analyzer-policy.md#rule-wp-02), [WP-05](work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05), and every gate that depends on them |
 | **Verification** | `§5.3` and `§5.4` of the reconciliation document record the effective configuration and the measured harness, both re-checkable |
 
+<a id="rule-r-12"></a>
 ### R-12 — Native shims are ABI skeletons, and two are fenced
 
-Historical revision record: current transport, generated-code and repository rules are amended by P2-009…P2-013; do not execute superseded baseline mechanics.
+Historical revision record: current transport, generated-code and repository rules are amended by [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009)…[P2-013](../decisions/phase-2-specification-decisions.md#rule-p2-013); do not execute superseded baseline mechanics.
 
 | Field | Content |
 |---|---|
@@ -148,9 +157,10 @@ Historical revision record: current transport, generated-code and repository rul
 | **Downstream consumers** | [WP-01.03](work-packages/01-repository-reconciliation-and-target-layout.md#rule-wp-01.03) (fencing), [WP-35.04](work-packages/35-arcscope-integration-and-sync.md#rule-wp-35.04) and [WP-39.05](work-packages/39-arcslate-integration-and-portability.md#rule-wp-39.05) (the substitute analyses), [WP-37.00](work-packages/37-arcslate-playback-and-processing.md#rule-wp-37.00) (the shims that stay) |
 | **Verification** | [WP-01.03](work-packages/01-repository-reconciliation-and-target-layout.md#rule-wp-01.03)'s gate asserts the two fenced shims are unreferenceable and their analyses are scheduled against named sub-steps |
 
+<a id="rule-r-13"></a>
 ### R-13 — Preserve the single Cloud Host
 
-Historical revision record: current transport, generated-code and repository rules are amended by P2-009…P2-013; do not execute superseded baseline mechanics.
+Historical revision record: current transport, generated-code and repository rules are amended by [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009)…[P2-013](../decisions/phase-2-specification-decisions.md#rule-p2-013); do not execute superseded baseline mechanics.
 
 | Field | Content |
 |---|---|
@@ -190,6 +200,7 @@ Historical revision record: current transport, generated-code and repository rul
 | **Downstream consumers** | [WP-00.01](work-packages/00-specification-naming-and-rights-freeze.md#rule-wp-00.01), [WP-05.05](work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05.05), [`../assurance/traceability-matrix.md`](../assurance/traceability-matrix.md) |
 | **Verification** | The completeness check in `§5` of that document accounts for all 484 corpus statements |
 
+<a id="rule-r-16"></a>
 ### R-16 — Four invariants were missing and are now catalogued
 
 | Field | Content |
@@ -237,8 +248,8 @@ Historical revision record: current transport, generated-code and repository rul
 
 | # | Rule |
 |---|---|
-| EV-01 | **A future evidence-driven change is added here** with the same five fields. |
-| EV-02 | **A change with no evidence does not belong in this document** — and, absent a dependency-based reason, does not belong in the plan either. |
+| <a id="rule-ev-01"></a>EV-01 | **A future evidence-driven change is added here** with the same five fields. |
+| <a id="rule-ev-02"></a>EV-02 | **A change with no evidence does not belong in this document** — and, absent a dependency-based reason, does not belong in the plan either. |
 
 
 ## React/TypeScript Web redesign — user decision

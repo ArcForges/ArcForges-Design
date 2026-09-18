@@ -1,7 +1,7 @@
 # Application Assistant — Feature Requirements
 
-P2-012 current implementation authorities: [Complete assistant surface specification](../../experience/01-embedded-assistant.md); [Independent application history modes](../../architecture/data-model/05-application-history.md).
-> Effective scope: P2-012 and P2-013 amend the technology and application ownership below. **[P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
+[P2-012](../../decisions/phase-2-specification-decisions.md#rule-p2-012) current implementation authorities: [Complete assistant surface specification](../../experience/01-embedded-assistant.md); [Independent application history modes](../../architecture/data-model/05-application-history.md).
+> Effective scope: [P2-012](../../decisions/phase-2-specification-decisions.md#rule-p2-012) and [P2-013](../../decisions/phase-2-specification-decisions.md#rule-p2-013) amend the technology and application ownership below. **[P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Requirements / Products
@@ -25,12 +25,12 @@ Six sentences that decide almost every design question:
 
 | # | Requirement |
 |---|---|
-| PB-01 | Each embedded assistant provides quick answers, directed work and durable task interaction in one feature surface; it is not a separately installed product. |
-| PB-02 | Each host connects directly to Cloud through Platform APIs. The assistant is its own application's control UI, never a gateway for another product. |
-| PB-03 | Platform assistant packages implement full per-app conversations/messages/projects/profiles/skills. Local history and drafts are app-owned; opted-in Cloud histories and Cloud automation/execution retain server authority under model 05. No shared assistant database/service across products. |
-| PB-04 | **ArcChat never owns**: an authoritative ArcNotes document copy, a writable ArcNotes knowledge database, an authoritative ArcScope session, raw ArcScope capture, an ArcSlate timeline, ArcSlate media ownership, or any professional product's undo stack ([I-020](../01-normative-glossary-and-invariants.md#rule-i-020)). |
+| <a id="rule-pb-01"></a>PB-01 | Each embedded assistant provides quick answers, directed work and durable task interaction in one feature surface; it is not a separately installed product. |
+| <a id="rule-pb-02"></a>PB-02 | Each host connects directly to Cloud through Platform APIs. The assistant is its own application's control UI, never a gateway for another product. |
+| <a id="rule-pb-03"></a>PB-03 | Platform assistant packages implement full per-app conversations/messages/projects/profiles/skills. Local history and drafts are app-owned; opted-in Cloud histories and Cloud automation/execution retain server authority under model 05. No shared assistant database/service across products. |
+| <a id="rule-pb-04"></a>PB-04 | **ArcChat never owns**: an authoritative ArcNotes document copy, a writable ArcNotes knowledge database, an authoritative ArcScope session, raw ArcScope capture, an ArcSlate timeline, ArcSlate media ownership, or any professional product's undo stack ([I-020](../01-normative-glossary-and-invariants.md#rule-i-020)). |
 | <a id="rule-pb-05"></a>PB-05 | Thin Preview plus OpenArtifact: text/image previews, metadata and thumbnails are sufficient; professional editing opens the owning domain inside this application. Edit-approval previews remain reviewable; no separate workbench or cross-product handoff is implied. |
-| PB-06 | The native client and local capability bridge are open-source product functionality. Official AI requires an active paid service term with replenishing capacity and optional credits. Local AI, end-user BYOK and a desktop agent scheduler are excluded. |
+| <a id="rule-pb-06"></a>PB-06 | The native client and local capability bridge are open-source product functionality. Official AI requires an active paid service term with replenishing capacity and optional credits. Local AI, end-user BYOK and a desktop agent scheduler are excluded. |
 
 ### 1.1 Non-goals
 
@@ -55,11 +55,11 @@ Primary surfaces:
 
 | # | Requirement |
 |---|---|
-| IA-01 | **Home is not a marketing dashboard.** It is Start (a composer), Continue (recent work), and Attention (what needs the user). |
-| IA-02 | **The composer is the most important element of Home.** "Ask or do something" is the primary action. |
-| IA-03 | **Needs Attention is a projection** ([I-091](../01-normative-glossary-and-invariants.md#rule-i-091)) over pending approvals, waiting-too-long tasks, recoverable interruptions, budget approvals, conflicts and failed compensations. It is not a fifth task state. |
-| IA-04 | **Artifacts is a first-class surface with a global library**, because work products outlive the conversations that produced them. |
-| IA-05 | **Search need not occupy a permanent navigation slot**; the quick bar and per-surface search cover it. |
+| <a id="rule-ia-01"></a>IA-01 | **Home is not a marketing dashboard.** It is Start (a composer), Continue (recent work), and Attention (what needs the user). |
+| <a id="rule-ia-02"></a>IA-02 | **The composer is the most important element of Home.** "Ask or do something" is the primary action. |
+| <a id="rule-ia-03"></a>IA-03 | **Needs Attention is a projection** ([I-091](../01-normative-glossary-and-invariants.md#rule-i-091)) over pending approvals, waiting-too-long tasks, recoverable interruptions, budget approvals, conflicts and failed compensations. It is not a fifth task state. |
+| <a id="rule-ia-04"></a>IA-04 | **Artifacts is a first-class surface with a global library**, because work products outlive the conversations that produced them. |
+| <a id="rule-ia-05"></a>IA-05 | **Search need not occupy a permanent navigation slot**; the quick bar and per-surface search cover it. |
 
 ---
 
@@ -69,16 +69,16 @@ Primary surfaces:
 
 | # | Requirement |
 |---|---|
-| CV-01 | **A conversation need not belong to a project.** An unfiled conversation is a first-class, permanent state. |
-| CV-02 | **A conversation has at most one primary project**, which does not prevent it referencing other resources. |
-| CV-03 | Conversation lifecycle: active → archived → deleted. **Archive ≠ Delete** ([I-448](../01-normative-glossary-and-invariants.md#rule-i-448)). |
+| <a id="rule-cv-01"></a>CV-01 | **A conversation need not belong to a project.** An unfiled conversation is a first-class, permanent state. |
+| <a id="rule-cv-02"></a>CV-02 | **A conversation has at most one primary project**, which does not prevent it referencing other resources. |
+| <a id="rule-cv-03"></a>CV-03 | Conversation lifecycle: active → archived → deleted. **Archive ≠ Delete** ([I-448](../01-normative-glossary-and-invariants.md#rule-i-448)). |
 | <a id="rule-cv-04"></a>CV-04 | **Conversation history is append-and-branch, never rewrite.** Editing an earlier message creates a **new conversation branch**; regenerating creates an **alternative branch**; forking creates a **new conversation**. |
-| CV-05 | **Even deleting content leaves a trace**: redaction produces a tombstone, so history is never silently rewritten. |
-| CV-06 | Conversation titles are generated but always user-editable. |
-| CV-07 | **Message ≠ Task** ([I-108](../01-normative-glossary-and-invariants.md#rule-i-108)). A task is not a message; a conversation **links** to tasks. |
-| CV-08 | **A tool call is not ordinary chat text** ([I-109](../01-normative-glossary-and-invariants.md#rule-i-109)). It is an activity detail with its own presentation. |
-| CV-09 | **Model chain-of-thought is never displayed** ([I-107](../01-normative-glossary-and-invariants.md#rule-i-107)). |
-| CV-10 | Response details show the executed model, public route identity, customer tariff version, measured usage and charge status, tools and citations. Private supplier prices, provider credentials and unrestricted deployment policy are never exposed. |
+| <a id="rule-cv-05"></a>CV-05 | **Even deleting content leaves a trace**: redaction produces a tombstone, so history is never silently rewritten. |
+| <a id="rule-cv-06"></a>CV-06 | Conversation titles are generated but always user-editable. |
+| <a id="rule-cv-07"></a>CV-07 | **Message ≠ Task** ([I-108](../01-normative-glossary-and-invariants.md#rule-i-108)). A task is not a message; a conversation **links** to tasks. |
+| <a id="rule-cv-08"></a>CV-08 | **A tool call is not ordinary chat text** ([I-109](../01-normative-glossary-and-invariants.md#rule-i-109)). It is an activity detail with its own presentation. |
+| <a id="rule-cv-09"></a>CV-09 | **Model chain-of-thought is never displayed** ([I-107](../01-normative-glossary-and-invariants.md#rule-i-107)). |
+| <a id="rule-cv-10"></a>CV-10 | Response details show the executed model, public route identity, customer tariff version, measured usage and charge status, tools and citations. Private supplier prices, provider credentials and unrestricted deployment policy are never exposed. |
 
 ---
 
@@ -86,9 +86,9 @@ Primary surfaces:
 
 | # | Requirement |
 |---|---|
-| CO-01 | **The composer defaults to one simple layer.** Advanced agent controls exist but are never all expanded permanently. |
-| CO-02 | **The composer has a durable draft**, stored as device-local state. |
-| CO-03 | Two interaction contracts, not two products: |
+| <a id="rule-co-01"></a>CO-01 | **The composer defaults to one simple layer.** Advanced agent controls exist but are never all expanded permanently. |
+| <a id="rule-co-02"></a>CO-02 | **The composer has a durable draft**, stored as device-local state. |
+| <a id="rule-co-03"></a>CO-03 | Two interaction contracts, not two products: |
 
 | Mode | Contract |
 |---|---|
@@ -97,24 +97,24 @@ Primary surfaces:
 
 | # | Requirement |
 |---|---|
-| CO-04 | **Chat Mode does not mean "no tools"** ([I-117](../01-normative-glossary-and-invariants.md#rule-i-117)); it means a constrained side-effect contract. |
-| CO-05 | **Agent Mode is not unlimited permission** ([I-118](../01-normative-glossary-and-invariants.md#rule-i-118)). Every capability call passes the full security pipeline. |
-| CO-06 | **Automation is not a third composer mode.** It is a separate surface producing definitions ([AU-01](#rule-au-01)). |
+| <a id="rule-co-04"></a>CO-04 | **Chat Mode does not mean "no tools"** ([I-117](../01-normative-glossary-and-invariants.md#rule-i-117)); it means a constrained side-effect contract. |
+| <a id="rule-co-05"></a>CO-05 | **Agent Mode is not unlimited permission** ([I-118](../01-normative-glossary-and-invariants.md#rule-i-118)). Every capability call passes the full security pipeline. |
+| <a id="rule-co-06"></a>CO-06 | **Automation is not a third composer mode.** It is a separate surface producing definitions ([AU-01](#rule-au-01)). |
 | <a id="rule-co-07"></a>CO-07 | A complex agent task may display a **plan summary** ([EX-06](../05-ai-and-agent-execution.md#rule-ex-06)); a simple task must not be forced through a ceremonial plan. |
 
 ### 4.1 Context
 
 | # | Requirement |
 |---|---|
-| CX-01 | **Composer context is a first-class object**, not a hidden prompt suffix. |
-| CX-02 | **Input attachments and context references are different** ([I-110](../01-normative-glossary-and-invariants.md#rule-i-110), [I-111](../01-normative-glossary-and-invariants.md#rule-i-111)). An attachment is content the user supplied for this turn; a reference points at a resource that lives elsewhere. |
+| <a id="rule-cx-01"></a>CX-01 | **Composer context is a first-class object**, not a hidden prompt suffix. |
+| <a id="rule-cx-02"></a>CX-02 | **Input attachments and context references are different** ([I-110](../01-normative-glossary-and-invariants.md#rule-i-110), [I-111](../01-normative-glossary-and-invariants.md#rule-i-111)). An attachment is content the user supplied for this turn; a reference points at a resource that lives elsewhere. |
 | <a id="rule-cx-03"></a>CX-03 | **A context reference does not copy content** ([I-051](../01-normative-glossary-and-invariants.md#rule-i-051)). Content is materialised at retrieval time, minimally ([CP-02](../06-knowledge-search-and-retrieval.md#rule-cp-02)). |
-| CX-04 | **"Attach" never means "copy everything"** for a large resource. A large document, session or project is referenced and queried through its owner. |
-| CX-05 | The **`@` picker** addresses own-application resources, projects and artifacts; the **`/` prefix** addresses commands and skills. Their semantics are distinct and never overloaded. |
-| CX-06 | An application qualifier refers only to the selected current product/installation. It never imports an entire application or expands access to another product. |
-| CX-07 | **A Context Inspector must exist**, showing exactly what will be sent, with per-item removal. |
-| CX-08 | Three context lifetimes are distinguished: **pinned** (persists), **temporary** (this turn only), **project** (inherited from the project). |
-| CX-09 | **Context scope is never expanded silently** ([AS-05](../06-knowledge-search-and-retrieval.md#rule-as-05)). Any expansion is user-visible and enters the retrieval trace. |
+| <a id="rule-cx-04"></a>CX-04 | **"Attach" never means "copy everything"** for a large resource. A large document, session or project is referenced and queried through its owner. |
+| <a id="rule-cx-05"></a>CX-05 | The **`@` picker** addresses own-application resources, projects and artifacts; the **`/` prefix** addresses commands and skills. Their semantics are distinct and never overloaded. |
+| <a id="rule-cx-06"></a>CX-06 | An application qualifier refers only to the selected current product/installation. It never imports an entire application or expands access to another product. |
+| <a id="rule-cx-07"></a>CX-07 | **A Context Inspector must exist**, showing exactly what will be sent, with per-item removal. |
+| <a id="rule-cx-08"></a>CX-08 | Three context lifetimes are distinguished: **pinned** (persists), **temporary** (this turn only), **project** (inherited from the project). |
+| <a id="rule-cx-09"></a>CX-09 | **Context scope is never expanded silently** ([AS-05](../06-knowledge-search-and-retrieval.md#rule-as-05)). Any expansion is user-visible and enters the retrieval trace. |
 
 ---
 
@@ -124,11 +124,11 @@ Primary surfaces:
 
 | # | Requirement |
 |---|---|
-| PJ-01 | A project owns: instructions, references, its conversations, its tasks, its artifacts, a default agent profile and a default context. |
-| PJ-02 | **A project stores references, not copies** of professional data ([I-051](../01-normative-glossary-and-invariants.md#rule-i-051)). |
-| PJ-03 | **Deleting a project never cascades into external professional resources** ([LC-05](../08-extensions-and-developer-platform.md#rule-lc-05) analogue). Referenced ArcNotes documents, ArcScope sessions and ArcSlate projects survive. |
-| PJ-04 | ArcChat-owned content inside a deleted project — its conversations and tasks — is preserved or explicitly handled, never silently destroyed. |
-| PJ-05 | Local projects and history belong to this application's model 05 store. Explicit Cloud-history projects belong to its product/workspace partition. Cloud execution metadata and automation remain server-owned regardless of transcript mode. |
+| <a id="rule-pj-01"></a>PJ-01 | A project owns: instructions, references, its conversations, its tasks, its artifacts, a default agent profile and a default context. |
+| <a id="rule-pj-02"></a>PJ-02 | **A project stores references, not copies** of professional data ([I-051](../01-normative-glossary-and-invariants.md#rule-i-051)). |
+| <a id="rule-pj-03"></a>PJ-03 | **Deleting a project never cascades into external professional resources** ([LC-05](../08-extensions-and-developer-platform.md#rule-lc-05) analogue). Referenced ArcNotes documents, ArcScope sessions and ArcSlate projects survive. |
+| <a id="rule-pj-04"></a>PJ-04 | ArcChat-owned content inside a deleted project — its conversations and tasks — is preserved or explicitly handled, never silently destroyed. |
+| <a id="rule-pj-05"></a>PJ-05 | Local projects and history belong to this application's model 05 store. Explicit Cloud-history projects belong to its product/workspace partition. Cloud execution metadata and automation remain server-owned regardless of transcript mode. |
 
 ---
 
@@ -136,15 +136,15 @@ Primary surfaces:
 
 | # | Requirement |
 |---|---|
-| TC-01 | The Task Center projects Cloud agent tasks from interactive and automation origins. It may display associated native product jobs distinctly, with owner and availability; a render or capture does not become an AI task merely by appearing here. |
-| TC-02 | **A task does not require a conversation** ([I-108](../01-normative-glossary-and-invariants.md#rule-i-108)), and **a conversation may link many tasks**. |
-| TC-03 | Task detail contains: intent, status with reason, execution location, plan, operational trace, artifacts, approvals, cost, budget, origin, actor chain and outcome summary. |
-| TC-04 | **Task trace shows the operational trace only** ([I-107](../01-normative-glossary-and-invariants.md#rule-i-107), [PR-08](../05-ai-and-agent-execution.md#rule-pr-08)–[PR-10](../05-ai-and-agent-execution.md#rule-pr-10)). |
-| TC-05 | Task controls — pause, resume, cancel, retry, steer, approve, adjust budget — are available from one unified entry point. |
-| TC-06 | **A task outlives its user interface.** Closing a conversation, a window or the application does not end a task, and reopening finds it. |
-| TC-07 | On completion a task enters stable history and remains inspectable. |
-| TC-08 | **Cancel ≠ Delete** for tasks ([CN-06](../05-ai-and-agent-execution.md#rule-cn-06)). |
-| TC-09 | The full execution semantics are specified in [`../05-ai-and-agent-execution.md`](../05-ai-and-agent-execution.md); ArcChat is the surface, not a second model. |
+| <a id="rule-tc-01"></a>TC-01 | The Task Center projects Cloud agent tasks from interactive and automation origins. It may display associated native product jobs distinctly, with owner and availability; a render or capture does not become an AI task merely by appearing here. |
+| <a id="rule-tc-02"></a>TC-02 | **A task does not require a conversation** ([I-108](../01-normative-glossary-and-invariants.md#rule-i-108)), and **a conversation may link many tasks**. |
+| <a id="rule-tc-03"></a>TC-03 | Task detail contains: intent, status with reason, execution location, plan, operational trace, artifacts, approvals, cost, budget, origin, actor chain and outcome summary. |
+| <a id="rule-tc-04"></a>TC-04 | **Task trace shows the operational trace only** ([I-107](../01-normative-glossary-and-invariants.md#rule-i-107), [PR-08](../05-ai-and-agent-execution.md#rule-pr-08)–[PR-10](../05-ai-and-agent-execution.md#rule-pr-10)). |
+| <a id="rule-tc-05"></a>TC-05 | Task controls — pause, resume, cancel, retry, steer, approve, adjust budget — are available from one unified entry point. |
+| <a id="rule-tc-06"></a>TC-06 | **A task outlives its user interface.** Closing a conversation, a window or the application does not end a task, and reopening finds it. |
+| <a id="rule-tc-07"></a>TC-07 | On completion a task enters stable history and remains inspectable. |
+| <a id="rule-tc-08"></a>TC-08 | **Cancel ≠ Delete** for tasks ([CN-06](../05-ai-and-agent-execution.md#rule-cn-06)). |
+| <a id="rule-tc-09"></a>TC-09 | The full execution semantics are specified in [`../05-ai-and-agent-execution.md`](../05-ai-and-agent-execution.md); ArcChat is the surface, not a second model. |
 
 ---
 
@@ -155,11 +155,11 @@ Primary surfaces:
 | # | Requirement |
 |---|---|
 | <a id="rule-ar-01"></a>AR-01 | **An artifact need not be owned by ArcChat** ([I-058](../01-normative-glossary-and-invariants.md#rule-i-058), [I-059](../01-normative-glossary-and-invariants.md#rule-i-059)). An ArcNotes document produced by a task is owned by ArcNotes; ArcChat holds an `ArtifactRef`. |
-| AR-02 | **ArcChat-native artifacts exist** — a generated answer document, an exported summary, a produced file — and those it does own. |
-| AR-03 | The **Artifact Library** lists artifacts across tasks and projects, with owner, kind, provenance and availability. |
+| <a id="rule-ar-02"></a>AR-02 | **ArcChat-native artifacts exist** — a generated answer document, an exported summary, a produced file — and those it does own. |
+| <a id="rule-ar-03"></a>AR-03 | The **Artifact Library** lists artifacts across tasks and projects, with owner, kind, provenance and availability. |
 | <a id="rule-ar-04"></a>AR-04 | **Artifact preview is thin preview** ([PB-05](#rule-pb-05)). Deep work happens in the owning product. |
-| AR-05 | **Deleting an artifact entry is not deleting the source resource** ([I-060](../01-normative-glossary-and-invariants.md#rule-i-060), [LC-05](../08-extensions-and-developer-platform.md#rule-lc-05)). |
-| AR-06 | **Every artifact retains provenance**: producing task, run, actor chain, capability, source references and time. |
+| <a id="rule-ar-05"></a>AR-05 | **Deleting an artifact entry is not deleting the source resource** ([I-060](../01-normative-glossary-and-invariants.md#rule-i-060), [LC-05](../08-extensions-and-developer-platform.md#rule-lc-05)). |
+| <a id="rule-ar-06"></a>AR-06 | **Every artifact retains provenance**: producing task, run, actor chain, capability, source references and time. |
 | <a id="rule-ar-07"></a>AR-07 | **Artifact availability is a distinct state**: available, requires the owning application, requires a device, unavailable, or deleted at source. |
 
 ---
@@ -170,17 +170,17 @@ Primary surfaces:
 
 | # | Requirement |
 |---|---|
-| AP-01 | The capability panel shows this application's identity, version, health, compatibility, granted capabilities and explicitly chosen remote installation where applicable. |
-| AP-02 | Installed and running are distinct. Cloud-targeted work waits when the chosen application is closed; no automatic launch or substitute application. |
-| AP-03 | Capabilities are inspectable per application, with risk level, permission requirements and current availability. |
-| AP-04 | **The Apps page is not a third-party package manager in V1.** Package management belongs to the extension platform surfaces. |
-| AP-05 | The assistant offers this application's admitted capabilities and integrations. It has no catalogue of absent first-party applications or suite-install prompt. |
+| <a id="rule-ap-01"></a>AP-01 | The capability panel shows this application's identity, version, health, compatibility, granted capabilities and explicitly chosen remote installation where applicable. |
+| <a id="rule-ap-02"></a>AP-02 | Installed and running are distinct. Cloud-targeted work waits when the chosen application is closed; no automatic launch or substitute application. |
+| <a id="rule-ap-03"></a>AP-03 | Capabilities are inspectable per application, with risk level, permission requirements and current availability. |
+| <a id="rule-ap-04"></a>AP-04 | **The Apps page is not a third-party package manager in V1.** Package management belongs to the extension platform surfaces. |
+| <a id="rule-ap-05"></a>AP-05 | The assistant offers this application's admitted capabilities and integrations. It has no catalogue of absent first-party applications or suite-install prompt. |
 | <a id="rule-ap-06"></a>AP-06 | **Applications contribute six kinds of thing**, not merely "tools": **Actions**, **Agent Capabilities**, **Context Providers**, **Artifact Handlers**, **Suggested Tasks**, and **Deep Links / Open Targets**. |
-| AP-07 | **A capability's description is richer than an ordinary tool schema** (`CapabilityDescriptor` in the glossary): identity, typed method, contract version, input/output summary, whether it writes, required scope, risk level, confirmation requirement, dry-run/undo/cancel support, expected duration, resource size and concurrency limits. |
-| AP-08 | **Every capability carries a trust level** (§9). |
-| AP-09 | **Capability version compatibility exists from the first release** ([P-13](../00-product-scope-and-portfolio.md#rule-p-13), [CM-01](../12-quality-and-compatibility-contract.md#rule-cm-01)). |
-| AP-10 | **Application events may drive agent automation** — the event feeds an ordinary automation trigger with deduplication, causation and throttling ([EP-05](../08-extensions-and-developer-platform.md#rule-ep-05)). **V1 keeps event automation simple**; time triggers are the baseline. |
-| AP-11 | The sole Cloud Harness orchestrates work within the selected application. Its own bridge invokes typed product ports; navigation stays inside the current owner. |
+| <a id="rule-ap-07"></a>AP-07 | **A capability's description is richer than an ordinary tool schema** (`CapabilityDescriptor` in the glossary): identity, typed method, contract version, input/output summary, whether it writes, required scope, risk level, confirmation requirement, dry-run/undo/cancel support, expected duration, resource size and concurrency limits. |
+| <a id="rule-ap-08"></a>AP-08 | **Every capability carries a trust level** (§9). |
+| <a id="rule-ap-09"></a>AP-09 | **Capability version compatibility exists from the first release** ([P-13](../00-product-scope-and-portfolio.md#rule-p-13), [CM-01](../12-quality-and-compatibility-contract.md#rule-cm-01)). |
+| <a id="rule-ap-10"></a>AP-10 | **Application events may drive agent automation** — the event feeds an ordinary automation trigger with deduplication, causation and throttling ([EP-05](../08-extensions-and-developer-platform.md#rule-ep-05)). **V1 keeps event automation simple**; time triggers are the baseline. |
+| <a id="rule-ap-11"></a>AP-11 | The sole Cloud Harness orchestrates work within the selected application. Its own bridge invokes typed product ports; navigation stays inside the current owner. |
 
 ### 8.1 Capability invocation ordering
 
@@ -192,8 +192,8 @@ The agent's preference order is fixed:
 
 | # | Requirement |
 |---|---|
-| CI-01 | The agent must not reach for a lower tier when a higher tier can do the job. |
-| CI-02 | **Computer use is high-risk by construction** and carries the strictest approval posture. |
+| <a id="rule-ci-01"></a>CI-01 | The agent must not reach for a lower tier when a higher tier can do the job. |
+| <a id="rule-ci-02"></a>CI-02 | **Computer use is high-risk by construction** and carries the strictest approval posture. |
 
 ---
 
@@ -201,13 +201,13 @@ The agent's preference order is fixed:
 
 | # | Requirement |
 |---|---|
-| PM-01 | ArcChat applies the full security model in [`../07-security-privacy-and-trust.md`](../07-security-privacy-and-trust.md). |
-| PM-02 | **Allow is never a bare Yes/No.** A grant states scope, constraints and lifetime (`PM-02`, [PM-08](../07-security-privacy-and-trust.md#rule-pm-08)). |
-| PM-03 | **The pattern for a consequential operation is Preview → Confirm → Execute**, with an impact preview and, for R2 and above, a checkpoint. |
-| PM-04 | **An unrestricted autonomous mode is prohibited.** There is no "do anything without asking" switch. |
-| PM-05 | The approval interface shows: what will happen, to which resource at which revision, the effective risk, the execution location, and the consequences — never a bare "allow?" ([AP-02](../07-security-privacy-and-trust.md#rule-ap-02) in the security requirements). |
-| PM-06 | **An external effect is highlighted distinctly** from a local one. |
-| PM-07 | **Remote approval displays the execution location** and cannot substitute for local presence where required ([LP-02](../07-security-privacy-and-trust.md#rule-lp-02)). |
+| <a id="rule-pm-01"></a>PM-01 | ArcChat applies the full security model in [`../07-security-privacy-and-trust.md`](../07-security-privacy-and-trust.md). |
+| <a id="rule-pm-02"></a>PM-02 | **Allow is never a bare Yes/No.** A grant states scope, constraints and lifetime ([`PM-02`](../07-security-privacy-and-trust.md#rule-pm-02), [PM-08](../07-security-privacy-and-trust.md#rule-pm-08)). |
+| <a id="rule-pm-03"></a>PM-03 | **The pattern for a consequential operation is Preview → Confirm → Execute**, with an impact preview and, for R2 and above, a checkpoint. |
+| <a id="rule-pm-04"></a>PM-04 | **An unrestricted autonomous mode is prohibited.** There is no "do anything without asking" switch. |
+| <a id="rule-pm-05"></a>PM-05 | The approval interface shows: what will happen, to which resource at which revision, the effective risk, the execution location, and the consequences — never a bare "allow?" ([AP-02](../07-security-privacy-and-trust.md#rule-ap-02) in the security requirements). |
+| <a id="rule-pm-06"></a>PM-06 | **An external effect is highlighted distinctly** from a local one. |
+| <a id="rule-pm-07"></a>PM-07 | **Remote approval displays the execution location** and cannot substitute for local presence where required ([LP-02](../07-security-privacy-and-trust.md#rule-lp-02)). |
 
 ---
 
@@ -217,23 +217,23 @@ The agent's preference order is fixed:
 
 | # | Requirement |
 |---|---|
-| AG-01 | **A profile is not a running agent** ([I-112](../01-normative-glossary-and-invariants.md#rule-i-112)) and **not a model** ([I-113](../01-normative-glossary-and-invariants.md#rule-i-113)). |
-| AG-02 | A profile may contain: instructions, model policy, effort level, enabled skills, permitted capability classes, default budgets, default execution target, and default context policy. |
-| AG-03 | **A profile must not contain**: secrets, granted permissions, or entitlement ([I-233](../01-normative-glossary-and-invariants.md#rule-i-233)). |
-| AG-04 | A built-in default profile exists and may be **duplicated**, not silently mutated. |
-| AG-05 | **Editing a profile does not change a running task** ([EX-05](../05-ai-and-agent-execution.md#rule-ex-05)). |
-| AG-06 | **Deleting a profile does not delete historical tasks**; those retain their frozen snapshot. |
-| AG-07 | Profile resolution order: explicit per-message selection → conversation setting → project default → global default. |
+| <a id="rule-ag-01"></a>AG-01 | **A profile is not a running agent** ([I-112](../01-normative-glossary-and-invariants.md#rule-i-112)) and **not a model** ([I-113](../01-normative-glossary-and-invariants.md#rule-i-113)). |
+| <a id="rule-ag-02"></a>AG-02 | A profile may contain: instructions, model policy, effort level, enabled skills, permitted capability classes, default budgets, default execution target, and default context policy. |
+| <a id="rule-ag-03"></a>AG-03 | **A profile must not contain**: secrets, granted permissions, or entitlement ([I-233](../01-normative-glossary-and-invariants.md#rule-i-233)). |
+| <a id="rule-ag-04"></a>AG-04 | A built-in default profile exists and may be **duplicated**, not silently mutated. |
+| <a id="rule-ag-05"></a>AG-05 | **Editing a profile does not change a running task** ([EX-05](../05-ai-and-agent-execution.md#rule-ex-05)). |
+| <a id="rule-ag-06"></a>AG-06 | **Deleting a profile does not delete historical tasks**; those retain their frozen snapshot. |
+| <a id="rule-ag-07"></a>AG-07 | Profile resolution order: explicit per-message selection → conversation setting → project default → global default. |
 
 **Skill = a reusable agent instruction, methodology and working-knowledge package.**
 
 | # | Requirement |
 |---|---|
-| SK-01 | **Skill ≠ Capability** ([I-290](../01-normative-glossary-and-invariants.md#rule-i-290)) and **Skill ≠ MCP** ([I-292](../01-normative-glossary-and-invariants.md#rule-i-292)). A skill describing how to use a capability does not grant it. |
-| SK-02 | Skills come from three sources: built-in, user-authored, and packaged (`§1` of the extension requirements). User skills are directly editable. |
-| SK-03 | **Skills are versioned** (`SK-03`). |
-| SK-04 | A profile enables a set of skills; a project may recommend or enable skills. **There must not be two conflicting ownership models for skills.** |
-| SK-05 | The task trace may show which skills applied. |
+| <a id="rule-sk-01"></a>SK-01 | **Skill ≠ Capability** ([I-290](../01-normative-glossary-and-invariants.md#rule-i-290)) and **Skill ≠ MCP** ([I-292](../01-normative-glossary-and-invariants.md#rule-i-292)). A skill describing how to use a capability does not grant it. |
+| <a id="rule-sk-02"></a>SK-02 | Skills come from three sources: built-in, user-authored, and packaged (`§1` of the extension requirements). User skills are directly editable. |
+| <a id="rule-sk-03"></a>SK-03 | **Skills are versioned** ([`SK-03`](../08-extensions-and-developer-platform.md#rule-sk-03)). |
+| <a id="rule-sk-04"></a>SK-04 | A profile enables a set of skills; a project may recommend or enable skills. **There must not be two conflicting ownership models for skills.** |
+| <a id="rule-sk-05"></a>SK-05 | The task trace may show which skills applied. |
 
 ---
 
@@ -241,13 +241,13 @@ The agent's preference order is fixed:
 
 | # | Requirement |
 |---|---|
-| IN-01 | **MCP is external capability integration** ([MC-01](../08-extensions-and-developer-platform.md#rule-mc-01)). |
-| IN-02 | The MCP management surface shows: server identity, connection state, declared tools, granted tools, secrets by reference, health, and last error. |
-| IN-03 | **Adding a server does not let the agent call all its tools.** Tools are enabled deliberately ([MC-10](../08-extensions-and-developer-platform.md#rule-mc-10)). |
-| IN-04 | **MCP credentials are secrets**, not configuration strings ([SE-01](../07-security-privacy-and-trust.md#rule-se-01)). |
+| <a id="rule-in-01"></a>IN-01 | **MCP is external capability integration** ([MC-01](../08-extensions-and-developer-platform.md#rule-mc-01)). |
+| <a id="rule-in-02"></a>IN-02 | The MCP management surface shows: server identity, connection state, declared tools, granted tools, secrets by reference, health, and last error. |
+| <a id="rule-in-03"></a>IN-03 | **Adding a server does not let the agent call all its tools.** Tools are enabled deliberately ([MC-10](../08-extensions-and-developer-platform.md#rule-mc-10)). |
+| <a id="rule-in-04"></a>IN-04 | **MCP credentials are secrets**, not configuration strings ([SE-01](../07-security-privacy-and-trust.md#rule-se-01)). |
 | <a id="rule-in-05"></a>IN-05 | **A down MCP server must not break ArcChat.** The product continues; the integration shows degraded. |
-| IN-06 | **An MCP resource does not automatically become AI context** ([I-076](../01-normative-glossary-and-invariants.md#rule-i-076)). |
-| IN-07 | MCP servers and connectors share an Integrations surface. External agent/ACP adapters, handoff and agent delegation are excluded. |
+| <a id="rule-in-06"></a>IN-06 | **An MCP resource does not automatically become AI context** ([I-076](../01-normative-glossary-and-invariants.md#rule-i-076)). |
+| <a id="rule-in-07"></a>IN-07 | MCP servers and connectors share an Integrations surface. External agent/ACP adapters, handoff and agent delegation are excluded. |
 
 ---
 
@@ -259,20 +259,20 @@ Cloud service access has one customer mode: subscribed, operator-managed AI. The
 
 | # | Requirement |
 |---|---|
-| AI-01 | **The default is an Auto class** (for example Balanced), not a specific model. |
+| <a id="rule-ai-01"></a>AI-01 | **The default is an Auto class** (for example Balanced), not a specific model. |
 | <a id="rule-ai-02"></a>AI-02 | **Advanced users may pin an explicit model**, and a pinned model is never silently substituted ([PA-05](../11-policy-and-configuration.md#rule-pa-05)). |
-| AI-03 | **The model picker is a curated catalogue**, not an exhaustive provider list ([RT-09](../05-ai-and-agent-execution.md#rule-rt-09)), and shows relative cost class. |
-| AI-04 | The product understands **model capabilities** — context window, modality support, tool-calling ability, reasoning support — and uses them for routing and for warning the user. |
-| AI-05 | **Effort is a provider-neutral product control**, not a per-vendor parameter leaked into the interface. |
-| AI-06 | A conversation remembers its model policy; **a single message may override without permanently changing the default**. |
-| AI-07 | Resolution order: per-message override → conversation policy → project default → profile → global default, bounded by availability policy and budget. |
-| AI-08 | **A task freezes its AI policy at start** ([TR-04](../05-ai-and-agent-execution.md#rule-tr-04), [TS-01](../11-policy-and-configuration.md#rule-ts-01)). |
-| AI-09 | AI always uses the selected Cloud service realm. Provider unavailability cannot cause desktop inference, end-user key use or a silent switch to another service realm. |
-| AI-10 | **Auto routing is explainable**: the user can see which model ran and why. |
-| AI-11 | Usage shows replenishing included capacity, recovery timing, additional credits, configured rate/concurrency limits and per-response/task measured consumption. Extra-credit use is opt-in and visibly capped. |
-| AI-12 | **Long context is flagged before it is used** ([CO-04](../05-ai-and-agent-execution.md#rule-co-04)). |
-| AI-13 | The client starts without a paid term and exposes sign-in, preferences, application status and authorized cached history. Sending a model request requires Cloud connectivity and service eligibility; no provider setup or offline agent alternative is offered. |
-| AI-14 | **Provider failure is productised**: a clear state, a retry path, an alternative, and never a red-flagged conversation. |
+| <a id="rule-ai-03"></a>AI-03 | **The model picker is a curated catalogue**, not an exhaustive provider list ([RT-09](../05-ai-and-agent-execution.md#rule-rt-09)), and shows relative cost class. |
+| <a id="rule-ai-04"></a>AI-04 | The product understands **model capabilities** — context window, modality support, tool-calling ability, reasoning support — and uses them for routing and for warning the user. |
+| <a id="rule-ai-05"></a>AI-05 | **Effort is a provider-neutral product control**, not a per-vendor parameter leaked into the interface. |
+| <a id="rule-ai-06"></a>AI-06 | A conversation remembers its model policy; **a single message may override without permanently changing the default**. |
+| <a id="rule-ai-07"></a>AI-07 | Resolution order: per-message override → conversation policy → project default → profile → global default, bounded by availability policy and budget. |
+| <a id="rule-ai-08"></a>AI-08 | **A task freezes its AI policy at start** ([TR-04](../05-ai-and-agent-execution.md#rule-tr-04), [TS-01](../11-policy-and-configuration.md#rule-ts-01)). |
+| <a id="rule-ai-09"></a>AI-09 | AI always uses the selected Cloud service realm. Provider unavailability cannot cause desktop inference, end-user key use or a silent switch to another service realm. |
+| <a id="rule-ai-10"></a>AI-10 | **Auto routing is explainable**: the user can see which model ran and why. |
+| <a id="rule-ai-11"></a>AI-11 | Usage shows replenishing included capacity, recovery timing, additional credits, configured rate/concurrency limits and per-response/task measured consumption. Extra-credit use is opt-in and visibly capped. |
+| <a id="rule-ai-12"></a>AI-12 | **Long context is flagged before it is used** ([CO-04](../05-ai-and-agent-execution.md#rule-co-04)). |
+| <a id="rule-ai-13"></a>AI-13 | The client starts without a paid term and exposes sign-in, preferences, application status and authorized cached history. Sending a model request requires Cloud connectivity and service eligibility; no provider setup or offline agent alternative is offered. |
+| <a id="rule-ai-14"></a>AI-14 | **Provider failure is productised**: a clear state, a retry path, an alternative, and never a red-flagged conversation. |
 
 ---
 
@@ -283,14 +283,14 @@ Cloud service access has one customer mode: subscribed, operator-managed AI. The
 | # | Requirement |
 |---|---|
 | <a id="rule-se-01"></a>SE-01 | Search covers this application's assistant conversations, projects, tasks, artifacts and admitted own-product content. No federation to another product. |
-| SE-02 | **Search results display their owner** ([SR-09](../06-knowledge-search-and-retrieval.md#rule-sr-09)). |
-| SE-03 | **Search never copies authoritative data.** ArcChat does not build a second complete index of another product's content ([I-031](../01-normative-glossary-and-invariants.md#rule-i-031)). |
-| SE-04 | **Search does not cross workspaces by default** ([CS-05](../03-cloud-services-and-sync.md#rule-cs-05)). |
-| SE-05 | Local and cloud search share one user experience while remaining distinct in scope and capability. |
-| SE-06 | A result may open in the current application, attach as admitted context or join an own-app project. Cross-product handoff is future-only. |
-| SE-07 | **A search query is not a prompt** ([I-147](../01-normative-glossary-and-invariants.md#rule-i-147)). Typing a search does not invoke a model. |
-| SE-08 | Web search is a separately labelled AI capability with citations. Requests are operator-funded; processing results uses customer AI capacity. |
-| SE-09 | **ArcChat does not save whole web pages as invisible long-term knowledge** ([I-149](../01-normative-glossary-and-invariants.md#rule-i-149), [KP-01](../06-knowledge-search-and-retrieval.md#rule-kp-01)). Web content is request context and citation. |
+| <a id="rule-se-02"></a>SE-02 | **Search results display their owner** ([SR-09](../06-knowledge-search-and-retrieval.md#rule-sr-09)). |
+| <a id="rule-se-03"></a>SE-03 | **Search never copies authoritative data.** ArcChat does not build a second complete index of another product's content ([I-031](../01-normative-glossary-and-invariants.md#rule-i-031)). |
+| <a id="rule-se-04"></a>SE-04 | **Search does not cross workspaces by default** ([CS-05](../03-cloud-services-and-sync.md#rule-cs-05)). |
+| <a id="rule-se-05"></a>SE-05 | Local and cloud search share one user experience while remaining distinct in scope and capability. |
+| <a id="rule-se-06"></a>SE-06 | A result may open in the current application, attach as admitted context or join an own-app project. Cross-product handoff is future-only. |
+| <a id="rule-se-07"></a>SE-07 | **A search query is not a prompt** ([I-147](../01-normative-glossary-and-invariants.md#rule-i-147)). Typing a search does not invoke a model. |
+| <a id="rule-se-08"></a>SE-08 | Web search is a separately labelled AI capability with citations. Requests are operator-funded; processing results uses customer AI capacity. |
+| <a id="rule-se-09"></a>SE-09 | **ArcChat does not save whole web pages as invisible long-term knowledge** ([I-149](../01-normative-glossary-and-invariants.md#rule-i-149), [KP-01](../06-knowledge-search-and-retrieval.md#rule-kp-01)). Web content is request context and citation. |
 
 ---
 
@@ -298,13 +298,13 @@ Cloud service access has one customer mode: subscribed, operator-managed AI. The
 
 | # | Requirement |
 |---|---|
-| HM-01 | **There is no universal history domain.** Each object owns its own history: conversations own message history, tasks own run history, automations own run history, artifacts own provenance. A global Activity view is a **projection** ([I-274](../01-normative-glossary-and-invariants.md#rule-i-274)). |
-| HM-02 | Memory is explicitly layered and must never be a black box: **conversation context** (this conversation), **project instructions and context** (this project), **personal memory** (ArcChat-owned durable preference recall), and **long-term knowledge** — which is **ArcNotes**, not ArcChat memory ([I-156](../01-normative-glossary-and-invariants.md#rule-i-156)). |
+| <a id="rule-hm-01"></a>HM-01 | **There is no universal history domain.** Each object owns its own history: conversations own message history, tasks own run history, automations own run history, artifacts own provenance. A global Activity view is a **projection** ([I-274](../01-normative-glossary-and-invariants.md#rule-i-274)). |
+| <a id="rule-hm-02"></a>HM-02 | Memory is explicitly layered and must never be a black box: **conversation context** (this conversation), **project instructions and context** (this project), **personal memory** (ArcChat-owned durable preference recall), and **long-term knowledge** — which is **ArcNotes**, not ArcChat memory ([I-156](../01-normative-glossary-and-invariants.md#rule-i-156)). |
 | <a id="rule-hm-03"></a>HM-03 | **A runtime context summary is not user memory** ([I-158](../01-normative-glossary-and-invariants.md#rule-i-158)). Compaction is context engineering, not a durable record about the user. |
-| HM-04 | **Personal memory is visible, inspectable, editable and deletable.** |
-| HM-05 | **Memory is never shared silently across workspaces** ([AS-02](../06-knowledge-search-and-retrieval.md#rule-as-02)). |
+| <a id="rule-hm-04"></a>HM-04 | **Personal memory is visible, inspectable, editable and deletable.** |
+| <a id="rule-hm-05"></a>HM-05 | **Memory is never shared silently across workspaces** ([AS-02](../06-knowledge-search-and-retrieval.md#rule-as-02)). |
 | <a id="rule-hm-06"></a>HM-06 | **Temporary Chat** exists as an explicit mode: not stored in history. It follows the actual route in use — **it does not mean the model never received the data** — and the interface must say so honestly. |
-| HM-07 | **A genuinely long-running agent task is unsuitable for a purely temporary conversation**, and the product says so rather than silently losing state. |
+| <a id="rule-hm-07"></a>HM-07 | **A genuinely long-running agent task is unsuitable for a purely temporary conversation**, and the product says so rather than silently losing state. |
 
 ---
 
@@ -313,9 +313,9 @@ Cloud service access has one customer mode: subscribed, operator-managed AI. The
 | # | Requirement |
 |---|---|
 | <a id="rule-au-01"></a>AU-01 | Automations has its own page listing definitions with: schedule, trigger, execution target, policies, budget, enabled state, last run and next run. |
-| AU-02 | **The primary creation route is "Automate this"** from a task that already succeeded — far better than asking a user to write a schedule expression first. It extracts a **task template** ([AU-03](../05-ai-and-agent-execution.md#rule-au-03) in the AI requirements), not a saved trace. |
-| AU-03 | **Every automation run appears in the Task Center** as an ordinary task. |
-| AU-04 | Trigger, missed-run policy and concurrency policy are configured here and enforced per [`../05-ai-and-agent-execution.md`](../05-ai-and-agent-execution.md) §10. |
+| <a id="rule-au-02"></a>AU-02 | **The primary creation route is "Automate this"** from a task that already succeeded — far better than asking a user to write a schedule expression first. It extracts a **task template** ([AU-03](../05-ai-and-agent-execution.md#rule-au-03) in the AI requirements), not a saved trace. |
+| <a id="rule-au-03"></a>AU-03 | **Every automation run appears in the Task Center** as an ordinary task. |
+| <a id="rule-au-04"></a>AU-04 | Trigger, missed-run policy and concurrency policy are configured here and enforced per [`../05-ai-and-agent-execution.md`](../05-ai-and-agent-execution.md) §10. |
 
 ---
 
@@ -323,10 +323,10 @@ Cloud service access has one customer mode: subscribed, operator-managed AI. The
 
 | # | Requirement |
 |---|---|
-| QB-01 | An in-application Quick Bar opens the assistant or searches its own history/context. It is distinct from the current application's Command Palette; no system-wide hotkey or standalone launcher is required. |
-| QB-02 | Quick Bar shortcuts are application-local, platform-safe and user-configurable. |
-| QB-03 | Invocation may include the current host's explicitly selected context, subject to Context Inspector and egress rules. |
-| QB-04 | Opening the assistant without selected context starts with no professional context; it cannot inspect another application. |
+| <a id="rule-qb-01"></a>QB-01 | An in-application Quick Bar opens the assistant or searches its own history/context. It is distinct from the current application's Command Palette; no system-wide hotkey or standalone launcher is required. |
+| <a id="rule-qb-02"></a>QB-02 | Quick Bar shortcuts are application-local, platform-safe and user-configurable. |
+| <a id="rule-qb-03"></a>QB-03 | Invocation may include the current host's explicitly selected context, subject to Context Inspector and egress rules. |
+| <a id="rule-qb-04"></a>QB-04 | Opening the assistant without selected context starts with no professional context; it cannot inspect another application. |
 
 ---
 
@@ -334,13 +334,13 @@ Cloud service access has one customer mode: subscribed, operator-managed AI. The
 
 | # | Requirement |
 |---|---|
-| ON-01 | Onboarding is restrained and explains the Cloud account/service dependency where needed. No forced tour or suite install. |
-| ON-02 | AI onboarding selects an available Cloud model policy after sign-in, shows service eligibility and usage limits, and obtains any required purchase through the approved commerce surface. |
+| <a id="rule-on-01"></a>ON-01 | Onboarding is restrained and explains the Cloud account/service dependency where needed. No forced tour or suite install. |
+| <a id="rule-on-02"></a>ON-02 | AI onboarding selects an available Cloud model policy after sign-in, shows service eligibility and usage limits, and obtains any required purchase through the approved commerce surface. |
 | <a id="rule-on-03"></a>ON-03 | Local AI and all end-user BYOK setup paths are excluded. |
-| ON-04 | Official AI requires an ArcForges account and active paid service term. Extra credits alone do not activate AI. Self-hosting uses the configured operator service grant, not official credits. |
-| ON-05 | Onboarding explains the owning application's capabilities and explicit Cloud target. No local application discovery or suite-install workflow exists. |
-| ON-06 | **Permissions are not front-loaded into onboarding** ([UX-01](../07-security-privacy-and-trust.md#rule-ux-01)). They are just-in-time. |
-| ON-07 | For an eligible account, first value is a first answer or simple Cloud agent task. An ineligible/offline state gives a precise next action rather than a fake response. |
+| <a id="rule-on-04"></a>ON-04 | Official AI requires an ArcForges account and active paid service term. Extra credits alone do not activate AI. Self-hosting uses the configured operator service grant, not official credits. |
+| <a id="rule-on-05"></a>ON-05 | Onboarding explains the owning application's capabilities and explicit Cloud target. No local application discovery or suite-install workflow exists. |
+| <a id="rule-on-06"></a>ON-06 | **Permissions are not front-loaded into onboarding** ([UX-01](../07-security-privacy-and-trust.md#rule-ux-01)). They are just-in-time. |
+| <a id="rule-on-07"></a>ON-07 | For an eligible account, first value is a first answer or simple Cloud agent task. An ineligible/offline state gives a precise next action rather than a fake response. |
 
 ---
 
@@ -358,12 +358,12 @@ Cloud service access has one customer mode: subscribed, operator-managed AI. The
 
 | # | Requirement |
 |---|---|
-| ST-01 | **Skills, MCP and Apps are manageable product objects with their own surfaces**, not buried in Settings. Settings carries defaults and preferences. |
-| ST-02 | End users never configure model-provider credentials. MCP/connector credentials remain purpose-scoped secrets by reference; they cannot act as a BYOK inference bypass. |
-| ST-03 | Cloud history and AI processing are separate choices. Desktop history defaults local; explicit Cloud history is server-owned; temporary mode is not stored. Cloud execution metadata remains authoritative even when bodies stay local. |
-| ST-04 | Every Cloud agent operation uses one selected owner workspace for data authorization, service eligibility and metering. Cross-realm billing or a local-only agent task billed elsewhere is excluded. |
-| ST-05 | Unsent drafts and local-only professional files are never uploaded merely on sign-in. Sending/attaching explicitly authorizes only the displayed content scope. |
-| ST-06 | **The active workspace and context scope are always visible** ([AC-03](../09-shared-desktop-experience.md#rule-ac-03)), and there is **no silent cross-workspace context** ([AS-02](../06-knowledge-search-and-retrieval.md#rule-as-02)). |
+| <a id="rule-st-01"></a>ST-01 | **Skills, MCP and Apps are manageable product objects with their own surfaces**, not buried in Settings. Settings carries defaults and preferences. |
+| <a id="rule-st-02"></a>ST-02 | End users never configure model-provider credentials. MCP/connector credentials remain purpose-scoped secrets by reference; they cannot act as a BYOK inference bypass. |
+| <a id="rule-st-03"></a>ST-03 | Cloud history and AI processing are separate choices. Desktop history defaults local; explicit Cloud history is server-owned; temporary mode is not stored. Cloud execution metadata remains authoritative even when bodies stay local. |
+| <a id="rule-st-04"></a>ST-04 | Every Cloud agent operation uses one selected owner workspace for data authorization, service eligibility and metering. Cross-realm billing or a local-only agent task billed elsewhere is excluded. |
+| <a id="rule-st-05"></a>ST-05 | Unsent drafts and local-only professional files are never uploaded merely on sign-in. Sending/attaching explicitly authorizes only the displayed content scope. |
+| <a id="rule-st-06"></a>ST-06 | **The active workspace and context scope are always visible** ([AC-03](../09-shared-desktop-experience.md#rule-ac-03)), and there is **no silent cross-workspace context** ([AS-02](../06-knowledge-search-and-retrieval.md#rule-as-02)). |
 
 ---
 
@@ -386,7 +386,7 @@ Cloud service access has one customer mode: subscribed, operator-managed AI. The
 | <a id="rule-ex-01"></a>EX-01 | Local history exports one committed conversation snapshot as assistant-history.v1 with optional Markdown. Cloud history uses JSON/text plus an attachment-availability manifest from the owned Cloud export job. Missing resources are reported; no secret or pending grant is exported. |
 | <a id="rule-ex-02"></a>EX-02 | Cloud task-summary and selected artifact export preserve provenance and declared scope. They exclude secret credentials, private operational traces and another product’s unselected data. |
 | <a id="rule-ex-03"></a>EX-03 | **ArcChat export never includes API keys or secrets** ([EX-10](../13-data-formats-and-portability.md#rule-ex-10) in the data requirements). |
-| EX-04 | **Public share links are not in V1** (`§18` of the cloud requirements). Sharing is by export. |
+| <a id="rule-ex-04"></a>EX-04 | **Public share links are not in V1** (`§18` of the cloud requirements). Sharing is by export. |
 
 ---
 
@@ -394,10 +394,10 @@ Cloud service access has one customer mode: subscribed, operator-managed AI. The
 
 | # | Requirement |
 |---|---|
-| BL-01 | Visible residence and last-window close follow shared desktop BR-01; it is a per-host option, default off. Quit disconnects only this application's tools; Cloud schedules and tasks remain server-owned. |
-| BL-02 | **It must never reside in the background secretly.** The state is visible, and the user can stop it. |
-| BL-03 | Restart recovers Cloud task projections and durable local tool receipts. A lost reply reconciles by operation identity; the desktop never recreates or blindly reruns the Cloud agent loop. |
-| BL-04 | Each assistant surface is owned by its application process; no standalone assistant/system service or cross-product runtime is installed. |
+| <a id="rule-bl-01"></a>BL-01 | Visible residence and last-window close follow shared desktop [BR-01](../09-shared-desktop-experience.md#rule-br-01); it is a per-host option, default off. Quit disconnects only this application's tools; Cloud schedules and tasks remain server-owned. |
+| <a id="rule-bl-02"></a>BL-02 | **It must never reside in the background secretly.** The state is visible, and the user can stop it. |
+| <a id="rule-bl-03"></a>BL-03 | Restart recovers Cloud task projections and durable local tool receipts. A lost reply reconciles by operation identity; the desktop never recreates or blindly reruns the Cloud agent loop. |
+| <a id="rule-bl-04"></a>BL-04 | Each assistant surface is owned by its application process; no standalone assistant/system service or cross-product runtime is installed. |
 
 ---
 

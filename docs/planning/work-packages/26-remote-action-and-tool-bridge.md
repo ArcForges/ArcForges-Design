@@ -1,7 +1,7 @@
 <a id="rule-wp-26"></a>
 # WP-26 — Application Presence and One-Application Tool Bridge
 
-> Status: Authoritative — P2-012
+> Status: Authoritative — [P2-012](../../decisions/phase-2-specification-decisions.md#rule-p2-012)
 > Upstream: `17` · `24` · `25` · Downstream: `31` · `33` · `36` · `49` · `52`
 > Repositories: Cloud + DesktopPlatform. Consume only exact published upstream artifacts; no adjacent sources.
 
@@ -105,7 +105,7 @@ Changed application scope, storage, transport, UI and deployment behavior are go
 
 ## 7. Tests and verification evidence
 
-Acceptance includes every amended §5 producer/consumer and WP-26.90 evidence. Current P2-013 contracts/data/runtime rules are tested in the original owner implementation, not a detached explanatory sample.
+Acceptance includes every amended §5 producer/consumer and [WP-26.90](#rule-wp-26.90) evidence. Current [P2-013](../../decisions/phase-2-specification-decisions.md#rule-p2-013) contracts/data/runtime rules are tested in the original owner implementation, not a detached explanatory sample.
 
 | Evidence | Produced by |
 |---|---|

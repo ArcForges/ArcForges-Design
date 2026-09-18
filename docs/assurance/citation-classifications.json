@@ -1,0 +1,1617 @@
+{
+  "schemaVersion": 1,
+  "license": "AGPL-3.0-only",
+  "authority": "docs/architecture/29-design-policy-export.md",
+  "classifications": [
+    {
+      "path": "docs/assurance/invariant-coverage.md",
+      "lineSha256": "46ff4491d147a8480b058d2d6df0a8a55fe361d6adab4d3e4b0b56303daa3dba",
+      "token": "I-018",
+      "occurrences": 1,
+      "kind": "reserved-allocation",
+      "reason": "Endpoint of the explicitly reserved invariant headroom in section 2; no catalogue row or implementation obligation exists for this identifier.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/invariant-coverage.md",
+      "lineSha256": "46ff4491d147a8480b058d2d6df0a8a55fe361d6adab4d3e4b0b56303daa3dba",
+      "token": "I-019",
+      "occurrences": 1,
+      "kind": "reserved-allocation",
+      "reason": "Endpoint of the explicitly reserved invariant headroom in section 2; no catalogue row or implementation obligation exists for this identifier.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/invariant-coverage.md",
+      "lineSha256": "db2a5f20a7305e7a5ff247c5f3416b6db228f1747bd0f1a3842fb4d235149476",
+      "token": "I-033",
+      "occurrences": 1,
+      "kind": "reserved-allocation",
+      "reason": "Endpoint of the explicitly reserved invariant headroom in section 2; no catalogue row or implementation obligation exists for this identifier.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/invariant-coverage.md",
+      "lineSha256": "db2a5f20a7305e7a5ff247c5f3416b6db228f1747bd0f1a3842fb4d235149476",
+      "token": "I-039",
+      "occurrences": 1,
+      "kind": "reserved-allocation",
+      "reason": "Endpoint of the explicitly reserved invariant headroom in section 2; no catalogue row or implementation obligation exists for this identifier.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/invariant-coverage.md",
+      "lineSha256": "c25a9fcd010fef83fedfa139ea64d529ecf3448433f3425bbce322a7ae6879e0",
+      "token": "I-078",
+      "occurrences": 1,
+      "kind": "reserved-allocation",
+      "reason": "Endpoint of the explicitly reserved invariant headroom in section 2; no catalogue row or implementation obligation exists for this identifier.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/invariant-coverage.md",
+      "lineSha256": "c25a9fcd010fef83fedfa139ea64d529ecf3448433f3425bbce322a7ae6879e0",
+      "token": "I-079",
+      "occurrences": 1,
+      "kind": "reserved-allocation",
+      "reason": "Endpoint of the explicitly reserved invariant headroom in section 2; no catalogue row or implementation obligation exists for this identifier.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/invariant-coverage.md",
+      "lineSha256": "b5702714e21bf85e7ed7fdf5485d98f62f75c7c964aa08a0478350be89aa487e",
+      "token": "I-126",
+      "occurrences": 1,
+      "kind": "reserved-allocation",
+      "reason": "Endpoint of the explicitly reserved invariant headroom in section 2; no catalogue row or implementation obligation exists for this identifier.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/invariant-coverage.md",
+      "lineSha256": "b5702714e21bf85e7ed7fdf5485d98f62f75c7c964aa08a0478350be89aa487e",
+      "token": "I-129",
+      "occurrences": 1,
+      "kind": "reserved-allocation",
+      "reason": "Endpoint of the explicitly reserved invariant headroom in section 2; no catalogue row or implementation obligation exists for this identifier.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/invariant-coverage.md",
+      "lineSha256": "564f35572056f4821268fc8e6d49a8757d38b2236f33c21fe3d2121653fe282e",
+      "token": "I-170",
+      "occurrences": 1,
+      "kind": "reserved-allocation",
+      "reason": "Endpoint of the explicitly reserved invariant headroom in section 2; no catalogue row or implementation obligation exists for this identifier.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/invariant-coverage.md",
+      "lineSha256": "564f35572056f4821268fc8e6d49a8757d38b2236f33c21fe3d2121653fe282e",
+      "token": "I-179",
+      "occurrences": 1,
+      "kind": "reserved-allocation",
+      "reason": "Endpoint of the explicitly reserved invariant headroom in section 2; no catalogue row or implementation obligation exists for this identifier.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/invariant-coverage.md",
+      "lineSha256": "a94115c2309a91c7e7231de37d322be7ea9b6d299648196d9e45f1c0aec9ca33",
+      "token": "I-225",
+      "occurrences": 1,
+      "kind": "reserved-allocation",
+      "reason": "Endpoint of the explicitly reserved invariant headroom in section 2; no catalogue row or implementation obligation exists for this identifier.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/invariant-coverage.md",
+      "lineSha256": "a94115c2309a91c7e7231de37d322be7ea9b6d299648196d9e45f1c0aec9ca33",
+      "token": "I-229",
+      "occurrences": 1,
+      "kind": "reserved-allocation",
+      "reason": "Endpoint of the explicitly reserved invariant headroom in section 2; no catalogue row or implementation obligation exists for this identifier.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/invariant-coverage.md",
+      "lineSha256": "9d1777e1ab317a5e1f9991f0d2bcd3b634cfd9bc5a6444f2807a7c429c1ae2d2",
+      "token": "I-282",
+      "occurrences": 1,
+      "kind": "reserved-allocation",
+      "reason": "Endpoint of the explicitly reserved invariant headroom in section 2; no catalogue row or implementation obligation exists for this identifier.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/invariant-coverage.md",
+      "lineSha256": "9d1777e1ab317a5e1f9991f0d2bcd3b634cfd9bc5a6444f2807a7c429c1ae2d2",
+      "token": "I-289",
+      "occurrences": 1,
+      "kind": "reserved-allocation",
+      "reason": "Endpoint of the explicitly reserved invariant headroom in section 2; no catalogue row or implementation obligation exists for this identifier.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/invariant-coverage.md",
+      "lineSha256": "06c6f6654fed6d358ca7582069a9bf43c2cc3cbb4d3df55e6be89edf70b625a1",
+      "token": "I-331",
+      "occurrences": 1,
+      "kind": "reserved-allocation",
+      "reason": "Endpoint of the explicitly reserved invariant headroom in section 2; no catalogue row or implementation obligation exists for this identifier.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/invariant-coverage.md",
+      "lineSha256": "06c6f6654fed6d358ca7582069a9bf43c2cc3cbb4d3df55e6be89edf70b625a1",
+      "token": "I-339",
+      "occurrences": 1,
+      "kind": "reserved-allocation",
+      "reason": "Endpoint of the explicitly reserved invariant headroom in section 2; no catalogue row or implementation obligation exists for this identifier.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/invariant-coverage.md",
+      "lineSha256": "f9d0a6b292f8134f8f9f8afa93fb313e72e0389a66ee5c33370fd08460e8518e",
+      "token": "I-373",
+      "occurrences": 1,
+      "kind": "reserved-allocation",
+      "reason": "Endpoint of the explicitly reserved invariant headroom in section 2; no catalogue row or implementation obligation exists for this identifier.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/invariant-coverage.md",
+      "lineSha256": "f9d0a6b292f8134f8f9f8afa93fb313e72e0389a66ee5c33370fd08460e8518e",
+      "token": "I-379",
+      "occurrences": 1,
+      "kind": "reserved-allocation",
+      "reason": "Endpoint of the explicitly reserved invariant headroom in section 2; no catalogue row or implementation obligation exists for this identifier.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/invariant-coverage.md",
+      "lineSha256": "b92a14323d32e7a88a6d2e4f3f0e40e0d5c0baf94e8a7284db394f06d5460d1f",
+      "token": "I-406",
+      "occurrences": 1,
+      "kind": "reserved-allocation",
+      "reason": "Endpoint of the explicitly reserved invariant headroom in section 2; no catalogue row or implementation obligation exists for this identifier.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/invariant-coverage.md",
+      "lineSha256": "b92a14323d32e7a88a6d2e4f3f0e40e0d5c0baf94e8a7284db394f06d5460d1f",
+      "token": "I-409",
+      "occurrences": 1,
+      "kind": "reserved-allocation",
+      "reason": "Endpoint of the explicitly reserved invariant headroom in section 2; no catalogue row or implementation obligation exists for this identifier.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/invariant-coverage.md",
+      "lineSha256": "d8bb40b973cdf87c43674bd60920b92d5ec682bc949803f51dd111fa8a0a2bc6",
+      "token": "I-449",
+      "occurrences": 1,
+      "kind": "reserved-allocation",
+      "reason": "Endpoint of the explicitly reserved invariant headroom in section 2; no catalogue row or implementation obligation exists for this identifier.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/invariant-coverage.md",
+      "lineSha256": "d8bb40b973cdf87c43674bd60920b92d5ec682bc949803f51dd111fa8a0a2bc6",
+      "token": "I-459",
+      "occurrences": 1,
+      "kind": "reserved-allocation",
+      "reason": "Endpoint of the explicitly reserved invariant headroom in section 2; no catalogue row or implementation obligation exists for this identifier.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "1b5b984b9bb3137449942a8c5e380ca548beba12988c13e3b567a578e302ae5c",
+      "token": "P2-012",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "f557a59fd1995a0ad8ce64d9f35e505d3c450ef07e2606fcfe9374eb5ff75bc6",
+      "token": "IRF-03",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "8f010b126a56425410ba60602ab704e5f0241861e5cafb76b4de1de511dbe67b",
+      "token": "IRS-03",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "5023d5d8a32543750c3c753d9ff0928fafd31b4665c9b701632d3d3e7c3df730",
+      "token": "IRS-03",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "cce6ddfda76cfe78c0a5660666e462d99ab0d45edf3405e5a7a93aa845b1167a",
+      "token": "IRS-03",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "9396a881130675c9fe4e663f3352aa99a0e8c42cc7be98ab0b44bbc8845bfa13",
+      "token": "IRS-03",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "0bd2267e758f2ece5465b1148fd58a92801bf46a8489605b0987dafb3ae7ae9b",
+      "token": "IRS-03",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "bace41bb722904119aacc1d0fe984ab1ecf15fa77f6611a0b1505ae9ea49a316",
+      "token": "IRS-03",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "dfa96f12e46eba0736640752ce441310656768480fdd59d9cba82d789a0895f8",
+      "token": "IRS-03",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "85ef121a814b784d4c5f5f2da9e11dca423d072d08667f00da6b054bd4ee2c4e",
+      "token": "IRS-03",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "39c9c5c32d4b750b04c41f275dd92387addab16b6da618706ca6310fbfcf047e",
+      "token": "IRS-07",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "e1524f6543ced3dc0d9284279d54f538443da679747bbdac3446b08726a57097",
+      "token": "IRS-03",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "5c35d8291eab55ebba4fb238bbc212ef59a978f46a972c30dbac486d7f7d05b2",
+      "token": "CF-03",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "5c35d8291eab55ebba4fb238bbc212ef59a978f46a972c30dbac486d7f7d05b2",
+      "token": "EN-08",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "3a4b0812b7cc50f6561629c384b97397bdad3f9c11848cf2fc267d6f0c680d98",
+      "token": "IRS-03",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "aea42e2e9cc907cf69366ab45196290c8aa7e42ead47ae99b8d6c2e436b4cdef",
+      "token": "IRS-03",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "f2f5bde6a24b023497f59a1f7a076977bbdfc22a79764b528001eec6c4422422",
+      "token": "D-014",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "f2f5bde6a24b023497f59a1f7a076977bbdfc22a79764b528001eec6c4422422",
+      "token": "D-016",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "f2f5bde6a24b023497f59a1f7a076977bbdfc22a79764b528001eec6c4422422",
+      "token": "IRS-07",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "d8e5e96643dc541a32e7208349532d992341250f964fb66f6a49862ae2dffcc9",
+      "token": "IRS-07",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "f64037699b4c743888ca86def7fc21cc0093e05f980b6afd8a0519d5e7ad73ee",
+      "token": "BR-04",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "f64037699b4c743888ca86def7fc21cc0093e05f980b6afd8a0519d5e7ad73ee",
+      "token": "D-018",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "b2d9dae449f54d65747fd5b50f542e9dca86bf92b9159a02b1a14e5ebaf48722",
+      "token": "IRS-07",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "648e7f206a97fa162b56a572926d2b4a512cdda7498b8c63db9aaa46ef31ceca",
+      "token": "IRS-03",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "4e4d65f4b24c52bc3d6309522dae8ddc51d71ff4b75e8ab8438dd9fc0b58b786",
+      "token": "IRS-07",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "f7529e1c8639dd8e6dcf23f374df136a1c8c0ceed614531ddae03785f71a9090",
+      "token": "IRS-03",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "39d2c41e709e0981300a071cd990c72c54e7f922e5854d65bdc5a05d808962ac",
+      "token": "WP-22.07",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "39d2c41e709e0981300a071cd990c72c54e7f922e5854d65bdc5a05d808962ac",
+      "token": "IRS-03",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "f940acf663cdec630dbbbdef7b89d750baaeab4a7f988cda43996cc36fe18cc3",
+      "token": "IRS-07",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "b6be9e13d1dbc41398885a35350d4dc8e9d1f0a450419bfb542b4496f7d23781",
+      "token": "IRS-07",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "05f6018946e627fc6e79eaed4bf1741f29f42fb113443e3eca130c5fe4bb360f",
+      "token": "IRS-07",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "822c4eff87a88bd408a8d071d20ce8cbe8ed5156f77f75b0f4510b316036e3aa",
+      "token": "IRS-07",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "dd7aa9ebcf35ebecdea30b62c733c3c8ac205ba8e50997a6c4300b69c5ff220c",
+      "token": "WP-52.05",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "dd7aa9ebcf35ebecdea30b62c733c3c8ac205ba8e50997a6c4300b69c5ff220c",
+      "token": "IRS-07",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "312000a09f3a71292555f5ff875d68fafbb2e02dcffbacfbfdd8fd10ed944daf",
+      "token": "IRS-07",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "135535f11c7ac76baea748aec3931fab8b4b11fec1afb90cb8e950beffb59dc9",
+      "token": "WP-52.05",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "135535f11c7ac76baea748aec3931fab8b4b11fec1afb90cb8e950beffb59dc9",
+      "token": "IRS-07",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "1e92e5dbf4d4eb40458daf2f34e50b73462638f61882c318528eea2672521d11",
+      "token": "IRS-07",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "e21af6e5e2ea94e3c8b8041b1f689d179e43967364db75da85099252b37f9e0e",
+      "token": "IRS-07",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "c8ed10ce1e548bb9dc8a101440cbda5f486b0619e3efff47d224902b84089980",
+      "token": "IRS-03",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "4be64017fbe05e58774397fdd9e2535730f25d3f8fa2507273084348e05e314f",
+      "token": "IRS-03",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "0c1190f5fb75ce557328ad875467c3b930650da3b56d67e2bc2f2fead85095e9",
+      "token": "IRS-03",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "0f59ca95cd11b0d69b830b30b44bffabf0f71e1e421b9b9d1bda45e9696536a2",
+      "token": "IRS-03",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "6284c4cfdd3c4f2d276573c797b55cc4ff6106e8c93fd228fc0cc61041aa60a3",
+      "token": "IRS-03",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "ea7398b6b6a56c32001ca8d9f29287faae73dce2c0e8e1d61527a264f87f5455",
+      "token": "I-031",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "ea7398b6b6a56c32001ca8d9f29287faae73dce2c0e8e1d61527a264f87f5455",
+      "token": "IRS-03",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "5cf48448b50c67fee22b0da5db1586405ef55eba88135b806464813812818841",
+      "token": "IRS-03",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "bf39f9fe1063931b84ebcd71a6eeeccde7b1b647a47705bab391ecb3eb0c9c6a",
+      "token": "IRS-03",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "53c8987484edd1ddfc598dbd6af3cd1975b40471505d1d3ce7b7742fae324065",
+      "token": "IRS-03",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "5037a8d7516d6572f1b2990ce13e0882c1e450f3b6d738712cf927ade1116c89",
+      "token": "CP-02",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "5037a8d7516d6572f1b2990ce13e0882c1e450f3b6d738712cf927ade1116c89",
+      "token": "IRS-03",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "b8ce4292ec31181f846a64ef1c4c8582c4adefe4436730012b7af4f7bcd5dea3",
+      "token": "SR-03",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "b8ce4292ec31181f846a64ef1c4c8582c4adefe4436730012b7af4f7bcd5dea3",
+      "token": "IRS-03",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "bbc13ab96435ad51cde55f464470b4edd8574649496dec06fdd57144a4c74f88",
+      "token": "IRS-03",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "e55030784e4506b821d6d1f0b628635d219a601c253dd657f4534db0dfe448ee",
+      "token": "IRS-03",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "a2e4772ccdcd450cbff4ad9b26c636c63d1448873aca0c21c9f6a0e8723a308f",
+      "token": "IRS-03",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "0fa8c7a6a56b54e5e90683481e8cb8a44718081b1d8984b38fd53de9717b4b8c",
+      "token": "TA-02",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "0fa8c7a6a56b54e5e90683481e8cb8a44718081b1d8984b38fd53de9717b4b8c",
+      "token": "IRS-03",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "322ae916d2ecf9306d703d5f24662aa64ca70e194b3e635353d100408b8839a8",
+      "token": "AT-04",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "322ae916d2ecf9306d703d5f24662aa64ca70e194b3e635353d100408b8839a8",
+      "token": "IRS-03",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "361c0706558baa4c85935e9a7da185886dd32746093489c84c74295c466eacf4",
+      "token": "IRS-03",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "52c30d4e1259f28d7ab1dea29d0aab4aed200fdb51208a146551b2fd7d2248de",
+      "token": "HO-05",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "52c30d4e1259f28d7ab1dea29d0aab4aed200fdb51208a146551b2fd7d2248de",
+      "token": "AV-04",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "9a80ab373e329b083e3898223625fbaa01071bbced28a503ab89eaf69db16f36",
+      "token": "IRS-03",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "2270754838286f363e6d3d0848785c29097d8584c1edf9917b30397f9f7aab43",
+      "token": "SI-17",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "8f9ba37b50ec8019a028d269fdd797120cb21c1555dffc04e98f2885d1bc4ff9",
+      "token": "SI-27",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "6be9bd33f859e3d859d6966896ac43b1a084b369b737f6a65764fc03f647b210",
+      "token": "AP-11",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "6be9bd33f859e3d859d6966896ac43b1a084b369b737f6a65764fc03f647b210",
+      "token": "IRS-03",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "6121e45d50a8d3a7503a11bd6399c5c4cbf48af02ac16e6fedf9cbb395363281",
+      "token": "IRS-03",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "e6e048fa8201d7f8b00618c1772a1bf6d50e8ca8d38b8a32b655487d049965c0",
+      "token": "IRS-03",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "bdc2d7a9f3f925dff71f7a30923ded96563aa01a5889f13e86cbbcae12c93f59",
+      "token": "IRS-03",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "3b10bee08d8f0966b7464fea374658bb32edd077dbd741b407913ad933f2be5f",
+      "token": "EN-08",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "00b3840c0171df9bc86790b34bc0459d1675494cee3712f3594ab5a356a9a713",
+      "token": "IRS-03",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/review-remediation-term-ledger.md",
+      "lineSha256": "aa63cfcce701f15980061f6966cf845af75d2a450e5f412d0531021757bfc482",
+      "token": "D-018",
+      "occurrences": 1,
+      "kind": "historical-excerpt",
+      "reason": "Exact occurrence in the dated 8b60426 term-replacement ledger: original excerpt or Plan review-step identifier, not a current rule home. Current requirements and P2-013 remain authoritative.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/decisions/phase-1-foundation-decisions.md",
+      "lineSha256": "ff1a93b9cb7a7f19266b106178c5f2ac230dc5d97ddc60f9dca82fa5704bc984",
+      "token": "P2-009",
+      "occurrences": 1,
+      "kind": "historical-quotation",
+      "reason": "Preserved user-decision quotation. The surrounding current disposition links the defining decision; the quotation is not rewritten or promoted into a separate definition.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/decisions/phase-2-specification-decisions.md",
+      "lineSha256": "609c6b01088e07a42aa0807eff67eca902c98176af084657fe07124273c41bd8",
+      "token": "IRF-01",
+      "occurrences": 1,
+      "kind": "historical-review-finding",
+      "reason": "Original Plan review finding identifier retained as provenance for the P2-013 disposition. The IRD decision and its named formal homes carry the current obligation; the external review label is not a new rule.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/decisions/phase-2-specification-decisions.md",
+      "lineSha256": "609c6b01088e07a42aa0807eff67eca902c98176af084657fe07124273c41bd8",
+      "token": "IRF-02",
+      "occurrences": 1,
+      "kind": "historical-review-finding",
+      "reason": "Original Plan review finding identifier retained as provenance for the P2-013 disposition. The IRD decision and its named formal homes carry the current obligation; the external review label is not a new rule.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/decisions/phase-2-specification-decisions.md",
+      "lineSha256": "609c6b01088e07a42aa0807eff67eca902c98176af084657fe07124273c41bd8",
+      "token": "IRF-13",
+      "occurrences": 1,
+      "kind": "historical-review-finding",
+      "reason": "Original Plan review finding identifier retained as provenance for the P2-013 disposition. The IRD decision and its named formal homes carry the current obligation; the external review label is not a new rule.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/decisions/phase-2-specification-decisions.md",
+      "lineSha256": "609c6b01088e07a42aa0807eff67eca902c98176af084657fe07124273c41bd8",
+      "token": "IRF-35",
+      "occurrences": 1,
+      "kind": "historical-review-finding",
+      "reason": "Original Plan review finding identifier retained as provenance for the P2-013 disposition. The IRD decision and its named formal homes carry the current obligation; the external review label is not a new rule.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/decisions/phase-2-specification-decisions.md",
+      "lineSha256": "21423dcf4b1a80e3b46957a47282c905be8afa5e907706b5711498c6ca806176",
+      "token": "IRF-04",
+      "occurrences": 1,
+      "kind": "historical-review-finding",
+      "reason": "Original Plan review finding identifier retained as provenance for the P2-013 disposition. The IRD decision and its named formal homes carry the current obligation; the external review label is not a new rule.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/decisions/phase-2-specification-decisions.md",
+      "lineSha256": "21423dcf4b1a80e3b46957a47282c905be8afa5e907706b5711498c6ca806176",
+      "token": "IRF-13",
+      "occurrences": 1,
+      "kind": "historical-review-finding",
+      "reason": "Original Plan review finding identifier retained as provenance for the P2-013 disposition. The IRD decision and its named formal homes carry the current obligation; the external review label is not a new rule.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/decisions/phase-2-specification-decisions.md",
+      "lineSha256": "33ad3c8d86abe4f2a634c5f6b5991db21ebdff2eb9b4fb36f93f3f13cd6d5847",
+      "token": "IRF-04",
+      "occurrences": 1,
+      "kind": "historical-review-finding",
+      "reason": "Original Plan review finding identifier retained as provenance for the P2-013 disposition. The IRD decision and its named formal homes carry the current obligation; the external review label is not a new rule.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/decisions/phase-2-specification-decisions.md",
+      "lineSha256": "b9ecbf4046ac7c2cf832057904de4eed040549821fde048b8e202d419076e3ae",
+      "token": "IRF-05",
+      "occurrences": 1,
+      "kind": "historical-review-finding",
+      "reason": "Original Plan review finding identifier retained as provenance for the P2-013 disposition. The IRD decision and its named formal homes carry the current obligation; the external review label is not a new rule.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/decisions/phase-2-specification-decisions.md",
+      "lineSha256": "42989d461620177de8cad01555a046af24dbf51573e00b91582acf3ee17a1162",
+      "token": "IRF-06",
+      "occurrences": 1,
+      "kind": "historical-review-finding",
+      "reason": "Original Plan review finding identifier retained as provenance for the P2-013 disposition. The IRD decision and its named formal homes carry the current obligation; the external review label is not a new rule.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/decisions/phase-2-specification-decisions.md",
+      "lineSha256": "b73bf9e3af3d9e739d8492a0a5cd5dac2cd66a817f8a7cc780452d88e7dbd042",
+      "token": "IRF-08",
+      "occurrences": 1,
+      "kind": "historical-review-finding",
+      "reason": "Original Plan review finding identifier retained as provenance for the P2-013 disposition. The IRD decision and its named formal homes carry the current obligation; the external review label is not a new rule.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/decisions/phase-2-specification-decisions.md",
+      "lineSha256": "b73bf9e3af3d9e739d8492a0a5cd5dac2cd66a817f8a7cc780452d88e7dbd042",
+      "token": "IRF-21",
+      "occurrences": 1,
+      "kind": "historical-review-finding",
+      "reason": "Original Plan review finding identifier retained as provenance for the P2-013 disposition. The IRD decision and its named formal homes carry the current obligation; the external review label is not a new rule.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/decisions/phase-2-specification-decisions.md",
+      "lineSha256": "b73bf9e3af3d9e739d8492a0a5cd5dac2cd66a817f8a7cc780452d88e7dbd042",
+      "token": "IRF-30",
+      "occurrences": 1,
+      "kind": "historical-review-finding",
+      "reason": "Original Plan review finding identifier retained as provenance for the P2-013 disposition. The IRD decision and its named formal homes carry the current obligation; the external review label is not a new rule.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/decisions/phase-2-specification-decisions.md",
+      "lineSha256": "9fcc6a49d385407c4706290005ea47514fd98b029e08e9e000856be100abb6dc",
+      "token": "IRF-09",
+      "occurrences": 1,
+      "kind": "historical-review-finding",
+      "reason": "Original Plan review finding identifier retained as provenance for the P2-013 disposition. The IRD decision and its named formal homes carry the current obligation; the external review label is not a new rule.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/decisions/phase-2-specification-decisions.md",
+      "lineSha256": "9fcc6a49d385407c4706290005ea47514fd98b029e08e9e000856be100abb6dc",
+      "token": "IRF-35",
+      "occurrences": 1,
+      "kind": "historical-review-finding",
+      "reason": "Original Plan review finding identifier retained as provenance for the P2-013 disposition. The IRD decision and its named formal homes carry the current obligation; the external review label is not a new rule.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/decisions/phase-2-specification-decisions.md",
+      "lineSha256": "33c3d400e55ee09040c34bf17648f0fad697a45a246c3e1ace56431a35687471",
+      "token": "IRF-12",
+      "occurrences": 1,
+      "kind": "historical-review-finding",
+      "reason": "Original Plan review finding identifier retained as provenance for the P2-013 disposition. The IRD decision and its named formal homes carry the current obligation; the external review label is not a new rule.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/decisions/phase-2-specification-decisions.md",
+      "lineSha256": "3a70a27e4e1bd9b6f6c6a4c089f675f730eea74dc0a95cf3f2ef051fe52d814c",
+      "token": "IRF-14",
+      "occurrences": 1,
+      "kind": "historical-review-finding",
+      "reason": "Original Plan review finding identifier retained as provenance for the P2-013 disposition. The IRD decision and its named formal homes carry the current obligation; the external review label is not a new rule.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/decisions/phase-2-specification-decisions.md",
+      "lineSha256": "d5c7d49c755c7764ff6905bd5299eaa8617223631cd4ca4a553f606a50a2ead0",
+      "token": "IRF-15",
+      "occurrences": 1,
+      "kind": "historical-review-finding",
+      "reason": "Original Plan review finding identifier retained as provenance for the P2-013 disposition. The IRD decision and its named formal homes carry the current obligation; the external review label is not a new rule.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/decisions/phase-2-specification-decisions.md",
+      "lineSha256": "c78de911f7fd3179367d293646bd36d3292fd9bb0efcf75d8df51b58e8221a37",
+      "token": "IRF-16",
+      "occurrences": 1,
+      "kind": "historical-review-finding",
+      "reason": "Original Plan review finding identifier retained as provenance for the P2-013 disposition. The IRD decision and its named formal homes carry the current obligation; the external review label is not a new rule.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/decisions/phase-2-specification-decisions.md",
+      "lineSha256": "eec5bf01dbc2777e195138fa2b992a39dba5a0bcd1a5612c369152ee89570982",
+      "token": "IRF-17",
+      "occurrences": 1,
+      "kind": "historical-review-finding",
+      "reason": "Original Plan review finding identifier retained as provenance for the P2-013 disposition. The IRD decision and its named formal homes carry the current obligation; the external review label is not a new rule.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/decisions/phase-2-specification-decisions.md",
+      "lineSha256": "eec5bf01dbc2777e195138fa2b992a39dba5a0bcd1a5612c369152ee89570982",
+      "token": "IRF-29",
+      "occurrences": 1,
+      "kind": "historical-review-finding",
+      "reason": "Original Plan review finding identifier retained as provenance for the P2-013 disposition. The IRD decision and its named formal homes carry the current obligation; the external review label is not a new rule.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/decisions/phase-2-specification-decisions.md",
+      "lineSha256": "c57577f67afa72e4c4aa9e51e8be6fe37f5d3723124581ec50525d159e3c48c9",
+      "token": "IRF-19",
+      "occurrences": 1,
+      "kind": "historical-review-finding",
+      "reason": "Original Plan review finding identifier retained as provenance for the P2-013 disposition. The IRD decision and its named formal homes carry the current obligation; the external review label is not a new rule.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/decisions/phase-2-specification-decisions.md",
+      "lineSha256": "d58f0fd285275db0d39111d4d5c25dcabf61d1033443e236c06160d20f4c5db6",
+      "token": "IRF-20",
+      "occurrences": 1,
+      "kind": "historical-review-finding",
+      "reason": "Original Plan review finding identifier retained as provenance for the P2-013 disposition. The IRD decision and its named formal homes carry the current obligation; the external review label is not a new rule.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/decisions/phase-2-specification-decisions.md",
+      "lineSha256": "fe4f8367d39c706ccf55bd8d9fb7ddea01e45d531cca8e2b0d57390455fbbec2",
+      "token": "IRF-21",
+      "occurrences": 1,
+      "kind": "historical-review-finding",
+      "reason": "Original Plan review finding identifier retained as provenance for the P2-013 disposition. The IRD decision and its named formal homes carry the current obligation; the external review label is not a new rule.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/decisions/phase-2-specification-decisions.md",
+      "lineSha256": "75a7c1be8267abab6a89ce308ba77c354f4b6121c42c24978acf3aa4dd3548e7",
+      "token": "IRF-22",
+      "occurrences": 1,
+      "kind": "historical-review-finding",
+      "reason": "Original Plan review finding identifier retained as provenance for the P2-013 disposition. The IRD decision and its named formal homes carry the current obligation; the external review label is not a new rule.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/decisions/phase-2-specification-decisions.md",
+      "lineSha256": "a33a1199b0349d43bda95635b62b1b74276634a679527d06d0a58d2ce80482d0",
+      "token": "IRF-24",
+      "occurrences": 1,
+      "kind": "historical-review-finding",
+      "reason": "Original Plan review finding identifier retained as provenance for the P2-013 disposition. The IRD decision and its named formal homes carry the current obligation; the external review label is not a new rule.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/decisions/phase-2-specification-decisions.md",
+      "lineSha256": "f83937552c3c7f85facc2ccfeb093368accbe64c329202d3befc209a20742dc3",
+      "token": "IRF-25",
+      "occurrences": 1,
+      "kind": "historical-review-finding",
+      "reason": "Original Plan review finding identifier retained as provenance for the P2-013 disposition. The IRD decision and its named formal homes carry the current obligation; the external review label is not a new rule.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/decisions/phase-2-specification-decisions.md",
+      "lineSha256": "a46f6f4173c764d26ffe5ce3349a919bf3580b2710899221609ca50228ecbdf1",
+      "token": "IRF-26",
+      "occurrences": 1,
+      "kind": "historical-review-finding",
+      "reason": "Original Plan review finding identifier retained as provenance for the P2-013 disposition. The IRD decision and its named formal homes carry the current obligation; the external review label is not a new rule.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/decisions/phase-2-specification-decisions.md",
+      "lineSha256": "a07feded6cf4088af30e2ed3dae6b0949a1470eed44e576a180aa2e574e7634a",
+      "token": "IRF-27",
+      "occurrences": 1,
+      "kind": "historical-review-finding",
+      "reason": "Original Plan review finding identifier retained as provenance for the P2-013 disposition. The IRD decision and its named formal homes carry the current obligation; the external review label is not a new rule.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/decisions/phase-2-specification-decisions.md",
+      "lineSha256": "f01e95036209300dfe956ebe9295393d861ecdfef25c9e22c33c1bb18d21bf27",
+      "token": "IRF-28",
+      "occurrences": 1,
+      "kind": "historical-review-finding",
+      "reason": "Original Plan review finding identifier retained as provenance for the P2-013 disposition. The IRD decision and its named formal homes carry the current obligation; the external review label is not a new rule.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/decisions/phase-2-specification-decisions.md",
+      "lineSha256": "6341b37c923c89aa5e21ed94b3cf762322d848244050c8dc322fe8d51ef37aee",
+      "token": "IRF-29",
+      "occurrences": 1,
+      "kind": "historical-review-finding",
+      "reason": "Original Plan review finding identifier retained as provenance for the P2-013 disposition. The IRD decision and its named formal homes carry the current obligation; the external review label is not a new rule.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/decisions/phase-2-specification-decisions.md",
+      "lineSha256": "10489d01c019e500696b42c039756780c6c1f86e3efe1aae3e90dc3eea963c7f",
+      "token": "IRF-11",
+      "occurrences": 2,
+      "kind": "historical-review-finding",
+      "reason": "Original Plan review finding identifier retained as provenance for the P2-013 disposition. The IRD decision and its named formal homes carry the current obligation; the external review label is not a new rule.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/decisions/phase-2-specification-decisions.md",
+      "lineSha256": "10489d01c019e500696b42c039756780c6c1f86e3efe1aae3e90dc3eea963c7f",
+      "token": "IRF-30",
+      "occurrences": 1,
+      "kind": "historical-review-finding",
+      "reason": "Original Plan review finding identifier retained as provenance for the P2-013 disposition. The IRD decision and its named formal homes carry the current obligation; the external review label is not a new rule.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/decisions/phase-2-specification-decisions.md",
+      "lineSha256": "efc2ae2bba3d66ee8abfb5c13759b98bfe701c5e3962a5e64d1ca02f43abe14b",
+      "token": "IRF-31",
+      "occurrences": 1,
+      "kind": "historical-review-finding",
+      "reason": "Original Plan review finding identifier retained as provenance for the P2-013 disposition. The IRD decision and its named formal homes carry the current obligation; the external review label is not a new rule.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/decisions/phase-2-specification-decisions.md",
+      "lineSha256": "6e32c4f3c2fe5b999b50035146365e6a8cd2b42c125d780297d8b7351ba46370",
+      "token": "IRF-35",
+      "occurrences": 1,
+      "kind": "historical-review-finding",
+      "reason": "Original Plan review finding identifier retained as provenance for the P2-013 disposition. The IRD decision and its named formal homes carry the current obligation; the external review label is not a new rule.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/decisions/phase-2-specification-decisions.md",
+      "lineSha256": "19af15288c9872bf0db1b3eab7390aea4e9207504b43d80d10834fdb39e367bf",
+      "token": "IRF-36",
+      "occurrences": 1,
+      "kind": "historical-review-finding",
+      "reason": "Original Plan review finding identifier retained as provenance for the P2-013 disposition. The IRD decision and its named formal homes carry the current obligation; the external review label is not a new rule.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/decisions/phase-2-specification-decisions.md",
+      "lineSha256": "c949730f19e722579c445796e302abefb8aff675e19c51e4ffaf17dfdd88ae61",
+      "token": "IRF-03",
+      "occurrences": 1,
+      "kind": "historical-review-finding",
+      "reason": "Original Plan review finding identifier retained as provenance for the P2-013 disposition. The IRD decision and its named formal homes carry the current obligation; the external review label is not a new rule.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/decisions/phase-2-specification-decisions.md",
+      "lineSha256": "c949730f19e722579c445796e302abefb8aff675e19c51e4ffaf17dfdd88ae61",
+      "token": "IRF-07",
+      "occurrences": 1,
+      "kind": "historical-review-finding",
+      "reason": "Original Plan review finding identifier retained as provenance for the P2-013 disposition. The IRD decision and its named formal homes carry the current obligation; the external review label is not a new rule.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/decisions/phase-2-specification-decisions.md",
+      "lineSha256": "c949730f19e722579c445796e302abefb8aff675e19c51e4ffaf17dfdd88ae61",
+      "token": "IRF-10",
+      "occurrences": 1,
+      "kind": "historical-review-finding",
+      "reason": "Original Plan review finding identifier retained as provenance for the P2-013 disposition. The IRD decision and its named formal homes carry the current obligation; the external review label is not a new rule.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/decisions/phase-2-specification-decisions.md",
+      "lineSha256": "c949730f19e722579c445796e302abefb8aff675e19c51e4ffaf17dfdd88ae61",
+      "token": "IRF-13",
+      "occurrences": 1,
+      "kind": "historical-review-finding",
+      "reason": "Original Plan review finding identifier retained as provenance for the P2-013 disposition. The IRD decision and its named formal homes carry the current obligation; the external review label is not a new rule.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/decisions/phase-2-specification-decisions.md",
+      "lineSha256": "c949730f19e722579c445796e302abefb8aff675e19c51e4ffaf17dfdd88ae61",
+      "token": "IRF-18",
+      "occurrences": 1,
+      "kind": "historical-review-finding",
+      "reason": "Original Plan review finding identifier retained as provenance for the P2-013 disposition. The IRD decision and its named formal homes carry the current obligation; the external review label is not a new rule.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/decisions/phase-2-specification-decisions.md",
+      "lineSha256": "c949730f19e722579c445796e302abefb8aff675e19c51e4ffaf17dfdd88ae61",
+      "token": "IRF-23",
+      "occurrences": 1,
+      "kind": "historical-review-finding",
+      "reason": "Original Plan review finding identifier retained as provenance for the P2-013 disposition. The IRD decision and its named formal homes carry the current obligation; the external review label is not a new rule.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/decisions/phase-2-specification-decisions.md",
+      "lineSha256": "c949730f19e722579c445796e302abefb8aff675e19c51e4ffaf17dfdd88ae61",
+      "token": "IRF-32",
+      "occurrences": 1,
+      "kind": "historical-review-finding",
+      "reason": "Original Plan review finding identifier retained as provenance for the P2-013 disposition. The IRD decision and its named formal homes carry the current obligation; the external review label is not a new rule.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/decisions/phase-2-specification-decisions.md",
+      "lineSha256": "c949730f19e722579c445796e302abefb8aff675e19c51e4ffaf17dfdd88ae61",
+      "token": "IRF-34",
+      "occurrences": 1,
+      "kind": "historical-review-finding",
+      "reason": "Original Plan review finding identifier retained as provenance for the P2-013 disposition. The IRD decision and its named formal homes carry the current obligation; the external review label is not a new rule.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/decisions/phase-2-specification-decisions.md",
+      "lineSha256": "c949730f19e722579c445796e302abefb8aff675e19c51e4ffaf17dfdd88ae61",
+      "token": "IRF-37",
+      "occurrences": 1,
+      "kind": "historical-review-finding",
+      "reason": "Original Plan review finding identifier retained as provenance for the P2-013 disposition. The IRD decision and its named formal homes carry the current obligation; the external review label is not a new rule.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/architecture/06-data-persistence-and-formats.md",
+      "lineSha256": "eca5d5d77455bc98d672abcb9a81e999b118ff1e48a1162978005839a0c7caba",
+      "token": "SHA-256",
+      "occurrences": 1,
+      "kind": "standard-name",
+      "reason": "Standard algorithm, encoding, floating-point format or curve name; not an ArcForges document-scoped rule identifier.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/architecture/14-build-packaging-and-release.md",
+      "lineSha256": "55929fda0957ea02a917fb6a6ce1b9da12f5ddbe4b60583122f54d0d8d8bf761",
+      "token": "P-256",
+      "occurrences": 1,
+      "kind": "standard-name",
+      "reason": "Standard algorithm, encoding, floating-point format or curve name; not an ArcForges document-scoped rule identifier.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/architecture/14-build-packaging-and-release.md",
+      "lineSha256": "55929fda0957ea02a917fb6a6ce1b9da12f5ddbe4b60583122f54d0d8d8bf761",
+      "token": "SHA-256",
+      "occurrences": 1,
+      "kind": "standard-name",
+      "reason": "Standard algorithm, encoding, floating-point format or curve name; not an ArcForges document-scoped rule identifier.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/architecture/18-editing-and-rich-content.md",
+      "lineSha256": "619b5daeb09515b4f1c9d4403725421468f780d01d5d9321c445e02630a6d82d",
+      "token": "UTF-16",
+      "occurrences": 1,
+      "kind": "standard-name",
+      "reason": "Standard algorithm, encoding, floating-point format or curve name; not an ArcForges document-scoped rule identifier.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/architecture/23-simulator-and-interchange.md",
+      "lineSha256": "f3217b20ace2e0d1b2ad719d56e36a542d6e8741cfd6441c0a82127cda082d81",
+      "token": "IEEE-754",
+      "occurrences": 1,
+      "kind": "standard-name",
+      "reason": "Standard algorithm, encoding, floating-point format or curve name; not an ArcForges document-scoped rule identifier.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/architecture/28-product-naming-policy.md",
+      "lineSha256": "8da41bcfa3d5f54064451ad1b1cf628187991f6e46654fa1ce12e4522fd558d8",
+      "token": "UTF-16",
+      "occurrences": 1,
+      "kind": "standard-name",
+      "reason": "Standard algorithm, encoding, floating-point format or curve name; not an ArcForges document-scoped rule identifier.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/architecture/28-product-naming-policy.md",
+      "lineSha256": "f5f5b4aaf99010ff39f155b0db6d11b48e9e9f5402c12bb3a4f1ca881e0e5a3e",
+      "token": "SHA-256",
+      "occurrences": 2,
+      "kind": "standard-name",
+      "reason": "Standard algorithm, encoding, floating-point format or curve name; not an ArcForges document-scoped rule identifier.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/architecture/29-design-policy-export.md",
+      "lineSha256": "654d22545a464e8e59a34ff46dd04b120d687c2ba2b582e949ef894b11ca3323",
+      "token": "SHA-256",
+      "occurrences": 2,
+      "kind": "standard-name",
+      "reason": "Standard algorithm, encoding, floating-point format or curve name; not an ArcForges document-scoped rule identifier.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/architecture/contracts/04-protobuf-wire-registry.md",
+      "lineSha256": "48f9dcfee0048d86ab1651a36b9acf7bc1f90832d55cdce09dcb055151f7a96e",
+      "token": "UTF-16",
+      "occurrences": 1,
+      "kind": "standard-name",
+      "reason": "Standard algorithm, encoding, floating-point format or curve name; not an ArcForges document-scoped rule identifier.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/architecture/contracts/04-protobuf-wire-registry.md",
+      "lineSha256": "ca371f493ec2aefcca655e0114d996fc6593810e61b1f18309de6b596bbe99e2",
+      "token": "UTF-16",
+      "occurrences": 1,
+      "kind": "standard-name",
+      "reason": "Standard algorithm, encoding, floating-point format or curve name; not an ArcForges document-scoped rule identifier.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/architecture/contracts/04-protobuf-wire-registry.md",
+      "lineSha256": "0c45712f0d94a34eceb4db0f72b9437816754ae87a92bc0c6b012a2acebfa990",
+      "token": "UTF-16",
+      "occurrences": 3,
+      "kind": "standard-name",
+      "reason": "Standard algorithm, encoding, floating-point format or curve name; not an ArcForges document-scoped rule identifier.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/architecture/contracts/04-protobuf-wire-registry.md",
+      "lineSha256": "51b08bc01a487e3f0c08a99cef7fa7d18aa2b9d01f57e59a29dc0ef72dd429ea",
+      "token": "SHA-256",
+      "occurrences": 1,
+      "kind": "standard-name",
+      "reason": "Standard algorithm, encoding, floating-point format or curve name; not an ArcForges document-scoped rule identifier.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/architecture/contracts/05-cloudflare-integration.md",
+      "lineSha256": "d0904317f22dfa46c78eaa83c43cc5f367af65adbbed578be110b35c9aa1dc68",
+      "token": "SHA-256",
+      "occurrences": 2,
+      "kind": "standard-name",
+      "reason": "Standard algorithm, encoding, floating-point format or curve name; not an ArcForges document-scoped rule identifier.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/deprecated-input-independence-review.md",
+      "lineSha256": "18a9a76419180eccedb62c04c87deed5d33aff4ac27a7d25005c2a9a371e041c",
+      "token": "SHA-256",
+      "occurrences": 1,
+      "kind": "standard-name",
+      "reason": "Standard algorithm, encoding, floating-point format or curve name; not an ArcForges document-scoped rule identifier.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/phase-2-design-closure-review.md",
+      "lineSha256": "60c782345109ec9086518fe724aa063dbfb87ec14a52f5b4190b4986c653ebb9",
+      "token": "UTF-16",
+      "occurrences": 1,
+      "kind": "standard-name",
+      "reason": "Standard algorithm, encoding, floating-point format or curve name; not an ArcForges document-scoped rule identifier.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/web-typescript-redesign-review.md",
+      "lineSha256": "0df04d2fe7372142971cf60deaf5508ef5fe9b7aa97f72aec9c1ff9641a71309",
+      "token": "SHA-256",
+      "occurrences": 1,
+      "kind": "standard-name",
+      "reason": "Standard algorithm, encoding, floating-point format or curve name; not an ArcForges document-scoped rule identifier.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/web-typescript-redesign-review.md",
+      "lineSha256": "4cc35a4848c15a44747e2209f2ec4e99c4186bf799be57da6993ed0d7e9b2ffd",
+      "token": "UTF-16",
+      "occurrences": 1,
+      "kind": "standard-name",
+      "reason": "Standard algorithm, encoding, floating-point format or curve name; not an ArcForges document-scoped rule identifier.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/planning/work-packages/00-specification-naming-and-rights-freeze.md",
+      "lineSha256": "61ab09b5277b414038aa28d67c841a814d2c3795fa2a81f4d22aca0552c16e56",
+      "token": "UTF-16",
+      "occurrences": 1,
+      "kind": "standard-name",
+      "reason": "Standard algorithm, encoding, floating-point format or curve name; not an ArcForges document-scoped rule identifier.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/requirements/03-cloud-services-and-sync.md",
+      "lineSha256": "fe91df31adeb49e62137a487403649314fd220999eaf9390cb7f054c4d95bf68",
+      "token": "SHA-256",
+      "occurrences": 1,
+      "kind": "standard-name",
+      "reason": "Standard algorithm, encoding, floating-point format or curve name; not an ArcForges document-scoped rule identifier.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/requirements/13-data-formats-and-portability.md",
+      "lineSha256": "6652905c69f5c2dfb7f3c14fedf40fbc8289f0daa58fcc58b079e7c154eddf5a",
+      "token": "SHA-256",
+      "occurrences": 1,
+      "kind": "standard-name",
+      "reason": "Standard algorithm, encoding, floating-point format or curve name; not an ArcForges document-scoped rule identifier.",
+      "reviewOwner": "Architecture Owner",
+      "reviewed": "2026-09-18"
+    }
+  ]
+}

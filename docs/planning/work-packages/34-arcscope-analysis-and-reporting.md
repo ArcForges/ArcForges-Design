@@ -48,15 +48,15 @@
 
 | # | Rule |
 |---|---|
-| BR-01 | **A trigger never modifies data.** It controls capture and marks time; samples are unchanged. |
-| BR-02 | **A decoder interprets data; it never commands hardware.** |
-| BR-03 | **Decoder errors are displayed, not silently dropped**: malformed frames, checksum failures and unknown fields are visible with counts and locations. |
-| BR-04 | **Analysis output is derived data**, fully reconstructable from evidence plus a recorded configuration. |
-| BR-05 | **Reproducibility is a core product value**: a result is reconstructable from session, capture, configuration snapshot, decoder version and configuration, analysis definition and version, alignment and calibration version. |
-| BR-06 | **A saved analysis view is work content; panel layout is device-local.** |
-| BR-07 | **A report traces every source** back to session, capture, time range, configuration snapshot and analysis version. |
-| BR-08 | **Visualisation downsampling never changes the underlying data**, and the display states when it is showing a downsampled view. |
-| BR-09 | **An annotation or finding is authored content** with its own identity and history; it is never written into raw capture. |
+| <a id="rule-br-01"></a>BR-01 | **A trigger never modifies data.** It controls capture and marks time; samples are unchanged. |
+| <a id="rule-br-02"></a>BR-02 | **A decoder interprets data; it never commands hardware.** |
+| <a id="rule-br-03"></a>BR-03 | **Decoder errors are displayed, not silently dropped**: malformed frames, checksum failures and unknown fields are visible with counts and locations. |
+| <a id="rule-br-04"></a>BR-04 | **Analysis output is derived data**, fully reconstructable from evidence plus a recorded configuration. |
+| <a id="rule-br-05"></a>BR-05 | **Reproducibility is a core product value**: a result is reconstructable from session, capture, configuration snapshot, decoder version and configuration, analysis definition and version, alignment and calibration version. |
+| <a id="rule-br-06"></a>BR-06 | **A saved analysis view is work content; panel layout is device-local.** |
+| <a id="rule-br-07"></a>BR-07 | **A report traces every source** back to session, capture, time range, configuration snapshot and analysis version. |
+| <a id="rule-br-08"></a>BR-08 | **Visualisation downsampling never changes the underlying data**, and the display states when it is showing a downsampled view. |
+| <a id="rule-br-09"></a>BR-09 | **An annotation or finding is authored content** with its own identity and history; it is never written into raw capture. |
 
 ---
 
@@ -237,6 +237,6 @@ Pearson independent vectors: x=[1,2,3], y=[2,4,6] gives r=1; y=[3,2,1] gives r=â
 
 **Downstream:** `35` Â· `51`. Consumers use exact released artifacts.
 
-## P2-010 required behavior and closure
+## [P2-010](../../decisions/phase-2-specification-decisions.md#rule-p2-010) required behavior and closure
 
 Implement every remaining spectrum/correlation/threshold/event-pattern/decoder analysis profile in architecture 26 with independent numeric and gap/error vectors, not only measurements.v1. The referenced normative profile and producer stage matrix are binding inputs. Record independent positive/negative vectors and actual owner integration at this WP's assigned stage; a mock cannot close a real-provider/device requirement.

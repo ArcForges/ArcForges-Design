@@ -64,9 +64,9 @@ The [content and extension isolation design](24-content-and-extension-isolation.
 The [Web toolchain and generated SDK contract](25-web-toolchain-and-sdk.md) defines the React/TypeScript/Node workspace, Windows esproj and portable npm entry points, handwritten proto → generated C#/TS packages, exact values, browser/realtime adapters and release gates under [P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008).
 
 
-[P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) together with P2-010 is the current repository/runtime/protocol authority. The [numbered protobuf wire registry](contracts/04-protobuf-wire-registry.md) supplies exact request/result/shared schemas; the [Cloudflare integration contract](contracts/05-cloudflare-integration.md) supplies execution, model, object and recovery state/ports. Their selected contracts are implementation inputs, including for local RPC, Kotlin Android and Web.
+[P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) together with [P2-010](../decisions/phase-2-specification-decisions.md#rule-p2-010) is the current repository/runtime/protocol authority. The [numbered protobuf wire registry](contracts/04-protobuf-wire-registry.md) supplies exact request/result/shared schemas; the [Cloudflare integration contract](contracts/05-cloudflare-integration.md) supplies execution, model, object and recovery state/ports. Their selected contracts are implementation inputs, including for local RPC, Kotlin Android and Web.
 
-P2-010 initial implementation authorities: [native functional ABI](contracts/06-native-functional-abi.md), [client journeys and ports](contracts/07-client-journeys-and-ports.md), [extension/policy/configuration schemas](contracts/08-extension-and-policy-profiles.md), [product behavior profiles](26-product-behavior-profiles.md) and [producer stages](../planning/producer-artifacts-and-integration.md). These are required inputs, not optional examples.
+[P2-010](../decisions/phase-2-specification-decisions.md#rule-p2-010) initial implementation authorities: [native functional ABI](contracts/06-native-functional-abi.md), [client journeys and ports](contracts/07-client-journeys-and-ports.md), [extension/policy/configuration schemas](contracts/08-extension-and-policy-profiles.md), [product behavior profiles](26-product-behavior-profiles.md) and [producer stages](../planning/producer-artifacts-and-integration.md). These are required inputs, not optional examples.
 
 ## Current Cloudflare and application assistant profiles
 
@@ -76,4 +76,6 @@ P2-010 initial implementation authorities: [native functional ABI](contracts/06-
 - [Application scope and streams](contracts/10-application-scope-and-streams.md)
 - [Complete client experience](../experience/README.md)
 
-Current coordinated repair: P2-013; see [verification record](../assurance/independent-review-remediation-verification.md). Runtime and commercial gates remain separate from design evidence.
+Current coordinated repair: [P2-013](../decisions/phase-2-specification-decisions.md#rule-p2-013); see [verification record](../assurance/independent-review-remediation-verification.md). Runtime and commercial gates remain separate from design evidence.
+
+[Design policy export and integrity](29-design-policy-export.md) assigns the generated vocabulary/invariant data and continuing citation/dependency checks.

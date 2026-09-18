@@ -51,15 +51,15 @@
 
 | # | Rule |
 |---|---|
-| BR-01 | **`CommandId`, `InvocationId`, `AttemptId` and `RunId` are four distinct identities with four distinct roles.** Collapsing any two is a defect. |
-| BR-02 | **A retry preserves command identity and allocates a new attempt only when retry is authorized.** Storage-free primitives express identity/effect certainty; an owner transaction plus durable receipt enforces one committed effect. Unknown external effects cannot acquire an exactly-once guarantee from the primitive. |
-| BR-03 | **`Revision ≠ Version`** and **`Sequence ≠ Revision`**. A revision orders changes to one object; a sequence orders delivery on a channel. |
-| BR-04 | **A resource identity is never a file path** ([I-192](../../requirements/01-normative-glossary-and-invariants.md#rule-i-192)). |
-| BR-05 | **Canonical storage, localised presentation** ([QI-18](../../requirements/12-quality-and-compatibility-contract.md#rule-qi-18)). Time is stored as an unambiguous instant with its originating zone where the zone is meaningful; it is never stored as a formatted string. |
-| BR-06 | **Every failure carries an enumerated reason code**, shared by the product surface, support and telemetry ([DM-04](../../architecture/13-observability-and-operations.md#rule-dm-04) in the observability architecture). |
-| BR-07 | **Effect certainty is part of failure classification**: whether the operation definitely did not happen, definitely did, or is unknown. |
-| BR-08 | **The nine version axes are distinct value types**, so one cannot be assigned to another ([I-383](../../requirements/01-normative-glossary-and-invariants.md#rule-i-383)). |
-| BR-09 | **Monotonic time is used for durations; wall-clock time is used for timestamps.** A duration is never computed by subtracting wall-clock values. |
+| <a id="rule-br-01"></a>BR-01 | **`CommandId`, `InvocationId`, `AttemptId` and `RunId` are four distinct identities with four distinct roles.** Collapsing any two is a defect. |
+| <a id="rule-br-02"></a>BR-02 | **A retry preserves command identity and allocates a new attempt only when retry is authorized.** Storage-free primitives express identity/effect certainty; an owner transaction plus durable receipt enforces one committed effect. Unknown external effects cannot acquire an exactly-once guarantee from the primitive. |
+| <a id="rule-br-03"></a>BR-03 | **`Revision ≠ Version`** and **`Sequence ≠ Revision`**. A revision orders changes to one object; a sequence orders delivery on a channel. |
+| <a id="rule-br-04"></a>BR-04 | **A resource identity is never a file path** ([I-192](../../requirements/01-normative-glossary-and-invariants.md#rule-i-192)). |
+| <a id="rule-br-05"></a>BR-05 | **Canonical storage, localised presentation** ([QI-18](../../requirements/12-quality-and-compatibility-contract.md#rule-qi-18)). Time is stored as an unambiguous instant with its originating zone where the zone is meaningful; it is never stored as a formatted string. |
+| <a id="rule-br-06"></a>BR-06 | **Every failure carries an enumerated reason code**, shared by the product surface, support and telemetry ([DM-04](../../architecture/13-observability-and-operations.md#rule-dm-04) in the observability architecture). |
+| <a id="rule-br-07"></a>BR-07 | **Effect certainty is part of failure classification**: whether the operation definitely did not happen, definitely did, or is unknown. |
+| <a id="rule-br-08"></a>BR-08 | **The nine version axes are distinct value types**, so one cannot be assigned to another ([I-383](../../requirements/01-normative-glossary-and-invariants.md#rule-i-383)). |
+| <a id="rule-br-09"></a>BR-09 | **Monotonic time is used for durations; wall-clock time is used for timestamps.** A duration is never computed by subtracting wall-clock values. |
 
 ---
 
