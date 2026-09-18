@@ -70,6 +70,8 @@ The classification above is *product classification only*. It must not become a 
 
 Mobile and Web are **ArcChat companion surfaces**, not mobile or web editions of the three professional desktop products. There is no ArcNotes Mobile editor, no ArcScope Mobile editor and no ArcSlate Mobile editor in this baseline. Their absence is a baseline statement, not a permanent prohibition; adding one is an Architecture Baseline Change.
 
+The [naming policy](../architecture/28-product-naming-policy.md) binds these identities to the Contracts-owned machine-readable authority and naming scan.
+
 ### 2.3 Excluded product names
 
 `ArcCanvas`, `ArcMusic`, `ArcImage` and `ArcVideo` are **obsolete and SUPERSEDED** (**[D-002](../decisions/phase-1-foundation-decisions.md#rule-d-002)**). They are not current products, future products, reserved products, aliases or re-entry candidates.

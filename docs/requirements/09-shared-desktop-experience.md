@@ -219,6 +219,8 @@ Four semantics:
 
 ### 9.1 File associations
 
+The [naming policy](../architecture/28-product-naming-policy.md#file-association-reservations) reserves Scope/Slate native project identifiers. A reservation does not claim an implemented format or handler. Notes, assistant history and companions have no private native-file association.
+
 | # | Requirement |
 |---|---|
 | FA-01 | **ArcForges registers only native formats it genuinely owns.** |

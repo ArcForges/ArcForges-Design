@@ -35,7 +35,7 @@ Nothing in this document authorises reuse. It defines the process by which reuse
 | StartArcForges | Packaged-product and release-behaviour oracle | Distribution and release |
 | The existing ArcForges monorepo | Implementation-state inventory and reconciliation target | All — see [`implementation-state-reconciliation.md`](implementation-state-reconciliation.md) |
 
-> **Naming note.** `ArcVideo` and `ArcVideoFoundation` appear here **only** as the names of existing reference repositories. They are **not** current products: the product baseline is exactly ArcChat, ArcNotes, ArcScope and ArcSlate (**[D-002](../decisions/phase-1-foundation-decisions.md#rule-d-002)**), and `ArcCanvas`, `ArcMusic`, `ArcImage` and `ArcVideo` are superseded product names that must never appear as current products in any authoritative document.
+> **Naming note.** `ArcVideo` and `ArcVideoFoundation` appear here **only** as the names of existing reference repositories. They are **not** current products: the desktop product baseline is exactly ArcNotes, ArcScope and ArcSlate, with embedded assistants and Android/Web companions under **[P2-012](../decisions/phase-2-specification-decisions.md#rule-p2-012)**, and `ArcCanvas`, `ArcMusic`, `ArcImage` and `ArcVideo` are superseded product names that must never appear as current products in any authoritative document.
 
 ---
 

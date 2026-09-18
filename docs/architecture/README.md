@@ -48,6 +48,8 @@ Documents `00`–`25` state architecture: boundaries, ownership and rules. The [
 | [`data-model/02-desktop-data-model.md`](data-model/02-desktop-data-model.md) | The desktop schema: the shared table groups every product store carries, the per-product schemas for ArcChat, ArcNotes, ArcScope and ArcSlate, and the portable package |
 | [`data-model/03-derived-stores.md`](data-model/03-derived-stores.md) | The derived-store contract, the search index and its citation anchors, retrieval chunks and embedding staleness, cache isolation, the per-product derived store table, and eviction |
 
+[Product naming policy](28-product-naming-policy.md) specifies the single naming-data owner, preserved identities, native association reservations and enforceable scan boundary.
+
 ## Conventions
 
 - Every architectural rule carries a stable identifier (`AB-nn`) scoped to its document, so requirements, assurance and work packages can cite it precisely.
