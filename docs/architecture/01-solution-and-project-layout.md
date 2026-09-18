@@ -125,6 +125,40 @@ existing package/application identities, signing continuity and immutable produc
 publication order. The declaration work changes no licence grant, architecture
 layering rule or allowed reuse disposition.
 
+### 4.2 Current Android dependency conflict and remediation
+
+The WP00.02 collection on 2026-09-18 found Mobile commit
+`15145a4b4139525aae4185f0d2d20c87ec91686a` enabling core-library desugaring and
+locking `com.android.tools:desugar_jdk_libs:2.1.5`. Its
+[published POM](https://dl.google.com/dl/android/maven2/com/android/tools/desugar_jdk_libs/2.1.5/desugar_jdk_libs-2.1.5.pom)
+declares GPL version 2 with the Classpath Exception. The
+[Android build documentation](https://developer.android.com/studio/write/java8-support#library-desugaring)
+explains that this option can package library implementation in a separate DEX.
+It is therefore a distributable input, not merely the build JDK. This concrete
+conflict is registered under [F-023](../assurance/open-gates-register.md#rule-f-023);
+the existing blanket exclusion in [D-004](../decisions/phase-1-foundation-decisions.md#rule-d-004)
+is not waived by the upstream exception or an earlier successful build.
+
+The selected resolution is to remove that optional core-library implementation
+from Mobile's dependencies and packaging, while retaining Kotlin/Java target 21,
+Android minimum API 26, application identity, signing continuity and all accepted
+Android behavior. D8/R8 language-bytecode transformation remains enabled. Mobile
+must verify the complete actual Android runtime closure and retained notices
+before producing a new candidate, reject unknown/conflicting inputs, and bind
+the result to source, locks and final APK/AAB hashes. Device/runtime checks must
+exercise the published client and the minified release on the minimum supported
+API as well as the current CI image; lint or compilation alone cannot prove
+the removal is compatible. Any newly discovered unsupported API must be repaired
+within the same Android requirements, without raising the minimum API or quietly
+restoring an excluded dependency.
+
+Mobile owns this remediation and its Apache-licensed checks. Development-only
+JVM preview tools and build-host JDKs are identified separately from Android
+packaging inputs. This decision records the issue and chosen repair;
+[F-023](../assurance/open-gates-register.md#rule-f-023) stays open until the actual
+dependency, notice and artifact evidence passes. It changes
+no licence grant, store-distribution target or future product acceptance gate.
+
 ---
 
 ## 5. Cloud module projects
