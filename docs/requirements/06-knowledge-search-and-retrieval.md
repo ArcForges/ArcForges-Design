@@ -432,5 +432,5 @@ KnowledgeFreshness · AIEligibility · CloudIndexEligibility · SemanticIndexEli
 |---|---|
 | [Derived Stores](../architecture/data-model/03-derived-stores.md) | Defines rebuildable indexes, retrieval chunks, citation anchors and cache isolation |
 | [Agent Harness](../architecture/17-agent-harness.md) | Consumes permission-scoped retrieval and evidence during the model loop |
-| [WP-40 — Knowledge, Search and Retrieval](../planning/work-packages/40-knowledge-search-and-retrieval.md) | Implements and verifies search, retrieval and evidence obligations |
+| [WP-40 — Knowledge, Search and Retrieval](../planning/work-packages/40-knowledge-search-and-retrieval.md#rule-wp-40) | Implements and verifies search, retrieval and evidence obligations |
 | **[D-020](../decisions/phase-1-foundation-decisions.md#rule-d-020)** | Managed embedding and reranking are cost of goods, not user-credit consumption |

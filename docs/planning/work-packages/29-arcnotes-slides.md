@@ -21,7 +21,7 @@
 | Slides as a presentation view over document and canvas content | **Dropped.** Canvas is also retired ([WP-27](27-arcnotes-edgeless-canvas.md#rule-wp-27)), so the projection had no remaining source |
 | `slide_deck`, `slide`, `speaker_note` tables | **Retired** from the desktop data model (`§3` there) |
 | Presentation navigation and frame ordering | **Dropped** |
-| Reference-coverage finding **F-AN-2** — *neither reference implements slides, so [WP-29](#rule-wp-29) has no reference oracle* | **Closes by scope rather than by evidence.** The missing oracle no longer matters because the capability is not delivered |
+| Reference-coverage finding **[F-AN-2](../../assurance/reference-coverage/arcnotes-affine-siyuan.md#rule-f-an-2)** — *neither reference implements slides, so [WP-29](#rule-wp-29) has no reference oracle* | **Closes by scope rather than by evidence.** The missing oracle no longer matters because the capability is not delivered |
 
 ---
 

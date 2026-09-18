@@ -43,7 +43,7 @@ The prerequisite evidence **[D-019](../decisions/phase-1-foundation-decisions.md
 
 | Field | Content |
 |---|---|
-| **Evidence** | [`arcnotes-affine-siyuan.md`](../assurance/reference-coverage/arcnotes-affine-siyuan.md) `F-AN-2`. Neither AFFiNE nor SiYuan implements a presentation mode |
+| **Evidence** | [`arcnotes-affine-siyuan.md`](../assurance/reference-coverage/arcnotes-affine-siyuan.md) [F-AN-2](../assurance/reference-coverage/arcnotes-affine-siyuan.md#rule-f-an-2). Neither AFFiNE nor SiYuan implements a presentation mode |
 | **Affected statement** | [WP-29](work-packages/29-arcnotes-slides.md#rule-wp-29) was written assuming reference oracles comparable to its sibling packages [WP-27](work-packages/27-arcnotes-edgeless-canvas.md#rule-wp-27) and [WP-28](work-packages/28-arcnotes-properties-and-views.md#rule-wp-28) |
 | **Correction** | Historical first-party slides-oracle requirement superseded by [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006): slides are excluded and the package is retired, with no future hook. The reference observation is preserved. |
 | **Downstream consumers** | Current Notes core/property packages implement the amended notebook scope. No live slides-oracle work or slides-parity claim is assigned to release. |
