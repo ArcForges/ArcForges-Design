@@ -1,5 +1,5 @@
 # Extensions, Integrations and Developer Platform Requirements
-> Current scope amendment: **[P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
+> Effective scope: P2-012 and P2-013 amend the technology and application ownership below. **[P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Requirements
@@ -76,7 +76,7 @@ Automation is specified in [`05-ai-and-agent-execution.md`](05-ai-and-agent-exec
 
 | # | Requirement |
 |---|---|
-| <a id="rule-mc-01"></a>MC-01 | **MCP never becomes the internal protocol of ArcForges** ([I-307](01-normative-glossary-and-invariants.md#rule-i-307)). Internal cross-product capability remains the native semantic capability model. MCP is an edge adapter. |
+| <a id="rule-mc-01"></a>MC-01 | **MCP never becomes the internal protocol of ArcForges** ([I-307](01-normative-glossary-and-invariants.md#rule-i-307)). Internal application capability remains typed application ports. MCP is an edge adapter. |
 | <a id="rule-mc-02"></a>MC-02 | **An MCP tool maps to a capability** in the ArcForges model, carrying declared risk, permission requirements and provenance — it is not injected as a raw tool into the agent. |
 | MC-03 | **An MCP resource is not an ArcForges resource** ([I-076](01-normative-glossary-and-invariants.md#rule-i-076), [I-309](01-normative-glossary-and-invariants.md#rule-i-309)). It is addressed by the server's own scheme and surfaced as an external source. |
 | MC-04 | **MCP Definition ≠ MCP Connection** ([I-309](01-normative-glossary-and-invariants.md#rule-i-309)). The integration definition or package is distinct from a live connection instance. |
@@ -86,6 +86,8 @@ Automation is specified in [`05-ai-and-agent-execution.md`](05-ai-and-agent-exec
 | MC-08 | Per **[V-02](../assurance/phase-1-official-verification.md#rule-v-02)**: the `2026-07-28` revision is stable and the official C# SDK is stable. The protocol core is **stateless** — no `initialize` exchange, no session header, per-request capability negotiation — so **ArcForges must not build session identity on MCP transport state**. Server-to-client requests use multi round-trip requests, which is a transport mechanism and not an ArcForges execution concept. |
 | MC-09 | **The exact MCP C# SDK version is pinned at first consumption**, and an explicit mapping between MCP extension concepts (its own `Task`, `Skill`) and the ArcForges execution vocabulary is recorded (see glossary §9). *Owner: Architecture Owner. Trigger: start of the MCP/extension work package.* |
 | <a id="rule-mc-10"></a>MC-10 | An MCP server changing its tool set **re-enters permission review** ([TR-10](07-security-privacy-and-trust.md#rule-tr-10) in the security requirements). |
+
+MCP placement is explicit: stdio servers run only in an owned desktop connector child; streamableHttp connections run either in that local child or in the AI Worker tool adapter for a Cloud connection. Cloud calls use the exact admitted HTTPS origin and Cloud SecretRef. Local calls pass through the device bridge; neither transport grants tool permission.
 
 ## 6. Connector
 
@@ -180,7 +182,7 @@ The unresolved tension — a strongly typed AOT product versus unknown third-par
 | # | Requirement |
 |---|---|
 | TA-01 | **A third-party Arc App is a standalone complete application** with its own process, domain, storage and lifecycle — distinct from an Extension ([I-317](01-normative-glossary-and-invariants.md#rule-i-317)). |
-| TA-02 | It participates through the same-application contribution model, exactly as a first-party product does. |
+| TA-02 | A third-party Arc App integrates through the public Cloud API with eligible scoped PATs, published file formats and explicit OS open/share. It does not contribute a local peer service into first-party applications. |
 | TA-03 | **It is not a first-party application.** Publisher and trust are distinct, and reserved official identifiers and namespaces cannot be claimed. |
 | TA-04 | It may hold higher permission than an extension — because it is a peer application — and it is still governed by the same security pipeline. |
 
@@ -270,12 +272,12 @@ The unresolved tension — a strongly typed AOT product versus unknown third-par
 | # | Requirement |
 |---|---|
 | SD-01 | **An internal interface does not automatically become SDK.** The public SDK is a deliberate, separately versioned, long-term-compatibility surface. |
-| SD-02 | **Public SDK contract ≠ internal LocalRpc contract** ([I-327](01-normative-glossary-and-invariants.md#rule-i-327)). |
+| SD-02 | Public SDK payload declarations are distinct from internal application ports and do not grant first-party trust. |
 | SD-03 | The SDK lives in the **Apache-2.0 interoperability boundary** (**[D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021)**), together with public wire schemas, public DTOs, public clients and contract-level validators. |
 | SD-04 | **SDK Foundation contains only genuinely stable types**: identity primitives, result and error primitives, `ResourceRef`, `ArtifactRef`, `TaskHandle`, capability descriptors, the structured value model and the schema attributes. |
 | SD-05 | **The SDK major version is separate from the extension protocol version** ([PK-05](#rule-pk-05)). |
 | SD-06 | **The extension protocol itself is versioned**, and the host supports a compatibility window across protocol versions. |
-| SD-07 | **A source generator produces the mechanical protocol surface** — schema, serializer, client and server binding — from C# records and attributes. Developers do not maintain three parallel schema definitions. |
+| SD-07 | Authored Contracts proto owns the extension wire protocol. The SDK generator maps C# records/attributes only to ValueSchema/StructuredValue payload declarations and manifest contributions. It never generates an alternate RPC schema; other languages consume the published proto and manifest schema. |
 | SD-08 | **The manifest has a language-independent canonical representation** (a static document), but **the manifest schema is generated and validated from the SDK model** rather than maintained twice by hand. |
 | SD-09 | **C# is the first-class SDK language.** Other languages may integrate through the documented wire protocol and manifest; the best developer experience is C#. |
 

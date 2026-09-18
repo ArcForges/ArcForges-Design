@@ -1,5 +1,5 @@
 # ArcNotes — Product Requirements
-> Current scope amendment: **[P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
+> Effective scope: P2-012 and P2-013 amend the technology and application ownership below. **[P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Requirements / Products
@@ -246,13 +246,13 @@ Three layers, with a firm boundary at the third:
 | Layer | What it is |
 |---|---|
 | **1 — Editor AI actions** | Selection-scoped actions: summarise, rewrite, translate, extract, continue, fix, explain |
-| **2 — Ask ArcChat** | Hands a context reference to ArcChat and receives an answer or an artifact |
+| **2 — Ask assistant** | Opens the embedded assistant with a bounded ArcNotes context reference and receives an answer or owned artifact |
 | **3 — Agent-driven ArcNotes capabilities** | The Cloud agent invokes authorized ArcNotes capabilities under the full permission model |
 
 | # | Requirement |
 |---|---|
-| AI-01 | Selection AI actions call Cloud directly and do not require ArcChat Desktop. An authenticated workspace, active service term, allowed context and available capacity are required. No local AI or BYOK path exists. |
-| AI-02 | ArcNotes has no agent loop. Cloud owns the single Harness; ArcChat provides task interaction and the authorised cross-product local-tool bridge. |
+| AI-01 | Selection AI and the embedded assistant call Cloud directly through Platform APIs. Authenticated workspace, active term, minimal authorized context and capacity are required; no local model or separate assistant process. |
+| AI-02 | ArcNotes has no agent loop. Cloud owns the sole Harness; the embedded assistant and own-application device bridge provide task interaction and local authorization. |
 | AI-03 | **"Ask ArcChat" passes a context reference, never a blanket copy** ([CX-03](arcchat.md#rule-cx-03)). |
 | AI-04 | **Clicking "Ask ArcChat" must never upload an entire notebook.** The minimum necessary context is passed ([AS-08](../06-knowledge-search-and-retrieval.md#rule-as-08)). |
 | AI-05 | **Every AI modification carries provenance** ([SY-21](../03-cloud-services-and-sync.md#rule-sy-21)): actor is the agent, with task, capability and approval reference. |
@@ -268,8 +268,8 @@ ArcNotes contributes **context providers**, **agent capabilities**, **artifact h
 |---|---|
 | CP-01 | **Deletion capabilities exist and are high-risk**, carrying elevated risk level, explicit approval and a checkpoint (`R2`–`R4` per operation scale). |
 | CP-02 | **ArcNotes is an artifact handler**: a task producing a report creates an **ArcNotes Document owned by ArcNotes**, and ArcChat receives an `ArtifactRef` ([AR-01](arcchat.md#rule-ar-01)). |
-| <a id="rule-cp-03"></a>CP-03 | **An ArcScope report becoming an ArcNotes document is a copy/import**, creating a new ArcNotes-owned object with provenance — never a shared writable object (`§4.2` of the product scope). |
-| CP-04 | **An ArcNotes document may reference an ArcScope resource** by `ResourceRef`, without owning it. |
+| <a id="rule-cp-03"></a>CP-03 | Cross-product report import is future-only. Current imports use the explicitly supported file formats and create ArcNotes-owned content with retained provenance; they do not create shared writable objects. |
+| CP-04 | Current context/resource references resolve inside ArcNotes or its admitted external sources. ArcScope references are future-only examples. |
 
 ---
 
@@ -371,7 +371,7 @@ Import a Markdown folder with nested links and attachments; retry without duplic
 | FR-01 | First notebook use signs into a realm and selects its workspace. Returning users open authorized cached content during outages. Sign-out blocks normal workspace views; the explicit local pending-work recovery path in identity [DL-01](../02-identity-account-and-workspace.md#rule-dl-01) is a narrow exception, not account-free notebook creation or AI. |
 | FR-02 | After account/workspace setup, first value is creating a note and typing immediately; shell startup never waits for background hydration/indexing. |
 | FR-03 | AI entitlement, provider availability and model configuration never block ordinary editing of available content. |
-| FR-04 | ArcChat absence does not disable ArcNotes editing or direct Cloud AI entry points. Cross-product desktop tool requests requiring the ArcChat bridge report that dependency. |
+| FR-04 | ArcNotes carries its own assistant packages and direct Cloud client. Its editing and selection AI do not depend on another product or coordinator. |
 | FR-05 | Startup meets the budget in [`../12-quality-and-compatibility-contract.md`](../12-quality-and-compatibility-contract.md) §5, with no cloud dependency in the startup path. |
 
 ---
@@ -447,7 +447,7 @@ Advanced importers and excluded workbenches are outside the current delivery bas
 
 **Attachments** — managed uploads preserve bytes and references, large/external files require a clear choice, hydration loss is recoverable, and an unavailable attachment does not masquerade as downloaded.
 
-**AI** — selection AI works through Cloud without ArcChat Desktop; no service term means no AI even with credits; no BYOK/model download UI exists; context is minimal; bulk edits require review and checkpoints.
+**AI** — selection AI works through Cloud without the owning desktop application; no service term means no AI even with credits; no BYOK/model download UI exists; context is minimal; bulk edits require review and checkpoints.
 
 **History/trash** — restore creates a new revision; trash restore preserves identity; deleting tags/views deletes no notes; deleting a folder has an explicit descendant scope.
 

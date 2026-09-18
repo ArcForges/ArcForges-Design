@@ -121,7 +121,7 @@ Client holds a SyncCursor per scope
 
 ### 4.2 Concurrency at the source
 
-Conflicts are minimised before they occur: optimistic revision on every write ([CC-06](03-local-ipc-and-process-model.md#rule-cc-06) in the local IPC architecture), per-document serial write ordering ([CC-01](03-local-ipc-and-process-model.md#rule-cc-01) there), and short transactions ([CS-03](06-data-persistence-and-formats.md#rule-cs-03) in the persistence architecture).
+Conflicts are minimized before they occur: every aggregate write checks its current expected revision ([RV-03](data-model/00-data-model-overview.md#rule-rv-03)), the owning in-process document service serializes writes to that document, and [CS-03](06-data-persistence-and-formats.md#rule-cs-03) keeps SQLite transactions short. Cloud writes use registered guarded D1 batches. Neither rule depends on a local RPC transport.
 
 ---
 
@@ -316,4 +316,4 @@ Notes/Chat Unsync pauses hydration or evicts acknowledged cache only; pending lo
 
 Realm migration uses the complete [realm-transfer.v1 owner-data profile](contracts/07-client-journeys-and-ports.md#5-realm-transfer-and-data-health): manifested typed roots/blobs, new receiving IDs, exact reference mapping, preview/fidelity, bounded per-root commit/resume and no source deletion. It is distinct from ordinary Markdown/Chat JSON user export and from disaster backup. Missing-all-copies content becomes irrecoverable with retained evidence, never a successful repair.
 
-Operational objectives are PG5minute/blob15minute RPO,4hour RTO and30day protected independent copies. Restore and rollback follow modeA/B/C in deployment22; a modeC migration past its write-fenced horizon cannot promise application-only rollback.
+Operational objectives are PG5 minute/blob15 minute RPO,4 hour RTO and 30 day protected independent copies. Restore and rollback follow modeA/B/C in deployment 22; a modeC migration past its write-fenced horizon cannot promise application-only rollback.

@@ -5,7 +5,7 @@
 > Governing authority: [`00-data-model-overview.md`](00-data-model-overview.md) `§4`, `§8`
 > Companions: [`../09-ai-and-agent-runtime-architecture.md`](../09-ai-and-agent-runtime-architecture.md) `§5`, [`../06-data-persistence-and-formats.md`](../06-data-persistence-and-formats.md)
 
-Every store here is **reconstructable from canonical data**. Deleting all of them leaves every product fully functional and loses no user content ([QI-10](../../requirements/12-quality-and-compatibility-contract.md#rule-qi-10)). That property is what makes them safe to evict under storage pressure, safe to rebuild after a schema change, and safe to exclude from backup.
+Every store here is **reconstructable from canonical data**. Deleting all of them loses no canonical user content; dependent search/previews may be unavailable or slower until rebuilding ([QI-10](../../requirements/12-quality-and-compatibility-contract.md#rule-qi-10)). That property is what makes them safe to evict under storage pressure, safe to rebuild after a schema change, and safe to exclude from backup.
 
 ---
 
@@ -175,7 +175,7 @@ The [CF/R2 lifecycle](../contracts/05-cloudflare-integration.md) fixes part veri
 This profile implements the existing [hybrid and retrieval-budget requirements](../../requirements/06-knowledge-search-and-retrieval.md#5-search-versus-retrieval) without changing owner-local lexical/scalar semantics. Freeze profile, query, principal/scope/policy, source versions and index/model/config versions into the dataset/context token; changes invalidate that token rather than mixing pages.
 
 1. Filter current permissions, metadata and search/AI-exclusion policy before candidates or counts. Owner-local lexical ranking remains its existing profile; Cloud semantic candidates use cosine similarity over complete same-version 1024-dimensional vectors. Zero-norm vectors are unrankable. Normalize each list to one-based ranks, tie-breaking by lower-case resource UUID then canonical anchor bytes. Prefer the local current version when a permitted native search also has a duplicate Cloud hit; only acknowledged versions are eligible for Cloud model context.
-2. Deduplicate by resource identity, source version, anchor and canonical content fingerprint. For hybrid ordering use reciprocal rank fusion RRF(x)=sum(1/(60+rank_i(x))) over the lexical and semantic lists, absent contribution0. Never add raw lexical and vector scores. Metadata-only search orders by the owner's declared sort, default modified descending then stable ID.
+2. Deduplicate by resource identity, source version, anchor and canonical content fingerprint. For hybrid ordering use reciprocal rank fusion RRF(x)=sum(1/(60+rank_i(x))) over the lexical and semantic lists, absent contribution 0. Never add raw lexical and vector scores. Metadata-only search orders by the owner's declared sort, default modified descending then stable ID.
 3. Exact matches precede other automatic hits. Exact means an ordinal NFC occurrence of the entire nonempty query in indexed title/text; no locale-dependent case folding is introduced here. Within each priority group sort descending fusion score, then stable resource/anchor tie. Keyword-only and semantic-only modes retain their corresponding list order, with the same exact-match priority where source text establishes it.
 4. Optional CF rerank operates on at most the first 200 authorized candidates and sorts by descending returned score inside each exactness group, tie-breaking by prior fused order. Candidates outside that bounded prefix retain their prior order after that group's reranked prefix. Refused/partial/unknown/unavailable reranking falls back to the complete pre-rerank order and reports that degradation; it never fails keyword retrieval.
 5. Context assembly processes explicit permitted pins first, then automatic exact and non-exact groups. Automatic evidence uses round-robin source queues ordered by each source's highest-ranked remaining hit, with the per-source cap; each queue preserves hit order. Identity/content duplicates consume no second evidence slot. Graph expansion follows canonical link-target order, deduplicates visited identities, and obeys depth/edge/candidate limits. Links do not acquire exact-match or pinned priority.
@@ -188,10 +188,14 @@ This profile implements the existing [hybrid and retrieval-budget requirements](
 | contextTokens | 8192 / 24000, also bounded by the selected model and remaining Run context allowance |
 | contextBytes | 131072 / 262144 |
 | perSource | 5 / 20 automatic items from one aggregate resource |
-| graphDepth; graphEdges | 1 / 3; 64 / 256 (depth0 disables expansion) |
+| graphDepth; graphEdges | 1 / 3; 64 / 256 (depth 0 disables expansion) |
 
 The effective value is the minimum of the caller's supplied budget (or these defaults), active product/resource policy, model limits and remaining Run allowance. Budgets govern candidate discovery and context assembly; an ordinary result page still follows its PageRequest/dataset contract and must disclose a bounded/incomplete candidate set. No fixed Top-K replaces this budget.
 
 Independent ranking vectors: lexical A,B and semantic B,C produce B>A>C under RRF60; marking A exact produces A>B>C. Equal scores tie by resource UUID/anchor, independent of arrival order. Revoked B contributes neither rank nor count; duplicate local/cloud A resolves once to the current local version for native search. A failed reranker reproduces pre-rerank order. Pinned content precedes automatic content but cannot bypass source permission, current Cloud acknowledgement or a budget refusal.
 
 Embedding/rerank jobs use the [canonical Search execution record](01-cloud-data-model.md#search-inference-job-execution-record) and existing platform-funded supplier accounting. Keyword/scalar search and rebuilding native lexical indexes remain usable without a model. Supplied weights behind a CF model ID may change: exact vector bytes are not a provider guarantee; fixture vectors test deterministic fusion, while provider evaluation/versioned rebuild gates cover model changes.
+
+## Assistant compaction
+
+Cloud chat.compaction_record and local assistant_compaction are derived source-hash-bound summaries governed by model 05 and HC-09. Rebuild/recompute may produce different wording, but must preserve the protected-content and authority rules; it cannot change canonical history or effect receipts. Rebuilding indexes guarantees the same source set and exact scalar results, not identical model-generated prose/ranking. Local assistant search is FTS5 keyword/metadata search; no local embedding model is introduced. ProductJob projections are not Task authority.

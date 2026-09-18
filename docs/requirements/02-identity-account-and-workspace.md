@@ -1,5 +1,5 @@
 # Identity, Account, Device, Session and Workspace Requirements
-> Current scope amendment: **[P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
+> Effective scope: P2-012 and P2-013 amend the technology and application ownership below. **[P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Requirements
@@ -118,9 +118,9 @@ Session                     (one app's current authenticated login state)
 | DV-01 | **Device** carries: name, platform, created time, last-seen time, trust status, remote-enabled flag, and a revoke action. |
 | DV-02 | Device identity is **created by user authorization**, not derived from a hardware fingerprint. CPU serial, motherboard ID and MAC address must not be used to identify a device — they break under virtualisation, reinstall, hardware replacement, and are privacy-hostile. A device may be renamed, revoked and re-registered. |
 | DV-03 | **App Installation** is a distinct cloud-visible dimension. A process instance is never a device identity. |
-| DV-04 | **Session** is per-application authenticated state. Sessions expire; the Device survives. One device may hold several concurrent sessions (`ArcChat`, `ArcNotes`, `ArcScope`, browser). |
-| DV-05 | **Device SSO** — after a user signs in from one Arc product on a device, another Arc product on the same device offers "Continue as \<name\>" rather than re-entering an email. |
-| DV-06 | **Device SSO must not create an architecture dependency.** ArcNotes signing in must work without another application. The unified account/session infrastructure is shared desktop foundation, never an ArcChat-private authentication service. |
+| DV-04 | Session is authenticated state of one application installation/profile. A device can hold independent ArcNotes, ArcScope, ArcSlate, Android or browser sessions; revocation never transfers credentials between them. |
+| DV-05 | Each application signs in independently. Native clients use the system-browser authorization-code/PKCE journey or in-app email code; existing browser login may be reused after consent. There is no local cross-application SSO broker. |
+| DV-06 | Each application must authenticate without another ArcForges application or local broker. Shared NuGet code is a library inside its owner process; application credentials and histories remain independent. |
 | DV-07 | Sign-out distinguishes four operations, each with different scope: **Sign out of this App** (other Arc apps stay signed in), **Sign out of this Device** (all Arc app cloud sessions revoked, local data retained), **Revoke Device** (performed from another device; stops sync, remote and cloud access), **Sign out everywhere** (all sessions cleared; the account remains). |
 
 ---
@@ -317,7 +317,7 @@ This document settles **identity ownership relationships**; commercial rules for
 |---|---|---|
 | A-01 | Fresh install, no network/account | Native UI starts within budget; local capture/media operations are usable; initial Cloud notebook enrolment and AI show their sign-in/network requirement |
 | A-02 | Sign in with unrelated local files present | Nothing is automatically imported/uploaded; explicit notebook enrolment and file selection define participation |
-| A-03 | Sign out of ArcNotes while ArcChat is signed in | ArcChat session unaffected; ArcNotes local data intact |
+| A-03 | Sign out of ArcNotes while ArcScope is signed in | ArcScope session unaffected; ArcNotes local data intact |
 | A-04 | Revoke a device from another device | The revoked device loses sync, remote and cloud access; its local data is intact |
 | A-05 | Enable remote access, then attempt an R4 operation from mobile | The operation is refused remotely and the user is directed to confirm on a trusted device |
 | A-06 | Sign in to Official and to a self-hosted realm with the same email | Two distinct identities; no data or entitlement crosses between them |

@@ -21,18 +21,18 @@ Own-application composition and state, public binary gRPC-Web, helper-only local
 
 ## 4. Projects, directories, files and major types affected
 
-Use the exact projects assigned to this WP in [architecture27](../../architecture/27-platform-projects-and-application-assistants.md#2-desktopplatform-tree-and-actual-projects) and its product/Cloud/Mobile trees. Implement their owned named services, typed records, schema migrations and tests; do not introduce a new repository, generic SQL facade or shared runtime to connect them. Versioned generated schema definitions remain in Contracts.
+Use the exact projects assigned to this WP in [architecture 27](../../architecture/27-platform-projects-and-application-assistants.md#2-desktopplatform-tree-and-actual-projects) and its product/Cloud/Mobile trees. Implement their owned named services, typed records, schema migrations and tests; do not introduce a new repository, generic SQL facade or shared runtime to connect them. Versioned generated schema definitions remain in Contracts.
 
 ## 5. Required implementation work
 
 <a id="rule-wp-46.00"></a>
-### WP-46.00 — Backup layers
+### WP-46.00 — D1 and independent object backup
 
-**What must be fully done.** Implement local canonical backup, D1 Time Travel/export/change archive, R2 objects and independent S3 COMPLIANCE copy under model04.
+**What must be fully done.** Implement model 04/backup manifest v1: matching D1 export/bookmark/base sequence, contiguous replay, verified R2 inventory and independent S3 COMPLIANCE copy. No PostgreSQL WAL/LSN procedure.
 
-**Testing requirements.** RPO5min metadata/15min objects measured; no WAL tooling or same-provider-only substitute.
+**Testing requirements.** Fresh database import, missing replay gap/hash/key, restrictive journal replay, session/generation reset and reconciled unknown effects; include selfhost.v1 account.
 
-**Completion gate.** The stated behavior and oracle pass using the actual owned implementation. Evidence names source commit, artifact versions/hashes, environment and any later fixture replacement.
+**Completion gate.** Measured metadata/blob RPO and RTO pass; Time Travel alone cannot satisfy independent restore.
 
 <a id="rule-wp-46.01"></a>
 ### WP-46.01 — Point-in-time and fresh restore
@@ -55,7 +55,7 @@ Use the exact projects assigned to this WP in [architecture27](../../architectur
 <a id="rule-wp-46.03"></a>
 ### WP-46.03 — Drill programme
 
-**What must be fully done.** Run actual Container/Worker/DO/R2/D1 restore using separate credentials and immutable archive; then combined AI reopen at50/52.
+**What must be fully done.** Run actual Container/Worker/DO/R2/D1 restore using separate credentials and immutable archive; then combined AI reopen at 50/52.
 
 **Testing requirements.** RTO≤4h with real evidence, not SQLite/simulator-only restore.
 
@@ -102,6 +102,8 @@ Use the exact projects assigned to this WP in [architecture27](../../architectur
 Changed application scope, storage, transport, UI and deployment behavior are governed by the authorities in §2. Preserve existing business rules and formats. Migration/compatibility manifests include source/schema/plan/ABI/runtime versions; current cross-product collaboration is deferred and contributes no release input.
 
 ## 7. Tests and verification evidence
+
+Acceptance includes every amended §5 producer/consumer and WP-46.90 evidence. Current P2-013 contracts/data/runtime rules are tested in the original owner implementation, not a detached explanatory sample.
 
 | Evidence | Produced by |
 |---|---|

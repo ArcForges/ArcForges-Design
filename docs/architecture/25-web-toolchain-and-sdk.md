@@ -11,12 +11,12 @@ This is the implementation contract for the React/TypeScript boundary. Handwritt
 
 | Area | Baseline | Owner and constraint |
 |---|---|---|
-| UI | React + React DOM; strict TypeScript | One account/chat application, with separately built profile route graphs |
+| UI | React + React DOM; strict TypeScript | One apps/app source with separate account/chat/operations route graphs; apps/site owns public pages |
 | Routing and public generation | React Router framework mode on Vite; runtime SSR disabled | Application profiles use client loaders; Site pre-renders the complete public locale/URL inventory at build time |
 | Design system | Tailwind CSS, owned shadcn/ui-derived components, Motion where interaction requires it | Shared tokens, accessible behavior and reviewed upstream updates; ordinary CSS transitions for simple effects |
 | Data access | Generated gRPC-Web SDK; TanStack Query | SDK from released Contracts proto; query cache is a projection, never authority |
 | Runtime validation | Generated Zod schemas | Wire shape only; server remains responsible for authorization and business validation |
-| Realtime | Generated unary EventService.Poll; separate CF WS/HTTP presentation | Same version/recovery rules as C# clients, with independent language adapters |
+| Realtime | Generated EventService.Watch/Poll and ExecutionService.WatchOutput/ReadOutput over binary gRPC-Web | Same version/recovery rules as C# clients, with independent language adapters |
 | Toolchain | Node.js 24 LTS + npm workspaces | Exact supported Node patch and bundled npm version pinned when [WP-02](../planning/work-packages/02-build-governance-and-analyzer-policy.md#rule-wp-02) creates the implementation manifest; no Bun, Deno, yarn or pnpm baseline |
 | Tests | Vitest, React Testing Library, Playwright, accessibility checks | TypeScript tests run under Node/browser, C# server tests retain Microsoft.Testing.Platform |
 | VS integration | One JavaScript SDK `.esproj` in `win.slnx` | Windows IDE entry only; no JavaScript SDK dependency in the portable managed graph |
@@ -24,7 +24,7 @@ This is the implementation contract for the React/TypeScript boundary. Handwritt
 | # | Rule |
 |---|---|
 | <a id="rule-wts-01"></a>WTS-01 | **All first-party Web UI and Web build/test automation are TypeScript.** Configuration may use JSON, XML, CSS and declarative formats. Browser production output is JavaScript; this does not authorize JavaScript/DOM UI inside Avalonia desktops. |
-| <a id="rule-wts-02"></a>WTS-02 | **One npm workspace root at ArcForges-Web and one committed `package-lock.json` there.** It owns both deliverables and internal packages; no nested lockfiles or second package manager. |
+| <a id="rule-wts-02"></a>WTS-02 | **One npm workspace root at ArcForges-Web and one committed `package-lock.json` there.** It owns the site, account, chat and operations outputs and internal packages; no nested lockfiles or second package manager. |
 | <a id="rule-wts-03"></a>WTS-03 | **Pin direct dependencies exactly, including code generators, and commit the resolved closure.** Node/npm, React, Router, Vite, TypeScript, the JS SDK, and all CI actions/images carry reviewed versions. No `latest` or prerelease baseline; an upgrade regenerates and verifies the contracts and production artifacts. |
 | <a id="rule-wts-04"></a>WTS-04 | **NuGet central management governs .NET, npm manifests govern Web.** An npm dependency is not a `Directory.Packages.props` entry. Both graphs join the repository licence, secret, provenance and vulnerability policy. |
 | <a id="rule-wts-05"></a>WTS-05 | **Node is not a second business backend.** No Express/Nest API, Node agent loop, provider credentials or billing implementation is introduced. Static rendering during a build is permitted; request-time Node SSR and React Server Components are outside this baseline. |
@@ -33,7 +33,7 @@ This is the implementation contract for the React/TypeScript boundary. Handwritt
 
 ## 2. Independent Web repository
 
-ArcForges-Web owns apps/site (static public generation), apps/app (explicit Account/Chat/operator/status route profiles), packages/ui (AGPL), tooling/, tests/, package.json/package-lock.json, .node-version, ArcForges.Web.esproj and win.slnx. Consume @arcforges/proto/api-client from Contracts; there is no local SDK source tree, Cloud ProjectReference or native build dependency. Portable npm commands work without Visual Studio; esproj delegates to those same commands and explicit npm ci, with no implicit install/build race.
+ArcForges-Web owns apps/site (static public generation), apps/app (explicit account/chat/operations route profiles; status is an external-provider page/link, not an apps/app profile), packages/ui (AGPL), tooling/, tests/, package.json/package-lock.json, .node-version, ArcForges.Web.esproj and win.slnx. Consume @arcforges/proto/api-client from Contracts; there is no local SDK source tree, Cloud ProjectReference or native build dependency. Portable npm commands work without Visual Studio; esproj delegates to those same commands and explicit npm ci, with no implicit install/build race.
 
 Development may start an exact released Cloud container or explicit built candidate from an independently checked-out Cloud repository. F5 identifies its image/endpoint and waits for health; no automatic second business host is launched. Account and Chat development origins are distinct hostnames, not only different ports. Only a reviewed dev profile permits dev certificates/HMR; no dev proxy/CSP relaxation enters release.
 
@@ -50,7 +50,7 @@ Contracts handwritten public proto â†’ pinned protoc/C#/protobuf-es generation â
 <a id="31-exact-wire-values"></a>
 ### 3.1 Exact wire values
 
-Use protobuf bigint for all 64-bit counters and integer microcredits; JSON exceptions use canonical decimal strings. Money uses exact Decimal string, media uses signed ticks/reduced rational, GUID uses canonical16 bytes, scalar null/absent is explicit. These preserve the complete content-origin/Notes/Scope profile oracles. No number coercion or metadata-only OpenAPI transformer may change actual bytes. [Independent vectors](contracts/04-protobuf-wire-registry.md#2-exact-values-canonical-identity-and-evolution) are required in both directions.
+Use protobuf bigint for all 64-bit counters and integer microcredits; JSON exceptions use canonical decimal strings. Money uses exact Decimal string, media uses signed ticks/reduced rational, GUID uses canonical 16 bytes, scalar null/absent is explicit. These preserve the complete content-origin/Notes/Scope profile oracles. No number coercion or metadata-only OpenAPI transformer may change actual bytes. [Independent vectors](contracts/04-protobuf-wire-registry.md#2-exact-values-canonical-identity-and-evolution) are required in both directions.
 
 <a id="32-realtime-and-streaming"></a>
 ### 3.2 Realtime and streaming
@@ -101,6 +101,6 @@ These establish the selected mechanisms, not a completed production build. Exact
 
 ## 7. Selected Web baseline
 
-Web retains React/Vite/React Router static profiles, selects React 19.3.0/Router 8.3.1/Vite 8.3.0/TS7.0.2 with existing UI/query/accessibility choices. Root paths apps/site, apps/app, packages/ui, tooling, tests, win.slnx + ArcForges.Web.esproj; no SDK source in Web (consume Apache Contracts package). Account/Chat/operator/status are explicit separately built route graphs; no runtime SSR. Pin other existing direct UI/test deps from their own approved manifest during initial build, without changing architecture; equivalent patch lock resolution is an implementation detail. Origins/runtime config/CSP/CSRF/cookie segregation and asset rollback rules remain.
+Web retains React/Vite/React Router static builds and the existing UI/query/accessibility choices. WP02 pins reviewed stable versions and lockfiles in the producer; prose patch numbers are not an alternate dependency lock. Outputs are site, account, chat and operations. Root paths are apps/site, apps/app, packages/ui, tooling, tests, win.slnx and ArcForges.Web.esproj; Apache clients come from released Contracts packages. No status build or SDK source tree is introduced.
 
 [Mobile](11-mobile-architecture.md#3-runtime-libraries-and-lifecycle-baseline) owns the Kotlin Android stack; Web consumes only its declared package/route profile. [Wire registry](contracts/04-protobuf-wire-registry.md) owns public schemas and adapters.

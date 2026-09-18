@@ -1,11 +1,11 @@
 # Working Data, Project Formats and Cloud Portability Requirements
-> Current scope amendment: **[P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
+> Effective scope: P2-012 and P2-013 amend the technology and application ownership below. **[P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Requirements
 > Companions: [`03-cloud-services-and-sync.md`](03-cloud-services-and-sync.md), [`12-quality-and-compatibility-contract.md`](12-quality-and-compatibility-contract.md), [`../architecture/06-data-persistence-and-formats.md`](../architecture/06-data-persistence-and-formats.md)
 
-This contract governs native working data, Cloud-acknowledged authority, pending-change durability and the product-specific portability formats. It does not require a standalone local ArcNotes/ArcChat product, encrypted export or a universal local backup package.
+This contract governs native working data, Cloud-acknowledged authority, pending-change durability and the product-specific portability formats. It preserves ArcNotes Cloud export and the application assistant's explicit local/cloud/temporary history formats; encrypted export and a universal local backup package remain excluded.
 
 ---
 
@@ -51,7 +51,7 @@ Each product owns its own local store ([P-09](00-product-scope-and-portfolio.md#
 
 | Product | Strategy | Shape |
 |---|---|---|
-| **ArcChat** | Cloud authority with native cache | Cloud conversations/projects/agent state; native history projections, unsent drafts, bounded attachments and local tool receipts. Cloud export is the portability route. |
+| **Application assistant** | Local history is app-authoritative by default; Cloud history is opt-in; temporary history is memory-only | Local assistant-history.v1 snapshot export with optional Markdown; Cloud history uses the owned export job; no credentials or pending execution rights are exported. |
 | **ArcNotes** | Cloud authority with durable native working cache | Cloud-acknowledged documents/blocks/properties/attachments/revisions; native cached data, pending-edit journal and local lexical index. Markdown is interchange, not the working store. |
 | **ArcScope** | **Project-centric hybrid** | A clearly identifiable project store: manifest, canonical metadata, a chunked capture store, managed assets, recovery state, derived caches. |
 | **ArcSlate** | **Project-centric hybrid** | A project store plus media references and managed media plus derived stores. **Original media is never inserted into the core database.** |
@@ -61,7 +61,7 @@ Each product owns its own local store ([P-09](00-product-scope-and-portfolio.md#
 | Product | Native durable content | Cloud authority |
 |---|---|---|
 | ArcNotes | Cached acknowledged documents/attachments, stable pending edits and attachment uploads, local lexical index, device UI state | Acknowledged revisions, synced attachments, history, trash, semantic index and export jobs |
-| ArcChat | Cached history/projections, unsent drafts, permission grants and idempotent local tool receipts | Conversations/projects/profiles/memory, the single agent runtime and schedules, usage and export jobs |
+| Application assistant | App-owned local histories/drafts, cached Cloud histories, permission and tool receipts | Opted-in Cloud histories; execution/automation metadata and usage; temporary/local bodies never become canonical Cloud Chat |
 | ArcScope | Project metadata, hardware captures/chunks, analysis and recovery state; downloaded synthetic capture | Synced metadata and explicitly uploaded raw data; simulator scenarios, runs and committed output manifests |
 | ArcSlate | Project/edit store, managed/external media references, recovery and revision state; derived proxies/caches | Synced project revisions and explicitly selected media |
 
@@ -243,7 +243,7 @@ The product scope determines which exports exist:
 | Product | Required portability |
 |---|---|
 | ArcNotes | Cloud Markdown export with selected attachments, hierarchy/property metadata and fidelity manifest; Markdown/text import under the Notes requirements |
-| ArcChat | Cloud conversation JSON/text and selected task-summary/artifact export; no local execution archive |
+| Application assistant | Local assistant-history.v1 plus optional Markdown; Cloud conversation JSON/text/task summaries and resource availability manifest; temporary content has no automatic archive |
 | ArcScope | Native investigation bundle, CSV/JSON and report outputs; simulator provenance retained |
 | ArcSlate | Native project/collect package, rendered media/subtitles, and canonical .otio in both directions ([OT-01](products/arcslate.md#rule-ot-01)–[OT-12](products/arcslate.md#rule-ot-12)) |
 

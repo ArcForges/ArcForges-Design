@@ -10,24 +10,25 @@ React/TypeScript implements the browser experiences. Node.js provides the shared
 ## 1. Build outputs
 
 ```text
-src/Web — one npm workspace and one Windows esproj
-├─ ArcForges.Web.Site — React/TS build-time pre-rendering
-│     → public HTML/CSS + bounded enhancement assets
-└─ ArcForges.Web.App — React/TS application
-      ├─ Account build profile → account.arcforges.com
-      └─ Chat build profile    → chat.arcforges.com
-          ↓ generated TypeScript SDK / same-origin edge routes
-       existing ASP.NET Core Cloud.Host
+Web repository — one npm workspace and one Windows esproj
+apps/site → site (static public pages)
+apps/app  → account (account.arcforges.com)
+          → chat (chat.arcforges.com)
+          → operations (separate operator origin and authorization)
+packages/ui → shared browser UI
+Released Contracts clients → same-origin Worker ingress → C# Container
 ```
 
 | # | Rule |
 |---|---|
 | <a id="rule-bo-01"></a>BO-01 | **Public content is present in static HTML/CSS before JavaScript runs.** Marketing, pricing information, legal, docs and downloads are usable with scripting disabled; enhancements do not hide initial content. |
 | <a id="rule-bo-02"></a>BO-02 | **Static pages are deployment artifacts, not a second account/chat application.** |
-| <a id="rule-bo-03"></a>BO-03 | **`ArcForges.Web.App` is the one interactive browser codebase**, built as Account and Chat profiles with their own route graphs. |
-| <a id="rule-bo-04"></a>BO-04 | **React DOM runs browser JavaScript emitted from strict TypeScript.** Web has no .NET/WASM host or Web AOT setting. Desktop and mobile keep their separately specified C# runtime postures. |
+| <a id="rule-bo-03"></a>BO-03 | ArcForges.Web.App is one interactive source tree built into account, chat and operations profiles, each with a disjoint route graph and authorization boundary. |
+| <a id="rule-bo-04"></a>BO-04 | React DOM runs browser JavaScript emitted from strict TypeScript. Web has no .NET/WASM host; desktop uses C# Native AOT and Android uses Kotlin/Compose as separately specified. |
 | <a id="rule-bo-05"></a>BO-05 | **Use Node.js/npm, React Router and Vite as specified in the toolchain companion.** Build-time static rendering is allowed; runtime Node SSR, Blazor modes, React Native and an additional Node business service are outside this baseline. |
 | <a id="rule-bo-06"></a>BO-06 | **Browser code may use the selected JS/TS ecosystem under dependency and bundle policy.** Browser capabilities do not authorize WebView, DOM or JavaScript UI inside native desktop applications. |
+
+Public host/path dispatch follows [arch 05 routing](05-cloud-architecture.md#edge-routes-and-binding-graph). Account/chat cookies never cross origins; operations uses a disjoint identity.
 
 ## 2. Static generation
 
@@ -47,11 +48,11 @@ Content, catalogue, release manifests, legal versions, locales and an approved p
 
 | # | Rule |
 |---|---|
-| <a id="rule-wa-01"></a>WA-01 | **One application codebase, two explicit build profiles.** Shared shell, error handling, locale and UI primitives have one implementation; account/chat feature route imports are selected at build time. Route exclusion is a bundle boundary, never authorization. |
+| <a id="rule-wa-01"></a>WA-01 | One React/TypeScript codebase builds four explicit outputs: site, account, chat and operations. Compile-time route/import boundaries prevent accidental feature inclusion; server authorization remains independent. status is independently hosted and not a fifth application profile. |
 | <a id="rule-wa-02"></a>WA-02 | **Origins have independent sessions, storage and in-memory state.** A workspace/user switch aborts old requests and clears scoped queries; late replies cannot contaminate the new context. |
-| <a id="rule-wa-03"></a>WA-03 | **C# DTOs and endpoint metadata generate OpenAPI, then TS types, SDK and runtime validators.** No UI model or database entity becomes a wire contract. |
-| <a id="rule-wa-04"></a>WA-04 | **React consumes the generated gRPC-Web SDK through one transport wrapper.** C# clients retain generated gRPC client; its AOT entry-point rule does not describe JavaScript. |
-| <a id="rule-wa-05"></a>WA-05 | **Realtime uses the official JS gRPC hint polling client with generated JSON payload validation.** Stream byte positions, sequence gaps and backfill follow the shared contracts. |
+| <a id="rule-wa-03"></a>WA-03 | Contracts handwritten proto generates protobuf-es types/descriptors and the gRPC-Web SDK. No C# DTO → OpenAPI → TypeScript pipeline or copied business types. |
+| <a id="rule-wa-04"></a>WA-04 | React uses the generated SDK through createGrpcWebTransport in binary mode. C# uses GrpcWebHandler; Android uses Connect Kotlin gRPC-Web. All three share semantic vectors, not runtime code. |
+| <a id="rule-wa-05"></a>WA-05 | EventService.Watch/Poll and ExecutionService.WatchOutput/ReadOutput use the generated annex 10 schema, trailers and cursor recovery. No JS SignalR client, public WebSocket or JSON hint protocol. |
 | <a id="rule-wa-06"></a>WA-06 | **Browser authentication is an opaque server-side cookie session**, resolved in §5. Browser JavaScript holds no bearer/refresh credential and performs no refresh-token loop. |
 | <a id="rule-wa-07"></a>WA-07 | **TanStack Query caches projections and invalidates them on authoritative changes.** Entitlement events and optimistic presentation never approve a paid action or settle a charge. |
 | <a id="rule-wa-08"></a>WA-08 | **Route chunks, initial transfer, first usable interaction and sustained chat memory have recorded budgets.** [WP-06](../planning/work-packages/06-aot-jit-and-wasm-publish-proof.md#rule-wp-06) establishes the production baseline; later releases enforce regressions. |

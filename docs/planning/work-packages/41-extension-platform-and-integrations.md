@@ -5,7 +5,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: J — Platform completion
-> Upstream: `09` · `11` · `17` · `22` · `25` · Downstream: `50` · `52`
+> Upstream: `09` · `11` · `17` · `22` · `25` · Downstream: `45` · `50` · `52`
 
 > **Goal.** Open the platform without weakening it: out-of-process extensions contributing **tools, never planners** ([EA-08](../../requirements/08-extensions-and-developer-platform.md#rule-ea-08)), the dual capability boundary with a closed AOT-safe value model, declarative UI contribution, the Arc Package runtime, the catalog, and the MCP, connector and artifact handoff and standard MCP integrations — all under the same security pipeline as first-party code.
 
@@ -121,7 +121,7 @@
 
 ### WP-41.04 — Package runtime
 
-**What must be fully done.** Implement manifest.v1/workflow.v1/panel.v1 validators from published Contracts, all six families and immutable staged install/update/drain/migration/revocation/rollback states in annex08.
+**What must be fully done.** Implement manifest.v1/workflow.v1/panel.v1 validators from published Contracts, all six families and immutable staged install/update/drain/migration/revocation/rollback states in annex 08.
 
 **Testing requirements.** Archive traversal/size/signature, DAG bounds, increased permissions, active old job, private-state rollback incompatibility and unknown-effect tests.
 
@@ -129,33 +129,33 @@
 
 <a id="rule-wp-41.05"></a>
 
-### WP-41.05 — Catalog
+### WP-41.05 — PackageCatalog producer and consumers
 
-**What must be fully done.** A catalog client supporting the official catalog, additional configured catalogs and local sources. Catalog content is untrusted: sanitised for display and never treated as instructions. The package page shows contributions, permissions, publisher, trust, review status, version history, compatibility and provenance before install.
+**What must be fully done.** Build Cloud PackageCatalog, DNS publisher verification, immutable submissions, review-state/revocation authority and signed static index producer, plus desktop/CLI consumers under arch 15/registry 04/model 01. Use WP03 fixture keys; production distribution keys are later WP53.
 
-**Testing requirements.** Hostile listing content; oversized metadata; malformed manifest; a catalog-unreachable test asserting installed packages keep working.
+**Testing requirements.** Owner/PAT/operator separation, duplicate version conflict, invalid archive, review/revoke replay, signed-index rollback/expiry and offline installed-package behavior.
 
-**Completion gate.** Hostile catalog content is rejected without executing anything, and catalog unavailability never disables installed packages.
+**Completion gate.** Real Cloud producer and package consumer integrate; WP45 can build review UI against existing methods, with no unowned catalog service.
 
 <a id="rule-wp-41.06"></a>
 
 ### WP-41.06 — Public SDK and CLI
 
-**What must be fully done.** The Apache-2.0 public SDK with source generators producing schema, codec and binding from C# records. The CLI with scaffold, development host, validate, pack and publish. `validate` runs the same checks the host runs at install. A first-party extension is built through the public SDK to prove the path.
+**What must be fully done.** Generate SDK/validators/tool payload projections from authored public proto. CLI uses eligible publisher PAT and catalog/resource methods. Third-party apps use approved public APIs or OS/file interchange.
 
-**Testing requirements.** Generator output tests; a validate-parity test against host install checks; a first-party-extension build through the public path.
+**Testing requirements.** Independent SDK consumer, manifest/tag compatibility, PAT scopes and no generated schema inferred from C# reflection.
 
-**Completion gate.** The SDK generates all protocol code, `validate` matches host install checks, and a first-party extension is built through the public SDK.
+**Completion gate.** CLI publish submits for review and never uploads directly into public catalog visibility.
 
 <a id="rule-wp-41.07"></a>
 
-### WP-41.07 — MCP and connectors
+### WP-41.07 — MCP placement and connectors
 
-**What must be fully done.** Implement MCP and connector owner lifecycle/typed bindings from annex08 and wire04, actual22 identity and25 immutable catalog/blob inputs, SecretRef broker and provider OAuth/egress/revocation.
+**What must be fully done.** Implement local MCP stdio behind the owned connector child and Cloud MCP HTTP through the AI Worker adapter. Preserve MCP standard protocol; only the owned child boundary speaks ArcForges gRPC.
 
-**Testing requirements.** Real configured connector callback and token refresh; malicious manifest, scope expansion, disconnection during request and unknown provider effect.
+**Testing requirements.** Origin/scope changes invalidate consent, no browser/Android local subprocess, no unrestricted AI fetch, child crash/lease recovery.
 
-**Completion gate.** Catalog/package/connection/owner actions form a complete authorized path; no model BYOK or phantom task.
+**Completion gate.** Each MCP connection has one placement/secret owner and exact failure/egress behavior.
 
 <a id="rule-wp-41.90"></a>
 ### WP-41.90 — Verify the owned artifact and real integration
@@ -185,6 +185,8 @@
 ---
 
 ## 7. Tests and verification evidence
+
+Acceptance includes every amended §5 producer/consumer and WP-41.90 evidence. Current P2-013 contracts/data/runtime rules are tested in the original owner implementation, not a detached explanatory sample.
 
 [Local gRPC closure](../../architecture/contracts/09-local-grpc-and-sandbox.md): Run real extension host↔child generated gRPC roles and ConnectorBroker consent/secret rotation/revocation; deny forged first-party identity and direct SSO/control access. No custom symmetric-event protocol.
 

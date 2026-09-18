@@ -76,23 +76,23 @@
 
 <a id="rule-wp-09.00"></a>
 
-### WP-09.00 — App, Installation and Instance identity
+### WP-09.00 — Application identity and in-process composition
 
-**What must be fully done.** The three identities with their lifecycles: an app is a stable product identity; an installation is that app installed on a device; an instance is a running process. Registration carries all three, and routing distinguishes "the app is installed" from "an instance is running".
+**What must be fully done.** Bind the closed ProductId, device, installation and instance epoch to each application composition root. Companion product identity is independent of Android/Web platform. No running-product registry or shared desktop Hub.
 
-**Testing requirements.** Lifecycle tests covering install without run, run without registration, multiple instances of one installation, and instance death.
+**Testing requirements.** Two products on one device keep separate sessions/history/capabilities; forged/missing target refuses.
 
-**Completion gate.** The three identities are distinguishable at every decision point, with a test per confusion case.
+**Completion gate.** Every application owns an independent registry and typed owner handlers.
 
 <a id="rule-wp-09.01"></a>
 
-### WP-09.01 — Contribution registration
+### WP-09.01 — Static contribution registration
 
-**What must be fully done.** The six contribution kinds register through one path with a declared kind, identity, version and owner. Registration is idempotent, survives an application service restart, and a contribution from an unknown or unverified source is refused.
+**What must be fully done.** Register capability/context/artifact/lifecycle/deep-link handlers inside the owning process through generated descriptors and explicit composition. Child extension contributions pass the admitted host boundary and grants.
 
-**Testing requirements.** Registration idempotency; restart recovery; refusal of an unowned or reserved namespace claim.
+**Testing requirements.** Duplicate IDs, wrong owner, unavailable child, undeclared tool schema and cross-product registration refuse.
 
-**Completion gate.** Registration is idempotent and refuses reserved-namespace claims.
+**Completion gate.** No product process discovery, peer heartbeat or central contribution host is required.
 
 <a id="rule-wp-09.02"></a>
 
@@ -136,13 +136,13 @@
 
 <a id="rule-wp-09.06"></a>
 
-### WP-09.06 — Deep links, events and health
+### WP-09.06 — Own navigation, hints and health
 
-**What must be fully done.** A deep-link router mapping canonical links to surfaces, treating every link as untrusted input carrying no secret. An event model with typed events and bounded subscription. Health reporting across the five dimensions, aggregated per contribution and per instance.
+**What must be fully done.** Route artifact opens and deep links to the owning application handler; bounded in-process state hints cause authoritative rereads. Private child events follow annex 09; Cloud application presence is WP26.
 
-**Testing requirements.** Deep-link tests including hostile input; event delivery and unsubscribe tests; health aggregation tests including a degraded provider.
+**Testing requirements.** Invalid ownership, missing content, expired child cursor, restart and duplicate hint recover without launching another product.
 
-**Completion gate.** Deep links reject hostile input, events cannot leak subscriptions, and health aggregation reflects a degraded provider correctly.
+**Completion gate.** Own-app navigation and child recovery work while other products are closed or absent.
 
 <a id="rule-wp-09.07"></a>
 

@@ -25,7 +25,7 @@ Desktop gRPC-Web / Web gRPC-Web / Kotlin Android gRPC-Web
                       explicit auth/tenancy/authorization/validation
                       business owners + leased bounded jobs
                       D1 + transactional outbox
-                   -> same-origin /ai, /objects -> CF Worker router
+                   -> generated RPC / object-byte exceptions -> Cloud Worker router
                       RunWorkflow: only model/tool loop -> Workers AI
                       RunStream DO: bounded disposable stream tail
                       R2: private immutable objects and staged transfers
@@ -37,9 +37,9 @@ Cloud clients never connect inbound to a desktop; device tools pull from Cloud.
 |---|---|
 | RT-01 | **The host is stateless between requests.** Anything that must survive a request lives in the database or object storage. |
 | RT-02 | **C# runs in restartable Cloudflare Containers that may sleep.** Worker ingress wakes ready instances; D1/DO/Queues preserve durable work. No minimum replica count is a correctness assumption. |
-| <a id="rule-rt-03"></a>RT-03 | **Every replica is identical and runs the same hosted services.** There is no role flag, no worker-only deployment and no leader instance chosen by configuration. |
-| <a id="rule-rt-04"></a>RT-04 | **Concurrency across replicas is controlled by durable leases with fencing**, not by deploying exactly one instance. A hosted service claims work by lease, renews while working, and loses it cleanly on expiry (`§9`). |
-| <a id="rule-rt-05"></a>RT-05 | **A hosted service is bounded.** It claims a batch, processes it and yields. An unbounded generation loop inside a request handler or a hosted service is prohibited ([SIM-10](../requirements/products/arcscope.md#rule-sim-10) of the ArcScope requirements). |
+| <a id="rule-rt-03"></a>RT-03 | Every Container instance runs the same image and exposes the same bounded job entry points. Cron/Queues/DO alarms wake work; a perpetual hosted-service process is not a correctness assumption. |
+| <a id="rule-rt-04"></a>RT-04 | Durable D1 leases and monotonic fences control concurrent job slices; a paused or replaced Container cannot publish after takeover. |
+| <a id="rule-rt-05"></a>RT-05 | A job slice handles at most 100 items or 20 seconds then commits a checkpoint and reschedules. No unbounded generation loop or sleep-based real-time scheduler runs inside the Container. |
 | RT-06 | **A user automation is never a platform scheduled job** ([RR-01](../requirements/products/arcforges-cloud.md#rule-rr-01) in the cloud requirements). |
 | RT-07 | **Untrusted code never holds a platform identity** ([RR-05](../requirements/products/arcforges-cloud.md#rule-rr-05) there). |
 | RT-08 | **Splitting a hosted service into its own deployable is an architecture baseline change**, requiring demonstrated need for independent scaling, isolation, security or ownership. V1 does not require it and no design may assume it. |
@@ -47,6 +47,28 @@ Cloud clients never connect inbound to a desktop; device tools pull from Cloud.
 > **Implementation evidence, 2026-09-06.** `ArcForges/src/Cloud` at commit `ede43db` contains exactly one web executable — `ArcForges.Cloud.Host` — referencing `ArcForges.Cloud.AgentRuntime`, `ArcForges.Cloud.BackgroundJobs`, `ArcForges.Cloud.PublicApi` and `ArcForges.Cloud.Realtime` as libraries. No `Worker` or `TaskRunner` executable exists. `ArcForges.Cloud.AppHost` is an Aspire orchestration host for local development only ([EN-05](../requirements/products/arcforges-cloud.md#rule-en-05)). Every cloud module is currently an `AssemblyPlaceholder.cs` scaffold with no implemented behaviour, so this topology correction is unblocked by existing code.
 
 ---
+
+### Edge routes and binding graph
+
+This is the authoritative routing table; arch 10 references it. All `/internal/*` paths are rejected before Container forwarding on every public hostname. Cloud's private exported handler is reachable only through service bindings. Retire the Hello World apex `/api/*` deployment at WP21.
+
+| Host | Paths | Serving owner |
+|---|---|---|
+| api.arcforges.com | /api/*, /webhooks/*, documented /session/*, /objects/* and GET /.well-known/arcforges-realm.json only; other paths return 404 | Cloud Worker → C# business/auth/webhook owners or R2 byte facade |
+| account.arcforges.com, chat.arcforges.com | /api/*, /session/*, /objects/*, /callbacks/* | Cloud Worker with exact host-bound cookie/CSRF rules |
+| account.arcforges.com | /.well-known/assetlinks.json, /native/android/callback and remaining static paths | account Web profile; callback only hands one-use code/state to the verified Android app |
+| chat.arcforges.com | remaining paths | chat Web profile |
+| arcforges.com | all paths including /.well-known/assetlinks.json | site Web profile; RP association static file |
+| ops.arcforges.com | operations assets and operator APIs | Cloud Worker plus operations static profile behind separate operator Access/OIDC identity; customer sessions rejected |
+| docs.arcforges.com, downloads.arcforges.com, updates.arcforges.com | immutable documentation, packages/catalog, signed update feeds respectively | static artifact deployment; no customer cookies/business writes |
+| status.arcforges.com | all | independently hosted status adapter, reachable during Cloud outage |
+| notify.arcforges.com, news.arcforges.com | no Web routes | transactional and broadcast mail domains only |
+
+Container port 8080 has no public ingress. Cloud Worker selects the Container; C# is the only business authority. Set `enableInternet=false`; configure the closed outbound host list and exported outbound proxy handler. `storage.internal` executes Cloud-owned named D1 plans, `objects.internal` accesses authorized R2 grants, `ai.internal` invokes the AI Worker service binding, and `feeds.internal` opens private DO projections. These virtual names have no public DNS fallback. AI Worker calls C# only through the Cloud Worker's private service binding. Per-direction HMAC/nonce/epoch checks in contracts 05 remain defense in depth. The handler routes exact host/path/method, strips client-forwarded private headers and rejects redirects to non-admitted destinations. No generic fetch proxy or arbitrary SQL endpoint exists.
+
+Container external egress through the handler is restricted to configured Postmark/SES, FCM, Paddle, independent S3 backup and activated self-host/operator OIDC token/metadata origins. Provider paths and ports are 443 only; private/link-local addresses and unexpected redirects are refused. AI Worker uses the Workers AI binding, Brave Search and exact admitted Cloud connector/MCP HTTPS origins through its one tool adapter; there is no unrestricted model-driven URL fetch. Cloud bindings/secrets are never passed into extension code. Host/path allowlists and instance limits are versioned deployment config with validation and negative integration vectors.
+
+Selected mechanism: [Containers outbound handlers](https://developers.cloudflare.com/containers/guides/outbound-traffic/) and [Worker connections](https://developers.cloudflare.com/containers/configuration/workers-connections/), checked 2026-09-17. Use the provider's outbound proxy export and certificate configuration only when HTTPS interception is actually configured. WP06/21 must prove the selected SDK/runtime wiring, blocked egress and public denial on a real deployment.
 
 ## 3. Host pipeline
 
@@ -61,7 +83,7 @@ Fixed request order (service registration remains explicit at startup):
 7. Generated contract validation, conditional revision/idempotency and the owning handler/transaction.
 8. Typed reply/status and audit/trace completion. Health/readiness have their explicit minimal allowlist.
 
-EventService.Poll uses the same pipeline. CF public presentation/object routes are authenticated through the selected C# ports and never acquire an alternate business authorization path.
+EventService.Poll uses the same pipeline. Generated output RPC and CF object routes are authenticated through the selected C# ports and never acquire an alternate business authorization path.
 
 | # | Rule |
 |---|---|
@@ -76,7 +98,7 @@ EventService.Poll uses the same pipeline. CF public presentation/object routes a
 
 ## 4. Modules
 
-Twenty domain modules, following the [Cloud schema ownership map](data-model/01-cloud-data-model.md#1-schema-map), each owning an application and domain boundary, its schema or explicit table set, a public module API and published events, and independent tests.
+Twenty-one domain modules, following the [Cloud schema ownership map](data-model/01-cloud-data-model.md#1-schema-map), each owning an application and domain boundary, its schema or explicit table set, a public module API and published events, and independent tests.
 
 | Module | Owns |
 |---|---|
@@ -99,6 +121,7 @@ Twenty domain modules, following the [Cloud schema ownership map](data-model/01-
 | **Notes** | Canonical notebooks, documents/blocks, properties, saved views and immutable history |
 | **Scope** | Cloud simulator state and authorized metadata replicas; native capture/analysis authority remains in ArcScope |
 | **Slate** | Authorized metadata replicas; native project/edit/render authority remains in ArcSlate |
+| **PackageCatalog** | Publisher verification, package/version submission, review, publication and revocation; TrustSafety enforcement and Support reports remain separate owners |
 | **Configuration** | Immutable deployment configuration revisions and atomic activation; Policy owns the governed policy projection and evaluation surface |
 
 | # | Rule |
@@ -135,9 +158,9 @@ Twenty domain modules, following the [Cloud schema ownership map](data-model/01-
 | # | Rule |
 |---|---|
 | AP-01 | Public business services implement handwritten proto through binary gRPC-Web unary methods and bounded server streams for all client platforms. Only the enumerated browser-auth/provider/object/AI/platform protocol exceptions use HTTP/JSON or their standard wire format. |
-| AP-02 | **Standard web semantics are preserved**: status codes, headers, cache control, ETag and conditional requests, so proxies, browsers and non-.NET clients all work. |
-| AP-03 | **OpenAPI is generated from the proto descriptors** for observation and third parties — never maintained as a parallel handwritten source (**[D-009](../decisions/phase-1-foundation-decisions.md#rule-d-009)**). |
-| AP-04 | **API drift is controlled by** shared DTO and route constants, generated description artifacts, server-client contract integration tests, and a compatibility matrix of the previous stable client against the current server. |
+| AP-02 | Business commands/queries use binary gRPC-Web with generated ArcResult and trailers. HTTP status/cache/ETag semantics apply only to the explicitly declared browser/object/provider/static exceptions; never expose a parallel REST CRUD surface. |
+| AP-03 | Handwritten proto is the business RPC authority. Descriptor sets generate C#/TS/Connect Kotlin records/clients and fixtures. JSON schemas document only the declared HTTP exceptions; OpenAPI is not a business generation stage. |
+| AP-04 | Descriptor compatibility, generated metadata/validation and real three-language package-consumer tests control drift. Published immutable artifacts are the integration boundary. |
 | AP-05 | **File upload and download use standard HTTP content and streams.** Large objects are never base64-encoded into JSON. |
 | AP-06 | **Timeout, cancellation and retry are explicit client policies**; a write retry requires `CommandId` idempotency. |
 | AP-07 | Public protobuf types use generated C#/TS serializers; declared HTTP exceptions use explicit source-generated JSON metadata. The same semantic validators apply before owner dispatch. |
@@ -157,8 +180,8 @@ Twenty domain modules, following the [Cloud schema ownership map](data-model/01-
 | RL-06 | A client acknowledgement is not a business commit. |
 | RL-07 | Losing hints never loses a business fact. |
 | RL-08 | EventService.Watch/Poll and ExecutionService.WatchOutput/ReadOutput use generated proto and durable owner/cursor recovery. |
-| RL-09 | Initial clients use bounded unary polling with the cadence/backoff in contracts05; no required backplane, affinity or transport negotiation. |
-| RL-10 | C# gRPC-Web server streams expose authorized DO projections with finite lifetime and current authorization refresh under annex10; no public AI WebSocket. |
+| RL-09 | Initial clients use bounded unary polling with the cadence/backoff in contracts 05; no required backplane, affinity or transport negotiation. |
+| RL-10 | C# gRPC-Web server streams expose authorized DO projections with finite lifetime and current authorization refresh under annex 10; no public AI WebSocket. |
 
 ---
 

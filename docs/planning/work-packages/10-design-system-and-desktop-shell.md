@@ -7,7 +7,7 @@
 > Phase: B — Shared platform
 > Upstream: `06` · `09` · Downstream: `13` · `14` · `18` · `33` · `36` · `53`
 
-> **Goal.** Build the shared desktop foundation once — tokens, windows, panels, commands, settings, attention, errors, lifecycle — so that four products feel like one family without any of them depending on another, and so that every control in it survives Native AOT.
+> **Goal.** Build the shared desktop foundation once — tokens, windows, panels, commands, settings, attention, errors, lifecycle — so that three desktop products feel like one family without any of them depending on another, and so that every control in it survives Native AOT.
 
 > **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Platform; four applications. Inputs: only the applicable published producers available at this stage under [staged artifact integration](../README.md#staged-artifact-integration). Producer candidate records precede Cloud consolidation; no future package/manifest is an input. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: Native AOT candidate packages/executables with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
 > After WP03, unit mocks consume published Contracts fixtures; earlier stages verify their inventory/policy outputs. Acceptance consumes the actual providers scheduled for that stage. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.

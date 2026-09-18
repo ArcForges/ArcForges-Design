@@ -22,25 +22,25 @@ Android only, Kotlin/JVM/Jetpack Compose, Apache-2.0; no GPL-family implementati
 
 ## 4. Projects, directories, files and major types affected
 
-Mobile owns app/, core/domain, core/data, core/network, core/security, core/designsystem, feature/home, feature/chat, feature/tasks, feature/library and feature/settings, tests and Android build/release governance. An equivalent module partition may preserve the same boundaries. No edits in other implementation repositories are required to bypass their published artifact boundary.
+Mobile adopts the exact module map in architecture 27 (app, core and feature modules), tests and Android build/release governance. The Hello World shared/preview host is not a second production module plan. No edits in other implementation repositories are required to bypass their published artifact boundary.
 
 ## 5. Required implementation work
 
 <a id="rule-wp-30.00"></a>
-### WP-30.00 — Repository, build and Apache boundary
+### WP-30.00 — Android repository identity and toolchain
 
-**What must be fully done.** Create Android Kotlin/JVM/Compose app/, core/ and feature/ modules with Gradle Kotlin DSL, version catalog, verified wrapper, exact dependency locks/checksums, .gitignore/.gitattributes/.editorconfig, Apache LICENSE/NOTICE/SPDX, SECURITY/CONTRIBUTING/CODEOWNERS, issue/PR templates, local hooks and CI parity. Pin the proven toolchain from WP06; signed app identity remains com.arcforges.mobile. No implementation repo is a source dependency.
+**What must be fully done.** Adopt com.arcforges.mobile applicationId/namespace/source packages before production. Follow-up F-1: on JDK 21 reconcile the Hello World compiler/AGP/Compose/Gradle stack to mutually compatible stable releases; commit exact producer pins, wrapper checksums, locks and generated-client compatibility evidence before any production upload. Document development prerelease reinstall; Apache boundary includes no GPL-family closure.
 
-**Testing requirements.** Fresh checkout, hook bypass in CI, LF/binary attributes, Gradle locked restore and negative GPL-family/import fixtures.
+**Testing requirements.** Release build, dependency verification, package/certificate inspection, device install and fixture-key App Link tests.
 
-**Completion gate.** Complete reproducible Android repository and compatible direct/transitive closure; no RN/npm runtime or iOS deliverable.
+**Completion gate.** Production identity and own Android module map match arch 11/27; no RN/TS or iOS obligation.
 
 <a id="rule-wp-30.01"></a>
 ### WP-30.01 — Native module and route boundaries
 
-**What must be fully done.** Implement architecture27 concrete Kotlin app/core/feature modules and AN01–AN25 navigation/state contracts; features depend typed core ports, app composes them, no React Native/iOS or AGPL imports.
+**What must be fully done.** Implement architecture 27 concrete Kotlin app/core/feature modules and AN01–AN25 navigation/state contracts; features depend typed core ports, app composes them, no React Native/iOS or AGPL imports.
 
-**Testing requirements.** Verify the stated behavior against the exact real artifact/owner boundary. Include scope/permission, wrong or stale target, loss/retry, expiry and applicable native UI cases from experience03; named later-provider fixtures cannot close real integration.
+**Testing requirements.** Verify the stated behavior against the exact real artifact/owner boundary. Include scope/permission, wrong or stale target, loss/retry, expiry and applicable native UI cases from experience 03; named later-provider fixtures cannot close real integration.
 
 **Completion gate.** Transport records do not become mutable domain/UI owners; all module boundaries enforceable.
 
@@ -58,16 +58,16 @@ Mobile owns app/, core/domain, core/data, core/network, core/security, core/desi
 
 **What must be fully done.** Consume pinned Maven messages/Connect Kotlin clients and fixtures. Select binary gRPC-Web explicitly; implement session/stream/retry/exact-value adapters and actual deployed foundation calls.
 
-**Testing requirements.** Verify the stated behavior against the exact real artifact/owner boundary. Include scope/permission, wrong or stale target, loss/retry, expiry and applicable native UI cases from experience03; named later-provider fixtures cannot close real integration.
+**Testing requirements.** Verify the stated behavior against the exact real artifact/owner boundary. Include scope/permission, wrong or stale target, loss/retry, expiry and applicable native UI cases from experience 03; named later-provider fixtures cannot close real integration.
 
 **Completion gate.** Real packaged Maven consumer and service/device evidence passes; missing TLS/transport support blocks.
 
 <a id="rule-wp-30.04"></a>
 ### WP-30.04 — Room history, drafts and receipts
 
-**What must be fully done.** Implement model05 equivalent Room schemas and per-profile partitions, own local/cloud/temporary behavior, bounded outbox/transfers/cursors. Local canonical history is not evictable cache; temporary content never persists.
+**What must be fully done.** Implement model 05 equivalent Room schemas and per-profile partitions, own local/cloud/temporary behavior, bounded outbox/transfers/cursors. Local canonical history is not evictable cache; temporary content never persists.
 
-**Testing requirements.** Verify the stated behavior against the exact real artifact/owner boundary. Include scope/permission, wrong or stale target, loss/retry, expiry and applicable native UI cases from experience03; named later-provider fixtures cannot close real integration.
+**Testing requirements.** Verify the stated behavior against the exact real artifact/owner boundary. Include scope/permission, wrong or stale target, loss/retry, expiry and applicable native UI cases from experience 03; named later-provider fixtures cannot close real integration.
 
 **Completion gate.** Drafts/pending work survive; retries reconcile exact owner command and never fabricate a completed side effect.
 
@@ -83,17 +83,19 @@ Mobile owns app/, core/domain, core/data, core/network, core/security, core/desi
 <a id="rule-wp-30.90"></a>
 ### WP-30.90 — Foundation integration evidence
 
-**What must be fully done.** Publish/test the exact candidate APK against real22/23/24/25 and released Maven packages. Future Task/AI fixtures must be named in evidence and compiled out of production at31.
+**What must be fully done.** Publish/test the exact candidate APK against real 22/23/24/25 and released Maven packages. Future Task/AI fixtures must be named in evidence and compiled out of production at 31.
 
 **Testing requirements.** Clean-cache restore/build/install and actual sign-in/hydration/upload/reconnect on device.
 
-**Completion gate.** Foundation complete; full companion and AI are explicitly gated by31/52, not counted here.
+**Completion gate.** Foundation complete; full companion and AI are explicitly gated by 31/52, not counted here.
 
 ## 6. Impacts
 
 Contracts delivers the complete public Kotlin package; Cloud/AI deliver the same owner behavior as desktop/Web. Mobile maintains its own lifecycle/storage/UI. Changes in package/signing/schema versions require an explicit compatible manifest and tested migration.
 
 ## 7. Tests and verification evidence
+
+Acceptance includes every amended §5 producer/consumer and WP-30.90 evidence. Current P2-013 contracts/data/runtime rules are tested in the original owner implementation, not a detached explanatory sample.
 
 Separate unit/schema/fixture tests, clean packaged consumers, actual Cloud/CF/desktop interactions, physical-device release evidence and distribution/store evidence. Record exact hashes/versions/device identity and limitations. A green build cannot substitute for a missing stage.
 

@@ -1,5 +1,5 @@
 # ArcForges Product Scope and Portfolio
-> Current scope amendment: **[P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
+> Effective scope: P2-012 and P2-013 amend the technology and application ownership below. **[P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Requirements
@@ -30,14 +30,14 @@ ArcForges is a C# product family with native professional desktop applications a
 | <a id="rule-c-02"></a>C-02 | All AI and AI automation run in Cloud. No local model, local embedding provider, local autonomous agent or end-user provider-key mode exists. Ordinary keyword search and native product jobs do not require AI. | [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006) |
 | <a id="rule-c-03"></a>C-03 | Official AI requires an active paid service term. Purchased credits alone, a desktop setting or a self-host policy cannot authorise official inference. No end-user BYOK exists. | [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006) |
 | <a id="rule-c-04"></a>C-04 | Subscription AI capacity replenishes under declared rate and resource limits. Exact metering and opt-in extra credits are specified in the commerce requirements. Unqualified unlimited-compute promises are prohibited; any hard allowance limit must be disclosed. | [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006), [D-020](../decisions/phase-1-foundation-decisions.md#rule-d-020) as amended |
-| <a id="rule-c-05"></a>C-05 | Installation and launch require no account. Cloud notebook enrolment, cloud continuity and AI require an authenticated realm and workspace; AI additionally requires service entitlement. | [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006) |
+| <a id="rule-c-05"></a>C-05 | Installation and launch require no account. Official Cloud notebook enrolment, sync writes, Cloud history/search, remote agent work, simulator and AI require an authenticated realm/workspace and an active paid service term. Without a term, account management, purchase, retained-data read/export and DL-01 recovery remain available; there is no free Cloud tier. | [P2-013](../decisions/phase-2-specification-decisions.md#rule-p2-013) |
 | <a id="rule-c-06"></a>C-06 | Signing in or changing plans never deletes native files or pending edits. UI distinguishes cloud unavailability from local processing availability. | [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006) |
 | <a id="rule-c-07"></a>C-07 | After the paid term ends, new official AI calls stop even with purchased credit remaining. Credits remain recorded; retained data can be read/downloaded during the published retention period. Pending native edits remain recoverable. | [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006) |
 | C-08 | Self-hosting uses the same Cloud implementation and public contracts with deployment-operator credentials and policy. It need not charge its own users, and grants no access to official paid services. | [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006) |
 | <a id="rule-c-09"></a>C-09 | Storage is quantified and tiered. Raw device captures and original media are not automatically uploaded; native resource locality remains explicit. Cloud-generated simulation data is cloud-owned and counts against storage quota. | [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006) |
 | <a id="rule-c-10"></a>C-10 | One suite offer is sold initially. ProductScope identifies eligible capabilities; it does not require separate product plans or team offers. | [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006) |
 | C-11 | Paddle remains the customer-facing Merchant of Record; Payoneer remains payout only. The prepaid Cloud Pass is an active paid service term under [D-023](../decisions/phase-1-foundation-decisions.md#rule-d-023), not credit-only access. | [D-005](../decisions/phase-1-foundation-decisions.md#rule-d-005), [D-023](../decisions/phase-1-foundation-decisions.md#rule-d-023), [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006) |
-| C-12 | ArcChat Mobile remains consumption-only: no checkout, purchase call to action or locally entered entitlement key. All surfaces consume the same server-owned entitlement and usage. | [D-022](../decisions/phase-1-foundation-decisions.md#rule-d-022), [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006) |
+| C-12 | Android companion remains consumption-only: no checkout, purchase call to action or locally entered entitlement key. All surfaces consume the same server-owned entitlement and usage. | [D-022](../decisions/phase-1-foundation-decisions.md#rule-d-022), [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006) |
 
 Official operating values are external deployment configuration, not compiled constants. Public schemas, runnable examples and the real metering/entitlement implementation remain available; no private policy repository or proprietary policy engine is required.
 
@@ -47,26 +47,26 @@ Official operating values are external deployment configuration, not compiled co
 
 ### 2.1 Frozen desktop portfolio
 
-The Phase 1 product baseline contains **exactly three professional desktop products** (**[D-002](../decisions/phase-1-foundation-decisions.md#rule-d-002)**).
+The effective P2-012/P2-013 portfolio contains **exactly three professional desktop products**. The assistant is a feature supplied by DesktopPlatform, not another executable or product identity.
 
 | Product | Stable product identity | Positioning | Business classification | Roadmap priority |
 |---|---|---|---|---|
-| **Application Assistant (legacy ArcChat feature IDs)** | `assistant` | Complete reusable chat/task/project/automation UI in DesktopPlatform | Embedded in each professional app; Web/Android companions | Core |
+| **Application Assistant (legacy ArcChat feature IDs)** | No separate product ID; feature namespace `assistant` | Complete chat/task/project/automation UI in DesktopPlatform | Embedded independently in each professional app | Core |
 | **ArcNotes** | `arcnotes` | Cloud-backed Knowledge & Document workspace | Knowledge product | Core |
 | **ArcScope** | `arcscope` | Local-first Observation / Acquisition / Telemetry Analysis authority | Observation & Analysis product | Core |
 | **ArcSlate** | `arcslate` | Local-first Professional Non-linear Video Editing authority | Media Creation product | Second |
 
-**Roadmap priority is not architectural status.** All four are first-class products with independent installation, execution, versioning, projects, data, undo and recovery, release cadence, capability surface, cloud participation, settings and lifecycle. ArcSlate being scheduled later never makes it a second-class architectural citizen.
+**Roadmap priority is not architectural status.** All three professional desktops are first-class products with independent installation, execution, versioning, projects, data, undo and recovery, release cadence, capability surface, cloud participation, settings and lifecycle. ArcSlate being scheduled later never makes it a second-class architectural citizen.
 
-The classification above is *product classification only*. It must not become a domain inheritance hierarchy; no `ArcProductBase` domain type may be created to unify the four.
+The classification above is *product classification only*. It must not become a domain inheritance hierarchy; no `ArcProductBase` domain type may be created to unify the three domains.
 
 ### 2.2 Non-desktop products and surfaces
 
 | Surface | Identity | Positioning | Notes |
 |---|---|---|---|
 | **ArcForges Cloud** | `cloud` | One logical managed platform | ASP.NET Core Native AOT modular monolith (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**). Not four per-product backends. |
-| **ArcForges Web** | `web` | Public static site + one interactive React/TypeScript application | Static public pages plus `ArcForges.Web.App` (**[D-007](../decisions/phase-1-foundation-decisions.md#rule-d-007)**). Account and Chat are deployment configurations of one codebase (**[D-014](../decisions/phase-1-foundation-decisions.md#rule-d-014)**). |
-| **ArcChat Mobile** | `arcchat-mobile` | ArcChat continuity/companion surface on Android (iOS outside the current scope) | Apache-2.0 boundary (**[D-004](../decisions/phase-1-foundation-decisions.md#rule-d-004)**); consumption-only (**[D-022](../decisions/phase-1-foundation-decisions.md#rule-d-022)**); Android on Kotlin/Jetpack Compose (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**). |
+| **ArcForges Web** | Companion uses `productId=companion`, `platform=web`; hostnames are surfaces | React/TypeScript site/account/chat/operations outputs | Consumer and operator credentials/bundles remain separate |
+| **Android companion** | `productId=companion`, `platform=android` | Chat, tasks, approval, artifact preview and explicit application targeting | Apache-2.0 Kotlin/Compose; consumption-only; iOS outside current scope |
 
 Mobile and Web are **ArcChat companion surfaces**, not mobile or web editions of the three professional desktop products. There is no ArcNotes Mobile editor, no ArcScope Mobile editor and no ArcSlate Mobile editor in this baseline. Their absence is a baseline statement, not a permanent prohibition; adding one is an Architecture Baseline Change.
 
@@ -82,9 +82,11 @@ Consequences that bind every downstream document, schema, contract, identifier, 
 - ArcNotes Edgeless/Canvas and presentation capabilities are excluded by [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006); the historical [D-002](../decisions/phase-1-foundation-decisions.md#rule-d-002) naming distinction is not a delivery obligation.
 - The files under [`docs/deprecated-inputs/`](../deprecated-inputs/README.md) retain these names only in their unchanged historical bodies; they are excluded from current design and audit scope.
 
-### 2.4 Adding a fifth product
+<a id="24-adding-a-fifth-product"></a>
 
-A future fifth first-class product is an **Architecture Baseline Change** requiring a formal decision, not a solution-file addition. Before acceptance it must answer, in writing:
+### 2.4 Adding another professional product
+
+An additional first-class professional product is an **Architecture Baseline Change** requiring a formal decision, not a solution-file addition. Before acceptance it must answer, in writing:
 
 1. What state does it own authoritatively?
 2. Can it perform its core work without another application?
@@ -95,7 +97,7 @@ A future fifth first-class product is an **Architecture Baseline Change** requir
 7. How does it recover from crash, corruption and interrupted migration?
 8. What native boundary, if any, does it require?
 
-Adding a product must not require modifying `ArcForges.Assistant.Core`. ArcChat must recognise a new product through the cross-application capability/contribution contract, never through a compile-time `switch (appId)`.
+Adding a product must not require a new assistant implementation. The new application composes Platform packages through typed host ports and declares its own capabilities; cross-product discovery is not required.
 
 ---
 
@@ -110,7 +112,7 @@ Every product installs and runs without another product. Cloud features can depe
 | ArcNotes | Open authorised cached content; edit and search hydrated notes; durably preserve pending edits and recover after a crash. Initial notebook creation/enrolment and uncached content require Cloud. |
 | ArcScope | Connect a local source, capture, inspect, analyse, save and produce outputs. A Cloud simulation requires Cloud; already downloaded capture data remains usable. |
 | ArcSlate | Import media, edit, play back, save, render/export and exchange .otio. Cloud features and AI are independently unavailable. |
-| ArcChat | Display cached conversation/task state and manage native UI. No offline model loop, autonomous task execution or AI automation. Local tool execution requires a valid Cloud request and local authorisation. |
+| Embedded assistant | Read, edit, search, copy and export local history and drafts in its owning application. Cloud execution and remote tools follow current session, entitlement and authorization rules; no offline model loop. |
 
 The Cloud acknowledgement is authoritative for synchronised revisions. A local durable save protects an edit pending synchronisation; it must never be labelled as already saved to Cloud. Scope/Slate hardware and media working stores retain their product-local authority.
 
@@ -122,9 +124,9 @@ Every subset of the three professional products is a legal installation, includi
 
 - No installer may refuse to install because another product is absent.
 - No product may require another product to be running in order to save, open, export or recover.
-- Absence of ArcChat degrades ecosystem capability; it never causes professional-application failure.
+- Each application carries its own assistant packages; no separate assistant installation is detected or required.
 
-When ArcChat is absent, user-directed deep links and direct product Cloud access remain. Cloud tasks needing the desktop tool bridge wait for the authorised device/app; Cloud-only AI and product-scoped AI entry points do not depend on ArcChat Desktop.
+A remote task waits for its explicitly selected application installation when that application is unavailable. Another application on the same device never acts as its bridge.
 
 ### 3.3 Account and cloud boundary
 
@@ -136,43 +138,29 @@ When ArcChat is absent, user-directed deep links and direct product Cloud access
 
 ---
 
-## 4. same-application interaction model
+## 4. Application interaction model
 
-### 4.1 Two distinct interaction shapes
+### 4.1 Navigation and orchestration
 
-| Shape | Path | When |
-|---|---|---|
-| **Handoff** | `App → App` directly, via Resource Reference plus Deep Link | A single user-directed step, e.g. "Open this report in ArcNotes" |
-| **Orchestration** | User/product → Cloud Harness → authorised Cloud tools or desktop ToolRequest bridge | AI-driven multi-step work |
+OpenArtifact navigates to a resource within the current application through typed in-process ports. AI orchestration follows user/application → Cloud Harness → authorized Cloud tools or that application's durable ToolRequest bridge. The Harness owns task, run, approval, trace, budget and compensation; ordinary native work remains a ProductJob.
 
-The Cloud Harness owns durable intent, task, run, approval, trace, budget and compensation coordination. ArcChat presents this state and bridges authorised local tools. Ordinary native activities are product-owned jobs, not Cloud Agent Tasks.
-
-There is no full mesh between professional products. `ArcNotes ↔ ArcScope ↔ ArcSlate` direct automation relationships are prohibited.
+Cross-product launch, handoff, federation and shared sign-in are future-only examples in the [future plan](../future/cross-product-collaboration/README.md), with no active work-package or release obligation.
 
 ### 4.2 Reference versus copy
 
-Two cross-application semantics must be distinguished in the product surface, never blurred:
-
-- **Reference** — ArcNotes references an ArcScope Report. Ownership stays with ArcScope.
-- **Copy / Import** — a new ArcNotes Document is created *from* an ArcScope Report. The new object is owned by ArcNotes.
-
-The system must never silently produce a shared writable object between two products. Two products must never edit the same domain object.
-
-> **Reference ≠ Ownership.**
+A reference retains the source identity, owner and revision. An explicit supported import creates a new owner-local object with provenance. Neither grants access to another application's database or creates a shared writable object. Current assistant context is restricted to its own product and admitted external sources.
 
 ### 4.3 Artifacts
 
-An **Artifact** is a meaningful work result produced by a task, agent or application — an ArcNotes Document, an ArcScope Report or Session, an ArcSlate rendered video or project, or an ordinary file. It is **not** "an ArcChat file".
-
-ArcChat may hold an `ArtifactReference`, provenance and task relationship. The underlying business object is always owned by its producing or owning application.
+An Artifact is a meaningful work result. The assistant stores an ArtifactRef, provenance and execution relationship; the professional application retains authority over its document, measurement, timeline or rendered output. Removing the reference does not remove the source.
 
 ### 4.4 Semantic capability, never remote UI
 
-Cross-application calls transmit semantic capability invocations and references. Remotely operating another product's user interface, controls, view models or dispatcher is prohibited.
+The companion names an explicit product/device/installation target. Cloud delivers a typed capability invocation; the target validates permission, resource revision, approval and current instance epoch before executing its Application port. No UI controls, dispatcher objects, raw pointers or remote desktop channel cross this boundary.
 
 ### 4.5 Product AI entry points
 
-ArcNotes, ArcScope and ArcSlate may expose selection-scoped AI actions and call the Cloud AI surface directly with minimal authorised context. No desktop contains provider credentials, model orchestration or a second Harness. Cloud results enter the owning product's validated editing/application path; bulk changes remain reviewable and reversible.
+Every professional application supplies selection-scoped actions and a complete embedded assistant. Both use Platform Cloud APIs and the sole server Harness. Content is minimal and authorized; resulting edits pass the owning domain's validation, undo/checkpoint and provenance rules.
 
 ---
 
@@ -182,12 +170,12 @@ Ownership is a product-level requirement before it is an architectural one. The 
 
 | State | Authoritative owner |
 |---|---|
-| Chat / Conversation / Message | Cloud Chat module; ArcChat clients hold projections and pending user drafts |
+| Chat / Conversation / Message | Local history: owning application SQLite; Cloud history: scoped Cloud Chat owner plus client cache; temporary history: memory and expiring execution bodies. See model 05. |
 | Agent task orchestration | Cloud Agent module / single Harness |
 | Agent Profile, Skill configuration | Cloud Agent module; clients edit authorised configuration |
-| ArcChat Projects | Cloud Chat module |
-| Local application/instance registry and capability registry | application-scoped capability registry |
-| Local approval coordination and local permission coordination | application-scoped capability registry |
+| Assistant projects | Per-application local store, or explicitly selected Cloud-history workspace |
+| Local capability registry | In-process registry owned by each application |
+| Local approval and permission coordination | The owning application; Cloud approval records do not bypass local checks |
 | ArcNotes Documents, Notes, knowledge organisation | Cloud Notes module for acknowledged revisions; ArcNotes for local pending edits and editor state |
 | ArcNotes attachments and document metadata | Cloud Notes module; native clients keep scoped caches and pending upload staging |
 | ArcScope Sessions and Capture state | ArcScope |
@@ -233,61 +221,31 @@ Native resources — an ArcSlate GPU texture, an ArcScope device handle — belo
 
 ## 6. Data and control paths
 
-Four paths exist and are never conflated (**[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)**).
+```text
+ArcNotes + own assistant/store ─┐
+ArcScope + own assistant/store ─┤
+ArcSlate + own assistant/store ─┼─ HTTPS binary gRPC-Web → Cloud Worker → C# Container
+Android / Web companions ───────┘                                  ↓
+                                                   D1 / coordination DOs / R2
+                                                   AI Workflow / Workers AI
+Private parser/extension child: its parent ↔ generated gRPC Named Pipe/UDS
+```
 
 ### 6.1 Local capability path
 
-```text
-ArcNotes + own assistant/store ─┐
-ArcScope + own assistant/store ─┤
-ArcSlate + own assistant/store ─┼─ HTTPS gRPC-Web → Worker → C# Container
-Android / Web companions ───────┘                           ↓
-                                            D1 / DO / Queues / R2
-                                            AI Workflow / Workers AI
-Private parser/extension children: own parent ↔ gRPC Named Pipe/UDS
-```
-
-Same-machine, first-party, strongly typed semantic capability calls.
+Assistant → the current application's typed Application ports in the same process. Hostile parser and executable-extension calls alone cross an admitted parent/child boundary. No product-to-product discovery or control listener exists.
 
 ### 6.2 Cloud data path
 
-```text
-ArcNotes + own assistant/store ─┐
-ArcScope + own assistant/store ─┤
-ArcSlate + own assistant/store ─┼─ HTTPS gRPC-Web → Worker → C# Container
-Android / Web companions ───────┘                           ↓
-                                            D1 / DO / Queues / R2
-                                            AI Workflow / Workers AI
-Private parser/extension children: own parent ↔ gRPC Named Pipe/UDS
-```
-
-Each cloud-capable product participates directly in the cloud features of **its own data** — sync participation, upload and download, workspace object state, cloud storage participation. ArcChat is not required to be installed or running.
-
-> **ArcChat is the local tool bridge and coordination UI; professional products access their own Cloud services directly.**
-
-Requiring ArcChat in this path would mean "ArcChat crashes → ArcNotes cloud sync stops", which is prohibited.
+Every application reaches its Cloud services directly through Platform packages. It applies results through its owning domain and local transactions; Cloud replies never write UI models directly.
 
 ### 6.3 Remote desktop agent path
 
-```text
-ArcNotes + own assistant/store ─┐
-ArcScope + own assistant/store ─┤
-ArcSlate + own assistant/store ─┼─ HTTPS gRPC-Web → Worker → C# Container
-Android / Web companions ───────┘                           ↓
-                                            D1 / DO / Queues / R2
-                                            AI Workflow / Workers AI
-Private parser/extension children: own parent ↔ gRPC Named Pipe/UDS
-```
+Cloud persists a ToolRequest targeted to one application installation. That application's own connection pulls it, reauthorizes locally, executes and submits a receipt-bound ToolResult. Cloud never connects to localhost, a pipe, a Unix socket or local stdio. A closed application waits with `waiting` with `reasonFacet=device`; it is never launched by another product. Companion clients never scan the LAN.
 
-A Cloud task needing first-party desktop capabilities uses ArcChat Desktop for device-side authorisation and IPC. Durable task, approval and trace authority stays in Cloud. Both desktop-originated and companion-originated AI use this same path.
+### 6.4 Domain and history ownership
 
-**Cloud never connects to localhost, a Named Pipe, a Unix domain socket or local stdio** (**[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)**). The Cloud issues a durable `ToolRequest`; ArcChat Desktop pulls it, re-authorises it locally, executes the approved capability and returns an idempotent `ToolResult`.
-
-Mobile and Web must never scan the LAN, discover a desktop application runtime, or address a Named Pipe or UDS.
-
-### 6.4 The cloud response still goes through the owning domain
-
-A cloud sync response must never be written straight into a UI model. It enters through the owning application's Application/Sync integration and then its domain and local state, exactly as a local edit does.
+Local, Cloud and temporary history follow model 05 independently of AI execution metadata. Each application uses its own database and credentials; opening another assistant window in the same app shares committed history, not drafts. Cross-product export/collaboration is future-only.
 
 ---
 
@@ -304,9 +262,9 @@ A cloud sync response must never be written straight into a UI model. It enters 
 | P-07 | Installed application and runtime instance are permanently distinct. `AppId == ProcessId` is prohibited. A product may have multiple runtime instances. | [Identity definitions](01-normative-glossary-and-invariants.md#1-identity-and-tenancy) |
 | P-08 | Three identities are distinct and all three exist: `ProductId`/`AppId` (stable), `InstallationId` (device installation), `InstanceId` (process lifecycle). | [Identity definitions](01-normative-glossary-and-invariants.md#1-identity-and-tenancy) |
 | <a id="rule-p-09"></a>P-09 | Each desktop product has its own local persistence. A single shared `ArcForges.db` covering all products is prohibited. Independent databases do not require different technologies. | [Desktop data model](../architecture/data-model/02-desktop-data-model.md) |
-| <a id="rule-p-10"></a>P-10 | Products must not reference one another's Domain or Application assemblies. Cross-product interaction is via stable cross-application contracts only. | [Project reference rules](../architecture/01-solution-and-project-layout.md) |
+| <a id="rule-p-10"></a>P-10 | Products must not reference one another's Domain or Application assemblies. Current product integration uses its own typed host ports and direct Cloud APIs; cross-product collaboration is future-only. | [Project reference rules](../architecture/01-solution-and-project-layout.md) |
 | P-11 | Shared foundation may provide **mechanism** only — identity primitives, result/error primitives, resource-reference primitives, task-reference primitives, cross-application contract primitives, observability, cloud client infrastructure, security primitives, update integration, design system. It must never hold business state and never become a fifth hidden product. Types such as `ArcForges.Foundation.Document` are prohibited. | [Shared-foundation boundary](../architecture/00-architecture-overview.md) |
-| <a id="rule-p-12"></a>P-12 | Product versions and release lifecycles are independent (`ArcChat 2.4` with `ArcNotes 1.8` is legal). No mandatory suite release train. A marketing release campaign is permitted; the production release unit remains the individual product. | [Distribution and release requirements](10-distribution-update-and-support.md) |
+| <a id="rule-p-12"></a>P-12 | Product versions and release lifecycles are independent (`ArcScope 2.4` with `ArcNotes 1.8` is legal). No mandatory suite release train. A marketing release campaign is permitted; the production release unit remains the individual product. | [Distribution and release requirements](10-distribution-update-and-support.md) |
 | <a id="rule-p-13"></a>P-13 | Application version and capability contract version are separate. Differing product version numbers must never by themselves cause a connection refusal; compatibility is negotiated on contract version. | [Contract compatibility](../architecture/02-contracts-and-protocols.md) |
 
 ---
@@ -323,12 +281,12 @@ The following apply with the explicit user amendment P2-006.
 | Mobile | Kotlin/Jetpack Compose; **Android on the supported Kotlin/Jetpack Compose release path**; iOS outside the current scope | **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** |
 | Web | Static React-generated public HTML/CSS plus one React/TypeScript Account/Chat application; Node.js/npm tooling; proto → C#/TypeScript SDKs | **[P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008)** |
 | Public request/response | Handwritten proto; generated C#/Kotlin/TS gRPC-Web unary and server-streaming; same owner errors/revisions | [Wire registry](../architecture/contracts/04-protobuf-wire-registry.md) |
-| Public realtime | gRPC hint polling, real-time delivery only, never the sole durable truth | [Realtime contract](../architecture/contracts/03-realtime-and-bridge.md) |
+| Public realtime | EventService.Watch and ExecutionService.WatchOutput bounded binary gRPC-Web streams; Poll/ReadOutput for recovery | [Streams](../architecture/contracts/10-application-scope-and-streams.md) |
 | Local IPC | Handwritten proto + generated native gRPC over Named Pipe / Unix domain socket, including helper control | [Transport definition](../architecture/03-local-ipc-and-process-model.md#2-authenticated-local-transport) |
 | Local wire format | Authored proto with generated language messages and services | [Wire format definition](../architecture/03-local-ipc-and-process-model.md#3-wire-and-flow-control-profile) |
-| Public JSON | `System.Text.Json` source generation, no reflection fallback | [Operation contract](../architecture/contracts/00-operation-catalogue.md) |
+| Declared HTTP exceptions | Standard session/callback/webhook/object/descriptor payloads only; System.Text.Json source generation where JSON is specified | [Wire registry](../architecture/contracts/04-protobuf-wire-registry.md) |
 | Native interop | `[LibraryImport]` across a narrow C ABI, in its owning product or the approved C# content helper according to the isolation profile | [Native ABI contract](../architecture/12-native-interop-and-media.md#3-managed-to-native-calling-discipline), [isolation](../architecture/24-content-and-extension-isolation.md) |
-| Prohibited | C++ workers, a central service owning all state, gRPC/Protobuf/MagicOnion/Aeron as the main RPC, Electron, Qt product bodies, Java/Kotlin desktop, reflection-based dynamic plug-ins on the AOT main path | [Architecture constraints](../architecture/00-architecture-overview.md), [permitted exceptions](#81-permitted-technical-exceptions) |
+| Prohibited | C++ workers, a central service owning all state, MagicOnion/Aeron as the main RPC, Electron, Qt product bodies, Java/Kotlin desktop, reflection-based dynamic plug-ins on the AOT main path | [Architecture constraints](../architecture/00-architecture-overview.md), [permitted exceptions](#81-permitted-technical-exceptions) |
 
 ### 8.1 Permitted technical exceptions
 
@@ -350,13 +308,13 @@ Two boundaries, per **[D-004](../decisions/phase-1-foundation-decisions.md#rule-
 
 | Boundary | Contents | Licence |
 |---|---|---|
-| **Apache-2.0 (interoperability)** | Entire Contracts repository, including public/internal schemas, tools, generators, SDK/CLI and fixtures under P2-010; ArcChat Mobile application; mobile-only libraries, tests, packaging and platform integrations; ArcForges-owned public protocol specifications required for mobile interoperability; the corresponding wire schemas, DTOs and generated or handwritten client libraries; validation rules that express wire-format constraints; public protocol state semantics required for independent interoperability; the future public SDK surface | `Apache-2.0` |
-| **AGPL-3.0-only (everything else)** | ArcChat Desktop, ArcNotes, ArcScope, ArcSlate, ArcForges Cloud and all server implementations, product-domain behaviour, server orchestration, desktop application use cases, policy decisions, persistence behaviour, entitlement authority, base ViewModel implementations and UI scaffolding, and everything not explicitly assigned to the Apache-2.0 boundary | `AGPL-3.0-only` |
+| **Apache-2.0 (interoperability)** | Entire Contracts repository, including public/internal schemas, tools, generators, SDK/CLI and fixtures under P2-010; Android companion application; mobile-only libraries, tests, packaging and platform integrations; ArcForges-owned public protocol specifications required for mobile interoperability; the corresponding wire schemas, DTOs and generated or handwritten client libraries; validation rules that express wire-format constraints; public protocol state semantics required for independent interoperability; the future public SDK surface | `Apache-2.0` |
+| **AGPL-3.0-only (everything else)** | the owning desktop application, ArcNotes, ArcScope, ArcSlate, ArcForges Cloud and all server implementations, product-domain behaviour, server orchestration, desktop application use cases, policy decisions, persistence behaviour, entitlement authority, base ViewModel implementations and UI scaffolding, and everything not explicitly assigned to the Apache-2.0 boundary | `AGPL-3.0-only` |
 
 Binding rules:
 
 - AGPL components may consume the Apache-2.0 interoperability packages without changing their own licence.
-- **ArcChat Mobile must not contain, link to, copy from, port from or reference any GPL-family or AGPL-only implementation**, directly or transitively.
+- **Android companion must not contain, link to, copy from, port from or reference any GPL-family or AGPL-only implementation**, directly or transitively.
 - No App Store exception, dual licensing, proprietary grant or CLA. DCO continues with inbound-equals-outbound per scope.
 - **Base ViewModel patterns are not shared between Avalonia desktop and Kotlin Android mobile.** Each UI stack owns its implementation (**[D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021)**).
 - Protocol communication across an explicit process or network boundary does not change the mobile client's licence.
@@ -409,12 +367,12 @@ Changes that do **not** reopen the baseline: adding an ArcNotes block type, an A
 
 Every subsequent design, specification and work package must be able to answer these immediately:
 
-1. Which product does this function belong to? (Unique, or an explicit same-application orchestrator.)
+1. Which product does this function belong to? (The owning product or a shared mechanism with no product authority.)
 2. Who owns its data?
 3. Is ArcChat the owner, or a reference-holder/orchestrator?
 4. Can the product still do its core work without ArcChat? (For a professional product: **yes**.)
 5. Which cached/native operations work without Cloud, and which require an account, fresh Cloud data or active service? The answer follows §3.1, not a blanket offline promise.
-6. Is this same-application behaviour a Handoff or an Orchestration?
+6. Is this in-process navigation, a ProductJob, or authorized Cloud orchestration within one application?
 7. Is this an ordinary implementation choice, or is it creating a new architecture exception?
 
 A specification that cannot answer all seven is not complete.
@@ -427,7 +385,7 @@ A specification that cannot answer all seven is not complete.
 |---|---|
 | [ArcForges Architecture Overview](../architecture/00-architecture-overview.md) | Implements the accepted portfolio, ownership and runtime boundaries |
 | [Solution and Project Layout](../architecture/01-solution-and-project-layout.md) | Places the products and shared mechanisms in their owning repositories |
-| [D-002](../decisions/phase-1-foundation-decisions.md#rule-d-002) | Four-product baseline; exclusion of ArcCanvas / ArcMusic / ArcImage |
+| [D-002](../decisions/phase-1-foundation-decisions.md#rule-d-002) | Historical product baseline, amended by P2-012 to three desktops with embedded assistants; ArcCanvas / ArcMusic / ArcImage remain excluded |
 | [D-004](../decisions/phase-1-foundation-decisions.md#rule-d-004), [D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021) | Two-boundary licensing |
 | [D-005](../decisions/phase-1-foundation-decisions.md#rule-d-005), [D-020](../decisions/phase-1-foundation-decisions.md#rule-d-020), [D-022](../decisions/phase-1-foundation-decisions.md#rule-d-022), [D-023](../decisions/phase-1-foundation-decisions.md#rule-d-023) | Commercial posture, provider baseline, mobile commerce |
 | [D-007](../decisions/phase-1-foundation-decisions.md#rule-d-007), [D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008) | Web and runtime/AOT matrix |

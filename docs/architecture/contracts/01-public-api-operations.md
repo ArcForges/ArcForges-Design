@@ -80,7 +80,6 @@ Authentication challenge creation/completion uses the catalogue's NI classificat
 | `device.setTrust` | Raise or lower trust | `R3`, **step-up** | `IW` | `auth.step_up_required` | `FR` |
 | `device.setRemoteEnabled` | Enable remote work to this device | `R3`, **step-up**; requires `trust = trusted` | `IW` | `state.invalid_transition` | `FR` |
 | `device.revoke` | Revoke a device and cascade | `R3`, step-up | `DE` | — | `FR` |
-| `device.heartbeat` | Presence keepalive | session, `R0` | `NI` | — | `AO` |
 
 | # | Rule |
 |---|---|
@@ -197,7 +196,7 @@ The typed requests use the canonical Notes schema in [the Cloud data model](../d
 | `notes.restoreRevision` | Create a new current revision from retained history without rewriting history | R3 | IW | conflict.revision_mismatch, resource.unavailable | FR |
 | `notes.requestExport` | Create bounded revision-pinned owner export with explicit data-export permission | R2 | CC | entitlement.quota_exceeded, state.not_found | FR |
 | `chat.requestExport` | Create bounded revision-pinned owner export with explicit data-export permission | R2 | CC | entitlement.quota_exceeded, state.not_found | FR |
-| `export.getStatus` | Read owner-filtered export progress | R1 | Q | state.not_found | AO |
+| `export.getStatus` | Read owner-filtered export progress | R1 | Q | AO | state.not_found |
 | `export.cancel` | Idempotent owner cancellation, preserving already committed output state | R2 | IW | state.invalid_transition | FR |
 | `export.getDownload` | Issue a new short-lived authenticated ticket for the retained verified artifact | R1 | NI | state.gone, resource.unavailable | FR |
 
@@ -244,43 +243,31 @@ Structural writes return the new revisions of **all** affected roots and the imm
 
 | # | Rule |
 |---|---|
-| TK-01 | **`task.create` records no placement.** The field is retired: a Task is always Cloud-owned ([TO-01](../data-model/00-data-model-overview.md#rule-to-01)), the surface it came from is provenance only ([TK-04](../data-model/01-cloud-data-model.md#rule-tk-04) of the Cloud data model), and **locality is declared per Step** as `toolLocality ∈ {cloud, device}` ([TO-02](../data-model/00-data-model-overview.md#rule-to-02), [TO-06](../data-model/00-data-model-overview.md#rule-to-06)). One Task may mix both. A Step declared `device` is never silently satisfied by a cloud approximation; with no eligible device online the Task waits in `waitingDevice` and says so. |
+| TK-01 | **`task.create` records no placement.** The field is retired: a Task is always Cloud-owned ([TO-01](../data-model/00-data-model-overview.md#rule-to-01)), the surface it came from is provenance only ([TK-04](../data-model/01-cloud-data-model.md#rule-tk-04) of the Cloud data model), and **locality is declared per Step** as `toolLocality ∈ {cloud, device}` ([TO-02](../data-model/00-data-model-overview.md#rule-to-02), [TO-06](../data-model/00-data-model-overview.md#rule-to-06)). One Task may mix both. A Step declared `device` is never silently satisfied by a cloud approximation; with no eligible device online the Task is `waiting` with `reasonFacet=device` and says so. |
 | TK-02 | **`approval.decide` inherits the underlying operation's requirements**, including local presence. An operation needing local presence **cannot** be approved from mobile or web ([AZ-01](00-operation-catalogue.md#rule-az-01)). |
 | TK-03 | **`task.steer` is an append, not an authorization.** It can never escalate ([WP-16.05](../../planning/work-packages/16-unified-execution-engine.md#rule-wp-16.05)). |
 | TK-04 | **`bridge.pullRequests` is the only direction.** There is no cloud-to-device push of work (**[D-010](../../decisions/phase-1-foundation-decisions.md#rule-d-010)**), and no operation in this catalogue lets Cloud initiate one. |
-| TK-05 | **`bridge.submitResult` is idempotent on `(taskId, attemptId)`**, so a lost response is recoverable by re-submission without duplicating the effect ([WP-26.03](../../planning/work-packages/26-remote-action-and-tool-bridge.md#rule-wp-26.03)). |
+| TK-05 | `bridge.submitResult` deduplicates `(toolRequestId, attemptId, commandId)` plus the canonical result hash. Identical replay returns the same receipt; different content refuses. One attempt may contain multiple tool requests; task identity alone is never a result key. |
 
 ---
 
 ### 7.1 The Task state a client is given
 
-`task.list`, `task.get` and every realtime task event carry this set, and [STR-04](#rule-str-04) sends clients here. **These are the wire values**, matching `task.task.state` in the Cloud data model exactly. Requirements prose uses the domain spelling for the same states — `WaitingForDevice` in `§` remote task of the mobile and web requirements is this table's `waitingDevice`, not a second state ([WP-00.01](../../planning/work-packages/00-specification-naming-and-rights-freeze.md#rule-wp-00.01) exports the term-space mapping).
-
-| State | Meaning to a client |
-|---|---|
-| `created` | Accepted and recorded; not yet queued |
-| `queued` | Waiting for the Harness to pick it up |
-| `running` | A turn is executing |
-| `waitingApproval` | Blocked on a human decision (`approval.list`) |
-| `waitingDevice` | Blocked on a `device` Step with no eligible device online ([TO-06](../data-model/00-data-model-overview.md#rule-to-06)). **Not a failure**; the client says which device is needed |
-| `waitingCapacity` | Admitted but unfunded: no capacity and no authorised extra credits. Carries `recoveryAt` where capacity replenishes ([AD-03](../16-billing-and-commerce-architecture.md#rule-ad-03) of the commerce architecture). **Not a failure** |
-| `paused` | Suspended by `task.pause` |
-| `unknownEffect` | Dispatched with no recorded outcome. **Not terminal and not a failure**: it resolves through the ladder in `§6.4` of the harness — declared idempotency, an owner status operation, the provider's record, the deadline, or a user decision ([UR-01](../17-agent-harness.md#rule-ur-01)–[UR-04](../17-agent-harness.md#rule-ur-04)). A client presents it as *outcome not yet established*, never as done and never as failed |
-| `succeeded`, `failed`, `cancelled` | Terminal |
+The only wire and persistence enum is registry 04 `TaskState`: queued, running, waiting, paused, interrupted, succeeded, partiallySucceeded, failed, canceled. Accepted creation enters queued in its owner commit; there is no durable created state. `TaskSnapshot.reasonFacet` is separate: none, approval, device, capacity, dependency, reconciliation. It is non-none exactly while waiting; reason/recoveryAt provide detail. `hasUnknownEffect` can coexist with any state that still has an unresolved attempt; it never constitutes a terminal answer or a state value. Attempts and provider/tool results retain their own effect-certainty vocabulary.
 
 | # | Rule |
 |---|---|
-| <a id="rule-ts-01"></a>TS-01 | **A client must render an unrecognised state as an unknown non-terminal state**, showing the accompanying reason text, and must never treat it as failed, terminal or absent. Clients version independently of the Cloud host ([CD-06](../22-deployment-and-release-execution.md#rule-cd-06) of the deployment architecture), so a client older than the host **will** receive a state it does not know — `waitingDevice` and `waitingCapacity` were both added to an existing enum this way. |
-| TS-02 | **Only `succeeded`, `failed` and `cancelled` are terminal**, and terminality is never inferred from an unrecognised value. A client that stops polling on an unknown state strands the Task. |
-| TS-03 | **`waitingDevice` and `waitingCapacity` are waiting states with a stated cause and, where one exists, a stated recovery time.** Presenting either as an error is a defect — the work is still going to happen. |
+| <a id="rule-ts-01"></a>TS-01 | Unknown enum values display an unknown read-only state and keep reconciling authority. Do not infer terminality. |
+| TS-02 | Only succeeded, partiallySucceeded, failed and canceled are terminal. Partially succeeded shows completed/missing outputs; interrupted remains recoverable. |
+| TS-03 | WaitingForDevice/WaitingForApproval/WaitingForCapacity are UI labels for waiting plus the matching facet, never extra proto values. Uncertainty is a separate badge and reconciliation action. |
 
 ---
 
 | # | Rule |
 |---|---|
-| STR-01 | `task.readStream` returns the bounded text + stream-state + authoritative Task-state contract in [Harness §7.2](../17-agent-harness.md#72-client-read-contract), including attempt, successor stream, durable output/final-message reference or no-answer reason. `truncated` is distinct from `completed`. |
+| STR-01 | `task.readStream` is the compatibility alias of `execution.readOutput` for a Task ExecutionOwner. Annex 10 defines attempt/stream/successor identity, offsets, truncation, terminal references and no-answer reason; Harness consumes that schema without a second JSON stream API. |
 | STR-02 | Stream state answers presentation availability; Task state answers execution progress. Empty/missing chunks never imply completion. Expired stream metadata falls back to Task/attempt authority, and only an existing final-message reference is fetched as an answer. |
-| STR-03 | **Any replica serves any read**, because the buffer is in the shared database ([SB-04](../17-agent-harness.md#rule-sb-04)). There is no affinity requirement and no sticky routing. |
+| STR-03 | Any authorized Cloud Container can read the shared private DO projection and durable owner output. No public sticky routing or Container-local buffer is authoritative. |
 | <a id="rule-str-04"></a>STR-04 | **`evicted` does not imply the turn ended.** A client checks the Task's own state to distinguish *the answer is ready* from *live presentation was lost while work continues* ([SR-04](../17-agent-harness.md#rule-sr-04) of the harness). |
 | STR-05 | **Polling with `retryAfter` is equivalent to realtime**, and a client with realtime disabled reaches identical output ([SR-01](../17-agent-harness.md#rule-sr-01) of the harness, [RE-07](03-realtime-and-bridge.md#rule-re-07)). |
 
@@ -303,7 +290,7 @@ Structural writes return the new revisions of **all** affected roots and the imm
 |---|---|
 | CH-01 | **`chat.appendMessage` atomically appends the user turn and creates its linked Task where requested**, with one retained command result. It runs no model. AI admission happens afterwards in the Harness; a refusal leaves the accepted message and a visible Task reason, not a missing Task. |
 | CH-02 | **`agent.listModels` returns availability with a reason.** A withdrawn model degrades explicitly rather than vanishing ([WP-43.05](../../planning/work-packages/43-managed-ai-routing-and-metering.md#rule-wp-43.05)). |
-| CH-03 | **`search.query` failing never affects local search** ([WP-40.06](../../planning/work-packages/40-knowledge-search-and-retrieval.md#rule-wp-40.06)). |
+| CH-03 | Cloud search failure never disables own-application hydrated local search; WP17 and WP19 prove this independently of WP40 Cloud retrieval. |
 
 The Notes branch of `search.query` accepts the typed `NotesQuery` [profile](02-local-rpc-operations.md#notes-query-contract): property comparisons, saved-view scope/order and cursor revision bindings are identical to native evaluation. Cloud completeness covers authorized acknowledged content; the local cache operation declares its smaller scope. Other search modes keep their declared ranking. Invalid profile/type/AST/cursor uses the shared catalogue errors, before query execution.
 
@@ -319,8 +306,8 @@ The Notes branch of `search.query` accepts the typed `NotesQuery` [profile](02-l
 | `notification.registerPush` | Register a push token | `R2` | `IW` | `FR` |
 | `notification.unregisterPush` | Remove one | `R2` | `DE` | `FR` |
 | `support.createCase` | Open a case with a **diagnostic reference, never content** | `R2` | `CC` | `AC` |
-| `support.listCases` | Read owner support cases | R1 | Q | state.not_found | AO |
-| `support.appendMessage` | Append owner-authored message with stable command ID and explicit diagnostic consent | R2 | AP | state.not_found | FR |
+| `support.listCases` | Read owner support cases | R1 | Q | AO |
+| `support.appendMessage` | Append owner-authored message with stable command ID and explicit diagnostic consent | R2 | AP | FR |
 | `data.requestExport` | Full user-data export | `R3`, step-up | `NI` | `FR` |
 | `data.getExportState` | Progress and download ticket | `R1` | `Q` | `AO` |
 
@@ -400,7 +387,7 @@ The Notes branch of `search.query` accepts the typed `NotesQuery` [profile](02-l
 
 ## P2-009 executable wire and transport binding
 
-Every operation/event above maps to the [numbered wire registry](04-protobuf-wire-registry.md). It fixes requests/results, record fields, enums, exact values, local counterpart preconditions, service names and compatibility. [CF integration](05-cloudflare-integration.md) fixes AI/object HTTP exceptions, frame/state recovery and authorization. New supporting bootstrap, upload-status, automation and conversation-create methods are enumerated there with their authorization/idempotency classes; none is left for endpoint invention during implementation.
+Every operation/event above maps to the [numbered wire registry](04-protobuf-wire-registry.md). It fixes requests/results, record fields, enums, exact values, local counterpart preconditions, service names and compatibility. [CF integration](05-cloudflare-integration.md) fixes private Cloud/AI bindings and signed object-transfer exceptions; annex10 owns public output/control framing, state recovery and authorization. New supporting bootstrap, upload-status, automation and conversation-create methods are enumerated there with their authorization/idempotency classes; none is left for endpoint invention during implementation.
 
 ## Supporting operations under the selected wire profile
 
@@ -422,8 +409,8 @@ These complete existing accepted flows. The [numbered registry](04-protobuf-wire
 | `chat.putMemory` | Write user-approved memory content under expected revision | R2 | IW | conflict.revision_mismatch | FR |
 | `chat.deleteMemory` | Delete current memory participation with history retention | R2 | DE | conflict.revision_mismatch | FR |
 | `preference.put` | Write only declared syncable user preference keys | R2 | IW | validation.invalid_request | FR |
-| `automation.list` | Read owner automation summaries | R1 | Q | state.not_found | AO |
-| `automation.get` | Read current definition and version | R1 | Q | state.not_found | AO |
+| `automation.list` | Read owner automation summaries | R1 | Q | AO | state.not_found |
+| `automation.get` | Read current definition and version | R1 | Q | AO | state.not_found |
 | `automation.create` | Create caller-stable declarative definition and grant references | R2 | CC | validation.invalid_request | FR |
 | `automation.update` | Write next immutable definition version under expected revision | R2 | IW | conflict.revision_mismatch | FR |
 | `automation.setEnabled` | Reauthorize and change future trigger eligibility | R2 | IW | entitlement.no_service_term | FR |
@@ -440,4 +427,4 @@ The [wire registry account operations](04-protobuf-wire-registry.md#account-oper
 
 ## Complete initial journey operations
 
-The additional identity enrollment, ChatTurn/promotion/temporary/project/memory, paged Task detail, source consent, realm transfer and connector methods are individually numbered in [wire registry sections5 and10](04-protobuf-wire-registry.md#5-public-business-operation-registry); their authorization/idempotency/risk is specified in its supporting-operation and added-owner rules. They are mandatory initial services, not optional later endpoints. [Client journeys](07-client-journeys-and-ports.md) fixes each standard browser-auth projection and provider callback, including enrollment/recovery/step-up and device SSO. All normal business operations use native C#/Kotlin gRPC or TypeScript gRPC-Web; no parallel JSON business CRUD API.
+The additional identity enrollment, ChatTurn/promotion/temporary/project/memory, paged Task detail, source consent, realm transfer and connector methods are individually numbered in [wire registry sections 5 and 10](04-protobuf-wire-registry.md#5-public-business-operation-registry); their authorization/idempotency/risk is specified in its supporting-operation and added-owner rules. They are mandatory initial services, not optional later endpoints. [Client journeys](07-client-journeys-and-ports.md) fixes each standard browser-auth projection and provider callback, including enrollment/recovery/step-up and device SSO. All normal business operations use native C#/Kotlin gRPC or TypeScript gRPC-Web; no parallel JSON business CRUD API.

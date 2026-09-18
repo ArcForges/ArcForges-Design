@@ -93,7 +93,7 @@ This document consolidates every gate that stands between work and users, in one
 | <a id="rule-p-02"></a>P-02 | The product's **licence audit** is complete — the **[F-013](open-gates-register.md#rule-f-013)** trigger has fired and been satisfied for this product (**[D-013](../decisions/phase-1-foundation-decisions.md#rule-d-013)**) | Audit record |
 | <a id="rule-p-03"></a>P-03 | The product's Quality Contract instance is populated with measured values, not targets (`§1` of the quality contract) | Quality report |
 | P-04 | Must-pass release scenarios pass for this product, including every applicable initial-state row of the [offline acceptance matrix](testing-and-verification-strategy.md#offline-acceptance-matrix). Record enrollment/hydration/authorization and restart outcomes; no generic Cloud-authoritative editable-workspace assumption substitutes for the product behavior | Scenario results |
-| P-05 | The product's **declared** exit path is met. **ArcScope and ArcSlate**: a portable package that re-imports completely and serialises deterministically ([WS-01](../requirements/13-data-formats-and-portability.md#rule-ws-01)–[WS-06](../requirements/13-data-formats-and-portability.md#rule-ws-06) of the data-format requirements; [WP-35.04](../planning/work-packages/35-arcscope-integration-and-sync.md#rule-wp-35.04), [WP-39.02](../planning/work-packages/39-arcslate-integration-and-portability.md#rule-wp-39.02)). **ArcNotes and ArcChat**: a Cloud-generated download over acknowledged revisions with an attachment manifest and a stated fidelity/exclusion report — **re-import is not an obligation for these two** ([EP-04](../requirements/products/arcnotes.md#rule-ep-04) of the ArcNotes requirements, [EX-01](../requirements/products/arcchat.md#rule-ex-01) of the ArcChat requirements), so a round-trip result is not the evidence and must not be demanded | Round-trip result, or export completeness and fidelity report, per the product's declared path |
+| P-05 | ArcScope/ArcSlate portable packages round-trip completely. Notes Cloud/cached export reports declared fidelity and missing resources. Every application assistant exports/imports assistant-history.v1 locally or from its admitted Cloud scope under model 05, without implicit promotion. | Owner-specific round-trip or complete fidelity/exclusion report |
 | <a id="rule-p-06"></a>P-06 | Cross-product launch/handoff is future-only. Current assistant navigation opens resources inside its own application; remote operations target an already authorized application through Cloud. | [Future boundary](../future/cross-product-collaboration/README.md) |
 | P-07 | Deep links, file associations and single-instance routing verified (`§7`, `§8` of the shared desktop requirements) | Test results |
 | P-08 | Diagnostics, crash reporting and consent behaviour verified (`§9` of the observability architecture) | Test results |
@@ -109,20 +109,21 @@ This document consolidates every gate that stands between work and users, in one
 | # | Gate |
 |---|---|
 | <a id="rule-l-01"></a>L-01 | A full **Game Day** exercising SEV0 through SEV2 scenarios against the real production topology |
-| L-02 | Database failover exercised; point-in-time restore proven |
+| L-02 | Real D1 Time Travel recovery and independent export/import plus contiguous replay into a fresh D1 database proven; validate generation, restrictive journal and object integrity. |
 | L-03 | Cross-provider blob restore proven |
 | L-04 | D1 outbox/inbox backlog and dead-letter replay proven; duplicate delivery produces one effect (WP21/24, drill46.03) |
 | L-05 | EventService.Watch/Poll degradation and cursor reset with authorized reread; ExecutionService.WatchOutput interruption recovers through ReadOutput or explicit retention reset (WP24/52, drill46.03) |
-| L-06 | AI provider outage with credit release and fallback proven |
-| L-07 | Edge or tunnel outage with local products fully unaffected, verified |
+| L-06 | Workers AI outage and unknown dispatch preserve customer-hold deadline/supplier liability; proven pre-dispatch reservation release and explicit user model selection tested. No automatic provider/model fallback. |
+| L-07 | Cloudflare ingress/Container/binding outage preserves each product's declared hydrated local behavior; independently hosted status and incident path remain usable. |
 | L-08 | Email failover proven **without duplicate one-time codes** |
 | L-09 | Deployment rollback exercised, and a migration failure recovered |
-| L-10 | A region rebuild rehearsed from infrastructure-as-code plus backups |
+| L-10 | Fresh operator-owned Cloudflare account/realm rebuilt from signed artifacts, infrastructure/configuration and independent backups; selfhost.v1 identity/route/key isolation passes PG-25. |
 | L-11 | Webhook loss recovered by reconciliation; entitlement repair verified |
 | <a id="rule-l-12"></a>L-12 | Every required runbook written, assigned and rehearsed at least once (`§9.1` there) |
 | <a id="rule-l-13"></a>L-13 | Backup health dashboard green **with a proven restore**, not merely a green backup job |
 | L-14 | Status page live, independently hosted, with the emergency alternate URL published (`§8` of the observability architecture) |
 | <a id="rule-l-15"></a>L-15 | Alert-to-runbook mapping complete; on-call responder arrangement in place (`§7` there) |
+| <a id="rule-l-16"></a>L-16 | Proposed model 04 launch envelope is explicitly approved and passes real production-shaped D1/Container/stream/Vectorize load, footprint, cold-start and 30-day headroom tests. PG-26 tracks the still-open evidence; a document or SQLite result cannot close it. |
 
 ### 6.2 Commercial go-live
 

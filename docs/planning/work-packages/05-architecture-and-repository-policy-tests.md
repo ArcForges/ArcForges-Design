@@ -22,7 +22,7 @@
 
 **Why this package exists.** Without it, every rule in the architecture layer is advice. With it, the rules are the build.
 
-**Its scope is smaller than first planned.** The reconciliation evidence (`§5.4`) found the harness already exists: `tests/ArchitectureTests` holds **2,075 lines**, 28 test methods in `ArchitectureRuleTests.cs` and 19 in `RepositoryPolicyTests.cs`, a real project-graph loader and a negative-fixture compiler. The file header names *thirteen* rules against the accepted twenty-four. **This package reconciles rule-by-rule against a working harness; it does not build one.**
+**Current reconciliation scope.** The earlier monorepo architecture-test inventory is historical evidence, not a current working harness. At the pinned repository baseline, retain useful surviving tests and implement the complete rule manifest in the owning repository; archived line/test counts cannot satisfy this package. Validate both allowed dependencies and deliberate negative fixtures against the actual multi-repository package graph.
 
 ---
 
@@ -46,7 +46,7 @@
 
 ---
 
-**Web redesign input.** [P2-008](../../decisions/phase-2-specification-decisions.md#rule-p2-008) and [Web toolchain and SDK](../../architecture/25-web-toolchain-and-sdk.md) are binding for this package's Web, generated-contract, toolchain and test responsibilities. The existing desktop/mobile runtime and product-scope decisions remain separately governed.
+**Web redesign input.** [P2-008 as amended by P2-012/P2-013](../../decisions/phase-2-specification-decisions.md#rule-p2-013) and [Web toolchain and SDK](../../architecture/25-web-toolchain-and-sdk.md) are binding for this package's Web, generated-contract, toolchain and test responsibilities. The existing desktop/mobile runtime and product-scope decisions remain separately governed.
 
 ---
 
@@ -203,7 +203,7 @@ Add Node/TS import and dependency checks to the existing policy suite: one Web w
 
 ## 7. Tests and verification evidence
 
-Generate an operation-by-actor reachability matrix for every public/local/operator/CF/exception binding under catalogue00 AZ-04, with all seven effective authorization fields and source profile. Fail unclassified/ambiguous fields, nonexistent idempotency examples, public imports of local schema and tool reachability of human-only approval/credential/commerce/policy methods. Include resource/context/connector egress denials and hostile actor-chain cases.
+Generate an operation-by-actor reachability matrix for every public/local/operator/CF/exception binding under catalogue 00 AZ-04, with all seven effective authorization fields and source profile. Fail unclassified/ambiguous fields, nonexistent idempotency examples, public imports of local schema and tool reachability of human-only approval/credential/commerce/policy methods. Include resource/context/connector egress denials and hostile actor-chain cases.
 
 | Evidence | Produced by |
 |---|---|
@@ -244,4 +244,4 @@ Generate an operation-by-actor reachability matrix for every public/local/operat
 
 ## Current source baseline and migration input
 
-The166-project ede43db monorepo inventory is historical disposition evidence, not the current checkout shape. [Family completion review](../../assurance/family-design-completion-review.md) records the separate DesktopPlatform/Contracts/Mobile bootstrap evidence and scope. Before coding, verify each actual source HEAD/dirty state and map only retained required mechanisms to its owning repository/package; preserve existing published Hello/probe compatibility and Mobile app/signing/version identity. Do not recreate deleted scaffolds, copy every legacy project, or treat unpublished implementation as missing design. Generated protocol artifacts follow the tracked authored-schema/generator baseline and immutable producer manifest from WP03; generated outputs are not categorically forbidden from version control.
+The 166-project ede43db monorepo inventory is historical disposition evidence, not the current checkout shape. [Family completion review](../../assurance/family-design-completion-review.md) records the separate DesktopPlatform/Contracts/Mobile bootstrap evidence and scope. Before coding, verify each actual source HEAD/dirty state and map only retained required mechanisms to its owning repository/package; preserve existing published Hello/probe compatibility and Mobile app/signing/version identity. Do not recreate deleted scaffolds, copy every legacy project, or treat unpublished implementation as missing design. Generated protocol artifacts follow the tracked authored-schema/generator baseline and immutable producer manifest from WP03; generated outputs are not categorically forbidden from version control.

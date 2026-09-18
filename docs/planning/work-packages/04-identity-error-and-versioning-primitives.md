@@ -43,7 +43,7 @@
 
 ---
 
-**Web redesign input.** [P2-008](../../decisions/phase-2-specification-decisions.md#rule-p2-008) and [Web toolchain and SDK](../../architecture/25-web-toolchain-and-sdk.md) are binding for this package's Web, generated-contract, toolchain and test responsibilities. The existing desktop/mobile runtime and product-scope decisions remain separately governed.
+**Web redesign input.** [P2-008 as amended by P2-012/P2-013](../../decisions/phase-2-specification-decisions.md#rule-p2-013) and [Web toolchain and SDK](../../architecture/25-web-toolchain-and-sdk.md) are binding for this package's Web, generated-contract, toolchain and test responsibilities. The existing desktop/mobile runtime and product-scope decisions remain separately governed.
 
 ---
 
@@ -80,13 +80,13 @@
 
 <a id="rule-wp-04.00"></a>
 
-### WP-04.00 — Identifier types
+### WP-04.00 — Shared identity, error and version primitives
 
-**What must be fully done.** Each identifier concept is a distinct value type with its own generation, parsing, validation and serialization. Identifiers are opaque to consumers, sortable where ordering is meaningful, and never carry embedded semantics that could be parsed by a client. Cross-assignment between identifier types is a compile error.
+**What must be fully done.** Implement registry 04 exact UUID/revision/enum/error primitives and generation/recovery scopes from the published Contracts packages. Proto controls business schema; HTTP exception JSON uses source-generated serialization only.
 
-**Testing requirements.** A compile-negative test per identifier pair; round-trip and parse-rejection tests; a collision and distribution test for generated identifiers.
+**Testing requirements.** Cross-language vectors, absent/default/unknown values, wrong revision kind, effect-certainty and error mapping.
 
-**Completion gate.** Cross-assignment fails to compile, and every identifier round-trips and rejects malformed input.
+**Completion gate.** No OpenAPI/REST business contract or copied DTO authority is created.
 
 <a id="rule-wp-04.01"></a>
 
@@ -144,7 +144,7 @@
 
 ### TypeScript primitive projection
 
-Implement the C# serializers and metadata projection for the exact wire rules in [Web toolchain and SDK](../../architecture/25-web-toolchain-and-sdk.md). IDs are opaque strings; 64-bit revision/sequence/token/byte/microcredit values and decimal rates preserve exact canonical strings. Bound int32 counters remain numbers. This package consumes [WP-03](03-contract-foundation-and-licence-split.md#rule-wp-03)'s initial vectors and extends them as primitives stabilize. Runtime JSON and generated OpenAPI must agree; metadata-only stringification is a failing gate.
+Implement the generated C#/TypeScript/Kotlin adapters for [registry 04 exact-value rules](../../architecture/contracts/04-protobuf-wire-registry.md#2-exact-values-canonical-identity-and-evolution). UUID uses canonical 16-byte ordering on protobuf, 64-bit integers use TS bigint and checked .NET/Kotlin equivalents, Decimal uses its canonical exact string, and int32 remains bounded. Standard JSON exceptions use the declared canonical string representation. Consume WP03's independent cross-language vectors; generation metadata cannot substitute for actual round-trip values. No OpenAPI business generation stage is involved.
 
 ---
 
@@ -199,7 +199,7 @@ Implement the C# serializers and metadata projection for the exact wire rules in
 **All of the following, with recorded evidence:**
 
 1. Identifier and version-axis confusion is a compile error, and every primitive round-trips.
-2. Command and attempt identities, canonical hashes and uncertainty/retry types are unambiguous; durable single-effect/receipt proof is deferred explicitly to owner persistence in07/21/52.
+2. Command and attempt identities, canonical hashes and uncertainty/retry types are unambiguous; durable single-effect/receipt proof is deferred explicitly to owner persistence in 07/21/52.
 3. Revision and sequence implement conflict and gap semantics correctly and are non-interchangeable.
 4. A locale or time-zone change never alters stored data, and durations use monotonic time.
 5. Every failure path returns a registered reason code with a category, retryability and effect certainty; cancellation is never reported as failure.

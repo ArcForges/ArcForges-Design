@@ -38,7 +38,7 @@ Observability answers *why is the system slow or failing*. It is a separate syst
 |---|---|
 | SG-01 | **A structured log event is a typed record, not an interpolated sentence.** Fields are named and stable so they can be queried. |
 | <a id="rule-sg-02"></a>SG-02 | **An identifier that can grow without bound is never a metric label** — no workspace id, actor id, task id, resource id or provider request id on a metric. Those live on spans and log records. |
-| SG-03 | Trace sampling uses head selection plus a bounded diagnostic buffer (default8MiB, hard16MiB; retention30seconds per trace). Error/slow traces promote only spans still recorded. Buffer loss/overflow/late-span loss is counted and visible; no guarantee of retaining all error traces. Redacted error counters/logs remain independent under the same consent and cost policy. |
+| SG-03 | Trace sampling uses head selection plus a bounded diagnostic buffer (default 8 MiB, hard 16 MiB; retention 30 seconds per trace). Error/slow traces promote only spans still recorded. Buffer loss/overflow/late-span loss is counted and visible; no guarantee of retaining all error traces. Redacted error counters/logs remain independent under the same consent and cost policy. |
 | SG-04 | **A task, sync operation or automation run is traceable end to end**, including across queue hops and provider calls (`§3`). |
 | SG-05 | **Every signal carries the build identifier and instance identity**, so a regression can be attributed to a release. |
 
@@ -222,6 +222,20 @@ Audit is a **product security record**, not a diagnostic aid.
 | OD-05 | **Provider selection is configuration, not code**, and switching providers requires no instrumentation change ([OA-02](#rule-oa-02)). |
 
 ---
+
+### Initial operational providers and completion gates
+
+Transactional email uses Postmark primary and Amazon SES prepared secondary. Sending domains: notify.arcforges.com for security/authentication, news.arcforges.com for broadcasts with separate provider streams, credentials and suppression policy. Before WP22 real-mail acceptance, Operations verifies ownership, SPF/DKIM/DMARC alignment, bounce/complaint webhooks and both providers' production sending access. Templates are versioned, locale bounded, contain no token in telemetry and bind delivery_id, purpose, expiry and user security epoch.
+
+Persist the typed Notification delivery, attempt, event-deduplication and suppression tables in [model 01](data-model/01-cloud-data-model.md#notification-email-delivery). A unique attempt is recorded before dispatch. Verified rejection before acceptance permits the prepared secondary; timeout/response loss enters unknown and cannot blindly send the same code through another provider. Query provider evidence by original ID/metadata; missing search result is not proof of non-acceptance. A user-requested replacement invalidates the earlier code and creates a new logical delivery under rate limits. Late delivery must never revive an expired code.
+
+Postmark webhooks are **not signed**: use HTTPS, a dedicated Basic-auth webhook credential, provider IP policy and strict delivery/message correlation; accept only bounded known event fields, deduplicate provider/event ID and re-query anomalous status. Never describe a nonexistent Postmark signature. SES uses verified SNS envelopes with permitted topic/account, signature/certificate validation and deduplication; subscription confirmation is operator-controlled. Credentials rotate with a bounded overlap; forged or replayed contradictory callbacks cannot change account proof. Accepted email is not proof that its user read it.
+
+Android push uses FCM HTTP v1 with service-account short-lived OAuth credentials, only opaque notification/attention IDs and explicit app/installation binding. Invalid/unregistered token disables that exact registration; transient 429/5xx uses bounded retry and expiry. Non-GMS/permission-denied paths rely on foreground Watch/Poll and never claim background delivery. Firebase credentials and Android signing/app registration are external PG-24 inputs.
+
+WP45 selects status, incident, telemetry and analytics adapters before operational acceptance against these fixed criteria: independently reachable status/incident path during Cloud outage; OTLP/redaction and bounded cardinality for telemetry; consent/opt-out and content exclusion for analytics; export/deletion, geography and cost evidence for all. Operations records provider/version/config, acceptance proof and rollback. No blank interface counts as an operational producer. This is the explicit D-016 selection trigger, not permission for implementers to change privacy or availability behavior.
+
+Sources checked 2026-09-17: [Postmark webhooks](https://postmarkapp.com/developer/webhooks/webhooks-overview), [message search](https://postmarkapp.com/developer/api/messages-api), [SES event publishing](https://docs.aws.amazon.com/ses/latest/dg/event-publishing-send-email.html). WP22 proves real identity delivery; WP45 drills unknown-outcome and provider outage recovery.
 
 ## 12. Runbooks as an architectural artifact
 

@@ -1,5 +1,5 @@
 # ArcSlate — Product Requirements
-> Current scope amendment: **[P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
+> Effective scope: P2-012 and P2-013 amend the technology and application ownership below. **[P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Requirements / Products
@@ -282,12 +282,14 @@ ArcSlate Project
 
 ---
 
-## 15. same-application integration
+<a id="15-same-application-integration"></a>
+
+## 15. Application integration boundary
 
 | # | Requirement |
 |---|---|
-| XP-01 | **ArcNotes integration** is by reference: an ArcSlate project or rendered output may be referenced from an ArcNotes document, and an ArcNotes document may be referenced from an ArcSlate project, by `ResourceRef`. **Databases are never shared directly** ([P-10](../00-product-scope-and-portfolio.md#rule-p-10)). |
-| XP-02 | **An edit decision list or report may be produced** as an artifact and, on request, materialised as an ArcNotes document — a copy/import creating a new ArcNotes-owned object (`§4.2` of the product scope). |
+| XP-01 | Cross-product ArcNotes/ArcSlate references are future-only examples. Current assistant context and navigation stay within ArcSlate; product databases are never shared. |
+| XP-02 | ArcSlate may produce supported edit-decision/report artifacts owned by ArcSlate. Creating an ArcNotes document from them is future-only; no current producer/consumer dependency is implied. |
 | XP-03 | **Large media never crosses the application runtime**. Only identity, metadata and controlled access cross boundaries. |
 
 ---

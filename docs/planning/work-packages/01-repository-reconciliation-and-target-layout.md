@@ -37,11 +37,11 @@
 | [`../../architecture/01-solution-and-project-layout.md`](../../architecture/01-solution-and-project-layout.md) | The target layout, project conventions and reference-direction rules that dispositions are measured against |
 | [`../../architecture/00-architecture-overview.md`](../../architecture/00-architecture-overview.md) | The layering rules and the shared-foundation boundary |
 | [WP-00](00-specification-naming-and-rights-freeze.md#rule-wp-00) output | The licence boundary declaration and naming freeze |
-| The existing monorepo at `ede43db` | **historical166 projects at ede43db**, 28 test-suite projects, 6 native shims, and the `eng/` build property set — measured, not estimated |
+| The existing monorepo at `ede43db` | **historical 166 projects at ede43db**, 28 test-suite projects, 6 native shims, and the `eng/` build property set — measured, not estimated |
 
 ---
 
-**Web redesign input.** [P2-008](../../decisions/phase-2-specification-decisions.md#rule-p2-008) and [Web toolchain and SDK](../../architecture/25-web-toolchain-and-sdk.md) are binding for this package's Web, generated-contract, toolchain and test responsibilities. The existing desktop/mobile runtime and product-scope decisions remain separately governed.
+**Web redesign input.** [P2-008 as amended by P2-012/P2-013](../../decisions/phase-2-specification-decisions.md#rule-p2-013) and [Web toolchain and SDK](../../architecture/25-web-toolchain-and-sdk.md) are binding for this package's Web, generated-contract, toolchain and test responsibilities. The existing desktop/mobile runtime and product-scope decisions remain separately governed.
 
 ---
 
@@ -85,15 +85,13 @@
 
 <a id="rule-wp-01.00"></a>
 
-### WP-01.00 — Validate the completed inventory against current head
+### WP-01.00 — Verify nine independent current repositories
 
-> **Design-stage prerequisite already complete.** The item-level inventory was produced during the Stage 2 repair, before the plan was derived (**[D-019](../../decisions/phase-1-foundation-decisions.md#rule-d-019)**), and is recorded in [`../../assurance/implementation-state-reconciliation.md`](../../assurance/implementation-state-reconciliation.md): 166 of 166 projects, 6 of 6 native shims, 28 test suites, with dispositions and six corrections to earlier false findings. It is bound to commit `ede43db`. **[PG-02](../../assurance/open-gates-register.md#rule-pg-02) is closed.** This sub-step does not re-create it.
+**What must be fully done.** Record actual clean commit/worktree states for DesktopPlatform, Contracts, Cloud, AI, Web, Mobile, ArcNotes, ArcScope and ArcSlate. Inventory existing Hello World/build/publish artifacts against arch 27 and the package registry. Earlier ede43db monorepo inventories are historical provenance, not current source inventory.
 
-**What must be fully done.** The inventory is re-validated against the repository's current head: projects added, removed or renamed since `ede43db` are identified, and each gains a disposition using the same vocabulary. The dispositions recorded in `§5` of that document are confirmed as still applicable, or amended with a reason.
+**Testing requirements.** Compare each owned path/project to current Git tree and published artifact identity; reject adjacent-source/submodule integration.
 
-**Testing requirements.** A drift comparison between the bound commit and current head, listing every added, removed and renamed project; a completeness check that every drifted item has a disposition.
-
-**Completion gate.** Drift against `ede43db` is enumerated and every drifted item has a disposition. **[PG-02](../../assurance/open-gates-register.md#rule-pg-02) is not re-closed here** — it was closed by the design-stage evidence; this step keeps that evidence current.
+**Completion gate.** Every planned directory has one repository owner and explicit keep/move/retire disposition; no source mutation is justified solely by a dated baseline.
 
 <a id="rule-wp-01.01"></a>
 
@@ -138,14 +136,13 @@
 
 <a id="rule-wp-01.05"></a>
 
-### WP-01.05 — Execute the blocking moves and fence the rest
+### WP-01.05 — Apply bounded repository reconciliation
 
+**What must be fully done.** Implement only inventory-backed owner moves and names in the nine repositories; replace legacy ArcChat host/Harness or product RPC scaffolds with the arch 27 composition boundaries. Preserve working builds while each consumer adopts immutable package artifacts.
 
-**What must be fully done.** Create the ten owner repositories with the fixed source/package mapping. The current implementation history becomes DesktopPlatform; migrate only licensed selected native/mechanism material, with explicit provenance. Other owners receive new application shells and released dependencies. Remove retired Notes canvas/slides scaffolds and obsolete monorepo source/solution references according to the existing disposition; preserve unrelated work and reference histories.
+**Testing requirements.** Clean-checkout builds with no sibling source; verify licenses and package closure.
 
-**Testing requirements.** Validate owner entry points and dependency-free shells in isolation; forbidden sibling ProjectReference/submodule/source import fixtures fail. Generated package-consuming builds occur after WP03 publication in WP06; verify retired scope remains absent.
-
-**Completion gate.** The selected repository graph exists without changing accepted product behavior or importing old placeholders as implemented features.
+**Completion gate.** Current repository/project map agrees with actual owned trees and every move has a tested consumer path.
 
 <a id="rule-wp-01.90"></a>
 ### WP-01.90 — Verify the owned artifact and real integration
@@ -211,4 +208,4 @@
 
 ## Current source baseline and migration input
 
-The166-project ede43db monorepo inventory is historical disposition evidence, not the current checkout shape. [Family completion review](../../assurance/family-design-completion-review.md) records the separate DesktopPlatform/Contracts/Mobile bootstrap evidence and scope. Before coding, verify each actual source HEAD/dirty state and map only retained required mechanisms to its owning repository/package; preserve existing published Hello/probe compatibility and Mobile app/signing/version identity. Do not recreate deleted scaffolds, copy every legacy project, or treat unpublished implementation as missing design. Generated protocol artifacts follow the tracked authored-schema/generator baseline and immutable producer manifest from WP03; generated outputs are not categorically forbidden from version control.
+The 166-project ede43db monorepo inventory is historical disposition evidence, not the current checkout shape. [Family completion review](../../assurance/family-design-completion-review.md) records the separate DesktopPlatform/Contracts/Mobile bootstrap evidence and scope. Before coding, verify each actual source HEAD/dirty state and map only retained required mechanisms to its owning repository/package; preserve existing published Hello/probe compatibility and Mobile app/signing/version identity. Do not recreate deleted scaffolds, copy every legacy project, or treat unpublished implementation as missing design. Generated protocol artifacts follow the tracked authored-schema/generator baseline and immutable producer manifest from WP03; generated outputs are not categorically forbidden from version control.

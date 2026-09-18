@@ -42,7 +42,7 @@
 
 ---
 
-**Web redesign input.** [P2-008](../../decisions/phase-2-specification-decisions.md#rule-p2-008) and [Web toolchain and SDK](../../architecture/25-web-toolchain-and-sdk.md) are binding for this package's Web, generated-contract, toolchain and test responsibilities. The existing desktop/mobile runtime and product-scope decisions remain separately governed.
+**Web redesign input.** [P2-008 as amended by P2-012/P2-013](../../decisions/phase-2-specification-decisions.md#rule-p2-013) and [Web toolchain and SDK](../../architecture/25-web-toolchain-and-sdk.md) are binding for this package's Web, generated-contract, toolchain and test responsibilities. The existing desktop/mobile runtime and product-scope decisions remain separately governed.
 
 ---
 
@@ -80,13 +80,13 @@
 
 <a id="rule-wp-06.00"></a>
 
-### WP-06.00 — Desktop AOT publish
+### WP-06.00 — Desktop Native AOT package proof
 
-**What must be fully done.** Each desktop host publishes Native AOT for every supported runtime identifier with zero trim, AOT and single-file diagnostics. The published binary launches, opens a window, executes one command through the real application service path, and shuts down cleanly. No machine-installed runtime is required.
+**What must be fully done.** Publish one minimal real host for each of ArcNotes/ArcScope/ArcSlate consuming Platform packages, with embedded assistant composition and private child channels. No fourth assistant executable.
 
-**Testing requirements.** A publish log per RID with a zero-diagnostic assertion; a launch smoke test executed against the published artifact on each platform; a clean-machine test confirming no runtime prerequisite.
+**Testing requirements.** Run published binaries on required RIDs; load real native libraries and execute the existing ABI smoke vectors; verify no reflection or sibling-source fallback.
 
-**Completion gate.** All three professional hosts publish AOT with zero diagnostics and launch on every supported platform.
+**Completion gate.** Actual immutable package consumers pass the required AOT/RID gates.
 
 <a id="rule-wp-06.01"></a>
 
@@ -106,7 +106,7 @@
 
 **What must be fully done.** Consume exact generated binary gRPC-Web client from published AOT desktop against actual Worker/Container ingress; prove headers, trailers, cancellation, scoped errors and exact primitives.
 
-**Testing requirements.** Verify the stated behavior against the exact real artifact/owner boundary. Include scope/permission, wrong or stale target, loss/retry, expiry and applicable native UI cases from experience03; named later-provider fixtures cannot close real integration.
+**Testing requirements.** Verify the stated behavior against the exact real artifact/owner boundary. Include scope/permission, wrong or stale target, loss/retry, expiry and applicable native UI cases from experience 03; named later-provider fixtures cannot close real integration.
 
 **Completion gate.** [F-026](../../assurance/open-gates-register.md#rule-f-026) passes on the actual generated-client AOT closure.
 
@@ -115,9 +115,9 @@
 ### WP-06.03 — Realtime under AOT
 
 
-**What must be fully done.** Prove EventService.Watch and output server streams plus Poll/readOutput recovery from annex10 on actual Worker/Container/DO; drop/expire/revoke and recover through authoritative reads.
+**What must be fully done.** Prove EventService.Watch and output server streams plus Poll/readOutput recovery from annex 10 on actual Worker/Container/DO; drop/expire/revoke and recover through authoritative reads.
 
-**Testing requirements.** Verify the stated behavior against the exact real artifact/owner boundary. Include scope/permission, wrong or stale target, loss/retry, expiry and applicable native UI cases from experience03; named later-provider fixtures cannot close real integration.
+**Testing requirements.** Verify the stated behavior against the exact real artifact/owner boundary. Include scope/permission, wrong or stale target, loss/retry, expiry and applicable native UI cases from experience 03; named later-provider fixtures cannot close real integration.
 
 **Completion gate.** Generated unary hints and durable reads work under AOT; no SignalR dependency or claimed hint durability.
 
@@ -126,9 +126,9 @@
 ### WP-06.04 — Cloudflare Native AOT and D1 proof
 
 
-**What must be fully done.** Publish/deploy the actual C# Container, private Worker D1 named-plan binding, DO/Queue/R2 foundation; prove rollback on guard failure, exact64bit/decimal, session/CSRF/revoke and bounded checkpoint/restart. No full product Harness claim.
+**What must be fully done.** Publish/deploy the actual C# Container, private Worker D1 named-plan binding, DO/Queue/R2 foundation; prove rollback on guard failure, exact 64 bit/decimal, session/CSRF/revoke and bounded checkpoint/restart. No full product Harness claim.
 
-**Testing requirements.** Verify the stated behavior against the exact real artifact/owner boundary. Include scope/permission, wrong or stale target, loss/retry, expiry and applicable native UI cases from experience03; named later-provider fixtures cannot close real integration.
+**Testing requirements.** Verify the stated behavior against the exact real artifact/owner boundary. Include scope/permission, wrong or stale target, loss/retry, expiry and applicable native UI cases from experience 03; named later-provider fixtures cannot close real integration.
 
 **Completion gate.** [VG-06](../../assurance/open-gates-register.md#rule-vg-06) foundation proof covers the entire selected dependency closure and deployed provider boundary; no full product Harness claim is made.
 
@@ -160,7 +160,7 @@
 
 **What must be fully done.** Build/install Kotlin Android release consuming actual Maven Connect Kotlin gRPC-Web clients; exercise unary/server-stream/trailers/cancel/Keystore and real Worker/Container/D1/DO/R2 foundation. Pin the compatible actual toolchain after proof.
 
-**Testing requirements.** Verify the stated behavior against the exact real artifact/owner boundary. Include scope/permission, wrong or stale target, loss/retry, expiry and applicable native UI cases from experience03; named later-provider fixtures cannot close real integration.
+**Testing requirements.** Verify the stated behavior against the exact real artifact/owner boundary. Include scope/permission, wrong or stale target, loss/retry, expiry and applicable native UI cases from experience 03; named later-provider fixtures cannot close real integration.
 
 **Completion gate.** Selected runtime and transport are proven; this minimal probe requires no future full Harness, product native package or WP30 app.
 
@@ -193,6 +193,8 @@
 
 ## 7. Tests and verification evidence
 
+Acceptance includes every amended §5 producer/consumer and WP-06.90 evidence. Current P2-013 contracts/data/runtime rules are tested in the original owner implementation, not a detached explanatory sample.
+
 [Local gRPC closure](../../architecture/contracts/09-local-grpc-and-sandbox.md): Run actual Windows Named Pipe/Linux and macOS UDS AOT peers with bootstrap/renew/reconnect, reverse generated invocation and zero TCP listeners. A memory stream is insufficient; full restricted launch remains WP11-owned.
 
 | Evidence | Produced by |
@@ -219,7 +221,7 @@
 
 **All of the following, with recorded evidence:**
 
-1. All four desktop hosts publish Native AOT with zero trim, AOT and single-file diagnostics, and launch on every supported platform without a machine-installed runtime.
+1. All three desktop hosts publish Native AOT with zero trim, AOT and single-file diagnostics, and launch on every supported platform without a machine-installed runtime.
 2. Bidirectional local RPC works between two published AOT binaries with generated proxies — satisfying [VG-04](../../assurance/open-gates-register.md#rule-vg-04).
 3. A published AOT binary makes a generated gRPC call with the selected explicit AOT-compatible adapters — satisfying [F-026](../../assurance/open-gates-register.md#rule-f-026).
 4. Realtime connects, receives, disconnects and reconnects with sequence backfill from a published AOT binary.

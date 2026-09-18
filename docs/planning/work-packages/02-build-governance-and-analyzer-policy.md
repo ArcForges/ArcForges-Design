@@ -41,7 +41,7 @@
 
 ---
 
-**Web redesign input.** [P2-008](../../decisions/phase-2-specification-decisions.md#rule-p2-008) and [Web toolchain and SDK](../../architecture/25-web-toolchain-and-sdk.md) are binding for this package's Web, generated-contract, toolchain and test responsibilities. The existing desktop/mobile runtime and product-scope decisions remain separately governed.
+**Web redesign input.** [P2-008 as amended by P2-012/P2-013](../../decisions/phase-2-specification-decisions.md#rule-p2-013) and [Web toolchain and SDK](../../architecture/25-web-toolchain-and-sdk.md) are binding for this package's Web, generated-contract, toolchain and test responsibilities. The existing desktop/mobile runtime and product-scope decisions remain separately governed.
 
 ---
 
@@ -58,7 +58,7 @@
 | BR-07 | The Cloud host must publish Native AOT using the complete selected adapter/dependency closure; zero trim/AOT diagnostics and the activated [VG-06](../../assurance/open-gates-register.md#rule-vg-06) gate apply. |
 | BR-08 | **Preview packages never enter a stable branch's core path** ([PJ-06](../../architecture/01-solution-and-project-layout.md#rule-pj-06)). |
 | BR-09 | **The build must not depend on machine state** ([BM-05](../../architecture/14-build-packaging-and-release.md#rule-bm-05)) and must work offline after restore ([BM-07](../../architecture/14-build-packaging-and-release.md#rule-bm-07)). |
-| BR-10 | **Generated code is generated at build time, not committed**, except deliberate compatibility fixtures ([BM-06](../../architecture/14-build-packaging-and-release.md#rule-bm-06)). |
+| BR-10 | Contracts generated source is committed; locked regeneration must produce no diff. Other generated build intermediates remain uncommitted unless they are explicit versioned compatibility fixtures. The toolchain manifest records exact generators and descriptor hashes. |
 | BR-11 | **A dependency addition is a reviewed change** with licence, provenance, maintenance status and transitive closure recorded ([SP-10](../../architecture/14-build-packaging-and-release.md#rule-sp-10)). |
 
 ---
@@ -70,10 +70,10 @@
 | `global.json` | Verified pinned, roll-forward disabled, prerelease disallowed |
 | `Directory.Build.props` / `.targets` | Language version, nullable, implicit usings, deterministic build, analysis level, SourceLink, licence boundary property, warnings-as-errors staging |
 | `Directory.Packages.props` | Central management with transitive pinning verified; preview packages audited |
-| `packages.lock.json` | Validate the 165 existing project locks and locked CI restore; create/update only for actual project/dependency changes. No root NuGet lock is required |
+| `packages.lock.json` | Validate the actual per-project locks in each current repository and locked CI restore; create/update only for actual project/dependency changes. No root NuGet lock is required |
 | `eng/build/desktop-aot.props` | Verified: AOT publish, trim analysis, single-file diagnostics as errors, RID set |
 | `eng/build/cloud-aot.props` | Create: PublishAot enabled and AOT/trim diagnostics treated as errors |
-| `ArcForges-Mobile/android/gradle.properties` | Selected Kotlin/Jetpack Compose/New Architecture settings plus native template locks ([RT-02](../../architecture/11-mobile-architecture.md#rule-rt-02) in the mobile architecture) |
+| `Mobile/gradle/libs.versions.toml, gradle-wrapper.properties, gradle.properties` | JDK 21/Kotlin/Compose/AGP pins and verified dependency metadata; no React Native New Architecture ([RT-02](../../architecture/11-mobile-architecture.md#rule-rt-02) in the mobile architecture) |
 | `src/Web/package.json`, `package-lock.json`, `.node-version`, `.npmrc`, `ArcForges.Web.esproj` | Create the one Node/npm workspace, exact toolchain/dependency pins, portable commands and Windows adapter; remove obsolete Web WASM property imports |
 | `eng/build/contracts.props` | Verified: source-generated serialization and generator settings for contract projects |
 | `.editorconfig` | Analyzer severities as build policy |
@@ -218,4 +218,4 @@
 
 ## Current source baseline and migration input
 
-The166-project ede43db monorepo inventory is historical disposition evidence, not the current checkout shape. [Family completion review](../../assurance/family-design-completion-review.md) records the separate DesktopPlatform/Contracts/Mobile bootstrap evidence and scope. Before coding, verify each actual source HEAD/dirty state and map only retained required mechanisms to its owning repository/package; preserve existing published Hello/probe compatibility and Mobile app/signing/version identity. Do not recreate deleted scaffolds, copy every legacy project, or treat unpublished implementation as missing design. Generated protocol artifacts follow the tracked authored-schema/generator baseline and immutable producer manifest from WP03; generated outputs are not categorically forbidden from version control.
+The 166-project ede43db monorepo inventory is historical disposition evidence, not the current checkout shape. [Family completion review](../../assurance/family-design-completion-review.md) records the separate DesktopPlatform/Contracts/Mobile bootstrap evidence and scope. Before coding, verify each actual source HEAD/dirty state and map only retained required mechanisms to its owning repository/package; preserve existing published Hello/probe compatibility and Mobile app/signing/version identity. Do not recreate deleted scaffolds, copy every legacy project, or treat unpublished implementation as missing design. Generated protocol artifacts follow the tracked authored-schema/generator baseline and immutable producer manifest from WP03; generated outputs are not categorically forbidden from version control.

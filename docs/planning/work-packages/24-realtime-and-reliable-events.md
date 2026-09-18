@@ -21,14 +21,14 @@ Own-application composition and state, public binary gRPC-Web, helper-only local
 
 ## 4. Projects, directories, files and major types affected
 
-Use the exact projects assigned to this WP in [architecture27](../../architecture/27-platform-projects-and-application-assistants.md#2-desktopplatform-tree-and-actual-projects) and its product/Cloud/Mobile trees. Implement their owned named services, typed records, schema migrations and tests; do not introduce a new repository, generic SQL facade or shared runtime to connect them. Versioned generated schema definitions remain in Contracts.
+Use the exact projects assigned to this WP in [architecture 27](../../architecture/27-platform-projects-and-application-assistants.md#2-desktopplatform-tree-and-actual-projects) and its product/Cloud/Mobile trees. Implement their owned named services, typed records, schema migrations and tests; do not introduce a new repository, generic SQL facade or shared runtime to connect them. Versioned generated schema definitions remain in Contracts.
 
 ## 5. Required implementation work
 
 <a id="rule-wp-24.00"></a>
 ### WP-24.00 — Connection and authentication
 
-**What must be fully done.** Implement EventService.Watch and ExecutionService.WatchOutput public server-streaming shells with generated StreamFrame; current session/scope authorization every15s.
+**What must be fully done.** Implement EventService.Watch and ExecutionService.WatchOutput public server-streaming shells with generated StreamFrame; current session/scope authorization every 15s.
 
 **Testing requirements.** Real C#/browser/Kotlin binary streams, trailers/cancel/expiry and no WebSocket path.
 
@@ -46,7 +46,7 @@ Use the exact projects assigned to this WP in [architecture27](../../architectur
 <a id="rule-wp-24.02"></a>
 ### WP-24.02 — Cursor and gap handling
 
-**What must be fully done.** Keep sequence/hash/offset and snapshot high-water recovery from annex10; DO is projection backed by D1 outbox.
+**What must be fully done.** Keep sequence/hash/offset and snapshot high-water recovery from annex 10; DO is projection backed by D1 outbox.
 
 **Testing requirements.** Duplicate/conflicting frames, expired cursor, deleted DO and revision replay.
 
@@ -55,7 +55,7 @@ Use the exact projects assigned to this WP in [architecture27](../../architectur
 <a id="rule-wp-24.03"></a>
 ### WP-24.03 — Durable unary fallback
 
-**What must be fully done.** Implement Poll/readOutput with the same owner/cursor profile; replace old HTTP task stream endpoint. AI terminal bodies arrive at52.
+**What must be fully done.** Implement Poll/readOutput with the same owner/cursor profile; replace old HTTP task stream endpoint. AI terminal bodies arrive at 52.
 
 **Testing requirements.** Blocked stream recovers through real unary read without invented completion.
 

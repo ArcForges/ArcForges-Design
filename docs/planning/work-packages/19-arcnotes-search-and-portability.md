@@ -137,13 +137,13 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 <a id="rule-wp-19.05"></a>
 
-### WP-19.05 — Cloud and hydrated local export clients
+### WP-19.05 — Owner-specific portability
 
-**What must be fully done.** Implement revision-pinned Cloud export client and offline export of already hydrated Notes including preserved pending edits. Cloud export job is fixture-bound until WP25; local export uses typed native format/fidelity/origin and never pretends all unhydrated data is present. Full realm transfer is its separate owner workflow.
+**What must be fully done.** Implement local assistant archive from model 05 and Notes authorized cached/full Cloud export from their distinct authorities. A missing/unhydrated Notes resource is reported explicitly; Markdown recovery is not falsely labelled a complete archive.
 
-**Testing requirements.** Offline complete/partial-hydration and pending-edit export, no local-file projection sync, lost Cloud job reply, missing resources and origin fidelity.
+**Testing requirements.** Offline hydrated export; Cloud unavailable partial content report; formats/import round-trip and no silent data loss.
 
-**Completion gate.** Both accepted local recoverability and Cloud export paths exist; no Cloud-only claim removes offline export.
+**Completion gate.** Each supported export names its authority, fidelity and completeness; assistant local export never requires Cloud.
 
 <a id="rule-wp-19.06"></a>
 
@@ -187,6 +187,8 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 ---
 
 ## 7. Tests and verification evidence
+
+Acceptance includes every amended §5 producer/consumer and WP-19.90 evidence. Current P2-013 contracts/data/runtime rules are tested in the original owner implementation, not a detached explanatory sample.
 
 **Required evidence addition.** Initial saved-list/missing/case/number vectors and honest unsupported-operator/completeness results.
 

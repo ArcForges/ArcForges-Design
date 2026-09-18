@@ -82,7 +82,7 @@ Product process (Native AOT)                     Extension process (any runtime)
 | TR-04 | **Cancellation, timeout and backpressure are first-class protocol concerns**, not conventions. |
 | TR-05 | **The host never blocks its UI thread on an extension** (`§4` of the desktop architecture). |
 
-[Local profile09](contracts/09-local-grpc-and-sandbox.md) fixes both receiver directions, launch-bound credentials, generated services and restricted-stream hosting. Host Handshake/RenewLease and bidirectional Invoke/Stop roles never use an untyped symmetric channel.
+[Local profile 09](contracts/09-local-grpc-and-sandbox.md) fixes both receiver directions, launch-bound credentials, generated services and restricted-stream hosting. Host Handshake/RenewLease and bidirectional Invoke/Stop roles never use an untyped symmetric channel.
 
 ### 3.3 Handshake and negotiation
 
@@ -144,7 +144,7 @@ date/time · ResourceRef · list<Value> · record<name, Value>
 
 | # | Rule |
 |---|---|
-| <a id="rule-cf-01"></a>CF-01 | **Developers write C# records with attributes**; a source generator produces the schema, the codec and the client and server binding ([DB-03](../requirements/08-extensions-and-developer-platform.md#rule-db-03) there). |
+| <a id="rule-cf-01"></a>CF-01 | C# attributed records feed only the declared extension parameter/settings schema and codec described by CF-02. Public service envelopes and method bindings are generated from authored Contracts proto. |
 | CF-02 | C# extension authors may generate their declared parameter/settings schema and codec from attributed records. The enclosing public extension service/messages remain the handwritten proto authority; this convenience never generates first-party business wire contracts from C#. |
 | <a id="rule-cf-03"></a>CF-03 | **The manifest still has a language-independent canonical representation**, so non-C# authors and the host tooling are not excluded. |
 | CF-04 | **Generated artifacts are verified in CI against the committed baseline**, exactly as product contracts are (`§2.2` of the build architecture). |
@@ -162,7 +162,7 @@ date/time · ResourceRef · list<Value> · record<name, Value>
 | **Connector** | Out of process | Definition and connection instance separated; secrets held as `SecretRef` only (`§6` there) |
 | ~~External agent~~ | — | **Retired by P2-006.** External-agent providers, ACP adapters, session mapping, delegation leases and result adapters are excluded ([EA-01](../requirements/08-extensions-and-developer-platform.md#rule-ea-01)–[EA-06](../requirements/08-extensions-and-developer-platform.md#rule-ea-06) of the extension requirements). **There is no external-agent contribution kind**, and a package, connector or MCP tool cannot start an autonomous delegated agent ([EA-08](../requirements/08-extensions-and-developer-platform.md#rule-ea-08) there). An integration contributes tools; it never contributes a planner |
 | **Extension** | **Yes** | The extension process model of `§3` |
-| **Third-party Arc App** | Yes, as a peer app | Participates through the same-application contribution model, not through the extension host (`§8.4` there) |
+| **Third-party Arc App** | Future scope | Peer-application discovery/contribution is not registered in this release. Current third-party executable contributions use the admitted extension host and its permissions. |
 
 | # | Rule |
 |---|---|
@@ -377,3 +377,13 @@ The public IExtensionHost service, StructuredValue and typed extension message e
 ## Initial schemas and owner lifecycle
 
 [Extension/policy profiles](contracts/08-extension-and-policy-profiles.md) fixes the six package contribution kinds, complete manifest, template/workflow/panel schemas, connector lifecycle and staged/drained update. Author those closed schemas in Contracts and generate validators before owner implementations. Dynamic schema generation is permitted only within the already declared extension-only argument boundary; it cannot replace handwritten business proto or invent first-party product operations. Catalog, signing, immutable package Resource hosting and existing owner/grant/policy validation are actual WP41 outputs, not a filesystem-only install demo.
+
+## PackageCatalog producer and distribution
+
+Cloud PackageCatalog owns the registry 04 catalog methods and model 01 publisher/package/version/review/revocation tables. WP41 implements submission/verification/scanning/review-state/index production and CLI consumer; WP45 adds operator review/revocation UI. CLI `publish` uploads immutable bytes through Resource, then calls catalog.submitVersion with a scoped publisher credential. It does not bypass review or publish directly to a public bucket.
+
+Contracts WP03 specifies `catalog-index.v1` and `catalog-revocations.v1` as signed canonical JSON envelopes. Envelope fields: schemaVersion, realmId, channel, revision:uint64-string, issuedAt, expiresAt, keyId, bodyHash, body, signature. Ed25519 signs canonical envelope bytes excluding signature; bodyHash is SHA256 of canonical body. Index body entries contain packageId, publisherId, exact version, archiveHttpsUrl, sha256, manifestHash, minimumHostVersion and capabilitiesDigest. Revocation body entries contain packageId/version/digest, reason and revokedAt; revisions are monotonic, no removed revocation. Pagination uses immutable signed shards with count/hash in the root, max 1 MiB/shard and 1,000 entries. Clients pin realm/channel/signing trust and reject expired (max 24h), rollback or mismatched shards. Production keys use WP53 distribution custody; WP02/06 supply distinct fixture keys so WP41 is independently executable.
+
+Serve immutable revisions and latest signed pointers at downloads.arcforges.com/catalog/v1/. Poll before new install/enable and at least every 24h when online. Known revoked code cannot launch; unreachable/expired metadata blocks new install/enable, reports attention and preserves existing data. Existing installed unrevoked packages follow their last verified admission and explicit offline policy; no network dependency is added to ordinary native editing. Self-host catalogs have separately accepted trust roots and cannot overwrite official publisher trust.
+
+Extension RPC schemas are handwritten Contracts public proto; SDK/tool generators project descriptors, argument validation and bindings, never discover business schemas from C# reflection. Executable extensions use the parent/child gRPC profile. Local MCP stdio is behind an owned connector child; Cloud MCP uses only the AI Worker's admitted HTTP adapter. Browser/Android never run a local MCP subprocess. Third-party apps use scoped PAT APIs or explicit OS/file interchange, never undocumented product discovery or unrestricted Tool Invoke.

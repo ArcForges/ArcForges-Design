@@ -1,4 +1,4 @@
-# Contracts, Protocols and the same-application Semantic Model
+# Contracts, Protocols and Shared Semantics
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Architecture
@@ -7,7 +7,7 @@
 
 > **What is shared across products is the semantic contract, not the domain model.**
 
-ArcChat must be able to orchestrate ArcNotes, ArcScope and ArcSlate without referencing any of their domain entities, and each product must be able to evolve its domain freely without breaking the others.
+Each professional application composes the Platform assistant with its own typed handlers. Shared packages do not reference product domain entities. Cloud may invoke the explicitly selected application installation through the device bridge; there is no desktop-to-desktop orchestration or local peer discovery. P2-012/P2-013 and annex 10 govern the current scope.
 
 ---
 
@@ -26,8 +26,8 @@ Owner-specific strongly typed contracts   independently owned and versioned per 
 | CM-01 | **Shared foundation is small and stable; product capability contracts are independently owned and versioned by their owning product** (**[D-009](../decisions/phase-1-foundation-decisions.md#rule-d-009)**). |
 | CM-02 | **An upgrade to one product must never force an unrelated product to recompile or re-release** ([I-032](../requirements/01-normative-glossary-and-invariants.md#rule-i-032) family). |
 | CM-03 | **The foundation contract package holds only genuinely long-term stable types.** Product-specific concepts are prohibited in it. |
-| CM-04 | **A cross-application envelope never contains `object`** ([I-328](../requirements/01-normative-glossary-and-invariants.md#rule-i-328)). Payloads are typed by the owning product's contract. |
-| CM-05 | **Cross-application contracts are AOT-friendly by construction**: source-generated serialization, no runtime type resolution, no assembly-qualified type names on the wire. |
+| CM-04 | A process-boundary envelope never contains object. Payloads use the owning contract; in-process application calls use the same typed semantics without introducing a listener. |
+| CM-05 | Process-boundary contracts are AOT-friendly: authored proto/generated bindings, no runtime type resolution or assembly-qualified type names. |
 | CM-06 | **A small amount of extensible metadata is permitted and must not become a domain dumping ground.** |
 
 ---
@@ -50,13 +50,13 @@ Owner-specific strongly typed contracts   independently owned and versioned per 
 | AI-06 | **An instance restart produces a new `InstanceId`** ([I-008](../requirements/01-normative-glossary-and-invariants.md#rule-i-008)). |
 | AI-07 | **Resource identity never depends on `InstanceId`**; **context identity may** (`§6.3`). |
 | AI-08 | **Application information is not deleted when an instance dies.** The installation and its static contributions remain. |
-| AI-09 | The term for a capability host in cross-application context is **App Instance**, never "provider" — "provider" is reserved for AI and external service providers ([I-115](../requirements/01-normative-glossary-and-invariants.md#rule-i-115), [I-116](../requirements/01-normative-glossary-and-invariants.md#rule-i-116)). |
+| AI-09 | App Instance names an application execution identity; provider remains reserved for AI/external service providers. Its presence is a Cloud projection, not a local discovery record. |
 
 ---
 
 ## 3. Contribution model
 
-A product declares what it offers through a **contribution manifest**, not by ArcChat hard-coding its behaviour.
+A host application composes its own signed contribution descriptors and admitted extensions. Shared assistant UI consumes these typed in-process registrations; it does not scan other installations or hard-code product behavior.
 
 Six contribution kinds:
 
@@ -71,12 +71,12 @@ Six contribution kinds:
 
 | # | Rule |
 |---|---|
-| CB-01 | **ArcChat must never hard-code product behaviour.** A `switch (appId)` over product identities is prohibited. |
+| CB-01 | Shared assistant packages must not hard-code product behavior. The host supplies typed contribution bindings; product-specific behavior stays in its domain/application package. |
 | CB-02 | **Contribution is description, not authority** ([I-042](../requirements/01-normative-glossary-and-invariants.md#rule-i-042)). Declaring a capability grants the caller nothing. |
-| CB-03 | **Discovery reads contributions; it never scans a product's domain** (`§13`). |
-| CB-04 | **Static contribution metadata exists before start-up**; a running instance's registration then **overrides runtime availability**. |
+| CB-03 | The own-application registry reads explicit contributions, never another product database or local discovery directory. |
+| CB-04 | Static metadata is part of the host package inventory. Runtime availability is evaluated inside that application and projected to Cloud through application.heartbeat when signed in. |
 | CB-05 | **`Static Capability ≠ Runtime Capability Availability`** ([I-045](../requirements/01-normative-glossary-and-invariants.md#rule-i-045)). |
-| CB-06 | **Adding a new product must not require changing ArcChat's domain**. |
+| CB-06 | Adding a host application does not require product switches in shared assistant packages. |
 
 ---
 
@@ -91,7 +91,7 @@ Six contribution kinds:
 | CP-01 | **A capability has a stable, namespaced `CapabilityId`**, owned by the contributing product: `arcnotes.document.create`, `arcscope.session.compare`, `arcslate.timeline.move-clip`. |
 | CP-02 | **The string is used only for discovery, display, policy, tool selection, routing and audit.** The actual call lands on a compiled, strongly typed interface method (**[AC-02](00-architecture-overview.md#rule-ac-02)**). |
 | CP-03 | **A capability is business semantics, not a CRUD mapping.** `arcnotes.document.insert-block` is a capability; `arcnotes.table.row.update` is not. |
-| CP-04 | **`Capability ≠ UI Command`** ([I-041](../requirements/01-normative-glossary-and-invariants.md#rule-i-041)). A local menu item is not automatically a cross-application capability; a capability is a domain behaviour with cross-application value. |
+| CP-04 | Capability and UI Command are distinct: a menu item is not automatically machine callable. Only explicit capability descriptors can enter an own-app assistant or authorized Cloud invocation. |
 | CP-05 | **`Capability ≠ Action`** ([I-040](../requirements/01-normative-glossary-and-invariants.md#rule-i-040)), **`Capability ≠ Permission`** ([I-042](../requirements/01-normative-glossary-and-invariants.md#rule-i-042)), **`Capability ≠ Package`** ([I-044](../requirements/01-normative-glossary-and-invariants.md#rule-i-044)). |
 | CP-06 | **One classification system, not three.** Read, write and long-running operations are all capabilities, differing by declared metadata — not by living in separate mechanisms. |
 | CP-07 | **A `CapabilityId` is not changed for an additive change.** A breaking change produces a new capability identity or a new contract version (`§8`). |
@@ -211,11 +211,11 @@ Partial selection — a block range, a time range, a clip set — uses a **commo
 |---|---|
 | AR-01 | **`Artifact ≠ Resource`** ([I-058](../requirements/01-normative-glossary-and-invariants.md#rule-i-058)) and **`ArtifactRef ≠ ResourceRef`** ([I-059](../requirements/01-normative-glossary-and-invariants.md#rule-i-059)). |
 | AR-02 | **An artifact record carries**: identity, namespaced `ArtifactKind`, producing task and run, actor chain, time, provenance, a reference to the underlying resource where one exists, and availability. |
-| AR-03 | **A professional product's artifact is owned by that product**; ArcChat records the artifact relationship, not the content. |
+| AR-03 | A professional product owns its artifacts. Its embedded assistant records relationships within that scope; it does not own another product corpus. |
 | AR-04 | An assistant-generated artifact belongs to its frozen application/Cloud execution scope and existing resource owner. Shared UI does not create a separate ArcChat owner or another product's write permission. |
 | AR-05 | **Deleting an artifact record never deletes the resource** ([I-060](../requirements/01-normative-glossary-and-invariants.md#rule-i-060)). Deleting the resource requires calling the owner's capability explicitly. |
 | AR-06 | **`Artifact Handler` declares which artifact kinds a product can handle** and with which capabilities — open, preview, import, convert, edit. |
-| AR-07 | **When several products can handle an artifact, resolution is deterministic** ([EP-06](../requirements/08-extensions-and-developer-platform.md#rule-ep-06)): explicit preference, then a documented rule, never a random pick. |
+| AR-07 | The host resolves its admitted artifact handlers deterministically by explicit preference then descriptor priority. Another product is never discovered or launched for resolution; cross-product handoff is future scope. |
 | AR-08 | **Artifact preview is a derived projection** ([I-060](../requirements/01-normative-glossary-and-invariants.md#rule-i-060)), never artifact content authority. |
 | AR-09 | **`ArtifactRef` is not a permission token** ([I-054](../requirements/01-normative-glossary-and-invariants.md#rule-i-054) family). |
 
@@ -223,11 +223,11 @@ Partial selection — a block range, a time range, a clip set — uses a **commo
 
 ## 9. Deep link
 
-**`Deep Link` = a navigation and handoff contract, not a remote command contract** ([I-062](../requirements/01-normative-glossary-and-invariants.md#rule-i-062)).
+**`Deep Link` = a navigation contract, not a remote command contract** ([I-062](../requirements/01-normative-glossary-and-invariants.md#rule-i-062)).
 
 | # | Rule |
 |---|---|
-| DL-01 | **A deep link may**: open a product, navigate to a location, address a resource, or carry a handoff intent. |
+| DL-01 | A deep link may open its addressed application and navigate to its own resource or route. Cross-product handoff payloads are deferred; native sign-in callbacks are governed separately by contracts 07. |
 | DL-02 | **A deep link may not, by default**: perform a side-effecting operation, bypass confirmation, or grant authority. It routes into the ordinary UI, capability and approval path. |
 | DL-03 | **A deep link may carry intent; it never represents authorized execution.** |
 | DL-04 | **Deep links address stable identity** — a `ResourceRef` or a logical route — never an absolute path (`DL-04` in the shared desktop requirements). |
@@ -276,7 +276,7 @@ Partial selection — a block range, a time range, a clip set — uses a **commo
 | HL-01 | **These dimensions must never be merged into one flag.** |
 | HL-02 | **`Health ≠ Trust`** ([I-070](../requirements/01-normative-glossary-and-invariants.md#rule-i-070)), **`Health ≠ Compatibility`** ([I-069](../requirements/01-normative-glossary-and-invariants.md#rule-i-069)), **`Health ≠ Capability Availability`** ([I-071](../requirements/01-normative-glossary-and-invariants.md#rule-i-071)), **`Presence ≠ Readiness`** ([I-068](../requirements/01-normative-glossary-and-invariants.md#rule-i-068)). |
 | HL-03 | **A health snapshot is not a business state image.** It carries operational state only. |
-| HL-04 | **Out-of-contact instances are evicted by lease**, not by guesswork (`§4.3` of the local IPC architecture). |
+| HL-04 | Cloud application presence expires after 30 seconds without the 10-second heartbeat, as specified by annex 10. A private helper lease is launch-bound under annex 09; neither mechanism discovers another product. |
 
 ---
 
@@ -324,28 +324,22 @@ Resolve target → Negotiate compatibility → Validate input
 
 ### 13.3 Routing
 
-Fixed priority:
-
-1. The invocation names an `InstanceId` explicitly
-2. The target resource is already bound to an online instance (**resource affinity**)
-3. The user's currently selected default instance for that product
-4. The single healthy instance of that product
-5. Otherwise → **`SelectionRequired`**
+Inside an application, the compiled capability binding invokes that host's handler directly. Remote device tools bind the exact ApplicationTarget from annex 10: product, device, installation and delivery epoch. The client may select an eligible own-product target; a Task, conversation or approval retains the target it captured. An absent/offline target waits or refuses with a typed reason; it never launches a desktop or silently chooses another installation.
 
 | # | Rule |
 |---|---|
-| RT-01 | **"The most recently started instance" is never a universal default.** |
-| RT-02 | **Resource affinity is a routing hint, not an ownership migration.** |
-| RT-03 | **If the product is installed but not running**, the caller may request a launch, subject to permission, and then retry. |
-| RT-04 | **If the product is not installed**, the result is `NotInstalled`, with a route to obtain it. |
-| RT-05 | **The application runtime never picks silently at random when several candidates exist.** |
+| RT-01 | Process start order is never a routing default. |
+| RT-02 | Resource affinity cannot migrate ownership or expand product scope. |
+| RT-03 | A stopped/offline target is unavailable until the user independently starts/connects it; no remote or peer launch-on-demand. |
+| RT-04 | Missing installation produces a stated unavailable/install action in the companion; it does not search the local machine. |
+| RT-05 | Multiple eligible targets require explicit selection; existing execution identities are not retargeted. |
 
 ### 13.4 Authorization
 
 | # | Rule |
 |---|---|
 | AU-01 | **Validation and authorization are separate.** Shape validity is not permission. |
-| AU-02 | **The owner authorizes again at the final execution point** ([DP-02](../requirements/07-security-privacy-and-trust.md#rule-dp-02) in the security requirements). Steps performed in ArcChat, the application runtime or Cloud never substitute for owner-side authorization. |
+| AU-02 | The executing owner reauthorizes current actor, scope, revision, policy and approval. An assistant UI, Cloud route or descriptor cannot substitute for owner-side checks. |
 | AU-03 | **A capability invocation never carries a UI object**, a control, a view model, a native pointer or a `SafeHandle`. Input is semantic. |
 
 ### 13.5 Results
@@ -387,12 +381,12 @@ Business failures use `ArcResult<T>` / `ArcError` with a **stable semantic code*
 
 | Pair | Relationship |
 |---|---|
-| **Cross-application model ↔ Search** | A search result is a projection, not resource authority ([SR-03](../requirements/06-knowledge-search-and-retrieval.md#rule-sr-03)). |
-| **same-application model ↔ Extensions** | Native products and third-party extensions may share semantics; **trust differs** (`§9` of the security requirements). |
-| **Cross-application model ↔ MCP** | **MCP is an edge adapter, never the internal protocol** ([I-307](../requirements/01-normative-glossary-and-invariants.md#rule-i-307)). **`MCP Resource ≠ ArcForges Resource`** ([I-076](../requirements/01-normative-glossary-and-invariants.md#rule-i-076)). MCP's own `Task` and `Skill` never conflate with ArcForges' (**[V-02](../assurance/phase-1-official-verification.md#rule-v-02)**, glossary §9). |
-| **same-application model ↔ Cloud** | **Local RPC and the public API are not required to share one wire contract.** Each carries the appropriate versioned DTO for its boundary. |
+| **Shared semantics ↔ Search** | A search result is a projection, not resource authority ([SR-03](../requirements/06-knowledge-search-and-retrieval.md#rule-sr-03)). |
+| **Shared semantics ↔ Extensions** | Native products and third-party extensions may share semantics; **trust differs** (`§9` of the security requirements). |
+| **Shared semantics ↔ MCP** | **MCP is an edge adapter, never the internal protocol** ([I-307](../requirements/01-normative-glossary-and-invariants.md#rule-i-307)). **`MCP Resource ≠ ArcForges Resource`** ([I-076](../requirements/01-normative-glossary-and-invariants.md#rule-i-076)). MCP's own `Task` and `Skill` never conflate with ArcForges' (**[V-02](../assurance/phase-1-official-verification.md#rule-v-02)**, glossary §9). |
+| **Application ↔ Cloud** | Every first-party client uses authored public proto over binary gRPC-Web. Only isolated child boundaries use private helper proto over Named Pipe/UDS; same-process handlers need no wire transport. |
 
-**A universal protocol is not reinvented for the sake of a unified semantic model.** Three transports remain, each with its own DTOs.
+[Registry 04](contracts/04-protobuf-wire-registry.md) owns generated public/private messages and named standard-protocol exceptions; there is no second business DTO authority.
 
 ---
 

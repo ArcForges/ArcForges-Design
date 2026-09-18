@@ -23,14 +23,14 @@ Own-application composition and state, public binary gRPC-Web, helper-only local
 
 ## 4. Projects, directories, files and major types affected
 
-Use the exact projects assigned to this WP in [architecture27](../../architecture/27-platform-projects-and-application-assistants.md#2-desktopplatform-tree-and-actual-projects) and its product/Cloud/Mobile trees. Implement their owned named services, typed records, schema migrations and tests; do not introduce a new repository, generic SQL facade or shared runtime to connect them. Versioned generated schema definitions remain in Contracts.
+Use the exact projects assigned to this WP in [architecture 27](../../architecture/27-platform-projects-and-application-assistants.md#2-desktopplatform-tree-and-actual-projects) and its product/Cloud/Mobile trees. Implement their owned named services, typed records, schema migrations and tests; do not introduce a new repository, generic SQL facade or shared runtime to connect them. Versioned generated schema definitions remain in Contracts.
 
 ## 5. Required implementation work
 
 <a id="rule-wp-17.00"></a>
 ### WP-17.00 — Complete assistant navigation
 
-**What must be fully done.** Implement all AS01–AS13 docked/floating/expanded surfaces and architecture27 AssistantHost API. Same code composes independently into each product.
+**What must be fully done.** Implement all AS01–AS13 docked/floating/expanded surfaces and architecture 27 AssistantHost API. Same code composes independently into each product.
 
 **Testing requirements.** All actions reachable at minimum size; window/draft/account/keyboard/accessibility matrix.
 
@@ -39,7 +39,7 @@ Use the exact projects assigned to this WP in [architecture27](../../architectur
 <a id="rule-wp-17.01"></a>
 ### WP-17.01 — Cloud client and device runtime
 
-**What must be fully done.** Implement reusable Cloud.Client/Device.Runtime session/event/output/upload and own-app typed dispatch adapters. Use named future-owner fixtures only until23–26/52.
+**What must be fully done.** Implement reusable Cloud.Client/Device.Runtime session/event/output/upload and own-app typed dispatch adapters. Use named future-owner fixtures only until 23–26/52.
 
 **Testing requirements.** Generated gRPC-Web calls/typed states; fixture manifest names each replacement producer.
 
@@ -95,7 +95,7 @@ Use the exact projects assigned to this WP in [architecture27](../../architectur
 
 **What must be fully done.** Publish Assistant.Avalonia/Core/Sqlite/Cloud candidates; clean AOT host consumes only required packages, all accepted assistant capabilities mapped.
 
-**Testing requirements.** UX-A/B/C/H pass locally; real Cloud/AI fixtures remain explicit and close at26/52, not here.
+**Testing requirements.** UX-A/B/C/H pass locally; real Cloud/AI fixtures remain explicit and close at 26/52, not here.
 
 **Completion gate.** The stated behavior and oracle pass using the actual owned implementation. Evidence names source commit, artifact versions/hashes, environment and any later fixture replacement.
 
@@ -123,7 +123,7 @@ Changed application scope, storage, transport, UI and deployment behavior are go
 | Automation client: Offline edits remain drafts and do not imply local scheduling. | [WP-17.04](#rule-wp-17.04) |
 | History and AI admission: No implicit upload; denied admission/credit consent and transient output recovery states. | [WP-17.05](#rule-wp-17.05) |
 | Preview and host context: No live-selection mutation, no another-product destination, citations/resources keep ownership. | [WP-17.06](#rule-wp-17.06) |
-| Complete package acceptance: UX-A/B/C/H pass locally; real Cloud/AI fixtures remain explicit and close at26/52, not here. | [WP-17.07](#rule-wp-17.07) |
+| Complete package acceptance: UX-A/B/C/H pass locally; real Cloud/AI fixtures remain explicit and close at 26/52, not here. | [WP-17.07](#rule-wp-17.07) |
 | Exact artifact/consumer and applicable UX acceptance ledger | [WP-17.90](#rule-wp-17.90) |
 
 ## 8. Completion gate

@@ -1,5 +1,5 @@
 # Shared Desktop Experience Requirements
-> Current scope amendment: **[P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
+> Effective scope: P2-012 and P2-013 amend the technology and application ownership below. **[P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Requirements
@@ -67,7 +67,7 @@ Founding invariant: **Shared Experience ≠ Shared Shell ≠ Shared Domain** ([I
 | # | Requirement |
 |---|---|
 | LY-01 | A shared **dock/panel foundation** supports: dockable panels, floating panels, tabbed panel groups, splitters, panel visibility toggles, panel reset, and **named saved layouts**. |
-| <a id="rule-ly-02"></a>LY-02 | **ArcScope and ArcSlate are panel-heavy professional workspaces**; ArcChat is conversation/task-centred; ArcNotes is document/knowledge-centred. All four use the same foundation with different compositions. |
+| <a id="rule-ly-02"></a>LY-02 | ArcScope and ArcSlate are panel-heavy workspaces, ArcNotes is document-centred, and each embeds conversation/task surfaces. The three hosts compose the same shared foundation without sharing product state. |
 | <a id="rule-ly-03"></a>LY-03 | **What may sync later is a named Layout *definition*, never physical window coordinates.** Monitor geometry is device-specific. |
 | LY-04 | The word for a panel arrangement is **Layout**. "Workspace" always means the cloud ownership boundary ([I-001](01-normative-glossary-and-invariants.md#rule-i-001), glossary §8). |
 
@@ -154,7 +154,7 @@ Five channels, chosen by **durability**, not only by severity:
 | AT-01 | **A toast must never carry attention that requires later action.** Anything needing follow-up becomes a persistent attention item. |
 | AT-02 | Severity is a **unified, closed set**, and error red is not overused. Informational states are visually distinct from failure states. |
 | <a id="rule-at-03"></a>AT-03 | **Notifications deduplicate**: a continuing condition updates one status item rather than emitting a stream. |
-| AT-04 | **ArcChat may aggregate same-application attention without taking ownership.** An ArcScope condition displayed in ArcChat is still owned, resolved and cleared by ArcScope. |
+| AT-04 | An application's assistant may aggregate its own attention items without owning their domain state. An ArcScope condition remains owned and cleared by ArcScope. |
 | AT-05 | Notification content respects the sensitivity rules in [`03-cloud-services-and-sync.md`](03-cloud-services-and-sync.md) §11. |
 
 ### 6.2 Save and sync status
@@ -203,7 +203,7 @@ Four semantics:
 | **Open Product** | Launch or focus a product |
 | **Navigate** | Go to a place in that product |
 | **Resource** | Open a specific resource by stable identity |
-| **Handoff** | Carry an intent plus a reference from one product to another |
+| **OpenArtifact** | Carry an intent plus a reference to the current application's owning domain |
 
 | # | Requirement |
 |---|---|
@@ -232,7 +232,7 @@ Four semantics:
 |---|---|
 | <a id="rule-dd-01"></a>DD-01 | **Data transfer semantics are unified and explicit**: Open, Import, Copy, Reference, Move. |
 | DD-02 | **Drop does not mean Copy by default.** The intended semantics depend on source, target and modifier, and are always shown. |
-| <a id="rule-dd-03"></a>DD-03 | **Cross-application drop is non-destructive by default** — reference or import, never a silent destructive move. |
+| <a id="rule-dd-03"></a>DD-03 | OS file drops use the owning application's declared import formats and consent; they never destructively move the source. ArcForges cross-product content transfer remains future-only. |
 | DD-04 | **Dragging a large file does not copy bytes.** A `ResourceRef` or controlled reference crosses the boundary. |
 | DD-05 | **Dragging to a cloud surface never uploads silently.** Cloud transmission is always an explicit act ([AS-03](03-cloud-services-and-sync.md#rule-as-03)). |
 | DD-06 | **The drop target displays the action that will occur** before the drop completes. |
@@ -253,7 +253,7 @@ Four semantics:
 |---|---|
 | <a id="rule-lf-01"></a>LF-01 | **Window close, application quit and background work are three different concepts.** "Close window = exit" must not be hard-coded. |
 | <a id="rule-lf-02"></a>LF-02 | **Ordinary professional products do not silently reside in the background** long-term. |
-| LF-03 | **ArcChat is the stated background/tray exception**, and the user must know it is running. |
+| LF-03 | The sole idle-residence rule is BR-01 below. A professional app may remain visibly available for remote requests only after the user enables that per-app setting; no standalone assistant tray exception exists. |
 | <a id="rule-lf-04"></a>LF-04 | **ArcScope and ArcSlate may continue in the background while genuinely working** — an active capture, an active render — and the interface makes that visible and stoppable. |
 | LF-05 | **Closing a window must never destroy confirmed data.** Anything locally durable stays durable; there is no "save?" prompt for content already committed. |
 | <a id="rule-lf-06"></a>LF-06 | **The exit sequence is consistent across products**: stop accepting new work, drain in-flight work, flush critical transactions, release local RPC and cloud connections, shut down native runtimes, exit. |
@@ -263,6 +263,9 @@ Four semantics:
 | LF-10 | **Startup behaviour is explicit.** No product enables launch-at-login by default. |
 
 ---
+
+<a id="rule-br-01"></a>
+**BR-01 — Visible residence.** The setting “Stay available for remote requests” belongs to each application and defaults off. When enabled, closing its last window leaves a visible tray/menu-bar presence with Open and Quit; where that presence cannot be displayed the app cannot remain invisibly available. Otherwise last-window close exits after the existing critical-work prompt/drain. LF-04 still governs visibly active capture/render work. Quit disconnects presence and safely checkpoints tools; Cloud tasks survive and wait for that installation. Enabling residence neither enables launch-at-login nor remote permission. OS logout/termination follows crash recovery.
 
 ## 11. Menus and interaction conventions
 
@@ -299,15 +302,17 @@ Four semantics:
 
 ---
 
-## 14. same-application handoff experience
+<a id="14-same-application-handoff-experience"></a>
+
+## 14. Own-application artifact navigation
 
 | # | Requirement |
 |---|---|
-| HO-01 | **Handoff shows the owning product** that will do the work ([I-020](01-normative-glossary-and-invariants.md#rule-i-020)). |
-| <a id="rule-ho-02"></a>HO-02 | **Target not installed** — explain and offer the download route; never fail silently. |
-| HO-03 | **Target version too old** — state the required version specifically ([FL-05](05-ai-and-agent-execution.md#rule-fl-05)), never "tool failed". |
-| <a id="rule-ho-04"></a>HO-04 | **Target not running** — launch on demand where permitted, with the launch visible to the user. |
-| HO-05 | **same-application progress is attributed to the owner** ([AV-04](#rule-av-04)). |
+| HO-01 | OpenArtifact shows the owning application and resource identity before navigation. Another product is not a current open target. |
+| <a id="rule-ho-02"></a>HO-02 | Missing local resource or unavailable remote target yields a precise availability explanation; navigation never installs another product. |
+| HO-03 | An unsupported target/client contract produces the required version and an explicit upgrade route. |
+| <a id="rule-ho-04"></a>HO-04 | A closed remote target waits for the user to open it. No peer launches it; expiration and cancellation follow the existing command rules. |
+| HO-05 | Progress is attributed to the current domain owner under AV-04. |
 
 ---
 
@@ -317,7 +322,7 @@ Four semantics:
 |---|---|
 | SF-01 | **The shared foundation must not become a giant shared UI library.** It provides mechanism and experience primitives; product-specific composition stays in the product. |
 | SF-02 | **Shared UI may never hold professional domain state** ([I-022](01-normative-glossary-and-invariants.md#rule-i-022)). |
-| SF-03 | The judgement rule: something belongs in the shared foundation when it is (a) experienced identically by users across products, (b) free of domain semantics, and (c) stable enough that a change is a deliberate same-application event. Anything else stays in the product. |
+| SF-03 | Shared foundation contains behavior experienced consistently across products, free of product domain semantics, with a reviewed package compatibility boundary. Product behavior stays in its owning repository. |
 | SF-04 | **A shared business ViewModel is prohibited.** ViewModels are product-owned, and per **[D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021)** are not shared with mobile either. |
 
 ---
@@ -352,7 +357,7 @@ Stage-14 shared experience does **not** own:
 
 | # | Invariant |
 |---|---|
-| <a id="rule-si-01"></a>SI-01 | The four products share the design language, not a mandatory shell layout. |
+| <a id="rule-si-01"></a>SI-01 | The three professional desktop products share the design language, not a mandatory shell layout; each composes its own assistant window. |
 | SI-02 | Professional products may differ in density and workspace composition. |
 | SI-03 | Menu, toolbar, shortcut and palette revolve around unified command semantics. |
 | <a id="rule-si-04"></a>SI-04 | The same user operation must not produce different business logic from a different entry point. |
@@ -371,7 +376,7 @@ Stage-14 shared experience does **not** own:
 | SI-17 | same-application drop is non-destructive by default. |
 | SI-18 | Drag and clipboard never move large payloads across applications. |
 | SI-19 | Window close, application quit and background work are distinct. |
-| SI-20 | No product silently resides in the background, except ArcChat or explicitly active work. |
+| SI-20 | No application resides silently in the background; apply BR-01 and visible active-work rule LF-04. |
 | <a id="rule-si-21"></a>SI-21 | Multi-window is a formal capability; `MainWindow` singleton is not an architectural prerequisite. |
 | <a id="rule-si-22"></a>SI-22 | Multi-window is the default; multi-process is an explicit extension. |
 | SI-23 | The same resource cannot have two local writable owners without a coordination mechanism. |

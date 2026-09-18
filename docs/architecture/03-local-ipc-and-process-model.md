@@ -1,6 +1,6 @@
 # Application Process and Private Helper IPC
 
-Authority: P2-012. Professional applications host their own UI, domain, assistant service/store and Cloud client. There is no shared Hub, shared coordinator, product discovery, cross-product local listener or peer data relay. [Architecture27](27-platform-projects-and-application-assistants.md) fixes process/project ownership; [annex10](contracts/10-application-scope-and-streams.md) fixes Cloud targeting and public gRPC-Web.
+Authority: P2-012. Professional applications host their own UI, domain, assistant service/store and Cloud client. There is no shared Hub, shared coordinator, product discovery, cross-product local listener or peer data relay. [Architecture 27](27-platform-projects-and-application-assistants.md) fixes process/project ownership; [annex 10](contracts/10-application-scope-and-streams.md) fixes Cloud targeting and public gRPC-Web.
 
 ## Current process topology
 
@@ -8,11 +8,13 @@ Product UI/assistant → typed in-process Application handlers → owned domain/
 
 Only parent-owned ContentSandbox and admitted extension/connector children use local RPC. Use authored proto/generated native gRPC, Kestrel HTTP/2 over owner-only Windows Named Pipe or Unix domain socket, and ConnectCallback clients. No TCP port is opened for this local boundary. The parent supplies a private endpoint/launch identity; no directory/LAN/global registry scan occurs. Child crash/parent exit revokes the launch grants and removes the endpoint.
 
+Platform packages, managed services, SQLite repositories, assistant windows and ordinary P/Invoke wrappers run inside the host application. They must not create a service process or local RPC listener merely because they are separately packaged. The isolated parser/extension exceptions below are security boundaries, not application-to-application communication. No generic background local service is part of the product.
+
 ## Private boundary rules
 
-OS identity/ACL and authenticated LocalBootstrap bind parent/child, build/protocol and fresh nonce/epoch. Names are not authentication. Helpers use restricted OS tokens/profiles and only brokered resource/buffer grants; unrestricted same-user children do not satisfy containment. Opposite-direction callbacks use explicitly parent-created bounded channels, never a peer application registry. Keep the30s lease/10s renewal and16active/64queued bounds for admitted helper connections, with deadlines and typed overload/cancel/effect results.
+OS identity/ACL and authenticated LocalBootstrap bind parent/child, build/protocol and fresh nonce/epoch. Names are not authentication. Helpers use restricted OS tokens/profiles and only brokered resource/buffer grants; unrestricted same-user children do not satisfy containment. Opposite-direction callbacks use explicitly parent-created bounded channels, never a peer application registry. Keep the 30s lease/10s renewal and 16 active/64 queued bounds for admitted helper connections, with deadlines and typed overload/cancel/effect results.
 
-Large parser input/output uses bounded broker resource grants and verified transfer/buffer mechanisms in [annex09](contracts/09-local-grpc-and-sandbox.md), not arbitrary filesystem paths or cross-product transfer tickets. Signed parser/helper runtime and native libraries come from tested Platform packages. Product UI remains responsive and canonical data remains recoverable if a helper fails. Ordinary in-process app handlers need no RPC bootstrap, heartbeat or network serialization.
+Large parser input/output uses bounded broker resource grants and verified transfer/buffer mechanisms in [annex 09](contracts/09-local-grpc-and-sandbox.md), not arbitrary filesystem paths or cross-product transfer tickets. Signed parser/helper runtime and native libraries come from tested Platform packages. Product UI remains responsive and canonical data remains recoverable if a helper fails. Ordinary in-process app handlers need no RPC bootstrap, heartbeat or network serialization.
 
 ## Required verification
 

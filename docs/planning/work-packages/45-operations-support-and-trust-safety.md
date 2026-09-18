@@ -5,7 +5,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: J — Platform completion
-> Upstream: `12` · `21` · `44` · `47` · Downstream: `31` · `46` · `53`
+> Upstream: `12` · `21` · `41` · `44` · `47` · Downstream: `31` · `46` · `53`
 
 > **Goal.** Make the platform operable: alerting that is worth waking someone for, runbooks that have actually been executed, a status page that survives an outage, support access that never silently impersonates a user, and an enforcement ladder with appeals.
 
@@ -158,13 +158,13 @@
 
 <a id="rule-wp-45.08"></a>
 
-### WP-45.08 — Security advisories and email adapters
+### WP-45.08 — Operational mail and provider drills
 
-**What must be fully done.** Implement private security advisory intake and transactional email notification outbox/status/reconciliation. One logical notification uses a stable provider dedup key; unknown provider acceptance is queried before resend/failover. Duplicate physical delivery is possible and explicitly handled.
+**What must be fully done.** Use WP22 real Postmark/SES adapters; add console metrics/runbooks, outage/reconciliation drills and prepared secondary validation under arch 13. Select status/incident/telemetry/analytics against its fixed criteria and record actual providers. Retain private security advisory intake, triage, assigned remediation, signed public advisory publication and in-product containment/revocation attention; mail adapter relocation to WP22 does not remove these TrustSafety obligations.
 
-**Testing requirements.** Lost acceptance reply, duplicate/reordered callback, bounce/complaint, ambiguous provider, failover with unchanged one-use code and no content in logs.
+**Testing requirements.** Unknown send, spoofed/replayed callback, bounced/complained suppression, DNS readiness, independent status/incident during Cloud outage and content-redaction tests. Verify private-report access, signed advisory authenticity, affected-version matching and no disclosure before approved publication.
 
-**Completion gate.** One logical notification/effect history; no impossible physical exactly-once promise or regenerated valid code on retry.
+**Completion gate.** Live operational evidence and rollback contacts exist; this step is not the first email producer. Security advisory intake through publication and affected-client attention is complete.
 
 <a id="rule-wp-45.09"></a>
 
@@ -175,6 +175,16 @@
 **Testing requirements.** Live isolated Firebase project send and recorded invalid-token/payload/project/rate-limit responses; token rotation race, crash-after-acceptance duplicates, TTL expiry, revoke-before-send and no secret logging. WP32 provides physical receipt.
 
 **Completion gate.** Actual sender works with bounded/fenced recovery; provider acceptance is labeled separately from device delivery. PG24 remains open until WP32 physical/no-GMS/permission evidence.
+
+<a id="rule-wp-45.10"></a>
+
+### WP-45.10 — Package review and revocation console
+
+**What must be fully done.** Integrate existing WP41 PackageCatalog operator methods with independent operator authentication, step-up/evidence and audit. Show asynchronous signed-index publication state.
+
+**Testing requirements.** Customer/PAT denial, changed proposal hash, replay, revoked package and failed index publication/retry.
+
+**Completion gate.** Review decisions and revocations affect real signed catalog consumers with recorded operator evidence.
 
 <a id="rule-wp-45.90"></a>
 ### WP-45.90 — Verify the owned artifact and real integration
@@ -204,6 +214,8 @@
 ---
 
 ## 7. Tests and verification evidence
+
+Acceptance includes every amended §5 producer/consumer and WP-45.90 evidence. Current P2-013 contracts/data/runtime rules are tested in the original owner implementation, not a detached explanatory sample.
 
 WP45.09 records live FCM sending, failure/rotation/generation vectors and credential/project identities without secrets; WP32 closes physical receipt under PG24.
 

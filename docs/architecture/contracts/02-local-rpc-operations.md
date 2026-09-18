@@ -1,13 +1,11 @@
-# Local RPC Operations
+# In-Process Product Ports and Private Helper Operations
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Architecture · Contracts
 > Governing authority: [`00-operation-catalogue.md`](00-operation-catalogue.md), [`../03-local-ipc-and-process-model.md`](../03-local-ipc-and-process-model.md), **[V-05b](../../assurance/phase-1-official-verification.md#rule-v-05b)**
 > Companions: [`../02-contracts-and-protocols.md`](../02-contracts-and-protocols.md), [`../data-model/02-desktop-data-model.md`](../data-model/02-desktop-data-model.md)
 
-The same-machine surface. Every interface here is an authored proto RPC contract with generated C# service registration (**[V-05b](../../assurance/phase-1-official-verification.md#rule-v-05b)**), hosted over a named pipe or Unix domain socket, never over a network.
-
-**Every method is task-returning and cancellation-aware** ([BR-09](../../planning/work-packages/08-local-ipc-and-registration.md#rule-br-09) of [WP-08](../../planning/work-packages/08-local-ipc-and-registration.md#rule-wp-08)). Signatures below omit the trailing cancellation token for brevity; it is present on all of them.
+Product ports use generated records and statically registered in-process handlers. Only the closed parent/child services in contracts 09 use native gRPC over Named Pipe/UDS. No product advertises a peer endpoint. All asynchronous operations remain cancellation-aware; cancellation after a dispatched effect reconciles its receipt.
 
 ---
 
@@ -15,13 +13,13 @@ The same-machine surface. Every interface here is an authored proto RPC contract
 
 | Interface | Hosted by | Consumed by |
 |---|---|---|
-| `ILocalBootstrap`, `ILocalEvents` | Each normal product | Verified peers; lease and bounded hints |
-| `IDeviceSsoBroker`, `IConnectorBroker` | Owning security/connector adapter | Verified peer on behalf of foreground human |
+| `ILocalBootstrap`, `ILocalEvents` | Owned helper/extension channel | Verified launch pair; lease and bounded hints |
+| `IConnectorBroker` | Owned connector child | Exact parent on behalf of foreground human; no Device SSO |
 | `IContentSandbox` | Restricted helper | Exact launch-bound parent only |
 | `ICapabilityProvider` | Every product | owning application composition, for its authorized callers |
-| `IContextProvider` | Every product | ArcChat |
-| `IArtifactHandler` | Every product | ArcChat |
-| `IResourceAccess` | Every product | Any authorised peer |
+| `IContextProvider` | Owning product in process | Its embedded assistant |
+| `IArtifactHandler` | Owning product in process | Its embedded assistant |
+| `IResourceAccess` | Owning product or admitted helper boundary | Own handler or exact child grant |
 | `IProductLifecycle` | Every product | owning application composition |
 | `IDeepLinkTarget` | Every product | owning application composition |
 | `INotesOperations`, `IScopeOperations`, `ISlateOperations`, `IChatOperations` | The owning product | owning application composition, for its authorized callers |
@@ -34,7 +32,7 @@ The same-machine surface. Every interface here is an authored proto RPC contract
 
 `IHubRegistry` and `IHubRouting` are reserved historical names, excluded from current generated server registration and runtime. There is no application-to-application discovery or routing. Their future use requires activation of the [cross-product plan](../../future/cross-product-collaboration/README.md).
 
-Current product services below are typed in-process Application ports. The Platform assistant registers only its own application's operations; Cloud's tool bridge dispatches to one authenticated application installation and the owner calls the same handlers. Private parent/helper discovery and bootstrap are separately specified in annex09.
+Current product services below are typed in-process Application ports. The Platform assistant registers only its own application's operations; Cloud's tool bridge dispatches to one authenticated application installation and the owner calls the same handlers. Private parent/helper discovery and bootstrap are separately specified in annex 09.
 
 ## 3. Capability invocation
 
@@ -47,7 +45,7 @@ EvaluateAvailabilityAsync(ActionKey, FrozenContext)
 InvokeAsync(InvocationRequest)               → ArcResult<InvocationOutcome>
 ```
 
-`InvocationRequest` is the generated registry04 `Invocation`: invocationId, commandId, capability, FrozenContext (including ActorChain), typed CapabilityArguments, optional approvalId/leaseId and exactly one declared expected-version field. [LocalCallContext](09-local-grpc-and-sandbox.md#2-discovery-peer-verification-and-bootstrap) carries the same validated actor/evidence references through transport and typed forwarding. It is not a second hand-authored DTO or an unspecified ApprovalToken/LeaseToken wire format.
+`InvocationRequest` is the generated registry 04 `Invocation`: invocationId, commandId, capability, FrozenContext (including ActorChain), typed CapabilityArguments, optional approvalId/leaseId and exactly one declared expected-version field. [LocalCallContext](09-local-grpc-and-sandbox.md#2-discovery-peer-verification-and-bootstrap) carries the same validated actor/evidence references through transport and typed forwarding. It is not a second hand-authored DTO or an unspecified ApprovalToken/LeaseToken wire format.
 
 | # | Rule |
 |---|---|
@@ -147,13 +145,12 @@ OpenAsync(ArtifactRef, OpenIntent)    → ArcResult<Unit>
 ```
 GetMetadataAsync(ResourceId)                    → ArcResult<ResourceRef>
 OpenReadAsync(ResourceId, RangeRequest?)        → ArcResult<TransferChannel>
-BeginTransferAsync(TransferRequest)             → ArcResult<TransferTicket>
 ReleaseAsync(ResourceId, ReferrerRef)           → ArcResult<Unit>
 ```
 
 | # | Rule |
 |---|---|
-| <a id="rule-ra-01"></a>RA-01 | **A path is never returned.** `TransferChannel` and `TransferTicket` carry controlled access; `LocalResourceLocator` is resolved by the owner and is not a user-visible path ([XS-01](../data-model/00-data-model-overview.md#rule-xs-01), [I-192](../../requirements/01-normative-glossary-and-invariants.md#rule-i-192)). |
+| <a id="rule-ra-01"></a>RA-01 | **A path is never returned.** `TransferChannel` carries controlled access; `LocalResourceLocator` is resolved by the owner and is not a user-visible path ([XS-01](../data-model/00-data-model-overview.md#rule-xs-01), [I-192](../../requirements/01-normative-glossary-and-invariants.md#rule-i-192)). |
 | RA-02 | **Range, checksum, cancellation and rate limiting are all supported**. |
 | RA-03 | **Resource bodies stay with the owning product adapter.** The assistant consumes a bounded authorized preview or opaque handle; no shared process, path-based relay or cross-product body route exists. |
 
@@ -174,7 +171,7 @@ HandleDeepLinkAsync(DeepLink)            → ArcResult<DeepLinkOutcome>
 
 ## 6. Product operation interfaces
 
-These are the domain operations each product exposes as capabilities. They are the concrete answer to *what can an agent, another product, or a remote surface actually do*.
+These are the domain operations each product exposes as capabilities. They are the concrete answer to *what can an authorized assistant or companion do within this application*.
 
 ### `INotesOperations` — ArcNotes
 
@@ -269,7 +266,6 @@ The methods below use the version preconditions in [NO-02](#rule-no-02). Noteboo
 | `AppendUserMessageAsync(ConversationId, MessageDraft, ExpectedRev)` → `Revision` | `R2`, none | `AP` |
 | `StartAgentTurnAsync(TurnRequest)` → `TaskRef` | `R2`+, per the plan's steps | `NI` |
 | `SubmitApprovalAsync(ApprovalId, Decision)` | risk of the underlying operation | `IW` |
-| `HandoffAsync(HandoffRequest)` | `R1`, none | `NI` |
 
 | # | Rule |
 |---|---|
@@ -316,13 +312,13 @@ The methods below use the version preconditions in [NO-02](#rule-no-02). Noteboo
 
 ## P2-012 executable wire and transport binding
 
-Every operation/event above maps to the [numbered wire registry](04-protobuf-wire-registry.md). It fixes requests/results, record fields, enums, exact values, local counterpart preconditions, service names and compatibility. [CF integration](05-cloudflare-integration.md) fixes AI/object HTTP exceptions, frame/state recovery and authorization. New supporting bootstrap, upload-status, automation and conversation-create methods are enumerated there with their authorization/idempotency classes; none is left for endpoint invention during implementation.
+Every operation/event above maps to the [numbered wire registry](04-protobuf-wire-registry.md). It fixes requests/results, record fields, enums, exact values, local counterpart preconditions, service names and compatibility. [CF integration](05-cloudflare-integration.md) fixes private Cloud/AI bindings and signed object-transfer exceptions; annex10 owns public output/control framing, state recovery and authorization. New supporting bootstrap, upload-status, automation and conversation-create methods are enumerated there with their authorization/idempotency classes; none is left for endpoint invention during implementation.
 
 ## Helper bootstrap and read-channel binding
 
-The [complete local profile09](09-local-grpc-and-sandbox.md) and numbered registry04 add Renew, LocalEvents.Poll, ConnectorBroker and every typed ContentSandbox operation. No untyped event, private helper command or unspecified bootstrap proof remains; all are initial WP03 outputs.
+The [complete local profile 09](09-local-grpc-and-sandbox.md) and numbered registry 04 add Renew, LocalEvents.Poll, ConnectorBroker and every typed ContentSandbox operation. No untyped event, private helper command or unspecified bootstrap proof remains; all are initial WP03 outputs.
 
-The wire registry explicitly adds ILocalBootstrap.Challenge/Confirm and IResourceAccess.ReadChunk and IProductLifecycle.GetJob as transport-support methods. Challenge/Confirm are NI, OS-peer-only, one-use five-second bootstrap before normal owner authorization; they confer no product capability. ReadChunk is Q/R1/AO on the exact immutable owned transfer/version/offset, authorizing each bounded chunk. GetJob is Q/R1/AO on an owned native ProductJob. BeginTransfer/OpenRead return LocalTransferTicket, never an HTTP bearer URL. The generated method names omit the C# Async suffix but preserve the catalogued operation's authorization, revision and effect rules.
+The wire registry explicitly adds ILocalBootstrap.Challenge/Confirm and IResourceAccess.ReadChunk and IProductLifecycle.GetJob as transport-support methods. Challenge/Confirm are NI, OS-peer-only, one-use five-second bootstrap before normal owner authorization; they confer no product capability. ReadChunk is Q/R1/AO on the exact immutable owned transfer/version/offset, authorizing each bounded chunk. GetJob is Q/R1/AO on an owned native ProductJob. OpenRead returns LocalTransferTicket, never an HTTP bearer URL. The generated method names omit the C# Async suffix but preserve the catalogued operation's authorization, revision and effect rules.
 
 ## Complete Notes and Slate method surface
 
@@ -330,4 +326,4 @@ The [wire registry](04-protobuf-wire-registry.md#notes-structural-and-slate-oper
 
 ## Initial producer and broker bindings
 
-Every local signature, capability descriptor and OS broker method is a WP03 producer output. Later product WPs implement these published ports; they do not first define their request/response shape. [Wire local registry](04-protobuf-wire-registry.md#6-local-and-extension-operation-registry) also fixes DeviceSsoBroker, exact semantic Notes/Scope/Slate commands and resource/job transport support. The [native annex](06-native-functional-abi.md) owns helper bulk-buffer handles/lengths/leases and typed native exports; ordinary RPC frames do not carry full pixel/audio buffers. No obsolete IResourceProvider interface or generated-shape/code-first service is part of the current protocol.
+Every local signature, capability descriptor and OS broker method is a WP03 producer output. Later product WPs implement these published ports; they do not first define their request/response shape. [Wire local registry](04-protobuf-wire-registry.md#6-local-and-extension-operation-registry) fixes exact semantic Notes/Scope/Slate commands and resource/job transport support. The [native annex](06-native-functional-abi.md) owns helper bulk-buffer handles/lengths/leases and typed native exports; ordinary RPC frames do not carry full pixel/audio buffers. No obsolete IResourceProvider interface or generated-shape/code-first service is part of the current protocol.

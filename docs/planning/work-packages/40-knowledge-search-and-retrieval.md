@@ -20,7 +20,7 @@ Own-application composition and state, public binary gRPC-Web, helper-only local
 
 ## 4. Projects, directories, files and major types affected
 
-Use the exact projects assigned to this WP in [architecture27](../../architecture/27-platform-projects-and-application-assistants.md#2-desktopplatform-tree-and-actual-projects) and its product/Cloud/Mobile trees. Implement their owned named services, typed records, schema migrations and tests; do not introduce a new repository, generic SQL facade or shared runtime to connect them. Versioned generated schema definitions remain in Contracts.
+Use the exact projects assigned to this WP in [architecture 27](../../architecture/27-platform-projects-and-application-assistants.md#2-desktopplatform-tree-and-actual-projects) and its product/Cloud/Mobile trees. Implement their owned named services, typed records, schema migrations and tests; do not introduce a new repository, generic SQL facade or shared runtime to connect them. Versioned generated schema definitions remain in Contracts.
 
 ## 5. Required implementation work
 
@@ -34,13 +34,13 @@ Use the exact projects assigned to this WP in [architecture27](../../architectur
 **Completion gate.** The stated behavior and oracle pass using the actual owned implementation. Evidence names source commit, artifact versions/hashes, environment and any later fixture replacement.
 
 <a id="rule-wp-40.01"></a>
-### WP-40.01 — Derived indexes
+### WP-40.01 — Scoped derived index production
 
-**What must be fully done.** Implement D1 FTS5, Vectorize and local SQLite indexes from model04 with source/revision/model/profile/generation keys.
+**What must be fully done.** Implement D1 FTS scoped queries and Vectorize per-workspace namespaces with mandatory realm/product/model-generation filters per model 04 §8. Preserve source revision/policy checks and rebuild pointers.
 
-**Testing requirements.** Delete/rebuild, tombstone, dimensional mismatch and generation switch.
+**Testing requirements.** Cross-product/tenant isolation before topK, stale deletion, unavailable canonical owner, lexical fallback and L-16 index/namespace footprint.
 
-**Completion gate.** The stated behavior and oracle pass using the actual owned implementation. Evidence names source commit, artifact versions/hashes, environment and any later fixture replacement.
+**Completion gate.** No global vector query followed only by UI filtering; measured index limits match the capacity profile.
 
 <a id="rule-wp-40.02"></a>
 ### WP-40.02 — Hybrid retrieval and budgets
@@ -101,6 +101,8 @@ Use the exact projects assigned to this WP in [architecture27](../../architectur
 Changed application scope, storage, transport, UI and deployment behavior are governed by the authorities in §2. Preserve existing business rules and formats. Migration/compatibility manifests include source/schema/plan/ABI/runtime versions; current cross-product collaboration is deferred and contributes no release input.
 
 ## 7. Tests and verification evidence
+
+Acceptance includes every amended §5 producer/consumer and WP-40.90 evidence. Current P2-013 contracts/data/runtime rules are tested in the original owner implementation, not a detached explanatory sample.
 
 | Evidence | Produced by |
 |---|---|

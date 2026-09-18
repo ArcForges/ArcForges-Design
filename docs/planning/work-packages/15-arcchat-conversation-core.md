@@ -20,18 +20,18 @@ Own-application composition and state, public binary gRPC-Web, helper-only local
 
 ## 4. Projects, directories, files and major types affected
 
-Use the exact projects assigned to this WP in [architecture27](../../architecture/27-platform-projects-and-application-assistants.md#2-desktopplatform-tree-and-actual-projects) and its product/Cloud/Mobile trees. Implement their owned named services, typed records, schema migrations and tests; do not introduce a new repository, generic SQL facade or shared runtime to connect them. Versioned generated schema definitions remain in Contracts.
+Use the exact projects assigned to this WP in [architecture 27](../../architecture/27-platform-projects-and-application-assistants.md#2-desktopplatform-tree-and-actual-projects) and its product/Cloud/Mobile trees. Implement their owned named services, typed records, schema migrations and tests; do not introduce a new repository, generic SQL facade or shared runtime to connect them. Versioned generated schema definitions remain in Contracts.
 
 ## 5. Required implementation work
 
 <a id="rule-wp-15.00"></a>
-### WP-15.00 — Conversation and local history store
+### WP-15.00 — Single application history store
 
-**What must be fully done.** Implement full Core and Persistence.Sqlite schemas/queries/receipts from model05 plus model02 typed records. Local is desktop default; no Cloud Chat row created for local CRUD.
+**What must be fully done.** Implement model 05 SQLite schema/migrations/transactions and typed payloads, plus Android logical-schema fixtures. Retire competing model 02 conversation tables. Include attachment/project/profile/skill/context/task/compaction/pending-work ownership.
 
-**Testing requirements.** Actual SQLite transaction/kill/disk-full; independent product partitions and immutable committed messages.
+**Testing requirements.** Execute DDL with foreign keys; migrations, disk-full, branch fork, concurrent-window stale revision, duplicate terminal frame and interrupted send.
 
-**Completion gate.** The stated behavior and oracle pass using the actual owned implementation. Evidence names source commit, artifact versions/hashes, environment and any later fixture replacement.
+**Completion gate.** One canonical local store per application/profile preserves all committed and pending content.
 
 <a id="rule-wp-15.01"></a>
 ### WP-15.01 — Branches and window drafts
@@ -79,13 +79,13 @@ Use the exact projects assigned to this WP in [architecture27](../../architectur
 **Completion gate.** The stated behavior and oracle pass using the actual owned implementation. Evidence names source commit, artifact versions/hashes, environment and any later fixture replacement.
 
 <a id="rule-wp-15.06"></a>
-### WP-15.06 — Export, promotion and recovery
+### WP-15.06 — Local history export and import
 
-**What must be fully done.** Implement local export and restartable Save-to-Cloud journal; real local copy/receipt logic now, named HistoryService fixture until25; preserve source on changed revision.
+**What must be fully done.** Produce/consume assistant-history.v1 from committed local snapshots, preserving branch/message/resource provenance and missing-resource reports. Import remaps identities; Cloud promotion remains WP25.
 
-**Testing requirements.** Lost finalize ack, changed local history, account switch and migration/downgrade refusal.
+**Testing requirements.** Offline full round-trip; malformed/archive-hash/foreign references, draft exclusion, branch graph cycles and canceled import.
 
-**Completion gate.** The stated behavior and oracle pass using the actual owned implementation. Evidence names source commit, artifact versions/hashes, environment and any later fixture replacement.
+**Completion gate.** Local export is complete without Cloud, implicit upload or mode conversion.
 
 <a id="rule-wp-15.07"></a>
 ### WP-15.07 — Reference and package proof
@@ -110,6 +110,8 @@ Use the exact projects assigned to this WP in [architecture27](../../architectur
 Changed application scope, storage, transport, UI and deployment behavior are governed by the authorities in §2. Preserve existing business rules and formats. Migration/compatibility manifests include source/schema/plan/ABI/runtime versions; current cross-product collaboration is deferred and contributes no release input.
 
 ## 7. Tests and verification evidence
+
+Acceptance includes every amended §5 producer/consumer and WP-15.90 evidence. Current P2-013 contracts/data/runtime rules are tested in the original owner implementation, not a detached explanatory sample.
 
 | Evidence | Produced by |
 |---|---|

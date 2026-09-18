@@ -73,3 +73,5 @@ P2-010 initial implementation authorities: [native functional ABI](contracts/06-
 - [Application-owned history](data-model/05-application-history.md)
 - [Application scope and streams](contracts/10-application-scope-and-streams.md)
 - [Complete client experience](../experience/README.md)
+
+Current coordinated repair: P2-013; see [verification record](../assurance/independent-review-remediation-verification.md). Runtime and commercial gates remain separate from design evidence.

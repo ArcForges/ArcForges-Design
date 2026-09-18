@@ -7,7 +7,7 @@ P2-012 current implementation authorities: [Canonical local assistant history, c
 > Governing authority: [`00-data-model-overview.md`](00-data-model-overview.md), [`../06-data-persistence-and-formats.md`](../06-data-persistence-and-formats.md)
 > Companions: [`../04-desktop-application-architecture.md`](../04-desktop-application-architecture.md), [`../07-sync-conflict-and-backup.md`](../07-sync-conflict-and-backup.md)
 
-Each desktop product owns its SQLite store. Cloud-mode assistant history and Notes hold acknowledged Cloud projections plus durable pending work; local-mode assistant history is canonical in its own app store under model05. Scope/Slate retain local authority for native working content and jobs, with separately revisioned Cloud metadata replicas. The version domains are defined in [the authority map](00-data-model-overview.md#4-authority-map--where-the-authoritative-copy-lives).
+Each desktop product owns its SQLite store. Cloud-mode assistant history and Notes hold acknowledged Cloud projections plus durable pending work; local-mode assistant history is canonical in its own app store under model 05. Scope/Slate retain local authority for native working content and jobs, with separately revisioned Cloud metadata replicas. The version domains are defined in [the authority map](00-data-model-overview.md#4-authority-map--where-the-authoritative-copy-lives).
 
 **Store technology.** An embedded relational store with an AOT-safe access path ([CS-01](../06-data-persistence-and-formats.md#rule-cs-01)). Journaling is enabled only after per-platform and per-filesystem validation ([CS-04](../06-data-persistence-and-formats.md#rule-cs-04)), because network volumes, removable media and container filesystems each break different assumptions.
 
@@ -181,104 +181,7 @@ Chat cache mirrors Cloud part origins. Notes pending events, conflict alternativ
 
 ## 2. ArcChat local store
 
-### `conversation` *(aggregate root)*
-
-| Field | Type | Notes |
-|---|---|---|
-| `conversation_id` | `id` | **PK** |
-| `project_id` | `id?` | `FK →` `arcchat_project`; set null on project delete |
-| `title` | `text NN` | |
-| `agent_profile_id` | `id?` | The profile in force |
-| `state` | `enum(active, archived, trashed) NN` | |
-| `trashed_at` | `instant?` | |
-| `created_at`, `updated_at` | `instant NN` | |
-| `rev` | `rev NN` | |
-
-- `IX (state, updated_at)` — the conversation list, the single hottest query
-- `IX (project_id, state, updated_at)` — project-scoped list
-
-### `conversation_branch`
-
-| Field | Type | Notes |
-|---|---|---|
-| `branch_id` | `id` | **PK** |
-| `conversation_id` | `id NN` | `FK →`; cascade |
-| `parent_branch_id` | `id?` | Null for the trunk |
-| `branch_point_message_id` | `id?` | The message this branched from |
-| `created_at` | `instant NN` | |
-
-- `IX (conversation_id, parent_branch_id)`
-- **Constraint** — branching **shares prior history by reference, never by copy** ([WP-15.01](../../planning/work-packages/15-arcchat-conversation-core.md#rule-wp-15.01)). Messages before the branch point belong to the parent branch and are read through it; there is no duplication.
-
-### `message`
-
-| Field | Type | Notes |
-|---|---|---|
-| `message_id` | `id` | **PK** |
-| `conversation_id` | `id NN` | `FK →`; cascade |
-| `branch_id` | `id NN` | `FK →`; cascade |
-| `ordinal` | `bigint NN` | Position within the branch |
-| `role` | `enum(user, assistant, tool, system) NN` | |
-| `state` | `enum(composing, complete, interrupted, failed) NN` | |
-| `revision_of_message_id` | `id?` | An edit creates a new row; the prior is retained |
-| `created_at` | `instant NN` | |
-
-- `UQ (branch_id, ordinal)`
-- `IX (conversation_id, created_at)`
-- **Constraint** — a committed message is **immutable**; an edit creates a new row ([WP-15.00](../../planning/work-packages/15-arcchat-conversation-core.md#rule-wp-15.00))
-- **Constraint** — a row is written with `state = complete` **only** when the stream finished. An interrupted stream is stored as `interrupted`, never as complete ([WP-15.00](../../planning/work-packages/15-arcchat-conversation-core.md#rule-wp-15.00)) — this is why `state` exists rather than a nullable completion timestamp.
-
-### `message_part`
-
-| Field | Type | Notes |
-|---|---|---|
-| `part_id` | `id` | **PK** |
-| `message_id` | `id NN` | `FK →`; cascade |
-| `ordinal` | `int NN` | |
-| `kind` | `enum(text, toolCall, toolResult, artifactRef, attachmentRef, citation, redaction) NN` | |
-| `payload` | `json NN` | Kind-specific, schema-validated |
-
-- `UQ (message_id, ordinal)`
-- **Rule** — `toolCall` and `toolResult` parts carry the `InvocationId` so a message links to its execution record without embedding it
-
-### `attachment`
-
-| Field | Type | Notes |
-|---|---|---|
-| `attachment_id` | `id` | **PK** |
-| `message_id` | `id?` | Null while attached to a draft |
-| `conversation_id` | `id NN` | |
-| `mode` | `enum(managed, externalReference) NN` | |
-| `resource_id` | `id?` | Set when `managed` — `FK →` `managed_resource` |
-| `external_locator` | `json?` | Set when `externalReference` |
-| `availability` | `enum(available, unavailable, checking) NN` | A visible state, not an error ([WP-15.02](../../planning/work-packages/15-arcchat-conversation-core.md#rule-wp-15.02)) |
-| `display_name` | `text NN` | |
-
-- **Constraint** — `mode = managed` ⟺ `resource_id` is not null; `mode = externalReference` ⟺ `external_locator` is not null. A check constraint enforces the discriminated union.
-- **Constraint** — **no attachment body is ever stored in `message_part.payload`** ([WP-15.02](../../planning/work-packages/15-arcchat-conversation-core.md#rule-wp-15.02)), asserted by a size limit on the column and a policy test.
-
-### `arcchat_project`, `agent_profile`, `skill`
-
-`arcchat_project` groups conversations with its own instructions and context references. `agent_profile` bundles model choice, mode and behaviour, versioned so a historical run records the version it used. `skill` is versioned declarative guidance: **a skill grants no capability** ([WP-15.04](../../planning/work-packages/15-arcchat-conversation-core.md#rule-wp-15.04)), so there is no permission column on it, and `skill_version` rows are immutable so a skill update never alters a historical result.
-
-### `context_reference`
-
-| Field | Type | Notes |
-|---|---|---|
-| `context_ref_id` | `id` | **PK** |
-| `scope_kind` | `enum(pinned, project, temporary) NN` | |
-| `owner_kind`, `owner_id` | `text NN`, `id NN` | Conversation or project |
-| `target_product` | `text NN` | |
-| `target_ref` | `json NN` | A `ResourceRef` or a product-specific selector |
-| `added_at` | `instant NN` | |
-
-- **Rule** — **there is no ambient default scope** ([CA-01](../09-ai-and-agent-runtime-architecture.md#rule-ca-01)). Absence of rows means absence of context.
-
-### `task_projection`
-
-The local read projection of tasks whose authority is elsewhere ([TO-07](00-data-model-overview.md#rule-to-07)): carries `task_id`, `authoritative_rev`, state, reason facet, and `projected_at`. **Stamped with the authoritative revision**, so staleness is detectable.
-
----
+The historical feature name identifies no standalone application or database. All assistant tables, messages, attachments, projects, profiles, skills, context, compaction and pending execution are defined exclusively in [model 05](05-application-history.md). Each owning desktop has its own store; Android mirrors the logical schema in Room. Model 02 §1 still owns common product journal/resource mechanisms. Do not generate a second conversation/message schema from this section.
 
 ## 3. ArcNotes local store
 
@@ -602,6 +505,6 @@ Per-realm session/cache metadata records recoveryGeneration; each outgoing comma
 
 ## Local transport and connector records
 
-EndpointManifest protobuf and connection/peer leases follow [local09](../contracts/09-local-grpc-and-sandbox.md). Nonces, launch secrets and helper handle maps are memory-only. Discovery files are untrusted hints in the private runtime directory, not account/session persistence.
+EndpointManifest protobuf and connection/peer leases follow [local 09](../contracts/09-local-grpc-and-sandbox.md). Nonces, launch secrets and helper handle maps are memory-only. Discovery files are untrusted hints in the private runtime directory, not account/session persistence.
 
 The owning product keeps local connector_connection(connection_id, definition_id, manifest_hash, name, state, scopes, revision, expires_at, reason, secret_ref?) and connector_flow(flow_id, connection_id, definition_hash, target_origins, scopes, expires_at, consumed_at). IDs/closed states and ten-minute one-use flow follow the generated Connector records; revision is a positive local row counter checked by expectedRev. Consent binds the exact manifest/origins/scopes. Secrets reside only in OS-protected storage referenced by secret_ref. Complete consumes flow and commits the local connection/secret reference atomically through the broker's compensation journal; a crash either reconciles the existing secret handle or removes an unreferenced handle. Revoke invalidates the connection before asynchronous provider cleanup; a failed provider cleanup never restores local authority. This state is not synchronized into Cloud connector credentials. WP11 supplies protected persistence/broker mechanics; WP41 supplies real provider integration.

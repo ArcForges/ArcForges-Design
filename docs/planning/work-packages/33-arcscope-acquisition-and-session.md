@@ -194,7 +194,7 @@
 
 ---
 
-Generic USB is V1: verify enumeration, explicit interface/endpoint open, control/bulk/interrupt transfers, partial writes, cancellation and driver/permission/busy refusal on each Tier1 RID. Bind device/firmware/driver identity to PG08; never automatically detach a kernel driver. Hot unplug records an explicit capture gap.
+Generic USB is V1: verify enumeration, explicit interface/endpoint open, control/bulk/interrupt transfers, partial writes, cancellation and driver/permission/busy refusal on each Tier 1 RID. Bind device/firmware/driver identity to PG08; never automatically detach a kernel driver. Hot unplug records an explicit capture gap.
 
 ## 7. Tests and verification evidence
 
@@ -244,4 +244,4 @@ Generic USB is V1: verify enumeration, explicit interface/endpoint open, control
 
 ## P2-010 required behavior and closure
 
-Use acquisition.source/framing/trigger profiles in architecture26 and wire04, with explicit gap/loss/durable capture manifests and all accepted serial/network/file/USB sources. The referenced normative profile and producer stage matrix are binding inputs. Record independent positive/negative vectors and actual owner integration at this WP's assigned stage; a mock cannot close a real-provider/device requirement.
+Use acquisition.source/framing/trigger profiles in architecture 26 and wire 04, with explicit gap/loss/durable capture manifests and all accepted serial/network/file/USB sources. The referenced normative profile and producer stage matrix are binding inputs. Record independent positive/negative vectors and actual owner integration at this WP's assigned stage; a mock cannot close a real-provider/device requirement.

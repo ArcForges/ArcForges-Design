@@ -113,14 +113,13 @@ The provider implementation is confined to ArcForges-AI; C# owns canonical comme
 
 <a id="rule-wp-43.03"></a>
 
-### WP-43.03 — Operator provider credentials and the absence of BYOK
+### WP-43.03 — Selected supplier and realm routing
 
+**What must be fully done.** Use Workers AI binding and explicit admitted model catalogue only; no AI Gateway/multiprovider bypass/fallback. Self-host uses operator-owned model/search credentials and funding, payment disabled by default.
 
-**What must be fully done.** Provision the Workers AI binding and restricted service credentials as deployment inputs, with dual-key HMAC rotation/clock/nonces from the CF contract. C# does not receive an end-user provider key. Self-host installation provisions its own CF resources and same typed integration/config contract.
+**Testing requirements.** Unavailable/withdrawn model, missing price/config, pre-dispatch refusal vs unknown dispatch and explicit new-model request.
 
-**Testing requirements.** Deployment secret/source/log/client projection checks and key-rotation/replay/forged callback tests.
-
-**Completion gate.** Only authorized service deployments can invoke admitted jobs or acknowledge outcomes; customer BYOK remains structurally absent.
+**Completion gate.** No silent substitution or token/credit crossing between official/self-host realms.
 
 <a id="rule-wp-43.04"></a>
 
@@ -136,14 +135,13 @@ The provider implementation is confined to ArcForges-AI; C# owns canonical comme
 
 <a id="rule-wp-43.05"></a>
 
-### WP-43.05 — Availability and failure
+### WP-43.05 — Funding and uncertain outcome proof
 
+**What must be fully done.** Implement supplier intent/exposure and customer settlement independently. Brave search is operator-funded; processing search results is customer inference. Aggregate Workers AI billing never proves an individual request outcome.
 
-**What must be fully done.** Implement catalogue health, explicit model withdrawal, pre-dispatch failure and possible-dispatch unknown classification. Use only the selected fallback policy within the catalogue and a new authorized intent when permitted; never retry an uncertain model effect automatically. Keep keyword/local work available when all AI routes fail.
+**Testing requirements.** Search without customer debit, model debit once, crash before/after dispatch, unknown deadline, late usage after closed-no-later-debit and no automatic model retry.
 
-**Testing requirements.** Rate limit, timeout before/after effect, partial usage, unavailable catalogue and all-models-unavailable alert/recovery.
-
-**Completion gate.** Visible AI degradation retains correct reservation and effect certainty without affecting unrelated product capabilities.
+**Completion gate.** Real selected supplier adapter and deterministic ledger vectors preserve uncertainty and all budget boundaries.
 
 <a id="rule-wp-43.07"></a>
 
@@ -198,6 +196,8 @@ The provider implementation is confined to ArcForges-AI; C# owns canonical comme
 ---
 
 ## 7. Tests and verification evidence
+
+Acceptance includes every amended §5 producer/consumer and WP-43.90 evidence. Current P2-013 contracts/data/runtime rules are tested in the original owner implementation, not a detached explanatory sample.
 
 **Required evidence addition.** [WP-43.04](#rule-wp-43.04) records the carrier/propagation/failure vectors above with payload and manifest hashes; early packages use declared fixtures, while provider/Harness packages require their real integrations.
 

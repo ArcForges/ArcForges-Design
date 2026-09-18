@@ -49,3 +49,5 @@ The [React/TypeScript Web redesign review](web-typescript-redesign-review.md) re
 The current [P2-009 amendment](../decisions/phase-2-specification-decisions.md#rule-p2-009) updates runtime/protocol/repository assumptions and activates the Cloud AOT gate. Prior review records are dated evidence; use the current requirements, contracts, planning and gate register for implementation. Product/runtime/commercial execution gates remain unclosed until their real evidence exists.
 
 [Family design completion review](family-design-completion-review.md) records the current frozen35-finding repair set, current source snapshot, closure checks and self-contained validator. VG-09 is retired because iOS is outside current scope; the32 current implementation obligations remain open. Historical validation does not establish the current runtime, actual AOT/CF/device behavior or commercial readiness.
+
+Current coordinated repair: P2-013; see [verification record](independent-review-remediation-verification.md). Runtime and commercial gates remain separate from design evidence.

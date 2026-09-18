@@ -1,15 +1,15 @@
-# ArcChat Mobile and ArcChat Web — Product Requirements
+# Android companion and Web companion — Product Requirements
 
 P2-012 current implementation authorities: [Complete Android experience](../../experience/02-android-companion.md); [One-application targeting and transport](../../architecture/contracts/10-application-scope-and-streams.md).
-> Current scope amendment: **[P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
+> Effective scope: P2-012 and P2-013 amend the technology and application ownership below. **[P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Requirements / Products
-> Product identities: `arcchat-mobile`, `chat.arcforges.com`
+> Product identities: `companion`, `chat.arcforges.com`
 > Governing authority: **[D-004](../../decisions/phase-1-foundation-decisions.md#rule-d-004)**/**[D-021](../../decisions/phase-1-foundation-decisions.md#rule-d-021)** (Apache-2.0 mobile boundary), **[D-007](../../decisions/phase-1-foundation-decisions.md#rule-d-007)** (web technology), **[D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008)** (Android Kotlin/Jetpack Compose; iOS outside scope), **[D-014](../../decisions/phase-1-foundation-decisions.md#rule-d-014)**/**[D-015](../../decisions/phase-1-foundation-decisions.md#rule-d-015)** (surfaces), **[D-022](../../decisions/phase-1-foundation-decisions.md#rule-d-022)**/**[V-09](../../assurance/phase-1-official-verification.md#rule-v-09)** (consumption-only)
 > Companions: [`arcchat.md`](arcchat.md), [`arcforges-web.md`](arcforges-web.md), [`../03-cloud-services-and-sync.md`](../03-cloud-services-and-sync.md), [`../05-ai-and-agent-execution.md`](../05-ai-and-agent-execution.md)
 
-> **ArcChat Mobile and ArcChat Web are the Cloud Continuity and Remote Agent Companion for ArcChat.**
+> **Android companion and Web companion are the Cloud Continuity and Remote Agent Companion for ArcChat.**
 
 The companion loop:
 
@@ -28,10 +28,10 @@ See → Approve → Steer → Continue → Start remote work → Receive results
 | ID-03 | **Mobile and Web connect only to Cloud** (**[D-010](../../decisions/phase-1-foundation-decisions.md#rule-d-010)**). They must never scan a LAN, discover a desktop application runtime, or address a named pipe or domain socket. |
 | ID-04 | **`Companion ≠ thin remote controller`** (`§20`). Both surfaces are useful with no desktop online, through cloud chat, cloud tasks, projects, search, automation and continuity. |
 | ID-05 | **A `Remote Task` is not remote desktop** ([I-120](../01-normative-glossary-and-invariants.md#rule-i-120)). ArcForges provides a **semantic remote agent**, never a general screen-and-input remote tool. |
-| ID-06 | **ArcChat Mobile is Apache-2.0** (**[D-004](../../decisions/phase-1-foundation-decisions.md#rule-d-004)**), together with the mobile-only libraries, the ArcForges-owned public protocol specifications required for its interoperability, and their wire schemas, DTOs and client libraries. It must not contain, link to, copy from, port from or reference any GPL-family or AGPL-only implementation, directly or transitively. |
+| ID-06 | **Android companion is Apache-2.0** (**[D-004](../../decisions/phase-1-foundation-decisions.md#rule-d-004)**), together with the mobile-only libraries, the ArcForges-owned public protocol specifications required for its interoperability, and their wire schemas, DTOs and client libraries. It must not contain, link to, copy from, port from or reference any GPL-family or AGPL-only implementation, directly or transitively. |
 | ID-07 | **Base ViewModel patterns are not shared between Avalonia desktop and Kotlin Android mobile** (**[D-021](../../decisions/phase-1-foundation-decisions.md#rule-d-021)**). Each UI stack owns its implementation. |
 | ID-08 | Android production uses Kotlin/Jetpack Compose on Android ART. iOS and multiplatform sharing are outside the current scope under P2-010. |
-| ID-09 | **ArcChat Web is a deployment of the single `ArcForges.Web.App` React/TypeScript codebase** (**[D-007](../../decisions/phase-1-foundation-decisions.md#rule-d-007)**, **[D-014](../../decisions/phase-1-foundation-decisions.md#rule-d-014)**), served at `chat.arcforges.com`. |
+| ID-09 | **Web companion is a deployment of the single `ArcForges.Web.App` React/TypeScript codebase** (**[D-007](../../decisions/phase-1-foundation-decisions.md#rule-d-007)**, **[D-014](../../decisions/phase-1-foundation-decisions.md#rule-d-014)**), served at `chat.arcforges.com`. |
 
 ### 1.1 Responsibility split
 
@@ -76,7 +76,7 @@ See → Approve → Steer → Continue → Start remote work → Receive results
 | DP-01 | **Device Presence is a core companion foundation**: which desktops exist, which are online, when last seen, product version, and per-product readiness. |
 | DP-02 | **`Device Presence ≠ Device Trust`** ([I-250](../01-normative-glossary-and-invariants.md#rule-i-250)), and **`Device Online ≠ Remote Agent Enabled`** ([I-251](../01-normative-glossary-and-invariants.md#rule-i-251)). |
 | DP-03 | **Presence is not a per-second heartbeat display.** It is a coarse, honest, low-noise state, and never presented as more precise than it is. |
-| DP-04 | **Desktop capability state is shown**: which professional products are installed, which are running, and which capabilities are currently available. **Installed and running remain separate** ([I-007](../01-normative-glossary-and-invariants.md#rule-i-007)). |
+| DP-04 | Show per-device application installations with product, running state, compatibility, instance epoch and available capabilities. Presence never grants access. |
 | DP-05 | **Remote availability is finer-grained than "device online"**: remote enabled, capability permitted, product installed, product running, workspace matching. |
 | DP-06 | **The device selector must not expose underlying network detail.** It presents devices, not transports or addresses. |
 | <a id="rule-dp-07"></a>DP-07 | **Remote agent enablement must be performed on the desktop the first time** ([TR-04](../02-identity-account-and-workspace.md#rule-tr-04)). It cannot be enabled remotely. |
@@ -90,10 +90,10 @@ See → Approve → Steer → Continue → Start remote work → Receive results
 
 | # | Requirement |
 |---|---|
-| RT-01 | A task fixes its permitted tool targets: Cloud-only, an explicitly selected desktop, or authorized Cloud/desktop tools. The agent loop always runs in Cloud. |
-| RT-02 | **With exactly one online desktop, Auto may select it**; with several, the user chooses rather than the system guessing. |
-| RT-03 | **The device target is a task attribute**, recorded and visible, not a transient UI selection. |
-| RT-04 | **Desktop-offline behaviour differs by task type**: a cloud-executable task proceeds; a desktop-required task enters **`WaitingForDevice`**, never `Failed` ([RX-02](../03-cloud-services-and-sync.md#rule-rx-02)). |
+| RT-01 | A task fixes either Cloud-only work or one explicit product/device/installation target. The agent loop always runs in Cloud; every device step uses that same product target. |
+| RT-02 | Require explicit application-target confirmation. A single eligible installation may be preselected but is never silently selected or substituted. |
+| RT-03 | The application target and realm/workspace profile are durable task attributes, not a transient UI selection. |
+| RT-04 | Cloud-only work can proceed without a desktop; desktop-required work uses TaskState=waiting with reasonFacet=device until that application is available. |
 | RT-05 | **Local-only data must never be uploaded to Cloud merely because the desktop is offline** ([OW-08](../05-ai-and-agent-execution.md#rule-ow-08)). The task waits. |
 | RT-06 | **A remote task is durable by default** ([EX-02](../05-ai-and-agent-execution.md#rule-ex-02)). It never depends on the mobile session's lifetime. |
 | RT-07 | **A created remote task enters the Task Center immediately**, before any execution begins. |
@@ -174,12 +174,12 @@ Three preview layers:
 | # | Requirement |
 |---|---|
 | AR-01 | **Mobile must not attempt to fully edit an ArcNotes document.** No complete block editor on mobile. |
-| <a id="rule-ar-02"></a>AR-02 | **ArcChat Web must not quietly become an ArcNotes Web editor.** Its role is preview, continuity and agent. |
+| <a id="rule-ar-02"></a>AR-02 | **Web companion must not quietly become an ArcNotes Web editor.** Its role is preview, continuity and agent. |
 | AR-03 | **Artifact availability is shown truthfully**: available in cloud, on a device only, requires download, requires the owning product, or unavailable. |
 | AR-04 | An assistant-generated artifact belongs to its frozen application/Cloud execution scope and existing resource owner. Shared UI does not create a separate ArcChat owner or another product's write permission. |
 | AR-05 | **Remote result delivery prefers small results with large source data kept local.** A summary, a report, a rendered excerpt — not the whole source. |
-| AR-06 | **Artifact handoff to desktop is a Handoff, not an agent task** (`§4.1` of the product scope). It opens the artifact in its owning product. |
-| AR-07 | **"Request download" must not be presented as though the content is already in the cloud.** Fetching from a device is a transfer task with its own state. |
+| AR-06 | Open an available Cloud artifact in the companion's bounded preview or show its owning desktop target. Current scope has no generic cross-product handoff command. |
+| AR-07 | A device-only artifact is visibly unavailable until an explicitly approved own-application upload tool produces a verified Cloud resource. Do not invent a generic transfer Task or report upload completion before verification. |
 | AR-08 | **A large artifact prompts before transfer**, with size and estimated cost. |
 | <a id="rule-ar-09"></a>AR-09 | **A cellular policy exists**: download over cellular, large transfers on Wi-Fi only, and a hard size threshold ([SY-36](../03-cloud-services-and-sync.md#rule-sy-36)). |
 | AR-10 | **Mobile artifact preview cache is bounded and evictable** (`§11`). |
@@ -260,7 +260,7 @@ Three preview layers:
 | WR-01 | **Workspace switching is an explicit action** with a visible active workspace ([AC-03](../09-shared-desktop-experience.md#rule-ac-03)). |
 | WR-02 | **Composer context does not survive a workspace switch.** Context bound to the previous workspace is removed or invalidated, never silently carried across. |
 | WR-03 | **The relationship between a remote device and a workspace is verified**: workspace, realm and permission must all match before a remote task targets a device. |
-| WR-04 | **A remote desktop may hold several workspace login states**, and the task states which one it acts in. |
+| WR-04 | A desktop may hold several realm/workspace profiles. Remote commands freeze the authorized realm, workspace and application installation; switching the phone's profile never retargets an existing execution. |
 | WR-05 | **Cross-realm operation is prohibited** ([RW-02](../07-security-privacy-and-trust.md#rule-rw-02)). Realm is part of the mobile and web login session, selected by server profile. |
 
 ---
@@ -284,8 +284,8 @@ Three preview layers:
 
 | # | Requirement |
 |---|---|
-| <a id="rule-wp-01"></a>WP-01 | **ArcChat Web and the Account Portal are strictly separate products** (**[D-014](../../decisions/phase-1-foundation-decisions.md#rule-d-014)**, **[D-015](../../decisions/phase-1-foundation-decisions.md#rule-d-015)**). `chat.arcforges.com` is the ArcChat surface; `account.arcforges.com` is the account, billing and security control centre. |
-| <a id="rule-wp-02"></a>WP-02 | ArcChat Web may **link** to the account portal; it does not embed it. |
+| <a id="rule-wp-01"></a>WP-01 | **Web companion and the Account Portal are strictly separate products** (**[D-014](../../decisions/phase-1-foundation-decisions.md#rule-d-014)**, **[D-015](../../decisions/phase-1-foundation-decisions.md#rule-d-015)**). `chat.arcforges.com` is the ArcChat surface; `account.arcforges.com` is the account, billing and security control centre. |
+| <a id="rule-wp-02"></a>WP-02 | Web companion may **link** to the account portal; it does not embed it. |
 | <a id="rule-wp-03"></a>WP-03 | **The mobile account surface is likewise a link-out**, showing identity, workspace, storage and usage, with management performed in the portal (`§12` of the identity requirements) — subject to the mobile commerce prohibitions in **[D-022](../../decisions/phase-1-foundation-decisions.md#rule-d-022)**. |
 
 ---
@@ -306,7 +306,7 @@ Three preview layers:
 
 Governed entirely by **[D-022](../../decisions/phase-1-foundation-decisions.md#rule-d-022)**, confirmed by **[V-09](../../assurance/phase-1-official-verification.md#rule-v-09)**.
 
-| ArcChat Mobile may | ArcChat Mobile must not |
+| Android companion may | Android companion must not |
 |---|---|
 | Sign in | Sell subscriptions, cloud access or AI credits in-app |
 | Display current plan and entitlement state | Embed provider checkout |
@@ -397,5 +397,5 @@ WorkspaceDeviceContext · RemoteSession · OfflineCachePolicy
 | **[D-004](../../decisions/phase-1-foundation-decisions.md#rule-d-004)**, **[D-021](../../decisions/phase-1-foundation-decisions.md#rule-d-021)**, **[F-023](../../assurance/open-gates-register.md#rule-f-023)** | Apache-2.0 mobile boundary, no shared ViewModels, pre-distribution provenance gate |
 | **[D-007](../../decisions/phase-1-foundation-decisions.md#rule-d-007)**, **[D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008)**, **[V-04](../../assurance/phase-1-official-verification.md#rule-v-04)** | Web technology; Android Kotlin/Jetpack Compose; iOS outside scope |
 | **[D-010](../../decisions/phase-1-foundation-decisions.md#rule-d-010)** | Cloud never reaches local IPC; the desktop re-authorises every remote request |
-| **[D-014](../../decisions/phase-1-foundation-decisions.md#rule-d-014)**, **[D-015](../../decisions/phase-1-foundation-decisions.md#rule-d-015)** | Surface inventory; ArcChat Web separate from the account portal |
+| **[D-014](../../decisions/phase-1-foundation-decisions.md#rule-d-014)**, **[D-015](../../decisions/phase-1-foundation-decisions.md#rule-d-015)** | Surface inventory; Web companion separate from the account portal |
 | **[D-022](../../decisions/phase-1-foundation-decisions.md#rule-d-022)**, **[V-09](../../assurance/phase-1-official-verification.md#rule-v-09)** | Consumption-only commerce posture and its traceable prohibitions |

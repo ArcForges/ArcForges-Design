@@ -10,7 +10,7 @@ DesktopPlatform, Contracts, ArcNotes, ArcScope, ArcSlate, Cloud, AI, Web and Mob
 <a id="root-and-logical-path-convention"></a>
 ### Root and logical path convention
 
-Use the exact repository/project trees in architecture27. Remaining logical suffixes in older rule examples identify their single owning repository; they do not authorize adjacent-source references. Current work-package project sections select those concrete trees. Contracts produces generated clients; ArcForges.Cloud.Client implements reusable session/transport/recovery behavior above them. No product CloudClient implementation is duplicated into Contracts.
+Use the exact repository/project trees in architecture 27. Remaining logical suffixes in older rule examples identify their single owning repository; they do not authorize adjacent-source references. Current work-package project sections select those concrete trees. Contracts produces generated clients; ArcForges.Cloud.Client implements reusable session/transport/recovery behavior above them. No product CloudClient implementation is duplicated into Contracts.
 
 ## 2. Project conventions
 
@@ -36,7 +36,7 @@ Mobile and the entire Contracts repository (public/internal proto, HTTP schemas,
 
 Package metadata declares owner/SPDX/source commit, schema/package version, dependency closure, NOTICE and SBOM. Public npm access=public, NuGet public registry; AGPL packages may be publicly distributed with source/notice obligations. Per-RID native license closure includes static dependencies and optional codec features, not merely the wrapper's license. Six reference-source access/exclusion/provenance boundaries and all archive prohibitions stay unchanged. Source review and actual distributable license gate remain evidence obligations; this amendment does not claim third-party code has been copied or audited by a runtime test.
 
-The [wire registry](contracts/04-protobuf-wire-registry.md) defines every service/message/field and the public/internal package split. Generated C#, TypeScript and Java/Kotlin output is not hand-edited. The [CF HTTP schema](contracts/05-cloudflare-integration.md) is the explicit AI/object exception. Contract validators validate shape/profile; business validation remains in the owner.
+The [wire registry](contracts/04-protobuf-wire-registry.md) defines every service/message/field and the public/internal package split. Generated C#, TypeScript and Java/Kotlin output is not hand-edited. The [CF integration schema](contracts/05-cloudflare-integration.md) owns private Cloud/AI bindings and signed object transfers. Public AI operations remain generated gRPC-Web under annex 10. Contract validators validate shape/profile; business validation remains in the owner.
 
 | # | Rule |
 |---|---|
@@ -83,7 +83,8 @@ Modules: **Identity**, **Workspace**, **Devices**, **Entitlement**, **Commerce**
 ## 6. Reference direction
 
 ```
-Desktop / LocalRpc / Infrastructure / MinimalApi / Kotlin Android adapters
+Desktop / Infrastructure / public gRPC-Web / Kotlin Android adapters
+Private helper transport adapters (no product listener)
                                  ↓
                           Application
                                  ↓
@@ -212,12 +213,12 @@ Assert portable managed projects have no esproj reference; win.slnx contains exa
 
 ## 12. Package and native distribution registry
 
-Publish the following package identities. Managed package versions and their compatible ABI range are independent from product versions. A producer candidate has version 1.0.0-ci.<run>.<attempt>, stable starts1.0.0; never overwrite an existing package/version. Producer release manifests list SHA256 and exact dependencies.
+Publish the following package identities. Managed package versions and their compatible ABI range are independent from product versions. A producer candidate has version 1.0.0-ci.<run>.<attempt>, stable starts 1.0.0; never overwrite an existing package/version. Producer release manifests list SHA256 and exact dependencies.
 
 | Package family | Dependencies / public C# capability | Native RID assets |
 |---|---|---|
 | ArcForges.Foundation, .Application.Abstractions | Contracts.Foundation; IDs are adapters, not duplicate wire types | None; headless |
-| ArcForges.LocalRpc, .Capabilities | Foundation and exact local Contracts; IPC, descriptor/selection mechanisms from WP08/09 | No product implementation or native payload transport |
+| ArcForges.LocalRpc, .Capabilities | Foundation and exact local Contracts; private-child IPC and in-process descriptor mechanisms from WP08/09 | No product implementation or native payload transport |
 | ArcForges.Observability | Foundation; bounded Activity/Meter/logging, no product telemetry schema | None; headless |
 | ArcForges.Persistence.Sqlite | Foundation; desktop SQLite/journal mechanics, no product schema/Cloud D1 binding adapter | None in managed package; SQLite runtime independently selected |
 | ArcForges.Security, .Update, .Execution | Foundation; OS secret/approval adapters, signed updates, ProductJob mechanics | Explicit OS adapters; Cloud may consume only documented headless subpackages |
@@ -238,17 +239,17 @@ Publish the following package identities. Managed package versions and their com
 | ArcForges.Native.Pdf | Native.Abstractions; render page and extract bounded text only | .Native.Pdf.Runtime.<rid>: PDFium chromium/8044 |
 | ArcForges.ContentSandbox.Contracts, .Broker | Exact ArcForges.Contracts.LocalRpc.Sandbox/Platform plus Foundation; Contracts facade has no duplicate authored/generated wire types. Broker owns restricted launch and buffer grants; helper loads selected parser wrappers | .ContentSandbox.Runtime.<rid>: signed AOT helper + OS enforcement profile, WP11 host/profile; WP13 production-parser composition |
 | ArcForges.Build.Policy | Build-only, source/pin/NOTICE checks | No runtime dependency |
-| ArcForges.Contracts.LocalRpc.Platform, .LocalRpc.Sandbox | Contracts-owned internal local records/services, peer/bootstrap/lease/hints/connector and complete parser controls; public clients cannot import | Generated C# messages/client/server bindings from authored proto, WP03 |
-| ArcForges.Contracts.Foundation/PublicApi/Events/Validation/LocalRpc.<owner>/CloudInternal; ArcForges.Sdk.* and ArcForges.Cli | Contracts-owned generated/public vs internal graph | No desktop native dependency |
+| ArcForges.Contracts.LocalRpc.Platform, .LocalRpc.Sandbox | Contracts-owned internal child records/services, launch/bootstrap/lease/hints/connector and complete parser controls; public clients cannot import | Generated C# messages/client/server bindings from authored proto, WP03 |
+| ArcForges.Contracts.Foundation/PublicApi/Events/Validation/LocalRpc.Platform/LocalRpc.Sandbox/CloudInternal; ArcForges.Sdk.* and ArcForges.Cli | Contracts-owned generated/public vs internal graph | No desktop native dependency |
 | @arcforges/proto, @arcforges/api-client, @arcforges/contract-fixtures | Apache; protobuf-es + selected transport; no AGPL app import | No desktop native dependency |
 | @arcforges/ai-internal | Internal HTTP generated types and validators | Apache-2.0; AI/Cloud import boundary only |
 | io.github.arcforges:contracts-proto, :contracts-connect-client, :contract-fixtures | Public Java/Kotlin lite messages, Connect Kotlin gRPC-Web clients, independent fixtures respectively | Apache-2.0 JARs; Connect Kotlin gRPC-Web transport is selected by Android consumer, no desktop dependency |
 
 Native.Abstractions holds status/ABI/build-manifest and safe lifetime wrappers, not media/domain entities. Consumers explicitly reference the managed package and exactly one matching .Runtime.<rid> package through RID-conditioned PackageReference; NuGet does not magically select a sibling RID package. Assets live runtimes/<rid>/native, signed in final app, load only app-owned read-only paths, with no PATH/user-writable fallback. RID set remains win-x64/win-arm64/osx-arm64/osx-x64/linux-x64/linux-arm64 under existing tiers. Normal consumer restore/build/publish never calls CMake/vcpkg; no “all desktop dependencies” metapackage.
 
-Existing version/build-info/error ABI preambles stay compatible; functional ABI1.1 adds the complete typed functions under owned prefixes in [native ABI](contracts/06-native-functional-abi.md), preserving the published1.0 probe/POD layout. C ABI uses fixed widths, explicit lengths, opaque handles, status+bounded error data, explicit allocation/free and callback deregistration before owner disposal. LibraryImport/SafeHandle wrappers own memory; no C++ exception, STL, native pointer or domain object crosses. Buffers may not outlive their handle unless explicitly copied; one handle is single-caller unless capability documents concurrent read. Existing native architecture remains the lifetime/concurrency/error authority.
+Existing version/build-info/error ABI preambles stay compatible; functional ABI1.1 adds the complete typed functions under owned prefixes in [native ABI](contracts/06-native-functional-abi.md), preserving the published 1.0 probe/POD layout. C ABI uses fixed widths, explicit lengths, opaque handles, status+bounded error data, explicit allocation/free and callback deregistration before owner disposal. LibraryImport/SafeHandle wrappers own memory; no C++ exception, STL, native pointer or domain object crosses. Buffers may not outlive their handle unless explicitly copied; one handle is single-caller unless capability documents concurrent read. Existing native architecture remains the lifetime/concurrency/error authority.
 
-**Admission dispositions resolved now.** OTIO selected as required official format interoperability, using upstream0.18.1 and the existing pinned overlay (Apache-2.0, Imath/RapidJSON notices). A first-party managed JSON reader could parse a subset but would duplicate official schema upgrade/fidelity behavior; it is not the selected interoperability engine. Hostile parsing remains isolated. MDF is not a V1 required interchange format: keep arcscope-mdf-abi fenced/excluded from all release/package closures, and implement accepted tabular/event/native formats with managed adapters. This is an explicit no-adoption disposition, not “decide during WP35”. No unrelated acquisition feature is removed.
+**Admission dispositions resolved now.** OTIO selected as required official format interoperability, using upstream 0.18.1 and the existing pinned overlay (Apache-2.0, Imath/RapidJSON notices). A first-party managed JSON reader could parse a subset but would duplicate official schema upgrade/fidelity behavior; it is not the selected interoperability engine. Hostile parsing remains isolated. MDF is not a V1 required interchange format: keep arcscope-mdf-abi fenced/excluded from all release/package closures, and implement accepted tabular/event/native formats with managed adapters. This is an explicit no-adoption disposition, not “decide during WP35”. No unrelated acquisition feature is removed.
 
 Native build record native-build.v1 fixes vcpkg36677bbd0b3bf11da7376e62e14bffcc54d2eaeb (current CI input); deployREADME9e593... is superseded. CMake 4.3.3/Ninja 1.13.1, C++20/C17 ABI; classic vcpkg standard triplets, no new manifest/custom triplets/local installed tree. Pin gives FFmpeg 9.0.1, OpenColorIO 2.5.2, OpenImageIO 3.1.14.0, libusb1.0.30/miniaudio0.11.25; overlay OTIO0.18.1 includes existing source SHA512. FFmpeg core LGPL configuration disables GPL/nonfree components; no optional GPU SDK silently changes redistribution closure. PDFium uses verified chromium/8044 source/build identity and full BSD/third-party notices; build in Platform isolated profile, not a dependency downloaded by clients. The exact platform library closure/signatures/SBOM are candidate build outputs and release gates, not a claim already built here.
 

@@ -45,7 +45,7 @@
 
 ---
 
-**Web redesign input.** [P2-008](../../decisions/phase-2-specification-decisions.md#rule-p2-008) and [Web toolchain and SDK](../../architecture/25-web-toolchain-and-sdk.md) are binding for this package's Web, generated-contract, toolchain and test responsibilities. The existing desktop/mobile runtime and product-scope decisions remain separately governed.
+**Web redesign input.** [P2-008 as amended by P2-012/P2-013](../../decisions/phase-2-specification-decisions.md#rule-p2-013) and [Web toolchain and SDK](../../architecture/25-web-toolchain-and-sdk.md) are binding for this package's Web, generated-contract, toolchain and test responsibilities. The existing desktop/mobile runtime and product-scope decisions remain separately governed.
 
 ---
 
@@ -75,7 +75,7 @@ All paths are in ArcForges-Contracts under the [selected package registry](../..
 | public/proto/, internal/proto/ | Handwritten initial schema/service/field/enum profiles from the wire registry; public versus internal Apache-2.0 import closure |
 | public/http/, internal/ai-http/, fixtures/public/, fixtures/internal/ | Selected CF/auth/provider HTTP exceptions, independent canonical positive/negative vectors |
 | generated/csharp/, generated/typescript/ | Generated DTOs, service descriptors/clients and wire validators; never hand edited |
-| src/transport/ | Apache Kotlin native gRPC adapter and selected public C# transport composition only |
+| src/transport/ | Apache Connect Kotlin binary gRPC-Web adapter and selected public C# transport composition only |
 | eng/, artifacts/contracts/ | Pinned generation, descriptor/breaking-change baselines, signed versioned package manifests and candidate publication |
 | tests/ | Schema closure, exact-value/unknown-field/conformance vectors and C#/TS compatibility |
 
@@ -130,24 +130,23 @@ The complete initial Resource/owner/query/measurement/simulator, public operatio
 
 <a id="rule-wp-03.04"></a>
 
-### WP-03.04 — Local RPC contract discipline
+### WP-03.04 — Private helper and in-process contract split
 
+**What must be fully done.** Author the closed ContentSandbox/Extension/Connector and bootstrap/resource/event proto closure from annex 09. Product interfaces use generated records and static in-process adapters; reserve removed Hub/SSO/transfer names without registering services.
 
-**What must be fully done.** Generate parent/helper bootstrap, extension and sandbox services under annex09, plus typed in-process product-port records. Register only methods marked private-helper in annex11; Hub/DeviceSsoBroker descriptors are reserved future schemas and ordinary product ports create no RPC listeners. Preserve cancellation, deadline, error and buffer semantics; runtime parent/child authentication belongs to WP08.
+**Testing requirements.** Wrong child direction/role, removed methods, parent death and cross-product server registration fail; verify no public package imports internal schemas.
 
-**Testing requirements.** Compile every local operation, descriptor-registration policy checks, wrong-oneof and malformed-transfer fixtures.
-
-**Completion gate.** Every helper method and in-process product port has concrete generated signatures; registration tests reject future or in-process descriptors on an RPC host.
+**Completion gate.** Published internal descriptors and transport fixtures expose only admitted child services.
 
 <a id="rule-wp-03.05"></a>
 
-### WP-03.05 — Complete C#/TypeScript/Kotlin generation and candidate gate
+### WP-03.05 — Complete generated package and schema gate
 
-**What must be fully done.** Generate all initial C#, TypeScript and Java/Kotlin messages, Connect Kotlin and C#/TS gRPC-Web clients, and validators from authored proto and declared exception/extension/policy schemas. Include all 335 legacy operation bindings classified by annex11, all 13 new annex10 operations, appended scope/history fields and the archive record format. Export descriptor/ABI/profile fixtures and complete immutable NuGet/npm/Maven candidates with hashes and notices.
+**What must be fully done.** Generate C#/TS/Kotlin-lite plus Connect Kotlin gRPC-Web packages from registry 04/annex 10, including native-auth HTTP exceptions, catalog operations and all transcript/output fields. Retire native-grpc-only contracts-client before the first business schema release. Export every method's eight authorization fields, scope, tags, risks, compatibility and exact source rule. Commit generated source and descriptor manifests.
 
-**Testing requirements.** Network-free regeneration after locked tool restore; all numbered types/operations/profiles resolve, independent exact-value and error vectors, isolated C#/React/Kotlin consumers.
+**Testing requirements.** Independent exact-value/state/target/context/archive vectors in three languages; descriptor-tag collision/removal and operation-count checks; regeneration clean; consumers restore NuGet/npm/Maven from immutable candidate feeds.
 
-**Completion gate.** Every accepted first-party consumer contract exists before its implementation; Hello is only an example. All matching artifacts pass codec/build checks.
+**Completion gate.** Every active operation is classified and decodable; future names are reserved; all packages pass real isolated consumer tests before publication.
 
 <a id="rule-wp-03.06"></a>
 
@@ -162,10 +161,20 @@ The complete initial Resource/owner/query/measurement/simulator, public operatio
 
 **Required implementation and closure from the final review.** Implement and independently verify [04-protobuf-wire-registry](../../architecture/contracts/04-protobuf-wire-registry.md). Generate every added account/provider, structural move, full Slate/ASR and encodedBody operation/record. Preserve field tags, exact ticks/integers and ModelId grammar. Independently decode >4 MiB Document/Timeline/Task bodies and reject wrong descriptor/hash/generation. Include all public/local methods in descriptor compatibility and the real-provider coverage map. Record exact artifact identities and real/fixture status with the existing substeps; these cases are part of this package's completion gate.
 
+<a id="rule-wp-03.07"></a>
+
+### WP-03.07 — Signed catalog and update format producer
+
+**What must be fully done.** Publish catalog-index.v1, catalog-revocations.v1, android-update.v1 and realm.v1 schemas, canonical signing vectors and separate fixture trust roots. Define malformed, expired, rollback and mixed-shard vectors under arch 15/deployment 22. Production keys are WP53 output, not an input here.
+
+**Testing requirements.** Independent signature/hash verification, exact integer handling and expired/revoked/unknown-key refusal.
+
+**Completion gate.** WP32/WP41 can implement complete consumers with deterministic fixture keys and named later production replacement.
+
 <a id="rule-wp-03.90"></a>
 ### WP-03.90 — Verify the owned artifact and real integration
 
-**What must be fully done.** Create handwritten proto from the frozen first-version schema registry, public/internal package split, AI HTTP/event definitions and generated C#/TS artifacts. Publish profiles, independent fixtures and version metadata before consumers. Remove C# → OpenAPI as business wire authority.
+**What must be fully done.** Create handwritten proto from the frozen first-version schema registry, public/internal package split, private CF binding/event definitions and generated C#/TS/Kotlin artifacts. Publish profiles, independent fixtures and version metadata before consumers. Remove C# → OpenAPI as business wire authority.
 
 **Execution order.** Follow [staged artifact integration](../README.md#staged-artifact-integration): consume only existing assigned producers, publish an owned capability candidate before its product consumer, and verify the declared stage against exact upstream artifacts. Record pending later owners and their closing gates; local mocks cover only that named test boundary.
 
@@ -189,11 +198,15 @@ The complete initial Resource/owner/query/measurement/simulator, public operatio
 
 ---
 
+State fixtures enumerate every numbered TaskState and TaskReasonFacet, including waiting with approval/device/capacity/dependency/reconciliation and non-waiting with none. An unknown future response facet renders an unknown reason while retaining authoritative TaskState and revision; it never grants authority or invents success. Unknown request facets refuse. Retained enum numbers remain fixed and descriptor compatibility prevents reuse of reserved values.
+
 ## 7. Tests and verification evidence
 
-[Local gRPC closure](../../architecture/contracts/09-local-grpc-and-sandbox.md): Publish complete .LocalRpc.Platform/.Sandbox and all typed parser/connector/hint/bootstrap methods before consumers. Descriptor fixture checks include every field in local09 and wire04.
+Acceptance includes every amended §5 producer/consumer and WP-03.90 evidence. Current P2-013 contracts/data/runtime rules are tested in the original owner implementation, not a detached explanatory sample.
 
-Generate an operation-by-actor reachability matrix for every public/local/operator/CF/exception binding under catalogue00 AZ-04, with all seven effective authorization fields and source profile. Fail unclassified/ambiguous fields, nonexistent idempotency examples, public imports of local schema and tool reachability of human-only approval/credential/commerce/policy methods. Include resource/context/connector egress denials and hostile actor-chain cases.
+[Local gRPC closure](../../architecture/contracts/09-local-grpc-and-sandbox.md): Publish complete .LocalRpc.Platform/.Sandbox and all typed parser/connector/hint/bootstrap methods before consumers. Descriptor fixture checks include every field in local 09 and wire 04.
+
+Generate an operation-by-actor reachability matrix for every public/local/operator/CF/exception binding under catalogue 00 AZ-04, with all seven effective authorization fields and source profile. Fail unclassified/ambiguous fields, nonexistent idempotency examples, public imports of local schema and tool reachability of human-only approval/credential/commerce/policy methods. Include resource/context/connector egress denials and hostile actor-chain cases.
 
 **Required evidence addition.** Generated wire/schema vectors for origin, scalar queries and measurement results, including exact decimals/instants, statuses and unknown-field/version behavior. The contract suite checks all catalogue producer codes.
 
@@ -242,4 +255,4 @@ Include source KnowledgePolicy/Patch/View, typed one-use overrides, stable Notes
 
 ## Current application and stream contract completeness
 
-WP03.05 implements [annex10](../../architecture/contracts/10-application-scope-and-streams.md) and the exhaustive [scope manifest11](../../architecture/contracts/11-operation-scope-manifest.md) together with the existing registry. Generate all appended fields, history-import archive records,13 new operations, EventService.Poll and operator bindings. Verify every operation has one current scope/transport class; reserved future Hub/DeviceSso methods are absent from active service registration and tool allowlists. Public connector management remains an application-scoped Cloud API, not helper IPC. C#/TS/Kotlin fixtures include binary unary/stream frames and scope/presence/unknown fields; clean consumers must use current published contracts-connect-client rather than the older native-grpc-only Android client. This is required before03 completion, not a .90 design task.
+WP03.05 implements [annex 10](../../architecture/contracts/10-application-scope-and-streams.md) and the exhaustive [scope manifest11](../../architecture/contracts/11-operation-scope-manifest.md) together with the existing registry. Generate all appended fields, history-import archive records,13 new operations, EventService.Poll and operator bindings. Verify every operation has one current scope/transport class; reserved future Hub/DeviceSso methods are absent from active service registration and tool allowlists. Public connector management remains an application-scoped Cloud API, not helper IPC. C#/TS/Kotlin fixtures include binary unary/stream frames and scope/presence/unknown fields; clean consumers must use current published contracts-connect-client rather than the older native-grpc-only Android client. This is required before 03 completion, not a .90 design task.

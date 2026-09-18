@@ -117,13 +117,13 @@
 
 <a id="rule-wp-11.04"></a>
 
-### WP-11.04 — Secret broker
+### WP-11.04 — Per-application secrets and session isolation
 
-**What must be fully done.** Secrets are stored in platform secure storage, referenced by `SecretRef`, and used through the broker. Use and reveal are separate operations with separate authorization. A secret-bearing type has no string representation and cannot be logged or serialized into a contract.
+**What must be fully done.** Provide Platform secure storage/broker primitives scoped to realm/account/product/installation, with no cross-product SSO endpoint. Connector child grants are foreground/definition-bound and cannot export raw secrets.
 
-**Testing requirements.** A structural test that a secret type cannot be logged or serialized; a use-without-reveal test; a reveal-authorization test; a platform round-trip test per operating system.
+**Testing requirements.** Cross-product access, revoked grant, agent-as-human and stale recovery generation all fail; own sign-out leaves other apps and local data intact.
 
-**Completion gate.** A secret can be used without being revealed, and a secret type is structurally unloggable and unserializable.
+**Completion gate.** Actual OS secret-store adapters and isolation tests pass; Cloud authentication arrives in WP22.
 
 <a id="rule-wp-11.05"></a>
 
@@ -169,7 +169,7 @@
 
 ### WP-11.09 — Content helper and OS-enforced isolation
 
-**What must be fully done.** Build and solely own the first-party C# Native AOT ContentSandbox, generated gRPC broker/control bindings and all restricted RID launch profiles in [isolation24](../../architecture/24-content-and-extension-isolation.md). Publish ContentSandbox.Contracts, Broker and the foundation Runtime.<rid> before WP13 consumes them. WP13 later adds production parser composition to the same host and publishes a new immutable Runtime version; this stage has no reverse dependency on those parsers. Prove OS containment with a deliberately hostile first-party test parser; production PDF/image/media/OTIO libraries are supplied and retested by WP13, never an upstream input here.
+**What must be fully done.** Build and solely own the first-party C# Native AOT ContentSandbox, generated gRPC broker/control bindings and all restricted RID launch profiles in [isolation 24](../../architecture/24-content-and-extension-isolation.md). Publish ContentSandbox.Contracts, Broker and the foundation Runtime.<rid> before WP13 consumes them. WP13 later adds production parser composition to the same host and publishes a new immutable Runtime version; this stage has no reverse dependency on those parsers. Prove OS containment with a deliberately hostile first-party test parser; production PDF/image/media/OTIO libraries are supplied and retested by WP13, never an upstream input here.
 
 **Testing requirements.** Publish and execute the real restricted helper on every supported RID. Attempt product-store/secret reads, loopback/external networking, process escape and descriptor abuse; inject native crash, hang, output overflow and parent death. Verify OS denial, resource bounds and cleanup. Test missing profile without an unsafe fallback.
 
@@ -206,7 +206,7 @@
 
 ## 7. Tests and verification evidence
 
-[Local gRPC closure](../../architecture/contracts/09-local-grpc-and-sandbox.md): Own actual signed restricted gRPC helper and launch-secret/OS-descriptor allowlist; prove hostile fixture containment and private-copy/digest validation. Implement DeviceSsoBroker mechanics and generated ConnectorBroker security boundary; real connector providers are WP41.
+[Local gRPC closure](../../architecture/contracts/09-local-grpc-and-sandbox.md): Own actual signed restricted gRPC helper and launch-secret/OS-descriptor allowlist; prove hostile fixture containment and private-copy/digest validation. Implement independent per-application session protection and the generated parent-owned ConnectorBroker security boundary; real connector providers are WP41.
 
 | Evidence | Produced by |
 |---|---|

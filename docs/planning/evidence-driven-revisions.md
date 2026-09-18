@@ -138,6 +138,8 @@ The prerequisite evidence **[D-019](../decisions/phase-1-foundation-decisions.md
 
 ### R-12 — Native shims are ABI skeletons, and two are fenced
 
+Historical revision record: current transport, generated-code and repository rules are amended by P2-009…P2-013; do not execute superseded baseline mechanics.
+
 | Field | Content |
 |---|---|
 | **Evidence** | There, `§5.2`. Each of the six shims contains **2–3 files, 28–120 lines**, exposing only the version / build-info / last-error triple. Total across all six plus shared: ~514 lines |
@@ -147,6 +149,8 @@ The prerequisite evidence **[D-019](../decisions/phase-1-foundation-decisions.md
 | **Verification** | [WP-01.03](work-packages/01-repository-reconciliation-and-target-layout.md#rule-wp-01.03)'s gate asserts the two fenced shims are unreferenceable and their analyses are scheduled against named sub-steps |
 
 ### R-13 — Preserve the single Cloud Host
+
+Historical revision record: current transport, generated-code and repository rules are amended by P2-009…P2-013; do not execute superseded baseline mechanics.
 
 | Field | Content |
 |---|---|

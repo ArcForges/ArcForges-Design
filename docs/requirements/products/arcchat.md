@@ -1,14 +1,14 @@
-# ArcChat — Product Requirements
+# Application Assistant — Feature Requirements
 
 P2-012 current implementation authorities: [Complete assistant surface specification](../../experience/01-embedded-assistant.md); [Independent application history modes](../../architecture/data-model/05-application-history.md).
-> Current scope amendment: **[P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
+> Effective scope: P2-012 and P2-013 amend the technology and application ownership below. **[P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Requirements / Products
 > Feature identity: legacy `arcchat` requirement IDs; implementation is the application-owned assistant in DesktopPlatform, not a standalone desktop product. Product partitions are arcnotes/arcscope/arcslate; companion chats use companion.
 > Companions: [`../05-ai-and-agent-execution.md`](../05-ai-and-agent-execution.md), [`../06-knowledge-search-and-retrieval.md`](../06-knowledge-search-and-retrieval.md), [`../08-extensions-and-developer-platform.md`](../08-extensions-and-developer-platform.md), [`../09-shared-desktop-experience.md`](../09-shared-desktop-experience.md), [`arcchat-mobile-and-web.md`](arcchat-mobile-and-web.md)
 
-> **ArcChat = Chat-first interface + Agent execution surface + Task control centre + ArcForges capability hub.**
+> **ArcChat = Chat-first interface + Agent execution surface + Task control centre + own-application capability surface.**
 
 Six sentences that decide almost every design question:
 
@@ -25,11 +25,11 @@ Six sentences that decide almost every design question:
 
 | # | Requirement |
 |---|---|
-| PB-01 | ArcChat serves **three depths of use in one product**: a quick answer, a directed piece of work, and a long-running orchestrated workflow. It must not fork into three products or three modes of a shell. |
-| PB-02 | **ArcChat is a control plane, never a mandatory data gateway** (**[D-010](../../decisions/phase-1-foundation-decisions.md#rule-d-010)**). Professional products reach Cloud directly for their own data. |
-| PB-03 | Platform assistant packages implement full per-app conversations/messages/projects/profiles/skills. Local history and drafts are app-owned; opted-in Cloud histories and Cloud automation/execution retain server authority under model05. No shared assistant database/service across products. |
+| PB-01 | Each embedded assistant provides quick answers, directed work and durable task interaction in one feature surface; it is not a separately installed product. |
+| PB-02 | Each host connects directly to Cloud through Platform APIs. The assistant is its own application's control UI, never a gateway for another product. |
+| PB-03 | Platform assistant packages implement full per-app conversations/messages/projects/profiles/skills. Local history and drafts are app-owned; opted-in Cloud histories and Cloud automation/execution retain server authority under model 05. No shared assistant database/service across products. |
 | PB-04 | **ArcChat never owns**: an authoritative ArcNotes document copy, a writable ArcNotes knowledge database, an authoritative ArcScope session, raw ArcScope capture, an ArcSlate timeline, ArcSlate media ownership, or any professional product's undo stack ([I-020](../01-normative-glossary-and-invariants.md#rule-i-020)). |
-| <a id="rule-pb-05"></a>PB-05 | Thin Preview + Rich Handoff governs results. Native text/image previews and document/media metadata or thumbnails are sufficient; a code/Diff/Office/PDF editing or full media preview workbench is not required. Professional editing opens the owning product; required edit-approval previews remain reviewable. |
+| <a id="rule-pb-05"></a>PB-05 | Thin Preview plus OpenArtifact: text/image previews, metadata and thumbnails are sufficient; professional editing opens the owning domain inside this application. Edit-approval previews remain reviewable; no separate workbench or cross-product handoff is implied. |
 | PB-06 | The native client and local capability bridge are open-source product functionality. Official AI requires an active paid service term with replenishing capacity and optional credits. Local AI, end-user BYOK and a desktop agent scheduler are excluded. |
 
 ### 1.1 Non-goals
@@ -49,7 +49,7 @@ Primary surfaces:
 | **Tasks** | The Task Center |
 | **Artifacts** | The artifact library |
 | **Projects** | Long-term working contexts |
-| **Apps** | The ArcForges capability centre |
+| **Capabilities** | Own-application capability inventory and allowed integrations |
 | **Automations** | Automation definitions and run history |
 | **Settings** | Preferences and configuration |
 
@@ -110,8 +110,8 @@ Primary surfaces:
 | CX-02 | **Input attachments and context references are different** ([I-110](../01-normative-glossary-and-invariants.md#rule-i-110), [I-111](../01-normative-glossary-and-invariants.md#rule-i-111)). An attachment is content the user supplied for this turn; a reference points at a resource that lives elsewhere. |
 | <a id="rule-cx-03"></a>CX-03 | **A context reference does not copy content** ([I-051](../01-normative-glossary-and-invariants.md#rule-i-051)). Content is materialised at retrieval time, minimally ([CP-02](../06-knowledge-search-and-retrieval.md#rule-cp-02)). |
 | CX-04 | **"Attach" never means "copy everything"** for a large resource. A large document, session or project is referenced and queried through its owner. |
-| CX-05 | The **`@` picker** addresses resources, apps, projects and artifacts; the **`/` prefix** addresses commands and skills. Their semantics are distinct and never overloaded. |
-| CX-06 | **`@App` does not mean "add the whole application to the prompt".** It qualifies scope, or invokes that application's context contribution. |
+| CX-05 | The **`@` picker** addresses own-application resources, projects and artifacts; the **`/` prefix** addresses commands and skills. Their semantics are distinct and never overloaded. |
+| CX-06 | An application qualifier refers only to the selected current product/installation. It never imports an entire application or expands access to another product. |
 | CX-07 | **A Context Inspector must exist**, showing exactly what will be sent, with per-item removal. |
 | CX-08 | Three context lifetimes are distinguished: **pinned** (persists), **temporary** (this turn only), **project** (inherited from the project). |
 | CX-09 | **Context scope is never expanded silently** ([AS-05](../06-knowledge-search-and-retrieval.md#rule-as-05)). Any expansion is user-visible and enters the retrieval trace. |
@@ -128,7 +128,7 @@ Primary surfaces:
 | PJ-02 | **A project stores references, not copies** of professional data ([I-051](../01-normative-glossary-and-invariants.md#rule-i-051)). |
 | PJ-03 | **Deleting a project never cascades into external professional resources** ([LC-05](../08-extensions-and-developer-platform.md#rule-lc-05) analogue). Referenced ArcNotes documents, ArcScope sessions and ArcSlate projects survive. |
 | PJ-04 | ArcChat-owned content inside a deleted project — its conversations and tasks — is preserved or explicitly handled, never silently destroyed. |
-| PJ-05 | Projects and their acknowledged content belong to the selected Cloud workspace. Native cached projections and unsent drafts are durable; a local-only agent project is not a supported storage or execution mode. |
+| PJ-05 | Local projects and history belong to this application's model 05 store. Explicit Cloud-history projects belong to its product/workspace partition. Cloud execution metadata and automation remain server-owned regardless of transcript mode. |
 
 ---
 
@@ -164,23 +164,23 @@ Primary surfaces:
 
 ---
 
-## 8. Apps and capability hub
+## 8. Application capabilities
 
-**Apps = the ArcForges capability centre**, not an installed-programs list.
+**Capabilities** is the current application's typed capability surface, not a local application-discovery hub.
 
 | # | Requirement |
 |---|---|
-| AP-01 | Each application card shows: identity, installed state, running state, version, contract compatibility, health, and its contributed capabilities. |
-| AP-02 | **Installed and running are separate states** ([I-007](../01-normative-glossary-and-invariants.md#rule-i-007)). An installed but stopped application can be **launched on demand** ([P-06](../00-product-scope-and-portfolio.md#rule-p-06)). |
+| AP-01 | The capability panel shows this application's identity, version, health, compatibility, granted capabilities and explicitly chosen remote installation where applicable. |
+| AP-02 | Installed and running are distinct. Cloud-targeted work waits when the chosen application is closed; no automatic launch or substitute application. |
 | AP-03 | Capabilities are inspectable per application, with risk level, permission requirements and current availability. |
 | AP-04 | **The Apps page is not a third-party package manager in V1.** Package management belongs to the extension platform surfaces. |
-| AP-05 | A not-installed Arc product may be shown, without becoming marketing pressure ([CA-09](../08-extensions-and-developer-platform.md#rule-ca-09)). |
+| AP-05 | The assistant offers this application's admitted capabilities and integrations. It has no catalogue of absent first-party applications or suite-install prompt. |
 | <a id="rule-ap-06"></a>AP-06 | **Applications contribute six kinds of thing**, not merely "tools": **Actions**, **Agent Capabilities**, **Context Providers**, **Artifact Handlers**, **Suggested Tasks**, and **Deep Links / Open Targets**. |
 | AP-07 | **A capability's description is richer than an ordinary tool schema** (`CapabilityDescriptor` in the glossary): identity, typed method, contract version, input/output summary, whether it writes, required scope, risk level, confirmation requirement, dry-run/undo/cancel support, expected duration, resource size and concurrency limits. |
 | AP-08 | **Every capability carries a trust level** (§9). |
 | AP-09 | **Capability version compatibility exists from the first release** ([P-13](../00-product-scope-and-portfolio.md#rule-p-13), [CM-01](../12-quality-and-compatibility-contract.md#rule-cm-01)). |
 | AP-10 | **Application events may drive agent automation** — the event feeds an ordinary automation trigger with deduplication, causation and throttling ([EP-05](../08-extensions-and-developer-platform.md#rule-ep-05)). **V1 keeps event automation simple**; time triggers are the baseline. |
-| AP-11 | AI same-application orchestration runs in the single Cloud harness. ArcChat bridges authorized desktop tools; simple user-directed handoffs can go directly to the owning product. |
+| AP-11 | The sole Cloud Harness orchestrates work within the selected application. Its own bridge invokes typed product ports; navigation stays inside the current owner. |
 
 ### 8.1 Capability invocation ordering
 
@@ -282,14 +282,14 @@ Cloud service access has one customer mode: subscribed, operator-managed AI. The
 
 | # | Requirement |
 |---|---|
-| <a id="rule-se-01"></a>SE-01 | Global search covers ArcChat's own data — conversations, projects, tasks, artifacts — and **federates** to other Arc products ([SR-03](../06-knowledge-search-and-retrieval.md#rule-sr-03)). |
+| <a id="rule-se-01"></a>SE-01 | Search covers this application's assistant conversations, projects, tasks, artifacts and admitted own-product content. No federation to another product. |
 | SE-02 | **Search results display their owner** ([SR-09](../06-knowledge-search-and-retrieval.md#rule-sr-09)). |
 | SE-03 | **Search never copies authoritative data.** ArcChat does not build a second complete index of another product's content ([I-031](../01-normative-glossary-and-invariants.md#rule-i-031)). |
 | SE-04 | **Search does not cross workspaces by default** ([CS-05](../03-cloud-services-and-sync.md#rule-cs-05)). |
 | SE-05 | Local and cloud search share one user experience while remaining distinct in scope and capability. |
-| SE-06 | A search result is directly actionable: open, attach as context, add to a project, or hand off. |
+| SE-06 | A result may open in the current application, attach as admitted context or join an own-app project. Cross-product handoff is future-only. |
 | SE-07 | **A search query is not a prompt** ([I-147](../01-normative-glossary-and-invariants.md#rule-i-147)). Typing a search does not invoke a model. |
-| SE-08 | **Web search is an AI/agent capability**, labelled distinctly from cloud search, costs credits, and **requires citations** ([CO-07](#rule-co-07), [EC-09](../06-knowledge-search-and-retrieval.md#rule-ec-09)). |
+| SE-08 | Web search is a separately labelled AI capability with citations. Requests are operator-funded; processing results uses customer AI capacity. |
 | SE-09 | **ArcChat does not save whole web pages as invisible long-term knowledge** ([I-149](../01-normative-glossary-and-invariants.md#rule-i-149), [KP-01](../06-knowledge-search-and-retrieval.md#rule-kp-01)). Web content is request context and citation. |
 
 ---
@@ -323,10 +323,10 @@ Cloud service access has one customer mode: subscribed, operator-managed AI. The
 
 | # | Requirement |
 |---|---|
-| QB-01 | A **global Quick Bar** is available system-wide, distinct from the in-product **Command Palette** ([CM-07](../09-shared-desktop-experience.md#rule-cm-07)). The palette runs commands in the current product; the quick bar starts work anywhere. |
-| QB-02 | **The global shortcut is platform-safe and user-configurable** ([SH-04](../09-shared-desktop-experience.md#rule-sh-04)). |
-| QB-03 | Invoked from a professional product, the quick bar may carry that product's **current context**. |
-| QB-04 | Invoked globally from the operating system, it carries **no professional context by default**. |
+| QB-01 | An in-application Quick Bar opens the assistant or searches its own history/context. It is distinct from the current application's Command Palette; no system-wide hotkey or standalone launcher is required. |
+| QB-02 | Quick Bar shortcuts are application-local, platform-safe and user-configurable. |
+| QB-03 | Invocation may include the current host's explicitly selected context, subject to Context Inspector and egress rules. |
+| QB-04 | Opening the assistant without selected context starts with no professional context; it cannot inspect another application. |
 
 ---
 
@@ -338,7 +338,7 @@ Cloud service access has one customer mode: subscribed, operator-managed AI. The
 | ON-02 | AI onboarding selects an available Cloud model policy after sign-in, shows service eligibility and usage limits, and obtains any required purchase through the approved commerce surface. |
 | <a id="rule-on-03"></a>ON-03 | Local AI and all end-user BYOK setup paths are excluded. |
 | ON-04 | Official AI requires an ArcForges account and active paid service term. Extra credits alone do not activate AI. Self-hosting uses the configured operator service grant, not official credits. |
-| ON-05 | **Application detection is informative, not coercive.** Discovering that ArcNotes is installed enables capabilities; not having it must not push a suite installation. |
+| ON-05 | Onboarding explains the owning application's capabilities and explicit Cloud target. No local application discovery or suite-install workflow exists. |
 | ON-06 | **Permissions are not front-loaded into onboarding** ([UX-01](../07-security-privacy-and-trust.md#rule-ux-01)). They are just-in-time. |
 | ON-07 | For an eligible account, first value is a first answer or simple Cloud agent task. An ineligible/offline state gives a precise next action rather than a fake response. |
 
@@ -360,7 +360,7 @@ Cloud service access has one customer mode: subscribed, operator-managed AI. The
 |---|---|
 | ST-01 | **Skills, MCP and Apps are manageable product objects with their own surfaces**, not buried in Settings. Settings carries defaults and preferences. |
 | ST-02 | End users never configure model-provider credentials. MCP/connector credentials remain purpose-scoped secrets by reference; they cannot act as a BYOK inference bypass. |
-| ST-03 | Cloud sync and AI processing permissions are distinct. Sync does not authorize every resource as AI context. Conversations/tasks are Cloud-owned; sending AI content is Cloud processing. |
+| ST-03 | Cloud history and AI processing are separate choices. Desktop history defaults local; explicit Cloud history is server-owned; temporary mode is not stored. Cloud execution metadata remains authoritative even when bodies stay local. |
 | ST-04 | Every Cloud agent operation uses one selected owner workspace for data authorization, service eligibility and metering. Cross-realm billing or a local-only agent task billed elsewhere is excluded. |
 | ST-05 | Unsent drafts and local-only professional files are never uploaded merely on sign-in. Sending/attaching explicitly authorizes only the displayed content scope. |
 | ST-06 | **The active workspace and context scope are always visible** ([AC-03](../09-shared-desktop-experience.md#rule-ac-03)), and there is **no silent cross-workspace context** ([AS-02](../06-knowledge-search-and-retrieval.md#rule-as-02)). |
@@ -374,7 +374,7 @@ Cloud service access has one customer mode: subscribed, operator-managed AI. The
 | **Cloud outage** | Cached history, drafts, deterministic search and authorized native tools remain usable. New AI requests wait for Cloud; there is no local model loop. Cloud-dependent capabilities degrade with a specific reason. The whole product does not enter a red offline mode ([ST-03](../09-shared-desktop-experience.md#rule-st-03) in the shared desktop requirements). |
 | **Provider failure** | Reserved credits are released; the failure is reported with a retry or alternative; the user is not charged for platform-caused retries ([CU-03](../05-ai-and-agent-execution.md#rule-cu-03)). |
 | **Agent task failure** | The **task** is marked failed, **not the conversation**. |
-| **Professional application unavailable** | The task waits or needs attention with a specific reason and a launch or install route ([HO-02](../09-shared-desktop-experience.md#rule-ho-02)–[HO-04](../09-shared-desktop-experience.md#rule-ho-04)). |
+| **Target application unavailable** | Task waits with TaskState=waiting and reasonFacet=device and a visible target/expiry. The user opens the target explicitly; no launch, install or retarget occurs automatically. |
 | **MCP server down** | ArcChat continues; the integration is degraded. |
 
 ---
@@ -383,7 +383,7 @@ Cloud service access has one customer mode: subscribed, operator-managed AI. The
 
 | # | Requirement |
 |---|---|
-| <a id="rule-ex-01"></a>EX-01 | Cloud conversation export supplies documented JSON/text content with an attachment manifest and explicit availability. The client downloads the artifact; no standalone local conversation archive/recovery format is required. |
+| <a id="rule-ex-01"></a>EX-01 | Local history exports one committed conversation snapshot as assistant-history.v1 with optional Markdown. Cloud history uses JSON/text plus an attachment-availability manifest from the owned Cloud export job. Missing resources are reported; no secret or pending grant is exported. |
 | <a id="rule-ex-02"></a>EX-02 | Cloud task-summary and selected artifact export preserve provenance and declared scope. They exclude secret credentials, private operational traces and another product’s unselected data. |
 | <a id="rule-ex-03"></a>EX-03 | **ArcChat export never includes API keys or secrets** ([EX-10](../13-data-formats-and-portability.md#rule-ex-10) in the data requirements). |
 | EX-04 | **Public share links are not in V1** (`§18` of the cloud requirements). Sharing is by export. |
@@ -394,7 +394,7 @@ Cloud service access has one customer mode: subscribed, operator-managed AI. The
 
 | # | Requirement |
 |---|---|
-| BL-01 | The owning product may use its existing visible background/tray lifecycle for its own device tools. Cloud owns schedules and the model loop; quitting that app makes only its tools unavailable. |
+| BL-01 | Visible residence and last-window close follow shared desktop BR-01; it is a per-host option, default off. Quit disconnects only this application's tools; Cloud schedules and tasks remain server-owned. |
 | BL-02 | **It must never reside in the background secretly.** The state is visible, and the user can stop it. |
 | BL-03 | Restart recovers Cloud task projections and durable local tool receipts. A lost reply reconciles by operation identity; the desktop never recreates or blindly reruns the Cloud agent loop. |
 | BL-04 | Each assistant surface is owned by its application process; no standalone assistant/system service or cross-product runtime is installed. |
@@ -431,7 +431,7 @@ ArcChatDataScope
 | **Composer** | Chat/Agent modes, `@` context, model selection, basic agent profile, attachments |
 | **Projects** | Instructions, references, chats, tasks, artifacts |
 | **Agent** | Task creation, Task Center, progress, approval, cancel, artifacts |
-| **Apps** | Detect Arc products, installed/running state, capabilities, launch on demand |
+| **Capabilities** | Own-application capabilities, permissions and explicit Cloud target state |
 | **Profiles / Skills** | A default profile, user profiles, user skills, skill assignment |
 | **AI** | Cloud subscription service, Auto/explicit model, actual usage, capacity recovery and opt-in extra credits |
 | **Search** | ArcChat data search plus the application-scoped search foundation |
@@ -471,9 +471,9 @@ An **ArcChat Reference Coverage Matrix** is required before ArcChat implementati
 
 **Approval** — an approval names the resource and revision, shows the impact, and is invalidated by a revision change.
 
-**same-application** — ArcChat requests a report; ArcNotes creates the document; ArcChat receives an `ArtifactRef`; the document is owned by ArcNotes; deleting the artifact entry does not delete the document.
+**Own-application result** — ArcNotes' embedded assistant requests a document; ArcNotes creates it through its validated Application port and returns an ArtifactRef. Removing the artifact entry preserves the document.
 
-**Application not running** — the capability launches ArcNotes on demand, or reports unavailability with a clear route.
+**Application not running** — the companion shows TaskState=waiting and reasonFacet=device for its selected installation until that application is explicitly opened or the request expires.
 
 **Version mismatch** — an incompatible professional product produces a specific "requires version X" message.
 

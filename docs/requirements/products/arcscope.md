@@ -1,5 +1,5 @@
 # ArcScope — Product Requirements
-> Current scope amendment: **[P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
+> Effective scope: P2-012 and P2-013 amend the technology and application ownership below. **[P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Requirements / Products
@@ -189,7 +189,7 @@ The time model is a product-level design, not an implementation detail.
 
 Analog channels use linear interpolation between adjacent finite samples within one run; both endpoints must be in the window. Digital channels are right-continuous steps, with crossings at the later timestamp. Rising crossing uses `x0 < q <= x1`, falling uses `x0 > q >= x1`, so a plateau counts once. Do not extrapolate across a boundary or interpolate across a gap/nonfinite sample.
 
-A complete cycle consists of consecutive rising 50% crossings and exactly one intervening falling 50% crossing in the same run. Its period is rise-to-rise; its high duration is rise50-to-fall50. Sum durations before division: averaging per-cycle reciprocals or duty percentages is not equivalent and is forbidden. A rise edge pairs rising 10% with the next rising 90% before a falling 10%; a new rising 10% replaces an unfinished candidate. A fall edge symmetrically pairs falling 90% with falling 10%, invalidated by rising 90%. Crossings within one segment are processed in temporal order, with rising thresholds low-to-high and falling thresholds high-to-low on a simultaneous digital edge. A gap cancels all pending edge/cycle candidates. Never report zero frequency or zero duty as a substitute for no complete observation.
+A complete cycle consists of consecutive rising 50% crossings and exactly one intervening falling 50% crossing in the same run. Its period is rise-to-rise; its high duration is rise 50-to-fall 50. Sum durations before division: averaging per-cycle reciprocals or duty percentages is not equivalent and is forbidden. A rise edge pairs rising 10% with the next rising 90% before a falling 10%; a new rising 10% replaces an unfinished candidate. A fall edge symmetrically pairs falling 90% with falling 10%, invalidated by rising 90%. Crossings within one segment are processed in temporal order, with rising thresholds low-to-high and falling thresholds high-to-low on a simultaneous digital edge. A gap cancels all pending edge/cycle candidates. Never report zero frequency or zero duty as a substitute for no complete observation.
 
 **Result and numerical contract.** Store the immutable request/config hash, profile, resolved levels, source bindings, per-family status (`ok`, `insufficient`, `invalid`), values/units, counts, coverage and uncertainty. Reasons are bounded: `noFiniteSamples`, `noCompleteCycle`, `noCompleteEdge`, `cursorUnavailable`, `invalidTimeOrder`, `invalidConfiguration`, `numericOverflow`. Invalid request syntax/configuration uses the operation catalogue's validation errors; data insufficiency is a successful typed result with no invented numeric value. Unknown profile returns `validation.unsupported_version`; historical results remain readable without recalculating them under a new default.
 
@@ -267,7 +267,7 @@ Also verify empty/constant data, nonfinite continuity breaks, irregular sampling
 | RP-03 | A report may contain: session and configuration provenance, measurements, analysis results, charts, annotations, findings and narrative. |
 | RP-04 | **A chart in a report is best stored as a reproducible view definition**, so it can be regenerated from data — with an exported report additionally able to carry a static snapshot. |
 | RP-05 | **Sources must be traceable from a report** back to session, capture, time range, configuration snapshot and analysis version. |
-| RP-06 | **The ArcScope → ArcNotes relationship is a copy/import**, creating a **new ArcNotes-owned document** with retained ArcScope provenance ([CP-03](arcnotes.md#rule-cp-03) in the ArcNotes requirements). **Two products never share one writable object** (`§4.2` of the product scope). |
+| RP-06 | ArcScope owns its reports and explicit supported exports. Creating an ArcNotes document from a report is future-only; no current cross-product capability or release gate is required. |
 
 ---
 
@@ -303,7 +303,7 @@ Export is in four classes:
 | <a id="rule-ai-02"></a>AI-02 | **AI does not process an entire raw capture.** It receives necessary structured results — measurements, analysis outputs, decoded event summaries, selected ranges ([CP-03](../06-knowledge-search-and-retrieval.md#rule-cp-03) in the knowledge requirements). |
 | AI-03 | **When AI states a number it must cite its source** — measurement, analysis result, range and revision ([EC-09](../06-knowledge-search-and-retrieval.md#rule-ec-09)). |
 | AI-04 | Internal AI actions are selection- and result-scoped: explain this range, summarise these findings, suggest a measurement, draft a report section. |
-| AI-05 | ArcScope has no agent harness. AI actions and orchestration use the single Cloud harness; ArcChat supplies the shared chat/task surface and local authorization bridge. |
+| AI-05 | ArcScope has no agent Harness. Its embedded assistant and selected actions use the sole Cloud Harness; ArcScope's own bridge validates and executes local tools. |
 | AI-06 | **"Ask ArcChat" passes a bounded context reference** — session, range, signals, results — never the raw capture. |
 | AI-07 | **The user must see the scope the AI used** ([RT-03](../06-knowledge-search-and-retrieval.md#rule-rt-03) in the knowledge requirements). |
 | <a id="rule-ai-08"></a>AI-08 | **A local-only capture must not be uploaded because an AI button was pressed** ([I-182](../01-normative-glossary-and-invariants.md#rule-i-182)). |
@@ -326,7 +326,7 @@ Query capabilities (list projects, sessions, captures, channels, signals, events
 | CL-03 | **Enabling project cloud sync does not upload raw capture.** Raw upload is an explicit per-session act. |
 | CL-04 | **The raw-capture cloud policy is explicit and visible** per project and per session. |
 | CL-05 | **Cloud metadata present with raw data missing locally is a normal state**, clearly presented — **never "corrupted"** ([AS-04](../03-cloud-services-and-sync.md#rule-as-04)). |
-| CL-06 | Hardware acquisition and analysis of local captures remain native. Cloud orchestrates authorized desktop tools through ArcChat; the Cloud simulator runs server-side without an online desktop. |
+| CL-06 | Hardware acquisition and local capture analysis remain native. Cloud targets ArcScope's own bridge for authorized tools; the simulator runs in Cloud without an online desktop. |
 | CL-07 | A remote agent may use an online desktop ArcScope to run analyses, subject to the full remote authorization model. |
 
 ---
@@ -346,7 +346,7 @@ The simulator supplies repeatable signal/event data through real Cloud persisten
 | <a id="rule-sim-07"></a>SIM-07 | Identical effective input under the same supported execution/encoding profile yields identical canonical segment content and hashes. The profile pins numeric semantics, RNG, generator and encoding versions; arbitrary cross-version/CPU floating-point equivalence is not promised. Host/run IDs and wall-clock metadata are outside the reproducible payload. |
 | <a id="rule-sim-08"></a>SIM-08 | Lifecycle is Queued → Starting → Running, with Pausing → Paused → Running, Stopping → Canceled, and terminal Succeeded or Failed. Success means the requested finite logical range completed. Cancel preserves committed segments and records a partial outcome, never success for an incomplete range. |
 | <a id="rule-sim-09"></a>SIM-09 | Start, pause, resume and cancel are durable, authorized, idempotent commands with expected state/revision. Stale commands and duplicate starts cannot create another run or resurrect a terminal run. Terminal reason and complete/partial extent are queryable. |
-| <a id="rule-sim-10"></a>SIM-10 | The single ASP.NET Core Cloud host executes bounded simulator work internally. Durable leases with fencing prevent replicas from publishing the same logical segment; request handlers do not run an unbounded generation loop. |
+| <a id="rule-sim-10"></a>SIM-10 | The C# Cloud Container executes bounded simulator job slices. Real-time pacing is coordinated by SimulationPacer DO alarms with durable D1 checkpoints and Cron rescue; no perpetual generation loop. |
 | <a id="rule-sim-11"></a>SIM-11 | Canonical batches become immutable object-storage segments. Each manifest entry contains run/profile identity, sequence, logical range, count, encoding, byte length and hash. Publication, manifest visibility and checkpoint advancement are recoverable: incomplete objects stay invisible and are cleaned; a committed manifest never references an unverified partial object. |
 | <a id="rule-sim-12"></a>SIM-12 | A durable checkpoint includes next tick, RNG/generator/replay positions, pending fault/reorder state and committed segment boundary. Pause/resume or host loss and lease takeover produce the same remaining canonical data without duplicate or missing logical ranges. |
 | <a id="rule-sim-13"></a>SIM-13 | Clients obtain an authorized manifest and resumable, hash-verifiable segments through HTTP/object storage, plus revision/cursor-based state/event polling. gRPC hint polling is an optional wakeup/preview hint, never the authoritative raw sample stream. Reconnect and disabled realtime preserve access to retained committed data. |
@@ -484,7 +484,7 @@ SimulationDefinition · ScenarioVersion · SimulationRun · SimulationSegment ·
 
 **Comparison** — alignment is explicit and stored; comparison produces no merged authoritative dataset; incompatible units block automatic comparison.
 
-**Report** — sources are traceable to session, range, configuration and analysis version; sending a report to ArcNotes creates a new ArcNotes-owned document with provenance, and the ArcScope report remains.
+**Report** — sources are traceable to session, range, configuration and analysis version; supported report export preserves provenance and leaves the source report intact. The future ArcNotes handoff example is not a current acceptance obligation.
 
 **Export** — CSV precision loss is declared; native export round-trips; a collect bundle is portable and non-destructive.
 

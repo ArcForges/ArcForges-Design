@@ -5,7 +5,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: A — Freeze and foundation
-> Upstream: none · Downstream: `01` · `47`
+> Upstream: None · Downstream: `01` · `47`
 
 > **Goal.** Make the vocabulary, the product set, the licence position and the reuse process *settled facts* before any code is written against them. This is the first hard gate: if naming, terminology, licence boundaries or product scope move later, editors, data formats, capabilities and cloud sync all rework.
 
@@ -52,14 +52,14 @@
 | BR-01 | **The product baseline is exactly ArcChat, ArcNotes, ArcScope and ArcSlate** (**[D-002](../../decisions/phase-1-foundation-decisions.md#rule-d-002)**). `ArcCanvas`, `ArcMusic`, `ArcImage` and `ArcVideo` are superseded and must never appear as current products. |
 | <a id="rule-br-02"></a>BR-02 | **`ArcVideo` and `ArcVideoFoundation` remain valid only as the names of existing reference repositories** (**[D-012](../../decisions/phase-1-foundation-decisions.md#rule-d-012)**), never as products. |
 | BR-03 | **Paddle is the sole customer-facing Merchant of Record; Payoneer is a payout destination only** (**[D-005](../../decisions/phase-1-foundation-decisions.md#rule-d-005)**). The superseded provider name never appears. |
-| BR-04 | **One canonical definition per same-application term; product-specific meanings are namespaced** (**[D-018](../../decisions/phase-1-foundation-decisions.md#rule-d-018)**). |
+| BR-04 | **One canonical definition per shared family term; product-specific meanings are namespaced** (**[D-018](../../decisions/phase-1-foundation-decisions.md#rule-d-018)**). |
 | BR-05 | **Every accepted `X ≠ Y` invariant is preserved** (**[D-018](../../decisions/phase-1-foundation-decisions.md#rule-d-018)**) and becomes enforceable. |
 | BR-06 | **Two licence boundaries exist**: Apache-2.0 for the interoperability boundary, AGPL-3.0-only for everything else (**[D-004](../../decisions/phase-1-foundation-decisions.md#rule-d-004)**, **[D-021](../../decisions/phase-1-foundation-decisions.md#rule-d-021)**). |
 | <a id="rule-br-07"></a>BR-07 | **No App Store exception, dual licensing, proprietary grant or CLA** (**[D-004](../../decisions/phase-1-foundation-decisions.md#rule-d-004)**). DCO continues with inbound-equals-outbound per scope. |
 | BR-08 | **Copy First is licence-gated and provenance-gated** (**[D-013](../../decisions/phase-1-foundation-decisions.md#rule-d-013)**). Unconditional copying is rejected. |
 | BR-09 | **A repository-root licence must not be assumed to cover every file** (**[D-013](../../decisions/phase-1-foundation-decisions.md#rule-d-013)**). |
 | BR-10 | **The technical exception list is closed** (`§8.1` of the scope requirements). Adding to it requires a formal decision. |
-| <a id="rule-br-11"></a>BR-11 | **The ArcChat AOT position is settled**: ArcChat Desktop is a Native AOT deliverable like the other desktop products (**[D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008)**). Any residual corpus text suggesting otherwise is stale. |
+| <a id="rule-br-11"></a>BR-11 | **The ArcChat AOT position is settled**: the owning desktop application is a Native AOT deliverable like the other desktop products (**[D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008)**). Any residual corpus text suggesting otherwise is stale. |
 | <a id="rule-br-12"></a>BR-12 | **ArcNotes scope is the notebook core, bounded typed properties, saved list/table views, references and cloud sync** (**[D-006](../../decisions/phase-1-foundation-decisions.md#rule-d-006)** as amended by **[P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006)**, 2026-09-06). Edgeless, slides and further database layouts are **excluded from delivery**, with no mandatory future hook. |
 
 ---
@@ -104,7 +104,7 @@
 
 **And the identifier index** ([PG-21](../../assurance/open-gates-register.md#rule-pg-21), [SV-01](../../assurance/testing-and-verification-strategy.md#rule-sv-01)): regenerate the defining-document and stable-anchor index and check all active citations. The design repair already closes the current corpus; this step verifies drift and installs the continuing check. Same-spelled rules in different documents must remain distinguishable ([OG-05](../../assurance/open-gates-register.md#rule-og-05)).
 
-**Testing requirements.** Compare both forward dependency tables, every WP header/section9 and the exact reverse transpose; validate the explicit topological schedule and current counts. Require unique top-level section numbers, resolvable links/anchors and one .90 evidence row per active WP. Historical review fixtures are scoped separately. A round-trip consistency check that the exported data matches [`../../requirements/01-normative-glossary-and-invariants.md`](../../requirements/01-normative-glossary-and-invariants.md) and `§7` of the coverage document exactly, in both directions — no term or invariant present in one and absent from the other. **A resolver run over every citation in `docs/`**, reporting each one's defining document and failing on a citation that resolves to zero definitions, or to several with no named home; the **1,597 citations ambiguous at this baseline** are worked to zero or individually waived with a reason.
+**Testing requirements.** Compare both forward dependency tables, every WP header/section 9 and the exact reverse transpose; validate the explicit topological schedule and current counts. Require unique top-level section numbers, resolvable links/anchors and one .90 evidence row per active WP. Historical review fixtures are scoped separately. A round-trip consistency check that the exported data matches [`../../requirements/01-normative-glossary-and-invariants.md`](../../requirements/01-normative-glossary-and-invariants.md) and `§7` of the coverage document exactly, in both directions — no term or invariant present in one and absent from the other. **A resolver run over every citation in `docs/`**, reporting each one's defining document and failing on a citation that resolves to zero definitions, or to several with no named home; the **1,597 citations ambiguous at this baseline** are worked to zero or individually waived with a reason.
 
 **Completion gate.** The exported policy data matches both source documents exactly, **and every citation in `docs/` resolves to exactly one definition or carries a recorded waiver** ([PG-21](../../assurance/open-gates-register.md#rule-pg-21)). **This does not close [PG-06](../../assurance/open-gates-register.md#rule-pg-06), which is already closed by design evidence, and it does not close [PG-11](../../assurance/open-gates-register.md#rule-pg-11), which requires implemented, passing checks.**
 
@@ -112,7 +112,7 @@
 
 ### WP-00.02 — Licence boundary declaration
 
-**What must be fully done.** Every project declares its SPDX identifier and its licence boundary as a build property. The Apache-2.0 set includes all Contracts public/internal schemas/tools/generators/fixtures/SDK/CLI under P2-010 and public protocol specifications, wire schemas, DTOs, public clients, contract-level validators, the public SDK, mobile-only libraries and ArcChat Mobile. Everything else is AGPL-3.0-only. The boundary is expressed as data that a policy test can read.
+**What must be fully done.** Every project declares its SPDX identifier and its licence boundary as a build property. The Apache-2.0 set includes all Contracts public/internal schemas/tools/generators/fixtures/SDK/CLI under P2-010 and public protocol specifications, wire schemas, DTOs, public clients, contract-level validators, the public SDK, mobile-only libraries and Android companion. Everything else is AGPL-3.0-only. The boundary is expressed as data that a policy test can read.
 
 **Testing requirements.** A check that every project declares a boundary; a check that the declared boundary matches the enumerated set; a reference-direction check that no AGPL project is referenced from an Apache project.
 
@@ -145,7 +145,7 @@
 ### WP-00.05 — Stale-claim reconciliation
 
 
-**What must be fully done.** Apply the current naming/scope/runtime authority to implementation repository manifests and policies: four desktop AOT products, Native AOT Cloud, React Web, Kotlin/Jetpack Compose Mobile and CF-only Harness. Record the ten repository owners and retired implementation scaffold dispositions; historical evidence stays dated and cannot override the accepted design.
+**What must be fully done.** Apply the current naming/scope/runtime authority to implementation repository manifests and policies: three professional desktop AOT products with embedded assistants, Native AOT Cloud, React Web, Kotlin/Jetpack Compose Mobile and CF-only Harness. Record the ten repository owners and retired implementation scaffold dispositions; historical evidence stays dated and cannot override the accepted design.
 
 **Testing requirements.** Repository-policy checks reject superseded product/provider names outside registered reference provenance, old runtime configuration and unassigned source ownership.
 
@@ -217,4 +217,4 @@
 
 ## Current source baseline and migration input
 
-The166-project ede43db monorepo inventory is historical disposition evidence, not the current checkout shape. [Family completion review](../../assurance/family-design-completion-review.md) records the separate DesktopPlatform/Contracts/Mobile bootstrap evidence and scope. Before coding, verify each actual source HEAD/dirty state and map only retained required mechanisms to its owning repository/package; preserve existing published Hello/probe compatibility and Mobile app/signing/version identity. Do not recreate deleted scaffolds, copy every legacy project, or treat unpublished implementation as missing design. Generated protocol artifacts follow the tracked authored-schema/generator baseline and immutable producer manifest from WP03; generated outputs are not categorically forbidden from version control.
+The 166-project ede43db monorepo inventory is historical disposition evidence, not the current checkout shape. [Family completion review](../../assurance/family-design-completion-review.md) records the separate DesktopPlatform/Contracts/Mobile bootstrap evidence and scope. Before coding, verify each actual source HEAD/dirty state and map only retained required mechanisms to its owning repository/package; preserve existing published Hello/probe compatibility and Mobile app/signing/version identity. Do not recreate deleted scaffolds, copy every legacy project, or treat unpublished implementation as missing design. Generated protocol artifacts follow the tracked authored-schema/generator baseline and immutable producer manifest from WP03; generated outputs are not categorically forbidden from version control.

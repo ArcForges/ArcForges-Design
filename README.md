@@ -30,3 +30,5 @@ Current producer and local gRPC amendment: [closure review](docs/assurance/produ
 ## Current design entry points
 
 [P2-012](docs/decisions/phase-2-specification-decisions.md#rule-p2-012) defines Cloudflare hosting and independent embedded assistants. Start with [project/package directories](docs/architecture/27-platform-projects-and-application-assistants.md), [client UX](docs/experience/README.md), [D1](docs/architecture/data-model/04-d1-execution-profile.md), [history](docs/architecture/data-model/05-application-history.md), and [scope/streams](docs/architecture/contracts/10-application-scope-and-streams.md). The [implementation sequence](docs/planning/implementation-sequence.md) contains51 active work packages; [cross-product collaboration](docs/future/cross-product-collaboration/README.md) is future only.
+
+Current coordinated repair: P2-013; see [verification record](docs/assurance/independent-review-remediation-verification.md). Runtime and commercial gates remain separate from design evidence.

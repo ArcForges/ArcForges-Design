@@ -93,7 +93,7 @@
 
 **What must be fully done.** Demux and decode through the boundary into pooled buffers. Buffers are returned on every path including failure. Pool exhaustion is measured and surfaced. Hardware acceleration is discovered at runtime with a proven software fallback, and the chosen path is visible.
 
-**Testing requirements.** Long-run buffer accounting; pool-exhaustion behaviour; forced-software-path equivalence; a decode-capability disclosure test.
+**Testing requirements.** Long-run buffer accounting; pool-exhaustion behaviour; forced-software-path equivalence; a decode-capability disclosure test. Measure the proposed playback/frame-drop/scrub/helper-memory profile from requirements 12, with hardware/RID/source fixtures recorded; inability to meet it is explicit and cannot be claimed from a probe ABI test.
 
 **Completion gate.** Buffers are never leaked, exhaustion is surfaced, and the software path produces equivalent output to the accelerated path within declared tolerance.
 
@@ -225,4 +225,4 @@
 
 ## P2-010 required behavior and closure
 
-Implement full retime/hold-linear-bezier keyframe, colour/effect/audio profiles from26; keep exact source/sequence time and typed graph semantics. No default-library result replaces a declared numeric rule. The referenced normative profile and producer stage matrix are binding inputs. Record independent positive/negative vectors and actual owner integration at this WP's assigned stage; a mock cannot close a real-provider/device requirement.
+Implement full retime/hold-linear-bezier keyframe, colour/effect/audio profiles from 26; keep exact source/sequence time and typed graph semantics. No default-library result replaces a declared numeric rule. The referenced normative profile and producer stage matrix are binding inputs. Record independent positive/negative vectors and actual owner integration at this WP's assigned stage; a mock cannot close a real-provider/device requirement.

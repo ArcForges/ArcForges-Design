@@ -107,7 +107,7 @@
 
 ### WP-12.03 — Cardinality and sampling
 
-**What must be fully done.** Enforce metric labels and bounded trace policy from observability13: head sample plus a bounded diagnostic buffer, error/slow promotion only for spans still retained, explicit overflow/loss counters. Unsampled mandatory error facts remain redacted logs/metrics under consent.
+**What must be fully done.** Enforce metric labels and bounded trace policy from observability 13: head sample plus a bounded diagnostic buffer, error/slow promotion only for spans still retained, explicit overflow/loss counters. Unsampled mandatory error facts remain redacted logs/metrics under consent.
 
 **Testing requirements.** Cardinality negative fixture, sampled/unsampled error, slow-span buffer expiry, overflow and disabled-consent tests.
 
