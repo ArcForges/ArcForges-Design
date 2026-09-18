@@ -164,9 +164,9 @@
 
 **Execution order.** Follow [staged artifact integration](../README.md#staged-artifact-integration): consume only existing assigned producers, publish an owned capability candidate before its product consumer, and verify the declared stage against exact upstream artifacts. Record pending later owners and their closing gates; local mocks cover only that named test boundary.
 
-**Testing requirements.** Independent local/Cloud query vectors, null/missing/invalid values, sorting/tie-breaks and snapshot pagination. Keep the producer edge to WP-40.
+**Testing requirements.** Independent local/Cloud query vectors, null/missing/invalid values, sorting/tie-breaks and snapshot pagination. Keep the producer edge to [WP-40](40-knowledge-search-and-retrieval.md#rule-wp-40).
 
-**Completion gate.** Independent local/Cloud query vectors, null/missing/invalid values, sorting/tie-breaks and snapshot pagination. Keep the producer edge to WP-40. Record exact artifacts and provider reality. The package is incomplete if an important contract/owner/recovery rule still requires design during coding.
+**Completion gate.** Independent local/Cloud query vectors, null/missing/invalid values, sorting/tie-breaks and snapshot pagination. Keep the producer edge to [WP-40](40-knowledge-search-and-retrieval.md#rule-wp-40). Record exact artifacts and provider reality. The package is incomplete if an important contract/owner/recovery rule still requires design during coding.
 
 ---
 
@@ -203,7 +203,7 @@
 
 ## 8. Completion gate
 
-**[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) gate:** [WP-28.90](#rule-wp-28.90) and all inherited domain-specific gates must pass on the same candidate closure. Independent local/Cloud query vectors, null/missing/invalid values, sorting/tie-breaks and snapshot pagination. Keep the producer edge to WP-40.
+**[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) gate:** [WP-28.90](#rule-wp-28.90) and all inherited domain-specific gates must pass on the same candidate closure. Independent local/Cloud query vectors, null/missing/invalid values, sorting/tie-breaks and snapshot pagination. Keep the producer edge to [WP-40](40-knowledge-search-and-retrieval.md#rule-wp-40).
 
 **Additional completion requirement.** Every scalar/query/profile vector passes on both owners; all supported list/table operations are implemented without new product design choices.
 

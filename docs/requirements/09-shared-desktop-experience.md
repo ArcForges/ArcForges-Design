@@ -314,7 +314,7 @@ The [naming policy](../architecture/28-product-naming-policy.md#file-association
 | <a id="rule-ho-02"></a>HO-02 | Missing local resource or unavailable remote target yields a precise availability explanation; navigation never installs another product. |
 | <a id="rule-ho-03"></a>HO-03 | An unsupported target/client contract produces the required version and an explicit upgrade route. |
 | <a id="rule-ho-04"></a>HO-04 | A closed remote target waits for the user to open it. No peer launches it; expiration and cancellation follow the existing command rules. |
-| <a id="rule-ho-05"></a>HO-05 | Progress is attributed to the current domain owner under AV-04. |
+| <a id="rule-ho-05"></a>HO-05 | Progress is attributed to the current domain owner under [AV-04](#rule-av-04). |
 
 ---
 
@@ -378,7 +378,7 @@ Stage-14 shared experience does **not** own:
 | <a id="rule-si-17"></a>SI-17 | same-application drop is non-destructive by default. |
 | <a id="rule-si-18"></a>SI-18 | Drag and clipboard never move large payloads across applications. |
 | <a id="rule-si-19"></a>SI-19 | Window close, application quit and background work are distinct. |
-| <a id="rule-si-20"></a>SI-20 | No application resides silently in the background; apply [BR-01](#rule-br-01) and visible active-work rule LF-04. |
+| <a id="rule-si-20"></a>SI-20 | No application resides silently in the background; apply [BR-01](#rule-br-01) and visible active-work rule [LF-04](#rule-lf-04). |
 | <a id="rule-si-21"></a>SI-21 | Multi-window is a formal capability; `MainWindow` singleton is not an architectural prerequisite. |
 | <a id="rule-si-22"></a>SI-22 | Multi-window is the default; multi-process is an explicit extension. |
 | <a id="rule-si-23"></a>SI-23 | The same resource cannot have two local writable owners without a coordination mechanism. |

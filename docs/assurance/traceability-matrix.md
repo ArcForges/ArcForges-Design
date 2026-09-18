@@ -84,7 +84,7 @@ Every decision is carried. The **Primary home** column names where the decision 
 | **[V-08](phase-1-official-verification.md#rule-v-08)** | Regional payment route constraints | `../architecture/16-billing-and-commerce-architecture.md` `§11` | [VG-12](open-gates-register.md#rule-vg-12) — three sharpened regional gates | [WP-42.10](../planning/work-packages/42-commerce-entitlement-and-credits.md#rule-wp-42.10), conditional |
 | **[V-09](phase-1-official-verification.md#rule-v-09)** | Mobile storefront commerce rules | `../architecture/11-mobile-architecture.md` `§9` | [VG-13](open-gates-register.md#rule-vg-13) — category fit and consumption-only by review | [WP-32.04](../planning/work-packages/32-mobile-release-and-store-gates.md#rule-wp-32.04) |
 
-**Coverage: 9 of 9 findings enforced; 13 active gates scheduled, 1 dormant by design, 1 merged into F-026.**
+**Coverage: 9 of 9 findings enforced; 13 active gates scheduled, 1 dormant by design, 1 merged into [F-026](open-gates-register.md#rule-f-026).**
 
 ---
 
@@ -165,7 +165,7 @@ Test family identifiers are those of [`testing-and-verification-strategy.md`](te
 
 ## 5. Invariant enforcement
 
-The catalogue in [`../requirements/01-normative-glossary-and-invariants.md`](../requirements/01-normative-glossary-and-invariants.md) contains **429 invariants** across thirteen sections — 421 at the original baseline plus 8 added by P2-006. The full item-level mapping is [`invariant-coverage.md`](invariant-coverage.md) `§7`.
+The catalogue in [`../requirements/01-normative-glossary-and-invariants.md`](../requirements/01-normative-glossary-and-invariants.md) contains **429 invariants** across thirteen sections — 421 at the original baseline plus 8 added by [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006). The full item-level mapping is [`invariant-coverage.md`](invariant-coverage.md) `§7`.
 
 > **Corrected count.** Earlier documents said "approximately 490". That read the highest identifier as a count. The catalogue holds **429** rows; identifiers reach [I-498](../requirements/01-normative-glossary-and-invariants.md#rule-i-498) because each section reserves headroom, evidenced in `§2` of the coverage document. **421 is the superseded pre-P2-006 figure.**
 

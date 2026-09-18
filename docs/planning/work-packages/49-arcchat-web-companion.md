@@ -31,7 +31,7 @@
 
 **Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
-The Web companion verifies real generation, tool approval, stream fallback and recovery through WP-52. Portal completion alone is not a working AI service.
+The Web companion verifies real generation, tool approval, stream fallback and recovery through [WP-52](52-cloud-harness.md#rule-wp-52). Portal completion alone is not a working AI service.
 
 | Input | Why it matters |
 |---|---|

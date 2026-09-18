@@ -1,6 +1,6 @@
 # Initial Product Behavior Profiles
 
-Authority: P2-010. This chapter closes the initial observable rules behind existing accepted Notes, Scope and Slate capabilities. [Editing 18](18-editing-and-rich-content.md), [simulator/interchange 23](23-simulator-and-interchange.md), [wire 04](contracts/04-protobuf-wire-registry.md) and their product requirements remain authorities for unchanged rules. These profiles are versioned payload meanings; an internal implementation may differ only when it produces the same specified outcome. These are future test vectors, not tests already executed.
+Authority: [P2-010](../decisions/phase-2-specification-decisions.md#rule-p2-010). This chapter closes the initial observable rules behind existing accepted Notes, Scope and Slate capabilities. [Editing 18](18-editing-and-rich-content.md), [simulator/interchange 23](23-simulator-and-interchange.md), [wire 04](contracts/04-protobuf-wire-registry.md) and their product requirements remain authorities for unchanged rules. These profiles are versioned payload meanings; an internal implementation may differ only when it produces the same specified outcome. These are future test vectors, not tests already executed.
 
 ## 1. Notes editing and conflict profile
 

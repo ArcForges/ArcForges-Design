@@ -249,7 +249,7 @@ Every gate in [`../../assurance/open-gates-register.md`](../../assurance/open-ga
 
 ## [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) package boundaries
 
-The 51 active packages follow the current [complete artifact graph](../implementation-sequence.md#9-p2-009-complete-artifact-dependency-graph). WP20 is future-only; WP27/29 remain retired. Package numbering/anchors are stable; titles and runtime/contract responsibilities reflect P2-009. New .90 substeps are the explicit repository/integration acceptance attached to inherited domain work.
+The 51 active packages follow the current [complete artifact graph](../implementation-sequence.md#9-p2-009-complete-artifact-dependency-graph). WP20 is future-only; WP27/29 remain retired. Package numbering/anchors are stable; titles and runtime/contract responsibilities reflect [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009). New .90 substeps are the explicit repository/integration acceptance attached to inherited domain work.
 
 
 [Producer artifacts and real integration](../producer-artifacts-and-integration.md) defines this WP's exact producer inputs, permitted fixtures and real replacement gates.

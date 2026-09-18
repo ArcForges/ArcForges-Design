@@ -173,7 +173,7 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 **Testing requirements.** Real host/database/object-store export across concurrent edits, notebook moves, deleted attachments, quota limit, expiry, restart, cancellation and paid-term end. Compare every delivered manifest/hash and omission; scan for secrets. Run both production clients with no fixture producer registered.
 
-**Completion gate.** Both export exit paths work against real Cloud authority, preserve a stable snapshot and honest fidelity, and release pins/reservations on all terminal paths. This is the Cloud Notes/Chat portion of PG-07.
+**Completion gate.** Both export exit paths work against real Cloud authority, preserve a stable snapshot and honest fidelity, and release pins/reservations on all terminal paths. This is the Cloud Notes/Chat portion of [PG-07](../../assurance/open-gates-register.md#rule-pg-07).
 
 ---
 

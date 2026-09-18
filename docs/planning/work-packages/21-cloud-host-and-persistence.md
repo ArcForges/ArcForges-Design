@@ -115,7 +115,7 @@ Use the exact projects assigned to this WP in [architecture 27](../../architectu
 
 **Completion gate.** All owned actions, schemas, public interfaces and tests are complete; later external evidence remains named. Publish/promote only the tested immutable bytes in the producer CI sequence.
 
-**Launch configuration acceptance.** Produce the exact model04 launch-capacity.v1 and deployed Worker/Container identity. Test four fixed standard-2 slots, no per-account instance creation, idle sleep/wake, pre-dispatch refusal versus unknown dispatched outcome, control-slot reserve and Vectorize/R2 reservation thresholds. Record cold-start and measured cost inputs; a localhost benchmark cannot close PG-26.
+**Launch configuration acceptance.** Produce the exact model04 launch-capacity.v1 and deployed Worker/Container identity. Test four fixed standard-2 slots, no per-account instance creation, idle sleep/wake, pre-dispatch refusal versus unknown dispatched outcome, control-slot reserve and Vectorize/R2 reservation thresholds. Record cold-start and measured cost inputs; a localhost benchmark cannot close [PG-26](../../assurance/open-gates-register.md#rule-pg-26).
 
 ## 6. Impacts
 

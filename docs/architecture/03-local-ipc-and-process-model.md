@@ -1,6 +1,6 @@
 # Application Process and Private Helper IPC
 
-Authority: P2-012. Professional applications host their own UI, domain, assistant service/store and Cloud client. There is no shared Hub, shared coordinator, product discovery, cross-product local listener or peer data relay. [Architecture 27](27-platform-projects-and-application-assistants.md) fixes process/project ownership; [annex 10](contracts/10-application-scope-and-streams.md) fixes Cloud targeting and public gRPC-Web.
+Authority: [P2-012](../decisions/phase-2-specification-decisions.md#rule-p2-012). Professional applications host their own UI, domain, assistant service/store and Cloud client. There is no shared Hub, shared coordinator, product discovery, cross-product local listener or peer data relay. [Architecture 27](27-platform-projects-and-application-assistants.md) fixes process/project ownership; [annex 10](contracts/10-application-scope-and-streams.md) fixes Cloud targeting and public gRPC-Web.
 
 ## Current process topology
 

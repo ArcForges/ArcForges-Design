@@ -273,7 +273,7 @@ Local, Cloud and temporary history follow model 05 independently of AI execution
 
 ## 8. Technology constitution
 
-The following apply with the explicit user amendment P2-006.
+The following apply with the explicit user amendment [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006).
 
 | Area | Baseline | Current definition / decision |
 |---|---|---|

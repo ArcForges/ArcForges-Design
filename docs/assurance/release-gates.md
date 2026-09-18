@@ -117,7 +117,7 @@ This document consolidates every gate that stands between work and users, in one
 | <a id="rule-l-07"></a>L-07 | Cloudflare ingress/Container/binding outage preserves each product's declared hydrated local behavior; independently hosted status and incident path remain usable. |
 | <a id="rule-l-08"></a>L-08 | Email failover proven **without duplicate one-time codes** |
 | <a id="rule-l-09"></a>L-09 | Deployment rollback exercised, and a migration failure recovered |
-| <a id="rule-l-10"></a>L-10 | Fresh operator-owned Cloudflare account/realm rebuilt from signed artifacts, infrastructure/configuration and independent backups; selfhost.v1 identity/route/key isolation passes PG-25. |
+| <a id="rule-l-10"></a>L-10 | Fresh operator-owned Cloudflare account/realm rebuilt from signed artifacts, infrastructure/configuration and independent backups; selfhost.v1 identity/route/key isolation passes [PG-25](open-gates-register.md#rule-pg-25). |
 | <a id="rule-l-11"></a>L-11 | Webhook loss recovered by reconciliation; entitlement repair verified |
 | <a id="rule-l-12"></a>L-12 | Every required runbook written, assigned and rehearsed at least once (`§9.1` there) |
 | <a id="rule-l-13"></a>L-13 | Backup health dashboard green **with a proven restore**, not merely a green backup job |

@@ -209,7 +209,7 @@ Official capability admission is explicit:
 | cloud.web_continuity mutations | Yes | Current owner and client session |
 | Account management, purchase, retained-data read/export, [DL-01](02-identity-account-and-workspace.md#rule-dl-01) recovery | No | Identity, retention and security still apply |
 
-Cloud enrolment creates no initial service grant. Self-host realms use explicit operator grants under CA-10. Grant rows have exactly capability/quota/allowance kinds; consumable balances are computed from immutable ledgers and lots, never grant rows. Provider raw subscription status is separate from pending/active/grace/cancelScheduled/ended/suspended domain states.
+Cloud enrolment creates no initial service grant. Self-host realms use explicit operator grants under [CA-10](../architecture/22-deployment-and-release-execution.md#rule-ca-10). Grant rows have exactly capability/quota/allowance kinds; consumable balances are computed from immutable ledgers and lots, never grant rows. Provider raw subscription status is separate from pending/active/grace/cancelScheduled/ended/suspended domain states.
 
 ### 6.2 Ownership and separation
 

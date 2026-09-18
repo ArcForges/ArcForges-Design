@@ -34,7 +34,7 @@ Every numeric allowance below is **versioned commercial policy under [D-020](../
 | Infrastructure backup retention | 30 days protected independent copies | Engineering objective; CF integration backup profile governs |
 | Storage add-on tiers | +100 GB / +500 GB / +1 TB | Proposal; requires approval |
 
-Two figures are **structural**, not policy, and are binding: storage is **workspace-shared, not per-product**, and storage/AI constraints are honestly disclosed under [C-04](00-product-scope-and-portfolio.md#rule-c-04)/C-09. Replenishing AI capacity is specified by commerce [AC-01](04-commerce-entitlement-and-credits.md#rule-ac-01)–AC-12.
+Two figures are **structural**, not policy, and are binding: storage is **workspace-shared, not per-product**, and storage/AI constraints are honestly disclosed under [C-04](00-product-scope-and-portfolio.md#rule-c-04)/[C-09](00-product-scope-and-portfolio.md#rule-c-09). Replenishing AI capacity is specified by commerce [AC-01](04-commerce-entitlement-and-credits.md#rule-ac-01)–[AC-12](04-commerce-entitlement-and-credits.md#rule-ac-12).
 
 ---
 
@@ -470,7 +470,7 @@ One device · two devices · three devices · long-offline return · double edit
 Project-only sync · proxy sync · selected originals · one original reused by several projects · **timeline edits never re-upload the original**.
 
 ### ArcScope
-Hardware telemetry local-only · explicit upload · resumed session upload · session deletion · Cloud scenario/seed/profile replay · immutable segment hashes · pause/resume/fenced takeover · native simulator adapter · SIM-20.
+Hardware telemetry local-only · explicit upload · resumed session upload · session deletion · Cloud scenario/seed/profile replay · immutable segment hashes · pause/resume/fenced takeover · native simulator adapter · [SIM-20](products/arcscope.md#rule-sim-20).
 
 ### History and deletion
 Version restore · delete · restore from trash · retention purge · **tombstone prevents an old device resurrecting an object** · search entry disappears after deletion · vector entry disappears after deletion.

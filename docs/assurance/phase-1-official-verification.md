@@ -180,7 +180,7 @@ Documented limitations, verbatim in substance: "Dynamic control creation must be
 
 The `NerdbankMessagePackFormatter` is documented as **NativeAOT ready**, and Nerdbank.MessagePack claims "premium support for trimming and Native AOT". **Source-generated proxies** replace runtime-generated dynamic proxies and are the documented route to NativeAOT compatibility and faster startup. Interfaces carrying `[JsonRpcContract]` or `[RpcMarshalable]` **should also apply `[GenerateShape]` with `IncludeMethods` set to `PublicInstance`**. `[GenerateShape]` is "highly encouraged" because it "ensures NativeAOT and trim safety", and referenced types have their shapes source-generated transitively.
 
-**Consequence.** This confirms `I3`'s local-IPC design precisely — `[JsonRpcContract]` + `GenerateShape` + `EnableStreamJsonRpcInterceptors` + Nerdbank.MessagePack is the AOT-viable combination, and it is the *only* documented one. It also means the shape-generation attributes are a **contract-authoring obligation**, not an optimisation: an interface added without them silently falls back to a path that is not AOT-safe. This belongs in the contract conventions under D-009.
+**Consequence.** This confirms `I3`'s local-IPC design precisely — `[JsonRpcContract]` + `GenerateShape` + `EnableStreamJsonRpcInterceptors` + Nerdbank.MessagePack is the AOT-viable combination, and it is the *only* documented one. It also means the shape-generation attributes are a **contract-authoring obligation**, not an optimisation: an interface added without them silently falls back to a path that is not AOT-safe. This belongs in the contract conventions under [D-009](../decisions/phase-1-foundation-decisions.md#rule-d-009).
 
 **Required gate.** An AOT publish proof of the desktop host with the real LocalRpc contract set, plus a repository-policy test asserting that every `[JsonRpcContract]`/`[RpcMarshalable]` interface carries `[GenerateShape(IncludeMethods = PublicInstance)]`. **Owner:** Architecture Owner. **Trigger:** before the first AOT desktop deliverable.
 
@@ -248,7 +248,7 @@ Server-side SignalR has **Partial support** under .NET 10 Native AOT — an impr
 
 The MoR role covers checkout, subscriptions, recurring billing, tax handling, invoices, refunds, chargebacks and webhooks — matching [D-005](../decisions/phase-1-foundation-decisions.md#rule-d-005)'s description of the role.
 
-**Architectural consequence.** Confirms D-005. Critically for the Phase 1 brief's constraint that no payment provider may become the basis of the architecture: MoR status means Paddle is the **legal seller**, which is a commercial and tax fact, not an architectural one. The entitlement architecture stays provider-independent under [D-005](../decisions/phase-1-foundation-decisions.md#rule-d-005)'s preserved abstraction principles, and the MoR relationship does not propagate into domain contracts.
+**Architectural consequence.** Confirms [D-005](../decisions/phase-1-foundation-decisions.md#rule-d-005). Critically for the Phase 1 brief's constraint that no payment provider may become the basis of the architecture: MoR status means Paddle is the **legal seller**, which is a commercial and tax fact, not an architectural one. The entitlement architecture stays provider-independent under [D-005](../decisions/phase-1-foundation-decisions.md#rule-d-005)'s preserved abstraction principles, and the MoR relationship does not propagate into domain contracts.
 
 **Required gate.** Supplier onboarding and account approval before go-live. Sanctions and export screening for the intended market set. **Owner:** Commercial Operations Owner. **Trigger:** before first live transaction.
 
@@ -269,7 +269,7 @@ The MoR role covers checkout, subscriptions, recurring billing, tax handling, in
 
 **Architectural consequence.** Confirms [D-005](../decisions/phase-1-foundation-decisions.md#rule-d-005)'s role split exactly: Payoneer is a **payout destination**, not a second Merchant of Record and not a checkout provider. It never appears in a customer-facing flow, never issues an entitlement, and must never appear in a client authority contract. The monthly-cycle timing is a **finance-operations** fact, not a system-design fact — but it does bear on reconciliation design, because settlement lags transactions by up to six weeks, so the reconciliation model must not assume payout timing tracks transaction timing.
 
-**Fees not verified.** Payoneer's own fee schedule and account-type differences are deferred under [D-003](../decisions/phase-1-foundation-decisions.md#rule-d-003) and D-020.
+**Fees not verified.** Payoneer's own fee schedule and account-type differences are deferred under [D-003](../decisions/phase-1-foundation-decisions.md#rule-d-003) and [D-020](../decisions/phase-1-foundation-decisions.md#rule-d-020).
 
 **Required gate.** Payoneer account eligibility and receiving-currency confirmation for the chosen supplier jurisdiction, before go-live. **Owner:** Commercial Operations Owner. **Trigger:** first authoritative pricing specification, and again before launch.
 

@@ -1,6 +1,6 @@
 # Cloudflare Execution and Object Integration
 
-> Authoritative under P2-009. Contracts repository owns internal HTTP schemas in internal/ai-http/v1/schema.json (Apache-2.0, internal access); public object presentation schemas in public/http/v1/schema.json (Apache). This document fixes their semantics. D1 remains business authority; CF checkpoints and streams are disposable execution/projection state.
+> Authoritative under [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009). Contracts repository owns internal HTTP schemas in internal/ai-http/v1/schema.json (Apache-2.0, internal access); public object presentation schemas in public/http/v1/schema.json (Apache). This document fixes their semantics. D1 remains business authority; CF checkpoints and streams are disposable execution/projection state.
 
 ## 1. Deployment and authority
 

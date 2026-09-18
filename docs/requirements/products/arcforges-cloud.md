@@ -16,7 +16,7 @@ Product capability requirements are specified in [`../03-cloud-services-and-sync
 
 | # | Requirement |
 |---|---|
-| <a id="rule-pp-01"></a>PP-01 | ArcForges Cloud is one C# Native AOT modular monolith per Container instance under [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009)/P2-012. The 21 module owners are enumerated in architecture 05, including PackageCatalog. D1, Durable Objects, Queues, Workflow/Workers AI and R2 are bound managed resources; no Node sidecar or second business host. |
+| <a id="rule-pp-01"></a>PP-01 | ArcForges Cloud is one C# Native AOT modular monolith per Container instance under [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009)/[P2-012](../../decisions/phase-2-specification-decisions.md#rule-p2-012). The 21 module owners are enumerated in architecture 05, including PackageCatalog. D1, Durable Objects, Queues, Workflow/Workers AI and R2 are bound managed resources; no Node sidecar or second business host. |
 | <a id="rule-pp-02"></a>PP-02 | **It is one logical platform**, internally partitioned by module — never split into per-product backends. |
 | <a id="rule-pp-03"></a>PP-03 | One deployable C# Native AOT host contains business APIs, admission, canonical Task/Agent stores, simulator and bounded leased jobs. The sole model/tool loop runs in the separate CF Worker deployment; identical C# replicas are allowed, no role-selected Worker/TaskRunner. |
 | <a id="rule-pp-04"></a>PP-04 | The first deployment uses Cloudflare Workers and Containers. Kubernetes and an independently operated container platform are outside this profile. |
@@ -147,7 +147,7 @@ Four layers:
 | <a id="rule-en-05"></a>EN-05 | **Local development orchestration is not replaced by, and does not replace, production IaC.** They serve different purposes and both exist. |
 | <a id="rule-en-06"></a>EN-06 | **IaC state is a secret**: stored in a secured backend, never in version control, and separated per environment. |
 | <a id="rule-en-07"></a>EN-07 | **Portal-driven infrastructure changes are prohibited in production.** An emergency manual change is reconciled back into IaC promptly, and drift detection runs regularly. |
-| <a id="rule-en-08"></a>EN-08 | CI uses provider-supported workload identity; Cloudflare deployment uses an expiring, narrowly scoped API token from a protected environment under CF-03. Rotation and revocation are rehearsed; secrets never enter artifacts or logs. |
+| <a id="rule-en-08"></a>EN-08 | CI uses provider-supported workload identity; Cloudflare deployment uses an expiring, narrowly scoped API token from a protected environment under [CF-03](../../architecture/22-deployment-and-release-execution.md#rule-cf-03). Rotation and revocation are rehearsed; secrets never enter artifacts or logs. |
 | <a id="rule-en-09"></a>EN-09 | **Staging and production use different deployment identities**, and neither holds subscription-owner rights. |
 | <a id="rule-en-10"></a>EN-10 | **Container images are published to a private registry**, and **production never rebuilds**: the same digest built once is promoted through environments. |
 | <a id="rule-en-11"></a>EN-11 | **Deployment references an image digest, never a mutable tag.** |

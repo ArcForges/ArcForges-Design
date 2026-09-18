@@ -1,6 +1,6 @@
 # Application Scope, History and Public Streams
 
-Authority: P2-012. This annex extends [wire registry 04](04-protobuf-wire-registry.md), preserving existing operation behavior, field numbers and error codes. All new request/response names, tags and presence follow its method-envelope convention. Contracts implements the handwritten proto and generates NuGet/npm/Maven artifacts; no production proto is copied into Design.
+Authority: [P2-012](../../decisions/phase-2-specification-decisions.md#rule-p2-012). This annex extends [wire registry 04](04-protobuf-wire-registry.md), preserving existing operation behavior, field numbers and error codes. All new request/response names, tags and presence follow its method-envelope convention. Contracts implements the handwritten proto and generates NuGet/npm/Maven artifacts; no production proto is copied into Design.
 
 ## 1. Public transport and routing
 

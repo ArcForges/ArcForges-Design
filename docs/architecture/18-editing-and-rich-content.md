@@ -424,7 +424,7 @@ Naming these prevents a "rich editor" from silently becoming an unbounded commit
 |---|---|
 | A text shaping or font engine | Platform stack, through Avalonia ([RN-02](#rule-rn-02)) |
 | A browser engine, or any HTML rendering path for content | [BL-06](../requirements/products/arcnotes.md#rule-bl-06); extensibility is out-of-process |
-| A real-time collaborative editing engine | Excluded by P2-006. Stable IDs and closed operations serve the required single-owner multi-device sync; no collaboration-only reservation, hook or framework is introduced |
+| A real-time collaborative editing engine | Excluded by [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006). Stable IDs and closed operations serve the required single-owner multi-device sync; no collaboration-only reservation, hook or framework is introduced |
 | A spreadsheet engine | [TB-01](#rule-tb-01) |
 | An image editor | [IG-07](#rule-ig-07) |
 | A diagram authoring surface | No requirement establishes one; the V1 block set ([BL-04](../requirements/products/arcnotes.md#rule-bl-04)) contains none, and none is introduced here |

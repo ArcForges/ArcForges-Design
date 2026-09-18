@@ -1,6 +1,6 @@
 # Solution and Project Layout
 
-Authority: P2-012. The [concrete project/package tree and host contracts](27-platform-projects-and-application-assistants.md) are the implementation directory authority for every repository, particularly DesktopPlatform.
+Authority: [P2-012](../decisions/phase-2-specification-decisions.md#rule-p2-012). The [concrete project/package tree and host contracts](27-platform-projects-and-application-assistants.md) are the implementation directory authority for every repository, particularly DesktopPlatform.
 
 <a id="1-repository-ownership-and-dependency-graph"></a>
 ## 1. Independent repository roots
@@ -33,7 +33,7 @@ Use the exact repository/project trees in architecture 27. Remaining logical suf
 
 Contracts also owns the Apache-2.0 machine-readable [naming policy](28-product-naming-policy.md) and its standalone inventory scanner. WP00 policy verification does not create a product source/build dependency or require a future package.
 
-Mobile and the entire Contracts repository (public/internal proto, HTTP schemas, generators, SDK/CLI, validators and fixtures) are Apache-2.0 under P2-010. Public/internal remains an access and import-direction separation. Platform/Cloud/AI/Web/three professional desktop implementations retains its existing licence; dependencies keep their own notices. Generated files preserve authored-schema and generator/runtime notices. Mobile imports only public artifacts and public fixtures; it cannot import Web application expression or any GPL-family implementation.
+Mobile and the entire Contracts repository (public/internal proto, HTTP schemas, generators, SDK/CLI, validators and fixtures) are Apache-2.0 under [P2-010](../decisions/phase-2-specification-decisions.md#rule-p2-010). Public/internal remains an access and import-direction separation. Platform/Cloud/AI/Web/three professional desktop implementations retains its existing licence; dependencies keep their own notices. Generated files preserve authored-schema and generator/runtime notices. Mobile imports only public artifacts and public fixtures; it cannot import Web application expression or any GPL-family implementation.
 
 Package metadata declares owner/SPDX/source commit, schema/package version, dependency closure, NOTICE and SBOM. Public npm access=public, NuGet public registry; AGPL packages may be publicly distributed with source/notice obligations. Per-RID native license closure includes static dependencies and optional codec features, not merely the wrapper's license. Six reference-source access/exclusion/provenance boundaries and all archive prohibitions stay unchanged. Source review and actual distributable license gate remain evidence obligations; this amendment does not claim third-party code has been copied or audited by a runtime test.
 

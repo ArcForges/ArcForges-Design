@@ -27,7 +27,7 @@
 | Subtree exceptions | No differing `LICENSE` file found under `packages/`, `mobile/` or `docs/` | None found in the reviewed scope |
 | Bundled third-party in packaged output | `StartArcForges/AionUi/LICENSE.electron.txt`, `LICENSES.chromium.html` | Electron and Chromium notices ship with the packaged product; they belong to the runtime, not to AionUi's own source |
 
-**Position under D-013.** Apache-2.0 is permissive and compatible with **both** ArcForges licence boundaries. AionUi is therefore the **only** reference in the programme whose material could, after a per-file provenance record, enter the Apache-2.0 mobile and public-client boundary.
+**Position under [D-013](../../decisions/phase-1-foundation-decisions.md#rule-d-013).** Apache-2.0 is permissive and compatible with **both** ArcForges licence boundaries. AionUi is therefore the **only** reference in the programme whose material could, after a per-file provenance record, enter the Apache-2.0 mobile and public-client boundary.
 
 **This matrix nevertheless proposes no reuse.** Every row below is `Reference Only` or an accepted exclusion, for reasons stated per row — principally that AionUi is a TypeScript/Electron application and ArcForges is C#/Avalonia under Native AOT, so its expression is not transferable even where its licence would permit it.
 

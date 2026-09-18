@@ -165,9 +165,9 @@ Cloud-acknowledged revisions are authoritative; native working caches preserve p
 | `ArcNotes.Tag` | domain | A non-hierarchical label. |
 | `ArcNotes.SavedView` | domain | A stored query and presentation over typed properties. Confers **no ownership** of the objects it lists. |
 | `ArcNotes.Attachment` | domain | A referenced binary managed by ArcNotes. Never base64 embedded in canonical content. |
-| `ArcNotes.Canvas` (Edgeless) | retired | Retired by P2-006. Edgeless, whiteboard, shape/connector/frame workspaces are excluded. |
+| `ArcNotes.Canvas` (Edgeless) | retired | Retired by [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006). Edgeless, whiteboard, shape/connector/frame workspaces are excluded. |
 | `ArcNotes.Database` | domain | Bounded note organization through scalar properties, queries and table/list Saved Views; not the SQLite/D1 storage schema or a formula/relation/rollup platform. |
-| `ArcNotes.Slides` | retired | Retired by P2-006. Presentations, slide generation, frame ordering and presentation navigation are excluded. |
+| `ArcNotes.Slides` | retired | Retired by [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006). Presentations, slide generation, frame ordering and presentation navigation are excluded. |
 | `ArcNotes.ChecklistItem` | domain | A document-local task item. **Not** an ArcChat Agent Task. |
 
 ### 5.3 ArcScope

@@ -1,6 +1,6 @@
 # Phase 1 Foundation Decision Register
 
-> **Current amendments:** P2-009 through P2-013. Historical decision quotations below retain their original context; the current-effective-rule column in the dispositions table identifies every superseded rule. See [P2-013](phase-2-specification-decisions.md#rule-p2-013).
+> **Current amendments:** P2-009 through [P2-013](phase-2-specification-decisions.md#rule-p2-013). Historical decision quotations below retain their original context; the current-effective-rule column in the dispositions table identifies every superseded rule. See [P2-013](phase-2-specification-decisions.md#rule-p2-013).
 
 > Status: **Foundation Freeze requested** — Phase 1 (Input Review and Foundation Decision Freeze)
 > Branch: `design/phase-1-foundation`
@@ -104,7 +104,7 @@ Totals: **26 registered** ([F-001](#rule-f-001) to [F-026](../assurance/open-gat
 
 **Where** `I4 §Stage 15` is titled "ArcNotes Complete Product Specification" and contains no Edgeless Canvas, no multi-view Database and no Slides; `§Stage 15.150` lists "Not complete Notion Database Platform" as a core non-goal; `§Stage 15.39` excludes relational database pages, formula engine, board engine, project management database and complex rollup. Stage 15 never mentions AFFiNE or SiYuan. `I2 §II` records the settled Option 5 decision, pre-empts the apparent contradiction ("'No Notion Database clone' means not replicating Notion's entire scope without limit"), and enumerates the V1 compatibility hooks.
 
-**Original outcome — scope superseded by P2-006.** Option A was confirmed. Stage 15 was the V1 document-core baseline, not the ceiling. Canvas, typed multi-view Database and Slides are all in complete scope, phased after the document core stabilises, at ArcForges-decided depth via the Reference Coverage Matrix. The `I2 §II` V1 compatibility hooks are binding from the beginning. Slides defaults to a presentation view over document and canvas content.
+**Original outcome — scope superseded by [P2-006](phase-2-specification-decisions.md#rule-p2-006).** Option A was confirmed. Stage 15 was the V1 document-core baseline, not the ceiling. Canvas, typed multi-view Database and Slides are all in complete scope, phased after the document core stabilises, at ArcForges-decided depth via the Reference Coverage Matrix. The `I2 §II` V1 compatibility hooks are binding from the beginning. Slides defaults to a presentation view over document and canvas content.
 
 ## [F-004](#rule-f-004) — Verification policy for time-sensitive claims
 
@@ -117,14 +117,14 @@ Totals: **26 registered** ([F-001](#rule-f-001) to [F-026](../assurance/open-gat
 | Claim | Source | Disposition |
 |---|---|---|
 | Claude Sonnet 5 promotional price reverts to $3/$15 per MTok on 2026-08-31 | `I4 §Stage 8.15` | Date passed. Invalidated as a frozen figure by **[D-020](#rule-d-020)**. |
-| EU AI Act Article 50 applies from 2026-08-02 | `I4 §Stage 11.30` | **VERIFIED — V-01.** |
-| MCP `2026-07-28` is a Release Candidate | `I4 §Stage 6.41` | **SUPERSEDED — V-02.** Now a stable release; the Stage 6 prohibition lapses on its own terms. |
+| EU AI Act Article 50 applies from 2026-08-02 | `I4 §Stage 11.30` | **VERIFIED — [V-01](../assurance/phase-1-official-verification.md#rule-v-01).** |
+| MCP `2026-07-28` is a Release Candidate | `I4 §Stage 6.41` | **SUPERSEDED — [V-02](../assurance/phase-1-official-verification.md#rule-v-02).** Now a stable release; the Stage 6 prohibition lapses on its own terms. |
 | Waffo Pancake `Change Subscription Product` returns 501 | `I4 §Stage 3.17`, `§4.63` | Obsolete per **[D-005](#rule-d-005)**. Historical evidence only. Not verified and never to be verified. |
 | Waffo WeChat Pay documented inconsistently | `I4 §Stage 3.5` | Obsolete per **[D-005](#rule-d-005)**. Historical evidence only. The `BillingProviderCapabilities` principle it motivated survives independently. |
 | Azure Southeast Asia Zone-Redundant HA blocked for new deployments | `I4 §Stage 10.8` | Deferred. `§Stage 10.10` already mandates a Region Preflight re-check at provisioning time. |
 | Pinned dependency versions | `I3 §2` | Partially re-verified — see **[V-05](../assurance/phase-1-official-verification.md#rule-v-05)**. Refit carries a material change (**[F-026](../assurance/open-gates-register.md#rule-f-026)**). |
-| Android CoreCLR Native AOT not a stable production baseline; Mono AOT is production | `I3 §2.1`, `§29.6` | **VERIFIED — V-04.** |
-| EF Core unsuitable as a strict-AOT production baseline | `I3 §2.1.4`, `§29.7` | **Moot for Cloud under [D-008](#rule-d-008)** — see V-05e. |
+| Android CoreCLR Native AOT not a stable production baseline; Mono AOT is production | `I3 §2.1`, `§29.6` | **VERIFIED — [V-04](../assurance/phase-1-official-verification.md#rule-v-04).** |
+| EF Core unsuitable as a strict-AOT production baseline | `I3 §2.1.4`, `§29.7` | **Moot for Cloud under [D-008](#rule-d-008)** — see [V-05e](../assurance/phase-1-official-verification.md#rule-v-05e). |
 | ~30 pricing and quota figures | `I4 §Stages 0, 5, 8, 9, 10` | Deferred under [D-003](#rule-d-003)'s first-consumption rule; frozen figures invalidated by **[D-020](#rule-d-020)**. |
 
 **Outcome** Foundation-critical verification only, executed and recorded in `docs/assurance/phase-1-official-verification.md`.
@@ -149,7 +149,7 @@ This is the single active statement of [D-003](#rule-d-003)'s applied scope. It 
 
 **Deferred with a first-consumption trigger, not verified now:** all provider pricing, quotas, fee schedules, payout terms, storage and AI rates, exchange rates, tax rates, Azure regional availability tables, and store fee details. Consistent with `I3 §32` and `I4 §Stage 8.77`, which already forbid acting on an unreviewed price change. **Owner:** Commercial Operations Owner ([D-016](#rule-d-016)). **Trigger:** first authoritative pricing specification, and again before launch.
 
-**Not a verification target.** Waffo Pancake is obsolete and `SUPERSEDED` under D-005. It must not be verified, recommended, integrated, or included in any new authoritative specification, roadmap, dependency, runtime component or implementation step. It survives in this register **only** in explicitly-labelled historical-evidence rows.
+**Not a verification target.** Waffo Pancake is obsolete and `SUPERSEDED` under [D-005](#rule-d-005). It must not be verified, recommended, integrated, or included in any new authoritative specification, roadmap, dependency, runtime component or implementation step. It survives in this register **only** in explicitly-labelled historical-evidence rows.
 
 ### Supersession history
 
@@ -165,7 +165,7 @@ This is the single active statement of [D-003](#rule-d-003)'s applied scope. It 
 
 **Outcome** A two-boundary licensing rule replaces the single-licence statement.
 
-**Register hygiene note** During drafting, a derived issue about shared-assembly licensing was prepared under the identifier [F-022](#rule-f-022) but **was never written to disk**. It is superseded in substance by D-004. It is recorded here only as a never-created draft; [F-022](#rule-f-022) below is a different, separately decided question.
+**Register hygiene note** During drafting, a derived issue about shared-assembly licensing was prepared under the identifier [F-022](#rule-f-022) but **was never written to disk**. It is superseded in substance by [D-004](#rule-d-004). It is recorded here only as a never-created draft; [F-022](#rule-f-022) below is a different, separately decided question.
 
 ## [F-006](#rule-f-006) — Web technology and rendering boundary
 
@@ -209,7 +209,7 @@ This is the single active statement of [D-003](#rule-d-003)'s applied scope. It 
 
 **Type** `MISSING_DECISION` · **Status** `USER_CONFIRMED` · **Resolved by** [D-011](#rule-d-011)
 
-**Where** `I3 §5.1` proposes a repository layout containing `ArcVideo/` and `ArcImage/`, both `SUPERSEDED` by D-002. The Phase 1 brief states `C:\MyFile\ArcForges\ArcForges` already contains implementation code and must not dictate the design.
+**Where** `I3 §5.1` proposes a repository layout containing `ArcVideo/` and `ArcImage/`, both `SUPERSEDED` by [D-002](#rule-d-002). The Phase 1 brief states `C:\MyFile\ArcForges\ArcForges` already contains implementation code and must not dictate the design.
 
 **Outcome** The implementation target is the existing monorepo. `ArcForges-Design` is the sole authoritative requirements, architecture and planning repository and contains no product source code. The implementation repository is inspected only in the later code-reading and reconciliation phase.
 
@@ -526,7 +526,7 @@ The current effective applied scope of this decision is recorded under **[F-004]
 >
 > 3. Preserve the provider-abstraction principles already identified as sound: entitlement state remains independent of provider identifiers; provider IDs do not enter client authority contracts; webhooks are verified and idempotent; and the architecture must not depend irreversibly on one provider’s proprietary data model.
 >
-> Apply this as a global disposition. Mark [F-014](#rule-f-014) USER_CONFIRMED and resolved by D-005.
+> Apply this as a global disposition. Mark [F-014](#rule-f-014) USER_CONFIRMED and resolved by [D-005](#rule-d-005).
 >
 > Do not rewrite or alter the verbatim [D-003](#rule-d-003) decision block. Add a clear supersession note stating that [D-005](#rule-d-005) replaces only the Waffo Pancake part of [D-003](#rule-d-003)’s applied verification worklist. The current verification target is Paddle and Payoneer, using current official primary sources. Verify their current availability, onboarding eligibility, supported regions and currencies, payout relationship, API/webhook capabilities, and any implementation-critical restrictions. Pricing and fees remain time-sensitive and must follow [D-003](#rule-d-003)’s first-consumption rule.
 >
@@ -552,7 +552,7 @@ The current effective applied scope of this decision is recorded under **[F-004]
 >
 > Slides should default to a presentation view over document and canvas content rather than a third incompatible content model, unless a later confirmed specification demonstrates a real need otherwise.
 >
-> Mark [F-003](#rule-f-003) USER_CONFIRMED and resolved by D-006.
+> Mark [F-003](#rule-f-003) USER_CONFIRMED and resolved by [D-006](#rule-d-006).
 
 **V1 compatibility hooks made binding by this decision** (from `I2 §II`): stable Document/Space and Block IDs with revisions and unified reference semantics; a Block model that allows later addition of Surface/Canvas types; canvas spatial positions, connectors, groupings and layout data isolated from normal document layout; typed properties, queries and saved views as the multi-view Database foundation; no stuffing of future fields into the core Block; no fake empty Canvas, Database or Slides implementations; static registration or source generation for block and extension types under AOT; and `DocumentId/BlockId/Operation/Revision` preserving future collaboration compatibility from the start.
 
@@ -585,7 +585,7 @@ The current effective applied scope of this decision is recorded under **[F-004]
 >
 > Minimal audited JavaScript interop remains allowed only where the browser or a required provider has no adequate managed interface.
 >
-> Mark [F-006](#rule-f-006) USER_CONFIRMED and resolved by D-007.
+> Mark [F-006](#rule-f-006) USER_CONFIRMED and resolved by [D-007](#rule-d-007).
 
 ---
 
@@ -613,7 +613,7 @@ The current effective applied scope of this decision is recorded under **[F-004]
 >
 > Remove obsolete claims that Cloud must publish as Native AOT. Do not spend Phase 1 proving Azure SDK Native AOT compatibility for a server that is now explicitly JIT.
 >
-> Mark [F-007](#rule-f-007) USER_CONFIRMED and resolved by D-008.
+> Mark [F-007](#rule-f-007) USER_CONFIRMED and resolved by [D-008](#rule-d-008).
 
 **Instruction honoured.** No Azure SDK Native AOT verification was attempted ([V-05e](../assurance/phase-1-official-verification.md#rule-v-05e)).
 
@@ -650,7 +650,7 @@ The current effective applied scope of this decision is recorded under **[F-004]
 >
 > No business implementation belongs in a contracts package.
 >
-> Mark [F-008](#rule-f-008) USER_CONFIRMED and resolved by D-009.
+> Mark [F-008](#rule-f-008) USER_CONFIRMED and resolved by [D-009](#rule-d-009).
 
 ---
 
@@ -670,7 +670,7 @@ The current effective applied scope of this decision is recorded under **[F-004]
 >
 > Same-machine first-party product-to-product communication remains StreamJsonRpc over Named Pipe/UDS. It is separate from Cloud and public HTTP APIs.
 >
-> Mark [F-009](#rule-f-009) USER_CONFIRMED and resolved by D-010.
+> Mark [F-009](#rule-f-009) USER_CONFIRMED and resolved by [D-010](#rule-d-010).
 
 ---
 
@@ -711,7 +711,7 @@ The current effective applied scope of this decision is recorded under **[F-004]
 >
 > Every product must receive a Reference Coverage Matrix before implementation planning for that product is finalized.
 >
-> Mark [F-011](#rule-f-011) USER_CONFIRMED and resolved by D-012.
+> Mark [F-011](#rule-f-011) USER_CONFIRMED and resolved by [D-012](#rule-d-012).
 
 ### Amendment 2026-09-05 — Olive removed as a separate required reference
 
@@ -760,7 +760,7 @@ Every other line of the map, and every other part of [D-012](#rule-d-012) — th
 >
 > Keep [F-013](../assurance/open-gates-register.md#rule-f-013) DEFERRED_WITH_OWNER_AND_TRIGGER. Its trigger is the first step of the per-product Reference Coverage Matrix and licence audit, before substantive reference source is used for planning or implementation.
 >
-> Mark [F-012](#rule-f-012) USER_CONFIRMED and resolved by D-013.
+> Mark [F-012](#rule-f-012) USER_CONFIRMED and resolved by [D-013](#rule-d-013).
 
 ---
 
@@ -787,7 +787,7 @@ Every other line of the map, and every other part of [D-012](#rule-d-012) — th
 >
 > Do not turn every hostname into an independently designed application. Account and Chat may be separately deployed configurations of the same ArcForges.Web.App codebase. Static surfaces remain static artifacts where appropriate.
 >
-> Mark [F-015](#rule-f-015) USER_CONFIRMED and resolved by D-014.
+> Mark [F-015](#rule-f-015) USER_CONFIRMED and resolved by [D-014](#rule-d-014).
 
 ---
 
@@ -801,7 +801,7 @@ Every other line of the map, and every other part of [D-012](#rule-d-012) — th
 >
 > Use explicit origin, cookie, OAuth redirect, CSP, CSRF and CORS boundaries. Do not share broad parent-domain authentication cookies.
 >
-> Mark [F-016](#rule-f-016) USER_CONFIRMED and resolved by D-015.
+> Mark [F-016](#rule-f-016) USER_CONFIRMED and resolved by [D-015](#rule-d-015).
 
 ---
 
@@ -829,9 +829,9 @@ Every other line of the map, and every other part of [D-012](#rule-d-012) — th
 > - pricing/fee verification → Commercial Operations Owner; trigger: first authoritative pricing specification and again before launch.
 > - dependency AOT proof → owning platform work-package owner; trigger: before accepting the dependency into an AOT deliverable.
 >
-> Mark [F-017](#rule-f-017) USER_CONFIRMED and resolved by D-016.
+> Mark [F-017](#rule-f-017) USER_CONFIRMED and resolved by [D-016](#rule-d-016).
 
-**Applied.** [F-013](../assurance/open-gates-register.md#rule-f-013), [F-023](../assurance/open-gates-register.md#rule-f-023) and [F-026](../assurance/open-gates-register.md#rule-f-026) above carry role, approval authority, trigger, earliest consumer, required evidence and failure consequence. The pricing/fee deferral is recorded under F-004. The dependency AOT proofs are recorded in the verification record's deferred-gate table.
+**Applied.** [F-013](../assurance/open-gates-register.md#rule-f-013), [F-023](../assurance/open-gates-register.md#rule-f-023) and [F-026](../assurance/open-gates-register.md#rule-f-026) above carry role, approval authority, trigger, earliest consumer, required evidence and failure consequence. The pricing/fee deferral is recorded under [F-004](#rule-f-004). The dependency AOT proofs are recorded in the verification record's deferred-gate table.
 
 ---
 
@@ -864,7 +864,7 @@ Every other line of the map, and every other part of [D-012](#rule-d-012) — th
 >
 > The AionUiReWrite-Kotlin material is not an input corpus or authority. The self-contained per-step format contract in I2 is sufficient.
 >
-> Mark [F-018](#rule-f-018) USER_CONFIRMED and resolved by D-017.
+> Mark [F-018](#rule-f-018) USER_CONFIRMED and resolved by [D-017](#rule-d-017).
 
 ---
 
@@ -888,7 +888,7 @@ Every other line of the map, and every other part of [D-012](#rule-d-012) — th
 >
 > Record this as a mandatory foundation-to-specification gate. Do not generate the full glossary in this turn.
 >
-> Mark [F-019](#rule-f-019) USER_CONFIRMED and resolved by D-018.
+> Mark [F-019](#rule-f-019) USER_CONFIRMED and resolved by [D-018](#rule-d-018).
 
 **Gate recorded.** Not generated in this turn. **Owner:** Architecture Owner. **Trigger:** before any detailed product specification is finalized. **Additional input from [V-02](../assurance/phase-1-official-verification.md#rule-v-02):** MCP's extension framework defines Tasks and Skills, which collide with the ArcForges execution vocabulary and must be disambiguated explicitly.
 
@@ -914,7 +914,7 @@ Every other line of the map, and every other part of [D-012](#rule-d-012) — th
 >
 > One main context advances the sequence serially. Do not split implementation ownership across autonomous agent teams.
 >
-> Mark [F-020](#rule-f-020) USER_CONFIRMED and resolved by D-019.
+> Mark [F-020](#rule-f-020) USER_CONFIRMED and resolved by [D-019](#rule-d-019).
 
 ---
 
@@ -944,7 +944,7 @@ Every other line of the map, and every other part of [D-012](#rule-d-012) — th
 >
 > Prices, included allowances, pack sizes, margins and regional amounts are versioned commercial policy. They require current provider pricing, Paddle fees, Payoneer payout costs, taxes, refund exposure and target-margin approval at first specification consumption and again before launch.
 >
-> Mark [F-021](#rule-f-021) USER_CONFIRMED and resolved by D-020.
+> Mark [F-021](#rule-f-021) USER_CONFIRMED and resolved by [D-020](#rule-d-020).
 
 ---
 
@@ -989,7 +989,7 @@ Every other line of the map, and every other part of [D-012](#rule-d-012) — th
 >
 > Base ViewModel patterns are not shared between Avalonia desktop and MAUI mobile. Each UI stack owns its implementation.
 >
-> Mark [F-022](#rule-f-022) USER_CONFIRMED and resolved by D-021.
+> Mark [F-022](#rule-f-022) USER_CONFIRMED and resolved by [D-021](#rule-d-021).
 
 ---
 
@@ -1025,7 +1025,7 @@ Every other line of the map, and every other part of [D-012](#rule-d-012) — th
 >
 > Keep the entitlement architecture capable of accepting a future store-originated grant, but do not implement that source until a new explicit decision authorizes mobile purchasing.
 >
-> Mark [F-024](#rule-f-024) USER_CONFIRMED and resolved by D-022.
+> Mark [F-024](#rule-f-024) USER_CONFIRMED and resolved by [D-022](#rule-d-022).
 
 ---
 
@@ -1063,15 +1063,15 @@ Every other line of the map, and every other part of [D-012](#rule-d-012) — th
 >
 > If these gates fail, disable mainland-China sales through explicit regional policy without blocking the global launch. Do not silently substitute another provider.
 >
-> Mark [F-025](#rule-f-025) USER_CONFIRMED and resolved by D-023.
+> Mark [F-025](#rule-f-025) USER_CONFIRMED and resolved by [D-023](#rule-d-023).
 
-**Verified against V-08.** The intended route matches Paddle's documented capability set item for item. [V-08](../assurance/phase-1-official-verification.md#rule-v-08) adds three operational facts that sharpen but do not change the decision: Alipay requires a separate approval application conditioned on CNY pricing; the Alipay cap is 1,600 CNY on renewals and charges; and **neither** China method supports chargebacks, so the dispute and refund model must not assume the card pathway.
+**Verified against [V-08](../assurance/phase-1-official-verification.md#rule-v-08).** The intended route matches Paddle's documented capability set item for item. [V-08](../assurance/phase-1-official-verification.md#rule-v-08) adds three operational facts that sharpen but do not change the decision: Alipay requires a separate approval application conditioned on CNY pricing; the Alipay cap is 1,600 CNY on renewals and charges; and **neither** China method supports chargebacks, so the dispute and refund model must not assume the card pathway.
 
 ---
 
 # Dispositions applied
 
-The original dispositions are retained for traceability. Implement the **current effective rule** in each row, under [P2-009](phase-2-specification-decisions.md#rule-p2-009) through P2-013. A superseded historical disposition is not an implementation requirement.
+The original dispositions are retained for traceability. Implement the **current effective rule** in each row, under [P2-009](phase-2-specification-decisions.md#rule-p2-009) through [P2-013](phase-2-specification-decisions.md#rule-p2-013). A superseded historical disposition is not an implementation requirement.
 
 | # | Disposition | Authority | Scope | Current effective rule |
 |---|---|---|---|---|
@@ -1134,10 +1134,10 @@ Per the decision package: any genuinely new material conflict uncovered by verif
 
 | # | Finding | Source | Disposition |
 |---|---|---|---|
-| 1 | **Refit's reflection request builder moved to a separate package; `RestService.ForGenerated<T>` is the AOT-safe entry point; `RF006` signals a non-generable shape.** The corpus records none of this. | [V-05c](../assurance/phase-1-official-verification.md#rule-v-05c) | **New issue [F-026](../assurance/open-gates-register.md#rule-f-026)**, deferred as an implementation gate under [D-008](#rule-d-008) and D-016. Changes no decision. |
-| 2 | MCP `2026-07-28` is stable, not a release candidate. `I4 §Stage 6.41`'s prohibition was conditioned on RC status and lapses on its own terms. | [V-02](../assurance/phase-1-official-verification.md#rule-v-02) | Recorded under F-004. No decision required — the corpus's own condition resolved it. |
+| 1 | **Refit's reflection request builder moved to a separate package; `RestService.ForGenerated<T>` is the AOT-safe entry point; `RF006` signals a non-generable shape.** The corpus records none of this. | [V-05c](../assurance/phase-1-official-verification.md#rule-v-05c) | **New issue [F-026](../assurance/open-gates-register.md#rule-f-026)**, deferred as an implementation gate under [D-008](#rule-d-008) and [D-016](#rule-d-016). Changes no decision. |
+| 2 | MCP `2026-07-28` is stable, not a release candidate. `I4 §Stage 6.41`'s prohibition was conditioned on RC status and lapses on its own terms. | [V-02](../assurance/phase-1-official-verification.md#rule-v-02) | Recorded under [F-004](#rule-f-004). No decision required — the corpus's own condition resolved it. |
 | 3 | MCP's extension framework defines **Tasks** and **Skills**, colliding with the ArcForges `Task / Run / Step / Attempt` vocabulary. | [V-02](../assurance/phase-1-official-verification.md#rule-v-02) | Added as required input to the [D-018](#rule-d-018) glossary gate. |
-| 4 | SignalR moved from Not supported (.NET 8) to **Partial support** (.NET 10) under Native AOT, making `I3 §2.1.3` stale. | [V-03](../assurance/phase-1-official-verification.md#rule-v-03) | Recorded as a corpus correction under F-007. Decision unaffected — Cloud is JIT under D-008. |
+| 4 | SignalR moved from Not supported (.NET 8) to **Partial support** (.NET 10) under Native AOT, making `I3 §2.1.3` stale. | [V-03](../assurance/phase-1-official-verification.md#rule-v-03) | Recorded as a corpus correction under [F-007](#rule-f-007). Decision unaffected — Cloud is JIT under [D-008](#rule-d-008). |
 | 5 | **CNY pricing inverts from forbidden to required.** `I4 §Stage 3.6` forbade a fixed CNY price; Paddle's Alipay route requires CNY-priced products and conditions approval on it. | [V-08](../assurance/phase-1-official-verification.md#rule-v-08) | Absorbed by [D-023](#rule-d-023)'s existing "CNY product and tax configuration" gate. |
 | 6 | Neither Alipay nor WeChat Pay supports chargebacks, and WeChat Pay supports neither subscriptions nor mobile. | [V-08](../assurance/phase-1-official-verification.md#rule-v-08) | Absorbed by [D-023](#rule-d-023)'s instruction not to hard-code provider limitations and by its retention of Cloud Pass. Sharpens the refund and dispute model. |
 | 7 | Apple 3.1.3(f) category fit is decided by App Review, not by reading the guideline; ArcChat Mobile fits the category's shape but is not literally enumerated. | [V-09](../assurance/phase-1-official-verification.md#rule-v-09) | `PARTIALLY_VERIFIED`. Covered by the existing store-submission gate. Does not affect [D-022](#rule-d-022), which already chooses the most conservative posture available. |
