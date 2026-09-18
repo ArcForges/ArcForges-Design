@@ -96,6 +96,8 @@ Use the exact projects assigned to this WP in [architecture 27](../../architectu
 
 **Completion gate.** All owned actions, schemas, public interfaces and tests are complete; later external evidence remains named. Publish/promote only the tested immutable bytes in the producer CI sequence.
 
+**Index capacity acceptance.** Consume model04 launch-capacity.v1 account/realm vector and namespace budgets. Test reservations, old/new index overlap, tombstone reconciliation, threshold refusal before new paid admission, rebuild pausing and recovery. An index count never substitutes for owner authorization or creates an undisclosed purchased quota.
+
 ## 6. Impacts
 
 Changed application scope, storage, transport, UI and deployment behavior are governed by the authorities in §2. Preserve existing business rules and formats. Migration/compatibility manifests include source/schema/plan/ABI/runtime versions; current cross-product collaboration is deferred and contributes no release input.

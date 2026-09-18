@@ -30,6 +30,8 @@ Released Contracts clients → same-origin Worker ingress → C# Container
 
 Public host/path dispatch follows [arch 05 routing](05-cloud-architecture.md#edge-routes-and-binding-graph). Account/chat cookies never cross origins; operations uses a disjoint identity.
 
+**Browser compatibility authority.** All four outputs and generated clients consume [browser-support.v1](../requirements/12-quality-and-compatibility-contract.md#202-browser-supportv1). Web pins exact resolved browser/test versions at release freeze and explicitly sets Chrome/Edge 134, Firefox 136 and Safari 18.4 build floors. Real current/previous-stable suites, capability-denial UI and Watch→Poll/ReadOutput recovery are required; no moving bundler default, security polyfill or unchecked in-app WebView is a supported fallback.
+
 ## 2. Static generation
 
 Content, catalogue, release manifests, legal versions, locales and an approved public pricing snapshot feed the Node build. React Router pre-renders the complete public URL inventory. No build reads a live pricing endpoint, customer database or arbitrary provider API. Private pricing policy is reduced to an approved public offer projection before it becomes a build input.

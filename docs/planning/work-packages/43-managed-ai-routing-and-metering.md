@@ -213,8 +213,6 @@ Acceptance includes every amended §5 producer/consumer and WP-43.90 evidence. C
 | Per-provider test-environment runs and fixture-driven CI results | [WP-43.06](#rule-wp-43.06) |
 | Owned artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/OS/device/provider, scenario, result, limitations and real-versus-fixture status; inapplicable fields explicitly marked | [WP-43.90](#rule-wp-43.90) |
 
-
-
 ---
 
 ## 8. Completion gate
@@ -245,4 +243,4 @@ Acceptance includes every amended §5 producer/consumer and WP-43.90 evidence. C
 
 ## P2-010 required behavior and closure
 
-Model intent/outcome/settlement supports real ExecutionOwner task/turn and operator-funded compaction/search. Temporary bodies stay outside PG/history/backup/checkpoints; durable receipts keep actual supplier/customer facts. The referenced normative profile and producer stage matrix are binding inputs. Record independent positive/negative vectors and actual owner integration at this WP's assigned stage; a mock cannot close a real-provider/device requirement.
+Model intent/outcome/settlement supports real ExecutionOwner task/turn and operator-funded compaction/search. Temporary bodies stay outside durable D1 and SQLite history, backups and Workflow checkpoints; durable receipts keep actual supplier/customer facts. The referenced normative profile and producer stage matrix are binding inputs. Record independent positive/negative vectors and actual owner integration at this WP's assigned stage; a mock cannot close a real-provider/device requirement.

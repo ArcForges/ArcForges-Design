@@ -31,6 +31,8 @@ This is the implementation contract for the React/TypeScript boundary. Handwritt
 
 **Source/configuration policy.** New TS/TSX/tooling source carries the applicable SPDX header. npm JSON manifests use their licence metadata; JSON cannot acquire invalid comment headers. Repository policy recognizes these formats explicitly. Shared .NET Directory.Build imports are conditioned on managed project type so esproj never inherits language/AOT/NuGet settings intended for csproj.
 
+**Browser compatibility authority.** All four outputs and generated clients consume [browser-support.v1](../requirements/12-quality-and-compatibility-contract.md#202-browser-supportv1). Web pins exact resolved browser/test versions at release freeze and explicitly sets Chrome/Edge 134, Firefox 136 and Safari 18.4 build floors. Real current/previous-stable suites, capability-denial UI and Watch→Poll/ReadOutput recovery are required; no moving bundler default, security polyfill or unchecked in-app WebView is a supported fallback.
+
 ## 2. Independent Web repository
 
 ArcForges-Web owns apps/site (static public generation), apps/app (explicit account/chat/operations route profiles; status is an external-provider page/link, not an apps/app profile), packages/ui (AGPL), tooling/, tests/, package.json/package-lock.json, .node-version, ArcForges.Web.esproj and win.slnx. Consume @arcforges/proto/api-client from Contracts; there is no local SDK source tree, Cloud ProjectReference or native build dependency. Portable npm commands work without Visual Studio; esproj delegates to those same commands and explicit npm ci, with no implicit install/build race.

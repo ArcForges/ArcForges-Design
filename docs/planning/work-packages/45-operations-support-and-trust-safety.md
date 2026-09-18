@@ -63,9 +63,9 @@
 
 | Location | Change |
 |---|---|
-| `src/Cloud/ArcForges.Cloud.Modules.Operations/` | Support cases, support access grants, break-glass, enforcement, appeals, advisories |
-| `src/Cloud/ArcForges.Cloud.Modules.Notification/` | Transactional and broadcast email adapters with separated streams and a secondary path |
-| `src/Web/ArcForges.Web.App/` (operator profile) | The operator console on its own origin and identity system |
+| Cloud `src/Modules/{Support,TrustSafety,Audit,Policy,Configuration,PackageCatalog}/<Name>.{Domain,Application,Infrastructure}` | Existing domain owners implement support/access, enforcement, proposals/audit, controls, configuration and catalog; Cloud.Host composes OperatorService. There is no unowned Operations persistence module. |
+| Cloud `src/Modules/Notification/Notification.{Domain,Application,Infrastructure}` | Transactional and broadcast email adapters with separated streams and a secondary path |
+| Web `apps/app` (operations profile) | The operator console on its own origin and identity system |
 | `deploy/monitoring/` | Alert definitions, service-level objective definitions, status component mapping |
 | `docs/runbooks/` in the implementation repository | The required runbook set with rehearsal records |
 | `tests/CloudIntegrationTests/Operations/` | Alert-to-runbook, support access, break-glass, enforcement and appeal suites |
@@ -122,7 +122,7 @@
 
 **What must be fully done.** The operator console on a separate origin with a separate identity system, never in public navigation. Support access is explicit, scoped, time-bounded, consented where required and audited. A destructive action affecting customer data or entitlement requires a second authorised operator. Operator tooling uses the same contracts as the product.
 
-**Testing requirements.** A silent-impersonation negative test; scope and expiry tests; a two-operator requirement test; an audit-completeness test; a parallel-admin-API absence assertion.
+**Testing requirements.** A silent-impersonation negative test; scope and expiry tests; a two-operator requirement test; an audit-completeness test; a parallel-admin-API absence assertion. Exercise every generated role/method pair (allowed and refused), operator case reply/reopen, grant/revoke, positive/negative compensation, approval/read/retry UI and pending/unknown refund. Assert durable audit context and user-visible entitlement/billing explanation, and that one approved proposal cannot execute twice.
 
 **Completion gate.** **An operator can never silently become a user**, every access is scoped, expiring and audited, and no parallel unversioned admin API exists.
 
@@ -174,7 +174,7 @@
 
 **Testing requirements.** Live isolated Firebase project send and recorded invalid-token/payload/project/rate-limit responses; token rotation race, crash-after-acceptance duplicates, TTL expiry, revoke-before-send and no secret logging. WP32 provides physical receipt.
 
-**Completion gate.** Actual sender works with bounded/fenced recovery; provider acceptance is labeled separately from device delivery. PG24 remains open until WP32 physical/no-GMS/permission evidence.
+**Completion gate.** Actual sender works with bounded/fenced recovery; provider acceptance is labeled separately from device delivery. [PG-24](../../assurance/open-gates-register.md#rule-pg-24) remains open until WP32 physical/no-GMS/permission evidence.
 
 <a id="rule-wp-45.10"></a>
 
@@ -182,7 +182,7 @@
 
 **What must be fully done.** Integrate existing WP41 PackageCatalog operator methods with independent operator authentication, step-up/evidence and audit. Show asynchronous signed-index publication state.
 
-**Testing requirements.** Customer/PAT denial, changed proposal hash, replay, revoked package and failed index publication/retry.
+**Testing requirements.** Customer/PAT denial, changed proposal hash, replay, revoked package and failed index publication/retry. Use internal GetCatalogSubmission and the same typed proposal/approval path as the generated operator matrix; production catalog read-only views cannot grant operator mutation authority.
 
 **Completion gate.** Review decisions and revocations affect real signed catalog consumers with recorded operator evidence.
 
@@ -198,6 +198,12 @@
 **Completion gate.** Actual role/redaction/status/support cases and actionable CF/R2 failure diagnostics; no second Node/operations business host. Record exact artifacts and provider reality. The package is incomplete if an important contract/owner/recovery rule still requires design during coding.
 
 ---
+
+**Producer prerequisites.** WP45.08 consumes WP22 real mail artifacts and its live-delivery/recovery record; it cannot be used to defer WP22’s gate. Runtime mail fixtures are absent. Recorded failures remain test-only.
+
+**Operator contract closure.** Consume [registry04 §9](../../architecture/contracts/04-protobuf-wire-registry.md#9-operator-control-and-separate-identity-boundary) and [model01 operator state](../../architecture/data-model/01-cloud-data-model.md#operator-proposal-approval-and-financial-owner-closure). Generate/implement every operation exactly once with its eight authorization fields, operator scope and OC-03 role binding. Public customer/PAT/agent access refuses. Verify distinct approver, stale hash/revision/configuration, role revocation, expiry, concurrent consumption and lost receipt; no direct SQL or public-SDK operator import. WP03 produces schema/negative vectors, WP23 real identity/dispatch conformance, WP42 the financial owners, WP44 configuration/policy owners, and WP45 the real console join. Earlier packages retain their named fixture boundary until the existing downstream join.
+
+**Browser matrix acceptance.** Use [browser-support.v1](../../requirements/12-quality-and-compatibility-contract.md#202-browser-supportv1) and the exact release artifact/OS/browser patches. For each output’s existing flows, verify supported/degraded/blocked browser behavior: delayed-stream polling where streaming exists, refusal of unavailable required authentication/step-up, safe-preview refusal and preserved pending work. Static site acceptance includes no-JavaScript readability; it does not invent interactive account/stream APIs. Operator step-up retains its separate Entra/MFA authority. WP23 proves generated transports; WP45/47/48/49 prove their respective operations/site/account/chat output; WP50 joins all four production hashes and real browser evidence. A Playwright WebKit run alone does not claim Safari/OS authenticator proof.
 
 ## 6. Impacts
 
@@ -217,7 +223,7 @@
 
 Acceptance includes every amended §5 producer/consumer and WP-45.90 evidence. Current P2-013 contracts/data/runtime rules are tested in the original owner implementation, not a detached explanatory sample.
 
-WP45.09 records live FCM sending, failure/rotation/generation vectors and credential/project identities without secrets; WP32 closes physical receipt under PG24.
+WP45.09 records live FCM sending, failure/rotation/generation vectors and credential/project identities without secrets; WP32 closes physical receipt under [PG-24](../../assurance/open-gates-register.md#rule-pg-24).
 
 | Evidence | Produced by |
 |---|---|
@@ -231,8 +237,6 @@ WP45.09 records live FCM sending, failure/rotation/generation vectors and creden
 | Ladder, communication, appeal and audit results | [WP-45.07](#rule-wp-45.07) |
 | Advisory rehearsal and email failover results | [WP-45.08](#rule-wp-45.08) |
 | Owned artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/OS/device/provider, scenario, result, limitations and real-versus-fixture status; inapplicable fields explicitly marked | [WP-45.90](#rule-wp-45.90) |
-
-
 
 ---
 

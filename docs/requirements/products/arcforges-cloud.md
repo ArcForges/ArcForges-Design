@@ -295,7 +295,7 @@ Architecture boundaries must be reconciled to [P2-006](../../decisions/phase-2-s
 
 **Topology** — Worker ingress is the only public business path; Container origin and internal service routes are inaccessible publicly. Kill an instance and prove bounded errors, replacement, fencing and command reconciliation without duplicate effects.
 
-**Scaling** — Worker ingress and restartable Containers use explicit concurrency/capacity limits; cold starts and unavailable dependencies return bounded typed outcomes. Durable work never depends on an always-on replica.
+**Scaling** — Worker ingress and restartable Containers use [launch-capacity.v1](../../architecture/data-model/04-d1-execution-profile.md#launch-capacity-profile-v1): four fixed standard-2 slots per realm, ten-minute idle sleep, bounded readiness/first-response deadlines and explicit D1/Vectorize/R2 reservations and budgets. Cold starts and unavailable dependencies return bounded typed outcomes. Durable work never depends on an always-on replica.
 
 **Migration** — a rolling deployment with an expand/contract migration succeeds with mixed application versions live; no replica attempts migration at startup.
 

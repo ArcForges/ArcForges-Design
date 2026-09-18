@@ -1,0 +1,55 @@
+# Final Findings Remediation and Verification
+
+Date: 2026-09-18. Design base: `70a04d4add8f5d53807561e8370adbd7c77de976` (merged PR11). Review input: local Plan `last-findings`, first review `1f5e560`, independent re-review `fee5e4c`. Execution plan was committed as Plan `eb6e7dd` before formal edits. This record accompanies [P2-014](../decisions/phase-2-specification-decisions.md#rule-p2-014).
+
+The thirteen reported findings were collected and reconciled with their original authoritative clauses before one coordinated repair. Work was serial in an isolated Design worktree. Implementation and reference repositories were read-only. This is a bounded remediation of that complete findings package and its affected dependency chains, not a claim that every future product defect has been disproved.
+
+## Disposition and authoritative closure
+
+| Finding | Applied repair and owner | Downstream acceptance |
+|---|---|---|
+| NRF-01 — remaining Device SSO | [Security](../architecture/08-security-architecture.md#account-and-provider-closure), catalogues 00/01, registry04 and journeys07 remove sibling discovery, bootstrap and challenge signing. Every application completes its own browser authorization and stores its own session. | WP11/22 test two installed products, separate credentials/sessions and absence of a peer listener. Independently specified restricted-child isolation is unchanged. |
+| NRF-02 — tool-result identity | [Bridge](../architecture/contracts/03-realtime-and-bridge.md) and Harness use `(toolRequestId, attemptId, commandId)` plus canonical result hash. | WP16/24/26 exercise multiple results per attempt, identical receipt replay and changed-result refusal for Task and ChatTurn. |
+| NRF-03 — operator surface | [Registry04 section 9](../architecture/contracts/04-protobuf-wire-registry.md#9-operator-control-and-separate-identity-boundary) and manifest11 cover 31 internal methods with all authorization fields and OC-03 roles. Eleven new methods complete typed proposal/approval/read, financial actions, catalog inspection and case reply/state. | WP03 schema/fixtures → WP23 identity/dispatch → WP42/44 owners → WP45 console. Public/PAT/agent denial, distinct approval, owner/configuration changes, one-use consumption, unknown refunds and user-visible explanations are mandatory. |
+| NRF-04 — unbound capacity | [D1 profile](../architecture/data-model/04-d1-execution-profile.md#launch-capacity-profile-v1) selects standard-2/four global slots/ten-minute idle sleep, bounded cold readiness, and exact Vectorize/R2 planning and realm budgets. [Model01](../architecture/data-model/01-cloud-data-model.md#realm-operating-budget-reservations) fixes persistent reservation/retry/rollover semantics. | Configuration, pricing, WP21/40/50 and L-16/PG-26 consume the same hashed artifact. Purchased entitlements are not silently reduced. Cost/performance approval and actual provider evidence remain open. |
+| NRF-05 — simulator loop | [Simulator](../architecture/23-simulator-and-interchange.md#12-execution-inside-the-single-host) uses bounded slices, verified R2 preparation, one guarded D1 segment/checkpoint/receipt/outbox commit and alarm/Cron recovery. | WP51 kills the Container around publication and scheduling, races wakeups, rejects stale fences and proves deterministic continuation. |
+| NRF-06 — missing module | [Layout](../architecture/01-solution-and-project-layout.md#5-cloud-module-projects) and architecture27 include all 21 Cloud domain modules, including PackageCatalog; platform remains infrastructure. WP45 names actual owners instead of an undefined Operations data module. | WP01/41 and owner/schema assertions; nine repository owners remain distinct from the module count. |
+| NRF-07 — active PG mechanisms | Original deployment, restore, identity, temporary-body exclusion, provider integration and producer/test clauses now use D1 guarded batches, primary session checks, export/bookmark/replay and verified R2 inventory. No public C# origin substitutes for Worker/private Container routing. | WP21/25/43/46/50/51 retain their real integration/recovery duties. Restrictive independent journal and unknown-effect reconciliation remain mandatory. |
+| NRF-08 — email fixture contradiction | Implementation sequence, producer prerequisites, observability and WP22 require real Postmark/SES delivery/recovery; recordings are test-only. | WP22 requires account/domain/DNS/SecretRefs/inbox. WP45.08 consumes the real adapter, not a deferred fake producer. |
+| NRF-09 — absent browser definition | [browser-support.v1](../requirements/12-quality-and-compatibility-contract.md#202-browser-supportv1) fixes engine/build floors, deterministic supported releases, exact release artifact, fallback timing and blocked/degraded UI. | WP23/45/47/48/49/50 and RG-11 prove each output's actual offered flows; site readability without JavaScript, real streaming fallback and separate operator MFA authority. |
+| NRF-10 — false native export | WP19 and desktop model02 now follow Notes' acknowledged Cloud Markdown/attachment/metadata/fidelity exit path. Ordinary offline copy/save recovery is distinct; assistant-history.v1 remains owned by model05/WP15. | No native Notes archive or pending-local-content round-trip claim. Early client fixtures join real export at WP25.08. |
+| NRF-11 — swapped table cells | Catalogue01 export/automation rows put registered errors and freshness in their declared columns. | Semantic vocabulary validation includes both quoted and unquoted rows, not just table width. |
+| NRF-12 — counts and references | Three-workspace slogan and prose, nine-repository traceability, current PG-24 links and WP17.05 fixture link are corrected. | Current links/anchors and graph/index checks; dated evidence remains dated. |
+| NRF-13 — merged dispositions columns | Foundation decisions restore separate Scope and Current effective rule cells for all 49 disposition rows. | Five-column schema validation, in addition to ordinary Markdown table checks. |
+
+## Corrections to the proposed repair plan
+
+- “Ten owners” described repositories, not Cloud modules: corrected to nine repositories, while PackageCatalog makes 21 modules.
+- Capacity and browser choices were selected under the user's existing authorization. Actual price, performance and commercial acceptance still need evidence; no approval or achieved latency was invented.
+- The proposed native-export wording would have preserved the scope contradiction. The original WP19 body and model02 ownership statement were repaired as well as its BR-07 row.
+- Device SSO also remained in registry04, catalogue01 and WP22. Those executable instructions were removed, not merely contradicted by another introductory sentence.
+- Dated historical reviews and their PG24 spellings remain unchanged. Current prose and links use PG-24. Historical claims of closure do not override the findings or this amendment.
+
+## Independent verification and corrections
+
+The final pass walked each changed flow from UI/identity to typed request, owner admission, atomic commit, response/recovery and its real integration gate, and inspected the changed normative text and work-package propagation. It corrected actual defects without reopening unrelated product scope: two orphaned table fragments; two additional stale tool-result keys in the public verification table and bridge diagram; operator case-message pagination; entitlement time compensation versus credit lots; outstanding versus confirmed refund balance; physical provider-attempt budget identity; specialized enforcement/configuration UI versus the generic proposal flow; and Notes Cloud export versus local recovery.
+
+Document checks are reproducible from the local Plan repository. Commands take the explicit isolated Design root:
+
+```powershell
+python -X utf8 remediation/verification/verify.py --design-root <Design-worktree> --output-dir last-remediation/verification/results
+python -X utf8 remediation/verification/verify_closure.py --design-root <Design-worktree> --output-dir last-remediation/verification/results
+python -X utf8 remediation/verification/verify_final.py --design-root <Design-worktree> --output-dir last-remediation/verification/results
+python -X utf8 last-remediation/verification/verify_last.py --design-root <Design-worktree>
+git -C <Design-worktree> diff --check
+```
+
+The retained earlier scripts continue checking original invariants; the added check covers operator metadata/role/variant bijections, existing method field numbering, record tags, error/freshness vocabulary, five-column dispositions, module/repository distinction, capacity arithmetic, browser contract and bounded residue. Textual schema checks are not a generated-proto compilation or a D1 integration test. Detailed JSON and the review ledger live in Plan `last-remediation/verification` and `last-remediation/02-execution-and-review.md`.
+
+Verified final inventory: 51 active work packages, 158 dependency edges, 380 manifest IDs = 373 active mappings + seven reserved future IDs, including 31 operator methods. Earlier 18 operator method request/result fields retain their original numbers; new context/approval/pagination fields are appended. No old public field is repurposed. The local assistant SQLite example has 16 tables; existing structural/negative vectors remain valid. All 17 new focused checks passed, together with the retained checks, link/table validation and git diff --check. The scan covered 169 non-deprecated Markdown files, with no broken link, duplicate anchor, malformed/orphaned table or dependency-order violation; 133 operation error/freshness rows and 49 disposition rows passed their semantic schemas.
+
+## Evidence boundary and remaining gates
+
+Evidence is E0–E2: authoritative document inspection, exact Git/source observations, mechanical consistency checks and local SQLite examples. Current primary-source capability checks are linked in the capacity and browser authorities with their access date. This work did not publish packages, compile a product/AOT/proto implementation, deploy Cloudflare resources, deliver email/push, exercise real browsers/Android/native hardware, charge/refund money or prove commercial operation.
+
+All thirteen findings are closed at the design level by concrete choices and propagated requirements. No required design choice remains assigned to an implementer by this repair. L-16/PG-26 and the existing AOT, Cloudflare, provider, signing, browser/device, licensing and commercial gates remain open until their named producers supply the required real evidence. Internal classes, private algorithms and ordinary code organization within the declared boundaries remain implementation choices.

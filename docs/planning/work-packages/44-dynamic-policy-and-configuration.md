@@ -167,6 +167,8 @@
 
 ---
 
+**Operator contract closure.** Consume [registry04 §9](../../architecture/contracts/04-protobuf-wire-registry.md#9-operator-control-and-separate-identity-boundary) and [model01 operator state](../../architecture/data-model/01-cloud-data-model.md#operator-proposal-approval-and-financial-owner-closure). Generate/implement every operation exactly once with its eight authorization fields, operator scope and OC-03 role binding. Public customer/PAT/agent access refuses. Verify distinct approver, stale hash/revision/configuration, role revocation, expiry, concurrent consumption and lost receipt; no direct SQL or public-SDK operator import. WP03 produces schema/negative vectors, WP23 real identity/dispatch conformance, WP42 the financial owners, WP44 configuration/policy owners, and WP45 the real console join. Earlier packages retain their named fixture boundary until the existing downstream join.
+
 ## 6. Impacts
 
 | Dimension | Impact |
@@ -194,8 +196,6 @@
 | Range-blocking precision and grace-period results | [WP-44.06](#rule-wp-44.06) |
 | Fallback chain, staleness and mid-operation results | [WP-44.07](#rule-wp-44.07) |
 | Owned artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/OS/device/provider, scenario, result, limitations and real-versus-fixture status; inapplicable fields explicitly marked | [WP-44.90](#rule-wp-44.90) |
-
-
 
 ---
 

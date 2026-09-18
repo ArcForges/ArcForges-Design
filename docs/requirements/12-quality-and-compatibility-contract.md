@@ -114,6 +114,8 @@ The product metric is **Time To Usable** ([I-389](01-normative-glossary-and-inva
 
 ---
 
+**Cloud-dependent first action.** Local startup never waits for Cloud. The [launch profile](../architecture/data-model/04-d1-execution-profile.md#launch-capacity-profile-v1) separately measures warm command P95<=2 seconds and idle-to-first-response P95<=10 seconds. Show connecting after one second; preserve pending work and expose retryable failure at the ten-second first-request deadline. This budget is an acceptance target, not a Cloudflare latency guarantee or an AOT startup measurement.
+
 ## 6. Memory
 
 **Quiescent base memory ceiling** — release AOT, main workspace open, no large project loaded, 60 s quiescent, derived startup work finished:
@@ -382,7 +384,7 @@ Three tiers of matrix, running at different cadences:
 | <a id="rule-pm-01"></a>PM-01 | **Desktop Tier-1 platforms genuinely enter build, AOT publish, install, UI, recovery, compatibility, performance and release matrices.** A platform that only compiles is not supported. |
 | <a id="rule-pm-02"></a>PM-02 | **The supported OS range is a versioned matrix** published as release metadata, not folklore. |
 | <a id="rule-pm-03"></a>PM-03 | **Android companion is verified on real devices**, not only emulators — the Kotlin/Jetpack Compose release artifact, cold start, weak network, background resume, and store-package verification. |
-| <a id="rule-pm-04"></a>PM-04 | **Web companion is verified against a maintained browser matrix**, including the production Web build, first load, caching and realtime reconnection. |
+| <a id="rule-pm-04"></a>PM-04 | **All four Web outputs are verified against [browser-support.v1](#202-browser-supportv1)**, including production assets, first load, caching, authentication/step-up, streaming/fallback and reconnect. The matrix is a release artifact with exact tested versions, not an undefined package-local target. |
 | PM-05 | **A hardware lab is mandatory for ArcScope and ArcSlate.** Real serial, network and device interfaces; real media, codecs and GPUs. A CI virtual machine cannot detect the failures these products actually have. |
 | <a id="rule-pm-06"></a>PM-06 | **Native hardware paths require fallback tests**: missing GPU, unsupported codec, absent device, driver failure — each must degrade explicitly rather than crash. |
 | PM-07 | **Cross-platform file-system behaviour is tested**: case sensitivity, path length, reserved names, Unicode normalisation, permissions, locking, and network or removable volumes. |
@@ -405,6 +407,29 @@ Three tiers of matrix, running at different cadences:
 | SCV-07 | No obsolete acceptance or schema obligation reintroduces BYOK, multi-agent/ACP delegation, team/member/invite models, whiteboard/slides, flashcards, DOCX import, formula/relation/rollup engines, custom encrypted stores/exports or E2EE. Ordinary TLS, server storage/backup protection, token storage and native data recovery remain verified. |
 
 ---
+
+### 20.2 Browser support.v1
+
+Web owns the versioned `browser-support.v1.json` artifact; Quality verifies it and the release approver signs its hash with the compatibility manifest. Publish beside the OS matrix at `downloads.arcforges.com/compatibility/<releaseId>/browser-support.v1.json`, and link it from the public support page and each interactive unsupported-browser notice. It binds site, account, chat and operations, including their narrow layouts; it adds no iOS application target.
+
+| Browser / admitted OS | Technical build floor | Fully supported release set |
+|---|---|---|
+| Chrome and Edge on supported Windows/macOS/Linux | 134 | Current and immediately previous stable major, at their latest vendor security patch at release freeze, and never below 134 |
+| Firefox on supported Windows/macOS/Linux | 136 | Current and immediately previous stable major, latest security patch, never below 136; ESR only when its actual major belongs to this same set |
+| Safari on supported macOS | 18.4 | Current and immediately previous supported stable major family, latest OS/security update, never below 18.4 |
+| Chrome on supported Android | 134 | Current and previous stable major at latest patch, never below 134; test on the maintained Android OS/device matrix |
+
+The previous-major rule is the product support decision; resolving vendor release numbers is a deterministic release task, not permission to choose an arbitrary market floor. The artifact records schemaVersion=browser-support.v1, releaseId, frozenAt, owner, qualityApprovalRef, buildTargets, and entries{browser,engine,osRange,minVersion,maxTestedVersion,testedVersions,tier,streaming,stepUp,previewIsolation,evidenceHashes}, plus outputArtifactHashes for all four outputs. No literal current/latest value is permitted in a published version field. Reject a release with a required entry missing or with its production asset hash different from the tested one. Exact browser patches are maintained in Web's release/test inputs, not guessed permanently in this Design.
+
+Tier behavior is explicit: **supported** means every required flow passes; **degraded-with-notice** is allowed for a supported browser when the network buffers streaming or the device lacks an enrolled usable authenticator, with only the declared fallback/refusal below; **blocked** covers below-floor/unsupported engines, embedded/in-app WebViews, or absent essential secure-cookie/WebCrypto/fetch/BigInt/ES-module primitives. Blocked interactive output displays a static update/open-in-supported-browser action before authentication or mutation, preserves existing local drafts and never destroys private data. Public static content/downloads/docs remain readable without JavaScript; no security assurance is inferred for untested browsers. Browser identity detection is advisory, never an authorization check.
+
+| Capability | Supported behavior and explicit fallback/refusal |
+|---|---|
+| Response-body streaming | Use generated binary gRPC-Web Watch/WatchOutput. After the existing 45-second silence timeout, or a proved buffered/unavailable stream, select EventService.Poll and ExecutionService.ReadOutput using the same cursor, owner and final-hash rules; show “Live updates delayed”. One event poll per 10 seconds and each active output read per 5 seconds, full jitter +/-20%, no overlapping requests; honor retryAfter/backoff, pause hidden idle views, and immediately reconcile on foreground/user refresh. This is a transport fallback only; it never restarts a command or marks partial output complete. Test the all-poll workload as well as streaming. |
+| WebAuthn step-up | Require the same server challenge/origin/RP/UV policy on every engine. A capability probe or successful password/email login is not step-up proof. If the selected account has no usable enrolled passkey/authenticator, keep the sensitive action unexecuted and offer the accepted account recovery or another supported device/browser ceremony; do not lower its assurance, auto-approve or transfer a sibling application's token. Preserve the pending action for explicit revalidation afterwards. |
+| Untrusted-content preview | Require the selected iframe sandbox/CSP isolation, with no same-origin-plus-script escape. If isolation cannot be enforced, refuse inline preview and offer only an authorized download/open action under the original resource policy. Never render unsafe HTML as a compatibility fallback. |
+
+The technical floors are deliberate compilation targets. Vite and CSS tooling must receive explicit matching targets rather than their moving defaults; generated Contracts adapters use the same minimums. Polyfills may supply presentation conveniences but never fabricate WebAuthn, credential isolation, streaming authority or iframe security. Primary capability references checked 2026-09-18: [Fetch response streams](https://developer.mozilla.org/en-US/docs/Web/API/Response/body), [WebAuthn authenticator availability](https://developer.mozilla.org/en-US/docs/Web/API/PublicKeyCredential/isUserVerifyingPlatformAuthenticatorAvailable_static), and [Vite production targets](https://vite.dev/guide/build.html). Actual release browser/OS combinations still require real evidence.
 
 ## 21. Severity and waivers
 

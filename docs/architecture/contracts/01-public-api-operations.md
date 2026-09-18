@@ -25,7 +25,7 @@ Every Cloud business operation and explicit HTTP exception. Columns follow `§2`
 | `identity.redeemEmailCode` | Verify a code | **anonymous** | `NI` | `state.invalid_transition` | `FR` |
 | `identity.refreshSession` | Rotate the refresh token | refresh token | `NI` | `auth.session_expired` | `FR` |
 | `identity.revokeSession` | End one session | session, `R2` | `DE` | `state.not_found` | `FR` |
-| `identity.revokeAllSessions` | End every session, including the caller and device SSO grants | session, `R3`, step-up | `DE` | — | `FR` |
+| `identity.revokeAllSessions` | End every independently issued account session, including the caller | session, `R3`, step-up | `DE` | — | `FR` |
 | `identity.listAuthIdentities` | The user's credentials | session, `R1` | `Q` | — | `AO` |
 | `identity.removeAuthIdentity` | Remove a credential | session, `R3`, step-up | `DE` | `identity.last_credential` | `FR` |
 | `identity.beginStepUp` | Satisfy a step-up challenge | session | `NI` | `auth.step_up_required` | `FR` |
@@ -64,8 +64,6 @@ Step-up, credential management, recovery, revoking other sessions and workspace 
 Authentication challenge creation/completion uses the catalogue's NI classification: no blind automatic retry; duplicate consumed challenge is rejected safely and a fresh login starts a new bounded flow.
 
 ---
-
-
 
 ## 2. Workspace and device
 
@@ -196,7 +194,7 @@ The typed requests use the canonical Notes schema in [the Cloud data model](../d
 | `notes.restoreRevision` | Create a new current revision from retained history without rewriting history | R3 | IW | conflict.revision_mismatch, resource.unavailable | FR |
 | `notes.requestExport` | Create bounded revision-pinned owner export with explicit data-export permission | R2 | CC | entitlement.quota_exceeded, state.not_found | FR |
 | `chat.requestExport` | Create bounded revision-pinned owner export with explicit data-export permission | R2 | CC | entitlement.quota_exceeded, state.not_found | FR |
-| `export.getStatus` | Read owner-filtered export progress | R1 | Q | AO | state.not_found |
+| `export.getStatus` | Read owner-filtered export progress | R1 | Q | state.not_found | AO |
 | `export.cancel` | Idempotent owner cancellation, preserving already committed output state | R2 | IW | state.invalid_transition | FR |
 | `export.getDownload` | Issue a new short-lived authenticated ticket for the retained verified artifact | R1 | NI | state.gone, resource.unavailable | FR |
 
@@ -380,7 +378,7 @@ The Notes branch of `search.query` accepts the typed `NotesQuery` [profile](02-l
 | PV-01 | Every operation here has a generated contract artifact, and every artifact traces to a row here | [WP-03.05](../../planning/work-packages/03-contract-foundation-and-licence-split.md#rule-wp-03.05), [WP-23.00](../../planning/work-packages/23-public-api-and-generated-clients.md#rule-wp-23.00) |
 | PV-02 | Every `localPresence` operation is absent from the mobile and web surfaces | [WP-31.06](../../planning/work-packages/31-arcchat-mobile-android.md#rule-wp-31.06), [WP-49.02](../../planning/work-packages/49-arcchat-web-companion.md#rule-wp-49.02) |
 | PV-03 | Every mutating operation is exactly-once under duplicate submission and lost response | [WP-23.03](../../planning/work-packages/23-public-api-and-generated-clients.md#rule-wp-23.03) |
-| PV-04 | `bridge.submitResult` is idempotent on `(taskId, attemptId)` | [WP-26.03](../../planning/work-packages/26-remote-action-and-tool-bridge.md#rule-wp-26.03) |
+| PV-04 | `bridge.submitResult` is idempotent on `(toolRequestId, attemptId, commandId)` plus canonical result hash | [WP-26.03](../../planning/work-packages/26-remote-action-and-tool-bridge.md#rule-wp-26.03) |
 | PV-05 | A denied resource returns `state.not_found` and discloses nothing by timing or shape | [WP-23.01](../../planning/work-packages/23-public-api-and-generated-clients.md#rule-wp-23.01) |
 | PV-06 | No operation accepts a payment instrument field | [WP-42.02](../../planning/work-packages/42-commerce-entitlement-and-credits.md#rule-wp-42.02) scan |
 | PV-07 | Entitlement operations resolve with the `commerce` schema absent | [WP-42.00](../../planning/work-packages/42-commerce-entitlement-and-credits.md#rule-wp-42.00) |
@@ -409,8 +407,8 @@ These complete existing accepted flows. The [numbered registry](04-protobuf-wire
 | `chat.putMemory` | Write user-approved memory content under expected revision | R2 | IW | conflict.revision_mismatch | FR |
 | `chat.deleteMemory` | Delete current memory participation with history retention | R2 | DE | conflict.revision_mismatch | FR |
 | `preference.put` | Write only declared syncable user preference keys | R2 | IW | validation.invalid_request | FR |
-| `automation.list` | Read owner automation summaries | R1 | Q | AO | state.not_found |
-| `automation.get` | Read current definition and version | R1 | Q | AO | state.not_found |
+| `automation.list` | Read owner automation summaries | R1 | Q | state.not_found | AO |
+| `automation.get` | Read current definition and version | R1 | Q | state.not_found | AO |
 | `automation.create` | Create caller-stable declarative definition and grant references | R2 | CC | validation.invalid_request | FR |
 | `automation.update` | Write next immutable definition version under expected revision | R2 | IW | conflict.revision_mismatch | FR |
 | `automation.setEnabled` | Reauthorize and change future trigger eligibility | R2 | IW | entitlement.no_service_term | FR |
@@ -423,8 +421,8 @@ The existing browser.*, commerce.providerWebhook, resource.uploadChunk and task.
 
 ## Complete account surface
 
-The [wire registry account operations](04-protobuf-wire-registry.md#account-operation-semantics) are part of this catalogue, with their explicitly stated classes, risk, compatibility and proof rules. They implement profile/email/credentials/recovery codes, session and PAT management, device SSO/sign-out/remote scopes, security activity, self-host provider discovery and workspace data health/deletion. Their stable names and typed fields are defined once in that registry. Identity and Device own security changes; Workspace coordinates content deletion through existing owner jobs. No Web-only substitute endpoint may implement a business rule missing from these owners.
+The [wire registry account operations](04-protobuf-wire-registry.md#account-operation-semantics) are part of this catalogue, with their explicitly stated classes, risk, compatibility and proof rules. They implement profile/email/credentials/recovery codes, session and PAT management, per-installation sign-in/sign-out/remote scopes, security activity, self-host provider discovery and workspace data health/deletion. Their stable names and typed fields are defined once in that registry. Identity and Device own security changes; Workspace coordinates content deletion through existing owner jobs. No Web-only substitute endpoint may implement a business rule missing from these owners.
 
 ## Complete initial journey operations
 
-The additional identity enrollment, ChatTurn/promotion/temporary/project/memory, paged Task detail, source consent, realm transfer and connector methods are individually numbered in [wire registry sections 5 and 10](04-protobuf-wire-registry.md#5-public-business-operation-registry); their authorization/idempotency/risk is specified in its supporting-operation and added-owner rules. They are mandatory initial services, not optional later endpoints. [Client journeys](07-client-journeys-and-ports.md) fixes each standard browser-auth projection and provider callback, including enrollment/recovery/step-up and device SSO. All normal business operations use native C#/Kotlin gRPC or TypeScript gRPC-Web; no parallel JSON business CRUD API.
+The additional identity enrollment, ChatTurn/promotion/temporary/project/memory, paged Task detail, source consent, realm transfer and connector methods are individually numbered in [wire registry sections 5 and 10](04-protobuf-wire-registry.md#5-public-business-operation-registry); their authorization/idempotency/risk is specified in its supporting-operation and added-owner rules. They are mandatory initial services, not optional later endpoints. [Client journeys](07-client-journeys-and-ports.md) fixes each standard browser-auth projection and provider callback, including enrollment/recovery/step-up and independent native browser authorization. All first-party public business operations use binary gRPC-Web on C#, Kotlin and TypeScript; no parallel JSON business CRUD API.

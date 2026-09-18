@@ -170,6 +170,8 @@
 
 ---
 
+**PackageCatalog ownership.** Cloud catalog tables, publication and review/revocation handlers live in `src/Modules/PackageCatalog/PackageCatalog.{Domain,Application,Infrastructure}`. OperatorService authenticates the operator and calls this owner; neither the Extensions implementation nor the console writes its tables. Verify owner references against the 21-module schema map.
+
 ## 6. Impacts
 
 | Dimension | Impact |
@@ -201,8 +203,6 @@ Acceptance includes every amended §5 producer/consumer and WP-41.90 evidence. C
 | Generator, validate-parity and first-party build results | [WP-41.06](#rule-wp-41.06) |
 | MCP mapping record, connector secret and no-delegation structural results | [WP-41.07](#rule-wp-41.07) |
 | Owned artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/OS/device/provider, scenario, result, limitations and real-versus-fixture status; inapplicable fields explicitly marked | [WP-41.90](#rule-wp-41.90) |
-
-
 
 ---
 

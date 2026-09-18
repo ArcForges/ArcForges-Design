@@ -83,7 +83,7 @@ Use the exact projects assigned to this WP in [architecture 27](../../architectu
 
 **What must be fully done.** Produce/consume assistant-history.v1 from committed local snapshots, preserving branch/message/resource provenance and missing-resource reports. Import remaps identities; Cloud promotion remains WP25.
 
-**Testing requirements.** Offline full round-trip; malformed/archive-hash/foreign references, draft exclusion, branch graph cycles and canceled import.
+**Testing requirements.** Offline full round-trip; malformed/archive-hash/foreign references, draft exclusion, branch graph cycles and canceled import. Use assistant-history.v1 for the selected local/cloud/temporary history mode. Its fixtures do not imply a native ArcNotes archive importer; compare its declared preservation and loss rules independently.
 
 **Completion gate.** Local export is complete without Cloud, implicit upload or mode conversion.
 

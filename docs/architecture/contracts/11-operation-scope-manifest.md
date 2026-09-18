@@ -1,8 +1,8 @@
 # Operation Scope Manifest
 
-Authority: P2-012. This assigns all 351 mapped operation IDs, including reserved future entries, registry 04 methods and all 13 annex 10 additions. `future` rows are reserved only and excluded from active generation; all other rows require concrete metadata and implementation ownership. Registry 04 and annex 10 own the method/field definitions.
+Authority: P2-012. This assigns all 380 mapped operation IDs, including reserved future entries, registry 04 methods and all 13 annex 10 additions. `future` rows are reserved only and excluded from active generation; all other rows require concrete metadata and implementation ownership. Registry 04 and annex 10 own the method/field definitions.
 
-`account`: existing realm/account/workspace permission; no assistant filter on account security/finance. `assistant`: mandatory product scope and inherited execution/resource owner. `product-owner`: product fixed by method/aggregate and validated against scope. `resource-owner`: derive account or product owner from admitted resource/notification/export kind, enforce existing owner permission and require a matching product scope for product-owned objects; never accept a caller-selected foreign owner. `application-target`: device administration keeps its account permission, but installation/presence/bridge execution always validates the explicit target and current epoch. `in-process`: ordinary product handlers, no network service. `private-helper`: parent-launched child only, never another product. `future`: not registered or invoked in this release; descriptor names remain reserved.
+`account`: existing realm/account/workspace permission; no assistant filter on account security/finance. `assistant`: mandatory product scope and inherited execution/resource owner. `product-owner`: product fixed by method/aggregate and validated against scope. `resource-owner`: derive account or product owner from admitted resource/notification/export kind, enforce existing owner permission and require a matching product scope for product-owned objects; never accept a caller-selected foreign owner. `application-target`: device administration keeps its account permission, but installation/presence/bridge execution always validates the explicit target and current epoch. `in-process`: ordinary product handlers, no network service. `private-helper`: parent-launched child only, never another product. `operator`: separate internal operator identity and the complete role/authorization matrix in registry04 section 9; no customer or tool access. `future`: not registered or invoked in this release; descriptor names remain reserved.
 
 | Operation | Scope class |
 |---|---|
@@ -357,3 +357,32 @@ Authority: P2-012. This assigns all 351 mapped operation IDs, including reserved
 | `catalog.getSubmission` | account |
 | `catalog.review` | operator |
 | `catalog.revoke` | operator |
+| `operator.listCases` | operator |
+| `operator.getCase` | operator |
+| `operator.requestAccess` | operator |
+| `operator.approveAccess` | operator |
+| `operator.endAccess` | operator |
+| `operator.readDiagnostic` | operator |
+| `operator.proposeEnforcement` | operator |
+| `operator.decideEnforcement` | operator |
+| `operator.getAppeal` | operator |
+| `operator.resolveAppeal` | operator |
+| `operator.stageConfiguration` | operator |
+| `operator.validateConfiguration` | operator |
+| `operator.approveConfiguration` | operator |
+| `operator.activateConfiguration` | operator |
+| `operator.getConfiguration` | operator |
+| `operator.setKillSwitch` | operator |
+| `operator.startBreakGlass` | operator |
+| `operator.endBreakGlass` | operator |
+| `operator.proposeAction` | operator |
+| `operator.approveAction` | operator |
+| `operator.getProposal` | operator |
+| `operator.grantEntitlement` | operator |
+| `operator.revokeEntitlement` | operator |
+| `operator.issueCompensation` | operator |
+| `operator.adjustCompensation` | operator |
+| `operator.decideRefund` | operator |
+| `operator.getCatalogSubmission` | operator |
+| `operator.replyCase` | operator |
+| `operator.setCaseState` | operator |

@@ -484,6 +484,10 @@ customer  = cost at the Run's pinned retail tariff snapshot, as micro-credits   
 
 ---
 
+**Operator financial controls.** [Registry04 §9](contracts/04-protobuf-wire-registry.md#9-operator-control-and-separate-identity-boundary) is the exclusive operator API for administrative grant/revoke, compensation issue/adjust and refund decision. Each uses the typed proposal, distinct approver and exact owner/configuration revision. Commerce/Entitlement own execution; Audit approval consumption and owner receipt/outbox commit in the same guarded D1 batch. No direct SQL or public customer credential qualifies. Refund approval creates a provider intent, not proof of repayment. Current credit/hold/refund/entitlement rules remain binding and credit compensation never increases included capacity or rewrites historical charges.
+
+**Launch unit-cost inputs.** Pricing readiness consumes the exact model04 launch-capacity.v1 hash and measured workload: four standard-2 slots, provisioned running GiB/GB-seconds, active vCPU-seconds, ten-minute sleep duty cycle/cold-start cost, Worker/DO/Queues/Workflow use, D1 reads/writes/storage, Vectorize stored/queried dimensions, R2 byte-months/Class A/Class B and independent backup costs. [Container billing](https://developers.cloudflare.com/containers/platform/pricing/) and [R2 billing](https://developers.cloudflare.com/r2/pricing/) were checked on 2026-09-18; actual rates/currencies/effective dates are versioned release inputs under F-023, not permanent figures here. Include operational reserve and unknown supplier exposure; R2 served-byte budgeting does not invent an egress fee. An unmeasured duty cycle or unapproved cost/latency result blocks L-16 and public price commitment, not document closure.
+
 ## 13. Testing and gates
 
 | # | Test obligation |

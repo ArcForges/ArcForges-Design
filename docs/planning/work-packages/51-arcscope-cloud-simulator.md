@@ -161,6 +161,8 @@ The official simulator consumes real paid-term and quota enforcement from [WP-42
 
 ---
 
+**Slice recovery acceptance.** Kill the real Container before D1 publication, after the guarded segment/checkpoint/outbox batch, and before/after alarm scheduling. Race a duplicate alarm with Cron rescue; assert one committed segment per run/range, deterministic continuation, no lost next-due intent and rejection of stale fences. Alarm delivery itself may repeat. Use the bounded mechanism in architecture23 §1.2, never interactive BEGIN/COMMIT or an in-memory continuation loop.
+
 ## 6. Impacts
 
 | Dimension | Impact |
@@ -190,8 +192,6 @@ Acceptance includes every amended §5 producer/consumer and WP-51.90 evidence. C
 | Command idempotency, realtime-disabled fallback and native ingestion results | [WP-51.04](#rule-wp-51.04) |
 | Limit enforcement, entitlement, expiry and 24-hour soak results | [WP-51.05](#rule-wp-51.05) |
 | Owned artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/OS/device/provider, scenario, result, limitations and real-versus-fixture status; inapplicable fields explicitly marked | [WP-51.90](#rule-wp-51.90) |
-
-
 
 ---
 

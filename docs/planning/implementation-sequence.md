@@ -86,7 +86,7 @@ The policy in this section is the complete, binding definition for every work pa
 | May be mocked initially | Must be real early |
 |---|---|
 | AI providers, streaming responses, token billing | **The device tool path inside a real AOT release binary** — pull, local re-authorisation, generated decode, typed invocation, idempotent result. **The agent loop itself is the CF Workflow** ([LS-02](../architecture/17-agent-harness.md#rule-ls-02), **[V-03](../assurance/phase-1-official-verification.md#rule-v-03)**), so no AOT gate applies to it |
-| Email delivery and one-time codes; push | **Identity, refresh and session contention** |
+| Push until its named producer; test-only recorded email responses | **Identity, refresh/session contention and real email delivery/recovery at WP22** |
 | Payment provider webhook payloads (as fixtures) | **The webhook inbox, idempotency and reconciliation** |
 | Object storage adapters | **Upload interruption, hashing, resumption and quota** |
 | Cloud policy distribution | **Permission re-validated at the final resource owner** |
@@ -111,7 +111,7 @@ Every fixture that stands in for a later capability is listed here with the pack
 | Scaffolding | Introduced by | Stands in for | Deleted by |
 |---|---|---|---|
 | **Fixture turn endpoint** — accepts a turn, returns scripted task and step transitions, scripted stream chunks and scripted `ToolRequest`s; runs no model, planner, admission or metering | [WP-17.01](work-packages/17-arcchat-independent-core.md#rule-wp-17.01) | The Cloud Harness | **[WP-52.05](work-packages/52-cloud-harness.md#rule-wp-52.05)**, which asserts structurally that it no longer exists |
-| Stubbed managed provider path | [WP-17.03](work-packages/17-arcchat-independent-core.md#rule-wp-17.05) | Real provider routing and metering | [WP-43.00](work-packages/43-managed-ai-routing-and-metering.md#rule-wp-43.00), [WP-43.07](work-packages/43-managed-ai-routing-and-metering.md#rule-wp-43.07) |
+| Stubbed managed provider path | [WP-17.05](work-packages/17-arcchat-independent-core.md#rule-wp-17.05) | Real provider routing and metering | [WP-43.00](work-packages/43-managed-ai-routing-and-metering.md#rule-wp-43.00), [WP-43.07](work-packages/43-managed-ai-routing-and-metering.md#rule-wp-43.07) |
 | Notes/Chat export fixture endpoints | [WP-15.06](work-packages/15-arcchat-conversation-core.md#rule-wp-15.06), [WP-19.05](work-packages/19-arcnotes-search-and-portability.md#rule-wp-19.05) | Real Cloud snapshot/export jobs | [WP-25.08](work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.08) |
 | Automation fixture state transitions | [WP-17.04](work-packages/17-arcchat-independent-core.md#rule-wp-17.04) | Durable Cloud trigger scheduler and occurrence execution | [WP-52.06](work-packages/52-cloud-harness.md#rule-wp-52.06) |
 | Payment-provider fixture adapter (recorded event fixtures remain regression inputs) | [WP-42.03](work-packages/42-commerce-entitlement-and-credits.md#rule-wp-42.03) | Live adapter/event ingestion | Remove runtime fixture registration at [WP-42.10](work-packages/42-commerce-entitlement-and-credits.md#rule-wp-42.10); retain recorded test cases |
@@ -119,7 +119,8 @@ Every fixture that stands in for a later capability is listed here with the pack
 | No-op media adapter, if used during a unit test | [WP-37.01](work-packages/37-arcslate-playback-and-processing.md#rule-wp-37.01) | Real codec integration | [WP-37](work-packages/37-arcslate-playback-and-processing.md#rule-wp-37)/[WP-38](work-packages/38-arcslate-render-and-colour.md#rule-wp-38) use real decode/export; golden media inputs are retained, never deleted as scaffolding |
 | Test-signed desktop update feed | WP53 | Production feed and real product signing | WP50.02 replaces the test source in release configuration; negative fixtures remain tests |
 | Hostile test parser inside real restricted helper | WP11.09 | Production native parser composition | WP13.13 replaces production fixture registration; malicious regression fixture remains test-only |
-| Recorded FCM sender responses | WP45.09 | Live provider and physical Android receipt | WP45.09 proves live sending; WP32 proves real device receipt under PG24 |
+| Recorded Postmark/SES responses | WP22.00 | Deterministic refusal, unknown-outcome and callback regression cases only | WP22.00 forbids runtime fixture registration and proves live delivery/recovery before completion; test recordings remain; WP45.08 consumes the real adapters |
+| Recorded FCM sender responses | WP45.09 | Live provider and physical Android receipt | WP45.09 proves live sending; WP32 proves real device receipt under [PG-24](../assurance/open-gates-register.md#rule-pg-24) |
 
 | # | Rule |
 |---|---|

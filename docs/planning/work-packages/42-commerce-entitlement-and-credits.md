@@ -211,6 +211,8 @@
 
 ---
 
+**Operator contract closure.** Consume [registry04 §9](../../architecture/contracts/04-protobuf-wire-registry.md#9-operator-control-and-separate-identity-boundary) and [model01 operator state](../../architecture/data-model/01-cloud-data-model.md#operator-proposal-approval-and-financial-owner-closure). Generate/implement every operation exactly once with its eight authorization fields, operator scope and OC-03 role binding. Public customer/PAT/agent access refuses. Verify distinct approver, stale hash/revision/configuration, role revocation, expiry, concurrent consumption and lost receipt; no direct SQL or public-SDK operator import. WP03 produces schema/negative vectors, WP23 real identity/dispatch conformance, WP42 the financial owners, WP44 configuration/policy owners, and WP45 the real console join. Earlier packages retain their named fixture boundary until the existing downstream join.
+
 ## 6. Impacts
 
 | Dimension | Impact |
@@ -245,8 +247,6 @@ Acceptance includes every amended §5 producer/consumer and WP-42.90 evidence. C
 | Refund rollback and evidence export results | [WP-42.09](#rule-wp-42.09) |
 | Technical commerce receipts: ledger integrity, test-mode charge/refund/webhook replay, period/renewal/exclusivity and unknown effects; activation checklist handed to WP48/WP50. Actual checkout and received payout are verified there | [WP-42.10](#rule-wp-42.10) |
 | Owned artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/OS/device/provider, scenario, result, limitations and real-versus-fixture status; inapplicable fields explicitly marked | [WP-42.90](#rule-wp-42.90) |
-
-
 
 ---
 

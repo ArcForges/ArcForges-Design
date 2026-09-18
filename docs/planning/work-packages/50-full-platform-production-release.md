@@ -123,7 +123,7 @@
 
 **What must be fully done.** Production deployment from a promoted artifact; expand/contract migration and compatible application rollback rehearsed; backup verified with a proven restore; upgrade and rollback rehearsed; the full go-live gate set from [L-01](../../assurance/release-gates.md#rule-l-01) to [L-16](../../assurance/release-gates.md#rule-l-16) satisfied; the status page live with its emergency alternate URL published. L-16 also requires the approved/measured capacity envelope and the independently operated self-host deployment (PG-25/26), using the same released artifact family.
 
-**Testing requirements.** A game-day exercise across the severity ladder against the real production topology; the recorded evidence for each go-live gate.
+**Testing requirements.** A game-day exercise across the severity ladder against the real production topology; the recorded evidence for each go-live gate. Archive the launch-capacity.v1 hash, actual standard-2 allocation/four global slots/ten-minute sleep, warm/cold/burst and fallback-read workload, all D1/Vectorize/R2 dimensions and provider prices/duty-cycle costs. Explicit Product/Operations approval plus real results are required for L-16/PG-26; do not mark those gates complete from document checks.
 
 **Completion gate.** **The cloud go-live threshold is met — "failure behaves correctly"** — with a completed game day and evidence for every gate, including [VG-06](../../assurance/open-gates-register.md#rule-vg-06) on the promoted Native AOT host and real CF/R2/recovery closure.
 
@@ -180,6 +180,8 @@
 
 ---
 
+**Browser matrix acceptance.** Use [browser-support.v1](../../requirements/12-quality-and-compatibility-contract.md#202-browser-supportv1) and the exact release artifact/OS/browser patches. For each output’s existing flows, verify supported/degraded/blocked browser behavior: delayed-stream polling where streaming exists, refusal of unavailable required authentication/step-up, safe-preview refusal and preserved pending work. Static site acceptance includes no-JavaScript readability; it does not invent interactive account/stream APIs. Operator step-up retains its separate Entra/MFA authority. WP23 proves generated transports; WP45/47/48/49 prove their respective operations/site/account/chat output; WP50 joins all four production hashes and real browser evidence. A Playwright WebKit run alone does not claim Safari/OS authenticator proof.
+
 ## 6. Impacts
 
 | Dimension | Impact |
@@ -208,8 +210,6 @@
 | Alert-to-runbook, on-call and support-path results | [WP-50.07](#rule-wp-50.07) |
 | Claim audit against gate evidence | [WP-50.08](#rule-wp-50.08) |
 | Owned artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/OS/device/provider, scenario, result, limitations and real-versus-fixture status; inapplicable fields explicitly marked | [WP-50.90](#rule-wp-50.90) |
-
-
 
 ---
 

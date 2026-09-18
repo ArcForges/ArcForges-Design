@@ -288,18 +288,18 @@ Current register reconciliation under P2-011:40 entries =5 design-closed +33 imp
 
 ## P2-009 amendment coverage
 
-The 23 foundation decisions and nine Phase 2 decisions remain traceable. [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) supersedes the repository/runtime/protocol/provider portions of earlier decisions; their product and semantic obligations remain effective.
+The 23 foundation decisions and fourteen Phase 2 decisions remain traceable. [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) supersedes the repository/runtime/protocol/provider portions of earlier decisions; their product and semantic obligations remain effective.
 
 | Change | Current authority | Implementation and evidence |
 |---|---|---|
-| Ten owners, native and managed packages, licenses | [Layout and registry](../architecture/01-solution-and-project-layout.md) | WP01/02/03/06, product consumers and WP50; immutable isolated package consumption |
+| Nine repository owners, native and managed packages, licenses | [Layout and registry](../architecture/01-solution-and-project-layout.md) | WP01/02/03/06, product consumers and WP50; immutable isolated package consumption |
 | Handwritten proto, exact values, all service bodies | [Wire registry](../architecture/contracts/04-protobuf-wire-registry.md) | WP03/04/08/23/24/30, product owner implementations; generated language/runtime vectors |
 | One AOT C# business process, explicit adapters | [Runtime matrix](../architecture/21-platform-and-dependency-matrix.md) and [Cloud](../architecture/05-cloud-architecture.md) | WP06/21/22/23/44/45 and [VG-06](open-gates-register.md#rule-vg-06); real published closure |
 | Kotlin/Compose Android mobile and React browser | [Mobile](../architecture/11-mobile-architecture.md), [Web toolchain](../architecture/25-web-toolchain-and-sdk.md) | WP06/30/31/32/47/48/49; artifact, device, session and real-server proof |
 | Sole CF Harness, Workers AI, R2 and recovery | [CF integration](../architecture/contracts/05-cloudflare-integration.md), [Harness](../architecture/17-agent-harness.md) | WP25/40/43/46/52 and WP50; real provider effects, committed business state and restored manifest |
 | Preserved accepted product workflows | [Product maps](../architecture/19-product-implementation-maps.md) and existing requirements | All 51 active packages; Notes query/content-origin/Scope measurement profiles and commercial fixtures retained |
 
-The two new contract companions are formal architecture inputs. Existing invariant IDs and the item-level reference dispositions are unchanged by repository relocation. The [complete dependency graph](../planning/implementation-sequence.md#9-p2-009-complete-artifact-dependency-graph) carries 51 active packages and 157 directed edges, with WP20 future-only and WP27/29 retired.
+The two new contract companions are formal architecture inputs. Existing invariant IDs and the item-level reference dispositions are unchanged by repository relocation. The [complete dependency graph](../planning/implementation-sequence.md#9-p2-009-complete-artifact-dependency-graph) carries 51 active packages and 158 directed edges, with WP20 future-only and WP27/29 retired.
 
 ## P2-010 completion map
 
@@ -309,12 +309,12 @@ The two new contract companions are formal architecture inputs. Existing invaria
 | Native functional ABI06 and package registry |03,06,08–13,33–39 | Existing probe compatibility, typed functional exports, full dependency closure, clean packaged AOT/RID consumers |
 | Android architecture11 |30–32,49,50,52 | Full surface/state/recovery matrix and real signed physical-device app |
 | Product behavior26 |18/19/28,33–39/51/52 | Independent edit/undo, framing/analysis, time/retime/render/fidelity examples |
-| Execution owner/consent/transactions/transfer |15/17/20/22/25/26/40/42/43/46/52 | No phantom Task, one effect/charge receipt, preserved pending work, explicit irrecoverable state and fenced restore |
+| Execution owner/consent/transactions/transfer |15/17/22/25/26/40/42/43/46/52; WP20 future-only | No phantom Task, one effect/charge receipt, preserved pending work, explicit irrecoverable state and fenced restore |
 | Producer stage matrix | All51 active packages | Acyclic symmetric graph, immutable package-only inputs, named fixture replacement and full required release scope |
 
 Document validation is recorded in [family completion review](family-design-completion-review.md); implementation receipts remain future obligations.
 
-PG24 Android push: WP45.09 produces the real sender; WP32 closes physical receipt, denial and fallback evidence. Desktop distribution requirements are implemented by WP53 and production-verified by WP50.
+[PG-24](open-gates-register.md#rule-pg-24) Android push: WP45.09 produces the real sender; WP32 closes physical receipt, denial and fallback evidence. Desktop distribution requirements are implemented by WP53 and production-verified by WP50.
 
 ## P2-013 repair trace and current acceptance
 
@@ -332,3 +332,8 @@ Historical decisions D-002/007/008/009/010/011/014/021/022 and P2-006/008/009/01
 | Launch capacity | model04 proposed profile | WP21.06/40.01/50.04 and OPEN PG-26/L-16: actual footprint, limits, latency and headroom |
 | Simulator pacing | reqScope SIM-10; arch23 | WP51: duplicate/late/exhausted alarms, checkpoint/fence and deterministic catch-up |
 | Commercial offer/search funding | req04/05/06; arch16/20 | WP42/43: no-term access, domain enums, operator search and customer inference, uncertain effects; live L-20…L-31 remain open |
+
+
+## P2-014 final findings closure
+
+[The final findings ledger](final-findings-remediation-verification.md) maps NRF-01–13 to repaired authorities and producer/consumer gates. Registry04/manifest11 now contain 373 active mappings plus seven reserved future IDs, including 31 operator methods. Model04 launch-capacity.v1 and requirements12 browser-support.v1 supply concrete release inputs. This amendment preserves the 51-node/158-edge implementation graph and keeps real service/device/commercial evidence gates open.

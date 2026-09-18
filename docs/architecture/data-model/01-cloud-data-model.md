@@ -21,7 +21,7 @@ Notation is defined in [`00-data-model-overview.md`](00-data-model-overview.md) 
 | `workspace` | Workspace | `workspace` — **no membership table** ([WO-01](#rule-wo-01)) |
 | `device` | Devices | `device`, `installation` |
 | `entitlement` | Entitlement | `grant`, `snapshot`, `usage_counter`, `service_term`, `capacity_bucket`, `capacity_policy_period`, `capacity_reservation` |
-| `commerce` | Commerce | `billing_account`, `order`, `subscription`, `credit_lot`, `provider_event`, `logical_ai_request`, `provider_attempt`, `attempt_usage`, `supplier_cost_entry`, `customer_settlement` |
+| `commerce` | Commerce | `billing_account`, `order`, `subscription`, `credit_lot`, `provider_event`, `logical_ai_request`, `provider_attempt`, `attempt_usage`, `supplier_cost_entry`, `customer_settlement`, `refund`, `compensation_adjustment` |
 | `notes` | Notes | `notebook` (owns `folder`), `document` (owns `block` and document metadata), `tag`, `property_definition`, `saved_view`; immutable revision records |
 | `slate` | ArcSlate Cloud | Revisioned metadata replicas; native working authority remains local |
 | `chat` | Chat | `conversation`, `message` and their committed content; Task owns iteration output, CF DO owns transient stream projection |
@@ -35,10 +35,10 @@ Notation is defined in [`00-data-model-overview.md`](00-data-model-overview.md) 
 | `policy` | Policy | `policy_bundle` |
 | `scope` | ArcScope Cloud | `simulation_definition`, `simulation_run`, `simulation_segment` (`§8.3`) |
 | `config` | Configuration | `revision` — activated deployment policy (`§8.2`) |
-| `audit` | Audit | `audit_event` |
+| `audit` | Audit | `audit_event`, `operator_proposal`, `operator_approval` |
 | `support` | Support | `support_case`, `access_grant` |
 | `trustsafety` | TrustSafety | `report`, `enforcement_action` |
-| `platform` | shared infrastructure | `outbox`, `inbox`, `command`, `job_lease` |
+| `platform` | shared infrastructure | `outbox`, `inbox`, `command`, `job_lease`, `operating_budget`, `operating_reservation` |
 
 ---
 
@@ -119,6 +119,21 @@ These exist once and are used by every module. They are the mechanism behind [TX
 - **Constraint** — acquisition conditionally updates `leased_until`, holder and `fence_token` together. A stale worker may still run after expiry but cannot commit an effect: every publication guards the current lease and fence in its registered D1 batch. Network uncertainty is handled by the dispatch barrier, not by the lease alone.
 
 ---
+
+### Realm operating-budget reservations
+
+These platform-owned records enforce [launch-capacity.v1](04-d1-execution-profile.md#launch-capacity-profile-v1) separately from customer Entitlement quota and AI funding. Resource and Search enlist these ports in their existing admission plans; no new business module or customer charge is introduced.
+
+| Table | Complete fields and constraints |
+|---|---|
+| platform.operating_budget | realm_id:id + dimension:enum(vectors,namespaces,r2Bytes,r2Objects,classA,classB,servedBytes) + period_start:instant composite PK; profile_hash:hash NN; ceiling/used/held:int64 NN; rev:rev NN; updated_at:instant NN. Gauge dimensions use the fixed epoch period; daily dimensions use UTC midnight. Values nonnegative, checked exact arithmetic; profile controls growth refusal vs expenditure alert semantics. |
+| platform.operating_reservation | reservation_id:id PK; realm_id:id NN; dimension:Key NN; period_start:instant NN; account_id:id?; owner_ref:AggregateRef NN; command_id:id NN; reservation_key:Key NN; dispatch_attempt_id:id?; bound/actual:int64 NN; state:enum(held,committed,released,unknown) NN; fence/recovery_generation:bigint NN; created_at/updated_at:instant NN; rev:rev NN; UQ(realm_id,reservation_key,dimension); FK(realm_id,dimension,period_start) to operating_budget RESTRICT; IX(state,updated_at). account_id absent only for explicit platform work. |
+
+Guard all required dimension revisions, normal-admission ceiling (90% for new storage/index growth), current entitlement reservation, authorization and generation in the same batch that creates the existing upload/index job and command receipt. Refusal commits none of them. Confirmed immutable publication converts held to used once; confirmed deletion removes its stored gauge once. Object/version pins and retention remain independent: a logical tombstone alone does not free physical storage. Unknown R2/Vectorize outcomes retain their reservation until hash/version/inventory reconciliation; elapsed time alone cannot release possibly committed bytes or repeat an external write. Rebuild overlap is reserved before starting. Counter drift conservatively retains exposure and blocks new growth until reconciled; it never deletes canonical content.
+
+For a gauge reservation, reservation_key binds the stable upload part/object version/index slice identity within the command; a duplicate claim resolves the same reservation. For daily expenditure, it binds the durable dispatch_attempt_id, so a new physical provider attempt receives a new reservation even when it belongs to the same business command. A lost reply reconciles that attempt before another is admitted.
+
+Daily budgets record completed operations against the actual dispatch day and carry unresolved exposure across period boundaries without resetting its reservation identity. Current exposure sums holds from all earlier periods plus current-day usage/holds; it never drops an old unresolved hold or charges previously completed usage again merely because midnight passed. They alert/throttle optional work under model04, not reject essential customer recovery at a midnight boundary. Distinct attempt IDs account for physical retry cost even when one business command is idempotent; no retry reuses a budget receipt to hide provider usage. The dispatcher obtains bounded next-slice reservations before external calls; callbacks cannot double-release a hold. At restore, rebuild used gauges from verified inventories and unresolved reservations before reopening admission, under the new recovery generation. WP21/25/40/46 test reserve/publish/lost-reply/delete, concurrent allocation and UTC rollover against actual bindings.
 
 ## 3. `identity`
 
@@ -242,8 +257,6 @@ The row plus its separate cookie binding and antiforgery validation bind a brows
 | identity.step_up_challenge | challenge_id:id PK; user_id/session_id:id FK NN; operation_class/target_hash/method:text NN; proof_hash:hash NN; state:enum(pending,proved,consumed,expired,denied) NN; attempt_count:int NN CHECK 0..5; created_at/expires_at:instant NN; consumed_at:instant?; auth_epoch/recovery_generation:bigint NN; rev:rev NN; IX(session_id,expires_at). |
 | identity.recovery_flow | flow_id:id PK; realm_id:id NN; user_id:id?; method:RecoveryMethod NN; proof_hash:hash NN; replacement_challenge:blob?; state:enum(pending,proved,completed,expired,denied) NN; attempt_count:int NN CHECK 0..5; rate_limit_key:text NN; created_at/expires_at:instant NN; completed_at:instant?; auth_epoch/recovery_generation:bigint NN; rev:rev NN; IX(expires_at). No credential replacement before bound proof. |
 
-
-
 Short-lived rows with `expires_at`, an attempt counter, and a rate-limit key. Both are swept on expiry. A recovery flow records every state transition for the audit trail, because recovery is the highest-value attack surface in the system.
 
 ---
@@ -318,8 +331,6 @@ Account proof changes and their Notification outbox are one Identity + Notificat
 | workspace.transfer_job | transfer_id:id PK; workspace_id:id FK NN; direction:enum(import,export) NN; state:TransferState NN; manifest_hash:hash NN; manifest_resource_id:id?; preview_hash:hash?; rev:rev NN; created_at:instant NN; expires_at:instant?; committed_roots/total_roots:bigint NN; reason:ReasonCode?; IX(workspace_id,state,created_at). |
 | workspace.transfer_mapping | transfer_id:id FK + source_kind:text + source_id:id composite PK; target_kind:text NN; target_id:id NN; state:TransferState NN; source_hash:hash NN; target_rev:rev?; receipt_id:id?; UQ(transfer_id,target_kind,target_id). |
 | workspace.transfer_issue | transfer_id:id FK + ordinal:bigint composite PK; code:ReasonCode NN; source_kind:text?; source_id:id?; blocks_commit:bool NN; accepted_at:instant?. |
-
-
 
 Job owner may coordinate but each imported content handler writes only its own tables in the declared shared family. Batch<=100 roots and complete mapping validation precede visibility; committed root receipts and IDs survive retry. Policy/quota/revision change invalidates preview or blocks the next root without rewriting past receipts. All mappings/issues are paged. Excluded authority and missing/unsupported bytes follow the journey profile, not blind copying of DB rows.
 
@@ -614,8 +625,6 @@ Simulation admission reserves bounded duration, sample count, output bytes and e
 | commerce.offer | offer_id:id PK; kind:enum(subscription,pass,credit,storageAddOn) NN; name:text NN; scope:text NN; active:bool NN; term_profile:text NN; created_at:instant NN; rev:rev NN. Only currently accepted CT-05 kinds are activated. |
 | commerce.price_version | price_version_id:id PK; offer_id:id FK NN; version:bigint NN; amount:money NN; tax_category:text NN; starts_at:instant NN; ends_at:instant?; config_revision_id:id NN; UQ(offer_id,version); IX(offer_id,starts_at). Immutable/restrict-delete once referenced. |
 
-
-
 Workspace-independent catalogue rows ([MT-04](00-data-model-overview.md#rule-mt-04)). An `offer` names what is sold; a `price_version` carries the amounts, currency, effective dates and tax category. **A price change creates a new `price_version`; existing orders retain the version they were bought under** ([PC-01](../../requirements/04-commerce-entitlement-and-credits.md#rule-pc-01)), so `order.price_version_id` is a restrict-delete foreign key and a price version is never mutated.
 
 ### `commerce.purchase_intent`
@@ -639,8 +648,6 @@ Workspace-independent catalogue rows ([MT-04](00-data-model-overview.md#rule-mt-
 | Table | Required fields / constraints |
 |---|---|
 | commerce.checkout_attempt | attempt_id:id PK; intent_id/billing_account_id/workspace_id/offer_id/price_version_id:id FK NN; provider:text NN; external_session_ref:text?; state:enum(prepared,created,unknown,completed,expired,failed) NN; request_hash:hash NN; created_at/expires_at:instant NN; rev:rev NN; UQ(provider,external_session_ref); IX(intent_id,created_at). Provider outcome after dispatch may be unknown; browser return cannot advance it. |
-
-
 
 Carries the internal metadata sent to the provider ([ID-04](../16-billing-and-commerce-architecture.md#rule-id-04)): billing account, workspace, offer, price version, attempt and intent identifiers. Holds the provider's session reference and its own expiry. **A success redirect writes nothing here** ([PU-01](../16-billing-and-commerce-architecture.md#rule-pu-01)) — only a verified provider event advances state.
 
@@ -705,6 +712,7 @@ Subscription fields:
 | `refund_hold` | `bool NN` | Freezes the lot during adjudication ([AI-17](../20-cross-system-lifecycles.md#rule-ai-17) of the cross-system lifecycles) |
 | `source_ref` | `text?` | Order or compensation-grant reference |
 | `created_at` | `instant NN` | |
+| `rev` | `rev NN` | Every held/remaining balance mutation advances the version |
 
 - `IX (workspace_id, lot_class, refund_hold, expires_at, created_at)` — **the funding-order query**: compensation earliest-expiry-first, then purchased oldest-acquisition-first ([CD-05](../16-billing-and-commerce-architecture.md#rule-cd-05))
 - **Constraint** — `remaining_micro >= 0` and `held_micro >= 0` and `held_micro <= remaining_micro`. This is what makes "no overdraft" structural ([CR-23](../../requirements/04-commerce-entitlement-and-credits.md#rule-cr-23))
@@ -901,8 +909,6 @@ No external call occurs inside a registered guarded commit. A device step requir
 |---|---|
 | task.approval | approval_id:id PK; task_id/run_id/step_id:id FK NN; proposal_hash:hash NN; actor_proto:ActorChain NN; frozen_context_proto:FrozenContext NN; risk:Key NN; local_presence_required:bool NN; description:text NN; state:enum(pending,approved,rejected,expired,withdrawn) NN; decision_by:id?; created_at/expires_at:instant NN; decided_at/consumed_at:instant?; rev:rev NN; IX(task_id,state,expires_at). Decision/consumption guards exact proposal, actor, scope, revision and expiry. |
 
-
-
 Durable pending state with `expires_at`, the operation described in user terms, the risk level, and whether local presence is required. **Survives restart of either side** ([WP-14.04](../../planning/work-packages/14-hub-and-minimal-provider-slice.md#rule-wp-14.04)).
 
 ### `task.automation_definition` and `automation_occurrence`
@@ -911,8 +917,6 @@ Durable pending state with `expires_at`, the operation described in user terms, 
 |---|---|
 | task.automation_definition | automation_id:id PK; workspace_id:id FK NN; product_id:ProductId NN; definition_version:bigint NN; definition_proto:AutomationSpec NN; enabled:bool NN; next_due_at:instant?; event_cursor:text?; created_at/updated_at:instant NN; rev:rev NN; IX(enabled,next_due_at). Definition freezes trigger, timezone, grants, target, misfire/coalescing and budgets. |
 | task.automation_occurrence | occurrence_id:id PK; automation_id:id FK NN; definition_version:bigint NN; occurrence_key:text NN; scheduled_at:instant NN; event_id:id?; state:enum(pending,admitted,skipped,completed,failed,canceled) NN; task_id:id?; reason:ReasonCode?; completed_at:instant?; UQ(automation_id,definition_version,occurrence_key); IX(state,scheduled_at). |
-
-
 
 `automation_definition` stores stable ID, workspace, immutable definition version, enabled state/revision, trigger kind, UTC schedule with timezone policy or durable event cursor, authorised grant/budget snapshot, misfire/coalescing bounds and next due instant. `automation_occurrence` has unique `(automation_id, definition_version, occurrence_key)`, scheduled time/event identity, admission outcome, Task ID and completion reason. The enumerated automation shared transaction records occurrence, Task, context pins and dispatch outbox together; a leased runner resumes from that receipt after crash. Definition changes invalidate future old-version occurrences, without rewriting past runs. Disable/revoke has an explicit in-flight cancellation policy; neither resets usage nor grants permission.
 
@@ -965,8 +969,6 @@ logical_ai_request ──1:N──> provider_attempt ──1:N──> attempt_us
 |---|---|
 | commerce.spend_budget | scope_kind:text + scope_id:text + period_key:text + unit:text composite PK; limit/used/held:decimal(28,9) NN; rev:rev NN; period_ends_at:instant?; CHECK limit,used,held≥0. unit is currency for supplier scopes or microcredit for customer Run; the latter is integer-valued. No mixed-unit arithmetic. |
 | commerce.spend_reservation | reservation_id:id PK; provider_attempt_id:id?; logical_request_id:id?; scope_kind/scope_id/period_key/unit:text NN (composite FK to spend_budget); bound/used:decimal(28,9) NN; state:enum(held,settled,released,uncertain) NN; lease_expires_at/reconcile_at:instant?; reconciliation_ref:id?; rev:rev NN; UQ(provider_attempt_id,scope_kind,scope_id,period_key,unit); UQ(logical_request_id,scope_kind,scope_id,period_key,unit); exactly one request identity. Supplier uncertainty cannot expire as a customer hold. |
-
-
 
 `spend_budget` has PK `(scope_kind, scope_id, period_key, unit)`, a pinned limit, used, held and revision. Supplier scopes include provider account/route, deployment total and configured workspace sublimit; `unit` is the exact ISO currency. Customer Run scope uses integer micro-credits and its explicit authorised maximum. Supplier decimal quantities use `decimal(28,9)`; no FX or comparison between money and credits is implicit.
 
@@ -1235,8 +1237,6 @@ Required operations: `CreateNotebook`, `UpdateNotebook`, `CreateFolder`, `MoveFo
 | scope.synced_aggregate / slate.synced_aggregate | workspace_id:id + aggregate_kind:text + aggregate_id:id composite PK; rev:rev NN; schema_version:text NN; payload_proto:typed blob NN; source_device_id:id NN; content_rev:bigint NN; state:enum(live,deleted) NN; created_at/updated_at:instant NN; deleted_at:instant?; IX(workspace_id,aggregate_kind,state,aggregate_id). Registered kind determines the exact validated record; state/deleted_at must agree. |
 | scope.replica_revision / slate.replica_revision | workspace_id:id + aggregate_kind:text + aggregate_id:id + rev:rev composite PK; schema_version:text NN; payload_resource_id:id NN; payload_hash:hash NN; created_at:instant NN. Immutable retained revision, not a second current owner. |
 
-
-
 `scope.synced_aggregate` and `slate.synced_aggregate` store `(workspace_id, aggregate_kind, aggregate_id)` as PK, server `rev`, schema version, typed canonical metadata payload, source device and source `content_rev`, state/tombstone and timestamps. A generated product-kind allowlist determines the DTO and validation; this is not an executable or arbitrary type-name payload. Immutable replica revisions and Resource references use the same publication and retention rules as Notes.
 
 Cloud accepts these through each owning module's sync adapter. The native SQLite model remains the working authority for hardware/media work. Raw capture and media bodies require their explicit upload policy; proxies and render caches are excluded. Fetching a replica does not assign a native `content_rev`: a local import/reconciliation command commits a new local revision and records which Cloud revision it reconciled. [WP-35.02](../../planning/work-packages/35-arcscope-integration-and-sync.md#rule-wp-35.02) and [WP-39.04](../../planning/work-packages/39-arcslate-integration-and-portability.md#rule-wp-39.04) implement these adapters against the already-delivered sync infrastructure.
@@ -1361,8 +1361,6 @@ Acquisition updates holder/expiry and increments the fence under a conditional a
 |---|---|
 | sync.conflict | conflict_id:id PK; workspace_id:id NN; aggregate_kind:text NN; aggregate_id:id NN; base_rev/current_rev:rev NN; incoming_hash:hash NN; retained_version_ref:id NN; policy_version:text NN; state:enum(unresolved,resolved) NN; resolution:Key?; created_at:instant NN; resolved_at:instant?; resolution_command_id:id? UNIQUE; rev:rev NN; IX(workspace_id,state,created_at). Losing content is retained before resolution receipt. |
 
-
-
 Records a detected conflict, the policy applied, and — where a policy discarded a version — **a reference to the retained discarded version** ([WP-25.03](../../planning/work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.03)). A discarded version is never destroyed.
 
 ---
@@ -1443,8 +1441,6 @@ Record every supplier attempt and keep unresolved exposure through expiry/period
 | platform.safety_receipt | journal_record_id:text PK; record_hash:hash NN; owner_command_id:id NN; recovery_generation:bigint NN; kind:Key NN; status:enum(pending,verified) NN; independent_receipt:text?; created_at:instant NN; verified_at:instant?; IX(status,created_at). Verified receipt is required before the protected success/dispatch. |
 | platform.recovery_epoch | realm_id:id PK; recovery_generation:bigint NN; recovery_point:text NN; journal_inventory_hash:hash NN; state:enum(fenced,restoring,reconciling,open) NN; updated_at:instant NN; rev:rev NN. Installed generation cannot decrease. |
 
-
-
 Resource service_object_grant stores grant_id PK, owner_kind/job_id, attempt_id?, realm/workspace, epoch, recovery_generation, direction, resource/upload_id, byte_limit, expires_at and revoked_at. It uses the existing upload reservations/verification pins, not a second object lifecycle. Every grant authorization validates its current owner job and fence. Task/Search/Resource keep cf_instance_inventory keyed by kind/instance_id/generation with owner workspace/job, actual worker version and deletion receipt; each module writes only its owned rows and exposes inventory through the deletion coordinator.
 
 platform.safety_receipt records immutable external journal record ID/hash, related owner command/intent ID, generation, kind and pending/verified status. It is a local receipt/cache, never authority over the independent signed journal head. Outbox dispatch cannot pass its external boundary before verified barrier; security denial cannot return durable success before verified fence. platform.recovery_epoch records the installed independent generation, recovery point, journal inventory hash and reopening state. Restored outstanding effects have explicit quarantined/unknown reconciliation records, retaining original identities even when their newer D1 outcome was outside the recovery point.
@@ -1474,6 +1470,21 @@ platform.safety_receipt records immutable external journal record ID/hash, relat
 
 ---
 
+
+### Operator proposal, approval and financial owner closure
+
+| Table | Complete fields and constraints |
+|---|---|
+| audit.operator_proposal | proposal_id:id PK; realm_id:id NN; operation_id:Key NN; mutation_proto:OperatorMutation NN; case_id:id? FK support.support_case RESTRICT; incident_id:id?; purpose/reason:text NN; proposer_subject:text NN; approver_subject:text?; proposal_hash/configuration_hash:hash NN; expected_owner_revision:rev NN; state:enum(pending,approved,rejected,expired,invalidated,executed) NN; created_at/expires_at:instant NN; recovery_generation:bigint NN; consumed_command_id:id? UNIQUE; result_ref:AggregateRef?; rev:rev NN. Exactly one case_id/incident_id; immutable payload/hash; expires_at<=created_at+15min; IX(state,expires_at); IX(case_id,created_at). |
+| audit.operator_approval | approval_id:id PK; proposal_id:id FK audit.operator_proposal RESTRICT NN; proposal_hash:hash NN; approver_subject:text NN; decision:enum(approve,reject) NN; reason:text NN; decided_at:instant NN; command_id:id UNIQUE NN; UQ(proposal_id). Append-only; approver differs from proposer; current eligible directory role required at approval and execution. |
+| commerce.refund | refund_id:id PK; payment_id:id FK commerce.payment RESTRICT NN; workspace_id:id FK NN; reason:text NN; amount:money?; state:enum(requested,approved,rejected,dispatching,unknown,succeeded,failed) NN; decision_proposal_id:id? FK audit.operator_proposal RESTRICT; provider_refund_ref:text?; provider_event_id:id?; created_at/updated_at:instant NN; rev:rev NN; UQ(payment_id,provider_refund_ref); IX(workspace_id,created_at). Original payment currency; aggregate approved/dispatching/unknown amounts cannot exceed captured payment total minus all verified refunded amounts (including provider-originated refunds). Verified success atomically moves this intent from outstanding to the confirmed-refund ledger, so the same amount is not counted twice. Concurrent refund decisions guard payment revision and all outstanding holds. Provider intent/dispatch/status follows existing payment outbox and independent journal. Requested amount is absent until owner adjudication; no false zero refund. |
+| commerce.compensation_adjustment | adjustment_id:id PK; workspace_id:id FK NN; source_lot_id:id FK commerce.credit_lot RESTRICT NN; new_lot_id:id? FK commerce.credit_lot RESTRICT; delta_micro:int64 NN; proposal_id:id FK audit.operator_proposal RESTRICT UNIQUE NN; created_at:instant NN; command_id:id UNIQUE NN. delta_micro<>0; new_lot_id required iff positive. Append-only. |
+
+Add `rev:rev NN` to commerce.credit_lot; every reserve, settle, release, expiry, refund or adjustment that changes its held/remaining state advances it. Add `source_ref=proposal_id` for administrative/time-compensation grants and compensation lots; revocations carry the operator actor and proposal/case audit link. Immutable grant/revocation rows are unchanged; revocation admission guards the current entitlement snapshot version and exact grant identity.
+
+Audit owns proposal/approval persistence and exposes typed ports. Entitlement/Commerce/PackageCatalog/TrustSafety/Policy assemble their declared shared unit with Audit, platform.command and Notification/outbox; they never write another module through an unowned repository. The executing batch guards proposal state/revision/hash/expiry/generation, current actor/approver eligibility and owner revision/configuration, commits the owner change and consumes the proposal atomically. Constraint failure rolls back everything. `GetProposal` returns the safe proposal projection and reads the current result through the owning module; a refund's evolving provider outcome is not cached as a completed financial result in the proposal.
+
+Negative vectors: same-actor approval, wrong OC-03 role, expired/changed/revoked approval, changed configuration, concurrent owner change, two commands consuming one approval, duplicate command with different body, compensation reduction into held balance, and unknown refund receipt after dispatch. Retain proposals and approval/audit metadata under financial/security retention and legal holds; expiry revokes execution, not the audit history. Recovery generation change invalidates unexecuted approvals. Restore quarantines dispatched refunds until provider/journal reconciliation, never resends from a restored approved state.
 
 ### Notification email delivery
 

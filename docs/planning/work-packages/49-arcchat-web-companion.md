@@ -164,6 +164,8 @@ The Web companion verifies real generation, tool approval, stream fallback and r
 
 ---
 
+**Browser matrix acceptance.** Use [browser-support.v1](../../requirements/12-quality-and-compatibility-contract.md#202-browser-supportv1) and the exact release artifact/OS/browser patches. For each output’s existing flows, verify supported/degraded/blocked browser behavior: delayed-stream polling where streaming exists, refusal of unavailable required authentication/step-up, safe-preview refusal and preserved pending work. Static site acceptance includes no-JavaScript readability; it does not invent interactive account/stream APIs. Operator step-up retains its separate Entra/MFA authority. WP23 proves generated transports; WP45/47/48/49 prove their respective operations/site/account/chat output; WP50 joins all four production hashes and real browser evidence. A Playwright WebKit run alone does not claim Safari/OS authenticator proof.
+
 ## 6. Impacts
 
 | Dimension | Impact |
@@ -172,7 +174,7 @@ The Web companion verifies real generation, tool approval, stream fallback and r
 | Protocol | Consumes chat, task, approval, artifact and presence contracts |
 | UI | The browser companion experience |
 | Security | Sandboxed previews, per-origin isolation, no public sharing in V1 |
-| Platform | Browser support matrix |
+| Platform | [browser-support.v1](../../requirements/12-quality-and-compatibility-contract.md#202-browser-supportv1) |
 | Migration | Cached client handling with a grace period |
 | Compatibility | The web client enters the supported client window |
 
@@ -190,8 +192,6 @@ The Web companion verifies real generation, tool approval, stream fallback and r
 | Offline, degradation, convergence and accessibility results | [WP-49.05](#rule-wp-49.05) |
 | Budget measurements and regression-gate negative test | [WP-49.06](#rule-wp-49.06) |
 | Owned artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/OS/device/provider, scenario, result, limitations and real-versus-fixture status; inapplicable fields explicitly marked | [WP-49.90](#rule-wp-49.90) |
-
-
 
 ---
 

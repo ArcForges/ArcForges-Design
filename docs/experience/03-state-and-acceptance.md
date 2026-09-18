@@ -23,6 +23,18 @@ Applies to the embedded assistant, Android and Web Chat, with native/browser-spe
 | App/window close | preserve draft; show local running-job consequences when required | closing a view only disposes subscriptions; explicit stop command is separate |
 | Upgrade / rollback | version compatibility reason, safe restart/forward-fix path | schema horizon and package hash interlock prevents destructive downgrade |
 
+## Operator console interaction closure
+
+The separate operations build shows role-filtered case queues and metadata, then an explicit case/incident header for every action. Case detail has attributed message history, reply, permitted state transition and separate diagnostic-access request/expiry. No arbitrary user-content search or SQL view exists.
+
+For financial/catalog/appeal/kill-switch controls, show current owner state, exact target, reason, proposed before/after values and effect warning. Submit a typed proposal and display pending approval, named distinct reviewer, expiry and immutable hash. Reviewer sees the same frozen diff; edits require a new proposal. Approval alone is not success: only the proposer’s named execution command commits the effect. Disable duplicate execution while sending/reconciling; GetProposal recovers lost replies. Changed owner/configuration/role/expiry shows invalidated and a refresh/re-propose action. Refund shows requested/approved/processing/unknown/completed or refused distinctly and never treats provider dispatch as completed repayment. User entitlement/billing/security views receive the resulting owner explanations.
+
+Enforcement keeps ProposeEnforcement/DecideEnforcement: the distinct authorized decision applies the owner action. Configuration keeps Stage/Validate/Approve/ActivateConfiguration; its approved immutable validation must still be explicitly activated. These specialized screens do not send a generic proposal or invent another execution method.
+
+Break-glass has a separate incident form, alarm and visible expiry; it cannot bypass financial approvals. Verify these screens with actual generated internal Contracts and Cloud owners at WP45, and the browser matrix at WP50.
+
+**Browser state acceptance.** All four Web outputs use browser-support.v1: delayed updates visibly select cursor-preserving polling, unavailable step-up keeps the action pending without weakening verification, unsupported preview offers only an authorized safe fallback, and unsupported interactive browsers show update/open guidance while static public information remains readable. Test browser refresh/cache, lost replies and resumed pending actions against real Cloud, including narrow layouts.
+
 ## Acceptance ledger
 
 | Acceptance group | Surfaces / owners | Required real join |

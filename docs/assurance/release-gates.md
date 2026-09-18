@@ -123,7 +123,7 @@ This document consolidates every gate that stands between work and users, in one
 | <a id="rule-l-13"></a>L-13 | Backup health dashboard green **with a proven restore**, not merely a green backup job |
 | L-14 | Status page live, independently hosted, with the emergency alternate URL published (`§8` of the observability architecture) |
 | <a id="rule-l-15"></a>L-15 | Alert-to-runbook mapping complete; on-call responder arrangement in place (`§7` there) |
-| <a id="rule-l-16"></a>L-16 | Proposed model 04 launch envelope is explicitly approved and passes real production-shaped D1/Container/stream/Vectorize load, footprint, cold-start and 30-day headroom tests. PG-26 tracks the still-open evidence; a document or SQLite result cannot close it. |
+| <a id="rule-l-16"></a>L-16 | The selected [launch-capacity.v1](../architecture/data-model/04-d1-execution-profile.md#launch-capacity-profile-v1) has recorded Product/Operations cost/performance approval and real production-shaped evidence: standard-2/four-slot routing, ten-minute idle sleep and cold first response, exact workload/stream/D1 footprint, Vectorize vector/namespace and R2 byte/object/Class A/Class B/served-byte budgets, threshold reservations/rescue and 30-day headroom. Include actual configuration hashes and unit-cost/duty-cycle results. PG-26 remains open until these pass; document/SQLite checks cannot close it. |
 
 ### 6.2 Commercial go-live
 

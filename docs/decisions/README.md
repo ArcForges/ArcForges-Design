@@ -1,9 +1,9 @@
 # Architecture Decisions
 
-The current effective baseline is [P2-012](phase-2-specification-decisions.md#rule-p2-012), with the complete propagation and gap closures in [P2-013](phase-2-specification-decisions.md#rule-p2-013).
+The current effective baseline is [P2-012](phase-2-specification-decisions.md#rule-p2-012), with the propagation repairs in [P2-013](phase-2-specification-decisions.md#rule-p2-013) and the final findings closure in [P2-014](phase-2-specification-decisions.md#rule-p2-014).
 
 - [Foundation decisions](phase-1-foundation-decisions.md): D-001…D-023, read through each disposition's current-effective-rule column. Historical quotations do not reinstate retired obligations.
-- [Specification decisions](phase-2-specification-decisions.md): P2-001…P2-013. Each superseded host, protocol, repository or runtime clause is marked at its original decision.
+- [Specification decisions](phase-2-specification-decisions.md): P2-001…P2-014. Each superseded host, protocol, repository or runtime clause is marked at its original decision.
 
 ## Effective architecture
 

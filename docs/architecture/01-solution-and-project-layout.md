@@ -67,9 +67,9 @@ The [wire registry](contracts/04-protobuf-wire-registry.md) defines every servic
 
 ## 5. Cloud module projects
 
-The 20 domain owners in the [Cloud schema map](data-model/01-cloud-data-model.md#1-schema-map) are authoritative; `platform` is shared infrastructure, not a domain module. The concrete arrangement is `src/Modules/<Name>/<Name>.Domain`, `<Name>.Application`, `<Name>.Infrastructure` and module tests. Cloud.Host composes them; Cloud.Storage.D1 owns the named-plan binding mechanism, while module owners own their plans/tables. Private implementation folders within these projects remain implementation choices.
+The 21 domain owners in the [Cloud schema map](data-model/01-cloud-data-model.md#1-schema-map) are authoritative; `platform` is shared infrastructure, not a domain module. The concrete arrangement is `src/Modules/<Name>/<Name>.Domain`, `<Name>.Application`, `<Name>.Infrastructure` and module tests. Cloud.Host composes them; Cloud.Storage.D1 owns the named-plan binding mechanism, while module owners own their plans/tables. Private implementation folders within these projects remain implementation choices.
 
-Modules: **Identity**, **Workspace**, **Devices**, **Entitlement**, **Commerce**, **Chat**, **Task**, **Agent**, **Sync**, **Resource**, **Search**, **Notification**, **Policy**, **Audit**, **Support**, **TrustSafety**, **Notes**, **Scope**, **Slate**, **Configuration**.
+Modules: **Identity**, **Workspace**, **Devices**, **Entitlement**, **Commerce**, **Chat**, **Task**, **Agent**, **Sync**, **Resource**, **Search**, **Notification**, **Policy**, **Audit**, **Support**, **TrustSafety**, **Notes**, **Scope**, **Slate**, **Configuration**, **PackageCatalog**.
 
 | # | Rule |
 |---|---|

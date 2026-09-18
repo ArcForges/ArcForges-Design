@@ -13,6 +13,8 @@ The persistence architecture states *how* storage behaves. This layer states *wh
 
 ---
 
+Operator proposal execution adds no deployment/module owner: [model01 operator closure](01-cloud-data-model.md#operator-proposal-approval-and-financial-owner-closure) defines Audit+owner shared units, exact approval consumption and compensation/refund records.
+
 ## 1. Documents in this layer
 
 | Document | Covers |

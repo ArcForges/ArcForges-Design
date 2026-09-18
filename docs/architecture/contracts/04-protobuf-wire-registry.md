@@ -46,6 +46,13 @@ ApprovalDecision = approve, reject; ReconciliationDecision = retryAuthorized, ac
 OpenIntent = view, edit, reveal; ResourcePurpose = attachment, export, simulatorSegment, aiOutput, diagnostic, managedAsset, transientInput.
 ResourceAvailability = AlwaysKeep, AvailableOffline, OnDemand, CloudOnly, MissingExternal; names are public vocabulary projections of the existing resource lifecycle, not new persistence states.
 ErrorCategory = validation, authentication, authorization, entitlement, conflict, state, resource, execution, internal. Each existing code maps by its catalogue meaning; unknown future code preserves the received category for safe display. Other Key-backed vocabularies are the named closed owner-profile registries, never arbitrary code/classes; unknown response keys preserve display/read-only behavior, unknown request keys fail validation.
+OperatorProposalState = pending, approved, rejected, expired, invalidated, executed.
+OperatorRefundDecision = approve, reject.
+OperatorGrantSource = administrative, compensation.
+OperatorGrantKind = capability, quota, allowance.
+SupportCaseState = open, inProgress, awaitingUser, resolved, closed.
+These five enums live in internal operator proto; public SupportCase.state retains its existing Key projection and closed state meanings.
+
 These named enums are proto enums: zero UNSPECIFIED (invalid request), followed by listed values starting at 1, in listed order, with a type prefix; never renumber. ReasonCode remains an open string registry to preserve additive error compatibility.
 
 ## 4. Shared record field registry
@@ -333,6 +340,20 @@ These named enums are proto enums: zero UNSPECIFIED (invalid request), followed 
 | `ConfigurationDocument` | `1 schemaVersion:Key`; `2 canonicalJson:bytes`; `3 documentHash:Hash`; `4 parentVersion:Key`; `5 createdAt:Instant` | Internal schema only, <=1 MiB; exact closed deployment configuration schema, secret references not values. |
 | `OperatorAccess` | `1 accessId:Id`; `2 operatorId:Id`; `3 caseId:Id?`; `4 workspaceId:Id`; `5 resources:AggregateRef[]`; `6 purpose:Text`; `7 expiresAt:Instant`; `8 state:Key`; `9 consentRef:Id?`; `10 secondOperatorId:Id?`; `11 revision:Revision` | Internal only; one workspace, fixed purpose/resources, maximum 15-minute access, required owner/second-operator approval. |
 | `OperatorAction` | `1 actionId:Id`; `2 proposerId:Id`; `3 approverId:Id?`; `4 target:AggregateRef`; `5 action:Key`; `6 proposalHash:Hash`; `7 reason:Text`; `8 state:Key`; `9 expiresAt:Instant?`; `10 revision:Revision` | Internal only; existing closed enforcement/kill action registry; dual operator binds exact proposal. |
+| `OperatorCallContext` | `1 caseId:Id`; `2 incidentId:Id`; `3 purpose:Text` | Internal only; oneof context is caseId/incidentId. Exactly one real, accessible case or incident plus nonempty purpose; diagnostics/content and financial changes require the owning case. Incident-scoped queue triage exposes metadata only. |
+| `OperatorProposalRef` | `1 proposalId:Id`; `2 proposalHash:Hash`; `3 expectedProposalRevision:Revision` | Approved, unexpired, unconsumed and bound to the exact executing operation, actor, case, generation and owner revision. |
+| `OperatorGrantInput` | `1 grantId:Id`; `2 workspaceId:Id`; `3 subject:Key`; `4 entitlementProfileId:Key`; `5 startsAt:Instant`; `6 endsAt:Instant`; `7 source:OperatorGrantSource`; `8 kind:OperatorGrantKind` | Administrative or time-compensation grant, positive finite interval; configured profile/subject must exist. Profile resolves a fixed kind/subject/value grant payload, never a caller-supplied policy body. No caller-defined entitlement policy or free official signup tier. |
+| `OperatorRevokeGrantInput` | `1 grantId:Id`; `2 revocationId:Id` | Existing AdminGrant or Compensation entitlement grant only; provider-owned grants follow their existing provider/enforcement owners. Append revocation, never edit the immutable grant. |
+| `OperatorIssueCreditInput` | `1 lotId:Id`; `2 workspaceId:Id`; `3 amountMicro:uint64`; `4 expiresAt:Instant` | Compensation only, amount 1..int64-max, future expiry, immutable source proposal/case. Never purchased-credit or included-capacity issuance. |
+| `OperatorAdjustCreditInput` | `1 lotId:Id`; `2 deltaMicro:sint64`; `3 adjustmentId:Id`; `4 newLotId:Id?` | Nonzero signed microcredits; original compensation lot must be unexpired and not refund-held. Positive adjustment creates newLotId with original expiry; negative adjustment cannot consume held or already spent credits. |
+| `OperatorRefundInput` | `1 refundId:Id`; `2 decision:OperatorRefundDecision`; `3 amount:Decimal?` | Approve requires a positive amount in the original payment currency within the current refundable balance; reject forbids amount. Existing refund eligibility and hold rules apply. |
+| `OperatorCatalogReviewInput` | `1 submissionId:Id`; `2 decision:CatalogReviewDecision`; `3 reason:ReasonCode`; `4 evidence:Text` | Exact catalog.review business fields; no arbitrary package script or mutable archive. |
+| `OperatorCatalogRevokeInput` | `1 packageId:Key`; `2 version:Key`; `3 reason:ReasonCode`; `4 evidence:Text` | Exact catalog.revoke business fields and current immutable version. |
+| `OperatorAppealInput` | `1 appealId:Id`; `2 actionId:Id`; `3 decision:Key`; `4 reason:Text` | Exact ResolveAppeal fields; decision uphold/reverse, reviewed by a different Trust & Safety Operator from the original proposer. |
+| `OperatorKillInput` | `1 actionId:Id`; `2 mode:Key`; `3 scope:AggregateRef?`; `4 reason:Text`; `5 until:Instant` | Existing kill-mode/scope registry only; at most 24 hours, no arbitrary capability or policy body. |
+| `OperatorMutation` | `1 grant:OperatorGrantInput`; `2 revokeGrant:OperatorRevokeGrantInput`; `3 issueCredit:OperatorIssueCreditInput`; `4 adjustCredit:OperatorAdjustCreditInput`; `5 refund:OperatorRefundInput`; `6 catalogReview:OperatorCatalogReviewInput`; `7 catalogRevoke:OperatorCatalogRevokeInput`; `8 appeal:OperatorAppealInput`; `9 kill:OperatorKillInput` | oneof mutation, every field; exact fixed method binding in section 9. No Key-selected arbitrary dispatch. |
+| `OperatorProposal` | `1 proposalId:Id`; `2 mutation:OperatorMutation`; `3 targetOperation:Key`; `4 context:OperatorCallContext`; `5 reason:Text`; `6 proposerSubject:Key`; `7 approverSubject:Key?`; `8 proposalHash:Hash`; `9 ownerRevision:Revision`; `10 revision:Revision`; `11 state:OperatorProposalState`; `12 expiresAt:Instant`; `13 consumedByCommandId:Id?`; `14 resultRef:AggregateRef?`; `15 recoveryGeneration:uint64`; `16 configurationHash:Hash` | Internal only; read is role/case-bound. Immutable proposal body/hash, current lifecycle projection; no secret or customer-content payload. |
+| `OperatorResult` | `1 grant:Grant`; `2 credit:CreditLot`; `3 refund:RefundView`; `4 submission:CatalogSubmissionView`; `5 catalogVersion:CatalogVersionView`; `6 action:OperatorAction` | oneof result, every field; GetProposal reads current owner outcome after execution. An approved refund remains pending until verified provider evidence. |
 | `ConfigValidation` | `1 configId:Id`; `2 configHash:Hash`; `3 schemaVersion:Key`; `4 problems:ArcError[]`; `5 workerAcknowledgement:Hash?`; `6 compatible:bool`; `7 revision:Revision` | Internal only; validation receipt binds exact document/parent and selected worker/model/profile readiness. |
 | `ExtensionLease` | `1 leaseId:Id`; `2 expiresAt:Instant`; `3 renewAfterSeconds:uint32`; `4 negotiatedContracts:Key[]` | Public extension-only endpoint-free lease, 30 seconds/renew 10; never imports an internal LocalLease. |
 | `ImageLayout` | `1 widthRatio:double`; `2 alignment:Key` | Finite widthRatio in(0,1], relative to available content width; start/center/end alignment. Default image insertion freezes ratio 1/center; this is document presentation, not viewport/zoom state. |
@@ -634,8 +655,6 @@ For every inherited operation, authorization/class/error/compatibility is the co
 
 Resource upload status is owner-authorized Q/R1/AO; renewal is NI/R1/FR transport authorization, safe to repeat only as a new ticket for the same still-valid upload, never a data mutation. Renewal issues a fresh ten-minute transport ticket only while the original 24-hour upload session/reservation remains valid; it does not extend that session, restart bytes or publish content. GetUploadStatus pages accepted receipts. CompleteUpload seals the immutable manifest, returns verifying, and is reconciled by status until verified/failed.
 
-
-
 | Operation ID | Generated method | Request additions | Success additions |
 |---|---|---|---|
 | `identity.completeEnrollment` | `IdentityService.CompleteEnrollment` | `10 flowId:Id`; `11 proof:EnrollmentProof`; `12 credential:CredentialReplacement?`; `13 profile:ProfileUpdate` | `10 session:NativeSession` |
@@ -887,7 +906,7 @@ Notification's `IPushSender` uses typed HTTP v1 and a least-privilege project-bo
 
 Confirmed FCM UNREGISTERED or a token-specific FcmError INVALID_ARGUMENT on an otherwise valid payload retires only the exact sent registration revision/hash/generation; never delete a replacement token. Generic 404, malformed payload, project/credential mismatch and other INVALID_ARGUMENT are adapter/config failures and retain registrations. UNAVAILABLE/INTERNAL use exponential backoff with jitter starting 1 second and capped 60 seconds, honoring longer Retry-After; quota exhaustion starts at least 60 seconds and respects provider retry-after. Stop at TTL; persistent configuration failures alert and await repair, never spin. Token rotation creates a new revision and supersedes pending old-revision intents. In the same registration transaction, enqueue the still-authorized unresolved notifications within their original TTL for the new revision using the same unique-intent key; do not extend expiry or resurrect resolved attention. Revoked devices invalidate all pending deliveries. Delivery state is not durable notification state.
 
-WP45.09 owns sending; WP31/32 consume the profile and PG24 requires a physical Android receipt, revoked/rotated token cases and explicit non-GMS/denied-permission behavior. See [FCM error classification](https://firebase.google.com/docs/cloud-messaging/error-codes) and [Android priority](https://firebase.google.com/docs/cloud-messaging/android-message-priority). These provider mechanics are distinct from ArcForges' application choices above.
+WP45.09 owns sending; WP31/32 consume the profile and [PG-24](../../assurance/open-gates-register.md#rule-pg-24) requires a physical Android receipt, revoked/rotated token cases and explicit non-GMS/denied-permission behavior. See [FCM error classification](https://firebase.google.com/docs/cloud-messaging/error-codes) and [Android priority](https://firebase.google.com/docs/cloud-messaging/android-message-priority). These provider mechanics are distinct from ArcForges' application choices above.
 
 ## 8. Transport and generation acceptance
 
@@ -905,32 +924,117 @@ References: [gRPC-Web framing](https://github.com/grpc/grpc/blob/master/doc/PROT
 
 OperatorService uses internal/proto/arcforges/operator/v1 (Apache-2.0, restricted imports/access), served only through the separate operator origin and operator Identity scheme. It shares the same generated message/value/error rules; it never accepts a customer cookie or customer entitlement as operator authority. The operator React build is AGPL and may consume its internal generated SDK, while public Web and Kotlin Android cannot import it.
 
-| Method | Request fields after meta 1 (starting 10) | Success fields starting 10 |
-|---|---|---|
-| ListCases | page:PageRequest, state:Key? | cases:SupportCase[], page:PageState |
-| GetCase | caseId:Id | case:SupportCase |
-| RequestAccess | accessId:Id, caseId:Id, workspaceId:Id, resources:AggregateRef[], reason:Text, until:Instant | access:OperatorAccess |
-| ApproveAccess | accessId:Id, proposalHash:Hash, approve:bool | access:OperatorAccess |
-| EndAccess | accessId:Id | receipt:Receipt |
-| ReadDiagnostic | accessId:Id, resourceId:Id | ticket:TransferTicket |
-| ProposeEnforcement | actionId:Id, caseId:Id, userId:Id, action:Key, reason:Text, until:Instant? | action:OperatorAction |
-| DecideEnforcement | actionId:Id, proposalHash:Hash, approve:bool | action:OperatorAction |
-| GetAppeal | appealId:Id | case:SupportCase, action:OperatorAction |
-| ResolveAppeal | appealId:Id, actionId:Id, decision:Key, reason:Text | action:OperatorAction |
-| StageConfiguration | configId:Id, parentVersion:Key, document:ConfigurationDocument | validation:ConfigValidation |
-| ValidateConfiguration | configId:Id | validation:ConfigValidation |
-| ApproveConfiguration | configId:Id, validationHash:Hash, approve:bool, reason:Text | approvalId:Id, expiresAt:Instant |
-| ActivateConfiguration | configId:Id, validationHash:Hash, secondApprovalId:Id | activeVersion:Key |
-| GetConfiguration | configId:Id? | document:ConfigurationDocument, validation:ConfigValidation |
-| SetKillSwitch | actionId:Id, mode:Key, scope:AggregateRef?, reason:Text, until:Instant | action:OperatorAction |
-| StartBreakGlass | accessId:Id, incidentId:Id, resources:AggregateRef[], reason:Text | access:OperatorAccess |
-| EndBreakGlass | accessId:Id, outcome:Text | receipt:Receipt |
+| Operation | Service method | Request fields | Value fields |
+|---|---|---|---|
+| `operator.listCases` | `OperatorService.ListCases` | `10 page:PageRequest`; `11 state:Key?` | `10 cases:SupportCase[]`; `11 page:PageState` |
+| `operator.getCase` | `OperatorService.GetCase` | `10 caseId:Id` | `10 case:SupportCase` |
+| `operator.requestAccess` | `OperatorService.RequestAccess` | `10 accessId:Id`; `11 caseId:Id`; `12 workspaceId:Id`; `13 resources:AggregateRef[]`; `14 reason:Text`; `15 until:Instant` | `10 access:OperatorAccess` |
+| `operator.approveAccess` | `OperatorService.ApproveAccess` | `10 accessId:Id`; `11 proposalHash:Hash`; `12 approve:bool` | `10 access:OperatorAccess` |
+| `operator.endAccess` | `OperatorService.EndAccess` | `10 accessId:Id` | `10 receipt:Receipt` |
+| `operator.readDiagnostic` | `OperatorService.ReadDiagnostic` | `10 accessId:Id`; `11 resourceId:Id` | `10 ticket:TransferTicket` |
+| `operator.proposeEnforcement` | `OperatorService.ProposeEnforcement` | `10 actionId:Id`; `11 caseId:Id`; `12 userId:Id`; `13 action:Key`; `14 reason:Text`; `15 until:Instant?` | `10 action:OperatorAction` |
+| `operator.decideEnforcement` | `OperatorService.DecideEnforcement` | `10 actionId:Id`; `11 proposalHash:Hash`; `12 approve:bool` | `10 action:OperatorAction` |
+| `operator.getAppeal` | `OperatorService.GetAppeal` | `10 appealId:Id` | `10 case:SupportCase`; `11 action:OperatorAction` |
+| `operator.resolveAppeal` | `OperatorService.ResolveAppeal` | `10 appealId:Id`; `11 actionId:Id`; `12 decision:Key`; `13 reason:Text` | `10 action:OperatorAction` |
+| `operator.stageConfiguration` | `OperatorService.StageConfiguration` | `10 configId:Id`; `11 parentVersion:Key`; `12 document:ConfigurationDocument` | `10 validation:ConfigValidation` |
+| `operator.validateConfiguration` | `OperatorService.ValidateConfiguration` | `10 configId:Id` | `10 validation:ConfigValidation` |
+| `operator.approveConfiguration` | `OperatorService.ApproveConfiguration` | `10 configId:Id`; `11 validationHash:Hash`; `12 approve:bool`; `13 reason:Text` | `10 approvalId:Id`; `11 expiresAt:Instant` |
+| `operator.activateConfiguration` | `OperatorService.ActivateConfiguration` | `10 configId:Id`; `11 validationHash:Hash`; `12 secondApprovalId:Id` | `10 activeVersion:Key` |
+| `operator.getConfiguration` | `OperatorService.GetConfiguration` | `10 configId:Id?` | `10 document:ConfigurationDocument`; `11 validation:ConfigValidation` |
+| `operator.setKillSwitch` | `OperatorService.SetKillSwitch` | `10 actionId:Id`; `11 mode:Key`; `12 scope:AggregateRef?`; `13 reason:Text`; `14 until:Instant` | `10 action:OperatorAction` |
+| `operator.startBreakGlass` | `OperatorService.StartBreakGlass` | `10 accessId:Id`; `11 incidentId:Id`; `12 resources:AggregateRef[]`; `13 reason:Text` | `10 access:OperatorAccess` |
+| `operator.endBreakGlass` | `OperatorService.EndBreakGlass` | `10 accessId:Id`; `11 outcome:Text` | `10 receipt:Receipt` |
+| `operator.proposeAction` | `OperatorService.ProposeAction` | `10 proposalId:Id`; `11 mutation:OperatorMutation`; `12 expectedOwnerRevision:Revision`; `13 reason:Text` | `10 proposal:OperatorProposal` |
+| `operator.approveAction` | `OperatorService.ApproveAction` | `10 proposalId:Id`; `11 proposalHash:Hash`; `12 approve:bool`; `13 reason:Text` | `10 proposal:OperatorProposal` |
+| `operator.getProposal` | `OperatorService.GetProposal` | `10 proposalId:Id` | `10 proposal:OperatorProposal`; `11 ownerResult:OperatorResult?` |
+| `operator.grantEntitlement` | `OperatorService.GrantEntitlement` | `10 proposal:OperatorProposalRef` | `10 grant:Grant`; `11 receipt:Receipt` |
+| `operator.revokeEntitlement` | `OperatorService.RevokeEntitlement` | `10 proposal:OperatorProposalRef` | `10 grant:Grant`; `11 receipt:Receipt` |
+| `operator.issueCompensation` | `OperatorService.IssueCompensation` | `10 proposal:OperatorProposalRef` | `10 lot:CreditLot`; `11 receipt:Receipt` |
+| `operator.adjustCompensation` | `OperatorService.AdjustCompensation` | `10 proposal:OperatorProposalRef` | `10 lot:CreditLot`; `11 receipt:Receipt` |
+| `operator.decideRefund` | `OperatorService.DecideRefund` | `10 proposal:OperatorProposalRef` | `10 refund:RefundView`; `11 receipt:Receipt` |
+| `operator.getCatalogSubmission` | `OperatorService.GetCatalogSubmission` | `10 submissionId:Id` | `10 submission:CatalogSubmissionView` |
+| `operator.replyCase` | `OperatorService.ReplyCase` | `10 caseId:Id`; `11 messageId:Id`; `12 text:Text` | `10 case:SupportCase` |
+| `operator.setCaseState` | `OperatorService.SetCaseState` | `10 caseId:Id`; `11 state:SupportCaseState`; `12 reason:Text` | `10 case:SupportCase` |
 
 OperatorAccess, OperatorAction and ConfigValidation use the numbered internal-only records in §4, including revision in responses for IW preconditions. Operator request/result fields in each table cell are numbered from 10 in the listed order.
 
-Queries are Q; caller-stable create IDs CC; decision/activation/ending IW with expected revision. Support read access expires at most 15 minutes and requires owner consent when content rather than diagnostics is involved. Destructive customer-data/entitlement/enforcement/config changes bind a second distinct authorized operator to the exact proposal hash before owner execution. Action names are the existing enforcement ladder, kill modes and configuration keys, not a new remote script facility. Break-glass uses the existing separately alarmed incident path with 15-minute limit, immediate alert/audit and mandatory post-review. Audit is appended by the operation owner; no generic “write audit rows” API. Customer appeals and community reports use support.createCase with the existing case category and action reference; internal operator methods cannot be called through the public support session.
+The explicit classes, approval postures and roles below govern every OperatorService method, including catalog review/revocation. Every mutation uses commandId plus canonical hash and the declared revision. The operator origin accepts only its separate session/CSRF identity; customer cookies, native sessions, PATs, agents and service credentials refuse. No operator endpoint is exposed by public Web/Android packages or the public origin. Support and enforcement remain owner services; the console never writes their tables directly.
 
-Operator identity selects Microsoft Entra ID OIDC Authorization Code+PKCE with server-side exchange, pinned tenant/client/audience and issuer, MFA/conditional access; separate opaque operator session cookie and CSRF binding, no JS bearer or personal Microsoft account fallback. Roles Reader/Support/Operator/SecurityAdmin/ConfigAdmin restrict the above actions; all role assignments are operator-directory inputs, never public user claims. OIDC redirect/code and external incident/status systems are explicit standard-protocol exceptions. JWKS rotation validates keys, issuer/audience/nonce/time and never accepts an arbitrary discovery URL. AOT implementation uses explicit JwtBearer10.0.12/JWT validation metadata, typed HTTP exchange and server session adapter; WP06 proves its actual publish path, WP45 its access/dual-approval/incident behavior.
+Operator identity selects Microsoft Entra ID OIDC Authorization Code+PKCE with server-side exchange, pinned tenant/client/audience and issuer, MFA/conditional access; separate opaque operator session cookie and CSRF binding, no JS bearer or personal Microsoft account fallback. The five OC-03 roles and the method matrix below are the only role vocabulary; configured Entra app-role identifiers map to those exact keys. Unknown roles and legacy Reader/Support/Operator/SecurityAdmin/ConfigAdmin names refuse at configuration validation. Directory mappings cannot union incompatible duty assignments or make an Operations Operator a customer-content reader. OIDC redirect/code and external incident/status systems are explicit standard-protocol exceptions. JWKS rotation validates keys, issuer/audience/nonce/time and never accepts an arbitrary discovery URL. AOT implementation uses explicit JwtBearer10.0.12/JWT validation metadata, typed HTTP exchange and server session adapter; WP06 proves its actual publish path, WP45 its access/dual-approval/incident behavior.
+
+### 9.1 Complete operator authorization and call context
+
+The [OC-03 role vocabulary](../../requirements/10-distribution-update-and-support.md#rule-oc-03) has these exact claim keys: CS=`customerSupport`, RS=`recoverySpecialist`, OP=`operations`, TS=`trustSafety`, SE=`security`. These abbreviations are table notation, not additional roles. No wildcard or superuser role exists. A role never grants unscoped content access. Assign mutually incompatible operational/content roles to separate operator identities; changing directory assignments requires current authorization re-evaluation, not a cached UI capability.
+
+Every OperatorService request appends `100 context:OperatorCallContext` after its listed fields; this internal record never enters public RequestMeta. GetCase and content/financial actions require context.caseId matching their subject and workspace; other calls bind a real case or incident. ListCases is a metadata-only, role/category-filtered queue under the declared triage incident, with no global content search; subsequent case reads bind that case. Paginate lists and case messages under the existing bounds. A caller-supplied context is verified against Support or the admitted incident adapter, not accepted merely because it has an ID.
+
+Catalog ReviewCatalogSubmission/RevokeCatalogVersion and ResolveAppeal/SetKillSwitch additionally append `101 proposal:OperatorProposalRef`; existing tags and results remain unchanged. All operator methods are internal Apache contracts in the same generated manifest, scope=operator; the two catalog operation IDs retain their existing names. They are not public CatalogService methods. Every metadata row below is concrete; payload-bound roles resolve through the finite action table, never a server default.
+
+| Operation | Class | capability | risk | approval | stepUp | localPresence | egress | patEligible | actorKinds | Roles |
+|---|---|---|---|---|---|---|---|---|---|---|
+| `operator.listCases` | Q | none | R1 | none | no | no | none | no | operator | CS, RS, TS, SE |
+| `operator.getCase` | Q | none | R1 | none | no | no | none | no | operator | CS, RS, TS, SE |
+| `operator.requestAccess` | CC | none | R3 | foreground | yes | no | none | no | operator | CS, RS, TS |
+| `operator.approveAccess` | IW | none | R3 | secondOperatorAndOwnerConsent | yes | no | none | no | operator | RS, SE |
+| `operator.endAccess` | IW | none | R2 | foreground | no | no | none | no | operator | CS, RS, TS, SE |
+| `operator.readDiagnostic` | Q | none | R3 | activeAccessGrant | yes | no | diagnosticToOperator | no | operator | CS, RS, TS |
+| `operator.proposeEnforcement` | CC | none | R3 | foreground | yes | no | none | no | operator | TS |
+| `operator.decideEnforcement` | IW | none | R3 | secondOperator | yes | no | none | no | operator | SE |
+| `operator.getAppeal` | Q | none | R1 | none | no | no | none | no | operator | TS, SE |
+| `operator.resolveAppeal` | IW | none | R3 | approvedProposal | yes | no | none | no | operator | TS |
+| `operator.stageConfiguration` | CC | none | R3 | foreground | yes | no | none | no | operator | OP |
+| `operator.validateConfiguration` | Q | none | R3 | none | yes | no | none | no | operator | OP |
+| `operator.approveConfiguration` | IW | none | R3 | secondOperator | yes | no | none | no | operator | SE |
+| `operator.activateConfiguration` | IW | none | R3 | secondOperatorReceipt | yes | no | none | no | operator | OP |
+| `operator.getConfiguration` | Q | none | R2 | none | no | no | none | no | operator | OP, SE |
+| `operator.setKillSwitch` | IW | none | R3 | approvedProposal | yes | no | none | no | operator | OP |
+| `operator.startBreakGlass` | CC | none | R4 | alarmedIncident | yes | no | caseBoundRecovery | no | operator | SE |
+| `operator.endBreakGlass` | IW | none | R2 | foreground | no | no | none | no | operator | SE |
+| `operator.proposeAction` | CC | none | R3 | foreground | yes | no | none | no | operator | payload-bound proposer |
+| `operator.approveAction` | IW | none | R3 | secondOperator | yes | no | none | no | operator | payload-bound approver |
+| `operator.getProposal` | Q | none | R2 | none | no | no | none | no | operator | payload-bound proposer or approver |
+| `operator.grantEntitlement` | CC | none | R3 | approvedProposal | yes | no | none | no | operator | CS, RS |
+| `operator.revokeEntitlement` | DE | none | R3 | approvedProposal | yes | no | none | no | operator | CS, RS |
+| `operator.issueCompensation` | CC | none | R3 | approvedProposal | yes | no | none | no | operator | CS |
+| `operator.adjustCompensation` | IW | none | R3 | approvedProposal | yes | no | none | no | operator | CS |
+| `operator.decideRefund` | IW | none | R3 | approvedProposal | yes | no | paymentProvider | no | operator | CS |
+| `operator.getCatalogSubmission` | Q | none | R2 | none | no | no | none | no | operator | TS, SE |
+| `operator.replyCase` | CC | none | R2 | foreground | no | no | caseOwnerNotification | no | operator | CS, RS, TS, SE |
+| `operator.setCaseState` | IW | none | R2 | foreground | no | no | caseOwnerNotification | no | operator | CS, RS, TS, SE |
+| `catalog.review` | IW | none | R3 | approvedProposal | yes | no | none | no | operator | TS |
+| `catalog.revoke` | DE | none | R3 | approvedProposal | yes | no | none | no | operator | TS |
+
+Queries use AO, all mutations FR. Every method also enforces context, current role/session/generation and its owner constraints. Fresh operator MFA/step-up is at most five minutes old where stepUp=yes. RequestAccess records a proposal, not permission; ApproveAccess requires a distinct eligible RS/SE approver, owner consent for content, exact hash and at most 15 minutes. CS/TS may inspect only the explicitly shared diagnostic/report evidence; general private-content recovery belongs to RS with the existing scoped grant. EndAccess can revoke only the actor's own grant or a grant explicitly supervised by SE; ReadDiagnostic revalidates the same live grant before every range. Break-glass is SE-only, incident-bound, immediately alarmed, at most 15 minutes and post-reviewed; it cannot grant money or bypass financial dual approval.
+
+**Owner projection rule.** Operator GetCase and GetCatalogSubmission read through their existing owner ports using internal operator authority; the public caller restrictions on SupportCase/CatalogSubmissionView are not a second customer-session requirement here. Safe projection fields and consent limits are unchanged. ListCases returns case summaries without message bodies; GetCase appends `102 messages:PageRequest?` and pages messages by the existing owner cursor, so large cases have a usable next-page request. Public support methods retain their existing customer-only contracts.
+
+### 9.2 Typed proposal and execution protocol
+
+| Mutation variant | Exact executing operation | Proposer/executor | Distinct approver | Owner revision guard |
+|---|---|---|---|---|
+| grant | operator.grantEntitlement | CS or RS | OP | absent grant=0 plus captured configuration/profile hash |
+| revokeGrant | operator.revokeEntitlement | CS or RS | SE | entitlement snapshot version and exact unrevoked grant identity |
+| issueCredit | operator.issueCompensation | CS | OP | absent lot=0 plus captured configuration hash |
+| adjustCredit | operator.adjustCompensation | CS | OP | existing credit_lot.rev and held/remaining balances |
+| refund | operator.decideRefund | CS | OP | commerce.refund.rev plus current payment/refundable balance |
+| catalogReview | catalog.review | TS | SE | PackageCatalog submission revision |
+| catalogRevoke | catalog.revoke | TS | SE | PackageCatalog published version revision |
+| appeal | operator.resolveAppeal | TS (not original enforcement proposer) | SE (not original enforcement approver) | enforcement action revision and pending appeal |
+| kill | operator.setKillSwitch | OP | SE | Policy control revision (0 for absent control) |
+
+1. ProposeAction uses a caller-stable proposalId/commandId and the exact typed body, expected owner revision, current case/incident and reason. It validates owner scope and current policy without applying the effect. Audit persists a pending proposal for 15 minutes; canonical hash binds the operation, complete typed body, proposer, context, reason, owner revision, active configuration hash, realm and recovery generation. Return that exact proposal, revision and expiry. Same command/hash returns the original receipt; changed content refuses with command.reused_identifier.
+2. ApproveAction requires the table's distinct eligible identity, expected proposal revision, exact proposalHash and current step-up. Approve/reject is final for this proposal and creates an append-only approval record. Reject never applies an owner effect. A changed payload, changed governing configuration/owner revision, expired proposal or revoked role invalidates execution; never silently regenerate approval. GetProposal lets both bound roles reconcile, see the exact diff and inspect current owner result after execution.
+3. The proposer invokes the named executing method with its approved reference and commandId. RequestMeta.expectedRev is the owner revision captured above; the reference separately carries the proposal revision. Catalog/appeal/kill request fields must exactly equal the approved typed body. Server checks the executor is the original proposer and that the distinct approver still has its permitted role. Owner writes, approval consumption, result receipt, audit, notification/outbox and proposal state=executed commit in ONE guarded D1 batch assembled through the owner ports. A competing command cannot consume an approval twice. Same command/hash returns the original receipt even after a lost response; current owner reads show later asynchronous progress. Different commands after consumption refuse, not repeat the effect.
+4. Refund approval commits a refund intent and hold/outbox, not “refunded”. The existing provider adapter performs the external act only after the independent safety-journal barrier. Unknown provider outcome stays unknown and reconciles its original identity; GetProposal and the customer's existing billing history show current pending/unknown/succeeded status. Provider verification alone records the actual refunded amount. A refusal/rejection releases only this request's unconsumed hold after rechecking other holds and in-flight reservations.
+
+Grant starts/ends, profile and reason are explicit and appear in the customer's entitlement explanation: administrative maps to AdminGrant and compensation to Compensation. Kind capability selects a declared profile capability subject and its boolean value; quota selects the registered storage-quota subject and profile.storageBytes; allowance selects the registered included-capacity subject and the immutable profile reference (capacity/refill/burst/period rules). Unknown subject/kind/profile combinations refuse. Time compensation is a new finite sourced grant (GR-04), never an edit to an old grant expiry. Existing service-term derivation and advance-before-change rules apply; no grant resets usage, mints a purchased-credit lot or bypasses the paid-service eligibility model. Creation never occurs on normal signup. RevokeEntitlement appends a revocation against that AdminGrant/Compensation grant and advances the existing snapshot, never mutates the grant or a provider-owned subscription. Credit compensation is integer microcredits only; time compensation uses the separate sourced entitlement grant above. Issue creates a compensation lot with future expiry and source_ref=proposalId. Positive adjustment creates a separate compensating lot with the original expiry and an append-only adjustment record; negative adjustment changes only unheld remaining compensation and records the signed movement. Do not change original_micro, reset expiry, seize reserved credits, alter purchased credits, refill included capacity or retrospectively charge a customer. Reject a zero/overflow/expired/refund-held/insufficient adjustment before mutation. Current commercial eligibility and configured limits remain binding at execution.
+
+Existing ProposeEnforcement/DecideEnforcement and Stage/Validate/Approve/ActivateConfiguration retain their specialized typed flows. Enforcement approval is a distinct SE over the TS proposal; configuration approval is a distinct SE over OP's immutable validationHash for 15 minutes. Role revocation and changed owner/configuration input invalidate them too. They do not obtain authority by passing an unrelated generic proposal.
+
+ReplyCase appends an immutable operator-attributed message under a case revision guard and command receipt, then emits the existing owner notification. SetCaseState permits open→inProgress, inProgress↔awaitingUser, open/inProgress/awaitingUser→resolved, resolved→closed, resolved/closed→inProgress with a recorded reason. Replying to a resolved/closed case requires the explicit reopen first. No state change deletes messages or completes an enforcement/refund merely because its support case is closed. Access to security/appeal cases is restricted to SE/TS respectively (RS only for an explicitly delegated recovery case); CS has no implicit security queue access.
+
+Failures use existing ArcError codes: auth.unauthenticated/session_expired/step_up_required, perm.resource_denied/approval_required/approval_expired, validation.invalid_request, conflict.revision_mismatch, command.reused_identifier, state.not_found/invalid_transition, capacity.rate_limited and dependency.unavailable/timeout with their established effect certainty. Role/case refusal does not reveal foreign IDs. All accepted/refused privileged calls emit the registered audit family operator.<operation-suffix>.<disposition>, disposition=read/proposed/approved/rejected/executed/refused/expired/invalidated; catalog operations use catalog.review or catalog.revoke as the prefix. The finite operation set and allowed lifecycle dispositions generate the event registry; no free-form event name or secret/body logging. Include actor(s), reason, case/incident, target, proposal hash, command/correlation and result reference. D1 outage produces independent security telemetry for refused calls, never a fabricated committed audit receipt.
+
 
 ## 10. Owner bodies, mutation admission and schema composition
 
@@ -960,8 +1064,6 @@ The public profile includes every owner record reachable from AggregateBody; int
 
 For new simulator semantic hashes, finite binary64 values encode as a 16-lowercase-hex-digit IEEE754 bit word in big-endian byte order, preserving signed zero; nonfinite values refuse. af-segment.v1 serializes SimulationDataSegment as canonical UTF-8 JSON under this field/value profile, with explicit oneof field presence and every ordered repeated field present even when empty. Integral fields use the exact string mapping; IDs use lower-case UUID; object fields sort ordinal. That canonical JSON is the immutable segment body, not arbitrary protobuf encoder output. Segment length/hash cover those bytes. Existing product-native canonical formats retain their own authority.
 
-
-
 Block.kind maps exactly to [the thirteen accepted owner kinds](../18-editing-and-rich-content.md#21-block-content): paragraph/heading/list/quote/callout/toggle use text; code uses code; math uses math with display=true; divider uses empty=true; table uses table; image/attachment use resource; embed uses link to a document/block/saved view identity. The required kind-specific BlockProperties above complete that body. PDF is attachment with pdfViewer, checklist is list with checklist style, and toggle children remain parent-linked Block rows. Collapse, PDF page/zoom and scroll are device-local, never sync content. Unsupported writable kinds or incompatible bodies refuse; unknown persisted kinds remain inert under the owner evolution rules.
 
 RichText is a reversible wire projection of InlineContent: concatenate NFC text runs, encode LineBreak as LF, and place U+FFFC for each mention/inline-math/footnote atom. Flatten marks, non-nested links and origin fragments into bounded spans/atoms; links may contain differently marked text. Convert owner run-relative UTF-16 offsets to absolute wire UTF-16 offsets by checked prefix sums, and reverse at span/atom boundaries on decode. Merge adjacent identical marked runs as the owner already requires; preserve unknown read-only marks inert. Atom content uses the declared oneof, with math display=false. For A中😀, UTF-16 boundaries are 0/1/2/4; byte boundaries 0/1/4/8 remain specific to CF stream offsets. Do not substitute one offset unit for the other. No HTML/Markdown string becomes canonical Notes content.
@@ -976,7 +1078,7 @@ Cloud uses the R2 authorized range facade. A local reply uses the same descripto
 
 The new identity/workspace/device operations above use the existing error registry. Read/list/preview operations are Q/R1/AO; listAuthProviders is anonymous, bounded and no-store. Profile and credential rename are IW/R2/FR with expectedRev. Email change and recovery/password/SSO proof flows are NI/FR, rate-limited and one-use, never automatically retried. Generating recovery codes is NI/R3/FR with fresh step-up; losing the response requires generating a new set that atomically invalidates the previous one. API token creation is CC/R3/FR with fresh step-up and caller tokenId; a duplicate returns its safe summary with secret absent, never redisplays the secret (the success secret field is optional). Token revocation and device sign-out are DE/R3/FR; reducing one's current device access requires no step-up, but increasing remote authority does. setRemotePolicy is IW/R3/FR with expectedRev and step-up for any expansion. Data deletion is CC/R4/FR with current previewHash and step-up. It does not cancel a paid subscription or delete the account. Deletion status/cancellation accepts only fresh purpose=cancelDeletion sessions during grace; cancellation is IW with the deletion revision carried by ResponseMeta. Old ordinary sessions remain revoked after cancellation; normal login is required.
 
-Browser begin/complete authentication mirrors providerId/purpose and returns SessionView plus Set-Cookie only. Recovery, email change and all secret-returning account management responses are no-store and never placed in telemetry/cache; a PAT secret may be displayed once in its explicit creation UI but is not used as the browser's session credential. Native Device SSO is unavailable on a browser. Its separate target bootstrap flow uses the signed device challenge and bound installation, not an ordinary caller bearer minted for a different app. [Security architecture](../08-security-architecture.md#account-and-provider-closure) fixes the remaining owner state transitions.
+Browser begin/complete authentication mirrors providerId/purpose and returns SessionView plus Set-Cookie only. Recovery, email change and all secret-returning account management responses are no-store and never placed in telemetry/cache; a PAT secret may be displayed once in its explicit creation UI but is not used as the browser's session credential. Each native application completes its own browser authorization; no sibling-app bootstrap or signing challenge exists. [Security architecture](../08-security-architecture.md#account-and-provider-closure) fixes the remaining owner state transitions.
 
 ## Notes structural and Slate operation bindings
 
@@ -998,7 +1100,7 @@ Read/status/list/describe/preview operations have pureRead, risk R1 and no mutat
 
 connector list/get are Q/R1/AO with current owner. beginConnection is CC/R3/FR, foreground grant and step-up for new secret authority; completeConnection is NI/R3/FR with original one-use flow (reconcile getConnection after lost response), revokeConnection is DE/R2/FR at expectedRev. Each secret/flow is user/workspace/definition-hash bound; definitions cannot extend origins/scopes after consent. Provider callback is the allowlisted standard OAuth exception under /callbacks/connectors/{providerId}; no arbitrary business HTTP method. Desktop local connections use equivalent generated Connector records inside the existing security/extension broker, never copy Cloud secrets to clients.
 
-Device SSO broker methods are Q/R1/FR and NI/R3/FR respectively, Named Pipe/UDS only, verified OS user and signed application identity, foreground target consent and challenge-bound target installation. Broker verifies challenge issuer, realm, source session/device, expiry, one-use flow and exact target claim before signing canonical challenge bytes. It never returns a refresh token or private key. A lost reply starts a new one-use challenge rather than caching signatures for arbitrary targets.
+Former Device SSO broker methods are retired and excluded from current generation and registration. Independent native browser authorization is defined in contracts 07; private helper authentication in contracts 09 never issues a customer session or serves a sibling application.
 
 Source getPolicy is Q/R1/AO; setPolicy is IW/R3/FR and clearPolicy DE/R3/FR at the policy revision, explicit owner setting and step-up only when governing policy requires it. Target kinds are notebook/folder/notesDocument/chatProject/conversation/resource/scopeSession/slateProject. Each target belongs to the same authorized workspace. New owner policy defaults searchable=true, cloudIndexAllowed=false, aiRetrievalAllowed=false, managedAiProcessingAllowed=false until the explicit source/AI setup consent; changing Sync alone does not opt in. Apply ancestor inheritance in realm→workspace→collection→resource order; explicit per-resource values override collection defaults only where no governing deny exists. Exclude from AI sets fields 3/4 false; a separate visibly reviewed one-use override may loosen that owner preference only when governing policy permits it. The receipt cannot bypass denied read access, hard workspace/realm denial or source revision change. Revalidate before each effect/model dispatch; permission changes immediately filter Cloud query/dispatch and queue derived index reconciliation. Source policy is not customer tariff configuration.
 

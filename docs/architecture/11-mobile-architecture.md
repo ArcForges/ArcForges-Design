@@ -138,7 +138,7 @@ User action while offline
 
 ---
 
-Use the [push.v1 profile](contracts/04-protobuf-wire-registry.md#android-push-provider-payload). Register only the current Android installation token; rotate on token changes, unregister on logout/permission loss. Deduplicate by realm/account/notificationId, display generic local HIGH-priority attention immediately, and fetch details through current authorization. No push supplies an approval credential. PG24 distinguishes provider acceptance, physical receipt and explicitly unavailable no-GMS/denied-permission background delivery.
+Use the [push.v1 profile](contracts/04-protobuf-wire-registry.md#android-push-provider-payload). Register only the current Android installation token; rotate on token changes, unregister on logout/permission loss. Deduplicate by realm/account/notificationId, display generic local HIGH-priority attention immediately, and fetch details through current authorization. No push supplies an approval credential. [PG-24](../assurance/open-gates-register.md#rule-pg-24) distinguishes provider acceptance, physical receipt and explicitly unavailable no-GMS/denied-permission background delivery.
 
 ## 9. Commerce constraints in the build
 

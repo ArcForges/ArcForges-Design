@@ -31,29 +31,29 @@ They share one property that makes them worth specifying together: **each produc
 
 ### 1.2 Execution inside the single host
 
-The simulator is a **hosted service inside `ArcForges.Cloud.Host`** ([RT-03](05-cloud-architecture.md#rule-rt-03), [SIM-10](../requirements/products/arcscope.md#rule-sim-10)). N identical replicas may all be running it.
+The simulator executes one bounded C# Container slice per private job request ([RT-03](05-cloud-architecture.md#rule-rt-03), [SIM-10](../requirements/products/arcscope.md#rule-sim-10)). SimulationPacer DO alarms coordinate wakeups; D1 owns run state, fencing, checkpoint and the durable next-due intent. No Container background loop owns continuation.
 
+```text
+wake:      DO alarm or Cron rescue requests the same run/generation
+claim:     guarded D1 batch claims the due run and increments its fence
+slice:     generate at most the configured batch, 100 items or 20 seconds
+prepare:   write immutable R2 segment; verify its length and hash
+publish:   ONE guarded D1Database.batch() checks state/lease/fence/generation,
+           inserts the segment identity and advances checkpoint + next_due,
+           and writes the command receipt, quota movement and outbox wake
+schedule:  deliver the committed next-due wake to SimulationPacer; then return
+rescue:    every-minute Cron scans due nonterminal checkpoints/outbox leases
 ```
-claim:    acquire simulation_lease (run_id) with a monotonic fence token   -- SIM-10
-loop:     for each bounded batch, while the lease is live:
-              generate ticks -> canonical batch
-              write object                     (invisible until the manifest row)
-              verify object length and hash
-              BEGIN
-                insert simulation_segment       (guarded by fence token)   -- SIM-11
-                advance simulation_checkpoint                              -- SIM-12
-              COMMIT
-              renew lease; yield                                           -- RT-05
-release:  on expiry, loss, pause or terminal state, drop the lease cleanly
-```
+
+External object writes and alarm calls are outside the D1 batch. Crash before publication leaves an unreferenced object for cleanup; crash after publication but before alarm scheduling is recovered from the committed next-due/outbox record. Duplicate alarms, lost replies and Cron races acquire the same guarded lease and cannot publish a logical segment twice. Replay the original receipt after an unknown batch outcome; a stale fence never advances the checkpoint. Stop/pause/cancel and eligibility are rechecked in the publication guard. At-least-once execution produces one committed segment identity, not a promise of exactly-once alarm delivery.
 
 | # | Rule |
 |---|---|
 | <a id="rule-sx-01"></a>SX-01 | **The manifest row is the commit point** ([SIM-11](../requirements/products/arcscope.md#rule-sim-11)). An object exists before it is visible; visibility is the row. A committed manifest row never references an unverified partial object. |
-| <a id="rule-sx-02"></a>SX-02 | **The checkpoint advances only after the manifest row commits** ([SIM-12](../requirements/products/arcscope.md#rule-sim-12)), in the same transaction. Reversing that order would let a takeover skip a range that no reader can see. |
+| <a id="rule-sx-02"></a>SX-02 | **The checkpoint and manifest row commit atomically** ([SIM-12](../requirements/products/arcscope.md#rule-sim-12)), in one guarded D1 batch. No committed state can expose an advanced checkpoint without its verified segment. |
 | <a id="rule-sx-03"></a>SX-03 | **A publish carrying a stale fence token is rejected** ([SIM-10](../requirements/products/arcscope.md#rule-sim-10)). This is what makes N replicas safe: a paused-then-resumed generator on an old host cannot publish over a new one. |
 | SX-04 | **Host loss and lease takeover produce the same remaining canonical data**, with no duplicate and no missing logical range ([SIM-12](../requirements/products/arcscope.md#rule-sim-12)). This is the simulator's central invariant, and [SIM-20](../requirements/products/arcscope.md#rule-sim-20) tests it by killing the host mid-run. |
-| SX-05 | **No unbounded generation loop exists** — not in a request handler, and not in the hosted service ([RT-05](05-cloud-architecture.md#rule-rt-05), [SIM-10](../requirements/products/arcscope.md#rule-sim-10)). Work is claimed in batches and yields between them. |
+| SX-05 | **No unbounded generation loop or perpetual hosted generator exists** ([RT-05](05-cloud-architecture.md#rule-rt-05), [SIM-10](../requirements/products/arcscope.md#rule-sim-10)). Each bounded slice commits its continuation before returning; DO alarms and Cron drive later slices. |
 | SX-06 | **Incomplete objects are cleaned** by a sweeper keyed on the absence of a manifest row ([SIM-11](../requirements/products/arcscope.md#rule-sim-11)). |
 
 ### 1.3 Bounded evaluation

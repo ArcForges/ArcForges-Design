@@ -43,6 +43,8 @@ Official passkey RP ID is `arcforges.com`; web origins are exactly https://accou
 
 PATs are generated in the account portal after step-up, displayed once, stored hash-only and given explicit expiry and exact operation scopes from catalogue 00. CLI sends Bearer on eligible gRPC-Web calls and never passes a PAT in a URL or browser cookie. Revocation takes effect on the next authorization check; no agent/extension actor may elevate itself using a human token.
 
+Each professional application starts from its own account state. On a second product’s first launch, show its own sign-in action; never show a sibling-discovered account chooser. Browser-held authentication may shorten the ceremony but does not copy ArcForges sessions.
+
 ## 2. ChatTurn and AgentTask
 
 | Trigger | Durable owner and path | Completion / recovery |

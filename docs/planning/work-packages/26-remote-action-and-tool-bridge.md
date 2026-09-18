@@ -112,7 +112,7 @@ Acceptance includes every amended §5 producer/consumer and WP-26.90 evidence. C
 | Application presence: 30s expiry/10s renewal, restarted epoch, app offline without device-wide false availability. | [WP-26.00](#rule-wp-26.00) |
 | Durable target queue: Another application cannot claim; duplicate/lost ack/expiry and per-owner budget. | [WP-26.01](#rule-wp-26.01) |
 | Owner reauthorization: No local product RPC, shared database or delegation through an shared coordinator. | [WP-26.02](#rule-wp-26.02) |
-| Execution and result: Crash before/after effect, checkpoint, cancel and stale epoch reconciliation. | [WP-26.03](#rule-wp-26.03) |
+| Execution and result: Crash before/after effect, checkpoint, cancel and stale epoch reconciliation. Two distinct tool requests in one attempt both persist; identical `(toolRequestId, attemptId, commandId)`/hash retry returns its receipt and changed hash refuses. | [WP-26.03](#rule-wp-26.03) |
 | Remote approval and steering: Mobile biometric cannot substitute for target presence; stale approval fails. | [WP-26.04](#rule-wp-26.04) |
 | Offline expiry and recovery: Disconnect/revoke/reinstall, no silent alternate product/device selection. | [WP-26.05](#rule-wp-26.05) |
 | Frozen application locality: Own-app multi-tool workflow passes; cross-product capability is absent/future. | [WP-26.06](#rule-wp-26.06) |

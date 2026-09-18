@@ -181,6 +181,8 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 ---
 
+**Tool-result acceptance.** Submit two distinct toolRequestIds in one attempt (for both Task and ChatTurn owners), then replay each original command/hash: both results persist and each replay returns its own original receipt. A changed result under the same `(toolRequestId, attemptId, commandId)` refuses with `command.reused_identifier`; lost acknowledgement never allocates a fresh command or drops the second result. Bind the wire registry, TK-05 and `task.tool_result` to this same key.
+
 ## 6. Impacts
 
 | Dimension | Impact |
