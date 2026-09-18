@@ -177,6 +177,8 @@
 
 ---
 
+**Browser matrix acceptance.** Use [browser-support.v1](../../requirements/12-quality-and-compatibility-contract.md#202-browser-supportv1) and the exact release artifact/OS/browser patches. For each output’s existing flows, verify supported/degraded/blocked browser behavior: delayed-stream polling where streaming exists, refusal of unavailable required authentication/step-up, safe-preview refusal and preserved pending work. Static site acceptance includes no-JavaScript readability; it does not invent interactive account/stream APIs. Operator step-up retains its separate Entra/MFA authority. WP23 proves generated transports; WP45/47/48/49 prove their respective operations/site/account/chat output; WP50 joins all four production hashes and real browser evidence. A Playwright WebKit run alone does not claim Safari/OS authenticator proof.
+
 ## 6. Impacts
 
 | Dimension | Impact |
@@ -185,7 +187,7 @@
 | Protocol | Consumes identity, entitlement, commerce and policy contracts |
 | UI | The canonical account experience |
 | Security | Browser token handling, step-up, origin isolation and content security |
-| Platform | Browser support matrix |
+| Platform | [browser-support.v1](../../requirements/12-quality-and-compatibility-contract.md#202-browser-supportv1) |
 | Migration | Bundle and contract version compatibility for cached clients |
 | Compatibility | A cached older client is told to refresh with a grace period, never silently broken |
 
@@ -206,8 +208,6 @@ Acceptance includes every amended §5 producer/consumer and WP-48.90 evidence. C
 | Policy headers, bundle secret scan and budget measurements | [WP-48.06](#rule-wp-48.06) |
 | Offline, outage and accessibility results | [WP-48.07](#rule-wp-48.07) |
 | Owned artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/OS/device/provider, scenario, result, limitations and real-versus-fixture status; inapplicable fields explicitly marked | [WP-48.90](#rule-wp-48.90) |
-
-
 
 ---
 

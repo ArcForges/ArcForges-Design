@@ -70,6 +70,8 @@ Container external egress through the handler is restricted to configured Postma
 
 Selected mechanism: [Containers outbound handlers](https://developers.cloudflare.com/containers/guides/outbound-traffic/) and [Worker connections](https://developers.cloudflare.com/containers/configuration/workers-connections/), checked 2026-09-17. Use the provider's outbound proxy export and certificate configuration only when HTTPS interception is actually configured. WP06/21 must prove the selected SDK/runtime wiring, blocked egress and public denial on a real deployment.
 
+**Launch allocation authority.** [Model04 launch-capacity.v1](data-model/04-d1-execution-profile.md#launch-capacity-profile-v1) selects standard-2, four globally capped fixed realm slots and ten-minute idle sleep with bounded wake/readiness admission. Worker routing and Container configuration consume that same validated artifact; do not inherit the Hello World lite/one-slot configuration or assume provider autoscaling. The Vectorize/R2 reservation and alert budgets there complement, rather than replace, purchased entitlements and D1 constraints.
+
 ## 3. Host pipeline
 
 Fixed request order (service registration remains explicit at startup):

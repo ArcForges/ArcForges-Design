@@ -147,7 +147,7 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 **What must be fully done.** Implement hydration/cache pause versus explicit Cloud deletion, source-consent/transient inputs, health states and full realm-transfer export/preview/commit/status/cancel workflow from client journeys. Rebuild or verify actual missing-object outcomes; irrecoverable retains evidence and recovery/export actions.
 
-**Testing requirements.** Real R2/PG, resume after 100-root batch, repeated command, missing object, partial cancellation, denied current scope, transfer credential/ledger exclusion and restore generation.
+**Testing requirements.** Real R2 object verification and guarded D1 publication/recovery, resume after 100-root batch, repeated command, missing object, partial cancellation, denied current scope, transfer credential/ledger exclusion and restore generation.
 
 **Completion gate.** No Unsync deletion of authoritative Notes/Chat, no empty success for irrecoverable data and no manual migration rule invented.
 

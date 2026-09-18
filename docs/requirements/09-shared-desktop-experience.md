@@ -7,9 +7,9 @@
 
 All desktop UI is native Avalonia/Skia under Native AOT. WebView, DOM/JavaScript, HTML-as-UI and localhost UI are prohibited, including previews and account/payment screens; external account/checkout links use the system browser.
 
-The three professional desktop products are neither four independently designed applications nor one shared shell with swapped content. The pattern is:
+The three professional desktop products are neither three independently designed applications nor one shared shell with swapped content. The pattern is:
 
-> **One design language, four professional workspaces.**
+> **One design language, three professional workspaces.**
 
 Founding invariant: **Shared Experience ≠ Shared Shell ≠ Shared Domain** ([I-021](01-normative-glossary-and-invariants.md#rule-i-021)).
 

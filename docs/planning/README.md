@@ -63,4 +63,4 @@ The earlier [producer and local gRPC review](../assurance/producer-and-local-grp
 
 P2-012 uses [concrete project/package producers](../architecture/27-platform-projects-and-application-assistants.md), [D1](../architecture/data-model/04-d1-execution-profile.md), [history](../architecture/data-model/05-application-history.md), [scope/streams](../architecture/contracts/10-application-scope-and-streams.md) and [complete client UX](../experience/README.md). All 51 active WPs include these where applicable. WP20 is [future only](../future/cross-product-collaboration/README.md), with no current dependency or gate.
 
-Current coordinated repair: P2-013; see [verification record](../assurance/independent-review-remediation-verification.md). Runtime and commercial gates remain separate from design evidence.
+Current coordinated repair: P2-014; see [final findings verification](../assurance/final-findings-remediation-verification.md). Earlier dated reviews retain their evidence baselines; real runtime and commercial gates remain separate and open.

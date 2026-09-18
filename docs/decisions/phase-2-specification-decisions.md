@@ -401,3 +401,23 @@ Authorities: [projects/packages](../architecture/27-platform-projects-and-applic
 **Specific supersession.** P2-006 host placement; P2-008 generated OpenAPI/JSON business authority; P2-009 RN and historical ten-repository count; P2-010 public native gRPC; P2-011 independent peers and SSO; all phase-1 disposition rows marked amended/superseded. Unchanged scope, permissions, accounting, measurement, media time, provenance, recovery and licence obligations remain binding.
 
 **Preserved scope.** Three independent professional desktops, embedded assistants, Android and Web companions, self-hosting, deterministic simulator, developer platform/catalog and complete commercial operations. Cross-product collaboration remains future-only; iOS, local AI, BYOK and agent teams are not introduced.
+
+
+<a id="rule-p2-014"></a>
+## P2-014 — Final independent findings closure
+
+**Status: accepted design selection, 2026-09-18.** Applies the bounded final review of merged `70a04d4` (Plan review `1f5e560` / `fee5e4c`) and execution plan `eb6e7dd`. It completes P2-012/P2-013 without changing the accepted product portfolio. The original conflicting normative text is replaced at its owner; dated verification records remain historical evidence.
+
+| Decision | Authority and implementation consequence |
+|---|---|
+| No application Device SSO | Each application performs its own browser ceremony and stores its own session. Remove sibling bootstrap/signing/broker requirements from security, contracts and WP22. Only independently specified parent/child isolation remains local IPC. |
+| Tool-result identity | `(toolRequestId, attemptId, commandId)` plus canonical result hash; Task and ChatTurn owners accept multiple results per attempt and reconcile identical retries. |
+| Complete operator surface | Registry04 §9 owns every internal method, OC-03 role binding, eight-field authorization profile, typed dual-approval/financial/case behavior and owner commit. Manifest11 includes all 31 operator methods. Customer/PAT/agent credentials are excluded. |
+| Module versus repository count | 21 Cloud domain modules include PackageCatalog; there are nine independent implementation repositories. Audit owns operator proposals; domain owners execute effects. No Operations data module or extra business host is created. |
+| Bounded Cloud execution | SimulationPacer/Cron wake bounded C# slices; verified segment, checkpoint and continuation outbox commit in one guarded D1 batch. Restore uses D1 export/bookmark/replay, R2 inventory and independent safety journal. |
+| Concrete launch profile | Model04 selects standard-2, four global fixed realm slots, ten-minute idle sleep, explicit first-response deadlines and Vectorize/R2 allocations/reservations. These are implementation/load targets, not hidden purchased quotas or achieved capacity. Real L-16/PG-26 cost/performance approval remains mandatory. |
+| Concrete browser policy | Requirements12 browser-support.v1 defines engines/OS, build floors, deterministic current/previous release selection, exact versioned artifact, polling fallback and fail-closed step-up/preview. All four Web outputs consume it. |
+| Real email and accurate portability | WP22 proves actual delivery/recovery before completion; recorded failures are regression-only. Notes exports retain the specified Cloud Markdown/attachments/manifest/fidelity path, not an excluded native archive importer. |
+| Verifiable propagation | Exact operation counts, table schemas and vocabulary, rule links, graph and affected consumer gates are checked; the five-column dispositions register is restored. |
+
+See the [final findings verification](../assurance/final-findings-remediation-verification.md). Documentation/source/SQLite example checks do not close real AOT, Cloudflare, browser, Android, native, provider, payment or commercial gates. D-020 approval requirements for cost/performance remain effective.

@@ -9,6 +9,8 @@ Observability answers *why is the system slow or failing*. It is a separate syst
 
 ---
 
+**Identity mail producer.** WP22 owns the real Postmark/SES adapters and requires an isolated provider account, verified sender domain/DNS, protected CI credentials and controlled inbox before its actual delivery/recovery acceptance. WP45.08 consumes those artifacts for operational drills. Recorded response fixtures are regression inputs, never runtime mail providers.
+
 ## 1. Controlling rules
 
 | # | Rule |
@@ -120,13 +122,15 @@ Audit is a **product security record**, not a diagnostic aid.
 |---|---|
 | <a id="rule-au-01"></a>AU-01 | Audit is append-only during its stated retention: normal application/operator roles cannot UPDATE or DELETE. A separate audited retention-maintenance role may purge expired unheld partitions under approved policy, retaining purge scope/hash/authority receipt. Legal/financial holds and account-deletion rules remain enforced; arbitrary editing is never allowed. |
 | AU-02 | **Audit retention is governed by policy and does not expire with the observability retention window**. |
-| AU-03 | **Audit events are enumerated, not incidental**: device revoked, passkey added or removed, session revoked, step-up performed, administrative grant, entitlement change, refund, secret created, rotated or deleted, remote action approved, break-glass access, enforcement action, export requested, deletion requested. |
+| AU-03 | **Audit events are enumerated, not incidental**: device revoked, passkey added or removed, session revoked, step-up performed, administrative grant/revocation, compensation issue/adjustment, refund proposal/decision/provider outcome, entitlement change, secret created, rotated or deleted, remote action approved, break-glass access, enforcement action, export requested, deletion requested. |
 | AU-04 | **Every audit event records the full actor chain** — human principal, device, installation, session, and any agent acting on the principal's behalf (`§2` of the security architecture). |
 | AU-05 | **An audit record is visible to the account owner** for events affecting their account, in the account portal and the security centre. |
 | <a id="rule-au-06"></a>AU-06 | **Audit access by an operator is itself audited** (`§15` of the distribution requirements). |
 | AU-07 | **Audit and observability are never joined in a query surface** that would let a diagnostic search read security history, or the reverse. Correlation between them is by identifier, deliberately. |
 
 ---
+
+The generated audit registry additionally includes each operator method and lifecycle disposition from [registry04 §9.2](contracts/04-protobuf-wire-registry.md#92-typed-proposal-and-execution-protocol). Proposal/approval/consumption and case/incident context are product audit evidence; an operations metric cannot substitute. Operator roles and current result access use that same contract authority.
 
 ## 6. Health and service levels
 

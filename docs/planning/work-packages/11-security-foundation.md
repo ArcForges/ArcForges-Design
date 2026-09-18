@@ -190,6 +190,8 @@
 
 ---
 
+**Application credential boundary.** Shared security packages use the caller application/installation storage namespace. Verify denial of sibling credential reads and absence of any device-SSO signing broker. OS enforcement of specified hostile-parser/connector children remains separately required; it is not a peer-application service.
+
 ## 6. Impacts
 
 | Dimension | Impact |

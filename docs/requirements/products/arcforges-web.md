@@ -50,7 +50,7 @@ Fixed by **[D-007](../../decisions/phase-1-foundation-decisions.md#rule-d-007)**
 | # | Requirement |
 |---|---|
 | <a id="rule-tb-01"></a>TB-01 | **Public marketing, legal, download and information pages render as static HTML and CSS before JavaScript runs.** Their content and ordinary navigation work with scripting disabled; they do not boot a client application merely to display initial content. |
-| TB-02 | **`ArcForges.Web.App` is the only interactive browser application**, implemented in React and strict TypeScript as separate Account/Chat build profiles under [P2-008](../../decisions/phase-2-specification-decisions.md#rule-p2-008). |
+| TB-02 | **`ArcForges.Web.App` is the only interactive browser application**, implemented in React and strict TypeScript as separate Account/Chat/Operations build profiles under [P2-008](../../decisions/phase-2-specification-decisions.md#rule-p2-008). |
 | TB-03 | **Public pages are generated at build time using React/TypeScript and Node.js**, as static deployment artifacts. Their initial content and navigation work without JavaScript. |
 | TB-04 | **The selected Web toolchain is Node.js/npm, Vite and React Router.** No Blazor browser host, React Native migration, runtime Node SSR or separate Node business backend is required. |
 | TB-05 | **Web is checked against production browser assets, not .NET AOT properties.** Pin the Node/compiler/dependency toolchain, enforce browser compatibility and track initial and per-route transfer budgets. |

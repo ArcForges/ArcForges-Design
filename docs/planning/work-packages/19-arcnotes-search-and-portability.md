@@ -56,7 +56,7 @@
 | BR-04 | **Search reveals nothing direct access would refuse** — permission is applied at query, not after ranking. |
 | BR-05 | **A citation anchor is stable**, surviving edits around it where the cited content still exists, and reporting explicitly when it does not. |
 | BR-06 | **Import is non-destructive**: the source is never modified, and a partial import is reported rather than silently completed. |
-| BR-07 | **Export is complete**: a native export can be re-imported to reconstruct the content, including attachments and structure ([EX-01](../../requirements/13-data-formats-and-portability.md#rule-ex-01) in the data requirements). |
+| BR-07 | **Export declares its fidelity.** The Cloud exit path is Markdown documents, authorized attachments, metadata/link manifest and explicit loss report, under [EP-04](../../requirements/products/arcnotes.md#rule-ep-04) and [EX-01/EX-02](../../requirements/13-data-formats-and-portability.md#rule-ex-01). Verify the declared content/link/attachment fidelity; do not build a native portable package, encrypted local export or bit-for-bit archive re-import promise. |
 | BR-08 | **An export never silently loses fidelity.** A lossy target format states what it drops. |
 | BR-09 | **No repository projection, Git synchronisation, linked-repository mode or LFS path is built** (`§14` and [EX-09](../../requirements/13-data-formats-and-portability.md#rule-ex-09) of the data-format requirements; [EE-04](../../requirements/13-data-formats-and-portability.md#rule-ee-04) there). [GT-01](../../requirements/13-data-formats-and-portability.md#rule-gt-01)–[GT-09](../../requirements/13-data-formats-and-portability.md#rule-gt-09) are retired, explicitly including their acceptance gates, so no Git-friendliness level is declared and none may be demanded. |
 
@@ -139,11 +139,11 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 ### WP-19.05 — Owner-specific portability
 
-**What must be fully done.** Implement local assistant archive from model 05 and Notes authorized cached/full Cloud export from their distinct authorities. A missing/unhydrated Notes resource is reported explicitly; Markdown recovery is not falsely labelled a complete archive.
+**What must be fully done.** Implement the Notes Cloud-export client over acknowledged source revisions, with authorized Markdown/attachments/metadata and a fidelity report. Offline clipboard/attachment saving and recovery of pending local edits remain ordinary local recovery, not a notebook-export implementation or a complete Cloud snapshot. Assistant-history archive implementation belongs to WP15.06/model05 and is not duplicated here. Use the registered export fixture at this early stage; WP25.08 supplies the real Cloud export join.
 
-**Testing requirements.** Offline hydrated export; Cloud unavailable partial content report; formats/import round-trip and no silent data loss.
+**Testing requirements.** Cloud unavailable refuses a new Cloud export without losing local drafts or pending changes; ordinary copy/save recovery remains available for accessible content. Test acknowledged-source snapshot identity, attachment hashes, metadata/link fidelity and complete loss entries. Re-import tests cover only the accepted Markdown/plain-text subset; they must not assert reconstruction of a native archive or pending device-only changes. Distinguish recorded export fixtures here from actual Cloud artifacts at WP25.08.
 
-**Completion gate.** Each supported export names its authority, fidelity and completeness; assistant local export never requires Cloud.
+**Completion gate.** Notes export names its acknowledged Cloud authority, fidelity and completeness; offline recovery is labelled separately, and the real producer join is required at WP25.08. No native Notes archive obligation is introduced.
 
 <a id="rule-wp-19.06"></a>
 

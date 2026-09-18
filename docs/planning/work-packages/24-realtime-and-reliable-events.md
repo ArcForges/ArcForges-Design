@@ -97,6 +97,8 @@ Use the exact projects assigned to this WP in [architecture 27](../../architectu
 
 **Completion gate.** All owned actions, schemas, public interfaces and tests are complete; later external evidence remains named. Publish/promote only the tested immutable bytes in the producer CI sequence.
 
+**Tool-result acceptance.** Submit two distinct toolRequestIds in one attempt (for both Task and ChatTurn owners), then replay each original command/hash: both results persist and each replay returns its own original receipt. A changed result under the same `(toolRequestId, attemptId, commandId)` refuses with `command.reused_identifier`; lost acknowledgement never allocates a fresh command or drops the second result. Bind the wire registry, TK-05 and `task.tool_result` to this same key.
+
 ## 6. Impacts
 
 Changed application scope, storage, transport, UI and deployment behavior are governed by the authorities in §2. Preserve existing business rules and formats. Migration/compatibility manifests include source/schema/plan/ABI/runtime versions; current cross-product collaboration is deferred and contributes no release input.

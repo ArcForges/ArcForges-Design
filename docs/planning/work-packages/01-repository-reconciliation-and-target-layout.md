@@ -157,6 +157,8 @@
 
 ---
 
+**Cloud module layout acceptance.** Create all 21 domain owners listed in architecture01 §5, including `src/Modules/PackageCatalog/PackageCatalog.Domain`, `.Application` and `.Infrastructure`; platform is shared infrastructure. Compare the project list to the model01 schema map. This count is distinct from the nine independent implementation repositories.
+
 ## 6. Impacts
 
 | Dimension | Impact |

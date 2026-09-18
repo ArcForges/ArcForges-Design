@@ -44,6 +44,8 @@
 
 ---
 
+**Real mail prerequisites (owned by Operations before WP22 completion).** An isolated Postmark account/server and verified sending subdomain, SPF/DKIM/DMARC records, protected CI SecretRefs, controlled recipient inbox and prepared SES secondary identity/configuration must exist. Provider credentials never enter source or fixtures. Recorded provider responses are permitted only in regression tests; the real delivery/recovery gate cannot close on a fake sender. Missing external access keeps the gate open, not the adapter design undecided.
+
 ## 3. Binding rules and decisions
 
 | # | Rule |
@@ -169,11 +171,11 @@
 
 **What must be fully done.** Implement the same-origin browser adapter in the AOT host using the selected random hashed session/preauth/CSRF records. Preserve the browser/native exclusive schema, exact Origin, idle/absolute expiry, lowest-trust browser installation and one-use auth flow. Map the declared /session bootstrap/auth/logout endpoints to existing application services. Use explicit cookie parsing/writing and X-AF-CSRF validation; no ASP.NET Data Protection/cookie-auth middleware dependency.
 
-**Testing requirements.** Real D1 one-use challenge, lost login response, idle-versus-revoke race, expiry and replica failover; browser exact Origin/CSRF on unsafe RPC/session/stream/object operations, native-token route refusal and gRPC-Web stream authorization.
+**Testing requirements.** Real D1 one-use challenge, lost login response, idle-versus-revoke race, expiry and replica failover; browser exact Origin/CSRF on unsafe RPC/session/stream/object operations, native-token route refusal and gRPC-Web stream authorization. Install two products under one OS user: neither enumerates the other account, reads its credentials, exposes a peer listener or signs a sibling challenge. Browser session convenience still produces distinct installation-bound sessions; revocation follows the selected explicit sign-out scope.
 
 **Completion gate.** One server-owned session authority, no JS bearer, no cross-origin reuse or session resurrection; actual AOT closure feeds WP23 and full portal acceptance.
 
-**Required implementation and closure from the final review.** Implement and independently verify [08-security-architecture](../../architecture/08-security-architecture.md#account-and-provider-closure). Implement the complete typed account surface: profile/email, recovery-code set, scoped PAT, credential rename, session listing, four sign-out scopes, Device SSO, remote capability policy and restricted deletion-cancel reauthentication. Exercise official email/passkey and self-host password/passkey/OIDC enrollment/recovery, no email-based merging, old refresh reuse/lost response, one-use proofs and secret-free browser session replies. Wire UI consumers through the same owner ports. Record exact artifact identities and real/fixture status with the existing substeps; these cases are part of this package's completion gate.
+**Required implementation and closure from the final review.** Implement and independently verify [08-security-architecture](../../architecture/08-security-architecture.md#account-and-provider-closure). Implement the complete typed account surface: profile/email, recovery-code set, scoped PAT, credential rename, session listing, four sign-out scopes, independent per-installation browser authorization, remote capability policy and restricted deletion-cancel reauthentication. Exercise official email/passkey and self-host password/passkey/OIDC enrollment/recovery, no email-based merging, old refresh reuse/lost response, one-use proofs and secret-free browser session replies. Wire UI consumers through the same owner ports. Record exact artifact identities and real/fixture status with the existing substeps; these cases are part of this package's completion gate.
 
 <a id="rule-wp-22.90"></a>
 ### WP-22.90 — Verify the owned artifact and real integration

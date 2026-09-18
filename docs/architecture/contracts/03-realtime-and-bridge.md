@@ -9,6 +9,8 @@ Two mechanisms, one principle: **neither carries authority**. Realtime tells a c
 
 ---
 
+**Browser delivery selection.** [browser-support.v1](../../requirements/12-quality-and-compatibility-contract.md#202-browser-supportv1) fixes Watch/WatchOutput capability detection, delayed-update UI and the bounded Poll/ReadOutput fallback. The same binary gRPC-Web contracts and cursors apply; fallback cannot replay a mutation or invent a completed output.
+
 ## 1. The realtime event set
 
 Every event carries `{ subscriptionKey, seq, workspaceId, occurredAt, correlationId }` with application scope bound by its subscription/owner plus its own payload. `seq` is per subscription ([SB-03](#rule-sb-03)), which is what makes a gap detectable.
@@ -125,7 +127,7 @@ LOCAL RE-AUTHORIZATION  ── local policy, local registry, local grants, local
    ▼
 Local capability invocation (ICapabilityProvider.InvokeAsync)
    ▼
-bridge.submitResult { outcome, resultRev }               ── idempotent on (taskId, attemptId)
+bridge.submitResult { outcome, resultRev }               ── idempotent on (toolRequestId, attemptId, commandId) + canonical result hash
    ▼
 Cloud updates the task; realtime hints the requester; the requester re-reads
 ```
@@ -148,7 +150,7 @@ Use registry 04 `ToolRequest` exactly: toolRequestId, optional taskId, runId, st
 
 | # | Rule |
 |---|---|
-| BI-01 | **`bridge.submitResult` is idempotent on `(taskId, attemptId)`.** Re-submission after a lost response has one effect ([WP-26.03](../../planning/work-packages/26-remote-action-and-tool-bridge.md#rule-wp-26.03)). |
+| BI-01 | **`bridge.submitResult` is idempotent on `(toolRequestId, attemptId, commandId)` plus the canonical result hash under TK-05 and `task.tool_result`; each distinct tool result in an attempt has its own receipt.** Re-submission after a lost response has one effect ([WP-26.03](../../planning/work-packages/26-remote-action-and-tool-bridge.md#rule-wp-26.03)). |
 | <a id="rule-bi-02"></a>BI-02 | **A request delivered but unanswered before a desktop crash is re-delivered** on the next pull, and the local command log makes re-execution a no-op if it already ran (`§1.2` of the desktop data model). |
 | <a id="rule-bi-03"></a>BI-03 | **This is the one place where local and cloud idempotency must agree**: the desktop's `command_log` and Cloud's `attempt` row both key on the same `CommandId`. A mismatch here is the defect class most likely to cause a duplicate real-world effect, and [WP-26.03](../../planning/work-packages/26-remote-action-and-tool-bridge.md#rule-wp-26.03) tests it specifically. |
 | <a id="rule-bi-04"></a>BI-04 | **An expired request closes with a typed reason**, never ambiguously ([WP-26.05](../../planning/work-packages/26-remote-action-and-tool-bridge.md#rule-wp-26.05)). |
