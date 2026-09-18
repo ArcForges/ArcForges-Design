@@ -28,7 +28,7 @@ The number is an identity, not a schedule. Ordering is by dependency; serial exe
 | 47 | [Static Public Site](47-static-public-site.md) | `00`, `02` |
 
 
-WP47 is an early Web tooling producer; the explicit serial schedule places it before45. Phase grouping is not execution order.
+WP47 is an early Web tooling producer; the explicit serial schedule places it before 45. Phase grouping is not execution order.
 
 ### Phase B — Shared platform
 
@@ -107,7 +107,7 @@ WP47 is an early Web tooling producer; the explicit serial schedule places it be
 | 43 | [Workers AI Routing and Metering](43-managed-ai-routing-and-metering.md) | `25`, `42`, `44` |
 | 40 | [Application-Scoped Knowledge Search and Retrieval](40-knowledge-search-and-retrieval.md) | `19`, `25`, `28`, `43`, `44` |
 | 41 | [Extension Platform and Integrations](41-extension-platform-and-integrations.md) | `09`, `11`, `17`, `22`, `25` |
-| 45 | [Operations, Support and Trust & Safety](45-operations-support-and-trust-safety.md) | `12`, `21`, `44`, `47` |
+| 45 | [Operations, Support and Trust & Safety](45-operations-support-and-trust-safety.md) | `12`, `21`, `41`, `44`, `47` |
 | 53 | [Desktop Distribution, Update Client and Channels](53-desktop-distribution-and-update.md) | `02`, `06`, `07`, `10`, `11`, `12`, `44`, `45` |
 | 46 | [D1, R2 and Independent Disaster Recovery](46-backup-recovery-and-data-health.md) | `25`, `45` |
 | 51 | [ArcScope Deterministic Cloud Simulator](51-arcscope-cloud-simulator.md) | `21`, `23`, `25`, `33`, `34`, `35`, `42`, `44` |
@@ -130,62 +130,61 @@ WP47 is an early Web tooling producer; the explicit serial schedule places it be
 
 ## Downstream dependency index
 
+Derived from implementation-sequence §9; this is the true inverse, not another upstream table. Retired/future packages have no active edges.
+
 | # | Blocks |
 |---|---|
-| 00 | [Specification, Naming and Rights Freeze](00-specification-naming-and-rights-freeze.md) | None |
-| 01 | [Repository Reconciliation and Target Layout](01-repository-reconciliation-and-target-layout.md) | `00` |
-| 02 | [Build Governance, Packaging Policy and Analyzers](02-build-governance-and-analyzer-policy.md) | `01` |
-| 03 | [Proto Contract Foundation and License Split](03-contract-foundation-and-licence-split.md) | `02` |
-| 04 | [Identity, Error, Revision and Versioning Primitives](04-identity-error-and-versioning-primitives.md) | `03` |
-| 05 | [Architecture and Repository Policy Test Suite](05-architecture-and-repository-policy-tests.md) | `02`, `03` |
-| 06 | [AOT, Android, CF and Real Artifact Publish Proof](06-aot-jit-and-wasm-publish-proof.md) | `03`, `04`, `05` |
-| 07 | [Local Persistence Foundation](07-local-persistence-foundation.md) | `04`, `06` |
-| 08 | [Private Helper gRPC and Parent Registration](08-local-ipc-and-registration.md) | `06`, `07` |
-| 09 | [Capability, Contribution and Resource Model](09-capability-contribution-and-resource-model.md) | `03`, `08` |
-| 10 | [Design System and Desktop Shell Foundation](10-design-system-and-desktop-shell.md) | `06`, `09` |
-| 11 | [Security Foundation](11-security-foundation.md) | `04`, `08`, `09` |
-| 12 | [Observability Foundation](12-observability-foundation.md) | `04`, `06` |
-| 13 | [Complete Native Producers and Technical Probes](13-high-risk-technical-probes.md) | `06`, `07`, `08`, `09`, `10`, `11`, `12` |
-| 14 | [Independent Application Composition and Typed Host Ports](14-hub-and-minimal-provider-slice.md) | `08`, `09`, `10`, `11`, `13` |
-| 15 | [Application Assistant Conversation, History and Project Packages](15-arcchat-conversation-core.md) | `14` |
-| 16 | [Unified Execution Engine](16-unified-execution-engine.md) | `09`, `11`, `14` |
-| 17 | [Complete Embedded Assistant and Cloud Client Surface](17-arcchat-independent-core.md) | `06`, `15`, `16` |
-| 18 | [ArcNotes Document Core](18-arcnotes-document-core.md) | `07`, `10`, `14` |
-| 19 | [ArcNotes Search, Import, Export and Portability](19-arcnotes-search-and-portability.md) | `18` |
-| 20 | [Cross-Product Collaboration — FUTURE](20-first-cross-product-workflow.md) | No active dependencies |
-| 21 | [Cloudflare Container, D1 Authority and Binding Plans](21-cloud-host-and-persistence.md) | `03`, `05`, `12` |
-| 22 | [Identity, Workspace, Device and Session](22-identity-workspace-and-device.md) | `11`, `21` |
-| 23 | [Public Proto APIs and Generated Clients](23-public-api-and-generated-clients.md) | `03`, `22` |
-| 24 | [gRPC-Web Streams and Durable Event Recovery](24-realtime-and-reliable-events.md) | `23` |
-| 25 | [Sync Engine and Blob Lifecycle](25-sync-engine-and-blob-lifecycle.md) | `19`, `24` |
-| 26 | [Application Presence and One-Application Tool Bridge](26-remote-action-and-tool-bridge.md) | `17`, `24`, `25` |
-| 28 | [ArcNotes Bounded Properties and Saved Views](28-arcnotes-properties-and-views.md) | `19`, `25` |
-| 30 | [Kotlin Android Foundation](30-mobile-shared-architecture.md) | `03`, `06`, `23`, `24`, `25` |
-| 31 | [Complete ArcChat Android Companion](31-arcchat-mobile-android.md) | `26`, `30`, `45`, `52` |
-| 32 | [Android Signing, Distribution and Store Gates](32-mobile-release-and-store-gates.md) | `31` |
-| 33 | [ArcScope Acquisition and Session Core](33-arcscope-acquisition-and-session.md) | `07`, `10`, `13`, `26` |
-| 34 | [ArcScope Visualisation, Analysis and Reporting](34-arcscope-analysis-and-reporting.md) | `33` |
-| 35 | [ArcScope Integration and Metadata Sync](35-arcscope-integration-and-sync.md) | `25`, `34` |
-| 36 | [ArcSlate Project, Timeline and Media Model](36-arcslate-project-and-timeline.md) | `07`, `10`, `13`, `26` |
-| 37 | [ArcSlate Playback and Processing Runtime](37-arcslate-playback-and-processing.md) | `36` |
-| 38 | [ArcSlate Render, Export and Colour Management](38-arcslate-render-and-colour.md) | `37` |
-| 39 | [ArcSlate Integration and Portability](39-arcslate-integration-and-portability.md) | `25`, `38` |
-| 40 | [Application-Scoped Knowledge Search and Retrieval](40-knowledge-search-and-retrieval.md) | `19`, `25`, `28`, `43`, `44` |
-| 41 | [Extension Platform and Integrations](41-extension-platform-and-integrations.md) | `09`, `11`, `17`, `22`, `25` |
-| 42 | [Commerce, Entitlement and Credits](42-commerce-entitlement-and-credits.md) | `22`, `23` |
-| 43 | [Workers AI Routing and Metering](43-managed-ai-routing-and-metering.md) | `25`, `42`, `44` |
-| 44 | [Dynamic Policy and Configuration Control Plane](44-dynamic-policy-and-configuration.md) | `23`, `42` |
-| 45 | [Operations, Support and Trust & Safety](45-operations-support-and-trust-safety.md) | `12`, `21`, `44`, `47` |
-| 46 | [D1, R2 and Independent Disaster Recovery](46-backup-recovery-and-data-health.md) | `25`, `45` |
-| 47 | [Static Public Site](47-static-public-site.md) | `00`, `02` |
-| 48 | [Account Portal](48-account-portal.md) | `25`, `42`, `44`, `46`, `47` |
-| 49 | [ArcChat Web Companion](49-arcchat-web-companion.md) | `26`, `48`, `52` |
-| 50 | [Full-Platform Production Release](50-full-platform-production-release.md) | `28`, `32`, `35`, `39`, `40`, `41`, `43`, `46`, `49`, `51`, `52`, `53` |
-| 51 | [ArcScope Deterministic Cloud Simulator](51-arcscope-cloud-simulator.md) | `21`, `23`, `25`, `33`, `34`, `35`, `42`, `44` |
-| 52 | [Sole Cloudflare Workflow Harness](52-cloud-harness.md) | `15`, `17`, `21`, `23`, `26`, `39`, `40`, `41`, `42`, `43`, `44` |
-| 53 | [Desktop Distribution, Update Client and Channels](53-desktop-distribution-and-update.md) | `02`, `06`, `07`, `10`, `11`, `12`, `44`, `45` |
-
----
+| 00 | `01`, `47` |
+| 01 | `02` |
+| 02 | `03`, `05`, `47`, `53` |
+| 03 | `04`, `05`, `06`, `09`, `21`, `23`, `30` |
+| 04 | `06`, `07`, `11`, `12` |
+| 05 | `06`, `21` |
+| 06 | `07`, `08`, `10`, `12`, `13`, `17`, `30`, `53` |
+| 07 | `08`, `13`, `18`, `33`, `36`, `53` |
+| 08 | `09`, `11`, `13`, `14` |
+| 09 | `10`, `11`, `13`, `14`, `16`, `41` |
+| 10 | `13`, `14`, `18`, `33`, `36`, `53` |
+| 11 | `13`, `14`, `16`, `22`, `41`, `53` |
+| 12 | `13`, `21`, `45`, `53` |
+| 13 | `14`, `33`, `36` |
+| 14 | `15`, `16`, `18` |
+| 15 | `17`, `52` |
+| 16 | `17` |
+| 17 | `26`, `41`, `52` |
+| 18 | `19` |
+| 19 | `25`, `28`, `40` |
+| 21 | `22`, `45`, `51`, `52` |
+| 22 | `23`, `41`, `42` |
+| 23 | `24`, `30`, `42`, `44`, `51`, `52` |
+| 24 | `25`, `26`, `30` |
+| 25 | `26`, `28`, `30`, `35`, `39`, `40`, `41`, `43`, `46`, `48`, `51` |
+| 26 | `31`, `33`, `36`, `49`, `52` |
+| 28 | `40`, `50` |
+| 30 | `31` |
+| 31 | `32` |
+| 32 | `50` |
+| 33 | `34`, `51` |
+| 34 | `35`, `51` |
+| 35 | `50`, `51` |
+| 36 | `37` |
+| 37 | `38` |
+| 38 | `39` |
+| 39 | `50`, `52` |
+| 40 | `50`, `52` |
+| 41 | `45`, `50`, `52` |
+| 42 | `43`, `44`, `48`, `51`, `52` |
+| 43 | `40`, `50`, `52` |
+| 44 | `40`, `43`, `45`, `48`, `51`, `52`, `53` |
+| 45 | `31`, `46`, `53` |
+| 46 | `48`, `50` |
+| 47 | `45`, `48` |
+| 48 | `49` |
+| 49 | `50` |
+| 50 | None |
+| 51 | `50` |
+| 52 | `31`, `49`, `50` |
+| 53 | `50` |
 
 ## Deferred-gate scheduling
 
@@ -250,7 +249,7 @@ Every gate in [`../../assurance/open-gates-register.md`](../../assurance/open-ga
 
 ## P2-009 package boundaries
 
-The51 active packages follow the current [complete artifact graph](../implementation-sequence.md#9-p2-009-complete-artifact-dependency-graph). WP20 is future-only; WP27/29 remain retired. Package numbering/anchors are stable; titles and runtime/contract responsibilities reflect P2-009. New .90 substeps are the explicit repository/integration acceptance attached to inherited domain work.
+The 51 active packages follow the current [complete artifact graph](../implementation-sequence.md#9-p2-009-complete-artifact-dependency-graph). WP20 is future-only; WP27/29 remain retired. Package numbering/anchors are stable; titles and runtime/contract responsibilities reflect P2-009. New .90 substeps are the explicit repository/integration acceptance attached to inherited domain work.
 
 
 [Producer artifacts and real integration](../producer-artifacts-and-integration.md) defines this WP's exact producer inputs, permitted fixtures and real replacement gates.

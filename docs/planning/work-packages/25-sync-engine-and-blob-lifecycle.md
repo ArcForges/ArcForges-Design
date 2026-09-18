@@ -103,13 +103,13 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 <a id="rule-wp-25.02"></a>
 
-### WP-25.02 — Published feed, bootstrap and revision application
+### WP-25.02 — Guarded publication and convergent bootstrap
 
-**What must be fully done.** Implement the committed publication sequence and bounded bootstrap manifest/pin protocol. Capture W then a primary repeatable-read snapshot at or after W, retain bounded immutable pages, and resume the feed after W. Every client applies only a newer aggregate revision including tombstones; duplicates/older rows never replace a newer bootstrap value. Advance a page cursor only after durable processing; resolve cross-aggregate references by canonical minRevision lookup.
+**What must be fully done.** Implement model 04 primary lower-bound W bootstrap, immutable-key pages, retention pin and replay to H; publisher guards watermark/fence/selected rows in one D1 batch.
 
-**Testing requirements.** Bootstrap sees v2 while feed still includes v1; own-origin echo; two same-millisecond UUID revisions in reverse order; late commit above advanced cursor; page retry/cursor expiry; tombstone retention floor and missing structural dependency. Preserve pending edits through full resync.
+**Testing requirements.** Two-writer interleavings, commit between pages, insert below cursor, delete/tombstone, expired pin, lost acknowledgement and old/new revision application with pending edits.
 
-**Completion gate.** Bootstrap plus feed loses no committed change and never regresses an aggregate, even with duplicates, delayed publication, structural references and pending local work. [PG-17](../../assurance/open-gates-register.md#rule-pg-17) stays a real multi-writer test gate.
+**Completion gate.** Real D1 clients converge without PostgreSQL snapshot/locks or lost pending work.
 
 <a id="rule-wp-25.03"></a>
 
@@ -147,7 +147,7 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 **What must be fully done.** Implement hydration/cache pause versus explicit Cloud deletion, source-consent/transient inputs, health states and full realm-transfer export/preview/commit/status/cancel workflow from client journeys. Rebuild or verify actual missing-object outcomes; irrecoverable retains evidence and recovery/export actions.
 
-**Testing requirements.** Real R2/PG, resume after100-root batch, repeated command, missing object, partial cancellation, denied current scope, transfer credential/ledger exclusion and restore generation.
+**Testing requirements.** Real R2/PG, resume after 100-root batch, repeated command, missing object, partial cancellation, denied current scope, transfer credential/ledger exclusion and restore generation.
 
 **Completion gate.** No Unsync deletion of authoritative Notes/Chat, no empty success for irrecoverable data and no manual migration rule invented.
 
@@ -182,7 +182,7 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 <a id="rule-wp-25.09"></a>
 ### WP-25.09 — Application Cloud history and restartable import
 
-**What must be fully done.** Implement HistoryService.BeginImport/FinalizeImport/GetImport/CancelImport from annex10; fixed product scope, verified staged archive/typed rows and atomic visibility/receipt. Complete opted-in per-app Cloud history synchronization, tombstone/export and promotion status used by WP15/17 clients. Replace their named HistoryService fixture with the real Worker/Container/D1/R2 owner. Local-only history bodies never enter Cloud Chat or search through this path without explicit promotion.
+**What must be fully done.** Implement HistoryService.BeginImport/FinalizeImport/GetImport/CancelImport from annex 10; fixed product scope, verified staged archive/typed rows and atomic visibility/receipt. Complete opted-in per-app Cloud history synchronization, tombstone/export and promotion status used by WP15/17 clients. Replace their named HistoryService fixture with the real Worker/Container/D1/R2 owner. Local-only history bodies never enter Cloud Chat or search through this path without explicit promotion.
 
 **Testing requirements.** Actual archive/manifest hashes, staged object authorization, parent/branch mapping, lost finalization acknowledgement, duplicate import, source edit during promotion, quota/permission loss and expiry; Cloud copy remains distinct when the local snapshot revision changed.
 
@@ -216,6 +216,8 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 ---
 
 ## 7. Tests and verification evidence
+
+Acceptance includes every amended §5 producer/consumer and WP-25.90 evidence. Current P2-013 contracts/data/runtime rules are tested in the original owner implementation, not a detached explanatory sample.
 
 **[WP-25.08](#rule-wp-25.08) producer evidence.** Real snapshot/export jobs, input revisions, attachment/origin/fidelity manifest, bounded retention/download, cancel/failure cases, and structural absence of the Notes/Chat runtime export fixture registrations.
 
@@ -272,4 +274,4 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 **Downstream:** `26` · `28` · `30` · `35` · `39` · `40` · `41` · `43` · `46` · `48` · `51`. Consumers use exact released artifacts.
 
-Completion also requires the real25.09 producer and its consumer receipt; the .90 stage cannot leave HistoryService as a fixture.
+Completion also requires the real 25.09 producer and its consumer receipt; the .90 stage cannot leave HistoryService as a fixture.

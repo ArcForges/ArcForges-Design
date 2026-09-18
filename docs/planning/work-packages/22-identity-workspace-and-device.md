@@ -40,7 +40,7 @@
 
 ---
 
-**Web redesign input.** [P2-008](../../decisions/phase-2-specification-decisions.md#rule-p2-008) and [Web toolchain and SDK](../../architecture/25-web-toolchain-and-sdk.md) are binding for this package's Web, generated-contract, toolchain and test responsibilities. The existing desktop/mobile runtime and product-scope decisions remain separately governed.
+**Web redesign input.** [P2-008 as amended by P2-012/P2-013](../../decisions/phase-2-specification-decisions.md#rule-p2-013) and [Web toolchain and SDK](../../architecture/25-web-toolchain-and-sdk.md) are binding for this package's Web, generated-contract, toolchain and test responsibilities. The existing desktop/mobile runtime and product-scope decisions remain separately governed.
 
 ---
 
@@ -92,13 +92,13 @@
 
 <a id="rule-wp-22.01"></a>
 
-### WP-22.01 — Authentication
+### WP-22.01 — Native and browser authentication with real mail
 
-**What must be fully done.** Passkey registration and authentication with multiple passkeys per user; email one-time codes for first verification and recovery; official passkey/email; supported self-host enrollment includes explicitly configured password/OIDC. Session issue, refresh with rotation, and revocation. Refresh is serialised so concurrent requests never trigger a storm.
+**What must be fully done.** Implement contracts 07 native authorize/token PKCE ceremony and minimal browser login UI, passkey/email and configured self-host OIDC/password. Produce Postmark/SES delivery/outcome adapters and provider/DNS setup checklist now; WP45 later adds operational drills. Account full UI in WP48 is not a prerequisite.
 
-**Testing requirements.** Multi-passkey registration and authentication; concurrent-refresh contention under load; revocation taking effect immediately; a rate-limit test on code delivery.
+**Testing requirements.** Actual email delivery/recovery and prepared secondary; timeout remains unknown; PKCE/state/redirect/code replay, Credential Manager/RP origin fixtures, refresh contention and revocation.
 
-**Completion gate.** Concurrent refresh never storms, revocation is immediate, and multiple passkeys work per user.
+**Completion gate.** Real provider identity flows work on the foundation client; required accounts/DNS are recorded external inputs, never replaced by a stub acceptance.
 
 <a id="rule-wp-22.02"></a>
 
@@ -132,13 +132,13 @@
 
 <a id="rule-wp-22.05"></a>
 
-### WP-22.05 — API tokens and actor kinds
+### WP-22.05 — PAT and actor authorization
 
-**What must be fully done.** Scoped API tokens with expiry, revocation and last-use visibility. Actor kinds — human, agent, automation, extension, operator, service — are modelled explicitly and carried in the actor chain. A token never grants more than its scope, and never grants step-up-requiring operations.
+**What must be fully done.** Implement the exact patEligible/scopes metadata, hash-only token storage, expiry/revocation and one-time display after step-up. Preserve actor chain and deny customer tokens on operator/internal/local boundaries.
 
-**Testing requirements.** Scope-enforcement tests; a negative test asserting a token cannot perform a step-up operation; revocation immediacy.
+**Testing requirements.** All eligible/denied methods enumerated from the generated manifest; cookie+bearer conflict, scope escalation and agent substitution negative vectors.
 
-**Completion gate.** Token scope is enforced, tokens cannot perform step-up operations, and revocation is immediate.
+**Completion gate.** No missing/default PAT metadata or generic token bypass remains.
 
 <a id="rule-wp-22.06"></a>
 
@@ -152,13 +152,13 @@
 
 <a id="rule-wp-22.07"></a>
 
-### WP-22.07 — Local integration
+### WP-22.07 — Independent native session integration
 
-**What must be fully done.** Desktop sign-in with device registration, secure session storage through the broker, and a unified sign-in experience across the three professional products on one device. Sign-out distinguishes its four actions and never deletes local data.
+**What must be fully done.** Integrate system browser, per-product redirects, secure storage and installation-bound tokens into Platform client primitives. Android package/links follow arch 11; no token-sharing/device SSO.
 
-**Testing requirements.** same-application sign-in on one device; sign-out variants; a test asserting local data survives every sign-out variant and account deletion.
+**Testing requirements.** Separate product sign-in/sign-out, canceled/lost callback, wrong state/realm, expired code, device revoke and local history preservation.
 
-**Completion gate.** Sign-in is unified per device, and no sign-out variant nor account deletion removes local data.
+**Completion gate.** Each client owns its session; browser login reuse is not shared application authority.
 
 ---
 
@@ -203,6 +203,8 @@
 ---
 
 ## 7. Tests and verification evidence
+
+Acceptance includes every amended §5 producer/consumer and WP-22.90 evidence. Current P2-013 contracts/data/runtime rules are tested in the original owner implementation, not a detached explanatory sample.
 
 | Evidence | Produced by |
 |---|---|
@@ -251,4 +253,4 @@
 
 ## P2-010 required behavior and closure
 
-Complete all initial enrollment/recovery/provider/account/SSO methods in client journeys and wire04. Official passwordless and self-host configured password/OIDC are distinct; account-free startup is not account-free creation of Cloud-authoritative content. The referenced normative profile and producer stage matrix are binding inputs. Record independent positive/negative vectors and actual owner integration at this WP's assigned stage; a mock cannot close a real-provider/device requirement.
+Complete all initial enrollment/recovery/provider/account/SSO methods in client journeys and wire 04. Official passwordless and self-host configured password/OIDC are distinct; account-free startup is not account-free creation of Cloud-authoritative content. The referenced normative profile and producer stage matrix are binding inputs. Record independent positive/negative vectors and actual owner integration at this WP's assigned stage; a mock cannot close a real-provider/device requirement.

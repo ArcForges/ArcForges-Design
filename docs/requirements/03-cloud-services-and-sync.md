@@ -1,5 +1,5 @@
 # Cloud Services, Sync, Assets and Data Integrity Requirements
-> Current scope amendment: **[P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
+> Effective scope: P2-012 and P2-013 amend the technology and application ownership below. **[P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Requirements
@@ -62,7 +62,7 @@ Every byte in the ecosystem belongs to exactly one class. A new data type must b
 
 | Class | Examples | User asset? | Default cloud treatment |
 |---|---|---|---|
-| **Canonical User Data** | ArcNotes Document, ArcSlate Project, ArcScope Project, ArcChat Conversation | Yes | Syncable |
+| **Canonical User Data** | ArcNotes Document, ArcSlate Project, ArcScope Project, explicitly Cloud-history assistant conversation | Yes | Syncable |
 | **Managed Asset** | Imported images, video, audio, attachments, uploaded telemetry | Yes | By policy |
 | **External Reference** | A video on the user's own disk | Yes, but ArcForges does not own it | **Never uploaded by default** |
 | **Derived Data** | Thumbnail, waveform, embedding, search index, preview, transcode cache | No | Rebuildable; not synced as user data |
@@ -107,7 +107,7 @@ Sync is never "the app directory is uploaded". The unit of participation is a **
 
 | Product | Synced by default | Not synced | User-selectable escalation |
 |---|---|---|---|
-| **ArcChat** | Conversations, Projects, task records, artifact references, agent profiles, user skills, automation definitions, selected preferences | Device-local paths, transient task working data, logs, device secrets | — |
+| **Application assistant** | Only explicitly selected Cloud histories/projects/profiles/memory plus Cloud task/automation metadata | Local history, drafts, temporary bodies, device paths and secrets | Local → Cloud is explicit snapshot import; no default transcript sync |
 | **ArcNotes** | Documents, Notebooks, metadata, managed attachments | External-reference targets | — |
 | **ArcScope** | Projects, session metadata, annotations, analyses, reports, configurations | **Raw capture — local only by default** | Per-session "upload raw data" |
 | **ArcSlate** | **Project only** by default: timeline, project metadata, editing decisions, text/subtitles, small assets | Managed originals, proxies | `Project + Managed Proxies` → `Project + Selected Originals` → `Full Managed Media` |
@@ -120,7 +120,7 @@ ArcSlate is never a single Sync On/Off toggle ([I-487](01-normative-glossary-and
 |---|---|
 | <a id="rule-sy-10"></a>SY-10 | Every syncable object is identified by `Workspace + App + ObjectId`. **A file path is never an identity** ([I-195](01-normative-glossary-and-invariants.md#rule-i-195)), and **a filename is never an identity**. |
 | <a id="rule-sy-11"></a>SY-11 | Renaming a file is a rename, not "delete old + create unrelated new". Breaking this destroys version history, deep links, artifact references and cross-product references. |
-| <a id="rule-sy-12"></a>SY-12 | A cross-product reference stores the target `ObjectId`, never a local path. Deep links are `arcforges://<product>/<kind>/<id>`, resolved to a local location on each device. |
+| <a id="rule-sy-12"></a>SY-12 | A resource reference stores the target ObjectId and owner, never a local path. Current open targets resolve inside the owning application; cross-product references are future-only. |
 
 ### 4.3 Revisions
 
@@ -241,7 +241,7 @@ ArcSlate is never a single Sync On/Off toggle ([I-487](01-normative-glossary-and
 
 | # | Requirement |
 |---|---|
-| CS-01 | Cloud search spans ArcChat conversations, ArcNotes content, ArcScope reports and metadata, ArcSlate project metadata, and artifacts. Results carry title, snippet, source product, object type, modified time and a deep link. |
+| CS-01 | Cloud search is scoped to one authenticated workspace and product. It searches that product's admitted acknowledged content and Cloud assistant histories; local/temporary transcripts are excluded. Titles, snippets, provenance and object targets are returned only after owner authorization. |
 | CS-02 | Three levels exist and are distinguished: **metadata search**, **full-text search**, **semantic search** ([I-145](01-normative-glossary-and-invariants.md#rule-i-145)). |
 | CS-03 | **The search index is never data authority** ([I-135](01-normative-glossary-and-invariants.md#rule-i-135)). The chain is `canonical object → search document → full-text index → vector index`, all derived, all deletable and rebuildable at any time. This is what makes changing the vector backend possible later. |
 | CS-04 | The ArcForges search API must not expose any vendor's vector-database concepts. |
@@ -292,7 +292,7 @@ Three tool-location shapes under one Cloud agent runtime, always visible to the 
 | # | Requirement |
 |---|---|
 | NT-01 | A Cloud Notification Center is a first-class product surface, covering: task completed, task failed, approval needed, desktop offline, automation missed, storage near quota, storage full, AI credits low, subscription issue, security event. |
-| NT-02 | Three channels with distinct purposes: **in-app** (desktop, web, mobile), **push** (ArcChat Mobile), **email** (security, billing, critical account issues only). Email is not sent for ordinary task completion. |
+| NT-02 | Three channels with distinct purposes: **in-app** (desktop, web, mobile), **push** (Android companion), **email** (security, billing, critical account issues only). Email is not sent for ordinary task completion. |
 | NT-03 | **Lock-screen and preview notifications must not leak sensitive content by default.** The default text is generic ("An ArcChat task needs your attention"); full content requires an explicit "show notification previews" opt-in. |
 | <a id="rule-nt-04"></a>NT-04 | **Push Notification ≠ Durable Attention State** ([I-448](01-normative-glossary-and-invariants.md#rule-i-448) family). Missing a push never loses the underlying pending approval or task state. |
 
@@ -367,10 +367,10 @@ These are **internal engineering objectives, not an external SLA** ([I-403](01-n
 | Objective | Target |
 |---|---|
 | Metadata RPO | ≤ 5 minutes |
-| Blob backup RPO | <=15minutes; alert before violation, release/restore drill verifies the bound |
+| Blob backup RPO | <=15 minutes; alert before violation, release/restore drill verifies the bound |
 | Critical service RTO | ≤ 4 hours |
 | Full blob recovery / provider switch | ≤ 24 hours |
-| Backup retention | 30days immutable independent copies under the protected backup profile |
+| Backup retention | 30 days immutable independent copies under the protected backup profile |
 
 No public claim of seconds-scale cross-cloud failover may be made.
 

@@ -28,13 +28,13 @@ Mobile owns app/, core/domain, core/data, core/network, core/security, core/desi
 ## 5. Required implementation work
 
 <a id="rule-wp-32.00"></a>
-### WP-32.00 — Automatic release build and signing
+### WP-32.00 — Signed Android release artifacts
 
-**What must be fully done.** PR builds/test candidates; main automatically allocates monotonic versionCode above every distributed bootstrap code, versionName from release ledger, builds/tests once then signs APK/AAB and publishes immutable GitHub release assets/checksums/SBOM/NOTICE/provenance after verification. Preserve com.arcforges.mobile and signing lineage. Keep keystore/password in protected CI environment; bootstrap self-signed key is durable release identity with separately recoverable backup.
+**What must be fully done.** Build AAB for Play and separately signed direct APK automatically from reviewed main, with monotonic versionCode and immutable provenance. Preserve signing custody/channel distinction and test against WP03 update schemas.
 
-**Testing requirements.** Reproducible candidate identity, no debug certificate, APK signature/manifest/version, previous→new install, parallel/repeated CI allocation and interrupted publish.
+**Testing requirements.** Verify actual signature/package/R8/runtime, version monotonicity, no development key in production, clean device install/upgrade.
 
-**Completion gate.** Main produces actual installable release; unknown/lost existing signing key blocks migration and cannot be silently replaced.
+**Completion gate.** Actual signed artifacts are produced; store/production-account gates stay evidence-based.
 
 <a id="rule-wp-32.01"></a>
 ### WP-32.01 — Release runtime inspection
@@ -64,13 +64,13 @@ Mobile owns app/, core/domain, core/data, core/network, core/security, core/desi
 **Completion gate.** Consumption-only remains true in every release branch and remote-config state.
 
 <a id="rule-wp-32.04"></a>
-### WP-32.04 — Store readiness and release channels
+### WP-32.04 — Play and direct-channel updates
 
-**What must be fully done.** Verify organization-owned Play account, app access/testing review instructions, data safety/privacy/content rating/category and consumption-only fit. Direct APK and Play signing are separate declared channels: preserve each certificate/lineage and do not imply cross-channel update compatibility without testing. Play rollout uses same verified AAB via configured protected publisher; account/permission/review evidence remains required.
+**What must be fully done.** Implement arch 11 channel behavior and notify-only signed update client. Consume WP03 format/fixture keys now; WP53 production feed/key replacement is verified at WP50, not a backwards input.
 
-**Testing requirements.** Fresh/update/rollback-rescue install, same-channel signature check, staged rollout and store submission requirements against actual artifact.
+**Testing requirements.** Expired/rollback/wrong certificate/URL/hash, offline stale feed and explicit channel-switch export/reinstall guidance.
 
-**Completion gate.** Signed GitHub release is automatic; store activation closes only with actual account and policy review evidence.
+**Completion gate.** Play primary and direct APK flow are complete with no silent install or unsupported cross-signature upgrade.
 
 <a id="rule-wp-32.05"></a>
 ### WP-32.05 — Physical device and recovery gates
@@ -104,6 +104,8 @@ Mobile owns app/, core/domain, core/data, core/network, core/security, core/desi
 Contracts delivers the complete public Kotlin package; Cloud/AI deliver the same owner behavior as desktop/Web. Mobile maintains its own lifecycle/storage/UI. Changes in package/signing/schema versions require an explicit compatible manifest and tested migration.
 
 ## 7. Tests and verification evidence
+
+Acceptance includes every amended §5 producer/consumer and WP-32.90 evidence. Current P2-013 contracts/data/runtime rules are tested in the original owner implementation, not a detached explanatory sample.
 
 Separate unit/schema/fixture tests, clean packaged consumers, actual Cloud/CF/desktop interactions, physical-device release evidence and distribution/store evidence. Record exact hashes/versions/device identity and limitations. A green build cannot substitute for a missing stage.
 

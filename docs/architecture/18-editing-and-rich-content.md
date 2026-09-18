@@ -151,7 +151,7 @@ Conversion is where content is quietly lost in most editors, so the mapping is d
 | From → To | Mapping |
 |---|---|
 | Text-bearing → text-bearing | `InlineContent` carries over unchanged; kind attributes reset to defaults |
-| Text-bearing → `code` | Marks are **dropped**; text is flattened; inline math becomes its TeX source; **the user is told what was dropped** |
+| Text-bearing → `code` | Marks are **dropped**; text is flattened; math becomes its TeX source; **the user is told what was dropped** |
 | `code` → text-bearing | Text becomes one unmarked run; the language attribute is discarded |
 | Any → `divider` | **Refused** if content is non-empty; the user must delete deliberately |
 | Text-bearing → `table` | The block becomes the first cell; **children are refused**, not silently reparented |
@@ -315,7 +315,7 @@ document → block sequence (in ordinal order, hierarchy flattened with depth)
 | MT-02 | **The supported subset is declared and versioned.** A construct outside it renders as its source with an explicit "unsupported construct" marker, never silently wrong — a silently mis-rendered formula is worse than an unrendered one. |
 | MT-03 | **Math layout is a managed component**, chosen against the AOT and licence constraints; it introduces no native dependency. |
 | MT-04 | **No TeX macro expansion from document content is executed as a general macro language** ([EC-06](#rule-ec-06)). The supported subset is fixed. |
-| MT-05 | **Math participates in inline layout with a real baseline**, so inline math sits on the text baseline rather than floating. |
+| MT-05 | V1 math is a block construct under notes.math.v1. Use bounded block measurement, baseline metrics inside the math box, accessibility source text and reflow; no separate inline-math editing construct is implied. |
 | MT-06 | **Math is copyable as its TeX source**, and exports as source in Markdown and as source plus rendering in HTML (`§10`). |
 
 ### 7.3 Images
@@ -366,7 +366,7 @@ This is where "preview" most often conceals missing capability, so each surface 
 
 | # | Rule |
 |---|---|
-| PV-01 | **Thin preview is a real boundary, not a fallback for unfinished work.** ArcChat previews and hands off ([PB-05](../requirements/products/arcchat.md#rule-pb-05) of the ArcChat requirements); it does not host the owning product's editing surface. |
+| PV-01 | Thin preview remains read-only and bounded inside the owning application assistant; opening a supported artifact invokes that same application's handler, never embeds another product editor. |
 | PV-02 | **A thin preview never claims to be authoritative** ([I-060](../requirements/01-normative-glossary-and-invariants.md#rule-i-060), [AR-04](../requirements/products/arcchat.md#rule-ar-04) of the ArcChat requirements). |
 | PV-03 | **Where a level is not implemented, the surface degrades to the level below and says so** — a metadata card labelled as such is honest; a blank rectangle is not. |
 | PV-04 | **A preview never executes content** ([EC-06](#rule-ec-06)) and never fetches a remote resource referenced by the content (`§7` of the security architecture). A document that phones home when previewed is an exfiltration channel. |
@@ -379,13 +379,13 @@ This is where "preview" most often conceals missing capability, so each surface 
 
 | # | Rule |
 |---|---|
-| PD-01 | **PDF rendering and text extraction are a declared dependency of ArcNotes**, with an owner, a substitute analysis and a licence position recorded under [NP-01](12-native-interop-and-media.md#rule-np-01) before adoption. |
+| PD-01 | PDFium through ArcForges.Native.Pdf is selected for bounded PDF render/text extraction. Platform owns build/license inventory and ContentSandbox containment; Notes owns its viewer/anchors. No implementation-time parser selection remains. |
 | PD-02 | **The permitted native surface for ArcNotes is extended to document rendering and text extraction** (`§2` of the native interop architecture, amended), and to nothing else. The note, block, link and search models remain fully managed. |
 | PD-03 | **The renderer is isolated behind a managed wrapper with the full C ABI discipline** ([AB-01](12-native-interop-and-media.md#rule-ab-01)–[AB-12](12-native-interop-and-media.md#rule-ab-12)), because a PDF renderer parses hostile input by definition. |
 | PD-04 | **A malformed or hostile PDF degrades to a metadata card** and never affects process stability or the document that references it. |
 | PD-05 | **Extracted text is derived data** ([AT-06](../requirements/products/arcnotes.md#rule-at-06), [IP-09](../requirements/06-knowledge-search-and-retrieval.md#rule-ip-09) of the ArcNotes requirements), rebuildable and never canonical. |
 | PD-06 | **A page anchor is `(attachmentContentHash, pageIndex, rectOrTextRange)`**, so an annotation anchor survives re-open and is invalidated honestly if the attachment content changes. |
-| PD-07 | **If the dependency is not adopted, [AT-05](../requirements/products/arcnotes.md#rule-at-05) is not met**, and that is stated as an open gate rather than absorbed by relabelling the viewer a preview. This is recorded as [PG-12](../assurance/open-gates-register.md#rule-pg-12) in the [open-gates register](../assurance/open-gates-register.md). |
+| PD-07 | PDFium selection is fixed. Its real build, licence inventory and hostile-input containment evidence must close [PG-12](../assurance/open-gates-register.md#rule-pg-12) before the viewer satisfies [AT-05](../requirements/products/arcnotes.md#rule-at-05). A metadata fallback does not close that delivery gate. |
 
 ### 8.3 Office documents — excluded from delivery
 
@@ -401,8 +401,8 @@ This is where "preview" most often conceals missing capability, so each surface 
 
 | # | Rule |
 |---|---|
-| AV-01 | **ArcNotes and ArcChat present media as thin preview** — a poster frame or waveform thumbnail plus duration — and hand off to the owning application for real work ([PB-05](../requirements/products/arcchat.md#rule-pb-05)). |
-| AV-02 | **The media runtime belongs to ArcSlate** (`§4` of the desktop architecture). ArcNotes does not acquire a decode pipeline to show a thumbnail; it requests a thumbnail through the artifact handler contract. |
+| AV-01 | Own-application media attachments show bounded poster/waveform/duration previews using the owner's admitted Platform parser packages. Full editing remains in that application's supported feature set; no cross-product handoff dependency. |
+| AV-02 | Platform owns native media wrappers and signed ContentSandbox runtime. Notes consumes only the preview capability it needs, with its own broker and resource grants; it never requests a running ArcSlate process for a thumbnail. |
 | AV-03 | **Where no owning application is installed, the surface degrades to a metadata card with a stated reason** ([AR-07](../requirements/products/arcchat.md#rule-ar-07) of the ArcChat requirements). |
 
 ### 8.5 Untrusted content boundaries
@@ -445,7 +445,7 @@ Naming these prevents a "rich editor" from silently becoming an unbounded commit
 
 ---
 
-## 11. same-application application
+## 11. shared application
 
 | Product | What this document governs |
 |---|---|
@@ -470,7 +470,7 @@ Naming these prevents a "rich editor" from silently becoming an unbounded commit
 | VF-01 | `BlockId` is stable across typing, move, indent, split of a sibling, conversion and merge | [WP-18.00](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.00) |
 | VF-02 | Every transaction is atomic, and a failure at any operation leaves the document unchanged | [WP-18.00](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.00) |
 | VF-03 | Undo restores content and selection, and one gesture undoes as one entry | [WP-18.05](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.05) |
-| VF-04 | A remote or agent change mid-session rebases the undo stack without retargeting an entry to the wrong block | [WP-18.05](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.05) |
+| VF-04 | A conflicting remote change preserves the original undo inverse and content, disables the stale entry with an explanation and offers conflict-copy/review recovery; no automatic rebase onto another revision. | WP18.05 / UN-05 |
 | VF-05 | Caret movement, deletion and selection are grapheme-correct on an emoji, Devanagari, Thai and combining-mark corpus | [WP-18.01](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.01) |
 | VF-06 | A CJK composition produces one undo entry and one transaction, and is not interrupted by a concurrent remote edit | [WP-18.01](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.01) |
 | VF-07 | Bidirectional text has correct visual caret movement and discontiguous selection painting | [WP-18.01](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.01) |

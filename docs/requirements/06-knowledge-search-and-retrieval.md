@@ -1,5 +1,5 @@
 # Knowledge, Search and Retrieval Requirements
-> Current scope amendment: **[P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
+> Effective scope: P2-012 and P2-013 amend the technology and application ownership below. **[P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Requirements
@@ -55,7 +55,7 @@ Two ownership statements govern everything below:
 |---|---|
 | SC-01 | **Knowledge Scope ≠ Index Scope** ([I-133](01-normative-glossary-and-invariants.md#rule-i-133)). Knowledge scope is a query-time boundary; index scope is what has actually been indexed. A resource may be in scope and not yet indexed, and vice versa. |
 | SC-02 | Scope may be **fixed** (these notebooks) or **dynamic** (documents modified this week, unresolved findings). |
-| SC-03 | **Knowledge Scope is not an ownership boundary**. ArcChat scoping a search across ArcNotes and ArcScope does not make ArcChat their owner. |
+| SC-03 | Knowledge scope narrows the owning application's admitted sources; it never changes source ownership or admits another product. |
 | SC-04 | **Scope always obeys realm and workspace.** Crossing either requires an explicit user switch or authorization; it never happens implicitly. |
 | SC-05 | **A Local Profile is a legal scope.** `Realm = Local`, workspace = none — a signed-out user has a complete local knowledge scope. |
 
@@ -146,10 +146,10 @@ Search visibility, Cloud indexing, AI retrieval and provider processing have dis
 |---|---|
 | SR-01 | **Search ≠ Retrieval** ([I-146](01-normative-glossary-and-invariants.md#rule-i-146)) and **Search ≠ Ask AI** ([I-147](01-normative-glossary-and-invariants.md#rule-i-147)). Search need not invoke any generative model. |
 | SR-02 | **`SearchResult` is not a `Citation`** ([I-152](01-normative-glossary-and-invariants.md#rule-i-152)). |
-| <a id="rule-sr-03"></a>SR-03 | **ArcChat Global Search is application-scoped**, querying each owning product and merging results. ArcChat does **not** maintain a central local full-text index of all products' data ([I-031](01-normative-glossary-and-invariants.md#rule-i-031)). |
-| <a id="rule-sr-04"></a>SR-04 | **ArcChat must not read another product's index database directly.** Federation goes through capability calls. |
-| SR-05 | When an owning product is not running, ArcChat may **launch it on demand** to serve a application-scoped query, subject to the ordinary capability and permission model. |
-| SR-06 | A lightweight federated-search cache is permitted; it is **disposable**, records source and revision, and is never a write point. |
+| <a id="rule-sr-03"></a>SR-03 | Assistant search is restricted to its own application's admitted data and history mode. It does not federate to other products or hold their indexes. |
+| <a id="rule-sr-04"></a>SR-04 | The assistant queries its owning product through typed in-process ports or that product's Cloud API. Another product's database/index is inaccessible. |
+| SR-05 | A companion query needing a desktop waits for the explicitly chosen application; it never launches or substitutes another application. |
+| SR-06 | A disposable own-application search cache may retain source identity, revision and completeness. It is never a write point. |
 | SR-07 | **Cloud Search is a derived cloud projection** over data that legitimately entered the cloud and is permitted to be cloud-indexed. It is never business authority. |
 | <a id="rule-sr-08"></a>SR-08 | **A local-only resource never appears in cloud search.** The cloud does not know its content, and must not acquire it in order to make search work. |
 | <a id="rule-sr-09"></a>SR-09 | **Search result rows display their owner**, so the user always knows where the thing actually lives. |
@@ -191,7 +191,7 @@ Search visibility, Cloud indexing, AI retrieval and provider processing have dis
 | PM-02 | Permission is applied as early as possible — **authorization-aware retrieval** narrows candidates rather than filtering after the fact. |
 | PM-03 | **Evidence fetch re-checks current authorization** at the moment of materialisation, not only at candidate time. |
 | PM-04 | **A permission change triggers index reconciliation.** Content must stop being returned immediately; query visibility must be correct immediately, even if the physical index reconciliation completes asynchronously. |
-| <a id="rule-pm-05"></a>PM-05 | Cloud indexes are **partitioned by realm and workspace**. A cross-workspace probe must fail on partitioning, not on filtering. |
+| <a id="rule-pm-05"></a>PM-05 | Bind workspace and product scope from the authenticated envelope before candidate generation. Vectorize uses the workspace namespace; D1 FTS5 named plans require the authenticated workspace/product predicate. Recheck current owner authorization before counts, snippets or citations. |
 | PM-06 | **Embedding is not anonymisation** ([I-139](01-normative-glossary-and-invariants.md#rule-i-139)). An embedding is a derived representation of user content and carries the same protection obligations. |
 | PM-07 | **Knowledge eligibility ≠ read permission** ([I-253](01-normative-glossary-and-invariants.md#rule-i-253)). Being permitted to read something does not make it AI-eligible, and vice versa. |
 | PM-08 | A **searchable but locked** resource is legitimate: it is discoverable, and access is governed by the owner's authorization policy. |
@@ -227,7 +227,7 @@ Search visibility, Cloud indexing, AI retrieval and provider processing have dis
 | <a id="rule-ec-09"></a>EC-09 | **AI answers that use knowledge cite by default**, and evidence must be traceable. |
 | EC-10 | **An unevidenced internal citation cannot be fabricated.** A claim with no admitted evidence carries no citation. |
 | EC-11 | Model knowledge and user knowledge are distinguished as far as practical, so the user can tell which claims are retrieval-grounded. |
-| EC-12 | Citations and search results support **deep link and handoff**. On a device lacking the owning application, a preview or cloud representation is offered — the full text is never copied to the cloud merely to make a mobile link clickable on a local-only resource. |
+| EC-12 | Citations navigate within the owning application or its authorized companion preview. Unavailable local-only content is labelled unavailable; no implicit upload or cross-product launch is permitted. |
 
 ### 7.1 Revalidation
 
@@ -294,7 +294,7 @@ This is the most consequential privacy control in the product.
 | Product | Knowledge responsibility |
 |---|---|
 | **ArcNotes** | The user's long-term knowledge authority. Owns documents, blocks, links, tags, typed properties, attachments and their extracted text; owns its local index; owns citation anchors; is the destination when a user promotes something into long-term knowledge. |
-| **ArcChat** | Knowledge **retrieval orchestrator**: global federated search, project knowledge scopes, AI retrieval orchestration, hybrid retrieval, context packing, internal citations, retrieval trace. Indexes **only its own data** — conversations, projects, its own artifacts. **Never copies the ArcNotes knowledge store.** |
+| **Application assistant** | Orchestrates retrieval over its own application sources, uploads and explicitly selected web search; packs context with provenance and citations. Its local history index belongs to that application. No cross-product federation. |
 | **ArcScope** | Specialist knowledge provider: searchable project/session/report metadata, findings, annotations and reports; structured measurement and analysis retrieval through professional capabilities. |
 | **ArcSlate** | Specialist knowledge provider: project and media metadata search, transcript/subtitle/marker search, timecode citations, through professional media capabilities. |
 | **Cloud** | Derived cloud projection: cloud-visible keyword search, cloud resource search, optional semantic index, permission-aware query, mobile and web search. |
@@ -337,7 +337,7 @@ This is the most consequential privacy control in the product.
 | SP-01 | **Knowledge ≠ Backup.** Cloud backup may hold data that search must not parse or index; index eligibility is a separate decision from backup inclusion. |
 | SP-02 | **Knowledge ≠ Sync.** Synchronising a resource does not make it AI-eligible or cloud-indexable. |
 | SP-03 | **Knowledge ≠ Semantic.** Semantic indexing is one retrieval technique, not the definition of knowledge. |
-| SP-04 | **Web search ≠ knowledge** ([I-148](01-normative-glossary-and-invariants.md#rule-i-148), [I-149](01-normative-glossary-and-invariants.md#rule-i-149)). Web results are transient, cost credits, and are labelled distinctly from cloud search in the interface. |
+| SP-04 | Web search is transient external context with citations, not durable knowledge. Requests are operator-funded; model processing of results uses customer AI capacity. Display this distinction from Cloud search. |
 
 ---
 
@@ -363,7 +363,7 @@ This is the most consequential privacy control in the product.
 - A global knowledge-graph engine
 - Automatic whole-filesystem indexing
 - Advanced graph RAG
-- Cross-owner or cross-realm application-scoped search
+- Cross-product federation and implicit cross-realm search
 - Every external SaaS connector
 - Complex learned reranking
 - Real-time collaborative knowledge curation
@@ -404,7 +404,7 @@ KnowledgeFreshness · AIEligibility · CloudIndexEligibility · SemanticIndexEli
 
 **Local-only source** — never appears in cloud search; a mobile search does not surface it; an explicit remote search Task can find it without uploading it.
 
-**application-scoped search** — results merged across products with owners shown; a closed application is launched on demand or reported as unavailable.
+**Application search** — results stay within the selected owning product and workspace. A closed desktop is shown unavailable; no launch or federation occurs.
 
 **Citation** — a citation opens the exact block, page region, session range or timecode; a citation to a changed revision reports the change; a citation to a deleted resource remains as provenance and is marked.
 
@@ -420,7 +420,7 @@ KnowledgeFreshness · AIEligibility · CloudIndexEligibility · SemanticIndexEli
 
 **Source removal** — indexing and retrieval stop; no user file is deleted.
 
-**Web search** — labelled distinctly from cloud search, costs credits, and does not silently become long-term knowledge.
+**Web search** — labelled distinctly from cloud search, uses operator-funded requests and customer-metered result-processing tokens, and does not silently become long-term knowledge.
 
 **AI pollution prevention** — a generated analysis does not enter the knowledge corpus without explicit promotion.
 

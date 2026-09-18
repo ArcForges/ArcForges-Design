@@ -98,19 +98,19 @@ The official simulator consumes real paid-term and quota enforcement from [WP-42
 
 **What must be fully done.** Fixed logical ticks driving canonical data; independently seeded RNG per channel and per fault source; the execution profile pinning numeric semantics, RNG, generator and encoding versions; real-time and bounded accelerated pacing that leave sample values, logical timestamps and hashes unchanged; fault profiles for latency, jitter, drop, duplicate, reorder, disconnect, malformed frame and outlier at explicit logical boundaries, each carrying provenance and counters.
 
-**Testing requirements.** Same seed and profile producing identical canonical hashes; a changed seed producing different data; identical hashes under real-time and accelerated pacing; exact fault positions; a proof that one channel's RNG consumption does not perturb another's.
+**Testing requirements.** Same seed and profile producing identical canonical hashes; a changed seed producing different data; identical hashes under real-time and accelerated pacing; exact fault positions; a proof that one channel's RNG consumption does not perturb another's. Exercise the architecture 23 SimulationPacer state diagram: duplicate/delayed alarm, exhausted automatic retries plus Cron rescue, Container cold start, pause/resume and epoch loss. Record a 24-hour run cost, alarm/Container/Queue counts and end-to-end pacing distribution against the proposed 5-second target; no hard real-time claim.
 
-**Completion gate.** [SIM-07](../../requirements/products/arcscope.md#rule-sim-07) equality holds within a profile, and every injected fault is distinguishable from unexpected loss.
+**Completion gate.** [SIM-07](../../requirements/products/arcscope.md#rule-sim-07) equality holds within a profile, and every injected fault is distinguishable from unexpected loss. Deterministic hashes survive wake/retry and the measured pacing/cost envelope is recorded and approved before launch.
 
 <a id="rule-wp-51.02"></a>
 
-### WP-51.02 — Lease-fenced execution in the single host
+### WP-51.02 — Fenced slices and SimulationPacer
 
-**What must be fully done.** The hosted service claims a run by durable lease with a monotonic fence token, generates in bounded batches, renews while working, and releases cleanly on expiry, pause or terminal state. No unbounded loop exists in a request handler or in the hosted service. A publish carrying a stale fence token is rejected.
+**What must be fully done.** Implement arch 23 DO alarm coordinator plus bounded Container segments, D1 checkpoint/fence/next_due_at and minutely rescue scan. Default 1s and 0.25–10s segment bounds; no permanent hosted-service loop.
 
-**Testing requirements.** Two replicas contending for one run; a killed host with a fenced takeover; a paused generator on an old host attempting to publish after takeover; lease expiry under a stalled batch; a bounded-batch assertion that no single iteration exceeds its budget.
+**Testing requirements.** At-least-once alarm, exhausted retry, sleeping Container, pause/cancel race, duplicate segment, delayed catch-up and accelerated mode.
 
-**Completion gate.** N identical replicas run the simulator with no duplicate segment and no unbounded loop.
+**Completion gate.** Deterministic committed samples and restart recovery pass; proposed5s latency is separately measured, not claimed as hard real time.
 
 <a id="rule-wp-51.03"></a>
 
@@ -176,6 +176,8 @@ The official simulator consumes real paid-term and quota enforcement from [WP-42
 ---
 
 ## 7. Tests and verification evidence
+
+Acceptance includes every amended §5 producer/consumer and WP-51.90 evidence. Current P2-013 contracts/data/runtime rules are tested in the original owner implementation, not a detached explanatory sample.
 
 **Required evidence addition.** Canonical simulator replay retains measurement profile and synthetic provenance.
 

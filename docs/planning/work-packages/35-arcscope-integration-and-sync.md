@@ -66,7 +66,7 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 | Location | Change |
 |---|---|
-| `src/ArcScope/ArcScope.LocalRpc/` | Capability registration: query, analysis, authoring and operational capabilities |
+| `src/ArcScope/ArcScope.AssistantIntegration/` | Capability registration: query, analysis, authoring and operational capabilities |
 | `src/ArcScope/ArcScope.CloudClient/` | Sync scope mapping with raw capture excluded by default; explicit raw upload path |
 | `src/ArcScope/ArcScope.ImportExport/` | Native bundle, tabular export with precision warnings, import with origin recording |
 | `src/ArcScope/ArcScope.Application/` | Context provision as bounded structured results |

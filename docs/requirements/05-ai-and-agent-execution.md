@@ -1,5 +1,5 @@
 # AI, Agent Execution, Tasks and Automation Requirements
-> Current scope amendment: **[P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
+> Effective scope: P2-012 and P2-013 amend the technology and application ownership below. **[P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Requirements
@@ -140,7 +140,7 @@ Failure reasons are a unified, semantic set — they drive whether to auto-retry
 | FL-01 | `Transient` permits **bounded** automatic retry. |
 | FL-02 | `Conflict` (expected revision 42, current 50) must **not** be retried indefinitely. It requires refresh, rebase, action regeneration, and re-approval where the approval was revision-bound. |
 | FL-03 | `PermissionDenied` is never retried "to see if it passes". It requires a user or policy change. |
-| FL-04 | `CapabilityUnsupported` where the owning application is merely not running may launch it and retry. Where it is not installed, the Task waits or needs attention, or the plan takes an alternative. |
+| FL-04 | A request for an offline target application waits with TaskState=waiting and reasonFacet=device. The user opens that application explicitly; no launch-on-demand or automatic retargeting occurs. Unsupported capabilities return a typed refusal. |
 | <a id="rule-fl-05"></a>FL-05 | `VersionIncompatible` surfaces as a specific, actionable message ("ArcNotes 2.1 or later required"), never "tool failed". |
 | <a id="rule-fl-06"></a>FL-06 | **`ExternalEffectUnknown` must never be blind-retried.** A send that lost its connection mid-flight has unknown effect. |
 | <a id="rule-fl-07"></a>FL-07 | Every effect carries an **Effect Certainty**: `NotApplied`, `Applied`, `Unknown`. `Unknown` triggers reconciliation against the external system first; if it cannot be resolved, the Task goes to Needs Attention. This is what prevents duplicate emails, duplicate issue creation and duplicate payments. |
@@ -171,7 +171,7 @@ The single Harness executes in the ArcForges-AI Cloudflare Workflow through Work
 | OW-07 | Automatic tool placement is bounded by data availability, capability, consent, resource authorisation, paid-service eligibility and budget. |
 | <a id="rule-ow-08"></a>OW-08 | **`Auto` must never upload local-only data to enable cloud execution.** An 80 GB local capture selects an authorized desktop analysis tool; it does not become an 80 GB upload. |
 | <a id="rule-ow-09"></a>OW-09 | Provider fallback remains within approved Cloud routes and the frozen customer budget. A Cloud outage never starts a desktop agent or changes the payer. |
-| OW-10 | **Actor ≠ Origin ≠ Executor ≠ Capability Owner.** All four are recorded: actor `Ryan`, origin `ArcChat Mobile`, AI executor Cloud, local bridge ArcChat Desktop, capability owner/executor ArcScope. |
+| OW-10 | Actor, origin, AI executor and capability owner are distinct: for example user → Android companion → Cloud Workflow → ArcScope installation. The target application's own bridge executes its authorized local capability. |
 | OW-11 | Task origin records desktop, Mobile, Web or a Cloud automation occurrence. The initiating actor is the workspace owner or an authorised Cloud service acting for that owner; no AgentDelegation origin exists. |
 
 ---
@@ -220,7 +220,7 @@ Every side-effecting Step declares one of:
 | # | Requirement |
 |---|---|
 | CP-01 | **Compensation is a business-reasonable reverse or remedial action, never a database rollback** ([I-096](01-normative-glossary-and-invariants.md#rule-i-096)). |
-| <a id="rule-cp-02"></a>CP-02 | same-application unwinding is a **Saga**, executed in reverse through each owner. Cross-process ACID transactions are not simulated. |
+| <a id="rule-cp-02"></a>CP-02 | Compensation across a Cloud effect and the targeted application's local effect is a Saga with reverse, owner-authorized actions. In-process database work uses its actual atomic boundary; cross-process ACID is never simulated. |
 | <a id="rule-cp-03"></a>CP-03 | **Compensation is itself traced and visible**, never executed silently. The trace shows each compensating action and its result, including failures ("unable to retract external email ⚠"). |
 | <a id="rule-cp-04"></a>CP-04 | **Compensation can fail.** A failed compensation yields Needs Attention or PartiallySucceeded. Claiming a successful rollback that did not occur is prohibited. |
 | <a id="rule-cp-05"></a>CP-05 | **Failure does not automatically trigger compensation.** Task policy chooses: keep partial result, attempt compensation, or ask the user. Analysis succeeding while report creation fails usually warrants keeping the analysis, not discarding everything. |
@@ -451,8 +451,8 @@ An enabled model route prices every applicable billable category/tier. The follo
 | <a id="rule-co-03"></a>CO-03 | **Cache isolation is a security requirement.** User-data-derived cache is workspace-scoped. Only genuinely public content — system prompts, public tool schemas, fixed instructions — may be reused across workspaces. |
 | <a id="rule-co-04"></a>CO-04 | Long-context requests are **flagged to the user in advance** ("a large context will increase credit usage"), not discovered after the fact. |
 | CO-05 | Multimodal consumption follows actual supplier units: tokens when token-billed; explicit image/second/call quantities when independently billed. Never invent token counts or charge tokenised media twice. |
-| CO-06 | **Paid tools are part of the budget.** Web search and similar tools carry their own per-call cost alongside token cost, and task budgets estimate them together. |
-| CO-07 | **Cloud search and web search are distinguished in the interface.** Searching ArcForges Cloud is a subscription feature and consumes no credits; searching the web may consume credits. Labelling both "Search" leaves the user unable to explain a charge. |
+| CO-06 | Paid tools and model tokens remain explicit budget dimensions. Web-search requests draw only on the operator search budget; processing retrieved results consumes customer AI capacity. Do not create a customer tool.webSearch tariff. |
+| CO-07 | Distinguish Cloud search from web search. Cloud search is an eligible service feature; web search itself is operator-funded and model processing of its results uses AI capacity. Explain this before use. |
 
 ### 11.4 What consumes credits
 
@@ -475,23 +475,19 @@ An enabled model route prices every applicable billable category/tier. The follo
 
 ### 11.5 Routing
 
-```
-Arc AI Control Plane
-      ↓
-AI Gateway (analytics, caching, rate limiting, retry, fallback, spend limits)
-      ↓
-Direct provider accounts (primary)   →   Aggregator (long-tail, new models, fallback)
+```text
+C# admission → CF Workflow Harness → Workers AI binding
 ```
 
 | # | Requirement |
 |---|---|
-| <a id="rule-rt-01"></a>RT-01 | **Infrastructure is not the product model.** A gateway vendor's concepts must never leak into ArcForges domain contracts, and its dashboard is never the business ledger. |
-| RT-02 | High-volume mainstream models route through **direct provider accounts**, because aggregator platform fees are real cost of goods at volume. |
-| RT-03 | An aggregator serves long-tail models, brand-new models and emergency fallback. |
-| <a id="rule-rt-04"></a>RT-04 | Gateway spend limits are a **second-line safety guard**, valuable but not authoritative. The customer credit ledger is always held by ArcForges. |
-| RT-05 | **Auto routing has explicit cost classes** — for example Fast, Balanced, Best — each with a stated cost ceiling, plus an explicit model chooser. |
+| <a id="rule-rt-01"></a>RT-01 | Supplier infrastructure is not the domain model. Private usage/billing dashboards never replace the ArcForges commercial ledger. |
+| RT-02 | V1 model dispatch is C# admission → sole Cloudflare Workflow Harness → Workers AI binding. No second supplier route is activated. |
+| RT-03 | Additional supplier and fallback topologies require a later explicit decision; they are not current implementation or release obligations. |
+| <a id="rule-rt-04"></a>RT-04 | Provider spend controls supplement admission but never authorize spending or replace the customer ledger. |
+| RT-05 | Auto resolves a configured cost class once: initial fast maps to @cf/openai/gpt-oss-20b and balanced to @cf/openai/gpt-oss-120b. Exact availability/prices remain validated configuration. |
 | <a id="rule-rt-06"></a>RT-06 | **Auto must not silently escalate to a far more expensive model.** Escalation beyond the class ceiling requires an explicit user allowance for that task. |
-| <a id="rule-rt-07"></a>RT-07 | **Fallback respects the cost ceiling.** A failed cheap model does not silently fall back to a premium model; fallback stays within the tariff class or asks before escalating price. |
+| <a id="rule-rt-07"></a>RT-07 | No automatic model fallback in V1. On unavailability, return the named reason; the user may choose another admitted model as a new authorized intent. Reconcile any uncertain earlier dispatch first. |
 | <a id="rule-rt-08"></a>RT-08 | **An explicitly chosen model's identity is honoured.** If the user selects a specific model, a different model must never be substituted for cost reasons. The provider *route* for that model may change (for example a different compliant channel for the same model); the model itself may not. |
 | <a id="rule-rt-09"></a>RT-09 | The managed model catalogue is deliberately small and curated at launch, not an exhaustive provider list. |
 | RT-10 | Very expensive specialist models are **explicit opt-in only** and never enter automatic routing. |
@@ -582,7 +578,7 @@ Intent that stays a chat turn · intent that becomes a Task · Run 1 fails and R
 Waiting for network with auto-resume · waiting for approval without auto-resume · paused by user then resumed on the same Run · interrupted by crash then recovery-evaluated · succeeded only when the outcome is truly reached · partially succeeded with an outcome manifest · cancelled after a completed side effect, with effects listed · cancel requested during a non-cancellable step.
 
 ### Failure and effect
-Transient retried within bounds · conflict rebased and re-approved · permission denied not retried · capability unavailable resolved by launching the app · version incompatible surfaced actionably · external effect unknown reconciled before any retry.
+Transient retried within bounds · conflict rebased and re-approved · permission denied not retried · offline target waits until the user opens the selected application · version incompatible surfaced actionably · external effect unknown reconciled before any retry.
 
 ### Approval and steering
 Approval bound to a specific revision · approval invalidated by a revision change · approval expiring · approval denied with an alternative path · steering event recorded immutably · original intent preserved · completed steps retained after contrary steering.
@@ -594,13 +590,13 @@ Task reserves and settles · three concurrent tasks cannot collectively overdraw
 Weekly automation producing distinct Tasks · disabled automation leaves a running Task alone · deleted automation retains history · missed run per each policy · bounded catch-up · `SkipIfRunning` default · cooperative replace · self-recursion suppressed · cross-automation loop halted by causation depth · storm caps enforced · aggregate budget pausing the automation · DST transition with defined semantics · scheduler restart not double-firing · duplicate event not double-creating.
 
 ### AI pricing and usage
-Ordinary input/output · cached input · cache write · reasoning tokens · context crossing a pricing threshold · priority tier · batch tier · region surcharge · provider price change mid-catalogue · promotional price expiring · streaming completing · user cancelling mid-stream · provider failure with no upstream charge · provider failure with partial upstream charge · automatic retry not charged to the user · model fallback within class · concurrent tool accounting · enabled tool/search billing dimensions · supported media-understanding routes only. Unscoped image/video generation is not a delivery obligation.
+Ordinary input/output · cached input · cache write · reasoning tokens · context crossing a pricing threshold · synthetic normalizer vectors for priority tier · batch tier · region surcharge · provider price change mid-catalogue · promotional price expiring · streaming completing · user cancelling mid-stream · provider failure with no upstream charge · provider failure with partial upstream charge · automatic retry not charged to the user · model fallback within class · concurrent tool accounting · enabled tool/search billing dimensions · supported media-understanding routes only. Unscoped image/video generation is not a delivery obligation.
 
 ### Credits
 Capacity recovers only in paid intervals · annual renewal does not reset capacity · separate purchased/compensation lots · disclosed source-order consumption · concurrent reservations · insufficient balance hard stop · partial refund · refund hold · compensation credit · **model retired but credits unaffected** · historical task retaining its retired model and tariff version.
 
 ### Cloud-only service boundary
-No local/provider-key mode or external-agent delegation · native render/capture without Agent Task · direct product Cloud AI without ArcChat Desktop · paused/expired service stops new model calls even with credits · a self-host policy cannot unlock official AI.
+No local/provider-key mode or external-agent delegation · native render/capture without Agent Task · direct product Cloud AI without the owning desktop application · paused/expired service stops new model calls even with credits · a self-host policy cannot unlock official AI.
 
 ---
 
@@ -612,5 +608,5 @@ No local/provider-key mode or external-agent delegation · native render/capture
 | [AI and Agent Runtime Architecture](../architecture/09-ai-and-agent-runtime-architecture.md) | Defines execution state, placement, provider routing and automation |
 | [Commerce, Entitlement and AI Credits Requirements](04-commerce-entitlement-and-credits.md) | Owns the commercial admission and metering obligations |
 | **[D-020](../decisions/phase-1-foundation-decisions.md#rule-d-020)** | Every economic figure is versioned commercial policy; reserve-then-settle; hard stop; three separate ledgers; per-run tariff snapshot |
-| **[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)** | Local action is a durable `ToolRequest` pulled and re-authorised by ArcChat Desktop |
+| **[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)** | Local action is a durable `ToolRequest` pulled and re-authorised by the owning desktop application |
 | **[V-02](../assurance/phase-1-official-verification.md#rule-v-02)** | MCP task/skill vocabulary is disambiguated in the glossary and never conflated with this model |

@@ -1,5 +1,5 @@
 # ArcForges Cloud — Product and Platform Requirements
-> Current scope amendment: **[P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
+> Effective scope: P2-012 and P2-013 amend the technology and application ownership below. **[P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Requirements / Products
@@ -16,11 +16,11 @@ Product capability requirements are specified in [`../03-cloud-services-and-sync
 
 | # | Requirement |
 |---|---|
-| PP-01 | ArcForges Cloud is one C# Native AOT modular monolith per instance under P2-009. All 20 business modules and ordinary bounded jobs run in that process. D1, CF Workflow/Workers AI and R2 are external managed services; no runtime Node sidecar. |
+| PP-01 | ArcForges Cloud is one C# Native AOT modular monolith per Container instance under P2-009/P2-012. The 21 module owners are enumerated in architecture 05, including PackageCatalog. D1, Durable Objects, Queues, Workflow/Workers AI and R2 are bound managed resources; no Node sidecar or second business host. |
 | PP-02 | **It is one logical platform**, internally partitioned by module — never split into per-product backends. |
 | <a id="rule-pp-03"></a>PP-03 | One deployable C# Native AOT host contains business APIs, admission, canonical Task/Agent stores, simulator and bounded leased jobs. The sole model/tool loop runs in the separate CF Worker deployment; identical C# replicas are allowed, no role-selected Worker/TaskRunner. |
-| PP-04 | **Kubernetes is not used in the first stage.** A managed container application platform is sufficient and materially cheaper to operate at this scale. |
-| PP-05 | **Cloud never connects to localhost, a named pipe, a Unix socket or local stdio** (**[D-010](../../decisions/phase-1-foundation-decisions.md#rule-d-010)**). Local action is a durable `ToolRequest` that ArcChat Desktop pulls, re-authorises locally, executes, and answers with an idempotent `ToolResult`. |
+| PP-04 | The first deployment uses Cloudflare Workers and Containers. Kubernetes and an independently operated container platform are outside this profile. |
+| PP-05 | **Cloud never connects to localhost, a named pipe, a Unix socket or local stdio** (**[D-010](../../decisions/phase-1-foundation-decisions.md#rule-d-010)**). Local action is a durable `ToolRequest` that the owning desktop application pulls, re-authorises locally, executes, and answers with an idempotent `ToolResult`. |
 | PP-06 | **Cloud never scans a LAN** and never addresses a desktop directly. |
 | PP-07 | **Professional products reach Cloud directly** for their own identity, sync, storage and product-domain APIs; ArcChat is not a mandatory data gateway (**[D-010](../../decisions/phase-1-foundation-decisions.md#rule-d-010)**). |
 
@@ -45,19 +45,19 @@ The current baseline selections. **Every provider fact — availability, region 
 
 | Concern | Baseline selection | Notes |
 |---|---|---|
-| Public edge | A CDN/WAF edge provider | Terminates TLS, applies WAF and rate limiting, fronts every public surface |
-| Application platform | A managed container application platform | Zone-redundant from creation |
+| Public edge | Cloudflare Worker, WAF and rate limits | Terminates public ingress; forwards only the closed routes in architecture 05 |
+| Application platform | Cloudflare Containers, reached through Worker bindings | Restartable C# Native AOT instances; explicit scale caps, wake sources and D1 fences |
 | Relational store | Managed D1 | One D1 database per realm, module-owned prefixes and fixed atomic plans |
 | Event hints | D1 outbox and DO feed via gRPC-Web Watch/Poll | Bounded hints; durable owners recover state |
 | Asynchronous effects | D1 transactional outbox/inbox plus Cloudflare Queues/Cron wakes | Bounded retries/dead-letter; consumers deduplicate |
 | Live AI presentation | Cloudflare Durable Object | Presentation only; Workflow and C# retain their existing authorities |
 | Mobile push | FCM HTTP v1 behind Notification adapter | Android data-only wake; durable attention survives provider loss |
-| Object storage | Primary object store plus an **independent second-provider** disaster copy | Per `§14` of the cloud requirements |
-| Secrets | A managed key vault with RBAC and purge protection | Plus workload identity for service-to-service auth |
+| Object storage | R2 plus an independent encrypted second-provider disaster copy | Exact object-version inventory and restore manifest under model 04 and architecture 22 |
+| Secrets | Cloudflare deployment secret bindings and operator secret references | Separate environment identities, audited rotation, no customer key submission |
 | Observability | An external observability and incident platform | Plus the platform's native signals |
-| Transactional email | A transactional email provider, behind an adapter | With an emergency secondary |
+| Transactional email | Postmark primary; SES emergency secondary | Notification owns correlated delivery intents and ambiguity reconciliation under architecture 13 |
 | Infrastructure as code | A declarative IaC tool with pinned providers | State stored securely, never in version control |
-| CI/CD | The build platform with application-scoped identity to the cloud | No long-lived deployment secrets |
+| CI/CD | The build platform with provider-supported deployment authentication under EN-08 | Protected short-lived or expiring deployment credentials |
 
 | # | Requirement |
 |---|---|
@@ -71,10 +71,10 @@ The current baseline selections. **Every provider fact — availability, region 
 
 | # | Requirement |
 |---|---|
-| RG-01 | **A single primary region is chosen, and the choice is a deployment configuration, never a hard-coded business assumption.** |
-| RG-02 | **A Region Preflight is mandatory at provisioning time**: the required capabilities — zone-redundant high availability, service tiers, private networking, backup features — must be confirmed **available in the chosen region at the time of provisioning**, because regional capability tables change. |
-| RG-03 | **The production environment is zone-redundant from creation.** Retrofitting zone redundancy is frequently impossible without a rebuild. |
-| RG-04 | **Region is a Terraform-level parameter from day one**, so a rebuild in another region is a configuration change rather than a redesign. |
+| RG-01 | A deployment declares its Cloudflare jurisdiction/location settings and any legally supported residency promises. D1 is a single primary authority per realm; Worker placement is not a region-pinned business assumption. |
+| RG-02 | Provisioning preflight verifies the actual account plan and availability of Workers, Containers, D1, Durable Objects, Queues, R2, Workflows, Workers AI and Vectorize; record current quotas, retention, jurisdiction and outbound restrictions. Missing required capabilities block provisioning rather than silently choosing another topology. |
+| RG-03 | Resilience uses the managed service guarantees and explicit application retry/fence/recovery design. Do not claim operator-configured availability zones or customer-controlled D1 failover. |
+| RG-04 | Jurisdiction and supported location hints are versioned IaC inputs. Disaster recovery provisions a fresh fenced realm/resource set from the independent manifest; it never assumes a SQL region switch or unchanged resource IDs. |
 | RG-05 | **Workspace `DataRegion` exists from day one** ([WS-09](../02-identity-account-and-workspace.md#rule-ws-09)), and **no public residency claim is made** unless infrastructure legally guaranteeing it is in use ([RG-02](../07-security-privacy-and-trust.md#rule-rg-02) in the security requirements). |
 
 ---
@@ -84,14 +84,14 @@ The current baseline selections. **Every provider fact — availability, region 
 | # | Requirement |
 |---|---|
 | <a id="rule-nw-01"></a>NW-01 | **The API origin is never directly exposed to the public internet.** It uses internal ingress, reached only through the edge. |
-| NW-02 | **The edge-to-origin connection is redundant** — at least two connector instances — so a single connector failure is not an outage. |
+| NW-02 | Only the bound Worker can route to the Container. A failed or restarting instance is replaced within the configured capacity; callers receive bounded unavailability and reconcile commands through D1. There is no cloudflared connector pair to operate. |
 | NW-03 | Worker origin routing and private Container/service bindings require no cloudflared tunnel host or separate relay VM. |
 | <a id="rule-nw-04"></a>NW-04 | **Three protection layers coexist**: edge WAF, a human-verification challenge on abuse-prone endpoints only, and **application-level rate limiting**. |
 | NW-05 | **A human-verification challenge must not be applied everywhere.** It belongs on sign-up, sign-in, recovery, support submission and other abuse-prone endpoints — never on ordinary product API traffic. |
 | <a id="rule-nw-06"></a>NW-06 | **Rate limiting is never IP-only.** It is dimensioned by identity, workspace, device, endpoint class and cost class, because IP alone punishes shared networks and fails against distributed abuse. |
-| <a id="rule-nw-07"></a>NW-07 | **The production database is never open to the public internet.** Private networking only. |
-| NW-08 | **Connection pooling is a platform feature, not a hand-rolled container**, wherever the managed service provides it. |
-| <a id="rule-nw-09"></a>NW-09 | **A public webhook endpoint is a distinct ingress class**: signature-verified, fast-accept then queue, idempotent, and never trusted to carry authorization (`§4.1` of the commerce requirements). |
+| <a id="rule-nw-07"></a>NW-07 | D1 is accessible only through the private Worker execution adapter with its deployment binding. No public SQL endpoint or general SQL-over-HTTP route is admitted. |
+| NW-08 | Use the bounded registered D1 plans and service-binding adapter in model 04. There is no PostgreSQL connection pool, arbitrary SQL proxy or per-request interactive transaction. |
+| <a id="rule-nw-09"></a>NW-09 | Provider callbacks are a separate allowlisted ingress class: verify each provider-specific authentication mechanism before durable idempotent acceptance. Payment signatures and SES SNS signatures are verified; Postmark uses its dedicated HTTPS credential/IP policy and correlation, not a fabricated signature. Callback payloads never authorize a user action. |
 | <a id="rule-nw-10"></a>NW-10 | **Cloud tasks require SSRF protection**: outbound destinations are validated against an allow policy, internal address ranges and metadata endpoints are blocked, and redirects are re-validated. |
 
 ---
@@ -102,8 +102,8 @@ The current baseline selections. **Every provider fact — availability, region 
 |---|---|
 | DP-01 | **One primary relational database, with module-owned schemas or explicit table ownership** — not one database per module. |
 | DP-02 | **A module never writes another module's tables**. Cross-module interaction is through module APIs and events. |
-| DP-03 | **Zone-redundant high availability** on the production database. |
-| DP-04 | **Point-in-time recovery with a retention window, plus geo-redundant backup**, is configured **at creation** — several backup options cannot be changed afterwards. |
+| DP-03 | D1 service failure is explicit unavailability. Guarded batches, durable receipts and primary-read reconciliation prevent duplicate or partially accepted business effects after retry; no customer-controlled database failover is assumed. |
+| DP-04 | Provision and verify the selected plan's D1 Time Travel retention and record its bookmark in the backup manifest. Independently export the fenced logical database and referenced object versions under model 04; restore evidence, not configured retention alone, satisfies recovery. |
 | DP-05 | **Platform backup is not the whole backup story.** An independent, encrypted logical backup to a second provider is also required (`§14` of the cloud requirements). |
 | DP-06 | **The transactional outbox commits with the business transaction**, and an inbox/idempotency table guards duplicate delivery. |
 | DP-07 | **Outbox/inbox dispatch is never the business source of truth.** Lost or replayed delivery cannot lose or duplicate a business fact. |
@@ -147,7 +147,7 @@ Four layers:
 | <a id="rule-en-05"></a>EN-05 | **Local development orchestration is not replaced by, and does not replace, production IaC.** They serve different purposes and both exist. |
 | <a id="rule-en-06"></a>EN-06 | **IaC state is a secret**: stored in a secured backend, never in version control, and separated per environment. |
 | <a id="rule-en-07"></a>EN-07 | **Portal-driven infrastructure changes are prohibited in production.** An emergency manual change is reconciled back into IaC promptly, and drift detection runs regularly. |
-| <a id="rule-en-08"></a>EN-08 | **CI authenticates to the cloud with application-scoped identity only** — no long-lived deployment credentials. |
+| <a id="rule-en-08"></a>EN-08 | CI uses provider-supported workload identity; Cloudflare deployment uses an expiring, narrowly scoped API token from a protected environment under CF-03. Rotation and revocation are rehearsed; secrets never enter artifacts or logs. |
 | <a id="rule-en-09"></a>EN-09 | **Staging and production use different deployment identities**, and neither holds subscription-owner rights. |
 | <a id="rule-en-10"></a>EN-10 | **Container images are published to a private registry**, and **production never rebuilds**: the same digest built once is promoted through environments. |
 | <a id="rule-en-11"></a>EN-11 | **Deployment references an image digest, never a mutable tag.** |
@@ -176,10 +176,10 @@ Four layers:
 | **Database unavailable** | The API returns an honest degraded state; nothing is silently accepted; native tools and cached editing/search continue; Cloud AI and fresh Cloud data remain unavailable, and pending edits are clearly unsynced |
 | **Event hints unavailable** | Clients keep bounded authoritative reads; expired cursors reset and reread without presenting partial history as complete. AI presentation reconnect follows the CF frame/range profile; no separate realtime-service failover |
 | **Push provider unavailable** | Pending attention remains durable and readable via notification.list; foreground/reconnect polling recovers it. Alert operations; bounded TTL retries. Background delivery without GMS/permission is unavailable and stated; never mark an approval resolved from a send result |
-| **AI provider unavailable** | Reserved credits are released; routing falls back within the cost class or asks; **the user is not charged for platform-caused retries** ([CU-03](../05-ai-and-agent-execution.md#rule-cu-03)) |
-| **AI gateway unavailable** | A direct-provider bypass path exists and is exercised, so the gateway is not a single point of failure |
+| **Workers AI unavailable** | Stop dispatch and show typed unavailability. Release customer reservations only when the accounting outcome permits; retain uncertain supplier exposure for reconciliation. No provider substitution or customer charge for platform-caused retry. |
+| **AI telemetry path unavailable** | Core provider metering and durable receipts remain authoritative. No AI Gateway or direct-provider bypass is a launch dependency. |
 | **Observability platform unavailable** | The product continues operating normally; only visibility is degraded |
-| **Edge or tunnel unavailable** | Cloud is unreachable; native product jobs and cached work continue; Cloud AI pauses and unsynced changes stay durable — the edge provider was never written into the business domain |
+| **Worker ingress unavailable** | Cloud is unreachable; native product jobs and cached work continue; Cloud AI pauses and unsynced changes stay durable — the edge provider was never written into the business domain |
 | **Email provider unavailable** | An emergency secondary exists for critical mail; **failover must never deliver two one-time codes for one request** |
 
 | # | Requirement |
@@ -219,14 +219,14 @@ Four layers:
 
 ### 9.1 Required runbooks
 
-Database failover and restore · point-in-time recovery · object-store outage · cross-provider blob restore · event-hint degradation and cursor reset · outbox/inbox backlog and dead-letter replay · AI provider outage and gateway bypass · edge or tunnel outage · email provider failover · secret compromise and rotation · deployment rollback · migration failure · region rebuild · entitlement reconciliation repair · webhook loss recovery · data-health anomaly · security advisory publication · package containment.
+D1 unavailability and guarded retry · Time Travel recovery · independent fresh-realm restore · R2 outage and cross-provider blob restore · event-hint degradation and cursor reset · outbox/inbox backlog and dead-letter replay · Workers AI outage and uncertain supplier reconciliation · Worker/Container cold-start or ingress outage · email delivery ambiguity and failover · secret compromise and rotation · deployment rollback · migration failure · entitlement reconciliation repair · webhook loss recovery · data-health anomaly · security advisory publication · package containment.
 
 ### 9.2 Disaster recovery
 
 | # | Requirement |
 |---|---|
-| DR-01 | **Disaster recovery is single-primary-region plus zone redundancy plus cross-region and cross-provider backup plus a tested rebuild** — **not** active-active. |
-| DR-02 | **A region rebuild is a tested procedure**, exercised in a full quarterly disaster-recovery drill ([BK-06](../03-cloud-services-and-sync.md#rule-bk-06)). |
+| DR-01 | Disaster recovery uses one authoritative D1 realm plus independent encrypted logical/object backup and a rehearsed fresh Cloudflare resource deployment. It is not active-active and cannot rely on the failed original database remaining accessible. |
+| DR-02 | Exercise fresh-resource restore from IaC, secrets recovery and independent backups in the quarterly drill. Validate schema/hash counts, object inventory, new recovery generation, invalidated sessions/leases and reconciliation before reopening traffic. |
 | DR-03 | **Internal recovery objectives** are those in `§14.2` of the cloud requirements, and remain internal engineering objectives until a drill justifies publishing anything. |
 | <a id="rule-dr-04"></a>DR-04 | **`backup.zip` is not a backup strategy.** Backups are structured, verified, restorable and drilled (`§14` there). |
 
@@ -262,15 +262,15 @@ Database failover and restore · point-in-time recovery · object-store outage �
 Before the paid cloud goes live:
 
 1. A full **Game Day** exercising SEV0 through SEV2 scenarios against the real production topology.
-2. Database failover exercised; point-in-time restore proven.
+2. D1 unavailability/retry and Time Travel recovery exercised; independent fresh-resource restore proven.
 3. Cross-provider blob restore proven.
 4. Outbox/inbox backlog and dead-letter replay proven.
 5. Event-hint degradation with authoritative reread and cursor reset proven.
-6. AI provider outage with credit release and fallback proven.
-7. Edge/tunnel outage with durable cached work and native jobs preserved, Cloud AI correctly unavailable, and reconnection recovery verified.
+6. Workers AI outage with correct customer reservations and supplier liability, no hidden fallback, proven.
+7. Worker ingress outage with durable cached work and native jobs preserved, Cloud AI correctly unavailable, and reconnection recovery verified.
 8. Email failover proven **without duplicate one-time codes**.
 9. Deployment rollback exercised, and a migration failure recovered.
-10. A region rebuild rehearsed from IaC plus backups.
+10. A fresh Cloudflare realm/resource rebuild rehearsed from IaC plus independent backups.
 11. Webhook loss recovered by reconciliation; entitlement repair verified ([RC-01](../04-commerce-entitlement-and-credits.md#rule-rc-01)–[RC-03](../04-commerce-entitlement-and-credits.md#rule-rc-03) in the commerce requirements).
 12. Every runbook in `§9.1` written, assigned and rehearsed at least once.
 13. Backup health dashboard green with a proven restore, not merely a green backup job ([BK-06](../../architecture/07-sync-conflict-and-backup.md#rule-bk-06), [BK-07](../03-cloud-services-and-sync.md#rule-bk-07)).
@@ -283,7 +283,7 @@ Before the paid cloud goes live:
 
 The cloud modular monolith is partitioned into modules, each owning an application/domain boundary, its own schema or explicit table ownership, a public module API and events, independent tests, and a prohibition on other modules writing its tables:
 
-**Identity & Workspace · Devices & Sessions · Entitlement & Commerce · Chat & Conversation · Task & Execution · Agent & Provider · Sync & Conflict · Resource & Storage Metadata · Search & Knowledge Index · Notification · Policy Control Plane · Audit · Support & Operations · Trust & Safety · Scope Simulation**
+The 21 rows in architecture 05 §3 are the complete current module inventory. PackageCatalog owns its authoring, review, publication and revocation records; Notification owns delivery intents; Scope Simulation owns simulator state. This requirements document does not maintain a second differently grouped module list.
 
 Scope Simulation owns the durable simulator state and manifests required by [SIM-01](arcscope.md#rule-sim-01)–[SIM-20](arcscope.md#rule-sim-20); it is an internal module, not another service.
 
@@ -293,7 +293,7 @@ Architecture boundaries must be reconciled to [P2-006](../../decisions/phase-2-s
 
 ## 14. Acceptance scenarios
 
-**Topology** — the API is unreachable directly from the public internet; the edge is the only path; a single connector instance failure does not cause an outage.
+**Topology** — Worker ingress is the only public business path; Container origin and internal service routes are inaccessible publicly. Kill an instance and prove bounded errors, replacement, fencing and command reconciliation without duplicate effects.
 
 **Scaling** — Worker ingress and restartable Containers use explicit concurrency/capacity limits; cold starts and unavailable dependencies return bounded typed outcomes. Durable work never depends on an always-on replica.
 
@@ -301,13 +301,13 @@ Architecture boundaries must be reconciled to [P2-006](../../decisions/phase-2-s
 
 **Deployment** — the same image digest built once is promoted through staging to production; rollback follows the verified migration-mode compatibility horizon; an incompatible persisted state requires forward repair or independent fenced restore, with the stated RPO/RTO.
 
-**Event hints and live presentation** — disable hint delivery and verify bounded authoritative reads; expired cursors return an explicit reset followed by a fresh snapshot. Interrupt CF presentation separately and recover its retained byte range or authoritative Task state under contracts05; no fabricated complete sequence backfill.
+**Event hints and live presentation** — disable hint delivery and verify bounded authoritative reads; expired cursors return an explicit reset followed by a fresh snapshot. Interrupt CF presentation separately and recover its retained byte range or authoritative Task state under contracts 05; no fabricated complete sequence backfill.
 
 **Outbox/inbox** — a consumer receives a message five times and produces one effect; a poisoned message lands in the dead-letter queue, is inspectable and is replayable.
 
 **Storage** — the primary object store is unavailable; uploads fail cleanly with a specific reason and no partial commit; a cross-provider restore recovers a blob.
 
-**Database** — a failover occurs and the service recovers; a point-in-time restore is proven to a specific timestamp.
+**Database** — inject D1 unavailability and ambiguous batch replies; authoritative state and receipts reconcile. Prove Time Travel to a recorded bookmark and separately restore without the original D1 database.
 
 **Email** — after primary failure/unknown acceptance, reconcile before secondary delivery; retain one authoritative challenge and stable logical notification/dedup key. Duplicate physical messages may occur but contain the same still-valid one-use proof; retry cannot create extra valid codes or misleading delivered status.
 
@@ -331,10 +331,10 @@ Architecture boundaries must be reconciled to [P2-006](../../decisions/phase-2-s
 | [Deployment and Release Execution](../../architecture/22-deployment-and-release-execution.md) | Defines provisioning, deployment, migration and recovery procedures |
 | [Observability and Operations Architecture](../../architecture/13-observability-and-operations.md) | Implements observability, incident, support and operator obligations |
 | **[D-003](../../decisions/phase-1-foundation-decisions.md#rule-d-003)** | Provider capability and pricing facts are deferred with a first-consumption trigger |
-| **[D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008)** | Cloud is an ASP.NET Core **Native AOT** modular monolith; no strict AOT requirement |
+| **[D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008)** | D-008 is amended by P2-009/P2-012: Cloud is an ASP.NET Core Native AOT Container; real AOT integration is a required gate |
 | **[D-010](../../decisions/phase-1-foundation-decisions.md#rule-d-010)** | Cloud never touches local IPC; durable `ToolRequest` / `ToolResult` model |
 | **[D-014](../../decisions/phase-1-foundation-decisions.md#rule-d-014)** | Surface inventory including the private operator surface |
-| **[V-03](../../assurance/phase-1-official-verification.md#rule-v-03)**, **[V-05e](../../assurance/phase-1-official-verification.md#rule-v-05e)** | The AOT evidence that made the Native AOT decision structural, and the instruction not to spend effort proving Azure SDK AOT compatibility |
+| **[V-03](../../assurance/phase-1-official-verification.md#rule-v-03)**, **[V-05e](../../assurance/phase-1-official-verification.md#rule-v-05e)** | Historical evidence for the earlier runtime decision; P2-009/P2-012 supersede its runtime/dependency conclusions |
 
 ## Cloudflare deployment profile
 

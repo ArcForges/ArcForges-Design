@@ -38,9 +38,10 @@ This inventory states capability and degradation obligations. The package regist
 
 ### 2.2 The matrix
 
+Embedded assistant packages are verified inside each host below; they are not a fourth desktop deliverable.
+
 | Target | Windows x64 | Windows arm64 | macOS arm64 | macOS x64 | Linux x64 | Linux arm64 |
 |---|---|---|---|---|---|---|
-| **ArcChat Desktop** | Tier 1 | Tier 2 | Tier 1 | Tier 2 | Tier 1 | Tier 2 |
 | **ArcNotes** | Tier 1 | Tier 2 | Tier 1 | Tier 2 | Tier 1 | Tier 2 |
 | **ArcScope** | Tier 1 | Tier 2 | Tier 1 | Tier 2 | Tier 1 | Tier 2 |
 | **ArcSlate** | Tier 1 | Tier 2 | Tier 1 | Tier 2 | Tier 1 | Tier 2 |
@@ -53,7 +54,7 @@ This inventory states capability and degradation obligations. The package regist
 
 | # | Rule |
 |---|---|
-| PT-01 | **Every desktop product ships the same platform set.** A product supported on fewer platforms than its siblings would break the same-application workflows the family is built on. |
+| PT-01 | Every professional desktop ships the accepted Windows/Linux/macOS platform and RID set. Shared native/UI mechanisms require per-product integration evidence; platform parity does not imply cross-product execution. |
 | PT-02 | **A Tier-2 platform is a real build, not a promise.** It publishes AOT in CI; what it does not carry is release-blocking authority. |
 | PT-03 | **Tier promotion is a decision with evidence** — full matrix participation demonstrated — not a marketing choice. |
 | PT-04 | **The mobile emulator architecture is never a release claim** ([PM-03](../requirements/12-quality-and-compatibility-contract.md#rule-pm-03) there). |
@@ -172,7 +173,7 @@ What the user sees when a slot is unavailable — absent library, unsupported pl
 
 ---
 
-The slot-to-degradation mapping is explicit: Media demux/decode→Media decode; encode/mux→Media encode; conversion/scale/resample→same-named row; colour management→Colour transforms; GPU/surface→GPU acceleration; serial/device→Serial or device transport plus USB instrument transport; high-rate→High-rate acquisition; document rendering→Document rendering; still-image, timeline interchange, audio devices, secure storage, shell integration and text shaping→their named rows. Native.Abstractions is common ownership infrastructure, not a physical slot. Every stated degradation preserves local data; a required Tier1 feature that is unavailable still fails its release gate.
+The slot-to-degradation mapping is explicit: Media demux/decode→Media decode; encode/mux→Media encode; conversion/scale/resample→same-named row; colour management→Colour transforms; GPU/surface→GPU acceleration; serial/device→Serial or device transport plus USB instrument transport; high-rate→High-rate acquisition; document rendering→Document rendering; still-image, timeline interchange, audio devices, secure storage, shell integration and text shaping→their named rows. Native.Abstractions is common ownership infrastructure, not a physical slot. Every stated degradation preserves local data; a required Tier 1 feature that is unavailable still fails its release gate.
 
 ## 6. Build and packaging linkage
 
@@ -214,11 +215,11 @@ dependency adopted (§3.3)
 
 ## 8. Selected P2-009 runtime and dependency closure
 
-Cloud uses .NET SDK 10.0.400, .NET10 runtime10.0.12, Grpc.AspNetCore/Web2.83.0 and the private Worker D1 binding adapter. One Linux-x64 Native AOT executable in Cloudflare Containers, chiseled Ubuntu runtime-deps image with ICU/tzdata/CA certificates, non-root, read-only root and declared scratch, no dynamic plugin assemblies, EF/dynamic ORM, ASP.NET Session or CookieAuthenticationHandler. ASP.NET Core Minimal API endpoints and explicit generated metadata handle only allowed HTTP exceptions. The private Worker binding bridge with versioned named SQL plans and exact typed results; SQL migrations shipped as one-shot bundle. Private binding requests max6 per Worker invocation, max128 active RPCs per Container, bounded queue256, drain30s; liveness process-only, readiness DB/config/private-port binding, degraded CF/R2 reported separately.
+Cloud uses .NET SDK 10.0.400, .NET10 runtime 10.0.12, Grpc.AspNetCore/Web2.83.0 and the private Worker D1 binding adapter. One Linux-x64 Native AOT executable in Cloudflare Containers, chiseled Ubuntu runtime-deps image with ICU/tzdata/CA certificates, non-root, read-only root and declared scratch, no dynamic plugin assemblies, EF/dynamic ORM, ASP.NET Session or CookieAuthenticationHandler. ASP.NET Core Minimal API endpoints and explicit generated metadata handle only allowed HTTP exceptions. The private Worker binding bridge with versioned named SQL plans and exact typed results; SQL migrations shipped as one-shot bundle. Private binding requests max 6 per Worker invocation, max 128 active RPCs per Container, bounded queue 256, drain30s; liveness process-only, readiness DB/config/private-port binding, degraded CF/R2 reported separately.
 
 Authentication is first-party explicit session/challenge state over .NET cryptography and System.Formats.Cbor, avoiding a reflection/native dependency closure from a full Identity/FIDO framework. WebAuthn RP offers ES256 only, resident/discoverable credentials, UV required, attestation none; verify type/challenge/exact origin/RP hash/UP+UV/credential ownership/signature per W3C, bounded CBOR/JSON, reject duplicates/trailing malformed structures. Parse only COSE EC2 NIST P256 keys; ECDsa verifies signature, no ad-hoc cryptographic algorithm. Non-backup counter rollback rejects; synced credential backup flags/counter changes follow explicit suspicious-auth step-up and audit, never count as proof of compromise by themselves. Email/recovery remain existing one-use challenge/rate-limit flow, no enumeration. WP06 tests real passkey ceremony and negative vectors under AOT; failed chosen-path proof requires a focused design correction, not automatic JIT.
 
-Native access handles are random256-bit opaque bearer values (PG access_token_hash + expiry), fifteen-minute expiry; native refresh token family thirty-day max with existing rotation/reuse revocation. Browser session random256-bit handle, host-only Secure/HttpOnly/SameSite=Lax, twelve-hour absolute/thirty-minute idle; CSRF token random256-bit bound to session/preauth flow hash, Origin+header checks on unsafe routes. C# validates current user/device/workspace/expiry on every command. No JavaScript-accessible browser credential. Secret handling never depends on ASP.NET Data Protection automatic cookie auth; same PG/hash-based session works on identical replicas. Browser login challenge state and session creation retain the existing Identity→Device shared transaction.
+Native access handles are random 256-bit opaque bearer values (PG access_token_hash + expiry), fifteen-minute expiry; native refresh token family thirty-day max with existing rotation/reuse revocation. Browser session random 256-bit handle, host-only Secure/HttpOnly/SameSite=Lax, twelve-hour absolute/thirty-minute idle; CSRF token random 256-bit bound to session/preauth flow hash, Origin+header checks on unsafe routes. C# validates current user/device/workspace/expiry on every command. No JavaScript-accessible browser credential. Secret handling never depends on ASP.NET Data Protection automatic cookie auth; same PG/hash-based session works on identical replicas. Browser login challenge state and session creation retain the existing Identity→Device shared transaction.
 
 Other adapters: Paddle raw-body HMAC and typed source-generated HttpClient, no provider SDK reflection; R2/backup S3 uses typed HTTP and .NET crypto/SigV4; CF HMAC ports use source-generated STJ from the JSON schema; compression through framework streams; crypto through .NET platform primitives; telemetry through ActivitySource/Meter plus explicitly registered OTLP exporters; simulator pure deterministic C# under current AST. Domain store authority and all 20 modules stay unchanged. Early WP06 proves complete selected host dependency publish+auth/gRPC/SQL/CF/R2 path with zero trim/AOT diagnostics; product functions follow their later WPs.
 
@@ -231,4 +232,4 @@ Native dependency selection and resolved OTIO/MDF dispositions are in [package r
 
 Android Kotlin/JVM/Compose toolchain, API/RID and OS adapter decisions are in [Mobile architecture](11-mobile-architecture.md#3-runtime-libraries-and-lifecycle-baseline). All versions are candidate pins until WP06 proves actual tool availability and release-device behavior; failed compatibility is a focused gate failure, never permission to silently switch runtime. Gradle version catalog, lock files and verification checksums cover build plugins, Java/Kotlin/protobuf/grpc-lite and app dependencies. iOS/KMP is outside this delivery. TypeScript remains Web/AI and public npm bindings, not Mobile runtime.
 
-Every native slot in section3 has fixed functions, C# wrapper ownership, error/lifetime/bulk-buffer and package closure in [functional ABI](contracts/06-native-functional-abi.md). Current probe-only DLLs do not satisfy functional producer completion. WP13 proves each required RID or retains the existing explicitly conditional tier status; mandatory portable functionality cannot be hidden behind an optional acceleration gate. [Producer stage matrix](../planning/producer-artifacts-and-integration.md) governs publication and isolated consumer evidence.
+Every native slot in section 3 has fixed functions, C# wrapper ownership, error/lifetime/bulk-buffer and package closure in [functional ABI](contracts/06-native-functional-abi.md). Current probe-only DLLs do not satisfy functional producer completion. WP13 proves each required RID or retains the existing explicitly conditional tier status; mandatory portable functionality cannot be hidden behind an optional acceleration gate. [Producer stage matrix](../planning/producer-artifacts-and-integration.md) governs publication and isolated consumer evidence.

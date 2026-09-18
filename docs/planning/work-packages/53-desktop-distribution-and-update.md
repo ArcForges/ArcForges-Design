@@ -7,7 +7,7 @@
 > Phase: J — Platform and client integration
 > Upstream: `02` · `06` · `07` · `10` · `11` · `12` · `44` · `45` · Downstream: `50`
 
-> **Goal.** Deliver ArcForges.Update as a real shared producer for all three professional desktop products before final release verification. Execute after45 and before46 in the serial schedule.
+> **Goal.** Deliver ArcForges.Update as a real shared producer for all three professional desktop products before final release verification. Execute after 45 and before 46 in the serial schedule.
 
 ## 1. Scope and purpose
 
@@ -49,7 +49,7 @@ Own desktop update discovery, verified download/delta, staging, safe application
 
 ### WP-53.00 — Signed feed and applicable target
 
-**What must be fully done.** Implement architecture14 §8.1 feed validation, trust, product/RID/channel selection, compatibility and anti-replay. AF-01–AF-07 and UC-07 apply.
+**What must be fully done.** Implement architecture 14 §8.1 feed validation, trust, product/RID/channel selection, compatibility and anti-replay. AF-01–AF-07 and UC-07 apply.
 
 **Testing requirements.** Unsigned/expired/duplicate/hash-invalid feed, removed and policy-blocked version independently, wrong product/RID and older signed feed.
 
@@ -89,7 +89,7 @@ Own desktop update discovery, verified download/delta, staging, safe application
 
 ### WP-53.04 — Channels, staged rollout and security updates
 
-**What must be fully done.** Implement UC-07/08/09, RC-01 and UP-09/10/11 using actual44 policy and45 advisory process. Explicit channel selection, stable installation assignment, halt bad versions and respect minimum-version grace.
+**What must be fully done.** Implement UC-07/08/09, RC-01 and UP-09/10/11 using actual 44 policy and 45 advisory process. Explicit channel selection, stable installation assignment, halt bad versions and respect minimum-version grace.
 
 **Testing requirements.** Both channel directions, unchanged rollout assignment across restart, blocked target after download, emergency offer during critical work and expired grace.
 
@@ -105,13 +105,23 @@ Own desktop update discovery, verified download/delta, staging, safe application
 
 **Completion gate.** Every outcome is diagnosable and uninstall never removes user data implicitly.
 
+<a id="rule-wp-53.07"></a>
+
+### WP-53.07 — Production catalog and Android distribution trust
+
+**What must be fully done.** Produce production catalog/revocation and Android direct-update feeds using WP03 formats. Keep signing custody/rotation and artifact URI/certificate inventory; register per-product desktop auth URI schemes in signed installers.
+
+**Testing requirements.** Real signatures/shards/monotonic revision, current/previous trust, Android certificate match and desktop callback registration from installed packages.
+
+**Completion gate.** WP50 can replace WP32/WP41 fixture keys with production feeds without changing schemas; no backwards dependency on this step.
+
 <a id="rule-wp-53.90"></a>
 
 ### WP-53.90 — Verify the owned artifact and real integration
 
 **What must be fully done.** Pack ArcForges.Update with its verified closure, restore it into clean consumer applications and exercise the complete update lifecycle through the actual installed artifacts. Record exact producer/consumer identities and all UC/UP rule evidence.
 
-**Testing requirements.** Real Tier1 install→staged update→restart→rollback against test-signed feed, with interrupted download/apply, blocked versions, signature corruption and wrong data horizon. Tier2 follows the existing recorded waiver process.
+**Testing requirements.** Real Tier 1 install→staged update→restart→rollback against test-signed feed, with interrupted download/apply, blocked versions, signature corruption and wrong data horizon. Tier 2 follows the existing recorded waiver process.
 
 **Completion gate.** All numbered substeps and package-only updater consumers pass. WP50.02 remains responsible for real product installers, production domains/signing and the full release matrix; no placeholder producer is admitted.
 
@@ -120,12 +130,14 @@ Own desktop update discovery, verified download/delta, staging, safe application
 | Dimension | Impact |
 |---|---|
 | Persistence | Versioned installation update journal and existing migration compatibility interlock; no product-data mutation by updater |
-| Protocol | Signed immutable feed profile in architecture14; lifecycle coordination uses existing local proto |
+| Protocol | Signed immutable feed profile in architecture 14; lifecycle coordination uses existing local proto |
 | Security | Verify trust, hashes, anti-replay and artifact identity before executing any updater action |
 | UI | Background update/pending/deferred/failure/channel consequences with native shell |
 | Recovery | Keep previous verified package and stable launch path until healthy startup; no blind rollback after incompatible migration |
 
 ## 7. Tests and verification evidence
+
+Acceptance includes every amended §5 producer/consumer and WP-53.90 evidence. Current P2-013 contracts/data/runtime rules are tested in the original owner implementation, not a detached explanatory sample.
 
 | Evidence | Produced by |
 |---|---|
@@ -141,7 +153,7 @@ Own desktop update discovery, verified download/delta, staging, safe application
 
 ## 8. Completion gate
 
-Every53.00–53.05 and53.90 gate passes with recorded evidence on the admitted platform set. UP-01–UP-11 and UC-01–UC-10 each resolve to the tests above. Required product/data behavior cannot remain an implementation-time design decision. Production release evidence remains WP50-owned.
+Every 53.00–53.05 and 53.90 gate passes with recorded evidence on the admitted platform set. UP-01–UP-11 and UC-01–UC-10 each resolve to the tests above. Required product/data behavior cannot remain an implementation-time design decision. Production release evidence remains WP50-owned.
 
 ## 9. Dependencies
 

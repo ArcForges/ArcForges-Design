@@ -245,14 +245,14 @@ branch message sequence (immutable, authoritative)
 | # | Rule |
 |---|---|
 | HC-01 | **Compaction never mutates or deletes a stored message.** It produces a `CompactionRecord` — a derived artifact keyed to `(branchId, fromMessageId, toMessageId, compactionModelId, promptVersion)`. The branch is unchanged and re-readable in full. |
-| HC-02 | **A `CompactionRecord` is a derived store** and obeys [DS-01](data-model/03-derived-stores.md#rule-ds-01)…[DS-07](data-model/03-derived-stores.md#rule-ds-07): rebuildable from the messages, never authoritative, and invalidated when its key inputs change. Losing every record costs compute, never content. |
+| HC-02 | CompactionRecord is derived from a frozen branch prefix and hash. Cloud history uses chat.compaction_record; local history uses assistant_compaction; temporary execution uses only ephemeral storage. model 05 owns deterministic window assembly and annex 10 the typed records. Deleting summaries never deletes canonical history or receipts. |
 | HC-03 | **The most recent turns are always verbatim.** A configurable tail — never zero — is never compacted, because the immediate work is what the model most needs exactly. |
 | HC-04 | **The opening intent is retained.** The head of a branch carries what the user actually asked for, and losing it is how a long agent run drifts from its objective. |
 | HC-05 | **Compaction is disclosed.** The user can see that a span was compacted, see the record, and expand the underlying messages. A silently shortened history is indistinguishable from a model that forgot. |
 | HC-06 | **A tool call and its result are compacted as a unit or not at all.** Keeping a call without its result, or a result without its call, produces a transcript the model reads as a failure. |
 | HC-07 | **An approval, a refusal and a user correction are never compacted away.** They are decision points, and a model that loses them re-proposes what the user already refused. |
 | HC-08 | Compaction is operator-funded platform work with its own supplier intent/usage/outcome, no customer capacity/compensation/purchased-credit debit. It runs inside the sole Harness using the pinned permitted model and platformCompaction purpose; it counts toward run call/time limits. A failure or repeated ambiguous supplier call cannot be silently charged to the user. |
-| HC-09 | Compaction failure removes only complete oldest unprotected units, with disclosed omitted span IDs. Opening intent, latest two full user/assistant turns, unresolved tool-call/result units and approval/refusal/correction records remain verbatim. If that protected set plus requested output cannot fit the exact model budget, refuse dispatch with validation.invalid_request/context_budget and ask the user to narrow context or start a new branch. Never truncate inside a protected unit or continue with hidden decision loss. |
+| <a id="rule-hc-09"></a>HC-09 | Compaction failure removes only complete oldest unprotected units, with disclosed omitted span IDs. Opening intent, latest two full user/assistant turns, unresolved tool-call/result units and approval/refusal/correction records remain verbatim. If that protected set plus requested output cannot fit the exact model budget, refuse dispatch with validation.invalid_request with reason context.protected_overflow and ask the user to narrow context or start a new branch. Never truncate inside a protected unit or continue with hidden decision loss. |
 | HC-10 | **A `CompactionRecord` is scoped to its branch.** Branching from a compacted point inherits the records covering the shared prefix; it never inherits a record covering messages the new branch does not contain. |
 | HC-11 | **A `CompactionRecord` is not personal memory** ([HM-03](../requirements/products/arcchat.md#rule-hm-03) there). It is never promoted into durable preference recall, never carried into another conversation, and never survives the branch it belongs to. |
 | HC-12 | **Temporary Chat compacts in memory only.** No `CompactionRecord` is persisted, consistent with the mode's promise ([HM-06](../requirements/products/arcchat.md#rule-hm-06) there) — and the mode still says honestly that the model received the data. |
@@ -311,13 +311,13 @@ approval.decide
 
 | Point | Relative to the barrier | Behaviour |
 |---|---|---|
-| Queued in `waitingCapacity` | **Before** — no reservation exists | Turn ends `cancelled`; nothing to release, nothing to settle |
+| Waiting with `reasonFacet=capacity` | **Before** — no reservation exists | Turn ends `canceled`; nothing to release, nothing to settle |
 | Admitted, intent **not yet committed** | **Before** | Immediate; the reserving transaction is abandoned or its reservation released outright |
 | Admitted, intent **committed**, provider not yet called | **After** | **The reservation is not released.** Dispatch is asked to abort, and the turn resolves through `§6.4`'s ladder like any other unknown — released only once an outcome or the deadline says it is safe ([DB-03](data-model/00-data-model-overview.md#rule-db-03), `§7.6` of the commerce architecture) |
-| Waiting in `waitingDevice` for a device tool | **After** — a `tool_request` exists | The request is withdrawn and expires; a device that already pulled it reports its own outcome, which decides ([CN-03](#rule-cn-03)) |
+| Waiting with `reasonFacet=device` for a device tool | **After** — a `tool_request` exists | The request is withdrawn and expires; a device that already pulled it reports its own outcome, which decides ([CN-03](#rule-cn-03)) |
 | During streaming | **After** | Stream aborted; partial text stored as `interrupted`; verified consumption within the authorised ceiling settles and **only the remainder releases** — completed provider work is not presumed refundable ([MT-09](../requirements/04-commerce-entitlement-and-credits.md#rule-mt-09)) |
 | During an invocation | **After** | Cancellation propagates; the capability's own semantics decide; effect certainty recorded |
-| While awaiting approval | **Before**, for the un-dispatched step | Approval withdrawn; turn ends `cancelled` |
+| While awaiting approval | **Before**, for the un-dispatched step | Approval withdrawn; turn ends `canceled` |
 
 | # | Rule |
 |---|---|
@@ -355,7 +355,7 @@ The asymmetry is the point: **the intent is written before the act, so its absen
 | CR-01 | **A local command log decides recovery only for effects that commit with it.** For an ArcNotes edit on the same device, the log write and the edit are one transaction and absence is proof. For anything crossing a process, a device or a network, it is not, and the design says so rather than relying on a convenient assumption. |
 | CR-02 | The sweeper releases an orphaned **customer** hold at its reconciliation deadline ([UU-03](20-cross-system-lifecycles.md#rule-uu-03) of the cross-system lifecycles). It records a terminal no-later-customer-debit disposition. An unresolved supplier liability remains reserved and reconciled independently ([UC-02](16-billing-and-commerce-architecture.md#rule-uc-02) of the commerce architecture). |
 | CR-03 | **Recovery is verifiable**: after restart, every task is in a valid state with a reason facet, and none is stuck in a transient state ([WP-16.00](../planning/work-packages/16-unified-execution-engine.md#rule-wp-16.00)). |
-| CR-04 | **Task unknownEffect is nonterminal until explicitly resolved, not a synonym for failure.** It has its own reason facet, its own resolution path (`§6.4`) and its own user-visible presentation. Collapsing it into success or failure is what produces either a duplicated effect or a lost one. |
+| CR-04 | Unknown effect is a nonterminal reason facet (waiting with reconciliation facet, or interrupted as appropriate), never a TaskState enum member or synonym for failure. Its explicit reconciliation path is §6.4; unresolved effects cannot be silently classified as success or repeated. |
 
 ### 6.4 Resolving an unknown effect
 
@@ -365,7 +365,7 @@ Resolution is ordered from cheapest and most certain to least, and stops at the 
 |---|---|---|---|
 | 1 | **Consult the declared idempotency** ([FL-08](../requirements/05-ai-and-agent-execution.md#rule-fl-08) of the AI requirements) | The capability declares `Idempotent` | Re-attempt with the same `CommandId`. One effect regardless of how many attempts ([CI-06](contracts/02-local-rpc-operations.md#rule-ci-06)) |
 | 2 | **Ask the owner** | The capability declares a status or reconciliation operation | The owner's answer is authoritative; record it and continue |
-| 3 | **Ask the provider** | A model attempt with a provider request identity ([MT-02](../requirements/04-commerce-entitlement-and-credits.md#rule-mt-02)) | Usage and outcome from the provider's own record; settle against it ([MT-12](../requirements/04-commerce-entitlement-and-credits.md#rule-mt-12)) |
+| 3 | **Ask the provider only where a verified per-request lookup exists** | A model attempt with a supported lookup and recorded provider identity | The selected Workers AI binding has no verified per-request recovery API: use captured final usage/receipts or later reconciled supplier evidence, never invent a query or treat aggregate billing as a request receipt. If no per-attempt evidence answers, continue to step 4. |
 | 4 | **Wait for the deadline** | Nothing above answers | The reconciliation deadline releases the customer hold while retaining the supplier liability ([UU-03](20-cross-system-lifecycles.md#rule-uu-03) of the lifecycles) |
 | 5 | **Surface a decision** | The capability is non-idempotent, has no status operation, and the effect matters | Present what is known and let the user decide ([BE-01](contracts/03-realtime-and-bridge.md#rule-be-01) of the bridge contract). **Never retry silently** |
 
@@ -389,7 +389,7 @@ The stream_chunk and stream_state projection tables live in the per-run CF Durab
 | <a id="rule-sb-01"></a>SB-01 | Presentation is not canonical Chat history. AgentTask responses use task.iteration_output; persistent ordinary ChatTurn responses use chat.iteration_output. Temporary responses use encrypted expiring transient storage excluded from history/search/backups. In all cases a hash/usage/owner receipt precedes customer settlement; only persistent owners create durable Chat message bodies. See the owner lifecycle below. |
 | SB-02 | Each provider attempt has a new stream ID. Retrying or starting a later model invocation cannot concatenate two attempts into one answer. The previous stream identifies its successor where one exists. |
 | SB-03 | Initial limits: 64 KiB per chunk/read, 4 MiB per stream, flush at 250 ms or the chunk bound, ten-minute tail TTL and 24-hour state-marker retention, all bounded validated deployment parameters. Unicode boundary-safe appends update chunk + next offset together. |
-| <a id="rule-sb-04"></a>SB-04 | Read the stable per-run DO projection and C# Task authority through the CF HTTP contract. DO/C# unavailability is explicit; it is never an empty successful stream or fabricated Task completion. |
+| <a id="rule-sb-04"></a>SB-04 | Read the stable per-run DO projection privately and expose C# owner-authorized generated gRPC-Web output frames under annex 10. DO/C# unavailability is explicit; it is never an empty successful stream or fabricated Task completion. |
 | SB-05 | Missing chunks do not determine Task state. Missing/expired stream metadata resolves through the authoritative Task and provider-attempt receipt; it never fabricates `open` indefinitely or a nonexistent final message. |
 | SB-06 | The sweeper marks eviction before removing chunks. A later reader still gets Task state, current attempt, durable output/final-message references and a retry/reconciliation action. State-marker expiry cannot delete Task authority. |
 | SB-07 | A size/time bound sets **truncated**, never `completed`. Generation may continue. The client displays unavailable live output and polls Task status; it requests a final message only when that reference exists. |
@@ -398,15 +398,24 @@ The stream_chunk and stream_state projection tables live in the per-run CF Durab
 
 ### 7.2 Client read contract
 
-`task.readStream(taskId, streamId?, fromOffset)` is the typed CF HTTP exception and returns this bounded JSON object:
+`execution.readOutput` and `execution.watchOutput` in [annex 10](contracts/10-application-scope-and-streams.md) are the sole public output contracts. `task.readStream` is a typed Task-owner compatibility alias, not a JSON HTTP endpoint. ReadOutput returns bounded chunks, position, terminal output when committed, reset state and an authoritative ExecutionProgress snapshot. WatchOutput uses the same generated frames and progress snapshot on opening, owner/attempt changes and final disposition.
 
-```
-{ streamId?, fromOffset, text, nextOffset, streamState,
-  taskState, taskRevision, attemptState?, currentStreamId?,
-  iterationOutputRef?, finalMessageRef?, noAnswerReason?, retryAfter? }
-```
+Output bytes are validated UTF-8 at returned boundaries; the client decodes them for display, not as a second base64 JSON schema. The snapshot binds the owner revision, current attempt/stream and stream state separately. No attempt yet has absent IDs and state `absent`; expired presentation still returns owner state or an explicit unavailability error. A successor resets its own offset and never concatenates with a previous attempt. Terminal output includes its immutable output/final-message reference or explicit no-answer reason. Requesting a final answer without that reference is invalid. Permission and scope are rechecked on every read and reference.
 
-`text` is decoded UTF-8 text, not a Base64 `byte[]`; large artifacts continue to use ResourceRef. A supplied offset must be a returned boundary; invalid or expired ranges have a typed reset action. Omitting stream ID selects the current attempt. An authoritative read returns Task status even when no stream has started or retained data has expired. Permission and workspace checks apply to every read and reference.
+The retired JSON presentation fields have these exact generated replacements; there is no parallel JSON endpoint:
+
+| Former field | Current generated field / recovery rule |
+|---|---|
+| taskId | request.owner.taskId; a Chat turn uses owner.turnId instead |
+| streamId / currentStreamId | progress.streamId and chunks[].streamId; cursor binds the selected stream |
+| fromOffset / nextOffset | chunks[].offset / chunks[].offset + byte length; position.cursor resumes the verified next boundary |
+| text | chunks[].data, UTF-8 decoded only at returned boundaries |
+| streamState | progress.streamState; resetRequired/reset frame handles an expired or invalid cursor |
+| taskState / taskRevision | progress.task.state / revision; Chat uses progress.turn.state / revision |
+| attemptState | progress.attemptState, the current provider attempt's dispatch_state; not a Task state |
+| iterationOutputRef / finalMessageRef | progress.iterationOutput / finalMessage and the committed terminal output |
+| noAnswerReason | progress.noAnswerReason or terminal.noAnswerReason |
+| retryAfter | progress.retryAfterMs, milliseconds; absent means no server retry advice |
 
 | # | Rule |
 |---|---|
@@ -439,13 +448,13 @@ The stream_chunk and stream_state projection tables live in the per-run CF Durab
 | Refused before dispatch — admission, unpriced route, bad request | **No** | **Did not happen** | Fail with the stated reason; release the reservation in full |
 | Connection refused or DNS failure — no request left the host | **No** | **Did not happen** | Retry within budget |
 | Rate limited, response received | Yes, rejected by the provider | **Did not happen** — the provider said so | Honour `retryAfter`; retry within budget |
-| **Timeout before any token** | **Yes** | **Unknown** | `§6.4`: reconcile against the provider's own record before deciding. **Never an automatic retry** |
+| **Timeout before any token** | **Yes** | **Unknown** | `§6.4`: reconcile only against available per-attempt evidence before deciding; aggregate Workers AI billing is not a per-request receipt. **Never an automatic retry** |
 | Timeout mid-stream | Yes | **Unknown**, usage partially known | Store the partial as `interrupted`; reconcile usage; ask the user or the profile before retrying |
 | Response lost after dispatch | Yes | **Unknown** | `§6.4` |
 | Content refused by the provider, response received | Yes | **Happened** — and may be billable | Record as the turn outcome; settle whatever the provider reports |
 | Context too long, rejected before generation | Yes, rejected | **Did not happen** for generation | Compact harder (`§4.6`) and retry once |
 | Model withdrawn | No | **Did not happen** | Fail with a stated reason; **no silent substitution** ([WP-43.05](../planning/work-packages/43-managed-ai-routing-and-metering.md#rule-wp-43.05)) |
-| Provider outage, no route reached | **No** | **Did not happen** | Fall back where policy allows, else fail; release the reservation |
+| Provider outage, no route reached | **No** | **Did not happen** | Fail with a provider-unavailable reason; release only proven pre-dispatch reservations |
 | All routes unavailable | No | **Did not happen** | Fail with a stated reason; page-worthy ([AL-02](13-observability-and-operations.md#rule-al-02) of the observability architecture) |
 
 | # | Rule |
@@ -453,7 +462,7 @@ The stream_chunk and stream_state projection tables live in the per-run CF Durab
 | PF-01 | **A provider outage that never reached a route consumes no credit** ([WP-43.05](../planning/work-packages/43-managed-ai-routing-and-metering.md#rule-wp-43.05)), because nothing was dispatched. An outage *after* dispatch is an `unknown`, and its customer hold is released at the reconciliation deadline while the supplier liability is retained ([UU-03](20-cross-system-lifecycles.md#rule-uu-03) of the lifecycles). |
 | PF-06 | **The dividing line is the dispatch barrier** ([DB-01](data-model/00-data-model-overview.md#rule-db-01) of the data-model overview), not the arrival of bytes. Before it, absence is proof; after it, absence is `unknown`. |
 | PF-07 | **An `unknown` is never retried automatically**, whatever the transport reported. It enters `§6.4`, which resolves it by declared idempotency, an owner status operation, the provider's own record, the deadline, or a user decision — in that order. |
-| PF-02 | **A fallback is a policy decision, not an adapter default**, and the substitution is recorded in the interaction record and shown to the user. |
+| PF-02 | No automatic model/provider fallback exists. Explicit user selection of another admitted Workers AI model creates a separately authorized request; unknown dispatch outcomes still reconcile the original attempt. |
 | PF-03 | **A retry produces a new Attempt inside the same Step, never a new Step** ([EX-09](../requirements/05-ai-and-agent-execution.md#rule-ex-09) there), and the `CommandId` is unchanged because the business action is unchanged ([ID-01](../requirements/05-ai-and-agent-execution.md#rule-id-01) there, [I-085](../requirements/01-normative-glossary-and-invariants.md#rule-i-085)). |
 | PF-04 | **A platform-caused retry is not charged to the user** ([CU-03](../requirements/05-ai-and-agent-execution.md#rule-cu-03) there). A logical AI request whose first provider attempt failed and whose second succeeded is charged for the useful work only. |
 | PF-05 | **Retry safety is declared by the capability owner, never guessed** ([FL-08](../requirements/05-ai-and-agent-execution.md#rule-fl-08) there), which is why the harness never infers idempotency from an operation's name. |
@@ -544,7 +553,7 @@ Implement every turn/context/batching/approval rule above in the [single CF Work
 
 [Client journeys](contracts/07-client-journeys-and-ports.md) is the mode/state authority. RunWorkflow accepts ExecutionOwner(taskId OR turnId). Ordinary ChatTurn can use declared pure reads, retrieval and Web search; it cannot execute any local/cloud/external mutation. An effectful proposal returns a promotion preview and waits for the user's explicit AgentTask creation. Temporary mode cannot be promoted while retaining hidden temporary history; save a reviewed snapshot first. Task pages contain real AgentTasks only. Every shared attempt/lease/stream/tool/financial record carries the exact owner, and mutation admission rechecks owner mode and current descriptor, not a model-supplied effect label.
 
-The durable iterative path is the preceding Task algorithm. Ordinary persistent turns use chat.turn/run/iteration_output and have their own cancellation/finalization projections; no placeholder Task is created. Temporary turns retain only owner/fence/usage/hash/status metadata durably. Their input, output and context body are encrypted in a separate transient store with keys scoped to the conversation, max24hours from creation, at most10MiB total per conversation and1MiB per turn. Close/expiry removes availability immediately and completes key/body/DO purge within1hour; new temporary input cannot extend old content TTL. Deletion/recovery generation invalidates reads even before physical deletion. No transient body enters PG WAL, backup, search, logs, exception text, permanent CompactionRecord or Workflow checkpoint input/output. Activity return values are bounded references/receipts; body handling is inside the activity and transient-store boundary. CF model-provider retention/processing remains honestly disclosed under the service policy.
+The durable iterative path is the preceding Task algorithm. Ordinary persistent turns use chat.turn/run/iteration_output and have their own cancellation/finalization projections; no placeholder Task is created. Temporary turns retain only owner/fence/usage/hash/status metadata durably. Their input, output and context body are encrypted in a separate transient store with keys scoped to the conversation, max 24 hours from creation, at most 10 MiB total per conversation and 1 MiB per turn. Close/expiry removes availability immediately and completes key/body/DO purge within 1 hour; new temporary input cannot extend old content TTL. Deletion/recovery generation invalidates reads even before physical deletion. No transient body enters PG WAL, backup, search, logs, exception text, permanent CompactionRecord or Workflow checkpoint input/output. Activity return values are bounded references/receipts; body handling is inside the activity and transient-store boundary. CF model-provider retention/processing remains honestly disclosed under the service policy.
 
 Temporary retries reuse original command/turn/attempt identity and reconcile; they cannot re-run possibly sent inference. After body loss/expiry the turn resolves interrupted/expired with retained usage receipt, not a fabricated answer. Explicit Save previews currently available user-selected messages/attachments and origin, creates a new persistent conversation atomically under fresh consent, then closes the temporary source. An already unavailable body cannot be recovered from billing receipts.
 

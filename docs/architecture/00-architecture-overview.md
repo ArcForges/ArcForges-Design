@@ -17,7 +17,7 @@ Five constraints determine almost every structural decision downstream.
 |---|---|---|
 | AC-01 | **State has exactly one owner** | No shared writable business database; no central service holding product state; caches record source and revision and are never write points |
 | <a id="rule-ac-02"></a>AC-02 | **Calls cross boundaries as strongly typed contracts** | No catch-all `Invoke(string, object)`; no dictionary payloads; no runtime-discovered interfaces on the AOT path |
-| AC-03 | **Public business RPC uses handwritten proto over gRPC/gRPC-Web** | Typed interoperable C#/TS clients, explicit standard HTTP exceptions, authenticated bounded reads and observable error semantics |
+| AC-03 | Public business RPC uses handwritten proto and binary gRPC-Web for C#, TypeScript and Kotlin | Generated clients and one operation/error/stream vocabulary; only declared standard HTTP exceptions remain |
 | <a id="rule-ac-04"></a>AC-04 | **Every production main path must be statically analysable where it is an AOT deliverable** | Source generation everywhere; no reflection fallback; no runtime code generation on the desktop main path |
 | AC-05 | **Failure is recoverable, and permission is validated at the final execution point** | Journals, revisions, idempotency, compensation — and owner-side re-authorization on every invocation |
 
@@ -42,8 +42,8 @@ Private parser/extension children: own parent ↔ gRPC Named Pipe/UDS
 | Path | Technology | Carries |
 |---|---|---|
 | **Private parent/child process boundary** | Authored proto + generated native gRPC over Named Pipe / UDS | Restricted parser/extension controls only; product handlers execute in process |
-| **Public request/response** | ASP.NET Core Minimal API server; generated gRPC client for C#, generated gRPC-Web SDK for TypeScript | Commands, queries, durable state, uploads and downloads |
-| **Public realtime** | gRPC hint polling | Presence, notifications, progress, chat deltas, remote wake-up |
+| **Public request/response** | ASP.NET Core gRPC-Web server; generated C#/TS/Connect Kotlin clients | Commands, queries, durable state, uploads and downloads |
+| **Public realtime** | Generated Event/Execution server streams with unary Poll/ReadOutput recovery | Bounded hints and output; owner state remains durable |
 
 **Prohibited:** public TCP listeners for local business IPC; authoritative mutations carried only by lossy hints; C++ pointers in RPC; bypassing the owner with direct database writes. Local Kestrel HTTP/2 over authenticated named pipes/UDS is the selected gRPC transport.
 
@@ -51,10 +51,10 @@ Private parser/extension children: own parent ↔ gRPC Named Pipe/UDS
 
 | Path | Route | Rule |
 |---|---|---|
-| **Local capability** | application-scoped capability registry ↔ professional product, same machine | Strongly typed, owner-authorised, never remote UI |
+| **Application capability** | host registry → typed Application handler within that process | Owner-authorized; no product-to-product IPC or remote UI |
 | **Cloud data** | Each product ↔ Cloud directly | **ArcChat is not a gateway** (**[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)**) |
-| **Remote agent** | Mobile/Web → Cloud → **durable `ToolRequest`** → ArcChat Desktop pulls, re-authorises, executes → idempotent `ToolResult` | **Cloud never connects to localhost, a pipe, a socket or local stdio** (**[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)**) |
-| **Handoff** | Product → product, user-directed | Resource reference plus deep link; no orchestration needed |
+| **Remote agent** | Mobile/Web → Cloud → **durable `ToolRequest`** → the explicitly targeted owning application pulls, re-authorises, executes → idempotent `ToolResult` | **Cloud never connects to localhost, a pipe, a socket or local stdio** (**[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)**) |
+| **Own-app navigation** | Embedded assistant → its owner Application handler in process | Verified resource reference and open intent; cross-product collaboration is future-only |
 
 ---
 
@@ -90,7 +90,7 @@ Fixed by **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**, e
 
 | Host | Mode | Notes |
 |---|---|---|
-| **ArcChat / ArcNotes / ArcScope / ArcSlate desktop** | **Native AOT** | Trim/AOT-safe dependency rules; real publish proof per RID per release |
+| **ArcNotes / ArcScope / ArcSlate desktop** | **Native AOT** | Trim/AOT-safe dependency rules; real publish proof per RID per release |
 | **ArcForges Cloud** | **ASP.NET Core Native AOT modular monolith** | Native AOT is mandatory; every dependency and real adapter participates in publish/run proof |
 | **ArcChat Mobile — Android** | **Kotlin/Jetpack Compose** | Pinned Kotlin/Jetpack Compose and native modules; release artifact inspected and exercised on a real Android device |
 | **ArcForges Web** | **React/TypeScript; Node.js/npm build tooling** | Production browser matrix; static public pre-rendering; [P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008) |
@@ -163,7 +163,7 @@ Private parser/extension children: own parent ↔ gRPC Named Pipe/UDS
 |---|---|
 | Commands within one document | Strongly consistent under a local transaction |
 | Multiple documents in one product | Per-document transactions coordinated by an application-level saga |
-| same-application | Eventually consistent: sagas, idempotent commands, compensation, visible state |
+| External/store boundary | Explicit outbox/saga, idempotency and visible recovery; same-store commands remain atomic |
 | Public HTTP | A success response means the server completed or accepted the request as defined; long work returns a `TaskHandle` |
 | Realtime | Visibility only, never the sole source of truth; gaps backfill by revision/sequence over HTTP |
 | Cross-device | The sync protocol plus revisions; **synchronising a database file is prohibited** |
@@ -206,7 +206,7 @@ Every write command carries at minimum `CommandId`, the target identity, `Expect
 | Document | Scope |
 |---|---|
 | [`01-solution-and-project-layout.md`](01-solution-and-project-layout.md) | Repository layout, project boundaries, reference direction, licence boundaries, architecture tests |
-| [`02-contracts-and-protocols.md`](02-contracts-and-protocols.md) | Contract split (**[D-009](../decisions/phase-1-foundation-decisions.md#rule-d-009)**), the same-application semantic model, versioning and compatibility |
+| [`02-contracts-and-protocols.md`](02-contracts-and-protocols.md) | Contract split (**[D-009](../decisions/phase-1-foundation-decisions.md#rule-d-009)**), the shared semantic model, versioning and compatibility |
 | [`03-local-ipc-and-process-model.md`](03-local-ipc-and-process-model.md) | gRPC, transports, private helper registration, authentication and routing, health, backpressure |
 | [`04-desktop-application-architecture.md`](04-desktop-application-architecture.md) | Avalonia host, MVVM, threading, multi-window, AOT constraints, lifecycle |
 | [`05-cloud-architecture.md`](05-cloud-architecture.md) | Native AOT modular business host, module boundaries, host pipeline, persistence, outbox, realtime, background work |
@@ -234,7 +234,7 @@ Answerable before any feature merges:
 
 **Local RPC** — Is every operation in the pinned handwritten proto set with generated messages/services/clients and explicit listener registration? Do Named Pipe/UDS peer bootstrap and reverse callbacks work in the actual AOT artifact? Are limits, cancellation, command identity, correct revision kind and previous-client compatibility verified without runtime discovery or proxy fallback?
 
-**Public HTTP** — Generated gRPC client for C# and generated proto gRPC-Web SDK for TypeScript? C# source-generated serialization and TS runtime validation agree? No reflection fallback in C#? Are verb, status, cache and version semantics correct? Do large objects use a stream or a resource reference?
+**Public RPC** — Are C#/TS/Kotlin package clients using binary gRPC-Web and matching descriptors/metadata? Do trailers, 64-bit values, scope, cancellation and output recovery agree? HTTP exceptions remain explicitly named.
 
 **Realtime** — Used only for realtime need, never as the sole durable fact? C# and TS payloads generated from the same authored contract? Recoverable through HTTP by revision or sequence after a disconnect?
 
@@ -280,3 +280,7 @@ Answerable before any feature merges:
 | **[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)** | Cloud topology and the durable local-action model |
 | **[D-011](../decisions/phase-1-foundation-decisions.md#rule-d-011)** | The implementation nine-repository target under [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) |
 | **[V-03](../assurance/phase-1-official-verification.md#rule-v-03)**, **[V-04](../assurance/phase-1-official-verification.md#rule-v-04)**, **[V-05](../assurance/phase-1-official-verification.md#rule-v-05)** | The AOT evidence underpinning the matrix |
+
+## Retired runtime concepts
+
+Standalone ArcChat desktop, cross-product Hub/discovery/SSO/handoff/federation, public native-gRPC clients, OpenAPI business generation, SignalR, public AI WebSockets, MAUI/RN Mobile, PostgreSQL business storage and a monorepo build are historical baselines superseded by P2-009…P2-013. Current professional hosts embed Platform assistant packages, retain separate history/session/database state and communicate directly with Cloud. Private helper gRPC and standardized external MCP/device protocols remain explicit different boundaries. Historical decision/review text is provenance, not an active work package.

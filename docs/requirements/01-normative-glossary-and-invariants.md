@@ -1,5 +1,5 @@
 # ArcForges Normative Glossary and Invariant Catalogue
-> Current scope amendment: **[P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
+> Effective scope: P2-012 and P2-013 amend the technology and application ownership below. **[P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Requirements — cross-cutting, consumed by every requirements, architecture, assurance and planning document
@@ -31,7 +31,7 @@ This document is the single normative vocabulary for ArcForges. Every other auth
 | **Device** | domain, wire | A registered client machine or handset within a realm. |
 | **Installation** / `InstallationId` | domain | One installed copy of one product on one device. Long-lived. |
 | **Instance** / `InstanceId` | domain, wire | One running process of one product. Per-launch. |
-| **App** / `AppId`, `ProductId` | domain, wire | The stable product identity: `arcchat`, `arcnotes`, `arcscope`, `arcslate`. Never a process id, never a product-scope, never a licence unit. |
+| **App** / `AppId`, `ProductId` | domain, wire | The stable product identity: `arcnotes`, `arcscope`, `arcslate`, `companion`. Never a process id, never a product-scope, never a licence unit. |
 | **Window** | UI | An OS window belonging to an Instance. An Instance may own several. |
 | **Session** | domain, wire | An authenticated interaction lifetime. Distinct from Connection, from Device and from Subscription. |
 | **Connection** | wire | A transport-level link (Named Pipe/UDS stream, HTTP connection, realtime connection). Carries no identity of its own. |
@@ -96,7 +96,7 @@ The ArcForges execution vocabulary is a strict hierarchy. No level may be collap
 | **Step** | domain, wire | One planned unit inside a Run. |
 | **Attempt** / `AttemptId` | domain, wire | One execution try of a Step. Distinct from `CommandId`. |
 | **Task Owner** | domain | The Cloud agent module holding authoritative Task/Run/Step/Attempt state. A desktop tool owner is not a Task Owner. |
-| **Orchestrator** | domain | The single Cloud harness sequencing agent work and authorized tools. ArcChat presents tasks and bridges local tools; it does not run another orchestrator. |
+| **Orchestrator** | domain | The single Cloud harness sequencing agent work and authorized tools. Each application's assistant presents its tasks and bridges only its own local tools; it does not run another orchestrator. |
 | **Execution Location** | domain | Cloud for the AI runtime. Desktop/Cloud/Hybrid labels on a task describe tool locality only; they never select another model loop. |
 | **TaskHandle** | wire | A stable Cloud Agent Task reference for query/correlation, never an RPC connection or product job identity. |
 | **TaskSnapshot** | wire | An authoritative point-in-time projection of Task state, retrievable over HTTP. |
@@ -275,7 +275,7 @@ Every active entry is binding where its concepts are in current product scope. A
 | <a id="rule-i-028"></a>I-028 | Native ArcNotes editor/working cache ≠ WebView shell; acknowledged Cloud revision ≠ pending local edit |
 | <a id="rule-i-029"></a>I-029 | ArcScope Report ≠ ArcNotes Document |
 | <a id="rule-i-030"></a>I-030 | Product AI surface ≠ agent runtime; all products use the single Cloud harness |
-| <a id="rule-i-031"></a>I-031 | ArcChat application-scoped Search ≠ a central ArcForges database |
+| <a id="rule-i-031"></a>I-031 | Own-application assistant search ≠ a central ArcForges database |
 | <a id="rule-i-032"></a>I-032 | Upstream product reference ≠ ArcSlate runtime architecture |
 
 ### 7.3 Capability, context and resource
@@ -742,7 +742,7 @@ Every active entry is binding where its concepts are in current product scope. A
 |---|---|---|
 | `ArcCanvas`, `ArcMusic`, `ArcImage`, `ArcVideo` | `SUPERSEDED` product names (**[D-002](../decisions/phase-1-foundation-decisions.md#rule-d-002)**) | No replacement canvas/slides product or capability; nothing; `ArcScope`; `ArcSlate` |
 | "Workspace" meaning a panel layout | Collides with the cloud tenancy boundary | **Layout** |
-| Bare "Project" in same-application text | Three incompatible product meanings | `ArcChat.Project` / `ArcScope.Project` / `ArcSlate.Project` |
+| Bare "Project" in shared family text | Three incompatible product meanings | `ArcChat.Project` / `ArcScope.Project` / `ArcSlate.Project` |
 | Bare "Scope" | Eight distinct meanings exist | Name the scope explicitly: Knowledge Scope, Sync Scope, Permission Scope, Policy Scope, Product Scope, Search Scope, Egress Scope, Resource Scope |
 | "ArcForges Suite 2.0" as a version | No mandatory suite release train | Per-product versions plus an optional release campaign name |
 | "Central desktop service", `ArcForgesService.exe` | Prohibited architecture | application-owned assistant |
@@ -751,7 +751,7 @@ Every active entry is binding where its concepts are in current product scope. A
 | "Cloud may remain JIT" | Superseded by [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) | "C# Cloud publishes Native AOT" |
 | "A realtime connection is durable authority" | Hints are projections | "Reconcile using the typed authoritative read" |
 | Waffo Pancake and every Waffo-specific mechanic | `SUPERSEDED` provider (**[D-005](../decisions/phase-1-foundation-decisions.md#rule-d-005)**) | Paddle (MoR) and Payoneer (payout destination) |
-| "License key unlock" in ArcChat Mobile | Prohibited by Apple 3.1.1 and **[D-022](../decisions/phase-1-foundation-decisions.md#rule-d-022)** | Cloud-resolved entitlement |
+| "License key unlock" in Android companion | Excluded by the accepted Android companion entitlement/distribution policy and **[D-022](../decisions/phase-1-foundation-decisions.md#rule-d-022)** | Cloud-resolved entitlement |
 | `InvokeAsync(string, object)` / `Dictionary<string,object>` capability calls | Bypasses contracts, permissions and versioning | Strongly typed capability interfaces |
 | `ArcForges.Foundation.Document`, `.VideoTimeline`, `.TelemetrySession` | Shared foundation must not hold domain | Product-owned domain types |
 | `ArcProductBase` domain hierarchy | Product classification is not inheritance | Independent domains + platform contracts |
@@ -793,7 +793,7 @@ The glossary is enforced, not merely published.
 | Current document | Relationship |
 |---|---|
 | [Invariant Coverage](../assurance/invariant-coverage.md) | Maps the current catalogue to architecture, verification and implementation owners |
-| [Contracts, Protocols and the same-application Semantic Model](../architecture/02-contracts-and-protocols.md) | Applies the canonical vocabulary to same-application contracts |
+| [Contracts, Protocols and the Application Semantic Model](../architecture/02-contracts-and-protocols.md) | Applies the canonical vocabulary to same-application contracts |
 | **[D-018](../decisions/phase-1-foundation-decisions.md#rule-d-018)** | The requirement that this document exists and gates detailed specification |
 | **[V-02](../assurance/phase-1-official-verification.md#rule-v-02)** | The MCP term-collision requirement discharged in §9 |
 

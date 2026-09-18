@@ -24,7 +24,7 @@ Own-application composition and state, public binary gRPC-Web, helper-only local
 
 ## 4. Projects, directories, files and major types affected
 
-Use the exact projects assigned to this WP in [architecture27](../../architecture/27-platform-projects-and-application-assistants.md#2-desktopplatform-tree-and-actual-projects) and its product/Cloud/Mobile trees. Implement their owned named services, typed records, schema migrations and tests; do not introduce a new repository, generic SQL facade or shared runtime to connect them. Versioned generated schema definitions remain in Contracts.
+Use the exact projects assigned to this WP in [architecture 27](../../architecture/27-platform-projects-and-application-assistants.md#2-desktopplatform-tree-and-actual-projects) and its product/Cloud/Mobile trees. Implement their owned named services, typed records, schema migrations and tests; do not introduce a new repository, generic SQL facade or shared runtime to connect them. Versioned generated schema definitions remain in Contracts.
 
 ## 5. Required implementation work
 
@@ -67,7 +67,7 @@ Use the exact projects assigned to this WP in [architecture27](../../architectur
 <a id="rule-wp-08.04"></a>
 ### WP-08.04 — Bounds and concurrency
 
-**What must be fully done.** Retain16active/64queued bounded calls, deadlines and parent-owned callback channels; no recursive saturated callback lane.
+**What must be fully done.** Retain 16 active/64 queued bounded calls, deadlines and parent-owned callback channels; no recursive saturated callback lane.
 
 **Testing requirements.** Queue/memory bound, fairness, timeout and typed overload.
 
@@ -85,7 +85,7 @@ Use the exact projects assigned to this WP in [architecture27](../../architectur
 <a id="rule-wp-08.06"></a>
 ### WP-08.06 — Brokered large data
 
-**What must be fully done.** Use annex09 sandbox resources/buffers and bounded verified chunks, parent-authorized only. No direct product-to-product transfer ticket.
+**What must be fully done.** Use annex 09 sandbox resources/buffers and bounded verified chunks, parent-authorized only. No direct product-to-product transfer ticket.
 
 **Testing requirements.** Wrong resource grant, range/hash/expiry/cancel and orphan cleanup.
 

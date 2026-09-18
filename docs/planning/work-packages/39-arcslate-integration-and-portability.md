@@ -66,7 +66,7 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 | Location | Change |
 |---|---|
-| `src/ArcSlate/ArcSlate.LocalRpc/` | Capability registration: query, edit, render, export and artifact capabilities |
+| `src/ArcSlate/ArcSlate.AssistantIntegration/` | Capability registration: query, edit, render, export and artifact capabilities |
 | `src/ArcSlate/ArcSlate.ImportExport/` | Collect and consolidate, portable package, interchange import and export |
 | `src/ArcSlate/ArcSlate.CloudClient/` | Sync scope with project data synced and heavyweight media handled explicitly |
 | `src/ArcSlate/ArcSlate.Application/` | Context provision, relink and media resolution services |

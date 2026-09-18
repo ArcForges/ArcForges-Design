@@ -7,7 +7,7 @@ P2-012 current implementation authorities: [Physical D1 mapping, fixed plans and
 > Governing authority: [`00-data-model-overview.md`](00-data-model-overview.md), [`../05-cloud-architecture.md`](../05-cloud-architecture.md) `§4`, `§5`
 > Companions: [`../16-billing-and-commerce-architecture.md`](../16-billing-and-commerce-architecture.md), [`../08-security-architecture.md`](../08-security-architecture.md)
 
-One D1 database, one schema per module ([PS-01](../05-cloud-architecture.md#rule-ps-01)). A module owns its schema exclusively: no other module reads or writes its tables, and cross-module reference is by identifier plus a published module API ([MD-02](../05-cloud-architecture.md#rule-md-02), [MD-03](../05-cloud-architecture.md#rule-md-03)).
+One D1 database, one logical schema per module (physical table prefixes under model 04, not PostgreSQL schemas) ([PS-01](../05-cloud-architecture.md#rule-ps-01)). A module owns its schema exclusively: no other module reads or writes its tables, and cross-module reference is by identifier plus a published module API ([MD-02](../05-cloud-architecture.md#rule-md-02), [MD-03](../05-cloud-architecture.md#rule-md-03)).
 
 Notation is defined in [`00-data-model-overview.md`](00-data-model-overview.md) `§2`.
 
@@ -15,21 +15,22 @@ Notation is defined in [`00-data-model-overview.md`](00-data-model-overview.md) 
 
 ## 1. Schema map
 
-| Schema | Module | Aggregate roots |
+| Schema | Module | Aggregates and owned records |
 |---|---|---|
 | `identity` | Identity | `user`, `auth_identity`, `session` |
 | `workspace` | Workspace | `workspace` — **no membership table** ([WO-01](#rule-wo-01)) |
 | `device` | Devices | `device`, `installation` |
-| `entitlement` | Entitlement | `grant`, `entitlement_snapshot`, `usage_counter`, `service_term`, `capacity_bucket`, `capacity_policy_period`, `capacity_reservation` |
+| `entitlement` | Entitlement | `grant`, `snapshot`, `usage_counter`, `service_term`, `capacity_bucket`, `capacity_policy_period`, `capacity_reservation` |
 | `commerce` | Commerce | `billing_account`, `order`, `subscription`, `credit_lot`, `provider_event`, `logical_ai_request`, `provider_attempt`, `attempt_usage`, `supplier_cost_entry`, `customer_settlement` |
 | `notes` | Notes | `notebook` (owns `folder`), `document` (owns `block` and document metadata), `tag`, `property_definition`, `saved_view`; immutable revision records |
 | `slate` | ArcSlate Cloud | Revisioned metadata replicas; native working authority remains local |
 | `chat` | Chat | `conversation`, `message` and their committed content; Task owns iteration output, CF DO owns transient stream projection |
-| `task` | Task | `task`, `automation` |
+| `task` | Task | `task`, `automation_definition`, `automation_occurrence` |
 | `agent` | Agent | `agent_profile`, `model_descriptor`, `tariff_version`, `supplier_price_version` |
 | `sync` | Sync | `sync_scope`, `change` |
 | `resource` | Resource | `cloud_object`, `upload_session` |
-| `search` | Search | *(derived — see [`03-derived-stores.md`](03-derived-stores.md))* |
+| `search` | Search | inference_job receipts; derived indexes are separately rebuildable |
+| `package_catalog` | PackageCatalog | publisher, package, version, review, revocation |
 | `notification` | Notification | `notification`, `push_registration` |
 | `policy` | Policy | `policy_bundle` |
 | `scope` | ArcScope Cloud | `simulation_definition`, `simulation_run`, `simulation_segment` (`§8.3`) |
@@ -115,7 +116,7 @@ These exist once and are used by every module. They are the mechanism behind [TX
 | `available_at` | `instant NN` | Backoff scheduling |
 
 - `IX (state, available_at)` — the only claim path
-- **Constraint** — acquisition conditionally updates `leased_until`, holder and `fence_token` together. A stale worker may still run after expiry but cannot commit an effect: every publication locks and validates the current lease and fence inside that same transaction. Network uncertainty is handled by the dispatch barrier, not by the lease alone.
+- **Constraint** — acquisition conditionally updates `leased_until`, holder and `fence_token` together. A stale worker may still run after expiry but cannot commit an effect: every publication guards the current lease and fence in its registered D1 batch. Network uncertainty is handled by the dispatch barrier, not by the lease alone.
 
 ---
 
@@ -131,7 +132,7 @@ These exist once and are used by every module. They are the mechanism behind [TX
 | `state` | `enum(active, restricted, suspended, pendingDeletion, deleted) NN` | |
 | `created_at` | `instant NN` | |
 | `deletion_requested_at` | `instant?` | Starts the grace period |
-| `rev` | `rev NN` | |
+| `rev` | `rev NN` | Profile and credential-lifecycle guard |
 
 - `IX (realm_id, state)`
 - **Constraint** — a `deleted` user retains the row with all personal fields cleared; the identifier is never reused ([ID-05](00-data-model-overview.md#rule-id-05))
@@ -144,12 +145,19 @@ These exist once and are used by every module. They are the mechanism behind [TX
 | `user_id` | `id NN` | `FK →` `identity.user`; restrict |
 | `method` | `enum(passkey, emailCode, password, oidc) NN` | |
 | `subject` | `text NN` | Credential identifier — for passkey, the credential id |
-| `public_key` | `text?` | Passkey only |
-| `sign_count` | `bigint?` | Passkey replay defence |
+| `public_key` | `blob?` | Passkey COSE public-key bytes only |
+| `user_handle` | `blob?` | Stable opaque WebAuthn user handle, required for passkey |
+| `backup_eligible`, `backup_state` | `bool?` | Passkey BE/BS flags; backup_state requires backup_eligible |
+| `transports` | `json?` | Validated WebAuthn transport list; hint only, never authentication authority |
+| `sign_count` | `bigint?` | Passkey counter observation; zero/synced counters follow the security 21 backup-aware policy, never unconditional account lockout |
 | `label` | `text?` | User-visible name for the credential |
 | `created_at` | `instant NN` | |
 | `last_used_at` | `instant?` | |
 | `revoked_at` | `instant?` | |
+| `realm_id` | `id NN` | Configured realm, part of provider identity uniqueness |
+| `provider_id` | `text NN` | Official passkey/email provider key or activated self-host provider |
+| `password_hash` | `text?` | Versioned salted password verifier only for password; null otherwise |
+| `rev` | `rev NN` | Credential mutation guard |
 
 - `UQ (realm_id, provider_id, subject)` — one configured-provider credential belongs to one user; password stores a versioned salted hash, OIDC subject is the verified issuer subject
 - `IX (user_id, revoked_at)` — listing a user's credentials
@@ -190,7 +198,14 @@ These exist once and are used by every module. They are the mechanism behind [TX
 | `session_policy_version` | `text NN` | Issuance policy reference; current revocation/tighter security policy still enforced |
 | `refresh_generation` | `int?` | Native bearer only; reused superseded generation revokes the family |
 | `step_up_at` | `instant?` | When step-up was last satisfied |
-| `step_up_classes` | `text[]` | Which operation classes the step-up covers |
+| `step_up_classes` | `JSON TEXT` | Which operation classes the step-up covers |
+| `access_token_hash` | `text?` | Unique hash for nativeBearer; null for browserCookie |
+| `access_expires_at` | `instant?` | Required with native access hash |
+| `csrf_hash` | `text?` | Required for browserCookie; secret absent from storage |
+| `purpose` | `AuthPurpose NN` | cancelDeletion limited API allowlist |
+| `auth_epoch`, `recovery_generation`, `rev` | `bigint NN` | Current account/session and restore fences |
+| `family_id` | `id?` | Native refresh family, required with refresh hash |
+| `product_id` | `text NN` | Closed ProductId; installation binding |
 
 - `IX (user_id, revoked_at, expires_at)` — active-session listing and mass revocation
 - `IX (device_id)` — device revocation cascade
@@ -198,9 +213,9 @@ These exist once and are used by every module. They are the mechanism behind [TX
 - **Exclusive credential check:** nativeBearer requires refresh hash/generation and null browser fields; browserCookie requires handle hash/origin/idle expiry and null refresh fields. The server accepts no browser cookie on the native bearer scheme.
 - **Native constraint:** presenting a superseded refresh generation revokes the family and raises a security audit event.
 - **Browser constraint:** exact origin, unrevoked user/device/installation/session, absolute expiry and idle expiry are checked before authorization. The random handle is issued only in a host-only HttpOnly cookie and stored as a hash; no plaintext refresh token is stored for the browser.
-- **Browser creation:** verified authentication consumes its one-use pre-auth challenge and creates/validates the lowest-trust browser device and installation through the owning modules, then creates the session in the same enlisted transaction. Follow the declared Identity → Device lock order; the browser cannot supply a trusted device assertion. Lost login responses may require reauthentication; they never cause an operation replay with increased authority.
+- **Browser creation:** verified authentication consumes its one-use pre-auth challenge and creates/validates the lowest-trust browser device and installation through the owning modules, then creates the session in the same enlisted transaction. Follow the declared Identity → Device statement order; the browser cannot supply a trusted device assertion. Lost login responses may require reauthentication; they never cause an operation replay with increased authority.
 - **Activity:** update idle expiry with a conditional write only for an unrevoked, currently unexpired session, bounded by absolute expires_at. Concurrent requests cannot revive expired/revoked rows; passive hint polls/CF stream frames do not extend session life. Logout/revocation sets revoked_at before cookie deletion and terminates live connections. Already committed commands keep their recorded result.
-- **Replica/restore:** every Cloud replica validates the same store. Database restore invalidates browser sessions under the existing security recovery procedure; explicit hashed CSRF tokens and session/pre-auth state support antiforgery across replicas. Authentication needs no replica affinity or in-memory-only session authority; business transport uses gRPC-Web unary reads; AI presentation follows the CF WS/HTTP contract.
+- **Replica/restore:** every Cloud replica validates the same store. Database restore invalidates browser sessions under the existing security recovery procedure; explicit hashed CSRF tokens and session/pre-auth state support antiforgery across replicas. Authentication needs no replica affinity or in-memory-only session authority; business reads/control and AI presentation use the generated binary gRPC-Web unary/server-streaming contracts.
 - **Cleanup:** expired handles and pre-auth challenges are purged by bounded Identity jobs after the security retention interval; secret hashes never enter application logs. User/device purge follows existing session FK/cascade rules.
 
 
@@ -216,14 +231,48 @@ These exist once and are used by every module. They are the mechanism behind [TX
 | `created_at` / `expires_at` | `instant NN` | Short server-policy lifetime; indexed expiry cleanup |
 | `attempts` / `max_attempts` | `int NN` | Atomically bounded, with existing rate-limit keys |
 | `consumed_at` | `instant?` | One-way terminal consumption; no client reset |
+| `csrf_hash` | `text NN` | Hash of origin-bound preauthentication antiforgery secret |
 
 The row plus its separate cookie binding and antiforgery validation bind a browser challenge; a flow ID alone grants no authority. Verify the existing method proof, then atomically compare the unconsumed/unexpired row, consume it and create the session/device in the registered transaction family. Duplicate completions fail safely. Expired/consumed rows are purged under the short challenge retention policy; logs never contain challenge proofs or binding secrets. Session bootstrap does not allocate an unbounded flow on every GET: beginAuthentication creates one under abuse limits. Explicit CSRF/session state is shared in D1; no framework Session/cookie-auth serialization is required.
 
 ### `identity.step_up_challenge`, `identity.recovery_flow`
 
+| Table | Required fields / constraints |
+|---|---|
+| identity.step_up_challenge | challenge_id:id PK; user_id/session_id:id FK NN; operation_class/target_hash/method:text NN; proof_hash:hash NN; state:enum(pending,proved,consumed,expired,denied) NN; attempt_count:int NN CHECK 0..5; created_at/expires_at:instant NN; consumed_at:instant?; auth_epoch/recovery_generation:bigint NN; rev:rev NN; IX(session_id,expires_at). |
+| identity.recovery_flow | flow_id:id PK; realm_id:id NN; user_id:id?; method:RecoveryMethod NN; proof_hash:hash NN; replacement_challenge:blob?; state:enum(pending,proved,completed,expired,denied) NN; attempt_count:int NN CHECK 0..5; rate_limit_key:text NN; created_at/expires_at:instant NN; completed_at:instant?; auth_epoch/recovery_generation:bigint NN; rev:rev NN; IX(expires_at). No credential replacement before bound proof. |
+
+
+
 Short-lived rows with `expires_at`, an attempt counter, and a rate-limit key. Both are swept on expiry. A recovery flow records every state transition for the audit trail, because recovery is the highest-value attack surface in the system.
 
 ---
+
+<a id="account-state-and-proof-constraints"></a>
+### Account proofs and lifecycle records
+
+User/profile and credential columns are defined above once; avatar changes enlist Resource when required. Provider configuration is versioned and references deployment secrets. Workspace enforces UQ(realm_id,owner_user_id). Official enrollment creates no service grant; explicit sourced grants are unique by owner/source action, not session or installation.
+
+| Identity-owned record | Required fields and constraints |
+|---|---|
+| spent_refresh | token_hash:hash PK; session_id/family_id:id FK NN; generation:bigint NN; consumed_at/family_expires_at:instant NN; UQ(family_id,generation). Retain through family expiry plus 60-second skew. Rotation guards the family revision, inserts the spent hash and replaces current hash atomically. |
+| recovery_code | code_hash:hash PK; set_id/user_id:id NN; issued_at:instant NN; consumed_at/invalidated_at:instant?; IX(user_id,set_id). One live set per user; consumption requires both code and set active. |
+| api_token | token_id:id PK; user_id/workspace_id:id FK NN; secret_hash:hash UNIQUE NN; name:text NN; scopes:canonical JSON array of exact operation IDs NN; created_at/expires_at:instant NN; last_used_at/revoked_at:instant?; rev:rev NN; auth_epoch/recovery_generation:bigint NN; IX(user_id,revoked_at). No reusable plaintext. |
+| security_flow | flow_id:id PK; kind/purpose:Key NN; provider:text?; user_id/installation_id/device_id:id?; origin:text?; proof_hash/target_payload_hash:hash NN; expires_at:instant NN; attempts:int NN; consumed_at:instant?; payload_proto:typed flow payload NN. Native authorization code rows are identity.native_authorization; this coordinator references flow_id, never stores a second code. Other kinds are enrollment, emailChange, providerCallback, deletionReauth. Consumption and owner/session effect share one batch. |
+| device remote policy | device.remote_policy: device_id:id PK/FK; allowed_capabilities/local_confirmation_capabilities:canonical Key arrays NN; rev:rev NN. Device-owned, not a heartbeat claim. |
+| workspace data deletion | workspace.data_deletion: deletion_id:id PK; workspace_id:id FK NN; preview_hash:hash NN; captured_revision:rev NN; state:enum(pending,running,completed,failed) NN; owner_job_inventory:canonical JSON of owner/job/receipt references NN; completed_at:instant?; rev:rev NN. Bounded jobs retain restartable progress, purge fence and resource release receipts. |
+
+Account proof changes and their Notification outbox are one Identity + Notification shared unit; profile avatar changes additionally enlist Resource/Entitlement. Workspace data deletion uses the existing owner content/reference-release shared family per batch and a Workspace coordinator outbox, never a transaction spanning all content and object storage. Security flow completion that creates a session uses the authentication family. The independently retained safety receipts in deployment architecture fence post-restore reuse and access resurrection.
+
+
+### Native authorization and operator records
+
+| Table | Fields / constraints |
+|---|---|
+| identity.native_authorization | flow_id:id PK; realm_id:id NN; installation_id:id NN; client_id/redirect_uri/state_hash/pkce_challenge:text NN; code_hash:text? UNIQUE; user_id/session_id:id?; created_at/expires_at:instant NN; code_expires_at/consumed_at:instant?; attempt_count:int NN CHECK 0..5; rev:rev NN. Exact code/PKCE/origin/installation guarded consumption creates the session atomically; no plaintext code/verifier. |
+| identity.operator_session | session_id:id PK; provider_id/subject/tenant_id:text NN; handle_hash:text UNIQUE NN; issued_at/expires_at:instant NN; revoked_at:instant?; auth_epoch/recovery_generation:bigint NN. Customer credential scheme cannot read it. |
+| identity.operator_access | provider_id/subject/role:text composite PK; granted_by:text NN; expires_at/revoked_at:instant?; rev:rev NN. Roles from registry 04 §9 only. |
+| identity.operator_action | action_id:id PK; proposer:text NN; approver:text?; operation_id/proposal_hash:text NN; evidence_ref:text NN; state:text NN; expires_at/created_at:instant NN; consumed_at:instant?; rev:rev NN. Dual-control operations require different active subjects and exact proposal hash. |
 
 ## 4. `workspace`
 
@@ -240,6 +289,8 @@ Short-lived rows with `expires_at`, an attempt counter, and a rate-limit key. Bo
 | `state` | `enum(active, suspended, pendingDeletion) NN` | |
 | `created_at` | `instant NN` | |
 | `rev` | `rev NN` | |
+
+- `UQ (realm_id, owner_user_id)` — one personal workspace per realm
 
 - `IX (owner_user_id, state)`
 - **Constraint** — `data_region` is immutable; moving a workspace between regions is a realm migration operation that creates a new workspace and migrates content ([WP-46.05](../../planning/work-packages/46-backup-recovery-and-data-health.md#rule-wp-46.05)), never an update
@@ -259,6 +310,21 @@ Short-lived rows with `expires_at`, an attempt counter, and a rate-limit key. Bo
 > **Retired identifier.** `workspace.membership` is retired by [P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006) and is not reused for another purpose. Its historical definition is in the git history of this document at `7ed79a6`.
 
 ---
+
+### Resumable owner-data transfer
+
+| Table | Required fields / constraints |
+|---|---|
+| workspace.transfer_job | transfer_id:id PK; workspace_id:id FK NN; direction:enum(import,export) NN; state:TransferState NN; manifest_hash:hash NN; manifest_resource_id:id?; preview_hash:hash?; rev:rev NN; created_at:instant NN; expires_at:instant?; committed_roots/total_roots:bigint NN; reason:ReasonCode?; IX(workspace_id,state,created_at). |
+| workspace.transfer_mapping | transfer_id:id FK + source_kind:text + source_id:id composite PK; target_kind:text NN; target_id:id NN; state:TransferState NN; source_hash:hash NN; target_rev:rev?; receipt_id:id?; UQ(transfer_id,target_kind,target_id). |
+| workspace.transfer_issue | transfer_id:id FK + ordinal:bigint composite PK; code:ReasonCode NN; source_kind:text?; source_id:id?; blocks_commit:bool NN; accepted_at:instant?. |
+
+
+
+Job owner may coordinate but each imported content handler writes only its own tables in the declared shared family. Batch<=100 roots and complete mapping validation precede visibility; committed root receipts and IDs survive retry. Policy/quota/revision change invalidates preview or blocks the next root without rewriting past receipts. All mappings/issues are paged. Excluded authority and missing/unsupported bytes follow the journey profile, not blind copying of DB rows.
+
+Data-health states detected/repairing/repaired/irrecoverable/acknowledged preserve last evidence/source hashes. Irrecoverable is not repaired; explicit replacement creates a new resource revision. No recovery job fabricates missing bytes or erases the anomaly to make a gate green.
+
 
 ## 5. `device`
 
@@ -288,29 +354,22 @@ Short-lived rows with `expires_at`, an attempt counter, and a rate-limit key. Bo
 |---|---|---|
 | `installation_id` | `id` | **PK** |
 | `device_id` | `id NN` | `FK →`; cascade |
-| `product_id` | `text NN` | `arcchat` \| `arcnotes` \| `arcscope` \| `arcslate` \| `mobile` \| `web` |
+| `product_id` | `text NN` | arcnotes / arcscope / arcslate / companion; platform is a separate field |
 | `app_version` | `text NN` | |
 | `contract_set_version` | `text NN` | Drives the compatibility window |
 | `installed_at` | `instant NN` | |
 | `last_active_at` | `instant NN` | |
+| `platform` | `text NN` | windows/linux/macos/android/web |
+| `public_key`, `key_version` | `text NN`, `bigint NN` | Installation proof and rotation |
+| `revoked_at` | `instant?` | Revokes sessions, presence and delivery eligibility |
+| `rev` | `rev NN` | Installation authorization guard |
 
 - `UQ (device_id, product_id)`
 - `IX (contract_set_version)` — the minimum-version rollout query ([UP-11](../../requirements/10-distribution-update-and-support.md#rule-up-11))
 
-### `device.presence`
+### Application presence projection
 
-| Field | Type | Notes |
-|---|---|---|
-| `device_id` | `id` | **PK**, `FK →`; cascade |
-| `connection_state` | `enum(connected, disconnected) NN` | |
-| `last_heartbeat_at` | `instant NN` | |
-| `stale_after` | `instant NN` | |
-| `eligible_for_remote` | `bool NN` | *(derived)* from trust, remote_enabled and connection |
-
-- `IX (eligible_for_remote, stale_after)` — target selection for remote work
-- **Constraint** — presence is never inferred from a valid session ([WP-26.00](../../planning/work-packages/26-remote-action-and-tool-bridge.md#rule-wp-26.00)). A row past `stale_after` reports disconnected regardless of `connection_state`.
-
----
+No device.presence D1 table exists. ApplicationPresence DO partitions `(realm,workspace,product,installation)` with deviceId, instanceEpoch, state, capabilities digest, lastSeenAt and expiresAt. Heartbeat lease is 30 seconds, renewed every 10 seconds. On expiry the projection is offline regardless of a surviving session. Trust, remote policy and installation revocation remain durable D1 authority and are rechecked on delivery/result. Device lists derive live children from Application.List; disconnected is not uninstalled. No second device heartbeat or InstancePresence model exists.
 
 ## 6. `entitlement`
 
@@ -322,10 +381,10 @@ The Entitlement module is **independent of Commerce** (`§2.1` of the commerce a
 |---|---|---|
 | `grant_id` | `id` | **PK** |
 | `workspace_id` | `id NN` | |
-| `kind` | `enum(capability, quota, credit, feature) NN` | The four entitlement kinds |
+| `kind` | `enum(capability, quota, allowance) NN` | Grant-row kinds only; consumable balances are Commerce ledger/lot projections |
 | `subject` | `text NN` | The capability, quota or feature key |
 | `value` | `json NN` | Kind-specific payload — a limit, a bundle reference, a boolean |
-| `source` | `enum(purchase, administrative, promotional, trial, store, free) NN` | **No provider identifier appears here** ([EO-04](../16-billing-and-commerce-architecture.md#rule-eo-04)) |
+| `source` | `enum(Subscription, CloudPass, StorageAddOn, PurchasedCredit, AdminGrant, Migration, Compensation) NN` | **No provider identifier appears here** ([EO-04](../16-billing-and-commerce-architecture.md#rule-eo-04)) |
 | `source_ref` | `text?` | An opaque reference the issuing module understands |
 | `effective_from` | `instant NN` | |
 | `effective_until` | `instant?` | Null = open-ended |
@@ -378,7 +437,7 @@ The Entitlement module is **independent of Commerce** (`§2.1` of the commerce a
 | `updated_at` | `instant NN` | |
 
 - **Constraint** — the period boundary comes from the entitlement snapshot, never from a calendar convenience ([QA-02](../16-billing-and-commerce-architecture.md#rule-qa-02))
-- **Constraint** — this is a display/reconciliation projection over durable quota events and measured objects. Admission locks `quota_budget` and reserves, never trusts this projection. Storage is a non-resetting gauge; period-based simulator/egress usage carries its explicit period.
+- **Constraint** — this is a display/reconciliation projection over durable quota events and measured objects. Admission guards current `quota_budget` revisions and reserves atomically, never trusts this projection. Storage is a non-resetting gauge; period-based simulator/egress usage carries its explicit period.
 
 ---
 
@@ -424,9 +483,16 @@ The gate before every AI decision (`§5.3` of the commerce architecture). An int
 | <a id="rule-tm-01"></a>TM-01 | Effective eligibility is the union of `[max(starts_at, authorized_at), ends_at)` after applying effective revocations. Scheduled renewals verified before their start abut normally. A late verification does not retrospectively authorise calls, refill a past gap or rewrite prior settlement. The original paid invoice interval remains available for reconciliation/compensation. |
 | <a id="rule-tm-02"></a>TM-02 | Provider events and paid periods have separate idempotency keys. A replay cannot create a second interval or change the checkout's plan-selection priority. |
 | <a id="rule-tm-03"></a>TM-03 | Contiguity is calculated from **effective** intervals after actions. Initialisation is recorded once against the effective run-opening term and boundary, never once per webhook or per overlapping offer. |
-| <a id="rule-tm-04"></a>TM-04 | Term rows are immutable. Supersession/revocation is an append to `service_term_action(term_action_id PK, term_id, kind, effective_at, recorded_at, source_ref UNIQUE, replacement_term_id?)`. The original `ends_at` is never rewritten. Under the workspace lock, advance capacity first; operational changes take effect at `max(server_now, watermark_at)`. A provider's earlier event time is evidence, not a backdated change to served history. |
+| <a id="rule-tm-04"></a>TM-04 | Term rows are immutable. Supersession/revocation is an append to `service_term_action(term_action_id PK, term_id, kind, effective_at, recorded_at, source_ref UNIQUE, replacement_term_id?)`. The original `ends_at` is never rewritten. In the guarded workspace/bucket batch, advance capacity first; operational changes take effect at `max(server_now, watermark_at)`. A provider's earlier event time is evidence, not a backdated change to served history. |
 | <a id="rule-tm-05"></a>TM-05 | One capacity offer applies at each instant: select the eligible term with highest pinned `selection_priority`, then `service_term_id` for a stable tie break. Subscription renewals retain their plan generation; an explicitly selected new plan/pass/grant has a new generation. An old delayed webhook cannot override a newer selection. Grace is excluded. When the selected term ends, resolve the remaining eligible set. Rates and bursts are never summed. |
-| TM-06 | `capacity_plan_assignment(assignment_id PK, workspace_id, offer_id, term_id, selection_priority, effective_from, effective_to?, cause_ref)` records the non-overlapping resolved timeline. All known term starts/ends/actions are resolution boundaries; lazy advancement first materialises these boundaries under the bucket lock. Only closing a current assignment and appending its successor is permitted. The refill join is assignment.offer_id → policy period at that instant, never the workspace's current offer applied to its whole history. |
+| TM-06 | `capacity_plan_assignment(assignment_id PK, workspace_id, offer_id, term_id, selection_priority, effective_from, effective_to?, cause_ref)` records the non-overlapping resolved timeline. All known term starts/ends/actions are resolution boundaries; lazy advancement first materialises these boundaries under the guarded bucket revision. Only closing a current assignment and appending its successor is permitted. The refill join is assignment.offer_id → policy period at that instant, never the workspace's current offer applied to its whole history. |
+
+### `entitlement.service_term_action`, `entitlement.capacity_plan_assignment`
+
+| Table | Required fields / constraints |
+|---|---|
+| entitlement.service_term_action | term_action_id:id PK; term_id:id FK NN; kind:enum(supersede,revoke) NN; effective_at/recorded_at:instant NN; source_ref:text NN UNIQUE; replacement_term_id:id? FK; supersede requires replacement_term_id, revoke forbids it; both terms share realm/workspace; append-only under TM-04. |
+| entitlement.capacity_plan_assignment | assignment_id:id PK; workspace_id/offer_id/term_id:id FK NN; selection_priority:bigint NN; effective_from:instant NN; effective_to:instant?; cause_ref:id NN; UQ(workspace_id,effective_from); IX(workspace_id,effective_to); non-overlap and closing/appending are guarded by the workspace bucket revision under TM-06. |
 
 ### `entitlement.capacity_bucket` *(new — [P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006); refill corrected 2026-09-07)*
 
@@ -511,7 +577,7 @@ Immutable policy history. One row per `(realm, offer, activation interval)` in w
 | `quota_reservation` | PK reservation ID; unique `(operation_id, budget_key)`; budget reference, owner kind/id, bound, consumed, state `held/settled/releasing/released`, expiry, lease/fence where applicable. Check consumed ≤ bound; enlarging requires a new atomic admission before the extra work. |
 | `quota_event` | Immutable unique `(reservation_id, effect_id)`; typed consume/release/adjust event, measured quantity, resulting budget revision, source object/segment/deletion receipt. Replays return the prior receipt. Gauges decrement only through verified deletion or replacement effects; period use never resets by restarting a job. |
 
-Admission locks all budget keys in stable order, checks `used + held + bound <= limit`, and inserts all reservations in one shared unit of work. A multi-limit operation either reserves all limits or none. Declared upload size and deterministic simulation bounds are conservative admission maxima; server measurement is settlement authority. Concurrency has separate leased slots, not sample/byte units.
+Admission guards all budget revisions in one fixed batch, checks `used + held + bound <= limit`, and inserts all reservations in one shared unit of work. A multi-limit operation either reserves all limits or none. Declared upload size and deterministic simulation bounds are conservative admission maxima; server measurement is settlement authority. Concurrency has separate leased slots, not sample/byte units.
 
 Storage reserves both future committed headroom and workspace/deployment staging headroom at upload start. Promotion atomically converts committed headroom to measured used bytes and releases only unused allocation; physical staging exposure persists until any duplicate/staging copy is deleted. Current/history/trash/conflict/export pins keep an object live. Releasing its final pin starts GC, which records verified object deletion before freeing physical/storage gauge use. Quota repair appends an audited adjustment from a verified inventory and never overwrites history.
 
@@ -543,6 +609,13 @@ Simulation admission reserves bounded duration, sample count, output bytes and e
 
 ### `commerce.offer`, `commerce.price_version`
 
+| Table | Required fields / constraints |
+|---|---|
+| commerce.offer | offer_id:id PK; kind:enum(subscription,pass,credit,storageAddOn) NN; name:text NN; scope:text NN; active:bool NN; term_profile:text NN; created_at:instant NN; rev:rev NN. Only currently accepted CT-05 kinds are activated. |
+| commerce.price_version | price_version_id:id PK; offer_id:id FK NN; version:bigint NN; amount:money NN; tax_category:text NN; starts_at:instant NN; ends_at:instant?; config_revision_id:id NN; UQ(offer_id,version); IX(offer_id,starts_at). Immutable/restrict-delete once referenced. |
+
+
+
 Workspace-independent catalogue rows ([MT-04](00-data-model-overview.md#rule-mt-04)). An `offer` names what is sold; a `price_version` carries the amounts, currency, effective dates and tax category. **A price change creates a new `price_version`; existing orders retain the version they were bought under** ([PC-01](../../requirements/04-commerce-entitlement-and-credits.md#rule-pc-01)), so `order.price_version_id` is a restrict-delete foreign key and a price version is never mutated.
 
 ### `commerce.purchase_intent`
@@ -562,6 +635,12 @@ Workspace-independent catalogue rows ([MT-04](00-data-model-overview.md#rule-mt-
 - **Constraint** — at most one `checkout_attempt` in a non-terminal state per intent, enforced by a partial unique index. This is what makes [PU-02](../16-billing-and-commerce-architecture.md#rule-pu-02) true.
 
 ### `commerce.checkout_attempt`
+
+| Table | Required fields / constraints |
+|---|---|
+| commerce.checkout_attempt | attempt_id:id PK; intent_id/billing_account_id/workspace_id/offer_id/price_version_id:id FK NN; provider:text NN; external_session_ref:text?; state:enum(prepared,created,unknown,completed,expired,failed) NN; request_hash:hash NN; created_at/expires_at:instant NN; rev:rev NN; UQ(provider,external_session_ref); IX(intent_id,created_at). Provider outcome after dispatch may be unknown; browser return cannot advance it. |
+
+
 
 Carries the internal metadata sent to the provider ([ID-04](../16-billing-and-commerce-architecture.md#rule-id-04)): billing account, workspace, offer, price version, attempt and intent identifiers. Holds the provider's session reference and its own expiry. **A success redirect writes nothing here** ([PU-01](../16-billing-and-commerce-architecture.md#rule-pu-01)) — only a verified provider event advances state.
 
@@ -588,13 +667,20 @@ Carries the internal metadata sent to the provider ([ID-04](../16-billing-and-co
 
 `order` links intent → offer → price version → billing account, and is append-only after completion. `payment` records each provider payment with its external reference, amount as `money`, and state. `subscription` carries the **normalised** state driven by `paid_through` ([EN-05](../16-billing-and-commerce-architecture.md#rule-en-05)), not by a provider status string:
 
+| Table | Required fields / constraints |
+|---|---|
+| commerce.order | order_id:id PK; purchase_intent_id/billing_account_id/workspace_id/offer_id/price_version_id:id FK NN; amount:money NN; state:enum(pending,completed,canceled) NN; created_at:instant NN; completed_at:instant?; rev:rev NN; UQ(purchase_intent_id). A verified captured payment completes the order in the purchase transaction. Completed commercial terms are immutable; refunds/disputes append financial events, never rewrite the original sale. |
+| commerce.payment | payment_id:id PK; order_id:id FK NN; provider/provider_payment_ref:text NN; amount:money NN; state:enum(pending,captured,failed,canceled) NN; provider_event_id:id FK NN; created_at:instant NN; captured_at:instant?; rev:rev NN; UQ(provider,provider_payment_ref). Captured is established only by verified provider evidence. Contradictory or older events reconcile instead of regressing it. Refund/dispute movements use linked ledger entries; they do not make the capture unhappen. |
+
+Subscription fields:
+
 | Field | Type | Notes |
 |---|---|---|
 | `subscription_id` | `id` | **PK** |
 | `billing_account_id` | `id NN` | |
 | `workspace_id` | `id NN` | |
 | `offer_id`, `price_version_id` | `id NN` | |
-| `state` | `enum(trialing, active, pastDue, graceperiod, cancelled, expired) NN` | Derived from `paid_through` and policy |
+| `state` | `enum(pending, active, grace, cancelScheduled, ended, suspended) NN` | Derived from `paid_through` and policy |
 | `paid_through` | `instant NN` | **The authoritative field** |
 | `cancel_at_period_end` | `bool NN` | |
 | `external_subscription_ref` | `text?` | |
@@ -626,6 +712,10 @@ Carries the internal metadata sent to the provider ([ID-04](../16-billing-and-co
 - **Constraint** — a lot is **never** created by a refill; only a purchase, a compensation grant or an adjustment creates one ([RF-07](../16-billing-and-commerce-architecture.md#rule-rf-07) of the commerce architecture)
 
 `credit_transaction` is the append-only movement log: reserve, settle, release, expire, refund, adjust. Every row names its lot, its `reservation_id` where applicable, its **signed micro-credit amount**, its reason, and the `logical_request_id` it settles where one applies. **No row is ever updated or deleted** ([ST-04](../16-billing-and-commerce-architecture.md#rule-st-04)).
+
+| Table | Required fields / constraints |
+|---|---|
+| commerce.credit_transaction | transaction_id:id PK; workspace_id/credit_lot_id:id FK NN; reservation_id/logical_request_id:id?; kind:enum(reserve,settle,release,expire,refund,adjust) NN; amount_micro:int64 NN; reason:ReasonCode NN; command_id:id NN; movement_ordinal:int NN; created_at:instant NN; UQ(command_id,movement_ordinal); IX(credit_lot_id,created_at). Signed exact microcredits; append-only and atomically paired with the guarded lot/reservation change. |
 
 #### The two funding pools, and the one reservation
 
@@ -671,11 +761,20 @@ Three separately balanced ledgers share a discriminated table ([LG-01](../16-bil
 
 ## 8. `chat`, `task`, `agent`
 
-**Cloud commits every row in this Cloud schema.** Cloud-history Chat and all execution metadata remain Cloud-authoritative. Local assistant bodies are independently canonical under [model05](05-application-history.md); they do not become Chat rows merely because Cloud executes an AI request.
+**Cloud commits every row in this Cloud schema.** Cloud-history Chat and all execution metadata remain Cloud-authoritative. Local assistant bodies are independently canonical under [model 05](05-application-history.md); they do not become Chat rows merely because Cloud executes an AI request.
 
 ### `chat.conversation`, `chat.message`
 
-For Cloud-history mode, the client projection in [`02-desktop-data-model.md`](02-desktop-data-model.md) mirrors these rows. Local-history stores instead follow model05. **Cloud holds the authoritative acknowledged revision and is its committer** ([AU-01](00-data-model-overview.md#rule-au-01), [CW-02](00-data-model-overview.md#rule-cw-02)); the client copy is a working cache plus unsent drafts.
+For Cloud-history mode, the client projection in [`02-desktop-data-model.md`](02-desktop-data-model.md) mirrors these rows. Local-history stores instead follow model 05. **Cloud holds the authoritative acknowledged revision and is its committer** ([AU-01](00-data-model-overview.md#rule-au-01), [CW-02](00-data-model-overview.md#rule-cw-02)); the client copy is a working cache plus unsent drafts.
+
+| Table | Complete fields and constraints |
+|---|---|
+| chat.conversation | conversation_id:id PK; workspace_id:id NN; product_id:ProductId NN; title:text NN; active_branch_id:id NN; project_id:id?; mode=cloud; created_at/updated_at:instant NN; deleted_at:instant?; rev:rev NN; UQ(workspace_id,product_id,conversation_id); list IX(workspace_id,product_id,deleted_at,updated_at,conversation_id). |
+| chat.branch | branch_id:id PK; conversation_id:id FK NN; parent_branch_id:id? self-FK; fork_message_id:id?; created_at:instant NN; parent/fork must belong to this conversation and form an acyclic graph. |
+| chat.message | message_id:id PK; conversation_id:id FK NN; branch_id:id FK NN; ordinal:bigint NN; role:TranscriptRole NN; state:text NN; parts_proto:blob?; body_resource_id:id?; body_hash:hash NN; task_id/turn_id:id? (at most one); created_at:instant NN; conversation_rev_at_commit:rev NN; UQ(branch_id,ordinal); exactly one inline parts or verified body resource (16 KiB threshold). Committed content immutable. conversation_rev_at_commit is the immutable MessageView.revision/VersionedRef snapshot, never a child CAS counter. Conversation commands guard the current root revision. |
+| chat.project | project_id:id PK; workspace_id:id NN; product_id:ProductId NN; body_proto:ChatProjectRecord NN; rev:rev NN; deleted_at:instant?; IX(workspace_id,product_id,deleted_at). |
+| agent.agent_profile / agent.skill | profile_id / skill_id:id PK; workspace_id:id NN; product_id:ProductId NN; revision:rev NN; body_proto:AgentProfile / SkillRecord NN; deleted_at:instant?; version rows PK(id,revision) are immutable; declarations never grant capability. |
+| chat.compaction_record | compaction_id:id PK; conversation_id:id FK NN; branch_id:id FK NN; through_ordinal:bigint NN; source_hash:hash NN; summary_resource_id:id NN; summary_hash:hash NN; model_id/config_version:text NN; created_at:instant NN; UQ(branch_id,through_ordinal,source_hash,config_version). Rebuildable, no user-authority state; publication guards current source hash/branch revision. |
 
 | # | Rule |
 |---|---|
@@ -684,13 +783,34 @@ For Cloud-history mode, the client projection in [`02-desktop-data-model.md`](02
 | CH-D3 | **Every commit writes its `sync.change` row in the same transaction** ([CW-06](00-data-model-overview.md#rule-cw-06)), so a message can never exist without being publishable. |
 | CH-D4 | **An unsent draft is not a row here.** It lives only on the device that composed it ([I-124](../../requirements/01-normative-glossary-and-invariants.md#rule-i-124)), and is therefore never a competing revision. |
 | CH-D5 | A committed Chat message is immutable; edit creates a branch. Stream chunks are presentation, each invocation has immutable `task.iteration_output`, and the terminal Turn publishes a separate final/interrupted message or explicit no-answer outcome. |
-| CH-D6 | Stream chunks/state live in the CF RunStream DO with bounded TTL, excluded from D1 change archives and business backups. C# stores Cloud-history canonical iteration/final content and pointers; local/temporary bodies use model05 transient storage. Restore discards projections and reconciles durable attempts under [CF integration](../contracts/05-cloudflare-integration.md). |
+| CH-D6 | Stream chunks/state live in the CF RunStream DO with bounded TTL, excluded from D1 change archives and business backups. C# stores Cloud-history canonical iteration/final content and pointers; local/temporary bodies use model 05 transient storage. Restore discards projections and reconciles durable attempts under [CF integration](../contracts/05-cloudflare-integration.md). |
+
+### Chat-owned ordinary and temporary execution
+
+| Table | Complete fields and constraints |
+|---|---|
+| chat.turn | turn_id:id PK; workspace_id:id NN; product_id:ProductId NN; history_mode:HistoryMode NN; origin_installation_id:id?; conversation_id/input_message_id/final_message_id:id?; mode:ChatMode NN; state:ChatTurnState NN; rev:rev NN; run_id/stream_id:id?; reason:ReasonCode?; created_at:instant NN; expires_at:instant?; has_unknown_effect:bool NN; transient_input_ref:id?; transient_output_receipt_id:id?; UQ(workspace_id,input_message_id); IX(workspace_id,product_id,state,created_at). |
+| chat.turn_promotion | turn_id:id PK/FK; task_id:id FK UNIQUE NN; preview_hash:hash NN; command_id:id UNIQUE NN; created_at:instant NN. Promotion creates a separate linked Task once, never changes a turn into an agent in place. |
+| chat.execution_lease | Same typed fields, PK and fence constraints as task.execution_lease; run_id references chat.run. |
+| chat.execution_command | Same typed fields, PK/UQ and replay rules as task.execution_command; run_id references chat.run. |
+| chat.run | Same typed fields and UQ as task.run with turn_id instead of task_id; owner must exist in Chat. |
+| chat.iteration_output | Same fields, constraints and receipt rules as task.iteration_output; run_id references chat.run. |
+| chat.transient_content | resource_id:id PK; workspace_id:id NN; product_id:ProductId NN; origin_installation_id:id NN; turn_id/task_id:id? (exactly one execution owner); purpose:enum(transientInput,transientOutput) NN; key_ref/ciphertext_ref:text NN; sha256:hash NN; size:bigint NN CHECK ≥0; expires_at:instant NN; closed_at/purged_at:instant?; IX(expires_at,purged_at). References encrypted bytes, not plaintext; metadata is not canonical history. |
+| task.control_receipt / chat.control_receipt | command_id:id PK; owner_id:id FK NN to respective Task/Turn; kind:Key NN; state:ControlState NN; requested_at:instant NN; acknowledged_at:instant?; reason:ReasonCode?; request_hash:hash NN; IX(owner_id,requested_at). Retains prior receipts rather than overwriting one latest state. |
+
+Cloud-history turns require conversation/input-message FKs and a committed final message or explicit no-answer outcome before success. Local/temporary turns have null Cloud conversation/message FKs, require origin_installation_id and bind verified transient input/output receipts from model 05. Temporary requires mode=temporary; other turns require mode=ordinary. Scope is immutable at admission. Shared provider/execution records use a validated ExecutionOwner, never a phantom Task or an unchecked polymorphic ID. Chat and Task own their respective table writes inside the registered shared batch.
+
+Transient content is encrypted, excluded from ordinary history, Sync, Knowledge and backups, and expires within 24 hours; close denies access immediately and purges within 1 hour. CF checkpoints carry IDs only. Account revocation/deletion denies access regardless of purge lag. Temporary compaction summaries never enter this table. Stable owner/accounting receipts retain hashes/counts/reasons, not body text.
 
 ### `task.iteration_output` and terminal references
 
-`iteration_output` has PK output ID, unique `(run_id, iteration_ordinal)`, logical request ID, winning provider-attempt ID, state `complete/interrupted/refused/toolProposals`, immutable typed parts or verified ResourceRef, checksum and created time. Each content part carries the [content origin record](../../requirements/13-data-formats-and-portability.md#content-origin-carriers), bound and committed with its payload before completed output publication; staged marking failure creates no delivered receipt. It is written with the provider outcome/usage receipt before customer settlement. Tool proposal/result parts link durable invocation IDs, and can be read through the authorised Task view without pretending the Turn is terminal. Resource promotion includes Entitlement quota conversion where required.
+| Table | Complete fields and constraints |
+|---|---|
+| task.iteration_output | output_id:id PK; run_id:id FK NN; iteration_ordinal:int NN; logical_request_id:id NN; provider_attempt_id:id NN; state:enum(complete,interrupted,refused,toolProposals) NN; parts_proto:blob?; body_resource_id:id?; checksum:hash NN; created_at:instant NN; UQ(run_id,iteration_ordinal); exactly one parts_proto or verified body_resource_id. |
 
-`task.task` additionally carries `current_iteration`, `current_provider_attempt_id?`, `final_message_id?`, `no_answer_reason?`, and `terminal_output_commit_id?`. Cloud-history terminal states require exactly one final/interrupted message reference or explicit no-answer reason in the same Chat/Task/Resource/Sync atomic batch. Local/temporary mode instead requires a verified transient-output commit receipt or explicit no-answer reason under model05; it never creates a dummy Cloud message. A provider callback cannot set Task succeeded merely because its own invocation finished. Updating intermediate Task state uses a typed read projection; synchronised aggregate changes still require publication.
+ Each content part carries the [content origin record](../../requirements/13-data-formats-and-portability.md#content-origin-carriers), bound and committed with its payload before completed output publication; staged marking failure creates no delivered receipt. It is written with the provider outcome/usage receipt before customer settlement. Tool proposal/result parts link durable invocation IDs, and can be read through the authorised Task view without pretending the Turn is terminal. Resource promotion includes Entitlement quota conversion where required.
+
+Cloud-history terminal states require exactly one final/interrupted message reference or explicit no-answer reason in the same Chat/Task/Resource/Sync atomic batch. Local/temporary mode instead requires a verified transient-output commit receipt or explicit no-answer reason under model 05; it never creates a dummy Cloud message. A provider callback cannot set Task succeeded merely because its own invocation finished. Updating intermediate Task state uses a typed read projection; synchronised aggregate changes still require publication.
 
 ### `task.task`
 
@@ -698,14 +818,21 @@ For Cloud-history mode, the client projection in [`02-desktop-data-model.md`](02
 |---|---|---|
 | `task_id` | `id` | **PK** |
 | `workspace_id` | `id NN` | |
-| `owning_product` | `text NN` | Whose **domain** the work concerns. It never transfers, and it does **not** move the authoritative store ([TO-01](00-data-model-overview.md#rule-to-01)) |
 | `origin_surface` | `enum(desktop, web, mobile, automation) NN` | Where the request came from. Provenance only — it confers no authority ([TO-03](00-data-model-overview.md#rule-to-03)) |
-| `origin_device_id` | `id?` | Present when a device originated it; **null for Web, Mobile and automation** |
+| `origin_device_id` | `id?` | Present when a device originated it; **null for browser/automation without a native installation; Android may carry its originating device** |
 | `state` | `enum(queued, running, waiting, paused, interrupted, succeeded, partiallySucceeded, failed, canceled) NN` | |
-| `reason_facet` | `text?` | Waiting/interruption reason; execution owner and control progress follow WP52, not the local ProductJob engine. |
+| `reason_facet` | `TaskReasonFacet NN` | none/approval/device/capacity/dependency/reconciliation; non-none exactly while waiting. |
 | `intent_summary` | `text NN` | User-facing |
 | `created_at`, `updated_at` | `instant NN` | |
 | `rev` | `rev NN` | |
+| `product_id` | `ProductId NN` | Frozen application scope: arcnotes/arcscope/arcslate/companion |
+| `origin_installation_id` | `id?` | Required for local-history origin; no body visibility to other devices |
+| `transient_input_ref`, `transient_output_receipt_id` | `id?` | Verified input/output for local history only; null for Cloud history |
+| `current_iteration` | `int NN` | Nonnegative iteration ordinal |
+| `current_provider_attempt_id`, `final_message_id`, `terminal_output_commit_id` | `id?` | Exact receipt/pointer, never derived from a presentation buffer |
+| `no_answer_reason` | `ReasonCode?` | Explicit terminal no-answer disposition |
+| `has_unknown_effect` | `bool NN` | Separate from TaskState |
+| `history_mode` | `enum(local,cloud) NN` | Temporary cannot be an agent; local metadata carries no conversation body |
 
 - `IX (workspace_id, state, updated_at)` — the task centre
 
@@ -721,6 +848,14 @@ For Cloud-history mode, the client projection in [`02-desktop-data-model.md`](02
 
 ### `task.run`, `task.plan_step`, `task.attempt`
 
+| Table | Complete fields and constraints |
+|---|---|
+| task.run | run_id:id PK; task_id:id FK NN; ordinal:int NN; state:TaskState NN; workflow_id/worker_version:text NN; recovery_generation:bigint NN; last_iteration_receipt:hash?; created_at/updated_at:instant NN; rev:rev NN; UQ(task_id,ordinal); IX(state,updated_at). |
+| task.execution_lease | run_id:id PK/FK; holder/workflow_id/worker_version:text NN; epoch:bigint NN; expires_at:instant NN; recovery_generation:bigint NN; IX(expires_at). |
+| task.execution_command | command_id:id PK; run_id:id FK NN; epoch:bigint NN; operation/request_sha256/state:text NN; result_ref:typed JSON TEXT?; created_at:instant NN; UQ(run_id,operation,command_id). |
+
+No external call occurs inside a registered guarded commit. A device step requires a full frozen target; retargeting requires a new approved command, never automatic fallback to another application.
+
 **Tool locality lives on the Step** ([TK-02](#rule-tk-02)), because one Task mixes cloud and device Steps.
 
 | `plan_step` field | Type | Notes |
@@ -731,10 +866,16 @@ For Cloud-history mode, the client projection in [`02-desktop-data-model.md`](02
 | `capability_key` | `text NN` | Resolved through the generated allowlist ([DP-04](../contracts/02-local-rpc-operations.md#rule-dp-04)) |
 | `tool_locality` | `enum(cloud, device) NN` | **Declared, never inferred** ([PL-02](../17-agent-harness.md#rule-pl-02) of the harness) |
 | `target_device_id` | `id?` | Required when `tool_locality = 'device'`, else null |
+| `target_product_id` | `ProductId?` | Required for device locality, matches Task product |
+| `target_installation_id` | `id?` | Required for device locality |
+| `target_instance_epoch` | `bigint?` | Required after device delivery/claim; current bound instance |
+| `arguments_proto` | `CapabilityArguments NN` | Validated typed capability arguments |
+| `approval_required` | `bool NN` | Frozen approval requirement, never authority by itself |
+| `compensation_proto` | `typed record?` | Declared compensation capability/arguments or absent |
 | `state`, `reason_facet` | `text NN`, `text?` | |
 
-- `IX (target_device_id, state)` — **the tool-request pull path**, now correctly on the Step
-- **Constraint** — `tool_locality = 'device'` requires `target_device_id IS NOT NULL`; `cloud` requires it to be null
+- `IX (target_device_id, target_installation_id, state)` — **the tool-request pull path**, now correctly on the Step
+- **Constraint** — `tool_locality = 'device'` requires target_device_id, target_product_id and target_installation_id; epoch is filled and fenced at delivery. `cloud` requires all target fields to be null
 - **Constraint** — a Step declared `device` is **never** satisfied by a cloud substitute ([PL-02](../17-agent-harness.md#rule-pl-02)); if no eligible device is online the Step waits with a stated reason
 
 
@@ -745,8 +886,9 @@ For Cloud-history mode, the client projection in [`02-desktop-data-model.md`](02
 | `attempt_id` | `id` | **PK** |
 | `run_id`, `step_id` | `id NN` | |
 | `command_id` | `id NN` | **Reused across retries of the same command** ([BR-02](../../planning/work-packages/16-unified-execution-engine.md#rule-br-02) of [WP-16](../../planning/work-packages/16-unified-execution-engine.md#rule-wp-16)) |
-| `state` | `enum(pending, running, succeeded, failed, cancelled) NN` | |
-| `failure_class` | `enum(transient, permanent, refused, cancelled, unknownEffect)?` | |
+| `state` | `enum(pending, running, succeeded, failed, canceled) NN` | |
+| `attempt_ordinal` | `int NN` | Monotonic under the command/run guard |
+| `failure_class` | `enum(transient, permanent, refused, canceled, unknownEffect)?` | |
 | `effect_certainty` | `enum(didNotHappen, happened, unknown)?` | |
 | `started_at`, `ended_at` | `instant?` | |
 
@@ -755,19 +897,44 @@ For Cloud-history mode, the client projection in [`02-desktop-data-model.md`](02
 
 ### `task.approval`
 
+| Table | Required fields / constraints |
+|---|---|
+| task.approval | approval_id:id PK; task_id/run_id/step_id:id FK NN; proposal_hash:hash NN; actor_proto:ActorChain NN; frozen_context_proto:FrozenContext NN; risk:Key NN; local_presence_required:bool NN; description:text NN; state:enum(pending,approved,rejected,expired,withdrawn) NN; decision_by:id?; created_at/expires_at:instant NN; decided_at/consumed_at:instant?; rev:rev NN; IX(task_id,state,expires_at). Decision/consumption guards exact proposal, actor, scope, revision and expiry. |
+
+
+
 Durable pending state with `expires_at`, the operation described in user terms, the risk level, and whether local presence is required. **Survives restart of either side** ([WP-14.04](../../planning/work-packages/14-hub-and-minimal-provider-slice.md#rule-wp-14.04)).
 
 ### `task.automation_definition` and `automation_occurrence`
+
+| Table | Required fields / constraints |
+|---|---|
+| task.automation_definition | automation_id:id PK; workspace_id:id FK NN; product_id:ProductId NN; definition_version:bigint NN; definition_proto:AutomationSpec NN; enabled:bool NN; next_due_at:instant?; event_cursor:text?; created_at/updated_at:instant NN; rev:rev NN; IX(enabled,next_due_at). Definition freezes trigger, timezone, grants, target, misfire/coalescing and budgets. |
+| task.automation_occurrence | occurrence_id:id PK; automation_id:id FK NN; definition_version:bigint NN; occurrence_key:text NN; scheduled_at:instant NN; event_id:id?; state:enum(pending,admitted,skipped,completed,failed,canceled) NN; task_id:id?; reason:ReasonCode?; completed_at:instant?; UQ(automation_id,definition_version,occurrence_key); IX(state,scheduled_at). |
+
+
 
 `automation_definition` stores stable ID, workspace, immutable definition version, enabled state/revision, trigger kind, UTC schedule with timezone policy or durable event cursor, authorised grant/budget snapshot, misfire/coalescing bounds and next due instant. `automation_occurrence` has unique `(automation_id, definition_version, occurrence_key)`, scheduled time/event identity, admission outcome, Task ID and completion reason. The enumerated automation shared transaction records occurrence, Task, context pins and dispatch outbox together; a leased runner resumes from that receipt after crash. Definition changes invalidate future old-version occurrences, without rewriting past runs. Disable/revoke has an explicit in-flight cancellation policy; neither resets usage nor grants permission.
 
 ### `task.tool_request`, `task.tool_result`
 
-The durable bridge (**[D-010](../../decisions/phase-1-foundation-decisions.md#rule-d-010)**). A request carries its target device, its payload, its expiry and its delivery state; a result carries the answering attempt and is **idempotent on `(task_id, attempt_id)`** so a re-submitted result has one effect.
+The durable bridge (**[D-010](../../decisions/phase-1-foundation-decisions.md#rule-d-010)**). A request carries its target device, its payload, its expiry and its delivery state; a result carries the answering attempt and is **idempotent on `(tool_request_id, attempt_id, command_id)`** so a re-submitted result has one effect.
+
+| Table | Complete fields / constraints |
+|---|---|
+| task.tool_request | tool_request_id:id PK; workspace_id:id NN; product_id:ProductId NN; task_id:id FK NN; run_id/step_id/attempt_id/command_id:id NN; target_device_id/target_installation_id:id?; target_product_id:ProductId?; target_instance_epoch:bigint?; capability:text NN; arguments_proto/context_proto/actor_proto:blob NN; approval_id:id?; expires_at:instant NN; state:queued/delivered/answered/expired/refused; rev:rev NN. Device requests require the full target, cloud requests omit it. IX(workspace_id,target_installation_id,state,expires_at); immutable command payload/hash. |
+| task.tool_result | tool_request_id:id FK + attempt_id:id + command_id:id composite PK; result_hash:hash NN; body_proto:ToolResult NN; effect_certainty:EffectCertainty NN; received_at:instant NN. Repeated key and same hash returns the receipt; different hash refuses; no deduplication on Task alone. |
+| chat.tool_request / chat.tool_result | Same fields/constraints with turn_id instead of task_id; ChatTurn permits only its admitted pure-read tool set, no fabricated Task FK. |
 
 ### `agent.model_descriptor`, `agent.tariff_version`, `agent.supplier_price_version`
 
 `model_descriptor` and the two price tables are workspace-independent catalogue rows **projected from an activated configuration revision** ([CG-02](../16-billing-and-commerce-architecture.md#rule-cg-02), [DC-05](../../requirements/11-policy-and-configuration.md#rule-dc-05), [DC-06](../../requirements/11-policy-and-configuration.md#rule-dc-06)). They are persisted snapshots, not live lookups into the current file ([I-494](../../requirements/01-normative-glossary-and-invariants.md#rule-i-494)).
+
+| Table | Required fields / constraints |
+|---|---|
+| agent.model_descriptor | model_descriptor_id:id PK; model_id:ModelId NN; config_revision_id:id FK NN; provider:enum(workersAi) NN; route/purpose/lifecycle_state:Key NN; descriptor_json:canonical closed models profile from contracts 08 NN; descriptor_hash:hash NN; created_at:instant NN; UQ(config_revision_id,model_id,purpose). Route, tokenizer, category/tier semantics and context/output limits are immutable for this descriptor identity. |
+| agent.supplier_price_version | supplier_price_version_id:id PK; model_descriptor_id/config_revision_id:id FK NN; currency:text NN; valid_from:instant NN; valid_to:instant?; rates_json:canonical closed supplierPrices profile from contracts 08 NN; rates_hash:hash NN; created_at:instant NN; IX(model_descriptor_id,valid_from). Exact Decimal rates/divisors, no missing-category zero; append-only snapshot. |
+| agent.tariff_version | tariff_version_id:id PK; model_descriptor_id/config_revision_id:id FK NN; valid_from:instant NN; valid_to:instant?; rates_json:canonical closed customerTariffs profile from contracts 08 NN; rates_hash:hash NN; created_at:instant NN; IX(model_descriptor_id,valid_from). Exact service-unit rates and declared dimensions; pinned per run/request; append-only snapshot. |
 
 | Table | Holds | Applies at |
 |---|---|---|
@@ -794,9 +961,16 @@ logical_ai_request ──1:N──> provider_attempt ──1:N──> attempt_us
 
 ### `commerce.spend_budget` and `spend_reservation`
 
+| Table | Required fields / constraints |
+|---|---|
+| commerce.spend_budget | scope_kind:text + scope_id:text + period_key:text + unit:text composite PK; limit/used/held:decimal(28,9) NN; rev:rev NN; period_ends_at:instant?; CHECK limit,used,held≥0. unit is currency for supplier scopes or microcredit for customer Run; the latter is integer-valued. No mixed-unit arithmetic. |
+| commerce.spend_reservation | reservation_id:id PK; provider_attempt_id:id?; logical_request_id:id?; scope_kind/scope_id/period_key/unit:text NN (composite FK to spend_budget); bound/used:decimal(28,9) NN; state:enum(held,settled,released,uncertain) NN; lease_expires_at/reconcile_at:instant?; reconciliation_ref:id?; rev:rev NN; UQ(provider_attempt_id,scope_kind,scope_id,period_key,unit); UQ(logical_request_id,scope_kind,scope_id,period_key,unit); exactly one request identity. Supplier uncertainty cannot expire as a customer hold. |
+
+
+
 `spend_budget` has PK `(scope_kind, scope_id, period_key, unit)`, a pinned limit, used, held and revision. Supplier scopes include provider account/route, deployment total and configured workspace sublimit; `unit` is the exact ISO currency. Customer Run scope uses integer micro-credits and its explicit authorised maximum. Supplier decimal quantities use `decimal(28,9)`; no FX or comparison between money and credits is implicit.
 
-`spend_reservation` has a unique `(provider_attempt_id, supplier_budget_key)` for supplier exposure, or `(logical_request_id, run_budget_key)` for the customer ceiling; bound, used, state, lease/deadline and linked reconciliation record. Admission locks every applicable budget row in stable order, verifies all `used + held + bound <= limit` predicates and reserves all or none in the Entitlement/Commerce unit of work. A platform call has supplier reservations and an operator job authority, without a customer capacity reservation. A retry has fresh supplier exposure and shares the logical request's one customer ceiling.
+`spend_reservation` has a unique `(provider_attempt_id, supplier_budget_key)` for supplier exposure, or `(logical_request_id, run_budget_key)` for the customer ceiling; bound, used, state, lease/deadline and linked reconciliation record. Admission guards every applicable budget revision in one registered D1 batch, verifies all `used + held + bound <= limit` predicates and reserves all or none in the Entitlement/Commerce unit of work. A platform call has supplier reservations and an operator job authority, without a customer capacity reservation. A retry has fresh supplier exposure and shares the logical request's one customer ceiling.
 
 Supplier exposure cannot expire merely because a customer hold expires. Confirmed usage replaces its conservative exposure; uncertainty remains reserved (or explicitly consumed as a conservative operator exposure adjustment) until provider reconciliation or an audited operator-funded resolution. Period closure carries unresolved exposure into the provider account's non-resetting outstanding-liability limit, so midnight/restart never unlocks another unbounded call. Customer Run ceilings similarly retain consumed/uncertain authorised exposure until resolved, even when spendable capacity is released. If no finite supported request bound exists, the route is unavailable for paid use.
 
@@ -836,7 +1010,7 @@ Supplier exposure cannot expire merely because a customer hold expires. Confirme
 | `dispatched_at`, `completed_at` | `instant?`, `instant?` | Observations only; NULL dispatch time does not prove the call did not happen |
 | `usage_source` | `enum(providerFinal, providerStream, invoice, unresolved) NN` | ([MT-05](../../requirements/04-commerce-entitlement-and-credits.md#rule-mt-05)) |
 | `completeness` | `enum(complete, pending, unconfirmed, mismatched) NN` | ([MT-12](../../requirements/04-commerce-entitlement-and-credits.md#rule-mt-12)) |
-| `outcome` | `enum(delivered, providerError, platformError, cancelled, timeout)?` | NULL at intent and while unknown |
+| `outcome` | `enum(delivered, providerError, platformError, canceled, timeout)?` | NULL at intent and while unknown |
 | `output_commit_ref` | `id?` | Durable Task iteration / Chat output receipt, or Search inference outcome receipt for platformIndexing; required before customer settlement of delivered user use. A Search receipt never creates customer settlement |
 
 - `UQ (logical_request_id, attempt_ordinal)`; `UQ (client_dispatch_key)`; provider identity uniqueness is conditional on non-NULL and scoped to the provider account
@@ -958,8 +1132,13 @@ The normalised, non-overlapping category quantities ([MT-03](../../requirements/
 | `completed_ticks` | `int64 NN` | **Partial extent is queryable** ([SIM-08](../../requirements/products/arcscope.md#rule-sim-08), [SIM-09](../../requirements/products/arcscope.md#rule-sim-09)) |
 | `service_term_id` | `id NN` | `FK →` — official simulation requires an active term ([SIM-17](../../requirements/products/arcscope.md#rule-sim-17)) |
 | `rev` | `rev NN` | |
+| `created_at`, `updated_at` | `instant NN` | Admission and latest durable transition |
+| `pacing_origin_at` | `instant?` | Real-time wall origin, reset on explicit resume |
+| `pacing_origin_tick` | `int64 NN` | Committed logical tick at that origin |
+| `next_due_at` | `instant?` | Nonterminal next wake; indexed for Cron rescue |
+| `pacer_epoch` | `bigint NN` | Increases on pause/resume/cancel/recovery fencing |
 
-- `IX (workspace_id, state)`; `IX (state, updated_at)` — the scheduler path
+- `IX (workspace_id, state)`; `IX (state, updated_at)`; `IX (state, next_due_at)` — the scheduler path
 - **Constraint** — `succeeded` requires `completed_ticks = duration_ticks`. **A cancel records a partial outcome, never success for an incomplete range** ([SIM-08](../../requirements/products/arcscope.md#rule-sim-08))
 - **Constraint** — a terminal run cannot be resurrected; a duplicate start creates no second run ([SIM-09](../../requirements/products/arcscope.md#rule-sim-09))
 
@@ -1035,27 +1214,42 @@ Cloud owns acknowledged Notes content. SQLite holds a projection of these shapes
 | `notes.checkpoint` | PK `(workspace_id, checkpoint_id)`; target aggregate and revision, label, creator/time; references an existing revision | User checkpoint listing and restore as a new revision |
 | `notes.link_index` | Derived backlink rows keyed by stable source/target identity and source revision | Rebuilt from document links; not canonical and not a second writer |
 
-The child field shapes for blocks, links, tags and scalar values are shared with [the desktop model](02-desktop-data-model.md#3-arcnotes-local-store). D1 uses typed columns and `jsonb` for the declared content structures; SQLite uses equivalent explicit SQL and validated JSON. Provider-specific storage types never enter contracts. Notebook/folder placement, revision ownership and the server-side constraints are defined here, not inferred from a local table name.
+The child field shapes for blocks, links, tags and scalar values are shared with [the desktop model](02-desktop-data-model.md#3-arcnotes-local-store). D1 uses typed columns and `JSON TEXT` for the declared content structures; SQLite uses equivalent explicit SQL and validated JSON. Provider-specific storage types never enter contracts. Notebook/folder placement, revision ownership and the server-side constraints are defined here, not inferred from a local table name.
 
 | # | Rule |
 |---|---|
-| ND-01 | **Folder structure belongs to the Notebook aggregate.** Creating, renaming, reordering, reparenting or trashing a folder takes the notebook's expected revision and increments it once. Under that root lock, reject cycles, cross-notebook parents and an active child under a trashed ancestor. Sibling order is deterministic by `(ordinal, id)` including root folders; names need not be unique. |
-| ND-02 | **Document placement belongs to the Document aggregate.** A move validates the source and destination notebook/folder under sorted notebook locks followed by the document lock. It carries both notebook revisions and the document revision. A cross-notebook move changes placement and emits the removal/addition projections without changing DocumentId, BlockIds or history. An upload, AI edit or import cannot bypass this operation. |
+| ND-01 | **Folder structure belongs to the Notebook aggregate.** Creating, renaming, reordering, reparenting or trashing a folder takes the notebook's expected revision and increments it once. Under that root revision guard, reject cycles, cross-notebook parents and an active child under a trashed ancestor. Sibling order is deterministic by `(ordinal, id)` including root folders; names need not be unique. |
+| ND-02 | **Document placement belongs to the Document aggregate.** A move validates the source and destination notebook/folder under guards for both notebook revisions and the document revision. It carries both notebook revisions and the document revision. A cross-notebook move changes placement and emits the removal/addition projections without changing DocumentId, BlockIds or history. An upload, AI edit or import cannot bypass this operation. |
 | ND-03 | **Folder trash is a visibility operation, not recursive content deletion.** Descendants remain in place and are hidden by the repository's ancestor-state predicate. Restoring the folder restores that visibility; independently trashed documents stay trashed. Permanent folder removal requires an empty subtree after explicit move or tracked purge; FK RESTRICT enforces it. Notebook deletion uses the tracked deletion lifecycle, never an unbounded cascade in a request handler. |
 | ND-04 | **Every accepted content commit stores the current rows, immutable revision, command receipt and publication row in one unit of work.** Resource participants pin attachments and any staged revision body. No network or blob upload occurs while the transaction is open. Conflict rejection preserves the proposed content and does not change current rows. |
 | ND-05 | **Read paths have one authority.** Hydration and `sync.getAggregate` reconstruct these canonical rows; local pending data never enters a Cloud export or AI context. History restore creates a new revision. Export freezes a manifest of notebook structure and document revisions, pins their attachments, then renders the Cloud Markdown/attachment/fidelity download from that manifest. It is not a re-importable native Notes package. |
 | ND-06 | **Local edits and remote updates share domain validation.** The client catches invalid structure early; Cloud repeats all checks as the final owner. A document's `rev` governs blocks and document metadata. Folder and document operations use explicit typed requests, with bounded bulk operations and per-operation receipts. |
 | ND-07 | **All durable payloads are accounted for.** Large revision bodies are staged as verified Resource objects before the Notes commit; that commit promotes them and adds a revision reference. Current content, retained history, conflict branches and active export manifests each pin the objects they need. Garbage collection starts only after the last pin and reader lease ends. |
 
-Required operations: `CreateNotebook`, `UpdateNotebook`, `CreateFolder`, `MoveFolder`, `TrashFolder`, `RestoreFolder`, `MoveDocument`, `GetNotebookTree`, `GetDocumentRevision`, `ListHistory` and `RestoreRevision`, alongside the typed block/property operations. These are Notes application operations reached through local RPC and typed sync proposals; no professional editor is added to Web or Mobile. A batch with a structural dependency submits the parent operation first and binds its acknowledgement before submitting the dependent operation. [WP-18.00](../../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.00) owns client/domain semantics; [WP-25.00](../../planning/work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.00) owns the real D1 counterpart and API integration.
+Required operations: `CreateNotebook`, `UpdateNotebook`, `CreateFolder`, `MoveFolder`, `TrashFolder`, `RestoreFolder`, `MoveDocument`, `GetNotebookTree`, `GetDocumentRevision`, `ListHistory` and `RestoreRevision`, alongside the typed block/property operations. These are Notes application operations reached through in-process ports and typed sync proposals; no professional editor is added to Web or Mobile. A batch with a structural dependency submits the parent operation first and binds its acknowledgement before submitting the dependent operation. [WP-18.00](../../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.00) owns client/domain semantics; [WP-25.00](../../planning/work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.00) owns the real D1 counterpart and API integration.
 
 ### 8.5 Native-product metadata replicas
+
+| Table | Required fields / constraints |
+|---|---|
+| scope.synced_aggregate / slate.synced_aggregate | workspace_id:id + aggregate_kind:text + aggregate_id:id composite PK; rev:rev NN; schema_version:text NN; payload_proto:typed blob NN; source_device_id:id NN; content_rev:bigint NN; state:enum(live,deleted) NN; created_at/updated_at:instant NN; deleted_at:instant?; IX(workspace_id,aggregate_kind,state,aggregate_id). Registered kind determines the exact validated record; state/deleted_at must agree. |
+| scope.replica_revision / slate.replica_revision | workspace_id:id + aggregate_kind:text + aggregate_id:id + rev:rev composite PK; schema_version:text NN; payload_resource_id:id NN; payload_hash:hash NN; created_at:instant NN. Immutable retained revision, not a second current owner. |
+
+
 
 `scope.synced_aggregate` and `slate.synced_aggregate` store `(workspace_id, aggregate_kind, aggregate_id)` as PK, server `rev`, schema version, typed canonical metadata payload, source device and source `content_rev`, state/tombstone and timestamps. A generated product-kind allowlist determines the DTO and validation; this is not an executable or arbitrary type-name payload. Immutable replica revisions and Resource references use the same publication and retention rules as Notes.
 
 Cloud accepts these through each owning module's sync adapter. The native SQLite model remains the working authority for hardware/media work. Raw capture and media bodies require their explicit upload policy; proxies and render caches are excluded. Fetching a replica does not assign a native `content_rev`: a local import/reconciliation command commits a new local revision and records which Cloud revision it reconciled. [WP-35.02](../../planning/work-packages/35-arcscope-integration-and-sync.md#rule-wp-35.02) and [WP-39.04](../../planning/work-packages/39-arcslate-integration-and-portability.md#rule-wp-39.04) implement these adapters against the already-delivered sync infrastructure.
 
 ---
+
+<a id="structural-move-and-complete-media-replica-constraints"></a>
+### Structural and replica validation
+
+A Notes cross-notebook move validates one explicit disposition for every used property/tag. Destination properties must have the same scalar type/scale, matching semantic revision, and complete mappings for used select options. Duplicate destination assignments, missing/trashed targets, implicit label matching or numeric conversion refuse. Explicit removal is previewed and retained in immutable history; document/block IDs and original values in old revisions survive. The preview hash binds all participating revisions and mapping. Under guards for every captured root revision, commit updates the document placement/classification and source/destination membership publications atomically. Named structural operations retain their typed command payload and results; a generic sync NotesDocument replacement cannot move an existing document.
+
+Slate replicas encode the complete [slate.project.v1 wire projection](../contracts/04-protobuf-wire-registry.md#4-shared-record-field-registry), including every sequence timeline/graph, exact grids, colour/input assignments, bins, markers, text/subtitles, generators/nesting, keyframe scopes and managed small-asset references. Validate identity, referential closure, type/graph/nesting cycles and source contentRev before storing the immutable replica. sequence summaries cannot substitute for timelines. Originals remain opt-in; absent bytes produce Offline Media without losing edit metadata. TranscriptRecord is an immutable derived Resource artifact linked to Task/source revision; adopting it creates ordinary authored native content with retained AI origin, never a server-side rewrite of a Slate project.
+
 
 ## 9. `sync`
 
@@ -1106,19 +1300,8 @@ The change feed. One row per aggregate revision that entered the cloud replica.
 
 `change_id` is identity only. UUIDv7 includes random bits and is not a same-millisecond revision ordering mechanism. Wall clocks also do not prove transaction order. The publisher assigns `publish_seq` only to committed rows, and explicitly preserves increasing `aggregate_rev` for each aggregate.
 
-```text
-publish(workspace, fence):
-    BEGIN
-      lock sync.publication_watermark(workspace)
-      verify current holder, fence and lease expiry
-      select a bounded set of aggregates with unpublished rows,
-        rotating after last_aggregate_key (wrap in sorted kind/id order)
-      for each selected aggregate:
-        read its lowest unpublished aggregate_rev from committed sync.change rows
-        assign last_seq + 1 to that row, then advance last_seq
-      persist last_aggregate_key, last_seq and assigned rows
-    COMMIT
-```
+Read primary watermark/fence and at most 100 committed unpublished rows. Select a contiguous publication batch, preserving each aggregate's revision order. One guarded D1 batch validates watermark revision/fence plus every selected change's identity/hash/unpublished state and required predecessor; assigns publish_seq in selected order and advances the watermark by exactly that count. On conflict, reread and reselect. Crash commits all or none. See model 04 §5 for interleavings; no open interactive SQL transaction crosses reads.
+
 
 Each batch admits at most one revision per selected aggregate; subsequent passes advance busy aggregates fairly. Limits on aggregates, rows and transaction time are configured. Indexes serve the lowest-unpublished query; no unbounded sort/materialisation or scan past a retained history is required.
 
@@ -1126,7 +1309,7 @@ Each batch admits at most one revision per selected aggregate; subsequent passes
 |---|---|
 | <a id="rule-pb-01"></a>PB-01 | **Only committed changes are selectable.** A transaction that commits after a previous publication gets a later cursor, even if its UUID sorts earlier. A rollback leaves no change row. |
 | PB-02 | **No row can appear later below an already-served cursor.** Assignment and watermark commit atomically; sequence allocation outside this transaction is prohibited. |
-| <a id="rule-pb-03"></a>PB-03 | **One validated fence publishes per workspace.** Lease acquisition, renewal and publication lock the same watermark row. A stale fence is rejected before assigning any number. A crashed assignment rolls back both rows and watermark. |
+| <a id="rule-pb-03"></a>PB-03 | One validated publication fence per workspace. Guard the watermark revision/fence and all selected rows in the same batch; stale publisher aborts with no numbering or watermark change. |
 | PB-04 | **Per-aggregate revision order is explicit.** The owner serialises its revision commits and writes each publication row in that commit. The publisher selects the lowest unpublished revision of that aggregate; it never uses UUID or timestamp order as a substitute. |
 | PB-05 | **Scheduling is bounded and fair.** A persisted round-robin aggregate key prevents a hot aggregate from starving another; unpublished age and publication lag are monitored. |
 | PB-06 | **There is no global business-commit-order or cross-aggregate atomic-observation guarantee.** Clients can split a publication batch across pages. Referential dependencies are resolved by stable identifiers and canonical reads, not by assuming a parent is on the preceding page. |
@@ -1137,7 +1320,7 @@ Each batch admits at most one revision per selected aggregate; subsequent passes
 | # | Rule |
 |---|---|
 | CU-01 | **A cursor binds workspace, scope/filter generation and `publish_seq`.** It is opaque and authenticated. Changing selective-sync scope requires a new bootstrap; a cursor cannot silently change its filter. |
-| CU-02 | **Bootstrap materialises one consistent snapshot with a lower-bound cursor.** Read watermark W on the primary, then establish a REPEATABLE READ snapshot S that sees at least W. Materialise bounded immutable pages plus an explicit manifest under S; do not paginate live aggregate queries across unrelated snapshots. A bounded expiry/retention pin protects W until bootstrap completes. Abort and restart if the build exceeds its time/storage bound. |
+| CU-02 | Bootstrap pins a primary-read lower-bound publication cursor W and scans primary aggregate/tombstone pages by immutable stable key. It is a convergent bootstrap, not a multi-request SQL snapshot. Return actual row revisions and replay all published changes above W through a captured completion high water. Pages/pin expire after 15 minutes or 100 MiB metadata; exceedance returns bootstrap_expired and preserves pending client work. model 04 §5 defines interleavings. |
 | CU-02a | **The snapshot may contain revisions published after W.** Return each aggregate's actual revision, including tombstone/state. Clients apply only a strictly newer Cloud revision; equal is idempotent and older is ignored. Thus replay above W cannot replace a newer snapshot with an older, previously unseen revision. |
 | CU-03 | **An expired cursor or expired bootstrap pin returns `sync.cursor_expired`.** Resync replaces only acknowledged shadow/cache data. Durable local journals, unacknowledged uploads and tool receipts survive and are rebased; they are not discarded with the cache. |
 | CU-04 | **A feed page is processed durably.** Persist the page, then atomically apply/stage every item and advance its cursor. A dependent object may be fetched with `sync.getAggregate(minRevision)` before exposing the relationship, or shown as an explicit unresolved reference pending that fetch. No missing page/dependency is treated as deletion. |
@@ -1173,6 +1356,12 @@ Acquisition updates holder/expiry and increments the fence under a conditional a
 - **Constraint** — a device whose cursor predates the oldest retained tombstone **must** full-resync; the feed returns `sync.cursor_expired` rather than a silently incomplete delta ([WP-25.02](../../planning/work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.02))
 
 ### `sync.conflict`
+
+| Table | Required fields / constraints |
+|---|---|
+| sync.conflict | conflict_id:id PK; workspace_id:id NN; aggregate_kind:text NN; aggregate_id:id NN; base_rev/current_rev:rev NN; incoming_hash:hash NN; retained_version_ref:id NN; policy_version:text NN; state:enum(unresolved,resolved) NN; resolution:Key?; created_at:instant NN; resolved_at:instant?; resolution_command_id:id? UNIQUE; rev:rev NN; IX(workspace_id,state,created_at). Losing content is retained before resolution receipt. |
+
+
 
 Records a detected conflict, the policy applied, and — where a policy discarded a version — **a reference to the retained discarded version** ([WP-25.03](../../planning/work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.03)). A discarded version is never destroyed.
 
@@ -1214,27 +1403,107 @@ Records a detected conflict, the policy applied, and — where a policy discarde
 
 ### `resource.upload_session`
 
-`upload_session` stores `upload_id PK`, workspace, operation/idempotency key, server-issued object key, expected hash, declared maximum bytes, received chunk bitmap with verified chunk lengths, reservation-group ID, state `receiving/verified/promoted/expiring/deleted`, created/expiry times and bounded extension count. Unique `(workspace_id, operation_key)` returns the same session. Oversize/chunk mismatch refuses further upload and enters cleanup. Completion verifies bytes/hash and creates a **Verified** object plus a provisional pin; it does not publish an owner reference. Owner commit enlists Entitlement, Resource and Sync where applicable, promotes to Committed, converts storage quota and pins the object atomically. Duplicate completion/promotion returns the recorded receipt.
+`upload_session` stores `upload_id PK`, workspace, operation/idempotency key, server-issued object key, expected hash, declared maximum bytes, received chunk bitmap with verified chunk lengths, reservation-group ID, state `receiving/verifying/verified/promoted/expiring/deleted`, created/expiry times and bounded extension count. Unique `(workspace_id, operation_key)` returns the same session. Oversize/chunk mismatch refuses further upload and enters cleanup. Completion verifies bytes/hash and creates a **Verified** object plus a provisional pin; it does not publish an owner reference. Owner commit enlists Entitlement, Resource and Sync where applicable, promotes to Committed, converts storage quota and pins the object atomically. Duplicate completion/promotion returns the recorded receipt.
+
+The table also stores sealed_parts_proto:PartReceipt[]?, verification_job_id:id?, verification_state:pending/running/verified/failed, verification_hash:hash?, provisional_pin_id:id?, completed_at:instant?, rev:rev NN. `resource.upload_part` has PK(upload_id,part_number), offset/length:uint64 NN, sha256:hash NN, provider_receipt:text NN, verified_at:instant NN. Exact repeat is accepted; changed bytes at an accepted part number refuse. Complete seals the immutable manifest and enters verifying; only a verified result creates the object/pin.
 
 Expiry forbids new writes and starts idempotent physical cleanup. The sweeper verifies deletion before releasing staging/storage reservations. An object-store timeout leaves cleanup retryable and exposure held; a bounded deployment staging limit prevents abandoned sessions from exhausting unaccounted storage. Partially received multipart uploads are explicitly aborted through the storage adapter.
 
 ---
 
+<a id="search-inference-job-execution-record"></a>
+## 10.1 `search` — inference jobs
+
+Search owns search.inference_job as the canonical business control/receipt record; vectors and reranked candidates remain derived. It is a bounded platform Job, not task.task or a second AI loop. The private [CF inference ports](../contracts/05-cloudflare-integration.md#8-session-bindings-inference-jobs-and-deployment-transitions) carry this identity.
+
+| Fields | Type and invariant |
+|---|---|
+| job_id; workspace_id; principal_id; service_term_id | id PK and non-null scoped owner/eligibility identities; scheduled indexing uses its explicit operator-job grant for that workspace, never a fabricated interactive session |
+| purpose; input_hash; source_manifest_ref; source_set_hash | embedding/rerank; exact hash plus immutable ResourceVersionRef; input hash includes kind, normalized input, ordered source revisions/hashes, principal/scope/policy snapshot, model/profile/config and effective budget |
+| model_descriptor_id; config_revision_id; profile | Pinned activated catalogue/config and selected inference profile; no dynamic provider fallback |
+| state; reason; rev; created_at; updated_at; deadline | queued/running/unknown/succeeded/failed/cancelled; named reason, monotonic revision and UTC instants. Admission-to-result deadline 120 seconds; before-dispatch expiry refuses, possible-dispatch expiry is unknown |
+| logical_request_id; provider_attempt_id; intent_receipt | Existing Commerce identities, one bounded invocation per admitted job; beneficiary=platformIndexing, funding_class=platformJob, operator_job_ref=job_id. No customer capacity reservation/tariff/settlement |
+| workflow_id; worker_version; recovery_generation; lease_holder; lease_epoch; lease_expires_at | Same deterministic CF ID and observed version as the private contract; conditional 60-second claim, renewal 20 seconds; old epoch cannot act after takeover/expiry |
+| result_ref?; outcome_receipt?; outcome_hash?; source_publication_ref? | Immutable validated result and canonical outcome digest/receipt. succeeded requires complete result; unknown has no claim of completion. Projection delivery receipt records publish/discard under current source/policy; never provider content in Commerce |
+| cancellation_requested_at?; completed_at? | Cancellation blocks new dispatch/publication; an already-sent invocation still records supplier facts under the existing uncertainty policy |
+
+Stable job_id comes from the committed Search source/query command, reused on outbox/redelivery. Reusing it with a different input hash is conflict. Unique logical request/attempt references and the outcome hash make receipts idempotent. Model calls never retry merely because a job/lease expired; a proven pre-dispatch refusal may be rescheduled by a new authorized job, and unknown attempts stay in supplier reconciliation. New source/model/config revisions produce new input identities, not edits to old outcomes.
+
+The two enumerated Search families in the [transaction authority](00-data-model-overview.md#611-shared-units-of-work) use each module's own SQL port in one D1 batch; no external CF/R2 call occurs inside the commit. Search is after Task and before Notification in statement order. The dispatch outbox creates/gets the exact Workflow; CF input fetch rechecks current source permissions, active service term and AI-exclusion policy. Source deletion/revocation cancels queued jobs and invalidates derived publication even when a late output is complete.
+
+Record every supplier attempt and keep unresolved exposure through expiry/period closure. A complete result may coexist with costUnconfirmed; it cannot create a customer debit or release conservative liability. Retain accounting identity/receipt under existing commerce retention; source text/result pins use Resource content/deletion policy, never extend user-content retention merely to retain cost evidence. A completed projection consumer releases ephemeral pins; interrupted consumers retry idempotently and rebuild readiness from current authoritative source, never from CF checkpoint data.
+
+
+### Service object and recovery receipts
+
+| Table | Required fields / constraints |
+|---|---|
+| resource.service_object_grant | grant_id:id PK; realm_id/workspace_id/owner_job_id:id NN; owner_kind:Key NN; attempt_id:id?; epoch/recovery_generation:bigint NN; direction:enum(read,write) NN; resource_id:id NN; upload_id:id?; byte_limit:bigint NN; expires_at:instant NN; revoked_at:instant?; IX(expires_at). Limits and current owner lease checked each use. |
+| task.cf_instance_inventory / chat.cf_instance_inventory / search.cf_instance_inventory / resource.cf_instance_inventory | kind:text + instance_id:text + recovery_generation:bigint composite PK; workspace_id/owner_job_id:id NN; worker_version:text NN; deletion_receipt:text?; updated_at:instant NN. Each owner writes its own rows; deletion coordinator reads via ports. |
+| platform.safety_receipt | journal_record_id:text PK; record_hash:hash NN; owner_command_id:id NN; recovery_generation:bigint NN; kind:Key NN; status:enum(pending,verified) NN; independent_receipt:text?; created_at:instant NN; verified_at:instant?; IX(status,created_at). Verified receipt is required before the protected success/dispatch. |
+| platform.recovery_epoch | realm_id:id PK; recovery_generation:bigint NN; recovery_point:text NN; journal_inventory_hash:hash NN; state:enum(fenced,restoring,reconciling,open) NN; updated_at:instant NN; rev:rev NN. Installed generation cannot decrease. |
+
+
+
+Resource service_object_grant stores grant_id PK, owner_kind/job_id, attempt_id?, realm/workspace, epoch, recovery_generation, direction, resource/upload_id, byte_limit, expires_at and revoked_at. It uses the existing upload reservations/verification pins, not a second object lifecycle. Every grant authorization validates its current owner job and fence. Task/Search/Resource keep cf_instance_inventory keyed by kind/instance_id/generation with owner workspace/job, actual worker version and deletion receipt; each module writes only its owned rows and exposes inventory through the deletion coordinator.
+
+platform.safety_receipt records immutable external journal record ID/hash, related owner command/intent ID, generation, kind and pending/verified status. It is a local receipt/cache, never authority over the independent signed journal head. Outbox dispatch cannot pass its external boundary before verified barrier; security denial cannot return durable success before verified fence. platform.recovery_epoch records the installed independent generation, recovery point, journal inventory hash and reopening state. Restored outstanding effects have explicit quarantined/unknown reconciliation records, retaining original identities even when their newer D1 outcome was outside the recovery point.
+
+
+### Purpose-bound source consent
+
+| Table | Required fields / constraints |
+|---|---|
+| resource.source_consent | consent_id:id PK; realm_id/workspace_id/actor_id:id NN; operation_id/purpose:Key NN; source_manifest_hash:hash NN; policy_rev:rev NN; max_bytes:bigint NN; expires_at:instant NN; consumed_at/revoked_at:instant?; generation:bigint NN; IX(expires_at). The one-use receipt binds the declared source/purpose/operation and current policy/recovery generation; it never changes durable source policy or grants arbitrary egress. |
+
+
 ## 11. `notification`, `policy`, `audit`, `support`, `trustsafety`
 
 | Table | Key points |
 |---|---|
-| `notification.notification` | Carries **durability class** (`durable` \| `transient`). A durable item persists until resolved regardless of push delivery ([WP-10.04](../../planning/work-packages/10-design-system-and-desktop-shell.md#rule-wp-10.04)). `IX (workspace_id, durability, resolved_at)` |
-| `notification.push_registration` | Per authorized device/installation, UQ(device_id,installation_id), increasing registration_revision, encrypted token, token_hash, platform=android-fcm, recovery_generation and updated_at. RegisterPush rotates/upserts transactionally, supersedes old pending intents and recreates only still-authorized unresolved/unexpired intents at the new revision; logout/device revoke/UnregisterPush removes current row. Confirmed token-invalid receipt compares registration_id/revision/token_hash/generation before deletion; stale response cannot delete a replacement. Wrong project/payload is not invalid-token evidence. |
-| `notification.push_delivery` | Unique(notification_id,registration_id,registration_revision,recovery_generation), notification-owned creation transaction plus outbox. Fields: delivery_id, expires_at, state(pending/sending/providerAccepted/expired/invalidated/configurationFailed), attempt_count, next_attempt_at, lease_fence, provider_message_id?, last_reason, created_at, completed_at?. No payload text or token copy. A crashed sending claim may retry within TTL after fence takeover; physical duplicates are permitted and client-deduplicated. Delete completed delivery diagnostics after30days; durable notification retention is independent. |
-| `policy.policy_bundle` | Versioned, signed, append-only. Carries `schema_version` and the full validated document. A bundle is applied atomically or not at all ([WP-44.01](../../planning/work-packages/44-dynamic-policy-and-configuration.md#rule-wp-44.01)) |
-| `policy.rollout_assignment` | *(derived)* — deterministic per installation, so it can be recomputed rather than stored; stored only as a cache with the rule version it came from |
-| `audit.audit_event` | **Append-only under normal application/operator roles; only approved expired-partition retention purge may delete** ([AU-01](../13-observability-and-operations.md#rule-au-01)). Carries the full actor chain, the enumerated event type, the reason code and the correlation identifier. `IX (workspace_id, occurred_at)`; `IX (actor_ref, occurred_at)`. Retention follows the explicit security/financial policy and holds, independently of short telemetry windows |
-| `support.support_case` | Links to a **diagnostic reference**, never to content ([WP-45.06](../../planning/work-packages/45-operations-support-and-trust-safety.md#rule-wp-45.06)) |
-| `support.access_grant` | Scoped, expiring, consented where required, and **itself audited** ([OP-04](../13-observability-and-operations.md#rule-op-04)). `IX (expires_at)` |
-| `trustsafety.enforcement_action` | Records the ladder position, the reason, the communication sent and the appeal state |
+| `notification.notification` | notification_id:id PK; workspace_id/user_id:id NN; product_id:ProductId?; kind:Key NN; owner_ref:AggregateRef NN; durability:enum(durable,transient) NN; created_at:instant NN; expires_at/resolved_at:instant?; rev:rev NN. Carries **durability class** (`durable` \| `transient`). A durable item persists until resolved regardless of push delivery ([WP-10.04](../../planning/work-packages/10-design-system-and-desktop-shell.md#rule-wp-10.04)). `IX (workspace_id, durability, resolved_at)` |
+| `notification.push_registration` | registration_id:id PK; device_id/installation_id:id NN; registration_revision:bigint NN; encrypted_token/token_hash:text NN; recovery_generation:bigint NN; updated_at:instant NN. Per authorized device/installation, UQ(device_id,installation_id), increasing registration_revision, encrypted token, token_hash, platform=android-fcm, recovery_generation and updated_at. RegisterPush rotates/upserts transactionally, supersedes old pending intents and recreates only still-authorized unresolved/unexpired intents at the new revision; logout/device revoke/UnregisterPush removes current row. Confirmed token-invalid receipt compares registration_id/revision/token_hash/generation before deletion; stale response cannot delete a replacement. Wrong project/payload is not invalid-token evidence. |
+| `notification.push_delivery` | delivery_id:id PK; notification_id/registration_id:id NN; registration_revision/recovery_generation:bigint NN; expires_at/next_attempt_at/created_at:instant NN; attempt_count/lease_fence:bigint NN; provider_message_id:text?; last_reason:ReasonCode?; completed_at:instant?. Unique(notification_id,registration_id,registration_revision,recovery_generation), notification-owned creation transaction plus outbox. Fields: delivery_id, expires_at, state(pending/sending/providerAccepted/expired/invalidated/configurationFailed), attempt_count, next_attempt_at, lease_fence, provider_message_id?, last_reason, created_at, completed_at?. No payload text or token copy. A crashed sending claim may retry within TTL after fence takeover; physical duplicates are permitted and client-deduplicated. Delete completed delivery diagnostics after 30 days; durable notification retention is independent. |
+| `policy.policy_bundle` | bundle_id:id + version:bigint composite PK; schema_version:text NN; document_proto:PolicyBundle NN; hash/signature:text NN; issued_at/expires_at:instant NN. Versioned, signed, append-only. Carries `schema_version` and the full validated document. A bundle is applied atomically or not at all ([WP-44.01](../../planning/work-packages/44-dynamic-policy-and-configuration.md#rule-wp-44.01)) |
+| `policy.rollout_assignment` | installation_id:id + rollout_id:id composite PK; rule_version:bigint NN; bucket:int NN; expires_at:instant NN. *(derived)* — deterministic per installation, so it can be recomputed rather than stored; stored only as a cache with the rule version it came from |
+| `audit.audit_event` | event_id:id PK; workspace_id:id?; actor_ref:text NN; actor_proto:ActorChain NN; event_type:Key NN; reason:ReasonCode NN; correlation_id/command_id:id?; target_ref:AggregateRef?; occurred_at:instant NN; payload_proto:typed event-schema JSON NN (registered event kind, IDs, revision/hash and disposition only; no content or secret); previous_hash/event_hash:hash NN. **Append-only under normal application/operator roles; only approved expired-partition retention purge may delete** ([AU-01](../13-observability-and-operations.md#rule-au-01)). Carries the full actor chain, the enumerated event type, the reason code and the correlation identifier. `IX (workspace_id, occurred_at)`; `IX (actor_ref, occurred_at)`. Retention follows the explicit security/financial policy and holds, independently of short telemetry windows |
+| `support.support_case` | case_id:id PK; workspace_id/user_id:id NN; category/subject:text NN; state:enum(open,inProgress,awaitingUser,resolved,closed) NN; diagnostic_ref:id?; created_at/updated_at:instant NN; rev:rev NN; IX(user_id,state,updated_at). Messages use support.case_message(message_id:id PK,case_id:id FK,ordinal:bigint NN,actor_ref:text NN,text:text NN,created_at:instant NN,UQ(case_id,ordinal)). Links to a **diagnostic reference**, never to content ([WP-45.06](../../planning/work-packages/45-operations-support-and-trust-safety.md#rule-wp-45.06)) |
+| `support.access_grant` | access_id:id PK; case_id:id FK NN; workspace_id/user_id:id NN; operator_subject:text NN; scope_proto:typed support.access.v1 JSON NN (case-bound resource IDs, allowed read/export actions and purpose; no wildcard or arbitrary SQL); proposal_hash:hash NN; consented_at:instant?; expires_at:instant NN; revoked_at:instant?; rev:rev NN. Scoped, expiring, consented where required, and **itself audited** ([OP-04](../13-observability-and-operations.md#rule-op-04)). `IX (expires_at)` |
+| `trustsafety.report` | report_id:id PK; reporter_user_id:id NN; subject_ref:AggregateRef NN; reason:ReasonCode NN; evidence_ref:text NN; state:enum(received,reviewing,actioned,dismissed) NN; action_id:id?; created_at/updated_at:instant NN; rev:rev NN; IX(state,created_at). Evidence access is purpose-bound and audited; reports alone do not grant content access or apply enforcement. |
+| `trustsafety.enforcement_action` | action_id:id PK; subject_ref:AggregateRef NN; level/reason:Key NN; evidence_ref:text NN; operator_subject:text NN; notification_id:id NN; appeal_state:enum(none,pending,upheld,reversed) NN; created_at:instant NN; expires_at:instant?; rev:rev NN; IX(subject_ref,created_at). Records the ladder position, the reason, the communication sent and the appeal state |
 
 ---
+
+
+### Notification email delivery
+
+| Table | Complete fields and constraints |
+|---|---|
+| notification.delivery | delivery_id:id PK; user_id:id FK NN; template_version/purpose/recipient_hash:text NN; recipient_secret_ref:text NN; state:enum(pending,sending,providerAccepted,unknown,rejected,bounced,complained,expired,canceled) NN; challenge_ref:id?; security_epoch:bigint NN; current_attempt_id:id?; created_at/expires_at:instant NN; rev:rev NN; IX(state,expires_at). Recipient and template variables are encrypted purpose-limited inputs; no raw proof in telemetry. |
+| notification.delivery_attempt | attempt_id:id PK; delivery_id:id FK NN; provider:enum(postmark,ses) NN; dispatch_state:enum(prepared,dispatched,accepted,rejected,unknown) NN; request_hash:hash NN; provider_message_id:text?; accepted_at:instant?; outcome:Key?; reconciled_at:instant?; UQ(provider,provider_message_id); IX(dispatch_state,reconciled_at). Intent commits before dispatch; unknown is not rejection. |
+| notification.provider_event | provider:text + event_id:text composite PK; delivery_id/attempt_id:id NN; body_hash:hash NN; kind:Key NN; received_at:instant NN; applied_at:instant?; contradictory replay is rejected. If the provider has no event ID, use canonical message ID/event kind/provider timestamp/body hash as its deterministic key. |
+| notification.suppression | recipient_hash:text + stream:enum(security,broadcast) composite PK; reason:enum(hardBounce,complaint,operator) NN; provider_event_id:text?; created_at:instant NN; cleared_at:instant?; rev:rev NN. Permanent bounce/complaint stops retries on that stream and alerts the owner to use another verified recovery route. Clearing requires corrected destination or audited operator evidence, never blind failover. |
+
+Templates, domain/provider settings, expiry and callback authentication are fixed by architecture 13/contracts 08. An attempt cannot restore an expired challenge or change account state. Unknown outcomes reconcile original provider evidence; absence of a search hit never authorizes secondary dispatch. Retain only proof-safe delivery metadata after challenge expiry; destroy recipient/template secret material after the delivery retention policy.
+
+### Source knowledge policy
+
+| Table | Required fields / constraints |
+|---|---|
+| policy.source_policy | workspace_id:id + target_kind:Key + target_id:id composite PK; revision:rev NN; searchable/cloudIndexAllowed/aiRetrievalAllowed/managedAiProcessingAllowed:bool?; updated_by:id NN; updated_at:instant NN; command_id:id NN. Four nullable overrides map exactly to KnowledgePolicyPatch in registry 04 and the source-policy rules in contracts 07; null inherits. |
+
+Owner/resource existence and authorization are checked through owner ports; no cross-module write. Command receipt, policy revision, audit event and index-reconciliation outbox commit atomically under Policy+Audit with the target's current scope/recovery generation. Clear creates a versioned inherited-state row rather than deleting the command fence. Source consent records reference exact policy revision, explicit temporary patch, operation/source hash and expiry; no durable policy write occurs when the receipt is used. Search and dispatch always read current effective policy; source.getPolicy gives the client its current projection. No generic sync body can write this table.
+
+## 11.1 `package_catalog`
+
+| Table | Fields / constraints |
+|---|---|
+| publisher | publisher_id:id PK; owner_user_id:id FK NN; domain:text UNIQUE NN; state:pending/verified/suspended; challenge_hash:text NN; challenge_expires_at:instant NN; verified_at:instant?; rev:rev NN. DNS verification rules are registry 04 authority. |
+| package | package_id:text PK; publisher_id:id FK NN; name/summary/kind:text NN; created_at:instant NN; rev:rev NN. Publisher binding immutable; no package ID takeover. |
+| version | package_id:text FK + version:text composite PK; submission_id:id UNIQUE NN; archive_resource_id:id NN; digest/manifest_hash:text NN; state:submitted/reviewing/published/rejected/revoked; submitted_at:instant NN; published_at:instant?; rev:rev NN. Archive immutable; submission ownership follows publisher. |
+| review | review_id:id PK; submission_id:id FK NN; operator_subject/decision/reason/evidence:text NN; proposal_hash:text NN; decided_at:instant NN; command_id:id UNIQUE NN. Append-only and separate from customer access. |
+| revocation | revocation_id:id PK; package_id/version composite FK NN; reason/operator_subject:text NN; revoked_at:instant NN; publication_revision:bigint UNIQUE NN; command_id:id UNIQUE NN. Never erase a published revocation. |
+| publication | channel:text PK; revision:bigint NN; index_hash/revocation_hash:text NN; signed_object_ref:text?; state:pending/published; updated_at:instant NN. Guarded revision advances with review/revocation; outbox publishes immutable signed snapshots. |
 
 ## 12. Constraints that span modules
 
@@ -1250,7 +1519,7 @@ These cannot be foreign keys ([AG-01](00-data-model-overview.md#rule-ag-01), [MD
 | <a id="rule-cx-11"></a>CX-11 | No `capacity_bucket.available_micro` was raised past `max(previous_available, max(0, burst_in_force - held_micro))` by any operation, and a balance sitting above the current ceiling after a reduction is **not** a violation ([RF-05](../16-billing-and-commerce-architecture.md#rule-rf-05) of the commerce architecture) | The bucket update predicate | Capacity accounting check |
 | CX-03 | Every `resource.object_reference` referrer exists in its owning module | Reference creation | Orphan detection ([WP-46.04](../../planning/work-packages/46-backup-recovery-and-data-health.md#rule-wp-46.04)) |
 | CX-04 | Every `sync.change` names an aggregate that exists or has a tombstone | The applying transaction | Feed integrity check |
-| CX-05 | Every `task.tool_request` targets a device that exists and is eligible | Request creation | Presence sweeper |
+| CX-05 | Every device tool request targets an eligible application installation/product and a current delivery epoch; cloud-local requests have no device target | Request creation and claim/result fence | Application-presence and command-receipt reconciliation |
 | CX-06 | Every `identity.session` names a live, unrevoked device | Session issue | Device revocation cascade |
 | CX-07 | `entitlement.usage_counter` for storage equals the committed sum in `resource` | — *(materialised)* | Accounting comparison ([WP-42.06](../../planning/work-packages/42-commerce-entitlement-and-credits.md#rule-wp-42.06)) |
 
@@ -1268,82 +1537,3 @@ These cannot be foreign keys ([AG-01](00-data-model-overview.md#rule-ag-01), [MD
 | CV-06 | A cross-workspace read fails at the data layer with a forged scope | [WP-21.06](../../planning/work-packages/21-cloud-host-and-persistence.md#rule-wp-21.06) |
 | CV-07 | Every cross-module invariant in `§12` has a detection check that fires on an induced violation | [WP-46.04](../../planning/work-packages/46-backup-recovery-and-data-health.md#rule-wp-46.04) |
 | CV-08 | Entitlement resolves correctly with the entire `commerce` schema absent ([EO-05](../16-billing-and-commerce-architecture.md#rule-eo-05)) | [WP-42.00](../../planning/work-packages/42-commerce-entitlement-and-credits.md#rule-wp-42.00) |
-
-## P2-009 state additions and projection relocation
-
-Implement exact [execution/receipt records](../contracts/05-cloudflare-integration.md#1-deployment-and-authority), late-outcome evidence constraints and object verification receipts. identity.session gains nullable access_token_hash/access_expires_at for nativeBearer, null for browserCookie; unique access hash, native refresh rotation unchanged. Add csrf_hash to session/preauth flow (never plaintext), auth_epoch and recovery_generation checked by every endpoint. Identity owns disjoint operator_session/operator_access/operator_action approval records with tenant/operator subject and proposal hash; only operator scheme can create/read them. Upload sessions retain sealed part manifest, verification job ID/status and immutable part receipts; completeUpload returns verifying while the content is not readable. Resource/Entitlement final verification and owner promotion remain separate commits. DO stream_chunk/state are not PG tables; task.run keeps only stream IDs/status/pointers. No other canonical owner changes.
-
-## Search inference job execution record
-
-Search owns search.inference_job as the canonical business control/receipt record; vectors and reranked candidates remain derived. It is a bounded platform Job, not task.task or a second AI loop. The private [CF inference ports](../contracts/05-cloudflare-integration.md#8-session-bindings-inference-jobs-and-deployment-transitions) carry this identity.
-
-| Fields | Type and invariant |
-|---|---|
-| job_id; workspace_id; principal_id; service_term_id | id PK and non-null scoped owner/eligibility identities; scheduled indexing uses its explicit operator-job grant for that workspace, never a fabricated interactive session |
-| purpose; input_hash; source_manifest_ref; source_set_hash | embedding/rerank; exact hash plus immutable ResourceVersionRef; input hash includes kind, normalized input, ordered source revisions/hashes, principal/scope/policy snapshot, model/profile/config and effective budget |
-| model_descriptor_id; config_revision_id; profile | Pinned activated catalogue/config and selected inference profile; no dynamic provider fallback |
-| state; reason; rev; created_at; updated_at; deadline | queued/running/unknown/succeeded/failed/cancelled; named reason, monotonic revision and UTC instants. Admission-to-result deadline120 seconds; before-dispatch expiry refuses, possible-dispatch expiry is unknown |
-| logical_request_id; provider_attempt_id; intent_receipt | Existing Commerce identities, one bounded invocation per admitted job; beneficiary=platformIndexing, funding_class=platformJob, operator_job_ref=job_id. No customer capacity reservation/tariff/settlement |
-| workflow_id; worker_version; recovery_generation; lease_holder; lease_epoch; lease_expires_at | Same deterministic CF ID and observed version as the private contract; conditional60-second claim, renewal20 seconds; old epoch cannot act after takeover/expiry |
-| result_ref?; outcome_receipt?; outcome_hash?; source_publication_ref? | Immutable validated result and canonical outcome digest/receipt. succeeded requires complete result; unknown has no claim of completion. Projection delivery receipt records publish/discard under current source/policy; never provider content in Commerce |
-| cancellation_requested_at?; completed_at? | Cancellation blocks new dispatch/publication; an already-sent invocation still records supplier facts under the existing uncertainty policy |
-
-Stable job_id comes from the committed Search source/query command, reused on outbox/redelivery. Reusing it with a different input hash is conflict. Unique logical request/attempt references and the outcome hash make receipts idempotent. Model calls never retry merely because a job/lease expired; a proven pre-dispatch refusal may be rescheduled by a new authorized job, and unknown attempts stay in supplier reconciliation. New source/model/config revisions produce new input identities, not edits to old outcomes.
-
-The two enumerated Search families in the [transaction authority](00-data-model-overview.md#611-shared-units-of-work) use each module's own SQL port on one connection; no external CF/R2 call occurs inside the commit. Search is after Task and before Notification in lock order. The dispatch outbox creates/gets the exact Workflow; CF input fetch rechecks current source permissions, active service term and AI-exclusion policy. Source deletion/revocation cancels queued jobs and invalidates derived publication even when a late output is complete.
-
-Record every supplier attempt and keep unresolved exposure through expiry/period closure. A complete result may coexist with costUnconfirmed; it cannot create a customer debit or release conservative liability. Retain accounting identity/receipt under existing commerce retention; source text/result pins use Resource content/deletion policy, never extend user-content retention merely to retain cost evidence. A completed projection consumer releases ephemeral pins; interrupted consumers retry idempotently and rebuild readiness from current authoritative source, never from CF checkpoint data.
-
-## Account state and proof constraints
-
-Identity user/profile and credential rows carry owner revisions; profile/avatar reference changes enlist Resource when required. auth_identity adds realm_id/provider_id and password_hash (password only, no raw secret); provider configuration is versioned and secrets referenced only from the secret store. UQ(workspace.realm_id, owner_user_id) enforces one personal workspace. Initial grants are unique by owner and configured grant identity, not session or installation.
-
-| Identity-owned record | Required fields and constraints |
-|---|---|
-| spent_refresh | token_hash PK, session_id/family_id FK, generation, consumed_at, family_expires_at; unique family/generation. Retain through family expiry plus the 60-second validation skew. Rotation locks the family, inserts spent hash and replaces current hash atomically. |
-| recovery_code | set_id, code_hash PK, user_id, issued_at, consumed_at, invalidated_at; one live set per user, consumption conditional on both code and set remaining active. |
-| api_token | token_id PK, user_id, workspace_id, secret_hash unique, name, scopes, created_at, expires_at, last_used_at, revoked_at, rev, auth_epoch, recovery_generation. Receipt persists safe summary only; no reusable plaintext. |
-| security_flow | flow_id PK, kind/provider/purpose, user_id if known, installation/device/origin binding, proof_hash, target payload hash, expires_at, attempts, consumed_at; email-change, SSO, enrollment, provider callback and deletion reauth use mutually exclusive typed payloads. Consumption and its owner/session effect share one transaction. |
-| session additions | purpose, recovery_generation, auth_epoch, rev; cancelDeletion purpose enforces an API allowlist independent of ordinary ownership. Every family can be revoked through user/device/session indexes. |
-| device remote policy | device_id PK/FK, allowed_capabilities, local_confirmation_capabilities, rev; part of Device ownership, not a claim supplied by a heartbeat. |
-| workspace data deletion | deletion_id PK, workspace_id, preview_hash, captured_revision, state, owner_job_inventory, completed_at, rev; bounded owner jobs record restartable progress, purge fence and reference release receipts. |
-
-Account proof changes and their Notification outbox are one Identity + Notification shared unit; profile avatar changes additionally enlist Resource/Entitlement. Workspace data deletion uses the existing owner content/reference-release shared family per batch and a Workspace coordinator outbox, never a transaction spanning all content and object storage. Security flow completion that creates a session uses the authentication family. The independently retained safety receipts in deployment architecture fence post-restore reuse and access resurrection.
-
-## Structural move and complete media replica constraints
-
-A Notes cross-notebook move validates one explicit disposition for every used property/tag. Destination properties must have the same scalar type/scale, matching semantic revision, and complete mappings for used select options. Duplicate destination assignments, missing/trashed targets, implicit label matching or numeric conversion refuse. Explicit removal is previewed and retained in immutable history; document/block IDs and original values in old revisions survive. The preview hash binds all participating revisions and mapping. Under the existing sorted locks, commit updates the document placement/classification and source/destination membership publications atomically. Named structural operations retain their typed command payload and results; a generic sync NotesDocument replacement cannot move an existing document.
-
-Slate replicas encode the complete [slate.project.v1 wire projection](../contracts/04-protobuf-wire-registry.md#4-shared-record-field-registry), including every sequence timeline/graph, exact grids, colour/input assignments, bins, markers, text/subtitles, generators/nesting, keyframe scopes and managed small-asset references. Validate identity, referential closure, type/graph/nesting cycles and source contentRev before storing the immutable replica. sequence summaries cannot substitute for timelines. Originals remain opt-in; absent bytes produce Offline Media without losing edit metadata. TranscriptRecord is an immutable derived Resource artifact linked to Task/source revision; adopting it creates ordinary authored native content with retained AI origin, never a server-side rewrite of a Slate project.
-
-## Service object and recovery persistence
-
-Resource service_object_grant stores grant_id PK, owner_kind/job_id, attempt_id?, realm/workspace, epoch, recovery_generation, direction, resource/upload_id, byte_limit, expires_at and revoked_at. It uses the existing upload reservations/verification pins, not a second object lifecycle. Every grant authorization validates its current owner job and fence. Task/Search/Resource keep cf_instance_inventory keyed by kind/instance_id/generation with owner workspace/job, actual worker version and deletion receipt; each module writes only its owned rows and exposes inventory through the deletion coordinator.
-
-platform.safety_receipt records immutable external journal record ID/hash, related owner command/intent ID, generation, kind and pending/verified status. It is a local receipt/cache, never authority over the independent signed journal head. Outbox dispatch cannot pass its external boundary before verified barrier; security denial cannot return durable success before verified fence. platform.recovery_epoch records the installed independent generation, recovery point, journal inventory hash and reopening state. Restored outstanding effects have explicit quarantined/unknown reconciliation records, retaining original identities even when their newer PG outcome was outside the recovery point.
-
-## P2-010 execution, consent and transfer records
-
-### Chat-owned ordinary and temporary execution
-
-`chat.turn(turn_id PK,workspace_id,conversation_id?,input_message_id?,mode,state,rev,run_id?,stream_id?,final_message_id?,reason?,created_at,expires_at?,has_unknown_effect)` uses wire ChatMode/ChatTurnState. `UQ(workspace_id,input_message_id)` prevents duplicate generation admission. For Cloud history, final success requires a committed final message or explicit no-answer outcome. Local/temporary metadata-only turns have null conversation/input/final message FKs and use the verified transient output receipt in model05. A turn cannot change ordinary/temporary into agent in place; promotion creates a linked Task once using `chat.turn_promotion(turn_id,task_id UNIQUE,preview_hash,command_id UNIQUE)`.
-
-`chat.execution_lease`, `chat.execution_command` and `chat.iteration_output` use the same closed lease/fence/receipt fields as their Task counterparts with turn_id instead of task_id, written only by Chat. Shared CF records carry `owner_kind enum(chatTurn,agentTask)` and `owner_id`; unique keys include workspace/ownerKind/ownerId/runId/attempt as applicable. Commerce logical/provider requests carry this pair, not a mandatory Task FK. Existing Task-only fields remain on actual Task records; no row is minted merely to satisfy an FK. The owner route is validated against the matching table inside the shared transaction; arbitrary polymorphic IDs cannot bypass ownership.
-
-Temporary body storage is `chat.transient_content(resource_id PK,turn_id?,conversation_id?,key_ref,ciphertext_ref,sha256,size,expires_at,closed_at?,purged_at?)`. Prompt/output/attachment text is encrypted, excluded from ordinary history, Sync, Knowledge and backups, and expires within24hours; close marks it inaccessible immediately and purges within1hour. CF checkpoints carry IDs only. Account deletion/revocation denies access immediately regardless of physical purge delay. Metadata-only owner/financial rows keep the normal retention, no text in telemetry or compact receipts. Temporary compaction summaries never enter this table.
-
-Task/Chat control uses `control_receipt(command_id PK,owner_id,kind,state,requested_at,acknowledged_at?,reason?,request_hash)` and the existing owner command fence. One latest projection does not erase previous receipts. Interrupted/partial success and unknown effect are distinct, following wire04.
-
-### Purpose-bound source consent
-
-`resource.source_consent(consent_id PK,realm_id,workspace_id,actor_id,operation_id,purpose,source_manifest_hash,policy_rev,max_bytes,expires_at,consumed_at?,revoked_at?,generation)` has `UQ(workspace_id,operation_id,source_manifest_hash,purpose)`. `resource.source_consent_item(consent_id,source_owner,source_id,source_rev,selection_hash)` stores the bounded exact source set. Admission locks receipt+current source policy, validates actor/operation/generation/bytes/expiry/revocation, consumes once and creates execution pins atomically. Replay of the same owner admission returns its existing receipt; it does not grant a second operation. Source revocation is restrictive even for an already-consumed receipt.
-
-### Resumable owner-data transfer
-
-`workspace.transfer_job(transfer_id PK,workspace_id,direction,state,manifest_hash,manifest_resource_id?,preview_hash?,rev,created_at,expires_at?,committed_roots,total_roots,reason?)`; `workspace.transfer_mapping(transfer_id,source_kind,source_id,target_kind,target_id,state,source_hash,target_rev?,receipt_id?,PRIMARY KEY(transfer_id,source_kind,source_id),UNIQUE(transfer_id,target_kind,target_id))`; `workspace.transfer_issue(transfer_id,ordinal,code,source_kind?,source_id?,blocks_commit,accepted_at?)`. Job owner may coordinate but each imported content handler writes only its own tables in the declared shared family. Batch<=100roots and complete mapping validation precede visibility; committed root receipts and IDs survive retry. Policy/quota/revision change invalidates preview or blocks the next root without rewriting past receipts. All mappings/issues are paged. Excluded authority and missing/unsupported bytes follow the journey profile, not blind copying of DB rows.
-
-Data-health states detected/repairing/repaired/irrecoverable/acknowledged preserve last evidence/source hashes. Irrecoverable is not repaired; explicit replacement creates a new resource revision. No recovery job fabricates missing bytes or erases the anomaly to make a gate green.
-
-## Source knowledge policy persistence
-
-Policy owns policy.source_policy: workspace_id, target_kind, target_id composite PK; revision bigint, four nullable boolean overrides, updated_by, updated_at, command_id. Owner/resource existence and authorization are checked through owner ports; no cross-module write. Command receipt, policy revision, audit event and index-reconciliation outbox commit atomically under Policy+Audit with the target's current scope/recovery generation. Clear creates a versioned inherited-state row rather than deleting the command fence. Source consent records reference exact policy revision, explicit temporary patch, operation/source hash and expiry; no durable policy write occurs when the receipt is used. Search and dispatch always read current effective policy; source.getPolicy gives the client its current projection. No generic sync body can write this table.

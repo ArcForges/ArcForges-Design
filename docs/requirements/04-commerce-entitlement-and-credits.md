@@ -1,5 +1,5 @@
 # Commerce, Entitlement and AI Credits Requirements
-> Current scope amendment: **[P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
+> Effective scope: P2-012 and P2-013 amend the technology and application ownership below. **[P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Requirements
@@ -191,12 +191,25 @@ Provider subscription states are **normalised** into ArcForges states. The provi
 
 | Kind | Example | Result shape | Combination rule |
 |---|---|---|---|
-| **Capability** | `cloud.sync`, `cloud.remote_agent`, `cloud.ai`, `cloud.vector_index`, `cloud.version_history`, `cloud.web_continuity` | Enabled / Disabled | Valid sourced grant AND paid-service eligibility where required; administrative credit alone never enables official AI |
+| **Capability** | `cloud.sync`, `cloud.remote_agent`, `cloud.ai`, `cloud.vector_index`, `cloud.version_history`, `cloud.web_continuity` | Enabled / Disabled | Valid sourced grant AND active paid-service eligibility for every official Cloud write/compute capability; administrative credit alone never enables service |
 | **Quota** | `cloud.storage.bytes` | A quantity | **SUM** — base plus add-ons |
 | **Allowance** | included AI capacity | A bounded quantity recovering over eligible elapsed time | One workspace capacity account; no duplicate issuance |
 | **Consumable balance** | Purchased AI credits | A ledger balance | Ledger computation, never resolver arithmetic |
 
 Two further combination rules exist for later use: **MAX** (e.g. two valid device-limit grants resolve to their declared maximum, not their sum) and **priority replace** (e.g. support level).
+
+Official capability admission is explicit:
+
+| Capability / operation family | Active paid term required | Other gate |
+|---|---|---|
+| cloud.sync, notebook enrolment and sync writes | Yes | Source grant, quota, current authorization |
+| cloud.version_history writes, assistant Cloud-history writes | Yes | Source grant and resource revision |
+| cloud.vector_index, Cloud search/query | Yes | Source policy, workspace/product partition |
+| cloud.remote_agent, cloud.ai, simulator compute | Yes | Capability grant, budget/rate/remote consent |
+| cloud.web_continuity mutations | Yes | Current owner and client session |
+| Account management, purchase, retained-data read/export, DL-01 recovery | No | Identity, retention and security still apply |
+
+Cloud enrolment creates no initial service grant. Self-host realms use explicit operator grants under CA-10. Grant rows have exactly capability/quota/allowance kinds; consumable balances are computed from immutable ledgers and lots, never grant rows. Provider raw subscription status is separate from pending/active/grace/cancelScheduled/ended/suspended domain states.
 
 ### 6.2 Ownership and separation
 
@@ -347,7 +360,7 @@ The following arithmetic fixture is synthetic, not a provider price or launch of
 
 Model rates, customer tariffs, plan prices, capacity/recovery parameters, limits and payment-platform price mappings are typed, versioned deployment data governed by [configuration requirements](11-policy-and-configuration.md) §10.5. Formal price values require verified operational inputs; the implementation must run end to end before those final values are selected.
 
-Acceptance includes: a hand-calculable multi-category usage fixture; two providers whose cache/reasoning fields overlap differently; cumulative stream events and duplicates; a real model call through the same metering path; cancellation with consumed tokens; lost final usage; provider retry charged once to the customer but fully visible in cost; token-category/tier price changes; reservation races across devices/replicas; restart without quota reset; paid-term expiry during a Task; recovery without buying credits; extra-credit opt-in and hard ceiling; and historical replay after changing all current rates. Sample configuration is labelled non-production and never silently selected by an official deployment.
+Acceptance includes: a hand-calculable multi-category usage fixture; two synthetic provider fixtures whose cache/reasoning fields overlap differently (normalizer unit evidence only; release evidence uses the selected Workers AI routes); cumulative stream events and duplicates; a real model call through the same metering path; cancellation with consumed tokens; lost final usage; provider retry charged once to the customer but fully visible in cost; token-category/tier price changes; reservation races across devices/replicas; restart without quota reset; paid-term expiry during a Task; recovery without buying credits; extra-credit opt-in and hard ceiling; and historical replay after changing all current rates. Sample configuration is labelled non-production and never silently selected by an official deployment.
 
 ---
 
@@ -402,7 +415,7 @@ Governed entirely by **[D-023](../decisions/phase-1-foundation-decisions.md#rule
 | CN-01 | Mainland China is a **conditional launch market**. No second payment provider for V1. |
 | CN-02 | The route is Paddle-hosted checkout with the methods Paddle makes available: **Alipay** for supported CNY one-time and recurring purchases (subject to separate Paddle approval and current limits), **WeChat Pay** for supported one-time desktop-web purchases (no subscriptions, desktop only), plus supported cards and other Paddle methods. Payoneer remains payout only. |
 | CN-03 | **Cloud Pass is the non-recurring product for customers who cannot or will not use a recurring method.** This is load-bearing: WeChat Pay users cannot subscribe at all, and Alipay users meet a renewal ceiling. |
-| CN-04 | ArcChat Mobile contains no China-specific checkout and remains consumption-only. |
+| CN-04 | Android companion contains no China-specific checkout and remains consumption-only. |
 | CN-05 | Eight pre-enablement gates must pass before mainland-China sales are enabled: Paddle supplier onboarding; Alipay/WeChat Pay approval where required; **CNY product and tax configuration**; checkout and webhook reachability; Payoneer payout eligibility; refund and reconciliation behaviour validated **against the absence of chargebacks**; sanctions, export, privacy and applicable Chinese regulatory review; production network preflight. |
 | CN-06 | On gate failure, mainland-China sales are disabled by **explicit regional policy** without blocking the global launch. Silently substituting another provider is prohibited. |
 
@@ -412,7 +425,7 @@ Governed entirely by **[D-023](../decisions/phase-1-foundation-decisions.md#rule
 
 Governed by **[D-022](../decisions/phase-1-foundation-decisions.md#rule-d-022)**, confirmed by **[V-09](../assurance/phase-1-official-verification.md#rule-v-09)**.
 
-| ArcChat Mobile may | ArcChat Mobile must not |
+| Android companion may | Android companion must not |
 |---|---|
 | Sign in | Sell subscriptions, cloud access or AI credits in-app |
 | Display current plan and entitlement state | Embed provider checkout |

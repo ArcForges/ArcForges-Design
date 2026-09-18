@@ -1,6 +1,6 @@
 # Platform Projects and Application Assistants
 
-Authority: P2-012. This is the concrete project, package, composition and lifetime contract. Native function/layout authority remains [annex06](contracts/06-native-functional-abi.md); product semantics remain [profiles26](26-product-behavior-profiles.md). [Assistant UX](../experience/01-embedded-assistant.md) defines presentation and [history storage](data-model/05-application-history.md) defines persistence.
+Authority: P2-012. This is the concrete project, package, composition and lifetime contract. Native function/layout authority remains [annex 06](contracts/06-native-functional-abi.md); product semantics remain [profiles 26](26-product-behavior-profiles.md). [Assistant UX](../experience/01-embedded-assistant.md) defines presentation and [history storage](data-model/05-application-history.md) defines persistence.
 
 ## 1. Repository and runtime ownership
 
@@ -54,7 +54,7 @@ Every row is a project named exactly as its package unless noted. `src/<group>/<
 | Assistant/ArcForges.Assistant.Cloud | run/turn/task/approval/automation orchestration; history sync, transient output recovery, budget/admission UI state | Assistant.Core, Cloud.Client, Device.Runtime | WP17; real WP26/52 acceptance |
 | Assistant/ArcForges.Assistant.Avalonia | complete docked/floating/expanded view, presentation models, host composition entry point | Assistant.Core, Assistant.Cloud, Assistant.Persistence.Sqlite, Desktop.Shell | WP17 |
 | Native/ArcForges.Native.Abstractions | ABI/status/lifetime and SafeHandle primitives | Foundation | WP13 |
-| Native/ArcForges.Native.{Media,Colour,Image,Otio,Instruments,Pdf,Graphics} | typed wrappers over the complete functional annex06 exports | Native.Abstractions; Media also Foundation | WP13 |
+| Native/ArcForges.Native.{Media,Colour,Image,Otio,Instruments,Pdf,Graphics} | typed wrappers over the complete functional annex 06 exports | Native.Abstractions; Media also Foundation | WP13 |
 | DesktopHelpers/ArcForges.ContentSandbox.Contracts | facade over generated sandbox wire types, no duplicate proto | Contracts.LocalRpc.Sandbox, Foundation | WP11 |
 | DesktopHelpers/ArcForges.ContentSandbox.Broker | restricted launch and brokered resources/buffers | ContentSandbox.Contracts, LocalRpc, Security | WP11 |
 | DesktopHelpers/ArcForges.ContentSandbox | signed Native AOT executable, packaged as Runtime.<rid> | broker protocol and only admitted parser wrappers | WP11 hostile fixture; WP13 production composition |
@@ -95,7 +95,7 @@ Same-product device requests invoke these Application handlers in process, using
 
 | Repository | Concrete layout and responsibilities |
 |---|---|
-| Contracts | `public/proto/arcforges/<domain>/v1`; `internal/proto` for helpers/product ports; `internal/ai-http/v1`; `public/http/v1`; existing `src/public/csharp`/internal C# owners, `src/public/ts/{proto,api-client}`, `src/public/kotlin/{contracts-proto,contracts-client,contracts-connect-client,contract-fixtures}`; generation/compatibility scripts and clean consumers. Generated artifacts are derived, schema handwritten only here. `Contracts.slnx` covers C# producers/tests. |
+| Contracts | `public/proto/arcforges/<domain>/v1`; `internal/proto` for helpers/product ports; `internal/ai-http/v1`; `public/http/v1`; existing `src/public/csharp`/internal C# owners, `src/public/ts/{proto,api-client}`, `src/public/kotlin/{contracts-proto,contracts-connect-client,contract-fixtures}`; generation/compatibility scripts and clean consumers. Generated source is committed, reproducibly regenerated and diff-checked; schemas are handwritten only here. Native-grpc-only contracts-client is retired at the first business release. `Contracts.slnx` covers C# producers/tests. |
 | Cloud | `Cloud.slnx`; `src/Cloud.Host`, `src/Modules/<existing20owners>/{Domain,Application,Infrastructure}`, `src/Cloud.Storage.D1`, `src/Cloud.Integrations`; `worker/src/{routing,container,bindings,events,jobs}`; `storage/{migrations,plans}`; `deploy` manifests; `tests/{Module,Sql,Bindings,Integration,Recovery}`. Worker executes fixed storage plans; C# owns decisions. |
 | AI | `src/{workflows,models,context,streams,objects,ports}`, generated internal contract dependency, Wrangler bindings and exact Workflow/model versions; one Harness only. |
 | Web | existing independent `site`, `account`, `chat`, `operations` build profiles over shared TS UI/auth/client libraries; no .NET desktop assembly import or server-side production Node requirement. |
@@ -109,4 +109,6 @@ CI for every producer is checks → build dependency closure → pack once → i
 
 ## 7. Observed bootstrap versions and transition
 
-Read-only baselines2026-09-16: Contracts d77aefa uses .NET SDK10.0.400, Grpc.Tools2.84.0, Google.Protobuf3.36.1, gRPC runtime2.83.0, Node24.21.0/npm11.19.0, TypeScript7.0.2 and protoc-gen-es2.15.0. Cloud6554400 uses SDK10.0.401. Mobile15145a4 consumes io.github.arcforges:contracts-connect-client1.0.0-ci.36.1 with Connect Kotlin0.9.0, Kotlin2.4.20, AGP9.4.0, Compose1.12.0 and Material3 1.9.0. These observed compatible Hello World pins are the migration inputs; they do not prove the full producer specification. Preserve existing source roots where they already express these responsibilities; WP01 moves only conflicting logical homes, and WP02/03 record exact per-repository locks and generator manifest before changing a version. No family-wide lockstep SDK/product version is implied.
+Read-only repository baselines dated 2026-09-16 are Contracts d77aefa, Cloud 6554400 and Mobile 15145a4. Their exact observed Hello World pins remain source evidence; Design does not maintain a competing patch-version list. WP01 reconciles actual roots and WP02/03 record coherent committed toolchain/generator manifests and locks; WP30 F-1 replaces any preview Android stack with a compatible stable stack before production. No family-wide SDK or product version lockstep is implied.
+
+Exact toolchain patch pins are owned by each producer repository's committed manifests/locks and immutable build provenance. Design selects tool families and required compatibility, not duplicate patch-version inventories. Android source/application identity is com.arcforges.mobile; four Web outputs are site/account/chat/operations. PackageCatalog is a Cloud module with WP41 producer and WP45 review console.

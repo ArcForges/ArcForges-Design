@@ -96,7 +96,7 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 ### WP-36.01 — The exact time model
 
-**What must be fully done.** Implement705600000tick time, exact source rational/grid mapping and sequence interval algebra under architecture23/26. Use source-PTS ingress, output frame/sample projection, display and interchange conversion boundaries exactly; no blanket four-rounding-site rule.
+**What must be fully done.** Implement705600000tick time, exact source rational/grid mapping and sequence interval algebra under architecture 23/26. Use source-PTS ingress, output frame/sample projection, display and interchange conversion boundaries exactly; no blanket four-rounding-site rule.
 
 **Testing requirements.** Independent NTSC/audio/negative/source-inexact/ties-even/half-open and overflow vectors; no intermediate double owner arithmetic.
 
@@ -140,7 +140,7 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 **What must be fully done.** Implement every TL-06 operation using TimelineCommand and slate.edits.v1: links/locks, ripple/roll/slip/slide/split/overwrite/group/duplicate/retime/markers/track state with fixed affected sets and one undo transaction.
 
-**Testing requirements.** Independent operation examples, collision/source handles, reverse/freeze retime, linked-track refusal and undo/restart vectors from26.
+**Testing requirements.** Independent operation examples, collision/source handles, reverse/freeze retime, linked-track refusal and undo/restart vectors from 26.
 
 **Completion gate.** All accepted edit operations complete, not only low-level insert/remove/replace.
 

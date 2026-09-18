@@ -31,7 +31,7 @@ Mobile owns app/, core/domain, core/data, core/network, core/security, core/desi
 
 **What must be fully done.** Complete AN01–AN06 native routes, system authentication, five-destination navigation and per-device application selection, with real Cloud identity/presence and explicit history disclosure.
 
-**Testing requirements.** Verify the stated behavior against the exact real artifact/owner boundary. Include scope/permission, wrong or stale target, loss/retry, expiry and applicable native UI cases from experience03; named later-provider fixtures cannot close real integration.
+**Testing requirements.** Verify the stated behavior against the exact real artifact/owner boundary. Include scope/permission, wrong or stale target, loss/retry, expiry and applicable native UI cases from experience 03; named later-provider fixtures cannot close real integration.
 
 **Completion gate.** All accepted account/attention paths complete and accessible; no hello-world scope substitution.
 
@@ -40,16 +40,16 @@ Mobile owns app/, core/domain, core/data, core/network, core/security, core/desi
 
 **What must be fully done.** Complete AN07–AN10/15/16 with native composer/IME/branch/context, history modes/promotion, real binary output streams and exact own-application scope; no desktop local-history access.
 
-**Testing requirements.** Verify the stated behavior against the exact real artifact/owner boundary. Include scope/permission, wrong or stale target, loss/retry, expiry and applicable native UI cases from experience03; named later-provider fixtures cannot close real integration.
+**Testing requirements.** Verify the stated behavior against the exact real artifact/owner boundary. Include scope/permission, wrong or stale target, loss/retry, expiry and applicable native UI cases from experience 03; named later-provider fixtures cannot close real integration.
 
-**Completion gate.** Every conversation/project/retrieval row in Mobile architecture works with actual52 owner outputs.
+**Completion gate.** Every conversation/project/retrieval row in Mobile architecture works with actual 52 owner outputs.
 
 <a id="rule-wp-31.02"></a>
 ### WP-31.02 — Tasks, approvals and automation
 
 **What must be fully done.** Complete AN11–AN13/19/25 against real Task/bridge/Harness/commerce; preserve current action, risk, credit-consent and consumption-only rules.
 
-**Testing requirements.** Verify the stated behavior against the exact real artifact/owner boundary. Include scope/permission, wrong or stale target, loss/retry, expiry and applicable native UI cases from experience03; named later-provider fixtures cannot close real integration.
+**Testing requirements.** Verify the stated behavior against the exact real artifact/owner boundary. Include scope/permission, wrong or stale target, loss/retry, expiry and applicable native UI cases from experience 03; named later-provider fixtures cannot close real integration.
 
 **Completion gate.** One actual owner outcome/settlement per command, no broad implicit grant or hidden background write.
 
@@ -58,7 +58,7 @@ Mobile owns app/, core/domain, core/data, core/network, core/security, core/desi
 
 **What must be fully done.** Complete AN14–AN18/22 native preview/import/export/transfers, missing/denied/unsupported states, local/cloud copy and deletion semantics.
 
-**Testing requirements.** Verify the stated behavior against the exact real artifact/owner boundary. Include scope/permission, wrong or stale target, loss/retry, expiry and applicable native UI cases from experience03; named later-provider fixtures cannot close real integration.
+**Testing requirements.** Verify the stated behavior against the exact real artifact/owner boundary. Include scope/permission, wrong or stale target, loss/retry, expiry and applicable native UI cases from experience 03; named later-provider fixtures cannot close real integration.
 
 **Completion gate.** All resource/Library journeys complete; no unavailable bytes represented as empty success.
 
@@ -67,18 +67,18 @@ Mobile owns app/, core/domain, core/data, core/network, core/security, core/desi
 
 **What must be fully done.** Complete AN20–AN24 plus FCM/current permissions and one-application targets; background reconnect reads durable attention and cannot expose a revoked resource.
 
-**Testing requirements.** Verify the stated behavior against the exact real artifact/owner boundary. Include scope/permission, wrong or stale target, loss/retry, expiry and applicable native UI cases from experience03; named later-provider fixtures cannot close real integration.
+**Testing requirements.** Verify the stated behavior against the exact real artifact/owner boundary. Include scope/permission, wrong or stale target, loss/retry, expiry and applicable native UI cases from experience 03; named later-provider fixtures cannot close real integration.
 
 **Completion gate.** Companion stays usable through declared polling/notification fallback; purchase/store billing remains absent.
 
 <a id="rule-wp-31.05"></a>
 ### WP-31.05 — Native interaction and recovery
 
-**What must be fully done.** Pass full experience02 phone/tablet/back/IME/TalkBack/large-text/process-death/account-switch/denied-permission/no-GMS matrix with real services; preserve typed effect uncertainty and drafts.
+**What must be fully done.** Pass full experience 02 phone/tablet/back/IME/TalkBack/large-text/process-death/account-switch/denied-permission/no-GMS matrix with real services; preserve typed effect uncertainty and drafts.
 
-**Testing requirements.** Verify the stated behavior against the exact real artifact/owner boundary. Include scope/permission, wrong or stale target, loss/retry, expiry and applicable native UI cases from experience03; named later-provider fixtures cannot close real integration.
+**Testing requirements.** Verify the stated behavior against the exact real artifact/owner boundary. Include scope/permission, wrong or stale target, loss/retry, expiry and applicable native UI cases from experience 03; named later-provider fixtures cannot close real integration.
 
-**Completion gate.** Real52/26/25 evidence passes on release APK; mocks do not close any required journey.
+**Completion gate.** Real 52/26/25 evidence passes on release APK; mocks do not close any required journey.
 
 <a id="rule-wp-31.06"></a>
 ### WP-31.06 — Scope and licence enforcement
@@ -92,11 +92,11 @@ Mobile owns app/, core/domain, core/data, core/network, core/security, core/desi
 <a id="rule-wp-31.90"></a>
 ### WP-31.90 — Complete companion acceptance
 
-**What must be fully done.** Join actual31 evidence with producer manifests, signed candidate and full52/26/25/42/45 compatible integration manifest.
+**What must be fully done.** Join actual 31 evidence with producer manifests, signed candidate and full 52/26/25/42/45 compatible integration manifest.
 
 **Testing requirements.** Run full physical-device release scenarios and injected failure matrix; record exact device/OS/server/worker/package identities.
 
-**Completion gate.** Companion behavior passes; distribution/store activation remains32.
+**Completion gate.** Companion behavior passes; distribution/store activation remains 32.
 
 ## 6. Impacts
 

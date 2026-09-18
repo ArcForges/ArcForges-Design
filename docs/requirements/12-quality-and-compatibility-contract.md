@@ -1,5 +1,5 @@
 # Product Quality and Compatibility Contract
-> Current scope amendment: **[P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
+> Effective scope: P2-012 and P2-013 amend the technology and application ownership below. **[P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Requirements
@@ -16,7 +16,7 @@ The mechanism, in five parts: **Budget + Matrix + Fixture + Test + Release Gate.
 
 ## 1. The Product Quality Contract
 
-Each of the following carries its own versioned Product Quality Contract: **ArcChat Desktop**, **ArcNotes**, **ArcScope**, **ArcSlate**, **ArcChat Mobile**, **ArcChat Web**, plus the user-perceived quality of cloud interaction.
+Each professional desktop carries a versioned Product Quality Contract including its embedded assistant. Android companion, Web companion and user-perceived Cloud interaction have their own contracts.
 
 Every contract contains at minimum:
 
@@ -101,7 +101,7 @@ The product metric is **Time To Usable** ([I-389](01-normative-glossary-and-inva
 
 | Product | Budget |
 |---|---|
-| ArcChat | ≤ 2.0 s |
+| Embedded assistant first open (inside each host budget) | Proposed P95 ≤ 300 ms incremental UI activation; no Cloud dependency |
 | ArcNotes | ≤ 2.0 s |
 | ArcScope | ≤ 2.5 s |
 | ArcSlate | ≤ 3.0 s |
@@ -110,7 +110,7 @@ The product metric is **Time To Usable** ([I-389](01-normative-glossary-and-inva
 |---|---|
 | SU-01 | ArcScope and ArcSlate may continue device scanning, media indexing and derived-cache loading in the background — **but must never block first workspace availability on them**. |
 | SU-02 | Native startup opens the shell and authorized cached work without waiting on Cloud. First-run or missing-content views state sign-in/network requirements honestly; Cloud refresh is asynchronous and does not promise account-free local AI or a standalone notebook. |
-| <a id="rule-su-03"></a>SU-03 | **Startup must not require ArcChat to be online.** ArcNotes, ArcScope and ArcSlate open their core workspace first; this app's Cloud session reconnects in the background. |
+| <a id="rule-su-03"></a>SU-03 | Core workspace startup never waits for Cloud or assistant activation. ArcNotes, ArcScope and ArcSlate open usable local state first and reconnect their own session in the background. |
 
 ---
 
@@ -120,7 +120,7 @@ The product metric is **Time To Usable** ([I-389](01-normative-glossary-and-inva
 
 | Product | Ceiling |
 |---|---|
-| ArcChat + own-application capability registry | ≤ 250 MiB |
+| Embedded assistant idle overhead (included in host ceiling) | Proposed ≤ 60 MiB incremental main-process memory with an empty conversation |
 | ArcNotes | ≤ 250 MiB |
 | ArcScope | ≤ 320 MiB |
 | ArcSlate | ≤ 450 MiB |
@@ -133,6 +133,12 @@ The product metric is **Time To Usable** ([I-389](01-normative-glossary-and-inva
 | <a id="rule-mm-04"></a>MM-04 | Under OS memory pressure, **derived and rebuildable memory is released first**. An application must never be killed by the OS while protecting a cache. |
 
 ---
+
+### 6.1 Isolation and playback acceptance
+
+Main-process quiescent ceilings include the assistant. Parser/decoder child memory is reported separately while active and included in the total active-work budget; it is not hidden as free memory. GPU consumption is reported separately. Native containment bounds from contracts 06 remain enforced.
+
+Proposed D-020 acceptance profile, requiring owner approval and WP13/37 measurements: on the declared reference hardware, 1080p30 8-bit 4:2:0 material for each supported decode profile, ten minutes at 1× with ContentSandbox isolation enabled; at most 1 dropped frame per 1,000, audio/video offset within ±40 ms, P95 seek-to-first-frame ≤ 500 ms. Report cold/warm seeks, decoding backend, child/main/GPU peaks and sample counts. Missing the target blocks the gate and requires a bounded correction; it never authorizes moving hostile decode into the main process.
 
 ## 7. Leaks and soak
 
@@ -277,7 +283,7 @@ The native boundary is a compatibility contract in its own right: exported ABI v
 |---|---|
 | <a id="rule-cm-01"></a>CM-01 | **Every release produces a Compatibility Manifest as a release artifact**, answering: which product versions can this interoperate with locally; which contract sets it speaks; which native formats it can read and write; which cloud API versions it can reach; which extension protocol versions it supports; which native ABI it requires. |
 | <a id="rule-cm-02"></a>CM-02 | **The three professional desktop products version independently** ([P-12](00-product-scope-and-portfolio.md#rule-p-12)), and **mixed-version combinations must actually be tested**. Nominal independent release plus de facto lockstep upgrade is a failed contract. |
-| <a id="rule-cm-03"></a>CM-03 | **Minimum first-party local interoperability window: current stable plus the immediately previous supported stable line**, in **both** directions — new ArcChat with previous ArcNotes, and previous ArcChat with new ArcNotes. |
+| <a id="rule-cm-03"></a>CM-03 | Client↔Cloud and parent↔helper contracts support the current stable and immediately previous supported stable line. Compatibility is tested on protocol versions and published artifacts, not on pairs of different professional products. |
 | CM-04 | A contract major upgrade requires an explicit **coexistence migration window** in which V1 and V2 both operate. |
 | <a id="rule-cm-05"></a>CM-05 | **"Previous version" is a floor, not a ceiling.** Some contracts may be supported longer; a security-driven sunset may be scheduled earlier through the policy control plane. |
 | <a id="rule-cm-06"></a>CM-06 | **Cloud compatibility follows a declared Supported Client Set.** Removing support is planned and communicated through compatibility policy, never discovered by users. |
@@ -375,8 +381,8 @@ Three tiers of matrix, running at different cadences:
 |---|---|
 | <a id="rule-pm-01"></a>PM-01 | **Desktop Tier-1 platforms genuinely enter build, AOT publish, install, UI, recovery, compatibility, performance and release matrices.** A platform that only compiles is not supported. |
 | <a id="rule-pm-02"></a>PM-02 | **The supported OS range is a versioned matrix** published as release metadata, not folklore. |
-| <a id="rule-pm-03"></a>PM-03 | **ArcChat Mobile is verified on real devices**, not only emulators — the Kotlin/Jetpack Compose release artifact, cold start, weak network, background resume, and store-package verification. |
-| <a id="rule-pm-04"></a>PM-04 | **ArcChat Web is verified against a maintained browser matrix**, including the production Web build, first load, caching and realtime reconnection. |
+| <a id="rule-pm-03"></a>PM-03 | **Android companion is verified on real devices**, not only emulators — the Kotlin/Jetpack Compose release artifact, cold start, weak network, background resume, and store-package verification. |
+| <a id="rule-pm-04"></a>PM-04 | **Web companion is verified against a maintained browser matrix**, including the production Web build, first load, caching and realtime reconnection. |
 | PM-05 | **A hardware lab is mandatory for ArcScope and ArcSlate.** Real serial, network and device interfaces; real media, codecs and GPUs. A CI virtual machine cannot detect the failures these products actually have. |
 | <a id="rule-pm-06"></a>PM-06 | **Native hardware paths require fallback tests**: missing GPU, unsupported codec, absent device, driver failure — each must degrade explicitly rather than crash. |
 | PM-07 | **Cross-platform file-system behaviour is tested**: case sensitivity, path length, reserved names, Unicode normalisation, permissions, locking, and network or removable volumes. |
@@ -529,7 +535,7 @@ The traditional three layers are insufficient here. The required families, each 
 
 **AOT** — the full publish matrix produces real artifacts with zero unreviewed trimming/AOT warnings, and the round-trip smoke tests pass on each platform.
 
-**Mixed application versions** — new with previous, and previous with new, in both directions, across the local interoperability window.
+**Mixed contract versions** — current/previous client↔Cloud and parent↔helper combinations negotiate or refuse explicitly. No product-to-product interoperability gate exists.
 
 **Cloud rolling upgrade** — a client newer than the server, and a client older than the server, both behave per the compatibility policy.
 

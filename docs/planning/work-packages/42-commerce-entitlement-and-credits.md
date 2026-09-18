@@ -190,13 +190,13 @@
 
 <a id="rule-wp-42.10"></a>
 
-### WP-42.10 — Go-live gates
+### WP-42.10 — Technical commerce closure and live gate staging
 
-**What must be fully done.** Produce technical commerce gate receipts for actual ledger/provider adapter/test-mode flows, exact Pass/subscription exclusivity/period/renewal and unknown-effect handling. Provide the activation checklist to WP48/50.
+**What must be fully done.** Complete deterministic provider normalization and sandbox lifecycle proof. No official free tier, grant kinds and SubscriptionState exactly match requirements 04; plan changes start next term without proration. Preserve all live-payment/payout/refund/merchant gates for WP50 after WP48 account checkout and operations are available.
 
-**Testing requirements.** Test-mode charge/refund/webhook replay and actual ledger integrity, plus explicit missing-live-evidence rejection.
+**Testing requirements.** Full synthetic/provider-sandbox ledger vectors including no-term, cancellation, lost result, unknown exposure and future-effective changes.
 
-**Completion gate.** Technical integration complete only; real customer checkout and received payout are mandatory48/50 gates, not an upstream prerequisite that creates a cycle.
+**Completion gate.** Technical commerce gates pass; real receipt/payout evidence is explicitly pending at WP50, never claimed from sandbox.
 
 <a id="rule-wp-42.90"></a>
 ### WP-42.90 — Verify the owned artifact and real integration
@@ -226,6 +226,8 @@
 ---
 
 ## 7. Tests and verification evidence
+
+Acceptance includes every amended §5 producer/consumer and WP-42.90 evidence. Current P2-013 contracts/data/runtime rules are tested in the original owner implementation, not a detached explanatory sample.
 
 **[WP-42.11](#rule-wp-42.11) producer evidence.** Real payment-event reconciliation, immutable term/offer history, exact refill/hold fixtures and durable multi-replica restart evidence. This producer must pass before commercial go-live; later AI/configuration producers supply their remaining shared-gate evidence.
 
@@ -272,7 +274,7 @@
 8. **Concurrent runs never overdraw; the balance never goes negative; no floating-point path exists in money or credit arithmetic.**
 9. **A dropped webhook is recovered by reconciliation without editing history**; the three ledgers remain provably separate.
 10. A refund rolls entitlement back correctly; evidence export is complete and free of payment instrument data.
-11. Every commercial go-live gate is satisfied **including a payout actually received** — satisfying [VG-10](../../assurance/open-gates-register.md#rule-vg-10) and [VG-11](../../assurance/open-gates-register.md#rule-vg-11); the regional route remains disabled pending [VG-12](../../assurance/open-gates-register.md#rule-vg-12).
+11. Test-mode commerce and the activation checklist are complete. Production merchant eligibility, checkout/refund and received-payout evidence remain at WP50, including [L-30](../../assurance/release-gates.md#62-commercial-go-live); WP42 does not claim VG-10/VG-11 closed. The regional route remains disabled pending VG-12.
 
 ---
 

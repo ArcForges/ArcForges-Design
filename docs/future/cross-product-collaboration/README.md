@@ -12,3 +12,15 @@ No current app-to-app RPC, Hub, discovery, peer transfer, multi-product agent ca
 Example-level common sequence: select/freeze source → review destination and data egress → upload verified artifact to Cloud → recipient preview → explicit recipient-authorized import → independent source/export and destination/import receipts. A disconnected recipient sees a pending transfer with expiry; retries reuse a transfer ID/hash; permission loss denies import; destination conflicts never overwrite silently. Each product remains usable without the collaboration service. No universal shared conversation/database is introduced by these examples.
 
 Activation requires a new accepted scope decision, full protocol/state/privacy/failure plan, source/recipient producer packages, a reviewed dependency graph and actual two-product acceptance. Until then, current search and agent execution remain within one application plus explicitly authorized web/upload sources.
+
+
+## Examples retained from the pre-P2-012 requirements
+
+These examples are inactive, with no current operation, plan edge or acceptance claim:
+
+- “ArcScope → ArcNotes” report copy/import creates a new ArcNotes-owned document with retained ArcScope provenance; two products never share one writable object.
+- An ArcSlate rendered output could be referenced from an ArcNotes document, or a report could be materialized there through explicit future Cloud-mediated consent and source/destination contracts.
+- A future assistant could federate search across products only after defining server-mediated scope, ownership, retention, conflict and permission rules. Current search never launches a closed product.
+- Cross-application Device SSO and independent local peer discovery remain retired. Any future sign-in reuse must have its own accepted security design; current system-browser login reuses only the browser session with consent.
+
+Historical names IHubRegistry/IHubRouting/DeviceSsoBroker and Handoff are reserved here. They are absent from active service registration and release gates. Shared UI conventions, copy/import provenance and Pearson cross-products are unrelated to enabling this future feature.

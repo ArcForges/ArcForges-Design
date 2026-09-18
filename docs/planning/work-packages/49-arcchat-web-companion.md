@@ -1,6 +1,6 @@
 <a id="rule-wp-49"></a>
 
-# WP-49 — ArcChat Web Companion
+# WP-49 — Web companion Companion
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
@@ -41,7 +41,7 @@ The Web companion verifies real generation, tool approval, stream fallback and r
 
 ---
 
-**Web redesign input.** [P2-008](../../decisions/phase-2-specification-decisions.md#rule-p2-008) and [Web toolchain and SDK](../../architecture/25-web-toolchain-and-sdk.md) are binding for this package's Web, generated-contract, toolchain and test responsibilities. The existing desktop/mobile runtime and product-scope decisions remain separately governed.
+**Web redesign input.** [P2-008 as amended by P2-012/P2-013](../../decisions/phase-2-specification-decisions.md#rule-p2-013) and [Web toolchain and SDK](../../architecture/25-web-toolchain-and-sdk.md) are binding for this package's Web, generated-contract, toolchain and test responsibilities. The existing desktop/mobile runtime and product-scope decisions remain separately governed.
 
 ---
 
@@ -93,9 +93,9 @@ The Web companion verifies real generation, tool approval, stream fallback and r
 
 ### WP-49.01 — Conversation and generated output streams
 
-**What must be fully done.** Implement the full Chat UI using annex10 gRPC-Web binary output/event streams and durable recovery; Cloud history only except memory-only temporary UI. Product scope remains explicit.
+**What must be fully done.** Implement the full Chat UI using annex 10 gRPC-Web binary output/event streams and durable recovery; Cloud history only except memory-only temporary UI. Product scope remains explicit.
 
-**Testing requirements.** Verify the stated behavior against the exact real artifact/owner boundary. Include scope/permission, wrong or stale target, loss/retry, expiry and applicable native UI cases from experience03; named later-provider fixtures cannot close real integration.
+**Testing requirements.** Verify the stated behavior against the exact real artifact/owner boundary. Include scope/permission, wrong or stale target, loss/retry, expiry and applicable native UI cases from experience 03; named later-provider fixtures cannot close real integration.
 
 **Completion gate.** History, pending input, stream and final-message presentation stay consistent with the Cloud authority under every declared recovery outcome and retain exact positions without duplicate execution.
 
@@ -125,7 +125,7 @@ The Web companion verifies real generation, tool approval, stream fallback and r
 
 **What must be fully done.** List device applications, select an explicit authorized product/installation and freeze each task target; no browser local connection, another-product tool or local-only desktop chat access.
 
-**Testing requirements.** Verify the stated behavior against the exact real artifact/owner boundary. Include scope/permission, wrong or stale target, loss/retry, expiry and applicable native UI cases from experience03; named later-provider fixtures cannot close real integration.
+**Testing requirements.** Verify the stated behavior against the exact real artifact/owner boundary. Include scope/permission, wrong or stale target, loss/retry, expiry and applicable native UI cases from experience 03; named later-provider fixtures cannot close real integration.
 
 **Completion gate.** Remote work reaches a desktop only through the cloud bridge, and an offline target shows an honest queued state with an expiry.
 

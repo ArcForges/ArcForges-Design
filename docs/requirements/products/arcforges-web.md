@@ -1,5 +1,5 @@
 # ArcForges Web — Product Requirements
-> Current scope amendment: **[P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
+> Effective scope: P2-012 and P2-013 amend the technology and application ownership below. **[P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Requirements / Products
@@ -10,7 +10,7 @@ The web presence is ArcForges' **only official outward entrance system**. It is 
 
 Three roles, and only three:
 
-> **The marketing site discovers and downloads. The account portal manages the cloud. ArcChat Web is a product surface.**
+> **The marketing site discovers and downloads. The account portal manages the cloud. Web companion is a product surface.**
 
 ---
 
@@ -137,14 +137,14 @@ Its job is **Discover → Understand → Download**, then **Upgrade to Cloud**.
 
 ---
 
-## 5. `chat.arcforges.com` — ArcChat Web
+## 5. `chat.arcforges.com` — Web companion
 
 Specified in [`arcchat-mobile-and-web.md`](arcchat-mobile-and-web.md). Two boundaries repeated here because they are web-surface decisions:
 
 | # | Requirement |
 |---|---|
-| CW-01 | **ArcChat Web and the account portal are strictly separate** ([WP-01](../../planning/work-packages/01-repository-reconciliation-and-target-layout.md#rule-wp-01) there), even though both are deployments of one codebase. Separate origins, separate cookies, separate authorization posture. |
-| CW-02 | **ArcChat Web must not become an ArcNotes web editor** ([AR-02](arcchat-mobile-and-web.md#rule-ar-02) there). |
+| CW-01 | **Web companion and the account portal are strictly separate** ([WP-01](../../planning/work-packages/01-repository-reconciliation-and-target-layout.md#rule-wp-01) there), even though both are deployments of one codebase. Separate origins, separate cookies, separate authorization posture. |
+| CW-02 | **Web companion must not become an ArcNotes web editor** ([AR-02](arcchat-mobile-and-web.md#rule-ar-02) there). |
 
 ---
 

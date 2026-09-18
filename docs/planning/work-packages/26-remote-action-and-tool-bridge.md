@@ -23,7 +23,7 @@ Own-application composition and state, public binary gRPC-Web, helper-only local
 
 ## 4. Projects, directories, files and major types affected
 
-Use the exact projects assigned to this WP in [architecture27](../../architecture/27-platform-projects-and-application-assistants.md#2-desktopplatform-tree-and-actual-projects) and its product/Cloud/Mobile trees. Implement their owned named services, typed records, schema migrations and tests; do not introduce a new repository, generic SQL facade or shared runtime to connect them. Versioned generated schema definitions remain in Contracts.
+Use the exact projects assigned to this WP in [architecture 27](../../architecture/27-platform-projects-and-application-assistants.md#2-desktopplatform-tree-and-actual-projects) and its product/Cloud/Mobile trees. Implement their owned named services, typed records, schema migrations and tests; do not introduce a new repository, generic SQL facade or shared runtime to connect them. Versioned generated schema definitions remain in Contracts.
 
 ## 5. Required implementation work
 
@@ -55,13 +55,13 @@ Use the exact projects assigned to this WP in [architecture27](../../architectur
 **Completion gate.** The stated behavior and oracle pass using the actual owned implementation. Evidence names source commit, artifact versions/hashes, environment and any later fixture replacement.
 
 <a id="rule-wp-26.03"></a>
-### WP-26.03 — Execution and result
+### WP-26.03 — Execution and exact result deduplication
 
-**What must be fully done.** Preserve ProductJob/tool result/effect certainty, hash/receipt and immutable artifact references.
+**What must be fully done.** Persist bridge request/result using full ApplicationTarget and `(toolRequestId,attemptId,commandId)` plus result hash. Same attempt may contain several requests; owner handler uses its normal in-process validation.
 
-**Testing requirements.** Crash before/after effect, checkpoint, cancel and stale epoch reconciliation.
+**Testing requirements.** Multiple tool requests per attempt, identical replay, changed result hash, stale epoch, duplicate delivery and uncertain external effect.
 
-**Completion gate.** The stated behavior and oracle pass using the actual owned implementation. Evidence names source commit, artifact versions/hashes, environment and any later fixture replacement.
+**Completion gate.** No duplicated effect, dropped sibling result or cross-application delivery.
 
 <a id="rule-wp-26.04"></a>
 ### WP-26.04 — Remote approval and steering
@@ -104,6 +104,8 @@ Use the exact projects assigned to this WP in [architecture27](../../architectur
 Changed application scope, storage, transport, UI and deployment behavior are governed by the authorities in §2. Preserve existing business rules and formats. Migration/compatibility manifests include source/schema/plan/ABI/runtime versions; current cross-product collaboration is deferred and contributes no release input.
 
 ## 7. Tests and verification evidence
+
+Acceptance includes every amended §5 producer/consumer and WP-26.90 evidence. Current P2-013 contracts/data/runtime rules are tested in the original owner implementation, not a detached explanatory sample.
 
 | Evidence | Produced by |
 |---|---|

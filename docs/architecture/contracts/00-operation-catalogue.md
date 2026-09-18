@@ -36,7 +36,7 @@ Every operation on every surface — HTTP, local RPC, realtime — obeys the sam
 | OC-06 | **Every list operation is cursor-paginated** with an opaque, scope-bound cursor. |
 | OC-07 | **Every operation declares its compatibility class** (`§7`), which determines what may change without a version bump. |
 
-**Wire projection for TypeScript.** SQL/C# bigint and decimal names below describe logical values. Their public JSON representation follows [Web exact-value rules](../25-web-toolchain-and-sdk.md#31-exact-wire-values): 64-bit integers and decimals are canonical strings, int32 counters remain numbers, and null/absence are not silently conflated. Existing authentication NI exceptions remain distinct from idempotent business commands.
+**Wire projection for TypeScript.** SQL/C# bigint and decimal names below describe logical values. Generated public protobuf uses bigint for 64-bit integers and canonical strings for Decimal; only declared JSON exceptions follow [Web exact-value rules](../25-web-toolchain-and-sdk.md#31-exact-wire-values): 64-bit integers and decimals are canonical strings, int32 counters remain numbers, and null/absence are not silently conflated. Existing authentication NI exceptions remain distinct from idempotent business commands.
 
 
 ### 2.1 The request envelope
@@ -131,16 +131,17 @@ Every operation's failures map into these. An operation may not invent a conditi
 
 ## 4. Authorization declaration
 
-Every operation has seven **effective** authorization fields. WP03 exports their concrete values from the numbered catalogue plus the closed profiles below; omitted metadata is not an implementation default. Owner authorization, entitlement, revision and source policy are always additional checks.
+Every operation has eight **effective** authorization fields. WP03 exports their concrete values from the numbered catalogue plus the closed profiles below; omitted metadata is not an implementation default. Owner authorization, entitlement, revision and source policy are always additional checks.
 
 | Field | Deterministic source |
 |---|---|
 | capability | Exact stable operation ID only for generated first-party tool bindings; absent for infrastructure, customer account/control and internal ports. No invented capability grants replace authentication. |
-| risk | The operation's catalogue risk; local infrastructure/bootstrap/helper risk is fixed in contracts09. Missing risk or conflicting declarations fail generation. |
+| risk | The operation's catalogue risk; local infrastructure/bootstrap/helper risk is fixed in contracts 09. Missing risk or conflicting declarations fail generation. |
 | approval | Declared operation posture; reads default none, mutations retain their declared risk/approval policy, never infer authorization from a method name. Human-only consent/approval decisions require their exact foreground/proposal binding. |
 | stepUp | Declared yes for authority expansion/sensitive account/financial controls; otherwise no, subject to stricter current owner policy. |
-| localPresence | Yes exactly for operations explicitly requiring local presence in catalogue02/security/device broker profiles; no public/client binding may expose those operations. |
+| localPresence | Yes exactly for operations explicitly requiring local presence in catalogue 02/security/device broker profiles; no public/client binding may expose those operations. |
 | egress | Derived by the explicit boundary table below; read permission alone cannot authorize crossing a new destination boundary. |
+| patEligible | True only for the closed PAT operation allowlist below; false for all others. PAT scopes never replace owner, entitlement or tool authorization. |
 | actorKinds | Derived by AZ-04; emitted for every service method in the generated operation metadata. No unclassified operation is reachable. |
 
 | # | Rule |
@@ -155,24 +156,26 @@ Every operation has seven **effective** authorization fields. WP03 exports their
 | Public customer services and standard browser adapters | Human owner through the declared session/API-token scope, or the exact enrollment/authentication/recovery one-use flow where no session exists yet. Never grant a preauth caller other customer methods. |
 | Generated Cloud tool bindings | Above owner, plus agent/automation/extension only when explicitly in the first-party tool catalogue and admitted through its owner/delegation/grant pipeline. No ambient CF service token may call arbitrary public customer APIs. |
 | Local Notes/Scope/Slate/Chat product methods | The owning in-process product handler on behalf of a verified human; permitted agent/automation/extension chains only for the generated tool subset. Preserve every operation's local presence, effect, resource and approval conditions. |
-| LocalBootstrap and child lease | Verified restricted parent/child OS identity under contracts09. Product/provider/resource/lifecycle handlers execute in process and retain the validated actor; network reachability never grants authority. |
-| DeviceSsoBroker and ConnectorBroker, all approval/consent/credential/commerce/policy configuration decisions (including IChatOperations.SubmitApproval) | Human-only action with the exact foreground, step-up and one-use proposal/flow bindings. Excluded from agent/automation/extension tool generation even if named in a product interface. Status/read paths retain their narrower declared permissions. |
-| ExtensionHost and ContentSandbox services | Only the authenticated installation/host or exact helper parent/session roles and method directions in contracts09. They cannot acquire a customer session from being local. |
-| OperatorService | Operator identity only; method-specific role and dual-approval rules in registry04 §9. Public human sessions never qualify. |
-| CF internal HTTP ports | Service identity only under contracts05, exact port/lease/epoch/generation and delegated owner scope; never an unrestricted customer token. |
-| Provider webhook/callback exceptions | That provider's verified signature or original state/PKCE/one-use flow, normalized at the adapter. A generic service or user session cannot forge provider identity. |
+| LocalBootstrap and child lease | Verified restricted parent/child OS identity under contracts 09. Product/provider/resource/lifecycle handlers execute in process and retain the validated actor; network reachability never grants authority. |
+| ConnectorBroker, all approval/consent/credential/commerce/policy configuration decisions (including IChatOperations.SubmitApproval) | Human-only action with the exact foreground, step-up and one-use proposal/flow bindings. Excluded from agent/automation/extension tool generation even if named in a product interface. Status/read paths retain their narrower declared permissions. |
+| ExtensionHost and ContentSandbox services | Only the authenticated installation/host or exact helper parent/session roles and method directions in contracts 09. They cannot acquire a customer session from being local. |
+| OperatorService | Operator identity only; method-specific role and dual-approval rules in registry 04 §9. Public human sessions never qualify. |
+| CF internal HTTP ports | Service identity only under contracts 05, exact port/lease/epoch/generation and delegated owner scope; never an unrestricted customer token. |
+| Provider webhook/callback exceptions | That provider's specified verification (signature/SNS envelope, or Postmark TLS/webhook credential/IP policy), or original state/PKCE/one-use callback flow, normalized at its adapter. A generic service or user session cannot forge provider identity. |
 
-Public customer and tool classifications are a base profile plus explicit tool opt-in, not competing identities. Within application methods, sensitive decisions keep their human-only profile. Helper/extension methods instead use verified parent/child roles. DeviceSsoBroker is future-only and excluded from current registration. The emitted profile ID, source rule and all seven values are part of the frozen descriptor/fixture manifest. New methods require a declared profile before release. [Annex10 §8](10-application-scope-and-streams.md#8-effective-operation-metadata) supplies all 13 new application/history/stream profiles.
+Public customer and tool classifications are a base profile plus explicit tool opt-in, not competing identities. Within application methods, sensitive decisions keep their human-only profile. Helper/extension methods instead use verified parent/child roles. DeviceSsoBroker is future-only and excluded from current registration. The emitted profile ID, source rule and all eight values are part of the frozen descriptor/fixture manifest. New methods require a declared profile before release. [Annex 10 §8](10-application-scope-and-streams.md#8-effective-operation-metadata) supplies all 13 new application/history/stream profiles.
+
+PAT allowlist: `workspace.list`, `workspace.get`, `catalog.search`, `catalog.getPackage`, `catalog.listVersions`, `catalog.submitVersion`, `catalog.getSubmission`, `resource.beginUpload`, `resource.completeUpload`, `resource.getUploadStatus`, `resource.renewUploadTicket`, and `support.listCases`. All other operations have patEligible=false. WP03 verifies these exact registry 04 IDs and exports the complete set; it may not silently drop an unknown ID or synthesize aliases. Scope strings are the exact operation IDs; issuance rejects absent, future, operator, local, authentication, approval, payment and credential operations. `catalog.submitVersion` additionally requires a verified publisher owned by the token's user. The token is a human-delegated CLI/API credential, not an agent credential. Present it only as `Authorization: Bearer`; cookie plus bearer is rejected. Token hashes, expiry, scope and revocation are checked on every call, with no step-up bypass. Changes to this closed set require a reviewed descriptor/metadata change.
 
 | Boundary / exact binding class | Egress destination and check |
 |---|---|
 | INotesOperations.Export, ISlateOperations.Export/ExportOtio/ExportSubtitles and declared export jobs | User-selected destination or owned export resource; preserve export/source policy and accepted loss/report semantics. |
-| IContextProvider.ProvideContext, IArtifactHandler.Resolve/RenderPreview/Open, IResourceAccess.OpenRead/ReadChunk/BeginTransfer, product Handoff and attachment/extraction/adoption operations | Exact receiving peer/owner/resource/AI context; bind current source version, allowed range, purpose and destination grant. A ResourceRef or successful read is never egress consent. Raw Scope captures/Slate media remain excluded from context. |
+| IContextProvider.ProvideContext, IArtifactHandler.Resolve/RenderPreview/Open, IResourceAccess.OpenRead/ReadChunk, own-application OpenArtifact and attachment/extraction/adoption operations | Exact receiving owned child/application/resource/AI context; bind current source version, allowed range, purpose and destination grant. A ResourceRef or successful read is never egress consent. Raw Scope captures/Slate media remain excluded from context. |
 | Public resource upload/download/transfer, sync/exports and content-bearing chat/task input | Same authenticated owner/workspace replica is permitted only by its existing Sync/content/source policy; any transfer to another purpose/AI context requires that purpose's separate authorization. No implicit Cloud index/AI opt-in. |
 | search.query with configured external Web search, and declared Web-search tool | Activated provider origin plus explicit query egress/source policy; ordinary local/internal index search is none. |
 | connector.beginConnection/completeConnection, local ConnectorBroker equivalents and admitted connector capability invocation | Exact definition-hash-bound provider origins/scopes under existing consent, SSRF/redirect and secret-broker checks. |
 | commerce.createCheckoutAttempt and provider-effect adapters | Selected hosted payment/provider origin; no customer-supplied redirect or second commerce authority. |
-| Managed AI dispatch and declared machine/device/provider tools | The already-authorized destination class in contracts05/07/08 and the capability descriptor; recheck source/AI preference and physical-effect approval before dispatch. |
+| Managed AI dispatch and declared machine/device/provider tools | The already-authorized destination class in contracts 05/07/08 and the capability descriptor; recheck source/AI preference and physical-effect approval before dispatch. |
 | All remaining typed methods | No additional external destination. Normal protocol response still enforces caller read authorization and redaction; any newly introduced data destination must first add a declared binding here. |
 
 ---
@@ -233,8 +236,9 @@ Notes document body creation/mutation uses the closed Sync mutation allowlist; s
 
 | Surface | Owns | Never carries |
 |---|---|---|
-| **Cloud HTTP** | Identity, workspace, device, entitlement, commerce, sync, resource transfer, cloud task, policy, notification, support | Anything requiring local presence; any local file access; realtime delivery |
-| **Local RPC** | Product domain operations, capability invocation, context provision, artifact resolution, local resource access | Anything network-facing; anything Cloud initiates (**[D-010](../../decisions/phase-1-foundation-decisions.md#rule-d-010)**) |
+| **Public gRPC-Web and enumerated HTTP exceptions** | Identity, workspace, device, entitlement, commerce, sync, resource transfer, cloud task, policy, notification, support | Anything requiring local presence; any local file access; realtime delivery |
+| **In-process product ports** | Own product operations, capability invocation, context/artifact resolution and local resources | Cross-product calls; remotely reachable product listeners |
+| **Private child gRPC** | Only launch-bound helper/extension/connector operations from annex 09 | Product discovery, shared credentials or public reachability |
 | **Realtime** | Change notification, task progress, approval arrival, presence, entitlement-changed hints | **Authoritative state**, command results, object bodies |
 | **Tool bridge** | Durable remote work requests and results | Anything synchronous; anything Cloud initiates toward a device |
 
@@ -250,7 +254,7 @@ Notes document body creation/mutation uses the closed Sync mutation allowlist; s
 
 | # | Obligation | Where |
 |---|---|---|
-| OV-01 | Every operation in catalogues01–03, numbered registry04 and local profile09 has a concrete name/class/idempotency/errors/compatibility/surface and seven effective authorization fields exported under §4; unresolved/contradictory profile, nonexistent example or forbidden actor reachability fails | Contract baseline check ([WP-03.05](../../planning/work-packages/03-contract-foundation-and-licence-split.md#rule-wp-03.05)) |
+| OV-01 | Every operation in catalogues 01–03, numbered registry 04 and local profile 09 has a concrete name/class/idempotency/errors/compatibility/surface and eight effective authorization fields exported under §4; unresolved/contradictory profile, nonexistent example or forbidden actor reachability fails | Contract baseline check ([WP-03.05](../../planning/work-packages/03-contract-foundation-and-licence-split.md#rule-wp-03.05)) |
 | OV-02 | Every error an implementation returns exists in `§3.2` | [WP-23.01](../../planning/work-packages/23-public-api-and-generated-clients.md#rule-wp-23.01) |
 | OV-03 | Every `localPresence = yes` operation is absent from the mobile and web client surfaces | [WP-31.06](../../planning/work-packages/31-arcchat-mobile-android.md#rule-wp-31.06), [WP-49.02](../../planning/work-packages/49-arcchat-web-companion.md#rule-wp-49.02) |
 | OV-04 | Every mutating operation is exactly-once under duplicate submission and lost response | [WP-23.03](../../planning/work-packages/23-public-api-and-generated-clients.md#rule-wp-23.03) |
@@ -260,7 +264,7 @@ Notes document body creation/mutation uses the closed Sync mutation allowlist; s
 
 ## P2-009 executable wire and transport binding
 
-Every operation/event above maps to the [numbered wire registry](04-protobuf-wire-registry.md). It fixes requests/results, record fields, enums, exact values, local counterpart preconditions, service names and compatibility. [CF integration](05-cloudflare-integration.md) fixes AI/object HTTP exceptions, frame/state recovery and authorization. New supporting bootstrap, upload-status, automation and conversation-create methods are enumerated there with their authorization/idempotency classes; none is left for endpoint invention during implementation.
+Every operation/event above maps to the [numbered wire registry](04-protobuf-wire-registry.md). It fixes requests/results, record fields, enums, exact values, local counterpart preconditions, service names and compatibility. [CF integration](05-cloudflare-integration.md) fixes private Cloud/AI bindings and signed object-transfer exceptions; annex10 owns public output/control framing, state recovery and authorization. New supporting bootstrap, upload-status, automation and conversation-create methods are enumerated there with their authorization/idempotency classes; none is left for endpoint invention during implementation.
 
 ## Error category projection
 

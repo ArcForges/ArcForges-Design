@@ -86,7 +86,7 @@
 
 ### WP-44.01 — Schema-constrained configuration
 
-**What must be fully done.** Consume policy.body.v1 and configuration.v1 from annex08; implement full exact-key/type/scope/limit/cross-reference validation and dry-run proposal/dual-approval/activation CAS.
+**What must be fully done.** Consume policy.body.v1 and configuration.v1 from annex 08; implement full exact-key/type/scope/limit/cross-reference validation and dry-run proposal/dual-approval/activation CAS.
 
 **Testing requirements.** Unknown key/field/version, invalid commercial route, secret-in-body, conflicting rule priority, stale parent, mixed-replica version and rollback tests.
 
@@ -106,9 +106,9 @@
 
 ### WP-44.03 — Features, flags and deterministic rollout
 
-**What must be fully done.** Implement deterministic target predicate/percent hashing, exclusion groups, sticky experiment allocation and explicit-setting/entitlement priority from annex08; preserve past variant evidence.
+**What must be fully done.** Implement deterministic target predicate/percent hashing, exclusion groups, sticky experiment allocation and explicit-setting/entitlement priority from annex 08; preserve past variant evidence.
 
-**Testing requirements.** Independent byte/hash/bucket vectors, boundary0/9999, holdout, overlapping exclusion group, account/device change and cached signed bundle expiry.
+**Testing requirements.** Independent byte/hash/bucket vectors, boundary 0/9999, holdout, overlapping exclusion group, account/device change and cached signed bundle expiry.
 
 **Completion gate.** Same stable subject/version selects the same result across languages and cannot grant commercial/security authority.
 

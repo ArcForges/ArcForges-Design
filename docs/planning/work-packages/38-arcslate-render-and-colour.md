@@ -134,7 +134,7 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 ### WP-38.05 — Subtitles and captions
 
-**What must be fully done.** Implement authored subtitles and SRT/WebVTT import/export under architecture23, exact canonical internal ticks and declared nearest-ms bounded loss. Preview <=0.5ms conversion, explicit collapsed-interval adjustment/refusal and retained sidecar/origin.
+**What must be fully done.** Implement authored subtitles and SRT/WebVTT import/export under architecture 23, exact canonical internal ticks and declared nearest-ms bounded loss. Preview <=0.5ms conversion, explicit collapsed-interval adjustment/refusal and retained sidecar/origin.
 
 **Testing requirements.** Independent sub-ms/negative/out-of-range/overlap/collapse cases and round-trip fidelity report; no blanket byte/time identity claim for lossy standard formats.
 

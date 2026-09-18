@@ -35,7 +35,7 @@ This document states the dependency model that produces the work-package sequenc
 | Requirements | [`../requirements/`](../requirements/README.md) | Complete |
 | Architecture | [`../architecture/`](../architecture/README.md) | Complete |
 | Licence matrices, per product | [`../assurance/reference-coverage/`](../assurance/reference-coverage/README.md) — five matrices, 145 item-level rows | **Complete** |
-| Current-code reconciliation | [`../assurance/implementation-state-reconciliation.md`](../assurance/implementation-state-reconciliation.md) — historical166-project inventory at ede43db; current repository snapshot in family completion review | **Historical evidence; revalidated per current source** |
+| Current-code reconciliation | [`../assurance/implementation-state-reconciliation.md`](../assurance/implementation-state-reconciliation.md) — historical 166-project inventory at ede43db; current repository snapshot in family completion review | **Historical evidence; revalidated per current source** |
 
 > **A correction is recorded here rather than hidden.** An earlier Phase 2 decision ([P2-002](../decisions/phase-2-specification-decisions.md#rule-p2-002)) substituted a different process — derive the plan first, perform the prerequisite audits during implementation, rewrite afterwards — and presented that substitution as satisfying **[D-019](../decisions/phase-1-foundation-decisions.md#rule-d-019)**. It did not. That entry is **withdrawn** and retained as the record of the error; [P2-004](../decisions/phase-2-specification-decisions.md#rule-p2-004) records the re-derivation from the completed evidence. The changes the evidence caused are in [`evidence-driven-revisions.md`](evidence-driven-revisions.md).
 
@@ -51,7 +51,7 @@ This document states the dependency model that produces the work-package sequenc
 
 ## 2. Phase structure
 
-The sequence is one continuous numbered series. Phases group ownership for reading; they are not the serial schedule. Each package belongs to exactly one phase. The executable serial order is in §9. WP47 may start after00/02 and must precede45; WP53 executes after45 and before46.
+The sequence is one continuous numbered series. Phases group ownership for reading; they are not the serial schedule. Each package belongs to exactly one phase. The executable serial order is in §9. WP47 may start after 00/02 and must precede 45; WP53 executes after 45 and before 46.
 
 | Phase | Work packages | What becomes true at the end |
 |---|---|---|
@@ -111,7 +111,7 @@ Every fixture that stands in for a later capability is listed here with the pack
 | Scaffolding | Introduced by | Stands in for | Deleted by |
 |---|---|---|---|
 | **Fixture turn endpoint** — accepts a turn, returns scripted task and step transitions, scripted stream chunks and scripted `ToolRequest`s; runs no model, planner, admission or metering | [WP-17.01](work-packages/17-arcchat-independent-core.md#rule-wp-17.01) | The Cloud Harness | **[WP-52.05](work-packages/52-cloud-harness.md#rule-wp-52.05)**, which asserts structurally that it no longer exists |
-| Stubbed managed provider path | [WP-17.05](work-packages/17-arcchat-independent-core.md#rule-wp-17.05) | Real provider routing and metering | [WP-43.00](work-packages/43-managed-ai-routing-and-metering.md#rule-wp-43.00), [WP-43.07](work-packages/43-managed-ai-routing-and-metering.md#rule-wp-43.07) |
+| Stubbed managed provider path | [WP-17.03](work-packages/17-arcchat-independent-core.md#rule-wp-17.05) | Real provider routing and metering | [WP-43.00](work-packages/43-managed-ai-routing-and-metering.md#rule-wp-43.00), [WP-43.07](work-packages/43-managed-ai-routing-and-metering.md#rule-wp-43.07) |
 | Notes/Chat export fixture endpoints | [WP-15.06](work-packages/15-arcchat-conversation-core.md#rule-wp-15.06), [WP-19.05](work-packages/19-arcnotes-search-and-portability.md#rule-wp-19.05) | Real Cloud snapshot/export jobs | [WP-25.08](work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.08) |
 | Automation fixture state transitions | [WP-17.04](work-packages/17-arcchat-independent-core.md#rule-wp-17.04) | Durable Cloud trigger scheduler and occurrence execution | [WP-52.06](work-packages/52-cloud-harness.md#rule-wp-52.06) |
 | Payment-provider fixture adapter (recorded event fixtures remain regression inputs) | [WP-42.03](work-packages/42-commerce-entitlement-and-credits.md#rule-wp-42.03) | Live adapter/event ingestion | Remove runtime fixture registration at [WP-42.10](work-packages/42-commerce-entitlement-and-credits.md#rule-wp-42.10); retain recorded test cases |
@@ -273,7 +273,7 @@ All 51 active packages retain the current accepted scope; WP20 is future-only; W
 | 42 | `22`, `23` |
 | 43 | `25`, `42`, `44` |
 | 44 | `23`, `42` |
-| 45 | `12`, `21`, `44`, `47` |
+| 45 | `12`, `21`, `41`, `44`, `47` |
 | 46 | `25`, `45` |
 | 47 | `00`, `02` |
 | 48 | `25`, `42`, `44`, `46`, `47` |
@@ -283,8 +283,9 @@ All 51 active packages retain the current accepted scope; WP20 is future-only; W
 | 52 | `15`, `17`, `21`, `23`, `26`, `39`, `40`, `41`, `42`, `43`, `44` |
 | 53 | `02`, `06`, `07`, `10`, `11`, `12`, `44`, `45` |
 
-Serial execution: 00, 01, 02, 03, 04, 05, 06, 07, 08, 09, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 21, 22, 23, 24, 25, 26, 28, 30, 33, 34, 35, 36, 37, 38, 39, 41, 42, 44, 43, 40, 47, 45, 53, 46, 48, 51, 52, 31, 32, 49, 50. WP42.11 precedes42.10. Follow the [producer artifact/stage matrix](producer-artifacts-and-integration.md): WP06 proves minimal real transports; WP13 complete functional native packages; WP52 replaces AI fixtures;31/32/49/50 require real product integration. Independent products use a tested manifest, not lockstep versions.
+Serial execution: 00, 01, 02, 03, 04, 05, 06, 07, 08, 09, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 21, 22, 23, 24, 25, 26, 28, 30, 33, 34, 35, 36, 37, 38, 39, 41, 42, 44, 43, 40, 47, 45, 53, 46, 48, 51, 52, 31, 32, 49, 50. WP42.11 precedes 42.10. Follow the [producer artifact/stage matrix](producer-artifacts-and-integration.md): WP06 proves minimal real transports; WP13 complete functional native packages; WP52 replaces AI fixtures;31/32/49/50 require real product integration. Independent products use a tested manifest, not lockstep versions.
 
 ## Final review execution bindings
 
 [Staged artifact integration](README.md#staged-artifact-integration) is mandatory for the graph above. WP02 produces the pipeline/BuildPolicy, WP03 Contracts, WP04 values and WP06 the real native/runtime foundation; later packages never require a future Cloud manifest. The shell directly consumes WP09 contribution contracts. Account UI consumes WP25 exports and WP46 data health. Simulator acceptance consumes WP34 measurements and WP35 portability. WP52 additionally consumes WP39 for real Slate transcription/adoption; this does not move the media engine into Cloud. No full integration gate is satisfied by renaming a mock.
+P2-013 adds the PackageCatalog producer edge 41→45. Native login/mail originates at 22, fixture signing formats at 03, production trust at 53. The existing serial order already places 41 before 45 and remains valid. Total active dependency edges: 158.

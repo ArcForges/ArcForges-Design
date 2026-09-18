@@ -16,9 +16,9 @@
 
 ## 1. Scope and purpose
 
-**In scope.** Four isolated technical probes followed by the seven functional native libraries, eight managed native packages, seven runtime package families across the six declared desktop RIDs, and integration with the WP11 restricted helper. The functional ABI, algorithms, formats and limits are fixed by [native annex06](../../architecture/contracts/06-native-functional-abi.md); no missing function is deferred to product coding.
+**In scope.** Four isolated technical probes followed by the seven functional native libraries, eight managed native packages, seven runtime package families across the six declared desktop RIDs, and integration with the WP11 restricted helper. The functional ABI, algorithms, formats and limits are fixed by [native annex 06](../../architecture/contracts/06-native-functional-abi.md); no missing function is deferred to product coding.
 
-**Out of scope.** Product UI, editing commands, Cloud business handlers and the AI model loop. Probe scaffolds are cleaned up or kept as isolated regression fixtures. Production ABI/wrapper/runtime code from13.05–13.16 is retained and published; ND-05 does not discard those deliverables.
+**Out of scope.** Product UI, editing commands, Cloud business handlers and the AI model loop. Probe scaffolds are cleaned up or kept as isolated regression fixtures. Production ABI/wrapper/runtime code from 13.05–13.16 is retained and published; ND-05 does not discard those deliverables.
 
 **Why this package exists.** Every downstream native consumer needs working, versioned packages with their actual dependencies. Neither a probe-only DLL nor an appended verification instruction can substitute for implementing that producer here.
 
@@ -47,7 +47,7 @@
 |---|---|
 | BR-01 | **A probe runs against a real published AOT binary**, not a debug host ([QI-01](../../requirements/12-quality-and-compatibility-contract.md#rule-qi-01), [QI-02](../../requirements/12-quality-and-compatibility-contract.md#rule-qi-02)). |
 | BR-02 | **Probe evidence is reproducible**: a recorded environment, a recorded procedure and a recorded result. |
-| BR-03 | **Probe scaffolds and production deliverables are separate.** Production13.05–13.16 is maintained; probe code reaches production only after the same functional, safety and package gates. |
+| BR-03 | **Probe scaffolds and production deliverables are separate.** Production 13.05–13.16 is maintained; probe code reaches production only after the same functional, safety and package gates. |
 | BR-04 | **A probe that fails produces a decision, not a workaround.** A failed probe raises the conflict rather than being papered over (**[D-001](../../decisions/phase-1-foundation-decisions.md#rule-d-001)**). |
 | BR-05 | **Native probes obey the native safety obligations from the start** — validated input, sanitiser builds, sacrificial-process tests (`§6` of the native architecture). |
 | BR-06 | **The acquisition probe uses a real transport**, not an in-memory generator, for at least one configuration. |
@@ -64,7 +64,7 @@
 | `benchmarks/probes/acquisition/` | Probe C workspace and evidence |
 | `benchmarks/probes/media/` | Probe D workspace and evidence |
 | `native/arcmedia-ffmpeg-abi/`, `arcslate-color-abi/`, `arcslate-image-abi/`, `arcslate-otio-abi/` | Extend the existing owned shims without renaming their published symbols |
-| `native/arcinstruments-abi/`, `arcpdf-abi/`, `arcgraphics-abi/` | New functional libraries with the fixed annex06 declarations |
+| `native/arcinstruments-abi/`, `arcpdf-abi/`, `arcgraphics-abi/` | New functional libraries with the fixed annex 06 declarations |
 | `src/Native/ArcForges.Native.Abstractions/` and `ArcForges.Native.Media/Colour/Image/Otio/Instruments/Pdf/Graphics` | Eight managed status/handle/wrapper packages; slash-separated names here expand to separate projects |
 | `src/Native/ArcForges.Native.<Capability>.Runtime.<rid>/` | Seven families × six RID package definitions, each carrying its admitted native dependency closure |
 | `src/DesktopHelpers/` | Consume WP11 helper/Broker/Contracts; add only the approved native parser composition, not a second helper owner |
@@ -72,7 +72,7 @@
 | `eng/verification/probe-evidence/` | The recorded environments, procedures and results |
 | `tests/HardwareLab/` | Created: the device inventory the later hardware families depend on |
 
-**Major types introduced:** the fixed annex06 status, safe handle, reader/writer, image, colour, OTIO, instrument, PDF and graphics wrappers. No native pointer becomes a managed domain identifier or a wire field.
+**Major types introduced:** the fixed annex 06 status, safe handle, reader/writer, image, colour, OTIO, instrument, PDF and graphics wrappers. No native pointer becomes a managed domain identifier or a wire field.
 
 ---
 
@@ -134,9 +134,9 @@
 
 ### WP-13.05 — Common ABI and deterministic failure surface
 
-**What must be fully done.** Implement annex06 common preambles, fixed numeric keys, pack8 records, ownership, cancellation and bounded-buffer helpers underlying the ABI1.1 declarations. This step compiles all declarations; the family bodies are implemented in13.06–13.14 and their complete runtime export set is accepted in13.15/13.90. Retain the five existing probe-library identities, including arc_metal_*; compatibility is not evidence of functional graphics.
+**What must be fully done.** Implement annex 06 common preambles, fixed numeric keys, pack 8 records, ownership, cancellation and bounded-buffer helpers underlying the ABI1.1 declarations. This step compiles all declarations; the family bodies are implemented in 13.06–13.14 and their complete runtime export set is accepted in 13.15/13.90. Retain the five existing probe-library identities, including arc_metal_*; compatibility is not evidence of functional graphics.
 
-**Testing requirements.** Compile C17/C++20 headers and C# layouts; assert every field offset and all17 sizes, wrong-size/version/null/closed-handle cases and zero leaked output on failure.
+**Testing requirements.** Compile C17/C++20 headers and C# layouts; assert every field offset and all 17 sizes, wrong-size/version/null/closed-handle cases and zero leaked output on failure.
 
 **Completion gate.** The common helpers, complete header/layout declarations and common failure rules are independently verified; later family implementation is not required to pass this first substep.
 
@@ -176,7 +176,7 @@
 
 **What must be fully done.** Implement immutable OCIO config/processor assets and alpha-correct CPU transforms; no ambient file/network config lookup.
 
-**Testing requirements.** Independent RGB/alpha vectors, alpha0, unknown space, tampered bundle and preview/render agreement.
+**Testing requirements.** Independent RGB/alpha vectors, alpha 0, unknown space, tampered bundle and preview/render agreement.
 
 **Completion gate.** Colour functions and pinned asset provenance pass with named refusal of invalid transforms.
 
@@ -206,7 +206,7 @@
 
 **What must be fully done.** Implement generic OS serial and explicit USB interface/endpoint open/read/write/cancel/close; identity is revalidated at open. Do not auto-detach unrelated drivers or enable vendor SDKs.
 
-**Testing requirements.** Enumeration, explicit interface claim, control/bulk/interrupt transfers, partial writes, cancellation callback, hot unplug, driver absence and permission denial on Tier1.
+**Testing requirements.** Enumeration, explicit interface claim, control/bulk/interrupt transfers, partial writes, cancellation callback, hot unplug, driver absence and permission denial on Tier 1.
 
 **Completion gate.** Native instrument functions and permission/loss semantics pass against the hardware inventory.
 
@@ -214,7 +214,7 @@
 
 ### WP-13.13 — PDF and production parser containment
 
-**What must be fully done.** Compose actual PDFium and all approved parser wrappers into the WP11 helper using generated local gRPC controls. WP11 remains the helper host/protocol/launcher authority. This step implements the production parser composition in that same DesktopPlatform helper and publishes the next immutable ContentSandbox.Runtime.<rid> version with its exact native closure. Broker/Contracts and launcher mechanics are consumed from11; no second helper design or duplicate DTO owner is created. Remove test-parser production registration, retain hostile regression fixtures.
+**What must be fully done.** Compose actual PDFium and all approved parser wrappers into the WP11 helper using generated local gRPC controls. WP11 remains the helper host/protocol/launcher authority. This step implements the production parser composition in that same DesktopPlatform helper and publishes the next immutable ContentSandbox.Runtime.<rid> version with its exact native closure. Broker/Contracts and launcher mechanics are consumed from 11; no second helper design or duplicate DTO owner is created. Remove test-parser production registration, retain hostile regression fixtures.
 
 **Testing requirements.** Packaged PDF page/text/tile fixtures, malformed/native-crash/hang and parent-death cleanup on every admitted RID; rerun actual image/media/OTIO parser containment.
 
@@ -234,7 +234,7 @@
 
 ### WP-13.15 — Immutable native package production
 
-**What must be fully done.** Publish ArcForges.Native.Abstractions plus Media/Colour/Image/Otio/Instruments/Pdf/Graphics and their Runtime.<rid> families: win-x64,win-arm64,osx-arm64,osx-x64,linux-x64,linux-arm64. Expand the allowlist explicitly; record any Tier2 waiver and omit unusable capability claims. These eight managed and42 runtime definitions are additional to other Platform mechanisms. Build native dependencies before pack; pack once; use the WP11 host/broker and the newly signed production helper version composed in13.13. Never alter already released WP11 package bytes.
+**What must be fully done.** Publish ArcForges.Native.Abstractions plus Media/Colour/Image/Otio/Instruments/Pdf/Graphics and their Runtime.<rid> families: win-x64,win-arm64,osx-arm64,osx-x64,linux-x64,linux-arm64. Expand the allowlist explicitly; record any Tier 2 waiver and omit unusable capability claims. These eight managed and 42 runtime definitions are additional to other Platform mechanisms. Build native dependencies before pack; pack once; use the WP11 host/broker and the newly signed production helper version composed in 13.13. Never alter already released WP11 package bytes.
 
 **Testing requirements.** Isolated clean-cache C17 and C# AOT consumers on each admitted RID; missing/transitive/wrong-RID library, hash collision, absent export, revoked artifact and source-unavailable negatives.
 
@@ -253,7 +253,7 @@
 <a id="rule-wp-13.90"></a>
 ### WP-13.90 — Verify the owned artifact and real integration
 
-**What must be fully done.** Verify the production outputs of13.05–13.16 as one immutable candidate using actual07–12 mechanisms. This step accepts completed implementations; it does not first design or implement the native families.
+**What must be fully done.** Verify the production outputs of 13.05–13.16 as one immutable candidate using actual 07–12 mechanisms. This step accepts completed implementations; it does not first design or implement the native families.
 
 **Testing requirements.** Decode/seek/drain, encode→independent decode, image tiles, colour, OTIO, PDF, instruments, graphics CPU/fallback, cancel/lifetime/hostile-helper vectors and missing-DLL/wrong-RID negative consumers.
 
@@ -313,9 +313,9 @@
 3. Sustained acquisition above the product target runs with bounded memory, and every overrun, gap and disconnect is explicitly reported.
 4. A decoded frame displays with synchronised audio; the sanitiser run is clean; the software fallback works with acceleration disabled.
 5. Each probe has a written conclusion stating what it proved, what it did not, and what constraint it imposes downstream.
-6. Every shipped dependency has a recorded licence position and the13.16 hardware inventory exists, contributing to [PG-08](../../assurance/open-gates-register.md#rule-pg-08).
+6. Every shipped dependency has a recorded licence position and the 13.16 hardware inventory exists, contributing to [PG-08](../../assurance/open-gates-register.md#rule-pg-08).
 
-7. All58 functional exports, eight managed native packages and every admitted runtime family are verified through clean package-only consumers; actual helper containment and all13.05–13.16 gates pass. No probe-only export set passes production closure.
+7. All 58 functional exports, eight managed native packages and every admitted runtime family are verified through clean package-only consumers; actual helper containment and all 13.05–13.16 gates pass. No probe-only export set passes production closure.
 
 ## 9. Dependencies
 

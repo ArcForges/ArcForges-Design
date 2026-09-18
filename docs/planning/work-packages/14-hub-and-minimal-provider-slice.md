@@ -21,23 +21,23 @@ Own-application composition and state, public binary gRPC-Web, helper-only local
 
 ## 4. Projects, directories, files and major types affected
 
-Use the exact projects assigned to this WP in [architecture27](../../architecture/27-platform-projects-and-application-assistants.md#2-desktopplatform-tree-and-actual-projects) and its product/Cloud/Mobile trees. Implement their owned named services, typed records, schema migrations and tests; do not introduce a new repository, generic SQL facade or shared runtime to connect them. Versioned generated schema definitions remain in Contracts.
+Use the exact projects assigned to this WP in [architecture 27](../../architecture/27-platform-projects-and-application-assistants.md#2-desktopplatform-tree-and-actual-projects) and its product/Cloud/Mobile trees. Implement their owned named services, typed records, schema migrations and tests; do not introduce a new repository, generic SQL facade or shared runtime to connect them. Versioned generated schema definitions remain in Contracts.
 
 ## 5. Required implementation work
 
 <a id="rule-wp-14.00"></a>
 ### WP-14.00 — Application scope and host ports
 
-**What must be fully done.** Publish Assistant.Abstractions with architecture27 host port signatures, product/profile identity and lifetime. The minimal sample uses real capabilities/shell/store; full AssistantHost UI is produced at17.
+**What must be fully done.** Publish Assistant.Abstractions with architecture 27 host port signatures, product/profile identity and lifetime. The minimal sample uses real capabilities/shell/store; full AssistantHost UI is produced at 17.
 
-**Testing requirements.** Two independent application identities cannot share stores/registration; no future15/17 implementation dependency.
+**Testing requirements.** Two independent application identities cannot share stores/registration; no future 15/17 implementation dependency.
 
 **Completion gate.** The stated behavior and oracle pass using the actual owned implementation. Evidence names source commit, artifact versions/hashes, environment and any later fixture replacement.
 
 <a id="rule-wp-14.01"></a>
 ### WP-14.01 — Minimal ArcNotes application services
 
-**What must be fully done.** Implement real read/create/append document commands through typed application handlers and local persistence. Professional document completion remains18.
+**What must be fully done.** Implement real read/create/append document commands through typed application handlers and local persistence. Professional document completion remains 18.
 
 **Testing requirements.** Descriptor/risk/context validation and one write path for UI and own-app capability.
 
@@ -105,7 +105,7 @@ Changed application scope, storage, transport, UI and deployment behavior are go
 
 | Evidence | Produced by |
 |---|---|
-| Application scope and host ports: Two independent application identities cannot share stores/registration; no future15/17 implementation dependency. | [WP-14.00](#rule-wp-14.00) |
+| Application scope and host ports: Two independent application identities cannot share stores/registration; no future 15/17 implementation dependency. | [WP-14.00](#rule-wp-14.00) |
 | Minimal ArcNotes application services: Descriptor/risk/context validation and one write path for UI and own-app capability. | [WP-14.01](#rule-wp-14.01) |
 | Package consumer composition: Package-only restore, publish/run, command/cancel/result and owner refusal. | [WP-14.02](#rule-wp-14.02) |
 | Idempotency and revision: Duplicate command, stale revision and process kill around commit. | [WP-14.03](#rule-wp-14.03) |

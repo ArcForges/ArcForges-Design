@@ -5,7 +5,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: K — Web and release
-> Upstream: `28` · `32` · `35` · `39` · `40` · `41` · `43` · `46` · `49` · `51` · `52` · `53` · Downstream: none
+> Upstream: `28` · `32` · `35` · `39` · `40` · `41` · `43` · `46` · `49` · `51` · `52` · `53` · Downstream: None
 
 > **Goal.** Ship everything together, once every gate is genuinely satisfied: three professional desktop products across three platforms, the Android companion, the cloud, the web surfaces, and the commercial loop — with the release audit, the production gates and the honest statement of what is and is not shipped.
 
@@ -41,7 +41,7 @@
 
 ---
 
-**Web redesign input.** [P2-008](../../decisions/phase-2-specification-decisions.md#rule-p2-008) and [Web toolchain and SDK](../../architecture/25-web-toolchain-and-sdk.md) are binding for this package's Web, generated-contract, toolchain and test responsibilities. The existing desktop/mobile runtime and product-scope decisions remain separately governed.
+**Web redesign input.** [P2-008 as amended by P2-012/P2-013](../../decisions/phase-2-specification-decisions.md#rule-p2-013) and [Web toolchain and SDK](../../architecture/25-web-toolchain-and-sdk.md) are binding for this package's Web, generated-contract, toolchain and test responsibilities. The existing desktop/mobile runtime and product-scope decisions remain separately governed.
 
 ---
 
@@ -121,7 +121,7 @@
 
 ### WP-50.04 — Cloud production
 
-**What must be fully done.** Production deployment from a promoted artifact; migration rehearsed forward and backward; backup verified with a proven restore; upgrade and rollback rehearsed; the full go-live gate set from [L-01](../../assurance/release-gates.md#rule-l-01) to [L-15](../../assurance/release-gates.md#rule-l-15) satisfied; the status page live with its emergency alternate URL published.
+**What must be fully done.** Production deployment from a promoted artifact; expand/contract migration and compatible application rollback rehearsed; backup verified with a proven restore; upgrade and rollback rehearsed; the full go-live gate set from [L-01](../../assurance/release-gates.md#rule-l-01) to [L-16](../../assurance/release-gates.md#rule-l-16) satisfied; the status page live with its emergency alternate URL published. L-16 also requires the approved/measured capacity envelope and the independently operated self-host deployment (PG-25/26), using the same released artifact family.
 
 **Testing requirements.** A game-day exercise across the severity ladder against the real production topology; the recorded evidence for each go-live gate.
 
@@ -229,7 +229,7 @@
 2. Every shipped artifact has a licence inventory, SBOM, provenance attestation and verified NOTICE; every reused item has a completed provenance record.
 3. **The full update matrix passes on Windows, macOS and Linux**, and a blocked bad version is refused by both the feed and compatibility policy.
 4. The Android release is live with every mobile gate closed and a listing consistent with the consumption-only posture.
-5. **The cloud go-live threshold is met** — a completed game day across the severity ladder, proven restore, rehearsed rollback and region rebuild, and evidence for every gate from [L-01](../../assurance/release-gates.md#rule-l-01) to [L-15](../../assurance/release-gates.md#rule-l-15).
+5. **The cloud go-live threshold is met** — a completed game day across the severity ladder, proven restore, rehearsed rollback and fresh Cloudflare realm restore, and evidence for every gate from [L-01](../../assurance/release-gates.md#rule-l-01) to [L-16](../../assurance/release-gates.md#rule-l-16).
 6. **Pricing and checkout are public only after a payout has actually been received**; the regional route remains disabled unless its own gates are met.
 7. Every web surface deploys atomically, rolls back cleanly, and handles a cached older client with a grace period.
 8. Every alert maps to a rehearsed runbook; on-call is in place; support, enforcement and appeal paths are operable.

@@ -186,6 +186,8 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 ---
 
+Pearson independent vectors: x=[1,2,3], y=[2,4,6] gives r=1; y=[3,2,1] gives r=−1. Constant input is unavailable; preserve the declared lag and overlap rules.
+
 ## 7. Tests and verification evidence
 
 **Required evidence addition.** Independent reference values for every family, edge/window/gap and invalid/insufficient case, and replay/UI/report comparison.
@@ -237,4 +239,4 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 ## P2-010 required behavior and closure
 
-Implement every remaining spectrum/correlation/threshold/event-pattern/decoder analysis profile in architecture26 with independent numeric and gap/error vectors, not only measurements.v1. The referenced normative profile and producer stage matrix are binding inputs. Record independent positive/negative vectors and actual owner integration at this WP's assigned stage; a mock cannot close a real-provider/device requirement.
+Implement every remaining spectrum/correlation/threshold/event-pattern/decoder analysis profile in architecture 26 with independent numeric and gap/error vectors, not only measurements.v1. The referenced normative profile and producer stage matrix are binding inputs. Record independent positive/negative vectors and actual owner integration at this WP's assigned stage; a mock cannot close a real-provider/device requirement.

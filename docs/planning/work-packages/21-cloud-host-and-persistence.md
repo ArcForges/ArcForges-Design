@@ -20,7 +20,7 @@ Own-application composition and state, public binary gRPC-Web, helper-only local
 
 ## 4. Projects, directories, files and major types affected
 
-Use the exact projects assigned to this WP in [architecture27](../../architecture/27-platform-projects-and-application-assistants.md#2-desktopplatform-tree-and-actual-projects) and its product/Cloud/Mobile trees. Implement their owned named services, typed records, schema migrations and tests; do not introduce a new repository, generic SQL facade or shared runtime to connect them. Versioned generated schema definitions remain in Contracts.
+Use the exact projects assigned to this WP in [architecture 27](../../architecture/27-platform-projects-and-application-assistants.md#2-desktopplatform-tree-and-actual-projects) and its product/Cloud/Mobile trees. Implement their owned named services, typed records, schema migrations and tests; do not introduce a new repository, generic SQL facade or shared runtime to connect them. Versioned generated schema definitions remain in Contracts.
 
 ## 5. Required implementation work
 
@@ -36,14 +36,14 @@ Use the exact projects assigned to this WP in [architecture27](../../architectur
 <a id="rule-wp-21.01"></a>
 ### WP-21.01 — Finite durable jobs
 
-**What must be fully done.** Replace perpetual hosted loops with Cron/Queue/Workflow-woken C# endpoints; ≤100items/20s per job, checkpoint/receipt/lease then yield.
+**What must be fully done.** Replace perpetual hosted loops with Cron/Queue/Workflow-woken C# endpoints; ≤100 items/20s per job, checkpoint/receipt/lease then yield.
 
 **Testing requirements.** Sleep/restart, duplicate wake, delayed delivery, stale lease and paused simulator continuation.
 
 **Completion gate.** The stated behavior and oracle pass using the actual owned implementation. Evidence names source commit, artifact versions/hashes, environment and any later fixture replacement.
 
 <a id="rule-wp-21.02"></a>
-### WP-21.02 — Twenty module boundaries
+### WP-21.02 — Twenty-one module boundaries
 
 **What must be fully done.** Implement exact module projects and D1 named-plan bridge; C# owns business decisions, Worker executes approved SQL only.
 
@@ -54,9 +54,9 @@ Use the exact projects assigned to this WP in [architecture27](../../architectur
 <a id="rule-wp-21.03"></a>
 ### WP-21.03 — D1 migration and exact physical mapping
 
-**What must be fully done.** Implement model04 full physical manifest, migrations, typed exact bind/result adapters and expand/backfill/fenced cutover.
+**What must be fully done.** Implement model 04 full physical manifest, migrations, typed exact bind/result adapters and expand/backfill/fenced cutover.
 
-**Testing requirements.** Actual D1 signed64/uint64/decimal/JSON/FTS5, interrupted migration, stale backfill and compatible rollback.
+**Testing requirements.** Actual D1 signed 64/uint64/decimal/JSON/FTS5, interrupted migration, stale backfill and compatible rollback.
 
 **Completion gate.** The stated behavior and oracle pass using the actual owned implementation. Evidence names source commit, artifact versions/hashes, environment and any later fixture replacement.
 
@@ -72,20 +72,20 @@ Use the exact projects assigned to this WP in [architecture27](../../architectur
 <a id="rule-wp-21.05"></a>
 ### WP-21.05 — Shared atomic families and claims
 
-**What must be fully done.** Implement every model00 shared transaction family as one fixed D1 batch, including authorization/revision/policy/balance/lease guards.
+**What must be fully done.** Implement every model 00 shared transaction family as one fixed D1 batch, including authorization/revision/policy/balance/lease guards.
 
 **Testing requirements.** Two Containers contend, stale holder cannot finalize, exact credits and sync cursor safety.
 
 **Completion gate.** The stated behavior and oracle pass using the actual owned implementation. Evidence names source commit, artifact versions/hashes, environment and any later fixture replacement.
 
 <a id="rule-wp-21.06"></a>
-### WP-21.06 — Configuration and capacity
+### WP-21.06 — Capacity and Container/D1 integration producer
 
-**What must be fully done.** Implement fixed plan/config/generation checks, primary reads, bounded binding calls, D1 capacity headroom/admission and observability.
+**What must be fully done.** Implement model 04 named plans, guarded batch fixtures, primary authorization, route/service-binding/outbound-handler matrix, job slice and SimulationPacer infrastructure. Produce L-16 measurement harness/config and proposed capacity report.
 
-**Testing requirements.** 10GB boundary not falsely raised; overload/cold-start/current-session failures explicit.
+**Testing requirements.** Real D1 rollback/duplicate/competing-writer/cold-start tests; public /internal denial, blocked egress, forged service headers, stream limits and headroom measurement.
 
-**Completion gate.** The stated behavior and oracle pass using the actual owned implementation. Evidence names source commit, artifact versions/hashes, environment and any later fixture replacement.
+**Completion gate.** Real deployed storage/ingress works; proposed launch envelope approval/load evidence remains explicitly open until WP50, not closed by SQLite.
 
 <a id="rule-wp-21.07"></a>
 ### WP-21.07 — Failure isolation and readiness
@@ -95,6 +95,16 @@ Use the exact projects assigned to this WP in [architecture27](../../architectur
 **Testing requirements.** Missing binding/plan mismatch fails readiness, not successful partial execution.
 
 **Completion gate.** The stated behavior and oracle pass using the actual owned implementation. Evidence names source commit, artifact versions/hashes, environment and any later fixture replacement.
+
+<a id="rule-wp-21.08"></a>
+
+### WP-21.08 — Selfhost.v1 deployment profile
+
+**What must be fully done.** Produce operator-owned CF deployment/config/realm descriptor and health validation using deployment 22. Default payment disabled, separate keys/identity/providers; preserve immutable artifacts and independent backup requirements.
+
+**Testing requirements.** Fresh development account/realm provisioning, missing binding/secret/unsupported descriptor/redirect failures and no official token acceptance.
+
+**Completion gate.** WP46 receives a runnable deployment and complete configuration inventory; production PG-25 remains external evidence.
 
 <a id="rule-wp-21.90"></a>
 ### WP-21.90 — Owned artifacts and real integration
@@ -111,15 +121,17 @@ Changed application scope, storage, transport, UI and deployment behavior are go
 
 ## 7. Tests and verification evidence
 
+Acceptance includes every amended §5 producer/consumer and WP-21.90 evidence. Current P2-013 contracts/data/runtime rules are tested in the original owner implementation, not a detached explanatory sample.
+
 | Evidence | Produced by |
 |---|---|
 | Ingress and host pipeline: Deployed request/stream/cancel/CSRF/trailer path; no buffered stream or direct public Container port. | [WP-21.00](#rule-wp-21.00) |
 | Finite durable jobs: Sleep/restart, duplicate wake, delayed delivery, stale lease and paused simulator continuation. | [WP-21.01](#rule-wp-21.01) |
-| Twenty module boundaries: Architecture/import/plan-hash/wrong-container/public-access refusal tests. | [WP-21.02](#rule-wp-21.02) |
-| D1 migration and exact physical mapping: Actual D1 signed64/uint64/decimal/JSON/FTS5, interrupted migration, stale backfill and compatible rollback. | [WP-21.03](#rule-wp-21.03) |
+| Twenty-one module boundaries: Architecture/import/plan-hash/wrong-container/public-access refusal tests. | [WP-21.02](#rule-wp-21.02) |
+| D1 migration and exact physical mapping: Actual D1 signed 64/uint64/decimal/JSON/FTS5, interrupted migration, stale backfill and compatible rollback. | [WP-21.03](#rule-wp-21.03) |
 | Receipts/outbox/archive: Constraint guard failure rolls back all rows; zero-row CAS cannot publish; duplicate/lost ack reconciles. | [WP-21.04](#rule-wp-21.04) |
 | Shared atomic families and claims: Two Containers contend, stale holder cannot finalize, exact credits and sync cursor safety. | [WP-21.05](#rule-wp-21.05) |
-| Configuration and capacity: 10GB boundary not falsely raised; overload/cold-start/current-session failures explicit. | [WP-21.06](#rule-wp-21.06) |
+| Configuration and capacity: 10 GB boundary not falsely raised; overload/cold-start/current-session failures explicit. | [WP-21.06](#rule-wp-21.06) |
 | Failure isolation and readiness: Missing binding/plan mismatch fails readiness, not successful partial execution. | [WP-21.07](#rule-wp-21.07) |
 | Exact artifact/consumer and applicable UX acceptance ledger | [WP-21.90](#rule-wp-21.90) |
 

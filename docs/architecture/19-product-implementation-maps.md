@@ -35,14 +35,14 @@ Every desktop product uses the same five-layer shape, which is why a capability'
 | `*.Domain` | Entities, value objects, invariants, domain services | Persistence, RPC, UI, provider clients |
 | `*.Application` | Use cases, orchestration, policy application, the single write path | Storage mechanics, transport |
 | `*.Infrastructure` | Persistence, file formats, external clients, native wrappers | Domain rules |
-| `*.LocalRpc` | Contract hosting and consumption, capability descriptors | Business logic — it delegates (`§4` of the local RPC contract) |
+| `*.AssistantIntegration` | Host-bound typed capability/context/artifact adapters and assistant composition | Business rules or a local network service; delegates to Application |
 | `*.Desktop` | Avalonia host, views, view models, shell composition | Any authoritative state |
 
 Plus per-product specialisations: `ArcForges.Capabilities` and presentation-only `ArcForges.Assistant.Cloud`; `ArcScope.Acquisition`; `ArcSlate.Media`.
 
 | # | Rule |
 |---|---|
-| CP-01 | **A capability's owner-side validation lives in `*.Application`**, never in `*.LocalRpc` and never in the caller (`§2` of the local RPC contract). |
+| CP-01 | A capability's owner-side validation lives in *.Application. AssistantIntegration and Cloud device dispatch use this same path; neither hosts a product local RPC service. |
 | <a id="rule-cp-02"></a>CP-02 | **A native wrapper lives in `*.Infrastructure`** and is the only project referencing a P/Invoke class ([PI-03](12-native-interop-and-media.md#rule-pi-03), [PI-04](12-native-interop-and-media.md#rule-pi-04) of the native interop architecture). |
 | CP-03 | **The Desktop project holds no authoritative state**, which is what makes headless testing of every product possible. |
 
@@ -56,7 +56,7 @@ Plus per-product specialisations: `ArcForges.Capabilities` and presentation-only
 |---|---|---|
 | Conversation, message, branch, part model | `ArcForges.Assistant.Core` | [WP-15.00](../planning/work-packages/15-arcchat-conversation-core.md#rule-wp-15.00), [WP-15.01](../planning/work-packages/15-arcchat-conversation-core.md#rule-wp-15.01) |
 | Attachments by reference | `ArcForges.Assistant.Core` + `ArcForges.Assistant.Persistence.Sqlite` | [WP-15.02](../planning/work-packages/15-arcchat-conversation-core.md#rule-wp-15.02) |
-| Projects, agent profiles, skills | `ArcForges.Assistant.Core` + `ArcForges.Assistant.Core` | [WP-15.03](../planning/work-packages/15-arcchat-conversation-core.md#rule-wp-15.03), [WP-15.04](../planning/work-packages/15-arcchat-conversation-core.md#rule-wp-15.04) |
+| Projects, agent profiles, skills | `ArcForges.Assistant.Core` | [WP-15.03](../planning/work-packages/15-arcchat-conversation-core.md#rule-wp-15.03), [WP-15.04](../planning/work-packages/15-arcchat-conversation-core.md#rule-wp-15.04) |
 | Local search over conversations | `ArcForges.Assistant.Persistence.Sqlite` (derived store) | [WP-15.05](../planning/work-packages/15-arcchat-conversation-core.md#rule-wp-15.05) |
 | **The turn loop, batching, compaction** | **`ArcForges-AI Workflow`** — Cloud, not the desktop ([LS-02](17-agent-harness.md#rule-ls-02)) | [WP-52.00](../planning/work-packages/52-cloud-harness.md#rule-wp-52.00), [WP-52.01](../planning/work-packages/52-cloud-harness.md#rule-wp-52.01) |
 | Context assembly and packing | **`ArcForges-AI Workflow`** | [WP-40.03](../planning/work-packages/40-knowledge-search-and-retrieval.md#rule-wp-40.03) |
@@ -67,7 +67,7 @@ Plus per-product specialisations: `ArcForges.Capabilities` and presentation-only
 | Automation | `ArcForges.Assistant.Core` | [WP-17.04](../planning/work-packages/17-arcchat-independent-core.md#rule-wp-17.04) |
 | Cloud AI client — submit a turn, read task state, surface admission reasons | `ArcForges.Cloud.Client` | [WP-17.05](../planning/work-packages/17-arcchat-independent-core.md#rule-wp-17.05) |
 | own-app capability registration, typed invocation and health | `ArcForges.Capabilities` | [WP-14.00](../planning/work-packages/14-hub-and-minimal-provider-slice.md#rule-wp-14.00)–[WP-14.06](../planning/work-packages/14-hub-and-minimal-provider-slice.md#rule-wp-14.06) |
-| Thin preview and handoff | `ArcForges.Assistant.Avalonia` (`§8.1` of the editing architecture) | [WP-17.06](../planning/work-packages/17-arcchat-independent-core.md#rule-wp-17.06) |
+| Thin preview and own-application navigation | `ArcForges.Assistant.Avalonia` (`§8.1` of the editing architecture) | [WP-17.06](../planning/work-packages/17-arcchat-independent-core.md#rule-wp-17.06) |
 | Cloud client, sync, bridge consumption | `ArcForges.Cloud.Client` | [WP-25](../planning/work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25), [WP-26](../planning/work-packages/26-remote-action-and-tool-bridge.md#rule-wp-26) |
 | First-party local capabilities and the ToolRequest executor | `ArcForges.Device.Runtime` | [WP-17.00](../planning/work-packages/17-arcchat-independent-core.md#rule-wp-17.00), [WP-26.02](../planning/work-packages/26-remote-action-and-tool-bridge.md#rule-wp-26.02) |
 
@@ -134,7 +134,7 @@ The matrix records 30 items at commit `29c9271a5` — **24 evidence established,
 | ~~Edgeless canvas~~ | **Retired by [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006)** — excluded from delivery, no future hook | — |
 | ~~Slides~~ | **Retired by [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006)** — excluded from delivery, no future hook | — |
 | Saved list and table views over bounded scalar properties | `ArcNotes.Domain` + `ArcNotes.Desktop` | [WP-28](../planning/work-packages/28-arcnotes-properties-and-views.md#rule-wp-28) |
-| Capability surface | `ArcNotes.LocalRpc` + `ArcNotes.Application` | [WP-18.07](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.07) |
+| Capability surface | `ArcNotes.AssistantIntegration` + `ArcNotes.Application` | [WP-18.07](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.07) |
 
 ### 4.2 AFFiNE and SiYuan reference verification
 
@@ -164,7 +164,7 @@ The matrix records 30 items at commit `29c9271a5` — **24 evidence established,
 | Analysis definitions and evaluation | `ArcScope.Domain` + `ArcScope.Application` | [WP-34](../planning/work-packages/34-arcscope-analysis-and-reporting.md#rule-wp-34) |
 | Reporting and evidence | `ArcScope.Application` + `ArcScope.Desktop` | [WP-34](../planning/work-packages/34-arcscope-analysis-and-reporting.md#rule-wp-34) |
 | Dashboard and visualisation | `ArcScope.Desktop` | [WP-34](../planning/work-packages/34-arcscope-analysis-and-reporting.md#rule-wp-34) |
-| Integration, sync and capability surface | `ArcScope.LocalRpc` + `ArcScope.CloudClient` | [WP-35](../planning/work-packages/35-arcscope-integration-and-sync.md#rule-wp-35) |
+| Integration, sync and capability surface | `ArcScope.AssistantIntegration` + `ArcScope.CloudClient` | [WP-35](../planning/work-packages/35-arcscope-integration-and-sync.md#rule-wp-35) |
 
 ### 5.2 Serial-Studio reference verification
 
@@ -193,7 +193,7 @@ The matrix records 30 items at commit `29c9271a5` — **24 evidence established,
 | Demux, decode, encode, colour conversion, scaling, resampling | **Native, behind the C ABI** (`§2`–`§3` of the native interop architecture) | [WP-37](../planning/work-packages/37-arcslate-playback-and-processing.md#rule-wp-37), [WP-38](../planning/work-packages/38-arcslate-render-and-colour.md#rule-wp-38) |
 | Render orchestration and the render queue | `ArcSlate.Application` — **managed; the native pipeline receives an immutable plan** | [WP-38](../planning/work-packages/38-arcslate-render-and-colour.md#rule-wp-38) |
 | Colour management and transforms | `ArcSlate.Media` + native colour pipeline | [WP-38](../planning/work-packages/38-arcslate-render-and-colour.md#rule-wp-38) |
-| Integration, portability, interchange | `ArcSlate.LocalRpc` + `ArcSlate.Infrastructure` | [WP-39](../planning/work-packages/39-arcslate-integration-and-portability.md#rule-wp-39) |
+| Integration, portability, interchange | `ArcSlate.AssistantIntegration` + `ArcSlate.Infrastructure` | [WP-39](../planning/work-packages/39-arcslate-integration-and-portability.md#rule-wp-39) |
 
 ### 6.2 ArcVideo and ArcVideoFoundation reference verification
 
@@ -249,7 +249,7 @@ The matrix records 30 items at commit `29c9271a5` — **24 evidence established,
 
 ## P2-009 product ownership and invariants
 
-Platform assistant packages own application-scoped conversations, own-application capability registry, context/approval/task UI and authorized device bridge; no local model. Notes owns blocks/scalar properties/list/table, notebook/folder operations and durable local pending cache, with Cloud acknowledged authority. Scope owns raw acquisition, sessions, deterministic scope.measurement.v1, native ProductJob/report paths; Cloud simulator remains C# non-AI, no MDF shipping requirement. Slate owns editable native timeline with705600000 Hz signed ticks, rational rates, half-open ranges, immutable render snapshots, isolated media/OTIO consumers. OTIO0.18.1 remains interchange, never editable working store. Professional apps work without ArcChat and use Cloud directly; local jobs never acquire AI charges.
+Platform assistant packages own application-scoped conversations, own-application capability registry, context/approval/task UI and authorized device bridge; no local model. Notes owns blocks/scalar properties/list/table, notebook/folder operations and durable local pending cache, with Cloud acknowledged authority. Scope owns raw acquisition, sessions, deterministic scope.measurement.v1, native ProductJob/report paths; Cloud simulator remains C# non-AI, no MDF shipping requirement. Slate owns editable native timeline with 705600000 Hz signed ticks, rational rates, half-open ranges, immutable render snapshots, isolated media/OTIO consumers. OTIO0.18.1 remains interchange, never editable working store. Professional apps work without ArcChat and use Cloud directly; local jobs never acquire AI charges.
 
 Protect exact arcforges.content-origin.v1 fields/parent bounds/payload hash/carriers, notes.scalar.v1 missing/null/order/snapshot cursor, and scope.measurement.v1 finite sample/gap/pulse/count/unit/tolerance oracles. Do not replace them with a simplified protocol restatement. New wire profile explicitly transports their complete inputs; unexpected source unknown fields remain inert and preserved/read-only as required. No organizations, team/seat UI, external-agent delegation, local AI, Notes canvas/slides/relations/formulas/E2EE/linked Git or professional Mobile/Web editors. Correct existing contradictory prose about terminal unknownEffect: Task unknownEffect is nonterminal until its explicit resolution, not succeeded/failed.
 
@@ -260,3 +260,5 @@ Assistant projects resolve inside DesktopPlatform; professional product paths re
 ## Complete initial implementation profiles
 
 [Product behavior profiles](26-product-behavior-profiles.md) supplies Notes semantic commands/undo, Scope framing/trigger/analysis and Slate edit/retime/effect/audio profiles. The maps above are ownership partitions; their functions consume those exact profiles and the published [wire](contracts/04-protobuf-wire-registry.md) and [native ABI](contracts/06-native-functional-abi.md) rather than inventing DTOs or numeric rules. [Mobile architecture](11-mobile-architecture.md) owns the full Android surface/action/outbox table. [Producer stages](../planning/producer-artifacts-and-integration.md) binds each partition's released input and final real integration owner.
+
+All product project maps refine [arch 27](27-platform-projects-and-application-assistants.md): Domain, Application, Infrastructure, Desktop and AssistantIntegration. Product-owned business rules remain in the product; Platform provides mechanisms/packages. No product *.LocalRpc server project is produced.

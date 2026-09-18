@@ -102,9 +102,9 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 **What must be fully done.** Assemble context through authorized C# ports in the fixed order, page under one snapshot hash and retain immutable source pins/content origins. Filter invocable capabilities before model declaration, disclose budget truncation and store derived compaction refs. Before mutation, revalidate the source/revision and active grant.
 
-**Testing requirements.** Large context paging, permission loss, stale source, prior compaction version and unsupported capability; no raw prompts in Workflow checkpoints.
+**Testing requirements.** Large context paging, permission loss, stale source, prior compaction version and unsupported capability; no raw prompts in Workflow checkpoints. Run model 05 context vectors (under budget, compaction, protected overflow, changed branch) through typed TranscriptWindow/CompactionRecord inputs, plus wrong role/tool-pair, hash and origin-installation negatives. Assert HC-09 refusal and no customer debit for compaction; exercise both inline and transient-object input.
 
-**Completion gate.** All effect decisions refer to authorized immutable context and the loop never writes stale source implicitly.
+**Completion gate.** All effect decisions refer to authorized immutable context and the loop never writes stale source implicitly. All four context vectors and typed role/pairing/large-input cases pass against the real Harness.
 
 <a id="rule-wp-52.02"></a>
 
@@ -122,11 +122,11 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 ### WP-52.03 — Generated streaming and durable output
 
 
-**What must be fully done.** Implement execution.readOutput/watchOutput, transient-turn admission/ack/purge and DO projections from annex10/model05; Cloud histories commit canonically, local histories recover verified transient output without Cloud Chat bodies.
+**What must be fully done.** Implement execution.readOutput/watchOutput, transient-turn admission/ack/purge and DO projections from annex 10/model 05; Cloud histories commit canonically, local histories recover verified transient output without Cloud Chat bodies.
 
-**Testing requirements.** Verify the stated behavior against the exact real artifact/owner boundary. Include scope/permission, wrong or stale target, loss/retry, expiry and applicable native UI cases from experience03; named later-provider fixtures cannot close real integration.
+**Testing requirements.** Verify the stated behavior against the exact real artifact/owner boundary. Include scope/permission, wrong or stale target, loss/retry, expiry and applicable native UI cases from experience 03; named later-provider fixtures cannot close real integration. Run model 05 context vectors (under budget, compaction, protected overflow, changed branch) through typed TranscriptWindow/CompactionRecord inputs, plus wrong role/tool-pair, hash and origin-installation negatives. Assert HC-09 refusal and no customer debit for compaction; exercise both inline and transient-object input.
 
-**Completion gate.** Stream projection never acts as message authority or determines Task state; Cloud-history final content survives projection loss. Local/temporary output survives reconnect within its declared retention while key/body exist; missing/expired content produces the explicit unavailable state without losing its durable outcome/usage receipt or rerunning the request.
+**Completion gate.** Stream projection never acts as message authority or determines Task state; Cloud-history final content survives projection loss. Local/temporary output survives reconnect within its declared retention while key/body exist; missing/expired content produces the explicit unavailable state without losing its durable outcome/usage receipt or rerunning the request. All four context vectors and typed role/pairing/large-input cases pass against the real Harness.
 
 <a id="rule-wp-52.04"></a>
 
@@ -140,13 +140,13 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 <a id="rule-wp-52.05"></a>
 
-### WP-52.05 — First real same-application AI workflows
+### WP-52.05 — Complete own-application execution proof
 
-**What must be fully done.** Replace WP17 named AI fixtures with actual CF model/usage/approval/tool paths separately in Notes, Scope and Slate. Example Notes own-selection summarize/edit, Scope own-range report, Slate own-sequence summary/render status. No step accesses another product; future WP20 is not an input.
+**What must be fully done.** Run two end-to-end oracles: ArcNotes embedded assistant processes its own selected document and local/cloud history; Android/Web explicitly target an authorized ArcNotes installation for an approved Notes command. Include typed transcript/compaction, promotion/export, binary streams and offline recovery.
 
-**Testing requirements.** Verify the stated behavior against the exact real artifact/owner boundary. Include scope/permission, wrong or stale target, loss/retry, expiry and applicable native UI cases from experience03; named later-provider fixtures cannot close real integration.
+**Testing requirements.** Protected-context overflow, stale summary/branch, large transient object, forged tool history, interrupted output/final hash, lost ack, app restart, revoke/epoch change and refused cross-product target.
 
-**Completion gate.** The full workflow passes end to end against the real Cloud host, real admission and a real provider. Every failure variant in the [canonical acceptance scenario](../../assurance/end-to-end-workflow-verification.md#first-arcchat-arcnotes-workflow) reaches its specified waiting, refusal or terminal outcome; waiting is never reported as completion, and recovery produces no duplicate effect or charge.
+**Completion gate.** Published Platform/Contracts/Cloud/AI/Mobile/Web producers complete the declared paths; no WP20/cross-product workflow is used as acceptance.
 
 ---
 
@@ -191,6 +191,8 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 ---
 
 ## 7. Tests and verification evidence
+
+Acceptance includes every amended §5 producer/consumer and WP-52.90 evidence. Current P2-013 contracts/data/runtime rules are tested in the original owner implementation, not a detached explanatory sample.
 
 **Required evidence addition.** [WP-52.03](#rule-wp-52.03) records the carrier/propagation/failure vectors above with payload and manifest hashes; early packages use declared fixtures, while provider/Harness packages require their real integrations.
 

@@ -167,7 +167,7 @@ Logical AI Request  (Cloud, authorised, service term verified)
 | PR-03 | **Auto routing is bounded by cost class, policy and task budget** ([RT-06](../requirements/05-ai-and-agent-execution.md#rule-rt-06), [BG-08](../requirements/05-ai-and-agent-execution.md#rule-bg-08) there). |
 | PR-04 | **Fallback stays within the tariff class or asks before escalating price** ([RT-07](../requirements/05-ai-and-agent-execution.md#rule-rt-07) there). |
 | PR-05 | **Supplier price and customer tariff are resolved separately and never derived from one another** ([MT-06](../requirements/04-commerce-entitlement-and-credits.md#rule-mt-06)). The supplier version applies at dispatch; the customer snapshot pins to the Run. |
-| PR-06 | **A gateway is infrastructure, never a domain concept** ([RT-01](../requirements/05-ai-and-agent-execution.md#rule-rt-01) there), and never a single point of failure — a direct-provider bypass exists (`§7` of the cloud product requirements). |
+| PR-06 | Workers AI is the only admitted model supplier. No AI Gateway failover/bypass or hidden provider/model substitution exists. An unavailable model fails with its durable reason; choosing a different admitted model is an explicit new request. |
 | <a id="rule-pr-07"></a>PR-07 | **`Logical AI Request ≠ Provider Attempt ≠ Step Attempt`** ([LG-03](../requirements/05-ai-and-agent-execution.md#rule-lg-03) there, [MT-02](../requirements/04-commerce-entitlement-and-credits.md#rule-mt-02)). |
 | PR-08 | **Model availability is policy, not health** ([I-361](../requirements/01-normative-glossary-and-invariants.md#rule-i-361)), and a task snapshots its model policy decision ([PA-07](../requirements/11-policy-and-configuration.md#rule-pa-07) in the policy requirements). |
 | PR-09 | **An emergency model suspension may interrupt future invocations inside a running run** — the single documented exception to snapshot immutability ([PA-08](../requirements/11-policy-and-configuration.md#rule-pa-08) there). |
@@ -220,7 +220,7 @@ Placement no longer describes where the model loop runs — it always runs in Cl
 | Tool locality | Executed by | Reached how |
 |---|---|---|
 | **Cloud tool** | The owning C# module | CF invokes the typed tool/admission port; C# executes its owner handler and commits an outcome |
-| **Device tool** | An authorised desktop, through ArcChat Desktop's local tool executor | Durable `ToolRequest` pulled by the device (**[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)**) |
+| **Device tool** | The explicitly targeted application's own authorized in-process tool executor | Durable `ToolRequest` pulled by the device (**[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)**) |
 
 | # | Rule |
 |---|---|
@@ -331,7 +331,7 @@ Automation Definition (versioned)
 | `PermissionDenied` / `ApprovalDenied` | Stop or ask; never retry to probe |
 | `BudgetExceeded` | Pause and request an extension |
 | `EntitlementBlocked` | Report the entitlement reason, distinct from a policy or security reason |
-| `CapabilityUnsupported` | Launch on demand and retry, or wait, or take an alternative path |
+| `CapabilityUnsupported` | Explain the unavailable own-application capability; wait for its explicitly selected target or propose an authorized alternative. Never launch or discover another product. |
 | `VersionIncompatible` | Wait or need attention, naming the required version |
 | `ExternalEffectUnknown` | **Reconcile before any retry**; unresolved → Needs Attention |
 | `Timeout` | Attempt failure handled by the retry policy |
@@ -355,7 +355,7 @@ Automation Definition (versioned)
 
 ## P2-009 execution placement and supplier binding
 
-Selected Workers AI routes: @cf/openai/gpt-oss-120b for default text/tool work; @cf/openai/gpt-oss-20b as explicit lower-latency text profile; @cf/google/gemma-4-26b-a4b-it only for accepted authorized image-context understanding; @cf/baai/bge-m3 for multilingual1024-dimensional embeddings; @cf/baai/bge-reranker-base for bounded reranking. No text-to-image/voice product feature added. Direct bindings, no mandatory AI Gateway/Agents SDK/Vercel SDK/external provider. Text input cap24,000 tokens, output4096, tools32, total context<=256 KiB default; vision max 4 approved images <=1024px longest side/1 MiB each, no raw media/capture egress. Embedding chunk512tokens/overlap64, batch16,1024 finite float components; query/doc use same version, max 200rerank candidates. Model max limits may be higher; product limits stay these bounded values.
+Selected Workers AI routes: @cf/openai/gpt-oss-120b for default text/tool work; @cf/openai/gpt-oss-20b as explicit lower-latency text profile; @cf/google/gemma-4-26b-a4b-it only for accepted authorized image-context understanding; @cf/baai/bge-m3 for multilingual 1024-dimensional embeddings; @cf/baai/bge-reranker-base for bounded reranking. No text-to-image/voice product feature added. Direct bindings, no mandatory AI Gateway/Agents SDK/Vercel SDK/external provider. Text input cap 24,000 tokens, output 4096, tools 32, total context<=256 KiB default; vision max 4 approved images <=1024px longest side/1 MiB each, no raw media/capture egress. Embedding chunk512tokens/overlap 64, batch 16,1024 finite float components; query/doc use same version, max 200rerank candidates. Model max limits may be higher; product limits stay these bounded values.
 
 Model route/config pins exact CF model ID and adapter profile v1. CF does not promise immutable weights behind an ID: a supplier change triggers eval/versioned embedding rebuild. No silent fallback across modality/tool capabilities. Operator can activate another supported selected model only through versioned config/canary; unavailable route returns named availability reason, no external-provider reroute. Model output classification stays Harness§3; tools decoded/validated through generated capability schema before proposing approval. No embedded function executor can bypass C# authorization. Rerank/scientific measurement remains advisory versus deterministic scalar/unit meanings.
 

@@ -40,7 +40,7 @@
 
 ---
 
-**Web redesign input.** [P2-008](../../decisions/phase-2-specification-decisions.md#rule-p2-008) and [Web toolchain and SDK](../../architecture/25-web-toolchain-and-sdk.md) are binding for this package's Web, generated-contract, toolchain and test responsibilities. The existing desktop/mobile runtime and product-scope decisions remain separately governed.
+**Web redesign input.** [P2-008 as amended by P2-012/P2-013](../../decisions/phase-2-specification-decisions.md#rule-p2-013) and [Web toolchain and SDK](../../architecture/25-web-toolchain-and-sdk.md) are binding for this package's Web, generated-contract, toolchain and test responsibilities. The existing desktop/mobile runtime and product-scope decisions remain separately governed.
 
 ---
 
@@ -82,13 +82,13 @@
 
 <a id="rule-wp-48.00"></a>
 
-### WP-48.00 — React account profile and visual composition
+### WP-48.00 — Account profile and native ceremony integration
 
-**What must be fully done.** Compose the Account route graph and shell using [WP-47](47-static-public-site.md#rule-wp-47)'s owned components/tokens, generated TS SDK and TanStack Query. Account and Chat share source but produce separate route builds; no client storage/cookie/query scope crosses origins. Provide responsive account overview, navigation, safe runtime public config, error boundaries and complete loading/empty/pending/expired states. Clear caches/abort requests on user/workspace changes.
+**What must be fully done.** Build account Web output using WP22 identity/browser/native endpoints and WP42 commerce. Integrate Android callback/assetlinks with actual production signing input and exact route map; minimal auth producer already exists in WP22. Compose the account route graph/shell using WP47 components/tokens, generated TS SDK and TanStack Query. Include responsive overview/navigation, safe public runtime config, error boundaries and loading/empty/pending/expired states; clear caches and abort requests on user/workspace changes.
 
-**Testing requirements.** Production per-profile route/chunk inspection; visual and keyboard tests in both themes and narrow layouts; long-translation and scope-switch late-response tests; no private config or Chat feature leakage.
+**Testing requirements.** No cookie leakage, state/PKCE/origin mismatch, Android verified links, purchase/read-only expired-service/export and separate operator denial. Check production route/chunk isolation, both themes, keyboard/narrow layouts, long translations and scope-switch late responses; no private config or Chat-feature leakage.
 
-**Completion gate.** One React codebase builds isolated profiles; approved account visuals and complete safe state transitions use real generated client contracts.
+**Completion gate.** Account profile is deployed with real identity/commerce producers and release gates retain their live evidence requirements. Approved account visuals and safe states use the real generated client.
 
 <a id="rule-wp-48.01"></a>
 
@@ -192,6 +192,8 @@
 ---
 
 ## 7. Tests and verification evidence
+
+Acceptance includes every amended §5 producer/consumer and WP-48.90 evidence. Current P2-013 contracts/data/runtime rules are tested in the original owner implementation, not a detached explanatory sample.
 
 | Evidence | Produced by |
 |---|---|

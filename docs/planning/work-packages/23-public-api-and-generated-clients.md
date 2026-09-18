@@ -43,7 +43,7 @@
 
 ---
 
-**Web redesign input.** [P2-008](../../decisions/phase-2-specification-decisions.md#rule-p2-008) and [Web toolchain and SDK](../../architecture/25-web-toolchain-and-sdk.md) are binding for this package's Web, generated-contract, toolchain and test responsibilities. The existing desktop/mobile runtime and product-scope decisions remain separately governed.
+**Web redesign input.** [P2-008 as amended by P2-012/P2-013](../../decisions/phase-2-specification-decisions.md#rule-p2-013) and [Web toolchain and SDK](../../architecture/25-web-toolchain-and-sdk.md) are binding for this package's Web, generated-contract, toolchain and test responsibilities. The existing desktop/mobile runtime and product-scope decisions remain separately governed.
 
 ---
 
@@ -71,7 +71,7 @@
 | `src/Cloud/ArcForges.Cloud.PublicApi/` | Endpoint mapping, validation, problem-detail mapping, pagination, conditional requests, rate limiting |
 | `src/Contracts/Public/ArcForges.Contracts.PublicApi.*/` | Extended per module as endpoints are added |
 | `src/BuildingBlocks/ArcForges.CloudClient/` | The shared typed client factory, token handler and refresh serialisation |
-| `artifacts/contracts/openapi/` | The generated documents and their baselines |
+| `artifacts/contracts/descriptors/` | The generated documents and their baselines |
 | `fixtures/wire/publicapi/` | Golden request and response vectors per contract version |
 | `tests/PublicApiContractTests/` | Generated client against a real server, plus the compatibility matrix |
 
@@ -94,25 +94,23 @@
 
 <a id="rule-wp-23.01"></a>
 
-### WP-23.01 — Problem details and error mapping
+### WP-23.01 — Typed protocol and error mapping
 
+**What must be fully done.** Map generated ArcResult domain errors and gRPC-Web transport statuses/trailers exactly under registry 04. ProblemDetails is limited to documented HTTP exceptions.
 
-**What must be fully done.** Implement the selected transport status/domain ProblemDetail mapping, reason categories, retry guidance and effect certainty. gRPC trailers carry status/details; HTTP exceptions use the declared HTTP status/schema. Never treat an unknown post-dispatch outcome as safe-to-retry transport failure.
+**Testing requirements.** HTTP200 with error trailers, partial frame, 64-bit values, deadline/cancel after dispatch and command receipt reconciliation.
 
-**Testing requirements.** Common native/browser/Android error vectors including malformed trailers, cancellation, unknown enum and correlation; secret/internal detail redaction.
-
-**Completion gate.** Error/recovery meaning is identical across the declared transports.
+**Completion gate.** Every C#/TS/Kotlin client distinguishes transport uncertainty from a domain refusal.
 
 <a id="rule-wp-23.02"></a>
 
-### WP-23.02 — Pagination, filtering and conditional requests
+### WP-23.02 — Typed queries and revision preconditions
 
+**What must be fully done.** Implement opaque scope-bound PageRequest cursors, registered typed filters and RequestMeta expected owner revision; no ETag/If-Match for business RPC. Standard HTTP byte/static exceptions retain their own conditional semantics.
 
-**What must be fully done.** Implement the fixed page/sort/filter/cursor and expected-revision contracts per operation. Scope all cursors, apply selected Notes query and general Search variants, enforce limits and return typed reset/conflict where needed.
+**Testing requirements.** Wrong product/scope cursor, stale revision, page limits, unsupported filter/version and exact scalar vectors.
 
-**Testing requirements.** Stable order/page replay, current permission changes, wrong scope/revision and page-limit cases.
-
-**Completion gate.** Reads and conditional writes use the predesigned profiles without consumer-defined query languages.
+**Completion gate.** Generated clients exercise the authoritative RPC query/revision rules without REST aliases.
 
 <a id="rule-wp-23.03"></a>
 
@@ -140,9 +138,9 @@
 
 **What must be fully done.** Consume released C# native, TypeScript gRPC-Web and Kotlin native clients against actual Identity/Workspace/Device endpoints. Supply native single-flight refresh, Web cookie/CSRF/Origin and generation-scoped callbacks outside generated code. Use WP06 Android probe, not the future complete app.
 
-**Testing requirements.** Independent exact-value/current-previous-major vectors, actual22 session expiry/revoke/refresh, public/internal leak rejection; future domain fixtures labeled and excluded from production.
+**Testing requirements.** Independent exact-value/current-previous-major vectors, actual 22 session expiry/revoke/refresh, public/internal leak rejection; future domain fixtures labeled and excluded from production.
 
-**Completion gate.** Three ecosystem clients work against the actual host; owner implementations are replaced by25/42/52 before full release.
+**Completion gate.** Three ecosystem clients work against the actual host; owner implementations are replaced by 25/42/52 before full release.
 
 <a id="rule-wp-23.06"></a>
 

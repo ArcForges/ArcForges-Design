@@ -23,7 +23,7 @@ Every event carries `{ subscriptionKey, seq, workspaceId, occurredAt, correlatio
 | `approval.raised` | `approvalId`, `taskId`, `riskLevel`, `expiresAt` | Show it; **also durable**, so a missed event loses nothing |
 | `approval.resolved` | `approvalId`, `decision` | Dismiss the prompt |
 | `entitlement.changed` | `entitlementVersion` | Re-read `entitlement.getSnapshot` |
-| `device.presenceChanged` | `deviceId`, `connectionState`, `eligibleForRemote` | Update target selection |
+| `application.presenceChanged` | `target:ApplicationTarget`, `state`, `eligibleForRemote` | Update target selection |
 | `bridge.requestAvailable` | `count` | **Trigger a pull** — carries no request content |
 | `notification.raised` | `notificationId`, `durability` | Show; a durable one is also in `notification.list` |
 | `policy.bundleAvailable` | `bundleVersion` | Fetch and validate the bundle |
@@ -132,17 +132,7 @@ Cloud updates the task; realtime hints the requester; the requester re-reads
 
 ### 5.1 The request
 
-| Field | Notes |
-|---|---|
-| `toolRequestId`, `taskId`, `attemptId` | |
-| `targetDeviceId` | |
-| `capabilityKey` | What is being asked for |
-| `arguments` | Structured value; **bounded** — large data crosses by reference |
-| `frozenContext` | Frozen at creation |
-| `actorChain` | Who is asking, through what |
-| `cloudApprovalToken?` | **Evidence, not authority** |
-| `expiresAt` | |
-| `state` | `queued` \| `delivered` \| `answered` \| `expired` \| `refused` |
+Use registry 04 `ToolRequest` exactly: toolRequestId, optional taskId, runId, stepId, attemptId, commandId, targetDeviceId, capability, typed arguments, context, actor, approvalId, expiresAt, state, ExecutionOwner and targetApplication. The taskId exists only for a Task owner. Device delivery requires the full product/device/installation/epoch target; the receiving application checks it before any effect. Approval IDs resolve owner records; there is no `cloudApprovalToken` or independent `frozenContext` wire shape. ToolResult identity is `(toolRequestId, attemptId, commandId)` plus canonical result hash.
 
 ### 5.2 Local re-authorization — the central control
 
@@ -195,7 +185,7 @@ Cloud updates the task; realtime hints the requester; the requester re-reads
 
 ### 6.1 Browser adapter
 
-Desktop, React and Kotlin Android use generated EventService.Watch with Poll recovery and ExecutionService.WatchOutput/ReadOutput under [annex10](10-application-scope-and-streams.md). All17 hints retain generated payloads and durable reread. Scope, product/installation/instance epoch and current authorization bind every remote request/result. The C# gRPC-Web service exposes DO projections; there is no public AI WebSocket or local product peer. A live connection never grants effect authority.
+Desktop, React and Kotlin Android use generated EventService.Watch with Poll recovery and ExecutionService.WatchOutput/ReadOutput under [annex 10](10-application-scope-and-streams.md). All 17 hints retain generated payloads and durable reread. Scope, product/installation/instance epoch and current authorization bind every remote request/result. The C# gRPC-Web service exposes DO projections; there is no public AI WebSocket or local product peer. A live connection never grants effect authority.
 
 ---
 
@@ -215,4 +205,4 @@ Desktop, React and Kotlin Android use generated EventService.Watch with Poll rec
 
 ## P2-009 executable wire and transport binding
 
-Every operation/event above maps to the [numbered wire registry](04-protobuf-wire-registry.md). It fixes requests/results, record fields, enums, exact values, local counterpart preconditions, service names and compatibility. [CF integration](05-cloudflare-integration.md) fixes AI/object HTTP exceptions, frame/state recovery and authorization. New supporting bootstrap, upload-status, automation and conversation-create methods are enumerated there with their authorization/idempotency classes; none is left for endpoint invention during implementation.
+Every operation/event above maps to the [numbered wire registry](04-protobuf-wire-registry.md). It fixes requests/results, record fields, enums, exact values, local counterpart preconditions, service names and compatibility. [CF integration](05-cloudflare-integration.md) fixes private Cloud/AI bindings and signed object-transfer exceptions; annex10 owns public output/control framing, state recovery and authorization. New supporting bootstrap, upload-status, automation and conversation-create methods are enumerated there with their authorization/idempotency classes; none is left for endpoint invention during implementation.

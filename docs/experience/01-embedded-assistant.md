@@ -1,6 +1,6 @@
 # Embedded Application Assistant
 
-Owner: DesktopPlatform `ArcForges.Assistant.Avalonia`, WP15/17. Composition and ports: [architecture27](../architecture/27-platform-projects-and-application-assistants.md). History: [model05](../architecture/data-model/05-application-history.md). All current assistant feature requirements remain; there is no standalone ArcChat executable.
+Owner: DesktopPlatform `ArcForges.Assistant.Avalonia`, WP15/17. Composition and ports: [architecture 27](../architecture/27-platform-projects-and-application-assistants.md). History: [model 05](../architecture/data-model/05-application-history.md). All current assistant feature requirements remain; there is no standalone ArcChat executable.
 
 ## 1. Presentation and navigation
 
@@ -8,9 +8,9 @@ One session/store per application profile; any number of ordinary application wi
 
 | Presentation | Layout and entry | Persistence / exit |
 |---|---|---|
-| Docked (default) | right panel, preferred400 logical px, minimum320; full host height. Header, message viewport, sticky composer; tabs/menus open over the panel. | Width/visibility device-local per app/window; Escape closes menus, then returns focus to host, not implicit task cancellation. |
-| Floating | owned application window, initial480×720, minimum360×480; same conversation service, own draft. | Persists bounds within visible monitors; close returns to host and preserves draft. No independent process. |
-| Expanded | owned window or full app panel, initial1100×760, minimum800×600; sidebar240, central conversation≥360, optional preview320. | Below900px hide preview behind a tab; navigation state local; no editor layout or cross-product setting sync. |
+| Docked (default) | right panel, preferred 400 logical px, minimum 320; full host height. Header, message viewport, sticky composer; tabs/menus open over the panel. | Width/visibility device-local per app/window; Escape closes menus, then returns focus to host, not implicit task cancellation. |
+| Floating | owned application window, initial 480×720, minimum 360×480; same conversation service, own draft. | Persists bounds within visible monitors; close returns to host and preserves draft. No independent process. |
+| Expanded | owned window or full app panel, initial 1100×760, minimum 800×600; sidebar 240, central conversation≥360, optional preview 320. | Below 900px hide preview behind a tab; navigation state local; no editor layout or cross-product setting sync. |
 
 ```text
 Expanded view
@@ -33,7 +33,7 @@ Docked/floating modes replace the sidebar with a labelled navigation menu and co
 
 | ID / surface | Controls and information | Actions, state and ownership |
 |---|---|---|
-| AS01 Home / conversation list | New chat, search, pinned/recent groups, title, last activity, local/cloud badge, overflow | create/rename/pin/archive/trash; empty state explains first local chat; keyset50/page; unsent drafts badge per window; WP15 |
+| AS01 Home / conversation list | New chat, search, pinned/recent groups, title, last activity, local/cloud badge, overflow | create/rename/pin/archive/trash; empty state explains first local chat; keyset 50/page; unsent drafts badge per window; WP15 |
 | AS02 Conversation | header title/branch breadcrumb, chronological messages, source labels/citations, tool cards, output status, composer | edit submitted message forks, retry preserves command semantics, branch picker, copy/export, stop, scroll-to-latest; immutable committed messages; WP15/17 |
 | AS03 Context inspector | selected document/range/resources, owner/revision/size, source kind, egress destination | inspect/remove/freeze; explicit “Use current selection”; stale or missing resource blocks send until refreshed/removed; never follows live host selection after send; WP09/17 |
 | AS04 Profile / mode | ordinary/agent/temporary choice, model profile, skills, project association | default ordinary; agent shows action/credit consequences; temporary visibly suppresses history/memory; unsupported choice has reason; WP15/17/52 |
@@ -53,7 +53,7 @@ Composer persists a per-window draft after each debounced edit (≤500ms) and be
 
 `@` opens explicitly permitted own-app resource/context search; `/` selects existing commands/skills. Suggestions are keyboard navigable and Escape preserves typed text. Attach via file picker, drag/drop or paste; inspect selected kind/size/count and upload status before admission. File selection grants access only to those files. Failed transfer remains a removable/retryable chip, not a vanished attachment. Host selection enters only on explicit context action or a visible invocation command that describes it. A locked chip shows frozen revision and source; replacing it creates a new draft snapshot.
 
-Auto-scroll follows output only when already near the bottom (within64px); reading earlier messages pauses follow and shows “New output”. No focus stealing on token updates. Select/copy text without live updates collapsing selection; code blocks have copy and wrap controls, links display destinations and cannot execute actions. Display concise tool progress and returned evidence, not hidden model reasoning. Citation opens the authorized resource/version/anchor, or explains missing/stale/permission state.
+Auto-scroll follows output only when already near the bottom (within 64px); reading earlier messages pauses follow and shows “New output”. No focus stealing on token updates. Select/copy text without live updates collapsing selection; code blocks have copy and wrap controls, links display destinations and cannot execute actions. Display concise tool progress and returned evidence, not hidden model reasoning. Citation opens the authorized resource/version/anchor, or explains missing/stale/permission state.
 
 ## 4. Tool, task and preview behavior
 
