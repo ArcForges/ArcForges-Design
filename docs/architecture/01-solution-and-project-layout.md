@@ -32,6 +32,8 @@ Use the exact repository/project trees in architecture 27. Remaining logical suf
 
 ## 3. Contract packages
 
+Contracts also owns the Apache-2.0 machine-readable [naming policy](28-product-naming-policy.md) and its standalone inventory scanner. WP00 policy verification does not create a product source/build dependency or require a future package.
+
 Mobile and the entire Contracts repository (public/internal proto, HTTP schemas, generators, SDK/CLI, validators and fixtures) are Apache-2.0 under P2-010. Public/internal remains an access and import-direction separation. Platform/Cloud/AI/Web/three professional desktop implementations retains its existing licence; dependencies keep their own notices. Generated files preserve authored-schema and generator/runtime notices. Mobile imports only public artifacts and public fixtures; it cannot import Web application expression or any GPL-family implementation.
 
 Package metadata declares owner/SPDX/source commit, schema/package version, dependency closure, NOTICE and SBOM. Public npm access=public, NuGet public registry; AGPL packages may be publicly distributed with source/notice obligations. Per-RID native license closure includes static dependencies and optional codec features, not merely the wrapper's license. Six reference-source access/exclusion/provenance boundaries and all archive prohibitions stay unchanged. Source review and actual distributable license gate remain evidence obligations; this amendment does not claim third-party code has been copied or audited by a runtime test.

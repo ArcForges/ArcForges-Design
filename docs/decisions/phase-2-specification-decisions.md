@@ -421,3 +421,15 @@ Authorities: [projects/packages](../architecture/27-platform-projects-and-applic
 | Verifiable propagation | Exact operation counts, table schemas and vocabulary, rule links, graph and affected consumer gates are checked; the five-column dispositions register is restored. |
 
 See the [final findings verification](../assurance/final-findings-remediation-verification.md). Documentation/source/SQLite example checks do not close real AOT, Cloudflare, browser, Android, native, provider, payment or commercial gates. D-020 approval requirements for cost/performance remain effective.
+
+
+<a id="rule-p2-015"></a>
+## P2-015 — Executable naming freeze under the current portfolio
+
+**Status: accepted bounded implementation clarification, 2026-09-18.** Authority: the user's delegated planning-repair discretion for WP00.00. Collection used Design `575ba9f` and all nine current origin/main implementation snapshots. This resolves residual four-product wording, an incorrect legacy-to-Scope mapping and the previously unassigned naming-data owner before implementation.
+
+The current desktop products remain ArcNotes, ArcScope and ArcSlate. `companion` is the fourth wire ProductId; `assistant` is a feature namespace and ArcChat is not an executable/product ID. Contracts owns one Apache-2.0 naming JSON and a portable scanner under the [naming policy](../architecture/28-product-naming-policy.md). Closed-schema forbidden-name declarations are data to validate; exact hash-bound reference provenance is the only scan exception. No blanket source, generated, test or documentation exclusion is permitted in implementation repositories.
+
+Reserve identifiers only for the already required Scope/Slate native projects; Notes and assistant history gain no native archive or default association. Preserve desktop bundle/assembly/package identities. The accepted WP30 development-prerelease Android rename remains at its owner; no production migration or signing continuity is claimed by WP00.00. WP02/WP05 consume this policy for continuing family enforcement; WP33/WP36/WP53 implement and test native associations. Existing package consumers and wire tags are unchanged.
+
+Verification: schema/identity checks, positive and adversarial scanner tests, nine actual Git inventories, Contracts CI and post-merge rescan. Documentation review and a clean naming scan do not establish product, installer, AOT, device, payment or commercial readiness.

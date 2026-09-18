@@ -34,7 +34,7 @@
 | Input | Why it matters |
 |---|---|
 | [`../../decisions/phase-1-foundation-decisions.md`](../../decisions/phase-1-foundation-decisions.md) | [D-001](../../decisions/phase-1-foundation-decisions.md#rule-d-001) … [D-023](../../decisions/phase-1-foundation-decisions.md#rule-d-023) are binding and are not reopened here |
-| [`../../requirements/00-product-scope-and-portfolio.md`](../../requirements/00-product-scope-and-portfolio.md) | The four-product freeze, the technology constitution and the closed exception list |
+| [`../../requirements/00-product-scope-and-portfolio.md`](../../requirements/00-product-scope-and-portfolio.md) | The three desktop products, companion identity and assistant feature boundary, the technology constitution and the closed exception list |
 | [`../../requirements/01-normative-glossary-and-invariants.md`](../../requirements/01-normative-glossary-and-invariants.md) | The glossary and invariant catalogue this package makes enforceable |
 | [`../../assurance/reference-coverage-and-provenance.md`](../../assurance/reference-coverage-and-provenance.md) | The matrix method, the ten-field provenance record and the licence decision table |
 | [`../../assurance/reference-coverage/`](../../assurance/reference-coverage/README.md) | **The five completed matrices** — versioned planning inputs, not work to be done |
@@ -49,7 +49,7 @@
 
 | # | Rule |
 |---|---|
-| BR-01 | **The product baseline is exactly ArcChat, ArcNotes, ArcScope and ArcSlate** (**[D-002](../../decisions/phase-1-foundation-decisions.md#rule-d-002)**). `ArcCanvas`, `ArcMusic`, `ArcImage` and `ArcVideo` are superseded and must never appear as current products. |
+| BR-01 | **The desktop product baseline is exactly ArcNotes, ArcScope and ArcSlate** under **[P2-012](../../decisions/phase-2-specification-decisions.md#rule-p2-012)** and **[P2-013](../../decisions/phase-2-specification-decisions.md#rule-p2-013)**. ArcChat names the embedded assistant/companion feature; it is not a fourth executable or product ID. The fourth allowed wire ProductId, `companion`, belongs to Android/Web. `ArcCanvas`, `ArcMusic`, `ArcImage` and `ArcVideo` are superseded and must never appear as current products. |
 | <a id="rule-br-02"></a>BR-02 | **`ArcVideo` and `ArcVideoFoundation` remain valid only as the names of existing reference repositories** (**[D-012](../../decisions/phase-1-foundation-decisions.md#rule-d-012)**), never as products. |
 | BR-03 | **Paddle is the sole customer-facing Merchant of Record; Payoneer is a payout destination only** (**[D-005](../../decisions/phase-1-foundation-decisions.md#rule-d-005)**). The superseded provider name never appears. |
 | BR-04 | **One canonical definition per shared family term; product-specific meanings are namespaced** (**[D-018](../../decisions/phase-1-foundation-decisions.md#rule-d-018)**). |
@@ -68,7 +68,8 @@
 
 | Location | Change |
 |---|---|
-| `eng/policy/` | Created: forbidden-term list, obsolete-name list, banned-symbol list, licence policy per boundary |
+| `Contracts/eng/policy/product-names.json` | WP00.00: single interoperable naming authority and forbidden-name data; other WP00 policy owners follow their substeps |
+| `eng/policy/` | Created in each assigned owner: glossary, banned-symbol and licence policy data |
 | `eng/policy/glossary-terms.json` | Created: the canonical term set with namespacing, generated from the glossary document |
 | `NOTICE.md` | Verified and regenerated from the provenance records that exist |
 | `LICENSE`, per-project SPDX declarations | Verified; every project declares its SPDX identifier and its boundary |
@@ -88,9 +89,9 @@
 
 ### WP-00.00 — Product and naming freeze
 
-**What must be fully done.** A single naming authority file listing the four current products with their canonical identifiers, display names, reserved namespaces and file-association identifiers. The superseded product names and the superseded payment provider are recorded as **forbidden**, with the reference-repository exception ([BR-02](#rule-br-02)) stated explicitly and narrowly. Legacy-to-target name mapping is recorded so historical material can be read without reintroducing the old names.
+**What must be fully done.** Contracts owns the single machine-readable `eng/policy/product-names.json`, following the [naming policy](../../architecture/28-product-naming-policy.md). List the three desktop products, the `companion` wire identity and the separately owned `assistant` feature, with canonical IDs, display names, reserved namespaces and file-association identifiers (explicitly empty where no native format is owned). Record superseded names as forbidden, the narrow reference-repository exception ([BR-02](#rule-br-02)), and historical dispositions without creating runtime aliases. Preserve observed package/application identities and the already scheduled WP30 Android prerelease migration.
 
-**Testing requirements.** A scan asserting no forbidden name appears in source, identifiers, resource strings or implementation documentation. The scan's exception list contains only the reference-repository names in provenance contexts.
+**Testing requirements.** Run the Contracts-owned scanner over Git-tracked paths and file contents in all nine implementation repositories, including generated source, configuration, resource strings and implementation documentation. Include non-ignored new files during local validation. Validate the naming policy itself as closed-schema enforcement data, not an arbitrary excluded file. Only exact, hash-bound provenance records may admit the two reference-repository names; no directory-wide, source-code or historical-document exemptions. Test mixed case, identifier substrings, UTF-16 resources, forbidden paths, policy tampering, missing files and invalid/stale exceptions. Record each repository commit and working-tree state. Contracts CI runs the scanner and its negative tests; family-wide automatic build enforcement remains WP02/WP05, without postponing the current nine-repository scan.
 
 **Completion gate.** The scan runs clean, and the exception list is reviewed and minimal.
 
@@ -200,7 +201,7 @@
 
 **All of the following, with recorded evidence:**
 
-1. The four-product baseline and forbidden-name set are enforced by a scan that runs clean.
+1. The three desktop products, companion identity, assistant feature boundary and forbidden-name set are recorded in the single naming authority; the nine-repository scan runs clean.
 2. The glossary and invariant catalogue exist as machine-readable policy data, consistent with the glossary document, with an enforcement mechanism assigned to every invariant.
 3. Every project declares an SPDX identifier and a licence boundary, and the reference-direction check passes.
 4. The provenance process exists, is encoded as policy data, and is in use for at least one real record.

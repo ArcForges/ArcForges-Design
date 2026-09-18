@@ -13,7 +13,7 @@ This document is the single normative vocabulary for ArcForges. Every other auth
 1. **One definition per canonical term.** If a term appears in a specification, contract, schema, UI string, telemetry dimension, database column, test name or work package, it carries the meaning defined here.
 2. **Product-specific meanings are namespaced.** Where a word means different things in different products, the bare word is not usable; the namespaced form is mandatory (`ArcChat.Project`, `ArcScope.Project`, `ArcSlate.Project`).
 3. **Every active `X ≠ Y` invariant in §7 is binding within current scope. Retired entries are historical only.**** Merging two sides of an invariant into one type, one table, one column, one flag, one enum, one endpoint, one event or one permission is an architecture violation, not a simplification.
-4. **Forbidden aliases (§8) must not appear** in any new authoritative document, identifier, or user-visible string.
+4. **Forbidden aliases (§8) must not appear as current names** in identifiers or user-visible strings. Their definitions and historical dispositions are enforcement data, not runtime aliases. The [naming policy](../architecture/28-product-naming-policy.md) defines the narrow implementation scan treatment.
 5. Terms are classified by space — **wire**, **domain**, **UI**, **storage**, **commercial** — in §6. A term may exist in more than one space; when it does, the spaces are distinct types and are never the same object.
 
 ---
@@ -740,7 +740,8 @@ Every active entry is binding where its concepts are in current product scope. A
 
 | Forbidden / obsolete | Reason | Use instead |
 |---|---|---|
-| `ArcCanvas`, `ArcMusic`, `ArcImage`, `ArcVideo` | `SUPERSEDED` product names (**[D-002](../decisions/phase-1-foundation-decisions.md#rule-d-002)**) | No replacement canvas/slides product or capability; nothing; `ArcScope`; `ArcSlate` |
+| `ArcCanvas`, `ArcMusic`, `ArcImage` | `SUPERSEDED` product names (**[D-002](../decisions/phase-1-foundation-decisions.md#rule-d-002)**) | No replacement product or runtime alias. ArcScope is independently defined; image-editor concepts do not migrate into it. |
+| `ArcVideo` | `SUPERSEDED` product name; reference-repository identity only | ArcSlate retains product direction only, not a model, identity or automatic migration. |
 | "Workspace" meaning a panel layout | Collides with the cloud tenancy boundary | **Layout** |
 | Bare "Project" in shared family text | Three incompatible product meanings | `ArcChat.Project` / `ArcScope.Project` / `ArcSlate.Project` |
 | Bare "Scope" | Eight distinct meanings exist | Name the scope explicitly: Knowledge Scope, Sync Scope, Permission Scope, Policy Scope, Product Scope, Search Scope, Egress Scope, Resource Scope |
