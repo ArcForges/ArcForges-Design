@@ -1,6 +1,6 @@
 # Independent Final Design Review
 
-> Historical evidence at the source/design revision recorded below. P2-010 and [family completion review](family-design-completion-review.md) define the current Android, producer, contract and evidence amendments. Earlier runtime/contract/count conclusions are not current implementation proof; no deprecated input is reopened.
+> Historical evidence at the source/design revision recorded below. [P2-010](../decisions/phase-2-specification-decisions.md#rule-p2-010) and [family completion review](family-design-completion-review.md) define the current Android, producer, contract and evidence amendments. Earlier runtime/contract/count conclusions are not current implementation proof; no deprecated input is reopened.
 
 
 > Review date: 2026-09-11. Base: `eae16e62afbb581053fed0ac19f38f255277aced`, after the accepted ten-repository/CF/RN amendment. This record is document evidence; implementation and release gates retain their own triggers.

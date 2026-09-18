@@ -1,7 +1,7 @@
 <a id="rule-wp-17"></a>
 # WP-17 — Complete Embedded Assistant and Cloud Client Surface
 
-> Status: Authoritative — P2-012
+> Status: Authoritative — [P2-012](../../decisions/phase-2-specification-decisions.md#rule-p2-012)
 > Upstream: `06` · `15` · `16` · Downstream: `26` · `41` · `52`
 > Repositories: DesktopPlatform. Consume only exact published upstream artifacts; no adjacent sources.
 

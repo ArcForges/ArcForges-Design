@@ -30,12 +30,12 @@ A gate is never closed by registering a finding about it, and never closed by a 
 
 | # | Rule |
 |---|---|
-| OG-01 | **A gate is closed only by recorded evidence**, never by assertion. |
+| <a id="rule-og-01"></a>OG-01 | **A gate is closed only by recorded evidence**, never by assertion. |
 | <a id="rule-og-02"></a>OG-02 | **A gate whose trigger has fired and which is not closed blocks the dependent work** — it does not become a warning. |
-| OG-03 | **A gate may not be silently re-scoped.** Changing a gate requires a decision record. |
-| OG-04 | **A new gate discovered during implementation is added here**, with the same fields, rather than living only in the document that discovered it. |
+| <a id="rule-og-03"></a>OG-03 | **A gate may not be silently re-scoped.** Changing a gate requires a decision record. |
+| <a id="rule-og-04"></a>OG-04 | **A new gate discovered during implementation is added here**, with the same fields, rather than living only in the document that discovered it. |
 | <a id="rule-og-05"></a>OG-05 | Rule identifiers are document-scoped. Every active citation is a direct link to its defining document and stable rule anchor; the same spelling in a different document is a different rule. Retired identifiers link to an explicit historical relocation, and reserved allocation ranges are metadata, not requirements. No unresolved or silently guessed citation is permitted. The complete current-corpus check is the design evidence for [PG-21](#rule-pg-21); subsequent edits must repeat it. |
-| OG-06 | **[PG-14b](#rule-pg-14b) is deliberately suffixed.** [PG-14](../requirements/products/arcslate.md#rule-pg-14) is already an ArcSlate processing-graph rule in [`../requirements/products/arcslate.md`](../requirements/products/arcslate.md), and reusing the bare number would have made two unrelated obligations indistinguishable in citation. The suffix is the disambiguation [OG-05](#rule-og-05) requires. |
+| <a id="rule-og-06"></a>OG-06 | **[PG-14b](#rule-pg-14b) is deliberately suffixed.** [PG-14](../requirements/products/arcslate.md#rule-pg-14) is already an ArcSlate processing-graph rule in [`../requirements/products/arcslate.md`](../requirements/products/arcslate.md), and reusing the bare number would have made two unrelated obligations indistinguishable in citation. The suffix is the disambiguation [OG-05](#rule-og-05) requires. |
 
 ---
 
@@ -61,7 +61,7 @@ A gate is never closed by registering a finding about it, and never closed by a 
 | <a id="rule-vg-06"></a>**VG-06** | Cloud full Native AOT closure: real D1, proto/gRPC-Web, opaque sessions, passkeys, operator OIDC, webhook and CF HTTP adapters under [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) | Architecture Owner | [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) adoption; proof due before Cloud feature implementation | Acceptance of the Cloud foundation and every later changed dependency closure | [WP-06.04](../planning/work-packages/06-aot-jit-and-wasm-publish-proof.md#rule-wp-06.04), maintained by [WP-21.00](../planning/work-packages/21-cloud-host-and-persistence.md#rule-wp-21.00) and [WP-50.04](../planning/work-packages/50-full-platform-production-release.md#rule-wp-50.04) | `TRIGGERED` — execution evidence pending |
 | <a id="rule-vg-07"></a>**VG-07** | Inspect the selected Kotlin/ART release artifact, native module closure and real Android native gRPC transport; replaces the historical Mono posture under [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) | Release Engineering Owner with Architecture Owner | First mobile candidate | That candidate; [L-53](release-gates.md#rule-l-53) | [WP-06.07](../planning/work-packages/06-aot-jit-and-wasm-publish-proof.md#rule-wp-06.07), [WP-30.02](../planning/work-packages/30-mobile-shared-architecture.md#rule-wp-30.02), [WP-32.01](../planning/work-packages/32-mobile-release-and-store-gates.md#rule-wp-32.01) | `OPEN` |
 | <a id="rule-vg-08"></a>**VG-08** | **[V-04](phase-1-official-verification.md#rule-v-04)** gate (b) — before any framework major-version upgrade, re-verify the Android runtime posture and re-run the Kotlin/ART, native-module, transport and license closure proof | Release Engineering Owner with Architecture Owner | Any framework major-version upgrade | That upgrade | The dependency and framework upgrade work package | `OPEN — recurring` |
-| <a id="rule-vg-09"></a>**VG-09** | Historical iOS release-runtime gate | Architecture Owner | No current trigger: iOS is outside P2-010 scope | No Android deliverable | A future accepted iOS scope must create its own runtime/build plan; no dormant implementation required | `RETIRED — P2-010` |
+| <a id="rule-vg-09"></a>**VG-09** | Historical iOS release-runtime gate | Architecture Owner | No current trigger: iOS is outside [P2-010](../decisions/phase-2-specification-decisions.md#rule-p2-010) scope | No Android deliverable | A future accepted iOS scope must create its own runtime/build plan; no dormant implementation required | `RETIRED` — [P2-010](../decisions/phase-2-specification-decisions.md#rule-p2-010) |
 | <a id="rule-vg-10"></a>**VG-10** | **[V-06](phase-1-official-verification.md#rule-v-06)** — supplier onboarding and account approval; sanctions and export screening for the intended market set | Commercial Operations Owner | Before the first live transaction | Commercial go-live; [L-20](release-gates.md#rule-l-20), [L-21](release-gates.md#rule-l-21) | The commerce go-live work package | `OPEN` |
 | <a id="rule-vg-11"></a>**VG-11** | **[V-07](phase-1-official-verification.md#rule-v-07)** — payout account eligibility and receiving-currency confirmation for the chosen supplier jurisdiction | Commercial Operations Owner | First authoritative pricing specification, and again before launch | Commercial go-live; [L-22](release-gates.md#rule-l-22) | The commerce go-live work package | `OPEN` |
 | <a id="rule-vg-12"></a>**VG-12** | **[V-08](phase-1-official-verification.md#rule-v-08)** — the additional regional gates: the separate payment-method application with its stated criteria; a local-currency product and tax configuration existing before approval can be sought; and a refund and dispute model validated against the absence of chargeback support | Commercial Operations Owner, with Product Owner approval on the pricing catalogue | Before enabling mainland-China sales | That market's enablement; [L-40](release-gates.md#rule-l-40) | The regional enablement work package | `OPEN — conditional` |
@@ -99,8 +99,8 @@ These are new obligations that follow from Phase 2 architecture rather than from
 | <a id="rule-pg-22"></a>**PG-22** | **OS isolation proof**: real packaged C# ContentSandbox and executable-extension profiles deny product-store/credential/network/process escape, contain native crash/hang/exhaustion and clean up after parent death; no unrestricted fallback | Security and Privacy Owner with Release Engineering Owner | Before any first-party hostile parser or executable extension ships on a RID | PDF/image/media parsing and executable extensions on that RID | [WP-11.09](../planning/work-packages/11-security-foundation.md#rule-wp-11.09), [WP-18.04](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.04), [WP-37.01](../planning/work-packages/37-arcslate-playback-and-processing.md#rule-wp-37.01), [WP-41.00](../planning/work-packages/41-extension-platform-and-integrations.md#rule-wp-41.00) | `OPEN` |
 | <a id="rule-pg-23"></a>**PG-23** | **React/TypeScript commercial Web proof under [P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008):** production Node-built assets, generated C#/TS SDK and exact values, same-origin cookie/CSRF/expiry/revocation, realtime recovery, approved visual/accessibility/performance evidence, esproj/portable CLI and coherent release/rollback | Web Engineering Owner with Security, Quality and Release Engineering Owners | First production Account/Chat deployment or Web release | Account/Chat commercial release; public static deployment must pass its applicable subset | [WP-06.05](../planning/work-packages/06-aot-jit-and-wasm-publish-proof.md#rule-wp-06.05), [WP-22.08](../planning/work-packages/22-identity-workspace-and-device.md#rule-wp-22.08), [WP-23.05](../planning/work-packages/23-public-api-and-generated-clients.md#rule-wp-23.05), [WP-24.06](../planning/work-packages/24-realtime-and-reliable-events.md#rule-wp-24.06), [WP-47](../planning/work-packages/47-static-public-site.md#rule-wp-47), [WP-48](../planning/work-packages/48-account-portal.md#rule-wp-48), [WP-49](../planning/work-packages/49-arcchat-web-companion.md#rule-wp-49), [WP-50.06](../planning/work-packages/50-full-platform-production-release.md#rule-wp-50.06) | `OPEN` |
 | <a id="rule-pg-24"></a>**PG-24** | Android push delivery: project-bound FCM credential, live sending, physical arm64 approval/security receipt, duplicate/rotation/revocation and denied-permission/no-GMS recovery; no secret or content payload | Operations Owner with Mobile and Quality Owners | First Android release candidate | Mobile release and its background-attention claims | [WP-45.09](../planning/work-packages/45-operations-support-and-trust-safety.md#rule-wp-45.09), [WP-32](../planning/work-packages/32-mobile-release-and-store-gates.md#rule-wp-32) | `OPEN` |
-| <a id="rule-pg-25"></a>**PG-25** | selfhost.v1 real operator account deployment, realm/key/auth isolation and fresh independent restore | Operations with Security/Release owners | Before production self-host readiness | L-10 | WP21.08, WP46, WP50 | `OPEN` |
-| <a id="rule-pg-26"></a>**PG-26** | L-16 approved launch capacity envelope plus production-shaped standard-2/four-slot/ten-minute-sleep/cold-start, per-account and realm Vectorize/R2 budgets, threshold accounting, unit-cost and load/footprint/cold-start/headroom evidence | Product and Operations with Quality owners | Before paid launch or capacity expansion | L-16 | WP21.06, WP40.01, WP50.04 | `OPEN` |
+| <a id="rule-pg-25"></a>**PG-25** | selfhost.v1 real operator account deployment, realm/key/auth isolation and fresh independent restore | Operations with Security/Release owners | Before production self-host readiness | [L-10](release-gates.md#rule-l-10) | WP21.08, WP46, WP50 | `OPEN` |
+| <a id="rule-pg-26"></a>**PG-26** | [L-16](release-gates.md#rule-l-16) approved launch capacity envelope plus production-shaped standard-2/four-slot/ten-minute-sleep/cold-start, per-account and realm Vectorize/R2 budgets, threshold accounting, unit-cost and load/footprint/cold-start/headroom evidence | Product and Operations with Quality owners | Before paid launch or capacity expansion | [L-16](release-gates.md#rule-l-16) | WP21.06, WP40.01, WP50.04 | `OPEN` |
 
 ---
 
@@ -118,7 +118,7 @@ These are new obligations that follow from Phase 2 architecture rather than from
 
 | # | Rule |
 |---|---|
-| NV-01 | **An illustrative commercial figure in the current design is a proposal until the required policy approval; it is never an implicit commitment** (**[D-020](../decisions/phase-1-foundation-decisions.md#rule-d-020)**). |
+| <a id="rule-nv-01"></a>NV-01 | **An illustrative commercial figure in the current design is a proposal until the required policy approval; it is never an implicit commitment** (**[D-020](../decisions/phase-1-foundation-decisions.md#rule-d-020)**). |
 | <a id="rule-nv-02"></a>NV-02 | **Consuming an unverified external fact triggers its verification at that moment** (**[D-003](../decisions/phase-1-foundation-decisions.md#rule-d-003)**), and the verification result is recorded in the assurance layer. |
 
 ---
@@ -136,7 +136,7 @@ Distinct from a gate. A gate has a known obligation awaiting evidence; an **unre
 | # | Rule |
 |---|---|
 | <a id="rule-ud-01"></a>UD-01 | **Closing [OC-01](#rule-oc-01) removed an audit obligation, not a provenance obligation.** ArcVideo is a documented Olive fork; its GPL-3.0 obligations, upstream copyright and attribution to the Olive authors are preserved wherever inherited material requires them (**[D-013](../decisions/phase-1-foundation-decisions.md#rule-d-013)**; `§3.1` of the ArcSlate matrix). |
-| UD-02 | **A future unresolved determination is recorded here** with the same fields, and blocks whatever depends on it until decided. |
+| <a id="rule-ud-02"></a>UD-02 | **A future unresolved determination is recorded here** with the same fields, and blocks whatever depends on it until decided. |
 
 ---
 
@@ -149,16 +149,16 @@ Distinct from a gate. A gate has a known obligation awaiting evidence; an **unre
 | Class | Count | Note |
 |---|---|---|
 | Deferred gates carried from Phase 1 | 3 | **[F-013](#rule-f-013) closed**; [F-023](#rule-f-023) and [F-026](#rule-f-026) remain implementation-stage |
-| Gates created by the verification record | 11 active + 1 retired + 1 merged | VG-09 retired by P2-010; active entries require implementation evidence |
+| Gates created by the verification record | 11 active + 1 retired + 1 merged | [VG-09](#rule-vg-09) retired by [P2-010](../decisions/phase-2-specification-decisions.md#rule-p2-010); active entries require implementation evidence |
 | Gates created by Phase 2 | 26 | Includes citation closure, packaged OS isolation, React/TypeScript Web and Android push delivery |
 | **Closed by design-stage evidence** | **5** | [F-013](#rule-f-013), [PG-01](#rule-pg-01), [PG-02](#rule-pg-02), [PG-06](#rule-pg-06), [PG-21](#rule-pg-21) |
-| **Open implementation-stage gates** | **35** | Current, conditional or recurring; VG-09 is retired under P2-010 and one additional entry is merged. Five design closures remain historical design evidence, not runtime pass. |
+| **Open implementation-stage gates** | **35** | Current, conditional or recurring; [VG-09](#rule-vg-09) is retired under [P2-010](../decisions/phase-2-specification-decisions.md#rule-p2-010) and one additional entry is merged. Five design closures remain historical design evidence, not runtime pass. |
 | Unresolved determinations | **0** | [OC-01](#rule-oc-01) closed by user decision 2026-09-05 ([P2-005](../decisions/phase-2-specification-decisions.md#rule-p2-005)) |
 
 | # | Rule |
 |---|---|
 | <a id="rule-rs-01"></a>RS-01 | **A design-stage gate closes on design evidence.** Five currently have. |
-| RS-02 | **An implementation-stage gate never closes on design evidence**, however complete that evidence is. |
+| <a id="rule-rs-02"></a>RS-02 | **An implementation-stage gate never closes on design evidence**, however complete that evidence is. |
 | <a id="rule-rs-03"></a>RS-03 | **[PG-06](#rule-pg-06) closing does not close [PG-11](#rule-pg-11).** They are different obligations with different evidence; the weaker one passing has no effect on the stronger one. |
 
 ---
@@ -174,6 +174,6 @@ Distinct from a gate. A gate has a known obligation awaiting evidence; an **unre
 | **[D-020](../decisions/phase-1-foundation-decisions.md#rule-d-020)** | Commercial figures as versioned policy, not verified constants |
 
 
-## P2-009 evidence boundary
+## [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) evidence boundary
 
-The runtime, protocol and package gate scopes above are amended by [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009). Historical official-verification records retain their dated claims; they cannot override the current selected runtime. Cloud AOT and Android Kotlin gates are triggered; VG-09 is retired by the accepted Android-only scope. All 35 current implementation obligations remain open or triggered; writing this design closes none of them. Workers AI/R2 real integration and restore use [PG-10](#rule-pg-10), [PG-13](#rule-pg-13), [PG-18](#rule-pg-18) and the existing full-release gates, with the exact artifacts and failure evidence in the [CF contract](../architecture/contracts/05-cloudflare-integration.md).
+The runtime, protocol and package gate scopes above are amended by [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009). Historical official-verification records retain their dated claims; they cannot override the current selected runtime. Cloud AOT and Android Kotlin gates are triggered; [VG-09](#rule-vg-09) is retired by the accepted Android-only scope. All 35 current implementation obligations remain open or triggered; writing this design closes none of them. Workers AI/R2 real integration and restore use [PG-10](#rule-pg-10), [PG-13](#rule-pg-13), [PG-18](#rule-pg-18) and the existing full-release gates, with the exact artifacts and failure evidence in the [CF contract](../architecture/contracts/05-cloudflare-integration.md).

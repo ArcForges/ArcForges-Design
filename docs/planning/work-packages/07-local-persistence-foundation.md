@@ -47,17 +47,17 @@
 
 | # | Rule |
 |---|---|
-| BR-01 | **There is exactly one write path.** Every mutation — UI, RPC, agent, import, sync — goes through the same eight steps (`§4` of the architecture overview). |
-| BR-02 | **The canonical commit unit is atomic**: a commit either applies fully or not at all, with its revision advanced exactly once. |
-| BR-03 | **Undo, revision, checkpoint and journal are four different things** and never substitute for one another ([QI-09](../../requirements/12-quality-and-compatibility-contract.md#rule-qi-09)). |
-| BR-04 | **A derived store is fully reconstructable**, and deleting every derived store leaves the product intact ([QI-10](../../requirements/12-quality-and-compatibility-contract.md#rule-qi-10)). |
-| BR-05 | **The executable directory is never a user data directory** ([UP-05](../../requirements/10-distribution-update-and-support.md#rule-up-05) in the distribution requirements). |
-| BR-06 | **Storage schema version equals the highest applied migration** (`§4` of the build architecture). |
-| BR-07 | **Migration is independent of the installer** and has its own recovery path ([UP-08](../../requirements/10-distribution-update-and-support.md#rule-up-08) there). |
-| BR-08 | **A resource identity is never a file path** ([I-192](../../requirements/01-normative-glossary-and-invariants.md#rule-i-192)), and the managed resource store resolves identity to location. |
-| BR-09 | **Large append data does not live in the working store** — captures and similar streams use the chunked verifiable store. |
-| BR-10 | **Persistence types never cross an application boundary.** Repositories expose domain types only. |
-| BR-11 | **Writes are serialised per store; reads are concurrent.** Single-writer discipline is structural, not conventional. |
+| <a id="rule-br-01"></a>BR-01 | **There is exactly one write path.** Every mutation — UI, RPC, agent, import, sync — goes through the same eight steps (`§4` of the architecture overview). |
+| <a id="rule-br-02"></a>BR-02 | **The canonical commit unit is atomic**: a commit either applies fully or not at all, with its revision advanced exactly once. |
+| <a id="rule-br-03"></a>BR-03 | **Undo, revision, checkpoint and journal are four different things** and never substitute for one another ([QI-09](../../requirements/12-quality-and-compatibility-contract.md#rule-qi-09)). |
+| <a id="rule-br-04"></a>BR-04 | **A derived store is fully reconstructable**, and deleting every derived store leaves the product intact ([QI-10](../../requirements/12-quality-and-compatibility-contract.md#rule-qi-10)). |
+| <a id="rule-br-05"></a>BR-05 | **The executable directory is never a user data directory** ([UP-05](../../requirements/10-distribution-update-and-support.md#rule-up-05) in the distribution requirements). |
+| <a id="rule-br-06"></a>BR-06 | **Storage schema version equals the highest applied migration** (`§4` of the build architecture). |
+| <a id="rule-br-07"></a>BR-07 | **Migration is independent of the installer** and has its own recovery path ([UP-08](../../requirements/10-distribution-update-and-support.md#rule-up-08) there). |
+| <a id="rule-br-08"></a>BR-08 | **A resource identity is never a file path** ([I-192](../../requirements/01-normative-glossary-and-invariants.md#rule-i-192)), and the managed resource store resolves identity to location. |
+| <a id="rule-br-09"></a>BR-09 | **Large append data does not live in the working store** — captures and similar streams use the chunked verifiable store. |
+| <a id="rule-br-10"></a>BR-10 | **Persistence types never cross an application boundary.** Repositories expose domain types only. |
+| <a id="rule-br-11"></a>BR-11 | **Writes are serialised per store; reads are concurrent.** Single-writer discipline is structural, not conventional. |
 
 ---
 

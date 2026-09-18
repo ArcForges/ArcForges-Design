@@ -1,7 +1,7 @@
 <a id="rule-wp-30"></a>
 # WP-30 — Kotlin Android Foundation
 
-> Status: Authoritative implementation plan under P2-010
+> Status: Authoritative implementation plan under [P2-010](../../decisions/phase-2-specification-decisions.md#rule-p2-010)
 > Phase: G — Kotlin Android foundation
 > Upstream: `03` · `06` · `23` · `24` · `25` · Downstream: `31`
 
@@ -95,7 +95,7 @@ Contracts delivers the complete public Kotlin package; Cloud/AI deliver the same
 
 ## 7. Tests and verification evidence
 
-Acceptance includes every amended §5 producer/consumer and WP-30.90 evidence. Current P2-013 contracts/data/runtime rules are tested in the original owner implementation, not a detached explanatory sample.
+Acceptance includes every amended §5 producer/consumer and [WP-30.90](#rule-wp-30.90) evidence. Current [P2-013](../../decisions/phase-2-specification-decisions.md#rule-p2-013) contracts/data/runtime rules are tested in the original owner implementation, not a detached explanatory sample.
 
 Separate unit/schema/fixture tests, clean packaged consumers, actual Cloud/CF/desktop interactions, physical-device release evidence and distribution/store evidence. Record exact hashes/versions/device identity and limitations. A green build cannot substitute for a missing stage.
 

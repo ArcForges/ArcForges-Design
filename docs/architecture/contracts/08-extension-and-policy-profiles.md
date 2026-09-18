@@ -1,6 +1,6 @@
 # Initial Extension and Policy Schemas
 
-Authority: P2-010, [extension architecture](../15-extension-platform-architecture.md), [policy requirements](../../requirements/11-policy-and-configuration.md). These closed profiles are implemented as authored schemas in Contracts and generated validators/types in each applicable language. They are not arbitrary JSON or a second business protocol. Public packaging/SDK code and internal schemas are Apache-2.0; internal access restrictions remain.
+Authority: [P2-010](../../decisions/phase-2-specification-decisions.md#rule-p2-010), [extension architecture](../15-extension-platform-architecture.md), [policy requirements](../../requirements/11-policy-and-configuration.md). These closed profiles are implemented as authored schemas in Contracts and generated validators/types in each applicable language. They are not arbitrary JSON or a second business protocol. Public packaging/SDK code and internal schemas are Apache-2.0; internal access restrictions remain.
 
 ## 1. Package manifest.v1
 
@@ -110,7 +110,7 @@ ConfigurationDocument.canonicalJson is a closed object with schemaVersion=config
 | policy | {bodyHash,artifactId}; exact policy.body.v1 from section 4, current signing trust and restrictive journal heads. |
 | email | {primary:postmark,secondary:ses,transactionalDomain,broadcastDomain,postmark:{serverTokenRef,webhookCredentialRef,messageStreamId,allowedWebhookCidrs},ses:{region,credentialRef,configurationSet,snsTopicArn},maxAttempts:3,unknownReconcileSeconds:300}; domains distinct and DNS verified; unknown delivery never auto-fails-over. |
 | push | {provider:fcm,projectId,serviceAccountRef,androidPackage:com.arcforges.mobile,ttlSeconds:300}; positive TTL≤86400, only opaque payload, token invalidation by exact registration. |
-| operatorIdentity | {issuer,audience,clientId,secretRef,allowedTenantIds,roleMapping,accessApplicationId}; exact HTTPS issuer/audience, nonempty roleMapping from configured Entra app-role IDs to the five OC-03 keys; reject legacy/wildcard roles and incompatible operational/content role unions, no customer issuer reuse. |
+| operatorIdentity | {issuer,audience,clientId,secretRef,allowedTenantIds,roleMapping,accessApplicationId}; exact HTTPS issuer/audience, nonempty roleMapping from configured Entra app-role IDs to the five [OC-03](../../requirements/10-distribution-update-and-support.md#rule-oc-03) keys; reject legacy/wildcard roles and incompatible operational/content role unions, no customer issuer reuse. |
 | serviceKeys | {keyId,direction,secretRef,activatesAt,retiresAt}[]; exact Cloud→AI/AI→Cloud/objects/feeds directions, 256-bit HMAC secret, overlap≤900s; no unrestricted service identity. |
 | origins | {publicHosts,privateVirtualHosts,providerEgressOrigins,connectorOriginPolicy,androidCertificateFingerprints}; exactly arch 05 route/egress classes; HTTPS external origins, no wildcard, private/link-local hosts or URL userinfo; certificate hashes are SHA256. |
 | observability | {otlpEndpoint,credentialRef,sampleRate,retentionDays,redactionProfileHash,incidentAdapterId,analyticsAdapterId,consentRequired:true}; sampleRate 0..1 finite, retention 1..90 days unless stricter policy; endpoint/provider admission under arch 13. |

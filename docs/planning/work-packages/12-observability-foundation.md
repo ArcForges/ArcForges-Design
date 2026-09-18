@@ -45,16 +45,16 @@
 
 | # | Rule |
 |---|---|
-| BR-01 | **Business code never references a vendor logging type** ([OA-02](../../architecture/13-observability-and-operations.md#rule-oa-02)). |
-| BR-02 | **Observability is never a user-content database** ([I-273](../../requirements/01-normative-glossary-and-invariants.md#rule-i-273)). |
-| BR-03 | **Audit and observability are separate systems** ([I-272](../../requirements/01-normative-glossary-and-invariants.md#rule-i-272)) with separate storage, retention and access. |
-| BR-04 | **Desktop telemetry is minimal and opt-in**; local diagnostics are always available without any upload. |
-| BR-05 | **A crash or diagnostic report is shown to the user before it is sent**, and a full memory dump is never sent by default. |
-| BR-06 | **An unbounded identifier is never a metric label** ([SG-02](../../architecture/13-observability-and-operations.md#rule-sg-02)). |
-| BR-07 | **A secret-bearing or content type has no logging representation** ([RD-03](../../architecture/13-observability-and-operations.md#rule-rd-03), [RD-04](../../architecture/13-observability-and-operations.md#rule-rd-04)). |
-| BR-08 | **A user-visible task identifier resolves to its trace** ([CR-04](../../architecture/13-observability-and-operations.md#rule-cr-04)). |
-| BR-09 | **Correlation propagation is implemented once**, in shared infrastructure ([CR-06](../../architecture/13-observability-and-operations.md#rule-cr-06)). |
-| BR-10 | **A diagnostic log is not an audit record** ([QI-23](../../requirements/12-quality-and-compatibility-contract.md#rule-qi-23)), and **diagnostics are not telemetry consent** ([QI-24](../../requirements/12-quality-and-compatibility-contract.md#rule-qi-24)). |
+| <a id="rule-br-01"></a>BR-01 | **Business code never references a vendor logging type** ([OA-02](../../architecture/13-observability-and-operations.md#rule-oa-02)). |
+| <a id="rule-br-02"></a>BR-02 | **Observability is never a user-content database** ([I-273](../../requirements/01-normative-glossary-and-invariants.md#rule-i-273)). |
+| <a id="rule-br-03"></a>BR-03 | **Audit and observability are separate systems** ([I-272](../../requirements/01-normative-glossary-and-invariants.md#rule-i-272)) with separate storage, retention and access. |
+| <a id="rule-br-04"></a>BR-04 | **Desktop telemetry is minimal and opt-in**; local diagnostics are always available without any upload. |
+| <a id="rule-br-05"></a>BR-05 | **A crash or diagnostic report is shown to the user before it is sent**, and a full memory dump is never sent by default. |
+| <a id="rule-br-06"></a>BR-06 | **An unbounded identifier is never a metric label** ([SG-02](../../architecture/13-observability-and-operations.md#rule-sg-02)). |
+| <a id="rule-br-07"></a>BR-07 | **A secret-bearing or content type has no logging representation** ([RD-03](../../architecture/13-observability-and-operations.md#rule-rd-03), [RD-04](../../architecture/13-observability-and-operations.md#rule-rd-04)). |
+| <a id="rule-br-08"></a>BR-08 | **A user-visible task identifier resolves to its trace** ([CR-04](../../architecture/13-observability-and-operations.md#rule-cr-04)). |
+| <a id="rule-br-09"></a>BR-09 | **Correlation propagation is implemented once**, in shared infrastructure ([CR-06](../../architecture/13-observability-and-operations.md#rule-cr-06)). |
+| <a id="rule-br-10"></a>BR-10 | **A diagnostic log is not an audit record** ([QI-23](../../requirements/12-quality-and-compatibility-contract.md#rule-qi-23)), and **diagnostics are not telemetry consent** ([QI-24](../../requirements/12-quality-and-compatibility-contract.md#rule-qi-24)). |
 
 ---
 

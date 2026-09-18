@@ -28,13 +28,13 @@ Every operation on every surface — HTTP, local RPC, realtime — obeys the sam
 
 | # | Rule |
 |---|---|
-| OC-01 | **An operation is a named business action**, not a resource-shaped CRUD verb. `chat.appendMessage` is an operation; "PATCH conversation" is not. The name is stable and is what appears in telemetry, audit and the command log. |
-| OC-02 | **Every mutating operation carries a `CommandId`** allocated by the caller, and is deduplicated at its declared owner commit; external effects retain explicit uncertainty ([TX-01](../data-model/00-data-model-overview.md#rule-tx-01)–[TX-06](../data-model/00-data-model-overview.md#rule-tx-06)). |
-| OC-03 | A mutating versioned owner operation supplies its exact Cloud Revision, LocalNotesVersion or NativeContentRev precondition; these are not interchangeable. Create uses the owner-defined absent-root value. |
-| OC-04 | **Every operation returns `ArcResult<T>`** — success with a payload, or a typed `ArcError`. Business failure is a value; transport and protocol failure is an exception (`ErrorCategory`). |
-| OC-05 | **Every operation declares its authorization profile**, risk and approval posture under §4; only tool bindings have a capability key. Authentication alone is insufficient. |
-| OC-06 | **Every list operation is cursor-paginated** with an opaque, scope-bound cursor. |
-| OC-07 | **Every operation declares its compatibility class** (`§7`), which determines what may change without a version bump. |
+| <a id="rule-oc-01"></a>OC-01 | **An operation is a named business action**, not a resource-shaped CRUD verb. `chat.appendMessage` is an operation; "PATCH conversation" is not. The name is stable and is what appears in telemetry, audit and the command log. |
+| <a id="rule-oc-02"></a>OC-02 | **Every mutating operation carries a `CommandId`** allocated by the caller, and is deduplicated at its declared owner commit; external effects retain explicit uncertainty ([TX-01](../data-model/00-data-model-overview.md#rule-tx-01)–[TX-06](../data-model/00-data-model-overview.md#rule-tx-06)). |
+| <a id="rule-oc-03"></a>OC-03 | A mutating versioned owner operation supplies its exact Cloud Revision, LocalNotesVersion or NativeContentRev precondition; these are not interchangeable. Create uses the owner-defined absent-root value. |
+| <a id="rule-oc-04"></a>OC-04 | **Every operation returns `ArcResult<T>`** — success with a payload, or a typed `ArcError`. Business failure is a value; transport and protocol failure is an exception (`ErrorCategory`). |
+| <a id="rule-oc-05"></a>OC-05 | **Every operation declares its authorization profile**, risk and approval posture under §4; only tool bindings have a capability key. Authentication alone is insufficient. |
+| <a id="rule-oc-06"></a>OC-06 | **Every list operation is cursor-paginated** with an opaque, scope-bound cursor. |
+| <a id="rule-oc-07"></a>OC-07 | **Every operation declares its compatibility class** (`§7`), which determines what may change without a version bump. |
 
 **Wire projection for TypeScript.** SQL/C# bigint and decimal names below describe logical values. Generated public protobuf uses bigint for 64-bit integers and canonical strings for Decimal; only declared JSON exceptions follow [Web exact-value rules](../25-web-toolchain-and-sdk.md#31-exact-wire-values): 64-bit integers and decimals are canonical strings, int32 counters remain numbers, and null/absence are not silently conflated. Existing authentication NI exceptions remain distinct from idempotent business commands.
 
@@ -123,9 +123,9 @@ Every operation's failures map into these. An operation may not invent a conditi
 | # | Rule |
 |---|---|
 | <a id="rule-er-01"></a>ER-01 | **`state.not_found` is used for both absence and refusal** where distinguishing them would let a caller enumerate what it cannot see. This is deliberate, and `Detail` carries nothing that reverses it. |
-| ER-02 | **Effect certainty is part of the contract**, not an inference. A caller retrying an `unknown` failure on a non-idempotent operation is a defect the engine prevents ([WP-16.02](../../planning/work-packages/16-unified-execution-engine.md#rule-wp-16.02)). |
-| ER-03 | **`retryAfter` is present on every retryable capacity failure**, and clients honour it rather than choosing their own backoff. |
-| ER-04 | **A new producer code is registered here before use.** Author-time operation/implementation baselines reject unregistered emitted codes. Readers remain additive-compatible: an unknown future code uses a safe generic failure display and preserves correlation/effect certainty; it is never success or an automatic retry of an unknown effect. |
+| <a id="rule-er-02"></a>ER-02 | **Effect certainty is part of the contract**, not an inference. A caller retrying an `unknown` failure on a non-idempotent operation is a defect the engine prevents ([WP-16.02](../../planning/work-packages/16-unified-execution-engine.md#rule-wp-16.02)). |
+| <a id="rule-er-03"></a>ER-03 | **`retryAfter` is present on every retryable capacity failure**, and clients honour it rather than choosing their own backoff. |
+| <a id="rule-er-04"></a>ER-04 | **A new producer code is registered here before use.** Author-time operation/implementation baselines reject unregistered emitted codes. Readers remain additive-compatible: an unknown future code uses a safe generic failure display and preserves correlation/effect certainty; it is never success or an automatic retry of an unknown effect. |
 
 ---
 
@@ -142,13 +142,13 @@ Every operation has eight **effective** authorization fields. WP03 exports their
 | localPresence | Yes exactly for operations explicitly requiring local presence in catalogue 02/security/device broker profiles; no public/client binding may expose those operations. |
 | egress | Derived by the explicit boundary table below; read permission alone cannot authorize crossing a new destination boundary. |
 | patEligible | True only for the closed PAT operation allowlist below; false for all others. PAT scopes never replace owner, entitlement or tool authorization. |
-| actorKinds | Derived by AZ-04; emitted for every service method in the generated operation metadata. No unclassified operation is reachable. |
+| actorKinds | Derived by [AZ-04](#rule-az-04); emitted for every service method in the generated operation metadata. No unclassified operation is reachable. |
 
 | # | Rule |
 |---|---|
 | <a id="rule-az-01"></a>AZ-01 | LocalPresence=yes has no Mobile/Web or remote-agent path. It is not merely a client-side hidden action. |
 | <a id="rule-az-02"></a>AZ-02 | Agent, automation and extension reach only the generated approved tool subset under AZ-04. Absence from that subset denies, regardless of a caller's claimed actor chain. |
-| AZ-03 | Declared egress requires a separately audited destination/source authorization at the final owner and again before actual outbound effect. |
+| <a id="rule-az-03"></a>AZ-03 | Declared egress requires a separately audited destination/source authorization at the final owner and again before actual outbound effect. |
 | <a id="rule-az-04"></a>AZ-04 | Apply the disjoint identity profiles below before capability selection. Human-only denials override any catalogue inclusion. An operator/customer/CF/peer credential cannot be substituted for another identity class. Unclassified or contradictory metadata fails producer generation and server startup. |
 
 | Surface/operation class | Eligible identity and delegation |
@@ -159,7 +159,7 @@ Every operation has eight **effective** authorization fields. WP03 exports their
 | LocalBootstrap and child lease | Verified restricted parent/child OS identity under contracts 09. Product/provider/resource/lifecycle handlers execute in process and retain the validated actor; network reachability never grants authority. |
 | ConnectorBroker, all approval/consent/credential/commerce/policy configuration decisions (including IChatOperations.SubmitApproval) | Human-only action with the exact foreground, step-up and one-use proposal/flow bindings. Excluded from agent/automation/extension tool generation even if named in a product interface. Status/read paths retain their narrower declared permissions. |
 | ExtensionHost and ContentSandbox services | Only the authenticated installation/host or exact helper parent/session roles and method directions in contracts 09. They cannot acquire a customer session from being local. |
-| OperatorService | Operator identity only; every method enumerated in manifest11 with the complete eight-field authorization and OC-03 role binding in [registry04 §9.1](04-protobuf-wire-registry.md#91-complete-operator-authorization-and-call-context). Public human sessions never qualify. |
+| OperatorService | Operator identity only; every method enumerated in manifest11 with the complete eight-field authorization and [OC-03](../../requirements/10-distribution-update-and-support.md#rule-oc-03) role binding in [registry04 §9.1](04-protobuf-wire-registry.md#91-complete-operator-authorization-and-call-context). Public human sessions never qualify. |
 | CF internal HTTP ports | Service identity only under contracts 05, exact port/lease/epoch/generation and delegated owner scope; never an unrestricted customer token. |
 | Provider webhook/callback exceptions | That provider's specified verification (signature/SNS envelope, or Postmark TLS/webhook credential/IP policy), or original state/PKCE/one-use callback flow, normalized at its adapter. A generic service or user session cannot forge provider identity. |
 
@@ -194,9 +194,9 @@ PAT allowlist: `workspace.list`, `workspace.get`, `catalog.search`, `catalog.get
 
 | # | Rule |
 |---|---|
-| IR-01 | **Every operation declares its class.** The class determines the client's retry behaviour, and the client does not decide it locally. |
-| IR-02 | **A non-idempotent operation that fails with unknown effect surfaces a decision to the user or the engine** rather than silently retrying ([WP-16.02](../../planning/work-packages/16-unified-execution-engine.md#rule-wp-16.02)). |
-| IR-03 | **A duplicate destructive call reports the already-done state**, so a retried delete after a lost response does not look like a failure. |
+| <a id="rule-ir-01"></a>IR-01 | **Every operation declares its class.** The class determines the client's retry behaviour, and the client does not decide it locally. |
+| <a id="rule-ir-02"></a>IR-02 | **A non-idempotent operation that fails with unknown effect surfaces a decision to the user or the engine** rather than silently retrying ([WP-16.02](../../planning/work-packages/16-unified-execution-engine.md#rule-wp-16.02)). |
+| <a id="rule-ir-03"></a>IR-03 | **A duplicate destructive call reports the already-done state**, so a retried delete after a lost response does not look like a failure. |
 
 ---
 
@@ -206,11 +206,11 @@ Notes document body creation/mutation uses the closed Sync mutation allowlist; s
 
 | # | Rule |
 |---|---|
-| CP-01 | **A cursor is opaque, signed and scope-bound.** A client cannot construct or mutate one to escape its scope ([WP-23.02](../../planning/work-packages/23-public-api-and-generated-clients.md#rule-wp-23.02)). |
-| CP-02 | **A cursor encodes the sort key, not an offset.** The operation declares its concurrent-mutation behavior. [Notes scalar queries](../../requirements/products/arcnotes.md#notes-scalar-query-profile) bind a dataset token and explicitly restart on a changed source set, so successful pages never silently mix revisions or duplicate/omit rows. |
-| CP-03 | **A cursor carries the query shape's fingerprint.** Presenting it with different filters is rejected rather than silently reinterpreted. |
-| CP-04 | **A cursor expires**, and an expired cursor returns `validation.unsupported_version` with an instruction to restart the listing — never a partial result presented as complete. |
-| CP-05 | **Every list declares a maximum page size**, and a larger request is clamped with a warning rather than refused. |
+| <a id="rule-cp-01"></a>CP-01 | **A cursor is opaque, signed and scope-bound.** A client cannot construct or mutate one to escape its scope ([WP-23.02](../../planning/work-packages/23-public-api-and-generated-clients.md#rule-wp-23.02)). |
+| <a id="rule-cp-02"></a>CP-02 | **A cursor encodes the sort key, not an offset.** The operation declares its concurrent-mutation behavior. [Notes scalar queries](../../requirements/products/arcnotes.md#notes-scalar-query-profile) bind a dataset token and explicitly restart on a changed source set, so successful pages never silently mix revisions or duplicate/omit rows. |
+| <a id="rule-cp-03"></a>CP-03 | **A cursor carries the query shape's fingerprint.** Presenting it with different filters is rejected rather than silently reinterpreted. |
+| <a id="rule-cp-04"></a>CP-04 | **A cursor expires**, and an expired cursor returns `validation.unsupported_version` with an instruction to restart the listing — never a partial result presented as complete. |
+| <a id="rule-cp-05"></a>CP-05 | **Every list declares a maximum page size**, and a larger request is clamped with a warning rather than refused. |
 
 ---
 
@@ -224,11 +224,11 @@ Notes document body creation/mutation uses the closed Sync mutation allowlist; s
 
 | # | Rule |
 |---|---|
-| CC-01 | **Every operation declares its class** in the catalogue, and the contract baseline check enforces it. |
-| CC-02 | **A closed enum's new member is a breaking change** unless the operation is `additive-open` **and** the client contract requires tolerating unknown members. Which enums are open is declared per enum, not assumed. |
-| CC-03 | **Removing or renaming a field is always breaking**, in every class. |
-| CC-04 | **Financial and security operations are `frozen`.** The cost of a subtle compatibility break there is unrecoverable. |
-| CC-05 | **The supported window is bidirectional** — previous client against current server, current client against minimum server — and both directions are tested ([WP-23.06](../../planning/work-packages/23-public-api-and-generated-clients.md#rule-wp-23.06)). |
+| <a id="rule-cc-01"></a>CC-01 | **Every operation declares its class** in the catalogue, and the contract baseline check enforces it. |
+| <a id="rule-cc-02"></a>CC-02 | **A closed enum's new member is a breaking change** unless the operation is `additive-open` **and** the client contract requires tolerating unknown members. Which enums are open is declared per enum, not assumed. |
+| <a id="rule-cc-03"></a>CC-03 | **Removing or renaming a field is always breaking**, in every class. |
+| <a id="rule-cc-04"></a>CC-04 | **Financial and security operations are `frozen`.** The cost of a subtle compatibility break there is unrecoverable. |
+| <a id="rule-cc-05"></a>CC-05 | **The supported window is bidirectional** — previous client against current server, current client against minimum server — and both directions are tested ([WP-23.06](../../planning/work-packages/23-public-api-and-generated-clients.md#rule-wp-23.06)). |
 
 ---
 
@@ -244,9 +244,9 @@ Notes document body creation/mutation uses the closed Sync mutation allowlist; s
 
 | # | Rule |
 |---|---|
-| SO-01 | **An operation appears on exactly one surface.** Where a workflow needs two, they are two operations with two names, not one operation with two transports. |
+| <a id="rule-so-01"></a>SO-01 | **An operation appears on exactly one surface.** Where a workflow needs two, they are two operations with two names, not one operation with two transports. |
 | <a id="rule-so-02"></a>SO-02 | **Realtime never carries an authoritative result** ([BR-02](../../planning/work-packages/24-realtime-and-reliable-events.md#rule-br-02) of [WP-24](../../planning/work-packages/24-realtime-and-reliable-events.md#rule-wp-24)). A client that needs the fact re-reads it. |
-| SO-03 | **Cloud never initiates toward a device** (**[D-010](../../decisions/phase-1-foundation-decisions.md#rule-d-010)**). The bridge is pull-and-answer. |
+| <a id="rule-so-03"></a>SO-03 | **Cloud never initiates toward a device** (**[D-010](../../decisions/phase-1-foundation-decisions.md#rule-d-010)**). The bridge is pull-and-answer. |
 
 ---
 
@@ -254,15 +254,15 @@ Notes document body creation/mutation uses the closed Sync mutation allowlist; s
 
 | # | Obligation | Where |
 |---|---|---|
-| OV-01 | Every operation in catalogues 01–03, numbered registry 04 and local profile 09 has a concrete name/class/idempotency/errors/compatibility/surface and eight effective authorization fields exported under §4; unresolved/contradictory profile, nonexistent example or forbidden actor reachability fails | Contract baseline check ([WP-03.05](../../planning/work-packages/03-contract-foundation-and-licence-split.md#rule-wp-03.05)) |
-| OV-02 | Every error an implementation returns exists in `§3.2` | [WP-23.01](../../planning/work-packages/23-public-api-and-generated-clients.md#rule-wp-23.01) |
-| OV-03 | Every `localPresence = yes` operation is absent from the mobile and web client surfaces | [WP-31.06](../../planning/work-packages/31-arcchat-mobile-android.md#rule-wp-31.06), [WP-49.02](../../planning/work-packages/49-arcchat-web-companion.md#rule-wp-49.02) |
-| OV-04 | Every mutating operation is exactly-once under duplicate submission and lost response | [WP-23.03](../../planning/work-packages/23-public-api-and-generated-clients.md#rule-wp-23.03) |
-| OV-05 | A forged or cross-scope cursor is refused | [WP-23.02](../../planning/work-packages/23-public-api-and-generated-clients.md#rule-wp-23.02) |
-| OV-06 | The bidirectional compatibility matrix passes and catches a deliberate break | [WP-23.06](../../planning/work-packages/23-public-api-and-generated-clients.md#rule-wp-23.06) |
-| OV-07 | No operation appears on two surfaces | Contract policy test |
+| <a id="rule-ov-01"></a>OV-01 | Every operation in catalogues 01–03, numbered registry 04 and local profile 09 has a concrete name/class/idempotency/errors/compatibility/surface and eight effective authorization fields exported under §4; unresolved/contradictory profile, nonexistent example or forbidden actor reachability fails | Contract baseline check ([WP-03.05](../../planning/work-packages/03-contract-foundation-and-licence-split.md#rule-wp-03.05)) |
+| <a id="rule-ov-02"></a>OV-02 | Every error an implementation returns exists in `§3.2` | [WP-23.01](../../planning/work-packages/23-public-api-and-generated-clients.md#rule-wp-23.01) |
+| <a id="rule-ov-03"></a>OV-03 | Every `localPresence = yes` operation is absent from the mobile and web client surfaces | [WP-31.06](../../planning/work-packages/31-arcchat-mobile-android.md#rule-wp-31.06), [WP-49.02](../../planning/work-packages/49-arcchat-web-companion.md#rule-wp-49.02) |
+| <a id="rule-ov-04"></a>OV-04 | Every mutating operation is exactly-once under duplicate submission and lost response | [WP-23.03](../../planning/work-packages/23-public-api-and-generated-clients.md#rule-wp-23.03) |
+| <a id="rule-ov-05"></a>OV-05 | A forged or cross-scope cursor is refused | [WP-23.02](../../planning/work-packages/23-public-api-and-generated-clients.md#rule-wp-23.02) |
+| <a id="rule-ov-06"></a>OV-06 | The bidirectional compatibility matrix passes and catches a deliberate break | [WP-23.06](../../planning/work-packages/23-public-api-and-generated-clients.md#rule-wp-23.06) |
+| <a id="rule-ov-07"></a>OV-07 | No operation appears on two surfaces | Contract policy test |
 
-## P2-009 executable wire and transport binding
+## [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) executable wire and transport binding
 
 Every operation/event above maps to the [numbered wire registry](04-protobuf-wire-registry.md). It fixes requests/results, record fields, enums, exact values, local counterpart preconditions, service names and compatibility. [CF integration](05-cloudflare-integration.md) fixes private Cloud/AI bindings and signed object-transfer exceptions; annex10 owns public output/control framing, state recovery and authorization. New supporting bootstrap, upload-status, automation and conversation-create methods are enumerated there with their authorization/idempotency classes; none is left for endpoint invention during implementation.
 

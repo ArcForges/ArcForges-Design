@@ -45,16 +45,16 @@
 
 | # | Rule |
 |---|---|
-| BR-01 | **Preview and final render share processing semantics.** Only quality, speed and precision differ. |
-| BR-02 | **An override never modifies the original media**; it changes how ArcSlate interprets the source. |
-| BR-03 | **Viewer display transform and export transform are separate.** |
-| BR-04 | **The colour management backend does not become domain.** The domain holds colour semantic configuration; the backend is infrastructure. |
-| BR-05 | **Video scopes are derived views**, never authority, and are distinct from the ArcScope product. |
-| BR-06 | **A render task binds a project and sequence revision snapshot.** A render never uses half an old timeline and half a new one. |
+| <a id="rule-br-01"></a>BR-01 | **Preview and final render share processing semantics.** Only quality, speed and precision differ. |
+| <a id="rule-br-02"></a>BR-02 | **An override never modifies the original media**; it changes how ArcSlate interprets the source. |
+| <a id="rule-br-03"></a>BR-03 | **Viewer display transform and export transform are separate.** |
+| <a id="rule-br-04"></a>BR-04 | **The colour management backend does not become domain.** The domain holds colour semantic configuration; the backend is infrastructure. |
+| <a id="rule-br-05"></a>BR-05 | **Video scopes are derived views**, never authority, and are distinct from the ArcScope product. |
+| <a id="rule-br-06"></a>BR-06 | **A render task binds a project and sequence revision snapshot.** A render never uses half an old timeline and half a new one. |
 | <a id="rule-br-07"></a>BR-07 | **A render is a native Product Job owned by ArcSlate**, not a Cloud Agent Task ([RN-03](../../requirements/products/arcslate.md#rule-rn-03) of the ArcSlate requirements, [CM-04](../../architecture/09-ai-and-agent-runtime-architecture.md#rule-cm-04) of the runtime architecture, [I-485](../../requirements/01-normative-glossary-and-invariants.md#rule-i-485)). It invokes no model, consumes no AI capacity, and ArcSlate owns its progress, cancellation and recovery. It shares the Product Job lifecycle of [WP-16](16-unified-execution-engine.md#rule-wp-16); it does not enter `task.task`. |
-| BR-08 | **Export writes to a temporary target and commits atomically**; a cancelled or failed render never leaves a file that looks complete. |
-| BR-09 | **Proxy render is an explicit, declared choice**, never a silent substitution. |
-| BR-10 | **Media analysis output is derived data**, rebuildable and never authority. |
+| <a id="rule-br-08"></a>BR-08 | **Export writes to a temporary target and commits atomically**; a cancelled or failed render never leaves a file that looks complete. |
+| <a id="rule-br-09"></a>BR-09 | **Proxy render is an explicit, declared choice**, never a silent substitution. |
+| <a id="rule-br-10"></a>BR-10 | **Media analysis output is derived data**, rebuildable and never authority. |
 
 ---
 
@@ -226,6 +226,6 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 **Downstream:** `39`. Consumers use exact released artifacts.
 
-## P2-010 required behavior and closure
+## [P2-010](../../decisions/phase-2-specification-decisions.md#rule-p2-010) required behavior and closure
 
 Verify native real encode/decode, pixel-tile/color/audio/loudness/analysis output and existing render/subtitle profiles together; byte-identical encoding across libraries is not promised. The referenced normative profile and producer stage matrix are binding inputs. Record independent positive/negative vectors and actual owner integration at this WP's assigned stage; a mock cannot close a real-provider/device requirement.

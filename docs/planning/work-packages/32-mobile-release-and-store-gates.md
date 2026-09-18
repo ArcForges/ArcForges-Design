@@ -1,7 +1,7 @@
 <a id="rule-wp-32"></a>
 # WP-32 — Android Signing, Distribution and Store Gates
 
-> Status: Authoritative implementation plan under P2-010
+> Status: Authoritative implementation plan under [P2-010](../../decisions/phase-2-specification-decisions.md#rule-p2-010)
 > Phase: J — Platform and client integration
 > Upstream: `31` · Downstream: `50`
 
@@ -105,7 +105,7 @@ Contracts delivers the complete public Kotlin package; Cloud/AI deliver the same
 
 ## 7. Tests and verification evidence
 
-Acceptance includes every amended §5 producer/consumer and WP-32.90 evidence. Current P2-013 contracts/data/runtime rules are tested in the original owner implementation, not a detached explanatory sample.
+Acceptance includes every amended §5 producer/consumer and [WP-32.90](#rule-wp-32.90) evidence. Current [P2-013](../../decisions/phase-2-specification-decisions.md#rule-p2-013) contracts/data/runtime rules are tested in the original owner implementation, not a detached explanatory sample.
 
 Separate unit/schema/fixture tests, clean packaged consumers, actual Cloud/CF/desktop interactions, physical-device release evidence and distribution/store evidence. Record exact hashes/versions/device identity and limitations. A green build cannot substitute for a missing stage.
 

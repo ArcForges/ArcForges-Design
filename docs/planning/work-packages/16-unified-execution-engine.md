@@ -51,18 +51,18 @@
 
 | # | Rule |
 |---|---|
-| BR-01 | **One *Product Job* model serves every long-running product operation** — render, capture, index, import, export. A **Cloud Agent Task is a different model with a different owner** ([CM-04](../../architecture/09-ai-and-agent-runtime-architecture.md#rule-cm-04), [I-121](../../requirements/01-normative-glossary-and-invariants.md#rule-i-121), [I-485](../../requirements/01-normative-glossary-and-invariants.md#rule-i-485)), owned by [WP-52](52-cloud-harness.md#rule-wp-52). They share vocabulary, never an implementation. |
+| <a id="rule-br-01"></a>BR-01 | **One *Product Job* model serves every long-running product operation** — render, capture, index, import, export. A **Cloud Agent Task is a different model with a different owner** ([CM-04](../../architecture/09-ai-and-agent-runtime-architecture.md#rule-cm-04), [I-121](../../requirements/01-normative-glossary-and-invariants.md#rule-i-121), [I-485](../../requirements/01-normative-glossary-and-invariants.md#rule-i-485)), owned by [WP-52](52-cloud-harness.md#rule-wp-52). They share vocabulary, never an implementation. |
 | <a id="rule-br-02"></a>BR-02 | **`ProductJob ≠ JobAttempt ≠ JobCheckpoint ≠ Cloud Agent Task`.** Native job identities are product-owned; no Cloud plan/model state is persisted here. |
-| BR-03 | **A retry allocates a new attempt and reuses the command identity** ([WP-04.01](04-identity-error-and-versioning-primitives.md#rule-wp-04.01)). |
-| BR-04 | **Failure classification includes effect certainty**: definitely-not, definitely-did, or unknown. An unknown effect never auto-retries a non-idempotent operation. |
-| BR-05 | **A task is owned by exactly one product** and its ownership never transfers. |
-| BR-06 | **Approval is a discrete authorization; steering adjusts a running operation and grants nothing** ([WP-11.03](11-security-foundation.md#rule-wp-11.03)). |
-| BR-07 | **Local resource permits are acquired before work and released after**, with bounded CPU/memory/disk/queue use. [D-020](../../decisions/phase-1-foundation-decisions.md#rule-d-020) monetary accounting belongs to Cloud and is absent here. |
-| BR-08 | **A checkpoint is not an undo entry and not a revision** ([QI-09](../../requirements/12-quality-and-compatibility-contract.md#rule-qi-09)). |
-| BR-09 | **Compensation is explicit per step**, declared where an operation is not naturally reversible. |
-| BR-10 | **Progress is an estimate; outcome is a fact.** They are separate channels and never conflated. |
-| BR-11 | **A task survives a process crash** and resumes or fails explicitly — never silently disappears. |
-| BR-12 | **Loop and storm protection are engine concerns**, not left to each caller. |
+| <a id="rule-br-03"></a>BR-03 | **A retry allocates a new attempt and reuses the command identity** ([WP-04.01](04-identity-error-and-versioning-primitives.md#rule-wp-04.01)). |
+| <a id="rule-br-04"></a>BR-04 | **Failure classification includes effect certainty**: definitely-not, definitely-did, or unknown. An unknown effect never auto-retries a non-idempotent operation. |
+| <a id="rule-br-05"></a>BR-05 | **A task is owned by exactly one product** and its ownership never transfers. |
+| <a id="rule-br-06"></a>BR-06 | **Approval is a discrete authorization; steering adjusts a running operation and grants nothing** ([WP-11.03](11-security-foundation.md#rule-wp-11.03)). |
+| <a id="rule-br-07"></a>BR-07 | **Local resource permits are acquired before work and released after**, with bounded CPU/memory/disk/queue use. [D-020](../../decisions/phase-1-foundation-decisions.md#rule-d-020) monetary accounting belongs to Cloud and is absent here. |
+| <a id="rule-br-08"></a>BR-08 | **A checkpoint is not an undo entry and not a revision** ([QI-09](../../requirements/12-quality-and-compatibility-contract.md#rule-qi-09)). |
+| <a id="rule-br-09"></a>BR-09 | **Compensation is explicit per step**, declared where an operation is not naturally reversible. |
+| <a id="rule-br-10"></a>BR-10 | **Progress is an estimate; outcome is a fact.** They are separate channels and never conflated. |
+| <a id="rule-br-11"></a>BR-11 | **A task survives a process crash** and resumes or fails explicitly — never silently disappears. |
+| <a id="rule-br-12"></a>BR-12 | **Loop and storm protection are engine concerns**, not left to each caller. |
 
 ---
 
@@ -181,7 +181,7 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 ---
 
-**Tool-result acceptance.** Submit two distinct toolRequestIds in one attempt (for both Task and ChatTurn owners), then replay each original command/hash: both results persist and each replay returns its own original receipt. A changed result under the same `(toolRequestId, attemptId, commandId)` refuses with `command.reused_identifier`; lost acknowledgement never allocates a fresh command or drops the second result. Bind the wire registry, TK-05 and `task.tool_result` to this same key.
+**Tool-result acceptance.** Submit two distinct toolRequestIds in one attempt (for both Task and ChatTurn owners), then replay each original command/hash: both results persist and each replay returns its own original receipt. A changed result under the same `(toolRequestId, attemptId, commandId)` refuses with `command.reused_identifier`; lost acknowledgement never allocates a fresh command or drops the second result. Bind the wire registry, [TK-05](../../architecture/contracts/01-public-api-operations.md#rule-tk-05) and `task.tool_result` to this same key.
 
 ## 6. Impacts
 

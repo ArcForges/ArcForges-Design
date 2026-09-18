@@ -14,10 +14,10 @@ Every store here is **reconstructable from canonical data**. Deleting all of the
 | # | Rule |
 |---|---|
 | <a id="rule-ds-01"></a>DS-01 | **A derived row records its source identity and source revision.** Without those, staleness is undetectable and a rebuild cannot be incremental. |
-| DS-02 | **A derived store lives in a separate file or schema from canonical data**, so deletion is a single operation that cannot damage authority. |
-| DS-03 | **A derived store is never the only copy of anything** ([XS-06](00-data-model-overview.md#rule-xs-06)). |
-| DS-04 | **A derived store never syncs as authority.** It may be transported as a convenience, but the receiving device treats it as a cache with its own validity check. |
-| DS-05 | **A rebuild is always available and always correct.** "Rebuild produces a different answer" is a defect, not a refresh ([WP-19.00](../../planning/work-packages/19-arcnotes-search-and-portability.md#rule-wp-19.00)). |
+| <a id="rule-ds-02"></a>DS-02 | **A derived store lives in a separate file or schema from canonical data**, so deletion is a single operation that cannot damage authority. |
+| <a id="rule-ds-03"></a>DS-03 | **A derived store is never the only copy of anything** ([XS-06](00-data-model-overview.md#rule-xs-06)). |
+| <a id="rule-ds-04"></a>DS-04 | **A derived store never syncs as authority.** It may be transported as a convenience, but the receiving device treats it as a cache with its own validity check. |
+| <a id="rule-ds-05"></a>DS-05 | **A rebuild is always available and always correct.** "Rebuild produces a different answer" is a defect, not a refresh ([WP-19.00](../../planning/work-packages/19-arcnotes-search-and-portability.md#rule-wp-19.00)). |
 | <a id="rule-ds-06"></a>DS-06 | The canonical transaction commits its durable journal/change-feed entry. Derived consumers run after commit, publish only a matching source-version result, and advance their cursor with that index update. Replay or rebuild repairs a crash between these transactions; derived rows never participate as canonical authority. |
 | <a id="rule-ds-07"></a>DS-07 | **Eviction is permitted at any time.** Nothing may hold a derived row's continued existence as an invariant. |
 
@@ -61,9 +61,9 @@ Index work captures the typed source version and journal position with the conte
 
 | # | Rule |
 |---|---|
-| SI-01 | The index consumes the durable journal. Its result is published only if the source-version token still matches the body analysed; the index checkpoint commits with that result. A crash may leave a detectable lag, which replay repairs ([WP-19.00](../../planning/work-packages/19-arcnotes-search-and-portability.md#rule-wp-19.00)); no claim of instantaneous cross-store consistency is made. |
-| SI-02 | **A full rebuild scans canonical content in aggregate order** and produces an index equivalent to the incremental one. Equivalence is asserted, not assumed. |
-| SI-03 | **Permission is applied at query evaluation**, so a refused document affects neither results nor counts ([WP-19.01](../../planning/work-packages/19-arcnotes-search-and-portability.md#rule-wp-19.01)). The index does not store a permission decision, because permission can change without the content changing. |
+| <a id="rule-si-01"></a>SI-01 | The index consumes the durable journal. Its result is published only if the source-version token still matches the body analysed; the index checkpoint commits with that result. A crash may leave a detectable lag, which replay repairs ([WP-19.00](../../planning/work-packages/19-arcnotes-search-and-portability.md#rule-wp-19.00)); no claim of instantaneous cross-store consistency is made. |
+| <a id="rule-si-02"></a>SI-02 | **A full rebuild scans canonical content in aggregate order** and produces an index equivalent to the incremental one. Equivalence is asserted, not assumed. |
+| <a id="rule-si-03"></a>SI-03 | **Permission is applied at query evaluation**, so a refused document affects neither results nor counts ([WP-19.01](../../planning/work-packages/19-arcnotes-search-and-portability.md#rule-wp-19.01)). The index does not store a permission decision, because permission can change without the content changing. |
 
 ---
 
@@ -93,9 +93,9 @@ Separate from lexical search, and subject to the **same permission and scope rul
 
 | # | Rule |
 |---|---|
-| RI-01 | **Retrieval cache keys include the workspace and the principal** ([CA-05](../09-ai-and-agent-runtime-architecture.md#rule-ca-05)). No cache entry is reused across principals or scopes ([WP-40.05](../../planning/work-packages/40-knowledge-search-and-retrieval.md#rule-wp-40.05)). |
-| RI-02 | **Only genuinely public content may be cached across workspaces**, and "public" is a recorded classification, not an inference. |
-| RI-03 | **Enabling AI never uploads local-only content** ([I-182](../../requirements/01-normative-glossary-and-invariants.md#rule-i-182)). The retrieval index for local-only content is local, and no path exports it. |
+| <a id="rule-ri-01"></a>RI-01 | **Retrieval cache keys include the workspace and the principal** ([CA-05](../09-ai-and-agent-runtime-architecture.md#rule-ca-05)). No cache entry is reused across principals or scopes ([WP-40.05](../../planning/work-packages/40-knowledge-search-and-retrieval.md#rule-wp-40.05)). |
+| <a id="rule-ri-02"></a>RI-02 | **Only genuinely public content may be cached across workspaces**, and "public" is a recorded classification, not an inference. |
+| <a id="rule-ri-03"></a>RI-03 | **Enabling AI never uploads local-only content** ([I-182](../../requirements/01-normative-glossary-and-invariants.md#rule-i-182)). The retrieval index for local-only content is local, and no path exports it. |
 
 ---
 
@@ -119,9 +119,9 @@ Separate from lexical search, and subject to the **same permission and scope rul
 
 | # | Rule |
 |---|---|
-| PD-01 | **A proxy is not a render cache** ([I-484](../../requirements/01-normative-glossary-and-invariants.md#rule-i-484)). A proxy is a cheaper source decode; a render cache is a stored result of timeline processing. They have different invalidation triggers and different lifetimes, and conflating them produces wrong output. |
-| PD-02 | **Analysis results record all five reproducibility inputs** — session, capture, configuration snapshot, decoder version and configuration, analysis definition and version ([LB-04](../../requirements/products/arcscope.md#rule-lb-04)). A result missing any of them cannot be trusted and is treated as absent. |
-| PD-03 | **An expensive rebuild is resumable and cancellable**, and runs as a Task so its progress and failure are visible like any other long operation. |
+| <a id="rule-pd-01"></a>PD-01 | **A proxy is not a render cache** ([I-484](../../requirements/01-normative-glossary-and-invariants.md#rule-i-484)). A proxy is a cheaper source decode; a render cache is a stored result of timeline processing. They have different invalidation triggers and different lifetimes, and conflating them produces wrong output. |
+| <a id="rule-pd-02"></a>PD-02 | **Analysis results record all five reproducibility inputs** — session, capture, configuration snapshot, decoder version and configuration, analysis definition and version ([LB-04](../../requirements/products/arcscope.md#rule-lb-04)). A result missing any of them cannot be trusted and is treated as absent. |
+| <a id="rule-pd-03"></a>PD-03 | **An expensive rebuild is resumable and cancellable**, and runs as a Task so its progress and failure are visible like any other long operation. |
 
 ---
 
@@ -146,9 +146,9 @@ Deterministic per installation, so it is **recomputable rather than stored**. Wh
 | # | Rule |
 |---|---|
 | <a id="rule-ev-01"></a>EV-01 | **Eviction touches only derived stores** ([WP-07.06](../../planning/work-packages/07-local-persistence-foundation.md#rule-wp-07.06)). Canonical data is never evicted, at any pressure. |
-| EV-02 | **Eviction order is by rebuild cost ascending and last-use ascending** — cheap and cold first. |
-| EV-03 | **Storage pressure is a visible product state**, with what is consuming space and what may be safely reclaimed (`§14` of the data requirements). |
-| EV-04 | **An evicted derived store rebuilds on demand**, and the product remains usable while it does — degraded, not broken. |
+| <a id="rule-ev-02"></a>EV-02 | **Eviction order is by rebuild cost ascending and last-use ascending** — cheap and cold first. |
+| <a id="rule-ev-03"></a>EV-03 | **Storage pressure is a visible product state**, with what is consuming space and what may be safely reclaimed (`§14` of the data requirements). |
+| <a id="rule-ev-04"></a>EV-04 | **An evicted derived store rebuilds on demand**, and the product remains usable while it does — degraded, not broken. |
 | <a id="rule-ev-05"></a>EV-05 | Derived indexes/previews do not consume the customer canonical-content storage allowance. Their real bytes and compute are bounded by deployment storage/worker quotas; model indexing calls use the operator-funded supplier budget. User-visible exports and retained canonical versions use their own declared quota classes. |
 
 ---
@@ -157,16 +157,16 @@ Deterministic per installation, so it is **recomputable rather than stored**. Wh
 
 | # | Obligation | Where |
 |---|---|---|
-| DR-01 | Deleting every derived store leaves each product fully functional with no content loss | [WP-07.06](../../planning/work-packages/07-local-persistence-foundation.md#rule-wp-07.06), [WP-37.05](../../planning/work-packages/37-arcslate-playback-and-processing.md#rule-wp-37.05) |
-| DR-02 | A full rebuild produces a state equivalent to the incremental one, for every store | [WP-19.00](../../planning/work-packages/19-arcnotes-search-and-portability.md#rule-wp-19.00), [WP-40.01](../../planning/work-packages/40-knowledge-search-and-retrieval.md#rule-wp-40.01) |
-| DR-03 | A crash mid-update leaves the index recoverable from the journal, with no divergence | [WP-19.00](../../planning/work-packages/19-arcnotes-search-and-portability.md#rule-wp-19.00) |
-| DR-04 | A citation anchor resolves exactly or reports invalidity — never drifts | [WP-19.02](../../planning/work-packages/19-arcnotes-search-and-portability.md#rule-wp-19.02) |
-| DR-05 | No retrieval cache entry is reused across principals or scopes | [WP-40.05](../../planning/work-packages/40-knowledge-search-and-retrieval.md#rule-wp-40.05) |
-| DR-06 | Changing the embedding model invalidates every chunk from the previous model | [WP-40.01](../../planning/work-packages/40-knowledge-search-and-retrieval.md#rule-wp-40.01) |
-| DR-07 | Render output is identical with proxies enabled and disabled | [WP-37.05](../../planning/work-packages/37-arcslate-playback-and-processing.md#rule-wp-37.05) |
-| DR-08 | Eviction under pressure never removes canonical data | [WP-07.06](../../planning/work-packages/07-local-persistence-foundation.md#rule-wp-07.06) |
+| <a id="rule-dr-01"></a>DR-01 | Deleting every derived store leaves each product fully functional with no content loss | [WP-07.06](../../planning/work-packages/07-local-persistence-foundation.md#rule-wp-07.06), [WP-37.05](../../planning/work-packages/37-arcslate-playback-and-processing.md#rule-wp-37.05) |
+| <a id="rule-dr-02"></a>DR-02 | A full rebuild produces a state equivalent to the incremental one, for every store | [WP-19.00](../../planning/work-packages/19-arcnotes-search-and-portability.md#rule-wp-19.00), [WP-40.01](../../planning/work-packages/40-knowledge-search-and-retrieval.md#rule-wp-40.01) |
+| <a id="rule-dr-03"></a>DR-03 | A crash mid-update leaves the index recoverable from the journal, with no divergence | [WP-19.00](../../planning/work-packages/19-arcnotes-search-and-portability.md#rule-wp-19.00) |
+| <a id="rule-dr-04"></a>DR-04 | A citation anchor resolves exactly or reports invalidity — never drifts | [WP-19.02](../../planning/work-packages/19-arcnotes-search-and-portability.md#rule-wp-19.02) |
+| <a id="rule-dr-05"></a>DR-05 | No retrieval cache entry is reused across principals or scopes | [WP-40.05](../../planning/work-packages/40-knowledge-search-and-retrieval.md#rule-wp-40.05) |
+| <a id="rule-dr-06"></a>DR-06 | Changing the embedding model invalidates every chunk from the previous model | [WP-40.01](../../planning/work-packages/40-knowledge-search-and-retrieval.md#rule-wp-40.01) |
+| <a id="rule-dr-07"></a>DR-07 | Render output is identical with proxies enabled and disabled | [WP-37.05](../../planning/work-packages/37-arcslate-playback-and-processing.md#rule-wp-37.05) |
+| <a id="rule-dr-08"></a>DR-08 | Eviction under pressure never removes canonical data | [WP-07.06](../../planning/work-packages/07-local-persistence-foundation.md#rule-wp-07.06) |
 
-## P2-009 transport, storage and recovery composition
+## [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) transport, storage and recovery composition
 
 The [CF/R2 lifecycle](../contracts/05-cloudflare-integration.md) fixes part verification, Verified pins, authorization on consumption, release/deletion and independent immutable restore. C# owning transactions, sync cursors/tombstones/conflicts, desktop pending changes, native job snapshots and derived-source revision checks above retain their semantics. The [wire profile](../contracts/04-protobuf-wire-registry.md) transports exact values without changing content-origin, Notes scalar or Scope measurement oracles. CF checkpoints/streams never become product history, and restoration cannot silently redispatch an uncertain external act.
 

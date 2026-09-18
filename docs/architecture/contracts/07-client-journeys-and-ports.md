@@ -1,6 +1,6 @@
 # Client Journeys, Owner Ports and Recovery
 
-Authority: P2-010; [numbered wire registry](04-protobuf-wire-registry.md) owns exact fields, [operation catalogue](00-operation-catalogue.md) owns errors/replay, [security](../08-security-architecture.md) owns authentication and grants. These are complete bindings for existing product behavior, not parallel APIs. Every normal business operation is generated proto; the listed auth/file/CF/provider exceptions are closed standard protocols. UI text may be localized without changing the behavior.
+Authority: [P2-010](../../decisions/phase-2-specification-decisions.md#rule-p2-010); [numbered wire registry](04-protobuf-wire-registry.md) owns exact fields, [operation catalogue](00-operation-catalogue.md) owns errors/replay, [security](../08-security-architecture.md) owns authentication and grants. These are complete bindings for existing product behavior, not parallel APIs. Every normal business operation is generated proto; the listed auth/file/CF/provider exceptions are closed standard protocols. UI text may be localized without changing the behavior.
 
 ## 1. Identity and session paths
 
@@ -61,7 +61,7 @@ CF uses the same RunWorkflow, InferenceWorkflow, RunStream and fenced C# owner p
 
 Temporary source/output blobs and chunks are encrypted, purpose-scoped and excluded from backup/history/search/export. CF step input/return stores only reference IDs and metadata, never prompt/output/summary plaintext. Temporary compaction summary exists only within the active Worker step; loss before the next model dispatch is context.interrupted, no automatic duplicate compaction. Business/financial audit retains IDs/hashes/counts/reasons under normal retention, not content. UI states that the model received data; temporary is not a claim of zero provider processing.
 
-Compaction uses the sole protected-set and refusal definition in [Harness HC-09](../17-agent-harness.md#rule-hc-09) and the window algorithm/vectors in [model 05](../data-model/05-application-history.md#context-window-and-compaction). The summary is untrusted derived context, not a replacement for user/system authority. Compaction is operator-funded under HC-08; no duplicate protected list or alternative refusal code is defined here.
+Compaction uses the sole protected-set and refusal definition in [Harness HC-09](../17-agent-harness.md#rule-hc-09) and the window algorithm/vectors in [model 05](../data-model/05-application-history.md#context-window-and-compaction). The summary is untrusted derived context, not a replacement for user/system authority. Compaction is operator-funded under [HC-08](../17-agent-harness.md#rule-hc-08); no duplicate protected list or alternative refusal code is defined here.
 
 ## 3. Source consent and Web search
 

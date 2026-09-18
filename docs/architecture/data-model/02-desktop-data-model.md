@@ -1,6 +1,6 @@
 # Desktop Local Data Model
 
-P2-012 current implementation authorities: [Canonical local assistant history, complete schema and mode lifecycle](05-application-history.md).
+[P2-012](../../decisions/phase-2-specification-decisions.md#rule-p2-012) current implementation authorities: [Canonical local assistant history, complete schema and mode lifecycle](05-application-history.md).
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Architecture · Data model
@@ -79,12 +79,12 @@ A Notes working aggregate carries `acked_rev`, `acked_local_seq` and `head_local
 
 | # | Rule |
 |---|---|
-| RV-C1 | **`acked_rev` is the only revision Cloud ever sees**, and it is the `ExpectedRev` on `sync.pushChange`. A device that sent a local counter would conflict on every second edit, because Cloud has never heard of it. |
-| RV-C2 | **The pending predicate is `head_local_seq > acked_local_seq`**, not a counter being non-zero. In the counterexample, acknowledging A advances `acked_local_seq` to A's sequence while `head_local_seq` is B's — so the row is correctly still pending. |
+| <a id="rule-rv-c1"></a>RV-C1 | **`acked_rev` is the only revision Cloud ever sees**, and it is the `ExpectedRev` on `sync.pushChange`. A device that sent a local counter would conflict on every second edit, because Cloud has never heard of it. |
+| <a id="rule-rv-c2"></a>RV-C2 | **The pending predicate is `head_local_seq > acked_local_seq`**, not a counter being non-zero. In the counterexample, acknowledging A advances `acked_local_seq` to A's sequence while `head_local_seq` is B's — so the row is correctly still pending. |
 | <a id="rule-rv-c3"></a>RV-C3 | **`local_seq` is never reset.** Resetting is what destroyed the ability to say which work an acknowledgement covered. It is a per-aggregate, per-device counter and its absolute value has no meaning outside that pair. |
 | <a id="rule-rv-c4"></a>RV-C4 | **An acknowledgement advances the watermark to the highest `local_seq` the submitted batch contained — and no further.** The batch records its range when it is dispatched, so the covered set is a recorded fact, not a re-derivation at acknowledgement time. |
 | <a id="rule-rv-c5"></a>RV-C5 | **A Notes local RPC takes and returns `(acked_rev, head_local_seq)`.** Every user edit or explicit conflict-resolution edit advances `head_local_seq`; applying a newer Cloud shadow advances `acked_rev` and rebases pending work atomically. A body cannot change while both token components stay unchanged. Scope/Slate RPC instead uses its native `content_rev`. |
-| RV-C6 | **A conflict compares `acked_rev`, never a local sequence.** Two devices conflict when they submitted against the same `acked_rev`; how much local work each accumulated is irrelevant to that question. |
+| <a id="rule-rv-c6"></a>RV-C6 | **A conflict compares `acked_rev`, never a local sequence.** Two devices conflict when they submitted against the same `acked_rev`; how much local work each accumulated is irrelevant to that question. |
 
 #### The submission log
 
@@ -113,11 +113,11 @@ A Notes working aggregate carries `acked_rev`, `acked_local_seq` and `head_local
 | <a id="rule-sb-l1"></a>SB-L1 | **An edit made while a batch is in flight does not join it.** It takes the next `local_seq` and waits for the next batch. **Editing is never blocked on network latency** — the user keeps typing, and the work accumulates behind the dispatched batch. |
 | <a id="rule-sb-l2"></a>SB-L2 | **A dispatched batch is never mutated.** Appending to an in-flight request would change what a `batch_id` means, and a retry would then carry different content under the same idempotency key ([TX-03](00-data-model-overview.md#rule-tx-03)). |
 | <a id="rule-sb-l3"></a>SB-L3 | **The next batch is built against the `acked_rev` the previous one produced.** Batches for one aggregate are therefore strictly sequential; there is at most one in flight per aggregate. |
-| SB-L4 | **A duplicate or delayed acknowledgement is idempotent.** Advancing the watermark to a value at or below its current one is a no-op, so an acknowledgement arriving twice — or late, after a newer one — cannot move it backwards. |
-| SB-L5 | **A lost response is resolved by re-sending the same `batch_id`.** Cloud returns the original result ([TX-04](00-data-model-overview.md#rule-tx-04)), including the revision it assigned, so the client learns the outcome without a second effect. |
-| SB-L6 | **Restart resumes from the log.** A `dispatched` batch with no settlement is re-sent; a `pending` batch is built and sent. Nothing is inferred from in-memory state. |
-| SB-L7 | **Conflict does not advance the acknowledgement watermark.** Stop dispatch for that aggregate, retain the old proposal and fetch the current Cloud shadow. Rebase unresolved local events in one local transaction. Automatic structural rebase cannot decide a semantic conflict. An explicit user resolution appends a new local event, supersedes the conflicted proposal and any dependent undispatched proposals, and creates one replacement covering the contiguous unresolved range through the resolution event against the new `acked_rev`. Original local event identities and bytes remain immutable. |
-| SB-L8 | **Replacement has explicit lineage and dispositions.** Its receipt states which original edits were retained, transformed or explicitly discarded by the user. Even a keep-Cloud resolution sends an idempotent resolution command; its no-content-change receipt can acknowledge the resolved range without inventing a content revision. Advance `acked_local_seq` only over a contiguous accepted/resolved prefix. Superseded receipts never advance it independently. Historical discarded content is retained for the declared recovery window. |
+| <a id="rule-sb-l4"></a>SB-L4 | **A duplicate or delayed acknowledgement is idempotent.** Advancing the watermark to a value at or below its current one is a no-op, so an acknowledgement arriving twice — or late, after a newer one — cannot move it backwards. |
+| <a id="rule-sb-l5"></a>SB-L5 | **A lost response is resolved by re-sending the same `batch_id`.** Cloud returns the original result ([TX-04](00-data-model-overview.md#rule-tx-04)), including the revision it assigned, so the client learns the outcome without a second effect. |
+| <a id="rule-sb-l6"></a>SB-L6 | **Restart resumes from the log.** A `dispatched` batch with no settlement is re-sent; a `pending` batch is built and sent. Nothing is inferred from in-memory state. |
+| <a id="rule-sb-l7"></a>SB-L7 | **Conflict does not advance the acknowledgement watermark.** Stop dispatch for that aggregate, retain the old proposal and fetch the current Cloud shadow. Rebase unresolved local events in one local transaction. Automatic structural rebase cannot decide a semantic conflict. An explicit user resolution appends a new local event, supersedes the conflicted proposal and any dependent undispatched proposals, and creates one replacement covering the contiguous unresolved range through the resolution event against the new `acked_rev`. Original local event identities and bytes remain immutable. |
+| <a id="rule-sb-l8"></a>SB-L8 | **Replacement has explicit lineage and dispositions.** Its receipt states which original edits were retained, transformed or explicitly discarded by the user. Even a keep-Cloud resolution sends an idempotent resolution command; its no-content-change receipt can acknowledge the resolved range without inventing a content revision. Advance `acked_local_seq` only over a contiguous accepted/resolved prefix. Superseded receipts never advance it independently. Historical discarded content is retained for the declared recovery window. |
 
 #### Safe eviction
 
@@ -125,7 +125,7 @@ A Notes working aggregate carries `acked_rev`, `acked_local_seq` and `head_local
 |---|---|
 | <a id="rule-ev-l1"></a>EV-L1 | **A row is evictable only when `head_local_seq == acked_local_seq`** and no staged upload and no unreturned tool receipt references it. This is [PE-02](#rule-pe-02), restated against the watermark. |
 | <a id="rule-ev-l2"></a>EV-L2 | **The corroborating invariant is that no batch for the aggregate is in a non-terminal state.** The two conditions must agree; a periodic check asserts they do, and a disagreement is a defect rather than a tie-break. |
-| EV-L3 | **Cache pressure, sign-out, account switch and subscription restriction all run this same gate** ([PE-03](#rule-pe-03)). None has a shortcut, because each is a path by which unacknowledged work has historically been lost. |
+| <a id="rule-ev-l3"></a>EV-L3 | **Cache pressure, sign-out, account switch and subscription restriction all run this same gate** ([PE-03](#rule-pe-03)). None has a shortcut, because each is a path by which unacknowledged work has historically been lost. |
 
 ### 1.4 Submission transport and acknowledgement application
 
@@ -143,8 +143,8 @@ Own-device feed entries suppress duplicate notifications only. They still reconc
 | <a id="rule-pe-02"></a>PE-02 | **A row is evictable only if every change to it has been acknowledged.** The gate is `head_local_seq == acked_local_seq` ([EV-L1](#rule-ev-l1)) **and** no staged upload and no unreturned tool receipt references it. The watermark comparison is the primary test because it is on the row itself; the batch-state check is the corroborating invariant, and the two must agree ([EV-L2](#rule-ev-l2)). |
 | <a id="rule-pe-03"></a>PE-03 | **Cache pressure, sign-out, account switch, subscription restriction and workspace change never discard an unacknowledged change** ([C-06](../../requirements/00-product-scope-and-portfolio.md#rule-c-06)). Each of these paths runs the same eviction gate; none has a shortcut. |
 | <a id="rule-pe-04"></a>PE-04 | **A durable local save is never presented as saved to Cloud** (`§3.1` of the product scope). The UI distinguishes *saved on this device* from *acknowledged by Cloud*, and the outbox row is what makes the difference queryable. |
-| PE-05 | **Pending work survives reinstall-level recovery.** The outbox, the journal and staged upload content are in the durable store, not in a cache directory that a cleanup tool may remove. |
-| PE-06 | **An acknowledged revision that is evicted is re-fetchable; an unacknowledged change that is lost is gone.** That asymmetry is why [PE-02](#rule-pe-02) is a constraint and not a heuristic. |
+| <a id="rule-pe-05"></a>PE-05 | **Pending work survives reinstall-level recovery.** The outbox, the journal and staged upload content are in the durable store, not in a cache directory that a cleanup tool may remove. |
+| <a id="rule-pe-06"></a>PE-06 | **An acknowledged revision that is evicted is re-fetchable; an unacknowledged change that is lost is gone.** That asymmetry is why [PE-02](#rule-pe-02) is a constraint and not a heuristic. |
 
 ### 1.5 `local_audit`
 
@@ -466,11 +466,11 @@ attachments-external/  external reference descriptors, never the files themselve
 
 | # | Rule |
 |---|---|
-| PP-01 | **The package is complete**: re-importing reconstructs every aggregate, relationship and managed resource ([WP-39.02](../../planning/work-packages/39-arcslate-integration-and-portability.md#rule-wp-39.02), [WP-35.04](../../planning/work-packages/35-arcscope-integration-and-sync.md#rule-wp-35.04)). |
-| PP-02 | **Serialisation is deterministic** — stable ordering, stable key order, no timestamps outside content. Two exports of unchanged content are byte-identical ([WP-39.02](../../planning/work-packages/39-arcslate-integration-and-portability.md#rule-wp-39.02), [WP-35.04](../../planning/work-packages/35-arcscope-integration-and-sync.md#rule-wp-35.04)). |
-| PP-03 | **Derived data is excluded.** No index, cache, proxy or thumbnail enters a package. |
-| PP-04 | **External references are exported as descriptors**, and collect/consolidate is the separate explicit operation that turns them into managed content ([WP-39.02](../../planning/work-packages/39-arcslate-integration-and-portability.md#rule-wp-39.02)). |
-| PP-05 | **The manifest carries `nativeFormatVersion`**, distinct from `storageSchemaVersion` — a version axis of its own. |
+| <a id="rule-pp-01"></a>PP-01 | **The package is complete**: re-importing reconstructs every aggregate, relationship and managed resource ([WP-39.02](../../planning/work-packages/39-arcslate-integration-and-portability.md#rule-wp-39.02), [WP-35.04](../../planning/work-packages/35-arcscope-integration-and-sync.md#rule-wp-35.04)). |
+| <a id="rule-pp-02"></a>PP-02 | **Serialisation is deterministic** — stable ordering, stable key order, no timestamps outside content. Two exports of unchanged content are byte-identical ([WP-39.02](../../planning/work-packages/39-arcslate-integration-and-portability.md#rule-wp-39.02), [WP-35.04](../../planning/work-packages/35-arcscope-integration-and-sync.md#rule-wp-35.04)). |
+| <a id="rule-pp-03"></a>PP-03 | **Derived data is excluded.** No index, cache, proxy or thumbnail enters a package. |
+| <a id="rule-pp-04"></a>PP-04 | **External references are exported as descriptors**, and collect/consolidate is the separate explicit operation that turns them into managed content ([WP-39.02](../../planning/work-packages/39-arcslate-integration-and-portability.md#rule-wp-39.02)). |
+| <a id="rule-pp-05"></a>PP-05 | **The manifest carries `nativeFormatVersion`**, distinct from `storageSchemaVersion` — a version axis of its own. |
 
 ---
 
@@ -478,18 +478,18 @@ attachments-external/  external reference descriptors, never the files themselve
 
 | # | Obligation | Where |
 |---|---|---|
-| DL-01 | Every aggregate round-trips with all fields and relationships | Per-product persistence tests |
-| DL-02 | Block order survives insert-between without renumbering siblings | [WP-18.00](../../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.00) |
-| DL-03 | A finalised capture is structurally immutable | [WP-33.04](../../planning/work-packages/33-arcscope-acquisition-and-session.md#rule-wp-33.04) |
-| DL-04 | No floating-point column exists in the ArcSlate time model | [WP-36.01](../../planning/work-packages/36-arcslate-project-and-timeline.md#rule-wp-36.01) policy test |
-| DL-05 | Deleting every derived store leaves each product fully intact | [WP-07.06](../../planning/work-packages/07-local-persistence-foundation.md#rule-wp-07.06), [WP-37.05](../../planning/work-packages/37-arcslate-playback-and-processing.md#rule-wp-37.05) |
-| DL-06 | Undo, history, checkpoint and journal behave independently | [WP-18.05](../../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.05) |
-| DL-07 | **Where a product has a portable package**, it round-trips with equivalence, deterministically | [WP-39.02](../../planning/work-packages/39-arcslate-integration-and-portability.md#rule-wp-39.02), [WP-35.04](../../planning/work-packages/35-arcscope-integration-and-sync.md#rule-wp-35.04) |
-| DL-07a | **Where a product's exit path is a Cloud download**, the export is complete over acknowledged revisions, states its exclusions, and **is not asserted to re-import** | [WP-19.05](../../planning/work-packages/19-arcnotes-search-and-portability.md#rule-wp-19.05), [WP-15.06](../../planning/work-packages/15-arcchat-conversation-core.md#rule-wp-15.06) |
-| DL-08 | **The repository read surface** excludes a trashed row from every list path, and **no application assembly can construct a query against the raw table** ([QP-06](00-data-model-overview.md#rule-qp-06)) | [WP-18.00](../../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.00), [WP-05](../../planning/work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05) |
-| DL-09 | A crash at any write-path point recovers to a committed boundary | [WP-07.02](../../planning/work-packages/07-local-persistence-foundation.md#rule-wp-07.02) |
+| <a id="rule-dl-01"></a>DL-01 | Every aggregate round-trips with all fields and relationships | Per-product persistence tests |
+| <a id="rule-dl-02"></a>DL-02 | Block order survives insert-between without renumbering siblings | [WP-18.00](../../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.00) |
+| <a id="rule-dl-03"></a>DL-03 | A finalised capture is structurally immutable | [WP-33.04](../../planning/work-packages/33-arcscope-acquisition-and-session.md#rule-wp-33.04) |
+| <a id="rule-dl-04"></a>DL-04 | No floating-point column exists in the ArcSlate time model | [WP-36.01](../../planning/work-packages/36-arcslate-project-and-timeline.md#rule-wp-36.01) policy test |
+| <a id="rule-dl-05"></a>DL-05 | Deleting every derived store leaves each product fully intact | [WP-07.06](../../planning/work-packages/07-local-persistence-foundation.md#rule-wp-07.06), [WP-37.05](../../planning/work-packages/37-arcslate-playback-and-processing.md#rule-wp-37.05) |
+| <a id="rule-dl-06"></a>DL-06 | Undo, history, checkpoint and journal behave independently | [WP-18.05](../../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.05) |
+| <a id="rule-dl-07"></a>DL-07 | **Where a product has a portable package**, it round-trips with equivalence, deterministically | [WP-39.02](../../planning/work-packages/39-arcslate-integration-and-portability.md#rule-wp-39.02), [WP-35.04](../../planning/work-packages/35-arcscope-integration-and-sync.md#rule-wp-35.04) |
+| <a id="rule-dl-07a"></a>DL-07a | **Where a product's exit path is a Cloud download**, the export is complete over acknowledged revisions, states its exclusions, and **is not asserted to re-import** | [WP-19.05](../../planning/work-packages/19-arcnotes-search-and-portability.md#rule-wp-19.05), [WP-15.06](../../planning/work-packages/15-arcchat-conversation-core.md#rule-wp-15.06) |
+| <a id="rule-dl-08"></a>DL-08 | **The repository read surface** excludes a trashed row from every list path, and **no application assembly can construct a query against the raw table** ([QP-06](00-data-model-overview.md#rule-qp-06)) | [WP-18.00](../../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.00), [WP-05](../../planning/work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05) |
+| <a id="rule-dl-09"></a>DL-09 | A crash at any write-path point recovers to a committed boundary | [WP-07.02](../../planning/work-packages/07-local-persistence-foundation.md#rule-wp-07.02) |
 
-## P2-009 transport, storage and recovery composition
+## [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) transport, storage and recovery composition
 
 The [CF/R2 lifecycle](../contracts/05-cloudflare-integration.md) fixes part verification, Verified pins, authorization on consumption, release/deletion and independent immutable restore. C# owning transactions, sync cursors/tombstones/conflicts, desktop pending changes, native job snapshots and derived-source revision checks above retain their semantics. The [wire profile](../contracts/04-protobuf-wire-registry.md) transports exact values without changing content-origin, Notes scalar or Scope measurement oracles. CF checkpoints/streams never become product history, and restoration cannot silently redispatch an uncertain external act.
 

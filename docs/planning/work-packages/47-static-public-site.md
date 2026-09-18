@@ -50,17 +50,17 @@
 
 | # | Rule |
 |---|---|
-| BR-01 | **Public pages render as static HTML and CSS before JavaScript runs**, with working ordinary navigation when scripting is disabled ([D-007](../../decisions/phase-1-foundation-decisions.md#rule-d-007), as amended). |
-| BR-02 | **Node.js/npm, React/TypeScript, Vite and React Router generate the static site.** Runtime Node SSR, Blazor and a second business backend are outside [P2-008](../../decisions/phase-2-specification-decisions.md#rule-p2-008). |
-| BR-03 | **Browser enhancements follow the owned design system and dependency/CSP/performance policy.** Initial content, links and downloads remain usable with JavaScript disabled. |
-| BR-04 | **Product catalogue, release metadata and pricing come from one source of truth.** The generator consumes it and never re-states versions or prices. |
-| BR-05 | **Above-the-fold content is present in the delivered HTML**; no client script is required to render it. |
-| BR-06 | **Locale-scoped URLs with correct alternate-language annotations**; no client-only language switching and no trapping automatic redirect. |
-| BR-07 | **No blocked third-party resource on the critical path** — fonts, script hosts, analytics and verification providers all chosen for global reachability. |
-| BR-08 | **The generator is deterministic**: identical inputs produce byte-identical output. |
-| BR-09 | **The site is entirely independent of Cloud** and remains available during any cloud incident. |
-| BR-10 | **Analytics are minimal and privacy-preserving**, with no cross-site advertising profile and no data sale. |
-| BR-11 | **Only the four current products appear.** Superseded product names never appear. |
+| <a id="rule-br-01"></a>BR-01 | **Public pages render as static HTML and CSS before JavaScript runs**, with working ordinary navigation when scripting is disabled ([D-007](../../decisions/phase-1-foundation-decisions.md#rule-d-007), as amended). |
+| <a id="rule-br-02"></a>BR-02 | **Node.js/npm, React/TypeScript, Vite and React Router generate the static site.** Runtime Node SSR, Blazor and a second business backend are outside [P2-008](../../decisions/phase-2-specification-decisions.md#rule-p2-008). |
+| <a id="rule-br-03"></a>BR-03 | **Browser enhancements follow the owned design system and dependency/CSP/performance policy.** Initial content, links and downloads remain usable with JavaScript disabled. |
+| <a id="rule-br-04"></a>BR-04 | **Product catalogue, release metadata and pricing come from one source of truth.** The generator consumes it and never re-states versions or prices. |
+| <a id="rule-br-05"></a>BR-05 | **Above-the-fold content is present in the delivered HTML**; no client script is required to render it. |
+| <a id="rule-br-06"></a>BR-06 | **Locale-scoped URLs with correct alternate-language annotations**; no client-only language switching and no trapping automatic redirect. |
+| <a id="rule-br-07"></a>BR-07 | **No blocked third-party resource on the critical path** — fonts, script hosts, analytics and verification providers all chosen for global reachability. |
+| <a id="rule-br-08"></a>BR-08 | **The generator is deterministic**: identical inputs produce byte-identical output. |
+| <a id="rule-br-09"></a>BR-09 | **The site is entirely independent of Cloud** and remains available during any cloud incident. |
+| <a id="rule-br-10"></a>BR-10 | **Analytics are minimal and privacy-preserving**, with no cross-site advertising profile and no data sale. |
+| <a id="rule-br-11"></a>BR-11 | **Only the four current products appear.** Superseded product names never appear. |
 
 ---
 

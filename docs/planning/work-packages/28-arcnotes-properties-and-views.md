@@ -48,14 +48,14 @@
 
 | # | Rule |
 |---|---|
-| BR-01 | **ArcNotes does not become a relational database clone.** A view is a projection over a query, not a table with foreign keys. **No formula, relation or rollup evaluator is built** ([P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006)), and no expression language reaches the filter path ([NO-06](../../architecture/contracts/02-local-rpc-operations.md#rule-no-06) of the local RPC contract). |
-| BR-02 | **A document table block is a document table**, not a database view. The two remain distinct concepts. |
-| BR-03 | **Properties must not make plain notes heavy.** A note with no properties has no property overhead and no property UI imposed. |
-| BR-04 | **System properties and user properties are separated** and never conflated. |
-| BR-05 | **A view owns no documents.** Deleting a view never deletes content (`BR` in [WP-19.03](19-arcnotes-search-and-portability.md#rule-wp-19.03)). |
-| BR-06 | **Backward compatibility applies to actually shipped supported Notes schemas**, without inventing a canvas-era native package. |
-| BR-07 | **A query is evaluated with permission applied**, exactly as search is. |
-| BR-08 | **View performance is budgeted** on the scale corpus; a large result set virtualises rather than degrading. |
+| <a id="rule-br-01"></a>BR-01 | **ArcNotes does not become a relational database clone.** A view is a projection over a query, not a table with foreign keys. **No formula, relation or rollup evaluator is built** ([P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006)), and no expression language reaches the filter path ([NO-06](../../architecture/contracts/02-local-rpc-operations.md#rule-no-06) of the local RPC contract). |
+| <a id="rule-br-02"></a>BR-02 | **A document table block is a document table**, not a database view. The two remain distinct concepts. |
+| <a id="rule-br-03"></a>BR-03 | **Properties must not make plain notes heavy.** A note with no properties has no property overhead and no property UI imposed. |
+| <a id="rule-br-04"></a>BR-04 | **System properties and user properties are separated** and never conflated. |
+| <a id="rule-br-05"></a>BR-05 | **A view owns no documents.** Deleting a view never deletes content (`BR` in [WP-19.03](19-arcnotes-search-and-portability.md#rule-wp-19.03)). |
+| <a id="rule-br-06"></a>BR-06 | **Backward compatibility applies to actually shipped supported Notes schemas**, without inventing a canvas-era native package. |
+| <a id="rule-br-07"></a>BR-07 | **A query is evaluated with permission applied**, exactly as search is. |
+| <a id="rule-br-08"></a>BR-08 | **View performance is budgeted** on the scale corpus; a large result set virtualises rather than degrading. |
 
 ---
 
@@ -225,6 +225,6 @@
 
 **Downstream:** `40` · `50`. Consumers use exact released artifacts.
 
-## P2-010 required behavior and closure
+## [P2-010](../../decisions/phase-2-specification-decisions.md#rule-p2-010) required behavior and closure
 
 Verify both local hydrated/pending export and actual Cloud export, complete source-policy/one-use context permission and notebook/document/query/structural conflict behavior. The referenced normative profile and producer stage matrix are binding inputs. Record independent positive/negative vectors and actual owner integration at this WP's assigned stage; a mock cannot close a real-provider/device requirement.

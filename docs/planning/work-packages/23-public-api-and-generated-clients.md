@@ -51,15 +51,15 @@
 
 | # | Rule |
 |---|---|
-| BR-01 | **Endpoints are mapped from the contract set**, not hand-written in divergence from it (**[D-009](../../decisions/phase-1-foundation-decisions.md#rule-d-009)**). |
-| BR-02 | **The generated document is produced by the build and diffed against a baseline** ([WP-03.05](03-contract-foundation-and-licence-split.md#rule-wp-03.05)). |
-| BR-03 | **C# clients use generated-only generated gRPC client with no reflection package; TypeScript uses the generated proto gRPC-Web SDK.** Both obey one public operation contract; their authentication adapters are language/surface-specific. |
-| BR-04 | **Every error is a problem detail with a registered reason code.** No raw exception text is ever returned. |
-| BR-05 | **The supported client window is declared and tested**, in both directions: an older client against the current server, and the current client against the minimum supported server. |
-| BR-06 | **Requests are idempotent where they change state**, keyed by command identity. |
-| BR-07 | **A response never leaks the existence of a resource the caller may not see** where existence itself is sensitive. |
-| BR-08 | **Rate limits are per identity and per capability class**, and produce a typed, explained refusal with retry guidance. |
-| BR-09 | **Object bodies go over standard HTTP upload and download, never over realtime**. |
+| <a id="rule-br-01"></a>BR-01 | **Endpoints are mapped from the contract set**, not hand-written in divergence from it (**[D-009](../../decisions/phase-1-foundation-decisions.md#rule-d-009)**). |
+| <a id="rule-br-02"></a>BR-02 | **The generated document is produced by the build and diffed against a baseline** ([WP-03.05](03-contract-foundation-and-licence-split.md#rule-wp-03.05)). |
+| <a id="rule-br-03"></a>BR-03 | **C# clients use generated-only generated gRPC client with no reflection package; TypeScript uses the generated proto gRPC-Web SDK.** Both obey one public operation contract; their authentication adapters are language/surface-specific. |
+| <a id="rule-br-04"></a>BR-04 | **Every error is a problem detail with a registered reason code.** No raw exception text is ever returned. |
+| <a id="rule-br-05"></a>BR-05 | **The supported client window is declared and tested**, in both directions: an older client against the current server, and the current client against the minimum supported server. |
+| <a id="rule-br-06"></a>BR-06 | **Requests are idempotent where they change state**, keyed by command identity. |
+| <a id="rule-br-07"></a>BR-07 | **A response never leaks the existence of a resource the caller may not see** where existence itself is sensitive. |
+| <a id="rule-br-08"></a>BR-08 | **Rate limits are per identity and per capability class**, and produce a typed, explained refusal with retry guidance. |
+| <a id="rule-br-09"></a>BR-09 | **Object bodies go over standard HTTP upload and download, never over realtime**. |
 | <a id="rule-br-10"></a>BR-10 | **Clients never choose arbitrary storage locations**; upload targets are issued by the server. |
 
 ---
@@ -169,7 +169,7 @@
 
 ---
 
-**Operator contract closure.** Consume [registry04 §9](../../architecture/contracts/04-protobuf-wire-registry.md#9-operator-control-and-separate-identity-boundary) and [model01 operator state](../../architecture/data-model/01-cloud-data-model.md#operator-proposal-approval-and-financial-owner-closure). Generate/implement every operation exactly once with its eight authorization fields, operator scope and OC-03 role binding. Public customer/PAT/agent access refuses. Verify distinct approver, stale hash/revision/configuration, role revocation, expiry, concurrent consumption and lost receipt; no direct SQL or public-SDK operator import. WP03 produces schema/negative vectors, WP23 real identity/dispatch conformance, WP42 the financial owners, WP44 configuration/policy owners, and WP45 the real console join. Earlier packages retain their named fixture boundary until the existing downstream join.
+**Operator contract closure.** Consume [registry04 §9](../../architecture/contracts/04-protobuf-wire-registry.md#9-operator-control-and-separate-identity-boundary) and [model01 operator state](../../architecture/data-model/01-cloud-data-model.md#operator-proposal-approval-and-financial-owner-closure). Generate/implement every operation exactly once with its eight authorization fields, operator scope and [OC-03](../../requirements/10-distribution-update-and-support.md#rule-oc-03) role binding. Public customer/PAT/agent access refuses. Verify distinct approver, stale hash/revision/configuration, role revocation, expiry, concurrent consumption and lost receipt; no direct SQL or public-SDK operator import. WP03 produces schema/negative vectors, WP23 real identity/dispatch conformance, WP42 the financial owners, WP44 configuration/policy owners, and WP45 the real console join. Earlier packages retain their named fixture boundary until the existing downstream join.
 
 **Browser matrix acceptance.** Use [browser-support.v1](../../requirements/12-quality-and-compatibility-contract.md#202-browser-supportv1) and the exact release artifact/OS/browser patches. For each output’s existing flows, verify supported/degraded/blocked browser behavior: delayed-stream polling where streaming exists, refusal of unavailable required authentication/step-up, safe-preview refusal and preserved pending work. Static site acceptance includes no-JavaScript readability; it does not invent interactive account/stream APIs. Operator step-up retains its separate Entra/MFA authority. WP23 proves generated transports; WP45/47/48/49 prove their respective operations/site/account/chat output; WP50 joins all four production hashes and real browser evidence. A Playwright WebKit run alone does not claim Safari/OS authenticator proof.
 

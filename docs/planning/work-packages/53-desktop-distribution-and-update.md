@@ -17,8 +17,8 @@ Own desktop update discovery, verified download/delta, staging, safe application
 
 | Input | Why |
 |---|---|
-| [Distribution requirements](../../requirements/10-distribution-update-and-support.md), UP-01–UP-11 | All accepted update, recovery and support behavior |
-| [Build/update architecture](../../architecture/14-build-packaging-and-release.md#8-update-client-architecture), UC-01–UC-10 and §8.1 | Fixed client, signed-feed and recovery profile |
+| [Distribution requirements](../../requirements/10-distribution-update-and-support.md), [UP-01](../../requirements/10-distribution-update-and-support.md#rule-up-01)–[UP-11](../../requirements/10-distribution-update-and-support.md#rule-up-11) | All accepted update, recovery and support behavior |
+| [Build/update architecture](../../architecture/14-build-packaging-and-release.md#8-update-client-architecture), [UC-01](../../architecture/14-build-packaging-and-release.md#rule-uc-01)–[UC-10](../../architecture/14-build-packaging-and-release.md#rule-uc-10) and §8.1 | Fixed client, signed-feed and recovery profile |
 | [Producer matrix](../producer-artifacts-and-integration.md) | Exact packages, fixture scope and real replacement |
 | WP02/06 | Signed candidate pipeline and real AOT applications to install |
 | WP07/10/11/12 | Migration journal, lifecycle shell, signature/security mechanisms and reason-code registry |
@@ -28,11 +28,11 @@ Own desktop update discovery, verified download/delta, staging, safe application
 
 | # | Rule |
 |---|---|
-| BR-01 | Build/pack once; install only the immutable tested bytes. |
-| BR-02 | Launch/local saves are not blocked by a failed update check. Apply never forces loss of work. |
-| BR-03 | Recheck product/RID/signatures/policy and data-compatibility immediately before apply or rollback. |
-| BR-04 | A test feed proves updater mechanics; it does not prove production signing or commercial activation. |
-| BR-05 | The updater never writes product data or implements schema migration. |
+| <a id="rule-br-01"></a>BR-01 | Build/pack once; install only the immutable tested bytes. |
+| <a id="rule-br-02"></a>BR-02 | Launch/local saves are not blocked by a failed update check. Apply never forces loss of work. |
+| <a id="rule-br-03"></a>BR-03 | Recheck product/RID/signatures/policy and data-compatibility immediately before apply or rollback. |
+| <a id="rule-br-04"></a>BR-04 | A test feed proves updater mechanics; it does not prove production signing or commercial activation. |
+| <a id="rule-br-05"></a>BR-05 | The updater never writes product data or implements schema migration. |
 
 ## 4. Projects, directories, files and major types affected
 
@@ -49,7 +49,7 @@ Own desktop update discovery, verified download/delta, staging, safe application
 
 ### WP-53.00 — Signed feed and applicable target
 
-**What must be fully done.** Implement architecture 14 §8.1 feed validation, trust, product/RID/channel selection, compatibility and anti-replay. AF-01–AF-07 and UC-07 apply.
+**What must be fully done.** Implement architecture 14 §8.1 feed validation, trust, product/RID/channel selection, compatibility and anti-replay. [AF-01](../../architecture/14-build-packaging-and-release.md#rule-af-01)–[AF-07](../../architecture/14-build-packaging-and-release.md#rule-af-07) and [UC-07](../../architecture/14-build-packaging-and-release.md#rule-uc-07) apply.
 
 **Testing requirements.** Unsigned/expired/duplicate/hash-invalid feed, removed and policy-blocked version independently, wrong product/RID and older signed feed.
 
@@ -59,7 +59,7 @@ Own desktop update discovery, verified download/delta, staging, safe application
 
 ### WP-53.01 — Background download and staging
 
-**What must be fully done.** Implement UP-01/02 and UC-01: background check, range resume, delta reconstruct with verified full fallback, bounded staging and final hash/signature checks.
+**What must be fully done.** Implement [UP-01](../../requirements/10-distribution-update-and-support.md#rule-up-01)/02 and [UC-01](../../architecture/14-build-packaging-and-release.md#rule-uc-01): background check, range resume, delta reconstruct with verified full fallback, bounded staging and final hash/signature checks.
 
 **Testing requirements.** Interrupt every transfer boundary, tamper base/delta/target, storage exhaustion; ensure launch remains available.
 
@@ -69,7 +69,7 @@ Own desktop update discovery, verified download/delta, staging, safe application
 
 ### WP-53.02 — Safe apply and atomic activation
 
-**What must be fully done.** Implement UC-02/03, UP-03/04 and LF-08/09 via the real lifecycle shutdown handshake and selected Velopack adapter. Await all affected instances exiting; do not wait while holding domain locks.
+**What must be fully done.** Implement [UC-02](../../architecture/14-build-packaging-and-release.md#rule-uc-02)/03, [UP-03](../../requirements/10-distribution-update-and-support.md#rule-up-03)/04 and [LF-08](../../requirements/09-shared-desktop-experience.md#rule-lf-08)/09 via the real lifecycle shutdown handshake and selected Velopack adapter. Await all affected instances exiting; do not wait while holding domain locks.
 
 **Testing requirements.** Long render/capture, unsaved edit, peer unavailable, canceled restart and kill at each activation boundary.
 
@@ -79,7 +79,7 @@ Own desktop update discovery, verified download/delta, staging, safe application
 
 ### WP-53.03 — Rollback and migration interlock
 
-**What must be fully done.** Implement UC-04/05/06 and UP-05/06/08. Persist the update journal outside install/data files; use the existing data-store migration read/write compatibility horizon before rollback.
+**What must be fully done.** Implement [UC-04](../../architecture/14-build-packaging-and-release.md#rule-uc-04)/05/06 and [UP-05](../../requirements/10-distribution-update-and-support.md#rule-up-05)/06/08. Persist the update journal outside install/data files; use the existing data-store migration read/write compatibility horizon before rollback.
 
 **Testing requirements.** Fail pre-migration startup, fail during migration, current store outside previous reader/writer horizon and interrupted rollback.
 
@@ -89,7 +89,7 @@ Own desktop update discovery, verified download/delta, staging, safe application
 
 ### WP-53.04 — Channels, staged rollout and security updates
 
-**What must be fully done.** Implement UC-07/08/09, RC-01 and UP-09/10/11 using actual 44 policy and 45 advisory process. Explicit channel selection, stable installation assignment, halt bad versions and respect minimum-version grace.
+**What must be fully done.** Implement [UC-07](../../architecture/14-build-packaging-and-release.md#rule-uc-07)/08/09, [RC-01](../../requirements/10-distribution-update-and-support.md#rule-rc-01) and [UP-09](../../requirements/10-distribution-update-and-support.md#rule-up-09)/10/11 using actual 44 policy and 45 advisory process. Explicit channel selection, stable installation assignment, halt bad versions and respect minimum-version grace.
 
 **Testing requirements.** Both channel directions, unchanged rollout assignment across restart, blocked target after download, emergency offer during critical work and expired grace.
 
@@ -99,7 +99,7 @@ Own desktop update discovery, verified download/delta, staging, safe application
 
 ### WP-53.05 — Diagnostics and preserving data on uninstall
 
-**What must be fully done.** Implement UC-10, UP-07 and existing support activity policy. Record check/download/verify/stage/apply/defer/fail/rollback with stable reasons and correlation; no user content.
+**What must be fully done.** Implement [UC-10](../../architecture/14-build-packaging-and-release.md#rule-uc-10), [UP-07](../../requirements/10-distribution-update-and-support.md#rule-up-07) and existing support activity policy. Record check/download/verify/stage/apply/defer/fail/rollback with stable reasons and correlation; no user content.
 
 **Testing requirements.** Independent expected activity sequence and uninstall/reinstall preserving product data and recovery journal.
 
@@ -137,7 +137,7 @@ Own desktop update discovery, verified download/delta, staging, safe application
 
 ## 7. Tests and verification evidence
 
-Acceptance includes every amended §5 producer/consumer and WP-53.90 evidence. Current P2-013 contracts/data/runtime rules are tested in the original owner implementation, not a detached explanatory sample.
+Acceptance includes every amended §5 producer/consumer and [WP-53.90](#rule-wp-53.90) evidence. Current [P2-013](../../decisions/phase-2-specification-decisions.md#rule-p2-013) contracts/data/runtime rules are tested in the original owner implementation, not a detached explanatory sample.
 
 | Evidence | Produced by |
 |---|---|
@@ -153,7 +153,7 @@ Acceptance includes every amended §5 producer/consumer and WP-53.90 evidence. C
 
 ## 8. Completion gate
 
-Every 53.00–53.05 and 53.90 gate passes with recorded evidence on the admitted platform set. UP-01–UP-11 and UC-01–UC-10 each resolve to the tests above. Required product/data behavior cannot remain an implementation-time design decision. Production release evidence remains WP50-owned.
+Every 53.00–53.05 and 53.90 gate passes with recorded evidence on the admitted platform set. [UP-01](../../requirements/10-distribution-update-and-support.md#rule-up-01)–[UP-11](../../requirements/10-distribution-update-and-support.md#rule-up-11) and [UC-01](../../architecture/14-build-packaging-and-release.md#rule-uc-01)–[UC-10](../../architecture/14-build-packaging-and-release.md#rule-uc-10) each resolve to the tests above. Required product/data behavior cannot remain an implementation-time design decision. Production release evidence remains WP50-owned.
 
 ## 9. Dependencies
 

@@ -25,9 +25,9 @@ They share one property that makes them worth specifying together: **each produc
 | # | Rule |
 |---|---|
 | <a id="rule-sd-01"></a>SD-01 | **The execution profile is part of the run's identity**, not an ambient property of the host. Two runs with the same seed and different profiles are not expected to match, and the profile is recorded on the run row. |
-| SD-02 | **Pacing never changes canonical data** ([SIM-06](../requirements/products/arcscope.md#rule-sim-06)). Real-time and bounded accelerated generation produce identical sample values, logical timestamps and hashes; only wall-clock metadata differs. |
-| SD-03 | **Every random stream is seeded independently per channel and per fault source** ([SIM-05](../requirements/products/arcscope.md#rule-sim-05)). A shared global RNG would make one channel's consumption perturb another's, which would break [SIM-07](../requirements/products/arcscope.md#rule-sim-07) in a way that is very hard to diagnose. |
-| SD-04 | **Logical ticks drive generation, never elapsed wall-clock time.** A host under load produces the same data more slowly, never different data ([SIM-06](../requirements/products/arcscope.md#rule-sim-06), [SIM-15](../requirements/products/arcscope.md#rule-sim-15)). |
+| <a id="rule-sd-02"></a>SD-02 | **Pacing never changes canonical data** ([SIM-06](../requirements/products/arcscope.md#rule-sim-06)). Real-time and bounded accelerated generation produce identical sample values, logical timestamps and hashes; only wall-clock metadata differs. |
+| <a id="rule-sd-03"></a>SD-03 | **Every random stream is seeded independently per channel and per fault source** ([SIM-05](../requirements/products/arcscope.md#rule-sim-05)). A shared global RNG would make one channel's consumption perturb another's, which would break [SIM-07](../requirements/products/arcscope.md#rule-sim-07) in a way that is very hard to diagnose. |
+| <a id="rule-sd-04"></a>SD-04 | **Logical ticks drive generation, never elapsed wall-clock time.** A host under load produces the same data more slowly, never different data ([SIM-06](../requirements/products/arcscope.md#rule-sim-06), [SIM-15](../requirements/products/arcscope.md#rule-sim-15)). |
 
 ### 1.2 Execution inside the single host
 
@@ -52,9 +52,9 @@ External object writes and alarm calls are outside the D1 batch. Crash before pu
 | <a id="rule-sx-01"></a>SX-01 | **The manifest row is the commit point** ([SIM-11](../requirements/products/arcscope.md#rule-sim-11)). An object exists before it is visible; visibility is the row. A committed manifest row never references an unverified partial object. |
 | <a id="rule-sx-02"></a>SX-02 | **The checkpoint and manifest row commit atomically** ([SIM-12](../requirements/products/arcscope.md#rule-sim-12)), in one guarded D1 batch. No committed state can expose an advanced checkpoint without its verified segment. |
 | <a id="rule-sx-03"></a>SX-03 | **A publish carrying a stale fence token is rejected** ([SIM-10](../requirements/products/arcscope.md#rule-sim-10)). This is what makes N replicas safe: a paused-then-resumed generator on an old host cannot publish over a new one. |
-| SX-04 | **Host loss and lease takeover produce the same remaining canonical data**, with no duplicate and no missing logical range ([SIM-12](../requirements/products/arcscope.md#rule-sim-12)). This is the simulator's central invariant, and [SIM-20](../requirements/products/arcscope.md#rule-sim-20) tests it by killing the host mid-run. |
-| SX-05 | **No unbounded generation loop or perpetual hosted generator exists** ([RT-05](05-cloud-architecture.md#rule-rt-05), [SIM-10](../requirements/products/arcscope.md#rule-sim-10)). Each bounded slice commits its continuation before returning; DO alarms and Cron drive later slices. |
-| SX-06 | **Incomplete objects are cleaned** by a sweeper keyed on the absence of a manifest row ([SIM-11](../requirements/products/arcscope.md#rule-sim-11)). |
+| <a id="rule-sx-04"></a>SX-04 | **Host loss and lease takeover produce the same remaining canonical data**, with no duplicate and no missing logical range ([SIM-12](../requirements/products/arcscope.md#rule-sim-12)). This is the simulator's central invariant, and [SIM-20](../requirements/products/arcscope.md#rule-sim-20) tests it by killing the host mid-run. |
+| <a id="rule-sx-05"></a>SX-05 | **No unbounded generation loop or perpetual hosted generator exists** ([RT-05](05-cloud-architecture.md#rule-rt-05), [SIM-10](../requirements/products/arcscope.md#rule-sim-10)). Each bounded slice commits its continuation before returning; DO alarms and Cron drive later slices. |
+| <a id="rule-sx-06"></a>SX-06 | **Incomplete objects are cleaned** by a sweeper keyed on the absence of a manifest row ([SIM-11](../requirements/products/arcscope.md#rule-sim-11)). |
 
 ### 1.3 Bounded evaluation
 
@@ -67,39 +67,39 @@ External object writes and alarm calls are outside the D1 batch. Crash before pu
 | # | Rule |
 |---|---|
 | <a id="rule-sb-01"></a>SB-01 | **Validation happens before admission** ([SIM-04](../requirements/products/arcscope.md#rule-sim-04), [SO-09](contracts/01-public-api-operations.md#rule-so-09)): acyclic channel dependencies, and bounds on depth, node count and operations per tick. An invalid AST fails **before any lease, object or quota debit**. |
-| SB-02 | **The allowlist is closed and versioned with the execution profile.** Adding a function is a profile version change, because it can alter [SIM-07](../requirements/products/arcscope.md#rule-sim-07) equality. |
-| SB-03 | **CSV replay reads an explicitly uploaded, workspace-owned resource identified by content hash** ([SIM-18](../requirements/products/arcscope.md#rule-sim-18)), with a bounded parse report. A scenario cannot fetch a URL, read a host file or cross a workspace boundary. |
-| SB-04 | **An exported scenario contains no deployment secret or policy value** ([SIM-18](../requirements/products/arcscope.md#rule-sim-18)). |
+| <a id="rule-sb-02"></a>SB-02 | **The allowlist is closed and versioned with the execution profile.** Adding a function is a profile version change, because it can alter [SIM-07](../requirements/products/arcscope.md#rule-sim-07) equality. |
+| <a id="rule-sb-03"></a>SB-03 | **CSV replay reads an explicitly uploaded, workspace-owned resource identified by content hash** ([SIM-18](../requirements/products/arcscope.md#rule-sim-18)), with a bounded parse report. A scenario cannot fetch a URL, read a host file or cross a workspace boundary. |
+| <a id="rule-sb-04"></a>SB-04 | **An exported scenario contains no deployment secret or policy value** ([SIM-18](../requirements/products/arcscope.md#rule-sim-18)). |
 
 ### 1.4 Faults, preview and back-pressure
 
 | # | Rule |
 |---|---|
 | <a id="rule-sf-01"></a>SF-01 | **Injected faults carry provenance and counters** ([SIM-05](../requirements/products/arcscope.md#rule-sim-05)). An intentional drop is labelled as intentional, so it can never be mistaken for unexpected data loss — which would make the simulator useless as a verification source. |
-| SF-02 | **Faults apply at explicit logical boundaries**, not at arbitrary points, so their positions are reproducible under [SIM-07](../requirements/products/arcscope.md#rule-sim-07). |
+| <a id="rule-sf-02"></a>SF-02 | **Faults apply at explicit logical boundaries**, not at arbitrary points, so their positions are reproducible under [SIM-07](../requirements/products/arcscope.md#rule-sim-07). |
 | <a id="rule-sf-03"></a>SF-03 | **Preview may visibly decimate or throttle; canonical generation may not** ([SIM-15](../requirements/products/arcscope.md#rule-sim-15)). Under pressure, canonical generation slows, persists safely, or stops with an explicit partial outcome. **Preview overload never silently drops a canonical sample.** |
-| SF-04 | **Memory, queues and temporary storage are bounded** ([SIM-15](../requirements/products/arcscope.md#rule-sim-15)), and deployment policy bounds channels, rates, duration, AST work, concurrency, queue time, storage, egress and retention ([SIM-16](../requirements/products/arcscope.md#rule-sim-16)). |
+| <a id="rule-sf-04"></a>SF-04 | **Memory, queues and temporary storage are bounded** ([SIM-15](../requirements/products/arcscope.md#rule-sim-15)), and deployment policy bounds channels, rates, duration, AST work, concurrency, queue time, storage, egress and retention ([SIM-16](../requirements/products/arcscope.md#rule-sim-16)). |
 
 ### 1.5 Commercial and lifecycle position
 
 | # | Rule |
 |---|---|
-| SC-01 | **A `SimulationRun` is a product job, not an Agent Run** ([SIM-01](../requirements/products/arcscope.md#rule-sim-01), [CM-04](09-ai-and-agent-runtime-architecture.md#rule-cm-04) of the runtime architecture). It invokes no model and debits no AI capacity. |
-| SC-02 | **It consumes product-resource quota** — duration, samples, bytes, egress — and its output counts against storage quota ([SIM-17](../requirements/products/arcscope.md#rule-sim-17), [C-09](../requirements/00-product-scope-and-portfolio.md#rule-c-09)). |
-| SC-03 | **Official simulation requires the active Cloud service entitlement**, independently of AI credits ([SIM-17](../requirements/products/arcscope.md#rule-sim-17)). Self-hosting uses operator grants and the same safety limits. |
-| SC-04 | **Term expiry or suspension stops generation at a durable boundary** as `canceled` with the explicit eligibility reason ([SIM-17](../requirements/products/arcscope.md#rule-sim-17)). Committed output then follows retained-data access rules. |
-| SC-05 | **Cancel commits a partial outcome, never success for an incomplete range** ([SIM-08](../requirements/products/arcscope.md#rule-sim-08)). |
+| <a id="rule-sc-01"></a>SC-01 | **A `SimulationRun` is a product job, not an Agent Run** ([SIM-01](../requirements/products/arcscope.md#rule-sim-01), [CM-04](09-ai-and-agent-runtime-architecture.md#rule-cm-04) of the runtime architecture). It invokes no model and debits no AI capacity. |
+| <a id="rule-sc-02"></a>SC-02 | **It consumes product-resource quota** — duration, samples, bytes, egress — and its output counts against storage quota ([SIM-17](../requirements/products/arcscope.md#rule-sim-17), [C-09](../requirements/00-product-scope-and-portfolio.md#rule-c-09)). |
+| <a id="rule-sc-03"></a>SC-03 | **Official simulation requires the active Cloud service entitlement**, independently of AI credits ([SIM-17](../requirements/products/arcscope.md#rule-sim-17)). Self-hosting uses operator grants and the same safety limits. |
+| <a id="rule-sc-04"></a>SC-04 | **Term expiry or suspension stops generation at a durable boundary** as `canceled` with the explicit eligibility reason ([SIM-17](../requirements/products/arcscope.md#rule-sim-17)). Committed output then follows retained-data access rules. |
+| <a id="rule-sc-05"></a>SC-05 | **Cancel commits a partial outcome, never success for an incomplete range** ([SIM-08](../requirements/products/arcscope.md#rule-sim-08)). |
 | <a id="rule-sc-06"></a>SC-06 | **Simulation output is labelled synthetic wherever it appears**, and seed and profile provenance survives export or copy ([SIM-14](../requirements/products/arcscope.md#rule-sim-14), [I-496](../requirements/01-normative-glossary-and-invariants.md#rule-i-496)). A synthetic capture must never be presented as hardware evidence. |
-| SC-07 | **Retention, deletion and exhausted storage expose their effect on historical runs and native availability** ([SIM-19](../requirements/products/arcscope.md#rule-sim-19)), and a stored output stays distinguishable from a regenerated one. |
+| <a id="rule-sc-07"></a>SC-07 | **Retention, deletion and exhausted storage expose their effect on historical runs and native availability** ([SIM-19](../requirements/products/arcscope.md#rule-sim-19)), and a stored output stays distinguishable from a regenerated one. |
 
 ### 1.6 Native consumption
 
 | # | Rule |
 |---|---|
-| SN-01 | **ArcScope exposes Cloud Simulation as a clearly synthetic `DataSource`** ([SIM-14](../requirements/products/arcscope.md#rule-sim-14)) that feeds the **normal** acquisition pipeline — session, capture, decoder, measurement and report workflows are unchanged. |
-| SN-02 | **Segments are fetched by manifest, resumable and hash-verified** ([SIM-13](../requirements/products/arcscope.md#rule-sim-13), [SO-03](contracts/01-public-api-operations.md#rule-so-03)). A hash mismatch is a rejected segment, not a warning. |
-| SN-03 | **Realtime is an optional wakeup or preview hint** ([SIM-13](../requirements/products/arcscope.md#rule-sim-13), [RE-07](contracts/03-realtime-and-bridge.md#rule-re-07)). With realtime disabled entirely, polling plus the manifest gives the same access to retained committed data. |
-| SN-04 | **Downloaded segments are a verified copy, not a second authority** (`§4` of the data-model overview). Deleting them is a cache operation; the Cloud manifest remains the record. |
+| <a id="rule-sn-01"></a>SN-01 | **ArcScope exposes Cloud Simulation as a clearly synthetic `DataSource`** ([SIM-14](../requirements/products/arcscope.md#rule-sim-14)) that feeds the **normal** acquisition pipeline — session, capture, decoder, measurement and report workflows are unchanged. |
+| <a id="rule-sn-02"></a>SN-02 | **Segments are fetched by manifest, resumable and hash-verified** ([SIM-13](../requirements/products/arcscope.md#rule-sim-13), [SO-03](contracts/01-public-api-operations.md#rule-so-03)). A hash mismatch is a rejected segment, not a warning. |
+| <a id="rule-sn-03"></a>SN-03 | **Realtime is an optional wakeup or preview hint** ([SIM-13](../requirements/products/arcscope.md#rule-sim-13), [RE-07](contracts/03-realtime-and-bridge.md#rule-re-07)). With realtime disabled entirely, polling plus the manifest gives the same access to retained committed data. |
+| <a id="rule-sn-04"></a>SN-04 | **Downloaded segments are a verified copy, not a second authority** (`§4` of the data-model overview). Deleting them is a cache operation; the Cloud manifest remains the record. |
 
 ---
 
@@ -107,7 +107,7 @@ External object writes and alarm calls are outside the D1 batch. Crash before pu
 
 SimulationPacer Durable Object is keyed by realm/run/recoveryGeneration and owns only alarm coordination. D1 remains authority for SimulationRun, segment sequence, next_due_at, pace_revision, checkpoint hash and execution fence. Real-time mode defaults to 1-second segments, configured 0.25–10 seconds; accelerated mode reschedules immediately after a bounded committed slice. DO alarm reads current D1 run/fence and invokes the same bounded Container job; completion atomically commits one deterministic segment/checkpoint and next_due_at. Duplicate/late alarms use `(run_id,segment_sequence)` receipts; an already committed segment is never regenerated/published twice. Pause/cancel increments pace_revision and revokes the old fence before acknowledgment; late alarm cannot revive it.
 
-DO alarms are at least once and automatic retries are bounded, not a hard-real-time clock. After failure schedule a bounded next alarm; a minutely Cron reconciler finds overdue active runs and repairs lost/exhausted alarms. Delayed work catches up in≤100 items/20s slices using the deterministic virtual sample timeline; wall-clock delay never changes measurements. A proposed D-020 healthy-path target is segment visibility within 5 seconds of due time, measured with cold starts and admitted concurrency; outages display late/degraded state and do not claim that deadline. WP51 owns duplicate/restart/cancel/overdue/accelerated soak vectors. [Alarm semantics](https://developers.cloudflare.com/durable-objects/api/alarms/) checked 2026-09-17.
+DO alarms are at least once and automatic retries are bounded, not a hard-real-time clock. After failure schedule a bounded next alarm; a minutely Cron reconciler finds overdue active runs and repairs lost/exhausted alarms. Delayed work catches up in≤100 items/20s slices using the deterministic virtual sample timeline; wall-clock delay never changes measurements. A proposed [D-020](../decisions/phase-1-foundation-decisions.md#rule-d-020) healthy-path target is segment visibility within 5 seconds of due time, measured with cold starts and admitted concurrency; outages display late/degraded state and do not claim that deadline. WP51 owns duplicate/restart/cancel/overdue/accelerated soak vectors. [Alarm semantics](https://developers.cloudflare.com/durable-objects/api/alarms/) checked 2026-09-17.
 
 ## 2. OTIO interchange
 
@@ -115,10 +115,10 @@ DO alarms are at least once and automatic retries are bounded, not a hard-real-t
 
 | # | Rule |
 |---|---|
-| OA-01 | **Import and export are both required in V1** ([OT-01](../requirements/products/arcslate.md#rule-ot-01)). A dependency entry or a one-direction adapter does not satisfy delivery. |
-| OA-02 | **OTIO is an interchange format, never the working store** ([OT-04](../requirements/products/arcslate.md#rule-ot-04), [I-497](../requirements/01-normative-glossary-and-invariants.md#rule-i-497)). Import creates ArcSlate-owned canonical objects with provenance; export binds a **committed** sequence revision and produces a separate artifact. |
-| OA-03 | **The support profile is declared**: the pinned library, the supported OTIO schema versions and the supported top-level types ([OT-02](../requirements/products/arcslate.md#rule-ot-02)). V1 accepts and emits a Timeline; an unsupported collection or top-level type produces a clear report, never an implicit partial selection. |
-| OA-04 | **`.otio` references media; it never collects, uploads or embeds it** ([OT-08](../requirements/products/arcslate.md#rule-ot-08), [I-497](../requirements/01-normative-glossary-and-invariants.md#rule-i-497)). |
+| <a id="rule-oa-01"></a>OA-01 | **Import and export are both required in V1** ([OT-01](../requirements/products/arcslate.md#rule-ot-01)). A dependency entry or a one-direction adapter does not satisfy delivery. |
+| <a id="rule-oa-02"></a>OA-02 | **OTIO is an interchange format, never the working store** ([OT-04](../requirements/products/arcslate.md#rule-ot-04), [I-497](../requirements/01-normative-glossary-and-invariants.md#rule-i-497)). Import creates ArcSlate-owned canonical objects with provenance; export binds a **committed** sequence revision and produces a separate artifact. |
+| <a id="rule-oa-03"></a>OA-03 | **The support profile is declared**: the pinned library, the supported OTIO schema versions and the supported top-level types ([OT-02](../requirements/products/arcslate.md#rule-ot-02)). V1 accepts and emits a Timeline; an unsupported collection or top-level type produces a clear report, never an implicit partial selection. |
+| <a id="rule-oa-04"></a>OA-04 | **`.otio` references media; it never collects, uploads or embeds it** ([OT-08](../requirements/products/arcslate.md#rule-ot-08), [I-497](../requirements/01-normative-glossary-and-invariants.md#rule-i-497)). |
 
 ### 2.2 The supported semantic subset
 
@@ -128,30 +128,30 @@ DO alarms are at least once and automatic retries are bounded, not a hard-real-t
 
 | # | Rule |
 |---|---|
-| OS-01 | **Every item outside the subset receives an item-level disposition** — retained, approximated or omitted ([OT-07](../requirements/products/arcslate.md#rule-ot-07)). Export cannot silently flatten or discard; the user reviews the result or cancels. |
-| OS-02 | **Opaque preservation is never advertised as editable support** ([OT-07](../requirements/products/arcslate.md#rule-ot-07)). Carrying a construct through is not the same as understanding it, and the report says which one happened. |
-| OS-03 | **Rate and range semantics are preserved exactly, including fractional frame rates and audio alignment** ([OT-05](../requirements/products/arcslate.md#rule-ot-05)). This is why the schema stores `frame_rate_num`/`frame_rate_den` and no float column. |
-| OS-04 | **Rounding, representability limits and unsupported time effects are reported against the affected objects** ([OT-05](../requirements/products/arcslate.md#rule-ot-05)). **No silent frame shift is permitted** — a one-frame drift that nobody reports is the defect this rule exists to prevent. |
+| <a id="rule-os-01"></a>OS-01 | **Every item outside the subset receives an item-level disposition** — retained, approximated or omitted ([OT-07](../requirements/products/arcslate.md#rule-ot-07)). Export cannot silently flatten or discard; the user reviews the result or cancels. |
+| <a id="rule-os-02"></a>OS-02 | **Opaque preservation is never advertised as editable support** ([OT-07](../requirements/products/arcslate.md#rule-ot-07)). Carrying a construct through is not the same as understanding it, and the report says which one happened. |
+| <a id="rule-os-03"></a>OS-03 | **Rate and range semantics are preserved exactly, including fractional frame rates and audio alignment** ([OT-05](../requirements/products/arcslate.md#rule-ot-05)). This is why the schema stores `frame_rate_num`/`frame_rate_den` and no float column. |
+| <a id="rule-os-04"></a>OS-04 | **Rounding, representability limits and unsupported time effects are reported against the affected objects** ([OT-05](../requirements/products/arcslate.md#rule-ot-05)). **No silent frame shift is permitted** — a one-frame drift that nobody reports is the defect this rule exists to prevent. |
 
 ### 2.3 Round-trip
 
 | # | Rule |
 |---|---|
-| OR-01 | **Round-trip equality is semantic, not byte-level** ([OT-06](../requirements/products/arcslate.md#rule-ot-06)). The comparison is over supported timeline meaning and media references — never byte equality, and never internal ArcSlate identifiers. |
-| OR-02 | **Repeated uses of one source retain their placement** ([OT-06](../requirements/products/arcslate.md#rule-ot-06)). |
-| OR-03 | **Core supported edits survive even when external tooling drops private ArcSlate metadata** ([OT-06](../requirements/products/arcslate.md#rule-ot-06)). Fidelity must not depend on a third-party tool preserving our namespace. |
-| OR-04 | **Verification uses real fixtures and the pinned official library** ([OT-12](../requirements/products/arcslate.md#rule-ot-12)): both directions, mixed rates, gaps and stack ordering, repeated media, missing references, supported dissolves and markers, unsupported-feature reports, malicious paths, malformed input, cancellation and semantic round-trip. **Merely opening JSON is insufficient.** |
+| <a id="rule-or-01"></a>OR-01 | **Round-trip equality is semantic, not byte-level** ([OT-06](../requirements/products/arcslate.md#rule-ot-06)). The comparison is over supported timeline meaning and media references — never byte equality, and never internal ArcSlate identifiers. |
+| <a id="rule-or-02"></a>OR-02 | **Repeated uses of one source retain their placement** ([OT-06](../requirements/products/arcslate.md#rule-ot-06)). |
+| <a id="rule-or-03"></a>OR-03 | **Core supported edits survive even when external tooling drops private ArcSlate metadata** ([OT-06](../requirements/products/arcslate.md#rule-ot-06)). Fidelity must not depend on a third-party tool preserving our namespace. |
+| <a id="rule-or-04"></a>OR-04 | **Verification uses real fixtures and the pinned official library** ([OT-12](../requirements/products/arcslate.md#rule-ot-12)): both directions, mixed rates, gaps and stack ordering, repeated media, missing references, supported dissolves and markers, unsupported-feature reports, malicious paths, malformed input, cancellation and semantic round-trip. **Merely opening JSON is insufficient.** |
 
 ### 2.4 Safety
 
 | # | Rule |
 |---|---|
-| OY-01 | **Parsing is bounded** in size, depth and item count, rejects malformed or unsupported schema and invalid numeric values, and **stages changes before commit** ([OT-09](../requirements/products/arcslate.md#rule-ot-09)). |
-| OY-02 | **No arbitrary adapters, no Python plug-ins, no executable content** ([OT-09](../requirements/products/arcslate.md#rule-ot-09)). This is the single most important safety rule here, because the upstream ecosystem's adapter mechanism is exactly an executable-content path. |
-| OY-03 | **Native OTIO use stays behind an owned narrow C ABI and the untrusted-content boundary** ([OT-09](../requirements/products/arcslate.md#rule-ot-09), `§3.2` of the native interop architecture). The slot's obligations are [AD-01](21-platform-and-dependency-matrix.md#rule-ad-01)–[AD-08](21-platform-and-dependency-matrix.md#rule-ad-08) of the platform matrix. |
-| OY-04 | **Relative paths resolve only under an explicitly approved base** ([OT-08](../requirements/products/arcslate.md#rule-ot-08)). A file cannot authorise access outside selected roots or initiate a download. |
-| OY-05 | **Export writes a temporary destination and publishes atomically after validation** ([OT-10](../requirements/products/arcslate.md#rule-ot-10)). Failure or cancellation preserves both the working project and any existing destination; overwrite requires explicit approval. |
-| OY-06 | **Reports exclude unselected absolute paths and secrets** ([OT-10](../requirements/products/arcslate.md#rule-ot-10)). |
+| <a id="rule-oy-01"></a>OY-01 | **Parsing is bounded** in size, depth and item count, rejects malformed or unsupported schema and invalid numeric values, and **stages changes before commit** ([OT-09](../requirements/products/arcslate.md#rule-ot-09)). |
+| <a id="rule-oy-02"></a>OY-02 | **No arbitrary adapters, no Python plug-ins, no executable content** ([OT-09](../requirements/products/arcslate.md#rule-ot-09)). This is the single most important safety rule here, because the upstream ecosystem's adapter mechanism is exactly an executable-content path. |
+| <a id="rule-oy-03"></a>OY-03 | **Native OTIO use stays behind an owned narrow C ABI and the untrusted-content boundary** ([OT-09](../requirements/products/arcslate.md#rule-ot-09), `§3.2` of the native interop architecture). The slot's obligations are [AD-01](21-platform-and-dependency-matrix.md#rule-ad-01)–[AD-08](21-platform-and-dependency-matrix.md#rule-ad-08) of the platform matrix. |
+| <a id="rule-oy-04"></a>OY-04 | **Relative paths resolve only under an explicitly approved base** ([OT-08](../requirements/products/arcslate.md#rule-ot-08)). A file cannot authorise access outside selected roots or initiate a download. |
+| <a id="rule-oy-05"></a>OY-05 | **Export writes a temporary destination and publishes atomically after validation** ([OT-10](../requirements/products/arcslate.md#rule-ot-10)). Failure or cancellation preserves both the working project and any existing destination; overwrite requires explicit approval. |
+| <a id="rule-oy-06"></a>OY-06 | **Reports exclude unselected absolute paths and secrets** ([OT-10](../requirements/products/arcslate.md#rule-ot-10)). |
 
 ### 2.5 Deliberately not V1
 
@@ -193,7 +193,7 @@ The tick base is chosen so that every rate the product supports divides it exact
 |---|---|
 | <a id="rule-tb-01"></a>TB-01 | **Canonical position is an integer tick count.** `timeline_item.start_ticks`, `duration_ticks` and every stored position are ticks. **No stored position is a frame number, a sample index, a float or a `TimeSpan`.** |
 | <a id="rule-tb-02"></a>TB-02 | Sequence output grids must be exact integer tick counts. This restriction applies to grids ArcSlate creates; source PTS and interchange import use the explicitly reported conversion rules in §3.5 and §3.10. An inexact source time base is not grounds for rejecting otherwise supported media. |
-| TB-03 | **Arithmetic is exact and closed.** Adding, subtracting and comparing ticks is integer arithmetic; no conversion occurs, so no rounding occurs. |
+| <a id="rule-tb-03"></a>TB-03 | **Arithmetic is exact and closed.** Adding, subtracting and comparing ticks is integer arithmetic; no conversion occurs, so no rounding occurs. |
 | <a id="rule-tb-04"></a>TB-04 | **Frames and samples are projections, computed on demand**, never stored as the position. The parallel integer sample columns of the previous model are removed: two stored grids that cannot agree is the defect itself. |
 
 ### 3.2 Three grids, and which is authoritative for what
@@ -264,8 +264,8 @@ Output sample ownership is therefore assigned, not rounded.
 
 | # | Rule |
 |---|---|
-| TC-01 | **Drop-frame timecode is a display convention**, defined against the nominal integer rate. Its rounding is correct *for timecode* and is never applied to a position. |
-| TC-02 | **A timecode string is produced from a canonical tick and never parsed back into one for storage.** Round-tripping a position through a timecode string is prohibited, because timecode is lossy by construction at fractional rates. |
+| <a id="rule-tc-01"></a>TC-01 | **Drop-frame timecode is a display convention**, defined against the nominal integer rate. Its rounding is correct *for timecode* and is never applied to a position. |
+| <a id="rule-tc-02"></a>TC-02 | **A timecode string is produced from a canonical tick and never parsed back into one for storage.** Round-tripping a position through a timecode string is prohibited, because timecode is lossy by construction at fractional rates. |
 
 ### 3.7 Source media, PTS and conform
 
@@ -273,10 +273,10 @@ Source media has its own time base, which is generally neither the sequence rate
 
 | # | Rule |
 |---|---|
-| SM-01 | **A source's own time base is recorded as a rational** (`frame_rate_num`/`frame_rate_den`, `sample_rate`, and the container's PTS time base), and is never assumed equal to the sequence's. |
+| <a id="rule-sm-01"></a>SM-01 | **A source's own time base is recorded as a rational** (`frame_rate_num`/`frame_rate_den`, `sample_rate`, and the container's PTS time base), and is never assumed equal to the sequence's. |
 | <a id="rule-sm-02"></a>SM-02 | **A source PTS converts to canonical ticks exactly where the source base divides the tick base, and with a declared rounding where it does not.** The conversion result is recorded with the media reference, so decode targets are reproducible rather than recomputed differently by two code paths. |
 | Source-conform application | Apply [SM-03](#rule-sm-03) from §3.5; the same rule is not redefined here. |
-| SM-04 | **Conform never rewrites the source.** It records a mapping; the media file is untouched ([MP-01](12-native-interop-and-media.md#rule-mp-01) of the native interop architecture). |
+| <a id="rule-sm-04"></a>SM-04 | **Conform never rewrites the source.** It records a mapping; the media file is untouched ([MP-01](12-native-interop-and-media.md#rule-mp-01) of the native interop architecture). |
 | <a id="rule-sm-05"></a>SM-05 | **Retiming composes rationals, then projects once.** A speed change multiplies the canonical range by an exact rational and projects to the source's grid at the end — never a chain of grid-to-grid conversions, which is how retiming drift is normally introduced. |
 
 ### 3.8 Consequences for the surrounding designs
@@ -313,44 +313,44 @@ The official [`RationalTime` API](https://raw.githubusercontent.com/AcademySoftw
 | # | Rule |
 |---|---|
 | <a id="rule-ob-01"></a>OB-01 | The OTIO adapter alone accepts/emits finite IEEE-754 value/rate pairs. Reject NaN, infinity, non-positive rate, overflow and impossible negative duration before committing any domain object. Preserve original numeric fields as provenance, not authoritative edit positions. |
-| OB-02 | Decode the exact binary rational of each finite double using its sign/exponent/significand. Normalise a rate to a declared standard n/d only when it is within one ULP of that standard's binary encoding; record the normalisation. Decimal 29.97 is not silently relabelled 30000/1001. Compute value/rate × tick-base with checked integer/rational arithmetic and round once, nearest ties-to-even. |
-| OB-03 | Choose a representable sequence output grid and report any substitution. Video/audio projections use their own grids. A source/interchange rate need not itself divide the tick base; bounded conversion error is recorded per item, with maximum error and fidelity level. Invalid values fail the import transaction; valid inexact values receive an explicit conform disposition. |
-| OB-04 | Export prefers a reduced exact `(value, rate)` pair whose integers fit binary64's exact-integer range, or an exactly represented frame/sample value with the declared normalised standard rate. Re-import through the same boundary must recover the intended canonical value for an exact claim. If the actual pair cannot, quantify the error and declare a lossy disposition before export; never silently claim lossless. A supported grid-aligned interchange must preserve frame/sample addressing. Optional namespaced exact-tick metadata is supplementary, never the only way the core interchange remains meaningful. |
+| <a id="rule-ob-02"></a>OB-02 | Decode the exact binary rational of each finite double using its sign/exponent/significand. Normalise a rate to a declared standard n/d only when it is within one ULP of that standard's binary encoding; record the normalisation. Decimal 29.97 is not silently relabelled 30000/1001. Compute value/rate × tick-base with checked integer/rational arithmetic and round once, nearest ties-to-even. |
+| <a id="rule-ob-03"></a>OB-03 | Choose a representable sequence output grid and report any substitution. Video/audio projections use their own grids. A source/interchange rate need not itself divide the tick base; bounded conversion error is recorded per item, with maximum error and fidelity level. Invalid values fail the import transaction; valid inexact values receive an explicit conform disposition. |
+| <a id="rule-ob-04"></a>OB-04 | Export prefers a reduced exact `(value, rate)` pair whose integers fit binary64's exact-integer range, or an exactly represented frame/sample value with the declared normalised standard rate. Re-import through the same boundary must recover the intended canonical value for an exact claim. If the actual pair cannot, quantify the error and declare a lossy disposition before export; never silently claim lossless. A supported grid-aligned interchange must preserve frame/sample addressing. Optional namespaced exact-tick metadata is supplementary, never the only way the core interchange remains meaningful. |
 | <a id="rule-ob-05"></a>OB-05 | Precision/range refusal affects that import/export operation, not the native project. No repeated double→rational→double conversions are permitted inside edit, retime, cache or render calculations. Test both directions against the pinned official library, including files with ArcSlate metadata removed. |
 
 ## 4. Verification
 
 | # | Obligation | Where |
 |---|---|---|
-| SV-01 | Same seed and profile produce identical canonical hashes; a changed seed produces different data | [WP-51.01](../planning/work-packages/51-arcscope-cloud-simulator.md#rule-wp-51.01) |
-| SV-02 | Fault positions are exact and reproducible, and every injected fault is labelled as intentional | [WP-51.02](../planning/work-packages/51-arcscope-cloud-simulator.md#rule-wp-51.02) |
-| SV-03 | Pause and resume, and **a killed host with a fenced takeover**, produce the same remaining canonical data with no duplicate or missing range | [WP-51.03](../planning/work-packages/51-arcscope-cloud-simulator.md#rule-wp-51.03), [WP-21.05](../planning/work-packages/21-cloud-host-and-persistence.md#rule-wp-21.05) |
-| SV-04 | Duplicate start, stale and out-of-order commands create no second run and cannot resurrect a terminal run | [WP-51.03](../planning/work-packages/51-arcscope-cloud-simulator.md#rule-wp-51.03) |
-| SV-05 | Malformed AST and malformed CSV fail before any lease, object or quota debit | [WP-51.02](../planning/work-packages/51-arcscope-cloud-simulator.md#rule-wp-51.02) |
-| SV-06 | Quota exhaustion and cross-workspace access are denied; a term expiry cancels at a durable boundary with its reason | [WP-51.04](../planning/work-packages/51-arcscope-cloud-simulator.md#rule-wp-51.04), [WP-42.11](../planning/work-packages/42-commerce-entitlement-and-credits.md#rule-wp-42.11) |
-| SV-07 | Reconnect with realtime disabled preserves access to all retained committed data | [WP-51.05](../planning/work-packages/51-arcscope-cloud-simulator.md#rule-wp-51.05), [WP-24.05](../planning/work-packages/24-realtime-and-reliable-events.md#rule-wp-24.05) |
-| SV-08 | Partial cancellation reports partial, never success, and a 24-hour bounded-resource soak holds | [WP-51.05](../planning/work-packages/51-arcscope-cloud-simulator.md#rule-wp-51.05) |
-| SV-09 | Simulated data is labelled synthetic through session, export and copy, and never enters a hardware-evidence path | [WP-51.05](../planning/work-packages/51-arcscope-cloud-simulator.md#rule-wp-51.05), [WP-34.04](../planning/work-packages/34-arcscope-analysis-and-reporting.md#rule-wp-34.04) |
-| OV-01 | OTIO import and export both work against real fixtures and the pinned official library, in both directions | [WP-39.05](../planning/work-packages/39-arcslate-integration-and-portability.md#rule-wp-39.05) |
-| OV-02 | Mixed rates, gaps, stack ordering, repeated media and missing references survive semantic round-trip | [WP-39.05](../planning/work-packages/39-arcslate-integration-and-portability.md#rule-wp-39.05) |
-| OV-03 | Every unsupported feature produces an item-level disposition; nothing is silently flattened or dropped | [WP-39.05](../planning/work-packages/39-arcslate-integration-and-portability.md#rule-wp-39.05) |
-| OV-04 | Fractional frame rates round-trip with no frame shift, and any rounding is reported against its object | [WP-39.05](../planning/work-packages/39-arcslate-integration-and-portability.md#rule-wp-39.05) |
-| OV-05 | Malicious paths, malformed input and oversized documents are rejected before commit; no adapter or plug-in loads | [WP-39.05](../planning/work-packages/39-arcslate-integration-and-portability.md#rule-wp-39.05), [WP-11.05](../planning/work-packages/11-security-foundation.md#rule-wp-11.05) |
-| OV-06 | Export cancellation leaves the project and any existing destination untouched | [WP-39.05](../planning/work-packages/39-arcslate-integration-and-portability.md#rule-wp-39.05) |
-| TV-01 | Frame → tick → frame and sample → tick → sample round-trip exactly for every supported rate | [WP-36.02](../planning/work-packages/36-arcslate-project-and-timeline.md#rule-wp-36.02) |
+| <a id="rule-sv-01"></a>SV-01 | Same seed and profile produce identical canonical hashes; a changed seed produces different data | [WP-51.01](../planning/work-packages/51-arcscope-cloud-simulator.md#rule-wp-51.01) |
+| <a id="rule-sv-02"></a>SV-02 | Fault positions are exact and reproducible, and every injected fault is labelled as intentional | [WP-51.02](../planning/work-packages/51-arcscope-cloud-simulator.md#rule-wp-51.02) |
+| <a id="rule-sv-03"></a>SV-03 | Pause and resume, and **a killed host with a fenced takeover**, produce the same remaining canonical data with no duplicate or missing range | [WP-51.03](../planning/work-packages/51-arcscope-cloud-simulator.md#rule-wp-51.03), [WP-21.05](../planning/work-packages/21-cloud-host-and-persistence.md#rule-wp-21.05) |
+| <a id="rule-sv-04"></a>SV-04 | Duplicate start, stale and out-of-order commands create no second run and cannot resurrect a terminal run | [WP-51.03](../planning/work-packages/51-arcscope-cloud-simulator.md#rule-wp-51.03) |
+| <a id="rule-sv-05"></a>SV-05 | Malformed AST and malformed CSV fail before any lease, object or quota debit | [WP-51.02](../planning/work-packages/51-arcscope-cloud-simulator.md#rule-wp-51.02) |
+| <a id="rule-sv-06"></a>SV-06 | Quota exhaustion and cross-workspace access are denied; a term expiry cancels at a durable boundary with its reason | [WP-51.04](../planning/work-packages/51-arcscope-cloud-simulator.md#rule-wp-51.04), [WP-42.11](../planning/work-packages/42-commerce-entitlement-and-credits.md#rule-wp-42.11) |
+| <a id="rule-sv-07"></a>SV-07 | Reconnect with realtime disabled preserves access to all retained committed data | [WP-51.05](../planning/work-packages/51-arcscope-cloud-simulator.md#rule-wp-51.05), [WP-24.05](../planning/work-packages/24-realtime-and-reliable-events.md#rule-wp-24.05) |
+| <a id="rule-sv-08"></a>SV-08 | Partial cancellation reports partial, never success, and a 24-hour bounded-resource soak holds | [WP-51.05](../planning/work-packages/51-arcscope-cloud-simulator.md#rule-wp-51.05) |
+| <a id="rule-sv-09"></a>SV-09 | Simulated data is labelled synthetic through session, export and copy, and never enters a hardware-evidence path | [WP-51.05](../planning/work-packages/51-arcscope-cloud-simulator.md#rule-wp-51.05), [WP-34.04](../planning/work-packages/34-arcscope-analysis-and-reporting.md#rule-wp-34.04) |
+| <a id="rule-ov-01"></a>OV-01 | OTIO import and export both work against real fixtures and the pinned official library, in both directions | [WP-39.05](../planning/work-packages/39-arcslate-integration-and-portability.md#rule-wp-39.05) |
+| <a id="rule-ov-02"></a>OV-02 | Mixed rates, gaps, stack ordering, repeated media and missing references survive semantic round-trip | [WP-39.05](../planning/work-packages/39-arcslate-integration-and-portability.md#rule-wp-39.05) |
+| <a id="rule-ov-03"></a>OV-03 | Every unsupported feature produces an item-level disposition; nothing is silently flattened or dropped | [WP-39.05](../planning/work-packages/39-arcslate-integration-and-portability.md#rule-wp-39.05) |
+| <a id="rule-ov-04"></a>OV-04 | Fractional frame rates round-trip with no frame shift, and any rounding is reported against its object | [WP-39.05](../planning/work-packages/39-arcslate-integration-and-portability.md#rule-wp-39.05) |
+| <a id="rule-ov-05"></a>OV-05 | Malicious paths, malformed input and oversized documents are rejected before commit; no adapter or plug-in loads | [WP-39.05](../planning/work-packages/39-arcslate-integration-and-portability.md#rule-wp-39.05), [WP-11.05](../planning/work-packages/11-security-foundation.md#rule-wp-11.05) |
+| <a id="rule-ov-06"></a>OV-06 | Export cancellation leaves the project and any existing destination untouched | [WP-39.05](../planning/work-packages/39-arcslate-integration-and-portability.md#rule-wp-39.05) |
+| <a id="rule-tv-01"></a>TV-01 | Frame → tick → frame and sample → tick → sample round-trip exactly for every supported rate | [WP-36.02](../planning/work-packages/36-arcslate-project-and-timeline.md#rule-wp-36.02) |
 | <a id="rule-tv-02"></a>TV-02 | No stored position is a frame number, a sample index, a float or a `TimeSpan`; a policy test asserts it | [WP-05](../planning/work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05), [WP-36.02](../planning/work-packages/36-arcslate-project-and-timeline.md#rule-wp-36.02) |
-| TV-03 | Creating an inexact output grid is refused; an inexact source/interchange base imports through the declared conform rules with fidelity evidence | [WP-36.02](../planning/work-packages/36-arcslate-project-and-timeline.md#rule-wp-36.02), [WP-39.05](../planning/work-packages/39-arcslate-integration-and-portability.md#rule-wp-39.05) |
-| TV-04 | Sequential clips at 30000/1001 fps and 48 kHz show **no cumulative drift** over a long sequence, and each cut lands within one sample of its canonical position | [WP-37.02](../planning/work-packages/37-arcslate-playback-and-processing.md#rule-wp-37.02) |
-| TV-05 | A projected range covers its canonical range; adjacent clips leave no one-sample hole | [WP-37.02](../planning/work-packages/37-arcslate-playback-and-processing.md#rule-wp-37.02) |
-| TV-06 | Retiming composes rationals and projects once; a chain of speed changes introduces no drift | [WP-37.02](../planning/work-packages/37-arcslate-playback-and-processing.md#rule-wp-37.02) |
-| TV-07 | A source whose time base does not divide the tick base imports with its rounding recorded in the conform report | [WP-36.02](../planning/work-packages/36-arcslate-project-and-timeline.md#rule-wp-36.02) |
+| <a id="rule-tv-03"></a>TV-03 | Creating an inexact output grid is refused; an inexact source/interchange base imports through the declared conform rules with fidelity evidence | [WP-36.02](../planning/work-packages/36-arcslate-project-and-timeline.md#rule-wp-36.02), [WP-39.05](../planning/work-packages/39-arcslate-integration-and-portability.md#rule-wp-39.05) |
+| <a id="rule-tv-04"></a>TV-04 | Sequential clips at 30000/1001 fps and 48 kHz show **no cumulative drift** over a long sequence, and each cut lands within one sample of its canonical position | [WP-37.02](../planning/work-packages/37-arcslate-playback-and-processing.md#rule-wp-37.02) |
+| <a id="rule-tv-05"></a>TV-05 | A projected range covers its canonical range; adjacent clips leave no one-sample hole | [WP-37.02](../planning/work-packages/37-arcslate-playback-and-processing.md#rule-wp-37.02) |
+| <a id="rule-tv-06"></a>TV-06 | Retiming composes rationals and projects once; a chain of speed changes introduces no drift | [WP-37.02](../planning/work-packages/37-arcslate-playback-and-processing.md#rule-wp-37.02) |
+| <a id="rule-tv-07"></a>TV-07 | A source whose time base does not divide the tick base imports with its rounding recorded in the conform report | [WP-36.02](../planning/work-packages/36-arcslate-project-and-timeline.md#rule-wp-36.02) |
 | <a id="rule-tv-08"></a>TV-08 | **A cut at frame 1 of a 30000/1001 fps sequence with 48 kHz audio emits sample 1601 exactly once and 1602 exactly once** across the join — no duplicated and no missing sample ([BO-02](#rule-bo-02), [BO-05](#rule-bo-05)) | [WP-37.04](../planning/work-packages/37-arcslate-playback-and-processing.md#rule-wp-37.04) |
-| TV-09 | Video edits are frame-precise and audio edits sample-precise **on their own grids**, and neither is forced onto the other's ([TG-03](#rule-tg-03)) | [WP-36.01](../planning/work-packages/36-arcslate-project-and-timeline.md#rule-wp-36.01), [WP-37.04](../planning/work-packages/37-arcslate-playback-and-processing.md#rule-wp-37.04) |
+| <a id="rule-tv-09"></a>TV-09 | Video edits are frame-precise and audio edits sample-precise **on their own grids**, and neither is forced onto the other's ([TG-03](#rule-tg-03)) | [WP-36.01](../planning/work-packages/36-arcslate-project-and-timeline.md#rule-wp-36.01), [WP-37.04](../planning/work-packages/37-arcslate-playback-and-processing.md#rule-wp-37.04) |
 | <a id="rule-tv-10"></a>TV-10 | A sequence output grid that is not exactly representable **cannot be created**, while a source stream with an inexact PTS base **imports successfully** with its rounding reported ([TB-02](#rule-tb-02), [SM-03](#rule-sm-03)) | [WP-36.01](../planning/work-packages/36-arcslate-project-and-timeline.md#rule-wp-36.01), [WP-36.02](../planning/work-packages/36-arcslate-project-and-timeline.md#rule-wp-36.02) |
-| TV-11 | A `.otio` timeline whose rate is not representable imports into a representable sequence grid with the substitution stated in the fidelity report; export never claims a rate the sequence does not have | [WP-39.05](../planning/work-packages/39-arcslate-integration-and-portability.md#rule-wp-39.05) |
+| <a id="rule-tv-11"></a>TV-11 | A `.otio` timeline whose rate is not representable imports into a representable sequence grid with the substitution stated in the fidelity report; export never claims a rate the sequence does not have | [WP-39.05](../planning/work-packages/39-arcslate-integration-and-portability.md#rule-wp-39.05) |
 | <a id="rule-tv-12"></a>TV-12 | Every rounding site is one of the five enumerated in [RP-02](#rule-rp-02); a policy test asserts no other code path rounds a position | [WP-05](../planning/work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05), [WP-36.01](../planning/work-packages/36-arcslate-project-and-timeline.md#rule-wp-36.01) |
-| TV-13 | Two simultaneous audio tracks sum at k; a dissolve applies both weights; a track gap supplies silence; adjacent cuts and filter padding do not duplicate emitted samples | [WP-37.04](../planning/work-packages/37-arcslate-playback-and-processing.md#rule-wp-37.04) |
-| TV-14 | Official OTIO value/rate doubles cover standard rational rates, decimal non-standard rates, large values, fractional values, NaN/infinity and both exact/lossy export dispositions without silent drift | [WP-39.05](../planning/work-packages/39-arcslate-integration-and-portability.md#rule-wp-39.05) |
+| <a id="rule-tv-13"></a>TV-13 | Two simultaneous audio tracks sum at k; a dissolve applies both weights; a track gap supplies silence; adjacent cuts and filter padding do not duplicate emitted samples | [WP-37.04](../planning/work-packages/37-arcslate-playback-and-processing.md#rule-wp-37.04) |
+| <a id="rule-tv-14"></a>TV-14 | Official OTIO value/rate doubles cover standard rational rates, decimal non-standard rates, large values, fractional values, NaN/infinity and both exact/lossy export dispositions without silent drift | [WP-39.05](../planning/work-packages/39-arcslate-integration-and-portability.md#rule-wp-39.05) |
 
 ## 5. Slate metadata, render and subtitle profiles
 

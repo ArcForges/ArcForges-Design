@@ -1,7 +1,7 @@
 <a id="rule-wp-14"></a>
 # WP-14 — Independent Application Composition and Typed Host Ports
 
-> Status: Authoritative — P2-012
+> Status: Authoritative — [P2-012](../../decisions/phase-2-specification-decisions.md#rule-p2-012)
 > Upstream: `08` · `09` · `10` · `11` · `13` · Downstream: `15` · `16` · `18`
 > Repositories: DesktopPlatform + ArcNotes. Consume only exact published upstream artifacts; no adjacent sources.
 

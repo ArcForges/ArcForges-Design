@@ -48,17 +48,17 @@
 
 | # | Rule |
 |---|---|
-| BR-01 | **`ArcForges.Web.App` is the only interactive browser application** (**[D-007](../../decisions/phase-1-foundation-decisions.md#rule-d-007)**), deployed per surface profile. |
-| BR-02 | **`arcforges.com/account` is a permanent redirect, never a second account application** (**[D-015](../../decisions/phase-1-foundation-decisions.md#rule-d-015)**). |
-| BR-03 | **Deployments do not share state, storage or cookies**, and no broad parent-domain authentication cookie exists (**[D-015](../../decisions/phase-1-foundation-decisions.md#rule-d-015)**). |
-| BR-04 | **React/TypeScript production assets use the pinned Node/npm build**, generated SDK and the shared design system; .NET WASM/AOT flags do not apply. |
-| BR-05 | **No access/refresh credential is script-readable or delivered to browser JSON.** The adopted C# opaque-cookie session and CSRF/origin rules apply. |
-| BR-06 | **A web session is shorter-lived and less trusted than a desktop session**, and a new browser does not immediately hold high-risk approval capability. |
-| BR-07 | **Step-up is available in the browser** for the enumerated sensitive operations. |
-| BR-08 | **No secret is compiled into the bundle.** Any value in the bundle is public. |
-| BR-09 | **Bundle size is a tracked budget with a regression gate.** |
-| BR-10 | **Losing entitlement never deletes local data**, and the portal states that plainly. |
-| BR-11 | **Deletion is explicit about what is and is not deleted**, with a grace period. |
+| <a id="rule-br-01"></a>BR-01 | **`ArcForges.Web.App` is the only interactive browser application** (**[D-007](../../decisions/phase-1-foundation-decisions.md#rule-d-007)**), deployed per surface profile. |
+| <a id="rule-br-02"></a>BR-02 | **`arcforges.com/account` is a permanent redirect, never a second account application** (**[D-015](../../decisions/phase-1-foundation-decisions.md#rule-d-015)**). |
+| <a id="rule-br-03"></a>BR-03 | **Deployments do not share state, storage or cookies**, and no broad parent-domain authentication cookie exists (**[D-015](../../decisions/phase-1-foundation-decisions.md#rule-d-015)**). |
+| <a id="rule-br-04"></a>BR-04 | **React/TypeScript production assets use the pinned Node/npm build**, generated SDK and the shared design system; .NET WASM/AOT flags do not apply. |
+| <a id="rule-br-05"></a>BR-05 | **No access/refresh credential is script-readable or delivered to browser JSON.** The adopted C# opaque-cookie session and CSRF/origin rules apply. |
+| <a id="rule-br-06"></a>BR-06 | **A web session is shorter-lived and less trusted than a desktop session**, and a new browser does not immediately hold high-risk approval capability. |
+| <a id="rule-br-07"></a>BR-07 | **Step-up is available in the browser** for the enumerated sensitive operations. |
+| <a id="rule-br-08"></a>BR-08 | **No secret is compiled into the bundle.** Any value in the bundle is public. |
+| <a id="rule-br-09"></a>BR-09 | **Bundle size is a tracked budget with a regression gate.** |
+| <a id="rule-br-10"></a>BR-10 | **Losing entitlement never deletes local data**, and the portal states that plainly. |
+| <a id="rule-br-11"></a>BR-11 | **Deletion is explicit about what is and is not deleted**, with a grace period. |
 
 ---
 
@@ -195,7 +195,7 @@
 
 ## 7. Tests and verification evidence
 
-Acceptance includes every amended §5 producer/consumer and WP-48.90 evidence. Current P2-013 contracts/data/runtime rules are tested in the original owner implementation, not a detached explanatory sample.
+Acceptance includes every amended §5 producer/consumer and [WP-48.90](#rule-wp-48.90) evidence. Current [P2-013](../../decisions/phase-2-specification-decisions.md#rule-p2-013) contracts/data/runtime rules are tested in the original owner implementation, not a detached explanatory sample.
 
 | Evidence | Produced by |
 |---|---|

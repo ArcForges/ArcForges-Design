@@ -15,11 +15,11 @@ Five constraints determine almost every structural decision downstream.
 
 | # | Constraint | Consequence |
 |---|---|---|
-| AC-01 | **State has exactly one owner** | No shared writable business database; no central service holding product state; caches record source and revision and are never write points |
+| <a id="rule-ac-01"></a>AC-01 | **State has exactly one owner** | No shared writable business database; no central service holding product state; caches record source and revision and are never write points |
 | <a id="rule-ac-02"></a>AC-02 | **Calls cross boundaries as strongly typed contracts** | No catch-all `Invoke(string, object)`; no dictionary payloads; no runtime-discovered interfaces on the AOT path |
-| AC-03 | Public business RPC uses handwritten proto and binary gRPC-Web for C#, TypeScript and Kotlin | Generated clients and one operation/error/stream vocabulary; only declared standard HTTP exceptions remain |
+| <a id="rule-ac-03"></a>AC-03 | Public business RPC uses handwritten proto and binary gRPC-Web for C#, TypeScript and Kotlin | Generated clients and one operation/error/stream vocabulary; only declared standard HTTP exceptions remain |
 | <a id="rule-ac-04"></a>AC-04 | **Every production main path must be statically analysable where it is an AOT deliverable** | Source generation everywhere; no reflection fallback; no runtime code generation on the desktop main path |
-| AC-05 | **Failure is recoverable, and permission is validated at the final execution point** | Journals, revisions, idempotency, compensation — and owner-side re-authorization on every invocation |
+| <a id="rule-ac-05"></a>AC-05 | **Failure is recoverable, and permission is validated at the final execution point** | Journals, revisions, idempotency, compensation — and owner-side re-authorization on every invocation |
 
 **The most important constraint is not that all code lives in one repository.** It is that these five hold.
 
@@ -73,13 +73,13 @@ Desktop / LocalRpc / Infrastructure / MinimalApi / Kotlin Android adapters
 | # | Rule |
 |---|---|
 | <a id="rule-ly-01"></a>LY-01 | **Domain references nothing** — not Application, not Infrastructure, not UI, not Contracts, not a database provider, not a transport library, not the file system, not a native handle. |
-| LY-02 | **Application depends only on Domain plus a small set of abstractions (ports).** |
-| LY-03 | **Infrastructure implements Application's ports.** |
-| LY-04 | **Adapters are entry points only.** A local RPC adapter performs local identity, validation, DTO mapping, cancellation propagation and an application-service call — nothing else. A Minimal API adapter performs authentication, authorization, HTTP semantics, JSON mapping and an application-service call — nothing else. |
-| LY-05 | **A realtime hub never mutates domain state directly.** When a write is required it calls the same application service, preserving command identity and revision semantics. |
+| <a id="rule-ly-02"></a>LY-02 | **Application depends only on Domain plus a small set of abstractions (ports).** |
+| <a id="rule-ly-03"></a>LY-03 | **Infrastructure implements Application's ports.** |
+| <a id="rule-ly-04"></a>LY-04 | **Adapters are entry points only.** A local RPC adapter performs local identity, validation, DTO mapping, cancellation propagation and an application-service call — nothing else. A Minimal API adapter performs authentication, authorization, HTTP semantics, JSON mapping and an application-service call — nothing else. |
+| <a id="rule-ly-05"></a>LY-05 | **A realtime hub never mutates domain state directly.** When a write is required it calls the same application service, preserving command identity and revision semantics. |
 | <a id="rule-ly-06"></a>LY-06 | **Local clicks, local RPC and public HTTP produce the same domain commands, the same revisions, the same journal entries and the same notifications.** This is [SI-04](../requirements/09-shared-desktop-experience.md#rule-si-04) in the shared desktop requirements, expressed structurally. |
-| LY-07 | **View models consume view state and call facades.** They hold no database connection, no session, no native pointer. |
-| LY-08 | **A transport DTO is never a domain entity, and a view model is never a transport DTO.** |
+| <a id="rule-ly-07"></a>LY-07 | **View models consume view state and call facades.** They hold no database connection, no session, no native pointer. |
+| <a id="rule-ly-08"></a>LY-08 | **A transport DTO is never a domain entity, and a view model is never a transport DTO.** |
 | <a id="rule-ly-09"></a>LY-09 | **A remote caller never drives another process's user interface.** Projection happens inside the owning process. |
 
 ---
@@ -97,10 +97,10 @@ Fixed by **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**, e
 
 | # | Rule |
 |---|---|
-| AO-01 | **AOT release gates apply only to projects actually consumed by an AOT deliverable** (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**). |
-| AO-02 | **Shared public contracts and client libraries consumed by desktop or mobile remain trim-safe and source-generation friendly**, regardless of who else consumes them. |
-| AO-03 | **The absence of an official AOT guarantee is never treated as proof of AOT compatibility** (**[D-003](../decisions/phase-1-foundation-decisions.md#rule-d-003)**, **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**). Where documentation cannot prove a dependency's behaviour under an AOT deliverable, a real publish-and-test proof is a registered gate with an owner and trigger. |
-| AO-04 | Cloud publishes the complete selected Native AOT closure. CF Workflow executes TypeScript remotely; this does not create a C# JIT exemption. |
+| <a id="rule-ao-01"></a>AO-01 | **AOT release gates apply only to projects actually consumed by an AOT deliverable** (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**). |
+| <a id="rule-ao-02"></a>AO-02 | **Shared public contracts and client libraries consumed by desktop or mobile remain trim-safe and source-generation friendly**, regardless of who else consumes them. |
+| <a id="rule-ao-03"></a>AO-03 | **The absence of an official AOT guarantee is never treated as proof of AOT compatibility** (**[D-003](../decisions/phase-1-foundation-decisions.md#rule-d-003)**, **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**). Where documentation cannot prove a dependency's behaviour under an AOT deliverable, a real publish-and-test proof is a registered gate with an owner and trigger. |
+| <a id="rule-ao-04"></a>AO-04 | Cloud publishes the complete selected Native AOT closure. CF Workflow executes TypeScript remotely; this does not create a C# JIT exemption. |
 
 ---
 
@@ -108,12 +108,12 @@ Fixed by **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**, e
 
 | # | Rule |
 |---|---|
-| PM-01 | **Each product instance is a complete, autonomous operating-system process.** "Single process" means the product plus its native libraries in one process — never all products merged into one. |
-| PM-02 | Each professional application hosts its own assistant window/service, SQLite store and Cloud connection through Platform packages. |
-| PM-03 | Capabilities, context, approvals and local tool execution are registered only inside the owning application. Cloud holds authorized application presence/remote queue state. |
-| PM-04 | Platform shares code and mechanisms, never a cross-product domain database, filesystem, undo stack or live singleton. |
-| PM-05 | A professional application starts/saves locally without Cloud; its own Cloud session/presence reconnects in the background. |
-| PM-06 | **Products never reference another product's Domain or Application assemblies.** Shared mechanisms come from Platform packages; current remote control targets one application. Cross-product collaboration is future-only. |
+| <a id="rule-pm-01"></a>PM-01 | **Each product instance is a complete, autonomous operating-system process.** "Single process" means the product plus its native libraries in one process — never all products merged into one. |
+| <a id="rule-pm-02"></a>PM-02 | Each professional application hosts its own assistant window/service, SQLite store and Cloud connection through Platform packages. |
+| <a id="rule-pm-03"></a>PM-03 | Capabilities, context, approvals and local tool execution are registered only inside the owning application. Cloud holds authorized application presence/remote queue state. |
+| <a id="rule-pm-04"></a>PM-04 | Platform shares code and mechanisms, never a cross-product domain database, filesystem, undo stack or live singleton. |
+| <a id="rule-pm-05"></a>PM-05 | A professional application starts/saves locally without Cloud; its own Cloud session/presence reconnects in the background. |
+| <a id="rule-pm-06"></a>PM-06 | **Products never reference another product's Domain or Application assemblies.** Shared mechanisms come from Platform packages; current remote control targets one application. Cross-product collaboration is future-only. |
 | <a id="rule-pm-07"></a>PM-07 | **Three identity axes exist and are distinct**: `AppId` (stable product identity), `InstallationId` (one installed copy on one device), `InstanceId` (one running process). `AppId == ProcessId` is prohibited. |
 
 ---
@@ -150,10 +150,10 @@ Private parser/extension children: own parent ↔ gRPC Named Pipe/UDS
 
 | # | Rule |
 |---|---|
-| LB-01 | **AGPL components may consume the Apache-2.0 interoperability packages** without changing their own licence. |
-| LB-02 | **No GPL-family or AGPL-only source, project reference, package, generated artifact or transitive dependency may enter the ArcChat Mobile distributable** — enforced by architecture and dependency tests (**[D-004](../decisions/phase-1-foundation-decisions.md#rule-d-004)** obligation 7). |
-| LB-03 | **Base ViewModel patterns are not shared between Avalonia desktop and Kotlin Android mobile** (**[D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021)**). Each UI stack owns its implementation. |
-| LB-04 | **Protocol communication across an explicit process or network boundary does not change a client's licence.** Desktop and server implementations remain separate works. |
+| <a id="rule-lb-01"></a>LB-01 | **AGPL components may consume the Apache-2.0 interoperability packages** without changing their own licence. |
+| <a id="rule-lb-02"></a>LB-02 | **No GPL-family or AGPL-only source, project reference, package, generated artifact or transitive dependency may enter the ArcChat Mobile distributable** — enforced by architecture and dependency tests (**[D-004](../decisions/phase-1-foundation-decisions.md#rule-d-004)** obligation 7). |
+| <a id="rule-lb-03"></a>LB-03 | **Base ViewModel patterns are not shared between Avalonia desktop and Kotlin Android mobile** (**[D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021)**). Each UI stack owns its implementation. |
+| <a id="rule-lb-04"></a>LB-04 | **Protocol communication across an explicit process or network boundary does not change a client's licence.** Desktop and server implementations remain separate works. |
 
 ---
 
@@ -283,4 +283,4 @@ Answerable before any feature merges:
 
 ## Retired runtime concepts
 
-Standalone ArcChat desktop, cross-product Hub/discovery/SSO/handoff/federation, public native-gRPC clients, OpenAPI business generation, SignalR, public AI WebSockets, MAUI/RN Mobile, PostgreSQL business storage and a monorepo build are historical baselines superseded by P2-009…P2-013. Current professional hosts embed Platform assistant packages, retain separate history/session/database state and communicate directly with Cloud. Private helper gRPC and standardized external MCP/device protocols remain explicit different boundaries. Historical decision/review text is provenance, not an active work package.
+Standalone ArcChat desktop, cross-product Hub/discovery/SSO/handoff/federation, public native-gRPC clients, OpenAPI business generation, SignalR, public AI WebSockets, MAUI/RN Mobile, PostgreSQL business storage and a monorepo build are historical baselines superseded by [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009)…P2-013. Current professional hosts embed Platform assistant packages, retain separate history/session/database state and communicate directly with Cloud. Private helper gRPC and standardized external MCP/device protocols remain explicit different boundaries. Historical decision/review text is provenance, not an active work package.

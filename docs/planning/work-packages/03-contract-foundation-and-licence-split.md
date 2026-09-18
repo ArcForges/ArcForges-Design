@@ -20,7 +20,7 @@
 
 **Out of scope.** Product behavior implementations; the complete selected initial wire records and operation signatures are already specified and generated here. The local IPC transport itself (`08`). The cloud endpoint implementations (`23`).
 
-**Why this package exists.** **[D-009](../../decisions/phase-1-foundation-decisions.md#rule-d-009)** rejects a single ever-growing contracts assembly, and **[D-004](../../decisions/phase-1-foundation-decisions.md#rule-d-004)**/**[D-021](../../decisions/phase-1-foundation-decisions.md#rule-d-021)** require that the entire Contracts repository be Apache-2.0 under P2-010 while product implementations keep their own licence. Both are structural decisions that are cheap now and extremely expensive after every product depends on the wrong shape.
+**Why this package exists.** **[D-009](../../decisions/phase-1-foundation-decisions.md#rule-d-009)** rejects a single ever-growing contracts assembly, and **[D-004](../../decisions/phase-1-foundation-decisions.md#rule-d-004)**/**[D-021](../../decisions/phase-1-foundation-decisions.md#rule-d-021)** require that the entire Contracts repository be Apache-2.0 under [P2-010](../../decisions/phase-2-specification-decisions.md#rule-p2-010) while product implementations keep their own licence. Both are structural decisions that are cheap now and extremely expensive after every product depends on the wrong shape.
 
 ---
 
@@ -38,8 +38,8 @@
 | [`../../architecture/02-contracts-and-protocols.md`](../../architecture/02-contracts-and-protocols.md) | The two-layer contract model, compatibility rules and contract-authoring obligations [CA-01](../../architecture/02-contracts-and-protocols.md#rule-ca-01)–[CA-14](../../architecture/02-contracts-and-protocols.md#rule-ca-14) |
 | [`../../architecture/01-solution-and-project-layout.md`](../../architecture/01-solution-and-project-layout.md) `§3` | The contract project split and licence enforcement rules |
 | **[D-009](../../decisions/phase-1-foundation-decisions.md#rule-d-009)** | Contract granularity: split by boundary, ownership, cadence and licence |
-| **[D-004](../../decisions/phase-1-foundation-decisions.md#rule-d-004)**, **[D-021](../../decisions/phase-1-foundation-decisions.md#rule-d-021)** | All Contracts material is Apache-2.0 under P2-010; public/internal import access remains separate |
-| **[V-05b](../../assurance/phase-1-official-verification.md#rule-v-05b)** | Historical verification superseded by authored proto and explicit generated service registration under P2-009/010 |
+| **[D-004](../../decisions/phase-1-foundation-decisions.md#rule-d-004)**, **[D-021](../../decisions/phase-1-foundation-decisions.md#rule-d-021)** | All Contracts material is Apache-2.0 under [P2-010](../../decisions/phase-2-specification-decisions.md#rule-p2-010); public/internal import access remains separate |
+| **[V-05b](../../assurance/phase-1-official-verification.md#rule-v-05b)** | Historical verification superseded by authored proto and explicit generated service registration under [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009)/010 |
 | [WP-01.01](01-repository-reconciliation-and-target-layout.md#rule-wp-01.01) output | The type-by-type assignment to each licence boundary |
 | [WP-02](02-build-governance-and-analyzer-policy.md#rule-wp-02) output | Generator settings, locked packages and the diagnostic posture |
 
@@ -53,16 +53,16 @@
 
 | # | Rule |
 |---|---|
-| BR-01 | **Handwritten proto is the business wire authority; C#/TS DTOs, validators and descriptors are generated** (**[D-009](../../decisions/phase-1-foundation-decisions.md#rule-d-009)**). Hand-edited generated DTOs or undeclared proto changes are defects. |
-| BR-02 | **Contracts split by communication boundary, product/domain ownership, release cadence and licence boundary** (**[D-009](../../decisions/phase-1-foundation-decisions.md#rule-d-009)**). |
-| BR-03 | **The Apache-2.0 set is exactly**: public protocol specifications, wire schemas, DTOs, public clients, contract-level validators, and the public SDK (**[D-004](../../decisions/phase-1-foundation-decisions.md#rule-d-004)**, **[D-021](../../decisions/phase-1-foundation-decisions.md#rule-d-021)**). |
+| <a id="rule-br-01"></a>BR-01 | **Handwritten proto is the business wire authority; C#/TS DTOs, validators and descriptors are generated** (**[D-009](../../decisions/phase-1-foundation-decisions.md#rule-d-009)**). Hand-edited generated DTOs or undeclared proto changes are defects. |
+| <a id="rule-br-02"></a>BR-02 | **Contracts split by communication boundary, product/domain ownership, release cadence and licence boundary** (**[D-009](../../decisions/phase-1-foundation-decisions.md#rule-d-009)**). |
+| <a id="rule-br-03"></a>BR-03 | **The Apache-2.0 set is exactly**: public protocol specifications, wire schemas, DTOs, public clients, contract-level validators, and the public SDK (**[D-004](../../decisions/phase-1-foundation-decisions.md#rule-d-004)**, **[D-021](../../decisions/phase-1-foundation-decisions.md#rule-d-021)**). |
 | <a id="rule-br-04"></a>BR-04 | **No Apache-boundary project references an AGPL project**, directly or transitively (**[D-004](../../decisions/phase-1-foundation-decisions.md#rule-d-004)**). |
-| BR-05 | C#/TS wire types derive from handwritten proto descriptors. Native code uses generated protobuf serializers; HTTP exceptions use explicit source-generated JSON metadata. No parallel handwritten business DTO or C#-exported wire authority. |
-| BR-06 | **Every local RPC contract interface carries the generated service/descriptor identity with public instance methods included** (**[V-05b](../../assurance/phase-1-official-verification.md#rule-v-05b)**), asserted by a policy test. |
-| BR-07 | **Base ViewModel patterns are never shared between desktop and mobile** (**[D-021](../../decisions/phase-1-foundation-decisions.md#rule-d-021)**) — the shared boundary is contracts and semantics, not UI patterns. |
-| BR-08 | **Contract version and application version are separate axes** ([QI-04](../../requirements/12-quality-and-compatibility-contract.md#rule-qi-04)), and a contract change without a version change fails the build. |
-| BR-09 | **Contract-level validators express wire constraints only** (**[D-021](../../decisions/phase-1-foundation-decisions.md#rule-d-021)**), never business policy. |
-| BR-10 | **Product-domain behaviour, server orchestration, policy decisions, persistence behaviour and entitlement authority stay outside the shared boundary** (**[D-021](../../decisions/phase-1-foundation-decisions.md#rule-d-021)**). |
+| <a id="rule-br-05"></a>BR-05 | C#/TS wire types derive from handwritten proto descriptors. Native code uses generated protobuf serializers; HTTP exceptions use explicit source-generated JSON metadata. No parallel handwritten business DTO or C#-exported wire authority. |
+| <a id="rule-br-06"></a>BR-06 | **Every local RPC contract interface carries the generated service/descriptor identity with public instance methods included** (**[V-05b](../../assurance/phase-1-official-verification.md#rule-v-05b)**), asserted by a policy test. |
+| <a id="rule-br-07"></a>BR-07 | **Base ViewModel patterns are never shared between desktop and mobile** (**[D-021](../../decisions/phase-1-foundation-decisions.md#rule-d-021)**) — the shared boundary is contracts and semantics, not UI patterns. |
+| <a id="rule-br-08"></a>BR-08 | **Contract version and application version are separate axes** ([QI-04](../../requirements/12-quality-and-compatibility-contract.md#rule-qi-04)), and a contract change without a version change fails the build. |
+| <a id="rule-br-09"></a>BR-09 | **Contract-level validators express wire constraints only** (**[D-021](../../decisions/phase-1-foundation-decisions.md#rule-d-021)**), never business policy. |
+| <a id="rule-br-10"></a>BR-10 | **Product-domain behaviour, server orchestration, policy decisions, persistence behaviour and entitlement authority stay outside the shared boundary** (**[D-021](../../decisions/phase-1-foundation-decisions.md#rule-d-021)**). |
 
 ---
 
@@ -184,7 +184,7 @@ The complete initial Resource/owner/query/measurement/simulator, public operatio
 
 ---
 
-**Operator contract closure.** Consume [registry04 §9](../../architecture/contracts/04-protobuf-wire-registry.md#9-operator-control-and-separate-identity-boundary) and [model01 operator state](../../architecture/data-model/01-cloud-data-model.md#operator-proposal-approval-and-financial-owner-closure). Generate/implement every operation exactly once with its eight authorization fields, operator scope and OC-03 role binding. Public customer/PAT/agent access refuses. Verify distinct approver, stale hash/revision/configuration, role revocation, expiry, concurrent consumption and lost receipt; no direct SQL or public-SDK operator import. WP03 produces schema/negative vectors, WP23 real identity/dispatch conformance, WP42 the financial owners, WP44 configuration/policy owners, and WP45 the real console join. Earlier packages retain their named fixture boundary until the existing downstream join.
+**Operator contract closure.** Consume [registry04 §9](../../architecture/contracts/04-protobuf-wire-registry.md#9-operator-control-and-separate-identity-boundary) and [model01 operator state](../../architecture/data-model/01-cloud-data-model.md#operator-proposal-approval-and-financial-owner-closure). Generate/implement every operation exactly once with its eight authorization fields, operator scope and [OC-03](../../requirements/10-distribution-update-and-support.md#rule-oc-03) role binding. Public customer/PAT/agent access refuses. Verify distinct approver, stale hash/revision/configuration, role revocation, expiry, concurrent consumption and lost receipt; no direct SQL or public-SDK operator import. WP03 produces schema/negative vectors, WP23 real identity/dispatch conformance, WP42 the financial owners, WP44 configuration/policy owners, and WP45 the real console join. Earlier packages retain their named fixture boundary until the existing downstream join.
 
 ## 6. Impacts
 
@@ -204,11 +204,11 @@ State fixtures enumerate every numbered TaskState and TaskReasonFacet, including
 
 ## 7. Tests and verification evidence
 
-Acceptance includes every amended §5 producer/consumer and WP-03.90 evidence. Current P2-013 contracts/data/runtime rules are tested in the original owner implementation, not a detached explanatory sample.
+Acceptance includes every amended §5 producer/consumer and [WP-03.90](#rule-wp-03.90) evidence. Current [P2-013](../../decisions/phase-2-specification-decisions.md#rule-p2-013) contracts/data/runtime rules are tested in the original owner implementation, not a detached explanatory sample.
 
 [Local gRPC closure](../../architecture/contracts/09-local-grpc-and-sandbox.md): Publish complete .LocalRpc.Platform/.Sandbox and all typed parser/connector/hint/bootstrap methods before consumers. Descriptor fixture checks include every field in local 09 and wire 04.
 
-Generate an operation-by-actor reachability matrix for every public/local/operator/CF/exception binding under catalogue 00 AZ-04, with all seven effective authorization fields and source profile. Fail unclassified/ambiguous fields, nonexistent idempotency examples, public imports of local schema and tool reachability of human-only approval/credential/commerce/policy methods. Include resource/context/connector egress denials and hostile actor-chain cases.
+Generate an operation-by-actor reachability matrix for every public/local/operator/CF/exception binding under catalogue 00 [AZ-04](../../architecture/contracts/00-operation-catalogue.md#rule-az-04), with all seven effective authorization fields and source profile. Fail unclassified/ambiguous fields, nonexistent idempotency examples, public imports of local schema and tool reachability of human-only approval/credential/commerce/policy methods. Include resource/context/connector egress denials and hostile actor-chain cases.
 
 **Required evidence addition.** Generated wire/schema vectors for origin, scalar queries and measurement results, including exact decimals/instants, statuses and unknown-field/version behavior. The contract suite checks all catalogue producer codes.
 
@@ -251,7 +251,7 @@ Generate an operation-by-actor reachability matrix for every public/local/operat
 
 **Downstream:** `04` · `05` · `06` · `09` · `21` · `23` · `30`. Consumers use exact released artifacts.
 
-## P2-010 required behavior and closure
+## [P2-010](../../decisions/phase-2-specification-decisions.md#rule-p2-010) required behavior and closure
 
 Include source KnowledgePolicy/Patch/View, typed one-use overrides, stable Notes run/atom/table-cell positions and all complete initial owner/profile records. Descriptor fixtures and cross-language validation must enumerate them. The referenced normative profile and producer stage matrix are binding inputs. Record independent positive/negative vectors and actual owner integration at this WP's assigned stage; a mock cannot close a real-provider/device requirement.
 

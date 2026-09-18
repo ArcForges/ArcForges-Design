@@ -13,14 +13,14 @@ The extension platform exists to resolve one tension: **ArcForges ships a strong
 
 | # | Rule |
 |---|---|
-| EA-01 | **Third-party executable extensions run out-of-process by default** ([EX-01](../requirements/08-extensions-and-developer-platform.md#rule-ex-01) in the extension requirements). |
-| EA-02 | **No third-party assembly is loaded into a product's main process at runtime.** That would break the Native AOT main path (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**) and remove the isolation boundary simultaneously ([EX-01](../requirements/08-extensions-and-developer-platform.md#rule-ex-01) there). |
+| <a id="rule-ea-01"></a>EA-01 | **Third-party executable extensions run out-of-process by default** ([EX-01](../requirements/08-extensions-and-developer-platform.md#rule-ex-01) in the extension requirements). |
+| <a id="rule-ea-02"></a>EA-02 | **No third-party assembly is loaded into a product's main process at runtime.** That would break the Native AOT main path (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**) and remove the isolation boundary simultaneously ([EX-01](../requirements/08-extensions-and-developer-platform.md#rule-ex-01) there). |
 | <a id="rule-ea-03"></a>EA-03 | **An extension's own implementation is not required to be Native AOT** ([EX-04](../requirements/08-extensions-and-developer-platform.md#rule-ex-04) there). The host stays AOT; the extension is a separate process with its own runtime. This is precisely what makes a dynamic ecosystem compatible with an AOT product. |
-| EA-04 | **Isolation is not authorization** ([I-259](../requirements/01-normative-glossary-and-invariants.md#rule-i-259)), and **out-of-process is not automatically safe** ([I-260](../requirements/01-normative-glossary-and-invariants.md#rule-i-260)). Every extension call passes the full security pipeline (`§7`). |
-| EA-05 | **An extension never touches a product store.** It calls capabilities ([EX-07](../requirements/08-extensions-and-developer-platform.md#rule-ex-07) there). |
+| <a id="rule-ea-04"></a>EA-04 | **Isolation is not authorization** ([I-259](../requirements/01-normative-glossary-and-invariants.md#rule-i-259)), and **out-of-process is not automatically safe** ([I-260](../requirements/01-normative-glossary-and-invariants.md#rule-i-260)). Every extension call passes the full security pipeline (`§7`). |
+| <a id="rule-ea-05"></a>EA-05 | **An extension never touches a product store.** It calls capabilities ([EX-07](../requirements/08-extensions-and-developer-platform.md#rule-ex-07) there). |
 | <a id="rule-ea-06"></a>EA-06 | **An extension crash must not crash the owning application** ([EX-11](../requirements/08-extensions-and-developer-platform.md#rule-ex-11) there). |
-| EA-07 | **The manifest is readable and verifiable before any extension code executes**. |
-| EA-08 | **The schema-described boundary applies only at the dynamic third-party edge** ([DB-05](../requirements/08-extensions-and-developer-platform.md#rule-db-05) there, [I-329](../requirements/01-normative-glossary-and-invariants.md#rule-i-329)). It is never back-propagated into first-party product capabilities. |
+| <a id="rule-ea-07"></a>EA-07 | **The manifest is readable and verifiable before any extension code executes**. |
+| <a id="rule-ea-08"></a>EA-08 | **The schema-described boundary applies only at the dynamic third-party edge** ([DB-05](../requirements/08-extensions-and-developer-platform.md#rule-db-05) there, [I-329](../requirements/01-normative-glossary-and-invariants.md#rule-i-329)). It is never back-propagated into first-party product capabilities. |
 
 ---
 
@@ -61,26 +61,26 @@ Product process (Native AOT)                     Extension process (any runtime)
 
 | # | Rule |
 |---|---|
-| PR-01 | **One extension process per installed package instance**, started on demand and stopped when idle ([EX-05](../requirements/08-extensions-and-developer-platform.md#rule-ex-05) there). |
-| PR-02 | **Background residency must be declared in the manifest and separately consented** ([EX-06](../requirements/08-extensions-and-developer-platform.md#rule-ex-06) there). Adding it in an update is a permission expansion requiring re-consent (`§8`). |
-| PR-03 | **Process identity is bound to the package installation** ([EX-12](../requirements/08-extensions-and-developer-platform.md#rule-ex-12) there). The host verifies it; a process cannot claim to be a different package. |
+| <a id="rule-pr-01"></a>PR-01 | **One extension process per installed package instance**, started on demand and stopped when idle ([EX-05](../requirements/08-extensions-and-developer-platform.md#rule-ex-05) there). |
+| <a id="rule-pr-02"></a>PR-02 | **Background residency must be declared in the manifest and separately consented** ([EX-06](../requirements/08-extensions-and-developer-platform.md#rule-ex-06) there). Adding it in an update is a permission expansion requiring re-consent (`§8`). |
+| <a id="rule-pr-03"></a>PR-03 | **Process identity is bound to the package installation** ([EX-12](../requirements/08-extensions-and-developer-platform.md#rule-ex-12) there). The host verifies it; a process cannot claim to be a different package. |
 | <a id="rule-pr-04"></a>PR-04 | **The host applies resource limits** — memory, CPU share, concurrent invocations, wall-clock per invocation — and enforces them by termination when exceeded, with a typed reason. |
-| PR-05 | **A crashed extension process is restarted with backoff**, and repeated crashes quarantine the extension with a visible state rather than looping (`§8`). |
+| <a id="rule-pr-05"></a>PR-05 | **A crashed extension process is restarted with backoff**, and repeated crashes quarantine the extension with a visible state rather than looping (`§8`). |
 | <a id="rule-pr-06"></a>PR-06 | **In-flight invocations of a crashed process fail with a typed, retryable-or-not classification**, never hang (`§5` of the agent runtime architecture). |
-| PR-07 | **Extension processes inherit no ambient credential.** They receive no environment secret, no session token, and no filesystem handle beyond what a granted capability provides. |
-| PR-08 | **Extension shutdown is graceful then forced**: a stop request, a bounded drain window, then termination. |
-| PR-09 | **A running extension cannot be uninstalled directly**. Stop, then uninstall. |
-| PR-10 | The [OS-enforced isolation profiles](24-content-and-extension-isolation.md) deny direct product-store, credential and ungranted network access. Same-user process separation plus an RPC grant check is insufficient. A missing profile refuses execution with `security.isolation_unavailable`; it never runs the extension in ambient full trust. |
+| <a id="rule-pr-07"></a>PR-07 | **Extension processes inherit no ambient credential.** They receive no environment secret, no session token, and no filesystem handle beyond what a granted capability provides. |
+| <a id="rule-pr-08"></a>PR-08 | **Extension shutdown is graceful then forced**: a stop request, a bounded drain window, then termination. |
+| <a id="rule-pr-09"></a>PR-09 | **A running extension cannot be uninstalled directly**. Stop, then uninstall. |
+| <a id="rule-pr-10"></a>PR-10 | The [OS-enforced isolation profiles](24-content-and-extension-isolation.md) deny direct product-store, credential and ungranted network access. Same-user process separation plus an RPC grant check is insufficient. A missing profile refuses execution with `security.isolation_unavailable`; it never runs the extension in ambient full trust. |
 
 ### 3.2 Transport
 
 | # | Rule |
 |---|---|
-| TR-01 | **The extension protocol is authored proto and native gRPC over the same OS IPC as the rest of the product** — named pipe on Windows, Unix domain socket elsewhere (`§2` of the local IPC architecture). |
-| TR-02 | **The channel is per process and access-controlled to the current user**; it is never a network endpoint. |
-| TR-03 | **Payload size is bounded.** Large content crosses as a `ResourceRef` with controlled access ([DB-06](../requirements/08-extensions-and-developer-platform.md#rule-db-06) there). |
-| TR-04 | **Cancellation, timeout and backpressure are first-class protocol concerns**, not conventions. |
-| TR-05 | **The host never blocks its UI thread on an extension** (`§4` of the desktop architecture). |
+| <a id="rule-tr-01"></a>TR-01 | **The extension protocol is authored proto and native gRPC over the same OS IPC as the rest of the product** — named pipe on Windows, Unix domain socket elsewhere (`§2` of the local IPC architecture). |
+| <a id="rule-tr-02"></a>TR-02 | **The channel is per process and access-controlled to the current user**; it is never a network endpoint. |
+| <a id="rule-tr-03"></a>TR-03 | **Payload size is bounded.** Large content crosses as a `ResourceRef` with controlled access ([DB-06](../requirements/08-extensions-and-developer-platform.md#rule-db-06) there). |
+| <a id="rule-tr-04"></a>TR-04 | **Cancellation, timeout and backpressure are first-class protocol concerns**, not conventions. |
+| <a id="rule-tr-05"></a>TR-05 | **The host never blocks its UI thread on an extension** (`§4` of the desktop architecture). |
 
 [Local profile 09](contracts/09-local-grpc-and-sandbox.md) fixes both receiver directions, launch-bound credentials, generated services and restricted-stream hosting. Host Handshake/RenewLease and bidirectional Invoke/Stop roles never use an untyped symmetric channel.
 
@@ -98,11 +98,11 @@ Host starts process with an installation-scoped identity token
 
 | # | Rule |
 |---|---|
-| HS-01 | **The handshake happens before any contribution is invoked**. |
-| HS-02 | **An extension process cannot claim to be another package**; a mismatch terminates the process. |
-| HS-03 | **An extension cannot register in a reserved official capability namespace**, except by implementing a known official extension point. |
-| HS-04 | **Version negotiation failure is a clean, explained refusal**, not a crash or a silent downgrade. |
-| HS-05 | **Manifest compatibility is a preflight check; the handshake is the ultimate fact**. A manifest that claims compatibility does not override a failed negotiation. |
+| <a id="rule-hs-01"></a>HS-01 | **The handshake happens before any contribution is invoked**. |
+| <a id="rule-hs-02"></a>HS-02 | **An extension process cannot claim to be another package**; a mismatch terminates the process. |
+| <a id="rule-hs-03"></a>HS-03 | **An extension cannot register in a reserved official capability namespace**, except by implementing a known official extension point. |
+| <a id="rule-hs-04"></a>HS-04 | **Version negotiation failure is a clean, explained refusal**, not a crash or a silent downgrade. |
+| <a id="rule-hs-05"></a>HS-05 | **Manifest compatibility is a preflight check; the handshake is the ultimate fact**. A manifest that claims compatibility does not override a failed negotiation. |
 
 ---
 
@@ -112,10 +112,10 @@ Host starts process with an installation-scoped identity token
 
 | # | Rule |
 |---|---|
-| L1-01 | **A typed extension point is an ordinary versioned contract** in the contract layer (**[D-009](../decisions/phase-1-foundation-decisions.md#rule-d-009)**), with generated serialization and no reflection. |
-| L1-02 | **It is the default route** for anything ArcForges anticipated, and gives the best developer experience and the strongest validation. |
-| L1-03 | **Extension points are product-specific and enumerated** (`§14` of the extension requirements). Not every point is opened in V1, **but the model must be able to carry them**. |
-| L1-04 | **An internal interface does not automatically become a public extension point**. Promotion to the public SDK is a deliberate act with a compatibility commitment. |
+| <a id="rule-l1-01"></a>L1-01 | **A typed extension point is an ordinary versioned contract** in the contract layer (**[D-009](../decisions/phase-1-foundation-decisions.md#rule-d-009)**), with generated serialization and no reflection. |
+| <a id="rule-l1-02"></a>L1-02 | **It is the default route** for anything ArcForges anticipated, and gives the best developer experience and the strongest validation. |
+| <a id="rule-l1-03"></a>L1-03 | **Extension points are product-specific and enumerated** (`§14` of the extension requirements). Not every point is opened in V1, **but the model must be able to carry them**. |
+| <a id="rule-l1-04"></a>L1-04 | **An internal interface does not automatically become a public extension point**. Promotion to the public SDK is a deliberate act with a compatibility commitment. |
 
 ### 4.2 Level 2 — the schema-described boundary
 
@@ -130,24 +130,24 @@ date/time · ResourceRef · list<Value> · record<name, Value>
 
 | # | Rule |
 |---|---|
-| L2-01 | **The value model is closed and AOT-safe.** No arbitrary CLR object, no runtime `Type`, no assembly-qualified type name, no native pointer crosses the boundary ([DB-02](../requirements/08-extensions-and-developer-platform.md#rule-db-02) there). |
+| <a id="rule-l2-01"></a>L2-01 | **The value model is closed and AOT-safe.** No arbitrary CLR object, no runtime `Type`, no assembly-qualified type name, no native pointer crosses the boundary ([DB-02](../requirements/08-extensions-and-developer-platform.md#rule-db-02) there). |
 | <a id="rule-l2-02"></a>L2-02 | **`Dictionary<string, object>` is not the extension protocol** ([I-328](../requirements/01-normative-glossary-and-invariants.md#rule-i-328)). Every dynamic payload is described by a schema and validated against it. |
-| L2-03 | **The host requires no knowledge of third-party CLR types** ([DB-04](../requirements/08-extensions-and-developer-platform.md#rule-db-04) there). This is what makes the boundary AOT-safe: the host manipulates values, never foreign types. |
+| <a id="rule-l2-03"></a>L2-03 | **The host requires no knowledge of third-party CLR types** ([DB-04](../requirements/08-extensions-and-developer-platform.md#rule-db-04) there). This is what makes the boundary AOT-safe: the host manipulates values, never foreign types. |
 | <a id="rule-l2-04"></a>L2-04 | **Every dynamic payload is validated in both directions** — inbound to the host and outbound to the extension — before it reaches any product logic ([EX-13](../requirements/08-extensions-and-developer-platform.md#rule-ex-13) there). |
 | <a id="rule-l2-05"></a>L2-05 | **Validation failure is a typed protocol error** attributed to the extension, never a host exception. |
 | <a id="rule-l2-06"></a>L2-06 | **The schema exception never leaks inward** ([DB-05](../requirements/08-extensions-and-developer-platform.md#rule-db-05) there, [I-329](../requirements/01-normative-glossary-and-invariants.md#rule-i-329)). ArcNotes, ArcScope and ArcSlate native capabilities stay compile-time typed. A repository policy test asserts that the structured value type does not appear in a first-party domain or product contract. |
-| L2-09 | **Inward means past the decode step.** The boundary receives a structured value and immediately converts it to a generated typed request (`§3.1` of the local RPC contract); everything after that point is compile-time typed. The exception is a doorway, not a corridor. |
-| L2-07 | **Numeric, temporal and text semantics are specified exactly** — integer width, decimal precision, time zone handling, normalisation and length limits — so two implementations agree. |
-| L2-08 | **Unknown fields are rejected by default**, with an explicit forward-compatible mode where the schema declares it. |
+| <a id="rule-l2-09"></a>L2-09 | **Inward means past the decode step.** The boundary receives a structured value and immediately converts it to a generated typed request (`§3.1` of the local RPC contract); everything after that point is compile-time typed. The exception is a doorway, not a corridor. |
+| <a id="rule-l2-07"></a>L2-07 | **Numeric, temporal and text semantics are specified exactly** — integer width, decimal precision, time zone handling, normalisation and length limits — so two implementations agree. |
+| <a id="rule-l2-08"></a>L2-08 | **Unknown fields are rejected by default**, with an explicit forward-compatible mode where the schema declares it. |
 
 ### 4.3 Code-first for C# authors
 
 | # | Rule |
 |---|---|
 | <a id="rule-cf-01"></a>CF-01 | C# attributed records feed only the declared extension parameter/settings schema and codec described by CF-02. Public service envelopes and method bindings are generated from authored Contracts proto. |
-| CF-02 | C# extension authors may generate their declared parameter/settings schema and codec from attributed records. The enclosing public extension service/messages remain the handwritten proto authority; this convenience never generates first-party business wire contracts from C#. |
+| <a id="rule-cf-02"></a>CF-02 | C# extension authors may generate their declared parameter/settings schema and codec from attributed records. The enclosing public extension service/messages remain the handwritten proto authority; this convenience never generates first-party business wire contracts from C#. |
 | <a id="rule-cf-03"></a>CF-03 | **The manifest still has a language-independent canonical representation**, so non-C# authors and the host tooling are not excluded. |
-| CF-04 | **Generated artifacts are verified in CI against the committed baseline**, exactly as product contracts are (`§2.2` of the build architecture). |
+| <a id="rule-cf-04"></a>CF-04 | **Generated artifacts are verified in CI against the committed baseline**, exactly as product contracts are (`§2.2` of the build architecture). |
 
 ---
 
@@ -166,10 +166,10 @@ date/time · ResourceRef · list<Value> · record<name, Value>
 
 | # | Rule |
 |---|---|
-| CK-01 | **A content contribution never executes code**, and the runtime must make that structurally true — a skill, template or workflow package has no executable entry point. |
-| CK-02 | **A workflow's steps are limited to the declared step semantics.** No scripting language is introduced, and unbounded looping is not a workflow capability. |
-| CK-03 | **A community-provided contribution obtains no implicit permission**. |
-| CK-04 | **A running task freezes the package version it started with**; an update does not change a running execution. |
+| <a id="rule-ck-01"></a>CK-01 | **A content contribution never executes code**, and the runtime must make that structurally true — a skill, template or workflow package has no executable entry point. |
+| <a id="rule-ck-02"></a>CK-02 | **A workflow's steps are limited to the declared step semantics.** No scripting language is introduced, and unbounded looping is not a workflow capability. |
+| <a id="rule-ck-03"></a>CK-03 | **A community-provided contribution obtains no implicit permission**. |
+| <a id="rule-ck-04"></a>CK-04 | **A running task freezes the package version it started with**; an update does not change a running execution. |
 | <a id="rule-ck-05"></a>CK-05 | **Package provenance enters the task and artifact records**, and resource provenance is retained. |
 
 ---
@@ -178,15 +178,15 @@ date/time · ResourceRef · list<Value> · record<name, Value>
 
 | # | Rule |
 |---|---|
-| UI-01 | **No third-party Avalonia control is instantiated in a product process** (`UI-01` there). |
-| UI-02 | **Panel contributions use a declarative panel protocol**: the extension sends a declaration tree from a closed element vocabulary; the host renders it with first-party controls and product theming. |
-| UI-03 | **The element vocabulary is closed and versioned**, with no raw markup, no styling escape hatch and no script. |
-| UI-04 | **Interaction is a message, not a callback into host internals.** A user action produces a typed event delivered to the extension process. |
-| UI-05 | **Settings UI is generated from a declarative settings schema** ([UI-02](../requirements/08-extensions-and-developer-platform.md#rule-ui-02) there). |
-| UI-06 | **A secret settings field yields a `SecretRef` only** ([UI-04](../requirements/08-extensions-and-developer-platform.md#rule-ui-04) there); plaintext is never stored in extension configuration and never returned to the extension. |
-| UI-07 | **Complex third-party interfaces belong in a standalone third-party Arc App** ([UI-03](../requirements/08-extensions-and-developer-platform.md#rule-ui-03) there), not embedded in a first-party process. |
-| UI-08 | **No general browser-extension or WebView platform is built** ([UI-05](../requirements/08-extensions-and-developer-platform.md#rule-ui-05) there). |
-| UI-09 | **Extension-contributed UI is visibly attributed** to its package, so a user always knows whose surface they are looking at. |
+| <a id="rule-ui-01"></a>UI-01 | **No third-party Avalonia control is instantiated in a product process** ([`UI-01`](../requirements/08-extensions-and-developer-platform.md#rule-ui-01) there). |
+| <a id="rule-ui-02"></a>UI-02 | **Panel contributions use a declarative panel protocol**: the extension sends a declaration tree from a closed element vocabulary; the host renders it with first-party controls and product theming. |
+| <a id="rule-ui-03"></a>UI-03 | **The element vocabulary is closed and versioned**, with no raw markup, no styling escape hatch and no script. |
+| <a id="rule-ui-04"></a>UI-04 | **Interaction is a message, not a callback into host internals.** A user action produces a typed event delivered to the extension process. |
+| <a id="rule-ui-05"></a>UI-05 | **Settings UI is generated from a declarative settings schema** ([UI-02](../requirements/08-extensions-and-developer-platform.md#rule-ui-02) there). |
+| <a id="rule-ui-06"></a>UI-06 | **A secret settings field yields a `SecretRef` only** ([UI-04](../requirements/08-extensions-and-developer-platform.md#rule-ui-04) there); plaintext is never stored in extension configuration and never returned to the extension. |
+| <a id="rule-ui-07"></a>UI-07 | **Complex third-party interfaces belong in a standalone third-party Arc App** ([UI-03](../requirements/08-extensions-and-developer-platform.md#rule-ui-03) there), not embedded in a first-party process. |
+| <a id="rule-ui-08"></a>UI-08 | **No general browser-extension or WebView platform is built** ([UI-05](../requirements/08-extensions-and-developer-platform.md#rule-ui-05) there). |
+| <a id="rule-ui-09"></a>UI-09 | **Extension-contributed UI is visibly attributed** to its package, so a user always knows whose surface they are looking at. |
 
 ---
 
@@ -194,17 +194,17 @@ date/time · ResourceRef · list<Value> · record<name, Value>
 
 | # | Rule |
 |---|---|
-| SE-01 | **Every extension invocation is an ordinary capability invocation** and passes the fourteen-step security decision pipeline (`§12` of the security requirements). |
-| SE-02 | **Owner-side final validation always applies** (`§3` of the security architecture). The extension host is one enforcement point; the capability owner remains the last. |
-| SE-03 | **Permissions are declared in the manifest, presented before installation, and granted explicitly**. Installation is not authorization. |
-| SE-04 | **A tool invocation into an extension creates a capability lease** — scoped, expiring, revocable, and audited (`§10` of the security requirements). The lease bounds one bounded invocation; it never authorises an extension to plan or to run its own agent loop ([EA-05](../requirements/08-extensions-and-developer-platform.md#rule-ea-05), [EA-08](../requirements/08-extensions-and-developer-platform.md#rule-ea-08) there). |
-| SE-05 | **Input to an extension is minimised to the current call** ([EX-14](../requirements/08-extensions-and-developer-platform.md#rule-ex-14) there). There is no full-access object. |
-| SE-06 | **Extension output is untrusted input.** It is schema-validated ([L2-04](#rule-l2-04)), and any instruction-like content it carries is marked with untrusted provenance for the agent runtime (`§8` of the security architecture). |
-| SE-07 | **Trust, permission, signature and review status are four separate things**: trust is a level, permission is a grant, a signature proves origin not safety, and review status is an independent assertion. |
-| SE-08 | **Egress by an extension is a separate authorization** (`§7` of the security requirements). Holding a read capability never implies permission to send data out. |
-| SE-09 | **Extension invocations appear in the ordinary task trace and audit** ([EX-15](../requirements/08-extensions-and-developer-platform.md#rule-ex-15) there), never in a separate plug-in log. |
-| SE-10 | **Package analytics and extension telemetry are separate, declared and consented** ([EX-16](../requirements/08-extensions-and-developer-platform.md#rule-ex-16) there); nothing is reported to a publisher automatically. |
-| SE-11 | **Developer Mode is user- or administrator-enabled only, never by a package**, is clearly visible while active, and does not bypass permission. |
+| <a id="rule-se-01"></a>SE-01 | **Every extension invocation is an ordinary capability invocation** and passes the fourteen-step security decision pipeline (`§12` of the security requirements). |
+| <a id="rule-se-02"></a>SE-02 | **Owner-side final validation always applies** (`§3` of the security architecture). The extension host is one enforcement point; the capability owner remains the last. |
+| <a id="rule-se-03"></a>SE-03 | **Permissions are declared in the manifest, presented before installation, and granted explicitly**. Installation is not authorization. |
+| <a id="rule-se-04"></a>SE-04 | **A tool invocation into an extension creates a capability lease** — scoped, expiring, revocable, and audited (`§10` of the security requirements). The lease bounds one bounded invocation; it never authorises an extension to plan or to run its own agent loop ([EA-05](../requirements/08-extensions-and-developer-platform.md#rule-ea-05), [EA-08](../requirements/08-extensions-and-developer-platform.md#rule-ea-08) there). |
+| <a id="rule-se-05"></a>SE-05 | **Input to an extension is minimised to the current call** ([EX-14](../requirements/08-extensions-and-developer-platform.md#rule-ex-14) there). There is no full-access object. |
+| <a id="rule-se-06"></a>SE-06 | **Extension output is untrusted input.** It is schema-validated ([L2-04](#rule-l2-04)), and any instruction-like content it carries is marked with untrusted provenance for the agent runtime (`§8` of the security architecture). |
+| <a id="rule-se-07"></a>SE-07 | **Trust, permission, signature and review status are four separate things**: trust is a level, permission is a grant, a signature proves origin not safety, and review status is an independent assertion. |
+| <a id="rule-se-08"></a>SE-08 | **Egress by an extension is a separate authorization** (`§7` of the security requirements). Holding a read capability never implies permission to send data out. |
+| <a id="rule-se-09"></a>SE-09 | **Extension invocations appear in the ordinary task trace and audit** ([EX-15](../requirements/08-extensions-and-developer-platform.md#rule-ex-15) there), never in a separate plug-in log. |
+| <a id="rule-se-10"></a>SE-10 | **Package analytics and extension telemetry are separate, declared and consented** ([EX-16](../requirements/08-extensions-and-developer-platform.md#rule-ex-16) there); nothing is reported to a publisher automatically. |
+| <a id="rule-se-11"></a>SE-11 | **Developer Mode is user- or administrator-enabled only, never by a package**, is clearly visible while active, and does not bypass permission. |
 
 ---
 
@@ -225,35 +225,35 @@ Acquire (.arcpkg from catalog, URL or local file)
 
 | # | Rule |
 |---|---|
-| PM-01 | **Integrity is verified before installation**, and an executable package should carry an SBOM. Community packages follow the same supply-chain discipline as ArcForges' own artifacts. |
-| PM-02 | **Installation never executes an arbitrary script**. Installation is performed by the ArcForges installer, not by package-provided code. |
-| PM-03 | **A published package version is immutable**; files of the same version are never overwritten. |
-| PM-04 | **Local sideload requires no cloud account**; publishing to the official catalog requires a verified publisher account. |
-| PM-05 | **Executable packages are as self-contained as practical**. Runtime dependencies are packaged at release so dependency resolution never happens on a user machine; no npm-style transitive dependency tree exists. |
-| PM-06 | **Arc Package dependencies express logical package relationships only**, and a dependency cycle fails validation. |
-| PM-07 | **System dependencies are declared, detected and reported** — never silently installed by the package. |
+| <a id="rule-pm-01"></a>PM-01 | **Integrity is verified before installation**, and an executable package should carry an SBOM. Community packages follow the same supply-chain discipline as ArcForges' own artifacts. |
+| <a id="rule-pm-02"></a>PM-02 | **Installation never executes an arbitrary script**. Installation is performed by the ArcForges installer, not by package-provided code. |
+| <a id="rule-pm-03"></a>PM-03 | **A published package version is immutable**; files of the same version are never overwritten. |
+| <a id="rule-pm-04"></a>PM-04 | **Local sideload requires no cloud account**; publishing to the official catalog requires a verified publisher account. |
+| <a id="rule-pm-05"></a>PM-05 | **Executable packages are as self-contained as practical**. Runtime dependencies are packaged at release so dependency resolution never happens on a user machine; no npm-style transitive dependency tree exists. |
+| <a id="rule-pm-06"></a>PM-06 | **Arc Package dependencies express logical package relationships only**, and a dependency cycle fails validation. |
+| <a id="rule-pm-07"></a>PM-07 | **System dependencies are declared, detected and reported** — never silently installed by the package. |
 
 ### 8.2 Update, disable, uninstall
 
 | # | Rule |
 |---|---|
-| PU-01 | **Automatic update is never silent**. |
-| PU-02 | **A new permission requirement forces re-consent**, and adding background execution is a permission expansion. |
-| PU-03 | **Side-by-side versions do not run**. One installed version is active. |
-| PU-04 | **Rollback is binary rollback, not data rollback**. Private data compatibility is governed by the extension's own `SchemaVersion` ([EX-08](../requirements/08-extensions-and-developer-platform.md#rule-ex-08)). |
-| PU-05 | **Disable and uninstall are separate**. Disable retains data and configuration. |
+| <a id="rule-pu-01"></a>PU-01 | **Automatic update is never silent**. |
+| <a id="rule-pu-02"></a>PU-02 | **A new permission requirement forces re-consent**, and adding background execution is a permission expansion. |
+| <a id="rule-pu-03"></a>PU-03 | **Side-by-side versions do not run**. One installed version is active. |
+| <a id="rule-pu-04"></a>PU-04 | **Rollback is binary rollback, not data rollback**. Private data compatibility is governed by the extension's own `SchemaVersion` ([EX-08](../requirements/08-extensions-and-developer-platform.md#rule-ex-08)). |
+| <a id="rule-pu-05"></a>PU-05 | **Disable and uninstall are separate**. Disable retains data and configuration. |
 | <a id="rule-pu-06"></a>PU-06 | **Uninstall asks about extension private data by default**, and **never cascade-deletes professional resources the extension created** — those belong to the owning product forever. |
-| PU-07 | **Yank, deprecate and revoke are three different operations** ([I-433](../requirements/01-normative-glossary-and-invariants.md#rule-i-433), [I-330](../requirements/01-normative-glossary-and-invariants.md#rule-i-330)): yank removes from new installation and recommendation; deprecate signals a successor; revoke blocks or severely limits execution of an installed package. |
-| PU-08 | **Revocation reaches installed clients** through the policy control plane's kill-switch mechanism (`§4` of the policy requirements), with a stated reason surfaced to the user. |
+| <a id="rule-pu-07"></a>PU-07 | **Yank, deprecate and revoke are three different operations** ([I-433](../requirements/01-normative-glossary-and-invariants.md#rule-i-433), [I-330](../requirements/01-normative-glossary-and-invariants.md#rule-i-330)): yank removes from new installation and recommendation; deprecate signals a successor; revoke blocks or severely limits execution of an installed package. |
+| <a id="rule-pu-08"></a>PU-08 | **Revocation reaches installed clients** through the policy control plane's kill-switch mechanism (`§4` of the policy requirements), with a stated reason surfaced to the user. |
 
 ### 8.3 Extension private state
 
 | # | Rule |
 |---|---|
-| PS-01 | **Private state lives in a per-installation store outside the product's canonical domain** ([EX-08](../requirements/08-extensions-and-developer-platform.md#rule-ex-08) there). |
-| PS-02 | **It carries its own `SchemaVersion`** and its own migration path. |
-| PS-03 | **It is included in device backup but is never treated as product authority**, and its loss degrades the extension without damaging product data. |
-| PS-04 | **It is size-bounded**, with pressure surfaced to the user rather than growing unchecked (`§14` of the data requirements). |
+| <a id="rule-ps-01"></a>PS-01 | **Private state lives in a per-installation store outside the product's canonical domain** ([EX-08](../requirements/08-extensions-and-developer-platform.md#rule-ex-08) there). |
+| <a id="rule-ps-02"></a>PS-02 | **It carries its own `SchemaVersion`** and its own migration path. |
+| <a id="rule-ps-03"></a>PS-03 | **It is included in device backup but is never treated as product authority**, and its loss degrades the extension without damaging product data. |
+| <a id="rule-ps-04"></a>PS-04 | **It is size-bounded**, with pressure surfaced to the user rather than growing unchecked (`§14` of the data requirements). |
 
 ---
 
@@ -261,13 +261,13 @@ Acquire (.arcpkg from catalog, URL or local file)
 
 | # | Rule |
 |---|---|
-| CA-01 | **The community catalog is a discovery and distribution catalog, not a marketplace**. There is no paid transaction in V1. |
-| CA-02 | **Three source classes are supported**: the official catalog, an additional configured catalog, and a local or direct source. |
-| CA-03 | **A self-hosted environment is never locked to the official catalog**. |
-| CA-04 | **A catalog is untrusted content.** Listing text, metadata and links are treated as data, sanitised for display, and never as instructions. |
-| CA-05 | **The package page shows what matters before install**: contributions, permissions, publisher, trust level, review status, version history, compatibility and provenance. |
-| CA-06 | **The catalog client does not execute anything it downloads** before the local verification pipeline of `§8.1` completes. |
-| CA-07 | **Catalog availability is not a runtime dependency.** An installed package continues to work when the catalog is unreachable. |
+| <a id="rule-ca-01"></a>CA-01 | **The community catalog is a discovery and distribution catalog, not a marketplace**. There is no paid transaction in V1. |
+| <a id="rule-ca-02"></a>CA-02 | **Three source classes are supported**: the official catalog, an additional configured catalog, and a local or direct source. |
+| <a id="rule-ca-03"></a>CA-03 | **A self-hosted environment is never locked to the official catalog**. |
+| <a id="rule-ca-04"></a>CA-04 | **A catalog is untrusted content.** Listing text, metadata and links are treated as data, sanitised for display, and never as instructions. |
+| <a id="rule-ca-05"></a>CA-05 | **The package page shows what matters before install**: contributions, permissions, publisher, trust level, review status, version history, compatibility and provenance. |
+| <a id="rule-ca-06"></a>CA-06 | **The catalog client does not execute anything it downloads** before the local verification pipeline of `§8.1` completes. |
+| <a id="rule-ca-07"></a>CA-07 | **Catalog availability is not a runtime dependency.** An installed package continues to work when the catalog is unreachable. |
 
 ---
 
@@ -285,20 +285,20 @@ Acquire (.arcpkg from catalog, URL or local file)
 
 | # | Rule |
 |---|---|
-| VC-01 | **These axes are never mixed** (`§14` of the quality contract). |
-| VC-02 | **The extension protocol is itself versioned and supports more than one version simultaneously** during a migration window. |
-| VC-03 | **The public SDK major version is separate from the protocol version**. |
-| VC-04 | **`PackageId` never changes across versions**, and `PublisherId` is stable ([PK-03](../requirements/08-extensions-and-developer-platform.md#rule-pk-03) there). |
+| <a id="rule-vc-01"></a>VC-01 | **These axes are never mixed** (`§14` of the quality contract). |
+| <a id="rule-vc-02"></a>VC-02 | **The extension protocol is itself versioned and supports more than one version simultaneously** during a migration window. |
+| <a id="rule-vc-03"></a>VC-03 | **The public SDK major version is separate from the protocol version**. |
+| <a id="rule-vc-04"></a>VC-04 | **`PackageId` never changes across versions**, and `PublisherId` is stable ([PK-03](../requirements/08-extensions-and-developer-platform.md#rule-pk-03) there). |
 
 ### 10.2 Contribution-level compatibility
 
 | # | Rule |
 |---|---|
 | <a id="rule-cc-01"></a>CC-01 | **Compatibility is judged per contribution, not per suite**. A package may be partially usable: three of its four contributions work, and the fourth is reported as incompatible with a reason. |
-| CC-02 | **Extension compatibility never forces the whole suite into lockstep**. |
-| CC-03 | **A compatibility manifest states real ranges, not a single number**, and partial compatibility is expressible. |
-| CC-04 | **Platform targets are declared**; content-only packages are usually cross-platform. |
-| CC-05 | **An incompatible contribution is visibly disabled with an explanation**, never silently missing. |
+| <a id="rule-cc-02"></a>CC-02 | **Extension compatibility never forces the whole suite into lockstep**. |
+| <a id="rule-cc-03"></a>CC-03 | **A compatibility manifest states real ranges, not a single number**, and partial compatibility is expressible. |
+| <a id="rule-cc-04"></a>CC-04 | **Platform targets are declared**; content-only packages are usually cross-platform. |
+| <a id="rule-cc-05"></a>CC-05 | **An incompatible contribution is visibly disabled with an explanation**, never silently missing. |
 
 ---
 
@@ -308,12 +308,12 @@ Acquire (.arcpkg from catalog, URL or local file)
 
 | # | Rule |
 |---|---|
-| SD-01 | **The public SDK is separate from internal contracts**, and carries a long-term compatibility commitment that internal interfaces do not. |
-| SD-02 | **The SDK foundation holds only genuinely stable types**. |
-| SD-03 | **The public SDK sits on the Apache-2.0 side of the licence boundary** (**[D-004](../decisions/phase-1-foundation-decisions.md#rule-d-004)**, **[D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021)**), together with public protocol specifications, wire schemas, DTOs, public clients and contract-level validators. |
-| SD-04 | **C# is the first-class SDK language**; other languages are served by the canonical manifest and protocol representations ([CF-03](#rule-cf-03)). |
-| SD-05 | **The SDK source generator produces mechanical protocol code only** — schema, codec, binding — never business behaviour. |
-| SD-06 | **An official first-party extension uses the public SDK**, not internal assemblies, so the public path is proven by first-party use. |
+| <a id="rule-sd-01"></a>SD-01 | **The public SDK is separate from internal contracts**, and carries a long-term compatibility commitment that internal interfaces do not. |
+| <a id="rule-sd-02"></a>SD-02 | **The SDK foundation holds only genuinely stable types**. |
+| <a id="rule-sd-03"></a>SD-03 | **The public SDK sits on the Apache-2.0 side of the licence boundary** (**[D-004](../decisions/phase-1-foundation-decisions.md#rule-d-004)**, **[D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021)**), together with public protocol specifications, wire schemas, DTOs, public clients and contract-level validators. |
+| <a id="rule-sd-04"></a>SD-04 | **C# is the first-class SDK language**; other languages are served by the canonical manifest and protocol representations ([CF-03](#rule-cf-03)). |
+| <a id="rule-sd-05"></a>SD-05 | **The SDK source generator produces mechanical protocol code only** — schema, codec, binding — never business behaviour. |
+| <a id="rule-sd-06"></a>SD-06 | **An official first-party extension uses the public SDK**, not internal assemblies, so the public path is proven by first-party use. |
 
 ### 11.2 CLI
 
@@ -329,9 +329,9 @@ The `arcforge` CLI is part of the developer platform.
 
 | # | Rule |
 |---|---|
-| CL-01 | **`validate` runs the same checks the host runs at install time**, so a developer discovers a failure locally rather than at publication. |
-| CL-02 | **`pack` output is immutable and content-addressed**, and the same artifact is what publishes. |
-| CL-03 | **The CLI never requires a cloud account for local development.** |
+| <a id="rule-cl-01"></a>CL-01 | **`validate` runs the same checks the host runs at install time**, so a developer discovers a failure locally rather than at publication. |
+| <a id="rule-cl-02"></a>CL-02 | **`pack` output is immutable and content-addressed**, and the same artifact is what publishes. |
+| <a id="rule-cl-03"></a>CL-03 | **The CLI never requires a cloud account for local development.** |
 
 ---
 
@@ -340,15 +340,15 @@ The `arcforge` CLI is part of the developer platform.
 | # | Test obligation |
 |---|---|
 | <a id="rule-xt-01"></a>XT-01 | **Protocol conformance suite**: a reference extension exercising every contribution kind, every value-model type, and every error path. |
-| XT-02 | **Version negotiation matrix**: host and extension at differing protocol versions produce the specified outcome — negotiated, partially usable, or cleanly refused. |
-| XT-03 | **Isolation tests**: extension crash, hang, memory exhaustion, and infinite output each leave the host healthy with a typed failure ([EA-06](#rule-ea-06), [PR-04](#rule-pr-04)–[PR-06](#rule-pr-06)). |
-| XT-04 | **Security tests**: an extension attempting to exceed its grant, impersonate another package, claim a reserved namespace, read a secret, or egress data is refused and audited. |
+| <a id="rule-xt-02"></a>XT-02 | **Version negotiation matrix**: host and extension at differing protocol versions produce the specified outcome — negotiated, partially usable, or cleanly refused. |
+| <a id="rule-xt-03"></a>XT-03 | **Isolation tests**: extension crash, hang, memory exhaustion, and infinite output each leave the host healthy with a typed failure ([EA-06](#rule-ea-06), [PR-04](#rule-pr-04)–[PR-06](#rule-pr-06)). |
+| <a id="rule-xt-04"></a>XT-04 | **Security tests**: an extension attempting to exceed its grant, impersonate another package, claim a reserved namespace, read a secret, or egress data is refused and audited. |
 | <a id="rule-xt-05"></a>XT-05 | **Schema-containment test**, scoped precisely: the structured value type is **absent** from every first-party domain, application and product-operation assembly, and **permitted only** in the boundary dispatch assembly that decodes it (`§3.1` of the local RPC contract, [DP-02](contracts/02-local-rpc-operations.md#rule-dp-02)). An unscoped test would fail against the boundary the design requires; a test that omitted the boundary's own assembly would let the exception leak inward. Enforced as a repository policy test. |
-| XT-06 | **AOT test**: the host publishes AOT with the extension platform present, and no reflection-based path is required ([EA-03](#rule-ea-03)). |
-| XT-07 | **Package lifecycle tests**: install, permission grant, update with new permissions, disable, enable, rollback, uninstall with and without private-data deletion, and revoke reaching an installed client. |
-| XT-08 | **Provenance tests**: a task and artifact produced through a community package carry that package's provenance ([CK-05](#rule-ck-05)). |
-| XT-09 | **Catalog-as-untrusted tests**: hostile listing content, oversized metadata and malformed manifests are rejected without executing anything. |
-| XT-10 | **Compatibility tests**: partial contribution availability is reported correctly and does not disable the whole package ([CC-01](#rule-cc-01)). |
+| <a id="rule-xt-06"></a>XT-06 | **AOT test**: the host publishes AOT with the extension platform present, and no reflection-based path is required ([EA-03](#rule-ea-03)). |
+| <a id="rule-xt-07"></a>XT-07 | **Package lifecycle tests**: install, permission grant, update with new permissions, disable, enable, rollback, uninstall with and without private-data deletion, and revoke reaching an installed client. |
+| <a id="rule-xt-08"></a>XT-08 | **Provenance tests**: a task and artifact produced through a community package carry that package's provenance ([CK-05](#rule-ck-05)). |
+| <a id="rule-xt-09"></a>XT-09 | **Catalog-as-untrusted tests**: hostile listing content, oversized metadata and malformed manifests are rejected without executing anything. |
+| <a id="rule-xt-10"></a>XT-10 | **Compatibility tests**: partial contribution availability is reported correctly and does not disable the whole package ([CC-01](#rule-cc-01)). |
 
 ---
 

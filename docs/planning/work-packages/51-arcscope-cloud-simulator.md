@@ -53,14 +53,14 @@ The official simulator consumes real paid-term and quota enforcement from [WP-42
 
 | # | Rule |
 |---|---|
-| BR-01 | **A `SimulationRun` is a product job, not an Agent Run** ([SIM-01](../../requirements/products/arcscope.md#rule-sim-01)). It invokes no model and debits no AI capacity. |
-| BR-02 | **The manifest row is the commit point**, and the checkpoint advances only after it, in the same transaction ([SX-01](../../architecture/23-simulator-and-interchange.md#rule-sx-01), [SX-02](../../architecture/23-simulator-and-interchange.md#rule-sx-02)). |
-| BR-03 | **Lease fencing, not single-instance deployment**, is what makes N replicas safe ([SX-03](../../architecture/23-simulator-and-interchange.md#rule-sx-03), [RT-04](../../architecture/05-cloud-architecture.md#rule-rt-04)). |
-| BR-04 | **Determinism is scoped to the execution profile** ([SD-01](../../architecture/23-simulator-and-interchange.md#rule-sd-01)). Cross-version and cross-CPU floating-point equivalence is never promised. |
-| BR-05 | **Preview may decimate; canonical generation may not** ([SF-03](../../architecture/23-simulator-and-interchange.md#rule-sf-03)). |
-| BR-06 | **Injected faults are labelled as intentional** ([SF-01](../../architecture/23-simulator-and-interchange.md#rule-sf-01)), so they cannot be mistaken for real data loss. |
-| BR-07 | **Synthetic data is labelled synthetic everywhere it appears** ([SC-06](../../architecture/23-simulator-and-interchange.md#rule-sc-06), [I-496](../../requirements/01-normative-glossary-and-invariants.md#rule-i-496)), and never enters a hardware-evidence path. |
-| BR-08 | **No scripting, dynamic compilation, reflection, file access or networking** in scenario evaluation ([SB-01](../../architecture/23-simulator-and-interchange.md#rule-sb-01)). |
+| <a id="rule-br-01"></a>BR-01 | **A `SimulationRun` is a product job, not an Agent Run** ([SIM-01](../../requirements/products/arcscope.md#rule-sim-01)). It invokes no model and debits no AI capacity. |
+| <a id="rule-br-02"></a>BR-02 | **The manifest row is the commit point**, and the checkpoint advances only after it, in the same transaction ([SX-01](../../architecture/23-simulator-and-interchange.md#rule-sx-01), [SX-02](../../architecture/23-simulator-and-interchange.md#rule-sx-02)). |
+| <a id="rule-br-03"></a>BR-03 | **Lease fencing, not single-instance deployment**, is what makes N replicas safe ([SX-03](../../architecture/23-simulator-and-interchange.md#rule-sx-03), [RT-04](../../architecture/05-cloud-architecture.md#rule-rt-04)). |
+| <a id="rule-br-04"></a>BR-04 | **Determinism is scoped to the execution profile** ([SD-01](../../architecture/23-simulator-and-interchange.md#rule-sd-01)). Cross-version and cross-CPU floating-point equivalence is never promised. |
+| <a id="rule-br-05"></a>BR-05 | **Preview may decimate; canonical generation may not** ([SF-03](../../architecture/23-simulator-and-interchange.md#rule-sf-03)). |
+| <a id="rule-br-06"></a>BR-06 | **Injected faults are labelled as intentional** ([SF-01](../../architecture/23-simulator-and-interchange.md#rule-sf-01)), so they cannot be mistaken for real data loss. |
+| <a id="rule-br-07"></a>BR-07 | **Synthetic data is labelled synthetic everywhere it appears** ([SC-06](../../architecture/23-simulator-and-interchange.md#rule-sc-06), [I-496](../../requirements/01-normative-glossary-and-invariants.md#rule-i-496)), and never enters a hardware-evidence path. |
+| <a id="rule-br-08"></a>BR-08 | **No scripting, dynamic compilation, reflection, file access or networking** in scenario evaluation ([SB-01](../../architecture/23-simulator-and-interchange.md#rule-sb-01)). |
 
 ---
 
@@ -179,7 +179,7 @@ The official simulator consumes real paid-term and quota enforcement from [WP-42
 
 ## 7. Tests and verification evidence
 
-Acceptance includes every amended §5 producer/consumer and WP-51.90 evidence. Current P2-013 contracts/data/runtime rules are tested in the original owner implementation, not a detached explanatory sample.
+Acceptance includes every amended §5 producer/consumer and [WP-51.90](#rule-wp-51.90) evidence. Current [P2-013](../../decisions/phase-2-specification-decisions.md#rule-p2-013) contracts/data/runtime rules are tested in the original owner implementation, not a detached explanatory sample.
 
 **Required evidence addition.** Canonical simulator replay retains measurement profile and synthetic provenance.
 

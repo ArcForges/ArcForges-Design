@@ -1,6 +1,6 @@
 # Private Child gRPC and Restricted Helper Profile
 
-> Status: **Authoritative** — Phase 2; P2-011
+> Status: **Authoritative** — Phase 2; [P2-011](../../decisions/phase-2-specification-decisions.md#rule-p2-011)
 > Scope: parent-owned parser/extension/connector children only under P2-012. Ordinary application operations are in-process; remote control uses the Cloud bridge.
 
 ## 1. Closed transport and ownership map

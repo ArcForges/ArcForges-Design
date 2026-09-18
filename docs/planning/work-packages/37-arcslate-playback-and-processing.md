@@ -44,17 +44,17 @@
 
 | # | Rule |
 |---|---|
-| BR-01 | **C# is the runtime orchestrator and product authority**; native code decodes, converts and computes only. |
-| BR-02 | **A native media foundation must never leak into the domain.** No native type, handle, enumeration or error code appears in a domain, contract or persisted type. |
-| BR-03 | **Hardware acceleration is abstract and optional.** Different machines may use different hardware paths; **output must not change because of it**, and a software fallback exists for every operation. |
-| BR-04 | **Preview prioritises real time; final render prioritises correctness** — but both share processing semantics. |
-| BR-05 | **A dropped preview frame is a playback-quality event, never data loss** ([I-480](../../requirements/01-normative-glossary-and-invariants.md#rule-i-480)). The audio and timeline clock stay correct. |
-| BR-06 | **`Effect Definition ≠ Effect Instance`** and **`Keyframe ≠ current parameter value`** ([I-483](../../requirements/01-normative-glossary-and-invariants.md#rule-i-483)). |
-| BR-07 | **Keyframe time belongs to its effect's scope** and never silently switches between clip-local and sequence time. |
-| BR-08 | **Proxy, render cache, thumbnail and waveform are derived** ([I-484](../../requirements/01-normative-glossary-and-invariants.md#rule-i-484)) and never project authority. Deleting every cache leaves the project intact. |
-| BR-09 | **Switching proxy on or off never changes render output**; proxy render is an explicit, declared choice. |
-| BR-10 | **Per-frame images never cross a serialization boundary**, and GPU state stays in the process. |
-| BR-11 | **Playback quality state is visible**: realtime, reduced quality, using proxy, dropping frames, or requiring render. |
+| <a id="rule-br-01"></a>BR-01 | **C# is the runtime orchestrator and product authority**; native code decodes, converts and computes only. |
+| <a id="rule-br-02"></a>BR-02 | **A native media foundation must never leak into the domain.** No native type, handle, enumeration or error code appears in a domain, contract or persisted type. |
+| <a id="rule-br-03"></a>BR-03 | **Hardware acceleration is abstract and optional.** Different machines may use different hardware paths; **output must not change because of it**, and a software fallback exists for every operation. |
+| <a id="rule-br-04"></a>BR-04 | **Preview prioritises real time; final render prioritises correctness** — but both share processing semantics. |
+| <a id="rule-br-05"></a>BR-05 | **A dropped preview frame is a playback-quality event, never data loss** ([I-480](../../requirements/01-normative-glossary-and-invariants.md#rule-i-480)). The audio and timeline clock stay correct. |
+| <a id="rule-br-06"></a>BR-06 | **`Effect Definition ≠ Effect Instance`** and **`Keyframe ≠ current parameter value`** ([I-483](../../requirements/01-normative-glossary-and-invariants.md#rule-i-483)). |
+| <a id="rule-br-07"></a>BR-07 | **Keyframe time belongs to its effect's scope** and never silently switches between clip-local and sequence time. |
+| <a id="rule-br-08"></a>BR-08 | **Proxy, render cache, thumbnail and waveform are derived** ([I-484](../../requirements/01-normative-glossary-and-invariants.md#rule-i-484)) and never project authority. Deleting every cache leaves the project intact. |
+| <a id="rule-br-09"></a>BR-09 | **Switching proxy on or off never changes render output**; proxy render is an explicit, declared choice. |
+| <a id="rule-br-10"></a>BR-10 | **Per-frame images never cross a serialization boundary**, and GPU state stays in the process. |
+| <a id="rule-br-11"></a>BR-11 | **Playback quality state is visible**: realtime, reduced quality, using proxy, dropping frames, or requiring render. |
 
 ---
 
@@ -223,6 +223,6 @@
 
 **Downstream:** `38`. Consumers use exact released artifacts.
 
-## P2-010 required behavior and closure
+## [P2-010](../../decisions/phase-2-specification-decisions.md#rule-p2-010) required behavior and closure
 
 Implement full retime/hold-linear-bezier keyframe, colour/effect/audio profiles from 26; keep exact source/sequence time and typed graph semantics. No default-library result replaces a declared numeric rule. The referenced normative profile and producer stage matrix are binding inputs. Record independent positive/negative vectors and actual owner integration at this WP's assigned stage; a mock cannot close a real-provider/device requirement.

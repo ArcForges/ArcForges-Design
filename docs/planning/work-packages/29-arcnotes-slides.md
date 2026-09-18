@@ -29,7 +29,7 @@
 
 | # | Rule |
 |---|---|
-| RT-01 | **The identifier [WP-29](#rule-wp-29) is retired and never reused.** |
-| RT-02 | **[WP-50](50-full-platform-production-release.md#rule-wp-50) no longer depends on it.** The full-platform release gate drops `29` from its upstream set. |
-| RT-03 | **[WP-28](28-arcnotes-properties-and-views.md#rule-wp-28) has no downstream successor in Phase F.** Phase F is now a single package. |
-| RT-04 | **No dormant hook remains** in the block model, the schema or the export formats. |
+| <a id="rule-rt-01"></a>RT-01 | **The identifier [WP-29](#rule-wp-29) is retired and never reused.** |
+| <a id="rule-rt-02"></a>RT-02 | **[WP-50](50-full-platform-production-release.md#rule-wp-50) no longer depends on it.** The full-platform release gate drops `29` from its upstream set. |
+| <a id="rule-rt-03"></a>RT-03 | **[WP-28](28-arcnotes-properties-and-views.md#rule-wp-28) has no downstream successor in Phase F.** Phase F is now a single package. |
+| <a id="rule-rt-04"></a>RT-04 | **No dormant hook remains** in the block model, the schema or the export formats. |

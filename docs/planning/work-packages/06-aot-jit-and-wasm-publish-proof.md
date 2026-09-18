@@ -50,14 +50,14 @@
 
 | # | Rule |
 |---|---|
-| BR-01 | **Desktop products are Native AOT deliverables** (**[D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008)**). |
-| BR-02 | **Cloud is ASP.NET Core Native AOT with explicit session/SQL/HTTP adapters and zero publish diagnostics** (**[D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008)**, **[V-03](../../assurance/phase-1-official-verification.md#rule-v-03)**). |
-| BR-03 | Web produces React/TypeScript browser assets with the pinned Node/npm build; no .NET WASM/AOT flags apply. |
-| BR-04 | **Zero trim and AOT diagnostics on the AOT path.** A suppressed diagnostic is not a pass ([PJ-08](../../architecture/01-solution-and-project-layout.md#rule-pj-08)). |
-| BR-05 | **A debug build passing is never evidence for a release target** ([PM-01](../../architecture/14-build-packaging-and-release.md#rule-pm-01) in the build architecture). |
-| BR-06 | **The proof is continuous**, re-run on every main-branch build ([PM-02](../../architecture/14-build-packaging-and-release.md#rule-pm-02) there), not a one-off milestone. |
-| BR-07 | **Every third-party control entering an AOT deliverable requires its own publish proof** (**[V-05a](../../assurance/phase-1-official-verification.md#rule-v-05a)**). |
-| BR-08 | Generated gRPC-Web clients and explicit HTTP-exception adapters must pass their real AOT dependency/registration gate; browser/Android use their selected generated TS closure. |
+| <a id="rule-br-01"></a>BR-01 | **Desktop products are Native AOT deliverables** (**[D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008)**). |
+| <a id="rule-br-02"></a>BR-02 | **Cloud is ASP.NET Core Native AOT with explicit session/SQL/HTTP adapters and zero publish diagnostics** (**[D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008)**, **[V-03](../../assurance/phase-1-official-verification.md#rule-v-03)**). |
+| <a id="rule-br-03"></a>BR-03 | Web produces React/TypeScript browser assets with the pinned Node/npm build; no .NET WASM/AOT flags apply. |
+| <a id="rule-br-04"></a>BR-04 | **Zero trim and AOT diagnostics on the AOT path.** A suppressed diagnostic is not a pass ([PJ-08](../../architecture/01-solution-and-project-layout.md#rule-pj-08)). |
+| <a id="rule-br-05"></a>BR-05 | **A debug build passing is never evidence for a release target** ([PM-01](../../architecture/14-build-packaging-and-release.md#rule-pm-01) in the build architecture). |
+| <a id="rule-br-06"></a>BR-06 | **The proof is continuous**, re-run on every main-branch build ([PM-02](../../architecture/14-build-packaging-and-release.md#rule-pm-02) there), not a one-off milestone. |
+| <a id="rule-br-07"></a>BR-07 | **Every third-party control entering an AOT deliverable requires its own publish proof** (**[V-05a](../../assurance/phase-1-official-verification.md#rule-v-05a)**). |
+| <a id="rule-br-08"></a>BR-08 | Generated gRPC-Web clients and explicit HTTP-exception adapters must pass their real AOT dependency/registration gate; browser/Android use their selected generated TS closure. |
 
 ---
 
@@ -193,7 +193,7 @@
 
 ## 7. Tests and verification evidence
 
-Acceptance includes every amended §5 producer/consumer and WP-06.90 evidence. Current P2-013 contracts/data/runtime rules are tested in the original owner implementation, not a detached explanatory sample.
+Acceptance includes every amended §5 producer/consumer and [WP-06.90](#rule-wp-06.90) evidence. Current [P2-013](../../decisions/phase-2-specification-decisions.md#rule-p2-013) contracts/data/runtime rules are tested in the original owner implementation, not a detached explanatory sample.
 
 [Local gRPC closure](../../architecture/contracts/09-local-grpc-and-sandbox.md): Run actual Windows Named Pipe/Linux and macOS UDS AOT peers with bootstrap/renew/reconnect, reverse generated invocation and zero TCP listeners. A memory stream is insufficient; full restricted launch remains WP11-owned.
 

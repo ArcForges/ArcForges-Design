@@ -1,6 +1,6 @@
 # ArcForges Cloud Architecture
 
-P2-012 current implementation authorities: [Complete D1/Container transaction and recovery profile](data-model/04-d1-execution-profile.md); [Public gRPC-Web and application scopes](contracts/10-application-scope-and-streams.md).
+[P2-012](../decisions/phase-2-specification-decisions.md#rule-p2-012) current implementation authorities: [Complete D1/Container transaction and recovery profile](data-model/04-d1-execution-profile.md); [Public gRPC-Web and application scopes](contracts/10-application-scope-and-streams.md).
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Architecture
@@ -35,14 +35,14 @@ Cloud clients never connect inbound to a desktop; device tools pull from Cloud.
 
 | # | Rule |
 |---|---|
-| RT-01 | **The host is stateless between requests.** Anything that must survive a request lives in the database or object storage. |
-| RT-02 | **C# runs in restartable Cloudflare Containers that may sleep.** Worker ingress wakes ready instances; D1/DO/Queues preserve durable work. No minimum replica count is a correctness assumption. |
+| <a id="rule-rt-01"></a>RT-01 | **The host is stateless between requests.** Anything that must survive a request lives in the database or object storage. |
+| <a id="rule-rt-02"></a>RT-02 | **C# runs in restartable Cloudflare Containers that may sleep.** Worker ingress wakes ready instances; D1/DO/Queues preserve durable work. No minimum replica count is a correctness assumption. |
 | <a id="rule-rt-03"></a>RT-03 | Every Container instance runs the same image and exposes the same bounded job entry points. Cron/Queues/DO alarms wake work; a perpetual hosted-service process is not a correctness assumption. |
 | <a id="rule-rt-04"></a>RT-04 | Durable D1 leases and monotonic fences control concurrent job slices; a paused or replaced Container cannot publish after takeover. |
 | <a id="rule-rt-05"></a>RT-05 | A job slice handles at most 100 items or 20 seconds then commits a checkpoint and reschedules. No unbounded generation loop or sleep-based real-time scheduler runs inside the Container. |
-| RT-06 | **A user automation is never a platform scheduled job** ([RR-01](../requirements/products/arcforges-cloud.md#rule-rr-01) in the cloud requirements). |
-| RT-07 | **Untrusted code never holds a platform identity** ([RR-05](../requirements/products/arcforges-cloud.md#rule-rr-05) there). |
-| RT-08 | **Splitting a hosted service into its own deployable is an architecture baseline change**, requiring demonstrated need for independent scaling, isolation, security or ownership. V1 does not require it and no design may assume it. |
+| <a id="rule-rt-06"></a>RT-06 | **A user automation is never a platform scheduled job** ([RR-01](../requirements/products/arcforges-cloud.md#rule-rr-01) in the cloud requirements). |
+| <a id="rule-rt-07"></a>RT-07 | **Untrusted code never holds a platform identity** ([RR-05](../requirements/products/arcforges-cloud.md#rule-rr-05) there). |
+| <a id="rule-rt-08"></a>RT-08 | **Splitting a hosted service into its own deployable is an architecture baseline change**, requiring demonstrated need for independent scaling, isolation, security or ownership. V1 does not require it and no design may assume it. |
 
 > **Implementation evidence, 2026-09-06.** `ArcForges/src/Cloud` at commit `ede43db` contains exactly one web executable — `ArcForges.Cloud.Host` — referencing `ArcForges.Cloud.AgentRuntime`, `ArcForges.Cloud.BackgroundJobs`, `ArcForges.Cloud.PublicApi` and `ArcForges.Cloud.Realtime` as libraries. No `Worker` or `TaskRunner` executable exists. `ArcForges.Cloud.AppHost` is an Aspire orchestration host for local development only ([EN-05](../requirements/products/arcforges-cloud.md#rule-en-05)). Every cloud module is currently an `AssemblyPlaceholder.cs` scaffold with no implemented behaviour, so this topology correction is unblocked by existing code.
 
@@ -89,12 +89,12 @@ EventService.Poll uses the same pipeline. Generated output RPC and CF object rou
 
 | # | Rule |
 |---|---|
-| HP-01 | **All cloud communication is TLS.** |
-| HP-02 | **Startup, readiness and liveness are separate signals.** |
-| HP-03 | **HTTP, realtime and background work all drain gracefully.** |
-| HP-04 | **Endpoints are registered explicitly**, never by runtime assembly scanning. |
-| HP-05 | **Exception normalisation never leaks a stack trace, an internal type name or a storage detail** to a client. |
-| HP-06 | **Every response carries the correlation identity** so a user-reported problem is traceable. |
+| <a id="rule-hp-01"></a>HP-01 | **All cloud communication is TLS.** |
+| <a id="rule-hp-02"></a>HP-02 | **Startup, readiness and liveness are separate signals.** |
+| <a id="rule-hp-03"></a>HP-03 | **HTTP, realtime and background work all drain gracefully.** |
+| <a id="rule-hp-04"></a>HP-04 | **Endpoints are registered explicitly**, never by runtime assembly scanning. |
+| <a id="rule-hp-05"></a>HP-05 | **Exception normalisation never leaks a stack trace, an internal type name or a storage detail** to a client. |
+| <a id="rule-hp-06"></a>HP-06 | **Every response carries the correlation identity** so a user-reported problem is traceable. |
 
 ---
 
@@ -128,10 +128,10 @@ Twenty-one domain modules, following the [Cloud schema ownership map](data-model
 
 | # | Rule |
 |---|---|
-| MD-01 | **A module never writes another module's tables**, enforced by architecture test. |
+| <a id="rule-md-01"></a>MD-01 | **A module never writes another module's tables**, enforced by architecture test. |
 | <a id="rule-md-02"></a>MD-02 | **Cross-module interaction is a module API call or a published event.** |
 | <a id="rule-md-03"></a>MD-03 | **A module's public API is the only reachable surface**; internal types are not referenced across modules. |
-| MD-04 | **Entitlement, Policy and Audit are consumed by nearly every module and depend on almost none**, which keeps the dependency graph acyclic. |
+| <a id="rule-md-04"></a>MD-04 | **Entitlement, Policy and Audit are consumed by nearly every module and depend on almost none**, which keeps the dependency graph acyclic. |
 | <a id="rule-md-05"></a>MD-05 | **Commerce depends on Entitlement's grant interface, never the reverse.** Entitlement must remain usable with Commerce entirely absent — for example in a self-hosted realm. |
 
 ---
@@ -141,17 +141,17 @@ Twenty-one domain modules, following the [Cloud schema ownership map](data-model
 | # | Rule |
 |---|---|
 | <a id="rule-ps-01"></a>PS-01 | **One primary D1 database per realm, partitioned by module-owned table prefixes; atomic families stay in that database.** |
-| PS-02 | **Short-lived connection and transaction per request or unit of work.** |
-| PS-03 | **Optimistic concurrency by revision token** on every mutable aggregate. |
+| <a id="rule-ps-02"></a>PS-02 | **Short-lived connection and transaction per request or unit of work.** |
+| <a id="rule-ps-03"></a>PS-03 | **Optimistic concurrency by revision token** on every mutable aggregate. |
 | <a id="rule-ps-04"></a>PS-04 | **The outbox commits inside the business transaction** — this is what makes "no lost business fact" true. |
-| PS-05 | **An inbox and idempotency table guard duplicate inbound messages and duplicate provider events.** |
-| PS-06 | **Hot queries have explicit indexes and query-plan monitoring.** |
+| <a id="rule-ps-05"></a>PS-05 | **An inbox and idempotency table guard duplicate inbound messages and duplicate provider events.** |
+| <a id="rule-ps-06"></a>PS-06 | **Hot queries have explicit indexes and query-plan monitoring.** |
 | <a id="rule-ps-07"></a>PS-07 | **Large content goes to object storage.** The database holds metadata, ownership and lifecycle — never large binary bodies. |
 | <a id="rule-ps-08"></a>PS-08 | **Vector retrieval is a replaceable module** and never bleeds into the core document model ([IX-10](../requirements/06-knowledge-search-and-retrieval.md#rule-ix-10)). |
-| PS-09 | **Migration is a separate, gated deployment step.** Automatic migration on replica start-up is prohibited ([MG-01](../requirements/products/arcforges-cloud.md#rule-mg-01) in the cloud product requirements). |
+| <a id="rule-ps-09"></a>PS-09 | **Migration is a separate, gated deployment step.** Automatic migration on replica start-up is prohibited ([MG-01](../requirements/products/arcforges-cloud.md#rule-mg-01) in the cloud product requirements). |
 | <a id="rule-ps-10"></a>PS-10 | **Schema change uses expand/contract**, so two application versions coexist during a rolling deployment. |
-| PS-11 | **A mapping and SQL-generation enhancement layer may be adopted after benchmarking**; it is not a prerequisite. |
-| PS-12 | Use the selected D1 binding adapter fixed-SQL mapping; no reflection-driven ORM enters the AOT host. |
+| <a id="rule-ps-11"></a>PS-11 | **A mapping and SQL-generation enhancement layer may be adopted after benchmarking**; it is not a prerequisite. |
+| <a id="rule-ps-12"></a>PS-12 | Use the selected D1 binding adapter fixed-SQL mapping; no reflection-driven ORM enters the AOT host. |
 
 ---
 
@@ -159,14 +159,14 @@ Twenty-one domain modules, following the [Cloud schema ownership map](data-model
 
 | # | Rule |
 |---|---|
-| AP-01 | Public business services implement handwritten proto through binary gRPC-Web unary methods and bounded server streams for all client platforms. Only the enumerated browser-auth/provider/object/AI/platform protocol exceptions use HTTP/JSON or their standard wire format. |
-| AP-02 | Business commands/queries use binary gRPC-Web with generated ArcResult and trailers. HTTP status/cache/ETag semantics apply only to the explicitly declared browser/object/provider/static exceptions; never expose a parallel REST CRUD surface. |
-| AP-03 | Handwritten proto is the business RPC authority. Descriptor sets generate C#/TS/Connect Kotlin records/clients and fixtures. JSON schemas document only the declared HTTP exceptions; OpenAPI is not a business generation stage. |
-| AP-04 | Descriptor compatibility, generated metadata/validation and real three-language package-consumer tests control drift. Published immutable artifacts are the integration boundary. |
-| AP-05 | **File upload and download use standard HTTP content and streams.** Large objects are never base64-encoded into JSON. |
-| AP-06 | **Timeout, cancellation and retry are explicit client policies**; a write retry requires `CommandId` idempotency. |
-| AP-07 | Public protobuf types use generated C#/TS serializers; declared HTTP exceptions use explicit source-generated JSON metadata. The same semantic validators apply before owner dispatch. |
-| AP-08 | **Route versioning is explicit**, and the supported client set is declared by compatibility policy (`§7` of the policy requirements). |
+| <a id="rule-ap-01"></a>AP-01 | Public business services implement handwritten proto through binary gRPC-Web unary methods and bounded server streams for all client platforms. Only the enumerated browser-auth/provider/object/AI/platform protocol exceptions use HTTP/JSON or their standard wire format. |
+| <a id="rule-ap-02"></a>AP-02 | Business commands/queries use binary gRPC-Web with generated ArcResult and trailers. HTTP status/cache/ETag semantics apply only to the explicitly declared browser/object/provider/static exceptions; never expose a parallel REST CRUD surface. |
+| <a id="rule-ap-03"></a>AP-03 | Handwritten proto is the business RPC authority. Descriptor sets generate C#/TS/Connect Kotlin records/clients and fixtures. JSON schemas document only the declared HTTP exceptions; OpenAPI is not a business generation stage. |
+| <a id="rule-ap-04"></a>AP-04 | Descriptor compatibility, generated metadata/validation and real three-language package-consumer tests control drift. Published immutable artifacts are the integration boundary. |
+| <a id="rule-ap-05"></a>AP-05 | **File upload and download use standard HTTP content and streams.** Large objects are never base64-encoded into JSON. |
+| <a id="rule-ap-06"></a>AP-06 | **Timeout, cancellation and retry are explicit client policies**; a write retry requires `CommandId` idempotency. |
+| <a id="rule-ap-07"></a>AP-07 | Public protobuf types use generated C#/TS serializers; declared HTTP exceptions use explicit source-generated JSON metadata. The same semantic validators apply before owner dispatch. |
+| <a id="rule-ap-08"></a>AP-08 | **Route versioning is explicit**, and the supported client set is declared by compatibility policy (`§7` of the policy requirements). |
 
 ---
 
@@ -174,16 +174,16 @@ Twenty-one domain modules, following the [Cloud schema ownership map](data-model
 
 | # | Rule |
 |---|---|
-| RL-01 | EventService.Poll/Watch carry the 17 existing typed hints. Live AI text uses ExecutionService.ReadOutput/WatchOutput over the same public gRPC-Web boundary; D1 task/message authority and transient-body rules remain separate. |
-| RL-02 | Hints and AI presentation never own durable commands, transactions, large objects, task outcomes or the only recovery path. |
-| RL-03 | Hints carry the numbered event envelope and the revision/identities declared by their payload; they never invent a global sequence. |
+| <a id="rule-rl-01"></a>RL-01 | EventService.Poll/Watch carry the 17 existing typed hints. Live AI text uses ExecutionService.ReadOutput/WatchOutput over the same public gRPC-Web boundary; D1 task/message authority and transient-body rules remain separate. |
+| <a id="rule-rl-02"></a>RL-02 | Hints and AI presentation never own durable commands, transactions, large objects, task outcomes or the only recovery path. |
+| <a id="rule-rl-03"></a>RL-03 | Hints carry the numbered event envelope and the revision/identities declared by their payload; they never invent a global sequence. |
 | <a id="rule-rl-04"></a>RL-04 | After loss or expired cursor, query current authoritative snapshots and resume from the returned cursor; no hidden partial backfill. |
-| RL-05 | Publish hints only after the owning transaction commits. Event delivery cannot commit domain state. |
-| RL-06 | A client acknowledgement is not a business commit. |
-| RL-07 | Losing hints never loses a business fact. |
-| RL-08 | EventService.Watch/Poll and ExecutionService.WatchOutput/ReadOutput use generated proto and durable owner/cursor recovery. |
-| RL-09 | Initial clients use bounded unary polling with the cadence/backoff in contracts 05; no required backplane, affinity or transport negotiation. |
-| RL-10 | C# gRPC-Web server streams expose authorized DO projections with finite lifetime and current authorization refresh under annex 10; no public AI WebSocket. |
+| <a id="rule-rl-05"></a>RL-05 | Publish hints only after the owning transaction commits. Event delivery cannot commit domain state. |
+| <a id="rule-rl-06"></a>RL-06 | A client acknowledgement is not a business commit. |
+| <a id="rule-rl-07"></a>RL-07 | Losing hints never loses a business fact. |
+| <a id="rule-rl-08"></a>RL-08 | EventService.Watch/Poll and ExecutionService.WatchOutput/ReadOutput use generated proto and durable owner/cursor recovery. |
+| <a id="rule-rl-09"></a>RL-09 | Initial clients use bounded unary polling with the cadence/backoff in contracts 05; no required backplane, affinity or transport negotiation. |
+| <a id="rule-rl-10"></a>RL-10 | C# gRPC-Web server streams expose authorized DO projections with finite lifetime and current authorization refresh under annex 10; no public AI WebSocket. |
 
 ---
 
@@ -202,12 +202,12 @@ Outbox dispatcher (a hosted service in the host)
 
 | # | Rule |
 |---|---|
-| EV-01 | **Outbox/inbox delivery is never business authority**; owner state and the emitting outbox row commit atomically. |
-| EV-02 | **Every consumer is idempotent**, keyed by `EventId`. |
-| EV-03 | **Required ordering uses the owning outbox/inbox stream and fence**, never an undeclared broker session or global sequence. |
-| EV-04 | **D1 outbox/inbox dead-letter state** is monitored, inspectable and replayable. |
-| EV-05 | **There is no global event sequence** ([EV-09](02-contracts-and-protocols.md#rule-ev-09) in the contracts architecture). Sequences are per stream or per resource. |
-| EV-06 | **No separate broker or backplane is provisioned in V1.** A later addition requires measured need and an explicit design decision. |
+| <a id="rule-ev-01"></a>EV-01 | **Outbox/inbox delivery is never business authority**; owner state and the emitting outbox row commit atomically. |
+| <a id="rule-ev-02"></a>EV-02 | **Every consumer is idempotent**, keyed by `EventId`. |
+| <a id="rule-ev-03"></a>EV-03 | **Required ordering uses the owning outbox/inbox stream and fence**, never an undeclared broker session or global sequence. |
+| <a id="rule-ev-04"></a>EV-04 | **D1 outbox/inbox dead-letter state** is monitored, inspectable and replayable. |
+| <a id="rule-ev-05"></a>EV-05 | **There is no global event sequence** ([EV-09](02-contracts-and-protocols.md#rule-ev-09) in the contracts architecture). Sequences are per stream or per resource. |
+| <a id="rule-ev-06"></a>EV-06 | **No separate broker or backplane is provisioned in V1.** A later addition requires measured need and an explicit design decision. |
 
 ---
 
@@ -215,10 +215,10 @@ Outbox dispatcher (a hosted service in the host)
 
 | # | Rule |
 |---|---|
-| BG-01 | **Background services are hosted services inside `ArcForges.Cloud.Host`** ([RT-03](#rule-rt-03)). There is no separate worker or task-runner deployable. |
+| <a id="rule-bg-01"></a>BG-01 | **Background services are hosted services inside `ArcForges.Cloud.Host`** ([RT-03](#rule-rt-03)). There is no separate worker or task-runner deployable. |
 | <a id="rule-bg-02"></a>BG-02 | **Critical background work persists leases, retry counts and idempotency keys.** |
 | <a id="rule-bg-03"></a>BG-03 | **A crashed worker does not lose a task.** Task authority lives in the database; a worker is only an executor ([RV-05](../requirements/05-ai-and-agent-execution.md#rule-rv-05) in the AI requirements). |
-| BG-04 | Splitting a worker into its own deployment role is a scaling or isolation decision — still a cloud role, never a reintroduced desktop worker process. |
+| <a id="rule-bg-04"></a>BG-04 | Splitting a worker into its own deployment role is a scaling or isolation decision — still a cloud role, never a reintroduced desktop worker process. |
 
 ---
 
@@ -228,12 +228,12 @@ The cloud half of the **[D-010](../decisions/phase-1-foundation-decisions.md#rul
 
 | # | Rule |
 |---|---|
-| RA-01 | **Cloud creates a durable `ToolRequest`** with target device, capability, typed input, actor chain, risk, approval reference, expiry and idempotency key. |
-| RA-02 | **The desktop pulls it.** Cloud never pushes into a local endpoint and never opens an inbound connection. |
-| RA-03 | **Realtime carries only a restricted wake or intent signal** to a bound device. |
-| RA-04 | **The desktop re-authorises locally**, executes through the owning product, and returns an **idempotent `ToolResult`**. |
-| RA-05 | **A `ToolRequest` whose result never arrives is re-adjudicated through durable task state**, never blindly re-issued ([FL-06](../requirements/05-ai-and-agent-execution.md#rule-fl-06), [FL-07](../requirements/05-ai-and-agent-execution.md#rule-fl-07) there). |
-| RA-06 | **Cloud re-validates independently on every request** — session, workspace, entitlement, permission, device trust and capability. **The client is never the security authority** ([RX-10](../requirements/03-cloud-services-and-sync.md#rule-rx-10) in the cloud requirements). |
+| <a id="rule-ra-01"></a>RA-01 | **Cloud creates a durable `ToolRequest`** with target device, capability, typed input, actor chain, risk, approval reference, expiry and idempotency key. |
+| <a id="rule-ra-02"></a>RA-02 | **The desktop pulls it.** Cloud never pushes into a local endpoint and never opens an inbound connection. |
+| <a id="rule-ra-03"></a>RA-03 | **Realtime carries only a restricted wake or intent signal** to a bound device. |
+| <a id="rule-ra-04"></a>RA-04 | **The desktop re-authorises locally**, executes through the owning product, and returns an **idempotent `ToolResult`**. |
+| <a id="rule-ra-05"></a>RA-05 | **A `ToolRequest` whose result never arrives is re-adjudicated through durable task state**, never blindly re-issued ([FL-06](../requirements/05-ai-and-agent-execution.md#rule-fl-06), [FL-07](../requirements/05-ai-and-agent-execution.md#rule-fl-07) there). |
+| <a id="rule-ra-06"></a>RA-06 | **Cloud re-validates independently on every request** — session, workspace, entitlement, permission, device trust and capability. **The client is never the security authority** ([RX-10](../requirements/03-cloud-services-and-sync.md#rule-rx-10) in the cloud requirements). |
 
 ---
 
@@ -241,11 +241,11 @@ The cloud half of the **[D-010](../decisions/phase-1-foundation-decisions.md#rul
 
 | # | Rule |
 |---|---|
-| MT-01 | **Every cloud object belongs to a workspace** ([WS-07](../requirements/02-identity-account-and-workspace.md#rule-ws-07) in the identity requirements). |
-| MT-02 | **Authorization is always `Actor → owner/service grant → Workspace → Resource`.** Knowledge of an identifier never grants access. |
+| <a id="rule-mt-01"></a>MT-01 | **Every cloud object belongs to a workspace** ([WS-07](../requirements/02-identity-account-and-workspace.md#rule-ws-07) in the identity requirements). |
+| <a id="rule-mt-02"></a>MT-02 | **Authorization is always `Actor → owner/service grant → Workspace → Resource`.** Knowledge of an identifier never grants access. |
 | <a id="rule-mt-03"></a>MT-03 | **Workspace scoping is enforced at the data access layer**, not only in handlers, so a missing filter is a structural impossibility rather than a review finding. |
-| MT-04 | **Search indexes are partitioned by realm and workspace** ([PM-05](../requirements/06-knowledge-search-and-retrieval.md#rule-pm-05) in the knowledge requirements). |
-| MT-05 | **Realm is the outermost boundary.** A self-hosted realm is a separate deployment with its own identity, policy and data authority (`§17` of the cloud requirements). |
+| <a id="rule-mt-04"></a>MT-04 | **Search indexes are partitioned by realm and workspace** ([PM-05](../requirements/06-knowledge-search-and-retrieval.md#rule-pm-05) in the knowledge requirements). |
+| <a id="rule-mt-05"></a>MT-05 | **Realm is the outermost boundary.** A self-hosted realm is a separate deployment with its own identity, policy and data authority (`§17` of the cloud requirements). |
 
 ---
 
@@ -255,10 +255,10 @@ The cloud half of the **[D-010](../decisions/phase-1-foundation-decisions.md#rul
 |---|---|
 | <a id="rule-cs-01"></a>CS-01 | **Configuration files hold references, never long-lived plaintext secrets.** |
 | <a id="rule-cs-02"></a>CS-02 | **Production secrets live in a managed vault in RBAC mode with purge protection.** |
-| CS-03 | **Service-to-service authentication uses workload identity where available.** |
-| CS-04 | **Envelope encryption is used for per-workspace secret material**, not one vault entry per workspace. **There are no user provider secrets** — end-user BYOK is excluded ([BY-01](../requirements/04-commerce-entitlement-and-credits.md#rule-by-01)–[BY-04](../requirements/04-commerce-entitlement-and-credits.md#rule-by-04), [I-015](../requirements/01-normative-glossary-and-invariants.md#rule-i-015) retired); provider credentials are deployment secrets ([DC-15](../requirements/11-policy-and-configuration.md#rule-dc-15)). |
-| CS-05 | **Logs, crash dumps and diagnostic bundles are redacted by default.** |
-| CS-06 | **Provider API keys are isolated by provider, workspace and environment.** |
+| <a id="rule-cs-03"></a>CS-03 | **Service-to-service authentication uses workload identity where available.** |
+| <a id="rule-cs-04"></a>CS-04 | **Envelope encryption is used for per-workspace secret material**, not one vault entry per workspace. **There are no user provider secrets** — end-user BYOK is excluded ([BY-01](../requirements/04-commerce-entitlement-and-credits.md#rule-by-01)–[BY-04](../requirements/04-commerce-entitlement-and-credits.md#rule-by-04), [I-015](../requirements/01-normative-glossary-and-invariants.md#rule-i-015) retired); provider credentials are deployment secrets ([DC-15](../requirements/11-policy-and-configuration.md#rule-dc-15)). |
+| <a id="rule-cs-05"></a>CS-05 | **Logs, crash dumps and diagnostic bundles are redacted by default.** |
+| <a id="rule-cs-06"></a>CS-06 | **Provider API keys are isolated by provider, workspace and environment.** |
 
 ---
 
@@ -268,10 +268,10 @@ Capabilities degrade independently. The full dependency-degradation matrix is in
 
 | # | Rule |
 |---|---|
-| FI-01 | **A module's failure must not cascade.** Cross-module calls have timeouts, bulkheads and explicit fallbacks. |
-| FI-02 | **An AI provider outage must not affect sync**; a search outage must not affect writes; a notification outage must not affect task execution. |
-| FI-03 | **A degraded capability reports a specific, honest reason** (`§11` of the policy requirements). |
-| FI-04 | **Health endpoints report per-capability state**, which is what the public status page renders. |
+| <a id="rule-fi-01"></a>FI-01 | **A module's failure must not cascade.** Cross-module calls have timeouts, bulkheads and explicit fallbacks. |
+| <a id="rule-fi-02"></a>FI-02 | **An AI provider outage must not affect sync**; a search outage must not affect writes; a notification outage must not affect task execution. |
+| <a id="rule-fi-03"></a>FI-03 | **A degraded capability reports a specific, honest reason** (`§11` of the policy requirements). |
+| <a id="rule-fi-04"></a>FI-04 | **Health endpoints report per-capability state**, which is what the public status page renders. |
 
 ---
 
@@ -279,10 +279,10 @@ Capabilities degrade independently. The full dependency-degradation matrix is in
 
 | # | Rule |
 |---|---|
-| SP-01 | **Start as a modular monolith; split only on demonstrated need** for independent scaling, isolation, security or team ownership. |
-| SP-02 | **The seams are kept**: module boundaries, module APIs, published events and explicit persistence ownership make a later split mechanical rather than architectural. |
-| SP-03 | **Premature microservices and premature distributed messaging are prohibited.** |
-| SP-04 | **Autoscaling has a maximum cap** ([CC-03](../requirements/products/arcforges-cloud.md#rule-cc-03) in the cloud product requirements). |
+| <a id="rule-sp-01"></a>SP-01 | **Start as a modular monolith; split only on demonstrated need** for independent scaling, isolation, security or team ownership. |
+| <a id="rule-sp-02"></a>SP-02 | **The seams are kept**: module boundaries, module APIs, published events and explicit persistence ownership make a later split mechanical rather than architectural. |
+| <a id="rule-sp-03"></a>SP-03 | **Premature microservices and premature distributed messaging are prohibited.** |
+| <a id="rule-sp-04"></a>SP-04 | **Autoscaling has a maximum cap** ([CC-03](../requirements/products/arcforges-cloud.md#rule-cc-03) in the cloud product requirements). |
 
 ---
 

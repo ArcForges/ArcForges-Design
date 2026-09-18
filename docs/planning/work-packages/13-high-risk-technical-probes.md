@@ -18,7 +18,7 @@
 
 **In scope.** Four isolated technical probes followed by the seven functional native libraries, eight managed native packages, seven runtime package families across the six declared desktop RIDs, and integration with the WP11 restricted helper. The functional ABI, algorithms, formats and limits are fixed by [native annex 06](../../architecture/contracts/06-native-functional-abi.md); no missing function is deferred to product coding.
 
-**Out of scope.** Product UI, editing commands, Cloud business handlers and the AI model loop. Probe scaffolds are cleaned up or kept as isolated regression fixtures. Production ABI/wrapper/runtime code from 13.05–13.16 is retained and published; ND-05 does not discard those deliverables.
+**Out of scope.** Product UI, editing commands, Cloud business handlers and the AI model loop. Probe scaffolds are cleaned up or kept as isolated regression fixtures. Production ABI/wrapper/runtime code from 13.05–13.16 is retained and published; [ND-05](../implementation-sequence.md#rule-nd-05) does not discard those deliverables.
 
 **Why this package exists.** Every downstream native consumer needs working, versioned packages with their actual dependencies. Neither a probe-only DLL nor an appended verification instruction can substitute for implementing that producer here.
 
@@ -45,13 +45,13 @@
 
 | # | Rule |
 |---|---|
-| BR-01 | **A probe runs against a real published AOT binary**, not a debug host ([QI-01](../../requirements/12-quality-and-compatibility-contract.md#rule-qi-01), [QI-02](../../requirements/12-quality-and-compatibility-contract.md#rule-qi-02)). |
-| BR-02 | **Probe evidence is reproducible**: a recorded environment, a recorded procedure and a recorded result. |
-| BR-03 | **Probe scaffolds and production deliverables are separate.** Production 13.05–13.16 is maintained; probe code reaches production only after the same functional, safety and package gates. |
-| BR-04 | **A probe that fails produces a decision, not a workaround.** A failed probe raises the conflict rather than being papered over (**[D-001](../../decisions/phase-1-foundation-decisions.md#rule-d-001)**). |
-| BR-05 | **Native probes obey the native safety obligations from the start** — validated input, sanitiser builds, sacrificial-process tests (`§6` of the native architecture). |
-| BR-06 | **The acquisition probe uses a real transport**, not an in-memory generator, for at least one configuration. |
-| BR-07 | **Every native dependency the probes introduce receives a licence position** before use ([PG-03](../../assurance/open-gates-register.md#rule-pg-03)). |
+| <a id="rule-br-01"></a>BR-01 | **A probe runs against a real published AOT binary**, not a debug host ([QI-01](../../requirements/12-quality-and-compatibility-contract.md#rule-qi-01), [QI-02](../../requirements/12-quality-and-compatibility-contract.md#rule-qi-02)). |
+| <a id="rule-br-02"></a>BR-02 | **Probe evidence is reproducible**: a recorded environment, a recorded procedure and a recorded result. |
+| <a id="rule-br-03"></a>BR-03 | **Probe scaffolds and production deliverables are separate.** Production 13.05–13.16 is maintained; probe code reaches production only after the same functional, safety and package gates. |
+| <a id="rule-br-04"></a>BR-04 | **A probe that fails produces a decision, not a workaround.** A failed probe raises the conflict rather than being papered over (**[D-001](../../decisions/phase-1-foundation-decisions.md#rule-d-001)**). |
+| <a id="rule-br-05"></a>BR-05 | **Native probes obey the native safety obligations from the start** — validated input, sanitiser builds, sacrificial-process tests (`§6` of the native architecture). |
+| <a id="rule-br-06"></a>BR-06 | **The acquisition probe uses a real transport**, not an in-memory generator, for at least one configuration. |
+| <a id="rule-br-07"></a>BR-07 | **Every native dependency the probes introduce receives a licence position** before use ([PG-03](../../assurance/open-gates-register.md#rule-pg-03)). |
 
 ---
 

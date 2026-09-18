@@ -53,13 +53,13 @@ Explicit inputs: WP17 assistant client, WP26 one-application bridge, WP39 Slate 
 
 | # | Rule |
 |---|---|
-| BR-01 | **One Harness, Cloud-only** ([LS-02](../../architecture/17-agent-harness.md#rule-ls-02)). No desktop, mobile or browser assembly contains a turn loop, a planner or a provider adapter. |
-| BR-02 | **The Cloud business host is Native AOT; Harness TypeScript runs on CF** (**[D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008)**, **[V-03](../../assurance/phase-1-official-verification.md#rule-v-03)**). CF Worker deployment tests apply to the loop; all C# integration ports retain the AOT artifact gate. |
-| BR-03 | **A Cloud Agent Task is not a native Product Job** ([CM-04](../../architecture/09-ai-and-agent-runtime-architecture.md#rule-cm-04), [I-121](../../requirements/01-normative-glossary-and-invariants.md#rule-i-121), [I-485](../../requirements/01-normative-glossary-and-invariants.md#rule-i-485)). This package owns the former; [WP-16](16-unified-execution-engine.md#rule-wp-16) owns the latter. |
-| BR-04 | **Admission commits before dispatch** (`§6.1.2` of the data-model overview). Nothing crosses the dispatch barrier inside a transaction. |
-| BR-05 | **Recovery is decided by dispatch intent, never by outcome absence** (`§6.3` of the harness). Retry safety is a declared capability property ([FL-08](../../requirements/05-ai-and-agent-execution.md#rule-fl-08)). |
-| BR-06 | **No agent teams, sub-agents or external-agent delegation** ([EA-01](../../requirements/08-extensions-and-developer-platform.md#rule-ea-01)–[EA-08](../../requirements/08-extensions-and-developer-platform.md#rule-ea-08), `§9` of the harness). |
-| BR-07 | **The stream buffer is transient presentation state**, never a message and never synchronised ([SB-01](../../architecture/17-agent-harness.md#rule-sb-01)). |
+| <a id="rule-br-01"></a>BR-01 | **One Harness, Cloud-only** ([LS-02](../../architecture/17-agent-harness.md#rule-ls-02)). No desktop, mobile or browser assembly contains a turn loop, a planner or a provider adapter. |
+| <a id="rule-br-02"></a>BR-02 | **The Cloud business host is Native AOT; Harness TypeScript runs on CF** (**[D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008)**, **[V-03](../../assurance/phase-1-official-verification.md#rule-v-03)**). CF Worker deployment tests apply to the loop; all C# integration ports retain the AOT artifact gate. |
+| <a id="rule-br-03"></a>BR-03 | **A Cloud Agent Task is not a native Product Job** ([CM-04](../../architecture/09-ai-and-agent-runtime-architecture.md#rule-cm-04), [I-121](../../requirements/01-normative-glossary-and-invariants.md#rule-i-121), [I-485](../../requirements/01-normative-glossary-and-invariants.md#rule-i-485)). This package owns the former; [WP-16](16-unified-execution-engine.md#rule-wp-16) owns the latter. |
+| <a id="rule-br-04"></a>BR-04 | **Admission commits before dispatch** (`§6.1.2` of the data-model overview). Nothing crosses the dispatch barrier inside a transaction. |
+| <a id="rule-br-05"></a>BR-05 | **Recovery is decided by dispatch intent, never by outcome absence** (`§6.3` of the harness). Retry safety is a declared capability property ([FL-08](../../requirements/05-ai-and-agent-execution.md#rule-fl-08)). |
+| <a id="rule-br-06"></a>BR-06 | **No agent teams, sub-agents or external-agent delegation** ([EA-01](../../requirements/08-extensions-and-developer-platform.md#rule-ea-01)–[EA-08](../../requirements/08-extensions-and-developer-platform.md#rule-ea-08), `§9` of the harness). |
+| <a id="rule-br-07"></a>BR-07 | **The stream buffer is transient presentation state**, never a message and never synchronised ([SB-01](../../architecture/17-agent-harness.md#rule-sb-01)). |
 
 ---
 
@@ -102,7 +102,7 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 **What must be fully done.** Assemble context through authorized C# ports in the fixed order, page under one snapshot hash and retain immutable source pins/content origins. Filter invocable capabilities before model declaration, disclose budget truncation and store derived compaction refs. Before mutation, revalidate the source/revision and active grant.
 
-**Testing requirements.** Large context paging, permission loss, stale source, prior compaction version and unsupported capability; no raw prompts in Workflow checkpoints. Run model 05 context vectors (under budget, compaction, protected overflow, changed branch) through typed TranscriptWindow/CompactionRecord inputs, plus wrong role/tool-pair, hash and origin-installation negatives. Assert HC-09 refusal and no customer debit for compaction; exercise both inline and transient-object input.
+**Testing requirements.** Large context paging, permission loss, stale source, prior compaction version and unsupported capability; no raw prompts in Workflow checkpoints. Run model 05 context vectors (under budget, compaction, protected overflow, changed branch) through typed TranscriptWindow/CompactionRecord inputs, plus wrong role/tool-pair, hash and origin-installation negatives. Assert [HC-09](../../architecture/17-agent-harness.md#rule-hc-09) refusal and no customer debit for compaction; exercise both inline and transient-object input.
 
 **Completion gate.** All effect decisions refer to authorized immutable context and the loop never writes stale source implicitly. All four context vectors and typed role/pairing/large-input cases pass against the real Harness.
 
@@ -124,7 +124,7 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 **What must be fully done.** Implement execution.readOutput/watchOutput, transient-turn admission/ack/purge and DO projections from annex 10/model 05; Cloud histories commit canonically, local histories recover verified transient output without Cloud Chat bodies.
 
-**Testing requirements.** Verify the stated behavior against the exact real artifact/owner boundary. Include scope/permission, wrong or stale target, loss/retry, expiry and applicable native UI cases from experience 03; named later-provider fixtures cannot close real integration. Run model 05 context vectors (under budget, compaction, protected overflow, changed branch) through typed TranscriptWindow/CompactionRecord inputs, plus wrong role/tool-pair, hash and origin-installation negatives. Assert HC-09 refusal and no customer debit for compaction; exercise both inline and transient-object input.
+**Testing requirements.** Verify the stated behavior against the exact real artifact/owner boundary. Include scope/permission, wrong or stale target, loss/retry, expiry and applicable native UI cases from experience 03; named later-provider fixtures cannot close real integration. Run model 05 context vectors (under budget, compaction, protected overflow, changed branch) through typed TranscriptWindow/CompactionRecord inputs, plus wrong role/tool-pair, hash and origin-installation negatives. Assert [HC-09](../../architecture/17-agent-harness.md#rule-hc-09) refusal and no customer debit for compaction; exercise both inline and transient-object input.
 
 **Completion gate.** Stream projection never acts as message authority or determines Task state; Cloud-history final content survives projection loss. Local/temporary output survives reconnect within its declared retention while key/body exist; missing/expired content produces the explicit unavailable state without losing its durable outcome/usage receipt or rerunning the request. All four context vectors and typed role/pairing/large-input cases pass against the real Harness.
 
@@ -192,7 +192,7 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 ## 7. Tests and verification evidence
 
-Acceptance includes every amended §5 producer/consumer and WP-52.90 evidence. Current P2-013 contracts/data/runtime rules are tested in the original owner implementation, not a detached explanatory sample.
+Acceptance includes every amended §5 producer/consumer and [WP-52.90](#rule-wp-52.90) evidence. Current [P2-013](../../decisions/phase-2-specification-decisions.md#rule-p2-013) contracts/data/runtime rules are tested in the original owner implementation, not a detached explanatory sample.
 
 **Required evidence addition.** [WP-52.03](#rule-wp-52.03) records the carrier/propagation/failure vectors above with payload and manifest hashes; early packages use declared fixtures, while provider/Harness packages require their real integrations.
 
@@ -242,6 +242,6 @@ Acceptance includes every amended §5 producer/consumer and WP-52.90 evidence. C
 
 **Downstream:** `31` · `49` · `50`. Consumers use exact released artifacts.
 
-## P2-010 required behavior and closure
+## [P2-010](../../decisions/phase-2-specification-decisions.md#rule-p2-010) required behavior and closure
 
 Execute ordinary persistent/temporary ChatTurn and AgentTask through the same real RunWorkflow, pure-read vs promoted effectful mode, transient source expiry/cleanup and platform-funded protected compaction. Every prior client/bridge fixture is replaced by actual C#/CF/model/R2 owner integration. The referenced normative profile and producer stage matrix are binding inputs. Record independent positive/negative vectors and actual owner integration at this WP's assigned stage; a mock cannot close a real-provider/device requirement.

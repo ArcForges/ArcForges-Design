@@ -48,15 +48,15 @@
 
 | # | Rule |
 |---|---|
-| BR-01 | **`Cloud Sync ≠ Raw Capture Upload`** ([I-474](../../requirements/01-normative-glossary-and-invariants.md#rule-i-474)). |
-| BR-02 | **Default sync scope**: project, session metadata, annotations, findings, analysis results, reports and configurations. **Raw capture is local by default.** |
-| BR-03 | **Enabling project cloud sync does not upload raw capture.** Raw upload is an explicit per-session act. |
-| BR-04 | **A local-only capture must not be uploaded because an AI button was pressed** ([I-182](../../requirements/01-normative-glossary-and-invariants.md#rule-i-182)). |
-| BR-05 | **AI does not process an entire raw capture.** It receives necessary structured results — measurements, analysis outputs, decoded event summaries, selected ranges. |
-| BR-06 | **"Ask ArcChat" passes a bounded context reference**, never the raw capture. |
-| BR-07 | **A third-party extension can never write raw capture arbitrarily.** Raw capture is written by ArcScope alone. |
-| BR-08 | **Native export is the complete data migration format**, and import enters the unified session model with a recorded origin. |
-| BR-09 | **The raw-capture cloud policy is explicit and visible** per project and per session. |
+| <a id="rule-br-01"></a>BR-01 | **`Cloud Sync ≠ Raw Capture Upload`** ([I-474](../../requirements/01-normative-glossary-and-invariants.md#rule-i-474)). |
+| <a id="rule-br-02"></a>BR-02 | **Default sync scope**: project, session metadata, annotations, findings, analysis results, reports and configurations. **Raw capture is local by default.** |
+| <a id="rule-br-03"></a>BR-03 | **Enabling project cloud sync does not upload raw capture.** Raw upload is an explicit per-session act. |
+| <a id="rule-br-04"></a>BR-04 | **A local-only capture must not be uploaded because an AI button was pressed** ([I-182](../../requirements/01-normative-glossary-and-invariants.md#rule-i-182)). |
+| <a id="rule-br-05"></a>BR-05 | **AI does not process an entire raw capture.** It receives necessary structured results — measurements, analysis outputs, decoded event summaries, selected ranges. |
+| <a id="rule-br-06"></a>BR-06 | **"Ask ArcChat" passes a bounded context reference**, never the raw capture. |
+| <a id="rule-br-07"></a>BR-07 | **A third-party extension can never write raw capture arbitrarily.** Raw capture is written by ArcScope alone. |
+| <a id="rule-br-08"></a>BR-08 | **Native export is the complete data migration format**, and import enters the unified session model with a recorded origin. |
+| <a id="rule-br-09"></a>BR-09 | **The raw-capture cloud policy is explicit and visible** per project and per session. |
 
 ---
 

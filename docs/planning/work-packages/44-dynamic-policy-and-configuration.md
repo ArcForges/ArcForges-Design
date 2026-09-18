@@ -43,16 +43,16 @@
 
 | # | Rule |
 |---|---|
-| BR-01 | **Policy is not entitlement, not user settings, not health, and not the data plane.** The four boundaries are enforced structurally. |
-| BR-02 | **Remote configuration is data, not code.** No expression language, no downloadable logic, no dynamic assembly — a hard requirement under Native AOT. |
-| BR-03 | **A compiled hard limit always wins over remote configuration.** Remote policy may tighten, never loosen, a safety limit. |
-| BR-04 | **Configuration is schema-constrained and validated before application.** An invalid bundle is rejected wholesale, never partially applied. |
-| BR-05 | **Rollout is deterministic per installation**, so a user does not flip between variants on each evaluation. |
-| BR-06 | **Kill switches have four modes** with defined blast radius, and every activation is audited with a reason. |
-| BR-07 | **A bad version must be immediately haltable** — the update feed can stop offering it and compatibility policy can block a specific range without blocking neighbours. |
-| BR-08 | **A minimum-version requirement is never imposed before every channel has had a genuine chance to update.** |
-| BR-09 | **Policy resolution is explainable**: the product can state which scope and which bundle produced an effective value. |
-| BR-10 | **A stale bundle falls back to last-known-good, then to compiled defaults**, and the state is visible. |
+| <a id="rule-br-01"></a>BR-01 | **Policy is not entitlement, not user settings, not health, and not the data plane.** The four boundaries are enforced structurally. |
+| <a id="rule-br-02"></a>BR-02 | **Remote configuration is data, not code.** No expression language, no downloadable logic, no dynamic assembly — a hard requirement under Native AOT. |
+| <a id="rule-br-03"></a>BR-03 | **A compiled hard limit always wins over remote configuration.** Remote policy may tighten, never loosen, a safety limit. |
+| <a id="rule-br-04"></a>BR-04 | **Configuration is schema-constrained and validated before application.** An invalid bundle is rejected wholesale, never partially applied. |
+| <a id="rule-br-05"></a>BR-05 | **Rollout is deterministic per installation**, so a user does not flip between variants on each evaluation. |
+| <a id="rule-br-06"></a>BR-06 | **Kill switches have four modes** with defined blast radius, and every activation is audited with a reason. |
+| <a id="rule-br-07"></a>BR-07 | **A bad version must be immediately haltable** — the update feed can stop offering it and compatibility policy can block a specific range without blocking neighbours. |
+| <a id="rule-br-08"></a>BR-08 | **A minimum-version requirement is never imposed before every channel has had a genuine chance to update.** |
+| <a id="rule-br-09"></a>BR-09 | **Policy resolution is explainable**: the product can state which scope and which bundle produced an effective value. |
+| <a id="rule-br-10"></a>BR-10 | **A stale bundle falls back to last-known-good, then to compiled defaults**, and the state is visible. |
 
 ---
 
@@ -167,7 +167,7 @@
 
 ---
 
-**Operator contract closure.** Consume [registry04 §9](../../architecture/contracts/04-protobuf-wire-registry.md#9-operator-control-and-separate-identity-boundary) and [model01 operator state](../../architecture/data-model/01-cloud-data-model.md#operator-proposal-approval-and-financial-owner-closure). Generate/implement every operation exactly once with its eight authorization fields, operator scope and OC-03 role binding. Public customer/PAT/agent access refuses. Verify distinct approver, stale hash/revision/configuration, role revocation, expiry, concurrent consumption and lost receipt; no direct SQL or public-SDK operator import. WP03 produces schema/negative vectors, WP23 real identity/dispatch conformance, WP42 the financial owners, WP44 configuration/policy owners, and WP45 the real console join. Earlier packages retain their named fixture boundary until the existing downstream join.
+**Operator contract closure.** Consume [registry04 §9](../../architecture/contracts/04-protobuf-wire-registry.md#9-operator-control-and-separate-identity-boundary) and [model01 operator state](../../architecture/data-model/01-cloud-data-model.md#operator-proposal-approval-and-financial-owner-closure). Generate/implement every operation exactly once with its eight authorization fields, operator scope and [OC-03](../../requirements/10-distribution-update-and-support.md#rule-oc-03) role binding. Public customer/PAT/agent access refuses. Verify distinct approver, stale hash/revision/configuration, role revocation, expiry, concurrent consumption and lost receipt; no direct SQL or public-SDK operator import. WP03 produces schema/negative vectors, WP23 real identity/dispatch conformance, WP42 the financial owners, WP44 configuration/policy owners, and WP45 the real console join. Earlier packages retain their named fixture boundary until the existing downstream join.
 
 ## 6. Impacts
 

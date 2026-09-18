@@ -40,7 +40,7 @@ ArcForges-Web owns apps/site (static public generation), apps/app (explicit acco
 Development may start an exact released Cloud container or explicit built candidate from an independently checked-out Cloud repository. F5 identifies its image/endpoint and waits for health; no automatic second business host is launched. Account and Chat development origins are distinct hostnames, not only different ports. Only a reviewed dev profile permits dev certificates/HMR; no dev proxy/CSP relaxation enters release.
 
 
-**Preserved rule anchors.** These identifiers now resolve to the selected rules in this section: <a id="rule-wvs-01"></a>WVS-01 <a id="rule-wvs-02"></a>WVS-02 <a id="rule-wvs-03"></a>WVS-03 <a id="rule-wvs-04"></a>WVS-04 <a id="rule-wvs-05"></a>WVS-05 <a id="rule-wvs-06"></a>WVS-06 <a id="rule-wcli-01"></a>WCLI-01 <a id="rule-wcli-02"></a>WCLI-02 <a id="rule-wcli-03"></a>WCLI-03 <a id="rule-wcli-04"></a>WCLI-04.
+**Preserved rule anchors.** These identifiers now resolve to the selected rules in this section: <a id="rule-wvs-01"></a>[WVS-01](#rule-wvs-01) <a id="rule-wvs-02"></a>[WVS-02](#rule-wvs-02) <a id="rule-wvs-03"></a>[WVS-03](#rule-wvs-03) <a id="rule-wvs-04"></a>[WVS-04](#rule-wvs-04) <a id="rule-wvs-05"></a>[WVS-05](#rule-wvs-05) <a id="rule-wvs-06"></a>[WVS-06](#rule-wvs-06) <a id="rule-wcli-01"></a>[WCLI-01](#rule-wcli-01) <a id="rule-wcli-02"></a>[WCLI-02](#rule-wcli-02) <a id="rule-wcli-03"></a>[WCLI-03](#rule-wcli-03) <a id="rule-wcli-04"></a>WCLI-04.
 
 ---
 
@@ -60,7 +60,7 @@ Use protobuf bigint for all 64-bit counters and integer microcredits; JSON excep
 React uses createGrpcWebTransport with generated unary EventService.Poll plus authoritative reads. All 17 hints are optional and never commit state. CF output uses generated gRPC-Web server streams and durable unary recovery; Unicode offsets, supersession, truncation and final-message reference follow the shared CF contract. No SignalR package or mandatory fetch-streaming path remains.
 
 
-**Preserved rule anchors.** These identifiers now resolve to the selected rules in this section: <a id="rule-wsdk-01"></a>WSDK-01 <a id="rule-wsdk-02"></a>WSDK-02 <a id="rule-wsdk-03"></a>WSDK-03 <a id="rule-wsdk-04"></a>WSDK-04 <a id="rule-wsdk-05"></a>WSDK-05 <a id="rule-wsdk-06"></a>WSDK-06 <a id="rule-wsdk-07"></a>WSDK-07 <a id="rule-wsdk-08"></a>WSDK-08 <a id="rule-wnum-01"></a>WNUM-01 <a id="rule-wnum-02"></a>WNUM-02 <a id="rule-wnum-03"></a>WNUM-03 <a id="rule-wev-01"></a>WEV-01 <a id="rule-wev-02"></a>WEV-02 <a id="rule-wev-03"></a>WEV-03 <a id="rule-wev-04"></a>WEV-04.
+**Preserved rule anchors.** These identifiers now resolve to the selected rules in this section: <a id="rule-wsdk-01"></a>[WSDK-01](#rule-wsdk-01) <a id="rule-wsdk-02"></a>[WSDK-02](#rule-wsdk-02) <a id="rule-wsdk-03"></a>[WSDK-03](#rule-wsdk-03) <a id="rule-wsdk-04"></a>[WSDK-04](#rule-wsdk-04) <a id="rule-wsdk-05"></a>[WSDK-05](#rule-wsdk-05) <a id="rule-wsdk-06"></a>[WSDK-06](#rule-wsdk-06) <a id="rule-wsdk-07"></a>[WSDK-07](#rule-wsdk-07) <a id="rule-wsdk-08"></a>[WSDK-08](#rule-wsdk-08) <a id="rule-wnum-01"></a>[WNUM-01](#rule-wnum-01) <a id="rule-wnum-02"></a>[WNUM-02](#rule-wnum-02) <a id="rule-wnum-03"></a>[WNUM-03](#rule-wnum-03) <a id="rule-wev-01"></a>[WEV-01](#rule-wev-01) <a id="rule-wev-02"></a>[WEV-02](#rule-wev-02) <a id="rule-wev-03"></a>[WEV-03](#rule-wev-03) <a id="rule-wev-04"></a>WEV-04.
 
 ---
 

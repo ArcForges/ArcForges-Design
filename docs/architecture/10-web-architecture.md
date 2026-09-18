@@ -87,7 +87,7 @@ Shared components live in `packages/ui`. React state models navigation and prese
 | <a id="rule-sm-04"></a>SM-04 | **Static public and status surfaces survive Cloud failure.** Their already published content remains available; current checkout and live account state truthfully report unavailability. |
 | <a id="rule-sm-05"></a>SM-05 | **SPA fallback applies only to declared UI navigation.** RPC errors keep their gRPC framing/trailers; session/AI/object errors keep their declared HTTP status/body, missing assets remain 404, protected responses are never cached as HTML, and direct account/chat deep links load the correct profile. |
 
-## 5. Browser session architecture — P2-003 resolved
+## 5. Browser session architecture — [P2-003](../decisions/phase-2-specification-decisions.md#rule-p2-003) resolved
 
 **Selected deployment.** A same-origin browser-session adapter (BFF boundary) runs as C# endpoint mapping/authentication inside the existing Cloud host. It invokes the same application services as the public API. It is not a new host, network hop to another business service, or proxy carrying stored user refresh tokens.
 

@@ -50,19 +50,19 @@
 
 | # | Rule |
 |---|---|
-| BR-01 | **No product requires an account to work locally.** Sign-in is never a launch gate. |
-| BR-02 | **Account and user data are not tied together.** Local data survives sign-out and account deletion. |
-| BR-03 | **A local user is not a cloud guest account.** The two concepts never merge. |
-| BR-04 | **Authentication identity is separate from user.** One user may hold several authentication identities; changing one never changes the user. |
-| BR-05 | **Workspace exists from the first day** and is the scope entitlement and data attach to. |
-| BR-06 | **Account, workspace and billing are completely separated.** |
-| BR-07 | **`Device ≠ Session`** and **`Installation ≠ Device`**. Four distinct concepts: device, installation, instance, session. |
+| <a id="rule-br-01"></a>BR-01 | **No product requires an account to work locally.** Sign-in is never a launch gate. |
+| <a id="rule-br-02"></a>BR-02 | **Account and user data are not tied together.** Local data survives sign-out and account deletion. |
+| <a id="rule-br-03"></a>BR-03 | **A local user is not a cloud guest account.** The two concepts never merge. |
+| <a id="rule-br-04"></a>BR-04 | **Authentication identity is separate from user.** One user may hold several authentication identities; changing one never changes the user. |
+| <a id="rule-br-05"></a>BR-05 | **Workspace exists from the first day** and is the scope entitlement and data attach to. |
+| <a id="rule-br-06"></a>BR-06 | **Account, workspace and billing are completely separated.** |
+| <a id="rule-br-07"></a>BR-07 | **`Device ≠ Session`** and **`Installation ≠ Device`**. Four distinct concepts: device, installation, instance, session. |
 | <a id="rule-br-08"></a>BR-08 | **Device identity is not a hardware fingerprint.** |
-| BR-09 | **Sign-out distinguishes four actions** and never silently deletes local data. |
-| BR-10 | **Remote access is gated by device trust**, defaulting to off. |
-| BR-11 | **Passkey is the primary method**, with email one-time codes for first verification and recovery; the official realm uses no password; self-host password/OIDC remains supported. |
-| BR-12 | **Step-up is required for the enumerated sensitive operations**, and an app unlock never substitutes for it ([I-278](../../requirements/01-normative-glossary-and-invariants.md#rule-i-278)). |
-| BR-13 | **Recovery is designed from the first version**, not retrofitted. |
+| <a id="rule-br-09"></a>BR-09 | **Sign-out distinguishes four actions** and never silently deletes local data. |
+| <a id="rule-br-10"></a>BR-10 | **Remote access is gated by device trust**, defaulting to off. |
+| <a id="rule-br-11"></a>BR-11 | **Passkey is the primary method**, with email one-time codes for first verification and recovery; the official realm uses no password; self-host password/OIDC remains supported. |
+| <a id="rule-br-12"></a>BR-12 | **Step-up is required for the enumerated sensitive operations**, and an app unlock never substitutes for it ([I-278](../../requirements/01-normative-glossary-and-invariants.md#rule-i-278)). |
+| <a id="rule-br-13"></a>BR-13 | **Recovery is designed from the first version**, not retrofitted. |
 
 ---
 
@@ -206,7 +206,7 @@
 
 ## 7. Tests and verification evidence
 
-Acceptance includes every amended §5 producer/consumer and WP-22.90 evidence. Current P2-013 contracts/data/runtime rules are tested in the original owner implementation, not a detached explanatory sample.
+Acceptance includes every amended §5 producer/consumer and [WP-22.90](#rule-wp-22.90) evidence. Current [P2-013](../../decisions/phase-2-specification-decisions.md#rule-p2-013) contracts/data/runtime rules are tested in the original owner implementation, not a detached explanatory sample.
 
 | Evidence | Produced by |
 |---|---|
@@ -253,6 +253,6 @@ Acceptance includes every amended §5 producer/consumer and WP-22.90 evidence. C
 
 **Downstream:** `23` · `41` · `42`. Consumers use exact released artifacts.
 
-## P2-010 required behavior and closure
+## [P2-010](../../decisions/phase-2-specification-decisions.md#rule-p2-010) required behavior and closure
 
 Complete all initial enrollment/recovery/provider/account/SSO methods in client journeys and wire 04. Official passwordless and self-host configured password/OIDC are distinct; account-free startup is not account-free creation of Cloud-authoritative content. The referenced normative profile and producer stage matrix are binding inputs. Record independent positive/negative vectors and actual owner integration at this WP's assigned stage; a mock cannot close a real-provider/device requirement.

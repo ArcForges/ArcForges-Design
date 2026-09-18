@@ -2,7 +2,7 @@
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Architecture
-> Governing authority: [P2-010](../decisions/phase-2-specification-decisions.md#rule-p2-010), D-004/D-021 (Apache boundary), D-022 (consumption-only companion).
+> Governing authority: [P2-010](../decisions/phase-2-specification-decisions.md#rule-p2-010), [D-004](../decisions/phase-1-foundation-decisions.md#rule-d-004)/[D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021) (Apache boundary), [D-022](../decisions/phase-1-foundation-decisions.md#rule-d-022) (consumption-only companion).
 > Companions: [`../requirements/products/arcchat-mobile-and-web.md`](../requirements/products/arcchat-mobile-and-web.md), [`01-solution-and-project-layout.md`](01-solution-and-project-layout.md), [`08-security-architecture.md`](08-security-architecture.md)
 
 ---
@@ -32,10 +32,10 @@ Secure storage · Local cache · Offline outbox
 
 | # | Rule |
 |---|---|
-| LY-01 | **Base ViewModel patterns are not shared between Avalonia desktop and Kotlin Android mobile** (**[D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021)**). Each UI stack owns its implementation. |
-| LY-02 | **Product-domain behaviour, server orchestration, policy decisions, persistence behaviour and entitlement authority stay outside the shared boundary** (**[D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021)**). |
-| LY-03 | **Mobile-only application behaviour is implemented independently inside the Apache mobile boundary** (**[D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021)**). |
-| LY-04 | **The mobile client never loads the desktop native media stack and never opens a desktop-local endpoint**. |
+| <a id="rule-ly-01"></a>LY-01 | **Base ViewModel patterns are not shared between Avalonia desktop and Kotlin Android mobile** (**[D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021)**). Each UI stack owns its implementation. |
+| <a id="rule-ly-02"></a>LY-02 | **Product-domain behaviour, server orchestration, policy decisions, persistence behaviour and entitlement authority stay outside the shared boundary** (**[D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021)**). |
+| <a id="rule-ly-03"></a>LY-03 | **Mobile-only application behaviour is implemented independently inside the Apache mobile boundary** (**[D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021)**). |
+| <a id="rule-ly-04"></a>LY-04 | **The mobile client never loads the desktop native media stack and never opens a desktop-local endpoint**. |
 
 ---
 
@@ -45,12 +45,12 @@ Everything in ArcForges-Mobile and the public contract and SDK projects it consu
 
 | # | Rule |
 |---|---|
-| LB-01 | **Android companion must not contain, link to, copy from, port from or reference any GPL-family or AGPL-only implementation**, directly or transitively. |
-| LB-02 | **Automated architecture and dependency checks prevent GPL-family or AGPL-only source, project references, packages, generated artifacts and transitive dependencies from entering the distributable** (**[D-004](../decisions/phase-1-foundation-decisions.md#rule-d-004)** obligation 7). |
-| LB-03 | **The complete direct and transitive dependency closure is verified before the first artifact is produced** — the **[F-023](../assurance/open-gates-register.md#rule-f-023)** gate. *Owners: Release Engineering Owner and Licensing and Provenance Owner; Product Owner approves.* |
-| LB-04 | **On discovering a conflicting contribution or dependency, the issue is registered and returned for decision.** Silently adding an exception, changing the licence or dropping the mobile target is prohibited (**[D-004](../decisions/phase-1-foundation-decisions.md#rule-d-004)**). |
-| LB-05 | **No App Store exception, dual licensing, proprietary grant or CLA.** DCO continues with inbound-equals-outbound per scope. |
-| LB-06 | **Protocol communication across an explicit process or network boundary does not change the client's licence** (**[D-004](../decisions/phase-1-foundation-decisions.md#rule-d-004)**). |
+| <a id="rule-lb-01"></a>LB-01 | **Android companion must not contain, link to, copy from, port from or reference any GPL-family or AGPL-only implementation**, directly or transitively. |
+| <a id="rule-lb-02"></a>LB-02 | **Automated architecture and dependency checks prevent GPL-family or AGPL-only source, project references, packages, generated artifacts and transitive dependencies from entering the distributable** (**[D-004](../decisions/phase-1-foundation-decisions.md#rule-d-004)** obligation 7). |
+| <a id="rule-lb-03"></a>LB-03 | **The complete direct and transitive dependency closure is verified before the first artifact is produced** — the **[F-023](../assurance/open-gates-register.md#rule-f-023)** gate. *Owners: Release Engineering Owner and Licensing and Provenance Owner; Product Owner approves.* |
+| <a id="rule-lb-04"></a>LB-04 | **On discovering a conflicting contribution or dependency, the issue is registered and returned for decision.** Silently adding an exception, changing the licence or dropping the mobile target is prohibited (**[D-004](../decisions/phase-1-foundation-decisions.md#rule-d-004)**). |
+| <a id="rule-lb-05"></a>LB-05 | **No App Store exception, dual licensing, proprietary grant or CLA.** DCO continues with inbound-equals-outbound per scope. |
+| <a id="rule-lb-06"></a>LB-06 | **Protocol communication across an explicit process or network boundary does not change the client's licence** (**[D-004](../decisions/phase-1-foundation-decisions.md#rule-d-004)**). |
 
 ---
 
@@ -82,11 +82,11 @@ Map signed 64 to Long; protobuf uint64 generated Long bits to ULong at the check
 | # | Rule |
 |---|---|
 | <a id="rule-nw-01"></a>NW-01 | Public gRPC-Web server streams use [the complete scope/stream contract](contracts/10-application-scope-and-streams.md); current authorization, CSRF/Origin, cursor recovery and bounded queues are required. |
-| NW-02 | **Foreground and background transitions rebuild or restore the realtime session per platform policy.** |
-| NW-03 | **Network changes use exponential backoff with jitter.** |
-| NW-04 | **After reconnecting, reread durable state with generated unary RPC and resume EventService.Watch/ExecutionService.WatchOutput at the last accepted cursor.** Expired retention takes the snapshot/reset path in [annex 10](contracts/10-application-scope-and-streams.md). |
-| NW-05 | **The client never scans a LAN, never discovers a desktop application runtime, and never addresses a named pipe or socket** (**[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)**). |
-| NW-06 | **Cellular policy is respected** for downloads and large transfers ([AR-09](../requirements/products/arcchat-mobile-and-web.md#rule-ar-09) in the companion requirements). |
+| <a id="rule-nw-02"></a>NW-02 | **Foreground and background transitions rebuild or restore the realtime session per platform policy.** |
+| <a id="rule-nw-03"></a>NW-03 | **Network changes use exponential backoff with jitter.** |
+| <a id="rule-nw-04"></a>NW-04 | **After reconnecting, reread durable state with generated unary RPC and resume EventService.Watch/ExecutionService.WatchOutput at the last accepted cursor.** Expired retention takes the snapshot/reset path in [annex 10](contracts/10-application-scope-and-streams.md). |
+| <a id="rule-nw-05"></a>NW-05 | **The client never scans a LAN, never discovers a desktop application runtime, and never addresses a named pipe or socket** (**[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)**). |
+| <a id="rule-nw-06"></a>NW-06 | **Cellular policy is respected** for downloads and large transfers ([AR-09](../requirements/products/arcchat-mobile-and-web.md#rule-ar-09) in the companion requirements). |
 
 ---
 
@@ -104,12 +104,12 @@ User action while offline
 
 | # | Rule |
 |---|---|
-| OB-01 | **The outbox is durable**, surviving process termination. |
-| OB-02 | **Every write retry obeys `CommandId` idempotency** ([ID-01](../requirements/05-ai-and-agent-execution.md#rule-id-01) in the AI requirements). |
-| OB-03 | **A high-risk agent task is never automatically executed on reconnection** ([OF-02](../requirements/products/arcchat-mobile-and-web.md#rule-of-02) in the companion requirements). |
-| OB-03a | **An unrecognised Task state renders as an unknown non-terminal state with its reason text** ([TS-01](contracts/01-public-api-operations.md#rule-ts-01) of the public API contract), never as failed and never as absent. Mobile ships on store timelines and is routinely older than the Cloud host, so this is the normal case, not an edge one. |
-| OB-04 | **Offline caching is restrained and bounded**: recent task state, recent conversation summaries, pending attention items and small previews ([OF-01](../requirements/products/arcchat-mobile-and-web.md#rule-of-01) there). |
-| OB-05 | **Acknowledged projection/preview caches are evictable and never authoritative. Unsent drafts and pending/unknown commands are durable user work and are never cache-evicted.** |
+| <a id="rule-ob-01"></a>OB-01 | **The outbox is durable**, surviving process termination. |
+| <a id="rule-ob-02"></a>OB-02 | **Every write retry obeys `CommandId` idempotency** ([ID-01](../requirements/05-ai-and-agent-execution.md#rule-id-01) in the AI requirements). |
+| <a id="rule-ob-03"></a>OB-03 | **A high-risk agent task is never automatically executed on reconnection** ([OF-02](../requirements/products/arcchat-mobile-and-web.md#rule-of-02) in the companion requirements). |
+| <a id="rule-ob-03a"></a>OB-03a | **An unrecognised Task state renders as an unknown non-terminal state with its reason text** ([TS-01](contracts/01-public-api-operations.md#rule-ts-01) of the public API contract), never as failed and never as absent. Mobile ships on store timelines and is routinely older than the Cloud host, so this is the normal case, not an edge one. |
+| <a id="rule-ob-04"></a>OB-04 | **Offline caching is restrained and bounded**: recent task state, recent conversation summaries, pending attention items and small previews ([OF-01](../requirements/products/arcchat-mobile-and-web.md#rule-of-01) there). |
+| <a id="rule-ob-05"></a>OB-05 | **Acknowledged projection/preview caches are evictable and never authoritative. Unsent drafts and pending/unknown commands are durable user work and are never cache-evicted.** |
 
 ---
 
@@ -117,11 +117,11 @@ User action while offline
 
 | # | Rule |
 |---|---|
-| SS-01 | **Session material uses the platform secure storage** — Android Keystore-backed encrypted storage. |
-| SS-02 | **Sensitive tokens never enter ordinary preferences or logs**. |
-| SS-03 | **No provider credential exists on any client, desktop or mobile** ([BY-01](../requirements/04-commerce-entitlement-and-credits.md#rule-by-01)–[BY-04](../requirements/04-commerce-entitlement-and-credits.md#rule-by-04)). |
-| SS-04 | **App lock is UI access protection, not authentication** ([I-277](../requirements/01-normative-glossary-and-invariants.md#rule-i-277)); biometric unlock never substitutes for step-up ([I-278](../requirements/01-normative-glossary-and-invariants.md#rule-i-278)). |
-| SS-05 | **Provider credentials are held only by their designated C# or CF service deployment** ([DC-15](../requirements/11-policy-and-configuration.md#rule-dc-15)), used server-side and never projected to any client ([DC-14](../requirements/11-policy-and-configuration.md#rule-dc-14)). |
+| <a id="rule-ss-01"></a>SS-01 | **Session material uses the platform secure storage** — Android Keystore-backed encrypted storage. |
+| <a id="rule-ss-02"></a>SS-02 | **Sensitive tokens never enter ordinary preferences or logs**. |
+| <a id="rule-ss-03"></a>SS-03 | **No provider credential exists on any client, desktop or mobile** ([BY-01](../requirements/04-commerce-entitlement-and-credits.md#rule-by-01)–[BY-04](../requirements/04-commerce-entitlement-and-credits.md#rule-by-04)). |
+| <a id="rule-ss-04"></a>SS-04 | **App lock is UI access protection, not authentication** ([I-277](../requirements/01-normative-glossary-and-invariants.md#rule-i-277)); biometric unlock never substitutes for step-up ([I-278](../requirements/01-normative-glossary-and-invariants.md#rule-i-278)). |
+| <a id="rule-ss-05"></a>SS-05 | **Provider credentials are held only by their designated C# or CF service deployment** ([DC-15](../requirements/11-policy-and-configuration.md#rule-dc-15)), used server-side and never projected to any client ([DC-14](../requirements/11-policy-and-configuration.md#rule-dc-14)). |
 
 ---
 
@@ -132,9 +132,9 @@ User action while offline
 | <a id="rule-pd-01"></a>PD-01 | **A push registration is per device and per installation**, revocable with the device. |
 | <a id="rule-pd-02"></a>PD-02 | **A push notification is not durable attention state** ([NT-07](../requirements/products/arcchat-mobile-and-web.md#rule-nt-07) in the companion requirements). Missing a push never loses a pending approval. |
 | <a id="rule-pd-03"></a>PD-03 | **A push action opens the corresponding surface; it never carries authorization** ([AD-01](../requirements/07-security-privacy-and-trust.md#rule-ad-01) in the security requirements). |
-| PD-04 | **Lock-screen content is non-sensitive by default** ([NT-03](../requirements/products/arcchat-mobile-and-web.md#rule-nt-03) there). |
-| PD-05 | **Universal/app links are supported** so an HTTPS canonical URL opens the installed application ([LN-02](../requirements/products/arcchat-mobile-and-web.md#rule-ln-02) in the companion requirements). |
-| PD-06 | **A deep link is treated as untrusted input** and never carries a secret ([DL-02](../requirements/09-shared-desktop-experience.md#rule-dl-02), [DL-03](../requirements/09-shared-desktop-experience.md#rule-dl-03) in the shared desktop requirements). |
+| <a id="rule-pd-04"></a>PD-04 | **Lock-screen content is non-sensitive by default** ([NT-03](../requirements/products/arcchat-mobile-and-web.md#rule-nt-03) there). |
+| <a id="rule-pd-05"></a>PD-05 | **Universal/app links are supported** so an HTTPS canonical URL opens the installed application ([LN-02](../requirements/products/arcchat-mobile-and-web.md#rule-ln-02) in the companion requirements). |
+| <a id="rule-pd-06"></a>PD-06 | **A deep link is treated as untrusted input** and never carries a secret ([DL-02](../requirements/09-shared-desktop-experience.md#rule-dl-02), [DL-03](../requirements/09-shared-desktop-experience.md#rule-dl-03) in the shared desktop requirements). |
 
 ---
 
@@ -147,12 +147,12 @@ Use the [push.v1 profile](contracts/04-protobuf-wire-registry.md#android-push-pr
 | # | Rule |
 |---|---|
 | <a id="rule-mc-01"></a>MC-01 | **No purchase surface exists in any build path.** |
-| MC-02 | **No provider checkout is embedded.** |
-| MC-03 | **No store billing integration for the initial release.** |
-| MC-04 | **No external purchase button, link or call to action exists.** |
+| <a id="rule-mc-02"></a>MC-02 | **No provider checkout is embedded.** |
+| <a id="rule-mc-03"></a>MC-03 | **No store billing integration for the initial release.** |
+| <a id="rule-mc-04"></a>MC-04 | **No external purchase button, link or call to action exists.** |
 | <a id="rule-mc-05"></a>MC-05 | **No licence-key or purchase-token unlock path exists** — the prohibition most likely to be violated by accident, since it is a natural engineering shortcut for offline entitlement. |
 | <a id="rule-mc-06"></a>MC-06 | **A build-time and CI check asserts [MC-01](#rule-mc-01) through [MC-05](#rule-mc-05)** ([MB-03](../requirements/04-commerce-entitlement-and-credits.md#rule-mb-03) in the commerce requirements). |
-| MC-07 | **The entitlement architecture remains capable of accepting a future store-originated grant**, without implementing one ([MB-02](../requirements/04-commerce-entitlement-and-credits.md#rule-mb-02) there). |
+| <a id="rule-mc-07"></a>MC-07 | **The entitlement architecture remains capable of accepting a future store-originated grant**, without implementing one ([MB-02](../requirements/04-commerce-entitlement-and-credits.md#rule-mb-02) there). |
 
 ---
 
@@ -160,10 +160,10 @@ Use the [push.v1 profile](contracts/04-protobuf-wire-registry.md#android-push-pr
 
 | # | Rule |
 |---|---|
-| PL-01 | **Mobile never loads executable extensions** (`PL-01` in the extension requirements). |
-| PL-02 | **Content packages — skills, templates, workflows — may sync; executable packages do not** (`PL-02` there). |
-| PL-03 | **Mobile holds no professional product's writable domain state** ([OM-02](../requirements/products/arcchat-mobile-and-web.md#rule-om-02) in the companion requirements). |
-| PL-04 | **Complex configuration surfaces — advanced automation policy, MCP configuration, skill authoring — live on desktop and web** (`§13`, `§14` there). |
+| <a id="rule-pl-01"></a>PL-01 | **Mobile never loads executable extensions** ([`PL-01`](../requirements/08-extensions-and-developer-platform.md#rule-pl-01) in the extension requirements). |
+| <a id="rule-pl-02"></a>PL-02 | **Content packages — skills, templates, workflows — may sync; executable packages do not** ([`PL-02`](../requirements/08-extensions-and-developer-platform.md#rule-pl-02) there). |
+| <a id="rule-pl-03"></a>PL-03 | **Mobile holds no professional product's writable domain state** ([OM-02](../requirements/products/arcchat-mobile-and-web.md#rule-om-02) in the companion requirements). |
+| <a id="rule-pl-04"></a>PL-04 | **Complex configuration surfaces — advanced automation policy, MCP configuration, skill authoring — live on desktop and web** (`§13`, `§14` there). |
 
 ---
 
@@ -188,16 +188,16 @@ All adapters are implemented within the Apache mobile boundary; dependency prove
 
 | # | Gate |
 |---|---|
-| MT-01 | Real-device verification, not emulator-only ([PM-03](../requirements/12-quality-and-compatibility-contract.md#rule-pm-03) in the quality contract) |
-| MT-02 | The signed Kotlin/Jetpack Compose release artifact built by CI and smoke-tested on device |
-| MT-03 | Cold-start, memory and weak-network behaviour measured against budget |
-| MT-04 | Background resume with realtime reconnection and sequence backfill |
-| MT-05 | Offline queueing, pending state and controlled reconnection behaviour |
-| MT-06 | The licence and dependency-closure audit — the **[F-023](../assurance/open-gates-register.md#rule-f-023)** gate |
-| MT-07 | Store category-fit and consumption-only conformance — the **[V-09](../assurance/phase-1-official-verification.md#rule-v-09)** gate |
-| MT-08 | The commerce-prohibition build check ([MC-06](#rule-mc-06)) |
-| MT-09 | Accessibility verification with the platform's assistive technology |
-| MT-10 | Contract compatibility against the supported client window |
+| <a id="rule-mt-01"></a>MT-01 | Real-device verification, not emulator-only ([PM-03](../requirements/12-quality-and-compatibility-contract.md#rule-pm-03) in the quality contract) |
+| <a id="rule-mt-02"></a>MT-02 | The signed Kotlin/Jetpack Compose release artifact built by CI and smoke-tested on device |
+| <a id="rule-mt-03"></a>MT-03 | Cold-start, memory and weak-network behaviour measured against budget |
+| <a id="rule-mt-04"></a>MT-04 | Background resume with realtime reconnection and sequence backfill |
+| <a id="rule-mt-05"></a>MT-05 | Offline queueing, pending state and controlled reconnection behaviour |
+| <a id="rule-mt-06"></a>MT-06 | The licence and dependency-closure audit — the **[F-023](../assurance/open-gates-register.md#rule-f-023)** gate |
+| <a id="rule-mt-07"></a>MT-07 | Store category-fit and consumption-only conformance — the **[V-09](../assurance/phase-1-official-verification.md#rule-v-09)** gate |
+| <a id="rule-mt-08"></a>MT-08 | The commerce-prohibition build check ([MC-06](#rule-mc-06)) |
+| <a id="rule-mt-09"></a>MT-09 | Accessibility verification with the platform's assistive technology |
+| <a id="rule-mt-10"></a>MT-10 | Contract compatibility against the supported client window |
 
 ---
 

@@ -27,12 +27,12 @@ CF RunStream DO carries live presentation only; C# owns final facts.
 
 | # | Rule |
 |---|---|
-| CM-01 | **There is one Task model and one Harness, both Cloud-owned** (**[P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006)**). Tool *locality* varies; the model loop does not ([I-491](../requirements/01-normative-glossary-and-invariants.md#rule-i-491)). |
+| <a id="rule-cm-01"></a>CM-01 | **There is one Task model and one Harness, both Cloud-owned** (**[P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006)**). Tool *locality* varies; the model loop does not ([I-491](../requirements/01-normative-glossary-and-invariants.md#rule-i-491)). |
 | <a id="rule-cm-02"></a>CM-02 | **No desktop, mobile or browser client runs a model loop, holds provider credentials or plans agent work.** A client proposes intent and executes authorised tools. |
-| CM-03 | **The credit ledger is always cloud-side and always ArcForges-owned** ([RT-04](../requirements/05-ai-and-agent-execution.md#rule-rt-04) in the AI requirements). A gateway's dashboard is never the business ledger. |
+| <a id="rule-cm-03"></a>CM-03 | **The credit ledger is always cloud-side and always ArcForges-owned** ([RT-04](../requirements/05-ai-and-agent-execution.md#rule-rt-04) in the AI requirements). A gateway's dashboard is never the business ledger. |
 | <a id="rule-cm-04"></a>CM-04 | **A Cloud Agent Task and a native Product Job are different things** ([I-121](../requirements/01-normative-glossary-and-invariants.md#rule-i-121), [I-485](../requirements/01-normative-glossary-and-invariants.md#rule-i-485)). A render, a capture, an index rebuild and an export are product jobs: they invoke no model, consume no AI capacity, and are owned and recovered by the product that runs them. |
-| CM-05 | **Product AI entry points call the Cloud AI surface directly** with minimal authorised context (`§4.5` of the product scope). They do not require ArcChat Desktop and do not constitute a second orchestrator. |
-| CM-06 | **Official inference requires an active paid service term** ([C-03](../requirements/00-product-scope-and-portfolio.md#rule-c-03), `§8.7` of the commerce requirements). No local mode, desktop setting, credit balance or self-host flag can authorise it. |
+| <a id="rule-cm-05"></a>CM-05 | **Product AI entry points call the Cloud AI surface directly** with minimal authorised context (`§4.5` of the product scope). They do not require ArcChat Desktop and do not constitute a second orchestrator. |
+| <a id="rule-cm-06"></a>CM-06 | **Official inference requires an active paid service term** ([C-03](../requirements/00-product-scope-and-portfolio.md#rule-c-03), `§8.7` of the commerce requirements). No local mode, desktop setting, credit balance or self-host flag can authorise it. |
 
 ---
 
@@ -42,12 +42,12 @@ CF RunStream DO carries live presentation only; C# owns final facts.
 
 | # | Rule |
 |---|---|
-| AO-01 | **Built-in agents, tools and capabilities are statically registered or source-generated.** |
-| AO-02 | **Arbitrary runtime assembly scanning, dynamic proxies and runtime code generation are prohibited** in the ArcChat main process. |
-| AO-03 | **Third-party executable extensions run out of process by default** ([EX-01](../requirements/08-extensions-and-developer-platform.md#rule-ex-01) in the extension requirements), so they may use any runtime while the host stays a Native AOT deliverable. |
-| AO-04 | **An agent framework feature is enabled only on surfaces validated by AOT analysis and a real publish** — never assumed from a debug build. |
-| AO-05 | **A capability is exposed to the model through an explicitly generated binding**, not through runtime reflection over method signatures. |
-| AO-06 | **Where a framework feature cannot be made AOT-safe, the surface is narrowed or the feature is replaced** — the desktop is not silently downgraded to JIT while still being described as AOT. |
+| <a id="rule-ao-01"></a>AO-01 | **Built-in agents, tools and capabilities are statically registered or source-generated.** |
+| <a id="rule-ao-02"></a>AO-02 | **Arbitrary runtime assembly scanning, dynamic proxies and runtime code generation are prohibited** in the ArcChat main process. |
+| <a id="rule-ao-03"></a>AO-03 | **Third-party executable extensions run out of process by default** ([EX-01](../requirements/08-extensions-and-developer-platform.md#rule-ex-01) in the extension requirements), so they may use any runtime while the host stays a Native AOT deliverable. |
+| <a id="rule-ao-04"></a>AO-04 | **An agent framework feature is enabled only on surfaces validated by AOT analysis and a real publish** — never assumed from a debug build. |
+| <a id="rule-ao-05"></a>AO-05 | **A capability is exposed to the model through an explicitly generated binding**, not through runtime reflection over method signatures. |
+| <a id="rule-ao-06"></a>AO-06 | **Where a framework feature cannot be made AOT-safe, the surface is narrowed or the feature is replaced** — the desktop is not silently downgraded to JIT while still being described as AOT. |
 
 ---
 
@@ -64,11 +64,11 @@ Capability Registry  →  filtered by intent, permission, entitlement, policy, b
 
 | # | Rule |
 |---|---|
-| CR-01 | **The full catalogue is never handed to the model** ([CE-01](../requirements/05-ai-and-agent-execution.md#rule-ce-01) in the AI requirements). Hundreds of tool schemas per turn degrade quality and explode cost. |
-| CR-02 | **Selection is a pipeline**: intent and capability discovery → relevant products → a small relevant capability set → invoke. |
-| CR-03 | **Capability metadata drives behaviour**, not the model's inference: execution shape, effect semantics, retry semantics, cancellation semantics, preview support, checkpoint support, compensation support, risk and scope (`§4.2` of the contracts architecture). |
-| CR-04 | **Invocation ordering is fixed**: native capability → trusted connector, MCP or API → computer use as an advanced fallback (`§8.1` of the ArcChat requirements). |
-| CR-05 | **A capability's availability is dynamic** and reflects installation, running state, health, compatibility, permission, entitlement and policy ([AC-04](02-contracts-and-protocols.md#rule-ac-04) in the contracts architecture). |
+| <a id="rule-cr-01"></a>CR-01 | **The full catalogue is never handed to the model** ([CE-01](../requirements/05-ai-and-agent-execution.md#rule-ce-01) in the AI requirements). Hundreds of tool schemas per turn degrade quality and explode cost. |
+| <a id="rule-cr-02"></a>CR-02 | **Selection is a pipeline**: intent and capability discovery → relevant products → a small relevant capability set → invoke. |
+| <a id="rule-cr-03"></a>CR-03 | **Capability metadata drives behaviour**, not the model's inference: execution shape, effect semantics, retry semantics, cancellation semantics, preview support, checkpoint support, compensation support, risk and scope (`§4.2` of the contracts architecture). |
+| <a id="rule-cr-04"></a>CR-04 | **Invocation ordering is fixed**: native capability → trusted connector, MCP or API → computer use as an advanced fallback (`§8.1` of the ArcChat requirements). |
+| <a id="rule-cr-05"></a>CR-05 | **A capability's availability is dynamic** and reflects installation, running state, health, compatibility, permission, entitlement and policy ([AC-04](02-contracts-and-protocols.md#rule-ac-04) in the contracts architecture). |
 
 ---
 
@@ -89,23 +89,23 @@ Intent
 
 | # | Rule |
 |---|---|
-| TE-01 | **Task, run, plan, step and attempt are separate persisted entities** ([I-080](../requirements/01-normative-glossary-and-invariants.md#rule-i-080)–[I-085](../requirements/01-normative-glossary-and-invariants.md#rule-i-085)). |
-| TE-02 | **A run freezes its execution snapshot at start** ([EX-05](../requirements/05-ai-and-agent-execution.md#rule-ex-05) in the AI requirements): intent version, profile version, skill versions, model and routing policy, permission policy, budget, execution target, workspace and realm, input bindings, automation version, **and the resolved policy and tariff decisions**. |
-| TE-03 | **One active run per task** ([EX-04](../requirements/05-ai-and-agent-execution.md#rule-ex-04) there). |
-| TE-04 | **Plan revisions are retained with categorised reasons** ([EX-06](../requirements/05-ai-and-agent-execution.md#rule-ex-06) there). |
-| TE-05 | One model loop advances per Run. Bounded independent tool calls may run concurrently and join before the loop continues; dependency records support recovery without requiring a general DAG scheduler ([EX-08](../requirements/05-ai-and-agent-execution.md#rule-ex-08) of the AI requirements). |
-| TE-06 | **State is `LifecycleState + Reason facet`**, so adding a wait reason never changes the state machine (`§2.1` there). |
-| TE-07 | **Task authority never migrates** ([OW-02](../requirements/05-ai-and-agent-execution.md#rule-ow-02)). All agent Tasks are Cloud-owned. Device execution is an owner command or ProductJob referenced by the Cloud step, never a local agent child Task. |
+| <a id="rule-te-01"></a>TE-01 | **Task, run, plan, step and attempt are separate persisted entities** ([I-080](../requirements/01-normative-glossary-and-invariants.md#rule-i-080)–[I-085](../requirements/01-normative-glossary-and-invariants.md#rule-i-085)). |
+| <a id="rule-te-02"></a>TE-02 | **A run freezes its execution snapshot at start** ([EX-05](../requirements/05-ai-and-agent-execution.md#rule-ex-05) in the AI requirements): intent version, profile version, skill versions, model and routing policy, permission policy, budget, execution target, workspace and realm, input bindings, automation version, **and the resolved policy and tariff decisions**. |
+| <a id="rule-te-03"></a>TE-03 | **One active run per task** ([EX-04](../requirements/05-ai-and-agent-execution.md#rule-ex-04) there). |
+| <a id="rule-te-04"></a>TE-04 | **Plan revisions are retained with categorised reasons** ([EX-06](../requirements/05-ai-and-agent-execution.md#rule-ex-06) there). |
+| <a id="rule-te-05"></a>TE-05 | One model loop advances per Run. Bounded independent tool calls may run concurrently and join before the loop continues; dependency records support recovery without requiring a general DAG scheduler ([EX-08](../requirements/05-ai-and-agent-execution.md#rule-ex-08) of the AI requirements). |
+| <a id="rule-te-06"></a>TE-06 | **State is `LifecycleState + Reason facet`**, so adding a wait reason never changes the state machine (`§2.1` there). |
+| <a id="rule-te-07"></a>TE-07 | **Task authority never migrates** ([OW-02](../requirements/05-ai-and-agent-execution.md#rule-ow-02)). All agent Tasks are Cloud-owned. Device execution is an owner command or ProductJob referenced by the Cloud step, never a local agent child Task. |
 
 ### 4.2 Persistence
 
 | # | Rule |
 |---|---|
-| TP-01 | **Task, run, plan, step, attempt, approval, steering event, budget reservation and trace entry are all durable**, on the owner's side. |
-| TP-02 | **A process crash leaves an interrupted run that enters recovery evaluation** ([RV-01](../requirements/05-ai-and-agent-execution.md#rule-rv-01)–[RV-03](../requirements/05-ai-and-agent-execution.md#rule-rv-03) there), never a blanket retry. |
-| TP-03 | **A cloud worker crash does not lose a task** ([RV-05](../requirements/05-ai-and-agent-execution.md#rule-rv-05) there). |
-| TP-04 | **The task snapshot is the authoritative read surface**, carrying revision and sequence ([SN-01](../requirements/05-ai-and-agent-execution.md#rule-sn-01), [SN-02](../requirements/05-ai-and-agent-execution.md#rule-sn-02) there). |
-| TP-05 | **Realtime progress is notification only** ([SN-03](../requirements/05-ai-and-agent-execution.md#rule-sn-03) there). |
+| <a id="rule-tp-01"></a>TP-01 | **Task, run, plan, step, attempt, approval, steering event, budget reservation and trace entry are all durable**, on the owner's side. |
+| <a id="rule-tp-02"></a>TP-02 | **A process crash leaves an interrupted run that enters recovery evaluation** ([RV-01](../requirements/05-ai-and-agent-execution.md#rule-rv-01)–[RV-03](../requirements/05-ai-and-agent-execution.md#rule-rv-03) there), never a blanket retry. |
+| <a id="rule-tp-03"></a>TP-03 | **A cloud worker crash does not lose a task** ([RV-05](../requirements/05-ai-and-agent-execution.md#rule-rv-05) there). |
+| <a id="rule-tp-04"></a>TP-04 | **The task snapshot is the authoritative read surface**, carrying revision and sequence ([SN-01](../requirements/05-ai-and-agent-execution.md#rule-sn-01), [SN-02](../requirements/05-ai-and-agent-execution.md#rule-sn-02) there). |
+| <a id="rule-tp-05"></a>TP-05 | **Realtime progress is notification only** ([SN-03](../requirements/05-ai-and-agent-execution.md#rule-sn-03) there). |
 
 ### 4.3 Idempotency
 
@@ -136,12 +136,12 @@ Explicit attachments  ·  pinned context  ·  project context  ·  temporary con
 | # | Rule |
 |---|---|
 | <a id="rule-ca-01"></a>CA-01 | **There is no ambient default scope** ([AS-02](../requirements/06-knowledge-search-and-retrieval.md#rule-as-02) in the knowledge requirements). |
-| CA-02 | **Scope expansion is visible and enters the retrieval trace** ([AS-05](../requirements/06-knowledge-search-and-retrieval.md#rule-as-05), [AS-06](../requirements/06-knowledge-search-and-retrieval.md#rule-as-06) there). |
-| CA-03 | **References are retrieved first; content is materialised last** ([CP-02](../requirements/06-knowledge-search-and-retrieval.md#rule-cp-02) there). |
+| <a id="rule-ca-02"></a>CA-02 | **Scope expansion is visible and enters the retrieval trace** ([AS-05](../requirements/06-knowledge-search-and-retrieval.md#rule-as-05), [AS-06](../requirements/06-knowledge-search-and-retrieval.md#rule-as-06) there). |
+| <a id="rule-ca-03"></a>CA-03 | **References are retrieved first; content is materialised last** ([CP-02](../requirements/06-knowledge-search-and-retrieval.md#rule-cp-02) there). |
 | <a id="rule-ca-04"></a>CA-04 | **An automation's scope freezes into the run's evidence scope** ([AS-07](../requirements/06-knowledge-search-and-retrieval.md#rule-as-07) there). |
 | <a id="rule-ca-05"></a>CA-05 | **Cache isolation is a security requirement**: user-derived prompt cache is workspace-scoped; only genuinely public content is reused across workspaces ([CO-03](../requirements/05-ai-and-agent-execution.md#rule-co-03) in the AI requirements). |
 | <a id="rule-ca-06"></a>CA-06 | **Conversation compaction is context engineering, not memory** ([HM-03](../requirements/products/arcchat.md#rule-hm-03) in the ArcChat requirements). |
-| CA-07 | Indexed knowledge uses acknowledged owner revisions. Separately approved bounded transient input uses SourceConsentRef and the exact source/purpose/hash/expiry profile; it is not sync or index enrollment. Pending Notes edits cannot be passed off as an acknowledged revision. Missing/denied context is disclosed, and enabling AI alone never uploads local content. |
+| <a id="rule-ca-07"></a>CA-07 | Indexed knowledge uses acknowledged owner revisions. Separately approved bounded transient input uses SourceConsentRef and the exact source/purpose/hash/expiry profile; it is not sync or index enrollment. Pending Notes edits cannot be passed off as an acknowledged revision. Missing/denied context is disclosed, and enabling AI alone never uploads local content. |
 
 ---
 
@@ -162,16 +162,16 @@ Logical AI Request  (Cloud, authorised, service term verified)
 
 | # | Rule |
 |---|---|
-| PR-01 | **Provider and model are separate axes** ([I-116](../requirements/01-normative-glossary-and-invariants.md#rule-i-116)). The source axis is gone: there is exactly one source, the operator-funded Cloud provider set. |
-| PR-02 | **An explicitly pinned model is never substituted** ([RT-08](../requirements/05-ai-and-agent-execution.md#rule-rt-08) in the AI requirements). The provider route may change; the model may not. |
-| PR-03 | **Auto routing is bounded by cost class, policy and task budget** ([RT-06](../requirements/05-ai-and-agent-execution.md#rule-rt-06), [BG-08](../requirements/05-ai-and-agent-execution.md#rule-bg-08) there). |
-| PR-04 | **Fallback stays within the tariff class or asks before escalating price** ([RT-07](../requirements/05-ai-and-agent-execution.md#rule-rt-07) there). |
-| PR-05 | **Supplier price and customer tariff are resolved separately and never derived from one another** ([MT-06](../requirements/04-commerce-entitlement-and-credits.md#rule-mt-06)). The supplier version applies at dispatch; the customer snapshot pins to the Run. |
-| PR-06 | Workers AI is the only admitted model supplier. No AI Gateway failover/bypass or hidden provider/model substitution exists. An unavailable model fails with its durable reason; choosing a different admitted model is an explicit new request. |
+| <a id="rule-pr-01"></a>PR-01 | **Provider and model are separate axes** ([I-116](../requirements/01-normative-glossary-and-invariants.md#rule-i-116)). The source axis is gone: there is exactly one source, the operator-funded Cloud provider set. |
+| <a id="rule-pr-02"></a>PR-02 | **An explicitly pinned model is never substituted** ([RT-08](../requirements/05-ai-and-agent-execution.md#rule-rt-08) in the AI requirements). The provider route may change; the model may not. |
+| <a id="rule-pr-03"></a>PR-03 | **Auto routing is bounded by cost class, policy and task budget** ([RT-06](../requirements/05-ai-and-agent-execution.md#rule-rt-06), [BG-08](../requirements/05-ai-and-agent-execution.md#rule-bg-08) there). |
+| <a id="rule-pr-04"></a>PR-04 | **Fallback stays within the tariff class or asks before escalating price** ([RT-07](../requirements/05-ai-and-agent-execution.md#rule-rt-07) there). |
+| <a id="rule-pr-05"></a>PR-05 | **Supplier price and customer tariff are resolved separately and never derived from one another** ([MT-06](../requirements/04-commerce-entitlement-and-credits.md#rule-mt-06)). The supplier version applies at dispatch; the customer snapshot pins to the Run. |
+| <a id="rule-pr-06"></a>PR-06 | Workers AI is the only admitted model supplier. No AI Gateway failover/bypass or hidden provider/model substitution exists. An unavailable model fails with its durable reason; choosing a different admitted model is an explicit new request. |
 | <a id="rule-pr-07"></a>PR-07 | **`Logical AI Request ≠ Provider Attempt ≠ Step Attempt`** ([LG-03](../requirements/05-ai-and-agent-execution.md#rule-lg-03) there, [MT-02](../requirements/04-commerce-entitlement-and-credits.md#rule-mt-02)). |
-| PR-08 | **Model availability is policy, not health** ([I-361](../requirements/01-normative-glossary-and-invariants.md#rule-i-361)), and a task snapshots its model policy decision ([PA-07](../requirements/11-policy-and-configuration.md#rule-pa-07) in the policy requirements). |
-| PR-09 | **An emergency model suspension may interrupt future invocations inside a running run** — the single documented exception to snapshot immutability ([PA-08](../requirements/11-policy-and-configuration.md#rule-pa-08) there). |
-| PR-10 | **A route with no configured price for a billable category cannot be dispatched** ([DC-05](../requirements/11-policy-and-configuration.md#rule-dc-05), [MT-15](../requirements/04-commerce-entitlement-and-credits.md#rule-mt-15)). There is no assumed zero rate and no silent default. |
+| <a id="rule-pr-08"></a>PR-08 | **Model availability is policy, not health** ([I-361](../requirements/01-normative-glossary-and-invariants.md#rule-i-361)), and a task snapshots its model policy decision ([PA-07](../requirements/11-policy-and-configuration.md#rule-pa-07) in the policy requirements). |
+| <a id="rule-pr-09"></a>PR-09 | **An emergency model suspension may interrupt future invocations inside a running run** — the single documented exception to snapshot immutability ([PA-08](../requirements/11-policy-and-configuration.md#rule-pa-08) there). |
+| <a id="rule-pr-10"></a>PR-10 | **A route with no configured price for a billable category cannot be dispatched** ([DC-05](../requirements/11-policy-and-configuration.md#rule-dc-05), [MT-15](../requirements/04-commerce-entitlement-and-credits.md#rule-mt-15)). There is no assumed zero rate and no silent default. |
 
 ---
 
@@ -187,16 +187,16 @@ Task start
 
 | # | Rule |
 |---|---|
-| MB-01 | **Reservation precedes execution** ([CR-20](../requirements/04-commerce-entitlement-and-credits.md#rule-cr-20) there), which is what prevents concurrent tasks from collectively overdrawing. |
-| MB-02 | The single Cloud Run shares one authorised total across its bounded invocations and concurrent tool calls. No multi-agent run, delegation or agent-team budget exists. |
-| MB-03 | **Three records per request**: usage, upstream cost, credit debit ([LG-01](../requirements/05-ai-and-agent-execution.md#rule-lg-01) there). |
-| MB-04 | **Every request binds a tariff version** ([TR-03](../requirements/05-ai-and-agent-execution.md#rule-tr-03) there), so any historical charge is exactly recomputable. |
+| <a id="rule-mb-01"></a>MB-01 | **Reservation precedes execution** ([CR-20](../requirements/04-commerce-entitlement-and-credits.md#rule-cr-20) there), which is what prevents concurrent tasks from collectively overdrawing. |
+| <a id="rule-mb-02"></a>MB-02 | The single Cloud Run shares one authorised total across its bounded invocations and concurrent tool calls. No multi-agent run, delegation or agent-team budget exists. |
+| <a id="rule-mb-03"></a>MB-03 | **Three records per request**: usage, upstream cost, credit debit ([LG-01](../requirements/05-ai-and-agent-execution.md#rule-lg-01) there). |
+| <a id="rule-mb-04"></a>MB-04 | **Every request binds a tariff version** ([TR-03](../requirements/05-ai-and-agent-execution.md#rule-tr-03) there), so any historical charge is exactly recomputable. |
 | <a id="rule-mb-05"></a>MB-05 | **A run locks its tariff snapshot at start** ([TR-04](../requirements/05-ai-and-agent-execution.md#rule-tr-04) there); mid-run upstream price changes are absorbed. |
-| MB-06 | **Fixed-precision sub-credit accounting**; per-request rounding up is prohibited ([CD-03](../requirements/05-ai-and-agent-execution.md#rule-cd-03) there). |
-| MB-07 | **Platform-caused retries are not charged to the user** ([CU-03](../requirements/05-ai-and-agent-execution.md#rule-cu-03) there). |
-| MB-08 | **Internal platform AI — routing classifiers, embedding, reranking, safety, health, cost prediction — never debits user credits** ([CU-01](../requirements/05-ai-and-agent-execution.md#rule-cu-01), [CU-02](../requirements/05-ai-and-agent-execution.md#rule-cu-02) there). |
-| MB-09 | **An agent cannot raise its own budget** ([BG-07](../requirements/05-ai-and-agent-execution.md#rule-bg-07) there). |
-| MB-10 | **Three ledgers stay separate**: provider cost, customer credit, payment/revenue ([I-011](../requirements/01-normative-glossary-and-invariants.md#rule-i-011)). |
+| <a id="rule-mb-06"></a>MB-06 | **Fixed-precision sub-credit accounting**; per-request rounding up is prohibited ([CD-03](../requirements/05-ai-and-agent-execution.md#rule-cd-03) there). |
+| <a id="rule-mb-07"></a>MB-07 | **Platform-caused retries are not charged to the user** ([CU-03](../requirements/05-ai-and-agent-execution.md#rule-cu-03) there). |
+| <a id="rule-mb-08"></a>MB-08 | **Internal platform AI — routing classifiers, embedding, reranking, safety, health, cost prediction — never debits user credits** ([CU-01](../requirements/05-ai-and-agent-execution.md#rule-cu-01), [CU-02](../requirements/05-ai-and-agent-execution.md#rule-cu-02) there). |
+| <a id="rule-mb-09"></a>MB-09 | **An agent cannot raise its own budget** ([BG-07](../requirements/05-ai-and-agent-execution.md#rule-bg-07) there). |
+| <a id="rule-mb-10"></a>MB-10 | **Three ledgers stay separate**: provider cost, customer credit, payment/revenue ([I-011](../requirements/01-normative-glossary-and-invariants.md#rule-i-011)). |
 
 ---
 
@@ -204,12 +204,12 @@ Task start
 
 | # | Rule |
 |---|---|
-| AS-01 | **An approval gate is a Step**, not an out-of-band interruption. The run enters `Waiting` with reason `Approval` and `AutoResume = false` ([ST-01](../requirements/05-ai-and-agent-execution.md#rule-st-01) there). |
-| AS-02 | **The approval binds the action snapshot including target revision and a parameter digest** ([AP-02](08-security-architecture.md#rule-ap-02) in the security architecture). |
-| AS-03 | **A revision change invalidates the approval**; the action is rebased, the preview regenerated, approval re-requested ([AP-04](../requirements/05-ai-and-agent-execution.md#rule-ap-04) in the AI requirements). |
-| AS-04 | **Steering produces an immutable event** that may trigger a plan revision; the original intent is never rewritten ([SG-02](../requirements/05-ai-and-agent-execution.md#rule-sg-02), [SG-03](../requirements/05-ai-and-agent-execution.md#rule-sg-03) there). |
-| AS-05 | **Steering application timing is explicit** — applied, queued to a safe point, or not applicable ([SG-05](../requirements/05-ai-and-agent-execution.md#rule-sg-05) there). |
-| AS-06 | **A denied approval does not automatically fail the task** ([AP-06](../requirements/05-ai-and-agent-execution.md#rule-ap-06) there). |
+| <a id="rule-as-01"></a>AS-01 | **An approval gate is a Step**, not an out-of-band interruption. The run enters `Waiting` with reason `Approval` and `AutoResume = false` ([ST-01](../requirements/05-ai-and-agent-execution.md#rule-st-01) there). |
+| <a id="rule-as-02"></a>AS-02 | **The approval binds the action snapshot including target revision and a parameter digest** ([AP-02](08-security-architecture.md#rule-ap-02) in the security architecture). |
+| <a id="rule-as-03"></a>AS-03 | **A revision change invalidates the approval**; the action is rebased, the preview regenerated, approval re-requested ([AP-04](../requirements/05-ai-and-agent-execution.md#rule-ap-04) in the AI requirements). |
+| <a id="rule-as-04"></a>AS-04 | **Steering produces an immutable event** that may trigger a plan revision; the original intent is never rewritten ([SG-02](../requirements/05-ai-and-agent-execution.md#rule-sg-02), [SG-03](../requirements/05-ai-and-agent-execution.md#rule-sg-03) there). |
+| <a id="rule-as-05"></a>AS-05 | **Steering application timing is explicit** — applied, queued to a safe point, or not applicable ([SG-05](../requirements/05-ai-and-agent-execution.md#rule-sg-05) there). |
+| <a id="rule-as-06"></a>AS-06 | **A denied approval does not automatically fail the task** ([AP-06](../requirements/05-ai-and-agent-execution.md#rule-ap-06) there). |
 
 ---
 
@@ -224,13 +224,13 @@ Placement no longer describes where the model loop runs — it always runs in Cl
 
 | # | Rule |
 |---|---|
-| PL-01 | **Every Task is Cloud-owned.** There is no local, hybrid or auto *task placement*; the only variable is each tool's locality. |
-| PL-02 | **A tool declares its locality**, and a tool that requires the device is never silently substituted by a cloud approximation. |
+| <a id="rule-pl-01"></a>PL-01 | **Every Task is Cloud-owned.** There is no local, hybrid or auto *task placement*; the only variable is each tool's locality. |
+| <a id="rule-pl-02"></a>PL-02 | **A tool declares its locality**, and a tool that requires the device is never silently substituted by a cloud approximation. |
 | <a id="rule-pl-03"></a>PL-03 | **A device tool with no eligible online device enters `WaitingForDevice`** with a stated reason and a bounded wait ([RX-02](../requirements/03-cloud-services-and-sync.md#rule-rx-02) in the cloud requirements). Waiting consumes no model capacity ([AC-05](../requirements/04-commerce-entitlement-and-credits.md#rule-ac-05)). |
-| PL-04 | **Remote execution is a durable `ToolRequest` pulled by the desktop, re-authorised locally, answered with an idempotent `ToolResult`** (**[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)**, `§10` of the cloud architecture). Cloud never connects to a device. |
-| PL-05 | **A device tool never uploads local-only data merely to make a cloud alternative possible** ([OW-08](../requirements/05-ai-and-agent-execution.md#rule-ow-08) in the AI requirements). If the data cannot leave, the tool runs on the device or the step fails with a reason. |
-| PL-06 | **A cloud failure never silently performs an external side effect on a desktop** ([OW-09](../requirements/05-ai-and-agent-execution.md#rule-ow-09) there), and the reverse is equally prohibited. |
-| PL-07 | **A native Product Job is not a tool locality.** A render, capture or export started by the user is owned and recovered by its product ([CM-04](#rule-cm-04)); the Harness may *observe* one through a status tool, never adopt it as a Step. |
+| <a id="rule-pl-04"></a>PL-04 | **Remote execution is a durable `ToolRequest` pulled by the desktop, re-authorised locally, answered with an idempotent `ToolResult`** (**[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)**, `§10` of the cloud architecture). Cloud never connects to a device. |
+| <a id="rule-pl-05"></a>PL-05 | **A device tool never uploads local-only data merely to make a cloud alternative possible** ([OW-08](../requirements/05-ai-and-agent-execution.md#rule-ow-08) in the AI requirements). If the data cannot leave, the tool runs on the device or the step fails with a reason. |
+| <a id="rule-pl-06"></a>PL-06 | **A cloud failure never silently performs an external side effect on a desktop** ([OW-09](../requirements/05-ai-and-agent-execution.md#rule-ow-09) there), and the reverse is equally prohibited. |
+| <a id="rule-pl-07"></a>PL-07 | **A native Product Job is not a tool locality.** A render, capture or export started by the user is owned and recovered by its product ([CM-04](#rule-cm-04)); the Harness may *observe* one through a status tool, never adopt it as a Step. |
 
 ---
 
@@ -246,10 +246,10 @@ Parent Step invokes a long-running capability
 
 | # | Rule |
 |---|---|
-| CT-01 | Long operations use ProductJob references; internal agent Steps remain inside one Run ([CT-03](../requirements/05-ai-and-agent-execution.md#rule-ct-03) of the AI requirements). |
-| CT-02 | Cancellation requests propagate only to jobs initiated by this Run and authorised for its control; shared/pre-existing jobs continue ([CT-04](../requirements/05-ai-and-agent-execution.md#rule-ct-04) of the AI requirements). |
-| CT-03 | The Run observes job references, status and output references; it never imports a product state store ([CT-05](../requirements/05-ai-and-agent-execution.md#rule-ct-05) of the AI requirements). |
-| CT-04 | Bounded independent tool calls are allowed; sub-agents, agent teams, handoff and external-agent delegation are excluded ([CT-06](../requirements/05-ai-and-agent-execution.md#rule-ct-06) of the AI requirements). |
+| <a id="rule-ct-01"></a>CT-01 | Long operations use ProductJob references; internal agent Steps remain inside one Run ([CT-03](../requirements/05-ai-and-agent-execution.md#rule-ct-03) of the AI requirements). |
+| <a id="rule-ct-02"></a>CT-02 | Cancellation requests propagate only to jobs initiated by this Run and authorised for its control; shared/pre-existing jobs continue ([CT-04](../requirements/05-ai-and-agent-execution.md#rule-ct-04) of the AI requirements). |
+| <a id="rule-ct-03"></a>CT-03 | The Run observes job references, status and output references; it never imports a product state store ([CT-05](../requirements/05-ai-and-agent-execution.md#rule-ct-05) of the AI requirements). |
+| <a id="rule-ct-04"></a>CT-04 | Bounded independent tool calls are allowed; sub-agents, agent teams, handoff and external-agent delegation are excluded ([CT-06](../requirements/05-ai-and-agent-execution.md#rule-ct-06) of the AI requirements). |
 
 ---
 
@@ -257,12 +257,12 @@ Parent Step invokes a long-running capability
 
 | # | Rule |
 |---|---|
-| CC-01 | **Two checkpoint kinds**: an execution checkpoint owned by the runtime, and a domain checkpoint owned by the product (`§5.1` there). |
-| CC-02 | **ArcChat never creates a system-wide snapshot** ([CK-01](../requirements/05-ai-and-agent-execution.md#rule-ck-01) there). It requests a checkpoint and receives a reference. |
-| CC-03 | **A domain checkpoint precedes any high-risk batch modification** ([CK-02](../requirements/05-ai-and-agent-execution.md#rule-ck-02) there). |
-| CC-04 | **Cross-application unwinding is a saga executed in reverse through each owner** ([CP-02](../requirements/05-ai-and-agent-execution.md#rule-cp-02) there), never a simulated distributed transaction. |
-| CC-05 | **Compensation is traced and can fail** ([CP-03](../requirements/05-ai-and-agent-execution.md#rule-cp-03), [CP-04](../requirements/05-ai-and-agent-execution.md#rule-cp-04) there). |
-| CC-06 | **Failure does not automatically trigger compensation** ([CP-05](../requirements/05-ai-and-agent-execution.md#rule-cp-05) there). |
+| <a id="rule-cc-01"></a>CC-01 | **Two checkpoint kinds**: an execution checkpoint owned by the runtime, and a domain checkpoint owned by the product (`§5.1` there). |
+| <a id="rule-cc-02"></a>CC-02 | **ArcChat never creates a system-wide snapshot** ([CK-01](../requirements/05-ai-and-agent-execution.md#rule-ck-01) there). It requests a checkpoint and receives a reference. |
+| <a id="rule-cc-03"></a>CC-03 | **A domain checkpoint precedes any high-risk batch modification** ([CK-02](../requirements/05-ai-and-agent-execution.md#rule-ck-02) there). |
+| <a id="rule-cc-04"></a>CC-04 | **Cross-application unwinding is a saga executed in reverse through each owner** ([CP-02](../requirements/05-ai-and-agent-execution.md#rule-cp-02) there), never a simulated distributed transaction. |
+| <a id="rule-cc-05"></a>CC-05 | **Compensation is traced and can fail** ([CP-03](../requirements/05-ai-and-agent-execution.md#rule-cp-03), [CP-04](../requirements/05-ai-and-agent-execution.md#rule-cp-04) there). |
+| <a id="rule-cc-06"></a>CC-06 | **Failure does not automatically trigger compensation** ([CP-05](../requirements/05-ai-and-agent-execution.md#rule-cp-05) there). |
 
 ---
 
@@ -278,10 +278,10 @@ Diagnostic Log             operations only
 
 | # | Rule |
 |---|---|
-| TR-01 | **All four are separate systems** ([I-107](../requirements/01-normative-glossary-and-invariants.md#rule-i-107), [I-167](../requirements/01-normative-glossary-and-invariants.md#rule-i-167), [I-272](../requirements/01-normative-glossary-and-invariants.md#rule-i-272)–[I-276](../requirements/01-normative-glossary-and-invariants.md#rule-i-276)). |
-| TR-02 | **Chain-of-thought never enters any of them** ([PR-10](../requirements/05-ai-and-agent-execution.md#rule-pr-10) in the AI requirements). |
-| TR-03 | **An external agent's internal reasoning never enters the ArcChat model** ([EA-07](../requirements/08-extensions-and-developer-platform.md#rule-ea-07) in the extension requirements). |
-| TR-04 | **An AI context inspector renders what the model was actually given** ([RT-03](../requirements/06-knowledge-search-and-retrieval.md#rule-rt-03) in the knowledge requirements). |
+| <a id="rule-tr-01"></a>TR-01 | **All four are separate systems** ([I-107](../requirements/01-normative-glossary-and-invariants.md#rule-i-107), [I-167](../requirements/01-normative-glossary-and-invariants.md#rule-i-167), [I-272](../requirements/01-normative-glossary-and-invariants.md#rule-i-272)–[I-276](../requirements/01-normative-glossary-and-invariants.md#rule-i-276)). |
+| <a id="rule-tr-02"></a>TR-02 | **Chain-of-thought never enters any of them** ([PR-10](../requirements/05-ai-and-agent-execution.md#rule-pr-10) in the AI requirements). |
+| <a id="rule-tr-03"></a>TR-03 | **An external agent's internal reasoning never enters the ArcChat model** ([EA-07](../requirements/08-extensions-and-developer-platform.md#rule-ea-07) in the extension requirements). |
+| <a id="rule-tr-04"></a>TR-04 | **An AI context inspector renders what the model was actually given** ([RT-03](../requirements/06-knowledge-search-and-retrieval.md#rule-rt-03) in the knowledge requirements). |
 
 ---
 
@@ -297,14 +297,14 @@ Automation Definition (versioned)
 
 | # | Rule |
 |---|---|
-| AU-01 | **An automation is a rule that creates tasks; it never executes work itself** (`§10` of the AI requirements). |
-| AU-02 | **A trigger occurrence has stable identity**, so a scheduler restart does not double-fire ([TG-03](../requirements/05-ai-and-agent-execution.md#rule-tg-03) there). |
-| AU-03 | **Event triggers deduplicate by event id** ([TG-04](../requirements/05-ai-and-agent-execution.md#rule-tg-04) there) and subscribe only to durable events ([EV-07](02-contracts-and-protocols.md#rule-ev-07) in the contracts architecture). |
-| AU-04 | **Loop protection is structural**: causation chains, causation depth limits, self-recursion suppression, cross-automation cycle detection where feasible ([LP-01](../requirements/05-ai-and-agent-execution.md#rule-lp-01)–[LP-03](../requirements/05-ai-and-agent-execution.md#rule-lp-03) there). |
-| AU-05 | **Storm caps are enforced**: per-automation rate limit, per-workspace concurrency, global agent concurrency, AI budget cap ([LP-04](../requirements/05-ai-and-agent-execution.md#rule-lp-04) there). |
-| AU-06 | **Catch-up is bounded** ([MR-02](../requirements/05-ai-and-agent-execution.md#rule-mr-02) there). |
-| AU-07 | **Every triggered task re-authorises** ([AP-10](../requirements/05-ai-and-agent-execution.md#rule-ap-10) there). |
-| AU-08 | AI automation scheduling exists only in Cloud. Ordinary native Product Jobs can run without Cloud or AI and do not create a desktop agent scheduler ([LA-01](../requirements/05-ai-and-agent-execution.md#rule-la-01) of the AI requirements). |
+| <a id="rule-au-01"></a>AU-01 | **An automation is a rule that creates tasks; it never executes work itself** (`§10` of the AI requirements). |
+| <a id="rule-au-02"></a>AU-02 | **A trigger occurrence has stable identity**, so a scheduler restart does not double-fire ([TG-03](../requirements/05-ai-and-agent-execution.md#rule-tg-03) there). |
+| <a id="rule-au-03"></a>AU-03 | **Event triggers deduplicate by event id** ([TG-04](../requirements/05-ai-and-agent-execution.md#rule-tg-04) there) and subscribe only to durable events ([EV-07](02-contracts-and-protocols.md#rule-ev-07) in the contracts architecture). |
+| <a id="rule-au-04"></a>AU-04 | **Loop protection is structural**: causation chains, causation depth limits, self-recursion suppression, cross-automation cycle detection where feasible ([LP-01](../requirements/05-ai-and-agent-execution.md#rule-lp-01)–[LP-03](../requirements/05-ai-and-agent-execution.md#rule-lp-03) there). |
+| <a id="rule-au-05"></a>AU-05 | **Storm caps are enforced**: per-automation rate limit, per-workspace concurrency, global agent concurrency, AI budget cap ([LP-04](../requirements/05-ai-and-agent-execution.md#rule-lp-04) there). |
+| <a id="rule-au-06"></a>AU-06 | **Catch-up is bounded** ([MR-02](../requirements/05-ai-and-agent-execution.md#rule-mr-02) there). |
+| <a id="rule-au-07"></a>AU-07 | **Every triggered task re-authorises** ([AP-10](../requirements/05-ai-and-agent-execution.md#rule-ap-10) there). |
+| <a id="rule-au-08"></a>AU-08 | AI automation scheduling exists only in Cloud. Ordinary native Product Jobs can run without Cloud or AI and do not create a desktop agent scheduler ([LA-01](../requirements/05-ai-and-agent-execution.md#rule-la-01) of the AI requirements). |
 
 ---
 
@@ -312,13 +312,13 @@ Automation Definition (versioned)
 
 | # | Rule |
 |---|---|
-| MC-01 | **MCP is an edge adapter behind the capability registry** (`MC-01` in the extension requirements), never the internal protocol. |
-| MC-02 | **The protocol core is stateless** (**[V-02](../assurance/phase-1-official-verification.md#rule-v-02)**): no initialize exchange, no session header, per-request capability negotiation. **ArcForges must not build session identity on MCP transport state.** |
-| MC-03 | **Server-to-client requests use the protocol's multi-round-trip mechanism**, which is transport, not an ArcForges execution concept. |
-| MC-04 | **MCP's own task and skill vocabulary never conflates with ArcForges'** (glossary §9). |
-| MC-05 | **The exact SDK version is pinned at first consumption, and the vocabulary mapping is recorded.** *Owner: Architecture Owner. Trigger: start of the MCP/extension work package.* |
-| MC-06 | **MCP content is untrusted data** (`§8` of the security architecture). |
-| MC-07 | **A down MCP server degrades that integration only** ([IN-05](../requirements/products/arcchat.md#rule-in-05) in the ArcChat requirements). |
+| <a id="rule-mc-01"></a>MC-01 | **MCP is an edge adapter behind the capability registry** ([`MC-01`](../requirements/08-extensions-and-developer-platform.md#rule-mc-01) in the extension requirements), never the internal protocol. |
+| <a id="rule-mc-02"></a>MC-02 | **The protocol core is stateless** (**[V-02](../assurance/phase-1-official-verification.md#rule-v-02)**): no initialize exchange, no session header, per-request capability negotiation. **ArcForges must not build session identity on MCP transport state.** |
+| <a id="rule-mc-03"></a>MC-03 | **Server-to-client requests use the protocol's multi-round-trip mechanism**, which is transport, not an ArcForges execution concept. |
+| <a id="rule-mc-04"></a>MC-04 | **MCP's own task and skill vocabulary never conflates with ArcForges'** (glossary §9). |
+| <a id="rule-mc-05"></a>MC-05 | **The exact SDK version is pinned at first consumption, and the vocabulary mapping is recorded.** *Owner: Architecture Owner. Trigger: start of the MCP/extension work package.* |
+| <a id="rule-mc-06"></a>MC-06 | **MCP content is untrusted data** (`§8` of the security architecture). |
+| <a id="rule-mc-07"></a>MC-07 | **A down MCP server degrades that integration only** ([IN-05](../requirements/products/arcchat.md#rule-in-05) in the ArcChat requirements). |
 
 ---
 
@@ -353,7 +353,7 @@ Automation Definition (versioned)
 | **[D-020](../decisions/phase-1-foundation-decisions.md#rule-d-020)** | Reserve-then-settle, fixed precision, per-run tariff snapshot, hard stop, three ledgers |
 | **[V-02](../assurance/phase-1-official-verification.md#rule-v-02)** | MCP stability, statelessness and vocabulary disambiguation |
 
-## P2-009 execution placement and supplier binding
+## [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) execution placement and supplier binding
 
 Selected Workers AI routes: @cf/openai/gpt-oss-120b for default text/tool work; @cf/openai/gpt-oss-20b as explicit lower-latency text profile; @cf/google/gemma-4-26b-a4b-it only for accepted authorized image-context understanding; @cf/baai/bge-m3 for multilingual 1024-dimensional embeddings; @cf/baai/bge-reranker-base for bounded reranking. No text-to-image/voice product feature added. Direct bindings, no mandatory AI Gateway/Agents SDK/Vercel SDK/external provider. Text input cap 24,000 tokens, output 4096, tools 32, total context<=256 KiB default; vision max 4 approved images <=1024px longest side/1 MiB each, no raw media/capture egress. Embedding chunk512tokens/overlap 64, batch 16,1024 finite float components; query/doc use same version, max 200rerank candidates. Model max limits may be higher; product limits stay these bounded values.
 

@@ -49,17 +49,17 @@
 
 | # | Rule |
 |---|---|
-| BR-01 | **The inventory exists before restructuring begins** ([MG-04](../../architecture/01-solution-and-project-layout.md#rule-mg-04) in the solution layout; gate [PG-02](../../assurance/open-gates-register.md#rule-pg-02)) — **satisfied**: it was completed as design-stage evidence before this plan was derived. |
-| BR-02 | **Dispositions are Keep · Rename · Move · Split · Merge · Rewrite · Fence · Delete** ([RM-03](../../assurance/implementation-state-reconciliation.md#rule-rm-03) in the reconciliation document). |
-| BR-03 | Unmigrated conflicting code is fenced until its explicit disposition is executed; deletion needs a recorded reason ([RM-07](../../assurance/implementation-state-reconciliation.md#rule-rm-07) of the reconciliation evidence). Conforming projects cannot reference a fenced component. |
-| BR-04 | A project spanning licence boundaries is split according to the item-level reconciliation and **[D-004](../../decisions/phase-1-foundation-decisions.md#rule-d-004)**; a broad exception cannot erase the boundary. |
-| BR-05 | A project combining domain and adapter responsibilities is split under [PJ-01](../../architecture/01-solution-and-project-layout.md#rule-pj-01) of the solution layout, with its inventory disposition updated. |
-| BR-06 | Names conflicting with the canonical glossary are reconciled under **[D-018](../../decisions/phase-1-foundation-decisions.md#rule-d-018)**, retaining migration compatibility only where explicitly specified. |
-| BR-07 | **Deleting existing work requires an explicit disposition with a reason** ([RC-06](../../requirements/11-policy-and-configuration.md#rule-rc-06) there). |
+| <a id="rule-br-01"></a>BR-01 | **The inventory exists before restructuring begins** ([MG-04](../../architecture/01-solution-and-project-layout.md#rule-mg-04) in the solution layout; gate [PG-02](../../assurance/open-gates-register.md#rule-pg-02)) — **satisfied**: it was completed as design-stage evidence before this plan was derived. |
+| <a id="rule-br-02"></a>BR-02 | **Dispositions are Keep · Rename · Move · Split · Merge · Rewrite · Fence · Delete** ([RM-03](../../assurance/implementation-state-reconciliation.md#rule-rm-03) in the reconciliation document). |
+| <a id="rule-br-03"></a>BR-03 | Unmigrated conflicting code is fenced until its explicit disposition is executed; deletion needs a recorded reason ([RM-07](../../assurance/implementation-state-reconciliation.md#rule-rm-07) of the reconciliation evidence). Conforming projects cannot reference a fenced component. |
+| <a id="rule-br-04"></a>BR-04 | A project spanning licence boundaries is split according to the item-level reconciliation and **[D-004](../../decisions/phase-1-foundation-decisions.md#rule-d-004)**; a broad exception cannot erase the boundary. |
+| <a id="rule-br-05"></a>BR-05 | A project combining domain and adapter responsibilities is split under [PJ-01](../../architecture/01-solution-and-project-layout.md#rule-pj-01) of the solution layout, with its inventory disposition updated. |
+| <a id="rule-br-06"></a>BR-06 | Names conflicting with the canonical glossary are reconciled under **[D-018](../../decisions/phase-1-foundation-decisions.md#rule-d-018)**, retaining migration compatibility only where explicitly specified. |
+| <a id="rule-br-07"></a>BR-07 | **Deleting existing work requires an explicit disposition with a reason** ([RC-06](../../requirements/11-policy-and-configuration.md#rule-rc-06) there). |
 | <a id="rule-br-08"></a>BR-08 | **No step leaves the repository unbuildable at a commit boundary** ([RC-07](../../requirements/11-policy-and-configuration.md#rule-rc-07) there). |
 | <a id="rule-br-09"></a>BR-09 | **A commit either moves code or changes what it does, never both** ([RC-08](../../requirements/11-policy-and-configuration.md#rule-rc-08) there). |
-| BR-10 | **Existing behaviour is evidence, not authority** ([RM-07](../../assurance/implementation-state-reconciliation.md#rule-rm-07) there). Where existing code disagrees with the specification, the specification governs. |
-| BR-11 | Existing repository location is not evidence of original authorship. Newly introduced or inherited external material keeps the source, commit, licence, target, oracle and NOTICE provenance required by **[D-013](../../decisions/phase-1-foundation-decisions.md#rule-d-013)**. Original first-party work records that origin without inventing an external source. |
+| <a id="rule-br-10"></a>BR-10 | **Existing behaviour is evidence, not authority** ([RM-07](../../assurance/implementation-state-reconciliation.md#rule-rm-07) there). Where existing code disagrees with the specification, the specification governs. |
+| <a id="rule-br-11"></a>BR-11 | Existing repository location is not evidence of original authorship. Newly introduced or inherited external material keeps the source, commit, licence, target, oracle and NOTICE provenance required by **[D-013](../../decisions/phase-1-foundation-decisions.md#rule-d-013)**. Original first-party work records that origin without inventing an external source. |
 
 ---
 

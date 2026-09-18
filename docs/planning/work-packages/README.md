@@ -203,7 +203,7 @@ Every gate in [`../../assurance/open-gates-register.md`](../../assurance/open-ga
 | **[VG-06](../../assurance/open-gates-register.md#rule-vg-06)** — Cloud Native AOT closure (triggered) | 06.04, 21.00, 50.04 |
 | **[VG-07](../../assurance/open-gates-register.md#rule-vg-07)** — Android runtime posture confirmed from the artifact | 06.07, 30.02, 32.01 |
 | **[VG-08](../../assurance/open-gates-register.md#rule-vg-08)** — framework upgrade re-verification (recurring) | 02, and re-run on each upgrade |
-| **[VG-09](../../assurance/open-gates-register.md#rule-vg-09)** — historical iOS gate (retired by P2-010) | outside current Android-only scope |
+| **[VG-09](../../assurance/open-gates-register.md#rule-vg-09)** — historical iOS gate (retired by [P2-010](../../decisions/phase-2-specification-decisions.md#rule-p2-010)) | outside current Android-only scope |
 | **[VG-10](../../assurance/open-gates-register.md#rule-vg-10)** — supplier onboarding and screening | 42 |
 | **[VG-11](../../assurance/open-gates-register.md#rule-vg-11)** — payout eligibility and currency | 42 |
 | **[VG-12](../../assurance/open-gates-register.md#rule-vg-12)** — regional enablement gates (conditional) | 42 |
@@ -247,7 +247,7 @@ Every gate in [`../../assurance/open-gates-register.md`](../../assurance/open-ga
 - **Numbering is allocation order, not execution order, above `50`.** `00`–`50` were allocated when the sequence was derived, and a retired identifier is never recycled, so a package added afterwards takes the next free number. **`51`, `52` and `53` execute in Phase J after their complete prerequisites; `31` and `32` follow `52`. All precede `50`.** The dependency graph in this file and each package's own header are authoritative for order; the numeral is not.
 
 
-## P2-009 package boundaries
+## [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) package boundaries
 
 The 51 active packages follow the current [complete artifact graph](../implementation-sequence.md#9-p2-009-complete-artifact-dependency-graph). WP20 is future-only; WP27/29 remain retired. Package numbering/anchors are stable; titles and runtime/contract responsibilities reflect P2-009. New .90 substeps are the explicit repository/integration acceptance attached to inherited domain work.
 

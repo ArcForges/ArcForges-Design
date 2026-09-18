@@ -1,5 +1,5 @@
 # ArcForges Web — Product Requirements
-> Effective scope: P2-012 and P2-013 amend the technology and application ownership below. **[P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
+> Effective scope: [P2-012](../../decisions/phase-2-specification-decisions.md#rule-p2-012) and [P2-013](../../decisions/phase-2-specification-decisions.md#rule-p2-013) amend the technology and application ownership below. **[P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006)** (2026-09-06) governs cloud AI, single-user scope, product exclusions and configuration-driven metering. Earlier references apply only where consistent.
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Requirements / Products
@@ -35,11 +35,11 @@ The twelve-entry inventory is fixed by **[D-014](../../decisions/phase-1-foundat
 
 | # | Requirement |
 |---|---|
-| SI-01 | **A hostname is not an application** (**[D-014](../../decisions/phase-1-foundation-decisions.md#rule-d-014)**). Account and Chat are separately deployed configurations of one `ArcForges.Web.App` codebase; static surfaces remain static artifacts. |
-| SI-02 | **`account.arcforges.com` is canonical** (**[D-015](../../decisions/phase-1-foundation-decisions.md#rule-d-015)**). `arcforges.com/account` is a **permanent redirect** and must never become a second account application. |
-| SI-03 | **Explicit origin, cookie, OAuth redirect, CSP, CSRF and CORS boundaries** apply per surface. **No broad parent-domain authentication cookies** (**[D-015](../../decisions/phase-1-foundation-decisions.md#rule-d-015)**). |
+| <a id="rule-si-01"></a>SI-01 | **A hostname is not an application** (**[D-014](../../decisions/phase-1-foundation-decisions.md#rule-d-014)**). Account and Chat are separately deployed configurations of one `ArcForges.Web.App` codebase; static surfaces remain static artifacts. |
+| <a id="rule-si-02"></a>SI-02 | **`account.arcforges.com` is canonical** (**[D-015](../../decisions/phase-1-foundation-decisions.md#rule-d-015)**). `arcforges.com/account` is a **permanent redirect** and must never become a second account application. |
+| <a id="rule-si-03"></a>SI-03 | **Explicit origin, cookie, OAuth redirect, CSP, CSRF and CORS boundaries** apply per surface. **No broad parent-domain authentication cookies** (**[D-015](../../decisions/phase-1-foundation-decisions.md#rule-d-015)**). |
 | <a id="rule-si-04"></a>SI-04 | **`status.arcforges.com` is hosted independently of ArcForges Cloud**, so a cloud outage cannot take the status page down with it. |
-| SI-05 | **`ops.arcforges.com` never appears in public navigation** and is reachable only by authorised operators (`§10` of the distribution requirements). |
+| <a id="rule-si-05"></a>SI-05 | **`ops.arcforges.com` never appears in public navigation** and is reachable only by authorised operators (`§10` of the distribution requirements). |
 
 ---
 
@@ -50,11 +50,11 @@ Fixed by **[D-007](../../decisions/phase-1-foundation-decisions.md#rule-d-007)**
 | # | Requirement |
 |---|---|
 | <a id="rule-tb-01"></a>TB-01 | **Public marketing, legal, download and information pages render as static HTML and CSS before JavaScript runs.** Their content and ordinary navigation work with scripting disabled; they do not boot a client application merely to display initial content. |
-| TB-02 | **`ArcForges.Web.App` is the only interactive browser application**, implemented in React and strict TypeScript as separate Account/Chat/Operations build profiles under [P2-008](../../decisions/phase-2-specification-decisions.md#rule-p2-008). |
-| TB-03 | **Public pages are generated at build time using React/TypeScript and Node.js**, as static deployment artifacts. Their initial content and navigation work without JavaScript. |
-| TB-04 | **The selected Web toolchain is Node.js/npm, Vite and React Router.** No Blazor browser host, React Native migration, runtime Node SSR or separate Node business backend is required. |
-| TB-05 | **Web is checked against production browser assets, not .NET AOT properties.** Pin the Node/compiler/dependency toolchain, enforce browser compatibility and track initial and per-route transfer budgets. |
-| TB-06 | **Browser JS/TS libraries are permitted under dependency, CSP, accessibility and performance policy.** This permission is confined to Web and does not relax pure-native Avalonia desktop requirements. |
+| <a id="rule-tb-02"></a>TB-02 | **`ArcForges.Web.App` is the only interactive browser application**, implemented in React and strict TypeScript as separate Account/Chat/Operations build profiles under [P2-008](../../decisions/phase-2-specification-decisions.md#rule-p2-008). |
+| <a id="rule-tb-03"></a>TB-03 | **Public pages are generated at build time using React/TypeScript and Node.js**, as static deployment artifacts. Their initial content and navigation work without JavaScript. |
+| <a id="rule-tb-04"></a>TB-04 | **The selected Web toolchain is Node.js/npm, Vite and React Router.** No Blazor browser host, React Native migration, runtime Node SSR or separate Node business backend is required. |
+| <a id="rule-tb-05"></a>TB-05 | **Web is checked against production browser assets, not .NET AOT properties.** Pin the Node/compiler/dependency toolchain, enforce browser compatibility and track initial and per-route transfer budgets. |
+| <a id="rule-tb-06"></a>TB-06 | **Browser JS/TS libraries are permitted under dependency, CSP, accessibility and performance policy.** This permission is confined to Web and does not relax pure-native Avalonia desktop requirements. |
 
 ---
 
@@ -64,27 +64,27 @@ Its job is **Discover → Understand → Download**, then **Upgrade to Cloud**.
 
 | # | Requirement |
 |---|---|
-| MS-01 | Discovery and direct download require no account. Product pages accurately separate native offline operations from Cloud account, service and AI requirements; download is never gated by purchase. |
-| MS-02 | **Downloading never requires an account** ([C-05](../00-product-scope-and-portfolio.md#rule-c-05)). |
-| MS-03 | First-level navigation is fixed: **Products · Cloud · Pricing · Download · Open Source · Docs**, with **Sign In** and a primary download action. |
-| MS-04 | The home page states that product source is open, Cloud is authoritative for subscribed AI and synchronized content, and operator deployment values are private. It must not imply account-free local AI or a permanent standalone ArcNotes service. |
-| MS-05 | **Every product has a page on a unified template**: what it is, who it is for, key capabilities, screenshots or demo, platform support, system requirements, download, documentation link, open-source link, and how the cloud enhances it. |
-| MS-06 | **Product pages must never advertise a superseded product name.** `ArcCanvas`, `ArcMusic`, `ArcImage` and `ArcVideo` do not appear (**[D-002](../../decisions/phase-1-foundation-decisions.md#rule-d-002)**). |
-| MS-07 | **A unified Download Center** presents every product, platform, architecture, package format, version, release channel, hash and signature information, and system requirements — from **one source of truth**. |
-| MS-08 | Pricing is generated from the public projection of deployed offers, states that checkout determines final price/tax, and discloses AI recovery, burst/rate/concurrency and model limits. It never promises unbounded throughput, budget or storage. |
-| MS-09 | **Open Source is a first-level official page**: licences (both boundaries per **[D-004](../../decisions/phase-1-foundation-decisions.md#rule-d-004)**), repositories, contribution guidance, third-party notices and the security policy. |
-| MS-10 | **Self-hosting belongs in the documentation**, presented as a supported first-class deployment — not as a competing product line on the marketing site. |
-| MS-11 | **A public roadmap commitment system is not built.** Direction may be communicated; dated feature promises are not ([OB-05](../10-distribution-update-and-support.md#rule-ob-05) in the distribution requirements). |
-| MS-12 | **Support entry points are clear**: documentation, community, private support and security disclosure, each routing to the right object type (`§7` of the distribution requirements). |
-| MS-13 | **A Security / Trust page** describes the security posture, the advisory feed, `security.txt` and the private disclosure route. |
+| <a id="rule-ms-01"></a>MS-01 | Discovery and direct download require no account. Product pages accurately separate native offline operations from Cloud account, service and AI requirements; download is never gated by purchase. |
+| <a id="rule-ms-02"></a>MS-02 | **Downloading never requires an account** ([C-05](../00-product-scope-and-portfolio.md#rule-c-05)). |
+| <a id="rule-ms-03"></a>MS-03 | First-level navigation is fixed: **Products · Cloud · Pricing · Download · Open Source · Docs**, with **Sign In** and a primary download action. |
+| <a id="rule-ms-04"></a>MS-04 | The home page states that product source is open, Cloud is authoritative for subscribed AI and synchronized content, and operator deployment values are private. It must not imply account-free local AI or a permanent standalone ArcNotes service. |
+| <a id="rule-ms-05"></a>MS-05 | **Every product has a page on a unified template**: what it is, who it is for, key capabilities, screenshots or demo, platform support, system requirements, download, documentation link, open-source link, and how the cloud enhances it. |
+| <a id="rule-ms-06"></a>MS-06 | **Product pages must never advertise a superseded product name.** `ArcCanvas`, `ArcMusic`, `ArcImage` and `ArcVideo` do not appear (**[D-002](../../decisions/phase-1-foundation-decisions.md#rule-d-002)**). |
+| <a id="rule-ms-07"></a>MS-07 | **A unified Download Center** presents every product, platform, architecture, package format, version, release channel, hash and signature information, and system requirements — from **one source of truth**. |
+| <a id="rule-ms-08"></a>MS-08 | Pricing is generated from the public projection of deployed offers, states that checkout determines final price/tax, and discloses AI recovery, burst/rate/concurrency and model limits. It never promises unbounded throughput, budget or storage. |
+| <a id="rule-ms-09"></a>MS-09 | **Open Source is a first-level official page**: licences (both boundaries per **[D-004](../../decisions/phase-1-foundation-decisions.md#rule-d-004)**), repositories, contribution guidance, third-party notices and the security policy. |
+| <a id="rule-ms-10"></a>MS-10 | **Self-hosting belongs in the documentation**, presented as a supported first-class deployment — not as a competing product line on the marketing site. |
+| <a id="rule-ms-11"></a>MS-11 | **A public roadmap commitment system is not built.** Direction may be communicated; dated feature promises are not ([OB-05](../10-distribution-update-and-support.md#rule-ob-05) in the distribution requirements). |
+| <a id="rule-ms-12"></a>MS-12 | **Support entry points are clear**: documentation, community, private support and security disclosure, each routing to the right object type (`§7` of the distribution requirements). |
+| <a id="rule-ms-13"></a>MS-13 | **A Security / Trust page** describes the security posture, the advisory feed, `security.txt` and the private disclosure route. |
 
 ### 3.1 Documentation, changelog and status
 
 | # | Requirement |
 |---|---|
-| DS-01 | **`docs.arcforges.com` is independent from the first day**, covering every product, self-hosting and developer documentation, **versioned per product**. |
-| DS-02 | **The changelog is a formal system**, generated from release metadata, per product and per version, and consistent with what the download page, updater and documentation state. |
-| DS-03 | **`status.arcforges.com` reports per-capability state** — Identity, Sync, Storage, Search, Remote, Tasks, Managed AI, Billing ([CL-03](../03-cloud-services-and-sync.md#rule-cl-03)) — and **never contains customer-specific private data** ([IN-05](../10-distribution-update-and-support.md#rule-in-05) in the distribution requirements). |
+| <a id="rule-ds-01"></a>DS-01 | **`docs.arcforges.com` is independent from the first day**, covering every product, self-hosting and developer documentation, **versioned per product**. |
+| <a id="rule-ds-02"></a>DS-02 | **The changelog is a formal system**, generated from release metadata, per product and per version, and consistent with what the download page, updater and documentation state. |
+| <a id="rule-ds-03"></a>DS-03 | **`status.arcforges.com` reports per-capability state** — Identity, Sync, Storage, Search, Remote, Tasks, Managed AI, Billing ([CL-03](../03-cloud-services-and-sync.md#rule-cl-03)) — and **never contains customer-specific private data** ([IN-05](../10-distribution-update-and-support.md#rule-in-05) in the distribution requirements). |
 
 ### 3.2 One source of truth
 
@@ -101,8 +101,8 @@ Its job is **Discover → Understand → Download**, then **Upgrade to Cloud**.
 | <a id="rule-il-01"></a>IL-01 | **Multi-language is designed correctly from the first day**: locale-scoped URLs, correct alternate-language annotations, no client-side-only language switching, and no locale-based automatic redirect that traps a user. |
 | <a id="rule-il-02"></a>IL-02 | **Mainland-China access must not depend on resources that are unreachable there.** No blocked fonts, script hosts, analytics or captcha providers on the public path. Region-specific infrastructure is a later, evidence-driven decision (**[D-023](../../decisions/phase-1-foundation-decisions.md#rule-d-023)** context). |
 | <a id="rule-il-03"></a>IL-03 | **Public site performance is a formal product requirement**, not an aspiration: the above-the-fold content renders without waiting for a client runtime ([TB-01](#rule-tb-01)), and the site meets its stated web-vitals targets at the 75th percentile. |
-| IL-04 | **Analytics are minimal and privacy-preserving** ([PV-05](../07-security-privacy-and-trust.md#rule-pv-05)). No cross-site advertising profile, no data sale, and no consent wall required for the basic site. |
-| IL-05 | **Sharing and discovery metadata** — canonical URLs, structured metadata, social previews, sitemaps — is generated as part of the build. |
+| <a id="rule-il-04"></a>IL-04 | **Analytics are minimal and privacy-preserving** ([PV-05](../07-security-privacy-and-trust.md#rule-pv-05)). No cross-site advertising profile, no data sale, and no consent wall required for the basic site. |
+| <a id="rule-il-05"></a>IL-05 | **Sharing and discovery metadata** — canonical URLs, structured metadata, social previews, sitemaps — is generated as part of the build. |
 
 ---
 
@@ -124,16 +124,16 @@ Its job is **Discover → Understand → Download**, then **Upgrade to Cloud**.
 
 | # | Requirement |
 |---|---|
-| AP-01 | **The portal manages the cloud; it does not edit ArcNotes documents, ArcScope sessions or ArcSlate projects.** |
-| AP-02 | **Every high-privilege operation lives here**: account, security, account deletion, billing, device revocation, remote-access grants (`§12` of the identity requirements). |
-| AP-03 | **In-product account interfaces stay lightweight** and link here (`§12` there). |
-| AP-04 | **Account deletion is available in the portal** and separately in every product, as required by store policy (`§10` there). |
-| AP-05 | Included recoverable capacity and purchased credits are displayed separately, with recovery timing, active-term dependency, extra-credit consent and consumption history. |
-| AP-06 | **Entitlement is shown with reasons**, not as a bare plan name ([ES-02](../04-commerce-entitlement-and-credits.md#rule-es-02) there). |
-| AP-07 | **An Entitlement Explain view exists for support** ([ES-07](../04-commerce-entitlement-and-credits.md#rule-es-07) there). |
-| AP-08 | **Invoices, receipts, payment details and billing-related refunds are handled by the Merchant of Record's portal** in V1; ArcForges does not reimplement an invoice engine or a tax-invoice editor (`§11` there). |
-| AP-09 | **Storage-full and over-quota states are explained**, with the assurance that local work is safe ([ST-06](../03-cloud-services-and-sync.md#rule-st-06), [QU-03](../04-commerce-entitlement-and-credits.md#rule-qu-03) there). |
-| AP-10 | **Remote access enablement in the portal cannot substitute for first-time enablement on the desktop** ([DP-07](arcchat-mobile-and-web.md#rule-dp-07) in the companion requirements). |
+| <a id="rule-ap-01"></a>AP-01 | **The portal manages the cloud; it does not edit ArcNotes documents, ArcScope sessions or ArcSlate projects.** |
+| <a id="rule-ap-02"></a>AP-02 | **Every high-privilege operation lives here**: account, security, account deletion, billing, device revocation, remote-access grants (`§12` of the identity requirements). |
+| <a id="rule-ap-03"></a>AP-03 | **In-product account interfaces stay lightweight** and link here (`§12` there). |
+| <a id="rule-ap-04"></a>AP-04 | **Account deletion is available in the portal** and separately in every product, as required by store policy (`§10` there). |
+| <a id="rule-ap-05"></a>AP-05 | Included recoverable capacity and purchased credits are displayed separately, with recovery timing, active-term dependency, extra-credit consent and consumption history. |
+| <a id="rule-ap-06"></a>AP-06 | **Entitlement is shown with reasons**, not as a bare plan name ([ES-02](../04-commerce-entitlement-and-credits.md#rule-es-02) there). |
+| <a id="rule-ap-07"></a>AP-07 | **An Entitlement Explain view exists for support** ([ES-07](../04-commerce-entitlement-and-credits.md#rule-es-07) there). |
+| <a id="rule-ap-08"></a>AP-08 | **Invoices, receipts, payment details and billing-related refunds are handled by the Merchant of Record's portal** in V1; ArcForges does not reimplement an invoice engine or a tax-invoice editor (`§11` there). |
+| <a id="rule-ap-09"></a>AP-09 | **Storage-full and over-quota states are explained**, with the assurance that local work is safe ([ST-06](../03-cloud-services-and-sync.md#rule-st-06), [QU-03](../04-commerce-entitlement-and-credits.md#rule-qu-03) there). |
+| <a id="rule-ap-10"></a>AP-10 | **Remote access enablement in the portal cannot substitute for first-time enablement on the desktop** ([DP-07](arcchat-mobile-and-web.md#rule-dp-07) in the companion requirements). |
 
 ---
 
@@ -143,8 +143,8 @@ Specified in [`arcchat-mobile-and-web.md`](arcchat-mobile-and-web.md). Two bound
 
 | # | Requirement |
 |---|---|
-| CW-01 | **Web companion and the account portal are strictly separate** ([WP-01](../../planning/work-packages/01-repository-reconciliation-and-target-layout.md#rule-wp-01) there), even though both are deployments of one codebase. Separate origins, separate cookies, separate authorization posture. |
-| CW-02 | **Web companion must not become an ArcNotes web editor** ([AR-02](arcchat-mobile-and-web.md#rule-ar-02) there). |
+| <a id="rule-cw-01"></a>CW-01 | **Web companion and the account portal are strictly separate** ([WP-01](../../planning/work-packages/01-repository-reconciliation-and-target-layout.md#rule-wp-01) there), even though both are deployments of one codebase. Separate origins, separate cookies, separate authorization posture. |
+| <a id="rule-cw-02"></a>CW-02 | **Web companion must not become an ArcNotes web editor** ([AR-02](arcchat-mobile-and-web.md#rule-ar-02) there). |
 
 ---
 
@@ -152,15 +152,15 @@ Specified in [`arcchat-mobile-and-web.md`](arcchat-mobile-and-web.md). Two bound
 
 | # | Requirement |
 |---|---|
-| SE-01 | **HTTPS only**, across every surface. |
-| SE-02 | **Each deployment has its own CSP, host-only cookie, CSRF and explicit origin policy**, using the C# browser-session adapter adopted by [P2-003](../../decisions/phase-2-specification-decisions.md#rule-p2-003). |
-| SE-03 | **Secrets are never compiled into the browser bundle.** |
-| SE-04 | **Browser JavaScript receives no access/refresh credential.** Opaque Secure/HttpOnly cookie sessions are held and revoked server-side; cookie-authenticated writes require explicit antiforgery and origin checks. |
-| SE-05 | **Cross-origin policy is an explicit allowlist.** Broad production CORS is prohibited. |
-| SE-06 | **Uploads undergo content-type, size and format validation with a quarantine area**, and are never executed server-side ([EX-06](../03-cloud-services-and-sync.md#rule-ex-06) in the cloud requirements). |
-| SE-07 | **Access tokens must be redacted from realtime transport logs.** |
+| <a id="rule-se-01"></a>SE-01 | **HTTPS only**, across every surface. |
+| <a id="rule-se-02"></a>SE-02 | **Each deployment has its own CSP, host-only cookie, CSRF and explicit origin policy**, using the C# browser-session adapter adopted by [P2-003](../../decisions/phase-2-specification-decisions.md#rule-p2-003). |
+| <a id="rule-se-03"></a>SE-03 | **Secrets are never compiled into the browser bundle.** |
+| <a id="rule-se-04"></a>SE-04 | **Browser JavaScript receives no access/refresh credential.** Opaque Secure/HttpOnly cookie sessions are held and revoked server-side; cookie-authenticated writes require explicit antiforgery and origin checks. |
+| <a id="rule-se-05"></a>SE-05 | **Cross-origin policy is an explicit allowlist.** Broad production CORS is prohibited. |
+| <a id="rule-se-06"></a>SE-06 | **Uploads undergo content-type, size and format validation with a quarantine area**, and are never executed server-side ([EX-06](../03-cloud-services-and-sync.md#rule-ex-06) in the cloud requirements). |
+| <a id="rule-se-07"></a>SE-07 | **Access tokens must be redacted from realtime transport logs.** |
 | <a id="rule-se-08"></a>SE-08 | **Public share links do not exist in V1** (`§18` of the cloud requirements). Links are authenticated and private ([I-279](../01-normative-glossary-and-invariants.md#rule-i-279)). |
-| SE-09 | **A web session is more conservative than a desktop session**, and an unknown browser does not immediately hold high-risk approval capability ([OF-07](arcchat-mobile-and-web.md#rule-of-07), [OF-08](arcchat-mobile-and-web.md#rule-of-08) in the companion requirements). |
+| <a id="rule-se-09"></a>SE-09 | **A web session is more conservative than a desktop session**, and an unknown browser does not immediately hold high-risk approval capability ([OF-07](arcchat-mobile-and-web.md#rule-of-07), [OF-08](arcchat-mobile-and-web.md#rule-of-08) in the companion requirements). |
 
 ---
 
