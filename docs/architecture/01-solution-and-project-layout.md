@@ -62,7 +62,68 @@ The [wire registry](contracts/04-protobuf-wire-registry.md) defines every servic
 | <a id="rule-lb-04"></a>LB-04 | **`NOTICE` files are generated from the dependency graph**, per boundary, as part of packaging. |
 | <a id="rule-lb-05"></a>LB-05 | **SBOM generation runs per deliverable**, and its output is a release artifact. |
 | <a id="rule-lb-06"></a>LB-06 | **On discovery of a conflicting contribution or dependency in the mobile boundary, the issue is registered and returned for decision.** Silently adding an exception, changing the licence, or removing the mobile distribution target is prohibited (**[D-004](../decisions/phase-1-foundation-decisions.md#rule-d-004)**). |
-| <a id="rule-lb-07"></a>LB-07 | **Reference-repository reuse requires the nine-field provenance record before any copy, translation, port or structural reuse** (**[D-013](../decisions/phase-1-foundation-decisions.md#rule-d-013)**), recorded in [`../assurance/reference-coverage-and-provenance.md`](../assurance/reference-coverage-and-provenance.md). |
+| <a id="rule-lb-07"></a>LB-07 | **Reference-repository reuse requires the ten-field provenance record before any copy, translation, port or structural reuse** (**[D-013](../decisions/phase-1-foundation-decisions.md#rule-d-013)**), recorded in [`../assurance/reference-coverage-and-provenance.md`](../assurance/reference-coverage-and-provenance.md). |
+
+### 4.1 Project declaration and verification profile
+
+[WP-00.02](../planning/work-packages/00-specification-naming-and-rights-freeze.md#rule-wp-00.02)
+makes the existing two-boundary decision readable by each build system. The current
+repository-wide assignment is closed: **Contracts and Mobile use `Apache` with
+`Apache-2.0`; DesktopPlatform, ArcNotes, ArcScope, ArcSlate, Cloud, AI and Web use
+`AGPL` with `AGPL-3.0-only`**. This covers original tooling, tests and internal
+schemas as well as application/library projects. Public/internal contract access
+restrictions remain separate from licensing. Third-party components retain their
+own licences and are never relicensed by these declarations.
+
+Each implementation owner maintains `eng/policy/licence-boundary.json`, schema
+version 1, with `repository`, `spdxLicense`, `licenceBoundary` and `projects`.
+Each project row names its repository-relative `path` and `kind` (`msbuild`,
+`npm`, `gradle` or `cmake`). The inventory includes tooling, test, root/workspace
+and IDE projects. It matches the actual tracked project/build manifests and
+non-ignored new manifests during local validation; a missing, extra or duplicate
+row fails. It is an inventory of existing projects, not permission to create
+future scaffolds. Build declarations use these representations:
+
+| Build system | Project declaration | Build verification |
+|---|---|---|
+| MSBuild, including native/JavaScript IDE projects | `PackageLicenseExpression` and `LicenceBoundary` properties | Inspect evaluated properties and references for supported build configurations; reject absent or changed values before build/pack. IDE-only adapters additionally receive source-inventory checks. |
+| npm root/workspace packages | `license` and `arcforges.licenceBoundary` in each `package.json` | The existing build/policy command verifies every workspace manifest and its dependency graph. |
+| Gradle root/subprojects and independent tooling/test builds | `spdxLicense` and `licenceBoundary` project extra properties | Verify evaluated project properties and project dependencies; published POM licences agree with the declared SPDX identifier. |
+| CMake project | `ARCFORGES_SPDX_LICENSE` and `ARCFORGES_LICENCE_BOUNDARY` project variables and owned target properties | The configured owned target graph carries and verifies the declaration; imported third-party targets retain their own attribution. |
+
+Declarations may be inherited through an owned build convention, but verification
+uses their effective values and cannot accept a missing declaration merely because
+the repository root has a LICENSE file. Reports retain the discovered project set,
+source commit/dirty state, evaluated declarations, reference edges and findings.
+The enumerated repository assignment is checked independently of editable project
+metadata. Every Apache project rejects an AGPL project/package in its direct or
+transitive closure; an unknown first-party package owner also fails review.
+Generated bindings follow their existing generator and input provenance.
+
+DesktopPlatform owns the standalone family inventory/reference verifier. It may
+read explicitly supplied implementation roots for this audit, without building,
+importing or executing adjacent product source. Each owner also verifies its own
+declarations in its existing native build/CI toolchain. Apache owners do not copy
+or import the AGPL verifier. This source-policy audit creates no product build
+dependency and requires no future policy package. Distribution and the expanded
+repository-policy suite remain with [WP-02](../planning/work-packages/02-build-governance-and-analyzer-policy.md#rule-wp-02)
+and [WP-05](../planning/work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05).
+
+The current reference-direction result is not a complete third-party licence
+audit. Existing candidate pipelines and their licence/NOTICE checks still apply.
+Before producing a new Android candidate, the Mobile owner must record and verify
+the actual resolved direct/transitive distributable dependency closure, its
+licence evidence and retained notices under [F-023](../assurance/open-gates-register.md#rule-f-023).
+Unknown or conflicting entries fail; a project declaration cannot excuse them.
+Evidence is bound to the inspected source, dependency locks and artifact, and does
+not preapprove future dependencies or claim store/commercial readiness.
+
+Review covers missing/overridden declarations, an unregistered project, inconsistent
+boundary/SPDX pairs, an Apache-to-AGPL edge (including a transitive one), unknown
+first-party ownership and references escaping the selected repository. Preserve
+existing package/application identities, signing continuity and immutable producer
+publication order. The declaration work changes no licence grant, architecture
+layering rule or allowed reuse disposition.
 
 ---
 

@@ -115,7 +115,7 @@
 
 **What must be fully done.** Every project declares its SPDX identifier and its licence boundary as a build property. The Apache-2.0 set includes all Contracts public/internal schemas/tools/generators/fixtures/SDK/CLI under [P2-010](../../decisions/phase-2-specification-decisions.md#rule-p2-010) and public protocol specifications, wire schemas, DTOs, public clients, contract-level validators, the public SDK, mobile-only libraries and Android companion. Everything else is AGPL-3.0-only. The boundary is expressed as data that a policy test can read.
 
-**Testing requirements.** A check that every project declares a boundary; a check that the declared boundary matches the enumerated set; a reference-direction check that no AGPL project is referenced from an Apache project.
+**Testing requirements.** A check that every project declares a boundary; a check that the declared boundary matches the enumerated set; a reference-direction check that no AGPL project is referenced from an Apache project. Apply the [project declaration and verification profile](../../architecture/01-solution-and-project-layout.md#41-project-declaration-and-verification-profile) across .NET, npm, Gradle and native/IDE projects, including current candidate licence gates.
 
 **Completion gate.** Every project declares a boundary, and the reference-direction check passes. **This is a precondition for `03`.**
 
