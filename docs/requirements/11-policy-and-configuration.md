@@ -417,6 +417,6 @@ PolicyApplicationTiming · PolicyStalenessMode
 |---|---|
 | [Cloud Data Model](../architecture/data-model/01-cloud-data-model.md) | Defines immutable policy snapshots, activation and financial binding |
 | [Commerce, Entitlement and AI Credits Requirements](04-commerce-entitlement-and-credits.md) | Owns pricing and metering semantics distinct from configuration |
-| [WP-44 — Dynamic Policy and Configuration Control Plane](../planning/work-packages/44-dynamic-policy-and-configuration.md) | Implements and verifies policy publication and resolution |
+| [WP-44 — Dynamic Policy and Configuration Control Plane](../planning/work-packages/44-dynamic-policy-and-configuration.md#rule-wp-44) | Implements and verifies policy publication and resolution |
 | **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** | The control plane distributes data, never code — required by the Native AOT desktop main path |
 | **[D-020](../decisions/phase-1-foundation-decisions.md#rule-d-020)** | Pricing is versioned commercial policy, not remote product policy |

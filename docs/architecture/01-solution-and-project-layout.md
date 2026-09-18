@@ -7,7 +7,6 @@ Authority: P2-012. The [concrete project/package tree and host contracts](27-pla
 
 DesktopPlatform, Contracts, ArcNotes, ArcScope, ArcSlate, Cloud, AI, Web and Mobile build independently. ArcChat is a reusable assistant feature family inside DesktopPlatform, not another desktop process/repository. Each product owns its domain/application/infrastructure/UI integration. Shared code never implies a shared database or live singleton across applications.
 
-<a id="root-and-logical-path-convention"></a>
 ### Root and logical path convention
 
 Use the exact repository/project trees in architecture 27. Remaining logical suffixes in older rule examples identify their single owning repository; they do not authorize adjacent-source references. Current work-package project sections select those concrete trees. Contracts produces generated clients; ArcForges.Cloud.Client implements reusable session/transport/recovery behavior above them. No product CloudClient implementation is duplicated into Contracts.

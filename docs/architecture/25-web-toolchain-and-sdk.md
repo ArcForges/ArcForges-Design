@@ -49,12 +49,10 @@ Development may start an exact released Cloud container or explicit built candid
 
 Contracts handwritten public proto → pinned protoc/C#/protobuf-es generation → released descriptors and compatibility fixtures → Apache generated API client → Web/Android consumers. [Wire registry](contracts/04-protobuf-wire-registry.md) fixes every numbered field, method, exact value, error and previous/current case. Business proto is not generated from C# handlers/OpenAPI.
 
-<a id="31-exact-wire-values"></a>
 ### 3.1 Exact wire values
 
 Use protobuf bigint for all 64-bit counters and integer microcredits; JSON exceptions use canonical decimal strings. Money uses exact Decimal string, media uses signed ticks/reduced rational, GUID uses canonical 16 bytes, scalar null/absent is explicit. These preserve the complete content-origin/Notes/Scope profile oracles. No number coercion or metadata-only OpenAPI transformer may change actual bytes. [Independent vectors](contracts/04-protobuf-wire-registry.md#2-exact-values-canonical-identity-and-evolution) are required in both directions.
 
-<a id="32-realtime-and-streaming"></a>
 ### 3.2 Realtime and streaming
 
 React uses createGrpcWebTransport with generated unary EventService.Poll plus authoritative reads. All 17 hints are optional and never commit state. CF output uses generated gRPC-Web server streams and durable unary recovery; Unicode offsets, supersession, truncation and final-message reference follow the shared CF contract. No SignalR package or mandatory fetch-streaming path remains.
