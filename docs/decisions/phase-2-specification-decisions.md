@@ -432,4 +432,6 @@ The current desktop products remain ArcNotes, ArcScope and ArcSlate. `companion`
 
 Reserve identifiers only for the already required Scope/Slate native projects; Notes and assistant history gain no native archive or default association. Preserve desktop bundle/assembly/package identities. The accepted WP30 development-prerelease Android rename remains at its owner; no production migration or signing continuity is claimed by WP00.00. WP02/WP05 consume this policy for continuing family enforcement; WP33/WP36/WP53 implement and test native associations. Existing package consumers and wire tags are unchanged.
 
+Inventory refinement on 2026-09-18: the actual Git scan includes the tracked-but-ignored DesktopPlatform traceability seed, missed by an ignore-aware text search. Its 50 matching values are reference repository names plus exact commits, all under `sourceBaselines`. The naming policy admits that one unchanged, hash-bound provenance artifact alongside normal provenance records; no source or artifact directory exemption is introduced.
+
 Verification: schema/identity checks, positive and adversarial scanner tests, nine actual Git inventories, Contracts CI and post-merge rescan. Documentation review and a clean naming scan do not establish product, installer, AOT, device, payment or commercial readiness.
