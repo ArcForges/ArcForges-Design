@@ -197,7 +197,7 @@ Reference repositories are also the source of migration evidence — what existi
 | Result | **No row proposes reuse.** Four of six accessible references are GPL-family, proprietary or AGPL. The per-file determination that would be required before any copy, translation or port has no pending subject |
 | Owner | Licensing and Provenance Owner |
 | State | **`CLOSED` 2026-09-05** for AionUi, AFFiNE, SiYuan, Serial-Studio, ArcVideo and ArcVideoFoundation — **the complete amended reference map** (**[D-012](../decisions/phase-1-foundation-decisions.md#rule-d-012)** as amended, [P2-005](../decisions/phase-2-specification-decisions.md#rule-p2-005)). No unresolved determination remains |
-| Related gate | **[F-023](open-gates-register.md#rule-f-023)** — mobile provenance and full dependency closure before the first mobile artifact ([AE-04](#rule-ae-04)). **Still open**; it requires a dependency-closure audit, not a reference audit |
+| Related gate | **[F-023](open-gates-register.md#rule-f-023)** — mobile provenance and full dependency closure before the first mobile artifact ([AE-04](#rule-ae-04)). Requires its own dependency-closure audit; see the [current candidate evidence and status](open-gates-register.md#21-current-android-candidate-licence-evidence). A reference audit cannot satisfy it |
 
 | # | Rule |
 |---|---|

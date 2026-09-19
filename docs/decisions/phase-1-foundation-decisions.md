@@ -363,7 +363,7 @@ Each carries a responsible role, a concrete trigger, the earliest consumer, requ
 
 **Where** [D-004](#rule-d-004): "The current decision assumes that ArcChat Mobile and its required interoperability code are ArcForges-owned and contain no GPL-family code. Verify provenance and the complete dependency closure before distribution."
 
-The audit is **not** complete and must not be described as complete.
+At the foundation baseline the audit was **not** complete. Current candidate evidence and its exact acceptance status are maintained in the [gate register](../assurance/open-gates-register.md#21-current-android-candidate-licence-evidence); the historical deferral is not a claim about later implementation evidence.
 
 | Field | Value |
 |---|---|

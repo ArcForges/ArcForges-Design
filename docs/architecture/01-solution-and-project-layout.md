@@ -155,8 +155,9 @@ restoring an excluded dependency.
 Mobile owns this remediation and its Apache-licensed checks. Development-only
 JVM preview tools and build-host JDKs are identified separately from Android
 packaging inputs. This decision records the issue and chosen repair;
-[F-023](../assurance/open-gates-register.md#rule-f-023) stays open until the actual
-dependency, notice and artifact evidence passes. It changes
+[F-023](../assurance/open-gates-register.md#rule-f-023) is satisfied only by actual
+dependency, notice and artifact evidence. Its [current candidate record](../assurance/open-gates-register.md#21-current-android-candidate-licence-evidence)
+separates completed checks from pending or later gates. It changes
 no licence grant, store-distribution target or future product acceptance gate.
 
 ---
