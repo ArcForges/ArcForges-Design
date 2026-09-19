@@ -129,6 +129,8 @@ Apply the [current-repository implementation profile](../../assurance/reference-
 
 Include [material introduced only during packaging](../../assurance/reference-coverage-and-provenance.md#32-material-introduced-only-during-packaging). A clean tracked-file inventory cannot waive provenance for copied documentation/frontend resources in an actual distributable; verify the owning candidate and every affected companion archive.
 
+For the existing native packages, apply the [native closure profile](../../assurance/reference-coverage-and-provenance.md#33-existing-native-distribution-closure) and the separately scoped [Windows compiler-runtime record](../../assurance/reference-coverage-and-provenance.md#34-existing-windows-compiler-runtime-redistributable). Retain source-reuse boundaries, exact corresponding source and full applicable notices; a vendor binary without public source must not be assigned a fictitious Git identity.
+
 **Testing requirements.** A check that every file identified as externally originated has a provenance record; a check that no record is missing a required field.
 
 **Completion gate.** The process exists, the template is in use for at least one real record, and the checks run in CI.
