@@ -189,6 +189,12 @@ pass. Record the conflict and resolution under §4.3; keep prior immutable relea
 identities and dated evidence. Neither this repair nor an earlier successful
 device test asserts that the replacement has already passed.
 
+The replacement execution evidence was completed on 2026-09-19 and is recorded
+in the [current Android receipt](open-gates-register.md#21-current-android-candidate-licence-evidence)
+and [WP00.03 completion evidence](wp00-03-implementation-evidence.md). That dated
+execution result closes the inspected candidate; the admission and repeat-verification
+obligations above continue to apply to future changes.
+
 ### 3.3 Existing native distribution closure
 
 The [admitted native packages](../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry) retain their existing compiled-dependency, ABI, isolated-consumer and publication gates. Their artifact provenance profile also binds each included upstream component to its exact source commit, archive integrity, selected source/configuration, applicable file-level licence, build recipe and notices. A port manifest's licence label or `NOASSERTION` alone is not a compatibility decision. Record the actual selected licence and scope, including permissive alternatives and excluded subtrees; a build tool whose code is absent from the output is not represented as a runtime dependency. Compilation does not make the compiler's own implementation part of the application.

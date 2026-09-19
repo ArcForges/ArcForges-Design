@@ -135,6 +135,8 @@ For the existing native packages, apply the [native closure profile](../../assur
 
 **Completion gate.** The process exists, the template is in use for at least one real record, and the checks run in CI.
 
+**Recorded execution.** The [2026-09-19 implementation receipt](../../assurance/wp00-03-implementation-evidence.md) binds all nine owners to their reviewed merged revisions, published artifacts and required runtime evidence. It closes this substep for those revisions, without starting its siblings or satisfying later commercial gates.
+
 <a id="rule-wp-00.04"></a>
 
 ### WP-00.04 — Register the completed reference matrices as versioned planning inputs
