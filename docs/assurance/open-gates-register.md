@@ -44,18 +44,47 @@ A gate is never closed by registering a finding about it, and never closed by a 
 | Gate | Subject | Owner | Trigger | Blocks | Scheduled in | State |
 |---|---|---|---|---|---|---|
 | <a id="rule-f-013"></a>**F-013** | Reference-repository licences and file-level SPDX evidence (**[D-013](../decisions/phase-1-foundation-decisions.md#rule-d-013)**) | Licensing and Provenance Owner | The first step of a product's Reference Coverage Matrix and licence audit — **fired and satisfied 2026-09-05** | That product's implementation planning; [P-02](release-gates.md#rule-p-02) in the release gates | Design-stage evidence: the five matrices in [`reference-coverage/`](reference-coverage/README.md), 145 item-level rows with a licence position each | **`CLOSED` 2026-09-05** for every registered reference under the amended **[D-012](../decisions/phase-1-foundation-decisions.md#rule-d-012)** map |
-| <a id="rule-f-023"></a>**F-023** | ArcChat Mobile provenance and complete direct and transitive dependency closure (**[D-004](../decisions/phase-1-foundation-decisions.md#rule-d-004)**) | Release Engineering Owner **and** Licensing and Provenance Owner; Product Owner approves | Before the first store, test-flight, store-listing or sideloadable mobile artifact is produced | Any mobile artifact; [L-50](release-gates.md#rule-l-50) | [WP-06.07](../planning/work-packages/06-aot-jit-and-wasm-publish-proof.md#rule-wp-06.07) before first artifact; [WP-30.00](../planning/work-packages/30-mobile-shared-architecture.md#rule-wp-30.00) for changes; [WP-32.02](../planning/work-packages/32-mobile-release-and-store-gates.md#rule-wp-32.02) before final artifact | **`REOPENED` 2026-09-19** — [packaged-resource finding](reference-coverage-and-provenance.md#321-current-android-packaged-resources); replacement candidate, device and publication evidence required |
+| <a id="rule-f-023"></a>**F-023** | ArcChat Mobile provenance and complete direct and transitive dependency closure (**[D-004](../decisions/phase-1-foundation-decisions.md#rule-d-004)**) | Release Engineering Owner **and** Licensing and Provenance Owner; Product Owner approves | Before the first store, test-flight, store-listing or sideloadable mobile artifact is produced | Any mobile artifact; [L-50](release-gates.md#rule-l-50) | [WP-06.07](../planning/work-packages/06-aot-jit-and-wasm-publish-proof.md#rule-wp-06.07) before first artifact; [WP-30.00](../planning/work-packages/30-mobile-shared-architecture.md#rule-wp-30.00) for changes; [WP-32.02](../planning/work-packages/32-mobile-release-and-store-gates.md#rule-wp-32.02) before final artifact | **`CLOSED` 2026-09-19** for the inspected `android-0.1.0-ci.14.1` replacement — [current resource, device and publication evidence](#21-current-android-candidate-licence-evidence) |
 | <a id="rule-f-026"></a>**F-026** | Generated protobuf/gRPC client pin, descriptor compatibility, no reflection-created RPC entry points, zero trim/AOT diagnostics under [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) | Architecture Owner | First use of the generated client in an AOT artifact | That artifact; [R-03](release-gates.md#rule-r-03) | [WP-03.02](../planning/work-packages/03-contract-foundation-and-licence-split.md#rule-wp-03.02), [WP-06.02](../planning/work-packages/06-aot-jit-and-wasm-publish-proof.md#rule-wp-06.02) | `OPEN` |
 
 ### 2.1 Current Android candidate licence evidence
 
-**Current qualification (2026-09-19).** The evidence below remains valid for its
+**Replacement closure (2026-09-19).** [Mobile PR4](https://github.com/ArcForges/Mobile/pull/4)
+implements the resource closure; [Mobile PR5](https://github.com/ArcForges/Mobile/pull/5)
+repairs API 36 installation-identity verification. The final revision is
+`5031d837d2e7bf9dd1b681c837c942d2b74dc65e`, merged after full review and all applicable PR checks.
+[Main CI and public upgrade verification](https://github.com/ArcForges/Mobile/actions/runs/35444269638) passed;
+the actual [published replacement](https://github.com/ArcForges/Mobile/releases/tag/android-0.1.0-ci.14.1) was independently downloaded and verified.
+The [WP00.03 receipt](wp00-03-implementation-evidence.md) records the nine-owner scope.
+
+| Evidence | Verified replacement scope |
+|---|---|
+| Source process | 110 inventoried files, 19 reused files, 18 retained immutable records, closed licence decisions, complete notices and conflict handling; 49 Python policy and release tests passed. |
+| Dependency and resource closure | Contracts `1.0.0-ci.54.1` from `aa2f187a4adae8ee4f79cee192c0d382cb7fec7f`; 195 reviewed components, 122 input archives, four native ABI payloads and 13 complete retained notice texts. All 454 members across release APK/AAB, debug APK and test APK are source/profile-bound. |
+| Conflict removal | No original or renamed excluded suffix-data bytes, unused JUnit artwork or source-only annotation resources remain. Explicit `NO_COOKIES` rejects unsolicited cookie persistence. Full JUnit EPL terms remain instrumentation-only; no EPL implementation is ported into owned Apache source. |
+| Real candidate checks | Windows/Linux full builds and archive gates passed. Both API 26/36 jobs passed all five instrumentation tests, eight real SDK protocol calls, native UI recreation and a real minified-release Cloud button call per image. |
+| Protected publication | All eleven public assets match their release digests. Actual APK/AAB signatures retain certificate `7a8b3b1402e77c3ec78e7a0b9f99d5358adc321d0e8d2a319c838d1cda181e9c`; all original candidate payload members and evidence companions are unchanged. |
+| Actual public upgrades | Each API job anonymously downloaded and verified the published APK, upgraded version code 901 to 1401, preserved package UID/first-install time and completed one real Cloud button call. Screenshots and device receipts were reviewed. |
+
+The public [resource receipt](https://github.com/ArcForges/Mobile/releases/download/android-0.1.0-ci.14.1/resource-provenance.json),
+[source receipt](https://github.com/ArcForges/Mobile/releases/download/android-0.1.0-ci.14.1/source-provenance.json),
+[licence closure](https://github.com/ArcForges/Mobile/releases/download/android-0.1.0-ci.14.1/licence-closure.json),
+[full notices](https://github.com/ArcForges/Mobile/releases/download/android-0.1.0-ci.14.1/THIRD_PARTY_NOTICES.txt),
+[signing-preservation receipt](https://github.com/ArcForges/Mobile/releases/download/android-0.1.0-ci.14.1/signed-resource-provenance.json)
+and [release manifest](https://github.com/ArcForges/Mobile/releases/download/android-0.1.0-ci.14.1/release.json) bind these checks to the inspected bytes.
+This closes [F-023](#rule-f-023) for this candidate only. Future dependency/resource changes must
+repeat the gates; store approval, physical devices and full companion behavior
+retain their separate requirements.
+
+#### Historical ci.9.1 evidence and reopening
+
+**Historical qualification (2026-09-19).** The evidence below remains valid for its
 stated checks, but its earlier full-closure conclusion is superseded by the
 [WP00.03 packaged-resource finding](reference-coverage-and-provenance.md#321-current-android-packaged-resources).
 The actual published APK/AAB contains MPL-2.0 Public Suffix List data that the
-earlier POM/notice audit did not classify separately. The gate is reopened for
-that resource closure. Mobile owns the accepted removal and verification;
-replacement publication and both device APIs must pass before reclosing it.
+earlier POM/notice audit did not classify separately. The gate was reopened for
+that resource closure. Mobile owned the accepted removal and verification;
+replacement publication and both device APIs were required before reclosing it.
 
 The [WP-00.02](../planning/work-packages/00-specification-naming-and-rights-freeze.md#rule-wp-00.02)
 audit implements the [declaration and Android closure profile](../architecture/01-solution-and-project-layout.md#41-project-declaration-and-verification-profile).
@@ -89,7 +118,7 @@ and [release manifest](https://github.com/ArcForges/Mobile/releases/download/and
 bind the source, locks, dependencies, candidate hashes, published bytes and persistent certificate.
 
 This was the earlier licence-gate closure for the inspected sideloadable candidate;
-the qualification above reopens its resource claim. It does not approve future dependencies,
+the historical qualification above reopened its resource claim. It does not approve future dependencies,
 Google Play submission, physical devices or full companion-product behavior.
 Changed source/dependency/native/packaging closure must pass the same checks before
 another artifact; a store submission still requires its applicable store gates.
@@ -195,12 +224,12 @@ Distinct from a gate. A gate has a known obligation awaiting evidence; an **unre
 
 | Class | Count | Note |
 |---|---|---|
-| Deferred gates carried from Phase 1 | 3 | **[F-013](#rule-f-013) closed**; [F-023](#rule-f-023) reopened for Android packaged resources; [F-026](#rule-f-026) remains open |
+| Deferred gates carried from Phase 1 | 3 | **[F-013](#rule-f-013) closed**; [F-023](#rule-f-023) closed for the inspected replacement; [F-026](#rule-f-026) remains open |
 | Gates created by the verification record | 11 active + 1 retired + 1 merged | [VG-09](#rule-vg-09) retired by [P2-010](../decisions/phase-2-specification-decisions.md#rule-p2-010); active entries require implementation evidence |
 | Gates created by Phase 2 | 26 | Includes citation closure, packaged OS isolation, React/TypeScript Web and Android push delivery |
 | **Closed by design-stage evidence** | **5** | [F-013](#rule-f-013), [PG-01](#rule-pg-01), [PG-02](#rule-pg-02), [PG-06](#rule-pg-06), [PG-21](#rule-pg-21) |
-| **Closed for a current implementation candidate** | **0** | [F-023](#rule-f-023) is reopened for the observed Android packaged-resource gap; previous dated checks remain evidence of their narrower scope. |
-| **Open implementation-stage gates** | **35** | Current, conditional or recurring; [VG-09](#rule-vg-09) is retired under [P2-010](../decisions/phase-2-specification-decisions.md#rule-p2-010) and one additional entry is merged. Five design closures remain historical design evidence, not runtime pass. |
+| **Closed for a current implementation candidate** | **1** | [F-023](#rule-f-023) is closed for the inspected replacement after source/resource, device, persistent-signature, public-byte and upgrade verification. |
+| **Open implementation-stage gates** | **34** | Current, conditional or recurring; [VG-09](#rule-vg-09) is retired under [P2-010](../decisions/phase-2-specification-decisions.md#rule-p2-010) and one additional entry is merged. Five design closures remain historical design evidence, not runtime pass. |
 | Unresolved determinations | **0** | [OC-01](#rule-oc-01) closed by user decision 2026-09-05 ([P2-005](../decisions/phase-2-specification-decisions.md#rule-p2-005)) |
 
 | # | Rule |
@@ -224,4 +253,4 @@ Distinct from a gate. A gate has a known obligation awaiting evidence; an **unre
 
 ## [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) evidence boundary
 
-The runtime, protocol and package gate scopes above are amended by [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009). Historical official-verification records retain their dated claims; they cannot override the current selected runtime. Cloud AOT and Android Kotlin gates are triggered; [VG-09](#rule-vg-09) is retired by the accepted Android-only scope. All 35 current implementation obligations remain open or triggered; writing this design closes none of them. Workers AI/R2 real integration and restore use [PG-10](#rule-pg-10), [PG-13](#rule-pg-13), [PG-18](#rule-pg-18) and the existing full-release gates, with the exact artifacts and failure evidence in the [CF contract](../architecture/contracts/05-cloudflare-integration.md).
+The runtime, protocol and package gate scopes above are amended by [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009). Historical official-verification records retain their dated claims; they cannot override the current selected runtime. Cloud AOT and Android Kotlin gates are triggered; [VG-09](#rule-vg-09) is retired by the accepted Android-only scope. Of the 35 implementation obligations, 34 remain open or triggered. [F-023](#rule-f-023) is closed only for the inspected replacement on its actual implementation evidence; writing this design closes none of them. Workers AI/R2 real integration and restore use [PG-10](#rule-pg-10), [PG-13](#rule-pg-13), [PG-18](#rule-pg-18) and the existing full-release gates, with the exact artifacts and failure evidence in the [CF contract](../architecture/contracts/05-cloudflare-integration.md).

@@ -199,7 +199,7 @@ Every gate in [`open-gates-register.md`](open-gates-register.md) is scheduled.
 | Gate | Scheduled in | Blocking |
 |---|---|---|
 | **[F-013](open-gates-register.md#rule-f-013)** | **Closed by design evidence 2026-09-05** — the five matrices. Registered in `00.04`; drift maintenance in `15.07`, `18.08`, `33.07`, `36.07` | [P-02](release-gates.md#rule-p-02) per product |
-| **[F-023](open-gates-register.md#rule-f-023)** | `06.07` before first artifact; `30.00` on change; `32.02` final closure | [L-50](release-gates.md#rule-l-50), any mobile artifact |
+| **[F-023](open-gates-register.md#rule-f-023)** | [Current candidate closed on execution evidence](open-gates-register.md#21-current-android-candidate-licence-evidence); `06.07` before first artifact, `30.00` on change and `32.02` final closure remain the recurring owners | [L-50](release-gates.md#rule-l-50), any mobile artifact |
 | **[F-026](open-gates-register.md#rule-f-026)** | `03.02`, `06.02` | [R-03](release-gates.md#rule-r-03) on consuming targets |
 | **[VG-01](open-gates-register.md#rule-vg-01)** | `43.04` | First EU-available release |
 | **[VG-02](open-gates-register.md#rule-vg-02)** | `41.07` | Finalising the extension work package |
@@ -208,7 +208,7 @@ Every gate in [`open-gates-register.md`](open-gates-register.md) is scheduled.
 | **[VG-06](open-gates-register.md#rule-vg-06)** | `06.04`, `21.00`, `50.04` | First AOT foundation and each changed/promoted closure |
 | **[VG-07](open-gates-register.md#rule-vg-07)** | `06.07`, `30.02`, `32.01` | First Android candidate and final release |
 | **[VG-08](open-gates-register.md#rule-vg-08)** | `02.05`, recurring | Every framework major upgrade |
-| **[VG-09](open-gates-register.md#rule-vg-09)** | Deferred with the iOS build | iOS release |
+| **[VG-09](open-gates-register.md#rule-vg-09)** | Retired under [P2-010](../decisions/phase-2-specification-decisions.md#rule-p2-010) | iOS is outside the accepted scope |
 | **[VG-10](open-gates-register.md#rule-vg-10)**, **[VG-11](open-gates-register.md#rule-vg-11)** | `42.10` | Commercial go-live |
 | **[VG-12](open-gates-register.md#rule-vg-12)** | `42.10`, conditional | Regional enablement |
 | **[VG-13](open-gates-register.md#rule-vg-13)** | `32.04` | First store submission |
@@ -235,9 +235,12 @@ Every gate in [`open-gates-register.md`](open-gates-register.md) is scheduled.
 | **[PG-21](open-gates-register.md#rule-pg-21)** | Current corpus closed by [repair verification](design-repair-verification.md); continuing drift check in 00.01 | Every later normative edit re-runs the complete citation check |
 | **[PG-22](open-gates-register.md#rule-pg-22)** | 11.09, 13.13, 18.04, 37.01, 41.00 | Packaged OS containment and extension permissions on each supported RID |
 | **[PG-23](open-gates-register.md#rule-pg-23)** | 06.05, 22.08, 23.05, 24.06, 47, 48, 49, 50.06 | Production React/TS, generated SDK, browser sessions, visual quality, toolchains and release/rollback |
+| **[PG-24](open-gates-register.md#rule-pg-24)** | `45.09`, `32` | Real Android push, physical receipt and recovery evidence |
+| **[PG-25](open-gates-register.md#rule-pg-25)** | `21.08`, `46`, `50` | Self-host account deployment, realm/key/auth isolation and independent restore |
+| **[PG-26](open-gates-register.md#rule-pg-26)** | `21.06`, `40.01`, `50.04` | Approved launch capacity, actual load/footprint/cost and headroom evidence |
 | **[VG-05](open-gates-register.md#rule-vg-05)** | **Merged into [F-026](open-gates-register.md#rule-f-026)** and recorded there; no separate schedule | — |
 
-**Coverage: 39 register entries** — 3 deferred Phase 1, 13 verification entries and 23 Phase 2 entries. Five are closed on design evidence; 33 remain open for implementation, with one retired iOS entry; one verification entry is merged into its deferred gate. There are zero unresolved owner determinations. Every entry has an owner, trigger and implementation or evidence location in the [gate register](open-gates-register.md).
+**Coverage: 42 register entries** — 3 deferred Phase 1, 13 verification entries and 26 Phase 2 entries. Five are closed on design evidence; one is closed for the inspected implementation candidate; 34 remain open for implementation. One iOS entry is retired and one verification entry is merged into its deferred gate. There are zero unresolved owner determinations. Every entry has an owner, trigger and implementation or evidence location in the [gate register](open-gates-register.md).
 
 > **This count is checked, not asserted.** [SV-05](testing-and-verification-strategy.md#rule-sv-05) of the verification strategy requires every gate to be scheduled in a named package; before 2026-09-08 this table stopped at [PG-10](open-gates-register.md#rule-pg-10) while the register held [PG-21](open-gates-register.md#rule-pg-21), so ten gates — including every gate created by the [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006) reconciliation and the two review passes — were unscheduled here while the coverage line claimed completeness.
 
@@ -247,11 +250,11 @@ Every gate in [`open-gates-register.md`](open-gates-register.md) is scheduled.
 
 | # | Statement |
 |---|---|
-| <a id="rule-nc-01"></a>NC-01 | **No gate is closed by this document.** Five gates are closed by the design-stage artifacts they name; this matrix records that, it does not effect it. |
+| <a id="rule-nc-01"></a>NC-01 | **This matrix records gate status; it does not supply closure evidence.** Five gates are closed by their design-stage artifacts; [F-023](open-gates-register.md#rule-f-023) is closed for the inspected candidate by the linked implementation receipts. |
 | <a id="rule-nc-02"></a>NC-02 | **Design traceability is complete; implementation enforcement is not.** [PG-06](open-gates-register.md#rule-pg-06) is closed on the mapping; [PG-11](open-gates-register.md#rule-pg-11) requires implemented, passing checks and is open. |
 | <a id="rule-nc-03"></a>NC-03 | **All five Reference Coverage Matrices exist**, with 145 item-level rows, and **no unresolved determination remains** — [OC-01](open-gates-register.md#rule-oc-01) was closed by user decision ([P2-005](../decisions/phase-2-specification-decisions.md#rule-p2-005)). |
 | <a id="rule-nc-04"></a>NC-04 | **The item-level code inventory exists** — 166 of 166 projects, measured. Its dispositions are **not executed**; that is [WP-01](../planning/work-packages/01-repository-reconciliation-and-target-layout.md#rule-wp-01)'s work. |
-| <a id="rule-nc-05"></a>NC-05 | **No test in this matrix has been run.** This is a specification repository; the test families and gates are defined here and executed in the implementation repository. |
+| <a id="rule-nc-05"></a>NC-05 | **This matrix does not execute tests.** Test families and gates are defined here; dated implementation receipts, including the [WP00.03 evidence](wp00-03-implementation-evidence.md), record what actually ran in the implementation owners. |
 | <a id="rule-nc-06"></a>NC-06 | **A resolving citation is not a designed mechanism.** This matrix records that a requirement has an architecture home; whether that home specifies a mechanism rather than restating the requirement is checked by [`end-to-end-workflow-verification.md`](end-to-end-workflow-verification.md), with the complete fourteen-group repair recorded in [the closure review](phase-2-design-closure-review.md). |
 | <a id="rule-nc-07"></a>NC-07 | **Row counts prove nothing about completeness.** Every architecture document being realised in a work package says every document is claimed by someone, not that every subject is designed. |
 | <a id="rule-nc-08"></a>NC-08 | **This matrix was recomputed on 2026-09-06 against the revised requirements**, not carried forward. [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006)'s downstream reconciliation statement is explicit that prior completion claims do not demonstrate coverage of the amended scope, so every count here is a fresh derivation. |
@@ -283,7 +286,7 @@ Every gate in [`open-gates-register.md`](open-gates-register.md) is scheduled.
 | Consumer visual and interaction quality | [Web requirements](../requirements/products/arcforges-web.md); [WP-47.07](../planning/work-packages/47-static-public-site.md#rule-wp-47.07) | [WP-48](../planning/work-packages/48-account-portal.md#rule-wp-48), [WP-49](../planning/work-packages/49-arcchat-web-companion.md#rule-wp-49) approved responsive/theme/state/locale visuals, keyboard/assistive and performance results |
 | Complete commercial Web release | [Deployment architecture](../architecture/22-deployment-and-release-execution.md); [WP-50.06](../planning/work-packages/50-full-platform-production-release.md#rule-wp-50.06) | [PG-23](open-gates-register.md#rule-pg-23); production artifacts and real Cloud workflows, not fixtures |
 
-Current register reconciliation under [P2-011](../decisions/phase-2-specification-decisions.md#rule-p2-011):40 entries =5 design-closed +33 implementation-open/triggered +1 retired iOS entry +1 merged entry. Neither the Web gate nor the Android push gate is closed by document review.
+Current register reconciliation (2026-09-19), including [P2-013](../decisions/phase-2-specification-decisions.md#rule-p2-013) and the [WP00.03 execution receipt](wp00-03-implementation-evidence.md): 42 entries = 5 design-closed + 1 candidate-specific implementation closure + 34 implementation-open/triggered + 1 retired iOS entry + 1 merged entry. Neither the Web gate nor the Android push gate is closed by document review.
 
 
 ## [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) amendment coverage
