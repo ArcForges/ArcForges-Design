@@ -1652,6 +1652,16 @@
       "reason": "Exact preserved baseline term-review occurrence; the historical remediation shorthand is not a current rule home.",
       "reviewOwner": "ArcForges WP00.01 implementation reviewer",
       "reviewed": "2026-09-18"
+    },
+    {
+      "path": "docs/assurance/reference-coverage-and-provenance.md",
+      "lineSha256": "2e42ea26f99ae322f1574b1af577a5efb4123d0993bf49db5a45656ee137f566",
+      "token": "SHA-256",
+      "occurrences": 1,
+      "kind": "standard-name",
+      "reason": "Cryptographic digest algorithm naming the provenance target-byte check, not an ArcForges rule identifier.",
+      "reviewOwner": "Licensing and Provenance Owner",
+      "reviewed": "2026-09-19"
     }
   ]
 }

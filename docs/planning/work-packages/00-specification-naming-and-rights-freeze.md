@@ -125,6 +125,8 @@
 
 **What must be fully done.** The provenance record template implementing the ten fields of **[D-013](../../decisions/phase-1-foundation-decisions.md#rule-d-013)** exists, with a storage location, a naming convention and a review step. The licence decision table is encoded as policy data. The process states who may approve a disposition, and what happens on discovery of a conflicting contribution — registered and returned for decision, never silently excepted ([BR-07](#rule-br-07)).
 
+Apply the [current-repository implementation profile](../../assurance/reference-coverage-and-provenance.md#31-current-repository-implementation-profile) and [review responsibilities](../../assurance/reference-coverage-and-provenance.md#43-review-responsibility-and-conflicts) in all nine owners. The initial audit reconciles existing wrappers, generated material, patches and retained notices with explicit source evidence; the completed reference matrices' absence of proposed reuse does not exempt those files. Preserve historical records and existing artifact notice/closure gates.
+
 **Testing requirements.** A check that every file identified as externally originated has a provenance record; a check that no record is missing a required field.
 
 **Completion gate.** The process exists, the template is in use for at least one real record, and the checks run in CI.
