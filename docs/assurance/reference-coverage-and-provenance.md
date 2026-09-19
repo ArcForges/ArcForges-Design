@@ -137,6 +137,58 @@ For these outputs, a record may bind an exact owning project/package and artifac
 
 This profile is required by the observed Contracts documentation archives: the JDK documentation producer copies executable resources, while the Dokka producer copies its own frontend and third-party resources. The current owning implementation audit must inspect their actual bytes and resolve any boundary conflict under §4.3 before publishing a replacement candidate. Replacement preserves complete API documentation, existing public package identities and immutable prior versions; it does not add a licence exception or treat a successful code compilation as a resource-licence check. The same trigger applies when another owner's existing packaging introduces such material. This implements [PR-05](#rule-pr-05), [AE-05](#rule-ae-05) and [AE-06](#rule-ae-06) within [WP-00.03](../planning/work-packages/00-specification-naming-and-rights-freeze.md#rule-wp-00.03), without importing a future producer or expanding product scope.
 
+#### 3.2.1 Current Android packaged resources
+
+The Mobile audit on 2026-09-19 inspected the actual `android-0.1.0-ci.9.1`
+APK/AAB members from commit `69155c7c3c2eda592270eeb354677c0537af55ec`.
+The Apache-2.0 POM for `com.squareup.okhttp3:okhttp-android:5.4.0` does not
+cover the separately licensed Public Suffix List data copied into
+`assets/PublicSuffixDatabase.list` (under `base/` in the AAB). Its SHA256 is
+`c75ab827afd7ffff59a51b14729c25dbfc3b45237eb40ccf02bec7b7d44304a4`.
+The [pinned upstream notice](https://github.com/lysine-dev/okhttp/blob/61423f472da24e0ccc42b6a2c0863fb27932fea5/okhttp/src/jvmTest/resources/okhttp3/internal/publicsuffix/NOTICE)
+and [input header](https://github.com/lysine-dev/okhttp/blob/61423f472da24e0ccc42b6a2c0863fb27932fea5/okhttp/src/jvmTest/resources/okhttp3/internal/publicsuffix/public_suffix_list.dat)
+identify MPL-2.0. Reapplying the pinned generator's rule sorting and binary
+encoding to that input reproduces the shipped data exactly. The source-reuse
+table does not admit this copyleft data into the Apache boundary. A package's
+permissive root declaration cannot override it.
+
+Mobile owns removal of this unused asset from every Android candidate variant,
+with exact member checks that also detect renamed copies. Keep the existing
+OkHttp/Connect transport, TLS checks, deadlines, application IDs and signing
+lineage. The current client uses `CookieJar.NO_COOKIES`, disables redirects and
+does not call `HttpUrl.topPrivateDomain`; upstream loads this data only for
+cookie-domain or explicit public-suffix lookup. Make the no-cookie transport
+choice explicit, verify that unsolicited `Set-Cookie` cannot create a later
+`Cookie` request, and run the published client and minified release against real
+Cloud on both required API images. Do not replace the database with an empty or
+inaccurate list. Native bearer sessions and system-browser authentication remain
+as specified in [Mobile transport](../architecture/11-mobile-architecture.md#3-runtime-libraries-and-lifecycle-baseline)
+and [client journeys](../architecture/contracts/07-client-journeys-and-ports.md).
+Any later feature needing suffix lookup or a cookie jar requires a compatible,
+reviewed input before enabling that use; removing an unused resource removes no
+accepted authentication or companion behavior.
+
+The same candidate audit covers dependency-copied schemas, metadata, assets,
+AndroidX graphics and compiled resources, including debug and instrumentation
+companions. Bind fixed bytes to their reviewed package/source members; bind
+transformed resources to the pinned generator, source inputs and a reproduction
+oracle. Source-bound receipts record the closed archive membership and hashes;
+outer ZIP hashes or dependency POMs alone do not establish resource provenance.
+Preserve all required full legal texts. The existing separately licensed JUnit
+test dependency remains instrumentation-only under the recorded
+[Android closure](open-gates-register.md#21-current-android-candidate-licence-evidence):
+retain its EPL terms and exact source availability, prohibit it in application
+runtime scopes, and do not treat that integration as permission to port EPL
+implementation into authored Apache source. Remove unused legacy test-runner
+images instead of misclassifying them as Apache assets. Compiled dependency
+closure and resource/source reuse remain separately verified obligations.
+
+This finding reopens the affected [F-023](open-gates-register.md#rule-f-023)
+packaging claim until the replacement candidate, runtime checks and publication
+pass. Record the conflict and resolution under §4.3; keep prior immutable release
+identities and dated evidence. Neither this repair nor an earlier successful
+device test asserts that the replacement has already passed.
+
 ### 3.3 Existing native distribution closure
 
 The [admitted native packages](../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry) retain their existing compiled-dependency, ABI, isolated-consumer and publication gates. Their artifact provenance profile also binds each included upstream component to its exact source commit, archive integrity, selected source/configuration, applicable file-level licence, build recipe and notices. A port manifest's licence label or `NOASSERTION` alone is not a compatibility decision. Record the actual selected licence and scope, including permissive alternatives and excluded subtrees; a build tool whose code is absent from the output is not represented as a runtime dependency. Compilation does not make the compiler's own implementation part of the application.
