@@ -127,6 +127,8 @@
 
 Apply the [current-repository implementation profile](../../assurance/reference-coverage-and-provenance.md#31-current-repository-implementation-profile) and [review responsibilities](../../assurance/reference-coverage-and-provenance.md#43-review-responsibility-and-conflicts) in all nine owners. The initial audit reconciles existing wrappers, generated material, patches and retained notices with explicit source evidence; the completed reference matrices' absence of proposed reuse does not exempt those files. Preserve historical records and existing artifact notice/closure gates.
 
+Include [material introduced only during packaging](../../assurance/reference-coverage-and-provenance.md#32-material-introduced-only-during-packaging). A clean tracked-file inventory cannot waive provenance for copied documentation/frontend resources in an actual distributable; verify the owning candidate and every affected companion archive.
+
 **Testing requirements.** A check that every file identified as externally originated has a provenance record; a check that no record is missing a required field.
 
 **Completion gate.** The process exists, the template is in use for at least one real record, and the checks run in CI.
