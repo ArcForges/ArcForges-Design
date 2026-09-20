@@ -105,6 +105,8 @@
 
 **Completion gate.** The assignment is complete and dependency-consistent. **This is the highest-priority reconciliation item** (`§3` of the reconciliation document). Use the [current contract access profile](../../assurance/wp01-01-contract-access-policy.md); both sets are Apache-2.0, and retired monorepo DTOs do not become current source.
 
+**Recorded execution (2026-09-20).** [WP01.01 evidence](../../assurance/wp01-01-implementation-evidence.md) records complete current type assignment, compiled dependency rejection, reviewed CI-green merge, isolated Linux/Windows consumers and verified public NuGet/npm/Maven candidate `1.0.0-ci.60.1`. This closes only WP01.01.
+
 <a id="rule-wp-01.02"></a>
 
 ### WP-01.02 — Shared-foundation boundary review

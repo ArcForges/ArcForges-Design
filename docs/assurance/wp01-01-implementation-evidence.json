@@ -1,0 +1,391 @@
+{
+  "substep": "WP01.01",
+  "verifiedOn": "2026-09-20",
+  "result": "passed",
+  "scope": "Current contract type assignment and dependency consistency; production schemas remain WP03.",
+  "authority": {
+    "commit": "94b3ec43389d8ec6f8cd3ad277daf0eac5e9259e",
+    "path": "docs/assurance/wp01-01-contract-access-policy.md",
+    "sha256": "80a93508b987e5ae4cb107a72e1cb6cc5bebfb126a287b56099dd94fb0c15884"
+  },
+  "implementation": {
+    "repository": "Contracts",
+    "pullRequest": "https://github.com/ArcForges/Contracts/pull/25",
+    "reviewedHead": "6ee078e6551818f966e9570ef26eb182edd3c83c",
+    "merge": "ef9e0aa9d90d47ff8355dc38b037fd5860b4476c",
+    "reviewedDiffSha256": "d318d9b13d830deab4029a39a1aac30293696d9d02518d2996fc246990b3b6cb",
+    "reviewFindings": []
+  },
+  "checks": {
+    "localAccessTests": 10,
+    "localToolingTests": 85,
+    "prCi": 35542065514,
+    "prSecurity": 35542065498,
+    "mainCi": 35542448605,
+    "mainSecurity": 35542448598,
+    "mainJobs": [
+      {
+        "name": "Consumer (windows-latest)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Publish Maven Central",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Consumer (ubuntu-latest)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Verify",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Publish NuGet",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Publish npm",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Build candidate",
+        "status": "completed",
+        "conclusion": "success"
+      }
+    ]
+  },
+  "assignment": {
+    "substep": "WP01.01",
+    "result": "passed",
+    "commit": "ef9e0aa9d90d47ff8355dc38b037fd5860b4476c",
+    "dirty": false,
+    "schemaFiles": 1,
+    "contractTypes": 3,
+    "distributionFiles": 18,
+    "declaredSourceTypes": 34,
+    "packages": 7,
+    "publicToInternalReclassifications": [],
+    "internalToPublicReclassifications": [],
+    "policySha256": "82d1ff075cb907cc87a4c4ef44fbfc4f36efefc3a30a446a3cb4c0e18a3407cc",
+    "design": {
+      "commit": "94b3ec43389d8ec6f8cd3ad277daf0eac5e9259e",
+      "path": "docs/assurance/wp01-01-contract-access-policy.md",
+      "sha256": "80a93508b987e5ae4cb107a72e1cb6cc5bebfb126a287b56099dd94fb0c15884"
+    },
+    "limitations": "Current contract access and compiled dependency proof; full production schemas remain WP03, provider/device operation is separate evidence."
+  },
+  "candidate": {
+    "version": "1.0.0-ci.60.1",
+    "manifestSha256": "b79fc213994cdd4ef261d08d41407c32027252d0df334804f488d703a0bbb6dc",
+    "files": [
+      {
+        "name": "ArcForges.Contracts.PublicApi.1.0.0-ci.60.1.nupkg",
+        "kind": "nuget",
+        "id": "ArcForges.Contracts.PublicApi",
+        "sha256": "61d875fd542d30d28c110e05ecd634cd2ff5089b66bd10fc015b4f9fd87448b5",
+        "size": 28608
+      },
+      {
+        "name": "arcforges-proto-1.0.0-ci.60.1.tgz",
+        "kind": "npm",
+        "id": "@arcforges/proto",
+        "sha256": "5ed96484c689479be352aa9130af3a6a7259179f4b7b01c18bdfb94ebec84bf4",
+        "size": 8517
+      },
+      {
+        "name": "arcforges-api-client-1.0.0-ci.60.1.tgz",
+        "kind": "npm",
+        "id": "@arcforges/api-client",
+        "sha256": "2bf68dbe596c57333d82d628475a3e1c9b4df9eb14fc6b61193daa3eb78a29b8",
+        "size": 7654
+      },
+      {
+        "name": "arcforges-maven-1.0.0-ci.60.1.zip",
+        "kind": "maven",
+        "id": "io.github.arcforges",
+        "sha256": "29a099b00b9931d52caba536bb99d766a6ed9c161a205b71569312df4b85190e",
+        "size": 1346546
+      },
+      {
+        "name": "contracts.binpb",
+        "kind": "descriptor",
+        "id": "arcforges.hello.v1",
+        "sha256": "7219a8d730978bcc3b7b8769e159d06711dff3f2b07715a6d487589f8c09b99c",
+        "size": 338
+      }
+    ]
+  },
+  "publicRegistryVerification": {
+    "result": "passed",
+    "commit": "ef9e0aa9d90d47ff8355dc38b037fd5860b4476c",
+    "version": "1.0.0-ci.60.1",
+    "packages": [
+      {
+        "id": "ArcForges.Contracts.PublicApi",
+        "members": 13,
+        "result": "all-original-members-identical",
+        "registrySignatureExcluded": true,
+        "sha256": "36355c1dc3b17c4bd362715b053315184ae2a74cb74ca4d86c1031f66a7ffc86"
+      },
+      {
+        "id": "@arcforges/proto",
+        "result": "identical-tarball",
+        "sha256": "5ed96484c689479be352aa9130af3a6a7259179f4b7b01c18bdfb94ebec84bf4"
+      },
+      {
+        "id": "@arcforges/api-client",
+        "result": "identical-tarball",
+        "sha256": "2bf68dbe596c57333d82d628475a3e1c9b4df9eb14fc6b61193daa3eb78a29b8"
+      },
+      {
+        "id": "io.github.arcforges",
+        "result": "all-candidate-files-identical",
+        "files": 20
+      }
+    ]
+  },
+  "isolatedMainConsumers": [
+    {
+      "version": "1.0.0-ci.60.1",
+      "commit": "ef9e0aa9d90d47ff8355dc38b037fd5860b4476c",
+      "rid": "linux-x64",
+      "inputs": [
+        {
+          "name": "ArcForges.Contracts.PublicApi.1.0.0-ci.60.1.nupkg",
+          "kind": "nuget",
+          "id": "ArcForges.Contracts.PublicApi",
+          "sha256": "61d875fd542d30d28c110e05ecd634cd2ff5089b66bd10fc015b4f9fd87448b5",
+          "size": 28608
+        },
+        {
+          "name": "arcforges-proto-1.0.0-ci.60.1.tgz",
+          "kind": "npm",
+          "id": "@arcforges/proto",
+          "sha256": "5ed96484c689479be352aa9130af3a6a7259179f4b7b01c18bdfb94ebec84bf4",
+          "size": 8517
+        },
+        {
+          "name": "arcforges-api-client-1.0.0-ci.60.1.tgz",
+          "kind": "npm",
+          "id": "@arcforges/api-client",
+          "sha256": "2bf68dbe596c57333d82d628475a3e1c9b4df9eb14fc6b61193daa3eb78a29b8",
+          "size": 7654
+        },
+        {
+          "name": "arcforges-maven-1.0.0-ci.60.1.zip",
+          "kind": "maven",
+          "id": "io.github.arcforges",
+          "sha256": "29a099b00b9931d52caba536bb99d766a6ed9c161a205b71569312df4b85190e",
+          "size": 1346546
+        },
+        {
+          "name": "contracts.binpb",
+          "kind": "descriptor",
+          "id": "arcforges.hello.v1",
+          "sha256": "7219a8d730978bcc3b7b8769e159d06711dff3f2b07715a6d487589f8c09b99c",
+          "size": 338
+        }
+      ],
+      "isolatedCaches": true,
+      "sourceReferences": false,
+      "csharpGrpc": "passed",
+      "typescriptGrpcWeb": "passed",
+      "kotlinGrpc": "passed",
+      "kotlinConnectGrpcWeb": "passed",
+      "kotlinConnectGrpc": "passed",
+      "nativeAotGrpc": "passed",
+      "browser": "not-run",
+      "androidDevice": "not-run",
+      "registryRestore": "not-run"
+    },
+    {
+      "version": "1.0.0-ci.60.1",
+      "commit": "ef9e0aa9d90d47ff8355dc38b037fd5860b4476c",
+      "rid": "win-x64",
+      "inputs": [
+        {
+          "name": "ArcForges.Contracts.PublicApi.1.0.0-ci.60.1.nupkg",
+          "kind": "nuget",
+          "id": "ArcForges.Contracts.PublicApi",
+          "sha256": "61d875fd542d30d28c110e05ecd634cd2ff5089b66bd10fc015b4f9fd87448b5",
+          "size": 28608
+        },
+        {
+          "name": "arcforges-proto-1.0.0-ci.60.1.tgz",
+          "kind": "npm",
+          "id": "@arcforges/proto",
+          "sha256": "5ed96484c689479be352aa9130af3a6a7259179f4b7b01c18bdfb94ebec84bf4",
+          "size": 8517
+        },
+        {
+          "name": "arcforges-api-client-1.0.0-ci.60.1.tgz",
+          "kind": "npm",
+          "id": "@arcforges/api-client",
+          "sha256": "2bf68dbe596c57333d82d628475a3e1c9b4df9eb14fc6b61193daa3eb78a29b8",
+          "size": 7654
+        },
+        {
+          "name": "arcforges-maven-1.0.0-ci.60.1.zip",
+          "kind": "maven",
+          "id": "io.github.arcforges",
+          "sha256": "29a099b00b9931d52caba536bb99d766a6ed9c161a205b71569312df4b85190e",
+          "size": 1346546
+        },
+        {
+          "name": "contracts.binpb",
+          "kind": "descriptor",
+          "id": "arcforges.hello.v1",
+          "sha256": "7219a8d730978bcc3b7b8769e159d06711dff3f2b07715a6d487589f8c09b99c",
+          "size": 338
+        }
+      ],
+      "isolatedCaches": true,
+      "sourceReferences": false,
+      "csharpGrpc": "passed",
+      "typescriptGrpcWeb": "passed",
+      "kotlinGrpc": "passed",
+      "kotlinConnectGrpcWeb": "passed",
+      "kotlinConnectGrpc": "passed",
+      "nativeAotGrpc": "passed",
+      "browser": "not-run",
+      "androidDevice": "not-run",
+      "registryRestore": "not-run"
+    }
+  ],
+  "freshFamilyReconciliation": {
+    "reportSha256": "4b5c000bd64c2390153a7c7448bf47285dea4adfcc55b1cde9f6aac282210b1d",
+    "report": {
+      "substep": "WP01.00",
+      "checkedAt": "2026-09-20T22:42:19.615658+00:00",
+      "mode": "fresh-family",
+      "repositories": [
+        {
+          "repository": "DesktopPlatform",
+          "commit": "b7744f3ffdeae161d8a3e34243aad3b8e8b47978",
+          "clean": true,
+          "snapshotCommit": "08c46ab9fe955c60c28e7106df519eb55bd8e3ba",
+          "snapshotIsHead": false,
+          "projects": 35,
+          "result": "passed"
+        },
+        {
+          "repository": "Contracts",
+          "commit": "ef9e0aa9d90d47ff8355dc38b037fd5860b4476c",
+          "clean": true,
+          "snapshotCommit": "d716045854e2e401a1a536ba2ee5c62ad1c4e8ab",
+          "snapshotIsHead": false,
+          "projects": 15,
+          "result": "passed"
+        },
+        {
+          "repository": "ArcNotes",
+          "commit": "e40423a1b14ce8341de35748cc2a093c7c9b77a7",
+          "clean": true,
+          "snapshotCommit": "e40423a1b14ce8341de35748cc2a093c7c9b77a7",
+          "snapshotIsHead": true,
+          "projects": 4,
+          "result": "passed"
+        },
+        {
+          "repository": "ArcScope",
+          "commit": "d247dcff36fd1123a70e5e59967a9b2294a2eeac",
+          "clean": true,
+          "snapshotCommit": "d247dcff36fd1123a70e5e59967a9b2294a2eeac",
+          "snapshotIsHead": true,
+          "projects": 4,
+          "result": "passed"
+        },
+        {
+          "repository": "ArcSlate",
+          "commit": "b0d255f54fb560a534cc493d5645ca4bc7b4bd0e",
+          "clean": true,
+          "snapshotCommit": "b0d255f54fb560a534cc493d5645ca4bc7b4bd0e",
+          "snapshotIsHead": true,
+          "projects": 4,
+          "result": "passed"
+        },
+        {
+          "repository": "Cloud",
+          "commit": "4571ec8692235485712d4c4e3ef4886c162f2574",
+          "clean": true,
+          "snapshotCommit": "4571ec8692235485712d4c4e3ef4886c162f2574",
+          "snapshotIsHead": true,
+          "projects": 5,
+          "result": "passed"
+        },
+        {
+          "repository": "AI",
+          "commit": "944edfe88718fc5f72a42ea0bed1c495307c22df",
+          "clean": true,
+          "snapshotCommit": "944edfe88718fc5f72a42ea0bed1c495307c22df",
+          "snapshotIsHead": true,
+          "projects": 1,
+          "result": "passed"
+        },
+        {
+          "repository": "Web",
+          "commit": "84939ca1fde0f0653d2cb4d8b8f9e5dd1057abb5",
+          "clean": true,
+          "snapshotCommit": "84939ca1fde0f0653d2cb4d8b8f9e5dd1057abb5",
+          "snapshotIsHead": true,
+          "projects": 4,
+          "result": "passed"
+        },
+        {
+          "repository": "Mobile",
+          "commit": "5031d837d2e7bf9dd1b681c837c942d2b74dc65e",
+          "clean": true,
+          "snapshotCommit": "5031d837d2e7bf9dd1b681c837c942d2b74dc65e",
+          "snapshotIsHead": true,
+          "projects": 3,
+          "result": "passed"
+        }
+      ],
+      "limitations": "Inventory/policy only; candidate identities refer to the bound WP00 receipt, not a new provider/device/product run.",
+      "result": "passed",
+      "counts": {
+        "owners": 9,
+        "projects": 75,
+        "historical": 166,
+        "directories": 359,
+        "native": 7
+      },
+      "historicalCommit": "ede43db5b2237104dd0008b99398090c54a2cf94",
+      "designCommit": "33bcddd9508ec60c0a2b0d7b53901ee7f50d0a70"
+    }
+  },
+  "mavenRecovery": {
+    "firstAttempt": "cancelled after user-requested timeout; retained PUBLISHING deployment receipt",
+    "successfulAttempt": 2,
+    "receipt": {
+      "version": "1.0.0-ci.60.1",
+      "commit": "ef9e0aa9d90d47ff8355dc38b037fd5860b4476c",
+      "candidateSha256": "29a099b00b9931d52caba536bb99d766a6ed9c161a205b71569312df4b85190e",
+      "deploymentId": "69143abb-d8f5-40d3-b9fe-bc030561be28",
+      "phase": "public-bytes-verified"
+    },
+    "futureRetryThresholdMinutes": 10
+  },
+  "retainedBranches": {
+    "Design": [
+      "codex/wp01-01-contract-access-policy",
+      "codex/wp01-01-completion-evidence"
+    ],
+    "Contracts": [
+      "codex/wp01-01-contract-access"
+    ]
+  },
+  "unavailableExternalPrerequisites": [],
+  "limits": [
+    "No new browser or Android device run; this step changes policy and tooling, not runtime schemas.",
+    "Hello compatibility probes do not prove production product behavior.",
+    "Current all-public assignment does not waive the future internal/operator/local/AI boundaries."
+  ]
+}
