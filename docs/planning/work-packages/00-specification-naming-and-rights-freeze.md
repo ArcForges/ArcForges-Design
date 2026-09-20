@@ -76,7 +76,7 @@
 | `Directory.Build.props` | Gains the boundary property that every project must set |
 | `docs/` in the implementation repository | Reduced to implementation-facing notes; design authority stays in this repository (**[D-017](../../decisions/phase-1-foundation-decisions.md#rule-d-017)**) |
 | `tests/RepositoryPolicyTests/` | Created (implemented in `05`; the policy data lands here) |
-| `eng/policy/reference-baselines.json` | Created: the five matrix registrations with their bound reference commits |
+| `DesktopPlatform/eng/policy/reference-baselines.json` | Five matrix registrations, exact Design identities and reference-source identities under the [registration profile](../../assurance/reference-baseline-registration.md) |
 | Provenance record store | Created: the location and naming convention for the ten-field records |
 
 **Major types introduced:** none — this package produces policy data, declarations and process artifacts, not runtime types.
@@ -143,11 +143,11 @@ For the existing native packages, apply the [native closure profile](../../assur
 
 > **Design-stage prerequisite already complete.** All five Reference Coverage Matrices were produced during the Stage 2 repair, before the plan was derived, as **[D-012](../../decisions/phase-1-foundation-decisions.md#rule-d-012)** and **[D-019](../../decisions/phase-1-foundation-decisions.md#rule-d-019)** require. They are in [`../../assurance/reference-coverage/`](../../assurance/reference-coverage/README.md): ArcChat/AionUi (30 rows), ArcNotes/AFFiNE+SiYuan (41), ArcScope/Serial-Studio (31), ArcSlate/ArcVideo+ArcVideoFoundation (31), distribution/StartArcForges (12). **[PG-01](../../assurance/open-gates-register.md#rule-pg-01) and [F-013](../../assurance/open-gates-register.md#rule-f-013) are closed** for the five accessible references. **This sub-step does not create a matrix.**
 
-**What must be fully done.** Each matrix is registered as a **versioned planning input** with its bound commit, so downstream packages consume a fixed baseline rather than re-reading a moving reference. The drift-check procedure is defined: what is compared against the recorded commit, what counts as newly introduced material, and who assesses it.
+**What must be fully done.** Each matrix is registered as a **versioned planning input** under the [registration profile](../../assurance/reference-baseline-registration.md), with its exact Design document identity and bound source identity, so downstream packages consume a fixed baseline rather than re-reading a moving reference. The drift-check procedure is defined: what is compared against the recorded commit, what counts as newly introduced material, and who assesses it.
 
-**Testing requirements.** A registration check that every matrix names its reference commit and that each commit is resolvable; a dry run of the drift check against one reference.
+**Testing requirements.** A registration check that all five matrices match their pinned Design documents, all six Git reference commits resolve in the registered repositories, and the non-Git packaged reference matches its observed-version and permitted-evidence registration; a real dry run of the drift check against one reference, plus rejection tests for changed or incomplete registrations.
 
-**Completion gate.** All five matrices are registered with resolvable bound commits, and the drift-check procedure is defined and exercised once. **No unresolved determination is carried forward** — the one that existed, [OC-01](../../assurance/open-gates-register.md#rule-oc-01), was closed by user decision on 2026-09-05 ([P2-005](../../decisions/phase-2-specification-decisions.md#rule-p2-005)), which amended **[D-012](../../decisions/phase-1-foundation-decisions.md#rule-d-012)**'s ArcSlate reference line to ArcVideo and ArcVideoFoundation ([`../../assurance/open-gates-register.md`](../../assurance/open-gates-register.md) `§6`).
+**Completion gate.** All five matrices are registered with verified bound identities (six resolvable Git commits and the non-Git packaged observation), and the drift-check procedure is defined and exercised once. **No unresolved determination is carried forward** — the one that existed, [OC-01](../../assurance/open-gates-register.md#rule-oc-01), was closed by user decision on 2026-09-05 ([P2-005](../../decisions/phase-2-specification-decisions.md#rule-p2-005)), which amended **[D-012](../../decisions/phase-1-foundation-decisions.md#rule-d-012)**'s ArcSlate reference line to ArcVideo and ArcVideoFoundation ([`../../assurance/open-gates-register.md`](../../assurance/open-gates-register.md) `§6`).
 
 <a id="rule-wp-00.05"></a>
 
@@ -195,7 +195,7 @@ For the existing native packages, apply the [native closure profile](../../assur
 | Glossary and invariant policy data, consistency-checked | [WP-00.01](#rule-wp-00.01) |
 | Licence boundary declaration report, every project covered | [WP-00.02](#rule-wp-00.02) |
 | Provenance record set with a completeness check | [WP-00.03](#rule-wp-00.03) |
-| The ArcChat Reference Coverage Matrix, complete | [WP-00.04](#rule-wp-00.04) |
+| Five versioned matrix registrations, source-resolution evidence and one exercised drift report | [WP-00.04](#rule-wp-00.04) |
 | A review record for every corrected stale claim | [WP-00.05](#rule-wp-00.05) |
 | Owned artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/OS/device/provider, scenario, result, limitations and real-versus-fixture status; inapplicable fields explicitly marked | [WP-00.90](#rule-wp-00.90) |
 
@@ -213,7 +213,7 @@ For the existing native packages, apply the [native closure profile](../../assur
 2. The glossary and invariant catalogue exist as machine-readable policy data, consistent with the glossary document, with an enforcement mechanism assigned to every invariant.
 3. Every project declares an SPDX identifier and a licence boundary, and the reference-direction check passes.
 4. The provenance process exists, is encoded as policy data, and is in use for at least one real record.
-5. All five completed Reference Coverage Matrices are registered as versioned planning inputs with resolvable bound commits, and the drift-check procedure is defined and exercised once. [PG-01](../../assurance/open-gates-register.md#rule-pg-01) and [F-013](../../assurance/open-gates-register.md#rule-f-013) were closed by the design-stage evidence itself, not by this package.
+5. All five completed Reference Coverage Matrices are registered as versioned planning inputs under the [registration profile](../../assurance/reference-baseline-registration.md), with six resolvable Git commits and the non-Git packaged observation, and the drift-check procedure is defined and exercised once. [PG-01](../../assurance/open-gates-register.md#rule-pg-01) and [F-013](../../assurance/open-gates-register.md#rule-f-013) were closed by the design-stage evidence itself, not by this package.
 6. No stale runtime, licence or scope claim remains in the implementation repository.
 
 ---
