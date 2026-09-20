@@ -149,6 +149,8 @@ For the existing native packages, apply the [native closure profile](../../assur
 
 **Completion gate.** All five matrices are registered with verified bound identities (six resolvable Git commits and the non-Git packaged observation), and the drift-check procedure is defined and exercised once. **No unresolved determination is carried forward** — the one that existed, [OC-01](../../assurance/open-gates-register.md#rule-oc-01), was closed by user decision on 2026-09-05 ([P2-005](../../decisions/phase-2-specification-decisions.md#rule-p2-005)), which amended **[D-012](../../decisions/phase-1-foundation-decisions.md#rule-d-012)**'s ArcSlate reference line to ArcVideo and ArcVideoFoundation ([`../../assurance/open-gates-register.md`](../../assurance/open-gates-register.md) `§6`).
 
+**Recorded execution.** [Implementation and post-merge evidence](../../assurance/wp00-04-implementation-evidence.md) records the reviewed changes, immutable source identities, exercised drift procedure and verified automatic publications.
+
 <a id="rule-wp-00.05"></a>
 
 ### WP-00.05 — Stale-claim reconciliation
