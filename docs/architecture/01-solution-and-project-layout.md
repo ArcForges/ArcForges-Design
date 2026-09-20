@@ -310,7 +310,7 @@ Assert portable managed projects have no esproj reference; win.slnx contains exa
 
 ## 12. Package and native distribution registry
 
-Publish the following package identities. Managed package versions and their compatible ABI range are independent from product versions. A producer candidate has version 1.0.0-ci.<run>.<attempt>, stable starts 1.0.0; never overwrite an existing package/version. Producer release manifests list SHA256 and exact dependencies.
+Publish the following package identities. Managed package versions and their compatible ABI range are independent from product versions. A producer candidate has version 1.0.0-ci.<run>.<attempt>, stable starts 1.0.0; never overwrite an existing package/version. Producer release manifests list SHA256 and exact dependencies. Contracts Maven development distribution uses the explicit [SNAPSHOT channel exception](contracts-publication-channels.md); formal tag releases remain immutable.
 
 | Package family | Dependencies / public C# capability | Native RID assets |
 |---|---|---|
