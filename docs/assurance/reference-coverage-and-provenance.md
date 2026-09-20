@@ -69,6 +69,8 @@ Nothing in this document authorises reuse. It defines the process by which reuse
 | <a id="rule-cm-06"></a>CM-06 | **The matrix is a living document per product** and is updated whenever a disposition changes. A changed disposition records who changed it and why. |
 | <a id="rule-cm-07"></a>CM-07 | **The matrix is complete before the product's implementation-planning work package is closed** — this is the completion gate that **[D-012](../decisions/phase-1-foundation-decisions.md#rule-d-012)** requires. |
 
+The [versioned reference registration profile](reference-baseline-registration.md) binds these completed matrices to immutable Design and source identities, with a separate non-Git packaged observation. It defines registration verification and later maintenance without creating a second matrix audit.
+
 ### 2.2 Per-product matrix status
 
 **All matrices are complete.** They were produced as design-stage evidence before the implementation plan was derived, as **[D-019](../decisions/phase-1-foundation-decisions.md#rule-d-019)** and **[D-012](../decisions/phase-1-foundation-decisions.md#rule-d-012)** require. This document defines the method; [`reference-coverage/`](reference-coverage/README.md) holds the evidence.

@@ -29,7 +29,7 @@ Each matrix was produced by reading the named reference repository at a recorded
 
 ## Source identity
 
-Every matrix is bound to a specific commit. Re-reading a reference at a different commit produces a different matrix; the drift check in each product's implementation package compares against these recorded commits.
+Each matrix is bound to its versioned Design document and the source identity below. The six Git references have recorded commits; StartArcForges instead has observed artifact versions under its authorized directory/notice boundary. The [registration profile](../reference-baseline-registration.md) defines the machine-readable binding and later drift checks; a different source revision requires a reviewed delta, not a second baseline audit.
 
 | Reference | Origin | Commit | Commit date | Root licence as found |
 |---|---|---|---|---|
