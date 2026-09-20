@@ -162,6 +162,8 @@ For the existing native packages, apply the [native closure profile](../../assur
 
 **Completion gate.** Implementation policy data matches current formal decisions; no new scope or architecture decision is delegated to downstream packages.
 
+**Recorded execution.** [Implementation and post-merge evidence](../../assurance/wp00-05-implementation-evidence.md) binds the current nine-owner policy, reviewed claim corrections, actual source/build checks, public packages and real Cloud/AI deployment results. Later product gates retain their assigned owners.
+
 <a id="rule-wp-00.90"></a>
 ### WP-00.90 — Verify the owned artifact and real integration
 
