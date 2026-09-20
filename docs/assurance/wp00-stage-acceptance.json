@@ -1,0 +1,327 @@
+{
+  "schemaVersion": 1,
+  "substep": "WP00.90",
+  "verifiedOn": "2026-09-20",
+  "designBaseline": "f8ef5561f5ff55dbecec1b01bc186427273520ef",
+  "stage": "authority-rights-runtime-and-source-inventory",
+  "result": "passed",
+  "evidenceScope": "Fresh source/instruction audits and retained exact candidate evidence; no new global runtime, device or commercial acceptance.",
+  "owners": [
+    {
+      "owner": "DesktopPlatform",
+      "commit": "08c46ab9fe955c60c28e7106df519eb55bd8e3ba",
+      "clean": true,
+      "files": {
+        "AGENTS.md": "5050a0ad697d2632f5cab2ddd32a2e8774c962681bb3df1dbae15614f4d9e240",
+        "eng/policy/licence-boundary.json": "dfa79dead6d1bca23118c93c5e98379273ee9987c5e0d3fed64b11cd4c2348dc",
+        "eng/provenance/files.json": "4384c97b004a378989af4373ed8ec6c5a7a534dd85795f7aefbbe7a585756969",
+        "LICENSE": "8486a10c4393cee1c25392769ddd3b2d6c242d6ec7928e1414efff7dfb2f07ef",
+        "eng/policy/design-source.json": "b4acb79feb469e8a5b24602b6f308820e3e49b5ad47cc992dc55b9a83573c2d6",
+        "eng/policy/glossary-terms.json": "5d73c6906a4af19090bcdf653e0364d2b3d4883425a14a0731db8111e78ac3a0",
+        "eng/policy/invariants.json": "8b1584f1d198b60e649b00e8536ddc4456fce8f4c12f8c70c5882098baa16578",
+        "eng/policy/reference-baselines.json": "c63e200e9e8cb90de3b562ef5776e1f63c4cc5111626a88c4bdf55d9483d2f8d",
+        "eng/provenance/reference-inputs.json": "4d06afa72af2deeff860288b96644a63b3b1ce814ab2bf8cb7992cd3b005edd5",
+        "eng/policy/runtime-ownership.json": "66813be2a63b4f76c9f2fb0effd7661fd76e3a71b9bac07ea9177b88e56fc6ea"
+      },
+      "licence": "AGPL-3.0-only",
+      "runtime": "dotnet-nativeaot-libraries-and-native-cabi",
+      "projects": 35,
+      "inventoriedFiles": 362,
+      "reusedFiles": 10,
+      "retainedProvenanceRecords": 115,
+      "candidate": {
+        "version": "1.0.0-ci.15.1",
+        "manifestSha256": "24bd7bdf42b94678ff2689742b3f296bdaeb78cf5652f76d5154c7075fbaf20d",
+        "sourceCommit": "08c46ab9fe955c60c28e7106df519eb55bd8e3ba"
+      },
+      "mainCi": "https://github.com/ArcForges/DesktopPlatform/actions/runs/35536843264"
+    },
+    {
+      "owner": "Contracts",
+      "commit": "d716045854e2e401a1a536ba2ee5c62ad1c4e8ab",
+      "clean": true,
+      "files": {
+        "AGENTS.md": "2cf80bdb2ca765dedda4e65a94b386a15f74f964b29eb54fea726a037190746a",
+        "eng/policy/licence-boundary.json": "d5ba827577db823c8676a2b4f83924e582168b7d671847c9a71db27f94516a6c",
+        "eng/provenance/files.json": "823934a78b2793684d9126d6e6127a31c71318515e09b0c828e587559eb25fbc",
+        "LICENSE": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+        "eng/policy/product-names.json": "e249d4ef2ecd7eb6d7895755364ccd15ddc28e99b16b015e707e6f4e3d88dc61"
+      },
+      "licence": "Apache-2.0",
+      "runtime": "proto-generated-clients",
+      "projects": 15,
+      "inventoriedFiles": 321,
+      "reusedFiles": 107,
+      "retainedProvenanceRecords": 87,
+      "candidate": {
+        "version": "1.0.0-ci.58.1",
+        "manifestSha256": "64f3f76a0d6dc01cadda0c9ecac1a374079cdbb44921d77eecbf84a37deac097",
+        "sourceCommit": "d716045854e2e401a1a536ba2ee5c62ad1c4e8ab"
+      },
+      "mainCi": "https://github.com/ArcForges/Contracts/actions/runs/35536018400"
+    },
+    {
+      "owner": "ArcNotes",
+      "commit": "e40423a1b14ce8341de35748cc2a093c7c9b77a7",
+      "clean": true,
+      "files": {
+        "AGENTS.md": "acad93ce39a7762531db675074e0e63873201e854df4fb3a0fa5cbaa9eda2cd4",
+        "eng/policy/licence-boundary.json": "b47394287794368d8b997161afe66ecdb03b632ce56d72f26df59e686200b478",
+        "eng/provenance/files.json": "b863476ebce3764f605397fdf844f0036e8fcf50f67a640835e88750e87c200e",
+        "LICENSE": "8486a10c4393cee1c25392769ddd3b2d6c242d6ec7928e1414efff7dfb2f07ef"
+      },
+      "licence": "AGPL-3.0-only",
+      "runtime": "avalonia-nativeaot",
+      "projects": 4,
+      "inventoriedFiles": 77,
+      "reusedFiles": 9,
+      "retainedProvenanceRecords": 10,
+      "candidate": {
+        "version": "0.1.0-ci.8.1",
+        "verificationArchiveSha256": "a3c26c35d5ee9dfe6d62dfe82796cb92bbcb81db25d24f1c279a253c4186aaa0",
+        "sourceCommit": "e40423a1b14ce8341de35748cc2a093c7c9b77a7",
+        "nativeRuns": [
+          {
+            "rid": "linux-x64",
+            "archiveSha256": "99b2f81a451ed99b195c8784830c57f71b27b06f0fccd1d064297268da5ca91b",
+            "smokeSha256": "0d12e7f6d4f98917a809b2e8d4ef3b4c0e871e3652a5eea46bf19a1d9f375f4f",
+            "observedCloudCommit": "2cf5a58633a7e09db05ebc1741f1cab83547a832"
+          },
+          {
+            "rid": "osx-arm64",
+            "archiveSha256": "717772ee943bf9e74351d2dbfcff8beee36ddb271fd5a5ab7238b16d6afaea2c",
+            "smokeSha256": "62472b699f15a3f0043a8c8a2b964aaeaaefee827783ce07fb4ac1cbdb3b50ab",
+            "observedCloudCommit": "2cf5a58633a7e09db05ebc1741f1cab83547a832"
+          },
+          {
+            "rid": "osx-x64",
+            "archiveSha256": "5948d3b86e884a23bba003862c55a095662c1487b3b1ed7fb5c4d7325a3b8d3f",
+            "smokeSha256": "121424c4b5cc5442a719bab53f96f6e8dacaabaf2ca56c737135f22ed189ca4d",
+            "observedCloudCommit": "2cf5a58633a7e09db05ebc1741f1cab83547a832"
+          },
+          {
+            "rid": "win-arm64",
+            "archiveSha256": "d5cc73c8a55e0e6ccf49747ea85af7941a6ac10e86680fc1bec938e04399cdce",
+            "smokeSha256": "791e24409e15e7ca5f756b28f8a464fd0402e1a567afc678b3cde25b9331df12",
+            "observedCloudCommit": "2cf5a58633a7e09db05ebc1741f1cab83547a832"
+          },
+          {
+            "rid": "win-x64",
+            "archiveSha256": "06fe56ddf2ed02f199b1a6c21ce09f7a0074f9ee305f62cbe374aa34fd6a794d",
+            "smokeSha256": "d43c08e7780eccd08fc7da25e20312c29730342002577a9911eb034eda32efbf",
+            "observedCloudCommit": "2cf5a58633a7e09db05ebc1741f1cab83547a832"
+          }
+        ]
+      },
+      "mainCi": "https://github.com/ArcForges/ArcNotes/actions/runs/35425608146"
+    },
+    {
+      "owner": "ArcScope",
+      "commit": "d247dcff36fd1123a70e5e59967a9b2294a2eeac",
+      "clean": true,
+      "files": {
+        "AGENTS.md": "9530be8b6d29d0d193505279d4026fc775b7ee40574431d4382e7653d29a6690",
+        "eng/policy/licence-boundary.json": "a742df60c4dfcad5f72da6b8312795d69b8d42894b0ef871eafb58732c4629be",
+        "eng/provenance/files.json": "14c9f49735f981474f11ac93c650cbcf103cc8851d508b741ac184d50f119d07",
+        "LICENSE": "8486a10c4393cee1c25392769ddd3b2d6c242d6ec7928e1414efff7dfb2f07ef"
+      },
+      "licence": "AGPL-3.0-only",
+      "runtime": "avalonia-nativeaot",
+      "projects": 4,
+      "inventoriedFiles": 76,
+      "reusedFiles": 12,
+      "retainedProvenanceRecords": 9,
+      "candidate": {
+        "version": "0.1.0-ci.8.1",
+        "verificationArchiveSha256": "b856d95171596d2434583af51804cee215f36cbe2506d8d2755901705ee5e864",
+        "sourceCommit": "d247dcff36fd1123a70e5e59967a9b2294a2eeac",
+        "nativeRuns": [
+          {
+            "rid": "linux-x64",
+            "archiveSha256": "6b35f26f367dca8c21699c45440da0c593bbe6debea0fc1faeecd348b3c4972f",
+            "smokeSha256": "130b9a5d543e6b64af5b78c44ea7bec99adc7e90db29c972f3a4573a70a06487",
+            "observedCloudCommit": "2cf5a58633a7e09db05ebc1741f1cab83547a832"
+          },
+          {
+            "rid": "osx-arm64",
+            "archiveSha256": "dc1605c99b60b179633ecb734592950322591246e95f59c0fb787379fc780a0d",
+            "smokeSha256": "b45c96f24e7877afe4541afc44415f792c8efdad8029ee76d278d01605d32504",
+            "observedCloudCommit": "2cf5a58633a7e09db05ebc1741f1cab83547a832"
+          },
+          {
+            "rid": "osx-x64",
+            "archiveSha256": "8a03ff9ff492da0e646b7f92f3974b0e74e3ea380210f5ae9b4b224db47ee1ba",
+            "smokeSha256": "035441bbdf95b93cfdae8f3ba80eaa0f10185afc40f815f0df5bb16428ec218c",
+            "observedCloudCommit": "2cf5a58633a7e09db05ebc1741f1cab83547a832"
+          },
+          {
+            "rid": "win-arm64",
+            "archiveSha256": "2b6c32a89cdd45ba51bd80cd6a4de8867090ee0e1d38d586a0d689d983d45c92",
+            "smokeSha256": "95009276d6ecd7e11a06a740d973e8c0a4a4fefdcc08bd5f1de8cd74486112f1",
+            "observedCloudCommit": "2cf5a58633a7e09db05ebc1741f1cab83547a832"
+          },
+          {
+            "rid": "win-x64",
+            "archiveSha256": "edb4ea523bf87ac02bbd62f0bbcea28867ed207c0aedc6f4dc70bc7ed1ac0da7",
+            "smokeSha256": "97ffbdadbb52f9c5f5e5f6f00b20b44b27a85e6389f22e3d6585622d3c64c6e0",
+            "observedCloudCommit": "2cf5a58633a7e09db05ebc1741f1cab83547a832"
+          }
+        ]
+      },
+      "mainCi": "https://github.com/ArcForges/ArcScope/actions/runs/35426873548"
+    },
+    {
+      "owner": "ArcSlate",
+      "commit": "b0d255f54fb560a534cc493d5645ca4bc7b4bd0e",
+      "clean": true,
+      "files": {
+        "AGENTS.md": "c36c2f041432abc5591bdc5ea20833d24c5b7097a1c9d6c548a1c537f0725696",
+        "eng/policy/licence-boundary.json": "1007807b6cf3d25c82cde1e00381f53b3557c4996525f0998fc212d4da252eb6",
+        "eng/provenance/files.json": "9bdb17054dbe43e2fa85ff795ec3e2c6c55603f21f2b7644021c6a85bbce7b07",
+        "LICENSE": "8486a10c4393cee1c25392769ddd3b2d6c242d6ec7928e1414efff7dfb2f07ef"
+      },
+      "licence": "AGPL-3.0-only",
+      "runtime": "avalonia-nativeaot",
+      "projects": 4,
+      "inventoriedFiles": 76,
+      "reusedFiles": 12,
+      "retainedProvenanceRecords": 9,
+      "candidate": {
+        "version": "0.1.0-ci.8.1",
+        "verificationArchiveSha256": "a14db6d00e928b33abf8ea8e2d405f2d1030ef72855a08e34f99760844a4265e",
+        "sourceCommit": "b0d255f54fb560a534cc493d5645ca4bc7b4bd0e",
+        "nativeRuns": [
+          {
+            "rid": "linux-x64",
+            "archiveSha256": "d23812de1598848b917d7d5c0c8863ca67f06e37a353bf80c8a33224667f55ff",
+            "smokeSha256": "b05877fd37e103de95d07db2c0a7b380e429cbdef53611d8e48bfe9d067d638b",
+            "observedCloudCommit": "2cf5a58633a7e09db05ebc1741f1cab83547a832"
+          },
+          {
+            "rid": "osx-arm64",
+            "archiveSha256": "79463644d337d0bb0d482f2f39f610b3f851b9b1aa532f6133ab6af94c3a4995",
+            "smokeSha256": "28365b2ca9436bc55ebef0c12d9b14659f2f58e3bc33064b2ce5bc0c6ece3a06",
+            "observedCloudCommit": "2cf5a58633a7e09db05ebc1741f1cab83547a832"
+          },
+          {
+            "rid": "osx-x64",
+            "archiveSha256": "31e4576de83018fcb43e18329776d71dd6d1680cee10c7ade068ac166c7632e4",
+            "smokeSha256": "6103b10b0b561b1accb692c24d91eff98609ab979b424e401ea5fcebd4935005",
+            "observedCloudCommit": "2cf5a58633a7e09db05ebc1741f1cab83547a832"
+          },
+          {
+            "rid": "win-arm64",
+            "archiveSha256": "a016e5995a28767eba636d7fa33d260b5232ae31447fad5a261e15d0c25cf2c2",
+            "smokeSha256": "5c585ecb81d4ee15cb6c47b5353113040c48184b61553594ccba6bbf7e4ccc00",
+            "observedCloudCommit": "2cf5a58633a7e09db05ebc1741f1cab83547a832"
+          },
+          {
+            "rid": "win-x64",
+            "archiveSha256": "873de67ab858650b68d98beca7aac14fdae52a6dcc838c04dec6e91d8430830d",
+            "smokeSha256": "d13799a7ebd6385f18004244e54888ef794aba3586ef50067e62b274c6e6c8dc",
+            "observedCloudCommit": "2cf5a58633a7e09db05ebc1741f1cab83547a832"
+          }
+        ]
+      },
+      "mainCi": "https://github.com/ArcForges/ArcSlate/actions/runs/35427484761"
+    },
+    {
+      "owner": "Cloud",
+      "commit": "4571ec8692235485712d4c4e3ef4886c162f2574",
+      "clean": true,
+      "files": {
+        "AGENTS.md": "93b407673b88cc91bb00f1acb4bfa38a82841b71579e1154d5c1f8b6049dddcb",
+        "eng/policy/licence-boundary.json": "64cde1c8f0618878cda89fe3f4f6e3bdc2eafa1605cc7bb6c79735e285adb7cc",
+        "eng/provenance/files.json": "183d682a3e0d37b43028c1e83596bdcd2939b4a3906888e3517eac2041052737",
+        "LICENSE": "8486a10c4393cee1c25392769ddd3b2d6c242d6ec7928e1414efff7dfb2f07ef"
+      },
+      "licence": "AGPL-3.0-only",
+      "runtime": "dotnet-nativeaot-cloudflare-container",
+      "projects": 5,
+      "inventoriedFiles": 109,
+      "reusedFiles": 12,
+      "retainedProvenanceRecords": 15,
+      "candidate": {
+        "version": "0.1.0-ci.18.1",
+        "manifestSha256": "1023abce52924b7db060ac2c5e5fad53ef108dde863470b959f5c507fb7e612a",
+        "sourceCommit": "4571ec8692235485712d4c4e3ef4886c162f2574"
+      },
+      "mainCi": "https://github.com/ArcForges/Cloud/actions/runs/35535883611"
+    },
+    {
+      "owner": "AI",
+      "commit": "944edfe88718fc5f72a42ea0bed1c495307c22df",
+      "clean": true,
+      "files": {
+        "AGENTS.md": "d3d297873245467c2cbc60c4577991ae95afc77dfece63f6de3ab7a9e170046a",
+        "eng/policy/licence-boundary.json": "9cc360bb210d5d32b2814f79926d3edd641f7c6a008c5177a8bc4a1f139c8035",
+        "eng/provenance/files.json": "4734860c3f6ac4fafd889df954a4e02eb10ebd101e75e8c6409b960f4e01aac9",
+        "LICENSE": "8486a10c4393cee1c25392769ddd3b2d6c242d6ec7928e1414efff7dfb2f07ef"
+      },
+      "licence": "AGPL-3.0-only",
+      "runtime": "cloudflare-workflow-workers-ai",
+      "projects": 1,
+      "inventoriedFiles": 88,
+      "reusedFiles": 10,
+      "retainedProvenanceRecords": 10,
+      "candidate": {
+        "version": "0.1.0-ci.26.1",
+        "manifestSha256": "a48dcfd9f35b5c1972d2079606073b742681103f81ca74e966d44218a47c26ef",
+        "sourceCommit": "944edfe88718fc5f72a42ea0bed1c495307c22df"
+      },
+      "mainCi": "https://github.com/ArcForges/AI/actions/runs/35535890121"
+    },
+    {
+      "owner": "Web",
+      "commit": "84939ca1fde0f0653d2cb4d8b8f9e5dd1057abb5",
+      "clean": true,
+      "files": {
+        "AGENTS.md": "938b8df4c48530abc1e6cd88c1c9f940a3869cea130e7371925cb6c31c2cc27b",
+        "eng/policy/licence-boundary.json": "0f30762ef9bedda1b54e543dd2b063f2fcbd9e2ba7b041d68b3eb5441f6b1b95",
+        "eng/provenance/files.json": "c5b187d5ce3f279bd280abaa2abf6b5a8b510216e023523f3bf7cee93fe06bbe",
+        "LICENSE": "8486a10c4393cee1c25392769ddd3b2d6c242d6ec7928e1414efff7dfb2f07ef"
+      },
+      "licence": "AGPL-3.0-only",
+      "runtime": "react-typescript-static",
+      "projects": 4,
+      "inventoriedFiles": 109,
+      "reusedFiles": 14,
+      "retainedProvenanceRecords": 13,
+      "candidate": {
+        "version": "0.1.0-ci.22.1",
+        "sourceCommit": "84939ca1fde0f0653d2cb4d8b8f9e5dd1057abb5",
+        "manifestSha256": "17e520c4e9d9e45b6636f32bf03764cf80d113f15a2bc9185708a37780221974",
+        "archiveSha256": "ad36fbf27582f9571e92b22772172bbb14dfab9eeecce102adcc28de3d6d3d6f",
+        "verifiedMembers": 49
+      },
+      "mainCi": "https://github.com/ArcForges/Web/actions/runs/35437014881"
+    },
+    {
+      "owner": "Mobile",
+      "commit": "5031d837d2e7bf9dd1b681c837c942d2b74dc65e",
+      "clean": true,
+      "files": {
+        "AGENTS.md": "d65b6ca08bc95d1a3c419dbdcfdd1d61afd1915b3c225214344813e9f701ed95",
+        "eng/policy/licence-boundary.json": "eae6bb06e3680a9db2611d254ea7efe80b488d7921c3fe7d2e1df4f05df43736",
+        "eng/provenance/files.json": "78bdb8cc217737219e7fe28d00ee0503714f5ff707e0bdaa8dfd36bf356fcfd7",
+        "LICENSE": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+      },
+      "licence": "Apache-2.0",
+      "runtime": "kotlin-compose-android",
+      "projects": 3,
+      "inventoriedFiles": 110,
+      "reusedFiles": 19,
+      "retainedProvenanceRecords": 18,
+      "candidate": {
+        "version": "0.1.0-ci.14.1",
+        "sourceCommit": "5031d837d2e7bf9dd1b681c837c942d2b74dc65e",
+        "releaseReceiptSha256": "33f08579b7b4d854f6bab241a62d2be0ac6e1ed45c324194272334c35ad80216",
+        "signedApkSha256": "418c406dd4b1cd12b5cd9b489a863340e3c6ccb172d8aa8809ad0c14de4d4de9",
+        "signedAabSha256": "6780866e2b833e4eddc2c9632f63734a7ed82e6a50abb5af3f53fdd224ef14d5",
+        "versionCode": 1401,
+        "identity": "io.github.arcforges.mobile"
+      },
+      "mainCi": "https://github.com/ArcForges/Mobile/actions/runs/35444269638"
+    }
+  ]
+}
