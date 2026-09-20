@@ -103,7 +103,7 @@
 
 **Testing requirements.** A review that every contract type has an assignment; a check that no type assigned to the public set transitively depends on an internal type.
 
-**Completion gate.** The assignment is complete and dependency-consistent. **This is the highest-priority reconciliation item** (`§3` of the reconciliation document).
+**Completion gate.** The assignment is complete and dependency-consistent. **This is the highest-priority reconciliation item** (`§3` of the reconciliation document). Use the [current contract access profile](../../assurance/wp01-01-contract-access-policy.md); both sets are Apache-2.0, and retired monorepo DTOs do not become current source.
 
 <a id="rule-wp-01.02"></a>
 
