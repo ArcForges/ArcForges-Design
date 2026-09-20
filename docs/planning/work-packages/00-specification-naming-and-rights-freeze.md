@@ -175,6 +175,8 @@ For the existing native packages, apply the [native closure profile](../../assur
 
 **Completion gate.** A named authority/licence/runtime/ownership table, with each repository's instructions derived from the revised design. No archived-input or old implementation document becomes authority. Record exact artifacts and provider reality. The package is incomplete if an important contract/owner/recovery rule still requires design during coding.
 
+**Recorded execution.** [WP00 stage acceptance](../../assurance/wp00-stage-acceptance.md) and its [exact closure receipt](../../assurance/wp00-stage-acceptance.json) verify the six preceding substeps, all nine instruction/owner/licence/runtime assignments, source policies, fixed candidates and actual evidence limits. This closes the WP00 stage; later product and commercial gates remain with their named owners.
+
 ---
 
 ## 6. Impacts
