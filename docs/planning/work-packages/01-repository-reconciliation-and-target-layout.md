@@ -7,7 +7,7 @@
 > Phase: A — Freeze and foundation
 > Upstream: `00` · Downstream: `02`
 
-> **Goal.** Execute the dispositions the completed inventory already records. The highest-priority item is not a move but a correction: **55 source files declare a licence Phase 1 forbids for their boundary.**
+> **Goal.** Reconcile the nine current repositories against the accepted ownership and licence boundaries. The historical ede43db inventory recorded **55 incorrectly licensed files**; verify current source before assigning a correction, move or retirement.
 
 > **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Platform and new owners. Inputs: only the applicable published producers available at this stage under [staged artifact integration](../README.md#staged-artifact-integration). Producer candidate records precede Cloud consolidation; no future package/manifest is an input. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: owned candidate artifacts and generated contracts with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
 > After WP03, unit mocks consume published Contracts fixtures; earlier stages verify their inventory/policy outputs. Acceptance consumes the actual providers scheduled for that stage. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
@@ -20,7 +20,7 @@
 
 **Out of scope.** Behaviour changes of any kind ([RC-08](../../requirements/11-policy-and-configuration.md#rule-rc-08) in the reconciliation document). Cloud module boundary changes that require schema decisions — those belong to `21`. Per-product project reorganisation beyond what the boundary split requires — those land inside each product's own package.
 
-**Why this package exists.** The inventory is complete; its dispositions are not executed. `§5.1` of the reconciliation evidence found **55 files actively declaring a licence that Phase 1 forbids for their boundary** — a defect, not merely pending work, and one the mobile artifact gate (**[F-023](../../assurance/open-gates-register.md#rule-f-023)**) will block.
+**Why this package exists.** The historical inventory identified licence and ownership defects. WP00 has since verified current first-party boundaries in nine independent repositories; its receipt does not complete contract type assignment or product behavior. WP01 records the actual remaining dispositions before restructuring. The mobile artifact gate (**[F-023](../../assurance/open-gates-register.md#rule-f-023)**) remains binding for its actual candidate.
 
 ---
 
@@ -71,10 +71,10 @@
 | `src/Contracts/` | **Split** into a public Apache-2.0 set and an internal Apache-2.0 set with restricted imports (executed in `03`; the split decision is made here) |
 | `src/DesktopHelpers/` | Disposition assigned against the shared-foundation boundary |
 | `src/BuildingBlocks/ArcForges.Desktop.*` | Reviewed against the shared-foundation boundary; mechanism-only projects Kept, product-aware projects Split or Moved |
-| `src/Cloud/Modules.*` | Map the 17 observed scaffold module names to the 20 declared domain owners in `21`; preserve the single Host with internal AgentRuntime/BackgroundJobs libraries and development-only AppHost |
+| `src/Cloud/Modules.*` | Map the 17 historical scaffold names to the 21 declared domain owners in `21`; Cloud owns the Native AOT Container host and Worker bindings, while AI owns the sole Workflow Harness. Retired AppHost/AgentRuntime scaffolds are not requirements |
 | `native/` | Apply the current WP01.03 admission: retain admitted native mechanisms in DesktopPlatform, use the pinned official OTIO adapter, exclude MDF; old skeletons are not product implementation evidence |
 | `tests/` | Each suite mapped to a required test family; gaps recorded |
-| `fixtures/` | Created as an empty, documented root for golden fixtures |
+| `fixtures/` | Owned by each producing repository; create with substantive golden fixtures when its producing step requires them, never as an empty placeholder |
 | `eng/policy/reconciliation/` | The inventory exported as machine-readable data for the drift check |
 
 **Major types introduced:** none.
@@ -91,7 +91,7 @@
 
 **Testing requirements.** Compare each owned path/project to current Git tree and published artifact identity; reject adjacent-source/submodule integration.
 
-**Completion gate.** Every planned directory has one repository owner and explicit keep/move/retire disposition; no source mutation is justified solely by a dated baseline.
+**Completion gate.** Every planned directory has one repository owner and explicit keep/move/retire disposition; no source mutation is justified solely by a dated baseline. Follow the [current inventory profile](../../assurance/wp01-00-inventory-policy.md) for the versioned data, historical drift, artifact and enforcement boundaries.
 
 <a id="rule-wp-01.01"></a>
 
