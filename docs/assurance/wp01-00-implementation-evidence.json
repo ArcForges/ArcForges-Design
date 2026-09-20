@@ -1,0 +1,125 @@
+{
+  "schemaVersion": 1,
+  "substep": "WP01.00",
+  "verifiedOn": "2026-09-20",
+  "result": "passed",
+  "designPolicyCommit": "33bcddd9508ec60c0a2b0d7b53901ee7f50d0a70",
+  "platformCommit": "b7744f3ffdeae161d8a3e34243aad3b8e8b47978",
+  "pr": "https://github.com/ArcForges/DesktopPlatform/pull/53",
+  "mainCi": "https://github.com/ArcForges/DesktopPlatform/actions/runs/35539950237",
+  "inventory": {
+    "schemaVersion": 1,
+    "substep": "WP01.00",
+    "observedOn": "2026-09-20",
+    "historicalCommit": "ede43db5b2237104dd0008b99398090c54a2cf94",
+    "designCommit": "33bcddd9508ec60c0a2b0d7b53901ee7f50d0a70",
+    "designFiles": {
+      "docs/assurance/wp01-00-inventory-policy.md": "ab6ed192920a34fb3da8a4b2a46f0717d1037cef7b8c92934917563a92b7f47a",
+      "docs/assurance/wp00-stage-acceptance.json": "69e06cd1248f61b5da2509184430ffc8c1f96d5c8550dd790f87e432393cc340",
+      "docs/architecture/27-platform-projects-and-application-assistants.md": "48532d4ecc59d986292075afae4ea4fea52a6106c94833e5e5ce4ae43594c4a5",
+      "docs/architecture/01-solution-and-project-layout.md": "ff8241d91e460ba35ae55e92b5b55cba0968b1a1fd788f7a5dc2242e52815658"
+    },
+    "counts": {
+      "owners": 9,
+      "projects": 75,
+      "historical": 166,
+      "directories": 359,
+      "native": 7
+    }
+  },
+  "registryFiles": {
+    "current.json": "754b9b8e9420960299fa084acb018afb9af22e7e05ddac060cd25ec4fe979c6f",
+    "directories.json": "2ce14d4811a966293a7e35259be1731f20bbfab4e9a2572396b3c65d77aed954",
+    "historical.json": "84f1b01f422a74d20120a42432c2bbdf1c3f6f8fb25aa604e705eec400e6fbfe",
+    "native.json": "c34f52f82e7259931cc2bdd93b7fd37873026e2407f3fbd6685e5828ea06f342",
+    "source.json": "b3b23a99d9864661bdff0553ddccd86ba898376ff8dc8974c556b145a547e3e5"
+  },
+  "candidateManifestSha256": "54a8e94c8ce7d143446e118e67d8b5fa11051aede1961efc42988aed688c510a",
+  "publicPackages": {
+    "result": "passed",
+    "version": "1.0.0-ci.16.1",
+    "sourceCommit": "b7744f3ffdeae161d8a3e34243aad3b8e8b47978",
+    "packages": [
+      {
+        "id": "ArcForges.Build.Policy",
+        "result": "passed",
+        "members": 9,
+        "publicSha256": "645ab36815f735f5e802e172e8abed6081a144a46289175c589f662f946d9566",
+        "source": "retained-public-download"
+      },
+      {
+        "id": "ArcForges.Native.Abstractions",
+        "result": "passed",
+        "members": 8,
+        "publicSha256": "ceda7f211d24369f356d349f6670c011fedac8a0c1df2bc7c8d1a1b7354d2588",
+        "source": "retained-public-download"
+      },
+      {
+        "id": "ArcForges.Native.Media",
+        "result": "passed",
+        "members": 8,
+        "publicSha256": "586ed06a6cf9e2015dffdee6c7b1296df0ea604843936d8e99b32b71494aa6b3",
+        "source": "retained-public-download"
+      },
+      {
+        "id": "ArcForges.Native.Colour",
+        "result": "passed",
+        "members": 8,
+        "publicSha256": "548bed995a19b5359dde85ccd82c685f04f5b8ff9d12e078d323ae8365334050",
+        "source": "retained-public-download"
+      },
+      {
+        "id": "ArcForges.Native.Image",
+        "result": "passed",
+        "members": 8,
+        "publicSha256": "c836b48814dadd26fedc3ed5e03eb8eacc8cc3b9c0cc834a5ad103b5359fe2fe",
+        "source": "retained-public-download"
+      },
+      {
+        "id": "ArcForges.Native.Otio",
+        "result": "passed",
+        "members": 8,
+        "publicSha256": "1ac92aaed3867615c8f2dfeddf72d04cb547129fb9c1cfe3bbb607d640955ce8",
+        "source": "retained-public-download"
+      },
+      {
+        "id": "ArcForges.Native.Media.Runtime.win-x64",
+        "result": "passed",
+        "members": 172,
+        "publicSha256": "facd3e1a4e30a872d6134933a70923061c126695e8a21188c27c488a4cb075a5",
+        "source": "https://api.nuget.org/v3-flatcontainer/arcforges.native.media.runtime.win-x64/1.0.0-ci.16.1/arcforges.native.media.runtime.win-x64.1.0.0-ci.16.1.nupkg?verification=wp0100-1789942153"
+      },
+      {
+        "id": "ArcForges.Native.Colour.Runtime.win-x64",
+        "result": "passed",
+        "members": 121,
+        "publicSha256": "ead345d493e8ddeb76b5aa0d10625f57924bd92d9f9a6076e6ae7f54dbb30d1d",
+        "source": "retained-public-download"
+      },
+      {
+        "id": "ArcForges.Native.Image.Runtime.win-x64",
+        "result": "passed",
+        "members": 197,
+        "publicSha256": "2b78d1e6954033b71a89210044c17858bc2dd2d462ea76e773680bde1ef0ff18",
+        "source": "retained-public-download"
+      },
+      {
+        "id": "ArcForges.Native.Otio.Runtime.win-x64",
+        "result": "passed",
+        "members": 60,
+        "publicSha256": "730af711b0df8cce9da032be814761586387b964b10ca44cd7352f932a8b1a42",
+        "source": "retained-public-download"
+      }
+    ],
+    "signatureExclusion": ".signature.p7s is registry-added; every original member compared"
+  },
+  "localChecks": {
+    "pythonPolicyTests": 62,
+    "provenanceTests": 41,
+    "dotnetArchitectureTests": 4,
+    "releaseBuildWarnings": 0,
+    "releaseBuildErrors": 0,
+    "postMergeFamilyAudit": "passed"
+  },
+  "limitations": "Inventory/policy acceptance and actual unchanged native package consumer proof; no new full application/provider/device/commercial acceptance."
+}

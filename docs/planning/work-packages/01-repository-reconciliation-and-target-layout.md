@@ -93,6 +93,8 @@
 
 **Completion gate.** Every planned directory has one repository owner and explicit keep/move/retire disposition; no source mutation is justified solely by a dated baseline. Follow the [current inventory profile](../../assurance/wp01-00-inventory-policy.md) for the versioned data, historical drift, artifact and enforcement boundaries.
 
+**Recorded execution (2026-09-20).** [WP01.00 evidence](../../assurance/wp01-00-implementation-evidence.md) records nine current owners, 75 build projects, all 166 historical projects, 359 planned/current directory dispositions, Windows/Linux drift gates, reviewed merges and the verified public candidate. This closes only WP01.00.
+
 <a id="rule-wp-01.01"></a>
 
 ### WP-01.01 — Implement the frozen contract split
