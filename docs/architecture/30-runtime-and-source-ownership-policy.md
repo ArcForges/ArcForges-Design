@@ -1,0 +1,47 @@
+# Runtime and Source Ownership Policy
+
+This is the executable-policy profile for [WP-00.05](../planning/work-packages/00-specification-naming-and-rights-freeze.md#rule-wp-00.05), under [P2-012](../decisions/phase-2-specification-decisions.md#rule-p2-012), [P2-013](../decisions/phase-2-specification-decisions.md#rule-p2-013) and [P2-014](../decisions/phase-2-specification-decisions.md#rule-p2-014). It records the existing [project authority](27-platform-projects-and-application-assistants.md), [scope](../requirements/00-product-scope-and-portfolio.md) and [runtime matrix](21-platform-and-dependency-matrix.md), without introducing another architecture.
+
+## Owners and policy location
+
+There are nine implementation repositories. Design is the separate documentation authority; it is not a tenth implementation owner. ArcChat identifies the embedded assistant and companion feature family, not another repository or desktop executable.
+
+| Owner | Required runtime and authority |
+|---|---|
+| DesktopPlatform | Shared C# mechanisms and per-application assistant libraries; Native AOT-compatible libraries, admitted Native AOT child helper, narrow native C ABI packages; no product-domain or shared desktop business host |
+| Contracts | Authored proto/declared HTTP schemas, generated C#/TypeScript/Kotlin clients and independent tooling/fixtures; public business clients select binary gRPC-Web |
+| ArcNotes | Independent C#/Avalonia Native AOT application; Notes domain, own assistant/store/session |
+| ArcScope | Independent C#/Avalonia Native AOT application; acquisition/measurement domain, own assistant/store/session |
+| ArcSlate | Independent C#/Avalonia Native AOT application; media/timeline domain, own assistant/store/session |
+| Cloud | Single C# Native AOT business host in Cloudflare Containers; Worker binding bridge; D1 authoritative transactions, R2 objects and coordination Durable Objects |
+| AI | Sole model/tool loop in Cloudflare Workflows, using Workers AI; no local or production Node agent host; no Cloud business authority |
+| Web | Four React/TypeScript output profiles: site, account, chat, operations; Node is build tooling, not a required production server |
+| Mobile | Kotlin/JVM and Jetpack Compose Android companion; no iOS or professional mobile editor; development JVM preview is not a product distribution |
+
+DesktopPlatform owns `eng/policy/runtime-ownership.json`, its standalone verifier and adversarial tests. The closed-schema registry contains the exact Design source revision, nine owner/runtime assignments, current inspected repository revisions, project/source ownership, runtime requirements, retained bootstrap boundaries and historical scaffold dispositions. It is AGPL tooling and is not imported into Contracts or Mobile. Each source path has an explicit repository owner; current project inventories and provenance inventories must cover the actual tracked files and non-ignored new files. Unknown owners, unregistered projects/source, duplicate entries, missing inputs and escaped paths fail. Retired monorepo paths cannot re-enter an active owner by merely adding them to an inventory.
+
+The [Contracts naming authority](28-product-naming-policy.md) remains the sole forbidden-product/provider vocabulary and exception mechanism. Runtime policy does not copy that list, add exemptions or change the derived glossary pin. Invoke its reviewed scanner for the same nine roots. Existing [licence declarations](01-solution-and-project-layout.md#41-project-declaration-and-verification-profile) and provenance completeness remain independent gates.
+
+## Checkable runtime inputs and evidence
+
+Validate structured project/build imports, dependency identities and deployment declarations, not arbitrary keyword matches in dated prose or test diagnostics. Required desktop/helper/Cloud host declarations enable Native AOT; production libraries declare compatibility. A conflicting explicit property override fails. Read-only source checks cover actual project membership and imports; evaluated MSBuild properties and existing real AOT consumer/publication evidence are reported separately. A source declaration is never proof of successful native execution. Tests and build tools may use their documented managed runtime; Web IDE adapters never receive .NET runtime properties.
+
+The source gate rejects obsolete desktop UI/agent stacks, retired Mobile runtime dependencies/targets, Cloud database-provider configuration inconsistent with D1, unassigned runtime hosts and additional model-loop deployment bindings. AI has the single registered Workflow and direct Workers AI binding. Cloud owns the Container/Worker bridge, and Web owns static browser assets. Inspect the actual configuration and dependency declarations; fail on absent or conflicting required values. This bounded source-policy check is not whole-program proof of business ownership or the complete later architecture suite.
+
+Windows and Linux CI run the verifier and negative cases. DesktopPlatform checks its own current source and immutable, explicitly pinned read-only snapshots of the other eight owners. Fetching snapshots or invoking an inventory checker does not build/import adjacent product source. A fresh nine-root audit of actual merged branches additionally closes this substep; pinned historical snapshots alone cannot do so. Reports identify each commit, dirty state, policy identity, discovered inventory, findings and evidence class. CI can run without private provider credentials. WP02/WP05 retain artifact distribution and comprehensive per-owner enforcement; WP00 does not require those future packages.
+
+Negative tests cover missing/extra owners, changed runtime selections, changed/conditional AOT declarations, missing project/source assignment, restored retired paths, unsupported dependency/target configuration, absent or extra Workflow bindings, and malformed or escaped inputs. An independently constructed invalid fixture must fail even if its local declaration claims to conform. Naming negative tests retain their existing exact provenance boundary.
+
+## Current bootstrap and retired scaffolds
+
+The historical 166-project monorepo is revision-bound evidence in the [reconciliation inventory](../assurance/implementation-state-reconciliation.md). DesktopPlatform's extraction baseline and current Git tree establish which old groups are absent. Record the former product, Cloud, Mobile, Web, Contracts, SDK and extension groups with their current owner or retirement reason. Explicitly record the retired standalone assistant host, Notes canvas/slides, old browser/.NET host, old Mobile runtime and old Cloud/agent placement. Do not reconstruct absent source to delete it again. Detailed physical reconciliation stays in WP01; this substep records and enforces the current assignments.
+
+Existing shared placeholders remain non-packable pending their assigned capability producers; the ContentSandbox scaffold is not accepted containment behavior. Current Hello desktop/Cloud/Web/AI/Mobile programs and published Contracts/native probes remain bounded, compatible examples. Native gRPC Hello fixtures and the existing Kotlin native client remain compatibility evidence, not authority to use native gRPC for public business clients. The first business release retires the native-only client under architecture 27. Preserve current package IDs, ABI probes, signing lineage and installation behavior.
+
+Mobile keeps the observed prerelease identity until the already assigned [WP30 migration](11-mobile-architecture.md#android-identity-and-release-channels); its current identity is not an additional product ID. Use the [naming policy](28-product-naming-policy.md) for the formal/observed distinction. The JVM preview and pinned bootstrap toolchain do not authorize a desktop/iOS product. The five-RID bootstrap and probe-only native packages do not close the complete platform/functional gates. Four Web profiles, D1 business modules and full assistant behavior remain required at their existing producers; their absence in a labelled Hello bootstrap does not create an alternative target.
+
+## Review and current external constraints
+
+Every corrected current claim receives a source path, old claim, accepted replacement, compatibility impact and validation record. Historical evidence remains bound to its original revision/date with an explicit current-authority link; do not rewrite old test results as if they had executed the new architecture. Repair current packaged README instructions as well as repository notes. Verify changed published archives/deployments after the owning main workflows run; a documentation change inside a package is still part of its immutable bytes.
+
+Checked 2026-09-20: Microsoft's [Native AOT documentation](https://learn.microsoft.com/en-us/dotnet/core/deploying/native-aot/) distinguishes the executable `PublishAot` declaration from library `IsAotCompatible`; Cloudflare's [Workflow binding API](https://developers.cloudflare.com/workflows/build/workers-api/) and [Workers AI bindings](https://developers.cloudflare.com/workers-ai/configuration/bindings/) supply the selected deployment declarations. These confirm the checkable inputs. They do not justify an SDK upgrade, a new provider or a claim of real commercial acceptance.

@@ -156,9 +156,9 @@ For the existing native packages, apply the [native closure profile](../../assur
 ### WP-00.05 — Stale-claim reconciliation
 
 
-**What must be fully done.** Apply the current naming/scope/runtime authority to implementation repository manifests and policies: three professional desktop AOT products with embedded assistants, Native AOT Cloud, React Web, Kotlin/Jetpack Compose Mobile and CF-only Harness. Record the ten repository owners and retired implementation scaffold dispositions; historical evidence stays dated and cannot override the accepted design.
+**What must be fully done.** Apply the current naming/scope/runtime authority to implementation repository manifests and policies: three professional desktop AOT products with embedded assistants, Native AOT Cloud, React Web, Kotlin/Jetpack Compose Mobile and CF-only Harness. Record the nine implementation repository owners and retired implementation scaffold dispositions under the [runtime and ownership profile](../../architecture/30-runtime-and-source-ownership-policy.md); Design remains the separate documentation authority. Historical evidence stays bound to its observed date/revision and cannot override the accepted design.
 
-**Testing requirements.** Repository-policy checks reject superseded product/provider names outside registered reference provenance, old runtime configuration and unassigned source ownership.
+**Testing requirements.** Repository-policy checks reject superseded product/provider names outside registered reference provenance, old runtime configuration and unassigned source ownership. Verify actual current roots, structured build/runtime inputs and negative fixtures using the profile; preserve the current package examples and explicitly assigned later migrations.
 
 **Completion gate.** Implementation policy data matches current formal decisions; no new scope or architecture decision is delegated to downstream packages.
 
