@@ -145,6 +145,8 @@
 
 **Completion gate.** All nine axes are produced independently, and build metadata is retrievable from a published artifact.
 
+**Execution profile.** [Independent version axes and build identity](../../assurance/wp02-04-version-identity-profile.md) records the researched source/applicability rules, runtime support identity and complete ordered plan. All nine axis entries are required; absent later-stage implementations remain explicit and cannot be presented as supported version values. This profile does not close the later business producers or typed version semantics.
+
 <a id="rule-wp-02.05"></a>
 
 ### WP-02.05 — Dependency policy

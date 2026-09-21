@@ -119,6 +119,16 @@ The nine version axes (`§14` of the quality contract) are produced by the build
 
 ---
 
+### 4.1 Foundation applicability and support identity
+
+The [WP02.04 version identity profile](../assurance/wp02-04-version-identity-profile.md) defines the complete foundation report and ordered implementation. Every candidate reports all nine axes from independent source kinds. The PackageVersion axis is the exact dependency package inventory; an artifact's own distribution version is separately recorded. Contract/profile identity comes from its authored or restored descriptor provenance, never from a NuGet/npm/Maven release number.
+
+An axis with no implementation at the current producer stage records not-applicable or not-produced, its reason and, for a later producer, the owning step. It must not invent version 1 or claim future capability/format/storage/policy/extension support. Independent source-resolution tests cover all nine axes; actual candidate values come only from actual inputs. This supplies build plumbing without replacing the later typed axes, business compatibility or complete integration manifest.
+
+Owned assemblies and runtime artifacts retain source/build/pipeline identity. Third-party and already-published dependency bytes remain unchanged and are inventoried separately. The stamped timestamp is explicitly the source commit's UTC timestamp for deterministic reproduction; actual execution times remain in the referenced pipeline record. Runtime retrieval reads compiled/sealed metadata, never the current process environment. Publication rejects local, dirty, incomplete or mismatched identities.
+
+---
+
 ## 5. Packaging
 
 ### 5.1 Install and update infrastructure
