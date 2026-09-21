@@ -124,11 +124,13 @@
 ### WP-01.03 — Execute the native surface dispositions
 
 
-**What must be fully done.** Retain the approved native foundations in DesktopPlatform; apply the selected vcpkg/official OTIO admission and MDF exclusion from the native registry. Migrate capability-specific managed wrappers into their DesktopPlatform packages; consume risky parsers only through the existing signed PlatformBroker isolation. Remove product copies only after exact source/NOTICE and package tests prove the transfer.
+**What must be fully done.** Retain the approved native foundations in DesktopPlatform; apply the selected vcpkg/official OTIO admission and MDF exclusion from the native registry. Migrate capability-specific managed wrappers into their DesktopPlatform packages; consume risky parsers only through the ContentSandbox/Broker isolation required by [architecture 24](../../architecture/24-content-and-extension-isolation.md). WP11 supplies the restricted helper and WP13 composes production parsers; WP01 must not introduce an uncontained parser or claim that the current Hello helper is a signed sandbox. Remove product copies only after exact source/NOTICE and package tests prove the transfer.
 
 **Testing requirements.** Compare native source/import manifests and reference dispositions; reject direct MDF use, duplicate wrappers, cross-product source links and unadmitted native binaries.
 
 **Completion gate.** Every retained native component has the selected package owner and admission state; no substitute selection is deferred to product integration.
+
+**Current execution profile.** [Native reconciliation](../../assurance/wp01-03-native-reconciliation-policy.md) separates existing ABI probes and package admission from the already scheduled functional parser/helper producers. Independent test-oracle bindings stay in tests; production bindings have one capability owner.
 
 <a id="rule-wp-01.04"></a>
 
