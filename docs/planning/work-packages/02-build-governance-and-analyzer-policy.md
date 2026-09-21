@@ -108,7 +108,7 @@
 
 **Completion gate.** The solution builds with warnings-as-errors, and every waiver has an owner and an expiry.
 
-**Current execution profile.** [Diagnostic posture and ordered plan](../../assurance/wp02-01-diagnostic-profile.md) records the evaluated baseline, per-language repairs, explicit diagnostic scopes and waiver inventory, provenance dependencies, negative checks and full review/CI/post-merge sequence. It is not completion evidence.
+**Completed execution.** [Diagnostic posture and ordered plan](../../assurance/wp02-01-diagnostic-profile.md) records the pre-implementation decisions and sequence. [Implementation evidence](../../assurance/wp02-01-implementation-evidence.md) records all 43 evaluated managed projects, 17 real warning-rejection cases, an empty authored-code waiver list, eight reviewed implementation PRs with green PR/main checks, public artifacts and actual runtime/device/provider verification. Existing local vcpkg dependencies were reused. This closes WP02.01 only; the complete AOT/trim diagnostic sweep remains WP02.02.
 
 <a id="rule-wp-02.02"></a>
 
