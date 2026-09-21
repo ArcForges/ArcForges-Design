@@ -5,7 +5,7 @@
 > Governing authority: **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** (runtime and AOT matrix), **[D-011](../decisions/phase-1-foundation-decisions.md#rule-d-011)** (nine-repository target under [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009)), **[D-014](../decisions/phase-1-foundation-decisions.md#rule-d-014)** (surface inventory, update and download domains), **[D-022](../decisions/phase-1-foundation-decisions.md#rule-d-022)** (mobile commerce posture), [distribution requirements](../requirements/10-distribution-update-and-support.md)
 > Companions: [`../requirements/10-distribution-update-and-support.md`](../requirements/10-distribution-update-and-support.md), [`../requirements/12-quality-and-compatibility-contract.md`](../requirements/12-quality-and-compatibility-contract.md), [`01-solution-and-project-layout.md`](01-solution-and-project-layout.md)
 
-Ten independently built repositories, versioned capability packages and immutable integration artifacts, and one rule that governs everything below: **the bytes a user runs are the bytes CI produced, verified end to end.**
+Nine independent implementation repositories plus the Design authority, versioned capability packages and immutable integration artifacts, and one rule that governs everything below: **the bytes a user runs are the bytes CI produced, verified end to end.**
 
 ---
 
@@ -28,7 +28,7 @@ Ten independently built repositories, versioned capability packages and immutabl
 
 ### 2.1 Structure
 
-The following files belong to each applicable repository root. DesktopPlatform publishes shared BuildPolicy; C# owners consume its pinned policy and retain their own SDK/package manifests. Web, AI and Mobile own independent locked npm roots. Only DesktopPlatform restores native toolchains; Contracts alone runs business proto generation.
+The following files belong to each applicable repository root. DesktopPlatform publishes shared BuildPolicy; C# owners consume its pinned policy and retain their own SDK/package manifests. Contracts, Cloud, AI and Web own independent locked npm roots; Mobile owns its Kotlin/Gradle locks. Only DesktopPlatform restores native toolchains; Contracts alone runs business proto generation.
 
 ```
 Directory.Build.props / .targets      one place for language version, nullable,
@@ -78,7 +78,7 @@ locked restores (.NET/native/npm) → proto compilation and descriptor export
 
 | Target | Publish mode | Verification obligation |
 |---|---|---|
-| ArcChat, ArcNotes, ArcScope, ArcSlate desktop | **Native AOT**, self-contained (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**) | AOT publish succeeds with zero trim/AOT warnings; the produced binary launches without a machine-installed runtime |
+| ArcNotes, ArcScope, ArcSlate desktop with their embedded assistant | **Native AOT**, self-contained (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**) | AOT publish succeeds with zero trim/AOT warnings; the produced binary launches without a machine-installed runtime |
 | ArcForges Cloud | **ASP.NET Core Native AOT**, container image (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**) | Native AOT publish and real-adapter verification are mandatory (**[V-03](../assurance/phase-1-official-verification.md#rule-v-03)**); the image runs the same pipeline in every environment |
 | ArcForges.Web.App | **React/TypeScript browser assets**, Node/npm production build ([P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008)) | Account/Chat profile artifacts, generated SDK round trip, browser/CSP/visual/bundle evidence |
 | ArcForges.Web.Site output | React/TS build-time pre-rendered static artifacts | No-script content, deterministic build, locale/SEO/accessibility and performance |
