@@ -111,11 +111,13 @@
 
 ### WP-01.02 — Shared-foundation boundary review
 
-**What must be fully done.** Every building-block project is classified as mechanism-only or product-aware. Mechanism-only projects are Kept. Product-aware content is moved into the owning product or split out. The shared-foundation boundary rules (`§7` of the architecture overview) are the criterion.
+**What must be fully done.** Every building-block project is classified as mechanism-only or product-aware. Mechanism-only projects are Kept. Product-aware content is moved into the owning product or split out. The [shared-foundation boundary rules](../../architecture/00-architecture-overview.md#6-shared-foundation-boundary) are the criterion.
 
 **Testing requirements.** A reference check that no building-block project references a product project; a review record for each reclassification.
 
 **Completion gate.** No product knowledge remains in the shared foundation, and the reference check passes.
+
+**Recorded execution (2026-09-20).** [WP01.02 review](../../assurance/wp01-02-foundation-review.md) classifies all 11 current BuildingBlocks projects as mechanism-only, confirms current Keep dispositions, and records actual evaluated reference checks, locked restore, Release build and architecture tests. This closes current content/reference review only; future mechanism implementation remains with its scheduled producer.
 
 <a id="rule-wp-01.03"></a>
 

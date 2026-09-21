@@ -1,0 +1,253 @@
+{
+  "sourceCommit": "b7744f3ffdeae161d8a3e34243aad3b8e8b47978",
+  "projects": [
+    {
+      "project": "src/BuildingBlocks/ArcForges.Application.Abstractions/ArcForges.Application.Abstractions.csproj",
+      "classification": "mechanism-only",
+      "disposition": "Keep",
+      "implementation": "name-only scaffold; no capability implementation",
+      "projectReferences": [],
+      "assemblyReferences": [],
+      "packageReferences": [
+        "Microsoft.CodeAnalysis.NetAnalyzers"
+      ],
+      "isPackable": false,
+      "compiledSources": [
+        {
+          "path": "src/BuildingBlocks/ArcForges.Application.Abstractions/AssemblyPlaceholder.cs",
+          "sha256": "f04864e5cee407cfeae9517ef6d979efd91a2775b91311ea8e382789ef58b91b"
+        }
+      ],
+      "lockSha256": "09f91faca7c23b7ef4c0a4a6a4afa1f5d4e17e2e3dcbd9aca08ff12aec384059"
+    },
+    {
+      "project": "src/BuildingBlocks/ArcForges.Desktop.Experience/ArcForges.Desktop.Experience.csproj",
+      "classification": "mechanism-only",
+      "disposition": "Keep",
+      "implementation": "name-only scaffold; no capability implementation",
+      "projectReferences": [],
+      "assemblyReferences": [],
+      "packageReferences": [
+        "Microsoft.CodeAnalysis.NetAnalyzers"
+      ],
+      "isPackable": false,
+      "compiledSources": [
+        {
+          "path": "src/BuildingBlocks/ArcForges.Desktop.Experience/AssemblyPlaceholder.cs",
+          "sha256": "28b229d8190f17b3042a9a8666d460bf9eb5816988ebb00456708f6f2bba677c"
+        }
+      ],
+      "lockSha256": "09f91faca7c23b7ef4c0a4a6a4afa1f5d4e17e2e3dcbd9aca08ff12aec384059"
+    },
+    {
+      "project": "src/BuildingBlocks/ArcForges.Desktop.Graphics/ArcForges.Desktop.Graphics.csproj",
+      "classification": "mechanism-only",
+      "disposition": "Keep",
+      "implementation": "name-only scaffold; no capability implementation",
+      "projectReferences": [],
+      "assemblyReferences": [],
+      "packageReferences": [
+        "Microsoft.CodeAnalysis.NetAnalyzers"
+      ],
+      "isPackable": false,
+      "compiledSources": [
+        {
+          "path": "src/BuildingBlocks/ArcForges.Desktop.Graphics/AssemblyPlaceholder.cs",
+          "sha256": "220660953f7c63b415c120b9d5239873266e7d3ec3607e510417b67214c89502"
+        }
+      ],
+      "lockSha256": "09f91faca7c23b7ef4c0a4a6a4afa1f5d4e17e2e3dcbd9aca08ff12aec384059"
+    },
+    {
+      "project": "src/BuildingBlocks/ArcForges.Desktop.Preview/ArcForges.Desktop.Preview.csproj",
+      "classification": "mechanism-only",
+      "disposition": "Keep",
+      "implementation": "name-only scaffold; no capability implementation",
+      "projectReferences": [],
+      "assemblyReferences": [],
+      "packageReferences": [
+        "Microsoft.CodeAnalysis.NetAnalyzers"
+      ],
+      "isPackable": false,
+      "compiledSources": [
+        {
+          "path": "src/BuildingBlocks/ArcForges.Desktop.Preview/AssemblyPlaceholder.cs",
+          "sha256": "b9ff6f12e7166ef44b99a67031cef6f660ec5ff467b82c5dc8c9ff9fc8d52756"
+        }
+      ],
+      "lockSha256": "09f91faca7c23b7ef4c0a4a6a4afa1f5d4e17e2e3dcbd9aca08ff12aec384059"
+    },
+    {
+      "project": "src/BuildingBlocks/ArcForges.Desktop.RichContent/ArcForges.Desktop.RichContent.csproj",
+      "classification": "mechanism-only",
+      "disposition": "Keep",
+      "implementation": "name-only scaffold; no capability implementation",
+      "projectReferences": [],
+      "assemblyReferences": [],
+      "packageReferences": [
+        "Microsoft.CodeAnalysis.NetAnalyzers"
+      ],
+      "isPackable": false,
+      "compiledSources": [
+        {
+          "path": "src/BuildingBlocks/ArcForges.Desktop.RichContent/AssemblyPlaceholder.cs",
+          "sha256": "fe474f9e9dda8a1e5b6ae54b2eccde3adf9d7da2fe5bd3ab93f82a644a27154b"
+        }
+      ],
+      "lockSha256": "09f91faca7c23b7ef4c0a4a6a4afa1f5d4e17e2e3dcbd9aca08ff12aec384059"
+    },
+    {
+      "project": "src/BuildingBlocks/ArcForges.Desktop.Text/ArcForges.Desktop.Text.csproj",
+      "classification": "mechanism-only",
+      "disposition": "Keep",
+      "implementation": "name-only scaffold; no capability implementation",
+      "projectReferences": [],
+      "assemblyReferences": [],
+      "packageReferences": [
+        "Microsoft.CodeAnalysis.NetAnalyzers"
+      ],
+      "isPackable": false,
+      "compiledSources": [
+        {
+          "path": "src/BuildingBlocks/ArcForges.Desktop.Text/AssemblyPlaceholder.cs",
+          "sha256": "290f15d7934a97309b0809b8401ea952061dca0f27896bc59c0f8de5f9dd630c"
+        }
+      ],
+      "lockSha256": "09f91faca7c23b7ef4c0a4a6a4afa1f5d4e17e2e3dcbd9aca08ff12aec384059"
+    },
+    {
+      "project": "src/BuildingBlocks/ArcForges.Foundation/ArcForges.Foundation.csproj",
+      "classification": "mechanism-only",
+      "disposition": "Keep",
+      "implementation": "name-only scaffold; no capability implementation",
+      "projectReferences": [],
+      "assemblyReferences": [],
+      "packageReferences": [
+        "Microsoft.CodeAnalysis.NetAnalyzers"
+      ],
+      "isPackable": false,
+      "compiledSources": [
+        {
+          "path": "src/BuildingBlocks/ArcForges.Foundation/AssemblyPlaceholder.cs",
+          "sha256": "323f71ad5c4015dea41f2001744f2a6e3220c075e5f1a22f6ac61a3f3939f125"
+        }
+      ],
+      "lockSha256": "09f91faca7c23b7ef4c0a4a6a4afa1f5d4e17e2e3dcbd9aca08ff12aec384059"
+    },
+    {
+      "project": "src/BuildingBlocks/ArcForges.NativeInterop/ArcForges.NativeInterop.csproj",
+      "classification": "mechanism-only",
+      "disposition": "Keep",
+      "implementation": "ABI compatibility probes",
+      "projectReferences": [],
+      "assemblyReferences": [],
+      "packageReferences": [
+        "Microsoft.CodeAnalysis.NetAnalyzers"
+      ],
+      "isPackable": false,
+      "compiledSources": [
+        {
+          "path": "src/BuildingBlocks/ArcForges.NativeInterop/ArcMediaNative.cs",
+          "sha256": "40e6387f0ee38fa7862e6654cc288d356e017521774a98226e286fff248eaac2"
+        },
+        {
+          "path": "src/BuildingBlocks/ArcForges.NativeInterop/AssemblyPlaceholder.cs",
+          "sha256": "e3feba8230e39bc3056266cbd2a2a7b3b14a4ed93e704eab399353a427d95efc"
+        },
+        {
+          "path": "src/BuildingBlocks/ArcForges.NativeInterop/NativeLibraryPolicy.cs",
+          "sha256": "b0795f26b439ed65e90f2441d4ef971dfa9030829b41424f903726d0b41db526"
+        },
+        {
+          "path": "src/BuildingBlocks/ArcForges.NativeInterop/NativeSmoke.cs",
+          "sha256": "aa05bb24ff91fd83fdef6b6c198d1c967c55397836c2b241a4a4f4e227462ac9"
+        }
+      ],
+      "lockSha256": "09f91faca7c23b7ef4c0a4a6a4afa1f5d4e17e2e3dcbd9aca08ff12aec384059"
+    },
+    {
+      "project": "src/BuildingBlocks/ArcForges.Observability/ArcForges.Observability.csproj",
+      "classification": "mechanism-only",
+      "disposition": "Keep",
+      "implementation": "name-only scaffold; no capability implementation",
+      "projectReferences": [],
+      "assemblyReferences": [],
+      "packageReferences": [
+        "Microsoft.CodeAnalysis.NetAnalyzers"
+      ],
+      "isPackable": false,
+      "compiledSources": [
+        {
+          "path": "src/BuildingBlocks/ArcForges.Observability/AssemblyPlaceholder.cs",
+          "sha256": "59978400cb6c69c1f9cda4ec4571cab12e3ced07d0c8501d13ef5c673cc88161"
+        }
+      ],
+      "lockSha256": "09f91faca7c23b7ef4c0a4a6a4afa1f5d4e17e2e3dcbd9aca08ff12aec384059"
+    },
+    {
+      "project": "src/BuildingBlocks/ArcForges.Persistence.Sqlite/ArcForges.Persistence.Sqlite.csproj",
+      "classification": "mechanism-only",
+      "disposition": "Keep",
+      "implementation": "name-only scaffold; no capability implementation",
+      "projectReferences": [],
+      "assemblyReferences": [],
+      "packageReferences": [
+        "Microsoft.CodeAnalysis.NetAnalyzers"
+      ],
+      "isPackable": false,
+      "compiledSources": [
+        {
+          "path": "src/BuildingBlocks/ArcForges.Persistence.Sqlite/AssemblyPlaceholder.cs",
+          "sha256": "5ce84c240f5ce3b37d790a9acd9c24a5b7b340520602099949445685587c6822"
+        }
+      ],
+      "lockSha256": "09f91faca7c23b7ef4c0a4a6a4afa1f5d4e17e2e3dcbd9aca08ff12aec384059"
+    },
+    {
+      "project": "src/BuildingBlocks/ArcForges.Security/ArcForges.Security.csproj",
+      "classification": "mechanism-only",
+      "disposition": "Keep",
+      "implementation": "name-only scaffold; no capability implementation",
+      "projectReferences": [],
+      "assemblyReferences": [],
+      "packageReferences": [
+        "Microsoft.CodeAnalysis.NetAnalyzers"
+      ],
+      "isPackable": false,
+      "compiledSources": [
+        {
+          "path": "src/BuildingBlocks/ArcForges.Security/AssemblyPlaceholder.cs",
+          "sha256": "1555e5dc425ebcf1c85326d4d92fb23d5e1cee006448395eeead11d187dd86e7"
+        }
+      ],
+      "lockSha256": "09f91faca7c23b7ef4c0a4a6a4afa1f5d4e17e2e3dcbd9aca08ff12aec384059"
+    }
+  ],
+  "result": "passed",
+  "limitations": [
+    "Windows Release evaluated graph; no claim of production capability behavior.",
+    "Content classification is manual review bound to source hashes, not a whole-program semantic analyzer."
+  ],
+  "substep": "WP01.02",
+  "verifiedAt": "2026-09-21T02:08:40.760228+00:00",
+  "designCommit": "fec697fed839da76aac2d4494440cf1e18b2e697",
+  "sourceUnchanged": true,
+  "checks": {
+    "lockedRestore": "passed",
+    "releaseBuild": "passed; zero warnings/errors",
+    "architectureTests": {
+      "passed": 4,
+      "failed": 0
+    },
+    "existingMainCi": "https://github.com/ArcForges/DesktopPlatform/actions/runs/35539950237"
+  },
+  "logSha256": {
+    "build.log": "263362fa9334035530bb09dca3e5ec1e2c535ccbd042b9c5afc1a55f16cfc1a5",
+    "restore.log": "33bdf84db5b22919aa63329fd537cbe86b032c70fc57d278b4b71ad8aa45a52d",
+    "test.log": "7ed137f4cb452f1ae885b18b8634124faf4f8dd100bfb9d64225d0261fa93bf7"
+  },
+  "retainedBranches": {
+    "DesktopPlatform": "codex/wp01-02-foundation-review",
+    "Design": "codex/wp01-02-foundation-review"
+  }
+}
