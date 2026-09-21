@@ -1,0 +1,3476 @@
+{
+  "schemaVersion": 1,
+  "substep": "WP01.05",
+  "checkedAt": "2026-09-21T03:32:06.289848+00:00",
+  "designBaseline": "509cbf88bd0c24462febb095b6e84b3fdfc012b0",
+  "sources": [
+    {
+      "owner": "DesktopPlatform",
+      "origin": "https://github.com/ArcForges/DesktopPlatform.git",
+      "commit": "6cb08997bb35299df86a6434606d8e24cf5a4d97",
+      "clean": true,
+      "remoteMainVerified": true,
+      "mainCi": "https://github.com/ArcForges/DesktopPlatform/actions/runs/35554989640",
+      "mainCiResult": "success",
+      "workflowSha256": "eceabe118826f5c30d619977b1e878a6b0446e3eff941638b1abf33652985550",
+      "tree": "42199a8b7fc1dcb65831594e4fe2250e45197708",
+      "projects": [
+        {
+          "path": "CMakeLists.txt",
+          "blob": "25e7846ac9304adad34abb1d784955820da5b66e",
+          "disposition": "Keep",
+          "producer": "WP01.02",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "25e7846ac9304adad34abb1d784955820da5b66e",
+          "changedSinceInventory": false
+        },
+        {
+          "path": "native/CMakeLists.txt",
+          "blob": "87000cb87754a69b5f62df1a30652c4212522b3a",
+          "disposition": "Keep",
+          "producer": "WP13",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "87000cb87754a69b5f62df1a30652c4212522b3a",
+          "changedSinceInventory": false
+        },
+        {
+          "path": "native/arcgraphics-metal-abi/CMakeLists.txt",
+          "blob": "892ac82b793b6d2d8abacae3c44c49bf2879c40c",
+          "disposition": "Keep",
+          "producer": "WP13",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "892ac82b793b6d2d8abacae3c44c49bf2879c40c",
+          "changedSinceInventory": false
+        },
+        {
+          "path": "native/arcmedia-ffmpeg-abi/CMakeLists.txt",
+          "blob": "c38d3134451034092dc2ea0b31931ae853543814",
+          "disposition": "Keep",
+          "producer": "WP13",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "c38d3134451034092dc2ea0b31931ae853543814",
+          "changedSinceInventory": false
+        },
+        {
+          "path": "native/arcmedia-ffmpeg-abi/windows/arcmedia_ffmpeg_abi.vcxproj",
+          "blob": "1193dea2c42d68fdef90a5e176a9cd6173486033",
+          "disposition": "Keep",
+          "producer": "WP13",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "1193dea2c42d68fdef90a5e176a9cd6173486033",
+          "changedSinceInventory": false
+        },
+        {
+          "path": "native/arcslate-color-abi/CMakeLists.txt",
+          "blob": "eff3fc8659b5e34a2af131d93602e50b297a9cdf",
+          "disposition": "Keep",
+          "producer": "WP13",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "eff3fc8659b5e34a2af131d93602e50b297a9cdf",
+          "changedSinceInventory": false
+        },
+        {
+          "path": "native/arcslate-color-abi/windows/arcslate_color_abi.vcxproj",
+          "blob": "86e16259126cd118adfd28f6f6bde26c8bda06a9",
+          "disposition": "Keep",
+          "producer": "WP13",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "86e16259126cd118adfd28f6f6bde26c8bda06a9",
+          "changedSinceInventory": false
+        },
+        {
+          "path": "native/arcslate-image-abi/CMakeLists.txt",
+          "blob": "19fc63e8d6c563fb3ca86214dabd37be06507834",
+          "disposition": "Keep",
+          "producer": "WP13",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "19fc63e8d6c563fb3ca86214dabd37be06507834",
+          "changedSinceInventory": false
+        },
+        {
+          "path": "native/arcslate-image-abi/windows/arcslate_image_abi.vcxproj",
+          "blob": "ce5be307c92a5bb9a84581b49df47d0abe0ab47a",
+          "disposition": "Keep",
+          "producer": "WP13",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "ce5be307c92a5bb9a84581b49df47d0abe0ab47a",
+          "changedSinceInventory": false
+        },
+        {
+          "path": "native/arcslate-otio-abi/CMakeLists.txt",
+          "blob": "966e3702b40213f530e8dff8bf91eccd58e74578",
+          "disposition": "Keep",
+          "producer": "WP13",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "966e3702b40213f530e8dff8bf91eccd58e74578",
+          "changedSinceInventory": false
+        },
+        {
+          "path": "native/arcslate-otio-abi/windows/arcslate_otio_abi.vcxproj",
+          "blob": "5b7ce9e0feb944ef210bd812023f41bdbe0a4bb9",
+          "disposition": "Keep",
+          "producer": "WP13",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "5b7ce9e0feb944ef210bd812023f41bdbe0a4bb9",
+          "changedSinceInventory": false
+        },
+        {
+          "path": "src/Build/ArcForges.Build.Policy/ArcForges.Build.Policy.csproj",
+          "blob": "26d6279f18250960eafcfd24876f215c7f151bee",
+          "disposition": "Keep",
+          "producer": "WP02",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "26d6279f18250960eafcfd24876f215c7f151bee",
+          "changedSinceInventory": false
+        },
+        {
+          "path": "src/BuildingBlocks/ArcForges.Application.Abstractions/ArcForges.Application.Abstractions.csproj",
+          "blob": "1c053fa658f7bbb17153e840891ba744b891d81f",
+          "disposition": "Keep",
+          "producer": "WP01.02",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "1c053fa658f7bbb17153e840891ba744b891d81f",
+          "changedSinceInventory": false
+        },
+        {
+          "path": "src/BuildingBlocks/ArcForges.Desktop.Experience/ArcForges.Desktop.Experience.csproj",
+          "blob": "3772961605c198c4e204dec02af39b607dd7a615",
+          "disposition": "Keep",
+          "producer": "WP01.02",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "3772961605c198c4e204dec02af39b607dd7a615",
+          "changedSinceInventory": false
+        },
+        {
+          "path": "src/BuildingBlocks/ArcForges.Desktop.Graphics/ArcForges.Desktop.Graphics.csproj",
+          "blob": "5880b50b0f64f5a64b450350b1a13795278b3e6b",
+          "disposition": "Keep",
+          "producer": "WP01.02",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "5880b50b0f64f5a64b450350b1a13795278b3e6b",
+          "changedSinceInventory": false
+        },
+        {
+          "path": "src/BuildingBlocks/ArcForges.Desktop.Preview/ArcForges.Desktop.Preview.csproj",
+          "blob": "19f944d4ff43ef37cc7559d5f4f16ae6581163d8",
+          "disposition": "Keep",
+          "producer": "WP01.02",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "19f944d4ff43ef37cc7559d5f4f16ae6581163d8",
+          "changedSinceInventory": false
+        },
+        {
+          "path": "src/BuildingBlocks/ArcForges.Desktop.RichContent/ArcForges.Desktop.RichContent.csproj",
+          "blob": "44ca1edfc5e7063cd769ae4d51853e0e7ed35527",
+          "disposition": "Keep",
+          "producer": "WP01.02",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "44ca1edfc5e7063cd769ae4d51853e0e7ed35527",
+          "changedSinceInventory": false
+        },
+        {
+          "path": "src/BuildingBlocks/ArcForges.Desktop.Text/ArcForges.Desktop.Text.csproj",
+          "blob": "87793aa3addd8366b664f4494520c9a97c7ca514",
+          "disposition": "Keep",
+          "producer": "WP01.02",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "87793aa3addd8366b664f4494520c9a97c7ca514",
+          "changedSinceInventory": false
+        },
+        {
+          "path": "src/BuildingBlocks/ArcForges.Foundation/ArcForges.Foundation.csproj",
+          "blob": "41ed903c7e00ec2e3d93647912052a5a40bac9ba",
+          "disposition": "Keep",
+          "producer": "WP01.02",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "41ed903c7e00ec2e3d93647912052a5a40bac9ba",
+          "changedSinceInventory": false
+        },
+        {
+          "path": "src/BuildingBlocks/ArcForges.NativeInterop/ArcForges.NativeInterop.csproj",
+          "blob": "4296a8d469d84de3d133c0dd56385baf800dbf77",
+          "disposition": "Keep",
+          "producer": "WP01.02",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "4296a8d469d84de3d133c0dd56385baf800dbf77",
+          "changedSinceInventory": false
+        },
+        {
+          "path": "src/BuildingBlocks/ArcForges.Observability/ArcForges.Observability.csproj",
+          "blob": "2240e37c65a0756ab39187fd6cc6d463443e30fc",
+          "disposition": "Keep",
+          "producer": "WP01.02",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "2240e37c65a0756ab39187fd6cc6d463443e30fc",
+          "changedSinceInventory": false
+        },
+        {
+          "path": "src/BuildingBlocks/ArcForges.Persistence.Sqlite/ArcForges.Persistence.Sqlite.csproj",
+          "blob": "6b4a9d54a67da08b17f2ae1d5842ac05d712d15d",
+          "disposition": "Keep",
+          "producer": "WP01.02",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "6b4a9d54a67da08b17f2ae1d5842ac05d712d15d",
+          "changedSinceInventory": false
+        },
+        {
+          "path": "src/BuildingBlocks/ArcForges.Security/ArcForges.Security.csproj",
+          "blob": "87fa93b3448a701333fc2a74219b8e320ba0d65d",
+          "disposition": "Keep",
+          "producer": "WP01.02",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "87fa93b3448a701333fc2a74219b8e320ba0d65d",
+          "changedSinceInventory": false
+        },
+        {
+          "path": "src/DesktopHelpers/ArcForges.ContentSandbox/ArcForges.ContentSandbox.csproj",
+          "blob": "63f22e07804e1b9af3a7955fed864187a14366c4",
+          "disposition": "Keep",
+          "producer": "WP11",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "63f22e07804e1b9af3a7955fed864187a14366c4",
+          "changedSinceInventory": false
+        },
+        {
+          "path": "src/Native/ArcForges.Native.Abstractions/ArcForges.Native.Abstractions.csproj",
+          "blob": "32742a65b4e25d04b40e0dfb519ef3201359c6ba",
+          "disposition": "Keep",
+          "producer": "WP13",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "32742a65b4e25d04b40e0dfb519ef3201359c6ba",
+          "changedSinceInventory": false
+        },
+        {
+          "path": "src/Native/ArcForges.Native.Colour.Runtime.win-x64/ArcForges.Native.Colour.Runtime.win-x64.csproj",
+          "blob": "54f158a9af6c9337d8f5b9057f2a37871e7387d2",
+          "disposition": "Keep",
+          "producer": "WP13",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "54f158a9af6c9337d8f5b9057f2a37871e7387d2",
+          "changedSinceInventory": false
+        },
+        {
+          "path": "src/Native/ArcForges.Native.Colour/ArcForges.Native.Colour.csproj",
+          "blob": "79676a56736dd0ace226cf1f71c2d1f60b2ab4c4",
+          "disposition": "Keep",
+          "producer": "WP13",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "79676a56736dd0ace226cf1f71c2d1f60b2ab4c4",
+          "changedSinceInventory": false
+        },
+        {
+          "path": "src/Native/ArcForges.Native.Image.Runtime.win-x64/ArcForges.Native.Image.Runtime.win-x64.csproj",
+          "blob": "a1649f7e50bfd602b4bc8d755366a546687bbe55",
+          "disposition": "Keep",
+          "producer": "WP13",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "a1649f7e50bfd602b4bc8d755366a546687bbe55",
+          "changedSinceInventory": false
+        },
+        {
+          "path": "src/Native/ArcForges.Native.Image/ArcForges.Native.Image.csproj",
+          "blob": "9132f77575e4d1940f4648f7f208d86cf6087bca",
+          "disposition": "Keep",
+          "producer": "WP13",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "9132f77575e4d1940f4648f7f208d86cf6087bca",
+          "changedSinceInventory": false
+        },
+        {
+          "path": "src/Native/ArcForges.Native.Media.Runtime.win-x64/ArcForges.Native.Media.Runtime.win-x64.csproj",
+          "blob": "6888263b03c3ebdaed94040dc35201f3b726c30c",
+          "disposition": "Keep",
+          "producer": "WP13",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "6888263b03c3ebdaed94040dc35201f3b726c30c",
+          "changedSinceInventory": false
+        },
+        {
+          "path": "src/Native/ArcForges.Native.Media/ArcForges.Native.Media.csproj",
+          "blob": "3cf66f75b2849777ccc027f4f15e0b48f09bf315",
+          "disposition": "Keep",
+          "producer": "WP13",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "3cf66f75b2849777ccc027f4f15e0b48f09bf315",
+          "changedSinceInventory": false
+        },
+        {
+          "path": "src/Native/ArcForges.Native.Otio.Runtime.win-x64/ArcForges.Native.Otio.Runtime.win-x64.csproj",
+          "blob": "d47a3be469d905ce5d01b956ee323d3b755b72f7",
+          "disposition": "Keep",
+          "producer": "WP13",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "d47a3be469d905ce5d01b956ee323d3b755b72f7",
+          "changedSinceInventory": false
+        },
+        {
+          "path": "src/Native/ArcForges.Native.Otio/ArcForges.Native.Otio.csproj",
+          "blob": "56fa2f251ef41a4e68e09792b7b1d442432e8250",
+          "disposition": "Keep",
+          "producer": "WP13",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "56fa2f251ef41a4e68e09792b7b1d442432e8250",
+          "changedSinceInventory": false
+        },
+        {
+          "path": "tests/ArchitectureTests/ArcForges.Tests.ArchitectureTests.csproj",
+          "blob": "f1c0f3c9c1eed1a1e286ce1449f38bd16c2a3d6b",
+          "disposition": "Keep",
+          "producer": "WP01.04",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "f1c0f3c9c1eed1a1e286ce1449f38bd16c2a3d6b",
+          "changedSinceInventory": false
+        },
+        {
+          "path": "tests/NativeAbiTests/ArcForges.Tests.NativeAbiTests.csproj",
+          "blob": "87b5bfceadd816497a18225b52a1149c53355dbe",
+          "disposition": "Keep",
+          "producer": "WP01.04",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "bfae1c5eb2425f36dc6bab237d5ebca5a6940efe",
+          "changedSinceInventory": true
+        }
+      ],
+      "jobs": [
+        {
+          "name": "candidate / native / native-win-x64",
+          "conclusion": "success"
+        },
+        {
+          "name": "preflight",
+          "conclusion": "success"
+        },
+        {
+          "name": "candidate / allocate-version",
+          "conclusion": "success"
+        },
+        {
+          "name": "candidate / reference-policy (ubuntu-latest)",
+          "conclusion": "success"
+        },
+        {
+          "name": "candidate / repository-hooks",
+          "conclusion": "success"
+        },
+        {
+          "name": "candidate / reference-policy (windows-latest)",
+          "conclusion": "success"
+        },
+        {
+          "name": "candidate / runtime-policy (ubuntu-latest)",
+          "conclusion": "success"
+        },
+        {
+          "name": "candidate / provenance-policy (ubuntu-latest)",
+          "conclusion": "success"
+        },
+        {
+          "name": "candidate / design-policy (ubuntu-latest)",
+          "conclusion": "success"
+        },
+        {
+          "name": "candidate / reconciliation-policy (ubuntu-latest)",
+          "conclusion": "success"
+        },
+        {
+          "name": "candidate / runtime-policy (windows-latest)",
+          "conclusion": "success"
+        },
+        {
+          "name": "candidate / secret-scan",
+          "conclusion": "success"
+        },
+        {
+          "name": "candidate / licence-policy (windows-latest)",
+          "conclusion": "success"
+        },
+        {
+          "name": "candidate / provenance-policy (windows-latest)",
+          "conclusion": "success"
+        },
+        {
+          "name": "candidate / design-policy (windows-latest)",
+          "conclusion": "success"
+        },
+        {
+          "name": "candidate / licence-policy (ubuntu-latest)",
+          "conclusion": "success"
+        },
+        {
+          "name": "candidate / reconciliation-policy (windows-latest)",
+          "conclusion": "success"
+        },
+        {
+          "name": "candidate / managed-packages / pack",
+          "conclusion": "success"
+        },
+        {
+          "name": "candidate / managed-packages / consumer (ubuntu-latest)",
+          "conclusion": "success"
+        },
+        {
+          "name": "candidate / managed-packages / consumer (windows-latest)",
+          "conclusion": "success"
+        },
+        {
+          "name": "candidate / ci",
+          "conclusion": "success"
+        },
+        {
+          "name": "publish",
+          "conclusion": "success"
+        }
+      ],
+      "worktrees": "worktree C:/MyFile/Projects/ArcForges/DesktopPlatform\nHEAD 6cb08997bb35299df86a6434606d8e24cf5a4d97\nbranch refs/heads/main\n\nworktree C:/MyFile/Projects/ArcForges/DesktopPlatform/.worktree/wp00-04-reference-baselines\nHEAD d5a30d63e044a2b3edf487bf68714d642b6a7b99\nbranch refs/heads/codex/wp00-04-reference-baselines\n\nworktree C:/MyFile/Projects/ArcForges/DesktopPlatform/.worktree/wp00-05-runtime-ownership\nHEAD 08c46ab9fe955c60c28e7106df519eb55bd8e3ba\nbranch refs/heads/codex/wp00-05-runtime-ownership\n\nworktree C:/MyFile/Projects/ArcForges/DesktopPlatform/.worktree/wp01-00-reconciliation-inventory\nHEAD b7744f3ffdeae161d8a3e34243aad3b8e8b47978\nbranch refs/heads/codex/wp01-00-reconciliation-inventory\n\nworktree C:/MyFile/Projects/ArcForges/DesktopPlatform/.worktree/wp01-02-foundation-review\nHEAD b7744f3ffdeae161d8a3e34243aad3b8e8b47978\nbranch refs/heads/codex/wp01-02-foundation-review\n\nworktree C:/MyFile/Projects/ArcForges/DesktopPlatform/.worktree/wp01-03-native-dispositions\nHEAD 152d2682105d005d88b46893f930dffccb2da4df\nbranch refs/heads/codex/wp01-03-native-dispositions"
+    },
+    {
+      "owner": "Contracts",
+      "origin": "https://github.com/ArcForges/Contracts.git",
+      "commit": "24c05b7fc215896eeec91437ffe8846f2d4467a1",
+      "clean": true,
+      "remoteMainVerified": true,
+      "mainCi": "https://github.com/ArcForges/Contracts/actions/runs/35546947568",
+      "mainCiResult": "success",
+      "workflowSha256": "aa910f681a27b4068bdfcc244fbe08773f00a8f4b58a95da147644aee2d76073",
+      "tree": "54af47433f6861fb80336639a6dd9a4f67a5c1ae",
+      "projects": [
+        {
+          "path": "build.gradle.kts",
+          "blob": "76903f01377ee59e69607c9178dc67e8397be7dc",
+          "disposition": "Keep",
+          "producer": "WP03",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "b1a82b96c78d070abfaf3369104baace852b8b82",
+          "changedSinceInventory": true
+        },
+        {
+          "path": "eng/Codegen/Codegen.csproj",
+          "blob": "75f6a3c70813e3d1e4390af604138514e3e40fb7",
+          "disposition": "Keep",
+          "producer": "WP03",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "75f6a3c70813e3d1e4390af604138514e3e40fb7",
+          "changedSinceInventory": false
+        },
+        {
+          "path": "eng/central-signing/build.gradle.kts",
+          "blob": "208fea8767f8d451bc663d8ca5f541264c58dc6b",
+          "disposition": "Keep",
+          "producer": "WP03",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "968379e00d8fa143611fa0767a934520078f5153",
+          "changedSinceInventory": true
+        },
+        {
+          "path": "package.json",
+          "blob": "1aa386b7b7ae94eb6a7b71d18bf624366a259123",
+          "disposition": "Keep",
+          "producer": "WP03",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "1aa386b7b7ae94eb6a7b71d18bf624366a259123",
+          "changedSinceInventory": false
+        },
+        {
+          "path": "src/public/dotnet/ArcForges.Contracts.PublicApi/ArcForges.Contracts.PublicApi.csproj",
+          "blob": "fa1b854b10eeb33bc0d4cc95c180d4ebc2dd53cd",
+          "disposition": "Keep",
+          "producer": "WP03",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "fa1b854b10eeb33bc0d4cc95c180d4ebc2dd53cd",
+          "changedSinceInventory": false
+        },
+        {
+          "path": "src/public/kotlin/contract-fixtures/build.gradle.kts",
+          "blob": "06a18cce968b2478df18631e279268041b5bce08",
+          "disposition": "Keep",
+          "producer": "WP03",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "06a18cce968b2478df18631e279268041b5bce08",
+          "changedSinceInventory": false
+        },
+        {
+          "path": "src/public/kotlin/contracts-client/build.gradle.kts",
+          "blob": "d136458c085612cf798eb7e4f35ea0bdc9eefb00",
+          "disposition": "Keep",
+          "producer": "WP03",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "d136458c085612cf798eb7e4f35ea0bdc9eefb00",
+          "changedSinceInventory": false
+        },
+        {
+          "path": "src/public/kotlin/contracts-connect-client/build.gradle.kts",
+          "blob": "aee1aa8ed040241c39f85c39ab2c01fd319cf96c",
+          "disposition": "Keep",
+          "producer": "WP03",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "aee1aa8ed040241c39f85c39ab2c01fd319cf96c",
+          "changedSinceInventory": false
+        },
+        {
+          "path": "src/public/kotlin/contracts-proto/build.gradle.kts",
+          "blob": "d670b7bceb9d9b7bf95e639279444f2d3dbd5109",
+          "disposition": "Keep",
+          "producer": "WP03",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "d670b7bceb9d9b7bf95e639279444f2d3dbd5109",
+          "changedSinceInventory": false
+        },
+        {
+          "path": "src/public/ts/api-client/package.json",
+          "blob": "28cc70e6e73cf160effd548fb4cefdf74dbb0739",
+          "disposition": "Keep",
+          "producer": "WP03",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "28cc70e6e73cf160effd548fb4cefdf74dbb0739",
+          "changedSinceInventory": false
+        },
+        {
+          "path": "src/public/ts/proto/package.json",
+          "blob": "2fcdc953f86548729a05b0332d75b4c0f548f489",
+          "disposition": "Keep",
+          "producer": "WP03",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "2fcdc953f86548729a05b0332d75b4c0f548f489",
+          "changedSinceInventory": false
+        },
+        {
+          "path": "tests/public/HelloClient/HelloClient.csproj",
+          "blob": "145766c682227d6dc8fc9fdc24872caccdef0253",
+          "disposition": "Keep",
+          "producer": "WP03",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "145766c682227d6dc8fc9fdc24872caccdef0253",
+          "changedSinceInventory": false
+        },
+        {
+          "path": "tests/public/HelloHost/HelloHost.csproj",
+          "blob": "fd7b7a19dc69ae6c96b167cd2241efd30c8b6a45",
+          "disposition": "Keep",
+          "producer": "WP03",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "fd7b7a19dc69ae6c96b167cd2241efd30c8b6a45",
+          "changedSinceInventory": false
+        },
+        {
+          "path": "tests/public/KotlinClient/build.gradle.kts",
+          "blob": "5cfe7a11c7fd8cfbdf550ad756e96b558279b8af",
+          "disposition": "Keep",
+          "producer": "WP03",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "5cfe7a11c7fd8cfbdf550ad756e96b558279b8af",
+          "changedSinceInventory": false
+        },
+        {
+          "path": "tests/public/KotlinConnectClient/build.gradle.kts",
+          "blob": "fb292439baa02220936bb1ed0ee7ff36cd3fab4c",
+          "disposition": "Keep",
+          "producer": "WP03",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "fb292439baa02220936bb1ed0ee7ff36cd3fab4c",
+          "changedSinceInventory": false
+        }
+      ],
+      "jobs": [
+        {
+          "name": "Build candidate",
+          "conclusion": "success"
+        },
+        {
+          "name": "Consumer (ubuntu-latest)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Verify",
+          "conclusion": "success"
+        },
+        {
+          "name": "Publish npm",
+          "conclusion": "success"
+        },
+        {
+          "name": "Publish NuGet",
+          "conclusion": "success"
+        },
+        {
+          "name": "Publish Maven channel",
+          "conclusion": "success"
+        },
+        {
+          "name": "Consumer (windows-latest)",
+          "conclusion": "success"
+        }
+      ],
+      "worktrees": "worktree C:/MyFile/Projects/ArcForges/Contracts\nHEAD 24c05b7fc215896eeec91437ffe8846f2d4467a1\nbranch refs/heads/main\n\nworktree C:/MyFile/Projects/ArcForges/Contracts/.worktree/maven-snapshot-channel\nHEAD 24c05b7fc215896eeec91437ffe8846f2d4467a1\nbranch refs/heads/codex/maven-snapshot-channel\n\nworktree C:/MyFile/Projects/ArcForges/Contracts/.worktree/maven-snapshot-http\nHEAD 24c05b7fc215896eeec91437ffe8846f2d4467a1\nbranch refs/heads/codex/maven-snapshot-http\n\nworktree C:/MyFile/Projects/ArcForges/Contracts/.worktree/wp00-04-reference-naming\nHEAD ee16cb255a50c17ac9561c45117a420b279fb46f\nbranch refs/heads/codex/wp00-04-reference-naming\n\nworktree C:/MyFile/Projects/ArcForges/Contracts/.worktree/wp00-05-runtime-ownership\nHEAD 6ff3f1b492f3caebfd38da5f9c3ece11184a604f\nbranch refs/heads/codex/wp00-05-runtime-ownership\n\nworktree C:/MyFile/Projects/ArcForges/Contracts/.worktree/wp01-01-contract-access\nHEAD ef9e0aa9d90d47ff8355dc38b037fd5860b4476c\nbranch refs/heads/codex/wp01-01-contract-access"
+    },
+    {
+      "owner": "ArcNotes",
+      "origin": "https://github.com/ArcForges/ArcNotes.git",
+      "commit": "e40423a1b14ce8341de35748cc2a093c7c9b77a7",
+      "clean": true,
+      "remoteMainVerified": true,
+      "mainCi": "https://github.com/ArcForges/ArcNotes/actions/runs/35425608146",
+      "mainCiResult": "success",
+      "workflowSha256": "d872a75b27d8f1da71d3d94b7152edb95fa25cfb2d4855c9e00af832cb5708c3",
+      "tree": "510cb6f84cfd36abf6c757b9ed7bcf0d427e137d",
+      "projects": [
+        {
+          "path": "eng/ArcForges.Repository/ArcForges.Repository.csproj",
+          "blob": "20a51da180a8b012de47ec9d6b7cf00c96dad2cd",
+          "disposition": "Keep",
+          "producer": "WP18",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "20a51da180a8b012de47ec9d6b7cf00c96dad2cd",
+          "changedSinceInventory": false
+        },
+        {
+          "path": "src/ArcForges.ArcNotes.Core/ArcForges.ArcNotes.Core.csproj",
+          "blob": "c0b0a7c802b9faf2601f0b8e1d273818b15f5e21",
+          "disposition": "Keep",
+          "producer": "WP18",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "c0b0a7c802b9faf2601f0b8e1d273818b15f5e21",
+          "changedSinceInventory": false
+        },
+        {
+          "path": "src/ArcForges.ArcNotes/ArcForges.ArcNotes.csproj",
+          "blob": "47c6a559a45dd8023a4b8209dc83d31f4b1e5c70",
+          "disposition": "Keep",
+          "producer": "WP18",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "47c6a559a45dd8023a4b8209dc83d31f4b1e5c70",
+          "changedSinceInventory": false
+        },
+        {
+          "path": "tests/ArcForges.ArcNotes.Tests/ArcForges.ArcNotes.Tests.csproj",
+          "blob": "fab08f5e2abe006bdb72f36e06d390dbdb1ff62c",
+          "disposition": "Keep",
+          "producer": "WP18",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "fab08f5e2abe006bdb72f36e06d390dbdb1ff62c",
+          "changedSinceInventory": false
+        }
+      ],
+      "jobs": [
+        {
+          "name": "CodeQL (csharp)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Native (osx-x64)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Native (osx-arm64)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Native (win-arm64)",
+          "conclusion": "success"
+        },
+        {
+          "name": "CodeQL (actions)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Native (linux-x64)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Native (win-x64)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Workflow and secret checks",
+          "conclusion": "success"
+        },
+        {
+          "name": "Dependency review",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Verify",
+          "conclusion": "success"
+        },
+        {
+          "name": "Publish portable release",
+          "conclusion": "success"
+        },
+        {
+          "name": "Verify publication",
+          "conclusion": "success"
+        }
+      ],
+      "worktrees": "worktree C:/MyFile/Projects/ArcForges/ArcNotes\nHEAD e40423a1b14ce8341de35748cc2a093c7c9b77a7\nbranch refs/heads/main\n\nworktree C:/MyFile/Projects/ArcForges/ArcNotes/.worktree/wp00-90-stage-acceptance\nHEAD e40423a1b14ce8341de35748cc2a093c7c9b77a7\nbranch refs/heads/codex/wp00-90-stage-acceptance\n\nworktree C:/MyFile/Projects/ArcForges/ArcNotes/.worktree/wp01-05-core-validation\nHEAD e40423a1b14ce8341de35748cc2a093c7c9b77a7\nbranch refs/heads/codex/wp01-05-core-validation"
+    },
+    {
+      "owner": "ArcScope",
+      "origin": "https://github.com/ArcForges/ArcScope.git",
+      "commit": "d247dcff36fd1123a70e5e59967a9b2294a2eeac",
+      "clean": true,
+      "remoteMainVerified": true,
+      "mainCi": "https://github.com/ArcForges/ArcScope/actions/runs/35426873548",
+      "mainCiResult": "success",
+      "workflowSha256": "85b06a7ffdb565f656714bc54054a5d6d40a1cda98971ab39ba274bf2f0f9e16",
+      "tree": "91419a71287443588e3a180a6a2e7b7e9d8fe3e2",
+      "projects": [
+        {
+          "path": "eng/ArcForges.Repository/ArcForges.Repository.csproj",
+          "blob": "20a51da180a8b012de47ec9d6b7cf00c96dad2cd",
+          "disposition": "Keep",
+          "producer": "WP33",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "20a51da180a8b012de47ec9d6b7cf00c96dad2cd",
+          "changedSinceInventory": false
+        },
+        {
+          "path": "src/ArcForges.ArcScope.Core/ArcForges.ArcScope.Core.csproj",
+          "blob": "c0b0a7c802b9faf2601f0b8e1d273818b15f5e21",
+          "disposition": "Keep",
+          "producer": "WP33",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "c0b0a7c802b9faf2601f0b8e1d273818b15f5e21",
+          "changedSinceInventory": false
+        },
+        {
+          "path": "src/ArcForges.ArcScope/ArcForges.ArcScope.csproj",
+          "blob": "aee25802b5bde26ebb54a3547347ea6c363dbc8f",
+          "disposition": "Keep",
+          "producer": "WP33",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "aee25802b5bde26ebb54a3547347ea6c363dbc8f",
+          "changedSinceInventory": false
+        },
+        {
+          "path": "tests/ArcForges.ArcScope.Tests/ArcForges.ArcScope.Tests.csproj",
+          "blob": "4a5675eb0a162e3d1429366361c11cbbc9769176",
+          "disposition": "Keep",
+          "producer": "WP33",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "4a5675eb0a162e3d1429366361c11cbbc9769176",
+          "changedSinceInventory": false
+        }
+      ],
+      "jobs": [
+        {
+          "name": "Workflow and secret checks",
+          "conclusion": "success"
+        },
+        {
+          "name": "CodeQL (actions)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Native (win-arm64)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Native (osx-x64)",
+          "conclusion": "success"
+        },
+        {
+          "name": "CodeQL (csharp)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Native (win-x64)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Native (linux-x64)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Native (osx-arm64)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Dependency review",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Verify",
+          "conclusion": "success"
+        },
+        {
+          "name": "Publish portable release",
+          "conclusion": "success"
+        },
+        {
+          "name": "Verify publication",
+          "conclusion": "success"
+        }
+      ],
+      "worktrees": "worktree C:/MyFile/Projects/ArcForges/ArcScope\nHEAD d247dcff36fd1123a70e5e59967a9b2294a2eeac\nbranch refs/heads/main\n\nworktree C:/MyFile/Projects/ArcForges/ArcScope/.worktree/wp00-90-stage-acceptance\nHEAD d247dcff36fd1123a70e5e59967a9b2294a2eeac\nbranch refs/heads/codex/wp00-90-stage-acceptance"
+    },
+    {
+      "owner": "ArcSlate",
+      "origin": "https://github.com/ArcForges/ArcSlate.git",
+      "commit": "b0d255f54fb560a534cc493d5645ca4bc7b4bd0e",
+      "clean": true,
+      "remoteMainVerified": true,
+      "mainCi": "https://github.com/ArcForges/ArcSlate/actions/runs/35427484761",
+      "mainCiResult": "success",
+      "workflowSha256": "27071fb54cee2092a29c1454caf030320db5cfe325b9eaec58fd1019cdb6ed84",
+      "tree": "c0e546663f52f0ae4fef451ff4dd679d35ce7981",
+      "projects": [
+        {
+          "path": "eng/ArcForges.Repository/ArcForges.Repository.csproj",
+          "blob": "20a51da180a8b012de47ec9d6b7cf00c96dad2cd",
+          "disposition": "Keep",
+          "producer": "WP36",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "20a51da180a8b012de47ec9d6b7cf00c96dad2cd",
+          "changedSinceInventory": false
+        },
+        {
+          "path": "src/ArcForges.ArcSlate.Core/ArcForges.ArcSlate.Core.csproj",
+          "blob": "c0b0a7c802b9faf2601f0b8e1d273818b15f5e21",
+          "disposition": "Keep",
+          "producer": "WP36",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "c0b0a7c802b9faf2601f0b8e1d273818b15f5e21",
+          "changedSinceInventory": false
+        },
+        {
+          "path": "src/ArcForges.ArcSlate/ArcForges.ArcSlate.csproj",
+          "blob": "1f2a2999800bc7845fac192ed0e6204f7c01f9a6",
+          "disposition": "Keep",
+          "producer": "WP36",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "1f2a2999800bc7845fac192ed0e6204f7c01f9a6",
+          "changedSinceInventory": false
+        },
+        {
+          "path": "tests/ArcForges.ArcSlate.Tests/ArcForges.ArcSlate.Tests.csproj",
+          "blob": "609d45bab405b7eb40a4e15061fa9e1a6e4ff969",
+          "disposition": "Keep",
+          "producer": "WP36",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "609d45bab405b7eb40a4e15061fa9e1a6e4ff969",
+          "changedSinceInventory": false
+        }
+      ],
+      "jobs": [
+        {
+          "name": "Workflow and secret checks",
+          "conclusion": "success"
+        },
+        {
+          "name": "CodeQL (csharp)",
+          "conclusion": "success"
+        },
+        {
+          "name": "CodeQL (actions)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Native (linux-x64)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Native (win-arm64)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Native (osx-x64)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Native (osx-arm64)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Native (win-x64)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Dependency review",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Verify",
+          "conclusion": "success"
+        },
+        {
+          "name": "Publish portable release",
+          "conclusion": "success"
+        },
+        {
+          "name": "Verify publication",
+          "conclusion": "success"
+        }
+      ],
+      "worktrees": "worktree C:/MyFile/Projects/ArcForges/ArcSlate\nHEAD b0d255f54fb560a534cc493d5645ca4bc7b4bd0e\nbranch refs/heads/main\n\nworktree C:/MyFile/Projects/ArcForges/ArcSlate/.worktree/wp00-90-stage-acceptance\nHEAD b0d255f54fb560a534cc493d5645ca4bc7b4bd0e\nbranch refs/heads/codex/wp00-90-stage-acceptance"
+    },
+    {
+      "owner": "Cloud",
+      "origin": "https://github.com/ArcForges/Cloud.git",
+      "commit": "4571ec8692235485712d4c4e3ef4886c162f2574",
+      "clean": true,
+      "remoteMainVerified": true,
+      "mainCi": "https://github.com/ArcForges/Cloud/actions/runs/35535883611",
+      "mainCiResult": "success",
+      "workflowSha256": "67815ee4a9136e0d4a8dda9556931e1ccfdfaeaebd69540b9c2d7885be59ecea",
+      "tree": "9c49531f1e1c89e67bdc9029029bd4ece89bdba6",
+      "projects": [
+        {
+          "path": "package.json",
+          "blob": "9dcc0a0322d85844860c4eaa4c94140c2c8bc256",
+          "disposition": "Keep",
+          "producer": "WP21",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "9dcc0a0322d85844860c4eaa4c94140c2c8bc256",
+          "changedSinceInventory": false
+        },
+        {
+          "path": "src/ArcForges.Cloud/ArcForges.Cloud.csproj",
+          "blob": "2960523c89be8d20dd2abaa6ff816e276614a2c5",
+          "disposition": "Keep",
+          "producer": "WP21",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "2960523c89be8d20dd2abaa6ff816e276614a2c5",
+          "changedSinceInventory": false
+        },
+        {
+          "path": "tests/ArcForges.Cloud.Consumer/ArcForges.Cloud.Consumer.csproj",
+          "blob": "bd7168f08439256710f60a26ea4f91296ea771fc",
+          "disposition": "Keep",
+          "producer": "WP21",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "bd7168f08439256710f60a26ea4f91296ea771fc",
+          "changedSinceInventory": false
+        },
+        {
+          "path": "tests/ArcForges.Cloud.Tests/ArcForges.Cloud.Tests.csproj",
+          "blob": "25bfa222199d806a951a8a0fe73dda22b04b6f10",
+          "disposition": "Keep",
+          "producer": "WP21",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "25bfa222199d806a951a8a0fe73dda22b04b6f10",
+          "changedSinceInventory": false
+        },
+        {
+          "path": "tests/kotlin-consumer/build.gradle.kts",
+          "blob": "14def5970080a2e185e5327af9148eea7fdec80b",
+          "disposition": "Keep",
+          "producer": "WP21",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "14def5970080a2e185e5327af9148eea7fdec80b",
+          "changedSinceInventory": false
+        }
+      ],
+      "jobs": [
+        {
+          "name": "Dependency audit and repository checks",
+          "conclusion": "success"
+        },
+        {
+          "name": "Source (windows-latest)",
+          "conclusion": "success"
+        },
+        {
+          "name": "CodeQL (csharp)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Source (ubuntu-latest)",
+          "conclusion": "success"
+        },
+        {
+          "name": "CodeQL (actions)",
+          "conclusion": "success"
+        },
+        {
+          "name": "CodeQL (javascript-typescript)",
+          "conclusion": "success"
+        },
+        {
+          "name": "CodeQL (java-kotlin)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Dependency review",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Native AOT image and real protocol integration",
+          "conclusion": "success"
+        },
+        {
+          "name": "Verify",
+          "conclusion": "success"
+        },
+        {
+          "name": "Deploy and verify Cloudflare",
+          "conclusion": "success"
+        }
+      ],
+      "worktrees": "worktree C:/MyFile/Projects/ArcForges/Cloud\nHEAD 4571ec8692235485712d4c4e3ef4886c162f2574\nbranch refs/heads/main\n\nworktree C:/MyFile/Projects/ArcForges/Cloud/.worktree/wp00-05-runtime-ownership\nHEAD 4571ec8692235485712d4c4e3ef4886c162f2574\nbranch refs/heads/codex/wp00-05-runtime-ownership"
+    },
+    {
+      "owner": "AI",
+      "origin": "https://github.com/ArcForges/AI.git",
+      "commit": "944edfe88718fc5f72a42ea0bed1c495307c22df",
+      "clean": true,
+      "remoteMainVerified": true,
+      "mainCi": "https://github.com/ArcForges/AI/actions/runs/35535890121",
+      "mainCiResult": "success",
+      "workflowSha256": "29f2cf6e64daed9e3154bdbb29ebaeb4e2a40c48903f395ba7120393e336fa16",
+      "tree": "7fbb95546504b0fbe6d71fd529e45371b08a800e",
+      "projects": [
+        {
+          "path": "package.json",
+          "blob": "535eb62a0aba8fc50fd251948cda16e2d7da24ce",
+          "disposition": "Keep",
+          "producer": "WP52",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "535eb62a0aba8fc50fd251948cda16e2d7da24ce",
+          "changedSinceInventory": false
+        }
+      ],
+      "jobs": [
+        {
+          "name": "CodeQL (actions)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Validate (windows-latest)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Validate (ubuntu-latest)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Repository security",
+          "conclusion": "success"
+        },
+        {
+          "name": "CodeQL (javascript-typescript)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Dependency review",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Build candidate",
+          "conclusion": "success"
+        },
+        {
+          "name": "Verify",
+          "conclusion": "success"
+        },
+        {
+          "name": "Deploy and verify Cloudflare",
+          "conclusion": "success"
+        },
+        {
+          "name": "Verify deployment",
+          "conclusion": "success"
+        }
+      ],
+      "worktrees": "worktree C:/MyFile/Projects/ArcForges/AI\nHEAD 944edfe88718fc5f72a42ea0bed1c495307c22df\nbranch refs/heads/main\n\nworktree C:/MyFile/Projects/ArcForges/AI/.worktree/wp00-05-runtime-ownership\nHEAD 944edfe88718fc5f72a42ea0bed1c495307c22df\nbranch refs/heads/codex/wp00-05-runtime-ownership"
+    },
+    {
+      "owner": "Web",
+      "origin": "https://github.com/ArcForges/Web.git",
+      "commit": "84939ca1fde0f0653d2cb4d8b8f9e5dd1057abb5",
+      "clean": true,
+      "remoteMainVerified": true,
+      "mainCi": "https://github.com/ArcForges/Web/actions/runs/35437014881",
+      "mainCiResult": "success",
+      "workflowSha256": "785f6faf7f0e32011dcc26c29041fbf11ac41684f32adc12f539822c7e697b8b",
+      "tree": "18370fe45c84efc957008f5954d4be089042aed3",
+      "projects": [
+        {
+          "path": "ArcForges.Web.esproj",
+          "blob": "3349d5ca919aa5f4fbcce0f2ee84da7e5c246e16",
+          "disposition": "Keep",
+          "producer": "WP47",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "3349d5ca919aa5f4fbcce0f2ee84da7e5c246e16",
+          "changedSinceInventory": false
+        },
+        {
+          "path": "apps/site/package.json",
+          "blob": "c7dfdd8ce47cf34e385c6b76436f7b8c0abc8eb5",
+          "disposition": "Keep",
+          "producer": "WP47",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "c7dfdd8ce47cf34e385c6b76436f7b8c0abc8eb5",
+          "changedSinceInventory": false
+        },
+        {
+          "path": "package.json",
+          "blob": "41c715894ad6dd067af8087a22d24d393da85d3c",
+          "disposition": "Keep",
+          "producer": "WP47",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "41c715894ad6dd067af8087a22d24d393da85d3c",
+          "changedSinceInventory": false
+        },
+        {
+          "path": "packages/ui/package.json",
+          "blob": "758009ce025ea86a6fd5983a6ecaf1f273233e26",
+          "disposition": "Keep",
+          "producer": "WP47",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "758009ce025ea86a6fd5983a6ecaf1f273233e26",
+          "changedSinceInventory": false
+        }
+      ],
+      "jobs": [
+        {
+          "name": "Dependency audit and repository checks",
+          "conclusion": "success"
+        },
+        {
+          "name": "Source (windows-latest)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Source (ubuntu-latest)",
+          "conclusion": "success"
+        },
+        {
+          "name": "CodeQL (actions)",
+          "conclusion": "success"
+        },
+        {
+          "name": "CodeQL (javascript-typescript)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Dependency review",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Build and test candidate",
+          "conclusion": "success"
+        },
+        {
+          "name": "Verify",
+          "conclusion": "success"
+        },
+        {
+          "name": "Deploy and verify Cloudflare",
+          "conclusion": "success"
+        }
+      ],
+      "worktrees": "worktree C:/MyFile/Projects/ArcForges/Web\nHEAD 84939ca1fde0f0653d2cb4d8b8f9e5dd1057abb5\nbranch refs/heads/main"
+    },
+    {
+      "owner": "Mobile",
+      "origin": "https://github.com/ArcForges/Mobile.git",
+      "commit": "5031d837d2e7bf9dd1b681c837c942d2b74dc65e",
+      "clean": true,
+      "remoteMainVerified": true,
+      "mainCi": "https://github.com/ArcForges/Mobile/actions/runs/35444269638",
+      "mainCiResult": "success",
+      "workflowSha256": "375d9176e37775a850db1bb0450f4fc50d420649638d7aabc395cd337d9178be",
+      "tree": "bf4f170f365e5546b5ef2e26d26f575e6b390187",
+      "projects": [
+        {
+          "path": "app/build.gradle.kts",
+          "blob": "e9c6106f0636c779b9029eb1843a49f67d80050a",
+          "disposition": "Keep",
+          "producer": "WP30",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "e9c6106f0636c779b9029eb1843a49f67d80050a",
+          "changedSinceInventory": false
+        },
+        {
+          "path": "build.gradle.kts",
+          "blob": "daded22d08c0c4b003a7f28336236e579eca6653",
+          "disposition": "Keep",
+          "producer": "WP30",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "daded22d08c0c4b003a7f28336236e579eca6653",
+          "changedSinceInventory": false
+        },
+        {
+          "path": "shared/build.gradle.kts",
+          "blob": "50f73dd0ab90a1c44164caa86532e4a704442aa0",
+          "disposition": "Keep",
+          "producer": "WP30",
+          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+          "baselineBlob": "50f73dd0ab90a1c44164caa86532e4a704442aa0",
+          "changedSinceInventory": false
+        }
+      ],
+      "jobs": [
+        {
+          "name": "Build (ubuntu-latest)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Build (windows-latest)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Security / CodeQL (java-kotlin)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Security / CodeQL (python)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Security / CodeQL (actions)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Security / Secret scan",
+          "conclusion": "success"
+        },
+        {
+          "name": "Security / Dependency review",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Android device tests (API 26)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Android device tests (API 36)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Verify",
+          "conclusion": "success"
+        },
+        {
+          "name": "Publish Android",
+          "conclusion": "success"
+        },
+        {
+          "name": "Public release upgrade (API 36)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Public release upgrade (API 26)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Verify publication",
+          "conclusion": "success"
+        }
+      ],
+      "worktrees": "worktree C:/MyFile/Projects/ArcForges/Mobile\nHEAD 5031d837d2e7bf9dd1b681c837c942d2b74dc65e\nbranch refs/heads/main"
+    }
+  ],
+  "directoryCount": 359,
+  "nonKeepDirectories": [
+    {
+      "owner": "Contracts",
+      "path": "src/public/csharp",
+      "disposition": "Retire",
+      "present": false,
+      "producer": "WP03",
+      "reason": "Architecture 27 legacy C# directory spelling; current generated C# owner is src/public/dotnet. Preserve actual project/package identity.",
+      "observedPresent": false
+    },
+    {
+      "owner": "Contracts",
+      "path": "src/public/kotlin/contracts-client",
+      "disposition": "Retire",
+      "present": true,
+      "producer": "WP03",
+      "reason": "Retain bootstrap compatibility until first business release; retirement is scheduled, not already executed.",
+      "observedPresent": true
+    },
+    {
+      "owner": "DesktopPlatform",
+      "path": "eng/ArcForges.Build.Policy",
+      "disposition": "Move",
+      "present": false,
+      "producer": "WP02",
+      "reason": "Required owned directory; implement substantive behavior only in its scheduled producer.",
+      "observedPresent": false
+    },
+    {
+      "owner": "DesktopPlatform",
+      "path": "native/arcscope-mdf-abi",
+      "disposition": "Retire",
+      "present": false,
+      "producer": "WP01.05",
+      "reason": "Retired monorepo or excluded MDF path; do not restore as an integration dependency.",
+      "observedPresent": false
+    },
+    {
+      "owner": "DesktopPlatform",
+      "path": "src/ArcChat",
+      "disposition": "Retire",
+      "present": false,
+      "producer": "WP01.05",
+      "reason": "Retired monorepo or excluded MDF path; do not restore as an integration dependency.",
+      "observedPresent": false
+    },
+    {
+      "owner": "DesktopPlatform",
+      "path": "src/ArcNotes",
+      "disposition": "Retire",
+      "present": false,
+      "producer": "WP01.05",
+      "reason": "Retired monorepo or excluded MDF path; do not restore as an integration dependency.",
+      "observedPresent": false
+    },
+    {
+      "owner": "DesktopPlatform",
+      "path": "src/ArcScope",
+      "disposition": "Retire",
+      "present": false,
+      "producer": "WP01.05",
+      "reason": "Retired monorepo or excluded MDF path; do not restore as an integration dependency.",
+      "observedPresent": false
+    },
+    {
+      "owner": "DesktopPlatform",
+      "path": "src/ArcSlate",
+      "disposition": "Retire",
+      "present": false,
+      "producer": "WP01.05",
+      "reason": "Retired monorepo or excluded MDF path; do not restore as an integration dependency.",
+      "observedPresent": false
+    },
+    {
+      "owner": "DesktopPlatform",
+      "path": "src/BuildingBlocks/ArcForges.Persistence.Postgres",
+      "disposition": "Retire",
+      "present": false,
+      "producer": "WP01.02",
+      "reason": "Historical target ownership; item-specific migration remains recorded in historical.json.",
+      "observedPresent": false
+    },
+    {
+      "owner": "DesktopPlatform",
+      "path": "src/BuildingBlocks/ArcForges.Testing",
+      "disposition": "Retire",
+      "present": false,
+      "producer": "WP01.02",
+      "reason": "Historical target ownership; item-specific migration remains recorded in historical.json.",
+      "observedPresent": false
+    },
+    {
+      "owner": "DesktopPlatform",
+      "path": "src/Cloud",
+      "disposition": "Retire",
+      "present": false,
+      "producer": "WP01.05",
+      "reason": "Retired monorepo or excluded MDF path; do not restore as an integration dependency.",
+      "observedPresent": false
+    },
+    {
+      "owner": "DesktopPlatform",
+      "path": "src/Contracts",
+      "disposition": "Retire",
+      "present": false,
+      "producer": "WP01.05",
+      "reason": "Retired monorepo or excluded MDF path; do not restore as an integration dependency.",
+      "observedPresent": false
+    },
+    {
+      "owner": "DesktopPlatform",
+      "path": "src/Extensions",
+      "disposition": "Retire",
+      "present": false,
+      "producer": "WP01.05",
+      "reason": "Retired monorepo or excluded MDF path; do not restore as an integration dependency.",
+      "observedPresent": false
+    },
+    {
+      "owner": "DesktopPlatform",
+      "path": "src/Mobile",
+      "disposition": "Retire",
+      "present": false,
+      "producer": "WP01.05",
+      "reason": "Retired monorepo or excluded MDF path; do not restore as an integration dependency.",
+      "observedPresent": false
+    },
+    {
+      "owner": "DesktopPlatform",
+      "path": "src/SDK",
+      "disposition": "Retire",
+      "present": false,
+      "producer": "WP01.05",
+      "reason": "Retired monorepo or excluded MDF path; do not restore as an integration dependency.",
+      "observedPresent": false
+    },
+    {
+      "owner": "DesktopPlatform",
+      "path": "src/Web",
+      "disposition": "Retire",
+      "present": false,
+      "producer": "WP01.05",
+      "reason": "Retired monorepo or excluded MDF path; do not restore as an integration dependency.",
+      "observedPresent": false
+    }
+  ],
+  "licenceAudit": {
+    "result": "passed",
+    "repositories": [
+      {
+        "repository": "DesktopPlatform",
+        "commit": "6cb08997bb35299df86a6434606d8e24cf5a4d97",
+        "dirty": false,
+        "spdxLicense": "AGPL-3.0-only",
+        "licenceBoundary": "AGPL",
+        "projects": [
+          {
+            "path": "CMakeLists.txt",
+            "kind": "cmake",
+            "spdxLicense": "AGPL-3.0-only",
+            "licenceBoundary": "AGPL"
+          },
+          {
+            "path": "native/CMakeLists.txt",
+            "kind": "cmake",
+            "spdxLicense": "AGPL-3.0-only",
+            "licenceBoundary": "AGPL"
+          },
+          {
+            "path": "native/arcgraphics-metal-abi/CMakeLists.txt",
+            "kind": "cmake",
+            "spdxLicense": "AGPL-3.0-only",
+            "licenceBoundary": "AGPL"
+          },
+          {
+            "path": "native/arcmedia-ffmpeg-abi/CMakeLists.txt",
+            "kind": "cmake",
+            "spdxLicense": "AGPL-3.0-only",
+            "licenceBoundary": "AGPL"
+          },
+          {
+            "path": "native/arcmedia-ffmpeg-abi/windows/arcmedia_ffmpeg_abi.vcxproj",
+            "kind": "msbuild",
+            "spdxLicense": "AGPL-3.0-only",
+            "licenceBoundary": "AGPL"
+          },
+          {
+            "path": "native/arcslate-color-abi/CMakeLists.txt",
+            "kind": "cmake",
+            "spdxLicense": "AGPL-3.0-only",
+            "licenceBoundary": "AGPL"
+          },
+          {
+            "path": "native/arcslate-color-abi/windows/arcslate_color_abi.vcxproj",
+            "kind": "msbuild",
+            "spdxLicense": "AGPL-3.0-only",
+            "licenceBoundary": "AGPL"
+          },
+          {
+            "path": "native/arcslate-image-abi/CMakeLists.txt",
+            "kind": "cmake",
+            "spdxLicense": "AGPL-3.0-only",
+            "licenceBoundary": "AGPL"
+          },
+          {
+            "path": "native/arcslate-image-abi/windows/arcslate_image_abi.vcxproj",
+            "kind": "msbuild",
+            "spdxLicense": "AGPL-3.0-only",
+            "licenceBoundary": "AGPL"
+          },
+          {
+            "path": "native/arcslate-otio-abi/CMakeLists.txt",
+            "kind": "cmake",
+            "spdxLicense": "AGPL-3.0-only",
+            "licenceBoundary": "AGPL"
+          },
+          {
+            "path": "native/arcslate-otio-abi/windows/arcslate_otio_abi.vcxproj",
+            "kind": "msbuild",
+            "spdxLicense": "AGPL-3.0-only",
+            "licenceBoundary": "AGPL"
+          },
+          {
+            "path": "src/Build/ArcForges.Build.Policy/ArcForges.Build.Policy.csproj",
+            "kind": "msbuild",
+            "spdxLicense": "AGPL-3.0-only",
+            "licenceBoundary": "AGPL"
+          },
+          {
+            "path": "src/BuildingBlocks/ArcForges.Application.Abstractions/ArcForges.Application.Abstractions.csproj",
+            "kind": "msbuild",
+            "spdxLicense": "AGPL-3.0-only",
+            "licenceBoundary": "AGPL"
+          },
+          {
+            "path": "src/BuildingBlocks/ArcForges.Desktop.Experience/ArcForges.Desktop.Experience.csproj",
+            "kind": "msbuild",
+            "spdxLicense": "AGPL-3.0-only",
+            "licenceBoundary": "AGPL"
+          },
+          {
+            "path": "src/BuildingBlocks/ArcForges.Desktop.Graphics/ArcForges.Desktop.Graphics.csproj",
+            "kind": "msbuild",
+            "spdxLicense": "AGPL-3.0-only",
+            "licenceBoundary": "AGPL"
+          },
+          {
+            "path": "src/BuildingBlocks/ArcForges.Desktop.Preview/ArcForges.Desktop.Preview.csproj",
+            "kind": "msbuild",
+            "spdxLicense": "AGPL-3.0-only",
+            "licenceBoundary": "AGPL"
+          },
+          {
+            "path": "src/BuildingBlocks/ArcForges.Desktop.RichContent/ArcForges.Desktop.RichContent.csproj",
+            "kind": "msbuild",
+            "spdxLicense": "AGPL-3.0-only",
+            "licenceBoundary": "AGPL"
+          },
+          {
+            "path": "src/BuildingBlocks/ArcForges.Desktop.Text/ArcForges.Desktop.Text.csproj",
+            "kind": "msbuild",
+            "spdxLicense": "AGPL-3.0-only",
+            "licenceBoundary": "AGPL"
+          },
+          {
+            "path": "src/BuildingBlocks/ArcForges.Foundation/ArcForges.Foundation.csproj",
+            "kind": "msbuild",
+            "spdxLicense": "AGPL-3.0-only",
+            "licenceBoundary": "AGPL"
+          },
+          {
+            "path": "src/BuildingBlocks/ArcForges.NativeInterop/ArcForges.NativeInterop.csproj",
+            "kind": "msbuild",
+            "spdxLicense": "AGPL-3.0-only",
+            "licenceBoundary": "AGPL"
+          },
+          {
+            "path": "src/BuildingBlocks/ArcForges.Observability/ArcForges.Observability.csproj",
+            "kind": "msbuild",
+            "spdxLicense": "AGPL-3.0-only",
+            "licenceBoundary": "AGPL"
+          },
+          {
+            "path": "src/BuildingBlocks/ArcForges.Persistence.Sqlite/ArcForges.Persistence.Sqlite.csproj",
+            "kind": "msbuild",
+            "spdxLicense": "AGPL-3.0-only",
+            "licenceBoundary": "AGPL"
+          },
+          {
+            "path": "src/BuildingBlocks/ArcForges.Security/ArcForges.Security.csproj",
+            "kind": "msbuild",
+            "spdxLicense": "AGPL-3.0-only",
+            "licenceBoundary": "AGPL"
+          },
+          {
+            "path": "src/DesktopHelpers/ArcForges.ContentSandbox/ArcForges.ContentSandbox.csproj",
+            "kind": "msbuild",
+            "spdxLicense": "AGPL-3.0-only",
+            "licenceBoundary": "AGPL"
+          },
+          {
+            "path": "src/Native/ArcForges.Native.Abstractions/ArcForges.Native.Abstractions.csproj",
+            "kind": "msbuild",
+            "spdxLicense": "AGPL-3.0-only",
+            "licenceBoundary": "AGPL"
+          },
+          {
+            "path": "src/Native/ArcForges.Native.Colour.Runtime.win-x64/ArcForges.Native.Colour.Runtime.win-x64.csproj",
+            "kind": "msbuild",
+            "spdxLicense": "AGPL-3.0-only",
+            "licenceBoundary": "AGPL"
+          },
+          {
+            "path": "src/Native/ArcForges.Native.Colour/ArcForges.Native.Colour.csproj",
+            "kind": "msbuild",
+            "spdxLicense": "AGPL-3.0-only",
+            "licenceBoundary": "AGPL"
+          },
+          {
+            "path": "src/Native/ArcForges.Native.Image.Runtime.win-x64/ArcForges.Native.Image.Runtime.win-x64.csproj",
+            "kind": "msbuild",
+            "spdxLicense": "AGPL-3.0-only",
+            "licenceBoundary": "AGPL"
+          },
+          {
+            "path": "src/Native/ArcForges.Native.Image/ArcForges.Native.Image.csproj",
+            "kind": "msbuild",
+            "spdxLicense": "AGPL-3.0-only",
+            "licenceBoundary": "AGPL"
+          },
+          {
+            "path": "src/Native/ArcForges.Native.Media.Runtime.win-x64/ArcForges.Native.Media.Runtime.win-x64.csproj",
+            "kind": "msbuild",
+            "spdxLicense": "AGPL-3.0-only",
+            "licenceBoundary": "AGPL"
+          },
+          {
+            "path": "src/Native/ArcForges.Native.Media/ArcForges.Native.Media.csproj",
+            "kind": "msbuild",
+            "spdxLicense": "AGPL-3.0-only",
+            "licenceBoundary": "AGPL"
+          },
+          {
+            "path": "src/Native/ArcForges.Native.Otio.Runtime.win-x64/ArcForges.Native.Otio.Runtime.win-x64.csproj",
+            "kind": "msbuild",
+            "spdxLicense": "AGPL-3.0-only",
+            "licenceBoundary": "AGPL"
+          },
+          {
+            "path": "src/Native/ArcForges.Native.Otio/ArcForges.Native.Otio.csproj",
+            "kind": "msbuild",
+            "spdxLicense": "AGPL-3.0-only",
+            "licenceBoundary": "AGPL"
+          },
+          {
+            "path": "tests/ArchitectureTests/ArcForges.Tests.ArchitectureTests.csproj",
+            "kind": "msbuild",
+            "spdxLicense": "AGPL-3.0-only",
+            "licenceBoundary": "AGPL"
+          },
+          {
+            "path": "tests/NativeAbiTests/ArcForges.Tests.NativeAbiTests.csproj",
+            "kind": "msbuild",
+            "spdxLicense": "AGPL-3.0-only",
+            "licenceBoundary": "AGPL"
+          }
+        ],
+        "projectReferences": {
+          "CMakeLists.txt": [],
+          "native/CMakeLists.txt": [],
+          "native/arcgraphics-metal-abi/CMakeLists.txt": [],
+          "native/arcmedia-ffmpeg-abi/CMakeLists.txt": [],
+          "native/arcmedia-ffmpeg-abi/windows/arcmedia_ffmpeg_abi.vcxproj": [],
+          "native/arcslate-color-abi/CMakeLists.txt": [],
+          "native/arcslate-color-abi/windows/arcslate_color_abi.vcxproj": [],
+          "native/arcslate-image-abi/CMakeLists.txt": [],
+          "native/arcslate-image-abi/windows/arcslate_image_abi.vcxproj": [],
+          "native/arcslate-otio-abi/CMakeLists.txt": [],
+          "native/arcslate-otio-abi/windows/arcslate_otio_abi.vcxproj": [],
+          "src/Build/ArcForges.Build.Policy/ArcForges.Build.Policy.csproj": [],
+          "src/BuildingBlocks/ArcForges.Application.Abstractions/ArcForges.Application.Abstractions.csproj": [],
+          "src/BuildingBlocks/ArcForges.Desktop.Experience/ArcForges.Desktop.Experience.csproj": [],
+          "src/BuildingBlocks/ArcForges.Desktop.Graphics/ArcForges.Desktop.Graphics.csproj": [],
+          "src/BuildingBlocks/ArcForges.Desktop.Preview/ArcForges.Desktop.Preview.csproj": [],
+          "src/BuildingBlocks/ArcForges.Desktop.RichContent/ArcForges.Desktop.RichContent.csproj": [],
+          "src/BuildingBlocks/ArcForges.Desktop.Text/ArcForges.Desktop.Text.csproj": [],
+          "src/BuildingBlocks/ArcForges.Foundation/ArcForges.Foundation.csproj": [],
+          "src/BuildingBlocks/ArcForges.NativeInterop/ArcForges.NativeInterop.csproj": [],
+          "src/BuildingBlocks/ArcForges.Observability/ArcForges.Observability.csproj": [],
+          "src/BuildingBlocks/ArcForges.Persistence.Sqlite/ArcForges.Persistence.Sqlite.csproj": [],
+          "src/BuildingBlocks/ArcForges.Security/ArcForges.Security.csproj": [],
+          "src/DesktopHelpers/ArcForges.ContentSandbox/ArcForges.ContentSandbox.csproj": [
+            "src/BuildingBlocks/ArcForges.Desktop.RichContent/ArcForges.Desktop.RichContent.csproj",
+            "src/BuildingBlocks/ArcForges.Foundation/ArcForges.Foundation.csproj",
+            "src/BuildingBlocks/ArcForges.NativeInterop/ArcForges.NativeInterop.csproj"
+          ],
+          "src/Native/ArcForges.Native.Abstractions/ArcForges.Native.Abstractions.csproj": [],
+          "src/Native/ArcForges.Native.Colour.Runtime.win-x64/ArcForges.Native.Colour.Runtime.win-x64.csproj": [],
+          "src/Native/ArcForges.Native.Colour/ArcForges.Native.Colour.csproj": [
+            "src/Native/ArcForges.Native.Abstractions/ArcForges.Native.Abstractions.csproj"
+          ],
+          "src/Native/ArcForges.Native.Image.Runtime.win-x64/ArcForges.Native.Image.Runtime.win-x64.csproj": [],
+          "src/Native/ArcForges.Native.Image/ArcForges.Native.Image.csproj": [
+            "src/Native/ArcForges.Native.Abstractions/ArcForges.Native.Abstractions.csproj"
+          ],
+          "src/Native/ArcForges.Native.Media.Runtime.win-x64/ArcForges.Native.Media.Runtime.win-x64.csproj": [],
+          "src/Native/ArcForges.Native.Media/ArcForges.Native.Media.csproj": [
+            "src/Native/ArcForges.Native.Abstractions/ArcForges.Native.Abstractions.csproj"
+          ],
+          "src/Native/ArcForges.Native.Otio.Runtime.win-x64/ArcForges.Native.Otio.Runtime.win-x64.csproj": [],
+          "src/Native/ArcForges.Native.Otio/ArcForges.Native.Otio.csproj": [
+            "src/Native/ArcForges.Native.Abstractions/ArcForges.Native.Abstractions.csproj"
+          ],
+          "tests/ArchitectureTests/ArcForges.Tests.ArchitectureTests.csproj": [],
+          "tests/NativeAbiTests/ArcForges.Tests.NativeAbiTests.csproj": []
+        },
+        "firstPartyPackages": [],
+        "result": "passed",
+        "findings": [],
+        "evidenceClass": "source-project-inventory-and-reference-audit"
+      },
+      {
+        "repository": "Contracts",
+        "commit": "24c05b7fc215896eeec91437ffe8846f2d4467a1",
+        "dirty": false,
+        "spdxLicense": "Apache-2.0",
+        "licenceBoundary": "Apache",
+        "projects": [
+          {
+            "path": "build.gradle.kts",
+            "kind": "gradle",
+            "spdxLicense": "Apache-2.0",
+            "licenceBoundary": "Apache"
+          },
+          {
+            "path": "eng/Codegen/Codegen.csproj",
+            "kind": "msbuild",
+            "spdxLicense": "Apache-2.0",
+            "licenceBoundary": "Apache"
+          },
+          {
+            "path": "eng/central-signing/build.gradle.kts",
+            "kind": "gradle",
+            "spdxLicense": "Apache-2.0",
+            "licenceBoundary": "Apache"
+          },
+          {
+            "path": "package.json",
+            "kind": "npm",
+            "spdxLicense": "Apache-2.0",
+            "licenceBoundary": "Apache"
+          },
+          {
+            "path": "src/public/dotnet/ArcForges.Contracts.PublicApi/ArcForges.Contracts.PublicApi.csproj",
+            "kind": "msbuild",
+            "spdxLicense": "Apache-2.0",
+            "licenceBoundary": "Apache"
+          },
+          {
+            "path": "src/public/kotlin/contract-fixtures/build.gradle.kts",
+            "kind": "gradle",
+            "spdxLicense": "Apache-2.0",
+            "licenceBoundary": "Apache"
+          },
+          {
+            "path": "src/public/kotlin/contracts-client/build.gradle.kts",
+            "kind": "gradle",
+            "spdxLicense": "Apache-2.0",
+            "licenceBoundary": "Apache"
+          },
+          {
+            "path": "src/public/kotlin/contracts-connect-client/build.gradle.kts",
+            "kind": "gradle",
+            "spdxLicense": "Apache-2.0",
+            "licenceBoundary": "Apache"
+          },
+          {
+            "path": "src/public/kotlin/contracts-proto/build.gradle.kts",
+            "kind": "gradle",
+            "spdxLicense": "Apache-2.0",
+            "licenceBoundary": "Apache"
+          },
+          {
+            "path": "src/public/ts/api-client/package.json",
+            "kind": "npm",
+            "spdxLicense": "Apache-2.0",
+            "licenceBoundary": "Apache"
+          },
+          {
+            "path": "src/public/ts/proto/package.json",
+            "kind": "npm",
+            "spdxLicense": "Apache-2.0",
+            "licenceBoundary": "Apache"
+          },
+          {
+            "path": "tests/public/HelloClient/HelloClient.csproj",
+            "kind": "msbuild",
+            "spdxLicense": "Apache-2.0",
+            "licenceBoundary": "Apache"
+          },
+          {
+            "path": "tests/public/HelloHost/HelloHost.csproj",
+            "kind": "msbuild",
+            "spdxLicense": "Apache-2.0",
+            "licenceBoundary": "Apache"
+          },
+          {
+            "path": "tests/public/KotlinClient/build.gradle.kts",
+            "kind": "gradle",
+            "spdxLicense": "Apache-2.0",
+            "licenceBoundary": "Apache"
+          },
+          {
+            "path": "tests/public/KotlinConnectClient/build.gradle.kts",
+            "kind": "gradle",
+            "spdxLicense": "Apache-2.0",
+            "licenceBoundary": "Apache"
+          }
+        ],
+        "projectReferences": {
+          "build.gradle.kts": [],
+          "eng/Codegen/Codegen.csproj": [],
+          "eng/central-signing/build.gradle.kts": [],
+          "package.json": [],
+          "src/public/dotnet/ArcForges.Contracts.PublicApi/ArcForges.Contracts.PublicApi.csproj": [],
+          "src/public/kotlin/contract-fixtures/build.gradle.kts": [],
+          "src/public/kotlin/contracts-client/build.gradle.kts": [
+            "src/public/kotlin/contracts-proto/build.gradle.kts"
+          ],
+          "src/public/kotlin/contracts-connect-client/build.gradle.kts": [
+            "src/public/kotlin/contracts-proto/build.gradle.kts"
+          ],
+          "src/public/kotlin/contracts-proto/build.gradle.kts": [],
+          "src/public/ts/api-client/package.json": [
+            "src/public/ts/proto/package.json"
+          ],
+          "src/public/ts/proto/package.json": [],
+          "tests/public/HelloClient/HelloClient.csproj": [
+            "src/public/dotnet/ArcForges.Contracts.PublicApi/ArcForges.Contracts.PublicApi.csproj"
+          ],
+          "tests/public/HelloHost/HelloHost.csproj": [
+            "src/public/dotnet/ArcForges.Contracts.PublicApi/ArcForges.Contracts.PublicApi.csproj"
+          ],
+          "tests/public/KotlinClient/build.gradle.kts": [],
+          "tests/public/KotlinConnectClient/build.gradle.kts": []
+        },
+        "firstPartyPackages": [
+          {
+            "source": "package-lock.json",
+            "name": "@arcforges/api-client",
+            "boundary": "Apache",
+            "evidence": "package-lock.json"
+          },
+          {
+            "source": "package-lock.json",
+            "name": "@arcforges/proto",
+            "boundary": "Apache",
+            "evidence": "package-lock.json"
+          },
+          {
+            "source": "package-lock.json",
+            "name": "@arcforges/api-client",
+            "boundary": "Apache",
+            "evidence": "package-lock.json"
+          },
+          {
+            "source": "package-lock.json",
+            "name": "@arcforges/proto",
+            "boundary": "Apache",
+            "evidence": "package-lock.json"
+          },
+          {
+            "source": "tests/public/KotlinClient/build.gradle.kts",
+            "name": "io.github.arcforges:contracts-client",
+            "boundary": "Apache",
+            "evidence": "tests/public/KotlinClient/build.gradle.kts"
+          },
+          {
+            "source": "tests/public/KotlinClient/build.gradle.kts",
+            "name": "io.github.arcforges:contract-fixtures",
+            "boundary": "Apache",
+            "evidence": "tests/public/KotlinClient/build.gradle.kts"
+          },
+          {
+            "source": "tests/public/KotlinConnectClient/build.gradle.kts",
+            "name": "io.github.arcforges:contracts-connect-client",
+            "boundary": "Apache",
+            "evidence": "tests/public/KotlinConnectClient/build.gradle.kts"
+          },
+          {
+            "source": "tests/public/KotlinConnectClient/build.gradle.kts",
+            "name": "io.github.arcforges:contract-fixtures",
+            "boundary": "Apache",
+            "evidence": "tests/public/KotlinConnectClient/build.gradle.kts"
+          }
+        ],
+        "result": "passed",
+        "findings": [],
+        "evidenceClass": "source-project-inventory-and-reference-audit"
+      },
+      {
+        "repository": "ArcNotes",
+        "commit": "e40423a1b14ce8341de35748cc2a093c7c9b77a7",
+        "dirty": false,
+        "spdxLicense": "AGPL-3.0-only",
+        "licenceBoundary": "AGPL",
+        "projects": [
+          {
+            "path": "eng/ArcForges.Repository/ArcForges.Repository.csproj",
+            "kind": "msbuild",
+            "spdxLicense": "AGPL-3.0-only",
+            "licenceBoundary": "AGPL"
+          },
+          {
+            "path": "src/ArcForges.ArcNotes.Core/ArcForges.ArcNotes.Core.csproj",
+            "kind": "msbuild",
+            "spdxLicense": "AGPL-3.0-only",
+            "licenceBoundary": "AGPL"
+          },
+          {
+            "path": "src/ArcForges.ArcNotes/ArcForges.ArcNotes.csproj",
+            "kind": "msbuild",
+            "spdxLicense": "AGPL-3.0-only",
+            "licenceBoundary": "AGPL"
+          },
+          {
+            "path": "tests/ArcForges.ArcNotes.Tests/ArcForges.ArcNotes.Tests.csproj",
+            "kind": "msbuild",
+            "spdxLicense": "AGPL-3.0-only",
+            "licenceBoundary": "AGPL"
+          }
+        ],
+        "projectReferences": {
+          "eng/ArcForges.Repository/ArcForges.Repository.csproj": [],
+          "src/ArcForges.ArcNotes.Core/ArcForges.ArcNotes.Core.csproj": [],
+          "src/ArcForges.ArcNotes/ArcForges.ArcNotes.csproj": [
+            "src/ArcForges.ArcNotes.Core/ArcForges.ArcNotes.Core.csproj"
+          ],
+          "tests/ArcForges.ArcNotes.Tests/ArcForges.ArcNotes.Tests.csproj": [
+            "src/ArcForges.ArcNotes.Core/ArcForges.ArcNotes.Core.csproj",
+            "eng/ArcForges.Repository/ArcForges.Repository.csproj"
+          ]
+        },
+        "firstPartyPackages": [
+          {
+            "source": "Directory.Build.props",
+            "name": "ArcForges.Build.Policy",
+            "boundary": "AGPL",
+            "evidence": "Directory.Build.props"
+          },
+          {
+            "source": "Directory.Packages.props",
+            "name": "ArcForges.Build.Policy",
+            "boundary": "AGPL",
+            "evidence": "Directory.Packages.props"
+          },
+          {
+            "source": "Directory.Packages.props",
+            "name": "ArcForges.Contracts.PublicApi",
+            "boundary": "Apache",
+            "evidence": "Directory.Packages.props"
+          },
+          {
+            "source": "eng/ArcForges.Repository/packages.lock.json",
+            "name": "ArcForges.Build.Policy",
+            "boundary": "AGPL",
+            "evidence": "eng/ArcForges.Repository/packages.lock.json"
+          },
+          {
+            "source": "src/ArcForges.ArcNotes.Core/ArcForges.ArcNotes.Core.csproj",
+            "name": "ArcForges.Contracts.PublicApi",
+            "boundary": "Apache",
+            "evidence": "src/ArcForges.ArcNotes.Core/ArcForges.ArcNotes.Core.csproj"
+          },
+          {
+            "source": "src/ArcForges.ArcNotes.Core/packages.lock.json",
+            "name": "ArcForges.Build.Policy",
+            "boundary": "AGPL",
+            "evidence": "src/ArcForges.ArcNotes.Core/packages.lock.json"
+          },
+          {
+            "source": "src/ArcForges.ArcNotes.Core/packages.lock.json",
+            "name": "ArcForges.Contracts.PublicApi",
+            "boundary": "Apache",
+            "evidence": "src/ArcForges.ArcNotes.Core/packages.lock.json"
+          },
+          {
+            "source": "src/ArcForges.ArcNotes/packages.lock.json",
+            "name": "ArcForges.Build.Policy",
+            "boundary": "AGPL",
+            "evidence": "src/ArcForges.ArcNotes/packages.lock.json"
+          },
+          {
+            "source": "src/ArcForges.ArcNotes/packages.lock.json",
+            "name": "ArcForges.Contracts.PublicApi",
+            "boundary": "Apache",
+            "evidence": "src/ArcForges.ArcNotes/packages.lock.json"
+          },
+          {
+            "source": "tests/ArcForges.ArcNotes.Tests/packages.lock.json",
+            "name": "ArcForges.Build.Policy",
+            "boundary": "AGPL",
+            "evidence": "tests/ArcForges.ArcNotes.Tests/packages.lock.json"
+          },
+          {
+            "source": "tests/ArcForges.ArcNotes.Tests/packages.lock.json",
+            "name": "ArcForges.Contracts.PublicApi",
+            "boundary": "Apache",
+            "evidence": "tests/ArcForges.ArcNotes.Tests/packages.lock.json"
+          }
+        ],
+        "result": "passed",
+        "findings": [],
+        "evidenceClass": "source-project-inventory-and-reference-audit"
+      },
+      {
+        "repository": "ArcScope",
+        "commit": "d247dcff36fd1123a70e5e59967a9b2294a2eeac",
+        "dirty": false,
+        "spdxLicense": "AGPL-3.0-only",
+        "licenceBoundary": "AGPL",
+        "projects": [
+          {
+            "path": "eng/ArcForges.Repository/ArcForges.Repository.csproj",
+            "kind": "msbuild",
+            "spdxLicense": "AGPL-3.0-only",
+            "licenceBoundary": "AGPL"
+          },
+          {
+            "path": "src/ArcForges.ArcScope.Core/ArcForges.ArcScope.Core.csproj",
+            "kind": "msbuild",
+            "spdxLicense": "AGPL-3.0-only",
+            "licenceBoundary": "AGPL"
+          },
+          {
+            "path": "src/ArcForges.ArcScope/ArcForges.ArcScope.csproj",
+            "kind": "msbuild",
+            "spdxLicense": "AGPL-3.0-only",
+            "licenceBoundary": "AGPL"
+          },
+          {
+            "path": "tests/ArcForges.ArcScope.Tests/ArcForges.ArcScope.Tests.csproj",
+            "kind": "msbuild",
+            "spdxLicense": "AGPL-3.0-only",
+            "licenceBoundary": "AGPL"
+          }
+        ],
+        "projectReferences": {
+          "eng/ArcForges.Repository/ArcForges.Repository.csproj": [],
+          "src/ArcForges.ArcScope.Core/ArcForges.ArcScope.Core.csproj": [],
+          "src/ArcForges.ArcScope/ArcForges.ArcScope.csproj": [
+            "src/ArcForges.ArcScope.Core/ArcForges.ArcScope.Core.csproj"
+          ],
+          "tests/ArcForges.ArcScope.Tests/ArcForges.ArcScope.Tests.csproj": [
+            "src/ArcForges.ArcScope.Core/ArcForges.ArcScope.Core.csproj",
+            "eng/ArcForges.Repository/ArcForges.Repository.csproj"
+          ]
+        },
+        "firstPartyPackages": [
+          {
+            "source": "Directory.Build.props",
+            "name": "ArcForges.Build.Policy",
+            "boundary": "AGPL",
+            "evidence": "Directory.Build.props"
+          },
+          {
+            "source": "Directory.Packages.props",
+            "name": "ArcForges.Build.Policy",
+            "boundary": "AGPL",
+            "evidence": "Directory.Packages.props"
+          },
+          {
+            "source": "Directory.Packages.props",
+            "name": "ArcForges.Contracts.PublicApi",
+            "boundary": "Apache",
+            "evidence": "Directory.Packages.props"
+          },
+          {
+            "source": "eng/ArcForges.Repository/packages.lock.json",
+            "name": "ArcForges.Build.Policy",
+            "boundary": "AGPL",
+            "evidence": "eng/ArcForges.Repository/packages.lock.json"
+          },
+          {
+            "source": "src/ArcForges.ArcScope.Core/ArcForges.ArcScope.Core.csproj",
+            "name": "ArcForges.Contracts.PublicApi",
+            "boundary": "Apache",
+            "evidence": "src/ArcForges.ArcScope.Core/ArcForges.ArcScope.Core.csproj"
+          },
+          {
+            "source": "src/ArcForges.ArcScope.Core/packages.lock.json",
+            "name": "ArcForges.Build.Policy",
+            "boundary": "AGPL",
+            "evidence": "src/ArcForges.ArcScope.Core/packages.lock.json"
+          },
+          {
+            "source": "src/ArcForges.ArcScope.Core/packages.lock.json",
+            "name": "ArcForges.Contracts.PublicApi",
+            "boundary": "Apache",
+            "evidence": "src/ArcForges.ArcScope.Core/packages.lock.json"
+          },
+          {
+            "source": "src/ArcForges.ArcScope/packages.lock.json",
+            "name": "ArcForges.Build.Policy",
+            "boundary": "AGPL",
+            "evidence": "src/ArcForges.ArcScope/packages.lock.json"
+          },
+          {
+            "source": "src/ArcForges.ArcScope/packages.lock.json",
+            "name": "ArcForges.Contracts.PublicApi",
+            "boundary": "Apache",
+            "evidence": "src/ArcForges.ArcScope/packages.lock.json"
+          },
+          {
+            "source": "tests/ArcForges.ArcScope.Tests/packages.lock.json",
+            "name": "ArcForges.Build.Policy",
+            "boundary": "AGPL",
+            "evidence": "tests/ArcForges.ArcScope.Tests/packages.lock.json"
+          },
+          {
+            "source": "tests/ArcForges.ArcScope.Tests/packages.lock.json",
+            "name": "ArcForges.Contracts.PublicApi",
+            "boundary": "Apache",
+            "evidence": "tests/ArcForges.ArcScope.Tests/packages.lock.json"
+          }
+        ],
+        "result": "passed",
+        "findings": [],
+        "evidenceClass": "source-project-inventory-and-reference-audit"
+      },
+      {
+        "repository": "ArcSlate",
+        "commit": "b0d255f54fb560a534cc493d5645ca4bc7b4bd0e",
+        "dirty": false,
+        "spdxLicense": "AGPL-3.0-only",
+        "licenceBoundary": "AGPL",
+        "projects": [
+          {
+            "path": "eng/ArcForges.Repository/ArcForges.Repository.csproj",
+            "kind": "msbuild",
+            "spdxLicense": "AGPL-3.0-only",
+            "licenceBoundary": "AGPL"
+          },
+          {
+            "path": "src/ArcForges.ArcSlate.Core/ArcForges.ArcSlate.Core.csproj",
+            "kind": "msbuild",
+            "spdxLicense": "AGPL-3.0-only",
+            "licenceBoundary": "AGPL"
+          },
+          {
+            "path": "src/ArcForges.ArcSlate/ArcForges.ArcSlate.csproj",
+            "kind": "msbuild",
+            "spdxLicense": "AGPL-3.0-only",
+            "licenceBoundary": "AGPL"
+          },
+          {
+            "path": "tests/ArcForges.ArcSlate.Tests/ArcForges.ArcSlate.Tests.csproj",
+            "kind": "msbuild",
+            "spdxLicense": "AGPL-3.0-only",
+            "licenceBoundary": "AGPL"
+          }
+        ],
+        "projectReferences": {
+          "eng/ArcForges.Repository/ArcForges.Repository.csproj": [],
+          "src/ArcForges.ArcSlate.Core/ArcForges.ArcSlate.Core.csproj": [],
+          "src/ArcForges.ArcSlate/ArcForges.ArcSlate.csproj": [
+            "src/ArcForges.ArcSlate.Core/ArcForges.ArcSlate.Core.csproj"
+          ],
+          "tests/ArcForges.ArcSlate.Tests/ArcForges.ArcSlate.Tests.csproj": [
+            "src/ArcForges.ArcSlate.Core/ArcForges.ArcSlate.Core.csproj",
+            "eng/ArcForges.Repository/ArcForges.Repository.csproj"
+          ]
+        },
+        "firstPartyPackages": [
+          {
+            "source": "Directory.Build.props",
+            "name": "ArcForges.Build.Policy",
+            "boundary": "AGPL",
+            "evidence": "Directory.Build.props"
+          },
+          {
+            "source": "Directory.Packages.props",
+            "name": "ArcForges.Build.Policy",
+            "boundary": "AGPL",
+            "evidence": "Directory.Packages.props"
+          },
+          {
+            "source": "Directory.Packages.props",
+            "name": "ArcForges.Contracts.PublicApi",
+            "boundary": "Apache",
+            "evidence": "Directory.Packages.props"
+          },
+          {
+            "source": "eng/ArcForges.Repository/packages.lock.json",
+            "name": "ArcForges.Build.Policy",
+            "boundary": "AGPL",
+            "evidence": "eng/ArcForges.Repository/packages.lock.json"
+          },
+          {
+            "source": "src/ArcForges.ArcSlate.Core/ArcForges.ArcSlate.Core.csproj",
+            "name": "ArcForges.Contracts.PublicApi",
+            "boundary": "Apache",
+            "evidence": "src/ArcForges.ArcSlate.Core/ArcForges.ArcSlate.Core.csproj"
+          },
+          {
+            "source": "src/ArcForges.ArcSlate.Core/packages.lock.json",
+            "name": "ArcForges.Build.Policy",
+            "boundary": "AGPL",
+            "evidence": "src/ArcForges.ArcSlate.Core/packages.lock.json"
+          },
+          {
+            "source": "src/ArcForges.ArcSlate.Core/packages.lock.json",
+            "name": "ArcForges.Contracts.PublicApi",
+            "boundary": "Apache",
+            "evidence": "src/ArcForges.ArcSlate.Core/packages.lock.json"
+          },
+          {
+            "source": "src/ArcForges.ArcSlate/packages.lock.json",
+            "name": "ArcForges.Build.Policy",
+            "boundary": "AGPL",
+            "evidence": "src/ArcForges.ArcSlate/packages.lock.json"
+          },
+          {
+            "source": "src/ArcForges.ArcSlate/packages.lock.json",
+            "name": "ArcForges.Contracts.PublicApi",
+            "boundary": "Apache",
+            "evidence": "src/ArcForges.ArcSlate/packages.lock.json"
+          },
+          {
+            "source": "tests/ArcForges.ArcSlate.Tests/packages.lock.json",
+            "name": "ArcForges.Build.Policy",
+            "boundary": "AGPL",
+            "evidence": "tests/ArcForges.ArcSlate.Tests/packages.lock.json"
+          },
+          {
+            "source": "tests/ArcForges.ArcSlate.Tests/packages.lock.json",
+            "name": "ArcForges.Contracts.PublicApi",
+            "boundary": "Apache",
+            "evidence": "tests/ArcForges.ArcSlate.Tests/packages.lock.json"
+          }
+        ],
+        "result": "passed",
+        "findings": [],
+        "evidenceClass": "source-project-inventory-and-reference-audit"
+      },
+      {
+        "repository": "Cloud",
+        "commit": "4571ec8692235485712d4c4e3ef4886c162f2574",
+        "dirty": false,
+        "spdxLicense": "AGPL-3.0-only",
+        "licenceBoundary": "AGPL",
+        "projects": [
+          {
+            "path": "package.json",
+            "kind": "npm",
+            "spdxLicense": "AGPL-3.0-only",
+            "licenceBoundary": "AGPL"
+          },
+          {
+            "path": "src/ArcForges.Cloud/ArcForges.Cloud.csproj",
+            "kind": "msbuild",
+            "spdxLicense": "AGPL-3.0-only",
+            "licenceBoundary": "AGPL"
+          },
+          {
+            "path": "tests/ArcForges.Cloud.Consumer/ArcForges.Cloud.Consumer.csproj",
+            "kind": "msbuild",
+            "spdxLicense": "AGPL-3.0-only",
+            "licenceBoundary": "AGPL"
+          },
+          {
+            "path": "tests/ArcForges.Cloud.Tests/ArcForges.Cloud.Tests.csproj",
+            "kind": "msbuild",
+            "spdxLicense": "AGPL-3.0-only",
+            "licenceBoundary": "AGPL"
+          },
+          {
+            "path": "tests/kotlin-consumer/build.gradle.kts",
+            "kind": "gradle",
+            "spdxLicense": "AGPL-3.0-only",
+            "licenceBoundary": "AGPL"
+          }
+        ],
+        "projectReferences": {
+          "package.json": [],
+          "src/ArcForges.Cloud/ArcForges.Cloud.csproj": [],
+          "tests/ArcForges.Cloud.Consumer/ArcForges.Cloud.Consumer.csproj": [],
+          "tests/ArcForges.Cloud.Tests/ArcForges.Cloud.Tests.csproj": [
+            "src/ArcForges.Cloud/ArcForges.Cloud.csproj"
+          ],
+          "tests/kotlin-consumer/build.gradle.kts": []
+        },
+        "firstPartyPackages": [
+          {
+            "source": "Directory.Packages.props",
+            "name": "ArcForges.Contracts.PublicApi",
+            "boundary": "Apache",
+            "evidence": "Directory.Packages.props"
+          },
+          {
+            "source": "package-lock.json",
+            "name": "@arcforges/cloud-workspace",
+            "boundary": "AGPL",
+            "evidence": "package-lock.json"
+          },
+          {
+            "source": "package-lock.json",
+            "name": "@arcforges/api-client",
+            "boundary": "Apache",
+            "evidence": "package-lock.json"
+          },
+          {
+            "source": "package-lock.json",
+            "name": "@arcforges/proto",
+            "boundary": "Apache",
+            "evidence": "package-lock.json"
+          },
+          {
+            "source": "package.json",
+            "name": "@arcforges/api-client",
+            "boundary": "Apache",
+            "evidence": "package.json"
+          },
+          {
+            "source": "src/ArcForges.Cloud/ArcForges.Cloud.csproj",
+            "name": "ArcForges.Contracts.PublicApi",
+            "boundary": "Apache",
+            "evidence": "src/ArcForges.Cloud/ArcForges.Cloud.csproj"
+          },
+          {
+            "source": "src/ArcForges.Cloud/packages.lock.json",
+            "name": "ArcForges.Contracts.PublicApi",
+            "boundary": "Apache",
+            "evidence": "src/ArcForges.Cloud/packages.lock.json"
+          },
+          {
+            "source": "tests/ArcForges.Cloud.Consumer/ArcForges.Cloud.Consumer.csproj",
+            "name": "ArcForges.Contracts.PublicApi",
+            "boundary": "Apache",
+            "evidence": "tests/ArcForges.Cloud.Consumer/ArcForges.Cloud.Consumer.csproj"
+          },
+          {
+            "source": "tests/ArcForges.Cloud.Consumer/packages.lock.json",
+            "name": "ArcForges.Contracts.PublicApi",
+            "boundary": "Apache",
+            "evidence": "tests/ArcForges.Cloud.Consumer/packages.lock.json"
+          },
+          {
+            "source": "tests/ArcForges.Cloud.Tests/packages.lock.json",
+            "name": "ArcForges.Contracts.PublicApi",
+            "boundary": "Apache",
+            "evidence": "tests/ArcForges.Cloud.Tests/packages.lock.json"
+          },
+          {
+            "source": "tests/kotlin-consumer/build.gradle.kts",
+            "name": "io.github.arcforges:contracts-connect-client",
+            "boundary": "Apache",
+            "evidence": "tests/kotlin-consumer/build.gradle.kts"
+          },
+          {
+            "source": "tests/kotlin-consumer/gradle.lockfile",
+            "name": "io.github.arcforges:contracts-connect-client",
+            "boundary": "Apache",
+            "evidence": "tests/kotlin-consumer/gradle.lockfile"
+          },
+          {
+            "source": "tests/kotlin-consumer/gradle.lockfile",
+            "name": "io.github.arcforges:contracts-proto",
+            "boundary": "Apache",
+            "evidence": "tests/kotlin-consumer/gradle.lockfile"
+          }
+        ],
+        "result": "passed",
+        "findings": [],
+        "evidenceClass": "source-project-inventory-and-reference-audit"
+      },
+      {
+        "repository": "AI",
+        "commit": "944edfe88718fc5f72a42ea0bed1c495307c22df",
+        "dirty": false,
+        "spdxLicense": "AGPL-3.0-only",
+        "licenceBoundary": "AGPL",
+        "projects": [
+          {
+            "path": "package.json",
+            "kind": "npm",
+            "spdxLicense": "AGPL-3.0-only",
+            "licenceBoundary": "AGPL"
+          }
+        ],
+        "projectReferences": {
+          "package.json": []
+        },
+        "firstPartyPackages": [
+          {
+            "source": "package-lock.json",
+            "name": "@arcforges/ai",
+            "boundary": "AGPL",
+            "evidence": "package-lock.json"
+          },
+          {
+            "source": "package-lock.json",
+            "name": "@arcforges/proto",
+            "boundary": "Apache",
+            "evidence": "package-lock.json"
+          },
+          {
+            "source": "package.json",
+            "name": "@arcforges/proto",
+            "boundary": "Apache",
+            "evidence": "package.json"
+          }
+        ],
+        "result": "passed",
+        "findings": [],
+        "evidenceClass": "source-project-inventory-and-reference-audit"
+      },
+      {
+        "repository": "Web",
+        "commit": "84939ca1fde0f0653d2cb4d8b8f9e5dd1057abb5",
+        "dirty": false,
+        "spdxLicense": "AGPL-3.0-only",
+        "licenceBoundary": "AGPL",
+        "projects": [
+          {
+            "path": "ArcForges.Web.esproj",
+            "kind": "msbuild",
+            "spdxLicense": "AGPL-3.0-only",
+            "licenceBoundary": "AGPL"
+          },
+          {
+            "path": "apps/site/package.json",
+            "kind": "npm",
+            "spdxLicense": "AGPL-3.0-only",
+            "licenceBoundary": "AGPL"
+          },
+          {
+            "path": "package.json",
+            "kind": "npm",
+            "spdxLicense": "AGPL-3.0-only",
+            "licenceBoundary": "AGPL"
+          },
+          {
+            "path": "packages/ui/package.json",
+            "kind": "npm",
+            "spdxLicense": "AGPL-3.0-only",
+            "licenceBoundary": "AGPL"
+          }
+        ],
+        "projectReferences": {
+          "ArcForges.Web.esproj": [],
+          "apps/site/package.json": [
+            "packages/ui/package.json"
+          ],
+          "package.json": [],
+          "packages/ui/package.json": []
+        },
+        "firstPartyPackages": [
+          {
+            "source": "apps/site/package.json",
+            "name": "@arcforges/api-client",
+            "boundary": "Apache",
+            "evidence": "apps/site/package.json"
+          },
+          {
+            "source": "apps/site/package.json",
+            "name": "@arcforges/proto",
+            "boundary": "Apache",
+            "evidence": "apps/site/package.json"
+          },
+          {
+            "source": "package-lock.json",
+            "name": "@arcforges/web-workspace",
+            "boundary": "AGPL",
+            "evidence": "package-lock.json"
+          },
+          {
+            "source": "package-lock.json",
+            "name": "@arcforges/web-site",
+            "boundary": "AGPL",
+            "evidence": "package-lock.json"
+          },
+          {
+            "source": "package-lock.json",
+            "name": "@arcforges/api-client",
+            "boundary": "Apache",
+            "evidence": "package-lock.json"
+          },
+          {
+            "source": "package-lock.json",
+            "name": "@arcforges/proto",
+            "boundary": "Apache",
+            "evidence": "package-lock.json"
+          },
+          {
+            "source": "package-lock.json",
+            "name": "@arcforges/web-site",
+            "boundary": "AGPL",
+            "evidence": "package-lock.json"
+          },
+          {
+            "source": "package-lock.json",
+            "name": "@arcforges/web-ui",
+            "boundary": "AGPL",
+            "evidence": "package-lock.json"
+          },
+          {
+            "source": "package-lock.json",
+            "name": "@arcforges/web-ui",
+            "boundary": "AGPL",
+            "evidence": "package-lock.json"
+          }
+        ],
+        "result": "passed",
+        "findings": [],
+        "evidenceClass": "source-project-inventory-and-reference-audit"
+      },
+      {
+        "repository": "Mobile",
+        "commit": "5031d837d2e7bf9dd1b681c837c942d2b74dc65e",
+        "dirty": false,
+        "spdxLicense": "Apache-2.0",
+        "licenceBoundary": "Apache",
+        "projects": [
+          {
+            "path": "app/build.gradle.kts",
+            "kind": "gradle",
+            "spdxLicense": "Apache-2.0",
+            "licenceBoundary": "Apache"
+          },
+          {
+            "path": "build.gradle.kts",
+            "kind": "gradle",
+            "spdxLicense": "Apache-2.0",
+            "licenceBoundary": "Apache"
+          },
+          {
+            "path": "shared/build.gradle.kts",
+            "kind": "gradle",
+            "spdxLicense": "Apache-2.0",
+            "licenceBoundary": "Apache"
+          }
+        ],
+        "projectReferences": {
+          "app/build.gradle.kts": [
+            "shared/build.gradle.kts"
+          ],
+          "build.gradle.kts": [],
+          "shared/build.gradle.kts": []
+        },
+        "firstPartyPackages": [
+          {
+            "source": "app/gradle.lockfile",
+            "name": "io.github.arcforges:contracts-connect-client",
+            "boundary": "Apache",
+            "evidence": "app/gradle.lockfile"
+          },
+          {
+            "source": "app/gradle.lockfile",
+            "name": "io.github.arcforges:contracts-proto",
+            "boundary": "Apache",
+            "evidence": "app/gradle.lockfile"
+          }
+        ],
+        "result": "passed",
+        "findings": [],
+        "evidenceClass": "source-project-inventory-and-reference-audit"
+      }
+    ],
+    "substep": "WP00.02",
+    "checkedAt": "2026-09-21T03:30:10.076898+00:00",
+    "limitations": "Source inventory only. Owner evaluated-build receipts and distributable dependency licence audits are separate evidence."
+  },
+  "runtimeAudit": {
+    "substep": "WP00.05",
+    "checkedAt": "2026-09-21T03:30:10.195430+00:00",
+    "evidenceClass": "source-runtime-and-ownership-policy",
+    "repositories": [
+      {
+        "repository": "DesktopPlatform",
+        "commit": "6cb08997bb35299df86a6434606d8e24cf5a4d97",
+        "dirty": false,
+        "files": 372,
+        "projects": 35,
+        "runtime": "dotnet-nativeaot-libraries-and-native-cabi",
+        "managedSourceChecks": [
+          {
+            "path": "src/Build/ArcForges.Build.Policy/ArcForges.Build.Policy.csproj",
+            "role": "package-container",
+            "requiredProperties": [],
+            "sourceInputs": [
+              "Directory.Build.props",
+              "Directory.Build.targets",
+              "src/Build/ArcForges.Build.Policy/ArcForges.Build.Policy.csproj",
+              "src/Build/ArcForges.Build.Policy/build/ArcForges.Build.Policy.props",
+              "src/Build/ArcForges.Build.Policy/build/ArcForges.Build.Policy.targets",
+              "src/Directory.Build.props"
+            ]
+          },
+          {
+            "path": "src/BuildingBlocks/ArcForges.Application.Abstractions/ArcForges.Application.Abstractions.csproj",
+            "role": "aot-library",
+            "requiredProperties": [
+              "IsAotCompatible"
+            ],
+            "sourceInputs": [
+              "Directory.Build.props",
+              "Directory.Build.targets",
+              "src/Build/ArcForges.Build.Policy/build/ArcForges.Build.Policy.props",
+              "src/Build/ArcForges.Build.Policy/build/ArcForges.Build.Policy.targets",
+              "src/BuildingBlocks/ArcForges.Application.Abstractions/ArcForges.Application.Abstractions.csproj",
+              "src/Directory.Build.props"
+            ]
+          },
+          {
+            "path": "src/BuildingBlocks/ArcForges.Desktop.Experience/ArcForges.Desktop.Experience.csproj",
+            "role": "aot-library",
+            "requiredProperties": [
+              "IsAotCompatible"
+            ],
+            "sourceInputs": [
+              "Directory.Build.props",
+              "Directory.Build.targets",
+              "src/Build/ArcForges.Build.Policy/build/ArcForges.Build.Policy.props",
+              "src/Build/ArcForges.Build.Policy/build/ArcForges.Build.Policy.targets",
+              "src/BuildingBlocks/ArcForges.Desktop.Experience/ArcForges.Desktop.Experience.csproj",
+              "src/Directory.Build.props"
+            ]
+          },
+          {
+            "path": "src/BuildingBlocks/ArcForges.Desktop.Graphics/ArcForges.Desktop.Graphics.csproj",
+            "role": "aot-library",
+            "requiredProperties": [
+              "IsAotCompatible"
+            ],
+            "sourceInputs": [
+              "Directory.Build.props",
+              "Directory.Build.targets",
+              "src/Build/ArcForges.Build.Policy/build/ArcForges.Build.Policy.props",
+              "src/Build/ArcForges.Build.Policy/build/ArcForges.Build.Policy.targets",
+              "src/BuildingBlocks/ArcForges.Desktop.Graphics/ArcForges.Desktop.Graphics.csproj",
+              "src/Directory.Build.props"
+            ]
+          },
+          {
+            "path": "src/BuildingBlocks/ArcForges.Desktop.Preview/ArcForges.Desktop.Preview.csproj",
+            "role": "aot-library",
+            "requiredProperties": [
+              "IsAotCompatible"
+            ],
+            "sourceInputs": [
+              "Directory.Build.props",
+              "Directory.Build.targets",
+              "src/Build/ArcForges.Build.Policy/build/ArcForges.Build.Policy.props",
+              "src/Build/ArcForges.Build.Policy/build/ArcForges.Build.Policy.targets",
+              "src/BuildingBlocks/ArcForges.Desktop.Preview/ArcForges.Desktop.Preview.csproj",
+              "src/Directory.Build.props"
+            ]
+          },
+          {
+            "path": "src/BuildingBlocks/ArcForges.Desktop.RichContent/ArcForges.Desktop.RichContent.csproj",
+            "role": "aot-library",
+            "requiredProperties": [
+              "IsAotCompatible"
+            ],
+            "sourceInputs": [
+              "Directory.Build.props",
+              "Directory.Build.targets",
+              "src/Build/ArcForges.Build.Policy/build/ArcForges.Build.Policy.props",
+              "src/Build/ArcForges.Build.Policy/build/ArcForges.Build.Policy.targets",
+              "src/BuildingBlocks/ArcForges.Desktop.RichContent/ArcForges.Desktop.RichContent.csproj",
+              "src/Directory.Build.props"
+            ]
+          },
+          {
+            "path": "src/BuildingBlocks/ArcForges.Desktop.Text/ArcForges.Desktop.Text.csproj",
+            "role": "aot-library",
+            "requiredProperties": [
+              "IsAotCompatible"
+            ],
+            "sourceInputs": [
+              "Directory.Build.props",
+              "Directory.Build.targets",
+              "src/Build/ArcForges.Build.Policy/build/ArcForges.Build.Policy.props",
+              "src/Build/ArcForges.Build.Policy/build/ArcForges.Build.Policy.targets",
+              "src/BuildingBlocks/ArcForges.Desktop.Text/ArcForges.Desktop.Text.csproj",
+              "src/Directory.Build.props"
+            ]
+          },
+          {
+            "path": "src/BuildingBlocks/ArcForges.Foundation/ArcForges.Foundation.csproj",
+            "role": "aot-library",
+            "requiredProperties": [
+              "IsAotCompatible"
+            ],
+            "sourceInputs": [
+              "Directory.Build.props",
+              "Directory.Build.targets",
+              "src/Build/ArcForges.Build.Policy/build/ArcForges.Build.Policy.props",
+              "src/Build/ArcForges.Build.Policy/build/ArcForges.Build.Policy.targets",
+              "src/BuildingBlocks/ArcForges.Foundation/ArcForges.Foundation.csproj",
+              "src/Directory.Build.props"
+            ]
+          },
+          {
+            "path": "src/BuildingBlocks/ArcForges.NativeInterop/ArcForges.NativeInterop.csproj",
+            "role": "aot-library",
+            "requiredProperties": [
+              "IsAotCompatible"
+            ],
+            "sourceInputs": [
+              "Directory.Build.props",
+              "Directory.Build.targets",
+              "src/Build/ArcForges.Build.Policy/build/ArcForges.Build.Policy.props",
+              "src/Build/ArcForges.Build.Policy/build/ArcForges.Build.Policy.targets",
+              "src/BuildingBlocks/ArcForges.NativeInterop/ArcForges.NativeInterop.csproj",
+              "src/Directory.Build.props"
+            ]
+          },
+          {
+            "path": "src/BuildingBlocks/ArcForges.Observability/ArcForges.Observability.csproj",
+            "role": "aot-library",
+            "requiredProperties": [
+              "IsAotCompatible"
+            ],
+            "sourceInputs": [
+              "Directory.Build.props",
+              "Directory.Build.targets",
+              "src/Build/ArcForges.Build.Policy/build/ArcForges.Build.Policy.props",
+              "src/Build/ArcForges.Build.Policy/build/ArcForges.Build.Policy.targets",
+              "src/BuildingBlocks/ArcForges.Observability/ArcForges.Observability.csproj",
+              "src/Directory.Build.props"
+            ]
+          },
+          {
+            "path": "src/BuildingBlocks/ArcForges.Persistence.Sqlite/ArcForges.Persistence.Sqlite.csproj",
+            "role": "aot-library",
+            "requiredProperties": [
+              "IsAotCompatible"
+            ],
+            "sourceInputs": [
+              "Directory.Build.props",
+              "Directory.Build.targets",
+              "src/Build/ArcForges.Build.Policy/build/ArcForges.Build.Policy.props",
+              "src/Build/ArcForges.Build.Policy/build/ArcForges.Build.Policy.targets",
+              "src/BuildingBlocks/ArcForges.Persistence.Sqlite/ArcForges.Persistence.Sqlite.csproj",
+              "src/Directory.Build.props"
+            ]
+          },
+          {
+            "path": "src/BuildingBlocks/ArcForges.Security/ArcForges.Security.csproj",
+            "role": "aot-library",
+            "requiredProperties": [
+              "IsAotCompatible"
+            ],
+            "sourceInputs": [
+              "Directory.Build.props",
+              "Directory.Build.targets",
+              "src/Build/ArcForges.Build.Policy/build/ArcForges.Build.Policy.props",
+              "src/Build/ArcForges.Build.Policy/build/ArcForges.Build.Policy.targets",
+              "src/BuildingBlocks/ArcForges.Security/ArcForges.Security.csproj",
+              "src/Directory.Build.props"
+            ]
+          },
+          {
+            "path": "src/DesktopHelpers/ArcForges.ContentSandbox/ArcForges.ContentSandbox.csproj",
+            "role": "aot-host",
+            "requiredProperties": [
+              "PublishAot"
+            ],
+            "sourceInputs": [
+              "Directory.Build.props",
+              "Directory.Build.targets",
+              "eng/build/desktop-aot.props",
+              "eng/build/desktop-rids.props",
+              "src/Build/ArcForges.Build.Policy/build/ArcForges.Build.Policy.props",
+              "src/Build/ArcForges.Build.Policy/build/ArcForges.Build.Policy.targets",
+              "src/DesktopHelpers/ArcForges.ContentSandbox/ArcForges.ContentSandbox.csproj",
+              "src/Directory.Build.props"
+            ]
+          },
+          {
+            "path": "src/Native/ArcForges.Native.Abstractions/ArcForges.Native.Abstractions.csproj",
+            "role": "aot-library",
+            "requiredProperties": [
+              "IsAotCompatible"
+            ],
+            "sourceInputs": [
+              "Directory.Build.props",
+              "Directory.Build.targets",
+              "src/Build/ArcForges.Build.Policy/build/ArcForges.Build.Policy.props",
+              "src/Build/ArcForges.Build.Policy/build/ArcForges.Build.Policy.targets",
+              "src/Directory.Build.props",
+              "src/Native/ArcForges.Native.Abstractions/ArcForges.Native.Abstractions.csproj"
+            ]
+          },
+          {
+            "path": "src/Native/ArcForges.Native.Colour.Runtime.win-x64/ArcForges.Native.Colour.Runtime.win-x64.csproj",
+            "role": "package-container",
+            "requiredProperties": [],
+            "sourceInputs": [
+              "Directory.Build.props",
+              "Directory.Build.targets",
+              "src/Build/ArcForges.Build.Policy/build/ArcForges.Build.Policy.props",
+              "src/Build/ArcForges.Build.Policy/build/ArcForges.Build.Policy.targets",
+              "src/Directory.Build.props",
+              "src/Native/ArcForges.Native.Colour.Runtime.win-x64/ArcForges.Native.Colour.Runtime.win-x64.csproj"
+            ]
+          },
+          {
+            "path": "src/Native/ArcForges.Native.Colour/ArcForges.Native.Colour.csproj",
+            "role": "aot-library",
+            "requiredProperties": [
+              "IsAotCompatible"
+            ],
+            "sourceInputs": [
+              "Directory.Build.props",
+              "Directory.Build.targets",
+              "src/Build/ArcForges.Build.Policy/build/ArcForges.Build.Policy.props",
+              "src/Build/ArcForges.Build.Policy/build/ArcForges.Build.Policy.targets",
+              "src/Directory.Build.props",
+              "src/Native/ArcForges.Native.Colour/ArcForges.Native.Colour.csproj"
+            ]
+          },
+          {
+            "path": "src/Native/ArcForges.Native.Image.Runtime.win-x64/ArcForges.Native.Image.Runtime.win-x64.csproj",
+            "role": "package-container",
+            "requiredProperties": [],
+            "sourceInputs": [
+              "Directory.Build.props",
+              "Directory.Build.targets",
+              "src/Build/ArcForges.Build.Policy/build/ArcForges.Build.Policy.props",
+              "src/Build/ArcForges.Build.Policy/build/ArcForges.Build.Policy.targets",
+              "src/Directory.Build.props",
+              "src/Native/ArcForges.Native.Image.Runtime.win-x64/ArcForges.Native.Image.Runtime.win-x64.csproj"
+            ]
+          },
+          {
+            "path": "src/Native/ArcForges.Native.Image/ArcForges.Native.Image.csproj",
+            "role": "aot-library",
+            "requiredProperties": [
+              "IsAotCompatible"
+            ],
+            "sourceInputs": [
+              "Directory.Build.props",
+              "Directory.Build.targets",
+              "src/Build/ArcForges.Build.Policy/build/ArcForges.Build.Policy.props",
+              "src/Build/ArcForges.Build.Policy/build/ArcForges.Build.Policy.targets",
+              "src/Directory.Build.props",
+              "src/Native/ArcForges.Native.Image/ArcForges.Native.Image.csproj"
+            ]
+          },
+          {
+            "path": "src/Native/ArcForges.Native.Media.Runtime.win-x64/ArcForges.Native.Media.Runtime.win-x64.csproj",
+            "role": "package-container",
+            "requiredProperties": [],
+            "sourceInputs": [
+              "Directory.Build.props",
+              "Directory.Build.targets",
+              "src/Build/ArcForges.Build.Policy/build/ArcForges.Build.Policy.props",
+              "src/Build/ArcForges.Build.Policy/build/ArcForges.Build.Policy.targets",
+              "src/Directory.Build.props",
+              "src/Native/ArcForges.Native.Media.Runtime.win-x64/ArcForges.Native.Media.Runtime.win-x64.csproj"
+            ]
+          },
+          {
+            "path": "src/Native/ArcForges.Native.Media/ArcForges.Native.Media.csproj",
+            "role": "aot-library",
+            "requiredProperties": [
+              "IsAotCompatible"
+            ],
+            "sourceInputs": [
+              "Directory.Build.props",
+              "Directory.Build.targets",
+              "src/Build/ArcForges.Build.Policy/build/ArcForges.Build.Policy.props",
+              "src/Build/ArcForges.Build.Policy/build/ArcForges.Build.Policy.targets",
+              "src/Directory.Build.props",
+              "src/Native/ArcForges.Native.Media/ArcForges.Native.Media.csproj"
+            ]
+          },
+          {
+            "path": "src/Native/ArcForges.Native.Otio.Runtime.win-x64/ArcForges.Native.Otio.Runtime.win-x64.csproj",
+            "role": "package-container",
+            "requiredProperties": [],
+            "sourceInputs": [
+              "Directory.Build.props",
+              "Directory.Build.targets",
+              "src/Build/ArcForges.Build.Policy/build/ArcForges.Build.Policy.props",
+              "src/Build/ArcForges.Build.Policy/build/ArcForges.Build.Policy.targets",
+              "src/Directory.Build.props",
+              "src/Native/ArcForges.Native.Otio.Runtime.win-x64/ArcForges.Native.Otio.Runtime.win-x64.csproj"
+            ]
+          },
+          {
+            "path": "src/Native/ArcForges.Native.Otio/ArcForges.Native.Otio.csproj",
+            "role": "aot-library",
+            "requiredProperties": [
+              "IsAotCompatible"
+            ],
+            "sourceInputs": [
+              "Directory.Build.props",
+              "Directory.Build.targets",
+              "src/Build/ArcForges.Build.Policy/build/ArcForges.Build.Policy.props",
+              "src/Build/ArcForges.Build.Policy/build/ArcForges.Build.Policy.targets",
+              "src/Directory.Build.props",
+              "src/Native/ArcForges.Native.Otio/ArcForges.Native.Otio.csproj"
+            ]
+          },
+          {
+            "path": "tests/ArchitectureTests/ArcForges.Tests.ArchitectureTests.csproj",
+            "role": "test-or-build-tool",
+            "requiredProperties": [],
+            "sourceInputs": [
+              "Directory.Build.props",
+              "Directory.Build.targets",
+              "src/Build/ArcForges.Build.Policy/build/ArcForges.Build.Policy.props",
+              "src/Build/ArcForges.Build.Policy/build/ArcForges.Build.Policy.targets",
+              "tests/ArchitectureTests/ArcForges.Tests.ArchitectureTests.csproj"
+            ]
+          },
+          {
+            "path": "tests/NativeAbiTests/ArcForges.Tests.NativeAbiTests.csproj",
+            "role": "test-or-build-tool",
+            "requiredProperties": [],
+            "sourceInputs": [
+              "Directory.Build.props",
+              "Directory.Build.targets",
+              "src/Build/ArcForges.Build.Policy/build/ArcForges.Build.Policy.props",
+              "src/Build/ArcForges.Build.Policy/build/ArcForges.Build.Policy.targets",
+              "tests/NativeAbiTests/ArcForges.Tests.NativeAbiTests.csproj"
+            ]
+          }
+        ],
+        "result": "passed"
+      },
+      {
+        "repository": "Contracts",
+        "commit": "24c05b7fc215896eeec91437ffe8846f2d4467a1",
+        "dirty": false,
+        "files": 330,
+        "projects": 15,
+        "runtime": "proto-generated-clients",
+        "managedSourceChecks": [
+          {
+            "path": "eng/Codegen/Codegen.csproj",
+            "role": "test-or-build-tool",
+            "requiredProperties": [],
+            "sourceInputs": [
+              "Directory.Build.props",
+              "Directory.Build.targets",
+              "eng/Codegen/Codegen.csproj"
+            ]
+          },
+          {
+            "path": "src/public/dotnet/ArcForges.Contracts.PublicApi/ArcForges.Contracts.PublicApi.csproj",
+            "role": "aot-library",
+            "requiredProperties": [
+              "IsAotCompatible"
+            ],
+            "sourceInputs": [
+              "Directory.Build.props",
+              "Directory.Build.targets",
+              "src/public/dotnet/ArcForges.Contracts.PublicApi/ArcForges.Contracts.PublicApi.csproj"
+            ]
+          },
+          {
+            "path": "tests/public/HelloClient/HelloClient.csproj",
+            "role": "test-or-build-tool",
+            "requiredProperties": [],
+            "sourceInputs": [
+              "Directory.Build.props",
+              "Directory.Build.targets",
+              "tests/public/HelloClient/HelloClient.csproj"
+            ]
+          },
+          {
+            "path": "tests/public/HelloHost/HelloHost.csproj",
+            "role": "test-or-build-tool",
+            "requiredProperties": [],
+            "sourceInputs": [
+              "Directory.Build.props",
+              "Directory.Build.targets",
+              "tests/public/HelloHost/HelloHost.csproj"
+            ]
+          }
+        ],
+        "result": "passed"
+      },
+      {
+        "repository": "ArcNotes",
+        "commit": "e40423a1b14ce8341de35748cc2a093c7c9b77a7",
+        "dirty": false,
+        "files": 77,
+        "projects": 4,
+        "runtime": "avalonia-nativeaot",
+        "managedSourceChecks": [
+          {
+            "path": "eng/ArcForges.Repository/ArcForges.Repository.csproj",
+            "role": "test-or-build-tool",
+            "requiredProperties": [],
+            "sourceInputs": [
+              "Directory.Build.props",
+              "Directory.Build.targets",
+              "eng/ArcForges.Repository/ArcForges.Repository.csproj"
+            ]
+          },
+          {
+            "path": "src/ArcForges.ArcNotes.Core/ArcForges.ArcNotes.Core.csproj",
+            "role": "aot-library",
+            "requiredProperties": [
+              "IsAotCompatible"
+            ],
+            "sourceInputs": [
+              "Directory.Build.props",
+              "Directory.Build.targets",
+              "src/ArcForges.ArcNotes.Core/ArcForges.ArcNotes.Core.csproj"
+            ]
+          },
+          {
+            "path": "src/ArcForges.ArcNotes/ArcForges.ArcNotes.csproj",
+            "role": "aot-host",
+            "requiredProperties": [
+              "PublishAot"
+            ],
+            "sourceInputs": [
+              "Directory.Build.props",
+              "Directory.Build.targets",
+              "src/ArcForges.ArcNotes/ArcForges.ArcNotes.csproj"
+            ]
+          },
+          {
+            "path": "tests/ArcForges.ArcNotes.Tests/ArcForges.ArcNotes.Tests.csproj",
+            "role": "test-or-build-tool",
+            "requiredProperties": [],
+            "sourceInputs": [
+              "Directory.Build.props",
+              "Directory.Build.targets",
+              "tests/ArcForges.ArcNotes.Tests/ArcForges.ArcNotes.Tests.csproj"
+            ]
+          }
+        ],
+        "result": "passed"
+      },
+      {
+        "repository": "ArcScope",
+        "commit": "d247dcff36fd1123a70e5e59967a9b2294a2eeac",
+        "dirty": false,
+        "files": 76,
+        "projects": 4,
+        "runtime": "avalonia-nativeaot",
+        "managedSourceChecks": [
+          {
+            "path": "eng/ArcForges.Repository/ArcForges.Repository.csproj",
+            "role": "test-or-build-tool",
+            "requiredProperties": [],
+            "sourceInputs": [
+              "Directory.Build.props",
+              "Directory.Build.targets",
+              "eng/ArcForges.Repository/ArcForges.Repository.csproj"
+            ]
+          },
+          {
+            "path": "src/ArcForges.ArcScope.Core/ArcForges.ArcScope.Core.csproj",
+            "role": "aot-library",
+            "requiredProperties": [
+              "IsAotCompatible"
+            ],
+            "sourceInputs": [
+              "Directory.Build.props",
+              "Directory.Build.targets",
+              "src/ArcForges.ArcScope.Core/ArcForges.ArcScope.Core.csproj"
+            ]
+          },
+          {
+            "path": "src/ArcForges.ArcScope/ArcForges.ArcScope.csproj",
+            "role": "aot-host",
+            "requiredProperties": [
+              "PublishAot"
+            ],
+            "sourceInputs": [
+              "Directory.Build.props",
+              "Directory.Build.targets",
+              "src/ArcForges.ArcScope/ArcForges.ArcScope.csproj"
+            ]
+          },
+          {
+            "path": "tests/ArcForges.ArcScope.Tests/ArcForges.ArcScope.Tests.csproj",
+            "role": "test-or-build-tool",
+            "requiredProperties": [],
+            "sourceInputs": [
+              "Directory.Build.props",
+              "Directory.Build.targets",
+              "tests/ArcForges.ArcScope.Tests/ArcForges.ArcScope.Tests.csproj"
+            ]
+          }
+        ],
+        "result": "passed"
+      },
+      {
+        "repository": "ArcSlate",
+        "commit": "b0d255f54fb560a534cc493d5645ca4bc7b4bd0e",
+        "dirty": false,
+        "files": 76,
+        "projects": 4,
+        "runtime": "avalonia-nativeaot",
+        "managedSourceChecks": [
+          {
+            "path": "eng/ArcForges.Repository/ArcForges.Repository.csproj",
+            "role": "test-or-build-tool",
+            "requiredProperties": [],
+            "sourceInputs": [
+              "Directory.Build.props",
+              "Directory.Build.targets",
+              "eng/ArcForges.Repository/ArcForges.Repository.csproj"
+            ]
+          },
+          {
+            "path": "src/ArcForges.ArcSlate.Core/ArcForges.ArcSlate.Core.csproj",
+            "role": "aot-library",
+            "requiredProperties": [
+              "IsAotCompatible"
+            ],
+            "sourceInputs": [
+              "Directory.Build.props",
+              "Directory.Build.targets",
+              "src/ArcForges.ArcSlate.Core/ArcForges.ArcSlate.Core.csproj"
+            ]
+          },
+          {
+            "path": "src/ArcForges.ArcSlate/ArcForges.ArcSlate.csproj",
+            "role": "aot-host",
+            "requiredProperties": [
+              "PublishAot"
+            ],
+            "sourceInputs": [
+              "Directory.Build.props",
+              "Directory.Build.targets",
+              "src/ArcForges.ArcSlate/ArcForges.ArcSlate.csproj"
+            ]
+          },
+          {
+            "path": "tests/ArcForges.ArcSlate.Tests/ArcForges.ArcSlate.Tests.csproj",
+            "role": "test-or-build-tool",
+            "requiredProperties": [],
+            "sourceInputs": [
+              "Directory.Build.props",
+              "Directory.Build.targets",
+              "tests/ArcForges.ArcSlate.Tests/ArcForges.ArcSlate.Tests.csproj"
+            ]
+          }
+        ],
+        "result": "passed"
+      },
+      {
+        "repository": "Cloud",
+        "commit": "4571ec8692235485712d4c4e3ef4886c162f2574",
+        "dirty": false,
+        "files": 109,
+        "projects": 5,
+        "runtime": "dotnet-nativeaot-cloudflare-container",
+        "managedSourceChecks": [
+          {
+            "path": "src/ArcForges.Cloud/ArcForges.Cloud.csproj",
+            "role": "aot-host",
+            "requiredProperties": [
+              "PublishAot"
+            ],
+            "sourceInputs": [
+              "Directory.Build.props",
+              "Directory.Build.targets",
+              "src/ArcForges.Cloud/ArcForges.Cloud.csproj"
+            ]
+          },
+          {
+            "path": "tests/ArcForges.Cloud.Consumer/ArcForges.Cloud.Consumer.csproj",
+            "role": "test-or-build-tool",
+            "requiredProperties": [],
+            "sourceInputs": [
+              "Directory.Build.props",
+              "Directory.Build.targets",
+              "tests/ArcForges.Cloud.Consumer/ArcForges.Cloud.Consumer.csproj"
+            ]
+          },
+          {
+            "path": "tests/ArcForges.Cloud.Tests/ArcForges.Cloud.Tests.csproj",
+            "role": "test-or-build-tool",
+            "requiredProperties": [],
+            "sourceInputs": [
+              "Directory.Build.props",
+              "Directory.Build.targets",
+              "tests/ArcForges.Cloud.Tests/ArcForges.Cloud.Tests.csproj"
+            ]
+          }
+        ],
+        "result": "passed"
+      },
+      {
+        "repository": "AI",
+        "commit": "944edfe88718fc5f72a42ea0bed1c495307c22df",
+        "dirty": false,
+        "files": 88,
+        "projects": 1,
+        "runtime": "cloudflare-workflow-workers-ai",
+        "managedSourceChecks": [],
+        "result": "passed"
+      },
+      {
+        "repository": "Web",
+        "commit": "84939ca1fde0f0653d2cb4d8b8f9e5dd1057abb5",
+        "dirty": false,
+        "files": 109,
+        "projects": 4,
+        "runtime": "react-typescript-static",
+        "managedSourceChecks": [
+          {
+            "path": "ArcForges.Web.esproj",
+            "role": "javascript-ide",
+            "requiredProperties": [],
+            "sourceInputs": [
+              "ArcForges.Web.esproj",
+              "Directory.Build.targets"
+            ]
+          }
+        ],
+        "result": "passed"
+      },
+      {
+        "repository": "Mobile",
+        "commit": "5031d837d2e7bf9dd1b681c837c942d2b74dc65e",
+        "dirty": false,
+        "files": 110,
+        "projects": 3,
+        "runtime": "kotlin-compose-android",
+        "managedSourceChecks": [],
+        "result": "passed"
+      }
+    ],
+    "limitations": "No product, deployment, store or commercial completion inferred; evaluated builds and real candidates are separate evidence.",
+    "policySha256": "66813be2a63b4f76c9f2fb0effd7661fd76e3a71b9bac07ea9177b88e56fc6ea",
+    "historicalDispositionSource": "99bfe7d695ed0d65a0d035af7d219fc9b86100f5",
+    "naming": [
+      {
+        "repository": "DesktopPlatform",
+        "commit": "6cb08997bb35299df86a6434606d8e24cf5a4d97",
+        "dirty": false,
+        "filesScanned": 372,
+        "inventorySha256": "dcbe4c9df178e106493125117ec60fe738f935a8a944fa1fa87514c3a4ce05be",
+        "exceptionsUsed": [
+          "artifacts/evidence/traceability/feature-trace-bridge.json",
+          "eng/provenance/reference-inputs.json"
+        ],
+        "declarationsUsed": [
+          "eng/policy/glossary-terms.json"
+        ],
+        "status": "pass",
+        "findings": []
+      },
+      {
+        "repository": "Contracts",
+        "commit": "24c05b7fc215896eeec91437ffe8846f2d4467a1",
+        "dirty": false,
+        "filesScanned": 330,
+        "inventorySha256": "05f251db6a14a82d3d12ccbe359eafc4ff3c53643318ec641a213f7cff51f5c2",
+        "exceptionsUsed": [],
+        "declarationsUsed": [],
+        "status": "pass",
+        "findings": []
+      },
+      {
+        "repository": "ArcNotes",
+        "commit": "e40423a1b14ce8341de35748cc2a093c7c9b77a7",
+        "dirty": false,
+        "filesScanned": 77,
+        "inventorySha256": "63fab48c4addc9e131bdeec9b1ddef9893dda40ff7c00e8cd85b32fac184b400",
+        "exceptionsUsed": [],
+        "declarationsUsed": [],
+        "status": "pass",
+        "findings": []
+      },
+      {
+        "repository": "ArcScope",
+        "commit": "d247dcff36fd1123a70e5e59967a9b2294a2eeac",
+        "dirty": false,
+        "filesScanned": 76,
+        "inventorySha256": "d4124d25746a3effef60aace38a9b2b3dbb0796c13dd6364cb88aaf364ec3a99",
+        "exceptionsUsed": [],
+        "declarationsUsed": [],
+        "status": "pass",
+        "findings": []
+      },
+      {
+        "repository": "ArcSlate",
+        "commit": "b0d255f54fb560a534cc493d5645ca4bc7b4bd0e",
+        "dirty": false,
+        "filesScanned": 76,
+        "inventorySha256": "48ff8f8f21f210da6d0cdc731c38e082d468475137c5fc373189e55badfb3e50",
+        "exceptionsUsed": [],
+        "declarationsUsed": [],
+        "status": "pass",
+        "findings": []
+      },
+      {
+        "repository": "Cloud",
+        "commit": "4571ec8692235485712d4c4e3ef4886c162f2574",
+        "dirty": false,
+        "filesScanned": 109,
+        "inventorySha256": "27e87ff0bf8e82eea341eeb3657ebc4b666c1601a837f0f24454b5b3dbd21dc4",
+        "exceptionsUsed": [],
+        "declarationsUsed": [],
+        "status": "pass",
+        "findings": []
+      },
+      {
+        "repository": "AI",
+        "commit": "944edfe88718fc5f72a42ea0bed1c495307c22df",
+        "dirty": false,
+        "filesScanned": 88,
+        "inventorySha256": "01af5c93627c7a0c3ced2fa488acd744b8552d692441bc804126973de967f8cb",
+        "exceptionsUsed": [],
+        "declarationsUsed": [],
+        "status": "pass",
+        "findings": []
+      },
+      {
+        "repository": "Web",
+        "commit": "84939ca1fde0f0653d2cb4d8b8f9e5dd1057abb5",
+        "dirty": false,
+        "filesScanned": 109,
+        "inventorySha256": "1926b13b7c9738f7ecd3148968299853606820851b1a8bb85d20d9cb9b4c6d01",
+        "exceptionsUsed": [],
+        "declarationsUsed": [],
+        "status": "pass",
+        "findings": []
+      },
+      {
+        "repository": "Mobile",
+        "commit": "5031d837d2e7bf9dd1b681c837c942d2b74dc65e",
+        "dirty": false,
+        "filesScanned": 110,
+        "inventorySha256": "89814e191d9d4b0930c6c0e484b700ca121831348ce193f63543abe6c5463763",
+        "exceptionsUsed": [],
+        "declarationsUsed": [],
+        "status": "pass",
+        "findings": []
+      }
+    ],
+    "result": "passed"
+  },
+  "result": "passed",
+  "scope": "Current owned graph and bounded reconciliation; no new product behavior, release or deployment.",
+  "localNotes": {
+    "commit": "e40423a1b14ce8341de35748cc2a093c7c9b77a7",
+    "worktree": "C:\\MyFile\\Projects\\ArcForges\\ArcNotes\\.worktree\\wp01-05-core-validation",
+    "sdk": "10.0.401",
+    "lockedRestore": "passed",
+    "releaseBuild": "passed",
+    "tests": {
+      "passed": 89,
+      "failed": 0,
+      "skipped": 0
+    },
+    "repositoryCheck": "passed",
+    "format": "passed",
+    "logs": {
+      "build.log": "1faca0e3eb6d4af99f468aac5d4a32598cd737f875a2afb94dd368a04ef0ee4e",
+      "format.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "repository-check.log": "4d2d75b384f3f79fc79da27fbfaa3c67fe735f191cac48ebc4a853d5c9614a8f",
+      "restore.log": "d746214161b55a7b8c7f95180a7be56f6be5fecf40334dd5a0df17dd268a221f",
+      "tests.log": "0b560c9530681fb26a6503f74c7abee57fbafd1393953005c66a5f568046a46e"
+    }
+  },
+  "historicalBlobChanges": [
+    {
+      "owner": "DesktopPlatform",
+      "path": "tests/NativeAbiTests/ArcForges.Tests.NativeAbiTests.csproj",
+      "blob": "87b5bfceadd816497a18225b52a1149c53355dbe",
+      "disposition": "Keep",
+      "producer": "WP01.04",
+      "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+      "baselineBlob": "bfae1c5eb2425f36dc6bab237d5ebca5a6940efe",
+      "changedSinceInventory": true,
+      "review": "DesktopPlatform PR 54 / WP01.03 native oracle relocation"
+    },
+    {
+      "owner": "Contracts",
+      "path": "build.gradle.kts",
+      "blob": "76903f01377ee59e69607c9178dc67e8397be7dc",
+      "disposition": "Keep",
+      "producer": "WP03",
+      "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+      "baselineBlob": "b1a82b96c78d070abfaf3369104baace852b8b82",
+      "changedSinceInventory": true,
+      "review": "Contracts PR 26 and PR 27 / reviewed Maven snapshot publication transition; no owner or project-set change"
+    },
+    {
+      "owner": "Contracts",
+      "path": "eng/central-signing/build.gradle.kts",
+      "blob": "208fea8767f8d451bc663d8ca5f541264c58dc6b",
+      "disposition": "Keep",
+      "producer": "WP03",
+      "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
+      "baselineBlob": "968379e00d8fa143611fa0767a934520078f5153",
+      "changedSinceInventory": true,
+      "review": "Contracts PR 26 and PR 27 / reviewed Maven snapshot publication transition; no owner or project-set change"
+    }
+  ],
+  "retiredReferenceScan": [
+    {
+      "owner": "DesktopPlatform",
+      "filesScanned": 280,
+      "matches": [
+        {
+          "path": "eng/policy/glossary-terms.json",
+          "line": 1371,
+          "text": "\"term\": \"`ArcNotes.Slides`\","
+        },
+        {
+          "path": "eng/policy/glossary-terms.json",
+          "line": 1373,
+          "text": "\"ArcNotes.Slides\""
+        },
+        {
+          "path": "eng/policy/reconciliation/historical.json",
+          "line": 183,
+          "text": "\"path\": \"src/ArcNotes/ArcNotes.Edgeless/ArcNotes.Edgeless.csproj\","
+        },
+        {
+          "path": "eng/policy/reconciliation/historical.json",
+          "line": 253,
+          "text": "\"path\": \"src/ArcNotes/ArcNotes.Slides/ArcNotes.Slides.csproj\","
+        },
+        {
+          "path": "eng/policy/reconciliation/historical.json",
+          "line": 793,
+          "text": "\"path\": \"src/Cloud/ArcForges.Cloud.AgentRuntime/ArcForges.Cloud.AgentRuntime.csproj\","
+        },
+        {
+          "path": "eng/policy/reconciliation/historical.json",
+          "line": 803,
+          "text": "\"path\": \"src/Cloud/ArcForges.Cloud.AppHost/ArcForges.Cloud.AppHost.csproj\","
+        },
+        {
+          "path": "eng/policy/reconciliation/historical.json",
+          "line": 1373,
+          "text": "\"path\": \"src/Web/ArcForges.Web.SiteGenerator/ArcForges.Web.SiteGenerator.csproj\","
+        },
+        {
+          "path": "eng/runtime_ownership.py",
+          "line": 283,
+          "text": "require(not any('/ArcNotes.Edgeless/' in '/' + p or '/ArcNotes.Slides/' in '/' + p for p in files), 'excluded Notes scaffold restored')"
+        }
+      ],
+      "result": "passed; matches confined to historical data or negative assertions"
+    },
+    {
+      "owner": "Contracts",
+      "filesScanned": 206,
+      "matches": [],
+      "result": "passed; matches confined to historical data or negative assertions"
+    },
+    {
+      "owner": "ArcNotes",
+      "filesScanned": 52,
+      "matches": [],
+      "result": "passed; matches confined to historical data or negative assertions"
+    },
+    {
+      "owner": "ArcScope",
+      "filesScanned": 51,
+      "matches": [],
+      "result": "passed; matches confined to historical data or negative assertions"
+    },
+    {
+      "owner": "ArcSlate",
+      "filesScanned": 51,
+      "matches": [],
+      "result": "passed; matches confined to historical data or negative assertions"
+    },
+    {
+      "owner": "Cloud",
+      "filesScanned": 66,
+      "matches": [],
+      "result": "passed; matches confined to historical data or negative assertions"
+    },
+    {
+      "owner": "AI",
+      "filesScanned": 61,
+      "matches": [],
+      "result": "passed; matches confined to historical data or negative assertions"
+    },
+    {
+      "owner": "Web",
+      "filesScanned": 49,
+      "matches": [],
+      "result": "passed; matches confined to historical data or negative assertions"
+    },
+    {
+      "owner": "Mobile",
+      "filesScanned": 51,
+      "matches": [],
+      "result": "passed; matches confined to historical data or negative assertions"
+    }
+  ],
+  "limitations": [
+    "Source audits do not prove commercial readiness.",
+    "No implementation source changed; clean-checkout/native/package runs are existing exact-head CI, not new hosted runs.",
+    "Local Notes build and 89 deterministic tests are newly executed; no new native UI/live-provider test is claimed.",
+    "Immutable WP01.00 snapshot registry is preserved. Fresh source licence/runtime/project-set/directory audits and the three enumerated reviewed blob changes establish this current observation; a fresh run of the old pinned reconciliation checker is not claimed.",
+    "Kotlin native-grpc-only bootstrap client retires at the first business release in WP03; current compatibility remains required.",
+    "Build.Policy target move belongs to WP02; Cloud 21-module implementation belongs to WP21.02.",
+    "No new package publication, tag, vcpkg installation or version change."
+  ]
+}

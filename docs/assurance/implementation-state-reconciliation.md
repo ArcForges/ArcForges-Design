@@ -441,7 +441,7 @@ All 273 `.cs` files declare `SPDX-License-Identifier: AGPL-3.0-only`, and `NOTIC
 
 ### 5.6 Shared boundary and remaining areas
 
-**Retired Notes dispositions (current scope).** Under [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006), **Delete** `src/ArcNotes/ArcNotes.Edgeless` and `src/ArcNotes/ArcNotes.Slides`, including their project-local lockfiles and obsolete solution/project references, in [WP-01.05](../planning/work-packages/01-repository-reconciliation-and-target-layout.md#rule-wp-01.05). These are the inventoried eight-line scaffolds, not shipped data formats. Retain unrelated Notes core work. Verify the retained build graph has neither retired project nor excluded schema/test hook. This is a design disposition; implementation deletion has not run. No work is assigned to the retired canvas/slides packages.
+**Retired Notes dispositions (current scope).** Under [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006), **Delete** `src/ArcNotes/ArcNotes.Edgeless` and `src/ArcNotes/ArcNotes.Slides`, including their project-local lockfiles and obsolete solution/project references, in [WP-01.05](../planning/work-packages/01-repository-reconciliation-and-target-layout.md#rule-wp-01.05). These are the inventoried eight-line scaffolds, not shipped data formats. Retain unrelated Notes core work. Verify the retained build graph has neither retired project nor excluded schema/test hook. Current verification (2026-09-20): [WP01.05](wp01-05-bounded-reconciliation.md) confirms both retired scaffolds and obsolete graph entries are already absent from the nine owned roots; the retained Notes core builds and passes 89 tests. No new deletion is claimed by that verification. No work is assigned to the retired canvas/slides packages.
 
 | Item | Evidence | Finding | Disposition |
 |---|---|---|---|
@@ -452,6 +452,8 @@ All 273 `.cs` files declare `SPDX-License-Identifier: AGPL-3.0-only`, and `NOTIC
 | `src/Web` | 5 projects, 27 lines; `ArcForges.Web.Components` is **empty**; generator is named `SiteGenerator` not `StaticGen` | Structure conforms; naming differs | `Keep` + `Rename` — [WP-01.05](../planning/work-packages/01-repository-reconciliation-and-target-layout.md#rule-wp-01.05) |
 | `src/Mobile` | 11 projects, 166 lines | Structure conforms; **licence declaration does not** (`§5.1`) | `Keep` + relicense |
 | `fixtures/` | **Absent** | The golden-fixture root does not exist | [WP-01.05](../planning/work-packages/01-repository-reconciliation-and-target-layout.md#rule-wp-01.05) creates it |
+
+**Current resolution (2026-09-20).** The table above records the historical monorepo. The [WP01.05 current observation](wp01-05-bounded-reconciliation.md) supersedes its proposed Web rename and empty fixture-root action: current Web has four TypeScript outputs, with neither old generator present. Substantive fixtures belong to their named producing steps in the current directory inventory; no empty root is created.
 
 ---
 

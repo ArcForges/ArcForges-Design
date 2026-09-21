@@ -156,6 +156,8 @@
 
 **Completion gate.** Current repository/project map agrees with actual owned trees and every move has a tested consumer path.
 
+**Recorded execution (2026-09-20).** [Bounded reconciliation evidence](../../assurance/wp01-05-bounded-reconciliation.md) verifies all nine current owners, 75 projects and 359 directory dispositions, clean exact-head CI, licence/runtime/reference checks and a new clean-worktree Notes build with 89 passing tests. Retired blocking paths are already absent; no additional source move or deletion is needed. Future producer moves and explicitly retained bootstrap compatibility remain scheduled.
+
 <a id="rule-wp-01.90"></a>
 ### WP-01.90 — Verify the owned artifact and real integration
 
@@ -169,7 +171,7 @@
 
 ---
 
-**Cloud module layout acceptance.** Create all 21 domain owners listed in architecture01 §5, including `src/Modules/PackageCatalog/PackageCatalog.Domain`, `.Application` and `.Infrastructure`; platform is shared infrastructure. Compare the project list to the model01 schema map. This count is distinct from the nine independent implementation repositories.
+**Cloud module layout acceptance.** WP01 records all 21 domain owners listed in architecture01 §5 and their Cloud ownership. [WP21.02](21-cloud-host-and-persistence.md#rule-wp-21.02) implements their substantive Domain/Application/Infrastructure projects and compares the project list to the model01 schema map, including PackageCatalog. Platform remains shared infrastructure. Do not create empty module projects during reconciliation; this follows the schema-boundary exclusion in §1 and preserves the full 21-module acceptance at its producing step. The count is distinct from the nine independent implementation repositories.
 
 ## 6. Impacts
 
@@ -210,7 +212,7 @@
 3. No product knowledge remains in the shared foundation.
 4. Current native admissions are applied: official OTIO is the selected interchange boundary, MDF is excluded, and unmigrated conflicting skeletons are unreferenceable; no pending substitute choice overrides WP01.03.
 5. Every required test family maps to an existing suite or a named future package.
-6. The blocking moves and explicit deletion of `ArcNotes.Edgeless`/`ArcNotes.Slides` are executed, their obsolete solution/project/lock entries and excluded hooks are absent, the retained Notes core builds green, and all remaining non-`Keep` code is fenced and unreferenceable.
+6. The blocking moves and explicit deletion of `ArcNotes.Edgeless`/`ArcNotes.Slides` are executed, their obsolete solution/project/lock entries and excluded hooks are absent, the retained Notes core builds green, and all remaining conflicting code whose disposition is due at this stage is fenced and unreferenceable. Explicit bootstrap compatibility retained until a named later producer, including the Kotlin native-grpc client until the first business release in WP03, is not prematurely removed.
 
 ---
 
