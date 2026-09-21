@@ -1,0 +1,971 @@
+{
+  "schemaVersion": 1,
+  "substep": "WP01.90",
+  "result": "passed",
+  "verifiedAt": "2026-09-21T03:38:50.874158+00:00",
+  "designBaseline": "483691ea64a5f624db43ccfdbb0741851cc58770",
+  "scope": "Repository reconciliation stage only; not commercial product acceptance.",
+  "prerequisites": [
+    {
+      "substep": "WP01.00",
+      "result": "passed",
+      "receipts": [
+        {
+          "path": "docs/assurance/wp01-00-implementation-evidence.md",
+          "sha256": "43ce5104924bfabd572bfe85a0757512d15ea4e4cc7b6b52d7446ff9cf16ba28"
+        },
+        {
+          "path": "docs/assurance/wp01-00-implementation-evidence.json",
+          "sha256": "80dc6575171630e3abedbc2495bbe741105acf7d16de06b70d0b7a8fce83b9d6"
+        }
+      ]
+    },
+    {
+      "substep": "WP01.01",
+      "result": "passed",
+      "receipts": [
+        {
+          "path": "docs/assurance/wp01-01-implementation-evidence.md",
+          "sha256": "a0cb759d5af9cc82f7d0fdacace6ff40340d63a8892769e6ceb822f33d321da7"
+        },
+        {
+          "path": "docs/assurance/wp01-01-implementation-evidence.json",
+          "sha256": "aec3578d615563680f41cb5df9ad70fb47eeea36c473be08ebdabc3928b379a1"
+        }
+      ]
+    },
+    {
+      "substep": "WP01.02",
+      "result": "passed",
+      "receipts": [
+        {
+          "path": "docs/assurance/wp01-02-foundation-review.md",
+          "sha256": "6e65d21fe249119b8b0611974d55410af4218bd122558eccd3c174f2ff332875"
+        },
+        {
+          "path": "docs/assurance/wp01-02-foundation-review.json",
+          "sha256": "9f379df381203c4599afaff7fbebe5844f2ba9d4eb9afcbcb7876b91d3d9a940"
+        }
+      ]
+    },
+    {
+      "substep": "WP01.03",
+      "result": "passed",
+      "receipts": [
+        {
+          "path": "docs/assurance/wp01-03-native-reconciliation.md",
+          "sha256": "e2157204f552ee596ea1484c45181805c4af03f26a15a4429dc48eb2e08bd7eb"
+        },
+        {
+          "path": "docs/assurance/wp01-03-native-reconciliation.json",
+          "sha256": "ab1b609911ecbd3016fc9cb124020db0f96c0fc92ab6f7f0c54a4efab7fb92c6"
+        }
+      ]
+    },
+    {
+      "substep": "WP01.04",
+      "result": "passed",
+      "receipts": [
+        {
+          "path": "docs/assurance/wp01-04-test-family-map.md",
+          "sha256": "01aa83d3ce9f23c9dcddf4b45ee409438385c042583de10cf8adf007e1e0c46c"
+        },
+        {
+          "path": "docs/assurance/wp01-04-test-family-map.json",
+          "sha256": "8d12b8e850757ce2a8d822ba22712f5aa83b5b540c671b86726a50b2141a32bd"
+        }
+      ]
+    },
+    {
+      "substep": "WP01.05",
+      "result": "passed",
+      "receipts": [
+        {
+          "path": "docs/assurance/wp01-05-bounded-reconciliation.md",
+          "sha256": "fbe4a719eb985e9c362acce9f19ca59c9c7db17a5eb6935c918719c41fad919c"
+        },
+        {
+          "path": "docs/assurance/wp01-05-bounded-reconciliation.json",
+          "sha256": "494f5b661c6108a089f125a861cf9228d2e7e47c659b601ca6721ecee033c47e"
+        }
+      ]
+    }
+  ],
+  "owners": [
+    {
+      "owner": "DesktopPlatform",
+      "sourceCommit": "6cb08997bb35299df86a6434606d8e24cf5a4d97",
+      "tree": "42199a8b7fc1dcb65831594e4fe2250e45197708",
+      "runtime": "dotnet-nativeaot-libraries-and-native-cabi",
+      "licence": "AGPL-3.0-only",
+      "projectCount": 35,
+      "mainCi": "https://github.com/ArcForges/DesktopPlatform/actions/runs/35554989640",
+      "mainCiResult": "success",
+      "candidate": {
+        "version": "1.0.0-ci.17.1",
+        "sourceCommit": "6cb08997bb35299df86a6434606d8e24cf5a4d97",
+        "manifestSha256": "b283dab0d086f4194ebfdb33eb7421eeaa35119ef1e94ce1619d50c311d2ff21",
+        "packages": [
+          {
+            "id": "ArcForges.Build.Policy",
+            "url": "https://api.nuget.org/v3-flatcontainer/arcforges.build.policy/1.0.0-ci.17.1/arcforges.build.policy.1.0.0-ci.17.1.nupkg",
+            "payloadMatches": true,
+            "candidateSha256": "c01726de51ad30496253ae9f3980aeb76b3b7e08d3096c076de279e24ac3f42f",
+            "publicSha256": "60ef3bacd98a67d19a5a163a43b65b7f348af537cf99778656dccbea103fe430",
+            "entries": 9
+          },
+          {
+            "id": "ArcForges.Native.Abstractions",
+            "url": "https://api.nuget.org/v3-flatcontainer/arcforges.native.abstractions/1.0.0-ci.17.1/arcforges.native.abstractions.1.0.0-ci.17.1.nupkg",
+            "payloadMatches": true,
+            "candidateSha256": "a0061a5803d6a5ab8298806ed47dd0d286eaea50220d634e9aac7f4eee08a13a",
+            "publicSha256": "7b4c272de5a4438635fc5cae7653d916cbacec20d645370273d4de160d5298c4",
+            "entries": 8
+          },
+          {
+            "id": "ArcForges.Native.Media",
+            "url": "https://api.nuget.org/v3-flatcontainer/arcforges.native.media/1.0.0-ci.17.1/arcforges.native.media.1.0.0-ci.17.1.nupkg",
+            "payloadMatches": true,
+            "candidateSha256": "3aad1f067643477a1abe4c28455fb15e353882b16890d3ad569353772e219199",
+            "publicSha256": "e9fec9710e34d8a90db841c41fef90c484992fd30e1e26155debb844026e7153",
+            "entries": 8
+          },
+          {
+            "id": "ArcForges.Native.Colour",
+            "url": "https://api.nuget.org/v3-flatcontainer/arcforges.native.colour/1.0.0-ci.17.1/arcforges.native.colour.1.0.0-ci.17.1.nupkg",
+            "payloadMatches": true,
+            "candidateSha256": "311c377573b9f10180f59af09f9929072f6e6d77f3b3b29a98edf6e0efb3988f",
+            "publicSha256": "78456e26acf8a0b0045dee7db00bbd4a50e9a2193df7164fbe7d1f3d3265ebf6",
+            "entries": 8
+          },
+          {
+            "id": "ArcForges.Native.Image",
+            "url": "https://api.nuget.org/v3-flatcontainer/arcforges.native.image/1.0.0-ci.17.1/arcforges.native.image.1.0.0-ci.17.1.nupkg",
+            "payloadMatches": true,
+            "candidateSha256": "9ab6fb65d8c341799c7ec7e784dc4bb51e85fdbadbbc00994fe7146a7e62dde0",
+            "publicSha256": "29fc2022fd9b3ccd39bf71d70549f52d804ff0346ddf00aead4481f2c565dd3d",
+            "entries": 8
+          },
+          {
+            "id": "ArcForges.Native.Otio",
+            "url": "https://api.nuget.org/v3-flatcontainer/arcforges.native.otio/1.0.0-ci.17.1/arcforges.native.otio.1.0.0-ci.17.1.nupkg",
+            "payloadMatches": true,
+            "candidateSha256": "dcaf158bd14f4da03991ae656b29a3121563eb3bb97bbad8f02d0fc05b42d3c8",
+            "publicSha256": "87698830d92170ab2aba4b6c061e55b43905defbf39c40c39a44433f6681ba08",
+            "entries": 8
+          },
+          {
+            "id": "ArcForges.Native.Media.Runtime.win-x64",
+            "url": "https://api.nuget.org/v3-flatcontainer/arcforges.native.media.runtime.win-x64/1.0.0-ci.17.1/arcforges.native.media.runtime.win-x64.1.0.0-ci.17.1.nupkg",
+            "payloadMatches": true,
+            "candidateSha256": "1de05d0639c6efb72592bae3fc1bcd3a7b01a15d0031cd0468d4781d5bd9e9d4",
+            "publicSha256": "945b6bf4727e168d8f815bd874aeed9f5f1eebf4bdd0fe1cf069a82693fb9f7a",
+            "entries": 172
+          },
+          {
+            "id": "ArcForges.Native.Colour.Runtime.win-x64",
+            "url": "https://api.nuget.org/v3-flatcontainer/arcforges.native.colour.runtime.win-x64/1.0.0-ci.17.1/arcforges.native.colour.runtime.win-x64.1.0.0-ci.17.1.nupkg",
+            "payloadMatches": true,
+            "candidateSha256": "41d264140ac8578a06fca7cc64558f82cb6d0eee60a6a1445ba2e8b40343649c",
+            "publicSha256": "e5f86162f13271d885c744870a73094f7c95ce6f365dbdd2bd81d23043cc5fa1",
+            "entries": 121
+          },
+          {
+            "id": "ArcForges.Native.Image.Runtime.win-x64",
+            "url": "https://api.nuget.org/v3-flatcontainer/arcforges.native.image.runtime.win-x64/1.0.0-ci.17.1/arcforges.native.image.runtime.win-x64.1.0.0-ci.17.1.nupkg",
+            "payloadMatches": true,
+            "candidateSha256": "dea8df2badf366f7129786a43c1e10b4884b2a03a9988397cb98237c3e34ab85",
+            "publicSha256": "c0c33f8c457f54e980669344eb91b0c886a2f918838cb69ef39b25c9c031faff",
+            "entries": 197
+          },
+          {
+            "id": "ArcForges.Native.Otio.Runtime.win-x64",
+            "url": "https://api.nuget.org/v3-flatcontainer/arcforges.native.otio.runtime.win-x64/1.0.0-ci.17.1/arcforges.native.otio.runtime.win-x64.1.0.0-ci.17.1.nupkg",
+            "payloadMatches": true,
+            "candidateSha256": "0dcb796584e59f934b34949ce113b8c64d14761e9cac7e15411f80effd5d0645",
+            "publicSha256": "d6bbec3bf80f651d95e9cfc7cc0311253ffa4943bd7d2d1f0f25507e84145775",
+            "entries": 60
+          }
+        ]
+      }
+    },
+    {
+      "owner": "Contracts",
+      "sourceCommit": "24c05b7fc215896eeec91437ffe8846f2d4467a1",
+      "tree": "54af47433f6861fb80336639a6dd9a4f67a5c1ae",
+      "runtime": "proto-generated-clients",
+      "licence": "Apache-2.0",
+      "projectCount": 15,
+      "mainCi": "https://github.com/ArcForges/Contracts/actions/runs/35546947568",
+      "mainCiResult": "success",
+      "candidate": {
+        "version": "1.0.0-ci.65.1",
+        "mavenVersion": "1.0.0-SNAPSHOT",
+        "sourceCommit": "24c05b7fc215896eeec91437ffe8846f2d4467a1",
+        "manifestSha256": "e7e7ae54a6c3a8ab43bc6c820d5ed3fa4564d6206241b6b04a7d91a99cb8d535",
+        "mavenTimestamp": "20260921.014054-1"
+      }
+    },
+    {
+      "owner": "ArcNotes",
+      "sourceCommit": "e40423a1b14ce8341de35748cc2a093c7c9b77a7",
+      "tree": "510cb6f84cfd36abf6c757b9ed7bcf0d427e137d",
+      "runtime": "avalonia-nativeaot",
+      "licence": "AGPL-3.0-only",
+      "projectCount": 4,
+      "mainCi": "https://github.com/ArcForges/ArcNotes/actions/runs/35425608146",
+      "mainCiResult": "success",
+      "candidate": {
+        "version": "0.1.0-ci.8.1",
+        "verificationArchiveSha256": "a3c26c35d5ee9dfe6d62dfe82796cb92bbcb81db25d24f1c279a253c4186aaa0",
+        "sourceCommit": "e40423a1b14ce8341de35748cc2a093c7c9b77a7",
+        "nativeRuns": [
+          {
+            "rid": "linux-x64",
+            "archiveSha256": "99b2f81a451ed99b195c8784830c57f71b27b06f0fccd1d064297268da5ca91b",
+            "smokeSha256": "0d12e7f6d4f98917a809b2e8d4ef3b4c0e871e3652a5eea46bf19a1d9f375f4f",
+            "observedCloudCommit": "2cf5a58633a7e09db05ebc1741f1cab83547a832"
+          },
+          {
+            "rid": "osx-arm64",
+            "archiveSha256": "717772ee943bf9e74351d2dbfcff8beee36ddb271fd5a5ab7238b16d6afaea2c",
+            "smokeSha256": "62472b699f15a3f0043a8c8a2b964aaeaaefee827783ce07fb4ac1cbdb3b50ab",
+            "observedCloudCommit": "2cf5a58633a7e09db05ebc1741f1cab83547a832"
+          },
+          {
+            "rid": "osx-x64",
+            "archiveSha256": "5948d3b86e884a23bba003862c55a095662c1487b3b1ed7fb5c4d7325a3b8d3f",
+            "smokeSha256": "121424c4b5cc5442a719bab53f96f6e8dacaabaf2ca56c737135f22ed189ca4d",
+            "observedCloudCommit": "2cf5a58633a7e09db05ebc1741f1cab83547a832"
+          },
+          {
+            "rid": "win-arm64",
+            "archiveSha256": "d5cc73c8a55e0e6ccf49747ea85af7941a6ac10e86680fc1bec938e04399cdce",
+            "smokeSha256": "791e24409e15e7ca5f756b28f8a464fd0402e1a567afc678b3cde25b9331df12",
+            "observedCloudCommit": "2cf5a58633a7e09db05ebc1741f1cab83547a832"
+          },
+          {
+            "rid": "win-x64",
+            "archiveSha256": "06fe56ddf2ed02f199b1a6c21ce09f7a0074f9ee305f62cbe374aa34fd6a794d",
+            "smokeSha256": "d43c08e7780eccd08fc7da25e20312c29730342002577a9911eb034eda32efbf",
+            "observedCloudCommit": "2cf5a58633a7e09db05ebc1741f1cab83547a832"
+          }
+        ]
+      }
+    },
+    {
+      "owner": "ArcScope",
+      "sourceCommit": "d247dcff36fd1123a70e5e59967a9b2294a2eeac",
+      "tree": "91419a71287443588e3a180a6a2e7b7e9d8fe3e2",
+      "runtime": "avalonia-nativeaot",
+      "licence": "AGPL-3.0-only",
+      "projectCount": 4,
+      "mainCi": "https://github.com/ArcForges/ArcScope/actions/runs/35426873548",
+      "mainCiResult": "success",
+      "candidate": {
+        "version": "0.1.0-ci.8.1",
+        "verificationArchiveSha256": "b856d95171596d2434583af51804cee215f36cbe2506d8d2755901705ee5e864",
+        "sourceCommit": "d247dcff36fd1123a70e5e59967a9b2294a2eeac",
+        "nativeRuns": [
+          {
+            "rid": "linux-x64",
+            "archiveSha256": "6b35f26f367dca8c21699c45440da0c593bbe6debea0fc1faeecd348b3c4972f",
+            "smokeSha256": "130b9a5d543e6b64af5b78c44ea7bec99adc7e90db29c972f3a4573a70a06487",
+            "observedCloudCommit": "2cf5a58633a7e09db05ebc1741f1cab83547a832"
+          },
+          {
+            "rid": "osx-arm64",
+            "archiveSha256": "dc1605c99b60b179633ecb734592950322591246e95f59c0fb787379fc780a0d",
+            "smokeSha256": "b45c96f24e7877afe4541afc44415f792c8efdad8029ee76d278d01605d32504",
+            "observedCloudCommit": "2cf5a58633a7e09db05ebc1741f1cab83547a832"
+          },
+          {
+            "rid": "osx-x64",
+            "archiveSha256": "8a03ff9ff492da0e646b7f92f3974b0e74e3ea380210f5ae9b4b224db47ee1ba",
+            "smokeSha256": "035441bbdf95b93cfdae8f3ba80eaa0f10185afc40f815f0df5bb16428ec218c",
+            "observedCloudCommit": "2cf5a58633a7e09db05ebc1741f1cab83547a832"
+          },
+          {
+            "rid": "win-arm64",
+            "archiveSha256": "2b6c32a89cdd45ba51bd80cd6a4de8867090ee0e1d38d586a0d689d983d45c92",
+            "smokeSha256": "95009276d6ecd7e11a06a740d973e8c0a4a4fefdcc08bd5f1de8cd74486112f1",
+            "observedCloudCommit": "2cf5a58633a7e09db05ebc1741f1cab83547a832"
+          },
+          {
+            "rid": "win-x64",
+            "archiveSha256": "edb4ea523bf87ac02bbd62f0bbcea28867ed207c0aedc6f4dc70bc7ed1ac0da7",
+            "smokeSha256": "97ffbdadbb52f9c5f5e5f6f00b20b44b27a85e6389f22e3d6585622d3c64c6e0",
+            "observedCloudCommit": "2cf5a58633a7e09db05ebc1741f1cab83547a832"
+          }
+        ]
+      }
+    },
+    {
+      "owner": "ArcSlate",
+      "sourceCommit": "b0d255f54fb560a534cc493d5645ca4bc7b4bd0e",
+      "tree": "c0e546663f52f0ae4fef451ff4dd679d35ce7981",
+      "runtime": "avalonia-nativeaot",
+      "licence": "AGPL-3.0-only",
+      "projectCount": 4,
+      "mainCi": "https://github.com/ArcForges/ArcSlate/actions/runs/35427484761",
+      "mainCiResult": "success",
+      "candidate": {
+        "version": "0.1.0-ci.8.1",
+        "verificationArchiveSha256": "a14db6d00e928b33abf8ea8e2d405f2d1030ef72855a08e34f99760844a4265e",
+        "sourceCommit": "b0d255f54fb560a534cc493d5645ca4bc7b4bd0e",
+        "nativeRuns": [
+          {
+            "rid": "linux-x64",
+            "archiveSha256": "d23812de1598848b917d7d5c0c8863ca67f06e37a353bf80c8a33224667f55ff",
+            "smokeSha256": "b05877fd37e103de95d07db2c0a7b380e429cbdef53611d8e48bfe9d067d638b",
+            "observedCloudCommit": "2cf5a58633a7e09db05ebc1741f1cab83547a832"
+          },
+          {
+            "rid": "osx-arm64",
+            "archiveSha256": "79463644d337d0bb0d482f2f39f610b3f851b9b1aa532f6133ab6af94c3a4995",
+            "smokeSha256": "28365b2ca9436bc55ebef0c12d9b14659f2f58e3bc33064b2ce5bc0c6ece3a06",
+            "observedCloudCommit": "2cf5a58633a7e09db05ebc1741f1cab83547a832"
+          },
+          {
+            "rid": "osx-x64",
+            "archiveSha256": "31e4576de83018fcb43e18329776d71dd6d1680cee10c7ade068ac166c7632e4",
+            "smokeSha256": "6103b10b0b561b1accb692c24d91eff98609ab979b424e401ea5fcebd4935005",
+            "observedCloudCommit": "2cf5a58633a7e09db05ebc1741f1cab83547a832"
+          },
+          {
+            "rid": "win-arm64",
+            "archiveSha256": "a016e5995a28767eba636d7fa33d260b5232ae31447fad5a261e15d0c25cf2c2",
+            "smokeSha256": "5c585ecb81d4ee15cb6c47b5353113040c48184b61553594ccba6bbf7e4ccc00",
+            "observedCloudCommit": "2cf5a58633a7e09db05ebc1741f1cab83547a832"
+          },
+          {
+            "rid": "win-x64",
+            "archiveSha256": "873de67ab858650b68d98beca7aac14fdae52a6dcc838c04dec6e91d8430830d",
+            "smokeSha256": "d13799a7ebd6385f18004244e54888ef794aba3586ef50067e62b274c6e6c8dc",
+            "observedCloudCommit": "2cf5a58633a7e09db05ebc1741f1cab83547a832"
+          }
+        ]
+      }
+    },
+    {
+      "owner": "Cloud",
+      "sourceCommit": "4571ec8692235485712d4c4e3ef4886c162f2574",
+      "tree": "9c49531f1e1c89e67bdc9029029bd4ece89bdba6",
+      "runtime": "dotnet-nativeaot-cloudflare-container",
+      "licence": "AGPL-3.0-only",
+      "projectCount": 5,
+      "mainCi": "https://github.com/ArcForges/Cloud/actions/runs/35535883611",
+      "mainCiResult": "success",
+      "candidate": {
+        "version": "0.1.0-ci.18.1",
+        "manifestSha256": "1023abce52924b7db060ac2c5e5fad53ef108dde863470b959f5c507fb7e612a",
+        "sourceCommit": "4571ec8692235485712d4c4e3ef4886c162f2574"
+      }
+    },
+    {
+      "owner": "AI",
+      "sourceCommit": "944edfe88718fc5f72a42ea0bed1c495307c22df",
+      "tree": "7fbb95546504b0fbe6d71fd529e45371b08a800e",
+      "runtime": "cloudflare-workflow-workers-ai",
+      "licence": "AGPL-3.0-only",
+      "projectCount": 1,
+      "mainCi": "https://github.com/ArcForges/AI/actions/runs/35535890121",
+      "mainCiResult": "success",
+      "candidate": {
+        "version": "0.1.0-ci.26.1",
+        "manifestSha256": "a48dcfd9f35b5c1972d2079606073b742681103f81ca74e966d44218a47c26ef",
+        "sourceCommit": "944edfe88718fc5f72a42ea0bed1c495307c22df"
+      }
+    },
+    {
+      "owner": "Web",
+      "sourceCommit": "84939ca1fde0f0653d2cb4d8b8f9e5dd1057abb5",
+      "tree": "18370fe45c84efc957008f5954d4be089042aed3",
+      "runtime": "react-typescript-static",
+      "licence": "AGPL-3.0-only",
+      "projectCount": 4,
+      "mainCi": "https://github.com/ArcForges/Web/actions/runs/35437014881",
+      "mainCiResult": "success",
+      "candidate": {
+        "version": "0.1.0-ci.22.1",
+        "sourceCommit": "84939ca1fde0f0653d2cb4d8b8f9e5dd1057abb5",
+        "manifestSha256": "17e520c4e9d9e45b6636f32bf03764cf80d113f15a2bc9185708a37780221974",
+        "archiveSha256": "ad36fbf27582f9571e92b22772172bbb14dfab9eeecce102adcc28de3d6d3d6f",
+        "verifiedMembers": 49
+      }
+    },
+    {
+      "owner": "Mobile",
+      "sourceCommit": "5031d837d2e7bf9dd1b681c837c942d2b74dc65e",
+      "tree": "bf4f170f365e5546b5ef2e26d26f575e6b390187",
+      "runtime": "kotlin-compose-android",
+      "licence": "Apache-2.0",
+      "projectCount": 3,
+      "mainCi": "https://github.com/ArcForges/Mobile/actions/runs/35444269638",
+      "mainCiResult": "success",
+      "candidate": {
+        "version": "0.1.0-ci.14.1",
+        "sourceCommit": "5031d837d2e7bf9dd1b681c837c942d2b74dc65e",
+        "releaseReceiptSha256": "33f08579b7b4d854f6bab241a62d2be0ac6e1ed45c324194272334c35ad80216",
+        "signedApkSha256": "418c406dd4b1cd12b5cd9b489a863340e3c6ccb172d8aa8809ad0c14de4d4de9",
+        "signedAabSha256": "6780866e2b833e4eddc2c9632f63734a7ed82e6a50abb5af3f53fdd224ef14d5",
+        "versionCode": 1401,
+        "identity": "io.github.arcforges.mobile"
+      }
+    }
+  ],
+  "historicalMapping": {
+    "commit": "ede43db5b2237104dd0008b99398090c54a2cf94",
+    "projectCount": 166,
+    "result": "actual Git paths/blobs and explicit owner/target/disposition/producer/reason verified"
+  },
+  "currentMapping": {
+    "projects": 75,
+    "directories": 359,
+    "nativeEntries": 7,
+    "licenceAudit": "passed",
+    "runtimeAudit": "passed",
+    "sourceReceipt": "wp01-05-bounded-reconciliation.json"
+  },
+  "publicDownloadVerification": {
+    "verifiedAt": "2026-09-21T03:37:28.062953+00:00",
+    "result": "passed",
+    "files": [
+      {
+        "owner": "DesktopPlatform",
+        "url": "https://api.nuget.org/v3-flatcontainer/arcforges.build.policy/1.0.0-ci.17.1/arcforges.build.policy.1.0.0-ci.17.1.nupkg",
+        "expectedSha256": "60ef3bacd98a67d19a5a163a43b65b7f348af537cf99778656dccbea103fe430",
+        "sha256": "60ef3bacd98a67d19a5a163a43b65b7f348af537cf99778656dccbea103fe430",
+        "bytes": 30029,
+        "result": "passed",
+        "viaProxy": false
+      },
+      {
+        "owner": "DesktopPlatform",
+        "url": "https://api.nuget.org/v3-flatcontainer/arcforges.native.abstractions/1.0.0-ci.17.1/arcforges.native.abstractions.1.0.0-ci.17.1.nupkg",
+        "expectedSha256": "7b4c272de5a4438635fc5cae7653d916cbacec20d645370273d4de160d5298c4",
+        "sha256": "7b4c272de5a4438635fc5cae7653d916cbacec20d645370273d4de160d5298c4",
+        "bytes": 35491,
+        "result": "passed",
+        "viaProxy": false
+      },
+      {
+        "owner": "DesktopPlatform",
+        "url": "https://api.nuget.org/v3-flatcontainer/arcforges.native.media/1.0.0-ci.17.1/arcforges.native.media.1.0.0-ci.17.1.nupkg",
+        "expectedSha256": "e9fec9710e34d8a90db841c41fef90c484992fd30e1e26155debb844026e7153",
+        "sha256": "e9fec9710e34d8a90db841c41fef90c484992fd30e1e26155debb844026e7153",
+        "bytes": 31776,
+        "result": "passed",
+        "viaProxy": false
+      },
+      {
+        "owner": "DesktopPlatform",
+        "url": "https://api.nuget.org/v3-flatcontainer/arcforges.native.colour/1.0.0-ci.17.1/arcforges.native.colour.1.0.0-ci.17.1.nupkg",
+        "expectedSha256": "78456e26acf8a0b0045dee7db00bbd4a50e9a2193df7164fbe7d1f3d3265ebf6",
+        "sha256": "78456e26acf8a0b0045dee7db00bbd4a50e9a2193df7164fbe7d1f3d3265ebf6",
+        "bytes": 31794,
+        "result": "passed",
+        "viaProxy": false
+      },
+      {
+        "owner": "DesktopPlatform",
+        "url": "https://api.nuget.org/v3-flatcontainer/arcforges.native.image/1.0.0-ci.17.1/arcforges.native.image.1.0.0-ci.17.1.nupkg",
+        "expectedSha256": "29fc2022fd9b3ccd39bf71d70549f52d804ff0346ddf00aead4481f2c565dd3d",
+        "sha256": "29fc2022fd9b3ccd39bf71d70549f52d804ff0346ddf00aead4481f2c565dd3d",
+        "bytes": 31785,
+        "result": "passed",
+        "viaProxy": false
+      },
+      {
+        "owner": "DesktopPlatform",
+        "url": "https://api.nuget.org/v3-flatcontainer/arcforges.native.otio/1.0.0-ci.17.1/arcforges.native.otio.1.0.0-ci.17.1.nupkg",
+        "expectedSha256": "87698830d92170ab2aba4b6c061e55b43905defbf39c40c39a44433f6681ba08",
+        "sha256": "87698830d92170ab2aba4b6c061e55b43905defbf39c40c39a44433f6681ba08",
+        "bytes": 31778,
+        "result": "passed",
+        "viaProxy": false
+      },
+      {
+        "owner": "DesktopPlatform",
+        "url": "https://api.nuget.org/v3-flatcontainer/arcforges.native.media.runtime.win-x64/1.0.0-ci.17.1/arcforges.native.media.runtime.win-x64.1.0.0-ci.17.1.nupkg",
+        "expectedSha256": "945b6bf4727e168d8f815bd874aeed9f5f1eebf4bdd0fe1cf069a82693fb9f7a",
+        "sha256": "945b6bf4727e168d8f815bd874aeed9f5f1eebf4bdd0fe1cf069a82693fb9f7a",
+        "bytes": 28374454,
+        "result": "passed",
+        "viaProxy": false
+      },
+      {
+        "owner": "DesktopPlatform",
+        "url": "https://api.nuget.org/v3-flatcontainer/arcforges.native.colour.runtime.win-x64/1.0.0-ci.17.1/arcforges.native.colour.runtime.win-x64.1.0.0-ci.17.1.nupkg",
+        "expectedSha256": "e5f86162f13271d885c744870a73094f7c95ce6f365dbdd2bd81d23043cc5fa1",
+        "sha256": "e5f86162f13271d885c744870a73094f7c95ce6f365dbdd2bd81d23043cc5fa1",
+        "bytes": 1112082,
+        "result": "passed",
+        "viaProxy": false
+      },
+      {
+        "owner": "DesktopPlatform",
+        "url": "https://api.nuget.org/v3-flatcontainer/arcforges.native.image.runtime.win-x64/1.0.0-ci.17.1/arcforges.native.image.runtime.win-x64.1.0.0-ci.17.1.nupkg",
+        "expectedSha256": "c0c33f8c457f54e980669344eb91b0c886a2f918838cb69ef39b25c9c031faff",
+        "sha256": "c0c33f8c457f54e980669344eb91b0c886a2f918838cb69ef39b25c9c031faff",
+        "bytes": 5391752,
+        "result": "passed",
+        "viaProxy": false
+      },
+      {
+        "owner": "DesktopPlatform",
+        "url": "https://api.nuget.org/v3-flatcontainer/arcforges.native.otio.runtime.win-x64/1.0.0-ci.17.1/arcforges.native.otio.runtime.win-x64.1.0.0-ci.17.1.nupkg",
+        "expectedSha256": "d6bbec3bf80f651d95e9cfc7cc0311253ffa4943bd7d2d1f0f25507e84145775",
+        "sha256": "d6bbec3bf80f651d95e9cfc7cc0311253ffa4943bd7d2d1f0f25507e84145775",
+        "bytes": 303058,
+        "result": "passed",
+        "viaProxy": false
+      },
+      {
+        "owner": "Contracts",
+        "url": "https://registry.npmjs.org/@arcforges/proto/-/proto-1.0.0-ci.65.1.tgz",
+        "expectedSha256": "c016f4135051ce21b9fefd5c72077901e591c8362eb4cc48522963aa4af3cf7a",
+        "sha256": "c016f4135051ce21b9fefd5c72077901e591c8362eb4cc48522963aa4af3cf7a",
+        "bytes": 8517,
+        "result": "passed",
+        "viaProxy": false
+      },
+      {
+        "owner": "Contracts",
+        "url": "https://registry.npmjs.org/@arcforges/api-client/-/api-client-1.0.0-ci.65.1.tgz",
+        "expectedSha256": "a2844e3e012805ec38151d0bd477987b7475a8e47783b1700acc432ebe79255b",
+        "sha256": "a2844e3e012805ec38151d0bd477987b7475a8e47783b1700acc432ebe79255b",
+        "bytes": 7657,
+        "result": "passed",
+        "viaProxy": false
+      },
+      {
+        "owner": "Contracts",
+        "url": "https://api.nuget.org/v3-flatcontainer/arcforges.contracts.publicapi/1.0.0-ci.65.1/arcforges.contracts.publicapi.1.0.0-ci.65.1.nupkg",
+        "expectedSha256": "95aa4dc1bd40b852987edea9fd15cf639836def462cca285aa95b77144e0303d",
+        "sha256": "95aa4dc1bd40b852987edea9fd15cf639836def462cca285aa95b77144e0303d",
+        "bytes": 41700,
+        "result": "passed",
+        "viaProxy": false
+      },
+      {
+        "owner": "Contracts",
+        "url": "https://central.sonatype.com/repository/maven-snapshots/io/github/arcforges/contracts-proto/1.0.0-SNAPSHOT/contracts-proto-1.0.0-20260921.014054-1.jar",
+        "expectedSha256": "3afdacfd86f628d7264307a71a850193e751f9052a6569c0a3d5ea23e196fa80",
+        "sha256": "3afdacfd86f628d7264307a71a850193e751f9052a6569c0a3d5ea23e196fa80",
+        "bytes": 30547,
+        "result": "passed",
+        "viaProxy": false
+      },
+      {
+        "owner": "Contracts",
+        "url": "https://central.sonatype.com/repository/maven-snapshots/io/github/arcforges/contracts-proto/1.0.0-SNAPSHOT/contracts-proto-1.0.0-20260921.014054-1.pom",
+        "expectedSha256": "e0456bda007824763550a2d04b57a8c0b217ea16358876722d0324630e6b09ba",
+        "sha256": "e0456bda007824763550a2d04b57a8c0b217ea16358876722d0324630e6b09ba",
+        "bytes": 2023,
+        "result": "passed",
+        "viaProxy": false
+      },
+      {
+        "owner": "Contracts",
+        "url": "https://central.sonatype.com/repository/maven-snapshots/io/github/arcforges/contracts-proto/1.0.0-SNAPSHOT/contracts-proto-1.0.0-20260921.014054-1-sources.jar",
+        "expectedSha256": "452219b2048081b4aee2cbab83a628847b1616c37117e1f0d48e84e468b9cd25",
+        "sha256": "452219b2048081b4aee2cbab83a628847b1616c37117e1f0d48e84e468b9cd25",
+        "bytes": 16654,
+        "result": "passed",
+        "viaProxy": false
+      },
+      {
+        "owner": "Contracts",
+        "url": "https://central.sonatype.com/repository/maven-snapshots/io/github/arcforges/contracts-proto/1.0.0-SNAPSHOT/contracts-proto-1.0.0-20260921.014054-1.module",
+        "expectedSha256": "6ce72582c01a98b4f5c5b3a4085a18231e55b23c74ebf4f17df5752d6342a7c7",
+        "sha256": "6ce72582c01a98b4f5c5b3a4085a18231e55b23c74ebf4f17df5752d6342a7c7",
+        "bytes": 3750,
+        "result": "passed",
+        "viaProxy": false
+      },
+      {
+        "owner": "Contracts",
+        "url": "https://central.sonatype.com/repository/maven-snapshots/io/github/arcforges/contracts-proto/1.0.0-SNAPSHOT/contracts-proto-1.0.0-20260921.014054-1-javadoc.jar",
+        "expectedSha256": "ae77ecf8f2d0a1dcf409824de1b8750ee1a5e7780997e1f40c16d2bf66800b78",
+        "sha256": "ae77ecf8f2d0a1dcf409824de1b8750ee1a5e7780997e1f40c16d2bf66800b78",
+        "bytes": 394627,
+        "result": "passed",
+        "viaProxy": false
+      },
+      {
+        "owner": "Contracts",
+        "url": "https://central.sonatype.com/repository/maven-snapshots/io/github/arcforges/contracts-client/1.0.0-SNAPSHOT/contracts-client-1.0.0-20260921.014054-1.jar",
+        "expectedSha256": "8d3f1d68649d71cbf16bab13563bd4addc9fde37f88ba1d590bca5b1be1916a7",
+        "sha256": "8d3f1d68649d71cbf16bab13563bd4addc9fde37f88ba1d590bca5b1be1916a7",
+        "bytes": 30232,
+        "result": "passed",
+        "viaProxy": false
+      },
+      {
+        "owner": "Contracts",
+        "url": "https://central.sonatype.com/repository/maven-snapshots/io/github/arcforges/contracts-client/1.0.0-SNAPSHOT/contracts-client-1.0.0-20260921.014054-1.pom",
+        "expectedSha256": "5dd17f9e809195f3f57a386151246e40563c31e0539a447468bd9a8462c1f8a1",
+        "sha256": "5dd17f9e809195f3f57a386151246e40563c31e0539a447468bd9a8462c1f8a1",
+        "bytes": 2756,
+        "result": "passed",
+        "viaProxy": false
+      },
+      {
+        "owner": "Contracts",
+        "url": "https://central.sonatype.com/repository/maven-snapshots/io/github/arcforges/contracts-client/1.0.0-SNAPSHOT/contracts-client-1.0.0-20260921.014054-1-javadoc.jar",
+        "expectedSha256": "ee84123ef412ba4ad2e8d6540729e7d3f03b3661f7becad7a408f2404705efc6",
+        "sha256": "ee84123ef412ba4ad2e8d6540729e7d3f03b3661f7becad7a408f2404705efc6",
+        "bytes": 353941,
+        "result": "passed",
+        "viaProxy": false
+      },
+      {
+        "owner": "Contracts",
+        "url": "https://central.sonatype.com/repository/maven-snapshots/io/github/arcforges/contracts-client/1.0.0-SNAPSHOT/contracts-client-1.0.0-20260921.014054-1-sources.jar",
+        "expectedSha256": "8d17bc7e1ffa4f600de28696afb71d88bb217a524edb3a362206a72c77570a08",
+        "sha256": "8d17bc7e1ffa4f600de28696afb71d88bb217a524edb3a362206a72c77570a08",
+        "bytes": 13417,
+        "result": "passed",
+        "viaProxy": false
+      },
+      {
+        "owner": "Contracts",
+        "url": "https://central.sonatype.com/repository/maven-snapshots/io/github/arcforges/contracts-client/1.0.0-SNAPSHOT/contracts-client-1.0.0-20260921.014054-1.module",
+        "expectedSha256": "66ec06c819f451b5b401963b319bbcb198ef0cd01c1030559f1d406d1331780d",
+        "sha256": "66ec06c819f451b5b401963b319bbcb198ef0cd01c1030559f1d406d1331780d",
+        "bytes": 5065,
+        "result": "passed",
+        "viaProxy": false
+      },
+      {
+        "owner": "Contracts",
+        "url": "https://central.sonatype.com/repository/maven-snapshots/io/github/arcforges/contracts-connect-client/1.0.0-SNAPSHOT/contracts-connect-client-1.0.0-20260921.014054-1-sources.jar",
+        "expectedSha256": "8ec9390795d25830e879e55e40e110a02d9c650415bdaef7ad54a72174e1bec7",
+        "sha256": "8ec9390795d25830e879e55e40e110a02d9c650415bdaef7ad54a72174e1bec7",
+        "bytes": 11172,
+        "result": "passed",
+        "viaProxy": false
+      },
+      {
+        "owner": "Contracts",
+        "url": "https://central.sonatype.com/repository/maven-snapshots/io/github/arcforges/contracts-connect-client/1.0.0-SNAPSHOT/contracts-connect-client-1.0.0-20260921.014054-1-javadoc.jar",
+        "expectedSha256": "89fef560caf40cc7936f13dd10e2c2d106f33b070be81f3b769727c8b10a7068",
+        "sha256": "89fef560caf40cc7936f13dd10e2c2d106f33b070be81f3b769727c8b10a7068",
+        "bytes": 265067,
+        "result": "passed",
+        "viaProxy": false
+      },
+      {
+        "owner": "Contracts",
+        "url": "https://central.sonatype.com/repository/maven-snapshots/io/github/arcforges/contracts-connect-client/1.0.0-SNAPSHOT/contracts-connect-client-1.0.0-20260921.014054-1.pom",
+        "expectedSha256": "d2548facdd8e959deecc26bd13835673857dc8ebd3ae29889b11fa50304253a4",
+        "sha256": "d2548facdd8e959deecc26bd13835673857dc8ebd3ae29889b11fa50304253a4",
+        "bytes": 2234,
+        "result": "passed",
+        "viaProxy": false
+      },
+      {
+        "owner": "Contracts",
+        "url": "https://central.sonatype.com/repository/maven-snapshots/io/github/arcforges/contracts-connect-client/1.0.0-SNAPSHOT/contracts-connect-client-1.0.0-20260921.014054-1.module",
+        "expectedSha256": "c9e628809ca8701f478630604caa1833b9f88af926ee533cfc11638c08cb11d9",
+        "sha256": "c9e628809ca8701f478630604caa1833b9f88af926ee533cfc11638c08cb11d9",
+        "bytes": 4145,
+        "result": "passed",
+        "viaProxy": false
+      },
+      {
+        "owner": "Contracts",
+        "url": "https://central.sonatype.com/repository/maven-snapshots/io/github/arcforges/contracts-connect-client/1.0.0-SNAPSHOT/contracts-connect-client-1.0.0-20260921.014054-1.jar",
+        "expectedSha256": "2c3532ce0023bdcae8695a2a88d4ef1c4a918be5f7b89e8fdb579b07fb4e7f09",
+        "sha256": "2c3532ce0023bdcae8695a2a88d4ef1c4a918be5f7b89e8fdb579b07fb4e7f09",
+        "bytes": 13508,
+        "result": "passed",
+        "viaProxy": false
+      },
+      {
+        "owner": "Contracts",
+        "url": "https://central.sonatype.com/repository/maven-snapshots/io/github/arcforges/contract-fixtures/1.0.0-SNAPSHOT/contract-fixtures-1.0.0-20260921.014054-1.jar",
+        "expectedSha256": "7cfae906e142f044c0647848a9bf4abfeb57f2287c942ef7d19a0856146eb25d",
+        "sha256": "7cfae906e142f044c0647848a9bf4abfeb57f2287c942ef7d19a0856146eb25d",
+        "bytes": 9266,
+        "result": "passed",
+        "viaProxy": false
+      },
+      {
+        "owner": "Contracts",
+        "url": "https://central.sonatype.com/repository/maven-snapshots/io/github/arcforges/contract-fixtures/1.0.0-SNAPSHOT/contract-fixtures-1.0.0-20260921.014054-1-sources.jar",
+        "expectedSha256": "7a0c26554276fb67c1d8dfcef3bf80cf472c960b0b0098fcbbf5a1b6a939803d",
+        "sha256": "7a0c26554276fb67c1d8dfcef3bf80cf472c960b0b0098fcbbf5a1b6a939803d",
+        "bytes": 8724,
+        "result": "passed",
+        "viaProxy": false
+      },
+      {
+        "owner": "Contracts",
+        "url": "https://central.sonatype.com/repository/maven-snapshots/io/github/arcforges/contract-fixtures/1.0.0-SNAPSHOT/contract-fixtures-1.0.0-20260921.014054-1.module",
+        "expectedSha256": "995f53534cbb5e926eadd20291d0883a98c4ccae6a1dc43eb8b303f981e7c55e",
+        "sha256": "995f53534cbb5e926eadd20291d0883a98c4ccae6a1dc43eb8b303f981e7c55e",
+        "bytes": 2795,
+        "result": "passed",
+        "viaProxy": false
+      },
+      {
+        "owner": "Contracts",
+        "url": "https://central.sonatype.com/repository/maven-snapshots/io/github/arcforges/contract-fixtures/1.0.0-SNAPSHOT/contract-fixtures-1.0.0-20260921.014054-1.pom",
+        "expectedSha256": "2999b41f4c90edb1839357a5d708d1ccbe04c4db56f811df6a42657c714e5205",
+        "sha256": "2999b41f4c90edb1839357a5d708d1ccbe04c4db56f811df6a42657c714e5205",
+        "bytes": 1618,
+        "result": "passed",
+        "viaProxy": false
+      },
+      {
+        "owner": "Contracts",
+        "url": "https://central.sonatype.com/repository/maven-snapshots/io/github/arcforges/contract-fixtures/1.0.0-SNAPSHOT/contract-fixtures-1.0.0-20260921.014054-1-javadoc.jar",
+        "expectedSha256": "fce613a0c6b59ce4fc92fc7e6c939ea4b2f17951ed25f8213c448af83ae8de15",
+        "sha256": "fce613a0c6b59ce4fc92fc7e6c939ea4b2f17951ed25f8213c448af83ae8de15",
+        "bytes": 255289,
+        "result": "passed",
+        "viaProxy": false
+      }
+    ]
+  },
+  "actualRuntimeEvidence": {
+    "DesktopPlatform": {
+      "receipt": "wp01-03-native-reconciliation.json",
+      "scope": "Packaged Windows x64 JIT/Native AOT/C17; five consumer cases and four negative loader fixtures",
+      "consumer": {
+        "sourceCommit": "6cb08997bb35299df86a6434606d8e24cf5a4d97",
+        "version": "1.0.0-ci.17.1",
+        "rid": "win-x64",
+        "packages": [
+          {
+            "id": "ArcForges.Build.Policy",
+            "version": "1.0.0-ci.17.1",
+            "file": "ArcForges.Build.Policy.1.0.0-ci.17.1.nupkg",
+            "sha256": "c01726de51ad30496253ae9f3980aeb76b3b7e08d3096c076de279e24ac3f42f"
+          },
+          {
+            "id": "ArcForges.Native.Abstractions",
+            "version": "1.0.0-ci.17.1",
+            "file": "ArcForges.Native.Abstractions.1.0.0-ci.17.1.nupkg",
+            "sha256": "a0061a5803d6a5ab8298806ed47dd0d286eaea50220d634e9aac7f4eee08a13a"
+          },
+          {
+            "id": "ArcForges.Native.Media",
+            "version": "1.0.0-ci.17.1",
+            "file": "ArcForges.Native.Media.1.0.0-ci.17.1.nupkg",
+            "sha256": "3aad1f067643477a1abe4c28455fb15e353882b16890d3ad569353772e219199"
+          },
+          {
+            "id": "ArcForges.Native.Colour",
+            "version": "1.0.0-ci.17.1",
+            "file": "ArcForges.Native.Colour.1.0.0-ci.17.1.nupkg",
+            "sha256": "311c377573b9f10180f59af09f9929072f6e6d77f3b3b29a98edf6e0efb3988f"
+          },
+          {
+            "id": "ArcForges.Native.Image",
+            "version": "1.0.0-ci.17.1",
+            "file": "ArcForges.Native.Image.1.0.0-ci.17.1.nupkg",
+            "sha256": "9ab6fb65d8c341799c7ec7e784dc4bb51e85fdbadbbc00994fe7146a7e62dde0"
+          },
+          {
+            "id": "ArcForges.Native.Otio",
+            "version": "1.0.0-ci.17.1",
+            "file": "ArcForges.Native.Otio.1.0.0-ci.17.1.nupkg",
+            "sha256": "dcaf158bd14f4da03991ae656b29a3121563eb3bb97bbad8f02d0fc05b42d3c8"
+          },
+          {
+            "id": "ArcForges.Native.Media.Runtime.win-x64",
+            "version": "1.0.0-ci.17.1",
+            "file": "ArcForges.Native.Media.Runtime.win-x64.1.0.0-ci.17.1.nupkg",
+            "sha256": "1de05d0639c6efb72592bae3fc1bcd3a7b01a15d0031cd0468d4781d5bd9e9d4"
+          },
+          {
+            "id": "ArcForges.Native.Colour.Runtime.win-x64",
+            "version": "1.0.0-ci.17.1",
+            "file": "ArcForges.Native.Colour.Runtime.win-x64.1.0.0-ci.17.1.nupkg",
+            "sha256": "41d264140ac8578a06fca7cc64558f82cb6d0eee60a6a1445ba2e8b40343649c"
+          },
+          {
+            "id": "ArcForges.Native.Image.Runtime.win-x64",
+            "version": "1.0.0-ci.17.1",
+            "file": "ArcForges.Native.Image.Runtime.win-x64.1.0.0-ci.17.1.nupkg",
+            "sha256": "dea8df2badf366f7129786a43c1e10b4884b2a03a9988397cb98237c3e34ab85"
+          },
+          {
+            "id": "ArcForges.Native.Otio.Runtime.win-x64",
+            "version": "1.0.0-ci.17.1",
+            "file": "ArcForges.Native.Otio.Runtime.win-x64.1.0.0-ci.17.1.nupkg",
+            "sha256": "0dcb796584e59f934b34949ce113b8c64d14761e9cac7e15411f80effd5d0645"
+          }
+        ],
+        "cases": [
+          {
+            "name": "ArcMediaNative",
+            "jit": "passed",
+            "aot": "passed",
+            "aotExeSha256": "30baee510b50573a5948186e60cde356fd8856c294380f17cc0a1c25bacfaf1b"
+          },
+          {
+            "name": "ArcSlateColorNative",
+            "jit": "passed",
+            "aot": "passed",
+            "aotExeSha256": "11de67f301fd6ab67627867a7d45a4b8cc37cde72869d55e002c554bed29c572"
+          },
+          {
+            "name": "ArcSlateImageNative",
+            "jit": "passed",
+            "aot": "passed",
+            "aotExeSha256": "415deca693cf1385c377392910c559310d38c13bfbbc14b6f92e77bf34106524"
+          },
+          {
+            "name": "ArcSlateOtioNative",
+            "jit": "passed",
+            "aot": "passed",
+            "aotExeSha256": "068fc6a5905da0428b2351efaa18f30e528959ff0c631c0cb7aefa5a37a5112d"
+          },
+          {
+            "name": "All",
+            "jit": "passed",
+            "aot": "passed",
+            "aotExeSha256": "5fdc72c9f75deb25ba18e07c75255b3886cbd1b201e67337c52314126c5a65c4"
+          }
+        ],
+        "c17": {
+          "result": "passed",
+          "exeSha256": "961eae54339ca93bc8708c5d6975f16941cb02c029b5186e83431f1c5189e44f"
+        },
+        "rejections": [
+          "wrong-rid",
+          "missing-owned-dll",
+          "missing-transitive-dll",
+          "changed-dll"
+        ]
+      }
+    },
+    "Contracts": {
+      "receipt": "contracts-publication-channels-evidence.json",
+      "scope": "Actual Windows isolated C#/TS/Kotlin/Connect/Native AOT gRPC/gRPC-Web Hello/error consumers; live snapshot restore",
+      "consumer": {
+        "version": "1.0.0-ci.65.1",
+        "commit": "24c05b7fc215896eeec91437ffe8846f2d4467a1",
+        "rid": "win-x64",
+        "inputs": [
+          {
+            "name": "ArcForges.Contracts.PublicApi.1.0.0-ci.65.1.nupkg",
+            "kind": "nuget",
+            "id": "ArcForges.Contracts.PublicApi",
+            "sha256": "24ebedc08c2d2d7c99c4156a6d4eb025e5fa2414991a6e1c1a131df69e7f867b",
+            "size": 28614
+          },
+          {
+            "name": "arcforges-proto-1.0.0-ci.65.1.tgz",
+            "kind": "npm",
+            "id": "@arcforges/proto",
+            "sha256": "c016f4135051ce21b9fefd5c72077901e591c8362eb4cc48522963aa4af3cf7a",
+            "size": 8517
+          },
+          {
+            "name": "arcforges-api-client-1.0.0-ci.65.1.tgz",
+            "kind": "npm",
+            "id": "@arcforges/api-client",
+            "sha256": "a2844e3e012805ec38151d0bd477987b7475a8e47783b1700acc432ebe79255b",
+            "size": 7657
+          },
+          {
+            "name": "arcforges-maven-1.0.0-SNAPSHOT.zip",
+            "kind": "maven",
+            "id": "io.github.arcforges",
+            "sha256": "b3a3c68e00274cc6463842b561f1863cbbe4f7b92dc91fb282736685a37768d3",
+            "size": 1346424
+          },
+          {
+            "name": "contracts.binpb",
+            "kind": "descriptor",
+            "id": "arcforges.hello.v1",
+            "sha256": "7219a8d730978bcc3b7b8769e159d06711dff3f2b07715a6d487589f8c09b99c",
+            "size": 338
+          }
+        ],
+        "isolatedCaches": true,
+        "sourceReferences": false,
+        "csharpGrpc": "passed",
+        "typescriptGrpcWeb": "passed",
+        "kotlinGrpc": "passed",
+        "kotlinConnectGrpcWeb": "passed",
+        "kotlinConnectGrpc": "passed",
+        "nativeAotGrpc": "passed",
+        "browser": "not-run",
+        "androidDevice": "not-run",
+        "registryRestore": "maven-snapshot-passed",
+        "mavenVersion": "1.0.0-SNAPSHOT",
+        "mavenRepository": "https://central.sonatype.com/repository/maven-snapshots/"
+      }
+    },
+    "unchangedOwners": {
+      "receipt": "wp00-stage-acceptance.json",
+      "scope": "Existing dated native desktop UI, real Cloudflare Container/Worker and AI Workflow, browser, signed Android emulator/upgrade evidence. Not rerun by WP01.90."
+    },
+    "NotesLocal": {
+      "commit": "e40423a1b14ce8341de35748cc2a093c7c9b77a7",
+      "worktree": "C:\\MyFile\\Projects\\ArcForges\\ArcNotes\\.worktree\\wp01-05-core-validation",
+      "sdk": "10.0.401",
+      "lockedRestore": "passed",
+      "releaseBuild": "passed",
+      "tests": {
+        "passed": 89,
+        "failed": 0,
+        "skipped": 0
+      },
+      "repositoryCheck": "passed",
+      "format": "passed",
+      "logs": {
+        "build.log": "1faca0e3eb6d4af99f468aac5d4a32598cd737f875a2afb94dd368a04ef0ee4e",
+        "format.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "repository-check.log": "4d2d75b384f3f79fc79da27fbfaa3c67fe735f191cac48ebc4a853d5c9614a8f",
+        "restore.log": "d746214161b55a7b8c7f95180a7be56f6be5fecf40334dd5a0df17dd268a221f",
+        "tests.log": "0b560c9530681fb26a6503f74c7abee57fbafd1393953005c66a5f568046a46e"
+      }
+    }
+  },
+  "remainingProducers": [
+    {
+      "producer": "WP02",
+      "obligation": "Build governance, policy package and substantive Build.Policy target migration."
+    },
+    {
+      "producer": "WP03",
+      "obligation": "Complete authored production schemas and generated clients; retire native-grpc Kotlin compatibility at first business release."
+    },
+    {
+      "producer": "WP04/WP07/WP08/WP09/WP10/WP11/WP12",
+      "obligation": "Substantive shared mechanisms; helper transport, containment and UI packages."
+    },
+    {
+      "producer": "WP05",
+      "obligation": "Complete AT/RP architecture and per-invariant enforcement accounting."
+    },
+    {
+      "producer": "WP13",
+      "obligation": "Functional native capability ABI and required RID packages, actual parser sandbox integration."
+    },
+    {
+      "producer": "WP21.02",
+      "obligation": "Implement all 21 Cloud domain module boundaries and named D1 plan bridge."
+    },
+    {
+      "producer": "Product WPs and WP50",
+      "obligation": "Full domain workflows, actual device/provider/recovery/distribution and commercial release gates."
+    }
+  ],
+  "externalPrerequisites": [],
+  "limitations": [
+    "No code, package, signature, tag or deployment changed by this stage receipt.",
+    "Public files are newly downloaded and hashed; prior runtime receipts retain their original execution dates and service revisions.",
+    "Maven SNAPSHOT is a moving channel with retention; timestamp and exact file hashes identify this verified CI candidate, not a permanent formal Central release.",
+    "Consumers retain their own exact compatible locks; latest producer versions do not imply a coordinated application upgrade.",
+    "Metal source retention is not actual macOS or functional graphics acceptance; existing probes are not completed product parsers.",
+    "Ten test families remain partial and eight have explicit gaps; mapping acceptance is not passing all future suites."
+  ]
+}

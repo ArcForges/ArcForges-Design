@@ -169,6 +169,8 @@
 
 **Completion gate.** Complete old-group → target-owner/disposition mapping; independently buildable roots; no product domain copied into Platform, no forced suite, no blanket retention of six shipping shims. Record exact artifacts and provider reality. The package is incomplete if an important contract/owner/recovery rule still requires design during coding.
 
+**Recorded execution (2026-09-20).** [WP01 stage acceptance](../../assurance/wp01-stage-acceptance.md) joins all six completed substeps to the nine current exact source/candidate identities, verifies all 166 historical project mappings, and re-downloads and hashes 33 Platform/Contracts public files. Current owner/build/licence gates pass; actual runtime evidence retains its original scenarios and dates. This closes the reconciliation stage only; named later producers remain required.
+
 ---
 
 **Cloud module layout acceptance.** WP01 records all 21 domain owners listed in architecture01 §5 and their Cloud ownership. [WP21.02](21-cloud-host-and-persistence.md#rule-wp-21.02) implements their substantive Domain/Application/Infrastructure projects and compares the project list to the model01 schema map, including PackageCatalog. Platform remains shared infrastructure. Do not create empty module projects during reconciliation; this follows the schema-boundary exclusion in §1 and preserves the full 21-module acceptance at its producing step. The count is distinct from the nine independent implementation repositories.
