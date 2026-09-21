@@ -96,7 +96,7 @@
 
 **Completion gate.** Every selected toolchain is reproducible from committed pins with no dependency on sibling checkout state.
 
-**Current execution profile.** [Toolchain pins and restore](../../assurance/wp02-00-toolchain-profile.md) records the verified nine-owner inputs, bounded repairs, offline/negative evidence requirements and explicit local native reuse policy. It does not claim completion before implementation and CI.
+**Completed execution.** [Toolchain pins and restore](../../assurance/wp02-00-toolchain-profile.md) records the reviewed plan and explicit local native reuse policy. [Implementation evidence](../../assurance/wp02-00-implementation-evidence.md) records the nine-owner pin/lock inventory, online/offline and negative checks, eight reviewed implementation PRs with green CI, public artifact verification and actual runtime receipts. No local vcpkg reinstall was required. This closes WP02.00 only; the Web solution/IDE dispatch check remains explicitly owned by WP02.03.
 
 <a id="rule-wp-02.01"></a>
 

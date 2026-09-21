@@ -1,0 +1,3701 @@
+{
+  "schemaVersion": 1,
+  "substep": "WP02.00",
+  "result": "passed",
+  "verifiedAt": "2026-09-21T07:36:12.730623+00:00",
+  "designBaseline": "7746e3ae7f2e946e025539f720a3f46c227caac0",
+  "scope": "Toolchain pins and locked/offline restore; not whole WP02 or commercial product acceptance.",
+  "plan": "docs/assurance/wp02-00-toolchain-profile.md",
+  "prs": [
+    {
+      "owner": "DesktopPlatform",
+      "url": "https://github.com/ArcForges/DesktopPlatform/pull/55",
+      "head": "3584f0b974bc5421816013f44c64d9957e5eb286",
+      "mergeCommit": "14f4c5c2b9243dfafa54dee0fc65f6d9ce22d3cb",
+      "merged": true,
+      "mergedAt": "2026-09-21T04:20:27Z"
+    },
+    {
+      "owner": "Contracts",
+      "url": "https://github.com/ArcForges/Contracts/pull/28",
+      "head": "aa0bfd57d72c4615ae5986181e9eaf0cdb0a37ee",
+      "mergeCommit": "e8353720af5d61c462c3b550e46620dddb445ae9",
+      "merged": true,
+      "mergedAt": "2026-09-21T04:25:47Z"
+    },
+    {
+      "owner": "ArcNotes",
+      "url": "https://github.com/ArcForges/ArcNotes/pull/5",
+      "head": "4def72ed61e340319ecd916b3d4b2e4dda3b69a3",
+      "mergeCommit": "c40116ac8ae0c76e539b3c19552a65ec08c8d94b",
+      "merged": true,
+      "mergedAt": "2026-09-21T04:25:57Z"
+    },
+    {
+      "owner": "ArcScope",
+      "url": "https://github.com/ArcForges/ArcScope/pull/5",
+      "head": "bc334be72b80d6cb666e8aac12cd9ef2ba24db44",
+      "mergeCommit": "1b13c9827f98578c8ba2f7db0c046db114aa7cb8",
+      "merged": true,
+      "mergedAt": "2026-09-21T04:26:05Z"
+    },
+    {
+      "owner": "ArcSlate",
+      "url": "https://github.com/ArcForges/ArcSlate/pull/5",
+      "head": "96d5123d2bf92e3bdc33f92fc41747cade1d6daa",
+      "mergeCommit": "0cc8093d51cdef20bae8057e77c4bcd80d32b39e",
+      "merged": true,
+      "mergedAt": "2026-09-21T04:26:13Z"
+    },
+    {
+      "owner": "Cloud",
+      "url": "https://github.com/ArcForges/Cloud/pull/6",
+      "head": "3220316b9d669cb26060a68de8904e82ffc8167d",
+      "mergeCommit": "4f53ed6a072cc9680101633e8c7e01efd450b84e",
+      "merged": true,
+      "mergedAt": "2026-09-21T04:26:21Z"
+    },
+    {
+      "owner": "AI",
+      "url": "https://github.com/ArcForges/AI/pull/11",
+      "head": "867d05bb02bb6a56db0538ca9ddd04283deb20f0",
+      "mergeCommit": "b50098108cdabdd3d0bdefc44e724c71aba2b0a6",
+      "merged": true,
+      "mergedAt": "2026-09-21T04:26:29Z"
+    },
+    {
+      "owner": "Mobile",
+      "url": "https://github.com/ArcForges/Mobile/pull/6",
+      "head": "da7298adcc8257d512f609b92bc74f2aae095533",
+      "mergeCommit": "f067f3447708ae2e62c334653a8dd4d544980032",
+      "merged": true,
+      "mergedAt": "2026-09-21T04:41:16Z"
+    }
+  ],
+  "finalState": {
+    "verifiedAt": "2026-09-21T07:22:15.065430+00:00",
+    "owners": {
+      "DesktopPlatform": {
+        "head": "14f4c5c2b9243dfafa54dee0fc65f6d9ce22d3cb",
+        "remoteMain": "14f4c5c2b9243dfafa54dee0fc65f6d9ce22d3cb",
+        "primaryClean": true,
+        "implementationWorktreeClean": true,
+        "runs": [
+          {
+            "conclusion": "success",
+            "databaseId": 35560607691,
+            "headSha": "14f4c5c2b9243dfafa54dee0fc65f6d9ce22d3cb",
+            "status": "completed",
+            "url": "https://github.com/ArcForges/DesktopPlatform/actions/runs/35560607691",
+            "workflowName": "Dependency Graph",
+            "jobs": [
+              {
+                "name": "update-pip-graph",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/DesktopPlatform/actions/runs/35560607691/job/106212646040"
+              }
+            ]
+          },
+          {
+            "conclusion": "success",
+            "databaseId": 35560603400,
+            "headSha": "14f4c5c2b9243dfafa54dee0fc65f6d9ce22d3cb",
+            "status": "completed",
+            "url": "https://github.com/ArcForges/DesktopPlatform/actions/runs/35560603400",
+            "workflowName": "Publish NuGet",
+            "jobs": [
+              {
+                "name": "preflight",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/DesktopPlatform/actions/runs/35560603400/job/106212632307"
+              },
+              {
+                "name": "candidate / reconciliation-policy (windows-latest)",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/DesktopPlatform/actions/runs/35560603400/job/106212658176"
+              },
+              {
+                "name": "candidate / licence-policy (ubuntu-latest)",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/DesktopPlatform/actions/runs/35560603400/job/106212658181"
+              },
+              {
+                "name": "candidate / licence-policy (windows-latest)",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/DesktopPlatform/actions/runs/35560603400/job/106212658182"
+              },
+              {
+                "name": "candidate / reconciliation-policy (ubuntu-latest)",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/DesktopPlatform/actions/runs/35560603400/job/106212658188"
+              },
+              {
+                "name": "candidate / allocate-version",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/DesktopPlatform/actions/runs/35560603400/job/106212658214"
+              },
+              {
+                "name": "candidate / secret-scan",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/DesktopPlatform/actions/runs/35560603400/job/106212658224"
+              },
+              {
+                "name": "candidate / repository-hooks",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/DesktopPlatform/actions/runs/35560603400/job/106212658232"
+              },
+              {
+                "name": "candidate / provenance-policy (ubuntu-latest)",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/DesktopPlatform/actions/runs/35560603400/job/106212658244"
+              },
+              {
+                "name": "candidate / design-policy (windows-latest)",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/DesktopPlatform/actions/runs/35560603400/job/106212658246"
+              },
+              {
+                "name": "candidate / reference-policy (windows-latest)",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/DesktopPlatform/actions/runs/35560603400/job/106212658263"
+              },
+              {
+                "name": "candidate / design-policy (ubuntu-latest)",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/DesktopPlatform/actions/runs/35560603400/job/106212658264"
+              },
+              {
+                "name": "candidate / runtime-policy (windows-latest)",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/DesktopPlatform/actions/runs/35560603400/job/106212658274"
+              },
+              {
+                "name": "candidate / reference-policy (ubuntu-latest)",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/DesktopPlatform/actions/runs/35560603400/job/106212658280"
+              },
+              {
+                "name": "candidate / runtime-policy (ubuntu-latest)",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/DesktopPlatform/actions/runs/35560603400/job/106212658281"
+              },
+              {
+                "name": "candidate / provenance-policy (windows-latest)",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/DesktopPlatform/actions/runs/35560603400/job/106212658343"
+              },
+              {
+                "name": "candidate / native / native-win-x64",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/DesktopPlatform/actions/runs/35560603400/job/106212658401"
+              },
+              {
+                "name": "candidate / managed-packages / pack",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/DesktopPlatform/actions/runs/35560603400/job/106213359275"
+              },
+              {
+                "name": "candidate / managed-packages / consumer (windows-latest)",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/DesktopPlatform/actions/runs/35560603400/job/106213654710"
+              },
+              {
+                "name": "candidate / managed-packages / consumer (ubuntu-latest)",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/DesktopPlatform/actions/runs/35560603400/job/106213654714"
+              },
+              {
+                "name": "candidate / ci",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/DesktopPlatform/actions/runs/35560603400/job/106214412998"
+              },
+              {
+                "name": "publish",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/DesktopPlatform/actions/runs/35560603400/job/106214441815"
+              }
+            ]
+          }
+        ],
+        "prChecks": [
+          {
+            "link": "https://github.com/ArcForges/DesktopPlatform/actions/runs/35560074706/job/106212443806",
+            "name": "ci",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/DesktopPlatform/actions/runs/35560074706/job/106212111614",
+            "name": "managed-packages / consumer (windows-latest)",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/DesktopPlatform/actions/runs/35560074706/job/106212111437",
+            "name": "managed-packages / consumer (ubuntu-latest)",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/DesktopPlatform/actions/runs/35560074706/job/106211825483",
+            "name": "managed-packages / pack",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/DesktopPlatform/actions/runs/35560074706/job/106211164892",
+            "name": "provenance-policy (windows-latest)",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/DesktopPlatform/actions/runs/35560074706/job/106211164899",
+            "name": "provenance-policy (ubuntu-latest)",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/DesktopPlatform/actions/runs/35560074706/job/106211164588",
+            "name": "secret-scan",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/DesktopPlatform/actions/runs/35560074706/job/106211164836",
+            "name": "design-policy (windows-latest)",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/DesktopPlatform/actions/runs/35560074706/job/106211164871",
+            "name": "reference-policy (ubuntu-latest)",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/DesktopPlatform/actions/runs/35560074706/job/106211164905",
+            "name": "reference-policy (windows-latest)",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/DesktopPlatform/actions/runs/35560074706/job/106211164760",
+            "name": "runtime-policy (ubuntu-latest)",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/DesktopPlatform/actions/runs/35560074706/job/106211164867",
+            "name": "runtime-policy (windows-latest)",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/DesktopPlatform/actions/runs/35560074706/job/106211164847",
+            "name": "reconciliation-policy (ubuntu-latest)",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/DesktopPlatform/actions/runs/35560074706/job/106211164845",
+            "name": "reconciliation-policy (windows-latest)",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/DesktopPlatform/actions/runs/35560074706/job/106211164746",
+            "name": "licence-policy (windows-latest)",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/DesktopPlatform/actions/runs/35560074706/job/106211164856",
+            "name": "licence-policy (ubuntu-latest)",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/DesktopPlatform/actions/runs/35560074706/job/106211164828",
+            "name": "allocate-version",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/DesktopPlatform/actions/runs/35560074706/job/106211164818",
+            "name": "design-policy (ubuntu-latest)",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/DesktopPlatform/actions/runs/35560074706/job/106211164823",
+            "name": "repository-hooks",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/DesktopPlatform/actions/runs/35560074706/job/106211165061",
+            "name": "native / native-win-x64",
+            "state": "SUCCESS"
+          }
+        ]
+      },
+      "Contracts": {
+        "head": "e8353720af5d61c462c3b550e46620dddb445ae9",
+        "remoteMain": "e8353720af5d61c462c3b550e46620dddb445ae9",
+        "primaryClean": true,
+        "implementationWorktreeClean": true,
+        "runs": [
+          {
+            "conclusion": "success",
+            "databaseId": 35560943850,
+            "headSha": "e8353720af5d61c462c3b550e46620dddb445ae9",
+            "status": "completed",
+            "url": "https://github.com/ArcForges/Contracts/actions/runs/35560943850",
+            "workflowName": "Security",
+            "jobs": [
+              {
+                "name": "CodeQL (java-kotlin)",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/Contracts/actions/runs/35560943850/job/106213572044"
+              },
+              {
+                "name": "CodeQL (csharp)",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/Contracts/actions/runs/35560943850/job/106213572162"
+              },
+              {
+                "name": "CodeQL (python)",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/Contracts/actions/runs/35560943850/job/106213572170"
+              },
+              {
+                "name": "CodeQL (javascript-typescript)",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/Contracts/actions/runs/35560943850/job/106213572175"
+              },
+              {
+                "name": "Secret scan",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/Contracts/actions/runs/35560943850/job/106213572283"
+              },
+              {
+                "name": "Dependency review",
+                "status": "completed",
+                "conclusion": "skipped",
+                "url": "https://github.com/ArcForges/Contracts/actions/runs/35560943850/job/106213572874"
+              }
+            ]
+          },
+          {
+            "conclusion": "success",
+            "databaseId": 35560943991,
+            "headSha": "e8353720af5d61c462c3b550e46620dddb445ae9",
+            "status": "completed",
+            "url": "https://github.com/ArcForges/Contracts/actions/runs/35560943991",
+            "workflowName": "CI",
+            "jobs": [
+              {
+                "name": "Build candidate",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/Contracts/actions/runs/35560943991/job/106213572392"
+              },
+              {
+                "name": "Consumer (windows-latest)",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/Contracts/actions/runs/35560943991/job/106214194964"
+              },
+              {
+                "name": "Consumer (ubuntu-latest)",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/Contracts/actions/runs/35560943991/job/106214194985"
+              },
+              {
+                "name": "Verify",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/Contracts/actions/runs/35560943991/job/106215279079"
+              },
+              {
+                "name": "Publish NuGet",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/Contracts/actions/runs/35560943991/job/106215295989"
+              },
+              {
+                "name": "Publish npm",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/Contracts/actions/runs/35560943991/job/106215296320"
+              },
+              {
+                "name": "Publish Maven channel",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/Contracts/actions/runs/35560943991/job/106215296345"
+              }
+            ]
+          }
+        ],
+        "prChecks": [
+          {
+            "link": "https://github.com/ArcForges/Contracts/actions/runs/35560300511/job/106213355049",
+            "name": "Publish NuGet",
+            "state": "SKIPPED"
+          },
+          {
+            "link": "https://github.com/ArcForges/Contracts/actions/runs/35560300511/job/106213355170",
+            "name": "Publish Maven channel",
+            "state": "SKIPPED"
+          },
+          {
+            "link": "https://github.com/ArcForges/Contracts/actions/runs/35560300511/job/106213355112",
+            "name": "Publish npm",
+            "state": "SKIPPED"
+          },
+          {
+            "link": "https://github.com/ArcForges/Contracts/actions/runs/35560300511/job/106213341045",
+            "name": "Verify",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/Contracts/actions/runs/35560300511/job/106212410556",
+            "name": "Consumer (ubuntu-latest)",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/Contracts/actions/runs/35560300511/job/106212410585",
+            "name": "Consumer (windows-latest)",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/Contracts/runs/106211920054",
+            "name": "CodeQL",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/Contracts/actions/runs/35560300534/job/106211795552",
+            "name": "Secret scan",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/Contracts/actions/runs/35560300534/job/106211795684",
+            "name": "CodeQL (python)",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/Contracts/actions/runs/35560300534/job/106211795747",
+            "name": "CodeQL (javascript-typescript)",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/Contracts/actions/runs/35560300534/job/106211795683",
+            "name": "CodeQL (java-kotlin)",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/Contracts/actions/runs/35560300534/job/106211795803",
+            "name": "CodeQL (csharp)",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/Contracts/actions/runs/35560300511/job/106211795875",
+            "name": "Build candidate",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/Contracts/actions/runs/35560300534/job/106211795754",
+            "name": "Dependency review",
+            "state": "SUCCESS"
+          }
+        ]
+      },
+      "ArcNotes": {
+        "head": "c40116ac8ae0c76e539b3c19552a65ec08c8d94b",
+        "remoteMain": "c40116ac8ae0c76e539b3c19552a65ec08c8d94b",
+        "primaryClean": true,
+        "implementationWorktreeClean": true,
+        "runs": [
+          {
+            "conclusion": "success",
+            "databaseId": 35560953892,
+            "headSha": "c40116ac8ae0c76e539b3c19552a65ec08c8d94b",
+            "status": "completed",
+            "url": "https://github.com/ArcForges/ArcNotes/actions/runs/35560953892",
+            "workflowName": "CI",
+            "jobs": [
+              {
+                "name": "Native (osx-x64)",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/ArcNotes/actions/runs/35560953892/job/106213598870"
+              },
+              {
+                "name": "Workflow and secret checks",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/ArcNotes/actions/runs/35560953892/job/106213598875"
+              },
+              {
+                "name": "Native (osx-arm64)",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/ArcNotes/actions/runs/35560953892/job/106213598933"
+              },
+              {
+                "name": "CodeQL (csharp)",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/ArcNotes/actions/runs/35560953892/job/106213598937"
+              },
+              {
+                "name": "Native (win-arm64)",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/ArcNotes/actions/runs/35560953892/job/106213598940"
+              },
+              {
+                "name": "Native (win-x64)",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/ArcNotes/actions/runs/35560953892/job/106213598964"
+              },
+              {
+                "name": "CodeQL (actions)",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/ArcNotes/actions/runs/35560953892/job/106213599001"
+              },
+              {
+                "name": "Native (linux-x64)",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/ArcNotes/actions/runs/35560953892/job/106213599007"
+              },
+              {
+                "name": "Dependency review",
+                "status": "completed",
+                "conclusion": "skipped",
+                "url": "https://github.com/ArcForges/ArcNotes/actions/runs/35560953892/job/106213599537"
+              },
+              {
+                "name": "Verify",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/ArcNotes/actions/runs/35560953892/job/106214770519"
+              },
+              {
+                "name": "Publish portable release",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/ArcNotes/actions/runs/35560953892/job/106214853054"
+              },
+              {
+                "name": "Verify publication",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/ArcNotes/actions/runs/35560953892/job/106214955394"
+              }
+            ]
+          }
+        ],
+        "prChecks": [
+          {
+            "link": "https://github.com/ArcForges/ArcNotes/actions/runs/35559345251/job/106209906584",
+            "name": "Verify publication",
+            "state": "SKIPPED"
+          },
+          {
+            "link": "https://github.com/ArcForges/ArcNotes/actions/runs/35559345251/job/106209906211",
+            "name": "Publish portable release",
+            "state": "SKIPPED"
+          },
+          {
+            "link": "https://github.com/ArcForges/ArcNotes/actions/runs/35559345251/job/106209828193",
+            "name": "Verify",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/ArcNotes/runs/106209174513",
+            "name": "CodeQL",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/ArcNotes/actions/runs/35559345251/job/106209082578",
+            "name": "Native (osx-arm64)",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/ArcNotes/actions/runs/35559345251/job/106209082661",
+            "name": "Native (osx-x64)",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/ArcNotes/actions/runs/35559345251/job/106209082611",
+            "name": "CodeQL (csharp)",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/ArcNotes/actions/runs/35559345251/job/106209082557",
+            "name": "CodeQL (actions)",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/ArcNotes/actions/runs/35559345251/job/106209082521",
+            "name": "Workflow and secret checks",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/ArcNotes/actions/runs/35559345251/job/106209082508",
+            "name": "Native (linux-x64)",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/ArcNotes/actions/runs/35559345251/job/106209082761",
+            "name": "Native (win-arm64)",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/ArcNotes/actions/runs/35559345251/job/106209082545",
+            "name": "Dependency review",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/ArcNotes/actions/runs/35559345251/job/106209082675",
+            "name": "Native (win-x64)",
+            "state": "SUCCESS"
+          }
+        ]
+      },
+      "ArcScope": {
+        "head": "1b13c9827f98578c8ba2f7db0c046db114aa7cb8",
+        "remoteMain": "1b13c9827f98578c8ba2f7db0c046db114aa7cb8",
+        "primaryClean": true,
+        "implementationWorktreeClean": true,
+        "runs": [
+          {
+            "conclusion": "success",
+            "databaseId": 35560962880,
+            "headSha": "1b13c9827f98578c8ba2f7db0c046db114aa7cb8",
+            "status": "completed",
+            "url": "https://github.com/ArcForges/ArcScope/actions/runs/35560962880",
+            "workflowName": "CI",
+            "jobs": [
+              {
+                "name": "CodeQL (actions)",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/ArcScope/actions/runs/35560962880/job/106213622785"
+              },
+              {
+                "name": "Native (osx-x64)",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/ArcScope/actions/runs/35560962880/job/106213622902"
+              },
+              {
+                "name": "Native (win-arm64)",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/ArcScope/actions/runs/35560962880/job/106213622927"
+              },
+              {
+                "name": "Native (osx-arm64)",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/ArcScope/actions/runs/35560962880/job/106213622937"
+              },
+              {
+                "name": "Native (win-x64)",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/ArcScope/actions/runs/35560962880/job/106213622940"
+              },
+              {
+                "name": "Native (linux-x64)",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/ArcScope/actions/runs/35560962880/job/106213622971"
+              },
+              {
+                "name": "Workflow and secret checks",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/ArcScope/actions/runs/35560962880/job/106213623037"
+              },
+              {
+                "name": "CodeQL (csharp)",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/ArcScope/actions/runs/35560962880/job/106213623111"
+              },
+              {
+                "name": "Dependency review",
+                "status": "completed",
+                "conclusion": "skipped",
+                "url": "https://github.com/ArcForges/ArcScope/actions/runs/35560962880/job/106213624475"
+              },
+              {
+                "name": "Verify",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/ArcScope/actions/runs/35560962880/job/106214531763"
+              },
+              {
+                "name": "Publish portable release",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/ArcScope/actions/runs/35560962880/job/106214628706"
+              },
+              {
+                "name": "Verify publication",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/ArcScope/actions/runs/35560962880/job/106214721660"
+              }
+            ]
+          }
+        ],
+        "prChecks": [
+          {
+            "link": "https://github.com/ArcForges/ArcScope/actions/runs/35559350059/job/106209795587",
+            "name": "Verify publication",
+            "state": "SKIPPED"
+          },
+          {
+            "link": "https://github.com/ArcForges/ArcScope/actions/runs/35559350059/job/106209795664",
+            "name": "Publish portable release",
+            "state": "SKIPPED"
+          },
+          {
+            "link": "https://github.com/ArcForges/ArcScope/actions/runs/35559350059/job/106209734456",
+            "name": "Verify",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/ArcScope/runs/106209185095",
+            "name": "CodeQL",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/ArcScope/actions/runs/35559350059/job/106209096719",
+            "name": "Native (osx-arm64)",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/ArcScope/actions/runs/35559350059/job/106209096786",
+            "name": "Native (osx-x64)",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/ArcScope/actions/runs/35559350059/job/106209096695",
+            "name": "Dependency review",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/ArcScope/actions/runs/35559350059/job/106209096608",
+            "name": "CodeQL (csharp)",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/ArcScope/actions/runs/35559350059/job/106209096699",
+            "name": "CodeQL (actions)",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/ArcScope/actions/runs/35559350059/job/106209096769",
+            "name": "Workflow and secret checks",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/ArcScope/actions/runs/35559350059/job/106209096706",
+            "name": "Native (win-x64)",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/ArcScope/actions/runs/35559350059/job/106209096730",
+            "name": "Native (linux-x64)",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/ArcScope/actions/runs/35559350059/job/106209096652",
+            "name": "Native (win-arm64)",
+            "state": "SUCCESS"
+          }
+        ]
+      },
+      "ArcSlate": {
+        "head": "0cc8093d51cdef20bae8057e77c4bcd80d32b39e",
+        "remoteMain": "0cc8093d51cdef20bae8057e77c4bcd80d32b39e",
+        "primaryClean": true,
+        "implementationWorktreeClean": true,
+        "runs": [
+          {
+            "conclusion": "success",
+            "databaseId": 35560972674,
+            "headSha": "0cc8093d51cdef20bae8057e77c4bcd80d32b39e",
+            "status": "completed",
+            "url": "https://github.com/ArcForges/ArcSlate/actions/runs/35560972674",
+            "workflowName": "CI",
+            "jobs": [
+              {
+                "name": "Workflow and secret checks",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/ArcSlate/actions/runs/35560972674/job/106213649377"
+              },
+              {
+                "name": "Native (osx-arm64)",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/ArcSlate/actions/runs/35560972674/job/106213649599"
+              },
+              {
+                "name": "CodeQL (actions)",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/ArcSlate/actions/runs/35560972674/job/106213649609"
+              },
+              {
+                "name": "CodeQL (csharp)",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/ArcSlate/actions/runs/35560972674/job/106213649631"
+              },
+              {
+                "name": "Native (linux-x64)",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/ArcSlate/actions/runs/35560972674/job/106213649676"
+              },
+              {
+                "name": "Native (win-arm64)",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/ArcSlate/actions/runs/35560972674/job/106213649698"
+              },
+              {
+                "name": "Native (win-x64)",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/ArcSlate/actions/runs/35560972674/job/106213649708"
+              },
+              {
+                "name": "Native (osx-x64)",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/ArcSlate/actions/runs/35560972674/job/106213649735"
+              },
+              {
+                "name": "Dependency review",
+                "status": "completed",
+                "conclusion": "skipped",
+                "url": "https://github.com/ArcForges/ArcSlate/actions/runs/35560972674/job/106213650369"
+              },
+              {
+                "name": "Verify",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/ArcSlate/actions/runs/35560972674/job/106214860858"
+              },
+              {
+                "name": "Publish portable release",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/ArcSlate/actions/runs/35560972674/job/106214936445"
+              },
+              {
+                "name": "Verify publication",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/ArcSlate/actions/runs/35560972674/job/106215054978"
+              }
+            ]
+          }
+        ],
+        "prChecks": [
+          {
+            "link": "https://github.com/ArcForges/ArcSlate/actions/runs/35559357650/job/106210051121",
+            "name": "Verify publication",
+            "state": "SKIPPED"
+          },
+          {
+            "link": "https://github.com/ArcForges/ArcSlate/actions/runs/35559357650/job/106210050599",
+            "name": "Publish portable release",
+            "state": "SKIPPED"
+          },
+          {
+            "link": "https://github.com/ArcForges/ArcSlate/actions/runs/35559357650/job/106209978377",
+            "name": "Verify",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/ArcSlate/actions/runs/35559357650/job/106209120137",
+            "name": "Native (osx-x64)",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/ArcSlate/actions/runs/35559357650/job/106209120089",
+            "name": "CodeQL (csharp)",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/ArcSlate/actions/runs/35559357650/job/106209120014",
+            "name": "Workflow and secret checks",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/ArcSlate/runs/106209189463",
+            "name": "CodeQL",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/ArcSlate/actions/runs/35559357650/job/106209120082",
+            "name": "Native (win-x64)",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/ArcSlate/actions/runs/35559357650/job/106209119978",
+            "name": "Native (osx-arm64)",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/ArcSlate/actions/runs/35559357650/job/106209120019",
+            "name": "Dependency review",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/ArcSlate/actions/runs/35559357650/job/106209120013",
+            "name": "CodeQL (actions)",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/ArcSlate/actions/runs/35559357650/job/106209120076",
+            "name": "Native (win-arm64)",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/ArcSlate/actions/runs/35559357650/job/106209120040",
+            "name": "Native (linux-x64)",
+            "state": "SUCCESS"
+          }
+        ]
+      },
+      "Cloud": {
+        "head": "4f53ed6a072cc9680101633e8c7e01efd450b84e",
+        "remoteMain": "4f53ed6a072cc9680101633e8c7e01efd450b84e",
+        "primaryClean": true,
+        "implementationWorktreeClean": true,
+        "runs": [
+          {
+            "conclusion": "success",
+            "databaseId": 35560981353,
+            "headSha": "4f53ed6a072cc9680101633e8c7e01efd450b84e",
+            "status": "completed",
+            "url": "https://github.com/ArcForges/Cloud/actions/runs/35560981353",
+            "workflowName": "CI",
+            "jobs": [
+              {
+                "name": "Dependency audit and repository checks",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/Cloud/actions/runs/35560981353/job/106213673821"
+              },
+              {
+                "name": "CodeQL (java-kotlin)",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/Cloud/actions/runs/35560981353/job/106213673994"
+              },
+              {
+                "name": "Source (windows-latest)",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/Cloud/actions/runs/35560981353/job/106213674030"
+              },
+              {
+                "name": "CodeQL (javascript-typescript)",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/Cloud/actions/runs/35560981353/job/106213674047"
+              },
+              {
+                "name": "CodeQL (actions)",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/Cloud/actions/runs/35560981353/job/106213674065"
+              },
+              {
+                "name": "Source (ubuntu-latest)",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/Cloud/actions/runs/35560981353/job/106213674071"
+              },
+              {
+                "name": "CodeQL (csharp)",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/Cloud/actions/runs/35560981353/job/106213674127"
+              },
+              {
+                "name": "Dependency review",
+                "status": "completed",
+                "conclusion": "skipped",
+                "url": "https://github.com/ArcForges/Cloud/actions/runs/35560981353/job/106213674765"
+              },
+              {
+                "name": "Native AOT image and real protocol integration",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/Cloud/actions/runs/35560981353/job/106214763392"
+              },
+              {
+                "name": "Verify",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/Cloud/actions/runs/35560981353/job/106215220487"
+              },
+              {
+                "name": "Deploy and verify Cloudflare",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/Cloud/actions/runs/35560981353/job/106215237241"
+              }
+            ]
+          }
+        ],
+        "prChecks": [
+          {
+            "link": "https://github.com/ArcForges/Cloud/actions/runs/35560330433/job/106213120497",
+            "name": "Deploy and verify Cloudflare",
+            "state": "SKIPPED"
+          },
+          {
+            "link": "https://github.com/ArcForges/Cloud/actions/runs/35560330433/job/106213106069",
+            "name": "Verify",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/Cloud/actions/runs/35560330433/job/106212643850",
+            "name": "Native AOT image and real protocol integration",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/Cloud/runs/106211977977",
+            "name": "CodeQL",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/Cloud/actions/runs/35560330433/job/106211876819",
+            "name": "CodeQL (java-kotlin)",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/Cloud/actions/runs/35560330433/job/106211876721",
+            "name": "Source (ubuntu-latest)",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/Cloud/actions/runs/35560330433/job/106211876789",
+            "name": "Source (windows-latest)",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/Cloud/actions/runs/35560330433/job/106211876780",
+            "name": "Dependency audit and repository checks",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/Cloud/actions/runs/35560330433/job/106211876673",
+            "name": "Dependency review",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/Cloud/actions/runs/35560330433/job/106211876713",
+            "name": "CodeQL (csharp)",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/Cloud/actions/runs/35560330433/job/106211876776",
+            "name": "CodeQL (javascript-typescript)",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/Cloud/actions/runs/35560330433/job/106211876781",
+            "name": "CodeQL (actions)",
+            "state": "SUCCESS"
+          }
+        ]
+      },
+      "AI": {
+        "head": "b50098108cdabdd3d0bdefc44e724c71aba2b0a6",
+        "remoteMain": "b50098108cdabdd3d0bdefc44e724c71aba2b0a6",
+        "primaryClean": true,
+        "implementationWorktreeClean": true,
+        "runs": [
+          {
+            "conclusion": "success",
+            "databaseId": 35565677211,
+            "headSha": "b50098108cdabdd3d0bdefc44e724c71aba2b0a6",
+            "status": "completed",
+            "url": "https://github.com/ArcForges/AI/actions/runs/35565677211",
+            "workflowName": "Dependabot Updates",
+            "jobs": [
+              {
+                "name": "Dependabot",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/AI/actions/runs/35565677211/job/106226897878"
+              }
+            ]
+          },
+          {
+            "conclusion": "success",
+            "databaseId": 35565677285,
+            "headSha": "b50098108cdabdd3d0bdefc44e724c71aba2b0a6",
+            "status": "completed",
+            "url": "https://github.com/ArcForges/AI/actions/runs/35565677285",
+            "workflowName": "Dependabot Updates",
+            "jobs": [
+              {
+                "name": "Dependabot",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/AI/actions/runs/35565677285/job/106226897250"
+              }
+            ]
+          },
+          {
+            "conclusion": "success",
+            "databaseId": 35560988965,
+            "headSha": "b50098108cdabdd3d0bdefc44e724c71aba2b0a6",
+            "status": "completed",
+            "url": "https://github.com/ArcForges/AI/actions/runs/35560988965",
+            "workflowName": "CI",
+            "jobs": [
+              {
+                "name": "CodeQL (javascript-typescript)",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/AI/actions/runs/35560988965/job/106213694893"
+              },
+              {
+                "name": "CodeQL (actions)",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/AI/actions/runs/35560988965/job/106213694965"
+              },
+              {
+                "name": "Validate (ubuntu-latest)",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/AI/actions/runs/35560988965/job/106213695126"
+              },
+              {
+                "name": "Validate (windows-latest)",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/AI/actions/runs/35560988965/job/106213695149"
+              },
+              {
+                "name": "Repository security",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/AI/actions/runs/35560988965/job/106213695163"
+              },
+              {
+                "name": "Dependency review",
+                "status": "completed",
+                "conclusion": "skipped",
+                "url": "https://github.com/ArcForges/AI/actions/runs/35560988965/job/106213695648"
+              },
+              {
+                "name": "Build candidate",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/AI/actions/runs/35560988965/job/106214513058"
+              },
+              {
+                "name": "Verify",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/AI/actions/runs/35560988965/job/106214589341"
+              },
+              {
+                "name": "Deploy and verify Cloudflare",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/AI/actions/runs/35560988965/job/106214607611"
+              },
+              {
+                "name": "Verify deployment",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/AI/actions/runs/35560988965/job/106214730966"
+              }
+            ]
+          }
+        ],
+        "prChecks": [
+          {
+            "link": "https://github.com/ArcForges/AI/actions/runs/35559824752/job/106210873266",
+            "name": "Deploy and verify Cloudflare",
+            "state": "SKIPPED"
+          },
+          {
+            "link": "https://github.com/ArcForges/AI/actions/runs/35559824752/job/106210873555",
+            "name": "Verify deployment",
+            "state": "SKIPPED"
+          },
+          {
+            "link": "https://github.com/ArcForges/AI/actions/runs/35559824752/job/106210856325",
+            "name": "Verify",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/AI/actions/runs/35559824752/job/106210690858",
+            "name": "Build candidate",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/AI/runs/106210538183",
+            "name": "CodeQL",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/AI/actions/runs/35559824752/job/106210439398",
+            "name": "Repository security",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/AI/actions/runs/35559824752/job/106210439337",
+            "name": "CodeQL (javascript-typescript)",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/AI/actions/runs/35559824752/job/106210439362",
+            "name": "Validate (ubuntu-latest)",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/AI/actions/runs/35559824752/job/106210439322",
+            "name": "Validate (windows-latest)",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/AI/actions/runs/35559824752/job/106210439333",
+            "name": "CodeQL (actions)",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/AI/actions/runs/35559824752/job/106210439232",
+            "name": "Dependency review",
+            "state": "SUCCESS"
+          }
+        ]
+      },
+      "Mobile": {
+        "head": "f067f3447708ae2e62c334653a8dd4d544980032",
+        "remoteMain": "f067f3447708ae2e62c334653a8dd4d544980032",
+        "primaryClean": true,
+        "implementationWorktreeClean": true,
+        "runs": [
+          {
+            "conclusion": "success",
+            "databaseId": 35571867458,
+            "headSha": "f067f3447708ae2e62c334653a8dd4d544980032",
+            "status": "completed",
+            "url": "https://github.com/ArcForges/Mobile/actions/runs/35571867458",
+            "workflowName": "Dependabot Updates",
+            "jobs": [
+              {
+                "name": "Dependabot",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/Mobile/actions/runs/35571867458/job/106244997092"
+              }
+            ]
+          },
+          {
+            "conclusion": "success",
+            "databaseId": 35571844092,
+            "headSha": "f067f3447708ae2e62c334653a8dd4d544980032",
+            "status": "completed",
+            "url": "https://github.com/ArcForges/Mobile/actions/runs/35571844092",
+            "workflowName": "Dependabot Updates",
+            "jobs": [
+              {
+                "name": "Dependabot",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/Mobile/actions/runs/35571844092/job/106244929453"
+              }
+            ]
+          },
+          {
+            "conclusion": "success",
+            "databaseId": 35561935091,
+            "headSha": "f067f3447708ae2e62c334653a8dd4d544980032",
+            "status": "completed",
+            "url": "https://github.com/ArcForges/Mobile/actions/runs/35561935091",
+            "workflowName": "CI",
+            "jobs": [
+              {
+                "name": "Build (windows-latest)",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/Mobile/actions/runs/35561935091/job/106216319619"
+              },
+              {
+                "name": "Build (ubuntu-latest)",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/Mobile/actions/runs/35561935091/job/106216319722"
+              },
+              {
+                "name": "Security / CodeQL (actions)",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/Mobile/actions/runs/35561935091/job/106216319732"
+              },
+              {
+                "name": "Security / CodeQL (java-kotlin)",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/Mobile/actions/runs/35561935091/job/106216319800"
+              },
+              {
+                "name": "Security / CodeQL (python)",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/Mobile/actions/runs/35561935091/job/106216319812"
+              },
+              {
+                "name": "Security / Secret scan",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/Mobile/actions/runs/35561935091/job/106216319815"
+              },
+              {
+                "name": "Security / Dependency review",
+                "status": "completed",
+                "conclusion": "skipped",
+                "url": "https://github.com/ArcForges/Mobile/actions/runs/35561935091/job/106216320227"
+              },
+              {
+                "name": "Android device tests (API 26)",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/Mobile/actions/runs/35561935091/job/106217637136"
+              },
+              {
+                "name": "Android device tests (API 36)",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/Mobile/actions/runs/35561935091/job/106217637226"
+              },
+              {
+                "name": "Verify",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/Mobile/actions/runs/35561935091/job/106218023747"
+              },
+              {
+                "name": "Publish Android",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/Mobile/actions/runs/35561935091/job/106218035873"
+              },
+              {
+                "name": "Public release upgrade (API 36)",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/Mobile/actions/runs/35561935091/job/106218111485"
+              },
+              {
+                "name": "Public release upgrade (API 26)",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/Mobile/actions/runs/35561935091/job/106218111537"
+              },
+              {
+                "name": "Verify publication",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/Mobile/actions/runs/35561935091/job/106218475182"
+              }
+            ]
+          }
+        ],
+        "prChecks": [
+          {
+            "link": "https://github.com/ArcForges/Mobile/actions/runs/35560876694/job/106215775262",
+            "name": "Verify publication",
+            "state": "SKIPPED"
+          },
+          {
+            "link": "https://github.com/ArcForges/Mobile/actions/runs/35560876694/job/106215774854",
+            "name": "Public release upgrade (API ${{ matrix.api }})",
+            "state": "SKIPPED"
+          },
+          {
+            "link": "https://github.com/ArcForges/Mobile/actions/runs/35560876694/job/106215774288",
+            "name": "Publish Android",
+            "state": "SKIPPED"
+          },
+          {
+            "link": "https://github.com/ArcForges/Mobile/actions/runs/35560876694/job/106215755318",
+            "name": "Verify",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/Mobile/actions/runs/35560876694/job/106215245923",
+            "name": "Android device tests (API 36)",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/Mobile/actions/runs/35560876694/job/106215246072",
+            "name": "Android device tests (API 26)",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/Mobile/runs/106213501020",
+            "name": "CodeQL",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/Mobile/actions/runs/35560876694/job/106213390456",
+            "name": "Build (ubuntu-latest)",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/Mobile/actions/runs/35560876694/job/106213390597",
+            "name": "Security / Secret scan",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/Mobile/actions/runs/35560876694/job/106213390578",
+            "name": "Security / CodeQL (java-kotlin)",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/Mobile/actions/runs/35560876694/job/106213390730",
+            "name": "Security / CodeQL (actions)",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/Mobile/actions/runs/35560876694/job/106213390580",
+            "name": "Build (windows-latest)",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/Mobile/actions/runs/35560876694/job/106213390723",
+            "name": "Security / CodeQL (python)",
+            "state": "SUCCESS"
+          },
+          {
+            "link": "https://github.com/ArcForges/Mobile/actions/runs/35560876694/job/106213390655",
+            "name": "Security / Dependency review",
+            "state": "SUCCESS"
+          }
+        ]
+      },
+      "Web": {
+        "head": "84939ca1fde0f0653d2cb4d8b8f9e5dd1057abb5",
+        "remoteMain": "84939ca1fde0f0653d2cb4d8b8f9e5dd1057abb5",
+        "primaryClean": true,
+        "implementationWorktreeClean": true,
+        "runs": [
+          {
+            "conclusion": "success",
+            "databaseId": 35437014881,
+            "headSha": "84939ca1fde0f0653d2cb4d8b8f9e5dd1057abb5",
+            "status": "completed",
+            "url": "https://github.com/ArcForges/Web/actions/runs/35437014881",
+            "workflowName": "CI",
+            "jobs": [
+              {
+                "name": "Dependency audit and repository checks",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/Web/actions/runs/35437014881/job/105881297861"
+              },
+              {
+                "name": "Source (windows-latest)",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/Web/actions/runs/35437014881/job/105881297939"
+              },
+              {
+                "name": "Source (ubuntu-latest)",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/Web/actions/runs/35437014881/job/105881297950"
+              },
+              {
+                "name": "CodeQL (actions)",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/Web/actions/runs/35437014881/job/105881297960"
+              },
+              {
+                "name": "CodeQL (javascript-typescript)",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/Web/actions/runs/35437014881/job/105881297972"
+              },
+              {
+                "name": "Dependency review",
+                "status": "completed",
+                "conclusion": "skipped",
+                "url": "https://github.com/ArcForges/Web/actions/runs/35437014881/job/105881298452"
+              },
+              {
+                "name": "Build and test candidate",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/Web/actions/runs/35437014881/job/105881536300"
+              },
+              {
+                "name": "Verify",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/Web/actions/runs/35437014881/job/105881763642"
+              },
+              {
+                "name": "Deploy and verify Cloudflare",
+                "status": "completed",
+                "conclusion": "success",
+                "url": "https://github.com/ArcForges/Web/actions/runs/35437014881/job/105881772646"
+              }
+            ]
+          }
+        ],
+        "prChecks": []
+      }
+    }
+  },
+  "pinInventory": [
+    {
+      "owner": "DesktopPlatform",
+      "implementationHead": "3584f0b974bc5421816013f44c64d9957e5eb286",
+      "managedProjects": 24,
+      "nugetLocks": 24,
+      "npmRootLocks": 0,
+      "files": {
+        ".python-version": "922fe0c3de073b01988e23348ea184456161678c5e329e6f34be89be24383f93",
+        "Directory.Packages.props": "f272ea30477a252562e648a8e53380e9e39eae5ee5f8c6670675066e24187c0b",
+        "eng/native/vcpkg/ports/opentimelineio/vcpkg.json": "7ef409e9db8b0fa5ed7feeea7655f75a421294131b610ca1176d66a23f2ddb49",
+        "eng/requirements-ci.txt": "fe6a76cb5334fd1b96af6203baec8723653e97453f0649f61b8703fd81787c25",
+        "global.json": "d17cfeed29d17cb8e75b56e26767c591ab560a2d7204f28bcb3ec3f47bb4263e",
+        "src/Build/ArcForges.Build.Policy/packages.lock.json": "09f91faca7c23b7ef4c0a4a6a4afa1f5d4e17e2e3dcbd9aca08ff12aec384059",
+        "src/BuildingBlocks/ArcForges.Application.Abstractions/packages.lock.json": "09f91faca7c23b7ef4c0a4a6a4afa1f5d4e17e2e3dcbd9aca08ff12aec384059",
+        "src/BuildingBlocks/ArcForges.Desktop.Experience/packages.lock.json": "09f91faca7c23b7ef4c0a4a6a4afa1f5d4e17e2e3dcbd9aca08ff12aec384059",
+        "src/BuildingBlocks/ArcForges.Desktop.Graphics/packages.lock.json": "09f91faca7c23b7ef4c0a4a6a4afa1f5d4e17e2e3dcbd9aca08ff12aec384059",
+        "src/BuildingBlocks/ArcForges.Desktop.Preview/packages.lock.json": "09f91faca7c23b7ef4c0a4a6a4afa1f5d4e17e2e3dcbd9aca08ff12aec384059",
+        "src/BuildingBlocks/ArcForges.Desktop.RichContent/packages.lock.json": "09f91faca7c23b7ef4c0a4a6a4afa1f5d4e17e2e3dcbd9aca08ff12aec384059",
+        "src/BuildingBlocks/ArcForges.Desktop.Text/packages.lock.json": "09f91faca7c23b7ef4c0a4a6a4afa1f5d4e17e2e3dcbd9aca08ff12aec384059",
+        "src/BuildingBlocks/ArcForges.Foundation/packages.lock.json": "09f91faca7c23b7ef4c0a4a6a4afa1f5d4e17e2e3dcbd9aca08ff12aec384059",
+        "src/BuildingBlocks/ArcForges.NativeInterop/packages.lock.json": "09f91faca7c23b7ef4c0a4a6a4afa1f5d4e17e2e3dcbd9aca08ff12aec384059",
+        "src/BuildingBlocks/ArcForges.Observability/packages.lock.json": "09f91faca7c23b7ef4c0a4a6a4afa1f5d4e17e2e3dcbd9aca08ff12aec384059",
+        "src/BuildingBlocks/ArcForges.Persistence.Sqlite/packages.lock.json": "09f91faca7c23b7ef4c0a4a6a4afa1f5d4e17e2e3dcbd9aca08ff12aec384059",
+        "src/BuildingBlocks/ArcForges.Security/packages.lock.json": "09f91faca7c23b7ef4c0a4a6a4afa1f5d4e17e2e3dcbd9aca08ff12aec384059",
+        "src/DesktopHelpers/ArcForges.ContentSandbox/packages.lock.json": "b4f0ff214884e99a7ee38ccdef1baee5338a75080447240915627b062a38747e",
+        "src/Native/ArcForges.Native.Abstractions/packages.lock.json": "09f91faca7c23b7ef4c0a4a6a4afa1f5d4e17e2e3dcbd9aca08ff12aec384059",
+        "src/Native/ArcForges.Native.Colour.Runtime.win-x64/packages.lock.json": "09f91faca7c23b7ef4c0a4a6a4afa1f5d4e17e2e3dcbd9aca08ff12aec384059",
+        "src/Native/ArcForges.Native.Colour/packages.lock.json": "cd7ed1d6af3e01a3bc233a62e7ae062e55434f0892d3f61c011387cd9ed0e576",
+        "src/Native/ArcForges.Native.Image.Runtime.win-x64/packages.lock.json": "09f91faca7c23b7ef4c0a4a6a4afa1f5d4e17e2e3dcbd9aca08ff12aec384059",
+        "src/Native/ArcForges.Native.Image/packages.lock.json": "cd7ed1d6af3e01a3bc233a62e7ae062e55434f0892d3f61c011387cd9ed0e576",
+        "src/Native/ArcForges.Native.Media.Runtime.win-x64/packages.lock.json": "09f91faca7c23b7ef4c0a4a6a4afa1f5d4e17e2e3dcbd9aca08ff12aec384059",
+        "src/Native/ArcForges.Native.Media/packages.lock.json": "cd7ed1d6af3e01a3bc233a62e7ae062e55434f0892d3f61c011387cd9ed0e576",
+        "src/Native/ArcForges.Native.Otio.Runtime.win-x64/packages.lock.json": "09f91faca7c23b7ef4c0a4a6a4afa1f5d4e17e2e3dcbd9aca08ff12aec384059",
+        "src/Native/ArcForges.Native.Otio/packages.lock.json": "cd7ed1d6af3e01a3bc233a62e7ae062e55434f0892d3f61c011387cd9ed0e576",
+        "tests/ArchitectureTests/packages.lock.json": "e2090c8b97e17e0ec5899d8819ac16997a6e0e1df1f3b545c55e5cb39d823168",
+        "tests/NativeAbiTests/packages.lock.json": "5affbe5a36928cc0cb9c2916d0f001f133b101523419cac181304aa091b57095"
+      }
+    },
+    {
+      "owner": "Contracts",
+      "implementationHead": "aa0bfd57d72c4615ae5986181e9eaf0cdb0a37ee",
+      "managedProjects": 4,
+      "nugetLocks": 4,
+      "npmRootLocks": 1,
+      "files": {
+        ".java-version": "b8481af4c809b46f02fc334825116cbe9e6d6a7bc8e2363511fa77044fca8016",
+        ".node-version": "73fb1b615e2043a933be1c0895cde4358036acc28d785692509b822aa53c761f",
+        ".npmrc": "d39e9a6c685eb4374c63df103c78708203e435eafe678d1497f168413bf50d9c",
+        ".python-version": "922fe0c3de073b01988e23348ea184456161678c5e329e6f34be89be24383f93",
+        "Directory.Packages.props": "da77af081aa25740bc3a66e950df7efd6a894674f186d355818f5cc7c4857e0c",
+        "eng/Codegen/packages.lock.json": "1823b949cabbc4f28cfb0326e36aab09e688869fd612d3a9d2630d7c1b82b875",
+        "global.json": "c39786ab1a147662bbe4db015f900165178875ec4a872ddae53bc0c90771ac34",
+        "gradle.lockfile": "410eb7817f1bdf23eb5c2563b1953c4c2ee0403d54f687cb1ccdf82c0bd816de",
+        "gradle/libs.versions.toml": "75913647f51c39122d54d1e6f311115145aa975033b567a7ae86455b1cd5dac8",
+        "gradle/verification-metadata.xml": "c9c78c7de10d769f47c7f025ccf28a3259ab75416242136c14cb00aac3a472c8",
+        "gradle/wrapper/gradle-wrapper.properties": "45b09518a2f0ea326bc776066e735b94527d2a94002e3b27621c32cdaee7e3ce",
+        "package-lock.json": "5ccbb6790ac9f6995b28d33a66f9c06192eeed2434892bdae8f9badde1614f7d",
+        "package.json": "fbd3bc8d9f5c69cc8b119314086187964d671cdf634b91edc8d1eef5f3d768c6",
+        "settings-gradle.lockfile": "5e2d075903b5cd264613e7538c7c51b1484fe2ed489d4ead3e6b4ba0cf3911c4",
+        "src/public/dotnet/ArcForges.Contracts.PublicApi/packages.lock.json": "6081ad4fb578234a0fb55b07cc28f635269fc9441be05a1d7c484bc423c25706",
+        "src/public/kotlin/contract-fixtures/gradle.lockfile": "14dc5803d23ab183aa24b2849ee51541e52e4d26fbada80e19082d15e0b1c654",
+        "src/public/kotlin/contracts-client/gradle.lockfile": "8f73565fdf42782b54bc63075e9daa435f7301dcee0654657f47235975e640ce",
+        "src/public/kotlin/contracts-connect-client/gradle.lockfile": "560f3bf8fa2d38cc4b9a87717342c7a3e003ed1243f405519f5b73e6de0acfb9",
+        "src/public/kotlin/contracts-proto/gradle.lockfile": "766ba7a9c4101ae5149d0200ddc2bfc45d54aa1e3187717171a1dfab28a1ec4b",
+        "src/public/ts/api-client/package.json": "393e78887e6e7bb297ecbda6831f76882cf3a1daa15c279ea29877ee1b50653f",
+        "src/public/ts/proto/package.json": "98367a7015180269a235989d7b30567c51595af931b24dc6e5e1916f7e326a84",
+        "tests/public/HelloClient/packages.lock.json": "1f14735e85fa30c10fd7f24f45f4c028de48b7ba565b70104896aa139efa8bbb",
+        "tests/public/HelloHost/packages.lock.json": "b42b2af5b45874a50dac347b26dc7a6a5dd54a4d8a9848ba6c1c620b02cbc022",
+        "tests/public/KotlinClient/gradle.lockfile": "b56875e6636e543c6afff508ef1159771073c208a15accc4fdd91e0bcdc0a251",
+        "tests/public/KotlinClient/gradle/verification-metadata.xml": "d76c87dcde5b2cc94eabba962560725ec67469831f0a86a93b9984d172173ee1",
+        "tests/public/KotlinClient/settings-gradle.lockfile": "5e2d075903b5cd264613e7538c7c51b1484fe2ed489d4ead3e6b4ba0cf3911c4",
+        "tests/public/KotlinConnectClient/gradle.lockfile": "be60b42d35161579032a9cc8665f64849b7cc4af4ca17f7356a9139d45690cad",
+        "tests/public/KotlinConnectClient/gradle/verification-metadata.xml": "b7688c90212d87b52e446ec1da2ccbe50196517fd308849851a1aa9d9b3d0e85",
+        "tests/public/KotlinConnectClient/settings-gradle.lockfile": "5e2d075903b5cd264613e7538c7c51b1484fe2ed489d4ead3e6b4ba0cf3911c4"
+      }
+    },
+    {
+      "owner": "ArcNotes",
+      "implementationHead": "4def72ed61e340319ecd916b3d4b2e4dda3b69a3",
+      "managedProjects": 4,
+      "nugetLocks": 4,
+      "npmRootLocks": 0,
+      "files": {
+        "Directory.Packages.props": "0750d291bd3d0ce5b9057a43653dc6aa5b3d374f4819431a076b61d2da15cbb3",
+        "eng/ArcForges.Repository/packages.lock.json": "eb75338aeb4b7f585bfe5d62c745d40bd48b2091e2b48871c7c5a1b838155a18",
+        "global.json": "d533441ee720f55065ffdda4273cd815f53f534612cd5899bd4b9b41d0e3a630",
+        "src/ArcForges.ArcNotes.Core/packages.lock.json": "a72b1a593e57637b01f6a0a17d58084fefe0468856e67470363444bb29639a11",
+        "src/ArcForges.ArcNotes/packages.lock.json": "f30f409154b2890c77833e1e5e08039837123a173ef7fd7aa758554bd84796cb",
+        "tests/ArcForges.ArcNotes.Tests/packages.lock.json": "5c699c1ecef504a7465f45d665bfb7a185c901a039e471081cebb9e8f845fc0a"
+      }
+    },
+    {
+      "owner": "ArcScope",
+      "implementationHead": "bc334be72b80d6cb666e8aac12cd9ef2ba24db44",
+      "managedProjects": 4,
+      "nugetLocks": 4,
+      "npmRootLocks": 0,
+      "files": {
+        "Directory.Packages.props": "0750d291bd3d0ce5b9057a43653dc6aa5b3d374f4819431a076b61d2da15cbb3",
+        "eng/ArcForges.Repository/packages.lock.json": "eb75338aeb4b7f585bfe5d62c745d40bd48b2091e2b48871c7c5a1b838155a18",
+        "global.json": "d533441ee720f55065ffdda4273cd815f53f534612cd5899bd4b9b41d0e3a630",
+        "src/ArcForges.ArcScope.Core/packages.lock.json": "a72b1a593e57637b01f6a0a17d58084fefe0468856e67470363444bb29639a11",
+        "src/ArcForges.ArcScope/packages.lock.json": "7ec4c86c5260a5a1445f8427b8838210d590e8eccab1cbf9d4c88893c62bc489",
+        "tests/ArcForges.ArcScope.Tests/packages.lock.json": "fff1d39955a38024d701018219bf18b7b815f66c71c65d2a246cce9eb1fc52ed"
+      }
+    },
+    {
+      "owner": "ArcSlate",
+      "implementationHead": "96d5123d2bf92e3bdc33f92fc41747cade1d6daa",
+      "managedProjects": 4,
+      "nugetLocks": 4,
+      "npmRootLocks": 0,
+      "files": {
+        "Directory.Packages.props": "0750d291bd3d0ce5b9057a43653dc6aa5b3d374f4819431a076b61d2da15cbb3",
+        "eng/ArcForges.Repository/packages.lock.json": "eb75338aeb4b7f585bfe5d62c745d40bd48b2091e2b48871c7c5a1b838155a18",
+        "global.json": "d533441ee720f55065ffdda4273cd815f53f534612cd5899bd4b9b41d0e3a630",
+        "src/ArcForges.ArcSlate.Core/packages.lock.json": "a72b1a593e57637b01f6a0a17d58084fefe0468856e67470363444bb29639a11",
+        "src/ArcForges.ArcSlate/packages.lock.json": "7a64fd86a8f40c2daad93f99c753fe3f5b7b84b46990c7187aedb426f3aef3ad",
+        "tests/ArcForges.ArcSlate.Tests/packages.lock.json": "dc816845ccb100880470234582f5e32fba9ac891a3d5b31e67664d8c8693bc9f"
+      }
+    },
+    {
+      "owner": "Cloud",
+      "implementationHead": "3220316b9d669cb26060a68de8904e82ffc8167d",
+      "managedProjects": 3,
+      "nugetLocks": 3,
+      "npmRootLocks": 1,
+      "files": {
+        ".java-version": "b8481af4c809b46f02fc334825116cbe9e6d6a7bc8e2363511fa77044fca8016",
+        ".node-version": "73fb1b615e2043a933be1c0895cde4358036acc28d785692509b822aa53c761f",
+        ".npmrc": "857e18055c0f5d75719d253033954c10511c4b16ae5bd68bc45bb75d93a411bc",
+        "Directory.Packages.props": "182fde4a1df023616fae0e4ecf173bca52f3d964da1043bca9b1a706f9a586d0",
+        "global.json": "67381be18aa807c04218165844967cf58235875477f30495ba98c3648248a9d4",
+        "package-lock.json": "dfde7727091be40081633f6e80e594db1c6526629e04fca448b7a4167642139f",
+        "package.json": "f02956b50a023124d8da052963d4bdfd2efc06ce901132c332592b04cfa774c8",
+        "src/ArcForges.Cloud/packages.lock.json": "188c3c6a14c52c5bf473fb06a8e28816492b551cdcebe0c3f4539b7bf2378de6",
+        "tests/ArcForges.Cloud.Consumer/packages.lock.json": "f3e3a07335cd3d67f0cb7432050be3563dac5699030f700be739eea725f13d08",
+        "tests/ArcForges.Cloud.Tests/packages.lock.json": "bf4bccb368bcde397a9ed905acf3bb09edc3455713b51e0e9e0fd518d788d5ce",
+        "tests/kotlin-consumer/gradle.lockfile": "09df4273fcde07660402638a8e85bd4ff56dd9e8e9e70470c3e48b63f203783f",
+        "tests/kotlin-consumer/gradle/verification-metadata.xml": "a946d6e0aa2a22c96bdc0ac5c5635eb4e3c842c805b83db302adfa2082ba3384",
+        "tests/kotlin-consumer/gradle/wrapper/gradle-wrapper.properties": "176fcae7ef9cfcdd82903d41888fe11fe197a674f752e9275aa51d0d8427a2c5"
+      }
+    },
+    {
+      "owner": "AI",
+      "implementationHead": "867d05bb02bb6a56db0538ca9ddd04283deb20f0",
+      "managedProjects": 0,
+      "nugetLocks": 0,
+      "npmRootLocks": 1,
+      "files": {
+        ".node-version": "73fb1b615e2043a933be1c0895cde4358036acc28d785692509b822aa53c761f",
+        ".npmrc": "994f7cb40cf8035ac70be35a65bf3cb51aa62e5b8fe94531d596b279f66740cb",
+        "package-lock.json": "8159497a707c8c29c98db18ccbcd3d03fd45fa73e9765bcae5b014d9dc99b998",
+        "package.json": "41dc0ac74643f1efcd386fb98269339f5dac6310f1d773cf2874be1ccc8a0e39"
+      }
+    },
+    {
+      "owner": "Web",
+      "implementationHead": "84939ca1fde0f0653d2cb4d8b8f9e5dd1057abb5",
+      "managedProjects": 0,
+      "nugetLocks": 0,
+      "npmRootLocks": 1,
+      "files": {
+        ".node-version": "73fb1b615e2043a933be1c0895cde4358036acc28d785692509b822aa53c761f",
+        ".npmrc": "73814024102037fcc5a961119bcbf39f81e0a73af504735653d3a6086651cef1",
+        "ArcForges.Web.esproj": "b2c592fabf2864a8154b3f671598d5ba4599629c7841287ed1e0ba5fb37e4969",
+        "apps/site/package.json": "944e5051b332e02ad56202851aa2cdf8fa2156ff911e45f7e9d8f4b1762d9fe3",
+        "package-lock.json": "07d57972f28fc4d515a1be097965d70cadc010480dd9897175f42c80f246efec",
+        "package.json": "117aca3fb66491d8916e93e55a01529ec74fb1f5d7163e61abb203dc2ff7188d",
+        "packages/ui/package.json": "d20240b20d4f2ff524d36d502b6f28b42f25c0ff54b91c8e416e8a49266342d6"
+      }
+    },
+    {
+      "owner": "Mobile",
+      "implementationHead": "da7298adcc8257d512f609b92bc74f2aae095533",
+      "managedProjects": 0,
+      "nugetLocks": 0,
+      "npmRootLocks": 0,
+      "files": {
+        ".java-version": "a3d51344032f8539de798beee98ccf38ed09f47d21208260bb41a3653a0fd100",
+        ".python-version": "922fe0c3de073b01988e23348ea184456161678c5e329e6f34be89be24383f93",
+        "app/gradle.lockfile": "77d2233f9c29d75e93eaa3711a5a3b4e621e99b9c1d2fb539ff33aa5645b7931",
+        "gradle/libs.versions.toml": "d67adb43996a5564c5903203079c0b0b1e2219da442c87de61aacf66fcee00df",
+        "gradle/locks/shared-linux-x64.lockfile": "231cbee7ca7d731a576e5b0f39c01012867e7cab9900ac04436552df479c74b1",
+        "gradle/locks/shared-windows-x64.lockfile": "06e2968eecc9d5004595b11da09527aa5b68aa8835f62161bd2fd9325ac66eb9",
+        "gradle/verification-metadata.xml": "aa0f06e5d9f1e3ac5e6607447ff1bc1ac89dcde3bee583830438998e0763eb79",
+        "gradle/wrapper/gradle-wrapper.properties": "45b09518a2f0ea326bc776066e735b94527d2a94002e3b27621c32cdaee7e3ce",
+        "settings-gradle.lockfile": "5e2d075903b5cd264613e7538c7c51b1484fe2ed489d4ead3e6b4ba0cf3911c4"
+      }
+    }
+  ],
+  "pinHashConvention": "SHA256 of UTF-8 text with LF line endings",
+  "localValidation": {
+    "collectedAt": "2026-09-21T04:31:02.569959+00:00",
+    "owners": {
+      "DesktopPlatform": {
+        "worktree": "C:\\MyFile\\Projects\\ArcForges\\DesktopPlatform\\.worktree\\wp02-00-toolchain-locks",
+        "head": "3584f0b974bc5421816013f44c64d9957e5eb286",
+        "clean": true,
+        "pins": {
+          "global.json": "{\n  \"sdk\": {\n    \"version\": \"10.0.400\",\n    \"rollForward\": \"disable\",\n    \"allowPrerelease\": false\n  },\n  \"test\": {\n    \"runner\": \"Microsoft.Testing.Platform\"\n  },\n  \"workloadVersion\": \"10.0.400\"\n}",
+          ".python-version": "3.14.7"
+        },
+        "logs": {
+          "architecture.log": {
+            "sha256": "c1301afab2b33490378c9e463cb4f851ee8ea009cd3738b2d9c7d0353e05a161",
+            "bytes": 565
+          },
+          "build.log": {
+            "sha256": "fc602d06aa4f02fbda10a44177e159d9158e3d30d1733cfafc38d3b23e157327",
+            "bytes": 5332
+          },
+          "dotnet-offline.log": {
+            "sha256": "0cffd8b8810809cce5a540449555beb42172950d17227b51be9635346fb6663a",
+            "bytes": 4365
+          },
+          "dotnet-online.log": {
+            "sha256": "8abf52427c5f17da62f904beb56378e3ab73cb1a7cc35e6ed254790a2e81a010",
+            "bytes": 4402
+          },
+          "eng-tests.log": {
+            "sha256": "0fd92a72ca67b8f1e0919d9a1b9474dd5f874683ae18b60c052d4de07893de15",
+            "bytes": 9708
+          },
+          "format.log": {
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "bytes": 0
+          },
+          "native-abi-tests.log": {
+            "sha256": "44559a357154e9d87b85f62be6335ee7c50d5c20969646d755d7fbdc1a8bfaab",
+            "bytes": 553
+          },
+          "native-local-build.log": {
+            "sha256": "2c7477f20f24cadaf7aec30f31ea3801cc991eac06d0144f051ed6c3064ff17e",
+            "bytes": 10467
+          },
+          "postmerge-native-consumer.log": {
+            "sha256": "505b878fcbbf7cd8131ba280fe79c4dc26fc2c09489ae59e628ad25244116442",
+            "bytes": 7109
+          },
+          "precommit.log": {
+            "sha256": "378c47154f3e73bbb2933b67911fb90d99d45018e06cb518f9a291b9d8cf3d93",
+            "bytes": 81
+          },
+          "provenance-check.log": {
+            "sha256": "7d7f9c621e060fc17b50ac3663b6daffd2b93816224d4f9418d6119b1e3d92e0",
+            "bytes": 1357
+          },
+          "python-download.log": {
+            "sha256": "fda39699679789e40e3975a7154343f3b5f2bce646b995a7ec2297d51bb89c05",
+            "bytes": 2133
+          },
+          "python-negative-hash.log": {
+            "sha256": "ff78eb99d785df2462238589474a741dd1d2ebb5fdef02e7a476260130caa930",
+            "bytes": 920
+          },
+          "python-offline.log": {
+            "sha256": "9f7df9f1181a6b8144f0e27c1d83d26ca2b50acabe1329e1df97fe2858a5aa57",
+            "bytes": 1529
+          },
+          "python-restore.log": {
+            "sha256": "14895125f75f80c22689234148597ffc22ca0a82cae37289696f595e23fd3a25",
+            "bytes": 2266
+          },
+          "tooling-tests.log": {
+            "sha256": "9273d07bb01356e7a22a95a3255dbb9cf00a2286e2b381a4dc3f878b1fb8f0e1",
+            "bytes": 6546
+          }
+        }
+      },
+      "Contracts": {
+        "worktree": "C:\\MyFile\\Projects\\ArcForges\\Contracts\\.worktree\\wp02-00-toolchain-locks",
+        "head": "aa0bfd57d72c4615ae5986181e9eaf0cdb0a37ee",
+        "clean": true,
+        "pins": {
+          "global.json": "{\n  \"sdk\": {\n    \"version\": \"10.0.400\",\n    \"rollForward\": \"disable\",\n    \"allowPrerelease\": false\n  }\n}",
+          ".node-version": "24.21.0",
+          ".python-version": "3.14.7",
+          ".java-version": "17.0.20",
+          "package.json": "npm@11.19.0"
+        },
+        "logs": {
+          "dotnet-offline.log": {
+            "sha256": "80363f699db4be53071172a7a417cb049100dfd226950f32615a1e5c753e0da4",
+            "bytes": 626
+          },
+          "dotnet-online.log": {
+            "sha256": "c737b9d0480bab771b35911044e421399844db2c58b9f1913d47fc94e6baf519",
+            "bytes": 634
+          },
+          "format.log": {
+            "sha256": "c5b57cde6bf5a18b1fd30932d9881e95825a56796fc480eb15c7b1d052098ca5",
+            "bytes": 146
+          },
+          "generate-check.log": {
+            "sha256": "e1ae47611fd73a0cd7e65303893358dcd59f5834ee80eade3a9c3ac1c193fef8",
+            "bytes": 3024
+          },
+          "gradle-offline.log": {
+            "sha256": "64e10e60a7d2c40d5f6dc06c74ded895b14781d60416b87c020bed1b5226b765",
+            "bytes": 1353
+          },
+          "gradle-online.log": {
+            "sha256": "f034fed2e6e1b1ca23cfa99b0660f827ce0f2e7b9d77d7275a15a16e85c67c8d",
+            "bytes": 1328
+          },
+          "naming.log": {
+            "sha256": "348d77ecb98d38caae0c85befcb26ebfd9cfdd1db14d250706b847af10e77bd3",
+            "bytes": 54
+          },
+          "npm-offline.log": {
+            "sha256": "2bdc8e7faec64cff44dc3402e82e6e38cca4cfe93a6b36c9fe5496c282700f9f",
+            "bytes": 27
+          },
+          "npm-online.log": {
+            "sha256": "1645bc3db4316a21028e9d84a3e267f6a19fe7968dd8c11252b4fe5547f0a5c9",
+            "bytes": 293
+          },
+          "pack.log": {
+            "sha256": "52601c8f96decdba824efbd3dd3d379c259dd61f4ef18a23a1adbb7723c994e4",
+            "bytes": 21904
+          },
+          "pr-candidate-ci.log": {
+            "sha256": "a260d2ad00f1a87571c3b64b87b60bf871ba367c770905133796ce124428374a",
+            "bytes": 174014
+          },
+          "provenance-check.log": {
+            "sha256": "0bc726f9b1114b7e8eb9cb0fd1ad7d8361b29ba298411ac0a27e66b25c2e2c1b",
+            "bytes": 3303
+          },
+          "tooling-tests.log": {
+            "sha256": "bea18681050cbddff8f34a2e04e3b931c3a488194d5de67a607c31479fcf2265",
+            "bytes": 15782
+          },
+          "postmerge-consume.log": {
+            "sha256": "bf57014567af71fc043a52b51fa1e75d8358b51d0b09d3d9338db0ad1f8dd0aa",
+            "bytes": 12720,
+            "result": "protocol checks passed; final TLS read failed"
+          },
+          "postmerge-consume-retry.log": {
+            "sha256": "d47b29920872e9da1ed0c4f5eb0c4373759033470ac4dfdbdbe12197c41370a2",
+            "bytes": 8921,
+            "result": "proxy intercepted loopback HTTP/2; superseded by corrected NO_PROXY"
+          },
+          "postmerge-consume-final.log": {
+            "sha256": "10d683f5776e749875e8d6eaac65fa5d826ad4ed868975acb1401b633ce731b4",
+            "bytes": 7816,
+            "result": "passed"
+          }
+        }
+      },
+      "ArcNotes": {
+        "worktree": "C:\\MyFile\\Projects\\ArcForges\\ArcNotes\\.worktree\\wp02-00-toolchain-locks",
+        "head": "4def72ed61e340319ecd916b3d4b2e4dda3b69a3",
+        "clean": true,
+        "pins": {
+          "global.json": "{\n  \"sdk\": {\n    \"version\": \"10.0.401\",\n    \"rollForward\": \"disable\",\n    \"allowPrerelease\": false\n  },\n  \"test\": { \"runner\": \"Microsoft.Testing.Platform\" }\n}"
+        },
+        "logs": {
+          "build.log": {
+            "sha256": "86d3fa7a61df6b9747e61f8af6489cff7a6e88e91c33332463d14d557ee99567",
+            "bytes": 765
+          },
+          "format.log": {
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "bytes": 0
+          },
+          "negative-lock.log": {
+            "sha256": "e23c165ff9d92c7000e2acc4d354941c7963a8f54d215dc012067684f4d207b0",
+            "bytes": 2986
+          },
+          "repository-check.log": {
+            "sha256": "4d2d75b384f3f79fc79da27fbfaa3c67fe735f191cac48ebc4a853d5c9614a8f",
+            "bytes": 191
+          },
+          "restore-offline.log": {
+            "sha256": "2456d733b4ea747a17785b3877a6a3cb543260a0f224c40e33e34fb8b0f48e3a",
+            "bytes": 650
+          },
+          "restore-online.log": {
+            "sha256": "f6d0324615e38400724a686f10057cab843a6bba3deda0f20cc235639a1c9a63",
+            "bytes": 658
+          },
+          "tests.log": {
+            "sha256": "d4c5929c5ceb99a1c62dc96dbedb6fe30ebcddb2a59e51623b06451607a31fe3",
+            "bytes": 479
+          }
+        }
+      },
+      "ArcScope": {
+        "worktree": "C:\\MyFile\\Projects\\ArcForges\\ArcScope\\.worktree\\wp02-00-toolchain-locks",
+        "head": "bc334be72b80d6cb666e8aac12cd9ef2ba24db44",
+        "clean": true,
+        "pins": {
+          "global.json": "{\n  \"sdk\": {\n    \"version\": \"10.0.401\",\n    \"rollForward\": \"disable\",\n    \"allowPrerelease\": false\n  },\n  \"test\": { \"runner\": \"Microsoft.Testing.Platform\" }\n}"
+        },
+        "logs": {
+          "build.log": {
+            "sha256": "dbb27286f36c5b1b2b9c330500ce1d605b9b6afe75a9a15c9731c00a5b62fb25",
+            "bytes": 765
+          },
+          "format.log": {
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "bytes": 0
+          },
+          "negative-lock.log": {
+            "sha256": "56586caf76b55d7b03e52212a35751ca8a8e31dda0da23116ef20350201e301c",
+            "bytes": 2986
+          },
+          "repository-check.log": {
+            "sha256": "089775571adcbd1b63f6bce12e7432be1bb20eda5a8ad32c6c72a136fb801354",
+            "bytes": 191
+          },
+          "restore-offline.log": {
+            "sha256": "0ba91a1156de7625ff4900b5ca410b0dd42f3e5fe990244e4a15848ac8dad9e4",
+            "bytes": 650
+          },
+          "restore-online.log": {
+            "sha256": "89df9ff59d3ef179c856a7d527277a7e3a5c5e8d6050341fa191ef20603e29c8",
+            "bytes": 658
+          },
+          "tests.log": {
+            "sha256": "7fc5b5d614058ceb2febe635eb40b8339a487e089c7f4e5b161a39e9656d2487",
+            "bytes": 479
+          }
+        }
+      },
+      "ArcSlate": {
+        "worktree": "C:\\MyFile\\Projects\\ArcForges\\ArcSlate\\.worktree\\wp02-00-toolchain-locks",
+        "head": "96d5123d2bf92e3bdc33f92fc41747cade1d6daa",
+        "clean": true,
+        "pins": {
+          "global.json": "{\n  \"sdk\": {\n    \"version\": \"10.0.401\",\n    \"rollForward\": \"disable\",\n    \"allowPrerelease\": false\n  },\n  \"test\": { \"runner\": \"Microsoft.Testing.Platform\" }\n}"
+        },
+        "logs": {
+          "build.log": {
+            "sha256": "044467b189ac1f6e55c28e49e583cbcf558fc6f67f35badbbd367cf5c10bcde9",
+            "bytes": 765
+          },
+          "format.log": {
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "bytes": 0
+          },
+          "negative-lock.log": {
+            "sha256": "575b81cbe3c43873ab9b9ddc8a509dad5cf06ab0150b6687e8273cd3f39ebefa",
+            "bytes": 2986
+          },
+          "repository-check.log": {
+            "sha256": "089775571adcbd1b63f6bce12e7432be1bb20eda5a8ad32c6c72a136fb801354",
+            "bytes": 191
+          },
+          "restore-offline.log": {
+            "sha256": "263b25c63ae3befb68950e6a4789bba3b6afdcf210cf60a736b19f39e5efa37a",
+            "bytes": 650
+          },
+          "restore-online.log": {
+            "sha256": "c879e7cde8664d36d7e717883ecff8a7beabc9e8979a1873d42480b0fa2a5097",
+            "bytes": 656
+          },
+          "tests.log": {
+            "sha256": "b8551858d8a9e8d8b2efcd2a480fc33a23bbb57c4d526515109effb22dec5216",
+            "bytes": 479
+          }
+        }
+      },
+      "Cloud": {
+        "worktree": "C:\\MyFile\\Projects\\ArcForges\\Cloud\\.worktree\\wp02-00-toolchain-locks",
+        "head": "3220316b9d669cb26060a68de8904e82ffc8167d",
+        "clean": true,
+        "pins": {
+          "global.json": "{\n  \"sdk\": {\n    \"version\": \"10.0.401\",\n    \"rollForward\": \"disable\",\n    \"allowPrerelease\": false\n  },\n  \"test\": {\n    \"runner\": \"Microsoft.Testing.Platform\"\n  }\n}",
+          ".node-version": "24.21.0",
+          ".java-version": "17.0.20",
+          "package.json": "npm@11.19.0"
+        },
+        "logs": {
+          "build.log": {
+            "sha256": "774e2e17fcb2fd9aba5d8de6750a54b9033d70333f23a4fa436ea29a525b294b",
+            "bytes": 584
+          },
+          "candidate.log": {
+            "sha256": "7c645587f8323c7d6308149b9a1acb62ed74625f896b163d36cfa4240f5be39e",
+            "bytes": 8693
+          },
+          "check.log": {
+            "sha256": "d99c311dfda11ccba40ab380fb2b6fbc5168e1d4b23ad9f9da788f502554ed66",
+            "bytes": 6688
+          },
+          "format-dotnet.log": {
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "bytes": 0
+          },
+          "kotlin-check.log": {
+            "sha256": "dffccd5e8e3080e27a489dfc5558ea3bf16002855141c3c46eea13d7419bbddb",
+            "bytes": 937
+          },
+          "negative-lock.log": {
+            "sha256": "0d45b7d6111c26ec216da5a3f5e787e3a803719e1412808813b3f36b033268a2",
+            "bytes": 2660
+          },
+          "npm-offline.log": {
+            "sha256": "eb4c19da4a789ce38d86f7448616293c0fe7ea92d83dd3aa573166ee5341d980",
+            "bytes": 27
+          },
+          "npm-online.log": {
+            "sha256": "a0ad781de81fe7b7d776fbdb7abc7821b0b59a35b5b7478ffaf61b82128b358a",
+            "bytes": 293
+          },
+          "restore-offline.log": {
+            "sha256": "5bc9d83dcc66eb91deb4f61276c67b21958cb6dd0971bbd95edc8ce5a5b1eb9f",
+            "bytes": 483
+          },
+          "restore-online.log": {
+            "sha256": "d9ba39df66228757698da47f5b09b1f2ff90dd36c594e9607cedab14838876da",
+            "bytes": 491
+          },
+          "tests.log": {
+            "sha256": "48659ec1ea2ab84c73bc9f2e95c881733bb0b705d87846d4691b7f514ee9b7da",
+            "bytes": 459
+          }
+        }
+      },
+      "AI": {
+        "worktree": "C:\\MyFile\\Projects\\ArcForges\\AI\\.worktree\\wp02-00-toolchain-locks",
+        "head": "867d05bb02bb6a56db0538ca9ddd04283deb20f0",
+        "clean": true,
+        "pins": {
+          ".node-version": "24.21.0",
+          "package.json": "npm@11.19.0"
+        },
+        "logs": {
+          "check.log": {
+            "sha256": "f9b969b863164905c2b3bf096c89635520bf35a02c5cf3588d2c88f5586216d2",
+            "bytes": 17393
+          },
+          "negative-npm-lock.log": {
+            "sha256": "2001d5a884c4960bc136031852b4c1485bcf74f9fd42b502abcf08197a9e26da",
+            "bytes": 4420
+          },
+          "npm-offline.log": {
+            "sha256": "41be61d1dcbef44ab0e6b9aa21f2c0b62950b6c0f528608d0bcad8b6228c5e5c",
+            "bytes": 27
+          },
+          "npm-online.log": {
+            "sha256": "f31c0132947e745a21715c5e71e5ba489f49133c88d11dc836b866245d560f16",
+            "bytes": 293
+          }
+        }
+      },
+      "Web": {
+        "worktree": "C:\\MyFile\\Projects\\ArcForges\\Web\\.worktree\\wp02-00-toolchain-locks",
+        "head": "84939ca1fde0f0653d2cb4d8b8f9e5dd1057abb5",
+        "clean": true,
+        "pins": {
+          ".node-version": "24.21.0",
+          "package.json": "npm@11.19.0"
+        },
+        "logs": {
+          "browser-e2e.log": {
+            "sha256": "f3ee30aa073f9ca925028f60caeaaffed3cb6d97b09e85ee0676e43e25362272",
+            "bytes": 5584
+          },
+          "check.log": {
+            "sha256": "32ddbd0d9100f3b568afc26daf69b564dc8b84acf2217d4ca719e2d13826fc0b",
+            "bytes": 6870
+          },
+          "esproj-build.log": {
+            "sha256": "67112081272d2a0f581fff90888ab533a847f4edeefb7c9b9b090523e727e3f3",
+            "bytes": 2652
+          },
+          "ide-properties.log": {
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "bytes": 0
+          },
+          "npm-offline.log": {
+            "sha256": "1cad5bfe392667d329835889405949bc8429e41d4e53f9536c64fe97d9646c04",
+            "bytes": 28
+          },
+          "npm-online.log": {
+            "sha256": "82dfb976ccc8889106f1513f178e884e00f0ef009c2be02aae79e125aef135be",
+            "bytes": 295
+          }
+        }
+      },
+      "Mobile": {
+        "worktree": "C:\\MyFile\\Projects\\ArcForges\\Mobile\\.worktree\\wp02-00-toolchain-locks",
+        "head": "da7298adcc8257d512f609b92bc74f2aae095533",
+        "clean": true,
+        "pins": {
+          ".python-version": "3.14.7",
+          ".java-version": "21.0.12"
+        },
+        "logs": {
+          "build.log": {
+            "sha256": "b026f4b7d855ede51db993b5c5a6e70bfd07afebf65a78e1e6daf99344c72d89",
+            "bytes": 12115
+          },
+          "candidate-build.log": {
+            "sha256": "2ac57497724fe3abe2470832d2578379f4c40b539934931454e59aaa75b0b6b4",
+            "bytes": 9314
+          },
+          "candidate-stage.log": {
+            "sha256": "8f71c9968ebe66d7e3b69f5bf3bdef4972dd1ba17d05dd78b4b4830c681cd0ff",
+            "bytes": 90
+          },
+          "check.log": {
+            "sha256": "6f1b0b2d071fb4115a16565fb72e5adec98c0de89db4d0456c1bad5e80d58884",
+            "bytes": 65
+          },
+          "contracts-linux-lock-update.log": {
+            "sha256": "6bf1f44e280bfbd3bd360fb15fb5ae720eb3d6614725dd7a27a7e3ba253d54c9",
+            "bytes": 2291
+          },
+          "contracts-lock-update.log": {
+            "sha256": "3e0e7ddc5b71d14d4f83b8bc1445e88ee86f847b7196d4307f90c6f6fad18491",
+            "bytes": 2284
+          },
+          "gradle-offline-final.log": {
+            "sha256": "da0cc8cc644317a7a484fe9f3b7ac494bf3daa127dc3d4c54cf2b9692f0e555e",
+            "bytes": 440
+          },
+          "gradle-offline.log": {
+            "sha256": "d3df581903c0d1fe41874e6c44fbb5253f95ee82b7731ffed9fa9bda74f6650a",
+            "bytes": 440
+          },
+          "gradle-online.log": {
+            "sha256": "4ccc59279a704dd45a5e1f0066b9f48aeeacced2e2d8618e712c3015857025e9",
+            "bytes": 440
+          },
+          "negative-gradle-checksum.log": {
+            "sha256": "a75d55eb0f35192eb7cbebd64e6626cf9b6ca5601180a32cc4acac1b0767c181",
+            "bytes": 1417
+          },
+          "tooling-tests-final.log": {
+            "sha256": "046474de801134e0d74b9ca767ebbbc251dc8a5638c79714a0ee166e1fc7ef2c",
+            "bytes": 15173
+          },
+          "tooling-tests.log": {
+            "sha256": "7ff04a859ed13987872b61bc81602046b2791a13655ff6536112e5e588fea021",
+            "bytes": 15173
+          }
+        }
+      }
+    }
+  },
+  "actualTools": {
+    "dotnet": {
+      "DesktopPlatform": "10.0.400",
+      "Contracts": "10.0.400",
+      "otherManagedOwners": "10.0.401"
+    },
+    "node": "24.21.0",
+    "npm": "11.19.0",
+    "python": "3.14.7",
+    "hostedJava": {
+      "Contracts": {
+        "Linux": "17.0.20+1",
+        "Windows": "17.0.20+101"
+      },
+      "Cloud": {
+        "selectedPatch": "17.0.20",
+        "scope": "Linux CI fixture; no Windows Java execution claim"
+      },
+      "Mobile": {
+        "Linux": "21.0.12+1",
+        "Windows": "21.0.12+101.0"
+      }
+    },
+    "localJava": {
+      "Contracts/Cloud": "Eclipse Adoptium 17.0.20.1+1",
+      "Mobile": "Eclipse Adoptium 21.0.11+10"
+    },
+    "nativeLocal": "Existing vcpkg installation and previously installed dependency tree; VcpkgManifestInstall=false; no dependency reinstall or rebuild"
+  },
+  "negativeCases": [
+    {
+      "case": "NuGet central selection contradicts committed lock",
+      "result": "NU1004 rejection"
+    },
+    {
+      "case": "npm lock omits required manifest member",
+      "result": "EUSAGE rejection after required registry metadata was fetched"
+    },
+    {
+      "case": "Executing Node/npm patches differ from owner pins",
+      "result": "toolchain policy rejection"
+    },
+    {
+      "case": "Python wheel hash altered",
+      "result": "pip hash mismatch rejection"
+    },
+    {
+      "case": "Mobile published Contracts JAR checksum altered",
+      "result": "Gradle dependency verification rejection"
+    },
+    {
+      "case": "Native producer baseline/closure altered",
+      "result": "existing engineering/tooling negative guards passed"
+    }
+  ],
+  "postMerge": {
+    "desktopPlatformPublic": {
+      "verifiedAt": "2026-09-21T04:55:26.301333+00:00",
+      "sourceCommit": "14f4c5c2b9243dfafa54dee0fc65f6d9ce22d3cb",
+      "version": "1.0.0-ci.18.1",
+      "result": "passed",
+      "packages": [
+        {
+          "id": "ArcForges.Build.Policy",
+          "url": "https://api.nuget.org/v3-flatcontainer/arcforges.build.policy/1.0.0-ci.18.1/arcforges.build.policy.1.0.0-ci.18.1.nupkg",
+          "sha256": "33322c3ef6f1610437dc685c09e74007d543999fbd4b9f904ebd1b488749e315",
+          "candidateSha256": "44e85cf4bbb8a5c77b449dde925c07a3e9e51703d86f7d2a51885d76b7b1f46d",
+          "originalMembersVerified": 9,
+          "registryAddedSignature": true,
+          "bytes": 30028,
+          "viaProxy": false,
+          "result": "passed"
+        },
+        {
+          "id": "ArcForges.Native.Abstractions",
+          "url": "https://api.nuget.org/v3-flatcontainer/arcforges.native.abstractions/1.0.0-ci.18.1/arcforges.native.abstractions.1.0.0-ci.18.1.nupkg",
+          "sha256": "212b07a41545bf9d85d617c9a96d9851978f217a60de443fea8580b02642107e",
+          "candidateSha256": "b700073b675604a862aa4dd763b24d854680d7af89ac2ffab11c5f3c4da4584f",
+          "originalMembersVerified": 8,
+          "registryAddedSignature": true,
+          "bytes": 35491,
+          "viaProxy": false,
+          "result": "passed"
+        },
+        {
+          "id": "ArcForges.Native.Media",
+          "url": "https://api.nuget.org/v3-flatcontainer/arcforges.native.media/1.0.0-ci.18.1/arcforges.native.media.1.0.0-ci.18.1.nupkg",
+          "sha256": "f649ee80c0e3c7215e52a859f6c701716a4f378b3d7c68e5df454315793be621",
+          "candidateSha256": "fa4172099efd01d1a5580e3e5c8a29ea93d9f834f1a34a8660712b69612b09f1",
+          "originalMembersVerified": 8,
+          "registryAddedSignature": true,
+          "bytes": 31775,
+          "viaProxy": false,
+          "result": "passed"
+        },
+        {
+          "id": "ArcForges.Native.Colour",
+          "url": "https://api.nuget.org/v3-flatcontainer/arcforges.native.colour/1.0.0-ci.18.1/arcforges.native.colour.1.0.0-ci.18.1.nupkg",
+          "sha256": "1a54e9b6f83a6c757ce61b3cb0226abf04a5ebebd05645746674d5a044adefc3",
+          "candidateSha256": "6476f4e13dc68a0591907d9ff1a49bd30ebb6f9bb9b2f6172a52d338af70da53",
+          "originalMembersVerified": 8,
+          "registryAddedSignature": true,
+          "bytes": 31789,
+          "viaProxy": false,
+          "result": "passed"
+        },
+        {
+          "id": "ArcForges.Native.Image",
+          "url": "https://api.nuget.org/v3-flatcontainer/arcforges.native.image/1.0.0-ci.18.1/arcforges.native.image.1.0.0-ci.18.1.nupkg",
+          "sha256": "ed3bf4d8bd2f404cfe15e92d167cb1d0da2dceeb8b6441de7f3f88452d95491e",
+          "candidateSha256": "232c1ac2c9473d82b35fdf11522dd0e2cb06e7d4ffaf093d850ab9cdcd25ad2d",
+          "originalMembersVerified": 8,
+          "registryAddedSignature": true,
+          "bytes": 31780,
+          "viaProxy": false,
+          "result": "passed"
+        },
+        {
+          "id": "ArcForges.Native.Otio",
+          "url": "https://api.nuget.org/v3-flatcontainer/arcforges.native.otio/1.0.0-ci.18.1/arcforges.native.otio.1.0.0-ci.18.1.nupkg",
+          "sha256": "2215d9e99e10545fe792645963337fa42c13ad5a90c1dcbcafda2b00a765ca29",
+          "candidateSha256": "0096ae508bf536b3694b48c236bde9a8ea3189207d76fe5b1f16bbb231287fef",
+          "originalMembersVerified": 8,
+          "registryAddedSignature": true,
+          "bytes": 31773,
+          "viaProxy": false,
+          "result": "passed"
+        },
+        {
+          "id": "ArcForges.Native.Media.Runtime.win-x64",
+          "url": "https://api.nuget.org/v3-flatcontainer/arcforges.native.media.runtime.win-x64/1.0.0-ci.18.1/arcforges.native.media.runtime.win-x64.1.0.0-ci.18.1.nupkg",
+          "sha256": "3e34cd86128514a971632c153f17dd24572103a43f48c293e9cf453d1dcc232f",
+          "candidateSha256": "aa22cbc0f3b3d8fd837da58206490504e9415ac0043d9a9898fd92cfaaf9d415",
+          "originalMembersVerified": 172,
+          "registryAddedSignature": true,
+          "bytes": 28374442,
+          "viaProxy": false,
+          "result": "passed"
+        },
+        {
+          "id": "ArcForges.Native.Colour.Runtime.win-x64",
+          "url": "https://api.nuget.org/v3-flatcontainer/arcforges.native.colour.runtime.win-x64/1.0.0-ci.18.1/arcforges.native.colour.runtime.win-x64.1.0.0-ci.18.1.nupkg",
+          "sha256": "e38e101e345439797b6d4cb1c882e25d65ecadcfb79c60d093fe3e7a6f98eaee",
+          "candidateSha256": "419ef9ff5138bd200cd7be21414f88cf0233b4f3d1ec0f7f9d82e08c1fe50564",
+          "originalMembersVerified": 121,
+          "registryAddedSignature": true,
+          "bytes": 1112064,
+          "viaProxy": false,
+          "result": "passed"
+        },
+        {
+          "id": "ArcForges.Native.Image.Runtime.win-x64",
+          "url": "https://api.nuget.org/v3-flatcontainer/arcforges.native.image.runtime.win-x64/1.0.0-ci.18.1/arcforges.native.image.runtime.win-x64.1.0.0-ci.18.1.nupkg",
+          "sha256": "7a45475840f71a6f8f6ba60a5a879c324fe90c3943b4a29a1e199e0375f57c0f",
+          "candidateSha256": "4657f470a895ae04571b0aca30f86507de63343223529227e7221968adf44e28",
+          "originalMembersVerified": 197,
+          "registryAddedSignature": true,
+          "bytes": 5391744,
+          "viaProxy": false,
+          "result": "passed"
+        },
+        {
+          "id": "ArcForges.Native.Otio.Runtime.win-x64",
+          "url": "https://api.nuget.org/v3-flatcontainer/arcforges.native.otio.runtime.win-x64/1.0.0-ci.18.1/arcforges.native.otio.runtime.win-x64.1.0.0-ci.18.1.nupkg",
+          "sha256": "1390ac35a5fb3e66d9f8ac496813ccbc08b5926ee91a08de1af68456bc9ec4ba",
+          "candidateSha256": "2efb2925f7d90b02dcc2b1a7262d7d0ff8b990820441f107abe1158c568413f7",
+          "originalMembersVerified": 60,
+          "registryAddedSignature": true,
+          "bytes": 303048,
+          "viaProxy": false,
+          "result": "passed"
+        }
+      ]
+    },
+    "desktopPlatformConsumers": {
+      "sourceCommit": "14f4c5c2b9243dfafa54dee0fc65f6d9ce22d3cb",
+      "version": "1.0.0-ci.18.1",
+      "rid": "win-x64",
+      "packages": [
+        {
+          "id": "ArcForges.Build.Policy",
+          "version": "1.0.0-ci.18.1",
+          "file": "ArcForges.Build.Policy.1.0.0-ci.18.1.nupkg",
+          "sha256": "44e85cf4bbb8a5c77b449dde925c07a3e9e51703d86f7d2a51885d76b7b1f46d"
+        },
+        {
+          "id": "ArcForges.Native.Abstractions",
+          "version": "1.0.0-ci.18.1",
+          "file": "ArcForges.Native.Abstractions.1.0.0-ci.18.1.nupkg",
+          "sha256": "b700073b675604a862aa4dd763b24d854680d7af89ac2ffab11c5f3c4da4584f"
+        },
+        {
+          "id": "ArcForges.Native.Media",
+          "version": "1.0.0-ci.18.1",
+          "file": "ArcForges.Native.Media.1.0.0-ci.18.1.nupkg",
+          "sha256": "fa4172099efd01d1a5580e3e5c8a29ea93d9f834f1a34a8660712b69612b09f1"
+        },
+        {
+          "id": "ArcForges.Native.Colour",
+          "version": "1.0.0-ci.18.1",
+          "file": "ArcForges.Native.Colour.1.0.0-ci.18.1.nupkg",
+          "sha256": "6476f4e13dc68a0591907d9ff1a49bd30ebb6f9bb9b2f6172a52d338af70da53"
+        },
+        {
+          "id": "ArcForges.Native.Image",
+          "version": "1.0.0-ci.18.1",
+          "file": "ArcForges.Native.Image.1.0.0-ci.18.1.nupkg",
+          "sha256": "232c1ac2c9473d82b35fdf11522dd0e2cb06e7d4ffaf093d850ab9cdcd25ad2d"
+        },
+        {
+          "id": "ArcForges.Native.Otio",
+          "version": "1.0.0-ci.18.1",
+          "file": "ArcForges.Native.Otio.1.0.0-ci.18.1.nupkg",
+          "sha256": "0096ae508bf536b3694b48c236bde9a8ea3189207d76fe5b1f16bbb231287fef"
+        },
+        {
+          "id": "ArcForges.Native.Media.Runtime.win-x64",
+          "version": "1.0.0-ci.18.1",
+          "file": "ArcForges.Native.Media.Runtime.win-x64.1.0.0-ci.18.1.nupkg",
+          "sha256": "aa22cbc0f3b3d8fd837da58206490504e9415ac0043d9a9898fd92cfaaf9d415"
+        },
+        {
+          "id": "ArcForges.Native.Colour.Runtime.win-x64",
+          "version": "1.0.0-ci.18.1",
+          "file": "ArcForges.Native.Colour.Runtime.win-x64.1.0.0-ci.18.1.nupkg",
+          "sha256": "419ef9ff5138bd200cd7be21414f88cf0233b4f3d1ec0f7f9d82e08c1fe50564"
+        },
+        {
+          "id": "ArcForges.Native.Image.Runtime.win-x64",
+          "version": "1.0.0-ci.18.1",
+          "file": "ArcForges.Native.Image.Runtime.win-x64.1.0.0-ci.18.1.nupkg",
+          "sha256": "4657f470a895ae04571b0aca30f86507de63343223529227e7221968adf44e28"
+        },
+        {
+          "id": "ArcForges.Native.Otio.Runtime.win-x64",
+          "version": "1.0.0-ci.18.1",
+          "file": "ArcForges.Native.Otio.Runtime.win-x64.1.0.0-ci.18.1.nupkg",
+          "sha256": "2efb2925f7d90b02dcc2b1a7262d7d0ff8b990820441f107abe1158c568413f7"
+        }
+      ],
+      "cases": [
+        {
+          "name": "ArcMediaNative",
+          "jit": "passed",
+          "aot": "passed",
+          "aotExeSha256": "fa75908d82ddd357cb512b9eb945fd01e97513c861ad35cfe5e94d360d4f7614"
+        },
+        {
+          "name": "ArcSlateColorNative",
+          "jit": "passed",
+          "aot": "passed",
+          "aotExeSha256": "d6a0dac254cd4fa7010f552d2c6b44f9910a87617f821be8f6cc55b0041e41f6"
+        },
+        {
+          "name": "ArcSlateImageNative",
+          "jit": "passed",
+          "aot": "passed",
+          "aotExeSha256": "1cfb51133e8f9edb9755948b906fd9c856d0e5f5a3f39af5ce473f7c5493369d"
+        },
+        {
+          "name": "ArcSlateOtioNative",
+          "jit": "passed",
+          "aot": "passed",
+          "aotExeSha256": "3761713e28cdc43e3d740931a6c9ea57ae328922e69eece6253e0c13cc6d6e6d"
+        },
+        {
+          "name": "All",
+          "jit": "passed",
+          "aot": "passed",
+          "aotExeSha256": "3c6d270adfc9ae9f9148bb71bcd244587afb81d507227b15c3bd1cc8e6716727"
+        }
+      ],
+      "c17": {
+        "result": "passed",
+        "exeSha256": "1d3b634a409def95e813a3c0d5c057ed929452b96cde47e2faa7f33ba27c10fa"
+      },
+      "rejections": [
+        "wrong-rid",
+        "missing-owned-dll",
+        "missing-transitive-dll",
+        "changed-dll"
+      ]
+    },
+    "contractsPublic": {
+      "verifiedAt": "2026-09-21T07:22:27.860031+00:00",
+      "commit": "e8353720af5d61c462c3b550e46620dddb445ae9",
+      "version": "1.0.0-ci.67.1",
+      "result": "passed",
+      "files": [
+        {
+          "id": "ArcForges.Contracts.PublicApi",
+          "url": "https://api.nuget.org/v3-flatcontainer/arcforges.contracts.publicapi/1.0.0-ci.67.1/arcforges.contracts.publicapi.1.0.0-ci.67.1.nupkg",
+          "sha256": "e464cdc3c5f937fc731db1c0c50fc6373917a4a8c2b292bf7aede7d519c7dca7",
+          "candidateSha256": "2d0a1ba9091b806cee645908f0083480aff708ba35115546cfddc15b99ebea43",
+          "comparison": "all original ZIP members identical; registry-added signature excluded",
+          "members": 13
+        },
+        {
+          "id": "@arcforges/proto",
+          "url": "https://registry.npmjs.org/@arcforges/proto/-/proto-1.0.0-ci.67.1.tgz",
+          "sha256": "6bcbd66d089b8ce810030296b6d7ebb156286934b2a5197a34b4ea61633af406",
+          "candidateSha256": "6bcbd66d089b8ce810030296b6d7ebb156286934b2a5197a34b4ea61633af406",
+          "comparison": "identical archive bytes"
+        },
+        {
+          "id": "@arcforges/api-client",
+          "url": "https://registry.npmjs.org/@arcforges/api-client/-/api-client-1.0.0-ci.67.1.tgz",
+          "sha256": "9aee4523a6b2c04fcd59f448a714a09f185ae131adb4e754688212dbb381ad61",
+          "candidateSha256": "9aee4523a6b2c04fcd59f448a714a09f185ae131adb4e754688212dbb381ad61",
+          "comparison": "identical archive bytes"
+        },
+        {
+          "url": "https://central.sonatype.com/repository/maven-snapshots/io/github/arcforges/contracts-proto/1.0.0-SNAPSHOT/contracts-proto-1.0.0-20260921.043550-2-sources.jar",
+          "sha256": "5340c0c488bc0a5aa8338a8d830bdf3ecbec6a570dd64f1b4f19a1b620c9d873",
+          "comparison": "identical archive bytes"
+        },
+        {
+          "url": "https://central.sonatype.com/repository/maven-snapshots/io/github/arcforges/contracts-proto/1.0.0-SNAPSHOT/contracts-proto-1.0.0-20260921.043550-2-javadoc.jar",
+          "sha256": "a7d43d9dd52c0706a908b1d650b8a1504eaecec0be79fdbd36f5a5c3e4202d7a",
+          "comparison": "identical archive bytes"
+        },
+        {
+          "url": "https://central.sonatype.com/repository/maven-snapshots/io/github/arcforges/contracts-proto/1.0.0-SNAPSHOT/contracts-proto-1.0.0-20260921.043550-2.jar",
+          "sha256": "31ca6ee6132433f93350526548c4d356c3c9b90aed5243b216297daa3b7c3bc5",
+          "comparison": "identical archive bytes"
+        },
+        {
+          "url": "https://central.sonatype.com/repository/maven-snapshots/io/github/arcforges/contracts-proto/1.0.0-SNAPSHOT/contracts-proto-1.0.0-20260921.043550-2.module",
+          "sha256": "e253b93c2b4b65350d3a7db791421e41ab61487c32a8e9cd2ae5af14826dcc4e",
+          "comparison": "identical archive bytes"
+        },
+        {
+          "url": "https://central.sonatype.com/repository/maven-snapshots/io/github/arcforges/contracts-proto/1.0.0-SNAPSHOT/contracts-proto-1.0.0-20260921.043550-2.pom",
+          "sha256": "c7bfacec2cf33dc53862b5230189e14bb710712143d2cd615b16f36e6b0c79a3",
+          "comparison": "identical archive bytes"
+        },
+        {
+          "url": "https://central.sonatype.com/repository/maven-snapshots/io/github/arcforges/contracts-client/1.0.0-SNAPSHOT/contracts-client-1.0.0-20260921.043550-2.jar",
+          "sha256": "61b898dd0010d46390f87d7aded8d24ddc666ae3d9dca2506e4aecd10366a6a3",
+          "comparison": "identical archive bytes"
+        },
+        {
+          "url": "https://central.sonatype.com/repository/maven-snapshots/io/github/arcforges/contracts-client/1.0.0-SNAPSHOT/contracts-client-1.0.0-20260921.043550-2-sources.jar",
+          "sha256": "b42d542804f8d33b1c4252b6e846522cf963a148ad837655bc9b36d6e776782b",
+          "comparison": "identical archive bytes"
+        },
+        {
+          "url": "https://central.sonatype.com/repository/maven-snapshots/io/github/arcforges/contracts-client/1.0.0-SNAPSHOT/contracts-client-1.0.0-20260921.043550-2.module",
+          "sha256": "e6aaf1478f19a81f798ab9f92cc98842576d747f872a57877a9db6099e965e99",
+          "comparison": "identical archive bytes"
+        },
+        {
+          "url": "https://central.sonatype.com/repository/maven-snapshots/io/github/arcforges/contracts-client/1.0.0-SNAPSHOT/contracts-client-1.0.0-20260921.043550-2-javadoc.jar",
+          "sha256": "4eaf897ec3feadd5acb9612ffac55f38b88785a1804ef86fc4f7bf121c56d9d9",
+          "comparison": "identical archive bytes"
+        },
+        {
+          "url": "https://central.sonatype.com/repository/maven-snapshots/io/github/arcforges/contracts-client/1.0.0-SNAPSHOT/contracts-client-1.0.0-20260921.043550-2.pom",
+          "sha256": "a8f5aa7a1e102397afd6b2dca883630d48935ed3aa69eb2c109e5cd915ad585d",
+          "comparison": "identical archive bytes"
+        },
+        {
+          "url": "https://central.sonatype.com/repository/maven-snapshots/io/github/arcforges/contracts-connect-client/1.0.0-SNAPSHOT/contracts-connect-client-1.0.0-20260921.043550-2-javadoc.jar",
+          "sha256": "bac5f09b0d677cbcb8b5e77abb59577fce94a3079518ccc896902db9967be4f8",
+          "comparison": "identical archive bytes"
+        },
+        {
+          "url": "https://central.sonatype.com/repository/maven-snapshots/io/github/arcforges/contracts-connect-client/1.0.0-SNAPSHOT/contracts-connect-client-1.0.0-20260921.043550-2.pom",
+          "sha256": "372548c745c2957eae841d2bb31c38db1063ae2e0df8d56445f2534b5d78f636",
+          "comparison": "identical archive bytes"
+        },
+        {
+          "url": "https://central.sonatype.com/repository/maven-snapshots/io/github/arcforges/contracts-connect-client/1.0.0-SNAPSHOT/contracts-connect-client-1.0.0-20260921.043550-2.jar",
+          "sha256": "5bbc9319368363e2b2266df9e1c3667c5af574bc76802047520080708cea3f66",
+          "comparison": "identical archive bytes"
+        },
+        {
+          "url": "https://central.sonatype.com/repository/maven-snapshots/io/github/arcforges/contracts-connect-client/1.0.0-SNAPSHOT/contracts-connect-client-1.0.0-20260921.043550-2.module",
+          "sha256": "a84ef71b64e9bcfb11772a94785169040e00da4aa215efa9d4748e7091dcdbb0",
+          "comparison": "identical archive bytes"
+        },
+        {
+          "url": "https://central.sonatype.com/repository/maven-snapshots/io/github/arcforges/contracts-connect-client/1.0.0-SNAPSHOT/contracts-connect-client-1.0.0-20260921.043550-2-sources.jar",
+          "sha256": "bd2124cb44dfe8c66cc55cea1a47809f218c8e55a6e42ca8a1762f0be89bf590",
+          "comparison": "identical archive bytes"
+        },
+        {
+          "url": "https://central.sonatype.com/repository/maven-snapshots/io/github/arcforges/contract-fixtures/1.0.0-SNAPSHOT/contract-fixtures-1.0.0-20260921.043550-2-sources.jar",
+          "sha256": "3b16428054d2b79cf8e65d6f21774b09cc6f1272c56bdc8a29fb1f2564e1ce5b",
+          "comparison": "identical archive bytes"
+        },
+        {
+          "url": "https://central.sonatype.com/repository/maven-snapshots/io/github/arcforges/contract-fixtures/1.0.0-SNAPSHOT/contract-fixtures-1.0.0-20260921.043550-2.pom",
+          "sha256": "2b26c32330f74aecd52d169651cda627f7c583e17b66d2a1ffb2df3828609d80",
+          "comparison": "identical archive bytes"
+        },
+        {
+          "url": "https://central.sonatype.com/repository/maven-snapshots/io/github/arcforges/contract-fixtures/1.0.0-SNAPSHOT/contract-fixtures-1.0.0-20260921.043550-2-javadoc.jar",
+          "sha256": "a6e1b1eea0b82d8dcd74f0c3f36858d7fcc65dccf12673a654dfe00c111c6759",
+          "comparison": "identical archive bytes"
+        },
+        {
+          "url": "https://central.sonatype.com/repository/maven-snapshots/io/github/arcforges/contract-fixtures/1.0.0-SNAPSHOT/contract-fixtures-1.0.0-20260921.043550-2.jar",
+          "sha256": "7bd06245ad178f7438d2b409e93f6c401e0dae10912e1bc921bde79c8c5a489c",
+          "comparison": "identical archive bytes"
+        },
+        {
+          "url": "https://central.sonatype.com/repository/maven-snapshots/io/github/arcforges/contract-fixtures/1.0.0-SNAPSHOT/contract-fixtures-1.0.0-20260921.043550-2.module",
+          "sha256": "72211ff62972acffcdf6756d075d3d23f60875a7a1fcb54237315cba67a5356a",
+          "comparison": "identical archive bytes"
+        }
+      ]
+    },
+    "contractsSnapshotPublication": {
+      "channel": "snapshot",
+      "version": "1.0.0-ci.67.1",
+      "mavenVersion": "1.0.0-SNAPSHOT",
+      "commit": "e8353720af5d61c462c3b550e46620dddb445ae9",
+      "candidateSha256": "8037aa4601f1a5c90999e3d4eeee5d2359ac549b88de0cf39f303c27c6e7339a",
+      "phase": "public-bytes-verified",
+      "files": [
+        {
+          "candidate": "io/github/arcforges/contracts-proto/1.0.0-SNAPSHOT/contracts-proto-1.0.0-SNAPSHOT-sources.jar",
+          "remote": "io/github/arcforges/contracts-proto/1.0.0-SNAPSHOT/contracts-proto-1.0.0-20260921.043550-2-sources.jar",
+          "sha256": "5340c0c488bc0a5aa8338a8d830bdf3ecbec6a570dd64f1b4f19a1b620c9d873",
+          "matches": true
+        },
+        {
+          "candidate": "io/github/arcforges/contracts-proto/1.0.0-SNAPSHOT/contracts-proto-1.0.0-SNAPSHOT-javadoc.jar",
+          "remote": "io/github/arcforges/contracts-proto/1.0.0-SNAPSHOT/contracts-proto-1.0.0-20260921.043550-2-javadoc.jar",
+          "sha256": "a7d43d9dd52c0706a908b1d650b8a1504eaecec0be79fdbd36f5a5c3e4202d7a",
+          "matches": true
+        },
+        {
+          "candidate": "io/github/arcforges/contracts-proto/1.0.0-SNAPSHOT/contracts-proto-1.0.0-SNAPSHOT.jar",
+          "remote": "io/github/arcforges/contracts-proto/1.0.0-SNAPSHOT/contracts-proto-1.0.0-20260921.043550-2.jar",
+          "sha256": "31ca6ee6132433f93350526548c4d356c3c9b90aed5243b216297daa3b7c3bc5",
+          "matches": true
+        },
+        {
+          "candidate": "io/github/arcforges/contracts-proto/1.0.0-SNAPSHOT/contracts-proto-1.0.0-SNAPSHOT.module",
+          "remote": "io/github/arcforges/contracts-proto/1.0.0-SNAPSHOT/contracts-proto-1.0.0-20260921.043550-2.module",
+          "sha256": "e253b93c2b4b65350d3a7db791421e41ab61487c32a8e9cd2ae5af14826dcc4e",
+          "matches": true
+        },
+        {
+          "candidate": "io/github/arcforges/contracts-proto/1.0.0-SNAPSHOT/contracts-proto-1.0.0-SNAPSHOT.pom",
+          "remote": "io/github/arcforges/contracts-proto/1.0.0-SNAPSHOT/contracts-proto-1.0.0-20260921.043550-2.pom",
+          "sha256": "c7bfacec2cf33dc53862b5230189e14bb710712143d2cd615b16f36e6b0c79a3",
+          "matches": true
+        },
+        {
+          "candidate": "io/github/arcforges/contracts-client/1.0.0-SNAPSHOT/contracts-client-1.0.0-SNAPSHOT.jar",
+          "remote": "io/github/arcforges/contracts-client/1.0.0-SNAPSHOT/contracts-client-1.0.0-20260921.043550-2.jar",
+          "sha256": "61b898dd0010d46390f87d7aded8d24ddc666ae3d9dca2506e4aecd10366a6a3",
+          "matches": true
+        },
+        {
+          "candidate": "io/github/arcforges/contracts-client/1.0.0-SNAPSHOT/contracts-client-1.0.0-SNAPSHOT-sources.jar",
+          "remote": "io/github/arcforges/contracts-client/1.0.0-SNAPSHOT/contracts-client-1.0.0-20260921.043550-2-sources.jar",
+          "sha256": "b42d542804f8d33b1c4252b6e846522cf963a148ad837655bc9b36d6e776782b",
+          "matches": true
+        },
+        {
+          "candidate": "io/github/arcforges/contracts-client/1.0.0-SNAPSHOT/contracts-client-1.0.0-SNAPSHOT.module",
+          "remote": "io/github/arcforges/contracts-client/1.0.0-SNAPSHOT/contracts-client-1.0.0-20260921.043550-2.module",
+          "sha256": "e6aaf1478f19a81f798ab9f92cc98842576d747f872a57877a9db6099e965e99",
+          "matches": true
+        },
+        {
+          "candidate": "io/github/arcforges/contracts-client/1.0.0-SNAPSHOT/contracts-client-1.0.0-SNAPSHOT-javadoc.jar",
+          "remote": "io/github/arcforges/contracts-client/1.0.0-SNAPSHOT/contracts-client-1.0.0-20260921.043550-2-javadoc.jar",
+          "sha256": "4eaf897ec3feadd5acb9612ffac55f38b88785a1804ef86fc4f7bf121c56d9d9",
+          "matches": true
+        },
+        {
+          "candidate": "io/github/arcforges/contracts-client/1.0.0-SNAPSHOT/contracts-client-1.0.0-SNAPSHOT.pom",
+          "remote": "io/github/arcforges/contracts-client/1.0.0-SNAPSHOT/contracts-client-1.0.0-20260921.043550-2.pom",
+          "sha256": "a8f5aa7a1e102397afd6b2dca883630d48935ed3aa69eb2c109e5cd915ad585d",
+          "matches": true
+        },
+        {
+          "candidate": "io/github/arcforges/contracts-connect-client/1.0.0-SNAPSHOT/contracts-connect-client-1.0.0-SNAPSHOT-javadoc.jar",
+          "remote": "io/github/arcforges/contracts-connect-client/1.0.0-SNAPSHOT/contracts-connect-client-1.0.0-20260921.043550-2-javadoc.jar",
+          "sha256": "bac5f09b0d677cbcb8b5e77abb59577fce94a3079518ccc896902db9967be4f8",
+          "matches": true
+        },
+        {
+          "candidate": "io/github/arcforges/contracts-connect-client/1.0.0-SNAPSHOT/contracts-connect-client-1.0.0-SNAPSHOT.pom",
+          "remote": "io/github/arcforges/contracts-connect-client/1.0.0-SNAPSHOT/contracts-connect-client-1.0.0-20260921.043550-2.pom",
+          "sha256": "372548c745c2957eae841d2bb31c38db1063ae2e0df8d56445f2534b5d78f636",
+          "matches": true
+        },
+        {
+          "candidate": "io/github/arcforges/contracts-connect-client/1.0.0-SNAPSHOT/contracts-connect-client-1.0.0-SNAPSHOT.jar",
+          "remote": "io/github/arcforges/contracts-connect-client/1.0.0-SNAPSHOT/contracts-connect-client-1.0.0-20260921.043550-2.jar",
+          "sha256": "5bbc9319368363e2b2266df9e1c3667c5af574bc76802047520080708cea3f66",
+          "matches": true
+        },
+        {
+          "candidate": "io/github/arcforges/contracts-connect-client/1.0.0-SNAPSHOT/contracts-connect-client-1.0.0-SNAPSHOT.module",
+          "remote": "io/github/arcforges/contracts-connect-client/1.0.0-SNAPSHOT/contracts-connect-client-1.0.0-20260921.043550-2.module",
+          "sha256": "a84ef71b64e9bcfb11772a94785169040e00da4aa215efa9d4748e7091dcdbb0",
+          "matches": true
+        },
+        {
+          "candidate": "io/github/arcforges/contracts-connect-client/1.0.0-SNAPSHOT/contracts-connect-client-1.0.0-SNAPSHOT-sources.jar",
+          "remote": "io/github/arcforges/contracts-connect-client/1.0.0-SNAPSHOT/contracts-connect-client-1.0.0-20260921.043550-2-sources.jar",
+          "sha256": "bd2124cb44dfe8c66cc55cea1a47809f218c8e55a6e42ca8a1762f0be89bf590",
+          "matches": true
+        },
+        {
+          "candidate": "io/github/arcforges/contract-fixtures/1.0.0-SNAPSHOT/contract-fixtures-1.0.0-SNAPSHOT-sources.jar",
+          "remote": "io/github/arcforges/contract-fixtures/1.0.0-SNAPSHOT/contract-fixtures-1.0.0-20260921.043550-2-sources.jar",
+          "sha256": "3b16428054d2b79cf8e65d6f21774b09cc6f1272c56bdc8a29fb1f2564e1ce5b",
+          "matches": true
+        },
+        {
+          "candidate": "io/github/arcforges/contract-fixtures/1.0.0-SNAPSHOT/contract-fixtures-1.0.0-SNAPSHOT.pom",
+          "remote": "io/github/arcforges/contract-fixtures/1.0.0-SNAPSHOT/contract-fixtures-1.0.0-20260921.043550-2.pom",
+          "sha256": "2b26c32330f74aecd52d169651cda627f7c583e17b66d2a1ffb2df3828609d80",
+          "matches": true
+        },
+        {
+          "candidate": "io/github/arcforges/contract-fixtures/1.0.0-SNAPSHOT/contract-fixtures-1.0.0-SNAPSHOT-javadoc.jar",
+          "remote": "io/github/arcforges/contract-fixtures/1.0.0-SNAPSHOT/contract-fixtures-1.0.0-20260921.043550-2-javadoc.jar",
+          "sha256": "a6e1b1eea0b82d8dcd74f0c3f36858d7fcc65dccf12673a654dfe00c111c6759",
+          "matches": true
+        },
+        {
+          "candidate": "io/github/arcforges/contract-fixtures/1.0.0-SNAPSHOT/contract-fixtures-1.0.0-SNAPSHOT.jar",
+          "remote": "io/github/arcforges/contract-fixtures/1.0.0-SNAPSHOT/contract-fixtures-1.0.0-20260921.043550-2.jar",
+          "sha256": "7bd06245ad178f7438d2b409e93f6c401e0dae10912e1bc921bde79c8c5a489c",
+          "matches": true
+        },
+        {
+          "candidate": "io/github/arcforges/contract-fixtures/1.0.0-SNAPSHOT/contract-fixtures-1.0.0-SNAPSHOT.module",
+          "remote": "io/github/arcforges/contract-fixtures/1.0.0-SNAPSHOT/contract-fixtures-1.0.0-20260921.043550-2.module",
+          "sha256": "72211ff62972acffcdf6756d075d3d23f60875a7a1fcb54237315cba67a5356a",
+          "matches": true
+        }
+      ]
+    },
+    "contractsConsumers": {
+      "version": "1.0.0-ci.67.1",
+      "commit": "e8353720af5d61c462c3b550e46620dddb445ae9",
+      "rid": "win-x64",
+      "inputs": [
+        {
+          "name": "ArcForges.Contracts.PublicApi.1.0.0-ci.67.1.nupkg",
+          "kind": "nuget",
+          "id": "ArcForges.Contracts.PublicApi",
+          "sha256": "2d0a1ba9091b806cee645908f0083480aff708ba35115546cfddc15b99ebea43",
+          "size": 28607
+        },
+        {
+          "name": "arcforges-proto-1.0.0-ci.67.1.tgz",
+          "kind": "npm",
+          "id": "@arcforges/proto",
+          "sha256": "6bcbd66d089b8ce810030296b6d7ebb156286934b2a5197a34b4ea61633af406",
+          "size": 8519
+        },
+        {
+          "name": "arcforges-api-client-1.0.0-ci.67.1.tgz",
+          "kind": "npm",
+          "id": "@arcforges/api-client",
+          "sha256": "9aee4523a6b2c04fcd59f448a714a09f185ae131adb4e754688212dbb381ad61",
+          "size": 7658
+        },
+        {
+          "name": "arcforges-maven-1.0.0-SNAPSHOT.zip",
+          "kind": "maven",
+          "id": "io.github.arcforges",
+          "sha256": "8037aa4601f1a5c90999e3d4eeee5d2359ac549b88de0cf39f303c27c6e7339a",
+          "size": 1346442
+        },
+        {
+          "name": "contracts.binpb",
+          "kind": "descriptor",
+          "id": "arcforges.hello.v1",
+          "sha256": "7219a8d730978bcc3b7b8769e159d06711dff3f2b07715a6d487589f8c09b99c",
+          "size": 338
+        }
+      ],
+      "isolatedCaches": true,
+      "sourceReferences": false,
+      "csharpGrpc": "passed",
+      "typescriptGrpcWeb": "passed",
+      "kotlinGrpc": "passed",
+      "kotlinConnectGrpcWeb": "passed",
+      "kotlinConnectGrpc": "passed",
+      "nativeAotGrpc": "passed",
+      "browser": "not-run",
+      "androidDevice": "not-run",
+      "registryRestore": "maven-snapshot-passed",
+      "mavenVersion": "1.0.0-SNAPSHOT",
+      "mavenRepository": "https://central.sonatype.com/repository/maven-snapshots/"
+    },
+    "desktopPublic": {
+      "verifiedAt": "2026-09-21T04:55:57.539136+00:00",
+      "result": "passed",
+      "releases": {
+        "ArcNotes": {
+          "release": "https://github.com/ArcForges/ArcNotes/releases/tag/v0.1.0-ci.10.1",
+          "tag": "v0.1.0-ci.10.1",
+          "manifests": [
+            {
+              "rid": "osx-x64",
+              "version": "0.1.0-ci.10.1",
+              "sourceRevision": "c40116ac8ae0c76e539b3c19552a65ec08c8d94b",
+              "archive": "arcnotes-0.1.0-ci.10.1-osx-x64.tar.gz",
+              "archiveSha256": "401f3804af0a7c9e251b5b28a8f94455326bf4944fb58847ae6e2784309344eb",
+              "smokeSha256": "119c8386399d80438f89ac9736bb04f797a4ff46879827b1e99306e105d85982"
+            },
+            {
+              "rid": "win-x64",
+              "version": "0.1.0-ci.10.1",
+              "sourceRevision": "c40116ac8ae0c76e539b3c19552a65ec08c8d94b",
+              "archive": "arcnotes-0.1.0-ci.10.1-win-x64.zip",
+              "archiveSha256": "cbbf4162ce862c835cc9521d329ddeafe585f1ee4e2bd574b420e4d4c9a48f7c",
+              "smokeSha256": "21948aa0264b8fe8a703a6e2e395989a30ea6b95cb0a538ad3c7798fb32fb9bb"
+            },
+            {
+              "rid": "win-arm64",
+              "version": "0.1.0-ci.10.1",
+              "sourceRevision": "c40116ac8ae0c76e539b3c19552a65ec08c8d94b",
+              "archive": "arcnotes-0.1.0-ci.10.1-win-arm64.zip",
+              "archiveSha256": "2c13ab0cf296974edefa589e5897bac1bfe3fc5957a9ba6c0f833cc718710b3a",
+              "smokeSha256": "74ef0aa7a1a4838d0764f9c620171e9938fb121f7c0c30432a89aa15562b790d"
+            },
+            {
+              "rid": "linux-x64",
+              "version": "0.1.0-ci.10.1",
+              "sourceRevision": "c40116ac8ae0c76e539b3c19552a65ec08c8d94b",
+              "archive": "arcnotes-0.1.0-ci.10.1-linux-x64.tar.gz",
+              "archiveSha256": "4a7d36f0b1b175061b71b3e85634cd27c2e8e379b5d34bb16a3f68413fd0c87d",
+              "smokeSha256": "0ccf8d1578dbbda7daa47c22c83e18015b81875146d64145648344061f716e4f"
+            },
+            {
+              "rid": "osx-arm64",
+              "version": "0.1.0-ci.10.1",
+              "sourceRevision": "c40116ac8ae0c76e539b3c19552a65ec08c8d94b",
+              "archive": "arcnotes-0.1.0-ci.10.1-osx-arm64.tar.gz",
+              "archiveSha256": "ab74b39990313ba72678658fe0f2280ebcd5942242565f48f473104fca3b57e4",
+              "smokeSha256": "aac6729d187e4e56164c27965acf368ad09f433a6ab37ca4ce3552b3ae7d923e"
+            }
+          ]
+        },
+        "ArcScope": {
+          "release": "https://github.com/ArcForges/ArcScope/releases/tag/v0.1.0-ci.10.1",
+          "tag": "v0.1.0-ci.10.1",
+          "manifests": [
+            {
+              "rid": "win-x64",
+              "version": "0.1.0-ci.10.1",
+              "sourceRevision": "1b13c9827f98578c8ba2f7db0c046db114aa7cb8",
+              "archive": "arcscope-0.1.0-ci.10.1-win-x64.zip",
+              "archiveSha256": "8073eb128ba753f32f9bc5876a9f5e3b69aced363a9c10b77b3b1410d8b82c06",
+              "smokeSha256": "0cb450db618d1d6541a07c6c74abdf65102a728d67196aafff0abc8aa9221567"
+            },
+            {
+              "rid": "linux-x64",
+              "version": "0.1.0-ci.10.1",
+              "sourceRevision": "1b13c9827f98578c8ba2f7db0c046db114aa7cb8",
+              "archive": "arcscope-0.1.0-ci.10.1-linux-x64.tar.gz",
+              "archiveSha256": "24e72eb079e3b64dde93f2f854b658e6646ad9187aada19280072efdd849296c",
+              "smokeSha256": "2aa68cd10407524cb211884da6ea4b181241870543f3fd230937e137010b8a49"
+            },
+            {
+              "rid": "osx-arm64",
+              "version": "0.1.0-ci.10.1",
+              "sourceRevision": "1b13c9827f98578c8ba2f7db0c046db114aa7cb8",
+              "archive": "arcscope-0.1.0-ci.10.1-osx-arm64.tar.gz",
+              "archiveSha256": "b44700008c1bb70902583fcd07b6cb46c9d7d8c463a043125f6ebcaf82d81e06",
+              "smokeSha256": "2c23506bf50b02a0e5cb0ebb6a3e7d70e6437dafea9b5490e0b712fbce041897"
+            },
+            {
+              "rid": "win-arm64",
+              "version": "0.1.0-ci.10.1",
+              "sourceRevision": "1b13c9827f98578c8ba2f7db0c046db114aa7cb8",
+              "archive": "arcscope-0.1.0-ci.10.1-win-arm64.zip",
+              "archiveSha256": "f495da8bb90b58c3a5a224ec1d520c875db434cac1bf1890798f5b85317c6df3",
+              "smokeSha256": "6f4922df7c30f7cf64eb7f076feccd7ac5e2032f4b2e8fd9fa3eb563d4e6b222"
+            },
+            {
+              "rid": "osx-x64",
+              "version": "0.1.0-ci.10.1",
+              "sourceRevision": "1b13c9827f98578c8ba2f7db0c046db114aa7cb8",
+              "archive": "arcscope-0.1.0-ci.10.1-osx-x64.tar.gz",
+              "archiveSha256": "fb1cda14d7103d364d9d3b1b5f51445de80dd9ba52eae41f15bead9cdec4771c",
+              "smokeSha256": "c1986d94226666ffbc40a9a631790132b5e84eb1aac9eca59607ca08cad1c1ff"
+            }
+          ]
+        },
+        "ArcSlate": {
+          "release": "https://github.com/ArcForges/ArcSlate/releases/tag/v0.1.0-ci.10.1",
+          "tag": "v0.1.0-ci.10.1",
+          "manifests": [
+            {
+              "rid": "osx-arm64",
+              "version": "0.1.0-ci.10.1",
+              "sourceRevision": "0cc8093d51cdef20bae8057e77c4bcd80d32b39e",
+              "archive": "arcslate-0.1.0-ci.10.1-osx-arm64.tar.gz",
+              "archiveSha256": "27464fa23eb6d00b572f2f2f9411893914aec93116e54b767d410707b2b10d97",
+              "smokeSha256": "47e4c874487c4fbfbe5d7fd921b50fafb4c665f7b0151e4be29b857dc2f7a56c"
+            },
+            {
+              "rid": "osx-x64",
+              "version": "0.1.0-ci.10.1",
+              "sourceRevision": "0cc8093d51cdef20bae8057e77c4bcd80d32b39e",
+              "archive": "arcslate-0.1.0-ci.10.1-osx-x64.tar.gz",
+              "archiveSha256": "fe8047471bc63184004c67e50a60203eb0ced4a67dc8a549c52e79f0f51b14ef",
+              "smokeSha256": "54a76730ebe53e21e446efb1f81cbde1394e240ac483e9e0b24e94d7a0fe5138"
+            },
+            {
+              "rid": "win-arm64",
+              "version": "0.1.0-ci.10.1",
+              "sourceRevision": "0cc8093d51cdef20bae8057e77c4bcd80d32b39e",
+              "archive": "arcslate-0.1.0-ci.10.1-win-arm64.zip",
+              "archiveSha256": "a97f66511e0fc5209acf7bab04b0b8ef3786f4ae07d19c31bc377e2077ffc45a",
+              "smokeSha256": "a167c5529e457dc02cd6d29882c3ea1c48aa8d380c3c766b6b0e7e9e664f6b4a"
+            },
+            {
+              "rid": "win-x64",
+              "version": "0.1.0-ci.10.1",
+              "sourceRevision": "0cc8093d51cdef20bae8057e77c4bcd80d32b39e",
+              "archive": "arcslate-0.1.0-ci.10.1-win-x64.zip",
+              "archiveSha256": "5f28c3a54385e18dc3d5bacbc405bc071780965af92b36bc3ff42470e91404de",
+              "smokeSha256": "f50d74c9ff87bf2cd86985e5bfb79706dc019588908dcd388f32c6be8d723147"
+            },
+            {
+              "rid": "linux-x64",
+              "version": "0.1.0-ci.10.1",
+              "sourceRevision": "0cc8093d51cdef20bae8057e77c4bcd80d32b39e",
+              "archive": "arcslate-0.1.0-ci.10.1-linux-x64.tar.gz",
+              "archiveSha256": "57bbe7be6e173dcb7d43dadd675adf134b8c7a9ddb842b6ef92a2e587f360b85",
+              "smokeSha256": "c1ed2c6785b3caf8407fc25c0c2568df294b0ddd92aa63ef37b5819ae2c77ad0"
+            }
+          ]
+        }
+      },
+      "files": [
+        {
+          "owner": "ArcNotes",
+          "rid": "osx-x64",
+          "url": "https://github.com/ArcForges/ArcNotes/releases/download/v0.1.0-ci.10.1/arcnotes-0.1.0-ci.10.1-osx-x64.tar.gz",
+          "bytes": 30109916,
+          "sha256": "401f3804af0a7c9e251b5b28a8f94455326bf4944fb58847ae6e2784309344eb",
+          "sourceRevision": "c40116ac8ae0c76e539b3c19552a65ec08c8d94b",
+          "version": "0.1.0-ci.10.1",
+          "result": "passed"
+        },
+        {
+          "owner": "ArcNotes",
+          "rid": "win-x64",
+          "url": "https://github.com/ArcForges/ArcNotes/releases/download/v0.1.0-ci.10.1/arcnotes-0.1.0-ci.10.1-win-x64.zip",
+          "bytes": 64678369,
+          "sha256": "cbbf4162ce862c835cc9521d329ddeafe585f1ee4e2bd574b420e4d4c9a48f7c",
+          "sourceRevision": "c40116ac8ae0c76e539b3c19552a65ec08c8d94b",
+          "version": "0.1.0-ci.10.1",
+          "result": "passed"
+        },
+        {
+          "owner": "ArcNotes",
+          "rid": "win-arm64",
+          "url": "https://github.com/ArcForges/ArcNotes/releases/download/v0.1.0-ci.10.1/arcnotes-0.1.0-ci.10.1-win-arm64.zip",
+          "bytes": 62965978,
+          "sha256": "2c13ab0cf296974edefa589e5897bac1bfe3fc5957a9ba6c0f833cc718710b3a",
+          "sourceRevision": "c40116ac8ae0c76e539b3c19552a65ec08c8d94b",
+          "version": "0.1.0-ci.10.1",
+          "result": "passed"
+        },
+        {
+          "owner": "ArcNotes",
+          "rid": "linux-x64",
+          "url": "https://github.com/ArcForges/ArcNotes/releases/download/v0.1.0-ci.10.1/arcnotes-0.1.0-ci.10.1-linux-x64.tar.gz",
+          "bytes": 33642770,
+          "sha256": "4a7d36f0b1b175061b71b3e85634cd27c2e8e379b5d34bb16a3f68413fd0c87d",
+          "sourceRevision": "c40116ac8ae0c76e539b3c19552a65ec08c8d94b",
+          "version": "0.1.0-ci.10.1",
+          "result": "passed"
+        },
+        {
+          "owner": "ArcNotes",
+          "rid": "osx-arm64",
+          "url": "https://github.com/ArcForges/ArcNotes/releases/download/v0.1.0-ci.10.1/arcnotes-0.1.0-ci.10.1-osx-arm64.tar.gz",
+          "bytes": 28083257,
+          "sha256": "ab74b39990313ba72678658fe0f2280ebcd5942242565f48f473104fca3b57e4",
+          "sourceRevision": "c40116ac8ae0c76e539b3c19552a65ec08c8d94b",
+          "version": "0.1.0-ci.10.1",
+          "result": "passed"
+        },
+        {
+          "owner": "ArcScope",
+          "rid": "win-x64",
+          "url": "https://github.com/ArcForges/ArcScope/releases/download/v0.1.0-ci.10.1/arcscope-0.1.0-ci.10.1-win-x64.zip",
+          "bytes": 64705990,
+          "sha256": "8073eb128ba753f32f9bc5876a9f5e3b69aced363a9c10b77b3b1410d8b82c06",
+          "sourceRevision": "1b13c9827f98578c8ba2f7db0c046db114aa7cb8",
+          "version": "0.1.0-ci.10.1",
+          "result": "passed"
+        },
+        {
+          "owner": "ArcScope",
+          "rid": "linux-x64",
+          "url": "https://github.com/ArcForges/ArcScope/releases/download/v0.1.0-ci.10.1/arcscope-0.1.0-ci.10.1-linux-x64.tar.gz",
+          "bytes": 33648648,
+          "sha256": "24e72eb079e3b64dde93f2f854b658e6646ad9187aada19280072efdd849296c",
+          "sourceRevision": "1b13c9827f98578c8ba2f7db0c046db114aa7cb8",
+          "version": "0.1.0-ci.10.1",
+          "result": "passed"
+        },
+        {
+          "owner": "ArcScope",
+          "rid": "osx-arm64",
+          "url": "https://github.com/ArcForges/ArcScope/releases/download/v0.1.0-ci.10.1/arcscope-0.1.0-ci.10.1-osx-arm64.tar.gz",
+          "bytes": 28078734,
+          "sha256": "b44700008c1bb70902583fcd07b6cb46c9d7d8c463a043125f6ebcaf82d81e06",
+          "sourceRevision": "1b13c9827f98578c8ba2f7db0c046db114aa7cb8",
+          "version": "0.1.0-ci.10.1",
+          "result": "passed"
+        },
+        {
+          "owner": "ArcScope",
+          "rid": "win-arm64",
+          "url": "https://github.com/ArcForges/ArcScope/releases/download/v0.1.0-ci.10.1/arcscope-0.1.0-ci.10.1-win-arm64.zip",
+          "bytes": 62968218,
+          "sha256": "f495da8bb90b58c3a5a224ec1d520c875db434cac1bf1890798f5b85317c6df3",
+          "sourceRevision": "1b13c9827f98578c8ba2f7db0c046db114aa7cb8",
+          "version": "0.1.0-ci.10.1",
+          "result": "passed"
+        },
+        {
+          "owner": "ArcScope",
+          "rid": "osx-x64",
+          "url": "https://github.com/ArcForges/ArcScope/releases/download/v0.1.0-ci.10.1/arcscope-0.1.0-ci.10.1-osx-x64.tar.gz",
+          "bytes": 30113869,
+          "sha256": "fb1cda14d7103d364d9d3b1b5f51445de80dd9ba52eae41f15bead9cdec4771c",
+          "sourceRevision": "1b13c9827f98578c8ba2f7db0c046db114aa7cb8",
+          "version": "0.1.0-ci.10.1",
+          "result": "passed"
+        },
+        {
+          "owner": "ArcSlate",
+          "rid": "osx-arm64",
+          "url": "https://github.com/ArcForges/ArcSlate/releases/download/v0.1.0-ci.10.1/arcslate-0.1.0-ci.10.1-osx-arm64.tar.gz",
+          "bytes": 28078781,
+          "sha256": "27464fa23eb6d00b572f2f2f9411893914aec93116e54b767d410707b2b10d97",
+          "sourceRevision": "0cc8093d51cdef20bae8057e77c4bcd80d32b39e",
+          "version": "0.1.0-ci.10.1",
+          "result": "passed"
+        },
+        {
+          "owner": "ArcSlate",
+          "rid": "osx-x64",
+          "url": "https://github.com/ArcForges/ArcSlate/releases/download/v0.1.0-ci.10.1/arcslate-0.1.0-ci.10.1-osx-x64.tar.gz",
+          "bytes": 30114794,
+          "sha256": "fe8047471bc63184004c67e50a60203eb0ced4a67dc8a549c52e79f0f51b14ef",
+          "sourceRevision": "0cc8093d51cdef20bae8057e77c4bcd80d32b39e",
+          "version": "0.1.0-ci.10.1",
+          "result": "passed"
+        },
+        {
+          "owner": "ArcSlate",
+          "rid": "win-arm64",
+          "url": "https://github.com/ArcForges/ArcSlate/releases/download/v0.1.0-ci.10.1/arcslate-0.1.0-ci.10.1-win-arm64.zip",
+          "bytes": 62965360,
+          "sha256": "a97f66511e0fc5209acf7bab04b0b8ef3786f4ae07d19c31bc377e2077ffc45a",
+          "sourceRevision": "0cc8093d51cdef20bae8057e77c4bcd80d32b39e",
+          "version": "0.1.0-ci.10.1",
+          "result": "passed"
+        },
+        {
+          "owner": "ArcSlate",
+          "rid": "win-x64",
+          "url": "https://github.com/ArcForges/ArcSlate/releases/download/v0.1.0-ci.10.1/arcslate-0.1.0-ci.10.1-win-x64.zip",
+          "bytes": 64700177,
+          "sha256": "5f28c3a54385e18dc3d5bacbc405bc071780965af92b36bc3ff42470e91404de",
+          "sourceRevision": "0cc8093d51cdef20bae8057e77c4bcd80d32b39e",
+          "version": "0.1.0-ci.10.1",
+          "result": "passed"
+        },
+        {
+          "owner": "ArcSlate",
+          "rid": "linux-x64",
+          "url": "https://github.com/ArcForges/ArcSlate/releases/download/v0.1.0-ci.10.1/arcslate-0.1.0-ci.10.1-linux-x64.tar.gz",
+          "bytes": 33648284,
+          "sha256": "57bbe7be6e173dcb7d43dadd675adf134b8c7a9ddb842b6ef92a2e587f360b85",
+          "sourceRevision": "0cc8093d51cdef20bae8057e77c4bcd80d32b39e",
+          "version": "0.1.0-ci.10.1",
+          "result": "passed"
+        }
+      ]
+    },
+    "desktopRuntime": {
+      "ArcNotes": [
+        {
+          "success": true,
+          "nativeAot": true,
+          "rid": "win-x64",
+          "version": "0.1.0-ci.10.1",
+          "sourceRevision": "c40116ac8ae0c76e539b3c19552a65ec08c8d94b",
+          "cloud": {
+            "service": "arcforges-cloud",
+            "revision": "4571ec8692235485712d4c4e3ef4886c162f2574",
+            "nativeAot": true
+          },
+          "uiGreeting": "Hello, ArcNotes!",
+          "checks": [
+            "native-ui-live-action",
+            "unicode-whitespace-boundary",
+            "InvalidArgument",
+            "ResourceExhausted"
+          ],
+          "error": null
+        },
+        {
+          "success": true,
+          "nativeAot": true,
+          "rid": "win-arm64",
+          "version": "0.1.0-ci.10.1",
+          "sourceRevision": "c40116ac8ae0c76e539b3c19552a65ec08c8d94b",
+          "cloud": {
+            "service": "arcforges-cloud",
+            "revision": "4571ec8692235485712d4c4e3ef4886c162f2574",
+            "nativeAot": true
+          },
+          "uiGreeting": "Hello, ArcNotes!",
+          "checks": [
+            "native-ui-live-action",
+            "unicode-whitespace-boundary",
+            "InvalidArgument",
+            "ResourceExhausted"
+          ],
+          "error": null
+        },
+        {
+          "success": true,
+          "nativeAot": true,
+          "rid": "linux-x64",
+          "version": "0.1.0-ci.10.1",
+          "sourceRevision": "c40116ac8ae0c76e539b3c19552a65ec08c8d94b",
+          "cloud": {
+            "service": "arcforges-cloud",
+            "revision": "4571ec8692235485712d4c4e3ef4886c162f2574",
+            "nativeAot": true
+          },
+          "uiGreeting": "Hello, ArcNotes!",
+          "checks": [
+            "native-ui-live-action",
+            "unicode-whitespace-boundary",
+            "InvalidArgument",
+            "ResourceExhausted"
+          ],
+          "error": null
+        },
+        {
+          "success": true,
+          "nativeAot": true,
+          "rid": "osx-x64",
+          "version": "0.1.0-ci.10.1",
+          "sourceRevision": "c40116ac8ae0c76e539b3c19552a65ec08c8d94b",
+          "cloud": {
+            "service": "arcforges-cloud",
+            "revision": "4571ec8692235485712d4c4e3ef4886c162f2574",
+            "nativeAot": true
+          },
+          "uiGreeting": "Hello, ArcNotes!",
+          "checks": [
+            "native-ui-live-action",
+            "unicode-whitespace-boundary",
+            "InvalidArgument",
+            "ResourceExhausted"
+          ],
+          "error": null
+        },
+        {
+          "success": true,
+          "nativeAot": true,
+          "rid": "osx-arm64",
+          "version": "0.1.0-ci.10.1",
+          "sourceRevision": "c40116ac8ae0c76e539b3c19552a65ec08c8d94b",
+          "cloud": {
+            "service": "arcforges-cloud",
+            "revision": "4571ec8692235485712d4c4e3ef4886c162f2574",
+            "nativeAot": true
+          },
+          "uiGreeting": "Hello, ArcNotes!",
+          "checks": [
+            "native-ui-live-action",
+            "unicode-whitespace-boundary",
+            "InvalidArgument",
+            "ResourceExhausted"
+          ],
+          "error": null
+        }
+      ],
+      "ArcScope": [
+        {
+          "success": true,
+          "nativeAot": true,
+          "rid": "win-x64",
+          "version": "0.1.0-ci.10.1",
+          "sourceRevision": "1b13c9827f98578c8ba2f7db0c046db114aa7cb8",
+          "cloud": {
+            "service": "arcforges-cloud",
+            "revision": "4571ec8692235485712d4c4e3ef4886c162f2574",
+            "nativeAot": true
+          },
+          "uiGreeting": "Hello, ArcScope!",
+          "checks": [
+            "native-ui-live-action",
+            "unicode-whitespace-boundary",
+            "InvalidArgument",
+            "ResourceExhausted"
+          ],
+          "error": null
+        },
+        {
+          "success": true,
+          "nativeAot": true,
+          "rid": "win-arm64",
+          "version": "0.1.0-ci.10.1",
+          "sourceRevision": "1b13c9827f98578c8ba2f7db0c046db114aa7cb8",
+          "cloud": {
+            "service": "arcforges-cloud",
+            "revision": "4571ec8692235485712d4c4e3ef4886c162f2574",
+            "nativeAot": true
+          },
+          "uiGreeting": "Hello, ArcScope!",
+          "checks": [
+            "native-ui-live-action",
+            "unicode-whitespace-boundary",
+            "InvalidArgument",
+            "ResourceExhausted"
+          ],
+          "error": null
+        },
+        {
+          "success": true,
+          "nativeAot": true,
+          "rid": "linux-x64",
+          "version": "0.1.0-ci.10.1",
+          "sourceRevision": "1b13c9827f98578c8ba2f7db0c046db114aa7cb8",
+          "cloud": {
+            "service": "arcforges-cloud",
+            "revision": "4571ec8692235485712d4c4e3ef4886c162f2574",
+            "nativeAot": true
+          },
+          "uiGreeting": "Hello, ArcScope!",
+          "checks": [
+            "native-ui-live-action",
+            "unicode-whitespace-boundary",
+            "InvalidArgument",
+            "ResourceExhausted"
+          ],
+          "error": null
+        },
+        {
+          "success": true,
+          "nativeAot": true,
+          "rid": "osx-x64",
+          "version": "0.1.0-ci.10.1",
+          "sourceRevision": "1b13c9827f98578c8ba2f7db0c046db114aa7cb8",
+          "cloud": {
+            "service": "arcforges-cloud",
+            "revision": "4571ec8692235485712d4c4e3ef4886c162f2574",
+            "nativeAot": true
+          },
+          "uiGreeting": "Hello, ArcScope!",
+          "checks": [
+            "native-ui-live-action",
+            "unicode-whitespace-boundary",
+            "InvalidArgument",
+            "ResourceExhausted"
+          ],
+          "error": null
+        },
+        {
+          "success": true,
+          "nativeAot": true,
+          "rid": "osx-arm64",
+          "version": "0.1.0-ci.10.1",
+          "sourceRevision": "1b13c9827f98578c8ba2f7db0c046db114aa7cb8",
+          "cloud": {
+            "service": "arcforges-cloud",
+            "revision": "4571ec8692235485712d4c4e3ef4886c162f2574",
+            "nativeAot": true
+          },
+          "uiGreeting": "Hello, ArcScope!",
+          "checks": [
+            "native-ui-live-action",
+            "unicode-whitespace-boundary",
+            "InvalidArgument",
+            "ResourceExhausted"
+          ],
+          "error": null
+        }
+      ],
+      "ArcSlate": [
+        {
+          "success": true,
+          "nativeAot": true,
+          "rid": "win-x64",
+          "version": "0.1.0-ci.10.1",
+          "sourceRevision": "0cc8093d51cdef20bae8057e77c4bcd80d32b39e",
+          "cloud": {
+            "service": "arcforges-cloud",
+            "revision": "4571ec8692235485712d4c4e3ef4886c162f2574",
+            "nativeAot": true
+          },
+          "uiGreeting": "Hello, ArcSlate!",
+          "checks": [
+            "native-ui-live-action",
+            "unicode-whitespace-boundary",
+            "InvalidArgument",
+            "ResourceExhausted"
+          ],
+          "error": null
+        },
+        {
+          "success": true,
+          "nativeAot": true,
+          "rid": "win-arm64",
+          "version": "0.1.0-ci.10.1",
+          "sourceRevision": "0cc8093d51cdef20bae8057e77c4bcd80d32b39e",
+          "cloud": {
+            "service": "arcforges-cloud",
+            "revision": "4571ec8692235485712d4c4e3ef4886c162f2574",
+            "nativeAot": true
+          },
+          "uiGreeting": "Hello, ArcSlate!",
+          "checks": [
+            "native-ui-live-action",
+            "unicode-whitespace-boundary",
+            "InvalidArgument",
+            "ResourceExhausted"
+          ],
+          "error": null
+        },
+        {
+          "success": true,
+          "nativeAot": true,
+          "rid": "linux-x64",
+          "version": "0.1.0-ci.10.1",
+          "sourceRevision": "0cc8093d51cdef20bae8057e77c4bcd80d32b39e",
+          "cloud": {
+            "service": "arcforges-cloud",
+            "revision": "4571ec8692235485712d4c4e3ef4886c162f2574",
+            "nativeAot": true
+          },
+          "uiGreeting": "Hello, ArcSlate!",
+          "checks": [
+            "native-ui-live-action",
+            "unicode-whitespace-boundary",
+            "InvalidArgument",
+            "ResourceExhausted"
+          ],
+          "error": null
+        },
+        {
+          "success": true,
+          "nativeAot": true,
+          "rid": "osx-x64",
+          "version": "0.1.0-ci.10.1",
+          "sourceRevision": "0cc8093d51cdef20bae8057e77c4bcd80d32b39e",
+          "cloud": {
+            "service": "arcforges-cloud",
+            "revision": "4571ec8692235485712d4c4e3ef4886c162f2574",
+            "nativeAot": true
+          },
+          "uiGreeting": "Hello, ArcSlate!",
+          "checks": [
+            "native-ui-live-action",
+            "unicode-whitespace-boundary",
+            "InvalidArgument",
+            "ResourceExhausted"
+          ],
+          "error": null
+        },
+        {
+          "success": true,
+          "nativeAot": true,
+          "rid": "osx-arm64",
+          "version": "0.1.0-ci.10.1",
+          "sourceRevision": "0cc8093d51cdef20bae8057e77c4bcd80d32b39e",
+          "cloud": {
+            "service": "arcforges-cloud",
+            "revision": "4571ec8692235485712d4c4e3ef4886c162f2574",
+            "nativeAot": true
+          },
+          "uiGreeting": "Hello, ArcSlate!",
+          "checks": [
+            "native-ui-live-action",
+            "unicode-whitespace-boundary",
+            "InvalidArgument",
+            "ResourceExhausted"
+          ],
+          "error": null
+        }
+      ]
+    },
+    "cloudDeployment": {
+      "revision": "4f53ed6a072cc9680101633e8c7e01efd450b84e",
+      "version": "0.1.0-ci.20.1",
+      "imageId": "sha256:be74a2ff33fbdfbddcaa523a02613c7604379e3ba39edc66132823819052edb9",
+      "imageDigest": "registry.cloudflare.com/85a6bb957ba952261f6d177217ca9919/arcforges-cloud@sha256:4595db11627aebb99ef0c7deba2554f8627d0b9b954c82940e5007991730407a",
+      "baseUrl": "https://arcforges.com/api",
+      "deployedAt": "2026-09-21T04:36:45.041Z",
+      "verified": {
+        "at": "2026-09-21T04:37:06.359Z",
+        "health": {
+          "service": "arcforges-cloud",
+          "revision": "4f53ed6a072cc9680101633e8c7e01efd450b84e",
+          "nativeAot": true
+        },
+        "protocol": {
+          "transport": "binary gRPC-Web",
+          "publishedClient": "1.0.0-ci.36.1",
+          "greeting": true,
+          "unicode": true,
+          "invalidArgument": true,
+          "resourceExhausted": true,
+          "workerBoundary": true
+        },
+        "kotlin": {
+          "client": "io.github.arcforges:contracts-connect-client:1.0.0-ci.36.1",
+          "transport": "binary gRPC-Web",
+          "baseUrl": "https://arcforges.com/api",
+          "revision": "4f53ed6a072cc9680101633e8c7e01efd450b84e",
+          "boundary": "worker",
+          "nativeAot": true,
+          "wrongPrefixHttp404": true,
+          "wire": [
+            {
+              "path": "/api/arcforges.hello.v1.HelloService/SayHello",
+              "requestContentType": "application/grpc-web+proto",
+              "requestTimeout": "5S",
+              "responseContentType": "application/grpc-web",
+              "httpStatus": 200,
+              "grpcStatus": 0
+            },
+            {
+              "path": "/api/arcforges.hello.v1.HelloService/SayHello",
+              "requestContentType": "application/grpc-web+proto",
+              "requestTimeout": "5S",
+              "responseContentType": "application/grpc-web",
+              "httpStatus": 200,
+              "grpcStatus": 0
+            },
+            {
+              "path": "/api/arcforges.hello.v1.HelloService/SayHello",
+              "requestContentType": "application/grpc-web+proto",
+              "requestTimeout": "5S",
+              "responseContentType": "application/grpc-web",
+              "httpStatus": 200,
+              "grpcStatus": 0
+            },
+            {
+              "path": "/api/arcforges.hello.v1.HelloService/SayHello",
+              "requestContentType": "application/grpc-web+proto",
+              "requestTimeout": "5S",
+              "responseContentType": "application/grpc-web",
+              "httpStatus": 200,
+              "grpcStatus": 0
+            },
+            {
+              "path": "/api/arcforges.hello.v1.HelloService/SayHello",
+              "requestContentType": "application/grpc-web+proto",
+              "requestTimeout": "5S",
+              "responseContentType": "application/grpc-web",
+              "httpStatus": 200,
+              "grpcStatus": 3
+            },
+            {
+              "path": "/api/arcforges.hello.v1.HelloService/SayHello",
+              "requestContentType": "application/grpc-web+proto",
+              "requestTimeout": "5S",
+              "responseContentType": "application/grpc-web",
+              "httpStatus": 200,
+              "grpcStatus": 8
+            }
+          ]
+        },
+        "webHome": true
+      }
+    },
+    "aiDeployment": {
+      "kind": "cloudflare-real-inference",
+      "verifiedAt": "2026-09-21T04:32:10.130Z",
+      "accountId": "85a6bb957ba952261f6d177217ca9919",
+      "workflow": "arcforges-ai-hello",
+      "smokeProtocol": "verified-hello-v1",
+      "workerVersion": "fddcd518-0d02-4147-8db6-964e76dfb22a",
+      "runId": "hello-fddcd518-0d02-4147-8db6-964e76dfb22a",
+      "sourceCommit": "b50098108cdabdd3d0bdefc44e724c71aba2b0a6",
+      "version": "0.1.0-ci.28.1",
+      "candidateSha256": "4d9043127bea2ce882d12fc1bb46fd0f2da0fb06ce7e0e10207c0070aa296e37",
+      "deployedAt": "2026-09-21T04:32:02.167Z",
+      "output": {
+        "runId": "hello-fddcd518-0d02-4147-8db6-964e76dfb22a",
+        "buildVersion": "0.1.0-ci.28.1",
+        "sourceCommit": "b50098108cdabdd3d0bdefc44e724c71aba2b0a6",
+        "workerVersion": "fddcd518-0d02-4147-8db6-964e76dfb22a",
+        "admission": {
+          "accepted": true,
+          "actual": {
+            "runId": "hello-fddcd518-0d02-4147-8db6-964e76dfb22a",
+            "buildVersion": "0.1.0-ci.28.1",
+            "sourceCommit": "b50098108cdabdd3d0bdefc44e724c71aba2b0a6",
+            "workerVersion": "fddcd518-0d02-4147-8db6-964e76dfb22a"
+          },
+          "expected": {
+            "workerVersion": "fddcd518-0d02-4147-8db6-964e76dfb22a",
+            "sourceCommit": "b50098108cdabdd3d0bdefc44e724c71aba2b0a6",
+            "buildVersion": "0.1.0-ci.28.1"
+          }
+        },
+        "model": "@cf/openai/gpt-oss-20b",
+        "modelCalls": 2,
+        "tool": "say_hello",
+        "toolMessage": "Hello, ArcForges!",
+        "message": "Hello, ArcForges!"
+      }
+    },
+    "mobilePublicAndUpgrade": {
+      "26": {
+        "public": {
+          "result": "passed",
+          "version_code": 1601,
+          "version_name": "0.1.0-ci.16.1",
+          "commit": "f067f3447708ae2e62c334653a8dd4d544980032",
+          "package": "io.github.arcforges.mobile",
+          "sha256": {
+            "app-release-unsigned.apk": "ec3d2326ab7a75a3b3446851f248b58f2aa54c3c684d0c7b885011c719edeb70",
+            "app-release.aab": "a1649d65ad3c10460f8d1b65f2efcc27942357ecb18469287ecd5c3cae305a77",
+            "app-debug.apk": "daa698339b94e4b52ddbcd7f4b244321e18f17ef8009fc249f2992742250d52d",
+            "app-debug-androidTest.apk": "8629afed07f308046e3faa17d0451661ae99ce61cbb0c6ecf9d673003e56e0fa",
+            "mapping.txt": "660edce4b4745c72ef09f9973d1adaec01f5f9c84fd4c0ffcb48a22ae6aed9f4",
+            "THIRD_PARTY_NOTICES.txt": "5e09a010c194e7943e4ec9f53ee63607f34a72c4643ef632c3b6831ab4782130",
+            "licence-closure.json": "bbc3d3f8a578349e807d43fc6c915df47db99d1db9032deaae8d84bd3740926a",
+            "source-provenance.json": "5b3996be3ec921f33e1f15fdebf6332f20c76cf7f3b66e54167d635c0cd04326",
+            "resource-provenance.json": "56a3b8546e126cf062924ab920a6bee7453387a40d4c1240447ba6588b9cf924"
+          },
+          "certificate_sha256": "7a8b3b1402e77c3ec78e7a0b9f99d5358adc321d0e8d2a319c838d1cda181e9c",
+          "public_sha256": {
+            "ArcForges-0.1.0-ci.16.1.aab": "d23596603035d530d488e53555f3a86e69b6f92669d6c60ef9e92452efb3e572",
+            "ArcForges-0.1.0-ci.16.1.apk": "789d129d25cc139ea0c4912831dba644711dae6ffae136edaaf866e3d163ed22",
+            "ArcForges-0.1.0-ci.16.1.apk.idsig": "0ee326842df5841c87f44ff697867c0d90c10ccad4b240841d818745dc14e4b9",
+            "THIRD_PARTY_NOTICES.txt": "5e09a010c194e7943e4ec9f53ee63607f34a72c4643ef632c3b6831ab4782130",
+            "licence-closure.json": "bbc3d3f8a578349e807d43fc6c915df47db99d1db9032deaae8d84bd3740926a",
+            "mapping.txt": "660edce4b4745c72ef09f9973d1adaec01f5f9c84fd4c0ffcb48a22ae6aed9f4",
+            "resource-provenance.json": "56a3b8546e126cf062924ab920a6bee7453387a40d4c1240447ba6588b9cf924",
+            "signed-resource-provenance.json": "5cabcf18f9b718ef2a53114a4c35c71d8bb2b5e011d5300a2b1a6de894bb7882",
+            "source-provenance.json": "5b3996be3ec921f33e1f15fdebf6332f20c76cf7f3b66e54167d635c0cd04326"
+          },
+          "baseline": {
+            "version": "0.1.0-ci.9.1",
+            "sha256": "ac9af161ad9db56ab7ce578651631be1f779edd64f9488089c8b60f3dc0dcf47"
+          }
+        },
+        "upgrade": {
+          "result": "passed",
+          "commit": "f067f3447708ae2e62c334653a8dd4d544980032",
+          "serial": "emulator-5554",
+          "before": {
+            "uid": "10077",
+            "firstInstallTime": "2026-09-21 04:56:06",
+            "versionCode": "901"
+          },
+          "after": {
+            "uid": "10077",
+            "firstInstallTime": "2026-09-21 04:56:06",
+            "versionCode": "1601"
+          },
+          "certificate_sha256": "7a8b3b1402e77c3ec78e7a0b9f99d5358adc321d0e8d2a319c838d1cda181e9c",
+          "publishedApkSha256": "789d129d25cc139ea0c4912831dba644711dae6ffae136edaaf866e3d163ed22"
+        },
+        "liveCloud": {
+          "package": "io.github.arcforges.mobile",
+          "serial": "emulator-5554",
+          "endpoint": "https://arcforges.com/api",
+          "button_presses": 1,
+          "response": "Hello, World!",
+          "minified_apk": "ArcForges-0.1.0-ci.16.1.apk"
+        }
+      },
+      "36": {
+        "public": {
+          "result": "passed",
+          "version_code": 1601,
+          "version_name": "0.1.0-ci.16.1",
+          "commit": "f067f3447708ae2e62c334653a8dd4d544980032",
+          "package": "io.github.arcforges.mobile",
+          "sha256": {
+            "app-release-unsigned.apk": "ec3d2326ab7a75a3b3446851f248b58f2aa54c3c684d0c7b885011c719edeb70",
+            "app-release.aab": "a1649d65ad3c10460f8d1b65f2efcc27942357ecb18469287ecd5c3cae305a77",
+            "app-debug.apk": "daa698339b94e4b52ddbcd7f4b244321e18f17ef8009fc249f2992742250d52d",
+            "app-debug-androidTest.apk": "8629afed07f308046e3faa17d0451661ae99ce61cbb0c6ecf9d673003e56e0fa",
+            "mapping.txt": "660edce4b4745c72ef09f9973d1adaec01f5f9c84fd4c0ffcb48a22ae6aed9f4",
+            "THIRD_PARTY_NOTICES.txt": "5e09a010c194e7943e4ec9f53ee63607f34a72c4643ef632c3b6831ab4782130",
+            "licence-closure.json": "bbc3d3f8a578349e807d43fc6c915df47db99d1db9032deaae8d84bd3740926a",
+            "source-provenance.json": "5b3996be3ec921f33e1f15fdebf6332f20c76cf7f3b66e54167d635c0cd04326",
+            "resource-provenance.json": "56a3b8546e126cf062924ab920a6bee7453387a40d4c1240447ba6588b9cf924"
+          },
+          "certificate_sha256": "7a8b3b1402e77c3ec78e7a0b9f99d5358adc321d0e8d2a319c838d1cda181e9c",
+          "public_sha256": {
+            "ArcForges-0.1.0-ci.16.1.aab": "d23596603035d530d488e53555f3a86e69b6f92669d6c60ef9e92452efb3e572",
+            "ArcForges-0.1.0-ci.16.1.apk": "789d129d25cc139ea0c4912831dba644711dae6ffae136edaaf866e3d163ed22",
+            "ArcForges-0.1.0-ci.16.1.apk.idsig": "0ee326842df5841c87f44ff697867c0d90c10ccad4b240841d818745dc14e4b9",
+            "THIRD_PARTY_NOTICES.txt": "5e09a010c194e7943e4ec9f53ee63607f34a72c4643ef632c3b6831ab4782130",
+            "licence-closure.json": "bbc3d3f8a578349e807d43fc6c915df47db99d1db9032deaae8d84bd3740926a",
+            "mapping.txt": "660edce4b4745c72ef09f9973d1adaec01f5f9c84fd4c0ffcb48a22ae6aed9f4",
+            "resource-provenance.json": "56a3b8546e126cf062924ab920a6bee7453387a40d4c1240447ba6588b9cf924",
+            "signed-resource-provenance.json": "5cabcf18f9b718ef2a53114a4c35c71d8bb2b5e011d5300a2b1a6de894bb7882",
+            "source-provenance.json": "5b3996be3ec921f33e1f15fdebf6332f20c76cf7f3b66e54167d635c0cd04326"
+          },
+          "baseline": {
+            "version": "0.1.0-ci.9.1",
+            "sha256": "ac9af161ad9db56ab7ce578651631be1f779edd64f9488089c8b60f3dc0dcf47"
+          }
+        },
+        "upgrade": {
+          "result": "passed",
+          "commit": "f067f3447708ae2e62c334653a8dd4d544980032",
+          "serial": "emulator-5554",
+          "before": {
+            "uid": "10216",
+            "firstInstallTime": "2026-09-21 04:55:41",
+            "versionCode": "901"
+          },
+          "after": {
+            "uid": "10216",
+            "firstInstallTime": "2026-09-21 04:55:41",
+            "versionCode": "1601"
+          },
+          "certificate_sha256": "7a8b3b1402e77c3ec78e7a0b9f99d5358adc321d0e8d2a319c838d1cda181e9c",
+          "publishedApkSha256": "789d129d25cc139ea0c4912831dba644711dae6ffae136edaaf866e3d163ed22"
+        },
+        "liveCloud": {
+          "package": "io.github.arcforges.mobile",
+          "serial": "emulator-5554",
+          "endpoint": "https://arcforges.com/api",
+          "button_presses": 1,
+          "response": "Hello, World!",
+          "minified_apk": "ArcForges-0.1.0-ci.16.1.apk"
+        }
+      }
+    }
+  },
+  "review": {
+    "completeDiffsReviewed": true,
+    "allEightImplementationPrChecksGreenBeforeMerge": true,
+    "allChangedOwnerMainChecksGreen": true,
+    "branchesAndWorktreesRetained": true,
+    "unresolvedFindings": []
+  },
+  "limitations": [
+    "Web source was unchanged; current local npm/adapter/browser checks supplement its earlier successful main CI, not a newly triggered Web pipeline.",
+    "Web direct esproj dispatch passed. CLI MSBuild of win.slnx skipped esproj; full solution/IDE dispatch belongs to WP02.03 and is not claimed here.",
+    "Desktop runtime receipts preserve the older Cloud revision actually observed; the separate Cloud deployment receipt identifies the newer deployment.",
+    "Snapshot coordinates are mutable; timestamped paths and exact public hashes identify this tested build.",
+    "Local compatible JDK/native builds are not represented as exact hosted producer binaries.",
+    "These Hello/protocol/build probes do not prove later product features, production/store promotion or full commercial readiness."
+  ],
+  "unavailableExternalPrerequisites": []
+}
