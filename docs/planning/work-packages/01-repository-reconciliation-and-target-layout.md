@@ -132,6 +132,8 @@
 
 **Current execution profile.** [Native reconciliation](../../assurance/wp01-03-native-reconciliation-policy.md) separates existing ABI probes and package admission from the already scheduled functional parser/helper producers. Independent test-oracle bindings stay in tests; production bindings have one capability owner.
 
+**Recorded execution (2026-09-20).** [Native reconciliation evidence](../../assurance/wp01-03-native-reconciliation.md) closes the current dispositions: test-only oracle relocation, single production binding ownership, selected native admissions and product-copy audit. The reviewed implementation passed all PR and post-merge gates, local independent JIT/AOT/C17 consumers and public payload comparison for all ten `1.0.0-ci.17.1` packages. Functional parser/helper acceptance remains with its named producers.
+
 <a id="rule-wp-01.04"></a>
 
 ### WP-01.04 — Test suite mapping
