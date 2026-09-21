@@ -133,6 +133,8 @@
 
 **Completion gate.** Runtime and build entry points match the fixed repository graph and produce foundation candidates for WP06.
 
+**Completed execution.** [Runtime boundaries and ordered plan](../../assurance/wp02-03-runtime-boundary-profile.md) records the pre-implementation decisions. [Implementation evidence](../../assurance/wp02-03-runtime-boundary-evidence.md) records the reviewed Web repair, actual Windows IDE startup and negative cases, fresh Windows/Linux CI, original-candidate public byte verification and real three-browser Cloud calls. The eight unchanged owners retain their exact accepted runtime/CI evidence and owner-local graphs. This closes WP02.03 only; the first consolidated foundation integration manifest remains WP06-owned.
+
 <a id="rule-wp-02.04"></a>
 
 ### WP-02.04 — Version axis plumbing
