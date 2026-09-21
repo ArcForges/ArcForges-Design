@@ -20,7 +20,7 @@
 
 **Out of scope.** Final product/store signing and public promotion belong to WP50. This package implements candidate publication/signing metadata mechanisms and BuildPolicy packaging; actual Contracts/native capability producers are WP03/06. Policy test implementations belong to WP05.
 
-**Why this package exists.** The corrected inventory records central desktop/contracts AOT imports and 165 committed per-project NuGet lockfiles. Validate evaluated properties and locked restore, repair uncovered AOT chains, and establish the accepted Web toolchain; file-local absence is not an effective-property defect.
+**Why this package exists.** The historical inventory records central desktop/contracts AOT imports and 165 per-project NuGet lockfiles; the current nine-owner graph has 43 managed projects with 43 committed NuGet locks. Validate evaluated properties and locked restore, repair uncovered AOT chains, and establish the accepted Web toolchain; file-local absence is not an effective-property defect.
 
 ---
 
@@ -90,11 +90,13 @@
 ### WP-02.00 — Pin and lock each toolchain
 
 
-**What must be fully done.** Pin the exact toolchain/package versions in the platform matrix: each .NET owner has SDK/central NuGet/locked restore; each TS owner has Node/npm and one root package-lock; DesktopPlatform has the same vcpkg baseline/overlays in local and CI. Contracts owns protoc/generator pins and generated package metadata. Web esproj delegates to its own npm commands without implicit restore.
+**What must be fully done.** Pin the exact toolchain/package versions in the platform matrix: each .NET owner has SDK/central NuGet/locked restore; each TS owner has Node/npm and one root package-lock; DesktopPlatform keeps committed vcpkg producer baseline/overlays for CI and candidate provenance; local development reuses already installed compatible dependencies without a mandatory reinstall, under the [toolchain profile](../../assurance/wp02-00-toolchain-profile.md). Contracts owns protoc/generator pins and generated package metadata. Web esproj delegates to its own npm commands without implicit restore.
 
 **Testing requirements.** Clean isolated restores and offline repeat from fetched caches; altered lock/baseline or floating dependency fails.
 
 **Completion gate.** Every selected toolchain is reproducible from committed pins with no dependency on sibling checkout state.
+
+**Current execution profile.** [Toolchain pins and restore](../../assurance/wp02-00-toolchain-profile.md) records the verified nine-owner inputs, bounded repairs, offline/negative evidence requirements and explicit local native reuse policy. It does not claim completion before implementation and CI.
 
 <a id="rule-wp-02.01"></a>
 
