@@ -22,4 +22,10 @@ Only canonical repository push runs may publish. Release tags must pass the same
 
 Acceptance requires negative publication guards, real snapshot repository transport/metadata resolution, real isolated package consumers, all applicable PR checks, and a post-merge live snapshot receipt with matching bytes. A local repository test is not evidence of Sonatype namespace enablement. Tag selection and release candidate tests may run without publishing an unrequested formal release.
 
-[Implementation evidence and the live Sonatype authorization gate](../assurance/contracts-publication-channels-evidence.md) record the merged pipeline, passed tests and remaining external setup. The live gate remains open until real publication and registry consumption pass.
+[Implementation and live publication evidence](../assurance/contracts-publication-channels-evidence.md) records the successful failed-job retry, all 20 public Maven files matching the tested candidate, and actual isolated registry consumption. The snapshot authorization and consumption gate is closed for that candidate.
+
+## Publishing usage and commercial operation
+
+External policy checked 2026-09-20: [Sonatype publishing limits](https://central.sonatype.org/publish/maven-central-publishing-limits/) measure current-calendar-month publishing activity, not cumulative retained storage; published Central releases cannot be deleted to reclaim an allowance. Snapshot retention does not establish a quota exemption, and no such exemption has been verified. The account Usage Center is authoritative for current thresholds and measured usage.
+
+[Sonatype's 2026-09-08 commercial-use announcement](https://central.sonatype.org/news/20260908_publisher_tiers_commercial_use/) states that commercial-nature artifacts require Publisher Pro from 2026-10-01 independently of publishing volume. Commercial operation must resolve the applicable subscription or approved classification with Sonatype before relying on continued distribution. This account/commercial prerequisite is distinct from the passed technical snapshot gate; neither tag-only formal releases nor successful snapshot uploads prove free commercial eligibility. No subscription purchase or exemption is claimed by this evidence.

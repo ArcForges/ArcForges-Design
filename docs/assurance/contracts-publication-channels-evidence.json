@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "change": "Contracts Maven development snapshots and canonical release tags",
-  "status": "implementation-merged-live-maven-gate-blocked",
-  "verifiedAt": "2026-09-21T00:25:08.478756+00:00",
+  "status": "implementation-merged-live-maven-verified",
+  "verifiedAt": "2026-09-21T02:04:49.331020+00:00",
   "designPolicy": {
     "pullRequest": 36,
     "mergeCommit": "816199b3ebdb82fbc2864b8c273056583ed5e850",
@@ -421,13 +421,14 @@
     ]
   },
   "mainCi": {
-    "conclusion": "failure",
+    "attempt": 2,
+    "conclusion": "success",
     "headSha": "24c05b7fc215896eeec91437ffe8846f2d4467a1",
     "jobs": [
       {
         "completedAt": "2026-09-21T00:15:56Z",
         "conclusion": "success",
-        "databaseId": 106174443148,
+        "databaseId": 106187409907,
         "name": "Build candidate",
         "startedAt": "2026-09-21T00:12:36Z",
         "status": "completed",
@@ -609,12 +610,12 @@
             "status": "completed"
           }
         ],
-        "url": "https://github.com/ArcForges/Contracts/actions/runs/35546947568/job/106174443148"
+        "url": "https://github.com/ArcForges/Contracts/actions/runs/35546947568/job/106187409907"
       },
       {
         "completedAt": "2026-09-21T00:20:18Z",
         "conclusion": "success",
-        "databaseId": 106174977088,
+        "databaseId": 106187428689,
         "name": "Consumer (windows-latest)",
         "startedAt": "2026-09-21T00:15:58Z",
         "status": "completed",
@@ -756,12 +757,12 @@
             "status": "completed"
           }
         ],
-        "url": "https://github.com/ArcForges/Contracts/actions/runs/35546947568/job/106174977088"
+        "url": "https://github.com/ArcForges/Contracts/actions/runs/35546947568/job/106187428689"
       },
       {
         "completedAt": "2026-09-21T00:18:37Z",
         "conclusion": "success",
-        "databaseId": 106174977123,
+        "databaseId": 106187410286,
         "name": "Consumer (ubuntu-latest)",
         "startedAt": "2026-09-21T00:15:58Z",
         "status": "completed",
@@ -903,12 +904,12 @@
             "status": "completed"
           }
         ],
-        "url": "https://github.com/ArcForges/Contracts/actions/runs/35546947568/job/106174977123"
+        "url": "https://github.com/ArcForges/Contracts/actions/runs/35546947568/job/106187410286"
       },
       {
         "completedAt": "2026-09-21T00:20:24Z",
         "conclusion": "success",
-        "databaseId": 106175636871,
+        "databaseId": 106187410437,
         "name": "Verify",
         "startedAt": "2026-09-21T00:20:20Z",
         "status": "completed",
@@ -938,12 +939,12 @@
             "status": "completed"
           }
         ],
-        "url": "https://github.com/ArcForges/Contracts/actions/runs/35546947568/job/106175636871"
+        "url": "https://github.com/ArcForges/Contracts/actions/runs/35546947568/job/106187410437"
       },
       {
         "completedAt": "2026-09-21T00:20:46Z",
         "conclusion": "success",
-        "databaseId": 106175652533,
+        "databaseId": 106187410523,
         "name": "Publish NuGet",
         "startedAt": "2026-09-21T00:20:28Z",
         "status": "completed",
@@ -1045,119 +1046,119 @@
             "status": "completed"
           }
         ],
-        "url": "https://github.com/ArcForges/Contracts/actions/runs/35546947568/job/106175652533"
+        "url": "https://github.com/ArcForges/Contracts/actions/runs/35546947568/job/106187410523"
       },
       {
-        "completedAt": "2026-09-21T00:21:01Z",
-        "conclusion": "failure",
-        "databaseId": 106175652889,
+        "completedAt": "2026-09-21T01:42:04Z",
+        "conclusion": "success",
+        "databaseId": 106187410548,
         "name": "Publish Maven channel",
-        "startedAt": "2026-09-21T00:20:28Z",
+        "startedAt": "2026-09-21T01:40:35Z",
         "status": "completed",
         "steps": [
           {
-            "completedAt": "2026-09-21T00:20:30Z",
+            "completedAt": "2026-09-21T01:40:39Z",
             "conclusion": "success",
             "name": "Set up job",
             "number": 1,
-            "startedAt": "2026-09-21T00:20:28Z",
+            "startedAt": "2026-09-21T01:40:37Z",
             "status": "completed"
           },
           {
-            "completedAt": "2026-09-21T00:20:32Z",
+            "completedAt": "2026-09-21T01:40:40Z",
             "conclusion": "success",
             "name": "Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
             "number": 2,
-            "startedAt": "2026-09-21T00:20:30Z",
+            "startedAt": "2026-09-21T01:40:39Z",
             "status": "completed"
           },
           {
-            "completedAt": "2026-09-21T00:20:32Z",
+            "completedAt": "2026-09-21T01:40:40Z",
             "conclusion": "success",
             "name": "Run actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6",
             "number": 3,
-            "startedAt": "2026-09-21T00:20:32Z",
+            "startedAt": "2026-09-21T01:40:40Z",
             "status": "completed"
           },
           {
-            "completedAt": "2026-09-21T00:20:32Z",
+            "completedAt": "2026-09-21T01:40:40Z",
             "conclusion": "success",
             "name": "Run actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
             "number": 4,
-            "startedAt": "2026-09-21T00:20:32Z",
+            "startedAt": "2026-09-21T01:40:40Z",
             "status": "completed"
           },
           {
-            "completedAt": "2026-09-21T00:20:33Z",
+            "completedAt": "2026-09-21T01:40:42Z",
             "conclusion": "success",
             "name": "Run actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c",
             "number": 5,
-            "startedAt": "2026-09-21T00:20:32Z",
+            "startedAt": "2026-09-21T01:40:40Z",
             "status": "completed"
           },
           {
-            "completedAt": "2026-09-21T00:20:34Z",
+            "completedAt": "2026-09-21T01:40:43Z",
             "conclusion": "success",
             "name": "Verify the candidate before exposing signing credentials",
             "number": 6,
-            "startedAt": "2026-09-21T00:20:33Z",
+            "startedAt": "2026-09-21T01:40:42Z",
             "status": "completed"
           },
           {
-            "completedAt": "2026-09-21T00:20:57Z",
-            "conclusion": "failure",
+            "completedAt": "2026-09-21T01:42:00Z",
+            "conclusion": "success",
             "name": "Publish tested Maven files to the selected channel",
             "number": 7,
-            "startedAt": "2026-09-21T00:20:34Z",
+            "startedAt": "2026-09-21T01:40:43Z",
             "status": "completed"
           },
           {
-            "completedAt": "2026-09-21T00:20:59Z",
+            "completedAt": "2026-09-21T01:42:01Z",
             "conclusion": "success",
             "name": "Retain deployment receipt for failed-job recovery",
             "number": 8,
-            "startedAt": "2026-09-21T00:20:57Z",
+            "startedAt": "2026-09-21T01:42:00Z",
             "status": "completed"
           },
           {
-            "completedAt": "2026-09-21T00:20:59Z",
-            "conclusion": "skipped",
+            "completedAt": "2026-09-21T01:42:01Z",
+            "conclusion": "success",
             "name": "Post Run actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
             "number": 14,
-            "startedAt": "2026-09-21T00:20:59Z",
+            "startedAt": "2026-09-21T01:42:01Z",
             "status": "completed"
           },
           {
-            "completedAt": "2026-09-21T00:20:59Z",
+            "completedAt": "2026-09-21T01:42:01Z",
             "conclusion": "success",
             "name": "Post Run actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6",
             "number": 15,
-            "startedAt": "2026-09-21T00:20:59Z",
+            "startedAt": "2026-09-21T01:42:01Z",
             "status": "completed"
           },
           {
-            "completedAt": "2026-09-21T00:20:59Z",
+            "completedAt": "2026-09-21T01:42:02Z",
             "conclusion": "success",
             "name": "Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
             "number": 16,
-            "startedAt": "2026-09-21T00:20:59Z",
+            "startedAt": "2026-09-21T01:42:01Z",
             "status": "completed"
           },
           {
-            "completedAt": "2026-09-21T00:20:59Z",
+            "completedAt": "2026-09-21T01:42:02Z",
             "conclusion": "success",
             "name": "Complete job",
             "number": 17,
-            "startedAt": "2026-09-21T00:20:59Z",
+            "startedAt": "2026-09-21T01:42:02Z",
             "status": "completed"
           }
         ],
-        "url": "https://github.com/ArcForges/Contracts/actions/runs/35546947568/job/106175652889"
+        "url": "https://github.com/ArcForges/Contracts/actions/runs/35546947568/job/106187410548"
       },
       {
         "completedAt": "2026-09-21T00:20:54Z",
         "conclusion": "success",
-        "databaseId": 106175652939,
+        "databaseId": 106187410439,
         "name": "Publish npm",
         "startedAt": "2026-09-21T00:20:28Z",
         "status": "completed",
@@ -1251,7 +1252,7 @@
             "status": "completed"
           }
         ],
-        "url": "https://github.com/ArcForges/Contracts/actions/runs/35546947568/job/106175652939"
+        "url": "https://github.com/ArcForges/Contracts/actions/runs/35546947568/job/106187410439"
       }
     ],
     "status": "completed"
@@ -1386,25 +1387,8 @@
       "phase": "upload-started"
     }
   },
-  "snapshotPublication": {
-    "receipt": {
-      "channel": "snapshot",
-      "version": "1.0.0-ci.65.1",
-      "mavenVersion": "1.0.0-SNAPSHOT",
-      "commit": "24c05b7fc215896eeec91437ffe8846f2d4467a1",
-      "candidateSha256": "b3a3c68e00274cc6463842b561f1863cbbe4f7b92dc91fb282736685a37768d3",
-      "phase": "upload-started"
-    },
-    "result": "blocked",
-    "httpStatus": 403,
-    "operation": "PUT contract-fixtures-1.0.0-20260921.002042-1.pom",
-    "jobStartedAt": "2026-09-21T00:20:28Z",
-    "jobCompletedAt": "2026-09-21T00:21:01Z",
-    "failureLogSha256": "334a9b11b6d91f385ad75dc298e7cf80560cb1b3bb92ec4046b688bb4b13fd98",
-    "liveRegistryConsumer": "not-run because snapshot publication is unavailable"
-  },
   "publicRegistries": {
-    "result": "failed",
+    "result": "passed",
     "commit": "24c05b7fc215896eeec91437ffe8846f2d4467a1",
     "version": "1.0.0-ci.65.1",
     "packages": [
@@ -1424,9 +1408,135 @@
         "result": "all-original-members-identical",
         "registrySignatureExcluded": true,
         "sha256": "95aa4dc1bd40b852987edea9fd15cf639836def462cca285aa95b77144e0303d"
+      },
+      {
+        "id": "io.github.arcforges",
+        "result": "all-candidate-files-identical",
+        "mavenVersion": "1.0.0-SNAPSHOT",
+        "files": [
+          {
+            "candidate": "io/github/arcforges/contracts-proto/1.0.0-SNAPSHOT/contracts-proto-1.0.0-SNAPSHOT.jar",
+            "remote": "io/github/arcforges/contracts-proto/1.0.0-SNAPSHOT/contracts-proto-1.0.0-20260921.014054-1.jar",
+            "sha256": "3afdacfd86f628d7264307a71a850193e751f9052a6569c0a3d5ea23e196fa80",
+            "matches": true
+          },
+          {
+            "candidate": "io/github/arcforges/contracts-proto/1.0.0-SNAPSHOT/contracts-proto-1.0.0-SNAPSHOT.pom",
+            "remote": "io/github/arcforges/contracts-proto/1.0.0-SNAPSHOT/contracts-proto-1.0.0-20260921.014054-1.pom",
+            "sha256": "e0456bda007824763550a2d04b57a8c0b217ea16358876722d0324630e6b09ba",
+            "matches": true
+          },
+          {
+            "candidate": "io/github/arcforges/contracts-proto/1.0.0-SNAPSHOT/contracts-proto-1.0.0-SNAPSHOT-sources.jar",
+            "remote": "io/github/arcforges/contracts-proto/1.0.0-SNAPSHOT/contracts-proto-1.0.0-20260921.014054-1-sources.jar",
+            "sha256": "452219b2048081b4aee2cbab83a628847b1616c37117e1f0d48e84e468b9cd25",
+            "matches": true
+          },
+          {
+            "candidate": "io/github/arcforges/contracts-proto/1.0.0-SNAPSHOT/contracts-proto-1.0.0-SNAPSHOT.module",
+            "remote": "io/github/arcforges/contracts-proto/1.0.0-SNAPSHOT/contracts-proto-1.0.0-20260921.014054-1.module",
+            "sha256": "6ce72582c01a98b4f5c5b3a4085a18231e55b23c74ebf4f17df5752d6342a7c7",
+            "matches": true
+          },
+          {
+            "candidate": "io/github/arcforges/contracts-proto/1.0.0-SNAPSHOT/contracts-proto-1.0.0-SNAPSHOT-javadoc.jar",
+            "remote": "io/github/arcforges/contracts-proto/1.0.0-SNAPSHOT/contracts-proto-1.0.0-20260921.014054-1-javadoc.jar",
+            "sha256": "ae77ecf8f2d0a1dcf409824de1b8750ee1a5e7780997e1f40c16d2bf66800b78",
+            "matches": true
+          },
+          {
+            "candidate": "io/github/arcforges/contracts-client/1.0.0-SNAPSHOT/contracts-client-1.0.0-SNAPSHOT.jar",
+            "remote": "io/github/arcforges/contracts-client/1.0.0-SNAPSHOT/contracts-client-1.0.0-20260921.014054-1.jar",
+            "sha256": "8d3f1d68649d71cbf16bab13563bd4addc9fde37f88ba1d590bca5b1be1916a7",
+            "matches": true
+          },
+          {
+            "candidate": "io/github/arcforges/contracts-client/1.0.0-SNAPSHOT/contracts-client-1.0.0-SNAPSHOT.pom",
+            "remote": "io/github/arcforges/contracts-client/1.0.0-SNAPSHOT/contracts-client-1.0.0-20260921.014054-1.pom",
+            "sha256": "5dd17f9e809195f3f57a386151246e40563c31e0539a447468bd9a8462c1f8a1",
+            "matches": true
+          },
+          {
+            "candidate": "io/github/arcforges/contracts-client/1.0.0-SNAPSHOT/contracts-client-1.0.0-SNAPSHOT-javadoc.jar",
+            "remote": "io/github/arcforges/contracts-client/1.0.0-SNAPSHOT/contracts-client-1.0.0-20260921.014054-1-javadoc.jar",
+            "sha256": "ee84123ef412ba4ad2e8d6540729e7d3f03b3661f7becad7a408f2404705efc6",
+            "matches": true
+          },
+          {
+            "candidate": "io/github/arcforges/contracts-client/1.0.0-SNAPSHOT/contracts-client-1.0.0-SNAPSHOT-sources.jar",
+            "remote": "io/github/arcforges/contracts-client/1.0.0-SNAPSHOT/contracts-client-1.0.0-20260921.014054-1-sources.jar",
+            "sha256": "8d17bc7e1ffa4f600de28696afb71d88bb217a524edb3a362206a72c77570a08",
+            "matches": true
+          },
+          {
+            "candidate": "io/github/arcforges/contracts-client/1.0.0-SNAPSHOT/contracts-client-1.0.0-SNAPSHOT.module",
+            "remote": "io/github/arcforges/contracts-client/1.0.0-SNAPSHOT/contracts-client-1.0.0-20260921.014054-1.module",
+            "sha256": "66ec06c819f451b5b401963b319bbcb198ef0cd01c1030559f1d406d1331780d",
+            "matches": true
+          },
+          {
+            "candidate": "io/github/arcforges/contracts-connect-client/1.0.0-SNAPSHOT/contracts-connect-client-1.0.0-SNAPSHOT-sources.jar",
+            "remote": "io/github/arcforges/contracts-connect-client/1.0.0-SNAPSHOT/contracts-connect-client-1.0.0-20260921.014054-1-sources.jar",
+            "sha256": "8ec9390795d25830e879e55e40e110a02d9c650415bdaef7ad54a72174e1bec7",
+            "matches": true
+          },
+          {
+            "candidate": "io/github/arcforges/contracts-connect-client/1.0.0-SNAPSHOT/contracts-connect-client-1.0.0-SNAPSHOT-javadoc.jar",
+            "remote": "io/github/arcforges/contracts-connect-client/1.0.0-SNAPSHOT/contracts-connect-client-1.0.0-20260921.014054-1-javadoc.jar",
+            "sha256": "89fef560caf40cc7936f13dd10e2c2d106f33b070be81f3b769727c8b10a7068",
+            "matches": true
+          },
+          {
+            "candidate": "io/github/arcforges/contracts-connect-client/1.0.0-SNAPSHOT/contracts-connect-client-1.0.0-SNAPSHOT.pom",
+            "remote": "io/github/arcforges/contracts-connect-client/1.0.0-SNAPSHOT/contracts-connect-client-1.0.0-20260921.014054-1.pom",
+            "sha256": "d2548facdd8e959deecc26bd13835673857dc8ebd3ae29889b11fa50304253a4",
+            "matches": true
+          },
+          {
+            "candidate": "io/github/arcforges/contracts-connect-client/1.0.0-SNAPSHOT/contracts-connect-client-1.0.0-SNAPSHOT.module",
+            "remote": "io/github/arcforges/contracts-connect-client/1.0.0-SNAPSHOT/contracts-connect-client-1.0.0-20260921.014054-1.module",
+            "sha256": "c9e628809ca8701f478630604caa1833b9f88af926ee533cfc11638c08cb11d9",
+            "matches": true
+          },
+          {
+            "candidate": "io/github/arcforges/contracts-connect-client/1.0.0-SNAPSHOT/contracts-connect-client-1.0.0-SNAPSHOT.jar",
+            "remote": "io/github/arcforges/contracts-connect-client/1.0.0-SNAPSHOT/contracts-connect-client-1.0.0-20260921.014054-1.jar",
+            "sha256": "2c3532ce0023bdcae8695a2a88d4ef1c4a918be5f7b89e8fdb579b07fb4e7f09",
+            "matches": true
+          },
+          {
+            "candidate": "io/github/arcforges/contract-fixtures/1.0.0-SNAPSHOT/contract-fixtures-1.0.0-SNAPSHOT.jar",
+            "remote": "io/github/arcforges/contract-fixtures/1.0.0-SNAPSHOT/contract-fixtures-1.0.0-20260921.014054-1.jar",
+            "sha256": "7cfae906e142f044c0647848a9bf4abfeb57f2287c942ef7d19a0856146eb25d",
+            "matches": true
+          },
+          {
+            "candidate": "io/github/arcforges/contract-fixtures/1.0.0-SNAPSHOT/contract-fixtures-1.0.0-SNAPSHOT-sources.jar",
+            "remote": "io/github/arcforges/contract-fixtures/1.0.0-SNAPSHOT/contract-fixtures-1.0.0-20260921.014054-1-sources.jar",
+            "sha256": "7a0c26554276fb67c1d8dfcef3bf80cf472c960b0b0098fcbbf5a1b6a939803d",
+            "matches": true
+          },
+          {
+            "candidate": "io/github/arcforges/contract-fixtures/1.0.0-SNAPSHOT/contract-fixtures-1.0.0-SNAPSHOT.module",
+            "remote": "io/github/arcforges/contract-fixtures/1.0.0-SNAPSHOT/contract-fixtures-1.0.0-20260921.014054-1.module",
+            "sha256": "995f53534cbb5e926eadd20291d0883a98c4ccae6a1dc43eb8b303f981e7c55e",
+            "matches": true
+          },
+          {
+            "candidate": "io/github/arcforges/contract-fixtures/1.0.0-SNAPSHOT/contract-fixtures-1.0.0-SNAPSHOT.pom",
+            "remote": "io/github/arcforges/contract-fixtures/1.0.0-SNAPSHOT/contract-fixtures-1.0.0-20260921.014054-1.pom",
+            "sha256": "2999b41f4c90edb1839357a5d708d1ccbe04c4db56f811df6a42657c714e5205",
+            "matches": true
+          },
+          {
+            "candidate": "io/github/arcforges/contract-fixtures/1.0.0-SNAPSHOT/contract-fixtures-1.0.0-SNAPSHOT-javadoc.jar",
+            "remote": "io/github/arcforges/contract-fixtures/1.0.0-SNAPSHOT/contract-fixtures-1.0.0-20260921.014054-1-javadoc.jar",
+            "sha256": "fce613a0c6b59ce4fc92fc7e6c939ea4b2f17951ed25f8213c448af83ae8de15",
+            "matches": true
+          }
+        ]
       }
-    ],
-    "error": "HTTP Error 404: io/github/arcforges/contracts-proto/1.0.0-SNAPSHOT/maven-metadata.xml"
+    ]
   },
   "localSnapshotConsumer": {
     "version": "1.0.0-ci.61.1",
@@ -1600,10 +1710,9 @@
     {
       "owner": "Sonatype namespace administrator",
       "gate": "Permit SNAPSHOT publication for io.github.arcforges",
-      "observed": "First authenticated snapshot POM PUT returned HTTP 403; public snapshot metadata remains unavailable.",
-      "requiredAction": "Confirm or enable SNAPSHOTs in Portal namespace settings, verify publishing-token namespace permissions if already enabled, then rerun only the failed Maven job of run 35546947568.",
-      "settingVerified": false,
-      "complete": false
+      "observed": "User supplied the SNAPSHOTs enabled namespace badge; failed-job retry published and independently verified all 20 files and actual registry consumers.",
+      "settingVerified": true,
+      "complete": true
     }
   ],
   "retainedBranches": {
@@ -1613,13 +1722,221 @@
     ],
     "Design": [
       "codex/contracts-publication-channels",
-      "codex/contracts-snapshot-evidence"
+      "codex/contracts-snapshot-evidence",
+      "codex/contracts-snapshot-verified"
     ]
   },
   "limits": [
-    "No complete cross-registry release or successful live Maven consumption is claimed.",
+    "Development publication and live Maven consumption passed; snapshots remain mutable and are not immutable production releases.",
     "Formal tag selection, signing and isolated consumers were tested without creating an unrequested production release.",
     "No browser or Android physical-device acceptance is claimed. Hello probes do not establish full product readiness.",
     "Existing immutable consumer locks remain unchanged."
-  ]
+  ],
+  "snapshotPublicationAttempt1": {
+    "receipt": {
+      "channel": "snapshot",
+      "version": "1.0.0-ci.65.1",
+      "mavenVersion": "1.0.0-SNAPSHOT",
+      "commit": "24c05b7fc215896eeec91437ffe8846f2d4467a1",
+      "candidateSha256": "b3a3c68e00274cc6463842b561f1863cbbe4f7b92dc91fb282736685a37768d3",
+      "phase": "upload-started"
+    },
+    "result": "blocked",
+    "httpStatus": 403,
+    "operation": "PUT contract-fixtures-1.0.0-20260921.002042-1.pom",
+    "jobStartedAt": "2026-09-21T00:20:28Z",
+    "jobCompletedAt": "2026-09-21T00:21:01Z",
+    "failureLogSha256": "334a9b11b6d91f385ad75dc298e7cf80560cb1b3bb92ec4046b688bb4b13fd98",
+    "liveRegistryConsumer": "not-run because snapshot publication is unavailable"
+  },
+  "snapshotPublication": {
+    "attempt": 2,
+    "receipt": {
+      "channel": "snapshot",
+      "version": "1.0.0-ci.65.1",
+      "mavenVersion": "1.0.0-SNAPSHOT",
+      "commit": "24c05b7fc215896eeec91437ffe8846f2d4467a1",
+      "candidateSha256": "b3a3c68e00274cc6463842b561f1863cbbe4f7b92dc91fb282736685a37768d3",
+      "phase": "public-bytes-verified",
+      "files": [
+        {
+          "candidate": "io/github/arcforges/contracts-proto/1.0.0-SNAPSHOT/contracts-proto-1.0.0-SNAPSHOT.jar",
+          "remote": "io/github/arcforges/contracts-proto/1.0.0-SNAPSHOT/contracts-proto-1.0.0-20260921.014054-1.jar",
+          "sha256": "3afdacfd86f628d7264307a71a850193e751f9052a6569c0a3d5ea23e196fa80",
+          "matches": true
+        },
+        {
+          "candidate": "io/github/arcforges/contracts-proto/1.0.0-SNAPSHOT/contracts-proto-1.0.0-SNAPSHOT.pom",
+          "remote": "io/github/arcforges/contracts-proto/1.0.0-SNAPSHOT/contracts-proto-1.0.0-20260921.014054-1.pom",
+          "sha256": "e0456bda007824763550a2d04b57a8c0b217ea16358876722d0324630e6b09ba",
+          "matches": true
+        },
+        {
+          "candidate": "io/github/arcforges/contracts-proto/1.0.0-SNAPSHOT/contracts-proto-1.0.0-SNAPSHOT-sources.jar",
+          "remote": "io/github/arcforges/contracts-proto/1.0.0-SNAPSHOT/contracts-proto-1.0.0-20260921.014054-1-sources.jar",
+          "sha256": "452219b2048081b4aee2cbab83a628847b1616c37117e1f0d48e84e468b9cd25",
+          "matches": true
+        },
+        {
+          "candidate": "io/github/arcforges/contracts-proto/1.0.0-SNAPSHOT/contracts-proto-1.0.0-SNAPSHOT.module",
+          "remote": "io/github/arcforges/contracts-proto/1.0.0-SNAPSHOT/contracts-proto-1.0.0-20260921.014054-1.module",
+          "sha256": "6ce72582c01a98b4f5c5b3a4085a18231e55b23c74ebf4f17df5752d6342a7c7",
+          "matches": true
+        },
+        {
+          "candidate": "io/github/arcforges/contracts-proto/1.0.0-SNAPSHOT/contracts-proto-1.0.0-SNAPSHOT-javadoc.jar",
+          "remote": "io/github/arcforges/contracts-proto/1.0.0-SNAPSHOT/contracts-proto-1.0.0-20260921.014054-1-javadoc.jar",
+          "sha256": "ae77ecf8f2d0a1dcf409824de1b8750ee1a5e7780997e1f40c16d2bf66800b78",
+          "matches": true
+        },
+        {
+          "candidate": "io/github/arcforges/contracts-client/1.0.0-SNAPSHOT/contracts-client-1.0.0-SNAPSHOT.jar",
+          "remote": "io/github/arcforges/contracts-client/1.0.0-SNAPSHOT/contracts-client-1.0.0-20260921.014054-1.jar",
+          "sha256": "8d3f1d68649d71cbf16bab13563bd4addc9fde37f88ba1d590bca5b1be1916a7",
+          "matches": true
+        },
+        {
+          "candidate": "io/github/arcforges/contracts-client/1.0.0-SNAPSHOT/contracts-client-1.0.0-SNAPSHOT.pom",
+          "remote": "io/github/arcforges/contracts-client/1.0.0-SNAPSHOT/contracts-client-1.0.0-20260921.014054-1.pom",
+          "sha256": "5dd17f9e809195f3f57a386151246e40563c31e0539a447468bd9a8462c1f8a1",
+          "matches": true
+        },
+        {
+          "candidate": "io/github/arcforges/contracts-client/1.0.0-SNAPSHOT/contracts-client-1.0.0-SNAPSHOT-javadoc.jar",
+          "remote": "io/github/arcforges/contracts-client/1.0.0-SNAPSHOT/contracts-client-1.0.0-20260921.014054-1-javadoc.jar",
+          "sha256": "ee84123ef412ba4ad2e8d6540729e7d3f03b3661f7becad7a408f2404705efc6",
+          "matches": true
+        },
+        {
+          "candidate": "io/github/arcforges/contracts-client/1.0.0-SNAPSHOT/contracts-client-1.0.0-SNAPSHOT-sources.jar",
+          "remote": "io/github/arcforges/contracts-client/1.0.0-SNAPSHOT/contracts-client-1.0.0-20260921.014054-1-sources.jar",
+          "sha256": "8d17bc7e1ffa4f600de28696afb71d88bb217a524edb3a362206a72c77570a08",
+          "matches": true
+        },
+        {
+          "candidate": "io/github/arcforges/contracts-client/1.0.0-SNAPSHOT/contracts-client-1.0.0-SNAPSHOT.module",
+          "remote": "io/github/arcforges/contracts-client/1.0.0-SNAPSHOT/contracts-client-1.0.0-20260921.014054-1.module",
+          "sha256": "66ec06c819f451b5b401963b319bbcb198ef0cd01c1030559f1d406d1331780d",
+          "matches": true
+        },
+        {
+          "candidate": "io/github/arcforges/contracts-connect-client/1.0.0-SNAPSHOT/contracts-connect-client-1.0.0-SNAPSHOT-sources.jar",
+          "remote": "io/github/arcforges/contracts-connect-client/1.0.0-SNAPSHOT/contracts-connect-client-1.0.0-20260921.014054-1-sources.jar",
+          "sha256": "8ec9390795d25830e879e55e40e110a02d9c650415bdaef7ad54a72174e1bec7",
+          "matches": true
+        },
+        {
+          "candidate": "io/github/arcforges/contracts-connect-client/1.0.0-SNAPSHOT/contracts-connect-client-1.0.0-SNAPSHOT-javadoc.jar",
+          "remote": "io/github/arcforges/contracts-connect-client/1.0.0-SNAPSHOT/contracts-connect-client-1.0.0-20260921.014054-1-javadoc.jar",
+          "sha256": "89fef560caf40cc7936f13dd10e2c2d106f33b070be81f3b769727c8b10a7068",
+          "matches": true
+        },
+        {
+          "candidate": "io/github/arcforges/contracts-connect-client/1.0.0-SNAPSHOT/contracts-connect-client-1.0.0-SNAPSHOT.pom",
+          "remote": "io/github/arcforges/contracts-connect-client/1.0.0-SNAPSHOT/contracts-connect-client-1.0.0-20260921.014054-1.pom",
+          "sha256": "d2548facdd8e959deecc26bd13835673857dc8ebd3ae29889b11fa50304253a4",
+          "matches": true
+        },
+        {
+          "candidate": "io/github/arcforges/contracts-connect-client/1.0.0-SNAPSHOT/contracts-connect-client-1.0.0-SNAPSHOT.module",
+          "remote": "io/github/arcforges/contracts-connect-client/1.0.0-SNAPSHOT/contracts-connect-client-1.0.0-20260921.014054-1.module",
+          "sha256": "c9e628809ca8701f478630604caa1833b9f88af926ee533cfc11638c08cb11d9",
+          "matches": true
+        },
+        {
+          "candidate": "io/github/arcforges/contracts-connect-client/1.0.0-SNAPSHOT/contracts-connect-client-1.0.0-SNAPSHOT.jar",
+          "remote": "io/github/arcforges/contracts-connect-client/1.0.0-SNAPSHOT/contracts-connect-client-1.0.0-20260921.014054-1.jar",
+          "sha256": "2c3532ce0023bdcae8695a2a88d4ef1c4a918be5f7b89e8fdb579b07fb4e7f09",
+          "matches": true
+        },
+        {
+          "candidate": "io/github/arcforges/contract-fixtures/1.0.0-SNAPSHOT/contract-fixtures-1.0.0-SNAPSHOT.jar",
+          "remote": "io/github/arcforges/contract-fixtures/1.0.0-SNAPSHOT/contract-fixtures-1.0.0-20260921.014054-1.jar",
+          "sha256": "7cfae906e142f044c0647848a9bf4abfeb57f2287c942ef7d19a0856146eb25d",
+          "matches": true
+        },
+        {
+          "candidate": "io/github/arcforges/contract-fixtures/1.0.0-SNAPSHOT/contract-fixtures-1.0.0-SNAPSHOT-sources.jar",
+          "remote": "io/github/arcforges/contract-fixtures/1.0.0-SNAPSHOT/contract-fixtures-1.0.0-20260921.014054-1-sources.jar",
+          "sha256": "7a0c26554276fb67c1d8dfcef3bf80cf472c960b0b0098fcbbf5a1b6a939803d",
+          "matches": true
+        },
+        {
+          "candidate": "io/github/arcforges/contract-fixtures/1.0.0-SNAPSHOT/contract-fixtures-1.0.0-SNAPSHOT.module",
+          "remote": "io/github/arcforges/contract-fixtures/1.0.0-SNAPSHOT/contract-fixtures-1.0.0-20260921.014054-1.module",
+          "sha256": "995f53534cbb5e926eadd20291d0883a98c4ccae6a1dc43eb8b303f981e7c55e",
+          "matches": true
+        },
+        {
+          "candidate": "io/github/arcforges/contract-fixtures/1.0.0-SNAPSHOT/contract-fixtures-1.0.0-SNAPSHOT.pom",
+          "remote": "io/github/arcforges/contract-fixtures/1.0.0-SNAPSHOT/contract-fixtures-1.0.0-20260921.014054-1.pom",
+          "sha256": "2999b41f4c90edb1839357a5d708d1ccbe04c4db56f811df6a42657c714e5205",
+          "matches": true
+        },
+        {
+          "candidate": "io/github/arcforges/contract-fixtures/1.0.0-SNAPSHOT/contract-fixtures-1.0.0-SNAPSHOT-javadoc.jar",
+          "remote": "io/github/arcforges/contract-fixtures/1.0.0-SNAPSHOT/contract-fixtures-1.0.0-20260921.014054-1-javadoc.jar",
+          "sha256": "fce613a0c6b59ce4fc92fc7e6c939ea4b2f17951ed25f8213c448af83ae8de15",
+          "matches": true
+        }
+      ]
+    },
+    "result": "passed",
+    "publicationStepSeconds": 77
+  },
+  "liveRegistryConsumer": {
+    "version": "1.0.0-ci.65.1",
+    "commit": "24c05b7fc215896eeec91437ffe8846f2d4467a1",
+    "rid": "win-x64",
+    "inputs": [
+      {
+        "name": "ArcForges.Contracts.PublicApi.1.0.0-ci.65.1.nupkg",
+        "kind": "nuget",
+        "id": "ArcForges.Contracts.PublicApi",
+        "sha256": "24ebedc08c2d2d7c99c4156a6d4eb025e5fa2414991a6e1c1a131df69e7f867b",
+        "size": 28614
+      },
+      {
+        "name": "arcforges-proto-1.0.0-ci.65.1.tgz",
+        "kind": "npm",
+        "id": "@arcforges/proto",
+        "sha256": "c016f4135051ce21b9fefd5c72077901e591c8362eb4cc48522963aa4af3cf7a",
+        "size": 8517
+      },
+      {
+        "name": "arcforges-api-client-1.0.0-ci.65.1.tgz",
+        "kind": "npm",
+        "id": "@arcforges/api-client",
+        "sha256": "a2844e3e012805ec38151d0bd477987b7475a8e47783b1700acc432ebe79255b",
+        "size": 7657
+      },
+      {
+        "name": "arcforges-maven-1.0.0-SNAPSHOT.zip",
+        "kind": "maven",
+        "id": "io.github.arcforges",
+        "sha256": "b3a3c68e00274cc6463842b561f1863cbbe4f7b92dc91fb282736685a37768d3",
+        "size": 1346424
+      },
+      {
+        "name": "contracts.binpb",
+        "kind": "descriptor",
+        "id": "arcforges.hello.v1",
+        "sha256": "7219a8d730978bcc3b7b8769e159d06711dff3f2b07715a6d487589f8c09b99c",
+        "size": 338
+      }
+    ],
+    "isolatedCaches": true,
+    "sourceReferences": false,
+    "csharpGrpc": "passed",
+    "typescriptGrpcWeb": "passed",
+    "kotlinGrpc": "passed",
+    "kotlinConnectGrpcWeb": "passed",
+    "kotlinConnectGrpc": "passed",
+    "nativeAotGrpc": "passed",
+    "browser": "not-run",
+    "androidDevice": "not-run",
+    "registryRestore": "maven-snapshot-passed",
+    "mavenVersion": "1.0.0-SNAPSHOT",
+    "mavenRepository": "https://central.sonatype.com/repository/maven-snapshots/"
+  }
 }
