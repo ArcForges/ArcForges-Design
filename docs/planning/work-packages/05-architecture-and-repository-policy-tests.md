@@ -35,12 +35,12 @@
 
 | Input | Why it matters |
 |---|---|
-| [`../../architecture/01-solution-and-project-layout.md`](../../architecture/01-solution-and-project-layout.md) `§8` | The `AT-*` and `RP-*` rule sets to implement |
+| [`../../architecture/01-solution-and-project-layout.md`](../../architecture/01-solution-and-project-layout.md) `§7` | The `AT-*` and `RP-*` rule sets to implement |
 | [`../../architecture/00-architecture-overview.md`](../../architecture/00-architecture-overview.md) | Layering rules [LY-01](../../architecture/00-architecture-overview.md#rule-ly-01)–[LY-09](../../architecture/00-architecture-overview.md#rule-ly-09) |
 | [`../../assurance/testing-and-verification-strategy.md`](../../assurance/testing-and-verification-strategy.md) `§4`, `§7` | The invariant-to-test obligation and the specification integrity checks |
 | [WP-00](00-specification-naming-and-rights-freeze.md#rule-wp-00) output | Forbidden-term lists and the exported glossary policy data |
 | [`../../assurance/invariant-coverage.md`](../../assurance/invariant-coverage.md) | **The completed item-level invariant mapping** — a versioned input, not work to be done |
-| [`../../assurance/implementation-state-reconciliation.md`](../../assurance/implementation-state-reconciliation.md) `§5.4` | The measured state of the existing test harness this package extends |
+| [Current test-family map](../../assurance/wp01-04-test-family-map.md) and [historical reconciliation](../../assurance/implementation-state-reconciliation.md) `§5.4` | Current exact-head suites and gaps; historical harness counts remain reference evidence only |
 | [WP-02](02-build-governance-and-analyzer-policy.md#rule-wp-02) output | A build that can fail; the dependency policy data |
 | [WP-03](03-contract-foundation-and-licence-split.md#rule-wp-03) output | Contract projects and their licence declarations |
 
@@ -68,12 +68,12 @@
 
 | Location | Change |
 |---|---|
-| `tests/ArchitectureTests/` | **Exists** — 2,075 lines, 13 rules implemented. Extended to the full [AT-01](../../architecture/01-solution-and-project-layout.md#rule-at-01)–[AT-14](../../architecture/01-solution-and-project-layout.md#rule-at-14) set |
-| `tests/ArchitectureTests/RepositoryPolicyTests.cs` | **Exists** — 19 test methods. Extended to [RP-01](../../architecture/01-solution-and-project-layout.md#rule-rp-01)–[RP-10](../../architecture/01-solution-and-project-layout.md#rule-rp-10). Whether it becomes a separate project is a packaging choice, not a gap |
-| `tests/ArchitectureTests/FixtureCompiler.cs`, `ProjectGraph.cs` | **Exist** — the negative-fixture and graph mechanism this package relies on |
-| `tests/SpecificationIntegrityTests/` | Created: link, identifier and coverage checks over the design repository |
+| `tests/ArchitectureTests/` | **Current DesktopPlatform project exists** — the WP01.04 baseline has five bounded repository-policy methods. Extend to the full [AT-01](../../architecture/01-solution-and-project-layout.md#rule-at-01)–[AT-14](../../architecture/01-solution-and-project-layout.md#rule-at-14) set |
+| `tests/ArchitectureTests/RepositoryPolicyTests.cs` | **Current file exists** — five methods at the WP01.04 baseline, not the historical nineteen. Extend to [RP-01](../../architecture/01-solution-and-project-layout.md#rule-rp-01)–[RP-10](../../architecture/01-solution-and-project-layout.md#rule-rp-10). Whether it becomes a separate project is a packaging choice, not a gap |
+| `tests/ArchitectureTests/FixtureCompiler.cs`, `ProjectGraph.cs` | Historical files are absent from the current suite. Retain current owner-local negative fixtures and introduce the graph/fixture mechanism needed to enforce the complete rules; do not assume the old harness is present |
+| DesktopPlatform `eng/design_policy.py`, `eng/design_corpus.py`, `eng/design_graph.py` and `eng/test_design_policy.py` | Existing link, identifier, glossary and graph tooling; extend missing specification checks and negative fixtures. A separate test project is optional, not a coverage requirement |
 | `eng/policy/exceptions.json` | Created: the owned, expiring exception set |
-| CI pull-request pipeline | Both suites added as required stages |
+| CI pull-request pipeline | Existing owner-local policy and Design checks remain required; add the remaining AT/RP and accounting gates |
 
 **Major types introduced:** test infrastructure only.
 

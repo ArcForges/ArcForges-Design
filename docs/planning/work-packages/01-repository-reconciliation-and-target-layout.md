@@ -138,11 +138,13 @@
 
 ### WP-01.04 — Test suite mapping
 
-**What must be fully done.** Every existing test suite is mapped to one of the eighteen required families. Families with no home are recorded as gaps and assigned to the package that will create them. The repository-policy suite is identified as absent and scheduled for `05`.
+**What must be fully done.** Every existing test suite is mapped to one of the eighteen required families. Families with no home are recorded as gaps and assigned to the package that will create them. Existing repository-policy checks are inventoried with their actual coverage; the full AT/RP rule set and invariant-enforcement accounting remain scheduled for `05`. Historical scaffold names and old test counts are not current coverage.
 
 **Testing requirements.** A coverage report: family → suite, with gaps explicit.
 
 **Completion gate.** Every family has either an existing suite or a named future package.
+
+**Recorded execution (2026-09-20).** [Test-family mapping](../../assurance/wp01-04-test-family-map.md) assigns all discovered current test sources/verification entrypoints and 28 historical test projects. All eighteen families have current bounded coverage or an explicit gap and named future producer; ten families are partial and eight have no current suite. This closes mapping only, not their implementation or release acceptance.
 
 <a id="rule-wp-01.05"></a>
 
