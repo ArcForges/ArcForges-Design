@@ -1,0 +1,1539 @@
+{
+  "schemaVersion": 1,
+  "substep": "WP01.04",
+  "observedOn": "2026-09-20",
+  "designBaseline": "b941f1da1e0caa4c78d6165b45fcad11570a6e10",
+  "scope": "Current nine-owner test sources and executable verification entrypoints, plus 28 historical test-project dispositions; not release acceptance.",
+  "sourceDiscovery": "Tracked test_*.py, *.test/spec.{js,mjs,ts,tsx}, *Tests.cs, *Test.kt, native /tests/*.cpp and shared fuzzer; explicit package/live verification entrypoints; one named accessibility case. Config, locks, fixtures, generated code and oracle/server helpers are not independent suites.",
+  "sources": [
+    {
+      "owner": "DesktopPlatform",
+      "origin": "https://github.com/ArcForges/DesktopPlatform.git",
+      "commit": "6cb08997bb35299df86a6434606d8e24cf5a4d97",
+      "clean": true,
+      "remoteMainVerified": true,
+      "mainCi": "https://github.com/ArcForges/DesktopPlatform/actions/runs/35554989640",
+      "mainCiResult": "success",
+      "workflowSha256": "eceabe118826f5c30d619977b1e878a6b0446e3eff941638b1abf33652985550"
+    },
+    {
+      "owner": "Contracts",
+      "origin": "https://github.com/ArcForges/Contracts.git",
+      "commit": "24c05b7fc215896eeec91437ffe8846f2d4467a1",
+      "clean": true,
+      "remoteMainVerified": true,
+      "mainCi": "https://github.com/ArcForges/Contracts/actions/runs/35546947568",
+      "mainCiResult": "success",
+      "workflowSha256": "aa910f681a27b4068bdfcc244fbe08773f00a8f4b58a95da147644aee2d76073"
+    },
+    {
+      "owner": "ArcNotes",
+      "origin": "https://github.com/ArcForges/ArcNotes.git",
+      "commit": "e40423a1b14ce8341de35748cc2a093c7c9b77a7",
+      "clean": true,
+      "remoteMainVerified": true,
+      "mainCi": "https://github.com/ArcForges/ArcNotes/actions/runs/35425608146",
+      "mainCiResult": "success",
+      "workflowSha256": "d872a75b27d8f1da71d3d94b7152edb95fa25cfb2d4855c9e00af832cb5708c3"
+    },
+    {
+      "owner": "ArcScope",
+      "origin": "https://github.com/ArcForges/ArcScope.git",
+      "commit": "d247dcff36fd1123a70e5e59967a9b2294a2eeac",
+      "clean": true,
+      "remoteMainVerified": true,
+      "mainCi": "https://github.com/ArcForges/ArcScope/actions/runs/35426873548",
+      "mainCiResult": "success",
+      "workflowSha256": "85b06a7ffdb565f656714bc54054a5d6d40a1cda98971ab39ba274bf2f0f9e16"
+    },
+    {
+      "owner": "ArcSlate",
+      "origin": "https://github.com/ArcForges/ArcSlate.git",
+      "commit": "b0d255f54fb560a534cc493d5645ca4bc7b4bd0e",
+      "clean": true,
+      "remoteMainVerified": true,
+      "mainCi": "https://github.com/ArcForges/ArcSlate/actions/runs/35427484761",
+      "mainCiResult": "success",
+      "workflowSha256": "27071fb54cee2092a29c1454caf030320db5cfe325b9eaec58fd1019cdb6ed84"
+    },
+    {
+      "owner": "Cloud",
+      "origin": "https://github.com/ArcForges/Cloud.git",
+      "commit": "4571ec8692235485712d4c4e3ef4886c162f2574",
+      "clean": true,
+      "remoteMainVerified": true,
+      "mainCi": "https://github.com/ArcForges/Cloud/actions/runs/35535883611",
+      "mainCiResult": "success",
+      "workflowSha256": "67815ee4a9136e0d4a8dda9556931e1ccfdfaeaebd69540b9c2d7885be59ecea"
+    },
+    {
+      "owner": "AI",
+      "origin": "https://github.com/ArcForges/AI.git",
+      "commit": "944edfe88718fc5f72a42ea0bed1c495307c22df",
+      "clean": true,
+      "remoteMainVerified": true,
+      "mainCi": "https://github.com/ArcForges/AI/actions/runs/35535890121",
+      "mainCiResult": "success",
+      "workflowSha256": "29f2cf6e64daed9e3154bdbb29ebaeb4e2a40c48903f395ba7120393e336fa16"
+    },
+    {
+      "owner": "Web",
+      "origin": "https://github.com/ArcForges/Web.git",
+      "commit": "84939ca1fde0f0653d2cb4d8b8f9e5dd1057abb5",
+      "clean": true,
+      "remoteMainVerified": true,
+      "mainCi": "https://github.com/ArcForges/Web/actions/runs/35437014881",
+      "mainCiResult": "success",
+      "workflowSha256": "785f6faf7f0e32011dcc26c29041fbf11ac41684f32adc12f539822c7e697b8b"
+    },
+    {
+      "owner": "Mobile",
+      "origin": "https://github.com/ArcForges/Mobile.git",
+      "commit": "5031d837d2e7bf9dd1b681c837c942d2b74dc65e",
+      "clean": true,
+      "remoteMainVerified": true,
+      "mainCi": "https://github.com/ArcForges/Mobile/actions/runs/35444269638",
+      "mainCiResult": "success",
+      "workflowSha256": "375d9176e37775a850db1bb0450f4fc50d420649638d7aabc395cd337d9178be"
+    }
+  ],
+  "suites": [
+    {
+      "owner": "DesktopPlatform",
+      "path": "eng/packaging/test_packages.py",
+      "family": "F-16",
+      "kind": "test-source",
+      "scope": "Package admission and immutable-candidate validation fixtures; no installer rollback proof.",
+      "sha256": "e145463747f7efb5f3b761d87dec1af8bb7f27f7f5671ebdb85503fa93735fcf"
+    },
+    {
+      "owner": "DesktopPlatform",
+      "path": "eng/test_design_policy.py",
+      "family": "F-17",
+      "kind": "test-source",
+      "scope": "Repository, architecture, ownership, rights, provenance or specification-policy assertions.",
+      "sha256": "3113e4c848b375c896397a493e05742330d22de88c1305ca93b1d755baf8f679"
+    },
+    {
+      "owner": "DesktopPlatform",
+      "path": "eng/test_licence_boundary.py",
+      "family": "F-17",
+      "kind": "test-source",
+      "scope": "Repository, architecture, ownership, rights, provenance or specification-policy assertions.",
+      "sha256": "80e76b3987f4a960fa42198642d43f6fbf259d5afc24eafeb0da38702c93015a"
+    },
+    {
+      "owner": "DesktopPlatform",
+      "path": "eng/test_reconciliation.py",
+      "family": "F-17",
+      "kind": "test-source",
+      "scope": "Repository, architecture, ownership, rights, provenance or specification-policy assertions.",
+      "sha256": "b1e88beda1147f9d095168ab2d52379c8ea832499c175e5f46fe2d1f251b1392"
+    },
+    {
+      "owner": "DesktopPlatform",
+      "path": "eng/test_reference_baselines.py",
+      "family": "F-17",
+      "kind": "test-source",
+      "scope": "Repository, architecture, ownership, rights, provenance or specification-policy assertions.",
+      "sha256": "fae3c1c0190d78fa29db188094dfbfa84a28864121c9daff6651c1740232e281"
+    },
+    {
+      "owner": "DesktopPlatform",
+      "path": "eng/test_runtime_ownership.py",
+      "family": "F-17",
+      "kind": "test-source",
+      "scope": "Repository, architecture, ownership, rights, provenance or specification-policy assertions.",
+      "sha256": "cb12867bef0f1ba87f6147293a6166c98b5d2c718442c1c227f2c0f276c451d3"
+    },
+    {
+      "owner": "DesktopPlatform",
+      "path": "native/arcgraphics-metal-abi/tests/arcgraphics_metal_abi_tests.cpp",
+      "family": "F-08",
+      "kind": "test-source",
+      "scope": "Native ABI probe tests; Metal/fuzz source presence does not claim current CI execution.",
+      "sha256": "ac7fdf4660d0830fb79fa64f62315580e762f388175c5db28fb8f60b1c86e242"
+    },
+    {
+      "owner": "DesktopPlatform",
+      "path": "native/arcmedia-ffmpeg-abi/tests/arcmedia_ffmpeg_abi_tests.cpp",
+      "family": "F-08",
+      "kind": "test-source",
+      "scope": "Native ABI probe tests; Metal/fuzz source presence does not claim current CI execution.",
+      "sha256": "b436a68c8367b4c9050e927da17456a8e6eb2865ee018d7b4a08d7f838641b45"
+    },
+    {
+      "owner": "DesktopPlatform",
+      "path": "native/arcslate-color-abi/tests/arcslate_color_abi_tests.cpp",
+      "family": "F-08",
+      "kind": "test-source",
+      "scope": "Native ABI probe tests; Metal/fuzz source presence does not claim current CI execution.",
+      "sha256": "f876a1bb62cf2ec19d5f81a1a36a67edbff23caf08fa13117b70386d71a64c6b"
+    },
+    {
+      "owner": "DesktopPlatform",
+      "path": "native/arcslate-image-abi/tests/arcslate_image_abi_tests.cpp",
+      "family": "F-08",
+      "kind": "test-source",
+      "scope": "Native ABI probe tests; Metal/fuzz source presence does not claim current CI execution.",
+      "sha256": "c0c6e311c807c420e589138d10cc88cbd0d49fb9084c482caa14442c7504f497"
+    },
+    {
+      "owner": "DesktopPlatform",
+      "path": "native/arcslate-otio-abi/tests/arcslate_otio_abi_tests.cpp",
+      "family": "F-08",
+      "kind": "test-source",
+      "scope": "Native ABI probe tests; Metal/fuzz source presence does not claim current CI execution.",
+      "sha256": "186e527e1d51934e96ff7fcaa8f69763ff80a90d5eeed6e5537f9185a85316cb"
+    },
+    {
+      "owner": "DesktopPlatform",
+      "path": "native/shared/fuzz/arc_native_abi_fuzzer.cpp",
+      "family": "F-08",
+      "kind": "test-source",
+      "scope": "Native ABI probe tests; Metal/fuzz source presence does not claim current CI execution.",
+      "sha256": "243cc27fcb81f8cb8c09d314b19349d1e679345be087f7d438d622839129dc7b"
+    },
+    {
+      "owner": "DesktopPlatform",
+      "path": "tests/ArchitectureTests/RepositoryPolicyTests.cs",
+      "family": "F-17",
+      "kind": "test-source",
+      "scope": "Repository, architecture, ownership, rights, provenance or specification-policy assertions.",
+      "sha256": "34f17e277d3248dd861cb2c161496b291a82a35d464df309eccc7412a8ddc9a3"
+    },
+    {
+      "owner": "DesktopPlatform",
+      "path": "tests/NativeAbiTests/SkeletonTests.cs",
+      "family": "F-08",
+      "kind": "test-source",
+      "scope": "Native ABI probe tests; Metal/fuzz source presence does not claim current CI execution.",
+      "sha256": "a1812da68a82b9d36eeeed3cea2527d22ea8a21a1bc04135c656f6fec2fec8d8"
+    },
+    {
+      "owner": "DesktopPlatform",
+      "path": "tests/tooling/test_native_provenance.py",
+      "family": "F-17",
+      "kind": "test-source",
+      "scope": "Repository, architecture, ownership, rights, provenance or specification-policy assertions.",
+      "sha256": "e7a0d588015eda921992f045e19cf32d3b1ecbbb83cba9c8997253c474344306"
+    },
+    {
+      "owner": "DesktopPlatform",
+      "path": "tests/tooling/test_provenance.py",
+      "family": "F-17",
+      "kind": "test-source",
+      "scope": "Repository, architecture, ownership, rights, provenance or specification-policy assertions.",
+      "sha256": "a9b7c9deb356133deed58adc0c7b9470fb89d7582d2d3a165cc33fb0c6705363"
+    },
+    {
+      "owner": "DesktopPlatform",
+      "path": "eng/packaging/native_consumer.py",
+      "family": "F-08",
+      "kind": "verification-entrypoint",
+      "scope": "Five isolated package JIT/AOT cases, C17 and negative loader fixtures.",
+      "sha256": "f4158eac5afc3103d6e29e8bf96f50b37e19416963971194ccefaa3bae7ba588"
+    },
+    {
+      "owner": "DesktopPlatform",
+      "path": "eng/packaging/packages.py",
+      "family": "F-16",
+      "kind": "verification-entrypoint",
+      "scope": "verify/smoke commands: candidate hashes and isolated package-policy consumption.",
+      "sha256": "60d8b8d3a64c56462dad517a51ce0534e6bd95b4fb3f2fc60d4d0d2919ad6eae"
+    },
+    {
+      "owner": "Contracts",
+      "path": "tests/public/wire.test.mjs",
+      "family": "F-04",
+      "kind": "test-source",
+      "scope": "Hello wire identity, exact field bytes, malformed payload and Unicode roundtrip.",
+      "sha256": "b9c6958259e785ee488a0e985ca6b639ffb496559e73d742e5d423d95c9ed104"
+    },
+    {
+      "owner": "Contracts",
+      "path": "tests/tooling/contract_access.test.mjs",
+      "family": "F-17",
+      "kind": "test-source",
+      "scope": "Contract access, naming, licence or source-provenance policy fixtures.",
+      "sha256": "2dc8f8b529c0a36f525b51011455e8a70927f2a07f975c4b04df517395ab8305"
+    },
+    {
+      "owner": "Contracts",
+      "path": "tests/tooling/test_documentation_provenance.py",
+      "family": "F-17",
+      "kind": "test-source",
+      "scope": "Contract access, naming, licence or source-provenance policy fixtures.",
+      "sha256": "6b2d1f2ccd7671d2a7b4ab4f868f7f686d38a0af3fcfd414f3d9bded111e58c1"
+    },
+    {
+      "owner": "Contracts",
+      "path": "tests/tooling/test_licence_boundary.py",
+      "family": "F-17",
+      "kind": "test-source",
+      "scope": "Contract access, naming, licence or source-provenance policy fixtures.",
+      "sha256": "8c4b11683dd154b6ad2035332a7dff851c900947fa0dc722e19b788765ad0af6"
+    },
+    {
+      "owner": "Contracts",
+      "path": "tests/tooling/test_maven_release.py",
+      "family": "F-16",
+      "kind": "test-source",
+      "scope": "Publication guards/channel/retry fixtures; no product install or rollback proof.",
+      "sha256": "75717472e60898847091611c4bc0a178bfb5c566acdcc0485a0a84ddf2f3857c"
+    },
+    {
+      "owner": "Contracts",
+      "path": "tests/tooling/test_naming_policy.py",
+      "family": "F-17",
+      "kind": "test-source",
+      "scope": "Contract access, naming, licence or source-provenance policy fixtures.",
+      "sha256": "5721e089e23192b05059e4fca63e199aefd6cb732cf36c5b9251cd88f24a9bf7"
+    },
+    {
+      "owner": "Contracts",
+      "path": "tests/tooling/test_npm_release_tags.py",
+      "family": "F-16",
+      "kind": "test-source",
+      "scope": "Publication guards/channel/retry fixtures; no product install or rollback proof.",
+      "sha256": "5093b6bc5f3e7efcc2c481e01f68b79ac78291a5156739ed2cf74c95395c7860"
+    },
+    {
+      "owner": "Contracts",
+      "path": "tests/tooling/test_provenance.py",
+      "family": "F-17",
+      "kind": "test-source",
+      "scope": "Contract access, naming, licence or source-provenance policy fixtures.",
+      "sha256": "a9b7c9deb356133deed58adc0c7b9470fb89d7582d2d3a165cc33fb0c6705363"
+    },
+    {
+      "owner": "Contracts",
+      "path": "tests/tooling/test_publication_channels.py",
+      "family": "F-16",
+      "kind": "test-source",
+      "scope": "Publication guards/channel/retry fixtures; no product install or rollback proof.",
+      "sha256": "61ca78fe661cadd7859269a7b40707e7e79c78f4c92b286104ddeb412b322985"
+    },
+    {
+      "owner": "Contracts",
+      "path": "tests/tooling/test_release_guards.py",
+      "family": "F-16",
+      "kind": "test-source",
+      "scope": "Publication guards/channel/retry fixtures; no product install or rollback proof.",
+      "sha256": "1346c4739121ff1f73e4e2b2d6e8ce1b125b0991125c5c4c49194456bc9ed97a"
+    },
+    {
+      "owner": "Contracts",
+      "path": "eng/consumer_tools.py",
+      "family": "F-06",
+      "kind": "verification-entrypoint",
+      "scope": "consume entrypoint builds isolated Hello host and C#/TS clients.",
+      "sha256": "4a30c7ab35059062cd98b8c471c1931cb58eceb3f575b5743a3af8b2f38c601c"
+    },
+    {
+      "owner": "Contracts",
+      "path": "eng/kotlin_consumer.py",
+      "family": "F-06",
+      "kind": "verification-entrypoint",
+      "scope": "Generated Kotlin clients against the real Hello host.",
+      "sha256": "c970497c5e4af4607edfeb0311a7561be5c40142b71478198c41153f1daa2d66"
+    },
+    {
+      "owner": "Contracts",
+      "path": "tests/public/package-consumer.ts",
+      "family": "F-06",
+      "kind": "verification-entrypoint",
+      "scope": "Published TS client against the running Hello host.",
+      "sha256": "e5e65ff37608cff04b47d374e3dc2415e80a508f7fece2310548f238a43b9b7f"
+    },
+    {
+      "owner": "Contracts",
+      "path": "tests/public/HelloClient/Program.cs",
+      "family": "F-06",
+      "kind": "verification-entrypoint",
+      "scope": "Published C# client against the running Hello host.",
+      "sha256": "5ee4383db3d4191913caf967eaaeaef8505c928565d09e9351b80c85a5d8623d"
+    },
+    {
+      "owner": "Contracts",
+      "path": "tests/public/KotlinClient/src/main/kotlin/io/github/arcforges/tests/Main.kt",
+      "family": "F-06",
+      "kind": "verification-entrypoint",
+      "scope": "Generated Kotlin gRPC consumer.",
+      "sha256": "0ed912d76a2b9b0397199ac71a32af6f1a3f6402de9af9aca827db33342845a3"
+    },
+    {
+      "owner": "Contracts",
+      "path": "tests/public/KotlinConnectClient/src/main/kotlin/io/github/arcforges/tests/Main.kt",
+      "family": "F-06",
+      "kind": "verification-entrypoint",
+      "scope": "Generated Kotlin Connect consumer.",
+      "sha256": "1bf9ef783f30c95e8009e01ad48cfa9ec644cd6dd080e68713706bba00973018"
+    },
+    {
+      "owner": "ArcNotes",
+      "path": "tests/ArcForges.ArcNotes.Tests/CandidateTests.cs",
+      "family": "F-16",
+      "kind": "test-source",
+      "scope": "Synthetic ZIP/tar candidate and tamper/identity checks; no production rollback.",
+      "sha256": "63342a622e37e4c82c3a8fd12f41a634c23a70e88222416a252e60d3cbbf24f4"
+    },
+    {
+      "owner": "ArcNotes",
+      "path": "tests/ArcForges.ArcNotes.Tests/HelloStateTests.cs",
+      "family": "F-02",
+      "kind": "test-source",
+      "scope": "Hello view-model orchestration with a port double; not product domain behavior.",
+      "sha256": "bb4ff227671a46ada0010e7ffadc20f2d0dcda2ae952bc03cd45ace8c08a7806"
+    },
+    {
+      "owner": "ArcNotes",
+      "path": "tests/ArcForges.ArcNotes.Tests/LicencePolicyTests.cs",
+      "family": "F-17",
+      "kind": "test-source",
+      "scope": "Owned licence/source-provenance negative fixtures.",
+      "sha256": "6022e471b0185d446196379b2437a0d678973a76c658eba3126b0a2f8eb3d760"
+    },
+    {
+      "owner": "ArcNotes",
+      "path": "tests/ArcForges.ArcNotes.Tests/ProvenancePolicyTests.cs",
+      "family": "F-17",
+      "kind": "test-source",
+      "scope": "Owned licence/source-provenance negative fixtures.",
+      "sha256": "286437bd06ea7dd22e58f2007e2b75ab7aa4264595ff1d548b9953adeb6bca69"
+    },
+    {
+      "owner": "ArcNotes",
+      "path": "tests/ArcForges.ArcNotes.Tests/TransportTests.cs",
+      "family": "F-06",
+      "kind": "test-source",
+      "scope": "Published binary gRPC-Web client against real local Kestrel fixture, with cancellation/errors; not deployed full Cloud.",
+      "sha256": "217f048fecb331a1f5c9fc2255f55d6340c9f928ff13f5052fb4cd01fa337866"
+    },
+    {
+      "owner": "ArcNotes",
+      "path": "eng/ArcForges.Repository/Program.cs",
+      "family": "F-11",
+      "kind": "verification-entrypoint",
+      "scope": "smoke entrypoint: native Hello UI action to real deployed Cloud; package commands additionally verify portable candidates.",
+      "sha256": "716c798d079e074415a7d5c07398b9876dd9b19de195475349f6d4bb69131ac2"
+    },
+    {
+      "owner": "ArcScope",
+      "path": "tests/ArcForges.ArcScope.Tests/CandidateTests.cs",
+      "family": "F-16",
+      "kind": "test-source",
+      "scope": "Synthetic ZIP/tar candidate and tamper/identity checks; no production rollback.",
+      "sha256": "f3d19e7a5ab317c2aeb837317b853c2219f96269f4d4a6927f59124c23639412"
+    },
+    {
+      "owner": "ArcScope",
+      "path": "tests/ArcForges.ArcScope.Tests/HelloStateTests.cs",
+      "family": "F-02",
+      "kind": "test-source",
+      "scope": "Hello view-model orchestration with a port double; not product domain behavior.",
+      "sha256": "b09e319178812ab5b8b98708460d856d649c94c7eca55236f0b93b987a31f5c6"
+    },
+    {
+      "owner": "ArcScope",
+      "path": "tests/ArcForges.ArcScope.Tests/LicencePolicyTests.cs",
+      "family": "F-17",
+      "kind": "test-source",
+      "scope": "Owned licence/source-provenance negative fixtures.",
+      "sha256": "6338a2e67a2bc6929f369f4d1923429e88c4d32eac455c4ccb1f071b9ca0064d"
+    },
+    {
+      "owner": "ArcScope",
+      "path": "tests/ArcForges.ArcScope.Tests/ProvenancePolicyTests.cs",
+      "family": "F-17",
+      "kind": "test-source",
+      "scope": "Owned licence/source-provenance negative fixtures.",
+      "sha256": "1772f9bcb9d0e681a979ae29437701478cdf706adaed66a2508bde5ac626f74a"
+    },
+    {
+      "owner": "ArcScope",
+      "path": "tests/ArcForges.ArcScope.Tests/TransportTests.cs",
+      "family": "F-06",
+      "kind": "test-source",
+      "scope": "Published binary gRPC-Web client against real local Kestrel fixture, with cancellation/errors; not deployed full Cloud.",
+      "sha256": "ccc1448fff1e15e7c7711a609c4192edbf000e9548fc59c3e323bfaba77fdbf3"
+    },
+    {
+      "owner": "ArcScope",
+      "path": "eng/ArcForges.Repository/Program.cs",
+      "family": "F-11",
+      "kind": "verification-entrypoint",
+      "scope": "smoke entrypoint: native Hello UI action to real deployed Cloud; no acquisition pipeline acceptance.",
+      "sha256": "3ba34ba2c1246e939fcbbbf5a3b9c3fa4ceb6294c4687c492108d7c0c870791c"
+    },
+    {
+      "owner": "ArcSlate",
+      "path": "tests/ArcForges.ArcSlate.Tests/CandidateTests.cs",
+      "family": "F-16",
+      "kind": "test-source",
+      "scope": "Synthetic ZIP/tar candidate and tamper/identity checks; no production rollback.",
+      "sha256": "e85df3d2e48756133fe4ec3811f229e0dbdefe5f8b7afb9fe9cca1f85085ddcc"
+    },
+    {
+      "owner": "ArcSlate",
+      "path": "tests/ArcForges.ArcSlate.Tests/HelloStateTests.cs",
+      "family": "F-02",
+      "kind": "test-source",
+      "scope": "Hello view-model orchestration with a port double; not product domain behavior.",
+      "sha256": "f8f85389119a0fe1052a91947fa6684518cf72b266dda36780c5db42750172f1"
+    },
+    {
+      "owner": "ArcSlate",
+      "path": "tests/ArcForges.ArcSlate.Tests/LicencePolicyTests.cs",
+      "family": "F-17",
+      "kind": "test-source",
+      "scope": "Owned licence/source-provenance negative fixtures.",
+      "sha256": "ced5363d68486c271fb56212b0eaf79fddee1f5d2335cd32318bd70c6e0010d6"
+    },
+    {
+      "owner": "ArcSlate",
+      "path": "tests/ArcForges.ArcSlate.Tests/ProvenancePolicyTests.cs",
+      "family": "F-17",
+      "kind": "test-source",
+      "scope": "Owned licence/source-provenance negative fixtures.",
+      "sha256": "9f3a1ffed9f06541fd4eb0854fe1fd9fe1ee48a960010b38e05f5fdc1f1e0d16"
+    },
+    {
+      "owner": "ArcSlate",
+      "path": "tests/ArcForges.ArcSlate.Tests/TransportTests.cs",
+      "family": "F-06",
+      "kind": "test-source",
+      "scope": "Published binary gRPC-Web client against real local Kestrel fixture, with cancellation/errors; not deployed full Cloud.",
+      "sha256": "96a0c5a7c683d2d63622a32ebefa5ef03bc7745da9cb4d9820e130e1a497873d"
+    },
+    {
+      "owner": "ArcSlate",
+      "path": "eng/ArcForges.Repository/Program.cs",
+      "family": "F-11",
+      "kind": "verification-entrypoint",
+      "scope": "smoke entrypoint: native Hello UI action to real deployed Cloud; no media workflow acceptance.",
+      "sha256": "42175c8ced1d846aea2e30c0c346aa5f9480faf5ff6111ac471a354a3e3d162d"
+    },
+    {
+      "owner": "Cloud",
+      "path": "tests/ArcForges.Cloud.Tests/HelloEndpointTests.cs",
+      "family": "F-02",
+      "kind": "test-source",
+      "scope": "Direct Hello endpoint calls without a server; not real transport evidence.",
+      "sha256": "0ce0e1ea224a24e97a10dc46513bff4609c92f83f31035b927eff051bb70117f"
+    },
+    {
+      "owner": "Cloud",
+      "path": "tests/worker/deadline.test.ts",
+      "family": "F-02",
+      "kind": "test-source",
+      "scope": "Worker routing/deadline/body/cancellation tests with injected container ports.",
+      "sha256": "256d207205c534254939baa2fc1a284af240c140442ee3700383216f65e43f89"
+    },
+    {
+      "owner": "Cloud",
+      "path": "tests/worker/licence-boundary.test.ts",
+      "family": "F-17",
+      "kind": "test-source",
+      "scope": "Licence and source-provenance assertions.",
+      "sha256": "be119558bf2d63bca9d2cabf136a23e94abd38ef92c5f51f34da0b2468c0927e"
+    },
+    {
+      "owner": "Cloud",
+      "path": "tests/worker/provenance.test.ts",
+      "family": "F-17",
+      "kind": "test-source",
+      "scope": "Licence and source-provenance assertions.",
+      "sha256": "9c6dfaf540be157c313f6937cf10bf68007c2d6e9ddbbbcb2a0ca99256defa0f"
+    },
+    {
+      "owner": "Cloud",
+      "path": "tests/worker/release-provenance.test.ts",
+      "family": "F-16",
+      "kind": "test-source",
+      "scope": "Actual Worker bundle and synthetic image-legal closure checks.",
+      "sha256": "83ff1a6258234ea1651487591b2795d039a59a48a51245f8c826f2400513fd97"
+    },
+    {
+      "owner": "Cloud",
+      "path": "tests/worker/router.test.ts",
+      "family": "F-02",
+      "kind": "test-source",
+      "scope": "Worker routing/deadline/body/cancellation tests with injected container ports.",
+      "sha256": "1e09aee4be75a9df1fd53f2b811afcfacb39139df5d96ea52010b304ce64c7d8"
+    },
+    {
+      "owner": "Cloud",
+      "path": "tooling/project.ts",
+      "family": "F-16",
+      "kind": "verification-entrypoint",
+      "scope": "candidate/container/worker/verify commands; actual AOT image and protocol harness orchestration.",
+      "sha256": "120f9e7cec745bbdd5bb7d942b42f37d5d047f5f38ff51c3836f45ca6690a9e6"
+    },
+    {
+      "owner": "Cloud",
+      "path": "tooling/protocol.ts",
+      "family": "F-06",
+      "kind": "verification-entrypoint",
+      "scope": "Real protocol conformance vectors, including rejection/cancellation.",
+      "sha256": "540d1067b24644f20d26e854113ba6afa0e8423435b865b44fb372cf5fc43a71"
+    },
+    {
+      "owner": "Cloud",
+      "path": "tooling/cloudflare.ts",
+      "family": "F-06",
+      "kind": "verification-entrypoint",
+      "scope": "smoke entrypoint: deployed Worker and AOT container Hello.",
+      "sha256": "0cf99d86d31c2fdc9c3486a5932a72942dd5864ead5b0d304514492051cbbe67"
+    },
+    {
+      "owner": "Cloud",
+      "path": "tests/ArcForges.Cloud.Consumer/Program.cs",
+      "family": "F-06",
+      "kind": "verification-entrypoint",
+      "scope": "Published generated C# client against real running host.",
+      "sha256": "9ca148f5c0c39bd3c8ad8066f31c9111ceed46f0efcd780dcb83866948ad1d46"
+    },
+    {
+      "owner": "Cloud",
+      "path": "tests/kotlin-consumer/src/main/kotlin/io/github/arcforges/cloud/verification/Main.kt",
+      "family": "F-06",
+      "kind": "verification-entrypoint",
+      "scope": "Published Kotlin SDK against real Hello transport.",
+      "sha256": "8aebe6063743f9fcd4165fe324fcda4ad86d60a1ef373bedf42d8f35a110bc82"
+    },
+    {
+      "owner": "AI",
+      "path": "eng/tests/cloudflare.test.mjs",
+      "family": "F-16",
+      "kind": "test-source",
+      "scope": "Deployment identity and released bundle verification fixtures.",
+      "sha256": "15fd683797bda3f4b7907d90b2c5a43bbbba7cee28a0fd550a9959a1c58f58d5"
+    },
+    {
+      "owner": "AI",
+      "path": "eng/tests/licence-boundary.test.mjs",
+      "family": "F-17",
+      "kind": "test-source",
+      "scope": "Repository, licence and provenance fixtures.",
+      "sha256": "cf2b3c7f99fdc269c849ebcda3018da1f0be4efdfc9dfa4966958d22fdc841d6"
+    },
+    {
+      "owner": "AI",
+      "path": "eng/tests/project.test.mjs",
+      "family": "F-17",
+      "kind": "test-source",
+      "scope": "Repository, licence and provenance fixtures.",
+      "sha256": "05b5be4f711e58944ecb394244e91e4d696a2e1fecd512ac034d5140e0bff463"
+    },
+    {
+      "owner": "AI",
+      "path": "eng/tests/provenance.test.mjs",
+      "family": "F-17",
+      "kind": "test-source",
+      "scope": "Repository, licence and provenance fixtures.",
+      "sha256": "9d265ed00ba6117b4b174c03728bf1cbea8bf757d48f6a78d2a185083296a086"
+    },
+    {
+      "owner": "AI",
+      "path": "eng/tests/release-provenance.test.mjs",
+      "family": "F-16",
+      "kind": "test-source",
+      "scope": "Deployment identity and released bundle verification fixtures.",
+      "sha256": "c8a3b68f7ce0979facac73e4b351f2f826dbc0e700a237982d392eab2ea8488c"
+    },
+    {
+      "owner": "AI",
+      "path": "tests/hello.test.ts",
+      "family": "F-04",
+      "kind": "test-source",
+      "scope": "Published protobuf roundtrip plus bounded model-output parsing; not full public API compatibility.",
+      "sha256": "0780e66a61463d77fbc5221b0012e71f3a40896140f40a2a1d3fff54db289ca4"
+    },
+    {
+      "owner": "AI",
+      "path": "tests/model-diagnostics.test.ts",
+      "family": "F-01",
+      "kind": "test-source",
+      "scope": "Pure bounded diagnostic value validation; not complete business-domain invariants.",
+      "sha256": "bc2cffe5dbaf79c6083d3e5143e22a85d9099902e05bc9a952fd2481d906c09a"
+    },
+    {
+      "owner": "AI",
+      "path": "tests/model.test.ts",
+      "family": "F-02",
+      "kind": "test-source",
+      "scope": "Model-port doubles/local Workflow emulator; no real provider or crash-durable acceptance.",
+      "sha256": "27f9aa769e9711389df73594540ba337a2e7f54f1d8c0219130dfc9b3f47d342"
+    },
+    {
+      "owner": "AI",
+      "path": "tests/workflow.test.ts",
+      "family": "F-02",
+      "kind": "test-source",
+      "scope": "Model-port doubles/local Workflow emulator; no real provider or crash-durable acceptance.",
+      "sha256": "48dd502d6e8771008aa2f7441b00543ebb47779595f3485b6c231b5de5e4e801"
+    },
+    {
+      "owner": "AI",
+      "path": "eng/project.mjs",
+      "family": "F-16",
+      "kind": "verification-entrypoint",
+      "scope": "build/verify/test-bundle entrypoints; local packaged Worker, with explicit fixture model mode.",
+      "sha256": "e05d7f50594f9b64912f6187e4e6b2945aa74a8b281a25371e93e37c1944ec5e"
+    },
+    {
+      "owner": "AI",
+      "path": "eng/cloudflare.mjs",
+      "family": "F-11",
+      "kind": "verification-entrypoint",
+      "scope": "test-live entrypoint verifies deployed Workflow, real model/tool steps and deployment identity; not the full Harness.",
+      "sha256": "ec2a5cce95ee79e0bad4241ca33daa06eea59dc96674c58086097ea7a2a89f4c"
+    },
+    {
+      "owner": "Web",
+      "path": "tests/browser/cloud-hello-fixture.spec.ts",
+      "family": "F-09",
+      "kind": "test-source",
+      "scope": "Hello component or production-browser automation; fixture API and automated accessibility remain bounded.",
+      "sha256": "39e7ef20a2c1e82215cafecc55d847187151a10b8da855f595a8a278d930c12f"
+    },
+    {
+      "owner": "Web",
+      "path": "tests/browser/site.spec.ts",
+      "family": "F-09",
+      "kind": "test-source",
+      "scope": "Hello component or production-browser automation; fixture API and automated accessibility remain bounded.",
+      "sha256": "ce8d6643f7a9bae31751fda83ee7c220e891a507579f7e2f390270cb34ef30cf"
+    },
+    {
+      "owner": "Web",
+      "path": "tests/provenance/candidate.test.ts",
+      "family": "F-16",
+      "kind": "test-source",
+      "scope": "Candidate identity, legal closure and deployment/asset propagation fixtures.",
+      "sha256": "c1decb51c60da4479d7a0423d601dee32a92464fc5ee93090a0a5f5d0e849eb8"
+    },
+    {
+      "owner": "Web",
+      "path": "tests/provenance/legal-path.test.ts",
+      "family": "F-17",
+      "kind": "test-source",
+      "scope": "Licence, source and dependency provenance assertions.",
+      "sha256": "66e1a3bcbb94534e3c545484453bafd23336eccb9c194e69b8ca0b80b340d5c9"
+    },
+    {
+      "owner": "Web",
+      "path": "tests/provenance/source.test.ts",
+      "family": "F-17",
+      "kind": "test-source",
+      "scope": "Licence, source and dependency provenance assertions.",
+      "sha256": "f8c3437dfed3278218cbbcc99ab8cfb71a173230e7f83b526738e3f94ecdcc9f"
+    },
+    {
+      "owner": "Web",
+      "path": "tests/unit/cloud-hello.test.ts",
+      "family": "F-02",
+      "kind": "test-source",
+      "scope": "Client behavior with an injected transport response.",
+      "sha256": "6b226476aa7359f1f09607ca644e68cb57d1a3133f0f3dc5d5881ee0334d895d"
+    },
+    {
+      "owner": "Web",
+      "path": "tests/unit/contracts.test.ts",
+      "family": "F-04",
+      "kind": "test-source",
+      "scope": "Published SDK binary framing/error tests with mocked fetch; no real server.",
+      "sha256": "4f6aca02f385bf48f74829ef26c47f1f976ebbca16820aa5923601c4dacd07d8"
+    },
+    {
+      "owner": "Web",
+      "path": "tests/unit/delivery.test.ts",
+      "family": "F-16",
+      "kind": "test-source",
+      "scope": "Candidate identity, legal closure and deployment/asset propagation fixtures.",
+      "sha256": "1c216a542e10456199e3e76d31a07b2aa2c905d8ab710dbb26da2a3074b0ea19"
+    },
+    {
+      "owner": "Web",
+      "path": "tests/unit/hello.test.tsx",
+      "family": "F-09",
+      "kind": "test-source",
+      "scope": "Hello component or production-browser automation; fixture API and automated accessibility remain bounded.",
+      "sha256": "5bb0a915c3f6e07b6a25b28bb313f60e451237fe593e805faaef29ab02f51dfd"
+    },
+    {
+      "owner": "Web",
+      "path": "tests/unit/licence-boundary.test.ts",
+      "family": "F-17",
+      "kind": "test-source",
+      "scope": "Licence, source and dependency provenance assertions.",
+      "sha256": "9df3d7e9f83192cd826bccdd3e48169ff50968680263f2f9706c1ee4c8e65cce"
+    },
+    {
+      "owner": "Web",
+      "path": "tests/unit/lock-provenance.test.ts",
+      "family": "F-17",
+      "kind": "test-source",
+      "scope": "Licence, source and dependency provenance assertions.",
+      "sha256": "05c67efe8519aa413f027296c702d96f320f29ed08f4d795b1715b3f36ffa760"
+    },
+    {
+      "owner": "Web",
+      "path": "tooling/project.ts",
+      "family": "F-16",
+      "kind": "verification-entrypoint",
+      "scope": "build/verify commands bind exact production browser and legal closure.",
+      "sha256": "7d88839566dfcbb72e85631cfcdb5498c0a59e0ee73243b446b84733f022b49a"
+    },
+    {
+      "owner": "Web",
+      "path": "tooling/cloudflare.ts",
+      "family": "F-16",
+      "kind": "verification-entrypoint",
+      "scope": "smoke entrypoint verifies actual deployed static assets and delivery behavior.",
+      "sha256": "28b6ef9ac32384f66f75d7b785dba32888a1df74175eaeafe63e38f6a9ecb49e"
+    },
+    {
+      "owner": "Mobile",
+      "path": "app/src/androidTest/kotlin/io/github/arcforges/mobile/CloudHelloIntegrationTest.kt",
+      "family": "F-06",
+      "kind": "test-source",
+      "scope": "Generated Kotlin client with real local HTTP fixture or device-to-deployed Cloud Hello, as named by the suite.",
+      "sha256": "8d92158829d8fb2baa0bc638476014d8f5c8017628e577b26436518b8be5b7d2"
+    },
+    {
+      "owner": "Mobile",
+      "path": "app/src/androidTest/kotlin/io/github/arcforges/mobile/GreetingScreenTest.kt",
+      "family": "F-09",
+      "kind": "test-source",
+      "scope": "Android Hello UI, pending state and activity recreation; no process-crash recovery claim.",
+      "sha256": "622215a31fd1bf2ca0970363450b091333780eec5519bffbd1c6b002952a1942"
+    },
+    {
+      "owner": "Mobile",
+      "path": "app/src/test/kotlin/io/github/arcforges/mobile/CloudHelloClientTest.kt",
+      "family": "F-06",
+      "kind": "test-source",
+      "scope": "Generated Kotlin client with real local HTTP fixture or device-to-deployed Cloud Hello, as named by the suite.",
+      "sha256": "dbf3c9bb912b0398b13926b07f5f147c2ed05c967e9e363343345dce33f6f934"
+    },
+    {
+      "owner": "Mobile",
+      "path": "eng/tests/test_licences.py",
+      "family": "F-17",
+      "kind": "test-source",
+      "scope": "Licence, resource or source-provenance policy assertions.",
+      "sha256": "f87bef6be383da5e7f7a6e6131e02cac55fc5dc114997ecbd5aab961844059d7"
+    },
+    {
+      "owner": "Mobile",
+      "path": "eng/tests/test_mobile.py",
+      "family": "F-16",
+      "kind": "test-source",
+      "scope": "Android candidate/identity verification fixtures; separate public upgrade harness required.",
+      "sha256": "9a30f641a120982054719b7cde181f585d9c43c32c3a76471e5a5107c3542609"
+    },
+    {
+      "owner": "Mobile",
+      "path": "eng/tests/test_provenance.py",
+      "family": "F-17",
+      "kind": "test-source",
+      "scope": "Licence, resource or source-provenance policy assertions.",
+      "sha256": "3bd4c62a2e1140af20250dba788fca057d6897f9ffda55d9883f0f82ce2477fb"
+    },
+    {
+      "owner": "Mobile",
+      "path": "eng/tests/test_resources.py",
+      "family": "F-17",
+      "kind": "test-source",
+      "scope": "Licence, resource or source-provenance policy assertions.",
+      "sha256": "e4739cba4e3404edb9aca64d4392dd96a55468f112299d1fbf8fa90984aa2330"
+    },
+    {
+      "owner": "Mobile",
+      "path": "shared/src/commonTest/kotlin/io/github/arcforges/mobile/shared/GreetingTest.kt",
+      "family": "F-01",
+      "kind": "test-source",
+      "scope": "Pure Hello value semantics and input rejection; no companion business-domain coverage.",
+      "sha256": "23d23161cb224202662ad77d07c06982174eaeece2ff3a9fc1aa96adb428372f"
+    },
+    {
+      "owner": "Mobile",
+      "path": "eng/device-smoke.py",
+      "family": "F-09",
+      "kind": "verification-entrypoint",
+      "scope": "Runs the packaged Android Hello UI on a selected device/emulator.",
+      "sha256": "ccec0c59ed787baed941a8f67e0c83c5711c01b5e0979f461f473e6c4297be3f"
+    },
+    {
+      "owner": "Mobile",
+      "path": "eng/published.py",
+      "family": "F-16",
+      "kind": "verification-entrypoint",
+      "scope": "Actual public APK signature identity, upgrade and Cloud Hello; emulator is not Scope/Slate hardware-lab evidence.",
+      "sha256": "0bf8d021613be45f3d05341f3d42f32429d298a96cacf291fd237b8205ba28e2"
+    },
+    {
+      "owner": "Mobile",
+      "path": "eng/verify_published_fixture.py",
+      "family": "F-16",
+      "kind": "verification-entrypoint",
+      "scope": "Disposable-signature publication negative fixtures; not persistent production identity evidence.",
+      "sha256": "02e935369bdfcebd91de69b4472fceb4340cd7146a2e293884af43a9dcb3ff7d"
+    },
+    {
+      "owner": "Web",
+      "path": "tests/browser/site.spec.ts",
+      "case": "pages are accessible and fit narrow screens",
+      "family": "F-10",
+      "kind": "named-test-case",
+      "scope": "Automated axe/browser and responsive checks only; no dated screen-reader verification.",
+      "sha256": "ce8d6643f7a9bae31751fda83ee7c220e891a507579f7e2f390270cb34ef30cf"
+    }
+  ],
+  "families": [
+    {
+      "id": "F-01",
+      "name": "Domain unit tests",
+      "status": "partial",
+      "suiteRows": [
+        69,
+        94
+      ],
+      "futureWorkPackages": [
+        "WP04",
+        "WP15",
+        "WP18",
+        "WP33",
+        "WP36"
+      ],
+      "remainingObligation": "Pure Hello/model boundary assertions exist; full domain/invariant enforcement is still owed.",
+      "completionClaim": false
+    },
+    {
+      "id": "F-02",
+      "name": "Application tests with port doubles",
+      "status": "partial",
+      "suiteRows": [
+        35,
+        41,
+        47,
+        52,
+        53,
+        57,
+        70,
+        71,
+        79
+      ],
+      "futureWorkPackages": [
+        "WP14",
+        "WP16",
+        "WP18",
+        "WP33",
+        "WP36",
+        "WP52"
+      ],
+      "remainingObligation": "Hello orchestration, routing and model doubles exist; authorization ordering, compensation and domain workflows remain.",
+      "completionClaim": false
+    },
+    {
+      "id": "F-03",
+      "name": "Persistence tests against real stores",
+      "status": "gap",
+      "suiteRows": [],
+      "futureWorkPackages": [
+        "WP07",
+        "WP21",
+        "WP25"
+      ],
+      "remainingObligation": "No current owned real-store transaction/isolation/migration suite; local Workflow emulation is not that evidence.",
+      "completionClaim": false
+    },
+    {
+      "id": "F-04",
+      "name": "Serialization and type-shape compatibility",
+      "status": "partial",
+      "suiteRows": [
+        18,
+        68,
+        80
+      ],
+      "futureWorkPackages": [
+        "WP03",
+        "WP23"
+      ],
+      "remainingObligation": "Hello wire vectors and generated SDK shape exist; initial domain catalogue, exact numeric/time profiles and supported-version window remain.",
+      "completionClaim": false
+    },
+    {
+      "id": "F-05",
+      "name": "Local RPC over real pipes and sockets",
+      "status": "gap",
+      "suiteRows": [],
+      "futureWorkPackages": [
+        "WP08",
+        "WP06"
+      ],
+      "remainingObligation": "No named-pipe/domain-socket suite; current HTTP/gRPC-Web Hello tests do not satisfy this family.",
+      "completionClaim": false
+    },
+    {
+      "id": "F-06",
+      "name": "Public API generated-client real-server contracts",
+      "status": "partial",
+      "suiteRows": [
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        38,
+        44,
+        50,
+        59,
+        60,
+        61,
+        62,
+        87,
+        89
+      ],
+      "futureWorkPackages": [
+        "WP03",
+        "WP23"
+      ],
+      "remainingObligation": "Real Hello protocol consumers exist; complete methods, authorization fields and old/current client-server compatibility remain.",
+      "completionClaim": false
+    },
+    {
+      "id": "F-07",
+      "name": "Realtime integration",
+      "status": "gap",
+      "suiteRows": [],
+      "futureWorkPackages": [
+        "WP24"
+      ],
+      "remainingObligation": "No current reconnect/sequence-gap/backfill suite.",
+      "completionClaim": false
+    },
+    {
+      "id": "F-08",
+      "name": "Native ABI per RID and error path",
+      "status": "partial",
+      "suiteRows": [
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        13,
+        16
+      ],
+      "futureWorkPackages": [
+        "WP13"
+      ],
+      "remainingObligation": "Existing Windows probe CTests and packaged JIT/AOT/C17 checks; Metal/fuzz source is not an executed matrix. Functional ABI, helper containment, sanitizers and supported-RID coverage remain.",
+      "completionClaim": false
+    },
+    {
+      "id": "F-09",
+      "name": "UI component and automation",
+      "status": "partial",
+      "suiteRows": [
+        74,
+        75,
+        82,
+        88,
+        95
+      ],
+      "futureWorkPackages": [
+        "WP10",
+        "WP31",
+        "WP47",
+        "WP48",
+        "WP49"
+      ],
+      "remainingObligation": "Hello native/browser/Android UI and lifecycle checks exist; full product workflows, locale/theme and visual acceptance remain.",
+      "completionClaim": false
+    },
+    {
+      "id": "F-10",
+      "name": "Accessibility automated and assistive verification",
+      "status": "partial",
+      "suiteRows": [
+        98
+      ],
+      "futureWorkPackages": [
+        "WP10",
+        "WP31",
+        "WP47",
+        "WP48",
+        "WP49",
+        "WP50"
+      ],
+      "remainingObligation": "Automated browser axe/keyboard checks exist; dated real assistive-technology checks and full-product scenarios remain.",
+      "completionClaim": false
+    },
+    {
+      "id": "F-11",
+      "name": "Integrated boundary tests",
+      "status": "partial",
+      "suiteRows": [
+        39,
+        45,
+        51,
+        73
+      ],
+      "futureWorkPackages": [
+        "WP20",
+        "WP26",
+        "WP35",
+        "WP39",
+        "WP49",
+        "WP52"
+      ],
+      "remainingObligation": "Bootstrap desktop-to-Cloud and deployed AI Hello boundaries exist; packaged assistant/helper, product isolation and full workflows remain.",
+      "completionClaim": false
+    },
+    {
+      "id": "F-12",
+      "name": "Migration and golden fixtures",
+      "status": "gap",
+      "suiteRows": [],
+      "futureWorkPackages": [
+        "WP07",
+        "WP18",
+        "WP25",
+        "WP36",
+        "WP46"
+      ],
+      "remainingObligation": "No current versioned store migration/semantic-preservation suite; Hello wire fixtures alone do not close it.",
+      "completionClaim": false
+    },
+    {
+      "id": "F-13",
+      "name": "Crash fault injection and recovery",
+      "status": "gap",
+      "suiteRows": [],
+      "futureWorkPackages": [
+        "WP07",
+        "WP11",
+        "WP25",
+        "WP46"
+      ],
+      "remainingObligation": "No current process-crash/power-loss durable recovery suite; cancellation, activity recreation and mocked Workflow failures do not substitute.",
+      "completionClaim": false
+    },
+    {
+      "id": "F-14",
+      "name": "Soak and scale",
+      "status": "gap",
+      "suiteRows": [],
+      "futureWorkPackages": [
+        "WP12",
+        "WP33",
+        "WP37",
+        "WP50"
+      ],
+      "remainingObligation": "No measured duration/resource-curve/corpus-scale suite.",
+      "completionClaim": false
+    },
+    {
+      "id": "F-15",
+      "name": "Performance regression benchmarks",
+      "status": "gap",
+      "suiteRows": [],
+      "futureWorkPackages": [
+        "WP06",
+        "WP12",
+        "WP13",
+        "WP50"
+      ],
+      "remainingObligation": "No measured reference-hardware budget/regression suite; test timeouts and successful builds are not benchmarks.",
+      "completionClaim": false
+    },
+    {
+      "id": "F-16",
+      "name": "Publish install update downgrade rollback",
+      "status": "partial",
+      "suiteRows": [
+        0,
+        17,
+        22,
+        24,
+        26,
+        27,
+        34,
+        40,
+        46,
+        56,
+        58,
+        63,
+        67,
+        72,
+        76,
+        81,
+        85,
+        86,
+        91,
+        96,
+        97
+      ],
+      "futureWorkPackages": [
+        "WP06",
+        "WP32",
+        "WP47",
+        "WP53",
+        "WP50"
+      ],
+      "remainingObligation": "Candidate integrity, publication and Android public upgrade checks exist; full installer/update/rollback/data-directory matrix remains.",
+      "completionClaim": false
+    },
+    {
+      "id": "F-17",
+      "name": "Architecture and repository policy",
+      "status": "partial",
+      "suiteRows": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        12,
+        14,
+        15,
+        19,
+        20,
+        21,
+        23,
+        25,
+        36,
+        37,
+        42,
+        43,
+        48,
+        49,
+        54,
+        55,
+        64,
+        65,
+        66,
+        77,
+        78,
+        83,
+        84,
+        90,
+        92,
+        93
+      ],
+      "futureWorkPackages": [
+        "WP02",
+        "WP03",
+        "WP05"
+      ],
+      "remainingObligation": "Substantive owner-local policy/provenance tests and five DesktopPlatform architecture tests exist; complete AT/RP manifest and per-invariant enforcement accounting remain.",
+      "completionClaim": false
+    },
+    {
+      "id": "F-18",
+      "name": "Scope and Slate hardware lab",
+      "status": "gap",
+      "suiteRows": [],
+      "futureWorkPackages": [
+        "WP13",
+        "WP33",
+        "WP37",
+        "WP38",
+        "WP50"
+      ],
+      "remainingObligation": "No current Scope/Slate physical device/driver/timing lab suite; Android device or emulator tests are not this family.",
+      "completionClaim": false
+    }
+  ],
+  "historicalCommit": "ede43db5b2237104dd0008b99398090c54a2cf94",
+  "historicalProjects": [
+    {
+      "path": "tests/AndroidUiTests/ArcForges.Tests.AndroidUiTests.csproj",
+      "blob": "e2cc1d9125b087d3481d2803dc781c3984525aa7",
+      "owner": "Mobile",
+      "family": "F-09",
+      "futureWorkPackage": "WP31",
+      "currentDisposition": "Move",
+      "interpretation": "Historical project mapping only; no directory resurrection or copied-source instruction."
+    },
+    {
+      "path": "tests/ArcScopePipelineTests/ArcForges.Tests.ArcScopePipelineTests.csproj",
+      "blob": "1b54f25696730dc456ee5647f5c3b87da843324d",
+      "owner": "ArcScope",
+      "family": "F-11",
+      "futureWorkPackage": "WP33",
+      "currentDisposition": "Move",
+      "interpretation": "Historical project mapping only; no directory resurrection or copied-source instruction."
+    },
+    {
+      "path": "tests/ArcSlateMediaTests/ArcForges.Tests.ArcSlateMediaTests.csproj",
+      "blob": "d4bf1d9eb0ecb0c08b989562b4645487ed4189d7",
+      "owner": "ArcSlate",
+      "family": "F-11",
+      "futureWorkPackage": "WP37",
+      "currentDisposition": "Move",
+      "interpretation": "Historical project mapping only; no directory resurrection or copied-source instruction."
+    },
+    {
+      "path": "tests/ArchitectureTests/ArcForges.Tests.ArchitectureTests.csproj",
+      "blob": "8de7cdd620e937a69ff6fa2c7389e2a40aaebfc8",
+      "owner": "DesktopPlatform",
+      "family": "F-17",
+      "futureWorkPackage": "WP05",
+      "currentDisposition": "Keep",
+      "interpretation": "Historical project mapping only; no directory resurrection or copied-source instruction."
+    },
+    {
+      "path": "tests/CloudIntegrationTests/ArcForges.Tests.CloudIntegrationTests.csproj",
+      "blob": "60683fb53ad1c5783929d20acbbaf2de0e54e541",
+      "owner": "Cloud",
+      "family": "F-11",
+      "futureWorkPackage": "WP21",
+      "currentDisposition": "Move",
+      "interpretation": "Historical project mapping only; no directory resurrection or copied-source instruction."
+    },
+    {
+      "path": "tests/ContractCompatibilityTests/ArcForges.Tests.ContractCompatibilityTests.csproj",
+      "blob": "6b309c5ce360bc3ae30401b175312add24179838",
+      "owner": "Contracts",
+      "family": "F-04",
+      "futureWorkPackage": "WP03",
+      "currentDisposition": "Move",
+      "interpretation": "Historical project mapping only; no directory resurrection or copied-source instruction."
+    },
+    {
+      "path": "tests/ContractSchemaTests/ArcForges.Tests.ContractSchemaTests.csproj",
+      "blob": "574f04858632c12b44d23dc72ee81b185ef2c1d7",
+      "owner": "Contracts",
+      "family": "F-04",
+      "futureWorkPackage": "WP03",
+      "currentDisposition": "Move",
+      "interpretation": "Historical project mapping only; no directory resurrection or copied-source instruction."
+    },
+    {
+      "path": "tests/DesktopExperienceGallery/ArcForges.Tests.DesktopExperienceGallery.csproj",
+      "blob": "0e3f1f1be3398bf6448bd0c76f0df34a02be816d",
+      "owner": "DesktopPlatform",
+      "family": "F-09",
+      "futureWorkPackage": "WP10",
+      "currentDisposition": "Move",
+      "interpretation": "Historical project mapping only; no directory resurrection or copied-source instruction."
+    },
+    {
+      "path": "tests/DesktopExperienceTests/ArcForges.Tests.DesktopExperienceTests.csproj",
+      "blob": "0ea35b132f8bc2454849d16c10ef8743ca415d42",
+      "owner": "DesktopPlatform",
+      "family": "F-09",
+      "futureWorkPackage": "WP10",
+      "currentDisposition": "Move",
+      "interpretation": "Historical project mapping only; no directory resurrection or copied-source instruction."
+    },
+    {
+      "path": "tests/DesktopUiTests/ArcForges.Tests.DesktopUiTests.csproj",
+      "blob": "c60de98f394095dd50be43d152ef466f9d6e285a",
+      "owner": "DesktopPlatform",
+      "family": "F-09",
+      "futureWorkPackage": "WP10",
+      "currentDisposition": "Move",
+      "interpretation": "Historical project mapping only; no directory resurrection or copied-source instruction."
+    },
+    {
+      "path": "tests/EndToEndTests/ArcForges.Tests.EndToEndTests.csproj",
+      "blob": "7926e4a418ac58f15bda193c1439bafc63f6b0ea",
+      "owner": "DesktopPlatform",
+      "family": "F-11",
+      "futureWorkPackage": "WP20",
+      "currentDisposition": "Move",
+      "interpretation": "Historical project mapping only; no directory resurrection or copied-source instruction."
+    },
+    {
+      "path": "tests/GraphicsInteropTests/ArcForges.Tests.GraphicsInteropTests.csproj",
+      "blob": "108b5000f433e7fa81b7e51abc169e7d7fcdecc7",
+      "owner": "DesktopPlatform",
+      "family": "F-08",
+      "futureWorkPackage": "WP13",
+      "currentDisposition": "Move",
+      "interpretation": "Historical project mapping only; no directory resurrection or copied-source instruction."
+    },
+    {
+      "path": "tests/LocalRpcAotTests/ArcForges.Tests.LocalRpcAotTests.csproj",
+      "blob": "d09fa2d5a9c87cc816079ae6630eb4d11d059e0d",
+      "owner": "DesktopPlatform",
+      "family": "F-05",
+      "futureWorkPackage": "WP08",
+      "currentDisposition": "Move",
+      "interpretation": "Historical project mapping only; no directory resurrection or copied-source instruction."
+    },
+    {
+      "path": "tests/McpAotTests/ArcForges.Tests.McpAotTests.csproj",
+      "blob": "df08cd469310ab8611cbff034598b0f1e0f1a2bf",
+      "owner": "DesktopPlatform",
+      "family": "F-11",
+      "futureWorkPackage": "WP41",
+      "currentDisposition": "Move",
+      "interpretation": "Historical project mapping only; no directory resurrection or copied-source instruction."
+    },
+    {
+      "path": "tests/MobileContractTests/ArcForges.Tests.MobileContractTests.csproj",
+      "blob": "73b9ba97be9ba2ed28140666c44ebebb6a02520c",
+      "owner": "Mobile",
+      "family": "F-06",
+      "futureWorkPackage": "WP30",
+      "currentDisposition": "Move",
+      "interpretation": "Historical project mapping only; no directory resurrection or copied-source instruction."
+    },
+    {
+      "path": "tests/NativeAbiTests/ArcForges.Tests.NativeAbiTests.csproj",
+      "blob": "e74c139d7b00e3df37deae1fcca34dd42f9dc3cb",
+      "owner": "DesktopPlatform",
+      "family": "F-08",
+      "futureWorkPackage": "WP13",
+      "currentDisposition": "Keep",
+      "interpretation": "Historical project mapping only; no directory resurrection or copied-source instruction."
+    },
+    {
+      "path": "tests/NativeContentTests/ArcForges.Tests.NativeContentTests.csproj",
+      "blob": "35a018b78c22acff1f4c8f4f7a96f836890e7225",
+      "owner": "DesktopPlatform",
+      "family": "F-08",
+      "futureWorkPackage": "WP13",
+      "currentDisposition": "Move",
+      "interpretation": "Historical project mapping only; no directory resurrection or copied-source instruction."
+    },
+    {
+      "path": "tests/PersistenceRecoveryTests/ArcForges.Tests.PersistenceRecoveryTests.csproj",
+      "blob": "28f40d42cda965dfd33dceddf3218dd8792096e0",
+      "owner": "DesktopPlatform",
+      "family": "F-13",
+      "futureWorkPackage": "WP07",
+      "currentDisposition": "Move",
+      "interpretation": "Historical project mapping only; no directory resurrection or copied-source instruction."
+    },
+    {
+      "path": "tests/PublicApiContractTests/ArcForges.Tests.PublicApiContractTests.csproj",
+      "blob": "d861397fc7b14c200e05b5c0c91214364f732a7e",
+      "owner": "Contracts",
+      "family": "F-06",
+      "futureWorkPackage": "WP23",
+      "currentDisposition": "Move",
+      "interpretation": "Historical project mapping only; no directory resurrection or copied-source instruction."
+    },
+    {
+      "path": "tests/RealtimeReconnectTests/ArcForges.Tests.RealtimeReconnectTests.csproj",
+      "blob": "4c593a4a77e99f8d8db951c124925a4159c3af04",
+      "owner": "Cloud",
+      "family": "F-07",
+      "futureWorkPackage": "WP24",
+      "currentDisposition": "Move",
+      "interpretation": "Historical project mapping only; no directory resurrection or copied-source instruction."
+    },
+    {
+      "path": "tests/ReleaseArtifactTests/ArcForges.Tests.ReleaseArtifactTests.csproj",
+      "blob": "e56a285b0bca3528f0a8fa8b98ea8c9cc2e99447",
+      "owner": "DesktopPlatform",
+      "family": "F-16",
+      "futureWorkPackage": "WP53",
+      "currentDisposition": "Move",
+      "interpretation": "Historical project mapping only; no directory resurrection or copied-source instruction."
+    },
+    {
+      "path": "tests/RemoteToolBridgeTests/ArcForges.Tests.RemoteToolBridgeTests.csproj",
+      "blob": "e06e774e751a9206458c6664d1c738f26a3840b7",
+      "owner": "Cloud",
+      "family": "F-11",
+      "futureWorkPackage": "WP26",
+      "currentDisposition": "Move",
+      "interpretation": "Historical project mapping only; no directory resurrection or copied-source instruction."
+    },
+    {
+      "path": "tests/SyncConflictTests/ArcForges.Tests.SyncConflictTests.csproj",
+      "blob": "acc850352c72a7eefe69f1245a131ba36cd77abe",
+      "owner": "Cloud",
+      "family": "F-11",
+      "futureWorkPackage": "WP25",
+      "currentDisposition": "Move",
+      "interpretation": "Historical project mapping only; no directory resurrection or copied-source instruction."
+    },
+    {
+      "path": "tests/VirtualizationTests/ArcForges.Tests.VirtualizationTests.csproj",
+      "blob": "2d6ee918d763e6b1db33c72ae79ca46c6d8392cf",
+      "owner": "DesktopPlatform",
+      "family": "F-15",
+      "futureWorkPackage": "WP10",
+      "currentDisposition": "Move",
+      "interpretation": "Historical project mapping only; no directory resurrection or copied-source instruction."
+    },
+    {
+      "path": "tests/Web/ArcForges.Web.BrowserTests/ArcForges.Web.BrowserTests.csproj",
+      "blob": "0f384de272aea8d2e922c7781bbc1c06edfdf75d",
+      "owner": "Web",
+      "family": "F-09",
+      "futureWorkPackage": "WP47",
+      "currentDisposition": "Move",
+      "interpretation": "Historical project mapping only; no directory resurrection or copied-source instruction."
+    },
+    {
+      "path": "tests/Web/ArcForges.Web.ComponentTests/ArcForges.Web.ComponentTests.csproj",
+      "blob": "f8bd464f7c2f773321f695f57942fb33e2ea7aff",
+      "owner": "Web",
+      "family": "F-09",
+      "futureWorkPackage": "WP47",
+      "currentDisposition": "Move",
+      "interpretation": "Historical project mapping only; no directory resurrection or copied-source instruction."
+    },
+    {
+      "path": "tests/Web/ArcForges.Web.ContractTests/ArcForges.Web.ContractTests.csproj",
+      "blob": "25b59f657f3a228d042a6a47a1cc384fb039fa3f",
+      "owner": "Web",
+      "family": "F-06",
+      "futureWorkPackage": "WP23",
+      "currentDisposition": "Move",
+      "interpretation": "Historical project mapping only; no directory resurrection or copied-source instruction."
+    },
+    {
+      "path": "tests/Web/ArcForges.Web.UnitTests/ArcForges.Web.UnitTests.csproj",
+      "blob": "04b2f9dc4e6db57576dec3f3441d809a592d7af9",
+      "owner": "Web",
+      "family": "F-02",
+      "futureWorkPackage": "WP47",
+      "currentDisposition": "Move",
+      "interpretation": "Historical project mapping only; no directory resurrection or copied-source instruction."
+    }
+  ],
+  "validation": {
+    "inventory": {
+      "result": "passed",
+      "counts": {
+        "owners": 9,
+        "testSources": 75,
+        "mappingRows": 99,
+        "families": 18,
+        "historicalProjects": 28
+      },
+      "negativeMutationsRejected": [
+        "missing-family",
+        "missing-source",
+        "changed-hash",
+        "missing-historical",
+        "invalid-producer"
+      ]
+    },
+    "designPreview": {
+      "result": "passed",
+      "terms": 135,
+      "names": 148,
+      "invariants": 429,
+      "forbiddenAliases": 16
+    },
+    "runtimeEvidence": "Existing exact-head green CI and linked dated receipts; no new global product/provider/device run claimed."
+  },
+  "externalPrerequisitesForMapping": [],
+  "deferredEvidence": "Physical devices, assistive-technology sessions, reference hardware and provider/customer-safe staging belong to the named future producers."
+}
