@@ -141,11 +141,13 @@
 
 **What must be fully done.** The nine version axes are produced by the build (`§4` of the build architecture): each axis has a declared source of truth and is stamped into the appropriate artifact. Build metadata — commit, build identifier, pipeline run — is stamped into every assembly and is retrievable at runtime for support.
 
-**Testing requirements.** A test asserting every axis is present and that no axis is derived from another; a runtime test that build metadata is retrievable from a published binary.
+**Testing requirements.** A test asserting every axis is present and that no axis is derived from another; a scoped local runtime test that build metadata is retrievable from a built binary.
 
-**Completion gate.** All nine axes are produced independently, and build metadata is retrievable from a published artifact.
+**Completion gate.** All nine axes are produced independently, and build metadata is retrievable from a built artifact, with publication confirmed by provider status.
 
 **Execution profile.** [Independent version axes and build identity](../../assurance/wp02-04-version-identity-profile.md) records the researched source/applicability rules, runtime support identity and complete ordered plan. All nine axis entries are required; absent later-stage implementations remain explicit and cannot be presented as supported version values. This profile does not close the later business producers or typed version semantics.
+
+**Current execution amendment.** [P2-017](../../decisions/phase-2-specification-decisions.md#rule-p2-017) and the [CI/local policy](../../assurance/ci-and-local-validation-policy.md) replace hosted runtime/macOS and repeated post-publication gates. Retain actual local readback evidence and reduced CI; no new public download or device/browser/provider rerun is required. Stop after this substep.
 
 <a id="rule-wp-02.05"></a>
 
@@ -215,7 +217,7 @@
 2. The solution builds with warnings-as-errors; every waiver has an owner and an expiry.
 3. Every project on an AOT chain declares its posture, and every resulting diagnostic is fixed or assigned to a named package.
 4. Each target's effective runtime posture matches **[D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008)**, verified from evaluated properties.
-5. All nine version axes are produced independently and build metadata is retrievable from a published artifact.
+5. All nine version axes are produced independently and build metadata is retrievable from a built artifact, with publication confirmed by provider status.
 6. The dependency policy exists as data, passes against the current set, and carries the framework-upgrade re-verification checklist.
 
 ---

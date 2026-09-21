@@ -11,3 +11,7 @@ Instructions for AI coding agents and contributors working in the ArcForges Desi
 - **No empty placeholder batches**: Do not create speculative or empty placeholder files without substantive content.
 - **Work in worktree**: Always work inside `.worktree/` branches rather than checking out or modifying the primary checkout branch.
 - **Integration**: `CLAUDE.md` defers directly to this file.
+
+## CI and validation restrictions
+
+Follow [the accepted CI and local validation policy](docs/assurance/ci-and-local-validation-policy.md) for all planning and implementation. Never prescribe macOS CI, hosted device/emulator/GUI/browser/live-service/inference/installed-consumer tests, or routine post-publication downloads/hash/install checks. Retain necessary Windows/Linux builds, targeted offline checks, signatures, locks, licences and non-duplicated security. Local runtime checks are affected-scope, existing-environment opt-in and are not repeated after passing. No toolchain reinstall or hidden heavy Git hooks. Delegate independent repository work when useful but serialize heavy local builds. Use normal networking, no proxy7890/wsl.exe wrappers; stop on a network failure. Post-merge verification is commit/job status and a clean fast-forward only. Historical receipts are not active testing mandates.

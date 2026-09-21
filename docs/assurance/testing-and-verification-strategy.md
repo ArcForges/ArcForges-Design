@@ -27,9 +27,9 @@ The quality contract states *what must be true*. This document states *how it is
 
 ## 2. The eighteen test families
 
-Each family below states its unique responsibility, where it runs, and its evidence.
+Each family below states its unique responsibility and evidence. [P2-017](../decisions/phase-2-specification-decisions.md#rule-p2-017) governs execution: CI runs only necessary Windows/Linux builds and targeted offline/static/security checks. Integration, packaged-consumer, device, GUI/browser, live-service, inference and robustness runtime scenarios are local opt-in using existing environments, never PR/main/scheduled/manual CI gates. Do not repeat passing local evidence or routine post-merge downloads. No macOS CI is permitted.
 
-### 2.1 Fast families — every pull request
+### 2.1 Offline families — relevant pull requests
 
 | # | Family | Uniquely catches | Evidence |
 |---|---|---|---|
@@ -38,7 +38,7 @@ Each family below states its unique responsibility, where it runs, and its evide
 | <a id="rule-f-04"></a>F-04 | **Serialization and type-shape compatibility tests** | A DTO that no longer round-trips, a missing source-generated context, a shape change that breaks an older client | Round-trip results plus a diff against the committed type-shape baseline |
 | <a id="rule-f-17"></a>F-17 | **Architecture and repository-policy tests** | Layering violations, forbidden references, licence-boundary breaches, forbidden terms, banned APIs, prohibited patterns | The `AT-*` and `RP-*` result set (`§8` of the solution layout) |
 
-### 2.2 Integration families — main branch
+### 2.2 Integration families — scoped local opt-in
 
 | # | Family | Uniquely catches | Evidence |
 |---|---|---|---|
@@ -50,7 +50,7 @@ Each family below states its unique responsibility, where it runs, and its evide
 | <a id="rule-f-12"></a>F-12 | **Migration and golden-fixture tests** | Data loss, semantic drift and irreversible migration defects ([QI-07](../requirements/12-quality-and-compatibility-contract.md#rule-qi-07)) | Fixture set plus before/after comparison |
 | <a id="rule-f-16"></a>F-16 | **Publish, install, update, downgrade-protection and rollback tests** | Packaging, staging, atomic switch, rollback and data-directory defects (`§10` of the build architecture) | Matrix results per platform |
 
-### 2.3 Robustness families — main branch and scheduled
+### 2.3 Robustness families — scoped local opt-in
 
 | # | Family | Uniquely catches | Evidence |
 |---|---|---|---|
@@ -95,7 +95,7 @@ These are not additional families; they are obligations distributed across the f
 | # | Theme | Where it is proved |
 |---|---|---|
 | <a id="rule-cv-01"></a>CV-01 | **AOT correctness** | [F-16](#rule-f-16) and [F-17](#rule-f-17) publish AOT for every desktop product and the C# Cloud host with zero trim or AOT diagnostics; [F-05](#rule-f-05), [F-06](#rule-f-06) and [F-08](#rule-f-08) run against AOT-published binaries, not JIT test hosts ([QI-02](../requirements/12-quality-and-compatibility-contract.md#rule-qi-02)) |
-| <a id="rule-cv-02"></a>CV-02 | **Mobile runtime posture** | The Android release artifact is built by CI, its runtime confirmed by inspecting the artifact, and smoke-tested on a real device ([RT-07](../architecture/11-mobile-architecture.md#rule-rt-07), [RT-08](../architecture/11-mobile-architecture.md#rule-rt-08) in the mobile architecture) |
+| <a id="rule-cv-02"></a>CV-02 | **Mobile runtime posture** | CI compiles/packages the Android release artifact and checks its declared posture; scoped local device/runtime observations are recorded separately under P2-017, without an automated device gate. |
 | <a id="rule-cv-03"></a>CV-03 | **Contract compatibility across the supported window** | [F-06](#rule-f-06) runs the current client against the previous and minimum supported server, and the reverse (`§15` of the quality contract) |
 | <a id="rule-cv-04"></a>CV-04 | **Idempotency** | [F-02](#rule-f-02), [F-03](#rule-f-03) and [F-11](#rule-f-11) assert that internal commands/events/settlement deduplicate in their authoritative transaction, and externally uncertain effects enter reconciliation rather than automatic replay |
 | <a id="rule-cv-05"></a>CV-05 | **Security enforcement** | [F-02](#rule-f-02) and [F-11](#rule-f-11) assert refusal paths: exceeded grant, missing approval, expired lease, egress without authorization, and owner-side final validation |
@@ -153,9 +153,9 @@ These are product-state assertions, not permissions to retain data after an expl
 | Environment | Purpose | Constraints |
 |---|---|---|
 | **Developer machine** | Fast families, targeted integration | Must run without cloud credentials or a network |
-| **CI ephemeral** | Fast and integration families | Real store instances, real pipes and sockets, no shared mutable state between runs |
-| **CI platform matrix** | Per-platform families | Every supported platform and architecture on a matching runner ([CI-05](../architecture/14-build-packaging-and-release.md#rule-ci-05) in the build architecture) |
-| **Long-run agent** | Soak, scale, fuzzing, sanitiser builds | Scheduled, with resource curves retained |
+| **CI ephemeral** | Targeted offline/static/security checks | No device, packaged-runtime, browser or live-service execution |
+| **CI platform matrix** | Necessary compile/AOT/package | Windows/Linux only; no macOS runners |
+| **Local diagnostic session** | Affected-scope runtime, soak or hardware behavior | Explicit opt-in, existing environment, no automatic recurring CI |
 | **Hardware lab** | [F-18](#rule-f-18) | Physical devices with a maintained inventory, recorded firmware and driver versions |
 | **Staging** | Release-candidate verification against provider test environments | Never customer data; provider test mode only |
 

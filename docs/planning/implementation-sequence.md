@@ -1,5 +1,7 @@
 # Implementation Sequence
 
+Execution follows [P2-017](../decisions/phase-2-specification-decisions.md#rule-p2-017) and the [CI/local policy](../assurance/ci-and-local-validation-policy.md). Numbered steps remain ordered; independent owner edits may run in parallel with serialized heavy local work. Runtime scenarios are scoped local opt-in, not hosted CI or repeated post-merge gates; macOS CI is prohibited. Historical completion evidence is not a rerun requirement.
+
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning
 > Governing authority: **[D-017](../decisions/phase-1-foundation-decisions.md#rule-d-017)** (planning location and format), **[D-019](../decisions/phase-1-foundation-decisions.md#rule-d-019)** (sequence status)
@@ -150,13 +152,13 @@ A shared gate closes only after every scheduled producer contributes its require
 
 ## 4. Serial execution and dependency freedom
 
-Implementation is one main, serial context. Execute the topological order in the work-package index; numerical identity never overrides a dependency. Independent products may have focused solution views and isolated build/test entry points without splitting authority or bypassing shared gates.
+One coordinator advances numbered steps in topological order; numerical identity never overrides a dependency. Independent owner work within the authorized step may be delegated under P2-017, with one CPU-heavy local build/test slot. Independent products may have focused solution views and isolated build/test entry points without splitting authority or bypassing shared gates.
 
 | # | Rule |
 |---|---|
 | <a id="rule-pa-01"></a>PA-01 | A package starts only after **all** direct upstream completion gates pass; the header, dependency section and index name the same edges. |
 | <a id="rule-pa-02"></a>PA-02 | A change to a shared contract follows its ownership/compatibility process before dependent work proceeds. |
-| <a id="rule-pa-03"></a>PA-03 | No delegated/background implementation agents or parallel package execution is required or authorised by this plan. Independent technical test cases can run concurrently inside a verification command where appropriate. |
+| <a id="rule-pa-03"></a>PA-03 | Independent repository edits/reviews may use delegated agents under one coordinator. Preserve source ownership, dependency order and a single CPU-heavy local build/test slot; do not begin a later numbered step. |
 
 ---
 

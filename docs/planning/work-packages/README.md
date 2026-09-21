@@ -1,5 +1,7 @@
 # Work Packages
 
+Execution follows [P2-017](../../decisions/phase-2-specification-decisions.md#rule-p2-017) and the [CI/local policy](../../assurance/ci-and-local-validation-policy.md). Numbered steps remain ordered; independent owner edits may run in parallel with serialized heavy local work. Runtime scenarios are scoped local opt-in, not hosted CI or repeated post-merge gates; macOS CI is prohibited. Historical completion evidence is not a rerun requirement.
+
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning
 > Governing authority: **[D-017](../../decisions/phase-1-foundation-decisions.md#rule-d-017)** (numbered implementation work packages belong here), **[D-019](../../decisions/phase-1-foundation-decisions.md#rule-d-019)** (one serial numbered sequence, no predetermined maximum)
