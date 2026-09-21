@@ -108,6 +108,8 @@
 
 **Completion gate.** The solution builds with warnings-as-errors, and every waiver has an owner and an expiry.
 
+**Current execution profile.** [Diagnostic posture and ordered plan](../../assurance/wp02-01-diagnostic-profile.md) records the evaluated baseline, per-language repairs, explicit diagnostic scopes and waiver inventory, provenance dependencies, negative checks and full review/CI/post-merge sequence. It is not completion evidence.
+
 <a id="rule-wp-02.02"></a>
 
 ### WP-02.02 — AOT and trim declaration sweep
