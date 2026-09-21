@@ -1,0 +1,298 @@
+{
+  "substep": "WP01.03",
+  "status": "complete",
+  "baselineCommit": "b7744f3ffdeae161d8a3e34243aad3b8e8b47978",
+  "reviewedHead": "152d2682105d005d88b46893f930dffccb2da4df",
+  "implementationPr": "https://github.com/ArcForges/DesktopPlatform/pull/54",
+  "authorityCommit": "7abe9bc4c1964a23d5dc3894dbe3a0357ec31a00",
+  "sourceMoves": [
+    {
+      "originalPath": "src/BuildingBlocks/ArcForges.NativeInterop/ArcMediaNative.cs",
+      "destinationPath": "tests/NativeAbiTests/Oracle/ArcMediaNative.cs",
+      "originalSha256": "40e6387f0ee38fa7862e6654cc288d356e017521774a98226e286fff248eaac2",
+      "destinationSha256": "40e6387f0ee38fa7862e6654cc288d356e017521774a98226e286fff248eaac2",
+      "behavior": "unchanged",
+      "visibilityChange": false
+    },
+    {
+      "originalPath": "src/BuildingBlocks/ArcForges.NativeInterop/NativeLibraryPolicy.cs",
+      "destinationPath": "tests/NativeAbiTests/Oracle/NativeLibraryPolicy.cs",
+      "originalSha256": "b0795f26b439ed65e90f2441d4ef971dfa9030829b41424f903726d0b41db526",
+      "destinationSha256": "b0795f26b439ed65e90f2441d4ef971dfa9030829b41424f903726d0b41db526",
+      "behavior": "unchanged",
+      "visibilityChange": false
+    },
+    {
+      "originalPath": "src/BuildingBlocks/ArcForges.NativeInterop/NativeSmoke.cs",
+      "destinationPath": "tests/NativeAbiTests/Oracle/NativeSmoke.cs",
+      "originalSha256": "aa05bb24ff91fd83fdef6b6c198d1c967c55397836c2b241a4a4f4e227462ac9",
+      "destinationSha256": "1044ca4830daa591c2213fa64bc5242fc3fca6500542e6cd379ae2561893b8d3",
+      "behavior": "unchanged",
+      "visibilityChange": true
+    }
+  ],
+  "productScans": [
+    {
+      "repository": "ArcNotes",
+      "commit": "e40423a1b14ce8341de35748cc2a093c7c9b77a7",
+      "clean": true,
+      "scope": "src",
+      "matches": 0
+    },
+    {
+      "repository": "ArcScope",
+      "commit": "d247dcff36fd1123a70e5e59967a9b2294a2eeac",
+      "clean": true,
+      "scope": "src",
+      "matches": 0
+    },
+    {
+      "repository": "ArcSlate",
+      "commit": "b0d255f54fb560a534cc493d5645ca4bc7b4bd0e",
+      "clean": true,
+      "scope": "src",
+      "matches": 0
+    }
+  ],
+  "scanPattern": "LibraryImport|DllImport|NativeLibrary|NativeSmoke|ArcSlateNative|PlatformBroker",
+  "localEvidenceHashes": {
+    "restore-final.log": "fe0cc12ade9b7374482874870bfa7d4ddc99d503ad082a98677b47c3bcb94686",
+    "build.log": "ddd5c1d21f4e1507d74b446111c9c7926213d5152b995c69fc55d2ab2e7593c5",
+    "format-check.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "win-slnx-final.log": "b218efcbccabbc8ce2e35a5ed94682bf0073389cfa90a906286a148a3e509940",
+    "native-built-final.log": "9be2748a77177b5a11ef62fdb4ea4906a7a1fcef3b4e8f24d6084b81c8deb49b",
+    "architecture-final.log": "c42a81e5b8d90cc067b48c6a15e4e1b57c73e88df704369fd5b80c69c9d5b4e3",
+    "policy-tests-final.log": "711081cdc300ae352c0803fb2c4e9f65703aeb4356b811d6a569fca0de85ccde",
+    "tooling-tests.log": "c0b25d4e17bc3b79085b7d7d8e24c86b62775a3836d09a7a3a8880c22dec406e",
+    "rejected-duplicate.log": "315d37e719bbd28587925e9a457338f84e2c891b992ce15c451a6e530e5ac9d3",
+    "reconciliation-pinned.log": "fe1bb10366d0ef0c9622f04a56a3cf15d3dfc008071ecc216f0d51898576ac5c",
+    "post-merge-native-consumer.log": "2354c74370303743b6e65168e1bf3860cc78f2f232d041b9cfeed604a2155d50"
+  },
+  "localResults": {
+    "windowsSolution": "Release|x64: 0 warnings, 0 errors",
+    "freshNativeAbiTests": 1,
+    "architectureTests": 5,
+    "engineeringTests": 63,
+    "toolingTests": 41,
+    "negativeDuplicateImport": "rejected",
+    "inventory": "9 owners, 75 projects, 166 historical projects, 359 directories, 7 native entries"
+  },
+  "limits": [
+    "bounded lexical binding guard",
+    "macOS Metal probe not tested on Windows",
+    "functional capabilities WP13 and actual helper enforcement WP11 remain future work"
+  ],
+  "externalPrerequisites": [],
+  "mergeCommit": "6cb08997bb35299df86a6434606d8e24cf5a4d97",
+  "prCi": "https://github.com/ArcForges/DesktopPlatform/actions/runs/35554487715",
+  "mainCi": "https://github.com/ArcForges/DesktopPlatform/actions/runs/35554989640",
+  "mainAttempt1": {
+    "result": "failed-before-packaging",
+    "cause": "HTTP 403 fetching Microsoft runtime legal bytes; native compilation and all four CTests passed",
+    "recovery": "rerun failed jobs; preserve allocated version",
+    "localNetworkCheck": "both original Microsoft URLs downloaded directly and matched reviewed SHA256"
+  },
+  "mainCiResult": {
+    "result": "success",
+    "attempt": 2,
+    "version": "1.0.0-ci.17.1"
+  },
+  "localPostMergeConsumer": {
+    "sourceCommit": "6cb08997bb35299df86a6434606d8e24cf5a4d97",
+    "version": "1.0.0-ci.17.1",
+    "rid": "win-x64",
+    "packages": [
+      {
+        "id": "ArcForges.Build.Policy",
+        "version": "1.0.0-ci.17.1",
+        "file": "ArcForges.Build.Policy.1.0.0-ci.17.1.nupkg",
+        "sha256": "c01726de51ad30496253ae9f3980aeb76b3b7e08d3096c076de279e24ac3f42f"
+      },
+      {
+        "id": "ArcForges.Native.Abstractions",
+        "version": "1.0.0-ci.17.1",
+        "file": "ArcForges.Native.Abstractions.1.0.0-ci.17.1.nupkg",
+        "sha256": "a0061a5803d6a5ab8298806ed47dd0d286eaea50220d634e9aac7f4eee08a13a"
+      },
+      {
+        "id": "ArcForges.Native.Media",
+        "version": "1.0.0-ci.17.1",
+        "file": "ArcForges.Native.Media.1.0.0-ci.17.1.nupkg",
+        "sha256": "3aad1f067643477a1abe4c28455fb15e353882b16890d3ad569353772e219199"
+      },
+      {
+        "id": "ArcForges.Native.Colour",
+        "version": "1.0.0-ci.17.1",
+        "file": "ArcForges.Native.Colour.1.0.0-ci.17.1.nupkg",
+        "sha256": "311c377573b9f10180f59af09f9929072f6e6d77f3b3b29a98edf6e0efb3988f"
+      },
+      {
+        "id": "ArcForges.Native.Image",
+        "version": "1.0.0-ci.17.1",
+        "file": "ArcForges.Native.Image.1.0.0-ci.17.1.nupkg",
+        "sha256": "9ab6fb65d8c341799c7ec7e784dc4bb51e85fdbadbbc00994fe7146a7e62dde0"
+      },
+      {
+        "id": "ArcForges.Native.Otio",
+        "version": "1.0.0-ci.17.1",
+        "file": "ArcForges.Native.Otio.1.0.0-ci.17.1.nupkg",
+        "sha256": "dcaf158bd14f4da03991ae656b29a3121563eb3bb97bbad8f02d0fc05b42d3c8"
+      },
+      {
+        "id": "ArcForges.Native.Media.Runtime.win-x64",
+        "version": "1.0.0-ci.17.1",
+        "file": "ArcForges.Native.Media.Runtime.win-x64.1.0.0-ci.17.1.nupkg",
+        "sha256": "1de05d0639c6efb72592bae3fc1bcd3a7b01a15d0031cd0468d4781d5bd9e9d4"
+      },
+      {
+        "id": "ArcForges.Native.Colour.Runtime.win-x64",
+        "version": "1.0.0-ci.17.1",
+        "file": "ArcForges.Native.Colour.Runtime.win-x64.1.0.0-ci.17.1.nupkg",
+        "sha256": "41d264140ac8578a06fca7cc64558f82cb6d0eee60a6a1445ba2e8b40343649c"
+      },
+      {
+        "id": "ArcForges.Native.Image.Runtime.win-x64",
+        "version": "1.0.0-ci.17.1",
+        "file": "ArcForges.Native.Image.Runtime.win-x64.1.0.0-ci.17.1.nupkg",
+        "sha256": "dea8df2badf366f7129786a43c1e10b4884b2a03a9988397cb98237c3e34ab85"
+      },
+      {
+        "id": "ArcForges.Native.Otio.Runtime.win-x64",
+        "version": "1.0.0-ci.17.1",
+        "file": "ArcForges.Native.Otio.Runtime.win-x64.1.0.0-ci.17.1.nupkg",
+        "sha256": "0dcb796584e59f934b34949ce113b8c64d14761e9cac7e15411f80effd5d0645"
+      }
+    ],
+    "cases": [
+      {
+        "name": "ArcMediaNative",
+        "jit": "passed",
+        "aot": "passed",
+        "aotExeSha256": "30baee510b50573a5948186e60cde356fd8856c294380f17cc0a1c25bacfaf1b"
+      },
+      {
+        "name": "ArcSlateColorNative",
+        "jit": "passed",
+        "aot": "passed",
+        "aotExeSha256": "11de67f301fd6ab67627867a7d45a4b8cc37cde72869d55e002c554bed29c572"
+      },
+      {
+        "name": "ArcSlateImageNative",
+        "jit": "passed",
+        "aot": "passed",
+        "aotExeSha256": "415deca693cf1385c377392910c559310d38c13bfbbc14b6f92e77bf34106524"
+      },
+      {
+        "name": "ArcSlateOtioNative",
+        "jit": "passed",
+        "aot": "passed",
+        "aotExeSha256": "068fc6a5905da0428b2351efaa18f30e528959ff0c631c0cb7aefa5a37a5112d"
+      },
+      {
+        "name": "All",
+        "jit": "passed",
+        "aot": "passed",
+        "aotExeSha256": "5fdc72c9f75deb25ba18e07c75255b3886cbd1b201e67337c52314126c5a65c4"
+      }
+    ],
+    "c17": {
+      "result": "passed",
+      "exeSha256": "961eae54339ca93bc8708c5d6975f16941cb02c029b5186e83431f1c5189e44f"
+    },
+    "rejections": [
+      "wrong-rid",
+      "missing-owned-dll",
+      "missing-transitive-dll",
+      "changed-dll"
+    ]
+  },
+  "publicVerification": {
+    "result": "passed",
+    "sourceCommit": "6cb08997bb35299df86a6434606d8e24cf5a4d97",
+    "version": "1.0.0-ci.17.1",
+    "verifiedAt": "2026-09-21T03:10:41.651382+00:00",
+    "comparison": "all ZIP entries byte hashes match; only NuGet repository signature excluded",
+    "packages": [
+      {
+        "id": "ArcForges.Build.Policy",
+        "url": "https://api.nuget.org/v3-flatcontainer/arcforges.build.policy/1.0.0-ci.17.1/arcforges.build.policy.1.0.0-ci.17.1.nupkg",
+        "payloadMatches": true,
+        "candidateSha256": "c01726de51ad30496253ae9f3980aeb76b3b7e08d3096c076de279e24ac3f42f",
+        "publicSha256": "60ef3bacd98a67d19a5a163a43b65b7f348af537cf99778656dccbea103fe430",
+        "entries": 9
+      },
+      {
+        "id": "ArcForges.Native.Abstractions",
+        "url": "https://api.nuget.org/v3-flatcontainer/arcforges.native.abstractions/1.0.0-ci.17.1/arcforges.native.abstractions.1.0.0-ci.17.1.nupkg",
+        "payloadMatches": true,
+        "candidateSha256": "a0061a5803d6a5ab8298806ed47dd0d286eaea50220d634e9aac7f4eee08a13a",
+        "publicSha256": "7b4c272de5a4438635fc5cae7653d916cbacec20d645370273d4de160d5298c4",
+        "entries": 8
+      },
+      {
+        "id": "ArcForges.Native.Media",
+        "url": "https://api.nuget.org/v3-flatcontainer/arcforges.native.media/1.0.0-ci.17.1/arcforges.native.media.1.0.0-ci.17.1.nupkg",
+        "payloadMatches": true,
+        "candidateSha256": "3aad1f067643477a1abe4c28455fb15e353882b16890d3ad569353772e219199",
+        "publicSha256": "e9fec9710e34d8a90db841c41fef90c484992fd30e1e26155debb844026e7153",
+        "entries": 8
+      },
+      {
+        "id": "ArcForges.Native.Colour",
+        "url": "https://api.nuget.org/v3-flatcontainer/arcforges.native.colour/1.0.0-ci.17.1/arcforges.native.colour.1.0.0-ci.17.1.nupkg",
+        "payloadMatches": true,
+        "candidateSha256": "311c377573b9f10180f59af09f9929072f6e6d77f3b3b29a98edf6e0efb3988f",
+        "publicSha256": "78456e26acf8a0b0045dee7db00bbd4a50e9a2193df7164fbe7d1f3d3265ebf6",
+        "entries": 8
+      },
+      {
+        "id": "ArcForges.Native.Image",
+        "url": "https://api.nuget.org/v3-flatcontainer/arcforges.native.image/1.0.0-ci.17.1/arcforges.native.image.1.0.0-ci.17.1.nupkg",
+        "payloadMatches": true,
+        "candidateSha256": "9ab6fb65d8c341799c7ec7e784dc4bb51e85fdbadbbc00994fe7146a7e62dde0",
+        "publicSha256": "29fc2022fd9b3ccd39bf71d70549f52d804ff0346ddf00aead4481f2c565dd3d",
+        "entries": 8
+      },
+      {
+        "id": "ArcForges.Native.Otio",
+        "url": "https://api.nuget.org/v3-flatcontainer/arcforges.native.otio/1.0.0-ci.17.1/arcforges.native.otio.1.0.0-ci.17.1.nupkg",
+        "payloadMatches": true,
+        "candidateSha256": "dcaf158bd14f4da03991ae656b29a3121563eb3bb97bbad8f02d0fc05b42d3c8",
+        "publicSha256": "87698830d92170ab2aba4b6c061e55b43905defbf39c40c39a44433f6681ba08",
+        "entries": 8
+      },
+      {
+        "id": "ArcForges.Native.Media.Runtime.win-x64",
+        "url": "https://api.nuget.org/v3-flatcontainer/arcforges.native.media.runtime.win-x64/1.0.0-ci.17.1/arcforges.native.media.runtime.win-x64.1.0.0-ci.17.1.nupkg",
+        "payloadMatches": true,
+        "candidateSha256": "1de05d0639c6efb72592bae3fc1bcd3a7b01a15d0031cd0468d4781d5bd9e9d4",
+        "publicSha256": "945b6bf4727e168d8f815bd874aeed9f5f1eebf4bdd0fe1cf069a82693fb9f7a",
+        "entries": 172
+      },
+      {
+        "id": "ArcForges.Native.Colour.Runtime.win-x64",
+        "url": "https://api.nuget.org/v3-flatcontainer/arcforges.native.colour.runtime.win-x64/1.0.0-ci.17.1/arcforges.native.colour.runtime.win-x64.1.0.0-ci.17.1.nupkg",
+        "payloadMatches": true,
+        "candidateSha256": "41d264140ac8578a06fca7cc64558f82cb6d0eee60a6a1445ba2e8b40343649c",
+        "publicSha256": "e5f86162f13271d885c744870a73094f7c95ce6f365dbdd2bd81d23043cc5fa1",
+        "entries": 121
+      },
+      {
+        "id": "ArcForges.Native.Image.Runtime.win-x64",
+        "url": "https://api.nuget.org/v3-flatcontainer/arcforges.native.image.runtime.win-x64/1.0.0-ci.17.1/arcforges.native.image.runtime.win-x64.1.0.0-ci.17.1.nupkg",
+        "payloadMatches": true,
+        "candidateSha256": "dea8df2badf366f7129786a43c1e10b4884b2a03a9988397cb98237c3e34ab85",
+        "publicSha256": "c0c33f8c457f54e980669344eb91b0c886a2f918838cb69ef39b25c9c031faff",
+        "entries": 197
+      },
+      {
+        "id": "ArcForges.Native.Otio.Runtime.win-x64",
+        "url": "https://api.nuget.org/v3-flatcontainer/arcforges.native.otio.runtime.win-x64/1.0.0-ci.17.1/arcforges.native.otio.runtime.win-x64.1.0.0-ci.17.1.nupkg",
+        "payloadMatches": true,
+        "candidateSha256": "0dcb796584e59f934b34949ce113b8c64d14761e9cac7e15411f80effd5d0645",
+        "publicSha256": "d6bbec3bf80f651d95e9cfc7cc0311253ffa4943bd7d2d1f0f25507e84145775",
+        "entries": 60
+      }
+    ]
+  }
+}
