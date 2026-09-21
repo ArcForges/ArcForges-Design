@@ -1,0 +1,594 @@
+{
+  "schemaVersion": 1,
+  "substep": "02.04",
+  "completedOn": "2026-09-21",
+  "status": "complete",
+  "scope": "Foundation version identity and explicitly authorized P2-017 CI/local validation reduction; not commercial acceptance or later version producers.",
+  "policy": {
+    "decision": "P2-017",
+    "designPr": "https://github.com/ArcForges/ArcForges-Design/pull/53",
+    "designMergeCommit": "47db6670a727317939b91245e8c0b288834acf99",
+    "planPr": "https://github.com/ArcForges/Plan/pull/3",
+    "planMergeCommit": "5b0563423555c8787385c01087c0ade5559d878d"
+  },
+  "historicalIdentityOwners": [
+    {
+      "owner": "DesktopPlatform",
+      "pr": "https://github.com/ArcForges/DesktopPlatform/pull/57",
+      "reviewedHead": "8453c339dc744b435ee07fac44cfb885e573c9ac",
+      "mergeCommit": "96d1acebc74e7dcc7dbff7652763084b1cd95908",
+      "packageVersion": "1.0.0-ci.20.1",
+      "limitations": "Foundation support identity, not commercial acceptance",
+      "prRun": 35589591720,
+      "mainRun": 35590450948,
+      "evidenceClass": "historical accepted identity implementation; not rerun under P2-017"
+    },
+    {
+      "owner": "Contracts",
+      "pr": "https://github.com/ArcForges/Contracts/pull/30",
+      "reviewedHead": "17e1f309bc296e04a099ec04ae1bfdad106c596b",
+      "mergeCommit": "e8b3e123b258fdf6f0b77268c60ea4d9e915e74b",
+      "version": "1.0.0-ci.71.1",
+      "mavenVersion": "1.0.0-SNAPSHOT",
+      "prRun": 35593754228,
+      "mainRun": 35594600655,
+      "evidenceClass": "historical accepted identity implementation; not rerun under P2-017"
+    },
+    {
+      "owner": "ArcNotes",
+      "pr": "https://github.com/ArcForges/ArcNotes/pull/7",
+      "reviewedHead": "665f5b5720a873845bedd48025a93058782ae7ee",
+      "mergeCommit": "0c797e30690a10d8798ddca19ca7f37b16cecf01",
+      "version": "0.1.0-ci.15.1",
+      "prRun": 35609826605,
+      "mainRun": 35610729653,
+      "evidenceClass": "historical accepted identity implementation; not rerun under P2-017"
+    },
+    {
+      "owner": "ArcScope",
+      "pr": "https://github.com/ArcForges/ArcScope/pull/7",
+      "reviewedHead": "265cd29bdfc6e0cb66653e849367303c19eef43e",
+      "mergeCommit": "a26c2c91db49d1ac95d339b7988d215ed9b520e8",
+      "version": "0.1.0-ci.14.2",
+      "prRun": 35612987011,
+      "mainRun": 35613699865,
+      "evidenceClass": "historical accepted identity implementation; not rerun under P2-017"
+    },
+    {
+      "owner": "ArcSlate",
+      "pr": "https://github.com/ArcForges/ArcSlate/pull/7",
+      "reviewedHead": "5cd02cdf7c86166c09149c9399cccf175ae502cc",
+      "mergeCommit": "807ac12a86036dbd48b5a6bdf8fbeaa0a6f48430",
+      "version": "0.1.0-ci.14.1",
+      "prRun": 35615976836,
+      "mainRun": 35616616925,
+      "evidenceClass": "historical accepted identity implementation; not rerun under P2-017"
+    },
+    {
+      "owner": "Cloud",
+      "pr": "https://github.com/ArcForges/Cloud/pull/8",
+      "reviewedHead": "d4b03fe1d666d3fd708b5ef5ceea15ddb9f86fc7",
+      "mergeCommit": "749de4b702a0de86859b8ae4a5f22ac90f856ffa",
+      "version": "0.1.0-ci.25.1",
+      "prRun": 35619942682,
+      "mainRun": 35620774565,
+      "evidenceClass": "historical accepted identity implementation; not rerun under P2-017"
+    },
+    {
+      "owner": "AI",
+      "pr": "https://github.com/ArcForges/AI/pull/17",
+      "reviewedHead": "607f2400116cab7f7f3441cfd9c6ed2dc2b46771",
+      "mergeCommit": "dc6b8402d0885f1d7e33f3c1b3d3f86e26a80750",
+      "version": "0.1.0-ci.41.1",
+      "prRun": 35623000133,
+      "mainRun": 35623427130,
+      "evidenceClass": "historical accepted identity implementation; not rerun under P2-017"
+    },
+    {
+      "owner": "Web",
+      "pr": "https://github.com/ArcForges/Web/pull/13",
+      "reviewedHead": "6fbdd7c432f508c2646f1f672e412ecacccef9f9",
+      "mergeCommit": "1560ab754ccdeb71fe6fa994de488daa5c257376",
+      "version": "0.1.0-ci.31.1",
+      "prRun": 35624609410,
+      "mainRun": 35625293952,
+      "evidenceClass": "historical accepted identity implementation; not rerun under P2-017"
+    }
+  ],
+  "historicalMobileLocalReadback": [
+    {
+      "api": 26,
+      "evidenceClass": "installed-apk-native-diagnostic-view",
+      "sourceCommit": "97ef9d15ebdf4cacbefcfe8f407a1af4b9fffac2",
+      "build": {
+        "sourceCommit": "97ef9d15ebdf4cacbefcfe8f407a1af4b9fffac2",
+        "dirty": false,
+        "kind": "local",
+        "buildId": "local.97ef9d15ebdf4cacbefcfe8f407a1af4b9fffac2",
+        "runId": null,
+        "runAttempt": null,
+        "pipelineRun": null,
+        "sourceDateEpoch": 1790011588
+      },
+      "axisStates": {
+        "AppVersion": "present",
+        "ContractSet": "present",
+        "CapabilityVersion": "not-produced",
+        "NativeFormatVersion": "not-produced",
+        "StorageSchemaVersion": "not-produced",
+        "NativeAbiVersion": "not-applicable",
+        "PolicySchemaVersion": "not-produced",
+        "ExtensionProtocolVersion": "not-produced",
+        "PackageVersion": "present"
+      },
+      "historicalOnly": true
+    },
+    {
+      "api": 36,
+      "evidenceClass": "installed-apk-native-diagnostic-view",
+      "sourceCommit": "97ef9d15ebdf4cacbefcfe8f407a1af4b9fffac2",
+      "build": {
+        "sourceCommit": "97ef9d15ebdf4cacbefcfe8f407a1af4b9fffac2",
+        "dirty": false,
+        "kind": "local",
+        "buildId": "local.97ef9d15ebdf4cacbefcfe8f407a1af4b9fffac2",
+        "runId": null,
+        "runAttempt": null,
+        "pipelineRun": null,
+        "sourceDateEpoch": 1790011588
+      },
+      "axisStates": {
+        "AppVersion": "present",
+        "ContractSet": "present",
+        "CapabilityVersion": "not-produced",
+        "NativeFormatVersion": "not-produced",
+        "StorageSchemaVersion": "not-produced",
+        "NativeAbiVersion": "not-applicable",
+        "PolicySchemaVersion": "not-produced",
+        "ExtensionProtocolVersion": "not-produced",
+        "PackageVersion": "present"
+      },
+      "historicalOnly": true
+    }
+  ],
+  "owners": [
+    {
+      "owner": "DesktopPlatform",
+      "pr": "https://github.com/ArcForges/DesktopPlatform/pull/58",
+      "reviewedHead": "42b42cb6143b7778867a24c1c24222eb35630846",
+      "mergeCommit": "940532d91c64d65d3d654ab031ad1985c466f91c",
+      "mainConclusion": "success",
+      "publishOutcome": "NuGet 1.0.0-ci.21.1: 10 package uploads accepted; publish job successful",
+      "localChecks": [
+        "6 offline build-identity tests passed",
+        "Python syntax and YAML parse passed",
+        "diff whitespace passed",
+        "hosted consumer guards reject before artifact IO",
+        "self-review and coordinator full review passed"
+      ],
+      "primaryClean": true,
+      "prRuns": [
+        "https://github.com/ArcForges/DesktopPlatform/actions/runs/35640868484"
+      ],
+      "mainRuns": [
+        "https://github.com/ArcForges/DesktopPlatform/actions/runs/35641624352"
+      ],
+      "reviewOutcome": "Full self-review and independent review completed; findings repaired; applicable latest-head checks successful before merge.",
+      "retainedBranch": "codex/wp02-04-ci-reduction",
+      "retainedWorktree": ".worktree/wp02-04-ci-reduction"
+    },
+    {
+      "owner": "Contracts",
+      "pr": "https://github.com/ArcForges/Contracts/pull/31",
+      "reviewedHead": "69270c26a98ad1a6b1ced749123254e76f30a0a5",
+      "mergeCommit": "9f0e90f65d57f405fcee311d467a57a255dfd644",
+      "mainConclusion": "success",
+      "publishOutcome": "NuGet ArcForges.Contracts.PublicApi and npm @arcforges/proto + @arcforges/api-client 1.0.0-ci.74.1 uploaded successfully. Four Maven modules 1.0.0-SNAPSHOT uploaded to Sonatype successfully in 1m 8s. No formal tag or public-byte polling.",
+      "localChecks": [
+        "20 offline publication/ordering/channel tests passed; 1 explicit-local transport fixture skipped",
+        "338-file source provenance passed",
+        "Python syntax, YAML parse, changed-file formatting and diff whitespace passed",
+        "self-review and coordinator full review passed"
+      ],
+      "primaryClean": true,
+      "prRuns": [
+        "https://github.com/ArcForges/Contracts/actions/runs/35641756917",
+        "https://github.com/ArcForges/Contracts/actions/runs/35641757034"
+      ],
+      "mainRuns": [
+        "https://github.com/ArcForges/Contracts/actions/runs/35642372095",
+        "https://github.com/ArcForges/Contracts/actions/runs/35642372186"
+      ],
+      "reviewOutcome": "Full self-review and independent review completed; findings repaired; applicable latest-head checks successful before merge.",
+      "retainedBranch": "codex/wp02-04-ci-reduction",
+      "retainedWorktree": ".worktree/wp02-04-ci-reduction"
+    },
+    {
+      "owner": "ArcNotes",
+      "pr": "https://github.com/ArcForges/ArcNotes/pull/8",
+      "reviewedHead": "a40c0e3575789969451a5a29093ea1b53f6af9e9",
+      "mergeCommit": "2dee20b0c1d9acaf3d83b20dfd045e1e070e082c",
+      "mainConclusion": "success",
+      "publishOutcome": {
+        "publishJob": "success",
+        "verifyPublicationJob": "success",
+        "releaseTag": "v0.1.0-ci.17.1",
+        "platforms": [
+          "win-x64",
+          "win-arm64",
+          "linux-x64"
+        ],
+        "evidenceBoundary": "Provider publication job result; no public archive download or runtime test"
+      },
+      "localChecks": {
+        "managedReleaseBuild": {
+          "warnings": 0,
+          "errors": 0
+        },
+        "offlineUnitTests": {
+          "passed": 97,
+          "failed": 0,
+          "excluded": "TransportTests loopback integration"
+        },
+        "sourceLicenceProvenance": "passed",
+        "gitDiffCheck": "passed",
+        "runtimeExecution": "not performed",
+        "aotCompilation": "hosted CI only"
+      },
+      "primaryClean": true,
+      "prRuns": [
+        "https://github.com/ArcForges/ArcNotes/actions/runs/35641667828"
+      ],
+      "mainRuns": [
+        "https://github.com/ArcForges/ArcNotes/actions/runs/35642212929"
+      ],
+      "reviewOutcome": "Full self-review and independent review completed; findings repaired; applicable latest-head checks successful before merge.",
+      "retainedBranch": "codex/wp02-04-ci-reduction",
+      "retainedWorktree": ".worktree/wp02-04-ci-reduction",
+      "removedCoverage": [
+        "macOS CI and automated macOS releases",
+        "hosted GUI/live Cloud and packaged binary execution",
+        "mandatory smoke and screenshot release evidence",
+        "duplicate aggregate candidate download and archive verification",
+        "implicit hook rebuilds/tests"
+      ]
+    },
+    {
+      "owner": "ArcScope",
+      "pr": "https://github.com/ArcForges/ArcScope/pull/8",
+      "reviewedHead": "3ceb6bd4d49819496dcc674bc2acd3c9862a7220",
+      "mergeCommit": "8316d0bded118b0a76223c35cd42d7b1096b6104",
+      "mainConclusion": "success",
+      "publishOutcome": {
+        "publishJob": "success",
+        "verifyPublicationJob": "success",
+        "releaseTag": "v0.1.0-ci.16.1",
+        "platforms": [
+          "win-x64",
+          "win-arm64",
+          "linux-x64"
+        ],
+        "evidenceBoundary": "Provider publication job result; no public archive download or runtime test"
+      },
+      "localChecks": {
+        "managedReleaseBuild": {
+          "warnings": 0,
+          "errors": 0
+        },
+        "offlineUnitTests": {
+          "passed": 97,
+          "failed": 0,
+          "excluded": "TransportTests loopback integration"
+        },
+        "sourceLicenceProvenance": "passed",
+        "gitDiffCheck": "passed",
+        "runtimeExecution": "not performed",
+        "aotCompilation": "hosted CI only"
+      },
+      "primaryClean": true,
+      "prRuns": [
+        "https://github.com/ArcForges/ArcScope/actions/runs/35641674730"
+      ],
+      "mainRuns": [
+        "https://github.com/ArcForges/ArcScope/actions/runs/35642226807"
+      ],
+      "reviewOutcome": "Full self-review and independent review completed; findings repaired; applicable latest-head checks successful before merge.",
+      "retainedBranch": "codex/wp02-04-ci-reduction",
+      "retainedWorktree": ".worktree/wp02-04-ci-reduction",
+      "removedCoverage": [
+        "macOS CI and automated macOS releases",
+        "hosted GUI/live Cloud and packaged binary execution",
+        "mandatory smoke and screenshot release evidence",
+        "duplicate aggregate candidate download and archive verification",
+        "implicit hook rebuilds/tests"
+      ]
+    },
+    {
+      "owner": "ArcSlate",
+      "pr": "https://github.com/ArcForges/ArcSlate/pull/8",
+      "reviewedHead": "a2f4459e1bea590c572b28245bdafc04ac48b8ce",
+      "mergeCommit": "26331c3b240a95603d2f9d25949f47899ac484e0",
+      "mainConclusion": "success",
+      "publishOutcome": {
+        "publishJob": "success",
+        "verifyPublicationJob": "success",
+        "releaseTag": "v0.1.0-ci.16.1",
+        "platforms": [
+          "win-x64",
+          "win-arm64",
+          "linux-x64"
+        ],
+        "evidenceBoundary": "Provider publication job result; no public archive download or runtime test"
+      },
+      "localChecks": {
+        "managedReleaseBuild": {
+          "warnings": 0,
+          "errors": 0
+        },
+        "offlineUnitTests": {
+          "passed": 97,
+          "failed": 0,
+          "excluded": "TransportTests loopback integration"
+        },
+        "sourceLicenceProvenance": "passed",
+        "gitDiffCheck": "passed",
+        "runtimeExecution": "not performed",
+        "aotCompilation": "hosted CI only"
+      },
+      "primaryClean": true,
+      "prRuns": [
+        "https://github.com/ArcForges/ArcSlate/actions/runs/35641681162"
+      ],
+      "mainRuns": [
+        "https://github.com/ArcForges/ArcSlate/actions/runs/35642242698"
+      ],
+      "reviewOutcome": "Full self-review and independent review completed; findings repaired; applicable latest-head checks successful before merge.",
+      "retainedBranch": "codex/wp02-04-ci-reduction",
+      "retainedWorktree": ".worktree/wp02-04-ci-reduction",
+      "removedCoverage": [
+        "macOS CI and automated macOS releases",
+        "hosted GUI/live Cloud and packaged binary execution",
+        "mandatory smoke and screenshot release evidence",
+        "duplicate aggregate candidate download and archive verification",
+        "implicit hook rebuilds/tests"
+      ]
+    },
+    {
+      "owner": "Cloud",
+      "pr": "https://github.com/ArcForges/Cloud/pull/9",
+      "reviewedHead": "31cb21397762b16c4813fba8bacc555d573082da",
+      "mergeCommit": "9910c8bbc8485f206aaa8e88fe4b490073661078",
+      "mainConclusion": "success",
+      "publishOutcome": {
+        "isDraft": false,
+        "isPrerelease": true,
+        "publishedAt": "2026-09-21T19:10:24Z",
+        "tagName": "cloud-0.1.0-ci.28.1",
+        "targetCommitish": "9910c8bbc8485f206aaa8e88fe4b490073661078",
+        "url": "https://github.com/ArcForges/Cloud/releases/tag/cloud-0.1.0-ci.28.1"
+      },
+      "localChecks": "Reduced npm check passed 63 offline tests plus static/source/format/lint/type checks; affected Kotlin orchestration delta passed TypeScript and whitespace checks. Hosted clean builds validated final Kotlin configuration. No local image/container/Worker/RPC/browser/public-download checks.",
+      "primaryClean": true,
+      "prRuns": [
+        "https://github.com/ArcForges/Cloud/actions/runs/35641969867"
+      ],
+      "mainRuns": [
+        "https://github.com/ArcForges/Cloud/actions/runs/35642540451"
+      ],
+      "reviewOutcome": "Full self-review and independent review completed; findings repaired; applicable latest-head checks successful before merge.",
+      "retainedBranch": "codex/wp02-04-ci-reduction",
+      "retainedWorktree": ".worktree/wp02-04-ci-reduction",
+      "deployOutcome": "Provider image push and Worker deployment job completed successfully; no live runtime acceptance claimed.",
+      "mainJobs": [
+        {
+          "name": "Source (ubuntu-latest)",
+          "conclusion": "success"
+        },
+        {
+          "name": "CodeQL (csharp)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Dependency audit and repository checks",
+          "conclusion": "success"
+        },
+        {
+          "name": "CodeQL (java-kotlin)",
+          "conclusion": "success"
+        },
+        {
+          "name": "CodeQL (actions)",
+          "conclusion": "success"
+        },
+        {
+          "name": "CodeQL (javascript-typescript)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Source (windows-latest)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Dependency review",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Native AOT image and Worker build",
+          "conclusion": "success"
+        },
+        {
+          "name": "Verify",
+          "conclusion": "success"
+        },
+        {
+          "name": "Deploy Cloudflare",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "owner": "AI",
+      "pr": "https://github.com/ArcForges/AI/pull/18",
+      "reviewedHead": "cda7e4e271e168bae12bf56f2cc30a7cbe6dc43f",
+      "mergeCommit": "3525611ec7b19a242dc275bbd093777f25355def",
+      "mainConclusion": "success",
+      "publishOutcome": {
+        "isDraft": false,
+        "isPrerelease": true,
+        "publishedAt": "2026-09-21T19:06:53Z",
+        "tagName": "ai-0.1.0-ci.44.1",
+        "targetCommitish": "3525611ec7b19a242dc275bbd093777f25355def",
+        "url": "https://github.com/ArcForges/AI/releases/tag/ai-0.1.0-ci.44.1"
+      },
+      "localChecks": "Format/lint/type/source policy; 46 pure Node units and 68 offline tooling tests passed. Documentation-only review fixes passed formatting. No runtime/inference/public-download checks.",
+      "primaryClean": true,
+      "prRuns": [
+        "https://github.com/ArcForges/AI/actions/runs/35642027422"
+      ],
+      "mainRuns": [
+        "https://github.com/ArcForges/AI/actions/runs/35642380942"
+      ],
+      "reviewOutcome": "Full self-review and independent review completed; findings repaired; applicable latest-head checks successful before merge.",
+      "retainedBranch": "codex/wp02-04-ci-reduction",
+      "retainedWorktree": ".worktree/wp02-04-ci-reduction",
+      "deployOutcome": "Provider deployment job completed successfully; no live runtime acceptance claimed.",
+      "mainJobs": [
+        {
+          "name": "Source and offline units",
+          "conclusion": "success"
+        },
+        {
+          "name": "CodeQL (actions)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Repository security",
+          "conclusion": "success"
+        },
+        {
+          "name": "CodeQL (javascript-typescript)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Dependency review",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Build candidate",
+          "conclusion": "success"
+        },
+        {
+          "name": "Verify",
+          "conclusion": "success"
+        },
+        {
+          "name": "Deploy Cloudflare",
+          "conclusion": "success"
+        },
+        {
+          "name": "Verify deployment",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "owner": "Web",
+      "pr": "https://github.com/ArcForges/Web/pull/14",
+      "reviewedHead": "2e09c6e2e89a3109307fd2c0a19b3251faa8464f",
+      "mergeCommit": "165278c585c14560667cfb67a50d87907b755b28",
+      "mainConclusion": "success",
+      "publishOutcome": {
+        "isDraft": false,
+        "isPrerelease": true,
+        "publishedAt": "2026-09-21T19:07:27Z",
+        "tagName": "web-0.1.0-ci.35.1",
+        "targetCommitish": "165278c585c14560667cfb67a50d87907b755b28",
+        "url": "https://github.com/ArcForges/Web/releases/tag/web-0.1.0-ci.35.1"
+      },
+      "localChecks": "Format/lint/type; 22 unit and 41 offline source/provenance tests passed. Full local policy intentionally rejected cache junctions; unchanged guard passed clean hosted CI. No browser/build/public-download checks locally.",
+      "primaryClean": true,
+      "prRuns": [
+        "https://github.com/ArcForges/Web/actions/runs/35642081110"
+      ],
+      "mainRuns": [
+        "https://github.com/ArcForges/Web/actions/runs/35642441506"
+      ],
+      "reviewOutcome": "Full self-review and independent review completed; findings repaired; applicable latest-head checks successful before merge.",
+      "retainedBranch": "codex/wp02-04-ci-reduction",
+      "retainedWorktree": ".worktree/wp02-04-ci-reduction",
+      "deployOutcome": "Provider deployment job completed successfully; no live runtime acceptance claimed.",
+      "mainJobs": [
+        {
+          "name": "Source (ubuntu-latest)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Source (windows-latest)",
+          "conclusion": "success"
+        },
+        {
+          "name": "CodeQL (javascript-typescript)",
+          "conclusion": "success"
+        },
+        {
+          "name": "CodeQL (actions)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Dependency audit and repository checks",
+          "conclusion": "success"
+        },
+        {
+          "name": "Dependency review",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Build static candidate",
+          "conclusion": "success"
+        },
+        {
+          "name": "Verify",
+          "conclusion": "success"
+        },
+        {
+          "name": "Deploy Cloudflare",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "owner": "Mobile",
+      "pr": "https://github.com/ArcForges/Mobile/pull/9",
+      "reviewedHead": "21d56bb5f0fe7953a319eaa170133dcbe4eeb3a5",
+      "mergeCommit": "56f815a80dc960a6e03c370891735d55b6a7cc24",
+      "mainConclusion": "success",
+      "publishOutcome": "Persistent identity signed APK/AAB successfully; Android 0.1.0-ci.28.1 prerelease published at https://github.com/ArcForges/Mobile/releases/tag/android-0.1.0-ci.28.1. No store upload, public download or device test.",
+      "localChecks": [
+        "56 offline Python tooling tests passed (coordinator)",
+        "12 relevant licence inventory tests passed after release-only archive fix (coordinator)",
+        "full coordinator and independent boundary/final-delta review passed",
+        "all current CodeQL categories successful; only 3 exact obsolete empty main baselines retired with audit, current main and PR history retained"
+      ],
+      "primaryClean": true,
+      "prRuns": [
+        "https://github.com/ArcForges/Mobile/actions/runs/35642378908"
+      ],
+      "mainRuns": [
+        "https://github.com/ArcForges/Mobile/actions/runs/35643331581"
+      ],
+      "reviewOutcome": "Full self-review and independent review completed; findings repaired; applicable latest-head checks successful before merge.",
+      "retainedBranch": "codex/wp02-04-version-identity",
+      "retainedWorktree": ".worktree/wp02-04-version-identity"
+    }
+  ],
+  "postMergeBoundary": "Expected merge commits, successful required main build/publish/deploy jobs, provider metadata and clean primary fast-forward only. No routine public artifact download/hash/install/runtime cycle.",
+  "untestedByThisReduction": [
+    "macOS build and runtime",
+    "device/emulator runtime",
+    "desktop GUI and browser E2E",
+    "live service, RPC and inference",
+    "installed-package consumer and public-release upgrade"
+  ],
+  "externalPrerequisitesUnavailable": [],
+  "nextSubstepStarted": false
+}

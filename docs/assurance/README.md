@@ -19,6 +19,7 @@ Prices, fees, quotas and rates are deliberately **not** verified in these artifa
 
 | Document | Covers |
 |---|---|
+| [ci-and-local-validation-policy.md](ci-and-local-validation-policy.md) | P2-017 execution authority: retained build/offline/security/signing checks, prohibited macOS/hosted runtime CI and redundant public verification, local opt-in coverage and bounded post-merge completion |
 | [`testing-and-verification-strategy.md`](testing-and-verification-strategy.md) | The eighteen test families with their unique responsibility, placement and evidence; cross-cutting verification themes; the invariant-to-test obligation; test environments; fixtures and corpora; verification of the specification itself; and what each family may not substitute for |
 | [`release-gates.md`](release-gates.md) | Every gate between work and users, consolidated: continuous, per-release, channel-promotion, product first-release, go-live (cloud, commercial, regional, mobile, extension) and deferred-gate closure — each with evidence and an accountable role |
 | [open-gates-register.md](open-gates-register.md) | The authoritative current register of design closures, candidate-specific implementation evidence, remaining implementation obligations, retired/merged entries and owner determinations |
@@ -52,4 +53,6 @@ The current [P2-009 amendment](../decisions/phase-2-specification-decisions.md#r
 
 Current coordinated repair: [P2-013](../decisions/phase-2-specification-decisions.md#rule-p2-013); see [verification record](independent-review-remediation-verification.md). Runtime and commercial gates remain separate from design evidence.
 
-Current implementation receipt: [WP00.03 — reuse and provenance](wp00-03-implementation-evidence.md), verified 2026-09-19 across all nine owners. It records real source, distribution and runtime evidence, including the candidate-specific [Android closure](open-gates-register.md#21-current-android-candidate-licence-evidence). Later work packages and commercial gates remain separate.
+Current implementation receipt: [WP02.04 — version identity and CI reduction](wp02-04-implementation-evidence.md), completed 2026-09-21 across all nine owners with reviewed merges, successful retained CI/publication and synchronized Design/Plan authority. Its [machine-readable receipt](wp02-04-implementation-evidence.json) separates historical runtime observations from current build/publication results. WP02.05 was not started; later work packages and commercial gates remain separate.
+
+Historical [WP00.03 — reuse and provenance](wp00-03-implementation-evidence.md), verified 2026-09-19, retains its original source, distribution and runtime evidence, including the candidate-specific [Android closure](open-gates-register.md#21-current-android-candidate-licence-evidence). Historical evidence does not require repeating the removed CI or post-publication checks.

@@ -149,6 +149,8 @@
 
 **Current execution amendment.** [P2-017](../../decisions/phase-2-specification-decisions.md#rule-p2-017) and the [CI/local policy](../../assurance/ci-and-local-validation-policy.md) replace hosted runtime/macOS and repeated post-publication gates. Retain actual local readback evidence and reduced CI; no new public download or device/browser/provider rerun is required. Stop after this substep.
 
+**Completed execution.** [Implementation evidence](../../assurance/wp02-04-implementation-evidence.md) and its [source/result receipt](../../assurance/wp02-04-implementation-evidence.json) record the independent source identities, retained historical local observations, nine reviewed owner PRs with successful reduced CI and main publication/deployment, and synchronized Design/Plan instructions. All primary checkouts were updated; branches and worktrees remain retained. This closes WP02.04 under P2-017 only, without claiming new runtime/macOS coverage, later version producers or commercial acceptance. WP02.05 was not started.
+
 <a id="rule-wp-02.05"></a>
 
 ### WP-02.05 — Dependency policy
