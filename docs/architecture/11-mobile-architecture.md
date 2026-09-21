@@ -189,7 +189,7 @@ All adapters are implemented within the Apache mobile boundary; dependency prove
 | # | Gate |
 |---|---|
 | <a id="rule-mt-01"></a>MT-01 | Real-device verification, not emulator-only ([PM-03](../requirements/12-quality-and-compatibility-contract.md#rule-pm-03) in the quality contract) |
-| <a id="rule-mt-02"></a>MT-02 | The signed Kotlin/Jetpack Compose release artifact built by CI and smoke-tested on device |
+| <a id="rule-mt-02"></a>MT-02 | The signed Kotlin/Jetpack Compose release artifact built by CI; relevant runtime/device observations are local opt-in and recorded separately under P2-017 |
 | <a id="rule-mt-03"></a>MT-03 | Cold-start, memory and weak-network behaviour measured against budget |
 | <a id="rule-mt-04"></a>MT-04 | Background resume with realtime reconnection and sequence backfill |
 | <a id="rule-mt-05"></a>MT-05 | Offline queueing, pending state and controlled reconnection behaviour |
@@ -264,7 +264,7 @@ Android rollback follows the [forward rescue release](22-deployment-and-release-
 
 ## Android publication and rescue
 
-PR CI resolves locked dependencies, regenerates/compares any derived resources, runs unit/lint/Java-Kotlin security checks, builds a release candidate and runs emulator smoke. Main verifies the same gates, builds one signed APK/AAB pair from identical inputs, records APK/AAB hashes, signing-certificate digest, versionName/versionCode, toolchain and Contracts manifest, then publishes immutable GitHub release artifacts automatically. Store submission/promotion additionally requires WP32's account/listing/consumption-only and physical-device receipts; an uploaded artifact is not a Play-approved product.
+PR CI resolves locked dependencies, checks generated resources, runs targeted offline unit/lint/Java-Kotlin security checks and builds a release candidate. Emulator/device and live Cloud tests are local opt-in only under P2-017. Main verifies the same gates, builds one signed APK/AAB pair from identical inputs, records APK/AAB hashes, signing-certificate digest, versionName/versionCode, toolchain and Contracts manifest, then publishes immutable GitHub release artifacts automatically. Store submission/promotion additionally requires WP32's account/listing/consumption-only and physical-device receipts; an uploaded artifact is not a Play-approved product.
 
 versionName follows the product release manifest; versionCode is an allocated monotonic integer in the repository release ledger, above every previously distributed code including the RN bootstrap. Re-run reuses the candidate or allocates a new code; no overwrite. CI signing keys live in protected repository environment secrets with backup/recovery ownership; they are not regenerated per build. Distribution signing identity and Play upload key are distinct when Play App Signing is used. A rescue release has a greater code, compatible current data and rollback-mode evidence. Never instruct users to downgrade database-bearing APKs in place.
 

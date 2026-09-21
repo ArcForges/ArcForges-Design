@@ -371,13 +371,13 @@ Three tiers, with different content and different rules:
 
 ## 20. Cross-platform test matrix
 
-Three tiers of matrix, running at different cadences:
+Execution follows [P2-017](../decisions/phase-2-specification-decisions.md#rule-p2-017) and the [CI/local policy](../assurance/ci-and-local-validation-policy.md). Product behavior and honest coverage remain required; the former exhaustive CI schedule is retired.
 
-| Matrix | Cadence | Contents |
+| Execution | Trigger | Contents |
 |---|---|---|
-| **PR matrix** | Every change | Build, unit, application, architecture and contract tests; a fast subset of integration tests; an AOT publish smoke test |
-| **Nightly matrix** | Daily | Full integration, multi-process end-to-end, migration corpus, soak subset, accessibility automation, performance benchmarks, full publish matrix |
-| **Release matrix** | Release train | Everything above, plus assistive-technology verification, hardware-lab tests, install/upgrade/rollback, mixed-version interoperability, disaster-recovery rehearsal, and the full compatibility matrix |
+| PR/main CI | A relevant source change | Necessary Windows/Linux compilation/AOT/package, targeted offline unit/static checks and non-duplicated security; no runtime/device/browser/live-service or macOS jobs |
+| Local runtime | A concrete affected behavior, with an existing suitable environment | One scoped opt-in check; retain its actual result and untested coverage, without automatic reruns or toolchain provisioning |
+| Post-merge | Successful merge | Expected commit, required build/publication/deployment status and clean fast-forward checkout; no public archive/hash/install/runtime cycle |
 
 | # | Requirement |
 |---|---|

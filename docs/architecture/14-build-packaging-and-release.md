@@ -5,7 +5,7 @@
 > Governing authority: **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** (runtime and AOT matrix), **[D-011](../decisions/phase-1-foundation-decisions.md#rule-d-011)** (nine-repository target under [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009)), **[D-014](../decisions/phase-1-foundation-decisions.md#rule-d-014)** (surface inventory, update and download domains), **[D-022](../decisions/phase-1-foundation-decisions.md#rule-d-022)** (mobile commerce posture), [distribution requirements](../requirements/10-distribution-update-and-support.md)
 > Companions: [`../requirements/10-distribution-update-and-support.md`](../requirements/10-distribution-update-and-support.md), [`../requirements/12-quality-and-compatibility-contract.md`](../requirements/12-quality-and-compatibility-contract.md), [`01-solution-and-project-layout.md`](01-solution-and-project-layout.md)
 
-Nine independent implementation repositories plus the Design authority, versioned capability packages and immutable integration artifacts, and one rule that governs everything below: **the bytes a user runs are the bytes CI produced, verified end to end.**
+Nine independent implementation repositories plus the Design authority, versioned capability packages and immutable integration artifacts, and one rule that governs everything below: **promote the original built candidate with its source and signing identity.** Execution follows [P2-017](../decisions/phase-2-specification-decisions.md#rule-p2-017) and the [CI/local policy](../assurance/ci-and-local-validation-policy.md); runtime scenarios are local opt-in, and macOS CI is prohibited.
 
 ---
 
@@ -19,7 +19,7 @@ Nine independent implementation repositories plus the Design authority, versione
 | <a id="rule-br-04"></a>BR-04 | **Release artifacts are immutable** ([DS-05](../requirements/10-distribution-update-and-support.md#rule-ds-05) there). A published version's bytes never change; a defect produces a new version, never a replaced file. |
 | <a id="rule-br-05"></a>BR-05 | **Every artifact is signed, hashed, attested and recorded** before it can be promoted ([RC-03](../requirements/10-distribution-update-and-support.md#rule-rc-03), [RC-04](../requirements/10-distribution-update-and-support.md#rule-rc-04) there). |
 | <a id="rule-br-06"></a>BR-06 | **The build is deterministic to the extent the toolchain allows**, and every non-determinism that remains is identified, justified and recorded rather than ignored. |
-| <a id="rule-br-07"></a>BR-07 | **A release gate is a machine check, not a person's recollection.** Every gate in `§9` is evaluated by the pipeline and recorded in the release record. |
+| <a id="rule-br-07"></a>BR-07 | **Record the checks actually performed.** The reduced CI set is machine-checked; relevant local runtime evidence is recorded separately and never fabricated from build success. |
 | <a id="rule-br-08"></a>BR-08 | **No secret required to produce a release is held by an individual.** Signing and publishing credentials live in the release credential store with scoped, audited access. |
 
 ---
@@ -53,7 +53,7 @@ build/                                the build orchestration entry points
 
 [Web toolchain and SDK](25-web-toolchain-and-sdk.md) defines the exact directory/command contract. Each repository has its own solution/build entry. Web win.slnx contains its esproj; DesktopPlatform alone composes CMake/native builds. The portable managed graph excludes esproj; non-Windows Web work runs npm from ArcForges-Web root, independently of CMake. JS SDK restore invokes root npm ci explicitly and Build never silently installs. Node runs only build/dev/test work; production assets are static artifacts served by the edge, and Cloud remains the C# host.
 
-CI retains generated descriptor/schema fingerprints, Node/npm and lock versions, generated SDK provenance, browser/visual reports and an npm-aware SBOM. Changed proto descriptors/HTTP exception schemas trigger both native and TS compatibility checks. The full solution's C# test pass is insufficient for Web. Existing Windows VS/native hooks and cross-platform CMake jobs retain separate obligations.
+CI retains generated descriptor/schema fingerprints, Node/npm and lock versions, generated SDK provenance, an npm-aware SBOM; relevant local browser/visual reports are separate opt-in evidence. Changed proto descriptors/HTTP exception schemas trigger both native and TS compatibility checks. The full solution's C# test pass is insufficient for Web. Windows IDE/native runtime checks are explicit local opt-in; Git hooks do not trigger heavy builds. Required Windows/Linux CMake compilation remains separate.
 
 
 ### 2.2 Build stages
@@ -61,7 +61,7 @@ CI retains generated descriptor/schema fingerprints, Node/npm and lock versions,
 ```
 locked restores (.NET/native/npm) → proto compilation and descriptor export
    → contract compatibility diff → TS SDK/event generation → language checks/tests
-   → architecture/policy → production .NET/native/Web builds → integration/browser tests
+   → architecture/policy → Windows/Linux production .NET/native/Web builds
    → package → sign → verify → attest → record → promote
 ```
 
@@ -70,7 +70,7 @@ locked restores (.NET/native/npm) → proto compilation and descriptor export
 | <a id="rule-bs-01"></a>BS-01 | **Architecture tests and repository policy tests run as ordinary build stages** ([AT-01](01-solution-and-project-layout.md#rule-at-01)–[AT-14](01-solution-and-project-layout.md#rule-at-14), [RP-01](01-solution-and-project-layout.md#rule-rp-01)–[RP-10](01-solution-and-project-layout.md#rule-rp-10) in the solution layout), and a violation fails the build. |
 | <a id="rule-bs-02"></a>BS-02 | **Contract artifacts — Proto descriptors, HTTP-exception schemas and capability descriptors — are generated from the handwritten proto source of truth** (**[D-009](../decisions/phase-1-foundation-decisions.md#rule-d-009)**) and compared against the committed baseline. An undeclared contract change fails the build (`§4`). |
 | <a id="rule-bs-03"></a>BS-03 | **Publish is per runtime identifier**, and the produced output is the input to packaging; packaging never recompiles. |
-| <a id="rule-bs-04"></a>BS-04 | **Verification runs against the packaged artifact**, not against the build output directory: signature, hash, entry point, runtime posture and launch smoke test. |
+| <a id="rule-bs-04"></a>BS-04 | **Check candidate identity at promotion.** Required signatures, source/version identity and licence provenance remain; no automated launch smoke or repeated public archive download. |
 
 ---
 
@@ -79,10 +79,10 @@ locked restores (.NET/native/npm) → proto compilation and descriptor export
 | Target | Publish mode | Verification obligation |
 |---|---|---|
 | ArcNotes, ArcScope, ArcSlate desktop with their embedded assistant | **Native AOT**, self-contained (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**) | AOT publish succeeds with zero trim/AOT warnings; the produced binary launches without a machine-installed runtime |
-| ArcForges Cloud | **ASP.NET Core Native AOT**, container image (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**) | Native AOT publish and real-adapter verification are mandatory (**[V-03](../assurance/phase-1-official-verification.md#rule-v-03)**); the image runs the same pipeline in every environment |
+| ArcForges Cloud | **ASP.NET Core Native AOT**, container image (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**) | Native AOT compilation is required; real-adapter runtime verification is scoped local opt-in (**[V-03](../assurance/phase-1-official-verification.md#rule-v-03)**); the image runs the same pipeline in every environment |
 | ArcForges.Web.App | **React/TypeScript browser assets**, Node/npm production build ([P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008)) | Account/Chat profile artifacts, generated SDK round trip, browser/CSP/visual/bundle evidence |
 | ArcForges.Web.Site output | React/TS build-time pre-rendered static artifacts | No-script content, deterministic build, locale/SEO/accessibility and performance |
-| ArcChat Mobile — Android | **Kotlin/Jetpack Compose** release build (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**, **[V-04](../assurance/phase-1-official-verification.md#rule-v-04)**) | The runtime posture is confirmed by inspecting the produced artifact ([RT-07](11-mobile-architecture.md#rule-rt-07) in the mobile architecture); CI builds the release artifact and smoke-tests on a real device |
+| ArcChat Mobile — Android | **Kotlin/Jetpack Compose** release build (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**, **[V-04](../assurance/phase-1-official-verification.md#rule-v-04)**) | The runtime posture is confirmed by inspecting the produced artifact ([RT-07](11-mobile-architecture.md#rule-rt-07) in the mobile architecture); CI builds the release artifact; device/runtime checks are scoped local opt-in under P2-017 |
 
 | # | Rule |
 |---|---|
@@ -104,7 +104,7 @@ The nine version axes (`§14` of the quality contract) are produced by the build
 | `CapabilityVersion` | Capability descriptor declarations | Compared against the committed descriptor baseline |
 | `NativeFormatVersion` | Format definition constant | A serializer change without a version change fails the format compatibility test |
 | `StorageSchemaVersion` | Migration set head | Must equal the highest applied migration |
-| `NativeAbiVersion` | Native library ABI constant | Verified at load ([AB-12](12-native-interop-and-media.md#rule-ab-12) in the native architecture) and asserted in CI |
+| `NativeAbiVersion` | Native library ABI constant | Verified by product load-time checks ([AB-12](12-native-interop-and-media.md#rule-ab-12)) and build-source/metadata checks; runtime probes are local opt-in |
 | `PolicySchemaVersion` | Policy schema definition | Schema change without a version change fails validation |
 | `ExtensionProtocolVersion` | Extension protocol definition | Same rule |
 | `PackageVersion` | Package manifest | Validated at package build |
@@ -155,7 +155,7 @@ Owned assemblies and runtime artifacts retain source/build/pipeline identity. Th
 | # | Rule |
 |---|---|
 | <a id="rule-pp-01"></a>PP-01 | **A "full suite" is an installation experience, not a packaging unit** ([DS-02](../requirements/10-distribution-update-and-support.md#rule-ds-02) there). A bootstrapper may install selected products; a single monolithic installer must never exist. |
-| <a id="rule-pp-02"></a>PP-02 | **A macOS artifact is built and signed on a macOS runner**. Cross-building and post-hoc signing are not substitutes. |
+| <a id="rule-pp-02"></a>PP-02 | **Any independently produced macOS artifact is built/signed on a suitable local Mac.** macOS CI is prohibited under P2-017; current CI release inventories do not require macOS output. |
 | <a id="rule-pp-03"></a>PP-03 | **Every product's package identity is stable and distinct**, and is never reused between products or channels. |
 | <a id="rule-pp-04"></a>PP-04 | **The executable directory is never a user data directory** ([UP-05](../requirements/10-distribution-update-and-support.md#rule-up-05) there), and packaging must make that structurally impossible. |
 
@@ -238,7 +238,7 @@ The selected Velopack per-RID switch must leave a valid launch path after kill a
 
 ## 9. Release gates
 
-A release cannot be promoted to a channel until every applicable gate passes. Gate results are recorded in the release record.
+A release record states the applicable checks actually performed under P2-017. The retained build/static/signing gates control automated candidate publication. Runtime, hardware, browser, install and rehearsal rows below are scoped local product-acceptance scenarios, not CI or automatic publication prerequisites. Do not claim unobserved product coverage.
 
 | # | Gate |
 |---|---|
@@ -266,10 +266,10 @@ A release cannot be promoted to a channel until every applicable gate passes. Ga
 | # | Rule |
 |---|---|
 | <a id="rule-ci-01"></a>CI-01 | **Pull-request builds run the fast gates**: build, unit tests, architecture and policy tests, contract baseline check. |
-| <a id="rule-ci-02"></a>CI-02 | **Each main build runs the full gates for its owned artifact and changed dependency closure.** Cross-repository CI restores published candidates by immutable identity; the family integration manifest records downstream checks without rebuilding unrelated sources. WP50 closes the full product matrix. |
+| <a id="rule-ci-02"></a>CI-02 | **Main runs the retained build/offline/static/security gates for its changed owner.** No hosted runtime, installed-consumer or live-service execution is permitted; unrelated sources are not rebuilt. |
 | <a id="rule-ci-03"></a>CI-03 | **Release builds additionally package, sign, attest and record.** |
-| <a id="rule-ci-04"></a>CI-04 | **Scheduled builds run the long gates**: soak, scale corpus, fuzzing, sanitiser builds, dependency audit, and the cross-platform matrix (`§20` there). |
-| <a id="rule-ci-05"></a>CI-05 | **Platform-specific work runs on the matching platform runner** ([PP-02](#rule-pp-02)), and the matrix covers every supported platform and architecture. |
+| <a id="rule-ci-04"></a>CI-04 | **Scheduled jobs are limited to non-duplicated offline/static/security checks.** Long runtime, soak, hardware, browser and live-service jobs are not scheduled in CI. |
+| <a id="rule-ci-05"></a>CI-05 | **CI uses only required Windows/Linux runners.** All macOS CI, including self-hosted/manual/scheduled variants, is prohibited; local macOS source support does not imply an automated artifact. |
 | <a id="rule-ci-06"></a>CI-06 | **A flaky test is quarantined with an owner and an expiry**, never silently retried forever. |
 | <a id="rule-ci-07"></a>CI-07 | **Pipeline definitions are versioned in the repository** and reviewed like code. |
 | <a id="rule-ci-08"></a>CI-08 | **Credentials are scoped per pipeline stage**; a test stage never holds a signing or publishing credential. |
@@ -312,7 +312,7 @@ The build and release system is **not**: a monolithic suite installer; a second 
 
 The exact integration manifest is owned by [deployment 22](22-deployment-and-release-execution.md#p2-009-independent-artifact-deployment-and-restore); build outputs populate its real hashes, D1 schema/plan identity and deployed compatibility date.
 
-Per-repo locked restore/build/mock tests → immutable producer candidate → consumer candidate restore/AOT/Kotlin Android/browser tests → isolated real C#/D1/CF/R2 deployment → exact manifest integration suite → approve/promote same bytes. Fork/untrusted PR code gets no deployment secrets; trusted CI promotes reviewed commit with short-lived credentials and dedicated test realm/service account, unique resources,24h cleanup TTL. Tests enter the isolated Worker TLS origin and reach the Container through its private binding; storage.internal stays private. A directly public C# origin or runner localhost cannot substitute for the production route/binding graph. Test artifacts use no real customer content. No submodules/latest/floating branch fixtures.
+Per-repo locked restore/build/offline tests → immutable producer candidate → consumer compile/AOT/package → original-candidate promotion/deployment with provider status. Runtime/browser/real-provider scenarios remain explicit local opt-in, never default CI or post-merge steps. Fork/untrusted PR code gets no deployment secrets; trusted CI promotes reviewed commit with short-lived credentials and dedicated test realm/service account, unique resources,24h cleanup TTL. Tests enter the isolated Worker TLS origin and reach the Container through its private binding; storage.internal stays private. A directly public C# origin or runner localhost cannot substitute for the production route/binding graph. Test artifacts use no real customer content. No submodules/latest/floating branch fixtures.
 
 Rolling upgrade: expand DB/internal/public read schemas → backfill from watermark → deploy C# dual readers → deploy compatible Worker (old workflows drain on their pinned worker version) → canary/soak ≥24h → activate config reader head → clients independently update within supported window → contract only after all old workflows drained and rollback horizon closed. Incompatible Worker code is a new workflow class/migration tag; no hot reinterpretation of checkpoints. Rollback before contract restores prior image/Worker/config/assets; after destructive contraction use verified forward repair or fresh-environment restore, not blind old binary startup. Selfhost operator supplies own CF resources/AWS disaster copy/DB/secrets/origins/realm, same one-host architecture.
 
@@ -328,12 +328,16 @@ Allocate the actual NuGet/npm/product version before compilation and signing. A 
 
 ## Complete producer candidate and promotion protocol
 
-[Producer artifacts and integration](../planning/producer-artifacts-and-integration.md) owns the complete package/stage matrix. Contracts delivers every initial field/profile and C#/TS/Kotlin artifact before consumer WPs; DesktopPlatform compiles the full required native RID closure before packing any wrapper/runtime candidate. A candidate is the actual immutable release input, not a dummy package. The same candidate bytes are tested in clean isolated consumers and then published, with package hashes, descriptors/ABI, SPDX/NOTICE/SBOM and source commit in its manifest.
+[Producer artifacts and integration](../planning/producer-artifacts-and-integration.md) owns the complete package/stage matrix. Contracts delivers every initial field/profile and C#/TS/Kotlin artifact before consumer WPs; DesktopPlatform compiles the full required native RID closure before packing any wrapper/runtime candidate. A candidate is the actual immutable release input, not a dummy package. The same candidate bytes are packaged and published without hosted consumer execution, with package hashes, descriptors/ABI, SPDX/NOTICE/SBOM and source commit in its manifest.
 
 The [Contracts publication channels profile](contracts-publication-channels.md) overrides the main Maven release destination below: development uses SNAPSHOT, while formal tags retain immutable Central releases.
 
-PR CI validates/generates/builds/packs/tests but has no registry publish authority. Merge to main automatically allocates 1.0.0-ci.<run>.<attempt> (configured base version), creates the complete candidate, verifies every required output/consumer, then promotes that version. Explicit stable version configuration/tag passes the same graph; no manual publish job is needed. Use a single non-canceling publication concurrency group and immutable version claim. NuGet prerelease remains explicit; npm latest is moved to the newest fully verified main candidate only after all npm packages of that release are available. Consumers pin exact versions and committed locks, never float latest on each restore. Dependency update PRs refresh the whole compatible producer set, test and commit locks.
+PR CI validates/generates/builds/packs/tests but has no registry publish authority. Merge to main automatically allocates 1.0.0-ci.<run>.<attempt> (configured base version), creates the complete candidate, checks its required build outputs and publication identity, then promotes that version. Explicit stable version configuration/tag passes the same graph; no manual publish job is needed. Use a single non-canceling publication concurrency group and immutable version claim. NuGet prerelease remains explicit; npm latest is moved to the newest fully verified main candidate only after all npm packages of that release are available. Consumers pin exact versions and committed locks, never float latest on each restore. Dependency update PRs refresh the whole compatible producer set, test and commit locks.
 
-NuGet/npm/Maven registries are not one transaction. Persist release state allocated/built/verified/publishing/complete or partial, expected asset inventory and per-registry receipts. Publish only the already-verified bytes; retries reuse each existing identical version and compare its content/manifest identity, allowing registry signing metadata transformations explicitly. A differing existing payload fails. On partial publication keep promotion manifest and dist-tag updates blocked, resume missing outputs from the preserved signed candidate; do not rebuild or delete/reuse versions. If unrecoverable, abandon that candidate and publish a new version while consumers remain on the last complete release. A deployment manifest can reference only complete producer releases. npm dist-tag rollback points to the prior complete version; it does not remove packages or rewrite consumer locks.
+NuGet/npm/Maven registries are not one transaction. Persist release state allocated/built/verified/publishing/complete or partial, expected asset inventory and per-registry receipts. Publish only the already-verified bytes; resume only with a trustworthy existing publication receipt or registry identity metadata for the same candidate. Ambiguous existing versions fail for diagnosis; routine remote archive downloads are prohibited. On partial publication keep promotion manifest and dist-tag updates blocked, resume missing outputs from the preserved signed candidate; do not rebuild or delete/reuse versions. If unrecoverable, abandon that candidate and publish a new version while consumers remain on the last complete release. A deployment manifest can reference only complete producer releases. npm dist-tag rollback points to the prior complete version; it does not remove packages or rewrite consumer locks.
 
-GitHub Environments and OIDC trust are repository-specific. NuGet policy binds exact repository/workflow/environment/package scope; npm trusted publisher binds each package and workflow/environment after its one-time bootstrap. Bootstrap granular token is revoked after successful OIDC verification and removed from CI; normal runs contain no npm static publish token. Maven Central requires organization namespace verification, publisher credentials/signing setup and immutable JAR/POM/module/sources/javadoc/signature/checksum output. CI secrets remain environment-bound; namespace ownership, real push and registry availability are implementation gates, not evidence established by this document. Signing identity and artifact provenance are checked before any registry accepts a candidate.
+GitHub Environments and OIDC trust are repository-specific. NuGet policy binds exact repository/workflow/environment/package scope; npm trusted publisher binds each package and workflow/environment after its one-time bootstrap. Bootstrap granular token is revoked after successful OIDC verification and removed from CI; normal runs contain no npm static publish token. Maven Central requires organization namespace verification, publisher credentials/signing setup and immutable JAR/POM/module/sources/javadoc/signature/checksum output. CI secrets remain environment-bound; namespace ownership and successful provider publication/status are implementation gates, not evidence established by this document. Signing identity and artifact provenance are checked before any registry accepts a candidate.
+
+### Current automated platform coverage
+
+P2-017 prohibits macOS CI, including scheduled/manual/self-hosted paths. Local macOS build support may remain, but current automated release inventories list only produced Windows/Linux artifacts. Missing macOS archives are not required by CI or represented as available. Product support claims still require actual evidence from the platform concerned. Post-merge confirmation is limited to commit and required job/publication/deployment status; no repeated public-byte or runtime verification.

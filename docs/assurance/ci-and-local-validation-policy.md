@@ -1,0 +1,43 @@
+# CI and local validation policy
+
+Accepted on 2026-09-21 by explicit user direction during WP02.04; decision [P2-017](../decisions/phase-2-specification-decisions.md#rule-p2-017). This is an execution-policy change across all nine implementation repositories, Design and Plan. It replaces prior mandatory hosted runtime matrices and repeated post-publication verification, including the original WP02.04 execution sequence. It does not remove application functionality, change dependency versions or establish untested product support.
+
+## Required boundaries
+
+1. No macOS CI job, runner, self-hosted label or matrix entry. Keep local macOS source support where applicable, but automated release inventories must contain only artifacts actually produced. Never claim a macOS package or runtime result from Windows/Linux compilation.
+2. No CI execution of physical-device/emulator tests, desktop GUI smoke, browser E2E, live API/service integration, real model inference/Workflows, installed-package consumers or public-release installation/upgrade tests. These prohibitions apply to PR, push, scheduled and manual workflows and to nested scripts/default build commands, not just job names.
+3. CI retains necessary Windows/Linux compilation, Native AOT compilation, packaging, static/format/type/lint checks, targeted offline unit tests and non-duplicated security scans. Pure fixture tests are not live integration. Remove identical platform-independent checks from redundant matrices.
+4. Build once and promote the same candidate. Retain package-manager locks/checksums, required signatures and signing continuity, licence/provenance checks and one necessary identity/integrity check at each actual trust handoff. These checks do not authorize repeated public downloads, full archive rescans at every job or running packaged applications. Narrow legal/dependency metadata inspection is not an end-to-end test.
+5. Do not routinely download public packages, release archives, images or site assets to compare hashes/members or rerun consumers. Registry upload/deployment receipts and status/coordinate metadata establish publication completion. Stop at the provider's successful operation/status; no public byte polling. A concrete integrity/publication defect or explicit user request can justify a scoped diagnostic download.
+6. Runtime tests remain explicit local opt-in when the affected behavior needs them and the existing environment supports them. Passing relevant local evidence is sufficient for this execution policy; do not repeat it in hosted CI or after merge. Do not install/reinstall vcpkg, SDKs, emulators or toolchains solely to expand verification. Record untested coverage accurately without turning an unavailable optional environment into an implementation blocker.
+7. Do not create tags, republish, re-sign or allocate replacement versions solely for verification. Preserve Maven main SNAPSHOT and deliberate-tag formal releases. A failed job is diagnosed before any rerun; no blind retries or unrelated test expansion. Documentation-only changes need consistency/link review, not product builds or runtime tests.
+8. Use the normal network connection. Do not set proxy 7890 or another proxy, invoke wsl.exe or a WSL wrapper. If a network operation fails, stop and report the exact operation; do not change network configuration or repeatedly retry. Use a directly available WSL terminal only when needed.
+9. Independent repositories may be delegated in parallel. One coordinator owns dependencies/review/merging; no overlapping edits. Serialize CPU-heavy local builds/tests and reuse existing caches. Hooks must not silently rebuild/test on every commit or push.
+10. Every source PR needs full review and successful applicable checks on its latest head before automatic merge. Obsolete runtime/macOS required-job references are removed with the jobs, never replaced by fake passing jobs. Documentation-only PRs without CI merge after review. Keep branches/worktrees. Post-merge work is limited to the expected commit, required build/publish/deploy job result and clean fast-forward primary update; no new download/hash/install/runtime cycle.
+
+## Research inventory and fixed execution order
+
+Research inspected the current workflows, called scripts, repository instructions, open PRs and clean main checkouts before edits. Mobile PR 9 is the only related open source PR; its existing version-identity branch/worktree receives the reduction. Unrelated dependency PRs remain unchanged. DesktopPlatform, Contracts, Cloud, AI and Web currently have no macOS runner; the three desktop products each have two macOS matrix entries.
+
+| Owner | Planned reduction and retained boundary |
+|---|---|
+| DesktopPlatform | Remove packaged C17/managed/AOT consumer execution, native runtime tests, owned-DLL execution and redundant policy/hash passes; retain actual native/managed build, package production and necessary legal identity checks |
+| Contracts | Remove consumer execution matrices, live transport fixtures from default checks and repeated restore/artifact verification; publish with bounded registry metadata/status and latest-main SNAPSHOT ordering, without public archive polling |
+| ArcNotes / ArcScope / ArcSlate | Remove both macOS RIDs and GUI/live smoke; remove screenshot/smoke requirements from candidate and release schemas; keep three Windows/Linux CI RIDs and local opt-in runtime tests |
+| Cloud | Build Native AOT/image without launching the app/container; remove Worker/RPC/live post-deploy tests and WSL fallback; keep image/candidate identity, licence extraction and deployment |
+| AI | Separate offline tests from opt-in Workflow runtime tests; remove real inference/live gates and mandatory live-evidence asset; keep sealed Worker build and deployment receipt |
+| Web | Remove Playwright/online asset verification and duplicate IDE/candidate builds; keep offline tests, static entry-point checks, one production build and deployment |
+| Mobile | Remove both device matrices, public upgrade/download tests, disposable test signing and redundant verification; remove debug/instrumentation APKs from the promoted release candidate; retain offline tests, release APK/AAB, permanent signing and publication |
+| Design / Plan | Correct active requirements, architecture, assurance, execution profiles and AGENTS; preserve historical evidence and unchanged product scope |
+
+Ordered execution:
+
+1. Review/merge this Design authority and the synchronized Plan profiles in new retained worktrees, then pull their primary checkouts. PR titles use `[WP02 · SubStep 02.04]`.
+2. Apply each owner's complete reduction independently, appending to Mobile PR 9 and creating one scoped worktree/PR for each other owner. Update hidden script calls, release inventories, instructions and active docs together. Append any necessary immutable provenance successor before using its changed producer; do not mutate old accepted profiles or learn expectations from output.
+3. Run workflow/reference checks and relevant offline tests once. Coordinate a single CPU-heavy local slot where compilation is necessary; do not start local device/browser/container tests for this workflow change.
+4. Review each complete PR and fix findings, wait for its retained latest-head CI, then merge. Preserve signing, package IDs, source metadata and publication channels. No consumer dependency upgrade is needed for this orchestration change.
+5. Confirm merged commits, required main job/publish/deploy results and clean primary fast-forwards. Record removed coverage and actual results; keep all branches/worktrees and stop without beginning WP02.05.
+
+## Evidence interpretation
+
+Old receipts remain accurate historical records of their original runs, not commands to repeat them. Scenario descriptions and later commercial/product requirements still describe the behavior that must work; they do not authorize reinstating hosted runtime or macOS jobs. Local observations identify the actual platform/artifact tested. A deployment result is not described as a live test, and absent macOS/device/browser coverage is not reported as a pass. Required CI is the reduced set above, not the former exhaustive matrix.
