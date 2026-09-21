@@ -32,3 +32,7 @@ Actual Visual Studio Run with a local Deploy mapping reached the JavaScript laun
 - [Visual Studio Run command](https://learn.microsoft.com/en-us/visualstudio/ide/reference/run-devenv-exe?view=visualstudio): actual IDE compile/start entry point used for verification.
 
 These facts were checked against the installed JavaScript SDK `1.0.6578810`, Visual Studio `18.10.1`, Node `24.21.0`, npm `11.19.0` and current official documentation. The JavaScript SDK internally evaluates `TargetFramework=net6.0` as project-system plumbing; no .NET app or AOT output is produced by this adapter. Preserve the reviewed toolchain rather than treating this internal value as a runtime migration request.
+
+## Execution finding: installed browser
+
+Actual IDE startup during execution exposed a missing local prerequisite: Edge is not installed on the verification machine. Chrome is already installed. The implementation uses the supported Chrome launch type with normal installed-browser discovery, and the development guide names that prerequisite. No browser or native dependency was installed. This replaces the Edge choice above without changing the loopback URL, strict-port behavior, runtime boundary or acceptance sequence. Actual Visual Studio Run reached debug mode 3 and the IDE-started page passed browser interaction after this correction; the initial missing-browser error is not counted as successful startup.
