@@ -1,0 +1,1992 @@
+{
+  "schemaVersion": 1,
+  "substep": "WP02.02",
+  "verifiedAt": "2026-09-21T09:14:42.447175+00:00",
+  "designBaseline": "c8e556995bbca169e7954bd4a34e4310d3390688",
+  "orderedPlan": [
+    "Record existing declarations, expanded diagnostics, SDK defaults and findings without changing conforming source.",
+    "Review receipt and completion link; validate Design and evidence identities.",
+    "Create and fully review scoped documentation PR; merge after applicable checks, retaining branch and worktree.",
+    "Pull primary and verify merged documentation and unchanged owner main identities before the next substep."
+  ],
+  "sourceBaselines": [
+    {
+      "owner": "DesktopPlatform",
+      "mainCommit": "b1c6d18467ec8b6b3b12d4b42018a1c991098292",
+      "sourceTree": "c4c4be4b364248da988339eb0e712eb1934d4856",
+      "researchWorktree": "C:\\MyFile\\Projects\\ArcForges\\DesktopPlatform\\.worktree\\wp02-01-diagnostic-posture",
+      "researchHead": "5807eeb81db314726034ca355320dec8e4dcf734",
+      "remoteMainVerified": true,
+      "clean": true
+    },
+    {
+      "owner": "Contracts",
+      "mainCommit": "2ad370e9c6e503c9491fc82485fa34bce53ecefa",
+      "sourceTree": "11bdec54acb0d91f295d6b89add14654c2f7c027",
+      "researchWorktree": "C:\\MyFile\\Projects\\ArcForges\\Contracts\\.worktree\\wp02-01-diagnostic-posture",
+      "researchHead": "43b22f99bb51112cf9ce242d7710432392cc335d",
+      "remoteMainVerified": true,
+      "clean": true
+    },
+    {
+      "owner": "ArcNotes",
+      "mainCommit": "885289e54e123bb1e2fa7ae2884f35306863c35a",
+      "sourceTree": "9ef0df8f8b3a740f712141806fabb70a415c4c4f",
+      "researchWorktree": "C:\\MyFile\\Projects\\ArcForges\\ArcNotes\\.worktree\\wp02-01-diagnostic-posture",
+      "researchHead": "c72a8412ee0baefc045fda8e3813f0d5b00782e8",
+      "remoteMainVerified": true,
+      "clean": true
+    },
+    {
+      "owner": "ArcScope",
+      "mainCommit": "cacab2a0305064018de505e704267ba8936cc5a4",
+      "sourceTree": "8101d22a0fa84a09cb02ad497d6fa1fc59e03d43",
+      "researchWorktree": "C:\\MyFile\\Projects\\ArcForges\\ArcScope\\.worktree\\wp02-01-diagnostic-posture",
+      "researchHead": "5b44175c50167cc977b98916fedac2bf88e4176e",
+      "remoteMainVerified": true,
+      "clean": true
+    },
+    {
+      "owner": "ArcSlate",
+      "mainCommit": "48abba0ce7a7cb83b35a0c6e20e0df1fb1af5e5e",
+      "sourceTree": "0b5ccc01050782df6180ae15048d5541d501a5cb",
+      "researchWorktree": "C:\\MyFile\\Projects\\ArcForges\\ArcSlate\\.worktree\\wp02-01-diagnostic-posture",
+      "researchHead": "9b6d861b8478150282bc24e45567a8e880d6a611",
+      "remoteMainVerified": true,
+      "clean": true
+    },
+    {
+      "owner": "Cloud",
+      "mainCommit": "8942437a5e42c01ae7595b64a220efd60f33b4f0",
+      "sourceTree": "fd235525b095604ae312f00286c75bfc1d8a60a5",
+      "researchWorktree": "C:\\MyFile\\Projects\\ArcForges\\Cloud\\.worktree\\wp02-01-diagnostic-posture",
+      "researchHead": "429e28562e4c2389cd282d9cf42152127591b3d1",
+      "remoteMainVerified": true,
+      "clean": true
+    }
+  ],
+  "projects": [
+    {
+      "owner": "DesktopPlatform",
+      "project": "src/Build/ArcForges.Build.Policy/ArcForges.Build.Policy.csproj",
+      "aotPath": true,
+      "properties": {
+        "IsAotCompatible": "true",
+        "PublishAot": "",
+        "PublishTrimmed": "",
+        "IsTrimmable": "true",
+        "EnableAotAnalyzer": "true",
+        "EnableTrimAnalyzer": "true",
+        "EnableSingleFileAnalyzer": "true",
+        "TreatWarningsAsErrors": "true",
+        "ILLinkTreatWarningsAsErrors": "",
+        "TrimmerSingleWarn": "",
+        "SuppressTrimAnalysisWarnings": "",
+        "NoWarn": "1701;1702",
+        "WarningsNotAsErrors": "",
+        "WarningsAsErrors": ";NU1605;IL2026;IL3050;NU1605;IL2026;IL3050;NU1605;SYSLIB0011",
+        "OutputType": "Library",
+        "IsTestProject": "",
+        "IsPackable": "true",
+        "TargetFramework": "net10.0",
+        "RuntimeIdentifier": "",
+        "ILLinkWarningLevel": "",
+        "_SuppressWarningIL2121": ""
+      },
+      "projectReferences": []
+    },
+    {
+      "owner": "DesktopPlatform",
+      "project": "src/BuildingBlocks/ArcForges.Application.Abstractions/ArcForges.Application.Abstractions.csproj",
+      "aotPath": true,
+      "properties": {
+        "IsAotCompatible": "true",
+        "PublishAot": "",
+        "PublishTrimmed": "",
+        "IsTrimmable": "true",
+        "EnableAotAnalyzer": "true",
+        "EnableTrimAnalyzer": "true",
+        "EnableSingleFileAnalyzer": "true",
+        "TreatWarningsAsErrors": "true",
+        "ILLinkTreatWarningsAsErrors": "",
+        "TrimmerSingleWarn": "",
+        "SuppressTrimAnalysisWarnings": "",
+        "NoWarn": "1701;1702",
+        "WarningsNotAsErrors": "",
+        "WarningsAsErrors": ";NU1605;IL2026;IL3050;NU1605;IL2026;IL3050;NU1605;SYSLIB0011",
+        "OutputType": "Library",
+        "IsTestProject": "",
+        "IsPackable": "false",
+        "TargetFramework": "net10.0",
+        "RuntimeIdentifier": "",
+        "ILLinkWarningLevel": "",
+        "_SuppressWarningIL2121": ""
+      },
+      "projectReferences": []
+    },
+    {
+      "owner": "DesktopPlatform",
+      "project": "src/BuildingBlocks/ArcForges.Desktop.Experience/ArcForges.Desktop.Experience.csproj",
+      "aotPath": true,
+      "properties": {
+        "IsAotCompatible": "true",
+        "PublishAot": "",
+        "PublishTrimmed": "",
+        "IsTrimmable": "true",
+        "EnableAotAnalyzer": "true",
+        "EnableTrimAnalyzer": "true",
+        "EnableSingleFileAnalyzer": "true",
+        "TreatWarningsAsErrors": "true",
+        "ILLinkTreatWarningsAsErrors": "",
+        "TrimmerSingleWarn": "",
+        "SuppressTrimAnalysisWarnings": "",
+        "NoWarn": "1701;1702",
+        "WarningsNotAsErrors": "",
+        "WarningsAsErrors": ";NU1605;IL2026;IL3050;NU1605;IL2026;IL3050;NU1605;SYSLIB0011",
+        "OutputType": "Library",
+        "IsTestProject": "",
+        "IsPackable": "false",
+        "TargetFramework": "net10.0",
+        "RuntimeIdentifier": "",
+        "ILLinkWarningLevel": "",
+        "_SuppressWarningIL2121": ""
+      },
+      "projectReferences": []
+    },
+    {
+      "owner": "DesktopPlatform",
+      "project": "src/BuildingBlocks/ArcForges.Desktop.Graphics/ArcForges.Desktop.Graphics.csproj",
+      "aotPath": true,
+      "properties": {
+        "IsAotCompatible": "true",
+        "PublishAot": "",
+        "PublishTrimmed": "",
+        "IsTrimmable": "true",
+        "EnableAotAnalyzer": "true",
+        "EnableTrimAnalyzer": "true",
+        "EnableSingleFileAnalyzer": "true",
+        "TreatWarningsAsErrors": "true",
+        "ILLinkTreatWarningsAsErrors": "",
+        "TrimmerSingleWarn": "",
+        "SuppressTrimAnalysisWarnings": "",
+        "NoWarn": "1701;1702",
+        "WarningsNotAsErrors": "",
+        "WarningsAsErrors": ";NU1605;IL2026;IL3050;NU1605;IL2026;IL3050;NU1605;SYSLIB0011",
+        "OutputType": "Library",
+        "IsTestProject": "",
+        "IsPackable": "false",
+        "TargetFramework": "net10.0",
+        "RuntimeIdentifier": "",
+        "ILLinkWarningLevel": "",
+        "_SuppressWarningIL2121": ""
+      },
+      "projectReferences": []
+    },
+    {
+      "owner": "DesktopPlatform",
+      "project": "src/BuildingBlocks/ArcForges.Desktop.Preview/ArcForges.Desktop.Preview.csproj",
+      "aotPath": true,
+      "properties": {
+        "IsAotCompatible": "true",
+        "PublishAot": "",
+        "PublishTrimmed": "",
+        "IsTrimmable": "true",
+        "EnableAotAnalyzer": "true",
+        "EnableTrimAnalyzer": "true",
+        "EnableSingleFileAnalyzer": "true",
+        "TreatWarningsAsErrors": "true",
+        "ILLinkTreatWarningsAsErrors": "",
+        "TrimmerSingleWarn": "",
+        "SuppressTrimAnalysisWarnings": "",
+        "NoWarn": "1701;1702",
+        "WarningsNotAsErrors": "",
+        "WarningsAsErrors": ";NU1605;IL2026;IL3050;NU1605;IL2026;IL3050;NU1605;SYSLIB0011",
+        "OutputType": "Library",
+        "IsTestProject": "",
+        "IsPackable": "false",
+        "TargetFramework": "net10.0",
+        "RuntimeIdentifier": "",
+        "ILLinkWarningLevel": "",
+        "_SuppressWarningIL2121": ""
+      },
+      "projectReferences": []
+    },
+    {
+      "owner": "DesktopPlatform",
+      "project": "src/BuildingBlocks/ArcForges.Desktop.RichContent/ArcForges.Desktop.RichContent.csproj",
+      "aotPath": true,
+      "properties": {
+        "IsAotCompatible": "true",
+        "PublishAot": "",
+        "PublishTrimmed": "",
+        "IsTrimmable": "true",
+        "EnableAotAnalyzer": "true",
+        "EnableTrimAnalyzer": "true",
+        "EnableSingleFileAnalyzer": "true",
+        "TreatWarningsAsErrors": "true",
+        "ILLinkTreatWarningsAsErrors": "",
+        "TrimmerSingleWarn": "",
+        "SuppressTrimAnalysisWarnings": "",
+        "NoWarn": "1701;1702",
+        "WarningsNotAsErrors": "",
+        "WarningsAsErrors": ";NU1605;IL2026;IL3050;NU1605;IL2026;IL3050;NU1605;SYSLIB0011",
+        "OutputType": "Library",
+        "IsTestProject": "",
+        "IsPackable": "false",
+        "TargetFramework": "net10.0",
+        "RuntimeIdentifier": "",
+        "ILLinkWarningLevel": "",
+        "_SuppressWarningIL2121": ""
+      },
+      "projectReferences": []
+    },
+    {
+      "owner": "DesktopPlatform",
+      "project": "src/BuildingBlocks/ArcForges.Desktop.Text/ArcForges.Desktop.Text.csproj",
+      "aotPath": true,
+      "properties": {
+        "IsAotCompatible": "true",
+        "PublishAot": "",
+        "PublishTrimmed": "",
+        "IsTrimmable": "true",
+        "EnableAotAnalyzer": "true",
+        "EnableTrimAnalyzer": "true",
+        "EnableSingleFileAnalyzer": "true",
+        "TreatWarningsAsErrors": "true",
+        "ILLinkTreatWarningsAsErrors": "",
+        "TrimmerSingleWarn": "",
+        "SuppressTrimAnalysisWarnings": "",
+        "NoWarn": "1701;1702",
+        "WarningsNotAsErrors": "",
+        "WarningsAsErrors": ";NU1605;IL2026;IL3050;NU1605;IL2026;IL3050;NU1605;SYSLIB0011",
+        "OutputType": "Library",
+        "IsTestProject": "",
+        "IsPackable": "false",
+        "TargetFramework": "net10.0",
+        "RuntimeIdentifier": "",
+        "ILLinkWarningLevel": "",
+        "_SuppressWarningIL2121": ""
+      },
+      "projectReferences": []
+    },
+    {
+      "owner": "DesktopPlatform",
+      "project": "src/BuildingBlocks/ArcForges.Foundation/ArcForges.Foundation.csproj",
+      "aotPath": true,
+      "properties": {
+        "IsAotCompatible": "true",
+        "PublishAot": "",
+        "PublishTrimmed": "",
+        "IsTrimmable": "true",
+        "EnableAotAnalyzer": "true",
+        "EnableTrimAnalyzer": "true",
+        "EnableSingleFileAnalyzer": "true",
+        "TreatWarningsAsErrors": "true",
+        "ILLinkTreatWarningsAsErrors": "",
+        "TrimmerSingleWarn": "",
+        "SuppressTrimAnalysisWarnings": "",
+        "NoWarn": "1701;1702",
+        "WarningsNotAsErrors": "",
+        "WarningsAsErrors": ";NU1605;IL2026;IL3050;NU1605;IL2026;IL3050;NU1605;SYSLIB0011",
+        "OutputType": "Library",
+        "IsTestProject": "",
+        "IsPackable": "false",
+        "TargetFramework": "net10.0",
+        "RuntimeIdentifier": "",
+        "ILLinkWarningLevel": "",
+        "_SuppressWarningIL2121": ""
+      },
+      "projectReferences": []
+    },
+    {
+      "owner": "DesktopPlatform",
+      "project": "src/BuildingBlocks/ArcForges.NativeInterop/ArcForges.NativeInterop.csproj",
+      "aotPath": true,
+      "properties": {
+        "IsAotCompatible": "true",
+        "PublishAot": "",
+        "PublishTrimmed": "",
+        "IsTrimmable": "true",
+        "EnableAotAnalyzer": "true",
+        "EnableTrimAnalyzer": "true",
+        "EnableSingleFileAnalyzer": "true",
+        "TreatWarningsAsErrors": "true",
+        "ILLinkTreatWarningsAsErrors": "",
+        "TrimmerSingleWarn": "",
+        "SuppressTrimAnalysisWarnings": "",
+        "NoWarn": "1701;1702",
+        "WarningsNotAsErrors": "",
+        "WarningsAsErrors": ";NU1605;IL2026;IL3050;NU1605;IL2026;IL3050;NU1605;SYSLIB0011",
+        "OutputType": "Library",
+        "IsTestProject": "",
+        "IsPackable": "false",
+        "TargetFramework": "net10.0",
+        "RuntimeIdentifier": "",
+        "ILLinkWarningLevel": "",
+        "_SuppressWarningIL2121": ""
+      },
+      "projectReferences": []
+    },
+    {
+      "owner": "DesktopPlatform",
+      "project": "src/BuildingBlocks/ArcForges.Observability/ArcForges.Observability.csproj",
+      "aotPath": true,
+      "properties": {
+        "IsAotCompatible": "true",
+        "PublishAot": "",
+        "PublishTrimmed": "",
+        "IsTrimmable": "true",
+        "EnableAotAnalyzer": "true",
+        "EnableTrimAnalyzer": "true",
+        "EnableSingleFileAnalyzer": "true",
+        "TreatWarningsAsErrors": "true",
+        "ILLinkTreatWarningsAsErrors": "",
+        "TrimmerSingleWarn": "",
+        "SuppressTrimAnalysisWarnings": "",
+        "NoWarn": "1701;1702",
+        "WarningsNotAsErrors": "",
+        "WarningsAsErrors": ";NU1605;IL2026;IL3050;NU1605;IL2026;IL3050;NU1605;SYSLIB0011",
+        "OutputType": "Library",
+        "IsTestProject": "",
+        "IsPackable": "false",
+        "TargetFramework": "net10.0",
+        "RuntimeIdentifier": "",
+        "ILLinkWarningLevel": "",
+        "_SuppressWarningIL2121": ""
+      },
+      "projectReferences": []
+    },
+    {
+      "owner": "DesktopPlatform",
+      "project": "src/BuildingBlocks/ArcForges.Persistence.Sqlite/ArcForges.Persistence.Sqlite.csproj",
+      "aotPath": true,
+      "properties": {
+        "IsAotCompatible": "true",
+        "PublishAot": "",
+        "PublishTrimmed": "",
+        "IsTrimmable": "true",
+        "EnableAotAnalyzer": "true",
+        "EnableTrimAnalyzer": "true",
+        "EnableSingleFileAnalyzer": "true",
+        "TreatWarningsAsErrors": "true",
+        "ILLinkTreatWarningsAsErrors": "",
+        "TrimmerSingleWarn": "",
+        "SuppressTrimAnalysisWarnings": "",
+        "NoWarn": "1701;1702",
+        "WarningsNotAsErrors": "",
+        "WarningsAsErrors": ";NU1605;IL2026;IL3050;NU1605;IL2026;IL3050;NU1605;SYSLIB0011",
+        "OutputType": "Library",
+        "IsTestProject": "",
+        "IsPackable": "false",
+        "TargetFramework": "net10.0",
+        "RuntimeIdentifier": "",
+        "ILLinkWarningLevel": "",
+        "_SuppressWarningIL2121": ""
+      },
+      "projectReferences": []
+    },
+    {
+      "owner": "DesktopPlatform",
+      "project": "src/BuildingBlocks/ArcForges.Security/ArcForges.Security.csproj",
+      "aotPath": true,
+      "properties": {
+        "IsAotCompatible": "true",
+        "PublishAot": "",
+        "PublishTrimmed": "",
+        "IsTrimmable": "true",
+        "EnableAotAnalyzer": "true",
+        "EnableTrimAnalyzer": "true",
+        "EnableSingleFileAnalyzer": "true",
+        "TreatWarningsAsErrors": "true",
+        "ILLinkTreatWarningsAsErrors": "",
+        "TrimmerSingleWarn": "",
+        "SuppressTrimAnalysisWarnings": "",
+        "NoWarn": "1701;1702",
+        "WarningsNotAsErrors": "",
+        "WarningsAsErrors": ";NU1605;IL2026;IL3050;NU1605;IL2026;IL3050;NU1605;SYSLIB0011",
+        "OutputType": "Library",
+        "IsTestProject": "",
+        "IsPackable": "false",
+        "TargetFramework": "net10.0",
+        "RuntimeIdentifier": "",
+        "ILLinkWarningLevel": "",
+        "_SuppressWarningIL2121": ""
+      },
+      "projectReferences": []
+    },
+    {
+      "owner": "DesktopPlatform",
+      "project": "src/DesktopHelpers/ArcForges.ContentSandbox/ArcForges.ContentSandbox.csproj",
+      "aotPath": true,
+      "properties": {
+        "IsAotCompatible": "true",
+        "PublishAot": "true",
+        "PublishTrimmed": "true",
+        "IsTrimmable": "true",
+        "EnableAotAnalyzer": "true",
+        "EnableTrimAnalyzer": "true",
+        "EnableSingleFileAnalyzer": "true",
+        "TreatWarningsAsErrors": "true",
+        "ILLinkTreatWarningsAsErrors": "",
+        "TrimmerSingleWarn": "",
+        "SuppressTrimAnalysisWarnings": "",
+        "NoWarn": "1701;1702;IL2121",
+        "WarningsNotAsErrors": "",
+        "WarningsAsErrors": ";NU1605;IL2026;IL3050;NU1605;IL2026;IL3050;NU1605;IL2026;IL3050;SYSLIB0011",
+        "OutputType": "Exe",
+        "IsTestProject": "",
+        "IsPackable": "false",
+        "TargetFramework": "net10.0",
+        "RuntimeIdentifier": "",
+        "ILLinkWarningLevel": "",
+        "_SuppressWarningIL2121": ""
+      },
+      "projectReferences": [
+        "..\\..\\BuildingBlocks\\ArcForges.Desktop.RichContent\\ArcForges.Desktop.RichContent.csproj",
+        "..\\..\\BuildingBlocks\\ArcForges.Foundation\\ArcForges.Foundation.csproj",
+        "..\\..\\BuildingBlocks\\ArcForges.NativeInterop\\ArcForges.NativeInterop.csproj"
+      ]
+    },
+    {
+      "owner": "DesktopPlatform",
+      "project": "src/Native/ArcForges.Native.Abstractions/ArcForges.Native.Abstractions.csproj",
+      "aotPath": true,
+      "properties": {
+        "IsAotCompatible": "true",
+        "PublishAot": "",
+        "PublishTrimmed": "",
+        "IsTrimmable": "true",
+        "EnableAotAnalyzer": "true",
+        "EnableTrimAnalyzer": "true",
+        "EnableSingleFileAnalyzer": "true",
+        "TreatWarningsAsErrors": "true",
+        "ILLinkTreatWarningsAsErrors": "",
+        "TrimmerSingleWarn": "",
+        "SuppressTrimAnalysisWarnings": "",
+        "NoWarn": "1701;1702",
+        "WarningsNotAsErrors": "",
+        "WarningsAsErrors": ";NU1605;IL2026;IL3050;NU1605;IL2026;IL3050;NU1605;SYSLIB0011",
+        "OutputType": "Library",
+        "IsTestProject": "",
+        "IsPackable": "true",
+        "TargetFramework": "net10.0",
+        "RuntimeIdentifier": "",
+        "ILLinkWarningLevel": "",
+        "_SuppressWarningIL2121": ""
+      },
+      "projectReferences": []
+    },
+    {
+      "owner": "DesktopPlatform",
+      "project": "src/Native/ArcForges.Native.Colour.Runtime.win-x64/ArcForges.Native.Colour.Runtime.win-x64.csproj",
+      "aotPath": true,
+      "properties": {
+        "IsAotCompatible": "true",
+        "PublishAot": "",
+        "PublishTrimmed": "",
+        "IsTrimmable": "true",
+        "EnableAotAnalyzer": "true",
+        "EnableTrimAnalyzer": "true",
+        "EnableSingleFileAnalyzer": "true",
+        "TreatWarningsAsErrors": "true",
+        "ILLinkTreatWarningsAsErrors": "",
+        "TrimmerSingleWarn": "",
+        "SuppressTrimAnalysisWarnings": "",
+        "NoWarn": "1701;1702",
+        "WarningsNotAsErrors": "",
+        "WarningsAsErrors": ";NU1605;IL2026;IL3050;NU1605;IL2026;IL3050;NU1605;SYSLIB0011",
+        "OutputType": "Library",
+        "IsTestProject": "",
+        "IsPackable": "true",
+        "TargetFramework": "net10.0",
+        "RuntimeIdentifier": "",
+        "ILLinkWarningLevel": "",
+        "_SuppressWarningIL2121": ""
+      },
+      "projectReferences": []
+    },
+    {
+      "owner": "DesktopPlatform",
+      "project": "src/Native/ArcForges.Native.Colour/ArcForges.Native.Colour.csproj",
+      "aotPath": true,
+      "properties": {
+        "IsAotCompatible": "true",
+        "PublishAot": "",
+        "PublishTrimmed": "",
+        "IsTrimmable": "true",
+        "EnableAotAnalyzer": "true",
+        "EnableTrimAnalyzer": "true",
+        "EnableSingleFileAnalyzer": "true",
+        "TreatWarningsAsErrors": "true",
+        "ILLinkTreatWarningsAsErrors": "",
+        "TrimmerSingleWarn": "",
+        "SuppressTrimAnalysisWarnings": "",
+        "NoWarn": "1701;1702",
+        "WarningsNotAsErrors": "",
+        "WarningsAsErrors": ";NU1605;IL2026;IL3050;NU1605;IL2026;IL3050;NU1605;SYSLIB0011",
+        "OutputType": "Library",
+        "IsTestProject": "",
+        "IsPackable": "true",
+        "TargetFramework": "net10.0",
+        "RuntimeIdentifier": "",
+        "ILLinkWarningLevel": "",
+        "_SuppressWarningIL2121": ""
+      },
+      "projectReferences": [
+        "../ArcForges.Native.Abstractions/ArcForges.Native.Abstractions.csproj"
+      ]
+    },
+    {
+      "owner": "DesktopPlatform",
+      "project": "src/Native/ArcForges.Native.Image.Runtime.win-x64/ArcForges.Native.Image.Runtime.win-x64.csproj",
+      "aotPath": true,
+      "properties": {
+        "IsAotCompatible": "true",
+        "PublishAot": "",
+        "PublishTrimmed": "",
+        "IsTrimmable": "true",
+        "EnableAotAnalyzer": "true",
+        "EnableTrimAnalyzer": "true",
+        "EnableSingleFileAnalyzer": "true",
+        "TreatWarningsAsErrors": "true",
+        "ILLinkTreatWarningsAsErrors": "",
+        "TrimmerSingleWarn": "",
+        "SuppressTrimAnalysisWarnings": "",
+        "NoWarn": "1701;1702",
+        "WarningsNotAsErrors": "",
+        "WarningsAsErrors": ";NU1605;IL2026;IL3050;NU1605;IL2026;IL3050;NU1605;SYSLIB0011",
+        "OutputType": "Library",
+        "IsTestProject": "",
+        "IsPackable": "true",
+        "TargetFramework": "net10.0",
+        "RuntimeIdentifier": "",
+        "ILLinkWarningLevel": "",
+        "_SuppressWarningIL2121": ""
+      },
+      "projectReferences": []
+    },
+    {
+      "owner": "DesktopPlatform",
+      "project": "src/Native/ArcForges.Native.Image/ArcForges.Native.Image.csproj",
+      "aotPath": true,
+      "properties": {
+        "IsAotCompatible": "true",
+        "PublishAot": "",
+        "PublishTrimmed": "",
+        "IsTrimmable": "true",
+        "EnableAotAnalyzer": "true",
+        "EnableTrimAnalyzer": "true",
+        "EnableSingleFileAnalyzer": "true",
+        "TreatWarningsAsErrors": "true",
+        "ILLinkTreatWarningsAsErrors": "",
+        "TrimmerSingleWarn": "",
+        "SuppressTrimAnalysisWarnings": "",
+        "NoWarn": "1701;1702",
+        "WarningsNotAsErrors": "",
+        "WarningsAsErrors": ";NU1605;IL2026;IL3050;NU1605;IL2026;IL3050;NU1605;SYSLIB0011",
+        "OutputType": "Library",
+        "IsTestProject": "",
+        "IsPackable": "true",
+        "TargetFramework": "net10.0",
+        "RuntimeIdentifier": "",
+        "ILLinkWarningLevel": "",
+        "_SuppressWarningIL2121": ""
+      },
+      "projectReferences": [
+        "../ArcForges.Native.Abstractions/ArcForges.Native.Abstractions.csproj"
+      ]
+    },
+    {
+      "owner": "DesktopPlatform",
+      "project": "src/Native/ArcForges.Native.Media.Runtime.win-x64/ArcForges.Native.Media.Runtime.win-x64.csproj",
+      "aotPath": true,
+      "properties": {
+        "IsAotCompatible": "true",
+        "PublishAot": "",
+        "PublishTrimmed": "",
+        "IsTrimmable": "true",
+        "EnableAotAnalyzer": "true",
+        "EnableTrimAnalyzer": "true",
+        "EnableSingleFileAnalyzer": "true",
+        "TreatWarningsAsErrors": "true",
+        "ILLinkTreatWarningsAsErrors": "",
+        "TrimmerSingleWarn": "",
+        "SuppressTrimAnalysisWarnings": "",
+        "NoWarn": "1701;1702",
+        "WarningsNotAsErrors": "",
+        "WarningsAsErrors": ";NU1605;IL2026;IL3050;NU1605;IL2026;IL3050;NU1605;SYSLIB0011",
+        "OutputType": "Library",
+        "IsTestProject": "",
+        "IsPackable": "true",
+        "TargetFramework": "net10.0",
+        "RuntimeIdentifier": "",
+        "ILLinkWarningLevel": "",
+        "_SuppressWarningIL2121": ""
+      },
+      "projectReferences": []
+    },
+    {
+      "owner": "DesktopPlatform",
+      "project": "src/Native/ArcForges.Native.Media/ArcForges.Native.Media.csproj",
+      "aotPath": true,
+      "properties": {
+        "IsAotCompatible": "true",
+        "PublishAot": "",
+        "PublishTrimmed": "",
+        "IsTrimmable": "true",
+        "EnableAotAnalyzer": "true",
+        "EnableTrimAnalyzer": "true",
+        "EnableSingleFileAnalyzer": "true",
+        "TreatWarningsAsErrors": "true",
+        "ILLinkTreatWarningsAsErrors": "",
+        "TrimmerSingleWarn": "",
+        "SuppressTrimAnalysisWarnings": "",
+        "NoWarn": "1701;1702",
+        "WarningsNotAsErrors": "",
+        "WarningsAsErrors": ";NU1605;IL2026;IL3050;NU1605;IL2026;IL3050;NU1605;SYSLIB0011",
+        "OutputType": "Library",
+        "IsTestProject": "",
+        "IsPackable": "true",
+        "TargetFramework": "net10.0",
+        "RuntimeIdentifier": "",
+        "ILLinkWarningLevel": "",
+        "_SuppressWarningIL2121": ""
+      },
+      "projectReferences": [
+        "../ArcForges.Native.Abstractions/ArcForges.Native.Abstractions.csproj"
+      ]
+    },
+    {
+      "owner": "DesktopPlatform",
+      "project": "src/Native/ArcForges.Native.Otio.Runtime.win-x64/ArcForges.Native.Otio.Runtime.win-x64.csproj",
+      "aotPath": true,
+      "properties": {
+        "IsAotCompatible": "true",
+        "PublishAot": "",
+        "PublishTrimmed": "",
+        "IsTrimmable": "true",
+        "EnableAotAnalyzer": "true",
+        "EnableTrimAnalyzer": "true",
+        "EnableSingleFileAnalyzer": "true",
+        "TreatWarningsAsErrors": "true",
+        "ILLinkTreatWarningsAsErrors": "",
+        "TrimmerSingleWarn": "",
+        "SuppressTrimAnalysisWarnings": "",
+        "NoWarn": "1701;1702",
+        "WarningsNotAsErrors": "",
+        "WarningsAsErrors": ";NU1605;IL2026;IL3050;NU1605;IL2026;IL3050;NU1605;SYSLIB0011",
+        "OutputType": "Library",
+        "IsTestProject": "",
+        "IsPackable": "true",
+        "TargetFramework": "net10.0",
+        "RuntimeIdentifier": "",
+        "ILLinkWarningLevel": "",
+        "_SuppressWarningIL2121": ""
+      },
+      "projectReferences": []
+    },
+    {
+      "owner": "DesktopPlatform",
+      "project": "src/Native/ArcForges.Native.Otio/ArcForges.Native.Otio.csproj",
+      "aotPath": true,
+      "properties": {
+        "IsAotCompatible": "true",
+        "PublishAot": "",
+        "PublishTrimmed": "",
+        "IsTrimmable": "true",
+        "EnableAotAnalyzer": "true",
+        "EnableTrimAnalyzer": "true",
+        "EnableSingleFileAnalyzer": "true",
+        "TreatWarningsAsErrors": "true",
+        "ILLinkTreatWarningsAsErrors": "",
+        "TrimmerSingleWarn": "",
+        "SuppressTrimAnalysisWarnings": "",
+        "NoWarn": "1701;1702",
+        "WarningsNotAsErrors": "",
+        "WarningsAsErrors": ";NU1605;IL2026;IL3050;NU1605;IL2026;IL3050;NU1605;SYSLIB0011",
+        "OutputType": "Library",
+        "IsTestProject": "",
+        "IsPackable": "true",
+        "TargetFramework": "net10.0",
+        "RuntimeIdentifier": "",
+        "ILLinkWarningLevel": "",
+        "_SuppressWarningIL2121": ""
+      },
+      "projectReferences": [
+        "../ArcForges.Native.Abstractions/ArcForges.Native.Abstractions.csproj"
+      ]
+    },
+    {
+      "owner": "DesktopPlatform",
+      "project": "tests/ArchitectureTests/ArcForges.Tests.ArchitectureTests.csproj",
+      "aotPath": false,
+      "properties": {
+        "IsAotCompatible": "",
+        "PublishAot": "",
+        "PublishTrimmed": "",
+        "IsTrimmable": "",
+        "EnableAotAnalyzer": "",
+        "EnableTrimAnalyzer": "",
+        "EnableSingleFileAnalyzer": "",
+        "TreatWarningsAsErrors": "true",
+        "ILLinkTreatWarningsAsErrors": "",
+        "TrimmerSingleWarn": "",
+        "SuppressTrimAnalysisWarnings": "",
+        "NoWarn": "1701;1702",
+        "WarningsNotAsErrors": "",
+        "WarningsAsErrors": ";NU1605;IL2026;IL3050;NU1605;IL2026;IL3050;NU1605;SYSLIB0011",
+        "OutputType": "Exe",
+        "IsTestProject": "true",
+        "IsPackable": "false",
+        "TargetFramework": "net10.0",
+        "RuntimeIdentifier": "",
+        "ILLinkWarningLevel": "",
+        "_SuppressWarningIL2121": ""
+      },
+      "projectReferences": []
+    },
+    {
+      "owner": "DesktopPlatform",
+      "project": "tests/NativeAbiTests/ArcForges.Tests.NativeAbiTests.csproj",
+      "aotPath": false,
+      "properties": {
+        "IsAotCompatible": "",
+        "PublishAot": "",
+        "PublishTrimmed": "",
+        "IsTrimmable": "",
+        "EnableAotAnalyzer": "",
+        "EnableTrimAnalyzer": "",
+        "EnableSingleFileAnalyzer": "",
+        "TreatWarningsAsErrors": "true",
+        "ILLinkTreatWarningsAsErrors": "",
+        "TrimmerSingleWarn": "",
+        "SuppressTrimAnalysisWarnings": "",
+        "NoWarn": "1701;1702",
+        "WarningsNotAsErrors": "",
+        "WarningsAsErrors": ";NU1605;IL2026;IL3050;NU1605;IL2026;IL3050;NU1605;SYSLIB0011",
+        "OutputType": "Exe",
+        "IsTestProject": "true",
+        "IsPackable": "false",
+        "TargetFramework": "net10.0",
+        "RuntimeIdentifier": "",
+        "ILLinkWarningLevel": "",
+        "_SuppressWarningIL2121": ""
+      },
+      "projectReferences": []
+    },
+    {
+      "owner": "Contracts",
+      "project": "eng/Codegen/Codegen.csproj",
+      "aotPath": false,
+      "properties": {
+        "IsAotCompatible": "",
+        "PublishAot": "",
+        "PublishTrimmed": "",
+        "IsTrimmable": "",
+        "EnableAotAnalyzer": "",
+        "EnableTrimAnalyzer": "",
+        "EnableSingleFileAnalyzer": "",
+        "TreatWarningsAsErrors": "true",
+        "ILLinkTreatWarningsAsErrors": "",
+        "TrimmerSingleWarn": "",
+        "SuppressTrimAnalysisWarnings": "",
+        "NoWarn": "1701;1702",
+        "WarningsNotAsErrors": "",
+        "WarningsAsErrors": ";NU1605;SYSLIB0011",
+        "OutputType": "Library",
+        "IsTestProject": "",
+        "IsPackable": "false",
+        "TargetFramework": "net10.0",
+        "RuntimeIdentifier": "",
+        "ILLinkWarningLevel": "",
+        "_SuppressWarningIL2121": ""
+      },
+      "projectReferences": []
+    },
+    {
+      "owner": "Contracts",
+      "project": "src/public/dotnet/ArcForges.Contracts.PublicApi/ArcForges.Contracts.PublicApi.csproj",
+      "aotPath": true,
+      "properties": {
+        "IsAotCompatible": "true",
+        "PublishAot": "",
+        "PublishTrimmed": "",
+        "IsTrimmable": "true",
+        "EnableAotAnalyzer": "true",
+        "EnableTrimAnalyzer": "true",
+        "EnableSingleFileAnalyzer": "true",
+        "TreatWarningsAsErrors": "true",
+        "ILLinkTreatWarningsAsErrors": "",
+        "TrimmerSingleWarn": "",
+        "SuppressTrimAnalysisWarnings": "",
+        "NoWarn": "1701;1702",
+        "WarningsNotAsErrors": "",
+        "WarningsAsErrors": ";NU1605;SYSLIB0011",
+        "OutputType": "Library",
+        "IsTestProject": "",
+        "IsPackable": "true",
+        "TargetFramework": "net10.0",
+        "RuntimeIdentifier": "",
+        "ILLinkWarningLevel": "",
+        "_SuppressWarningIL2121": ""
+      },
+      "projectReferences": []
+    },
+    {
+      "owner": "Contracts",
+      "project": "tests/public/HelloClient/HelloClient.csproj",
+      "aotPath": true,
+      "properties": {
+        "IsAotCompatible": "true",
+        "PublishAot": "",
+        "PublishTrimmed": "",
+        "IsTrimmable": "true",
+        "EnableAotAnalyzer": "true",
+        "EnableTrimAnalyzer": "true",
+        "EnableSingleFileAnalyzer": "true",
+        "TreatWarningsAsErrors": "true",
+        "ILLinkTreatWarningsAsErrors": "",
+        "TrimmerSingleWarn": "",
+        "SuppressTrimAnalysisWarnings": "",
+        "NoWarn": "1701;1702",
+        "WarningsNotAsErrors": "",
+        "WarningsAsErrors": ";NU1605;SYSLIB0011",
+        "OutputType": "Exe",
+        "IsTestProject": "",
+        "IsPackable": "false",
+        "TargetFramework": "net10.0",
+        "RuntimeIdentifier": "",
+        "ILLinkWarningLevel": "",
+        "_SuppressWarningIL2121": ""
+      },
+      "projectReferences": [
+        "../../../src/public/dotnet/ArcForges.Contracts.PublicApi/ArcForges.Contracts.PublicApi.csproj"
+      ]
+    },
+    {
+      "owner": "Contracts",
+      "project": "tests/public/HelloHost/HelloHost.csproj",
+      "aotPath": false,
+      "properties": {
+        "IsAotCompatible": "",
+        "PublishAot": "",
+        "PublishTrimmed": "",
+        "IsTrimmable": "",
+        "EnableAotAnalyzer": "",
+        "EnableTrimAnalyzer": "",
+        "EnableSingleFileAnalyzer": "",
+        "TreatWarningsAsErrors": "true",
+        "ILLinkTreatWarningsAsErrors": "",
+        "TrimmerSingleWarn": "",
+        "SuppressTrimAnalysisWarnings": "",
+        "NoWarn": "1701;1702",
+        "WarningsNotAsErrors": "",
+        "WarningsAsErrors": ";NU1605;SYSLIB0011",
+        "OutputType": "Exe",
+        "IsTestProject": "",
+        "IsPackable": "false",
+        "TargetFramework": "net10.0",
+        "RuntimeIdentifier": "",
+        "ILLinkWarningLevel": "",
+        "_SuppressWarningIL2121": ""
+      },
+      "projectReferences": [
+        "../../../src/public/dotnet/ArcForges.Contracts.PublicApi/ArcForges.Contracts.PublicApi.csproj"
+      ]
+    },
+    {
+      "owner": "ArcNotes",
+      "project": "eng/ArcForges.Repository/ArcForges.Repository.csproj",
+      "aotPath": false,
+      "properties": {
+        "IsAotCompatible": "",
+        "PublishAot": "",
+        "PublishTrimmed": "",
+        "IsTrimmable": "",
+        "EnableAotAnalyzer": "",
+        "EnableTrimAnalyzer": "",
+        "EnableSingleFileAnalyzer": "",
+        "TreatWarningsAsErrors": "true",
+        "ILLinkTreatWarningsAsErrors": "",
+        "TrimmerSingleWarn": "",
+        "SuppressTrimAnalysisWarnings": "",
+        "NoWarn": "1701;1702",
+        "WarningsNotAsErrors": "",
+        "WarningsAsErrors": ";NU1605;IL2026;IL3050;NU1605;SYSLIB0011",
+        "OutputType": "Exe",
+        "IsTestProject": "",
+        "IsPackable": "false",
+        "TargetFramework": "net10.0",
+        "RuntimeIdentifier": "",
+        "ILLinkWarningLevel": "",
+        "_SuppressWarningIL2121": ""
+      },
+      "projectReferences": []
+    },
+    {
+      "owner": "ArcNotes",
+      "project": "src/ArcForges.ArcNotes.Core/ArcForges.ArcNotes.Core.csproj",
+      "aotPath": true,
+      "properties": {
+        "IsAotCompatible": "true",
+        "PublishAot": "",
+        "PublishTrimmed": "",
+        "IsTrimmable": "true",
+        "EnableAotAnalyzer": "true",
+        "EnableTrimAnalyzer": "true",
+        "EnableSingleFileAnalyzer": "true",
+        "TreatWarningsAsErrors": "true",
+        "ILLinkTreatWarningsAsErrors": "",
+        "TrimmerSingleWarn": "",
+        "SuppressTrimAnalysisWarnings": "",
+        "NoWarn": "1701;1702",
+        "WarningsNotAsErrors": "",
+        "WarningsAsErrors": ";NU1605;IL2026;IL3050;NU1605;SYSLIB0011",
+        "OutputType": "Library",
+        "IsTestProject": "",
+        "IsPackable": "false",
+        "TargetFramework": "net10.0",
+        "RuntimeIdentifier": "",
+        "ILLinkWarningLevel": "",
+        "_SuppressWarningIL2121": ""
+      },
+      "projectReferences": []
+    },
+    {
+      "owner": "ArcNotes",
+      "project": "src/ArcForges.ArcNotes/ArcForges.ArcNotes.csproj",
+      "aotPath": true,
+      "properties": {
+        "IsAotCompatible": "true",
+        "PublishAot": "true",
+        "PublishTrimmed": "true",
+        "IsTrimmable": "true",
+        "EnableAotAnalyzer": "true",
+        "EnableTrimAnalyzer": "true",
+        "EnableSingleFileAnalyzer": "true",
+        "TreatWarningsAsErrors": "true",
+        "ILLinkTreatWarningsAsErrors": "true",
+        "TrimmerSingleWarn": "",
+        "SuppressTrimAnalysisWarnings": "false",
+        "NoWarn": "1701;1702;IL2121",
+        "WarningsNotAsErrors": "",
+        "WarningsAsErrors": ";NU1605;IL2026;IL3050;NU1605;SYSLIB0011",
+        "OutputType": "WinExe",
+        "IsTestProject": "",
+        "IsPackable": "false",
+        "TargetFramework": "net10.0",
+        "RuntimeIdentifier": "",
+        "ILLinkWarningLevel": "",
+        "_SuppressWarningIL2121": ""
+      },
+      "projectReferences": [
+        "../ArcForges.ArcNotes.Core/ArcForges.ArcNotes.Core.csproj"
+      ]
+    },
+    {
+      "owner": "ArcNotes",
+      "project": "tests/ArcForges.ArcNotes.Tests/ArcForges.ArcNotes.Tests.csproj",
+      "aotPath": false,
+      "properties": {
+        "IsAotCompatible": "",
+        "PublishAot": "",
+        "PublishTrimmed": "",
+        "IsTrimmable": "",
+        "EnableAotAnalyzer": "",
+        "EnableTrimAnalyzer": "",
+        "EnableSingleFileAnalyzer": "",
+        "TreatWarningsAsErrors": "true",
+        "ILLinkTreatWarningsAsErrors": "",
+        "TrimmerSingleWarn": "",
+        "SuppressTrimAnalysisWarnings": "",
+        "NoWarn": "1701;1702",
+        "WarningsNotAsErrors": "",
+        "WarningsAsErrors": ";NU1605;IL2026;IL3050;NU1605;SYSLIB0011",
+        "OutputType": "Exe",
+        "IsTestProject": "",
+        "IsPackable": "false",
+        "TargetFramework": "net10.0",
+        "RuntimeIdentifier": "",
+        "ILLinkWarningLevel": "",
+        "_SuppressWarningIL2121": ""
+      },
+      "projectReferences": [
+        "../../src/ArcForges.ArcNotes.Core/ArcForges.ArcNotes.Core.csproj",
+        "../../eng/ArcForges.Repository/ArcForges.Repository.csproj"
+      ]
+    },
+    {
+      "owner": "ArcScope",
+      "project": "eng/ArcForges.Repository/ArcForges.Repository.csproj",
+      "aotPath": false,
+      "properties": {
+        "IsAotCompatible": "",
+        "PublishAot": "",
+        "PublishTrimmed": "",
+        "IsTrimmable": "",
+        "EnableAotAnalyzer": "",
+        "EnableTrimAnalyzer": "",
+        "EnableSingleFileAnalyzer": "",
+        "TreatWarningsAsErrors": "true",
+        "ILLinkTreatWarningsAsErrors": "",
+        "TrimmerSingleWarn": "",
+        "SuppressTrimAnalysisWarnings": "",
+        "NoWarn": "1701;1702",
+        "WarningsNotAsErrors": "",
+        "WarningsAsErrors": ";NU1605;IL2026;IL3050;NU1605;SYSLIB0011",
+        "OutputType": "Exe",
+        "IsTestProject": "",
+        "IsPackable": "false",
+        "TargetFramework": "net10.0",
+        "RuntimeIdentifier": "",
+        "ILLinkWarningLevel": "",
+        "_SuppressWarningIL2121": ""
+      },
+      "projectReferences": []
+    },
+    {
+      "owner": "ArcScope",
+      "project": "src/ArcForges.ArcScope.Core/ArcForges.ArcScope.Core.csproj",
+      "aotPath": true,
+      "properties": {
+        "IsAotCompatible": "true",
+        "PublishAot": "",
+        "PublishTrimmed": "",
+        "IsTrimmable": "true",
+        "EnableAotAnalyzer": "true",
+        "EnableTrimAnalyzer": "true",
+        "EnableSingleFileAnalyzer": "true",
+        "TreatWarningsAsErrors": "true",
+        "ILLinkTreatWarningsAsErrors": "",
+        "TrimmerSingleWarn": "",
+        "SuppressTrimAnalysisWarnings": "",
+        "NoWarn": "1701;1702",
+        "WarningsNotAsErrors": "",
+        "WarningsAsErrors": ";NU1605;IL2026;IL3050;NU1605;SYSLIB0011",
+        "OutputType": "Library",
+        "IsTestProject": "",
+        "IsPackable": "false",
+        "TargetFramework": "net10.0",
+        "RuntimeIdentifier": "",
+        "ILLinkWarningLevel": "",
+        "_SuppressWarningIL2121": ""
+      },
+      "projectReferences": []
+    },
+    {
+      "owner": "ArcScope",
+      "project": "src/ArcForges.ArcScope/ArcForges.ArcScope.csproj",
+      "aotPath": true,
+      "properties": {
+        "IsAotCompatible": "true",
+        "PublishAot": "true",
+        "PublishTrimmed": "true",
+        "IsTrimmable": "true",
+        "EnableAotAnalyzer": "true",
+        "EnableTrimAnalyzer": "true",
+        "EnableSingleFileAnalyzer": "true",
+        "TreatWarningsAsErrors": "true",
+        "ILLinkTreatWarningsAsErrors": "true",
+        "TrimmerSingleWarn": "",
+        "SuppressTrimAnalysisWarnings": "false",
+        "NoWarn": "1701;1702;IL2121",
+        "WarningsNotAsErrors": "",
+        "WarningsAsErrors": ";NU1605;IL2026;IL3050;NU1605;SYSLIB0011",
+        "OutputType": "WinExe",
+        "IsTestProject": "",
+        "IsPackable": "false",
+        "TargetFramework": "net10.0",
+        "RuntimeIdentifier": "",
+        "ILLinkWarningLevel": "",
+        "_SuppressWarningIL2121": ""
+      },
+      "projectReferences": [
+        "../ArcForges.ArcScope.Core/ArcForges.ArcScope.Core.csproj"
+      ]
+    },
+    {
+      "owner": "ArcScope",
+      "project": "tests/ArcForges.ArcScope.Tests/ArcForges.ArcScope.Tests.csproj",
+      "aotPath": false,
+      "properties": {
+        "IsAotCompatible": "",
+        "PublishAot": "",
+        "PublishTrimmed": "",
+        "IsTrimmable": "",
+        "EnableAotAnalyzer": "",
+        "EnableTrimAnalyzer": "",
+        "EnableSingleFileAnalyzer": "",
+        "TreatWarningsAsErrors": "true",
+        "ILLinkTreatWarningsAsErrors": "",
+        "TrimmerSingleWarn": "",
+        "SuppressTrimAnalysisWarnings": "",
+        "NoWarn": "1701;1702",
+        "WarningsNotAsErrors": "",
+        "WarningsAsErrors": ";NU1605;IL2026;IL3050;NU1605;SYSLIB0011",
+        "OutputType": "Exe",
+        "IsTestProject": "",
+        "IsPackable": "false",
+        "TargetFramework": "net10.0",
+        "RuntimeIdentifier": "",
+        "ILLinkWarningLevel": "",
+        "_SuppressWarningIL2121": ""
+      },
+      "projectReferences": [
+        "../../src/ArcForges.ArcScope.Core/ArcForges.ArcScope.Core.csproj",
+        "../../eng/ArcForges.Repository/ArcForges.Repository.csproj"
+      ]
+    },
+    {
+      "owner": "ArcSlate",
+      "project": "eng/ArcForges.Repository/ArcForges.Repository.csproj",
+      "aotPath": false,
+      "properties": {
+        "IsAotCompatible": "",
+        "PublishAot": "",
+        "PublishTrimmed": "",
+        "IsTrimmable": "",
+        "EnableAotAnalyzer": "",
+        "EnableTrimAnalyzer": "",
+        "EnableSingleFileAnalyzer": "",
+        "TreatWarningsAsErrors": "true",
+        "ILLinkTreatWarningsAsErrors": "",
+        "TrimmerSingleWarn": "",
+        "SuppressTrimAnalysisWarnings": "",
+        "NoWarn": "1701;1702",
+        "WarningsNotAsErrors": "",
+        "WarningsAsErrors": ";NU1605;IL2026;IL3050;NU1605;SYSLIB0011",
+        "OutputType": "Exe",
+        "IsTestProject": "",
+        "IsPackable": "false",
+        "TargetFramework": "net10.0",
+        "RuntimeIdentifier": "",
+        "ILLinkWarningLevel": "",
+        "_SuppressWarningIL2121": ""
+      },
+      "projectReferences": []
+    },
+    {
+      "owner": "ArcSlate",
+      "project": "src/ArcForges.ArcSlate.Core/ArcForges.ArcSlate.Core.csproj",
+      "aotPath": true,
+      "properties": {
+        "IsAotCompatible": "true",
+        "PublishAot": "",
+        "PublishTrimmed": "",
+        "IsTrimmable": "true",
+        "EnableAotAnalyzer": "true",
+        "EnableTrimAnalyzer": "true",
+        "EnableSingleFileAnalyzer": "true",
+        "TreatWarningsAsErrors": "true",
+        "ILLinkTreatWarningsAsErrors": "",
+        "TrimmerSingleWarn": "",
+        "SuppressTrimAnalysisWarnings": "",
+        "NoWarn": "1701;1702",
+        "WarningsNotAsErrors": "",
+        "WarningsAsErrors": ";NU1605;IL2026;IL3050;NU1605;SYSLIB0011",
+        "OutputType": "Library",
+        "IsTestProject": "",
+        "IsPackable": "false",
+        "TargetFramework": "net10.0",
+        "RuntimeIdentifier": "",
+        "ILLinkWarningLevel": "",
+        "_SuppressWarningIL2121": ""
+      },
+      "projectReferences": []
+    },
+    {
+      "owner": "ArcSlate",
+      "project": "src/ArcForges.ArcSlate/ArcForges.ArcSlate.csproj",
+      "aotPath": true,
+      "properties": {
+        "IsAotCompatible": "true",
+        "PublishAot": "true",
+        "PublishTrimmed": "true",
+        "IsTrimmable": "true",
+        "EnableAotAnalyzer": "true",
+        "EnableTrimAnalyzer": "true",
+        "EnableSingleFileAnalyzer": "true",
+        "TreatWarningsAsErrors": "true",
+        "ILLinkTreatWarningsAsErrors": "true",
+        "TrimmerSingleWarn": "",
+        "SuppressTrimAnalysisWarnings": "false",
+        "NoWarn": "1701;1702;IL2121",
+        "WarningsNotAsErrors": "",
+        "WarningsAsErrors": ";NU1605;IL2026;IL3050;NU1605;SYSLIB0011",
+        "OutputType": "WinExe",
+        "IsTestProject": "",
+        "IsPackable": "false",
+        "TargetFramework": "net10.0",
+        "RuntimeIdentifier": "",
+        "ILLinkWarningLevel": "",
+        "_SuppressWarningIL2121": ""
+      },
+      "projectReferences": [
+        "../ArcForges.ArcSlate.Core/ArcForges.ArcSlate.Core.csproj"
+      ]
+    },
+    {
+      "owner": "ArcSlate",
+      "project": "tests/ArcForges.ArcSlate.Tests/ArcForges.ArcSlate.Tests.csproj",
+      "aotPath": false,
+      "properties": {
+        "IsAotCompatible": "",
+        "PublishAot": "",
+        "PublishTrimmed": "",
+        "IsTrimmable": "",
+        "EnableAotAnalyzer": "",
+        "EnableTrimAnalyzer": "",
+        "EnableSingleFileAnalyzer": "",
+        "TreatWarningsAsErrors": "true",
+        "ILLinkTreatWarningsAsErrors": "",
+        "TrimmerSingleWarn": "",
+        "SuppressTrimAnalysisWarnings": "",
+        "NoWarn": "1701;1702",
+        "WarningsNotAsErrors": "",
+        "WarningsAsErrors": ";NU1605;IL2026;IL3050;NU1605;SYSLIB0011",
+        "OutputType": "Exe",
+        "IsTestProject": "",
+        "IsPackable": "false",
+        "TargetFramework": "net10.0",
+        "RuntimeIdentifier": "",
+        "ILLinkWarningLevel": "",
+        "_SuppressWarningIL2121": ""
+      },
+      "projectReferences": [
+        "../../src/ArcForges.ArcSlate.Core/ArcForges.ArcSlate.Core.csproj",
+        "../../eng/ArcForges.Repository/ArcForges.Repository.csproj"
+      ]
+    },
+    {
+      "owner": "Cloud",
+      "project": "src/ArcForges.Cloud/ArcForges.Cloud.csproj",
+      "aotPath": true,
+      "properties": {
+        "IsAotCompatible": "",
+        "PublishAot": "true",
+        "PublishTrimmed": "true",
+        "IsTrimmable": "",
+        "EnableAotAnalyzer": "true",
+        "EnableTrimAnalyzer": "true",
+        "EnableSingleFileAnalyzer": "true",
+        "TreatWarningsAsErrors": "true",
+        "ILLinkTreatWarningsAsErrors": "true",
+        "TrimmerSingleWarn": "",
+        "SuppressTrimAnalysisWarnings": "false",
+        "NoWarn": "1701;1702;IL2121",
+        "WarningsNotAsErrors": "",
+        "WarningsAsErrors": ";NU1605;SYSLIB0011",
+        "OutputType": "Exe",
+        "IsTestProject": "",
+        "IsPackable": "false",
+        "TargetFramework": "net10.0",
+        "RuntimeIdentifier": "",
+        "ILLinkWarningLevel": "",
+        "_SuppressWarningIL2121": ""
+      },
+      "projectReferences": []
+    },
+    {
+      "owner": "Cloud",
+      "project": "tests/ArcForges.Cloud.Consumer/ArcForges.Cloud.Consumer.csproj",
+      "aotPath": false,
+      "properties": {
+        "IsAotCompatible": "",
+        "PublishAot": "",
+        "PublishTrimmed": "",
+        "IsTrimmable": "",
+        "EnableAotAnalyzer": "",
+        "EnableTrimAnalyzer": "",
+        "EnableSingleFileAnalyzer": "",
+        "TreatWarningsAsErrors": "true",
+        "ILLinkTreatWarningsAsErrors": "",
+        "TrimmerSingleWarn": "",
+        "SuppressTrimAnalysisWarnings": "",
+        "NoWarn": "1701;1702",
+        "WarningsNotAsErrors": "",
+        "WarningsAsErrors": ";NU1605;SYSLIB0011",
+        "OutputType": "Exe",
+        "IsTestProject": "",
+        "IsPackable": "false",
+        "TargetFramework": "net10.0",
+        "RuntimeIdentifier": "",
+        "ILLinkWarningLevel": "",
+        "_SuppressWarningIL2121": ""
+      },
+      "projectReferences": []
+    },
+    {
+      "owner": "Cloud",
+      "project": "tests/ArcForges.Cloud.Tests/ArcForges.Cloud.Tests.csproj",
+      "aotPath": false,
+      "properties": {
+        "IsAotCompatible": "",
+        "PublishAot": "",
+        "PublishTrimmed": "",
+        "IsTrimmable": "",
+        "EnableAotAnalyzer": "",
+        "EnableTrimAnalyzer": "",
+        "EnableSingleFileAnalyzer": "",
+        "TreatWarningsAsErrors": "true",
+        "ILLinkTreatWarningsAsErrors": "",
+        "TrimmerSingleWarn": "",
+        "SuppressTrimAnalysisWarnings": "",
+        "NoWarn": "1701;1702",
+        "WarningsNotAsErrors": "",
+        "WarningsAsErrors": ";NU1605;SYSLIB0011",
+        "OutputType": "Exe",
+        "IsTestProject": "",
+        "IsPackable": "false",
+        "TargetFramework": "net10.0",
+        "RuntimeIdentifier": "",
+        "ILLinkWarningLevel": "",
+        "_SuppressWarningIL2121": ""
+      },
+      "projectReferences": [
+        "../../src/ArcForges.Cloud/ArcForges.Cloud.csproj"
+      ]
+    }
+  ],
+  "builds": [
+    {
+      "owner": "DesktopPlatform",
+      "command": [
+        "C:\\MyFile\\Projects\\ArcForges\\DesktopPlatform\\.worktree\\wp00-04-reference-baselines\\artifacts\\tools\\dotnet\\dotnet.exe",
+        "build",
+        "DesktopPlatform.slnx",
+        "-c",
+        "Release",
+        "--no-restore",
+        "-p:_TrimmerShowRedundantSuppressions=true",
+        "-p:TrimmerSingleWarn=false",
+        "-p:SuppressTrimAnalysisWarnings=false"
+      ],
+      "exitCode": 0,
+      "seconds": 7.0
+    },
+    {
+      "owner": "Contracts",
+      "command": [
+        "C:\\MyFile\\Projects\\ArcForges\\DesktopPlatform\\.worktree\\wp00-04-reference-baselines\\artifacts\\tools\\dotnet\\dotnet.exe",
+        "build",
+        "ArcForges.Contracts.slnx",
+        "-c",
+        "Release",
+        "--no-restore",
+        "-p:_TrimmerShowRedundantSuppressions=true",
+        "-p:TrimmerSingleWarn=false",
+        "-p:SuppressTrimAnalysisWarnings=false"
+      ],
+      "exitCode": 0,
+      "seconds": 2.5
+    },
+    {
+      "owner": "ArcNotes",
+      "command": [
+        "dotnet",
+        "build",
+        "ArcNotes.slnx",
+        "-c",
+        "Release",
+        "--no-restore",
+        "-p:_TrimmerShowRedundantSuppressions=true",
+        "-p:TrimmerSingleWarn=false",
+        "-p:SuppressTrimAnalysisWarnings=false"
+      ],
+      "exitCode": 0,
+      "seconds": 5.2
+    },
+    {
+      "owner": "ArcScope",
+      "command": [
+        "dotnet",
+        "build",
+        "ArcScope.slnx",
+        "-c",
+        "Release",
+        "--no-restore",
+        "-p:_TrimmerShowRedundantSuppressions=true",
+        "-p:TrimmerSingleWarn=false",
+        "-p:SuppressTrimAnalysisWarnings=false"
+      ],
+      "exitCode": 0,
+      "seconds": 3.3
+    },
+    {
+      "owner": "ArcSlate",
+      "command": [
+        "dotnet",
+        "build",
+        "ArcSlate.slnx",
+        "-c",
+        "Release",
+        "--no-restore",
+        "-p:_TrimmerShowRedundantSuppressions=true",
+        "-p:TrimmerSingleWarn=false",
+        "-p:SuppressTrimAnalysisWarnings=false"
+      ],
+      "exitCode": 0,
+      "seconds": 3.0
+    },
+    {
+      "owner": "Cloud",
+      "command": [
+        "dotnet",
+        "build",
+        "Cloud.slnx",
+        "-c",
+        "Release",
+        "--no-restore",
+        "-p:_TrimmerShowRedundantSuppressions=true",
+        "-p:TrimmerSingleWarn=false",
+        "-p:SuppressTrimAnalysisWarnings=false"
+      ],
+      "exitCode": 0,
+      "seconds": 2.4
+    }
+  ],
+  "nativePublishes": [
+    {
+      "owner": "DesktopPlatform",
+      "command": [
+        "C:\\MyFile\\Projects\\ArcForges\\DesktopPlatform\\.worktree\\wp00-04-reference-baselines\\artifacts\\tools\\dotnet\\dotnet.exe",
+        "publish",
+        "src/DesktopHelpers/ArcForges.ContentSandbox/ArcForges.ContentSandbox.csproj",
+        "-c",
+        "Release",
+        "-r",
+        "win-x64",
+        "--no-restore",
+        "-p:_TrimmerShowRedundantSuppressions=true",
+        "-p:TrimmerSingleWarn=false",
+        "-p:SuppressTrimAnalysisWarnings=false",
+        "-o",
+        "C:\\MyFile\\Projects\\ArcForges\\DesktopPlatform\\.worktree\\wp02-01-diagnostic-posture\\artifacts\\wp02-02-research-publish"
+      ],
+      "exitCode": 0,
+      "seconds": 5.1
+    },
+    {
+      "owner": "ArcNotes",
+      "command": [
+        "dotnet",
+        "publish",
+        "src/ArcForges.ArcNotes/ArcForges.ArcNotes.csproj",
+        "-c",
+        "Release",
+        "-r",
+        "win-x64",
+        "--no-restore",
+        "-p:_TrimmerShowRedundantSuppressions=true",
+        "-p:TrimmerSingleWarn=false",
+        "-p:SuppressTrimAnalysisWarnings=false",
+        "-o",
+        "C:\\MyFile\\Projects\\ArcForges\\ArcNotes\\.worktree\\wp02-01-diagnostic-posture\\artifacts\\wp02-02-research-publish"
+      ],
+      "exitCode": 0,
+      "seconds": 30.8
+    },
+    {
+      "owner": "ArcScope",
+      "command": [
+        "dotnet",
+        "publish",
+        "src/ArcForges.ArcScope/ArcForges.ArcScope.csproj",
+        "-c",
+        "Release",
+        "-r",
+        "win-x64",
+        "--no-restore",
+        "-p:_TrimmerShowRedundantSuppressions=true",
+        "-p:TrimmerSingleWarn=false",
+        "-p:SuppressTrimAnalysisWarnings=false",
+        "-o",
+        "C:\\MyFile\\Projects\\ArcForges\\ArcScope\\.worktree\\wp02-01-diagnostic-posture\\artifacts\\wp02-02-research-publish"
+      ],
+      "exitCode": 0,
+      "seconds": 31.2
+    },
+    {
+      "owner": "ArcSlate",
+      "command": [
+        "dotnet",
+        "publish",
+        "src/ArcForges.ArcSlate/ArcForges.ArcSlate.csproj",
+        "-c",
+        "Release",
+        "-r",
+        "win-x64",
+        "--no-restore",
+        "-p:_TrimmerShowRedundantSuppressions=true",
+        "-p:TrimmerSingleWarn=false",
+        "-p:SuppressTrimAnalysisWarnings=false",
+        "-o",
+        "C:\\MyFile\\Projects\\ArcForges\\ArcSlate\\.worktree\\wp02-01-diagnostic-posture\\artifacts\\wp02-02-research-publish"
+      ],
+      "exitCode": 0,
+      "seconds": 34.0
+    }
+  ],
+  "additionalPublishes": {
+    "Contracts": {
+      "package": "ArcForges.Contracts.PublicApi",
+      "version": "1.0.0-ci.69.1",
+      "source": "https://api.nuget.org/v3/index.json",
+      "isolatedCache": true,
+      "aotPublishExitCode": 0,
+      "nativeProtocolExitCode": 0,
+      "fixture": "Existing authored Hello success/error vectors; real native client and local gRPC server, not production domain handlers"
+    },
+    "Cloud": {
+      "image": "arcforges-cloud:wp02-02-research",
+      "configDigest": "sha256:500287cd2b048be43377c3b6a12f2f804e2f52adc5a724a377fe1210cf6aa10f",
+      "platform": "linux-x64",
+      "publishExitCode": 0,
+      "method": "Original pinned Dockerfile with diagnostic-only command-line overrides in an untracked research recipe; no source input or deployed image changed"
+    }
+  },
+  "runtimeCommands": [
+    {
+      "owner": "DesktopPlatform",
+      "command": [
+        "C:\\MyFile\\Projects\\ArcForges\\DesktopPlatform\\.worktree\\wp02-01-diagnostic-posture\\artifacts\\wp02-02-research-publish\\ArcForges.ContentSandbox.exe"
+      ],
+      "exitCode": 0
+    },
+    {
+      "owner": "ArcNotes",
+      "command": [
+        "C:\\MyFile\\Projects\\ArcForges\\ArcNotes\\.worktree\\wp02-01-diagnostic-posture\\artifacts\\wp02-02-research-publish\\ArcNotes.exe",
+        "--smoke-live",
+        "--evidence",
+        "C:\\MyFile\\Projects\\ArcForges-Design\\.worktree\\wp02-02-aot-sweep\\artifacts\\ArcNotes-expanded-runtime.json"
+      ],
+      "exitCode": 0
+    },
+    {
+      "owner": "ArcScope",
+      "command": [
+        "C:\\MyFile\\Projects\\ArcForges\\ArcScope\\.worktree\\wp02-01-diagnostic-posture\\artifacts\\wp02-02-research-publish\\ArcScope.exe",
+        "--smoke-live",
+        "--evidence",
+        "C:\\MyFile\\Projects\\ArcForges-Design\\.worktree\\wp02-02-aot-sweep\\artifacts\\ArcScope-expanded-runtime.json"
+      ],
+      "exitCode": 0
+    },
+    {
+      "owner": "ArcSlate",
+      "command": [
+        "C:\\MyFile\\Projects\\ArcForges\\ArcSlate\\.worktree\\wp02-01-diagnostic-posture\\artifacts\\wp02-02-research-publish\\ArcSlate.exe",
+        "--smoke-live",
+        "--evidence",
+        "C:\\MyFile\\Projects\\ArcForges-Design\\.worktree\\wp02-02-aot-sweep\\artifacts\\ArcSlate-expanded-runtime.json"
+      ],
+      "exitCode": 0
+    }
+  ],
+  "runtimeReceipts": {
+    "ArcNotes": {
+      "success": true,
+      "nativeAot": true,
+      "rid": "win-x64",
+      "version": "1.0.0",
+      "sourceRevision": "local",
+      "cloud": {
+        "service": "arcforges-cloud",
+        "revision": "8942437a5e42c01ae7595b64a220efd60f33b4f0",
+        "nativeAot": true
+      },
+      "uiGreeting": "Hello, ArcNotes!",
+      "checks": [
+        "native-ui-live-action",
+        "unicode-whitespace-boundary",
+        "InvalidArgument",
+        "ResourceExhausted"
+      ],
+      "error": null
+    },
+    "ArcScope": {
+      "success": true,
+      "nativeAot": true,
+      "rid": "win-x64",
+      "version": "1.0.0",
+      "sourceRevision": "local",
+      "cloud": {
+        "service": "arcforges-cloud",
+        "revision": "8942437a5e42c01ae7595b64a220efd60f33b4f0",
+        "nativeAot": true
+      },
+      "uiGreeting": "Hello, ArcScope!",
+      "checks": [
+        "native-ui-live-action",
+        "unicode-whitespace-boundary",
+        "InvalidArgument",
+        "ResourceExhausted"
+      ],
+      "error": null
+    },
+    "ArcSlate": {
+      "success": true,
+      "nativeAot": true,
+      "rid": "win-x64",
+      "version": "1.0.0",
+      "sourceRevision": "local",
+      "cloud": {
+        "service": "arcforges-cloud",
+        "revision": "8942437a5e42c01ae7595b64a220efd60f33b4f0",
+        "nativeAot": true
+      },
+      "uiGreeting": "Hello, ArcSlate!",
+      "checks": [
+        "native-ui-live-action",
+        "unicode-whitespace-boundary",
+        "InvalidArgument",
+        "ResourceExhausted"
+      ],
+      "error": null
+    },
+    "Cloud": {
+      "health": {
+        "service": "arcforges-cloud",
+        "revision": "8942437a5e42c01ae7595b64a220efd60f33b4f0",
+        "nativeAot": true
+      },
+      "protocol": {
+        "transport": "binary gRPC-Web",
+        "publishedClient": "1.0.0-ci.36.1",
+        "greeting": true,
+        "unicode": true,
+        "invalidArgument": true,
+        "resourceExhausted": true,
+        "workerBoundary": false
+      }
+    }
+  },
+  "ilcDiagnosticArguments": [
+    {
+      "owner": "DesktopPlatform",
+      "path": "C:\\MyFile\\Projects\\ArcForges\\DesktopPlatform\\.worktree\\wp02-01-diagnostic-posture\\artifacts\\obj\\dotnet\\windows\\ArcForges.ContentSandbox\\Release\\net10.0\\win-x64\\native\\ArcForges.ContentSandbox.ilc.rsp",
+      "sha256": "59e33210153ceca87ec726ae2e0d197ccd795422dd6c7f949f8f41468b684d3e",
+      "diagnosticArguments": [
+        "--nowarn:\"1701;1702;1701;1702;8002\"",
+        "--warnaserror",
+        "--warnaserr:\";NU1605;IL2026;IL3050;NU1605;IL2026;IL3050;NU1605;IL2026;IL3050;SYSLIB0011\"",
+        "--nosinglewarnassembly:ArcForges.Desktop.RichContent",
+        "--nosinglewarnassembly:ArcForges.Foundation",
+        "--nosinglewarnassembly:ArcForges.NativeInterop",
+        "--nosinglewarnassembly:ArcForges.ContentSandbox"
+      ]
+    },
+    {
+      "owner": "ArcNotes",
+      "path": "C:\\MyFile\\Projects\\ArcForges\\ArcNotes\\.worktree\\wp02-01-diagnostic-posture\\src\\ArcForges.ArcNotes\\obj\\Release\\net10.0\\win-x64\\native\\ArcNotes.ilc.rsp",
+      "sha256": "9b0bca7b04eb5f80bed3b681eb77527c2562e60234432232dbba3d4095e066b7",
+      "diagnosticArguments": [
+        "--nowarn:\"1701;1702;1701;1702;8002\"",
+        "--warnaserror",
+        "--warnaserr:\";NU1605;IL2026;IL3050;NU1605;SYSLIB0011\"",
+        "--nosinglewarnassembly:ArcForges.ArcNotes.Core",
+        "--nosinglewarnassembly:ArcNotes"
+      ]
+    },
+    {
+      "owner": "ArcScope",
+      "path": "C:\\MyFile\\Projects\\ArcForges\\ArcScope\\.worktree\\wp02-01-diagnostic-posture\\src\\ArcForges.ArcScope\\obj\\Release\\net10.0\\win-x64\\native\\ArcScope.ilc.rsp",
+      "sha256": "877ac57f90b7203623ea0f3896041b601ae39f8e4b69609348f7bb07eb4c733a",
+      "diagnosticArguments": [
+        "--nowarn:\"1701;1702;1701;1702;8002\"",
+        "--warnaserror",
+        "--warnaserr:\";NU1605;IL2026;IL3050;NU1605;SYSLIB0011\"",
+        "--nosinglewarnassembly:ArcForges.ArcScope.Core",
+        "--nosinglewarnassembly:ArcScope"
+      ]
+    },
+    {
+      "owner": "ArcSlate",
+      "path": "C:\\MyFile\\Projects\\ArcForges\\ArcSlate\\.worktree\\wp02-01-diagnostic-posture\\src\\ArcForges.ArcSlate\\obj\\Release\\net10.0\\win-x64\\native\\ArcSlate.ilc.rsp",
+      "sha256": "db1f645fe10b367480108b160f64e3de24a3ee3894a706f755779cfd172bb6ce",
+      "diagnosticArguments": [
+        "--nowarn:\"1701;1702;1701;1702;8002\"",
+        "--warnaserror",
+        "--warnaserr:\";NU1605;IL2026;IL3050;NU1605;SYSLIB0011\"",
+        "--nosinglewarnassembly:ArcForges.ArcSlate.Core",
+        "--nosinglewarnassembly:ArcSlate"
+      ]
+    },
+    {
+      "owner": "Contracts",
+      "path": "artifacts\\contracts-consumer\\HelloClient\\obj\\Release\\net10.0\\win-x64\\native\\HelloClient.ilc.rsp",
+      "sha256": "431aa5afb5cfa94f561bd5e82fd51e42140777b053a63f95c4e88e0784474f0d",
+      "diagnosticArguments": [
+        "--nowarn:\"1701;1702;1701;1702;8002\"",
+        "--warnaserror",
+        "--warnaserr:\";NU1605;SYSLIB0011\"",
+        "--nosinglewarnassembly:HelloClient"
+      ]
+    }
+  ],
+  "diagnosticOverrides": {
+    "_TrimmerShowRedundantSuppressions": "true",
+    "TrimmerSingleWarn": "false",
+    "SuppressTrimAnalysisWarnings": "false"
+  },
+  "diagnostics": [],
+  "authoredAotSuppressions": [],
+  "blockingAssignments": [],
+  "sdkDefaultDisposition": {
+    "IL2121": "Pinned ILLink default only; disabled for this sweep via _TrimmerShowRedundantSuppressions=true. Expanded actual ILC inputs contain no IL2121 suppression and no redundant-suppression findings occurred. This is not an authored-code waiver.",
+    "CS1701_CS1702_CS8002": "Non-IL compiler exclusions observed in actual compiler response arguments; not trim/AOT diagnostics. SDK CSharp.props establishes defaults 1701/1702."
+  },
+  "priorPublishedMatrix": {
+    "path": "docs/assurance/wp02-01-implementation-evidence.json",
+    "sha256": "f55ea9fbd3e241f33faa5a82444242816a21e9d94737635f646e22b32dfb4951",
+    "relationship": "Unchanged exact merged source trees. Prior receipt retains public package bytes, five-RID product executions, native package consumers and deployed Cloud verification. Those were normal policy runs, not newly expanded non-Windows diagnostic sweeps."
+  },
+  "logs": [
+    {
+      "name": "ArcNotes-expanded-build.log",
+      "sha256": "05b2b1410cac738daa1729b2027a238741161de4b0c87a24df4bc95856ee7ac6",
+      "content": "  ArcForges.ArcNotes.Core -> C:\\MyFile\\Projects\\ArcForges\\ArcNotes\\.worktree\\wp02-01-diagnostic-posture\\src\\ArcForges.ArcNotes.Core\\bin\\Release\\net10.0\\ArcForges.ArcNotes.Core.dll\n  ArcForges.Repository -> C:\\MyFile\\Projects\\ArcForges\\ArcNotes\\.worktree\\wp02-01-diagnostic-posture\\eng\\ArcForges.Repository\\bin\\Release\\net10.0\\ArcForges.Repository.dll\n  ArcForges.ArcNotes -> C:\\MyFile\\Projects\\ArcForges\\ArcNotes\\.worktree\\wp02-01-diagnostic-posture\\src\\ArcForges.ArcNotes\\bin\\Release\\net10.0\\ArcNotes.dll\n  ArcForges.ArcNotes.Tests -> C:\\MyFile\\Projects\\ArcForges\\ArcNotes\\.worktree\\wp02-01-diagnostic-posture\\tests\\ArcForges.ArcNotes.Tests\\bin\\Release\\net10.0\\ArcForges.ArcNotes.Tests.dll\n\nBuild succeeded.\n    0 Warning(s)\n    0 Error(s)\n\nTime Elapsed 00:00:04.92\n"
+    },
+    {
+      "name": "ArcNotes-expanded-publish.log",
+      "sha256": "1f7891b60169c2dd0f8b255888f8fd31f42dde674c7e9c492b4daec787befcf5",
+      "content": "  ArcForges.ArcNotes.Core -> C:\\MyFile\\Projects\\ArcForges\\ArcNotes\\.worktree\\wp02-01-diagnostic-posture\\src\\ArcForges.ArcNotes.Core\\bin\\Release\\net10.0\\ArcForges.ArcNotes.Core.dll\n  ArcForges.ArcNotes -> C:\\MyFile\\Projects\\ArcForges\\ArcNotes\\.worktree\\wp02-01-diagnostic-posture\\src\\ArcForges.ArcNotes\\bin\\Release\\net10.0\\win-x64\\ArcNotes.dll\n  Generating native code\n  ArcForges.ArcNotes -> C:\\MyFile\\Projects\\ArcForges\\ArcNotes\\.worktree\\wp02-01-diagnostic-posture\\artifacts\\wp02-02-research-publish\\\n"
+    },
+    {
+      "name": "ArcNotes-expanded-runtime.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "content": ""
+    },
+    {
+      "name": "ArcScope-expanded-build.log",
+      "sha256": "31fb267dd891a6e3634a68073e7e459bee69077bb5d053d0e8ccfb2e5f265993",
+      "content": "  ArcForges.ArcScope.Core -> C:\\MyFile\\Projects\\ArcForges\\ArcScope\\.worktree\\wp02-01-diagnostic-posture\\src\\ArcForges.ArcScope.Core\\bin\\Release\\net10.0\\ArcForges.ArcScope.Core.dll\n  ArcForges.Repository -> C:\\MyFile\\Projects\\ArcForges\\ArcScope\\.worktree\\wp02-01-diagnostic-posture\\eng\\ArcForges.Repository\\bin\\Release\\net10.0\\ArcForges.Repository.dll\n  ArcForges.ArcScope -> C:\\MyFile\\Projects\\ArcForges\\ArcScope\\.worktree\\wp02-01-diagnostic-posture\\src\\ArcForges.ArcScope\\bin\\Release\\net10.0\\ArcScope.dll\n  ArcForges.ArcScope.Tests -> C:\\MyFile\\Projects\\ArcForges\\ArcScope\\.worktree\\wp02-01-diagnostic-posture\\tests\\ArcForges.ArcScope.Tests\\bin\\Release\\net10.0\\ArcForges.ArcScope.Tests.dll\n\nBuild succeeded.\n    0 Warning(s)\n    0 Error(s)\n\nTime Elapsed 00:00:02.99\n"
+    },
+    {
+      "name": "ArcScope-expanded-publish.log",
+      "sha256": "f6f1a83ab4ceef43c04fe75702effce83db7313104ac628ea9eacc56e887a2bb",
+      "content": "  ArcForges.ArcScope.Core -> C:\\MyFile\\Projects\\ArcForges\\ArcScope\\.worktree\\wp02-01-diagnostic-posture\\src\\ArcForges.ArcScope.Core\\bin\\Release\\net10.0\\ArcForges.ArcScope.Core.dll\n  ArcForges.ArcScope -> C:\\MyFile\\Projects\\ArcForges\\ArcScope\\.worktree\\wp02-01-diagnostic-posture\\src\\ArcForges.ArcScope\\bin\\Release\\net10.0\\win-x64\\ArcScope.dll\n  Generating native code\n  ArcForges.ArcScope -> C:\\MyFile\\Projects\\ArcForges\\ArcScope\\.worktree\\wp02-01-diagnostic-posture\\artifacts\\wp02-02-research-publish\\\n"
+    },
+    {
+      "name": "ArcScope-expanded-runtime.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "content": ""
+    },
+    {
+      "name": "ArcSlate-expanded-build.log",
+      "sha256": "1d7dfc654450c529b9dc86b3d037541a0c532c9ccefe3fa9b81f82a1288ae1ac",
+      "content": "  ArcForges.ArcSlate.Core -> C:\\MyFile\\Projects\\ArcForges\\ArcSlate\\.worktree\\wp02-01-diagnostic-posture\\src\\ArcForges.ArcSlate.Core\\bin\\Release\\net10.0\\ArcForges.ArcSlate.Core.dll\n  ArcForges.Repository -> C:\\MyFile\\Projects\\ArcForges\\ArcSlate\\.worktree\\wp02-01-diagnostic-posture\\eng\\ArcForges.Repository\\bin\\Release\\net10.0\\ArcForges.Repository.dll\n  ArcForges.ArcSlate -> C:\\MyFile\\Projects\\ArcForges\\ArcSlate\\.worktree\\wp02-01-diagnostic-posture\\src\\ArcForges.ArcSlate\\bin\\Release\\net10.0\\ArcSlate.dll\n  ArcForges.ArcSlate.Tests -> C:\\MyFile\\Projects\\ArcForges\\ArcSlate\\.worktree\\wp02-01-diagnostic-posture\\tests\\ArcForges.ArcSlate.Tests\\bin\\Release\\net10.0\\ArcForges.ArcSlate.Tests.dll\n\nBuild succeeded.\n    0 Warning(s)\n    0 Error(s)\n\nTime Elapsed 00:00:02.69\n"
+    },
+    {
+      "name": "ArcSlate-expanded-publish.log",
+      "sha256": "0e35b12c5822fdd4f499e4c23b9b7d7ad47802d41508d02f112fe357f9971edf",
+      "content": "  ArcForges.ArcSlate.Core -> C:\\MyFile\\Projects\\ArcForges\\ArcSlate\\.worktree\\wp02-01-diagnostic-posture\\src\\ArcForges.ArcSlate.Core\\bin\\Release\\net10.0\\ArcForges.ArcSlate.Core.dll\n  ArcForges.ArcSlate -> C:\\MyFile\\Projects\\ArcForges\\ArcSlate\\.worktree\\wp02-01-diagnostic-posture\\src\\ArcForges.ArcSlate\\bin\\Release\\net10.0\\win-x64\\ArcSlate.dll\n  Generating native code\n  ArcForges.ArcSlate -> C:\\MyFile\\Projects\\ArcForges\\ArcSlate\\.worktree\\wp02-01-diagnostic-posture\\artifacts\\wp02-02-research-publish\\\n"
+    },
+    {
+      "name": "ArcSlate-expanded-runtime.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "content": ""
+    },
+    {
+      "name": "Cloud-expanded-build.log",
+      "sha256": "ddf61f91bbfe210001ba55147a64788cfdc5f27068ae1ad0aedcc4fd213f45f3",
+      "content": "  ArcForges.Cloud.Consumer -> C:\\MyFile\\Projects\\ArcForges\\Cloud\\.worktree\\wp02-01-diagnostic-posture\\tests\\ArcForges.Cloud.Consumer\\bin\\Release\\net10.0\\ArcForges.Cloud.Consumer.dll\n  ArcForges.Cloud -> C:\\MyFile\\Projects\\ArcForges\\Cloud\\.worktree\\wp02-01-diagnostic-posture\\src\\ArcForges.Cloud\\bin\\Release\\net10.0\\ArcForges.Cloud.dll\n  ArcForges.Cloud.Tests -> C:\\MyFile\\Projects\\ArcForges\\Cloud\\.worktree\\wp02-01-diagnostic-posture\\tests\\ArcForges.Cloud.Tests\\bin\\Release\\net10.0\\ArcForges.Cloud.Tests.dll\n\nBuild succeeded.\n    0 Warning(s)\n    0 Error(s)\n\nTime Elapsed 00:00:02.11\n"
+    },
+    {
+      "name": "Cloud-expanded-publish.log",
+      "sha256": "0fc6e1fbbcefad22a756abb0b1f5d1d44e7c439357be090abe7bd41100b6d801",
+      "content": "#0 building with \"default\" instance using docker driver\n\n#1 [internal] load build definition from wp02-02-research.Dockerfile\n#1 transferring dockerfile: 1.51kB 0.0s done\n#1 DONE 0.0s\n\n#2 [internal] load metadata for mcr.microsoft.com/dotnet/sdk:10.0.401-noble-aot@sha256:1a069a730888d278b5ac00e3e238707387d20d2b65f0fc6866b6180df0a767e0\n#2 DONE 1.0s\n\n#3 [internal] load metadata for mcr.microsoft.com/dotnet/runtime-deps:10.0.12-noble-chiseled@sha256:18d4848091a40d13dbfdd6a8340c1657dc3e2f2d7fa2f042e9d162e68669dbc9\n#3 DONE 1.0s\n\n#4 [internal] load .dockerignore\n#4 transferring context: 373B 0.0s done\n#4 DONE 0.1s\n\n#5 [stage-1 1/5] FROM mcr.microsoft.com/dotnet/runtime-deps:10.0.12-noble-chiseled@sha256:18d4848091a40d13dbfdd6a8340c1657dc3e2f2d7fa2f042e9d162e68669dbc9\n#5 resolve mcr.microsoft.com/dotnet/runtime-deps:10.0.12-noble-chiseled@sha256:18d4848091a40d13dbfdd6a8340c1657dc3e2f2d7fa2f042e9d162e68669dbc9\n#5 resolve mcr.microsoft.com/dotnet/runtime-deps:10.0.12-noble-chiseled@sha256:18d4848091a40d13dbfdd6a8340c1657dc3e2f2d7fa2f042e9d162e68669dbc9 0.1s done\n#5 DONE 0.1s\n\n#6 [build 1/7] FROM mcr.microsoft.com/dotnet/sdk:10.0.401-noble-aot@sha256:1a069a730888d278b5ac00e3e238707387d20d2b65f0fc6866b6180df0a767e0\n#6 resolve mcr.microsoft.com/dotnet/sdk:10.0.401-noble-aot@sha256:1a069a730888d278b5ac00e3e238707387d20d2b65f0fc6866b6180df0a767e0 0.1s done\n#6 DONE 0.1s\n\n#7 [internal] load build context\n#7 transferring context: 1.42kB 0.4s done\n#7 DONE 0.4s\n\n#8 [build 3/7] COPY global.json Directory.Build.props Directory.Build.targets Directory.Packages.props NuGet.Config ./\n#8 CACHED\n\n#9 [build 4/7] COPY src/ArcForges.Cloud/ArcForges.Cloud.csproj src/ArcForges.Cloud/packages.lock.json ./src/ArcForges.Cloud/\n#9 CACHED\n\n#10 [build 5/7] RUN dotnet restore src/ArcForges.Cloud --locked-mode\n#10 CACHED\n\n#11 [build 2/7] WORKDIR /source\n#11 CACHED\n\n#12 [build 6/7] COPY src/ArcForges.Cloud/ ./src/ArcForges.Cloud/\n#12 CACHED\n\n#13 [build 7/7] RUN test -n \"8942437a5e42c01ae7595b64a220efd60f33b4f0\" && dotnet publish src/ArcForges.Cloud -p:_TrimmerShowRedundantSuppressions=true -p:TrimmerSingleWarn=false -p:SuppressTrimAnalysisWarnings=false -c Release -r linux-x64 --no-restore -p:SourceRevisionId=\"8942437a5e42c01ae7595b64a220efd60f33b4f0\" -o /out && test -x /out/ArcForges.Cloud\n#13 4.386   ArcForges.Cloud -> /source/src/ArcForges.Cloud/bin/Release/net10.0/linux-x64/ArcForges.Cloud.dll\n#13 4.794   Generating native code\n#13 21.53   ArcForges.Cloud -> /out/\n#13 DONE 21.6s\n\n#14 [stage-1 2/5] WORKDIR /app\n#14 CACHED\n\n#15 [stage-1 3/5] COPY --from=build /out/ArcForges.Cloud ./\n#15 DONE 0.1s\n\n#16 [stage-1 4/5] COPY LICENSE ./LICENSE\n#16 DONE 0.1s\n\n#17 [stage-1 5/5] COPY artifacts/image-notices/ ./notices/\n#17 DONE 0.1s\n\n#18 exporting to image\n#18 exporting layers\n#18 exporting layers 0.6s done\n#18 exporting manifest sha256:45fd3363489086cf89283771e4ef3f865ef34ec518a1b12f7e36f31c9acce146 0.0s done\n#18 exporting config sha256:500287cd2b048be43377c3b6a12f2f804e2f52adc5a724a377fe1210cf6aa10f 0.0s done\n#18 exporting attestation manifest sha256:8a72d3c22c653e32266cce8753780c2d07de477591fb04f1bc13f22c781bc002\n#18 exporting attestation manifest sha256:8a72d3c22c653e32266cce8753780c2d07de477591fb04f1bc13f22c781bc002 0.1s done\n#18 exporting manifest list sha256:a9abc04fcb10a646e55d7b9be778a7da0dadab49615e28616fb11c2dada399e7 0.0s done\n#18 naming to docker.io/library/arcforges-cloud:wp02-02-research\n#18 naming to docker.io/library/arcforges-cloud:wp02-02-research done\n#18 unpacking to docker.io/library/arcforges-cloud:wp02-02-research\n#18 unpacking to docker.io/library/arcforges-cloud:wp02-02-research 0.2s done\n#18 DONE 1.0s\n"
+    },
+    {
+      "name": "Contracts-expanded-build.log",
+      "sha256": "9062ebe7c8b04ac029469594a2ad048fb60f2b9d46a4ac313c8acde56c5f748c",
+      "content": "  Codegen -> C:\\MyFile\\Projects\\ArcForges\\Contracts\\.worktree\\wp02-01-diagnostic-posture\\eng\\Codegen\\bin\\Release\\net10.0\\Codegen.dll\n  ArcForges.Contracts.PublicApi -> C:\\MyFile\\Projects\\ArcForges\\Contracts\\.worktree\\wp02-01-diagnostic-posture\\src\\public\\dotnet\\ArcForges.Contracts.PublicApi\\bin\\Release\\net10.0\\ArcForges.Contracts.PublicApi.dll\n  HelloClient -> C:\\MyFile\\Projects\\ArcForges\\Contracts\\.worktree\\wp02-01-diagnostic-posture\\tests\\public\\HelloClient\\bin\\Release\\net10.0\\HelloClient.dll\n  HelloHost -> C:\\MyFile\\Projects\\ArcForges\\Contracts\\.worktree\\wp02-01-diagnostic-posture\\tests\\public\\HelloHost\\bin\\Release\\net10.0\\HelloHost.dll\n\nBuild succeeded.\n    0 Warning(s)\n    0 Error(s)\n\nTime Elapsed 00:00:02.24\n"
+    },
+    {
+      "name": "Contracts-expanded-publish.log",
+      "sha256": "6d16af674f38ce89ca86bcef50d15b07478c096f69bfd41dc0c9579096745d8e",
+      "content": "['restore', 'HelloHost', '--force-evaluate', '-p:RestoreLockedMode=false']\n  Determining projects to restore...\n  Restored C:\\MyFile\\Projects\\ArcForges-Design\\.worktree\\wp02-02-aot-sweep\\artifacts\\contracts-consumer\\HelloHost\\HelloHost.csproj (in 16.82 sec).\n['build', 'HelloHost', '-c', 'Release', '--no-restore']\n  HelloHost -> C:\\MyFile\\Projects\\ArcForges-Design\\.worktree\\wp02-02-aot-sweep\\artifacts\\contracts-consumer\\HelloHost\\bin\\Release\\net10.0\\HelloHost.dll\n\nBuild succeeded.\n    0 Warning(s)\n    0 Error(s)\n\nTime Elapsed 00:00:01.51\n['restore', 'HelloClient', '--force-evaluate', '-p:RestoreLockedMode=false']\n  Determining projects to restore...\n  Restored C:\\MyFile\\Projects\\ArcForges-Design\\.worktree\\wp02-02-aot-sweep\\artifacts\\contracts-consumer\\HelloClient\\HelloClient.csproj (in 5.84 sec).\n['build', 'HelloClient', '-c', 'Release', '--no-restore']\n  HelloClient -> C:\\MyFile\\Projects\\ArcForges-Design\\.worktree\\wp02-02-aot-sweep\\artifacts\\contracts-consumer\\HelloClient\\bin\\Release\\net10.0\\HelloClient.dll\n\nBuild succeeded.\n    0 Warning(s)\n    0 Error(s)\n\nTime Elapsed 00:00:00.85\n['restore', 'HelloClient', '-r', 'win-x64', '-p:PublishAot=true', '-p:RestoreLockedMode=false', '--force-evaluate']\n  Determining projects to restore...\n  Restored C:\\MyFile\\Projects\\ArcForges-Design\\.worktree\\wp02-02-aot-sweep\\artifacts\\contracts-consumer\\HelloClient\\HelloClient.csproj (in 31.63 sec).\n['publish', 'HelloClient', '-c', 'Release', '-r', 'win-x64', '-p:PublishAot=true', '--no-restore', '-p:_TrimmerShowRedundantSuppressions=true', '-p:TrimmerSingleWarn=false', '-p:SuppressTrimAnalysisWarnings=false', '-o', 'native-client']\n  HelloClient -> C:\\MyFile\\Projects\\ArcForges-Design\\.worktree\\wp02-02-aot-sweep\\artifacts\\contracts-consumer\\HelloClient\\bin\\Release\\net10.0\\win-x64\\HelloClient.dll\n  Generating native code\n  HelloClient -> C:\\MyFile\\Projects\\ArcForges-Design\\.worktree\\wp02-02-aot-sweep\\artifacts\\contracts-consumer\\native-client\\\nC# protobuf and real gRPC success/error checks passed.\n"
+    },
+    {
+      "name": "DesktopPlatform-expanded-build.log",
+      "sha256": "a06bcdc39d3519ef021e42e121ea1934b3e81424b789a86278bb4c7ebaaed303",
+      "content": "  ArcForges.Build.Policy -> C:\\MyFile\\Projects\\ArcForges\\DesktopPlatform\\.worktree\\wp02-01-diagnostic-posture\\artifacts\\bin\\dotnet\\windows\\ArcForges.Build.Policy\\Release\\net10.0\\ArcForges.Build.Policy.dll\n  ArcForges.Security -> C:\\MyFile\\Projects\\ArcForges\\DesktopPlatform\\.worktree\\wp02-01-diagnostic-posture\\artifacts\\bin\\dotnet\\windows\\ArcForges.Security\\Release\\net10.0\\ArcForges.Security.dll\n  ArcForges.Desktop.RichContent -> C:\\MyFile\\Projects\\ArcForges\\DesktopPlatform\\.worktree\\wp02-01-diagnostic-posture\\artifacts\\bin\\dotnet\\windows\\ArcForges.Desktop.RichContent\\Release\\net10.0\\ArcForges.Desktop.RichContent.dll\n  ArcForges.Persistence.Sqlite -> C:\\MyFile\\Projects\\ArcForges\\DesktopPlatform\\.worktree\\wp02-01-diagnostic-posture\\artifacts\\bin\\dotnet\\windows\\ArcForges.Persistence.Sqlite\\Release\\net10.0\\ArcForges.Persistence.Sqlite.dll\n  ArcForges.Desktop.Preview -> C:\\MyFile\\Projects\\ArcForges\\DesktopPlatform\\.worktree\\wp02-01-diagnostic-posture\\artifacts\\bin\\dotnet\\windows\\ArcForges.Desktop.Preview\\Release\\net10.0\\ArcForges.Desktop.Preview.dll\n  ArcForges.Native.Media.Runtime.win-x64 -> C:\\MyFile\\Projects\\ArcForges\\DesktopPlatform\\.worktree\\wp02-01-diagnostic-posture\\artifacts\\bin\\dotnet\\windows\\ArcForges.Native.Media.Runtime.win-x64\\Release\\net10.0\\ArcForges.Native.Media.Runtime.win-x64.dll\n  ArcForges.Desktop.Graphics -> C:\\MyFile\\Projects\\ArcForges\\DesktopPlatform\\.worktree\\wp02-01-diagnostic-posture\\artifacts\\bin\\dotnet\\windows\\ArcForges.Desktop.Graphics\\Release\\net10.0\\ArcForges.Desktop.Graphics.dll\n  ArcForges.Desktop.Experience -> C:\\MyFile\\Projects\\ArcForges\\DesktopPlatform\\.worktree\\wp02-01-diagnostic-posture\\artifacts\\bin\\dotnet\\windows\\ArcForges.Desktop.Experience\\Release\\net10.0\\ArcForges.Desktop.Experience.dll\n  ArcForges.NativeInterop -> C:\\MyFile\\Projects\\ArcForges\\DesktopPlatform\\.worktree\\wp02-01-diagnostic-posture\\artifacts\\bin\\dotnet\\windows\\ArcForges.NativeInterop\\Release\\net10.0\\ArcForges.NativeInterop.dll\n  ArcForges.Observability -> C:\\MyFile\\Projects\\ArcForges\\DesktopPlatform\\.worktree\\wp02-01-diagnostic-posture\\artifacts\\bin\\dotnet\\windows\\ArcForges.Observability\\Release\\net10.0\\ArcForges.Observability.dll\n  ArcForges.Application.Abstractions -> C:\\MyFile\\Projects\\ArcForges\\DesktopPlatform\\.worktree\\wp02-01-diagnostic-posture\\artifacts\\bin\\dotnet\\windows\\ArcForges.Application.Abstractions\\Release\\net10.0\\ArcForges.Application.Abstractions.dll\n  ArcForges.Foundation -> C:\\MyFile\\Projects\\ArcForges\\DesktopPlatform\\.worktree\\wp02-01-diagnostic-posture\\artifacts\\bin\\dotnet\\windows\\ArcForges.Foundation\\Release\\net10.0\\ArcForges.Foundation.dll\n  ArcForges.Native.Otio.Runtime.win-x64 -> C:\\MyFile\\Projects\\ArcForges\\DesktopPlatform\\.worktree\\wp02-01-diagnostic-posture\\artifacts\\bin\\dotnet\\windows\\ArcForges.Native.Otio.Runtime.win-x64\\Release\\net10.0\\ArcForges.Native.Otio.Runtime.win-x64.dll\n  ArcForges.Native.Image.Runtime.win-x64 -> C:\\MyFile\\Projects\\ArcForges\\DesktopPlatform\\.worktree\\wp02-01-diagnostic-posture\\artifacts\\bin\\dotnet\\windows\\ArcForges.Native.Image.Runtime.win-x64\\Release\\net10.0\\ArcForges.Native.Image.Runtime.win-x64.dll\n  ArcForges.Desktop.Text -> C:\\MyFile\\Projects\\ArcForges\\DesktopPlatform\\.worktree\\wp02-01-diagnostic-posture\\artifacts\\bin\\dotnet\\windows\\ArcForges.Desktop.Text\\Release\\net10.0\\ArcForges.Desktop.Text.dll\n  ArcForges.Native.Colour.Runtime.win-x64 -> C:\\MyFile\\Projects\\ArcForges\\DesktopPlatform\\.worktree\\wp02-01-diagnostic-posture\\artifacts\\bin\\dotnet\\windows\\ArcForges.Native.Colour.Runtime.win-x64\\Release\\net10.0\\ArcForges.Native.Colour.Runtime.win-x64.dll\n  ArcForges.Native.Abstractions -> C:\\MyFile\\Projects\\ArcForges\\DesktopPlatform\\.worktree\\wp02-01-diagnostic-posture\\artifacts\\bin\\dotnet\\windows\\ArcForges.Native.Abstractions\\Release\\net10.0\\ArcForges.Native.Abstractions.dll\n  ArcForges.Tests.ArchitectureTests -> C:\\MyFile\\Projects\\ArcForges\\DesktopPlatform\\.worktree\\wp02-01-diagnostic-posture\\artifacts\\bin\\dotnet\\windows\\ArcForges.Tests.ArchitectureTests\\Release\\net10.0\\ArcForges.Tests.ArchitectureTests.dll\n  ArcForges.Native.Otio -> C:\\MyFile\\Projects\\ArcForges\\DesktopPlatform\\.worktree\\wp02-01-diagnostic-posture\\artifacts\\bin\\dotnet\\windows\\ArcForges.Native.Otio\\Release\\net10.0\\ArcForges.Native.Otio.dll\n  ArcForges.Native.Media -> C:\\MyFile\\Projects\\ArcForges\\DesktopPlatform\\.worktree\\wp02-01-diagnostic-posture\\artifacts\\bin\\dotnet\\windows\\ArcForges.Native.Media\\Release\\net10.0\\ArcForges.Native.Media.dll\n  ArcForges.ContentSandbox -> C:\\MyFile\\Projects\\ArcForges\\DesktopPlatform\\.worktree\\wp02-01-diagnostic-posture\\artifacts\\bin\\dotnet\\windows\\ArcForges.ContentSandbox\\Release\\net10.0\\ArcForges.ContentSandbox.dll\n  ArcForges.Tests.NativeAbiTests -> C:\\MyFile\\Projects\\ArcForges\\DesktopPlatform\\.worktree\\wp02-01-diagnostic-posture\\artifacts\\bin\\dotnet\\windows\\ArcForges.Tests.NativeAbiTests\\Release\\net10.0\\ArcForges.Tests.NativeAbiTests.dll\n  ArcForges.Native.Image -> C:\\MyFile\\Projects\\ArcForges\\DesktopPlatform\\.worktree\\wp02-01-diagnostic-posture\\artifacts\\bin\\dotnet\\windows\\ArcForges.Native.Image\\Release\\net10.0\\ArcForges.Native.Image.dll\n  ArcForges.Native.Colour -> C:\\MyFile\\Projects\\ArcForges\\DesktopPlatform\\.worktree\\wp02-01-diagnostic-posture\\artifacts\\bin\\dotnet\\windows\\ArcForges.Native.Colour\\Release\\net10.0\\ArcForges.Native.Colour.dll\n\nBuild succeeded.\n    0 Warning(s)\n    0 Error(s)\n\nTime Elapsed 00:00:06.71\n"
+    },
+    {
+      "name": "DesktopPlatform-expanded-publish.log",
+      "sha256": "15b67b79263fe3d51e8fe6f05c2c0d119abd321aed379b38ecbe0322ddd48fe4",
+      "content": "  ArcForges.Desktop.RichContent -> C:\\MyFile\\Projects\\ArcForges\\DesktopPlatform\\.worktree\\wp02-01-diagnostic-posture\\artifacts\\bin\\dotnet\\windows\\ArcForges.Desktop.RichContent\\Release\\net10.0\\ArcForges.Desktop.RichContent.dll\n  ArcForges.NativeInterop -> C:\\MyFile\\Projects\\ArcForges\\DesktopPlatform\\.worktree\\wp02-01-diagnostic-posture\\artifacts\\bin\\dotnet\\windows\\ArcForges.NativeInterop\\Release\\net10.0\\ArcForges.NativeInterop.dll\n  ArcForges.Foundation -> C:\\MyFile\\Projects\\ArcForges\\DesktopPlatform\\.worktree\\wp02-01-diagnostic-posture\\artifacts\\bin\\dotnet\\windows\\ArcForges.Foundation\\Release\\net10.0\\ArcForges.Foundation.dll\n  ArcForges.ContentSandbox -> C:\\MyFile\\Projects\\ArcForges\\DesktopPlatform\\.worktree\\wp02-01-diagnostic-posture\\artifacts\\bin\\dotnet\\windows\\ArcForges.ContentSandbox\\Release\\net10.0\\win-x64\\ArcForges.ContentSandbox.dll\n  Generating native code\n  ArcForges.ContentSandbox -> C:\\MyFile\\Projects\\ArcForges\\DesktopPlatform\\.worktree\\wp02-01-diagnostic-posture\\artifacts\\wp02-02-research-publish\\\n"
+    },
+    {
+      "name": "DesktopPlatform-expanded-runtime.log",
+      "sha256": "541bc731450dcd1e1614ab7ba2169cfa31035c2666131115a9d315fd5f94165e",
+      "content": "Hello from ArcForges.ContentSandbox.\n"
+    }
+  ],
+  "limitations": [
+    "Fresh expanded product/helper publishes ran on Windows x64; Cloud ran Linux x64. Other RID publication/runtime evidence is the unchanged WP02.01 matrix, not a fresh expanded sweep.",
+    "Research desktop binaries report sourceRevision=local and version=1.0.0; source identity is bound by clean Git tree equality and commands. They are not new public candidates.",
+    "The helper remains a scaffold; this diagnostic receipt does not close WP11/13 containment or parser capability gates.",
+    "No mobile/Web/AI .NET flags apply. No business capability, production signing or complete commercial acceptance is claimed."
+  ],
+  "unavailableExternalPrerequisites": [],
+  "authoredSuppressionSearch": [
+    {
+      "owner": "DesktopPlatform",
+      "command": [
+        "git",
+        "grep",
+        "-n",
+        "-E",
+        "NoWarn|WarningsNotAsErrors|SuppressAotAnalysisWarnings|SuppressTrimAnalysisWarnings|UnconditionalSuppressMessage|IL[23][0-9]{3}|TrimmerSingleWarn",
+        "--",
+        "*.cs",
+        "*.csproj",
+        "*.props",
+        "*.targets",
+        "*.xml",
+        ".editorconfig"
+      ],
+      "exitCode": 0,
+      "matches": [
+        "Directory.Build.props:29:    <WarningsAsErrors>$(WarningsAsErrors);NU1605;IL2026;IL3050</WarningsAsErrors>",
+        "eng/build/desktop-aot.props:8:    <WarningsAsErrors>$(WarningsAsErrors);IL2026;IL3050</WarningsAsErrors>",
+        "src/Build/ArcForges.Build.Policy/build/ArcForges.Build.Policy.props:12:    <WarningsAsErrors>$(WarningsAsErrors);NU1605;IL2026;IL3050</WarningsAsErrors>"
+      ]
+    },
+    {
+      "owner": "Contracts",
+      "command": [
+        "git",
+        "grep",
+        "-n",
+        "-E",
+        "NoWarn|WarningsNotAsErrors|SuppressAotAnalysisWarnings|SuppressTrimAnalysisWarnings|UnconditionalSuppressMessage|IL[23][0-9]{3}|TrimmerSingleWarn",
+        "--",
+        "*.cs",
+        "*.csproj",
+        "*.props",
+        "*.targets",
+        "*.xml",
+        ".editorconfig"
+      ],
+      "exitCode": 1,
+      "matches": []
+    },
+    {
+      "owner": "ArcNotes",
+      "command": [
+        "git",
+        "grep",
+        "-n",
+        "-E",
+        "NoWarn|WarningsNotAsErrors|SuppressAotAnalysisWarnings|SuppressTrimAnalysisWarnings|UnconditionalSuppressMessage|IL[23][0-9]{3}|TrimmerSingleWarn",
+        "--",
+        "*.cs",
+        "*.csproj",
+        "*.props",
+        "*.targets",
+        "*.xml",
+        ".editorconfig"
+      ],
+      "exitCode": 1,
+      "matches": []
+    },
+    {
+      "owner": "ArcScope",
+      "command": [
+        "git",
+        "grep",
+        "-n",
+        "-E",
+        "NoWarn|WarningsNotAsErrors|SuppressAotAnalysisWarnings|SuppressTrimAnalysisWarnings|UnconditionalSuppressMessage|IL[23][0-9]{3}|TrimmerSingleWarn",
+        "--",
+        "*.cs",
+        "*.csproj",
+        "*.props",
+        "*.targets",
+        "*.xml",
+        ".editorconfig"
+      ],
+      "exitCode": 1,
+      "matches": []
+    },
+    {
+      "owner": "ArcSlate",
+      "command": [
+        "git",
+        "grep",
+        "-n",
+        "-E",
+        "NoWarn|WarningsNotAsErrors|SuppressAotAnalysisWarnings|SuppressTrimAnalysisWarnings|UnconditionalSuppressMessage|IL[23][0-9]{3}|TrimmerSingleWarn",
+        "--",
+        "*.cs",
+        "*.csproj",
+        "*.props",
+        "*.targets",
+        "*.xml",
+        ".editorconfig"
+      ],
+      "exitCode": 1,
+      "matches": []
+    },
+    {
+      "owner": "Cloud",
+      "command": [
+        "git",
+        "grep",
+        "-n",
+        "-E",
+        "NoWarn|WarningsNotAsErrors|SuppressAotAnalysisWarnings|SuppressTrimAnalysisWarnings|UnconditionalSuppressMessage|IL[23][0-9]{3}|TrimmerSingleWarn",
+        "--",
+        "*.cs",
+        "*.csproj",
+        "*.props",
+        "*.targets",
+        "*.xml",
+        ".editorconfig"
+      ],
+      "exitCode": 1,
+      "matches": []
+    }
+  ],
+  "artifactIdentities": [
+    {
+      "owner": "DesktopPlatform",
+      "path": "C:\\MyFile\\Projects\\ArcForges\\DesktopPlatform\\.worktree\\wp02-01-diagnostic-posture\\artifacts\\wp02-02-research-publish\\ArcForges.ContentSandbox.exe",
+      "bytes": 969216,
+      "sha256": "e3bbdeecddafdfcf96b65fd3063bea54e16a1f9fb571fb73bbd4493a46e28b41"
+    },
+    {
+      "owner": "ArcNotes",
+      "path": "C:\\MyFile\\Projects\\ArcForges\\ArcNotes\\.worktree\\wp02-01-diagnostic-posture\\artifacts\\wp02-02-research-publish\\ArcNotes.exe",
+      "bytes": 24240128,
+      "sha256": "f5eebb922ed850738abd47124aec501763b735ed473e37ae19d2d4e724561eb6"
+    },
+    {
+      "owner": "ArcScope",
+      "path": "C:\\MyFile\\Projects\\ArcForges\\ArcScope\\.worktree\\wp02-01-diagnostic-posture\\artifacts\\wp02-02-research-publish\\ArcScope.exe",
+      "bytes": 24240128,
+      "sha256": "7cef944a7d430485f8879658f3d5417f8f005edde687804fdba88a8e747928d7"
+    },
+    {
+      "owner": "ArcSlate",
+      "path": "C:\\MyFile\\Projects\\ArcForges\\ArcSlate\\.worktree\\wp02-01-diagnostic-posture\\artifacts\\wp02-02-research-publish\\ArcSlate.exe",
+      "bytes": 24240128,
+      "sha256": "6c016f7133c2414bd5dad93c2a486546795b7a50ee03ccb057d39dae08774dad"
+    },
+    {
+      "owner": "Contracts",
+      "path": "artifacts\\contracts-consumer\\native-client\\HelloClient.exe",
+      "bytes": 7114752,
+      "sha256": "9b9f912cc1e756d52f5f610ff166ab83b5bd117f8bd07db01640e984ad2d2e1f"
+    },
+    {
+      "owner": "Contracts",
+      "path": "artifacts\\contracts-consumer\\nuget-cache\\arcforges.contracts.publicapi\\1.0.0-ci.69.1\\arcforges.contracts.publicapi.1.0.0-ci.69.1.nupkg",
+      "bytes": 41697,
+      "sha256": "b231b482ed4d549dacf9ec2dd273179cec11847e426a69ac3e7bc57770660dbf"
+    }
+  ]
+}

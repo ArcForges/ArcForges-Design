@@ -120,6 +120,8 @@
 
 **Completion gate.** Every project on an AOT chain declares its posture, and every resulting diagnostic is fixed or assigned. **A suppressed diagnostic without an assignment fails this gate.**
 
+**Completed execution.** [AOT declaration sweep and evidence](../../assurance/wp02-02-aot-sweep-evidence.md) records all 43 evaluated projects, the 31 effective AOT-analysis postures, expanded six-owner builds and actual Windows/Linux Native AOT publishes and runtime checks. No missing declaration, authored suppression or resulting diagnostic was found. Existing source and published identities remain unchanged; no empty source PR or replacement release was created. This closes WP02.02 only.
+
 <a id="rule-wp-02.03"></a>
 
 ### WP-02.03 — Runtime and directory boundaries
