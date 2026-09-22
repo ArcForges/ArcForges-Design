@@ -1,6 +1,6 @@
 # WP03.00 contract structure implementation profile
 
-Authority: [WP03.00](../planning/work-packages/03-contract-foundation-and-licence-split.md#rule-wp-03.00), [package registry](../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [producer matrix](../planning/producer-artifacts-and-integration.md), [wire registry](../architecture/contracts/04-protobuf-wire-registry.md) and [P2-017](ci-and-local-validation-policy.md). This preserves the complete ordered plan established before implementation. The [completion receipt](wp03-00-implementation-evidence.md) records reviewed source, required checks and successful publication. WP03.00 is complete; WP03.01 has not started.
+Authority: [WP03.00](../planning/work-packages/03-contract-foundation-and-licence-split.md#rule-wp-03.00), [package registry](../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [producer matrix](../planning/producer-artifacts-and-integration.md), [wire registry](../architecture/contracts/04-protobuf-wire-registry.md) and [P2-017](ci-and-local-validation-policy.md). This preserves the complete ordered plan established before implementation. The [completion receipt](wp03-00-implementation-evidence.md) records reviewed source, required checks and successful publication. WP03.00 is complete. Its ordered plan and stopping boundary below are historical; current execution continues under the separate [WP03.01 profile](wp03-01-foundation-contract-profile.md).
 
 ## Decisions and verified gaps
 
