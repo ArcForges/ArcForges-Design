@@ -6,6 +6,8 @@ Authority: [P2-010](../../decisions/phase-2-specification-decisions.md#rule-p2-0
 
 An `.arcpkg` is a ZIP with root `manifest.json`, `inventory.json`, `signature.json`, licence/NOTICE and declared files. Reject traversal, absolute/drive/UNC paths, symlinks, case-fold path collision, duplicate ZIP entries and undeclared files. Maximum compressed 256 MiB, expanded 1 GiB,10000files, individual 128 MiB; validate declared size/ratio and limits while streaming, before execution. No install script. Every inventory entry is relative slash path, byte length and SHA256; entries sorted ordinal. Signature Ed25519 signs the canonical manifest hash and inventory hash with publisher/key/version. Revoked/unknown trust is shown and follows existing install policy; developer mode never disables OS isolation/grants.
 
+The [normative inventory.v1 definition](../../assurance/wp03-00-contract-structure-profile.md#canonical-inventoryv1-definition) fixes the closed JSON container and entry properties, canonical decimal size strings, portable ASCII path/collision rules and self-reference exclusions. Payload inventory includes manifest and applicable licence/NOTICE files, excluding root inventory.json/signature.json. Its WP03.00 CLI validation proves document shape and declared bounds only; it does not replace archive-byte, hash, signature or trust verification.
+
 | Field | Type / required behavior |
 |---|---|
 | schemaVersion | Exact string manifest.v1 |
