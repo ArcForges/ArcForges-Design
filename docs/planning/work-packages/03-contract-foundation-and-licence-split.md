@@ -74,7 +74,8 @@ All paths are in ArcForges-Contracts under the [selected package registry](../..
 |---|---|
 | public/proto/, internal/proto/ | Handwritten initial schema/service/field/enum profiles from the wire registry; public versus internal Apache-2.0 import closure |
 | public/http/, internal/ai-http/, fixtures/public/, fixtures/internal/ | Selected CF/auth/provider HTTP exceptions, independent canonical positive/negative vectors |
-| generated/csharp/, generated/typescript/ | Generated DTOs, service descriptors/clients and wire validators; never hand edited |
+| ArcForges.Contracts.slnx; src/public/dotnet/, src/internal/dotnet/ | Retain the existing solution identity; actual source-bearing public/internal C# projects with generated outputs under their owned Generated directories |
+| src/public/ts/{proto,api-client,contract-fixtures}/; src/internal/ts/{ai-internal,operator-client}/; src/public/kotlin/ | Preserve existing generated paths and package identities; generated DTOs, descriptors/clients and validators stay with their owning package and are never hand edited |
 | src/transport/ | Apache Connect Kotlin binary gRPC-Web adapter and selected public C# transport composition only |
 | eng/, artifacts/contracts/ | Pinned generation, descriptor/breaking-change baselines, signed versioned package manifests and candidate publication |
 | tests/ | Schema closure, exact-value/unknown-field/conformance vectors and C#/TS compatibility |
@@ -94,6 +95,8 @@ The complete initial Resource/owner/query/measurement/simulator, public operatio
 **Testing requirements.** Negative public→internal/GPL import fixture, package identity/SPDX and generated-header tests.
 
 **Completion gate.** All package boundaries and generators exist with no implementation dependency.
+
+The [WP03.00 implementation profile](../../assurance/wp03-00-contract-structure-profile.md) fixes the ordered implementation and publication prerequisites. A manifest of future projects or empty packages does not satisfy this gate. Each selected project has substantive schema-derived content or useful declared SDK/validator/CLI behavior; later substeps complete their assigned schema and semantic inventories.
 
 <a id="rule-wp-03.01"></a>
 
