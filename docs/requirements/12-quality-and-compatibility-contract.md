@@ -458,7 +458,7 @@ The technical floors are deliberate compilation targets. Vite and CSS tooling mu
 
 ## 22. Dependency upgrade gate
 
-A dependency upgrade — especially of the communication, serialization, UI or native stack — runs: full build, the AOT publish matrix, contract compatibility tests against previously published clients, performance benchmarks with regression comparison, licence and vulnerability scanning, SBOM regeneration, and the migration corpus where persistence is affected.
+A dependency upgrade records the affected closure, maintenance/licence/provenance review and applicable evidence: required Windows/Linux compilation and AOT packaging, targeted offline compatibility checks, non-duplicated security checks and SBOM updates. Performance, runtime, transport and migration scenarios run locally only when affected behavior requires them and the existing environment supports them, under [P2-017](../decisions/phase-2-specification-decisions.md#rule-p2-017). Record untested coverage; do not mandate macOS CI, installed-consumer execution, empty caches, toolchain provisioning or repeated public downloads. [WP02.05 policy](../assurance/wp02-05-dependency-policy-profile.md) binds reviewed inputs and upgrade records.
 
 **Framework major upgrades additionally re-verify the runtime posture** — notably the Android runtime posture at any framework major version change (**[V-04](../assurance/phase-1-official-verification.md#rule-v-04)**).
 
