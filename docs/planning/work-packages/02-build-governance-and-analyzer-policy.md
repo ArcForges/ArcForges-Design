@@ -158,9 +158,11 @@
 
 **What must be fully done.** Encode the selected licence/import and dependency-admission rules as owner policy data, including exact source hashes, generated public/internal separation, native gates and the framework-upgrade re-verification obligation. Configure candidate/stable package feeds and restricted publisher credentials, immutable versions and checksum/signature verification.
 
-**Testing requirements.** Negative forbidden-license, floating-tag, mutable-version and wrong-publisher fixtures; actual tooling-package publication/restore round trip. Generated Contracts and runtime consumers follow WP03/WP06.
+**Testing requirements.** Negative forbidden-license, floating-tag, mutable-version and wrong-publisher fixtures; actual tooling-package publication/restore evidence. Under P2-017, retain established round-trip receipts for unchanged mechanisms and confirm changed candidate publication by provider status; do not repeat public downloads or installed consumers. Generated Contracts and runtime consumers follow WP03/WP06.
 
 **Completion gate.** Publication mechanisms and dependency policies are usable before consumer work; production release remains WP50.
+
+**Execution profile.** [Dependency admission and publication](../../assurance/wp02-05-dependency-policy-profile.md) records the researched owner boundaries, candidate/stable rules, upgrade evidence and ordered implementation/review/merge plan.
 
 <a id="rule-wp-02.90"></a>
 ### WP-02.90 — Verify the owned artifact and real integration
