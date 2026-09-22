@@ -177,6 +177,8 @@
 
 **Completion gate.** Selected pins and licence/AOT policy agree across owners; the BuildPolicy produces an identifiable candidate and the native pack pipeline is configured; real native capability proof is WP06; consumers need no CMake/vcpkg for ordinary restore. Record exact artifacts and provider reality. The package is incomplete if an important contract/owner/recovery rule still requires design during coding.
 
+**Completed stage.** [WP02 stage acceptance](../../assurance/wp02-stage-acceptance.md) and its [source/evidence index](../../assurance/wp02-stage-acceptance.json) join the six preceding substeps, exact nine-owner source/provider results, current producer inventories and independently retained consumer pins. All parent completion conditions pass for build/publication governance under P2-017. No new runtime, download, build or publication cycle was required; WP03/04/05/06/11/13/21/50 and recurring VG-08 retain their declared responsibilities.
+
 ---
 
 ## 6. Impacts

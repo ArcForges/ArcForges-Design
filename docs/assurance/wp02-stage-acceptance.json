@@ -1,0 +1,222 @@
+{
+  "schemaVersion": 1,
+  "workPackage": "02",
+  "substep": "02.90",
+  "completedOn": "2026-09-21",
+  "status": "accepted-for-declared-stage",
+  "scope": "Build/publication governance and candidate pipelines; no full contract/native/business/commercial acceptance",
+  "acceptedDesignBaseline": "f7646d769e5fc67a1f30130d381f907718b4cb01",
+  "evidenceRefs": [
+    "wp01-stage-acceptance.json",
+    "wp02-00-implementation-evidence.json",
+    "wp02-01-implementation-evidence.json",
+    "wp02-02-aot-sweep-evidence.json",
+    "wp02-03-runtime-boundary-evidence.json",
+    "wp02-04-implementation-evidence.json",
+    "wp02-05-implementation-evidence.json"
+  ],
+  "owners": [
+    {
+      "owner": "ArcNotes",
+      "reviewedHead": "63b2af31aafab2b4f93d3247480e400b101e515a",
+      "mergeCommit": "268c3290ab372423c9a7d94a3027876f507f9816",
+      "pr": "https://github.com/ArcForges/ArcNotes/pull/9",
+      "mainRuns": [
+        "https://github.com/ArcForges/ArcNotes/actions/runs/35688797135"
+      ],
+      "mainConclusion": "success",
+      "providerResult": "Publish portable release and Verify publication succeeded for win-x64, win-arm64 and linux-x64."
+    },
+    {
+      "owner": "ArcScope",
+      "reviewedHead": "e337ee96fca109997e4411d86d9b9ec8ff7d6314",
+      "mergeCommit": "5e68634deb80cd0cf096944a9c71a581d6ba48ba",
+      "pr": "https://github.com/ArcForges/ArcScope/pull/9",
+      "mainRuns": [
+        "https://github.com/ArcForges/ArcScope/actions/runs/35688248008"
+      ],
+      "mainConclusion": "success",
+      "providerResult": "Publish portable release and Verify publication succeeded for win-x64, win-arm64 and linux-x64."
+    },
+    {
+      "owner": "ArcSlate",
+      "reviewedHead": "7e9966962245dc7ccc90d4506719966f170875ec",
+      "mergeCommit": "1214224ac105e1a172ea589ecf16810874f7b381",
+      "pr": "https://github.com/ArcForges/ArcSlate/pull/9",
+      "mainRuns": [
+        "https://github.com/ArcForges/ArcSlate/actions/runs/35688252843"
+      ],
+      "mainConclusion": "success",
+      "providerResult": "Publish portable release and Verify publication succeeded for win-x64, win-arm64 and linux-x64."
+    },
+    {
+      "owner": "Mobile",
+      "reviewedHead": "6b2738e35b5eeed0e22237dfd52a527c960083b4",
+      "mergeCommit": "d32df20b626259802a6f950b99053b93ab45a501",
+      "pr": "https://github.com/ArcForges/Mobile/pull/10",
+      "mainRuns": [
+        "https://github.com/ArcForges/Mobile/actions/runs/35688243200"
+      ],
+      "mainConclusion": "success",
+      "providerResult": "Publish Android succeeded with the existing signing identity; no store upload or device execution."
+    },
+    {
+      "owner": "Cloud",
+      "reviewedHead": "3f1a778cf9766cb795e9a2671f43a98e155f6108",
+      "mergeCommit": "ce0a32a40f25ab83a62b06b0e5c810a671060e66",
+      "pr": "https://github.com/ArcForges/Cloud/pull/19",
+      "mainRuns": [
+        "https://github.com/ArcForges/Cloud/actions/runs/35688528067"
+      ],
+      "mainConclusion": "success",
+      "providerResult": "Deploy Cloudflare succeeded; provider job result only, not live runtime acceptance."
+    },
+    {
+      "owner": "AI",
+      "reviewedHead": "42d6e0587c717595e8a74abbefac263dd96bc760",
+      "mergeCommit": "233d1e3457b4a71da7540698ccc05113bcf4dbe0",
+      "pr": "https://github.com/ArcForges/AI/pull/19",
+      "mainRuns": [
+        "https://github.com/ArcForges/AI/actions/runs/35688532745"
+      ],
+      "mainConclusion": "success",
+      "providerResult": "Deploy Cloudflare succeeded; provider job result only, not live runtime acceptance."
+    },
+    {
+      "owner": "Web",
+      "reviewedHead": "03de57bf52b8519e5686ef7f937e2bb2e3bb8529",
+      "mergeCommit": "ca2c170bbdcee392a9fa24f12e9094eba8d2bd1e",
+      "pr": "https://github.com/ArcForges/Web/pull/15",
+      "mainRuns": [
+        "https://github.com/ArcForges/Web/actions/runs/35688537646"
+      ],
+      "mainConclusion": "success",
+      "providerResult": "Deploy Cloudflare succeeded; provider job result only, not live runtime acceptance."
+    },
+    {
+      "owner": "DesktopPlatform",
+      "reviewedHead": "da4fd987ec666831cf9dae6a04ddc58bcd9d00e2",
+      "mergeCommit": "fe8476d0e137ab91af0a0a189419c7bd6cc68114",
+      "pr": "https://github.com/ArcForges/DesktopPlatform/pull/59",
+      "mainRuns": [
+        "https://github.com/ArcForges/DesktopPlatform/actions/runs/35688808413"
+      ],
+      "mainConclusion": "success",
+      "providerResult": "Publish NuGet succeeded; unchanged ten-package allowlist, candidate 1.0.0-ci.22.1 from selected main run identity."
+    },
+    {
+      "owner": "Contracts",
+      "reviewedHead": "b6f40f165146d26ab8ab3efad83dbea38c31ce60",
+      "mergeCommit": "48654ae3f2d37a98c949f1fa644f3da5c1642b58",
+      "pr": "https://github.com/ArcForges/Contracts/pull/32",
+      "mainRuns": [
+        "https://github.com/ArcForges/Contracts/actions/runs/35688812523",
+        "https://github.com/ArcForges/Contracts/actions/runs/35688812552"
+      ],
+      "mainConclusion": "success",
+      "providerResult": "Publish NuGet, Publish npm and Publish Maven channel succeeded; NuGet/npm candidate 1.0.0-ci.78.1 and Maven 1.0.0-SNAPSHOT. Separate main Security workflow also succeeded."
+    }
+  ],
+  "retainedConsumerPins": {
+    "ArcNotes": {
+      "ArcForges.Build.Policy": "1.0.0-ci.20.1",
+      "ArcForges.Contracts.PublicApi": "1.0.0-ci.36.1"
+    },
+    "ArcScope": {
+      "ArcForges.Build.Policy": "1.0.0-ci.20.1",
+      "ArcForges.Contracts.PublicApi": "1.0.0-ci.36.1"
+    },
+    "ArcSlate": {
+      "ArcForges.Build.Policy": "1.0.0-ci.20.1",
+      "ArcForges.Contracts.PublicApi": "1.0.0-ci.36.1"
+    },
+    "Cloud": {
+      "ArcForges.Build.Policy": "1.0.0-ci.21.1",
+      "ArcForges.Contracts.PublicApi": "1.0.0-ci.74.1",
+      "@arcforges/proto": "1.0.0-ci.74.1",
+      "@arcforges/api-client": "1.0.0-ci.74.1"
+    },
+    "AI": {
+      "@arcforges/proto": "1.0.0-ci.44.1"
+    },
+    "Web": {
+      "@arcforges/proto": "1.0.0-ci.44.1",
+      "@arcforges/api-client": "1.0.0-ci.44.1"
+    },
+    "Mobile": {
+      "io.github.arcforges:contracts-proto": "1.0.0-ci.60.1",
+      "io.github.arcforges:contracts-connect-client": "1.0.0-ci.60.1"
+    }
+  },
+  "producerCandidates": {
+    "DesktopPlatform": {
+      "version": "1.0.0-ci.22.1",
+      "packages": 10,
+      "nativeRuntimeRids": [
+        "win-x64"
+      ],
+      "sourceCommit": "fe8476d0e137ab91af0a0a189419c7bd6cc68114",
+      "runId": 35688808413,
+      "capability": "Build.Policy and existing native ABI/version/error probes; not functional WP13 capability"
+    },
+    "Contracts": {
+      "version": "1.0.0-ci.78.1",
+      "mavenVersion": "1.0.0-SNAPSHOT",
+      "sourceCommit": "48654ae3f2d37a98c949f1fa644f3da5c1642b58",
+      "runId": 35688812523,
+      "candidateInventory": [
+        "NuGet",
+        "npm proto",
+        "npm API client",
+        "Maven bundle",
+        "descriptor"
+      ],
+      "capability": "Hello bootstrap and packaging/code-generation mechanism; not complete WP03 schema"
+    }
+  },
+  "hashAuthority": "Exact source/run-bound producer candidate manifests, lockfiles and existing admission/round-trip receipts. No new artifact download or hash audit for this documentation-only acceptance.",
+  "completedConditions": [
+    "toolchain-locks",
+    "warnings-and-waivers",
+    "aot-trim-posture",
+    "runtime-owner-ide-boundaries",
+    "independent-version-axes",
+    "dependency-and-upgrade-policy"
+  ],
+  "currentProjectCount": 43,
+  "historicalEvaluatedAotPostures": 31,
+  "historicalDiagnosticRejectionCases": 17,
+  "latestOfflineAdmissionCases": 120,
+  "sourceDriftReview": "43 managed projects remain; no changed AOT/trim/diagnostic posture since WP02.02. The Git metadata command stderr option is not a compiler diagnostic suppression.",
+  "validationForThisSubstep": [
+    "current source/package selection review",
+    "upstream receipt and source/result consistency",
+    "full documentation review",
+    "local relative-link and whitespace checks"
+  ],
+  "newProductBuilds": 0,
+  "newRuntimeTests": 0,
+  "newPublicArtifactDownloads": 0,
+  "newPublications": 0,
+  "unavailableExternalPrerequisites": [],
+  "remainingOwners": {
+    "WP03": "Complete production schemas, generated public/internal bindings and independent fixtures",
+    "WP04": "Foundation value packages",
+    "WP05": "Broader architecture and invariant policies",
+    "WP06": "Actual foundation runtime/native/transport integration and first joined manifest",
+    "WP11/WP13": "Contained parser/helper and functional native ABI/RID packages",
+    "WP21": "Progressive Cloud consolidation",
+    "WP50": "Full product, recovery, production signing and commercial release",
+    "VG-08": "Recurring framework-upgrade runtime-posture evidence"
+  },
+  "untestedByThisSubstep": [
+    "macOS",
+    "device/emulator runtime",
+    "desktop GUI/browser E2E",
+    "live service/inference",
+    "installed consumer/public release upgrade",
+    "stable-tag publication"
+  ],
+  "retainedBranch": "codex/wp02-90-stage-acceptance",
+  "retainedWorktree": ".worktree/wp02-90-stage-acceptance"
+}
