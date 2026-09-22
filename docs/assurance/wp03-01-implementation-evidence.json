@@ -1,0 +1,324 @@
+{
+  "schemaVersion": 1,
+  "workPackage": "03",
+  "substep": "03.01",
+  "observedOn": "2026-09-22",
+  "completedOn": "2026-09-22",
+  "status": "complete",
+  "scope": "Complete selected foundation schema and safe-value/profile validation boundary; not complete WP03 or product/commercial acceptance",
+  "plan": {
+    "profile": "wp03-01-foundation-contract-profile.md",
+    "authorityCommit": "5e202ff10f3c218d9e159029579ca535c641169b",
+    "prerequisites": [
+      {
+        "pr": "https://github.com/ArcForges/ArcForges-Design/pull/62",
+        "mergeCommit": "3d4a58d6dc613d04ef12ed6db68fb41a0b14501d",
+        "purpose": "Fix complete selected closure, decisions and ordered implementation plan"
+      },
+      {
+        "pr": "https://github.com/ArcForges/ArcForges-Design/pull/63",
+        "mergeCommit": "5e202ff10f3c218d9e159029579ca535c641169b",
+        "purpose": "Align framing vocabulary before dependent implementation"
+      }
+    ]
+  },
+  "upstream": {
+    "substep": "03.00",
+    "evidence": "wp03-00-implementation-evidence.json",
+    "sourceCommit": "30ddcad2bcb3634e089abb5e29d6c9ce05d38386",
+    "nugetNpmVersion": "1.0.0-ci.86.1",
+    "mavenVersion": "1.0.0-SNAPSHOT"
+  },
+  "owner": {
+    "repository": "ArcForges/Contracts",
+    "pr": "https://github.com/ArcForges/Contracts/pull/36",
+    "reviewedHead": "30f7d4b8a785e1a71b1a62d3127d95fc4009aae7",
+    "mergeCommit": "4b8134eaf8a4174922d6378da003ed390b85a94a",
+    "mergedAt": "2026-09-22T12:55:57Z",
+    "reviewOutcome": "Complete latest-head source, generated-output, fixture, provenance and workflow review; concrete findings fixed before normal merge",
+    "prRuns": [
+      {
+        "url": "https://github.com/ArcForges/Contracts/actions/runs/35729559580",
+        "workflow": "CI",
+        "conclusion": "success",
+        "requiredCandidateJobs": [
+          "Build candidate",
+          "Verify"
+        ],
+        "publicationDisposition": "Normally skipped for pull-request event"
+      },
+      {
+        "url": "https://github.com/ArcForges/Contracts/actions/runs/35729559585",
+        "workflow": "Security",
+        "conclusion": "success",
+        "scope": "All applicable latest-head checks"
+      }
+    ],
+    "retainedBranch": "wp03-01-foundation-contracts",
+    "retainedWorktree": ".worktree/wp03-01-foundation-contracts",
+    "primaryFastForwardClean": true,
+    "primaryCommit": "4b8134eaf8a4174922d6378da003ed390b85a94a"
+  },
+  "implementedBoundary": {
+    "inventoryPath": "eng/foundation-inventory.json",
+    "records": 148,
+    "foundationRecords": 32,
+    "publicApiRecords": 116,
+    "enums": 10,
+    "oneofBranches": 82,
+    "aggregateBodyBranches": 16,
+    "identifierDomains": 69,
+    "profiles": [
+      "arcforges.content-origin.v1",
+      "notes.scalar.v1",
+      "scope.measurement.v1"
+    ],
+    "scopeOracle": "Fixed seed reachability, complete registered field/tag/presence/oneof sets, single ownership and declared semantic rules; counts are summaries",
+    "safeValues": [
+      "Canonical UUID network bytes and defensive byte ownership",
+      "Exact signed/unsigned 64-bit boundaries and distinct revision/sequence kinds",
+      "Checked decimal coefficient/scale and rational time conversion",
+      "Bounded opaque cursors and compatible unknown-read preservation"
+    ],
+    "serviceRegistrationAdded": false,
+    "newPackageIdentities": false,
+    "downstreamConsumerPinsChanged": false
+  },
+  "validation": {
+    "fixturePath": "fixtures/public/wp03-01.json",
+    "semanticCases": 476,
+    "positiveCases": 314,
+    "negativeCases": 162,
+    "csharpPassed": true,
+    "typescriptPassed": true,
+    "bidirectionalExchange": {
+      "csharpToTypescriptCases": 314,
+      "typescriptToCsharpCases": 314,
+      "fixtureIdentityBound": true,
+      "duplicateAndMissingCasesRejected": true
+    },
+    "errorCategoryMappings": 45,
+    "independentBinaryOracles": 10,
+    "originalProfileScenarioGroups": 10,
+    "negativeTypeCompilation": "passed",
+    "targetedInventoryNegativeTests": 8,
+    "sourceAccessTests": 14,
+    "compiledAccessAudit": {
+      "contractTypes": 174,
+      "distributionFiles": 526,
+      "packageIdentities": 22
+    },
+    "apacheSourceBoundaryProjects": 30,
+    "local": {
+      "platform": "Windows",
+      "csharp": "Release build passed with zero warnings and errors",
+      "dotnetSdk": "10.0.401",
+      "committedAndCiSdk": "10.0.400",
+      "sdkEvidenceBoundary": "Existing local adapter; not an assertion of SDK equivalence",
+      "typescript": "Workspace builds and retained offline tests passed",
+      "kotlinJava": "Cached JDK 17 assemble/check passed",
+      "kotlinTests": "NO-SOURCE; no Kotlin runtime or complete third-language semantic conformance claimed",
+      "toolchainInstalled": false
+    },
+    "prCi": {
+      "platform": "Ubuntu",
+      "candidateAndVerification": "passed",
+      "applicableSecurity": "passed",
+      "publication": "not applicable to PR event"
+    },
+    "ciRepairs": {
+      "linearUrlValidation": {
+        "expectationsPerLanguage": 96,
+        "languages": [
+          "C#",
+          "TypeScript"
+        ],
+        "largeAuthorityCharacters": 100000,
+        "result": "passed"
+      },
+      "dokka": {
+        "profile": "eng/provenance/artifact-profiles/dokka-2-2-0-r6.json",
+        "apiMembers": 14017,
+        "apiMarkerPages": 152,
+        "protobufApiClassPages": 150,
+        "changedProtobufPages": 453,
+        "removedPages": 0,
+        "sourceInputs": 481,
+        "fixedResources": 42,
+        "excludedFonts": 10,
+        "thirdPartyComponents": 81,
+        "focusedAdmissionTests": 6,
+        "declaredApiMarkersPreserved": true,
+        "strictPageAndResourceAdmissionPreserved": true,
+        "mandatoryPublicApiMarkers": true,
+        "finalPrCandidateResult": "passed"
+      },
+      "secretScan": "Exact reviewed public-hash exceptions restricted by rule, path and complete line; default rules retained"
+    },
+    "newProducerTestsForCompletionReceipt": false,
+    "newArtifactDownloadsForCompletionReceipt": false,
+    "postMergeBoundary": "Expected merge commit, required normal job results and clean primary fast-forward only",
+    "runtimeProviderAcceptance": "Not claimed"
+  },
+  "provenance": {
+    "reviewedRepairSource": "af7b6cca5e14a51735512d283b03d3ae9d96d170",
+    "generatedRecord": "contract-bindings-r4",
+    "documentationRecord": "dokka-documentation-resources-r6",
+    "dependencyReceipt": "eng/policy/dependency-reviews/wp03-01-r2.json",
+    "dependencyCoordinates": 140,
+    "coordinateAndIntegrityClosureChanged": false,
+    "immutablePredecessorsPreserved": true
+  },
+  "publication": {
+    "status": "success",
+    "sourceCommit": "4b8134eaf8a4174922d6378da003ed390b85a94a",
+    "run": "https://github.com/ArcForges/Contracts/actions/runs/35730204418",
+    "runNumber": 89,
+    "runAttempt": 1,
+    "configuredMavenChannel": "1.0.0-SNAPSHOT",
+    "observedMavenPublication": {
+      "version": "1.0.0-SNAPSHOT",
+      "actualPublicationTasks": 3,
+      "expectedFileCount": 15,
+      "result": "Sonatype snapshot upload completed; no public-byte polling",
+      "supersededCandidateNoOp": false
+    },
+    "requiredJobs": [
+      {
+        "name": "Build candidate",
+        "conclusion": "success",
+        "jobId": 106753582190,
+        "url": "https://github.com/ArcForges/Contracts/actions/runs/35730204418/job/106753582190"
+      },
+      {
+        "name": "Verify",
+        "conclusion": "success",
+        "jobId": 106755504306,
+        "url": "https://github.com/ArcForges/Contracts/actions/runs/35730204418/job/106755504306"
+      },
+      {
+        "name": "Publish NuGet",
+        "conclusion": "success",
+        "jobId": 106755544028,
+        "url": "https://github.com/ArcForges/Contracts/actions/runs/35730204418/job/106755544028"
+      },
+      {
+        "name": "Publish npm",
+        "conclusion": "success",
+        "jobId": 106755545511,
+        "url": "https://github.com/ArcForges/Contracts/actions/runs/35730204418/job/106755545511"
+      },
+      {
+        "name": "Publish Maven channel",
+        "conclusion": "success",
+        "jobId": 106755544995,
+        "url": "https://github.com/ArcForges/Contracts/actions/runs/35730204418/job/106755544995"
+      }
+    ],
+    "mainSecurity": {
+      "run": "https://github.com/ArcForges/Contracts/actions/runs/35730204268",
+      "runNumber": 91,
+      "conclusion": "success"
+    },
+    "candidateHashAuthority": {
+      "run": "https://github.com/ArcForges/Contracts/actions/runs/35730204418",
+      "producerManifestPath": "artifacts/packages/manifest.json",
+      "format": "arcforges.contracts.candidate.v1",
+      "retainedArtifact": "contracts-candidate-35730204418-1",
+      "verification": "Original producer content/admission checks and successful 1.0.0-ci.89.1 handoff identity in all three publisher jobs; no public-artifact redownload or hash recomputation"
+    },
+    "packageInventoryPath": "eng/contract-packages.json",
+    "nuget": [
+      "ArcForges.Contracts.Foundation",
+      "ArcForges.Contracts.PublicApi",
+      "ArcForges.Contracts.Events",
+      "ArcForges.Contracts.Validation",
+      "ArcForges.Contracts.LocalRpc.Platform",
+      "ArcForges.Contracts.LocalRpc.Sandbox",
+      "ArcForges.Contracts.LocalRpc.Chat",
+      "ArcForges.Contracts.LocalRpc.Notes",
+      "ArcForges.Contracts.LocalRpc.Scope",
+      "ArcForges.Contracts.LocalRpc.Slate",
+      "ArcForges.Contracts.CloudInternal",
+      "ArcForges.Sdk.Contracts",
+      "ArcForges.Sdk.Client",
+      "ArcForges.Cli"
+    ],
+    "npm": [
+      "@arcforges/proto",
+      "@arcforges/api-client",
+      "@arcforges/contract-fixtures",
+      "@arcforges/ai-internal",
+      "@arcforges/operator-client"
+    ],
+    "maven": [
+      "io.github.arcforges:contracts-proto",
+      "io.github.arcforges:contracts-connect-client",
+      "io.github.arcforges:contract-fixtures"
+    ],
+    "totalPackageIdentities": 22,
+    "verificationOnlyPublication": false,
+    "formalStableMavenCentralPublicationClaimed": false,
+    "candidateVersion": "1.0.0-ci.89.1",
+    "providerObservations": {
+      "nuget": {
+        "actualUploads": 14,
+        "version": "1.0.0-ci.89.1",
+        "logEvidence": "Your package was pushed for each expected identity"
+      },
+      "npm": {
+        "actualUploads": 5,
+        "version": "1.0.0-ci.89.1",
+        "mode": "oidc",
+        "signedProvenance": true
+      },
+      "maven": {
+        "actualPublicationTasks": 3,
+        "fileCount": 15,
+        "version": "1.0.0-SNAPSHOT",
+        "deploymentReceiptArtifact": "maven-deployment-35730204418-1",
+        "deploymentReceiptArtifactId": 10695207684
+      },
+      "jobLogReads": "One read of each publication job log",
+      "publicPackageDownloads": false
+    }
+  },
+  "designReceipt": {
+    "retainedBranch": "wp03-01-foundation-evidence",
+    "retainedWorktree": ".worktree/wp03-01-foundation-evidence",
+    "configuredCi": false,
+    "requiredChecks": [
+      "Complete document review",
+      "JSON, links and document consistency",
+      "Expected merge and clean primary fast-forward"
+    ],
+    "reviewBoundary": "Documentation contribution reviewed with JSON, link and consistency checks; no additional product build or runtime test"
+  },
+  "remainingOwners": [
+    "WP03.02 serialization/AOT/registration",
+    "WP03.03 complete descriptor/resource/Sync admission semantics",
+    "WP03.04 complete helper/in-process closure",
+    "WP03.05 complete operation, authorization/scope, stream/history and three-language conformance",
+    "WP03.06 compatibility windows",
+    "WP03.07 signed catalog/update formats",
+    "WP03.90 complete contract-stage acceptance",
+    "WP04 application foundation values",
+    "Product/Cloud/Platform engines, transactions and real integration"
+  ],
+  "untestedCoverage": [
+    "Complete Native AOT execution/registration posture",
+    "Kotlin runtime and complete three-language semantic conformance",
+    "Notes query and Scope numerical engines",
+    "Owner transactions, export/import pipelines and native/media effects",
+    "Live authorization/service/provider and real AI inference",
+    "macOS builds/runtime",
+    "Physical devices and Android emulators",
+    "Desktop GUI/browser E2E",
+    "Installed-package consumers and public-release installation/upgrade",
+    "Formal stable Maven Central publication",
+    "Commercial product acceptance"
+  ],
+  "nextSubstep": "03.02",
+  "nextSubstepStarted": false,
+  "advancementCondition": "WP03.01 source, required checks and normal publication are complete. Update Plan to 03.02 through its separate retained worktree and reviewed completion PR; begin that substep only with its own research and complete ordered plan."
+}
