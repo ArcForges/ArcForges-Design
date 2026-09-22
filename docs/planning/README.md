@@ -39,7 +39,7 @@ Implement the adopted [architecture amendment](../decisions/phase-2-specificatio
 
 ## Staged artifact integration
 
-Producer existence is a prerequisite, not something every package may assume. A candidate is published to a private immutable feed/channel with its final package version, hash, source and evidence. Promotion changes channel access, never embedded version/bytes. The following stages govern every execution binding and WPxx.90 gate.
+Producer existence is a prerequisite, not something every package may assume. A candidate uses its approved owner feed/channel with exact version, hash, source and evidence; access may be public while publisher credentials remain restricted. Public candidate access and mutable channel pointers do not declare production stability. Promotion never rewrites embedded version/bytes. Contracts development Maven uses the separately defined SNAPSHOT identity/retention protocol; formal releases remain immutable. The following stages govern every execution binding and WPxx.90 gate.
 
 | Stage / first producer | Required input | Output and actual proof |
 |---|---|---|
@@ -66,3 +66,7 @@ The earlier [producer and local gRPC review](../assurance/producer-and-local-grp
 [P2-012](../decisions/phase-2-specification-decisions.md#rule-p2-012) uses [concrete project/package producers](../architecture/27-platform-projects-and-application-assistants.md), [D1](../architecture/data-model/04-d1-execution-profile.md), [history](../architecture/data-model/05-application-history.md), [scope/streams](../architecture/contracts/10-application-scope-and-streams.md) and [complete client UX](../experience/README.md). All 51 active WPs include these where applicable. WP20 is [future only](../future/cross-product-collaboration/README.md), with no current dependency or gate.
 
 Current coordinated repair: [P2-014](../decisions/phase-2-specification-decisions.md#rule-p2-014); see [final findings verification](../assurance/final-findings-remediation-verification.md). Earlier dated reviews retain their evidence baselines; real runtime and commercial gates remain separate and open.
+
+## Accepted implementation stages
+
+[WP02 stage acceptance](../assurance/wp02-stage-acceptance.md) closes build/publication governance through 02.90 under P2-017. Exact owner sources, current candidate identities and retained consumer pins are recorded separately from historical runtime evidence. Complete schema, functional native/runtime integration and commercial acceptance remain with their later producers.
