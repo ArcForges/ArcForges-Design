@@ -1,0 +1,182 @@
+{
+  "schemaVersion": 1,
+  "workPackage": "03",
+  "substep": "03.00",
+  "completedOn": "2026-09-22",
+  "status": "complete",
+  "scope": "Selected contract project/package/generator structure and substantive schema slices; not complete WP03 or product/commercial acceptance",
+  "plan": {
+    "pr": "https://github.com/ArcForges/ArcForges-Design/pull/58",
+    "mergeCommit": "26f15ebf6278e8cd42c2b2396e82c326513e1078",
+    "profile": "wp03-00-contract-structure-profile.md"
+  },
+  "upstream": {
+    "workPackage": "02",
+    "mergeCommit": "7165187cb2d96aee0f275666eaa19dc6b8001833",
+    "evidence": "wp02-stage-acceptance.json"
+  },
+  "owner": {
+    "repository": "ArcForges/Contracts",
+    "sourceCommit": "84c89054b119bb0afa595c85ad85c24638501b65",
+    "changes": [
+      {
+        "pr": "https://github.com/ArcForges/Contracts/pull/33",
+        "purpose": "Implement the complete selected project/package/generator structure",
+        "reviewedHead": "7a785c680023b2a9d2395d88043af7b25fe79e7e",
+        "mergeCommit": "0fbb746d3bd46c507a939e2901504f390e7cd2e2",
+        "prRuns": [
+          "https://github.com/ArcForges/Contracts/actions/runs/35694422042",
+          "https://github.com/ArcForges/Contracts/actions/runs/35694422049"
+        ],
+        "reviewOutcome": "Complete PR review; applicable latest-head CI and security checks successful before merge",
+        "retainedBranch": "codex/wp03-00-contract-structure",
+        "retainedWorktree": ".worktree/wp03-00-contract-structure"
+      },
+      {
+        "pr": "https://github.com/ArcForges/Contracts/pull/34",
+        "purpose": "Correct initial npm package metadata handling without changing package identities",
+        "reviewedHead": "722e996d95114a721580f5dd43db3e9877280bd8",
+        "mergeCommit": "84c89054b119bb0afa595c85ad85c24638501b65",
+        "prRuns": [
+          "https://github.com/ArcForges/Contracts/actions/runs/35703626099",
+          "https://github.com/ArcForges/Contracts/actions/runs/35703625915"
+        ],
+        "reviewOutcome": "Complete PR review; applicable latest-head CI and security checks successful before merge",
+        "retainedBranch": "codex/wp03-00-npm-first-publish",
+        "retainedWorktree": ".worktree/wp03-00-npm-first-publish"
+      }
+    ],
+    "mainRuns": [
+      {
+        "url": "https://github.com/ArcForges/Contracts/actions/runs/35704055306",
+        "workflow": "CI",
+        "conclusion": "success",
+        "requiredJobs": [
+          "Build candidate",
+          "Verify",
+          "Publish NuGet",
+          "Publish npm",
+          "Publish Maven channel"
+        ]
+      },
+      {
+        "url": "https://github.com/ArcForges/Contracts/actions/runs/35704055307",
+        "workflow": "Security",
+        "conclusion": "success"
+      }
+    ],
+    "primaryFastForwardClean": true
+  },
+  "publication": {
+    "candidateVersion": "1.0.0-ci.84.1",
+    "mavenVersion": "1.0.0-SNAPSHOT",
+    "mavenProviderResult": "Actual Sonatype snapshot upload of 15 expected files completed successfully; not a superseded-candidate no-op",
+    "sourceCommit": "84c89054b119bb0afa595c85ad85c24638501b65",
+    "candidateHashAuthority": {
+      "run": "https://github.com/ArcForges/Contracts/actions/runs/35704055306",
+      "artifact": "contracts-candidate-35704055306-1",
+      "producerManifestPath": "artifacts/packages/manifest.json",
+      "format": "arcforges.contracts.candidate.v1",
+      "verification": "Producer content validation and required publication-handoff identity/integrity checks; no post-publication redownload or hash recomputation for this receipt"
+    },
+    "packageInventoryPath": "eng/contract-packages.json",
+    "nuget": [
+      "ArcForges.Contracts.Foundation",
+      "ArcForges.Contracts.PublicApi",
+      "ArcForges.Contracts.Events",
+      "ArcForges.Contracts.Validation",
+      "ArcForges.Contracts.LocalRpc.Platform",
+      "ArcForges.Contracts.LocalRpc.Sandbox",
+      "ArcForges.Contracts.LocalRpc.Chat",
+      "ArcForges.Contracts.LocalRpc.Notes",
+      "ArcForges.Contracts.LocalRpc.Scope",
+      "ArcForges.Contracts.LocalRpc.Slate",
+      "ArcForges.Contracts.CloudInternal",
+      "ArcForges.Sdk.Contracts",
+      "ArcForges.Sdk.Client",
+      "ArcForges.Cli"
+    ],
+    "npm": [
+      "@arcforges/proto",
+      "@arcforges/api-client",
+      "@arcforges/contract-fixtures",
+      "@arcforges/ai-internal",
+      "@arcforges/operator-client"
+    ],
+    "maven": [
+      "io.github.arcforges:contracts-proto",
+      "io.github.arcforges:contracts-connect-client",
+      "io.github.arcforges:contract-fixtures"
+    ],
+    "totalPackageIdentities": 22,
+    "retiredFromNewPublication": "io.github.arcforges:contracts-client",
+    "historicalConsumerPinsChanged": false,
+    "earlierPartialPublication": {
+      "run": "https://github.com/ArcForges/Contracts/actions/runs/35702693766",
+      "candidateVersion": "1.0.0-ci.82.1",
+      "acceptedCompleteClosure": false,
+      "disposition": "Preserved historical partial publication; concrete first-package metadata defect fixed by PR 34 before the normal complete main publication"
+    }
+  },
+  "publisher": {
+    "successfulNpmPublicationMode": "bootstrap",
+    "currentNpmPublishMode": "oidc",
+    "modeEvidence": "GitHub repository variable updated and read back as oidc",
+    "newTrustedPublisherPackages": [
+      "@arcforges/contract-fixtures",
+      "@arcforges/ai-internal",
+      "@arcforges/operator-client"
+    ],
+    "trustConfiguration": {
+      "provider": "GitHub Actions",
+      "repository": "ArcForges/Contracts",
+      "workflow": "ci.yml",
+      "environment": "npm",
+      "allowDirectPublish": true,
+      "evidence": "Explicit account-owner confirmation that all three new package connections were saved"
+    },
+    "firstAllFiveNpmOidcPublicationObserved": false,
+    "bootstrapSecretRetained": true,
+    "bootstrapSecretPassedInOidcMode": false,
+    "deferredOperation": "Remove the bootstrap secret only after a subsequent ordinary OIDC publication succeeds; no verification-only publication",
+    "nugetEvidence": "Required Publish NuGet job succeeded for all 14 identities",
+    "secretValuesRead": false
+  },
+  "validation": {
+    "acceptedEvidence": "Existing reviewed source PR/main CI and bounded source audit against the implementation profile",
+    "categories": [
+      "Deterministic regeneration and generated baselines",
+      "Compilation and packaging",
+      "Targeted offline schema/validator/CLI cases",
+      "Negative import/licence and generated-header/package identity checks",
+      "Locked dependencies and immutable source/provenance checks",
+      "Formatting and applicable security checks"
+    ],
+    "newProducerTestsForCompletionReceipt": false,
+    "newArtifactDownloadsForCompletionReceipt": false,
+    "postMergeBoundary": "Expected merge commit, required main build/publication/security results and clean primary fast-forward only",
+    "runtimeProviderAcceptance": "Not claimed; schema and build evidence only"
+  },
+  "remainingOwners": [
+    "WP03.01 full foundation and semantic profiles",
+    "WP03.02 serialization/AOT/registration",
+    "WP03.03 resource/capability inventory",
+    "WP03.04 complete private helper/in-process contracts",
+    "WP03.05 complete application/operation/stream/history generation",
+    "WP03.06 compatibility window",
+    "WP03.07 signed catalog/update formats",
+    "WP03.90 complete contract stage acceptance and later actual provider joins"
+  ],
+  "untestedCoverage": [
+    "First normal OIDC publication of the three new npm identities",
+    "Stable-tag/formal Maven Central publication",
+    "macOS build/runtime",
+    "Physical device/emulator runtime",
+    "Desktop GUI/browser E2E",
+    "Live service/inference",
+    "Installed-package consumer/public-release installation or upgrade"
+  ],
+  "nextSubstep": "03.01",
+  "nextSubstepStarted": false,
+  "executionBoundary": "Stop after completing WP03.00 as explicitly requested"
+}

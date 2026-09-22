@@ -1,0 +1,41 @@
+# WP03.00 contract structure implementation evidence
+
+Scope: [WP03.00](../planning/work-packages/03-contract-foundation-and-licence-split.md#rule-wp-03.00), executed under the [reviewed implementation profile](wp03-00-contract-structure-profile.md) and [P2-017 validation policy](ci-and-local-validation-policy.md). Result: the selected project, package and generator boundaries are complete and published. This closes substep 03.00 only; the remaining WP03 schemas, semantic inventories and integration gates remain open.
+
+## Accepted source and dependency boundary
+
+The accepted [WP02 stage](wp02-stage-acceptance.md), Design commit `7165187cb2d96aee0f275666eaa19dc6b8001833`, supplies the existing pinned tools, independent producers and publication mechanisms. [Design PR 58](https://github.com/ArcForges/ArcForges-Design/pull/58), merged as `26f15ebf6278e8cd42c2b2396e82c326513e1078`, established the complete ordered implementation profile before source work.
+
+[Contracts PR 33](https://github.com/ArcForges/Contracts/pull/33) implemented the selected structure and substantive package slices. [Contracts PR 34](https://github.com/ArcForges/Contracts/pull/34) corrected initial npm publication metadata handling. Both received complete review and successful applicable latest-head checks before merge. The accepted final source is `84c89054b119bb0afa595c85ad85c24638501b65`; the [machine-readable receipt](wp03-00-implementation-evidence.json) records both reviewed heads, merges, retained worktrees and CI evidence. Existing consumer pins remain unchanged; this producer step does not upgrade downstream applications.
+
+## Completion conditions
+
+| Condition | Implemented result and accepted evidence |
+|---|---|
+| Actual selected projects and outputs | `eng/contract-packages.json` binds 14 NuGet, five npm and three Maven identities to their actual source roots, schema inputs, dependencies and descriptors. All 22 outputs compile, pack and publish; no empty bootstrap package or future-project manifest substitutes for content. |
+| Public/local/internal/SDK/HTTP ownership | Foundation, PublicApi, Events, Validation, six LocalRpc packages, CloudInternal, SDK.Contracts, SDK.Client and CLI have separate projects. Public TypeScript, private AI/operator TypeScript and public Maven have their selected owners. Public imports cannot reach local/operator/private schemas or GPL/AGPL implementations. |
+| Source and generator authority | Authored proto and closed HTTP schemas remain the authority. Existing solution and generated-source locations are preserved. Generated C#/TypeScript/Java-Kotlin outputs, descriptors and applicable validators follow the registered inputs, with deterministic regeneration, generated-header, import and package identity/SPDX checks. |
+| Complete selected schema slices | The implementation profile's full Foundation dependency closure, EntitlementChanged, LocalChunk, SandboxLimits, four product-port result records, OperatorCallContext, ExtensionLease/RenewLease, PartReceipt, CommitReceipt and inventory.v1 are present. PublicApi retains Hello compatibility. The four product-port packages contain in-process records and do not register product gRPC listeners. |
+| Useful SDK, validators and CLI | SDK.Client composes a caller-owned `CallInvoker`. Generated validators and independent fixtures cover the selected shapes. CLI performs offline inventory path, size, hash-shape, order, uniqueness and bound validation; it does not claim archive-byte verification, signing, credentials or owner business policy. |
+| Licence and package closure | Authored Contracts material and its package boundary remain Apache-2.0. Dependency admission, immutable provenance, notices and negative public-to-internal/licence cases are retained. The native-gRPC-only Maven `contracts-client` is retired from new publication while historical releases and consumer locks remain intact. |
+| Required build and publication | The final main run's Build candidate, Verify, Publish NuGet, Publish npm and Publish Maven channel jobs succeeded for the same accepted source. Producer archive/content checks and publication handoff identity checks supply candidate integrity evidence. |
+
+## Publication and publisher configuration
+
+[Main run 35704055306](https://github.com/ArcForges/Contracts/actions/runs/35704055306) published all 14 NuGet and five npm packages at **`1.0.0-ci.84.1`**, and all three Maven coordinates through the existing **`1.0.0-SNAPSHOT`** development channel. The Maven job completed its actual 15-file Sonatype upload, rather than skipping a superseded candidate. The producer's `artifacts/packages/manifest.json`, retained in `contracts-candidate-35704055306-1`, is the candidate file/hash authority. Its source and run identity bind this receipt to those original bytes; no public archives were downloaded or hashed again to prepare this document. SNAPSHOT publication is not a formal stable Central release.
+
+The earlier [partial run 35702693766](https://github.com/ArcForges/Contracts/actions/runs/35702693766), candidate `1.0.0-ci.82.1`, is not the accepted complete closure. Its npm job encountered a first-publication metadata error for an identity that did not yet exist. PR 34 repaired the specific absent-package handling before the normal main publication; an incomplete earlier run is not relabelled successful.
+
+The successful npm publication used the authorized bootstrap mode to create the complete substantive package set. The user subsequently confirmed the trusted publishers for `@arcforges/contract-fixtures`, `@arcforges/ai-internal` and `@arcforges/operator-client`: GitHub Actions, owner/repository `ArcForges/Contracts`, workflow `ci.yml`, environment `npm`, with direct `npm publish` allowed. The repository's `NPM_PUBLISH_MODE` was then set to `oidc` and read back successfully. This records account-owner confirmation and configuration evidence separately from publication execution.
+
+The first normal OIDC publication of all five npm packages has not yet been observed. The bootstrap secret remains retained until that ordinary publication succeeds; the OIDC workflow does not pass it to the publisher. No verification-only version, tag or republication was created. This deferred credential cleanup does not change the successfully published package structure or imply that OIDC has already been exercised for the three new identities. NuGet authorization for the complete new output set is demonstrated by its successful required publication job; no secret value was read.
+
+## Review, validation and stopping boundary
+
+Accepted source CI covers deterministic generation, compilation and packaging, targeted offline schema/validator/CLI and import-policy cases, identity/SPDX/generated-header checks, locked dependency and provenance checks, formatting, and applicable security checks. These are source/build/schema evidence, not live provider or installed-consumer acceptance. The completion pass reviewed current source against the fixed implementation profile and inspected the existing merge and required job results; it did not repeat passing producer tests or perform another artifact-download cycle.
+
+The Contracts primary checkout was fast-forwarded cleanly to the accepted merge. Source branches and worktrees remain retained. This documentation-only closure requires review, local link/JSON/consistency checks and clean primary updates, with no product build or CI execution.
+
+No macOS, physical-device/emulator, desktop GUI/browser E2E, live service/inference, installed-package consumer or public-release installation/upgrade result is claimed. Stable-tag publication and the first OIDC publication of the newly created npm identities remain unobserved. Full foundation semantics, resource/capability records, helper interfaces, complete operation/stream/history inventories, compatibility windows, signed catalog formats, AOT/registration and real integration remain with WP03.01–03.07/.90 and their later owners. WP03 as a whole and commercial product acceptance remain incomplete.
+
+The user's stopping boundary is substep 03.00. Plan records its completion and the next pending substep separately; **WP03.01 has not started**.

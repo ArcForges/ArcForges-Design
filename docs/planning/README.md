@@ -70,3 +70,5 @@ Current coordinated repair: [P2-014](../decisions/phase-2-specification-decision
 ## Accepted implementation stages
 
 [WP02 stage acceptance](../assurance/wp02-stage-acceptance.md) closes build/publication governance through 02.90 under P2-017. Exact owner sources, current candidate identities and retained consumer pins are recorded separately from historical runtime evidence. Complete schema, functional native/runtime integration and commercial acceptance remain with their later producers.
+
+[WP03.00 completion](../assurance/wp03-00-implementation-evidence.md) accepts the selected contract project/package/generator structure and 22 published outputs under its fixed implementation profile. This is substep acceptance, not completion of WP03. The current execution stops after 03.00; WP03.01 is pending and has not started.
