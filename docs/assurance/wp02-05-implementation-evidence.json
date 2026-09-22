@@ -1,0 +1,223 @@
+{
+  "schemaVersion": 1,
+  "substep": "02.05",
+  "recordedOn": "2026-09-21",
+  "status": "complete",
+  "scope": "Dependency admission and publication governance under P2-017, not product/commercial acceptance",
+  "plan": {
+    "pr": "https://github.com/ArcForges/ArcForges-Design/pull/55",
+    "mergeCommit": "9ba6571f6d79ef4e953d3c05a9640ec03487e746",
+    "profile": "wp02-05-dependency-policy-profile.md"
+  },
+  "owners": [
+    {
+      "owner": "ArcNotes",
+      "pr": "https://github.com/ArcForges/ArcNotes/pull/9",
+      "reviewedHead": "63b2af31aafab2b4f93d3247480e400b101e515a",
+      "mergeCommit": "268c3290ab372423c9a7d94a3027876f507f9816",
+      "prRuns": [
+        "https://github.com/ArcForges/ArcNotes/actions/runs/35687871656"
+      ],
+      "mainRuns": [
+        "https://github.com/ArcForges/ArcNotes/actions/runs/35688797135"
+      ],
+      "mainConclusion": "success",
+      "reviewOutcome": "Complete PR review; findings fixed; applicable latest-head checks successful before merge",
+      "localOfflinePolicyCasesPassed": 12,
+      "admittedClosure": "91 NuGet coordinates",
+      "primaryFastForwardClean": true,
+      "retainedBranch": "wp02-05-dependency-policy",
+      "retainedWorktree": ".worktree/wp02-05-dependency-policy",
+      "providerResult": "Publish portable release and Verify publication succeeded for win-x64, win-arm64 and linux-x64.",
+      "eventDelay": "Push workflow appeared after an initial event-processing delay; no manual dispatch or replacement commit was made."
+    },
+    {
+      "owner": "ArcScope",
+      "pr": "https://github.com/ArcForges/ArcScope/pull/9",
+      "reviewedHead": "e337ee96fca109997e4411d86d9b9ec8ff7d6314",
+      "mergeCommit": "5e68634deb80cd0cf096944a9c71a581d6ba48ba",
+      "prRuns": [
+        "https://github.com/ArcForges/ArcScope/actions/runs/35687907497"
+      ],
+      "mainRuns": [
+        "https://github.com/ArcForges/ArcScope/actions/runs/35688248008"
+      ],
+      "mainConclusion": "success",
+      "reviewOutcome": "Complete PR review; findings fixed; applicable latest-head checks successful before merge",
+      "localOfflinePolicyCasesPassed": 12,
+      "admittedClosure": "91 NuGet coordinates",
+      "primaryFastForwardClean": true,
+      "retainedBranch": "wp02-05-dependency-policy",
+      "retainedWorktree": ".worktree/wp02-05-dependency-policy",
+      "providerResult": "Publish portable release and Verify publication succeeded for win-x64, win-arm64 and linux-x64."
+    },
+    {
+      "owner": "ArcSlate",
+      "pr": "https://github.com/ArcForges/ArcSlate/pull/9",
+      "reviewedHead": "7e9966962245dc7ccc90d4506719966f170875ec",
+      "mergeCommit": "1214224ac105e1a172ea589ecf16810874f7b381",
+      "prRuns": [
+        "https://github.com/ArcForges/ArcSlate/actions/runs/35687937829"
+      ],
+      "mainRuns": [
+        "https://github.com/ArcForges/ArcSlate/actions/runs/35688252843"
+      ],
+      "mainConclusion": "success",
+      "reviewOutcome": "Complete PR review; findings fixed; applicable latest-head checks successful before merge",
+      "localOfflinePolicyCasesPassed": 12,
+      "admittedClosure": "91 NuGet coordinates",
+      "primaryFastForwardClean": true,
+      "retainedBranch": "wp02-05-dependency-policy",
+      "retainedWorktree": ".worktree/wp02-05-dependency-policy",
+      "providerResult": "Publish portable release and Verify publication succeeded for win-x64, win-arm64 and linux-x64."
+    },
+    {
+      "owner": "Mobile",
+      "pr": "https://github.com/ArcForges/Mobile/pull/10",
+      "reviewedHead": "6b2738e35b5eeed0e22237dfd52a527c960083b4",
+      "mergeCommit": "d32df20b626259802a6f950b99053b93ab45a501",
+      "prRuns": [
+        "https://github.com/ArcForges/Mobile/actions/runs/35687632761"
+      ],
+      "mainRuns": [
+        "https://github.com/ArcForges/Mobile/actions/runs/35688243200"
+      ],
+      "mainConclusion": "success",
+      "reviewOutcome": "Complete PR review; findings fixed; applicable latest-head checks successful before merge",
+      "localOfflinePolicyCasesPassed": 14,
+      "admittedClosure": "Existing 195-component Android inventory",
+      "primaryFastForwardClean": true,
+      "retainedBranch": "codex/wp02-05-dependency-policy",
+      "retainedWorktree": ".worktree/wp02-05-dependency-policy",
+      "providerResult": "Publish Android succeeded with the existing signing identity; no store upload or device execution."
+    },
+    {
+      "owner": "Cloud",
+      "pr": "https://github.com/ArcForges/Cloud/pull/19",
+      "reviewedHead": "3f1a778cf9766cb795e9a2671f43a98e155f6108",
+      "mergeCommit": "ce0a32a40f25ab83a62b06b0e5c810a671060e66",
+      "prRuns": [
+        "https://github.com/ArcForges/Cloud/actions/runs/35688239308"
+      ],
+      "mainRuns": [
+        "https://github.com/ArcForges/Cloud/actions/runs/35688528067"
+      ],
+      "mainConclusion": "success",
+      "reviewOutcome": "Complete PR review; findings fixed; applicable latest-head checks successful before merge",
+      "localOfflinePolicyCasesPassed": 15,
+      "admittedClosure": "131 external npm lock entries; other existing inputs bound",
+      "primaryFastForwardClean": true,
+      "retainedBranch": "codex/wp02-05-dependency-policy",
+      "retainedWorktree": ".worktree/wp02-05-dependency-policy",
+      "providerResult": "Deploy Cloudflare succeeded; provider job result only, not live runtime acceptance."
+    },
+    {
+      "owner": "AI",
+      "pr": "https://github.com/ArcForges/AI/pull/19",
+      "reviewedHead": "42d6e0587c717595e8a74abbefac263dd96bc760",
+      "mergeCommit": "233d1e3457b4a71da7540698ccc05113bcf4dbe0",
+      "prRuns": [
+        "https://github.com/ArcForges/AI/actions/runs/35687944424"
+      ],
+      "mainRuns": [
+        "https://github.com/ArcForges/AI/actions/runs/35688532745"
+      ],
+      "mainConclusion": "success",
+      "reviewOutcome": "Complete PR review; findings fixed; applicable latest-head checks successful before merge",
+      "localOfflinePolicyCasesPassed": 15,
+      "admittedClosure": "195 external npm lock entries",
+      "primaryFastForwardClean": true,
+      "retainedBranch": "codex/wp02-05-dependency-policy",
+      "retainedWorktree": ".worktree/wp02-05-dependency-policy",
+      "providerResult": "Deploy Cloudflare succeeded; provider job result only, not live runtime acceptance."
+    },
+    {
+      "owner": "Web",
+      "pr": "https://github.com/ArcForges/Web/pull/15",
+      "reviewedHead": "03de57bf52b8519e5686ef7f937e2bb2e3bb8529",
+      "mergeCommit": "ca2c170bbdcee392a9fa24f12e9094eba8d2bd1e",
+      "prRuns": [
+        "https://github.com/ArcForges/Web/actions/runs/35688243019"
+      ],
+      "mainRuns": [
+        "https://github.com/ArcForges/Web/actions/runs/35688537646"
+      ],
+      "mainConclusion": "success",
+      "reviewOutcome": "Complete PR review; findings fixed; applicable latest-head checks successful before merge",
+      "localOfflinePolicyCasesPassed": 15,
+      "admittedClosure": "351 external npm lock entries",
+      "primaryFastForwardClean": true,
+      "retainedBranch": "codex/wp02-05-dependency-policy",
+      "retainedWorktree": ".worktree/wp02-05-dependency-policy",
+      "providerResult": "Deploy Cloudflare succeeded; provider job result only, not live runtime acceptance."
+    },
+    {
+      "owner": "DesktopPlatform",
+      "pr": "https://github.com/ArcForges/DesktopPlatform/pull/59",
+      "reviewedHead": "da4fd987ec666831cf9dae6a04ddc58bcd9d00e2",
+      "mergeCommit": "fe8476d0e137ab91af0a0a189419c7bd6cc68114",
+      "prRuns": [
+        "https://github.com/ArcForges/DesktopPlatform/actions/runs/35688292211"
+      ],
+      "mainRuns": [
+        "https://github.com/ArcForges/DesktopPlatform/actions/runs/35688808413"
+      ],
+      "mainConclusion": "success",
+      "reviewOutcome": "Complete PR review; findings fixed; applicable latest-head checks successful before merge",
+      "localOfflinePolicyCasesPassed": 12,
+      "admittedClosure": "31 NuGet + 10 Python tooling; existing native inventory retained",
+      "primaryFastForwardClean": true,
+      "retainedBranch": "wp02-05-dependency-policy",
+      "retainedWorktree": ".worktree/wp02-05-dependency-policy",
+      "providerResult": "Publish NuGet succeeded; unchanged ten-package allowlist, candidate 1.0.0-ci.22.1 from selected main run identity.",
+      "candidateVersion": "1.0.0-ci.22.1"
+    },
+    {
+      "owner": "Contracts",
+      "pr": "https://github.com/ArcForges/Contracts/pull/32",
+      "reviewedHead": "b6f40f165146d26ab8ab3efad83dbea38c31ce60",
+      "mergeCommit": "48654ae3f2d37a98c949f1fa644f3da5c1642b58",
+      "prRuns": [
+        "https://github.com/ArcForges/Contracts/actions/runs/35688503082",
+        "https://github.com/ArcForges/Contracts/actions/runs/35688503035"
+      ],
+      "mainRuns": [
+        "https://github.com/ArcForges/Contracts/actions/runs/35688812523",
+        "https://github.com/ArcForges/Contracts/actions/runs/35688812552"
+      ],
+      "mainConclusion": "success",
+      "reviewOutcome": "Complete PR review; findings fixed; applicable latest-head checks successful before merge",
+      "localOfflinePolicyCasesPassed": 13,
+      "admittedClosure": "166 NuGet/npm/Maven coordinates",
+      "primaryFastForwardClean": true,
+      "retainedBranch": "wp02-05-dependency-policy",
+      "retainedWorktree": ".worktree/wp02-05-dependency-policy",
+      "providerResult": "Publish NuGet, Publish npm and Publish Maven channel succeeded; NuGet/npm candidate 1.0.0-ci.78.1 and Maven 1.0.0-SNAPSHOT. Separate main Security workflow also succeeded.",
+      "candidateVersion": "1.0.0-ci.78.1",
+      "mavenVersion": "1.0.0-SNAPSHOT"
+    }
+  ],
+  "publisherEnvironment": {
+    "repository": "DesktopPlatform",
+    "environment": "nuget",
+    "retainedMainBranchRule": 59762667,
+    "addedStableTagRule": 60658454,
+    "tagPattern": "v*",
+    "stableTagExecuted": false
+  },
+  "historicalRoundTripEvidence": [
+    "wp02-00-implementation-evidence.json",
+    "wp02-04-implementation-evidence.json"
+  ],
+  "postMergeBoundary": "Expected merge commit, required main build/publication/deployment job result, and clean primary fast-forward only",
+  "untestedCoverage": [
+    "Stable-tag publication",
+    "macOS build/runtime",
+    "Device/emulator runtime",
+    "Desktop GUI/browser E2E",
+    "Live service/inference",
+    "Installed-package consumer/public-release installation or upgrade"
+  ],
+  "nextSubstepStarted": false,
+  "completedOn": "2026-09-21"
+}

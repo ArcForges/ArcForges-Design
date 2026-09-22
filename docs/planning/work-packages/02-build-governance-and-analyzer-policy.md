@@ -164,6 +164,8 @@
 
 **Execution profile.** [Dependency admission and publication](../../assurance/wp02-05-dependency-policy-profile.md) records the researched owner boundaries, candidate/stable rules, upgrade evidence and ordered implementation/review/merge plan.
 
+**Completed execution.** [Dependency policy implementation](../../assurance/wp02-05-implementation-evidence.md) and its [source/result receipt](../../assurance/wp02-05-implementation-evidence.json) record all nine reviewed owner PRs, successful applicable PR checks and required main publication/deployment results, immutable admission/upgrade controls, restricted publisher scope and clean primary fast-forwards. Stable-tag execution and new runtime/consumer proof are explicitly unclaimed. This closes WP02.05 under P2-017; recurring VG-08 and later owner gates remain open.
+
 <a id="rule-wp-02.90"></a>
 ### WP-02.90 — Verify the owned artifact and real integration
 
