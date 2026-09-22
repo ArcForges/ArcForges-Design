@@ -113,7 +113,7 @@ The [WP03.00 implementation profile](../../assurance/wp03-00-contract-structure-
 
 The [WP03.01 implementation profile](../../assurance/wp03-01-foundation-contract-profile.md) fixes the complete selected seed/dependency closure, safe value boundaries, profile fixtures and ordered implementation/publication plan. Its owner-body dependency generation does not close WP03.03's descriptor/resource/Sync semantic gate or WP03.05's complete operation, scope, stream/history and language-client gate. Query, measurement and transaction engines remain with their product owners.
 
-The [WP03.01 completion receipt](../../assurance/wp03-01-implementation-evidence.md) records reviewed source, passing required checks, exact C#/TS conformance and complete normal publication. Substep 03.02 is in progress under its approved profile; later-owner gates remain open.
+The [WP03.01 completion receipt](../../assurance/wp03-01-implementation-evidence.md) records reviewed source, passing required checks, exact C#/TS conformance and complete normal publication. Substep 03.02 is complete; later-owner gates remain open.
 
 <a id="rule-wp-03.02"></a>
 
@@ -127,6 +127,8 @@ The [WP03.01 completion receipt](../../assurance/wp03-01-implementation-evidence
 **Completion gate.** No runtime schema discovery, dynamic business serializer or duplicate handwritten wire type is reachable.
 
 The [WP03.02 implementation profile](../../assurance/wp03-02-serialization-posture-profile.md) fixes the decode limits, strict HTTP-exception JSON codecs, generated service catalogues, forbidden serializer/dependency gate, Native AOT probe and ordered implementation/publication plan. It contributes to, but does not close, [F-026](../../assurance/open-gates-register.md#rule-f-026); WP06.02 retains the real published generated-client AOT call.
+
+The [WP03.02 completion receipt](../../assurance/wp03-02-implementation-evidence.md) records reviewed source, passing required checks, the Linux Native AOT probe, C#/TS vector conformance and complete normal publication. Substep 03.03 is next and has not started.
 
 <a id="rule-wp-03.03"></a>
 
