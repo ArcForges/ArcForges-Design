@@ -113,6 +113,8 @@ The [WP03.00 implementation profile](../../assurance/wp03-00-contract-structure-
 
 The [WP03.01 implementation profile](../../assurance/wp03-01-foundation-contract-profile.md) fixes the complete selected seed/dependency closure, safe value boundaries, profile fixtures and ordered implementation/publication plan. Its owner-body dependency generation does not close WP03.03's descriptor/resource/Sync semantic gate or WP03.05's complete operation, scope, stream/history and language-client gate. Query, measurement and transaction engines remain with their product owners.
 
+The [WP03.01 completion receipt](../../assurance/wp03-01-implementation-evidence.md) records reviewed source, passing required checks, exact C#/TS conformance and complete normal publication. Substep 03.02 is next and has not started; later-owner gates remain open.
+
 <a id="rule-wp-03.02"></a>
 
 ### WP-03.02 — Serialization posture
