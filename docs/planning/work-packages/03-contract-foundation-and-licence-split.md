@@ -86,6 +86,8 @@ The complete initial Resource/owner/query/measurement/simulator, public operatio
 
 ## 5. Required implementation work
 
+**Validation policy for every substep.** [P2-017](../../assurance/ci-and-local-validation-policy.md) governs the execution of all gates below. Retain necessary Windows/Linux compilation, packaging, static checks, targeted offline schema/unit tests and non-duplicated security. Consumer restoration/compilation does not authorize installed-package execution in CI, public-byte polling or another post-merge test cycle. Product/runtime scenarios remain with their named owners and supported local environments; absent coverage is recorded, never inferred from schema or publication success.
+
 <a id="rule-wp-03.00"></a>
 
 ### WP-03.00 — Create the split project structure
@@ -108,6 +110,8 @@ The [WP03.00 implementation profile](../../assurance/wp03-00-contract-structure-
 **Testing requirements.** Independent positive/negative vectors cover exact integer/decimal, optional/oneof, invalid enum/ID, typed error and all three original audit profiles.
 
 **Completion gate.** All selected records and their semantic constraints round-trip consistently in C# and TS.
+
+The [WP03.01 implementation profile](../../assurance/wp03-01-foundation-contract-profile.md) fixes the complete selected seed/dependency closure, safe value boundaries, profile fixtures and ordered implementation/publication plan. Its owner-body dependency generation does not close WP03.03's descriptor/resource/Sync semantic gate or WP03.05's complete operation, scope, stream/history and language-client gate. Query, measurement and transaction engines remain with their product owners.
 
 <a id="rule-wp-03.02"></a>
 
@@ -149,7 +153,7 @@ The [WP03.00 implementation profile](../../assurance/wp03-00-contract-structure-
 
 **Testing requirements.** Independent exact-value/state/target/context/archive vectors in three languages; descriptor-tag collision/removal and operation-count checks; regeneration clean; consumers restore NuGet/npm/Maven from immutable candidate feeds.
 
-**Completion gate.** Every active operation is classified and decodable; future names are reserved; all packages pass real isolated consumer tests before publication.
+**Completion gate.** Every active operation is classified and decodable; future names are reserved; all packages pass the applicable offline conformance, isolated restore/compilation and candidate packaging checks under P2-017. Publication completion uses original candidate identity and successful provider receipts; no installed-package consumer execution or routine public artifact download is required.
 
 <a id="rule-wp-03.06"></a>
 

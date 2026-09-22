@@ -285,7 +285,7 @@ The [content origin behavior](07-security-privacy-and-trust.md#content-origin-pr
 | `producerKind` | `model`, `human`, `deterministic` or `import`; does not substitute for the inherited kinds |
 | `createdAt` | Known UTC instant or null for an unknown historical time; never guessed |
 | `parentOriginIds` | The first 32 distinct contributing origin IDs in ascending [canonical ID-byte order](../architecture/data-model/00-data-model-overview.md#canonical-id-order), or all if fewer |
-| `omittedParentCount` | Nonnegative int32, zero unless lineage was bounded; the full kind union is retained even when parent IDs are omitted |
+| `omittedParentCount` | Integer in 0..2147483647, encoded as protobuf uint32 at wire tag 9; zero unless lineage was bounded. The full kind union is retained even when parent IDs are omitted |
 
 Maximum encoded record is 64 KiB. Unknown additive fields are preserved inert; invalid required fields fail validation and unknown profile versions are preserved read-only until supported. An origin record is committed with its payload under the existing content revision and journal/sync transaction. This is an additive content feature with a declared reader capability: an older reader may preserve it, but a writer unable to preserve known origin must refuse that mutation/export rather than strip it. Schema migration labels previously unmarked data unknown and never backfills fictitious generation evidence.
 

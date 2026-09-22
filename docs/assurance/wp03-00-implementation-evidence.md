@@ -42,4 +42,4 @@ The Contracts primary checkout was fast-forwarded cleanly to the accepted merge.
 
 No macOS, physical-device/emulator, desktop GUI/browser E2E, live service/inference, installed-package consumer or public-release installation/upgrade result is claimed. Stable-tag/formal Maven Central publication remains unobserved. Full foundation semantics, resource/capability records, helper interfaces, complete operation/stream/history inventories, compatibility windows, signed catalog formats, AOT/registration and real integration remain with WP03.01–03.07/.90 and their later owners. WP03 as a whole and commercial product acceptance remain incomplete.
 
-The user's stopping boundary is substep 03.00. Plan records its completion and the next pending substep separately; **WP03.01 has not started**.
+At this receipt's original execution, the user's stopping boundary was substep 03.00 and WP03.01 had not started. That historical boundary is preserved here; the user's later continuation instruction proceeds under the separate [WP03.01 profile](wp03-01-foundation-contract-profile.md), without changing this receipt's accepted scope.
