@@ -33,18 +33,18 @@ This inventory states capability and degradation obligations. The package regist
 | Tier | Commitment |
 |---|---|
 | **Tier 1** | Full matrix participation ([PD-01](#rule-pd-01)); a release is blocked by its failure |
-| **Tier 2** | Build and automated test participation; a failure is recorded and may be waived per `§21` of the quality contract |
+| **Tier 2** | Produced Windows/Linux build and permitted automated-check participation under P2-017; a failure is recorded and may be waived per `§21` of the quality contract |
 | **Not supported** | Not built, not tested, not claimed. **Absence is stated, never implied** |
 
 ### 2.2 The matrix
 
-Embedded assistant packages are verified inside each host below; they are not a fourth desktop deliverable.
+Embedded assistant packages are verified inside each host below; they are not a fourth desktop deliverable. The table records source-support design intent, not an assertion that every RID is produced or tested. Under [P2-017](../decisions/phase-2-specification-decisions.md#rule-p2-017), CI/publication inventories include only actually produced Windows/Linux artifacts. macOS remains source support with local-only, unverified coverage unless specific local evidence exists; no macOS CI, automatic release artifact or passing result is implied.
 
 | Target | Windows x64 | Windows arm64 | macOS arm64 | macOS x64 | Linux x64 | Linux arm64 |
 |---|---|---|---|---|---|---|
-| **ArcNotes** | Tier 1 | Tier 2 | Tier 1 | Tier 2 | Tier 1 | Tier 2 |
-| **ArcScope** | Tier 1 | Tier 2 | Tier 1 | Tier 2 | Tier 1 | Tier 2 |
-| **ArcSlate** | Tier 1 | Tier 2 | Tier 1 | Tier 2 | Tier 1 | Tier 2 |
+| **ArcNotes** | Tier 1 | Tier 2 | Source only | Source only | Tier 1 | Tier 2 |
+| **ArcScope** | Tier 1 | Tier 2 | Source only | Source only | Tier 1 | Tier 2 |
+| **ArcSlate** | Tier 1 | Tier 2 | Source only | Source only | Tier 1 | Tier 2 |
 
 | Target | Runtime | Architecture posture |
 |---|---|---|
@@ -54,8 +54,8 @@ Embedded assistant packages are verified inside each host below; they are not a 
 
 | # | Rule |
 |---|---|
-| <a id="rule-pt-01"></a>PT-01 | Every professional desktop ships the accepted Windows/Linux/macOS platform and RID set. Shared native/UI mechanisms require per-product integration evidence; platform parity does not imply cross-product execution. |
-| <a id="rule-pt-02"></a>PT-02 | **A Tier-2 platform is a real build, not a promise.** It publishes AOT in CI; what it does not carry is release-blocking authority. |
+| <a id="rule-pt-01"></a>PT-01 | Every professional desktop retains the accepted Windows/Linux/macOS source-support design; a release ships only its actually produced RID set under P2-017 and records missing or untested coverage explicitly. Shared native/UI mechanisms require per-product integration evidence; platform parity does not imply cross-product execution. |
+| <a id="rule-pt-02"></a>PT-02 | **A claimed Tier-2 release platform is a real build, not a promise.** Produced Windows/Linux RIDs publish AOT in permitted CI; source-only targets are not counted as released Tier-2 artifacts. Tier 2 does not carry release-blocking authority. |
 | <a id="rule-pt-03"></a>PT-03 | **Tier promotion is a decision with evidence** — full matrix participation demonstrated — not a marketing choice. |
 | <a id="rule-pt-04"></a>PT-04 | **The mobile emulator architecture is never a release claim** ([PM-03](../requirements/12-quality-and-compatibility-contract.md#rule-pm-03) there). |
 | <a id="rule-pt-05"></a>PT-05 | **A native capability unavailable on a Tier-2 architecture does not demote the platform**; it degrades the capability per `§5`, and the degradation is part of that platform's release metadata. |
@@ -202,8 +202,8 @@ dependency adopted (§3.3)
 
 | # | Obligation | Where |
 |---|---|---|
-| <a id="rule-pv-01"></a>PV-01 | Every Tier-1 platform completes build, AOT publish, install, UI, recovery, compatibility and performance matrices | [WP-06.00](../planning/work-packages/06-aot-jit-and-wasm-publish-proof.md#rule-wp-06.00), [WP-50.02](../planning/work-packages/50-full-platform-production-release.md#rule-wp-50.02) |
-| <a id="rule-pv-02"></a>PV-02 | Every Tier-2 platform completes build and AOT publish in CI | [WP-06.00](../planning/work-packages/06-aot-jit-and-wasm-publish-proof.md#rule-wp-06.00) |
+| <a id="rule-pv-01"></a>PV-01 | Claimed Tier-1 coverage records build/AOT and relevant local install, UI, recovery, compatibility and performance evidence under P2-017; unavailable environments are reported, never fabricated or provisioned solely for validation | [WP-06.00](../planning/work-packages/06-aot-jit-and-wasm-publish-proof.md#rule-wp-06.00), [WP-50.02](../planning/work-packages/50-full-platform-production-release.md#rule-wp-50.02) |
+| <a id="rule-pv-02"></a>PV-02 | Every produced Windows/Linux Tier-2 release RID completes build and AOT publish in permitted CI; macOS source-only targets remain outside that inventory | [WP-06.00](../planning/work-packages/06-aot-jit-and-wasm-publish-proof.md#rule-wp-06.00) |
 | <a id="rule-pv-03"></a>PV-03 | The supported OS range is published as release metadata and matches what was tested | [WP-50.02](../planning/work-packages/50-full-platform-production-release.md#rule-wp-50.02), [WP-50.08](../planning/work-packages/50-full-platform-production-release.md#rule-wp-50.08) |
 | <a id="rule-pv-04"></a>PV-04 | Every native slot in use has its [AD-01](#rule-ad-01)–[AD-08](#rule-ad-08) obligations recorded before the dependent work completes | [PG-03](../assurance/open-gates-register.md#rule-pg-03), [PG-12](../assurance/open-gates-register.md#rule-pg-12), [WP-50.01](../planning/work-packages/50-full-platform-production-release.md#rule-wp-50.01) |
 | <a id="rule-pv-05"></a>PV-05 | Every degradation row is exercised: absent library, failed verification, missing hardware, unsupported format | [WP-13.03](../planning/work-packages/13-high-risk-technical-probes.md#rule-wp-13.03), [WP-37](../planning/work-packages/37-arcslate-playback-and-processing.md#rule-wp-37), [WP-33](../planning/work-packages/33-arcscope-acquisition-and-session.md#rule-wp-33), [WP-18.04](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.04) |

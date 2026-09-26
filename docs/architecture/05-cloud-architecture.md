@@ -255,11 +255,11 @@ The cloud half of the **[D-010](../decisions/phase-1-foundation-decisions.md#rul
 | # | Rule |
 |---|---|
 | <a id="rule-cs-01"></a>CS-01 | **Configuration files hold references, never long-lived plaintext secrets.** |
-| <a id="rule-cs-02"></a>CS-02 | **Production secrets live in a managed vault in RBAC mode with purge protection.** |
+| <a id="rule-cs-02"></a>CS-02 | **Production secrets use Cloudflare Worker secrets or Secrets Store**, with environment-separated bindings, least privilege, audited access and rotation under [IRD-13](../decisions/phase-2-specification-decisions.md#rule-ird-13). |
 | <a id="rule-cs-03"></a>CS-03 | **Service-to-service authentication uses workload identity where available.** |
-| <a id="rule-cs-04"></a>CS-04 | **Envelope encryption is used for per-workspace secret material**, not one vault entry per workspace. **There are no user provider secrets** — end-user BYOK is excluded ([BY-01](../requirements/04-commerce-entitlement-and-credits.md#rule-by-01)–[BY-04](../requirements/04-commerce-entitlement-and-credits.md#rule-by-04), [I-015](../requirements/01-normative-glossary-and-invariants.md#rule-i-015) retired); provider credentials are deployment secrets ([DC-15](../requirements/11-policy-and-configuration.md#rule-dc-15)). |
+| <a id="rule-cs-04"></a>CS-04 | **Envelope encryption is used for per-workspace secret material**, not one deployment-secret entry per workspace. **There are no user provider secrets** — end-user BYOK is excluded ([BY-01](../requirements/04-commerce-entitlement-and-credits.md#rule-by-01)–[BY-04](../requirements/04-commerce-entitlement-and-credits.md#rule-by-04), [I-015](../requirements/01-normative-glossary-and-invariants.md#rule-i-015) retired); provider credentials are deployment secrets ([DC-15](../requirements/11-policy-and-configuration.md#rule-dc-15)). |
 | <a id="rule-cs-05"></a>CS-05 | **Logs, crash dumps and diagnostic bundles are redacted by default.** |
-| <a id="rule-cs-06"></a>CS-06 | **Provider API keys are isolated by provider, workspace and environment.** |
+| <a id="rule-cs-06"></a>CS-06 | **Provider API keys are deployment-operator credentials isolated by provider and environment**, not customer workspace keys. Workspace authorization and data-key isolation remain separate controls. |
 
 ---
 

@@ -1929,7 +1929,7 @@
           "postmerge-consume-retry.log": {
             "sha256": "d47b29920872e9da1ed0c4f5eb0c4373759033470ac4dfdbdbe12197c41370a2",
             "bytes": 8921,
-            "result": "proxy intercepted loopback HTTP/2; superseded by corrected NO_PROXY"
+            "result": "loopback HTTP/2 verification failed; superseded by a successful run"
           },
           "postmerge-consume-final.log": {
             "sha256": "10d683f5776e749875e8d6eaac65fa5d826ad4ed868975acb1401b633ce731b4",
@@ -2302,7 +2302,6 @@
           "originalMembersVerified": 9,
           "registryAddedSignature": true,
           "bytes": 30028,
-          "viaProxy": false,
           "result": "passed"
         },
         {
@@ -2313,7 +2312,6 @@
           "originalMembersVerified": 8,
           "registryAddedSignature": true,
           "bytes": 35491,
-          "viaProxy": false,
           "result": "passed"
         },
         {
@@ -2324,7 +2322,6 @@
           "originalMembersVerified": 8,
           "registryAddedSignature": true,
           "bytes": 31775,
-          "viaProxy": false,
           "result": "passed"
         },
         {
@@ -2335,7 +2332,6 @@
           "originalMembersVerified": 8,
           "registryAddedSignature": true,
           "bytes": 31789,
-          "viaProxy": false,
           "result": "passed"
         },
         {
@@ -2346,7 +2342,6 @@
           "originalMembersVerified": 8,
           "registryAddedSignature": true,
           "bytes": 31780,
-          "viaProxy": false,
           "result": "passed"
         },
         {
@@ -2357,7 +2352,6 @@
           "originalMembersVerified": 8,
           "registryAddedSignature": true,
           "bytes": 31773,
-          "viaProxy": false,
           "result": "passed"
         },
         {
@@ -2368,7 +2362,6 @@
           "originalMembersVerified": 172,
           "registryAddedSignature": true,
           "bytes": 28374442,
-          "viaProxy": false,
           "result": "passed"
         },
         {
@@ -2379,7 +2372,6 @@
           "originalMembersVerified": 121,
           "registryAddedSignature": true,
           "bytes": 1112064,
-          "viaProxy": false,
           "result": "passed"
         },
         {
@@ -2390,7 +2382,6 @@
           "originalMembersVerified": 197,
           "registryAddedSignature": true,
           "bytes": 5391744,
-          "viaProxy": false,
           "result": "passed"
         },
         {
@@ -2401,7 +2392,6 @@
           "originalMembersVerified": 60,
           "registryAddedSignature": true,
           "bytes": 303048,
-          "viaProxy": false,
           "result": "passed"
         }
       ]

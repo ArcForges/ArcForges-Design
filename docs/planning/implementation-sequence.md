@@ -1,15 +1,15 @@
-# Implementation Sequence
+# Implementation Dependency Model
 
-Execution follows [P2-017](../decisions/phase-2-specification-decisions.md#rule-p2-017) and the [CI/local policy](../assurance/ci-and-local-validation-policy.md). Numbered steps remain ordered; independent owner edits may run in parallel with serialized heavy local work. Runtime scenarios are scoped local opt-in, not hosted CI or repeated post-merge gates; macOS CI is prohibited. Historical completion evidence is not a rerun requirement.
+Execution follows [P2-018](../decisions/phase-2-specification-decisions.md#rule-p2-018) and [P2-017](../decisions/phase-2-specification-decisions.md#rule-p2-017) with the [CI/local policy](../assurance/ci-and-local-validation-policy.md). Work is scheduled as delivery tasks with typed prerequisites in the [delivery graph](delivery/README.md); any number of ready tasks may run concurrently while CPU-heavy local work stays serialized per workstation. Runtime scenarios are scoped local opt-in, not hosted CI or repeated post-merge gates; macOS CI is prohibited. Historical completion evidence is not a rerun requirement.
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning
-> Governing authority: **[D-017](../decisions/phase-1-foundation-decisions.md#rule-d-017)** (planning location and format), **[D-019](../decisions/phase-1-foundation-decisions.md#rule-d-019)** (sequence status)
-> Companions: [`work-packages/README.md`](work-packages/README.md), [`../assurance/release-gates.md`](../assurance/release-gates.md), [`../assurance/open-gates-register.md`](../assurance/open-gates-register.md)
+> Governing authority: **[D-017](../decisions/phase-1-foundation-decisions.md#rule-d-017)** (planning location and format), **[D-019](../decisions/phase-1-foundation-decisions.md#rule-d-019)** (derivation after evidence), [P2-018](../decisions/phase-2-specification-decisions.md#rule-p2-018) (task-level scheduling)
+> Companions: [`delivery/README.md`](delivery/README.md), [`work-packages/README.md`](work-packages/README.md), [`../assurance/release-gates.md`](../assurance/release-gates.md), [`../assurance/open-gates-register.md`](../assurance/open-gates-register.md)
 
-This document states the dependency model that produces the work-package sequence: why the order is what it is, what may be parallelised, what may be mocked, and what may never be.
+This document states the principles that shape the dependency model: why prerequisites are what they are, what may be substituted, what must be real, and which semantics are frozen before their first consumer. The scheduling itself — tasks, typed edges, readiness and claims — is defined by the [delivery model](delivery/README.md) and its [graph](delivery/delivery-graph.json).
 
-**The sequence is a dependency order, not a schedule.** It contains no dates, no durations and no resourcing assumptions.
+**The model is a dependency structure, not a schedule.** It contains no dates, no durations and no resourcing assumptions; the relative task sizes exist only for the [schedule analysis](delivery/schedule-analysis.md).
 
 ---
 
@@ -17,20 +17,20 @@ This document states the dependency model that produces the work-package sequenc
 
 | # | Principle |
 |---|---|
-| <a id="rule-sq-01"></a>SQ-01 | **Freeze before build.** Naming, terminology, licence position and product scope are frozen first, because editors, data formats, capabilities and sync all rework if they change later. |
-| <a id="rule-sq-02"></a>SQ-02 | **Prove the risky mechanism before building on it.** AOT publish, local IPC, serialization and persistence recovery are proven on a skeleton before product work depends on them. |
-| <a id="rule-sq-03"></a>SQ-03 | **External vendors may be mocked; your own architectural boundaries may not**. This single rule determines most of the ordering. |
-| <a id="rule-sq-04"></a>SQ-04 | **Prove each real boundary before its consumers.** WP06/08 prove parent/helper AOT gRPC over OS streams; WP14 proves independent product hosts and typed in-process calls. Product-to-product IPC is not a prerequisite. |
-| <a id="rule-sq-05"></a>SQ-05 | **ArcNotes proves sync**, because it is more complex than a toy and simpler than raw captures or large media. |
-| <a id="rule-sq-06"></a>SQ-06 | **The professional products come after the platform they depend on**, and ArcSlate comes last because it carries the highest complexity and performance risk. |
-| <a id="rule-sq-07"></a>SQ-07 | **Mobile architecture follows the first real Cloud contracts; runtime acceptance follows the actual Harness**. Deferring mobile design until every desktop product is finished would rework the contracts it depends on. |
-| <a id="rule-sq-08"></a>SQ-08 | **Commercial primitives precede paid Cloud consumers; paid go-live remains gated at final release**, after entitlement, refunds, webhook idempotency and a real payout path are proven. |
+| <a id="rule-sq-01"></a>SQ-01 | **Freeze before build.** Naming, terminology, licence position and product scope are frozen first, because editors, data formats, capabilities and sync all rework if they change later. This freeze is complete and accepted. |
+| <a id="rule-sq-02"></a>SQ-02 | **Prove the risky mechanism before building on it.** AOT publish, local IPC, serialization, persistence recovery, native decode and acquisition throughput are proven by tasks with few prerequisites; each proof gates only the work that depends on its conclusion ([DLV-21](delivery/README.md#rule-dlv-21)). |
+| <a id="rule-sq-03"></a>SQ-03 | **External vendors may be mocked; your own architectural boundaries may be substituted only to start work.** A contract-bound substitute generated from the authoritative schema may unblock a consumer's start, but every gate that proves a boundary requires the real boundary, and the must-be-real-early list in §3 is unchanged ([DLV-18](delivery/README.md#rule-dlv-18), [DLV-19](delivery/README.md#rule-dlv-19)). |
+| <a id="rule-sq-04"></a>SQ-04 | **Prove each real boundary before the consumers that depend on it complete.** Parent/helper AOT gRPC over OS streams, independent product hosts with typed in-process calls, and each Cloud transport are proven by named proof or integration tasks; consumers may start against the published contract. Product-to-product IPC is not a prerequisite. |
+| <a id="rule-sq-05"></a>SQ-05 | **ArcNotes proves sync**, because it is more complex than a toy and simpler than raw captures or large media. Other products' sync integration tasks follow the real Notes convergence evidence of the sync engine. |
+| <a id="rule-sq-06"></a>SQ-06 | **Products depend on the platform capabilities they use, not on the whole platform.** Each product task depends on the specific persistence, shell, security, native-family or assistant tasks it consumes. ArcSlate's high performance and media risk is retired early by the native decode and synchronisation probe and the media family tasks, not by scheduling ArcSlate last. |
+| <a id="rule-sq-07"></a>SQ-07 | **Android foundation work starts from the published contracts; Android runtime acceptance follows the real Cloud and Harness integration tasks.** Deferring mobile design until every desktop product is finished would rework the contracts it depends on. |
+| <a id="rule-sq-08"></a>SQ-08 | **Commercial primitives precede the completion of paid Cloud consumers; paid go-live remains gated at release**, after entitlement, refunds, webhook idempotency and a real payout path are proven. |
 | <a id="rule-sq-09"></a>SQ-09 | **The static public site can start very early** after the shared Node toolchain is available; it does not need completed commercial or agent services. |
-| <a id="rule-sq-10"></a>SQ-10 | **Each professional product may connect directly to Cloud.** Nothing in this sequence may create a dependency in which a professional product must relay through ArcChat (**[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)**). |
+| <a id="rule-sq-10"></a>SQ-10 | **Each professional product may connect directly to Cloud.** Nothing in this model may create a dependency in which a professional product must relay through ArcChat (**[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)**). |
 
 ### 1.1 The [D-019](../decisions/phase-1-foundation-decisions.md#rule-d-019) ordering, followed
 
-**[D-019](../decisions/phase-1-foundation-decisions.md#rule-d-019)** requires the implementation plan to be derived **after** requirements, architecture, licence matrices and current-code reconciliation are complete. **[D-012](../decisions/phase-1-foundation-decisions.md#rule-d-012)** requires each product's Reference Coverage Matrix before that product's implementation planning is finalized. That ordering is followed.
+**[D-019](../decisions/phase-1-foundation-decisions.md#rule-d-019)** requires the implementation plan to be derived **after** requirements, architecture, licence matrices and current-code reconciliation are complete, and **[D-012](../decisions/phase-1-foundation-decisions.md#rule-d-012)** requires each product's Reference Coverage Matrix before that product's implementation planning is finalized. That derivation requirement remains in force; [P2-018](../decisions/phase-2-specification-decisions.md#rule-p2-018) replaced only its serial single-context execution rule.
 
 | Prerequisite | Artifact | State |
 |---|---|---|
@@ -53,7 +53,7 @@ This document states the dependency model that produces the work-package sequenc
 
 ## 2. Phase structure
 
-The sequence is one continuous numbered series. Phases group ownership for reading; they are not the serial schedule. Each package belongs to exactly one phase. The executable serial order is in §9. WP47 may start after 00/02 and must precede 45; WP53 executes after 45 and before 46.
+Phases group obligation packages for reading; they are not a schedule and carry no ordering. Each package belongs to exactly one phase. Scheduling is defined only by task prerequisites in the [delivery graph](delivery/README.md).
 
 | Phase | Work packages | What becomes true at the end |
 |---|---|---|
@@ -71,19 +71,19 @@ The sequence is one continuous numbered series. Phases group ownership for readi
 
 ---
 
-> **Numbering above `50`.** `00`–`50` were allocated when the sequence was first derived, and a retired identifier is never recycled (`27`, `29`). A package added afterwards therefore takes the next free number while executing at its real dependency position: **`51`, `52` and `53` run in Phase J; Android execution acceptance `31`/`32` follows `52`, and all gate `50`.** Where the numeral and the dependency graph disagree, **the dependency graph governs**.
+> **Numbering.** `00`–`50` were allocated when the obligations were first derived and `51`–`53` were added later; a retired identifier is never recycled (`27`, `29`). Numbers are identities only. Whether any task of a package can run depends solely on that task's prerequisites.
 
 ---
 
 ### 2.1 Web redesign producers and consumers
 
-[P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008) preserves package identity while changing its Web implementation: [WP-01](work-packages/01-repository-reconciliation-and-target-layout.md#rule-wp-01), [WP-02](work-packages/02-build-governance-and-analyzer-policy.md#rule-wp-02) produce the npm/esproj/toolchain boundary; [WP-03](work-packages/03-contract-foundation-and-licence-split.md#rule-wp-03), [WP-04](work-packages/04-identity-error-and-versioning-primitives.md#rule-wp-04) produce handwritten proto descriptors/generated C#/TS packages and exact values; [WP-06.05](work-packages/06-aot-jit-and-wasm-publish-proof.md#rule-wp-06.05) proves a production React call against the real foundation host. [WP-22.08](work-packages/22-identity-workspace-and-device.md#rule-wp-22.08) supplies the production cookie-session adapter before [WP-23](work-packages/23-public-api-and-generated-clients.md#rule-wp-23)'s generated clients and [WP-24](work-packages/24-realtime-and-reliable-events.md#rule-wp-24)'s TS realtime adapter. [WP-47](work-packages/47-static-public-site.md#rule-wp-47) now also depends on [WP-02](work-packages/02-build-governance-and-analyzer-policy.md#rule-wp-02) and supplies the shared consumer design system before [WP-48](work-packages/48-account-portal.md#rule-wp-48), [WP-49](work-packages/49-arcchat-web-companion.md#rule-wp-49). Commercial/Chat release acceptance still consumes the real Cloud/Harness, then [WP-50](work-packages/50-full-platform-production-release.md#rule-wp-50). One new edge, [WP-02](work-packages/02-build-governance-and-analyzer-policy.md#rule-wp-02) → [WP-47](work-packages/47-static-public-site.md#rule-wp-47), prevents the static site from assuming a Node toolchain that no package has built.
+[P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008) preserves package identity while changing its Web implementation: [WP-01](work-packages/01-repository-reconciliation-and-target-layout.md#rule-wp-01), [WP-02](work-packages/02-build-governance-and-analyzer-policy.md#rule-wp-02) produce the npm/esproj/toolchain boundary; [WP-03](work-packages/03-contract-foundation-and-licence-split.md#rule-wp-03), [WP-04](work-packages/04-identity-error-and-versioning-primitives.md#rule-wp-04) produce handwritten proto descriptors/generated C#/TS packages and exact values; [WP-06.05](work-packages/06-aot-jit-and-wasm-publish-proof.md#rule-wp-06.05) proves a production React call against the real foundation host. [WP-22.08](work-packages/22-identity-workspace-and-device.md#rule-wp-22.08) supplies the production cookie-session adapter before [WP-23](work-packages/23-public-api-and-generated-clients.md#rule-wp-23)'s generated clients and [WP-24](work-packages/24-realtime-and-reliable-events.md#rule-wp-24)'s TS realtime adapter. [WP-47](work-packages/47-static-public-site.md#rule-wp-47) now also depends on [WP-02](work-packages/02-build-governance-and-analyzer-policy.md#rule-wp-02) and supplies the shared consumer design system before [WP-48](work-packages/48-account-portal.md#rule-wp-48), [WP-49](work-packages/49-arcchat-web-companion.md#rule-wp-49). Commercial/Chat release acceptance still consumes the real Cloud/Harness, then [WP-50](work-packages/50-full-platform-production-release.md#rule-wp-50). The static site depends only on the accepted Node toolchain of [WP-02](work-packages/02-build-governance-and-analyzer-policy.md#rule-wp-02), so its tasks are among the first to become ready.
 
 ---
 
 ## 3. What may be mocked, and what may not
 
-The policy in this section is the complete, binding definition for every work package. The table defines the permitted fixture boundaries; the rules and named replacement owners below govern their removal.
+The policy in this section is the complete, binding definition for every task. The table defines the permitted substitute boundaries; the rules below and the [substitute registry](delivery/substitutes.md) govern their removal.
 
 | May be mocked initially | Must be real early |
 |---|---|
@@ -101,33 +101,19 @@ The policy in this section is the complete, binding definition for every work pa
 
 | # | Rule |
 |---|---|
-| <a id="rule-mk-01"></a>MK-01 | **A mock is temporary and named.** Every mock introduced by a work package is listed in that package, with the later package that replaces it. |
-| <a id="rule-mk-02"></a>MK-02 | **A mock never crosses a completion gate that the real thing is supposed to prove.** |
-| <a id="rule-mk-03"></a>MK-03 | **A test that only ever runs against a mock does not satisfy a gate for the real integration.** |
-| <a id="rule-mk-04"></a>MK-04 | **A package may not gate on a capability a later package builds.** Where an early package needs a Cloud behaviour that does not exist yet, it uses a named fixture and **states in its own gate that the real verification belongs to the later package**. [WP-17.01](work-packages/17-arcchat-independent-core.md#rule-wp-17.01) and [WP-52](work-packages/52-cloud-harness.md#rule-wp-52) are the worked case. |
+| <a id="rule-mk-01"></a>MK-01 | **A substitute is temporary and named.** Every substitute is registered in the [substitute registry](delivery/substitutes.md) with the contract it implements, what it proves, its real producer and the task that removes its runtime use. |
+| <a id="rule-mk-02"></a>MK-02 | **A substitute never crosses a completion gate that the real thing is supposed to prove.** |
+| <a id="rule-mk-03"></a>MK-03 | **A test that only ever runs against a substitute does not satisfy a gate for the real integration.** |
+| <a id="rule-mk-04"></a>MK-04 | **A task's own gate never requires a capability produced by a task that depends on it.** Where early work needs a Cloud behaviour that does not exist yet, it uses a registered substitute, and the real verification belongs to a named integration or acceptance task. The fixture turn endpoint, removed only after every assistant, Android and Web consumer runs against the real Harness, is the worked case. |
 
 ### 3.1 Named temporary scaffolding
 
-Every fixture that stands in for a later capability is listed here with the package that **deletes** it. [MK-01](#rule-mk-01) requires the naming; this table is where it lives.
-
-| Scaffolding | Introduced by | Stands in for | Deleted by |
-|---|---|---|---|
-| **Fixture turn endpoint** — accepts a turn, returns scripted task and step transitions, scripted stream chunks and scripted `ToolRequest`s; runs no model, planner, admission or metering | [WP-17.01](work-packages/17-arcchat-independent-core.md#rule-wp-17.01) | The Cloud Harness | **[WP-52.05](work-packages/52-cloud-harness.md#rule-wp-52.05)**, which asserts structurally that it no longer exists |
-| Stubbed managed provider path | [WP-17.05](work-packages/17-arcchat-independent-core.md#rule-wp-17.05) | Real provider routing and metering | [WP-43.00](work-packages/43-managed-ai-routing-and-metering.md#rule-wp-43.00), [WP-43.07](work-packages/43-managed-ai-routing-and-metering.md#rule-wp-43.07) |
-| Notes/Chat export fixture endpoints | [WP-15.06](work-packages/15-arcchat-conversation-core.md#rule-wp-15.06), [WP-19.05](work-packages/19-arcnotes-search-and-portability.md#rule-wp-19.05) | Real Cloud snapshot/export jobs | [WP-25.08](work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.08) |
-| Automation fixture state transitions | [WP-17.04](work-packages/17-arcchat-independent-core.md#rule-wp-17.04) | Durable Cloud trigger scheduler and occurrence execution | [WP-52.06](work-packages/52-cloud-harness.md#rule-wp-52.06) |
-| Payment-provider fixture adapter (recorded event fixtures remain regression inputs) | [WP-42.03](work-packages/42-commerce-entitlement-and-credits.md#rule-wp-42.03) | Live adapter/event ingestion | Remove runtime fixture registration at [WP-42.10](work-packages/42-commerce-entitlement-and-credits.md#rule-wp-42.10); retain recorded test cases |
-| Local device test-source substitution | [WP-33.00](work-packages/33-arcscope-acquisition-and-session.md#rule-wp-33.00) | Real hardware acceptance | [WP-33](work-packages/33-arcscope-acquisition-and-session.md#rule-wp-33) hardware-lab gate ([PG-08](../assurance/open-gates-register.md#rule-pg-08)); replay and test sources remain explicitly labelled |
-| No-op media adapter, if used during a unit test | [WP-37.01](work-packages/37-arcslate-playback-and-processing.md#rule-wp-37.01) | Real codec integration | [WP-37](work-packages/37-arcslate-playback-and-processing.md#rule-wp-37)/[WP-38](work-packages/38-arcslate-render-and-colour.md#rule-wp-38) use real decode/export; golden media inputs are retained, never deleted as scaffolding |
-| Test-signed desktop update feed | WP53 | Production feed and real product signing | WP50.02 replaces the test source in release configuration; negative fixtures remain tests |
-| Hostile test parser inside real restricted helper | WP11.09 | Production native parser composition | WP13.13 replaces production fixture registration; malicious regression fixture remains test-only |
-| Recorded Postmark/SES responses | WP22.00 | Deterministic refusal, unknown-outcome and callback regression cases only | WP22.00 forbids runtime fixture registration and proves live delivery/recovery before completion; test recordings remain; WP45.08 consumes the real adapters |
-| Recorded FCM sender responses | WP45.09 | Live provider and physical Android receipt | WP45.09 proves live sending; WP32 proves real device receipt under [PG-24](../assurance/open-gates-register.md#rule-pg-24) |
+Every piece of named scaffolding from the retired scaffolding table — the fixture turn endpoint, the stubbed managed provider path, the Notes and assistant export fixtures, automation fixture state transitions, the payment-provider fixture adapter and recorded events, local device test sources, the no-op media adapter, the test-signed desktop update feed, the hostile test parser, recorded Postmark/SES responses and recorded FCM sender responses — is registered in the [substitute registry](delivery/substitutes.md) with its real producer and removing task. The registry is the only list; it also records substitutes introduced by task decomposition.
 
 | # | Rule |
 |---|---|
 | <a id="rule-ts-01"></a>TS-01 | **Scaffolding is deleted, never adapted.** A fixture that graduates into production code stops being visible as a fixture, which is how a mock ends up serving real traffic. |
-| <a id="rule-ts-02"></a>TS-02 | **The deleting package asserts the deletion structurally**, so the removal is verified rather than assumed. |
+| <a id="rule-ts-02"></a>TS-02 | **The removing task asserts the deletion structurally**, so the removal is verified rather than assumed. |
 
 ---
 
@@ -137,28 +123,26 @@ Every fixture that stands in for a later capability is listed here with the pack
 
 ### Frozen semantics before the first consumer
 
-The reviewed repairs establish these definitions before implementation starts. Packages implement and test them; they do not select their product meaning during coding.
+The reviewed repairs establish these definitions before implementation starts. Tasks implement and test them; they do not select their product meaning during coding.
 
 | Definition | Earliest implementation and downstream proof |
 |---|---|
 | [Content origin behavior](../requirements/07-security-privacy-and-trust.md#content-origin-profile) and [carriers](../requirements/13-data-formats-and-portability.md#content-origin-carriers) | Contract foundation freezes typed records/vectors; persistence commits origin with content; Chat/Notes/native report/media formats preserve it. Real Cloud export replaces runtime fixtures in [WP-25.08](work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.08); real provider/Harness marking runs in [WP-43.04](work-packages/43-managed-ai-routing-and-metering.md#rule-wp-43.04) and [WP-52.03](work-packages/52-cloud-harness.md#rule-wp-52.03). Early fixtures cannot close these real-producer gates |
-| [Notes scalar query](../requirements/products/arcnotes.md#notes-scalar-query-profile) | Foundation contracts and core values precede initial list filters, API/cursor and sync validation. [WP-28](work-packages/28-arcnotes-properties-and-views.md#rule-wp-28) completes both query evaluators; [WP-40](work-packages/40-knowledge-search-and-retrieval.md#rule-wp-40) directly depends on it for the Notes filter. The existing serial order already puts 28 before 40 |
+| [Notes scalar query](../requirements/products/arcnotes.md#notes-scalar-query-profile) | Foundation contracts and core values precede initial list filters, API/cursor and sync validation. [WP-28](work-packages/28-arcnotes-properties-and-views.md#rule-wp-28) completes both query evaluators; [WP-40](work-packages/40-knowledge-search-and-retrieval.md#rule-wp-40) directly depends on it for the Notes filter. In the delivery graph the Notes filter in search depends on the query-model task |
 | [Scope measurement](../requirements/products/arcscope.md#measurement-profile) | Contract/storage projection precedes [WP-34.02](work-packages/34-arcscope-analysis-and-reporting.md#rule-wp-34.02) formulas/oracles and reports. Recorded acquisition/replay input is sufficient; the later Cloud simulator reuses this profile and does not gate earlier analysis |
 | Service term and capacity | [WP-42.11](work-packages/42-commerce-entitlement-and-credits.md#rule-wp-42.11) executes before [WP-42.10](work-packages/42-commerce-entitlement-and-credits.md#rule-wp-42.10) go-live despite numerical suffix order. AI-provider and configuration evidence complete their own shared gates later |
 
-A shared gate closes only after every scheduled producer contributes its required execution evidence. An early package records its scoped contribution in §7/§8, never a substitute global pass. The [gate index](work-packages/README.md#deferred-gate-scheduling) and each named completion gate carry the same obligation. Design-only checks do not close provider, hardware, market, isolation or commercial runtime gates.
+A shared gate closes only after every contributing task records its required execution evidence. An early task records its scoped contribution, never a substitute global pass. The [gate traceability](delivery/traceability.md#gates) and each named completion gate carry the same obligation. Design-only checks do not close provider, hardware, market, isolation or commercial runtime gates.
 
 ---
 
-## 4. Serial execution and dependency freedom
-
-One coordinator advances numbered steps in topological order; numerical identity never overrides a dependency. Independent owner work within the authorized step may be delegated under P2-017, with one CPU-heavy local build/test slot. Independent products may have focused solution views and isolated build/test entry points without splitting authority or bypassing shared gates.
+## 4. Parallel execution and dependency freedom
 
 | # | Rule |
 |---|---|
-| <a id="rule-pa-01"></a>PA-01 | A package starts only after **all** direct upstream completion gates pass; the header, dependency section and index name the same edges. |
-| <a id="rule-pa-02"></a>PA-02 | A change to a shared contract follows its ownership/compatibility process before dependent work proceeds. |
-| <a id="rule-pa-03"></a>PA-03 | Independent repository edits/reviews may use delegated agents under one coordinator. Preserve source ownership, dependency order and a single CPU-heavy local build/test slot; do not begin a later numbered step. |
+| <a id="rule-pa-01"></a>PA-01 | **A task starts when its own start prerequisites are satisfied** ([DLV-24](delivery/README.md#rule-dlv-24)) and the adoption slice for its repository and lane is complete ([DLV-22](delivery/README.md#rule-dlv-22)). There is no package-level start rule: a package's other tasks, its numeric neighbours and unrelated lanes never gate it. |
+| <a id="rule-pa-02"></a>PA-02 | **A change to a shared contract follows its ownership/compatibility process before dependent work proceeds.** The Architecture Owner accepts the change; consumers move to the new closure through reviewed pin updates. |
+| <a id="rule-pa-03"></a>PA-03 | **Independent tasks run concurrently** in the same or different repositories under atomic claims ([DLV-26](delivery/README.md#rule-dlv-26)); merges follow each repository's integration owner ([DLV-29](delivery/README.md#rule-dlv-29)); at most one CPU-heavy local build or test runs per workstation ([DLV-31](delivery/README.md#rule-dlv-31)). |
 
 ---
 
@@ -176,6 +160,7 @@ Roles are functions. One person may hold several; a role always has exactly one 
 | **Operations Owner** | Cloud operation, runbooks, incidents, go-live readiness |
 | **Commercial Operations Owner** | Provider onboarding, payouts, screening, regional gates |
 | **Licensing and Provenance Owner** | Licence boundaries, provenance records, dependency closure |
+| **Repository integration owner** (one per repository) | Merge order and main health, shared-resource protocols, generated baselines, candidate publication of that repository |
 
 ---
 
@@ -191,28 +176,28 @@ Every work package states, without exception:
 6. **Impacts** — database, protocol, UI, security, platform, migration and compatibility, where applicable
 7. **Tests and verification evidence**, including the .90 owned-artifact and real-integration receipt
 8. **Completion gate**
-9. **Dependencies on earlier and later work packages**
+9. **Delivery tasks** — generated from the delivery graph: the tasks that satisfy the package, their prerequisites outside it and their consumers
 
 Required design inputs are current formal definitions, accepted decisions, declared reference-source evidence and completed upstream outputs. An input table must link to the actual definition or evidence it consumes. A historical source label or an instruction to reconstruct a rule from an archived document is not a valid input. Where a rule is defined by this package itself, its behavior and acceptance belong in sections 3, 5, 7 and 8; they are not an external prerequisite.
 
 | # | Rule |
 |---|---|
 | <a id="rule-wf-01"></a>WF-01 | **A work package is not complete until its gate is satisfied with recorded evidence.** |
-| <a id="rule-wf-02"></a>WF-02 | **A work package may not silently absorb another's scope.** Moving scope between packages is a recorded change. |
-| <a id="rule-wf-03"></a>WF-03 | **A work package that discovers a genuine architecture conflict stops and raises it** (**[D-001](../decisions/phase-1-foundation-decisions.md#rule-d-001)**), rather than resolving it locally. |
-| <a id="rule-wf-04"></a>WF-04 | **Sub-steps execute serially in dependency order.** Independent verification cases may run concurrently without dividing implementation ownership. |
-| <a id="rule-wf-05"></a>WF-05 | **Every deferred gate that a package is scheduled to satisfy is named in that package's gate section** ([`../assurance/open-gates-register.md`](../assurance/open-gates-register.md)). |
+| <a id="rule-wf-02"></a>WF-02 | **A work package may not silently absorb another's scope.** Moving scope between packages or tasks is a recorded planning change. |
+| <a id="rule-wf-03"></a>WF-03 | **A task that discovers a genuine architecture conflict stops and raises it** (**[D-001](../decisions/phase-1-foundation-decisions.md#rule-d-001)**), rather than resolving it locally. |
+| <a id="rule-wf-04"></a>WF-04 | **Substeps are obligations, not a sequence.** Their tasks run whenever their prerequisites allow; tasks of one package may run concurrently, and independent verification cases may run concurrently without dividing implementation ownership. |
+| <a id="rule-wf-05"></a>WF-05 | **Every deferred gate that a package is scheduled to satisfy is named in that package's gate section** ([`../assurance/open-gates-register.md`](../assurance/open-gates-register.md)) and mapped to its contributing tasks in [traceability](delivery/traceability.md#gates). |
 
 ---
 
-## 7. What this sequence deliberately does not do
+## 7. What this model deliberately does not do
 
 | # | Position |
 |---|---|
-| <a id="rule-nd-01"></a>ND-01 | **It does not create separate multi-tier plans per product**. One continuous sequence interleaves shared foundation, Cloud, mobile, Web and application-owned capabilities at their real dependency positions. |
-| <a id="rule-nd-02"></a>ND-02 | **It does not schedule.** No dates, no durations, no capacity assumptions. |
-| <a id="rule-nd-03"></a>ND-03 | **It does not reopen Phase 1 decisions.** Where a package touches a decided area, it implements the decision. |
-| <a id="rule-nd-04"></a>ND-04 | **It does not defer risk to the end.** The four high-risk probes are early, precisely so that ArcSlate does not meet decoding, GPU, synchronisation and AOT problems for the first time at work package 36. |
+| <a id="rule-nd-01"></a>ND-01 | **It does not create separate multi-tier plans per product.** One delivery graph interleaves shared foundation, Cloud, mobile, Web and application-owned capabilities at their real dependency positions. |
+| <a id="rule-nd-02"></a>ND-02 | **It does not schedule by calendar.** No dates, no durations, no capacity assumptions; relative sizes serve only the schedule analysis. |
+| <a id="rule-nd-03"></a>ND-03 | **It does not reopen Phase 1 decisions.** Where a task touches a decided area, it implements the decision. |
+| <a id="rule-nd-04"></a>ND-04 | **It does not defer risk to the end.** The four high-risk probes are tasks with few prerequisites, precisely so that ArcSlate does not meet decoding, GPU, synchronisation and AOT problems for the first time late. |
 | <a id="rule-nd-05"></a>ND-05 | **Probe scaffolding does not become production by relabeling.** Probe conclusions feed implementation; scaffolds are cleaned up or discarded. Explicitly assigned functional producer code (WP13.05–13.16) is production code, retained and maintained. |
 
 ---
@@ -227,68 +212,14 @@ Required design inputs are current formal definitions, accepted decisions, decla
 | **[D-017](../decisions/phase-1-foundation-decisions.md#rule-d-017)** | Planning location and format |
 | **[D-019](../decisions/phase-1-foundation-decisions.md#rule-d-019)** | The status of the original stage sequence as discovery, not delivery order |
 | **[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)** | The prohibition on making ArcChat a mandatory relay for professional products |
+| [Delivery traceability](delivery/traceability.md) | Maps every substep, package obligation and gate to its delivery tasks |
 
 ## 9. [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) complete artifact dependency graph
 
-All 51 active packages retain the current accepted scope; WP20 is future-only; WP27/29 remain retired. The dependency table below is the current complete directed graph. Header and dependency sections of each package are generated from this same frozen set. Source ownership and immutable inputs are in each package; no cross-repository source dependency is implied.
+[P2-018](../decisions/phase-2-specification-decisions.md#rule-p2-018) replaced the package-level dependency table and its serial execution list with the task-level [delivery graph](delivery/delivery-graph.json). The graph is the complete artifact dependency structure: every start prerequisite names the published closure or artifact a task needs, every completion prerequisite names the real scenario its acceptance includes, and release prerequisites apply only to release tasks. The retired table (51 active packages, 158 package edges) remains in repository history as a record; it is not an execution rule. All 51 active packages retain their accepted scope; WP20 is future-only and WP27/WP29 remain retired.
 
-| WP | Required upstream |
-|---|---|
-| 00 | None |
-| 01 | `00` |
-| 02 | `01` |
-| 03 | `02` |
-| 04 | `03` |
-| 05 | `02`, `03` |
-| 06 | `03`, `04`, `05` |
-| 07 | `04`, `06` |
-| 08 | `06`, `07` |
-| 09 | `03`, `08` |
-| 10 | `06`, `09` |
-| 11 | `04`, `08`, `09` |
-| 12 | `04`, `06` |
-| 13 | `06`, `07`, `08`, `09`, `10`, `11`, `12` |
-| 14 | `08`, `09`, `10`, `11`, `13` |
-| 15 | `14` |
-| 16 | `09`, `11`, `14` |
-| 17 | `06`, `15`, `16` |
-| 18 | `07`, `10`, `14` |
-| 19 | `18` |
-| 21 | `03`, `05`, `12` |
-| 22 | `11`, `21` |
-| 23 | `03`, `22` |
-| 24 | `23` |
-| 25 | `19`, `24` |
-| 26 | `17`, `24`, `25` |
-| 28 | `19`, `25` |
-| 30 | `03`, `06`, `23`, `24`, `25` |
-| 31 | `26`, `30`, `45`, `52` |
-| 32 | `31` |
-| 33 | `07`, `10`, `13`, `26` |
-| 34 | `33` |
-| 35 | `25`, `34` |
-| 36 | `07`, `10`, `13`, `26` |
-| 37 | `36` |
-| 38 | `37` |
-| 39 | `25`, `38` |
-| 40 | `19`, `25`, `28`, `43`, `44` |
-| 41 | `09`, `11`, `17`, `22`, `25` |
-| 42 | `22`, `23` |
-| 43 | `25`, `42`, `44` |
-| 44 | `23`, `42` |
-| 45 | `12`, `21`, `41`, `44`, `47` |
-| 46 | `25`, `45` |
-| 47 | `00`, `02` |
-| 48 | `25`, `42`, `44`, `46`, `47` |
-| 49 | `26`, `48`, `52` |
-| 50 | `28`, `32`, `35`, `39`, `40`, `41`, `43`, `46`, `49`, `51`, `52`, `53` |
-| 51 | `21`, `23`, `25`, `33`, `34`, `35`, `42`, `44` |
-| 52 | `15`, `17`, `21`, `23`, `26`, `39`, `40`, `41`, `42`, `43`, `44` |
-| 53 | `02`, `06`, `07`, `10`, `11`, `12`, `44`, `45` |
-
-Serial execution: 00, 01, 02, 03, 04, 05, 06, 07, 08, 09, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 21, 22, 23, 24, 25, 26, 28, 30, 33, 34, 35, 36, 37, 38, 39, 41, 42, 44, 43, 40, 47, 45, 53, 46, 48, 51, 52, 31, 32, 49, 50. WP42.11 precedes 42.10. Follow the [producer artifact/stage matrix](producer-artifacts-and-integration.md): WP06 proves minimal real transports; WP13 complete functional native packages; WP52 replaces AI fixtures;31/32/49/50 require real product integration. Independent products use a tested manifest, not lockstep versions.
+Package relationships are now derived views: each package's section 9 lists the tasks that satisfy it, their prerequisites outside the package and the tasks that consume them. The explicit service-term-before-go-live constraint is a task edge: the live-gate staging task starts only after the service-term and replenishing-capacity task is delivered.
 
 ## Final review execution bindings
 
-[Staged artifact integration](README.md#staged-artifact-integration) is mandatory for the graph above. WP02 produces the pipeline/BuildPolicy, WP03 Contracts, WP04 values and WP06 the real native/runtime foundation; later packages never require a future Cloud manifest. The shell directly consumes WP09 contribution contracts. Account UI consumes WP25 exports and WP46 data health. Simulator acceptance consumes WP34 measurements and WP35 portability. WP52 additionally consumes WP39 for real Slate transcription/adoption; this does not move the media engine into Cloud. No full integration gate is satisfied by renaming a mock.
-[P2-013](../decisions/phase-2-specification-decisions.md#rule-p2-013) adds the PackageCatalog producer edge 41→45. Native login/mail originates at 22, fixture signing formats at 03, production trust at 53. The existing serial order already places 41 before 45 and remains valid. Total active dependency edges: 158.
+[Staged artifact integration](README.md#staged-artifact-integration) is mandatory for every task. Contracts closures, Foundation values, platform packages and the runtime proofs are produced before the tasks that consume them; no task requires a future Cloud manifest. The shell directly consumes the capability contribution contracts. Account UI consumes the Cloud export producer and the data-health read projection. Simulator acceptance consumes ArcScope measurements and portability. The Slate transcription adoption scenario consumes the Harness and ArcSlate subtitles without moving the media engine into Cloud. No full integration gate is satisfied by renaming a mock. [P2-013](../decisions/phase-2-specification-decisions.md#rule-p2-013) PackageCatalog production precedes the package review console; native login and mail originate in the identity tasks, fixture signing formats in Contracts, and production trust in the updater and release tasks.

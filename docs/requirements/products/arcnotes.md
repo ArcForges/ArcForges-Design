@@ -109,7 +109,7 @@ Notebook
 | <a id="rule-bl-04"></a>BL-04 | **V1 first-party block types**: paragraph, headings, bulleted list, numbered list, checklist item, quote, callout, code, divider, table, math, image, file/attachment, PDF, embed/reference, toggle/collapsible. |
 | <a id="rule-bl-05"></a>BL-05 | **`ArcNotes.ChecklistItem ≠ ArcChat Agent Task`** ([I-464](../01-normative-glossary-and-invariants.md#rule-i-464)). A checklist item is document content. It may later relate to an agent task explicitly; it is never silently one. |
 | <a id="rule-bl-06"></a>BL-06 | **Arbitrary HTML or script blocks are not offered in V1.** Extensibility goes through the extension model, out of process, with declared capability (`§8` of the extension requirements). |
-| <a id="rule-bl-07"></a>BL-07 | **Inline content** — bold, italic, code, links, mentions, math, footnote references — is modelled explicitly, not as embedded markup strings. |
+| <a id="rule-bl-07"></a>BL-07 | **Inline content** — bold, italic, code, links, mentions, footnote references — is modelled explicitly, not as embedded markup strings. V1 math is a block under [notes.math.v1](../../architecture/26-product-behavior-profiles.md#initial-math-profile--notesmathv1); legacy inline math preserves its source with an unsupported marker, without enabling inline-math authoring. |
 | <a id="rule-bl-08"></a>BL-08 | Block types are registered **statically or by source generation** ([CH-06](#rule-ch-06)). |
 
 ---

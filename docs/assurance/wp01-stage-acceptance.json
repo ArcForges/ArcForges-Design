@@ -437,8 +437,7 @@
         "expectedSha256": "60ef3bacd98a67d19a5a163a43b65b7f348af537cf99778656dccbea103fe430",
         "sha256": "60ef3bacd98a67d19a5a163a43b65b7f348af537cf99778656dccbea103fe430",
         "bytes": 30029,
-        "result": "passed",
-        "viaProxy": false
+        "result": "passed"
       },
       {
         "owner": "DesktopPlatform",
@@ -446,8 +445,7 @@
         "expectedSha256": "7b4c272de5a4438635fc5cae7653d916cbacec20d645370273d4de160d5298c4",
         "sha256": "7b4c272de5a4438635fc5cae7653d916cbacec20d645370273d4de160d5298c4",
         "bytes": 35491,
-        "result": "passed",
-        "viaProxy": false
+        "result": "passed"
       },
       {
         "owner": "DesktopPlatform",
@@ -455,8 +453,7 @@
         "expectedSha256": "e9fec9710e34d8a90db841c41fef90c484992fd30e1e26155debb844026e7153",
         "sha256": "e9fec9710e34d8a90db841c41fef90c484992fd30e1e26155debb844026e7153",
         "bytes": 31776,
-        "result": "passed",
-        "viaProxy": false
+        "result": "passed"
       },
       {
         "owner": "DesktopPlatform",
@@ -464,8 +461,7 @@
         "expectedSha256": "78456e26acf8a0b0045dee7db00bbd4a50e9a2193df7164fbe7d1f3d3265ebf6",
         "sha256": "78456e26acf8a0b0045dee7db00bbd4a50e9a2193df7164fbe7d1f3d3265ebf6",
         "bytes": 31794,
-        "result": "passed",
-        "viaProxy": false
+        "result": "passed"
       },
       {
         "owner": "DesktopPlatform",
@@ -473,8 +469,7 @@
         "expectedSha256": "29fc2022fd9b3ccd39bf71d70549f52d804ff0346ddf00aead4481f2c565dd3d",
         "sha256": "29fc2022fd9b3ccd39bf71d70549f52d804ff0346ddf00aead4481f2c565dd3d",
         "bytes": 31785,
-        "result": "passed",
-        "viaProxy": false
+        "result": "passed"
       },
       {
         "owner": "DesktopPlatform",
@@ -482,8 +477,7 @@
         "expectedSha256": "87698830d92170ab2aba4b6c061e55b43905defbf39c40c39a44433f6681ba08",
         "sha256": "87698830d92170ab2aba4b6c061e55b43905defbf39c40c39a44433f6681ba08",
         "bytes": 31778,
-        "result": "passed",
-        "viaProxy": false
+        "result": "passed"
       },
       {
         "owner": "DesktopPlatform",
@@ -491,8 +485,7 @@
         "expectedSha256": "945b6bf4727e168d8f815bd874aeed9f5f1eebf4bdd0fe1cf069a82693fb9f7a",
         "sha256": "945b6bf4727e168d8f815bd874aeed9f5f1eebf4bdd0fe1cf069a82693fb9f7a",
         "bytes": 28374454,
-        "result": "passed",
-        "viaProxy": false
+        "result": "passed"
       },
       {
         "owner": "DesktopPlatform",
@@ -500,8 +493,7 @@
         "expectedSha256": "e5f86162f13271d885c744870a73094f7c95ce6f365dbdd2bd81d23043cc5fa1",
         "sha256": "e5f86162f13271d885c744870a73094f7c95ce6f365dbdd2bd81d23043cc5fa1",
         "bytes": 1112082,
-        "result": "passed",
-        "viaProxy": false
+        "result": "passed"
       },
       {
         "owner": "DesktopPlatform",
@@ -509,8 +501,7 @@
         "expectedSha256": "c0c33f8c457f54e980669344eb91b0c886a2f918838cb69ef39b25c9c031faff",
         "sha256": "c0c33f8c457f54e980669344eb91b0c886a2f918838cb69ef39b25c9c031faff",
         "bytes": 5391752,
-        "result": "passed",
-        "viaProxy": false
+        "result": "passed"
       },
       {
         "owner": "DesktopPlatform",
@@ -518,8 +509,7 @@
         "expectedSha256": "d6bbec3bf80f651d95e9cfc7cc0311253ffa4943bd7d2d1f0f25507e84145775",
         "sha256": "d6bbec3bf80f651d95e9cfc7cc0311253ffa4943bd7d2d1f0f25507e84145775",
         "bytes": 303058,
-        "result": "passed",
-        "viaProxy": false
+        "result": "passed"
       },
       {
         "owner": "Contracts",
@@ -527,8 +517,7 @@
         "expectedSha256": "c016f4135051ce21b9fefd5c72077901e591c8362eb4cc48522963aa4af3cf7a",
         "sha256": "c016f4135051ce21b9fefd5c72077901e591c8362eb4cc48522963aa4af3cf7a",
         "bytes": 8517,
-        "result": "passed",
-        "viaProxy": false
+        "result": "passed"
       },
       {
         "owner": "Contracts",
@@ -536,8 +525,7 @@
         "expectedSha256": "a2844e3e012805ec38151d0bd477987b7475a8e47783b1700acc432ebe79255b",
         "sha256": "a2844e3e012805ec38151d0bd477987b7475a8e47783b1700acc432ebe79255b",
         "bytes": 7657,
-        "result": "passed",
-        "viaProxy": false
+        "result": "passed"
       },
       {
         "owner": "Contracts",
@@ -545,8 +533,7 @@
         "expectedSha256": "95aa4dc1bd40b852987edea9fd15cf639836def462cca285aa95b77144e0303d",
         "sha256": "95aa4dc1bd40b852987edea9fd15cf639836def462cca285aa95b77144e0303d",
         "bytes": 41700,
-        "result": "passed",
-        "viaProxy": false
+        "result": "passed"
       },
       {
         "owner": "Contracts",
@@ -554,8 +541,7 @@
         "expectedSha256": "3afdacfd86f628d7264307a71a850193e751f9052a6569c0a3d5ea23e196fa80",
         "sha256": "3afdacfd86f628d7264307a71a850193e751f9052a6569c0a3d5ea23e196fa80",
         "bytes": 30547,
-        "result": "passed",
-        "viaProxy": false
+        "result": "passed"
       },
       {
         "owner": "Contracts",
@@ -563,8 +549,7 @@
         "expectedSha256": "e0456bda007824763550a2d04b57a8c0b217ea16358876722d0324630e6b09ba",
         "sha256": "e0456bda007824763550a2d04b57a8c0b217ea16358876722d0324630e6b09ba",
         "bytes": 2023,
-        "result": "passed",
-        "viaProxy": false
+        "result": "passed"
       },
       {
         "owner": "Contracts",
@@ -572,8 +557,7 @@
         "expectedSha256": "452219b2048081b4aee2cbab83a628847b1616c37117e1f0d48e84e468b9cd25",
         "sha256": "452219b2048081b4aee2cbab83a628847b1616c37117e1f0d48e84e468b9cd25",
         "bytes": 16654,
-        "result": "passed",
-        "viaProxy": false
+        "result": "passed"
       },
       {
         "owner": "Contracts",
@@ -581,8 +565,7 @@
         "expectedSha256": "6ce72582c01a98b4f5c5b3a4085a18231e55b23c74ebf4f17df5752d6342a7c7",
         "sha256": "6ce72582c01a98b4f5c5b3a4085a18231e55b23c74ebf4f17df5752d6342a7c7",
         "bytes": 3750,
-        "result": "passed",
-        "viaProxy": false
+        "result": "passed"
       },
       {
         "owner": "Contracts",
@@ -590,8 +573,7 @@
         "expectedSha256": "ae77ecf8f2d0a1dcf409824de1b8750ee1a5e7780997e1f40c16d2bf66800b78",
         "sha256": "ae77ecf8f2d0a1dcf409824de1b8750ee1a5e7780997e1f40c16d2bf66800b78",
         "bytes": 394627,
-        "result": "passed",
-        "viaProxy": false
+        "result": "passed"
       },
       {
         "owner": "Contracts",
@@ -599,8 +581,7 @@
         "expectedSha256": "8d3f1d68649d71cbf16bab13563bd4addc9fde37f88ba1d590bca5b1be1916a7",
         "sha256": "8d3f1d68649d71cbf16bab13563bd4addc9fde37f88ba1d590bca5b1be1916a7",
         "bytes": 30232,
-        "result": "passed",
-        "viaProxy": false
+        "result": "passed"
       },
       {
         "owner": "Contracts",
@@ -608,8 +589,7 @@
         "expectedSha256": "5dd17f9e809195f3f57a386151246e40563c31e0539a447468bd9a8462c1f8a1",
         "sha256": "5dd17f9e809195f3f57a386151246e40563c31e0539a447468bd9a8462c1f8a1",
         "bytes": 2756,
-        "result": "passed",
-        "viaProxy": false
+        "result": "passed"
       },
       {
         "owner": "Contracts",
@@ -617,8 +597,7 @@
         "expectedSha256": "ee84123ef412ba4ad2e8d6540729e7d3f03b3661f7becad7a408f2404705efc6",
         "sha256": "ee84123ef412ba4ad2e8d6540729e7d3f03b3661f7becad7a408f2404705efc6",
         "bytes": 353941,
-        "result": "passed",
-        "viaProxy": false
+        "result": "passed"
       },
       {
         "owner": "Contracts",
@@ -626,8 +605,7 @@
         "expectedSha256": "8d17bc7e1ffa4f600de28696afb71d88bb217a524edb3a362206a72c77570a08",
         "sha256": "8d17bc7e1ffa4f600de28696afb71d88bb217a524edb3a362206a72c77570a08",
         "bytes": 13417,
-        "result": "passed",
-        "viaProxy": false
+        "result": "passed"
       },
       {
         "owner": "Contracts",
@@ -635,8 +613,7 @@
         "expectedSha256": "66ec06c819f451b5b401963b319bbcb198ef0cd01c1030559f1d406d1331780d",
         "sha256": "66ec06c819f451b5b401963b319bbcb198ef0cd01c1030559f1d406d1331780d",
         "bytes": 5065,
-        "result": "passed",
-        "viaProxy": false
+        "result": "passed"
       },
       {
         "owner": "Contracts",
@@ -644,8 +621,7 @@
         "expectedSha256": "8ec9390795d25830e879e55e40e110a02d9c650415bdaef7ad54a72174e1bec7",
         "sha256": "8ec9390795d25830e879e55e40e110a02d9c650415bdaef7ad54a72174e1bec7",
         "bytes": 11172,
-        "result": "passed",
-        "viaProxy": false
+        "result": "passed"
       },
       {
         "owner": "Contracts",
@@ -653,8 +629,7 @@
         "expectedSha256": "89fef560caf40cc7936f13dd10e2c2d106f33b070be81f3b769727c8b10a7068",
         "sha256": "89fef560caf40cc7936f13dd10e2c2d106f33b070be81f3b769727c8b10a7068",
         "bytes": 265067,
-        "result": "passed",
-        "viaProxy": false
+        "result": "passed"
       },
       {
         "owner": "Contracts",
@@ -662,8 +637,7 @@
         "expectedSha256": "d2548facdd8e959deecc26bd13835673857dc8ebd3ae29889b11fa50304253a4",
         "sha256": "d2548facdd8e959deecc26bd13835673857dc8ebd3ae29889b11fa50304253a4",
         "bytes": 2234,
-        "result": "passed",
-        "viaProxy": false
+        "result": "passed"
       },
       {
         "owner": "Contracts",
@@ -671,8 +645,7 @@
         "expectedSha256": "c9e628809ca8701f478630604caa1833b9f88af926ee533cfc11638c08cb11d9",
         "sha256": "c9e628809ca8701f478630604caa1833b9f88af926ee533cfc11638c08cb11d9",
         "bytes": 4145,
-        "result": "passed",
-        "viaProxy": false
+        "result": "passed"
       },
       {
         "owner": "Contracts",
@@ -680,8 +653,7 @@
         "expectedSha256": "2c3532ce0023bdcae8695a2a88d4ef1c4a918be5f7b89e8fdb579b07fb4e7f09",
         "sha256": "2c3532ce0023bdcae8695a2a88d4ef1c4a918be5f7b89e8fdb579b07fb4e7f09",
         "bytes": 13508,
-        "result": "passed",
-        "viaProxy": false
+        "result": "passed"
       },
       {
         "owner": "Contracts",
@@ -689,8 +661,7 @@
         "expectedSha256": "7cfae906e142f044c0647848a9bf4abfeb57f2287c942ef7d19a0856146eb25d",
         "sha256": "7cfae906e142f044c0647848a9bf4abfeb57f2287c942ef7d19a0856146eb25d",
         "bytes": 9266,
-        "result": "passed",
-        "viaProxy": false
+        "result": "passed"
       },
       {
         "owner": "Contracts",
@@ -698,8 +669,7 @@
         "expectedSha256": "7a0c26554276fb67c1d8dfcef3bf80cf472c960b0b0098fcbbf5a1b6a939803d",
         "sha256": "7a0c26554276fb67c1d8dfcef3bf80cf472c960b0b0098fcbbf5a1b6a939803d",
         "bytes": 8724,
-        "result": "passed",
-        "viaProxy": false
+        "result": "passed"
       },
       {
         "owner": "Contracts",
@@ -707,8 +677,7 @@
         "expectedSha256": "995f53534cbb5e926eadd20291d0883a98c4ccae6a1dc43eb8b303f981e7c55e",
         "sha256": "995f53534cbb5e926eadd20291d0883a98c4ccae6a1dc43eb8b303f981e7c55e",
         "bytes": 2795,
-        "result": "passed",
-        "viaProxy": false
+        "result": "passed"
       },
       {
         "owner": "Contracts",
@@ -716,8 +685,7 @@
         "expectedSha256": "2999b41f4c90edb1839357a5d708d1ccbe04c4db56f811df6a42657c714e5205",
         "sha256": "2999b41f4c90edb1839357a5d708d1ccbe04c4db56f811df6a42657c714e5205",
         "bytes": 1618,
-        "result": "passed",
-        "viaProxy": false
+        "result": "passed"
       },
       {
         "owner": "Contracts",
@@ -725,8 +693,7 @@
         "expectedSha256": "fce613a0c6b59ce4fc92fc7e6c939ea4b2f17951ed25f8213c448af83ae8de15",
         "sha256": "fce613a0c6b59ce4fc92fc7e6c939ea4b2f17951ed25f8213c448af83ae8de15",
         "bytes": 255289,
-        "result": "passed",
-        "viaProxy": false
+        "result": "passed"
       }
     ]
   },

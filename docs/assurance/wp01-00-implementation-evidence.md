@@ -52,7 +52,7 @@ WP00's exact NuGet/npm/Maven/native, five-RID desktop, browser, signed Android, 
 
 [Main CI](https://github.com/ArcForges/DesktopPlatform/actions/runs/35539950237) completed successfully on the merge. Candidate `1.0.0-ci.16.1` contains ten NuGet packages, with manifest SHA256 `54a8e94c8ce7d143446e118e67d8b5fa11051aede1961efc42988aed688c510a`. Every candidate package hash matched. Windows/Linux empty-cache package consumers and Windows Native AOT runtime consumers passed before publication.
 
-All ten public NuGet packages were downloaded and all **599 original ZIP members** matched the tested candidate exactly. Only registry-added `.signature.p7s` was excluded from member comparison. Initial 404 responses cleared after registry processing; direct/proxy retries and cache-busting requests were used without republishing or overwriting any version. Exact public package hashes are in the [machine-readable receipt](wp01-00-implementation-evidence.json). The main CI and public-availability gates passed; no pending prerequisite remains for WP01.00.
+All ten public NuGet packages were downloaded and all **599 original ZIP members** matched the tested candidate exactly. Only registry-added `.signature.p7s` was excluded from member comparison. Initial 404 responses cleared after registry processing; retries and cache-busting requests were used without republishing or overwriting any version. Exact public package hashes are in the [machine-readable receipt](wp01-00-implementation-evidence.json). The main CI and public-availability gates passed; no pending prerequisite remains for WP01.00.
 
 ## Retention and remaining scope
 

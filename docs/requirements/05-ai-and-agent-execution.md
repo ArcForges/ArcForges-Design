@@ -501,7 +501,7 @@ The most effective cost control is sending fewer meaningless tokens, not reducin
 
 | # | Requirement |
 |---|---|
-| <a id="rule-ce-01"></a>CE-01 | **The full capability catalogue is never handed to the model.** With hundreds of capabilities across products, sending every tool schema each round degrades quality and explodes cost. The flow is: intent and capability discovery → select relevant applications → select a small relevant capability set → invoke the agent. |
+| <a id="rule-ce-01"></a>CE-01 | **The full capability catalogue is never handed to the model.** With hundreds of capabilities across products, sending every tool schema each round degrades quality and explodes cost. The flow is: intent and capability discovery within the frozen owning or explicitly targeted application and authorized Cloud scope → select a small relevant capability set → invoke the agent. |
 
 ### 11.7 Ledgers and reconciliation
 

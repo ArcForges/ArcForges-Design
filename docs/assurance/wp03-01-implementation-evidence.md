@@ -1,6 +1,6 @@
 # WP03.01 foundation contract implementation evidence
 
-Status: **WP03.01 complete**. This receipt closes the selected foundation schema, safe-value and profile-validation boundary under the [approved profile](wp03-01-foundation-contract-profile.md) and [P2-017 validation policy](ci-and-local-validation-policy.md). The [machine-readable receipt](wp03-01-implementation-evidence.json) records reviewed source, successful required checks and complete normal publication. Substep 03.02 is next and has not started; Plan advancement is a separate completion change. This is [WP03.01](../planning/work-packages/03-contract-foundation-and-licence-split.md#rule-wp-03.01) acceptance, not completion of WP03 or commercial product acceptance.
+Status: **WP03.01 complete**. This receipt closes the selected foundation schema, safe-value and profile-validation boundary under the [approved profile](wp03-01-foundation-contract-profile.md) and [P2-017 validation policy](../decisions/phase-2-specification-decisions.md#rule-p2-017). The [machine-readable receipt](wp03-01-implementation-evidence.json) records reviewed source, successful required checks and complete normal publication. Substep 03.02 is next and has not started; Plan advancement is a separate completion change. This is [WP03.01](../planning/work-packages/03-contract-foundation-and-licence-split.md#rule-wp-03.01) acceptance, not completion of WP03 or commercial product acceptance.
 
 ## Authority and accepted source
 

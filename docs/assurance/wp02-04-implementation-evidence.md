@@ -1,12 +1,12 @@
 # WP02.04 version identity and CI reduction
 
-Scope: [WP02.04](../planning/work-packages/02-build-governance-and-analyzer-policy.md#rule-wp-02.04), the [version identity profile](wp02-04-version-identity-profile.md), and the explicitly authorized [P2-017 CI/local policy](ci-and-local-validation-policy.md). This receipt covers foundation identity plumbing and the repository-wide execution-policy change. It does not establish complete business applications, future compatibility producers or commercial acceptance.
+Scope: [WP02.04](../planning/work-packages/02-build-governance-and-analyzer-policy.md#rule-wp-02.04), the [version identity profile](wp02-04-version-identity-profile.md), and the explicitly authorized [P2-017 CI/local policy](../decisions/phase-2-specification-decisions.md#rule-p2-017). This receipt covers foundation identity plumbing and the repository-wide execution-policy change. It does not establish complete business applications, future compatibility producers or commercial acceptance.
 
 ## Authority and execution
 
 [Design PR 53](https://github.com/ArcForges/ArcForges-Design/pull/53), merged as `47db6670a727317939b91245e8c0b288834acf99`, established the researched inventory and complete ordered reduction plan before implementation. [Plan PR 3](https://github.com/ArcForges/Plan/pull/3), merged as `5b0563423555c8787385c01087c0ade5559d878d`, synchronized both execution profiles, AGENTS and the reusable single-task command. The current task remains WP02.04; no WP02.05 work was started.
 
-Independent agents owned DesktopPlatform/Contracts, the three desktop products, and Cloud/AI/Web. The coordinator owned Mobile, authoritative documentation, dependency order and final review. Heavy local desktop builds ran sequentially using existing caches. No local toolchain, vcpkg, SDK or emulator was installed or reinstalled. Normal networking was used without proxy configuration or WSL wrappers.
+Independent agents owned DesktopPlatform/Contracts, the three desktop products, and Cloud/AI/Web. The coordinator owned Mobile, authoritative documentation, dependency order and final review. Heavy local desktop builds ran sequentially using existing caches. No local toolchain, vcpkg, SDK or emulator was installed or reinstalled. Normal networking was used without WSL wrappers.
 
 Mobile work was appended to its existing PR 9. Every other changed source owner received a new retained worktree and PR. Unrelated dependency PRs were left unchanged. Every complete PR received review, findings were corrected, and source merges required successful applicable checks on the latest reviewed head. Documentation-only PRs had no CI and merged after consistency review.
 

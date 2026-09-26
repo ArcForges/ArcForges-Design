@@ -3828,7 +3828,6 @@
           "originalMembersVerified": 9,
           "registryAddedSignature": true,
           "bytes": 30029,
-          "viaProxy": false,
           "result": "passed"
         },
         {
@@ -3839,7 +3838,6 @@
           "originalMembersVerified": 8,
           "registryAddedSignature": true,
           "bytes": 35484,
-          "viaProxy": false,
           "result": "passed"
         },
         {
@@ -3850,7 +3848,6 @@
           "originalMembersVerified": 8,
           "registryAddedSignature": true,
           "bytes": 31779,
-          "viaProxy": false,
           "result": "passed"
         },
         {
@@ -3861,7 +3858,6 @@
           "originalMembersVerified": 8,
           "registryAddedSignature": true,
           "bytes": 31799,
-          "viaProxy": false,
           "result": "passed"
         },
         {
@@ -3872,7 +3868,6 @@
           "originalMembersVerified": 8,
           "registryAddedSignature": true,
           "bytes": 31784,
-          "viaProxy": false,
           "result": "passed"
         },
         {
@@ -3883,7 +3878,6 @@
           "originalMembersVerified": 8,
           "registryAddedSignature": true,
           "bytes": 31780,
-          "viaProxy": false,
           "result": "passed"
         },
         {
@@ -3894,7 +3888,6 @@
           "originalMembersVerified": 172,
           "registryAddedSignature": true,
           "bytes": 28374442,
-          "viaProxy": false,
           "result": "passed"
         },
         {
@@ -3905,7 +3898,6 @@
           "originalMembersVerified": 121,
           "registryAddedSignature": true,
           "bytes": 1112084,
-          "viaProxy": false,
           "result": "passed"
         },
         {
@@ -3916,7 +3908,6 @@
           "originalMembersVerified": 197,
           "registryAddedSignature": true,
           "bytes": 5391753,
-          "viaProxy": false,
           "result": "passed"
         },
         {
@@ -3927,7 +3918,6 @@
           "originalMembersVerified": 60,
           "registryAddedSignature": true,
           "bytes": 303056,
-          "viaProxy": false,
           "result": "passed"
         }
       ]

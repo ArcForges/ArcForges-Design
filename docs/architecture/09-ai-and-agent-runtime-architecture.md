@@ -65,7 +65,7 @@ Capability Registry  →  filtered by intent, permission, entitlement, policy, b
 | # | Rule |
 |---|---|
 | <a id="rule-cr-01"></a>CR-01 | **The full catalogue is never handed to the model** ([CE-01](../requirements/05-ai-and-agent-execution.md#rule-ce-01) in the AI requirements). Hundreds of tool schemas per turn degrade quality and explode cost. |
-| <a id="rule-cr-02"></a>CR-02 | **Selection is a pipeline**: intent and capability discovery → relevant products → a small relevant capability set → invoke. |
+| <a id="rule-cr-02"></a>CR-02 | **Selection is a pipeline**: intent and capability discovery within the frozen owning or explicitly targeted application and authorized Cloud scope → a small relevant capability set → invoke. |
 | <a id="rule-cr-03"></a>CR-03 | **Capability metadata drives behaviour**, not the model's inference: execution shape, effect semantics, retry semantics, cancellation semantics, preview support, checkpoint support, compensation support, risk and scope (`§4.2` of the contracts architecture). |
 | <a id="rule-cr-04"></a>CR-04 | **Invocation ordering is fixed**: native capability → trusted connector, MCP or API → computer use as an advanced fallback (`§8.1` of the ArcChat requirements). |
 | <a id="rule-cr-05"></a>CR-05 | **A capability's availability is dynamic** and reflects installation, running state, health, compatibility, permission, entitlement and policy ([AC-04](02-contracts-and-protocols.md#rule-ac-04) in the contracts architecture). |
@@ -83,7 +83,7 @@ Intent
            ├── Plan Revision (retained, reasoned)
            │    └── Step (DAG)
            │         └── Attempt
-           │              └── Capability Invocation / AI Request / Child Task / Gate / Wait
+           │              └── Capability Invocation / AI Request / ProductJobRef / Gate / Wait
            └── Checkpoints, budget reservation, trace
 ```
 
@@ -234,13 +234,15 @@ Placement no longer describes where the model loop runs — it always runs in Cl
 
 ---
 
-## 10. Child tasks and long-running capabilities
+<a id="10-child-tasks-and-long-running-capabilities"></a>
+
+## 10. Product jobs and long-running capabilities
 
 ```
 Parent Step invokes a long-running capability
-  → the owner returns a TaskHandle
+  → the owner returns a ProductJobRef
   → the parent step enters Waiting(ProductJob)
-  → the parent observes the child by snapshot and events
+  → the Run observes the product job by snapshot and events
   → completion: the parent receives result, ResourceRef, ArtifactRef, outcome
 ```
 
@@ -260,7 +262,7 @@ Parent Step invokes a long-running capability
 | <a id="rule-cc-01"></a>CC-01 | **Two checkpoint kinds**: an execution checkpoint owned by the runtime, and a domain checkpoint owned by the product (`§5.1` there). |
 | <a id="rule-cc-02"></a>CC-02 | **ArcChat never creates a system-wide snapshot** ([CK-01](../requirements/05-ai-and-agent-execution.md#rule-ck-01) there). It requests a checkpoint and receives a reference. |
 | <a id="rule-cc-03"></a>CC-03 | **A domain checkpoint precedes any high-risk batch modification** ([CK-02](../requirements/05-ai-and-agent-execution.md#rule-ck-02) there). |
-| <a id="rule-cc-04"></a>CC-04 | **Cross-application unwinding is a saga executed in reverse through each owner** ([CP-02](../requirements/05-ai-and-agent-execution.md#rule-cp-02) there), never a simulated distributed transaction. |
+| <a id="rule-cc-04"></a>CC-04 | **Compensation between Cloud and the targeted application is a saga executed in reverse through each owner** ([CP-02](../requirements/05-ai-and-agent-execution.md#rule-cp-02) there), never a simulated distributed transaction. |
 | <a id="rule-cc-05"></a>CC-05 | **Compensation is traced and can fail** ([CP-03](../requirements/05-ai-and-agent-execution.md#rule-cp-03), [CP-04](../requirements/05-ai-and-agent-execution.md#rule-cp-04) there). |
 | <a id="rule-cc-06"></a>CC-06 | **Failure does not automatically trigger compensation** ([CP-05](../requirements/05-ai-and-agent-execution.md#rule-cp-05) there). |
 

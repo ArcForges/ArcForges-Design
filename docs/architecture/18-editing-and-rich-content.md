@@ -64,7 +64,7 @@ InlineContent := ordered list of Inline
 Inline        := TextRun { text, marks }
                | Link      { target, marks, InlineContent }
                | Mention   { subject, marks }
-               | InlineMath{ tex }
+               | InlineMath{ tex }  // legacy preservation only; not V1 authoring
                | FootnoteRef { footnoteId }
                | LineBreak
 Mark          := bold | italic | strikethrough | underline | code
@@ -79,7 +79,7 @@ Mark          := bold | italic | strikethrough | underline | code
 | <a id="rule-in-04"></a>IN-04 | **Adjacent runs with identical mark sets are merged at the transaction boundary.** Without this, a long editing session fragments a paragraph into thousands of runs and every subsequent operation slows down. |
 | <a id="rule-in-05"></a>IN-05 | **A `Link` carries `InlineContent`, so a link can contain formatted text**, but a link never nests inside a link. |
 | <a id="rule-in-06"></a>IN-06 | **A `Mention` and a `Link` to a document both store identity, never a title** ([BR-04](../planning/work-packages/18-arcnotes-document-core.md#rule-br-04) of [WP-18](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18)). The title is resolved at render time, so renaming a document updates every reference without a write. |
-| <a id="rule-in-07"></a>IN-07 | **`InlineMath` stores TeX source as the authority**; its rendered form is derived and cached (`§7.2`). |
+| <a id="rule-in-07"></a>IN-07 | **TeX source is the authority for math blocks**; their rendered form is derived and cached (`§7.2`). The legacy `InlineMath` shape preserves unsupported source and its identity, never enables V1 inline authoring or silently converts it to a block. |
 | <a id="rule-in-08"></a>IN-08 | **An empty run is never persisted.** Empty `InlineContent` is an empty list, which is how an empty paragraph is represented — not a run containing `""`. |
 
 ### 2.3 What the model deliberately excludes
@@ -315,7 +315,7 @@ document → block sequence (in ordinal order, hierarchy flattened with depth)
 | <a id="rule-mt-02"></a>MT-02 | **The supported subset is declared and versioned.** A construct outside it renders as its source with an explicit "unsupported construct" marker, never silently wrong — a silently mis-rendered formula is worse than an unrendered one. |
 | <a id="rule-mt-03"></a>MT-03 | **Math layout is a managed component**, chosen against the AOT and licence constraints; it introduces no native dependency. |
 | <a id="rule-mt-04"></a>MT-04 | **No TeX macro expansion from document content is executed as a general macro language** ([EC-06](#rule-ec-06)). The supported subset is fixed. |
-| <a id="rule-mt-05"></a>MT-05 | V1 math is a block construct under notes.math.v1. Use bounded block measurement, baseline metrics inside the math box, accessibility source text and reflow; no separate inline-math editing construct is implied. |
+| <a id="rule-mt-05"></a>MT-05 | V1 math is a block construct under notes.math.v1. Use bounded block measurement, baseline metrics inside the math box, accessibility source text and reflow; no V1 inline-math authoring is supported. Existing inline payloads remain source-preserving unsupported content, with their wire field numbers unchanged. |
 | <a id="rule-mt-06"></a>MT-06 | **Math is copyable as its TeX source**, and exports as source in Markdown and as source plus rendering in HTML (`§10`). |
 
 ### 7.3 Images

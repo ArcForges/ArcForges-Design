@@ -16,7 +16,7 @@ DesktopPlatform/
   native-ide/win.slnx                  # generated local native IDE view, not authority
   global.json  Directory.Build.props  Directory.Packages.props
   NuGet.config  .editorconfig  .gitattributes  .gitignore
-  .github/workflows/                   # verify -> build -> pack -> consume -> publish
+  .github/workflows/                   # verify -> build -> pack -> publish
   .github/dependabot.yml  .githooks/    # shared policy, no secret-dependent hook
   SECURITY.md  LICENSE  NOTICE  README.md
   native/                             # CMake, headers, implementation, vcpkg pins/overlays
@@ -60,7 +60,7 @@ Every row is a project named exactly as its package unless noted. `src/<group>/<
 | DesktopHelpers/ArcForges.ContentSandbox | signed Native AOT executable, packaged as Runtime.<rid> | broker protocol and only admitted parser wrappers | WP11 hostile fixture; WP13 production composition |
 | eng/ArcForges.Build.Policy | build-only NuGet rules | no runtime dependencies | WP02 |
 
-The seven native families each have six `Runtime.<rid>` packages under the existing tier rules, with exact compatible managed/runtime versions and full DLL/SO/dylib/NOTICE closure. NuGet consumers select the needed family and RID explicitly; they never build CMake. The helper has its own signed runtime family. Assistant consumers do not transitively download FFmpeg, Instruments or OTIO: attachment parsing requests the host's admitted sandbox capability and unsupported previews have a visible fallback. Existing first-party licensing boundaries apply: public Contracts/Foundation/SDK Apache, desktop implementation and assistant UI in the existing DesktopPlatform implementation boundary; no Android import of those implementations.
+The seven native families publish `Runtime.<rid>` packages only for RIDs actually produced under [P2-017](../decisions/phase-2-specification-decisions.md#rule-p2-017), with exact compatible managed/runtime versions and the complete native dependency/NOTICE closure for each produced RID. macOS source support does not imply an automated macOS package or tested release. NuGet consumers select the needed family and RID explicitly; they never build CMake. The helper has its own signed runtime family. Assistant consumers do not transitively download FFmpeg, Instruments or OTIO: attachment parsing requests the host's admitted sandbox capability and unsupported previews have a visible fallback. Existing first-party licensing boundaries apply: public Contracts/Foundation/SDK Apache, desktop implementation and assistant UI in the existing DesktopPlatform implementation boundary; no Android import of those implementations.
 
 ## 3. Host integration contract
 
@@ -105,7 +105,7 @@ Same-product device requests invoke these Application handlers in process, using
 
 Each package publishes an immutable candidate only after its applicable owned checks. A clean package-only consumer diagnostic uses exact versions, compiles AOT where relevant and invokes the affected public surface locally only when the existing environment supports it and the change requires it, under P2-017 below. AssistantHost sample demonstrates two separate product identities with separate roots/connections and multiple windows within one application. It is a test executable, not ArcChat reborn. At WP17, Cloud AI/remote behavior is a named fixture; WP26/52 replace it with actual Cloud/CF and WP31/49 verify Android/Web. UI acceptance remains open until real services replace those fixtures.
 
-Under [P2-017](../assurance/ci-and-local-validation-policy.md), producer CI is necessary static/targeted offline checks → Windows/Linux compilation and applicable AOT compilation → pack once → required licence/provenance/signing and candidate identity checks → publish those bytes after main integration. No macOS, installed-package consumer execution, GUI/browser/device, live-service or real-inference CI is retained. Relevant runtime and consumer diagnostics are local only when supported by the existing environment and required by the change; their evidence and untested coverage remain distinct from compilation. Existing package versions are never overwritten; adding behavior requires a new version and proportionate compatibility evidence. CodeQL scope follows selected supported languages without duplicating security scans; local native diagnostics follow the same policy.
+Under [P2-017](../decisions/phase-2-specification-decisions.md#rule-p2-017), producer CI is necessary static/targeted offline checks → Windows/Linux compilation and applicable AOT compilation → pack once → required licence/provenance/signing and candidate identity checks → publish those bytes after main integration. No macOS, installed-package consumer execution, GUI/browser/device, live-service or real-inference CI is retained. Relevant runtime and consumer diagnostics are local only when supported by the existing environment and required by the change; their evidence and untested coverage remain distinct from compilation. Existing package versions are never overwritten; adding behavior requires a new version and proportionate compatibility evidence. CodeQL scope follows selected supported languages without duplicating security scans; local native diagnostics follow the same policy.
 
 ## 7. Observed bootstrap versions and transition
 

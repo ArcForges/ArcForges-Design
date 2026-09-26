@@ -1,6 +1,6 @@
 # WP02.05 dependency policy implementation evidence
 
-Scope: [WP02.05](../planning/work-packages/02-build-governance-and-analyzer-policy.md#rule-wp-02.05), executed under [the researched ordered profile](wp02-05-dependency-policy-profile.md) and [P2-017 validation policy](ci-and-local-validation-policy.md). This is foundation dependency and publication governance, not product or commercial acceptance.
+Scope: [WP02.05](../planning/work-packages/02-build-governance-and-analyzer-policy.md#rule-wp-02.05), executed under [the researched ordered profile](wp02-05-dependency-policy-profile.md) and [P2-017 validation policy](../decisions/phase-2-specification-decisions.md#rule-p2-017). This is foundation dependency and publication governance, not product or commercial acceptance.
 
 ## Implemented behavior
 
@@ -26,7 +26,7 @@ The unchanged Build.Policy publication/restore mechanism retains the round-trip 
 
 All nine implementation PRs were merged after successful applicable latest-head checks. Required main build/publication/deployment jobs succeeded, expected merge commits were confirmed, and all primary checkouts were fast-forwarded cleanly. The [source/result receipt](wp02-05-implementation-evidence.json) records exact reviewed heads, merges, run identities, retained branches/worktrees and validation. This closes WP02.05 under P2-017; WP02.90 is the next stage acceptance step. The stable-tag path is source-reviewed and covered by offline refusal cases, but deliberately unexecuted. Historical runtime observations retain their original commits and are not new observations of these candidates.
 
-No macOS CI, physical-device/emulator test, desktop GUI/browser E2E, live service/inference test, installed-package consumer or public-release upgrade test was added or executed. Removed platform coverage is not claimed. No SDK/vcpkg/emulator installation, dependency upgrade, proxy change or WSL wrapper was used. Later schema/native capability and real consumer integration gates remain with WP03/WP06 and their assigned owners; production release remains WP50.
+No macOS CI, physical-device/emulator test, desktop GUI/browser E2E, live service/inference test, installed-package consumer or public-release upgrade test was added or executed. Removed platform coverage is not claimed. No SDK/vcpkg/emulator installation, dependency upgrade or WSL wrapper was used. Later schema/native capability and real consumer integration gates remain with WP03/WP06 and their assigned owners; production release remains WP50.
 
 ## Accepted owner results
 

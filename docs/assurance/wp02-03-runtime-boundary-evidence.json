@@ -1126,7 +1126,7 @@
     },
     {
       "case": "Python urllib public asset reads",
-      "cause": "HTTP 403 both direct/default route and explicit local proxy",
+      "cause": "HTTP 403 on the recorded attempts",
       "resolution": "Playwright browser-context request client independently verified all 21 public asset hashes; CI also passed full public delivery verification"
     }
   ],
