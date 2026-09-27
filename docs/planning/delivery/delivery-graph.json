@@ -1597,6 +1597,7 @@
     "DesktopPlatform:src/Native/* (retired family projects and the still-image logical library name)",
     "DesktopPlatform:tests/NativeAbiTests/**",
     "DesktopPlatform:win.slnx",
+    "DesktopPlatform:DesktopPlatform.slnx (retired native project entries only)",
     "DesktopPlatform:eng/packaging/packages.json",
     "DesktopPlatform:docs/native-reconciliation.md",
     "DesktopPlatform:README.md",
@@ -2743,6 +2744,7 @@
     "Contracts:Directory.Packages.props (exact published previous-client candidate pin for the isolated compatibility harness)",
     "Contracts:ArcForges.Contracts.slnx (register the isolated offline previous-client harness)",
     "Contracts:eng/policy/dependency-policy.json (owned previous-client dependency admission and changed input registration)",
+    "Contracts:eng/policy/contract-access.json (register the owned semantic hash sources and changed build input hashes in the existing package access inventory)",
     "Contracts:eng/policy/dependency-reviews/** (new immutable previous-client dependency receipt; preserve historical records)"
    ],
    "shared": [
@@ -3180,7 +3182,8 @@
     "Contracts:eng/documentation_tools.py (current immutable Dokka successor profile selection only)",
     "Contracts:tests/tooling/test_dependency_admission.py (current retirement input bindings; preserve immutable history assertions)",
     "Contracts:tests/tooling/test_serialization_policy.py (retained packable AOT output inventory)",
-    "Contracts:.gitleaks.toml (only exact demonstrated new receipt/profile digest false-positive entries; no broad exclusion)"
+    "Contracts:.gitleaks.toml (only exact demonstrated new receipt/profile digest false-positive entries; no broad exclusion)",
+    "Contracts:.github/workflows/security.yml (scan complete history reachable from reviewed HEAD with --full-history HEAD; exclude only unrelated unmerged refs, preserve removed-secret detection and retained rules)"
    ],
    "shared": [
     {
