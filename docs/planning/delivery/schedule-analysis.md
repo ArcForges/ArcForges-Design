@@ -52,7 +52,7 @@ Tasks on the same delivery level have no prerequisite path between them, so they
 
 | Repository | Open tasks | Lanes | Widest level (tasks at once) | Ready after its adoption slices | Examples that can run at the same time |
 |---|---|---|---|---|---|
-| AI | 12 | 4 | level 7: 3 | 0 | [AIR.05](lanes/ai-routing.md#task-air-05) Content-origin marking at the provider generation boundary, [GOV.10](lanes/governance.md#task-gov-10) AI (Workflow Harness) policy tests, [AIR.07](lanes/ai-routing.md#task-air-07) Provider test-environment coverage |
+| AI | 12 | 4 | level 7: 4 | 0 | [AIR.05](lanes/ai-routing.md#task-air-05) Content-origin marking at the provider generation boundary, [EXT.10](lanes/extensions.md#task-ext-10) Cloud MCP HTTP through the AI Worker adapter, [GOV.10](lanes/governance.md#task-gov-10) AI (Workflow Harness) policy tests, [AIR.07](lanes/ai-routing.md#task-air-07) Provider test-environment coverage |
 | ArcScope | 33 | 6 | level 9: 9 | 2 | [APP.03](lanes/app-composition.md#task-app-03) Clean Native AOT package-consumer composition for ArcScope, [SCOPE.07](lanes/arcscope.md#task-scope-07) Durable capture writer, chunked verifiable store and crash recovery, [SCOPE.09](lanes/arcscope.md#task-scope-09) Long-running capture in the shell, [SCOPE.12](lanes/arcscope.md#task-scope-12) Visualisation: virtualised rendering, downsampling, cursors and markers |
 | Cloud | 132 | 13 | level 12: 15 | 8 | [AIR.90](lanes/ai-routing.md#task-air-90) Verify owned artifact and real integration (AI routing and metering), [CLOUD.32](lanes/cloud.md#task-cloud-32) Durable unary fallback (Poll/readOutput), [COM.09](lanes/commerce.md#task-com-09) Ledgers and reconciliation, [DEV.04](lanes/device-bridge.md#task-dev-04) Execution and result deduplication -- Cloud D1 attempt/result store |
 | Contracts | 29 | 4 | level 5: 8 | 7 | [CON.03](lanes/contracts.md#task-con-03) Resource/Sync owner-body admission: closed Sync mutation allowlist + cross-owner/wrong-revision/opaque-object/forbidden-path negatives, [EXT.04](lanes/extensions.md#task-ext-04) Package manifest/workflow/panel validators and lifecycle state machine, [CON.06](lanes/contracts.md#task-con-06) Product in-process port completion: IScopeOperations/IChatOperations + infra ports, [CON.08](lanes/contracts.md#task-con-08) Entitlement/commerce operation registry |
@@ -98,9 +98,9 @@ Tasks on the same delivery level have no prerequisite path between them, so they
 | 3 | 28 |
 | 4 | 29 |
 | 5 | 39 |
-| 6 | 35 |
+| 6 | 36 |
 | 7 | 41 |
-| 8 | 38 |
+| 8 | 37 |
 | 9 | 46 |
 | 10 | 33 |
 | 11 | 26 |
