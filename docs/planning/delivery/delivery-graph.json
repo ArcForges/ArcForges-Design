@@ -1869,7 +1869,9 @@
     "Contracts:eng/provenance/artifact-profiles/dokka-2-2-0-*.json (new descriptor documentation successor profiles only; preserve history)",
     "Contracts:eng/provenance/records/dokka-documentation-resources-*.json (new descriptor documentation successor receipts only; preserve history)",
     "Contracts:eng/documentation_tools.py (current descriptor documentation profile pointer only)",
-    "Contracts:tests/tooling/test_documentation_provenance.py (add retained descriptor markers; preserve historical-resource invariants)"
+    "Contracts:tests/tooling/test_documentation_provenance.py (add retained descriptor markers; preserve historical-resource invariants)",
+    "Contracts:.gitleaks.toml (only demonstrated CON.02 public source-inventory SHA256 false positives: exact existing rule/path/key/digest bindings, independently verify source hash; no algorithm change or whole-key/path exemption)",
+    "Contracts:tests/tooling/test_dependency_admission.py (exact CON.02 public-digest false-positive regressions; retain other digest/key/path/token negatives)"
    ],
    "shared": [
     {
@@ -1891,7 +1893,7 @@
     "state": "not-started",
     "notes": "Observed none, unreviewed: Grepped the whole repo for CapabilityDescriptor|ActionDescriptor|ContextDescriptor|HealthSnapshot|InstancePresence|InstanceHealth|InstanceReadiness|CompatibilityDescriptor|EncodedBodyRef|ApplicationPresence: zero matches anywhere. None of these types exist in any form."
    },
-   "notes": "This is the 'descriptor' half of WP-03.03. Registry 04 explicitly allocates the missing initial wire fields; ContractVersion identity is separate from ContractCompatibility support minima. Their version/minimum strings use registry 04 section 3 explicit SemVer profile: 128 ASCII maximum, build metadata retained in exact identity but ignored by precedence; other Key fields remain unchanged. ContextProvider/ContextDescriptor belong to PublicApi; no Foundation-to-PublicApi import cycle. ApplicationPresence and DeviceCapabilityView remain CON.11, with no InstancePresence duplicate. EncodedBodyReader validates expected type/descriptor/snapshot, canonical expiry, <=64MiB and exact byteLength plus ResourceVersionRef contentHash before invoking a caller-supplied statically generated parser; it neither fetches nor authorizes content. No new dependencies or projects. Small and foundational: many later domain tasks (CON.06 in-process ports, CON.10 task/chat tool binding) reference CapabilityDescriptor for tool metadata, so this should land early even though nothing strictly blocks it from running in parallel with CON.03-CON.05.",
+   "notes": "This is the 'descriptor' half of WP-03.03. Registry 04 explicitly allocates the missing initial wire fields; ContractVersion identity is separate from ContractCompatibility support minima. Their version/minimum strings use registry 04 section 3 explicit SemVer profile: 128 ASCII maximum, build metadata retained in exact identity but ignored by precedence; other Key fields remain unchanged. ContextProvider/ContextDescriptor belong to PublicApi; no Foundation-to-PublicApi import cycle. ApplicationPresence and DeviceCapabilityView remain CON.11, with no InstancePresence duplicate. EncodedBodyReader validates expected type/descriptor/snapshot, canonical expiry, <=64MiB and exact byteLength plus ResourceVersionRef contentHash before invoking a caller-supplied statically generated parser; it neither fetches nor authorizes content. No new dependencies or projects. Small and foundational: many later domain tasks (CON.06 in-process ports, CON.10 task/chat tool binding) reference CapabilityDescriptor for tool metadata, so this should land early even though nothing strictly blocks it from running in parallel with CON.03-CON.05. Security support is limited to actually observed generic-api-key false positives for CON.02 public SHA256 inventory entries; bind each exact containing path, JSON key and recomputed value to its observed commit, including necessary immutable historical snapshots. Rebase or normalization may update an exception only after an actual scan finding and independent public-input hash verification; no blanket key, path, digest pattern or scanner bypass is authorized.",
    "complete": []
   },
   {
@@ -1984,7 +1986,9 @@
     "Contracts:fixtures/internal/con-04-content-sandbox.json",
     "Contracts:tests/StructureTests/** (owned ContentSandbox profile/RPC metadata fixtures)",
     "Contracts:tests/tooling/test_content_sandbox.py (offline schema and reservation negatives)",
-    "Contracts:eng/operations/con-04.json (owned domain operation authorization export; append through schema-source resource protocol)"
+    "Contracts:eng/operations/con-04.json (owned domain operation authorization export; append through schema-source resource protocol)",
+    "Contracts:.gitleaks.toml (only demonstrated CON.04 public source-inventory SHA256 false positives: exact existing rule/path/key/digest bindings, independently verify source hash; no algorithm change or whole-key/path exemption)",
+    "Contracts:tests/tooling/test_dependency_admission.py (exact CON.04 public-digest false-positive regressions; retain other digest/key/path/token negatives)"
    ],
    "shared": [
     {
@@ -2006,7 +2010,7 @@
     "state": "not-started",
     "notes": "Observed scaffold, unreviewed: SandboxLimits (7-field record) already exists as a WP03.00 seed slice. No ContentSandboxService and none of its 15 methods exist (confirmed: grep '^service ' finds only HelloService and ExtensionHostService anywhere in the repo)."
    },
-   "notes": "Fifteen methods. Independently implementable in parallel with CON.05/CON.06 - different proto file (sandbox/v1 vs platform/v1), different owning package (.LocalRpc.Sandbox vs .LocalRpc.Platform/.Chat/.Scope).",
+   "notes": "Fifteen methods. Independently implementable in parallel with CON.05/CON.06 - different proto file (sandbox/v1 vs platform/v1), different owning package (.LocalRpc.Sandbox vs .LocalRpc.Platform/.Chat/.Scope). Security support is limited to actually observed generic-api-key false positives for CON.04 public SHA256 inventory entries; bind each exact containing path, JSON key and recomputed value to its observed commit, including necessary immutable historical snapshots. Rebase or normalization may update an exception only after an actual scan finding and independent public-input hash verification; no blanket key, path, digest pattern or scanner bypass is authorized.",
    "start": [],
    "complete": []
   },
@@ -2050,7 +2054,9 @@
     "Contracts:tests/StructureTests/Program.cs (append owned Con05Cases call only)",
     "Contracts:eng/operations/con-05.json (owned domain operation authorization export; append through schema-source resource protocol)",
     "Contracts:tests/StructureTests/packages.lock.json (regenerated transitive owned service-reference lock)",
-    "Contracts:tests/public/SerializationProbe/packages.lock.json (regenerated transitive owned service-reference lock)"
+    "Contracts:tests/public/SerializationProbe/packages.lock.json (regenerated transitive owned service-reference lock)",
+    "Contracts:.gitleaks.toml (only demonstrated CON.05 public source-inventory SHA256 false positives: exact existing rule/path/key/digest bindings, independently verify source hash; no algorithm change or whole-key/path exemption)",
+    "Contracts:tests/tooling/test_dependency_admission.py (exact CON.05 public-digest false-positive regressions; retain other digest/key/path/token negatives)"
    ],
    "shared": [
     {
@@ -2072,7 +2078,7 @@
     "state": "not-started",
     "notes": "Observed scaffold, unreviewed: ExtensionLease + ExtensionHostService.RenewLease exist (WP03.00 seed). Handshake/Invoke/Stop, LocalBootstrapService and ConnectorBroker do not exist at all."
    },
-   "notes": "Independent of CON.04 (different proto files/packages).",
+   "notes": "Independent of CON.04 (different proto files/packages). Security support is limited to actually observed generic-api-key false positives for CON.05 public SHA256 inventory entries; bind each exact containing path, JSON key and recomputed value to its observed commit, including necessary immutable historical snapshots. Rebase or normalization may update an exception only after an actual scan finding and independent public-input hash verification; no blanket key, path, digest pattern or scanner bypass is authorized.",
    "start": [],
    "complete": []
   },
