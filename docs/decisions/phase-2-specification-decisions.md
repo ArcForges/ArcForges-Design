@@ -178,7 +178,7 @@ Custom local encrypted stores, encrypted portable exports and E2EE remain exclud
 
 **Scope.** [P2-006](#rule-p2-006)'s product scope continues to govern. Native ArcScope working stores remain authoritative locally; Cloud acknowledges their synchronised metadata replicas. The helper-process design is the present, bounded application of [D-016](phase-1-foundation-decisions.md#rule-d-016)'s isolation exception, not a C++ worker or second Agent Host. Its operation allowlist, ownership and platform enforcement are specified in the architecture.
 
-**Closure evidence.** The [Stage 2 closure review](../assurance/phase-2-design-closure-review.md) records the fourteen dispositions, design checks and remaining implementation obligations. Existing historical statements are not completion evidence for the revised baseline. A future runtime gate cannot substitute for resolving a contradiction in current specifications.
+**Closure evidence.** The original acceptance covered fourteen dispositions. Under [P2-019](#rule-p2-019), the [current Stage 2 closure review](../assurance/phase-2-design-closure-review.md#2-twelve-repaired-groups) retains twelve groups, their design checks and remaining implementation obligations; removed obligations are retired rather than satisfied. The original authority statement above remains historical evidence of that acceptance, not a requirement to recreate removed groups. Existing historical statements are not completion evidence for the revised baseline. A future runtime gate cannot substitute for resolving a contradiction in current specifications.
 
 ---
 
