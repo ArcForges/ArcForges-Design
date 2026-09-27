@@ -1597,6 +1597,7 @@
     "DesktopPlatform:src/Native/* (retired family projects and the still-image logical library name)",
     "DesktopPlatform:tests/NativeAbiTests/**",
     "DesktopPlatform:win.slnx",
+    "DesktopPlatform:DesktopPlatform.slnx (retired native project entries only)",
     "DesktopPlatform:eng/packaging/packages.json",
     "DesktopPlatform:docs/native-reconciliation.md",
     "DesktopPlatform:README.md",
