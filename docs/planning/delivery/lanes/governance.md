@@ -23,7 +23,7 @@ Tasks: 16 · Owning repositories: AI, ArcScope, Cloud, Contracts, DesktopPlatfor
 | [GOV.15](#task-gov-15) | WP05 stage integration verification | integration | M | [GOV.04](#task-gov-04) (artifact), [GOV.05](#task-gov-05) (artifact), [GOV.07](#task-gov-07) (artifact), [GOV.09](#task-gov-09) (artifact), [GOV.10](#task-gov-10) (artifact), [GOV.11](#task-gov-11) (artifact), [GOV.12](#task-gov-12) (artifact), [GOV.13](#task-gov-13) (artifact), [GOV.14](#task-gov-14) (artifact) | not-started |
 | [GOV.16](#task-gov-16) | Operation-catalogue authorization reachability matrix and identity boundary evidence | governance | M | [CON.18](contracts.md#task-con-18) (contract) | not-started |
 | [GOV.17](#task-gov-17) | Retire the native families outside the product family and move the still-image shim | governance | M | none | not-started |
-| [GOV.18](#task-gov-18) | Reduce the DesktopPlatform policy data and re-pin the design-policy export | governance | M | none | not-started |
+| [GOV.18](#task-gov-18) | Reduce the DesktopPlatform policy data and re-pin the design-policy export | governance | M | [CON.23](contracts.md#task-con-23) (artifact) | not-started |
 
 ## Tasks
 
@@ -232,8 +232,8 @@ Tasks: 16 · Owning repositories: AI, ArcScope, Cloud, Contracts, DesktopPlatfor
 | Entry condition | [ADOPT.09.governance](adoption.md#task-adopt-09-governance) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
 | Unblocks | [GOV.15](#task-gov-15) |
-| Write scope | `Web:eng/policy/**`<br>`Web:.eslintrc*/lint-config for architecture rules`<br>`Web:tooling/project.ts (wire owned policy checks into existing PR gate)`<br>`Web:tests/unit/** (offline policy positive/negative fixtures)`<br>`Web:eng/provenance/** (owned policy source inventory and new receipts; preserve historical records)` |
-| Shared resources | [RES-architecture-tests](../shared-resources.md#res-architecture-tests) (append) |
+| Write scope | `Web:eng/policy/**`<br>`Web:.eslintrc*/lint-config for architecture rules`<br>`Web:tooling/project.ts (wire owned policy checks into existing PR gate)`<br>`Web:tests/unit/** (offline policy positive/negative fixtures)`<br>`Web:eng/provenance/** (owned policy source inventory and new receipts; preserve historical records)`<br>`Web:apps/site/package.json (exact published naming-tool candidate pin and required existing SDK lockstep)`<br>`Web:package-lock.json (regenerate exact naming-tool candidate lock)`<br>`Web:eng/policy/dependency-reviews/** (immutable naming-tool pin admission receipt)` |
+| Shared resources | [RES-architecture-tests](../shared-resources.md#res-architecture-tests) (append), [RES-web-build-config](../shared-resources.md#res-web-build-config) (append) |
 | Validation | Node/npm-based static import-rule checks, offline, PR CI; no browser/E2E runtime here - that is [WP-06.05](../../work-packages/06-aot-jit-and-wasm-publish-proof.md#rule-wp-06.05)/[WP-50.06](../../work-packages/50-full-platform-production-release.md#rule-wp-50.06), per [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017). |
 | Completion evidence | Per-rule pass/fail fixture table for the Web import/dependency graph. |
 | Baseline (unreviewed unless accepted) | not-started |
@@ -395,7 +395,7 @@ Tasks: 16 · Owning repositories: AI, ArcScope, Cloud, Contracts, DesktopPlatfor
 | Kind / size | governance / M |
 | Obligations | [P2-019](../../../decisions/phase-2-specification-decisions.md#rule-p2-019) — retirement of the accepted DesktopPlatform policy data that names repositories or families outside the family; the design-policy export re-pinned to this Design repository<br>[P2-020](../../../decisions/phase-2-specification-decisions.md#rule-p2-020) — source cleanup of the alignment sequence ([ADP-10](../adoption.md#rule-adp-10)); blocks only the tasks that edit the retired bindings<br>[P2-018](../../../decisions/phase-2-specification-decisions.md#rule-p2-018) — delivery-graph validation replacing the retired package-level graph check |
 | Provides | design-policy-export-repinned |
-| Start prerequisites | none |
+| Start prerequisites | **artifact** [CON.23](contracts.md#task-con-23) — Published canonical naming data/scanner build-time candidate. *Why:* The policy repin validates new exports through the canonical scanner rather than old Contracts source or duplicated naming authority. |
 | Entry condition | [ADOPT.02.governance](adoption.md#task-adopt-02-governance) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
 | Unblocks | [CON.23](contracts.md#task-con-23), [GOV.04](#task-gov-04), [GOV.13](#task-gov-13), [GOV.14](#task-gov-14) |

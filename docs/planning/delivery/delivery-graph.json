@@ -1234,11 +1234,18 @@
     "Web:.eslintrc*/lint-config for architecture rules",
     "Web:tooling/project.ts (wire owned policy checks into existing PR gate)",
     "Web:tests/unit/** (offline policy positive/negative fixtures)",
-    "Web:eng/provenance/** (owned policy source inventory and new receipts; preserve historical records)"
+    "Web:eng/provenance/** (owned policy source inventory and new receipts; preserve historical records)",
+    "Web:apps/site/package.json (exact published naming-tool candidate pin and required existing SDK lockstep)",
+    "Web:package-lock.json (regenerate exact naming-tool candidate lock)",
+    "Web:eng/policy/dependency-reviews/** (immutable naming-tool pin admission receipt)"
    ],
    "shared": [
     {
      "resource": "RES-architecture-tests",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-web-build-config",
      "mode": "append"
     }
    ],
@@ -1705,7 +1712,14 @@
     "notes": "Observed in the accepted WP00-WP02 implementation: policy data and the design-policy export pinned to the derivation-baseline Design commit."
    },
    "notes": "Performs the narrow checker migration needed to repin within this cleanup task. GOV.13 and GOV.14 consume the resulting export; GOV.14 retains the broader specification-integrity audit. CON.23 completes after its forbidden-alias declaration is re-exported.",
-   "start": [],
+   "start": [
+    {
+     "type": "artifact",
+     "task": "CON.23",
+     "need": "Published canonical naming data/scanner build-time candidate",
+     "why": "The policy repin validates new exports through the canonical scanner rather than old Contracts source or duplicated naming authority."
+    }
+   ],
    "complete": []
   },
   {
@@ -2169,7 +2183,7 @@
     "state": "not-started",
     "notes": "Observed none, unreviewed: No EntitlementService/CommerceService exist."
    },
-   "notes": "Independent of every other CON.0x domain task. Needed to start by WP-42 (commerce/entitlement/credits, the commerce, policy and operations lanes).",
+   "notes": "Consumes shared CON.02 read-envelope types; commerce domain schemas otherwise remain independent of other domain closures. Consumers are the commerce, policy and operations lanes.",
    "start": [
     {
      "type": "contract",
@@ -3071,7 +3085,8 @@
     "Contracts:tests/tooling/** (naming candidate identity and artifact registration negatives)",
     "Contracts:src/public/ts/proto/package.json (include canonical build-only naming tools in existing package)",
     "Contracts:src/public/dotnet/ArcForges.Contracts.Validation/ArcForges.Contracts.Validation.csproj (package canonical build-only naming tools in existing package)",
-    "Contracts:eng/packaging_tools.py (canonical build-only naming tool/data staging in existing packages)"
+    "Contracts:eng/packaging_tools.py (canonical build-only naming tool/data staging in existing packages)",
+    "Contracts:src/public/kotlin/**/generated/** (regenerated retained bindings; no manual edits)"
    ],
    "shared": [
     {
