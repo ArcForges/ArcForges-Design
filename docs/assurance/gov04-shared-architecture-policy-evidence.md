@@ -1,6 +1,6 @@
 # GOV.04 shared architecture policy evidence
 
-Status: source merged after all retained CI passed; normal main publication and final assurance/ledger acceptance remain pending. This draft does not record completion.
+Status: the reviewed shared policy producer and its observed scanner correction are merged and published as immutable candidates. The corrected `1.0.0-ci.31.1` candidate is the final producer recorded here; final assurance and Plan ledger acceptance remain pending independent review.
 
 Claim: GOV.04 epoch 1 (w-20260927-dgov). Source: [DesktopPlatform PR67](https://github.com/ArcForges/DesktopPlatform/pull/67), reviewed head `2e180f7826ef9cae0b679db7d10459e51027d4b2`; independent full/delta review [5860461159](https://github.com/ArcForges/DesktopPlatform/pull/67#issuecomment-5860461159). Final whitespace-only delta approved [5860492140](https://github.com/ArcForges/DesktopPlatform/pull/67#issuecomment-5860492140). Packaging-delta approval [5860560182](https://github.com/ArcForges/DesktopPlatform/pull/67#issuecomment-5860560182) binds the final source. Producer scope was accepted by Design PR85 and Plan PR48.
 
