@@ -188,7 +188,7 @@ PAT allowlist: `workspace.list`, `workspace.get`, `catalog.search`, `catalog.get
 | **Append** | `chat.appendMessage` | `CommandId` — a duplicate returns the original message | Yes |
 | **Non-idempotent effect** | `IScopeOperations.StartCapture` | `CommandId` **plus** a live-instance constraint | **No** — surfaces a decision |
 | **External side effect** | `commerce.createCheckoutAttempt`, capability invocation with egress | `CommandId` **plus** provider-side idempotency where available | **No** |
-| **Destructive** | `identity.revokeApiToken`, `identity.revokeDevice` | `CommandId`; the second call reports already-done rather than failing | Yes — but never without the original approval |
+| **Destructive** | `identity.revokeApiToken`, `device.revoke` | `CommandId`; the second call reports already-done rather than failing | Yes — but never without the original approval |
 
 | # | Rule |
 |---|---|

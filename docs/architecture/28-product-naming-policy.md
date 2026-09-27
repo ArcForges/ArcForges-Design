@@ -14,6 +14,8 @@ Authority: [P2-015](../decisions/phase-2-specification-decisions.md#rule-p2-015)
 
 `arcnotes`, `arcslate`, `arcchat`, `arcchat-mobile`, `mobile` and `web` are retired wire product values, not aliases. Historical compatibility vocabulary in types or documentation does not reactivate them. `cloud` names a service, not a client ProductId. Paddle is the sole customer-facing MoR; Payoneer is payout-only. The forbidden-name list and historical dispositions implement glossary section 8 without creating migration aliases. Existing NuGet/npm/Maven Hello identities remain unchanged; the naming file does not rename published packages.
 
+The closed naming schema also records exact technical names already authorized by [P2-019](../decisions/phase-2-specification-decisions.md#rule-p2-019): `ArcImageNative` is the retained still-image logical library and `arcimage-abi` its directory basename. These are technical identifiers, never an ArcImage product, display alias, installation or wire identity. The scanner recognizes only these exact complete identifier/path-segment occurrences, with identifier boundaries; other `ArcImage*` spellings and embedded/suffixed variants remain forbidden. A `technicalNames` declaration is validated against these exact two names and their kinds; it is not a prefix, regex, directory or file exemption. Negative fixtures prove both admitted exact names and rejected near matches. This distinction preserves the still-image migration already required by the reduced-family decision.
+
 ## File-association reservations
 
 | Owner / format | Extension | Windows ProgID | Apple type identifier | State |

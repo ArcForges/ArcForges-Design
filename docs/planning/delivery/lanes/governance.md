@@ -267,7 +267,7 @@ Tasks: 16 · Owning repositories: AI, ArcScope, Cloud, Contracts, DesktopPlatfor
 
 ### GOV.13 — Invariant enforcement accounting report
 
-**Outcome.** A build-produced report classifies all 429 catalogued invariants as enforced-and-passing / enforced-and-failing / not-yet-implemented, every classification derived from an actual test-run result, without re-deriving the design-stage mapping ([PG-06](../../../assurance/open-gates-register.md#rule-pg-06), already closed) and without itself closing [PG-11](../../../assurance/open-gates-register.md#rule-pg-11).
+**Outcome.** A build-produced report classifies all current catalogued invariants (406 after reduced-family retirement) as enforced-and-passing / enforced-and-failing / not-yet-implemented, every classification derived from an actual test-run result, without re-deriving the design-stage mapping ([PG-06](../../../assurance/open-gates-register.md#rule-pg-06), already closed) and without itself closing [PG-11](../../../assurance/open-gates-register.md#rule-pg-11).
 
 | Field | Value |
 |---|---|
@@ -282,9 +282,9 @@ Tasks: 16 · Owning repositories: AI, ArcScope, Cloud, Contracts, DesktopPlatfor
 | Unblocks | [GOV.15](#task-gov-15) |
 | Write scope | `DesktopPlatform:eng/accounting/invariant-report.py or equivalent`<br>`DesktopPlatform:artifacts/evidence/invariant-accounting.json` |
 | Validation | Report generation reads real CI test-run results only; offline; re-run as each owning package lands enforcement (not a one-time close), per [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017)'s 'runtime checks local, affected-scope, once, existing environment only' spirit. |
-| Completion evidence | 429-row accounting table, every row classified from a real result. |
+| Completion evidence | Current-catalogue-complete accounting table, every row classified from a real result. |
 | Baseline (unreviewed unless accepted) | not-started |
-| Notes | Will read as mostly 'not yet implemented' immediately after WP05 since most of the 429 invariants are owned by packages far downstream (WP06...WP53, per invariant-coverage.md's ownerCell). [PG-11](../../../assurance/open-gates-register.md#rule-pg-11) stays open per-invariant in its OWNING package; GOV.13 never closes [PG-11](../../../assurance/open-gates-register.md#rule-pg-11) or [PG-06](../../../assurance/open-gates-register.md#rule-pg-06) itself - it only reports. |
+| Notes | Will read as mostly 'not yet implemented' immediately after WP05 since most current invariants are owned by packages far downstream (WP06...WP53, per invariant-coverage.md's ownerCell). [PG-11](../../../assurance/open-gates-register.md#rule-pg-11) stays open per-invariant in its OWNING package; GOV.13 never closes [PG-11](../../../assurance/open-gates-register.md#rule-pg-11) or [PG-06](../../../assurance/open-gates-register.md#rule-pg-06) itself - it only reports. |
 
 <a id="task-gov-14"></a>
 
