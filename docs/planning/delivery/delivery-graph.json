@@ -1890,6 +1890,9 @@
    "writes": [
     "Contracts:public/proto/arcforges/publicapi/v1/content.proto",
     "Contracts:fixtures/public/con-03-sync-allowlist.json",
+    "Contracts:eng/con03_sync_semantics.py (domain-owned schema-derived C#/TS admission helper emitter only)",
+    "Contracts:eng/generate_shapes.py (narrow CON.03 semantic emitter registration only; preserve other domain outputs)",
+    "Contracts:tests/tooling/test_con03_sync_admission.py",
     "Contracts:public/proto/constraints/** (project metadata and owner-body admission)",
     "Contracts:src/public/**/Generated/** (regenerated)",
     "Contracts:src/public/ts/proto/src/gen/** (regenerated)",
@@ -1915,7 +1918,7 @@
     "state": "not-started",
     "notes": "Observed partial, unreviewed: The underlying AggregateBody oneof (all 16 branches) and every named record it references already exist and are published (WP03.01). Only the ADMISSION RULE (which branches Sync may accept as a client write) and its negative vectors are missing — confirmed by grepping content.proto for SyncScope/SyncChange/ChangeProposal/ChangeReceipt/AggregateView/ConflictView/BootstrapManifest: none exist yet either (those are CON.09's job, registry04 §5 Sync service operations, not this validator). ScopeProjectMetadata and its additive AggregateBody variant are new under the ArcScope library closure and are not covered by the accepted foundation receipt."
    },
-   "notes": "Owns the shared project metadata record and Sync body-admission rule. CON.09 owns SyncService RPC methods; CON.24 consumes this record for the library. This closure publishes independently of the library endpoints.",
+   "notes": "Owns the shared project metadata record and Sync body-admission rule. CON.09 owns SyncService RPC methods; CON.24 consumes this record for the library. This closure publishes independently of the library endpoints. The domain-owned generation hook enforces exactly ScopeMetadata and ScopeProjectMetadata as the client-writable AggregateBody alternatives, including the resolved externalBody path; schema validation never grants owner authorization, fetches content, persists state or implements a transaction. Necessary owned supporting inventories and registrations follow ADP-07 with exact paths and evidence recorded before editing.",
    "complete": []
   },
   {
