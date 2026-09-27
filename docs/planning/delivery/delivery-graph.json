@@ -1884,7 +1884,7 @@
     "state": "not-started",
     "notes": "Observed none, unreviewed: Grepped the whole repo for CapabilityDescriptor|ActionDescriptor|ContextDescriptor|HealthSnapshot|InstancePresence|InstanceHealth|InstanceReadiness|CompatibilityDescriptor|EncodedBodyRef|ApplicationPresence: zero matches anywhere. None of these types exist in any form."
    },
-   "notes": "This is the 'descriptor' half of WP-03.03. Registry 04 explicitly allocates the missing initial wire fields; ContractVersion identity is separate from ContractCompatibility support minima. ContextProvider/ContextDescriptor belong to PublicApi; no Foundation-to-PublicApi import cycle. ApplicationPresence and DeviceCapabilityView remain CON.11, with no InstancePresence duplicate. EncodedBodyReader validates expected type/descriptor/snapshot, canonical expiry, <=64MiB and exact byteLength plus ResourceVersionRef contentHash before invoking a caller-supplied statically generated parser; it neither fetches nor authorizes content. No new dependencies or projects. Small and foundational: many later domain tasks (CON.06 in-process ports, CON.10 task/chat tool binding) reference CapabilityDescriptor for tool metadata, so this should land early even though nothing strictly blocks it from running in parallel with CON.03-CON.05.",
+   "notes": "This is the 'descriptor' half of WP-03.03. Registry 04 explicitly allocates the missing initial wire fields; ContractVersion identity is separate from ContractCompatibility support minima. Their version/minimum strings use registry 04 section 3 explicit SemVer profile: 128 ASCII maximum, build metadata retained in exact identity but ignored by precedence; other Key fields remain unchanged. ContextProvider/ContextDescriptor belong to PublicApi; no Foundation-to-PublicApi import cycle. ApplicationPresence and DeviceCapabilityView remain CON.11, with no InstancePresence duplicate. EncodedBodyReader validates expected type/descriptor/snapshot, canonical expiry, <=64MiB and exact byteLength plus ResourceVersionRef contentHash before invoking a caller-supplied statically generated parser; it neither fetches nor authorizes content. No new dependencies or projects. Small and foundational: many later domain tasks (CON.06 in-process ports, CON.10 task/chat tool binding) reference CapabilityDescriptor for tool metadata, so this should land early even though nothing strictly blocks it from running in parallel with CON.03-CON.05.",
    "complete": []
   },
   {
@@ -2528,8 +2528,15 @@
     "state": "not-started",
     "notes": "Observed none, unreviewed: No CatalogService or catalog records exist."
    },
-   "notes": "Small and self-contained. Catalog proto is registered in the existing PublicApi output; no new NuGet/npm/Maven package identity. CatalogProfile is a pure offline validator for registry 04 declared challenge/domain/version/submission facts; it performs no DNS query, current owner authorization, storage, scanning or publication. Public CatalogService retains exactly seven operations; catalog.review/revoke remain OperatorService-owned. Supporting inventories follow ADP-07 with exact paths and necessity recorded before editing.",
-   "start": [],
+   "notes": "Small and self-contained. Catalog proto is registered in the existing PublicApi output; no new NuGet/npm/Maven package identity. Catalog version fields follow registry 04 section 3 explicit SemVer profile: 128 ASCII maximum, exact identity retains build metadata and precedence ignores it; other Key fields remain unchanged. CatalogProfile is a pure offline validator for registry 04 declared challenge/domain/version/submission facts; it performs no DNS query, current owner authorization, storage, scanning or publication. Public CatalogService retains exactly seven operations; catalog.review/revoke remain OperatorService-owned. Supporting inventories follow ADP-07 with exact paths and necessity recorded before editing.",
+   "start": [
+    {
+     "type": "contract",
+     "task": "CON.02",
+     "need": "published Foundation EncodedBodyRef for Search/GetPackage/ListVersions/GetSubmission response outcome tag 4",
+     "why": "All four read projections must use the real generated immutable body reference; no local substitute or premature publication. Retain previously authored isolated source, but generation and delivery wait for the published producer."
+    }
+   ],
    "complete": []
   },
   {
