@@ -215,7 +215,7 @@ Every gate in [`open-gates-register.md`](open-gates-register.md) is scheduled.
 | **[PG-05](open-gates-register.md#rule-pg-05)** | `12.02` | [R-16](release-gates.md#rule-r-16) |
 | **[PG-06](open-gates-register.md#rule-pg-06)** | **Closed by design evidence 2026-09-05** — [`invariant-coverage.md`](invariant-coverage.md) `§7` | Finalising the design baseline |
 | **[PG-11](open-gates-register.md#rule-pg-11)** | Distributed across the owning packages in that mapping; accounting reported by `05.05` | Each owning package's gate; [P-03](release-gates.md#rule-p-03) per product |
-| **[PG-07](open-gates-register.md#rule-pg-07)** | 35.04, 25.08 | Public import-format claims. The WP-15.06 fixture is the Cloud Chat export producer's only runtime fixture; 25.08 proves the real Cloud download |
+| **[PG-07](open-gates-register.md#rule-pg-07)** | 35.04, 25.08 | Public import-format claims. The [WP-15.06](../planning/work-packages/15-arcchat-conversation-core.md#rule-wp-15.06) fixture is the Cloud Chat export producer's only runtime fixture; 25.08 proves the real Cloud download |
 | **[PG-08](open-gates-register.md#rule-pg-08)** | 13.04 seeds and 13.16 completes the inventory; 33/34 consume and maintain it | [C-04](release-gates.md#rule-c-04) |
 | **[PG-09](open-gates-register.md#rule-pg-09)** | `41` | Third-party extension enablement |
 | **[PG-10](open-gates-register.md#rule-pg-10)** | `42.10`, `43.06` | [L-28](release-gates.md#rule-l-28), [L-29](release-gates.md#rule-l-29) |

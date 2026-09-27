@@ -149,7 +149,7 @@
 
 **Current execution amendment.** [P2-017](../../decisions/phase-2-specification-decisions.md#rule-p2-017) and the [CI/local policy](../../assurance/ci-and-local-validation-policy.md) replace hosted runtime/macOS and repeated post-publication gates. Retain actual local readback evidence and reduced CI; no new public download or device/browser/provider rerun is required. Stop after this substep.
 
-**Completed execution.** [Implementation evidence](../../assurance/wp02-04-implementation-evidence.md) and its [source/result receipt](../../assurance/wp02-04-implementation-evidence.json) record the independent source identities, retained historical local observations, seven reviewed owner PRs with successful reduced CI and main publication/deployment, and synchronized Design/Plan instructions. All primary checkouts were updated; branches and worktrees remain retained. This closes WP02.04 under P2-017 only, without claiming new runtime/macOS coverage, later version producers or commercial acceptance. WP02.05 was not started.
+**Completed execution.** [Implementation evidence](../../assurance/wp02-04-implementation-evidence.md) and its [source/result receipt](../../assurance/wp02-04-implementation-evidence.json) record the independent source identities, retained historical local observations, seven reviewed owner PRs with successful reduced CI and main publication/deployment, and synchronized Design/Plan instructions. All primary checkouts were updated; branches and worktrees remain retained. This closes WP02.04 under [P2-017](../../decisions/phase-2-specification-decisions.md#rule-p2-017) only, without claiming new runtime/macOS coverage, later version producers or commercial acceptance. WP02.05 was not started.
 
 <a id="rule-wp-02.05"></a>
 
@@ -158,13 +158,13 @@
 
 **What must be fully done.** Encode the selected licence/import and dependency-admission rules as owner policy data, including exact source hashes, generated public/internal separation, native gates and the framework-upgrade re-verification obligation. Configure candidate/stable package feeds and restricted publisher credentials, immutable versions and checksum/signature verification.
 
-**Testing requirements.** Negative forbidden-license, floating-tag, mutable-version and wrong-publisher fixtures; actual tooling-package publication/restore evidence. Under P2-017, retain established round-trip receipts for unchanged mechanisms and confirm changed candidate publication by provider status; do not repeat public downloads or installed consumers. Generated Contracts and runtime consumers follow WP03/WP06.
+**Testing requirements.** Negative forbidden-license, floating-tag, mutable-version and wrong-publisher fixtures; actual tooling-package publication/restore evidence. Under [P2-017](../../decisions/phase-2-specification-decisions.md#rule-p2-017), retain established round-trip receipts for unchanged mechanisms and confirm changed candidate publication by provider status; do not repeat public downloads or installed consumers. Generated Contracts and runtime consumers follow WP03/WP06.
 
 **Completion gate.** Publication mechanisms and dependency policies are usable before consumer work; production release remains WP50.
 
 **Execution profile.** [Dependency admission and publication](../../assurance/wp02-05-dependency-policy-profile.md) records the researched owner boundaries, candidate/stable rules, upgrade evidence and ordered implementation/review/merge plan.
 
-**Completed execution.** [Dependency policy implementation](../../assurance/wp02-05-implementation-evidence.md) and its [source/result receipt](../../assurance/wp02-05-implementation-evidence.json) record all seven reviewed owner PRs, successful applicable PR checks and required main publication/deployment results, immutable admission/upgrade controls, restricted publisher scope and clean primary fast-forwards. Stable-tag execution and new runtime/consumer proof are explicitly unclaimed. This closes WP02.05 under P2-017; recurring VG-08 and later owner gates remain open.
+**Completed execution.** [Dependency policy implementation](../../assurance/wp02-05-implementation-evidence.md) and its [source/result receipt](../../assurance/wp02-05-implementation-evidence.json) record all seven reviewed owner PRs, successful applicable PR checks and required main publication/deployment results, immutable admission/upgrade controls, restricted publisher scope and clean primary fast-forwards. Stable-tag execution and new runtime/consumer proof are explicitly unclaimed. This closes WP02.05 under [P2-017](../../decisions/phase-2-specification-decisions.md#rule-p2-017); recurring [VG-08](../../assurance/open-gates-register.md#rule-vg-08) and later owner gates remain open.
 
 <a id="rule-wp-02.90"></a>
 ### WP-02.90 — Verify the owned artifact and real integration
@@ -177,7 +177,7 @@
 
 **Completion gate.** Selected pins and licence/AOT policy agree across owners; the BuildPolicy produces an identifiable candidate and the native pack pipeline is configured; real native capability proof is WP06; consumers need no CMake/vcpkg for ordinary restore. Record exact artifacts and provider reality. The package is incomplete if an important contract/owner/recovery rule still requires design during coding.
 
-**Completed stage.** [WP02 stage acceptance](../../assurance/wp02-stage-acceptance.md) and its [source/evidence index](../../assurance/wp02-stage-acceptance.json) join the six preceding substeps, exact seven-owner source/provider results, current producer inventories and independently retained consumer pins. All parent completion conditions pass for build/publication governance under P2-017. No new runtime, download, build or publication cycle was required; WP03/04/05/06/11/13/21/50 and recurring VG-08 retain their declared responsibilities.
+**Completed stage.** [WP02 stage acceptance](../../assurance/wp02-stage-acceptance.md) and its [source/evidence index](../../assurance/wp02-stage-acceptance.json) join the six preceding substeps, exact seven-owner source/provider results, current producer inventories and independently retained consumer pins. All parent completion conditions pass for build/publication governance under [P2-017](../../decisions/phase-2-specification-decisions.md#rule-p2-017). No new runtime, download, build or publication cycle was required; WP03/04/05/06/11/13/21/50 and recurring [VG-08](../../assurance/open-gates-register.md#rule-vg-08) retain their declared responsibilities.
 
 ---
 

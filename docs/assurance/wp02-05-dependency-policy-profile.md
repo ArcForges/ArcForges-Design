@@ -1,6 +1,6 @@
 # WP02.05 dependency admission and publication profile
 
-Scope: [WP02.05](../planning/work-packages/02-build-governance-and-analyzer-policy.md#rule-wp-02.05), including BR-02/03/08/11, SP-08/10, D-013 and the recurring VG-08 upgrade obligation. This profile records research and the complete ordered plan before implementation. It does not close WP03 schemas, WP05 architecture-policy coverage, WP06 functional integration or WP50 commercial release.
+Scope: [WP02.05](../planning/work-packages/02-build-governance-and-analyzer-policy.md#rule-wp-02.05), including [BR-02](../planning/work-packages/02-build-governance-and-analyzer-policy.md#rule-br-02)/03/08/11, [SP-08](../architecture/14-build-packaging-and-release.md#rule-sp-08)/10, [D-013](../decisions/phase-1-foundation-decisions.md#rule-d-013) and the recurring [VG-08](open-gates-register.md#rule-vg-08) upgrade obligation. This profile records research and the complete ordered plan before implementation. It does not close WP03 schemas, WP05 architecture-policy coverage, WP06 functional integration or WP50 commercial release.
 
 ## Research and decisions
 
@@ -20,7 +20,7 @@ Primary provider documentation verified on 2026-09-21: [NuGet trusted publishing
 
 ## Complete ordered execution
 
-1. Review and merge this Design profile and directly relevant authority repairs in a retained worktree, with no product CI. Clarify the upgrade venue/cadence and WP02.05 acceptance under P2-017. Fast-forward the Design primary.
+1. Review and merge this Design profile and directly relevant authority repairs in a retained worktree, with no product CI. Clarify the upgrade venue/cadence and WP02.05 acceptance under [P2-017](../decisions/phase-2-specification-decisions.md#rule-p2-017). Fast-forward the Design primary.
 2. Implement independent owner changes in retained worktrees: DesktopPlatform/Contracts producer policy and stable tooling path; ArcScope/Mobile consumer admission; Cloud/AI/Web dependency and import policy. Keep existing dependency versions and source/licence history. Register new files and append provenance successors if reused implementation changes require them. Repair Mobile's obsolete mandatory device/empty-cache upgrade instructions.
 3. Run scoped offline negative fixtures and actual policy/input checks once, using existing tools/caches. Integrate into existing CI entry points without new duplicate security jobs or forbidden execution. Serialize any necessary heavy local compilation. CI retains applicable Windows/Linux compilation/AOT/packaging and security; no installed consumers, public downloads or new runtime scenarios.
 4. Review every complete PR, fix concrete findings within this plan, wait for all retained applicable latest-head checks, and merge automatically. Titles begin `[WP02 · SubStep 02.05]`. Preserve candidate bytes, signing identity, package IDs and branches/worktrees. Configure the DesktopPlatform stable-tag environment restriction only for that reviewed workflow path.

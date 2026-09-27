@@ -18,7 +18,7 @@ This document consolidates every gate that stands between work and users, in one
 | Class | When evaluated | Blocks |
 |---|---|---|
 | **G — Continuous** | Every pull request and main build | Merge |
-| **R — Per-release** | Applicable automated build/package gates per candidate; local observations under P2-017 | Promotion under the applicable channel requirements |
+| **R — Per-release** | Applicable automated build/package gates per candidate; local observations under [P2-017](../decisions/phase-2-specification-decisions.md#rule-p2-017) | Promotion under the applicable channel requirements |
 | **C — Channel promotion** | Moving a release between channels | That promotion |
 | **P — Product first release** | The first public release of a product | That product's launch |
 | **L — Go-live** | The first time a paid or externally exposed capability opens | That capability's launch |
@@ -56,7 +56,7 @@ This document consolidates every gate that stands between work and users, in one
 |---|---|---|
 | <a id="rule-r-01"></a>R-01 | All continuous gates pass on the release commit | Gate report |
 | <a id="rule-r-02"></a>R-02 | Integration families pass: persistence, local RPC, public API contract, realtime, multi-process ([F-03](testing-and-verification-strategy.md#rule-f-03), [F-05](testing-and-verification-strategy.md#rule-f-05), [F-06](testing-and-verification-strategy.md#rule-f-06), [F-07](testing-and-verification-strategy.md#rule-f-07), [F-11](testing-and-verification-strategy.md#rule-f-11)) | Test results |
-| <a id="rule-r-03"></a>R-03 | **AOT publish succeeds for every produced desktop target and the C# Cloud host** (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**, **[V-05](phase-1-official-verification.md#rule-v-05)**). Launch and real-adapter observations are separate local opt-in evidence under P2-017, not publication jobs. | Publish log; separately identified local observations where available |
+| <a id="rule-r-03"></a>R-03 | **AOT publish succeeds for every produced desktop target and the C# Cloud host** (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**, **[V-05](phase-1-official-verification.md#rule-v-05)**). Launch and real-adapter observations are separate local opt-in evidence under [P2-017](../decisions/phase-2-specification-decisions.md#rule-p2-017), not publication jobs. | Publish log; separately identified local observations where available |
 | <a id="rule-r-04"></a>R-04 | Migration and golden-fixture tests pass, forward and — where reversibility is claimed — backward ([F-12](testing-and-verification-strategy.md#rule-f-12)) | Fixture comparison |
 | <a id="rule-r-05"></a>R-05 | Crash, fault-injection and recovery tests pass ([F-13](testing-and-verification-strategy.md#rule-f-13)) | Recovery outcomes |
 | <a id="rule-r-06"></a>R-06 | Performance budgets met with the regression gate applied: startup, memory, responsiveness, bundle size (`§2`–`§6` of the quality contract) | Measured values versus budget and previous release |
@@ -160,7 +160,7 @@ This document consolidates every gate that stands between work and users, in one
 | <a id="rule-l-51"></a>L-51 | **[V-09](phase-1-official-verification.md#rule-v-09)**: store category fit and consumption-only conformance confirmed by review, not by reading the guideline ([PL-07](../requirements/10-distribution-update-and-support.md#rule-pl-07) there) |
 | <a id="rule-l-52"></a>L-52 | Commerce-prohibition build check passes: no purchase surface, no embedded checkout, no store billing, no external purchase call to action, **no licence-key or purchase-token unlock path** ([MC-01](../architecture/11-mobile-architecture.md#rule-mc-01)–[MC-06](../architecture/11-mobile-architecture.md#rule-mc-06) in the mobile architecture) |
 | <a id="rule-l-53"></a>L-53 | Android runtime posture confirmed by inspecting the produced release artifact, not the project file ([RT-07](../architecture/11-mobile-architecture.md#rule-rt-07) there) |
-| <a id="rule-l-54"></a>L-54 | Release artifact built by retained CI. Any device observation is explicit local opt-in under P2-017, with its actual artifact and coverage recorded; it is not a hosted or repeated post-publication gate ([RT-08](../architecture/11-mobile-architecture.md#rule-rt-08) there). |
+| <a id="rule-l-54"></a>L-54 | Release artifact built by retained CI. Any device observation is explicit local opt-in under [P2-017](../decisions/phase-2-specification-decisions.md#rule-p2-017), with its actual artifact and coverage recorded; it is not a hosted or repeated post-publication gate ([RT-08](../architecture/11-mobile-architecture.md#rule-rt-08) there). |
 | <a id="rule-l-55"></a>L-55 | Store developer account established under the intended long-term owning identity ([PL-05](../requirements/10-distribution-update-and-support.md#rule-pl-05) in the distribution requirements) |
 
 ### 6.5 Extension platform opening

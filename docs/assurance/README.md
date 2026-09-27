@@ -19,7 +19,7 @@ Prices, fees, quotas and rates are deliberately **not** verified in these artifa
 
 | Document | Covers |
 |---|---|
-| [ci-and-local-validation-policy.md](ci-and-local-validation-policy.md) | P2-017 execution authority: retained build/offline/security/signing checks, prohibited macOS/hosted runtime CI and redundant public verification, local opt-in coverage and bounded post-merge completion |
+| [ci-and-local-validation-policy.md](ci-and-local-validation-policy.md) | [P2-017](../decisions/phase-2-specification-decisions.md#rule-p2-017) execution authority: retained build/offline/security/signing checks, prohibited macOS/hosted runtime CI and redundant public verification, local opt-in coverage and bounded post-merge completion |
 | [`testing-and-verification-strategy.md`](testing-and-verification-strategy.md) | The eighteen test families with their unique responsibility, placement and evidence; cross-cutting verification themes; the invariant-to-test obligation; test environments; fixtures and corpora; verification of the specification itself; and what each family may not substitute for |
 | [`release-gates.md`](release-gates.md) | Every gate between work and users, consolidated: continuous, per-release, channel-promotion, product first-release, go-live (cloud, commercial, regional, mobile, extension) and deferred-gate closure — each with evidence and an accountable role |
 | [open-gates-register.md](open-gates-register.md) | The authoritative current register of design closures, candidate-specific implementation evidence, remaining implementation obligations, retired/merged entries and owner determinations |
