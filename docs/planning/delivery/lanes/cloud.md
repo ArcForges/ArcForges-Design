@@ -930,7 +930,7 @@ Tasks: 60 · Owning repositories: Cloud, DesktopPlatform · Integration owner(s)
 
 ### CLOUD.39 — Guarded publication, convergent bootstrap and the Sync owner transaction
 
-**Outcome.** Model-04's primary lower-bound W bootstrap, immutable-key pages, retention pin and replay-to-H work; the publisher guards watermark/fence/selected rows in one D1 batch; the real Sync owner transaction commits admitted ArcScope metadata owner bodies with publication, receipts and Resource/Entitlement enlistment in the same commit; real D1 clients converge without PostgreSQL snapshot/locks or lost pending work.
+**Outcome.** Model-04's primary lower-bound W bootstrap, immutable-key pages, retention pin and replay-to-H work; the publisher guards watermark/fence/selected rows in one D1 batch; the real Sync owner transaction commits admitted ScopeProjectMetadata and ScopeMetadata owner bodies with publication, receipts and Resource/Entitlement enlistment in the same commit; real D1 clients converge without PostgreSQL snapshot/locks or lost pending work.
 
 | Field | Value |
 |---|---|
@@ -1423,7 +1423,7 @@ Tasks: 60 · Owning repositories: Cloud, DesktopPlatform · Integration owner(s)
 
 ### CLOUD.68 — ArcScope library read model and companion notifications
 
-**Outcome.** scope.listProjects, scope.listSessions and scope.getSession serve owner-filtered, paged, revision- and commit-time-bearing projections of committed scope.synced_aggregate rows with no mutation and no raw bytes; the Sync commit emits durable scope.reportSynced and sync.conflictNeedsDecision notifications exactly once.
+**Outcome.** scope.listProjects, scope.listSessions and scope.getSession project authorized committed project/session rows from scope.synced_aggregate. Project names, revisions and commit times come from ScopeProjectMetadata; counts and paging bind a consistent authorized snapshot, with missing/deleted parents and empty projects excluded. Sync emits durable scope.reportSynced and sync.conflictNeedsDecision notifications through the existing owner transaction, idempotently on replay. No raw bytes or new authoritative table are introduced.
 
 | Field | Value |
 |---|---|
@@ -1437,7 +1437,7 @@ Tasks: 60 · Owning repositories: Cloud, DesktopPlatform · Integration owner(s)
 | Completion prerequisites | **integration** [CLOUD.12](#task-cloud-12) — the Notification module durable rows. *Why:* the emitted notifications are persisted and delivered by the Notification owner |
 | Unblocks | [AND.27](android.md#task-and-27), [CLOUD.47](#task-cloud-47), [WEB.32](web.md#task-web-32) |
 | Write scope | `Cloud:src/Cloud/ArcForges.Cloud.Modules.Scope/Library/**`<br>`Cloud:src/Cloud/ArcForges.Cloud.Modules.Sync/Notifications/**` |
-| Validation | offline projection and authorization tests; opt-in real-D1 runs for pagination across concurrent commits, minRevision, tombstones, revoked membership, wrong product scope, large-session projection and exactly-once notification on commit and replay ([P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017)). |
+| Validation | offline projection, authorization and notification tests covering project rename, parent tombstones, out-of-order project/session arrival, empty projects, count changes without a project revision change, paged reads across commits and cache invalidation on either root; optional affected-scope real-D1 checks using an existing environment for these cases, minRevision, large responses and durable notification replay ([P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017)). |
 | Completion evidence | Real D1 projection results, authorization refusals and notification receipts for a synced ArcScope workspace. |
 | Baseline (unreviewed unless accepted) | not-started Observed none: the Cloud host has no Scope or Sync module code yet. |
 | Notes | Builds as soon as the Sync owner transaction exists; durable notification rows come from the Notification module. |

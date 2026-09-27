@@ -1350,13 +1350,9 @@
     {
      "ref": "WP-05.06",
      "part": "full: six checks over docs/ in ArcForges-Design, plus the 23+8-row Phase-1/Phase-2 decision-coverage check against traceability-matrix.md"
-    },
-    {
-     "ref": "P2-018",
-     "part": "delivery-graph validation replacing the retired package-level graph check"
     }
    ],
-   "outcome": "Checks run against the current Design repository and produce zero findings: every internal link resolves; every cited requirement/architecture rule/decision/verification finding/gate identifier exists; no superseded name appears as current outside docs/deprecated-inputs/; every Phase 1 decision is cited by at least one Phase 2 document or its non-applicability is stated; the work-package dependency graph is acyclic with every referenced package existing; and the decision-coverage check passes.",
+   "outcome": "Checks run against the current Design repository and produce zero findings: every internal link resolves; every cited requirement/architecture rule/decision/verification finding/gate identifier exists; no superseded name appears as current outside docs/deprecated-inputs/; every Phase 1 decision is cited by at least one Phase 2 document or its non-applicability is stated; the delivery graph has satisfiable prerequisites, current generated views and complete obligation coverage; and the decision-coverage check passes.",
    "provides": [
     "spec-integrity-check-v1"
    ],
@@ -1392,7 +1388,7 @@
     "state": "not-started",
     "notes": "Observed partial, unreviewed: DesktopPlatform/eng/design_graph.py:graph() (read in full) already implements: cross-checking implementation-sequence.md section 9's forward-dependency table against README.md's phase tables and its 'Downstream dependency index' reverse table (all three must agree, and reverse must be the exact transpose of forward); rejecting a producer reference to an inactive/nonexistent package; requiring every active WP file to declare exactly sections 1-9 with no duplicate numbering; requiring exactly one #rule-wp-NN.90 evidence row in each WP's own section 7; requiring implementation-sequence.md to carry a 'Serial execution:...' line that is a valid topological order of every active package (every producer ordered before its consumer) plus three exact hardcoded sentences ('All N active packages...', 'Total active dependency edges: E.', 'WP42.11 precedes 42.10.'). DesktopPlatform/eng/design_policy.py:verify() (read in full) additionally pins the ENTIRE Design corpus by commit+per-file sha256 (glossary/coverage/classifications sources plus one corpusSha256 over every doc), calls corpus.audit() for citation/anchor integrity (design_corpus.py itself not read), calls graph() above, and validates a citation-classification register (docs/assurance/citation-classifications.json) so every non-linked occurrence of a standard ID-shaped token anywhere in the corpus is either a normal citation or an explicit, dated, owned exception. This already covers the acyclic-graph check and much of link/citation integrity. NOT confirmed from this reading: the specific 23+8-row decision-coverage check against traceability-matrix.md, and whether superseded-name-outside-deprecated-inputs is checked here versus by WP00.00/WP05.02's separate forbidden-term scanner."
    },
-   "notes": "Implements the delivery-graph validation required by the design policy export specification under P2-018, replacing the retired package-graph and serial-order check; a precondition for moving the pinned Design commit (adoption stage section 5).",
+   "notes": "Extends the corpus and decision-coverage checks after GOV.18 has migrated the retired graph validator and re-pinned the export. Reuse that migration evidence; this broader integrity task is not a prerequisite for the initial repin.",
    "complete": []
   },
   {
@@ -1555,7 +1551,7 @@
      "part": "source cleanup of the alignment sequence (ADP-10); blocks only the tasks that edit the retired bindings"
     }
    ],
-   "outcome": "The Media, Colour and Otio native families and the macOS Metal graphics probe leave DesktopPlatform - ABI directories, overlays, managed and runtime projects, oracle tests, solution entries and package registrations - and no further versions of them are published; the still-image shim moves to native/arcimage-abi under the logical library ArcImageNative while its published arc_image_* symbols stay unchanged; provenance records of reused files stay unchanged.",
+   "outcome": "The Media, Colour and Otio native families and the macOS Metal graphics probe leave DesktopPlatform - ABI directories, overlays, managed and runtime projects, oracle tests, solution entries and package registrations - and no further versions of them are published; the still-image shim moves to native/arcimage-abi under the logical library ArcImageNative while its published arc_image_* symbols stay unchanged; provenance records of reused files stay unchanged. Packaging guards, local opt-in consumer fixtures and examples use retained producers, preserving applicable integrity and RID checks.",
    "provides": [
     "retired-native-families",
     "still-image-shim-moved"
@@ -1571,7 +1567,10 @@
     "DesktopPlatform:README.md",
     "DesktopPlatform:docs/native-package-release.md",
     "DesktopPlatform:src/BuildingBlocks/ArcForges.NativeInterop/README.md",
-    "DesktopPlatform:tests/ArchitectureTests/** (retired native library map)"
+    "DesktopPlatform:tests/ArchitectureTests/** (retired native library map)",
+    "DesktopPlatform:eng/packaging/test_packages.py",
+    "DesktopPlatform:eng/packaging/native_consumer.py",
+    "DesktopPlatform:eng/packaging/README.md"
    ],
    "shared": [
     {
@@ -1595,7 +1594,7 @@
      "mode": "append"
     }
    ],
-   "validation": "offline: native CMake/solution/package-inventory consistency and a scan proving the retired families and libraries are absent outside provenance history; the existing Windows native build and package consumers run for the retained families where the change requires it (P2-017). Acceptance: outside eng/provenance, no retired native family, library, package or directory remains in source, solution, packaging, tests or documentation, and the still-image consumers resolve ArcImageNative.",
+   "validation": "offline: native CMake/solution/package-inventory consistency, retained packaging guard tests and a scan for active retired-family bindings outside provenance history. Retain necessary Windows native compilation and packaging checks; run affected consumer behavior locally only when the existing environment supports it and the change requires it (P2-017), never as CI. Acceptance: source, solution, packaging, tests and current documentation contain only retained families, guards no longer select Media packages, and still-image consumers resolve ArcImageNative.",
    "evidence": "Retirement diff; native build and package-consumer results for the retained families; the moved still-image shim with unchanged exported symbols.",
    "baseline": {
     "state": "not-started",
@@ -1620,9 +1619,13 @@
     {
      "ref": "P2-020",
      "part": "source cleanup of the alignment sequence (ADP-10); blocks only the tasks that edit the retired bindings"
+    },
+    {
+     "ref": "P2-018",
+     "part": "delivery-graph validation replacing the retired package-level graph check"
     }
    ],
-   "outcome": "Runtime-ownership, licence-boundary and reconciliation policy data drop the retired repositories and families; the design-policy export is re-pinned to a reviewed commit of this Design repository and glossary-terms.json and invariants.json are regenerated from it; provenance records of reused files stay unchanged.",
+   "outcome": "Runtime-ownership, licence-boundary and reconciliation policy data drop the retired repositories and families. In the same reviewed change, the retired serial-graph validator and exporter migrate to the delivery graph, including graph-derived active invariant owners, before the design-policy export is re-pinned to this Design repository and glossary-terms.json and invariants.json are regenerated. Provenance records of reused files stay unchanged.",
    "provides": [
     "design-policy-export-repinned"
    ],
@@ -1636,7 +1639,9 @@
     "DesktopPlatform:eng/test_runtime_ownership.py",
     "DesktopPlatform:eng/test_licence_boundary.py",
     "DesktopPlatform:eng/test_design_policy.py",
-    "DesktopPlatform:tests/ArchitectureTests/** (retired repository owners)"
+    "DesktopPlatform:tests/ArchitectureTests/** (retired repository owners)",
+    "DesktopPlatform:eng/design_graph.py",
+    "DesktopPlatform:eng/design_policy.py"
    ],
    "shared": [
     {
@@ -1648,13 +1653,13 @@
      "mode": "append"
     }
    ],
-   "validation": "offline: architecture and runtime-ownership tests, the design-policy exporter comparing fresh bytes against the re-pinned Design commit, and a scan proving the retired repositories are absent from the policy data outside provenance history. Acceptance: the policy tools and their tests name only the seven implementation repositories and retained references, and the design-policy check passes against the re-pinned commit of this Design repository.",
-   "evidence": "Re-pinned Design commit and policy-source hashes; exporter comparison; policy-test results.",
+   "validation": "offline: delivery-graph and exporter tests, including invalid prerequisite/obligation/active-owner rejection fixtures; architecture and runtime-ownership tests; fresh exporter comparison against the reviewed repinned Design commit; no live retired bindings outside provenance. Acceptance: the graph-validator migration and repin pass together without waiting for GOV.14, policy tools name only the retained repositories and references, and the design-policy check passes against the new pin.",
+   "evidence": "Reviewed graph-validator/exporter migration and negative-fixture results; repinned Design commit and policy-source identities; exporter comparison and policy-test results.",
    "baseline": {
     "state": "not-started",
     "notes": "Observed in the accepted WP00-WP02 implementation: policy data and the design-policy export pinned to the derivation-baseline Design commit."
    },
-   "notes": "GOV.13 and GOV.14 read the re-pinned export; CON.23 completes after its forbidden-alias declaration is re-exported.",
+   "notes": "Performs the narrow checker migration needed to repin within this cleanup task. GOV.13 and GOV.14 consume the resulting export; GOV.14 retains the broader specification-integrity audit. CON.23 completes after its forbidden-alias declaration is re-exported.",
    "start": [],
    "complete": []
   },
@@ -1783,10 +1788,10 @@
    "obligations": [
     {
      "ref": "WP-03.03",
-     "part": "the Sync mutation allowlist and oversized-body admission negative-vector half; ResourceRef/ResourceVersionRef/BlobRef schema itself is already done (CON.91/WP-03.01)"
+     "part": "the ScopeProjectMetadata owner body and AggregateBody binding, closed Sync mutation allowlist and oversized-body admission negative vectors; ResourceRef/ResourceVersionRef/BlobRef schema itself is already done (CON.91/WP-03.01)"
     }
    ],
-   "outcome": "A generated/schema-derived validator enforces that Sync (registry04 §10) accepts client-origin writes only for authorized ScopeMetadata (AggregateBody's Cloud-writable subset), refusing TaskSnapshot/AutomationView/ConversationBody/AgentProfile/SkillRecord/ChatProjectRecord/MemoryRecord/PreferenceRecord as client writes (Cloud-authored-only); externalBody indirection resolves to the same allowlist before validation. Independent negative vectors cover cross-owner reference, wrong-revision precondition, opaque/unknown AggregateBody variant, and forbidden-path (non-allowlisted body kind) attempts, plus compatible unknown-response preservation.",
+   "outcome": "A generated/schema-derived validator enforces that Sync (registry04 §10) accepts client-origin writes only for authorized ScopeProjectMetadata and ScopeMetadata (the closed client-writable subset of AggregateBody), refusing TaskSnapshot/AutomationView/ConversationBody/AgentProfile/SkillRecord/ChatProjectRecord/MemoryRecord/PreferenceRecord as client writes (Cloud-authored-only); externalBody indirection resolves to the same allowlist before validation. Independent negative vectors cover cross-owner reference, wrong-revision precondition, opaque/unknown AggregateBody variant, and forbidden-path (non-allowlisted body kind) attempts, plus compatible unknown-response preservation. Author ScopeProjectMetadata and its additive AggregateBody variant, with cross-workspace project/session and tombstone vectors; project identity/name is never inferred from an arbitrary session.",
    "provides": [
     "sync-mutation-allowlist",
     "owner-body-admission-negatives"
@@ -1807,7 +1812,11 @@
    ],
    "writes": [
     "Contracts:public/proto/arcforges/publicapi/v1/content.proto",
-    "Contracts:fixtures/public/con-03-sync-allowlist.json"
+    "Contracts:fixtures/public/con-03-sync-allowlist.json",
+    "Contracts:public/proto/constraints/** (project metadata and owner-body admission)",
+    "Contracts:src/public/**/Generated/** (regenerated)",
+    "Contracts:src/public/ts/proto/src/gen/** (regenerated)",
+    "Contracts:src/public/ts/proto/src/shapes/gen/** (regenerated)"
    ],
    "shared": [
     {
@@ -1827,9 +1836,9 @@
    "evidence": "fixtures/public/con-03-sync-allowlist.json with named negative cases; validator unit test report.",
    "baseline": {
     "state": "not-started",
-    "notes": "Observed partial, unreviewed: The underlying AggregateBody oneof (all 16 branches) and every named record it references already exist and are published (WP03.01). Only the ADMISSION RULE (which branches Sync may accept as a client write) and its negative vectors are missing — confirmed by grepping content.proto for SyncScope/SyncChange/ChangeProposal/ChangeReceipt/AggregateView/ConflictView/BootstrapManifest: none exist yet either (those are CON.09's job, registry04 §5 Sync service operations, not this validator)."
+    "notes": "Observed partial, unreviewed: The underlying AggregateBody oneof (all 16 branches) and every named record it references already exist and are published (WP03.01). Only the ADMISSION RULE (which branches Sync may accept as a client write) and its negative vectors are missing — confirmed by grepping content.proto for SyncScope/SyncChange/ChangeProposal/ChangeReceipt/AggregateView/ConflictView/BootstrapManifest: none exist yet either (those are CON.09's job, registry04 §5 Sync service operations, not this validator). ScopeProjectMetadata and its additive AggregateBody variant are new under the ArcScope library closure and are not covered by the accepted foundation receipt."
    },
-   "notes": "Deliberately scoped narrower than 'author SyncService.* RPC methods' (that's CON.09, part of the huge WP-03.05 business-operation registry). CON.03 is only the shared-record ADMISSION RULE that CON.09's SyncService.pushChange/pushBatch and WP-21's real D1 sync both must obey — keeping it separate lets WP-21 pin an early closure (CON.03) without waiting for the full SyncService RPC surface (CON.09).",
+   "notes": "Owns the shared project metadata record and Sync body-admission rule. CON.09 owns SyncService RPC methods; CON.24 consumes this record for the library. This closure publishes independently of the library endpoints.",
    "complete": []
   },
   {
@@ -2805,10 +2814,10 @@
    "obligations": [
     {
      "ref": "WP-03.05",
-     "part": "simulation.* operations (12), their records, authorization fields and vectors"
+     "part": "simulation.* operations (13, including paged workspace-authorized listRuns), their records, authorization fields and vectors"
     }
    ],
-   "outcome": "SimulationService is generated with all simulation.* operations (definitions, scenario versions, run control, segments, segment tickets and state polling), exact fields and vectors in C#, TypeScript and Kotlin.",
+   "outcome": "SimulationService is generated with all simulation.* operations (definitions, scenario versions, run control, segments, segment tickets and state polling), exact fields and vectors in C#, TypeScript and Kotlin. Include simulation.listRuns with deterministic paging and current authorization, so a fresh companion can discover running and completed runs.",
    "provides": [
     "Simulation operation registry"
    ],
@@ -2944,7 +2953,11 @@
     "Contracts:tests/public/**",
     "Contracts:tests/tooling/**",
     "Contracts:src/public/ts/proto/src/values.ts",
-    "Contracts:README.md"
+    "Contracts:README.md",
+    "Contracts:public/proto/constraints.json (retired record constraints before CON.01 sharding)",
+    "Contracts:internal/proto/constraints.json (retired port constraints before CON.01 sharding)",
+    "Contracts:src/public/ts/proto/src/gen/** (regenerated)",
+    "Contracts:src/public/ts/proto/src/shapes/gen/** (regenerated)"
    ],
    "shared": [
     {
@@ -2960,7 +2973,7 @@
      "mode": "append"
     }
    ],
-   "validation": "offline: naming, schema, reservation and compatibility checks prove every retired number and name is reserved and unused, no retained record, service or fixture references a retired one, the package set matches the registry and generated shapes regenerate cleanly; the compatibility check accepts only the reviewed retirements. Acceptance: a scan of the repository outside eng/provenance and docs/implementation finds no retired type, package, product value or naming entry; the package set, solution, contract-access policy and foundation inventory list only retained items; structure tests pass without the retired cases.",
+   "validation": "offline: naming, schema, reservation and compatibility checks prove every retired number and name is reserved and unused, no retained record, service or fixture references a retired one, the package set matches the registry and generated shapes regenerate cleanly; the compatibility check accepts only the reviewed retirements. Acceptance: a scan finds no active retired type, package, product value or naming entry; required wire reservations, eng/provenance and historical docs/implementation receipts remain permitted; the package set, solution, contract-access policy and foundation inventory list only retained items; structure tests pass without the retired cases.",
    "evidence": "Retirement diff against the reserved lists of the wire registry; naming, schema, compatibility and generation results; package-set comparison with the registry.",
    "baseline": {
     "state": "not-started",
@@ -3136,10 +3149,10 @@
    "obligations": [
     {
      "ref": "WP-03.05",
-     "part": "ArcScope library read operations (scope.listProjects, scope.listSessions, scope.getSession), the ScopeProjectSummary and ScopeSessionSummary records, authorization fields and vectors"
+     "part": "ArcScope library read operations (scope.listProjects, scope.listSessions, scope.getSession), the ScopeProjectSummary and ScopeSessionSummary records, authorization fields and vectors; project summaries consume CON.03 ScopeProjectMetadata with project-owned revisions and snapshot-bound session counts"
     }
    ],
-   "outcome": "ScopeService is generated with scope.listProjects, scope.listSessions and scope.getSession and the ScopeProjectSummary and ScopeSessionSummary records in C#, TypeScript and Kotlin, with exact fields, authorization metadata (R1, Q, AO, product-owner scope) and independent vectors.",
+   "outcome": "ScopeService is generated with scope.listProjects, scope.listSessions and scope.getSession and the ScopeProjectSummary and ScopeSessionSummary records in C#, TypeScript and Kotlin, with exact fields, authorization metadata (R1, Q, AO, product-owner scope) and independent vectors. Project names and revisions come from ScopeProjectMetadata; counts and pagination bind the same authorized snapshot of live project/session rows.",
    "provides": [
     "scope-library-operations"
    ],
@@ -3155,12 +3168,22 @@
      "task": "CON.23",
      "need": "the retired content records removed and reserved",
      "why": "the library records sit beside ScopeMetadata in the content closure that CON.23 cleans first"
+    },
+    {
+     "type": "contract",
+     "task": "CON.03",
+     "need": "the typed ScopeProjectMetadata body and closed owner-body admission",
+     "why": "library project summaries read a defined project aggregate rather than inventing project name and revision semantics"
     }
    ],
    "writes": [
     "Contracts:public/proto/arcforges/publicapi/v1/scope.proto",
     "Contracts:fixtures/public/con-24-scope-library.json",
-    "Contracts:src/public/**/Generated/**"
+    "Contracts:src/public/**/Generated/**",
+    "Contracts:public/proto/arcforges/publicapi/v1/content.proto (ScopeProjectSummary and ScopeSessionSummary only)",
+    "Contracts:public/proto/constraints/** (library summaries and operations)",
+    "Contracts:src/public/ts/proto/src/gen/** (regenerated)",
+    "Contracts:src/public/ts/proto/src/shapes/gen/** (regenerated)"
    ],
    "shared": [
     {
@@ -10933,7 +10956,7 @@
      "part": "package-level obligation contribution"
     }
    ],
-   "outcome": "Reports compose analyses, measurements, findings and visualisations into a portable exported form; every element traces to session, capture, time range, configuration snapshot, decoder version and analysis version; regenerating from recorded sources produces equivalent results.",
+   "outcome": "Reports compose analyses, measurements, findings and visualisations into a portable exported form; every element traces to session, capture, time range, configuration snapshot, decoder version and analysis version; regenerating from recorded sources produces equivalent results. Companion publication uses arcscope.report.pdf.v1: an atomic ZIP with static report.pdf (stored chart snapshots, textual results and a provenance appendix) and report.pdf.arcforges-origin.json. The immutable bundle is verified before its report reference is synced; preview reads the PDF, while download/share preserves the complete bundle. Companion readers never recompute measurements.",
    "provides": [
     "scope.reports"
    ],
@@ -10968,7 +10991,7 @@
     "ArcScope:tests/ArcScopePipelineTests/Reports/**"
    ],
    "validation": "traceability completeness test; regeneration-equivalence test; export fidelity check; content-origin carrier vectors including unknown input and failed publication — offline",
-   "evidence": "traceability completeness and regeneration equivalence results; carrier/propagation/failure vectors with payload and manifest hashes",
+   "evidence": "traceability completeness and regeneration equivalence results; carrier/propagation/failure vectors with payload and manifest hashes A companion-readable PDF bundle with stored snapshots, provenance appendix and mandatory origin sidecar; verified resource identity and unavailable-artifact behavior.",
    "baseline": {
     "state": "not-started"
    },
@@ -11177,7 +11200,7 @@
      "part": "all work except the parts mapped to SCOPE.27"
     }
    ],
-   "outcome": "The ArcScope sync scope excludes raw capture by default and includes metadata, analysis, annotations, findings, reports and configurations; enabling project sync transfers no raw capture bytes; the policy is visible per project and per session; the included scope converges across devices.",
+   "outcome": "The ArcScope sync scope publishes ScopeProjectMetadata (project identity/name, independent revision and deletion) and ScopeMetadata (session membership and metadata), analyses, annotations, findings, configuration and companion-readable report references. Commit the verified report resource before publishing its reference. Raw capture remains local unless explicitly uploaded; project/session policy is visible and the included scope converges across devices.",
    "provides": [
     "scope.cloud-sync-scope"
    ],
@@ -11199,6 +11222,12 @@
      "task": "SCOPE.17",
      "need": "annotations/findings",
      "why": "sync scope includes them"
+    },
+    {
+     "type": "contract",
+     "task": "CON.03",
+     "need": "the generated project/session bodies and owner-body admission profile",
+     "why": "the sync adapter publishes the exact project metadata carrier and session membership instead of making a second schema"
     }
    ],
    "complete": [
@@ -11216,7 +11245,7 @@
     "ArcScope:src/ArcScope/ArcScope.CloudClient/SyncScope/**",
     "ArcScope:tests/SyncConflictTests/ArcScope/**"
    ],
-   "validation": "enable-sync test asserting no raw bytes transferred; policy-visibility test; convergence test across devices for included scope — early development against a contract-bound sync fixture, real convergence at WP-35.90",
+   "validation": "enable-sync test asserting no raw bytes transferred; policy-visibility test; convergence test across devices for included scope — early development against a contract-bound sync fixture, real convergence at WP-35.90; offline fixtures cover project rename/delete, parent/session arrival order and withholding a report reference until its resource is verified",
    "evidence": "no-raw-bytes sync assertion and convergence results",
    "baseline": {
     "state": "not-started"
@@ -11456,7 +11485,7 @@
      "part": "ArcScope object-kind coverage of the convergence harness; the real ArcScope client participates in the three-device run"
     }
    ],
-   "outcome": "ArcScope session and capture metadata sync scopes converge across devices against the deployed Cloud sync engine, replacing the contract-bound sync substitute; raw captures stay local unless explicitly uploaded.",
+   "outcome": "ArcScope project, session and capture metadata sync scopes converge against the deployed Cloud sync engine, including project rename/deletion, session membership and companion-readable report references, replacing the contract-bound substitute; raw captures stay local unless explicitly uploaded.",
    "provides": [
     "ArcScope real metadata sync evidence"
    ],
@@ -11601,7 +11630,7 @@
      "part": "'Slice recovery acceptance' body text (between §5 and §6, no substep id): kill the real Container before D1 publication, after the guarded segment/checkpoint/outbox batch, and before/after alarm scheduling; race a duplicate alarm with Cron rescue; assert one committed segment per run/range, deterministic continuation, no lost next-due intent, rejection of stale fences; alarm delivery itself may repeat; use the bounded mechanism in architecture 23 §1.2, never interactive BEGIN/COMMIT or an in-memory continuation loop; package-level obligation contribution"
     }
    ],
-   "outcome": "Deterministic committed samples and restart recovery pass under real DO alarm delivery, Container execution and D1 checkpoint/fence; the proposed 5s latency is measured and recorded, never claimed as hard real time; every SimulationPacer state-diagram race (duplicate alarm, exhausted retry, sleeping Container, pause/cancel race, duplicate segment, delayed catch-up, accelerated mode) passes.",
+   "outcome": "Deterministic committed samples and restart recovery pass under real DO alarm delivery, Container execution and D1 checkpoint/fence; the proposed 5s latency is measured and recorded, never claimed as hard real time; every SimulationPacer state-diagram race (duplicate alarm, exhausted retry, sleeping Container, pause/cancel race, duplicate segment, delayed catch-up, accelerated mode) passes. Retained run rows include createdAt and support the workspace-authorized scenario-version/state filters and deterministic paging of simulation.listRuns.",
    "provides": [
     "sim.pacer-fenced-execution"
    ],
@@ -11723,10 +11752,10 @@
    "obligations": [
     {
      "ref": "WP-51.04",
-     "part": "the Cloud API half: the eleven simulation.* operations as durable, idempotent, expected-state commands; authorised manifest listing; resumable hash-verifiable segment fetch over HTTP or object storage; revision-/cursor-based state polling"
+     "part": "the Cloud API half: the thirteen simulation.* operations as durable, idempotent, commands guarded by expectedRev and legal predecessor states; authorised manifest listing; resumable hash-verifiable segment fetch over HTTP or object storage; revision-/cursor-based state polling"
     }
    ],
-   "outcome": "The eleven simulation.* operations are durable, idempotent and expected-state; a client can list authorised manifests and fetch segments resumably with hash verification; state polling works with realtime disabled; a run reaching a terminal state emits one durable simulation.runTerminal notification.",
+   "outcome": "The thirteen simulation operations implement the declared query or command semantics; mutations are durable and idempotent, guarded by expectedRev and legal predecessor states. Clients discover retained authorized runs with simulation.listRuns, list committed manifests and fetch segments resumably with hash verification; polling works with realtime disabled and terminal transitions emit one durable simulation.runTerminal notification. Fresh clients require no remembered run ID.",
    "provides": [
     "sim.cloud-api"
    ],
@@ -11741,13 +11770,13 @@
      "type": "artifact",
      "task": "CLOUD.21",
      "need": "published endpoint mapping and validation pattern",
-     "why": "the eleven simulation.* operations are new Cloud PublicApi endpoints and should follow the one real endpoint-mapping/validation mechanism, not a bespoke one"
+     "why": "the thirteen simulation.* operations are new Cloud PublicApi endpoints and should follow the one real endpoint-mapping/validation mechanism, not a bespoke one"
     },
     {
      "type": "artifact",
      "task": "CLOUD.24",
      "need": "published idempotency and rate-limiting mechanism",
-     "why": "WP-51.04 explicitly requires 'durable, idempotent, expected-state commands' and testing against duplicate/stale/out-of-order commands — this is exactly WP-23.03's mechanism, reused rather than reinvented per-module"
+     "why": "WP-51.04 requires durable, idempotent commands with revision and legal-state guards and duplicate/stale/out-of-order tests; reuse WP-23.03's mechanism rather than implement another per-module engine."
     },
     {
      "type": "contract",
@@ -11766,7 +11795,7 @@
      "mode": "append"
     }
    ],
-   "validation": "duplicate/stale/out-of-order commands; terminal-run resists resurrection; hash-mismatched segment rejected; reconnect-with-realtime-disabled proves polling is a complete authoritative fallback — real local Cloud host per P2-017",
+   "validation": "duplicate/stale/out-of-order commands; terminal-run resists resurrection; hash-mismatched segment rejected; reconnect-with-realtime-disabled proves polling is a complete authoritative fallback — real local Cloud host per P2-017; offline run-list authorization/paging and stale-revision/illegal-predecessor vectors",
    "evidence": "command idempotency and realtime-disabled fallback results (Cloud-side)",
    "baseline": {
     "state": "not-started"
@@ -14044,7 +14073,7 @@
      "part": "real Sync owner transaction implementation for admitted ArcScope metadata owner bodies"
     }
    ],
-   "outcome": "Model-04's primary lower-bound W bootstrap, immutable-key pages, retention pin and replay-to-H work; the publisher guards watermark/fence/selected rows in one D1 batch; the real Sync owner transaction commits admitted ArcScope metadata owner bodies with publication, receipts and Resource/Entitlement enlistment in the same commit; real D1 clients converge without PostgreSQL snapshot/locks or lost pending work.",
+   "outcome": "Model-04's primary lower-bound W bootstrap, immutable-key pages, retention pin and replay-to-H work; the publisher guards watermark/fence/selected rows in one D1 batch; the real Sync owner transaction commits admitted ScopeProjectMetadata and ScopeMetadata owner bodies with publication, receipts and Resource/Entitlement enlistment in the same commit; real D1 clients converge without PostgreSQL snapshot/locks or lost pending work.",
    "provides": [
     "sync-publication-bootstrap",
     "sync-change-feed",
@@ -15188,7 +15217,7 @@
      "part": "full"
     }
    ],
-   "outcome": "scope.listProjects, scope.listSessions and scope.getSession serve owner-filtered, paged, revision- and commit-time-bearing projections of committed scope.synced_aggregate rows with no mutation and no raw bytes; the Sync commit emits durable scope.reportSynced and sync.conflictNeedsDecision notifications exactly once.",
+   "outcome": "scope.listProjects, scope.listSessions and scope.getSession project authorized committed project/session rows from scope.synced_aggregate. Project names, revisions and commit times come from ScopeProjectMetadata; counts and paging bind a consistent authorized snapshot, with missing/deleted parents and empty projects excluded. Sync emits durable scope.reportSynced and sync.conflictNeedsDecision notifications through the existing owner transaction, idempotently on replay. No raw bytes or new authoritative table are introduced.",
    "provides": [
     "scope-library-read-model"
    ],
@@ -15216,7 +15245,7 @@
     "Cloud:src/Cloud/ArcForges.Cloud.Modules.Scope/Library/**",
     "Cloud:src/Cloud/ArcForges.Cloud.Modules.Sync/Notifications/**"
    ],
-   "validation": "offline projection and authorization tests; opt-in real-D1 runs for pagination across concurrent commits, minRevision, tombstones, revoked membership, wrong product scope, large-session projection and exactly-once notification on commit and replay (P2-017).",
+   "validation": "offline projection, authorization and notification tests covering project rename, parent tombstones, out-of-order project/session arrival, empty projects, count changes without a project revision change, paged reads across commits and cache invalidation on either root; optional affected-scope real-D1 checks using an existing environment for these cases, minRevision, large responses and durable notification replay (P2-017).",
    "evidence": "Real D1 projection results, authorization refusals and notification receipts for a synced ArcScope workspace.",
    "baseline": {
     "state": "not-started",
@@ -20803,7 +20832,7 @@
      "part": "full"
     }
    ],
-   "outcome": "AN14 and AN26-AN28: the read-only ArcScope library, session and report views with provenance and stored chart snapshots, report sharing through the system share sheet, simulation run status with cancel, and the ArcScope notification kinds opening their objects.",
+   "outcome": "AN14 and AN26-AN28: the read-only ArcScope library, session and report views with provenance and stored chart snapshots, report sharing through the system share sheet, simulation run status with cancel, and the ArcScope notification kinds opening their objects. A fresh installation discovers runs with simulation.listRuns before reading details or cancelling.",
    "provides": [
     "android-arcscope-workspace"
    ],
@@ -20831,7 +20860,7 @@
     "Mobile:feature/scope/**"
    ],
    "validation": "Local real-integration run of the affected scenario in an existing environment, recorded once; offline and static checks in CI; no hosted runtime, device, browser, live-service or inference CI (P2-017).",
-   "evidence": "A report synced from ArcScope desktop found, read and shared on Android; a Cloud simulation run followed to its terminal state; revocation, unavailable-artifact and raw-data-local cases.",
+   "evidence": "A report synced from ArcScope desktop found, read and shared on Android; a Cloud simulation run followed to its terminal state; revocation, unavailable-artifact and raw-data-local cases. Run discovery after reinstall or on another authorized device; no remembered run ID required.",
    "baseline": {
     "state": "not-started",
     "notes": "Observed none."
@@ -20848,6 +20877,12 @@
      "task": "SIM.05",
      "need": "the deployed simulation operations",
      "why": "acceptance follows a real run to its terminal state"
+    },
+    {
+     "type": "integration",
+     "task": "SCOPE.22",
+     "need": "the delivered desktop project/session and report publication adapter",
+     "why": "acceptance must consume desktop-produced synced metadata and readable reports rather than a fixture; UI development remains parallel"
     }
    ]
   },
@@ -22484,6 +22519,12 @@
      "task": "CLOUD.68",
      "need": "the deployed library read model",
      "why": "acceptance reads a real synced workspace"
+    },
+    {
+     "type": "integration",
+     "task": "SCOPE.22",
+     "need": "the delivered desktop project/session and report publication adapter",
+     "why": "acceptance must consume desktop-produced synced metadata and readable reports rather than a fixture; UI development remains parallel"
     }
    ]
   },
@@ -22500,7 +22541,7 @@
      "part": "full"
     }
    ],
-   "outcome": "The simulator console: definitions, immutable scenario versions with validation errors, start, pause, resume and cancel with expected state, run state with complete-or-partial extent, and the committed segment manifest with resumable, hash-verified downloads.",
+   "outcome": "The simulator console: definitions, immutable scenario versions with validation errors, start, pause, resume and cancel with expectedRev and legal predecessor-state guards, run state with complete-or-partial extent, and the committed segment manifest with resumable, hash-verified downloads. Run history is discovered through simulation.listRuns on a fresh session.",
    "provides": [
     "web-simulator-console"
    ],
@@ -22522,7 +22563,7 @@
     "Web:apps/app/app/features/simulation/**"
    ],
    "validation": "Local real-integration run of the affected scenario in an existing environment, recorded once; offline and static checks in CI; no hosted runtime, device, browser, live-service or inference CI (P2-017).",
-   "evidence": "A scenario created and run from the browser with every desktop off, completed or cancelled with the correct extent, and its committed segments downloaded and verified.",
+   "evidence": "A scenario created and run from the browser with every desktop off, completed or cancelled with the correct extent, and its committed segments downloaded and verified. Authorized run discovery, filter paging and denied cross-workspace access.",
    "baseline": {
     "state": "not-started",
     "notes": "Observed none."

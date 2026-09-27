@@ -187,6 +187,15 @@ The historical feature name identifies no standalone application or database. Al
 
 ### `scope_project`, `session_record` *(aggregate roots)*
 
+| Table | Required root fields / constraints |
+|---|---|
+| scope_project | project_id:id PK; name:Name NN; content_rev:bigint NN; state:enum(live,deleted) NN; created_at/updated_at:instant NN; deleted_at:instant?. Stable ID survives rename/restore; state and deleted_at agree. |
+| session_record | session_id:id PK; project_id:id FK → scope_project NN; name:Name NN; content_rev:bigint NN; state:enum(live,deleted) NN; created_at/updated_at:instant NN; deleted_at:instant?. Stable ID survives rename/restore; state and deleted_at agree. Membership changes are native session commands and advance its content_rev. |
+
+Both roots use the common command/journal and separate sync submission/shadow fields in §1. Project rename advances the project native revision without rewriting session names; each session belongs to exactly one project. Native deletion tombstones the root; no cascading physical deletion bypasses retention/resource pins. A deleted project hides its still-live sessions until restore or an explicit native move to a live project. New/moved sessions require a live local parent. Cloud project deletion changes the replica/shadow and is reconciled under normal pending-edit rules, never silently deleting native working data.
+
+The sync adapter publishes `ScopeProjectMetadata` (project ID/name) and `ScopeMetadata` (session ID/name/project ID and declared content) to their distinct registered aggregate kinds. Native content revisions never substitute for their independent Cloud revisions. Enabling session/project metadata sync includes its parent metadata; parent publication and child publication need not be observed atomically. Missing/deleted Cloud parents suppress library visibility until reconciliation; they do not imply deletion of child data. Project sync disable retains the existing keep-local policy, while explicit replica deletion uses the normal tombstone lifecycle.
+
 ### `connection_profile` and `effective_configuration_snapshot`
 
 | `effective_configuration_snapshot` field | Type | Notes |

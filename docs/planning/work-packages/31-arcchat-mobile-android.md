@@ -92,9 +92,9 @@ Mobile owns app/, core/domain, core/data, core/network, core/security, core/desi
 <a id="rule-wp-31.07"></a>
 ### WP-31.07 — ArcScope library, reports and simulation runs
 
-**What must be fully done.** Implement AN14 and AN26–AN28 ([SW-01](../../requirements/products/arcchat-mobile-and-web.md#rule-sw-01)–[SW-05](../../requirements/products/arcchat-mobile-and-web.md#rule-sw-05), [P2-020](../../decisions/phase-2-specification-decisions.md#rule-p2-020)): the read-only ArcScope library over the library operations, session and report views with provenance and stored chart snapshots, report sharing through the system share sheet, simulation run status with cancel, and the ArcScope notification kinds opening their objects.
+**What must be fully done.** Implement AN14 and AN26–AN28 ([SW-01](../../requirements/products/arcchat-mobile-and-web.md#rule-sw-01)–[SW-05](../../requirements/products/arcchat-mobile-and-web.md#rule-sw-05), [P2-020](../../decisions/phase-2-specification-decisions.md#rule-p2-020)): the read-only ArcScope library over the library operations, session and report views with provenance and stored chart snapshots, bounded static-PDF preview of the verified `arcscope.report.pdf.v1` bundle and sharing of its complete ZIP, including the origin sidecar, through the system share sheet, paginated simulation run discovery through `simulation.listRuns`, run status with cancel, and the ArcScope notification kinds opening their objects.
 
-**Testing requirements.** Real generated Kotlin client against the deployed library and simulation operations: pagination, revision and commit time, revoked access, unavailable report artifact, raw-data-local sessions, cancellation of a run, notification deep links, offline cache purge on sign-out.
+**Testing requirements.** Real generated Kotlin client against the deployed library and simulation operations: pagination, revision and commit time, revoked access, unavailable report artifact, raw-data-local sessions, discovery of a run started on another surface before any terminal notification, cancellation of a run, notification deep links, offline cache purge on sign-out.
 
 **Completion gate.** A report synced from ArcScope desktop is found, read and shared on Android, and a Cloud simulation run is followed to its terminal state, with no editing path and no raw-capture download.
 

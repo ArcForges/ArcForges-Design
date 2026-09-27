@@ -754,7 +754,7 @@ Tasks: 33 · Owning repositories: Web · Integration owner(s): Web integration o
 | Provides | web-arcscope-workspace |
 | Start prerequisites | **artifact** [WEB.19](#task-web-19) — the companion route shell and design-system integration. *Why:* the workspace is a route set of the companion deployment<br>**contract** [CON.24](contracts.md#task-con-24) — the generated library operations. *Why:* the views call the library operations through the generated TypeScript client |
 | Entry condition | [ADOPT.09.web](adoption.md#task-adopt-09-web) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
-| Completion prerequisites | **integration** [CLOUD.68](cloud.md#task-cloud-68) — the deployed library read model. *Why:* acceptance reads a real synced workspace |
+| Completion prerequisites | **integration** [CLOUD.68](cloud.md#task-cloud-68) — the deployed library read model. *Why:* acceptance reads a real synced workspace<br>**integration** [SCOPE.22](arcscope.md#task-scope-22) — the delivered desktop project/session and report publication adapter. *Why:* acceptance must consume desktop-produced synced metadata and readable reports rather than a fixture; UI development remains parallel |
 | Unblocks | [WEB.26](#task-web-26) |
 | Write scope | `Web:apps/app/app/features/scope/**` |
 | Validation | Local real-integration run of the affected scenario in an existing environment, recorded once; offline and static checks in CI; no hosted runtime, device, browser, live-service or inference CI ([P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017)). |
@@ -765,7 +765,7 @@ Tasks: 33 · Owning repositories: Web · Integration owner(s): Web integration o
 
 ### WEB.33 — Cloud simulator console in the Web companion
 
-**Outcome.** The simulator console: definitions, immutable scenario versions with validation errors, start, pause, resume and cancel with expected state, run state with complete-or-partial extent, and the committed segment manifest with resumable, hash-verified downloads.
+**Outcome.** The simulator console: definitions, immutable scenario versions with validation errors, start, pause, resume and cancel with expectedRev and legal predecessor-state guards, run state with complete-or-partial extent, and the committed segment manifest with resumable, hash-verified downloads. Run history is discovered through simulation.listRuns on a fresh session.
 
 | Field | Value |
 |---|---|
@@ -780,5 +780,5 @@ Tasks: 33 · Owning repositories: Web · Integration owner(s): Web integration o
 | Unblocks | [WEB.26](#task-web-26) |
 | Write scope | `Web:apps/app/app/features/simulation/**` |
 | Validation | Local real-integration run of the affected scenario in an existing environment, recorded once; offline and static checks in CI; no hosted runtime, device, browser, live-service or inference CI ([P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017)). |
-| Completion evidence | A scenario created and run from the browser with every desktop off, completed or cancelled with the correct extent, and its committed segments downloaded and verified. |
+| Completion evidence | A scenario created and run from the browser with every desktop off, completed or cancelled with the correct extent, and its committed segments downloaded and verified. Authorized run discovery, filter paging and denied cross-workspace access. |
 | Baseline (unreviewed unless accepted) | not-started Observed none. |

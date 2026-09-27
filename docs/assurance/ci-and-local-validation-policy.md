@@ -17,7 +17,10 @@ The user's 2026-09-22 clarification distinguishes documentation repositories wit
 9. Independent delivery tasks run in parallel under [P2-018](../decisions/phase-2-specification-decisions.md#rule-p2-018) (amended 2026-09-23): each repository's integration owner owns merge order, shared files and publication, overlapping edits to a shared file follow its declared protocol, and an exclusive environment, device or signing authority is held only through a short lease ([DLV-37](../planning/delivery/README.md#rule-dlv-37)). Serialize CPU-heavy local builds/tests per workstation and reuse existing caches. Hooks must not silently rebuild/test on every commit or push.
 10. Every PR in a repository with CI needs full review and successful applicable required checks on its latest head before automatic merge, including documentation-only PRs. Obsolete runtime/macOS required-job references are removed with the jobs, never replaced by fake passing jobs. Documentation-only PRs in documentation repositories with no configured CI merge after review. Do not add skip-CI directives, disable workflows or bypass required checks merely because a PR changes documentation. Keep branches/worktrees. Post-merge work is limited to the expected commit, required build/publish/deploy job result and clean fast-forward primary update; no new download/hash/install/runtime cycle.
 
-## Research inventory and fixed execution order
+<a id="research-inventory-and-fixed-execution-order"></a>
+## Historical WP02.04 research inventory and execution order — 2026-09-21
+
+This section preserves the inventory and ordered plan recorded for the 2026-09-21 WP02.04 policy change. Its repository/PR states, execution instructions and stop-before-WP02.05 boundary are superseded execution history, not current commands or current runner inventories. Do not replay this sequence. Current work follows the required boundaries above and the [delivery model](../planning/delivery/README.md).
 
 Research inspected the current workflows, called scripts, repository instructions, open PRs and clean main checkouts before edits. Mobile PR 9 is the only related open source PR; its existing version-identity branch/worktree receives the reduction. Unrelated dependency PRs remain unchanged. DesktopPlatform, Contracts, Cloud, AI and Web currently have no macOS runner; ArcScope has two macOS matrix entries.
 
@@ -32,7 +35,7 @@ Research inspected the current workflows, called scripts, repository instruction
 | Mobile | Remove both device matrices, public upgrade/download tests, disposable test signing and redundant verification; remove debug/instrumentation APKs from the promoted release candidate; retain offline tests, release APK/AAB, permanent signing and publication |
 | Design / Plan | Correct active requirements, architecture, assurance, execution profiles and AGENTS; preserve historical evidence and unchanged product scope |
 
-Ordered execution:
+Historical ordered execution:
 
 1. Review/merge this Design authority and the synchronized Plan profiles in new retained worktrees, then pull their primary checkouts. PR titles use `[WP02 · SubStep 02.04]`.
 2. Apply each owner's complete reduction independently, appending to Mobile PR 9 and creating one scoped worktree/PR for each other owner. Update hidden script calls, release inventories, instructions and active docs together. Append any necessary immutable provenance successor before using its changed producer; do not mutate old accepted profiles or learn expectations from output.

@@ -72,7 +72,7 @@ Tasks: 10 · Owning repositories: ArcScope, Cloud · Integration owner(s): ArcSc
 
 ### SIM.03 — Fenced slices and SimulationPacer (DO alarm coordinator, bounded Container segments, D1 checkpoint/fence)
 
-**Outcome.** Deterministic committed samples and restart recovery pass under real DO alarm delivery, Container execution and D1 checkpoint/fence; the proposed 5s latency is measured and recorded, never claimed as hard real time; every SimulationPacer state-diagram race (duplicate alarm, exhausted retry, sleeping Container, pause/cancel race, duplicate segment, delayed catch-up, accelerated mode) passes.
+**Outcome.** Deterministic committed samples and restart recovery pass under real DO alarm delivery, Container execution and D1 checkpoint/fence; the proposed 5s latency is measured and recorded, never claimed as hard real time; every SimulationPacer state-diagram race (duplicate alarm, exhausted retry, sleeping Container, pause/cancel race, duplicate segment, delayed catch-up, accelerated mode) passes. Retained run rows include createdAt and support the workspace-authorized scenario-version/state filters and deterministic paging of simulation.listRuns.
 
 | Field | Value |
 |---|---|
@@ -119,22 +119,22 @@ Tasks: 10 · Owning repositories: ArcScope, Cloud · Integration owner(s): ArcSc
 
 ### SIM.05 — Cloud-side simulation.* operations, manifest listing and segment fetch
 
-**Outcome.** The eleven simulation.* operations are durable, idempotent and expected-state; a client can list authorised manifests and fetch segments resumably with hash verification; state polling works with realtime disabled; a run reaching a terminal state emits one durable simulation.runTerminal notification.
+**Outcome.** The thirteen simulation operations implement the declared query or command semantics; mutations are durable and idempotent, guarded by expectedRev and legal predecessor states. Clients discover retained authorized runs with simulation.listRuns, list committed manifests and fetch segments resumably with hash verification; polling works with realtime disabled and terminal transitions emit one durable simulation.runTerminal notification. Fresh clients require no remembered run ID.
 
 | Field | Value |
 |---|---|
 | Owning repository | Cloud (`C:\MyFile\Projects\ArcForges\Cloud`); integration owner: Cloud integration owner, the holder of `roles/integration-cloud` |
 | Claim, branch and ledger | `claims/sim-05` and ledger record `ledger/tasks/sim-05.md` in the Plan repository; task branch `task/sim-05` ([DLV-26](../README.md#rule-dlv-26)) |
 | Kind / size | service / M |
-| Obligations | [WP-51.04](../../work-packages/51-arcscope-cloud-simulator.md#rule-wp-51.04) — the Cloud API half: the eleven simulation.* operations as durable, idempotent, expected-state commands; authorised manifest listing; resumable hash-verifiable segment fetch over HTTP or object storage; revision-/cursor-based state polling |
+| Obligations | [WP-51.04](../../work-packages/51-arcscope-cloud-simulator.md#rule-wp-51.04) — the Cloud API half: the thirteen simulation.* operations as durable, idempotent, commands guarded by expectedRev and legal predecessor states; authorised manifest listing; resumable hash-verifiable segment fetch over HTTP or object storage; revision-/cursor-based state polling |
 | Provides | sim.cloud-api |
-| Start prerequisites | **artifact** [SIM.04](#task-sim-04) — published manifests/checkpoints to expose. *Why:* the API surfaces what SIM.04 commits<br>**artifact** [CLOUD.21](cloud.md#task-cloud-21) — published endpoint mapping and validation pattern. *Why:* the eleven simulation.* operations are new Cloud PublicApi endpoints and should follow the one real endpoint-mapping/validation mechanism, not a bespoke one<br>**artifact** [CLOUD.24](cloud.md#task-cloud-24) — published idempotency and rate-limiting mechanism. *Why:* [WP-51.04](../../work-packages/51-arcscope-cloud-simulator.md#rule-wp-51.04) explicitly requires 'durable, idempotent, expected-state commands' and testing against duplicate/stale/out-of-order commands — this is exactly [WP-23.03](../../work-packages/23-public-api-and-generated-clients.md#rule-wp-23.03)'s mechanism, reused rather than reinvented per-module<br>**contract** [CON.21](contracts.md#task-con-21) — published SimulationService operations. *Why:* the Cloud-side operations implement the generated service |
+| Start prerequisites | **artifact** [SIM.04](#task-sim-04) — published manifests/checkpoints to expose. *Why:* the API surfaces what SIM.04 commits<br>**artifact** [CLOUD.21](cloud.md#task-cloud-21) — published endpoint mapping and validation pattern. *Why:* the thirteen simulation.* operations are new Cloud PublicApi endpoints and should follow the one real endpoint-mapping/validation mechanism, not a bespoke one<br>**artifact** [CLOUD.24](cloud.md#task-cloud-24) — published idempotency and rate-limiting mechanism. *Why:* [WP-51.04](../../work-packages/51-arcscope-cloud-simulator.md#rule-wp-51.04) requires durable, idempotent commands with revision and legal-state guards and duplicate/stale/out-of-order tests; reuse [WP-23.03](../../work-packages/23-public-api-and-generated-clients.md#rule-wp-23.03)'s mechanism rather than implement another per-module engine.<br>**contract** [CON.21](contracts.md#task-con-21) — published SimulationService operations. *Why:* the Cloud-side operations implement the generated service |
 | Entry condition | [ADOPT.07.simulator](adoption.md#task-adopt-07-simulator) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
 | Unblocks | [AND.27](android.md#task-and-27), [SIM.06](#task-sim-06), [SIM.08](#task-sim-08), [SIM.09](#task-sim-09), [WEB.33](web.md#task-web-33) |
 | Write scope | `Cloud:src/Cloud/ArcForges.Cloud.PublicApi/Scope/**`<br>`Cloud:tests/Cloud.Tests.Integration/Scope/Api/**` |
 | Shared resources | [RES-cloud-leased-singletons](../shared-resources.md#res-cloud-leased-singletons) (append) |
-| Validation | duplicate/stale/out-of-order commands; terminal-run resists resurrection; hash-mismatched segment rejected; reconnect-with-realtime-disabled proves polling is a complete authoritative fallback — real local Cloud host per [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017) |
+| Validation | duplicate/stale/out-of-order commands; terminal-run resists resurrection; hash-mismatched segment rejected; reconnect-with-realtime-disabled proves polling is a complete authoritative fallback — real local Cloud host per [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017); offline run-list authorization/paging and stale-revision/illegal-predecessor vectors |
 | Completion evidence | command idempotency and realtime-disabled fallback results (Cloud-side) |
 | Baseline (unreviewed unless accepted) | not-started |
 
