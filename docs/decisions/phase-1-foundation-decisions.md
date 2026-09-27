@@ -1,6 +1,6 @@
 # Phase 1 Foundation Decision Register
 
-> **Current amendments:** P2-009 through [P2-013](phase-2-specification-decisions.md#rule-p2-013). Historical decision quotations below retain their original context; the current-effective-rule column in the dispositions table identifies every superseded rule. See [P2-013](phase-2-specification-decisions.md#rule-p2-013).
+> **Current amendments:** [P2-009](phase-2-specification-decisions.md#rule-p2-009) through [P2-013](phase-2-specification-decisions.md#rule-p2-013). Historical decision quotations below retain their original context; the current-effective-rule column in the dispositions table identifies every superseded rule. See [P2-013](phase-2-specification-decisions.md#rule-p2-013).
 >
 > **Planning amendment (2026-09-23):** [P2-018](phase-2-specification-decisions.md#rule-p2-018) supersedes the serial execution portion of the sequence decision; see [D-019](#rule-d-019).
 >
@@ -77,7 +77,7 @@ Every confirmed global disposition applies to all occurrences it covers without 
 | <a id="rule-f-025"></a>F-025 | Mainland China payment route | `USER_CONFIRMED` | [D-023](#rule-d-023) |
 | [F-026](../assurance/open-gates-register.md#rule-f-026) | Refit AOT packaging and entry-point change | `DEFERRED_WITH_OWNER_AND_TRIGGER` | [D-008](#rule-d-008), [D-016](#rule-d-016); discovered by [V-05c](../assurance/phase-1-official-verification.md#rule-v-05c) |
 
-Totals: **25 registered** ([F-001](#rule-f-001) to [F-026](../assurance/open-gates-register.md#rule-f-026); F-003 retired and never reused) = **22 resolved** · **3 validly deferred** ([F-013](../assurance/open-gates-register.md#rule-f-013), [F-023](../assurance/open-gates-register.md#rule-f-023), [F-026](../assurance/open-gates-register.md#rule-f-026)) · **0 open** · **0 proposed**. One of the 25 was newly discovered during official verification ([F-026](../assurance/open-gates-register.md#rule-f-026)), deferred as an implementation gate rather than a foundation conflict.
+Totals: **25 registered** ([F-001](#rule-f-001) to [F-026](../assurance/open-gates-register.md#rule-f-026); foundation issue 003 retired and never reused) = **22 resolved** · **3 validly deferred** ([F-013](../assurance/open-gates-register.md#rule-f-013), [F-023](../assurance/open-gates-register.md#rule-f-023), [F-026](../assurance/open-gates-register.md#rule-f-026)) · **0 open** · **0 proposed**. One of the 25 was newly discovered during official verification ([F-026](../assurance/open-gates-register.md#rule-f-026)), deferred as an implementation gate rather than a foundation conflict.
 
 ---
 

@@ -159,7 +159,7 @@ The [WP03.02 completion receipt](../../assurance/wp03-02-implementation-evidence
 
 **Testing requirements.** Independent exact-value/state/target/context/archive vectors in three languages; descriptor-tag collision/removal and operation-count checks; regeneration clean; consumers restore NuGet/npm/Maven from immutable candidate feeds.
 
-**Completion gate.** Every active operation is classified and decodable; future names are reserved; all packages pass the applicable offline conformance, isolated restore/compilation and candidate packaging checks under P2-017. Publication completion uses original candidate identity and successful provider receipts; no installed-package consumer execution or routine public artifact download is required.
+**Completion gate.** Every active operation is classified and decodable; future names are reserved; all packages pass the applicable offline conformance, isolated restore/compilation and candidate packaging checks under [P2-017](../../decisions/phase-2-specification-decisions.md#rule-p2-017). Publication completion uses original candidate identity and successful provider receipts; no installed-package consumer execution or routine public artifact download is required.
 
 <a id="rule-wp-03.06"></a>
 

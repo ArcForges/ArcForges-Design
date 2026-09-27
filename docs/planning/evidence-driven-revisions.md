@@ -126,7 +126,7 @@ Historical revision record: current transport, generated-code and repository rul
 
 | Field | Content |
 |---|---|
-| **Evidence** | [`../assurance/invariant-coverage.md`](../assurance/invariant-coverage.md) `§1`, `§2`. 589 raw corpus lines → 484 unique statements → **421 catalogue rows**, with identifiers reaching I-490 because each section reserves headroom |
+| **Evidence** | [`../assurance/invariant-coverage.md`](../assurance/invariant-coverage.md) `§1`, `§2`. 589 raw corpus lines → 484 unique statements → **421 catalogue rows**, with identifiers reaching invariant number 490 because each section reserves headroom |
 | **Affected statement** | Every document stating "roughly 490 invariants" read the highest identifier as a count |
 | **Correction** | The count is 421. The 72 identifier gaps are **deliberate per-section reserved headroom**, evidenced by a table showing each section's last used identifier and its reserved range |
 | **Downstream consumers** | [WP-00.01](work-packages/00-specification-naming-and-rights-freeze.md#rule-wp-00.01), [WP-05.05](work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05.05), [`../assurance/traceability-matrix.md`](../assurance/traceability-matrix.md) |

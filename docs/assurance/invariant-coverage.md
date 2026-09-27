@@ -140,7 +140,7 @@ Every invariant maps to an architecture home, an enforcement mechanism, a planne
 | **Structural test** | 1 | Exact mechanism label in the current §7 rows |
 | **Unit and integration test** | 1 | Exact mechanism label in the current §7 rows |
 | **Policy test** | 1 | Exact mechanism label in the current §7 rows |
-| **Total** | **406** | Includes all eight P2-006 additions, retained absence-test rows and the 23 rows retired by P2-019 (`§5.2`) |
+| **Total** | **406** | Includes all eight [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006) additions, retained absence-test rows and the 23 rows retired by [P2-019](../decisions/phase-2-specification-decisions.md#rule-p2-019) (`§5.2`) |
 
 ### 4.3 Owning package distribution
 
@@ -180,7 +180,7 @@ The revised requirements changed the catalogue itself, so the accounting is reco
 |---|---|---|
 | Rows **added** ([I-491](../requirements/01-normative-glossary-and-invariants.md#rule-i-491)–[I-498](../requirements/01-normative-glossary-and-invariants.md#rule-i-498)) | 8 | Each mapped in `§7` with an architecture home, a mechanism, a planned verification, an owning package and a gate |
 | Rows **retired** ([I-015](../requirements/01-normative-glossary-and-invariants.md#rule-i-015), [I-313](../requirements/01-normative-glossary-and-invariants.md#rule-i-313), [I-314](../requirements/01-normative-glossary-and-invariants.md#rule-i-314)) | 3 | Retained in the catalogue with a retirement statement, and mapped to an **absence test** rather than removed |
-| Rows **reworded** without retirement ([I-028](../requirements/01-normative-glossary-and-invariants.md#rule-i-028), [I-030](../requirements/01-normative-glossary-and-invariants.md#rule-i-030), [I-105](../requirements/01-normative-glossary-and-invariants.md#rule-i-105), [I-114](../requirements/01-normative-glossary-and-invariants.md#rule-i-114), [I-121](../requirements/01-normative-glossary-and-invariants.md#rule-i-121), [I-124](../requirements/01-normative-glossary-and-invariants.md#rule-i-124), I-485) | 7 | Statement updated; mapping unchanged in structure |
+| Rows **reworded** without retirement ([I-028](../requirements/01-normative-glossary-and-invariants.md#rule-i-028), [I-030](../requirements/01-normative-glossary-and-invariants.md#rule-i-030), [I-105](../requirements/01-normative-glossary-and-invariants.md#rule-i-105), [I-114](../requirements/01-normative-glossary-and-invariants.md#rule-i-114), [I-121](../requirements/01-normative-glossary-and-invariants.md#rule-i-121), [I-124](../requirements/01-normative-glossary-and-invariants.md#rule-i-124), [invariant 485, subsequently retired](../decisions/phase-2-specification-decisions.md#rule-p2-019)) | 7 | Statement updated; mapping unchanged in structure |
 | Total catalogue rows | **421 → 429** | |
 
 | # | Rule |
@@ -199,7 +199,7 @@ Two products are removed entirely from the family under [P2-019](../decisions/ph
 
 | Change | Count | Effect on coverage |
 |---|---|---|
-| Rows **deleted** (I-029, I-032, I-161, I-460–I-462, I-464, I-476–I-490, I-497) | 23 | Removed from `§7` with their anchors; identifiers retired and never reused |
+| Rows **deleted** (invariant numbers 029, 032, 161, 460–462, 464, 476–490, 497) | 23 | Removed from `§7` with their anchors; identifiers retired and never reused |
 | Rows **reworded** without retirement ([I-028](../requirements/01-normative-glossary-and-invariants.md#rule-i-028), [I-156](../requirements/01-normative-glossary-and-invariants.md#rule-i-156), [I-157](../requirements/01-normative-glossary-and-invariants.md#rule-i-157)) | 3 | Statement generalised to the retained family; mapping unchanged in structure |
 | Total catalogue rows | **429 → 406** | |
 

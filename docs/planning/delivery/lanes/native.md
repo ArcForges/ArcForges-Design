@@ -74,7 +74,7 @@ Tasks: 13 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 
 ### NAT.05 — Probe evidence, licence positions, conclusions and hardware-lab inventory seed
 
-**Outcome.** Each of the four probes has a written conclusion (proved / not proved / downstream constraint / open items); every native dependency the probes introduced has a recorded licence position; the tests/HardwareLab device inventory is created (device/firmware/driver versions) -- seeding [PG-08](../../../assurance/open-gates-register.md#rule-pg-08) (completed later by NAT.28/[WP-13.16](../../work-packages/13-high-risk-technical-probes.md#rule-wp-13.16)).
+**Outcome.** Each of the two retained probes (A and C) has a written conclusion (proved / not proved / downstream constraint / open items); every native dependency the probes introduced has a recorded licence position; the tests/HardwareLab device inventory is created (device/firmware/driver versions) -- seeding [PG-08](../../../assurance/open-gates-register.md#rule-pg-08) (completed later by NAT.28/[WP-13.16](../../work-packages/13-high-risk-technical-probes.md#rule-wp-13.16)).
 
 | Field | Value |
 |---|---|
@@ -89,15 +89,15 @@ Tasks: 13 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 | Unblocks | [NAT.30](#task-nat-30) |
 | Write scope | `DesktopPlatform:eng/verification/probe-evidence/**`<br>`DesktopPlatform:tests/HardwareLab/**` |
 | Validation | Completeness check: every probe has a recorded environment, procedure, result and conclusion |
-| Completion evidence | Four written probe conclusions; licence positions for probe-introduced dependencies; hardware inventory shell |
-| Baseline (unreviewed unless accepted) | not-started Observed none, unreviewed: depends entirely on NAT.01-04 existing first. |
+| Completion evidence | Two written probe conclusions; licence positions for probe-introduced dependencies; hardware inventory shell |
+| Baseline (unreviewed unless accepted) | not-started Observed none, unreviewed: depends on the retained NAT.01 and NAT.03 probe results. |
 | Notes | Small synthesis task; not itself a risk probe. |
 
 <a id="task-nat-06"></a>
 
 ### NAT.06 — Common native ABI: preambles, pack8 records, ownership, cancellation, bounded buffers
 
-**Outcome.** annex-06 common preambles, fixed numeric keys, pack8 records, ownership/cancellation/bounded-buffer helpers compile as C17/C++20 headers and C# layouts for all seven families; every field offset and all 17 normative sizes are asserted; wrong-size/version/null/closed-handle cases and zero-leaked-output-on-failure are proven. ArcForges.Native.Abstractions managed package (status/handle types only) is published. The five existing probe-library identities (incl. arc_metal_*) are retained unchanged.
+**Outcome.** annex-06 common preambles, fixed numeric keys, pack8 records, ownership/cancellation/bounded-buffer helpers compile as C17/C++20 headers and C# layouts for the retained still-image, instrument and PDF families; every field offset and all 17 normative sizes are asserted; wrong-size/version/null/closed-handle cases and zero-leaked-output-on-failure are proven. ArcForges.Native.Abstractions managed package (status/handle types only) is published. The existing arc_image_* probe-library identity is retained unchanged; retired families are removed by GOV.17 before this task starts.
 
 | Field | Value |
 |---|---|

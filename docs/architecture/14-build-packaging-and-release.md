@@ -82,7 +82,7 @@ locked restores (.NET/native/npm) → proto compilation and descriptor export
 | ArcForges Cloud | **ASP.NET Core Native AOT**, container image (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**) | Native AOT compilation is required; real-adapter runtime verification is scoped local opt-in (**[V-03](../assurance/phase-1-official-verification.md#rule-v-03)**); the image runs the same pipeline in every environment |
 | ArcForges.Web.App | **React/TypeScript browser assets**, Node/npm production build ([P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008)) | Account/Chat profile artifacts, generated SDK round trip, browser/CSP/visual/bundle evidence |
 | ArcForges.Web.Site output | React/TS build-time pre-rendered static artifacts | No-script content, deterministic build, locale/SEO/accessibility and performance |
-| ArcChat Mobile — Android | **Kotlin/Jetpack Compose** release build (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**, **[V-04](../assurance/phase-1-official-verification.md#rule-v-04)**) | The runtime posture is confirmed by inspecting the produced artifact ([RT-07](11-mobile-architecture.md#rule-rt-07) in the mobile architecture); CI builds the release artifact; device/runtime checks are scoped local opt-in under P2-017 |
+| ArcChat Mobile — Android | **Kotlin/Jetpack Compose** release build (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**, **[V-04](../assurance/phase-1-official-verification.md#rule-v-04)**) | The runtime posture is confirmed by inspecting the produced artifact ([RT-07](11-mobile-architecture.md#rule-rt-07) in the mobile architecture); CI builds the release artifact; device/runtime checks are scoped local opt-in under [P2-017](../decisions/phase-2-specification-decisions.md#rule-p2-017) |
 
 | # | Rule |
 |---|---|
@@ -155,7 +155,7 @@ Owned assemblies and runtime artifacts retain source/build/pipeline identity. Th
 | # | Rule |
 |---|---|
 | <a id="rule-pp-01"></a>PP-01 | **The desktop installer is a packaging unit for one application** ([DS-02](../requirements/10-distribution-update-and-support.md#rule-ds-02) there). It never becomes a monolithic installer that bundles companions, services or other components with independent release lifecycles. |
-| <a id="rule-pp-02"></a>PP-02 | **Any independently produced macOS artifact is built/signed on a suitable local Mac.** macOS CI is prohibited under P2-017; current CI release inventories do not require macOS output. |
+| <a id="rule-pp-02"></a>PP-02 | **Any independently produced macOS artifact is built/signed on a suitable local Mac.** macOS CI is prohibited under [P2-017](../decisions/phase-2-specification-decisions.md#rule-p2-017); current CI release inventories do not require macOS output. |
 | <a id="rule-pp-03"></a>PP-03 | **Every product's package identity is stable and distinct**, and is never reused between products or channels. |
 | <a id="rule-pp-04"></a>PP-04 | **The executable directory is never a user data directory** ([UP-05](../requirements/10-distribution-update-and-support.md#rule-up-05) there), and packaging must make that structurally impossible. |
 
@@ -238,7 +238,7 @@ The selected Velopack per-RID switch must leave a valid launch path after kill a
 
 ## 9. Release gates
 
-A release record states the applicable checks actually performed under P2-017. The retained build/static/signing gates control automated candidate publication. Runtime, hardware, browser, install and rehearsal rows below are scoped local product-acceptance scenarios, not CI or automatic publication prerequisites. Do not claim unobserved product coverage.
+A release record states the applicable checks actually performed under [P2-017](../decisions/phase-2-specification-decisions.md#rule-p2-017). The retained build/static/signing gates control automated candidate publication. Runtime, hardware, browser, install and rehearsal rows below are scoped local product-acceptance scenarios, not CI or automatic publication prerequisites. Do not claim unobserved product coverage.
 
 | # | Gate |
 |---|---|
@@ -340,4 +340,4 @@ GitHub Environments and OIDC trust are repository-specific. NuGet policy binds e
 
 ### Current automated platform coverage
 
-P2-017 prohibits macOS CI, including scheduled/manual/self-hosted paths. Local macOS build support may remain, but current automated release inventories list only produced Windows/Linux artifacts. Missing macOS archives are not required by CI or represented as available. Product support claims still require actual evidence from the platform concerned. Post-merge confirmation is limited to commit and required job/publication/deployment status; no repeated public-byte or runtime verification.
+[P2-017](../decisions/phase-2-specification-decisions.md#rule-p2-017) prohibits macOS CI, including scheduled/manual/self-hosted paths. Local macOS build support may remain, but current automated release inventories list only produced Windows/Linux artifacts. Missing macOS archives are not required by CI or represented as available. Product support claims still require actual evidence from the platform concerned. Post-merge confirmation is limited to commit and required job/publication/deployment status; no repeated public-byte or runtime verification.

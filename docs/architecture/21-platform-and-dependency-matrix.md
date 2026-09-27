@@ -33,7 +33,7 @@ This inventory states capability and degradation obligations. The package regist
 | Tier | Commitment |
 |---|---|
 | **Tier 1** | Full matrix participation ([PD-01](#rule-pd-01)); a release is blocked by its failure |
-| **Tier 2** | Produced Windows/Linux build and permitted automated-check participation under P2-017; a failure is recorded and may be waived per `§21` of the quality contract |
+| **Tier 2** | Produced Windows/Linux build and permitted automated-check participation under [P2-017](../decisions/phase-2-specification-decisions.md#rule-p2-017); a failure is recorded and may be waived per `§21` of the quality contract |
 | **Not supported** | Not built, not tested, not claimed. **Absence is stated, never implied** |
 
 ### 2.2 The matrix
@@ -52,7 +52,7 @@ Embedded assistant packages are verified inside each host below; they are not a 
 
 | # | Rule |
 |---|---|
-| <a id="rule-pt-01"></a>PT-01 | Every professional desktop retains the accepted Windows/Linux/macOS source-support design; a release ships only its actually produced RID set under P2-017 and records missing or untested coverage explicitly. Shared native/UI mechanisms require per-product integration evidence; platform parity does not imply cross-product execution. |
+| <a id="rule-pt-01"></a>PT-01 | Every professional desktop retains the accepted Windows/Linux/macOS source-support design; a release ships only its actually produced RID set under [P2-017](../decisions/phase-2-specification-decisions.md#rule-p2-017) and records missing or untested coverage explicitly. Shared native/UI mechanisms require per-product integration evidence; platform parity does not imply cross-product execution. |
 | <a id="rule-pt-02"></a>PT-02 | **A claimed Tier-2 release platform is a real build, not a promise.** Produced Windows/Linux RIDs publish AOT in permitted CI; source-only targets are not counted as released Tier-2 artifacts. Tier 2 does not carry release-blocking authority. |
 | <a id="rule-pt-03"></a>PT-03 | **Tier promotion is a decision with evidence** — full matrix participation demonstrated — not a marketing choice. |
 | <a id="rule-pt-04"></a>PT-04 | **The mobile emulator architecture is never a release claim** ([PM-03](../requirements/12-quality-and-compatibility-contract.md#rule-pm-03) there). |
@@ -186,7 +186,7 @@ dependency adopted (§3.3)
 
 | # | Obligation | Where |
 |---|---|---|
-| <a id="rule-pv-01"></a>PV-01 | Claimed Tier-1 coverage records build/AOT and relevant local install, UI, recovery, compatibility and performance evidence under P2-017; unavailable environments are reported, never fabricated or provisioned solely for validation | [WP-06.00](../planning/work-packages/06-aot-jit-and-wasm-publish-proof.md#rule-wp-06.00), [WP-50.02](../planning/work-packages/50-full-platform-production-release.md#rule-wp-50.02) |
+| <a id="rule-pv-01"></a>PV-01 | Claimed Tier-1 coverage records build/AOT and relevant local install, UI, recovery, compatibility and performance evidence under [P2-017](../decisions/phase-2-specification-decisions.md#rule-p2-017); unavailable environments are reported, never fabricated or provisioned solely for validation | [WP-06.00](../planning/work-packages/06-aot-jit-and-wasm-publish-proof.md#rule-wp-06.00), [WP-50.02](../planning/work-packages/50-full-platform-production-release.md#rule-wp-50.02) |
 | <a id="rule-pv-02"></a>PV-02 | Every produced Windows/Linux Tier-2 release RID completes build and AOT publish in permitted CI; macOS source-only targets remain outside that inventory | [WP-06.00](../planning/work-packages/06-aot-jit-and-wasm-publish-proof.md#rule-wp-06.00) |
 | <a id="rule-pv-03"></a>PV-03 | The supported OS range is published as release metadata and matches what was tested | [WP-50.02](../planning/work-packages/50-full-platform-production-release.md#rule-wp-50.02), [WP-50.08](../planning/work-packages/50-full-platform-production-release.md#rule-wp-50.08) |
 | <a id="rule-pv-04"></a>PV-04 | Every native slot in use has its [AD-01](#rule-ad-01)–[AD-08](#rule-ad-08) obligations recorded before the dependent work completes | [PG-03](../assurance/open-gates-register.md#rule-pg-03), [PG-12](../assurance/open-gates-register.md#rule-pg-12), [WP-50.01](../planning/work-packages/50-full-platform-production-release.md#rule-wp-50.01) |

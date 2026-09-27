@@ -1641,7 +1641,16 @@
     "DesktopPlatform:eng/test_design_policy.py",
     "DesktopPlatform:tests/ArchitectureTests/** (retired repository owners)",
     "DesktopPlatform:eng/design_graph.py",
-    "DesktopPlatform:eng/design_policy.py"
+    "DesktopPlatform:eng/design_policy.py",
+    "DesktopPlatform:eng/provenance/** (new same-owner tool reuse receipt and source inventory only; existing reused-file provenance remains unchanged)",
+    "DesktopPlatform:NOTICE.md (generated provenance notice only)",
+    "DesktopPlatform:eng/test_reference_baselines.py",
+    "DesktopPlatform:eng/test_reconciliation.py",
+    "DesktopPlatform:AGENTS.md",
+    "DesktopPlatform:docs/runtime-ownership.md",
+    "DesktopPlatform:docs/licence-boundary.md",
+    "DesktopPlatform:docs/reference-baselines.md",
+    "DesktopPlatform:docs/reconciliation-inventory.md"
    ],
    "shared": [
     {
@@ -6723,7 +6732,7 @@
      "part": "full"
     }
    ],
-   "outcome": "Each of the four probes has a written conclusion (proved / not proved / downstream constraint / open items); every native dependency the probes introduced has a recorded licence position; the tests/HardwareLab device inventory is created (device/firmware/driver versions) -- seeding PG-08 (completed later by NAT.28/WP-13.16).",
+   "outcome": "Each of the two retained probes (A and C) has a written conclusion (proved / not proved / downstream constraint / open items); every native dependency the probes introduced has a recorded licence position; the tests/HardwareLab device inventory is created (device/firmware/driver versions) -- seeding PG-08 (completed later by NAT.28/WP-13.16).",
    "provides": [
     "probe-conclusions",
     "hardware-lab-inventory-seed"
@@ -6747,10 +6756,10 @@
     "DesktopPlatform:tests/HardwareLab/**"
    ],
    "validation": "Completeness check: every probe has a recorded environment, procedure, result and conclusion",
-   "evidence": "Four written probe conclusions; licence positions for probe-introduced dependencies; hardware inventory shell",
+   "evidence": "Two written probe conclusions; licence positions for probe-introduced dependencies; hardware inventory shell",
    "baseline": {
     "state": "not-started",
-    "notes": "Observed none, unreviewed: depends entirely on NAT.01-04 existing first."
+    "notes": "Observed none, unreviewed: depends on the retained NAT.01 and NAT.03 probe results."
    },
    "notes": "Small synthesis task; not itself a risk probe.",
    "complete": []
@@ -6776,7 +6785,7 @@
      "part": "package-level obligation contribution"
     }
    ],
-   "outcome": "annex-06 common preambles, fixed numeric keys, pack8 records, ownership/cancellation/bounded-buffer helpers compile as C17/C++20 headers and C# layouts for all seven families; every field offset and all 17 normative sizes are asserted; wrong-size/version/null/closed-handle cases and zero-leaked-output-on-failure are proven. ArcForges.Native.Abstractions managed package (status/handle types only) is published. The five existing probe-library identities (incl. arc_metal_*) are retained unchanged.",
+   "outcome": "annex-06 common preambles, fixed numeric keys, pack8 records, ownership/cancellation/bounded-buffer helpers compile as C17/C++20 headers and C# layouts for the retained still-image, instrument and PDF families; every field offset and all 17 normative sizes are asserted; wrong-size/version/null/closed-handle cases and zero-leaked-output-on-failure are proven. ArcForges.Native.Abstractions managed package (status/handle types only) is published. The existing arc_image_* probe-library identity is retained unchanged; retired families are removed by GOV.17 before this task starts.",
    "provides": [
     "native-abi-common-v1.1",
     "native-abstractions-package"
