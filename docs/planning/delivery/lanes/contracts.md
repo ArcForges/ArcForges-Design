@@ -54,7 +54,7 @@ Tasks: 26 · Owning repositories: Contracts · Integration owner(s): Contracts i
 | Entry condition | [ADOPT.03.contracts](adoption.md#task-adopt-03-contracts) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
 | Unblocks | [CON.19](#task-con-19) |
-| Write scope | `Contracts:eng/contracts.py`<br>`Contracts:public/proto/constraints/**`<br>`Contracts:internal/proto/constraints/**`<br>`Contracts:CONTRIBUTING.md` |
+| Write scope | `Contracts:.gitleaks.toml (only demonstrated CON.01 public source-inventory SHA256 false positives: exact existing rule/path/key/digest bindings, independently verify source hash; no algorithm change or whole-key/path exemption)`<br>`Contracts:tests/tooling/test_dependency_admission.py (exact CON.01 public-digest false-positive regressions; retain other digest/key/path/token negatives)`<br>`Contracts:eng/contracts.py`<br>`Contracts:public/proto/constraints/**`<br>`Contracts:internal/proto/constraints/**`<br>`Contracts:CONTRIBUTING.md` |
 | Shared resources | [RES-contracts-generated-baseline](../shared-resources.md#res-contracts-generated-baseline) (regenerate), [RES-contracts-publication](../shared-resources.md#res-contracts-publication) (append), [RES-contracts-schema-sources](../shared-resources.md#res-contracts-schema-sources) (append) |
 | Validation | offline: eng/contracts.py generate --check round-trips the sharded constraints back to the same effective merged content; existing eng/check_foundation.py and check_serialization.py pass unchanged. |
 | Completion evidence | eng/contracts.py generate --check clean; diff shows only file-layout change, zero constraint-content change. |
