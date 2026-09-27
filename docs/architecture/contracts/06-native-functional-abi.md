@@ -96,11 +96,6 @@ All declarations below use `ARC_ABI_EXPORT arc_status_t ARC_ABI_CALL` before the
 | `arc_instruments_close(arc_handle_t device)` | Release claimed interface/serial handle; no lingering callback |
 | `arc_image_open(const arc_io_v1* io,const arc_image_options_v1* options,arc_handle_t* image,arc_mut_buffer_t* metadata,const arc_cancel_token_t* cancel)` | ImageReader.Open/Probe |
 | `arc_image_read(arc_handle_t image,const arc_region_v1* region,arc_mut_buffer_t* pixels,const arc_cancel_token_t* cancel)` | ReadRegionAsync, explicit packed RGBA output |
-| `arc_image_writer_open(const arc_io_v1* io,uint32_t profile,const arc_frame_v1* description,const arc_limits_v1* limits,arc_handle_t* writer)` | ImageWriter.Open staged PNG1/TIFF2/EXR3; dimensions/format fixed |
-| `arc_image_writer_write(arc_handle_t writer,const arc_region_v1* region,arc_byte_view_t pixels,uint64_t stride,const arc_cancel_token_t* cancel)` | WriteRegionAsync, bounded64MiB tile, nonoverlapping raster-order exact coverage |
-| `arc_image_writer_finish(arc_handle_t writer,const arc_cancel_token_t* cancel)` | FinishAsync validates complete coverage, codec drain/flush before parent commit |
-| `arc_image_writer_abort(arc_handle_t writer)` | Abort staged output, idempotent and no publication |
-| `arc_image_writer_close(arc_handle_t writer)` | Dispose after finish/abort, never silently finish on close |
 | `arc_image_close(arc_handle_t image)` | ImageReader.Dispose |
 | `arc_pdf_open(const arc_io_v1* io,arc_string_view_t password,const arc_limits_v1* limits,arc_handle_t* document,uint32_t* pages,const arc_cancel_token_t* cancel)` | PdfDocument.Open; empty password allowed, password required is typed denial |
 | `arc_pdf_page_info(arc_handle_t document,uint32_t index,arc_pdf_page_v1* page)` | Page geometry in PDF points |
@@ -115,7 +110,7 @@ Image regions transfer at most64MiB each, validate checked dimensions/stride and
 | Operation family | Required algorithm/boundary and independent acceptance |
 |---|---|
 | Instruments | OS serial and libusb async transfers behind the owned shim. Enumeration sorted stable identity, max256devices, descriptors≤64KiB each. Open revalidates identity; USB interface claiming cannot detach unrelated kernel drivers automatically. Partial writes are effects and never blindly retried. Capture owner records gaps/time uncertainty. |
-| Images/PDF | OIIO/ImageInput/ImageOutput and PDFium document/page/text/render APIs are allowed only in the sandbox. Baseline image PNG/TIFF/EXR codec metadata/bit depth preserved with explicit conversion loss. PDF actions/JavaScript are disabled. PDF pages0-based; geometryfinitepoints/rotation0/90/180/270. Request bounds precede decode allocation. |
+| Images/PDF | OIIO/ImageInput and PDFium document/page/text/render APIs are allowed only in the sandbox. Baseline image PNG/TIFF/EXR codec metadata/bit depth preserved with explicit conversion loss. PDF actions/JavaScript are disabled. PDF pages0-based; geometryfinitepoints/rotation0/90/180/270. Request bounds precede decode allocation. |
 
 Image metadata is bounded subimage/mip counts and bounded channel names/types. Device list is `{version,devices:[{id,name,transport,vendorId?,productId?,serial?,interfaces:[{number,endpoints:[{address,kind,maxPacketBytes}]}]}]}`; this is descriptive only. PDF text is `{version,page,start,next?,text,boxes:[{start,length,x,y,width,height}]}` with UTF16 offsets and finite geometry. These are closed private ABI metadata encodings, not new business RPC authorities.
 

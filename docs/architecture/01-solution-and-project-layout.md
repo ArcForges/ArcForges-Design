@@ -327,7 +327,7 @@ Publish the following package identities. Managed package versions and their com
 | ArcForges.Assistant.Persistence.Sqlite | Assistant.Core, Persistence.Sqlite; complete assistant schema/repositories/migrations | Existing SQLite runtime policy; WP15 |
 | ArcForges.Assistant.Cloud | Assistant.Core, Cloud.Client, Device.Runtime; history/execution/recovery adapters | None; WP17, real WP26/52 |
 | ArcForges.Assistant.Avalonia | Core, Cloud, Persistence.Sqlite, Desktop.Shell; complete embedded window | No implicit native-image or PDF dependency; WP17 |
-| ArcForges.Native.Image | Native.Abstractions; image probe/decode/encode | .Native.Image.Runtime.<rid>: OpenImageIO/OpenEXR/Imath |
+| ArcForges.Native.Image | Native.Abstractions; image probe/decode | .Native.Image.Runtime.<rid>: OpenImageIO/OpenEXR/Imath |
 | ArcForges.Native.Instruments | Native.Abstractions; device transport buffers/USB | .Native.Instruments.Runtime.<rid>: libusb; serial OS adapter |
 | ArcForges.Native.Pdf | Native.Abstractions; render page and extract bounded text only | .Native.Pdf.Runtime.<rid>: PDFium chromium/8044 |
 | ArcForges.ContentSandbox.Contracts, .Broker | Exact ArcForges.Contracts.LocalRpc.Sandbox/Platform plus Foundation; Contracts facade has no duplicate authored/generated wire types. Broker owns restricted launch and buffer grants; helper loads selected parser wrappers | .ContentSandbox.Runtime.<rid>: signed AOT helper + OS enforcement profile, WP11 host/profile; WP13 production-parser composition |

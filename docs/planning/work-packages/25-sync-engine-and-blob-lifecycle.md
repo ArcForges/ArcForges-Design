@@ -174,6 +174,15 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 **Completion gate.** Clean published desktop/Kotlin/TS consumers recover a real interrupted import, see no partial visible conversation, and keep local/Cloud/temporary retention distinct.
 
+<a id="rule-wp-25.10"></a>
+### WP-25.10 — ArcScope library read model for the companions
+
+**What must be fully done.** Serve `scope.listProjects`, `scope.listSessions` and `scope.getSession` from committed `scope.synced_aggregate` rows per the [library operations](../../architecture/contracts/01-public-api-operations.md#52-arcscope-library-read-only) under [P2-020](../../decisions/phase-2-specification-decisions.md#rule-p2-020): owner-filtered, paged, revision- and commit-time-bearing, with no mutation and no raw bytes. Emit the durable `scope.reportSynced` and `sync.conflictNeedsDecision` notifications from the Sync commit that causes them.
+
+**Testing requirements.** Real D1 projections against committed and tombstoned aggregates, pagination across concurrent commits, `minRevision`, revoked membership and wrong product scope, a large session through the large read projection profile, and exactly-once notification emission on commit and replay.
+
+**Completion gate.** Generated Kotlin and TypeScript clients read the library of a real synced ArcScope workspace with correct revisions, authorization and notifications; no unsynced or raw data is exposed.
+
 <a id="rule-wp-25.90"></a>
 ### WP-25.90 — Verify the owned artifact and real integration
 
@@ -273,8 +282,9 @@ Scheduling is task-level under [P2-018](../../decisions/phase-2-specification-de
 | [CLOUD.46](../delivery/lanes/cloud.md#task-cloud-46) | [WP-25.09](25-sync-engine-and-blob-lifecycle.md#rule-wp-25.09) (all work except the parts mapped to AST.22) | [CLOUD.06](../delivery/lanes/cloud.md#task-cloud-06) (artifact) |
 | [CLOUD.47](../delivery/lanes/cloud.md#task-cloud-47) | [WP-25.90](25-sync-engine-and-blob-lifecycle.md#rule-wp-25.90) (full)<br>[WP-25](25-sync-engine-and-blob-lifecycle.md#rule-wp-25) Required implementation and closure from the final review (01-cloud-data-model verification; real structural move/ack/conflict transactions, full native metadata replicas, job-authorized R2 staging/verification/promotion, quarantined old-generation client commands) (package-level obligation contribution) | none |
 | [CLOUD.58](../delivery/lanes/cloud.md#task-cloud-58) | [WP-25.08](25-sync-engine-and-blob-lifecycle.md#rule-wp-25.08) (full, joint with consumer-side structural fixture-registration removal) | none |
+| [CLOUD.68](../delivery/lanes/cloud.md#task-cloud-68) | [WP-25.10](25-sync-engine-and-blob-lifecycle.md#rule-wp-25.10) (full) | [CON.24](../delivery/lanes/contracts.md#task-con-24) (contract), [CLOUD.21](../delivery/lanes/cloud.md#task-cloud-21) (artifact) |
 
-**Consumers outside this package:** [AND.07](../delivery/lanes/android.md#task-and-07), [CLOUD.10](../delivery/lanes/cloud.md#task-cloud-10), [CLOUD.48](../delivery/lanes/cloud.md#task-cloud-48), [EXT.06](../delivery/lanes/extensions.md#task-ext-06), [REL.06](../delivery/lanes/release.md#task-rel-06), [SCOPE.22](../delivery/lanes/arcscope.md#task-scope-22), [SCOPE.23](../delivery/lanes/arcscope.md#task-scope-23), [SIM.04](../delivery/lanes/simulator.md#task-sim-04), [SRCH.00](../delivery/lanes/search.md#task-srch-00), [WEB.13](../delivery/lanes/web.md#task-web-13), [WEB.15](../delivery/lanes/web.md#task-web-15).
+**Consumers outside this package:** [AND.07](../delivery/lanes/android.md#task-and-07), [AND.27](../delivery/lanes/android.md#task-and-27), [CLOUD.10](../delivery/lanes/cloud.md#task-cloud-10), [CLOUD.48](../delivery/lanes/cloud.md#task-cloud-48), [EXT.06](../delivery/lanes/extensions.md#task-ext-06), [REL.06](../delivery/lanes/release.md#task-rel-06), [SCOPE.22](../delivery/lanes/arcscope.md#task-scope-22), [SCOPE.23](../delivery/lanes/arcscope.md#task-scope-23), [SIM.04](../delivery/lanes/simulator.md#task-sim-04), [SRCH.00](../delivery/lanes/search.md#task-srch-00), [WEB.13](../delivery/lanes/web.md#task-web-13), [WEB.15](../delivery/lanes/web.md#task-web-15), [WEB.32](../delivery/lanes/web.md#task-web-32).
 
 <!-- delivery-graph:end -->
 

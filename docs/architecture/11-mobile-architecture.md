@@ -270,7 +270,7 @@ versionName follows the product release manifest; versionCode is an allocated mo
 
 ## Complete native UX and application targeting
 
-The [Android route/layout/action specification](../experience/02-android-companion.md) resolves the navigation inventory: Home, Chats, Tasks, Library, Settings; Devices is nested under Home. It is normative for AN01–AN25 and native Back/IME/accessibility/lifecycle behavior. [Application scope](contracts/10-application-scope-and-streams.md) and [history modes](data-model/05-application-history.md) govern Room, own chats, explicit desktop Cloud history and frozen one-application remote control. No local-only desktop history is remotely exposed.
+The [Android route/layout/action specification](../experience/02-android-companion.md) resolves the navigation inventory: Home, ArcScope, Chats, Tasks, Settings; Devices is nested under Home. It is normative for AN01–AN28 and native Back/IME/accessibility/lifecycle behavior. [Application scope](contracts/10-application-scope-and-streams.md) and [history modes](data-model/05-application-history.md) govern Room, own chats, explicit desktop Cloud history and frozen one-application remote control. No local-only desktop history is remotely exposed.
 
 ## Android identity and release channels
 

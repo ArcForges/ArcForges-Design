@@ -1,5 +1,5 @@
 <a id="rule-wp-31"></a>
-# WP-31 — Complete ArcChat Android Companion
+# WP-31 — Complete Android ArcScope Companion
 
 > Status: Authoritative implementation plan under [P2-010](../../decisions/phase-2-specification-decisions.md#rule-p2-010)
 > Phase: J — Platform and client integration
@@ -89,6 +89,15 @@ Mobile owns app/, core/domain, core/data, core/network, core/security, core/desi
 
 **Completion gate.** Required scope is complete; Android licence and commerce boundary hold without removing accepted behavior.
 
+<a id="rule-wp-31.07"></a>
+### WP-31.07 — ArcScope library, reports and simulation runs
+
+**What must be fully done.** Implement AN14 and AN26–AN28 ([SW-01](../../requirements/products/arcchat-mobile-and-web.md#rule-sw-01)–[SW-05](../../requirements/products/arcchat-mobile-and-web.md#rule-sw-05), [P2-020](../../decisions/phase-2-specification-decisions.md#rule-p2-020)): the read-only ArcScope library over the library operations, session and report views with provenance and stored chart snapshots, report sharing through the system share sheet, simulation run status with cancel, and the ArcScope notification kinds opening their objects.
+
+**Testing requirements.** Real generated Kotlin client against the deployed library and simulation operations: pagination, revision and commit time, revoked access, unavailable report artifact, raw-data-local sessions, cancellation of a run, notification deep links, offline cache purge on sign-out.
+
+**Completion gate.** A report synced from ArcScope desktop is found, read and shared on Android, and a Cloud simulation run is followed to its terminal state, with no editing path and no raw-capture download.
+
 <a id="rule-wp-31.90"></a>
 ### WP-31.90 — Complete companion acceptance
 
@@ -136,6 +145,7 @@ Scheduling is task-level under [P2-018](../../decisions/phase-2-specification-de
 | [AND.24](../delivery/lanes/android.md#task-and-24) | [WP-31.01](31-arcchat-mobile-android.md#rule-wp-31.01) (real-integration closure)<br>[WP-31.02](31-arcchat-mobile-android.md#rule-wp-31.02) (real-integration closure) | [HAR.00](../delivery/lanes/harness.md#task-har-00) (artifact), [HAR.03](../delivery/lanes/harness.md#task-har-03) (artifact) |
 | [AND.25](../delivery/lanes/android.md#task-and-25) | [WP-31.02](31-arcchat-mobile-android.md#rule-wp-31.02) (device-dispatch closure)<br>[WP-31.05](31-arcchat-mobile-android.md#rule-wp-31.05) (real-52/26 evidence) | [DEV.02](../delivery/lanes/device-bridge.md#task-dev-02) (artifact), [DEV.03](../delivery/lanes/device-bridge.md#task-dev-03) (artifact), [DEV.06](../delivery/lanes/device-bridge.md#task-dev-06) (artifact), [DEV.07](../delivery/lanes/device-bridge.md#task-dev-07) (artifact), [DEV.12](../delivery/lanes/device-bridge.md#task-dev-12) (artifact) |
 | [AND.26](../delivery/lanes/android.md#task-and-26) | [WP-31.04](31-arcchat-mobile-android.md#rule-wp-31.04) (physical receipt closure) | [AND.23](../delivery/lanes/android.md#task-and-23) (artifact), [OPS.10](../delivery/lanes/operations.md#task-ops-10) (artifact), [AND.21](../delivery/lanes/android.md#task-and-21) (artifact) |
+| [AND.27](../delivery/lanes/android.md#task-and-27) | [WP-31.07](31-arcchat-mobile-android.md#rule-wp-31.07) (full) | [CON.24](../delivery/lanes/contracts.md#task-con-24) (contract), [CON.21](../delivery/lanes/contracts.md#task-con-21) (contract) |
 
 **Consumers outside this package:** [AND.16](../delivery/lanes/android.md#task-and-16), [AND.19](../delivery/lanes/android.md#task-and-19), [AND.23](../delivery/lanes/android.md#task-and-23), [HAR.05](../delivery/lanes/harness.md#task-har-05), [HAR.06](../delivery/lanes/harness.md#task-har-06), [OPS.10](../delivery/lanes/operations.md#task-ops-10), [OPS.12](../delivery/lanes/operations.md#task-ops-12).
 

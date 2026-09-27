@@ -2,14 +2,14 @@
 
 > Generated from [the delivery graph](../delivery-graph.json) by Plan `tools/delivery.py`; do not edit by hand. Rules and definitions: [delivery model](../README.md).
 
-Kotlin/Compose foundation, companion features and Android release gates.
+Kotlin/Compose foundation, the Android ArcScope companion (workspace, assistant, approvals) and Android release gates.
 
-Tasks: 26 · Owning repositories: Mobile · Integration owner(s): Mobile integration owner
+Tasks: 27 · Owning repositories: Mobile · Integration owner(s): Mobile integration owner
 
 | Task | Title | Kind | Size | Start prerequisites | Baseline |
 |---|---|---|---|---|---|
 | [AND.01](#task-and-01) | Android production identity and stable toolchain reconciliation | producer | M | [PRF.10](runtime-proofs.md#task-prf-10) (artifact) | not-started |
-| [AND.02](#task-and-02) | Real Android module graph and AN01-AN25 route/state contracts | producer | L | [AND.01](#task-and-01) (artifact) | not-started |
+| [AND.02](#task-and-02) | Real Android module graph and AN01-AN28 route/state contracts | producer | L | [AND.01](#task-and-01) (artifact) | not-started |
 | [AND.03](#task-and-03) | Android runtime and OS adapters (Compose, Credential Manager, Keystore wrapper, WorkManager, FCM registration, SAF/MediaStore) | feature | L | [AND.02](#task-and-02) (artifact) | not-started |
 | [AND.04](#task-and-04) | Published gRPC-Web contract consumption (Connect Kotlin client, binary framing, session/stream/retry adapters) | feature | M | [AND.02](#task-and-02) (artifact), [CON.07](contracts.md#task-con-07) (contract), [CON.11](contracts.md#task-con-11) (contract), [AND.01](#task-and-01) (artifact) | not-started |
 | [AND.05](#task-and-05) | Room history, drafts, outbox and receipts | feature | L | [AND.02](#task-and-02) (artifact), [CON.11](contracts.md#task-con-11) (contract) | not-started |
@@ -22,7 +22,7 @@ Tasks: 26 · Owning repositories: Mobile · Integration owner(s): Mobile integra
 | [AND.12](#task-and-12) | Presence, push, links and settings (AN20-AN24) | feature | M | [CON.22](contracts.md#task-con-22) (contract), [AND.03](#task-and-03) (artifact), [AND.04](#task-and-04) (artifact), [AND.06](#task-and-06) (artifact) | not-started |
 | [AND.13](#task-and-13) | Native interaction and recovery: full experience-02 device matrix | integration | L | [AND.08](#task-and-08) (artifact), [AND.09](#task-and-09) (artifact), [AND.10](#task-and-10) (artifact), [AND.11](#task-and-11) (artifact), [AND.12](#task-and-12) (artifact) | not-started |
 | [AND.14](#task-and-14) | Scope and licence enforcement audit | acceptance | S | [AND.08](#task-and-08) (artifact), [AND.09](#task-and-09) (artifact), [AND.10](#task-and-10) (artifact) | not-started |
-| [AND.15](#task-and-15) | Complete companion acceptance | integration | M | [AND.08](#task-and-08) (artifact), [AND.09](#task-and-09) (artifact), [AND.10](#task-and-10) (artifact), [AND.11](#task-and-11) (artifact), [AND.12](#task-and-12) (artifact), [AND.13](#task-and-13) (artifact), [AND.14](#task-and-14) (artifact) | not-started |
+| [AND.15](#task-and-15) | Complete companion acceptance | integration | M | [AND.08](#task-and-08) (artifact), [AND.09](#task-and-09) (artifact), [AND.10](#task-and-10) (artifact), [AND.11](#task-and-11) (artifact), [AND.12](#task-and-12) (artifact), [AND.13](#task-and-13) (artifact), [AND.14](#task-and-14) (artifact), [AND.27](#task-and-27) (artifact) | not-started |
 | [AND.16](#task-and-16) | Signed Android release artifacts (AAB + direct APK) | release | S | [AND.15](#task-and-15) (artifact) | not-started |
 | [AND.17](#task-and-17) | Release runtime inspection | acceptance | S | [AND.16](#task-and-16) (artifact) | not-started |
 | [AND.18](#task-and-18) | Dependency and source rights closure (final artifact) | acceptance | S | [AND.16](#task-and-16) (artifact) | not-started |
@@ -34,6 +34,7 @@ Tasks: 26 · Owning repositories: Mobile · Integration owner(s): Mobile integra
 | [AND.24](#task-and-24) | Real CF Harness generation/tool loop observed end to end on Android | integration | M | [AND.09](#task-and-09) (artifact), [AND.10](#task-and-10) (artifact), [HAR.00](harness.md#task-har-00) (artifact), [HAR.03](harness.md#task-har-03) (artifact) | not-started |
 | [AND.25](#task-and-25) | Real desktop tool dispatch and unknown-effect reconciliation from Android | integration | M | [AND.10](#task-and-10) (artifact), [AND.13](#task-and-13) (artifact), [DEV.02](device-bridge.md#task-dev-02) (artifact), [DEV.03](device-bridge.md#task-dev-03) (artifact), [DEV.06](device-bridge.md#task-dev-06) (artifact), [DEV.07](device-bridge.md#task-dev-07) (artifact), [DEV.12](device-bridge.md#task-dev-12) (artifact) | not-started |
 | [AND.26](#task-and-26) | Real FCM sending and physical Android receipt | integration | M | [AND.12](#task-and-12) (artifact), [AND.23](#task-and-23) (artifact), [OPS.10](operations.md#task-ops-10) (artifact), [AND.21](#task-and-21) (artifact) | not-started |
+| [AND.27](#task-and-27) | ArcScope library, reports and simulation runs on Android | feature | L | [AND.11](#task-and-11) (artifact), [CON.24](contracts.md#task-con-24) (contract), [CON.21](contracts.md#task-con-21) (contract) | not-started |
 
 ## Tasks
 
@@ -63,9 +64,9 @@ Tasks: 26 · Owning repositories: Mobile · Integration owner(s): Mobile integra
 
 <a id="task-and-02"></a>
 
-### AND.02 — Real Android module graph and AN01-AN25 route/state contracts
+### AND.02 — Real Android module graph and AN01-AN28 route/state contracts
 
-**Outcome.** The arch-27 module set (app, core/domain, core/data, core/network, core/security, core/designsystem, feature/home, feature/chat, feature/tasks, feature/library, feature/settings) exists as enforced Gradle modules with typed AN01-AN25 navigation/state contracts; features depend only on typed core ports.
+**Outcome.** The arch-27 module set (app, core/domain, core/data, core/network, core/security, core/designsystem, feature/home, feature/chat, feature/tasks, feature/library, feature/scope, feature/settings) exists as enforced Gradle modules with typed AN01-AN28 navigation/state contracts; features depend only on typed core ports.
 
 | Field | Value |
 |---|---|
@@ -81,7 +82,7 @@ Tasks: 26 · Owning repositories: Mobile · Integration owner(s): Mobile integra
 | Write scope | `Mobile:settings.gradle.kts`<br>`Mobile:build.gradle.kts`<br>`Mobile:core/domain/**`<br>`Mobile:core/data/**`<br>`Mobile:core/network/**`<br>`Mobile:core/security/**`<br>`Mobile:core/designsystem/**`<br>`Mobile:feature/home/**`<br>`Mobile:feature/chat/**`<br>`Mobile:feature/tasks/**`<br>`Mobile:feature/library/**`<br>`Mobile:feature/settings/**` |
 | Shared resources | [RES-mobile-build-config](../shared-resources.md#res-mobile-build-config) (exclusive) |
 | Validation | Architecture/import boundary tests (no React Native/iOS/AGPL imports, no cross-module leakage) as offline static checks; targeted offline unit tests per module |
-| Completion evidence | Module dependency graph report showing one-way core<-feature<-app dependencies; route ID inventory matching AN01-AN25 |
+| Completion evidence | Module dependency graph report showing one-way core<-feature<-app dependencies; route ID inventory matching AN01-AN28 |
 | Baseline (unreviewed unless accepted) | not-started Observed none, unreviewed: Only app/ and the KMP shared/ preview module exist today; none of the arch-27 core/* or feature/* modules exist |
 
 <a id="task-and-03"></a>
@@ -287,7 +288,7 @@ Tasks: 26 · Owning repositories: Mobile · Integration owner(s): Mobile integra
 | Start prerequisites | **artifact** [AND.04](#task-and-04) — the real Android foundation module AND.04 this feature is built on. *Why:* the feature uses the real foundation modules, not a fresh bootstrap<br>**artifact** [AND.05](#task-and-05) — the real Android foundation module AND.05 this feature is built on. *Why:* the feature uses the real foundation modules, not a fresh bootstrap |
 | Entry condition | [ADOPT.10.android](adoption.md#task-adopt-10-android) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | **integration** [AND.07](#task-and-07) — foundation candidate proven against the deployed Cloud services. *Why:* the feature can be built on the foundation modules, but its acceptance runs against the deployed services AND.07 proves and requires any remaining Task/AI fixtures compiled out |
-| Unblocks | [AND.13](#task-and-13), [AND.15](#task-and-15), [AND.19](#task-and-19) |
+| Unblocks | [AND.13](#task-and-13), [AND.15](#task-and-15), [AND.19](#task-and-19), [AND.27](#task-and-27) |
 | Write scope | `Mobile:feature/library/**` |
 | Validation | Offline transfer-journal unit tests; resumable-upload/hash-mismatch/process-death-during-transfer scenarios are local opt-in on real devices |
 | Completion evidence | No unavailable bytes represented as empty success; resumable journal survives process death |
@@ -376,7 +377,7 @@ Tasks: 26 · Owning repositories: Mobile · Integration owner(s): Mobile integra
 | Package acceptance | Records the [WP-31](../../work-packages/31-arcchat-mobile-android.md#rule-wp-31) acceptance receipt after every task mapped to the package; tasks outside the package never start from it ([DLV-35](../README.md#rule-dlv-35)) |
 | Obligations | [WP-31.90](../../work-packages/31-arcchat-mobile-android.md#rule-wp-31.90) — full<br>[WP-31](../../work-packages/31-arcchat-mobile-android.md#rule-wp-31) [PG-24](../../../assurance/open-gates-register.md#rule-pg-24) completion-gate paragraph: physical arm64 push/Doze/background evidence — package-level obligation contribution |
 | Provides | android-companion-candidate |
-| Start prerequisites | **artifact** [AND.08](#task-and-08) — all WP31 substep tasks complete. *Why:* final join<br>**artifact** [AND.09](#task-and-09) — all WP31 substep tasks complete. *Why:* final join<br>**artifact** [AND.10](#task-and-10) — all WP31 substep tasks complete. *Why:* final join<br>**artifact** [AND.11](#task-and-11) — all WP31 substep tasks complete. *Why:* final join<br>**artifact** [AND.12](#task-and-12) — all WP31 substep tasks complete. *Why:* final join<br>**artifact** [AND.13](#task-and-13) — all WP31 substep tasks complete. *Why:* final join<br>**artifact** [AND.14](#task-and-14) — all WP31 substep tasks complete. *Why:* final join |
+| Start prerequisites | **artifact** [AND.08](#task-and-08) — all WP31 substep tasks complete. *Why:* final join<br>**artifact** [AND.09](#task-and-09) — all WP31 substep tasks complete. *Why:* final join<br>**artifact** [AND.10](#task-and-10) — all WP31 substep tasks complete. *Why:* final join<br>**artifact** [AND.11](#task-and-11) — all WP31 substep tasks complete. *Why:* final join<br>**artifact** [AND.12](#task-and-12) — all WP31 substep tasks complete. *Why:* final join<br>**artifact** [AND.13](#task-and-13) — all WP31 substep tasks complete. *Why:* final join<br>**artifact** [AND.14](#task-and-14) — all WP31 substep tasks complete. *Why:* final join<br>**artifact** [AND.27](#task-and-27) — package task delivered. *Why:* the package acceptance receipt verifies every task mapped to the package ([DLV-03](../README.md#rule-dlv-03)) |
 | Entry condition | [ADOPT.10.android](adoption.md#task-adopt-10-android) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
 | Unblocks | [AND.16](#task-and-16) |
@@ -631,3 +632,25 @@ Tasks: 26 · Owning repositories: Mobile · Integration owner(s): Mobile integra
 | Completion evidence | [PG-24](../../../assurance/open-gates-register.md#rule-pg-24): a project-bound FCM credential actually sends and a physical arm64 device actually receives, including duplicate/rotation/revocation and denied-permission/no-GMS recovery |
 | Baseline (unreviewed unless accepted) | not-started |
 | Notes | Merged duplicate integration or closure task formerly proposed as COM.17. |
+
+<a id="task-and-27"></a>
+
+### AND.27 — ArcScope library, reports and simulation runs on Android
+
+**Outcome.** AN14 and AN26-AN28: the read-only ArcScope library, session and report views with provenance and stored chart snapshots, report sharing through the system share sheet, simulation run status with cancel, and the ArcScope notification kinds opening their objects.
+
+| Field | Value |
+|---|---|
+| Owning repository | Mobile (`C:\MyFile\Projects\ArcForges\Mobile`); integration owner: Mobile integration owner, the holder of `roles/integration-mobile` |
+| Claim, branch and ledger | `claims/and-27` and ledger record `ledger/tasks/and-27.md` in the Plan repository; task branch `task/and-27` ([DLV-26](../README.md#rule-dlv-26)) |
+| Kind / size | feature / L |
+| Obligations | [WP-31.07](../../work-packages/31-arcchat-mobile-android.md#rule-wp-31.07) — full |
+| Provides | android-arcscope-workspace |
+| Start prerequisites | **artifact** [AND.11](#task-and-11) — the Library route and resource preview surfaces. *Why:* the ArcScope library is built into the Library destination and reuses its preview and transfer paths<br>**contract** [CON.24](contracts.md#task-con-24) — the generated library operations. *Why:* the views call scope.listProjects, scope.listSessions and scope.getSession<br>**contract** [CON.21](contracts.md#task-con-21) — the generated simulation operations. *Why:* run status and cancel use simulation.getRun and simulation.cancelRun |
+| Entry condition | [ADOPT.10.android](adoption.md#task-adopt-10-android) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
+| Completion prerequisites | **integration** [CLOUD.68](cloud.md#task-cloud-68) — the deployed library read model. *Why:* acceptance reads a real synced workspace<br>**integration** [SIM.05](simulator.md#task-sim-05) — the deployed simulation operations. *Why:* acceptance follows a real run to its terminal state |
+| Unblocks | [AND.15](#task-and-15) |
+| Write scope | `Mobile:feature/scope/**` |
+| Validation | Local real-integration run of the affected scenario in an existing environment, recorded once; offline and static checks in CI; no hosted runtime, device, browser, live-service or inference CI ([P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017)). |
+| Completion evidence | A report synced from ArcScope desktop found, read and shared on Android; a Cloud simulation run followed to its terminal state; revocation, unavailable-artifact and raw-data-local cases. |
+| Baseline (unreviewed unless accepted) | not-started Observed none. |

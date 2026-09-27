@@ -361,6 +361,23 @@ The simulator supplies repeatable signal/event data through real Cloud persisten
 | <a id="rule-sim-19"></a>SIM-19 | Retention, deletion and exhausted storage expose their effect on historical runs and native availability. Active leases/readers are handled safely. Stored outputs remain distinguishable from regenerating a new run. |
 | <a id="rule-sim-20"></a>SIM-20 | Acceptance runs against the real Cloud host, storage and native adapter: same seed/profile hashes; changed seed; precise fault positions; pause/resume; killed host and fenced takeover; duplicate commands; malformed AST/CSV; quota exhaustion; cross-workspace denial; reconnect with realtime disabled; partial cancellation; and a 24-hour bounded-resource soak. A preview or test fake is insufficient. |
 
+### 17.1 System surfaces
+
+ArcScope is delivered as one system across surfaces with distinct responsibilities ([P2-020](../../decisions/phase-2-specification-decisions.md#rule-p2-020)):
+
+| Surface | ArcScope responsibility |
+|---|---|
+| **Desktop** | Acquisition, recording, decoding, measurement, analysis, annotation, findings and report authoring; local raw captures; the embedded assistant with ArcScope tools; Cloud simulation as a synthetic DataSource |
+| **Android** | Attention and approval; the read-only library of synced projects, sessions, findings and reports; report reading; simulation run status and cancel; assistant conversations; approved commands to an online installation ([companions](arcchat-mobile-and-web.md#21-the-arcscope-workspace-on-the-companions)) |
+| **Web** | The ArcScope workspace with library, report reading and download, simulator console, assistant, tasks and approved commands; the site for discovery, pricing, downloads and documentation; the account portal for identity, members, subscription, credits, storage and data export or deletion ([Web](arcforges-web.md)) |
+| **Cloud** | Identity, workspaces and authorization; entitlement, billing and credits; sync of metadata and reports and explicit raw-capture storage; the library read model; the simulator; the AI Harness and search; notifications; backup, recovery and operations |
+
+| # | Requirement |
+|---|---|
+| <a id="rule-sf-01"></a>SF-01 | **One system.** Every surface uses the same identity, workspace, authorization and entitlement; a capability differs between surfaces only as the table above states. |
+| <a id="rule-sf-02"></a>SF-02 | **Only the desktop creates or changes ArcScope evidence, measurements and reports.** Companions read synced metadata and reports and request authorized desktop commands. |
+| <a id="rule-sf-03"></a>SF-03 | **A companion never recomputes a measurement from raw capture**; it shows synced results and report snapshots with their provenance. |
+
 ---
 
 ## 18. Library, metadata and reproducibility

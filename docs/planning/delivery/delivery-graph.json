@@ -239,14 +239,14 @@
    "prefix": "AND",
    "repo": "Mobile",
    "title": "Android companion",
-   "description": "Kotlin/Compose foundation, companion features and Android release gates."
+   "description": "Kotlin/Compose foundation, the Android ArcScope companion (workspace, assistant, approvals) and Android release gates."
   },
   {
    "id": "web",
    "prefix": "WEB",
    "repo": "Web",
    "title": "Web",
-   "description": "Static site, shared consumer design system, Account portal and ArcChat Web companion."
+   "description": "Static site, shared consumer design system, Account portal and the ArcScope Web companion (workspace, simulator console, assistant)."
   },
   {
    "id": "updater",
@@ -266,33 +266,53 @@
  "tasks": [
   {
    "id": "ADOPT.01",
-   "title": "Freeze the adoption baseline",
+   "title": "Retarget repository instructions and freeze the adoption baseline",
    "lane": "adoption",
    "repo": "Plan",
    "kind": "adoption",
-   "size": "S",
+   "size": "M",
    "obligations": [
     {
      "ref": "P2-018",
      "part": "adoption stage: baseline inputs"
+    },
+    {
+     "ref": "P2-020",
+     "part": "retarget of every implementation repository's AGENTS.md to this Design and Plan pair before the baseline is frozen (ADP-09)"
     }
    ],
-   "outcome": "The Plan ledger records, for every repository, the main head, open pull requests and branches and the latest published candidate per registry, so every adoption slice starts from the same frozen inputs. The baseline is complete through WP-03.02; WP-03.03 has not started.",
+   "outcome": "Every implementation repository's AGENTS.md instruction entry links this Design repository's delivery model and the Plan repository's execution entry, never the derivation-baseline pair (ADP-09); then the Plan ledger records, for every repository, the main head, open pull requests and branches and the latest published candidate per registry, so every adoption slice starts from the same frozen inputs. The baseline is complete through WP-03.02; WP-03.03 has not started.",
    "provides": [
     "adoption baseline record",
     "ledger skeleton"
    ],
    "writes": [
     "Plan:ledger/adoption/baseline.md",
-    "Plan:ledger/README.md"
+    "Plan:ledger/README.md",
+    "DesktopPlatform:AGENTS.md",
+    "Contracts:AGENTS.md",
+    "ArcScope:AGENTS.md",
+    "Cloud:AGENTS.md",
+    "AI:AGENTS.md",
+    "Web:AGENTS.md",
+    "Mobile:AGENTS.md"
    ],
-   "validation": "Read-only inspection of repositories, pull requests and registry receipts already recorded; no builds, downloads or runtime checks (P2-017).",
-   "evidence": "Baseline record with exact commit identities per repository, open pull request list and latest candidate identities; reviewed and merged in the Plan repository.",
+   "validation": "Retarget: each repository's AGENTS.md change is a reviewed documentation-only pull request merged with that repository's existing applicable CI before its head is recorded. Baseline: read-only inspection of repositories, pull requests and registry receipts already recorded; no builds, downloads or runtime checks (P2-017).",
+   "evidence": "The merged retarget pull request per repository; baseline record with exact commit identities per repository, open pull request list and latest candidate identities; reviewed and merged in the Plan repository.",
    "baseline": {
     "state": "not-started"
    },
    "start": [],
-   "complete": []
+   "complete": [],
+   "alsoTouches": [
+    "DesktopPlatform",
+    "Contracts",
+    "ArcScope",
+    "Cloud",
+    "AI",
+    "Web",
+    "Mobile"
+   ]
   },
   {
    "id": "ADOPT.02",
@@ -307,7 +327,7 @@
      "part": "adoption stage: DesktopPlatform repository record"
     }
    ],
-   "outcome": "The repository-wide adoption facts for DesktopPlatform (main head, retained CI workflow inventory under P2-017, package identities and pins, shared roots and source inventory) are recorded once for its slices to cite, and the DesktopPlatform classification table is complete when every adoption slice of the repository is complete. The governance slice schedules the replacement of the design-policy graph check that still validates the retired work-package graph. The repository's AGENTS.md instruction entry links this Design repository's delivery model and the Plan repository's execution entry, never the derivation-baseline pair.",
+   "outcome": "The repository-wide adoption facts for DesktopPlatform (main head, retained CI workflow inventory under P2-017, package identities and pins, shared roots and source inventory) are recorded once for its slices to cite, and the DesktopPlatform classification table is complete when every adoption slice of the repository is complete. The governance slice schedules the replacement of the design-policy graph check that still validates the retired work-package graph.",
    "provides": [
     "DesktopPlatform adoption record"
    ],
@@ -321,8 +341,7 @@
    ],
    "writes": [
     "Plan:ledger/adoption/DesktopPlatform.md",
-    "Plan:ledger/tasks/adopt-02.md",
-    "DesktopPlatform:AGENTS.md"
+    "Plan:ledger/tasks/adopt-02.md"
    ],
    "validation": "Review of merged source, retained CI results and receipts only; no new builds, downloads or runtime checks (P2-017).",
    "evidence": "Repository adoption record with the repository-wide facts, links to every slice record, the combined classification table and any conflicts raised under D-001.",
@@ -344,7 +363,7 @@
      "part": "adoption stage: Contracts repository record"
     }
    ],
-   "outcome": "The repository-wide adoption facts for Contracts (main head, retained CI workflow inventory under P2-017, package identities and pins, shared roots and source inventory) are recorded once for its slices to cite, and the Contracts classification table is complete when every adoption slice of the repository is complete. The accepted WP-03.00 to WP-03.02 receipts are recorded as inherited by the contracts slice; every later Contracts task, starting with the WP-03.03 closures, is open. The repository's AGENTS.md instruction entry links this Design repository's delivery model and the Plan repository's execution entry, never the derivation-baseline pair.",
+   "outcome": "The repository-wide adoption facts for Contracts (main head, retained CI workflow inventory under P2-017, package identities and pins, shared roots and source inventory) are recorded once for its slices to cite, and the Contracts classification table is complete when every adoption slice of the repository is complete. The accepted WP-03.00 to WP-03.02 receipts are recorded as inherited by the contracts slice; every later Contracts task, starting with the WP-03.03 closures, is open.",
    "provides": [
     "Contracts adoption record"
    ],
@@ -358,8 +377,7 @@
    ],
    "writes": [
     "Plan:ledger/adoption/Contracts.md",
-    "Plan:ledger/tasks/adopt-03.md",
-    "Contracts:AGENTS.md"
+    "Plan:ledger/tasks/adopt-03.md"
    ],
    "validation": "Review of merged source, retained CI results and receipts only; no new builds, downloads or runtime checks (P2-017).",
    "evidence": "Repository adoption record with the repository-wide facts, links to every slice record, the combined classification table and any conflicts raised under D-001.",
@@ -381,7 +399,7 @@
      "part": "adoption stage: ArcScope repository record"
     }
    ],
-   "outcome": "The repository-wide adoption facts for ArcScope (main head, retained CI workflow inventory under P2-017, package identities and pins, shared roots and source inventory) are recorded once for its slices to cite, and the ArcScope classification table is complete when every adoption slice of the repository is complete. The repository's AGENTS.md instruction entry links this Design repository's delivery model and the Plan repository's execution entry, never the derivation-baseline pair.",
+   "outcome": "The repository-wide adoption facts for ArcScope (main head, retained CI workflow inventory under P2-017, package identities and pins, shared roots and source inventory) are recorded once for its slices to cite, and the ArcScope classification table is complete when every adoption slice of the repository is complete.",
    "provides": [
     "ArcScope adoption record"
    ],
@@ -395,8 +413,7 @@
    ],
    "writes": [
     "Plan:ledger/adoption/ArcScope.md",
-    "Plan:ledger/tasks/adopt-05.md",
-    "ArcScope:AGENTS.md"
+    "Plan:ledger/tasks/adopt-05.md"
    ],
    "validation": "Review of merged source, retained CI results and receipts only; no new builds, downloads or runtime checks (P2-017).",
    "evidence": "Repository adoption record with the repository-wide facts, links to every slice record, the combined classification table and any conflicts raised under D-001.",
@@ -418,7 +435,7 @@
      "part": "adoption stage: Cloud repository record"
     }
    ],
-   "outcome": "The repository-wide adoption facts for Cloud (main head, retained CI workflow inventory under P2-017, package identities and pins, shared roots and source inventory) are recorded once for its slices to cite, and the Cloud classification table is complete when every adoption slice of the repository is complete. The repository's AGENTS.md instruction entry links this Design repository's delivery model and the Plan repository's execution entry, never the derivation-baseline pair.",
+   "outcome": "The repository-wide adoption facts for Cloud (main head, retained CI workflow inventory under P2-017, package identities and pins, shared roots and source inventory) are recorded once for its slices to cite, and the Cloud classification table is complete when every adoption slice of the repository is complete.",
    "provides": [
     "Cloud adoption record"
    ],
@@ -432,8 +449,7 @@
    ],
    "writes": [
     "Plan:ledger/adoption/Cloud.md",
-    "Plan:ledger/tasks/adopt-07.md",
-    "Cloud:AGENTS.md"
+    "Plan:ledger/tasks/adopt-07.md"
    ],
    "validation": "Review of merged source, retained CI results and receipts only; no new builds, downloads or runtime checks (P2-017).",
    "evidence": "Repository adoption record with the repository-wide facts, links to every slice record, the combined classification table and any conflicts raised under D-001.",
@@ -455,7 +471,7 @@
      "part": "adoption stage: AI repository record"
     }
    ],
-   "outcome": "The repository-wide adoption facts for AI (main head, retained CI workflow inventory under P2-017, package identities and pins, shared roots and source inventory) are recorded once for its slices to cite, and the AI classification table is complete when every adoption slice of the repository is complete. The repository's AGENTS.md instruction entry links this Design repository's delivery model and the Plan repository's execution entry, never the derivation-baseline pair.",
+   "outcome": "The repository-wide adoption facts for AI (main head, retained CI workflow inventory under P2-017, package identities and pins, shared roots and source inventory) are recorded once for its slices to cite, and the AI classification table is complete when every adoption slice of the repository is complete.",
    "provides": [
     "AI adoption record"
    ],
@@ -469,8 +485,7 @@
    ],
    "writes": [
     "Plan:ledger/adoption/AI.md",
-    "Plan:ledger/tasks/adopt-08.md",
-    "AI:AGENTS.md"
+    "Plan:ledger/tasks/adopt-08.md"
    ],
    "validation": "Review of merged source, retained CI results and receipts only; no new builds, downloads or runtime checks (P2-017).",
    "evidence": "Repository adoption record with the repository-wide facts, links to every slice record, the combined classification table and any conflicts raised under D-001.",
@@ -492,7 +507,7 @@
      "part": "adoption stage: Web repository record"
     }
    ],
-   "outcome": "The repository-wide adoption facts for Web (main head, retained CI workflow inventory under P2-017, package identities and pins, shared roots and source inventory) are recorded once for its slices to cite, and the Web classification table is complete when every adoption slice of the repository is complete. The repository's AGENTS.md instruction entry links this Design repository's delivery model and the Plan repository's execution entry, never the derivation-baseline pair.",
+   "outcome": "The repository-wide adoption facts for Web (main head, retained CI workflow inventory under P2-017, package identities and pins, shared roots and source inventory) are recorded once for its slices to cite, and the Web classification table is complete when every adoption slice of the repository is complete.",
    "provides": [
     "Web adoption record"
    ],
@@ -506,8 +521,7 @@
    ],
    "writes": [
     "Plan:ledger/adoption/Web.md",
-    "Plan:ledger/tasks/adopt-09.md",
-    "Web:AGENTS.md"
+    "Plan:ledger/tasks/adopt-09.md"
    ],
    "validation": "Review of merged source, retained CI results and receipts only; no new builds, downloads or runtime checks (P2-017).",
    "evidence": "Repository adoption record with the repository-wide facts, links to every slice record, the combined classification table and any conflicts raised under D-001.",
@@ -529,7 +543,7 @@
      "part": "adoption stage: Mobile repository record"
     }
    ],
-   "outcome": "The repository-wide adoption facts for Mobile (main head, retained CI workflow inventory under P2-017, package identities and pins, shared roots and source inventory) are recorded once for its slices to cite, and the Mobile classification table is complete when every adoption slice of the repository is complete. The repository's AGENTS.md instruction entry links this Design repository's delivery model and the Plan repository's execution entry, never the derivation-baseline pair.",
+   "outcome": "The repository-wide adoption facts for Mobile (main head, retained CI workflow inventory under P2-017, package identities and pins, shared roots and source inventory) are recorded once for its slices to cite, and the Mobile classification table is complete when every adoption slice of the repository is complete.",
    "provides": [
     "Mobile adoption record"
    ],
@@ -543,8 +557,7 @@
    ],
    "writes": [
     "Plan:ledger/adoption/Mobile.md",
-    "Plan:ledger/tasks/adopt-10.md",
-    "Mobile:AGENTS.md"
+    "Plan:ledger/tasks/adopt-10.md"
    ],
    "validation": "Review of merged source, retained CI results and receipts only; no new builds, downloads or runtime checks (P2-017).",
    "evidence": "Repository adoption record with the repository-wide facts, links to every slice record, the combined classification table and any conflicts raised under D-001.",
@@ -862,6 +875,12 @@
      "task": "GOV.01",
      "need": "exported glossary-terms.json/invariants.json policy data (GOV.01)",
      "why": "the layering/shared-foundation rules and forbidden-alias checks read this generated policy data directly rather than re-deriving it"
+    },
+    {
+     "type": "artifact",
+     "task": "GOV.18",
+     "need": "policy data reduced to the retained repositories",
+     "why": "the shared policy-test engine is built over the cleaned policy data"
     }
    ],
    "writes": [
@@ -934,6 +953,12 @@
      "task": "CON.90",
      "need": "Contracts' public/internal Apache-2.0 project split and generated proto baseline",
      "why": "05.03 checks that generated artifacts match a committed baseline and that no public type transitively depends on an internal one; there is no generated baseline to check against before WP03 lands"
+    },
+    {
+     "type": "artifact",
+     "task": "CON.23",
+     "need": "retired Contracts elements removed and reserved",
+     "why": "the Contracts policy tests run over the cleaned naming data and record set"
     }
    ],
    "writes": [
@@ -1524,6 +1549,10 @@
     {
      "ref": "P2-019",
      "part": "retirement of the accepted DesktopPlatform native families, projects, packages and tests whose only consumers left the family; the neutral identity of the still-image shim"
+    },
+    {
+     "ref": "P2-020",
+     "part": "source cleanup of the alignment sequence (ADP-10); blocks only the tasks that edit the retired bindings"
     }
    ],
    "outcome": "The Media, Colour and Otio native families and the macOS Metal graphics probe leave DesktopPlatform - ABI directories, overlays, managed and runtime projects, oracle tests, solution entries and package registrations - and no further versions of them are published; the still-image shim moves to native/arcimage-abi under the logical library ArcImageNative while its published arc_image_* symbols stay unchanged; provenance records of reused files stay unchanged.",
@@ -1538,7 +1567,11 @@
     "DesktopPlatform:tests/NativeAbiTests/**",
     "DesktopPlatform:win.slnx",
     "DesktopPlatform:eng/packaging/packages.json",
-    "DesktopPlatform:docs/native-reconciliation.md"
+    "DesktopPlatform:docs/native-reconciliation.md",
+    "DesktopPlatform:README.md",
+    "DesktopPlatform:docs/native-package-release.md",
+    "DesktopPlatform:src/BuildingBlocks/ArcForges.NativeInterop/README.md",
+    "DesktopPlatform:tests/ArchitectureTests/** (retired native library map)"
    ],
    "shared": [
     {
@@ -1556,9 +1589,13 @@
     {
      "resource": "RES-workstation-build-slot",
      "mode": "exclusive"
+    },
+    {
+     "resource": "RES-architecture-tests",
+     "mode": "append"
     }
    ],
-   "validation": "offline: native CMake/solution/package-inventory consistency and a scan proving the retired families and libraries are absent outside provenance history; the existing Windows native build and package consumers run for the retained families where the change requires it (P2-017).",
+   "validation": "offline: native CMake/solution/package-inventory consistency and a scan proving the retired families and libraries are absent outside provenance history; the existing Windows native build and package consumers run for the retained families where the change requires it (P2-017). Acceptance: outside eng/provenance, no retired native family, library, package or directory remains in source, solution, packaging, tests or documentation, and the still-image consumers resolve ArcImageNative.",
    "evidence": "Retirement diff; native build and package-consumer results for the retained families; the moved still-image shim with unchanged exported symbols.",
    "baseline": {
     "state": "not-started",
@@ -1579,6 +1616,10 @@
     {
      "ref": "P2-019",
      "part": "retirement of the accepted DesktopPlatform policy data that names repositories or families outside the family; the design-policy export re-pinned to this Design repository"
+    },
+    {
+     "ref": "P2-020",
+     "part": "source cleanup of the alignment sequence (ADP-10); blocks only the tasks that edit the retired bindings"
     }
    ],
    "outcome": "Runtime-ownership, licence-boundary and reconciliation policy data drop the retired repositories and families; the design-policy export is re-pinned to a reviewed commit of this Design repository and glossary-terms.json and invariants.json are regenerated from it; provenance records of reused files stay unchanged.",
@@ -1587,15 +1628,27 @@
    ],
    "writes": [
     "DesktopPlatform:eng/policy/**",
-    "DesktopPlatform:docs/design-policy.md"
+    "DesktopPlatform:docs/design-policy.md",
+    "DesktopPlatform:eng/runtime_ownership.py",
+    "DesktopPlatform:eng/licence_boundary.py",
+    "DesktopPlatform:eng/reference_baselines.py",
+    "DesktopPlatform:eng/reconciliation.py",
+    "DesktopPlatform:eng/test_runtime_ownership.py",
+    "DesktopPlatform:eng/test_licence_boundary.py",
+    "DesktopPlatform:eng/test_design_policy.py",
+    "DesktopPlatform:tests/ArchitectureTests/** (retired repository owners)"
    ],
    "shared": [
     {
      "resource": "RES-desktopplatform-policy-data",
      "mode": "append"
+    },
+    {
+     "resource": "RES-architecture-tests",
+     "mode": "append"
     }
    ],
-   "validation": "offline: architecture and runtime-ownership tests, the design-policy exporter comparing fresh bytes against the re-pinned Design commit, and a scan proving the retired repositories are absent from the policy data outside provenance history.",
+   "validation": "offline: architecture and runtime-ownership tests, the design-policy exporter comparing fresh bytes against the re-pinned Design commit, and a scan proving the retired repositories are absent from the policy data outside provenance history. Acceptance: the policy tools and their tests name only the seven implementation repositories and retained references, and the design-policy check passes against the re-pinned commit of this Design repository.",
    "evidence": "Re-pinned Design commit and policy-source hashes; exporter comparison; policy-test results.",
    "baseline": {
     "state": "not-started",
@@ -1650,7 +1703,14 @@
     "notes": "Observed none, unreviewed: public/proto/constraints.json is a single 3070-line file today (confirmed by direct read), alphabetically ordered by fully-qualified message name; internal/proto/constraints.json is a single 107-line file. No sharding exists yet."
    },
    "notes": "Optional enabler: without it, closure pull requests edit the same constraint files and are merged one at a time with rebase-and-regenerate by the Contracts integration owner, which remains the fallback protocol.",
-   "start": [],
+   "start": [
+    {
+     "type": "artifact",
+     "task": "CON.23",
+     "need": "retired Contracts elements removed and reserved",
+     "why": "the sharded constraint files must not carry retired record constraints"
+    }
+   ],
    "complete": []
   },
   {
@@ -1677,6 +1737,12 @@
      "task": "CON.91",
      "need": "published Foundation ResourceRef/ResourceVersionRef/ArtifactRef (already generated) as the base EncodedBodyRef.resource field type",
      "why": "EncodedBodyRef's resource field is a ResourceVersionRef; without the already-published Foundation closure this can't compile."
+    },
+    {
+     "type": "artifact",
+     "task": "CON.23",
+     "need": "retired Contracts elements removed and reserved",
+     "why": "foundation.proto is edited only after its retired records are removed and reserved"
     }
    ],
    "writes": [
@@ -1731,6 +1797,12 @@
      "task": "CON.02",
      "need": "EncodedBodyRef record",
      "why": "the 'immutable oversized-body reference form' WP-03.03 asks for is EncodedBodyRef; the admission validator must recognize it as the alternative to an inline AggregateBody."
+    },
+    {
+     "type": "artifact",
+     "task": "CON.23",
+     "need": "retired Contracts elements removed and reserved",
+     "why": "content.proto and the owner-body union are edited only after the retired bodies are reserved"
     }
    ],
    "writes": [
@@ -1887,6 +1959,12 @@
      "task": "CON.02",
      "need": "CapabilityDescriptor/ContextDescriptor shapes",
      "why": "ICapabilityProvider.Describe returns CapabilityDescriptor[] and IContextProvider.ProvideContext returns a ContextContribution keyed on those descriptor shapes; without CON.02 this can't be typed."
+    },
+    {
+     "type": "artifact",
+     "task": "CON.23",
+     "need": "retired Contracts elements removed and reserved",
+     "why": "the product port packages are completed only after the retired port packages leave the set"
     }
    ],
    "writes": [
@@ -2681,6 +2759,12 @@
      "task": "CON.23",
      "need": "the retired elements removed and reserved",
      "why": "the owned-artifact verification compares the published set with the wire registry, including its reservations"
+    },
+    {
+     "type": "artifact",
+     "task": "CON.24",
+     "need": "package task delivered",
+     "why": "the package acceptance receipt verifies every task mapped to the package (DLV-03)"
     }
    ],
    "writes": [
@@ -2826,6 +2910,10 @@
     {
      "ref": "P2-019",
      "part": "retirement of the accepted Contracts naming data, in-process port packages, records, fixtures and generated shapes whose only consumers left the family, with their numbers and names reserved exactly as the wire registry lists"
+    },
+    {
+     "ref": "P2-020",
+     "part": "source cleanup of the alignment sequence (ADP-10); blocks only the tasks that edit the retired bindings"
     }
    ],
    "outcome": "eng/policy/product-names.json and the naming checks name only the family's products; the two retired in-process port packages and their proto files leave the package set and are never republished; retired foundation and content records, AggregateBody variants and enum values are deleted with their field, value and message numbers reserved exactly as the wire registry lists; accepted fixtures and generated C#/TypeScript/Kotlin shapes are regenerated without them; already published package versions remain immutable history.",
@@ -2843,7 +2931,20 @@
     "Contracts:fixtures/public/wp03-00.json",
     "Contracts:fixtures/public/wp03-01.json",
     "Contracts:src/public/ts/contract-fixtures/src/index.ts",
-    "Contracts:src/public/**/Generated/**"
+    "Contracts:src/public/**/Generated/**",
+    "Contracts:eng/policy/contract-access.json",
+    "Contracts:eng/foundation-inventory.json",
+    "Contracts:eng/foundation-baseline.json",
+    "Contracts:eng/check_foundation.py",
+    "Contracts:eng/foundation_semantics.py",
+    "Contracts:ArcForges.Contracts.slnx",
+    "Contracts:public/proto/constraints/** (retired record constraints)",
+    "Contracts:internal/proto/constraints/** (retired port constraints)",
+    "Contracts:tests/StructureTests/**",
+    "Contracts:tests/public/**",
+    "Contracts:tests/tooling/**",
+    "Contracts:src/public/ts/proto/src/values.ts",
+    "Contracts:README.md"
    ],
    "shared": [
     {
@@ -2859,7 +2960,7 @@
      "mode": "append"
     }
    ],
-   "validation": "offline: naming, schema, reservation and compatibility checks prove every retired number and name is reserved and unused, no retained record, service or fixture references a retired one, the package set matches the registry and generated shapes regenerate cleanly; the compatibility check accepts only the reviewed retirements.",
+   "validation": "offline: naming, schema, reservation and compatibility checks prove every retired number and name is reserved and unused, no retained record, service or fixture references a retired one, the package set matches the registry and generated shapes regenerate cleanly; the compatibility check accepts only the reviewed retirements. Acceptance: a scan of the repository outside eng/provenance and docs/implementation finds no retired type, package, product value or naming entry; the package set, solution, contract-access policy and foundation inventory list only retained items; structure tests pass without the retired cases.",
    "evidence": "Retirement diff against the reserved lists of the wire registry; naming, schema, compatibility and generation results; package-set comparison with the registry.",
    "baseline": {
     "state": "not-started",
@@ -3024,6 +3125,65 @@
      "mode": "append"
     }
    ]
+  },
+  {
+   "id": "CON.24",
+   "title": "ArcScope library read operations and summary records",
+   "lane": "contracts",
+   "repo": "Contracts",
+   "kind": "contract",
+   "size": "M",
+   "obligations": [
+    {
+     "ref": "WP-03.05",
+     "part": "ArcScope library read operations (scope.listProjects, scope.listSessions, scope.getSession), the ScopeProjectSummary and ScopeSessionSummary records, authorization fields and vectors"
+    }
+   ],
+   "outcome": "ScopeService is generated with scope.listProjects, scope.listSessions and scope.getSession and the ScopeProjectSummary and ScopeSessionSummary records in C#, TypeScript and Kotlin, with exact fields, authorization metadata (R1, Q, AO, product-owner scope) and independent vectors.",
+   "provides": [
+    "scope-library-operations"
+   ],
+   "start": [
+    {
+     "type": "contract",
+     "task": "CON.02",
+     "need": "capability/resource descriptor and oversized-body reference records",
+     "why": "the library responses reference resources and may use the large read projection profile"
+    },
+    {
+     "type": "artifact",
+     "task": "CON.23",
+     "need": "the retired content records removed and reserved",
+     "why": "the library records sit beside ScopeMetadata in the content closure that CON.23 cleans first"
+    }
+   ],
+   "writes": [
+    "Contracts:public/proto/arcforges/publicapi/v1/scope.proto",
+    "Contracts:fixtures/public/con-24-scope-library.json",
+    "Contracts:src/public/**/Generated/**"
+   ],
+   "shared": [
+    {
+     "resource": "RES-contracts-generated-baseline",
+     "mode": "regenerate"
+    },
+    {
+     "resource": "RES-contracts-publication",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-contracts-schema-sources",
+     "mode": "append"
+    }
+   ],
+   "validation": "offline: descriptor/field vectors in three languages, operation-count and scope-manifest checks, regeneration clean, candidate packaging checks (P2-017).",
+   "evidence": "Generated ScopeService in all three languages; vectors and manifest check results; candidate identity.",
+   "baseline": {
+    "state": "not-started",
+    "notes": "Observed none: no ScopeService exists in Contracts."
+   },
+   "notes": "Independent of the other contract closures except for the shared schema-source protocol.",
+   "complete": []
   },
   {
    "id": "FND.01",
@@ -6620,7 +6780,14 @@
     "notes": "Observed partial, unreviewed: native/shared/include/arc/arc_native_abi.h and native/shared/src/arc_native_abi_internal.hpp already exist (probe-level ABI1.0: get_abi_version/get_build_info/get_last_error only, per design's repeated 'probe-only' warning); the ABI1.1 functional preamble/pack8 records from contracts/06-native-functional-abi.md SS2 are not yet present. src/Native/ArcForges.Native.Abstractions/NativeAbi.cs exists as an early scaffold."
    },
    "notes": "Hard prerequisite for NAT.11, NAT.13 and NAT.14 (artifact edges from each).",
-   "start": [],
+   "start": [
+    {
+     "type": "artifact",
+     "task": "GOV.17",
+     "need": "retired native families removed and the still-image shim moved",
+     "why": "the common ABI headers and package inventory are edited only after the retired families leave"
+    }
+   ],
    "complete": []
   },
   {
@@ -6644,7 +6811,7 @@
      "part": "package-level obligation contribution"
     }
    ],
-   "outcome": "arc_image_* implemented with PNG/TIFF/EXR metadata and bounded tile reads/writes via OIIO/OpenEXR/Imath; hostile reads execute only in the WP11 helper.",
+   "outcome": "arc_image_* implemented with PNG/TIFF/EXR metadata and bounded tile reads via OIIO/OpenEXR/Imath; hostile reads execute only in the WP11 helper.",
    "provides": [
     "arc-image-functions"
    ],
@@ -6722,6 +6889,12 @@
      "task": "NAT.06",
      "need": "compiled common ABI headers/layouts (arc_instrument_options_v1, arc_transfer_v1)",
      "why": "exact parameter types"
+    },
+    {
+     "type": "artifact",
+     "task": "GOV.17",
+     "need": "retired native families removed and the still-image shim moved",
+     "why": "the instruments family registers in the cleaned package inventory"
     }
    ],
    "writes": [
@@ -6791,6 +6964,12 @@
      "task": "NAT.06",
      "need": "compiled common ABI headers/layouts (arc_pdf_page_v1)",
      "why": "exact parameter types"
+    },
+    {
+     "type": "artifact",
+     "task": "GOV.17",
+     "need": "retired native families removed and the still-image shim moved",
+     "why": "the PDF family registers in the cleaned package inventory and helper composition"
     }
    ],
    "substitutes": [
@@ -11547,7 +11726,7 @@
      "part": "the Cloud API half: the eleven simulation.* operations as durable, idempotent, expected-state commands; authorised manifest listing; resumable hash-verifiable segment fetch over HTTP or object storage; revision-/cursor-based state polling"
     }
    ],
-   "outcome": "The eleven simulation.* operations are durable, idempotent and expected-state; a client can list authorised manifests and fetch segments resumably with hash verification; state polling works with realtime disabled.",
+   "outcome": "The eleven simulation.* operations are durable, idempotent and expected-state; a client can list authorised manifests and fetch segments resumably with hash verification; state polling works with realtime disabled; a run reaching a terminal state emits one durable simulation.runTerminal notification.",
    "provides": [
     "sim.cloud-api"
    ],
@@ -14375,6 +14554,12 @@
      "task": "CLOUD.46",
      "need": "final candidate",
      "why": "closure requires every preceding WP-25 substep, and the.90 stage explicitly cannot leave HistoryService as a fixture per WP-25 §9"
+    },
+    {
+     "type": "integration",
+     "task": "CLOUD.68",
+     "need": "package task complete",
+     "why": "the WP-25 closure verifies every task mapped to the package (DLV-03)"
     }
    ],
    "writes": [
@@ -14989,6 +15174,63 @@
    },
    "complete": [],
    "writes": []
+  },
+  {
+   "id": "CLOUD.68",
+   "title": "ArcScope library read model and companion notifications",
+   "lane": "cloud",
+   "repo": "Cloud",
+   "kind": "service",
+   "size": "M",
+   "obligations": [
+    {
+     "ref": "WP-25.10",
+     "part": "full"
+    }
+   ],
+   "outcome": "scope.listProjects, scope.listSessions and scope.getSession serve owner-filtered, paged, revision- and commit-time-bearing projections of committed scope.synced_aggregate rows with no mutation and no raw bytes; the Sync commit emits durable scope.reportSynced and sync.conflictNeedsDecision notifications exactly once.",
+   "provides": [
+    "scope-library-read-model"
+   ],
+   "start": [
+    {
+     "type": "contract",
+     "task": "CON.24",
+     "need": "the generated ScopeService and summary records",
+     "why": "the endpoints implement the generated library operations"
+    },
+    {
+     "type": "artifact",
+     "task": "CLOUD.39",
+     "need": "the real Sync owner transaction committing ArcScope metadata",
+     "why": "the read model projects committed scope.synced_aggregate rows"
+    },
+    {
+     "type": "artifact",
+     "task": "CLOUD.21",
+     "need": "public endpoint registration",
+     "why": "the library operations are registered public endpoints"
+    }
+   ],
+   "writes": [
+    "Cloud:src/Cloud/ArcForges.Cloud.Modules.Scope/Library/**",
+    "Cloud:src/Cloud/ArcForges.Cloud.Modules.Sync/Notifications/**"
+   ],
+   "validation": "offline projection and authorization tests; opt-in real-D1 runs for pagination across concurrent commits, minRevision, tombstones, revoked membership, wrong product scope, large-session projection and exactly-once notification on commit and replay (P2-017).",
+   "evidence": "Real D1 projection results, authorization refusals and notification receipts for a synced ArcScope workspace.",
+   "baseline": {
+    "state": "not-started",
+    "notes": "Observed none: the Cloud host has no Scope or Sync module code yet."
+   },
+   "notes": "Builds as soon as the Sync owner transaction exists; durable notification rows come from the Notification module.",
+   "complete": [
+    {
+     "type": "integration",
+     "task": "CLOUD.12",
+     "need": "the Notification module durable rows",
+     "why": "the emitted notifications are persisted and delivered by the Notification owner"
+    }
+   ]
   },
   {
    "id": "COM.01",
@@ -19115,7 +19357,7 @@
   },
   {
    "id": "AND.02",
-   "title": "Real Android module graph and AN01-AN25 route/state contracts",
+   "title": "Real Android module graph and AN01-AN28 route/state contracts",
    "lane": "android",
    "repo": "Mobile",
    "kind": "producer",
@@ -19126,7 +19368,7 @@
      "part": "full"
     }
    ],
-   "outcome": "The arch-27 module set (app, core/domain, core/data, core/network, core/security, core/designsystem, feature/home, feature/chat, feature/tasks, feature/library, feature/settings) exists as enforced Gradle modules with typed AN01-AN25 navigation/state contracts; features depend only on typed core ports.",
+   "outcome": "The arch-27 module set (app, core/domain, core/data, core/network, core/security, core/designsystem, feature/home, feature/chat, feature/tasks, feature/library, feature/scope, feature/settings) exists as enforced Gradle modules with typed AN01-AN28 navigation/state contracts; features depend only on typed core ports.",
    "provides": [
     "android-module-boundaries",
     "android-nav-contracts"
@@ -19160,7 +19402,7 @@
     }
    ],
    "validation": "Architecture/import boundary tests (no React Native/iOS/AGPL imports, no cross-module leakage) as offline static checks; targeted offline unit tests per module",
-   "evidence": "Module dependency graph report showing one-way core<-feature<-app dependencies; route ID inventory matching AN01-AN25",
+   "evidence": "Module dependency graph report showing one-way core<-feature<-app dependencies; route ID inventory matching AN01-AN28",
    "baseline": {
     "state": "not-started",
     "notes": "Observed none, unreviewed: Only app/ and the KMP shared/ preview module exist today; none of the arch-27 core/* or feature/* modules exist"
@@ -19974,6 +20216,12 @@
      "task": "AND.14",
      "need": "all WP31 substep tasks complete",
      "why": "final join"
+    },
+    {
+     "type": "artifact",
+     "task": "AND.27",
+     "need": "package task delivered",
+     "why": "the package acceptance receipt verifies every task mapped to the package (DLV-03)"
     }
    ],
    "writes": [
@@ -20541,6 +20789,67 @@
    "notes": "Merged duplicate integration or closure task formerly proposed as COM.17.",
    "complete": [],
    "writes": []
+  },
+  {
+   "id": "AND.27",
+   "title": "ArcScope library, reports and simulation runs on Android",
+   "lane": "android",
+   "repo": "Mobile",
+   "kind": "feature",
+   "size": "L",
+   "obligations": [
+    {
+     "ref": "WP-31.07",
+     "part": "full"
+    }
+   ],
+   "outcome": "AN14 and AN26-AN28: the read-only ArcScope library, session and report views with provenance and stored chart snapshots, report sharing through the system share sheet, simulation run status with cancel, and the ArcScope notification kinds opening their objects.",
+   "provides": [
+    "android-arcscope-workspace"
+   ],
+   "start": [
+    {
+     "type": "artifact",
+     "task": "AND.11",
+     "need": "the Library route and resource preview surfaces",
+     "why": "the ArcScope library is built into the Library destination and reuses its preview and transfer paths"
+    },
+    {
+     "type": "contract",
+     "task": "CON.24",
+     "need": "the generated library operations",
+     "why": "the views call scope.listProjects, scope.listSessions and scope.getSession"
+    },
+    {
+     "type": "contract",
+     "task": "CON.21",
+     "need": "the generated simulation operations",
+     "why": "run status and cancel use simulation.getRun and simulation.cancelRun"
+    }
+   ],
+   "writes": [
+    "Mobile:feature/scope/**"
+   ],
+   "validation": "Local real-integration run of the affected scenario in an existing environment, recorded once; offline and static checks in CI; no hosted runtime, device, browser, live-service or inference CI (P2-017).",
+   "evidence": "A report synced from ArcScope desktop found, read and shared on Android; a Cloud simulation run followed to its terminal state; revocation, unavailable-artifact and raw-data-local cases.",
+   "baseline": {
+    "state": "not-started",
+    "notes": "Observed none."
+   },
+   "complete": [
+    {
+     "type": "integration",
+     "task": "CLOUD.68",
+     "need": "the deployed library read model",
+     "why": "acceptance reads a real synced workspace"
+    },
+    {
+     "type": "integration",
+     "task": "SIM.05",
+     "need": "the deployed simulation operations",
+     "why": "acceptance follows a real run to its terminal state"
+    }
+   ]
   },
   {
    "id": "WEB.01",
@@ -21800,6 +22109,18 @@
      "task": "WEB.25",
      "need": "budgets",
      "why": "final join"
+    },
+    {
+     "type": "artifact",
+     "task": "WEB.32",
+     "need": "package task delivered",
+     "why": "the package acceptance receipt verifies every task mapped to the package (DLV-03)"
+    },
+    {
+     "type": "artifact",
+     "task": "WEB.33",
+     "need": "package task delivered",
+     "why": "the package acceptance receipt verifies every task mapped to the package (DLV-03)"
     }
    ],
    "complete": [
@@ -22116,6 +22437,104 @@
     "state": "not-started"
    },
    "writes": []
+  },
+  {
+   "id": "WEB.32",
+   "title": "ArcScope workspace in the Web companion: library and reports",
+   "lane": "web",
+   "repo": "Web",
+   "kind": "feature",
+   "size": "L",
+   "obligations": [
+    {
+     "ref": "WP-49.07",
+     "part": "full"
+    }
+   ],
+   "outcome": "The Web ArcScope library: projects, sessions, findings and annotations, report reading with provenance and stored chart snapshots, exported-report download through resource tickets, sessions and reports attached to assistant conversations, and the ArcScope notification kinds.",
+   "provides": [
+    "web-arcscope-workspace"
+   ],
+   "start": [
+    {
+     "type": "artifact",
+     "task": "WEB.19",
+     "need": "the companion route shell and design-system integration",
+     "why": "the workspace is a route set of the companion deployment"
+    },
+    {
+     "type": "contract",
+     "task": "CON.24",
+     "need": "the generated library operations",
+     "why": "the views call the library operations through the generated TypeScript client"
+    }
+   ],
+   "writes": [
+    "Web:apps/app/app/features/scope/**"
+   ],
+   "validation": "Local real-integration run of the affected scenario in an existing environment, recorded once; offline and static checks in CI; no hosted runtime, device, browser, live-service or inference CI (P2-017).",
+   "evidence": "A report synced from ArcScope desktop found, read and downloaded on Web with provenance; revocation, ticket expiry and accessibility results.",
+   "baseline": {
+    "state": "not-started",
+    "notes": "Observed none."
+   },
+   "complete": [
+    {
+     "type": "integration",
+     "task": "CLOUD.68",
+     "need": "the deployed library read model",
+     "why": "acceptance reads a real synced workspace"
+    }
+   ]
+  },
+  {
+   "id": "WEB.33",
+   "title": "Cloud simulator console in the Web companion",
+   "lane": "web",
+   "repo": "Web",
+   "kind": "feature",
+   "size": "M",
+   "obligations": [
+    {
+     "ref": "WP-49.08",
+     "part": "full"
+    }
+   ],
+   "outcome": "The simulator console: definitions, immutable scenario versions with validation errors, start, pause, resume and cancel with expected state, run state with complete-or-partial extent, and the committed segment manifest with resumable, hash-verified downloads.",
+   "provides": [
+    "web-simulator-console"
+   ],
+   "start": [
+    {
+     "type": "artifact",
+     "task": "WEB.19",
+     "need": "the companion route shell and design-system integration",
+     "why": "the console is a route set of the companion deployment"
+    },
+    {
+     "type": "contract",
+     "task": "CON.21",
+     "need": "the generated simulation operations",
+     "why": "the console calls the simulation operations through the generated TypeScript client"
+    }
+   ],
+   "writes": [
+    "Web:apps/app/app/features/simulation/**"
+   ],
+   "validation": "Local real-integration run of the affected scenario in an existing environment, recorded once; offline and static checks in CI; no hosted runtime, device, browser, live-service or inference CI (P2-017).",
+   "evidence": "A scenario created and run from the browser with every desktop off, completed or cancelled with the correct extent, and its committed segments downloaded and verified.",
+   "baseline": {
+    "state": "not-started",
+    "notes": "Observed none."
+   },
+   "complete": [
+    {
+     "type": "integration",
+     "task": "SIM.05",
+     "need": "the deployed simulation operations",
+     "why": "acceptance runs a real scenario"
+    }
+   ]
   },
   {
    "id": "UPD.01",

@@ -9,7 +9,7 @@
 > Governing authority: **[D-004](../../decisions/phase-1-foundation-decisions.md#rule-d-004)**/**[D-021](../../decisions/phase-1-foundation-decisions.md#rule-d-021)** (Apache-2.0 mobile boundary), **[D-007](../../decisions/phase-1-foundation-decisions.md#rule-d-007)** (web technology), **[D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008)** (Android Kotlin/Jetpack Compose; iOS outside scope), **[D-014](../../decisions/phase-1-foundation-decisions.md#rule-d-014)**/**[D-015](../../decisions/phase-1-foundation-decisions.md#rule-d-015)** (surfaces), **[D-022](../../decisions/phase-1-foundation-decisions.md#rule-d-022)**/**[V-09](../../assurance/phase-1-official-verification.md#rule-v-09)** (consumption-only)
 > Companions: [`arcchat.md`](arcchat.md), [`arcforges-web.md`](arcforges-web.md), [`../03-cloud-services-and-sync.md`](../03-cloud-services-and-sync.md), [`../05-ai-and-agent-execution.md`](../05-ai-and-agent-execution.md)
 
-> **Android companion and Web companion are the Cloud Continuity and Remote Agent Companion for ArcChat.**
+> **Android companion and Web companion are the ArcScope companions: they keep the ArcScope workspace — projects, sessions, findings, reports and Cloud simulation runs — and the ArcScope assistant available away from the workbench, with approval, steering and results for work on an ArcScope installation** ([P2-020](../../decisions/phase-2-specification-decisions.md#rule-p2-020)).
 
 The companion loop:
 
@@ -37,9 +37,10 @@ See → Approve → Steer → Continue → Start remote work → Receive results
 
 | Surface | Responsibility |
 |---|---|
-| **Desktop** | Native product surface, cached projections/drafts, local tool execution and the application runtime; Cloud owns AI execution |
-| **Mobile** | Attention, approval, remote control, result consumption — with cloud chat and tasks in their own right |
-| **Web** | Cloud chat, tasks, projects, search, automation, continuity — closer to desktop in depth, without local capability |
+| **Desktop** | ArcScope acquisition, recording, analysis, measurement, annotation, findings and report authoring; local raw captures, cached projections/drafts, local tool execution and the application runtime; Cloud owns AI execution |
+| **Mobile** | Attention and approval; the read-only ArcScope library and report reading; simulation run status and cancel; ArcScope assistant conversations and tasks; approved commands to an online ArcScope installation |
+| **Web** | The ArcScope workspace: library, report reading and download, the Cloud simulator console, assistant, tasks, approvals, automation and approved remote commands — closer to desktop in depth, without local capability |
+| **Cloud** | Identity, workspaces and authorization; entitlement, billing and credits; sync of ArcScope metadata and reports and explicit raw-capture storage; the library read model; the simulator; AI Harness, search and notifications; backup, recovery and operations |
 
 ---
 
@@ -47,9 +48,21 @@ See → Approve → Steer → Continue → Start remote work → Receive results
 
 | # | Requirement |
 |---|---|
-| <a id="rule-om-01"></a>OM-01 | **The core objects on Mobile and Web are still ArcChat objects**: conversations, tasks, projects, artifacts, approvals, automations. |
+| <a id="rule-om-01"></a>OM-01 | **The core objects on Mobile and Web are ArcScope workspace objects** — projects, sessions, findings, reports and simulation runs — **together with the assistant objects** that act on them: conversations, tasks, projects, artifacts, approvals, automations. |
 | <a id="rule-om-02"></a>OM-02 | **Professional product objects appear through reference and preview only.** A companion surface never holds a complete writable copy of an ArcScope session ([I-060](../01-normative-glossary-and-invariants.md#rule-i-060)). |
 | <a id="rule-om-03"></a>OM-03 | The full execution semantics are those of [`../05-ai-and-agent-execution.md`](../05-ai-and-agent-execution.md); the companion is a surface, never a second model. |
+
+### 2.1 The ArcScope workspace on the companions
+
+| # | Requirement |
+|---|---|
+| <a id="rule-sw-01"></a>SW-01 | **Library.** Both companions list the workspace's ArcScope projects and synced sessions and open a session's synced metadata — capture metadata, annotations, findings, analysis results, configuration snapshot and report artifacts — through the [ArcScope library operations](../../architecture/contracts/01-public-api-operations.md#52-arcscope-library-read-only). The view is read-only; raw capture bytes are shown only as their metadata unless the session's raw data was explicitly uploaded ([CL-03](arcscope.md#rule-cl-03)). |
+| <a id="rule-sw-02"></a>SW-02 | **Reports.** A synced report opens read-only from its artifact through a resource download ticket, with provenance back to session, range, configuration and analysis version ([RP-05](arcscope.md#rule-rp-05)). Charts show the report's stored snapshot ([RP-04](arcscope.md#rule-rp-04)); a companion never recomputes a measurement. Web downloads the exported report; Android hands it to the system share sheet. |
+| <a id="rule-sw-03"></a>SW-03 | **Freshness is explicit.** Every library object shows its Cloud revision and commit time; work that has not synced from a desktop is not presented as present, and metadata without local raw data is a normal state ([CL-05](arcscope.md#rule-cl-05)). |
+| <a id="rule-sw-04"></a>SW-04 | **Simulator.** Web is the Cloud simulator console: scenario definitions, immutable scenario versions, start, pause, resume and cancel of runs, run state with complete-or-partial extent, and the committed segment manifest with downloads ([simulator operations](../../architecture/contracts/01-public-api-operations.md#91-arcscope-cloud-simulator)). Android shows run state, receives the terminal notification and can cancel a run. |
+| <a id="rule-sw-05"></a>SW-05 | **Attention.** The companions receive durable notifications for approval requests, assistant and remote task results, simulation runs reaching a terminal state, sync conflicts needing a decision and new reports synced to the workspace. A notification opens its object and never carries authority. Conflicts are resolved on the ArcScope desktop; the companion links to it. |
+| <a id="rule-sw-06"></a>SW-06 | **Assistant.** Companion conversations are ArcScope assistant conversations: they attach sessions, findings and reports as context by reference, answer through knowledge search over synced ArcScope metadata and reports, and request approved ArcScope commands on an online installation ([CL-07](arcscope.md#rule-cl-07)). |
+| <a id="rule-sw-07"></a>SW-07 | **Permissions.** Every library, report and simulation read is authorized per request by workspace membership, role and the `arcscope` product scope; a revoked member or device fails its next request, and offline caches follow the session-security rules of `§16`. |
 
 ---
 
@@ -384,6 +397,10 @@ WorkspaceDeviceContext · RemoteSession · OfflineCachePolicy
 **Security** — app lock does not substitute for step-up; a new browser cannot immediately perform an R3 approval; revoking a device takes effect immediately and deletes no local data.
 
 **Commerce** — no purchase surface, no external purchase call to action, and no licence-key unlock path exists in any build; an entitlement purchased on the web is consumed normally.
+
+**ArcScope library** — a report synced from the desktop appears on Android and Web with its revision and commit time, opens read-only with provenance and its stored chart snapshots, downloads on Web, and disappears from both after the member loses access; an unsynced desktop session is absent rather than shown as empty.
+
+**Simulator** — a scenario version created and started on Web runs with every desktop off; Android receives the terminal notification and shows complete-or-partial extent; a cancellation from either surface commits the partial outcome once.
 
 ---
 

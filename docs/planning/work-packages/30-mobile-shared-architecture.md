@@ -38,7 +38,7 @@ Mobile adopts the exact module map in architecture 27 (app, core and feature mod
 <a id="rule-wp-30.01"></a>
 ### WP-30.01 — Native module and route boundaries
 
-**What must be fully done.** Implement architecture 27 concrete Kotlin app/core/feature modules and AN01–AN25 navigation/state contracts; features depend typed core ports, app composes them, no React Native/iOS or AGPL imports.
+**What must be fully done.** Implement architecture 27 concrete Kotlin app/core/feature modules and AN01–AN28 navigation/state contracts; features depend typed core ports, app composes them, no React Native/iOS or AGPL imports.
 
 **Testing requirements.** Verify the stated behavior against the exact real artifact/owner boundary. Include scope/permission, wrong or stale target, loss/retry, expiry and applicable native UI cases from experience 03; named later-provider fixtures cannot close real integration.
 

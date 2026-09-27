@@ -184,6 +184,24 @@ Direct HTTP and an authorised Cloud tool invoke the same domain validator/write 
 
 Export manifests pin their inputs through bounded completion/retention and exclude pending local work.
 
+## 5.2 ArcScope library (read-only)
+
+Read models over the Sync owner's committed ArcScope metadata for the companions ([P2-020](../../decisions/phase-2-specification-decisions.md#rule-p2-020), [SW-01](../../requirements/products/arcchat-mobile-and-web.md#rule-sw-01)).
+
+| Operation | Purpose | Auth | Class | Key errors | Compat |
+|---|---|---|---|---|---|
+| `scope.listProjects` | The workspace's projects that have synced sessions, newest first | `R1` | `Q` | — | `AO` |
+| `scope.listSessions` | Synced sessions of one project with finding and report counts | `R1` | `Q` | `state.not_found` | `AO` |
+| `scope.getSession` | One session's committed metadata: capture metadata, annotations, findings, analysis results, configuration and report artifacts | `R1` | `Q` | `state.not_found`, `state.gone` | `AO` |
+
+| # | Rule |
+|---|---|
+| <a id="rule-lq-01"></a>LQ-01 | **Read-only projections of committed `ScopeMetadata`.** They never mutate, never return raw capture bytes and add no authoritative table; reports and explicitly uploaded captures are fetched through resource tickets (`§6`). |
+| <a id="rule-lq-02"></a>LQ-02 | **Every item carries its Cloud revision and commit time**, so a companion never presents unsynced desktop work as present. |
+| <a id="rule-lq-03"></a>LQ-03 | **Each request is authorized** by workspace membership, role and the `arcscope` product scope; revocation takes effect at the next request. |
+| <a id="rule-lq-04"></a>LQ-04 | **Lists are paged** and a large session uses the large read projection profile of registry 04. |
+| <a id="rule-lq-05"></a>LQ-05 | **Owners emit durable notifications** of kinds `scope.reportSynced` (Sync, when a committed session gains a report), `sync.conflictNeedsDecision` (Sync) and `simulation.runTerminal` (Simulation), each targeting its aggregate; the hint grants no authority. |
+
 ## 6. Resource transfer
 
 | Operation | Purpose | Auth | Class | Key errors | Compat |

@@ -4,7 +4,7 @@ Authority: [P2-012](../decisions/phase-2-specification-decisions.md#rule-p2-012)
 
 ## 1. Navigation and top-level layout
 
-Five bottom destinations: **Home, Chats, Tasks, Library, Settings**. Devices is a Home card and `Home → Devices` route, not a sixth bottom tab. Current workspace is in the app bar; own-chat vs selected desktop application is an explicit scope chip below it. Switching target opens/selects a separate scoped destination; it never retargets an existing chat, request, draft or approval.
+Five bottom destinations: **Home, ArcScope, Chats, Tasks, Settings**. ArcScope is the workspace library ([SW-01](../requirements/products/arcchat-mobile-and-web.md#rule-sw-01)): synced projects, sessions, findings, reports and simulation runs, with the assistant's resources, saved searches and automations as its sections. Devices is a Home card and `Home → Devices` route, not a sixth bottom tab. Current workspace is in the app bar; own-chat vs selected desktop application is an explicit scope chip below it. Switching target opens/selects a separate scoped destination; it never retargets an existing chat, request, draft or approval.
 
 ```text
 +-------------------------------------+
@@ -15,9 +15,9 @@ Five bottom destinations: **Home, Chats, Tasks, Library, Settings**. Devices is 
 | Continue chat                       |
 | Connected applications              |
 |   PC-A · ArcScope      Online        |
-| Recent tasks / saved artifacts       |
+| Recent reports / simulation runs     |
 |                                     |
-| Home | Chats | Tasks | Library | ⚙  |
+| Home | ArcScope | Chats | Tasks | ⚙ |
 +-------------------------------------+
 
 Chat destination
@@ -51,7 +51,7 @@ Compact width<600dp uses a single pane and bottom navigation.600–839dp uses a 
 | AN11 Tasks / tasks | filters state/target, attention first, progress and usage | list/open/cancel/pause/resume only when allowed | stale state refreshes before action, unknown effect reconciles |
 | AN12 Task detail / tasks | timeline, step/tool/target, reasons, artifacts, budget | inspect, steering form, cancel confirmation, clone/fork existing actions | expired/offline target shows durable wait/retry state |
 | AN13 Approval / tasks | full-screen sensitive operation, target/source/egress/effects/cost/expiry | approve once/deny with idempotency; step-up where required | expired approval read-only; local-presence action instructs target desktop, no biometric substitution |
-| AN14 Library / library | projects, resources, saved search, simple automation sections | list/open/filter within current product scope | no cross-product merged library |
+| AN14 ArcScope library / library | projects, resources, saved search, simple automation sections | list/open/filter within current product scope | no cross-product merged library |
 | AN15 Project/profile/skill / library | metadata, instruction/source disclosure and version | supported create/edit/archive/attach behavior; preserve existing bounded mobile scope | concurrent change offers reload/copy; no untrusted content granted authority |
 | AN16 Search / library | query/scope/source kind, index/completeness badge | permission-aware results/citations | lexical-only and unavailable are distinguished; query change cancels obsolete result |
 | AN17 Resource detail / library | metadata/status/provenance/version, preview pane, safe actions | view text/code/Markdown/image/PDF, bounded table/report; download/export via Storage Access Framework | unsupported preview shows metadata/download, missing or unauthorized differs |
@@ -63,6 +63,9 @@ Compact width<600dp uses a single pane and bottom navigation.600–839dp uses a 
 | AN23 Notifications / settings | system permission/status, categories, privacy preview | ask permission only after contextual explanation; system settings shortcut | denied/non-GMS keeps in-app attention; no promise of background immediacy |
 | AN24 Support/diagnostics / settings | problem category, full redacted report preview, consent | create support case/report, status/help/security advisory | offline draft, explicit upload retry, no automatic content dump |
 | AN25 Admission/usage / tasks | allowance/credits/status and exact requested consequence | accept allowed credit use or cancel under existing policy; consumed-only info | no buy button, external checkout CTA, license-key entry or hidden web purchase page |
+| AN26 Session / library | synced session metadata: captures (metadata), annotations, findings, analysis results, configuration, reports; revision and commit time | open a report, attach the session to a conversation, request an approved ArcScope command on an online installation | not yet synced, access revoked and raw-data-local states are distinct; no editing ([SW-01](../requirements/products/arcchat-mobile-and-web.md#rule-sw-01)) |
+| AN27 Report / library | read-only report with provenance and stored chart snapshots | share the exported report through the system share sheet; open the source session | unavailable artifact shows its reason; no measurement recomputation ([SW-02](../requirements/products/arcchat-mobile-and-web.md#rule-sw-02)) |
+| AN28 Simulation runs / library | run list and detail: scenario version, state, complete-or-partial extent, reason | cancel an allowed run; open committed segment manifest | terminal notification opens the run; ineligible term shows the admission reason ([SW-04](../requirements/products/arcchat-mobile-and-web.md#rule-sw-04)) |
 
 ## 3. Android interaction details
 
@@ -82,6 +85,6 @@ Room owns per-profile drafts, local-history canonical rows, Cloud projection/pen
 
 ## 5. Integration and independent acceptance
 
-WP30 produces core modules, real generated Maven client, Room/Keystore/lifecycle and route shell with named Task fixtures. WP31 completes all AN01–AN25 actions against real Cloud25/26/42/45/52, including binary stream recovery, actual same-app remote tools, history modes/import and permission expiry. WP32 produces signed APK/AAB and physical-device/store evidence. Tests include phone/tablet, rotation/fold/resizing, background/force-stop, denied notification/file access, no-GMS, slow network, lost acknowledgement, two applications on one device, TalkBack/IME/large text and account switch.
+WP30 produces core modules, real generated Maven client, Room/Keystore/lifecycle and route shell with named Task fixtures. WP31 completes all AN01–AN28 actions against real Cloud25/26/42/45/52, including binary stream recovery, actual same-app remote tools, history modes/import and permission expiry. WP32 produces signed APK/AAB and physical-device/store evidence. Tests include phone/tablet, rotation/fold/resizing, background/force-stop, denied notification/file access, no-GMS, slow network, lost acknowledgement, two applications on one device, TalkBack/IME/large text and account switch.
 
 The AionUi mobile reference supplies interaction/layout ideas; it is not a React Native implementation dependency. Kotlin modules consume published Contracts packages by exact version with dependency locks; platform NuGets are not imported or translated into Android code. Shipping uses the existing automatic main CI sequence and signing gates; a Hello World APK does not satisfy this complete UI acceptance.
