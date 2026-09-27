@@ -138,7 +138,7 @@ Scheduling is task-level under [P2-018](../../decisions/phase-2-specification-de
 | [PLT.15](../delivery/lanes/platform.md#task-plt-15) | [WP-08.06](08-local-ipc-and-registration.md#rule-wp-08.06) (full) | [CON.04](../delivery/lanes/contracts.md#task-con-04) (contract) |
 | [PLT.16](../delivery/lanes/platform.md#task-plt-16) | [WP-08.90](08-local-ipc-and-registration.md#rule-wp-08.90) (full) | none |
 
-**Consumers outside this package:** [NAT.01](../delivery/lanes/native.md#task-nat-01), [PLT.24](../delivery/lanes/platform.md#task-plt-24), [PLT.38](../delivery/lanes/platform.md#task-plt-38), [PLT.45](../delivery/lanes/platform.md#task-plt-45).
+**Consumers outside this package:** [NAT.01](../delivery/lanes/native.md#task-nat-01), [PLT.24](../delivery/lanes/platform.md#task-plt-24), [PLT.38](../delivery/lanes/platform.md#task-plt-38), [PLT.45](../delivery/lanes/platform.md#task-plt-45), [PRF.02](../delivery/lanes/runtime-proofs.md#task-prf-02).
 
 <!-- delivery-graph:end -->
 
