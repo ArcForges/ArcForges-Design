@@ -43,7 +43,7 @@ Challenge, Confirm and Renew use the launch-bootstrap-only profile: capability `
 
 ### Extension operation authorization metadata
 
-The operation export for the public extension transport uses closed, source-bound profiles. This declaration describes the launch and capability checks above; it grants no additional customer authority.
+The operation export for the public extension transport uses closed, source-bound profiles. This declaration describes the launch and capability checks above; it grants no additional customer authority. The `delegated-invocation` profile remains exclusive to `IExtensionHost.Invoke` on the private-helper surface with its launch-role check; the registered product-handler profile in [catalogue 02](02-local-rpc-operations.md#closed-in-process-authorization-profiles) is distinct and cannot inherit or bypass that launch authority.
 
 | Methods | Authorization and retry profile |
 |---|---|

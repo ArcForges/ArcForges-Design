@@ -134,8 +134,8 @@ Every operation has eight **effective** authorization fields. WP03 exports their
 
 | Field | Deterministic source |
 |---|---|
-| capability | Exact stable operation ID only for generated first-party tool bindings; absent for infrastructure, customer account/control and internal ports. No invented capability grants replace authentication. |
-| risk | The operation's catalogue risk; local infrastructure/bootstrap/helper risk is fixed in contracts 09. Missing risk or conflicting declarations fail generation. |
+| capability | Exact stable operation ID for generated first-party tool bindings; absent for customer account/control and ordinary infrastructure/internal ports. The two closed invocation carriers derive only their admitted target operationId under catalogue 02/annex 09; this is not a capability grant for the infrastructure port itself. No invented capability grants replace authentication. |
+| risk | The operation's catalogue risk; local infrastructure/bootstrap/helper risk is fixed in contracts 09. The exact in-process Invoke and human approval-decision rows use only [catalogue 02 closed owner-resolved profiles](02-local-rpc-operations.md#closed-in-process-authorization-profiles), preserving underlying effective risk. Missing risk or conflicting declarations fail generation. |
 | approval | Declared operation posture; reads default none, mutations retain their declared risk/approval policy, never infer authorization from a method name. Human-only consent/approval decisions require their exact foreground/proposal binding. |
 | stepUp | Declared yes for authority expansion/sensitive account/financial controls; otherwise no, subject to stricter current owner policy. |
 | localPresence | Yes exactly for operations explicitly requiring local presence in catalogue 02/security/device broker profiles; no public/client binding may expose those operations. |
