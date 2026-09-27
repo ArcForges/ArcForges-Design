@@ -4116,13 +4116,27 @@
     }
    ],
    "validation": "Windows/Linux local Native AOT publish with zero trim/AOT/single-file diagnostics; real per-RID launch and ABI smoke vectors; no macOS CI",
-   "evidence": "Per-RID AOT publish log with zero-diagnostic assertion; smoke-vector pass log; continuous main-branch CI run reference",
+   "evidence": "Per-RID AOT publish log with zero-diagnostic assertion; smoke-vector pass log; continuous main-branch CI run reference; final completion additionally requires exact APP.01/PLT.11 candidate identities and actual embedded host/private child-channel acceptance, with fixture and untested coverage explicitly distinguished",
    "baseline": {
     "state": "not-started",
     "notes": "Observed scaffold, unreviewed: src/ArcForges.ArcScope/ArcForges.ArcScope.csproj + Core already exist; docs/assurance/wp02-02-aot-sweep-evidence.md records only one-off research Windows x64 AOT evidence, explicitly not the WP06 continuous/full-contract-set proof."
    },
    "earlyRiskProof": true,
-   "complete": []
+   "complete": [
+    {
+     "type": "integration",
+     "task": "APP.01",
+     "need": "published minimal Assistant.Abstractions host ports over the actual PLT.17 application composition",
+     "why": "WP-06.00 embedded assistant composition must consume real published host abstractions, not a placeholder. Native/primitive host proof can be delivered first; full product assistant behavior is not an early proof requirement."
+    },
+    {
+     "type": "integration",
+     "task": "PLT.11",
+     "need": "real parent-owned private child registration over PLT.09 transport and PLT.10 endpoint identity",
+     "why": "WP-06.00 private child channels require these actual LocalRpc producers. PRF.04 owns independent probe processes, not the package consumed by ArcScope; no fixture or typed-port-only host completes the real channel gate."
+    }
+   ],
+   "notes": "Stage delivery as the real minimal ArcScope Native AOT host consuming existing immutable Foundation/Application.Abstractions primitives, generated contracts and admitted native packages, with zero-diagnostic compilation and applicable native ABI evidence. Preserve the full WP-06.00 embedded assistant composition and private child-channel obligations as this task own completion acceptance after APP.01 (including PLT.17) and PLT.11 (including PLT.09/10) are complete. Consume those exact published candidates and record actual host composition/channel evidence before completion; neither future full assistant/Harness implementation nor an acceptance-only package closure is an early producer. Fixtures remain named boundary evidence only. Keep the ledger delivered while required real producers or completion acceptance are pending; no downstream task claim or implementation is authorized by this repair. The existing optional local runtime/environment policy remains unchanged: missing optional infrastructure is not a provisioning task, and unobserved evidence is never reported as passed."
   },
   {
    "id": "PRF.04",
@@ -4562,7 +4576,7 @@
     "state": "not-started",
     "notes": "Observed scaffold, unreviewed: src/BuildingBlocks/ArcForges.Persistence.Sqlite/ is a bare AssemblyPlaceholder.cs project with zero dependencies declared; Microsoft.Data.Sqlite is not yet in Directory.Packages.props."
    },
-   "notes": "Interface-first decoupling recommended: define IJournalWriter/IJournalReader here as the seam PLT.02 implements, so PLT.01 and PLT.02 can be authored in parallel PRs against the same interface rather than serially.",
+   "notes": "Interface-first decoupling recommended: define IJournalWriter/IJournalReader here as the seam PLT.02 implements, so PLT.01 and PLT.02 can be authored in parallel PRs against the same interface rather than serially. Security-exception scope is limited to CA2100 on the internal SqliteReadContext.CreateCommand(string) method in src/BuildingBlocks/ArcForges.Persistence.Sqlite/Store/StoreDatabase.cs. Independent review must establish that every caller supplies literal SQL, a fixed internal identifier, or explicitly trusted owner-authored MigrationStep.Statements, with data values bound as parameters. The SQLite schema authorizer is additional defense, not a sanitizer or permission to accept untrusted SQL. A documented method-only suppression may cover this demonstrated statement-factory false positive; no file-wide, project-wide or repository-wide suppression, new caller trust, or weakened authorizer is authorized. Fix any real injection finding instead; retain targeted offline migration/journal tests and all other security diagnostics. Retain strict boundary negatives for untrusted data, forbidden schema actions and protected tables; the exemption must not extend to any other method or diagnostic.",
    "complete": []
   },
   {
@@ -4606,12 +4620,20 @@
     }
    ],
    "validation": "Offline tests: durability test using a simulated process kill between journal write and commit acknowledgement (in-process fault injection, not a real OS-level crash - that remains local opt-in); replay test; truncation-under-read test.",
-   "evidence": "Durability and replay results.",
+   "evidence": "Durability and replay results. Completion additionally records exact PLT.03 snapshot artifacts and real snapshot/truncate/replay, concurrent-read and repeated bounded-growth acceptance; fixture-only evidence supports delivery only.",
    "baseline": {
     "state": "not-started",
     "notes": "Observed scaffold, unreviewed: No journal table/type exists."
    },
-   "complete": []
+   "complete": [
+    {
+     "type": "integration",
+     "task": "PLT.03",
+     "need": "actual durable verified snapshots and recovery integrated with journal truncation",
+     "why": "The journal artifact can be delivered first and remains the start input for PLT.03; full bounded growth by snapshot policy requires its real snapshot producer, followed by PLT.02 snapshot/truncate/replay and repeated bounded-growth acceptance."
+    }
+   ],
+   "notes": "Deliver the durable append/replay journal and verified-boundary truncation seam against an explicitly named snapshot fixture before the snapshot producer exists. A fixture never proves durable snapshot validity or the full bounded-growth obligation. Keep the ledger delivered while PLT.03 is pending; after that producer is complete, perform the real snapshot/truncate/replay, concurrent-read and repeated bounded-growth acceptance before completing PLT.02. Preserve every WP-07.01 obligation and PLT.03 existing artifact start edge; this staging does not authorize starting any unclaimed downstream task."
   },
   {
    "id": "PLT.03",

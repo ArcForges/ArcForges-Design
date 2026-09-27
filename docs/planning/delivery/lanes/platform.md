@@ -88,7 +88,7 @@ Tasks: 55 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 | Validation | Offline unit + integration tests against a real local SQLite file (no external service): policy test asserting no alternative write path, concurrency tests for serialised writes/concurrent reads, boundary test that no storage type appears in an application signature. AOT/trim diagnostics build-breaking since this library is IsAotCompatible. |
 | Completion evidence | Single-write-path policy test result. |
 | Baseline (unreviewed unless accepted) | not-started Observed scaffold, unreviewed: src/BuildingBlocks/ArcForges.Persistence.Sqlite/ is a bare AssemblyPlaceholder.cs project with zero dependencies declared; Microsoft.Data.Sqlite is not yet in Directory.Packages.props. |
-| Notes | Interface-first decoupling recommended: define IJournalWriter/IJournalReader here as the seam PLT.02 implements, so PLT.01 and PLT.02 can be authored in parallel PRs against the same interface rather than serially. |
+| Notes | Interface-first decoupling recommended: define IJournalWriter/IJournalReader here as the seam PLT.02 implements, so PLT.01 and PLT.02 can be authored in parallel PRs against the same interface rather than serially. Security-exception scope is limited to CA2100 on the internal SqliteReadContext.CreateCommand(string) method in src/BuildingBlocks/ArcForges.Persistence.Sqlite/Store/StoreDatabase.cs. Independent review must establish that every caller supplies literal SQL, a fixed internal identifier, or explicitly trusted owner-authored MigrationStep.Statements, with data values bound as parameters. The SQLite schema authorizer is additional defense, not a sanitizer or permission to accept untrusted SQL. A documented method-only suppression may cover this demonstrated statement-factory false positive; no file-wide, project-wide or repository-wide suppression, new caller trust, or weakened authorizer is authorized. Fix any real injection finding instead; retain targeted offline migration/journal tests and all other security diagnostics. Retain strict boundary negatives for untrusted data, forbidden schema actions and protected tables; the exemption must not extend to any other method or diagnostic. |
 
 <a id="task-plt-02"></a>
 
@@ -105,13 +105,14 @@ Tasks: 55 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 | Provides | persistence-journal |
 | Start prerequisites | **artifact** [FND.02](foundation.md#task-fnd-02) — CommandId type. *Why:* [JS-01](../../../architecture/06-data-persistence-and-formats.md#rule-js-01) requires the journal entry to carry CommandId, checksum, actor, correlation, causation, commit time - these are [WP-04](../../work-packages/04-identity-error-and-versioning-primitives.md#rule-wp-04) types.<br>**artifact** [FND.03](foundation.md#task-fnd-03) — Revision/Sequence types. *Why:* [JS-01](../../../architecture/06-data-persistence-and-formats.md#rule-js-01) requires previous/new typed source version fields. |
 | Entry condition | [ADOPT.02.platform](adoption.md#task-adopt-02-platform) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
-| Completion prerequisites | none |
+| Completion prerequisites | **integration** [PLT.03](#task-plt-03) — actual durable verified snapshots and recovery integrated with journal truncation. *Why:* The journal artifact can be delivered first and remains the start input for PLT.03; full bounded growth by snapshot policy requires its real snapshot producer, followed by PLT.02 snapshot/truncate/replay and repeated bounded-growth acceptance. |
 | Unblocks | [PLT.03](#task-plt-03), [PLT.08](#task-plt-08) |
 | Write scope | `DesktopPlatform:src/BuildingBlocks/ArcForges.Persistence.Sqlite/**` |
 | Shared resources | [RES-assistant-store-schema](../shared-resources.md#res-assistant-store-schema) (append) |
 | Validation | Offline tests: durability test using a simulated process kill between journal write and commit acknowledgement (in-process fault injection, not a real OS-level crash - that remains local opt-in); replay test; truncation-under-read test. |
-| Completion evidence | Durability and replay results. |
+| Completion evidence | Durability and replay results. Completion additionally records exact PLT.03 snapshot artifacts and real snapshot/truncate/replay, concurrent-read and repeated bounded-growth acceptance; fixture-only evidence supports delivery only. |
 | Baseline (unreviewed unless accepted) | not-started Observed scaffold, unreviewed: No journal table/type exists. |
+| Notes | Deliver the durable append/replay journal and verified-boundary truncation seam against an explicitly named snapshot fixture before the snapshot producer exists. A fixture never proves durable snapshot validity or the full bounded-growth obligation. Keep the ledger delivered while PLT.03 is pending; after that producer is complete, perform the real snapshot/truncate/replay, concurrent-read and repeated bounded-growth acceptance before completing PLT.02. Preserve every [WP-07.01](../../work-packages/07-local-persistence-foundation.md#rule-wp-07.01) obligation and PLT.03 existing artifact start edge; this staging does not authorize starting any unclaimed downstream task. |
 
 <a id="task-plt-03"></a>
 
@@ -129,7 +130,7 @@ Tasks: 55 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 | Start prerequisites | **artifact** [PLT.02](#task-plt-02) — journal append/replay implementation. *Why:* recovery is defined as 'replay the journal forward from the most recent valid snapshot'; cannot be written or tested against a real journal until PLT.02's replay contract exists (may start against the IJournalReader interface from PLT.01 with a fake, but the real recovery matrix needs the real journal). |
 | Entry condition | [ADOPT.02.platform](adoption.md#task-adopt-02-platform) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
-| Unblocks | [PLT.08](#task-plt-08) |
+| Unblocks | [PLT.02](#task-plt-02), [PLT.08](#task-plt-08) |
 | Write scope | `DesktopPlatform:src/BuildingBlocks/ArcForges.Persistence.Sqlite/**` |
 | Shared resources | [RES-desktopplatform-policy-data](../shared-resources.md#res-desktopplatform-policy-data) (append) |
 | Validation | Offline tests: full recovery matrix (clean shutdown, hard kill, kill during snapshot, kill during migration, corrupted snapshot, corrupted journal tail, disk-full during write) using simulated fault injection; native-crash/safe-start scenarios beyond process-level simulation are local opt-in only. |
@@ -315,7 +316,7 @@ Tasks: 55 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 | Start prerequisites | **artifact** [PLT.10](#task-plt-10) — endpoint identity. *Why:* registration authenticates against the endpoint identity/nonce PLT.10 establishes. |
 | Entry condition | [ADOPT.02.platform](adoption.md#task-adopt-02-platform) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
-| Unblocks | [PLT.12](#task-plt-12), [PLT.16](#task-plt-16) |
+| Unblocks | [PLT.12](#task-plt-12), [PLT.16](#task-plt-16), [PRF.02](runtime-proofs.md#task-prf-02) |
 | Write scope | `DesktopPlatform:src/BuildingBlocks/ArcForges.LocalRpc/**` |
 | Validation | Offline/local tests: expired/stale child cannot call, parent restart requires fresh grants. |
 | Completion evidence | Expired/stale child cannot call; parent restart requires fresh grants. |

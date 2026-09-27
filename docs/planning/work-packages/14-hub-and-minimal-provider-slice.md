@@ -135,7 +135,7 @@ Scheduling is task-level under [P2-018](../../decisions/phase-2-specification-de
 | [APP.07](../delivery/lanes/app-composition.md#task-app-07) | [WP-14.06](14-hub-and-minimal-provider-slice.md#rule-wp-14.06) (full) | [PLT.32](../delivery/lanes/platform.md#task-plt-32) (artifact) |
 | [APP.08](../delivery/lanes/app-composition.md#task-app-08) | [WP-14.90](14-hub-and-minimal-provider-slice.md#rule-wp-14.90) (full) | none |
 
-**Consumers outside this package:** [AST.01](../delivery/lanes/assistant.md#task-ast-01), [AST.03](../delivery/lanes/assistant.md#task-ast-03), [AST.12](../delivery/lanes/assistant.md#task-ast-12), [AST.16](../delivery/lanes/assistant.md#task-ast-16), [AST.17](../delivery/lanes/assistant.md#task-ast-17), [DEV.03](../delivery/lanes/device-bridge.md#task-dev-03), [EXE.01](../delivery/lanes/execution.md#task-exe-01), [HAR.05](../delivery/lanes/harness.md#task-har-05), [PLT.57](../delivery/lanes/platform.md#task-plt-57).
+**Consumers outside this package:** [AST.01](../delivery/lanes/assistant.md#task-ast-01), [AST.03](../delivery/lanes/assistant.md#task-ast-03), [AST.12](../delivery/lanes/assistant.md#task-ast-12), [AST.16](../delivery/lanes/assistant.md#task-ast-16), [AST.17](../delivery/lanes/assistant.md#task-ast-17), [DEV.03](../delivery/lanes/device-bridge.md#task-dev-03), [EXE.01](../delivery/lanes/execution.md#task-exe-01), [HAR.05](../delivery/lanes/harness.md#task-har-05), [PLT.57](../delivery/lanes/platform.md#task-plt-57), [PRF.02](../delivery/lanes/runtime-proofs.md#task-prf-02).
 
 <!-- delivery-graph:end -->
 
