@@ -2467,6 +2467,13 @@
    "writes": [
     "Contracts:public/proto/arcforges/catalog/v1/catalog.proto",
     "Contracts:fixtures/public/con-13-package-catalog.json",
+    "Contracts:public/proto/constraints/con-13-package-catalog.json",
+    "Contracts:src/public/dotnet/ArcForges.Contracts.Validation/CatalogProfile.cs (offline DNS-challenge/domain/version/submission-integrity policy only; no DNS query or publication)",
+    "Contracts:tests/StructureTests/CatalogCases.cs",
+    "Contracts:src/public/ts/proto/src/catalog-profile.ts (same pure offline catalog policy as C#)",
+    "Contracts:tests/public/catalog.test.mjs",
+    "Contracts:package.json (additive CON.13 test script registration only)",
+    "Contracts:tests/StructureTests/Program.cs (additive CON.13 test registration only)",
     "Contracts:eng/operations/con-13.json (owned domain operation authorization export; append through schema-source resource protocol)"
    ],
    "shared": [
@@ -2489,7 +2496,7 @@
     "state": "not-started",
     "notes": "Observed none, unreviewed: No CatalogService or catalog records exist."
    },
-   "notes": "Small and self-contained.",
+   "notes": "Small and self-contained. Catalog proto is registered in the existing PublicApi output; no new NuGet/npm/Maven package identity. CatalogProfile is a pure offline validator for registry 04 declared challenge/domain/version/submission facts; it performs no DNS query, current owner authorization, storage, scanning or publication. Public CatalogService retains exactly seven operations; catalog.review/revoke remain OperatorService-owned. Supporting inventories follow ADP-07 with exact paths and necessity recorded before editing.",
    "start": [],
    "complete": []
   },
@@ -2697,6 +2704,8 @@
     }
    ],
    "writes": [
+    "Contracts:.gitleaks.toml (only demonstrated CON.17 public source-inventory SHA256 false positives: exact rule/path/key/digest bindings, independently verify source hash; no whole-key/path exemption)",
+    "Contracts:tests/tooling/test_dependency_admission.py (exact CON.17 public-digest false-positive regressions; retain other digest/key/path/token negatives)",
     "Contracts:eng/check_compatibility.py",
     "Contracts:tests/tooling/test_compatibility_matrix.py",
     "Contracts:fixtures/public/con-17-compat-hash.json",
