@@ -2577,7 +2577,9 @@
     "Contracts:tests/public/catalog.test.mjs",
     "Contracts:package.json (additive CON.13 test script registration only)",
     "Contracts:tests/StructureTests/Program.cs (additive CON.13 test registration only)",
-    "Contracts:eng/operations/con-13.json (owned domain operation authorization export; append through schema-source resource protocol)"
+    "Contracts:eng/operations/con-13.json (owned domain operation authorization export; append through schema-source resource protocol)",
+    "Contracts:.gitleaks.toml (only observed CON.13 generic-api-key findings at the exact two containing paths and four public-input key/digest identities recorded in task notes; no scanner algorithm or general exemption)",
+    "Contracts:tests/tooling/test_dependency_admission.py (exact CON.13 whole-line rule/path/key/digest positives, immutable source hash proof and changed key/path/hash/token/rule negatives)"
    ],
    "shared": [
     {
@@ -2599,7 +2601,7 @@
     "state": "not-started",
     "notes": "Observed none, unreviewed: No CatalogService or catalog records exist."
    },
-   "notes": "Small and self-contained. Catalog proto is registered in the existing PublicApi output; no new NuGet/npm/Maven package identity. Catalog version fields follow registry 04 section 3 explicit SemVer profile: 128 ASCII maximum, exact identity retains build metadata and precedence ignores it; other Key fields remain unchanged. CatalogProfile is a pure offline validator for registry 04 declared challenge/domain/version/submission facts; it performs no DNS query, current owner authorization, storage, scanning or publication. Public CatalogService retains exactly seven operations; catalog.review/revoke remain OperatorService-owned. Supporting inventories follow ADP-07 with exact paths and necessity recorded before editing.",
+   "notes": "Small and self-contained. Catalog proto is registered in the existing PublicApi output; no new NuGet/npm/Maven package identity. Catalog version fields follow registry 04 section 3 explicit SemVer profile: 128 ASCII maximum, exact identity retains build metadata and precedence ignores it; other Key fields remain unchanged. CatalogProfile is a pure offline validator for registry 04 declared challenge/domain/version/submission facts; it performs no DNS query, current owner authorization, storage, scanning or publication. Public CatalogService retains exactly seven operations; catalog.review/revoke remain OperatorService-owned. Supporting inventories follow ADP-07 with exact paths and necessity recorded before editing. Security support is limited to the six actual generic-api-key findings at commit 1acce905a742a92598180916a86dbdbc9354214e in run36359019194/job108732338415. Exact bindings: eng/policy/dependency-policy.json permits only key eng/policy/contract-access.json with SHA256 35563026049706b6a119191ce3679a7ebb918a228aee5267b0fdf84c6764d996 (two observed occurrences); eng/policy/dependency-reviews/con-13-r1.json permits that same key/hash and exactly three other keys: eng/provenance/records/dokka-combokeys-licence-r1.json=75219d61672002f0bb242fed0fd93a0886f07d944e0b9e1b1f72132f59df1b41, eng/provenance/records/dokka-object-keys-licence-r1.json=55621ecc7032745ca46e56d13133dc22a3bd808d80966d737427b5d6fc5bd096, and src/public/dotnet/ArcForges.Contracts.PublicApi/ArcForges.Contracts.PublicApi.csproj=986b7a97734cd5d0630e548da897869de322a112c087c2d0df6a0bfc98b8784c. All four values are independently recomputed SHA256 of LF-normalized public Git inputs at the observed commit. Match the existing rule and exact containing path plus complete JSON key/value line; retain changed-key/path/digest/token/rule negatives and immutable proof. This authorizes only these observed public hashes, not future normalization guesses, broad path/key/hash-pattern suppression or weakening of real credential detection. Earlier other-task exceptions do not confer this scope.",
    "start": [
     {
      "type": "contract",
