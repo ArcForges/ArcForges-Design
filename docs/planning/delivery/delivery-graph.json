@@ -2096,14 +2096,14 @@
    "obligations": [
     {
      "ref": "WP-03.04",
-     "part": "the 'Product interfaces use generated records and static in-process adapters' half — full method surface for the two product-port packages plus ICapabilityProvider/IContextProvider/IArtifactHandler/IResourceAccess/IProductLifecycle/IDeepLinkTarget"
+     "part": "the 'Product interfaces use generated records and static in-process adapters' half — all 38 registered in-process ports: IScopeOperations (13), IChatOperations (7) and the 18 infrastructure ports, including local resource chunk, product job and event poll operations"
     },
     {
      "ref": "WP-03:p2-010-required-behavior-and-closure-sou",
-     "part": "P2-010 required behavior: source KnowledgePolicy/Patch/View and typed one-use overrides (source.getPolicy/setPolicy/clearPolicy, source.createConsent/revokeConsent) fall inside IChatOperations/context-provider scope; package-level obligation contribution"
+     "part": "P2-010 required behavior: uniquely author the shared KnowledgePolicy/Patch/View, SourceConsentSpec and typed one-use-override records and static validation consumed by the context ports. The registered public SourceService policy/consent operations belong to CON.10, not additional private in-process methods."
     }
    ],
-   "outcome": "Every method in manifest11's 'in-process' scope class (ICapabilityProvider, IContextProvider, IArtifactHandler, IResourceAccess, IProductLifecycle, IDeepLinkTarget, IScopeOperations [13], IChatOperations [8]) is generated as a typed request/result pair per registry04 §6, with product-port packages containing only in-process records (no listener/gRPC registration) and a policy test proving that.",
+   "outcome": "Generate all 38 manifest11 in-process ports as typed request/result pairs: Scope 13, Chat 7 and infrastructure 18, including ResourceReadChunk/ProductGetJob/LocalEventsPoll. Emit static C# interfaces in the existing LocalRpc.Platform/Chat/Scope packages without a listener, generated gRPC service or active RPC registration. Uniquely author shared public ContextRequest/ContextContribution/ContextItem, Availability, PreviewRequest, ResourceMetadata, ApprovalView/ApprovalDecision, TurnOptions/ChatMode, KnowledgePolicy/KnowledgePolicyPatch/SourcePolicyView and SourceConsentSpec in publicapi/v1/inprocess-values.proto using registry04 exact fields and closed constraints. Reuse baseline MeasurementResult, ContextRef, SourceConsentRef and TaskSnapshot; import CON.05 canonical extension/local-platform records. Author private infrastructure envelopes and LocalTransferTicket/ProductJobRef/ProductState/LocalHint in local/platform/v1/inprocess.proto, retaining Scope-only acquisition/analysis records in the private Scope source. Generate no public SourceService methods here; CON.10 consumes the canonical policy/consent records for that registered public service.",
    "provides": [
     "product-in-process-ports"
    ],
@@ -2119,12 +2119,33 @@
      "task": "CON.23",
      "need": "retired Contracts elements removed and reserved",
      "why": "the product port packages are completed only after the retired port packages leave the set"
+    },
+    {
+     "type": "contract",
+     "task": "CON.05",
+     "need": "Canonical Invocation/FrozenContext/Contribution and LocalEndpoint/LocalChunk records",
+     "why": "The registered in-process methods consume these extension and private-platform records. Import their existing owning sources rather than redefining them; CON.06 has no reverse dependency on its public-value consumers CON.08/09/10."
     }
    ],
    "writes": [
     "Contracts:internal/proto/arcforges/local/chat/v1/chat.proto",
     "Contracts:internal/proto/arcforges/local/scope/v1/scope.proto",
-    "Contracts:fixtures/internal/con-06-product-ports.json"
+    "Contracts:fixtures/internal/con-06-product-ports.json",
+    "Contracts:public/proto/arcforges/publicapi/v1/inprocess-values.proto (canonical shared public value records only; no service registration)",
+    "Contracts:internal/proto/arcforges/local/platform/v1/inprocess.proto (owned private infrastructure records and typed in-process envelopes)",
+    "Contracts:public/proto/constraints/inprocess-values.json (owned closed public value constraints)",
+    "Contracts:internal/proto/constraints/con-06-chat.json",
+    "Contracts:internal/proto/constraints/con-06-scope.json",
+    "Contracts:internal/proto/constraints/con-06-inprocess.json",
+    "Contracts:eng/con06_inprocess.py (pure static C# port-interface emitter for the registered 38 ports; no listener or runtime handler)",
+    "Contracts:eng/contracts.py (owned in-process generation registration only)",
+    "Contracts:src/internal/dotnet/ArcForges.Contracts.LocalRpc.Platform/Generated/InprocessPorts.g.cs (regenerated only)",
+    "Contracts:src/internal/dotnet/ArcForges.Contracts.LocalRpc.Chat/Generated/InprocessPorts.g.cs (regenerated only)",
+    "Contracts:src/internal/dotnet/ArcForges.Contracts.LocalRpc.Scope/Generated/InprocessPorts.g.cs (regenerated only)",
+    "Contracts:tests/tooling/test_con06_inprocess.py",
+    "Contracts:tests/StructureTests/Con06InprocessCases.cs",
+    "Contracts:tests/StructureTests/Program.cs (owned Con06InprocessCases registration only)",
+    "Contracts:eng/operations/con-06.json (owned existing in-process operation authorization export; append through schema-source resource protocol)"
    ],
    "shared": [
     {
@@ -2146,7 +2167,7 @@
     "state": "not-started",
     "notes": "Observed scaffold, unreviewed: the Scope and Chat LocalRpc product packages each have exactly one seed result record from WP03.00; their other ~12/7 methods do not exist."
    },
-   "notes": "Two independent product sub-surfaces (Scope/Chat) kept as one task because they share the same infra-port dependency (ICapabilityProvider etc.) and are individually S-to-M sized; splitting further would violate the 'do not create one task per trivial item' guidance.",
+   "notes": "Two independent product sub-surfaces (Scope/Chat) kept as one task because they share the same infra-port dependency (ICapabilityProvider etc.) and are individually S-to-M sized; splitting further would violate the 'do not create one task per trivial item' guidance. Public shared values have one author here and are imported by CON.08 (Availability), CON.09 (ResourceMetadata) and CON.10 (context, approval, turn and source-policy records). This creates real producer prerequisites without a reverse consumer dependency. SourceEndpoint and other Scope-only acquisition data stay internal and cannot enter Cloud metadata. Existing package identities and baseline records remain unchanged.",
    "complete": []
   },
   {
@@ -2259,13 +2280,19 @@
     "state": "not-started",
     "notes": "Observed none, unreviewed: No EntitlementService/CommerceService exist."
    },
-   "notes": "Consumes shared CON.02 read-envelope types; commerce domain schemas otherwise remain independent of other domain closures. Consumers are the commerce, policy and operations lanes.",
+   "notes": "Consumes shared CON.02 read-envelope types; CON.06 supplies the shared Availability record; other commerce domain schemas retain their ownership. Consumers are the commerce, policy and operations lanes.",
    "start": [
     {
      "type": "contract",
      "task": "CON.02",
      "need": "EncodedBodyRef for canonical read/query outcome envelopes",
      "why": "Commerce query schemas consume the shared oversized-body type rather than duplicating it."
+    },
+    {
+     "type": "contract",
+     "task": "CON.06",
+     "need": "Canonical Availability record",
+     "why": "EntitlementSnapshot.capabilities and EntitlementService.Check return the same Availability record used by in-process capability preflight; import the sole definition from inprocess-values.proto rather than duplicate it."
     }
    ],
    "complete": []
@@ -2294,6 +2321,12 @@
      "task": "CON.03",
      "need": "the closed Sync mutation allowlist validator",
      "why": "SyncService.pushChange/pushBatch cannot be schema-complete without the admission rule that rejects non-allowlisted AggregateBody variants — generating the RPC methods without it would let a consumer invent Sync semantics, which WP-03.03's own completion gate explicitly forbids."
+    },
+    {
+     "type": "contract",
+     "task": "CON.06",
+     "need": "Canonical ResourceMetadata record",
+     "why": "ResourceService.GetMetadata and the private IResourceAccess.GetMetadata port expose the same registry04 record. Import the sole public definition rather than redefine a service-specific copy."
     }
    ],
    "writes": [
@@ -2335,14 +2368,14 @@
    "obligations": [
     {
      "ref": "WP-03.05",
-     "part": "TaskService(~9)/ApprovalService(2)/BridgeService(3)/public ChatOperationsService(~25)/AgentService(3)/AutomationService(9)/search.query from registry04 §5, plus internal/ai-http/v1 schema.json (ai-internal npm/CloudInternal package) for the C#<->AI-Worker internal HTTP ports in contracts05 §3"
+     "part": "TaskService(~9)/ApprovalService(2)/BridgeService(3)/public ChatOperationsService(~25)/AgentService(3)/AutomationService(9)/search.query from registry04 §5, plus internal/ai-http/v1 schema.json (ai-internal npm/CloudInternal package) for the C#<->AI-Worker internal HTTP ports in contracts05 §3; public SourceService.getPolicy/setPolicy/clearPolicy/createConsent/revokeConsent from registry04, consuming the canonical CON.06 policy/consent values"
     },
     {
      "ref": "WP-03:p2-010-required-behavior-and-closure-sou",
      "part": "package-level obligation contribution"
     }
    ],
-   "outcome": "All listed public services generated with exact fields and eight authorization fields. CON.10 authors ExecutionOwner (registry04), ApplicationTarget and ChatTurnProgress (annex10), ChatTurnState/ChatTurnView and the entire ToolRequest including targetApplication tag 16 in chat.proto; existing content.proto records remain canonical imports. CON.10 alone authors SessionBinding (contracts05 section 8) in internal/ai-http/v1/schema.json and exactly the 14 C# run HTTP ports authorize/claim/renew/reconcile/context/model-intent/model-outcome/settle/prepare-tools/cloud-tool/wait/finalize/stream-state/late-outcome from contracts05 section 3. These closed JSON records feed the existing ai-internal and CloudInternal packages. stream-state carries run identity, streamId, attemptId, state and nextOffset, not StreamPosition or StreamFrame. Inference ports belong solely to CON.15; public and private stream framing belongs to CON.11.",
+   "outcome": "All listed public services generated with exact fields and eight authorization fields. CON.10 authors ExecutionOwner (registry04), ApplicationTarget and ChatTurnProgress (annex10), ChatTurnState/ChatTurnView and the entire ToolRequest including targetApplication tag 16 in chat.proto; existing content.proto records remain canonical imports. CON.10 alone authors SessionBinding (contracts05 section 8) in internal/ai-http/v1/schema.json and exactly the 14 C# run HTTP ports authorize/claim/renew/reconcile/context/model-intent/model-outcome/settle/prepare-tools/cloud-tool/wait/finalize/stream-state/late-outcome from contracts05 section 3. These closed JSON records feed the existing ai-internal and CloudInternal packages. stream-state carries run identity, streamId, attemptId, state and nextOffset, not StreamPosition or StreamFrame. Inference ports belong solely to CON.15; public and private stream framing belongs to CON.11. The registered public SourceService policy/consent operations are authored here, importing CON.06 shared records without adding private in-process methods.",
    "provides": [
     "task-chat-agent-automation-ops",
     "ai-internal-package"
@@ -2353,6 +2386,12 @@
      "task": "CON.02",
      "need": "CapabilityDescriptor",
      "why": "registry04 tail section 'Initial capability binding' requires one CapabilityDescriptor per tool-eligible method on I*Operations plus each declared Cloud tool — this task's ToolRequest/ToolProposal wiring needs that shape to exist."
+    },
+    {
+     "type": "contract",
+     "task": "CON.06",
+     "need": "Canonical context, approval, turn-option and source-policy/consent value records",
+     "why": "The public task/chat/approval and SourceService operations consume these registry04 records authored by CON.06. CON.06 imports existing baseline TaskSnapshot, not new CON.10 records; no reverse edge is introduced."
     }
    ],
    "writes": [
