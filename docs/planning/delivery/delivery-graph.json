@@ -2008,7 +2008,9 @@
     "Contracts:eng/provenance/** (owned generated binding inventory and new successor receipts; preserve historical records)",
     "Contracts:tests/StructureTests/Con05Cases.cs",
     "Contracts:tests/StructureTests/Program.cs (append owned Con05Cases call only)",
-    "Contracts:eng/operations/con-05.json (owned domain operation authorization export; append through schema-source resource protocol)"
+    "Contracts:eng/operations/con-05.json (owned domain operation authorization export; append through schema-source resource protocol)",
+    "Contracts:tests/StructureTests/packages.lock.json (regenerated transitive owned service-reference lock)",
+    "Contracts:tests/public/SerializationProbe/packages.lock.json (regenerated transitive owned service-reference lock)"
    ],
    "shared": [
     {
@@ -2753,7 +2755,8 @@
     "Contracts:eng/contracts.py (wire operation-scope gate into existing checks)",
     "Contracts:tests/tooling/test_operation_scope.py",
     "Contracts:docs/operation-scope.md",
-    "Contracts:eng/operations/** (initial retained operation exports and closed export schema)"
+    "Contracts:eng/operations/** (initial retained operation exports and closed export schema)",
+    "Contracts:eng/provenance/** (owned first-party checker/oracle/tests/docs inventory only; preserve historical records)"
    ],
    "shared": [
     {
@@ -3137,7 +3140,11 @@
     "Contracts:src/public/dotnet/ArcForges.Contracts.Validation/ArcForges.Contracts.Validation.csproj (package canonical build-only naming tools in existing package)",
     "Contracts:eng/packaging_tools.py (canonical build-only naming tool/data staging in existing packages)",
     "Contracts:src/public/kotlin/**/generated/** (regenerated retained bindings; no manual edits)",
-    "Contracts:fixtures/public/wp03-02.json (replace retired-record vectors with retained recursive value vectors while preserving decode-limit/AOT coverage)"
+    "Contracts:fixtures/public/wp03-02.json (replace retired-record vectors with retained recursive value vectors while preserving decode-limit/AOT coverage)",
+    "Contracts:eng/documentation_tools.py (current immutable Dokka successor profile selection only)",
+    "Contracts:tests/tooling/test_dependency_admission.py (current retirement input bindings; preserve immutable history assertions)",
+    "Contracts:tests/tooling/test_serialization_policy.py (retained packable AOT output inventory)",
+    "Contracts:.gitleaks.toml (only exact demonstrated new receipt/profile digest false-positive entries; no broad exclusion)"
    ],
    "shared": [
     {
@@ -3427,7 +3434,9 @@
     "DesktopPlatform:eng/policy/runtime-ownership.json (owned producer/test project registration)",
     "DesktopPlatform:eng/policy/reconciliation/active-projects.json (owned active project registration; preserve historical frozen inventories)",
     "DesktopPlatform:eng/packaging/packages.py (exact external published dependency pins distinct from same-candidate owned packages)",
-    "DesktopPlatform:eng/packaging/test_packages.py (external pin positive/negative fixtures)"
+    "DesktopPlatform:eng/packaging/test_packages.py (external pin positive/negative fixtures)",
+    "DesktopPlatform:README.md (current Foundation/Application package production claims only)",
+    "DesktopPlatform:docs/compliance/third-party-license-register.md (exact admitted Contracts/Protobuf dependencies for owned producer packages)"
    ],
    "shared": [
     {
@@ -3500,7 +3509,9 @@
     "DesktopPlatform:eng/policy/runtime-ownership.json (owned producer/test project registration)",
     "DesktopPlatform:eng/policy/reconciliation/active-projects.json (owned active project registration; preserve historical frozen inventories)",
     "DesktopPlatform:eng/packaging/packages.py (exact external published dependency pins distinct from same-candidate owned packages)",
-    "DesktopPlatform:eng/packaging/test_packages.py (external pin positive/negative fixtures)"
+    "DesktopPlatform:eng/packaging/test_packages.py (external pin positive/negative fixtures)",
+    "DesktopPlatform:README.md (current Foundation/Application package production claims only)",
+    "DesktopPlatform:docs/compliance/third-party-license-register.md (exact admitted Contracts/Protobuf dependencies for owned producer packages)"
    ],
    "shared": [
     {
@@ -3826,7 +3837,15 @@
    ],
    "writes": [
     "DesktopPlatform:eng/packaging/packages.json",
-    "DesktopPlatform:eng/version-sources.json"
+    "DesktopPlatform:eng/version-sources.json",
+    "DesktopPlatform:eng/acceptance/foundation/** (exact published C#/TS producer-consumer offline fixtures, runner and receipt; no installed-consumer CI)",
+    "DesktopPlatform:eng/policy/dependency-policy.json (owned dev-only acceptance dependencies)",
+    "DesktopPlatform:eng/policy/dependency-reviews/** (new immutable acceptance dependency receipts)",
+    "DesktopPlatform:eng/policy/licence-boundary.json (owned acceptance project registration)",
+    "DesktopPlatform:eng/provenance/** (owned acceptance inventory and new receipts; preserve historical records)",
+    "DesktopPlatform:eng/policy/runtime-ownership.json (owned acceptance project registration)",
+    "DesktopPlatform:eng/policy/reconciliation/active-projects.json (owned acceptance project registration)",
+    "DesktopPlatform:eng/policy/reconciliation/source.json (owned acceptance source inventory)"
    ],
    "shared": [
     {
@@ -3835,6 +3854,10 @@
     },
     {
      "resource": "RES-desktopplatform-package-inventory",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-desktopplatform-policy-data",
      "mode": "append"
     }
    ],
