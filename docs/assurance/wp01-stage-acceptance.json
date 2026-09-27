@@ -207,53 +207,6 @@
       }
     },
     {
-      "owner": "ArcNotes",
-      "sourceCommit": "e40423a1b14ce8341de35748cc2a093c7c9b77a7",
-      "tree": "510cb6f84cfd36abf6c757b9ed7bcf0d427e137d",
-      "runtime": "avalonia-nativeaot",
-      "licence": "AGPL-3.0-only",
-      "projectCount": 4,
-      "mainCi": "https://github.com/ArcForges/ArcNotes/actions/runs/35425608146",
-      "mainCiResult": "success",
-      "candidate": {
-        "version": "0.1.0-ci.8.1",
-        "verificationArchiveSha256": "a3c26c35d5ee9dfe6d62dfe82796cb92bbcb81db25d24f1c279a253c4186aaa0",
-        "sourceCommit": "e40423a1b14ce8341de35748cc2a093c7c9b77a7",
-        "nativeRuns": [
-          {
-            "rid": "linux-x64",
-            "archiveSha256": "99b2f81a451ed99b195c8784830c57f71b27b06f0fccd1d064297268da5ca91b",
-            "smokeSha256": "0d12e7f6d4f98917a809b2e8d4ef3b4c0e871e3652a5eea46bf19a1d9f375f4f",
-            "observedCloudCommit": "2cf5a58633a7e09db05ebc1741f1cab83547a832"
-          },
-          {
-            "rid": "osx-arm64",
-            "archiveSha256": "717772ee943bf9e74351d2dbfcff8beee36ddb271fd5a5ab7238b16d6afaea2c",
-            "smokeSha256": "62472b699f15a3f0043a8c8a2b964aaeaaefee827783ce07fb4ac1cbdb3b50ab",
-            "observedCloudCommit": "2cf5a58633a7e09db05ebc1741f1cab83547a832"
-          },
-          {
-            "rid": "osx-x64",
-            "archiveSha256": "5948d3b86e884a23bba003862c55a095662c1487b3b1ed7fb5c4d7325a3b8d3f",
-            "smokeSha256": "121424c4b5cc5442a719bab53f96f6e8dacaabaf2ca56c737135f22ed189ca4d",
-            "observedCloudCommit": "2cf5a58633a7e09db05ebc1741f1cab83547a832"
-          },
-          {
-            "rid": "win-arm64",
-            "archiveSha256": "d5cc73c8a55e0e6ccf49747ea85af7941a6ac10e86680fc1bec938e04399cdce",
-            "smokeSha256": "791e24409e15e7ca5f756b28f8a464fd0402e1a567afc678b3cde25b9331df12",
-            "observedCloudCommit": "2cf5a58633a7e09db05ebc1741f1cab83547a832"
-          },
-          {
-            "rid": "win-x64",
-            "archiveSha256": "06fe56ddf2ed02f199b1a6c21ce09f7a0074f9ee305f62cbe374aa34fd6a794d",
-            "smokeSha256": "d43c08e7780eccd08fc7da25e20312c29730342002577a9911eb034eda32efbf",
-            "observedCloudCommit": "2cf5a58633a7e09db05ebc1741f1cab83547a832"
-          }
-        ]
-      }
-    },
-    {
       "owner": "ArcScope",
       "sourceCommit": "d247dcff36fd1123a70e5e59967a9b2294a2eeac",
       "tree": "91419a71287443588e3a180a6a2e7b7e9d8fe3e2",
@@ -295,53 +248,6 @@
             "rid": "win-x64",
             "archiveSha256": "edb4ea523bf87ac02bbd62f0bbcea28867ed207c0aedc6f4dc70bc7ed1ac0da7",
             "smokeSha256": "97ffbdadbb52f9c5f5e5f6f00b20b44b27a85e6389f22e3d6585622d3c64c6e0",
-            "observedCloudCommit": "2cf5a58633a7e09db05ebc1741f1cab83547a832"
-          }
-        ]
-      }
-    },
-    {
-      "owner": "ArcSlate",
-      "sourceCommit": "b0d255f54fb560a534cc493d5645ca4bc7b4bd0e",
-      "tree": "c0e546663f52f0ae4fef451ff4dd679d35ce7981",
-      "runtime": "avalonia-nativeaot",
-      "licence": "AGPL-3.0-only",
-      "projectCount": 4,
-      "mainCi": "https://github.com/ArcForges/ArcSlate/actions/runs/35427484761",
-      "mainCiResult": "success",
-      "candidate": {
-        "version": "0.1.0-ci.8.1",
-        "verificationArchiveSha256": "a14db6d00e928b33abf8ea8e2d405f2d1030ef72855a08e34f99760844a4265e",
-        "sourceCommit": "b0d255f54fb560a534cc493d5645ca4bc7b4bd0e",
-        "nativeRuns": [
-          {
-            "rid": "linux-x64",
-            "archiveSha256": "d23812de1598848b917d7d5c0c8863ca67f06e37a353bf80c8a33224667f55ff",
-            "smokeSha256": "b05877fd37e103de95d07db2c0a7b380e429cbdef53611d8e48bfe9d067d638b",
-            "observedCloudCommit": "2cf5a58633a7e09db05ebc1741f1cab83547a832"
-          },
-          {
-            "rid": "osx-arm64",
-            "archiveSha256": "79463644d337d0bb0d482f2f39f610b3f851b9b1aa532f6133ab6af94c3a4995",
-            "smokeSha256": "28365b2ca9436bc55ebef0c12d9b14659f2f58e3bc33064b2ce5bc0c6ece3a06",
-            "observedCloudCommit": "2cf5a58633a7e09db05ebc1741f1cab83547a832"
-          },
-          {
-            "rid": "osx-x64",
-            "archiveSha256": "31e4576de83018fcb43e18329776d71dd6d1680cee10c7ade068ac166c7632e4",
-            "smokeSha256": "6103b10b0b561b1accb692c24d91eff98609ab979b424e401ea5fcebd4935005",
-            "observedCloudCommit": "2cf5a58633a7e09db05ebc1741f1cab83547a832"
-          },
-          {
-            "rid": "win-arm64",
-            "archiveSha256": "a016e5995a28767eba636d7fa33d260b5232ae31447fad5a261e15d0c25cf2c2",
-            "smokeSha256": "5c585ecb81d4ee15cb6c47b5353113040c48184b61553594ccba6bbf7e4ccc00",
-            "observedCloudCommit": "2cf5a58633a7e09db05ebc1741f1cab83547a832"
-          },
-          {
-            "rid": "win-x64",
-            "archiveSha256": "873de67ab858650b68d98beca7aac14fdae52a6dcc838c04dec6e91d8430830d",
-            "smokeSha256": "d13799a7ebd6385f18004244e54888ef794aba3586ef50067e62b274c6e6c8dc",
             "observedCloudCommit": "2cf5a58633a7e09db05ebc1741f1cab83547a832"
           }
         ]
@@ -420,7 +326,7 @@
     "result": "actual Git paths/blobs and explicit owner/target/disposition/producer/reason verified"
   },
   "currentMapping": {
-    "projects": 75,
+    "projects": 67,
     "directories": 359,
     "nativeEntries": 7,
     "licenceAudit": "passed",
@@ -437,8 +343,7 @@
         "expectedSha256": "60ef3bacd98a67d19a5a163a43b65b7f348af537cf99778656dccbea103fe430",
         "sha256": "60ef3bacd98a67d19a5a163a43b65b7f348af537cf99778656dccbea103fe430",
         "bytes": 30029,
-        "result": "passed",
-        "viaProxy": false
+        "result": "passed"
       },
       {
         "owner": "DesktopPlatform",
@@ -446,8 +351,7 @@
         "expectedSha256": "7b4c272de5a4438635fc5cae7653d916cbacec20d645370273d4de160d5298c4",
         "sha256": "7b4c272de5a4438635fc5cae7653d916cbacec20d645370273d4de160d5298c4",
         "bytes": 35491,
-        "result": "passed",
-        "viaProxy": false
+        "result": "passed"
       },
       {
         "owner": "DesktopPlatform",
@@ -455,8 +359,7 @@
         "expectedSha256": "e9fec9710e34d8a90db841c41fef90c484992fd30e1e26155debb844026e7153",
         "sha256": "e9fec9710e34d8a90db841c41fef90c484992fd30e1e26155debb844026e7153",
         "bytes": 31776,
-        "result": "passed",
-        "viaProxy": false
+        "result": "passed"
       },
       {
         "owner": "DesktopPlatform",
@@ -464,8 +367,7 @@
         "expectedSha256": "78456e26acf8a0b0045dee7db00bbd4a50e9a2193df7164fbe7d1f3d3265ebf6",
         "sha256": "78456e26acf8a0b0045dee7db00bbd4a50e9a2193df7164fbe7d1f3d3265ebf6",
         "bytes": 31794,
-        "result": "passed",
-        "viaProxy": false
+        "result": "passed"
       },
       {
         "owner": "DesktopPlatform",
@@ -473,8 +375,7 @@
         "expectedSha256": "29fc2022fd9b3ccd39bf71d70549f52d804ff0346ddf00aead4481f2c565dd3d",
         "sha256": "29fc2022fd9b3ccd39bf71d70549f52d804ff0346ddf00aead4481f2c565dd3d",
         "bytes": 31785,
-        "result": "passed",
-        "viaProxy": false
+        "result": "passed"
       },
       {
         "owner": "DesktopPlatform",
@@ -482,8 +383,7 @@
         "expectedSha256": "87698830d92170ab2aba4b6c061e55b43905defbf39c40c39a44433f6681ba08",
         "sha256": "87698830d92170ab2aba4b6c061e55b43905defbf39c40c39a44433f6681ba08",
         "bytes": 31778,
-        "result": "passed",
-        "viaProxy": false
+        "result": "passed"
       },
       {
         "owner": "DesktopPlatform",
@@ -491,8 +391,7 @@
         "expectedSha256": "945b6bf4727e168d8f815bd874aeed9f5f1eebf4bdd0fe1cf069a82693fb9f7a",
         "sha256": "945b6bf4727e168d8f815bd874aeed9f5f1eebf4bdd0fe1cf069a82693fb9f7a",
         "bytes": 28374454,
-        "result": "passed",
-        "viaProxy": false
+        "result": "passed"
       },
       {
         "owner": "DesktopPlatform",
@@ -500,8 +399,7 @@
         "expectedSha256": "e5f86162f13271d885c744870a73094f7c95ce6f365dbdd2bd81d23043cc5fa1",
         "sha256": "e5f86162f13271d885c744870a73094f7c95ce6f365dbdd2bd81d23043cc5fa1",
         "bytes": 1112082,
-        "result": "passed",
-        "viaProxy": false
+        "result": "passed"
       },
       {
         "owner": "DesktopPlatform",
@@ -509,8 +407,7 @@
         "expectedSha256": "c0c33f8c457f54e980669344eb91b0c886a2f918838cb69ef39b25c9c031faff",
         "sha256": "c0c33f8c457f54e980669344eb91b0c886a2f918838cb69ef39b25c9c031faff",
         "bytes": 5391752,
-        "result": "passed",
-        "viaProxy": false
+        "result": "passed"
       },
       {
         "owner": "DesktopPlatform",
@@ -518,8 +415,7 @@
         "expectedSha256": "d6bbec3bf80f651d95e9cfc7cc0311253ffa4943bd7d2d1f0f25507e84145775",
         "sha256": "d6bbec3bf80f651d95e9cfc7cc0311253ffa4943bd7d2d1f0f25507e84145775",
         "bytes": 303058,
-        "result": "passed",
-        "viaProxy": false
+        "result": "passed"
       },
       {
         "owner": "Contracts",
@@ -527,8 +423,7 @@
         "expectedSha256": "c016f4135051ce21b9fefd5c72077901e591c8362eb4cc48522963aa4af3cf7a",
         "sha256": "c016f4135051ce21b9fefd5c72077901e591c8362eb4cc48522963aa4af3cf7a",
         "bytes": 8517,
-        "result": "passed",
-        "viaProxy": false
+        "result": "passed"
       },
       {
         "owner": "Contracts",
@@ -536,8 +431,7 @@
         "expectedSha256": "a2844e3e012805ec38151d0bd477987b7475a8e47783b1700acc432ebe79255b",
         "sha256": "a2844e3e012805ec38151d0bd477987b7475a8e47783b1700acc432ebe79255b",
         "bytes": 7657,
-        "result": "passed",
-        "viaProxy": false
+        "result": "passed"
       },
       {
         "owner": "Contracts",
@@ -545,8 +439,7 @@
         "expectedSha256": "95aa4dc1bd40b852987edea9fd15cf639836def462cca285aa95b77144e0303d",
         "sha256": "95aa4dc1bd40b852987edea9fd15cf639836def462cca285aa95b77144e0303d",
         "bytes": 41700,
-        "result": "passed",
-        "viaProxy": false
+        "result": "passed"
       },
       {
         "owner": "Contracts",
@@ -554,8 +447,7 @@
         "expectedSha256": "3afdacfd86f628d7264307a71a850193e751f9052a6569c0a3d5ea23e196fa80",
         "sha256": "3afdacfd86f628d7264307a71a850193e751f9052a6569c0a3d5ea23e196fa80",
         "bytes": 30547,
-        "result": "passed",
-        "viaProxy": false
+        "result": "passed"
       },
       {
         "owner": "Contracts",
@@ -563,8 +455,7 @@
         "expectedSha256": "e0456bda007824763550a2d04b57a8c0b217ea16358876722d0324630e6b09ba",
         "sha256": "e0456bda007824763550a2d04b57a8c0b217ea16358876722d0324630e6b09ba",
         "bytes": 2023,
-        "result": "passed",
-        "viaProxy": false
+        "result": "passed"
       },
       {
         "owner": "Contracts",
@@ -572,8 +463,7 @@
         "expectedSha256": "452219b2048081b4aee2cbab83a628847b1616c37117e1f0d48e84e468b9cd25",
         "sha256": "452219b2048081b4aee2cbab83a628847b1616c37117e1f0d48e84e468b9cd25",
         "bytes": 16654,
-        "result": "passed",
-        "viaProxy": false
+        "result": "passed"
       },
       {
         "owner": "Contracts",
@@ -581,8 +471,7 @@
         "expectedSha256": "6ce72582c01a98b4f5c5b3a4085a18231e55b23c74ebf4f17df5752d6342a7c7",
         "sha256": "6ce72582c01a98b4f5c5b3a4085a18231e55b23c74ebf4f17df5752d6342a7c7",
         "bytes": 3750,
-        "result": "passed",
-        "viaProxy": false
+        "result": "passed"
       },
       {
         "owner": "Contracts",
@@ -590,8 +479,7 @@
         "expectedSha256": "ae77ecf8f2d0a1dcf409824de1b8750ee1a5e7780997e1f40c16d2bf66800b78",
         "sha256": "ae77ecf8f2d0a1dcf409824de1b8750ee1a5e7780997e1f40c16d2bf66800b78",
         "bytes": 394627,
-        "result": "passed",
-        "viaProxy": false
+        "result": "passed"
       },
       {
         "owner": "Contracts",
@@ -599,8 +487,7 @@
         "expectedSha256": "8d3f1d68649d71cbf16bab13563bd4addc9fde37f88ba1d590bca5b1be1916a7",
         "sha256": "8d3f1d68649d71cbf16bab13563bd4addc9fde37f88ba1d590bca5b1be1916a7",
         "bytes": 30232,
-        "result": "passed",
-        "viaProxy": false
+        "result": "passed"
       },
       {
         "owner": "Contracts",
@@ -608,8 +495,7 @@
         "expectedSha256": "5dd17f9e809195f3f57a386151246e40563c31e0539a447468bd9a8462c1f8a1",
         "sha256": "5dd17f9e809195f3f57a386151246e40563c31e0539a447468bd9a8462c1f8a1",
         "bytes": 2756,
-        "result": "passed",
-        "viaProxy": false
+        "result": "passed"
       },
       {
         "owner": "Contracts",
@@ -617,8 +503,7 @@
         "expectedSha256": "ee84123ef412ba4ad2e8d6540729e7d3f03b3661f7becad7a408f2404705efc6",
         "sha256": "ee84123ef412ba4ad2e8d6540729e7d3f03b3661f7becad7a408f2404705efc6",
         "bytes": 353941,
-        "result": "passed",
-        "viaProxy": false
+        "result": "passed"
       },
       {
         "owner": "Contracts",
@@ -626,8 +511,7 @@
         "expectedSha256": "8d17bc7e1ffa4f600de28696afb71d88bb217a524edb3a362206a72c77570a08",
         "sha256": "8d17bc7e1ffa4f600de28696afb71d88bb217a524edb3a362206a72c77570a08",
         "bytes": 13417,
-        "result": "passed",
-        "viaProxy": false
+        "result": "passed"
       },
       {
         "owner": "Contracts",
@@ -635,8 +519,7 @@
         "expectedSha256": "66ec06c819f451b5b401963b319bbcb198ef0cd01c1030559f1d406d1331780d",
         "sha256": "66ec06c819f451b5b401963b319bbcb198ef0cd01c1030559f1d406d1331780d",
         "bytes": 5065,
-        "result": "passed",
-        "viaProxy": false
+        "result": "passed"
       },
       {
         "owner": "Contracts",
@@ -644,8 +527,7 @@
         "expectedSha256": "8ec9390795d25830e879e55e40e110a02d9c650415bdaef7ad54a72174e1bec7",
         "sha256": "8ec9390795d25830e879e55e40e110a02d9c650415bdaef7ad54a72174e1bec7",
         "bytes": 11172,
-        "result": "passed",
-        "viaProxy": false
+        "result": "passed"
       },
       {
         "owner": "Contracts",
@@ -653,8 +535,7 @@
         "expectedSha256": "89fef560caf40cc7936f13dd10e2c2d106f33b070be81f3b769727c8b10a7068",
         "sha256": "89fef560caf40cc7936f13dd10e2c2d106f33b070be81f3b769727c8b10a7068",
         "bytes": 265067,
-        "result": "passed",
-        "viaProxy": false
+        "result": "passed"
       },
       {
         "owner": "Contracts",
@@ -662,8 +543,7 @@
         "expectedSha256": "d2548facdd8e959deecc26bd13835673857dc8ebd3ae29889b11fa50304253a4",
         "sha256": "d2548facdd8e959deecc26bd13835673857dc8ebd3ae29889b11fa50304253a4",
         "bytes": 2234,
-        "result": "passed",
-        "viaProxy": false
+        "result": "passed"
       },
       {
         "owner": "Contracts",
@@ -671,8 +551,7 @@
         "expectedSha256": "c9e628809ca8701f478630604caa1833b9f88af926ee533cfc11638c08cb11d9",
         "sha256": "c9e628809ca8701f478630604caa1833b9f88af926ee533cfc11638c08cb11d9",
         "bytes": 4145,
-        "result": "passed",
-        "viaProxy": false
+        "result": "passed"
       },
       {
         "owner": "Contracts",
@@ -680,8 +559,7 @@
         "expectedSha256": "2c3532ce0023bdcae8695a2a88d4ef1c4a918be5f7b89e8fdb579b07fb4e7f09",
         "sha256": "2c3532ce0023bdcae8695a2a88d4ef1c4a918be5f7b89e8fdb579b07fb4e7f09",
         "bytes": 13508,
-        "result": "passed",
-        "viaProxy": false
+        "result": "passed"
       },
       {
         "owner": "Contracts",
@@ -689,8 +567,7 @@
         "expectedSha256": "7cfae906e142f044c0647848a9bf4abfeb57f2287c942ef7d19a0856146eb25d",
         "sha256": "7cfae906e142f044c0647848a9bf4abfeb57f2287c942ef7d19a0856146eb25d",
         "bytes": 9266,
-        "result": "passed",
-        "viaProxy": false
+        "result": "passed"
       },
       {
         "owner": "Contracts",
@@ -698,8 +575,7 @@
         "expectedSha256": "7a0c26554276fb67c1d8dfcef3bf80cf472c960b0b0098fcbbf5a1b6a939803d",
         "sha256": "7a0c26554276fb67c1d8dfcef3bf80cf472c960b0b0098fcbbf5a1b6a939803d",
         "bytes": 8724,
-        "result": "passed",
-        "viaProxy": false
+        "result": "passed"
       },
       {
         "owner": "Contracts",
@@ -707,8 +583,7 @@
         "expectedSha256": "995f53534cbb5e926eadd20291d0883a98c4ccae6a1dc43eb8b303f981e7c55e",
         "sha256": "995f53534cbb5e926eadd20291d0883a98c4ccae6a1dc43eb8b303f981e7c55e",
         "bytes": 2795,
-        "result": "passed",
-        "viaProxy": false
+        "result": "passed"
       },
       {
         "owner": "Contracts",
@@ -716,8 +591,7 @@
         "expectedSha256": "2999b41f4c90edb1839357a5d708d1ccbe04c4db56f811df6a42657c714e5205",
         "sha256": "2999b41f4c90edb1839357a5d708d1ccbe04c4db56f811df6a42657c714e5205",
         "bytes": 1618,
-        "result": "passed",
-        "viaProxy": false
+        "result": "passed"
       },
       {
         "owner": "Contracts",
@@ -725,8 +599,7 @@
         "expectedSha256": "fce613a0c6b59ce4fc92fc7e6c939ea4b2f17951ed25f8213c448af83ae8de15",
         "sha256": "fce613a0c6b59ce4fc92fc7e6c939ea4b2f17951ed25f8213c448af83ae8de15",
         "bytes": 255289,
-        "result": "passed",
-        "viaProxy": false
+        "result": "passed"
       }
     ]
   },
@@ -906,27 +779,6 @@
     "unchangedOwners": {
       "receipt": "wp00-stage-acceptance.json",
       "scope": "Existing dated native desktop UI, real Cloudflare Container/Worker and AI Workflow, browser, signed Android emulator/upgrade evidence. Not rerun by WP01.90."
-    },
-    "NotesLocal": {
-      "commit": "e40423a1b14ce8341de35748cc2a093c7c9b77a7",
-      "worktree": "C:\\MyFile\\Projects\\ArcForges\\ArcNotes\\.worktree\\wp01-05-core-validation",
-      "sdk": "10.0.401",
-      "lockedRestore": "passed",
-      "releaseBuild": "passed",
-      "tests": {
-        "passed": 89,
-        "failed": 0,
-        "skipped": 0
-      },
-      "repositoryCheck": "passed",
-      "format": "passed",
-      "logs": {
-        "build.log": "1faca0e3eb6d4af99f468aac5d4a32598cd737f875a2afb94dd368a04ef0ee4e",
-        "format.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-        "repository-check.log": "4d2d75b384f3f79fc79da27fbfaa3c67fe735f191cac48ebc4a853d5c9614a8f",
-        "restore.log": "d746214161b55a7b8c7f95180a7be56f6be5fecf40334dd5a0df17dd268a221f",
-        "tests.log": "0b560c9530681fb26a6503f74c7abee57fbafd1393953005c66a5f568046a46e"
-      }
     }
   },
   "remainingProducers": [

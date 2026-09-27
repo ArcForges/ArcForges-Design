@@ -2,10 +2,10 @@
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Architecture
-> Governing authority: **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** (Desktop is a Native AOT deliverable), **[D-011](../decisions/phase-1-foundation-decisions.md#rule-d-011)** (nine-repository target under [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009)), **[D-012](../decisions/phase-1-foundation-decisions.md#rule-d-012)** (reference coverage), **[D-013](../decisions/phase-1-foundation-decisions.md#rule-d-013)** (provenance)
+> Governing authority: **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** (Desktop is a Native AOT deliverable), **[D-011](../decisions/phase-1-foundation-decisions.md#rule-d-011)** (seven-repository target under [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009), amended by [P2-019](../decisions/phase-2-specification-decisions.md#rule-p2-019)), **[D-012](../decisions/phase-1-foundation-decisions.md#rule-d-012)** (reference coverage), **[D-013](../decisions/phase-1-foundation-decisions.md#rule-d-013)** (provenance)
 > Companions: [`01-solution-and-project-layout.md`](01-solution-and-project-layout.md), [`../assurance/reference-coverage/README.md`](../assurance/reference-coverage/README.md)
 
-The project layout says which projects exist. The reference coverage matrices say which reference capabilities were reviewed and how they were disposed. **Neither says where each accepted capability actually lives in ArcForges.** This document closes that gap for the three professional desktop products, and verifies the claim that matters most: that every reference capability ArcForges accepted has a real home, and that every one it declined is declined on the record rather than by omission.
+The project layout says which projects exist. The reference coverage matrices say which reference capabilities were reviewed and how they were disposed. **Neither says where each accepted capability actually lives in ArcForges.** This document closes that gap for ArcScope, the one professional desktop application, and verifies the claim that matters most: that every reference capability ArcForges accepted has a real home, and that every one it declined is declined on the record rather than by omission.
 
 ---
 
@@ -20,7 +20,7 @@ The project layout says which projects exist. The reference coverage matrices sa
 | # | Rule |
 |---|---|
 | <a id="rule-pm-01"></a>PM-01 | **No row here creates a requirement** ([RC-03](../assurance/reference-coverage/README.md#rule-rc-03) of the coverage README). A capability appears because a requirement establishes it. |
-| <a id="rule-pm-02"></a>PM-02 | **No row here authorizes reuse.** Across all five matrices — **145 rows** — every disposition is `Reference Only` or `Drop`; **not one proposes `Copy`, `Rewrite`, `Improve` or `Replace`** ([ND-02](../assurance/reference-coverage/README.md#rule-nd-02) there). ArcForges is a first-party implementation informed by behavioural evidence. |
+| <a id="rule-pm-02"></a>PM-02 | **No row here authorizes reuse.** Across all three matrices — **69 rows** — every disposition is `Reference Only` or `Drop`; **not one proposes `Copy`, `Rewrite`, `Improve` or `Replace`** ([ND-02](../assurance/reference-coverage/README.md#rule-nd-02) there). ArcForges is a first-party implementation informed by behavioural evidence. |
 | <a id="rule-pm-03"></a>PM-03 | **A component named here is a project or a bounded area within one**, from [`01-solution-and-project-layout.md`](01-solution-and-project-layout.md). Adding a project is a layout change, not a map change. |
 | <a id="rule-pm-04"></a>PM-04 | **A capability with no component and no accepted exclusion is a defect**, and `§7` asserts there are none. |
 
@@ -38,7 +38,7 @@ Every desktop product uses the same five-layer shape, which is why a capability'
 | `*.AssistantIntegration` | Host-bound typed capability/context/artifact adapters and assistant composition | Business rules or a local network service; delegates to Application |
 | `*.Desktop` | Avalonia host, views, view models, shell composition | Any authoritative state |
 
-Plus per-product specialisations: `ArcForges.Capabilities` and presentation-only `ArcForges.Assistant.Cloud`; `ArcScope.Acquisition`; `ArcSlate.Media`.
+Plus per-product specialisations: `ArcForges.Capabilities` and presentation-only `ArcForges.Assistant.Cloud`; `ArcScope.Acquisition`.
 
 | # | Rule |
 |---|---|
@@ -78,7 +78,7 @@ The matrix records 30 items at commit `29c9271a5` — **24 evidence established,
 | # | Reference capability | ArcForges position | Where |
 |---|---|---|---|
 | <a id="rule-ac-01"></a>AC-01 | Conversation, message, streaming assembly | Present, and **stricter** — a message is immutable on commit and an interrupted stream is stored as `interrupted`, never as complete | `ArcForges.Assistant.Core`; [WP-15.00](../planning/work-packages/15-arcchat-conversation-core.md#rule-wp-15.00), [ST-01](17-agent-harness.md#rule-st-01) of the harness |
-| <a id="rule-ac-02"></a>AC-02 | Slash commands and availability | Present, and **routed through the capability registry** rather than a static list, so availability is computed with a reason | `ArcForges.Capabilities`; [WP-17.00](../planning/work-packages/17-arcchat-independent-core.md#rule-wp-17.00), [MK-05](18-editing-and-rich-content.md#rule-mk-05) of the editing architecture |
+| <a id="rule-ac-02"></a>AC-02 | Slash commands and availability | Present, and **routed through the capability registry** rather than a static list, so availability is computed with a reason | `ArcForges.Capabilities`; [WP-17.00](../planning/work-packages/17-arcchat-independent-core.md#rule-wp-17.00) |
 | <a id="rule-ac-03"></a>AC-03 | `@`-mention context binding | Present, and **bounded, frozen and permission-filtered** at assembly | `ArcForges-AI Workflow`; `§4` of the harness, [WP-40.03](../planning/work-packages/40-knowledge-search-and-retrieval.md#rule-wp-40.03) |
 | <a id="rule-ac-04"></a>AC-04 | Tool-call normalisation | Present as the resolve-and-validate step of the turn loop, normalising into the typed capability model | `ArcForges-AI Workflow`; `§2` of the harness, [MR-01](17-agent-harness.md#rule-mr-01) |
 | <a id="rule-ac-05"></a>AC-05 | Approval store | Present, and **owner-side enforced** — an approval is a durable object, and a cloud approval never substitutes for local re-authorization | `ArcForges.Assistant.Core`; `§5` of the harness, [BR-01](../planning/work-packages/26-remote-action-and-tool-bridge.md#rule-br-01)–[BR-03](../planning/work-packages/26-remote-action-and-tool-bridge.md#rule-br-03) |
@@ -104,7 +104,7 @@ The matrix records 30 items at commit `29c9271a5` — **24 evidence established,
 | <a id="rule-ac-25"></a>AC-25 | CDP browser automation | **Accepted exclusion** — not a first-party capability in the accepted scope | Matrix [`AC-25`](../assurance/reference-coverage/arcchat-aionui.md#rule-ac-25) |
 | <a id="rule-ac-26"></a>AC-26 | Self-hosted server deployment | Present, bounded by ArcForges' own self-host boundary | [WP-45](../planning/work-packages/45-operations-support-and-trust-safety.md#rule-wp-45) |
 | <a id="rule-ac-27"></a>AC-27 | First-party image generation via MCP | **Accepted exclusion as a capability**; retained as MCP evidence | Matrix [`AC-27`](../assurance/reference-coverage/arcchat-aionui.md#rule-ac-27) |
-| <a id="rule-ac-28"></a>AC-28 | Document handling in chat | Present, **by reference with integrity verification** and never an embedded body | [WP-15.02](../planning/work-packages/15-arcchat-conversation-core.md#rule-wp-15.02); [AT-03](../requirements/products/arcnotes.md#rule-at-03) of the ArcNotes requirements applies the same rule product-wide |
+| <a id="rule-ac-28"></a>AC-28 | Document handling in chat | Present, **by reference with integrity verification** and never an embedded body | [WP-15.02](../planning/work-packages/15-arcchat-conversation-core.md#rule-wp-15.02) |
 | <a id="rule-ac-29"></a>AC-29 | Packaging configuration | Present; the toolchain differs entirely | `§4` of the build architecture; [WP-50.02](../planning/work-packages/50-full-platform-production-release.md#rule-wp-50.02) |
 | <a id="rule-ac-30"></a>AC-30 | application runtime testing scenarios | Present as the first-slice application composition suite — isolated ownership, restart, context and typed invocation | [WP-14.00](../planning/work-packages/14-hub-and-minimal-provider-slice.md#rule-wp-14.00)–[WP-14.06](../planning/work-packages/14-hub-and-minimal-provider-slice.md#rule-wp-14.06) |
 
@@ -114,40 +114,6 @@ The matrix records 30 items at commit `29c9271a5` — **24 evidence established,
 | <a id="rule-vc-02"></a>VC-02 | **Three rows record ArcForges being deliberately stricter than the reference**: [AC-01](#rule-ac-01) immutability, [AC-05](#rule-ac-05) owner-side approval, [AC-22](#rule-ac-22) permission during query evaluation. |
 | <a id="rule-vc-03"></a>VC-03 | **One row records a direct architectural contradiction resolved in ArcForges' favour**: [AC-13](#rule-ac-13). The nearest real-world implementation of this product category runs a web server on the user's machine, which **[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)** forbids. That the reference does it is evidence the prohibition is load-bearing ([F-AC-1](../assurance/reference-coverage/arcchat-aionui.md#rule-f-ac-1)). |
 | <a id="rule-vc-04"></a>VC-04 | **No AionUI code is copied, translated or ported.** Every disposition is `Reference Only` or `Drop`, so there is no attribution obligation beyond the matrix's own record — and [LP-02](../assurance/reference-coverage/arcchat-aionui.md#rule-lp-02) there states what the obligation would be if that ever changed. |
-
----
-
-## 4. ArcNotes
-
-### 4.1 Capability map
-
-| Capability | Component | Package |
-|---|---|---|
-| Notebook, folder, document, block tree | `ArcNotes.Domain` | [WP-18.00](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.00) |
-| **Inline content model, edit transactions, undo** | `ArcNotes.Domain` + `ArcNotes.Application` (`§2`–`§3` of the editing architecture) | [WP-18.00](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.00), [WP-18.05](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.05) |
-| Editor interaction, caret, IME, layout | `ArcNotes.Desktop` (`§4`–`§5` there) | [WP-18.01](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.01) |
-| Links, backlinks, outline | `ArcNotes.Application` + derived index | [WP-18.02](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.02) |
-| Properties, tags, saved views | `ArcNotes.Domain` + `ArcNotes.Application` | [WP-18.03](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.03), [WP-28](../planning/work-packages/28-arcnotes-properties-and-views.md#rule-wp-28) |
-| Attachments, preview levels, PDF viewer | `ArcNotes.Infrastructure` + `ArcNotes.Desktop` | [WP-18.04](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.04); **[PG-12](../assurance/open-gates-register.md#rule-pg-12)** |
-| History, checkpoint, trash, recovery | `ArcNotes.Application` + `ArcNotes.Infrastructure` | [WP-18.05](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.05), [WP-18.06](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.06) |
-| Search and portability | `ArcNotes.Infrastructure` | [WP-19](../planning/work-packages/19-arcnotes-search-and-portability.md#rule-wp-19) |
-| ~~Edgeless canvas~~ | **Retired by [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006)** — excluded from delivery, no future hook | — |
-| ~~Slides~~ | **Retired by [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006)** — excluded from delivery, no future hook | — |
-| Saved list and table views over bounded scalar properties | `ArcNotes.Domain` + `ArcNotes.Desktop` | [WP-28](../planning/work-packages/28-arcnotes-properties-and-views.md#rule-wp-28) |
-| Capability surface | `ArcNotes.AssistantIntegration` + `ArcNotes.Application` | [WP-18.07](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.07) |
-
-### 4.2 AFFiNE and SiYuan reference verification
-
-41 items across two references — **33 evidence established, 9 accepted exclusions, 0 unresolved**; [AN-14](../assurance/reference-coverage/arcnotes-affine-siyuan.md#rule-an-14) is the one compound row, its sharing half excluded and its quota half established. The licence position is the material fact:
-
-| # | Result |
-|---|---|
-| <a id="rule-vn-01"></a>VN-01 | **AFFiNE's licence is split, and the split is load-bearing.** `packages/backend/**` and `packages/common/native/**` are governed by the Enterprise Edition licence, not MIT ([LP-01](../assurance/reference-coverage/arcnotes-affine-siyuan.md#rule-lp-01) there). Those subtrees are **permanently ineligible and deliberately unread** — recorded as finding [F-AN-1](../assurance/reference-coverage/arcnotes-affine-siyuan.md#rule-f-an-1). |
-| <a id="rule-vn-02"></a>VN-02 | **This is exactly the case [D-013](../decisions/phase-1-foundation-decisions.md#rule-d-013) anticipates**: a repository-root licence does not cover every file. The matrix is the evidence that the rule was applied rather than assumed. |
-| <a id="rule-vn-03"></a>VN-03 | **SiYuan is AGPL-3.0.** Under **[D-004](../decisions/phase-1-foundation-decisions.md#rule-d-004)**/**[D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021)**, AGPL material could only ever live inside the AGPL boundary and is **prohibited in the Apache-2.0 mobile, public-client and SDK projects**. No row proposes reuse, so the question stays hypothetical. |
-| <a id="rule-vn-04"></a>VN-04 | **[F-AN-2](../assurance/reference-coverage/arcnotes-affine-siyuan.md#rule-f-an-2) is now moot.** Neither reference implemented slides, and [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006) excludes slides from delivery, so the missing-oracle finding closes by scope rather than by evidence. Canvas is likewise excluded; no first-party canvas oracle obligation remains. This is stated rather than discovered during implementation. |
-| <a id="rule-vn-05"></a>VN-05 | The nine exclusions are recorded individually: edgeless ([AN-03](../assurance/reference-coverage/arcnotes-affine-siyuan.md#rule-an-03)),  journal as a distinct model ([AN-12](../assurance/reference-coverage/arcnotes-affine-siyuan.md#rule-an-12)), comments ([AN-13](../assurance/reference-coverage/arcnotes-affine-siyuan.md#rule-an-13)), public sharing ([AN-14](../assurance/reference-coverage/arcnotes-affine-siyuan.md#rule-an-14)), WebDAV/CalDAV/CardDAV ([AN-32](../assurance/reference-coverage/arcnotes-affine-siyuan.md#rule-an-32)), flashcards ([AN-33](../assurance/reference-coverage/arcnotes-affine-siyuan.md#rule-an-33)), OCR ([AN-34](../assurance/reference-coverage/arcnotes-affine-siyuan.md#rule-an-34)), graph view ([AN-35](../assurance/reference-coverage/arcnotes-affine-siyuan.md#rule-an-35)) and publish access ([AN-36](../assurance/reference-coverage/arcnotes-affine-siyuan.md#rule-an-36)). Each states its reason rather than being left unmentioned. |
-| <a id="rule-vn-06"></a>VN-06 | **The block model, transaction and undo log rows ([AN-01](../assurance/reference-coverage/arcnotes-affine-siyuan.md#rule-an-01), [AN-07](../assurance/reference-coverage/arcnotes-affine-siyuan.md#rule-an-07), [AN-23](../assurance/reference-coverage/arcnotes-affine-siyuan.md#rule-an-23)) are behavioural evidence for `§2`–`§3` of the editing architecture**, which is a first-party design; the correspondence is conceptual, not derived. |
 
 ---
 
@@ -176,37 +142,7 @@ The matrix records 30 items at commit `29c9271a5` — **24 evidence established,
 | <a id="rule-vs-02"></a>VS-02 | **Under [D-013](../decisions/phase-1-foundation-decisions.md#rule-d-013), GPL-only material must not be copied, translated or ported.** Every row is `Reference Only` or an accepted exclusion ([LP-04](../assurance/reference-coverage/arcscope-serial-studio.md#rule-lp-04) there); **no reuse is proposed anywhere in the matrix.** |
 | <a id="rule-vs-03"></a>VS-03 | **The transport, framing and buffering rows are behavioural evidence** for what an acquisition pipeline must handle — checksum framing, rolling buffers, hot-path pressure — not a source of implementation. |
 | <a id="rule-vs-04"></a>VS-04 | **Seven capabilities are excluded on the record**: MQTT transport ([AS-03](../assurance/reference-coverage/arcscope-serial-studio.md#rule-as-03)), the DBC/Modbus/Protobuf importers ([AS-08](../assurance/reference-coverage/arcscope-serial-studio.md#rule-as-08)), 3D and XY plot widgets ([AS-14](../assurance/reference-coverage/arcscope-serial-studio.md#rule-as-14)), web-engine widgets ([AS-15](../assurance/reference-coverage/arcscope-serial-studio.md#rule-as-15)), the gRPC API ([AS-20](../assurance/reference-coverage/arcscope-serial-studio.md#rule-as-20)), CLI console-only mode ([AS-26](../assurance/reference-coverage/arcscope-serial-studio.md#rule-as-26)) and the licensing and activation system ([AS-27](../assurance/reference-coverage/arcscope-serial-studio.md#rule-as-27)). Four of those — MQTT, XY plotting, 3D visualization and activation — are exactly the **§4 Pro modules excluded from the GPL grant**, so excluding them is a licence necessity as well as a scope decision. |
-| <a id="rule-vs-05"></a>VS-05 | **The packaged binary in the reference tree is never executed**, at any stage ([LP-03](../assurance/reference-coverage/arcscope-serial-studio.md#rule-lp-03) there, [MT-04](../assurance/reference-coverage/arcslate-arcvideo.md#rule-mt-04) of the ArcSlate matrix). |
-
----
-
-## 6. ArcSlate
-
-### 6.1 Capability map
-
-| Capability | Component | Package |
-|---|---|---|
-| Project, sequence, timeline, clip model | `ArcSlate.Domain` — **exact rational frame rates, no float column** | [WP-36](../planning/work-packages/36-arcslate-project-and-timeline.md#rule-wp-36) |
-| Edit decisions, ripple, markers, undo | `ArcSlate.Domain` + `ArcSlate.Application` | [WP-36](../planning/work-packages/36-arcslate-project-and-timeline.md#rule-wp-36) |
-| Processing graph and parameter model | `ArcSlate.Domain` | [WP-37](../planning/work-packages/37-arcslate-playback-and-processing.md#rule-wp-37) |
-| Playback, audio clock, proxy and cache management | `ArcSlate.Media` + `ArcSlate.Application` | [WP-37](../planning/work-packages/37-arcslate-playback-and-processing.md#rule-wp-37) |
-| Demux, decode, encode, colour conversion, scaling, resampling | **Native, behind the C ABI** (`§2`–`§3` of the native interop architecture) | [WP-37](../planning/work-packages/37-arcslate-playback-and-processing.md#rule-wp-37), [WP-38](../planning/work-packages/38-arcslate-render-and-colour.md#rule-wp-38) |
-| Render orchestration and the render queue | `ArcSlate.Application` — **managed; the native pipeline receives an immutable plan** | [WP-38](../planning/work-packages/38-arcslate-render-and-colour.md#rule-wp-38) |
-| Colour management and transforms | `ArcSlate.Media` + native colour pipeline | [WP-38](../planning/work-packages/38-arcslate-render-and-colour.md#rule-wp-38) |
-| Integration, portability, interchange | `ArcSlate.AssistantIntegration` + `ArcSlate.Infrastructure` | [WP-39](../planning/work-packages/39-arcslate-integration-and-portability.md#rule-wp-39) |
-
-### 6.2 ArcVideo and ArcVideoFoundation reference verification
-
-31 items — **29 evidence established, 2 accepted exclusions, 0 unresolved** — the highest evidence ratio of the four, because the reference is closest in domain.
-
-| # | Result |
-|---|---|
-| <a id="rule-vl-01"></a>VL-01 | **Both references are GPL-3.0-only** ([LP-01](../assurance/reference-coverage/arcslate-arcvideo.md#rule-lp-01) there). **GPL-3.0 → AGPL-3.0-only is not a permitted reuse direction** ([LP-04](../assurance/reference-coverage/arcslate-arcvideo.md#rule-lp-04) there), so no row proposes reuse despite the domain proximity. |
-| <a id="rule-vl-02"></a>VL-02 | **ArcForges owning the reference repository does not change its licence** ([LP-03](../assurance/reference-coverage/arcslate-arcvideo.md#rule-lp-03) there). ArcVideo is a documented Olive fork and **the copyright is not solely ArcForges'** ([LP-02](../assurance/reference-coverage/arcslate-arcvideo.md#rule-lp-02) there). |
-| <a id="rule-vl-03"></a>VL-03 | **Olive provenance is preserved.** Removing Olive as an independent reference ([P2-005](../decisions/phase-2-specification-decisions.md#rule-p2-005), [OC-01](../assurance/open-gates-register.md#rule-oc-01)) removed an audit obligation, not a provenance obligation: upstream copyright, licence notices and attribution to the Olive authors are retained wherever inherited material requires them ([UD-01](../assurance/open-gates-register.md#rule-ud-01) of the open-gates register). 25 rows are labelled *(upstream-derived)* for exactly this reason. |
-| <a id="rule-vl-04"></a>VL-04 | **The two exclusions are multicam ([AL-23](../assurance/reference-coverage/arcslate-arcvideo.md#rule-al-23)) and node-based compositing as the user-facing paradigm ([AL-24](../assurance/reference-coverage/arcslate-arcvideo.md#rule-al-24)).** ArcSlate's processing graph is an internal model; the reference's editing paradigm is not adopted. |
-| <a id="rule-vl-05"></a>VL-05 | **[AL-30](../assurance/reference-coverage/arcslate-arcvideo.md#rule-al-30) records ArcVideoFoundation's actual extraction state** and is re-checked on drift ([MT-02](../assurance/reference-coverage/arcslate-arcvideo.md#rule-mt-02) there) — the one row whose value is a fact about the reference rather than about a capability. |
-| <a id="rule-vl-06"></a>VL-06 | **The rational-arithmetic and timeline-coordinate rows ([AL-01](../assurance/reference-coverage/arcslate-arcvideo.md#rule-al-01), [AL-02](../assurance/reference-coverage/arcslate-arcvideo.md#rule-al-02)) are why the schema stores `frame_rate_num`/`frame_rate_den`** and forbids a float column. The reference is evidence that float frame rates are a defect class, not a style preference. |
+| <a id="rule-vs-05"></a>VS-05 | **The packaged binary in the reference tree is never executed**, at any stage ([LP-03](../assurance/reference-coverage/arcscope-serial-studio.md#rule-lp-03) there). |
 
 ---
 
@@ -214,11 +150,11 @@ The matrix records 30 items at commit `29c9271a5` — **24 evidence established,
 
 | Check | Result |
 |---|---|
-| Every product has a capability map naming components and packages | **Pass** — three professional products plus shared assistant, `§3.1`, `§4.1`, `§5.1`, `§6.1` |
-| Every non-excluded reference row has an ArcForges home | **Pass** — all 30 ArcChat rows verified individually in `§3.2`; the remaining 115 rows verified by capability area in `§4.2`, `§5.2`, `§6.2` against the maps in `§4.1`, `§5.1`, `§6.1` |
-| Every excluded reference row is excluded on the record | **Pass** — **25 accepted exclusion dispositions** across 145 rows (ArcChat 6, ArcNotes 9, ArcScope 7, ArcSlate 2, distribution 1); 121 evidence dispositions plus 25 exclusions make 146 dispositions because [Notes AN-14](../assurance/reference-coverage/arcnotes-affine-siyuan.md#rule-an-14) is compound, each with a stated reason |
+| Every product has a capability map naming components and packages | **Pass** — ArcScope plus the shared assistant, `§3.1`, `§5.1` |
+| Every non-excluded reference row has an ArcForges home | **Pass** — all 30 ArcChat rows verified individually in `§3.2`; the remaining 43 rows verified by capability area in `§5.2` (ArcScope) and the distribution matrix's own record, against the map in `§5.1` |
+| Every excluded reference row is excluded on the record | **Pass** — **14 accepted exclusion dispositions** across 69 rows (ArcChat 6, ArcScope 7, distribution 1); 59 evidence dispositions plus 14 exclusions make 73 dispositions, each with a stated reason |
 | Any row proposing reuse carries a provenance record | **Not applicable** — **no row in any matrix proposes reuse** ([PM-02](#rule-pm-02)) |
-| Unresolved determinations | **Zero** across all 145 rows; [OC-01](../assurance/open-gates-register.md#rule-oc-01), the one that existed, was closed by user decision ([P2-005](../decisions/phase-2-specification-decisions.md#rule-p2-005)) |
+| Unresolved determinations | **Zero** across all 69 rows |
 | A capability with neither a component nor an exclusion | **None found** ([PM-04](#rule-pm-04)) |
 
 ---
@@ -227,10 +163,10 @@ The matrix records 30 items at commit `29c9271a5` — **24 evidence established,
 
 | Not built | Rule |
 |---|---|
-| A second agent runtime in any product | [CT-06](../requirements/05-ai-and-agent-execution.md#rule-ct-06) of the AI requirements; ArcScope and ArcSlate reach AI through the capability model |
+| A second agent runtime in any product | [CT-06](../requirements/05-ai-and-agent-execution.md#rule-ct-06) of the AI requirements; ArcScope reaches AI through the capability model |
 | A product-local approval or permission model | `§2` of the local RPC contract; one security pipeline, owner-side |
 | A product-local update or telemetry channel | `§7` of the build architecture; `§2` of the observability architecture |
-| A product-local marketplace | [AN-30](../assurance/reference-coverage/arcnotes-affine-siyuan.md#rule-an-30) accepted exclusion; the extension catalog is platform-level |
+| A product-local marketplace | The extension catalog is platform-level |
 | A host-side web server for remote control | **[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)**; [AC-13](#rule-ac-13) |
 | Any UI shared between Avalonia desktop and Kotlin Android mobile | **[D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021)**; [AC-23](#rule-ac-23) |
 
@@ -240,25 +176,24 @@ The matrix records 30 items at commit `29c9271a5` — **24 evidence established,
 
 | # | Obligation | Where |
 |---|---|---|
-| <a id="rule-pv-01"></a>PV-01 | Each product's drift check compares its reference against the bound commit and assesses newly introduced material against accepted scope — it does not re-create the matrix | [WP-15.07](../planning/work-packages/15-arcchat-conversation-core.md#rule-wp-15.07), [WP-18.08](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.08), [WP-35](../planning/work-packages/35-arcscope-integration-and-sync.md#rule-wp-35), [WP-39](../planning/work-packages/39-arcslate-integration-and-portability.md#rule-wp-39) |
+| <a id="rule-pv-01"></a>PV-01 | Each product's drift check compares its reference against the bound commit and assesses newly introduced material against accepted scope — it does not re-create the matrix | [WP-15.07](../planning/work-packages/15-arcchat-conversation-core.md#rule-wp-15.07), [WP-33.07](../planning/work-packages/33-arcscope-acquisition-and-session.md#rule-wp-33.07) |
 | <a id="rule-pv-02"></a>PV-02 | A repository policy test asserts no project references a P/Invoke class outside its owning infrastructure project | [WP-05](../planning/work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05), [DR-02](12-native-interop-and-media.md#rule-dr-02) |
 | <a id="rule-pv-03"></a>PV-03 | A repository policy test asserts no AGPL-boundary assembly is referenced from an Apache-2.0 project | [WP-03](../planning/work-packages/03-contract-foundation-and-licence-split.md#rule-wp-03), [WP-05](../planning/work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05) |
-| <a id="rule-pv-04"></a>PV-04 | **Launch requires no account; content behavior follows the [offline acceptance matrix](../assurance/testing-and-verification-strategy.md#offline-acceptance-matrix).** Scope/Slate native work runs without Cloud; authorized hydrated Notes supports durable pending editing/search; ArcChat retains permitted draft/cache presentation and requires Cloud for AI. Initial Notes enrollment/uncached content and signed-out normal views are not offline editing cases. | Shell, Notes/sync, native product and companion completion gates execute their applicable initial-state rows |
-| <a id="rule-pv-05"></a>PV-05 | The AFFiNE Enterprise-Edition subtrees remain unread and unreferenced across every drift check | [WP-18.08](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.08) |
-| <a id="rule-pv-06"></a>PV-06 | No packaged reference binary is executed at any stage | Matrix [MT-04](../assurance/reference-coverage/arcslate-arcvideo.md#rule-mt-04); the reference-coverage README |
+| <a id="rule-pv-04"></a>PV-04 | **Launch requires no account; content behavior follows the [offline acceptance matrix](../assurance/testing-and-verification-strategy.md#offline-acceptance-matrix).** ArcScope native work runs without Cloud; ArcChat retains permitted draft/cache presentation and requires Cloud for AI. Signed-out normal views are not offline editing cases. | Shell, sync, native product and companion completion gates execute their applicable initial-state rows |
+| <a id="rule-pv-06"></a>PV-06 | No packaged reference binary is executed at any stage | Matrix [LP-03](../assurance/reference-coverage/arcscope-serial-studio.md#rule-lp-03); the reference-coverage README |
 
 ## [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) product ownership and invariants
 
-Platform assistant packages own application-scoped conversations, own-application capability registry, context/approval/task UI and authorized device bridge; no local model. Notes owns blocks/scalar properties/list/table, notebook/folder operations and durable local pending cache, with Cloud acknowledged authority. Scope owns raw acquisition, sessions, deterministic scope.measurement.v1, native ProductJob/report paths; Cloud simulator remains C# non-AI, no MDF shipping requirement. Slate owns editable native timeline with 705600000 Hz signed ticks, rational rates, half-open ranges, immutable render snapshots, isolated media/OTIO consumers. OTIO0.18.1 remains interchange, never editable working store. Professional apps work without ArcChat and use Cloud directly; local jobs never acquire AI charges.
+Platform assistant packages own application-scoped conversations, own-application capability registry, context/approval/task UI and authorized device bridge; no local model. ArcScope owns raw acquisition, sessions, deterministic `scope.measurement.v1`, native ProductJob/report paths; Cloud simulator remains C# non-AI, no MDF shipping requirement. ArcScope works without ArcChat and uses Cloud directly; local jobs never acquire AI charges.
 
-Protect exact arcforges.content-origin.v1 fields/parent bounds/payload hash/carriers, notes.scalar.v1 missing/null/order/snapshot cursor, and scope.measurement.v1 finite sample/gap/pulse/count/unit/tolerance oracles. Do not replace them with a simplified protocol restatement. New wire profile explicitly transports their complete inputs; unexpected source unknown fields remain inert and preserved/read-only as required. No organizations, team/seat UI, external-agent delegation, local AI, Notes canvas/slides/relations/formulas/E2EE/linked Git or professional Mobile/Web editors. Correct existing contradictory prose about terminal unknownEffect: Task unknownEffect is nonterminal until its explicit resolution, not succeeded/failed.
+Protect exact `arcforges.content-origin.v1` fields/parent bounds/payload hash/carriers, and `scope.measurement.v1` finite sample/gap/pulse/count/unit/tolerance oracles. Do not replace them with a simplified protocol restatement. New wire profile explicitly transports their complete inputs; unexpected source unknown fields remain inert and preserved/read-only as required. No organizations, team/seat UI, external-agent delegation, local AI, or a professional Mobile/Web editor. Correct existing contradictory prose about terminal unknownEffect: Task unknownEffect is nonterminal until its explicit resolution, not succeeded/failed.
 
-Owner local Notes Export now returns ArtifactRef with export-job identity until the accepted Cloud snapshot/export finishes; it never invents an excluded local export engine. Local Notes structural preconditions remain composite local tokens; Cloud counterparts use acknowledged revision. Cross-repository package relocation changes no product permission/recovery/measurement/format semantics.
+Cross-repository package relocation changes no product permission/recovery/measurement/format semantics.
 
-Assistant projects resolve inside DesktopPlatform; professional product paths resolve inside ArcNotes/ArcScope/ArcSlate under [the layout convention](01-solution-and-project-layout.md#root-and-logical-path-convention). Shared mechanism implementations and native adapters are consumed as Platform packages; contracts are produced by Contracts. Cloud/AI integration never imports a desktop domain assembly.
+Assistant projects resolve inside DesktopPlatform; ArcScope's product paths resolve inside ArcScope under [the layout convention](01-solution-and-project-layout.md#root-and-logical-path-convention). Shared mechanism implementations and native adapters are consumed as Platform packages; contracts are produced by Contracts. Cloud/AI integration never imports a desktop domain assembly.
 
 ## Complete initial implementation profiles
 
-[Product behavior profiles](26-product-behavior-profiles.md) supplies Notes semantic commands/undo, Scope framing/trigger/analysis and Slate edit/retime/effect/audio profiles. The maps above are ownership partitions; their functions consume those exact profiles and the published [wire](contracts/04-protobuf-wire-registry.md) and [native ABI](contracts/06-native-functional-abi.md) rather than inventing DTOs or numeric rules. [Mobile architecture](11-mobile-architecture.md) owns the full Android surface/action/outbox table. [Producer stages](../planning/producer-artifacts-and-integration.md) binds each partition's released input and final real integration owner.
+[Product behavior profiles](26-product-behavior-profiles.md) supplies ArcScope framing/trigger/analysis profiles. The maps above are ownership partitions; their functions consume those exact profiles and the published [wire](contracts/04-protobuf-wire-registry.md) and [native ABI](contracts/06-native-functional-abi.md) rather than inventing DTOs or numeric rules. [Mobile architecture](11-mobile-architecture.md) owns the full Android surface/action/outbox table. [Producer stages](../planning/producer-artifacts-and-integration.md) binds each partition's released input and final real integration owner.
 
 All product project maps refine [arch 27](27-platform-projects-and-application-assistants.md): Domain, Application, Infrastructure, Desktop and AssistantIntegration. Product-owned business rules remain in the product; Platform provides mechanisms/packages. No product *.LocalRpc server project is produced.

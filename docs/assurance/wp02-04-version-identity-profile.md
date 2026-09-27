@@ -4,7 +4,7 @@ Authority: [WP02.04](../planning/work-packages/02-build-governance-and-analyzer-
 
 ## Research baseline and gaps
 
-Research on 2026-09-21 uses Design `d31d49e1eba3a707a65cbc6bf295a67d5eee5fc0` and the clean owner mains bound by the [WP02.03 receipt](wp02-03-runtime-boundary-evidence.json). Web is now `6678e12cf3c71f5c8be04b4b3b5f4cc3aefacf81`; the other eight owners retain that receipt's identities. Remotes, branches, dirty state and retained worktrees were inspected. All owners have working foundation candidates and real runtime evidence; no nonexistent producer is an input to this step.
+Research on 2026-09-21 uses Design `d31d49e1eba3a707a65cbc6bf295a67d5eee5fc0` and the clean owner mains bound by the [WP02.03 receipt](wp02-03-runtime-boundary-evidence.json). Web is now `6678e12cf3c71f5c8be04b4b3b5f4cc3aefacf81`; the other six owners retain that receipt's identities. Remotes, branches, dirty state and retained worktrees were inspected. All owners have working foundation candidates and real runtime evidence; no nonexistent producer is an input to this step.
 
 Existing product smoke reports and Cloud health expose source revision, and Web/AI report a release version plus source. Contracts package resources retain schema/descriptor and source identity. DesktopPlatform's native ABI1.0 probes report library/dependency versions. Android already stamps versionName/versionCode and a Contracts package version. These are useful but do not form a nine-axis report, do not prove independence and do not stamp a complete build/run identity into every owner-authored assembly or runtime artifact. DesktopPlatform's managed packing currently passes PackageVersion separately from assembly Version, so those identities must be checked explicitly.
 
@@ -19,7 +19,7 @@ Every candidate produces a closed, versioned build-identity report with owner, a
 | AppVersion | The owner's already allocated product/service release input; Android's separate platform versionCode stays packaging metadata | Library-only packages have no installed product version; explicitly not applicable |
 | ContractVersion / ContractSet | Authored proto/profile identities in Contracts; consumers read the exact restored producer's schema/descriptor provenance, retaining its package identity separately | No fabricated LocalRpc, Events or business schema version from the Hello example |
 | CapabilityVersion | Owned descriptor declarations, with subject/version and source digest | Not produced until the owning capability implementation; WP09 and later product owners replace this state |
-| NativeFormatVersion | Owned portable-format definition/version declarations, separately keyed by format | Not produced until the product's format owner; WP18/28, WP34 and WP38 remain responsible |
+| NativeFormatVersion | Owned portable-format definition/version declarations, separately keyed by format | Not produced until the product's format owner; WP34 and WP35 remain responsible |
 | StorageSchemaVersion | Owned migration-set head for each store, with migration source identity | Not produced before WP07/21 and the relevant product storage owner; no claim about a deployed database from build metadata |
 | NativeAbiVersion | Actual owned C ABI constants and matched runtime metadata; never the NuGet release number | No first-party native boundary in an artifact means explicitly not applicable; DesktopPlatform reports actual probe ABI1.0 |
 | PolicySchemaVersion | Owned policy bundle schema definition, independently named/versioned | Not produced before the WP03 schema and WP44 runtime producers; build-policy file format is not a signed policy bundle |
@@ -38,11 +38,11 @@ The report is a foundation artifact, not the complete compatibility manifest or 
 
 ## Current ordered execution
 
-The [CI/local reduction plan](ci-and-local-validation-policy.md#research-inventory-and-fixed-execution-order) replaces the former nine-owner exhaustive CI/public-download sequence by explicit user direction on 2026-09-21. Eight version-identity source PRs were already merged; Mobile PR 9 retains its source work and receives the CI reduction. Existing local/runtime receipts remain historical evidence and are not rerun.
+The [CI/local reduction plan](ci-and-local-validation-policy.md#research-inventory-and-fixed-execution-order) replaces the former seven-owner exhaustive CI/public-download sequence by explicit user direction on 2026-09-21. Six version-identity source PRs were already merged; Mobile PR 9 retains its source work and receives the CI reduction. Existing local/runtime receipts remain historical evidence and are not rerun.
 
 Retain all nine independent resolvers, compiled/sealed support identity and local readback entry points. Complete the reduced relevant build/offline/security gates, full PR review and merge. Publication/deployment confirmation uses the provider job/status, not public archive downloads or device/browser/inference reruns. Update the final receipt with actual source/PR identities, retained local evidence, current checks and omitted coverage. Pull primary checkouts and stop after WP02.04; do not enter WP02.05.
 
-**Completed execution.** The [final implementation receipt](wp02-04-implementation-evidence.md) records all nine reviewed reduction merges, successful applicable PR/main checks and provider publication, retained local observations and clean primary updates. The ordered plan above is complete; no later substep was begun.
+**Completed execution.** The [final implementation receipt](wp02-04-implementation-evidence.md) records all seven reviewed reduction merges, successful applicable PR/main checks and provider publication, retained local observations and clean primary updates. The ordered plan above is complete; no later substep was begun.
 
 ## Current primary-source verification
 

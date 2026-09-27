@@ -68,7 +68,7 @@ Exactly three channels from day one:
 | # | Requirement |
 |---|---|
 | <a id="rule-up-01"></a>UP-01 | **An update never blocks launch.** The product starts; the update is discovered, downloaded and staged in the background, and applied at a safe moment. |
-| <a id="rule-up-02"></a>UP-02 | **Delta updates are supported**, which matters most for large products such as ArcSlate. |
+| <a id="rule-up-02"></a>UP-02 | **Delta updates are supported**, which matters most for large products such as ArcScope. |
 | <a id="rule-up-03"></a>UP-03 | **Before updating**, the product checks for running tasks and unsaved work, and defers rather than interrupting critical work ([LF-09](09-shared-desktop-experience.md#rule-lf-09)). |
 | <a id="rule-up-04"></a>UP-04 | The update sequence is: download → verify signature and hash → stage → **switch atomically** → retain the previous launchable version. |
 | <a id="rule-up-05"></a>UP-05 | **A failed update must never damage user data.** **An executable directory is never a user data directory.** |
@@ -164,7 +164,7 @@ Nine distinct object types. **They must never all be called "ticket"** ([I-410](
 | <a id="rule-sc-08"></a>SC-08 | **Every operator action uses the operator's own principal.** An action taken by support must never be recorded as if the user performed it. |
 | <a id="rule-sc-09"></a>SC-09 | **"View as user" is a Support Projection / Reproduction View**, not impersonation: a read-only rendering constructed under an explicit grant, clearly marked as such. |
 | <a id="rule-sc-10"></a>SC-10 | **Support must never ask a user for a secret**, and **never for a persistent remote-access credential**. Any remote support session is explicit, ephemeral, view-only by default, and separately authorised for any interaction. A remote support session must not expose secrets. |
-| <a id="rule-sc-11"></a>SC-11 | **Support attachments are support-domain data.** They never become ArcNotes, ArcChat or other product resources, they carry their own retention, and they are not copied into unrelated systems. |
+| <a id="rule-sc-11"></a>SC-11 | **Support attachments are support-domain data.** They never become ArcChat or other product resources, they carry their own retention, and they are not copied into unrelated systems. |
 | <a id="rule-sc-12"></a>SC-12 | **Support data retention and product data retention are separate** ([BK-09](03-cloud-services-and-sync.md#rule-bk-09) in the cloud requirements). |
 | <a id="rule-sc-13"></a>SC-13 | **Temporary access is revoked immediately when the case closes.** |
 | <a id="rule-sc-14"></a>SC-14 | **Sending a recovery package is data egress** and follows the egress authorization rules ([EG-02](07-security-privacy-and-trust.md#rule-eg-02)), including the owning user's authorization and current resource permissions. |
@@ -193,7 +193,7 @@ Nine distinct object types. **They must never all be called "ticket"** ([I-410](
 | # | Requirement |
 |---|---|
 | <a id="rule-oc-01"></a>OC-01 | **Operator Console ≠ Database Console** ([I-422](01-normative-glossary-and-invariants.md#rule-i-422)). **It provides no arbitrary SQL.** A production data problem is never solved by ad-hoc production SQL; where an exceptional data operation is unavoidable it is an individually defined, individually audited capability. |
-| <a id="rule-oc-02"></a>OC-02 | **Operator Console ≠ Domain Owner** ([I-423](01-normative-glossary-and-invariants.md#rule-i-423)). It does not own an ArcNotes document, an ArcScope session or an ArcSlate project. Changes go through the owning application's recovery capability. |
+| <a id="rule-oc-02"></a>OC-02 | **Operator Console ≠ Domain Owner** ([I-423](01-normative-glossary-and-invariants.md#rule-i-423)). It does not own an ArcScope session. Changes go through the owning application's recovery capability. |
 | <a id="rule-oc-03"></a>OC-03 | **Roles are separated and least-privileged**: Customer Support Operator, Recovery Specialist, Operations Operator, Trust & Safety Operator, Security Operator. **No role holds all capabilities**, and an operations role does not become a customer-content role. Their exact directory keys are customerSupport, recoverySpecialist, operations, trustSafety and security; [registry04 §9.1](../architecture/contracts/04-protobuf-wire-registry.md#91-complete-operator-authorization-and-call-context) binds every method to this vocabulary. |
 | <a id="rule-oc-04"></a>OC-04 | **Global content search is prohibited.** Access is purpose-bound. |
 | <a id="rule-oc-05"></a>OC-05 | **Every operator access requires a case or incident context.** Curiosity browsing is structurally impossible, not merely discouraged. |
@@ -293,14 +293,14 @@ Notice → Warning → Version-scoped delist → Package delist
 | <a id="rule-cp-01"></a>CP-01 | **Copyright and intellectual-property reports follow an independent legal workflow**, separate from ordinary abuse. |
 | <a id="rule-cp-02"></a>CP-02 | **Copyright enforcement targets the distribution surface** — the catalog listing, the public share — **not a user's private local canonical data** ([I-436](01-normative-glossary-and-invariants.md#rule-i-436)). |
 | <a id="rule-cp-03"></a>CP-03 | **Public share removal does not delete the private source** ([I-437](01-normative-glossary-and-invariants.md#rule-i-437)). |
-| <a id="rule-cp-04"></a>CP-04 | **Private local data is not a community moderation surface** ([I-489](01-normative-glossary-and-invariants.md#rule-i-489) analogue). |
+| <a id="rule-cp-04"></a>CP-04 | **Private local data is not a community moderation surface**. |
 | <a id="rule-cp-05"></a>CP-05 | **A community report does not expose private cloud data to a moderator** ([SC-03](#rule-sc-03), [OC-08](#rule-oc-08)). |
 
 ### 13.3 Account enforcement
 
 | # | Requirement |
 |---|---|
-| <a id="rule-ae-01"></a>AE-01 | Cloud account restrictions stop authorized Cloud service access as specified; they do not confiscate independent native capture/media data or discard unsynced work. Cached Notes/Chat access, service expiry and deletion follow the identity and Cloud lifecycle contracts; local AI is not a fallback. |
+| <a id="rule-ae-01"></a>AE-01 | Cloud account restrictions stop authorized Cloud service access as specified; they do not confiscate independent native capture data or discard unsynced work. Cached ArcScope/Chat access, service expiry and deletion follow the identity and Cloud lifecycle contracts; local AI is not a fallback. |
 | <a id="rule-ae-02"></a>AE-02 | **Cloud Account Restriction ≠ local data confiscation** ([I-438](01-normative-glossary-and-invariants.md#rule-i-438)). |
 
 ### 13.4 Appeal

@@ -28,10 +28,9 @@ Five constraints determine almost every structural decision downstream.
 ## 2. Runtime topology
 
 ```text
-ArcNotes + own assistant/store ─┐
-ArcScope + own assistant/store ─┤
-ArcSlate + own assistant/store ─┼─ HTTPS gRPC-Web → Worker → C# Container
-Android / Web companions ───────┘                           ↓
+ArcScope + own assistant/store ─┐
+Android / Web companions ───────┴─ HTTPS gRPC-Web → Worker → C# Container
+                                                    ↓
                                             D1 / DO / Queues / R2
                                             AI Workflow / Workers AI
 Private parser/extension children: own parent ↔ gRPC Named Pipe/UDS
@@ -90,7 +89,7 @@ Fixed by **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**, e
 
 | Host | Mode | Notes |
 |---|---|---|
-| **ArcNotes / ArcScope / ArcSlate desktop** | **Native AOT** | Trim/AOT-safe dependency rules; real publish proof per RID per release |
+| **ArcScope desktop** | **Native AOT** | Trim/AOT-safe dependency rules; real publish proof per RID per release |
 | **ArcForges Cloud** | **ASP.NET Core Native AOT modular monolith** | Native AOT is mandatory; every dependency and real adapter participates in publish/run proof |
 | **ArcChat Mobile — Android** | **Kotlin/Jetpack Compose** | Pinned Kotlin/Jetpack Compose and native modules; release artifact inspected and exercised on a real Android device |
 | **ArcForges Web** | **React/TypeScript; Node.js/npm build tooling** | [browser-support.v1](../requirements/12-quality-and-compatibility-contract.md#202-browser-supportv1); static public pre-rendering; [P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008) |
@@ -130,7 +129,7 @@ Fixed by **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**, e
 | Pagination, time and base enumerations | Business rules |
 | Observability, cloud client infrastructure, security primitives, update integration, design system | A shared business view model |
 
-Types such as `ArcForges.Foundation.Document`, `.VideoTimeline` or `.TelemetrySession` are prohibited. `ArcProductBase` domain hierarchies are prohibited. **Shared foundation must never become a fifth hidden product.**
+Types such as `ArcForges.Foundation.Annotation`, `.Report` or `.TelemetrySession` are prohibited. `ArcProductBase` domain hierarchies are prohibited. **Shared foundation must never become a third hidden product.**
 
 ---
 
@@ -139,10 +138,9 @@ Types such as `ArcForges.Foundation.Document`, `.VideoTimeline` or `.TelemetrySe
 Two boundaries, enforced by build-time checks (**[D-004](../decisions/phase-1-foundation-decisions.md#rule-d-004)**, **[D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021)**).
 
 ```text
-ArcNotes + own assistant/store ─┐
-ArcScope + own assistant/store ─┤
-ArcSlate + own assistant/store ─┼─ HTTPS gRPC-Web → Worker → C# Container
-Android / Web companions ───────┘                           ↓
+ArcScope + own assistant/store ─┐
+Android / Web companions ───────┴─ HTTPS gRPC-Web → Worker → C# Container
+                                                    ↓
                                             D1 / DO / Queues / R2
                                             AI Workflow / Workers AI
 Private parser/extension children: own parent ↔ gRPC Named Pipe/UDS
@@ -193,7 +191,7 @@ Every write — from a local click, a local RPC call, a public HTTP request or a
 8.  Return the new revision and the minimal delta
 ```
 
-**Step 5 is a closed list, not an illustration.** Which participants may share one transaction is enumerated by operation class in `§6.1.1` of the data-model overview ([SU-01](data-model/00-data-model-overview.md#rule-su-01)–[SU-07](data-model/00-data-model-overview.md#rule-su-07)), under a single global lock order; `sync` is always a participant and never an initiator ([SU-07](data-model/00-data-model-overview.md#rule-su-07)), which is why its row is inside the transaction rather than after it. **Step 6 is the dispatch barrier** (`§6.1.2`, [DB-01](data-model/00-data-model-overview.md#rule-db-01)–[DB-03](data-model/00-data-model-overview.md#rule-db-03)): no provider call, object-storage write or network hop occurs before it ([SU-05](data-model/00-data-model-overview.md#rule-su-05)). The local elaboration of the same path is `§3` of [the persistence architecture](06-data-persistence-and-formats.md). Those two are authoritative; this is the skeleton they share, and it is not a third specification.
+**Step 5 is a closed list, not an illustration.** Which participants may share one transaction is enumerated by operation class in `§6.1.1` of the data-model overview ([SU-01](data-model/00-data-model-overview.md#rule-su-01)–[SU-07](data-model/00-data-model-overview.md#rule-su-07)), using the deterministic guarded D1 batch statement order in [SU-04](data-model/00-data-model-overview.md#rule-su-04); `sync`, when enlisted for a synchronised write, is a participant and never an initiator ([SU-07](data-model/00-data-model-overview.md#rule-su-07)), which is why its row is inside the transaction rather than after it. **Step 6 is the dispatch barrier** (`§6.1.2`, [DB-01](data-model/00-data-model-overview.md#rule-db-01)–[DB-03](data-model/00-data-model-overview.md#rule-db-03)): no provider call, object-storage write or network hop occurs before it ([SU-05](data-model/00-data-model-overview.md#rule-su-05)). The local elaboration of the same path is `§3` of [the persistence architecture](06-data-persistence-and-formats.md). Those two are authoritative; this is the skeleton they share, and it is not a third specification.
 
 Every write command carries at minimum `CommandId`, the target identity, `ExpectedRevision`, actor and device from the authentication context, causation and correlation identifiers, business parameters, and an optional approval reference.
 
@@ -216,7 +214,7 @@ Every write command carries at minimum `CommandId`, the target identity, `Expect
 | [`09-ai-and-agent-runtime-architecture.md`](09-ai-and-agent-runtime-architecture.md) | Agent runtime, capability registry, task engine, provider routing, credit metering |
 | [`10-web-architecture.md`](10-web-architecture.md) | Static generation, React/TypeScript application, per-surface deployment and security |
 | [`11-mobile-architecture.md`](11-mobile-architecture.md) | Kotlin Android structure, Apache boundary, offline outbox, push, secure storage |
-| [`12-native-interop-and-media.md`](12-native-interop-and-media.md) | P/Invoke discipline, the C ABI, SafeHandle, media and acquisition pipelines |
+| [`12-native-interop-and-media.md`](12-native-interop-and-media.md) | P/Invoke discipline, the C ABI, SafeHandle, image/instrument/PDF native families and acquisition pipelines |
 | [`13-observability-and-operations.md`](13-observability-and-operations.md) | Telemetry, correlation, health, incident tooling, operator surface |
 | [`14-build-packaging-and-release.md`](14-build-packaging-and-release.md) | Build governance, versioning axes, packaging, signing, update feed, CI gates |
 | [`15-extension-platform-architecture.md`](15-extension-platform-architecture.md) | Extension host, protocol, schema model, package runtime, catalog |
@@ -278,7 +276,7 @@ Answerable before any feature merges:
 | **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** | The runtime and AOT matrix, including Cloud as Native AOT under [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) |
 | **[D-009](../decisions/phase-1-foundation-decisions.md#rule-d-009)** | Contract granularity |
 | **[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)** | Cloud topology and the durable local-action model |
-| **[D-011](../decisions/phase-1-foundation-decisions.md#rule-d-011)** | The implementation nine-repository target under [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) |
+| **[D-011](../decisions/phase-1-foundation-decisions.md#rule-d-011)** | The implementation seven-repository target under [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) and [P2-019](../decisions/phase-2-specification-decisions.md#rule-p2-019) |
 | **[V-03](../assurance/phase-1-official-verification.md#rule-v-03)**, **[V-04](../assurance/phase-1-official-verification.md#rule-v-04)**, **[V-05](../assurance/phase-1-official-verification.md#rule-v-05)** | The AOT evidence underpinning the matrix |
 
 ## Retired runtime concepts

@@ -7,9 +7,9 @@
 
 All desktop UI is native Avalonia/Skia under Native AOT. WebView, DOM/JavaScript, HTML-as-UI and localhost UI are prohibited, including previews and account/payment screens; external account/checkout links use the system browser.
 
-The three professional desktop products are neither three independently designed applications nor one shared shell with swapped content. The pattern is:
+The professional desktop application and its embedded assistant are neither independently designed experiences nor one interchangeable shell. The pattern is:
 
-> **One design language, three professional workspaces.**
+> **One design language, one professional workspace and its embedded assistant.**
 
 Founding invariant: **Shared Experience ≠ Shared Shell ≠ Shared Domain** ([I-021](01-normative-glossary-and-invariants.md#rule-i-021)).
 
@@ -33,10 +33,10 @@ Founding invariant: **Shared Experience ≠ Shared Shell ≠ Shared Domain** ([I
 |---|---|
 | <a id="rule-ds-01"></a>DS-01 | **What is unified is semantic design tokens, not literal colours.** Products consume tokens with meaning (surface, elevated surface, accent, danger, warning, success, informational, disabled, focus ring), never raw hex values. |
 | <a id="rule-ds-02"></a>DS-02 | **Product code must not invent colour semantics.** A product needing a new semantic adds a token to the system; it does not hard-code a colour. |
-| <a id="rule-ds-03"></a>DS-03 | **Product state colours are a defined, closed semantic set**, shared across the three professional products and shared assistant, so a warning means the same thing everywhere. |
-| <a id="rule-ds-04"></a>DS-04 | **Typography establishes a semantic hierarchy** — not a list of sizes. Numeric and tabular presentation is a distinct, stable typographic role, because three of the three professional products display precise numbers. |
+| <a id="rule-ds-03"></a>DS-03 | **Product state colours are a defined, closed semantic set**, shared across ArcScope and its embedded assistant, so a warning means the same thing everywhere. |
+| <a id="rule-ds-04"></a>DS-04 | **Typography establishes a semantic hierarchy** — not a list of sizes. Numeric and tabular presentation is a distinct, stable typographic role, because the professional desktop application displays precise numbers. |
 | <a id="rule-ds-05"></a>DS-05 | **Density is a first-class design-system capability**, not a per-product hack. At minimum: Comfortable, Compact, and a professional-dense mode for panel-heavy products. |
-| <a id="rule-ds-06"></a>DS-06 | **Iconography is one visual language** across the three professional products and shared assistant. |
+| <a id="rule-ds-06"></a>DS-06 | **Iconography is one visual language** across ArcScope and its embedded assistant. |
 | <a id="rule-ds-07"></a>DS-07 | **An icon is never the only carrier of information** ([I-393](01-normative-glossary-and-invariants.md#rule-i-393) family). Every icon-only control has a label, tooltip or accessible name. |
 | <a id="rule-ds-08"></a>DS-08 | **Motion is restrained and never load-bearing.** No state may be understandable *only* through animation. |
 
@@ -60,14 +60,14 @@ Founding invariant: **Shared Experience ≠ Shared Shell ≠ Shared Domain** ([I
 | <a id="rule-wn-03"></a>WN-03 | **Multi-window first, multi-process second.** Multi-process is an explicit extension capability, not the default user experience. |
 | <a id="rule-wn-04"></a>WN-04 | **The same resource must not have two independent writable owners** without an explicit coordination mechanism. A `DocumentSession` owns write authority; a second view is read-only, coordinated, or refused with an explanation. Two silently-diverging local writable copies are prohibited. |
 | <a id="rule-wn-05"></a>WN-05 | **Window and layout physical state is device-local by default** and is never synced as user data ([I-181](01-normative-glossary-and-invariants.md#rule-i-181)). |
-| <a id="rule-wn-06"></a>WN-06 | Full-screen state is not forced to restore unexpectedly. This shared behavior does not require a presentation/slides mode in ArcNotes. |
+| <a id="rule-wn-06"></a>WN-06 | Full-screen state is not forced to restore unexpectedly. |
 
 ### 3.2 Panels, docking and layout
 
 | # | Requirement |
 |---|---|
 | <a id="rule-ly-01"></a>LY-01 | A shared **dock/panel foundation** supports: dockable panels, floating panels, tabbed panel groups, splitters, panel visibility toggles, panel reset, and **named saved layouts**. |
-| <a id="rule-ly-02"></a>LY-02 | ArcScope and ArcSlate are panel-heavy workspaces, ArcNotes is document-centred, and each embeds conversation/task surfaces. The three hosts compose the same shared foundation without sharing product state. |
+| <a id="rule-ly-02"></a>LY-02 | ArcScope is a panel-heavy workspace and embeds conversation/task surfaces. ArcScope and its embedded assistant compose the same shared foundation without sharing product state. |
 | <a id="rule-ly-03"></a>LY-03 | **What may sync later is a named Layout *definition*, never physical window coordinates.** Monitor geometry is device-specific. |
 | <a id="rule-ly-04"></a>LY-04 | The word for a panel arrangement is **Layout**. "Workspace" always means the cloud ownership boundary ([I-001](01-normative-glossary-and-invariants.md#rule-i-001), glossary §8). |
 
@@ -85,8 +85,8 @@ Founding invariant: **Shared Experience ≠ Shared Shell ≠ Shared Domain** ([I
 | <a id="rule-cm-04"></a>CM-04 | **A command knows its own availability**: enabled, disabled with reason, hidden, or requiring elevation/approval. A disabled command explains why. |
 | <a id="rule-cm-05"></a>CM-05 | **Command scope is explicit** — application, window, document/session, panel, selection — and resolution priority is fixed and documented, from most specific to least. |
 | <a id="rule-cm-06"></a>CM-06 | **Undo/redo uses unified command identity, but undo state belongs to the owning product** ([I-201](01-normative-glossary-and-invariants.md#rule-i-201)). **There is no global ArcForges undo service.** |
-| <a id="rule-cm-07"></a>CM-07 | **A command palette is a shared capability of all three professional products**, with the same invocation gesture and behaviour. |
-| <a id="rule-cm-08"></a>CM-08 | **A quick-entry bar** (find, jump, run) is available in all three professional products with consistent semantics. |
+| <a id="rule-cm-07"></a>CM-07 | **A command palette is a standard capability of the professional desktop application**, with the same invocation gesture and behaviour throughout. |
+| <a id="rule-cm-08"></a>CM-08 | **A quick-entry bar** (find, jump, run) is available throughout the professional desktop application with consistent semantics. |
 
 ### 4.1 Shortcuts
 
@@ -96,7 +96,7 @@ Four levels, resolved in a defined order:
 |---|---|
 | **Platform standard** | Copy, paste, save, close, undo |
 | **ArcForges shared** | Command palette, settings, activity surface, quick jump |
-| **Product-specific** | Timeline navigation, capture control, block formatting |
+| **Product-specific** | Session and measurement navigation, capture control, annotation formatting |
 | **User custom** | Any rebinding |
 
 | # | Requirement |
@@ -131,7 +131,7 @@ Four levels, resolved in a defined order:
 | <a id="rule-se-03"></a>SE-03 | **Settings ≠ Policy** ([I-340](01-normative-glossary-and-invariants.md#rule-i-340)). A user preference and an administratively enforced policy are separate systems; a policy-locked setting shows as locked with its reason. |
 | <a id="rule-se-04"></a>SE-04 | **A secret is never an ordinary setting** ([SE-01](07-security-privacy-and-trust.md#rule-se-01) in the security requirements). Secret fields store a `SecretRef` and never display plaintext. |
 | <a id="rule-se-05"></a>SE-05 | **Settings user experience is unified** across products: the same organisation, the same search, the same reset semantics, the same scope indicators. |
-| <a id="rule-se-06"></a>SE-06 | **Reset never deletes business data.** "Reset ArcNotes settings" resets settings; it does not touch notebooks. The scope of a reset is stated before it runs. |
+| <a id="rule-se-06"></a>SE-06 | **Reset never deletes business data.** "Reset ArcScope settings" resets settings; it does not touch projects. The scope of a reset is stated before it runs. |
 
 ---
 
@@ -219,7 +219,7 @@ Four semantics:
 
 ### 9.1 File associations
 
-The [naming policy](../architecture/28-product-naming-policy.md#file-association-reservations) reserves Scope/Slate native project identifiers. A reservation does not claim an implemented format or handler. Notes, assistant history and companions have no private native-file association.
+The [naming policy](../architecture/28-product-naming-policy.md#file-association-reservations) reserves ArcScope's native project identifier; retired identifiers remain permanently reserved. A reservation does not claim an implemented format or handler. Assistant history and companions have no private native-file association.
 
 | # | Requirement |
 |---|---|
@@ -256,7 +256,7 @@ The [naming policy](../architecture/28-product-naming-policy.md#file-association
 | <a id="rule-lf-01"></a>LF-01 | **Window close, application quit and background work are three different concepts.** "Close window = exit" must not be hard-coded. |
 | <a id="rule-lf-02"></a>LF-02 | **Ordinary professional products do not silently reside in the background** long-term. |
 | <a id="rule-lf-03"></a>LF-03 | The sole idle-residence rule is [BR-01](#rule-br-01) below. A professional app may remain visibly available for remote requests only after the user enables that per-app setting; no standalone assistant tray exception exists. |
-| <a id="rule-lf-04"></a>LF-04 | **ArcScope and ArcSlate may continue in the background while genuinely working** — an active capture, an active render — and the interface makes that visible and stoppable. |
+| <a id="rule-lf-04"></a>LF-04 | **ArcScope may continue in the background while genuinely working** — an active capture, an active export — and the interface makes that visible and stoppable. |
 | <a id="rule-lf-05"></a>LF-05 | **Closing a window must never destroy confirmed data.** Anything locally durable stays durable; there is no "save?" prompt for content already committed. |
 | <a id="rule-lf-06"></a>LF-06 | **The exit sequence is consistent across products**: stop accepting new work, drain in-flight work, flush critical transactions, release local RPC and cloud connections, shut down native runtimes, exit. |
 | <a id="rule-lf-07"></a>LF-07 | **A recovery surface appears uniformly on the first launch after a crash**, explaining what was recovered, what was quarantined, and what the user may do. |
@@ -273,7 +273,7 @@ The [naming policy](../architecture/28-product-naming-policy.md#file-association
 
 | # | Requirement |
 |---|---|
-| <a id="rule-mn-01"></a>MN-01 | A **shared menu architecture** gives the three professional products the same top-level organisation for shared concerns (application, file/project, edit, view, window, help), with product-specific menus in between. |
+| <a id="rule-mn-01"></a>MN-01 | A **shared menu architecture** gives the professional desktop application a consistent top-level organisation for shared concerns (application, file/project, edit, view, window, help), with feature-specific menus in between. |
 | <a id="rule-mn-02"></a>MN-02 | **Platform desktop conventions are respected**, notably on macOS. The goal is **semantic consistency, not pixel-identical interfaces**. |
 | <a id="rule-mn-03"></a>MN-03 | **Context menus are built from the current selection** and the command system, never from a static list. |
 | <a id="rule-mn-04"></a>MN-04 | **A toolbar is not a command dump.** It carries the highest-frequency, most important commands for the current context. |
@@ -286,7 +286,7 @@ The [naming policy](../architecture/28-product-naming-policy.md#file-association
 
 | # | Requirement |
 |---|---|
-| <a id="rule-ac-01"></a>AC-01 | The native shell and direct download are not purchase-gated. Cloud-backed notebook/chat use requires the stated account/service boundary; no blanket account-free first-use promise overrides product requirements. |
+| <a id="rule-ac-01"></a>AC-01 | The native shell and direct download are not purchase-gated. Cloud-backed project/chat use requires the stated account/service boundary; no blanket account-free first-use promise overrides product requirements. |
 | <a id="rule-ac-02"></a>AC-02 | The **account surface is in the same place with the same behaviour in every product**: identity, realm, workspace, storage summary, and "Manage Account →". |
 | <a id="rule-ac-03"></a>AC-03 | **The workspace selector must clearly express that it changes cloud ownership context** — what is synced, where new cloud objects go, which knowledge scope applies. It is not a cosmetic filter. |
 | <a id="rule-ac-04"></a>AC-04 | **Cloud status presentation is unified** across products. |
@@ -359,8 +359,8 @@ Stage-14 shared experience does **not** own:
 
 | # | Invariant |
 |---|---|
-| <a id="rule-si-01"></a>SI-01 | The three professional desktop products share the design language, not a mandatory shell layout; each composes its own assistant window. |
-| <a id="rule-si-02"></a>SI-02 | Professional products may differ in density and workspace composition. |
+| <a id="rule-si-01"></a>SI-01 | The professional desktop application shares the design language, not a mandatory shell layout; it composes its own assistant window. |
+| <a id="rule-si-02"></a>SI-02 | The professional desktop application and its companions may differ in density and workspace composition. |
 | <a id="rule-si-03"></a>SI-03 | Menu, toolbar, shortcut and palette revolve around unified command semantics. |
 | <a id="rule-si-04"></a>SI-04 | The same user operation must not produce different business logic from a different entry point. |
 | <a id="rule-si-05"></a>SI-05 | Commands carry context and scope; there is no global shortcut dumping ground. |
@@ -407,7 +407,7 @@ ArcForges Desktop Experience
 
 ## 20. Acceptance scenarios
 
-**Consistency** — a user moving between the three professional products finds settings in the same place, invokes the command palette the same way, and encounters logically consistent shortcuts.
+**Consistency** — a user moving between ArcScope's workspaces and its embedded assistant finds settings in the same place, invokes the command palette the same way, and encounters logically consistent shortcuts.
 
 **Command parity** — the same action from menu, toolbar, context menu, shortcut and palette produces one identical domain command and one identical audit outcome.
 

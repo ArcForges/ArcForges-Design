@@ -5,7 +5,7 @@
 > Layer: Requirements
 > Companions: [`03-cloud-services-and-sync.md`](03-cloud-services-and-sync.md), [`12-quality-and-compatibility-contract.md`](12-quality-and-compatibility-contract.md), [`../architecture/06-data-persistence-and-formats.md`](../architecture/06-data-persistence-and-formats.md)
 
-This contract governs native working data, Cloud-acknowledged authority, pending-change durability and the product-specific portability formats. It preserves ArcNotes Cloud export and the application assistant's explicit local/cloud/temporary history formats; encrypted export and a universal local backup package remain excluded.
+This contract governs native working data, Cloud-acknowledged authority, pending-change durability and the product-specific portability formats. It preserves the application assistant's explicit local/cloud/temporary history formats; encrypted export and a universal local backup package remain excluded.
 
 ---
 
@@ -14,10 +14,10 @@ This contract governs native working data, Cloud-acknowledged authority, pending
 | Layer | Definition | Authority |
 |---|---|---|
 | **Domain Model** | The product's in-memory business model | The product |
-| **Working Store** | Durable native working data and Cloud persistence with explicit revision ownership | Cloud acknowledges Notes/Chat state; native products own local tools, pending edits and Scope/Slate working stores |
-| **Native Portable Format** | Required Scope/Slate project portability, where explicitly specified | The owning product; not a universal notebook/chat archive requirement |
-| **Interchange Format** | Third-party formats — Markdown, HTML, PDF, CSV, media, subtitle, timeline exchange | Adapters; **full fidelity is not guaranteed** |
-| **Derived Projection / Cache** | Indexes, thumbnails, proxies, decoded caches, embeddings | Rebuildable; never authority |
+| **Working Store** | Durable native working data and Cloud persistence with explicit revision ownership | Cloud acknowledges Chat state; native products own local tools, pending edits and Scope working stores |
+| **Native Portable Format** | Required Scope project portability, where explicitly specified | The owning product; not a universal chat archive requirement |
+| **Interchange Format** | Third-party formats — Markdown, HTML, PDF, CSV, media | Adapters; **full fidelity is not guaranteed** |
+| **Derived Projection / Cache** | Indexes, thumbnails, decoded caches, embeddings | Rebuildable; never authority |
 
 ### 1.1 The three highest principles
 
@@ -33,12 +33,12 @@ This contract governs native working data, Cloud-acknowledged authority, pending
 
 | Class | Examples | Durability requirement |
 |---|---|---|
-| **Canonical Structured State** | Notebooks, documents, blocks, links, tags, sessions, measurements, sequences, tracks, clips, conversations, tasks | **Must reach a reliable durable store** |
+| **Canonical Structured State** | Sessions, measurements, annotations, findings, conversations, tasks | **Must reach a reliable durable store** |
 | **Managed Assets** | Imported attachments, imported media, uploaded telemetry | Owned, hashed, lifecycle-managed |
 | **External References** | Files left where the user put them | Referenced, never owned |
 | **Append-only / Large Data** | Raw captures, long event streams | Chunked, verifiable large-scale storage — **never an ordinary blob column** |
 | **Revision / Recovery State** | Revisions, checkpoints, recovery journal | Reliability infrastructure |
-| **Derived Data** | Search index, embeddings, thumbnails, waveforms, proxies, decoded caches | **Delete and rebuild** |
+| **Derived Data** | Search index, embeddings, thumbnails, decoded caches | **Delete and rebuild** |
 | **Device-local Presentation State** | Window and panel layout, view state, recent items | Device-local by default; **never part of native project portability** |
 | **Secrets** | Credentials, keys | Platform secure storage only — **never inside a project or document format** |
 | **Temporary Data** | Scratch, staging, render temp | Directly cleanable |
@@ -52,18 +52,14 @@ Each product owns its own local store ([P-09](00-product-scope-and-portfolio.md#
 | Product | Strategy | Shape |
 |---|---|---|
 | **Application assistant** | Local history is app-authoritative by default; Cloud history is opt-in; temporary history is memory-only | Local assistant-history.v1 snapshot export with optional Markdown; Cloud history uses the owned export job; no credentials or pending execution rights are exported. |
-| **ArcNotes** | Cloud authority with durable native working cache | Cloud-acknowledged documents/blocks/properties/attachments/revisions; native cached data, pending-edit journal and local lexical index. Markdown is interchange, not the working store. |
 | **ArcScope** | **Project-centric hybrid** | A clearly identifiable project store: manifest, canonical metadata, a chunked capture store, managed assets, recovery state, derived caches. |
-| **ArcSlate** | **Project-centric hybrid** | A project store plus media references and managed media plus derived stores. **Original media is never inserted into the core database.** |
 
 ### 3.1 Authority and native working content
 
 | Product | Native durable content | Cloud authority |
 |---|---|---|
-| ArcNotes | Cached acknowledged documents/attachments, stable pending edits and attachment uploads, local lexical index, device UI state | Acknowledged revisions, synced attachments, history, trash, semantic index and export jobs |
 | Application assistant | App-owned local histories/drafts, cached Cloud histories, permission and tool receipts | Opted-in Cloud histories; execution/automation metadata and usage; temporary/local bodies never become canonical Cloud Chat |
 | ArcScope | Project metadata, hardware captures/chunks, analysis and recovery state; downloaded synthetic capture | Synced metadata and explicitly uploaded raw data; simulator scenarios, runs and committed output manifests |
-| ArcSlate | Project/edit store, managed/external media references, recovery and revision state; derived proxies/caches | Synced project revisions and explicitly selected media |
 
 Pending edits, attachment bytes awaiting upload and unacknowledged tool receipts are not evictable cache. They survive restart, outage and service expiry until acknowledged or explicitly discarded. Evicting acknowledged downloaded content never creates a new domain revision. Cloud loss cannot be disguised by promoting a stale client projection into unrestricted server authority.
 
@@ -83,7 +79,7 @@ Pending edits, attachment bytes awaiting upload and unacknowledged tool receipts
 
 ## 4. Working store versus portable package
 
-These package requirements apply to the Scope/Slate native formats and any explicitly offered package. They do not create a Notes/Chat local archive obligation.
+These package requirements apply to the Scope native formats and any explicitly offered package. They do not create a Chat local archive obligation.
 
 | # | Requirement |
 |---|---|
@@ -92,7 +88,7 @@ These package requirements apply to the Scope/Slate native formats and any expli
 | <a id="rule-ws-03"></a>WS-03 | **Portable export may produce a single-file archive** when the user asks for one; a folder bundle is equally valid. |
 | <a id="rule-ws-04"></a>WS-04 | **A portable bundle always contains a manifest**: format version, product and writer version, contents inventory, resource identities, integrity information, and the round-trip level. |
 | <a id="rule-ws-05"></a>WS-05 | **The manifest must be readable without loading the whole project**, so a tool can inspect, validate and plan before committing to a full read. |
-| <a id="rule-ws-06"></a>WS-06 | **The manifest is not a second copy of the project content.** It describes; it does not duplicate a timeline or a document body. |
+| <a id="rule-ws-06"></a>WS-06 | **The manifest is not a second copy of the project content.** It describes; it does not duplicate a session's data or a report body. |
 
 ---
 
@@ -195,18 +191,14 @@ Four permanently separate concepts ([I-201](01-normative-glossary-and-invariants
 | <a id="rule-er-02"></a>ER-02 | **A portable project must not depend on the original machine's absolute paths.** A missing external resource is an explicit, recoverable state ([AS-04](03-cloud-services-and-sync.md#rule-as-04)). |
 | <a id="rule-er-03"></a>ER-03 | **Managed assets inside a project use relative positions**, so the bundle moves intact. |
 | <a id="rule-er-04"></a>ER-04 | **External file changes are detected**, using a fingerprint that need not rehash an enormous file every time — size, timestamp, sampled content and recorded hash together are sufficient to detect meaningful change and to trigger a full verification when warranted. |
-| <a id="rule-er-05"></a>ER-05 | **`ArcSlate` timeline clip identity never changes because a file changed** ([I-477](01-normative-glossary-and-invariants.md#rule-i-477)). Clip identity binds to the media asset identity, not the bytes. |
 
 ### 10.1 External editing boundaries
 
 | # | Requirement |
 |---|---|
-| <a id="rule-ee-01"></a>EE-01 | **V1 performs no real-time bidirectional mirroring of an external Markdown folder.** The boundary is explicit rather than accidentally half-working. |
 | <a id="rule-ee-02"></a>EE-02 | **A managed attachment may be opened externally** with an external application, and the change flows back through a controlled re-import — never by an external process writing into the internal store. |
 | <a id="rule-ee-03"></a>EE-03 | **An external editor must never modify the internal store directly.** That is a corruption interface, not a feature. |
-| <a id="rule-ee-04"></a>EE-04 | A linked Markdown workspace or Git-backed notebook mode is excluded from the current delivery. Explicit Markdown import does not establish a second live writer. |
 | <a id="rule-ee-05"></a>EE-05 | **A finalised ArcScope capture does not follow external file changes.** Choosing to link or replay an external source produces a new source revision or import state. |
-| <a id="rule-ee-06"></a>EE-06 | **ArcSlate media may always be external**; external subtitle or metadata files may have an explicit linked mode that watches for changes. |
 
 ### 10.2 Single writer authority
 
@@ -242,10 +234,8 @@ The product scope determines which exports exist:
 
 | Product | Required portability |
 |---|---|
-| ArcNotes | Cloud Markdown export with selected attachments, hierarchy/property metadata and fidelity manifest; Markdown/text import under the Notes requirements |
 | Application assistant | Local assistant-history.v1 plus optional Markdown; Cloud conversation JSON/text/task summaries and resource availability manifest; temporary content has no automatic archive |
 | ArcScope | Native investigation bundle, CSV/JSON and report outputs; simulator provenance retained |
-| ArcSlate | Native project/collect package, rendered media/subtitles, and canonical .otio in both directions ([OT-01](products/arcslate.md#rule-ot-01)–[OT-12](products/arcslate.md#rule-ot-12)) |
 
 The following classes describe an offered export; they do not require every product to implement all three:
 
@@ -264,8 +254,7 @@ The following classes describe an offered export; they do not require every prod
 | <a id="rule-ex-05"></a>EX-05 | Exports bind a consistent revision snapshot and declare scope/history/attachment availability. Full archival history export is not a universal requirement; product-specific supported choices must not silently imply omitted history is included. |
 | <a id="rule-ex-06"></a>EX-06 | **Managed assets are included by default** in a native export; the user may exclude them. |
 | <a id="rule-ex-07"></a>EX-07 | **External resources are excluded by default**, with an explicit "collect external assets into the export" option ([EX-04](03-cloud-services-and-sync.md#rule-ex-04) in the cloud requirements). |
-| <a id="rule-ex-08"></a>EX-08 | **ArcSlate "collect project"** and **ArcScope "collect investigation bundle"** are first-class operations under this architecture: they gather the project, its managed assets and, on request, its external references into a portable bundle, without destroying the originals. |
-| <a id="rule-ex-09"></a>EX-09 | ArcNotes portability is its Cloud-produced Markdown, attachments and metadata/fidelity manifest under [EP-01](products/arcnotes.md#rule-ep-01)–[EP-04](products/arcnotes.md#rule-ep-04). A local native/encrypted archive, DOCX import, Git projection or PDF/HTML export engine is not required. |
+| <a id="rule-ex-08"></a>EX-08 | **ArcScope "collect investigation bundle"** is a first-class operation under this architecture: it gathers the project, its managed assets and, on request, its external references into a portable bundle, without destroying the originals. |
 | <a id="rule-ex-10"></a>EX-10 | Every export excludes credentials, private deployment policy and unselected source data. ArcChat exports only authorized conversation/task summaries and selected artifacts. |
 | <a id="rule-ex-11"></a>EX-11 | **Export ≠ Backup** ([I-210](01-normative-glossary-and-invariants.md#rule-i-210)). Export is portability; backup is recovery. |
 
@@ -292,17 +281,15 @@ Maximum encoded record is 64 KiB. Unknown additive fields are preserved inert; i
 | Existing content/output | Required carrier |
 |---|---|
 | Chat / Harness output | Typed `contentOrigin` on durable message parts and iteration-output parts; a stream header carries origin kinds before deltas, with final origin/hash on durable publication |
-| Notes document / attachment | Origin on each block payload and attachment reference, retained in document revisions, pending edits, sync, checkpoints and restore; document summary is the union |
-| Scope / Slate native content | Origin on report sections, authored findings and media assets/derived output where applicable; native package metadata and manifest inventory retain the records. Raw instrument/simulator provenance is separate and cannot be relabelled AI merely because an agent invoked a tool |
-| Notes Markdown / Chat JSON or text download | Cloud export manifest inventories content units and origin records with the acknowledged input snapshot. Each output file is hash-bound; embedded structured records may additionally carry the same profile |
-| CSV, text, subtitles, report presentation files and rendered media | `<output-name>.arcforges-origin.json` containing the output hash, profile, union and selected unit records. A renderer inherits the contributing assets' kinds; optional container tags are supplementary |
-| OTIO | `metadata.arcforges.contentOrigin` on represented objects plus the same export sidecar, with final file hash. Unknown metadata is preserved according to the existing OTIO fidelity contract |
+| Scope native content | Origin on report sections, authored findings and media assets/derived output where applicable; native package metadata and manifest inventory retain the records. Raw instrument/simulator provenance is separate and cannot be relabelled AI merely because an agent invoked a tool |
+| Chat JSON or text download | Cloud export manifest inventories content units and origin records with the acknowledged input snapshot. Each output file is hash-bound; embedded structured records may additionally carry the same profile |
+| CSV, text and report presentation files | `<output-name>.arcforges-origin.json` containing the output hash, profile, union and selected unit records. A renderer inherits the contributing assets' kinds; optional container tags are supplementary |
 
 Export origin IDs are local to that export, with an explicit stable mapping inside the manifest. Include parent references only for selected exported records and account for omitted parents. Marking carries no user/workspace/device IDs, prompts, private provider/configuration values, absolute paths, secrets or unselected source data. Import maps export-local IDs to new local origin records and retains the declared kinds and import provenance.
 
-**Atomic deliverable.** Stage and verify output plus required manifest/sidecars before publication. A multi-file export is one directory bundle published by atomic rename, or one ZIP containing those files published atomically; a raw single-file shortcut that omits a required carrier is refused. No cancellation/crash may expose a complete-looking output without its marker. Native packages include the carrier internally. Validation failure leaves a recoverable staged job, not a completed export. This changes the carrier of existing exports; it adds no Notes PDF/HTML engine or Notes/Chat native archive.
+**Atomic deliverable.** Stage and verify output plus required manifest/sidecars before publication. A multi-file export is one directory bundle published by atomic rename, or one ZIP containing those files published atomically; a raw single-file shortcut that omits a required carrier is refused. No cancellation/crash may expose a complete-looking output without its marker. Native packages include the carrier internally. Validation failure leaves a recoverable staged job, not a completed export. This changes the carrier of existing exports; it adds no PDF/HTML export engine or Chat native archive.
 
-**Conformance.** Verify payload bytes against each record, the enclosing kind union, parent truncation accounting, privacy exclusions, unknown-field preservation and unsupported-writer refusal. Run generation→save→copy/edit→export/import vectors from the security profile, including mixed report sections, media/OTIO propagation and failed/partial publication. Compare imported declarations as declarations, not externally authenticated authorship.
+**Conformance.** Verify payload bytes against each record, the enclosing kind union, parent truncation accounting, privacy exclusions, unknown-field preservation and unsupported-writer refusal. Run generation→save→copy/edit→export/import vectors from the security profile, including mixed report sections, media propagation and failed/partial publication. Compare imported declarations as declarations, not externally authenticated authorship.
 
 ---
 
@@ -342,14 +329,14 @@ No product must ship Git synchronization, repository projection, linked-reposito
 
 ## 15. Backup and restore
 
-Native backup UX here applies to Scope/Slate project data. Notes/Chat use Cloud operator recovery and protected native pending-change durability; custom local-store encryption, encrypted export and end-to-end encryption are excluded. TLS, encrypted server storage/backups and system secret storage remain mandatory.
+Native backup UX here applies to Scope project data. Chat uses Cloud operator recovery and protected native pending-change durability; custom local-store encryption, encrypted export and end-to-end encryption are excluded. TLS, encrypted server storage/backups and system secret storage remain mandatory.
 
 | # | Requirement |
 |---|---|
 | <a id="rule-bk-01"></a>BK-01 | **Backup ≠ Export** ([I-210](01-normative-glossary-and-invariants.md#rule-i-210)). |
 | <a id="rule-bk-02"></a>BK-02 | **A backup must never copy an open database file directly.** A consistent snapshot is required; copying a live file yields an inconsistent backup. |
-| <a id="rule-bk-03"></a>BK-03 | Scope/Slate native project backups use consistent manifest snapshots and incremental content. Notes/Chat disaster recovery is the Cloud operator backup/restore contract; durable pending-change recovery remains native, not a user-managed full local backup product. |
-| <a id="rule-bk-04"></a>BK-04 | ArcSlate large media may be included in a backup, and the collect-project operation is the supported route for a self-contained copy. |
+| <a id="rule-bk-03"></a>BK-03 | Scope native project backups use consistent manifest snapshots and incremental content. Chat disaster recovery is the Cloud operator backup/restore contract; durable pending-change recovery remains native, not a user-managed full local backup product. |
+| <a id="rule-bk-04"></a>BK-04 | **ArcScope** large captures may be included in a backup, and the collect-investigation-bundle operation is the supported route for a self-contained copy. |
 | <a id="rule-bk-05"></a>BK-05 | **Backup integrity is validated** — the backup is verified, not merely written ([BK-06](03-cloud-services-and-sync.md#rule-bk-06) in the cloud requirements). |
 | <a id="rule-bk-06"></a>BK-06 | **Restore must not overwrite an open project in place.** It restores to a new location or requires the project to be closed, with explicit confirmation. |
 
@@ -393,7 +380,7 @@ Native backup UX here applies to Scope/Slate project data. Notes/Chat use Cloud 
 
 ## 19. Acceptance scenarios
 
-**Cloud/cache** — offline edits and pending uploads survive cache pressure and restart; another device receives only acknowledged revisions; Cloud export identifies pending local content not yet included. Simulator chunks and OTIO imports follow their product-specific commit/fidelity rules.
+**Cloud/cache** — offline edits and pending uploads survive cache pressure and restart; another device receives only acknowledged revisions; Cloud export identifies pending local content not yet included. Simulator chunks follow their product-specific commit/fidelity rules.
 
 **Durability** — kill after save, OS crash, disk full, corrupted store, interrupted migration, application downgrade; in every case, everything reported saved is present.
 
@@ -417,7 +404,7 @@ Native backup UX here applies to Scope/Slate project data. Notes/Chat use Cloud 
 
 **Portability** — a bundle moves between platforms with reserved names deterministically mapped, Unicode normalisation not changing identity, and line-ending changes not creating new resources.
 
-**Excluded paths** — no notebook local archive/encryption, DOCX import or repository-projection delivery is inferred from generic portability rules. Required Scope/Slate exports, OTIO and native recovery remain covered.
+**Excluded paths** — no local archive/encryption, DOCX import or repository-projection delivery is inferred from generic portability rules. Required Scope exports and native recovery remain covered.
 
 **Backup and restore** — a backup of an open store is consistent; integrity is validated; restore does not overwrite an open project.
 

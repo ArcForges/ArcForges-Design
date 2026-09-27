@@ -67,7 +67,7 @@ Its job is **Discover → Understand → Download**, then **Upgrade to Cloud**.
 | <a id="rule-ms-01"></a>MS-01 | Discovery and direct download require no account. Product pages accurately separate native offline operations from Cloud account, service and AI requirements; download is never gated by purchase. |
 | <a id="rule-ms-02"></a>MS-02 | **Downloading never requires an account** ([C-05](../00-product-scope-and-portfolio.md#rule-c-05)). |
 | <a id="rule-ms-03"></a>MS-03 | First-level navigation is fixed: **Products · Cloud · Pricing · Download · Open Source · Docs**, with **Sign In** and a primary download action. |
-| <a id="rule-ms-04"></a>MS-04 | The home page states that product source is open, Cloud is authoritative for subscribed AI and synchronized content, and operator deployment values are private. It must not imply account-free local AI or a permanent standalone ArcNotes service. |
+| <a id="rule-ms-04"></a>MS-04 | The home page states that product source is open, Cloud is authoritative for subscribed AI and synchronized content, and operator deployment values are private. It must not imply account-free local AI or a permanent standalone offline service. |
 | <a id="rule-ms-05"></a>MS-05 | **Every product has a page on a unified template**: what it is, who it is for, key capabilities, screenshots or demo, platform support, system requirements, download, documentation link, open-source link, and how the cloud enhances it. |
 | <a id="rule-ms-06"></a>MS-06 | **Product pages must never advertise a superseded product name.** `ArcCanvas`, `ArcMusic`, `ArcImage` and `ArcVideo` do not appear (**[D-002](../../decisions/phase-1-foundation-decisions.md#rule-d-002)**). |
 | <a id="rule-ms-07"></a>MS-07 | **A unified Download Center** presents every product, platform, architecture, package format, version, release channel, hash and signature information, and system requirements — from **one source of truth**. |
@@ -124,7 +124,7 @@ Its job is **Discover → Understand → Download**, then **Upgrade to Cloud**.
 
 | # | Requirement |
 |---|---|
-| <a id="rule-ap-01"></a>AP-01 | **The portal manages the cloud; it does not edit ArcNotes documents, ArcScope sessions or ArcSlate projects.** |
+| <a id="rule-ap-01"></a>AP-01 | **The portal manages the cloud; it does not edit ArcScope sessions.** |
 | <a id="rule-ap-02"></a>AP-02 | **Every high-privilege operation lives here**: account, security, account deletion, billing, device revocation, remote-access grants (`§12` of the identity requirements). |
 | <a id="rule-ap-03"></a>AP-03 | **In-product account interfaces stay lightweight** and link here (`§12` there). |
 | <a id="rule-ap-04"></a>AP-04 | **Account deletion is available in the portal** and separately in every product, as required by store policy (`§10` there). |
@@ -144,7 +144,7 @@ Specified in [`arcchat-mobile-and-web.md`](arcchat-mobile-and-web.md). Two bound
 | # | Requirement |
 |---|---|
 | <a id="rule-cw-01"></a>CW-01 | **Web companion and the account portal are strictly separate** ([WP-01](../../planning/work-packages/01-repository-reconciliation-and-target-layout.md#rule-wp-01) there), even though both are deployments of one codebase. Separate origins, separate cookies, separate authorization posture. |
-| <a id="rule-cw-02"></a>CW-02 | **Web companion must not become an ArcNotes web editor** ([AR-02](arcchat-mobile-and-web.md#rule-ar-02) there). |
+| <a id="rule-cw-02"></a>CW-02 | **Web companion must not become an ArcScope web editor** ([AR-02](arcchat-mobile-and-web.md#rule-ar-02) there). |
 
 ---
 
@@ -213,12 +213,12 @@ Each must be complete and testable:
 
 1. **Discover → product page → download**, with no account.
 2. **Download → install → native product entry**, with honest sign-in requirements; cached work and native capture/render operate under their product-specific offline contract.
-3. **Sign up → create passkey → single-owner workspace → activate service → synchronized work**, with explicit native raw-media/capture upload choices.
+3. **Sign up → create passkey → single-owner workspace → activate service → synchronized work**, with explicit native raw-capture upload choices.
 4. **Pricing → sign in → checkout → confirming → entitlement active** (`§4` of the commerce requirements).
 5. **Sign in → account portal → manage storage, AI, devices, remote access, security, billing.**
 6. **Enable remote access on desktop → manage per-capability grants in the portal → approve from a companion surface.**
 7. **Export workspace data → download.**
-8. **Delete selected Cloud data**, or **delete account**, with a retention/propagation preview and protection of unsent work. Deletion semantics distinguish device caches from independent native capture/media files.
+8. **Delete selected Cloud data**, or **delete account**, with a retention/propagation preview and protection of unsent work. Deletion semantics distinguish device caches from independent native capture files.
 9. **Read documentation for a specific product version.**
 10. **Check status during an incident**, on infrastructure independent of the cloud.
 11. **Report a security issue** through the private route.
@@ -228,7 +228,7 @@ Each must be complete and testable:
 
 ## 9. Non-goals
 
-The web presence is **not**: an ArcNotes, ArcScope or ArcSlate web editor; a second account application at a secondary path; a public content-sharing platform in V1; a public roadmap commitment system; a heavy client application on public marketing pages.
+The web presence is **not**: an ArcScope web editor; a second account application at a secondary path; a public content-sharing platform in V1; a public roadmap commitment system; a heavy client application on public marketing pages.
 
 ---
 

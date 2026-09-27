@@ -5,7 +5,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: A — Freeze and foundation
-> Upstream: None · Downstream: `01` · `47`
+> Scheduling: this package is an obligation set; its delivery tasks and their typed prerequisites are listed in section 9, generated from the [delivery graph](../delivery/delivery-graph.json) under [P2-018](../../decisions/phase-2-specification-decisions.md#rule-p2-018).
 
 > **Goal.** Make the vocabulary, the product set, the licence position and the reuse process *settled facts* before any code is written against them. This is the first hard gate: if naming, terminology, licence boundaries or product scope move later, editors, data formats, capabilities and cloud sync all rework.
 
@@ -34,7 +34,7 @@
 | Input | Why it matters |
 |---|---|
 | [`../../decisions/phase-1-foundation-decisions.md`](../../decisions/phase-1-foundation-decisions.md) | [D-001](../../decisions/phase-1-foundation-decisions.md#rule-d-001) … [D-023](../../decisions/phase-1-foundation-decisions.md#rule-d-023) are binding and are not reopened here |
-| [`../../requirements/00-product-scope-and-portfolio.md`](../../requirements/00-product-scope-and-portfolio.md) | The three desktop products, companion identity and assistant feature boundary, the technology constitution and the closed exception list |
+| [`../../requirements/00-product-scope-and-portfolio.md`](../../requirements/00-product-scope-and-portfolio.md) | ArcScope as the one desktop application, companion identity and assistant feature boundary, the technology constitution and the closed exception list |
 | [`../../requirements/01-normative-glossary-and-invariants.md`](../../requirements/01-normative-glossary-and-invariants.md) | The glossary and invariant catalogue this package makes enforceable |
 | [`../../assurance/reference-coverage-and-provenance.md`](../../assurance/reference-coverage-and-provenance.md) | The matrix method, the ten-field provenance record and the licence decision table |
 | [`../../assurance/reference-coverage/`](../../assurance/reference-coverage/README.md) | **The five completed matrices** — versioned planning inputs, not work to be done |
@@ -49,8 +49,7 @@
 
 | # | Rule |
 |---|---|
-| <a id="rule-br-01"></a>BR-01 | **The desktop product baseline is exactly ArcNotes, ArcScope and ArcSlate** under **[P2-012](../../decisions/phase-2-specification-decisions.md#rule-p2-012)** and **[P2-013](../../decisions/phase-2-specification-decisions.md#rule-p2-013)**. ArcChat names the embedded assistant/companion feature; it is not a fourth executable or product ID. The fourth allowed wire ProductId, `companion`, belongs to Android/Web. `ArcCanvas`, `ArcMusic`, `ArcImage` and `ArcVideo` are superseded and must never appear as current products. |
-| <a id="rule-br-02"></a>BR-02 | **`ArcVideo` and `ArcVideoFoundation` remain valid only as the names of existing reference repositories** (**[D-012](../../decisions/phase-1-foundation-decisions.md#rule-d-012)**), never as products. |
+| <a id="rule-br-01"></a>BR-01 | **The desktop product baseline is exactly ArcScope** under **[P2-012](../../decisions/phase-2-specification-decisions.md#rule-p2-012)** and **[P2-013](../../decisions/phase-2-specification-decisions.md#rule-p2-013)**. ArcChat names the embedded assistant/companion feature; it is not a second executable or product ID. The second allowed wire ProductId, `companion`, belongs to Android/Web. `ArcCanvas`, `ArcMusic`, `ArcImage` and `ArcVideo` are superseded and must never appear as current products. |
 | <a id="rule-br-03"></a>BR-03 | **Paddle is the sole customer-facing Merchant of Record; Payoneer is a payout destination only** (**[D-005](../../decisions/phase-1-foundation-decisions.md#rule-d-005)**). The superseded provider name never appears. |
 | <a id="rule-br-04"></a>BR-04 | **One canonical definition per shared family term; product-specific meanings are namespaced** (**[D-018](../../decisions/phase-1-foundation-decisions.md#rule-d-018)**). |
 | <a id="rule-br-05"></a>BR-05 | **Every accepted `X ≠ Y` invariant is preserved** (**[D-018](../../decisions/phase-1-foundation-decisions.md#rule-d-018)**) and becomes enforceable. |
@@ -60,7 +59,6 @@
 | <a id="rule-br-09"></a>BR-09 | **A repository-root licence must not be assumed to cover every file** (**[D-013](../../decisions/phase-1-foundation-decisions.md#rule-d-013)**). |
 | <a id="rule-br-10"></a>BR-10 | **The technical exception list is closed** (`§8.1` of the scope requirements). Adding to it requires a formal decision. |
 | <a id="rule-br-11"></a>BR-11 | **The ArcChat AOT position is settled**: the owning desktop application is a Native AOT deliverable like the other desktop products (**[D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008)**). Any residual corpus text suggesting otherwise is stale. |
-| <a id="rule-br-12"></a>BR-12 | **ArcNotes scope is the notebook core, bounded typed properties, saved list/table views, references and cloud sync** (**[D-006](../../decisions/phase-1-foundation-decisions.md#rule-d-006)** as amended by **[P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006)**, 2026-09-06). Edgeless, slides and further database layouts are **excluded from delivery**, with no mandatory future hook. |
 
 ---
 
@@ -89,9 +87,9 @@
 
 ### WP-00.00 — Product and naming freeze
 
-**What must be fully done.** Contracts owns the single machine-readable `eng/policy/product-names.json`, following the [naming policy](../../architecture/28-product-naming-policy.md). List the three desktop products, the `companion` wire identity and the separately owned `assistant` feature, with canonical IDs, display names, reserved namespaces and file-association identifiers (explicitly empty where no native format is owned). Record superseded names as forbidden, the narrow reference-repository exception ([BR-02](#rule-br-02)), and historical dispositions without creating runtime aliases. Preserve observed package/application identities and the already scheduled WP30 Android prerelease migration.
+**What must be fully done.** Contracts owns the single machine-readable `eng/policy/product-names.json`, following the [naming policy](../../architecture/28-product-naming-policy.md). List ArcScope as the desktop product, the `companion` wire identity and the separately owned `assistant` feature, with canonical IDs, display names, reserved namespaces and file-association identifiers (explicitly empty where no native format is owned). Record superseded names as forbidden and historical dispositions without creating runtime aliases. Preserve observed package/application identities and the already scheduled WP30 Android prerelease migration.
 
-**Testing requirements.** Run the Contracts-owned scanner over Git-tracked paths and file contents in all nine implementation repositories, including generated source, configuration, resource strings and implementation documentation. Include non-ignored new files during local validation. Validate the naming policy itself as closed-schema enforcement data, not an arbitrary excluded file. Only exact, hash-bound provenance records may admit the two reference-repository names; no directory-wide, source-code or historical-document exemptions. Test mixed case, identifier substrings, UTF-16 resources, forbidden paths, policy tampering, missing files and invalid/stale exceptions. Record each repository commit and working-tree state. Contracts CI runs the scanner and its negative tests; family-wide automatic build enforcement remains WP02/WP05, without postponing the current nine-repository scan.
+**Testing requirements.** Run the Contracts-owned scanner over Git-tracked paths and file contents in all seven implementation repositories, including generated source, configuration, resource strings and implementation documentation. Include non-ignored new files during local validation. Validate the naming policy itself as closed-schema enforcement data, not an arbitrary excluded file. Test mixed case, identifier substrings, UTF-16 resources, forbidden paths, policy tampering, missing files and invalid/stale exceptions. Record each repository commit and working-tree state. Contracts CI runs the scanner and its negative tests; family-wide automatic build enforcement remains WP02/WP05, without postponing the current seven-repository scan.
 
 **Completion gate.** The scan runs clean, and the exception list is reviewed and minimal.
 
@@ -125,7 +123,7 @@
 
 **What must be fully done.** The provenance record template implementing the ten fields of **[D-013](../../decisions/phase-1-foundation-decisions.md#rule-d-013)** exists, with a storage location, a naming convention and a review step. The licence decision table is encoded as policy data. The process states who may approve a disposition, and what happens on discovery of a conflicting contribution — registered and returned for decision, never silently excepted ([BR-07](#rule-br-07)).
 
-Apply the [current-repository implementation profile](../../assurance/reference-coverage-and-provenance.md#31-current-repository-implementation-profile) and [review responsibilities](../../assurance/reference-coverage-and-provenance.md#43-review-responsibility-and-conflicts) in all nine owners. The initial audit reconciles existing wrappers, generated material, patches and retained notices with explicit source evidence; the completed reference matrices' absence of proposed reuse does not exempt those files. Preserve historical records and existing artifact notice/closure gates.
+Apply the [current-repository implementation profile](../../assurance/reference-coverage-and-provenance.md#31-current-repository-implementation-profile) and [review responsibilities](../../assurance/reference-coverage-and-provenance.md#43-review-responsibility-and-conflicts) in all seven owners. The initial audit reconciles existing wrappers, generated material, patches and retained notices with explicit source evidence; the completed reference matrices' absence of proposed reuse does not exempt those files. Preserve historical records and existing artifact notice/closure gates.
 
 Include [material introduced only during packaging](../../assurance/reference-coverage-and-provenance.md#32-material-introduced-only-during-packaging). A clean tracked-file inventory cannot waive provenance for copied documentation/frontend resources in an actual distributable; verify the owning candidate and every affected companion archive.
 
@@ -135,19 +133,19 @@ For the existing native packages, apply the [native closure profile](../../assur
 
 **Completion gate.** The process exists, the template is in use for at least one real record, and the checks run in CI.
 
-**Recorded execution.** The [2026-09-19 implementation receipt](../../assurance/wp00-03-implementation-evidence.md) binds all nine owners to their reviewed merged revisions, published artifacts and required runtime evidence. It closes this substep for those revisions, without starting its siblings or satisfying later commercial gates.
+**Recorded execution.** The [2026-09-19 implementation receipt](../../assurance/wp00-03-implementation-evidence.md) binds all seven owners to their reviewed merged revisions, published artifacts and required runtime evidence. It closes this substep for those revisions, without starting its siblings or satisfying later commercial gates.
 
 <a id="rule-wp-00.04"></a>
 
 ### WP-00.04 — Register the completed reference matrices as versioned planning inputs
 
-> **Design-stage prerequisite already complete.** All five Reference Coverage Matrices were produced during the Stage 2 repair, before the plan was derived, as **[D-012](../../decisions/phase-1-foundation-decisions.md#rule-d-012)** and **[D-019](../../decisions/phase-1-foundation-decisions.md#rule-d-019)** require. They are in [`../../assurance/reference-coverage/`](../../assurance/reference-coverage/README.md): ArcChat/AionUi (30 rows), ArcNotes/AFFiNE+SiYuan (41), ArcScope/Serial-Studio (31), ArcSlate/ArcVideo+ArcVideoFoundation (31), distribution/StartArcForges (12). **[PG-01](../../assurance/open-gates-register.md#rule-pg-01) and [F-013](../../assurance/open-gates-register.md#rule-f-013) are closed** for the five accessible references. **This sub-step does not create a matrix.**
+> **Design-stage prerequisite already complete.** All three Reference Coverage Matrices were produced during the Stage 2 repair, before the plan was derived, as **[D-012](../../decisions/phase-1-foundation-decisions.md#rule-d-012)** and **[D-019](../../decisions/phase-1-foundation-decisions.md#rule-d-019)** require. They are in [`../../assurance/reference-coverage/`](../../assurance/reference-coverage/README.md): ArcChat/AionUi (30 rows), ArcScope/Serial-Studio (31), distribution/StartArcForges (12). **[PG-01](../../assurance/open-gates-register.md#rule-pg-01) and [F-013](../../assurance/open-gates-register.md#rule-f-013) are closed** for the three accessible references. **This sub-step does not create a matrix.**
 
 **What must be fully done.** Each matrix is registered as a **versioned planning input** under the [registration profile](../../assurance/reference-baseline-registration.md), with its exact Design document identity and bound source identity, so downstream packages consume a fixed baseline rather than re-reading a moving reference. The drift-check procedure is defined: what is compared against the recorded commit, what counts as newly introduced material, and who assesses it.
 
-**Testing requirements.** A registration check that all five matrices match their pinned Design documents, all six Git reference commits resolve in the registered repositories, and the non-Git packaged reference matches its observed-version and permitted-evidence registration; a real dry run of the drift check against one reference, plus rejection tests for changed or incomplete registrations.
+**Testing requirements.** A registration check that all three matrices match their pinned Design documents, both Git reference commits resolve in the registered repositories, and the non-Git packaged reference matches its observed-version and permitted-evidence registration; a real dry run of the drift check against one reference, plus rejection tests for changed or incomplete registrations.
 
-**Completion gate.** All five matrices are registered with verified bound identities (six resolvable Git commits and the non-Git packaged observation), and the drift-check procedure is defined and exercised once. **No unresolved determination is carried forward** — the one that existed, [OC-01](../../assurance/open-gates-register.md#rule-oc-01), was closed by user decision on 2026-09-05 ([P2-005](../../decisions/phase-2-specification-decisions.md#rule-p2-005)), which amended **[D-012](../../decisions/phase-1-foundation-decisions.md#rule-d-012)**'s ArcSlate reference line to ArcVideo and ArcVideoFoundation ([`../../assurance/open-gates-register.md`](../../assurance/open-gates-register.md) `§6`).
+**Completion gate.** All three matrices are registered with verified bound identities (two resolvable Git commits and the non-Git packaged observation), and the drift-check procedure is defined and exercised once. **No unresolved determination is carried forward** across the three matrices ([`../../assurance/open-gates-register.md`](../../assurance/open-gates-register.md) `§6`).
 
 **Recorded execution.** [Implementation and post-merge evidence](../../assurance/wp00-04-implementation-evidence.md) records the reviewed changes, immutable source identities, exercised drift procedure and verified automatic publications.
 
@@ -156,18 +154,18 @@ For the existing native packages, apply the [native closure profile](../../assur
 ### WP-00.05 — Stale-claim reconciliation
 
 
-**What must be fully done.** Apply the current naming/scope/runtime authority to implementation repository manifests and policies: three professional desktop AOT products with embedded assistants, Native AOT Cloud, React Web, Kotlin/Jetpack Compose Mobile and CF-only Harness. Record the nine implementation repository owners and retired implementation scaffold dispositions under the [runtime and ownership profile](../../architecture/30-runtime-and-source-ownership-policy.md); Design remains the separate documentation authority. Historical evidence stays bound to its observed date/revision and cannot override the accepted design.
+**What must be fully done.** Apply the current naming/scope/runtime authority to implementation repository manifests and policies: the ArcScope professional desktop AOT product with its embedded assistant, Native AOT Cloud, React Web, Kotlin/Jetpack Compose Mobile and CF-only Harness. Record the seven implementation repository owners and retired implementation scaffold dispositions under the [runtime and ownership profile](../../architecture/30-runtime-and-source-ownership-policy.md); Design remains the separate documentation authority. Historical evidence stays bound to its observed date/revision and cannot override the accepted design.
 
 **Testing requirements.** Repository-policy checks reject superseded product/provider names outside registered reference provenance, old runtime configuration and unassigned source ownership. Verify actual current roots, structured build/runtime inputs and negative fixtures using the profile; preserve the current package examples and explicitly assigned later migrations.
 
 **Completion gate.** Implementation policy data matches current formal decisions; no new scope or architecture decision is delegated to downstream packages.
 
-**Recorded execution.** [Implementation and post-merge evidence](../../assurance/wp00-05-implementation-evidence.md) binds the current nine-owner policy, reviewed claim corrections, actual source/build checks, public packages and real Cloud/AI deployment results. Later product gates retain their assigned owners.
+**Recorded execution.** [Implementation and post-merge evidence](../../assurance/wp00-05-implementation-evidence.md) binds the current seven-owner policy, reviewed claim corrections, actual source/build checks, public packages and real Cloud/AI deployment results. Later product gates retain their assigned owners.
 
 <a id="rule-wp-00.90"></a>
 ### WP-00.90 — Verify the owned artifact and real integration
 
-**What must be fully done.** Assemble the owned deliverables from the preceding substeps under the selected repository, package, runtime and protocol authorities. Enforce the nine-repository, proto, AOT, Android, CF/R2 amendment. Carry licence boundaries and current product exclusions. Reconcile old implementation instructions as historical inputs; preserve the design-repair baseline.
+**What must be fully done.** Assemble the owned deliverables from the preceding substeps under the selected repository, package, runtime and protocol authorities. Enforce the seven-repository, proto, AOT, Android, CF/R2 amendment. Carry licence boundaries and current product exclusions. Reconcile old implementation instructions as historical inputs; preserve the design-repair baseline.
 
 **Execution order.** Follow [staged artifact integration](../README.md#staged-artifact-integration): consume only existing assigned producers, publish an owned capability candidate before its product consumer, and verify the declared stage against exact upstream artifacts. Record pending later owners and their closing gates; local mocks cover only that named test boundary.
 
@@ -175,7 +173,7 @@ For the existing native packages, apply the [native closure profile](../../assur
 
 **Completion gate.** A named authority/licence/runtime/ownership table, with each repository's instructions derived from the revised design. No archived-input or old implementation document becomes authority. Record exact artifacts and provider reality. The package is incomplete if an important contract/owner/recovery rule still requires design during coding.
 
-**Recorded execution.** [WP00 stage acceptance](../../assurance/wp00-stage-acceptance.md) and its [exact closure receipt](../../assurance/wp00-stage-acceptance.json) verify the six preceding substeps, all nine instruction/owner/licence/runtime assignments, source policies, fixed candidates and actual evidence limits. This closes the WP00 stage; later product and commercial gates remain with their named owners.
+**Recorded execution.** [WP00 stage acceptance](../../assurance/wp00-stage-acceptance.md) and its [exact closure receipt](../../assurance/wp00-stage-acceptance.json) verify the six preceding substeps, all seven instruction/owner/licence/runtime assignments, source policies, fixed candidates and actual evidence limits. This closes the WP00 stage; later product and commercial gates remain with their named owners.
 
 ---
 
@@ -215,20 +213,28 @@ For the existing native packages, apply the [native closure profile](../../assur
 
 **All of the following, with recorded evidence:**
 
-1. The three desktop products, companion identity, assistant feature boundary and forbidden-name set are recorded in the single naming authority; the nine-repository scan runs clean.
+1. ArcScope as the one desktop product, companion identity, assistant feature boundary and forbidden-name set are recorded in the single naming authority; the seven-repository scan runs clean.
 2. The glossary and invariant catalogue exist as machine-readable policy data, consistent with the glossary document, with an enforcement mechanism assigned to every invariant.
 3. Every project declares an SPDX identifier and a licence boundary, and the reference-direction check passes.
 4. The provenance process exists, is encoded as policy data, and is in use for at least one real record.
-5. All five completed Reference Coverage Matrices are registered as versioned planning inputs under the [registration profile](../../assurance/reference-baseline-registration.md), with six resolvable Git commits and the non-Git packaged observation, and the drift-check procedure is defined and exercised once. [PG-01](../../assurance/open-gates-register.md#rule-pg-01) and [F-013](../../assurance/open-gates-register.md#rule-f-013) were closed by the design-stage evidence itself, not by this package.
+5. All three completed Reference Coverage Matrices are registered as versioned planning inputs under the [registration profile](../../assurance/reference-baseline-registration.md), with both resolvable Git commits and the non-Git packaged observation, and the drift-check procedure is defined and exercised once. [PG-01](../../assurance/open-gates-register.md#rule-pg-01) and [F-013](../../assurance/open-gates-register.md#rule-f-013) were closed by the design-stage evidence itself, not by this package.
 6. No stale runtime, licence or scope claim remains in the implementation repository.
 
 ---
 
 ## 9. Dependencies
 
-**Upstream:** none. Consume completed stage outputs.
+<!-- delivery-graph:begin (generated by Plan tools/delivery.py; do not edit) -->
 
-**Downstream:** `01` · `47`. Consumers use exact released artifacts.
+Scheduling is task-level under [P2-018](../../decisions/phase-2-specification-decisions.md#rule-p2-018). This package is an obligation set; it is satisfied when every task below is complete with its evidence. Prerequisites are typed task edges, never "all upstream packages complete".
+
+| Delivery task | Satisfies | Start prerequisites outside this package |
+|---|---|---|
+| [GOV.01](../delivery/lanes/governance.md#task-gov-01) | [WP-00.00](00-specification-naming-and-rights-freeze.md#rule-wp-00.00) (full)<br>[WP-00.01](00-specification-naming-and-rights-freeze.md#rule-wp-00.01) (full)<br>[WP-00.02](00-specification-naming-and-rights-freeze.md#rule-wp-00.02) (full)<br>[WP-00.03](00-specification-naming-and-rights-freeze.md#rule-wp-00.03) (full)<br>[WP-00.04](00-specification-naming-and-rights-freeze.md#rule-wp-00.04) (full)<br>[WP-00.05](00-specification-naming-and-rights-freeze.md#rule-wp-00.05) (full)<br>[WP-00.90](00-specification-naming-and-rights-freeze.md#rule-wp-00.90) (full) | none |
+
+**Consumers outside this package:** [CON.23](../delivery/lanes/contracts.md#task-con-23), [GOV.02](../delivery/lanes/governance.md#task-gov-02), [GOV.04](../delivery/lanes/governance.md#task-gov-04), [GOV.11](../delivery/lanes/governance.md#task-gov-11), [GOV.14](../delivery/lanes/governance.md#task-gov-14).
+
+<!-- delivery-graph:end -->
 
 ## Current source baseline and migration input
 

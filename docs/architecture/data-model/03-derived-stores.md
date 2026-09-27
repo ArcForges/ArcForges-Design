@@ -17,7 +17,7 @@ Every store here is **reconstructable from canonical data**. Deleting all of the
 | <a id="rule-ds-02"></a>DS-02 | **A derived store lives in a separate file or schema from canonical data**, so deletion is a single operation that cannot damage authority. |
 | <a id="rule-ds-03"></a>DS-03 | **A derived store is never the only copy of anything** ([XS-06](00-data-model-overview.md#rule-xs-06)). |
 | <a id="rule-ds-04"></a>DS-04 | **A derived store never syncs as authority.** It may be transported as a convenience, but the receiving device treats it as a cache with its own validity check. |
-| <a id="rule-ds-05"></a>DS-05 | **A rebuild is always available and always correct.** "Rebuild produces a different answer" is a defect, not a refresh ([WP-19.00](../../planning/work-packages/19-arcnotes-search-and-portability.md#rule-wp-19.00)). |
+| <a id="rule-ds-05"></a>DS-05 | **A rebuild is always available and always correct.** "Rebuild produces a different answer" is a defect, not a refresh ([WP-15.05](../../planning/work-packages/15-arcchat-conversation-core.md#rule-wp-15.05)). |
 | <a id="rule-ds-06"></a>DS-06 | The canonical transaction commits its durable journal/change-feed entry. Derived consumers run after commit, publish only a matching source-version result, and advance their cursor with that index update. Replay or rebuild repairs a crash between these transactions; derived rows never participate as canonical authority. |
 | <a id="rule-ds-07"></a>DS-07 | **Eviction is permitted at any time.** Nothing may hold a derived row's continued existence as an invariant. |
 
@@ -25,7 +25,7 @@ Every store here is **reconstructable from canonical data**. Deleting all of the
 
 ## 2. Local search index
 
-The lexical index over each product's **hydrated** content. **Works during a Cloud outage** ([BR-01](../../planning/work-packages/19-arcnotes-search-and-portability.md#rule-br-01) of [WP-19](../../planning/work-packages/19-arcnotes-search-and-portability.md#rule-wp-19)), which is outage tolerance rather than an account-free product: it indexes what the device has, and workspace-wide search is a Cloud operation.
+The lexical index over each product's **hydrated** content. **Works during a Cloud outage** ([WP-15.05](../../planning/work-packages/15-arcchat-conversation-core.md#rule-wp-15.05)), which is outage tolerance rather than an account-free product: it indexes what the device has, and workspace-wide search is a Cloud operation.
 
 ### `search_document`
 
@@ -33,7 +33,7 @@ The lexical index over each product's **hydrated** content. **Works during a Clo
 |---|---|---|
 | `search_doc_id` | `id` | **PK** |
 | `source_kind`, `source_id` | `text NN`, `id NN` | The canonical aggregate |
-| `source_version` | `json NN` | Discriminated version: Notes `(acked_rev, head_local_seq)`, native `content_rev`, or Cloud `rev`; exact equality with the current source is the staleness check |
+| `source_version` | `json NN` | Discriminated version: ArcScope metadata `(acked_rev, head_local_seq)`, native `content_rev`, or Cloud `rev`; exact equality with the current source is the staleness check |
 | `workspace_scope` | `id?` | For permission filtering |
 | `title` | `text NN` | |
 | `body` | `text NN` | Extracted plain text |
@@ -52,18 +52,18 @@ The lexical index over each product's **hydrated** content. **Works during a Clo
 | `offset_start`, `offset_end` | `int NN` | Character range within the block |
 | `content_fingerprint` | `text NN` | **Hash of the anchored text** |
 
-- **This is the citation anchor** ([WP-19.02](../../planning/work-packages/19-arcnotes-search-and-portability.md#rule-wp-19.02)). Resolution compares `content_fingerprint` against the current content: a match resolves exactly; a mismatch reports **invalid explicitly** rather than drifting to a nearby location.
+- **This is the citation anchor** ([WP-15.05](../../planning/work-packages/15-arcchat-conversation-core.md#rule-wp-15.05)). Resolution compares `content_fingerprint` against the current content: a match resolves exactly; a mismatch reports **invalid explicitly** rather than drifting to a nearby location.
 - `IX (search_doc_id, offset_start)`
 
 ### Update and rebuild
 
-Index work captures the typed source version and journal position with the content. Publishing an index result compares that token with the current source under a short store transaction; a stale job is discarded/requeued. Rebuild uses a fixed source snapshot followed by journal catch-up. A Notes pending edit, conflict rebase or acknowledgement changes the token even when the acknowledged content revision alone would not reveal the edit. Native jobs and caches use their immutable local content revision; Cloud retrieval never treats a device token as an acknowledged revision.
+Index work captures the typed source version and journal position with the content. Publishing an index result compares that token with the current source under a short store transaction; a stale job is discarded/requeued. Rebuild uses a fixed source snapshot followed by journal catch-up. An ArcScope metadata pending edit, conflict rebase or acknowledgement changes the token even when the acknowledged content revision alone would not reveal the edit. Native jobs and caches use their immutable local content revision; Cloud retrieval never treats a device token as an acknowledged revision.
 
 | # | Rule |
 |---|---|
-| <a id="rule-si-01"></a>SI-01 | The index consumes the durable journal. Its result is published only if the source-version token still matches the body analysed; the index checkpoint commits with that result. A crash may leave a detectable lag, which replay repairs ([WP-19.00](../../planning/work-packages/19-arcnotes-search-and-portability.md#rule-wp-19.00)); no claim of instantaneous cross-store consistency is made. |
+| <a id="rule-si-01"></a>SI-01 | The index consumes the durable journal. Its result is published only if the source-version token still matches the body analysed; the index checkpoint commits with that result. A crash may leave a detectable lag, which replay repairs ([WP-15.05](../../planning/work-packages/15-arcchat-conversation-core.md#rule-wp-15.05)); no claim of instantaneous cross-store consistency is made. |
 | <a id="rule-si-02"></a>SI-02 | **A full rebuild scans canonical content in aggregate order** and produces an index equivalent to the incremental one. Equivalence is asserted, not assumed. |
-| <a id="rule-si-03"></a>SI-03 | **Permission is applied at query evaluation**, so a refused document affects neither results nor counts ([WP-19.01](../../planning/work-packages/19-arcnotes-search-and-portability.md#rule-wp-19.01)). The index does not store a permission decision, because permission can change without the content changing. |
+| <a id="rule-si-03"></a>SI-03 | **Permission is applied at query evaluation**, so a refused document affects neither results nor counts ([WP-40.03](../../planning/work-packages/40-knowledge-search-and-retrieval.md#rule-wp-40.03)). The index does not store a permission decision, because permission can change without the content changing. |
 
 ---
 
@@ -103,15 +103,8 @@ Separate from lexical search, and subject to the **same permission and scope rul
 
 | Store | Product | Source | Invalidated by | Rebuild cost |
 |---|---|---|---|---|
-| `link_index` | ArcNotes | `document_link` | Any link change | Cheap — a scan of link rows |
-| `backlink_projection` | ArcNotes | `link_index` | Same | Cheap |
-| `property_index` | ArcNotes | `property_value` | Property or definition change | Moderate |
-| `view_result_cache` | ArcNotes | Query + content | Any content change in scope | Cheap; often not worth caching |
-| `outline_projection` | ArcNotes | Block structure | Document revision | Cheap |
-| `waveform_cache` | ArcSlate, ArcScope | Audio source | Source content hash | Expensive — background |
-| `thumbnail_cache` | ArcSlate, ArcNotes | Media/attachment | Source content hash | Moderate |
-| `proxy_representation` | ArcSlate | `media_asset` | Source content hash, proxy policy | **Very expensive** — background, resumable |
-| `render_cache` | ArcSlate | Sequence + processing graph | Any revision in the evaluated range | Very expensive |
+| `waveform_cache` | ArcScope | Signal source | Source content hash | Expensive — background |
+| `thumbnail_cache` | ArcChat | Media/attachment | Source content hash | Moderate |
 | `analysis_result` | ArcScope | Capture + definition version + config | Any of the three | Expensive |
 | `decoded_event_index` | ArcScope | Capture + decoder version | Either | Expensive |
 | `task_projection` | ArcChat, all | Authoritative task store | Authoritative revision | Cheap |
@@ -119,7 +112,6 @@ Separate from lexical search, and subject to the **same permission and scope rul
 
 | # | Rule |
 |---|---|
-| <a id="rule-pd-01"></a>PD-01 | **A proxy is not a render cache** ([I-484](../../requirements/01-normative-glossary-and-invariants.md#rule-i-484)). A proxy is a cheaper source decode; a render cache is a stored result of timeline processing. They have different invalidation triggers and different lifetimes, and conflating them produces wrong output. |
 | <a id="rule-pd-02"></a>PD-02 | **Analysis results record all five reproducibility inputs** — session, capture, configuration snapshot, decoder version and configuration, analysis definition and version ([LB-04](../../requirements/products/arcscope.md#rule-lb-04)). A result missing any of them cannot be trusted and is treated as absent. |
 | <a id="rule-pd-03"></a>PD-03 | **An expensive rebuild is resumable and cancellable**, and runs as a Task so its progress and failure are visible like any other long operation. |
 
@@ -157,18 +149,17 @@ Deterministic per installation, so it is **recomputable rather than stored**. Wh
 
 | # | Obligation | Where |
 |---|---|---|
-| <a id="rule-dr-01"></a>DR-01 | Deleting every derived store leaves each product fully functional with no content loss | [WP-07.06](../../planning/work-packages/07-local-persistence-foundation.md#rule-wp-07.06), [WP-37.05](../../planning/work-packages/37-arcslate-playback-and-processing.md#rule-wp-37.05) |
-| <a id="rule-dr-02"></a>DR-02 | A full rebuild produces a state equivalent to the incremental one, for every store | [WP-19.00](../../planning/work-packages/19-arcnotes-search-and-portability.md#rule-wp-19.00), [WP-40.01](../../planning/work-packages/40-knowledge-search-and-retrieval.md#rule-wp-40.01) |
-| <a id="rule-dr-03"></a>DR-03 | A crash mid-update leaves the index recoverable from the journal, with no divergence | [WP-19.00](../../planning/work-packages/19-arcnotes-search-and-portability.md#rule-wp-19.00) |
-| <a id="rule-dr-04"></a>DR-04 | A citation anchor resolves exactly or reports invalidity — never drifts | [WP-19.02](../../planning/work-packages/19-arcnotes-search-and-portability.md#rule-wp-19.02) |
+| <a id="rule-dr-01"></a>DR-01 | Deleting every derived store leaves each product fully functional with no content loss | [WP-07.06](../../planning/work-packages/07-local-persistence-foundation.md#rule-wp-07.06) |
+| <a id="rule-dr-02"></a>DR-02 | A full rebuild produces a state equivalent to the incremental one, for every store | [WP-15.05](../../planning/work-packages/15-arcchat-conversation-core.md#rule-wp-15.05), [WP-40.01](../../planning/work-packages/40-knowledge-search-and-retrieval.md#rule-wp-40.01) |
+| <a id="rule-dr-03"></a>DR-03 | A crash mid-update leaves the index recoverable from the journal, with no divergence | [WP-15.05](../../planning/work-packages/15-arcchat-conversation-core.md#rule-wp-15.05) |
+| <a id="rule-dr-04"></a>DR-04 | A citation anchor resolves exactly or reports invalidity — never drifts | [WP-15.05](../../planning/work-packages/15-arcchat-conversation-core.md#rule-wp-15.05) |
 | <a id="rule-dr-05"></a>DR-05 | No retrieval cache entry is reused across principals or scopes | [WP-40.05](../../planning/work-packages/40-knowledge-search-and-retrieval.md#rule-wp-40.05) |
 | <a id="rule-dr-06"></a>DR-06 | Changing the embedding model invalidates every chunk from the previous model | [WP-40.01](../../planning/work-packages/40-knowledge-search-and-retrieval.md#rule-wp-40.01) |
-| <a id="rule-dr-07"></a>DR-07 | Render output is identical with proxies enabled and disabled | [WP-37.05](../../planning/work-packages/37-arcslate-playback-and-processing.md#rule-wp-37.05) |
 | <a id="rule-dr-08"></a>DR-08 | Eviction under pressure never removes canonical data | [WP-07.06](../../planning/work-packages/07-local-persistence-foundation.md#rule-wp-07.06) |
 
 ## [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) transport, storage and recovery composition
 
-The [CF/R2 lifecycle](../contracts/05-cloudflare-integration.md) fixes part verification, Verified pins, authorization on consumption, release/deletion and independent immutable restore. C# owning transactions, sync cursors/tombstones/conflicts, desktop pending changes, native job snapshots and derived-source revision checks above retain their semantics. The [wire profile](../contracts/04-protobuf-wire-registry.md) transports exact values without changing content-origin, Notes scalar or Scope measurement oracles. CF checkpoints/streams never become product history, and restoration cannot silently redispatch an uncertain external act.
+The [CF/R2 lifecycle](../contracts/05-cloudflare-integration.md) fixes part verification, Verified pins, authorization on consumption, release/deletion and independent immutable restore. C# owning transactions, sync cursors/tombstones/conflicts, desktop pending changes, native job snapshots and derived-source revision checks above retain their semantics. The [wire profile](../contracts/04-protobuf-wire-registry.md) transports exact values without changing content-origin or Scope measurement oracles. CF checkpoints/streams never become product history, and restoration cannot silently redispatch an uncertain external act.
 
 ## Selected retrieval profile: retrieval.hybrid.v1
 

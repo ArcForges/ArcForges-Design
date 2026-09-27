@@ -603,106 +603,6 @@
       "worktrees": "worktree C:/MyFile/Projects/ArcForges/Contracts\nHEAD 24c05b7fc215896eeec91437ffe8846f2d4467a1\nbranch refs/heads/main\n\nworktree C:/MyFile/Projects/ArcForges/Contracts/.worktree/maven-snapshot-channel\nHEAD 24c05b7fc215896eeec91437ffe8846f2d4467a1\nbranch refs/heads/codex/maven-snapshot-channel\n\nworktree C:/MyFile/Projects/ArcForges/Contracts/.worktree/maven-snapshot-http\nHEAD 24c05b7fc215896eeec91437ffe8846f2d4467a1\nbranch refs/heads/codex/maven-snapshot-http\n\nworktree C:/MyFile/Projects/ArcForges/Contracts/.worktree/wp00-04-reference-naming\nHEAD ee16cb255a50c17ac9561c45117a420b279fb46f\nbranch refs/heads/codex/wp00-04-reference-naming\n\nworktree C:/MyFile/Projects/ArcForges/Contracts/.worktree/wp00-05-runtime-ownership\nHEAD 6ff3f1b492f3caebfd38da5f9c3ece11184a604f\nbranch refs/heads/codex/wp00-05-runtime-ownership\n\nworktree C:/MyFile/Projects/ArcForges/Contracts/.worktree/wp01-01-contract-access\nHEAD ef9e0aa9d90d47ff8355dc38b037fd5860b4476c\nbranch refs/heads/codex/wp01-01-contract-access"
     },
     {
-      "owner": "ArcNotes",
-      "origin": "https://github.com/ArcForges/ArcNotes.git",
-      "commit": "e40423a1b14ce8341de35748cc2a093c7c9b77a7",
-      "clean": true,
-      "remoteMainVerified": true,
-      "mainCi": "https://github.com/ArcForges/ArcNotes/actions/runs/35425608146",
-      "mainCiResult": "success",
-      "workflowSha256": "d872a75b27d8f1da71d3d94b7152edb95fa25cfb2d4855c9e00af832cb5708c3",
-      "tree": "510cb6f84cfd36abf6c757b9ed7bcf0d427e137d",
-      "projects": [
-        {
-          "path": "eng/ArcForges.Repository/ArcForges.Repository.csproj",
-          "blob": "20a51da180a8b012de47ec9d6b7cf00c96dad2cd",
-          "disposition": "Keep",
-          "producer": "WP18",
-          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
-          "baselineBlob": "20a51da180a8b012de47ec9d6b7cf00c96dad2cd",
-          "changedSinceInventory": false
-        },
-        {
-          "path": "src/ArcForges.ArcNotes.Core/ArcForges.ArcNotes.Core.csproj",
-          "blob": "c0b0a7c802b9faf2601f0b8e1d273818b15f5e21",
-          "disposition": "Keep",
-          "producer": "WP18",
-          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
-          "baselineBlob": "c0b0a7c802b9faf2601f0b8e1d273818b15f5e21",
-          "changedSinceInventory": false
-        },
-        {
-          "path": "src/ArcForges.ArcNotes/ArcForges.ArcNotes.csproj",
-          "blob": "47c6a559a45dd8023a4b8209dc83d31f4b1e5c70",
-          "disposition": "Keep",
-          "producer": "WP18",
-          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
-          "baselineBlob": "47c6a559a45dd8023a4b8209dc83d31f4b1e5c70",
-          "changedSinceInventory": false
-        },
-        {
-          "path": "tests/ArcForges.ArcNotes.Tests/ArcForges.ArcNotes.Tests.csproj",
-          "blob": "fab08f5e2abe006bdb72f36e06d390dbdb1ff62c",
-          "disposition": "Keep",
-          "producer": "WP18",
-          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
-          "baselineBlob": "fab08f5e2abe006bdb72f36e06d390dbdb1ff62c",
-          "changedSinceInventory": false
-        }
-      ],
-      "jobs": [
-        {
-          "name": "CodeQL (csharp)",
-          "conclusion": "success"
-        },
-        {
-          "name": "Native (osx-x64)",
-          "conclusion": "success"
-        },
-        {
-          "name": "Native (osx-arm64)",
-          "conclusion": "success"
-        },
-        {
-          "name": "Native (win-arm64)",
-          "conclusion": "success"
-        },
-        {
-          "name": "CodeQL (actions)",
-          "conclusion": "success"
-        },
-        {
-          "name": "Native (linux-x64)",
-          "conclusion": "success"
-        },
-        {
-          "name": "Native (win-x64)",
-          "conclusion": "success"
-        },
-        {
-          "name": "Workflow and secret checks",
-          "conclusion": "success"
-        },
-        {
-          "name": "Dependency review",
-          "conclusion": "skipped"
-        },
-        {
-          "name": "Verify",
-          "conclusion": "success"
-        },
-        {
-          "name": "Publish portable release",
-          "conclusion": "success"
-        },
-        {
-          "name": "Verify publication",
-          "conclusion": "success"
-        }
-      ],
-      "worktrees": "worktree C:/MyFile/Projects/ArcForges/ArcNotes\nHEAD e40423a1b14ce8341de35748cc2a093c7c9b77a7\nbranch refs/heads/main\n\nworktree C:/MyFile/Projects/ArcForges/ArcNotes/.worktree/wp00-90-stage-acceptance\nHEAD e40423a1b14ce8341de35748cc2a093c7c9b77a7\nbranch refs/heads/codex/wp00-90-stage-acceptance\n\nworktree C:/MyFile/Projects/ArcForges/ArcNotes/.worktree/wp01-05-core-validation\nHEAD e40423a1b14ce8341de35748cc2a093c7c9b77a7\nbranch refs/heads/codex/wp01-05-core-validation"
-    },
-    {
       "owner": "ArcScope",
       "origin": "https://github.com/ArcForges/ArcScope.git",
       "commit": "d247dcff36fd1123a70e5e59967a9b2294a2eeac",
@@ -801,106 +701,6 @@
         }
       ],
       "worktrees": "worktree C:/MyFile/Projects/ArcForges/ArcScope\nHEAD d247dcff36fd1123a70e5e59967a9b2294a2eeac\nbranch refs/heads/main\n\nworktree C:/MyFile/Projects/ArcForges/ArcScope/.worktree/wp00-90-stage-acceptance\nHEAD d247dcff36fd1123a70e5e59967a9b2294a2eeac\nbranch refs/heads/codex/wp00-90-stage-acceptance"
-    },
-    {
-      "owner": "ArcSlate",
-      "origin": "https://github.com/ArcForges/ArcSlate.git",
-      "commit": "b0d255f54fb560a534cc493d5645ca4bc7b4bd0e",
-      "clean": true,
-      "remoteMainVerified": true,
-      "mainCi": "https://github.com/ArcForges/ArcSlate/actions/runs/35427484761",
-      "mainCiResult": "success",
-      "workflowSha256": "27071fb54cee2092a29c1454caf030320db5cfe325b9eaec58fd1019cdb6ed84",
-      "tree": "c0e546663f52f0ae4fef451ff4dd679d35ce7981",
-      "projects": [
-        {
-          "path": "eng/ArcForges.Repository/ArcForges.Repository.csproj",
-          "blob": "20a51da180a8b012de47ec9d6b7cf00c96dad2cd",
-          "disposition": "Keep",
-          "producer": "WP36",
-          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
-          "baselineBlob": "20a51da180a8b012de47ec9d6b7cf00c96dad2cd",
-          "changedSinceInventory": false
-        },
-        {
-          "path": "src/ArcForges.ArcSlate.Core/ArcForges.ArcSlate.Core.csproj",
-          "blob": "c0b0a7c802b9faf2601f0b8e1d273818b15f5e21",
-          "disposition": "Keep",
-          "producer": "WP36",
-          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
-          "baselineBlob": "c0b0a7c802b9faf2601f0b8e1d273818b15f5e21",
-          "changedSinceInventory": false
-        },
-        {
-          "path": "src/ArcForges.ArcSlate/ArcForges.ArcSlate.csproj",
-          "blob": "1f2a2999800bc7845fac192ed0e6204f7c01f9a6",
-          "disposition": "Keep",
-          "producer": "WP36",
-          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
-          "baselineBlob": "1f2a2999800bc7845fac192ed0e6204f7c01f9a6",
-          "changedSinceInventory": false
-        },
-        {
-          "path": "tests/ArcForges.ArcSlate.Tests/ArcForges.ArcSlate.Tests.csproj",
-          "blob": "609d45bab405b7eb40a4e15061fa9e1a6e4ff969",
-          "disposition": "Keep",
-          "producer": "WP36",
-          "reason": "Retain current owned build/probe compatibility; scheduled producer completes accepted behavior.",
-          "baselineBlob": "609d45bab405b7eb40a4e15061fa9e1a6e4ff969",
-          "changedSinceInventory": false
-        }
-      ],
-      "jobs": [
-        {
-          "name": "Workflow and secret checks",
-          "conclusion": "success"
-        },
-        {
-          "name": "CodeQL (csharp)",
-          "conclusion": "success"
-        },
-        {
-          "name": "CodeQL (actions)",
-          "conclusion": "success"
-        },
-        {
-          "name": "Native (linux-x64)",
-          "conclusion": "success"
-        },
-        {
-          "name": "Native (win-arm64)",
-          "conclusion": "success"
-        },
-        {
-          "name": "Native (osx-x64)",
-          "conclusion": "success"
-        },
-        {
-          "name": "Native (osx-arm64)",
-          "conclusion": "success"
-        },
-        {
-          "name": "Native (win-x64)",
-          "conclusion": "success"
-        },
-        {
-          "name": "Dependency review",
-          "conclusion": "skipped"
-        },
-        {
-          "name": "Verify",
-          "conclusion": "success"
-        },
-        {
-          "name": "Publish portable release",
-          "conclusion": "success"
-        },
-        {
-          "name": "Verify publication",
-          "conclusion": "success"
-        }
-      ],
-      "worktrees": "worktree C:/MyFile/Projects/ArcForges/ArcSlate\nHEAD b0d255f54fb560a534cc493d5645ca4bc7b4bd0e\nbranch refs/heads/main\n\nworktree C:/MyFile/Projects/ArcForges/ArcSlate/.worktree/wp00-90-stage-acceptance\nHEAD b0d255f54fb560a534cc493d5645ca4bc7b4bd0e\nbranch refs/heads/codex/wp00-90-stage-acceptance"
     },
     {
       "owner": "Cloud",
@@ -1862,121 +1662,6 @@
         "evidenceClass": "source-project-inventory-and-reference-audit"
       },
       {
-        "repository": "ArcNotes",
-        "commit": "e40423a1b14ce8341de35748cc2a093c7c9b77a7",
-        "dirty": false,
-        "spdxLicense": "AGPL-3.0-only",
-        "licenceBoundary": "AGPL",
-        "projects": [
-          {
-            "path": "eng/ArcForges.Repository/ArcForges.Repository.csproj",
-            "kind": "msbuild",
-            "spdxLicense": "AGPL-3.0-only",
-            "licenceBoundary": "AGPL"
-          },
-          {
-            "path": "src/ArcForges.ArcNotes.Core/ArcForges.ArcNotes.Core.csproj",
-            "kind": "msbuild",
-            "spdxLicense": "AGPL-3.0-only",
-            "licenceBoundary": "AGPL"
-          },
-          {
-            "path": "src/ArcForges.ArcNotes/ArcForges.ArcNotes.csproj",
-            "kind": "msbuild",
-            "spdxLicense": "AGPL-3.0-only",
-            "licenceBoundary": "AGPL"
-          },
-          {
-            "path": "tests/ArcForges.ArcNotes.Tests/ArcForges.ArcNotes.Tests.csproj",
-            "kind": "msbuild",
-            "spdxLicense": "AGPL-3.0-only",
-            "licenceBoundary": "AGPL"
-          }
-        ],
-        "projectReferences": {
-          "eng/ArcForges.Repository/ArcForges.Repository.csproj": [],
-          "src/ArcForges.ArcNotes.Core/ArcForges.ArcNotes.Core.csproj": [],
-          "src/ArcForges.ArcNotes/ArcForges.ArcNotes.csproj": [
-            "src/ArcForges.ArcNotes.Core/ArcForges.ArcNotes.Core.csproj"
-          ],
-          "tests/ArcForges.ArcNotes.Tests/ArcForges.ArcNotes.Tests.csproj": [
-            "src/ArcForges.ArcNotes.Core/ArcForges.ArcNotes.Core.csproj",
-            "eng/ArcForges.Repository/ArcForges.Repository.csproj"
-          ]
-        },
-        "firstPartyPackages": [
-          {
-            "source": "Directory.Build.props",
-            "name": "ArcForges.Build.Policy",
-            "boundary": "AGPL",
-            "evidence": "Directory.Build.props"
-          },
-          {
-            "source": "Directory.Packages.props",
-            "name": "ArcForges.Build.Policy",
-            "boundary": "AGPL",
-            "evidence": "Directory.Packages.props"
-          },
-          {
-            "source": "Directory.Packages.props",
-            "name": "ArcForges.Contracts.PublicApi",
-            "boundary": "Apache",
-            "evidence": "Directory.Packages.props"
-          },
-          {
-            "source": "eng/ArcForges.Repository/packages.lock.json",
-            "name": "ArcForges.Build.Policy",
-            "boundary": "AGPL",
-            "evidence": "eng/ArcForges.Repository/packages.lock.json"
-          },
-          {
-            "source": "src/ArcForges.ArcNotes.Core/ArcForges.ArcNotes.Core.csproj",
-            "name": "ArcForges.Contracts.PublicApi",
-            "boundary": "Apache",
-            "evidence": "src/ArcForges.ArcNotes.Core/ArcForges.ArcNotes.Core.csproj"
-          },
-          {
-            "source": "src/ArcForges.ArcNotes.Core/packages.lock.json",
-            "name": "ArcForges.Build.Policy",
-            "boundary": "AGPL",
-            "evidence": "src/ArcForges.ArcNotes.Core/packages.lock.json"
-          },
-          {
-            "source": "src/ArcForges.ArcNotes.Core/packages.lock.json",
-            "name": "ArcForges.Contracts.PublicApi",
-            "boundary": "Apache",
-            "evidence": "src/ArcForges.ArcNotes.Core/packages.lock.json"
-          },
-          {
-            "source": "src/ArcForges.ArcNotes/packages.lock.json",
-            "name": "ArcForges.Build.Policy",
-            "boundary": "AGPL",
-            "evidence": "src/ArcForges.ArcNotes/packages.lock.json"
-          },
-          {
-            "source": "src/ArcForges.ArcNotes/packages.lock.json",
-            "name": "ArcForges.Contracts.PublicApi",
-            "boundary": "Apache",
-            "evidence": "src/ArcForges.ArcNotes/packages.lock.json"
-          },
-          {
-            "source": "tests/ArcForges.ArcNotes.Tests/packages.lock.json",
-            "name": "ArcForges.Build.Policy",
-            "boundary": "AGPL",
-            "evidence": "tests/ArcForges.ArcNotes.Tests/packages.lock.json"
-          },
-          {
-            "source": "tests/ArcForges.ArcNotes.Tests/packages.lock.json",
-            "name": "ArcForges.Contracts.PublicApi",
-            "boundary": "Apache",
-            "evidence": "tests/ArcForges.ArcNotes.Tests/packages.lock.json"
-          }
-        ],
-        "result": "passed",
-        "findings": [],
-        "evidenceClass": "source-project-inventory-and-reference-audit"
-      },
-      {
         "repository": "ArcScope",
         "commit": "d247dcff36fd1123a70e5e59967a9b2294a2eeac",
         "dirty": false,
@@ -2085,121 +1770,6 @@
             "name": "ArcForges.Contracts.PublicApi",
             "boundary": "Apache",
             "evidence": "tests/ArcForges.ArcScope.Tests/packages.lock.json"
-          }
-        ],
-        "result": "passed",
-        "findings": [],
-        "evidenceClass": "source-project-inventory-and-reference-audit"
-      },
-      {
-        "repository": "ArcSlate",
-        "commit": "b0d255f54fb560a534cc493d5645ca4bc7b4bd0e",
-        "dirty": false,
-        "spdxLicense": "AGPL-3.0-only",
-        "licenceBoundary": "AGPL",
-        "projects": [
-          {
-            "path": "eng/ArcForges.Repository/ArcForges.Repository.csproj",
-            "kind": "msbuild",
-            "spdxLicense": "AGPL-3.0-only",
-            "licenceBoundary": "AGPL"
-          },
-          {
-            "path": "src/ArcForges.ArcSlate.Core/ArcForges.ArcSlate.Core.csproj",
-            "kind": "msbuild",
-            "spdxLicense": "AGPL-3.0-only",
-            "licenceBoundary": "AGPL"
-          },
-          {
-            "path": "src/ArcForges.ArcSlate/ArcForges.ArcSlate.csproj",
-            "kind": "msbuild",
-            "spdxLicense": "AGPL-3.0-only",
-            "licenceBoundary": "AGPL"
-          },
-          {
-            "path": "tests/ArcForges.ArcSlate.Tests/ArcForges.ArcSlate.Tests.csproj",
-            "kind": "msbuild",
-            "spdxLicense": "AGPL-3.0-only",
-            "licenceBoundary": "AGPL"
-          }
-        ],
-        "projectReferences": {
-          "eng/ArcForges.Repository/ArcForges.Repository.csproj": [],
-          "src/ArcForges.ArcSlate.Core/ArcForges.ArcSlate.Core.csproj": [],
-          "src/ArcForges.ArcSlate/ArcForges.ArcSlate.csproj": [
-            "src/ArcForges.ArcSlate.Core/ArcForges.ArcSlate.Core.csproj"
-          ],
-          "tests/ArcForges.ArcSlate.Tests/ArcForges.ArcSlate.Tests.csproj": [
-            "src/ArcForges.ArcSlate.Core/ArcForges.ArcSlate.Core.csproj",
-            "eng/ArcForges.Repository/ArcForges.Repository.csproj"
-          ]
-        },
-        "firstPartyPackages": [
-          {
-            "source": "Directory.Build.props",
-            "name": "ArcForges.Build.Policy",
-            "boundary": "AGPL",
-            "evidence": "Directory.Build.props"
-          },
-          {
-            "source": "Directory.Packages.props",
-            "name": "ArcForges.Build.Policy",
-            "boundary": "AGPL",
-            "evidence": "Directory.Packages.props"
-          },
-          {
-            "source": "Directory.Packages.props",
-            "name": "ArcForges.Contracts.PublicApi",
-            "boundary": "Apache",
-            "evidence": "Directory.Packages.props"
-          },
-          {
-            "source": "eng/ArcForges.Repository/packages.lock.json",
-            "name": "ArcForges.Build.Policy",
-            "boundary": "AGPL",
-            "evidence": "eng/ArcForges.Repository/packages.lock.json"
-          },
-          {
-            "source": "src/ArcForges.ArcSlate.Core/ArcForges.ArcSlate.Core.csproj",
-            "name": "ArcForges.Contracts.PublicApi",
-            "boundary": "Apache",
-            "evidence": "src/ArcForges.ArcSlate.Core/ArcForges.ArcSlate.Core.csproj"
-          },
-          {
-            "source": "src/ArcForges.ArcSlate.Core/packages.lock.json",
-            "name": "ArcForges.Build.Policy",
-            "boundary": "AGPL",
-            "evidence": "src/ArcForges.ArcSlate.Core/packages.lock.json"
-          },
-          {
-            "source": "src/ArcForges.ArcSlate.Core/packages.lock.json",
-            "name": "ArcForges.Contracts.PublicApi",
-            "boundary": "Apache",
-            "evidence": "src/ArcForges.ArcSlate.Core/packages.lock.json"
-          },
-          {
-            "source": "src/ArcForges.ArcSlate/packages.lock.json",
-            "name": "ArcForges.Build.Policy",
-            "boundary": "AGPL",
-            "evidence": "src/ArcForges.ArcSlate/packages.lock.json"
-          },
-          {
-            "source": "src/ArcForges.ArcSlate/packages.lock.json",
-            "name": "ArcForges.Contracts.PublicApi",
-            "boundary": "Apache",
-            "evidence": "src/ArcForges.ArcSlate/packages.lock.json"
-          },
-          {
-            "source": "tests/ArcForges.ArcSlate.Tests/packages.lock.json",
-            "name": "ArcForges.Build.Policy",
-            "boundary": "AGPL",
-            "evidence": "tests/ArcForges.ArcSlate.Tests/packages.lock.json"
-          },
-          {
-            "source": "tests/ArcForges.ArcSlate.Tests/packages.lock.json",
-            "name": "ArcForges.Contracts.PublicApi",
-            "boundary": "Apache",
-            "evidence": "tests/ArcForges.ArcSlate.Tests/packages.lock.json"
           }
         ],
         "result": "passed",
@@ -2950,61 +2520,6 @@
         "result": "passed"
       },
       {
-        "repository": "ArcNotes",
-        "commit": "e40423a1b14ce8341de35748cc2a093c7c9b77a7",
-        "dirty": false,
-        "files": 77,
-        "projects": 4,
-        "runtime": "avalonia-nativeaot",
-        "managedSourceChecks": [
-          {
-            "path": "eng/ArcForges.Repository/ArcForges.Repository.csproj",
-            "role": "test-or-build-tool",
-            "requiredProperties": [],
-            "sourceInputs": [
-              "Directory.Build.props",
-              "Directory.Build.targets",
-              "eng/ArcForges.Repository/ArcForges.Repository.csproj"
-            ]
-          },
-          {
-            "path": "src/ArcForges.ArcNotes.Core/ArcForges.ArcNotes.Core.csproj",
-            "role": "aot-library",
-            "requiredProperties": [
-              "IsAotCompatible"
-            ],
-            "sourceInputs": [
-              "Directory.Build.props",
-              "Directory.Build.targets",
-              "src/ArcForges.ArcNotes.Core/ArcForges.ArcNotes.Core.csproj"
-            ]
-          },
-          {
-            "path": "src/ArcForges.ArcNotes/ArcForges.ArcNotes.csproj",
-            "role": "aot-host",
-            "requiredProperties": [
-              "PublishAot"
-            ],
-            "sourceInputs": [
-              "Directory.Build.props",
-              "Directory.Build.targets",
-              "src/ArcForges.ArcNotes/ArcForges.ArcNotes.csproj"
-            ]
-          },
-          {
-            "path": "tests/ArcForges.ArcNotes.Tests/ArcForges.ArcNotes.Tests.csproj",
-            "role": "test-or-build-tool",
-            "requiredProperties": [],
-            "sourceInputs": [
-              "Directory.Build.props",
-              "Directory.Build.targets",
-              "tests/ArcForges.ArcNotes.Tests/ArcForges.ArcNotes.Tests.csproj"
-            ]
-          }
-        ],
-        "result": "passed"
-      },
-      {
         "repository": "ArcScope",
         "commit": "d247dcff36fd1123a70e5e59967a9b2294a2eeac",
         "dirty": false,
@@ -3054,61 +2569,6 @@
               "Directory.Build.props",
               "Directory.Build.targets",
               "tests/ArcForges.ArcScope.Tests/ArcForges.ArcScope.Tests.csproj"
-            ]
-          }
-        ],
-        "result": "passed"
-      },
-      {
-        "repository": "ArcSlate",
-        "commit": "b0d255f54fb560a534cc493d5645ca4bc7b4bd0e",
-        "dirty": false,
-        "files": 76,
-        "projects": 4,
-        "runtime": "avalonia-nativeaot",
-        "managedSourceChecks": [
-          {
-            "path": "eng/ArcForges.Repository/ArcForges.Repository.csproj",
-            "role": "test-or-build-tool",
-            "requiredProperties": [],
-            "sourceInputs": [
-              "Directory.Build.props",
-              "Directory.Build.targets",
-              "eng/ArcForges.Repository/ArcForges.Repository.csproj"
-            ]
-          },
-          {
-            "path": "src/ArcForges.ArcSlate.Core/ArcForges.ArcSlate.Core.csproj",
-            "role": "aot-library",
-            "requiredProperties": [
-              "IsAotCompatible"
-            ],
-            "sourceInputs": [
-              "Directory.Build.props",
-              "Directory.Build.targets",
-              "src/ArcForges.ArcSlate.Core/ArcForges.ArcSlate.Core.csproj"
-            ]
-          },
-          {
-            "path": "src/ArcForges.ArcSlate/ArcForges.ArcSlate.csproj",
-            "role": "aot-host",
-            "requiredProperties": [
-              "PublishAot"
-            ],
-            "sourceInputs": [
-              "Directory.Build.props",
-              "Directory.Build.targets",
-              "src/ArcForges.ArcSlate/ArcForges.ArcSlate.csproj"
-            ]
-          },
-          {
-            "path": "tests/ArcForges.ArcSlate.Tests/ArcForges.ArcSlate.Tests.csproj",
-            "role": "test-or-build-tool",
-            "requiredProperties": [],
-            "sourceInputs": [
-              "Directory.Build.props",
-              "Directory.Build.targets",
-              "tests/ArcForges.ArcSlate.Tests/ArcForges.ArcSlate.Tests.csproj"
             ]
           }
         ],
@@ -3230,33 +2690,11 @@
         "findings": []
       },
       {
-        "repository": "ArcNotes",
-        "commit": "e40423a1b14ce8341de35748cc2a093c7c9b77a7",
-        "dirty": false,
-        "filesScanned": 77,
-        "inventorySha256": "63fab48c4addc9e131bdeec9b1ddef9893dda40ff7c00e8cd85b32fac184b400",
-        "exceptionsUsed": [],
-        "declarationsUsed": [],
-        "status": "pass",
-        "findings": []
-      },
-      {
         "repository": "ArcScope",
         "commit": "d247dcff36fd1123a70e5e59967a9b2294a2eeac",
         "dirty": false,
         "filesScanned": 76,
         "inventorySha256": "d4124d25746a3effef60aace38a9b2b3dbb0796c13dd6364cb88aaf364ec3a99",
-        "exceptionsUsed": [],
-        "declarationsUsed": [],
-        "status": "pass",
-        "findings": []
-      },
-      {
-        "repository": "ArcSlate",
-        "commit": "b0d255f54fb560a534cc493d5645ca4bc7b4bd0e",
-        "dirty": false,
-        "filesScanned": 76,
-        "inventorySha256": "48ff8f8f21f210da6d0cdc731c38e082d468475137c5fc373189e55badfb3e50",
         "exceptionsUsed": [],
         "declarationsUsed": [],
         "status": "pass",
@@ -3311,27 +2749,6 @@
   },
   "result": "passed",
   "scope": "Current owned graph and bounded reconciliation; no new product behavior, release or deployment.",
-  "localNotes": {
-    "commit": "e40423a1b14ce8341de35748cc2a093c7c9b77a7",
-    "worktree": "C:\\MyFile\\Projects\\ArcForges\\ArcNotes\\.worktree\\wp01-05-core-validation",
-    "sdk": "10.0.401",
-    "lockedRestore": "passed",
-    "releaseBuild": "passed",
-    "tests": {
-      "passed": 89,
-      "failed": 0,
-      "skipped": 0
-    },
-    "repositoryCheck": "passed",
-    "format": "passed",
-    "logs": {
-      "build.log": "1faca0e3eb6d4af99f468aac5d4a32598cd737f875a2afb94dd368a04ef0ee4e",
-      "format.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "repository-check.log": "4d2d75b384f3f79fc79da27fbfaa3c67fe735f191cac48ebc4a853d5c9614a8f",
-      "restore.log": "d746214161b55a7b8c7f95180a7be56f6be5fecf40334dd5a0df17dd268a221f",
-      "tests.log": "0b560c9530681fb26a6503f74c7abee57fbafd1393953005c66a5f568046a46e"
-    }
-  },
   "historicalBlobChanges": [
     {
       "owner": "DesktopPlatform",
@@ -3422,19 +2839,7 @@
       "result": "passed; matches confined to historical data or negative assertions"
     },
     {
-      "owner": "ArcNotes",
-      "filesScanned": 52,
-      "matches": [],
-      "result": "passed; matches confined to historical data or negative assertions"
-    },
-    {
       "owner": "ArcScope",
-      "filesScanned": 51,
-      "matches": [],
-      "result": "passed; matches confined to historical data or negative assertions"
-    },
-    {
-      "owner": "ArcSlate",
       "filesScanned": 51,
       "matches": [],
       "result": "passed; matches confined to historical data or negative assertions"

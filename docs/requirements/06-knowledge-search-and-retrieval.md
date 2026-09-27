@@ -13,7 +13,7 @@ Knowledge Source → Scope → Index → Search → Retrieval → Evidence → C
 
 Two ownership statements govern everything below:
 
-> **ArcNotes is the long-term knowledge authority. ArcChat is the cross-source retrieval and agent-retrieval orchestrator, and never a second knowledge store.**
+> **ArcScope owns the professional analytical knowledge it produces. ArcChat is the cross-source retrieval and agent-retrieval orchestrator, and never a second knowledge store.**
 
 ---
 
@@ -26,23 +26,20 @@ Two ownership statements govern everything below:
 | <a id="rule-ks-01"></a>KS-01 | **Knowledge Source ≠ Data Copy** ([I-130](01-normative-glossary-and-invariants.md#rule-i-130)). Declaring a source never duplicates its content into a knowledge store. |
 | <a id="rule-ks-02"></a>KS-02 | **Knowledge Source ≠ Context Provider** ([I-131](01-normative-glossary-and-invariants.md#rule-i-131)). A context provider answers "what is the user looking at now"; a knowledge source is a durable retrievable corpus. A context provider may point at a resource inside a knowledge source. |
 | <a id="rule-ks-03"></a>KS-03 | **Knowledge Source ≠ Import** ([I-132](01-normative-glossary-and-invariants.md#rule-i-132)). Adding a source does not create new owned resources. |
-| <a id="rule-ks-04"></a>KS-04 | **Declaring a source never changes ownership.** An ArcNotes notebook used as a knowledge source is still owned by ArcNotes. |
+| <a id="rule-ks-04"></a>KS-04 | **Declaring a source never changes ownership.** An ArcScope project used as a knowledge source is still owned by ArcScope. |
 | <a id="rule-ks-05"></a>KS-05 | A Knowledge Source definition carries at minimum: identity, owning application, scope of inclusion, a policy set (§4), and its current index state. |
-| <a id="rule-ks-06"></a>KS-06 | A source may represent a **collection** (a notebook, a project, a folder). An individual resource inside it may **override** the collection policy, and the resource-level override takes precedence. |
+| <a id="rule-ks-06"></a>KS-06 | A source may represent a **collection** (a project, a folder). An individual resource inside it may **override** the collection policy, and the resource-level override takes precedence. |
 
 ### 1.1 Per-product sources
 
 | Product | What is a knowledge source | What is not |
 |---|---|---|
-| **ArcNotes** | Notebooks, folders, documents, blocks, managed attachments with extracted text | — |
 | **ArcChat** | Its own conversations, projects and artifacts | **ArcChat is not the user's long-term knowledge base** |
 | **ArcScope** | Project, session and report metadata; findings; annotations; reports | **Raw telemetry is not a plain text corpus** |
-| **ArcSlate** | Project and media metadata; transcripts; subtitles; markers | **Raw video is not a default vector corpus** |
 
 | # | Requirement |
 |---|---|
 | <a id="rule-ks-10"></a>KS-10 | **Raw ArcScope capture data does not become an ordinary text knowledge source** ([I-160](01-normative-glossary-and-invariants.md#rule-i-160)). It is reached through ArcScope's professional query, measurement and analysis capabilities. |
-| <a id="rule-ks-11"></a>KS-11 | **Raw ArcSlate video is not a default vector corpus** ([I-161](01-normative-glossary-and-invariants.md#rule-i-161)). Multimodal video embedding is not a V1 dependency. |
 | <a id="rule-ks-12"></a>KS-12 | **Web search results are not a long-term knowledge source by default** ([I-149](01-normative-glossary-and-invariants.md#rule-i-149)). Retaining web content long-term is an explicit act that creates an owned resource in an owning application. |
 
 ---
@@ -54,7 +51,7 @@ Two ownership statements govern everything below:
 | # | Requirement |
 |---|---|
 | <a id="rule-sc-01"></a>SC-01 | **Knowledge Scope ≠ Index Scope** ([I-133](01-normative-glossary-and-invariants.md#rule-i-133)). Knowledge scope is a query-time boundary; index scope is what has actually been indexed. A resource may be in scope and not yet indexed, and vice versa. |
-| <a id="rule-sc-02"></a>SC-02 | Scope may be **fixed** (these notebooks) or **dynamic** (documents modified this week, unresolved findings). |
+| <a id="rule-sc-02"></a>SC-02 | Scope may be **fixed** (these projects) or **dynamic** (sessions modified this week, unresolved findings). |
 | <a id="rule-sc-03"></a>SC-03 | Knowledge scope narrows the owning application's admitted sources; it never changes source ownership or admits another product. |
 | <a id="rule-sc-04"></a>SC-04 | **Scope always obeys realm and workspace.** Crossing either requires an explicit user switch or authorization; it never happens implicitly. |
 | <a id="rule-sc-05"></a>SC-05 | **A Local Profile is a legal scope.** `Realm = Local`, workspace = none — a signed-out user has a complete local knowledge scope. |
@@ -71,7 +68,7 @@ Two ownership statements govern everything below:
 | <a id="rule-ix-02"></a>IX-02 | Four index kinds exist: **metadata**, **keyword/lexical**, **semantic**, and **specialised domain** indexes. |
 | <a id="rule-ix-03"></a>IX-03 | **Keyword search must work with no AI model present.** It is the baseline capability, never a fallback for a failed model. |
 | <a id="rule-ix-04"></a>IX-04 | **Semantic search is never the only search capability.** A semantic backend outage degrades ranking, never search itself. |
-| <a id="rule-ix-05"></a>IX-05 | **Not everything becomes a vector.** Structured measurements, timecodes and typed properties use specialised domain indexes owned by their products. |
+| <a id="rule-ix-05"></a>IX-05 | **Not everything becomes a vector.** Structured measurements and other domain-specific data use specialised domain indexes owned by their products. |
 | <a id="rule-ix-06"></a>IX-06 | **There is no central ArcForges graph database as the authority for all data.** Link-graph retrieval is one signal, owned as a derived domain relation by the product that owns the links. |
 | <a id="rule-ix-07"></a>IX-07 | Each product owns native lexical/domain indexes over available local data; Cloud owns its derived semantic index. ArcChat cannot read another product index database directly. |
 | <a id="rule-ix-08"></a>IX-08 | The index carries an **`IndexSchemaVersion`** and an **`ExtractionProfile`** version, so a pipeline change is a rebuild rather than silent inconsistency. |
@@ -102,7 +99,7 @@ Two ownership statements govern everything below:
 |---|---|
 | <a id="rule-ru-01"></a>RU-01 | **Retrieval Unit ≠ Domain Resource** ([I-154](01-normative-glossary-and-invariants.md#rule-i-154)). A retrieval unit is a derived index representation. |
 | <a id="rule-ru-02"></a>RU-02 | **A retrieval-unit identifier is never citation authority** ([I-153](01-normative-glossary-and-invariants.md#rule-i-153)). A citation must never be a vector-database chunk id. |
-| <a id="rule-ru-03"></a>RU-03 | **Every retrieval unit carries a Source Anchor** locating it in the owner's own addressing scheme: document and block, page and region, session and time range, timecode. |
+| <a id="rule-ru-03"></a>RU-03 | **Every retrieval unit carries a Source Anchor** locating it in the owner's own addressing scheme: page and region, session and time range, message. |
 | <a id="rule-ru-04"></a>RU-04 | **Chunking is content-aware** and must not destroy semantic boundaries. Chunk size is an implementation parameter, not a permanent contract — changing it triggers a rebuild. |
 | <a id="rule-ru-05"></a>RU-05 | **Changing an embedding does not change the source revision** ([I-165](01-normative-glossary-and-invariants.md#rule-i-165)). The source did not change; its derived representation did. Index entries track their processing version separately. |
 | <a id="rule-ru-06"></a>RU-06 | Different content types may use different embedding strategies. Text-first is the V1 baseline; forcing one embedding across all content types is prohibited. |
@@ -220,7 +217,7 @@ Search visibility, Cloud indexing, AI retrieval and provider processing have dis
 | <a id="rule-ec-02"></a>EC-02 | Evidence binds: source resource, source revision, anchor, the permission decision that admitted it, and its freshness at the time. |
 | <a id="rule-ec-03"></a>EC-03 | **Citations are produced by the system's evidence mapping**, never by the model. A model must not be able to author a citation identity. |
 | <a id="rule-ec-04"></a>EC-04 | **A citation can never point to a vector chunk id** ([I-153](01-normative-glossary-and-invariants.md#rule-i-153)). It points at the owner's addressable anchor. |
-| <a id="rule-ec-05"></a>EC-05 | Per-product citation anchors: ArcNotes opens the document at the cited block; a PDF opens the page and region; ArcScope opens the session at the cited measurement, range or finding; ArcSlate opens the timecode; ArcChat opens the message. |
+| <a id="rule-ec-05"></a>EC-05 | Per-product citation anchors: a PDF opens the page and region; ArcScope opens the session at the cited measurement, range or finding; ArcChat opens the message. |
 | <a id="rule-ec-06"></a>EC-06 | **Citations carry the source revision.** Where the historical revision is still retrievable, the citation resolves to it; where it is not, the citation states that the content has changed since it was cited. |
 | <a id="rule-ec-07"></a>EC-07 | A small **Evidence Digest** excerpt may be retained for display. **Copying an entire source into ArcChat is prohibited.** |
 | <a id="rule-ec-08"></a>EC-08 | **A citation points at the original source first.** A derived summary may be used as evidence, but must be **marked derived** and must carry the source revision of what it derived from. |
@@ -284,8 +281,8 @@ This is the most consequential privacy control in the product.
 |---|---|
 | <a id="rule-cp-01"></a>CP-01 | **Context Pack ≠ entire knowledge source** ([I-155](01-normative-glossary-and-invariants.md#rule-i-155)). |
 | <a id="rule-cp-02"></a>CP-02 | **Retrieve references first, materialise content last.** The pack is kept as small as the task allows. |
-| <a id="rule-cp-03"></a>CP-03 | **Large resources stay on the owner's side** and are reached by owner-side query. ArcScope answers with measurements and analysis rather than raw capture; ArcSlate answers with transcripts, metadata and timecodes rather than video. |
-| <a id="rule-cp-04"></a>CP-04 | **Retrieval uses the owner's best representation of the data**: text and document retrieval for ArcNotes, structured analytical retrieval for ArcScope, transcript/metadata/timecode retrieval for ArcSlate, text chunks plus vectors for general prose. |
+| <a id="rule-cp-03"></a>CP-03 | **Large resources stay on the owner's side** and are reached by owner-side query. ArcScope answers with measurements and analysis rather than raw capture. |
+| <a id="rule-cp-04"></a>CP-04 | **Retrieval uses the owner's best representation of the data**: structured analytical retrieval for ArcScope, text chunks plus vectors for general prose. |
 
 ---
 
@@ -293,10 +290,8 @@ This is the most consequential privacy control in the product.
 
 | Product | Knowledge responsibility |
 |---|---|
-| **ArcNotes** | The user's long-term knowledge authority. Owns documents, blocks, links, tags, typed properties, attachments and their extracted text; owns its local index; owns citation anchors; is the destination when a user promotes something into long-term knowledge. |
 | **Application assistant** | Orchestrates retrieval over its own application sources, uploads and explicitly selected web search; packs context with provenance and citations. Its local history index belongs to that application. No cross-product federation. |
 | **ArcScope** | Specialist knowledge provider: searchable project/session/report metadata, findings, annotations and reports; structured measurement and analysis retrieval through professional capabilities. |
-| **ArcSlate** | Specialist knowledge provider: project and media metadata search, transcript/subtitle/marker search, timecode citations, through professional media capabilities. |
 | **Cloud** | Derived cloud projection: cloud-visible keyword search, cloud resource search, optional semantic index, permission-aware query, mobile and web search. |
 
 | # | Requirement |
@@ -358,7 +353,6 @@ This is the most consequential privacy control in the product.
 
 **Explicitly not required in V1** — architecturally supported, deliberately deferred:
 
-- Full multimodal video embeddings
 - An image semantic corpus spanning everything
 - A global knowledge-graph engine
 - Automatic whole-filesystem indexing
@@ -388,7 +382,7 @@ KnowledgeFreshness · AIEligibility · CloudIndexEligibility · SemanticIndexEli
 
 ## 16. Acceptance scenarios
 
-**Local search** — an authorized hydrated ArcNotes corpus remains keyword/metadata searchable offline; an exact technical term is found without model execution or fresh Cloud access.
+**Local search** — an authorized hydrated ArcScope corpus remains keyword/metadata searchable offline; an exact technical term is found without model execution or fresh Cloud access.
 
 **Semantic failure** — the semantic backend is unavailable; keyword search continues to work and the degradation is visible.
 
@@ -400,13 +394,13 @@ KnowledgeFreshness · AIEligibility · CloudIndexEligibility · SemanticIndexEli
 
 **Search without AI** — native keyword/metadata search works on available cached content while AI retrieval is disabled; no local embedding model runs.
 
-**Cloud sync ≠ AI** — a synced notebook is not thereby AI-eligible or cloud-indexed.
+**Cloud sync ≠ AI** — a synced ArcScope project is not thereby AI-eligible or cloud-indexed.
 
 **Local-only source** — never appears in cloud search; a mobile search does not surface it; an explicit remote search Task can find it without uploading it.
 
 **Application search** — results stay within the selected owning product and workspace. A closed desktop is shown unavailable; no launch or federation occurs.
 
-**Citation** — a citation opens the exact block, page region, session range or timecode; a citation to a changed revision reports the change; a citation to a deleted resource remains as provenance and is marked.
+**Citation** — a citation opens the exact page region, session range or message; a citation to a changed revision reports the change; a citation to a deleted resource remains as provenance and is marked.
 
 **Scope** — a non-project conversation retrieves nothing implicitly; a project conversation retrieves only its configured scope; an automation's scope is frozen at run start.
 

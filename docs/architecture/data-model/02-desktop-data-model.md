@@ -7,7 +7,7 @@
 > Governing authority: [`00-data-model-overview.md`](00-data-model-overview.md), [`../06-data-persistence-and-formats.md`](../06-data-persistence-and-formats.md)
 > Companions: [`../04-desktop-application-architecture.md`](../04-desktop-application-architecture.md), [`../07-sync-conflict-and-backup.md`](../07-sync-conflict-and-backup.md)
 
-Each desktop product owns its SQLite store. Cloud-mode assistant history and Notes hold acknowledged Cloud projections plus durable pending work; local-mode assistant history is canonical in its own app store under model 05. Scope/Slate retain local authority for native working content and jobs, with separately revisioned Cloud metadata replicas. The version domains are defined in [the authority map](00-data-model-overview.md#4-authority-map--where-the-authoritative-copy-lives).
+Each desktop product owns its SQLite store. Cloud-mode assistant history holds acknowledged Cloud projections plus durable pending work; local-mode assistant history is canonical in its own app store under model 05. ArcScope retains local authority for native working content and jobs, with separately revisioned Cloud metadata replicas. The version domains are defined in [the authority map](00-data-model-overview.md#4-authority-map--where-the-authoritative-copy-lives).
 
 **Store technology.** An embedded relational store with an AOT-safe access path ([CS-01](../06-data-persistence-and-formats.md#rule-cs-01)). Journaling is enabled only after per-platform and per-filesystem validation ([CS-04](../06-data-persistence-and-formats.md#rule-cs-04)), because network volumes, removable media and container filesystems each break different assumptions.
 
@@ -15,7 +15,7 @@ Each desktop product owns its SQLite store. Cloud-mode assistant history and Not
 
 ## 1. What every product store contains
 
-Five table groups are identical in shape across the three professional products and shared assistant. They are specified once here and referenced, not repeated.
+Five table groups are identical in shape across ArcScope and the shared assistant. They are specified once here and referenced, not repeated.
 
 ### 1.1 `sys_meta`
 
@@ -36,7 +36,7 @@ The local half of [TX-01](00-data-model-overview.md#rule-tx-01)–[TX-06](00-dat
 | `operation` | `text NN` | |
 | `request_hash` | `text NN` | |
 | `status` | `enum(inProgress, succeeded, failed) NN` | |
-| `result_version` | `json?` | Typed result token: Cloud revision, Notes local token, or native content revision |
+| `result_version` | `json?` | Typed result token: Cloud revision, ArcScope metadata local token, or native content revision |
 | `result_payload` | `json?` | Original typed response, including generated references; retained for the duplicate window |
 | `error_code` | `text?` | |
 | `created_at`, `expires_at` | `instant NN` | |
@@ -50,7 +50,7 @@ The local half of [TX-01](00-data-model-overview.md#rule-tx-01)–[TX-06](00-dat
 |---|---|---|
 | `journal_seq` | `bigint` | **PK**, monotonic |
 | `aggregate_kind`, `aggregate_id` | `text NN`, `id NN` | |
-| `source_version` | `json NN` | Notes `(acked_rev, head_local_seq)` or native `content_rev`; discriminator fixes the version domain |
+| `source_version` | `json NN` | ArcScope metadata `(acked_rev, head_local_seq)` or native `content_rev`; discriminator fixes the version domain |
 | `local_seq` | `bigint?` | Durable local edit identity for sync-eligible work; separate from store-wide journal order |
 | `command_id` | `id NN` | |
 | `payload` | `json NN` | Enough to replay |
@@ -75,7 +75,7 @@ The local half of [TX-01](00-data-model-overview.md#rule-tx-01)–[TX-06](00-dat
 | `acked_rev` | Per aggregate | **Cloud** | The authoritative revision, and the `ExpectedRev` a submission is made against |
 | `acked_local_seq` | Per aggregate, per device | Set from the acknowledgement | The **watermark**: local work at or below it is acknowledged |
 
-A Notes working aggregate carries `acked_rev`, `acked_local_seq` and `head_local_seq`. `acked_rev` names its separately retained canonical Cloud shadow; the displayed body is that shadow plus unresolved local edits. A Scope/Slate root additionally owns `content_rev`, which advances on every native domain commit and is what local jobs snapshot. Its sync metadata tracks the same submission identities separately. Chat uses durable draft/command identities and acknowledged Cloud projections; an unsent draft is not a synchronised aggregate revision.
+An ArcScope metadata aggregate carries `acked_rev`, `acked_local_seq` and `head_local_seq`. `acked_rev` names its separately retained canonical Cloud shadow; the displayed body is that shadow plus unresolved local edits. An ArcScope native root additionally owns `content_rev`, which advances on every native domain commit and is what local jobs snapshot. Its sync metadata tracks the same submission identities separately. Chat uses durable draft/command identities and acknowledged Cloud projections; an unsent draft is not a synchronised aggregate revision.
 
 | # | Rule |
 |---|---|
@@ -83,7 +83,7 @@ A Notes working aggregate carries `acked_rev`, `acked_local_seq` and `head_local
 | <a id="rule-rv-c2"></a>RV-C2 | **The pending predicate is `head_local_seq > acked_local_seq`**, not a counter being non-zero. In the counterexample, acknowledging A advances `acked_local_seq` to A's sequence while `head_local_seq` is B's — so the row is correctly still pending. |
 | <a id="rule-rv-c3"></a>RV-C3 | **`local_seq` is never reset.** Resetting is what destroyed the ability to say which work an acknowledgement covered. It is a per-aggregate, per-device counter and its absolute value has no meaning outside that pair. |
 | <a id="rule-rv-c4"></a>RV-C4 | **An acknowledgement advances the watermark to the highest `local_seq` the submitted batch contained — and no further.** The batch records its range when it is dispatched, so the covered set is a recorded fact, not a re-derivation at acknowledgement time. |
-| <a id="rule-rv-c5"></a>RV-C5 | **A Notes local RPC takes and returns `(acked_rev, head_local_seq)`.** Every user edit or explicit conflict-resolution edit advances `head_local_seq`; applying a newer Cloud shadow advances `acked_rev` and rebases pending work atomically. A body cannot change while both token components stay unchanged. Scope/Slate RPC instead uses its native `content_rev`. |
+| <a id="rule-rv-c5"></a>RV-C5 | **A synced-metadata write through the local store takes and returns `(acked_rev, head_local_seq)`.** Every user edit or explicit conflict-resolution edit advances `head_local_seq`; applying a newer Cloud shadow advances `acked_rev` and rebases pending work atomically. A body cannot change while both token components stay unchanged. ArcScope's native RPC instead uses its native `content_rev`. |
 | <a id="rule-rv-c6"></a>RV-C6 | **A conflict compares `acked_rev`, never a local sequence.** Two devices conflict when they submitted against the same `acked_rev`; how much local work each accumulated is irrelevant to that question. |
 
 #### The submission log
@@ -175,131 +175,15 @@ Append-only, separate from telemetry ([OA-06](../13-observability-and-operations
 <a id="content-origin-storage"></a>
 ### Content origin storage and revision ownership
 
-The [content origin carrier](../../requirements/13-data-formats-and-portability.md#content-origin-carriers) is an immutable typed record stored with the owning payload. A content unit has a stable `ContentUnitId`, bound to exactly one message part, Notes block/attachment, report section/finding or media asset/output; it is a child of that owner's revision, not an independently mutable aggregate. A new payload version gets a new `ContentOriginId`, payload hash and parent lineage. The owning revision references both payload and origin. Their insertion/reference update is atomic through the same journal/write/sync path. Retained revisions pin their own origin records; deletion/GC follows the owning content's history/pins, never a separate metadata expiry.
+The [content origin carrier](../../requirements/13-data-formats-and-portability.md#content-origin-carriers) is an immutable typed record stored with the owning payload. A content unit has a stable `ContentUnitId`, bound to exactly one message part or report section/finding; it is a child of that owner's revision, not an independently mutable aggregate. A new payload version gets a new `ContentOriginId`, payload hash and parent lineage. The owning revision references both payload and origin. Their insertion/reference update is atomic through the same journal/write/sync path. Retained revisions pin their own origin records; deletion/GC follows the owning content's history/pins, never a separate metadata expiry.
 
-Chat cache mirrors Cloud part origins. Notes pending events, conflict alternatives, undo, checkpoints and restored revisions preserve origin along with content; restoring/copying to a new payload version retains its kinds. Scope/Slate native stores own local origins; Cloud metadata replicas carry the same typed projection without taking native authority. Native packages, generated downloads and sidecars use the carrier contract. Legacy absent metadata becomes `unknown`; unknown profile/fields remain inert and readable, and a writer unable to preserve them refuses affected writes. No origin payload includes credentials or an executable type name.
+Chat cache mirrors Cloud part origins. ArcScope native stores own local origins; Cloud metadata replicas carry the same typed projection without taking native authority. Native packages, generated downloads and sidecars use the carrier contract. Legacy absent metadata becomes `unknown`; unknown profile/fields remain inert and readable, and a writer unable to preserve them refuses affected writes. No origin payload includes credentials or an executable type name.
 
 ## 2. ArcChat local store
 
 The historical feature name identifies no standalone application or database. All assistant tables, messages, attachments, projects, profiles, skills, context, compaction and pending execution are defined exclusively in [model 05](05-application-history.md). Each owning desktop has its own store; Android mirrors the logical schema in Room. Model 02 §1 still owns common product journal/resource mechanisms. Do not generate a second conversation/message schema from this section.
 
-## 3. ArcNotes local store
-
-### Cloud projection and folder ownership
-
-The canonical shape is [Cloud Notes §8.4](01-cloud-data-model.md#84-notes--canonical-cloud-knowledge-store). SQLite stores the same logical notebook, folder, document, block and scalar-property fields, scoped to the enrolled workspace, alongside a separate acknowledged shadow and pending journal. Local table `rev` fields in this section mean `acked_rev` on the shadow; working mutations use the composite local token, not a fabricated Cloud revision.
-
-`notebook` has `notebook_id`, `workspace_id`, title, state and the local version fields. `folder` has `folder_id`, `notebook_id`, nullable `parent_folder_id`, name, fractional ordinal, state and timestamps. Folder rows are children of the notebook revision. Parent and document-placement foreign keys remain within one notebook; cycles are rejected under the notebook writer. Root and nested sibling order is `(ordinal, folder_id)` with an explicit root predicate, not a uniqueness assumption about NULL. Folder trash hides descendants without changing each document's own trash state. The same folder and placement commands and lock order are validated locally and in Cloud.
-
-### `notebook`, `document` *(aggregate roots)*
-
-| `document` field | Type | Notes |
-|---|---|---|
-| `document_id` | `id` | **PK** |
-| `notebook_id` | `id NN` | `FK →` `notebook`; restrict |
-| `folder_id` | `id?` | Null at notebook root; composite FK `(notebook_id, folder_id)` to `folder`, restrict |
-| `title` | `text NN` | **An independent field, not the first heading block** ([DC-03](../../requirements/products/arcnotes.md#rule-dc-03)) |
-| `state` | `enum(active, trashed) NN` | |
-| `trashed_at` | `instant?` | |
-| `created_at`, `updated_at` | `instant NN` | |
-| `rev` | `rev NN` | |
-
-- `IX (notebook_id, state, updated_at)`
-- `IX (state, updated_at)` — the global recent list
-- **Partial index** on `state = active` for every list path — for **size and speed only**. It does **not** filter: a query omitting the predicate simply does not use it and returns trashed rows from a sequential scan ([QP-05](00-data-model-overview.md#rule-qp-05))
-- **Exclusion is enforced by the repository read surface**, which applies the state predicate and is the only reachable path to this table from application code ([QP-06](00-data-model-overview.md#rule-qp-06))
-
-### `block`
-
-| Field | Type | Notes |
-|---|---|---|
-| `block_id` | `id` | **PK** — stable across reorder and reparent ([WP-18.00](../../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.00)) |
-| `document_id` | `id NN` | `FK →`; cascade |
-| `parent_block_id` | `id?` | Null at document root |
-| `ordinal` | `text NN` | **A fractional order key**, not an integer |
-| `kind` | `text NN` | Exactly the [BL-04](../../requirements/products/arcnotes.md#rule-bl-04) V1 set: `paragraph`, `heading`, `list`, `quote`, `callout`, `code`, `divider`, `table`, `math`, `image`, `attachment`, `embed`, `toggle`. **Checklist is a `list` style and PDF is an `attachment` presentation** — neither is a separate kind (`§2.1` of the editing architecture) |
-| `content` | `json NN` | The kind's declared content shape; text-bearing kinds carry `InlineContent` (`§2` of the [editing architecture](../18-editing-and-rich-content.md)) |
-| `created_at` | `instant NN` | |
-
-- `UQ (document_id, parent_block_id, ordinal)`
-- `IX (document_id, parent_block_id, ordinal)` — the document read path, in document order
-- **Constraint** — a block carries **no revision of its own** ([RV-03](00-data-model-overview.md#rule-rv-03)); the document's revision governs
-- **Why a fractional order key** — inserting between two blocks must not renumber siblings, because renumbering would make every insert a whole-document write and would defeat sync's per-aggregate change detection. The key is a string with a defined mid-point algorithm and a rebalance operation that is itself a normal revision.
-
-### `document_link`, `link_index`
-
-| `document_link` field | Type | Notes |
-|---|---|---|
-| `link_id` | `id` | **PK** |
-| `source_document_id` | `id NN` | `FK →`; cascade |
-| `source_block_id` | `id?` | |
-| `target_kind` | `enum(document, block, external) NN` | |
-| `target_document_id`, `target_block_id` | `id?` | **Identity, never a title** ([BR-04](../../planning/work-packages/18-arcnotes-document-core.md#rule-br-04) of [WP-18](../../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18)) |
-| `display_alias` | `text?` | |
-| `state` | `enum(resolved, broken) NN` | An explicit state, never a silent failure |
-
-- `IX (target_document_id)` — **the backlink query path**
-- **Rule** — `link_index` is *(derived)*: the backlink panel reads it, and **backlinks are never written into block content** ([WP-18.02](../../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.02)). Deleting the index rebuilds it.
-
-### `tag`, `document_tag`
-
-`tag` is cross-cutting classification carrying **no hierarchical position**. `document_tag` is `(document_id, tag_id)`. **Deleting a tag deletes the `document_tag` rows and nothing else** — documents survive ([BR-07](../../planning/work-packages/18-arcnotes-document-core.md#rule-br-07) of [WP-18](../../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18)), enforced by the foreign key direction.
-
-### `property_definition`, `property_value`
-
-| `property_definition` field | Type | Notes |
-|---|---|---|
-| `property_def_id` | `id` | **PK** |
-| `key` | `text NN` | |
-| `owner` | `enum(system, user) NN` | Separated, never conflated ([WP-28.00](../../planning/work-packages/28-arcnotes-properties-and-views.md#rule-wp-28.00)) |
-| `type` | `enum(text, number, date, dateTime, select, multiSelect, checkbox, url) NN` | The [required scalar property kinds](../../requirements/products/arcnotes.md#7-properties-tags-and-views); `select` is single-select |
-| `config` | `json NN` | Typed `notes.scalar.v1` profile/options and optional scale (default 9, max 9), per the [query profile](../../requirements/products/arcnotes.md#notes-scalar-query-profile); no relation/evaluator |
-| `semantic_rev` | `rev NN` | Changes for comparison-affecting config/type/option membership, not labels; normal `rev` changes for every edit |
-| `rev` | `rev NN` | |
-
-`property_value` is `(document_id, property_def_id)` with exactly one typed value column set per type. Numbers use exact decimal storage (28 significant digits, scale at most 9); date and UTC instant have distinct columns; options use stable IDs and multi-select is a bounded set. No row means missing; a null write deletes the row, while empty/false/zero remain present. The [query profile](../../requirements/products/arcnotes.md#notes-scalar-query-profile) governs write validation, type-change refusal and every comparison. **A document with no property rows has no property overhead** — this is what makes [WP-28.04](../../planning/work-packages/28-arcnotes-properties-and-views.md#rule-wp-28.04)'s lightness requirement structural rather than a UI choice.
-
-- `IX (property_def_id, value_text)`, `IX (property_def_id, value_number)`, `IX (property_def_id, value_date)` — the query-and-view paths
-
-### `saved_view`
-
-`saved_view` is a saved query plus its configuration and view kind. **It owns no documents**, so its deletion cascades to nothing.
-
-| Field | Type | Notes |
-|---|---|---|
-| `saved_view_id` | `id` | **PK** |
-| `notebook_id` | `id NN` | One authorized notebook, per the accepted saved-view scope |
-| `query_profile` | `text NN` | `notes.scalar.v1`; unknown version remains read-only and cannot execute |
-| `definition_semantic_revs` | `json NN` | Typed map of referenced PropertyDefId to semantic revision |
-| `kind` | `enum(list, table) NN` | **Exactly two layouts** ([P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006)). Board, gallery, calendar and timeline layouts are excluded |
-| `filter` | `json?` | Null means match-all; otherwise bounded property predicates over the declared scalar kinds in [property storage](#property_definition-property_value), governed by the [ArcNotes property and view requirements](../../requirements/products/arcnotes.md#7-properties-tags-and-views) |
-| `sort` | `json NN` | At most 8 typed keys, missing last and final DocumentId ascending; [profile](../../requirements/products/arcnotes.md#notes-scalar-query-profile) |
-| `columns` | `json?` | Table layout only |
-| `rev` | `rev NN` | |
-
-- **Constraint** — a filter references only **declared property definitions with scalar types**. There is no formula, relation or rollup evaluator ([P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006)), and no expression language enters this column
-- **Rule** — a view is a **query, never a container**. Deleting a view deletes no document; a document appears in a view because it matches, not because it was added
-
-> **Retired identifiers.** `canvas`, `canvas_element`, `slide_deck`, `slide` and `speaker_note` are **retired by [P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006)** and are not reused. Edgeless canvas, whiteboard surfaces, shapes, connectors, frames and presentations are excluded from delivery, with no mandatory future hook. Their historical definitions are in the git history of this document at `7ed79a6`.
-
-**Query dataset token.** The materialized Notes query source maintains a monotonically changing token for relevant notebook membership/value/trash changes; local evaluation also binds hydration and pending-local generations. Authorization is rechecked on each page. A consistent read returns its token with results; a cursor checks that token before reading the next page. Token change produces the profile's explicit restart, not a page from another dataset. Tokens are opaque equality/version evidence, never content revision values compared across different aggregates. Label-only definition rename leaves semantic bindings valid; type/config changes follow the profile's refusal/repair rules.
-
-### `document_history`, `checkpoint`, `trash_entry`
-
-Three distinct mechanisms plus the journal make four ([QI-09](../../requirements/12-quality-and-compatibility-contract.md#rule-qi-09)):
-
-| Mechanism | Table | Scope | Retention |
-|---|---|---|---|
-| Undo | *in-memory session stack, not persisted* | Session | Session |
-| History | `document_history` | Per document, per revision | Policy window |
-| Checkpoint | `checkpoint` | Explicit user act | Until deleted |
-| Journal | `journal` (§1.3) | Crash recovery | Until snapshot |
-
-**None substitutes for another**, and a test asserts each behaves independently ([WP-18.05](../../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.05)).
-
----
-
-## 4. ArcScope local store
+## 3. ArcScope local store
 
 ### `scope_project`, `session_record` *(aggregate roots)*
 
@@ -353,107 +237,9 @@ Raw capture is **not** in the relational store ([SE-14](../../requirements/produ
 
 ---
 
-## 5. ArcSlate local store
+## 4. The portable package
 
-### `slate_project`, `sequence` *(aggregate roots)*
-
-| `sequence` field | Type | Notes |
-|---|---|---|
-| `sequence_id` | `id` | **PK** |
-| `project_id` | `id NN` | `FK →`; cascade |
-| `frame_rate_num`, `frame_rate_den` | `int NN` | **The sequence's own output video grid.** Rational, stored exactly — never a float. A sequence has exactly one; its sources may have many different ones ([SG-01](../23-simulator-and-interchange.md#rule-sg-01)) |
-| `drop_frame` | `bool NN` | Timecode **presentation** only; it never affects position arithmetic (`§3.6` of the time model) |
-| `sample_rate` | `int NN` | **The sequence's own output audio grid** ([SG-02](../23-simulator-and-interchange.md#rule-sg-02)) |
-| `ticks_per_video_frame` | `bigint NN` | *(derived, materialised)* Exact ticks per output frame. **NOT NULL** — a sequence grid that is not exactly representable cannot exist ([TB-02](../23-simulator-and-interchange.md#rule-tb-02)) |
-| `ticks_per_audio_sample` | `bigint NN` | *(derived, materialised)* Exact ticks per output sample |
-| `width`, `height` | `int NN` | |
-| `working_color_config` | `json NN` | |
-| `rev` | `rev NN` | |
-
-- **Constraint** — `ticks_per_video_frame` and `ticks_per_audio_sample` are **exact**: `705600000 × frame_rate_den` must divide by `frame_rate_num`, and `705600000` by `sample_rate`. A sequence whose grid is not exactly representable **cannot be created** ([TB-02](../23-simulator-and-interchange.md#rule-tb-02), [SG-03](../23-simulator-and-interchange.md#rule-sg-03))
-- **Constraint** — a frame rate is **never** stored as a floating-point value. This single decision is what prevents accumulated drift ([WP-36.01](../../planning/work-packages/36-arcslate-project-and-timeline.md#rule-wp-36.01)), and a policy test asserts no float column exists in the time model.
-
-### `media_asset`, `media_stream`
-
-| `media_asset` field | Type | Notes |
-|---|---|---|
-| `media_asset_id` | `id` | **PK** — a stable logical identity |
-| `project_id` | `id NN` | |
-| `mode` | `enum(externalReference, managed) NN` | Reference-in-place by default ([MD-03](../../requirements/products/arcslate.md#rule-md-03)) |
-| `content_hash` | `text?` | Present when managed or once hashed |
-| `availability` | `enum(available, offline, checking) NN` | **A normal state, not an error** ([MD-05](../../requirements/products/arcslate.md#rule-md-05)) |
-| `metadata` | `json NN` | Streams, codecs, dimensions, rate, duration, colour metadata, timecode, channel layout |
-| `color_interpretation_override` | `json?` | **Never modifies the source** ([CO-03](../../requirements/products/arcslate.md#rule-co-03)) |
-
-- **Constraint** — `media_asset_id` is **not a file path** ([I-192](../../requirements/01-normative-glossary-and-invariants.md#rule-i-192)), and **a clip never references a file** ([MD-07](../../requirements/products/arcslate.md#rule-md-07))
-- `media_location` is a separate table keyed `(media_asset_id, device_id)` — **the same asset may resolve to different locations on different devices** ([MD-08](../../requirements/products/arcslate.md#rule-md-08)) while remaining one logical asset. This table is device-local and does not sync.
-
-
-**Source time bases live here, not on the sequence** ([SG-01](../23-simulator-and-interchange.md#rule-sg-01)). One sequence routinely contains sources with different stream time bases, so a single per-sequence field could not represent them.
-
-| `media_stream` field | Type | Notes |
-|---|---|---|
-| `media_stream_id` | `id` | **PK** |
-| `media_asset_id` | `id NN` | `FK →`; cascade |
-| `stream_kind` | `enum(video, audio, subtitle, data) NN` | |
-| `stream_index` | `int NN` | The container's own index |
-| `rate_num`, `rate_den` | `int NN` | **This stream's own** rate. Rational, exact, never a float |
-| `pts_time_base_num`, `pts_time_base_den` | `int NN` | The container's PTS base for **this stream** — generally neither the stream rate nor any sequence's |
-| `ticks_per_pts_unit` | `bigint?` | Exact tick mapping where the PTS base divides the tick base; **NULL means the mapping rounds** ([SM-03](../23-simulator-and-interchange.md#rule-sm-03)), and the rounding is recorded in the conform report |
-| `start_pts` | `bigint NN` | The container's own origin, preserved rather than normalised away |
-
-- `UQ (media_asset_id, stream_index)`
-- **Constraint** — a `NULL` `ticks_per_pts_unit` is legal and **does not block import** ([SM-03](../23-simulator-and-interchange.md#rule-sm-03)); it makes the stream's mapping approximate, and the approximation is reported, never silent
-- **Rule** — a stream's rate is never assumed equal to the sequence's output grid. That assumption is the defect [SG-01](../23-simulator-and-interchange.md#rule-sg-01) exists to prevent
-
-### `track`, `timeline_item`, `clip`, `transition`
-
-> **Corrected 2026-09-07.** Positions were stored as integer frames with a **parallel integer sample column set**. Those two grids cannot agree: at 30000/1001 fps and 48 kHz one frame is 1601.6 samples, so most frame positions have no integer sample and most sample positions have no integer frame. Storing both made the model self-contradictory. Positions are now **canonical ticks** (`§3` of the [time model](../23-simulator-and-interchange.md)); frames and samples are computed projections.
-
-| `timeline_item` field | Type | Notes |
-|---|---|---|
-| `timeline_item_id` | `id` | **PK** |
-| `sequence_id`, `track_id` | `id NN` | `FK →`; cascade |
-| `kind` | `enum(clip, transition, gap, generatedMedia, title, subtitleCue) NN` | |
-| `start_ticks` | `bigint NN` | **Canonical ticks at 705 600 000 Hz** ([TB-01](../23-simulator-and-interchange.md#rule-tb-01)) |
-| `duration_ticks` | `bigint NN` | |
-| `media_asset_id` | `id?` | Clips only |
-| `source_in_ticks`, `source_out_ticks` | `bigint?` | In the **source's** canonical tick domain, mapped by conform ([SM-02](../23-simulator-and-interchange.md#rule-sm-02)) |
-
-- `IX (sequence_id, track_id, start_ticks)` — **the timeline read path**
-- **Constraint** — many timeline items may reference one `media_asset` independently ([I-477](../../requirements/01-normative-glossary-and-invariants.md#rule-i-477)); there is no back-reference from asset to clip
-- **Constraint** — **no position column is a frame number, a sample index, a float or a duration type** ([TB-01](../23-simulator-and-interchange.md#rule-tb-01), [TB-04](../23-simulator-and-interchange.md#rule-tb-04)), asserted by a repository policy test ([TV-02](../23-simulator-and-interchange.md#rule-tv-02))
-- **Constraint** — `duration_ticks > 0`; a zero-length item is not representable
-- **Rule** — the sequence's frame rate and the project's audio rate are **projection parameters**, not storage units. Changing a sequence's frame rate reprojects the display without altering a single stored position, which is what makes a rate change non-destructive.
-
-### `effect_instance`, `effect_parameter`, `keyframe`, `animation_curve`
-
-`effect_instance` references an `effect_definition_id` from a catalogue — **definition and instance are separate** ([I-483](../../requirements/01-normative-glossary-and-invariants.md#rule-i-483), [WP-37.03](../../planning/work-packages/37-arcslate-playback-and-processing.md#rule-wp-37.03)). `keyframe` carries `scope ∈ {clipLocal, sequence}` **explicitly**, so keyframe time can never silently switch domain when a clip moves ([PG-09](../../assurance/open-gates-register.md#rule-pg-09) of the ArcSlate requirements).
-
-### Derived stores — proxy, render cache, waveform, thumbnail
-
-All four are *(derived)*, in a **separate store file** from the project, so [WP-37.05](../../planning/work-packages/37-arcslate-playback-and-processing.md#rule-wp-37.05)'s "delete every cache and the project is intact" is structurally true rather than a promise. Each row records the source asset, the source content hash and the generation parameters, so a stale entry is detectable. **Switching proxy on or off never changes render output** ([MP-06](../12-native-interop-and-media.md#rule-mp-06)) because the render path resolves the original unless proxy render is explicitly declared on the `render_request`.
-
-### `export_preset`, `render_request`
-
-| `render_request` field | Type | Notes |
-|---|---|---|
-| `render_request_id` | `id` | **PK** |
-| `sequence_id` | `id NN` | |
-| `bound_project_rev`, `bound_sequence_rev` | `rev NN` | **The immutable snapshot binding** ([RN-04](../../requirements/products/arcslate.md#rule-rn-04)) |
-| `range_start_ticks`, `range_end_ticks` | `bigint NN` | **Canonical ticks** ([TB-01](../23-simulator-and-interchange.md#rule-tb-01)). Output is half-open and follows [BO-01](../23-simulator-and-interchange.md#rule-bo-01) through [BO-04](../23-simulator-and-interchange.md#rule-bo-04); outward decode coverage never expands emitted sample ownership |
-| `export_preset_id` | `id NN` | |
-| `allow_proxy_render` | `bool NN` | Explicit, recorded in output metadata |
-| `job_id` | `id NN` | A render is a **native Product Job**, not a Cloud Agent Task ([CM-04](../09-ai-and-agent-runtime-architecture.md#rule-cm-04) of the runtime architecture, [I-485](../../requirements/01-normative-glossary-and-invariants.md#rule-i-485)). ArcSlate owns its progress, cancellation and recovery |
-| `destination` | `text NN` | |
-
-- **Constraint** — the render reads the bound revisions, never live editor state. Editing during a render cannot affect its output ([WP-38.02](../../planning/work-packages/38-arcslate-render-and-colour.md#rule-wp-38.02)).
-
----
-
-## 6. The portable package
-
-**Which products have one.** These native working-package rules apply to **ArcScope and ArcSlate**, and to a package explicitly offered by its owner; they impose no universal Notes/assistant archive format. ArcNotes' exit path is a Cloud-generated download over acknowledged revisions under [EP-04](../../requirements/products/arcnotes.md#rule-ep-04), with client fixtures in [WP19.05](../../planning/work-packages/19-arcnotes-search-and-portability.md#rule-wp-19.05) and the real Cloud export join in [WP25.08](../../planning/work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.08). It is not a re-importable native Notes package. The embedded assistant separately implements [assistant-history.v1](05-application-history.md) and [WP15.06](../../planning/work-packages/15-arcchat-conversation-core.md#rule-wp-15.06), including its explicit local history export; that format does not turn Notes into a local native archive product.
+**Which products have one.** These native working-package rules apply to **ArcScope**, and to a package explicitly offered by its owner; they impose no universal assistant archive format. The embedded assistant's exit path is a Cloud-generated download over acknowledged revisions, implemented as [assistant-history.v1](05-application-history.md) and [WP15.06](../../planning/work-packages/15-arcchat-conversation-core.md#rule-wp-15.06), including its explicit local history export, with the real Cloud export producer in [WP25.08](../../planning/work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.08). It is not a re-importable native package.
 
 The working store is not the exchange format (`§8` of the persistence architecture). Where a product has a package, it is a directory or archive containing:
 
@@ -466,38 +252,29 @@ attachments-external/  external reference descriptors, never the files themselve
 
 | # | Rule |
 |---|---|
-| <a id="rule-pp-01"></a>PP-01 | **The package is complete**: re-importing reconstructs every aggregate, relationship and managed resource ([WP-39.02](../../planning/work-packages/39-arcslate-integration-and-portability.md#rule-wp-39.02), [WP-35.04](../../planning/work-packages/35-arcscope-integration-and-sync.md#rule-wp-35.04)). |
-| <a id="rule-pp-02"></a>PP-02 | **Serialisation is deterministic** — stable ordering, stable key order, no timestamps outside content. Two exports of unchanged content are byte-identical ([WP-39.02](../../planning/work-packages/39-arcslate-integration-and-portability.md#rule-wp-39.02), [WP-35.04](../../planning/work-packages/35-arcscope-integration-and-sync.md#rule-wp-35.04)). |
-| <a id="rule-pp-03"></a>PP-03 | **Derived data is excluded.** No index, cache, proxy or thumbnail enters a package. |
-| <a id="rule-pp-04"></a>PP-04 | **External references are exported as descriptors**, and collect/consolidate is the separate explicit operation that turns them into managed content ([WP-39.02](../../planning/work-packages/39-arcslate-integration-and-portability.md#rule-wp-39.02)). |
+| <a id="rule-pp-01"></a>PP-01 | **The package is complete**: re-importing reconstructs every aggregate, relationship and managed resource ([WP-35.04](../../planning/work-packages/35-arcscope-integration-and-sync.md#rule-wp-35.04)). |
+| <a id="rule-pp-02"></a>PP-02 | **Serialisation is deterministic** — stable ordering, stable key order, no timestamps outside content. Two exports of unchanged content are byte-identical ([WP-35.04](../../planning/work-packages/35-arcscope-integration-and-sync.md#rule-wp-35.04)). |
+| <a id="rule-pp-03"></a>PP-03 | **Derived data is excluded.** No index or cache enters a package. |
+| <a id="rule-pp-04"></a>PP-04 | **External references are exported as descriptors**, and collect/consolidate is the separate explicit operation that turns them into managed content ([WP-35.04](../../planning/work-packages/35-arcscope-integration-and-sync.md#rule-wp-35.04)). |
 | <a id="rule-pp-05"></a>PP-05 | **The manifest carries `nativeFormatVersion`**, distinct from `storageSchemaVersion` — a version axis of its own. |
 
 ---
 
-## 7. Verification
+## 5. Verification
 
 | # | Obligation | Where |
 |---|---|---|
 | <a id="rule-dl-01"></a>DL-01 | Every aggregate round-trips with all fields and relationships | Per-product persistence tests |
-| <a id="rule-dl-02"></a>DL-02 | Block order survives insert-between without renumbering siblings | [WP-18.00](../../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.00) |
 | <a id="rule-dl-03"></a>DL-03 | A finalised capture is structurally immutable | [WP-33.04](../../planning/work-packages/33-arcscope-acquisition-and-session.md#rule-wp-33.04) |
-| <a id="rule-dl-04"></a>DL-04 | No floating-point column exists in the ArcSlate time model | [WP-36.01](../../planning/work-packages/36-arcslate-project-and-timeline.md#rule-wp-36.01) policy test |
-| <a id="rule-dl-05"></a>DL-05 | Deleting every derived store leaves each product fully intact | [WP-07.06](../../planning/work-packages/07-local-persistence-foundation.md#rule-wp-07.06), [WP-37.05](../../planning/work-packages/37-arcslate-playback-and-processing.md#rule-wp-37.05) |
-| <a id="rule-dl-06"></a>DL-06 | Undo, history, checkpoint and journal behave independently | [WP-18.05](../../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.05) |
-| <a id="rule-dl-07"></a>DL-07 | **Where a product has a portable package**, it round-trips with equivalence, deterministically | [WP-39.02](../../planning/work-packages/39-arcslate-integration-and-portability.md#rule-wp-39.02), [WP-35.04](../../planning/work-packages/35-arcscope-integration-and-sync.md#rule-wp-35.04) |
-| <a id="rule-dl-07a"></a>DL-07a | **Where a product's exit path is a Cloud download**, the export is complete over acknowledged revisions, states its exclusions, and **is not asserted to re-import** | [WP-19.05](../../planning/work-packages/19-arcnotes-search-and-portability.md#rule-wp-19.05), [WP-15.06](../../planning/work-packages/15-arcchat-conversation-core.md#rule-wp-15.06) |
-| <a id="rule-dl-08"></a>DL-08 | **The repository read surface** excludes a trashed row from every list path, and **no application assembly can construct a query against the raw table** ([QP-06](00-data-model-overview.md#rule-qp-06)) | [WP-18.00](../../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.00), [WP-05](../../planning/work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05) |
+| <a id="rule-dl-05"></a>DL-05 | Deleting every derived store leaves each product fully intact | [WP-07.06](../../planning/work-packages/07-local-persistence-foundation.md#rule-wp-07.06) |
+| <a id="rule-dl-07"></a>DL-07 | **Where a product has a portable package**, it round-trips with equivalence, deterministically | [WP-35.04](../../planning/work-packages/35-arcscope-integration-and-sync.md#rule-wp-35.04) |
+| <a id="rule-dl-07a"></a>DL-07a | **Where a product's exit path is a Cloud download**, the export is complete over acknowledged revisions, states its exclusions, and **is not asserted to re-import** | [WP-15.06](../../planning/work-packages/15-arcchat-conversation-core.md#rule-wp-15.06), [WP-25.08](../../planning/work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.08) |
+| <a id="rule-dl-08"></a>DL-08 | **The repository read surface** excludes a trashed row from every list path, and **no application assembly can construct a query against the raw table** ([QP-06](00-data-model-overview.md#rule-qp-06)) | [WP-05](../../planning/work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05) |
 | <a id="rule-dl-09"></a>DL-09 | A crash at any write-path point recovers to a committed boundary | [WP-07.02](../../planning/work-packages/07-local-persistence-foundation.md#rule-wp-07.02) |
 
 ## [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) transport, storage and recovery composition
 
-The [CF/R2 lifecycle](../contracts/05-cloudflare-integration.md) fixes part verification, Verified pins, authorization on consumption, release/deletion and independent immutable restore. C# owning transactions, sync cursors/tombstones/conflicts, desktop pending changes, native job snapshots and derived-source revision checks above retain their semantics. The [wire profile](../contracts/04-protobuf-wire-registry.md) transports exact values without changing content-origin, Notes scalar or Scope measurement oracles. CF checkpoints/streams never become product history, and restoration cannot silently redispatch an uncertain external act.
-
-## Structural outbox and Slate metadata completeness
-
-Notes outbox entries have a closed payload union: contentProposal or namedStructuralCommand. The latter stores operation ID plus its generated request, ordered affected root IDs and their composite base tokens, immutable request hash, batchId/local sequence range, explicit classification mapping and preview hash. Structural command acknowledgement carries every changed root revision; one local transaction installs those acknowledgements and rebases the remaining pending tail. Folder/document create→move→edit dependencies wait for their predecessor receipts. A conflict preserves the original payload and pending graph. Do not rewrite a pending structural operation into a full NotesDocument upload; that would bypass the Cloud owner locks and classification rules.
-
-Slate local stores preserve all fields of slate.project.v1: independent bins; sequence grid/audio/colour configuration; track role/name/lock; item kind and typed source; graph nodes/edges and effect definition/instance identity; exact keyframe scope; title/subtitle style/text; managed small assets and immutable transcript provenance. Nested sequences add a same-project FK and cycle check. Project archive and metadata replica use the same complete projection, excluding device paths, cache/proxy bytes and transient editor UI. A graph and its effect-stack view have one stored authority. Unknown effect definitions remain inert bytes within the versioned graph, bounded by the existing immutable body channel when oversized, rather than being discarded by a narrower DTO.
+The [CF/R2 lifecycle](../contracts/05-cloudflare-integration.md) fixes part verification, Verified pins, authorization on consumption, release/deletion and independent immutable restore. C# owning transactions, sync cursors/tombstones/conflicts, desktop pending changes, native job snapshots and derived-source revision checks above retain their semantics. The [wire profile](../contracts/04-protobuf-wire-registry.md) transports exact values without changing content-origin or Scope measurement oracles. CF checkpoints/streams never become product history, and restoration cannot silently redispatch an uncertain external act.
 
 ## Client recovery generation
 

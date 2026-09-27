@@ -5,7 +5,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: A — Freeze and foundation
-> Upstream: `01` · Downstream: `03` · `05` · `47` · `53`
+> Scheduling: this package is an obligation set; its delivery tasks and their typed prerequisites are listed in section 9, generated from the [delivery graph](../delivery/delivery-graph.json) under [P2-018](../../decisions/phase-2-specification-decisions.md#rule-p2-018).
 
 > **Goal.** Make the build tell the truth. Until diagnostics are real, warnings are errors, versions are locked and the runtime split is expressed in the build itself, every later AOT proof and every later quality claim rests on unverified ground.
 
@@ -20,7 +20,7 @@
 
 **Out of scope.** Final product/store signing and public promotion belong to WP50. This package implements candidate publication/signing metadata mechanisms and BuildPolicy packaging; actual Contracts/native capability producers are WP03/06. Policy test implementations belong to WP05.
 
-**Why this package exists.** The historical inventory records central desktop/contracts AOT imports and 165 per-project NuGet lockfiles; the current nine-owner graph has 43 managed projects with 43 committed NuGet locks. Validate evaluated properties and locked restore, repair uncovered AOT chains, and establish the accepted Web toolchain; file-local absence is not an effective-property defect.
+**Why this package exists.** The historical inventory records central desktop/contracts AOT imports and 165 per-project NuGet lockfiles; the current seven-owner graph has 35 managed projects with 35 committed NuGet locks. Validate evaluated properties and locked restore, repair uncovered AOT chains, and establish the accepted Web toolchain; file-local absence is not an effective-property defect.
 
 ---
 
@@ -96,7 +96,7 @@
 
 **Completion gate.** Every selected toolchain is reproducible from committed pins with no dependency on sibling checkout state.
 
-**Completed execution.** [Toolchain pins and restore](../../assurance/wp02-00-toolchain-profile.md) records the reviewed plan and explicit local native reuse policy. [Implementation evidence](../../assurance/wp02-00-implementation-evidence.md) records the nine-owner pin/lock inventory, online/offline and negative checks, eight reviewed implementation PRs with green CI, public artifact verification and actual runtime receipts. No local vcpkg reinstall was required. This closes WP02.00 only; the Web solution/IDE dispatch check remains explicitly owned by WP02.03.
+**Completed execution.** [Toolchain pins and restore](../../assurance/wp02-00-toolchain-profile.md) records the reviewed plan and explicit local native reuse policy. [Implementation evidence](../../assurance/wp02-00-implementation-evidence.md) records the seven-owner pin/lock inventory, online/offline and negative checks, six reviewed implementation PRs with green CI, public artifact verification and actual runtime receipts. No local vcpkg reinstall was required. This closes WP02.00 only; the Web solution/IDE dispatch check remains explicitly owned by WP02.03.
 
 <a id="rule-wp-02.01"></a>
 
@@ -108,7 +108,7 @@
 
 **Completion gate.** The solution builds with warnings-as-errors, and every waiver has an owner and an expiry.
 
-**Completed execution.** [Diagnostic posture and ordered plan](../../assurance/wp02-01-diagnostic-profile.md) records the pre-implementation decisions and sequence. [Implementation evidence](../../assurance/wp02-01-implementation-evidence.md) records all 43 evaluated managed projects, 17 real warning-rejection cases, an empty authored-code waiver list, eight reviewed implementation PRs with green PR/main checks, public artifacts and actual runtime/device/provider verification. Existing local vcpkg dependencies were reused. This closes WP02.01 only; the complete AOT/trim diagnostic sweep remains WP02.02.
+**Completed execution.** [Diagnostic posture and ordered plan](../../assurance/wp02-01-diagnostic-profile.md) records the pre-implementation decisions and sequence. [Implementation evidence](../../assurance/wp02-01-implementation-evidence.md) records all 35 evaluated managed projects, 17 real warning-rejection cases, an empty authored-code waiver list, six reviewed implementation PRs with green PR/main checks, public artifacts and actual runtime/device/provider verification. Existing local vcpkg dependencies were reused. This closes WP02.01 only; the complete AOT/trim diagnostic sweep remains WP02.02.
 
 <a id="rule-wp-02.02"></a>
 
@@ -120,7 +120,7 @@
 
 **Completion gate.** Every project on an AOT chain declares its posture, and every resulting diagnostic is fixed or assigned. **A suppressed diagnostic without an assignment fails this gate.**
 
-**Completed execution.** [AOT declaration sweep and evidence](../../assurance/wp02-02-aot-sweep-evidence.md) records all 43 evaluated projects, the 31 effective AOT-analysis postures, expanded six-owner builds and actual Windows/Linux Native AOT publishes and runtime checks. No missing declaration, authored suppression or resulting diagnostic was found. Existing source and published identities remain unchanged; no empty source PR or replacement release was created. This closes WP02.02 only.
+**Completed execution.** [AOT declaration sweep and evidence](../../assurance/wp02-02-aot-sweep-evidence.md) records all 35 evaluated projects, the 31 effective AOT-analysis postures, expanded four-owner builds and actual Windows/Linux Native AOT publishes and runtime checks. No missing declaration, authored suppression or resulting diagnostic was found. Existing source and published identities remain unchanged; no empty source PR or replacement release was created. This closes WP02.02 only.
 
 <a id="rule-wp-02.03"></a>
 
@@ -133,7 +133,7 @@
 
 **Completion gate.** Runtime and build entry points match the fixed repository graph and produce foundation candidates for WP06.
 
-**Completed execution.** [Runtime boundaries and ordered plan](../../assurance/wp02-03-runtime-boundary-profile.md) records the pre-implementation decisions. [Implementation evidence](../../assurance/wp02-03-runtime-boundary-evidence.md) records the reviewed Web repair, actual Windows IDE startup and negative cases, fresh Windows/Linux CI, original-candidate public byte verification and real three-browser Cloud calls. The eight unchanged owners retain their exact accepted runtime/CI evidence and owner-local graphs. This closes WP02.03 only; the first consolidated foundation integration manifest remains WP06-owned.
+**Completed execution.** [Runtime boundaries and ordered plan](../../assurance/wp02-03-runtime-boundary-profile.md) records the pre-implementation decisions. [Implementation evidence](../../assurance/wp02-03-runtime-boundary-evidence.md) records the reviewed Web repair, actual Windows IDE startup and negative cases, fresh Windows/Linux CI, original-candidate public byte verification and real three-browser Cloud calls. The six unchanged owners retain their exact accepted runtime/CI evidence and owner-local graphs. This closes WP02.03 only; the first consolidated foundation integration manifest remains WP06-owned.
 
 <a id="rule-wp-02.04"></a>
 
@@ -149,7 +149,7 @@
 
 **Current execution amendment.** [P2-017](../../decisions/phase-2-specification-decisions.md#rule-p2-017) and the [CI/local policy](../../assurance/ci-and-local-validation-policy.md) replace hosted runtime/macOS and repeated post-publication gates. Retain actual local readback evidence and reduced CI; no new public download or device/browser/provider rerun is required. Stop after this substep.
 
-**Completed execution.** [Implementation evidence](../../assurance/wp02-04-implementation-evidence.md) and its [source/result receipt](../../assurance/wp02-04-implementation-evidence.json) record the independent source identities, retained historical local observations, nine reviewed owner PRs with successful reduced CI and main publication/deployment, and synchronized Design/Plan instructions. All primary checkouts were updated; branches and worktrees remain retained. This closes WP02.04 under P2-017 only, without claiming new runtime/macOS coverage, later version producers or commercial acceptance. WP02.05 was not started.
+**Completed execution.** [Implementation evidence](../../assurance/wp02-04-implementation-evidence.md) and its [source/result receipt](../../assurance/wp02-04-implementation-evidence.json) record the independent source identities, retained historical local observations, seven reviewed owner PRs with successful reduced CI and main publication/deployment, and synchronized Design/Plan instructions. All primary checkouts were updated; branches and worktrees remain retained. This closes WP02.04 under P2-017 only, without claiming new runtime/macOS coverage, later version producers or commercial acceptance. WP02.05 was not started.
 
 <a id="rule-wp-02.05"></a>
 
@@ -164,7 +164,7 @@
 
 **Execution profile.** [Dependency admission and publication](../../assurance/wp02-05-dependency-policy-profile.md) records the researched owner boundaries, candidate/stable rules, upgrade evidence and ordered implementation/review/merge plan.
 
-**Completed execution.** [Dependency policy implementation](../../assurance/wp02-05-implementation-evidence.md) and its [source/result receipt](../../assurance/wp02-05-implementation-evidence.json) record all nine reviewed owner PRs, successful applicable PR checks and required main publication/deployment results, immutable admission/upgrade controls, restricted publisher scope and clean primary fast-forwards. Stable-tag execution and new runtime/consumer proof are explicitly unclaimed. This closes WP02.05 under P2-017; recurring VG-08 and later owner gates remain open.
+**Completed execution.** [Dependency policy implementation](../../assurance/wp02-05-implementation-evidence.md) and its [source/result receipt](../../assurance/wp02-05-implementation-evidence.json) record all seven reviewed owner PRs, successful applicable PR checks and required main publication/deployment results, immutable admission/upgrade controls, restricted publisher scope and clean primary fast-forwards. Stable-tag execution and new runtime/consumer proof are explicitly unclaimed. This closes WP02.05 under P2-017; recurring VG-08 and later owner gates remain open.
 
 <a id="rule-wp-02.90"></a>
 ### WP-02.90 — Verify the owned artifact and real integration
@@ -177,7 +177,7 @@
 
 **Completion gate.** Selected pins and licence/AOT policy agree across owners; the BuildPolicy produces an identifiable candidate and the native pack pipeline is configured; real native capability proof is WP06; consumers need no CMake/vcpkg for ordinary restore. Record exact artifacts and provider reality. The package is incomplete if an important contract/owner/recovery rule still requires design during coding.
 
-**Completed stage.** [WP02 stage acceptance](../../assurance/wp02-stage-acceptance.md) and its [source/evidence index](../../assurance/wp02-stage-acceptance.json) join the six preceding substeps, exact nine-owner source/provider results, current producer inventories and independently retained consumer pins. All parent completion conditions pass for build/publication governance under P2-017. No new runtime, download, build or publication cycle was required; WP03/04/05/06/11/13/21/50 and recurring VG-08 retain their declared responsibilities.
+**Completed stage.** [WP02 stage acceptance](../../assurance/wp02-stage-acceptance.md) and its [source/evidence index](../../assurance/wp02-stage-acceptance.json) join the six preceding substeps, exact seven-owner source/provider results, current producer inventories and independently retained consumer pins. All parent completion conditions pass for build/publication governance under P2-017. No new runtime, download, build or publication cycle was required; WP03/04/05/06/11/13/21/50 and recurring VG-08 retain their declared responsibilities.
 
 ---
 
@@ -232,9 +232,17 @@
 
 ## 9. Dependencies
 
-**Upstream:** `01`. Consume completed stage outputs.
+<!-- delivery-graph:begin (generated by Plan tools/delivery.py; do not edit) -->
 
-**Downstream:** `03` · `05` · `47` · `53`. Consumers use exact released artifacts.
+Scheduling is task-level under [P2-018](../../decisions/phase-2-specification-decisions.md#rule-p2-018). This package is an obligation set; it is satisfied when every task below is complete with its evidence. Prerequisites are typed task edges, never "all upstream packages complete".
+
+| Delivery task | Satisfies | Start prerequisites outside this package |
+|---|---|---|
+| [GOV.03](../delivery/lanes/governance.md#task-gov-03) | [WP-02.00](02-build-governance-and-analyzer-policy.md#rule-wp-02.00) (full)<br>[WP-02.01](02-build-governance-and-analyzer-policy.md#rule-wp-02.01) (full)<br>[WP-02.02](02-build-governance-and-analyzer-policy.md#rule-wp-02.02) (full)<br>[WP-02.03](02-build-governance-and-analyzer-policy.md#rule-wp-02.03) (full)<br>[WP-02.04](02-build-governance-and-analyzer-policy.md#rule-wp-02.04) (full, under [P2-017](../../decisions/phase-2-specification-decisions.md#rule-p2-017))<br>[WP-02.05](02-build-governance-and-analyzer-policy.md#rule-wp-02.05) (full, under [P2-017](../../decisions/phase-2-specification-decisions.md#rule-p2-017))<br>[WP-02.90](02-build-governance-and-analyzer-policy.md#rule-wp-02.90) (full) | [GOV.02](../delivery/lanes/governance.md#task-gov-02) (artifact) |
+
+**Consumers outside this package:** [GOV.04](../delivery/lanes/governance.md#task-gov-04), [GOV.11](../delivery/lanes/governance.md#task-gov-11), [GOV.12](../delivery/lanes/governance.md#task-gov-12), [REL.06](../delivery/lanes/release.md#task-rel-06), [WEB.01](../delivery/lanes/web.md#task-web-01), [WEB.08](../delivery/lanes/web.md#task-web-08).
+
+<!-- delivery-graph:end -->
 
 ## Current source baseline and migration input
 

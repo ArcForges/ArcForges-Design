@@ -2,7 +2,7 @@
 
 This repository contains product requirements, system architecture, design decisions, and delivery planning for the ArcForges product family. It does not contain product implementation code.
 
-Current work uses the formal requirements, architecture, planning and assurance under the effective accepted decisions. The original inputs have completed their role and are archived in [`docs/deprecated-inputs/`](docs/deprecated-inputs/README.md). They are **deprecated**, not current design authority or part of ongoing design-completeness audits. A missing current definition must be resolved in the formal design, not inferred from the archive.
+Current work uses the formal requirements, architecture, planning and assurance under the effective accepted decisions. The original inputs completed their role; under [P2-019](docs/decisions/phase-2-specification-decisions.md#rule-p2-019) their bodies are not carried into this repository, and [`docs/deprecated-inputs/README.md`](docs/deprecated-inputs/README.md) identifies where they remain archived. They are **deprecated**, not current design authority or part of ongoing design-completeness audits. A missing current definition must be resolved in the formal design, not inferred from the archive.
 
 ## Repository Structure
 
@@ -11,7 +11,7 @@ Current work uses the formal requirements, architecture, planning and assurance 
 - [`docs/decisions/`](docs/decisions/): Architecture Decision Records (ADRs) capturing significant technical and design choices.
 - [`docs/planning/`](docs/planning/): Implementation delivery plans and work packages derived from accepted designs.
 - [`docs/assurance/`](docs/assurance/): Design specifications covering quality, security, and acceptance criteria.
-- [`docs/deprecated-inputs/`](docs/deprecated-inputs/README.md): Deprecated original inputs, retained only for historical provenance. Excluded from active design, planning and audit scope.
+- [`docs/deprecated-inputs/`](docs/deprecated-inputs/README.md): Records where the deprecated original inputs are archived; their bodies are not carried into this repository. Excluded from active design, planning and audit scope.
 
 Historical `I1`–`I4` and input Stage citations identify the archived origin of a rule; they do not require reading or auditing those inputs again. Current definitions and accepted decisions stand on their own. Reference-source repositories and their review obligations are unaffected by this archival change.
 
@@ -29,6 +29,10 @@ Current producer and local gRPC amendment: [closure review](docs/assurance/produ
 
 ## Current design entry points
 
-[P2-012](docs/decisions/phase-2-specification-decisions.md#rule-p2-012) defines Cloudflare hosting and independent embedded assistants. Start with [project/package directories](docs/architecture/27-platform-projects-and-application-assistants.md), [client UX](docs/experience/README.md), [D1](docs/architecture/data-model/04-d1-execution-profile.md), [history](docs/architecture/data-model/05-application-history.md), and [scope/streams](docs/architecture/contracts/10-application-scope-and-streams.md). The [implementation sequence](docs/planning/implementation-sequence.md) contains 51 active work packages; [cross-product collaboration](docs/future/cross-product-collaboration/README.md) is future only.
+[P2-012](docs/decisions/phase-2-specification-decisions.md#rule-p2-012) defines Cloudflare hosting and independent embedded assistants. Start with [project/package directories](docs/architecture/27-platform-projects-and-application-assistants.md), [client UX](docs/experience/README.md), [D1](docs/architecture/data-model/04-d1-execution-profile.md), [history](docs/architecture/data-model/05-application-history.md), and [scope/streams](docs/architecture/contracts/10-application-scope-and-streams.md). Implementation is scheduled by the [delivery model](docs/planning/delivery/README.md) under [P2-018](docs/decisions/phase-2-specification-decisions.md#rule-p2-018): 51 active work packages are the obligation catalogue and the delivery graph schedules concurrent tasks.
+
+## Related repositories
+
+This Design repository and the [Plan repository](https://github.com/ArcForges/Plan) (`C:\MyFile\Projects\Plan`) are the documentation pair governing the ArcForges family, per [P2-019](docs/decisions/phase-2-specification-decisions.md#rule-p2-019). Seven independent implementation repositories consume their accepted decisions: DesktopPlatform, Contracts, ArcScope, Cloud, AI, Web and Mobile.
 
 Current coordinated repair: [P2-014](docs/decisions/phase-2-specification-decisions.md#rule-p2-014); see [final findings verification](docs/assurance/final-findings-remediation-verification.md). Earlier dated reviews retain their evidence baselines; real runtime and commercial gates remain separate and open.

@@ -1,6 +1,10 @@
 # Phase 1 Foundation Decision Register
 
 > **Current amendments:** P2-009 through [P2-013](phase-2-specification-decisions.md#rule-p2-013). Historical decision quotations below retain their original context; the current-effective-rule column in the dispositions table identifies every superseded rule. See [P2-013](phase-2-specification-decisions.md#rule-p2-013).
+>
+> **Planning amendment (2026-09-23):** [P2-018](phase-2-specification-decisions.md#rule-p2-018) supersedes the serial execution portion of the sequence decision; see [D-019](#rule-d-019).
+>
+> **Reduced-family amendment (2026-09-27):** [P2-019](phase-2-specification-decisions.md#rule-p2-019) amends [D-011](#rule-d-011) and governs the current repository roster.
 
 > Status: **Foundation Freeze requested** — Phase 1 (Input Review and Foundation Decision Freeze)
 > Branch: `design/phase-1-foundation`
@@ -49,7 +53,6 @@ Every confirmed global disposition applies to all occurrences it covers without 
 |---|---|---|---|
 | <a id="rule-f-001"></a>F-001 | Conflict-resolution rule for the input corpus | `USER_CONFIRMED` | [D-001](#rule-d-001) |
 | <a id="rule-f-002"></a>F-002 | Product portfolio; ArcCanvas, ArcMusic, ArcImage | `USER_CONFIRMED` | [D-002](#rule-d-002) |
-| <a id="rule-f-003"></a>F-003 | ArcNotes complete scope | `USER_CONFIRMED` | [D-006](#rule-d-006) |
 | <a id="rule-f-004"></a>F-004 | Verification policy for time-sensitive claims | `USER_CONFIRMED` | [D-003](#rule-d-003) |
 | <a id="rule-f-005"></a>F-005 | Licensing boundary for ArcChat Mobile | `USER_CONFIRMED` | [D-004](#rule-d-004) |
 | <a id="rule-f-006"></a>F-006 | Web technology and rendering boundary | `USER_CONFIRMED` | [D-007](#rule-d-007) |
@@ -74,7 +77,7 @@ Every confirmed global disposition applies to all occurrences it covers without 
 | <a id="rule-f-025"></a>F-025 | Mainland China payment route | `USER_CONFIRMED` | [D-023](#rule-d-023) |
 | [F-026](../assurance/open-gates-register.md#rule-f-026) | Refit AOT packaging and entry-point change | `DEFERRED_WITH_OWNER_AND_TRIGGER` | [D-008](#rule-d-008), [D-016](#rule-d-016); discovered by [V-05c](../assurance/phase-1-official-verification.md#rule-v-05c) |
 
-Totals: **26 registered** ([F-001](#rule-f-001) to [F-026](../assurance/open-gates-register.md#rule-f-026), every identifier used, none skipped) = **23 resolved** · **3 validly deferred** ([F-013](../assurance/open-gates-register.md#rule-f-013), [F-023](../assurance/open-gates-register.md#rule-f-023), [F-026](../assurance/open-gates-register.md#rule-f-026)) · **0 open** · **0 proposed**. One of the 26 was newly discovered during official verification ([F-026](../assurance/open-gates-register.md#rule-f-026)), deferred as an implementation gate rather than a foundation conflict.
+Totals: **25 registered** ([F-001](#rule-f-001) to [F-026](../assurance/open-gates-register.md#rule-f-026); F-003 retired and never reused) = **22 resolved** · **3 validly deferred** ([F-013](../assurance/open-gates-register.md#rule-f-013), [F-023](../assurance/open-gates-register.md#rule-f-023), [F-026](../assurance/open-gates-register.md#rule-f-026)) · **0 open** · **0 proposed**. One of the 25 was newly discovered during official verification ([F-026](../assurance/open-gates-register.md#rule-f-026)), deferred as an implementation gate rather than a foundation conflict.
 
 ---
 
@@ -96,15 +99,7 @@ Totals: **26 registered** ([F-001](#rule-f-001) to [F-026](../assurance/open-gat
 
 **Where** `I4 §Stage 0.1`, `§0.14` list six-plus products; `§Stage 2.3` and `§2.20` place ArcCanvas and ArcMusic in navigation and docs; `§Stage 1.2` shows a six-product account diagram; `§Stage 13.1` freezes the portfolio to four and `§13.3` places ArcImage at "Not in Current Product Baseline"; `I3` line 5 and `§3` still describe ArcVideo and ArcImage as current.
 
-**Outcome** Three professional desktop products only. ArcCanvas, ArcMusic and ArcImage are not current, future, reserved, alias or re-entry-candidate products.
-
-## [F-003](#rule-f-003) — ArcNotes complete scope
-
-**Type** `CONTRADICTION` (apparent) + `MISSING_DECISION` (depth) · **Status** `USER_CONFIRMED` · **Resolved by** [D-006](#rule-d-006)
-
-**Where** `I4 §Stage 15` is titled "ArcNotes Complete Product Specification" and contains no Edgeless Canvas, no multi-view Database and no Slides; `§Stage 15.150` lists "Not complete Notion Database Platform" as a core non-goal; `§Stage 15.39` excludes relational database pages, formula engine, board engine, project management database and complex rollup. Stage 15 never mentions AFFiNE or SiYuan. `I2 §II` records the settled Option 5 decision, pre-empts the apparent contradiction ("'No Notion Database clone' means not replicating Notion's entire scope without limit"), and enumerates the V1 compatibility hooks.
-
-**Original outcome — scope superseded by [P2-006](phase-2-specification-decisions.md#rule-p2-006).** Option A was confirmed. Stage 15 was the V1 document-core baseline, not the ceiling. Canvas, typed multi-view Database and Slides are all in complete scope, phased after the document core stabilises, at ArcForges-decided depth via the Reference Coverage Matrix. The `I2 §II` V1 compatibility hooks are binding from the beginning. Slides defaults to a presentation view over document and canvas content.
+**Outcome** ArcScope is the one professional desktop application. ArcCanvas, ArcMusic and ArcImage are not current, future, reserved, alias or re-entry-candidate products.
 
 ## [F-004](#rule-f-004) — Verification policy for time-sensitive claims
 
@@ -191,7 +186,7 @@ This is the single active statement of [D-003](#rule-d-003)'s applied scope. It 
 
 **Type** `CONTRADICTION` (mild) · **Status** `USER_CONFIRMED` · **Resolved by** [D-009](#rule-d-009)
 
-**Where** `I3 §5.1` and `§5.3` define four shared Contracts projects with all LocalRpc interfaces in one assembly. `I3 §6.5` itself warns local contracts must stay small rather than becoming "one ever-expanding giant assembly". `I4 §Stage 21.122–123` requires per-product semantic ownership and versioning, so an ArcNotes contract change must not force an ArcSlate re-release. [D-004](#rule-d-004) adds the constraint that mobile-facing contracts must sit in clearly bounded Apache-2.0 packages.
+**Where** `I3 §5.1` and `§5.3` define four shared Contracts projects with all LocalRpc interfaces in one assembly. `I3 §6.5` itself warns local contracts must stay small rather than becoming "one ever-expanding giant assembly". `I4 §Stage 21.122–123` requires per-product semantic ownership and versioning, so a contract change owned by one product must not force an unrelated product's re-release. [D-004](#rule-d-004) adds the constraint that mobile-facing contracts must sit in clearly bounded Apache-2.0 packages.
 
 **Outcome** Contracts split by communication boundary, product/domain ownership, release cadence and licence boundary. C# DTOs and endpoint metadata are the source of truth; OpenAPI and JSON Schema are generated from them. No business implementation in a contracts package.
 
@@ -217,7 +212,7 @@ This is the single active statement of [D-003](#rule-d-003)'s applied scope. It 
 
 **Type** `UNSUPPORTED_ASSUMPTION` · **Status** `USER_CONFIRMED` · **Resolved by** [D-012](#rule-d-012)
 
-**Where** `I4 §Stage 15` never mentions AFFiNE or SiYuan; `§Stage 16` never mentions Serial Studio; `§Stage 20` mentions only Olive, never ArcVideo or ArcVideoFoundation. All reference-repository roles came solely from `I2 §II` and the Phase 1 brief's inventory.
+**Where** `I4 §Stage 16` never mentions Serial Studio. All reference-repository roles came solely from `I2 §II` and the Phase 1 brief's inventory.
 
 **Outcome** The reference map is confirmed explicitly rather than inferred. Reference repositories are sources of features, behaviour, tests, migration evidence and possible reusable material — never architecture authorities, parity commitments, or reasons to import a runtime stack. Every product receives a Reference Coverage Matrix before its implementation planning is finalized.
 
@@ -225,7 +220,7 @@ This is the single active statement of [D-003](#rule-d-003)'s applied scope. It 
 
 **Type** `USER_INTENT` / `MISSING_DECISION` · **Status** `USER_CONFIRMED` · **Resolved by** [D-013](#rule-d-013)
 
-**Where** `I2 §II` states as user-confirmed that non-AGPL content from AFFiNE, Serial Studio, ArcVideo, ArcVideoFoundation and Olive may be copied — code, logic, tests and assets — then progressively replaced. Its interaction with the `I4 §Stage 11.5–7` licence traffic lights (GPL-2.0-only and unknown-origin code are `RED`) was unstated. [D-004](#rule-d-004) adds a hard constraint on the mobile side.
+**Where** `I2 §II` states as user-confirmed that non-AGPL content from Serial Studio may be copied — code, logic, tests and assets — then progressively replaced. Its interaction with the `I4 §Stage 11.5–7` licence traffic lights (GPL-2.0-only and unknown-origin code are `RED`) was unstated. [D-004](#rule-d-004) adds a hard constraint on the mobile side.
 
 **Outcome** Copy First is retained only as a **licence-gated and provenance-gated** strategy; unconditional copying is rejected. A ten-field provenance record is required before any reuse.
 
@@ -279,7 +274,7 @@ This is the single active statement of [D-003](#rule-d-003)'s applied scope. It 
 
 **Type** `MISSING_DECISION` · **Status** `USER_CONFIRMED` · **Resolved by** [D-018](#rule-d-018)
 
-**Where** The corpus defines roughly 600 named domain concepts and asserts roughly 250 `X ≠ Y` invariants across Stages 13–28. These invariants are the corpus's highest-value content and cannot be enforced without a single normative glossary. Overloaded terms needing particular care: **Workspace** (cloud ownership boundary versus panel layout — `§Stage 14.95` and `§Stage 20.166` mandate "Layout" for the latter), **Project** (ArcChat / ArcScope / ArcSlate — namespaced `ResourceKind` in `§Stage 21.54`), and **Scope** (Knowledge, Sync, Permission, Policy, Product, Search, Egress, Resource — each defined separately, never consolidated).
+**Where** The corpus defines roughly 600 named domain concepts and asserts roughly 250 `X ≠ Y` invariants across Stages 13–28. These invariants are the corpus's highest-value content and cannot be enforced without a single normative glossary. Overloaded terms needing particular care: **Workspace** (cloud ownership boundary versus panel layout — `§Stage 14.95` and `§Stage 20.166` mandate "Layout" for the latter), **Project** (ArcChat / ArcScope — namespaced `ResourceKind` in `§Stage 21.54`), and **Scope** (Knowledge, Sync, Permission, Policy, Product, Search, Egress, Resource — each defined separately, never consolidated).
 
 **Outcome** A single normative glossary and invariant catalogue is a mandatory foundation-to-specification gate. Not generated in Phase 1.
 
@@ -292,6 +287,8 @@ This is the single active statement of [D-003](#rule-d-003)'s applied scope. It 
 **Where** `I2`'s 14-item "Final Recommended Sequence" and `I3 §28`'s Phase 0–8 are proposals. `I2 §I.1` states Stage 0–28 is decision order, not build order, and `I2 §I.2` declares `I3`'s legacy Phase 3 and Phase 4 inapplicable to the current portfolio. The Phase 1 brief forbids assuming an earlier plan's step count or structure is still valid.
 
 **Outcome** All corpus sequences are planning evidence only. One serial numbered sequence `00 → 01 → … → NN` with no predetermined maximum. Interleaving by real dependency gates. One main context advances the sequence serially.
+
+**Current effective rule (2026-09-23):** amended by [P2-018](phase-2-specification-decisions.md#rule-p2-018). Numbered work packages remain the obligation catalogue; scheduling is the task-level delivery graph, and any number of workers execute ready tasks concurrently.
 
 ## [F-021](#rule-f-021) — AI and payment economic model
 
@@ -346,7 +343,7 @@ Each carries a responsible role, a concrete trigger, the earliest consumer, requ
 
 **Status** `DEFERRED_WITH_OWNER_AND_TRIGGER` · **Governed by** [D-013](#rule-d-013), [D-016](#rule-d-016)
 
-**Where** AionUi is corrected to **Apache-2.0** in `I4 §Stage 6.77` (previously believed MIT) — one-way compatible into AGPL with attribution and NOTICE. Serial Studio's licence is stated nowhere in the corpus; `I2 §II` requires file-level SPDX verification against the local repository baseline, not the repository-root licence or an external page. AFFiNE's licence is stated nowhere. Olive is GPL-family. Phase 1 forbids inspecting these repositories.
+**Where** AionUi is corrected to **Apache-2.0** in `I4 §Stage 6.77` (previously believed MIT) — one-way compatible into AGPL with attribution and NOTICE. Serial Studio's licence is stated nowhere in the corpus; `I2 §II` requires file-level SPDX verification against the local repository baseline, not the repository-root licence or an external page. Phase 1 forbids inspecting these repositories.
 
 | Field | Value |
 |---|---|
@@ -435,15 +432,15 @@ The original input-review wording below is retained as history. Its current appl
 
 **Historical rule — current amendments:** see the corresponding disposition row and [P2-013](phase-2-specification-decisions.md#rule-p2-013). Original quotations are provenance; superseded stack, portfolio and transport clauses are not current obligations.
 
-**Current consumption.** The [current portfolio](../requirements/00-product-scope-and-portfolio.md#2-the-product-portfolio) defines the product set, obsolete names and fifth-product acceptance contract. Current ArcNotes scope follows the [P2-006](phase-2-specification-decisions.md#rule-p2-006) amendment. The original wording below does not require an archived-input lookup or restore excluded capabilities.
+**Current consumption.** The [current portfolio](../requirements/00-product-scope-and-portfolio.md#2-the-product-portfolio) defines the product set, obsolete names and additional-product acceptance contract. The original wording below does not require an archived-input lookup or restore excluded capabilities.
 
-> The current product baseline contains exactly three professional desktop products: ArcChat, ArcNotes, ArcScope, and ArcSlate.
+> The current product baseline contains one professional desktop application: ArcScope.
 >
 > ArcCanvas, ArcMusic, and ArcImage are not current products, future products, reserved products, aliases, or re-entry candidates. Mark every occurrence in the raw inputs as obsolete and SUPERSEDED. Do not create any database, runtime component, dependency, navigation entry, contract, specification, roadmap item, or implementation step for them.
 >
 > Preserve the raw input files unchanged, but exclude these three product names from every new authoritative document.
 >
-> ArcScope is an independently defined product, not a rename or continuation of ArcImage. ArcNotes Edgeless Canvas is an ArcNotes capability, not a standalone ArcCanvas product.
+> ArcScope is an independently defined product, not a rename or continuation of ArcImage.
 
 ---
 
@@ -479,9 +476,7 @@ The current effective applied scope of this decision is recorded under **[F-004]
 > The following remain AGPL-3.0-only:
 >
 > - ArcChat Desktop;
-> - ArcNotes;
 > - ArcScope;
-> - ArcSlate;
 > - ArcForges Cloud and all server implementations;
 > - all other components not explicitly assigned to the Apache-2.0 mobile/interoperability boundary.
 >
@@ -531,36 +526,6 @@ The current effective applied scope of this decision is recorded under **[F-004]
 > Do not rewrite or alter the verbatim [D-003](#rule-d-003) decision block. Add a clear supersession note stating that [D-005](#rule-d-005) replaces only the Waffo Pancake part of [D-003](#rule-d-003)’s applied verification worklist. The current verification target is Paddle and Payoneer, using current official primary sources. Verify their current availability, onboarding eligibility, supported regions and currencies, payout relationship, API/webhook capabilities, and any implementation-critical restrictions. Pricing and fees remain time-sensitive and must follow [D-003](#rule-d-003)’s first-consumption rule.
 >
 > Register a separate open issue for the mobile-store commerce boundary. Paddle and Payoneer being selected for web/cloud commerce does not by itself decide whether ArcChat Mobile is a free companion with no in-app purchasing, uses Apple/Google in-app purchasing, or may expose an external purchase path in particular storefronts. Do not decide that issue silently and do not assume Paddle checkout may be embedded in every mobile-store build.
-
----
-
-<a id="rule-d-006"></a>
-
-## D-006 — ArcNotes complete scope · resolves **[F-003](#rule-f-003)** · `USER_CONFIRMED`
-
-> Confirm Option A.
->
-> Stage 15 is the ArcNotes V1 document-core baseline, not the ceiling of the complete ArcNotes product.
->
-> ArcNotes Edgeless Canvas, typed multi-view Database and Slides are all part of the complete ArcNotes scope and must be delivered in phases after the document core stabilises.
->
-> “Incorporate in full, in phases” means that all three capability families are in scope. It does not mean feature-for-feature parity with AFFiNE, SiYuan, Notion or any other external product.
->
-> The depth of each feature is decided by the ArcNotes Reference Coverage Matrix using Copy, Rewrite, Improve, Replace, Reference Only or Drop.
->
-> The V1 compatibility hooks listed in I2 are binding from the beginning. Do not create fake empty Canvas, Database or Slides implementations.
->
-> Slides should default to a presentation view over document and canvas content rather than a third incompatible content model, unless a later confirmed specification demonstrates a real need otherwise.
->
-> Mark [F-003](#rule-f-003) USER_CONFIRMED and resolved by [D-006](#rule-d-006).
-
-**V1 compatibility hooks made binding by this decision** (from `I2 §II`): stable Document/Space and Block IDs with revisions and unified reference semantics; a Block model that allows later addition of Surface/Canvas types; canvas spatial positions, connectors, groupings and layout data isolated from normal document layout; typed properties, queries and saved views as the multi-view Database foundation; no stuffing of future fields into the core Block; no fake empty Canvas, Database or Slides implementations; static registration or source generation for block and extension types under AOT; and `DocumentId/BlockId/Operation/Revision` preserving future collaboration compatibility from the start.
-
----
-
-### [D-006](#rule-d-006) amendment — 2026-09-06
-
-**Current effective scope:** [P2-006](phase-2-specification-decisions.md#rule-p2-006) removes Edgeless Canvas, Slides/Presentation and future-collaboration hooks from required ArcNotes delivery. Notebook core, bounded typed properties, saved list/table views, queries, references and multi-device cloud sync remain. No reference feature automatically expands scope. The original quotation above is preserved for provenance.
 
 ---
 
@@ -644,8 +609,6 @@ The current effective applied scope of this decision is recorded under **[F-004]
 >   - Cloud-internal contracts;
 >   - implementation-only interfaces and domain internals.
 >
-> A contract change owned by ArcNotes must not require an unrelated ArcSlate contract release.
->
 > C# DTOs and endpoint metadata are the source of truth. Generate OpenAPI and JSON Schema compatibility artifacts from them. Do not maintain parallel handwritten schemas that can drift.
 >
 > No business implementation belongs in a contracts package.
@@ -662,7 +625,7 @@ The current effective applied scope of this decision is recorded under **[F-004]
 
 > Professional desktop products communicate directly with ArcForges Cloud for their own identity, sync, storage and product-domain APIs.
 >
-> ArcChat is a control plane and user-facing agent client. It is not a mandatory data gateway or proxy for ArcNotes, ArcScope or ArcSlate.
+> ArcChat is a control plane and user-facing agent client. It is not a mandatory data gateway or proxy for ArcScope.
 >
 > Cloud must never connect directly to localhost, Named Pipes, Unix sockets or local stdio.
 >
@@ -701,9 +664,7 @@ The current effective applied scope of this decision is recorded under **[F-004]
 > Confirm this reference map:
 >
 > - AionUi → ArcChat reference.
-> - AFFiNE and SiYuan → ArcNotes references.
 > - Serial-Studio → ArcScope reference.
-> - ArcVideo, ArcVideoFoundation and Olive → ArcSlate references.
 > - StartArcForges → packaged-product and release-behavior oracle.
 > - The existing ArcForges monorepo → implementation-state inventory and reconciliation target.
 >
@@ -712,20 +673,6 @@ The current effective applied scope of this decision is recorded under **[F-004]
 > Every product must receive a Reference Coverage Matrix before implementation planning for that product is finalized.
 >
 > Mark [F-011](#rule-f-011) USER_CONFIRMED and resolved by [D-012](#rule-d-012).
-
-### Amendment 2026-09-05 — Olive removed as a separate required reference
-
-**Amended by user decision, recorded as [P2-005](phase-2-specification-decisions.md#rule-p2-005) in [`phase-2-specification-decisions.md`](phase-2-specification-decisions.md).**
-
-The verbatim decision block above is unchanged, following this register's supersession convention. The **current effective reference map** replaces its ArcSlate line:
-
-> - **ArcVideo and ArcVideoFoundation → ArcSlate references.**
-
-Every other line of the map, and every other part of [D-012](#rule-d-012) — the non-authority position, the not-a-parity-commitment position, the no-runtime-import position, and the per-product Reference Coverage Matrix requirement — remains in force exactly as recorded.
-
-**Basis.** Olive could not be built in the user's environment. ArcVideo contains the modifications made to get that codebase building, and ArcVideo and ArcVideoFoundation are the intended concrete reference baselines. There is no requirement to obtain or independently review an Olive repository.
-
-**What this amendment does not do.** It removes Olive as a *separate required reference*. It does **not** remove Olive's provenance. ArcVideo is a documented fork of Olive; its GPL-3.0 obligations, upstream copyright and attribution run to the Olive authors, and every notice, licence header and provenance record that inherited material requires is preserved unchanged (**[D-013](#rule-d-013)**).
 
 ---
 
@@ -898,7 +845,9 @@ Every other line of the map, and every other part of [D-012](#rule-d-012) — th
 
 ## D-019 — Sequence status · resolves **[F-020](#rule-f-020)** · `USER_CONFIRMED`
 
-**Current consumption after input deprecation:** [Implementation Sequence](../planning/implementation-sequence.md) and the [work-package index](../planning/work-packages/README.md) define the actual dependency order. Original stage numbers below explain the decision history and are not implementation dependencies.
+**Current consumption after input deprecation:** The [delivery model](../planning/delivery/README.md) and its graph define the actual dependency structure; the [work-package index](../planning/work-packages/README.md) is the obligation catalogue. Original stage numbers below explain the decision history and are not implementation dependencies.
+
+**Amended in part (2026-09-23):** [P2-018](phase-2-specification-decisions.md#rule-p2-018) supersedes the requirements that one serial numbered sequence be advanced serially by one main context and that implementation ownership never be split across autonomous agent teams. The requirement that the plan be derived only after requirements, architecture, licence matrices and current-code reconciliation are complete remains in force. The quotation below is preserved as the historical record.
 
 > Every sequence in the raw corpus is planning evidence only, not a frozen implementation plan.
 >
@@ -910,7 +859,7 @@ Every other line of the map, and every other part of [D-012](#rule-d-012) — th
 >
 > There is no predetermined maximum step count. The final count may substantially exceed every previous ArcForges plan.
 >
-> Allow shared foundations, Cloud, Web, Mobile and product work to interleave according to real dependency gates. Do not interpret ArcChat → ArcNotes → ArcScope → ArcSlate as requiring one product to be completely finished before dependent shared work begins.
+> Allow shared foundations, Cloud, Web, Mobile and product work to interleave according to real dependency gates. Do not interpret product and shared-capability work as strictly serial phases requiring full completion before dependent work begins.
 >
 > One main context advances the sequence serially. Do not split implementation ownership across autonomous agent teams.
 >
@@ -1077,14 +1026,13 @@ The original dispositions are retained for traceability. Implement the **current
 |---|---|---|---|---|
 | 1 | No automatic precedence among raw input documents; they are evidence only. Conflicts are registered, explained, decided, recorded, then applied globally. | [D-001](#rule-d-001) | All | Unchanged; apply the cited authority within the current [P2-012](phase-2-specification-decisions.md#rule-p2-012)/[P2-013](phase-2-specification-decisions.md#rule-p2-013) topology. |
 | 2 | Only material conflicts not already covered by an existing user decision are brought back. | [D-001](#rule-d-001) | All | Unchanged; apply the cited authority within the current [P2-012](phase-2-specification-decisions.md#rule-p2-012)/[P2-013](phase-2-specification-decisions.md#rule-p2-013) topology. |
-| 3 | The product baseline is exactly ArcChat, ArcNotes, ArcScope and ArcSlate. | [D-002](#rule-d-002) | All | SUPERSEDED by [P2-012](phase-2-specification-decisions.md#rule-p2-012): three professional desktops; assistant packages inside each; Android/Web companions. |
-| 4 | `ArcCanvas`, `ArcMusic` and `ArcImage` are obsolete and `SUPERSEDED` wherever they appear, and are excluded from every new authoritative document. Not future, reserved, alias or re-entry-candidate products, so the [current fifth-product contract](../requirements/00-product-scope-and-portfolio.md#24-adding-a-fifth-product) does not apply to them; it remains available for a genuinely new product. | [D-002](#rule-d-002) | All | Unchanged; apply the cited authority within the current [P2-012](phase-2-specification-decisions.md#rule-p2-012)/[P2-013](phase-2-specification-decisions.md#rule-p2-013) topology. |
-| 5 | `ArcVideo` is likewise obsolete wherever it appears; ArcSlate is the current product. | [D-002](#rule-d-002) | T01, T03 | Unchanged; apply the cited authority within the current [P2-012](phase-2-specification-decisions.md#rule-p2-012)/[P2-013](phase-2-specification-decisions.md#rule-p2-013) topology. |
+| 3 | The product baseline is ArcScope, the one professional desktop application. | [D-002](#rule-d-002) | All | SUPERSEDED by [P2-012](phase-2-specification-decisions.md#rule-p2-012)/[P2-019](phase-2-specification-decisions.md#rule-p2-019): ArcScope, the one professional desktop application; its embedded assistant; Android/Web companions. |
+| 4 | `ArcCanvas`, `ArcMusic` and `ArcImage` are obsolete and `SUPERSEDED` wherever they appear, and are excluded from every new authoritative document. Not future, reserved, alias or re-entry-candidate products, so the [current additional-product contract](../requirements/00-product-scope-and-portfolio.md#24-adding-a-fifth-product) does not apply to them; it remains available for a genuinely new product. | [D-002](#rule-d-002) | All | Unchanged; apply the cited authority within the current [P2-012](phase-2-specification-decisions.md#rule-p2-012)/[P2-013](phase-2-specification-decisions.md#rule-p2-013) topology. |
+| 5 | `ArcVideo` is likewise obsolete wherever it appears. | [D-002](#rule-d-002) | T01, T03 | Unchanged; apply the cited authority within the current [P2-012](phase-2-specification-decisions.md#rule-p2-012)/[P2-013](phase-2-specification-decisions.md#rule-p2-013) topology. |
 | 6 | ArcScope is an independently defined product, not a rename or continuation of ArcImage. Obsolete ArcImage domain concepts must not be migrated into ArcScope. | [D-002](#rule-d-002) | T01, T03 | Unchanged; apply the cited authority within the current [P2-012](phase-2-specification-decisions.md#rule-p2-012)/[P2-013](phase-2-specification-decisions.md#rule-p2-013) topology. |
-| 7 | The former Canvas naming distinction does not require delivery. Canvas/whiteboard and presentation scope is excluded by [P2-006](phase-2-specification-decisions.md#rule-p2-006); no standalone product is introduced. | [D-002](#rule-d-002); [D-006](#rule-d-006) as amended by [P2-006](phase-2-specification-decisions.md#rule-p2-006) | T03 | Unchanged; apply the cited authority within the current [P2-012](phase-2-specification-decisions.md#rule-p2-012)/[P2-013](phase-2-specification-decisions.md#rule-p2-013) topology. |
 | 8 | Raw input files remain unmodified. Dispositions are recorded here, never applied to the inputs themselves. | [D-002](#rule-d-002), [D-005](#rule-d-005) | All | Unchanged; apply the cited authority within the current [P2-012](phase-2-specification-decisions.md#rule-p2-012)/[P2-013](phase-2-specification-decisions.md#rule-p2-013) topology. |
 | 9 | Foundation-critical external facts are verified now; all pricing, quota, fee, rate and regional-availability data is deferred with a first-consumption trigger. | [D-003](#rule-d-003) | All | Unchanged; apply the cited authority within the current [P2-012](phase-2-specification-decisions.md#rule-p2-012)/[P2-013](phase-2-specification-decisions.md#rule-p2-013) topology. |
-| 10 | Two-boundary licensing: ArcChat Mobile and its mobile-facing interoperability code are Apache-2.0; ArcChat Desktop, ArcNotes, ArcScope, ArcSlate, ArcForges Cloud and all server implementations, and everything not explicitly assigned to the Apache-2.0 boundary, remain `AGPL-3.0-only`. | [D-004](#rule-d-004) | T17, T20 | AMENDED by [P2-009](phase-2-specification-decisions.md#rule-p2-009)/[P2-010](phase-2-specification-decisions.md#rule-p2-010)/[P2-012](phase-2-specification-decisions.md#rule-p2-012): Mobile and all Contracts are Apache-2.0; assistant implementation inherits DesktopPlatform AGPL boundary; no standalone ArcChat. |
+| 10 | Two-boundary licensing: ArcChat Mobile and its mobile-facing interoperability code are Apache-2.0; ArcChat Desktop, ArcScope, ArcForges Cloud and all server implementations, and everything not explicitly assigned to the Apache-2.0 boundary, remain `AGPL-3.0-only`. | [D-004](#rule-d-004) | T17, T20 | AMENDED by [P2-009](phase-2-specification-decisions.md#rule-p2-009)/[P2-010](phase-2-specification-decisions.md#rule-p2-010)/[P2-012](phase-2-specification-decisions.md#rule-p2-012): Mobile and all Contracts are Apache-2.0; assistant implementation inherits DesktopPlatform AGPL boundary; no standalone ArcChat. |
 | 11 | No App Store exception, dual licensing, proprietary grant or CLA for ArcChat Mobile. DCO continues with inbound-equals-outbound licensing per scope. | [D-004](#rule-d-004) | T20 | Applies to the Android companion under [P2-010](phase-2-specification-decisions.md#rule-p2-010)/[P2-012](phase-2-specification-decisions.md#rule-p2-012); no new licence exception. |
 | 12 | ArcChat Mobile must not contain, link to, copy from, port from or reference any GPL-family or AGPL-only implementation, directly or transitively. | [D-004](#rule-d-004) | T17, T20 | Applies to the Android companion; provenance exclusions unchanged. |
 | 13 | Protocol communication across explicit process or network boundaries does not change the mobile client's licence; desktop and server implementations remain separate works. | [D-004](#rule-d-004) | T07, T17, T20 | Unchanged; apply the cited authority within the current [P2-012](phase-2-specification-decisions.md#rule-p2-012)/[P2-013](phase-2-specification-decisions.md#rule-p2-013) topology. |
@@ -1094,19 +1042,18 @@ The original dispositions are retained for traceability. Implement the **current
 | 17 | **Payoneer is the payout and settlement destination for receiving Paddle payouts.** Not a second Merchant of Record, not an interchangeable checkout provider, not a customer-facing fallback processor. | [D-005](#rule-d-005) | T11 | Unchanged; apply the cited authority within the current [P2-012](phase-2-specification-decisions.md#rule-p2-012)/[P2-013](phase-2-specification-decisions.md#rule-p2-013) topology. |
 | 18 | Provider-abstraction principles preserved: entitlement state independent of provider identifiers; provider IDs never in client authority contracts; webhooks verified and idempotent; no irreversible dependence on one provider's proprietary data model. | [D-005](#rule-d-005) | T11 | Unchanged; apply the cited authority within the current [P2-012](phase-2-specification-decisions.md#rule-p2-012)/[P2-013](phase-2-specification-decisions.md#rule-p2-013) topology. |
 | 19 | The payment-provider verification target is Paddle and Payoneer. Their pricing and fees remain under [D-003](#rule-d-003)'s first-consumption rule. | [D-005](#rule-d-005) | T11 | Unchanged; apply the cited authority within the current [P2-012](phase-2-specification-decisions.md#rule-p2-012)/[P2-013](phase-2-specification-decisions.md#rule-p2-013) topology. |
-| 20 | Current ArcNotes scope is notebook core, bounded property/query views and cloud sync. Canvas, Slides and collaboration-only hooks are excluded by the dated [D-006](#rule-d-006) amendment; references do not imply parity. | [D-006](#rule-d-006) as amended by [P2-006](phase-2-specification-decisions.md#rule-p2-006) | T03, T13 | Unchanged; apply the cited authority within the current [P2-012](phase-2-specification-decisions.md#rule-p2-012)/[P2-013](phase-2-specification-decisions.md#rule-p2-013) topology. |
 | 21 | Public marketing, legal, download and other public information pages render as static HTML/CSS without booting the .NET runtime or WebAssembly. Static pages are deployment artifacts, not a second browser application. | [D-007](#rule-d-007) | T16 | Unchanged; apply the cited authority within the current [P2-012](phase-2-specification-decisions.md#rule-p2-012)/[P2-013](phase-2-specification-decisions.md#rule-p2-013) topology. |
 | 22 | `ArcForges.Web.App` is one React/TypeScript application with Account/Chat build profiles. Node.js/npm generates static assets and the TS SDK from C#-generated contracts. Windows win.slnx includes esproj; other platforms run npm in src/Web. No production Node business service or runtime SSR baseline. | [D-007](#rule-d-007) as amended by [P2-008](phase-2-specification-decisions.md#rule-p2-008) | T16 | SUPERSEDED by [P2-009](phase-2-specification-decisions.md#rule-p2-009)/[P2-012](phase-2-specification-decisions.md#rule-p2-012): Web owns npm root, four outputs; authored proto generates TS packages; no esproj dependency. |
 | 23 | **ArcForges Cloud is an ASP.NET Core JIT modular monolith.** Strict Native AOT is not a Cloud requirement, and every obsolete claim that Cloud must publish as Native AOT is removed. Azure SDKs, the durable agent loop, provider adapters, SignalR integration, billing, policy and operational infrastructure run inside the JIT boundary. | [D-008](#rule-d-008) | T18, T07 | SUPERSEDED by [P2-009](phase-2-specification-decisions.md#rule-p2-009)/[P2-012](phase-2-specification-decisions.md#rule-p2-012): Native AOT C# Container behind Workers, D1/DO/R2, sole AI Workflow Harness, gRPC-Web. |
 | 24 | Desktop remains a Native AOT deliverable with trim/AOT-safe dependency rules. **Only projects actually consumed by an AOT deliverable must satisfy AOT release gates.** Shared public contracts and client libraries stay trim-safe and source-generation friendly. | [D-008](#rule-d-008) | T07, T19 | Unchanged; apply the cited authority within the current [P2-012](phase-2-specification-decisions.md#rule-p2-012)/[P2-013](phase-2-specification-decisions.md#rule-p2-013) topology. |
 | 25 | ArcChat Mobile Android uses the supported .NET 10 Mono AOT release path. Experimental Android CoreCLR and experimental Android NativeAOT are not production baselines. iOS architecture stays present and complete with its build deferred; its release runtime is re-verified against the then-current supported MAUI/iOS baseline. | [D-008](#rule-d-008) | T17 | SUPERSEDED by [P2-010](phase-2-specification-decisions.md#rule-p2-010)/[P2-012](phase-2-specification-decisions.md#rule-p2-012): Kotlin/Compose Android only; no iOS deliverable. |
-| 26 | Contracts are split by communication boundary, product/domain ownership, release cadence and licence boundary. A single ever-growing contracts assembly is rejected, and an ArcNotes contract change must not force an unrelated ArcSlate release. | [D-009](#rule-d-009) | T07, T20 | Unchanged; apply the cited authority within the current [P2-012](phase-2-specification-decisions.md#rule-p2-012)/[P2-013](phase-2-specification-decisions.md#rule-p2-013) topology. |
+| 26 | Contracts are split by communication boundary, product/domain ownership, release cadence and licence boundary. A single ever-growing contracts assembly is rejected, and a contract change owned by one product must not force an unrelated product's release. | [D-009](#rule-d-009) | T07, T20 | Unchanged; apply the cited authority within the current [P2-012](phase-2-specification-decisions.md#rule-p2-012)/[P2-013](phase-2-specification-decisions.md#rule-p2-013) topology. |
 | 27 | C# DTOs and endpoint metadata are the source of truth; OpenAPI and JSON Schema compatibility artifacts are generated from them. No parallel handwritten schemas. No business implementation in a contracts package. | [D-009](#rule-d-009) | T07 | SUPERSEDED by [P2-009](phase-2-specification-decisions.md#rule-p2-009)/[P2-012](phase-2-specification-decisions.md#rule-p2-012): authored proto is business-RPC authority; OpenAPI describes declared HTTP exceptions only. |
 | 28 | Professional desktop products talk directly to Cloud for their own identity, sync, storage and product-domain APIs. **ArcChat is a control plane, never a mandatory data gateway or proxy.** | [D-010](#rule-d-010) | T04, T07, T18 | AMENDED by [P2-012](phase-2-specification-decisions.md#rule-p2-012): each application connects directly using Platform libraries and embeds its own assistant. |
 | 29 | **Cloud never connects directly to localhost, Named Pipes, Unix sockets or local stdio.** Local action flows as a durable `ToolRequest` that ArcChat Desktop pulls, re-authorizes locally, executes, and answers with an idempotent `ToolResult`. Same-machine first-party product-to-product communication remains StreamJsonRpc over Named Pipe/UDS. | [D-010](#rule-d-010) | T07, T08, T09 | SUPERSEDED by [P2-011](phase-2-specification-decisions.md#rule-p2-011)/[P2-012](phase-2-specification-decisions.md#rule-p2-012): each application pulls its own Cloud requests; only private parent/child gRPC uses Named Pipe/UDS. |
-| 30 | The implementation target is the existing `ArcForges` monorepo; no replacement implementation repository is created. `ArcForges-Design` is the sole authoritative requirements, architecture and planning repository and contains no product source code. Existing scaffolds and code are implementation-state evidence, never design authority. | [D-011](#rule-d-011) | T23 | SUPERSEDED by [P2-009](phase-2-specification-decisions.md#rule-p2-009)/[P2-012](phase-2-specification-decisions.md#rule-p2-012): nine independent implementation repositories; Design remains sole formal authority. |
-| 31 | The reference map is fixed: AionUi → ArcChat; AFFiNE and SiYuan → ArcNotes; Serial-Studio → ArcScope; **ArcVideo and ArcVideoFoundation → ArcSlate** (amended 2026-09-05; see [D-012](#rule-d-012)'s amendment); StartArcForges → packaged-product and release-behaviour oracle; the ArcForges monorepo → implementation-state inventory and reconciliation target. References are never architecture authorities, parity commitments, or reasons to import a runtime stack. | [D-012](#rule-d-012) | T02, T03, T20 | AMENDED by [P2-009](phase-2-specification-decisions.md#rule-p2-009)/[P2-012](phase-2-specification-decisions.md#rule-p2-012): reference roles persist; nine repositories replace the historical implementation inventory. Archived or absent checkouts are not required inputs. |
-| 32 | Every product receives a Reference Coverage Matrix — Copy / Rewrite / Improve / Replace / Reference Only / Drop — before its implementation planning is finalized. | [D-012](#rule-d-012), [D-006](#rule-d-006) | T02, T03, T20 | Unchanged; apply the cited authority within the current [P2-012](phase-2-specification-decisions.md#rule-p2-012)/[P2-013](phase-2-specification-decisions.md#rule-p2-013) topology. |
+| 30 | The implementation target is the existing `ArcForges` monorepo; no replacement implementation repository is created. `ArcForges-Design` is the sole authoritative requirements, architecture and planning repository and contains no product source code. Existing scaffolds and code are implementation-state evidence, never design authority. | [D-011](#rule-d-011) | T23 | SUPERSEDED by [P2-009](phase-2-specification-decisions.md#rule-p2-009)/[P2-012](phase-2-specification-decisions.md#rule-p2-012)/[P2-019](phase-2-specification-decisions.md#rule-p2-019): seven independent implementation repositories; Design remains sole formal authority. |
+| 31 | The reference map is fixed: AionUi → ArcChat; Serial-Studio → ArcScope; StartArcForges → packaged-product and release-behaviour oracle; the ArcForges monorepo → implementation-state inventory and reconciliation target. References are never architecture authorities, parity commitments, or reasons to import a runtime stack. | [D-012](#rule-d-012) | T02, T03, T20 | AMENDED by [P2-009](phase-2-specification-decisions.md#rule-p2-009)/[P2-012](phase-2-specification-decisions.md#rule-p2-012)/[P2-019](phase-2-specification-decisions.md#rule-p2-019): reference roles persist for AionUi → ArcChat and Serial-Studio → ArcScope; seven repositories replace the historical implementation inventory. Archived or absent checkouts are not required inputs. |
+| 32 | Every product receives a Reference Coverage Matrix — Copy / Rewrite / Improve / Replace / Reference Only / Drop — before its implementation planning is finalized. | [D-012](#rule-d-012) | T02, T03, T20 | Unchanged; apply the cited authority within the current [P2-012](phase-2-specification-decisions.md#rule-p2-012)/[P2-013](phase-2-specification-decisions.md#rule-p2-013) topology. |
 | 33 | Copy First is licence-gated and provenance-gated; unconditional copying is rejected. The ten-field provenance record in [D-013](#rule-d-013) is mandatory before any source, test, asset or generated artifact is copied, translated, ported or structurally reused. | [D-013](#rule-d-013) | T20 | Unchanged; apply the cited authority within the current [P2-012](phase-2-specification-decisions.md#rule-p2-012)/[P2-013](phase-2-specification-decisions.md#rule-p2-013) topology. |
 | 34 | GPL-only, licence-unclear, unknown-origin or otherwise incompatible material must not be copied, translated or ported; it may be used only as controlled behavioural evidence until an explicit compatibility decision says otherwise. Tests and assets require their own licence checks; a repository-root licence is never assumed to cover every file. | [D-013](#rule-d-013) | T20 | Unchanged; apply the cited authority within the current [P2-012](phase-2-specification-decisions.md#rule-p2-012)/[P2-013](phase-2-specification-decisions.md#rule-p2-013) topology. |
 | 35 | The twelve-entry web and service surface inventory in [D-014](#rule-d-014) is the consolidated list. A hostname is not an application: Account and Chat may be separate deployments of one `ArcForges.Web.App` codebase, and static surfaces stay static artifacts. | [D-014](#rule-d-014) | T16 | AMENDED by [P2-012](phase-2-specification-decisions.md#rule-p2-012)/[P2-013](phase-2-specification-decisions.md#rule-p2-013): route ownership is architecture10; Web outputs are site/account/chat/operations; status is external. |
@@ -1114,7 +1061,7 @@ The original dispositions are retained for traceability. Implement the **current
 | 37 | **"The user" is not an operational owner.** Every deferred item names a responsible role, the Product Owner as final approval authority where a product decision is required, a concrete trigger, the earliest consumer, required evidence, and the consequence if the gate fails. Roles are durable: Architecture Owner, Product Owner, Licensing and Provenance Owner, Security/Privacy Owner, Commercial Operations Owner, Release Engineering Owner. | [D-016](#rule-d-016) | All | Unchanged; apply the cited authority within the current [P2-012](phase-2-specification-decisions.md#rule-p2-012)/[P2-013](phase-2-specification-decisions.md#rule-p2-013) topology. |
 | 38 | Authoritative output locations are fixed: `docs/requirements/`, `docs/architecture/`, `docs/decisions/`, `docs/assurance/`, `docs/planning/work-packages/`. The old `ArchitectureDesign` locations are obsolete, must never be used as an output or authority, and must not be accessed or depended on. `AionUiReWrite-Kotlin` is not an input corpus or authority. | [D-017](#rule-d-017) | T23 | Unchanged; apply the cited authority within the current [P2-012](phase-2-specification-decisions.md#rule-p2-012)/[P2-013](phase-2-specification-decisions.md#rule-p2-013) topology. |
 | 39 | A single normative glossary and invariant catalogue is a mandatory foundation-to-specification gate. It defines each canonical term once, namespaces product-specific meanings, preserves every accepted `X ≠ Y` invariant, separates wire/domain/UI/storage/commercial terms, names forbidden aliases, and links definitions to requirements, contracts and work packages. | [D-018](#rule-d-018) | T19, T23, All | Unchanged; apply the cited authority within the current [P2-012](phase-2-specification-decisions.md#rule-p2-012)/[P2-013](phase-2-specification-decisions.md#rule-p2-013) topology. |
-| 40 | Every corpus sequence is planning evidence only. The implementation plan is one serial numbered sequence `00 → 01 → … → NN` with no predetermined maximum, derived after requirements, architecture, licence matrices and current-code reconciliation. Work interleaves by real dependency gates. One main context advances it serially; implementation ownership is never split across autonomous agent teams. | [D-019](#rule-d-019) | T23 | Unchanged; apply the cited authority within the current [P2-012](phase-2-specification-decisions.md#rule-p2-012)/[P2-013](phase-2-specification-decisions.md#rule-p2-013) topology. |
+| 40 | Every corpus sequence is planning evidence only. The implementation plan is one serial numbered sequence `00 → 01 → … → NN` with no predetermined maximum, derived after requirements, architecture, licence matrices and current-code reconciliation. Work interleaves by real dependency gates. One main context advances it serially; implementation ownership is never split across autonomous agent teams. | [D-019](#rule-d-019) | T23 | Derivation after the prerequisite evidence is unchanged. Serial single-context execution is superseded by [P2-018](phase-2-specification-decisions.md#rule-p2-018): work packages are the obligation catalogue and the task-level delivery graph schedules concurrent workers. |
 | 41 | The provider-independent accounting model is preserved: fixed-precision credit accounting, versioned retail tariffs, per-run tariff snapshots, three separate ledgers, reserve-then-settle, immutable historical financial records, explicit hard stop at exhausted balance. | [D-020](#rule-d-020) | T11, T12 | Unchanged; apply the cited authority within the current [P2-012](phase-2-specification-decisions.md#rule-p2-012)/[P2-013](phase-2-specification-decisions.md#rule-p2-013) topology. |
 | 42 | Every frozen economic figure derived from expired model pricing or the removed provider's fees is invalidated and removed from the authoritative baseline, and is **not** replaced with new frozen numbers in Phase 1. Prices, allowances, pack sizes, margins and regional amounts are versioned commercial policy requiring approval at first specification consumption and again before launch. | [D-020](#rule-d-020) | T11, T12 | Unchanged; apply the cited authority within the current [P2-012](phase-2-specification-decisions.md#rule-p2-012)/[P2-013](phase-2-specification-decisions.md#rule-p2-013) topology. |
 | 43 | The Apache-2.0 boundary is drawn around **interoperability**: public wire schemas, public/mobile DTOs, public clients, validation rules expressing wire-format constraints, public protocol state semantics, and the future public SDK. Product-domain behaviour, server orchestration, desktop use cases, policy decisions, persistence behaviour, entitlement authority and UI scaffolding stay outside it. | [D-021](#rule-d-021) | T17, T20, T07 | Unchanged; apply the cited authority within the current [P2-012](phase-2-specification-decisions.md#rule-p2-012)/[P2-013](phase-2-specification-decisions.md#rule-p2-013) topology. |
@@ -1148,7 +1095,7 @@ Per the decision package: any genuinely new material conflict uncovered by verif
 
 | # | Gate | Status |
 |---|---|---|
-| 1 | Every current issue resolved or validly deferred | **Pass** — 26 registered: 23 resolved, 3 deferred, 0 open, 0 proposed |
+| 1 | Every current issue resolved or validly deferred | **Pass** — 25 registered: 22 resolved, 3 deferred, 0 open, 0 proposed |
 | 2 | Every deferred item has a responsible role and trigger | **Pass** — [F-013](../assurance/open-gates-register.md#rule-f-013), [F-023](../assurance/open-gates-register.md#rule-f-023), [F-026](../assurance/open-gates-register.md#rule-f-026) each carry role, approval authority, trigger, earliest consumer, evidence and failure consequence per [D-016](#rule-d-016) |
 | 3 | Official verification artifact complete | **Pass** — `docs/assurance/phase-1-official-verification.md`, [V-01](../assurance/phase-1-official-verification.md#rule-v-01) to [V-09](../assurance/phase-1-official-verification.md#rule-v-09) |
 | 4 | Decision register and ledger agree | **Pass** — see the ledger's status table |

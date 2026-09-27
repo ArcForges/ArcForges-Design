@@ -654,32 +654,6 @@
         "priorEffectivePropertiesUnchanged": true
       },
       {
-        "owner": "ArcNotes",
-        "mainCommit": "885289e54e123bb1e2fa7ae2884f35306863c35a",
-        "remoteMainVerified": true,
-        "clean": true,
-        "solutions": {
-          "ArcNotes.slnx": [
-            "src/ArcForges.ArcNotes.Core/ArcForges.ArcNotes.Core.csproj",
-            "src/ArcForges.ArcNotes/ArcForges.ArcNotes.csproj",
-            "tests/ArcForges.ArcNotes.Tests/ArcForges.ArcNotes.Tests.csproj",
-            "eng/ArcForges.Repository/ArcForges.Repository.csproj"
-          ]
-        },
-        "projectReferences": {
-          "eng/ArcForges.Repository/ArcForges.Repository.csproj": [],
-          "src/ArcForges.ArcNotes.Core/ArcForges.ArcNotes.Core.csproj": [],
-          "src/ArcForges.ArcNotes/ArcForges.ArcNotes.csproj": [
-            "../ArcForges.ArcNotes.Core/ArcForges.ArcNotes.Core.csproj"
-          ],
-          "tests/ArcForges.ArcNotes.Tests/ArcForges.ArcNotes.Tests.csproj": [
-            "../../src/ArcForges.ArcNotes.Core/ArcForges.ArcNotes.Core.csproj",
-            "../../eng/ArcForges.Repository/ArcForges.Repository.csproj"
-          ]
-        },
-        "priorEffectivePropertiesUnchanged": true
-      },
-      {
         "owner": "ArcScope",
         "mainCommit": "cacab2a0305064018de505e704267ba8936cc5a4",
         "remoteMainVerified": true,
@@ -700,32 +674,6 @@
           ],
           "tests/ArcForges.ArcScope.Tests/ArcForges.ArcScope.Tests.csproj": [
             "../../src/ArcForges.ArcScope.Core/ArcForges.ArcScope.Core.csproj",
-            "../../eng/ArcForges.Repository/ArcForges.Repository.csproj"
-          ]
-        },
-        "priorEffectivePropertiesUnchanged": true
-      },
-      {
-        "owner": "ArcSlate",
-        "mainCommit": "48abba0ce7a7cb83b35a0c6e20e0df1fb1af5e5e",
-        "remoteMainVerified": true,
-        "clean": true,
-        "solutions": {
-          "ArcSlate.slnx": [
-            "src/ArcForges.ArcSlate.Core/ArcForges.ArcSlate.Core.csproj",
-            "src/ArcForges.ArcSlate/ArcForges.ArcSlate.csproj",
-            "tests/ArcForges.ArcSlate.Tests/ArcForges.ArcSlate.Tests.csproj",
-            "eng/ArcForges.Repository/ArcForges.Repository.csproj"
-          ]
-        },
-        "projectReferences": {
-          "eng/ArcForges.Repository/ArcForges.Repository.csproj": [],
-          "src/ArcForges.ArcSlate.Core/ArcForges.ArcSlate.Core.csproj": [],
-          "src/ArcForges.ArcSlate/ArcForges.ArcSlate.csproj": [
-            "../ArcForges.ArcSlate.Core/ArcForges.ArcSlate.Core.csproj"
-          ],
-          "tests/ArcForges.ArcSlate.Tests/ArcForges.ArcSlate.Tests.csproj": [
-            "../../src/ArcForges.ArcSlate.Core/ArcForges.ArcSlate.Core.csproj",
             "../../eng/ArcForges.Repository/ArcForges.Repository.csproj"
           ]
         },
@@ -807,30 +755,12 @@
         "workflowName": "CI"
       }
     ],
-    "ArcNotes": [
-      {
-        "databaseId": 35579012604,
-        "headSha": "885289e54e123bb1e2fa7ae2884f35306863c35a",
-        "conclusion": "success",
-        "url": "https://github.com/ArcForges/ArcNotes/actions/runs/35579012604",
-        "workflowName": "CI"
-      }
-    ],
     "ArcScope": [
       {
         "databaseId": 35579025945,
         "headSha": "cacab2a0305064018de505e704267ba8936cc5a4",
         "conclusion": "success",
         "url": "https://github.com/ArcForges/ArcScope/actions/runs/35579025945",
-        "workflowName": "CI"
-      }
-    ],
-    "ArcSlate": [
-      {
-        "databaseId": 35579040862,
-        "headSha": "48abba0ce7a7cb83b35a0c6e20e0df1fb1af5e5e",
-        "conclusion": "success",
-        "url": "https://github.com/ArcForges/ArcSlate/actions/runs/35579040862",
         "workflowName": "CI"
       }
     ],
@@ -1126,7 +1056,7 @@
     },
     {
       "case": "Python urllib public asset reads",
-      "cause": "HTTP 403 both direct/default route and explicit local proxy",
+      "cause": "HTTP 403 on the recorded attempts",
       "resolution": "Playwright browser-context request client independently verified all 21 public asset hashes; CI also passed full public delivery verification"
     }
   ],

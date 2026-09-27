@@ -7,7 +7,7 @@
 > Governing authority: **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** (publish matrix), **[D-013](../decisions/phase-1-foundation-decisions.md#rule-d-013)** (provenance), **[D-014](../decisions/phase-1-foundation-decisions.md#rule-d-014)** (owned distribution surfaces), [PM-02](../requirements/12-quality-and-compatibility-contract.md#rule-pm-02) and `§20` of the quality contract
 > Companions: [`12-native-interop-and-media.md`](12-native-interop-and-media.md), [`14-build-packaging-and-release.md`](14-build-packaging-and-release.md), [`../assurance/open-gates-register.md`](../assurance/open-gates-register.md)
 
-The publish matrix says which runtime each target uses. The native interop architecture says how a native call must be made. **Neither says which native capabilities the product family actually needs, which platform and architecture each is available on, what happens where it is absent, or how a dependency reaches the signed artifact.** A product with a real media pipeline and a real acquisition pipeline cannot be planned without that.
+The publish matrix says which runtime each target uses. The native interop architecture says how a native call must be made. **Neither says which native capabilities the product family actually needs, which platform and architecture each is available on, what happens where it is absent, or how a dependency reaches the signed artifact.** A product with a real acquisition pipeline and a real preview pipeline cannot be planned without that.
 
 This inventory states capability and degradation obligations. The package registry and functional ABI fix the selected initial libraries; WP13 records their adoption evidence under §3.3. Implementation cannot postpone those selections.
 
@@ -33,18 +33,16 @@ This inventory states capability and degradation obligations. The package regist
 | Tier | Commitment |
 |---|---|
 | **Tier 1** | Full matrix participation ([PD-01](#rule-pd-01)); a release is blocked by its failure |
-| **Tier 2** | Build and automated test participation; a failure is recorded and may be waived per `§21` of the quality contract |
+| **Tier 2** | Produced Windows/Linux build and permitted automated-check participation under P2-017; a failure is recorded and may be waived per `§21` of the quality contract |
 | **Not supported** | Not built, not tested, not claimed. **Absence is stated, never implied** |
 
 ### 2.2 The matrix
 
-Embedded assistant packages are verified inside each host below; they are not a fourth desktop deliverable.
+Embedded assistant packages are verified inside each host below; they are not a second desktop deliverable. The table records source-support design intent, not an assertion that every RID is produced or tested. Under [P2-017](../decisions/phase-2-specification-decisions.md#rule-p2-017), CI/publication inventories include only actually produced Windows/Linux artifacts. macOS remains source support with local-only, unverified coverage unless specific local evidence exists; no macOS CI, automatic release artifact or passing result is implied.
 
 | Target | Windows x64 | Windows arm64 | macOS arm64 | macOS x64 | Linux x64 | Linux arm64 |
 |---|---|---|---|---|---|---|
-| **ArcNotes** | Tier 1 | Tier 2 | Tier 1 | Tier 2 | Tier 1 | Tier 2 |
-| **ArcScope** | Tier 1 | Tier 2 | Tier 1 | Tier 2 | Tier 1 | Tier 2 |
-| **ArcSlate** | Tier 1 | Tier 2 | Tier 1 | Tier 2 | Tier 1 | Tier 2 |
+| **ArcScope** | Tier 1 | Tier 2 | Source only | Source only | Tier 1 | Tier 2 |
 
 | Target | Runtime | Architecture posture |
 |---|---|---|
@@ -54,8 +52,8 @@ Embedded assistant packages are verified inside each host below; they are not a 
 
 | # | Rule |
 |---|---|
-| <a id="rule-pt-01"></a>PT-01 | Every professional desktop ships the accepted Windows/Linux/macOS platform and RID set. Shared native/UI mechanisms require per-product integration evidence; platform parity does not imply cross-product execution. |
-| <a id="rule-pt-02"></a>PT-02 | **A Tier-2 platform is a real build, not a promise.** It publishes AOT in CI; what it does not carry is release-blocking authority. |
+| <a id="rule-pt-01"></a>PT-01 | Every professional desktop retains the accepted Windows/Linux/macOS source-support design; a release ships only its actually produced RID set under P2-017 and records missing or untested coverage explicitly. Shared native/UI mechanisms require per-product integration evidence; platform parity does not imply cross-product execution. |
+| <a id="rule-pt-02"></a>PT-02 | **A claimed Tier-2 release platform is a real build, not a promise.** Produced Windows/Linux RIDs publish AOT in permitted CI; source-only targets are not counted as released Tier-2 artifacts. Tier 2 does not carry release-blocking authority. |
 | <a id="rule-pt-03"></a>PT-03 | **Tier promotion is a decision with evidence** — full matrix participation demonstrated — not a marketing choice. |
 | <a id="rule-pt-04"></a>PT-04 | **The mobile emulator architecture is never a release claim** ([PM-03](../requirements/12-quality-and-compatibility-contract.md#rule-pm-03) there). |
 | <a id="rule-pt-05"></a>PT-05 | **A native capability unavailable on a Tier-2 architecture does not demote the platform**; it degrades the capability per `§5`, and the degradation is part of that platform's release metadata. |
@@ -78,17 +76,10 @@ Embedded assistant packages are verified inside each host below; they are not a 
 
 | Slot | Owner | ABI | Required by | Gate |
 |---|---|---|---|---|
-| **Media demux and decode** | `ArcForges.Native.Media` / DesktopPlatform | **ArcForges-owned `arc_media_*` shim** over the chosen foundation | ArcSlate playback, proxy generation, thumbnails, waveforms | [PG-03](../assurance/open-gates-register.md#rule-pg-03) |
-| **Media encode and mux** | `ArcForges.Native.Media` / DesktopPlatform | Same shim | ArcSlate export and render | [PG-03](../assurance/open-gates-register.md#rule-pg-03) |
-| **Colour conversion, scale, resample** | `ArcForges.Native.Media` / DesktopPlatform | Same shim | Playback and render correctness; **preview and render share semantics** ([MP-03](12-native-interop-and-media.md#rule-mp-03)) | [PG-03](../assurance/open-gates-register.md#rule-pg-03) |
-| **Colour management transforms** | `ArcForges.Native.Colour` / DesktopPlatform | ArcForges-owned shim | ArcSlate colour pipeline ([WP-38](../planning/work-packages/38-arcslate-render-and-colour.md#rule-wp-38)) | [PG-03](../assurance/open-gates-register.md#rule-pg-03) |
-| **GPU device and surface access** | `ArcForges.Native.Graphics` / DesktopPlatform | Owned arc_graphics_* with mandatory CPU and optional OS backends | Portable preview; acceleration optional | [PG-03](../assurance/open-gates-register.md#rule-pg-03) |
 | **Serial and device transports** | `ArcForges.Native.Instruments` / DesktopPlatform | arc_instruments_* over OS serial and libusb; no vendor SDK in V1 | ArcScope generic serial and explicit-interface USB acquisition | [PG-03](../assurance/open-gates-register.md#rule-pg-03), [PG-08](../assurance/open-gates-register.md#rule-pg-08) |
 | **High-rate acquisition and signal primitives** | `ArcForges.Native.Instruments` / DesktopPlatform | ArcForges-owned shim where a managed path cannot meet the rate | ArcScope hot path | [PG-03](../assurance/open-gates-register.md#rule-pg-03) |
-| **Document rendering and text extraction** | `ArcForges.Native.Pdf` inside WP11 ContentSandbox, brokered by ArcNotes.Infrastructure | Owned arc_pdf_* over PDFium; only bounded text and raster output | ArcNotes PDF viewing | [PG-03](../assurance/open-gates-register.md#rule-pg-03), [PG-12](../assurance/open-gates-register.md#rule-pg-12) |
-| **Still-image codecs** | `ArcForges.Native.Image` | arc_image_* over OIIO/OpenEXR/Imath | Slate stills and Notes images | [PG-03](../assurance/open-gates-register.md#rule-pg-03) |
-| **Timeline interchange** | `ArcForges.Native.Otio` | arc_otio_* over official OTIO | Slate import/export | [PG-03](../assurance/open-gates-register.md#rule-pg-03) |
-| **Audio devices** | `ArcForges.Native.Media` | arc_media_audio_* over miniaudio | Slate monitoring and capture where accepted | [PG-03](../assurance/open-gates-register.md#rule-pg-03) |
+| **Document rendering and text extraction** | `ArcForges.Native.Pdf` inside WP11 ContentSandbox, brokered by the assistant's ContentSandbox integration | Owned arc_pdf_* over PDFium; only bounded text and raster output | Assistant PDF thin previews | [PG-03](../assurance/open-gates-register.md#rule-pg-03), [PG-12](../assurance/open-gates-register.md#rule-pg-12) |
+| **Still-image codecs** | `ArcForges.Native.Image` (logical library `ArcImageNative`) | arc_image_* over OIIO/OpenEXR/Imath | Assistant image thin previews | [PG-03](../assurance/open-gates-register.md#rule-pg-03) |
 | **Secure storage** | Per-product `*.Infrastructure` | Platform APIs | Secret broker backing (`§6` of the security architecture) | — |
 | **Shell integration, global hotkey, notification** | Per-product `*.Infrastructure` | Platform APIs | Desktop shell behaviours | — |
 | **Text shaping, font fallback, glyph rasterisation** | **Not ArcForges'** — Avalonia's platform backends | — | All text rendering ([RN-02](18-editing-and-rich-content.md#rule-rn-02) of the editing architecture) | — |
@@ -96,7 +87,7 @@ Embedded assistant packages are verified inside each host below; they are not a 
 | # | Rule |
 |---|---|
 | <a id="rule-ns-01"></a>NS-01 | **There is no first-party C++ worker process.** Native code runs in-process behind the ABI (`§1` of the native interop architecture), which is why `§6` there carries the safety obligations that make a worker-free design acceptable. |
-| <a id="rule-ns-02"></a>NS-02 | **Cloud has no desktop native slot** (`§2` there). Cloud is a Native AOT executable using platform crypto/SQL/HTTP without the desktop media stack. |
+| <a id="rule-ns-02"></a>NS-02 | **Cloud has no desktop native slot** (`§2` there). Cloud is a Native AOT executable using platform crypto/SQL/HTTP without the desktop native stack. |
 | <a id="rule-ns-03"></a>NS-03 | **Mobile and Web have no first-party native ABI** (`§2` there). A capability that needs one is a desktop capability. |
 | <a id="rule-ns-04"></a>NS-04 | **A slot filled for one product is not thereby available to another.** A native library used by two products is still loaded per process with no shared global state ([NP-02](12-native-interop-and-media.md#rule-np-02) there), and the second product's use is its own adoption decision. |
 | <a id="rule-ns-05"></a>NS-05 | **Every ArcForges-owned shim carries a fixed prefix and an ABI version** ([AB-02](12-native-interop-and-media.md#rule-ab-02) there), negotiated at load rather than assumed ([AB-12](12-native-interop-and-media.md#rule-ab-12) there). |
@@ -148,17 +139,10 @@ What the user sees when a slot is unavailable — absent library, unsupported pl
 
 | Slot | Degradation | Never |
 |---|---|---|
-| Media decode | The affected format is reported unsupported with its name; the project opens, media shows as **offline** ([MP-12](12-native-interop-and-media.md#rule-mp-12)) | The project fails to open |
-| Media encode | Export to that format is unavailable with a reason; other formats remain | Export appears to succeed and produces an unusable file |
-| GPU acceleration | **Software path, with a visible reason** ([GP-04](12-native-interop-and-media.md#rule-gp-04), [MP-08](12-native-interop-and-media.md#rule-mp-08)) | A feature disappears |
-| Colour transforms | Render is refused with a named reason rather than produced with wrong colour | Silently wrong colour |
 | Serial or device transport | That transport is listed unavailable with its reason; others remain usable ([PM-06](../requirements/12-quality-and-compatibility-contract.md#rule-pm-06) of the quality contract) | The device list is silently short |
 | High-rate acquisition | Rate ceiling reduced and **stated before capture starts**, not discovered afterwards | A capture that silently drops samples |
-| Document rendering | **Metadata card** with open-in-system-application (`§8.2` of the editing architecture); [AT-05](../requirements/products/arcnotes.md#rule-at-05) is **not met** and [PG-12](../assurance/open-gates-register.md#rule-pg-12) stays open | A blank viewer, or the gap concealed by calling it a preview |
-| Colour conversion, scale, resample | Preview/render requiring conversion refuses with a named reason; unchanged-format operations remain available | Wrong colour, geometry or sample timing |
-| Still-image codecs | Affected formats are named unavailable; projects open with explicit missing-image state; export containing unsupported stills refuses | A silently missing image or omitted still in successful export |
-| Timeline interchange | OTIO import/export unavailable with reason; editing/playback remain usable; PG15 remains open | Partial or approximated OTIO claimed complete |
-| Audio devices | Visible video-only playback uses the monotonic host clock; capture/monitoring unavailable with reason; offline render/export unaffected | Silence presented as normal or export refused for missing output device |
+| Document rendering | The assistant's thin PDF preview through the ContentSandbox is unavailable and falls back to the **metadata card** (`§8.1`–`§8.2` of the rich content architecture); [PG-12](../assurance/open-gates-register.md#rule-pg-12) stays open | A blank preview, or the gap concealed by calling it complete |
+| Still-image codecs | Affected formats are named unavailable; the assistant's thin image preview falls back to the **metadata card** | A silently missing image presented as available |
 | USB instrument transport | Device remains listed with driver/permission/interface-busy reason; other transports remain usable | Silently short enumeration or automatic kernel-driver detach |
 | Text shaping, font fallback, glyph rasterisation | Use verified bundled fallback fonts, mark unsupported glyphs explicitly; broken rendering backend blocks that platform release | Silent text omission or corrupted layout |
 | Secure storage | Start-up fails with an actionable message | A secret stored unprotected |
@@ -173,7 +157,7 @@ What the user sees when a slot is unavailable — absent library, unsupported pl
 
 ---
 
-The slot-to-degradation mapping is explicit: Media demux/decode→Media decode; encode/mux→Media encode; conversion/scale/resample→same-named row; colour management→Colour transforms; GPU/surface→GPU acceleration; serial/device→Serial or device transport plus USB instrument transport; high-rate→High-rate acquisition; document rendering→Document rendering; still-image, timeline interchange, audio devices, secure storage, shell integration and text shaping→their named rows. Native.Abstractions is common ownership infrastructure, not a physical slot. Every stated degradation preserves local data; a required Tier 1 feature that is unavailable still fails its release gate.
+The slot-to-degradation mapping is explicit: serial/device→Serial or device transport plus USB instrument transport; high-rate→High-rate acquisition; document rendering→Document rendering; still-image, secure storage, shell integration and text shaping→their named rows. Native.Abstractions is common ownership infrastructure, not a physical slot. Every stated degradation preserves local data; a required Tier 1 feature that is unavailable still fails its release gate.
 
 ## 6. Build and packaging linkage
 
@@ -202,12 +186,12 @@ dependency adopted (§3.3)
 
 | # | Obligation | Where |
 |---|---|---|
-| <a id="rule-pv-01"></a>PV-01 | Every Tier-1 platform completes build, AOT publish, install, UI, recovery, compatibility and performance matrices | [WP-06.00](../planning/work-packages/06-aot-jit-and-wasm-publish-proof.md#rule-wp-06.00), [WP-50.02](../planning/work-packages/50-full-platform-production-release.md#rule-wp-50.02) |
-| <a id="rule-pv-02"></a>PV-02 | Every Tier-2 platform completes build and AOT publish in CI | [WP-06.00](../planning/work-packages/06-aot-jit-and-wasm-publish-proof.md#rule-wp-06.00) |
+| <a id="rule-pv-01"></a>PV-01 | Claimed Tier-1 coverage records build/AOT and relevant local install, UI, recovery, compatibility and performance evidence under P2-017; unavailable environments are reported, never fabricated or provisioned solely for validation | [WP-06.00](../planning/work-packages/06-aot-jit-and-wasm-publish-proof.md#rule-wp-06.00), [WP-50.02](../planning/work-packages/50-full-platform-production-release.md#rule-wp-50.02) |
+| <a id="rule-pv-02"></a>PV-02 | Every produced Windows/Linux Tier-2 release RID completes build and AOT publish in permitted CI; macOS source-only targets remain outside that inventory | [WP-06.00](../planning/work-packages/06-aot-jit-and-wasm-publish-proof.md#rule-wp-06.00) |
 | <a id="rule-pv-03"></a>PV-03 | The supported OS range is published as release metadata and matches what was tested | [WP-50.02](../planning/work-packages/50-full-platform-production-release.md#rule-wp-50.02), [WP-50.08](../planning/work-packages/50-full-platform-production-release.md#rule-wp-50.08) |
 | <a id="rule-pv-04"></a>PV-04 | Every native slot in use has its [AD-01](#rule-ad-01)–[AD-08](#rule-ad-08) obligations recorded before the dependent work completes | [PG-03](../assurance/open-gates-register.md#rule-pg-03), [PG-12](../assurance/open-gates-register.md#rule-pg-12), [WP-50.01](../planning/work-packages/50-full-platform-production-release.md#rule-wp-50.01) |
-| <a id="rule-pv-05"></a>PV-05 | Every degradation row is exercised: absent library, failed verification, missing hardware, unsupported format | [WP-13.03](../planning/work-packages/13-high-risk-technical-probes.md#rule-wp-13.03), [WP-37](../planning/work-packages/37-arcslate-playback-and-processing.md#rule-wp-37), [WP-33](../planning/work-packages/33-arcscope-acquisition-and-session.md#rule-wp-33), [WP-18.04](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.04) |
-| <a id="rule-pv-06"></a>PV-06 | Start-up verification rejects an ABI-version mismatch with an actionable message rather than crashing later | [WP-13.03](../planning/work-packages/13-high-risk-technical-probes.md#rule-wp-13.03) |
+| <a id="rule-pv-05"></a>PV-05 | Every degradation row is exercised: absent library, failed verification, missing hardware, unsupported format | [WP-13.05](../planning/work-packages/13-high-risk-technical-probes.md#rule-wp-13.05), [WP-33](../planning/work-packages/33-arcscope-acquisition-and-session.md#rule-wp-33) |
+| <a id="rule-pv-06"></a>PV-06 | Start-up verification rejects an ABI-version mismatch with an actionable message rather than crashing later | [WP-13.05](../planning/work-packages/13-high-risk-technical-probes.md#rule-wp-13.05) |
 | <a id="rule-pv-07"></a>PV-07 | No native asset resolves from a user-writable path, and no dependency is downloaded at runtime | Repository policy test; [WP-11.05](../planning/work-packages/11-security-foundation.md#rule-wp-11.05) |
 | <a id="rule-pv-08"></a>PV-08 | A Cloud-class dependency cannot be referenced from a desktop project | [WP-05](../planning/work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05) |
 | <a id="rule-pv-09"></a>PV-09 | An AGPL-boundary assembly cannot be referenced from an Apache-2.0 project | [WP-03](../planning/work-packages/03-contract-foundation-and-licence-split.md#rule-wp-03), [WP-05](../planning/work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05) |
@@ -226,7 +210,7 @@ Other adapters: Paddle raw-body HMAC and typed source-generated HttpClient, no p
 Operator access uses the separate Entra OIDC/operator opaque-session scheme and typed internal operator methods fixed in [the internal operator schema](contracts/04-protobuf-wire-registry.md#9-operator-control-and-separate-identity-boundary). The same AOT host enforces both schemes with disjoint audiences/origins; no customer token can authorize administration. Public status remains independently hosted static output with an alternate provider URL under the existing operations rule.
 
 
-Native dependency selection and resolved OTIO/MDF dispositions are in [package registry](01-solution-and-project-layout.md#12-package-and-native-distribution-registry). Android OS adapters are Mobile dependencies, not desktop ABI packages. All actual candidate/RID/admission proofs remain required; the selected route is fixed before coding.
+Native dependency selection and resolved native dispositions are in [package registry](01-solution-and-project-layout.md#12-package-and-native-distribution-registry). Android OS adapters are Mobile dependencies, not desktop ABI packages. All actual candidate/RID/admission proofs remain required; the selected route is fixed before coding.
 
 ## 9. [P2-010](../decisions/phase-2-specification-decisions.md#rule-p2-010) producer and Android closure
 

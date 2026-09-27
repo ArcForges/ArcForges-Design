@@ -11,27 +11,6 @@
   },
   "owners": [
     {
-      "owner": "ArcNotes",
-      "pr": "https://github.com/ArcForges/ArcNotes/pull/9",
-      "reviewedHead": "63b2af31aafab2b4f93d3247480e400b101e515a",
-      "mergeCommit": "268c3290ab372423c9a7d94a3027876f507f9816",
-      "prRuns": [
-        "https://github.com/ArcForges/ArcNotes/actions/runs/35687871656"
-      ],
-      "mainRuns": [
-        "https://github.com/ArcForges/ArcNotes/actions/runs/35688797135"
-      ],
-      "mainConclusion": "success",
-      "reviewOutcome": "Complete PR review; findings fixed; applicable latest-head checks successful before merge",
-      "localOfflinePolicyCasesPassed": 12,
-      "admittedClosure": "91 NuGet coordinates",
-      "primaryFastForwardClean": true,
-      "retainedBranch": "wp02-05-dependency-policy",
-      "retainedWorktree": ".worktree/wp02-05-dependency-policy",
-      "providerResult": "Publish portable release and Verify publication succeeded for win-x64, win-arm64 and linux-x64.",
-      "eventDelay": "Push workflow appeared after an initial event-processing delay; no manual dispatch or replacement commit was made."
-    },
-    {
       "owner": "ArcScope",
       "pr": "https://github.com/ArcForges/ArcScope/pull/9",
       "reviewedHead": "e337ee96fca109997e4411d86d9b9ec8ff7d6314",
@@ -41,26 +20,6 @@
       ],
       "mainRuns": [
         "https://github.com/ArcForges/ArcScope/actions/runs/35688248008"
-      ],
-      "mainConclusion": "success",
-      "reviewOutcome": "Complete PR review; findings fixed; applicable latest-head checks successful before merge",
-      "localOfflinePolicyCasesPassed": 12,
-      "admittedClosure": "91 NuGet coordinates",
-      "primaryFastForwardClean": true,
-      "retainedBranch": "wp02-05-dependency-policy",
-      "retainedWorktree": ".worktree/wp02-05-dependency-policy",
-      "providerResult": "Publish portable release and Verify publication succeeded for win-x64, win-arm64 and linux-x64."
-    },
-    {
-      "owner": "ArcSlate",
-      "pr": "https://github.com/ArcForges/ArcSlate/pull/9",
-      "reviewedHead": "7e9966962245dc7ccc90d4506719966f170875ec",
-      "mergeCommit": "1214224ac105e1a172ea589ecf16810874f7b381",
-      "prRuns": [
-        "https://github.com/ArcForges/ArcSlate/actions/runs/35687937829"
-      ],
-      "mainRuns": [
-        "https://github.com/ArcForges/ArcSlate/actions/runs/35688252843"
       ],
       "mainConclusion": "success",
       "reviewOutcome": "Complete PR review; findings fixed; applicable latest-head checks successful before merge",

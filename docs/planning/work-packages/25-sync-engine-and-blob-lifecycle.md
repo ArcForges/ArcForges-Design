@@ -5,9 +5,9 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: E — First real cloud
-> Upstream: `19` · `24` · Downstream: `26` · `28` · `30` · `35` · `39` · `40` · `41` · `43` · `46` · `48` · `51`
+> Scheduling: this package is an obligation set; its delivery tasks and their typed prerequisites are listed in section 9, generated from the [delivery graph](../delivery/delivery-graph.json) under [P2-018](../../decisions/phase-2-specification-decisions.md#rule-p2-018).
 
-> **Goal.** Prove sync on ArcNotes: a client outbox, a server inbox, a change feed, five conflict policies, deletion propagation, and a blob lifecycle that never leaves a reference pointing at nothing — with multi-device convergence demonstrated, not assumed.
+> **Goal.** Prove sync on ArcScope metadata: a client outbox, a server inbox, a change feed, five conflict policies, deletion propagation, and a blob lifecycle that never leaves a reference pointing at nothing — with multi-device convergence demonstrated, not assumed.
 
 > **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Cloud; desktop/Mobile consumers. Inputs: only the applicable published producers available at this stage under [staged artifact integration](../README.md#staged-artifact-integration). Producer candidate records precede Cloud consolidation; no future package/manifest is an input. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: owned candidate artifacts and generated contracts with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
 > After WP03, unit mocks consume published Contracts fixtures; earlier stages verify their inventory/policy outputs. Acceptance consumes the actual providers scheduled for that stage. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
@@ -16,11 +16,11 @@
 
 ## 1. Scope and purpose
 
-**In scope.** The sync engine end to end for ArcNotes: sync scopes, the client outbox, the server inbox, the change feed, conflict detection and resolution policies, deletion and tombstones, the blob lifecycle from staged to committed, availability states, protection profiles, data health, and multi-device convergence.
+**In scope.** The sync engine end to end for ArcScope metadata: sync scopes, the client outbox, the server inbox, the change feed, conflict detection and resolution policies, deletion and tombstones, the blob lifecycle from staged to committed, availability states, protection profiles, data health, and multi-device convergence.
 
-**Out of scope.** ArcScope and ArcSlate sync strategies (`35`, `39`) — this package establishes the engine those extend. Backup and disaster recovery (`46`).
+**Out of scope.** ArcScope's own sync strategy (`35`) — this package establishes the engine it extends. Backup and disaster recovery (`46`).
 
-**Why this package exists.** [SQ-05](../implementation-sequence.md#rule-sq-05): ArcNotes is the right product to prove the initial sync protocol — more complex than a toy, simpler than raw captures or large media, yet sufficient to validate revisions, attachments, deletions, conflicts, history and recovery.
+**Why this package exists.** [SQ-05](../implementation-sequence.md#rule-sq-05): ArcScope metadata is the right target to prove the initial sync protocol — more complex than a toy, simpler than raw captures or large media, yet sufficient to validate revisions, attachments, deletions, conflicts, history and recovery.
 
 ---
 
@@ -31,15 +31,13 @@
 
 **Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
-**Frozen design input.** [notes.scalar.v1](../../requirements/products/arcnotes.md#notes-scalar-query-profile)
-
 **Frozen design input.** [content-origin behavior](../../requirements/07-security-privacy-and-trust.md#content-origin-profile) and [carrier schema](../../requirements/13-data-formats-and-portability.md#content-origin-carriers) is fixed before this package; implement it without choosing a different marking mechanism.
 
 | Input | Why it matters |
 |---|---|
 | [`../../architecture/07-sync-conflict-and-backup.md`](../../architecture/07-sync-conflict-and-backup.md) | Identity and revision, outbox/inbox, change feed, conflict policies, blob lifecycle, protection profiles, data health |
 | [`../../requirements/03-cloud-services-and-sync.md`](../../requirements/03-cloud-services-and-sync.md) | Sync scopes, per-product defaults, change propagation, tombstones, storage accounting |
-| [WP-19](19-arcnotes-search-and-portability.md#rule-wp-19), [WP-24](24-realtime-and-reliable-events.md#rule-wp-24) output | A format proven to round-trip locally, and gap-detecting change notification |
+| [WP-24](24-realtime-and-reliable-events.md#rule-wp-24) output | Gap-detecting change notification |
 
 ---
 
@@ -70,7 +68,7 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 | `src/Cloud/ArcForges.Cloud.Modules.Sync/` | Server inbox, change feed, conflict evaluation, tombstones, scope registry |
 | `src/Cloud/ArcForges.Cloud.Modules.Resource/` | Blob lifecycle, upload tickets, verification, commit, garbage collection, accounting |
 | `src/BuildingBlocks/ArcForges.Sync/` | Client outbox, change application, conflict presentation, availability states |
-| `src/ArcNotes/ArcNotes.CloudClient/` | ArcNotes sync adapter: scope mapping, attachment handling, conflict surfacing |
+| `src/ArcScope/ArcScope.CloudClient/SyncScope/` | ArcScope metadata sync adapter: scope mapping, attachment handling, conflict surfacing |
 | `tests/SyncConflictTests/` | Convergence, conflict, deletion, blob and multi-device suites |
 
 **Major types introduced.** `SyncScope`, `OutboxEntry`, `InboxRecord`, `ChangeFeedCursor`, `ChangeRecord`, `ConflictPolicy`, `ConflictResolution`, `Tombstone`, `BlobState`, `UploadSession`, `AvailabilityState`, `ProtectionProfile`, `DataHealthReport`.
@@ -78,18 +76,6 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 ---
 
 ## 5. Required implementation work
-
-<a id="rule-wp-25.00"></a>
-
-### WP-25.00 — Cloud Notes authority and sync scopes
-
-**Required design implementation and verification.** Canonical Notes write validators and sync projection preserve number/date values, semantic revisions and query profile/view bindings. Advance the acknowledged query dataset token in the same relevant source commit. Exercise a label rename, rejected dependent type change and stale-view restoration across local/Cloud revisions.
-
-**What must be fully done.** Implement the canonical notes schema in [Cloud data model §8.4](../../architecture/data-model/01-cloud-data-model.md#84-cloud-notes-canonical-model): notebook-owned folders, document-owned blocks and values, tags, property definitions, saved views, immutable revisions, checkpoints and derived backlinks. Add the typed folder/document/history operations and their sorted-root revision checks. Cloud validates the same typed operations as the local domain; publication, receipts and Resource/Entitlement enlistment share the commit.
-
-**Testing requirements.** Folder cycle/reorder/reparent, cross-notebook move with stable document IDs, concurrent move/delete, ancestor trash/restore without restoring separately trashed documents, stale revisions, immutable history and revision/attachment pins. Verify generated API/SQLite projections against real D1.
-
-**Completion gate.** A note has one complete server authority model and hierarchy, with executable operations, history and resource ownership; no client is required to create authoritative schema or assign Cloud revisions.
 
 <a id="rule-wp-25.01"></a>
 
@@ -105,7 +91,7 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 ### WP-25.02 — Guarded publication and convergent bootstrap
 
-**What must be fully done.** Implement model 04 primary lower-bound W bootstrap, immutable-key pages, retention pin and replay to H; publisher guards watermark/fence/selected rows in one D1 batch.
+**What must be fully done.** Implement model 04 primary lower-bound W bootstrap, immutable-key pages, retention pin and replay to H; publisher guards watermark/fence/selected rows in one D1 batch, including the real Sync owner transaction that admits client-origin ArcScope metadata owner bodies as authorized ScopeMetadata.
 
 **Testing requirements.** Two-writer interleavings, commit between pages, insert below cursor, delete/tombstone, expired pin, lost acknowledgement and old/new revision application with pending edits.
 
@@ -149,7 +135,7 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 **Testing requirements.** Real R2 object verification and guarded D1 publication/recovery, resume after 100-root batch, repeated command, missing object, partial cancellation, denied current scope, transfer credential/ledger exclusion and restore generation.
 
-**Completion gate.** No Unsync deletion of authoritative Notes/Chat, no empty success for irrecoverable data and no manual migration rule invented.
+**Completion gate.** No Unsync deletion of authoritative Chat, no empty success for irrecoverable data and no manual migration rule invented.
 
 <a id="rule-wp-25.07"></a>
 
@@ -157,7 +143,7 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 **What must be fully done.** Three devices editing concurrently, one offline for an extended period, converge to identical state with all conflicts either resolved by policy or surfaced. Convergence is verified by comparison, not by absence of errors.
 
-**Testing requirements.** A three-device convergence harness with concurrent edits, an extended offline device, attachments, deletions and a mid-sync crash.
+**Testing requirements.** A three-device convergence harness with concurrent edits, an extended offline device, attachments, deletions and a mid-sync crash, run against the real ArcScope client.
 
 **Completion gate.** **Three devices converge to verifiably identical state** under concurrent editing, extended offline periods, attachments, deletions and a crash.
 
@@ -165,19 +151,19 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 <a id="rule-wp-25.08"></a>
 
-### WP-25.08 — Real Cloud Notes and Chat export producers
+### WP-25.08 — Real Cloud Chat export producer
 
-**Required design implementation and verification.** Implement real acknowledged-snapshot Notes/Chat exports with origin/fidelity/attachment inventory, bounded pin/retention and verified download. Stage output plus sidecars and publish one atomic bundle. Exercise failure/cancel and structurally remove runtime fixture registrations from [WP-15.06](15-arcchat-conversation-core.md#rule-wp-15.06) and [WP-19.05](19-arcnotes-search-and-portability.md#rule-wp-19.05); retained test fixtures are not runtime producers.
+**Required design implementation and verification.** Implement a real acknowledged-snapshot Chat export with origin/fidelity/attachment inventory, bounded pin/retention and verified download. Stage output plus sidecars and publish one atomic bundle. Exercise failure/cancel and structurally remove the runtime fixture registration from [WP-15.06](15-arcchat-conversation-core.md#rule-wp-15.06); retained test fixtures are not runtime producers.
 
-**What must be fully done.** Build bounded leased Cloud export jobs for Notes and Chat. Freeze an acknowledged revision manifest, pin its content/history/attachment objects, and generate the declared Markdown/JSON/text outputs, attachments, metadata/link map and fidelity report. Publish a verified, expiring download artifact; exclude device-only pending edits. Enforce resource/egress reservations and allow retained-data export during configured read/grace periods. Delete the early [WP-15.06](15-arcchat-conversation-core.md#rule-wp-15.06) and [WP-19.05](19-arcnotes-search-and-portability.md#rule-wp-19.05) export fixtures from runtime registration.
+**What must be fully done.** Build a bounded leased Cloud export job for Chat. Freeze an acknowledged revision manifest, pin its content/history/attachment objects, and generate the declared Markdown/JSON/text outputs, attachments, metadata/link map and fidelity report. Publish a verified, expiring download artifact; exclude device-only pending edits. Enforce resource/egress reservations and allow retained-data export during configured read/grace periods. Delete the early [WP-15.06](15-arcchat-conversation-core.md#rule-wp-15.06) export fixture from runtime registration.
 
-**Testing requirements.** Real host/database/object-store export across concurrent edits, notebook moves, deleted attachments, quota limit, expiry, restart, cancellation and paid-term end. Compare every delivered manifest/hash and omission; scan for secrets. Run both production clients with no fixture producer registered.
+**Testing requirements.** Real host/database/object-store export across concurrent edits, deleted attachments, quota limit, expiry, restart, cancellation and paid-term end. Compare every delivered manifest/hash and omission; scan for secrets. Run the production client with no fixture producer registered.
 
-**Completion gate.** Both export exit paths work against real Cloud authority, preserve a stable snapshot and honest fidelity, and release pins/reservations on all terminal paths. This is the Cloud Notes/Chat portion of [PG-07](../../assurance/open-gates-register.md#rule-pg-07).
+**Completion gate.** The export exit path works against real Cloud authority, preserves a stable snapshot and honest fidelity, and releases pins/reservations on all terminal paths. This is the Cloud Chat portion of [PG-07](../../assurance/open-gates-register.md#rule-pg-07).
 
 ---
 
-**Required implementation and closure from the final review.** Implement and independently verify [01-cloud-data-model](../../architecture/data-model/01-cloud-data-model.md). Implement real structural move/ack/conflict transactions, full native metadata replicas, job-authorized R2 staging/verification/promotion and quarantined old-generation client commands. WP25.08 closes both Notes and Chat Cloud export manifests through actual R2; test missing permission, partial transfer, loss reports, no pending-local content and response loss. Old Notebook/Document body uploads cannot bypass placement operations. Record exact artifact identities and real/fixture status with the existing substeps; these cases are part of this package's completion gate.
+**Required implementation and closure from the final review.** Implement and independently verify [01-cloud-data-model](../../architecture/data-model/01-cloud-data-model.md). Implement real structural move/ack/conflict transactions, full native metadata replicas, job-authorized R2 staging/verification/promotion and quarantined old-generation client commands. WP25.08 closes the Chat Cloud export manifest through actual R2; test missing permission, partial transfer, loss reports, no pending-local content and response loss. Record exact artifact identities and real/fixture status with the existing substeps; these cases are part of this package's completion gate.
 
 <a id="rule-wp-25.09"></a>
 ### WP-25.09 — Application Cloud history and restartable import
@@ -219,15 +205,12 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 Acceptance includes every amended §5 producer/consumer and [WP-25.90](#rule-wp-25.90) evidence. Current [P2-013](../../decisions/phase-2-specification-decisions.md#rule-p2-013) contracts/data/runtime rules are tested in the original owner implementation, not a detached explanatory sample.
 
-**[WP-25.08](#rule-wp-25.08) producer evidence.** Real snapshot/export jobs, input revisions, attachment/origin/fidelity manifest, bounded retention/download, cancel/failure cases, and structural absence of the Notes/Chat runtime export fixture registrations.
-
-**Required evidence addition.** Canonical scalar/schema and pending/acknowledged query-token sync results.
+**[WP-25.08](#rule-wp-25.08) producer evidence.** Real snapshot/export jobs, input revisions, attachment/origin/fidelity manifest, bounded retention/download, cancel/failure cases, and structural absence of the Chat runtime export fixture registration.
 
 **Required evidence addition.** [WP-25.08](#rule-wp-25.08) records the carrier/propagation/failure vectors above with payload and manifest hashes; early packages use declared fixtures, while provider/Harness packages require their real integrations.
 
 | Evidence | Produced by |
 |---|---|
-| Scope change and exclusion results | [WP-25.00](#rule-wp-25.00) |
 | Batch-log survival, in-flight-edit, duplicate-acknowledgement and conflict-rebase results | [WP-25.01](#rule-wp-25.01) |
 | Deduplication, feed stability and expired-cursor results | [WP-25.02](#rule-wp-25.02) |
 | Conflict matrix and recoverability results | [WP-25.03](#rule-wp-25.03) |
@@ -245,13 +228,13 @@ Acceptance includes every amended §5 producer/consumer and [WP-25.90](#rule-wp-
 
 **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) gate:** [WP-25.90](#rule-wp-25.90) and all inherited domain-specific gates must pass on the same candidate closure. Three-device convergence and interrupted-upload/failed-content-commit/orphan/delete cases run against actual provider adapters; [WP-25.08](#rule-wp-25.08) remains represented in its evidence and completion gate.
 
-**Producer completion.** [WP-25.08](#rule-wp-25.08) must pass with the explicit §7 artifacts above; it is not optional because other package checks pass. Its real Cloud Notes/Chat export format, origin-carrier and fidelity fixtures provide this package's [PG-07](../../assurance/open-gates-register.md#rule-pg-07) contribution; import/interchange producers retain their separately scheduled obligations.
+**Producer completion.** [WP-25.08](#rule-wp-25.08) must pass with the explicit §7 artifacts above; it is not optional because other package checks pass. Its real Cloud Chat export format, origin-carrier and fidelity fixtures provide this package's [PG-07](../../assurance/open-gates-register.md#rule-pg-07) contribution; import/interchange producers retain their separately scheduled obligations.
 
 **[PG-17](../../assurance/open-gates-register.md#rule-pg-17) evidence:** [WP-25.07](#rule-wp-25.07) — Bootstrap/feed convergence, old revisions/tombstones/echoes, and late commit after an advanced cursor, consuming the publisher from package 21. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
 
 **Offline evidence.** Execute this product's applicable [initial-state matrix](../../assurance/testing-and-verification-strategy.md#offline-acceptance-matrix) rows, including fresh shell, hydrated outage, unavailable content, signout and restart where applicable. Record permitted local work and explicitly unavailable Cloud actions.
 
-**Additional completion requirement.** Notes sync preserves the declared semantics and origin through conflicts, restore and export; no mixed source revisions are presented as one successful query dataset.
+**Additional completion requirement.** ArcScope metadata sync preserves the declared semantics and origin through conflicts, restore and export; no mixed source revisions are presented as one successful query dataset.
 
 **Additional completion requirement.** The package's content paths pass the stated origin vectors, including unknown input and failed publication; a valid stored/rendered payload alone cannot satisfy the carrier requirement.
 
@@ -270,8 +253,30 @@ Acceptance includes every amended §5 producer/consumer and [WP-25.90](#rule-wp-
 
 ## 9. Dependencies
 
-**Upstream:** `19` · `24`. Consume completed stage outputs.
+<!-- delivery-graph:begin (generated by Plan tools/delivery.py; do not edit) -->
 
-**Downstream:** `26` · `28` · `30` · `35` · `39` · `40` · `41` · `43` · `46` · `48` · `51`. Consumers use exact released artifacts.
+Scheduling is task-level under [P2-018](../../decisions/phase-2-specification-decisions.md#rule-p2-018). This package is an obligation set; it is satisfied when every task below is complete with its evidence. Prerequisites are typed task edges, never "all upstream packages complete".
+
+| Delivery task | Satisfies | Start prerequisites outside this package |
+|---|---|---|
+| [SCOPE.27](../delivery/lanes/arcscope.md#task-scope-27) | [WP-25.07](25-sync-engine-and-blob-lifecycle.md#rule-wp-25.07) (ArcScope object-kind coverage of the convergence harness; the real ArcScope client participates in the three-device run) | [SCOPE.22](../delivery/lanes/arcscope.md#task-scope-22) (artifact) |
+| [AST.21](../delivery/lanes/assistant.md#task-ast-21) | [WP-25.08](25-sync-engine-and-blob-lifecycle.md#rule-wp-25.08) (all work except the parts mapped to CLOUD.45, CLOUD.58) | [AST.07](../delivery/lanes/assistant.md#task-ast-07) (artifact) |
+| [AST.22](../delivery/lanes/assistant.md#task-ast-22) | [WP-25.09](25-sync-engine-and-blob-lifecycle.md#rule-wp-25.09) (full; consumer-side real integration) | [AST.15](../delivery/lanes/assistant.md#task-ast-15) (artifact), [AST.01](../delivery/lanes/assistant.md#task-ast-01) (artifact) |
+| [CLOUD.38](../delivery/lanes/cloud.md#task-cloud-38) | [WP-25.01](25-sync-engine-and-blob-lifecycle.md#rule-wp-25.01) (full) | [PLT.01](../delivery/lanes/platform.md#task-plt-01) (artifact) |
+| [CLOUD.39](../delivery/lanes/cloud.md#task-cloud-39) | [WP-25.02](25-sync-engine-and-blob-lifecycle.md#rule-wp-25.02) (full) | [CLOUD.04](../delivery/lanes/cloud.md#task-cloud-04) (artifact), [CLOUD.31](../delivery/lanes/cloud.md#task-cloud-31) (artifact), [CLOUD.03](../delivery/lanes/cloud.md#task-cloud-03) (artifact), [CLOUD.06](../delivery/lanes/cloud.md#task-cloud-06) (artifact), [CON.03](../delivery/lanes/contracts.md#task-con-03) (artifact), [CON.09](../delivery/lanes/contracts.md#task-con-09) (artifact), [CLOUD.01](../delivery/lanes/cloud.md#task-cloud-01) (artifact) |
+| [CLOUD.40](../delivery/lanes/cloud.md#task-cloud-40) | [WP-25.03](25-sync-engine-and-blob-lifecycle.md#rule-wp-25.03) (full) | none |
+| [CLOUD.41](../delivery/lanes/cloud.md#task-cloud-41) | [WP-25.04](25-sync-engine-and-blob-lifecycle.md#rule-wp-25.04) (full) | none |
+| [CLOUD.42](../delivery/lanes/cloud.md#task-cloud-42) | [WP-25.05](25-sync-engine-and-blob-lifecycle.md#rule-wp-25.05) (full) | [CLOUD.01](../delivery/lanes/cloud.md#task-cloud-01) (artifact), [CLOUD.06](../delivery/lanes/cloud.md#task-cloud-06) (artifact), [CLOUD.25](../delivery/lanes/cloud.md#task-cloud-25) (artifact) |
+| [CLOUD.43](../delivery/lanes/cloud.md#task-cloud-43) | [WP-25.06](25-sync-engine-and-blob-lifecycle.md#rule-wp-25.06) (full) | none |
+| [CLOUD.44](../delivery/lanes/cloud.md#task-cloud-44) | [WP-25.07](25-sync-engine-and-blob-lifecycle.md#rule-wp-25.07) (all work except the parts mapped to SCOPE.27) | none |
+| [CLOUD.45](../delivery/lanes/cloud.md#task-cloud-45) | [WP-25.08](25-sync-engine-and-blob-lifecycle.md#rule-wp-25.08) (all work except the parts mapped to AST.21, CLOUD.58) | [CLOUD.05](../delivery/lanes/cloud.md#task-cloud-05) (artifact), [CON.22](../delivery/lanes/contracts.md#task-con-22) (contract) |
+| [CLOUD.46](../delivery/lanes/cloud.md#task-cloud-46) | [WP-25.09](25-sync-engine-and-blob-lifecycle.md#rule-wp-25.09) (all work except the parts mapped to AST.22) | [CLOUD.06](../delivery/lanes/cloud.md#task-cloud-06) (artifact) |
+| [CLOUD.47](../delivery/lanes/cloud.md#task-cloud-47) | [WP-25.90](25-sync-engine-and-blob-lifecycle.md#rule-wp-25.90) (full)<br>[WP-25](25-sync-engine-and-blob-lifecycle.md#rule-wp-25) Required implementation and closure from the final review (01-cloud-data-model verification; real structural move/ack/conflict transactions, full native metadata replicas, job-authorized R2 staging/verification/promotion, quarantined old-generation client commands) (package-level obligation contribution) | none |
+| [CLOUD.58](../delivery/lanes/cloud.md#task-cloud-58) | [WP-25.08](25-sync-engine-and-blob-lifecycle.md#rule-wp-25.08) (full, joint with consumer-side structural fixture-registration removal) | none |
+
+**Consumers outside this package:** [AND.07](../delivery/lanes/android.md#task-and-07), [CLOUD.10](../delivery/lanes/cloud.md#task-cloud-10), [CLOUD.48](../delivery/lanes/cloud.md#task-cloud-48), [EXT.06](../delivery/lanes/extensions.md#task-ext-06), [REL.06](../delivery/lanes/release.md#task-rel-06), [SCOPE.22](../delivery/lanes/arcscope.md#task-scope-22), [SCOPE.23](../delivery/lanes/arcscope.md#task-scope-23), [SIM.04](../delivery/lanes/simulator.md#task-sim-04), [SRCH.00](../delivery/lanes/search.md#task-srch-00), [WEB.13](../delivery/lanes/web.md#task-web-13), [WEB.15](../delivery/lanes/web.md#task-web-15).
+
+<!-- delivery-graph:end -->
 
 Completion also requires the real 25.09 producer and its consumer receipt; the .90 stage cannot leave HistoryService as a fixture.
+

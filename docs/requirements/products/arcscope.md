@@ -5,7 +5,7 @@
 > Layer: Requirements / Products
 > Product identity: `arcscope` · Positioning: **Local-first Professional Data Acquisition, Observation & Telemetry Analysis Workspace**
 > Governing authority: **[D-002](../../decisions/phase-1-foundation-decisions.md#rule-d-002)** (ArcScope is an independently defined product, **not** a rename or continuation of ArcImage)
-> Companions: [`../12-quality-and-compatibility-contract.md`](../12-quality-and-compatibility-contract.md), [`../13-data-formats-and-portability.md`](../13-data-formats-and-portability.md), [`arcchat.md`](arcchat.md), [`arcnotes.md`](arcnotes.md)
+> Companions: [`../12-quality-and-compatibility-contract.md`](../12-quality-and-compatibility-contract.md), [`../13-data-formats-and-portability.md`](../13-data-formats-and-portability.md), [`arcchat.md`](arcchat.md)
 
 > **A local-first professional acquisition and analysis workbench: Session as the working context, Capture as the original evidence, supporting both Signal and Event, performing real-time observation, recording, decoding, measurement, analysis, comparison and reporting around a timeline.**
 
@@ -267,11 +267,10 @@ Also verify empty/constant data, nonfinite continuity breaks, irregular sampling
 | # | Requirement |
 |---|---|
 | <a id="rule-rp-01"></a>RP-01 | **`ArcScope Report` = a structured, traceable technical analysis result.** |
-| <a id="rule-rp-02"></a>RP-02 | **`ArcScope Report ≠ ArcNotes Document`** ([I-029](../01-normative-glossary-and-invariants.md#rule-i-029), [I-471](../01-normative-glossary-and-invariants.md#rule-i-471)). It is not an alias. |
 | <a id="rule-rp-03"></a>RP-03 | A report may contain: session and configuration provenance, measurements, analysis results, charts, annotations, findings and narrative. |
 | <a id="rule-rp-04"></a>RP-04 | **A chart in a report is best stored as a reproducible view definition**, so it can be regenerated from data — with an exported report additionally able to carry a static snapshot. |
 | <a id="rule-rp-05"></a>RP-05 | **Sources must be traceable from a report** back to session, capture, time range, configuration snapshot and analysis version. |
-| <a id="rule-rp-06"></a>RP-06 | ArcScope owns its reports and explicit supported exports. Creating an ArcNotes document from a report is future-only; no current cross-product capability or release gate is required. |
+| <a id="rule-rp-06"></a>RP-06 | ArcScope owns its reports and explicit supported exports. |
 
 ---
 
@@ -403,7 +402,7 @@ Reserved contribution points: **source adapters**, **decoders**, **measurement k
 
 ## 21. Non-goals
 
-ArcScope is **not**: a general-purpose BI tool; a long-term knowledge base (that is ArcNotes); an agent runtime (the single runtime lives in Cloud); a device management or configuration console; a SCADA/control system; an image editor; or a data warehouse.
+ArcScope is **not**: a general-purpose BI tool; a long-term knowledge base; an agent runtime (the single runtime lives in Cloud); a device management or configuration console; a SCADA/control system; an image editor; or a data warehouse.
 
 **The architecture is always Raw immutable + Derived analysis.**
 
@@ -488,7 +487,7 @@ SimulationDefinition · ScenarioVersion · SimulationRun · SimulationSegment ·
 
 **Comparison** — alignment is explicit and stored; comparison produces no merged authoritative dataset; incompatible units block automatic comparison.
 
-**Report** — sources are traceable to session, range, configuration and analysis version; supported report export preserves provenance and leaves the source report intact. The future ArcNotes handoff example is not a current acceptance obligation.
+**Report** — sources are traceable to session, range, configuration and analysis version; supported report export preserves provenance and leaves the source report intact.
 
 **Export** — CSV precision loss is declared; native export round-trips; a collect bundle is portable and non-destructive.
 
@@ -506,8 +505,8 @@ SimulationDefinition · ScenarioVersion · SimulationRun · SimulationSegment ·
 
 | Current document | Relationship |
 |---|---|
-| [Native Interoperability and Media Architecture](../../architecture/12-native-interop-and-media.md) | Defines native acquisition and evidence boundaries |
-| [Cloud Simulator, Time Model and OTIO Interchange](../../architecture/23-simulator-and-interchange.md) | Defines deterministic Cloud simulation |
+| [Native Interoperability Architecture](../../architecture/12-native-interop-and-media.md) | Defines native acquisition and evidence boundaries |
+| [ArcScope Cloud Simulator](../../architecture/23-simulator-and-interchange.md) | Defines deterministic Cloud simulation |
 | [Reference Coverage Matrix — ArcScope / Serial-Studio](../../assurance/reference-coverage/arcscope-serial-studio.md) | Records source dispositions, licence boundaries and verification oracles |
 | **[D-002](../../decisions/phase-1-foundation-decisions.md#rule-d-002)** | ArcScope is independently defined; ArcImage concepts must not migrate into it |
 | **[D-012](../../decisions/phase-1-foundation-decisions.md#rule-d-012)**, **[D-013](../../decisions/phase-1-foundation-decisions.md#rule-d-013)** | Serial-Studio as a licence-gated reference with a required file-level audit |

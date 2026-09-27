@@ -16,7 +16,7 @@ ArcForges Cloud
 └── Managed Services  cloud search, subscription AI, metering, notifications
 ```
 
-**Founding principle:** Cloud owns AI orchestration and acknowledged synchronised revisions. Native clients preserve working caches and pending edits during outages; local acquisition/media jobs keep running. No offline AI or account-free notebook service is promised.
+**Founding principle:** Cloud owns AI orchestration and acknowledged synchronised revisions. Native clients preserve working caches and pending edits during outages; local acquisition and analysis jobs keep running. No offline AI or account-free Cloud service is promised.
 
 ---
 
@@ -42,8 +42,8 @@ Two figures are **structural**, not policy, and are binding: storage is **worksp
 
 | Capability | Native/offline boundary | Active official service |
 |---|---|---|
-| Editor/capture/media operations | Available for local files and authorised hydrated data | Cloud features separately enabled |
-| Notebook/chat continuity | Scoped cache/pending drafts; no autonomous AI | Acknowledged data, sync, history and recovery |
+| Capture/analysis operations | Available for local files and authorised cached data | Cloud features separately enabled |
+| Project/chat continuity | Scoped cache/pending drafts; no autonomous AI | Acknowledged data, sync, history and recovery |
 | Search | Keyword/metadata over available native data | Cloud keyword and permitted semantic search |
 | AI tasks/automation | No local loop/provider-key mode | Cloud single Harness, included capacity and opt-in extra credits |
 | Scope simulator | Downloaded captures remain inspectable | Real deterministic Cloud simulation under resource/storage limits |
@@ -52,7 +52,7 @@ Two figures are **structural**, not policy, and are binding: storage is **worksp
 |---|---|
 | <a id="rule-cl-01"></a>CL-01 | Purchased credits remain recorded after subscription expiry but are spendable only during an active paid service term. |
 | <a id="rule-cl-02"></a>CL-02 | After PaidThrough, new official AI/model-based jobs stop and capacity does not replenish. Native pending work is preserved; retained Cloud data stays readable/exportable under the published retention lifecycle. |
-| <a id="rule-cl-03"></a>CL-03 | Capability health is independent. An AI provider outage does not stop note sync, keyword search or native editing; status distinguishes Identity, Sync, Storage, Search, Tools, Tasks, AI and Billing. |
+| <a id="rule-cl-03"></a>CL-03 | Capability health is independent. An AI provider outage does not stop metadata sync, keyword search or native acquisition and analysis; status distinguishes Identity, Sync, Storage, Search, Tools, Tasks, AI and Billing. |
 
 ---
 
@@ -62,13 +62,13 @@ Every byte in the ecosystem belongs to exactly one class. A new data type must b
 
 | Class | Examples | User asset? | Default cloud treatment |
 |---|---|---|---|
-| **Canonical User Data** | ArcNotes Document, ArcSlate Project, ArcScope Project, explicitly Cloud-history assistant conversation | Yes | Syncable |
-| **Managed Asset** | Imported images, video, audio, attachments, uploaded telemetry | Yes | By policy |
-| **External Reference** | A video on the user's own disk | Yes, but ArcForges does not own it | **Never uploaded by default** |
-| **Derived Data** | Thumbnail, waveform, embedding, search index, preview, transcode cache | No | Rebuildable; not synced as user data |
+| **Canonical User Data** | ArcScope Project, session metadata, annotations, findings and reports, explicitly Cloud-history assistant conversation | Yes | Syncable |
+| **Managed Asset** | Assistant attachments such as images and PDFs, uploaded raw capture and telemetry | Yes | By policy |
+| **External Reference** | A replay or import source file on the user's own disk | Yes, but ArcForges does not own it | **Never uploaded by default** |
+| **Derived Data** | Thumbnail, signal overview/decimation cache, embedding, search index, preview | No | Rebuildable; not synced as user data |
 | **Device-local State** | Window position, GPU configuration, device paths, local caches, recent folders | No | Never synced |
 | **Secret** | Device/login credentials, connector tokens, operator provider keys | Sensitive | Dedicated credential storage; never ordinary sync data |
-| **Ephemeral Data** | Temp files, agent scratch, logs, render temp, task working directories | No | Never synced |
+| **Ephemeral Data** | Temp files, agent scratch, logs, export temp, task working directories | No | Never synced |
 | **Operational Data** | Sync cursor, job state | System | Cloud-owned |
 | **Audit / Commercial** | Billing records, security audit | System | Independently retained, separate retention |
 
@@ -78,8 +78,8 @@ Every byte in the ecosystem belongs to exactly one class. A new data type must b
 
 | System | Responsible for | Never responsible for |
 |---|---|---|
-| Professional product | The **business semantics** of its data (what a Document, Session or Timeline means) | Replication mechanics |
-| Sync subsystem | Replication, revisions, conflicts, device state | Understanding how to merge a video timeline |
+| Professional product | The **business semantics** of its data (what a Session, Capture or Finding means) | Replication mechanics |
+| Sync subsystem | Replication, revisions, conflicts, device state | Understanding how to merge an analysis or report |
 | Object storage | Blobs | Being the authoritative record of "what the current version is" |
 | Search | A derived projection | Any authority over user data |
 
@@ -89,7 +89,7 @@ Every byte in the ecosystem belongs to exactly one class. A new data type must b
 
 ### 3.2 Cloud acknowledgement and native pending work
 
-For Notes/Chat, Cloud product modules own acknowledged revisions. Native writes commit durably to an owner-scoped pending journal and become authoritative Cloud versions only after revision validation and acknowledgement. The UI distinguishes local durability from Cloud sync success. Pending edits cannot be evicted as cache, reassigned on account switch, or overwritten by a newer Cloud snapshot. Scope/Slate local capture/media authority and explicit upload choices remain unchanged. No permanent local-only notebook mode is required.
+For Cloud assistant history, the Cloud Chat module owns acknowledged revisions; for ArcScope project metadata, Cloud holds the acknowledged synchronized replica while ArcScope keeps native authority over its sessions, captures and raw data. Native writes commit durably to an owner-scoped pending journal and become acknowledged Cloud revisions only after revision validation and acknowledgement. The UI distinguishes local durability from Cloud sync success. Pending edits cannot be evicted as cache, reassigned on account switch, or overwritten by a newer Cloud snapshot. ArcScope local capture authority and explicit raw-upload choices remain unchanged.
 
 ## 4. Sync Scope
 
@@ -100,27 +100,23 @@ Sync is never "the app directory is uploaded". The unit of participation is a **
 | <a id="rule-sy-01"></a>SY-01 | A sync scope declares owner realm/workspace, enrolled resources, local hydration/large-asset policy and conflict semantics. No encryption mode or collaboration profile is required. |
 | <a id="rule-sy-02"></a>SY-02 | **Sync Scope ≠ ArcChat Project.** An ArcChat Project is agent context/work topic; a Sync Scope is which data participates in cloud replication. One ArcChat Project may reference three objects with three different sync states. |
 | <a id="rule-sy-03"></a>SY-03 | Per-product default sync policy: see §4.1. Defaults are conservative for large data. |
-| <a id="rule-sy-04"></a>SY-04 | Expose Synced, Syncing, Offline, PendingChanges, Conflict, StorageFull and Error with last Cloud acknowledgement, pending transfers and next action. LocalOnly applies to unuploaded capture/media resources, not a separate notebook or Agent mode. |
+| <a id="rule-sy-04"></a>SY-04 | Expose Synced, Syncing, Offline, PendingChanges, Conflict, StorageFull and Error with last Cloud acknowledgement, pending transfers and next action. LocalOnly applies to unuploaded raw-capture resources, not a separate Agent mode. |
 | <a id="rule-sy-05"></a>SY-05 | Pausing sync/hydration preserves pending edits. Evicting acknowledged cache requires an explicit local-space action and cannot delete Cloud data. Leaving a realm or deleting Cloud content is a separate confirmed operation. |
 
 ### 4.1 Per-product default sync policy
 
 | Product | Synced by default | Not synced | User-selectable escalation |
 |---|---|---|---|
-| **Application assistant** | Only explicitly selected Cloud histories/projects/profiles/memory plus Cloud task/automation metadata | Local history, drafts, temporary bodies, device paths and secrets | Local → Cloud is explicit snapshot import; no default transcript sync |
-| **ArcNotes** | Documents, Notebooks, metadata, managed attachments | External-reference targets | — |
+| **Application assistant** | Only explicitly selected Cloud histories/projects/profiles/memory plus Cloud task/automation metadata | Local history, drafts, temporary bodies, device paths and secrets | Local → Cloud is explicit snapshot import; no default conversation sync |
 | **ArcScope** | Projects, session metadata, annotations, analyses, reports, configurations | **Raw capture — local only by default** | Per-session "upload raw data" |
-| **ArcSlate** | **Project only** by default: timeline, project metadata, editing decisions, text/subtitles, small assets | Managed originals, proxies | `Project + Managed Proxies` → `Project + Selected Originals` → `Full Managed Media` |
-
-ArcSlate is never a single Sync On/Off toggle ([I-487](01-normative-glossary-and-invariants.md#rule-i-487): **Project Sync ≠ original media upload**).
 
 ### 4.2 Object identity
 
 | # | Requirement |
 |---|---|
 | <a id="rule-sy-10"></a>SY-10 | Every syncable object is identified by `Workspace + App + ObjectId`. **A file path is never an identity** ([I-195](01-normative-glossary-and-invariants.md#rule-i-195)), and **a filename is never an identity**. |
-| <a id="rule-sy-11"></a>SY-11 | Renaming a file is a rename, not "delete old + create unrelated new". Breaking this destroys version history, deep links, artifact references and cross-product references. |
-| <a id="rule-sy-12"></a>SY-12 | A resource reference stores the target ObjectId and owner, never a local path. Current open targets resolve inside the owning application; cross-product references are future-only. |
+| <a id="rule-sy-11"></a>SY-11 | Renaming a file is a rename, not "delete old + create unrelated new". Breaking this destroys version history, deep links, artifact references and assistant project references. |
+| <a id="rule-sy-12"></a>SY-12 | A resource reference stores the target ObjectId and owner, never a local path. Open targets resolve inside the owning application. |
 
 ### 4.3 Revisions
 
@@ -129,7 +125,7 @@ ArcSlate is never a single Sync On/Off toggle ([I-487](01-normative-glossary-and
 | <a id="rule-sy-20"></a>SY-20 | Every user object carries a **Revision** chain. A Revision records at minimum: `RevisionId`, `ObjectId`, `ParentRevision`, created time, `Actor`, `Device`, `AppVersion`, `SchemaVersion`. |
 | <a id="rule-sy-21"></a>SY-21 | An agent-produced Revision additionally records `TaskId`, `Capability` and the approval reference where relevant, so the user can see "Edited by ArcChat Agent" with a traceable cause. |
 | <a id="rule-sy-22"></a>SY-22 | **Historical Revisions are immutable.** A change produces a new Revision; it never rewrites an existing one. This is what makes sync, history, backup, agent undo and audit tractable. |
-| <a id="rule-sy-23"></a>SY-23 | A checkpoint Revision is created **before** any high-risk batch agent modification (e.g. "reorganise my entire notebook") and before any breaking data migration. Recovery must not depend on the agent remembering what it did. |
+| <a id="rule-sy-23"></a>SY-23 | A checkpoint Revision is created **before** any high-risk batch agent modification (e.g. "re-tag every session in this project") and before any breaking data migration. Recovery must not depend on the agent remembering what it did. |
 | <a id="rule-sy-24"></a>SY-24 | The Revision system carries product-distinguishable kinds — autosave revision, user version, agent checkpoint, migration checkpoint — sharing one underlying mechanism with distinct product semantics ([I-201](01-normative-glossary-and-invariants.md#rule-i-201)–[I-204](01-normative-glossary-and-invariants.md#rule-i-204)). |
 
 ### 4.4 Change propagation
@@ -141,9 +137,9 @@ ArcSlate is never a single Sync On/Off toggle ([I-487](01-normative-glossary-and
 | <a id="rule-sy-32"></a>SY-32 | The client holds a **durable Sync Outbox**. A local edit commits to local durable storage first, then enqueues an outbox entry. A crash immediately after save must leave the outbox intact for the next launch. An in-memory task is not an outbox. |
 | <a id="rule-sy-33"></a>SY-33 | The server holds an **Inbox / idempotency** record. Five retries of the same client change produce exactly one Revision. |
 | <a id="rule-sy-34"></a>SY-34 | **Local save can never fail because Cloud failed.** The path is `local edit → local durable commit → sync outbox → cloud when available`. |
-| <a id="rule-sy-35"></a>SY-35 | Sync priority separates metadata from large blobs: project metadata, notes and conversations first; large media afterwards. A second machine must show the user's projects within seconds, not after a 40 GB upload. |
-| <a id="rule-sy-36"></a>SY-36 | Users control network policy: sync over metered connections, upload large assets on Wi-Fi only, bandwidth limit, pause media sync. |
-| <a id="rule-sy-37"></a>SY-37 | Sync progress is expressed in human terms — files in flight, per-file bytes, queue depth, estimate — with Pause, Resume and Prioritize. A bare percentage is insufficient for ArcSlate-scale data. |
+| <a id="rule-sy-35"></a>SY-35 | Sync priority separates metadata from large blobs: project metadata, annotations, findings and conversations first; raw captures and large attachments afterwards. A second machine must show the user's projects within seconds, not after a 40 GB upload. |
+| <a id="rule-sy-36"></a>SY-36 | Users control network policy: sync over metered connections, upload large assets on Wi-Fi only, bandwidth limit, pause large-asset sync. |
+| <a id="rule-sy-37"></a>SY-37 | Sync progress is expressed in human terms — files in flight, per-file bytes, queue depth, estimate — with Pause, Resume and Prioritize. A bare percentage is insufficient for multi-gigabyte raw-capture uploads. |
 | <a id="rule-sy-38"></a>SY-38 | **Cloud search indexing must never block sync success.** Canonical data syncs, sync reports success, indexing proceeds asynchronously. An index outage degrades search, never sync. |
 
 ### 4.5 Conflicts
@@ -163,7 +159,7 @@ ArcSlate is never a single Sync On/Off toggle ([I-487](01-normative-glossary-and
 | <a id="rule-de-02"></a>DE-02 | Trash is built on tombstones. During the recovery window the object is restorable, its blobs are retained, its history is retained, and it still counts toward storage. |
 | <a id="rule-de-03"></a>DE-03 | **Restore restores the original `ObjectId`.** Allocating a new id would sever ArcChat project references, deep links and artifact links. Restore is a new Revision that revokes the tombstone state. |
 | <a id="rule-de-04"></a>DE-04 | **Permanent delete is a propagation process**, not a row delete. It must clear: canonical metadata, blob references, now-unused blobs, version references, search documents, vector index entries, previews and caches, future share/access state, and schedule backup expiry. |
-| <a id="rule-de-05"></a>DE-05 | **Deletion propagation is tracked to completion.** A permanently deleted document must not remain discoverable through semantic search ([I-165](01-normative-glossary-and-invariants.md#rule-i-165)). |
+| <a id="rule-de-05"></a>DE-05 | **Deletion propagation is tracked to completion.** A permanently deleted object must not remain discoverable through semantic search ([I-165](01-normative-glossary-and-invariants.md#rule-i-165)). |
 | <a id="rule-de-06"></a>DE-06 | The deletion promise is stated honestly: deleted data becomes **immediately inaccessible from the online system** and disappears from disaster backups when the backup retention window elapses. A claim that pressing Delete instantly erases every historical backup copy must not be made ([I-220](01-normative-glossary-and-invariants.md#rule-i-220)). |
 
 ---
@@ -177,11 +173,11 @@ ArcSlate is never a single Sync On/Off toggle ([I-487](01-normative-glossary-and
 | <a id="rule-as-01"></a>AS-01 | **Managed Asset** — the user chose to import content into ArcForges. ArcForges owns its `AssetId`, lifecycle, hash, sync, relocation and backup. |
 | <a id="rule-as-02"></a>AS-02 | **External Reference** — the user chose to leave the file where it is. ArcForges stores an `ExternalAssetReference` and **does not own the file**. |
 | <a id="rule-as-03"></a>AS-03 | **External assets are never silently copied to Cloud.** Enabling sync on a project must never begin uploading a 200 GB external library. The user is given an explicit choice: keep local only / make managed / upload original. This is a privacy boundary as well as a bandwidth one. |
-| <a id="rule-as-04"></a>AS-04 | An unavailable external asset yields **Missing / Unavailable Asset**, and the project still opens. Recovery affordances: Locate file, Relink, Find by content, Use proxy. "Project corrupted" is not acceptable. |
+| <a id="rule-as-04"></a>AS-04 | An unavailable external asset yields **Missing / Unavailable Asset**, and the project still opens. Recovery affordances: Locate file, Relink, Find by content, Download an uploaded copy. "Project corrupted" is not acceptable. |
 | <a id="rule-as-05"></a>AS-05 | Relink verifies content, not filenames: `AssetId`, expected size, content hash and metadata. A same-named file with different content must be reported as different. |
 | <a id="rule-as-06"></a>AS-06 | **ArcForges must never delete a user's original local source file to save space.** Only a **Managed** asset may be offloaded, and only after an explicit "free up local space" action, leaving a cloud-backed placeholder that hydrates on demand. External references can never be offloaded. |
 | <a id="rule-as-07"></a>AS-07 | Assets carry a **Local Availability Policy**: `Always keep on this device`, `Available offline`, `Download on demand`, `Cloud only`. |
-| <a id="rule-as-08"></a>AS-08 | New-device bootstrap fetches workspace metadata, object catalogue, project metadata and small assets first. Large media and raw telemetry hydrate on demand. A full download of the whole quota on sign-in is prohibited. |
+| <a id="rule-as-08"></a>AS-08 | New-device bootstrap fetches workspace metadata, object catalogue, project metadata and small assets first. Large attachments and raw telemetry hydrate on demand. A full download of the whole quota on sign-in is prohibited. |
 
 ### 5.2 Immutable blobs
 
@@ -204,10 +200,9 @@ ArcSlate is never a single Sync On/Off toggle ([I-487](01-normative-glossary-and
 
 | # | Requirement |
 |---|---|
-| <a id="rule-st-01"></a>ST-01 | Quota counts **canonical synced user data, attachments, managed originals, explicitly stored proxies, trashed items still recoverable, and historical user blobs that remain restorable**. |
+| <a id="rule-st-01"></a>ST-01 | Quota counts **canonical synced user data, attachments, uploaded raw captures, Cloud simulation output, trashed items still recoverable, and historical user blobs that remain restorable**. |
 | <a id="rule-st-02"></a>ST-02 | Quota does **not** count ArcForges-generated derived data: vector index, embeddings, search index, internal DB metadata, thumbnails, operational logs, temporary agent files. A user who uploaded 40 GB must not see 47 GB. |
 | <a id="rule-st-03"></a>ST-03 | The same managed blob reused across three projects in one workspace counts **once**. |
-| <a id="rule-st-04"></a>ST-04 | Explicit user-requested cloud proxies count toward quota; pure implementation caches do not. |
 | <a id="rule-st-05"></a>ST-05 | Storage is presented by product plus versions/trash, and is explainable: a per-product breakdown plus a "Manage storage" affordance. |
 | <a id="rule-st-06"></a>ST-06 | **Storage full never destroys local work.** Local save, local edit and reads of existing cloud data all continue; only cloud upload and sync writes pause. The message is explicit: "Cloud storage is full. Your local work is safe." |
 | <a id="rule-st-07"></a>ST-07 | **Quota downgrade never deletes data.** A workspace over quota enters `Over Quota`, which limits new cloud writes only. Automatic deletion to fit a smaller quota is prohibited. |
@@ -241,7 +236,7 @@ ArcSlate is never a single Sync On/Off toggle ([I-487](01-normative-glossary-and
 
 | # | Requirement |
 |---|---|
-| <a id="rule-cs-01"></a>CS-01 | Cloud search is scoped to one authenticated workspace and product. It searches that product's admitted acknowledged content and Cloud assistant histories; local/temporary transcripts are excluded. Titles, snippets, provenance and object targets are returned only after owner authorization. |
+| <a id="rule-cs-01"></a>CS-01 | Cloud search is scoped to one authenticated workspace and product. It searches that product's admitted acknowledged content and Cloud assistant histories; local/temporary histories are excluded. Titles, snippets, provenance and object targets are returned only after owner authorization. |
 | <a id="rule-cs-02"></a>CS-02 | Three levels exist and are distinguished: **metadata search**, **full-text search**, **semantic search** ([I-145](01-normative-glossary-and-invariants.md#rule-i-145)). |
 | <a id="rule-cs-03"></a>CS-03 | **The search index is never data authority** ([I-135](01-normative-glossary-and-invariants.md#rule-i-135)). The chain is `canonical object → search document → full-text index → vector index`, all derived, all deletable and rebuildable at any time. This is what makes changing the vector backend possible later. |
 | <a id="rule-cs-04"></a>CS-04 | The ArcForges search API must not expose any vendor's vector-database concepts. |
@@ -319,7 +314,7 @@ Three tool-location shapes under one Cloud agent runtime, always visible to the 
 
 | # | Requirement |
 |---|---|
-| <a id="rule-ex-01"></a>EX-01 | V1 offers the product-specific exports in [data §12](13-data-formats-and-portability.md): Notes Markdown/attachments/metadata, Chat history/task summaries, Scope data/reports and Slate project/OTIO/media as applicable. Cloud exports only data it actually holds. |
+| <a id="rule-ex-01"></a>EX-01 | V1 offers the product-specific exports in [data §12](13-data-formats-and-portability.md): Chat history/task summaries and Scope metadata/data/reports as applicable. Cloud exports only data it actually holds. |
 | <a id="rule-ex-02"></a>EX-02 | Workspace export coordinates the supported per-product Cloud exports with one inventory/checksum/fidelity manifest. It declares included revisions, attachment availability and omitted device-only/pending content. It is not a universal native archive or a promise to restore execution, credentials or billing state. |
 | <a id="rule-ex-03"></a>EX-03 | The export manifest format is **documented and public**, covering manifest, schema version, objects, references, assets and checksums. A convenience container extension may exist; an undocumented opaque archive is prohibited, because the product's premise is that data is not locked in. |
 | <a id="rule-ex-04"></a>EX-04 | Device-only/external assets are listed by availability and safe provenance, not silently fetched or bundled. Including permitted missing assets requires a separately authorized transfer; a user library is never copied automatically. |
@@ -415,8 +410,7 @@ Outside current scope; no speculative implementation or schema reservations:
 - Real-time multi-user collaborative editing (presence, cursors, OT/CRDT convergence)
 - Public "anyone with the link" sharing
 - Zero-knowledge E2EE, custom local encrypted stores and encrypted portable exports
-- Full ArcNotes or ArcSlate web editors
-- Cloud video rendering farm
+- Web or mobile editions of ArcScope
 - Unlimited general-purpose cloud compute
 - Complex team collaboration, enterprise SSO, SCIM
 - Cross-realm live sync
@@ -466,9 +460,6 @@ One device · two devices · three devices · long-offline return · double edit
 ### Assets
 1 KB · 100 MB · 20 GB · multipart interrupt · resume · hash mismatch · missing external reference · relink · one asset referenced by multiple projects · managed → cloud-only offload · **external assets are never uploaded automatically**.
 
-### ArcSlate
-Project-only sync · proxy sync · selected originals · one original reused by several projects · **timeline edits never re-upload the original**.
-
 ### ArcScope
 Hardware telemetry local-only · explicit upload · resumed session upload · session deletion · Cloud scenario/seed/profile replay · immutable segment hashes · pause/resume/fenced takeover · native simulator adapter · [SIM-20](products/arcscope.md#rule-sim-20).
 
@@ -482,7 +473,7 @@ Approaching quota · storage full · local work continues · over-quota downgrad
 Database PITR restore · missing primary blob · restore from secondary backup · backup-credential compromise simulation · erroneous primary deletion simulation · backup object lock enforced · random checksum restore · full DR drill.
 
 ### Export and import
-Workspace export with an explicit per-product inventory and loss report · supported Markdown/OTIO/Scope formats imported into a fresh account or self-host realm · no assumed live-task/credit/secret migration · device-only data reported unavailable · malformed inputs, traversal and archive bombs rejected.
+Workspace export with an explicit per-product inventory and loss report · supported assistant-history and Scope formats imported into a fresh account or self-host realm · no assumed live-task/credit/secret migration · device-only data reported unavailable · malformed inputs, traversal and archive bombs rejected.
 
 ### Remote and tasks
 Desktop online · desktop offline → `WaitingForDevice` · mobile steering · device revoke · remote disabled · R4 requires local confirmation · machine fully powered off and a cloud-only task still completes · hybrid task waits for the desktop · cloud task timeout · budget exhausted · provider 429 and fallback · task interrupted and recovered.

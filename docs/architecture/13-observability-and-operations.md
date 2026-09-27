@@ -103,10 +103,10 @@ Redaction is enforced by construction, not by reviewer diligence.
 
 | # | Rule |
 |---|---|
-| <a id="rule-rd-01"></a>RD-01 | **Prohibited from telemetry by default**: authorization headers, cookies, passkey material, one-time codes, API keys, BYOK secrets, prompt content, model response content, note and document content, file contents, file paths, and raw sync payloads. |
+| <a id="rule-rd-01"></a>RD-01 | **Prohibited from telemetry by default**: authorization headers, cookies, passkey material, one-time codes, API keys, BYOK secrets, prompt content, model response content, annotation, report and attachment content, file contents, file paths, and raw sync payloads. |
 | <a id="rule-rd-02"></a>RD-02 | **The permitted substitute for a payload is its shape**: object identifier, size, duration, status, item count, and a hash prefix where a hash genuinely aids diagnosis. |
 | <a id="rule-rd-03"></a>RD-03 | **A secret-bearing type cannot be logged.** `SecretRef` and equivalent types have a formatting implementation that emits only a reference, and the underlying value has no accessible string representation (`§6` of the security architecture). |
-| <a id="rule-rd-04"></a>RD-04 | **A domain content type has no logging representation.** Message bodies, note blocks, capture buffers and media frames are not loggable objects. |
+| <a id="rule-rd-04"></a>RD-04 | **A domain content type has no logging representation.** Message bodies, annotation and report text, capture buffers and attachment bytes are not loggable objects. |
 | <a id="rule-rd-05"></a>RD-05 | **A scrubbing processor runs in the telemetry pipeline as a second line of defence**, removing known-sensitive header and field names before export. It is a safety net, never the primary control. |
 | <a id="rule-rd-06"></a>RD-06 | **A test asserts redaction**: a suite exercises representative error and success paths and fails if a known-sensitive marker value appears anywhere in the exported signal (`§9`). |
 | <a id="rule-rd-07"></a>RD-07 | **An exception message is not assumed safe.** Exception messages that can embed user input are mapped to reason codes before export. |

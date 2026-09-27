@@ -29,29 +29,11 @@
       "clean": true
     },
     {
-      "owner": "ArcNotes",
-      "mainCommit": "885289e54e123bb1e2fa7ae2884f35306863c35a",
-      "sourceTree": "9ef0df8f8b3a740f712141806fabb70a415c4c4f",
-      "researchWorktree": "C:\\MyFile\\Projects\\ArcForges\\ArcNotes\\.worktree\\wp02-01-diagnostic-posture",
-      "researchHead": "c72a8412ee0baefc045fda8e3813f0d5b00782e8",
-      "remoteMainVerified": true,
-      "clean": true
-    },
-    {
       "owner": "ArcScope",
       "mainCommit": "cacab2a0305064018de505e704267ba8936cc5a4",
       "sourceTree": "8101d22a0fa84a09cb02ad497d6fa1fc59e03d43",
       "researchWorktree": "C:\\MyFile\\Projects\\ArcForges\\ArcScope\\.worktree\\wp02-01-diagnostic-posture",
       "researchHead": "5b44175c50167cc977b98916fedac2bf88e4176e",
-      "remoteMainVerified": true,
-      "clean": true
-    },
-    {
-      "owner": "ArcSlate",
-      "mainCommit": "48abba0ce7a7cb83b35a0c6e20e0df1fb1af5e5e",
-      "sourceTree": "0b5ccc01050782df6180ae15048d5541d501a5cb",
-      "researchWorktree": "C:\\MyFile\\Projects\\ArcForges\\ArcSlate\\.worktree\\wp02-01-diagnostic-posture",
-      "researchHead": "9b6d861b8478150282bc24e45567a8e880d6a611",
       "remoteMainVerified": true,
       "clean": true
     },
@@ -895,127 +877,6 @@
       ]
     },
     {
-      "owner": "ArcNotes",
-      "project": "eng/ArcForges.Repository/ArcForges.Repository.csproj",
-      "aotPath": false,
-      "properties": {
-        "IsAotCompatible": "",
-        "PublishAot": "",
-        "PublishTrimmed": "",
-        "IsTrimmable": "",
-        "EnableAotAnalyzer": "",
-        "EnableTrimAnalyzer": "",
-        "EnableSingleFileAnalyzer": "",
-        "TreatWarningsAsErrors": "true",
-        "ILLinkTreatWarningsAsErrors": "",
-        "TrimmerSingleWarn": "",
-        "SuppressTrimAnalysisWarnings": "",
-        "NoWarn": "1701;1702",
-        "WarningsNotAsErrors": "",
-        "WarningsAsErrors": ";NU1605;IL2026;IL3050;NU1605;SYSLIB0011",
-        "OutputType": "Exe",
-        "IsTestProject": "",
-        "IsPackable": "false",
-        "TargetFramework": "net10.0",
-        "RuntimeIdentifier": "",
-        "ILLinkWarningLevel": "",
-        "_SuppressWarningIL2121": ""
-      },
-      "projectReferences": []
-    },
-    {
-      "owner": "ArcNotes",
-      "project": "src/ArcForges.ArcNotes.Core/ArcForges.ArcNotes.Core.csproj",
-      "aotPath": true,
-      "properties": {
-        "IsAotCompatible": "true",
-        "PublishAot": "",
-        "PublishTrimmed": "",
-        "IsTrimmable": "true",
-        "EnableAotAnalyzer": "true",
-        "EnableTrimAnalyzer": "true",
-        "EnableSingleFileAnalyzer": "true",
-        "TreatWarningsAsErrors": "true",
-        "ILLinkTreatWarningsAsErrors": "",
-        "TrimmerSingleWarn": "",
-        "SuppressTrimAnalysisWarnings": "",
-        "NoWarn": "1701;1702",
-        "WarningsNotAsErrors": "",
-        "WarningsAsErrors": ";NU1605;IL2026;IL3050;NU1605;SYSLIB0011",
-        "OutputType": "Library",
-        "IsTestProject": "",
-        "IsPackable": "false",
-        "TargetFramework": "net10.0",
-        "RuntimeIdentifier": "",
-        "ILLinkWarningLevel": "",
-        "_SuppressWarningIL2121": ""
-      },
-      "projectReferences": []
-    },
-    {
-      "owner": "ArcNotes",
-      "project": "src/ArcForges.ArcNotes/ArcForges.ArcNotes.csproj",
-      "aotPath": true,
-      "properties": {
-        "IsAotCompatible": "true",
-        "PublishAot": "true",
-        "PublishTrimmed": "true",
-        "IsTrimmable": "true",
-        "EnableAotAnalyzer": "true",
-        "EnableTrimAnalyzer": "true",
-        "EnableSingleFileAnalyzer": "true",
-        "TreatWarningsAsErrors": "true",
-        "ILLinkTreatWarningsAsErrors": "true",
-        "TrimmerSingleWarn": "",
-        "SuppressTrimAnalysisWarnings": "false",
-        "NoWarn": "1701;1702;IL2121",
-        "WarningsNotAsErrors": "",
-        "WarningsAsErrors": ";NU1605;IL2026;IL3050;NU1605;SYSLIB0011",
-        "OutputType": "WinExe",
-        "IsTestProject": "",
-        "IsPackable": "false",
-        "TargetFramework": "net10.0",
-        "RuntimeIdentifier": "",
-        "ILLinkWarningLevel": "",
-        "_SuppressWarningIL2121": ""
-      },
-      "projectReferences": [
-        "../ArcForges.ArcNotes.Core/ArcForges.ArcNotes.Core.csproj"
-      ]
-    },
-    {
-      "owner": "ArcNotes",
-      "project": "tests/ArcForges.ArcNotes.Tests/ArcForges.ArcNotes.Tests.csproj",
-      "aotPath": false,
-      "properties": {
-        "IsAotCompatible": "",
-        "PublishAot": "",
-        "PublishTrimmed": "",
-        "IsTrimmable": "",
-        "EnableAotAnalyzer": "",
-        "EnableTrimAnalyzer": "",
-        "EnableSingleFileAnalyzer": "",
-        "TreatWarningsAsErrors": "true",
-        "ILLinkTreatWarningsAsErrors": "",
-        "TrimmerSingleWarn": "",
-        "SuppressTrimAnalysisWarnings": "",
-        "NoWarn": "1701;1702",
-        "WarningsNotAsErrors": "",
-        "WarningsAsErrors": ";NU1605;IL2026;IL3050;NU1605;SYSLIB0011",
-        "OutputType": "Exe",
-        "IsTestProject": "",
-        "IsPackable": "false",
-        "TargetFramework": "net10.0",
-        "RuntimeIdentifier": "",
-        "ILLinkWarningLevel": "",
-        "_SuppressWarningIL2121": ""
-      },
-      "projectReferences": [
-        "../../src/ArcForges.ArcNotes.Core/ArcForges.ArcNotes.Core.csproj",
-        "../../eng/ArcForges.Repository/ArcForges.Repository.csproj"
-      ]
-    },
-    {
       "owner": "ArcScope",
       "project": "eng/ArcForges.Repository/ArcForges.Repository.csproj",
       "aotPath": false,
@@ -1133,127 +994,6 @@
       },
       "projectReferences": [
         "../../src/ArcForges.ArcScope.Core/ArcForges.ArcScope.Core.csproj",
-        "../../eng/ArcForges.Repository/ArcForges.Repository.csproj"
-      ]
-    },
-    {
-      "owner": "ArcSlate",
-      "project": "eng/ArcForges.Repository/ArcForges.Repository.csproj",
-      "aotPath": false,
-      "properties": {
-        "IsAotCompatible": "",
-        "PublishAot": "",
-        "PublishTrimmed": "",
-        "IsTrimmable": "",
-        "EnableAotAnalyzer": "",
-        "EnableTrimAnalyzer": "",
-        "EnableSingleFileAnalyzer": "",
-        "TreatWarningsAsErrors": "true",
-        "ILLinkTreatWarningsAsErrors": "",
-        "TrimmerSingleWarn": "",
-        "SuppressTrimAnalysisWarnings": "",
-        "NoWarn": "1701;1702",
-        "WarningsNotAsErrors": "",
-        "WarningsAsErrors": ";NU1605;IL2026;IL3050;NU1605;SYSLIB0011",
-        "OutputType": "Exe",
-        "IsTestProject": "",
-        "IsPackable": "false",
-        "TargetFramework": "net10.0",
-        "RuntimeIdentifier": "",
-        "ILLinkWarningLevel": "",
-        "_SuppressWarningIL2121": ""
-      },
-      "projectReferences": []
-    },
-    {
-      "owner": "ArcSlate",
-      "project": "src/ArcForges.ArcSlate.Core/ArcForges.ArcSlate.Core.csproj",
-      "aotPath": true,
-      "properties": {
-        "IsAotCompatible": "true",
-        "PublishAot": "",
-        "PublishTrimmed": "",
-        "IsTrimmable": "true",
-        "EnableAotAnalyzer": "true",
-        "EnableTrimAnalyzer": "true",
-        "EnableSingleFileAnalyzer": "true",
-        "TreatWarningsAsErrors": "true",
-        "ILLinkTreatWarningsAsErrors": "",
-        "TrimmerSingleWarn": "",
-        "SuppressTrimAnalysisWarnings": "",
-        "NoWarn": "1701;1702",
-        "WarningsNotAsErrors": "",
-        "WarningsAsErrors": ";NU1605;IL2026;IL3050;NU1605;SYSLIB0011",
-        "OutputType": "Library",
-        "IsTestProject": "",
-        "IsPackable": "false",
-        "TargetFramework": "net10.0",
-        "RuntimeIdentifier": "",
-        "ILLinkWarningLevel": "",
-        "_SuppressWarningIL2121": ""
-      },
-      "projectReferences": []
-    },
-    {
-      "owner": "ArcSlate",
-      "project": "src/ArcForges.ArcSlate/ArcForges.ArcSlate.csproj",
-      "aotPath": true,
-      "properties": {
-        "IsAotCompatible": "true",
-        "PublishAot": "true",
-        "PublishTrimmed": "true",
-        "IsTrimmable": "true",
-        "EnableAotAnalyzer": "true",
-        "EnableTrimAnalyzer": "true",
-        "EnableSingleFileAnalyzer": "true",
-        "TreatWarningsAsErrors": "true",
-        "ILLinkTreatWarningsAsErrors": "true",
-        "TrimmerSingleWarn": "",
-        "SuppressTrimAnalysisWarnings": "false",
-        "NoWarn": "1701;1702;IL2121",
-        "WarningsNotAsErrors": "",
-        "WarningsAsErrors": ";NU1605;IL2026;IL3050;NU1605;SYSLIB0011",
-        "OutputType": "WinExe",
-        "IsTestProject": "",
-        "IsPackable": "false",
-        "TargetFramework": "net10.0",
-        "RuntimeIdentifier": "",
-        "ILLinkWarningLevel": "",
-        "_SuppressWarningIL2121": ""
-      },
-      "projectReferences": [
-        "../ArcForges.ArcSlate.Core/ArcForges.ArcSlate.Core.csproj"
-      ]
-    },
-    {
-      "owner": "ArcSlate",
-      "project": "tests/ArcForges.ArcSlate.Tests/ArcForges.ArcSlate.Tests.csproj",
-      "aotPath": false,
-      "properties": {
-        "IsAotCompatible": "",
-        "PublishAot": "",
-        "PublishTrimmed": "",
-        "IsTrimmable": "",
-        "EnableAotAnalyzer": "",
-        "EnableTrimAnalyzer": "",
-        "EnableSingleFileAnalyzer": "",
-        "TreatWarningsAsErrors": "true",
-        "ILLinkTreatWarningsAsErrors": "",
-        "TrimmerSingleWarn": "",
-        "SuppressTrimAnalysisWarnings": "",
-        "NoWarn": "1701;1702",
-        "WarningsNotAsErrors": "",
-        "WarningsAsErrors": ";NU1605;IL2026;IL3050;NU1605;SYSLIB0011",
-        "OutputType": "Exe",
-        "IsTestProject": "",
-        "IsPackable": "false",
-        "TargetFramework": "net10.0",
-        "RuntimeIdentifier": "",
-        "ILLinkWarningLevel": "",
-        "_SuppressWarningIL2121": ""
-      },
-      "projectReferences": [
-        "../../src/ArcForges.ArcSlate.Core/ArcForges.ArcSlate.Core.csproj",
         "../../eng/ArcForges.Repository/ArcForges.Repository.csproj"
       ]
     },
@@ -1381,22 +1121,6 @@
       "seconds": 2.5
     },
     {
-      "owner": "ArcNotes",
-      "command": [
-        "dotnet",
-        "build",
-        "ArcNotes.slnx",
-        "-c",
-        "Release",
-        "--no-restore",
-        "-p:_TrimmerShowRedundantSuppressions=true",
-        "-p:TrimmerSingleWarn=false",
-        "-p:SuppressTrimAnalysisWarnings=false"
-      ],
-      "exitCode": 0,
-      "seconds": 5.2
-    },
-    {
       "owner": "ArcScope",
       "command": [
         "dotnet",
@@ -1411,22 +1135,6 @@
       ],
       "exitCode": 0,
       "seconds": 3.3
-    },
-    {
-      "owner": "ArcSlate",
-      "command": [
-        "dotnet",
-        "build",
-        "ArcSlate.slnx",
-        "-c",
-        "Release",
-        "--no-restore",
-        "-p:_TrimmerShowRedundantSuppressions=true",
-        "-p:TrimmerSingleWarn=false",
-        "-p:SuppressTrimAnalysisWarnings=false"
-      ],
-      "exitCode": 0,
-      "seconds": 3.0
     },
     {
       "owner": "Cloud",
@@ -1467,26 +1175,6 @@
       "seconds": 5.1
     },
     {
-      "owner": "ArcNotes",
-      "command": [
-        "dotnet",
-        "publish",
-        "src/ArcForges.ArcNotes/ArcForges.ArcNotes.csproj",
-        "-c",
-        "Release",
-        "-r",
-        "win-x64",
-        "--no-restore",
-        "-p:_TrimmerShowRedundantSuppressions=true",
-        "-p:TrimmerSingleWarn=false",
-        "-p:SuppressTrimAnalysisWarnings=false",
-        "-o",
-        "C:\\MyFile\\Projects\\ArcForges\\ArcNotes\\.worktree\\wp02-01-diagnostic-posture\\artifacts\\wp02-02-research-publish"
-      ],
-      "exitCode": 0,
-      "seconds": 30.8
-    },
-    {
       "owner": "ArcScope",
       "command": [
         "dotnet",
@@ -1505,26 +1193,6 @@
       ],
       "exitCode": 0,
       "seconds": 31.2
-    },
-    {
-      "owner": "ArcSlate",
-      "command": [
-        "dotnet",
-        "publish",
-        "src/ArcForges.ArcSlate/ArcForges.ArcSlate.csproj",
-        "-c",
-        "Release",
-        "-r",
-        "win-x64",
-        "--no-restore",
-        "-p:_TrimmerShowRedundantSuppressions=true",
-        "-p:TrimmerSingleWarn=false",
-        "-p:SuppressTrimAnalysisWarnings=false",
-        "-o",
-        "C:\\MyFile\\Projects\\ArcForges\\ArcSlate\\.worktree\\wp02-01-diagnostic-posture\\artifacts\\wp02-02-research-publish"
-      ],
-      "exitCode": 0,
-      "seconds": 34.0
     }
   ],
   "additionalPublishes": {
@@ -1554,16 +1222,6 @@
       "exitCode": 0
     },
     {
-      "owner": "ArcNotes",
-      "command": [
-        "C:\\MyFile\\Projects\\ArcForges\\ArcNotes\\.worktree\\wp02-01-diagnostic-posture\\artifacts\\wp02-02-research-publish\\ArcNotes.exe",
-        "--smoke-live",
-        "--evidence",
-        "C:\\MyFile\\Projects\\ArcForges-Design\\.worktree\\wp02-02-aot-sweep\\artifacts\\ArcNotes-expanded-runtime.json"
-      ],
-      "exitCode": 0
-    },
-    {
       "owner": "ArcScope",
       "command": [
         "C:\\MyFile\\Projects\\ArcForges\\ArcScope\\.worktree\\wp02-01-diagnostic-posture\\artifacts\\wp02-02-research-publish\\ArcScope.exe",
@@ -1572,39 +1230,9 @@
         "C:\\MyFile\\Projects\\ArcForges-Design\\.worktree\\wp02-02-aot-sweep\\artifacts\\ArcScope-expanded-runtime.json"
       ],
       "exitCode": 0
-    },
-    {
-      "owner": "ArcSlate",
-      "command": [
-        "C:\\MyFile\\Projects\\ArcForges\\ArcSlate\\.worktree\\wp02-01-diagnostic-posture\\artifacts\\wp02-02-research-publish\\ArcSlate.exe",
-        "--smoke-live",
-        "--evidence",
-        "C:\\MyFile\\Projects\\ArcForges-Design\\.worktree\\wp02-02-aot-sweep\\artifacts\\ArcSlate-expanded-runtime.json"
-      ],
-      "exitCode": 0
     }
   ],
   "runtimeReceipts": {
-    "ArcNotes": {
-      "success": true,
-      "nativeAot": true,
-      "rid": "win-x64",
-      "version": "1.0.0",
-      "sourceRevision": "local",
-      "cloud": {
-        "service": "arcforges-cloud",
-        "revision": "8942437a5e42c01ae7595b64a220efd60f33b4f0",
-        "nativeAot": true
-      },
-      "uiGreeting": "Hello, ArcNotes!",
-      "checks": [
-        "native-ui-live-action",
-        "unicode-whitespace-boundary",
-        "InvalidArgument",
-        "ResourceExhausted"
-      ],
-      "error": null
-    },
     "ArcScope": {
       "success": true,
       "nativeAot": true,
@@ -1617,26 +1245,6 @@
         "nativeAot": true
       },
       "uiGreeting": "Hello, ArcScope!",
-      "checks": [
-        "native-ui-live-action",
-        "unicode-whitespace-boundary",
-        "InvalidArgument",
-        "ResourceExhausted"
-      ],
-      "error": null
-    },
-    "ArcSlate": {
-      "success": true,
-      "nativeAot": true,
-      "rid": "win-x64",
-      "version": "1.0.0",
-      "sourceRevision": "local",
-      "cloud": {
-        "service": "arcforges-cloud",
-        "revision": "8942437a5e42c01ae7595b64a220efd60f33b4f0",
-        "nativeAot": true
-      },
-      "uiGreeting": "Hello, ArcSlate!",
       "checks": [
         "native-ui-live-action",
         "unicode-whitespace-boundary",
@@ -1678,18 +1286,6 @@
       ]
     },
     {
-      "owner": "ArcNotes",
-      "path": "C:\\MyFile\\Projects\\ArcForges\\ArcNotes\\.worktree\\wp02-01-diagnostic-posture\\src\\ArcForges.ArcNotes\\obj\\Release\\net10.0\\win-x64\\native\\ArcNotes.ilc.rsp",
-      "sha256": "9b0bca7b04eb5f80bed3b681eb77527c2562e60234432232dbba3d4095e066b7",
-      "diagnosticArguments": [
-        "--nowarn:\"1701;1702;1701;1702;8002\"",
-        "--warnaserror",
-        "--warnaserr:\";NU1605;IL2026;IL3050;NU1605;SYSLIB0011\"",
-        "--nosinglewarnassembly:ArcForges.ArcNotes.Core",
-        "--nosinglewarnassembly:ArcNotes"
-      ]
-    },
-    {
       "owner": "ArcScope",
       "path": "C:\\MyFile\\Projects\\ArcForges\\ArcScope\\.worktree\\wp02-01-diagnostic-posture\\src\\ArcForges.ArcScope\\obj\\Release\\net10.0\\win-x64\\native\\ArcScope.ilc.rsp",
       "sha256": "877ac57f90b7203623ea0f3896041b601ae39f8e4b69609348f7bb07eb4c733a",
@@ -1699,18 +1295,6 @@
         "--warnaserr:\";NU1605;IL2026;IL3050;NU1605;SYSLIB0011\"",
         "--nosinglewarnassembly:ArcForges.ArcScope.Core",
         "--nosinglewarnassembly:ArcScope"
-      ]
-    },
-    {
-      "owner": "ArcSlate",
-      "path": "C:\\MyFile\\Projects\\ArcForges\\ArcSlate\\.worktree\\wp02-01-diagnostic-posture\\src\\ArcForges.ArcSlate\\obj\\Release\\net10.0\\win-x64\\native\\ArcSlate.ilc.rsp",
-      "sha256": "db1f645fe10b367480108b160f64e3de24a3ee3894a706f755779cfd172bb6ce",
-      "diagnosticArguments": [
-        "--nowarn:\"1701;1702;1701;1702;8002\"",
-        "--warnaserror",
-        "--warnaserr:\";NU1605;IL2026;IL3050;NU1605;SYSLIB0011\"",
-        "--nosinglewarnassembly:ArcForges.ArcSlate.Core",
-        "--nosinglewarnassembly:ArcSlate"
       ]
     },
     {
@@ -1744,21 +1328,6 @@
   },
   "logs": [
     {
-      "name": "ArcNotes-expanded-build.log",
-      "sha256": "05b2b1410cac738daa1729b2027a238741161de4b0c87a24df4bc95856ee7ac6",
-      "content": "  ArcForges.ArcNotes.Core -> C:\\MyFile\\Projects\\ArcForges\\ArcNotes\\.worktree\\wp02-01-diagnostic-posture\\src\\ArcForges.ArcNotes.Core\\bin\\Release\\net10.0\\ArcForges.ArcNotes.Core.dll\n  ArcForges.Repository -> C:\\MyFile\\Projects\\ArcForges\\ArcNotes\\.worktree\\wp02-01-diagnostic-posture\\eng\\ArcForges.Repository\\bin\\Release\\net10.0\\ArcForges.Repository.dll\n  ArcForges.ArcNotes -> C:\\MyFile\\Projects\\ArcForges\\ArcNotes\\.worktree\\wp02-01-diagnostic-posture\\src\\ArcForges.ArcNotes\\bin\\Release\\net10.0\\ArcNotes.dll\n  ArcForges.ArcNotes.Tests -> C:\\MyFile\\Projects\\ArcForges\\ArcNotes\\.worktree\\wp02-01-diagnostic-posture\\tests\\ArcForges.ArcNotes.Tests\\bin\\Release\\net10.0\\ArcForges.ArcNotes.Tests.dll\n\nBuild succeeded.\n    0 Warning(s)\n    0 Error(s)\n\nTime Elapsed 00:00:04.92\n"
-    },
-    {
-      "name": "ArcNotes-expanded-publish.log",
-      "sha256": "1f7891b60169c2dd0f8b255888f8fd31f42dde674c7e9c492b4daec787befcf5",
-      "content": "  ArcForges.ArcNotes.Core -> C:\\MyFile\\Projects\\ArcForges\\ArcNotes\\.worktree\\wp02-01-diagnostic-posture\\src\\ArcForges.ArcNotes.Core\\bin\\Release\\net10.0\\ArcForges.ArcNotes.Core.dll\n  ArcForges.ArcNotes -> C:\\MyFile\\Projects\\ArcForges\\ArcNotes\\.worktree\\wp02-01-diagnostic-posture\\src\\ArcForges.ArcNotes\\bin\\Release\\net10.0\\win-x64\\ArcNotes.dll\n  Generating native code\n  ArcForges.ArcNotes -> C:\\MyFile\\Projects\\ArcForges\\ArcNotes\\.worktree\\wp02-01-diagnostic-posture\\artifacts\\wp02-02-research-publish\\\n"
-    },
-    {
-      "name": "ArcNotes-expanded-runtime.log",
-      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "content": ""
-    },
-    {
       "name": "ArcScope-expanded-build.log",
       "sha256": "31fb267dd891a6e3634a68073e7e459bee69077bb5d053d0e8ccfb2e5f265993",
       "content": "  ArcForges.ArcScope.Core -> C:\\MyFile\\Projects\\ArcForges\\ArcScope\\.worktree\\wp02-01-diagnostic-posture\\src\\ArcForges.ArcScope.Core\\bin\\Release\\net10.0\\ArcForges.ArcScope.Core.dll\n  ArcForges.Repository -> C:\\MyFile\\Projects\\ArcForges\\ArcScope\\.worktree\\wp02-01-diagnostic-posture\\eng\\ArcForges.Repository\\bin\\Release\\net10.0\\ArcForges.Repository.dll\n  ArcForges.ArcScope -> C:\\MyFile\\Projects\\ArcForges\\ArcScope\\.worktree\\wp02-01-diagnostic-posture\\src\\ArcForges.ArcScope\\bin\\Release\\net10.0\\ArcScope.dll\n  ArcForges.ArcScope.Tests -> C:\\MyFile\\Projects\\ArcForges\\ArcScope\\.worktree\\wp02-01-diagnostic-posture\\tests\\ArcForges.ArcScope.Tests\\bin\\Release\\net10.0\\ArcForges.ArcScope.Tests.dll\n\nBuild succeeded.\n    0 Warning(s)\n    0 Error(s)\n\nTime Elapsed 00:00:02.99\n"
@@ -1770,21 +1339,6 @@
     },
     {
       "name": "ArcScope-expanded-runtime.log",
-      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "content": ""
-    },
-    {
-      "name": "ArcSlate-expanded-build.log",
-      "sha256": "1d7dfc654450c529b9dc86b3d037541a0c532c9ccefe3fa9b81f82a1288ae1ac",
-      "content": "  ArcForges.ArcSlate.Core -> C:\\MyFile\\Projects\\ArcForges\\ArcSlate\\.worktree\\wp02-01-diagnostic-posture\\src\\ArcForges.ArcSlate.Core\\bin\\Release\\net10.0\\ArcForges.ArcSlate.Core.dll\n  ArcForges.Repository -> C:\\MyFile\\Projects\\ArcForges\\ArcSlate\\.worktree\\wp02-01-diagnostic-posture\\eng\\ArcForges.Repository\\bin\\Release\\net10.0\\ArcForges.Repository.dll\n  ArcForges.ArcSlate -> C:\\MyFile\\Projects\\ArcForges\\ArcSlate\\.worktree\\wp02-01-diagnostic-posture\\src\\ArcForges.ArcSlate\\bin\\Release\\net10.0\\ArcSlate.dll\n  ArcForges.ArcSlate.Tests -> C:\\MyFile\\Projects\\ArcForges\\ArcSlate\\.worktree\\wp02-01-diagnostic-posture\\tests\\ArcForges.ArcSlate.Tests\\bin\\Release\\net10.0\\ArcForges.ArcSlate.Tests.dll\n\nBuild succeeded.\n    0 Warning(s)\n    0 Error(s)\n\nTime Elapsed 00:00:02.69\n"
-    },
-    {
-      "name": "ArcSlate-expanded-publish.log",
-      "sha256": "0e35b12c5822fdd4f499e4c23b9b7d7ad47802d41508d02f112fe357f9971edf",
-      "content": "  ArcForges.ArcSlate.Core -> C:\\MyFile\\Projects\\ArcForges\\ArcSlate\\.worktree\\wp02-01-diagnostic-posture\\src\\ArcForges.ArcSlate.Core\\bin\\Release\\net10.0\\ArcForges.ArcSlate.Core.dll\n  ArcForges.ArcSlate -> C:\\MyFile\\Projects\\ArcForges\\ArcSlate\\.worktree\\wp02-01-diagnostic-posture\\src\\ArcForges.ArcSlate\\bin\\Release\\net10.0\\win-x64\\ArcSlate.dll\n  Generating native code\n  ArcForges.ArcSlate -> C:\\MyFile\\Projects\\ArcForges\\ArcSlate\\.worktree\\wp02-01-diagnostic-posture\\artifacts\\wp02-02-research-publish\\\n"
-    },
-    {
-      "name": "ArcSlate-expanded-runtime.log",
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
       "content": ""
     },
@@ -1875,45 +1429,7 @@
       "matches": []
     },
     {
-      "owner": "ArcNotes",
-      "command": [
-        "git",
-        "grep",
-        "-n",
-        "-E",
-        "NoWarn|WarningsNotAsErrors|SuppressAotAnalysisWarnings|SuppressTrimAnalysisWarnings|UnconditionalSuppressMessage|IL[23][0-9]{3}|TrimmerSingleWarn",
-        "--",
-        "*.cs",
-        "*.csproj",
-        "*.props",
-        "*.targets",
-        "*.xml",
-        ".editorconfig"
-      ],
-      "exitCode": 1,
-      "matches": []
-    },
-    {
       "owner": "ArcScope",
-      "command": [
-        "git",
-        "grep",
-        "-n",
-        "-E",
-        "NoWarn|WarningsNotAsErrors|SuppressAotAnalysisWarnings|SuppressTrimAnalysisWarnings|UnconditionalSuppressMessage|IL[23][0-9]{3}|TrimmerSingleWarn",
-        "--",
-        "*.cs",
-        "*.csproj",
-        "*.props",
-        "*.targets",
-        "*.xml",
-        ".editorconfig"
-      ],
-      "exitCode": 1,
-      "matches": []
-    },
-    {
-      "owner": "ArcSlate",
       "command": [
         "git",
         "grep",
@@ -1959,22 +1475,10 @@
       "sha256": "e3bbdeecddafdfcf96b65fd3063bea54e16a1f9fb571fb73bbd4493a46e28b41"
     },
     {
-      "owner": "ArcNotes",
-      "path": "C:\\MyFile\\Projects\\ArcForges\\ArcNotes\\.worktree\\wp02-01-diagnostic-posture\\artifacts\\wp02-02-research-publish\\ArcNotes.exe",
-      "bytes": 24240128,
-      "sha256": "f5eebb922ed850738abd47124aec501763b735ed473e37ae19d2d4e724561eb6"
-    },
-    {
       "owner": "ArcScope",
       "path": "C:\\MyFile\\Projects\\ArcForges\\ArcScope\\.worktree\\wp02-01-diagnostic-posture\\artifacts\\wp02-02-research-publish\\ArcScope.exe",
       "bytes": 24240128,
       "sha256": "7cef944a7d430485f8879658f3d5417f8f005edde687804fdba88a8e747928d7"
-    },
-    {
-      "owner": "ArcSlate",
-      "path": "C:\\MyFile\\Projects\\ArcForges\\ArcSlate\\.worktree\\wp02-01-diagnostic-posture\\artifacts\\wp02-02-research-publish\\ArcSlate.exe",
-      "bytes": 24240128,
-      "sha256": "6c016f7133c2414bd5dad93c2a486546795b7a50ee03ccb057d39dae08774dad"
     },
     {
       "owner": "Contracts",

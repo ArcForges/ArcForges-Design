@@ -35,7 +35,7 @@ Secure storage · Local cache · Offline outbox
 | <a id="rule-ly-01"></a>LY-01 | **Base ViewModel patterns are not shared between Avalonia desktop and Kotlin Android mobile** (**[D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021)**). Each UI stack owns its implementation. |
 | <a id="rule-ly-02"></a>LY-02 | **Product-domain behaviour, server orchestration, policy decisions, persistence behaviour and entitlement authority stay outside the shared boundary** (**[D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021)**). |
 | <a id="rule-ly-03"></a>LY-03 | **Mobile-only application behaviour is implemented independently inside the Apache mobile boundary** (**[D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021)**). |
-| <a id="rule-ly-04"></a>LY-04 | **The mobile client never loads the desktop native media stack and never opens a desktop-local endpoint**. |
+| <a id="rule-ly-04"></a>LY-04 | **The mobile client never loads a desktop native library stack and never opens a desktop-local endpoint**. |
 
 ---
 
@@ -75,7 +75,7 @@ Consume exactly `io.github.arcforges:contracts-proto` and `io.github.arcforges:c
 
 One Connect Kotlin client per authenticated application profile uses binary gRPC-Web over HTTPS, system trust, bounded messages/deadlines and bearer metadata. A custom Cloud realm uses an explicitly configured HTTPS origin; no trust-all callback. Refresh is single-flight and excluded from automatic business retries. Status/trailers map through ArcError; an HTTP failure does not prove an effect failed. The generated client implements gRPC-Web framing; there is no handwritten Android framing fork. Only file bytes, OAuth and provider adapters retain the [declared standard-protocol exceptions](contracts/05-cloudflare-integration.md). Event and AI output recovery use annex 10 RPCs.
 
-Map signed 64 to Long; protobuf uint64 generated Long bits to ULong at the checked application boundary. Preserve high-bit values and unsigned base10 JSON strings. Money/Notes decimals stay canonical strings with checked arithmetic; UUID bytes are network order. Generated enums retain unknown values. Current/previous client vectors include uint64 max, negative ticks, absent/default fields, unknown enums, ArcError details, content origin, oversized/truncated bodies and canceled calls. Connect Kotlin service clients use the producer's generated Java/Kotlin protobuf messages and the explicit gRPC-Web protocol; no TypeScript runtime is embedded.
+Map signed 64 to Long; protobuf uint64 generated Long bits to ULong at the checked application boundary. Preserve high-bit values and unsigned base10 JSON strings. Money decimals stay canonical strings with checked arithmetic; UUID bytes are network order. Generated enums retain unknown values. Current/previous client vectors include uint64 max, negative ticks, absent/default fields, unknown enums, ArcError details, content origin, oversized/truncated bodies and canceled calls. Connect Kotlin service clients use the producer's generated Java/Kotlin protobuf messages and the explicit gRPC-Web protocol; no TypeScript runtime is embedded.
 
 ## 5. Network behaviour
 
@@ -203,7 +203,7 @@ All adapters are implemented within the Apache mobile boundary; dependency prove
 
 ## 13. Non-goals
 
-Mobile is **not**: an ArcNotes, ArcScope or ArcSlate editor; a general screen-and-input remote desktop; a route that bypasses the ArcChat trust model; a way to perform R4 operations without local presence; a holder of desktop-local secrets; a commerce surface; or a host for executable extensions.
+Mobile is **not**: an ArcScope editor; a general screen-and-input remote desktop; a route that bypasses the ArcChat trust model; a way to perform R4 operations without local presence; a holder of desktop-local secrets; a commerce surface; or a host for executable extensions.
 
 ---
 
@@ -242,7 +242,7 @@ Navigation is authentication followed by **Home, Conversations, Tasks, Library, 
 | Simple automation | automation.list/get/create/update/setEnabled/delete/runNow/resolveMissed using accepted simple schedule and target/profile/context controls. Missed occurrence choices are explicit; background phone execution is not a scheduler. |
 | Device status/selection | device.list and paged capability detail distinguish installed/running/ready/lastSeen. Phone is not a desktop tool host. Selected target enters the command; no silent device failover after dispatch. |
 | Trust/grants | device.setTrust/setRemoteEnabled/getRemotePolicy/setRemotePolicy/revoke/signOut, scope grant operations from the journey registry, fresh step-up for authority expansion. Revocation invalidates pending work before any new dispatch. |
-| Artifact previews | resource.getMetadata/getDownloadTicket and export.getStatus/getDownload; Notes excerpt/PDF, Scope chart/table/report, Slate image/audio/video/output. Bounded read-only Android viewers, no professional editing or executable attachment. |
+| Artifact previews | resource.getMetadata/getDownloadTicket and export.getStatus/getDownload; Scope chart/table/report, assistant image/PDF/text. Bounded read-only Android viewers, no professional editing or executable attachment. |
 | Handoff and transfer | Declared semantic handoff opens an owned target through Cloud/device policy; user-data export/realm transfer uses explicit preview/job status/download. Never screen/input remote control or silent copy of active task authority. |
 | Capacity/credit consent | entitlement snapshot/usage/capacity, agent usage and existing extra-usage preference. Explain available/exhausted/unknown and the approved maximum. May authorize use of already-owned credits; no purchase, checkout link, billing SDK or unlock token. |
 | Account/support | Profile/session/device management, deletion status/cancel flow, support cases/messages, data health and export. Purpose-restricted deletion session cannot operate ordinary content. |

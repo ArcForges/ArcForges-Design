@@ -22,7 +22,7 @@ WP06 proves two real AOT helper-probe processes over each exact OS transport; WP
 
 ## Stable rule and section references
 
-The following legacy anchors are retained for existing links. Their current normative meaning is the helper-only topology, authentication, bounds, lifetime and verification above; none retains the retired application runtime/discovery behavior. Cross-product examples are [future only](../future/cross-product-collaboration/README.md).
+The following legacy anchors are retained for existing links. Their current normative meaning is the helper-only topology, authentication, bounds, lifetime and verification above; none retains the retired application runtime/discovery behavior. Cross-product collaboration remains future-only and out of scope.
 
 <a id="1-generated-service-shape"></a>
 <a id="10-bidirectional-communication"></a>

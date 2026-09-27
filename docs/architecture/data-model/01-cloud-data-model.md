@@ -22,8 +22,6 @@ Notation is defined in [`00-data-model-overview.md`](00-data-model-overview.md) 
 | `device` | Devices | `device`, `installation` |
 | `entitlement` | Entitlement | `grant`, `snapshot`, `usage_counter`, `service_term`, `capacity_bucket`, `capacity_policy_period`, `capacity_reservation` |
 | `commerce` | Commerce | `billing_account`, `order`, `subscription`, `credit_lot`, `provider_event`, `logical_ai_request`, `provider_attempt`, `attempt_usage`, `supplier_cost_entry`, `customer_settlement`, `refund`, `compensation_adjustment` |
-| `notes` | Notes | `notebook` (owns `folder`), `document` (owns `block` and document metadata), `tag`, `property_definition`, `saved_view`; immutable revision records |
-| `slate` | ArcSlate Cloud | Revisioned metadata replicas; native working authority remains local |
 | `chat` | Chat | `conversation`, `message` and their committed content; Task owns iteration output, CF DO owns transient stream projection |
 | `task` | Task | `task`, `automation_definition`, `automation_occurrence` |
 | `agent` | Agent | `agent_profile`, `model_descriptor`, `tariff_version`, `supplier_price_version` |
@@ -365,7 +363,7 @@ Data-health states detected/repairing/repaired/irrecoverable/acknowledged preser
 |---|---|---|
 | `installation_id` | `id` | **PK** |
 | `device_id` | `id NN` | `FK →`; cascade |
-| `product_id` | `text NN` | arcnotes / arcscope / arcslate / companion; platform is a separate field |
+| `product_id` | `text NN` | arcscope / companion; platform is a separate field |
 | `app_version` | `text NN` | |
 | `contract_set_version` | `text NN` | Drives the compatibility window |
 | `installed_at` | `instant NN` | |
@@ -833,7 +831,7 @@ Cloud-history terminal states require exactly one final/interrupted message refe
 | `intent_summary` | `text NN` | User-facing |
 | `created_at`, `updated_at` | `instant NN` | |
 | `rev` | `rev NN` | |
-| `product_id` | `ProductId NN` | Frozen application scope: arcnotes/arcscope/arcslate/companion |
+| `product_id` | `ProductId NN` | Frozen application scope: arcscope/companion |
 | `origin_installation_id` | `id?` | Required for local-history origin; no body visibility to other devices |
 | `transient_input_ref`, `transient_output_receipt_id` | `id?` | Verified input/output for local history only; null for Cloud history |
 | `current_iteration` | `int NN` | Nonnegative iteration ordinal |
@@ -850,7 +848,7 @@ Cloud-history terminal states require exactly one final/interrupted message refe
 |---|---|
 | <a id="rule-tk-01"></a>TK-01 | **There is no `placement` column and no `authoritative_store` column.** The authoritative store is always Cloud ([TO-01](00-data-model-overview.md#rule-to-01)). What varies is **each Step's tool locality**, which lives on `task.plan_step` ([TK-02](#rule-tk-02)), because one Task routinely mixes both. |
 | <a id="rule-tk-02"></a>TK-02 | **`plan_step.tool_locality ∈ {cloud, device}`**, with `target_device_id` on the Step — not on the Task — since different Steps of one Task may target different devices, or none. |
-| <a id="rule-tk-03"></a>TK-03 | **A native Product Job is not in this table at all** ([TO-05](00-data-model-overview.md#rule-to-05), [I-485](../../requirements/01-normative-glossary-and-invariants.md#rule-i-485)). It lives in its product's own store with its own job identity; the task centre reads both through a union projection and labels each with its owner ([WP-17.03](../../planning/work-packages/17-arcchat-independent-core.md#rule-wp-17.03)). |
+| <a id="rule-tk-03"></a>TK-03 | **A native Product Job is not in this table at all** ([TO-05](00-data-model-overview.md#rule-to-05), [I-121](../../requirements/01-normative-glossary-and-invariants.md#rule-i-121)). It lives in its product's own store with its own job identity; the task centre reads both through a union projection and labels each with its owner ([WP-17.03](../../planning/work-packages/17-arcchat-independent-core.md#rule-wp-17.03)). |
 | <a id="rule-tk-04"></a>TK-04 | **`origin_surface` and `origin_device_id` are provenance, never authority.** A Task created from Web has no device and is fully executable; a device is required only for a Step whose locality is `device` ([CW-03](00-data-model-overview.md#rule-cw-03)). |
 | <a id="rule-tk-05"></a>TK-05 | **Cancellation and recovery are Cloud-side for the Task and product-side for a Product Job.** Cancelling a Task cancels its Steps; a Step that started a Product Job requests that product's cancellation and records the outcome — it does not reach into the product's store. |
 
@@ -1194,62 +1192,20 @@ The manifest over immutable object-storage segments ([SIM-11](../../requirements
 
 ---
 
-<a id="84-cloud-notes-canonical-model"></a>
-
-## 8.4 `notes` — canonical Cloud knowledge store
-
-Notes scalar value/config/query semantics are fixed by [notes.scalar.v1](../../requirements/products/arcnotes.md#notes-scalar-query-profile). The [desktop logical property/view fields](02-desktop-data-model.md#property_definition-property_value), including `semantic_rev`, query profile and definition revision bindings, project identically to Cloud; Cloud rows use Cloud revisions rather than local pending tokens. Saved views require one notebook. An acknowledged Notes dataset token advances with relevant membership/value/trash changes; the query reads one consistent token and rejects a stale page cursor. There is no nullable workspace-wide saved-view variant.
-
-Every block/attachment payload and immutable revision snapshot preserves its [content origin](02-desktop-data-model.md#content-origin-storage). Direct HTTP, sync, authorized tool writes and export use the same typed validators: a caller cannot clear known AI origin, reinterpret a property type or execute an unknown query profile. Scope/Slate metadata replicas preserve origin/profile fields while leaving native content authority local.
-
-Cloud owns acknowledged Notes content. SQLite holds a projection of these shapes plus the device's pending-edit journal. `sync.change` is a publication index, not the body store. All Notes keys and references include `workspace_id`; repository APIs require the authenticated workspace, and compound foreign keys prevent cross-workspace or cross-notebook placement.
-
-| Table | Keys, fields and constraints | Read/write paths |
-|---|---|---|
-| `notes.notebook` | PK `(workspace_id, notebook_id)`; `title`, `state(active,trashed)`, `rev`, `created_at`, `updated_at`, `trashed_at?`; notebooks do not nest | Workspace list, sync scope, default capture destination |
-| `notes.folder` | PK `(workspace_id, notebook_id, folder_id)`; `parent_folder_id?`, `name`, `ordinal`, `state(active,trashed)`, timestamps; parent FK in the same notebook, RESTRICT on delete; no independent revision | Notebook tree; index `(workspace_id, notebook_id, parent_folder_id, ordinal, folder_id)` |
-| `notes.document` | PK `(workspace_id, document_id)`; `notebook_id`, `folder_id?`, independent `title`, `state(active,trashed)`, `rev`, timestamps; placement FK into the same notebook; no document parent field | Folder listing, recent documents, acknowledged document fetch |
-| `notes.block` | PK `(workspace_id, block_id)`; unique `(workspace_id, document_id, block_id)` for same-document parent references; `document_id`, `parent_block_id?`, `ordinal`, `kind`, canonical typed `InlineContent`/kind payload; parent FK scoped to the same document; no independent revision | Ordered document reconstruction; content uses the editing architecture's V1 kinds |
-| `notes.document_link`, `notes.document_tag`, `notes.property_value` | Child rows of a document; stable target identifiers, typed scalar values; a reference to another document may be unresolved and never cascades deletion to its source | Forward links, tags and property queries; mutations increment the document revision |
-| `notes.tag`, `notes.property_definition`, `notes.saved_view` | Independently revisioned roots; scalar property types only; saved views contain typed filter/sort and `list` or `table` configuration, never document ownership | Workspace classification and opt-in query views |
-| `notes.aggregate_revision` | PK `(workspace_id, aggregate_kind, aggregate_id, rev)`; `parent_rev`, immutable canonical snapshot or verified `payload_object_id`, `schema_version`, actor/source/command identity, time, optional Task/capability/approval attribution | History, checkpoint, conflict recovery, revision-pinned export; retention never removes a pinned revision |
-| `notes.checkpoint` | PK `(workspace_id, checkpoint_id)`; target aggregate and revision, label, creator/time; references an existing revision | User checkpoint listing and restore as a new revision |
-| `notes.link_index` | Derived backlink rows keyed by stable source/target identity and source revision | Rebuilt from document links; not canonical and not a second writer |
-
-The child field shapes for blocks, links, tags and scalar values are shared with [the desktop model](02-desktop-data-model.md#3-arcnotes-local-store). D1 uses typed columns and `JSON TEXT` for the declared content structures; SQLite uses equivalent explicit SQL and validated JSON. Provider-specific storage types never enter contracts. Notebook/folder placement, revision ownership and the server-side constraints are defined here, not inferred from a local table name.
-
-| # | Rule |
-|---|---|
-| <a id="rule-nd-01"></a>ND-01 | **Folder structure belongs to the Notebook aggregate.** Creating, renaming, reordering, reparenting or trashing a folder takes the notebook's expected revision and increments it once. Under that root revision guard, reject cycles, cross-notebook parents and an active child under a trashed ancestor. Sibling order is deterministic by `(ordinal, id)` including root folders; names need not be unique. |
-| <a id="rule-nd-02"></a>ND-02 | **Document placement belongs to the Document aggregate.** A move validates the source and destination notebook/folder under guards for both notebook revisions and the document revision. It carries both notebook revisions and the document revision. A cross-notebook move changes placement and emits the removal/addition projections without changing DocumentId, BlockIds or history. An upload, AI edit or import cannot bypass this operation. |
-| <a id="rule-nd-03"></a>ND-03 | **Folder trash is a visibility operation, not recursive content deletion.** Descendants remain in place and are hidden by the repository's ancestor-state predicate. Restoring the folder restores that visibility; independently trashed documents stay trashed. Permanent folder removal requires an empty subtree after explicit move or tracked purge; FK RESTRICT enforces it. Notebook deletion uses the tracked deletion lifecycle, never an unbounded cascade in a request handler. |
-| <a id="rule-nd-04"></a>ND-04 | **Every accepted content commit stores the current rows, immutable revision, command receipt and publication row in one unit of work.** Resource participants pin attachments and any staged revision body. No network or blob upload occurs while the transaction is open. Conflict rejection preserves the proposed content and does not change current rows. |
-| <a id="rule-nd-05"></a>ND-05 | **Read paths have one authority.** Hydration and `sync.getAggregate` reconstruct these canonical rows; local pending data never enters a Cloud export or AI context. History restore creates a new revision. Export freezes a manifest of notebook structure and document revisions, pins their attachments, then renders the Cloud Markdown/attachment/fidelity download from that manifest. It is not a re-importable native Notes package. |
-| <a id="rule-nd-06"></a>ND-06 | **Local edits and remote updates share domain validation.** The client catches invalid structure early; Cloud repeats all checks as the final owner. A document's `rev` governs blocks and document metadata. Folder and document operations use explicit typed requests, with bounded bulk operations and per-operation receipts. |
-| <a id="rule-nd-07"></a>ND-07 | **All durable payloads are accounted for.** Large revision bodies are staged as verified Resource objects before the Notes commit; that commit promotes them and adds a revision reference. Current content, retained history, conflict branches and active export manifests each pin the objects they need. Garbage collection starts only after the last pin and reader lease ends. |
-
-Required operations: `CreateNotebook`, `UpdateNotebook`, `CreateFolder`, `MoveFolder`, `TrashFolder`, `RestoreFolder`, `MoveDocument`, `GetNotebookTree`, `GetDocumentRevision`, `ListHistory` and `RestoreRevision`, alongside the typed block/property operations. These are Notes application operations reached through in-process ports and typed sync proposals; no professional editor is added to Web or Mobile. A batch with a structural dependency submits the parent operation first and binds its acknowledgement before submitting the dependent operation. [WP-18.00](../../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.00) owns client/domain semantics; [WP-25.00](../../planning/work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.00) owns the real D1 counterpart and API integration.
-
 ### 8.5 Native-product metadata replicas
 
 | Table | Required fields / constraints |
 |---|---|
-| scope.synced_aggregate / slate.synced_aggregate | workspace_id:id + aggregate_kind:text + aggregate_id:id composite PK; rev:rev NN; schema_version:text NN; payload_proto:typed blob NN; source_device_id:id NN; content_rev:bigint NN; state:enum(live,deleted) NN; created_at/updated_at:instant NN; deleted_at:instant?; IX(workspace_id,aggregate_kind,state,aggregate_id). Registered kind determines the exact validated record; state/deleted_at must agree. |
-| scope.replica_revision / slate.replica_revision | workspace_id:id + aggregate_kind:text + aggregate_id:id + rev:rev composite PK; schema_version:text NN; payload_resource_id:id NN; payload_hash:hash NN; created_at:instant NN. Immutable retained revision, not a second current owner. |
+| scope.synced_aggregate | workspace_id:id + aggregate_kind:text + aggregate_id:id composite PK; rev:rev NN; schema_version:text NN; payload_proto:typed blob NN; source_device_id:id NN; content_rev:bigint NN; state:enum(live,deleted) NN; created_at/updated_at:instant NN; deleted_at:instant?; IX(workspace_id,aggregate_kind,state,aggregate_id). Registered kind determines the exact validated record; state/deleted_at must agree. |
+| scope.replica_revision | workspace_id:id + aggregate_kind:text + aggregate_id:id + rev:rev composite PK; schema_version:text NN; payload_resource_id:id NN; payload_hash:hash NN; created_at:instant NN. Immutable retained revision, not a second current owner. |
 
-`scope.synced_aggregate` and `slate.synced_aggregate` store `(workspace_id, aggregate_kind, aggregate_id)` as PK, server `rev`, schema version, typed canonical metadata payload, source device and source `content_rev`, state/tombstone and timestamps. A generated product-kind allowlist determines the DTO and validation; this is not an executable or arbitrary type-name payload. Immutable replica revisions and Resource references use the same publication and retention rules as Notes.
+`scope.synced_aggregate` stores `(workspace_id, aggregate_kind, aggregate_id)` as PK, server `rev`, schema version, typed canonical metadata payload, source device and source `content_rev`, state/tombstone and timestamps. A generated product-kind allowlist determines the DTO and validation; this is not an executable or arbitrary type-name payload. Immutable replica revisions and Resource references use the same publication and retention rules as every synchronised aggregate (`§9`).
 
-Cloud accepts these through each owning module's sync adapter. The native SQLite model remains the working authority for hardware/media work. Raw capture and media bodies require their explicit upload policy; proxies and render caches are excluded. Fetching a replica does not assign a native `content_rev`: a local import/reconciliation command commits a new local revision and records which Cloud revision it reconciled. [WP-35.02](../../planning/work-packages/35-arcscope-integration-and-sync.md#rule-wp-35.02) and [WP-39.04](../../planning/work-packages/39-arcslate-integration-and-portability.md#rule-wp-39.04) implement these adapters against the already-delivered sync infrastructure.
+Cloud accepts these through its owning module's sync adapter. The native SQLite model remains the working authority for hardware work. Raw capture bodies require their explicit upload policy. Fetching a replica does not assign a native `content_rev`: a local import/reconciliation command commits a new local revision and records which Cloud revision it reconciled. [WP-35.02](../../planning/work-packages/35-arcscope-integration-and-sync.md#rule-wp-35.02) implements this adapter against the already-delivered sync infrastructure.
+
+Sync's client-origin owner-body allowlist admits only authorized ScopeMetadata; the Sync owner transaction commits an admitted ArcScope metadata owner body together with its publication, receipts and Resource/Entitlement enlistment in the same commit.
 
 ---
-
-<a id="structural-move-and-complete-media-replica-constraints"></a>
-### Structural and replica validation
-
-A Notes cross-notebook move validates one explicit disposition for every used property/tag. Destination properties must have the same scalar type/scale, matching semantic revision, and complete mappings for used select options. Duplicate destination assignments, missing/trashed targets, implicit label matching or numeric conversion refuse. Explicit removal is previewed and retained in immutable history; document/block IDs and original values in old revisions survive. The preview hash binds all participating revisions and mapping. Under guards for every captured root revision, commit updates the document placement/classification and source/destination membership publications atomically. Named structural operations retain their typed command payload and results; a generic sync NotesDocument replacement cannot move an existing document.
-
-Slate replicas encode the complete [slate.project.v1 wire projection](../contracts/04-protobuf-wire-registry.md#4-shared-record-field-registry), including every sequence timeline/graph, exact grids, colour/input assignments, bins, markers, text/subtitles, generators/nesting, keyframe scopes and managed small-asset references. Validate identity, referential closure, type/graph/nesting cycles and source contentRev before storing the immutable replica. sequence summaries cannot substitute for timelines. Originals remain opt-in; absent bytes produce Offline Media without losing edit metadata. TranscriptRecord is an immutable derived Resource artifact linked to Task/source revision; adopting it creates ordinary authored native content with retained AI origin, never a server-side rewrite of a Slate project.
-
 
 ## 9. `sync`
 
@@ -1260,7 +1216,7 @@ Slate replicas encode the complete [slate.project.v1 wire projection](../contrac
 | `sync_scope_id` | `id` | **PK** |
 | `workspace_id` | `id NN` | |
 | `product_id` | `text NN` | |
-| `scope_kind` | `text NN` | e.g. `arcnotes.notebook`, `arcscope.projectMetadata` |
+| `scope_kind` | `text NN` | e.g. `arcscope.projectMetadata` |
 | `scope_ref` | `id?` | The specific object, null for product-wide |
 | `enabled` | `bool NN` | |
 | `content_exclusions` | `json NN` | **Expressive enough for [I-474](../../requirements/01-normative-glossary-and-invariants.md#rule-i-474)** — raw capture excluded by default |

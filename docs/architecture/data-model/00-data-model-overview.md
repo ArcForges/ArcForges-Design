@@ -63,16 +63,16 @@ The implementation repository already establishes the convention, and this layer
 | <a id="rule-id-05"></a>ID-05 | **An identifier is never reused**, including after hard deletion. |
 | <a id="rule-id-06"></a>ID-06 | **A cross-store identifier is the same value.** A document synced to Cloud keeps its local `DocumentId`; there is no separate cloud identifier and no mapping table. |
 
-**The identifier set.** `RealmId`, `UserId`, `AuthIdentityId`, `WorkspaceId`, `DeviceId`, `InstallationId`, `InstanceId`, `SessionId`, `ApiTokenId`, `BillingAccountId`, `OfferId`, `PriceVersionId`, `PurchaseIntentId`, `CheckoutAttemptId`, `OrderId`, `PaymentId`, `SubscriptionId`, `GrantId`, `RevocationId`, `CreditLotId`, `ReservationId`, `LedgerEntryId`, `ProviderEventId`, `TaskId`, `RunId`, `PlanId`, `StepId`, `AttemptId`, `CommandId`, `InvocationId`, `ApprovalId`, `AutomationId`, `ConversationId`, `BranchId`, `MessageId`, `ProjectId`, `AgentProfileId`, `SkillId`, `FolderId`, `DocumentId`, `BlockId`, `NotebookId`, `TagId`, `PropertyDefId`, `ViewId`, `SessionRecordId` (ArcScope), `CaptureId`, `SegmentId`, `ChannelId`, `SignalId`, `AnalysisId`, `FindingId`, `ReportId`, `SlateProjectId`, `SequenceId`, `TrackId`, `TimelineItemId`, `MediaAssetId`, `EffectInstanceId`, `RenderRequestId`, `ResourceId`, `BlobId`, `UploadSessionId`, `ArtifactId`, `ContentOriginId`, `ContentUnitId`, `PackageId`, `InstallationPackageId`, `NotificationId`, `AuditEventId`, `SupportCaseId`.
+**The identifier set.** `RealmId`, `UserId`, `AuthIdentityId`, `WorkspaceId`, `DeviceId`, `InstallationId`, `InstanceId`, `SessionId`, `ApiTokenId`, `BillingAccountId`, `OfferId`, `PriceVersionId`, `PurchaseIntentId`, `CheckoutAttemptId`, `OrderId`, `PaymentId`, `SubscriptionId`, `GrantId`, `RevocationId`, `CreditLotId`, `ReservationId`, `LedgerEntryId`, `ProviderEventId`, `TaskId`, `RunId`, `PlanId`, `StepId`, `AttemptId`, `CommandId`, `InvocationId`, `ApprovalId`, `AutomationId`, `ConversationId`, `BranchId`, `MessageId`, `ProjectId`, `AgentProfileId`, `SkillId`, `SessionRecordId` (ArcScope), `CaptureId`, `SegmentId`, `ChannelId`, `SignalId`, `AnalysisId`, `FindingId`, `ReportId`, `ResourceId`, `BlobId`, `UploadSessionId`, `ArtifactId`, `ContentOriginId`, `ContentUnitId`, `PackageId`, `InstallationPackageId`, `NotificationId`, `AuditEventId`, `SupportCaseId`.
 
 ### 3.2 Revision, sequence and concurrency
 
 | # | Rule |
 |---|---|
-| <a id="rule-rv-01"></a>RV-01 | **Each authoritative mutable root carries its owner-assigned revision**: CloudRevision for Cloud authority, NativeContentRevision for native Scope/Slate work. Notes materialised projections also carry LocalNotesVersion(acked_rev, head_local_seq); a bare Cloud rev cannot represent pending local changes. |
+| <a id="rule-rv-01"></a>RV-01 | **Each authoritative mutable root carries its owner-assigned revision**: CloudRevision for Cloud authority, NativeContentRevision for native Scope work. A local materialised projection with pending edits also carries a composite local version `(acked_rev, head_local_seq)`; a bare Cloud rev cannot represent pending local changes. |
 | <a id="rule-rv-02"></a>RV-02 | **`rev` increments once per commit unit**, never once per changed field and never once per child row. |
 | <a id="rule-rv-03"></a>RV-03 | **A child row does not carry its own `rev`.** Its concurrency is the aggregate root's. A block belongs to a document's revision; a message belongs to a conversation's. |
-| <a id="rule-rv-04"></a>RV-04 | **Each conditional mutation carries the expected version of its target authority.** A local Notes edit uses the composite local token; Cloud sync uses expectedCloudRevision; native product edits use expectedNativeContentRevision. Create has an explicit create precondition. Idempotent receipt replay returns its original result, without an extra revision increment. |
+| <a id="rule-rv-04"></a>RV-04 | **Each conditional mutation carries the expected version of its target authority.** A local edit to a synced projection uses the composite local token; Cloud sync uses expectedCloudRevision; native product edits use expectedNativeContentRevision. Create has an explicit create precondition. Idempotent receipt replay returns its original result, without an extra revision increment. |
 | <a id="rule-rv-05"></a>RV-05 | **`seq` is per channel, not per entity**, and orders delivery. `Revision ≠ Sequence` (distinct types and roles defined in this section), and neither is derivable from the other. |
 | <a id="rule-rv-06"></a>RV-06 | **A revision is meaningful only within its aggregate.** Comparing revisions across aggregates is a defect. |
 
@@ -82,15 +82,13 @@ An aggregate root is the unit of concurrency, authorization and sync. Everything
 
 | Store | Aggregate roots |
 |---|---|
-| Cloud | `Workspace`, `User`, `Device`, `Subscription`, `Grant`, `CreditLot`, `Task`, `Conversation`, `Notebook`, `Document`, `SavedView`, `PropertyDefinition`, `Tag`, `SyncScope`, `CloudObject`, `PolicyBundle`, `PackageInstallation`, `SupportCase` |
+| Cloud | `Workspace`, `User`, `Device`, `Subscription`, `Grant`, `CreditLot`, `Task`, `Conversation`, `SyncScope`, `CloudObject`, `PolicyBundle`, `PackageInstallation`, `SupportCase` |
 | Per-application assistant | Local mode: canonical conversation/branch/message/project/profile/skill/compaction in model 05 SQLite. Cloud mode: acknowledged projections plus durable unsent drafts. Temporary mode: memory/expiring encrypted bodies only; execution metadata remains Cloud-owned. |
-| ArcNotes local | Working projections and pending edits for `Document`, `Notebook` (including its folders), `SavedView`, `PropertyDefinition`, `Tag`; no canvas or slide domain |
 | ArcScope local | `ScopeProject`, `SessionRecord`, `Capture`, `AnalysisDefinition`, `Finding`, `Report`, `ConnectionProfile` |
-| ArcSlate local | `SlateProject`, `Sequence`, `MediaAsset`, `ExportPreset`, `RenderRequest` |
 
 | # | Rule |
 |---|---|
-| <a id="rule-ag-01"></a>AG-01 | **Cross-module transactions are limited to the operation families in §6.1.1.** Each participant accesses only its own tables. Other cross-module effects use a named outbox consumer and recovery invariant. Within one module, a registered atomic plan may guard multiple root revisions in canonical identity order when a folder move or another structural invariant requires it. |
+| <a id="rule-ag-01"></a>AG-01 | **Cross-module transactions are limited to the operation families in §6.1.1.** Each participant accesses only its own tables. Other cross-module effects use a named outbox consumer and recovery invariant. Within one module, a registered atomic plan may guard multiple root revisions in canonical identity order when a declared structural invariant requires it. |
 | <a id="rule-ag-02"></a>AG-02 | **A foreign key across an aggregate boundary is a reference, not a cascade.** Deleting a referenced aggregate never silently deletes a referencing one. |
 | <a id="rule-ag-03"></a>AG-03 | **An aggregate is the unit of sync.** A sync change record names an aggregate root and its revision. |
 
@@ -100,7 +98,7 @@ An aggregate root is the unit of concurrency, authorization and sync. Everything
 
 This is the single most consequential table in the data layer. Every entity has exactly one authoritative store; every other copy is a projection, a cache or a durable pending change.
 
-**[P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006) moves the authority for synchronised user data to Cloud.** Native clients keep a working cache of acknowledged revisions plus durable pending edits ([I-498](../../requirements/01-normative-glossary-and-invariants.md#rule-i-498)). Hardware acquisition and media working stores keep product-local authority.
+**[P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006) moves the authority for synchronised user data to Cloud.** Native clients keep a working cache of acknowledged revisions plus durable pending edits ([I-498](../../requirements/01-normative-glossary-and-invariants.md#rule-i-498)). Hardware acquisition keeps product-local authority.
 
 | Entity family | Authoritative store | Held by clients as | Rule |
 |---|---|---|---|
@@ -111,13 +109,10 @@ This is the single most consequential table in the data layer. Every entity has 
 | BillingAccount, Offer, Order, Payment, Subscription, CreditLot, LedgerEntry, ProviderEvent, LogicalAIRequest, ProviderAttempt, AttemptUsage, SupplierCost, CustomerSettlement | **Cloud — Commerce** | Read projections only | No local write path exists |
 | ConfigRevision | **Cloud — Configuration** | Allowlisted client projection only ([DC-14](../../requirements/11-policy-and-configuration.md#rule-dc-14)) | Supplier rates and thresholds never ship to a client |
 | Assistant conversation, message, branch, project, profile, skill and compaction | **Local mode: owning application SQLite; Cloud mode: Cloud Chat/Agent; temporary mode: current session only** | Cloud mode caches acknowledged revisions plus durable unsent drafts; local mode is independently canonical; temporary bodies are never history | model 05 is the single local schema. Save to Cloud is explicit immutable snapshot import, never hidden mode conversion. |
-| Notebook, Folder, Document, Block, Link, Tag, Property, SavedView | **Cloud — Notes** for acknowledged revisions | Working cache + **durable pending edits** ([PE-01](02-desktop-data-model.md#rule-pe-01)) | A pending edit is never discarded as cache ([PE-03](02-desktop-data-model.md#rule-pe-03)) |
 | Task, Run, Plan, Step, Attempt, Approval, ToolRequest, ToolResult | **Cloud — Task/Agent** | Read projection | **Always Cloud-owned** (`§4.1`); only tool locality varies |
-| Native Product Job — render, capture, index, export | **The running product** | Its own durable job record | **Not a Cloud Agent Task** ([I-121](../../requirements/01-normative-glossary-and-invariants.md#rule-i-121), [I-485](../../requirements/01-normative-glossary-and-invariants.md#rule-i-485)); invokes no model |
+| Native Product Job — render, capture, index, export | **The running product** | Its own durable job record | **Not a Cloud Agent Task** ([I-121](../../requirements/01-normative-glossary-and-invariants.md#rule-i-121)); invokes no model |
 | ScopeProject, SessionRecord, Capture metadata, Analysis, Finding, Report | **ArcScope local** | — | Metadata synced; **raw capture is local by default** ([I-474](../../requirements/01-normative-glossary-and-invariants.md#rule-i-474)) |
 | SimulationDefinition, ScenarioVersion, SimulationRun, Segment, Checkpoint | **Cloud — Scope** | Downloaded segments are a verified copy | **Synthetic, cloud-owned, quota-counted** ([I-496](../../requirements/01-normative-glossary-and-invariants.md#rule-i-496), [SIM-01](../../requirements/products/arcscope.md#rule-sim-01), [C-09](../../requirements/00-product-scope-and-portfolio.md#rule-c-09)) |
-| SlateProject, Sequence, Timeline, MediaAsset metadata | **ArcSlate local** | — | Project data synced; heavyweight media by explicit policy |
-| OTIO artifact | **Neither** — an interchange file | Produced and consumed, never the working store | [I-497](../../requirements/01-normative-glossary-and-invariants.md#rule-i-497); export binds a committed sequence revision ([OT-04](../../requirements/products/arcslate.md#rule-ot-04)) |
 | CloudObject, Blob, UploadSession | **Cloud — Resource** | Content-addressed cache; **staged uploads are pending, not cache** ([PE-02](02-desktop-data-model.md#rule-pe-02)) | A copy is verifiable by hash |
 | Artifact | **The producing product** | Referenced by identity | `ArtifactRef` carries provenance, never the body |
 | PolicyBundle, Flag, KillSwitch | **Cloud — Policy** | Cached with staleness and last-known-good | Compiled hard limits win over any cached value |
@@ -127,7 +122,7 @@ This is the single most consequential table in the data layer. Every entity has 
 | # | Rule |
 |---|---|
 | <a id="rule-au-01"></a>AU-01 | **Acknowledgement is the authority boundary.** A revision Cloud has acknowledged is authoritative in Cloud; a change it has not is authoritative on the device that holds it, and is durable there ([PE-01](02-desktop-data-model.md#rule-pe-01)). |
-| <a id="rule-au-02"></a>AU-02 | **There is no second notebook authority.** A native client never becomes the durable owner of an acknowledged revision, and requiring a Cloud acknowledgement before a local durable save is equally prohibited (item 9 of the architecture baseline changes). |
+| <a id="rule-au-02"></a>AU-02 | **There is no second synced-content authority.** A native client never becomes the durable owner of an acknowledged revision, and requiring a Cloud acknowledgement before a local durable save is equally prohibited (item 9 of the architecture baseline changes). |
 | <a id="rule-au-03"></a>AU-03 | **A product job is not an agent task.** Confusing the two would put a render under AI metering and Cloud recovery, which is wrong in both directions ([CM-04](../09-ai-and-agent-runtime-architecture.md#rule-cm-04) of the runtime architecture). |
 
 ### 4.1 Task ownership and tool locality
@@ -140,7 +135,7 @@ A Task can be created from any surface — desktop, Web, Mobile or an automation
 | <a id="rule-to-02"></a>TO-02 | **`Task.toolLocality ∈ {cloud, device}` is recorded per Step, not per Task.** A single Task may mix both. The old `placement ∈ {local, cloud, remoteViaBridge}` field is **retired**: there is no local task placement ([I-491](../../requirements/01-normative-glossary-and-invariants.md#rule-i-491)). |
 | <a id="rule-to-03"></a>TO-03 | **The authoritative record is always `task.task` in Cloud.** Every client — including the desktop that created the Task — holds a read projection. |
 | <a id="rule-to-04"></a>TO-04 | **A device Step's execution attempts are recorded in Cloud from the returned `ToolResult`**, and mirrored in the device's own `command_log` for local idempotency. Neither writes the other's rows ([BI-03](../contracts/03-realtime-and-bridge.md#rule-bi-03) of the bridge contract). |
-| <a id="rule-to-05"></a>TO-05 | **A native Product Job is not a Task at all.** A render, capture, index or export is owned and recovered by its product, has its own durable job record, and never appears in `task.task` ([AU-03](#rule-au-03), [I-121](../../requirements/01-normative-glossary-and-invariants.md#rule-i-121), [I-485](../../requirements/01-normative-glossary-and-invariants.md#rule-i-485)). |
+| <a id="rule-to-05"></a>TO-05 | **A native Product Job is not a Task at all.** A render, capture, index or export is owned and recovered by its product, has its own durable job record, and never appears in `task.task` ([AU-03](#rule-au-03), [I-121](../../requirements/01-normative-glossary-and-invariants.md#rule-i-121)). |
 | <a id="rule-to-06"></a>TO-06 | **Tool locality is decided per Step and recorded.** A Step declared `device` is never silently satisfied by a cloud approximation ([PL-02](../17-agent-harness.md#rule-pl-02) of the harness); if no eligible device is online it waits with a stated reason ([WP-26.06](../../planning/work-packages/26-remote-action-and-tool-bridge.md#rule-wp-26.06)). |
 | <a id="rule-to-07"></a>TO-07 | **A projection is stamped with the authoritative revision it was built from**, so a stale projection is detectable rather than silently wrong. |
 
@@ -150,22 +145,22 @@ A Task can be created from any surface — desktop, Web, Mobile or an automation
 
 The authority map says *where the authoritative copy lives*. It does not by itself say **who commits**, and for Chat that gap was previously filled by two contradictory sentences. This section settles it.
 
-**Cloud assigns every Cloud replica revision.** Chat and Notes use that revision as the authority for acknowledged content. ArcScope and ArcSlate additionally retain a product-local `content_rev` for their native working store and jobs; the Cloud replica revision never replaces it. A device submits against its last acknowledged Cloud replica revision, not against a native working revision. Chat and Notes differ in origination and local staging:
+**Cloud assigns every Cloud replica revision.** Chat and Scope metadata use that revision as the authority for acknowledged content. ArcScope additionally retains a product-local `content_rev` for its native working store and jobs; the Cloud replica revision never replaces it. A device submits against its last acknowledged Cloud replica revision, not against a native working revision. Chat and Scope metadata differ in origination and local staging:
 
-| | Chat | Notes |
+| | Chat | Scope metadata |
 |---|---|---|
-| Origination | Any admitted client or authorized Cloud execution | Native client edits or authorized Cloud owner tools/import/restore |
+| Origination | Any admitted client or authorized Cloud execution | Native ArcScope edits (annotations, findings, reports) or authorized Cloud owner tools/import/restore |
 | Staged locally before submission | An unsent draft is local ([I-124](../../requirements/01-normative-glossary-and-invariants.md#rule-i-124)); a submitted message is not re-staged | Native edits are durable pending work; Cloud-originated commands have durable owner command receipts and no invented device journal |
-| Submitted through | `chat.appendMessage` or the fenced Chat execution-owner port | `sync.pushChange`, declared Notes API, or authorized typed Cloud owner capability using the same Notes validators |
+| Submitted through | `chat.appendMessage` or the fenced Chat execution-owner port | `sync.pushChange`, or authorized typed Cloud owner capability using the same ScopeMetadata validators |
 | Committer | Cloud | Cloud |
 | Revision assigned by | Cloud | Cloud |
 
 | # | Rule |
 |---|---|
-| <a id="rule-cw-01"></a>CW-01 | **A client never assigns a Cloud acknowledgement.** Notes stages edits with `local_seq`; its local optimistic token is `(acked_rev, head_local_seq)`. Native Scope/Slate operations use their own `content_rev`, while the replication envelope separately carries `expected_cloud_rev`. These version domains are distinct contract types. |
-| <a id="rule-cw-02"></a>CW-02 | **Cloud writes Chat directly.** `chat.appendMessage` commits the user message in Cloud; the Harness commits the assistant message in Cloud. **There is no rule that Cloud may only apply a client change** — that statement described a Notes-shaped replica model and was wrong for Chat. |
+| <a id="rule-cw-01"></a>CW-01 | **A client never assigns a Cloud acknowledgement.** Native Scope operations use their own `content_rev`, while the replication envelope separately carries `expected_cloud_rev`. These version domains are distinct contract types. |
+| <a id="rule-cw-02"></a>CW-02 | **Cloud writes Chat directly.** `chat.appendMessage` commits the user message in Cloud; the Harness commits the assistant message in Cloud. **There is no rule that Cloud may only apply a client change** — that statement described a Scope-shaped replica model and was wrong for Chat. |
 | <a id="rule-cw-03"></a>CW-03 | **A Cloud-originated row needs no client.** With every device offline, a Web user's message and the Harness's reply both commit normally; devices discover them through the change feed when they return. |
-| <a id="rule-cw-04"></a>CW-04 | **Native Notes edits are staged durably before submission** ([PE-01](02-desktop-data-model.md#rule-pe-01)); their pending rows clear only on acknowledgement. Authorized Cloud tools/import/restore originate directly through Notes owner ports, with current permission, expected revision, origin and idempotency. They use the same validation/publication transaction and never fabricate a device-local edit. |
+| <a id="rule-cw-04"></a>CW-04 | **Native ArcScope edits are staged durably before submission** ([PE-01](02-desktop-data-model.md#rule-pe-01)); their pending rows clear only on acknowledgement. Authorized Cloud tools/import/restore originate directly through Scope owner ports, with current permission, expected revision, origin and idempotency. They use the same validation/publication transaction and never fabricate a device-local edit. |
 | <a id="rule-cw-05"></a>CW-05 | **One writer per aggregate per transaction.** The module that owns the schema executes the write; no other module and no client writes those tables ([MD-02](../05-cloud-architecture.md#rule-md-02), [SU-02](#rule-su-02)). |
 | <a id="rule-cw-06"></a>CW-06 | **Every commit that changes a synchronised aggregate writes its `sync.change` row in the same transaction** (`§9`), so a change can never be committed and un-publishable. |
 
@@ -184,19 +179,19 @@ The authority map says *where the authoritative copy lives*. It does not by itse
 
 **Nothing in this agent-mode path requires a device.** Ordinary mode uses a Chat-owned ChatTurn instead of Task in the same admission/output families; no generation means no execution owner at all. Temporary mode follows the non-history body profile in the client journeys. Step 8 is the only device-owned draft state in this example.
 
-#### 4.2.2 Worked path — offline note edit
+#### 4.2.2 Worked path — offline ArcScope metadata edit
 
 | # | Step | Committer | Result |
 |---|---|---|---|
 | 1 | User edits offline | **Device**, into its working store | Durable pending change taking the next `local_seq`; **not** an acknowledged revision ([CW-01](#rule-cw-01), [PE-04](02-desktop-data-model.md#rule-pe-04)) |
 | 2 | Device reconnects, submits `sync.pushChange` with its `CommandId` | — | — |
-| 3 | Cloud applies it | **Cloud — Notes** | `document`/`block` rows, the command record, and the `sync.change` row, in one transaction ([CW-06](#rule-cw-06)); Cloud assigns `rev` |
+| 3 | Cloud applies it | **Cloud — Scope** | `scope.synced_aggregate` row, the command record, and the `sync.change` row, in one transaction ([CW-06](#rule-cw-06)); Cloud assigns `rev` |
 | 4 | Acknowledgement returns the assigned `rev` | — | The watermark advances to **the highest `local_seq` the batch covered, and no further** ([RV-C4](02-desktop-data-model.md#rule-rv-c4)). Edits made while the batch was in flight remain pending ([SB-L1](02-desktop-data-model.md#rule-sb-l1)) |
-| 5 | A concurrent change existed | **Cloud — Notes** | Conflict raised with both branches retained; resolution is a **new** Cloud-assigned revision |
+| 5 | A concurrent change existed | **Cloud — Scope** | Conflict raised with both branches retained; resolution is a **new** Cloud-assigned revision |
 
 | # | Rule |
 |---|---|
-| <a id="rule-cw-07"></a>CW-07 | **A sync submission carries the last acknowledged Cloud revision as `expectedRev`.** Notes local RPC uses `(acked_rev, head_local_seq)`; native Scope/Slate RPC uses `content_rev`. A transport adapter never substitutes one version domain for another. |
+| <a id="rule-cw-07"></a>CW-07 | **A sync submission carries the last acknowledged Cloud revision as `expectedRev`.** Native Scope RPC uses its own `content_rev`, a distinct version domain from the replication envelope's `expectedRev`. A transport adapter never substitutes one for the other. |
 | <a id="rule-cw-08"></a>CW-08 | **A conflict is resolved by a new revision, never by a client overwriting one** (`§4` of the sync architecture). |
 
 ## 5. Cross-store relationships
@@ -237,7 +232,7 @@ Cloud is one C# Container image and one D1 authority database per realm. A unit 
 | <a id="rule-su-01"></a>SU-01 | **The write-participant list below is closed.** Adding a family or participant is an architecture change. Read-only authorisation and policy ports may participate without acquiring write ownership of their tables. |
 | <a id="rule-su-02"></a>SU-02 | Each module contributes only its declared SQL statements and typed parameters to one immutable commit plan. The coordinator invokes one D1 batch; no ambient connection/interactive transaction crosses the binding boundary. |
 | <a id="rule-su-03"></a>SU-03 | **Enlistment is observable and tested.** Architecture tests assert the family, permitted participants and their write sets, including optional Resource/Sync enlistment when a body/reference/publication is involved. |
-| <a id="rule-su-04"></a>SU-04 | Assemble guards then mutations in module order: Config → Identity → Workspace → Device → Entitlement → Commerce → Policy → Agent → Chat → Notes → Scope → Slate → Task → Search → PackageCatalog → Notification → Resource → Sync → Audit. Within a module sort stable keys, notebooks before documents and quota/buckets before reservations. Guard every pre-read revision/fence and all participating authorization rows in the same batch. A failed guard aborts the whole batch; reread/recalculate with bounded jitter only under the original command receipt. No PostgreSQL row locks or deadlock-retry implementation is implied. |
+| <a id="rule-su-04"></a>SU-04 | Assemble guards then mutations in module order: Config → Identity → Workspace → Device → Entitlement → Commerce → Policy → Agent → Chat → Scope → Task → Search → PackageCatalog → Notification → Resource → Sync → Audit. Within a module sort stable keys, quota/buckets before reservations. Guard every pre-read revision/fence and all participating authorization rows in the same batch. A failed guard aborts the whole batch; reread/recalculate with bounded jitter only under the original command receipt. No PostgreSQL row locks or deadlock-retry implementation is implied. |
 | <a id="rule-su-05"></a>SU-05 | **No external I/O inside the transaction.** Provider, object-storage and device calls happen outside it. Pre-staged verified bodies are promoted/pinned by metadata only. Every operation has bounded rows, bytes and time; large purges/exports use durable jobs. |
 | <a id="rule-su-06"></a>SU-06 | **Everything not listed uses a named asynchronous recovery path.** A producer outbox row is part of its business commit. No caller reports the downstream effect as complete until its durable state confirms it. |
 | <a id="rule-su-07"></a>SU-07 | **Sync publishes another module's commit; it does not own that module's body.** Only the owner decides whether the proposal is valid. |
@@ -245,7 +240,7 @@ Cloud is one C# Container image and one D1 authority database per realm. A unit 
 | Operation family | Write participants | Commit invariant |
 |---|---|---|
 | Catalog publication or revocation | PackageCatalog + Resource for immutable archive pins + Audit + publication outbox | Publisher/version/review/revocation state, receipt and distribution revision agree; external signing/upload occurs after commit. |
-| Synchronised content or structural mutation, history restore, or reference release | Entitlement when quota changes + owning content module + Resource when references/pins change + Sync | Current body, immutable revision, command receipt, exact reference set and publication row agree; Notes may guard several roots for a declared structural command |
+| Synchronised content or structural mutation, history restore, or reference release | Entitlement when quota changes + owning content module + Resource when references/pins change + Sync | Current body, immutable revision, command receipt, exact reference set and publication row agree; a declared structural command may guard several roots |
 | Verified purchase, renewal, credit issue or refund/revocation recognition | Entitlement + Commerce | Provider inbox application, normalized order/payment/period, applicable immutable term/grant/credit adjustment, entitlement version and notification outbox commit together. Provider verification is outside the transaction; failure retries the complete idempotent local commit. |
 | Chat acceptance that starts an ordinary or temporary ChatTurn | Entitlement when quota changes + Chat + Resource when attachments are pinned + Sync for durable conversation content | User input and its ChatTurn/command receipt agree; temporary bodies remain in the bounded non-history store and publish no Sync/history record. Model dispatch uses the separate admission family below. |
 | Realm-transfer root commit | Workspace + Entitlement + one content owner + Resource + Sync | Root, mapped identity/receipt, visibility state, quota/reference set and publication agree; the Workspace coordinator cannot write content tables. A batch is at most 100 roots, each root transaction bounded. |
@@ -338,7 +333,7 @@ Deletion is where data models usually fail, because five different meanings get 
 |---|---|---|---|
 | **Trash** | Sets an aggregate's state to `trashed` with a timestamp; content intact | Yes, until purge | Yes, as a state change |
 | **Purge** | Removes content, leaves a **tombstone** carrying identity, deletion time and deleting actor | No | Yes, as a tombstone |
-| **Unsync / pause hydration** | Notes/Chat retain Cloud authority; stop hydration or evict acknowledged cache only after preserving pending work. Scope/Slate may detach their selective Cloud replica while local native authority remains. | Re-enable hydration/detached scope | Scope metadata only; Cloud deletion requires its explicit command |
+| **Unsync / pause hydration** | Chat retains Cloud authority; stop hydration or evict acknowledged cache only after preserving pending work. Scope may detach its selective Cloud replica while local native authority remains. | Re-enable hydration/detached scope | Scope metadata only; Cloud deletion requires its explicit command |
 | **Cloud deletion** | Removes the cloud replica **and** records a deletion that propagates to other devices | Only within the recovery window | Yes |
 | **Account deletion** | Removes cloud-side account data after a grace period; **local data is never touched** | Within the grace period only | Terminates sync |
 
@@ -347,7 +342,7 @@ Deletion is where data models usually fail, because five different meanings get 
 | <a id="rule-dl-01"></a>DL-01 | **A tombstone outlives the content.** Its retention exceeds the maximum plausible device-offline period, so a returning device converges rather than resurrecting ([WP-25.04](../../planning/work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.04)). |
 | <a id="rule-dl-02"></a>DL-02 | **Tombstone retention is a declared value**, and a device offline beyond it is required to perform a full resync rather than a delta. |
 | <a id="rule-dl-03"></a>DL-03 | **Purging an aggregate purges its children in the same transaction.** Children have no independent lifetime. |
-| <a id="rule-dl-04"></a>DL-04 | **Purging an aggregate does not purge what it merely references.** An ArcNotes document referencing a managed attachment releases a reference; the attachment is removed only when its reference count reaches zero and the grace period elapses. |
+| <a id="rule-dl-04"></a>DL-04 | **Purging an aggregate does not purge what it merely references.** A Chat message referencing a managed attachment releases a reference; the attachment is removed only when its reference count reaches zero and the grace period elapses. |
 | <a id="rule-dl-05"></a>DL-05 | **Reference counting is transactional with the referencing change**, and the garbage collector never removes an object whose count is above zero or whose grace period has not elapsed ([WP-07.04](../../planning/work-packages/07-local-persistence-foundation.md#rule-wp-07.04)). |
 | <a id="rule-dl-06"></a>DL-06 | **Deleting a professional resource created by an extension is prohibited by extension uninstall** ([PU-06](../15-extension-platform-architecture.md#rule-pu-06) in the extension architecture). |
 | <a id="rule-dl-07"></a>DL-07 | **An audit event is never deleted by any of the five operations.** Audit retention is independent and policy-governed. |
@@ -375,7 +370,8 @@ Each is versioned commercial or operational policy, not a compiled constant. The
 |---|---|---|
 | Aggregate root ↔ its children | **Strong** | One transaction |
 | Aggregate ↔ its outbox row | **Strong** | Same transaction |
-| Module ↔ module, within Cloud | **Eventual, exactly-once effect** | Outbox → event → inbox |
+| Module ↔ module, enumerated shared unit within Cloud | **Strong** | One guarded D1 batch under §6.1.1 |
+| Module ↔ module, ordinary asynchronous effect | **Eventual, exactly-once effect** | Outbox → event → inbox with the named recovery invariant |
 | Local store ↔ Cloud replica | **Eventual, convergent** | Outbox → change feed → conflict policy |
 | Device ↔ device | **Eventual, convergent** | Through Cloud only; devices never talk directly |
 | Database ↔ object storage | **Eventual, verifiable** | Staged → Verified → Committed, plus orphan detection |
@@ -443,7 +439,7 @@ An index exists because a named query path needs it. The per-entity documents li
 | <a id="rule-dv-05"></a>DV-05 | Reference counting never orphans and never premature-deletes, including across a crash | [WP-07.04](../../planning/work-packages/07-local-persistence-foundation.md#rule-wp-07.04) |
 | <a id="rule-dv-06"></a>DV-06 | A cross-workspace read fails at the data layer with a forged scope | [WP-21.06](../../planning/work-packages/21-cloud-host-and-persistence.md#rule-wp-21.06) |
 | <a id="rule-dv-07"></a>DV-07 | Every eventual relationship's divergence signal fires on an induced fault, and its repair converges | [WP-46.04](../../planning/work-packages/46-backup-recovery-and-data-health.md#rule-wp-46.04) |
-| <a id="rule-dv-08"></a>DV-08 | The full migration chain preserves semantics from the earliest supported version | [WP-18.06](../../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.06), [WP-21.03](../../planning/work-packages/21-cloud-host-and-persistence.md#rule-wp-21.03) |
+| <a id="rule-dv-08"></a>DV-08 | The full migration chain preserves semantics from the earliest supported version | [WP-21.03](../../planning/work-packages/21-cloud-host-and-persistence.md#rule-wp-21.03) |
 
 ---
 
@@ -459,14 +455,14 @@ An index exists because a named query path needs it. The per-entity documents li
 
 ## [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) external execution and additional enlisted families
 
-D1 remains canonical for all 20 owners. [CF integration §1–4](../contracts/05-cloudflare-integration.md) fixes execution_lease/command, Workflow/DO projections, current stream pointer and recovery_generation. Automation occurrence admission adds the closed shared family Entitlement + Task + Resource when context pins change, with occurrence/Task/outbox atomic. Operator mutations enlist their affected owner family and an Audit receipt participant; operator access/approval state is Identity-owned, incident/support state Support-owned. Lock order places Audit after Sync; collect all locks before writes. No network act occurs within any transaction. New Task dispatch outbox→CF, control outbox→CF and deletion outbox→CF use stable delivery IDs and recorded receipts, with periodic reconciliation independent of hints.
+D1 remains canonical for the nineteen module owners in [the Cloud schema map](01-cloud-data-model.md#1-schema-map). [CF integration §1–4](../contracts/05-cloudflare-integration.md) fixes execution_lease/command, Workflow/DO projections, current stream pointer and recovery_generation. Automation occurrence admission adds the closed shared family Entitlement + Task + Resource when context pins change, with occurrence/Task/outbox atomic. Operator mutations enlist their affected owner family and an Audit receipt participant; operator access/approval state is Identity-owned, incident/support state Support-owned. The [SU-04](#rule-su-04) statement order places Audit after Sync; assemble all guards before mutations in the same immutable D1 batch. No network act occurs within any transaction. New Task dispatch outbox→CF, control outbox→CF and deletion outbox→CF use stable delivery IDs and recorded receipts, with periodic reconciliation independent of hints.
 
 ## Execution owner, transient consent and transfer transactions
 
-An ExecutionOwner is exactly one ChatTurn (Chat) or AgentTask (Task). Owner-specific admission/control/output tables are written only by that module inside the named shared family. Ordinary ChatTurn admission enlists Entitlement+Commerce+Chat+Resource when pins change+Sync when durable content publishes; temporary content excludes Sync/history but retains metadata-only accounting. Order locks under [SU-04](#rule-su-04); no network action in a transaction.
+An ExecutionOwner is exactly one ChatTurn (Chat) or AgentTask (Task). Owner-specific admission/control/output tables are written only by that module inside the named shared family. Ordinary ChatTurn admission enlists Entitlement+Commerce+Chat+Resource when pins change+Sync when durable content publishes; temporary content excludes Sync/history but retains metadata-only accounting. Order guards and mutations under [SU-04](#rule-su-04); no network action in a transaction.
 
 Resource owns source_consent and transient byte pins; current source owner authorizes an override before receipt consumption. Transfer import uses Workspace+Entitlement+one content owner+Resource+Sync per bounded root and its durable transfer receipt, with dependency mappings staged before visibility. No new unbounded all-workspace transaction or imported credentials/financial authority. The [journey profile](../contracts/07-client-journeys-and-ports.md) fixes exact scope/fidelity/state.
 
 Commerce owns provider-specific mapping IDs. Entitlement accepts a normalized logical request/service-period identity and can execute its tests without a Commerce schema. Such logical IDs are not foreign keys into Commerce. Actual shared participants, not a cross-module repository shortcut, enforce all-or-nothing admission.
 
-Source-policy setting/clear is an enumerated Policy+Audit shared transaction: validate target owner/read authority, lock policy revision, persist command/result+policy+audit+index-reconciliation outbox. Search is the async derived consumer, not another table writer in that transaction. First-use source/AI consent writes this typed policy explicitly; synchronization enrollment alone cannot set AI/index flags.
+Source-policy setting/clear is an enumerated Policy+Audit shared transaction: validate target owner/read authority, guard the policy revision, persist command/result+policy+audit+index-reconciliation outbox in the same D1 batch. Search is the async derived consumer, not another table writer in that transaction. First-use source/AI consent writes this typed policy explicitly; synchronization enrollment alone cannot set AI/index flags.

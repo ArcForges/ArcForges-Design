@@ -30,7 +30,7 @@ Every operation on every surface — HTTP, local RPC, realtime — obeys the sam
 |---|---|
 | <a id="rule-oc-01"></a>OC-01 | **An operation is a named business action**, not a resource-shaped CRUD verb. `chat.appendMessage` is an operation; "PATCH conversation" is not. The name is stable and is what appears in telemetry, audit and the command log. |
 | <a id="rule-oc-02"></a>OC-02 | **Every mutating operation carries a `CommandId`** allocated by the caller, and is deduplicated at its declared owner commit; external effects retain explicit uncertainty ([TX-01](../data-model/00-data-model-overview.md#rule-tx-01)–[TX-06](../data-model/00-data-model-overview.md#rule-tx-06)). |
-| <a id="rule-oc-03"></a>OC-03 | A mutating versioned owner operation supplies its exact Cloud Revision, LocalNotesVersion or NativeContentRev precondition; these are not interchangeable. Create uses the owner-defined absent-root value. |
+| <a id="rule-oc-03"></a>OC-03 | A mutating versioned owner operation supplies its exact Cloud Revision or NativeContentRev precondition; these are not interchangeable. Create uses the owner-defined absent-root value. |
 | <a id="rule-oc-04"></a>OC-04 | **Every operation returns `ArcResult<T>`** — success with a payload, or a typed `ArcError`. Business failure is a value; transport and protocol failure is an exception (`ErrorCategory`). |
 | <a id="rule-oc-05"></a>OC-05 | **Every operation declares its authorization profile**, risk and approval posture under §4; only tool bindings have a capability key. Authentication alone is insufficient. |
 | <a id="rule-oc-06"></a>OC-06 | **Every list operation is cursor-paginated** with an opaque, scope-bound cursor. |
@@ -95,7 +95,7 @@ Every operation's failures map into these. An operation may not invent a conditi
 | `identity.last_credential` | Removing this credential would leave no usable authentication credential | No — establish another usable credential first | Did not happen |
 | `validation.unsupported_version` | Contract version outside the window | No | Did not happen |
 | `conflict.revision_mismatch` | `expectedRev` did not match | Yes, after re-reading | Did not happen |
-| `conflict.local_changes_pending` | Cloud-derived tool context cannot overwrite pending local Notes edits | Synchronise/resolve, then refresh context and authorisation | Did not happen |
+| `conflict.local_changes_pending` | Cloud-derived tool context cannot overwrite pending local edits | Synchronise/resolve, then refresh context and authorisation | Did not happen |
 | `conflict.duplicate_identifier` | Identifier already exists with different content | No | Did not happen |
 | `command.reused_identifier` | Same `CommandId`, different request | No | Did not happen |
 | `state.not_found` | Absent, **or present and refused** — deliberately indistinguishable | No | Did not happen |
@@ -117,7 +117,6 @@ Every operation's failures map into these. An operation may not invent a conditi
 | `commerce.supplier_budget_exhausted` | Supplier exposure/remaining budget cannot admit another attempt | Operator recovery or declared budget period; uncertainty is not erased | Did not happen |
 | `security.isolation_unavailable` | Required OS profile is absent or not enforceable | Repair/install a supported profile; no unsafe fallback | Did not happen |
 | `resource.parser_failed` | Isolated parser crashed, timed out or returned invalid content | Only a declared safe retry or a different input | No parent-domain mutation; failed child work may have occurred |
-| `media.time_not_representable` | Invalid/unrepresentable output grid or interchange precision/range | Select a supported grid or explicit reported fidelity disposition | Did not happen |
 | `state.stale_fence` | A former lease owner attempted to publish | Re-read current owner/state; never replay the stale effect | Did not happen for the rejected publication |
 
 | # | Rule |
@@ -155,7 +154,7 @@ Every operation has eight **effective** authorization fields. WP03 exports their
 |---|---|
 | Public customer services and standard browser adapters | Human owner through the declared session/API-token scope, or the exact enrollment/authentication/recovery one-use flow where no session exists yet. Never grant a preauth caller other customer methods. |
 | Generated Cloud tool bindings | Above owner, plus agent/automation/extension only when explicitly in the first-party tool catalogue and admitted through its owner/delegation/grant pipeline. No ambient CF service token may call arbitrary public customer APIs. |
-| Local Notes/Scope/Slate/Chat product methods | The owning in-process product handler on behalf of a verified human; permitted agent/automation/extension chains only for the generated tool subset. Preserve every operation's local presence, effect, resource and approval conditions. |
+| Local Scope/Chat product methods | The owning in-process product handler on behalf of a verified human; permitted agent/automation/extension chains only for the generated tool subset. Preserve every operation's local presence, effect, resource and approval conditions. |
 | LocalBootstrap and child lease | Verified restricted parent/child OS identity under contracts 09. Product/provider/resource/lifecycle handlers execute in process and retain the validated actor; network reachability never grants authority. |
 | ConnectorBroker, all approval/consent/credential/commerce/policy configuration decisions (including IChatOperations.SubmitApproval) | Human-only action with the exact foreground, step-up and one-use proposal/flow bindings. Excluded from agent/automation/extension tool generation even if named in a product interface. Status/read paths retain their narrower declared permissions. |
 | ExtensionHost and ContentSandbox services | Only the authenticated installation/host or exact helper parent/session roles and method directions in contracts 09. They cannot acquire a customer session from being local. |
@@ -169,8 +168,7 @@ PAT allowlist: `workspace.list`, `workspace.get`, `catalog.search`, `catalog.get
 
 | Boundary / exact binding class | Egress destination and check |
 |---|---|
-| INotesOperations.Export, ISlateOperations.Export/ExportOtio/ExportSubtitles and declared export jobs | User-selected destination or owned export resource; preserve export/source policy and accepted loss/report semantics. |
-| IContextProvider.ProvideContext, IArtifactHandler.Resolve/RenderPreview/Open, IResourceAccess.OpenRead/ReadChunk, own-application OpenArtifact and attachment/extraction/adoption operations | Exact receiving owned child/application/resource/AI context; bind current source version, allowed range, purpose and destination grant. A ResourceRef or successful read is never egress consent. Raw Scope captures/Slate media remain excluded from context. |
+| IContextProvider.ProvideContext, IArtifactHandler.Resolve/RenderPreview/Open, IResourceAccess.OpenRead/ReadChunk, own-application OpenArtifact and attachment/extraction/adoption operations | Exact receiving owned child/application/resource/AI context; bind current source version, allowed range, purpose and destination grant. A ResourceRef or successful read is never egress consent. Raw Scope captures remain excluded from context. |
 | Public resource upload/download/transfer, sync/exports and content-bearing chat/task input | Same authenticated owner/workspace replica is permitted only by its existing Sync/content/source policy; any transfer to another purpose/AI context requires that purpose's separate authorization. No implicit Cloud index/AI opt-in. |
 | search.query with configured external Web search, and declared Web-search tool | Activated provider origin plus explicit query egress/source policy; ordinary local/internal index search is none. |
 | connector.beginConnection/completeConnection, local ConnectorBroker equivalents and admitted connector capability invocation | Exact definition-hash-bound provider origins/scopes under existing consent, SSRF/redirect and secret-broker checks. |
@@ -185,10 +183,10 @@ PAT allowlist: `workspace.list`, `workspace.get`, `catalog.search`, `catalog.get
 | Class | Example | Idempotency mechanism | Safe to auto-retry on unknown effect? |
 |---|---|---|---|
 | **Pure query** | `chat.getConversation` | Naturally idempotent | Yes |
-| **Idempotent write** | `notes.renameFolder` | `CommandId` + `expectedRev` | Yes |
-| **Create with client identifier** | `notes.createNotebook` | Caller-allocated id makes re-issue a no-op | Yes |
+| **Idempotent write** | `device.rename` | `CommandId` + `expectedRev` | Yes |
+| **Create with client identifier** | `chat.createConversation` | Caller-allocated id makes re-issue a no-op | Yes |
 | **Append** | `chat.appendMessage` | `CommandId` — a duplicate returns the original message | Yes |
-| **Non-idempotent effect** | `ISlateOperations.StartRender`, `IScopeOperations.StartCapture` | `CommandId` **plus** a live-instance constraint | **No** — surfaces a decision |
+| **Non-idempotent effect** | `IScopeOperations.StartCapture` | `CommandId` **plus** a live-instance constraint | **No** — surfaces a decision |
 | **External side effect** | `commerce.createCheckoutAttempt`, capability invocation with egress | `CommandId` **plus** provider-side idempotency where available | **No** |
 | **Destructive** | `identity.revokeApiToken`, `identity.revokeDevice` | `CommandId`; the second call reports already-done rather than failing | Yes — but never without the original approval |
 
@@ -200,14 +198,12 @@ PAT allowlist: `workspace.list`, `workspace.get`, `catalog.search`, `catalog.get
 
 ---
 
-Notes document body creation/mutation uses the closed Sync mutation allowlist; structural operations use the named Notes commands. These examples do not create alternate public document-write APIs.
-
 ## 6. Cursors and pagination
 
 | # | Rule |
 |---|---|
 | <a id="rule-cp-01"></a>CP-01 | **A cursor is opaque, signed and scope-bound.** A client cannot construct or mutate one to escape its scope ([WP-23.02](../../planning/work-packages/23-public-api-and-generated-clients.md#rule-wp-23.02)). |
-| <a id="rule-cp-02"></a>CP-02 | **A cursor encodes the sort key, not an offset.** The operation declares its concurrent-mutation behavior. [Notes scalar queries](../../requirements/products/arcnotes.md#notes-scalar-query-profile) bind a dataset token and explicitly restart on a changed source set, so successful pages never silently mix revisions or duplicate/omit rows. |
+| <a id="rule-cp-02"></a>CP-02 | **A cursor encodes the sort key, not an offset.** The operation declares its concurrent-mutation behavior, binding a dataset token and explicitly restarting on a changed source set, so successful pages never silently mix revisions or duplicate/omit rows. |
 | <a id="rule-cp-03"></a>CP-03 | **A cursor carries the query shape's fingerprint.** Presenting it with different filters is rejected rather than silently reinterpreted. |
 | <a id="rule-cp-04"></a>CP-04 | **A cursor expires**, and an expired cursor returns `validation.unsupported_version` with an instruction to restart the listing — never a partial result presented as complete. |
 | <a id="rule-cp-05"></a>CP-05 | **Every list declares a maximum page size**, and a larger request is clamped with a warning rather than refused. |
@@ -268,7 +264,7 @@ Every operation/event above maps to the [numbered wire registry](04-protobuf-wir
 
 ## Error category projection
 
-The [numbered ArcError profile](04-protobuf-wire-registry.md#3-primitive-aliases-and-enums) uses nine categories. Map all validation.* and media.time_not_representable to validation; auth.* to authentication except auth.local_presence_required to authorization; perm.* to authorization; entitlement.* and commerce.supplier_budget_exhausted to entitlement; conflict.* and command.reused_identifier to conflict; state.*, sync.* and identity.last_credential to state; resource.* and capacity.* to resource; dependency.*, provider.* and security.isolation_unavailable to execution; internal.* to internal. The existing code-specific effect/retry rules above remain decisive. This projection changes no code meaning and is complete for the registered initial code set.
+The [numbered ArcError profile](04-protobuf-wire-registry.md#3-primitive-aliases-and-enums) uses nine categories. Map all validation.* to validation; auth.* to authentication except auth.local_presence_required to authorization; perm.* to authorization; entitlement.* and commerce.supplier_budget_exhausted to entitlement; conflict.* and command.reused_identifier to conflict; state.*, sync.* and identity.last_credential to state; resource.* and capacity.* to resource; dependency.*, provider.* and security.isolation_unavailable to execution; internal.* to internal. The existing code-specific effect/retry rules above remain decisive. This projection changes no code meaning and is complete for the registered initial code set.
 
 ## Command replay retention profile
 

@@ -102,15 +102,13 @@ The product metric is **Time To Usable** ([I-389](01-normative-glossary-and-inva
 | Product | Budget |
 |---|---|
 | Embedded assistant first open (inside each host budget) | Proposed P95 ≤ 300 ms incremental UI activation; no Cloud dependency |
-| ArcNotes | ≤ 2.0 s |
 | ArcScope | ≤ 2.5 s |
-| ArcSlate | ≤ 3.0 s |
 
 | # | Requirement |
 |---|---|
-| <a id="rule-su-01"></a>SU-01 | ArcScope and ArcSlate may continue device scanning, media indexing and derived-cache loading in the background — **but must never block first workspace availability on them**. |
-| <a id="rule-su-02"></a>SU-02 | Native startup opens the shell and authorized cached work without waiting on Cloud. First-run or missing-content views state sign-in/network requirements honestly; Cloud refresh is asynchronous and does not promise account-free local AI or a standalone notebook. |
-| <a id="rule-su-03"></a>SU-03 | Core workspace startup never waits for Cloud or assistant activation. ArcNotes, ArcScope and ArcSlate open usable local state first and reconnect their own session in the background. |
+| <a id="rule-su-01"></a>SU-01 | ArcScope may continue device scanning, media indexing and derived-cache loading in the background — **but must never block first workspace availability on them**. |
+| <a id="rule-su-02"></a>SU-02 | Native startup opens the shell and authorized cached work without waiting on Cloud. First-run or missing-content views state sign-in/network requirements honestly; Cloud refresh is asynchronous and does not promise account-free local AI or a standalone project. |
+| <a id="rule-su-03"></a>SU-03 | Core workspace startup never waits for Cloud or assistant activation. ArcScope opens usable local state first and reconnects its own session in the background. |
 
 ---
 
@@ -123,24 +121,20 @@ The product metric is **Time To Usable** ([I-389](01-normative-glossary-and-inva
 | Product | Ceiling |
 |---|---|
 | Embedded assistant idle overhead (included in host ceiling) | Proposed ≤ 60 MiB incremental main-process memory with an empty conversation |
-| ArcNotes | ≤ 250 MiB |
 | ArcScope | ≤ 320 MiB |
-| ArcSlate | ≤ 450 MiB |
 
 | # | Requirement |
 |---|---|
 | <a id="rule-mm-01"></a>MM-01 | **Managed heap ≠ total memory** ([I-390](01-normative-glossary-and-invariants.md#rule-i-390)). The budget counts managed heap, native heap, pinned buffers, media buffers, RPC buffers, image buffers and index working memory. GPU memory is measured separately and is never ignored merely because it is not on the managed heap. |
 | <a id="rule-mm-02"></a>MM-02 | **"Cache doesn't count as memory" is not a valid exemption.** |
-| <a id="rule-mm-03"></a>MM-03 | **Memory pressure must be surrenderable.** Every cache — thumbnails, render cache, frame cache, waveforms, proxy working data, decoded data, analysis cache, visualisation buffers — has a budget and an eviction policy. |
+| <a id="rule-mm-03"></a>MM-03 | **Memory pressure must be surrenderable.** Every cache — thumbnails, decoded data, analysis cache, visualisation buffers — has a budget and an eviction policy. |
 | <a id="rule-mm-04"></a>MM-04 | Under OS memory pressure, **derived and rebuildable memory is released first**. An application must never be killed by the OS while protecting a cache. |
 
 ---
 
-### 6.1 Isolation and playback acceptance
+### 6.1 Isolation acceptance
 
 Main-process quiescent ceilings include the assistant. Parser/decoder child memory is reported separately while active and included in the total active-work budget; it is not hidden as free memory. GPU consumption is reported separately. Native containment bounds from contracts 06 remain enforced.
-
-Proposed [D-020](../decisions/phase-1-foundation-decisions.md#rule-d-020) acceptance profile, requiring owner approval and WP13/37 measurements: on the declared reference hardware, 1080p30 8-bit 4:2:0 material for each supported decode profile, ten minutes at 1× with ContentSandbox isolation enabled; at most 1 dropped frame per 1,000, audio/video offset within ±40 ms, P95 seek-to-first-frame ≤ 500 ms. Report cold/warm seeks, decoding backend, child/main/GPU peaks and sample counts. Missing the target blocks the gate and requires a bounded correction; it never authorizes moving hostile decode into the main process.
 
 ## 7. Leaks and soak
 
@@ -148,7 +142,7 @@ Proposed [D-020](../decisions/phase-1-foundation-decisions.md#rule-d-020) accept
 |---|---|
 | <a id="rule-sk-01"></a>SK-01 | Every product has a **long-running soak test** as a release gate. |
 | <a id="rule-sk-02"></a>SK-02 | **No monotonic growth is permitted** in handles, native resources, threads, subscriptions, timers or event registrations. |
-| <a id="rule-sk-03"></a>SK-03 | Product soaks cover Cloud agent cycles with native task projections; native note editing with pending sync/index work; at least 8 hours of hardware capture/visualization; the 24-hour Cloud simulator soak in [SIM-20](products/arcscope.md#rule-sim-20); and native timeline/playback/export with cache churn. |
+| <a id="rule-sk-03"></a>SK-03 | Product soaks cover Cloud agent cycles with native task projections; native annotation editing with pending sync/index work; at least 8 hours of hardware capture/visualization; and the 24-hour Cloud simulator soak in [SIM-20](products/arcscope.md#rule-sim-20). |
 | <a id="rule-sk-04"></a>SK-04 | **Small benchmark ≠ scale reliability** ([I-388](01-normative-glossary-and-invariants.md#rule-i-388)). Soak and scale results, not micro-benchmarks, decide the gate. |
 
 ---
@@ -166,7 +160,7 @@ Proposed [D-020](../decisions/phase-1-foundation-decisions.md#rule-d-020) accept
 |---|---|
 | <a id="rule-bg-01"></a>BG-01 | **Busy polling is prohibited.** Waiting is event-driven, with bounded backoff. |
 | <a id="rule-bg-02"></a>BG-02 | Background traffic is bounded. Prefer notifications/outbox dispatch; when realtime is unavailable, authorized HTTP polling with backoff, jitter, idle limits and reconnect backfill is supported. Busy polling and unbounded retries are prohibited. |
-| <a id="rule-bg-03"></a>BG-03 | **Background work must not starve foreground work.** Task resource competition has explicit priority: a timeline drag must not stutter, a capture must not lose data, and typing must not lag because of background indexing, sync or rendering. |
+| <a id="rule-bg-03"></a>BG-03 | **Background work must not starve foreground work.** Task resource competition has explicit priority: a live plot pan must not stutter, a capture must not lose data, and typing must not lag because of background indexing, sync or rendering. |
 
 ---
 
@@ -175,7 +169,7 @@ Proposed [D-020](../decisions/phase-1-foundation-decisions.md#rule-d-020) accept
 | # | Requirement |
 |---|---|
 | <a id="rule-sc-01"></a>SC-01 | Each product declares a **Scale Corpus** — the size each release must support and remain stable at. Anything at or below that scale must behave correctly. |
-| <a id="rule-sc-02"></a>SC-02 | **Performance budgets are expressed in terms of user work**, not only function-level micro-benchmarks: open a large document, scrub a long timeline, run an 8-hour capture, search a large corpus. |
+| <a id="rule-sc-02"></a>SC-02 | **Performance budgets are expressed in terms of user work**, not only function-level micro-benchmarks: open a large document, scrub a long session, run an 8-hour capture, search a large corpus. |
 | <a id="rule-sc-03"></a>SC-03 | **Search quality and search performance are separate contracts** ([QA-01](06-knowledge-search-and-retrieval.md#rule-qa-01), [QA-04](06-knowledge-search-and-retrieval.md#rule-qa-04) in the knowledge requirements). A fast search that returns the wrong result is a failure of a different contract. |
 
 ---
@@ -231,7 +225,6 @@ Proposed [D-020](../decisions/phase-1-foundation-decisions.md#rule-d-020) accept
 | <a id="rule-un-02"></a>UN-02 | **ArcScope retains the source unit** as acquisition provenance. A converted display value never overwrites what the instrument reported. |
 | <a id="rule-un-03"></a>UN-03 | **Engineering prefixes are handled by a unified formatter.** Products must not write their own prefix string formatting. |
 | <a id="rule-un-04"></a>UN-04 | **Unit conversion is dimension-safe.** Converting across incompatible dimensions is a compile-time or validation error, never a silent numeric operation. |
-| <a id="rule-un-05"></a>UN-05 | **ArcSlate time is not forced into the general unit system.** It uses a rational time and time-base model, because frame-accurate editing requires exact rational arithmetic rather than floating-point seconds ([I-478](01-normative-glossary-and-invariants.md#rule-i-478)). |
 
 ---
 
@@ -284,8 +277,8 @@ The native boundary is a compatibility contract in its own right: exported ABI v
 | # | Requirement |
 |---|---|
 | <a id="rule-cm-01"></a>CM-01 | **Every release produces a Compatibility Manifest as a release artifact**, answering: which product versions can this interoperate with locally; which contract sets it speaks; which native formats it can read and write; which cloud API versions it can reach; which extension protocol versions it supports; which native ABI it requires. |
-| <a id="rule-cm-02"></a>CM-02 | **The three professional desktop products version independently** ([P-12](00-product-scope-and-portfolio.md#rule-p-12)), and **mixed-version combinations must actually be tested**. Nominal independent release plus de facto lockstep upgrade is a failed contract. |
-| <a id="rule-cm-03"></a>CM-03 | Client↔Cloud and parent↔helper contracts support the current stable and immediately previous supported stable line. Compatibility is tested on protocol versions and published artifacts, not on pairs of different professional products. |
+| <a id="rule-cm-02"></a>CM-02 | **ArcScope and its companions version independently** ([P-12](00-product-scope-and-portfolio.md#rule-p-12)), and **mixed-version combinations must actually be tested**. Nominal independent release plus de facto lockstep upgrade is a failed contract. |
+| <a id="rule-cm-03"></a>CM-03 | Client↔Cloud and parent↔helper contracts support the current stable and immediately previous supported stable line. Compatibility is tested on protocol versions and published artifacts, not on pairs of different applications. |
 | <a id="rule-cm-04"></a>CM-04 | A contract major upgrade requires an explicit **coexistence migration window** in which V1 and V2 both operate. |
 | <a id="rule-cm-05"></a>CM-05 | **"Previous version" is a floor, not a ceiling.** Some contracts may be supported longer; a security-driven sunset may be scheduled earlier through the policy control plane. |
 | <a id="rule-cm-06"></a>CM-06 | **Cloud compatibility follows a declared Supported Client Set.** Removing support is planned and communicated through compatibility policy, never discovered by users. |
@@ -338,7 +331,6 @@ Contract tests cover **every** communication boundary: local RPC, public HTTP AP
 | <a id="rule-cr-02"></a>CR-02 | **Derived data may be lost** and must be rebuildable. Losing a cache must never corrupt a project. |
 | <a id="rule-cr-03"></a>CR-03 | Fault-injection points include at least: kill immediately after save; kill mid-write; kill mid-migration; kill mid-sync; kill during capture; kill during render; disk full; database busy; corrupted snapshot; corrupted derived cache; native library fault. |
 | <a id="rule-cr-04"></a>CR-04 | **ArcScope capture recovery is separately tested**: an interrupted capture must recover to the last durably committed data with an accurate, honest boundary — never silently truncated and presented as complete. |
-| <a id="rule-cr-05"></a>CR-05 | **ArcSlate recovery is separately tested**: a project must not be damaged by a proxy or render failure; the timeline and project data survive independently of derived media. |
 | <a id="rule-cr-06"></a>CR-06 | **Crash-loop protection** is required: repeated startup failures enter **Safe Start / Recovery Mode**, which is read-first, does not modify canonical content, and **never automatically deletes user data**. |
 | <a id="rule-cr-07"></a>CR-07 | **Cache recovery ≠ canonical data recovery** ([I-222](01-normative-glossary-and-invariants.md#rule-i-222)). Rebuilding a cache is not evidence that canonical recovery works. |
 | <a id="rule-cr-08"></a>CR-08 | **Crash-free ≠ recoverable** ([I-387](01-normative-glossary-and-invariants.md#rule-i-387)). A release with no crashes but no proven recovery path has not met this contract. |
@@ -358,7 +350,7 @@ Three tiers, with different content and different rules:
 | # | Requirement |
 |---|---|
 | <a id="rule-dg-01"></a>DG-01 | **A diagnostic bundle is never uploaded automatically** ([I-424](01-normative-glossary-and-invariants.md#rule-i-424)). It is exported on explicit user action, its contents are shown, and it is redacted by default. |
-| <a id="rule-dg-02"></a>DG-02 | **A diagnostic bundle does not include by default**: document content, note content, chat content, media, raw captures, secrets, or tokens. Including any of these requires an explicit, itemised user choice. |
+| <a id="rule-dg-02"></a>DG-02 | **A diagnostic bundle does not include by default**: document content, chat content, media, raw captures, secrets, or tokens. Including any of these requires an explicit, itemised user choice. |
 | <a id="rule-dg-03"></a>DG-03 | **Local paths are redacted or normalised by default**, because a path can identify a person. |
 | <a id="rule-dg-04"></a>DG-04 | **Verbose diagnostics are time-bounded** and revert automatically. |
 | <a id="rule-dg-05"></a>DG-05 | **Logs have a rotation budget** — size, age and count — and never grow without limit. |
@@ -385,8 +377,8 @@ Execution follows [P2-017](../decisions/phase-2-specification-decisions.md#rule-
 | <a id="rule-pm-02"></a>PM-02 | **The supported OS range is a versioned matrix** published as release metadata, not folklore. |
 | <a id="rule-pm-03"></a>PM-03 | **Android companion is verified on real devices**, not only emulators — the Kotlin/Jetpack Compose release artifact, cold start, weak network, background resume, and store-package verification. |
 | <a id="rule-pm-04"></a>PM-04 | **All four Web outputs are verified against [browser-support.v1](#202-browser-supportv1)**, including production assets, first load, caching, authentication/step-up, streaming/fallback and reconnect. The matrix is a release artifact with exact tested versions, not an undefined package-local target. |
-| <a id="rule-pm-05"></a>PM-05 | **A hardware lab is mandatory for ArcScope and ArcSlate.** Real serial, network and device interfaces; real media, codecs and GPUs. A CI virtual machine cannot detect the failures these products actually have. |
-| <a id="rule-pm-06"></a>PM-06 | **Native hardware paths require fallback tests**: missing GPU, unsupported codec, absent device, driver failure — each must degrade explicitly rather than crash. |
+| <a id="rule-pm-05"></a>PM-05 | **A hardware lab is mandatory for ArcScope.** Real serial, network and device interfaces; real GPUs. A CI virtual machine cannot detect the failures this product actually has. |
+| <a id="rule-pm-06"></a>PM-06 | **Native hardware paths require fallback tests**: missing GPU, unsupported device protocol, absent device, driver failure — each must degrade explicitly rather than crash. |
 | <a id="rule-pm-07"></a>PM-07 | **Cross-platform file-system behaviour is tested**: case sensitivity, path length, reserved names, Unicode normalisation, permissions, locking, and network or removable volumes. |
 | <a id="rule-pm-08"></a>PM-08 | **DPI and multi-monitor are tested**: fractional scaling, mixed-DPI monitors, monitor hot-plug, and window restoration across configuration changes. |
 | <a id="rule-pm-09"></a>PM-09 | **The input matrix is tested**: keyboard layouts, IME composition, touch, pen, trackpad gestures, and high-precision pointing. |
@@ -399,11 +391,10 @@ Execution follows [P2-017](../decisions/phase-2-specification-decisions.md#rule-
 | # | Requirement |
 |---|---|
 | <a id="rule-scv-01"></a>SCV-01 | Published Native AOT desktops contain no WebView/DOM/JavaScript UI or local AI. Cloud is independently Native AOT; the sole remote AI loop is the CF Workflow. Test each actual artifact. |
-| <a id="rule-scv-02"></a>SCV-02 | Native cached Notes work survives offline edits, restart, service expiry and disk/cache pressure, then reconciles through revisions/conflicts. Pending edits/uploads cannot be evicted. Property-view tests cover only the accepted scalar/list/table scope and loss-safe type changes. |
+| <a id="rule-scv-02"></a>SCV-02 | Native cached ArcScope work survives offline edits, restart, service expiry and disk/cache pressure, then reconciles through revisions/conflicts. Pending edits/uploads cannot be evicted. |
 | <a id="rule-scv-03"></a>SCV-03 | Real metering verifies cached/uncached/reasoning categories, cumulative streaming, interrupted calls, unknown usage, cancellation, platform retries, concurrent clients, holds, corrections, price changes, period transitions and duplicate payment events under MT/AC/DC requirements. Deterministic provider fixtures complement a controlled real-provider integration; neither alone proves the full billing loop. |
 | <a id="rule-scv-04"></a>SCV-04 | The same public Cloud code runs with a documented mounted sample configuration and operator secrets. Validate missing/invalid policy, atomic activation, rollback, replica convergence, no balance reset, historic-rate retention and no disclosure of private values. A stub policy interface does not pass. |
 | <a id="rule-scv-05"></a>SCV-05 | Cloud simulation passes [SIM-20](products/arcscope.md#rule-sim-20) through the actual database, storage, host and native source adapter. This does not substitute for hardware acquisition tests. |
-| <a id="rule-scv-06"></a>SCV-06 | ArcSlate .otio passes [OT-12](products/arcslate.md#rule-ot-12), including both directions and semantic fidelity, separately from native-project recovery and rendered-media verification. |
 | <a id="rule-scv-07"></a>SCV-07 | No obsolete acceptance or schema obligation reintroduces BYOK, multi-agent/ACP delegation, team/member/invite models, whiteboard/slides, flashcards, DOCX import, formula/relation/rollup engines, custom encrypted stores/exports or E2EE. Ordinary TLS, server storage/backup protection, token storage and native data recovery remain verified. |
 
 ---
@@ -500,7 +491,7 @@ The traditional three layers are insufficient here. The required families, each 
 15. Performance benchmarks with regression gates
 16. Publish, install, update, downgrade-protection and rollback tests
 17. Architecture and repository-policy tests
-18. Hardware-lab tests for ArcScope and ArcSlate
+18. Hardware-lab tests for ArcScope
 
 ---
 
@@ -540,15 +531,13 @@ The traditional three layers are insufficient here. The required families, each 
 
 ## 27. Must-pass release scenarios
 
-**Startup** — launching the application requires no account ([`ID-01`](02-identity-account-and-workspace.md#rule-id-01)). With an **already enrolled and hydrated** notebook and Cloud entirely offline: ArcNotes starts, the hydrated workspace is editable within budget, pending edits are durably saved and visibly unsynchronised, cloud state refreshes in the background when Cloud returns, and **a cached session is never forced into an interactive re-authentication prompt merely because Cloud is unreachable**. Enrolment itself requires Cloud and sign-in ([PR-02](products/arcnotes.md#rule-pr-02) and [CL-02](products/arcnotes.md#rule-cl-02) of [the ArcNotes requirements](products/arcnotes.md)), so an unenrolled first run is a different scenario and is not this one.
+**Startup** — launching the application requires no account ([`ID-01`](02-identity-account-and-workspace.md#rule-id-01)). With an **already enrolled and hydrated** project and Cloud entirely offline: ArcScope starts, the hydrated workspace is editable within budget, pending edits are durably saved and visibly unsynchronised, cloud state refreshes in the background when Cloud returns, and **a cached session is never forced into an interactive re-authentication prompt merely because Cloud is unreachable**. Enrolment itself requires Cloud and sign-in ([A-02](02-identity-account-and-workspace.md#rule-a-02) in the identity requirements), so an unenrolled first run is a different scenario and is not this one.
 
-**Independent assistant ownership** — two professional apps launch with separate stores/connections; each saves with Cloud offline. Closing/restarting one cannot alter the other's history or pending work.
+**Independent assistant ownership** — two ArcScope installations launch with separate stores/connections; each saves with Cloud offline. Closing/restarting one cannot alter the other's history or pending work.
 
 **Responsiveness** — under scale-corpus load, input to acknowledgement stays within budget; no UI-thread block exceeds the threshold.
 
 **ArcScope** — an 8-hour continuous capture and visualisation with no monotonic resource growth and no data loss.
-
-**ArcSlate** — a long editing, playback and export cycle with cache churn; memory returns to budget; the project is never damaged by derived-media failure.
 
 **Leak** — soak shows no monotonic growth in handles, threads, subscriptions or native resources.
 

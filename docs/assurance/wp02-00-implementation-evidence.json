@@ -24,28 +24,12 @@
       "mergedAt": "2026-09-21T04:25:47Z"
     },
     {
-      "owner": "ArcNotes",
-      "url": "https://github.com/ArcForges/ArcNotes/pull/5",
-      "head": "4def72ed61e340319ecd916b3d4b2e4dda3b69a3",
-      "mergeCommit": "c40116ac8ae0c76e539b3c19552a65ec08c8d94b",
-      "merged": true,
-      "mergedAt": "2026-09-21T04:25:57Z"
-    },
-    {
       "owner": "ArcScope",
       "url": "https://github.com/ArcForges/ArcScope/pull/5",
       "head": "bc334be72b80d6cb666e8aac12cd9ef2ba24db44",
       "mergeCommit": "1b13c9827f98578c8ba2f7db0c046db114aa7cb8",
       "merged": true,
       "mergedAt": "2026-09-21T04:26:05Z"
-    },
-    {
-      "owner": "ArcSlate",
-      "url": "https://github.com/ArcForges/ArcSlate/pull/5",
-      "head": "96d5123d2bf92e3bdc33f92fc41747cade1d6daa",
-      "mergeCommit": "0cc8093d51cdef20bae8057e77c4bcd80d32b39e",
-      "merged": true,
-      "mergedAt": "2026-09-21T04:26:13Z"
     },
     {
       "owner": "Cloud",
@@ -521,163 +505,6 @@
           }
         ]
       },
-      "ArcNotes": {
-        "head": "c40116ac8ae0c76e539b3c19552a65ec08c8d94b",
-        "remoteMain": "c40116ac8ae0c76e539b3c19552a65ec08c8d94b",
-        "primaryClean": true,
-        "implementationWorktreeClean": true,
-        "runs": [
-          {
-            "conclusion": "success",
-            "databaseId": 35560953892,
-            "headSha": "c40116ac8ae0c76e539b3c19552a65ec08c8d94b",
-            "status": "completed",
-            "url": "https://github.com/ArcForges/ArcNotes/actions/runs/35560953892",
-            "workflowName": "CI",
-            "jobs": [
-              {
-                "name": "Native (osx-x64)",
-                "status": "completed",
-                "conclusion": "success",
-                "url": "https://github.com/ArcForges/ArcNotes/actions/runs/35560953892/job/106213598870"
-              },
-              {
-                "name": "Workflow and secret checks",
-                "status": "completed",
-                "conclusion": "success",
-                "url": "https://github.com/ArcForges/ArcNotes/actions/runs/35560953892/job/106213598875"
-              },
-              {
-                "name": "Native (osx-arm64)",
-                "status": "completed",
-                "conclusion": "success",
-                "url": "https://github.com/ArcForges/ArcNotes/actions/runs/35560953892/job/106213598933"
-              },
-              {
-                "name": "CodeQL (csharp)",
-                "status": "completed",
-                "conclusion": "success",
-                "url": "https://github.com/ArcForges/ArcNotes/actions/runs/35560953892/job/106213598937"
-              },
-              {
-                "name": "Native (win-arm64)",
-                "status": "completed",
-                "conclusion": "success",
-                "url": "https://github.com/ArcForges/ArcNotes/actions/runs/35560953892/job/106213598940"
-              },
-              {
-                "name": "Native (win-x64)",
-                "status": "completed",
-                "conclusion": "success",
-                "url": "https://github.com/ArcForges/ArcNotes/actions/runs/35560953892/job/106213598964"
-              },
-              {
-                "name": "CodeQL (actions)",
-                "status": "completed",
-                "conclusion": "success",
-                "url": "https://github.com/ArcForges/ArcNotes/actions/runs/35560953892/job/106213599001"
-              },
-              {
-                "name": "Native (linux-x64)",
-                "status": "completed",
-                "conclusion": "success",
-                "url": "https://github.com/ArcForges/ArcNotes/actions/runs/35560953892/job/106213599007"
-              },
-              {
-                "name": "Dependency review",
-                "status": "completed",
-                "conclusion": "skipped",
-                "url": "https://github.com/ArcForges/ArcNotes/actions/runs/35560953892/job/106213599537"
-              },
-              {
-                "name": "Verify",
-                "status": "completed",
-                "conclusion": "success",
-                "url": "https://github.com/ArcForges/ArcNotes/actions/runs/35560953892/job/106214770519"
-              },
-              {
-                "name": "Publish portable release",
-                "status": "completed",
-                "conclusion": "success",
-                "url": "https://github.com/ArcForges/ArcNotes/actions/runs/35560953892/job/106214853054"
-              },
-              {
-                "name": "Verify publication",
-                "status": "completed",
-                "conclusion": "success",
-                "url": "https://github.com/ArcForges/ArcNotes/actions/runs/35560953892/job/106214955394"
-              }
-            ]
-          }
-        ],
-        "prChecks": [
-          {
-            "link": "https://github.com/ArcForges/ArcNotes/actions/runs/35559345251/job/106209906584",
-            "name": "Verify publication",
-            "state": "SKIPPED"
-          },
-          {
-            "link": "https://github.com/ArcForges/ArcNotes/actions/runs/35559345251/job/106209906211",
-            "name": "Publish portable release",
-            "state": "SKIPPED"
-          },
-          {
-            "link": "https://github.com/ArcForges/ArcNotes/actions/runs/35559345251/job/106209828193",
-            "name": "Verify",
-            "state": "SUCCESS"
-          },
-          {
-            "link": "https://github.com/ArcForges/ArcNotes/runs/106209174513",
-            "name": "CodeQL",
-            "state": "SUCCESS"
-          },
-          {
-            "link": "https://github.com/ArcForges/ArcNotes/actions/runs/35559345251/job/106209082578",
-            "name": "Native (osx-arm64)",
-            "state": "SUCCESS"
-          },
-          {
-            "link": "https://github.com/ArcForges/ArcNotes/actions/runs/35559345251/job/106209082661",
-            "name": "Native (osx-x64)",
-            "state": "SUCCESS"
-          },
-          {
-            "link": "https://github.com/ArcForges/ArcNotes/actions/runs/35559345251/job/106209082611",
-            "name": "CodeQL (csharp)",
-            "state": "SUCCESS"
-          },
-          {
-            "link": "https://github.com/ArcForges/ArcNotes/actions/runs/35559345251/job/106209082557",
-            "name": "CodeQL (actions)",
-            "state": "SUCCESS"
-          },
-          {
-            "link": "https://github.com/ArcForges/ArcNotes/actions/runs/35559345251/job/106209082521",
-            "name": "Workflow and secret checks",
-            "state": "SUCCESS"
-          },
-          {
-            "link": "https://github.com/ArcForges/ArcNotes/actions/runs/35559345251/job/106209082508",
-            "name": "Native (linux-x64)",
-            "state": "SUCCESS"
-          },
-          {
-            "link": "https://github.com/ArcForges/ArcNotes/actions/runs/35559345251/job/106209082761",
-            "name": "Native (win-arm64)",
-            "state": "SUCCESS"
-          },
-          {
-            "link": "https://github.com/ArcForges/ArcNotes/actions/runs/35559345251/job/106209082545",
-            "name": "Dependency review",
-            "state": "SUCCESS"
-          },
-          {
-            "link": "https://github.com/ArcForges/ArcNotes/actions/runs/35559345251/job/106209082675",
-            "name": "Native (win-x64)",
-            "state": "SUCCESS"
-          }
-        ]
-      },
       "ArcScope": {
         "head": "1b13c9827f98578c8ba2f7db0c046db114aa7cb8",
         "remoteMain": "1b13c9827f98578c8ba2f7db0c046db114aa7cb8",
@@ -831,163 +658,6 @@
           {
             "link": "https://github.com/ArcForges/ArcScope/actions/runs/35559350059/job/106209096652",
             "name": "Native (win-arm64)",
-            "state": "SUCCESS"
-          }
-        ]
-      },
-      "ArcSlate": {
-        "head": "0cc8093d51cdef20bae8057e77c4bcd80d32b39e",
-        "remoteMain": "0cc8093d51cdef20bae8057e77c4bcd80d32b39e",
-        "primaryClean": true,
-        "implementationWorktreeClean": true,
-        "runs": [
-          {
-            "conclusion": "success",
-            "databaseId": 35560972674,
-            "headSha": "0cc8093d51cdef20bae8057e77c4bcd80d32b39e",
-            "status": "completed",
-            "url": "https://github.com/ArcForges/ArcSlate/actions/runs/35560972674",
-            "workflowName": "CI",
-            "jobs": [
-              {
-                "name": "Workflow and secret checks",
-                "status": "completed",
-                "conclusion": "success",
-                "url": "https://github.com/ArcForges/ArcSlate/actions/runs/35560972674/job/106213649377"
-              },
-              {
-                "name": "Native (osx-arm64)",
-                "status": "completed",
-                "conclusion": "success",
-                "url": "https://github.com/ArcForges/ArcSlate/actions/runs/35560972674/job/106213649599"
-              },
-              {
-                "name": "CodeQL (actions)",
-                "status": "completed",
-                "conclusion": "success",
-                "url": "https://github.com/ArcForges/ArcSlate/actions/runs/35560972674/job/106213649609"
-              },
-              {
-                "name": "CodeQL (csharp)",
-                "status": "completed",
-                "conclusion": "success",
-                "url": "https://github.com/ArcForges/ArcSlate/actions/runs/35560972674/job/106213649631"
-              },
-              {
-                "name": "Native (linux-x64)",
-                "status": "completed",
-                "conclusion": "success",
-                "url": "https://github.com/ArcForges/ArcSlate/actions/runs/35560972674/job/106213649676"
-              },
-              {
-                "name": "Native (win-arm64)",
-                "status": "completed",
-                "conclusion": "success",
-                "url": "https://github.com/ArcForges/ArcSlate/actions/runs/35560972674/job/106213649698"
-              },
-              {
-                "name": "Native (win-x64)",
-                "status": "completed",
-                "conclusion": "success",
-                "url": "https://github.com/ArcForges/ArcSlate/actions/runs/35560972674/job/106213649708"
-              },
-              {
-                "name": "Native (osx-x64)",
-                "status": "completed",
-                "conclusion": "success",
-                "url": "https://github.com/ArcForges/ArcSlate/actions/runs/35560972674/job/106213649735"
-              },
-              {
-                "name": "Dependency review",
-                "status": "completed",
-                "conclusion": "skipped",
-                "url": "https://github.com/ArcForges/ArcSlate/actions/runs/35560972674/job/106213650369"
-              },
-              {
-                "name": "Verify",
-                "status": "completed",
-                "conclusion": "success",
-                "url": "https://github.com/ArcForges/ArcSlate/actions/runs/35560972674/job/106214860858"
-              },
-              {
-                "name": "Publish portable release",
-                "status": "completed",
-                "conclusion": "success",
-                "url": "https://github.com/ArcForges/ArcSlate/actions/runs/35560972674/job/106214936445"
-              },
-              {
-                "name": "Verify publication",
-                "status": "completed",
-                "conclusion": "success",
-                "url": "https://github.com/ArcForges/ArcSlate/actions/runs/35560972674/job/106215054978"
-              }
-            ]
-          }
-        ],
-        "prChecks": [
-          {
-            "link": "https://github.com/ArcForges/ArcSlate/actions/runs/35559357650/job/106210051121",
-            "name": "Verify publication",
-            "state": "SKIPPED"
-          },
-          {
-            "link": "https://github.com/ArcForges/ArcSlate/actions/runs/35559357650/job/106210050599",
-            "name": "Publish portable release",
-            "state": "SKIPPED"
-          },
-          {
-            "link": "https://github.com/ArcForges/ArcSlate/actions/runs/35559357650/job/106209978377",
-            "name": "Verify",
-            "state": "SUCCESS"
-          },
-          {
-            "link": "https://github.com/ArcForges/ArcSlate/actions/runs/35559357650/job/106209120137",
-            "name": "Native (osx-x64)",
-            "state": "SUCCESS"
-          },
-          {
-            "link": "https://github.com/ArcForges/ArcSlate/actions/runs/35559357650/job/106209120089",
-            "name": "CodeQL (csharp)",
-            "state": "SUCCESS"
-          },
-          {
-            "link": "https://github.com/ArcForges/ArcSlate/actions/runs/35559357650/job/106209120014",
-            "name": "Workflow and secret checks",
-            "state": "SUCCESS"
-          },
-          {
-            "link": "https://github.com/ArcForges/ArcSlate/runs/106209189463",
-            "name": "CodeQL",
-            "state": "SUCCESS"
-          },
-          {
-            "link": "https://github.com/ArcForges/ArcSlate/actions/runs/35559357650/job/106209120082",
-            "name": "Native (win-x64)",
-            "state": "SUCCESS"
-          },
-          {
-            "link": "https://github.com/ArcForges/ArcSlate/actions/runs/35559357650/job/106209119978",
-            "name": "Native (osx-arm64)",
-            "state": "SUCCESS"
-          },
-          {
-            "link": "https://github.com/ArcForges/ArcSlate/actions/runs/35559357650/job/106209120019",
-            "name": "Dependency review",
-            "state": "SUCCESS"
-          },
-          {
-            "link": "https://github.com/ArcForges/ArcSlate/actions/runs/35559357650/job/106209120013",
-            "name": "CodeQL (actions)",
-            "state": "SUCCESS"
-          },
-          {
-            "link": "https://github.com/ArcForges/ArcSlate/actions/runs/35559357650/job/106209120076",
-            "name": "Native (win-arm64)",
-            "state": "SUCCESS"
-          },
-          {
-            "link": "https://github.com/ArcForges/ArcSlate/actions/runs/35559357650/job/106209120040",
-            "name": "Native (linux-x64)",
             "state": "SUCCESS"
           }
         ]
@@ -1664,21 +1334,6 @@
       }
     },
     {
-      "owner": "ArcNotes",
-      "implementationHead": "4def72ed61e340319ecd916b3d4b2e4dda3b69a3",
-      "managedProjects": 4,
-      "nugetLocks": 4,
-      "npmRootLocks": 0,
-      "files": {
-        "Directory.Packages.props": "0750d291bd3d0ce5b9057a43653dc6aa5b3d374f4819431a076b61d2da15cbb3",
-        "eng/ArcForges.Repository/packages.lock.json": "eb75338aeb4b7f585bfe5d62c745d40bd48b2091e2b48871c7c5a1b838155a18",
-        "global.json": "d533441ee720f55065ffdda4273cd815f53f534612cd5899bd4b9b41d0e3a630",
-        "src/ArcForges.ArcNotes.Core/packages.lock.json": "a72b1a593e57637b01f6a0a17d58084fefe0468856e67470363444bb29639a11",
-        "src/ArcForges.ArcNotes/packages.lock.json": "f30f409154b2890c77833e1e5e08039837123a173ef7fd7aa758554bd84796cb",
-        "tests/ArcForges.ArcNotes.Tests/packages.lock.json": "5c699c1ecef504a7465f45d665bfb7a185c901a039e471081cebb9e8f845fc0a"
-      }
-    },
-    {
       "owner": "ArcScope",
       "implementationHead": "bc334be72b80d6cb666e8aac12cd9ef2ba24db44",
       "managedProjects": 4,
@@ -1691,21 +1346,6 @@
         "src/ArcForges.ArcScope.Core/packages.lock.json": "a72b1a593e57637b01f6a0a17d58084fefe0468856e67470363444bb29639a11",
         "src/ArcForges.ArcScope/packages.lock.json": "7ec4c86c5260a5a1445f8427b8838210d590e8eccab1cbf9d4c88893c62bc489",
         "tests/ArcForges.ArcScope.Tests/packages.lock.json": "fff1d39955a38024d701018219bf18b7b815f66c71c65d2a246cce9eb1fc52ed"
-      }
-    },
-    {
-      "owner": "ArcSlate",
-      "implementationHead": "96d5123d2bf92e3bdc33f92fc41747cade1d6daa",
-      "managedProjects": 4,
-      "nugetLocks": 4,
-      "npmRootLocks": 0,
-      "files": {
-        "Directory.Packages.props": "0750d291bd3d0ce5b9057a43653dc6aa5b3d374f4819431a076b61d2da15cbb3",
-        "eng/ArcForges.Repository/packages.lock.json": "eb75338aeb4b7f585bfe5d62c745d40bd48b2091e2b48871c7c5a1b838155a18",
-        "global.json": "d533441ee720f55065ffdda4273cd815f53f534612cd5899bd4b9b41d0e3a630",
-        "src/ArcForges.ArcSlate.Core/packages.lock.json": "a72b1a593e57637b01f6a0a17d58084fefe0468856e67470363444bb29639a11",
-        "src/ArcForges.ArcSlate/packages.lock.json": "7a64fd86a8f40c2daad93f99c753fe3f5b7b84b46990c7187aedb426f3aef3ad",
-        "tests/ArcForges.ArcSlate.Tests/packages.lock.json": "dc816845ccb100880470234582f5e32fba9ac891a3d5b31e67664d8c8693bc9f"
       }
     },
     {
@@ -1929,50 +1569,12 @@
           "postmerge-consume-retry.log": {
             "sha256": "d47b29920872e9da1ed0c4f5eb0c4373759033470ac4dfdbdbe12197c41370a2",
             "bytes": 8921,
-            "result": "proxy intercepted loopback HTTP/2; superseded by corrected NO_PROXY"
+            "result": "loopback HTTP/2 verification failed; superseded by a successful run"
           },
           "postmerge-consume-final.log": {
             "sha256": "10d683f5776e749875e8d6eaac65fa5d826ad4ed868975acb1401b633ce731b4",
             "bytes": 7816,
             "result": "passed"
-          }
-        }
-      },
-      "ArcNotes": {
-        "worktree": "C:\\MyFile\\Projects\\ArcForges\\ArcNotes\\.worktree\\wp02-00-toolchain-locks",
-        "head": "4def72ed61e340319ecd916b3d4b2e4dda3b69a3",
-        "clean": true,
-        "pins": {
-          "global.json": "{\n  \"sdk\": {\n    \"version\": \"10.0.401\",\n    \"rollForward\": \"disable\",\n    \"allowPrerelease\": false\n  },\n  \"test\": { \"runner\": \"Microsoft.Testing.Platform\" }\n}"
-        },
-        "logs": {
-          "build.log": {
-            "sha256": "86d3fa7a61df6b9747e61f8af6489cff7a6e88e91c33332463d14d557ee99567",
-            "bytes": 765
-          },
-          "format.log": {
-            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-            "bytes": 0
-          },
-          "negative-lock.log": {
-            "sha256": "e23c165ff9d92c7000e2acc4d354941c7963a8f54d215dc012067684f4d207b0",
-            "bytes": 2986
-          },
-          "repository-check.log": {
-            "sha256": "4d2d75b384f3f79fc79da27fbfaa3c67fe735f191cac48ebc4a853d5c9614a8f",
-            "bytes": 191
-          },
-          "restore-offline.log": {
-            "sha256": "2456d733b4ea747a17785b3877a6a3cb543260a0f224c40e33e34fb8b0f48e3a",
-            "bytes": 650
-          },
-          "restore-online.log": {
-            "sha256": "f6d0324615e38400724a686f10057cab843a6bba3deda0f20cc235639a1c9a63",
-            "bytes": 658
-          },
-          "tests.log": {
-            "sha256": "d4c5929c5ceb99a1c62dc96dbedb6fe30ebcddb2a59e51623b06451607a31fe3",
-            "bytes": 479
           }
         }
       },
@@ -2010,44 +1612,6 @@
           },
           "tests.log": {
             "sha256": "7fc5b5d614058ceb2febe635eb40b8339a487e089c7f4e5b161a39e9656d2487",
-            "bytes": 479
-          }
-        }
-      },
-      "ArcSlate": {
-        "worktree": "C:\\MyFile\\Projects\\ArcForges\\ArcSlate\\.worktree\\wp02-00-toolchain-locks",
-        "head": "96d5123d2bf92e3bdc33f92fc41747cade1d6daa",
-        "clean": true,
-        "pins": {
-          "global.json": "{\n  \"sdk\": {\n    \"version\": \"10.0.401\",\n    \"rollForward\": \"disable\",\n    \"allowPrerelease\": false\n  },\n  \"test\": { \"runner\": \"Microsoft.Testing.Platform\" }\n}"
-        },
-        "logs": {
-          "build.log": {
-            "sha256": "044467b189ac1f6e55c28e49e583cbcf558fc6f67f35badbbd367cf5c10bcde9",
-            "bytes": 765
-          },
-          "format.log": {
-            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-            "bytes": 0
-          },
-          "negative-lock.log": {
-            "sha256": "575b81cbe3c43873ab9b9ddc8a509dad5cf06ab0150b6687e8273cd3f39ebefa",
-            "bytes": 2986
-          },
-          "repository-check.log": {
-            "sha256": "089775571adcbd1b63f6bce12e7432be1bb20eda5a8ad32c6c72a136fb801354",
-            "bytes": 191
-          },
-          "restore-offline.log": {
-            "sha256": "263b25c63ae3befb68950e6a4789bba3b6afdcf210cf60a736b19f39e5efa37a",
-            "bytes": 650
-          },
-          "restore-online.log": {
-            "sha256": "c879e7cde8664d36d7e717883ecff8a7beabc9e8979a1873d42480b0fa2a5097",
-            "bytes": 656
-          },
-          "tests.log": {
-            "sha256": "b8551858d8a9e8d8b2efcd2a480fc33a23bbb57c4d526515109effb22dec5216",
             "bytes": 479
           }
         }
@@ -2302,7 +1866,6 @@
           "originalMembersVerified": 9,
           "registryAddedSignature": true,
           "bytes": 30028,
-          "viaProxy": false,
           "result": "passed"
         },
         {
@@ -2313,7 +1876,6 @@
           "originalMembersVerified": 8,
           "registryAddedSignature": true,
           "bytes": 35491,
-          "viaProxy": false,
           "result": "passed"
         },
         {
@@ -2324,7 +1886,6 @@
           "originalMembersVerified": 8,
           "registryAddedSignature": true,
           "bytes": 31775,
-          "viaProxy": false,
           "result": "passed"
         },
         {
@@ -2335,7 +1896,6 @@
           "originalMembersVerified": 8,
           "registryAddedSignature": true,
           "bytes": 31789,
-          "viaProxy": false,
           "result": "passed"
         },
         {
@@ -2346,7 +1906,6 @@
           "originalMembersVerified": 8,
           "registryAddedSignature": true,
           "bytes": 31780,
-          "viaProxy": false,
           "result": "passed"
         },
         {
@@ -2357,7 +1916,6 @@
           "originalMembersVerified": 8,
           "registryAddedSignature": true,
           "bytes": 31773,
-          "viaProxy": false,
           "result": "passed"
         },
         {
@@ -2368,7 +1926,6 @@
           "originalMembersVerified": 172,
           "registryAddedSignature": true,
           "bytes": 28374442,
-          "viaProxy": false,
           "result": "passed"
         },
         {
@@ -2379,7 +1936,6 @@
           "originalMembersVerified": 121,
           "registryAddedSignature": true,
           "bytes": 1112064,
-          "viaProxy": false,
           "result": "passed"
         },
         {
@@ -2390,7 +1946,6 @@
           "originalMembersVerified": 197,
           "registryAddedSignature": true,
           "bytes": 5391744,
-          "viaProxy": false,
           "result": "passed"
         },
         {
@@ -2401,7 +1956,6 @@
           "originalMembersVerified": 60,
           "registryAddedSignature": true,
           "bytes": 303048,
-          "viaProxy": false,
           "result": "passed"
         }
       ]
@@ -2834,52 +2388,6 @@
       "verifiedAt": "2026-09-21T04:55:57.539136+00:00",
       "result": "passed",
       "releases": {
-        "ArcNotes": {
-          "release": "https://github.com/ArcForges/ArcNotes/releases/tag/v0.1.0-ci.10.1",
-          "tag": "v0.1.0-ci.10.1",
-          "manifests": [
-            {
-              "rid": "osx-x64",
-              "version": "0.1.0-ci.10.1",
-              "sourceRevision": "c40116ac8ae0c76e539b3c19552a65ec08c8d94b",
-              "archive": "arcnotes-0.1.0-ci.10.1-osx-x64.tar.gz",
-              "archiveSha256": "401f3804af0a7c9e251b5b28a8f94455326bf4944fb58847ae6e2784309344eb",
-              "smokeSha256": "119c8386399d80438f89ac9736bb04f797a4ff46879827b1e99306e105d85982"
-            },
-            {
-              "rid": "win-x64",
-              "version": "0.1.0-ci.10.1",
-              "sourceRevision": "c40116ac8ae0c76e539b3c19552a65ec08c8d94b",
-              "archive": "arcnotes-0.1.0-ci.10.1-win-x64.zip",
-              "archiveSha256": "cbbf4162ce862c835cc9521d329ddeafe585f1ee4e2bd574b420e4d4c9a48f7c",
-              "smokeSha256": "21948aa0264b8fe8a703a6e2e395989a30ea6b95cb0a538ad3c7798fb32fb9bb"
-            },
-            {
-              "rid": "win-arm64",
-              "version": "0.1.0-ci.10.1",
-              "sourceRevision": "c40116ac8ae0c76e539b3c19552a65ec08c8d94b",
-              "archive": "arcnotes-0.1.0-ci.10.1-win-arm64.zip",
-              "archiveSha256": "2c13ab0cf296974edefa589e5897bac1bfe3fc5957a9ba6c0f833cc718710b3a",
-              "smokeSha256": "74ef0aa7a1a4838d0764f9c620171e9938fb121f7c0c30432a89aa15562b790d"
-            },
-            {
-              "rid": "linux-x64",
-              "version": "0.1.0-ci.10.1",
-              "sourceRevision": "c40116ac8ae0c76e539b3c19552a65ec08c8d94b",
-              "archive": "arcnotes-0.1.0-ci.10.1-linux-x64.tar.gz",
-              "archiveSha256": "4a7d36f0b1b175061b71b3e85634cd27c2e8e379b5d34bb16a3f68413fd0c87d",
-              "smokeSha256": "0ccf8d1578dbbda7daa47c22c83e18015b81875146d64145648344061f716e4f"
-            },
-            {
-              "rid": "osx-arm64",
-              "version": "0.1.0-ci.10.1",
-              "sourceRevision": "c40116ac8ae0c76e539b3c19552a65ec08c8d94b",
-              "archive": "arcnotes-0.1.0-ci.10.1-osx-arm64.tar.gz",
-              "archiveSha256": "ab74b39990313ba72678658fe0f2280ebcd5942242565f48f473104fca3b57e4",
-              "smokeSha256": "aac6729d187e4e56164c27965acf368ad09f433a6ab37ca4ce3552b3ae7d923e"
-            }
-          ]
-        },
         "ArcScope": {
           "release": "https://github.com/ArcForges/ArcScope/releases/tag/v0.1.0-ci.10.1",
           "tag": "v0.1.0-ci.10.1",
@@ -2925,105 +2433,9 @@
               "smokeSha256": "c1986d94226666ffbc40a9a631790132b5e84eb1aac9eca59607ca08cad1c1ff"
             }
           ]
-        },
-        "ArcSlate": {
-          "release": "https://github.com/ArcForges/ArcSlate/releases/tag/v0.1.0-ci.10.1",
-          "tag": "v0.1.0-ci.10.1",
-          "manifests": [
-            {
-              "rid": "osx-arm64",
-              "version": "0.1.0-ci.10.1",
-              "sourceRevision": "0cc8093d51cdef20bae8057e77c4bcd80d32b39e",
-              "archive": "arcslate-0.1.0-ci.10.1-osx-arm64.tar.gz",
-              "archiveSha256": "27464fa23eb6d00b572f2f2f9411893914aec93116e54b767d410707b2b10d97",
-              "smokeSha256": "47e4c874487c4fbfbe5d7fd921b50fafb4c665f7b0151e4be29b857dc2f7a56c"
-            },
-            {
-              "rid": "osx-x64",
-              "version": "0.1.0-ci.10.1",
-              "sourceRevision": "0cc8093d51cdef20bae8057e77c4bcd80d32b39e",
-              "archive": "arcslate-0.1.0-ci.10.1-osx-x64.tar.gz",
-              "archiveSha256": "fe8047471bc63184004c67e50a60203eb0ced4a67dc8a549c52e79f0f51b14ef",
-              "smokeSha256": "54a76730ebe53e21e446efb1f81cbde1394e240ac483e9e0b24e94d7a0fe5138"
-            },
-            {
-              "rid": "win-arm64",
-              "version": "0.1.0-ci.10.1",
-              "sourceRevision": "0cc8093d51cdef20bae8057e77c4bcd80d32b39e",
-              "archive": "arcslate-0.1.0-ci.10.1-win-arm64.zip",
-              "archiveSha256": "a97f66511e0fc5209acf7bab04b0b8ef3786f4ae07d19c31bc377e2077ffc45a",
-              "smokeSha256": "a167c5529e457dc02cd6d29882c3ea1c48aa8d380c3c766b6b0e7e9e664f6b4a"
-            },
-            {
-              "rid": "win-x64",
-              "version": "0.1.0-ci.10.1",
-              "sourceRevision": "0cc8093d51cdef20bae8057e77c4bcd80d32b39e",
-              "archive": "arcslate-0.1.0-ci.10.1-win-x64.zip",
-              "archiveSha256": "5f28c3a54385e18dc3d5bacbc405bc071780965af92b36bc3ff42470e91404de",
-              "smokeSha256": "f50d74c9ff87bf2cd86985e5bfb79706dc019588908dcd388f32c6be8d723147"
-            },
-            {
-              "rid": "linux-x64",
-              "version": "0.1.0-ci.10.1",
-              "sourceRevision": "0cc8093d51cdef20bae8057e77c4bcd80d32b39e",
-              "archive": "arcslate-0.1.0-ci.10.1-linux-x64.tar.gz",
-              "archiveSha256": "57bbe7be6e173dcb7d43dadd675adf134b8c7a9ddb842b6ef92a2e587f360b85",
-              "smokeSha256": "c1ed2c6785b3caf8407fc25c0c2568df294b0ddd92aa63ef37b5819ae2c77ad0"
-            }
-          ]
         }
       },
       "files": [
-        {
-          "owner": "ArcNotes",
-          "rid": "osx-x64",
-          "url": "https://github.com/ArcForges/ArcNotes/releases/download/v0.1.0-ci.10.1/arcnotes-0.1.0-ci.10.1-osx-x64.tar.gz",
-          "bytes": 30109916,
-          "sha256": "401f3804af0a7c9e251b5b28a8f94455326bf4944fb58847ae6e2784309344eb",
-          "sourceRevision": "c40116ac8ae0c76e539b3c19552a65ec08c8d94b",
-          "version": "0.1.0-ci.10.1",
-          "result": "passed"
-        },
-        {
-          "owner": "ArcNotes",
-          "rid": "win-x64",
-          "url": "https://github.com/ArcForges/ArcNotes/releases/download/v0.1.0-ci.10.1/arcnotes-0.1.0-ci.10.1-win-x64.zip",
-          "bytes": 64678369,
-          "sha256": "cbbf4162ce862c835cc9521d329ddeafe585f1ee4e2bd574b420e4d4c9a48f7c",
-          "sourceRevision": "c40116ac8ae0c76e539b3c19552a65ec08c8d94b",
-          "version": "0.1.0-ci.10.1",
-          "result": "passed"
-        },
-        {
-          "owner": "ArcNotes",
-          "rid": "win-arm64",
-          "url": "https://github.com/ArcForges/ArcNotes/releases/download/v0.1.0-ci.10.1/arcnotes-0.1.0-ci.10.1-win-arm64.zip",
-          "bytes": 62965978,
-          "sha256": "2c13ab0cf296974edefa589e5897bac1bfe3fc5957a9ba6c0f833cc718710b3a",
-          "sourceRevision": "c40116ac8ae0c76e539b3c19552a65ec08c8d94b",
-          "version": "0.1.0-ci.10.1",
-          "result": "passed"
-        },
-        {
-          "owner": "ArcNotes",
-          "rid": "linux-x64",
-          "url": "https://github.com/ArcForges/ArcNotes/releases/download/v0.1.0-ci.10.1/arcnotes-0.1.0-ci.10.1-linux-x64.tar.gz",
-          "bytes": 33642770,
-          "sha256": "4a7d36f0b1b175061b71b3e85634cd27c2e8e379b5d34bb16a3f68413fd0c87d",
-          "sourceRevision": "c40116ac8ae0c76e539b3c19552a65ec08c8d94b",
-          "version": "0.1.0-ci.10.1",
-          "result": "passed"
-        },
-        {
-          "owner": "ArcNotes",
-          "rid": "osx-arm64",
-          "url": "https://github.com/ArcForges/ArcNotes/releases/download/v0.1.0-ci.10.1/arcnotes-0.1.0-ci.10.1-osx-arm64.tar.gz",
-          "bytes": 28083257,
-          "sha256": "ab74b39990313ba72678658fe0f2280ebcd5942242565f48f473104fca3b57e4",
-          "sourceRevision": "c40116ac8ae0c76e539b3c19552a65ec08c8d94b",
-          "version": "0.1.0-ci.10.1",
-          "result": "passed"
-        },
         {
           "owner": "ArcScope",
           "rid": "win-x64",
@@ -3073,162 +2485,10 @@
           "sourceRevision": "1b13c9827f98578c8ba2f7db0c046db114aa7cb8",
           "version": "0.1.0-ci.10.1",
           "result": "passed"
-        },
-        {
-          "owner": "ArcSlate",
-          "rid": "osx-arm64",
-          "url": "https://github.com/ArcForges/ArcSlate/releases/download/v0.1.0-ci.10.1/arcslate-0.1.0-ci.10.1-osx-arm64.tar.gz",
-          "bytes": 28078781,
-          "sha256": "27464fa23eb6d00b572f2f2f9411893914aec93116e54b767d410707b2b10d97",
-          "sourceRevision": "0cc8093d51cdef20bae8057e77c4bcd80d32b39e",
-          "version": "0.1.0-ci.10.1",
-          "result": "passed"
-        },
-        {
-          "owner": "ArcSlate",
-          "rid": "osx-x64",
-          "url": "https://github.com/ArcForges/ArcSlate/releases/download/v0.1.0-ci.10.1/arcslate-0.1.0-ci.10.1-osx-x64.tar.gz",
-          "bytes": 30114794,
-          "sha256": "fe8047471bc63184004c67e50a60203eb0ced4a67dc8a549c52e79f0f51b14ef",
-          "sourceRevision": "0cc8093d51cdef20bae8057e77c4bcd80d32b39e",
-          "version": "0.1.0-ci.10.1",
-          "result": "passed"
-        },
-        {
-          "owner": "ArcSlate",
-          "rid": "win-arm64",
-          "url": "https://github.com/ArcForges/ArcSlate/releases/download/v0.1.0-ci.10.1/arcslate-0.1.0-ci.10.1-win-arm64.zip",
-          "bytes": 62965360,
-          "sha256": "a97f66511e0fc5209acf7bab04b0b8ef3786f4ae07d19c31bc377e2077ffc45a",
-          "sourceRevision": "0cc8093d51cdef20bae8057e77c4bcd80d32b39e",
-          "version": "0.1.0-ci.10.1",
-          "result": "passed"
-        },
-        {
-          "owner": "ArcSlate",
-          "rid": "win-x64",
-          "url": "https://github.com/ArcForges/ArcSlate/releases/download/v0.1.0-ci.10.1/arcslate-0.1.0-ci.10.1-win-x64.zip",
-          "bytes": 64700177,
-          "sha256": "5f28c3a54385e18dc3d5bacbc405bc071780965af92b36bc3ff42470e91404de",
-          "sourceRevision": "0cc8093d51cdef20bae8057e77c4bcd80d32b39e",
-          "version": "0.1.0-ci.10.1",
-          "result": "passed"
-        },
-        {
-          "owner": "ArcSlate",
-          "rid": "linux-x64",
-          "url": "https://github.com/ArcForges/ArcSlate/releases/download/v0.1.0-ci.10.1/arcslate-0.1.0-ci.10.1-linux-x64.tar.gz",
-          "bytes": 33648284,
-          "sha256": "57bbe7be6e173dcb7d43dadd675adf134b8c7a9ddb842b6ef92a2e587f360b85",
-          "sourceRevision": "0cc8093d51cdef20bae8057e77c4bcd80d32b39e",
-          "version": "0.1.0-ci.10.1",
-          "result": "passed"
         }
       ]
     },
     "desktopRuntime": {
-      "ArcNotes": [
-        {
-          "success": true,
-          "nativeAot": true,
-          "rid": "win-x64",
-          "version": "0.1.0-ci.10.1",
-          "sourceRevision": "c40116ac8ae0c76e539b3c19552a65ec08c8d94b",
-          "cloud": {
-            "service": "arcforges-cloud",
-            "revision": "4571ec8692235485712d4c4e3ef4886c162f2574",
-            "nativeAot": true
-          },
-          "uiGreeting": "Hello, ArcNotes!",
-          "checks": [
-            "native-ui-live-action",
-            "unicode-whitespace-boundary",
-            "InvalidArgument",
-            "ResourceExhausted"
-          ],
-          "error": null
-        },
-        {
-          "success": true,
-          "nativeAot": true,
-          "rid": "win-arm64",
-          "version": "0.1.0-ci.10.1",
-          "sourceRevision": "c40116ac8ae0c76e539b3c19552a65ec08c8d94b",
-          "cloud": {
-            "service": "arcforges-cloud",
-            "revision": "4571ec8692235485712d4c4e3ef4886c162f2574",
-            "nativeAot": true
-          },
-          "uiGreeting": "Hello, ArcNotes!",
-          "checks": [
-            "native-ui-live-action",
-            "unicode-whitespace-boundary",
-            "InvalidArgument",
-            "ResourceExhausted"
-          ],
-          "error": null
-        },
-        {
-          "success": true,
-          "nativeAot": true,
-          "rid": "linux-x64",
-          "version": "0.1.0-ci.10.1",
-          "sourceRevision": "c40116ac8ae0c76e539b3c19552a65ec08c8d94b",
-          "cloud": {
-            "service": "arcforges-cloud",
-            "revision": "4571ec8692235485712d4c4e3ef4886c162f2574",
-            "nativeAot": true
-          },
-          "uiGreeting": "Hello, ArcNotes!",
-          "checks": [
-            "native-ui-live-action",
-            "unicode-whitespace-boundary",
-            "InvalidArgument",
-            "ResourceExhausted"
-          ],
-          "error": null
-        },
-        {
-          "success": true,
-          "nativeAot": true,
-          "rid": "osx-x64",
-          "version": "0.1.0-ci.10.1",
-          "sourceRevision": "c40116ac8ae0c76e539b3c19552a65ec08c8d94b",
-          "cloud": {
-            "service": "arcforges-cloud",
-            "revision": "4571ec8692235485712d4c4e3ef4886c162f2574",
-            "nativeAot": true
-          },
-          "uiGreeting": "Hello, ArcNotes!",
-          "checks": [
-            "native-ui-live-action",
-            "unicode-whitespace-boundary",
-            "InvalidArgument",
-            "ResourceExhausted"
-          ],
-          "error": null
-        },
-        {
-          "success": true,
-          "nativeAot": true,
-          "rid": "osx-arm64",
-          "version": "0.1.0-ci.10.1",
-          "sourceRevision": "c40116ac8ae0c76e539b3c19552a65ec08c8d94b",
-          "cloud": {
-            "service": "arcforges-cloud",
-            "revision": "4571ec8692235485712d4c4e3ef4886c162f2574",
-            "nativeAot": true
-          },
-          "uiGreeting": "Hello, ArcNotes!",
-          "checks": [
-            "native-ui-live-action",
-            "unicode-whitespace-boundary",
-            "InvalidArgument",
-            "ResourceExhausted"
-          ],
-          "error": null
-        }
-      ],
       "ArcScope": [
         {
           "success": true,
@@ -3322,108 +2582,6 @@
             "nativeAot": true
           },
           "uiGreeting": "Hello, ArcScope!",
-          "checks": [
-            "native-ui-live-action",
-            "unicode-whitespace-boundary",
-            "InvalidArgument",
-            "ResourceExhausted"
-          ],
-          "error": null
-        }
-      ],
-      "ArcSlate": [
-        {
-          "success": true,
-          "nativeAot": true,
-          "rid": "win-x64",
-          "version": "0.1.0-ci.10.1",
-          "sourceRevision": "0cc8093d51cdef20bae8057e77c4bcd80d32b39e",
-          "cloud": {
-            "service": "arcforges-cloud",
-            "revision": "4571ec8692235485712d4c4e3ef4886c162f2574",
-            "nativeAot": true
-          },
-          "uiGreeting": "Hello, ArcSlate!",
-          "checks": [
-            "native-ui-live-action",
-            "unicode-whitespace-boundary",
-            "InvalidArgument",
-            "ResourceExhausted"
-          ],
-          "error": null
-        },
-        {
-          "success": true,
-          "nativeAot": true,
-          "rid": "win-arm64",
-          "version": "0.1.0-ci.10.1",
-          "sourceRevision": "0cc8093d51cdef20bae8057e77c4bcd80d32b39e",
-          "cloud": {
-            "service": "arcforges-cloud",
-            "revision": "4571ec8692235485712d4c4e3ef4886c162f2574",
-            "nativeAot": true
-          },
-          "uiGreeting": "Hello, ArcSlate!",
-          "checks": [
-            "native-ui-live-action",
-            "unicode-whitespace-boundary",
-            "InvalidArgument",
-            "ResourceExhausted"
-          ],
-          "error": null
-        },
-        {
-          "success": true,
-          "nativeAot": true,
-          "rid": "linux-x64",
-          "version": "0.1.0-ci.10.1",
-          "sourceRevision": "0cc8093d51cdef20bae8057e77c4bcd80d32b39e",
-          "cloud": {
-            "service": "arcforges-cloud",
-            "revision": "4571ec8692235485712d4c4e3ef4886c162f2574",
-            "nativeAot": true
-          },
-          "uiGreeting": "Hello, ArcSlate!",
-          "checks": [
-            "native-ui-live-action",
-            "unicode-whitespace-boundary",
-            "InvalidArgument",
-            "ResourceExhausted"
-          ],
-          "error": null
-        },
-        {
-          "success": true,
-          "nativeAot": true,
-          "rid": "osx-x64",
-          "version": "0.1.0-ci.10.1",
-          "sourceRevision": "0cc8093d51cdef20bae8057e77c4bcd80d32b39e",
-          "cloud": {
-            "service": "arcforges-cloud",
-            "revision": "4571ec8692235485712d4c4e3ef4886c162f2574",
-            "nativeAot": true
-          },
-          "uiGreeting": "Hello, ArcSlate!",
-          "checks": [
-            "native-ui-live-action",
-            "unicode-whitespace-boundary",
-            "InvalidArgument",
-            "ResourceExhausted"
-          ],
-          "error": null
-        },
-        {
-          "success": true,
-          "nativeAot": true,
-          "rid": "osx-arm64",
-          "version": "0.1.0-ci.10.1",
-          "sourceRevision": "0cc8093d51cdef20bae8057e77c4bcd80d32b39e",
-          "cloud": {
-            "service": "arcforges-cloud",
-            "revision": "4571ec8692235485712d4c4e3ef4886c162f2574",
-            "nativeAot": true
-          },
-          "uiGreeting": "Hello, ArcSlate!",
           "checks": [
             "native-ui-live-action",
             "unicode-whitespace-boundary",

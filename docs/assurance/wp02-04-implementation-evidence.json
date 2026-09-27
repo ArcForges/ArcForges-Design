@@ -35,16 +35,6 @@
       "evidenceClass": "historical accepted identity implementation; not rerun under P2-017"
     },
     {
-      "owner": "ArcNotes",
-      "pr": "https://github.com/ArcForges/ArcNotes/pull/7",
-      "reviewedHead": "665f5b5720a873845bedd48025a93058782ae7ee",
-      "mergeCommit": "0c797e30690a10d8798ddca19ca7f37b16cecf01",
-      "version": "0.1.0-ci.15.1",
-      "prRun": 35609826605,
-      "mainRun": 35610729653,
-      "evidenceClass": "historical accepted identity implementation; not rerun under P2-017"
-    },
-    {
       "owner": "ArcScope",
       "pr": "https://github.com/ArcForges/ArcScope/pull/7",
       "reviewedHead": "265cd29bdfc6e0cb66653e849367303c19eef43e",
@@ -52,16 +42,6 @@
       "version": "0.1.0-ci.14.2",
       "prRun": 35612987011,
       "mainRun": 35613699865,
-      "evidenceClass": "historical accepted identity implementation; not rerun under P2-017"
-    },
-    {
-      "owner": "ArcSlate",
-      "pr": "https://github.com/ArcForges/ArcSlate/pull/7",
-      "reviewedHead": "5cd02cdf7c86166c09149c9399cccf175ae502cc",
-      "mergeCommit": "807ac12a86036dbd48b5a6bdf8fbeaa0a6f48430",
-      "version": "0.1.0-ci.14.1",
-      "prRun": 35615976836,
-      "mainRun": 35616616925,
       "evidenceClass": "historical accepted identity implementation; not rerun under P2-017"
     },
     {
@@ -204,56 +184,6 @@
       "retainedWorktree": ".worktree/wp02-04-ci-reduction"
     },
     {
-      "owner": "ArcNotes",
-      "pr": "https://github.com/ArcForges/ArcNotes/pull/8",
-      "reviewedHead": "a40c0e3575789969451a5a29093ea1b53f6af9e9",
-      "mergeCommit": "2dee20b0c1d9acaf3d83b20dfd045e1e070e082c",
-      "mainConclusion": "success",
-      "publishOutcome": {
-        "publishJob": "success",
-        "verifyPublicationJob": "success",
-        "releaseTag": "v0.1.0-ci.17.1",
-        "platforms": [
-          "win-x64",
-          "win-arm64",
-          "linux-x64"
-        ],
-        "evidenceBoundary": "Provider publication job result; no public archive download or runtime test"
-      },
-      "localChecks": {
-        "managedReleaseBuild": {
-          "warnings": 0,
-          "errors": 0
-        },
-        "offlineUnitTests": {
-          "passed": 97,
-          "failed": 0,
-          "excluded": "TransportTests loopback integration"
-        },
-        "sourceLicenceProvenance": "passed",
-        "gitDiffCheck": "passed",
-        "runtimeExecution": "not performed",
-        "aotCompilation": "hosted CI only"
-      },
-      "primaryClean": true,
-      "prRuns": [
-        "https://github.com/ArcForges/ArcNotes/actions/runs/35641667828"
-      ],
-      "mainRuns": [
-        "https://github.com/ArcForges/ArcNotes/actions/runs/35642212929"
-      ],
-      "reviewOutcome": "Full self-review and independent review completed; findings repaired; applicable latest-head checks successful before merge.",
-      "retainedBranch": "codex/wp02-04-ci-reduction",
-      "retainedWorktree": ".worktree/wp02-04-ci-reduction",
-      "removedCoverage": [
-        "macOS CI and automated macOS releases",
-        "hosted GUI/live Cloud and packaged binary execution",
-        "mandatory smoke and screenshot release evidence",
-        "duplicate aggregate candidate download and archive verification",
-        "implicit hook rebuilds/tests"
-      ]
-    },
-    {
       "owner": "ArcScope",
       "pr": "https://github.com/ArcForges/ArcScope/pull/8",
       "reviewedHead": "3ceb6bd4d49819496dcc674bc2acd3c9862a7220",
@@ -291,56 +221,6 @@
       ],
       "mainRuns": [
         "https://github.com/ArcForges/ArcScope/actions/runs/35642226807"
-      ],
-      "reviewOutcome": "Full self-review and independent review completed; findings repaired; applicable latest-head checks successful before merge.",
-      "retainedBranch": "codex/wp02-04-ci-reduction",
-      "retainedWorktree": ".worktree/wp02-04-ci-reduction",
-      "removedCoverage": [
-        "macOS CI and automated macOS releases",
-        "hosted GUI/live Cloud and packaged binary execution",
-        "mandatory smoke and screenshot release evidence",
-        "duplicate aggregate candidate download and archive verification",
-        "implicit hook rebuilds/tests"
-      ]
-    },
-    {
-      "owner": "ArcSlate",
-      "pr": "https://github.com/ArcForges/ArcSlate/pull/8",
-      "reviewedHead": "a2f4459e1bea590c572b28245bdafc04ac48b8ce",
-      "mergeCommit": "26331c3b240a95603d2f9d25949f47899ac484e0",
-      "mainConclusion": "success",
-      "publishOutcome": {
-        "publishJob": "success",
-        "verifyPublicationJob": "success",
-        "releaseTag": "v0.1.0-ci.16.1",
-        "platforms": [
-          "win-x64",
-          "win-arm64",
-          "linux-x64"
-        ],
-        "evidenceBoundary": "Provider publication job result; no public archive download or runtime test"
-      },
-      "localChecks": {
-        "managedReleaseBuild": {
-          "warnings": 0,
-          "errors": 0
-        },
-        "offlineUnitTests": {
-          "passed": 97,
-          "failed": 0,
-          "excluded": "TransportTests loopback integration"
-        },
-        "sourceLicenceProvenance": "passed",
-        "gitDiffCheck": "passed",
-        "runtimeExecution": "not performed",
-        "aotCompilation": "hosted CI only"
-      },
-      "primaryClean": true,
-      "prRuns": [
-        "https://github.com/ArcForges/ArcSlate/actions/runs/35641681162"
-      ],
-      "mainRuns": [
-        "https://github.com/ArcForges/ArcSlate/actions/runs/35642242698"
       ],
       "reviewOutcome": "Full self-review and independent review completed; findings repaired; applicable latest-head checks successful before merge.",
       "retainedBranch": "codex/wp02-04-ci-reduction",

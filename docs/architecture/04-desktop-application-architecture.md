@@ -7,7 +7,7 @@
 > Governing authority: **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** (desktop is a Native AOT deliverable), **[V-05a](../assurance/phase-1-official-verification.md#rule-v-05a)** (Avalonia AOT evidence)
 > Companions: [`00-architecture-overview.md`](00-architecture-overview.md), [`03-local-ipc-and-process-model.md`](03-local-ipc-and-process-model.md), [`../requirements/09-shared-desktop-experience.md`](../requirements/09-shared-desktop-experience.md)
 
-One structure, used identically by ArcChat, ArcNotes, ArcScope and ArcSlate.
+One structure, used identically by ArcScope and its embedded ArcChat assistant.
 
 ---
 
@@ -76,7 +76,7 @@ The Generic Host owns, in one place: dependency injection, configuration and sec
 | <a id="rule-th-02"></a>TH-02 | **CPU-bound work goes to a controlled scheduler.** Arbitrary background task creation that produces unbounded concurrency is prohibited. |
 | <a id="rule-th-03"></a>TH-03 | **I/O is asynchronous end to end.** |
 | <a id="rule-th-04"></a>TH-04 | **Native callbacks copy minimal metadata as early as possible** and hand off to a managed queue. |
-| <a id="rule-th-05"></a>TH-05 | **Each document, timeline or capture session protects write ordering** with a serial mailbox or an async lock. |
+| <a id="rule-th-05"></a>TH-05 | **Each capture session or annotation edit protects write ordering** with a serial mailbox or an async lock. |
 | <a id="rule-th-06"></a>TH-06 | **Never wait on an RPC callback, the UI dispatcher, or a long native call while holding a domain lock.** |
 | <a id="rule-th-07"></a>TH-07 | **Every channel has a capacity and an overflow policy.** |
 | <a id="rule-th-08"></a>TH-08 | **A synchronous UI-thread block beyond the responsiveness threshold is a defect** ([RS-03](../requirements/12-quality-and-compatibility-contract.md#rule-rs-03) in the quality contract). |
@@ -132,7 +132,7 @@ Because native libraries share the process, an access violation terminates the a
 1. Detect the abnormal-exit marker
 2. Validate the last transaction and the journal
 3. Recover to the last committed revision
-4. **Quarantine the media, plug-in or operation that may have triggered the crash**
+4. **Quarantine the input, plug-in or operation that may have triggered the crash**
 5. Present a recovery report and offer an optional diagnostic bundle
 6. Reopen this app's Cloud session/presence and recreate parent-owned helper channels
 7. Re-establish the realtime session and query missing state over HTTP
@@ -204,7 +204,7 @@ Process start
 | <a id="rule-su-01"></a>SU-01 | **Nothing in the background column may block reaching a usable workspace** ([`SU-01`](../requirements/12-quality-and-compatibility-contract.md#rule-su-01)–[SU-03](../requirements/12-quality-and-compatibility-contract.md#rule-su-03) in the quality contract). |
 | <a id="rule-su-02"></a>SU-02 | **Start-up never waits for account, cloud, policy or a model catalogue.** |
 | <a id="rule-su-03"></a>SU-03 | **Start-up never requires ArcChat to be online.** |
-| <a id="rule-su-04"></a>SU-04 | Installation and shell launch require no account ([ID-01](../requirements/02-identity-account-and-workspace.md#rule-id-01) of the identity requirements). Cloud Notes enrolment, AI and continuity require sign-in; previously authorised hydrated content and pending edits retain their stated offline protections. ArcScope/ArcSlate native operations require neither Cloud enrolment nor a paid AI term. |
+| <a id="rule-su-04"></a>SU-04 | Installation and shell launch require no account ([ID-01](../requirements/02-identity-account-and-workspace.md#rule-id-01) of the identity requirements). Cloud sync enrolment, AI and continuity require sign-in; previously authorised hydrated content and pending edits retain their stated offline protections. ArcScope native operations require neither Cloud enrolment nor a paid AI term. |
 
 ---
 
@@ -230,9 +230,7 @@ Shutdown requested
 | Product | Additional host concerns |
 |---|---|
 | **Embedded assistant** | Own-app chat/task/project/automation/approval/context UI, local or Cloud history, independent Cloud connection and device bridge; all packaged by DesktopPlatform |
-| **ArcNotes** | Block editor infrastructure, link index, search index host, attachment store |
 | **ArcScope** | Acquisition pipeline, ring buffers, decoder host, chunked capture store, real-time visualisation pipeline, device adapters |
-| **ArcSlate** | Media runtime, decode and playback pipeline, audio clock, processing graph engine, proxy and cache managers, render queue |
 
 Each is elaborated in its product requirements and in [`12-native-interop-and-media.md`](12-native-interop-and-media.md).
 

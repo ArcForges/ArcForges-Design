@@ -5,7 +5,7 @@
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: J — Platform completion
-> Upstream: `25` · `42` · `44` · Downstream: `40` · `50` · `52`
+> Scheduling: this package is an obligation set; its delivery tasks and their typed prerequisites are listed in section 9, generated from the [delivery graph](../delivery/delivery-graph.json) under [P2-018](../../decisions/phase-2-specification-decisions.md#rule-p2-018).
 
 > **Goal.** Replace the stubbed provider path with the real one: provider routing under **operator-funded credentials**, dispatch-time supplier prices and Run-pinned customer tariffs, real usage normalisation, metering that reserves before and settles after, transparency obligations, and honest failure when a provider is unavailable.
 
@@ -20,7 +20,7 @@
 
 **Out of scope.** The sole Harness itself (`52`). Retrieval (`40`). Commercial policy authoring (`42`).
 
-**Why this package exists.** WP17 implements the fixture-backed AI client and WP42 the actual economic kernel. This package supplies real CF model adapters and persistent intent/outcome/metering ports for WP40/52, including the accepted ASR profile and transparency evidence.
+**Why this package exists.** WP17 implements the fixture-backed AI client and WP42 the actual economic kernel. This package supplies real CF model adapters and persistent intent/outcome/metering ports for WP40/52, including transparency evidence.
 
 ---
 
@@ -33,7 +33,7 @@
 
 **Frozen design input.** [content-origin behavior](../../requirements/07-security-privacy-and-trust.md#content-origin-profile) and [carrier schema](../../requirements/13-data-formats-and-portability.md#content-origin-carriers) is fixed before this package; implement it without choosing a different marking mechanism.
 
-[WP-25](25-sync-engine-and-blob-lifecycle.md#rule-wp-25) provides authoritative Chat/Notes stores and durable output/resource commits; [WP-42](42-commerce-entitlement-and-credits.md#rule-wp-42) provides money/capacity admission; [WP-44](44-dynamic-policy-and-configuration.md#rule-wp-44) provides active route/policy snapshots. Single-invocation integration is tested here through those real ports without implementing a second Harness; [WP-52](52-cloud-harness.md#rule-wp-52) composes the loop.
+[WP-25](25-sync-engine-and-blob-lifecycle.md#rule-wp-25) provides authoritative Chat stores and durable output/resource commits; [WP-42](42-commerce-entitlement-and-credits.md#rule-wp-42) provides money/capacity admission; [WP-44](44-dynamic-policy-and-configuration.md#rule-wp-44) provides active route/policy snapshots. Single-invocation integration is tested here through those real ports without implementing a second Harness; [WP-52](52-cloud-harness.md#rule-wp-52) composes the loop.
 
 | Input | Why it matters |
 |---|---|
@@ -84,7 +84,7 @@ The provider implementation is confined to ArcForges-AI; C# owns canonical comme
 ### WP-43.00 — Provider adapters and routing
 
 
-**What must be fully done.** Implement only the selected Workers AI catalogue/capability profiles using env.AI.run: default/fast text, accepted image context, bge-m3 embedding, reranker and slate.transcribe.v1 Whisper ASR. Validate model availability and frozen config, canonical request limits and supported tool/stream shapes before dispatch. C# records admission/routing and supplier version; CF executes the already admitted intent.
+**What must be fully done.** Implement only the selected Workers AI catalogue/capability profiles using env.AI.run: default/fast text, accepted image context, bge-m3 embedding and reranker. Validate model availability and frozen config, canonical request limits and supported tool/stream shapes before dispatch. C# records admission/routing and supplier version; CF executes the already admitted intent.
 
 **Testing requirements.** Actual selected models/capability shapes, withdrawn/unknown/unsupported requests, request-size/output bounds and version mismatch.
 
@@ -94,7 +94,7 @@ The provider implementation is confined to ArcForges-AI; C# owns canonical comme
 
 ### WP-43.01 — Tariffs and cost dimensions
 
-**What must be fully done.** Versioned tariffs with effective dates and the full cost-dimension set. Each run locks a tariff snapshot at start. A historical charge is explainable against the rates in force at the time. Media units are metered separately from text units.
+**What must be fully done.** Versioned tariffs with effective dates and the full cost-dimension set. Each run locks a tariff snapshot at start. A historical charge is explainable against the rates in force at the time. Image-context units are metered separately from text units.
 
 **Testing requirements.** A rate-change test asserting settled charges are unaffected; an explainability test reconstructing a historical charge; per-dimension metering tests.
 
@@ -166,7 +166,7 @@ The provider implementation is confined to ArcForges-AI; C# owns canonical comme
 
 ---
 
-**Required implementation and closure from the final review.** Implement and independently verify [05-cloudflare-integration](../../architecture/contracts/05-cloudflare-integration.md#9-job-authorized-objects-control-inventory-and-resource-budgets). Use real Workers AI Whisper plus typed audio manifests/service object grants; verify supplier metering against actual response/manifest with missing usage retained uncertain. Implement inference-late-outcome evidence-only reconciliation, exact observed versions and bounded Workflow limits. Stale results cannot publish or charge the customer. Record exact artifact identities and real/fixture status with the existing substeps; these cases are part of this package's completion gate.
+**Required implementation and closure from the final review.** Implement and independently verify [05-cloudflare-integration](../../architecture/contracts/05-cloudflare-integration.md#9-job-authorized-objects-control-inventory-and-resource-budgets). Verify supplier metering against actual response/manifest with missing usage retained uncertain. Implement inference-late-outcome evidence-only reconciliation, exact observed versions and bounded Workflow limits. Stale results cannot publish or charge the customer. Record exact artifact identities and real/fixture status with the existing substeps; these cases are part of this package's completion gate.
 
 <a id="rule-wp-43.90"></a>
 ### WP-43.90 — Verify the owned artifact and real integration
@@ -237,9 +237,26 @@ Acceptance includes every amended §5 producer/consumer and [WP-43.90](#rule-wp-
 
 ## 9. Dependencies
 
-**Upstream:** `25` · `42` · `44`. Consume completed stage outputs.
+<!-- delivery-graph:begin (generated by Plan tools/delivery.py; do not edit) -->
 
-**Downstream:** `40` · `50` · `52`. Consumers use exact released artifacts.
+Scheduling is task-level under [P2-018](../../decisions/phase-2-specification-decisions.md#rule-p2-018). This package is an obligation set; it is satisfied when every task below is complete with its evidence. Prerequisites are typed task edges, never "all upstream packages complete".
+
+| Delivery task | Satisfies | Start prerequisites outside this package |
+|---|---|---|
+| [AIR.00](../delivery/lanes/ai-routing.md#task-air-00) | [WP-43.00](43-managed-ai-routing-and-metering.md#rule-wp-43.00) (full) | [CON.10](../delivery/lanes/contracts.md#task-con-10) (contract), [POL.08](../delivery/lanes/policy.md#task-pol-08) (artifact) |
+| [AIR.01](../delivery/lanes/ai-routing.md#task-air-01) | [WP-43.01](43-managed-ai-routing-and-metering.md#rule-wp-43.01) (full) | [POL.02](../delivery/lanes/policy.md#task-pol-02) (artifact) |
+| [AIR.02](../delivery/lanes/ai-routing.md#task-air-02) | [WP-43.02](43-managed-ai-routing-and-metering.md#rule-wp-43.02) (full) | [COM.08](../delivery/lanes/commerce.md#task-com-08) (artifact) |
+| [AIR.03](../delivery/lanes/ai-routing.md#task-air-03) | [WP-43.03](43-managed-ai-routing-and-metering.md#rule-wp-43.03) (full) | none |
+| [AIR.04](../delivery/lanes/ai-routing.md#task-air-04) | [WP-43.04](43-managed-ai-routing-and-metering.md#rule-wp-43.04) (interaction record, redaction, and cost-transparency surfaces (Cloud side)) | none |
+| [AIR.05](../delivery/lanes/ai-routing.md#task-air-05) | [WP-43.04](43-managed-ai-routing-and-metering.md#rule-wp-43.04) (transparency marking mechanism at the provider generation boundary; marking-coverage per artifact type) | none |
+| [AIR.06](../delivery/lanes/ai-routing.md#task-air-06) | [WP-43.05](43-managed-ai-routing-and-metering.md#rule-wp-43.05) (full) | none |
+| [AIR.07](../delivery/lanes/ai-routing.md#task-air-07) | [WP-43.06](43-managed-ai-routing-and-metering.md#rule-wp-43.06) (full) | none |
+| [AIR.08](../delivery/lanes/ai-routing.md#task-air-08) | [WP-43.07](43-managed-ai-routing-and-metering.md#rule-wp-43.07) (full) | [AST.15](../delivery/lanes/assistant.md#task-ast-15) (artifact) |
+| [AIR.90](../delivery/lanes/ai-routing.md#task-air-90) | [WP-43.90](43-managed-ai-routing-and-metering.md#rule-wp-43.90) (remaining aggregation/receipt)<br>[WP-43](43-managed-ai-routing-and-metering.md#rule-wp-43) [P2-010](../../decisions/phase-2-specification-decisions.md#rule-p2-010) required behavior and closure: real ExecutionOwner task/turn + operator-funded compaction/search support, durable receipts vs temporary bodies outside D1/SQLite/backups/checkpoints (package-level obligation contribution) | none |
+
+**Consumers outside this package:** [CLOUD.67](../delivery/lanes/cloud.md#task-cloud-67), [HAR.00](../delivery/lanes/harness.md#task-har-00), [HAR.03](../delivery/lanes/harness.md#task-har-03), [HAR.04](../delivery/lanes/harness.md#task-har-04), [HAR.05](../delivery/lanes/harness.md#task-har-05), [REL.06](../delivery/lanes/release.md#task-rel-06), [SRCH.06](../delivery/lanes/search.md#task-srch-06).
+
+<!-- delivery-graph:end -->
 
 ## [P2-010](../../decisions/phase-2-specification-decisions.md#rule-p2-010) required behavior and closure
 

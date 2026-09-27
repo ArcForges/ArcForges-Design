@@ -29,12 +29,12 @@ Six responsibilities, never merged:
 
 | # | Requirement |
 |---|---|
-| <a id="rule-id-01"></a>ID-01 | Installing and launching native applications requires no account. Cloud notebook enrolment, AI and continuity require sign-in; previously authorised hydrated content and pending edits follow the offline/cache rules. |
+| <a id="rule-id-01"></a>ID-01 | Installing and launching the native application requires no account. Project Cloud sync, Cloud history, AI and continuity require sign-in; previously authorised cached content and pending edits follow the offline/cache rules. |
 | <a id="rule-id-02"></a>ID-02 | The signed-out operator is a **Local Profile**: the local application identity of the current OS user on the current device. It has no server-side representation. |
 | <a id="rule-id-03"></a>ID-03 | A Local Profile is **never** silently registered as a cloud "Anonymous User" or "Guest Account". No hidden server record is created on first launch. |
 | <a id="rule-id-04"></a>ID-04 | A Local Profile owns device settings and ordinary native jobs/files. Authenticated workspace caches and pending edits remain scoped to their realm/owner; no local agent history or provider-key mode. |
-| <a id="rule-id-05"></a>ID-05 | Sign-in identifies the selected Cloud realm/workspace for notes, sync, search, AI and remote tools. Service entitlement is checked separately; provider-key configuration is not an onboarding option. |
-| <a id="rule-id-06"></a>ID-06 | Sign-in alone does not upload unrelated device files. Creating/importing into an enrolled Cloud notebook explicitly consents to storing those notes/managed attachments in that workspace; captures/original media require their own upload choice. |
+| <a id="rule-id-05"></a>ID-05 | Sign-in identifies the selected Cloud realm/workspace for sync, Cloud history, search, AI and remote tools. Service entitlement is checked separately; provider-key configuration is not an onboarding option. |
+| <a id="rule-id-06"></a>ID-06 | Sign-in alone does not upload unrelated device files. Enabling Cloud sync for an ArcScope project explicitly consents to storing its synchronized metadata, annotations, findings and reports in that workspace; raw captures require their own per-session upload choice ([CL-03](products/arcscope.md#rule-cl-03)). |
 | <a id="rule-id-07"></a>ID-07 | Sign-out stops Cloud access and clears active session credentials. Workspace views are locked until authentication; pending edits are retained safely and are never silently deleted or reassigned to a later account. |
 | <a id="rule-id-08"></a>ID-08 | Service expiry blocks protected Cloud writes/AI according to the commerce lifecycle. Existing native work and pending edits remain recoverable; it does not enable an offline AI mode. |
 
@@ -68,7 +68,7 @@ A **Realm** is an independent identity and data authority: the Official ArcForge
 | <a id="rule-id-26"></a>ID-26 | V1 does **not** implement Google, Apple or other social sign-in. The model supports adding them without a schema change. |
 | <a id="rule-id-27"></a>ID-27 | Email verification uses a **verification code** as the primary mechanism. Magic links may be offered as a convenience but must never be the only route, because ArcForges spans desktop, mobile and web with deep-link complications. |
 | <a id="rule-id-28"></a>ID-28 | No phone number or SMS in the first stage. No global username. No security questions. |
-| <a id="rule-id-29"></a>ID-29 | V1 does not implement account merging. A matching email never merges realm/user identities or moves notes, devices, subscription sources or credits. |
+| <a id="rule-id-29"></a>ID-29 | V1 does not implement account merging. A matching email never merges realm/user identities or moves workspace data, devices, subscription sources or credits. |
 
 ### 2.3 Recovery
 
@@ -87,7 +87,7 @@ Account Profile is deliberately minimal: Display Name, Avatar, Primary Email, Lo
 
 | # | Requirement |
 |---|---|
-| <a id="rule-ws-01"></a>WS-01 | **All cloud data belongs to a Workspace, never directly to a User.** `User.Notes`, `User.Storage`, `User.SubscriptionId` and equivalents are prohibited. |
+| <a id="rule-ws-01"></a>WS-01 | **All cloud data belongs to a Workspace, never directly to a User.** `User.Projects`, `User.Storage`, `User.SubscriptionId` and equivalents are prohibited. |
 | <a id="rule-ws-02"></a>WS-02 | On registration a **Personal Workspace** is created automatically and owned by the User. |
 | <a id="rule-ws-03"></a>WS-03 | Workspace is the single-owner boundary for data, device access, storage, AI usage/budget, sync, authorisation and entitlement. |
 | <a id="rule-ws-04"></a>WS-04 | Organisations, team workspaces, membership roles and invitation models are excluded. V1 provisions one personal workspace per user in each realm. |
@@ -118,10 +118,10 @@ Session                     (one app's current authenticated login state)
 | <a id="rule-dv-01"></a>DV-01 | **Device** carries: name, platform, created time, last-seen time, trust status, remote-enabled flag, and a revoke action. |
 | <a id="rule-dv-02"></a>DV-02 | Device identity is **created by user authorization**, not derived from a hardware fingerprint. CPU serial, motherboard ID and MAC address must not be used to identify a device — they break under virtualisation, reinstall, hardware replacement, and are privacy-hostile. A device may be renamed, revoked and re-registered. |
 | <a id="rule-dv-03"></a>DV-03 | **App Installation** is a distinct cloud-visible dimension. A process instance is never a device identity. |
-| <a id="rule-dv-04"></a>DV-04 | Session is authenticated state of one application installation/profile. A device can hold independent ArcNotes, ArcScope, ArcSlate, Android or browser sessions; revocation never transfers credentials between them. |
+| <a id="rule-dv-04"></a>DV-04 | Session is authenticated state of one application installation/profile. A device can hold independent ArcScope, Android or browser sessions; revocation never transfers credentials between them. |
 | <a id="rule-dv-05"></a>DV-05 | Each application signs in independently. Native clients use the system-browser authorization-code/PKCE journey or in-app email code; existing browser login may be reused after consent. There is no local cross-application SSO broker. |
 | <a id="rule-dv-06"></a>DV-06 | Each application must authenticate without another ArcForges application or local broker. Shared NuGet code is a library inside its owner process; application credentials and histories remain independent. |
-| <a id="rule-dv-07"></a>DV-07 | Sign-out distinguishes four operations, each with different scope: **Sign out of this App** (other Arc apps stay signed in), **Sign out of this Device** (all Arc app cloud sessions revoked, local data retained), **Revoke Device** (performed from another device; stops sync, remote and cloud access), **Sign out everywhere** (all sessions cleared; the account remains). |
+| <a id="rule-dv-07"></a>DV-07 | Sign-out distinguishes four operations, each with different scope: **Sign out of this App** (other ArcForges sessions on the device, such as a browser session, stay signed in), **Sign out of this Device** (all ArcForges cloud sessions on the device revoked, local data retained), **Revoke Device** (performed from another device; stops sync, remote and cloud access), **Sign out everywhere** (all sessions cleared; the account remains). |
 
 ---
 
@@ -133,7 +133,7 @@ Session                     (one app's current authenticated login state)
 | <a id="rule-tr-02"></a>TR-02 | **Device Online ≠ Remote Agent Enabled** ([I-251](01-normative-glossary-and-invariants.md#rule-i-251)). |
 | <a id="rule-tr-03"></a>TR-03 | **Registered Device ≠ Remote-authorized Device** ([I-252](01-normative-glossary-and-invariants.md#rule-i-252)). |
 | <a id="rule-tr-04"></a>TR-04 | Remote access defaults to **off**. The chain is `Account → Trusted Device → Remote Enabled → Allowed Capabilities`. |
-| <a id="rule-tr-05"></a>TR-05 | Remote capability grants are per-product and per-capability-class, individually toggleable (for example ArcNotes and ArcScope enabled, ArcSlate export not). |
+| <a id="rule-tr-05"></a>TR-05 | Remote capability grants are per-application and per-capability-class, individually toggleable (for example ArcScope analysis enabled, ArcScope capture control not). |
 | <a id="rule-tr-06"></a>TR-06 | High-risk capabilities may additionally require local confirmation on the desktop even when remote access is enabled. R4-class operations — credential changes, security settings, high-risk device operations — are **never remotely releasable by default**; cloud and mobile may only prompt the user to return to a trusted device. |
 | <a id="rule-tr-07"></a>TR-07 | Remote access is delivered by a desktop-initiated authenticated **outbound** connection to Cloud. **No inbound public port is opened on the user's machine.** |
 | <a id="rule-tr-08"></a>TR-08 | The user can revoke a device, disable remote access and revoke capability scope at any time, from any signed-in surface. |
@@ -168,7 +168,7 @@ Operations requiring step-up:
 | <a id="rule-at-01"></a>AT-01 | Personal Access Tokens exist in the model from the first release, for CLI, automation, third-party agents and integrations. |
 | <a id="rule-at-02"></a>AT-02 | Every token is **named**, **scoped**, **expirable**, **revocable**, and displays last-used time. |
 | <a id="rule-at-03"></a>AT-03 | A permanent, unscoped master API key is prohibited. |
-| <a id="rule-at-04"></a>AT-04 | Token scopes are drawn from the same capability/permission vocabulary as the rest of the system (for example `notes.read`, `notes.write`). |
+| <a id="rule-at-04"></a>AT-04 | Token scopes are drawn from the same capability/permission vocabulary as the rest of the system (for example `arcscope.session.read`, `arcscope.annotation.create`). |
 
 ---
 
@@ -193,7 +193,7 @@ Account status is richer than Active/Deleted:
 | `Pending` | Registered, first verification incomplete | None |
 | `Active` | Normal | None |
 | `Restricted` | e.g. AI abuse — cloud AI disabled; the user can still sign in and export | **None** |
-| `Suspended` | Serious violation — protected Cloud operations denied | Native capture/media and pending-work recovery remain; cached data follows its authorized access contract |
+| `Suspended` | Serious violation — protected Cloud operations denied | Native capture/analysis and pending-work recovery remain; cached data follows its authorized access contract |
 | `DeletionPending` | Deletion requested, within the reversal window | None |
 | `Deleted` | Cloud identity and data removed subject to retention | Independent native files and pending work are not remotely wiped; cached Cloud views are no longer an active workspace |
 
@@ -216,10 +216,10 @@ On entering DeletionPending, prohibit new Cloud writes and AI dispatch, stop ren
 
 | # | Requirement |
 |---|---|
-| <a id="rule-dl-01"></a>DL-01 | Account deletion does not remotely erase independent native capture/media files or pending user edits/uploads. Preview their fate before confirmation and offer recovery. Explicit local cache deletion is a separate choice. A guarded recovery view for locally owned pending work must remain usable without paid Cloud access, even if the Cloud identity has been deleted; it is not a new standalone notebook mode. |
+| <a id="rule-dl-01"></a>DL-01 | Account deletion does not remotely erase independent native capture/analysis files or pending user edits/uploads. Preview their fate before confirmation and offer recovery. Explicit local cache deletion is a separate choice. A guarded recovery view for locally owned pending work must remain usable without paid Cloud access, even if the Cloud identity has been deleted. |
 | <a id="rule-dl-02"></a>DL-02 | **Subscription cancellation ≠ Account deletion ≠ Cloud data deletion ≠ Workspace deletion** ([I-002](01-normative-glossary-and-invariants.md#rule-i-002)). Four distinct flows. |
 | <a id="rule-dl-03"></a>DL-03 | A user may delete cloud data while retaining the account, AI credits and purchase history. |
-| <a id="rule-dl-04"></a>DL-04 | Deletion propagates to derived data: full-text index entries, vector entries, derived previews and caches. A deleted document must not remain findable through semantic search ([I-165](01-normative-glossary-and-invariants.md#rule-i-165)). |
+| <a id="rule-dl-04"></a>DL-04 | Deletion propagates to derived data: full-text index entries, vector entries, derived previews and caches. A deleted resource must not remain findable through semantic search ([I-165](01-normative-glossary-and-invariants.md#rule-i-165)). |
 
 ---
 
@@ -315,9 +315,9 @@ This document settles **identity ownership relationships**; commercial rules for
 
 | # | Scenario | Required outcome |
 |---|---|---|
-| <a id="rule-a-01"></a>A-01 | Fresh install, no network/account | Native UI starts within budget; local capture/media operations are usable; initial Cloud notebook enrolment and AI show their sign-in/network requirement |
-| <a id="rule-a-02"></a>A-02 | Sign in with unrelated local files present | Nothing is automatically imported/uploaded; explicit notebook enrolment and file selection define participation |
-| <a id="rule-a-03"></a>A-03 | Sign out of ArcNotes while ArcScope is signed in | ArcScope session unaffected; ArcNotes local data intact |
+| <a id="rule-a-01"></a>A-01 | Fresh install, no network/account | Native UI starts within budget; local capture and analysis operations are usable; project Cloud sync, Cloud history and AI show their sign-in/network requirement |
+| <a id="rule-a-02"></a>A-02 | Sign in with unrelated local files present | Nothing is automatically imported/uploaded; explicit project sync enrolment and per-session raw-capture upload choices define participation |
+| <a id="rule-a-03"></a>A-03 | Sign out of ArcScope while the Web companion is signed in on the same device | The browser session is unaffected; ArcScope local data intact |
 | <a id="rule-a-04"></a>A-04 | Revoke a device from another device | The revoked device loses sync, remote and cloud access; its local data is intact |
 | <a id="rule-a-05"></a>A-05 | Enable remote access, then attempt an R4 operation from mobile | The operation is refused remotely and the user is directed to confirm on a trusted device |
 | <a id="rule-a-06"></a>A-06 | Sign in to Official and to a self-hosted realm with the same email | Two distinct identities; no data or entitlement crosses between them |

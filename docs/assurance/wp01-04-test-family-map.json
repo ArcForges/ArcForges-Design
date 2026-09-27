@@ -3,7 +3,7 @@
   "substep": "WP01.04",
   "observedOn": "2026-09-20",
   "designBaseline": "b941f1da1e0caa4c78d6165b45fcad11570a6e10",
-  "scope": "Current nine-owner test sources and executable verification entrypoints, plus 28 historical test-project dispositions; not release acceptance.",
+  "scope": "Current seven-owner test sources and executable verification entrypoints, plus 27 historical test-project dispositions; not release acceptance.",
   "sourceDiscovery": "Tracked test_*.py, *.test/spec.{js,mjs,ts,tsx}, *Tests.cs, *Test.kt, native /tests/*.cpp and shared fuzzer; explicit package/live verification entrypoints; one named accessibility case. Config, locks, fixtures, generated code and oracle/server helpers are not independent suites.",
   "sources": [
     {
@@ -27,16 +27,6 @@
       "workflowSha256": "aa910f681a27b4068bdfcc244fbe08773f00a8f4b58a95da147644aee2d76073"
     },
     {
-      "owner": "ArcNotes",
-      "origin": "https://github.com/ArcForges/ArcNotes.git",
-      "commit": "e40423a1b14ce8341de35748cc2a093c7c9b77a7",
-      "clean": true,
-      "remoteMainVerified": true,
-      "mainCi": "https://github.com/ArcForges/ArcNotes/actions/runs/35425608146",
-      "mainCiResult": "success",
-      "workflowSha256": "d872a75b27d8f1da71d3d94b7152edb95fa25cfb2d4855c9e00af832cb5708c3"
-    },
-    {
       "owner": "ArcScope",
       "origin": "https://github.com/ArcForges/ArcScope.git",
       "commit": "d247dcff36fd1123a70e5e59967a9b2294a2eeac",
@@ -45,16 +35,6 @@
       "mainCi": "https://github.com/ArcForges/ArcScope/actions/runs/35426873548",
       "mainCiResult": "success",
       "workflowSha256": "85b06a7ffdb565f656714bc54054a5d6d40a1cda98971ab39ba274bf2f0f9e16"
-    },
-    {
-      "owner": "ArcSlate",
-      "origin": "https://github.com/ArcForges/ArcSlate.git",
-      "commit": "b0d255f54fb560a534cc493d5645ca4bc7b4bd0e",
-      "clean": true,
-      "remoteMainVerified": true,
-      "mainCi": "https://github.com/ArcForges/ArcSlate/actions/runs/35427484761",
-      "mainCiResult": "success",
-      "workflowSha256": "27071fb54cee2092a29c1454caf030320db5cfe325b9eaec58fd1019cdb6ed84"
     },
     {
       "owner": "Cloud",
@@ -371,54 +351,6 @@
       "sha256": "1bf9ef783f30c95e8009e01ad48cfa9ec644cd6dd080e68713706bba00973018"
     },
     {
-      "owner": "ArcNotes",
-      "path": "tests/ArcForges.ArcNotes.Tests/CandidateTests.cs",
-      "family": "F-16",
-      "kind": "test-source",
-      "scope": "Synthetic ZIP/tar candidate and tamper/identity checks; no production rollback.",
-      "sha256": "63342a622e37e4c82c3a8fd12f41a634c23a70e88222416a252e60d3cbbf24f4"
-    },
-    {
-      "owner": "ArcNotes",
-      "path": "tests/ArcForges.ArcNotes.Tests/HelloStateTests.cs",
-      "family": "F-02",
-      "kind": "test-source",
-      "scope": "Hello view-model orchestration with a port double; not product domain behavior.",
-      "sha256": "bb4ff227671a46ada0010e7ffadc20f2d0dcda2ae952bc03cd45ace8c08a7806"
-    },
-    {
-      "owner": "ArcNotes",
-      "path": "tests/ArcForges.ArcNotes.Tests/LicencePolicyTests.cs",
-      "family": "F-17",
-      "kind": "test-source",
-      "scope": "Owned licence/source-provenance negative fixtures.",
-      "sha256": "6022e471b0185d446196379b2437a0d678973a76c658eba3126b0a2f8eb3d760"
-    },
-    {
-      "owner": "ArcNotes",
-      "path": "tests/ArcForges.ArcNotes.Tests/ProvenancePolicyTests.cs",
-      "family": "F-17",
-      "kind": "test-source",
-      "scope": "Owned licence/source-provenance negative fixtures.",
-      "sha256": "286437bd06ea7dd22e58f2007e2b75ab7aa4264595ff1d548b9953adeb6bca69"
-    },
-    {
-      "owner": "ArcNotes",
-      "path": "tests/ArcForges.ArcNotes.Tests/TransportTests.cs",
-      "family": "F-06",
-      "kind": "test-source",
-      "scope": "Published binary gRPC-Web client against real local Kestrel fixture, with cancellation/errors; not deployed full Cloud.",
-      "sha256": "217f048fecb331a1f5c9fc2255f55d6340c9f928ff13f5052fb4cd01fa337866"
-    },
-    {
-      "owner": "ArcNotes",
-      "path": "eng/ArcForges.Repository/Program.cs",
-      "family": "F-11",
-      "kind": "verification-entrypoint",
-      "scope": "smoke entrypoint: native Hello UI action to real deployed Cloud; package commands additionally verify portable candidates.",
-      "sha256": "716c798d079e074415a7d5c07398b9876dd9b19de195475349f6d4bb69131ac2"
-    },
-    {
       "owner": "ArcScope",
       "path": "tests/ArcForges.ArcScope.Tests/CandidateTests.cs",
       "family": "F-16",
@@ -465,54 +397,6 @@
       "kind": "verification-entrypoint",
       "scope": "smoke entrypoint: native Hello UI action to real deployed Cloud; no acquisition pipeline acceptance.",
       "sha256": "3ba34ba2c1246e939fcbbbf5a3b9c3fa4ceb6294c4687c492108d7c0c870791c"
-    },
-    {
-      "owner": "ArcSlate",
-      "path": "tests/ArcForges.ArcSlate.Tests/CandidateTests.cs",
-      "family": "F-16",
-      "kind": "test-source",
-      "scope": "Synthetic ZIP/tar candidate and tamper/identity checks; no production rollback.",
-      "sha256": "e85df3d2e48756133fe4ec3811f229e0dbdefe5f8b7afb9fe9cca1f85085ddcc"
-    },
-    {
-      "owner": "ArcSlate",
-      "path": "tests/ArcForges.ArcSlate.Tests/HelloStateTests.cs",
-      "family": "F-02",
-      "kind": "test-source",
-      "scope": "Hello view-model orchestration with a port double; not product domain behavior.",
-      "sha256": "f8f85389119a0fe1052a91947fa6684518cf72b266dda36780c5db42750172f1"
-    },
-    {
-      "owner": "ArcSlate",
-      "path": "tests/ArcForges.ArcSlate.Tests/LicencePolicyTests.cs",
-      "family": "F-17",
-      "kind": "test-source",
-      "scope": "Owned licence/source-provenance negative fixtures.",
-      "sha256": "ced5363d68486c271fb56212b0eaf79fddee1f5d2335cd32318bd70c6e0010d6"
-    },
-    {
-      "owner": "ArcSlate",
-      "path": "tests/ArcForges.ArcSlate.Tests/ProvenancePolicyTests.cs",
-      "family": "F-17",
-      "kind": "test-source",
-      "scope": "Owned licence/source-provenance negative fixtures.",
-      "sha256": "9f3a1ffed9f06541fd4eb0854fe1fd9fe1ee48a960010b38e05f5fdc1f1e0d16"
-    },
-    {
-      "owner": "ArcSlate",
-      "path": "tests/ArcForges.ArcSlate.Tests/TransportTests.cs",
-      "family": "F-06",
-      "kind": "test-source",
-      "scope": "Published binary gRPC-Web client against real local Kestrel fixture, with cancellation/errors; not deployed full Cloud.",
-      "sha256": "96a0c5a7c683d2d63622a32ebefa5ef03bc7745da9cb4d9820e130e1a497873d"
-    },
-    {
-      "owner": "ArcSlate",
-      "path": "eng/ArcForges.Repository/Program.cs",
-      "family": "F-11",
-      "kind": "verification-entrypoint",
-      "scope": "smoke entrypoint: native Hello UI action to real deployed Cloud; no media workflow acceptance.",
-      "sha256": "42175c8ced1d846aea2e30c0c346aa5f9480faf5ff6111ac471a354a3e3d162d"
     },
     {
       "owner": "Cloud",
@@ -898,15 +782,13 @@
       "name": "Domain unit tests",
       "status": "partial",
       "suiteRows": [
-        69,
-        94
+        57,
+        82
       ],
       "futureWorkPackages": [
         "WP04",
         "WP15",
-        "WP18",
-        "WP33",
-        "WP36"
+        "WP33"
       ],
       "remainingObligation": "Pure Hello/model boundary assertions exist; full domain/invariant enforcement is still owed.",
       "completionClaim": false
@@ -917,21 +799,17 @@
       "status": "partial",
       "suiteRows": [
         35,
+        40,
         41,
-        47,
-        52,
-        53,
-        57,
-        70,
-        71,
-        79
+        45,
+        58,
+        59,
+        67
       ],
       "futureWorkPackages": [
         "WP14",
         "WP16",
-        "WP18",
         "WP33",
-        "WP36",
         "WP52"
       ],
       "remainingObligation": "Hello orchestration, routing and model doubles exist; authorization ordering, compensation and domain workflows remain.",
@@ -956,8 +834,8 @@
       "status": "partial",
       "suiteRows": [
         18,
-        68,
-        80
+        56,
+        68
       ],
       "futureWorkPackages": [
         "WP03",
@@ -990,14 +868,12 @@
         32,
         33,
         38,
-        44,
+        47,
+        48,
+        49,
         50,
-        59,
-        60,
-        61,
-        62,
-        87,
-        89
+        75,
+        77
       ],
       "futureWorkPackages": [
         "WP03",
@@ -1042,11 +918,11 @@
       "name": "UI component and automation",
       "status": "partial",
       "suiteRows": [
-        74,
-        75,
-        82,
-        88,
-        95
+        62,
+        63,
+        70,
+        76,
+        83
       ],
       "futureWorkPackages": [
         "WP10",
@@ -1063,7 +939,7 @@
       "name": "Accessibility automated and assistive verification",
       "status": "partial",
       "suiteRows": [
-        98
+        86
       ],
       "futureWorkPackages": [
         "WP10",
@@ -1082,15 +958,11 @@
       "status": "partial",
       "suiteRows": [
         39,
-        45,
-        51,
-        73
+        61
       ],
       "futureWorkPackages": [
-        "WP20",
         "WP26",
         "WP35",
-        "WP39",
         "WP49",
         "WP52"
       ],
@@ -1104,9 +976,7 @@
       "suiteRows": [],
       "futureWorkPackages": [
         "WP07",
-        "WP18",
         "WP25",
-        "WP36",
         "WP46"
       ],
       "remainingObligation": "No current versioned store migration/semantic-preservation suite; Hello wire fixtures alone do not close it.",
@@ -1134,7 +1004,6 @@
       "futureWorkPackages": [
         "WP12",
         "WP33",
-        "WP37",
         "WP50"
       ],
       "remainingObligation": "No measured duration/resource-curve/corpus-scale suite.",
@@ -1166,20 +1035,18 @@
         26,
         27,
         34,
-        40,
+        44,
         46,
-        56,
-        58,
-        63,
-        67,
-        72,
-        76,
-        81,
-        85,
-        86,
-        91,
-        96,
-        97
+        51,
+        55,
+        60,
+        64,
+        69,
+        73,
+        74,
+        79,
+        84,
+        85
       ],
       "futureWorkPackages": [
         "WP06",
@@ -1213,20 +1080,16 @@
         37,
         42,
         43,
-        48,
-        49,
+        52,
+        53,
         54,
-        55,
-        64,
         65,
         66,
-        77,
+        71,
+        72,
         78,
-        83,
-        84,
-        90,
-        92,
-        93
+        80,
+        81
       ],
       "futureWorkPackages": [
         "WP02",
@@ -1244,8 +1107,6 @@
       "futureWorkPackages": [
         "WP13",
         "WP33",
-        "WP37",
-        "WP38",
         "WP50"
       ],
       "remainingObligation": "No current Scope/Slate physical device/driver/timing lab suite; Android device or emulator tests are not this family.",
@@ -1269,15 +1130,6 @@
       "owner": "ArcScope",
       "family": "F-11",
       "futureWorkPackage": "WP33",
-      "currentDisposition": "Move",
-      "interpretation": "Historical project mapping only; no directory resurrection or copied-source instruction."
-    },
-    {
-      "path": "tests/ArcSlateMediaTests/ArcForges.Tests.ArcSlateMediaTests.csproj",
-      "blob": "d4bf1d9eb0ecb0c08b989562b4645487ed4189d7",
-      "owner": "ArcSlate",
-      "family": "F-11",
-      "futureWorkPackage": "WP37",
       "currentDisposition": "Move",
       "interpretation": "Historical project mapping only; no directory resurrection or copied-source instruction."
     },
@@ -1349,7 +1201,7 @@
       "blob": "7926e4a418ac58f15bda193c1439bafc63f6b0ea",
       "owner": "DesktopPlatform",
       "family": "F-11",
-      "futureWorkPackage": "WP20",
+      "futureWorkPackage": "WP35",
       "currentDisposition": "Move",
       "interpretation": "Historical project mapping only; no directory resurrection or copied-source instruction."
     },
@@ -1511,11 +1363,11 @@
     "inventory": {
       "result": "passed",
       "counts": {
-        "owners": 9,
-        "testSources": 75,
-        "mappingRows": 99,
+        "owners": 7,
+        "testSources": 65,
+        "mappingRows": 87,
         "families": 18,
-        "historicalProjects": 28
+        "historicalProjects": 27
       },
       "negativeMutationsRejected": [
         "missing-family",

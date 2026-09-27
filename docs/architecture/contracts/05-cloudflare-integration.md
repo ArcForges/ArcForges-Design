@@ -169,13 +169,9 @@ CfDeletionTarget = {kind:runWorkflow/inferenceWorkflow/objectVerifier/streamDO, 
 
 RunWorkflow paid deployment explicitly sets limits.subrequests=1000000. The implementation counts/reserves its bounded network actions and stops new model/tool dispatch at 900000, keeping 100000 for reconciliation/outcome/finalization. Seven days of 60-second reconciliation plus bounded calls must fit both this allowance and the existing 24000-step guard/25000-step ceiling; the default 10000 subrequests is insufficient. Retries and range/auth requests count as requests; object loops also enforce their declared byte/part bounds. Hitting a guard records a durable limit/wait/failure through C#, never silently loses a Task. [Cloudflare limits](https://developers.cloudflare.com/workflows/reference/limits/) support explicit configuration; actual workload evidence remains WP06/52.
 
-ASR model-intent additionally accepts audioMilliseconds:uint64? and audioManifest:ResourceVersionRef? for slate.transcribe.v1, with zero maxOutputTokens permitted only for the registered audio model. Its supplier reservation uses verified audio duration and pinned tariff. Model-outcome.outputResource is the verified TranscriptRecord/chunk output; normal settlement/finalization receipts retain source range and content origin. The CF adapter's <=256 KiB JSON service messages carry references, never a base64 WAV body; env.AI.run consumes the bounded audio chunk under a job read grant.
-
 ### Verification clarifications for these ports
 
 Service PUT byte parts use <=8 MiB and a declared X-AF-Content-SHA256 in the signed request body-hash position. Verify HMAC/authorization before accepting bytes, stream-hash into isolated staging, and reject mismatched length/hash before recording a part receipt. Never publish unverified bytes. Transfer retry is the same immutable upload/part identity; JSON control requests retain their 256 KiB bound. A Verified output reference is Resource's immutable verified revision/blob plus the authorized provisional job pin, not a fabricated final Task/Chat revision.
-
-Task.startTranscription has no implicit conversation. Its model-outcome persists typed TranscriptRecord output and attempt evidence under the existing Task/Resource/Commerce participants; finalize records its final/partial artifact or explicit no-result on Task and publishes Sync. Chat participates only when a real conversation owns the request; no empty synthetic Chat message is created. The finalize request therefore permits artifactRefs:ArtifactRef[] for non-conversation Tasks, mutually exclusive with a final Chat message disposition. Every referenced artifact is already committed/pinned before the terminal transaction.
 
 ## Execution-owner and Web-search additions
 

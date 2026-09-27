@@ -30,7 +30,7 @@ CF RunStream DO carries live presentation only; C# owns final facts.
 | <a id="rule-cm-01"></a>CM-01 | **There is one Task model and one Harness, both Cloud-owned** (**[P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006)**). Tool *locality* varies; the model loop does not ([I-491](../requirements/01-normative-glossary-and-invariants.md#rule-i-491)). |
 | <a id="rule-cm-02"></a>CM-02 | **No desktop, mobile or browser client runs a model loop, holds provider credentials or plans agent work.** A client proposes intent and executes authorised tools. |
 | <a id="rule-cm-03"></a>CM-03 | **The credit ledger is always cloud-side and always ArcForges-owned** ([RT-04](../requirements/05-ai-and-agent-execution.md#rule-rt-04) in the AI requirements). A gateway's dashboard is never the business ledger. |
-| <a id="rule-cm-04"></a>CM-04 | **A Cloud Agent Task and a native Product Job are different things** ([I-121](../requirements/01-normative-glossary-and-invariants.md#rule-i-121), [I-485](../requirements/01-normative-glossary-and-invariants.md#rule-i-485)). A render, a capture, an index rebuild and an export are product jobs: they invoke no model, consume no AI capacity, and are owned and recovered by the product that runs them. |
+| <a id="rule-cm-04"></a>CM-04 | **A Cloud Agent Task and a native Product Job are different things** ([I-121](../requirements/01-normative-glossary-and-invariants.md#rule-i-121)). A render, a capture, an index rebuild and an export are product jobs: they invoke no model, consume no AI capacity, and are owned and recovered by the product that runs them. |
 | <a id="rule-cm-05"></a>CM-05 | **Product AI entry points call the Cloud AI surface directly** with minimal authorised context (`§4.5` of the product scope). They do not require ArcChat Desktop and do not constitute a second orchestrator. |
 | <a id="rule-cm-06"></a>CM-06 | **Official inference requires an active paid service term** ([C-03](../requirements/00-product-scope-and-portfolio.md#rule-c-03), `§8.7` of the commerce requirements). No local mode, desktop setting, credit balance or self-host flag can authorise it. |
 
@@ -65,7 +65,7 @@ Capability Registry  →  filtered by intent, permission, entitlement, policy, b
 | # | Rule |
 |---|---|
 | <a id="rule-cr-01"></a>CR-01 | **The full catalogue is never handed to the model** ([CE-01](../requirements/05-ai-and-agent-execution.md#rule-ce-01) in the AI requirements). Hundreds of tool schemas per turn degrade quality and explode cost. |
-| <a id="rule-cr-02"></a>CR-02 | **Selection is a pipeline**: intent and capability discovery → relevant products → a small relevant capability set → invoke. |
+| <a id="rule-cr-02"></a>CR-02 | **Selection is a pipeline**: intent and capability discovery within the frozen owning or explicitly targeted application and authorized Cloud scope → a small relevant capability set → invoke. |
 | <a id="rule-cr-03"></a>CR-03 | **Capability metadata drives behaviour**, not the model's inference: execution shape, effect semantics, retry semantics, cancellation semantics, preview support, checkpoint support, compensation support, risk and scope (`§4.2` of the contracts architecture). |
 | <a id="rule-cr-04"></a>CR-04 | **Invocation ordering is fixed**: native capability → trusted connector, MCP or API → computer use as an advanced fallback (`§8.1` of the ArcChat requirements). |
 | <a id="rule-cr-05"></a>CR-05 | **A capability's availability is dynamic** and reflects installation, running state, health, compatibility, permission, entitlement and policy ([AC-04](02-contracts-and-protocols.md#rule-ac-04) in the contracts architecture). |
@@ -83,7 +83,7 @@ Intent
            ├── Plan Revision (retained, reasoned)
            │    └── Step (DAG)
            │         └── Attempt
-           │              └── Capability Invocation / AI Request / Child Task / Gate / Wait
+           │              └── Capability Invocation / AI Request / ProductJobRef / Gate / Wait
            └── Checkpoints, budget reservation, trace
 ```
 
@@ -141,7 +141,7 @@ Explicit attachments  ·  pinned context  ·  project context  ·  temporary con
 | <a id="rule-ca-04"></a>CA-04 | **An automation's scope freezes into the run's evidence scope** ([AS-07](../requirements/06-knowledge-search-and-retrieval.md#rule-as-07) there). |
 | <a id="rule-ca-05"></a>CA-05 | **Cache isolation is a security requirement**: user-derived prompt cache is workspace-scoped; only genuinely public content is reused across workspaces ([CO-03](../requirements/05-ai-and-agent-execution.md#rule-co-03) in the AI requirements). |
 | <a id="rule-ca-06"></a>CA-06 | **Conversation compaction is context engineering, not memory** ([HM-03](../requirements/products/arcchat.md#rule-hm-03) in the ArcChat requirements). |
-| <a id="rule-ca-07"></a>CA-07 | Indexed knowledge uses acknowledged owner revisions. Separately approved bounded transient input uses SourceConsentRef and the exact source/purpose/hash/expiry profile; it is not sync or index enrollment. Pending Notes edits cannot be passed off as an acknowledged revision. Missing/denied context is disclosed, and enabling AI alone never uploads local content. |
+| <a id="rule-ca-07"></a>CA-07 | Indexed knowledge uses acknowledged owner revisions. Separately approved bounded transient input uses SourceConsentRef and the exact source/purpose/hash/expiry profile; it is not sync or index enrollment. Pending ArcScope edits cannot be passed off as an acknowledged revision. Missing/denied context is disclosed, and enabling AI alone never uploads local content. |
 
 ---
 
@@ -234,13 +234,15 @@ Placement no longer describes where the model loop runs — it always runs in Cl
 
 ---
 
-## 10. Child tasks and long-running capabilities
+<a id="10-child-tasks-and-long-running-capabilities"></a>
+
+## 10. Product jobs and long-running capabilities
 
 ```
 Parent Step invokes a long-running capability
-  → the owner returns a TaskHandle
+  → the owner returns a ProductJobRef
   → the parent step enters Waiting(ProductJob)
-  → the parent observes the child by snapshot and events
+  → the Run observes the product job by snapshot and events
   → completion: the parent receives result, ResourceRef, ArtifactRef, outcome
 ```
 
@@ -260,7 +262,7 @@ Parent Step invokes a long-running capability
 | <a id="rule-cc-01"></a>CC-01 | **Two checkpoint kinds**: an execution checkpoint owned by the runtime, and a domain checkpoint owned by the product (`§5.1` there). |
 | <a id="rule-cc-02"></a>CC-02 | **ArcChat never creates a system-wide snapshot** ([CK-01](../requirements/05-ai-and-agent-execution.md#rule-ck-01) there). It requests a checkpoint and receives a reference. |
 | <a id="rule-cc-03"></a>CC-03 | **A domain checkpoint precedes any high-risk batch modification** ([CK-02](../requirements/05-ai-and-agent-execution.md#rule-ck-02) there). |
-| <a id="rule-cc-04"></a>CC-04 | **Cross-application unwinding is a saga executed in reverse through each owner** ([CP-02](../requirements/05-ai-and-agent-execution.md#rule-cp-02) there), never a simulated distributed transaction. |
+| <a id="rule-cc-04"></a>CC-04 | **Compensation between Cloud and the targeted application is a saga executed in reverse through each owner** ([CP-02](../requirements/05-ai-and-agent-execution.md#rule-cp-02) there), never a simulated distributed transaction. |
 | <a id="rule-cc-05"></a>CC-05 | **Compensation is traced and can fail** ([CP-03](../requirements/05-ai-and-agent-execution.md#rule-cp-03), [CP-04](../requirements/05-ai-and-agent-execution.md#rule-cp-04) there). |
 | <a id="rule-cc-06"></a>CC-06 | **Failure does not automatically trigger compensation** ([CP-05](../requirements/05-ai-and-agent-execution.md#rule-cp-05) there). |
 
@@ -361,13 +363,9 @@ Model route/config pins exact CF model ID and adapter profile v1. CF does not pr
 
 Supplier request ID is nullable until CF returns one; ArcForges attempt identity exists first. Usage counts come from per-call response if supplied; missing/partial measurements stay unknown. Normalize input/output/cached counts and exact decimal supplier price version; existing customer tariff, admission/hold/settlement/refund examples unchanged. No promise that CF aggregate billing can resolve one missing call; late supplier totals reconcile operator liability separately, never debit a customer after its existing terminal hold deadline. Production prices are operator input snapshots of published CF rates, synthetic testprices explicitly labeled.
 
-Search keeps D1 FTS5 and Vectorize projections and query-time authorization; D1 FTS5 and Vectorize projections under the current D1 profile. Projection key(sourceId,sourceRev,embeddingModelId,embeddingProfileVersion,chunkHash), tombstone/source-denial before counts/citations. Model dimension/profile change builds separate index from authorized acknowledged sources, catches up journal, switches reader atomically and retains rollback window; no mixing vectors or changing canonical Notes scalar order. C# config activation creates immutable snapshot, Worker acknowledges supported schema/model/limits and version hash, then C# atomically moves active head; stale Worker cannot admit a new call. Emergency denial applies immediately even to a frozen Run; existing tariff snapshot remains for already admitted work.
+Search keeps D1 FTS5 and Vectorize projections and query-time authorization; D1 FTS5 and Vectorize projections under the current D1 profile. Projection key(sourceId,sourceRev,embeddingModelId,embeddingProfileVersion,chunkHash), tombstone/source-denial before counts/citations. Model dimension/profile change builds separate index from authorized acknowledged sources, catches up journal, switches reader atomically and retains rollback window; no mixing vectors or changing canonical Scope measurement order. C# config activation creates immutable snapshot, Worker acknowledges supported schema/model/limits and version hash, then C# atomically moves active head; stale Worker cannot admit a new call. Emergency denial applies immediately even to a frozen Run; existing tariff snapshot remains for already admitted work.
 
 The [sole Workflow and transactional ports](contracts/05-cloudflare-integration.md) supply the concrete placement, transitions, retry/approval/cancellation and restore rules. C# schedules deterministic occurrences and owns their Task record; CF advances the model/tool loop. ProductJob remains product-owned.
-
-## Slate transcription within the sole Harness
-
-The accepted [slate.transcribe.v1 profile](23-simulator-and-interchange.md#5-slate-metadata-render-and-subtitle-profiles) adds Workers AI whisper-large-v3-turbo to the selected catalogue for audio transcription only. Task.startTranscription creates a normal Cloud Task with immutable uploaded-audio input pins, explicit paid budget and a fixed chunk-processing plan. RunWorkflow executes it using existing claim/model-intent/model-outcome/settle/finalize ports and unknown-effect rules. It does not invoke Search InferenceWorkflow, create another agent loop or execute render code in CF. Final Task output is a TranscriptRecord artifact or explicit partial/no-result outcome; adopting subtitles remains a separately approved local NativeContentRev edit.
 
 ## Ordinary and temporary execution authority
 

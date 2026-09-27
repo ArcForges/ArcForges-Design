@@ -23,7 +23,7 @@ See → Approve → Steer → Continue → Start remote work → Receive results
 
 | # | Requirement |
 |---|---|
-| <a id="rule-id-01"></a>ID-01 | **Mobile and Web are companion surfaces, not mobile or web editions of the three professional desktop products** ([I-027](../01-normative-glossary-and-invariants.md#rule-i-027)). There is no ArcNotes Mobile editor, no ArcScope Mobile editor and no ArcSlate Mobile editor. |
+| <a id="rule-id-01"></a>ID-01 | **Mobile and Web are companion surfaces, not a mobile or web edition of the professional desktop application** ([I-027](../01-normative-glossary-and-invariants.md#rule-i-027)). There is no ArcScope Mobile editor. |
 | <a id="rule-id-02"></a>ID-02 | **Mobile and Web are not one responsive product.** They share domain semantics and contracts; their information architecture, interaction model and capability set differ deliberately. |
 | <a id="rule-id-03"></a>ID-03 | **Mobile and Web connect only to Cloud** (**[D-010](../../decisions/phase-1-foundation-decisions.md#rule-d-010)**). They must never scan a LAN, discover a desktop application runtime, or address a named pipe or domain socket. |
 | <a id="rule-id-04"></a>ID-04 | **`Companion ≠ thin remote controller`** (`§20`). Both surfaces are useful with no desktop online, through cloud chat, cloud tasks, projects, search, automation and continuity. |
@@ -48,7 +48,7 @@ See → Approve → Steer → Continue → Start remote work → Receive results
 | # | Requirement |
 |---|---|
 | <a id="rule-om-01"></a>OM-01 | **The core objects on Mobile and Web are still ArcChat objects**: conversations, tasks, projects, artifacts, approvals, automations. |
-| <a id="rule-om-02"></a>OM-02 | **Professional product objects appear through reference and preview only.** A companion surface never holds a complete writable copy of an ArcScope session, an ArcNotes document or an ArcSlate project ([I-060](../01-normative-glossary-and-invariants.md#rule-i-060)). |
+| <a id="rule-om-02"></a>OM-02 | **Professional product objects appear through reference and preview only.** A companion surface never holds a complete writable copy of an ArcScope session ([I-060](../01-normative-glossary-and-invariants.md#rule-i-060)). |
 | <a id="rule-om-03"></a>OM-03 | The full execution semantics are those of [`../05-ai-and-agent-execution.md`](../05-ai-and-agent-execution.md); the companion is a surface, never a second model. |
 
 ---
@@ -173,8 +173,8 @@ Three preview layers:
 
 | # | Requirement |
 |---|---|
-| <a id="rule-ar-01"></a>AR-01 | **Mobile must not attempt to fully edit an ArcNotes document.** No complete block editor on mobile. |
-| <a id="rule-ar-02"></a>AR-02 | **Web companion must not quietly become an ArcNotes Web editor.** Its role is preview, continuity and agent. |
+| <a id="rule-ar-01"></a>AR-01 | **Mobile must not attempt to fully edit an ArcScope report or annotation.** Deep editing stays on the desktop application. |
+| <a id="rule-ar-02"></a>AR-02 | **Web companion must not quietly become an ArcScope Web editor.** Its role is preview, continuity and agent. |
 | <a id="rule-ar-03"></a>AR-03 | **Artifact availability is shown truthfully**: available in cloud, on a device only, requires download, requires the owning product, or unavailable. |
 | <a id="rule-ar-04"></a>AR-04 | An assistant-generated artifact belongs to its frozen application/Cloud execution scope and existing resource owner. Shared UI does not create a separate ArcChat owner or another product's write permission. |
 | <a id="rule-ar-05"></a>AR-05 | **Remote result delivery prefers small results with large source data kept local.** A summary, a report, a rendered excerpt — not the whole source. |
@@ -320,7 +320,7 @@ Governed entirely by **[D-022](../../decisions/phase-1-foundation-decisions.md#r
 
 ## 20. Non-goals
 
-Mobile and Web are **not**: a complete knowledge editing workbench; an ArcScope or ArcSlate editor; a general screen-and-input remote desktop; a route that bypasses the ArcChat trust model to reach professional products directly; a way to perform R4 operations without local presence; a place where desktop-local secrets are held; or a commerce surface.
+Mobile and Web are **not**: a complete knowledge editing workbench; an ArcScope editor; a general screen-and-input remote desktop; a route that bypasses the ArcChat trust model to reach professional products directly; a way to perform R4 operations without local presence; a place where desktop-local secrets are held; or a commerce surface.
 
 ---
 

@@ -35,7 +35,7 @@ POST `/session/v1/native/token` is a standard form-urlencoded exception (≤16 K
 
 | Client IDs | Exact redirects |
 |---|---|
-| arcnotes.desktop, arcscope.desktop, arcslate.desktop | respectively `com.arcforges.arcnotes:/auth/callback`, `com.arcforges.arcscope:/auth/callback`, `com.arcforges.arcslate:/auth/callback` |
+| arcscope.desktop | `com.arcforges.arcscope:/auth/callback` |
 | companion.android | `https://account.arcforges.com/native/android/callback` for official realm; verified Android App Link for package `com.arcforges.mobile`, production signing certificate fingerprints in account-origin assetlinks.json |
 | companion.android.selfhost | `com.arcforges.mobile:/auth/callback`; manually trusted realm profile and exact PKCE flow; no official App Link claim for another origin |
 
@@ -75,14 +75,13 @@ Search requires explicit enabled Web-search choice and query egress disclosure. 
 
 | Owner path | Ports / critical boundary | Required adverse vector |
 |---|---|---|
-| Notes content | notes notebook/folder/document/query/revision/checkpoint/export operations; product edits use typed commands, Cloud accepts same owner change profile | stale revision produces preserved conflict proposal; move validates both notebooks and property mapping; no hidden Cloud delete on cache eviction |
 | Chat projects/memory | list/get/put/delete project and memory, updateConversation metadata, branch/message operations | project deletion removes association but not conversations; memory delete removes future context immediately, never rewrites old output |
 | Query/search/subscriptions | query APIs with snapshot/schema/permission bound cursors; notification/events/owner polls plus CF presentation | expired cursor restarts read, gap forces bounded owner backfill, revocation clears visible old data; hints never authorize content |
 | Task execution detail | task.get summary≤100detail entries then getDetails cursor at same owner/run revision | no unbounded plan/attempt result; interrupted and partial outputs visible; unknown state disables unsupported controls |
 | Device readiness/remote control | device list/getCapabilities; trust/remote policy; existing grant/revoke and tool bridge operations | stopped instance vs uninstalled vs offline distinct; no target substitution after dispatch; current owner/grant check at execution |
 | Automation | list/get/create/update/delete/setEnabled/runNow/resolveMissed; occurrence IDs and schedule profile in existing wire | duplicate trigger one occurrence/task, missed runs explicit, configuration update cannot rewrite admitted run snapshot |
 | Resource upload/download | beginUpload→bounded parts→complete→verifying→verified→owner commit; tickets/current authorization on reads | absent hash never promotes, expired pin blocks adoption, denied source cannot be fetched with a stale URL |
-| Scope/Slate | typed local operations and selective Cloud metadata/read-only result projections | product jobs remain native owned; Cloud Task links result handle, never takes over acquisition/render persistence |
+| Scope | typed local operations and selective Cloud metadata/read-only result projections | product jobs remain native owned; Cloud Task links result handle, never takes over acquisition persistence |
 | Entitlement/commerce | snapshots/capacity/extra-usage consent separate from checkout/order/provider webhook/reconciliation | unexpired Pass blocks subscription and active subscription blocks Pass; no duplicate term or overdraw; Mobile never gets checkout route |
 | Operator/support/policy | private host/C# Ops service, explicit scoped support access and dual approval/config audit | public edge cannot reach operator routes; support grant expires/revokes; policy can restrict behavior but not mint credits |
 
@@ -90,9 +89,9 @@ One stable operation has one class/risk/retry/approval/compatibility definition.
 
 ## 5. Realm transfer and data health
 
-`realm-transfer.v1` closes the accepted export-then-import migration. It is service owner-data interchange, distinct from the ordinary Markdown/Chat-JSON user export and not a native editable Notes file or a sync authority shared between realms. It cannot be substituted for an independent disaster backup.
+`realm-transfer.v1` closes the accepted export-then-import migration. It is service owner-data interchange, distinct from the ordinary Chat-JSON user export and not a sync authority shared between realms. It cannot be substituted for an independent disaster backup.
 
-Included roots: current Notes notebook/folder/document blocks/inline/property definitions/options/values/saved views; Chat projects/conversations/branches/messages/memory/artifact references; synced Scope sessions/capture manifests/analysis/reports and Slate project/sequence/asset metadata; managed blobs referenced by included roots. Source provenance, revision, exact values and hashes are included. Historic Task results may appear as inert content summaries associated with messages/artifacts, never a runnable Task. External native files are explicit missing/external references unless uploaded with consent. Keep user content and its reference mapping; unsupported version/kind is an issue, never silently skipped.
+Included roots: Chat projects/conversations/branches/messages/memory/artifact references; synced Scope sessions/capture manifests/analysis/reports; managed blobs referenced by included roots. Source provenance, revision, exact values and hashes are included. Historic Task results may appear as inert content summaries associated with messages/artifacts, never a runnable Task. External native files are explicit missing/external references unless uploaded with consent. Keep user content and its reference mapping; unsupported version/kind is an issue, never silently skipped.
 
 Excluded authority: credentials/tokens/device trust/remote grants, payment/credits/service terms/quotas, active execution/leases/outboxes, runnable automation schedules, operator/security audit, policy and deletion tombstones. Export a manifest of exclusions and per-root fidelity; no source deletion. The receiving realm assigns new owner IDs and rewrites every internal reference using a recorded mapping. External links keep origin identity and show unresolved availability. It never imports a deleted source into an existing destination root or revives a source tombstone.
 

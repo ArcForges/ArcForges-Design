@@ -77,7 +77,7 @@ The product repository currently having these C# projects is not evidence that t
 | <a id="rule-rm-03"></a>RM-03 | **Dispositions**: `Keep` · `Rename` · `Move` · `Split` · `Merge` · `Rewrite` · `Fence` · `Delete`. |
 | <a id="rule-rm-04"></a>RM-04 | **`Keep` means the item conforms to the accepted design or has a scheduled change that will make it conform** — never merely that it exists. |
 | <a id="rule-rm-05"></a>RM-05 | **Existing code is evidence of present state, not a competing design authority** (**[D-011](../decisions/phase-1-foundation-decisions.md#rule-d-011)**). Where existing code and the accepted design disagree, the design governs. |
-| <a id="rule-rm-06"></a>RM-06 | **A scaffold is not an implementation.** A scaffold in accepted scope is `Keep` on structure and carries behavior in its owning package. The two retired Notes projects in §5.6 are explicit `Delete` exceptions; an excluded capability receives no future implementation hook. |
+| <a id="rule-rm-06"></a>RM-06 | **A scaffold is not an implementation.** A scaffold in accepted scope is `Keep` on structure and carries behavior in its owning package. A scaffold whose capability is excluded from the family, recorded in §5.6, is an explicit `Delete` exception; an excluded capability receives no future implementation hook. |
 | <a id="rule-rm-07"></a>RM-07 | **Deleting existing work requires an explicit disposition with a reason.** |
 | <a id="rule-rm-08"></a>RM-08 | **A reconciliation change is separate from a behaviour change**, and no step leaves the repository unbuildable at a commit boundary. |
 | <a id="rule-rm-09"></a>RM-09 | **Completing this inventory is not executing it.** Physical migration and build-time enforcement remain implementation work in [WP-01](../planning/work-packages/01-repository-reconciliation-and-target-layout.md#rule-wp-01) and [WP-02](../planning/work-packages/02-build-governance-and-analyzer-policy.md#rule-wp-02). |
@@ -387,14 +387,14 @@ All 273 `.cs` files declare `SPDX-License-Identifier: AGPL-3.0-only`, and `NOTIC
 | <a id="rule-ns-01"></a>NS-01 | **The earlier framing — "a broader native surface than the architecture illustrates" — was wrong.** These are six *named placeholders* sharing one ABI convention, not six implemented surfaces | Corrected here |
 | <a id="rule-ns-02"></a>NS-02 | The shared preamble already implements version negotiation, build info and last-error — exactly what [AB-02](../architecture/12-native-interop-and-media.md#rule-ab-02), [AB-08](../architecture/12-native-interop-and-media.md#rule-ab-08) and [AB-12](../architecture/12-native-interop-and-media.md#rule-ab-12) require | `Keep` — the convention conforms |
 | <a id="rule-ns-03"></a>NS-03 | Each shim carries `exports/{linux.map,macos.exports,windows.def}`, an `include/`, `src/`, `generated/`, `tests/` and `fuzz/` layout | `Keep` — the layout anticipates [NT-01](../architecture/12-native-interop-and-media.md#rule-nt-01)–[NT-05](../architecture/12-native-interop-and-media.md#rule-nt-05) |
-| <a id="rule-ns-04"></a>NS-04 | `arcmedia-ffmpeg-abi` → ArcSlate decode/encode. Permitted under `§2` of the native architecture | `Keep`; substantive work in [WP-37.00](../planning/work-packages/37-arcslate-playback-and-processing.md#rule-wp-37.00) |
-| <a id="rule-ns-05"></a>NS-05 | `arcslate-color-abi` → ArcSlate colour management. Permitted | `Keep`; work in [WP-38.00](../planning/work-packages/38-arcslate-render-and-colour.md#rule-wp-38.00) |
-| <a id="rule-ns-06"></a>NS-06 | `arcslate-image-abi` → ArcSlate still-image I/O. Permitted | `Keep`; work in [WP-37.01](../planning/work-packages/37-arcslate-playback-and-processing.md#rule-wp-37.01) |
-| <a id="rule-ns-07"></a>NS-07 | `arcslate-otio-abi` → ArcSlate timeline interchange. **Permitted-surface question**: interchange parsing is a *format* concern, and the native architecture permits native code only where no reasonable managed substitute exists. A managed interchange reader is plausible | **`Fence` pending a substitute analysis in [WP-39.05](../planning/work-packages/39-arcslate-integration-and-portability.md#rule-wp-39.05).** Not deleted — the exports and layout are reusable if the analysis favours native |
+| <a id="rule-ns-04"></a>NS-04 | `arcmedia-ffmpeg-abi` → the media native family, retired with no surviving consumer | **`Delete`** — retired by [GOV.17](../planning/delivery/lanes/governance.md#task-gov-17); no functional work is scheduled |
+| <a id="rule-ns-05"></a>NS-05 | `arcslate-color-abi` → the colour native family, retired with no surviving consumer | **`Delete`** — retired by [GOV.17](../planning/delivery/lanes/governance.md#task-gov-17); no functional work is scheduled |
+| <a id="rule-ns-06"></a>NS-06 | `arcslate-image-abi` → the still-image native family. Permitted | **`Move`** to `native/arcimage-abi` as the logical library **ArcImageNative** under [GOV.17](../planning/delivery/lanes/governance.md#task-gov-17) (its `arc_image_*` symbols unchanged); functional work in [WP-13.10](../planning/work-packages/13-high-risk-technical-probes.md#rule-wp-13.10) |
+| <a id="rule-ns-07"></a>NS-07 | `arcslate-otio-abi` → the timeline-interchange (OTIO) native family, retired with no surviving consumer | **`Delete`** — retired by [GOV.17](../planning/delivery/lanes/governance.md#task-gov-17); the earlier fence question no longer applies |
 | <a id="rule-ns-08"></a>NS-08 | `arcscope-mdf-abi` → ArcScope measurement-format I/O. Same question as [NS-07](#rule-ns-07), same treatment | **`Fence` pending a substitute analysis in [WP-35.04](../planning/work-packages/35-arcscope-integration-and-sync.md#rule-wp-35.04)** |
-| <a id="rule-ns-09"></a>NS-09 | `arcgraphics-metal-abi` → GPU surface access on one platform. Permitted under `§2` (GPU device and surface access) | `Keep`; work in [WP-37.02](../planning/work-packages/37-arcslate-playback-and-processing.md#rule-wp-37.02) |
+| <a id="rule-ns-09"></a>NS-09 | `arcgraphics-metal-abi` → the graphics native family, retired with no surviving consumer | **`Delete`** — no functional work is scheduled |
 | <a id="rule-ns-10"></a>NS-10 | Every shim's `.h` declares `SPDX-License-Identifier: AGPL-3.0-only`. Native shims sit inside the AGPL boundary and are not consumed by mobile or the public SDK | **Conforms** — no change |
-| <a id="rule-ns-11"></a>NS-11 | **No third-party native dependency is vendored into any shim.** The FFmpeg, OpenColorIO and image dependencies named in `NOTICE.md` are external | Licence review of those externals remains [PG-03](open-gates-register.md#rule-pg-03), per product |
+| <a id="rule-ns-11"></a>NS-11 | **No third-party native dependency is vendored into any shim.** The FFmpeg, OpenColorIO and image dependencies named in `NOTICE.md` are external | Licence review of those externals remains [PG-03](open-gates-register.md#rule-pg-03), per native family |
 
 ### 5.3 Build governance — better than the first pass claimed
 
@@ -435,13 +435,13 @@ All 273 `.cs` files declare `SPDX-License-Identifier: AGPL-3.0-only`, and `NOTIC
 
 | Item | Evidence | Finding | Disposition |
 |---|---|---|---|
-| Modules present | 17: AI, Agent, Billing, Catalog, Chat, Configuration, Entitlement, Identity, Notes, Notification, Operations, Policy, Resource, Scope, Search, Slate, Sync | Existing project names are not the owner catalogue: the [Cloud schema map](../architecture/data-model/01-cloud-data-model.md#1-schema-map) declares 20 domain owners plus shared infrastructure | `Keep`; reconciled item-by-item in [WP-21.02](../planning/work-packages/21-cloud-host-and-persistence.md#rule-wp-21.02) |
+| Modules present | 17: AI, Agent, Billing, Catalog, Chat, Configuration, Entitlement, Identity, Notes, Notification, Operations, Policy, Resource, Scope, Search, Slate, Sync | Existing project names are not the owner catalogue: the [Cloud schema map](../architecture/data-model/01-cloud-data-model.md#1-schema-map) declares 19 domain owners plus shared infrastructure | `Keep`; reconciled item-by-item in [WP-21.02](../planning/work-packages/21-cloud-host-and-persistence.md#rule-wp-21.02) |
 | Runtime roles | `ArcForges.Cloud.Host`, `.AppHost`, `.BackgroundJobs`, `.ServiceDefaults` — **no `Worker`, no `TaskRunner`** | **The observed structure matches the accepted design.** [PP-03](../requirements/products/arcforges-cloud.md#rule-pp-03) of the Cloud product requirements and [RT-03](../architecture/05-cloud-architecture.md#rule-rt-03) of the Cloud architecture require **one** deployable ASP.NET Core host containing API handlers, the Harness and bounded internal background services; `BackgroundJobs` is a library referenced by the single web executable, which is exactly that shape. `AppHost` is Aspire local-development orchestration only ([EN-05](../requirements/products/arcforges-cloud.md#rule-en-05) of the Cloud architecture) | **`Keep`.** [WP-21.01](../planning/work-packages/21-cloud-host-and-persistence.md#rule-wp-21.01) must assert the shape holds — identical replicas, no role flag, no configuration-chosen leader, coordination by lease with fencing — **not split the host into roles** |
 | Content | 27 projects, **233 C# lines total** | Scaffolding | `Keep` on structure; all behaviour is [WP-21](../planning/work-packages/21-cloud-host-and-persistence.md#rule-wp-21)+ |
 
 ### 5.6 Shared boundary and remaining areas
 
-**Retired Notes dispositions (current scope).** Under [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006), **Delete** `src/ArcNotes/ArcNotes.Edgeless` and `src/ArcNotes/ArcNotes.Slides`, including their project-local lockfiles and obsolete solution/project references, in [WP-01.05](../planning/work-packages/01-repository-reconciliation-and-target-layout.md#rule-wp-01.05). These are the inventoried eight-line scaffolds, not shipped data formats. Retain unrelated Notes core work. Verify the retained build graph has neither retired project nor excluded schema/test hook. Current verification (2026-09-20): [WP01.05](wp01-05-bounded-reconciliation.md) confirms both retired scaffolds and obsolete graph entries are already absent from the nine owned roots; the retained Notes core builds and passes 89 tests. No new deletion is claimed by that verification. No work is assigned to the retired canvas/slides packages.
+**Excluded subtree dispositions (current scope).** Under [P2-019](../decisions/phase-2-specification-decisions.md#rule-p2-019), the historical monorepo's `src/ArcNotes` and `src/ArcSlate` subtrees belong to products outside the family: they have no owner among the seven implementation repositories and nothing is migrated from them. The 2026-09-20 [WP01.05 verification](wp01-05-bounded-reconciliation.md) confirmed that the owned roots carry no inventoried scaffold or obsolete graph entry from them; retained-repository material that exists only for those products is retired by [CON.23](../planning/delivery/lanes/contracts.md#task-con-23), [GOV.17](../planning/delivery/lanes/governance.md#task-gov-17) and [GOV.18](../planning/delivery/lanes/governance.md#task-gov-18).
 
 | Item | Evidence | Finding | Disposition |
 |---|---|---|---|
@@ -467,7 +467,7 @@ Derived from what blocks the most downstream work, and revised by the corrected 
 | 2 | **Contract `Public`/`Internal` split** | Governs both layout and licence header; `Contracts.Foundation` is the only substantive code to move | Unchanged |
 | 3 | **Cloud owner mapping and single-Host verification** (`§5.5`) | Preserve Host plus internal libraries; map all 20 domain owners before behavior is added | **Corrected** — no deployment-role split is required |
 | 4 | **Shared-boundary moves** (`§5.6`) | Five UI-facing projects sit in mechanism-only building blocks | Unchanged |
-| 5 | **Native shim substitute analyses** ([NS-07](#rule-ns-07), [NS-08](#rule-ns-08)) | Two shims may not belong in the permitted native surface | **Narrowed** — from six shims to two questions |
+| 5 | **Native shim substitute analysis** ([NS-08](#rule-ns-08)) | One shim may not belong in the permitted native surface | **Narrowed** — from six shims to one question; the OTIO shim's question is resolved by retirement under GOV.17 |
 | 6 | **Build governance completion** (`§5.3`) | Only the Node/Web posture, the library `IsAotCompatible` sweep and version-axis plumbing remain | **Lowered** — most of it already conforms |
 | 7 | **Architecture-rule reconciliation** (`§5.4`) | Thirteen existing rules versus the accepted twenty-four | **Lowered** — the harness exists |
 | 8 | **Fixtures root and naming** | Cheap, and unblocks compatibility claims | Unchanged |
@@ -479,16 +479,16 @@ Derived from what blocks the most downstream work, and revised by the corrected 
 | Check | Result |
 |---|---|
 | Every `.csproj` in the main tree appears in `§4` | **Pass** — 166 of 166 |
-| Every inventoried area has a current disposition in `§5` | **Pass for the recorded source/project inventory** — 13 areas, including the two explicit retired Notes exceptions; not a claim about all implementation documentation or runtime completeness |
+| Every inventoried area has a current disposition in `§5` | **Pass for the recorded source/project inventory** — 13 areas, including the excluded-subtree dispositions in `§5.6`; not a claim about all implementation documentation or runtime completeness |
 | Every native shim has a role, consuming product, permitted-surface assessment and disposition | **Pass** — 6 of 6, plus `shared` |
-| Substitute analysis recorded where the permitted-surface assessment is open | **Pass** — [NS-07](#rule-ns-07), [NS-08](#rule-ns-08), both scheduled |
+| Substitute analysis recorded where the permitted-surface assessment is open | **Pass** — [NS-08](#rule-ns-08) scheduled; [NS-07](#rule-ns-07) is resolved by retirement, not an open question |
 | Every earlier conformance claim re-checked against evidence | **Pass** — 6 corrections in `§3` |
 | Effective build configuration read rather than inferred | **Pass** — `§5.3` |
 | Licence position read at file level | **Pass** — all 273 `.cs` files |
 | Test suites assessed by content, not directory presence | **Pass** — `§5.4` |
 | Nothing in the implementation repository modified | **Pass** — read-only; no build or test executed |
 
-**Unresolved determinations: none.** Two open *questions* ([NS-07](#rule-ns-07), [NS-08](#rule-ns-08)) are scheduled substitute analyses with named owners, not unresolved determinations — the disposition (`Fence`) is decided; only the eventual destination is open.
+**Unresolved determinations: none.** One open *question* ([NS-08](#rule-ns-08)) is a scheduled substitute analysis with a named owner, not an unresolved determination — the disposition (`Fence`) is decided; only the eventual destination is open. [NS-07](#rule-ns-07) is resolved by retirement, not an open question.
 
 ---
 
@@ -509,4 +509,4 @@ The dated measurements above remain implementation-state evidence at their recor
 
 Current source ownership, repository roots and dependencies are defined only in [the layout authority](../architecture/01-solution-and-project-layout.md#1-repository-ownership-and-dependency-graph). WP01 applies that mapping to the measured baseline; the old inventory rows remain historical evidence rather than competing target instructions.
 
-Native dispositions are in [the package registry](../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry): retain approved foundations in DesktopPlatform, admit the selected official OTIO overlay, and exclude MDF from V1 published closures. No implementation file was changed by this documentation amendment.
+Native dispositions are in [the package registry](../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry): retain approved foundations in DesktopPlatform, and exclude MDF from V1 published closures. No implementation file was changed by this documentation amendment.

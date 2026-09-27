@@ -15,13 +15,13 @@ One session/store per application profile; any number of ordinary application wi
 ```text
 Expanded view
 +--------------------+-----------------------------------+---------------------+
-| ArcNotes Assistant | [workspace] [Local history] [•••] | Resource preview    |
+| ArcScope Assistant | [workspace] [Local history] [•••] | Resource preview    |
 | New conversation   | Conversation title / branch       | Source · permission |
 | Search             |                                   |                     |
 | Conversations      | You: frozen selection + question  | bounded content     |
 | Tasks [2 attention]| Assistant: streamed answer        | / native fallback   |
 | Projects           | [sources] [tool card] [result]     |                     |
-| Library            |                                   | [Open in ArcNotes]  |
+| Library            |                                   | [Open in ArcScope]  |
 | Automations        | [context chips] [profile] [mode]  | [Save as…]          |
 | Settings           | [multiline draft           ][Send]|                     |
 +--------------------+-----------------------------------+---------------------+
@@ -59,7 +59,7 @@ Auto-scroll follows output only when already near the bottom (within 64px); read
 
 A tool card shows operation, app/device target, frozen inputs, state and effect certainty. Approval cards are durable attention items; dismissing the surface leaves them in Tasks. A lost response shows reconciliation before retry. Native render/export/capture are ProductJobs linked from a Cloud task when requested, not relabelled AI runs. The app can keep editing while Cloud work runs; shutdown confirms consequences of local work and makes remote device tools unavailable.
 
-Preview supports plain/Markdown/code, inert sanitized HTML, bounded tables/measurement reports, images, PDF through restricted helper, audio/video through admitted host capability and exact timeline/frame references. No active HTML/script or arbitrary native parser inside the assistant package. Absent preview capability yields metadata plus safe Save As/Open action; content is not falsely reported missing. Captures remain bounded reports/selected ranges unless explicit raw upload. Video source precision, captions and render artifact identity retain Slate rules. An artifact's “Open in app” targets the current owning application only; future cross-product destinations are not shown.
+Preview supports plain/Markdown/code, inert sanitized HTML, bounded tables/measurement reports, images and PDF through the restricted helper. No active HTML/script or arbitrary native parser inside the assistant package. Absent preview capability yields metadata plus safe Save As/Open action; content is not falsely reported missing. Captures remain bounded reports/selected ranges unless explicit raw upload. An artifact's “Open in app” targets the current owning application only; future cross-product destinations are not shown.
 
 ## 5. History/privacy and lifecycle UI
 
@@ -71,4 +71,4 @@ Deleting a conversation presents local vs Cloud consequences, pending task statu
 
 All controls have names/roles, focus order and keyboard paths; minimum target size follows shared desktop tokens, contrast/high-contrast/reduced-motion/text scaling are tested. Streaming announcements are throttled to meaningful sentence/status changes, with user pause. Color is never the only state cue. Restore windows onto available screens after monitor changes. Test Chinese/English IME, long localized labels,200% text scaling, RTL structure and screen reader navigation.
 
-WP17 acceptance uses the published package from a clean sample host plus ArcNotes integration. WP35/39 independently compose the same package in Scope/Slate with their own store/context/action ports. Two apps must show unrelated conversations/drafts and independent connection loss; two windows in one app must show consistent commits without draft overwrite. WP52 completes actual model/tool/approval/usage/reconnect and WP50 tests installed signed applications. A screenshot or fixture-only UI does not close real integration.
+WP17 acceptance uses the published package from a clean sample host plus ArcScope integration. WP35 independently composes the same package in ArcScope with its own store/context/action ports. Two apps must show unrelated conversations/drafts and independent connection loss; two windows in one app must show consistent commits without draft overwrite. WP52 completes actual model/tool/approval/usage/reconnect and WP50 tests installed signed applications. A screenshot or fixture-only UI does not close real integration.

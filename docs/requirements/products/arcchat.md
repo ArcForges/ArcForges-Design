@@ -5,7 +5,7 @@
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Requirements / Products
-> Feature identity: legacy `arcchat` requirement IDs; implementation is the application-owned assistant in DesktopPlatform, not a standalone desktop product. Product partitions are arcnotes/arcscope/arcslate; companion chats use companion.
+> Feature identity: legacy `arcchat` requirement IDs; implementation is the application-owned assistant in DesktopPlatform, not a standalone desktop product. The product partition is arcscope; companion chats use companion.
 > Companions: [`../05-ai-and-agent-execution.md`](../05-ai-and-agent-execution.md), [`../06-knowledge-search-and-retrieval.md`](../06-knowledge-search-and-retrieval.md), [`../08-extensions-and-developer-platform.md`](../08-extensions-and-developer-platform.md), [`../09-shared-desktop-experience.md`](../09-shared-desktop-experience.md), [`arcchat-mobile-and-web.md`](arcchat-mobile-and-web.md)
 
 > **ArcChat = Chat-first interface + Agent execution surface + Task control centre + own-application capability surface.**
@@ -28,13 +28,13 @@ Six sentences that decide almost every design question:
 | <a id="rule-pb-01"></a>PB-01 | Each embedded assistant provides quick answers, directed work and durable task interaction in one feature surface; it is not a separately installed product. |
 | <a id="rule-pb-02"></a>PB-02 | Each host connects directly to Cloud through Platform APIs. The assistant is its own application's control UI, never a gateway for another product. |
 | <a id="rule-pb-03"></a>PB-03 | Platform assistant packages implement full per-app conversations/messages/projects/profiles/skills. Local history and drafts are app-owned; opted-in Cloud histories and Cloud automation/execution retain server authority under model 05. No shared assistant database/service across products. |
-| <a id="rule-pb-04"></a>PB-04 | **ArcChat never owns**: an authoritative ArcNotes document copy, a writable ArcNotes knowledge database, an authoritative ArcScope session, raw ArcScope capture, an ArcSlate timeline, ArcSlate media ownership, or any professional product's undo stack ([I-020](../01-normative-glossary-and-invariants.md#rule-i-020)). |
+| <a id="rule-pb-04"></a>PB-04 | **ArcChat never owns**: an authoritative ArcScope session, raw ArcScope capture, or any professional product's undo stack ([I-020](../01-normative-glossary-and-invariants.md#rule-i-020)). |
 | <a id="rule-pb-05"></a>PB-05 | Thin Preview plus OpenArtifact: text/image previews, metadata and thumbnails are sufficient; professional editing opens the owning domain inside this application. Edit-approval previews remain reviewable; no separate workbench or cross-product handoff is implied. |
 | <a id="rule-pb-06"></a>PB-06 | The native client and local capability bridge are open-source product functionality. Official AI requires an active paid service term with replenishing capacity and optional credits. Local AI, end-user BYOK and a desktop agent scheduler are excluded. |
 
 ### 1.1 Non-goals
 
-ArcChat is **not**: an IDE, a document editor, a telemetry analysis workbench, a video editor, a package manager for third-party software, a general-purpose automation scripting environment, or a model marketplace. Each of those has an owner, and ArcChat orchestrates rather than replaces them.
+ArcChat is **not**: an IDE, a telemetry analysis workbench, a package manager for third-party software, a general-purpose automation scripting environment, or a model marketplace. Each of those has an owner, and ArcChat orchestrates rather than replaces them.
 
 ---
 
@@ -126,7 +126,7 @@ Primary surfaces:
 |---|---|
 | <a id="rule-pj-01"></a>PJ-01 | A project owns: instructions, references, its conversations, its tasks, its artifacts, a default agent profile and a default context. |
 | <a id="rule-pj-02"></a>PJ-02 | **A project stores references, not copies** of professional data ([I-051](../01-normative-glossary-and-invariants.md#rule-i-051)). |
-| <a id="rule-pj-03"></a>PJ-03 | **Deleting a project never cascades into external professional resources** ([LC-05](../08-extensions-and-developer-platform.md#rule-lc-05) analogue). Referenced ArcNotes documents, ArcScope sessions and ArcSlate projects survive. |
+| <a id="rule-pj-03"></a>PJ-03 | **Deleting a project never cascades into external professional resources** ([LC-05](../08-extensions-and-developer-platform.md#rule-lc-05) analogue). Referenced ArcScope sessions survive. |
 | <a id="rule-pj-04"></a>PJ-04 | ArcChat-owned content inside a deleted project — its conversations and tasks — is preserved or explicitly handled, never silently destroyed. |
 | <a id="rule-pj-05"></a>PJ-05 | Local projects and history belong to this application's model 05 store. Explicit Cloud-history projects belong to its product/workspace partition. Cloud execution metadata and automation remain server-owned regardless of transcript mode. |
 
@@ -154,7 +154,7 @@ Primary surfaces:
 
 | # | Requirement |
 |---|---|
-| <a id="rule-ar-01"></a>AR-01 | **An artifact need not be owned by ArcChat** ([I-058](../01-normative-glossary-and-invariants.md#rule-i-058), [I-059](../01-normative-glossary-and-invariants.md#rule-i-059)). An ArcNotes document produced by a task is owned by ArcNotes; ArcChat holds an `ArtifactRef`. |
+| <a id="rule-ar-01"></a>AR-01 | **An artifact need not be owned by ArcChat** ([I-058](../01-normative-glossary-and-invariants.md#rule-i-058), [I-059](../01-normative-glossary-and-invariants.md#rule-i-059)). An ArcScope annotation produced by a task is owned by ArcScope; ArcChat holds an `ArtifactRef`. |
 | <a id="rule-ar-02"></a>AR-02 | **ArcChat-native artifacts exist** — a generated answer document, an exported summary, a produced file — and those it does own. |
 | <a id="rule-ar-03"></a>AR-03 | The **Artifact Library** lists artifacts across tasks and projects, with owner, kind, provenance and availability. |
 | <a id="rule-ar-04"></a>AR-04 | **Artifact preview is thin preview** ([PB-05](#rule-pb-05)). Deep work happens in the owning product. |
@@ -299,7 +299,7 @@ Cloud service access has one customer mode: subscribed, operator-managed AI. The
 | # | Requirement |
 |---|---|
 | <a id="rule-hm-01"></a>HM-01 | **There is no universal history domain.** Each object owns its own history: conversations own message history, tasks own run history, automations own run history, artifacts own provenance. A global Activity view is a **projection** ([I-274](../01-normative-glossary-and-invariants.md#rule-i-274)). |
-| <a id="rule-hm-02"></a>HM-02 | Memory is explicitly layered and must never be a black box: **conversation context** (this conversation), **project instructions and context** (this project), **personal memory** (ArcChat-owned durable preference recall), and **long-term knowledge** — which is **ArcNotes**, not ArcChat memory ([I-156](../01-normative-glossary-and-invariants.md#rule-i-156)). |
+| <a id="rule-hm-02"></a>HM-02 | Memory is explicitly layered and must never be a black box: **conversation context** (this conversation), **project instructions and context** (this project), **personal memory** (ArcChat-owned durable preference recall), and **long-term knowledge** — which is the **Knowledge Source**, not ArcChat memory ([I-156](../01-normative-glossary-and-invariants.md#rule-i-156)). |
 | <a id="rule-hm-03"></a>HM-03 | **A runtime context summary is not user memory** ([I-158](../01-normative-glossary-and-invariants.md#rule-i-158)). Compaction is context engineering, not a durable record about the user. |
 | <a id="rule-hm-04"></a>HM-04 | **Personal memory is visible, inspectable, editable and deletable.** |
 | <a id="rule-hm-05"></a>HM-05 | **Memory is never shared silently across workspaces** ([AS-02](../06-knowledge-search-and-retrieval.md#rule-as-02)). |
@@ -461,17 +461,17 @@ An **ArcChat Reference Coverage Matrix** is required before ArcChat implementati
 
 **Chat versus Agent** — a question in Chat Mode answers with no task; a work request in Agent Mode creates a task with a visible plan and controls.
 
-**Context** — attaching a large ArcNotes notebook references rather than copies; the Context Inspector shows exactly what is sent; removing an item removes it.
+**Context** — attaching a large ArcScope session references rather than copies; the Context Inspector shows exactly what is sent; removing an item removes it.
 
 **Branching** — editing an earlier message creates a branch; the original history remains; regenerate creates an alternative branch.
 
-**Project** — deleting a project leaves referenced ArcNotes documents and ArcScope sessions intact.
+**Project** — deleting a project leaves referenced ArcScope sessions intact.
 
 **Task** — a task survives closing the conversation, closing the window and restarting the application, and is found in the Task Center.
 
 **Approval** — an approval names the resource and revision, shows the impact, and is invalidated by a revision change.
 
-**Own-application result** — ArcNotes' embedded assistant requests a document; ArcNotes creates it through its validated Application port and returns an ArtifactRef. Removing the artifact entry preserves the document.
+**Own-application result** — ArcScope's embedded assistant requests an annotation; ArcScope creates it through its validated Application port and returns an ArtifactRef. Removing the artifact entry preserves the annotation.
 
 **Application not running** — the companion shows TaskState=waiting and reasonFacet=device for its selected installation until that application is explicitly opened or the request expires.
 

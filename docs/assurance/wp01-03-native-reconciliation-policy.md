@@ -8,7 +8,7 @@ DesktopPlatform b7744f3ffdeae161d8a3e34243aad3b8e8b47978 already owns Media, Col
 
 The current BuildingBlocks.NativeInterop contains a second set of ABI probe bindings used by NativeAbiTests; it is not an admitted package. Move those unchanged independent oracle sources to NativeAbiTests, preserving their null-pointer/layout/error tests and native symbol compatibility. Keep the non-packable placeholder project identity to avoid unrelated project-map churn. It must contain no native bindings. Capability-specific production declarations remain exclusively in src/Native; their package bytes, APIs and native sources need no behavioral change. Record the original and destination source identities and update the first-party provenance inventory. A repository architecture check prevents these bindings from reappearing outside their capability owner. Independent direct ABI oracle bindings are test-only and cannot be imported by production projects.
 
-Inspect all three product source trees for duplicate native bindings, native source imports or MDF adoption before recording no transfer required. Existing immutable package consumers and source/NOTICE history remain compatible. Product source is not built through an adjacent repository.
+Inspect ArcScope's product source tree for duplicate native bindings, native source imports or MDF adoption before recording no transfer required. Existing immutable package consumers and source/NOTICE history remain compatible. Product source is not built through an adjacent repository.
 
 ## Parser prerequisite and evidence classes
 

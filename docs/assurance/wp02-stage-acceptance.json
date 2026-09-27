@@ -17,34 +17,12 @@
   ],
   "owners": [
     {
-      "owner": "ArcNotes",
-      "reviewedHead": "63b2af31aafab2b4f93d3247480e400b101e515a",
-      "mergeCommit": "268c3290ab372423c9a7d94a3027876f507f9816",
-      "pr": "https://github.com/ArcForges/ArcNotes/pull/9",
-      "mainRuns": [
-        "https://github.com/ArcForges/ArcNotes/actions/runs/35688797135"
-      ],
-      "mainConclusion": "success",
-      "providerResult": "Publish portable release and Verify publication succeeded for win-x64, win-arm64 and linux-x64."
-    },
-    {
       "owner": "ArcScope",
       "reviewedHead": "e337ee96fca109997e4411d86d9b9ec8ff7d6314",
       "mergeCommit": "5e68634deb80cd0cf096944a9c71a581d6ba48ba",
       "pr": "https://github.com/ArcForges/ArcScope/pull/9",
       "mainRuns": [
         "https://github.com/ArcForges/ArcScope/actions/runs/35688248008"
-      ],
-      "mainConclusion": "success",
-      "providerResult": "Publish portable release and Verify publication succeeded for win-x64, win-arm64 and linux-x64."
-    },
-    {
-      "owner": "ArcSlate",
-      "reviewedHead": "7e9966962245dc7ccc90d4506719966f170875ec",
-      "mergeCommit": "1214224ac105e1a172ea589ecf16810874f7b381",
-      "pr": "https://github.com/ArcForges/ArcSlate/pull/9",
-      "mainRuns": [
-        "https://github.com/ArcForges/ArcSlate/actions/runs/35688252843"
       ],
       "mainConclusion": "success",
       "providerResult": "Publish portable release and Verify publication succeeded for win-x64, win-arm64 and linux-x64."
@@ -118,15 +96,7 @@
     }
   ],
   "retainedConsumerPins": {
-    "ArcNotes": {
-      "ArcForges.Build.Policy": "1.0.0-ci.20.1",
-      "ArcForges.Contracts.PublicApi": "1.0.0-ci.36.1"
-    },
     "ArcScope": {
-      "ArcForges.Build.Policy": "1.0.0-ci.20.1",
-      "ArcForges.Contracts.PublicApi": "1.0.0-ci.36.1"
-    },
-    "ArcSlate": {
       "ArcForges.Build.Policy": "1.0.0-ci.20.1",
       "ArcForges.Contracts.PublicApi": "1.0.0-ci.36.1"
     },
@@ -183,11 +153,11 @@
     "independent-version-axes",
     "dependency-and-upgrade-policy"
   ],
-  "currentProjectCount": 43,
+  "currentProjectCount": 35,
   "historicalEvaluatedAotPostures": 31,
   "historicalDiagnosticRejectionCases": 17,
   "latestOfflineAdmissionCases": 120,
-  "sourceDriftReview": "43 managed projects remain; no changed AOT/trim/diagnostic posture since WP02.02. The Git metadata command stderr option is not a compiler diagnostic suppression.",
+  "sourceDriftReview": "35 managed projects remain; no changed AOT/trim/diagnostic posture since WP02.02. The Git metadata command stderr option is not a compiler diagnostic suppression.",
   "validationForThisSubstep": [
     "current source/package selection review",
     "upstream receipt and source/result consistency",
