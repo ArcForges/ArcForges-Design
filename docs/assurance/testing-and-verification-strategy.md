@@ -109,13 +109,13 @@ These are not additional families; they are obligations distributed across the f
 
 ## 4. The invariant-to-test obligation
 
-**[D-018](../decisions/phase-1-foundation-decisions.md#rule-d-018)** produces an invariant catalogue of **429** `X ≠ Y` statements — 421 at the original baseline plus 8 added by [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006) ([I-491](../requirements/01-normative-glossary-and-invariants.md#rule-i-491)–[I-498](../requirements/01-normative-glossary-and-invariants.md#rule-i-498)). That is the count, not the highest identifier, which reaches [I-498](../requirements/01-normative-glossary-and-invariants.md#rule-i-498) because each section reserves headroom. They are only useful if they are enforced.
+**[D-018](../decisions/phase-1-foundation-decisions.md#rule-d-018)** produces an invariant catalogue of **429** `X ≠ Y` statements — 421 at the original baseline plus 8 added by [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006) ([I-491](../requirements/01-normative-glossary-and-invariants.md#rule-i-491)–[I-498](../requirements/01-normative-glossary-and-invariants.md#rule-i-498)). [P2-019](../decisions/phase-2-specification-decisions.md#rule-p2-019) leaves **406** after the product-family reduction. That is the count, not the highest identifier, which reaches [I-498](../requirements/01-normative-glossary-and-invariants.md#rule-i-498) because each section reserves headroom. They are only useful if they are enforced.
 
 **The obligation has two halves with two gates.** They were previously conflated, which let an owned open finding appear to satisfy a coverage gate.
 
 | Half | Content | Gate | State |
 |---|---|---|---|
-| **Design traceability** | Architecture home, mechanism, **planned** verification, owning gate — per invariant | [PG-06](open-gates-register.md#rule-pg-06) | **Closed** — **429 of 429** in [`invariant-coverage.md`](invariant-coverage.md) `§7` |
+| **Design traceability** | Architecture home, mechanism, **planned** verification, owning gate — per invariant | [PG-06](open-gates-register.md#rule-pg-06) | **Closed** — **406 of 406** in [`invariant-coverage.md`](invariant-coverage.md) `§7` |
 | **Implementation enforcement** | An **implemented** check with a **passing** result | [PG-11](open-gates-register.md#rule-pg-11) | **Open** — distributed across owning packages |
 
 | # | Rule |

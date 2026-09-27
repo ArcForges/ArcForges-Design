@@ -4,7 +4,7 @@
 
 Accepted freeze, reconciliation and build-governance baselines, and the per-repository architecture and policy test suites.
 
-Tasks: 15 · Owning repositories: AI, ArcScope, Cloud, Contracts, DesktopPlatform, Mobile, Web · Integration owner(s): AI integration owner, ArcScope integration owner, Cloud integration owner, Contracts integration owner, DesktopPlatform integration owner, Mobile integration owner, Web integration owner
+Tasks: 16 · Owning repositories: AI, ArcScope, Cloud, Contracts, DesktopPlatform, Mobile, Web · Integration owner(s): AI integration owner, ArcScope integration owner, Cloud integration owner, Contracts integration owner, DesktopPlatform integration owner, Mobile integration owner, Web integration owner
 
 | Task | Title | Kind | Size | Start prerequisites | Baseline |
 |---|---|---|---|---|---|
@@ -18,11 +18,12 @@ Tasks: 15 · Owning repositories: AI, ArcScope, Cloud, Contracts, DesktopPlatfor
 | [GOV.10](#task-gov-10) | AI (Workflow Harness) policy tests | governance | S | [GOV.04](#task-gov-04) (artifact), [GOV.05](#task-gov-05) (artifact) | not-started |
 | [GOV.11](#task-gov-11) | Web policy tests (Node/TS mechanism) | governance | M | [GOV.03](#task-gov-03) (artifact), [GOV.01](#task-gov-01) (artifact) | not-started |
 | [GOV.12](#task-gov-12) | Mobile policy tests (Gradle/Kotlin mechanism) | governance | M | [GOV.03](#task-gov-03) (artifact), [GOV.04](#task-gov-04) (artifact) | not-started |
-| [GOV.13](#task-gov-13) | Invariant enforcement accounting report | governance | M | [GOV.04](#task-gov-04) (artifact), [GOV.17](#task-gov-17) (artifact) | not-started |
-| [GOV.14](#task-gov-14) | Specification integrity checks over the Design repository | governance | M | [GOV.01](#task-gov-01) (artifact), [GOV.17](#task-gov-17) (artifact) | not-started |
+| [GOV.13](#task-gov-13) | Invariant enforcement accounting report | governance | M | [GOV.04](#task-gov-04) (artifact), [GOV.18](#task-gov-18) (artifact) | not-started |
+| [GOV.14](#task-gov-14) | Specification integrity checks over the Design repository | governance | M | [GOV.01](#task-gov-01) (artifact), [GOV.18](#task-gov-18) (artifact) | not-started |
 | [GOV.15](#task-gov-15) | WP05 stage integration verification | integration | M | [GOV.04](#task-gov-04) (artifact), [GOV.05](#task-gov-05) (artifact), [GOV.07](#task-gov-07) (artifact), [GOV.09](#task-gov-09) (artifact), [GOV.10](#task-gov-10) (artifact), [GOV.11](#task-gov-11) (artifact), [GOV.12](#task-gov-12) (artifact), [GOV.13](#task-gov-13) (artifact), [GOV.14](#task-gov-14) (artifact) | not-started |
 | [GOV.16](#task-gov-16) | Operation-catalogue authorization reachability matrix and identity boundary evidence | governance | M | [CON.18](contracts.md#task-con-18) (contract) | not-started |
-| [GOV.17](#task-gov-17) | Retire the DesktopPlatform material outside the product family and re-pin the design-policy export | governance | L | none | not-started |
+| [GOV.17](#task-gov-17) | Retire the native families outside the product family and move the still-image shim | governance | M | none | not-started |
+| [GOV.18](#task-gov-18) | Reduce the DesktopPlatform policy data and re-pin the design-policy export | governance | M | none | not-started |
 
 ## Tasks
 
@@ -275,7 +276,7 @@ Tasks: 15 · Owning repositories: AI, ArcScope, Cloud, Contracts, DesktopPlatfor
 | Kind / size | governance / M |
 | Obligations | [WP-05.05](../../work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05.05) — full |
 | Provides | invariant-accounting-report-v1 |
-| Start prerequisites | **artifact** [GOV.04](#task-gov-04) — at least one owning package's real policy-test run to classify (DesktopPlatform's own AT-*/RP-* results). *Why:* the report's classifications must come from actual test-run results, not declared status; it needs at least one real producer before it can report anything besides 'not yet implemented' for every row<br>**artifact** [GOV.17](#task-gov-17) — the invariant export regenerated from this Design repository. *Why:* the accounting report reads the pinned invariant export, which must describe the reduced family |
+| Start prerequisites | **artifact** [GOV.04](#task-gov-04) — at least one owning package's real policy-test run to classify (DesktopPlatform's own AT-*/RP-* results). *Why:* the report's classifications must come from actual test-run results, not declared status; it needs at least one real producer before it can report anything besides 'not yet implemented' for every row<br>**artifact** [GOV.18](#task-gov-18) — the invariant export regenerated from this Design repository. *Why:* the accounting report reads the pinned invariant export, which must describe the reduced family |
 | Entry condition | [ADOPT.02.governance](adoption.md#task-adopt-02-governance) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
 | Unblocks | [GOV.15](#task-gov-15) |
@@ -298,7 +299,7 @@ Tasks: 15 · Owning repositories: AI, ArcScope, Cloud, Contracts, DesktopPlatfor
 | Kind / size | governance / M |
 | Obligations | [WP-05.06](../../work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05.06) — full: six checks over docs/ in ArcForges-Design, plus the 23+8-row Phase-1/Phase-2 decision-coverage check against traceability-matrix.md<br>[P2-018](../../../decisions/phase-2-specification-decisions.md#rule-p2-018) — delivery-graph validation replacing the retired package-level graph check |
 | Provides | spec-integrity-check-v1 |
-| Start prerequisites | **artifact** [GOV.01](#task-gov-01) — the citation/anchor index and continuing drift check installed by GOV.01 ([PG-21](../../../assurance/open-gates-register.md#rule-pg-21)). *Why:* 05.06 extends the same corpus/citation machinery WP00.01 already established rather than building link-resolution from nothing<br>**artifact** [GOV.17](#task-gov-17) — the design-policy export re-pinned to this Design repository. *Why:* the integrity checks run against the pinned Design commit, which must be the reduced family |
+| Start prerequisites | **artifact** [GOV.01](#task-gov-01) — the citation/anchor index and continuing drift check installed by GOV.01 ([PG-21](../../../assurance/open-gates-register.md#rule-pg-21)). *Why:* 05.06 extends the same corpus/citation machinery WP00.01 already established rather than building link-resolution from nothing<br>**artifact** [GOV.18](#task-gov-18) — the design-policy export re-pinned to this Design repository. *Why:* the integrity checks run against the pinned Design commit, which must be the reduced family |
 | Entry condition | [ADOPT.02.governance](adoption.md#task-adopt-02-governance) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
 | Unblocks | [GOV.15](#task-gov-15) |
@@ -359,24 +360,48 @@ Tasks: 15 · Owning repositories: AI, ArcScope, Cloud, Contracts, DesktopPlatfor
 
 <a id="task-gov-17"></a>
 
-### GOV.17 — Retire the DesktopPlatform material outside the product family and re-pin the design-policy export
+### GOV.17 — Retire the native families outside the product family and move the still-image shim
 
-**Outcome.** The Media, Colour and Otio native families and the macOS Metal graphics probe leave DesktopPlatform - ABI directories, overlays, managed and runtime projects, oracle tests, solution entries and package registrations - and no further versions of them are published; the still-image shim moves to native/arcimage-abi under the logical library ArcImageNative while its published arc_image_* symbols stay unchanged; runtime-ownership, licence-boundary and reconciliation policy data drop the retired repositories and families; the design-policy export is re-pinned to a reviewed commit of this Design repository and glossary-terms.json and invariants.json are regenerated from it; provenance records of reused files stay unchanged.
+**Outcome.** The Media, Colour and Otio native families and the macOS Metal graphics probe leave DesktopPlatform - ABI directories, overlays, managed and runtime projects, oracle tests, solution entries and package registrations - and no further versions of them are published; the still-image shim moves to native/arcimage-abi under the logical library ArcImageNative while its published arc_image_* symbols stay unchanged; provenance records of reused files stay unchanged.
 
 | Field | Value |
 |---|---|
 | Owning repository | DesktopPlatform (`C:\MyFile\Projects\ArcForges\DesktopPlatform`); integration owner: DesktopPlatform integration owner, the holder of `roles/integration-desktopplatform` |
 | Claim, branch and ledger | `claims/gov-17` and ledger record `ledger/tasks/gov-17.md` in the Plan repository; task branch `task/gov-17` ([DLV-26](../README.md#rule-dlv-26)) |
-| Kind / size | governance / L |
-| Obligations | [P2-019](../../../decisions/phase-2-specification-decisions.md#rule-p2-019) — retirement of the accepted DesktopPlatform native families, projects, packages, tests and policy data whose only consumers left the family; the neutral identity of the still-image shim; the design-policy export re-pinned to this Design repository |
-| Provides | retired-desktop-material; design-policy-export-repinned |
+| Kind / size | governance / M |
+| Obligations | [P2-019](../../../decisions/phase-2-specification-decisions.md#rule-p2-019) — retirement of the accepted DesktopPlatform native families, projects, packages and tests whose only consumers left the family; the neutral identity of the still-image shim |
+| Provides | retired-native-families; still-image-shim-moved |
 | Start prerequisites | none |
 | Entry condition | [ADOPT.02.governance](adoption.md#task-adopt-02-governance) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
-| Unblocks | [CON.23](contracts.md#task-con-23), [GOV.13](#task-gov-13), [GOV.14](#task-gov-14), [NAT.11](native.md#task-nat-11), [NAT.30](native.md#task-nat-30) |
-| Write scope | `DesktopPlatform:native/* (retired family directories and the moved still-image directory)`<br>`DesktopPlatform:native/CMakeLists.txt`<br>`DesktopPlatform:src/Native/* (retired family projects and the still-image logical library name)`<br>`DesktopPlatform:tests/NativeAbiTests/**`<br>`DesktopPlatform:win.slnx`<br>`DesktopPlatform:eng/packaging/packages.json`<br>`DesktopPlatform:eng/policy/**`<br>`DesktopPlatform:docs/design-policy.md`<br>`DesktopPlatform:docs/native-reconciliation.md` |
-| Shared resources | [RES-desktopplatform-policy-data](../shared-resources.md#res-desktopplatform-policy-data) (append), [RES-desktopplatform-package-inventory](../shared-resources.md#res-desktopplatform-package-inventory) (append), [RES-desktopplatform-native-build](../shared-resources.md#res-desktopplatform-native-build) (append), [RES-desktopplatform-build-config](../shared-resources.md#res-desktopplatform-build-config) (append), [RES-workstation-build-slot](../shared-resources.md#res-workstation-build-slot) (exclusive) |
-| Validation | offline: native CMake/solution/package-inventory consistency, architecture and runtime-ownership tests, the design-policy exporter comparing fresh bytes against the re-pinned Design commit, and a scan proving the retired families, libraries and repositories are absent outside provenance history; the existing Windows native build and package consumers run for the retained families where the change requires it ([P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017)). |
-| Completion evidence | Retirement diff; re-pinned Design commit and policy-source hashes; exporter comparison; native build and package-consumer results for the retained families. |
-| Baseline (unreviewed unless accepted) | not-started Observed in the accepted WP00-WP02 implementation: the media, colour, OTIO and still-image shim directories, the Metal graphics probe source, their managed/runtime projects and 1.0.0-ci.17.1 packages, and policy data pinned to the derivation-baseline Design commit. |
-| Notes | Independent of the retained native families; NAT.11 starts on the moved still-image directory, and GOV.13, GOV.14 and NAT.30 read the re-pinned export or the retained producer set. |
+| Unblocks | [NAT.11](native.md#task-nat-11), [NAT.30](native.md#task-nat-30) |
+| Write scope | `DesktopPlatform:native/* (retired family directories and the moved still-image directory)`<br>`DesktopPlatform:native/CMakeLists.txt`<br>`DesktopPlatform:src/Native/* (retired family projects and the still-image logical library name)`<br>`DesktopPlatform:tests/NativeAbiTests/**`<br>`DesktopPlatform:win.slnx`<br>`DesktopPlatform:eng/packaging/packages.json`<br>`DesktopPlatform:docs/native-reconciliation.md` |
+| Shared resources | [RES-desktopplatform-package-inventory](../shared-resources.md#res-desktopplatform-package-inventory) (append), [RES-desktopplatform-native-build](../shared-resources.md#res-desktopplatform-native-build) (append), [RES-desktopplatform-build-config](../shared-resources.md#res-desktopplatform-build-config) (append), [RES-workstation-build-slot](../shared-resources.md#res-workstation-build-slot) (exclusive) |
+| Validation | offline: native CMake/solution/package-inventory consistency and a scan proving the retired families and libraries are absent outside provenance history; the existing Windows native build and package consumers run for the retained families where the change requires it ([P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017)). |
+| Completion evidence | Retirement diff; native build and package-consumer results for the retained families; the moved still-image shim with unchanged exported symbols. |
+| Baseline (unreviewed unless accepted) | not-started Observed in the accepted WP00-WP02 implementation: the media, colour, OTIO and still-image shim directories, the Metal graphics probe source, and their managed/runtime projects and 1.0.0-ci.17.1 packages. |
+| Notes | Independent of the retained native families; NAT.11 starts on the moved still-image directory and NAT.30 verifies the retained producer set. GOV.18 carries the policy-data half, so neither waits on the other. |
+
+<a id="task-gov-18"></a>
+
+### GOV.18 — Reduce the DesktopPlatform policy data and re-pin the design-policy export
+
+**Outcome.** Runtime-ownership, licence-boundary and reconciliation policy data drop the retired repositories and families; the design-policy export is re-pinned to a reviewed commit of this Design repository and glossary-terms.json and invariants.json are regenerated from it; provenance records of reused files stay unchanged.
+
+| Field | Value |
+|---|---|
+| Owning repository | DesktopPlatform (`C:\MyFile\Projects\ArcForges\DesktopPlatform`); integration owner: DesktopPlatform integration owner, the holder of `roles/integration-desktopplatform` |
+| Claim, branch and ledger | `claims/gov-18` and ledger record `ledger/tasks/gov-18.md` in the Plan repository; task branch `task/gov-18` ([DLV-26](../README.md#rule-dlv-26)) |
+| Kind / size | governance / M |
+| Obligations | [P2-019](../../../decisions/phase-2-specification-decisions.md#rule-p2-019) — retirement of the accepted DesktopPlatform policy data that names repositories or families outside the family; the design-policy export re-pinned to this Design repository |
+| Provides | design-policy-export-repinned |
+| Start prerequisites | none |
+| Entry condition | [ADOPT.02.governance](adoption.md#task-adopt-02-governance) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
+| Completion prerequisites | none |
+| Unblocks | [CON.23](contracts.md#task-con-23), [GOV.13](#task-gov-13), [GOV.14](#task-gov-14) |
+| Write scope | `DesktopPlatform:eng/policy/**`<br>`DesktopPlatform:docs/design-policy.md` |
+| Shared resources | [RES-desktopplatform-policy-data](../shared-resources.md#res-desktopplatform-policy-data) (append) |
+| Validation | offline: architecture and runtime-ownership tests, the design-policy exporter comparing fresh bytes against the re-pinned Design commit, and a scan proving the retired repositories are absent from the policy data outside provenance history. |
+| Completion evidence | Re-pinned Design commit and policy-source hashes; exporter comparison; policy-test results. |
+| Baseline (unreviewed unless accepted) | not-started Observed in the accepted WP00-WP02 implementation: policy data and the design-policy export pinned to the derivation-baseline Design commit. |
+| Notes | GOV.13 and GOV.14 read the re-pinned export; CON.23 completes after its forbidden-alias declaration is re-exported. |

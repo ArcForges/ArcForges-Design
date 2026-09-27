@@ -8,7 +8,7 @@ All values below are computed by Plan tools/delivery.py from the current graph. 
 
 | Measure | Value |
 |---|---|
-| Delivery tasks | 430 (6 carried as accepted baseline), plus 50 adoption slices |
+| Delivery tasks | 431 (6 carried as accepted baseline), plus 50 adoption slices |
 | Dependency edges by type | artifact 991, contract 80, design 1, integration(completion) 175, release 33 |
 | Remaining work (size units: S=1, M=2, L=4, XL=8) | 1100 |
 | Longest dependency chain (levels) | 21 |
@@ -21,7 +21,7 @@ All values below are computed by Plan tools/delivery.py from the current graph. 
 | Lane | Tasks | Size units | Owning repositories |
 |---|---|---|---|
 | [Adoption stage](lanes/adoption.md) | 9 | 9 | AI, ArcScope, Cloud, Contracts, Design, DesktopPlatform, Mobile, Plan, Web |
-| [Family governance and policy tests](lanes/governance.md) | 15 | 52 | AI, ArcScope, Cloud, Contracts, DesktopPlatform, Mobile, Web |
+| [Family governance and policy tests](lanes/governance.md) | 16 | 52 | AI, ArcScope, Cloud, Contracts, DesktopPlatform, Mobile, Web |
 | [Contracts schema closures](lanes/contracts.md) | 25 | 61 | Contracts |
 | [Foundation values](lanes/foundation.md) | 7 | 8 | DesktopPlatform |
 | [Runtime proofs](lanes/runtime-proofs.md) | 8 | 27 | ArcScope, Cloud, DesktopPlatform, Mobile, Web |
@@ -56,7 +56,7 @@ Tasks on the same delivery level have no prerequisite path between them, so they
 | ArcScope | 33 | 6 | level 9: 9 | 2 | [APP.03](lanes/app-composition.md#task-app-03) Clean Native AOT package-consumer composition for ArcScope, [SCOPE.07](lanes/arcscope.md#task-scope-07) Durable capture writer, chunked verifiable store and crash recovery, [SCOPE.09](lanes/arcscope.md#task-scope-09) Long-running capture in the shell, [SCOPE.12](lanes/arcscope.md#task-scope-12) Visualisation: virtualised rendering, downsampling, cursors and markers |
 | Cloud | 131 | 13 | level 12: 14 | 9 | [CLOUD.32](lanes/cloud.md#task-cloud-32) Durable unary fallback (Poll/readOutput), [COM.09](lanes/commerce.md#task-com-09) Ledgers and reconciliation, [DEV.04](lanes/device-bridge.md#task-dev-04) Execution and result deduplication -- Cloud D1 attempt/result store, [SIM.05](lanes/simulator.md#task-sim-05) Cloud-side simulation.* operations, manifest listing and segment fetch |
 | Contracts | 28 | 4 | level 3: 12 | 12 | [CON.01](lanes/contracts.md#task-con-01) Shard contended eng inventory/constraint files by domain; fix one-owner merge protocol, [CON.02](lanes/contracts.md#task-con-02) Capability/action/context/version/health descriptor records + immutable oversized-body reference (EncodedBodyRef), [CON.04](lanes/contracts.md#task-con-04) ContentSandbox service schema (15 methods: session/slot/image/PDF), [CON.05](lanes/contracts.md#task-con-05) Extension/Connector/LocalBootstrap service schema (annex09 helper closure minus ContentSandbox) |
-| DesktopPlatform | 144 | 14 | level 7: 29 | 10 | [AST.02](lanes/assistant.md#task-ast-02) Branches and window drafts, [EXE.02](lanes/execution.md#task-exe-02) Lifecycle states and reason facets, [NAT.05](lanes/native.md#task-nat-05) Probe evidence, licence positions, conclusions and hardware-lab inventory seed, [PLT.11](lanes/platform.md#task-plt-11) Child registration lifecycle |
+| DesktopPlatform | 145 | 14 | level 7: 29 | 11 | [AST.02](lanes/assistant.md#task-ast-02) Branches and window drafts, [EXE.02](lanes/execution.md#task-exe-02) Lifecycle states and reason facets, [NAT.05](lanes/native.md#task-nat-05) Probe evidence, licence positions, conclusions and hardware-lab inventory seed, [PLT.11](lanes/platform.md#task-plt-11) Child registration lifecycle |
 | Mobile | 29 | 4 | level 8: 4 | 1 | [AND.06](lanes/android.md#task-and-06) Secure per-account lifecycle: Keystore encryption, no-backup policy, purge/quarantine, deep-link validation, [AND.09](lanes/android.md#task-and-09) Conversations and context (AN07-AN10/15/16), [AND.10](lanes/android.md#task-and-10) Tasks, approvals and automation (AN11-AN13/19/25), [AND.11](lanes/android.md#task-and-11) Library and resources (AN14-AN18/22) |
 | Web | 38 | 5 | level 4: 9 | 3 | [OPS.04](lanes/operations.md#task-ops-04) Status page, [PRF.08](lanes/runtime-proofs.md#task-prf-08) React production build and generated TS SDK proof, [WEB.02](lanes/web.md#task-web-02) Versioned public content and pricing inputs (catalogue.json), [WEB.03](lanes/web.md#task-web-03) Rendering and performance |
 
@@ -90,7 +90,7 @@ Tasks on the same delivery level have no prerequisite path between them, so they
 |---|---|
 | 1 | 1 |
 | 2 | 58 |
-| 3 | 37 |
+| 3 | 38 |
 | 4 | 40 |
 | 5 | 43 |
 | 6 | 37 |
@@ -129,7 +129,7 @@ Assumptions: task effort is its relative size (S=1, M=2, L=4, XL=8 units, never 
 
 Tasks whose start prerequisites are satisfied once their adoption slices have confirmed the accepted baseline, assuming no other existing work is inherited. The actual first ready set is established slice by slice during adoption and grows as reviewed existing work is recorded as inherited.
 
-[AND.22](lanes/android.md#task-and-22), [CLOUD.01](lanes/cloud.md#task-cloud-01), [CLOUD.44](lanes/cloud.md#task-cloud-44), [CLOUD.55](lanes/cloud.md#task-cloud-55), [COM.01](lanes/commerce.md#task-com-01), [COM.02](lanes/commerce.md#task-com-02), [COM.05](lanes/commerce.md#task-com-05), [CON.01](lanes/contracts.md#task-con-01), [CON.02](lanes/contracts.md#task-con-02), [CON.04](lanes/contracts.md#task-con-04), [CON.05](lanes/contracts.md#task-con-05), [CON.07](lanes/contracts.md#task-con-07), [CON.08](lanes/contracts.md#task-con-08), [CON.12](lanes/contracts.md#task-con-12), [CON.13](lanes/contracts.md#task-con-13), [CON.16](lanes/contracts.md#task-con-16), [CON.17](lanes/contracts.md#task-con-17), [CON.18](lanes/contracts.md#task-con-18), [CON.23](lanes/contracts.md#task-con-23), [FND.01](lanes/foundation.md#task-fnd-01), [FND.02](lanes/foundation.md#task-fnd-02), [FND.03](lanes/foundation.md#task-fnd-03), [FND.04](lanes/foundation.md#task-fnd-04), [FND.05](lanes/foundation.md#task-fnd-05), [FND.06](lanes/foundation.md#task-fnd-06), [GOV.04](lanes/governance.md#task-gov-04), [GOV.11](lanes/governance.md#task-gov-11), [GOV.17](lanes/governance.md#task-gov-17), [NAT.03](lanes/native.md#task-nat-03), [NAT.06](lanes/native.md#task-nat-06), [OPS.01](lanes/operations.md#task-ops-01), [POL.01](lanes/policy.md#task-pol-01), [PRF.07](lanes/runtime-proofs.md#task-prf-07), [SCOPE.02](lanes/arcscope.md#task-scope-02), [SCOPE.10](lanes/arcscope.md#task-scope-10), [WEB.01](lanes/web.md#task-web-01), [WEB.08](lanes/web.md#task-web-08)
+[AND.22](lanes/android.md#task-and-22), [CLOUD.01](lanes/cloud.md#task-cloud-01), [CLOUD.44](lanes/cloud.md#task-cloud-44), [CLOUD.55](lanes/cloud.md#task-cloud-55), [COM.01](lanes/commerce.md#task-com-01), [COM.02](lanes/commerce.md#task-com-02), [COM.05](lanes/commerce.md#task-com-05), [CON.01](lanes/contracts.md#task-con-01), [CON.02](lanes/contracts.md#task-con-02), [CON.04](lanes/contracts.md#task-con-04), [CON.05](lanes/contracts.md#task-con-05), [CON.07](lanes/contracts.md#task-con-07), [CON.08](lanes/contracts.md#task-con-08), [CON.12](lanes/contracts.md#task-con-12), [CON.13](lanes/contracts.md#task-con-13), [CON.16](lanes/contracts.md#task-con-16), [CON.17](lanes/contracts.md#task-con-17), [CON.18](lanes/contracts.md#task-con-18), [CON.23](lanes/contracts.md#task-con-23), [FND.01](lanes/foundation.md#task-fnd-01), [FND.02](lanes/foundation.md#task-fnd-02), [FND.03](lanes/foundation.md#task-fnd-03), [FND.04](lanes/foundation.md#task-fnd-04), [FND.05](lanes/foundation.md#task-fnd-05), [FND.06](lanes/foundation.md#task-fnd-06), [GOV.04](lanes/governance.md#task-gov-04), [GOV.11](lanes/governance.md#task-gov-11), [GOV.17](lanes/governance.md#task-gov-17), [GOV.18](lanes/governance.md#task-gov-18), [NAT.03](lanes/native.md#task-nat-03), [NAT.06](lanes/native.md#task-nat-06), [OPS.01](lanes/operations.md#task-ops-01), [POL.01](lanes/policy.md#task-pol-01), [PRF.07](lanes/runtime-proofs.md#task-prf-07), [SCOPE.02](lanes/arcscope.md#task-scope-02), [SCOPE.10](lanes/arcscope.md#task-scope-10), [WEB.01](lanes/web.md#task-web-01), [WEB.08](lanes/web.md#task-web-08)
 
 ## Remaining serial dependencies and bottlenecks
 

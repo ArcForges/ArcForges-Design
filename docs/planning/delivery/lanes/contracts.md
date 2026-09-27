@@ -557,14 +557,14 @@ Tasks: 25 · Owning repositories: Contracts · Integration owner(s): Contracts i
 | Provides | retired-contract-elements |
 | Start prerequisites | **artifact** [GOV.01](governance.md#task-gov-01) — the accepted WP00 naming data. *Why:* the retirement edits the accepted naming authority in place rather than creating a second one |
 | Entry condition | [ADOPT.03.contracts](adoption.md#task-adopt-03-contracts) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
-| Completion prerequisites | **integration** [GOV.17](governance.md#task-gov-17) — the forbidden-alias declaration re-exported from this Design repository. *Why:* the Contracts naming registration binds the exact Design commit and declaration digest that DesktopPlatform exports |
+| Completion prerequisites | **integration** [GOV.18](governance.md#task-gov-18) — the forbidden-alias declaration re-exported from this Design repository. *Why:* the Contracts naming registration binds the exact Design commit and declaration digest that DesktopPlatform exports |
 | Unblocks | [CON.19](#task-con-19) |
 | Write scope | `Contracts:eng/policy/product-names.json`<br>`Contracts:eng/check_naming.py`<br>`Contracts:eng/contract-packages.json`<br>`Contracts:public/proto/arcforges/foundation/v1/foundation.proto`<br>`Contracts:public/proto/arcforges/publicapi/v1/content.proto`<br>`Contracts:internal/proto/arcforges/local/* (retired port directories only)`<br>`Contracts:src/internal/dotnet/* (retired port packages only)`<br>`Contracts:fixtures/public/wp03-00.json`<br>`Contracts:fixtures/public/wp03-01.json`<br>`Contracts:src/public/ts/contract-fixtures/src/index.ts`<br>`Contracts:src/public/**/Generated/**` |
 | Shared resources | [RES-contracts-generated-baseline](../shared-resources.md#res-contracts-generated-baseline) (regenerate), [RES-contracts-publication](../shared-resources.md#res-contracts-publication) (append), [RES-contracts-schema-sources](../shared-resources.md#res-contracts-schema-sources) (append) |
 | Validation | offline: naming, schema, reservation and compatibility checks prove every retired number and name is reserved and unused, no retained record, service or fixture references a retired one, the package set matches the registry and generated shapes regenerate cleanly; the compatibility check accepts only the reviewed retirements. |
 | Completion evidence | Retirement diff against the reserved lists of the wire registry; naming, schema, compatibility and generation results; package-set comparison with the registry. |
 | Baseline (unreviewed unless accepted) | not-started Observed in the accepted WP00, WP03.00 and WP03.01 implementation: the naming data, two in-process port packages with seed records, and foundation/content records and fixtures still carry the retired products. |
-| Notes | Independent of the new contract closures, with which it shares the schema-source protocol; it completes only after GOV.17 re-exports the forbidden-alias declaration that the naming registration binds. |
+| Notes | Independent of the new contract closures, with which it shares the schema-source protocol; it completes only after GOV.18 re-exports the forbidden-alias declaration that the naming registration binds. |
 
 <a id="task-con-90"></a>
 

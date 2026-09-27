@@ -1297,7 +1297,7 @@
     },
     {
      "type": "artifact",
-     "task": "GOV.17",
+     "task": "GOV.18",
      "need": "the invariant export regenerated from this Design repository",
      "why": "the accounting report reads the pinned invariant export, which must describe the reduced family"
     }
@@ -1344,7 +1344,7 @@
     },
     {
      "type": "artifact",
-     "task": "GOV.17",
+     "task": "GOV.18",
      "need": "the design-policy export re-pinned to this Design repository",
      "why": "the integrity checks run against the pinned Design commit, which must be the reduced family"
     }
@@ -1515,21 +1515,21 @@
   },
   {
    "id": "GOV.17",
-   "title": "Retire the DesktopPlatform material outside the product family and re-pin the design-policy export",
+   "title": "Retire the native families outside the product family and move the still-image shim",
    "lane": "governance",
    "repo": "DesktopPlatform",
    "kind": "governance",
-   "size": "L",
+   "size": "M",
    "obligations": [
     {
      "ref": "P2-019",
-     "part": "retirement of the accepted DesktopPlatform native families, projects, packages, tests and policy data whose only consumers left the family; the neutral identity of the still-image shim; the design-policy export re-pinned to this Design repository"
+     "part": "retirement of the accepted DesktopPlatform native families, projects, packages and tests whose only consumers left the family; the neutral identity of the still-image shim"
     }
    ],
-   "outcome": "The Media, Colour and Otio native families and the macOS Metal graphics probe leave DesktopPlatform - ABI directories, overlays, managed and runtime projects, oracle tests, solution entries and package registrations - and no further versions of them are published; the still-image shim moves to native/arcimage-abi under the logical library ArcImageNative while its published arc_image_* symbols stay unchanged; runtime-ownership, licence-boundary and reconciliation policy data drop the retired repositories and families; the design-policy export is re-pinned to a reviewed commit of this Design repository and glossary-terms.json and invariants.json are regenerated from it; provenance records of reused files stay unchanged.",
+   "outcome": "The Media, Colour and Otio native families and the macOS Metal graphics probe leave DesktopPlatform - ABI directories, overlays, managed and runtime projects, oracle tests, solution entries and package registrations - and no further versions of them are published; the still-image shim moves to native/arcimage-abi under the logical library ArcImageNative while its published arc_image_* symbols stay unchanged; provenance records of reused files stay unchanged.",
    "provides": [
-    "retired-desktop-material",
-    "design-policy-export-repinned"
+    "retired-native-families",
+    "still-image-shim-moved"
    ],
    "writes": [
     "DesktopPlatform:native/* (retired family directories and the moved still-image directory)",
@@ -1538,15 +1538,9 @@
     "DesktopPlatform:tests/NativeAbiTests/**",
     "DesktopPlatform:win.slnx",
     "DesktopPlatform:eng/packaging/packages.json",
-    "DesktopPlatform:eng/policy/**",
-    "DesktopPlatform:docs/design-policy.md",
     "DesktopPlatform:docs/native-reconciliation.md"
    ],
    "shared": [
-    {
-     "resource": "RES-desktopplatform-policy-data",
-     "mode": "append"
-    },
     {
      "resource": "RES-desktopplatform-package-inventory",
      "mode": "append"
@@ -1564,13 +1558,50 @@
      "mode": "exclusive"
     }
    ],
-   "validation": "offline: native CMake/solution/package-inventory consistency, architecture and runtime-ownership tests, the design-policy exporter comparing fresh bytes against the re-pinned Design commit, and a scan proving the retired families, libraries and repositories are absent outside provenance history; the existing Windows native build and package consumers run for the retained families where the change requires it (P2-017).",
-   "evidence": "Retirement diff; re-pinned Design commit and policy-source hashes; exporter comparison; native build and package-consumer results for the retained families.",
+   "validation": "offline: native CMake/solution/package-inventory consistency and a scan proving the retired families and libraries are absent outside provenance history; the existing Windows native build and package consumers run for the retained families where the change requires it (P2-017).",
+   "evidence": "Retirement diff; native build and package-consumer results for the retained families; the moved still-image shim with unchanged exported symbols.",
    "baseline": {
     "state": "not-started",
-    "notes": "Observed in the accepted WP00-WP02 implementation: the media, colour, OTIO and still-image shim directories, the Metal graphics probe source, their managed/runtime projects and 1.0.0-ci.17.1 packages, and policy data pinned to the derivation-baseline Design commit."
+    "notes": "Observed in the accepted WP00-WP02 implementation: the media, colour, OTIO and still-image shim directories, the Metal graphics probe source, and their managed/runtime projects and 1.0.0-ci.17.1 packages."
    },
-   "notes": "Independent of the retained native families; NAT.11 starts on the moved still-image directory, and GOV.13, GOV.14 and NAT.30 read the re-pinned export or the retained producer set.",
+   "notes": "Independent of the retained native families; NAT.11 starts on the moved still-image directory and NAT.30 verifies the retained producer set. GOV.18 carries the policy-data half, so neither waits on the other.",
+   "start": [],
+   "complete": []
+  },
+  {
+   "id": "GOV.18",
+   "title": "Reduce the DesktopPlatform policy data and re-pin the design-policy export",
+   "lane": "governance",
+   "repo": "DesktopPlatform",
+   "kind": "governance",
+   "size": "M",
+   "obligations": [
+    {
+     "ref": "P2-019",
+     "part": "retirement of the accepted DesktopPlatform policy data that names repositories or families outside the family; the design-policy export re-pinned to this Design repository"
+    }
+   ],
+   "outcome": "Runtime-ownership, licence-boundary and reconciliation policy data drop the retired repositories and families; the design-policy export is re-pinned to a reviewed commit of this Design repository and glossary-terms.json and invariants.json are regenerated from it; provenance records of reused files stay unchanged.",
+   "provides": [
+    "design-policy-export-repinned"
+   ],
+   "writes": [
+    "DesktopPlatform:eng/policy/**",
+    "DesktopPlatform:docs/design-policy.md"
+   ],
+   "shared": [
+    {
+     "resource": "RES-desktopplatform-policy-data",
+     "mode": "append"
+    }
+   ],
+   "validation": "offline: architecture and runtime-ownership tests, the design-policy exporter comparing fresh bytes against the re-pinned Design commit, and a scan proving the retired repositories are absent from the policy data outside provenance history.",
+   "evidence": "Re-pinned Design commit and policy-source hashes; exporter comparison; policy-test results.",
+   "baseline": {
+    "state": "not-started",
+    "notes": "Observed in the accepted WP00-WP02 implementation: policy data and the design-policy export pinned to the derivation-baseline Design commit."
+   },
+   "notes": "GOV.13 and GOV.14 read the re-pinned export; CON.23 completes after its forbidden-alias declaration is re-exported.",
    "start": [],
    "complete": []
   },
@@ -2834,7 +2865,7 @@
     "state": "not-started",
     "notes": "Observed in the accepted WP00, WP03.00 and WP03.01 implementation: the naming data, two in-process port packages with seed records, and foundation/content records and fixtures still carry the retired products."
    },
-   "notes": "Independent of the new contract closures, with which it shares the schema-source protocol; it completes only after GOV.17 re-exports the forbidden-alias declaration that the naming registration binds.",
+   "notes": "Independent of the new contract closures, with which it shares the schema-source protocol; it completes only after GOV.18 re-exports the forbidden-alias declaration that the naming registration binds.",
    "start": [
     {
      "type": "artifact",
@@ -2846,7 +2877,7 @@
    "complete": [
     {
      "type": "integration",
-     "task": "GOV.17",
+     "task": "GOV.18",
      "need": "the forbidden-alias declaration re-exported from this Design repository",
      "why": "the Contracts naming registration binds the exact Design commit and declaration digest that DesktopPlatform exports"
     }

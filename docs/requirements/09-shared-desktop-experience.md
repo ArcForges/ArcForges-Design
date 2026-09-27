@@ -96,7 +96,7 @@ Four levels, resolved in a defined order:
 |---|---|
 | **Platform standard** | Copy, paste, save, close, undo |
 | **ArcForges shared** | Command palette, settings, activity surface, quick jump |
-| **Product-specific** | Timeline navigation, capture control, block formatting |
+| **Product-specific** | Session and measurement navigation, capture control, annotation formatting |
 | **User custom** | Any rebinding |
 
 | # | Requirement |

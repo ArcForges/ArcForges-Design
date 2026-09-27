@@ -42,7 +42,7 @@ Mark          := bold | italic | strikethrough | underline | code
 |---|---|
 | <a id="rule-in-01"></a>IN-01 | **Marks are a closed enumeration**, versioned with the schema. An unknown mark is preserved and ignored for rendering, never dropped. |
 | <a id="rule-in-02"></a>IN-02 | **Text is stored NFC-normalised UTF-8.** Normalisation happens at the transaction boundary, once, so comparison, search and diff never face two encodings of one string. |
-| <a id="rule-in-03"></a>IN-03 | **Offsets are UTF-16 code-unit indices into a run's `text`**, matching the .NET string the editor manipulates. Converting to and from grapheme positions is the caret's job (`§4.2`), not the model's. |
+| <a id="rule-in-03"></a>IN-03 | **Offsets are UTF-16 code-unit indices into a run's `text`**, matching the .NET string the editor manipulates. Converting to and from grapheme positions belongs to the presenting surface, not the model. |
 | <a id="rule-in-04"></a>IN-04 | **Adjacent runs with identical mark sets are merged at the transaction boundary.** Without this, a long editing session fragments a paragraph into thousands of runs and every subsequent operation slows down. |
 | <a id="rule-in-05"></a>IN-05 | **A `Link` carries `InlineContent`, so a link can contain formatted text**, but a link never nests inside a link. |
 | <a id="rule-in-06"></a>IN-06 | **A `Mention` and a `Link` both store identity, never a title.** The title is resolved at render time, so a rename updates every reference without a write. |
@@ -132,7 +132,7 @@ Mark          := bold | italic | strikethrough | underline | code
 | <a id="rule-em-01"></a>EM-01 | **An embed is a reference, never a copy** ([I-224](../requirements/01-normative-glossary-and-invariants.md#rule-i-224)). Editing the source updates every embed. |
 | <a id="rule-em-02"></a>EM-02 | **An embed renders at a bounded depth.** A cycle is detected and the inner occurrence renders as a link with a stated reason, never as infinite recursion. |
 | <a id="rule-em-03"></a>EM-03 | **An embed re-checks permission at render**, so an embed of content the reader may not see resolves to an unavailable placeholder rather than leaking it. |
-| <a id="rule-em-04"></a>EM-04 | **A broken reference is an explicit state** (`state = broken` in `document_link`), never a silent blank. |
+| <a id="rule-em-04"></a>EM-04 | **A broken reference is an explicit state** (`state = broken` on the reference), never a silent blank. |
 
 ---
 

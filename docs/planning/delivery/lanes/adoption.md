@@ -222,7 +222,7 @@ Each slice classifies the tasks of one repository and lane against the frozen ba
 | <a id="task-adopt-02-execution"></a>ADOPT.02.execution | DesktopPlatform | [Execution engine](execution.md) | 9 | none | [ADOPT.02](#task-adopt-02) |
 | <a id="task-adopt-02-extensions"></a>ADOPT.02.extensions | DesktopPlatform | [Extension platform and integrations](extensions.md) | 7 | none | [ADOPT.02](#task-adopt-02) |
 | <a id="task-adopt-02-foundation"></a>ADOPT.02.foundation | DesktopPlatform | [Foundation values](foundation.md) | 7 | none | [ADOPT.02](#task-adopt-02) |
-| <a id="task-adopt-02-governance"></a>ADOPT.02.governance | DesktopPlatform | [Family governance and policy tests](governance.md) | 5 | [GOV.01](governance.md#task-gov-01), [GOV.02](governance.md#task-gov-02), [GOV.03](governance.md#task-gov-03) | [ADOPT.02](#task-adopt-02) |
+| <a id="task-adopt-02-governance"></a>ADOPT.02.governance | DesktopPlatform | [Family governance and policy tests](governance.md) | 6 | [GOV.01](governance.md#task-gov-01), [GOV.02](governance.md#task-gov-02), [GOV.03](governance.md#task-gov-03) | [ADOPT.02](#task-adopt-02) |
 | <a id="task-adopt-02-native"></a>ADOPT.02.native | DesktopPlatform | [Native producers and probes](native.md) | 13 | none | [ADOPT.02](#task-adopt-02) |
 | <a id="task-adopt-02-platform"></a>ADOPT.02.platform | DesktopPlatform | [Desktop platform mechanisms](platform.md) | 55 | none | [ADOPT.02](#task-adopt-02) |
 | <a id="task-adopt-02-policy"></a>ADOPT.02.policy | DesktopPlatform | [Dynamic policy and configuration](policy.md) | 1 | none | [ADOPT.02](#task-adopt-02) |
