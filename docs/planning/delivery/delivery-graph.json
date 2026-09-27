@@ -1389,7 +1389,7 @@
    "obligations": [
     {
      "ref": "WP-05.06",
-     "part": "full: six checks over docs/ in ArcForges-Design, plus the 23+8-row Phase-1/Phase-2 decision-coverage check against traceability-matrix.md"
+     "part": "full: six checks over docs/ in ArcForges-Design, plus semantic coverage of the 22 retained Phase 1 rows, seven retained initial Phase 2 rows and twelve current closure groups; trace retired decisions through P2-019 without recreating removed obligations"
     }
    ],
    "outcome": "Checks run against the current Design repository and produce zero findings: every internal link resolves; every cited requirement/architecture rule/decision/verification finding/gate identifier exists; no superseded name appears as current outside docs/deprecated-inputs/; every Phase 1 decision is cited by at least one Phase 2 document or its non-applicability is stated; the delivery graph has satisfiable prerequisites, current generated views and complete obligation coverage; and the decision-coverage check passes.",
@@ -1428,7 +1428,7 @@
     "state": "not-started",
     "notes": "Observed partial, unreviewed: DesktopPlatform/eng/design_graph.py:graph() (read in full) already implements: cross-checking implementation-sequence.md section 9's forward-dependency table against README.md's phase tables and its 'Downstream dependency index' reverse table (all three must agree, and reverse must be the exact transpose of forward); rejecting a producer reference to an inactive/nonexistent package; requiring every active WP file to declare exactly sections 1-9 with no duplicate numbering; requiring exactly one #rule-wp-NN.90 evidence row in each WP's own section 7; requiring implementation-sequence.md to carry a 'Serial execution:...' line that is a valid topological order of every active package (every producer ordered before its consumer) plus three exact hardcoded sentences ('All N active packages...', 'Total active dependency edges: E.', 'WP42.11 precedes 42.10.'). DesktopPlatform/eng/design_policy.py:verify() (read in full) additionally pins the ENTIRE Design corpus by commit+per-file sha256 (glossary/coverage/classifications sources plus one corpusSha256 over every doc), calls corpus.audit() for citation/anchor integrity (design_corpus.py itself not read), calls graph() above, and validates a citation-classification register (docs/assurance/citation-classifications.json) so every non-linked occurrence of a standard ID-shaped token anywhere in the corpus is either a normal citation or an explicit, dated, owned exception. This already covers the acyclic-graph check and much of link/citation integrity. NOT confirmed from this reading: the specific 23+8-row decision-coverage check against traceability-matrix.md, and whether superseded-name-outside-deprecated-inputs is checked here versus by WP00.00/WP05.02's separate forbidden-term scanner."
    },
-   "notes": "Extends the corpus and decision-coverage checks after GOV.18 has migrated the retired graph validator and re-pinned the export. Reuse that migration evidence; this broader integrity task is not a prerequisite for the initial repin.",
+   "notes": "Extends the corpus and decision-coverage checks after GOV.18 has migrated the retired graph validator and re-pinned the export. Reuse that migration evidence; this broader integrity task is not a prerequisite for the initial repin. Current coverage follows the effective reduced-family authority: 22 of the original 23 Phase 1 decisions, seven of the initial eight Phase 2 decisions and twelve current closure groups. Historical acceptance totals remain historical, later amendment records remain traceable, and retirement is accounted through P2-019. Test semantic row identity, successor and producer/consumer mappings, not count equality alone.",
    "complete": []
   },
   {
@@ -2466,7 +2466,9 @@
     "Contracts:tests/StructureTests/** (owned generated validator conformance)",
     "Contracts:eng/generate_shapes.py (owned JSON-schema registry/compiler support; preserve closed validation and existing schema outputs)",
     "Contracts:tests/public/** (owned C#/TS codec fixtures)",
-    "Contracts:eng/operations/con-12.json (owned domain operation authorization export; append through schema-source resource protocol)"
+    "Contracts:eng/operations/con-12.json (owned domain operation authorization export; append through schema-source resource protocol)",
+    "Contracts:.gitleaks.toml (only demonstrated CON.12 public source-inventory SHA256 false positives: exact existing rule/path/key/digest bindings, independently verify source hash; no algorithm change or whole-key/path exemption)",
+    "Contracts:tests/tooling/test_dependency_admission.py (exact CON.12 public-digest false-positive regressions; retain other digest/key/path/token negatives)"
    ],
    "shared": [
     {
@@ -2488,7 +2490,7 @@
     "state": "not-started",
     "notes": "Observed none, unreviewed: None of manifest.v1/workflow.v1/panel.v1/policy-body.v1/configuration.v1 exist in the repo in any form."
    },
-   "notes": "Consumers use the published schema closure; no whole-WP03 barrier. Exact section coverage comes from current contracts08, not a historical count.",
+   "notes": "Consumers use the published schema closure; no whole-WP03 barrier. Exact section coverage comes from current contracts08, not a historical count. Security support is limited to actually observed generic-api-key false positives for CON.12 public SHA256 inventory entries; bind each exact containing path, JSON key and recomputed value to its observed commit, including necessary immutable historical snapshots. Rebase or normalization may update an exception only after an actual scan finding and independent public-input hash verification; no blanket key, path, digest pattern or scanner bypass is authorized.",
    "start": [],
    "complete": []
   },
