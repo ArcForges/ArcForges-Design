@@ -205,6 +205,8 @@ These named enums are proto enums: zero UNSPECIFIED (invalid request), followed 
 | `CaptureMetadata` | `1 captureId:Id`; `2 sampleCount:uint64`; `3 channels:ChannelDefinition[]`; `4 contentHash:Hash?`; `5 resource:ResourceRef?` | Metadata replica, Resource only after consent and commit. |
 | `ScopeAnnotation` | `1 annotationId:Id`; `2 range:SampleRange`; `3 text:string`; `4 origin:ContentOrigin?` | Original measurement/source preserved. |
 | `ScopeFinding` | `1 findingId:Id`; `2 result:ResourceVersionRef`; `3 text:string`; `4 origin:ContentOrigin?`; `5 severity:Key`; `6 status:Key`; `7 evidence:ContextRef[]`; `8 actor:ActorChain` | info/warning/critical; open/accepted/dismissed; actor derived by owner; AI narrative never becomes measurement. |
+| `ScopeProjectSummary` | `1 projectId:Id`; `2 name:Name`; `3 sessionCount:uint32`; `4 updatedAt:Instant`; `5 revision:Revision` | Owner-filtered projection of committed ScopeMetadata; no raw data. |
+| `ScopeSessionSummary` | `1 sessionId:Id`; `2 projectId:Id`; `3 name:Name`; `4 findingCount:uint32`; `5 reportCount:uint32`; `6 tags:Id[]`; `7 updatedAt:Instant`; `8 revision:Revision` | Owner-filtered projection; counts from the committed aggregate. |
 | `ScopeSession` | `1 sessionId:Id`; `2 name:Name`; `3 revision:NativeContentRev`; `4 configuration:ScopeConfiguration`; `5 captures:CaptureMetadata[]` | Frozen configuration per capture. |
 | `ScopeConfiguration` | `1 configurationId:Id`; `2 channels:ChannelDefinition[]`; `3 parserProfile:Key`; `4 revision:NativeContentRev`; `5 framing:FrameConfiguration`; `6 trigger:TriggerConfiguration?` | Closed framing/trigger profiles from architecture 26. Configuration change starts a new immutable source segment. |
 | `ChannelDefinition` | `1 channelId:Id`; `2 name:Name`; `3 unit:Key`; `4 sampleType:Key`; `5 rate:Rational`; `6 calibration:Calibration?` | Samples exact under scope.measurement.v1. |
@@ -467,6 +469,9 @@ For every inherited operation, authorization/class/error/compatibility is the co
 | `sync.resolveConflict` | `SyncService.ResolveConflict` | `10 conflictId:Id`; `11 resolution:ConflictResolution` | `10 result:ChangeReceipt` |
 | `sync.requestFullResync` | `SyncService.RequestFullResync` | `10 scopeId:Id` | `10 bootstrap:BootstrapManifest` |
 | `sync.getBootstrapPage` | `SyncService.GetBootstrapPage` | `10 bootstrapId:Id`; `11 cursor:Cursor?` | `10 items:AggregateView[]`; `11 page:PageState`; `12 resumeCursor:Cursor` |
+| `scope.listProjects` | `ScopeService.ListProjects` | `10 page:PageRequest` | `10 items:ScopeProjectSummary[]`; `11 page:PageState` |
+| `scope.listSessions` | `ScopeService.ListSessions` | `10 projectId:Id`; `11 page:PageRequest` | `10 items:ScopeSessionSummary[]`; `11 page:PageState` |
+| `scope.getSession` | `ScopeService.GetSession` | `10 sessionId:Id`; `11 minRevision:Revision?` | `10 session:ScopeMetadata`; `11 revision:Revision`; `12 committedAt:Instant` |
 | `export.getStatus` | `ExportService.GetStatus` | `10 exportId:Id` | `10 job:ExportJob` |
 | `export.cancel` | `ExportService.Cancel` | `10 exportId:Id` | `10 job:ExportJob` |
 | `export.getDownload` | `ExportService.GetDownload` | `10 exportId:Id` | `10 ticket:TransferTicket` |

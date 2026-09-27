@@ -119,7 +119,7 @@ Tasks: 10 · Owning repositories: ArcScope, Cloud · Integration owner(s): ArcSc
 
 ### SIM.05 — Cloud-side simulation.* operations, manifest listing and segment fetch
 
-**Outcome.** The eleven simulation.* operations are durable, idempotent and expected-state; a client can list authorised manifests and fetch segments resumably with hash verification; state polling works with realtime disabled.
+**Outcome.** The eleven simulation.* operations are durable, idempotent and expected-state; a client can list authorised manifests and fetch segments resumably with hash verification; state polling works with realtime disabled; a run reaching a terminal state emits one durable simulation.runTerminal notification.
 
 | Field | Value |
 |---|---|
@@ -131,7 +131,7 @@ Tasks: 10 · Owning repositories: ArcScope, Cloud · Integration owner(s): ArcSc
 | Start prerequisites | **artifact** [SIM.04](#task-sim-04) — published manifests/checkpoints to expose. *Why:* the API surfaces what SIM.04 commits<br>**artifact** [CLOUD.21](cloud.md#task-cloud-21) — published endpoint mapping and validation pattern. *Why:* the eleven simulation.* operations are new Cloud PublicApi endpoints and should follow the one real endpoint-mapping/validation mechanism, not a bespoke one<br>**artifact** [CLOUD.24](cloud.md#task-cloud-24) — published idempotency and rate-limiting mechanism. *Why:* [WP-51.04](../../work-packages/51-arcscope-cloud-simulator.md#rule-wp-51.04) explicitly requires 'durable, idempotent, expected-state commands' and testing against duplicate/stale/out-of-order commands — this is exactly [WP-23.03](../../work-packages/23-public-api-and-generated-clients.md#rule-wp-23.03)'s mechanism, reused rather than reinvented per-module<br>**contract** [CON.21](contracts.md#task-con-21) — published SimulationService operations. *Why:* the Cloud-side operations implement the generated service |
 | Entry condition | [ADOPT.07.simulator](adoption.md#task-adopt-07-simulator) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
-| Unblocks | [SIM.06](#task-sim-06), [SIM.08](#task-sim-08), [SIM.09](#task-sim-09) |
+| Unblocks | [AND.27](android.md#task-and-27), [SIM.06](#task-sim-06), [SIM.08](#task-sim-08), [SIM.09](#task-sim-09), [WEB.33](web.md#task-web-33) |
 | Write scope | `Cloud:src/Cloud/ArcForges.Cloud.PublicApi/Scope/**`<br>`Cloud:tests/Cloud.Tests.Integration/Scope/Api/**` |
 | Shared resources | [RES-cloud-leased-singletons](../shared-resources.md#res-cloud-leased-singletons) (append) |
 | Validation | duplicate/stale/out-of-order commands; terminal-run resists resurrection; hash-mismatched segment rejected; reconnect-with-realtime-disabled proves polling is a complete authoritative fallback — real local Cloud host per [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017) |

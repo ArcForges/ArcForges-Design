@@ -11,10 +11,10 @@ Tasks: 13 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 | [NAT.01](#task-nat-01) | Probe A: device tool execution under Native AOT | producer | M | [PLT.18](platform.md#task-plt-18) (artifact), [PLT.09](platform.md#task-plt-09) (artifact), [PRF.04](runtime-proofs.md#task-prf-04) (artifact) | not-started |
 | [NAT.03](#task-nat-03) | Probe C: high-throughput acquisition over a real transport | producer | M | none | not-started |
 | [NAT.05](#task-nat-05) | Probe evidence, licence positions, conclusions and hardware-lab inventory seed | producer | S | [NAT.01](#task-nat-01) (artifact), [NAT.03](#task-nat-03) (artifact) | not-started |
-| [NAT.06](#task-nat-06) | Common native ABI: preambles, pack8 records, ownership, cancellation, bounded buffers | producer | L | none | not-started |
+| [NAT.06](#task-nat-06) | Common native ABI: preambles, pack8 records, ownership, cancellation, bounded buffers | producer | L | [GOV.17](governance.md#task-gov-17) (artifact) | not-started |
 | [NAT.11](#task-nat-11) | Image family: still-image codecs (PNG/TIFF/EXR) | producer | M | [NAT.06](#task-nat-06) (artifact), [PLT.45](platform.md#task-plt-45) (artifact), [GOV.17](governance.md#task-gov-17) (artifact) | not-started |
-| [NAT.13](#task-nat-13) | Instruments family: serial and USB devices (NEW library) | producer | M | [NAT.06](#task-nat-06) (artifact) | not-started |
-| [NAT.14](#task-nat-14) | Pdf family: PDFium and production parser containment in the WP11 helper (NEW library) | producer | L | [PLT.45](platform.md#task-plt-45) (artifact), [NAT.06](#task-nat-06) (artifact) | not-started |
+| [NAT.13](#task-nat-13) | Instruments family: serial and USB devices (NEW library) | producer | M | [NAT.06](#task-nat-06) (artifact), [GOV.17](governance.md#task-gov-17) (artifact) | not-started |
+| [NAT.14](#task-nat-14) | Pdf family: PDFium and production parser containment in the WP11 helper (NEW library) | producer | L | [PLT.45](platform.md#task-plt-45) (artifact), [NAT.06](#task-nat-06) (artifact), [GOV.17](governance.md#task-gov-17) (artifact) | not-started |
 | [NAT.22](#task-nat-22) | Image package production: all 6 RIDs | producer | S | [NAT.11](#task-nat-11) (artifact) | not-started |
 | [NAT.24](#task-nat-24) | Instruments package production: all 6 RIDs | producer | S | [NAT.13](#task-nat-13) (artifact) | not-started |
 | [NAT.25](#task-nat-25) | Pdf package production: all 6 RIDs + ContentSandbox Runtime.<rid> composition | producer | M | [NAT.14](#task-nat-14) (artifact), [PLT.45](platform.md#task-plt-45) (artifact) | not-started |
@@ -106,7 +106,7 @@ Tasks: 13 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 | Kind / size | producer / L |
 | Obligations | [WP-13.05](../../work-packages/13-high-risk-technical-probes.md#rule-wp-13.05) — full<br>[WP-13](../../work-packages/13-high-risk-technical-probes.md#rule-wp-13) SS1/[ND-05](../../implementation-sequence.md#rule-nd-05): probe scaffolds (13.00-13.03) are cleanup-or-regression-fixture; production 13.05-13.16 code is retained and maintained -- different lifecycle rules for the two groups even though both may live under similar directories — package-level obligation contribution<br>[WP-13](../../work-packages/13-high-risk-technical-probes.md#rule-wp-13) SS4 major-types note: no native pointer becomes a managed domain identifier or a wire field — package-level obligation contribution |
 | Provides | native-abi-common-v1.1; native-abstractions-package |
-| Start prerequisites | none |
+| Start prerequisites | **artifact** [GOV.17](governance.md#task-gov-17) — retired native families removed and the still-image shim moved. *Why:* the common ABI headers and package inventory are edited only after the retired families leave |
 | Entry condition | [ADOPT.02.native](adoption.md#task-adopt-02-native) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
 | Unblocks | [NAT.11](#task-nat-11), [NAT.13](#task-nat-13), [NAT.14](#task-nat-14), [NAT.30](#task-nat-30) |
@@ -121,7 +121,7 @@ Tasks: 13 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 
 ### NAT.11 — Image family: still-image codecs (PNG/TIFF/EXR)
 
-**Outcome.** arc_image_* implemented with PNG/TIFF/EXR metadata and bounded tile reads/writes via OIIO/OpenEXR/Imath; hostile reads execute only in the WP11 helper.
+**Outcome.** arc_image_* implemented with PNG/TIFF/EXR metadata and bounded tile reads via OIIO/OpenEXR/Imath; hostile reads execute only in the WP11 helper.
 
 | Field | Value |
 |---|---|
@@ -154,7 +154,7 @@ Tasks: 13 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 | Kind / size | producer / M |
 | Obligations | [WP-13.12](../../work-packages/13-high-risk-technical-probes.md#rule-wp-13.12) — full<br>[WP-13](../../work-packages/13-high-risk-technical-probes.md#rule-wp-13) SS1/[ND-05](../../implementation-sequence.md#rule-nd-05): probe scaffolds (13.00-13.03) are cleanup-or-regression-fixture; production 13.05-13.16 code is retained and maintained -- different lifecycle rules for the two groups even though both may live under similar directories — package-level obligation contribution<br>[WP-13](../../work-packages/13-high-risk-technical-probes.md#rule-wp-13) SS4 major-types note: no native pointer becomes a managed domain identifier or a wire field — package-level obligation contribution |
 | Provides | arc-instruments-functions |
-| Start prerequisites | **artifact** [NAT.06](#task-nat-06) — compiled common ABI headers/layouts (arc_instrument_options_v1, arc_transfer_v1). *Why:* exact parameter types |
+| Start prerequisites | **artifact** [NAT.06](#task-nat-06) — compiled common ABI headers/layouts (arc_instrument_options_v1, arc_transfer_v1). *Why:* exact parameter types<br>**artifact** [GOV.17](governance.md#task-gov-17) — retired native families removed and the still-image shim moved. *Why:* the instruments family registers in the cleaned package inventory |
 | Entry condition | [ADOPT.02.native](adoption.md#task-adopt-02-native) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
 | Unblocks | [NAT.24](#task-nat-24), [NAT.30](#task-nat-30), [SCOPE.04](arcscope.md#task-scope-04) |
@@ -178,7 +178,7 @@ Tasks: 13 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 | Kind / size | producer / L · early risk proof |
 | Obligations | [WP-13.13](../../work-packages/13-high-risk-technical-probes.md#rule-wp-13.13) — all work except the parts mapped to PLT.54<br>[WP-13](../../work-packages/13-high-risk-technical-probes.md#rule-wp-13) SS1/[ND-05](../../implementation-sequence.md#rule-nd-05): probe scaffolds (13.00-13.03) are cleanup-or-regression-fixture; production 13.05-13.16 code is retained and maintained -- different lifecycle rules for the two groups even though both may live under similar directories — package-level obligation contribution<br>[WP-13](../../work-packages/13-high-risk-technical-probes.md#rule-wp-13) SS4 major-types note: no native pointer becomes a managed domain identifier or a wire field — package-level obligation contribution |
 | Provides | arc-pdf-functions; contentsandbox-production-parser-runtime |
-| Start prerequisites | **artifact** [PLT.45](platform.md#task-plt-45) — published ArcForges.ContentSandbox.Contracts,.Broker and the foundation Runtime.<rid> package (built around a deliberately hostile first-party TEST parser). *Why:* design text is explicit: WP11 'solely owns' the host/protocol/launcher; WP13.13 composes the real parser into that SAME host and 'no future parser is an input to WP11 and no already-published artifact is modified' -- a fixture or reimplementation is not acceptable, this must be the real published foundation binary<br>**artifact** [NAT.06](#task-nat-06) — compiled common ABI headers/layouts (arc_pdf_page_v1). *Why:* exact parameter types |
+| Start prerequisites | **artifact** [PLT.45](platform.md#task-plt-45) — published ArcForges.ContentSandbox.Contracts,.Broker and the foundation Runtime.<rid> package (built around a deliberately hostile first-party TEST parser). *Why:* design text is explicit: WP11 'solely owns' the host/protocol/launcher; WP13.13 composes the real parser into that SAME host and 'no future parser is an input to WP11 and no already-published artifact is modified' -- a fixture or reimplementation is not acceptable, this must be the real published foundation binary<br>**artifact** [NAT.06](#task-nat-06) — compiled common ABI headers/layouts (arc_pdf_page_v1). *Why:* exact parameter types<br>**artifact** [GOV.17](governance.md#task-gov-17) — retired native families removed and the still-image shim moved. *Why:* the PDF family registers in the cleaned package inventory and helper composition |
 | Entry condition | [ADOPT.02.native](adoption.md#task-adopt-02-native) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
 | Unblocks | [NAT.25](#task-nat-25), [NAT.30](#task-nat-30), [PLT.45](platform.md#task-plt-45), [PLT.54](platform.md#task-plt-54) |

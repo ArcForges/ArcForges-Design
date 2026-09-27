@@ -2,9 +2,9 @@
 
 > Generated from [the delivery graph](../delivery-graph.json) by Plan `tools/delivery.py`; do not edit by hand. Rules and definitions: [delivery model](../README.md).
 
-Static site, shared consumer design system, Account portal and ArcChat Web companion.
+Static site, shared consumer design system, Account portal and the ArcScope Web companion (workspace, simulator console, assistant).
 
-Tasks: 31 · Owning repositories: Web · Integration owner(s): Web integration owner
+Tasks: 33 · Owning repositories: Web · Integration owner(s): Web integration owner
 
 | Task | Title | Kind | Size | Start prerequisites | Baseline |
 |---|---|---|---|---|---|
@@ -33,12 +33,14 @@ Tasks: 31 · Owning repositories: Web · Integration owner(s): Web integration o
 | [WEB.23](#task-web-23) | One-application remote control | feature | M | [WEB.19](#task-web-19) (artifact) | not-started |
 | [WEB.24](#task-web-24) | Offline, degradation and accessibility (chat) | feature | M | [WEB.20](#task-web-20) (artifact), [WEB.21](#task-web-21) (artifact), [WEB.22](#task-web-22) (artifact), [WEB.23](#task-web-23) (artifact) | not-started |
 | [WEB.25](#task-web-25) | Performance budgets (chat) | feature | S | [WEB.19](#task-web-19) (artifact) | not-started |
-| [WEB.26](#task-web-26) | Verify the owned Chat artifact and real integration | integration | M | [WEB.20](#task-web-20) (artifact), [WEB.21](#task-web-21) (artifact), [WEB.22](#task-web-22) (artifact), [WEB.23](#task-web-23) (artifact), [WEB.24](#task-web-24) (artifact), [WEB.25](#task-web-25) (artifact) | not-started |
+| [WEB.26](#task-web-26) | Verify the owned Chat artifact and real integration | integration | M | [WEB.20](#task-web-20) (artifact), [WEB.21](#task-web-21) (artifact), [WEB.22](#task-web-22) (artifact), [WEB.23](#task-web-23) (artifact), [WEB.24](#task-web-24) (artifact), [WEB.25](#task-web-25) (artifact), [WEB.32](#task-web-32) (artifact), [WEB.33](#task-web-33) (artifact) | not-started |
 | [WEB.27](#task-web-27) | Real CF Harness generation/tool loop observed end to end in the browser | integration | M | [WEB.20](#task-web-20) (artifact), [WEB.21](#task-web-21) (artifact), [HAR.00](harness.md#task-har-00) (artifact), [HAR.03](harness.md#task-har-03) (artifact) | not-started |
 | [WEB.28](#task-web-28) | Real desktop tool dispatch from the browser companion | integration | M | [WEB.21](#task-web-21) (artifact), [WEB.23](#task-web-23) (artifact), [DEV.02](device-bridge.md#task-dev-02) (artifact), [DEV.03](device-bridge.md#task-dev-03) (artifact), [DEV.06](device-bridge.md#task-dev-06) (artifact), [DEV.07](device-bridge.md#task-dev-07) (artifact), [DEV.12](device-bridge.md#task-dev-12) (artifact) | not-started |
 | [WEB.29](#task-web-29) | Real commerce/policy provider evidence for the account portal | integration | M | [WEB.14](#task-web-14) (artifact), [COM.14](commerce.md#task-com-14) (artifact), [POL.08](policy.md#task-pol-08) (artifact) | not-started |
 | [WEB.30](#task-web-30) | Real React Web client against deployed browser session/PublicApi/realtime | integration | M | [CLOUD.19](cloud.md#task-cloud-19) (artifact), [CLOUD.26](cloud.md#task-cloud-26) (artifact), [CLOUD.29](cloud.md#task-cloud-29) (artifact), [WEB.07](#task-web-07) (artifact), [WEB.14](#task-web-14) (artifact), [WEB.19](#task-web-19) (artifact), [PRF.08](runtime-proofs.md#task-prf-08) (artifact) | not-started |
 | [WEB.31](#task-web-31) | Full browser-support.v1 matrix across all Web-facing outputs | integration | M | [OPS.05](operations.md#task-ops-05) (artifact), [WEB.07](#task-web-07) (artifact), [WEB.14](#task-web-14) (artifact), [WEB.19](#task-web-19) (artifact), [WEB.30](#task-web-30) (artifact) | not-started |
+| [WEB.32](#task-web-32) | ArcScope workspace in the Web companion: library and reports | feature | L | [WEB.19](#task-web-19) (artifact), [CON.24](contracts.md#task-con-24) (contract) | not-started |
+| [WEB.33](#task-web-33) | Cloud simulator console in the Web companion | feature | M | [WEB.19](#task-web-19) (artifact), [CON.21](contracts.md#task-con-21) (contract) | not-started |
 
 ## Tasks
 
@@ -467,7 +469,7 @@ Tasks: 31 · Owning repositories: Web · Integration owner(s): Web integration o
 | Start prerequisites | **artifact** [WEB.08](#task-web-08) — design system tokens/components. *Why:* the chat shell composes packages/ui directly, same as the account shell<br>**artifact** [WEB.10](#task-web-10) — account shell and apps/app workspace registration. *Why:* chat is the second deployment profile of the same already-registered apps/app codebase; do not re-register the workspace |
 | Entry condition | [ADOPT.09.web](adoption.md#task-adopt-09-web) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
-| Unblocks | [WEB.20](#task-web-20), [WEB.21](#task-web-21), [WEB.22](#task-web-22), [WEB.23](#task-web-23), [WEB.25](#task-web-25), [WEB.30](#task-web-30), [WEB.31](#task-web-31) |
+| Unblocks | [WEB.20](#task-web-20), [WEB.21](#task-web-21), [WEB.22](#task-web-22), [WEB.23](#task-web-23), [WEB.25](#task-web-25), [WEB.30](#task-web-30), [WEB.31](#task-web-31), [WEB.32](#task-web-32), [WEB.33](#task-web-33) |
 | Write scope | `Web:apps/app/app/features/chat/**` |
 | Shared resources | [RES-web-app-routing](../shared-resources.md#res-web-app-routing) (append), [RES-web-build-config](../shared-resources.md#res-web-build-config) (append), [RES-web-shared-ui](../shared-resources.md#res-web-shared-ui) (append) |
 | Validation | Production route/profile inspection; approved light/dark/narrow-screen visual baselines; keyboard/touch/long-text states; source/dependency assertion that no provider or Harness implementation enters the browser |
@@ -623,7 +625,7 @@ Tasks: 31 · Owning repositories: Web · Integration owner(s): Web integration o
 | Package acceptance | Records the [WP-49](../../work-packages/49-arcchat-web-companion.md#rule-wp-49) acceptance receipt after every task mapped to the package; tasks outside the package never start from it ([DLV-35](../README.md#rule-dlv-35)) |
 | Obligations | [WP-49.90](../../work-packages/49-arcchat-web-companion.md#rule-wp-49.90) — full<br>[WP-49](../../work-packages/49-arcchat-web-companion.md#rule-wp-49) Browser matrix acceptance paragraph (browser-support.v1 for the chat output) — package-level obligation contribution |
 | Provides | web-chat-candidate |
-| Start prerequisites | **artifact** [WEB.20](#task-web-20) — streaming. *Why:* final join<br>**artifact** [WEB.21](#task-web-21) — tasks/approval. *Why:* final join<br>**artifact** [WEB.22](#task-web-22) — artifacts. *Why:* final join<br>**artifact** [WEB.23](#task-web-23) — remote control. *Why:* final join<br>**artifact** [WEB.24](#task-web-24) — resilience. *Why:* final join<br>**artifact** [WEB.25](#task-web-25) — budgets. *Why:* final join |
+| Start prerequisites | **artifact** [WEB.20](#task-web-20) — streaming. *Why:* final join<br>**artifact** [WEB.21](#task-web-21) — tasks/approval. *Why:* final join<br>**artifact** [WEB.22](#task-web-22) — artifacts. *Why:* final join<br>**artifact** [WEB.23](#task-web-23) — remote control. *Why:* final join<br>**artifact** [WEB.24](#task-web-24) — resilience. *Why:* final join<br>**artifact** [WEB.25](#task-web-25) — budgets. *Why:* final join<br>**artifact** [WEB.32](#task-web-32) — package task delivered. *Why:* the package acceptance receipt verifies every task mapped to the package ([DLV-03](../README.md#rule-dlv-03))<br>**artifact** [WEB.33](#task-web-33) — package task delivered. *Why:* the package acceptance receipt verifies every task mapped to the package ([DLV-03](../README.md#rule-dlv-03)) |
 | Entry condition | [ADOPT.09.web](adoption.md#task-adopt-09-web) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | **integration** [WEB.27](#task-web-27) — real Harness. *Why:* unlike WP47's deferrable numeric join, [WP-49](../../work-packages/49-arcchat-web-companion.md#rule-wp-49)'s own text states "49 consumes 52" as a hard requirement recorded at this task's own gate, not deferred to WP50 |
 | Unblocks | [REL.05](release.md#task-rel-05) |
@@ -736,3 +738,47 @@ Tasks: 31 · Owning repositories: Web · Integration owner(s): Web integration o
 | Validation | Local real-integration run of the affected scenario in an existing environment, recorded once; offline and static checks in CI; no hosted runtime, device, browser, live-service or inference CI ([P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017)). |
 | Completion evidence | Supported/degraded/blocked behavior across every output's flows on real browser/OS patches; [WP-50](../../work-packages/50-full-platform-production-release.md#rule-wp-50) joins all production hashes and real browser evidence |
 | Baseline (unreviewed unless accepted) | not-started |
+
+<a id="task-web-32"></a>
+
+### WEB.32 — ArcScope workspace in the Web companion: library and reports
+
+**Outcome.** The Web ArcScope library: projects, sessions, findings and annotations, report reading with provenance and stored chart snapshots, exported-report download through resource tickets, sessions and reports attached to assistant conversations, and the ArcScope notification kinds.
+
+| Field | Value |
+|---|---|
+| Owning repository | Web (`C:\MyFile\Projects\ArcForges\Web`); integration owner: Web integration owner, the holder of `roles/integration-web` |
+| Claim, branch and ledger | `claims/web-32` and ledger record `ledger/tasks/web-32.md` in the Plan repository; task branch `task/web-32` ([DLV-26](../README.md#rule-dlv-26)) |
+| Kind / size | feature / L |
+| Obligations | [WP-49.07](../../work-packages/49-arcchat-web-companion.md#rule-wp-49.07) — full |
+| Provides | web-arcscope-workspace |
+| Start prerequisites | **artifact** [WEB.19](#task-web-19) — the companion route shell and design-system integration. *Why:* the workspace is a route set of the companion deployment<br>**contract** [CON.24](contracts.md#task-con-24) — the generated library operations. *Why:* the views call the library operations through the generated TypeScript client |
+| Entry condition | [ADOPT.09.web](adoption.md#task-adopt-09-web) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
+| Completion prerequisites | **integration** [CLOUD.68](cloud.md#task-cloud-68) — the deployed library read model. *Why:* acceptance reads a real synced workspace |
+| Unblocks | [WEB.26](#task-web-26) |
+| Write scope | `Web:apps/app/app/features/scope/**` |
+| Validation | Local real-integration run of the affected scenario in an existing environment, recorded once; offline and static checks in CI; no hosted runtime, device, browser, live-service or inference CI ([P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017)). |
+| Completion evidence | A report synced from ArcScope desktop found, read and downloaded on Web with provenance; revocation, ticket expiry and accessibility results. |
+| Baseline (unreviewed unless accepted) | not-started Observed none. |
+
+<a id="task-web-33"></a>
+
+### WEB.33 — Cloud simulator console in the Web companion
+
+**Outcome.** The simulator console: definitions, immutable scenario versions with validation errors, start, pause, resume and cancel with expected state, run state with complete-or-partial extent, and the committed segment manifest with resumable, hash-verified downloads.
+
+| Field | Value |
+|---|---|
+| Owning repository | Web (`C:\MyFile\Projects\ArcForges\Web`); integration owner: Web integration owner, the holder of `roles/integration-web` |
+| Claim, branch and ledger | `claims/web-33` and ledger record `ledger/tasks/web-33.md` in the Plan repository; task branch `task/web-33` ([DLV-26](../README.md#rule-dlv-26)) |
+| Kind / size | feature / M |
+| Obligations | [WP-49.08](../../work-packages/49-arcchat-web-companion.md#rule-wp-49.08) — full |
+| Provides | web-simulator-console |
+| Start prerequisites | **artifact** [WEB.19](#task-web-19) — the companion route shell and design-system integration. *Why:* the console is a route set of the companion deployment<br>**contract** [CON.21](contracts.md#task-con-21) — the generated simulation operations. *Why:* the console calls the simulation operations through the generated TypeScript client |
+| Entry condition | [ADOPT.09.web](adoption.md#task-adopt-09-web) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
+| Completion prerequisites | **integration** [SIM.05](simulator.md#task-sim-05) — the deployed simulation operations. *Why:* acceptance runs a real scenario |
+| Unblocks | [WEB.26](#task-web-26) |
+| Write scope | `Web:apps/app/app/features/simulation/**` |
+| Validation | Local real-integration run of the affected scenario in an existing environment, recorded once; offline and static checks in CI; no hosted runtime, device, browser, live-service or inference CI ([P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017)). |
+| Completion evidence | A scenario created and run from the browser with every desktop off, completed or cancelled with the correct extent, and its committed segments downloaded and verified. |
+| Baseline (unreviewed unless accepted) | not-started Observed none. |

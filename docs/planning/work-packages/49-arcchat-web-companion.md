@@ -1,13 +1,13 @@
 <a id="rule-wp-49"></a>
 
-# WP-49 — Web companion Companion
+# WP-49 — Web ArcScope Companion
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: K — Web and release
 > Scheduling: this package is an obligation set; its delivery tasks and their typed prerequisites are listed in section 9, generated from the [delivery graph](../delivery/delivery-graph.json) under [P2-018](../../decisions/phase-2-specification-decisions.md#rule-p2-018).
 
-> **Goal.** Deliver the browser companion as the second deployment profile of the same application: chat, tasks, approvals, steering, artifacts and remote control — a cloud surface, distinct from the account portal, sharing no state with it.
+> **Goal.** Deliver the ArcScope Web companion as the second deployment profile of the same application: the ArcScope workspace (library, reports and the Cloud simulator console) with the ArcScope assistant, tasks, approvals, steering, artifacts and remote control — a cloud surface, distinct from the account portal, sharing no state with it.
 
 > **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Web + Cloud + AI. Inputs: only the applicable published producers available at this stage under [staged artifact integration](../README.md#staged-artifact-integration). Producer candidate records precede Cloud consolidation; no future package/manifest is an input. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: production React build and real C#/CF endpoints with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
 > After WP03, unit mocks consume published Contracts fixtures; earlier stages verify their inventory/policy outputs. Acceptance consumes the actual providers scheduled for that stage. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
@@ -149,6 +149,24 @@ The Web companion verifies real generation, tool approval, stream fallback and r
 
 **Completion gate.** All three budgets are met and a deliberate regression is caught by the gate.
 
+<a id="rule-wp-49.07"></a>
+### WP-49.07 — ArcScope workspace: library and reports
+
+**What must be fully done.** Implement the Web ArcScope library ([SW-01](../../requirements/products/arcchat-mobile-and-web.md#rule-sw-01)–[SW-03](../../requirements/products/arcchat-mobile-and-web.md#rule-sw-03), [P2-020](../../decisions/phase-2-specification-decisions.md#rule-p2-020)): projects, sessions, findings and annotations over the library operations, report reading with provenance and stored chart snapshots, exported-report download through resource tickets, attaching sessions and reports to assistant conversations, and the ArcScope notification kinds.
+
+**Testing requirements.** Generated TypeScript client against the deployed library: paging, revision and commit time, revoked access and wrong scope, unavailable artifacts, download ticket expiry and resume, keyboard and screen-reader paths.
+
+**Completion gate.** A report synced from ArcScope desktop is found, read and downloaded on Web with its provenance, and access revocation removes it at the next request.
+
+<a id="rule-wp-49.08"></a>
+### WP-49.08 — Cloud simulator console
+
+**What must be fully done.** Implement the simulator console ([SW-04](../../requirements/products/arcchat-mobile-and-web.md#rule-sw-04)) over the `simulation.*` operations: definitions, immutable scenario versions with validation errors, start, pause, resume and cancel with expected state, run state with complete-or-partial extent and reasons, and the committed segment manifest with resumable downloads.
+
+**Testing requirements.** Real deployed simulator: version validation failures, idempotent commands, ineligible term, cancellation committing a partial outcome, manifest-only listing of committed segments, download hash verification.
+
+**Completion gate.** A scenario created and run from the browser with every desktop off completes or is cancelled with the correct extent, and its committed segments download and verify.
+
 ---
 
 <a id="rule-wp-49.90"></a>
@@ -237,6 +255,8 @@ Scheduling is task-level under [P2-018](../../decisions/phase-2-specification-de
 | [WEB.26](../delivery/lanes/web.md#task-web-26) | [WP-49.90](49-arcchat-web-companion.md#rule-wp-49.90) (full)<br>[WP-49](49-arcchat-web-companion.md#rule-wp-49) Browser matrix acceptance paragraph (browser-support.v1 for the chat output) (package-level obligation contribution) | none |
 | [WEB.27](../delivery/lanes/web.md#task-web-27) | [WP-49.01](49-arcchat-web-companion.md#rule-wp-49.01) (real-integration closure)<br>[WP-49.02](49-arcchat-web-companion.md#rule-wp-49.02) (real-integration closure) | [HAR.00](../delivery/lanes/harness.md#task-har-00) (artifact), [HAR.03](../delivery/lanes/harness.md#task-har-03) (artifact) |
 | [WEB.28](../delivery/lanes/web.md#task-web-28) | [WP-49.02](49-arcchat-web-companion.md#rule-wp-49.02) (device-dispatch closure)<br>[WP-49.04](49-arcchat-web-companion.md#rule-wp-49.04) (real-integration closure) | [DEV.02](../delivery/lanes/device-bridge.md#task-dev-02) (artifact), [DEV.03](../delivery/lanes/device-bridge.md#task-dev-03) (artifact), [DEV.06](../delivery/lanes/device-bridge.md#task-dev-06) (artifact), [DEV.07](../delivery/lanes/device-bridge.md#task-dev-07) (artifact), [DEV.12](../delivery/lanes/device-bridge.md#task-dev-12) (artifact) |
+| [WEB.32](../delivery/lanes/web.md#task-web-32) | [WP-49.07](49-arcchat-web-companion.md#rule-wp-49.07) (full) | [CON.24](../delivery/lanes/contracts.md#task-con-24) (contract) |
+| [WEB.33](../delivery/lanes/web.md#task-web-33) | [WP-49.08](49-arcchat-web-companion.md#rule-wp-49.08) (full) | [CON.21](../delivery/lanes/contracts.md#task-con-21) (contract) |
 
 **Consumers outside this package:** [HAR.05](../delivery/lanes/harness.md#task-har-05), [REL.05](../delivery/lanes/release.md#task-rel-05), [WEB.30](../delivery/lanes/web.md#task-web-30), [WEB.31](../delivery/lanes/web.md#task-web-31).
 

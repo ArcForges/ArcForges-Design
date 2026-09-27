@@ -23,7 +23,7 @@ The twelve-entry inventory is fixed by **[D-014](../../decisions/phase-1-foundat
 | `arcforges.com` | Canonical public marketing site | **Static artifacts** |
 | `www.arcforges.com` | Permanent redirect to `arcforges.com` | Redirect |
 | `account.arcforges.com` | **Canonical authenticated account portal** | `ArcForges.Web.App` deployment |
-| `chat.arcforges.com` | ArcChat web companion | `ArcForges.Web.App` deployment |
+| `chat.arcforges.com` | ArcScope web companion: the ArcScope workspace and assistant | `ArcForges.Web.App` deployment |
 | `api.arcforges.com` | Public Cloud API | Service |
 | `docs.arcforges.com` | Public documentation | Static artifacts |
 | `status.arcforges.com` | Public service status | **Independently hosted** |
@@ -137,9 +137,9 @@ Its job is **Discover → Understand → Download**, then **Upgrade to Cloud**.
 
 ---
 
-## 5. `chat.arcforges.com` — Web companion
+## 5. `chat.arcforges.com` — ArcScope Web companion
 
-Specified in [`arcchat-mobile-and-web.md`](arcchat-mobile-and-web.md). Two boundaries repeated here because they are web-surface decisions:
+Specified in [`arcchat-mobile-and-web.md`](arcchat-mobile-and-web.md), including the [ArcScope workspace](arcchat-mobile-and-web.md#21-the-arcscope-workspace-on-the-companions): library, report reading and download, the Cloud simulator console and the ArcScope assistant. Two boundaries repeated here because they are web-surface decisions:
 
 | # | Requirement |
 |---|---|
@@ -223,6 +223,9 @@ Each must be complete and testable:
 10. **Check status during an incident**, on infrastructure independent of the cloud.
 11. **Report a security issue** through the private route.
 12. **Find and read the changelog for the version currently installed.**
+13. **Sign in → ArcScope workspace → open a synced session → read its report → download the exported report.**
+14. **Create a scenario version → start a Cloud simulation run → watch its state → download committed segments**, with no desktop online.
+15. **Receive an approval request → approve an ArcScope command for an online installation → read the result.**
 
 ---
 
