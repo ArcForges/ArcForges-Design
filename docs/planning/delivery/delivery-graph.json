@@ -2712,6 +2712,7 @@
     "Contracts:Directory.Packages.props (exact published previous-client candidate pin for the isolated compatibility harness)",
     "Contracts:ArcForges.Contracts.slnx (register the isolated offline previous-client harness)",
     "Contracts:eng/policy/dependency-policy.json (owned previous-client dependency admission and changed input registration)",
+    "Contracts:eng/policy/contract-access.json (register the owned semantic hash sources and changed build input hashes in the existing package access inventory)",
     "Contracts:eng/policy/dependency-reviews/** (new immutable previous-client dependency receipt; preserve historical records)"
    ],
    "shared": [
