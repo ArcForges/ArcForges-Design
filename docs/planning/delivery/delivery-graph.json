@@ -1853,7 +1853,15 @@
     "Contracts:package.json (append CON.02 test registration only)",
     "Contracts:eng/provenance/files.json (owned source inventory only)",
     "Contracts:eng/provenance/records/contract-bindings-*.json (new successor receipts only; preserve history)",
-    "Contracts:docs/con-02-descriptors.md"
+    "Contracts:docs/con-02-descriptors.md",
+    "Contracts:eng/policy/contract-access.json (descriptor source hashes and existing project ownership only)",
+    "Contracts:eng/policy/dependency-policy.json (current descriptor input binding only; no version or closure expansion)",
+    "Contracts:eng/policy/dependency-reviews/** (new descriptor input successor receipts only; preserve history)",
+    "Contracts:eng/provenance/NOTICE.txt (current generated successor notice only)",
+    "Contracts:eng/provenance/artifact-profiles/dokka-2-2-0-*.json (new descriptor documentation successor profiles only; preserve history)",
+    "Contracts:eng/provenance/records/dokka-documentation-resources-*.json (new descriptor documentation successor receipts only; preserve history)",
+    "Contracts:eng/documentation_tools.py (current descriptor documentation profile pointer only)",
+    "Contracts:tests/tooling/test_documentation_provenance.py (add retained descriptor markers; preserve historical-resource invariants)"
    ],
    "shared": [
     {
