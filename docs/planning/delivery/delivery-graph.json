@@ -4036,7 +4036,11 @@
     "DesktopPlatform:eng/provenance/** (owned acceptance inventory and new receipts; preserve historical records)",
     "DesktopPlatform:eng/policy/runtime-ownership.json (owned acceptance project registration)",
     "DesktopPlatform:eng/policy/reconciliation/active-projects.json (owned acceptance project registration)",
-    "DesktopPlatform:eng/policy/reconciliation/source.json (owned acceptance source inventory)"
+    "DesktopPlatform:eng/policy/reconciliation/source.json (owned acceptance source inventory)",
+    "DesktopPlatform:eng/dependency_policy.py (only exact existing Foundation/Application.Abstractions 1.0.0-ci.29.1 AGPL package/publisher admission for the owned acceptance runner, and its exact npm manifest/lock input bindings)",
+    "DesktopPlatform:eng/test_dependency_policy.py (owned exact admission positive and wrong package/version/publisher/licence/source/hash negatives)",
+    "DesktopPlatform:eng/runtime_ownership.py (only eng/acceptance/foundation/package.json as a local test/build tool; no production npm runtime)",
+    "DesktopPlatform:eng/test_runtime_ownership.py (exact acceptance path/owner positive and adjacent path/owner negatives)"
    ],
    "shared": [
     {
@@ -4059,7 +4063,7 @@
     "notes": "Observed scaffold, unreviewed: Neither package appears in eng/packaging/packages.json today (confirmed: only Build.Policy and five Native.* families are admitted)."
    },
    "packageAcceptance": "WP-04",
-   "notes": "Merged duplicate integration or closure task formerly proposed as CON.93.",
+   "notes": "Merged duplicate integration or closure task formerly proposed as CON.93. The existing policy rejects this repository own AGPL Foundation/Application.Abstractions packages and any DesktopPlatform npm project; the current acceptance task may repair only those precise admission boundaries. Permit AGPL-3.0-only solely for arcforges.foundation/1.0.0-ci.29.1 and arcforges.application.abstractions/1.0.0-ci.29.1 with immutable locked hashes, exact NuGet source URLs, DesktopPlatform publisher identity and source commit ace60538849047184954baed09fb05ec7676d367 verified from existing publication/nuspec evidence. Preserve all other licence refusals, candidate/receipt history checks and independent review. Bind eng/acceptance/foundation/package.json and package-lock.json as exact dependency input hashes; retain their locked Contracts proto/fixtures 1.0.0-ci.113.1 and protobuf 2.15.0 closure, not a general npm admission expansion. The exact npm project is a local-only test/build tool, never a product runtime or CI installed-consumer execution. Negative tests must reject changed package/version/publisher/source/licence/hash and any other DesktopPlatform npm path. This is explicit source-policy repair under the existing FND.07 claim, not inferred supporting-file authority or permission to add other dependencies.",
    "complete": []
   },
   {
