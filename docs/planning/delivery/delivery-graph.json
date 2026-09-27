@@ -3150,7 +3150,8 @@
     "Contracts:eng/documentation_tools.py (current immutable Dokka successor profile selection only)",
     "Contracts:tests/tooling/test_dependency_admission.py (current retirement input bindings; preserve immutable history assertions)",
     "Contracts:tests/tooling/test_serialization_policy.py (retained packable AOT output inventory)",
-    "Contracts:.gitleaks.toml (only exact demonstrated new receipt/profile digest false-positive entries; no broad exclusion)"
+    "Contracts:.gitleaks.toml (only exact demonstrated new receipt/profile digest false-positive entries; no broad exclusion)",
+    "Contracts:.github/workflows/security.yml (scan complete history reachable from reviewed HEAD with --full-history HEAD; exclude only unrelated unmerged refs, preserve removed-secret detection and retained rules)"
    ],
    "shared": [
     {
