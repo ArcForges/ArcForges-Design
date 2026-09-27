@@ -182,6 +182,37 @@ HandleDeepLinkAsync(DeepLink)            → ArcResult<DeepLinkOutcome>
 
 ---
 
+<a id="ordinary-in-process-authorization-metadata"></a>
+### 5.1 Ordinary in-process infrastructure metadata
+
+The following closed table supplies the operation export for the seventeen ordinary infrastructure methods already registered in registry 04 and manifest 11. It does not add a method, tool, listener or private-helper binding. Every row has scope and surface `in-process`, profile `product-handler`, `capability=null`, `actorKinds=[human,product-handler]`, `patEligible=false`, baseline `risk=R1`, `approval=none`, `stepUp=false` and `localPresence=false`. The owning product handler preserves its verified human and actor provenance; these infrastructure ports are not directly model-callable capabilities. An agent, automation or extension can reach only an admitted product operation through the separate invocation boundary, never acquire this infrastructure identity from a claimed actor kind.
+
+| Exact operation ID | Idempotency | Egress |
+|---|---|---|
+| `ICapabilityProvider.Describe` | `Q` | `none` |
+| `ICapabilityProvider.EvaluateAvailability` | `Q` | `none` |
+| `IContextProvider.DescribeContextKinds` | `Q` | `none` |
+| `IContextProvider.ProvideContext` | `Q` | `ownedContent` |
+| `IArtifactHandler.DescribeArtifactKinds` | `Q` | `none` |
+| `IArtifactHandler.Resolve` | `Q` | `ownedContent` |
+| `IArtifactHandler.RenderPreview` | `Q` | `ownedContent` |
+| `IArtifactHandler.Open` | `NI` | `ownedContent` |
+| `IResourceAccess.GetMetadata` | `Q` | `none` |
+| `IResourceAccess.OpenRead` | `Q` | `ownedContent` |
+| `IResourceAccess.Release` | `IW` | `none` |
+| `IResourceAccess.ReadChunk` | `Q` | `ownedContent` |
+| `IProductLifecycle.GetState` | `Q` | `none` |
+| `IProductLifecycle.PrepareForShutdown` | `NI` | `none` |
+| `IProductLifecycle.GetJob` | `Q` | `none` |
+| `IDeepLinkTarget.HandleDeepLink` | `NI` | `none` |
+| `ILocalEvents.Poll` | `Q` | `none` |
+
+`ownedContent` denotes exactly the receiving owned application/helper/resource/AI context in [catalogue 00's egress table](00-operation-catalogue.md#4-authorization-declaration): the owner checks source version, bounded range, purpose and destination grant before returning content. It is not unrestricted external egress or implicit AI consent; raw Scope capture remains excluded from context. `none` authorizes no additional external destination and never removes response access checks or redaction. `Q` describes an authorized read, not permission to retry under a revoked grant or changed immutable transfer; each access rechecks the current owner conditions. Opening a transfer may allocate a new bounded ticket, but it does not mutate the underlying resource or grant additional access. `Release` is `IW` only for the same owned resource/referrer and command/input; replay cannot decrement another reference or trigger an unrelated deletion.
+
+The table declares the infrastructure baseline, not a ceiling on effective risk or a promise that a sensitive read is safe. Existing source/owner policy and runtime risk modifiers may require stronger approval, step-up or local presence and must be enforced before the affected access/effect. These ports do not authorize a later capability effect. `Open` and `HandleDeepLink` navigate within the owning application; a deep link remains untrusted and opens an interface with a prefilled intent, never invisibly executes a side-effecting command under [DL-01](../../requirements/09-shared-desktop-experience.md#rule-dl-01). `PrepareForShutdown` may refuse and does not authorize forced shutdown or loss of unsaved/capture state. The three `NI` rows are not automatically replayed after an unknown outcome. `Poll` returns bounded hints only and remains an in-process port in this operation set; it does not register a peer endpoint.
+
+---
+
 ## 6. Product operation interfaces
 
 These are the domain operations each product exposes as capabilities. They are the concrete answer to *what can an authorized assistant or companion do within this application*.
@@ -219,6 +250,11 @@ These are the domain operations each product exposes as capabilities. They are t
 | `AppendUserMessageAsync(ConversationId, MessageDraft, ExpectedRev)` → `Revision` | `R2`, none | `AP` |
 | `StartAgentTurnAsync(TurnRequest)` → `TaskRef` | `R2`+, per the plan's steps | `NI` |
 | `SubmitApprovalAsync(ApprovalId, Decision)` | risk of the underlying operation | `IW` |
+| `OpenArtifactAsync(ArtifactRef, OpenIntent)` | `R1`, none; `ownedContent` egress | `NI` |
+
+`StartAgentTurn`'s exported `R2` and `approval=perPlanStep` classify submission of the durable Cloud task, not every action the eventual plan may request. This is the existing `R2`+ posture: compute effective risk with current modifiers at submission, then evaluate every planned step against its own admitted capability, scope, egress and approval requirements before execution. Returning a TaskRef grants no blanket R2 approval, standing permission or local agent loop. `NI` preserves unknown-effect reconciliation; a lost response is not permission to submit another paid task automatically.
+
+`IChatOperations.OpenArtifact` retains its existing generated first-party tool eligibility under registry 04. Its export uses `tool-delegation`, exact capability `IChatOperations.OpenArtifact`, `actorKinds=[human,agent,automation,extension]`, `patEligible=false`, baseline `stepUp=false` and `localPresence=false`, with the risk/approval/idempotency and `ownedContent` egress above. The target remains the current application's authorized artifact owner; navigation does not grant cross-product access or authority to execute the artifact's suggested actions. Both rows retain stricter current owner policy and all original-actor/current-grant checks; neither can reach the human-only approval-decision path.
 
 | # | Rule |
 |---|---|
