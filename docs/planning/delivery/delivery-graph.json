@@ -891,7 +891,11 @@
    ],
    "writes": [
     "DesktopPlatform:tests/ArchitectureTests/**",
-    "DesktopPlatform:eng/policy/exceptions.json"
+    "DesktopPlatform:eng/policy/exceptions.json",
+    "DesktopPlatform:Directory.Packages.props (exact canonical naming-tool package pin)",
+    "DesktopPlatform:eng/policy/dependency-policy.json (canonical naming-tool admission)",
+    "DesktopPlatform:eng/policy/dependency-reviews/** (new immutable naming-tool admission receipt)",
+    "DesktopPlatform:eng/provenance/** (owned naming-tool inventory and new receipts; preserve historical records)"
    ],
    "shared": [
     {
@@ -900,6 +904,10 @@
     },
     {
      "resource": "RES-desktopplatform-policy-data",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-desktopplatform-build-config",
      "mode": "append"
     }
    ],
@@ -1693,7 +1701,11 @@
     "DesktopPlatform:docs/runtime-ownership.md",
     "DesktopPlatform:docs/licence-boundary.md",
     "DesktopPlatform:docs/reference-baselines.md",
-    "DesktopPlatform:docs/reconciliation-inventory.md"
+    "DesktopPlatform:docs/reconciliation-inventory.md",
+    "DesktopPlatform:Directory.Packages.props (exact canonical naming-tool package pin)",
+    "DesktopPlatform:eng/policy/dependency-policy.json (canonical naming-tool admission)",
+    "DesktopPlatform:eng/policy/dependency-reviews/** (new immutable naming-tool admission receipt)",
+    "DesktopPlatform:eng/provenance/** (owned naming-tool inventory and new receipts; preserve historical records)"
    ],
    "shared": [
     {
@@ -1702,6 +1714,10 @@
     },
     {
      "resource": "RES-architecture-tests",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-desktopplatform-build-config",
      "mode": "append"
     }
    ],
