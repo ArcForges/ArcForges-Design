@@ -1344,7 +1344,7 @@
      "part": "full"
     }
    ],
-   "outcome": "A build-produced report classifies all 429 catalogued invariants as enforced-and-passing / enforced-and-failing / not-yet-implemented, every classification derived from an actual test-run result, without re-deriving the design-stage mapping (PG-06, already closed) and without itself closing PG-11.",
+   "outcome": "A build-produced report classifies all current catalogued invariants (406 after reduced-family retirement) as enforced-and-passing / enforced-and-failing / not-yet-implemented, every classification derived from an actual test-run result, without re-deriving the design-stage mapping (PG-06, already closed) and without itself closing PG-11.",
    "provides": [
     "invariant-accounting-report-v1"
    ],
@@ -1367,11 +1367,11 @@
     "DesktopPlatform:artifacts/evidence/invariant-accounting.json"
    ],
    "validation": "Report generation reads real CI test-run results only; offline; re-run as each owning package lands enforcement (not a one-time close), per P2-017's 'runtime checks local, affected-scope, once, existing environment only' spirit.",
-   "evidence": "429-row accounting table, every row classified from a real result.",
+   "evidence": "Current-catalogue-complete accounting table, every row classified from a real result.",
    "baseline": {
     "state": "not-started"
    },
-   "notes": "Will read as mostly 'not yet implemented' immediately after WP05 since most of the 429 invariants are owned by packages far downstream (WP06...WP53, per invariant-coverage.md's ownerCell). PG-11 stays open per-invariant in its OWNING package; GOV.13 never closes PG-11 or PG-06 itself - it only reports.",
+   "notes": "Will read as mostly 'not yet implemented' immediately after WP05 since most current invariants are owned by packages far downstream (WP06...WP53, per invariant-coverage.md's ownerCell). PG-11 stays open per-invariant in its OWNING package; GOV.13 never closes PG-11 or PG-06 itself - it only reports.",
    "complete": []
   },
   {
@@ -1621,7 +1621,8 @@
     "DesktopPlatform:tests/tooling/test_provenance.py (retirement rejection fixtures)",
     "DesktopPlatform:eng/provenance/retired-artifacts.json (exact former project/package/kind targets with retirement authority; reject active or unregistered targets)",
     "DesktopPlatform:eng/provenance/records/contracts-provenance-tools-r2.json (new immutable tool successor; preserve previous record)",
-    "DesktopPlatform:CMakeLists.txt (reject retired native build profiles)"
+    "DesktopPlatform:CMakeLists.txt (reject retired native build profiles)",
+    "DesktopPlatform:docs/provenance.md (current retained native profile inventory; preserve historical evidence)"
    ],
    "shared": [
     {
@@ -1942,7 +1943,8 @@
     "Contracts:src/internal/dotnet/ArcForges.Contracts.LocalRpc.Sandbox/**",
     "Contracts:fixtures/internal/con-04-content-sandbox.json",
     "Contracts:tests/StructureTests/** (owned ContentSandbox profile/RPC metadata fixtures)",
-    "Contracts:tests/tooling/test_content_sandbox.py (offline schema and reservation negatives)"
+    "Contracts:tests/tooling/test_content_sandbox.py (offline schema and reservation negatives)",
+    "Contracts:eng/operations/con-04.json (owned domain operation authorization export; append through schema-source resource protocol)"
    ],
    "shared": [
     {
@@ -2003,7 +2005,10 @@
     "Contracts:eng/policy/contract-access.json (owned existing project imports)",
     "Contracts:eng/policy/dependency-policy.json (owned service-reference admission)",
     "Contracts:eng/policy/dependency-reviews/** (new immutable owned admission receipts)",
-    "Contracts:eng/provenance/** (owned generated binding inventory and new successor receipts; preserve historical records)"
+    "Contracts:eng/provenance/** (owned generated binding inventory and new successor receipts; preserve historical records)",
+    "Contracts:tests/StructureTests/Con05Cases.cs",
+    "Contracts:tests/StructureTests/Program.cs (append owned Con05Cases call only)",
+    "Contracts:eng/operations/con-05.json (owned domain operation authorization export; append through schema-source resource protocol)"
    ],
    "shared": [
     {
@@ -2119,7 +2124,9 @@
     "Contracts:tests/tooling/** (authentication schema and encoding registration checks)",
     "Contracts:tests/public/** (identity and HTTP exception conformance)",
     "Contracts:src/**/Generated/** (regenerated owned identity/HTTP outputs)",
-    "Contracts:src/public/ts/**/gen/** (regenerated owned identity/HTTP outputs)"
+    "Contracts:src/public/ts/**/gen/** (regenerated owned identity/HTTP outputs)",
+    "Contracts:eng/generate_shapes.py (owned JSON-schema registry/compiler support; preserve closed validation and existing schema outputs)",
+    "Contracts:eng/operations/con-07.json (owned domain operation authorization export; append through schema-source resource protocol)"
    ],
    "shared": [
     {
@@ -2177,7 +2184,8 @@
    ],
    "writes": [
     "Contracts:public/proto/arcforges/publicapi/v1/commerce.proto",
-    "Contracts:fixtures/public/con-08-entitlement-commerce.json"
+    "Contracts:fixtures/public/con-08-entitlement-commerce.json",
+    "Contracts:eng/operations/con-08.json (owned domain operation authorization export; append through schema-source resource protocol)"
    ],
    "shared": [
     {
@@ -2239,7 +2247,8 @@
    "writes": [
     "Contracts:public/proto/arcforges/publicapi/v1/sync.proto",
     "Contracts:public/proto/arcforges/publicapi/v1/transfer.proto",
-    "Contracts:fixtures/public/con-09-sync-transfer.json"
+    "Contracts:fixtures/public/con-09-sync-transfer.json",
+    "Contracts:eng/operations/con-09.json (owned domain operation authorization export; append through schema-source resource protocol)"
    ],
    "shared": [
     {
@@ -2298,7 +2307,8 @@
     "Contracts:public/proto/arcforges/publicapi/v1/chat.proto",
     "Contracts:internal/ai-http/v1/schema.json",
     "Contracts:fixtures/public/con-10-chat-task-agent.json",
-    "Contracts:fixtures/internal/con-10-ai-internal.json"
+    "Contracts:fixtures/internal/con-10-ai-internal.json",
+    "Contracts:eng/operations/con-10.json (owned domain operation authorization export; append through schema-source resource protocol)"
    ],
    "shared": [
     {
@@ -2355,7 +2365,8 @@
    "writes": [
     "Contracts:public/proto/arcforges/publicapi/v1/application.proto",
     "Contracts:public/proto/arcforges/events/v1/events.proto",
-    "Contracts:fixtures/public/con-11-application-streams.json"
+    "Contracts:fixtures/public/con-11-application-streams.json",
+    "Contracts:eng/operations/con-11.json (owned domain operation authorization export; append through schema-source resource protocol)"
    ],
    "shared": [
     {
@@ -2404,7 +2415,10 @@
     "Contracts:eng/contracts.py (owned extension/policy schema registration)",
     "Contracts:eng/package_catalog.py (owned existing output registration)",
     "Contracts:tests/tooling/** (owned extension/policy schema registration negatives)",
-    "Contracts:tests/StructureTests/** (owned generated validator conformance)"
+    "Contracts:tests/StructureTests/** (owned generated validator conformance)",
+    "Contracts:eng/generate_shapes.py (owned JSON-schema registry/compiler support; preserve closed validation and existing schema outputs)",
+    "Contracts:tests/public/** (owned C#/TS codec fixtures)",
+    "Contracts:eng/operations/con-12.json (owned domain operation authorization export; append through schema-source resource protocol)"
    ],
    "shared": [
     {
@@ -2449,7 +2463,8 @@
    ],
    "writes": [
     "Contracts:public/proto/arcforges/catalog/v1/catalog.proto",
-    "Contracts:fixtures/public/con-13-package-catalog.json"
+    "Contracts:fixtures/public/con-13-package-catalog.json",
+    "Contracts:eng/operations/con-13.json (owned domain operation authorization export; append through schema-source resource protocol)"
    ],
    "shared": [
     {
@@ -2508,7 +2523,8 @@
     "Contracts:internal/proto/arcforges/operator/v1/operator.proto",
     "Contracts:src/internal/dotnet/ArcForges.Contracts.CloudInternal/**",
     "Contracts:src/internal/ts/operator-client/src/**",
-    "Contracts:fixtures/internal/con-14-operator.json"
+    "Contracts:fixtures/internal/con-14-operator.json",
+    "Contracts:eng/operations/con-14.json (owned domain operation authorization export; append through schema-source resource protocol)"
    ],
    "shared": [
     {
@@ -2566,7 +2582,8 @@
     "Contracts:eng/contracts.py (storage schema registration only)",
     "Contracts:eng/package_catalog.py (existing CloudInternal generated output registration)",
     "Contracts:fixtures/internal/con-15-d1-execute-plan.json",
-    "Contracts:tests/tooling/** (owned ExecutePlan schema negative fixtures)"
+    "Contracts:tests/tooling/** (owned ExecutePlan schema negative fixtures)",
+    "Contracts:eng/operations/con-15.json (owned domain operation authorization export; append through schema-source resource protocol)"
    ],
    "shared": [
     {
@@ -2613,7 +2630,11 @@
    ],
    "writes": [
     "Contracts:public/http/v1/signed-formats.schema.json",
-    "Contracts:fixtures/public/con-16-signed-formats.json"
+    "Contracts:fixtures/public/con-16-signed-formats.json",
+    "Contracts:eng/generate_shapes.py (owned JSON-schema registry/compiler support; preserve closed validation and existing schema outputs)",
+    "Contracts:tests/tooling/test_signed_formats.py",
+    "Contracts:docs/con-16-signed-formats.md",
+    "Contracts:eng/operations/con-16.json (owned domain operation authorization export; append through schema-source resource protocol)"
    ],
    "shared": [
     {
@@ -2675,7 +2696,16 @@
    "writes": [
     "Contracts:eng/check_compatibility.py",
     "Contracts:tests/tooling/test_compatibility_matrix.py",
-    "Contracts:fixtures/public/con-17-compat-hash.json"
+    "Contracts:fixtures/public/con-17-compat-hash.json",
+    "Contracts:src/public/dotnet/ArcForges.Contracts.Foundation/CanonicalSemanticHash.cs",
+    "Contracts:src/public/ts/proto/src/semantic-hash.ts",
+    "Contracts:eng/contracts.py (owned hash export generation and compatibility gate registration)",
+    "Contracts:src/public/ts/proto/src/index.ts (generator-produced export only)",
+    "Contracts:tests/public/semantic-hash.test.mjs",
+    "Contracts:tests/StructureTests/** (owned C# shared golden-vector verification)",
+    "Contracts:package.json (existing npm test registration only)",
+    "Contracts:eng/provenance/** (owned source inventory and new receipts; preserve historical records)",
+    "Contracts:eng/compatibility/** (immutable previous/minimum descriptors and version/window records)"
    ],
    "shared": [
     {
@@ -2713,13 +2743,17 @@
      "part": "§7 evidence requirement: 'Generate an operation-by-actor reachability matrix for every public/local/operator/CF/exception binding under catalogue 00 AZ-04, with all seven effective authorization fields and source profile. Fail unclassified/ambiguous fields...'; package-level obligation contribution"
     }
    ],
-   "outcome": "A generator/policy-test tool reads manifest11's ~380-row scope-class table as its oracle, cross-references every currently-registered service method's exported eight authorization fields (capability/risk/approval/stepUp/localPresence/egress/patEligible/actorKinds), and fails the build on any unclassified, ambiguous, or nonexistent-idempotency-example method, or any tool reachability of a human-only approval/credential/commerce/policy method.",
+   "outcome": "A generator/policy-test tool reads manifest11's complete current scope-class table as its oracle, cross-references every currently-registered service method's exported eight authorization fields (capability/risk/approval/stepUp/localPresence/egress/patEligible/actorKinds), and fails the build on any unclassified, ambiguous, or nonexistent-idempotency-example method, or any tool reachability of a human-only approval/credential/commerce/policy method.",
    "provides": [
     "operation-scope-manifest-tooling"
    ],
    "writes": [
     "Contracts:eng/check_operation_scope.py",
-    "Contracts:eng/operation-scope-manifest.json"
+    "Contracts:eng/operation-scope-manifest.json",
+    "Contracts:eng/contracts.py (wire operation-scope gate into existing checks)",
+    "Contracts:tests/tooling/test_operation_scope.py",
+    "Contracts:docs/operation-scope.md",
+    "Contracts:eng/operations/** (initial retained operation exports and closed export schema)"
    ],
    "shared": [
     {
@@ -3102,7 +3136,8 @@
     "Contracts:src/public/ts/proto/package.json (include canonical build-only naming tools in existing package)",
     "Contracts:src/public/dotnet/ArcForges.Contracts.Validation/ArcForges.Contracts.Validation.csproj (package canonical build-only naming tools in existing package)",
     "Contracts:eng/packaging_tools.py (canonical build-only naming tool/data staging in existing packages)",
-    "Contracts:src/public/kotlin/**/generated/** (regenerated retained bindings; no manual edits)"
+    "Contracts:src/public/kotlin/**/generated/** (regenerated retained bindings; no manual edits)",
+    "Contracts:fixtures/public/wp03-02.json (replace retired-record vectors with retained recursive value vectors while preserving decode-limit/AOT coverage)"
    ],
    "shared": [
     {
@@ -3388,7 +3423,11 @@
     "DesktopPlatform:eng/policy/licence-boundary.json (owned producer/test project registration)",
     "DesktopPlatform:eng/policy/reconciliation/project-updates.json (owned producer/test project registration)",
     "DesktopPlatform:eng/policy/reconciliation/source.json (owned producer source inventory)",
-    "DesktopPlatform:eng/provenance/** (new owned-source receipts and generated inventory; preserve historical reused-file records)"
+    "DesktopPlatform:eng/provenance/** (new owned-source receipts and generated inventory; preserve historical reused-file records)",
+    "DesktopPlatform:eng/policy/runtime-ownership.json (owned producer/test project registration)",
+    "DesktopPlatform:eng/policy/reconciliation/active-projects.json (owned active project registration; preserve historical frozen inventories)",
+    "DesktopPlatform:eng/packaging/packages.py (exact external published dependency pins distinct from same-candidate owned packages)",
+    "DesktopPlatform:eng/packaging/test_packages.py (external pin positive/negative fixtures)"
    ],
    "shared": [
     {
@@ -3457,7 +3496,11 @@
     "DesktopPlatform:eng/policy/licence-boundary.json (owned producer/test project registration)",
     "DesktopPlatform:eng/policy/reconciliation/project-updates.json (owned producer/test project registration)",
     "DesktopPlatform:eng/policy/reconciliation/source.json (owned producer source inventory)",
-    "DesktopPlatform:eng/provenance/** (new owned-source receipts and generated inventory; preserve historical reused-file records)"
+    "DesktopPlatform:eng/provenance/** (new owned-source receipts and generated inventory; preserve historical reused-file records)",
+    "DesktopPlatform:eng/policy/runtime-ownership.json (owned producer/test project registration)",
+    "DesktopPlatform:eng/policy/reconciliation/active-projects.json (owned active project registration; preserve historical frozen inventories)",
+    "DesktopPlatform:eng/packaging/packages.py (exact external published dependency pins distinct from same-candidate owned packages)",
+    "DesktopPlatform:eng/packaging/test_packages.py (external pin positive/negative fixtures)"
    ],
    "shared": [
     {
@@ -3514,7 +3557,9 @@
     "DesktopPlatform:eng/policy/licence-boundary.json (owned producer/test project registration)",
     "DesktopPlatform:eng/policy/reconciliation/project-updates.json (owned producer/test project registration)",
     "DesktopPlatform:eng/policy/reconciliation/source.json (owned producer source inventory)",
-    "DesktopPlatform:eng/provenance/** (new owned-source receipts and generated inventory; preserve historical reused-file records)"
+    "DesktopPlatform:eng/provenance/** (new owned-source receipts and generated inventory; preserve historical reused-file records)",
+    "DesktopPlatform:eng/policy/runtime-ownership.json (owned producer/test project registration)",
+    "DesktopPlatform:eng/policy/reconciliation/active-projects.json (owned active project registration; preserve historical frozen inventories)"
    ],
    "validation": "Offline unit tests: optimistic concurrency conflict tests, sequence gap detection, compile-negative revision/sequence comparison test.",
    "evidence": "Optimistic concurrency and sequence gap test results.",
@@ -3566,7 +3611,9 @@
     "DesktopPlatform:eng/policy/licence-boundary.json (owned producer/test project registration)",
     "DesktopPlatform:eng/policy/reconciliation/project-updates.json (owned producer/test project registration)",
     "DesktopPlatform:eng/policy/reconciliation/source.json (owned producer source inventory)",
-    "DesktopPlatform:eng/provenance/** (new owned-source receipts and generated inventory; preserve historical reused-file records)"
+    "DesktopPlatform:eng/provenance/** (new owned-source receipts and generated inventory; preserve historical reused-file records)",
+    "DesktopPlatform:eng/policy/runtime-ownership.json (owned producer/test project registration)",
+    "DesktopPlatform:eng/policy/reconciliation/active-projects.json (owned active project registration; preserve historical frozen inventories)"
    ],
    "validation": "Offline unit tests: locale-change test asserting stored values unchanged, duration test asserting monotonic time used, DST boundary test for scheduled operations. Deterministic testing enabled by the clock abstraction itself.",
    "evidence": "Locale, time-zone and daylight-saving test results.",
@@ -3628,7 +3675,9 @@
     "DesktopPlatform:eng/policy/licence-boundary.json (owned producer/test project registration)",
     "DesktopPlatform:eng/policy/reconciliation/project-updates.json (owned producer/test project registration)",
     "DesktopPlatform:eng/policy/reconciliation/source.json (owned producer source inventory)",
-    "DesktopPlatform:eng/provenance/** (new owned-source receipts and generated inventory; preserve historical reused-file records)"
+    "DesktopPlatform:eng/provenance/** (new owned-source receipts and generated inventory; preserve historical reused-file records)",
+    "DesktopPlatform:eng/policy/runtime-ownership.json (owned producer/test project registration)",
+    "DesktopPlatform:eng/policy/reconciliation/active-projects.json (owned active project registration; preserve historical frozen inventories)"
    ],
    "shared": [
     {
@@ -3678,7 +3727,9 @@
     "DesktopPlatform:eng/policy/licence-boundary.json (owned producer/test project registration)",
     "DesktopPlatform:eng/policy/reconciliation/project-updates.json (owned producer/test project registration)",
     "DesktopPlatform:eng/policy/reconciliation/source.json (owned producer source inventory)",
-    "DesktopPlatform:eng/provenance/** (new owned-source receipts and generated inventory; preserve historical reused-file records)"
+    "DesktopPlatform:eng/provenance/** (new owned-source receipts and generated inventory; preserve historical reused-file records)",
+    "DesktopPlatform:eng/policy/runtime-ownership.json (owned producer/test project registration)",
+    "DesktopPlatform:eng/policy/reconciliation/active-projects.json (owned active project registration; preserve historical frozen inventories)"
    ],
    "shared": [
     {

@@ -37,6 +37,20 @@ Every ordinary call supplies x-af-peer-bin (nonce), x-af-instance-bin (16-byte c
 
 Renew every 10 seconds extends the lease by 30 seconds after verifying the pair still lives. One HTTP/2 connection per channel, no hedging/automatic mutation replay and no periodic recycling. A broken stream relaunches/reconciles under a new launch identity; it never inherits the nonce or grants. Queries can retry after authorization; mutations preserve their command ID and uncertainty. Full-jitter reconnect starts 250 ms, doubles to 30 seconds. Parent death closes the channel and kills its process tree.
 
+### Extension operation authorization metadata
+
+The operation export for the public extension transport uses closed, source-bound profiles. This declaration describes the launch and capability checks above; it grants no additional customer authority.
+
+| Methods | Authorization and retry profile |
+|---|---|
+| Handshake, RenewLease | Verified extension-child to its owning host only; capability `null`, risk `R1`, approval `none`, stepUp/localPresence `false`, egress `none`, patEligible `false`, actor kind `extension-child`; scope class `private-helper`, idempotency class `IW`. |
+| Stop | Verified owning host to its admitted extension-child only; the same fixed fields as lifecycle maintenance above with actor kind `owning-parent`; scope class `private-helper`, idempotency class `IW`. |
+| Invoke | `delegated-invocation`: capability derives from `admittedCapability.operationId`; risk, approval, stepUp, localPresence and egress derive from the corresponding admitted descriptor fields, never a fixed low-risk default. `patEligible` is `false` on the launch-bound transport. Effective actor kinds are the intersection of the admitted descriptor, frozen original actor and current grant. Receiver direction is separately verified: host to admitted extension contribution, or extension-child to approved host capability. |
+
+Lifecycle `IW` is a checked duplicate-command property, not authority to replay mutations automatically. The same command ID and canonical input return the same recorded result and lease expiry; a duplicate RenewLease never extends expiry again. A fresh renewal uses a new command ID while the verified pair remains live, at the existing renewal cadence. An expired or revoked pair cannot be revived or regranted. Duplicate Handshake can only return the identical immutable admitted binding; Stop is idempotently terminal. The launch, connection, nonce, direction and current-grant checks remain mandatory. Bootstrap Challenge/Confirm retain their one-use transcript semantics and are not classified as lifecycle `IW`.
+
+For delegated fields, the manifest export uses a closed expression object such as `{"from":"admittedCapability.risk"}` with its defining source profile. Only the named descriptor fields above are allowed; unknown expressions, absent descriptors, missing current grants and unclassified metadata fail validation. The actor intersection and receiver role checks are evaluated before invocation; a descriptor or wire claim never elevates an actor. Domain-owned `eng/operations/<domain>.json` exports aggregate into the operation-scope manifest without requiring pending unrelated operations to exist.
+
 ## 3. Bounds, event recovery and sensitive brokers
 
 Ordinary request/response<=4 MiB, default deadline 10 seconds (declared synchronous measurement<=30 seconds),16 active calls and 64 queued per peer. Reserve two separate control slots for bootstrap/renew/cancel/health so a saturated work lane cannot starve lease/cancellation. Refuse excess before dispatch. No domain lock held across peer calls; service dispatch never blocks the UI thread. Cancellation or timeout after a mutation was sent preserves unknown-effect semantics. Long jobs return an owned ProductJob, then GetJob/status; never extend the general unary deadline to run a render.
