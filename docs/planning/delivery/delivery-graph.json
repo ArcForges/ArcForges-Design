@@ -2360,7 +2360,9 @@
     "Contracts:internal/ai-http/v1/schema.json",
     "Contracts:fixtures/public/con-10-chat-task-agent.json",
     "Contracts:fixtures/internal/con-10-ai-internal.json",
-    "Contracts:eng/operations/con-10.json (owned domain operation authorization export; append through schema-source resource protocol)"
+    "Contracts:eng/operations/con-10.json (owned domain operation authorization export; append through schema-source resource protocol)",
+    "Design:docs/architecture/contracts/11-operation-scope-manifest.md (only this task-owned private CF routes: unique route identities, exact bindings, existing owner-derived scope and complete eight-field cf-service authorization profile sourced from contracts05; independently review and merge authority before consuming)",
+    "Contracts:eng/operation-scope-manifest.json (append this task-owned private route oracle rows only after Design authority merge; exact source commit and hash pin refresh; preserve existing rows)"
    ],
    "shared": [
     {
@@ -2382,7 +2384,7 @@
     "state": "not-started",
     "notes": "Observed none, unreviewed: No TaskService/ApprovalService/BridgeService/ChatOperationsService(public)/AgentService/AutomationService exist. internal/ai-http/v1/schema.json currently contains only CommitReceipt."
    },
-   "notes": "Second-largest domain task. WP-15/16/17 (ArcChat core/execution/independent-core, the assistant lanes) are the direct consumers; WP-52 (Cloud Harness, the AI lanes) needs both this and CON.11. Shared leaf shapes are defined here before CON.11 consumes them; there is no reverse CON.10 prerequisite on CON.11. SessionBinding is a schema record, not cached authorization; this task adds no live handlers.",
+   "notes": "Second-largest domain task. WP-15/16/17 (ArcChat core/execution/independent-core, the assistant lanes) are the direct consumers; WP-52 (Cloud Harness, the AI lanes) needs both this and CON.11. Shared leaf shapes are defined here before CON.11 consumes them; there is no reverse CON.10 prerequisite on CON.11. SessionBinding is a schema record, not cached authorization; this task adds no live handlers. Private CF route exports require actual authoritative route oracle rows before registration: preserve service actor, PAT denial, HMAC, owner/fence binding and idempotency requirements from contracts05. No borrowed public operation identities, new scope enum, authorization weakening or CON.18 checker algorithm expansion is authorized by this repair. This future authoring scope is not evidence that those route rows already exist.",
    "complete": []
   },
   {
@@ -2654,7 +2656,9 @@
     "Contracts:eng/package_catalog.py (existing CloudInternal and ai-internal generated output registration; no new package identity)",
     "Contracts:fixtures/internal/con-15-d1-execute-plan.json",
     "Contracts:tests/tooling/** (owned CF schema/shared-reference and ExecutePlan negative fixtures)",
-    "Contracts:eng/operations/con-15.json (owned domain operation authorization export; append through schema-source resource protocol)"
+    "Contracts:eng/operations/con-15.json (owned domain operation authorization export; append through schema-source resource protocol)",
+    "Design:docs/architecture/contracts/11-operation-scope-manifest.md (only this task-owned private CF routes: unique route identities, exact bindings, existing owner-derived scope and complete eight-field cf-service authorization profile sourced from contracts05; independently review and merge authority before consuming)",
+    "Contracts:eng/operation-scope-manifest.json (append this task-owned private route oracle rows only after Design authority merge; exact source commit and hash pin refresh; preserve existing rows)"
    ],
    "shared": [
     {
@@ -2676,7 +2680,7 @@
     "state": "not-started",
     "notes": "Observed none, unreviewed: None of contracts05's ~25 internal HTTP ports exist beyond CommitReceipt (WP03.00 seed, shared with CON.10)."
    },
-   "notes": "Consumed by WP-21 (D1 execution lease), WP-25 (R2/object lifecycle), WP-52 (Harness) — all the Cloud lane/the AI lanes. This is schema-only; the actual Worker deployment is explicitly out of WP03 scope (WP03 §1 'Out of scope:... The cloud endpoint implementations (23)').",
+   "notes": "Consumed by WP-21 (D1 execution lease), WP-25 (R2/object lifecycle), WP-52 (Harness) — all the Cloud lane/the AI lanes. This is schema-only; the actual Worker deployment is explicitly out of WP03 scope (WP03 §1 'Out of scope:... The cloud endpoint implementations (23)'). Private CF route exports require actual authoritative route oracle rows before registration: preserve service actor, PAT denial, HMAC, owner/fence binding and idempotency requirements from contracts05. No borrowed public operation identities, new scope enum, authorization weakening or CON.18 checker algorithm expansion is authorized by this repair. This future authoring scope is not evidence that those route rows already exist.",
    "complete": []
   },
   {
