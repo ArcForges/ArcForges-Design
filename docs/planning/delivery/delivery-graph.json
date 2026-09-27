@@ -1759,6 +1759,8 @@
     "contracts-merge-protocol"
    ],
    "writes": [
+    "Contracts:.gitleaks.toml (only demonstrated CON.01 public source-inventory SHA256 false positives: exact existing rule/path/key/digest bindings, independently verify source hash; no algorithm change or whole-key/path exemption)",
+    "Contracts:tests/tooling/test_dependency_admission.py (exact CON.01 public-digest false-positive regressions; retain other digest/key/path/token negatives)",
     "Contracts:eng/contracts.py",
     "Contracts:public/proto/constraints/**",
     "Contracts:internal/proto/constraints/**",
