@@ -2702,10 +2702,14 @@
     "Contracts:eng/contracts.py (owned hash export generation and compatibility gate registration)",
     "Contracts:src/public/ts/proto/src/index.ts (generator-produced export only)",
     "Contracts:tests/public/semantic-hash.test.mjs",
-    "Contracts:tests/StructureTests/** (owned C# shared golden-vector verification)",
+    "Contracts:tests/StructureTests/** (owned C# shared golden-vector verification and isolated pinned previous-client offline compatibility harness)",
     "Contracts:package.json (existing npm test registration only)",
     "Contracts:eng/provenance/** (owned source inventory and new receipts; preserve historical records)",
-    "Contracts:eng/compatibility/** (immutable previous/minimum descriptors and version/window records)"
+    "Contracts:eng/compatibility/** (immutable previous/minimum descriptors and version/window records)",
+    "Contracts:Directory.Packages.props (exact published previous-client candidate pin for the isolated compatibility harness)",
+    "Contracts:ArcForges.Contracts.slnx (register the isolated offline previous-client harness)",
+    "Contracts:eng/policy/dependency-policy.json (owned previous-client dependency admission and changed input registration)",
+    "Contracts:eng/policy/dependency-reviews/** (new immutable previous-client dependency receipt; preserve historical records)"
    ],
    "shared": [
     {
