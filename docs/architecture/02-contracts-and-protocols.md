@@ -432,8 +432,8 @@ ResourceRef · ResourceKind · ResourceVersionRef · TypedResourceSelection
 Artifact · ArtifactRef · ArtifactKind · ArtifactHandler
 DeepLink · DeepLinkRoute
 IntegrationEvent · EventType · EventId · EventSequence
-HealthSnapshot · InstancePresence · InstanceHealth · InstanceReadiness
-CompatibilityDescriptor · ContractVersion · FeatureSet
+HealthSnapshot · ApplicationPresence · InstanceHealth · InstanceReadiness
+CompatibilityDescriptor · ContractCompatibility · ContractVersion · FeatureSet
 Invocation · InvocationId · InvocationTarget · InvocationResult · SemanticError
 SuggestedTask · CorrelationId · CausationId
 ```
