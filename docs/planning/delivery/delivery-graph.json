@@ -1250,7 +1250,8 @@
     "Web:eng/provenance/** (owned policy source inventory and new receipts; preserve historical records)",
     "Web:apps/site/package.json (exact published naming-tool candidate pin and required existing SDK lockstep)",
     "Web:package-lock.json (regenerate exact naming-tool candidate lock)",
-    "Web:eng/policy/dependency-reviews/** (immutable naming-tool pin admission receipt)"
+    "Web:eng/policy/dependency-reviews/** (immutable naming-tool pin admission receipt)",
+    "Web:.gitleaks.toml (extend the existing anchored browser-resources-r1 through r6 path selection to r7 only for its eight actually observed public source-hash rows, reusing the unchanged five exact key/hash regexes, generic-api-key rule and AND condition; no new hash, rule, broad path or future receipt exemption)"
    ],
    "shared": [
     {
@@ -1267,7 +1268,7 @@
    "baseline": {
     "state": "not-started"
    },
-   "notes": "Owns the unlabeled 'Web repository and architecture assertions' package obligation from WP05 (no WP-05.MM anchor); see package_obligations. Mechanism is necessarily separate code from GOV.04's.NET engine.",
+   "notes": "Owns the unlabeled 'Web repository and architecture assertions' package obligation from WP05 (no WP-05.MM anchor); see package_obligations. Mechanism is necessarily separate code from GOV.04's.NET engine. The r7 public-digest support requires independently verifying all eight observed key/hash rows against r6 and their public inputs; six distinct digest values and all existing narrow matching conditions remain unchanged. This is explicit security-exception scope, not ADP.07 metadata support. A previously pushed exception change is not retroactive approval: preserve that history and require this authority, independent exact-head review and retained CI before merging the product PR.",
    "complete": []
   },
   {
