@@ -881,11 +881,21 @@
      "task": "GOV.18",
      "need": "policy data reduced to the retained repositories",
      "why": "the shared policy-test engine is built over the cleaned policy data"
+    },
+    {
+     "type": "artifact",
+     "task": "CON.23",
+     "need": "Immutable canonical naming policy/scanner build-time candidate asset",
+     "why": "The repository policy suite consumes Contracts-owned published naming authority without sibling source imports or copied rules."
     }
    ],
    "writes": [
     "DesktopPlatform:tests/ArchitectureTests/**",
-    "DesktopPlatform:eng/policy/exceptions.json"
+    "DesktopPlatform:eng/policy/exceptions.json",
+    "DesktopPlatform:Directory.Packages.props (exact canonical naming-tool package pin)",
+    "DesktopPlatform:eng/policy/dependency-policy.json (canonical naming-tool admission)",
+    "DesktopPlatform:eng/policy/dependency-reviews/** (new immutable naming-tool admission receipt)",
+    "DesktopPlatform:eng/provenance/** (owned naming-tool inventory and new receipts; preserve historical records)"
    ],
    "shared": [
     {
@@ -894,6 +904,10 @@
     },
     {
      "resource": "RES-desktopplatform-policy-data",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-desktopplatform-build-config",
      "mode": "append"
     }
    ],
@@ -1215,15 +1229,31 @@
      "task": "GOV.01",
      "need": "licence boundary declarations (mobile-only/public-SDK Apache set)",
      "why": "the SDK-to-UI licence separation check needs the frozen Apache/AGPL boundary"
+    },
+    {
+     "type": "artifact",
+     "task": "CON.23",
+     "need": "Immutable canonical naming policy/scanner build-time candidate asset",
+     "why": "The repository policy suite consumes Contracts-owned published naming authority without sibling source imports or copied rules."
     }
    ],
    "writes": [
     "Web:eng/policy/**",
-    "Web:.eslintrc*/lint-config for architecture rules"
+    "Web:.eslintrc*/lint-config for architecture rules",
+    "Web:tooling/project.ts (wire owned policy checks into existing PR gate)",
+    "Web:tests/unit/** (offline policy positive/negative fixtures)",
+    "Web:eng/provenance/** (owned policy source inventory and new receipts; preserve historical records)",
+    "Web:apps/site/package.json (exact published naming-tool candidate pin and required existing SDK lockstep)",
+    "Web:package-lock.json (regenerate exact naming-tool candidate lock)",
+    "Web:eng/policy/dependency-reviews/** (immutable naming-tool pin admission receipt)"
    ],
    "shared": [
     {
      "resource": "RES-architecture-tests",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-web-build-config",
      "mode": "append"
     }
    ],
@@ -1280,11 +1310,16 @@
    ],
    "writes": [
     "Mobile:gradle/policy/**",
-    "Mobile:eng/policy/exceptions.json"
+    "Mobile:eng/policy/exceptions.json",
+    "Mobile:build.gradle.kts (apply owned Gradle-native policy and formatter target only)"
    ],
    "shared": [
     {
      "resource": "RES-architecture-tests",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-mobile-build-config",
      "mode": "append"
     }
    ],
@@ -1570,7 +1605,23 @@
     "DesktopPlatform:tests/ArchitectureTests/** (retired native library map)",
     "DesktopPlatform:eng/packaging/test_packages.py",
     "DesktopPlatform:eng/packaging/native_consumer.py",
-    "DesktopPlatform:eng/packaging/README.md"
+    "DesktopPlatform:eng/packaging/README.md",
+    "DesktopPlatform:.github/workflows/native-abi.yml (retired owned-family build inputs only; retain dependencies of retained image/PDF/instrument families)",
+    "DesktopPlatform:CMakePresets.json (retired build targets only)",
+    "DesktopPlatform:deploy/README.md (current retained-family build/install inventory)",
+    "DesktopPlatform:eng/packaging/native.py",
+    "DesktopPlatform:eng/native/vcpkg/ports/opentimelineio/** (retired overlay only)",
+    "DesktopPlatform:eng/native_provenance.py",
+    "DesktopPlatform:tests/tooling/test_native_provenance.py",
+    "DesktopPlatform:eng/provenance/files.json",
+    "DesktopPlatform:eng/provenance/NOTICE.txt",
+    "DesktopPlatform:eng/provenance/artifact-profiles/native-win-x64-r4.json (new immutable successor)",
+    "DesktopPlatform:eng/provenance/records/native-*-r4.json (new immutable successors; preserve historical records)",
+    "DesktopPlatform:eng/check_provenance.py (validate explicit retirement of previously registered artifact targets only)",
+    "DesktopPlatform:tests/tooling/test_provenance.py (retirement rejection fixtures)",
+    "DesktopPlatform:eng/provenance/retired-artifacts.json (exact former project/package/kind targets with retirement authority; reject active or unregistered targets)",
+    "DesktopPlatform:eng/provenance/records/contracts-provenance-tools-r2.json (new immutable tool successor; preserve previous record)",
+    "DesktopPlatform:CMakeLists.txt (reject retired native build profiles)"
    ],
    "shared": [
     {
@@ -1650,7 +1701,11 @@
     "DesktopPlatform:docs/runtime-ownership.md",
     "DesktopPlatform:docs/licence-boundary.md",
     "DesktopPlatform:docs/reference-baselines.md",
-    "DesktopPlatform:docs/reconciliation-inventory.md"
+    "DesktopPlatform:docs/reconciliation-inventory.md",
+    "DesktopPlatform:Directory.Packages.props (exact canonical naming-tool package pin)",
+    "DesktopPlatform:eng/policy/dependency-policy.json (canonical naming-tool admission)",
+    "DesktopPlatform:eng/policy/dependency-reviews/** (new immutable naming-tool admission receipt)",
+    "DesktopPlatform:eng/provenance/** (owned naming-tool inventory and new receipts; preserve historical records)"
    ],
    "shared": [
     {
@@ -1659,6 +1714,10 @@
     },
     {
      "resource": "RES-architecture-tests",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-desktopplatform-build-config",
      "mode": "append"
     }
    ],
@@ -1669,7 +1728,14 @@
     "notes": "Observed in the accepted WP00-WP02 implementation: policy data and the design-policy export pinned to the derivation-baseline Design commit."
    },
    "notes": "Performs the narrow checker migration needed to repin within this cleanup task. GOV.13 and GOV.14 consume the resulting export; GOV.14 retains the broader specification-integrity audit. CON.23 completes after its forbidden-alias declaration is re-exported.",
-   "start": [],
+   "start": [
+    {
+     "type": "artifact",
+     "task": "CON.23",
+     "need": "Published canonical naming data/scanner build-time candidate",
+     "why": "The policy repin validates new exports through the canonical scanner rather than old Contracts source or duplicated naming authority."
+    }
+   ],
    "complete": []
   },
   {
@@ -1874,7 +1940,9 @@
    "writes": [
     "Contracts:internal/proto/arcforges/local/sandbox/v1/sandbox.proto",
     "Contracts:src/internal/dotnet/ArcForges.Contracts.LocalRpc.Sandbox/**",
-    "Contracts:fixtures/internal/con-04-content-sandbox.json"
+    "Contracts:fixtures/internal/con-04-content-sandbox.json",
+    "Contracts:tests/StructureTests/** (owned ContentSandbox profile/RPC metadata fixtures)",
+    "Contracts:tests/tooling/test_content_sandbox.py (offline schema and reservation negatives)"
    ],
    "shared": [
     {
@@ -1924,7 +1992,18 @@
    "writes": [
     "Contracts:public/proto/arcforges/extensions/v1/extensions.proto",
     "Contracts:internal/proto/arcforges/local/platform/v1/platform.proto",
-    "Contracts:fixtures/internal/con-05-extension-connector-bootstrap.json"
+    "Contracts:fixtures/internal/con-05-extension-connector-bootstrap.json",
+    "Contracts:src/public/dotnet/ArcForges.Sdk.Contracts/ArcForges.Sdk.Contracts.csproj (existing PublicApi reference for invocation types)",
+    "Contracts:src/internal/dotnet/ArcForges.Contracts.LocalRpc.Platform/ArcForges.Contracts.LocalRpc.Platform.csproj (Foundation and admitted gRPC service references)",
+    "Contracts:src/**/packages.lock.json (affected owned project lock regeneration)",
+    "Contracts:eng/local-contract-retirements.json (removed Hub/SSO/transfer names)",
+    "Contracts:tests/tooling/test_con05_local_contracts.py",
+    "Contracts:public/proto/constraints/extensions.json (owned constraint shard)",
+    "Contracts:internal/proto/constraints/platform.json (owned constraint shard)",
+    "Contracts:eng/policy/contract-access.json (owned existing project imports)",
+    "Contracts:eng/policy/dependency-policy.json (owned service-reference admission)",
+    "Contracts:eng/policy/dependency-reviews/** (new immutable owned admission receipts)",
+    "Contracts:eng/provenance/** (owned generated binding inventory and new successor receipts; preserve historical records)"
    ],
    "shared": [
     {
@@ -2023,18 +2102,24 @@
    "obligations": [
     {
      "ref": "WP-03.05",
-     "part": "IdentityService (29 ops)/WorkspaceService (4)/DeviceService (6) from registry04 §5, plus contracts07 §1 native PKCE token endpoint and the four /session/v1 browser routes as declared JSON exceptions"
+     "part": "All current IdentityService/WorkspaceService/DeviceService operations in registry04 section 5 and contracts07 section 1 native/browser authentication exceptions; preserve the declared transport encoding for every endpoint."
     }
    ],
-   "outcome": "IdentityService/WorkspaceService/DeviceService are generated with all listed operations, exact request/response field tags, and the eight authorization fields exported per operation; GET /session/v1/native/authorize, POST /session/v1/native/token and the four /session/v1 browser routes have generated strict-JSON exception schemas (reusing WP03.02's JsonSerializerContext posture); independent fixtures cover the identity journeys table in contracts07 §1 (account creation, email/passkey/OIDC login, recovery, step-up, refresh, logout, PAT).",
+   "outcome": "IdentityService/WorkspaceService/DeviceService are generated with every current operation in registry04 section 5, exact request/response field tags and eight authorization fields per operation. Native authorize/token and all browser session and OIDC callback exceptions in contracts07 section 1 receive generated schemas and encoding validation: native token requests remain application/x-www-form-urlencoded with the specified 16 KiB bound, and JSON bodies use the accepted strict serializer posture. Independent fixtures cover account creation, email/passkey/OIDC login, enrollment, recovery, step-up, refresh, logout and PAT journeys; existing transfer HTTP schemas remain intact.",
    "provides": [
     "identity-session-device-ops",
     "native-browser-auth-exceptions"
    ],
    "writes": [
     "Contracts:public/proto/arcforges/publicapi/v1/identity.proto",
-    "Contracts:public/http/v1/schema.json",
-    "Contracts:fixtures/public/con-07-identity.json"
+    "Contracts:public/http/v1/** (additive authentication exception schemas; preserve existing PartReceipt transfer schema)",
+    "Contracts:fixtures/public/con-07-identity.json",
+    "Contracts:eng/contracts.py (authentication schema registration only)",
+    "Contracts:eng/package_catalog.py (authentication schema outputs only)",
+    "Contracts:tests/tooling/** (authentication schema and encoding registration checks)",
+    "Contracts:tests/public/** (identity and HTTP exception conformance)",
+    "Contracts:src/**/Generated/** (regenerated owned identity/HTTP outputs)",
+    "Contracts:src/public/ts/**/gen/** (regenerated owned identity/HTTP outputs)"
    ],
    "shared": [
     {
@@ -2054,10 +2139,23 @@
    "evidence": "fixtures/public/con-07-identity.json; C#/TS/Kotlin conformance report.",
    "baseline": {
     "state": "not-started",
-    "notes": "Observed none, unreviewed: No IdentityService/WorkspaceService/DeviceService and none of their ~39 operations exist (confirmed via service grep)."
+    "notes": "Observed none, unreviewed: the frozen bootstrap has no IdentityService/WorkspaceService/DeviceService operations; exact current scope comes from the authoritative registry, not a historical operation count."
    },
-   "notes": "Largest single domain in the public registry by operation count. WP-22 (Identity/Workspace/Device, owned by the Cloud lane) is the direct downstream consumer and is the one WP explicitly still gated behind the OLD 'whole WP03' edge in implementation-sequence.md §9 (22 depends on 11,21; 21 depends on 03,05,12) — this task is what actually unblocks WP-22's real work, not WP-03.05 as a monolith.",
-   "start": [],
+   "notes": "Cloud identity tasks consume the published operation closure; there is no whole-WP03 barrier.",
+   "start": [
+    {
+     "type": "contract",
+     "task": "CON.02",
+     "need": "EncodedBodyRef and CapabilityDescriptor generated foundation records",
+     "why": "Identity read outcomes and DeviceCapabilityView consume these shared types; the identity closure must not duplicate them."
+    },
+    {
+     "type": "contract",
+     "task": "CON.11",
+     "need": "ApplicationPresence record from the application/stream closure",
+     "why": "DeviceCapabilityView field 1 references ApplicationPresence; identity schemas must consume its owning producer."
+    }
+   ],
    "complete": []
   },
   {
@@ -2101,8 +2199,15 @@
     "state": "not-started",
     "notes": "Observed none, unreviewed: No EntitlementService/CommerceService exist."
    },
-   "notes": "Independent of every other CON.0x domain task. Needed to start by WP-42 (commerce/entitlement/credits, the commerce, policy and operations lanes).",
-   "start": [],
+   "notes": "Consumes shared CON.02 read-envelope types; commerce domain schemas otherwise remain independent of other domain closures. Consumers are the commerce, policy and operations lanes.",
+   "start": [
+    {
+     "type": "contract",
+     "task": "CON.02",
+     "need": "EncodedBodyRef for canonical read/query outcome envelopes",
+     "why": "Commerce query schemas consume the shared oversized-body type rather than duplicating it."
+    }
+   ],
    "complete": []
   },
   {
@@ -2285,7 +2390,7 @@
    "obligations": [
     {
      "ref": "WP-03.05",
-     "part": "extension/policy schemas named in WP-03 §4's projects table ('Selected CF/auth/provider HTTP exceptions') and contracts08 in full:.arcpkg manifest.v1, workflow.v1 DAG, panel.v1 declarative UI, PolicyBundle body.v1, internal ConfigurationDocument (20 sections)"
+     "part": "extension/policy schemas named in WP-03 §4's projects table ('Selected CF/auth/provider HTTP exceptions') and contracts08 in full:.arcpkg manifest.v1, workflow.v1 DAG, panel.v1 declarative UI, PolicyBundle body.v1, internal ConfigurationDocument (all current sections, including status)"
     }
    ],
    "outcome": "The five contracts08 schema families are authored as closed JSON schemas (manifest.v1/workflow.v1/panel.v1 under public/http or a dedicated extensions schema path; policy body.v1 and configuration.v1 under public/http and internal/ai-http respectively) with generated C#/TS validators; independent vectors cover malformed archive, permission expansion, revoke-during-work, private-schema-rollback-refusal and the deterministic bucket-assignment hash vectors from contracts08 §5.",
@@ -2293,9 +2398,13 @@
     "extension-policy-schemas"
    ],
    "writes": [
-    "Contracts:public/http/v1/schema.json",
-    "Contracts:internal/ai-http/v1/schema.json",
-    "Contracts:fixtures/public/con-12-extension-policy.json"
+    "Contracts:public/http/v1/** (additive extension/policy schemas; preserve existing transfer schemas)",
+    "Contracts:internal/ai-http/v1/** (additive configuration schema; preserve existing CommitReceipt)",
+    "Contracts:fixtures/public/con-12-extension-policy.json",
+    "Contracts:eng/contracts.py (owned extension/policy schema registration)",
+    "Contracts:eng/package_catalog.py (owned existing output registration)",
+    "Contracts:tests/tooling/** (owned extension/policy schema registration negatives)",
+    "Contracts:tests/StructureTests/** (owned generated validator conformance)"
    ],
    "shared": [
     {
@@ -2317,7 +2426,7 @@
     "state": "not-started",
     "notes": "Observed none, unreviewed: None of manifest.v1/workflow.v1/panel.v1/policy-body.v1/configuration.v1 exist in the repo in any form."
    },
-   "notes": "Needed to start by WP-41 (extensions) and WP-44 (policy/configuration), both currently blocked on the whole-WP03 edge in the old serial graph.",
+   "notes": "Consumers use the published schema closure; no whole-WP03 barrier. Exact section coverage comes from current contracts08, not a historical count.",
    "start": [],
    "complete": []
   },
@@ -2426,7 +2535,7 @@
   },
   {
    "id": "CON.15",
-   "title": "Cloudflare-internal HTTP bindings (AI Worker <-> C# ports beyond ai-internal's chat/task family)",
+   "title": "Cloudflare-internal HTTP and D1 ExecutePlan bindings",
    "lane": "contracts",
    "repo": "Contracts",
    "kind": "contract",
@@ -2434,12 +2543,13 @@
    "obligations": [
     {
      "ref": "WP-03.90",
-     "part": "'Private CF binding/event definitions' input — the remaining contracts05 ports not already covered by CON.10 (ai-internal): /internal/objects/v1/* (authorize/part-receipt/verification/job-grant/job-authorize), /internal/ai/v1/dispatch|control|delete (Worker-side), inference-job family (embedding/rerank), and CfDeletionTarget/CfDeletionReceipt/SessionBinding/BackupManifest records"
+     "part": "'Private CF binding/event definitions' input — the remaining contracts05 ports not already covered by CON.10 (ai-internal): /internal/objects/v1/* (authorize/part-receipt/verification/job-grant/job-authorize), /internal/ai/v1/dispatch|control|delete (Worker-side), inference-job family (embedding/rerank), and CfDeletionTarget/CfDeletionReceipt/SessionBinding/BackupManifest records; the private generated D1 ExecutePlan request/reply boundary defined by data-model/04-d1-execution-profile.md, sections 1 and 3"
     }
    ],
-   "outcome": "The remaining ~15 contracts05 internal HTTP ports and their records are generated as closed JSON schemas in internal/ai-http/v1/schema.json (or a dedicated internal/cf-http/v1 if the CON.10 file is already large), reusing WP03.02's strict-JSON posture; independent vectors cover duplicate dispatch, lease takeover, R2 part mismatch and stale-epoch rejection per contracts05 §7's injection list (schema-level only — no live Worker).",
+   "outcome": "The remaining ~15 contracts05 internal HTTP ports and their records are generated as closed JSON schemas in internal/ai-http/v1/schema.json (or a dedicated internal/cf-http/v1 if the CON.10 file is already large), reusing WP03.02's strict-JSON posture; independent vectors cover duplicate dispatch, lease takeover, R2 part mismatch and stale-epoch rejection per contracts05 §7's injection list (schema-level only — no live Worker). The private D1 ExecutePlan request/reply is generated from the authoritative named-plan execution profile as a separate internal storage HTTP schema, with plan/parameter/result typing and fail-closed guard/error vectors; it accepts no public SQL or duplicate C# business decisions.",
    "provides": [
-    "cf-internal-bindings"
+    "cf-internal-bindings",
+    "d1-execute-plan-schema"
    ],
    "start": [
     {
@@ -2451,7 +2561,12 @@
    ],
    "writes": [
     "Contracts:internal/ai-http/v1/schema.json",
-    "Contracts:fixtures/internal/con-15-cf-internal.json"
+    "Contracts:fixtures/internal/con-15-cf-internal.json",
+    "Contracts:internal/storage-http/v1/** (generated-schema authority for private D1 ExecutePlan)",
+    "Contracts:eng/contracts.py (storage schema registration only)",
+    "Contracts:eng/package_catalog.py (existing CloudInternal generated output registration)",
+    "Contracts:fixtures/internal/con-15-d1-execute-plan.json",
+    "Contracts:tests/tooling/** (owned ExecutePlan schema negative fixtures)"
    ],
    "shared": [
     {
@@ -2468,7 +2583,7 @@
     }
    ],
    "validation": "offline vectors only; explicitly NOT a live-Worker/D1/R2 test (that is WP-06 minimal probe and WP-52 real Harness per the producer matrix's WP03 row: 'Owner handlers are deliberately absent; codec/validator fixtures prove schema only').",
-   "evidence": "fixtures/internal/con-15-cf-internal.json.",
+   "evidence": "fixtures/internal/con-15-cf-internal.json. Independent private D1 ExecutePlan schema/guard/error vectors and published generated request/reply identity.",
    "baseline": {
     "state": "not-started",
     "notes": "Observed none, unreviewed: None of contracts05's ~25 internal HTTP ports exist beyond CommitReceipt (WP03.00 seed, shared with CON.10)."
@@ -2934,9 +3049,10 @@
      "part": "source cleanup of the alignment sequence (ADP-10); blocks only the tasks that edit the retired bindings"
     }
    ],
-   "outcome": "eng/policy/product-names.json and the naming checks name only the family's products; the two retired in-process port packages and their proto files leave the package set and are never republished; retired foundation and content records, AggregateBody variants and enum values are deleted with their field, value and message numbers reserved exactly as the wire registry lists; accepted fixtures and generated C#/TypeScript/Kotlin shapes are regenerated without them; already published package versions remain immutable history.",
+   "outcome": "eng/policy/product-names.json and the naming checks name only the family's products; the two retired in-process port packages and their proto files leave the package set and are never republished; retired foundation and content records, AggregateBody variants and enum values are deleted with their field, value and message numbers reserved exactly as the wire registry lists; accepted fixtures and generated C#/TypeScript/Kotlin shapes are regenerated without them; already published package versions remain immutable history. Publish the canonical product-names policy and its scanner as an immutable build-time asset in the existing Contracts candidate lifecycle, bound to the same source/version and original publication receipt; consumers pin this artifact, never a sibling checkout or a new authored naming authority. Stage the same authored scanner/data into the existing @arcforges/proto and ArcForges.Contracts.Validation packages as build-only tools; no new package identity or authored policy copy is introduced. Packaging is a build-time delivery mechanism only, not a business/runtime schema prerequisite or new naming authority.",
    "provides": [
-    "retired-contract-elements"
+    "retired-contract-elements",
+    "canonical-naming-policy-build-artifact"
    ],
    "writes": [
     "Contracts:eng/policy/product-names.json",
@@ -2966,7 +3082,27 @@
     "Contracts:public/proto/constraints.json (retired record constraints before CON.01 sharding)",
     "Contracts:internal/proto/constraints.json (retired port constraints before CON.01 sharding)",
     "Contracts:src/public/ts/proto/src/gen/** (regenerated)",
-    "Contracts:src/public/ts/proto/src/shapes/gen/** (regenerated)"
+    "Contracts:src/public/ts/proto/src/shapes/gen/** (regenerated)",
+    "Contracts:public/proto/value-boundaries.json (retired identifier domains only)",
+    "Contracts:src/public/dotnet/ArcForges.Contracts.Foundation/ValueBoundaries.cs (retired Notes values only)",
+    "Contracts:src/public/ts/proto/src/values/gen/** (regenerated retained value brands)",
+    "Contracts:src/internal/dotnet/**/Generated/** (regenerated retained imports)",
+    "Contracts:eng/policy/licence-boundary.json (retired project removal)",
+    "Contracts:eng/policy/dependency-policy.json (retired input removal admission)",
+    "Contracts:eng/policy/dependency-reviews/** (new immutable retirement admission receipts)",
+    "Contracts:eng/provenance/files.json",
+    "Contracts:eng/provenance/records/contract-bindings-*.json (new successors only; preserve historical receipts)",
+    "Contracts:fixtures/internal/wp03-00.json (retired port cases only)",
+    "Contracts:docs/architecture.md (current retained output inventory)",
+    "Contracts:docs/releasing.md (current retained output inventory)",
+    "Contracts:src/public/**/README.md (current retained output inventory)",
+    "Contracts:eng/contracts.py (canonical naming build-asset packaging only)",
+    "Contracts:eng/package_catalog.py (canonical naming candidate asset registration only)",
+    "Contracts:tests/tooling/** (naming candidate identity and artifact registration negatives)",
+    "Contracts:src/public/ts/proto/package.json (include canonical build-only naming tools in existing package)",
+    "Contracts:src/public/dotnet/ArcForges.Contracts.Validation/ArcForges.Contracts.Validation.csproj (package canonical build-only naming tools in existing package)",
+    "Contracts:eng/packaging_tools.py (canonical build-only naming tool/data staging in existing packages)",
+    "Contracts:src/public/kotlin/**/generated/** (regenerated retained bindings; no manual edits)"
    ],
    "shared": [
     {
@@ -2983,7 +3119,7 @@
     }
    ],
    "validation": "offline: naming, schema, reservation and compatibility checks prove every retired number and name is reserved and unused, no retained record, service or fixture references a retired one, the package set matches the registry and generated shapes regenerate cleanly; the compatibility check accepts only the reviewed retirements. Acceptance: a scan finds no active retired type, package, product value or naming entry; required wire reservations, eng/provenance and historical docs/implementation receipts remain permitted; the package set, solution, contract-access policy and foundation inventory list only retained items; structure tests pass without the retired cases.",
-   "evidence": "Retirement diff against the reserved lists of the wire registry; naming, schema, compatibility and generation results; package-set comparison with the registry.",
+   "evidence": "Retirement diff against the reserved lists of the wire registry; naming, schema, compatibility and generation results; package-set comparison with the registry. Original candidate publication receipt and exact identity of the canonical naming policy/scanner build-time asset.",
    "baseline": {
     "state": "not-started",
     "notes": "Observed in the accepted WP00, WP03.00 and WP03.01 implementation: the naming data, two in-process port packages with seed records, and foundation/content records and fixtures still carry the retired products."
@@ -3244,11 +3380,27 @@
     }
    ],
    "writes": [
-    "DesktopPlatform:src/BuildingBlocks/ArcForges.Foundation/**"
+    "DesktopPlatform:src/BuildingBlocks/ArcForges.Foundation/**",
+    "DesktopPlatform:eng/packaging/packages.json (owned producer package admission only)",
+    "DesktopPlatform:eng/version-sources.json (owned producer source declarations only)",
+    "DesktopPlatform:eng/policy/dependency-policy.json (owned producer/test dependency admission)",
+    "DesktopPlatform:eng/policy/dependency-reviews/** (new immutable admission receipts)",
+    "DesktopPlatform:eng/policy/licence-boundary.json (owned producer/test project registration)",
+    "DesktopPlatform:eng/policy/reconciliation/project-updates.json (owned producer/test project registration)",
+    "DesktopPlatform:eng/policy/reconciliation/source.json (owned producer source inventory)",
+    "DesktopPlatform:eng/provenance/** (new owned-source receipts and generated inventory; preserve historical reused-file records)"
    ],
    "shared": [
     {
      "resource": "RES-desktopplatform-build-config",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-desktopplatform-package-inventory",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-desktopplatform-policy-data",
      "mode": "append"
     }
    ],
@@ -3297,11 +3449,27 @@
    ],
    "writes": [
     "DesktopPlatform:src/BuildingBlocks/ArcForges.Foundation/**",
-    "DesktopPlatform:src/BuildingBlocks/ArcForges.Application.Abstractions/**"
+    "DesktopPlatform:src/BuildingBlocks/ArcForges.Application.Abstractions/**",
+    "DesktopPlatform:eng/packaging/packages.json (owned producer package admission only)",
+    "DesktopPlatform:eng/version-sources.json (owned producer source declarations only)",
+    "DesktopPlatform:eng/policy/dependency-policy.json (owned producer/test dependency admission)",
+    "DesktopPlatform:eng/policy/dependency-reviews/** (new immutable admission receipts)",
+    "DesktopPlatform:eng/policy/licence-boundary.json (owned producer/test project registration)",
+    "DesktopPlatform:eng/policy/reconciliation/project-updates.json (owned producer/test project registration)",
+    "DesktopPlatform:eng/policy/reconciliation/source.json (owned producer source inventory)",
+    "DesktopPlatform:eng/provenance/** (new owned-source receipts and generated inventory; preserve historical reused-file records)"
    ],
    "shared": [
     {
      "resource": "RES-desktopplatform-build-config",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-desktopplatform-package-inventory",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-desktopplatform-policy-data",
      "mode": "append"
     }
    ],
@@ -3338,7 +3506,15 @@
     }
    ],
    "writes": [
-    "DesktopPlatform:src/BuildingBlocks/ArcForges.Foundation/**"
+    "DesktopPlatform:src/BuildingBlocks/ArcForges.Foundation/**",
+    "DesktopPlatform:eng/packaging/packages.json (owned producer package admission only)",
+    "DesktopPlatform:eng/version-sources.json (owned producer source declarations only)",
+    "DesktopPlatform:eng/policy/dependency-policy.json (owned producer/test dependency admission)",
+    "DesktopPlatform:eng/policy/dependency-reviews/** (new immutable admission receipts)",
+    "DesktopPlatform:eng/policy/licence-boundary.json (owned producer/test project registration)",
+    "DesktopPlatform:eng/policy/reconciliation/project-updates.json (owned producer/test project registration)",
+    "DesktopPlatform:eng/policy/reconciliation/source.json (owned producer source inventory)",
+    "DesktopPlatform:eng/provenance/** (new owned-source receipts and generated inventory; preserve historical reused-file records)"
    ],
    "validation": "Offline unit tests: optimistic concurrency conflict tests, sequence gap detection, compile-negative revision/sequence comparison test.",
    "evidence": "Optimistic concurrency and sequence gap test results.",
@@ -3346,7 +3522,21 @@
     "state": "not-started",
     "notes": "Observed scaffold, unreviewed: No Revision/Sequence types exist yet; same placeholder project as FND.01."
    },
-   "complete": []
+   "complete": [],
+   "shared": [
+    {
+     "resource": "RES-desktopplatform-build-config",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-desktopplatform-package-inventory",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-desktopplatform-policy-data",
+     "mode": "append"
+    }
+   ]
   },
   {
    "id": "FND.04",
@@ -3368,7 +3558,15 @@
     "monotonic-timestamp-type"
    ],
    "writes": [
-    "DesktopPlatform:src/BuildingBlocks/ArcForges.Foundation/**"
+    "DesktopPlatform:src/BuildingBlocks/ArcForges.Foundation/**",
+    "DesktopPlatform:eng/packaging/packages.json (owned producer package admission only)",
+    "DesktopPlatform:eng/version-sources.json (owned producer source declarations only)",
+    "DesktopPlatform:eng/policy/dependency-policy.json (owned producer/test dependency admission)",
+    "DesktopPlatform:eng/policy/dependency-reviews/** (new immutable admission receipts)",
+    "DesktopPlatform:eng/policy/licence-boundary.json (owned producer/test project registration)",
+    "DesktopPlatform:eng/policy/reconciliation/project-updates.json (owned producer/test project registration)",
+    "DesktopPlatform:eng/policy/reconciliation/source.json (owned producer source inventory)",
+    "DesktopPlatform:eng/provenance/** (new owned-source receipts and generated inventory; preserve historical reused-file records)"
    ],
    "validation": "Offline unit tests: locale-change test asserting stored values unchanged, duration test asserting monotonic time used, DST boundary test for scheduled operations. Deterministic testing enabled by the clock abstraction itself.",
    "evidence": "Locale, time-zone and daylight-saving test results.",
@@ -3377,7 +3575,21 @@
     "notes": "Observed scaffold, unreviewed: No clock abstraction exists yet."
    },
    "start": [],
-   "complete": []
+   "complete": [],
+   "shared": [
+    {
+     "resource": "RES-desktopplatform-build-config",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-desktopplatform-package-inventory",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-desktopplatform-policy-data",
+     "mode": "append"
+    }
+   ]
   },
   {
    "id": "FND.05",
@@ -3408,11 +3620,27 @@
    ],
    "writes": [
     "DesktopPlatform:src/BuildingBlocks/ArcForges.Foundation/**",
-    "DesktopPlatform:eng/policy/reason-codes.json"
+    "DesktopPlatform:eng/policy/reason-codes.json",
+    "DesktopPlatform:eng/packaging/packages.json (owned producer package admission only)",
+    "DesktopPlatform:eng/version-sources.json (owned producer source declarations only)",
+    "DesktopPlatform:eng/policy/dependency-policy.json (owned producer/test dependency admission)",
+    "DesktopPlatform:eng/policy/dependency-reviews/** (new immutable admission receipts)",
+    "DesktopPlatform:eng/policy/licence-boundary.json (owned producer/test project registration)",
+    "DesktopPlatform:eng/policy/reconciliation/project-updates.json (owned producer/test project registration)",
+    "DesktopPlatform:eng/policy/reconciliation/source.json (owned producer source inventory)",
+    "DesktopPlatform:eng/provenance/** (new owned-source receipts and generated inventory; preserve historical reused-file records)"
    ],
    "shared": [
     {
      "resource": "RES-desktopplatform-policy-data",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-desktopplatform-build-config",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-desktopplatform-package-inventory",
      "mode": "append"
     }
    ],
@@ -3442,11 +3670,27 @@
     "version-axis-types"
    ],
    "writes": [
-    "DesktopPlatform:src/BuildingBlocks/ArcForges.Foundation/**"
+    "DesktopPlatform:src/BuildingBlocks/ArcForges.Foundation/**",
+    "DesktopPlatform:eng/packaging/packages.json (owned producer package admission only)",
+    "DesktopPlatform:eng/version-sources.json (owned producer source declarations only)",
+    "DesktopPlatform:eng/policy/dependency-policy.json (owned producer/test dependency admission)",
+    "DesktopPlatform:eng/policy/dependency-reviews/** (new immutable admission receipts)",
+    "DesktopPlatform:eng/policy/licence-boundary.json (owned producer/test project registration)",
+    "DesktopPlatform:eng/policy/reconciliation/project-updates.json (owned producer/test project registration)",
+    "DesktopPlatform:eng/policy/reconciliation/source.json (owned producer source inventory)",
+    "DesktopPlatform:eng/provenance/** (new owned-source receipts and generated inventory; preserve historical reused-file records)"
    ],
    "shared": [
     {
      "resource": "RES-desktopplatform-build-config",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-desktopplatform-package-inventory",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-desktopplatform-policy-data",
      "mode": "append"
     }
    ],
@@ -3780,21 +4024,63 @@
     {
      "type": "contract",
      "task": "CON.92",
-     "need": "ArcForges.Contracts.CloudInternal, native auth exception/catalog/index/revocation/realm schemas and independent signed vectors (fixture keys per WP02/06)",
-     "why": "WP06 itself is a permitted producer of the signing-key fixture, not solely a consumer"
+     "need": "Published Contracts serialization posture, exact-value vectors and existing CloudInternal package boundary",
+     "why": "The proof consumes admitted generated serialization and exact-value behavior; later native/browser schemas come from their actual producer."
+    },
+    {
+     "type": "contract",
+     "task": "CON.07",
+     "need": "Native/browser authentication exception and identity/session schemas",
+     "why": "The session/CSRF/revoke proof consumes the actual generated authentication closure; CON.92 supplies serialization posture only."
+    },
+    {
+     "type": "contract",
+     "task": "CON.15",
+     "need": "Generated private D1 ExecutePlan request/reply schema",
+     "why": "The actual Worker named-plan binding consumes the canonical internal storage schema instead of inventing parallel DTOs."
     }
    ],
    "substitutes": [
     "SUB-signed-format-fixture-keys"
    ],
    "writes": [
-    "Cloud:src/Cloud/ArcForges.Cloud.Host/**",
-    "Cloud:eng/verification/**"
+    "Cloud:src/ArcForges.Cloud/**",
+    "Cloud:eng/verification/**",
+    "Cloud:worker/**",
+    "Cloud:wrangler.json",
+    "Cloud:Dockerfile",
+    "Cloud:Directory.Packages.props",
+    "Cloud:package.json",
+    "Cloud:package-lock.json",
+    "Cloud:tests/ArcForges.Cloud.Tests/**",
+    "Cloud:tests/worker/**",
+    "Cloud:eng/policy/dependency-reviews/**",
+    "Cloud:eng/provenance/**",
+    "Cloud:tooling/project.ts",
+    "Cloud:tooling/cloudflare.ts",
+    "Cloud:.github/workflows/ci.yml",
+    "Cloud:docs/prf-07-*.md"
    ],
    "shared": [
     {
      "resource": "RES-workstation-build-slot",
      "mode": "exclusive"
+    },
+    {
+     "resource": "RES-cloud-deployment",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-cloud-host-composition",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-cloud-leased-singletons",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-cloud-storage-plans",
+     "mode": "regenerate"
     }
    ],
    "validation": "Native AOT compilation required; real-adapter runtime verification is scoped local opt-in per V-03/P2-017; no EF/dynamic ORM/ASP.NET Session/CookieAuthenticationHandler; chiseled Ubuntu image, non-root, read-only root",
